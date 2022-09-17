@@ -1,0 +1,1599 @@
+// cli.go
+// Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"sort"
+	"strconv"
+	"strings"
+	"text/tabwriter"
+	"time"
+
+	"github.com/mmp/imgui-go/v4"
+)
+
+type CommandImplementation func(cli *CLIPane, args []string) string
+
+type CommandArgsFormat int
+
+const (
+	// Only one of aircraft, controller, or string should be set.
+	CommandArgsAircraft = 1 << iota
+	CommandArgsController
+	CommandArgsString
+	CommandArgsOptional // Can only be at the end. Allows 0 or 1 args.
+	CommandArgsMultiple // Can only be at the end. Allows 0, 1, 2, ... args
+)
+
+type Command interface {
+	Name() string
+	Help() string
+	Usage() string
+	Syntax(isAircraftSelected bool) []CommandArgsFormat
+	Run(cli *CLIPane, args []string) (string, error)
+}
+
+var (
+	cliCommands []Command = []Command{
+		&SetACTypeCommand{},
+		&SetAltitudeCommand{isTemporary: false},
+		&SetAltitudeCommand{isTemporary: true},
+		&SetArrivalCommand{},
+		&SetDepartureCommand{},
+		&SetEquipmentSuffixCommand{},
+		&SetIFRCommand{},
+		&SetScratchpadCommand{},
+		&SetSquawkCommand{},
+		&SetVFRCommand{},
+
+		&EditRouteCommand{},
+		&NYPRDCommand{},
+		&PRDCommand{},
+		&SetRouteCommand{},
+
+		&AcceptHandoffCommand{},
+		&DropTrackCommand{},
+		&HandoffCommand{},
+		&PointOutCommand{},
+		&RejectHandoffCommand{},
+		&TrackAircraftCommand{},
+
+		&FindCommand{},
+		&MITCommand{},
+
+		&InfoCommand{},
+		&TimerCommand{},
+		&ToDoCommand{},
+		&TrafficCommand{},
+	}
+)
+
+func checkCommands(cmds []Command) {
+	seen := make(map[string]interface{})
+	for _, c := range cmds {
+		if _, ok := seen[c.Name()]; ok {
+			lg.Errorf("%s: command has multiple definitions", c.Name())
+		} else {
+			seen[c.Name()] = nil
+		}
+
+		syntax := c.Syntax(false)
+		for i := 0; i < len(syntax)-1; i++ {
+			if syntax[i]&CommandArgsOptional != 0 {
+				lg.Errorf("%s: optional arguments can only be at the end", c.Name())
+			}
+			if syntax[i]&CommandArgsMultiple != 0 {
+				lg.Errorf("%s: multiple arguments can only be at the end", c.Name())
+			}
+			if syntax[i]&CommandArgsOptional != 0 && syntax[i]&CommandArgsMultiple != 0 {
+				lg.Errorf("%s: cannot specify both optional and multiple arguments", c.Name())
+			}
+		}
+	}
+}
+
+type ConsoleTextStyle int
+
+const (
+	ConsoleTextRegular = iota
+	ConsoleTextEmphasized
+	ConsoleTextError
+)
+
+type ConsoleEntry struct {
+	text  []string
+	style []ConsoleTextStyle
+}
+
+func (e *ConsoleEntry) Add(t string, s ConsoleTextStyle) {
+	e.text = append(e.text, t)
+	e.style = append(e.style, s)
+}
+
+func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *TextDrawable {
+	t := &TextDrawable{}
+	for i := range e.text {
+		switch e.style[i] {
+		case ConsoleTextRegular:
+			style.color = cs.Text
+
+		case ConsoleTextEmphasized:
+			style.color = cs.TextHighlight
+
+		case ConsoleTextError:
+			style.color = cs.TextError
+		}
+
+		t.AddText(e.text[i], p, style)
+		if i < len(e.text)-1 {
+			bx, _ := style.font.BoundText(e.text[i], 0)
+			p[0] += float32(bx)
+		}
+	}
+	return t
+}
+
+const consoleLimit = 250
+
+type CLIPane struct {
+	history       []string
+	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
+	savedInput    string
+
+	console           []*ConsoleEntry
+	consoleViewOffset int // lines from the end (for pgup/down)
+	errorCount        map[string]int
+
+	FontIdentifier FontIdentifier
+	font           *Font
+
+	// Note that we're not handling unicode here, though it's not
+	// evident that VATSIM does either.
+	input  []byte
+	status string
+
+	cursor int
+
+	dl DrawList
+}
+
+func NewCLIPane() *CLIPane {
+	font := GetDefaultFont()
+	return &CLIPane{
+		FontIdentifier: font.id,
+		font:           font,
+		errorCount:     make(map[string]int)}
+}
+
+func (cli *CLIPane) Duplicate(nameAsCopy bool) Pane {
+	return &CLIPane{
+		FontIdentifier: cli.FontIdentifier,
+		font:           cli.font,
+		errorCount:     make(map[string]int)}
+}
+
+func (cli *CLIPane) Activate(cs *ColorScheme) {
+	if cli.font = GetFont(cli.FontIdentifier); cli.font == nil {
+		cli.font = GetDefaultFont()
+		cli.FontIdentifier = cli.font.id
+	}
+	if cli.errorCount == nil {
+		cli.errorCount = make(map[string]int)
+	}
+	lg.RegisterErrorMonitor(cli)
+	checkCommands(cliCommands)
+}
+
+func (cli *CLIPane) Deactivate() {
+	lg.DeregisterErrorMonitor(cli)
+}
+
+func (cli *CLIPane) ErrorReported(msg string) {
+	// Remove excess spaces
+	msg = strings.Join(strings.Fields(msg), " ")
+	cli.errorCount[msg] = cli.errorCount[msg] + 1
+
+	isPow10 := func(v int) bool {
+		for v != 0 {
+			if v == 1 {
+				return true
+			}
+			if v%10 != 0 {
+				return false
+			}
+			v /= 10
+		}
+		return false
+	}
+	n := cli.errorCount[msg]
+	if n == 1 {
+		cli.AddConsoleEntry([]string{"Internal Error: ", msg}, []ConsoleTextStyle{ConsoleTextError, ConsoleTextRegular})
+	} else if isPow10(n) {
+		cli.AddConsoleEntry([]string{fmt.Sprintf("Internal Error (%dx): ", n), msg},
+			[]ConsoleTextStyle{ConsoleTextError, ConsoleTextRegular})
+	}
+}
+
+func (cli *CLIPane) Update(updates *WorldUpdates) {
+	// Add any text/radio messages to the console
+	for _, m := range updates.messages {
+		if m.messageType == TextFrequency {
+			cli.AddConsoleEntry([]string{m.frequency.String() + ": ", m.contents},
+				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+		} else {
+			cli.AddConsoleEntry([]string{m.sender + ": ", m.contents},
+				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+		}
+	}
+}
+
+func (cli *CLIPane) Name() string { return "Command Line Interface" }
+
+func (cli *CLIPane) DrawUI() {
+	if newFont, changed := DrawFontPicker(&cli.FontIdentifier, "Font"); changed {
+		cli.font = newFont
+	}
+}
+
+func isspace(c byte) bool {
+	return c == ' '
+}
+
+func (cli *CLIPane) Draw(ctx *PaneContext) []*DrawList {
+	cli.dl.Reset()
+
+	style := TextStyle{font: cli.font, lineSpacing: 1, color: ctx.cs.Text}
+	cursorStyle := TextStyle{font: cli.font, lineSpacing: 0,
+		color: ctx.cs.Background, drawBackground: true, backgroundColor: ctx.cs.Text}
+	statusStyle := TextStyle{font: cli.font, lineSpacing: 0, color: ctx.cs.TextError}
+	lineHeight := float32(style.font.size + style.lineSpacing)
+
+	// Draw the console buffer.
+	// Save some space for top/bottom padding and the input and the status line.
+	consoleLinesVisible := int((ctx.paneExtent.Height() - 3*lineHeight) / lineHeight)
+
+	// Process user input
+	io := imgui.CurrentIO()
+	if !io.WantCaptureKeyboard() {
+		prevCallsign := ""
+		if positionConfig.selectedAircraft != nil {
+			prevCallsign = positionConfig.selectedAircraft.Callsign()
+		}
+
+		// Execute command if enter was typed
+		hitEnter := cli.updateInput(consoleLinesVisible, ctx.platform)
+		if hitEnter {
+			if len(cli.input) > 0 {
+				input := cli.input
+				// Reset this state here so that commands like 'editroute'
+				// can poplate the next command input.
+				cli.input = cli.input[:0]
+				cli.cursor = 0
+
+				cmd := string(input)
+				output, err := cli.runCommand(cmd)
+
+				cli.history = append(cli.history, cmd)
+
+				// Add the command and its to the console history
+				if prevCallsign != "" {
+					cli.AddBasicConsoleEntry(prevCallsign+"> "+cmd, ConsoleTextRegular)
+				} else {
+					cli.AddBasicConsoleEntry("> "+cmd, ConsoleTextRegular)
+				}
+				if err != nil {
+					cli.AddBasicConsoleEntry(err.Error(), ConsoleTextError)
+				}
+				for _, str := range strings.Split(output, "\n") {
+					if str != "" {
+						cli.AddBasicConsoleEntry(str, ConsoleTextRegular)
+					}
+				}
+			}
+
+			cli.consoleViewOffset = 0
+			cli.historyOffset = 0
+			cli.status = ""
+		}
+	}
+
+	// Draw the console history above the command prompt
+	left := float32(cli.font.size) / 2
+	y := (float32(consoleLinesVisible) + 2.5) * lineHeight // 2.5 for the stuff below
+	for i := 0; i < consoleLinesVisible; i++ {
+		idx := len(cli.console) - 1 - cli.consoleViewOffset - consoleLinesVisible + 1 + i
+		if idx >= 0 {
+			td := cli.console[idx].Draw([2]float32{left, y}, style, ctx.cs)
+			cli.dl.AddText(*td)
+		}
+		y -= lineHeight
+	}
+
+	// Draw text for the input, one line above the status line
+	td := TextDrawable{}
+	prompt := ""
+	if positionConfig.selectedAircraft != nil {
+		prompt = positionConfig.selectedAircraft.Callsign()
+	}
+	prompt = prompt + "> "
+	inputPos := [2]float32{left, 2.5 * lineHeight}
+	if cli.cursor == len(cli.input) {
+		// cursor at the end
+		td.AddTextMulti([]string{prompt + string(cli.input), " "}, inputPos,
+			[]TextStyle{style, cursorStyle})
+	} else {
+		// cursor in the middle
+		sb := prompt + string(cli.input[:cli.cursor])
+		sc := string(cli.input[cli.cursor : cli.cursor+1])
+		se := string(cli.input[cli.cursor+1:])
+		styles := []TextStyle{style, cursorStyle, style}
+		td.AddTextMulti([]string{sb, sc, se}, inputPos, styles)
+	}
+	cli.dl.AddText(td)
+
+	// status
+	if cli.status != "" {
+		sd := TextDrawable{}
+		// Half line of spacing below it
+		sd.AddText(cli.status, [2]float32{left, 1.5 * lineHeight}, statusStyle)
+		cli.dl.AddText(sd)
+	}
+
+	cli.dl.clear = true
+	cli.dl.clearColor = ctx.cs.Background
+	cli.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+
+	return []*DrawList{&cli.dl}
+}
+
+// Simple, one string, same style
+func (cli *CLIPane) AddBasicConsoleEntry(str string, style ConsoleTextStyle) {
+	e := &ConsoleEntry{}
+	e.text = append(e.text, str)
+	e.style = append(e.style, style)
+	cli.console = append(cli.console, e)
+
+	if len(cli.console) > consoleLimit {
+		// FIXME: this will be slow if consoleLimit is big. Use a ring
+		// buffer instead?
+		copy(cli.console, cli.console[1:])
+		cli.console = cli.console[:consoleLimit]
+	}
+}
+
+func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
+	n := len(str)
+	if len(str) != len(style) {
+		lg.ErrorfUp1("Mismatching slice lengths: %d vs %d", len(str), len(style))
+		if len(style) < len(str) {
+			n = len(style)
+		}
+	}
+
+	e := &ConsoleEntry{}
+	e.text = append(e.text, str[:n]...)
+	e.style = append(e.style, style[:n]...)
+	cli.console = append(cli.console, e)
+
+	if len(cli.console) > consoleLimit {
+		copy(cli.console, cli.console[1:])
+		cli.console = cli.console[:consoleLimit]
+	}
+}
+
+func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hitEnter bool) {
+	io := imgui.CurrentIO()
+	ctrl := io.KeyCtrlPressed()
+
+	if ctrl {
+		return false
+	}
+
+	// Grab keyboard input
+	if ni := len(platform.InputCharacters()); ni > 0 {
+		for i := 0; i < ni; i++ {
+			cli.input = append(cli.input, ' ') // make space
+		}
+		// Move old text forward if we're inserting
+		nc := len(cli.input) - cli.cursor
+		if nc > 0 {
+			copy(cli.input[cli.cursor+ni:], cli.input[cli.cursor:])
+		}
+
+		copy(cli.input[cli.cursor:], []byte(platform.InputCharacters())[:])
+		cli.cursor += ni
+	}
+
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
+		if cli.historyOffset == len(cli.history) {
+			cli.status = "Reached end of history."
+		} else {
+			if cli.historyOffset == 0 {
+				cli.savedInput = string(cli.input) // save current input in case we return
+			}
+			cli.historyOffset++
+			cli.input = []byte(cli.history[len(cli.history)-cli.historyOffset])
+			cli.cursor = len(cli.input)
+			cli.status = ""
+		}
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
+		if cli.historyOffset == 0 {
+			cli.status = "Reached end of history."
+		} else {
+			cli.historyOffset--
+			if cli.historyOffset == 0 {
+				cli.input = []byte(cli.savedInput)
+				cli.savedInput = ""
+			} else {
+				cli.input = []byte(cli.history[len(cli.history)-cli.historyOffset])
+			}
+			cli.cursor = len(cli.input)
+		}
+	}
+
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
+		if cli.cursor > 0 {
+			cli.cursor--
+		}
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
+		if cli.cursor < len(cli.input) {
+			cli.cursor++
+		}
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
+		cli.cursor = 0
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
+		cli.cursor = len(cli.input)
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
+		// Delete char before the cursor
+		if cli.cursor > 0 {
+			if cli.cursor < len(cli.input)-1 {
+				copy(cli.input[cli.cursor-1:], cli.input[cli.cursor:])
+			}
+			cli.input = cli.input[:len(cli.input)-1]
+			cli.cursor--
+		}
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
+		// Delete char after the cursor
+		if cli.cursor < len(cli.input) {
+			if cli.cursor+1 < len(cli.input) {
+				copy(cli.input[cli.cursor+1:], cli.input[cli.cursor+2:])
+			}
+			cli.input = cli.input[:len(cli.input)-1]
+		}
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
+		if cli.cursor > 0 {
+			// clear the current input
+			cli.cursor = 0
+			cli.input = []byte{}
+		} else {
+			positionConfig.selectedAircraft = nil
+		}
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
+		// get span of current word
+		start, end := cli.cursor, cli.cursor
+		for start > 0 && !isspace(cli.input[start-1]) {
+			start--
+		}
+		for end < len(cli.input) && !isspace(cli.input[end]) {
+			end++
+		}
+		word := string(cli.input[start:end])
+		var matches []string
+		for _, ac := range world.aircraft {
+			if ac.LostTrack() {
+				continue
+			}
+			if strings.Contains(strings.ToUpper(ac.Callsign()),
+				strings.ToUpper(word)) {
+				matches = append(matches, ac.Callsign())
+			}
+		}
+		switch len(matches) {
+		case 0:
+			cli.status = "No matches!"
+		case 1:
+			// delete the current word
+			copy(cli.input[start:], cli.input[end:])
+			cli.input = cli.input[:len(cli.input)-(end-start)]
+			// make space for the replacement
+			for i := 0; i < len(matches[0]); i++ {
+				cli.input = append(cli.input, '_')
+			}
+			copy(cli.input[end:], cli.input[start:])
+			// put the replacement in there
+			copy(cli.input[start:], []byte(matches[0]))
+			cli.cursor = start + len(matches[0])
+			cli.status = ""
+		default:
+			cli.status = "Multiple matches: "
+			for _, m := range matches {
+				cli.status += m + " "
+			}
+		}
+	}
+
+	// history-related
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageUp)) {
+		// Keep one line from before
+		cli.consoleViewOffset += consoleLinesVisible - 1
+		// Don't go past the end
+		if cli.consoleViewOffset > len(cli.console)-consoleLinesVisible {
+			cli.consoleViewOffset = len(cli.console) - consoleLinesVisible
+			if cli.consoleViewOffset < 0 {
+				cli.consoleViewOffset = 0
+			}
+		}
+		return
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
+		cli.consoleViewOffset -= consoleLinesVisible - 1
+		if cli.consoleViewOffset < 0 {
+			cli.consoleViewOffset = 0
+		}
+		return
+	}
+
+	// Other than paging through history, everything henceforth changes the input.
+	return imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter))
+}
+
+func matchingAircraft(s string) []*Aircraft {
+	var matches []*Aircraft
+	s = strings.ToUpper(s)
+
+	// if there's an exact match, then take that.
+	if ac, ok := world.aircraft[s]; ok {
+		matches = append(matches, ac)
+		return matches
+	}
+
+	// Otherwise return all that match
+	for _, ac := range world.aircraft {
+		if !ac.LostTrack() && strings.Contains(ac.Callsign(), s) {
+			matches = append(matches, ac)
+		}
+	}
+
+	return matches
+}
+
+func lookupCommand(n string) Command {
+	for _, c := range cliCommands {
+		if c.Name() == n {
+			return c
+		}
+	}
+	return nil
+}
+
+func (cli *CLIPane) runCommand(cmd string) (string, error) {
+	fields := strings.Fields(cmd)
+	if len(fields) == 0 {
+		lg.Printf("unexpected no fields in command: %s", cmd)
+		return "", nil
+	}
+
+	if fields[0] == "help" {
+		switch len(fields) {
+		case 1:
+			var names []string
+			for _, cmd := range cliCommands {
+				names = append(names, cmd.Name())
+			}
+			sort.Strings(names)
+			return fmt.Sprintf("available commands: %s", strings.Join(names, " ")), nil
+		case 2:
+			cmd := lookupCommand(fields[1])
+			if cmd == nil {
+				return "", fmt.Errorf("%s: unknown command", fields[1])
+			} else {
+				return fmt.Sprintf("%s: %s\nusage: %s %s", cmd.Name(), cmd.Help(),
+					cmd.Name(), cmd.Usage()), nil
+			}
+
+		default:
+			return "", fmt.Errorf("usage: help <command name>")
+		}
+	}
+
+	// If it's a built-in command, run it
+	if cmd := lookupCommand(fields[0]); cmd != nil {
+		syntax := cmd.Syntax(positionConfig.selectedAircraft != nil)
+		args := fields[1:]
+
+		// Minimum and maximum number of args required from the user
+		minArgc, maxArgc := len(syntax), len(syntax)
+		if len(syntax) > 0 {
+			last := syntax[len(syntax)-1]
+			if last&CommandArgsOptional != 0 {
+				minArgc--
+			}
+			if last&CommandArgsMultiple != 0 {
+				minArgc--
+				maxArgc += 100000 // oughta be enough...
+			}
+		}
+		if positionConfig.selectedAircraft != nil {
+			for _, s := range syntax {
+				if s&CommandArgsAircraft != 0 {
+					// We can get this one from selected.
+					minArgc--
+					break
+				}
+			}
+		}
+
+		if len(args) < minArgc {
+			return "", fmt.Errorf("%s: insufficient arguments provided: %s",
+				cmd.Name(), cmd.Usage())
+		} else if len(args) > maxArgc {
+			return "", fmt.Errorf("%s: excessive arguments provided: %s",
+				cmd.Name(), cmd.Usage())
+		}
+
+		argSyntax := func(i int) CommandArgsFormat {
+			if i < len(syntax) {
+				return syntax[i]
+			} else {
+				return syntax[len(syntax)-1]
+			}
+		}
+
+		// Parameter expansion and normalization
+		for i := range args {
+			syn := argSyntax(i)
+			if syn&CommandArgsAircraft != 0 {
+				// TODO: expansion
+				args[i] = strings.ToUpper(args[i])
+			} else if syn&CommandArgsController != 0 {
+				args[i] = strings.ToUpper(args[i])
+			}
+		}
+
+		return cmd.Run(cli, args)
+	}
+
+	// Otherwise see if we're selecting an aircraft...
+	if len(fields) == 1 {
+		matches := matchingAircraft(fields[0])
+		switch len(matches) {
+		case 0:
+			// drop through to unknown command error
+		case 1:
+			positionConfig.selectedAircraft = matches[0]
+			return "", nil
+		default:
+			msg := "Error: multiple aircraft match: "
+			for _, ac := range matches {
+				msg += ac.Callsign() + " "
+			}
+			return "", fmt.Errorf(msg)
+		}
+	}
+
+	return "", fmt.Errorf("%s: unknown command", fields[0])
+}
+
+func (cli *CLIPane) ConsumeAircraftSelection(ac *Aircraft) bool {
+	if ac != nil && len(cli.input) > 0 {
+		callsign := ac.Callsign()
+
+		// insert at the current cursor position
+		n := 1 + len(callsign)
+		for i := 0; i < n; i++ {
+			cli.input = append(cli.input, '_')
+		}
+		copy(cli.input[cli.cursor+n:], cli.input[cli.cursor:])
+		copy(cli.input[cli.cursor:], []byte(" "+callsign))
+		cli.cursor += n
+		return true
+	}
+	return false
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Command implementations
+
+func getCallsign(args []string) (string, []string) {
+	if positionConfig.selectedAircraft != nil {
+		return positionConfig.selectedAircraft.Callsign(), args
+	} else {
+		return args[0], args[1:]
+	}
+}
+
+type SetACTypeCommand struct{}
+
+func (*SetACTypeCommand) Name() string { return "actype" }
+func (*SetACTypeCommand) Help() string {
+	return "Sets the aircraft's type."
+}
+func (*SetACTypeCommand) Usage() string {
+	return "<callsign> <type>"
+}
+func (*SetACTypeCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
+	}
+}
+func (*SetACTypeCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.SetAircraftType(callsign, strings.ToUpper(args[0]))
+}
+
+type SetAltitudeCommand struct {
+	isTemporary bool
+}
+
+func (sa *SetAltitudeCommand) Name() string {
+	if sa.isTemporary {
+		return "tempalt"
+	} else {
+		return "alt"
+	}
+}
+func (sa *SetAltitudeCommand) Usage() string {
+	return "<callsign> <altitude>"
+}
+func (sa *SetAltitudeCommand) Help() string {
+	if sa.isTemporary {
+		return "Sets the aircraft's temporary clearance altitude."
+	} else {
+		return "Sets the aircraft's clearance altitude."
+	}
+}
+func (*SetAltitudeCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
+	}
+}
+func (sa *SetAltitudeCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+
+	altitude, err := strconv.Atoi(args[0])
+	if err != nil {
+		return "", err
+	}
+	if altitude < 1000 {
+		altitude *= 100
+	}
+
+	if sa.isTemporary {
+		err = world.SetTemporaryAltitude(callsign, altitude)
+	} else {
+		err = world.SetAltitude(callsign, altitude)
+	}
+	return "", nil
+}
+
+type SetArrivalCommand struct{}
+
+func (*SetArrivalCommand) Name() string { return "arr" }
+func (*SetArrivalCommand) Usage() string {
+	return "<callsign> <airport>"
+}
+func (*SetArrivalCommand) Help() string {
+	return "Sets the aircraft's arrival airport."
+}
+func (*SetArrivalCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
+	}
+}
+func (*SetArrivalCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.SetArrival(callsign, strings.ToUpper(args[0]))
+}
+
+type SetDepartureCommand struct{}
+
+func (*SetDepartureCommand) Name() string { return "dep" }
+func (*SetDepartureCommand) Usage() string {
+	return "<callsign> <airport>"
+}
+func (*SetDepartureCommand) Help() string {
+	return "Sets the aircraft's departure airport"
+}
+func (*SetDepartureCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
+	}
+}
+func (*SetDepartureCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.SetDeparture(callsign, strings.ToUpper(args[0]))
+}
+
+type SetEquipmentSuffixCommand struct{}
+
+func (*SetEquipmentSuffixCommand) Name() string { return "equip" }
+func (*SetEquipmentSuffixCommand) Usage() string {
+	return "<callsign> <suffix>"
+}
+func (*SetEquipmentSuffixCommand) Help() string {
+	return "Sets the aircraft's equipment suffix."
+}
+func (*SetEquipmentSuffixCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
+	}
+}
+func (*SetEquipmentSuffixCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	ac := world.GetAircraft(callsign)
+	if ac == nil {
+		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+
+	atype := ac.flightPlan.TypeWithoutSuffix()
+	suffix := strings.ToUpper(args[0])
+	if suffix[0] != '/' {
+		suffix = "/" + suffix
+	}
+	return "", world.SetAircraftType(callsign, atype+suffix)
+}
+
+type SetIFRCommand struct{}
+
+func (*SetIFRCommand) Name() string { return "ifr" }
+func (*SetIFRCommand) Usage() string {
+	return "<callsign>"
+}
+func (*SetIFRCommand) Help() string {
+	return "Marks the aircraft as an IFR flight."
+}
+func (*SetIFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return nil
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*SetIFRCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.SetFlightRules(callsign, IFR)
+}
+
+type SetScratchpadCommand struct{}
+
+func (*SetScratchpadCommand) Name() string { return "scratchpad" }
+func (*SetScratchpadCommand) Usage() string {
+	return "<callsign> <contents--optional>"
+}
+func (*SetScratchpadCommand) Help() string {
+	return "Sets the aircraft's scratchpad. If no contents are specified, the scratchpad is cleared."
+}
+func (*SetScratchpadCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString | CommandArgsOptional}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString | CommandArgsOptional}
+	}
+}
+func (*SetScratchpadCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	if len(args) == 0 {
+		// clear scratchpad
+		return "", world.SetScratchpad(callsign, "")
+	} else {
+		return "", world.SetScratchpad(callsign, strings.ToUpper(args[0]))
+	}
+}
+
+type SetSquawkCommand struct{}
+
+func (*SetSquawkCommand) Name() string { return "squawk" }
+func (*SetSquawkCommand) Usage() string {
+	return "<aircraft> <squawk--optional>"
+}
+func (*SetSquawkCommand) Help() string {
+	return "Sets the aircraft's squawk code. If no code is provided and the aircraft is IFR, a code is assigned automatically."
+}
+func (*SetSquawkCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString | CommandArgsOptional}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString | CommandArgsOptional}
+	}
+}
+func (*SetSquawkCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	if len(args) == 0 {
+		return "", world.SetSquawkAutomatic(callsign)
+	} else {
+		squawk, err := ParseSquawk(args[0])
+		if err != nil {
+			return "", err
+		}
+		return "", world.SetSquawk(callsign, squawk)
+	}
+}
+
+type SetVFRCommand struct{}
+
+func (*SetVFRCommand) Name() string { return "vfr" }
+func (*SetVFRCommand) Usage() string {
+	return "<callsign>"
+}
+func (*SetVFRCommand) Help() string {
+	return "Marks the aircraft as a VFR flight."
+}
+func (*SetVFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*SetVFRCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.SetFlightRules(callsign, VFR)
+}
+
+type EditRouteCommand struct{}
+
+func (*EditRouteCommand) Name() string { return "editroute" }
+func (*EditRouteCommand) Usage() string {
+	return "<callsign>"
+}
+func (*EditRouteCommand) Help() string {
+	return "Loads the aircraft's route into the command buffer for editing using the \"route\" command."
+}
+func (*EditRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return nil
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*EditRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	ac := world.GetAircraft(callsign)
+	if ac == nil {
+		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+
+	cli.input = []byte("route " + callsign + " ")
+	cli.cursor = len(cli.input)
+	cli.input = append(cli.input, []byte(ac.flightPlan.route)...)
+	return "", nil
+}
+
+type NYPRDEntry struct {
+	Id            int       `json:"id"`
+	AirportOrigin string    `json:"airport_origin"`
+	AirportDest   string    `json:"airport_dest"`
+	Route         string    `json:"route"`
+	Hours1        string    `json:"hours1"`
+	Hours2        string    `json:"hours2"`
+	Hours3        string    `json:"hours3"`
+	RouteType     string    `json:"route_type"`
+	Area          string    `json:"area"`
+	Altitude      string    `json:"altitude"`
+	Aircraft      string    `json:"aircraft"`
+	Direction     string    `json:"direction"`
+	Seq           string    `json:"seq"`
+	CenterOrigin  string    `json:"center_origin"`
+	CenterDest    string    `json:"center_dest"`
+	IsLocal       int       `json:"is_local"`
+	Created       time.Time `json:"created_at"`
+	Updated       time.Time `json:"updated_at"`
+}
+
+type NYPRDCommand struct{}
+
+func (*NYPRDCommand) Name() string { return "nyprd" }
+func (*NYPRDCommand) Usage() string {
+	return "<callsign>"
+}
+func (*NYPRDCommand) Help() string {
+	return "Looks up the aircraft's route in the ZNY preferred route database."
+}
+func (*NYPRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*NYPRDCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	ac := world.GetAircraft(callsign)
+	if ac == nil {
+		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+
+	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
+	url := fmt.Sprintf("https://nyartcc.org/prd/search?depart=%s&arrive=%s", depart, arrive)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		lg.Printf("PRD get err: %+v", err)
+		return "", fmt.Errorf("nyprd: network error")
+	}
+	defer resp.Body.Close()
+
+	decoder := json.NewDecoder(resp.Body)
+	var prdEntries []NYPRDEntry
+	if err := decoder.Decode(&prdEntries); err != nil {
+		lg.Errorf("PRD decode err: %+v", err)
+		return "", fmt.Errorf("error decoding PRD entry")
+	}
+
+	if len(prdEntries) == 0 {
+		return "", fmt.Errorf("no PRD found for route from %s to %s", depart, arrive)
+	}
+
+	anyType := false
+	anyArea := false
+	anyAlt := false
+	anyAC := false
+	for _, entry := range prdEntries {
+		anyType = anyType || (entry.RouteType != "")
+		anyArea = anyArea || (entry.Area != "")
+		anyAlt = anyAlt || (entry.Altitude != "")
+		anyAC = anyAC || (entry.Aircraft != "")
+	}
+
+	var result strings.Builder
+	w := tabwriter.NewWriter(&result, 0 /* min width */, 1 /* tab width */, 1 /* padding */, ' ', 0)
+	w.Write([]byte("\tORG\tDST\t"))
+	writeIf := func(b bool, s string) {
+		if b {
+			w.Write([]byte(s))
+		}
+	}
+
+	writeIf(anyType, "TYPE\t")
+	writeIf(anyArea, "AREA\t")
+	writeIf(anyAlt, "ALT\t")
+	writeIf(anyAC, "A/C\t")
+	w.Write([]byte("ROUTE\n"))
+
+	print := func(entry NYPRDEntry) {
+		w.Write([]byte(entry.AirportOrigin + "\t" + entry.AirportDest + "\t"))
+		writeIf(anyType, entry.RouteType+"\t")
+		writeIf(anyArea, entry.Area+"\t")
+		writeIf(anyAlt, entry.Altitude+"\t")
+		writeIf(anyAC, entry.Aircraft+"\t")
+		w.Write([]byte(entry.Route + "\n"))
+	}
+
+	// Print the required ones first, with an asterisk
+	for _, entry := range prdEntries {
+		if entry.IsLocal == 0 {
+			continue
+		}
+		w.Write([]byte("*\t"))
+		print(entry)
+	}
+	for _, entry := range prdEntries {
+		if entry.IsLocal != 0 {
+			continue
+		}
+		w.Write([]byte("\t"))
+		print(entry)
+	}
+	w.Flush()
+
+	return result.String(), nil
+}
+
+type PRDCommand struct{}
+
+func (*PRDCommand) Name() string { return "faaprd" }
+func (*PRDCommand) Usage() string {
+	return "<callsign>"
+}
+func (*PRDCommand) Help() string {
+	return "Looks up the aircraft's route in the FAA preferred route database."
+}
+func (*PRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*PRDCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	ac := world.GetAircraft(callsign)
+	if ac == nil {
+		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+
+	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
+	if len(depart) == 4 && depart[0] == 'K' {
+		depart = depart[1:]
+	}
+	if len(arrive) == 4 && arrive[0] == 'K' {
+		arrive = arrive[1:]
+	}
+
+	if prdEntries, ok := world.FAA.prd[AirportPair{depart, arrive}]; !ok {
+		return "", fmt.Errorf(depart + "-" + arrive + ": no entry in FAA PRD")
+	} else {
+		anyType := false
+		anyHour1, anyHour2, anyHour3 := false, false, false
+		anyAC := false
+		anyAlt, anyDir := false, false
+		for _, entry := range prdEntries {
+			anyType = anyType || (entry.Type != "")
+			anyHour1 = anyHour1 || (entry.Hours[0] != "")
+			anyHour2 = anyHour2 || (entry.Hours[1] != "")
+			anyHour3 = anyHour3 || (entry.Hours[2] != "")
+			anyAC = anyAC || (entry.Aircraft != "")
+			anyAlt = anyAlt || (entry.Altitude != "")
+			anyDir = anyDir || (entry.Direction != "")
+		}
+
+		var result strings.Builder
+		w := tabwriter.NewWriter(&result, 0 /* min width */, 1 /* tab width */, 1 /* padding */, ' ', 0)
+		w.Write([]byte("NUM\tORG\tDST\t"))
+
+		writeIf := func(b bool, s string) {
+			if b {
+				w.Write([]byte(s))
+			}
+		}
+		writeIf(anyType, "TYPE\t")
+		writeIf(anyHour1, "HOUR1\t")
+		writeIf(anyHour2, "HOUR2\t")
+		writeIf(anyHour3, "HOUR3\t")
+		writeIf(anyAC, "A/C\t")
+		writeIf(anyAlt, "ALT\t")
+		writeIf(anyDir, "DIR\t")
+		w.Write([]byte("ROUTE\n"))
+
+		for _, entry := range prdEntries {
+			w.Write([]byte(entry.Seq + "\t" + entry.Depart + "\t" + entry.Arrive + "\t"))
+			writeIf(anyType, entry.Type+"\t")
+			writeIf(anyHour1, entry.Hours[0]+"\t")
+			writeIf(anyHour2, entry.Hours[1]+"\t")
+			writeIf(anyHour3, entry.Hours[2]+"\t")
+			writeIf(anyAC, entry.Aircraft+"\t")
+			writeIf(anyAlt, entry.Altitude+"\t")
+			writeIf(anyDir, entry.Direction+"\t")
+			w.Write([]byte(entry.Route + "\n"))
+		}
+		w.Flush()
+
+		return result.String(), nil
+	}
+}
+
+type SetRouteCommand struct{}
+
+func (*SetRouteCommand) Name() string { return "route" }
+func (*SetRouteCommand) Usage() string {
+	return "<callsign> <route...>"
+}
+func (*SetRouteCommand) Help() string {
+	return "Sets the specified aircraft's route to the one provided."
+}
+func (*SetRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString | CommandArgsMultiple}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString | CommandArgsMultiple}
+	}
+}
+func (*SetRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.SetRoute(callsign, strings.ToUpper(strings.Join(args, " ")))
+}
+
+type AcceptHandoffCommand struct{}
+
+func (*AcceptHandoffCommand) Name() string { return "accept" }
+func (*AcceptHandoffCommand) Usage() string {
+	return "<callsign>"
+}
+func (*AcceptHandoffCommand) Help() string {
+	return "Accepts the requested handoff of the specified aircraft."
+}
+func (*AcceptHandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*AcceptHandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, _ := getCallsign(args)
+	return "", world.AcceptHandoff(callsign)
+}
+
+type DropTrackCommand struct{}
+
+func (*DropTrackCommand) Name() string { return "drop" }
+func (*DropTrackCommand) Usage() string {
+	return "<callsign>"
+}
+func (*DropTrackCommand) Help() string {
+	return "Drops the track on the selected aircraft."
+}
+func (*DropTrackCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*DropTrackCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, _ := getCallsign(args)
+	return "", world.DropTrack(callsign)
+}
+
+type HandoffCommand struct{}
+
+func (*HandoffCommand) Name() string { return "handoff" }
+func (*HandoffCommand) Usage() string {
+	return "<callsign> <controller>"
+}
+func (*HandoffCommand) Help() string {
+	return "Hands off the specified aircraft to the specified controller."
+}
+func (*HandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsController}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsController}
+	}
+}
+func (*HandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.Handoff(callsign, args[0])
+}
+
+type PointOutCommand struct{}
+
+func (*PointOutCommand) Name() string { return "pointout" }
+func (*PointOutCommand) Usage() string {
+	return "<callsign> <controller>"
+}
+func (*PointOutCommand) Help() string {
+	return "Points the specified aircraft out to the specified controller."
+}
+func (*PointOutCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsController}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsController}
+	}
+}
+func (*PointOutCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", world.PointOut(callsign, args[0])
+}
+
+type RejectHandoffCommand struct{}
+
+func (*RejectHandoffCommand) Name() string { return "reject" }
+func (*RejectHandoffCommand) Usage() string {
+	return "<callsign>"
+}
+func (*RejectHandoffCommand) Help() string {
+	return "Rejects a handoff request for the specified aircraft."
+}
+func (*RejectHandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*RejectHandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, _ := getCallsign(args)
+	return "", world.RejectHandoff(callsign)
+}
+
+type TrackAircraftCommand struct{}
+
+func (*TrackAircraftCommand) Name() string { return "track" }
+func (*TrackAircraftCommand) Usage() string {
+	return "<callsign>"
+}
+func (*TrackAircraftCommand) Help() string {
+	return "Initiates a track on the specified aircraft."
+}
+func (*TrackAircraftCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*TrackAircraftCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, _ := getCallsign(args)
+	return "", world.InitiateTrack(callsign)
+}
+
+type FindCommand struct{}
+
+func (*FindCommand) Name() string { return "find" }
+func (*FindCommand) Usage() string {
+	return "<callsign, fix, VOR, DME, airport...>"
+}
+func (*FindCommand) Help() string {
+	return "Finds the specified object and highlights it in any radar scopes in which it is visible."
+}
+func (*FindCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString | CommandArgsOptional}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft | CommandArgsString}
+	}
+}
+func (*FindCommand) Run(cli *CLIPane, args []string) (string, error) {
+	var pos Point2LL
+	if len(args) == 0 && positionConfig.selectedAircraft != nil {
+		pos = positionConfig.selectedAircraft.Position()
+	} else {
+		name := strings.ToUpper(args[0])
+
+		aircraft := matchingAircraft(name)
+		if len(aircraft) == 1 {
+			pos = aircraft[0].Position()
+		} else if len(aircraft) > 1 {
+			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
+			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
+		} else if ac, ok := world.aircraft[name]; ok {
+			pos = ac.Position()
+		} else if nav, ok := world.FAA.navaids[name]; ok {
+			pos = nav.location
+		} else if fix, ok := world.FAA.fixes[name]; ok {
+			pos = fix.location
+		} else if ap, ok := world.FAA.airports[name]; ok {
+			pos = ap.location
+		} else {
+			return "", fmt.Errorf("%s: no matches found", args[0])
+		}
+	}
+	positionConfig.highlightedLocation = pos
+	positionConfig.highlightedLocationEndTime = time.Now().Add(3 * time.Second)
+	return "", nil
+}
+
+type MITCommand struct{}
+
+func (*MITCommand) Name() string { return "mit" }
+func (*MITCommand) Usage() string {
+	return "<zero, one, or more callsigns...>"
+}
+func (*MITCommand) Help() string {
+	return "With no callsigns, this clears the current miles in trail list. " +
+		"Otherwise, the specified aircraft are added to it."
+}
+func (*MITCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsAircraft | CommandArgsMultiple}
+}
+func (*MITCommand) Run(cli *CLIPane, args []string) (string, error) {
+	if len(args) == 0 {
+		// clear it
+		positionConfig.mit = nil
+	} else {
+		for _, callsign := range args {
+			ac := world.GetAircraft(callsign)
+			if ac == nil {
+				return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+			}
+
+			positionConfig.mit = append(positionConfig.mit, ac)
+		}
+	}
+
+	result := "Current MIT list: "
+	for _, ac := range positionConfig.mit {
+		result += ac.Callsign() + " "
+	}
+	return result, nil
+}
+
+type InfoCommand struct{}
+
+func (*InfoCommand) Name() string { return "info" }
+func (*InfoCommand) Usage() string {
+	return "<callsign, fix, VOR, DME, airport...>"
+}
+func (*InfoCommand) Help() string {
+	return "Prints available information about the specified object."
+}
+func (*InfoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString | CommandArgsOptional}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft | CommandArgsString}
+	}
+}
+func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
+	acInfo := func(ac *Aircraft) string {
+		result, indent := ac.GetFormattedFlightPlan(true)
+		result = strings.TrimRight(result, "\n")
+		indstr := fmt.Sprintf("%*c", indent, ' ')
+		if u, ok := world.users[ac.Callsign()]; ok {
+			result += fmt.Sprintf("\n%spilot: %s %s (%s)", indstr, u.name, u.rating, u.note)
+		}
+		if tel := ac.flightPlan.Telephony(); tel != "" {
+			result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
+		}
+		if ac.trackingController != "" || ac.hoController != "" {
+			result += fmt.Sprintf("\n%sTracked by: %s", indstr, ac.trackingController)
+			if ac.hoController != "" {
+				result += fmt.Sprintf(" Handing off to: %s", ac.hoController)
+			}
+		}
+		if ac.squawk != ac.assignedSquawk {
+			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.squawk)
+		}
+		if ac.LostTrack() {
+			result += fmt.Sprintf("\n%s*** Lost Track!", indstr)
+		}
+		return result
+	}
+
+	if len(args) == 0 && positionConfig.selectedAircraft != nil {
+		return acInfo(positionConfig.selectedAircraft), nil
+	} else {
+		name := strings.ToUpper(args[0])
+
+		aircraft := matchingAircraft(name)
+		if len(aircraft) == 1 {
+			return acInfo(aircraft[0]), nil
+		} else if len(aircraft) > 1 {
+			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
+			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
+		} else if navaid, ok := world.FAA.navaids[name]; ok {
+			return fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.name),
+				navaid.navtype, navaid.location), nil
+		} else if fix, ok := world.FAA.fixes[name]; ok {
+			return fmt.Sprintf("%s: Fix %s", name, fix.location), nil
+		} else if ap, ok := world.FAA.airports[name]; ok {
+			return fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.name),
+				ap.location, ap.elevation), nil
+		} else if cs, ok := world.callsigns[name]; ok {
+			return fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company), nil
+		} else if ct, ok := world.controllers[name]; ok {
+			result := fmt.Sprintf("%s (%s) @ %7.3f, range %d", ct.callsign,
+				ct.rating, ct.frequency, ct.scopeRange)
+			if u, ok := world.users[name]; ok {
+				result += fmt.Sprintf("\n%s %s (%s)", u.name, u.rating, u.note)
+			}
+			return result, nil
+		} else {
+			return "", fmt.Errorf("%s: unknown", name)
+		}
+	}
+}
+
+type TrafficCommand struct{}
+
+func (*TrafficCommand) Name() string { return "traffic" }
+func (*TrafficCommand) Usage() string {
+	return "<callsign>"
+}
+func (*TrafficCommand) Help() string {
+	return "Summarizes information related to nearby traffic for the specified aircraft."
+}
+func (*TrafficCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsAircraft}
+}
+func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, _ := getCallsign(args)
+	ac := world.GetAircraft(callsign)
+	if ac == nil {
+		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+
+	type Traffic struct {
+		ac       *Aircraft
+		distance float32
+	}
+	filter := func(a *Aircraft) bool {
+		return a.Callsign() == ac.Callsign() || a.LostTrack() || a.OnGround()
+	}
+
+	lateralLimit := float32(6.)
+	verticalLimit := 1500
+
+	var traffic []Traffic
+	for _, other := range world.GetFilteredAircraft(filter) {
+		ldist := nmdistance2ll(ac.Position(), other.Position())
+		vdist := abs(ac.Altitude() - other.Altitude())
+		if ldist < lateralLimit && vdist < verticalLimit {
+			traffic = append(traffic, Traffic{other, ldist})
+		}
+	}
+
+	sort.Slice(traffic, func(i, j int) bool {
+		if traffic[i].distance == traffic[j].distance {
+			return traffic[i].ac.Callsign() < traffic[j].ac.Callsign()
+		}
+		return traffic[i].distance < traffic[j].distance
+	})
+
+	str := ""
+	for _, t := range traffic {
+		alt := (t.ac.Altitude() + 250) / 500 * 500
+		hto := headingp2ll(ac.Position(), t.ac.Position(), world.MagneticVariation)
+		hdiff := hto - ac.Heading()
+		clock := headingAsHour(hdiff)
+		str += fmt.Sprintf("  %-10s %2d o'c %2d mi %2s bound %-10s %5d' [%s]\n",
+			ac.Callsign(), clock, int(t.distance+0.5),
+			shortCompass(t.ac.Heading()), t.ac.flightPlan.actype, int(alt), t.ac.Callsign())
+	}
+	if str != "" {
+		str += "\n"
+	}
+
+	return str, nil
+}
+
+type TimerCommand struct{}
+
+func (*TimerCommand) Name() string { return "timer" }
+func (*TimerCommand) Usage() string {
+	return "<minutes> <message...>"
+}
+func (*TimerCommand) Help() string {
+	return "Starts a timer for the specified number of minutes with the associated message."
+}
+func (*TimerCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*TimerCommand) Run(cli *CLIPane, args []string) (string, error) {
+	if minutes, err := strconv.ParseFloat(args[0], 64); err != nil {
+		return "", fmt.Errorf("\"%s\": expected time in minutes", args[0])
+	} else {
+		end := time.Now().Add(time.Duration(minutes * float64(time.Minute)))
+		timer := TimerReminderItem{end: end, note: strings.Join(args[1:], " ")}
+
+		positionConfig.timers = append(positionConfig.timers, timer)
+		sort.Slice(positionConfig.timers, func(i, j int) bool {
+			return positionConfig.timers[i].end.Before(positionConfig.timers[j].end)
+		})
+
+		return "", nil
+	}
+}
+
+type ToDoCommand struct{}
+
+func (*ToDoCommand) Name() string { return "todo" }
+func (*ToDoCommand) Usage() string {
+	return "<message...>"
+}
+func (*ToDoCommand) Help() string {
+	return "Adds a todo with the associated message to the todo list."
+}
+func (*ToDoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*ToDoCommand) Run(cli *CLIPane, args []string) (string, error) {
+	note := strings.Join(args[0:], " ")
+	positionConfig.todos = append(positionConfig.todos, ToDoReminderItem{note: note})
+	return "", nil
+}

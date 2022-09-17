@@ -1,0 +1,12 @@
+*~
+#*#
+*.vsess
+installer.wixobj
+rsrc_windows_*.syso
+osx/icon.iconset/
+osx/Vice.app/
+osx/Vice*.dmg
+osx/vice
+osx/vice_amd64
+osx/vice_arm64
+resources/version.txt

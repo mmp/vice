@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='Vice'
+    	     Manufacturer='Matt Pharr'
+	     Id='0F1DA295-A235-40B2-BBB7-2E93C3D6E6C9'
+	     UpgradeCode='A10E3C66-BA55-406A-B4E2-586D7108D622'
+	     Language='1033'
+	     Codepage='1252'
+	     Version='0.1.0'
+	     >
+    <Package Id='*'
+    	     Keywords='Installer'
+	     Description="Vice Installer"
+	     Manufacturer='Matt Pharr'
+	     InstallerVersion='100'
+	     Languages='1033'
+	     Compressed='yes'
+	     SummaryCodepage='1252'
+	     />
+
+    <MajorUpgrade DowngradeErrorMessage="A later version of Vice is already installed. Setup will now exit." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR"
+               Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Vice">
+          <Component Id="MainExecutable">
+            <File KeyPath="yes" Name="Vice.exe" Source="Vice.exe"></File>
+          </Component>
+          <Component Id="SDLDLL">
+            <File KeyPath="yes" Source="windows/SDL2.dll"></File>
+          </Component>
+          <Component Id="gccseh">
+            <File KeyPath="yes" Source="windows/libgcc_s_seh-1.dll"></File>
+          </Component>
+          <Component Id="libstdcpp">
+            <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <UIRef Id="WixUI_Minimal" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="windows\gpl-3.0.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="windows\dialog.bmp" />
+
+    <Feature Id="MyFeature">
+      <ComponentRef Id="MainExecutable" />
+      <ComponentRef Id="SDLDLL" />
+      <ComponentRef Id="gccseh" />
+      <ComponentRef Id="libstdcpp" />
+    </Feature>
+  </Product>
+</Wix>

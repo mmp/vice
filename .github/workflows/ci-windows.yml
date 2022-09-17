@@ -1,0 +1,78 @@
+name: build-windows
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest ]
+
+    name: Build ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Setup go
+      uses: actions/setup-go@v3
+      with:
+        go-version-file: go.mod
+        cache: true
+        cache-dependency-path: go.sum
+
+    - name: Checkout Windows prebuilts
+      uses: actions/checkout@v3
+      with:
+        repository: mmp/vice-windows-ext
+        path: ./ext
+
+    - name: Install windows prebuilts
+      working-directory: ./ext
+      run: |
+        unzip -q SDL2-devel-2.24.0-mingw.zip
+        7z x x86_64-12.2.0-release-win32-seh-rt_v10-rev0.7z -omingw
+        echo ${{ github.workspace }}/ext/mingw/mingw64 >> $GITHUB_PATH
+        ls
+
+    - name: Prepare icon resources
+      run: |
+        go install github.com/tc-hib/go-winres@latest
+        go-winres make --in windows/winres.json
+
+    - name: Build
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
+        go build -tags static -o ./vice.exe .
+        ls
+
+    - name: Save executable as build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: vice.exe
+        path: vice.exe
+
+    - name: Add WIX to path
+      run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Create installer
+      run: |
+        candle.exe windows/installer.wxs
+        light.exe -ext WixUIExtension installer.wixobj
+        move installer.msi 'Vice-${{ github.ref_name }}-installer.msi'
+
+    - name: Upload release (maybe)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'Vice-${{ github.ref_name }}-installer.msi'

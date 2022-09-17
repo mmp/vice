@@ -1,0 +1,15 @@
+# making the icon:
+
+# add rounded border
+convert -size 1024x1024 xc:none -fill white -draw \
+    'roundRectangle 0,0 1024,1024 100,100' tower-1024x1024.png  \
+    -compose SrcIn -composite tower-rounded-1024x1024.png
+
+# inset and add transparent
+convert tower-rounded-1024x1024.png -background none -gravity center \
+        -extent 1200x1200  tower-rounded-inset-1200x1200.png
+
+# make lower-res versions
+for r in 1024 512 256 128 64 32 16; do
+  convert tower-rounded-inset-1200x1200.png -geometry ${r}x${r} tower-rounded-inset-${r}x${r}.png
+done  
