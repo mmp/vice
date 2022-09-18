@@ -11,7 +11,7 @@ vice
 
 Features
 --------
-* Cross-platform: runs on Windows and Mac (and should work on Linux--untested)
+* Cross-platform: runs on Windows, Macintosh, and Linux.
 * Open source: licensed under the [GNU General Public License, version 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 * Tiled window interface allows flexible use of multiple radar scopes for VATSIM's
   top-down controlling environment.
