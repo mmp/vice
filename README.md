@@ -5,9 +5,9 @@ vice
 
 *A cross-platform, open-source, possibly-future VATSIM client*
 
-[<img src="https://github.com/mmp/vice/workflows/ci-windows.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-windows)
-[<img src="https://github.com/mmp/vice/workflows/ci-mac.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-mac)
-[<img src="https://github.com/mmp/vice/workflows/ci-linux.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-linux)
+[<img src="https://github.com/mmp/vice/actions/workflows/ci-windows.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-windows)
+[<img src="https://github.com/mmp/vice/actions/workflows/ci-mac.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-mac)
+[<img src="https://github.com/mmp/vice/actions/workflows/ci-linux.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-linux)
 
 Features
 --------
