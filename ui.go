@@ -350,14 +350,17 @@ type ModalDialogBox struct {
 	client       ModalDialogClient
 }
 
+type ModalDialogButton struct {
+	text     string
+	disabled bool
+	action   func() bool
+}
+
 type ModalDialogClient interface {
 	Title() string
 	Opening()
-	Draw() bool /* was "ok" equivalently clicked (e.g., via enter) */
-	EnableOk() bool
-	OfferCancel() bool
-	Ok() bool /* accept "ok" click */
-	Cancel()
+	Buttons() []ModalDialogButton
+	Draw() int /* returns index of equivalently-clicked button; out of range if none */
 }
 
 func NewModalDialogBox(c ModalDialogClient) *ModalDialogBox {
@@ -387,32 +390,43 @@ func (m *ModalDialogBox) Draw() {
 			m.isOpen = true
 		}
 
-		ok := m.client.Draw()
+		selIndex := m.client.Draw()
+		imgui.Text("\n") // spacing
 
-		okok := m.client.EnableOk() || !m.client.OfferCancel()
-		if !okok {
-			ok = false // ignore any reported ok from the client if it's not legit
-			imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-			imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+		buttons := m.client.Buttons()
+
+		// First, figure out where to start drawing so the buttons end up right-justified.
+		// https://github.com/ocornut/imgui/discussions/3862
+		width := float32(0)
+		style := imgui.CurrentStyle()
+		for i, b := range buttons {
+			width += imgui.CalcTextSize(b.text, false, 100000).X + 2*style.FramePadding().X
+			if i > 0 {
+				// space between buttons
+				width += style.ItemSpacing().X
+			}
 		}
-		if imgui.Button("Ok") || ok {
-			imgui.CloseCurrentPopup()
-			m.show = false
-			m.isOpen = false
-			m.client.Ok()
-		}
-		if !okok {
-			// Want this but not yet in the imgui-go bindings: imgui.EndDisabled()
-			imgui.PopItemFlag()
-			imgui.PopStyleVar()
-		}
-		if m.client.OfferCancel() {
-			imgui.SameLine()
-			if imgui.Button("Cancel") {
-				imgui.CloseCurrentPopup()
-				m.show = false
-				m.isOpen = false
-				m.client.Cancel()
+		offset := imgui.ContentRegionAvail().X - width
+		imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
+
+		for i, b := range buttons {
+			if b.disabled {
+				imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+				imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+			}
+			if i > 0 {
+				imgui.SameLine()
+			}
+			if (imgui.Button(b.text) || i == selIndex) && !b.disabled {
+				if b.action == nil || b.action() {
+					imgui.CloseCurrentPopup()
+					m.show = false
+					m.isOpen = false
+				}
+			}
+			if b.disabled {
+				imgui.PopItemFlag()
+				imgui.PopStyleVar()
 			}
 		}
 
@@ -540,6 +554,8 @@ type ConnectModalClient struct {
 	connectionType ConnectionType
 	err            string
 
+	// Store all three so that if the user switches back and forth any set
+	// values are retained.
 	flightRadar  FlightRadarConnectionConfiguration
 	vatsim       VATSIMConnectionConfiguration
 	vatsimReplay VATSIMReplayConfiguration
@@ -567,7 +583,54 @@ func (c *ConnectModalClient) Opening() {
 	c.vatsimReplay.Initialize()
 }
 
-func (c *ConnectModalClient) Draw() bool {
+func (c *ConnectModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		var err error
+		switch c.connectionType {
+		case ConnectionTypeFlightRadar:
+			err = c.flightRadar.Connect(world)
+
+		case ConnectionTypeVATSIM:
+			err = c.vatsim.Connect(world)
+
+		case ConnectionTypeVATSIMReplay:
+			err = c.vatsimReplay.Connect(world)
+
+		default:
+			lg.Errorf("Unhandled connection type")
+			return true
+		}
+
+		if err == nil {
+			c.err = ""
+		} else {
+			c.err = err.Error()
+		}
+		return err == nil
+	}}
+
+	switch c.connectionType {
+	case ConnectionTypeFlightRadar:
+		ok.disabled = !c.flightRadar.Valid()
+
+	case ConnectionTypeVATSIM:
+		ok.disabled = !c.vatsim.Valid()
+
+	case ConnectionTypeVATSIMReplay:
+		ok.disabled = !c.vatsimReplay.Valid()
+
+	default:
+		lg.Errorf("Unhandled connection type")
+	}
+	b = append(b, ok)
+
+	return b
+}
+
+func (c *ConnectModalClient) Draw() int {
 	if imgui.BeginCombo("Type", c.connectionType.String()) {
 		for i := 0; i < ConnectionTypeCount; i++ {
 			ct := ConnectionType(i)
@@ -593,52 +656,12 @@ func (c *ConnectModalClient) Draw() bool {
 	if c.err != "" {
 		imgui.Text(c.err)
 	}
-	return enter
-}
 
-func (c *ConnectModalClient) OfferCancel() bool { return true }
-
-func (c *ConnectModalClient) EnableOk() bool {
-	switch c.connectionType {
-	case ConnectionTypeFlightRadar:
-		return c.flightRadar.Valid()
-
-	case ConnectionTypeVATSIM:
-		return c.vatsim.Valid()
-
-	case ConnectionTypeVATSIMReplay:
-		return c.vatsimReplay.Valid()
-	}
-
-	lg.Errorf("Unhandled connection type")
-	return false
-}
-
-func (c *ConnectModalClient) Cancel() {}
-
-func (c *ConnectModalClient) Ok() bool {
-	var err error
-	switch c.connectionType {
-	case ConnectionTypeFlightRadar:
-		err = c.flightRadar.Connect(world)
-
-	case ConnectionTypeVATSIM:
-		err = c.vatsim.Connect(world)
-
-	case ConnectionTypeVATSIMReplay:
-		err = c.vatsimReplay.Connect(world)
-
-	default:
-		lg.Errorf("Unhandled connection type")
-		return true
-	}
-
-	if err == nil {
-		c.err = ""
+	if enter {
+		return 0
 	} else {
-		c.err = err.Error()
+		return -1
 	}
-	return err == nil
 }
 
 type DisconnectModalClient struct {
@@ -651,7 +674,24 @@ func (d *DisconnectModalClient) Opening() {
 	d.err = ""
 }
 
-func (d *DisconnectModalClient) Draw() bool {
+func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		if err := world.Disconnect(); err != nil {
+			lg.Errorf("Disconnect: %v", err)
+			c.err = err.Error()
+			return false
+		}
+		return true
+	}}
+	b = append(b, ok)
+
+	return b
+}
+
+func (d *DisconnectModalClient) Draw() int {
 	imgui.Text("Are you sure you want to disconnect?")
 	if d.err != "" {
 		color := positionConfig.GetColorScheme().TextError
@@ -659,20 +699,7 @@ func (d *DisconnectModalClient) Draw() bool {
 		imgui.Text(d.err)
 		imgui.PopStyleColor()
 	}
-	return false
-}
-
-func (d *DisconnectModalClient) OfferCancel() bool { return true }
-func (d *DisconnectModalClient) EnableOk() bool    { return true }
-func (d *DisconnectModalClient) Cancel()           {}
-
-func (d *DisconnectModalClient) Ok() bool {
-	if err := world.Disconnect(); err != nil {
-		lg.Errorf("Disconnect: %v", err)
-		d.err = err.Error()
-		return false
-	}
-	return true
+	return -1
 }
 
 type NewModalClient struct {
@@ -688,38 +715,45 @@ func (n *NewModalClient) Opening() {
 	n.err = ""
 }
 
-func (n *NewModalClient) Draw() bool {
-	flags := imgui.InputTextFlagsEnterReturnsTrue
-	enter := imgui.InputTextV("Configuration name", &n.name, flags, nil)
-	if enter {
-		_, alreadyExists := globalConfig.PositionConfigs[n.name]
-		if alreadyExists {
-			n.err = "\"" + n.name + "\" already exists"
+func (n *NewModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		if n.isBrandNew {
+			globalConfig.PositionConfigs[n.name] = NewPositionConfig()
+		} else {
+			globalConfig.PositionConfigs[n.name] = positionConfig.Duplicate()
 		}
+		globalConfig.MakeConfigActive(n.name)
+		return true
+	}}
+	ok.disabled = n.name == ""
+	if _, exists := globalConfig.PositionConfigs[n.name]; exists {
+		ok.disabled = true
+		n.err = "\"" + n.name + "\" already exists"
 	} else {
 		n.err = ""
 	}
+	b = append(b, ok)
+
+	return b
+}
+
+func (n *NewModalClient) Draw() int {
+	flags := imgui.InputTextFlagsEnterReturnsTrue
+	enter := imgui.InputTextV("Configuration name", &n.name, flags, nil)
 	if n.err != "" {
 		cs := positionConfig.GetColorScheme()
 		imgui.PushStyleColor(imgui.StyleColorText, cs.Error.imgui())
 		imgui.Text(n.err)
 		imgui.PopStyleColor()
 	}
-	return enter
-}
-
-func (n *NewModalClient) OfferCancel() bool { return true }
-func (n *NewModalClient) EnableOk() bool    { return n.name != "" && n.err == "" }
-func (n *NewModalClient) Cancel()           {}
-
-func (n *NewModalClient) Ok() bool {
-	if n.isBrandNew {
-		globalConfig.PositionConfigs[n.name] = NewPositionConfig()
+	if enter {
+		return 0
 	} else {
-		globalConfig.PositionConfigs[n.name] = positionConfig.Duplicate()
+		return -1
 	}
-	globalConfig.MakeConfigActive(n.name)
-	return true
 }
 
 type RenameModalClient struct {
@@ -733,7 +767,29 @@ func (r *RenameModalClient) Opening() {
 	r.newName = ""
 }
 
-func (r *RenameModalClient) Draw() bool {
+func (r *RenameModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		if globalConfig.ActivePosition == r.selectedName {
+			globalConfig.ActivePosition = r.newName
+		}
+		pc := globalConfig.PositionConfigs[r.selectedName]
+		delete(globalConfig.PositionConfigs, r.selectedName)
+		globalConfig.PositionConfigs[r.newName] = pc
+		return true
+	}}
+	ok.disabled = r.selectedName == ""
+	if !ok.disabled {
+		_, ok.disabled = globalConfig.PositionConfigs[r.newName]
+	}
+	b = append(b, ok)
+
+	return b
+}
+
+func (r *RenameModalClient) Draw() int {
 	if imgui.BeginCombo("Config Name", r.selectedName) {
 		names := SortedMapKeys(globalConfig.PositionConfigs)
 
@@ -754,28 +810,11 @@ func (r *RenameModalClient) Draw() bool {
 		imgui.Text("Config with that name already exits!")
 		imgui.PopStyleColor()
 	}
-	return enter
-}
-
-func (r *RenameModalClient) OfferCancel() bool { return true }
-func (r *RenameModalClient) Cancel()           {}
-
-func (r *RenameModalClient) EnableOk() bool {
-	if r.selectedName == "" {
-		return false
+	if enter {
+		return 0
+	} else {
+		return -1
 	}
-	_, exists := globalConfig.PositionConfigs[r.newName]
-	return !exists
-}
-
-func (r *RenameModalClient) Ok() bool {
-	if globalConfig.ActivePosition == r.selectedName {
-		globalConfig.ActivePosition = r.newName
-	}
-	pc := globalConfig.PositionConfigs[r.selectedName]
-	delete(globalConfig.PositionConfigs, r.selectedName)
-	globalConfig.PositionConfigs[r.newName] = pc
-	return true
 }
 
 type DeleteModalClient struct {
@@ -786,7 +825,29 @@ func (d *DeleteModalClient) Title() string { return "Delete Config" }
 
 func (d *DeleteModalClient) Opening() { d.name = "" }
 
-func (d *DeleteModalClient) Draw() bool {
+func (d *DeleteModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		if globalConfig.ActivePosition == d.name {
+			for name := range globalConfig.PositionConfigs {
+				if name != d.name {
+					globalConfig.MakeConfigActive(name)
+					break
+				}
+			}
+		}
+		delete(globalConfig.PositionConfigs, d.name)
+		return true
+	}}
+	ok.disabled = d.name == ""
+	b = append(b, ok)
+
+	return b
+}
+
+func (d *DeleteModalClient) Draw() int {
 	if imgui.BeginCombo("Config Name", d.name) {
 		names := SortedMapKeys(globalConfig.PositionConfigs)
 		for _, name := range names {
@@ -796,24 +857,7 @@ func (d *DeleteModalClient) Draw() bool {
 		}
 		imgui.EndCombo()
 	}
-	return false
-}
-
-func (d *DeleteModalClient) OfferCancel() bool { return true }
-func (d *DeleteModalClient) EnableOk() bool    { return d.name != "" }
-func (d *DeleteModalClient) Cancel()           {}
-
-func (d *DeleteModalClient) Ok() bool {
-	if globalConfig.ActivePosition == d.name {
-		for name := range globalConfig.PositionConfigs {
-			if name != d.name {
-				globalConfig.MakeConfigActive(name)
-				break
-			}
-		}
-	}
-	delete(globalConfig.PositionConfigs, d.name)
-	return true
+	return -1
 }
 
 type YesOrNoModalClient struct {
@@ -825,24 +869,22 @@ func (yn *YesOrNoModalClient) Title() string { return yn.title }
 
 func (yn *YesOrNoModalClient) Opening() {}
 
-func (yn *YesOrNoModalClient) Draw() bool {
-	imgui.Text(yn.query)
-	return false
-}
-
-func (yn *YesOrNoModalClient) OfferCancel() bool { return true }
-func (yn *YesOrNoModalClient) EnableOk() bool    { return true }
-func (yn *YesOrNoModalClient) Cancel() {
-	if yn.notok != nil {
+func (yn *YesOrNoModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "No", action: func() bool {
 		yn.notok()
-	}
+		return true
+	}})
+	b = append(b, ModalDialogButton{text: "Yes", action: func() bool {
+		yn.ok()
+		return true
+	}})
+	return b
 }
 
-func (yn *YesOrNoModalClient) Ok() bool {
-	if yn.ok != nil {
-		yn.ok()
-	}
-	return true
+func (yn *YesOrNoModalClient) Draw() int {
+	imgui.Text(yn.query)
+	return -1
 }
 
 /////////////////////////
@@ -858,19 +900,20 @@ func (d *DeleteNoteModalClient) Opening() {
 	d.id = ui.activeNoteID
 }
 
-func (d *DeleteNoteModalClient) Draw() bool {
-	imgui.Text("Delete \"" + globalConfig.Notes[d.id].Title + "\"?")
-	return false
+func (d *DeleteNoteModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+	b = append(b, ModalDialogButton{text: "Ok", action: func() bool {
+		delete(globalConfig.Notes, d.id)
+		ui.activeNoteID = InvalidNoteID
+		return true
+	}})
+	return b
 }
 
-func (d *DeleteNoteModalClient) OfferCancel() bool { return true }
-func (d *DeleteNoteModalClient) EnableOk() bool    { return true }
-func (d *DeleteNoteModalClient) Cancel()           {}
-
-func (d *DeleteNoteModalClient) Ok() bool {
-	delete(globalConfig.Notes, d.id)
-	ui.activeNoteID = InvalidNoteID
-	return true
+func (d *DeleteNoteModalClient) Draw() int {
+	imgui.Text("Delete \"" + globalConfig.Notes[d.id].Title + "\"?")
+	return -1
 }
 
 func showNotesEditor(deleteDialog *ModalDialogBox) {
@@ -1154,14 +1197,21 @@ func (fs *FileSelectDialogBox) Draw() {
 }
 
 type ErrorModalClient struct {
-	message   string
-	okClicked bool
+	message string
 }
 
 func (e *ErrorModalClient) Title() string { return "Vice Error" }
 func (e *ErrorModalClient) Opening()      {}
 
-func (e *ErrorModalClient) Draw() bool {
+func (e *ErrorModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Ok", action: func() bool {
+		return true
+	}})
+	return b
+}
+
+func (e *ErrorModalClient) Draw() int {
 	if imgui.BeginTableV("Error", 2, 0, imgui.Vec2{}, 0) {
 		imgui.TableSetupColumn("icon")
 		imgui.TableSetupColumn("text")
@@ -1175,15 +1225,7 @@ func (e *ErrorModalClient) Draw() bool {
 
 		imgui.EndTable()
 	}
-	return false
-}
-
-func (e *ErrorModalClient) OfferCancel() bool { return false }
-func (e *ErrorModalClient) EnableOk() bool    { return true }
-func (e *ErrorModalClient) Cancel()           {}
-func (e *ErrorModalClient) Ok() bool {
-	e.okClicked = true
-	return true
+	return -1
 }
 
 func ShowErrorDialog(s string, args ...interface{}) {
@@ -1196,10 +1238,9 @@ func ShowErrorDialog(s string, args ...interface{}) {
 func ShowFatalErrorDialog(s string, args ...interface{}) {
 	lg.ErrorfUp1(s, args...)
 
-	emc := &ErrorModalClient{message: fmt.Sprintf(s, args...)}
-	d := NewModalDialogBox(emc)
+	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
 	d.Activate()
-	for !emc.okClicked {
+	for d.show {
 		platform.ProcessEvents()
 		platform.NewFrame()
 		imgui.NewFrame()
