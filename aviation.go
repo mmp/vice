@@ -459,22 +459,6 @@ func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 
 	return nmdistance2ll(afut, bfut)
 }
 
-func TrafficCall(from *Aircraft, to *Aircraft) string {
-	frompos := from.tracks[0]
-	topos := to.tracks[0]
-
-	alt := (topos.altitude + 250) / 500 * 500
-	// Include magnetic correction in hto so that it cancels when we
-	// subtract from from.Heading().
-	hto := headingp2ll(frompos.position, topos.position, world.MagneticVariation)
-	clock := headingAsHour(hto - from.Heading())
-	dist := nmdistance2ll(frompos.position, topos.position)
-
-	return fmt.Sprintf("  %-10s %2d o'c %2d mi %2s bound %-10s %5d'\n",
-		from.Callsign(), clock, int(dist+0.5),
-		shortCompass(to.Heading()), to.flightPlan.actype, int(alt))
-}
-
 func (fp FlightPlan) TypeWithoutSuffix() string {
 	// try to chop off equipment suffix
 	actypeFields := strings.Split(fp.actype, "/")

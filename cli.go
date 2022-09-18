@@ -17,8 +17,6 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-type CommandImplementation func(cli *CLIPane, args []string) string
-
 type CommandArgsFormat int
 
 const (
@@ -780,7 +778,7 @@ func (sa *SetAltitudeCommand) Run(cli *CLIPane, args []string) (string, error) {
 	} else {
 		err = world.SetAltitude(callsign, altitude)
 	}
-	return "", nil
+	return "", err
 }
 
 type SetArrivalCommand struct{}
@@ -873,7 +871,7 @@ func (*SetIFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	}
 }
 func (*SetIFRCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, args := getCallsign(args)
+	callsign, _ := getCallsign(args)
 	return "", world.SetFlightRules(callsign, IFR)
 }
 
@@ -949,7 +947,7 @@ func (*SetVFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	}
 }
 func (*SetVFRCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, args := getCallsign(args)
+	callsign, _ := getCallsign(args)
 	return "", world.SetFlightRules(callsign, VFR)
 }
 
@@ -970,7 +968,7 @@ func (*EditRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	}
 }
 func (*EditRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, args := getCallsign(args)
+	callsign, _ := getCallsign(args)
 	ac := world.GetAircraft(callsign)
 	if ac == nil {
 		return "", fmt.Errorf("%s: aircraft does not exist", callsign)

@@ -282,10 +282,9 @@ func LoadOrMakeDefaultConfig() {
 		if errors.Is(err, os.ErrNotExist) {
 			lg.Printf("%s: config file doesn't exist", fn)
 			_ = os.WriteFile(fn, config, 0o600)
-			err = nil
 		} else {
 			lg.Printf("%s: unable to read config file: %v", fn, err)
-			ShowErrorDialog("%s: unable to read config file: %w\nUsing default configuration.",
+			ShowErrorDialog("%s: unable to read config file: %v\nUsing default configuration.",
 				fn, err)
 			fn = "default.config"
 		}
@@ -297,9 +296,8 @@ func LoadOrMakeDefaultConfig() {
 	d := json.NewDecoder(r)
 
 	globalConfig = &GlobalConfig{}
-	// Preserve earlier err, if set.
 	if err := d.Decode(globalConfig); err != nil {
-		ShowErrorDialog("%s: configuration file is corrupt: %w", fn, err)
+		ShowErrorDialog("%s: configuration file is corrupt: %v", fn, err)
 	}
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
