@@ -11,12 +11,18 @@ if [[ ! -e ~/Downloads/vice ]]; then
     echo vice not found in Downloads
     exit 1
 fi
+
+if [[ ! -v VERSION ]]; then
+    echo VERSION environment variable must be set
+    exit 1
+fi
     
 cd osx
 rm -rf Vice.app
 mkdir -p Vice.app/Contents/MacOS
 cp Info.plist Vice.App/Contents
 mv ~/Downloads/vice Vice.app/Contents/MacOS/vice
+chmod +x Vice.app/Contents/MacOS/vice
 
 # take care of the icons
 mkdir -p icon.iconset
@@ -41,5 +47,5 @@ gon -log-level=info  gon-config.hcl
 
 # upload it to github
 mv Vice.dmg Vice-${VERSION}.dmg
-gh release create ${VERSION}
+#gh release create ${VERSION}
 gh release upload ${VERSION} Vice-${VERSION}.dmg
