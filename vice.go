@@ -181,13 +181,13 @@ func main() {
 		timeMarker(&stats.processMessages)
 
 		platform.NewFrame()
-		imgui.NewFrame()
 
 		// Generate and render vice draw lists
 		wmDrawPanes(platform, renderer)
 		timeMarker(&stats.drawPanes)
 
 		// Prepare our imgui draw lists
+		imgui.NewFrame()
 		drawUI(positionConfig.GetColorScheme(), platform)
 		// Finalize and submit the imgui draw lists
 		imgui.Render()
