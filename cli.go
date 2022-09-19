@@ -1461,26 +1461,37 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 		aircraft := matchingAircraft(name)
 		if len(aircraft) == 1 {
 			return acInfo(aircraft[0]), nil
+		}
+
+		// e.g. "fft" matches both a VOR and a callsign, so report both...
+		var info []string
+		if navaid, ok := world.FAA.navaids[name]; ok {
+			info = append(info, fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.name),
+				navaid.navtype, navaid.location))
+		}
+		if fix, ok := world.FAA.fixes[name]; ok {
+			info = append(info, fmt.Sprintf("%s: Fix %s", name, fix.location))
+		}
+		if ap, ok := world.FAA.airports[name]; ok {
+			info = append(info, fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.name),
+				ap.location, ap.elevation))
+		}
+		if cs, ok := world.callsigns[name]; ok {
+			info = append(info, fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company))
+		}
+		if ct, ok := world.controllers[name]; ok {
+			info = append(info, fmt.Sprintf("%s (%s) @ %7.3f, range %d", ct.callsign,
+				ct.rating, ct.frequency, ct.scopeRange))
+			if u, ok := world.users[name]; ok {
+				info = append(info, fmt.Sprintf("%s %s (%s)", u.name, u.rating, u.note))
+			}
+		}
+
+		if len(info) > 0 {
+			return strings.Join(info, "\n"), nil
 		} else if len(aircraft) > 1 {
 			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
 			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
-		} else if navaid, ok := world.FAA.navaids[name]; ok {
-			return fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.name),
-				navaid.navtype, navaid.location), nil
-		} else if fix, ok := world.FAA.fixes[name]; ok {
-			return fmt.Sprintf("%s: Fix %s", name, fix.location), nil
-		} else if ap, ok := world.FAA.airports[name]; ok {
-			return fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.name),
-				ap.location, ap.elevation), nil
-		} else if cs, ok := world.callsigns[name]; ok {
-			return fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company), nil
-		} else if ct, ok := world.controllers[name]; ok {
-			result := fmt.Sprintf("%s (%s) @ %7.3f, range %d", ct.callsign,
-				ct.rating, ct.frequency, ct.scopeRange)
-			if u, ok := world.users[name]; ok {
-				result += fmt.Sprintf("\n%s %s (%s)", u.name, u.rating, u.note)
-			}
-			return result, nil
 		} else {
 			return "", fmt.Errorf("%s: unknown", name)
 		}
