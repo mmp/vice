@@ -1401,14 +1401,36 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 					[2]float32{float32(0), float32(0)}})
 			rs.datablockTextDrawList.lines = append(rs.datablockTextDrawList.lines, ld)
 		}
+	}
 
-		flashCycle := time.Now().Second() & 1
+	flashCycle := time.Now().Second() & 1
+	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+	paneBounds := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{width, height}}
+
+	// Sort the aircraft so that they are always drawn in the same order
+	// (go's map iterator randomization otherwise randomizes the order,
+	// which can cause shimmering when datablocks overlap (especially if
+	// one is selected). We'll go with alphabetical by callsign, with the
+	// selected aircraft, if any, always drawn last.
+	aircraft := SortedMapKeysPred(rs.trackedAircraft, func(a **Aircraft, b **Aircraft) bool {
+		asel := *a == positionConfig.selectedAircraft
+		bsel := *b == positionConfig.selectedAircraft
+		if asel == bsel {
+			// This is effectively that neither is selected; alphabetical
+			return (*a).Callsign() < (*b).Callsign()
+		} else {
+			// Otherwise one of the two is; we want the selected one at the
+			// end.
+			return bsel
+		}
+	})
+	for _, ac := range aircraft {
+		ta := rs.trackedAircraft[ac]
 
 		// userOffset := ta.datablockManualOffset
 		drawLine := true // ??? userOffset[0] != 0 || userOffset[1] != 0
 
-		width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
-		paneBounds := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{width, height}}
+		pac := windowFromLatLongP(ac.Position())
 		bbox := ta.WindowDatablockBounds(pac)
 		if Overlaps(paneBounds, bbox) {
 			rs.datablockTextDrawList.AddText(ta.textDrawable[flashCycle])
