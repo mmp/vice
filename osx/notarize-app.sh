@@ -2,7 +2,7 @@
 
 set -e
 
-# make a zip for notarization
+# make a zip for notarization.
 zip -rv vice.zip Vice.app
 
 # get the zip file notarized
