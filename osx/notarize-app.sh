@@ -22,7 +22,7 @@ while [[ "$notarizestatus" = "in progress" ]]; do
   echo "xcrun altool --notarization-info ..."
   xcrun altool --notarization-info $uuid -u ${APPLE_CODESIGN_ID} --password @env:APPLE_CODESIGN_PASSWORD > notarize.out
   cat notarize.out
-  notarizestatus="`grep Status: notarize.out | cut -b14-`"
+  notarizestatus="`grep Status: notarize.out | sed 's/^.*Status: //'`"
 done
 
 echo "    $uuid: $notarizestatus"
