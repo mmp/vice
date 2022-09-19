@@ -55,12 +55,6 @@ jobs:
         go build -tags static -o ./vice.exe .
         ls
 
-    - name: Save executable as build artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: vice.exe
-        path: vice.exe
-
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
       shell: bash
@@ -69,7 +63,23 @@ jobs:
       run: |
         candle.exe windows/installer.wxs
         light.exe -ext WixUIExtension installer.wixobj
-        move installer.msi 'Vice-${{ github.ref_name }}-installer.msi'
+        move installer.msi Vice-installer.msi
+
+    - name: Save executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: vice.exe
+        path: vice.exe
+
+    - name: Save installer
+      uses: actions/upload-artifact@v3
+      with:
+        name: Vice-installer.msi
+        path: Vice-installer.msi
+
+    - name: Rename installer for release (maybe)
+      if: startsWith(github.ref, 'refs/tags/')
+      run: move Vice-installer.msi 'Vice-${{ github.ref_name }}-installer.msi'
 
     - name: Upload release (maybe)
       if: startsWith(github.ref, 'refs/tags/')
