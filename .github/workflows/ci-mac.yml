@@ -98,10 +98,16 @@ jobs:
 
     - name: Create zip file for notarized app
       run:
-        zip -rv Vice-osx.zip Vice.app
+        zip -rv 'Vice-${{ github.ref_name }}-osx.zip' Vice.app
 
     - name: Save zip file as build artifact
       uses: actions/upload-artifact@v3
       with:
-        name: Vice-osx.zip
-        path: Vice-osx.zip
+        name: 'Vice-${{ github.ref_name }}-osx.zip'
+        path: 'Vice-${{ github.ref_name }}-osx.zip'
+
+    - name: Upload release (maybe)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'Vice-${{ github.ref_name }}-osx.zip'
