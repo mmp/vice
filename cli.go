@@ -150,6 +150,8 @@ type CLIPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
+	SpecialKeys map[string]*string
+
 	// Note that we're not handling unicode here, though it's not
 	// evident that VATSIM does either.
 	input  []byte
@@ -165,6 +167,7 @@ func NewCLIPane() *CLIPane {
 	return &CLIPane{
 		FontIdentifier: font.id,
 		font:           font,
+		SpecialKeys:    make(map[string]*string),
 		errorCount:     make(map[string]int)}
 }
 
@@ -182,6 +185,9 @@ func (cli *CLIPane) Activate(cs *ColorScheme) {
 	}
 	if cli.errorCount == nil {
 		cli.errorCount = make(map[string]int)
+	}
+	if cli.SpecialKeys == nil {
+		cli.SpecialKeys = make(map[string]*string)
 	}
 	lg.RegisterErrorMonitor(cli)
 	checkCommands(cliCommands)
@@ -235,6 +241,40 @@ func (cli *CLIPane) Name() string { return "Command Line Interface" }
 func (cli *CLIPane) DrawUI() {
 	if newFont, changed := DrawFontPicker(&cli.FontIdentifier, "Font"); changed {
 		cli.font = newFont
+	}
+
+	imgui.Separator()
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
+	imgui.Text("Key Bindings")
+	const textWidth = 200
+	if imgui.BeginTableV(fmt.Sprintf("SpecialKeys##%p", cli), 4, flags, imgui.Vec2{}, 0.0) {
+		imgui.TableSetupColumnV("Key", imgui.TableColumnFlagsWidthFixed, 20., 0)
+		imgui.TableSetupColumnV("Command", imgui.TableColumnFlagsWidthFixed, textWidth, 0)
+		imgui.TableSetupColumnV("Key##Shift", imgui.TableColumnFlagsWidthFixed, 50., 0)
+		imgui.TableSetupColumnV("Command##Shift", imgui.TableColumnFlagsWidthFixed, textWidth, 0)
+		imgui.TableHeadersRow()
+		for i := 1; i <= 12; i++ {
+			imgui.TableNextRow()
+
+			k := func(key string) {
+				imgui.TableNextColumn()
+				imgui.Text(key)
+				imgui.TableNextColumn()
+				sp := cli.SpecialKeys[key]
+				if sp == nil {
+					sp = new(string)
+					cli.SpecialKeys[key] = sp
+				}
+				imgui.SetNextItemWidth(textWidth)
+				imgui.InputText("##"+key, sp)
+			}
+
+			key := fmt.Sprintf("F%d", i)
+			k(key)
+			k("Shift-" + key)
+		}
+
+		imgui.EndTable()
 	}
 }
 
@@ -385,13 +425,6 @@ func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 }
 
 func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hitEnter bool) {
-	io := imgui.CurrentIO()
-	ctrl := io.KeyCtrlPressed()
-
-	if ctrl {
-		return false
-	}
-
 	// Grab keyboard input
 	if ni := len(platform.InputCharacters()); ni > 0 {
 		for i := 0; i < ni; i++ {
@@ -542,6 +575,41 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 			cli.consoleViewOffset = 0
 		}
 		return
+	}
+
+	// Check the function keys
+	const F1 = 290
+	for i := 0; i < 12; i++ {
+		if !imgui.IsKeyPressed(F1 + i) {
+			continue
+		}
+
+		name := fmt.Sprintf("F%d", i+1)
+		io := imgui.CurrentIO()
+		if io.KeyShiftPressed() {
+			name = "Shift-" + name
+		}
+
+		if t, ok := cli.SpecialKeys[name]; ok {
+			// insert it at the start
+			text := strings.TrimRight(*t, " ")
+			text = text + " "
+
+			// don't insert if the text is already there
+			if strings.HasPrefix(string(cli.input), text) {
+				continue
+			}
+			// make space
+			cli.input = append(cli.input, []byte(text)...)
+			n := len([]byte(text))
+			if len(cli.input) > n {
+				// move any existing text forward
+				copy(cli.input[n:], cli.input)
+				copy(cli.input, []byte(text))
+			}
+			// place cursor after the inserted text
+			cli.cursor = len(text)
+		}
 	}
 
 	// Other than paging through history, everything henceforth changes the input.
