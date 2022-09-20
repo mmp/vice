@@ -100,7 +100,7 @@ func uiInit(renderer Renderer) {
 
 	ui.deleteNoteDialog = NewModalDialogBox(&DeleteNoteModalClient{})
 
-	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", ".sct2",
+	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
 		func(filename string) {
 			if err := world.LoadSectorFile(filename); err == nil {
 				delete(ui.errorText, "SECTORFILE")
@@ -121,7 +121,7 @@ func uiInit(renderer Renderer) {
 				})
 			}
 		})
-	ui.openPositionFileDialog = NewFileSelectDialogBox("Open Position File...", ".pof",
+	ui.openPositionFileDialog = NewFileSelectDialogBox("Open Position File...", []string{".pof"},
 		func(filename string) {
 			if err := world.LoadPositionFile(filename); err == nil {
 				delete(ui.errorText, "POSITIONFILE")
@@ -522,7 +522,7 @@ type VATSIMReplayConfiguration struct {
 
 func (v *VATSIMReplayConfiguration) Initialize() {
 	v.rate = 1
-	v.dialog = NewFileSelectDialogBox("Select VATSIM session file", ".vsess",
+	v.dialog = NewFileSelectDialogBox("Select VATSIM session file", []string{".vsess"},
 		func(fn string) { v.filename = fn })
 	v.dialog.Activate()
 }
@@ -1049,11 +1049,11 @@ type FileSelectDialogBox struct {
 	dirEntriesLastUpdated time.Time
 
 	title    string
-	filter   string
+	filter   []string
 	callback func(string)
 }
 
-func NewFileSelectDialogBox(title string, filter string, callback func(string)) *FileSelectDialogBox {
+func NewFileSelectDialogBox(title string, filter []string, callback func(string)) *FileSelectDialogBox {
 	if fileSelectDialogDirectory == "" {
 		var err error
 		fileSelectDialogDirectory, err = os.UserHomeDir()
@@ -1136,8 +1136,13 @@ func (fs *FileSelectDialogBox) Draw() {
 				}
 
 				canSelect := entry.IsDir()
-				if !entry.IsDir() && fs.filter != "" {
-					canSelect = strings.HasSuffix(strings.ToUpper(entry.Name()), strings.ToUpper(fs.filter))
+				if !entry.IsDir() {
+					for _, f := range fs.filter {
+						if strings.HasSuffix(strings.ToUpper(entry.Name()), strings.ToUpper(f)) {
+							canSelect = true
+							break
+						}
+					}
 				}
 
 				if !canSelect {
