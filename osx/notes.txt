@@ -13,3 +13,14 @@ convert tower-rounded-1024x1024.png -background none -gravity center \
 for r in 1024 512 256 128 64 32 16; do
   convert tower-rounded-inset-1200x1200.png -geometry ${r}x${r} tower-rounded-inset-${r}x${r}.png
 done  
+
+# dmg, maybe someday
+~/create-dmg/create-dmg --volname "Vice-${VERSION}" \
+           --volicon icon.icns \
+           --icon-size 100 \
+           --icon "Vice.app" 10 180 \
+           --app-drop-link 350 180 \
+           --window-size 570 420 \
+           --background dmg-background.png  \
+           Vice.dmg \
+           Vice.app
