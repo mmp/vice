@@ -21,6 +21,10 @@ type METAR struct {
 	rmk       string
 }
 
+func (m METAR) String() string {
+	return strings.Join([]string{m.airport, m.time, m.wind, m.weather, m.altimeter, m.rmk}, " ")
+}
+
 type NetworkRating int
 
 const (
