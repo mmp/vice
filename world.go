@@ -65,8 +65,7 @@ type World struct {
 
 	// Static things to draw; derived from the sector file
 	runwayGeom                        LinesDrawable
-	geoGeom                           LinesDrawable
-	geoColorMap                       ColorMap
+	geos                              []Geo
 	regionGeom                        []Region
 	regionColorMap                    ColorMap
 	SIDs, STARs                       []SidStar
@@ -119,6 +118,12 @@ type Label struct {
 type ARTCC struct {
 	name  string
 	lines LinesDrawable
+}
+
+type Geo struct {
+	name     string
+	lines    LinesDrawable
+	colorMap ColorMap
 }
 
 type Region struct {
@@ -239,8 +244,7 @@ func (w *World) LoadSectorFile(filename string) error {
 
 	// Static things to draw; derived from the sector file
 	w.runwayGeom = LinesDrawable{}
-	w.geoGeom = LinesDrawable{}
-	w.geoColorMap = ColorMap{}
+	w.geos = nil
 	w.regionGeom = nil
 	w.regionColorMap = ColorMap{}
 	w.SIDs = nil
@@ -370,14 +374,17 @@ func (w *World) LoadSectorFile(filename string) error {
 			colorMap: colorMap})
 	}
 
-	w.geoColorMap = MakeColorMap()
 	for _, geo := range sectorFile.Geo {
-		w.geoGeom.AddLine(Point2LLFromSct2(geo.P[0]), Point2LLFromSct2(geo.P[1]), RGB{})
-		if geo.Color == "" {
-			w.geoColorMap.Add("Geo")
-		} else {
-			w.geoColorMap.Add(geo.Color)
+		worldGeo := Geo{name: geo.Name, colorMap: MakeColorMap()}
+		for i, seg := range geo.Segments {
+			worldGeo.lines.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]), RGB{})
+			if geo.Colors[i] == "" {
+				worldGeo.colorMap.Add("Geo")
+			} else {
+				worldGeo.colorMap.Add(geo.Colors[i])
+			}
 		}
+		w.geos = append(w.geos, worldGeo)
 	}
 
 	w.sectorFileColors = make(map[string]RGB)
@@ -557,10 +564,12 @@ func (w *World) NamedColorChanged(name string, rgb RGB) {
 		updateARTCC(w.ARTCCHigh)
 
 	case "Geo":
-		w.geoColorMap.Visit("Geo", func(i int) {
-			w.geoGeom.color[2*i] = rgb
-			w.geoGeom.color[2*i+1] = rgb
-		})
+		for _, geo := range w.geos {
+			geo.colorMap.Visit("Geo", func(i int) {
+				geo.lines.color[2*i] = rgb
+				geo.lines.color[2*i+1] = rgb
+			})
+		}
 
 	case "HighAirway":
 		for i := range w.highAirwayGeom.color {
@@ -615,9 +624,11 @@ func (w *World) NamedColorChanged(name string, rgb RGB) {
 				w.regionGeom[i].tris.color[j] = rgb
 			}
 		})
-		w.geoColorMap.Visit(name, func(i int) {
-			w.geoGeom.color[i] = rgb
-		})
+		for _, geo := range w.geos {
+			geo.colorMap.Visit(name, func(i int) {
+				geo.lines.color[i] = rgb
+			})
+		}
 
 		updateColors := func(sidstar []SidStar) {
 			for _, ss := range sidstar {

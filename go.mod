@@ -10,7 +10,7 @@ require (
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20220810122213-9ac08159e8b5
 	github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f
-	github.com/mmp/sct2 v0.0.0-20220810140932-13accab9d45f
+	github.com/mmp/sct2 v0.0.0-20220921135816-8e1c45d584a5
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/veandco/go-sdl2 v0.5.0-alpha.3.0.20220913133553-3c4862273074
 	golang.org/x/exp v0.0.0-20220909130031-43970299f5e2

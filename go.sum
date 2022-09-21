@@ -19,6 +19,12 @@ github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f h1:Cj9yfc52qDYTl5I
 github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f/go.mod h1:XU5HFLBjK2vENXeun5QefyBRtQhbjwdDvRXxG+Ifmnw=
 github.com/mmp/sct2 v0.0.0-20220810140932-13accab9d45f h1:8OHehnOddyZurDIbD0cTXw0icVf88gF/M+wJhNr14L4=
 github.com/mmp/sct2 v0.0.0-20220810140932-13accab9d45f/go.mod h1:XkPz4Pa/gM/BnaO6z6HOw2BKZ/SIODZ3v7nZ8Fx/Onw=
+github.com/mmp/sct2 v0.0.0-20220921131540-9d4aad739d77 h1:KLYpbXshF4L007iNAuXWNo16/LW0SCwXO9p4+Bjz4BY=
+github.com/mmp/sct2 v0.0.0-20220921131540-9d4aad739d77/go.mod h1:XkPz4Pa/gM/BnaO6z6HOw2BKZ/SIODZ3v7nZ8Fx/Onw=
+github.com/mmp/sct2 v0.0.0-20220921133112-c6370c06df66 h1:9Q1LcDxCu2ieQIBkBcs3A2FbyamdXO0F21MlZzxWM48=
+github.com/mmp/sct2 v0.0.0-20220921133112-c6370c06df66/go.mod h1:XkPz4Pa/gM/BnaO6z6HOw2BKZ/SIODZ3v7nZ8Fx/Onw=
+github.com/mmp/sct2 v0.0.0-20220921135816-8e1c45d584a5 h1:OwGiMfOETw1sNsQXQzT6YfUQdPHoj+Q21CYT0QZl3QU=
+github.com/mmp/sct2 v0.0.0-20220921135816-8e1c45d584a5/go.mod h1:XkPz4Pa/gM/BnaO6z6HOw2BKZ/SIODZ3v7nZ8Fx/Onw=
 github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 h1:KoWmjvw+nsYOo29YJK9vDA65RGE3NrOnUtO7a+RF9HU=
 github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8/go.mod h1:HKlIX3XHQyzLZPlr7++PzdhaXEj94dEiJgZDTsxEqUI=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

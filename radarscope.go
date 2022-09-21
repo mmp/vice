@@ -26,7 +26,6 @@ type RadarScopePane struct {
 	Runways          bool
 	Regions          bool
 	Labels           bool
-	Geo              bool
 	LowAirways       bool
 	HighAirways      bool
 	VORs             bool
@@ -42,6 +41,7 @@ type RadarScopePane struct {
 	AirportNames     bool
 	SelectedAirports map[string]interface{}
 
+	GeoDrawSet       map[string]interface{}
 	SIDDrawSet       map[string]interface{}
 	STARDrawSet      map[string]interface{}
 	ARTCCDrawSet     map[string]interface{}
@@ -162,6 +162,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.DataBlockFormat = DataBlockFormatGround
 	c.Regions = true
 	c.Labels = true
+	c.GeoDrawSet = make(map[string]interface{})
 	c.SIDDrawSet = make(map[string]interface{})
 	c.STARDrawSet = make(map[string]interface{})
 	c.ARTCCDrawSet = make(map[string]interface{})
@@ -200,6 +201,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.SelectedNDBs = dupemap(rs.SelectedNDBs)
 	dupe.SelectedFixes = dupemap(rs.SelectedFixes)
 	dupe.SelectedAirports = dupemap(rs.SelectedAirports)
+	dupe.GeoDrawSet = dupemap(rs.GeoDrawSet)
 	dupe.SIDDrawSet = dupemap(rs.SIDDrawSet)
 	dupe.STARDrawSet = dupemap(rs.STARDrawSet)
 	dupe.ARTCCDrawSet = dupemap(rs.ARTCCDrawSet)
@@ -254,6 +256,9 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	// Temporary: catch unset ones from old config files
 	if rs.CRDAConfig.GlideslopeLateralSpread == 0 {
 		rs.CRDAConfig = NewCRDAConfig()
+	}
+	if rs.GeoDrawSet == nil {
+		rs.GeoDrawSet = make(map[string]interface{})
 	}
 
 	if rs.datablockFont = GetFont(rs.DatablockFontIdentifier); rs.datablockFont == nil {
@@ -430,11 +435,23 @@ func (rs *RadarScopePane) DrawUI() {
 			checkbox("Fix Names", &rs.FixNames)
 			checkbox("Airports", &rs.Airports)
 			checkbox("Airport Names", &rs.AirportNames)
-			checkbox("Geo", &rs.Geo)
 			checkbox("Low Airways", &rs.LowAirways)
 			checkbox("High Airways", &rs.HighAirways)
 			checkbox("Runways", &rs.Runways)
 			imgui.EndTable()
+		}
+
+		if len(world.geos) > 0 && imgui.TreeNode("Geo") {
+			for _, geo := range world.geos {
+				_, draw := rs.GeoDrawSet[geo.name]
+				imgui.Checkbox(geo.name, &draw)
+				if draw {
+					rs.GeoDrawSet[geo.name] = nil
+				} else {
+					delete(rs.GeoDrawSet, geo.name)
+				}
+			}
+			imgui.TreePop()
 		}
 
 		sidStarHierarchy := func(title string, sidstar []SidStar, drawSet map[string]interface{}) {
@@ -825,8 +842,11 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		}
 	}
 
-	if rs.Everything || rs.Geo {
-		rs.llDrawList.AddLinesWithWidth(world.geoGeom, lineWidth)
+	for _, geo := range world.geos {
+		_, draw := rs.GeoDrawSet[geo.name]
+		if rs.Everything || draw {
+			rs.llDrawList.AddLinesWithWidth(geo.lines, lineWidth)
+		}
 	}
 
 	drawAirwayLabels := func(labels []Label, color RGB) {
