@@ -324,6 +324,21 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	imgui.PopFont()
 }
 
+func setCursorForRightButtons(text []string) {
+	style := imgui.CurrentStyle()
+	width := float32(0)
+
+	for i, t := range text {
+		width += imgui.CalcTextSize(t, false, 100000).X + 2*style.FramePadding().X
+		if i > 0 {
+			// space between buttons
+			width += style.ItemSpacing().X
+		}
+	}
+	offset := imgui.ContentRegionAvail().X - width
+	imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 func drawAirportSelector(airports map[string]interface{}, title string) map[string]interface{} {
@@ -397,17 +412,11 @@ func (m *ModalDialogBox) Draw() {
 
 		// First, figure out where to start drawing so the buttons end up right-justified.
 		// https://github.com/ocornut/imgui/discussions/3862
-		width := float32(0)
-		style := imgui.CurrentStyle()
-		for i, b := range buttons {
-			width += imgui.CalcTextSize(b.text, false, 100000).X + 2*style.FramePadding().X
-			if i > 0 {
-				// space between buttons
-				width += style.ItemSpacing().X
-			}
+		var allButtonText []string
+		for _, b := range buttons {
+			allButtonText = append(allButtonText, b.text)
 		}
-		offset := imgui.ContentRegionAvail().X - width
-		imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
+		setCursorForRightButtons(allButtonText)
 
 		for i, b := range buttons {
 			if b.disabled {
