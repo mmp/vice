@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"text/tabwriter"
 	"time"
 
@@ -145,6 +146,7 @@ type CLIPane struct {
 	history       []string
 	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
 	savedInput    string
+	mutex         sync.Mutex
 
 	console           []*ConsoleEntry
 	consoleViewOffset int // lines from the end (for pgup/down)
@@ -203,6 +205,10 @@ func (cli *CLIPane) Deactivate() {
 func (cli *CLIPane) ErrorReported(msg string) {
 	// Remove excess spaces
 	msg = strings.Join(strings.Fields(msg), " ")
+	// Although vice isn't multithreaded, sector file parsing is, so we may
+	// get concurrent calls to this...
+	cli.mutex.Lock()
+	defer cli.mutex.Unlock()
 	cli.errorCount[msg] = cli.errorCount[msg] + 1
 
 	isPow10 := func(v int) bool {
