@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -68,6 +69,8 @@ var (
 		&TimerCommand{},
 		&ToDoCommand{},
 		&TrafficCommand{},
+
+		&EchoCommand{},
 	}
 )
 
@@ -645,10 +648,285 @@ func lookupCommand(n string) Command {
 	return nil
 }
 
-func (cli *CLIPane) runCommand(cmd string) (string, error) {
-	fields := strings.Fields(cmd)
+func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
+	// We'll start by expanding cmd out into individual arguments. The
+	// first step is to split them based on whitespace.
+	initialArgs := strings.Split(cmd, " ")
+
+	// Now we need to patch things up for the builtin functions--the goal
+	// is that if there is a function use like $foo(bar bat) that we turn
+	// it into the entries "$foo", "bar bat" in the result array. Or, for
+	// $foo(), we end up with "$foo", "". Thus, the function expansion
+	// implementations can always assume that whatever was passed to it is
+	// available as a single string in the following argument.
+
+	// $func(arg), all in a single string. Capture groups give the two parts.
+	rsingle := regexp.MustCompile("(^\\$\\w+?)\\((.*)\\)$")
+
+	// $func(arg, with no closing paren. Again two capture groups.
+	ropen := regexp.MustCompile("^(\\$\\w+?)\\((.*)$")
+
+	// ...), closing multi-arg function
+	rclose := regexp.MustCompile("^(.*)\\)$")
+
+	var groupedArgs []string
+	for i := 0; i < len(initialArgs); i++ {
+		arg := initialArgs[i]
+		if len(arg) == 0 /* ?? */ || arg[0] != '$' {
+			groupedArgs = append(groupedArgs, arg)
+			continue
+		}
+
+		fn := ""
+		if m := rsingle.FindStringSubmatch(arg); m != nil {
+			if len(m) != 3 {
+				lg.Errorf("%s -> %+v (length %d, not 3!)", arg, m, len(m))
+			} else {
+				fn = m[1]
+				groupedArgs = append(groupedArgs, m[1], m[2])
+			}
+		} else if m := ropen.FindStringSubmatch(arg); m != nil {
+			if len(m) != 3 {
+				lg.Errorf("%s -> %+v (length %d, not 3!)", arg, m, len(m))
+			} else {
+				fn = m[1]
+				groupedArgs = append(groupedArgs, m[1])
+			}
+
+			funArg := m[2]
+			// Now slurp up args until we reach one with the closing paren.
+			i++
+			for i < len(initialArgs) {
+				arg = initialArgs[i]
+				if m := rclose.FindStringSubmatch(arg); m != nil {
+					if len(m) != 2 {
+						lg.Errorf("%s -> %+v (length %d, not 2!)", arg, m, len(m))
+					} else {
+						funArg += " " + m[1]
+					}
+					break
+				} else {
+					funArg += " " + arg
+				}
+				i++
+			}
+
+			if i == len(initialArgs) {
+				err = fmt.Errorf("%s: no closing parenthesis found after function alias", fn)
+			}
+			groupedArgs = append(groupedArgs, funArg)
+		} else {
+			// it's just a variable
+			groupedArgs = append(groupedArgs, arg)
+		}
+	}
+
+	var finalArgs []string
+	for i := 0; i < len(groupedArgs); i++ {
+		arg := groupedArgs[i]
+		if err != nil {
+			break
+		}
+
+		if len(arg) == 0 || arg[0] != '$' {
+			finalArgs = append(finalArgs, arg)
+			continue
+		}
+
+		// Helper for variables that expand do things based on the selected aircraft.
+		// The provided callback can assume a non-nil *Aircraft...
+		acarg := func(str func(*Aircraft) string) {
+			if positionConfig.selectedAircraft != nil {
+				finalArgs = append(finalArgs, str(positionConfig.selectedAircraft))
+			} else if err == nil {
+				err = fmt.Errorf("%s: unable to expand variable since no aircraft is selected.", arg)
+			}
+		}
+
+		metararg := func(airport string, str func(m *METAR) string) {
+			if m, ok := world.metar[strings.ToUpper(airport)]; ok {
+				finalArgs = append(finalArgs, str(&m))
+			} else if err == nil {
+				err = fmt.Errorf("%s: METAR for airport is not available.", airport)
+			}
+		}
+
+		fixarg := func(fix string, str func(a *Aircraft, pos Point2LL) string) {
+			if positionConfig.selectedAircraft != nil {
+				var pos Point2LL
+				fix = strings.ToUpper(fix)
+				// We'll start with the sector file and then move on to the
+				// FAA database if we don't find it.
+				var ok bool
+				if pos, ok = world.VORs[fix]; ok {
+				} else if pos, ok = world.NDBs[fix]; ok {
+				} else if pos, ok = world.fixes[fix]; ok {
+				} else if pos, ok = world.airports[fix]; ok {
+				} else if n, ok := world.FAA.navaids[fix]; ok {
+					pos = n.location
+				} else if f, ok := world.FAA.fixes[fix]; ok {
+					pos = f.location
+				} else if ap, ok := world.FAA.airports[fix]; ok {
+					pos = ap.location
+				} else {
+					err = fmt.Errorf("%s: fix is unknown.", fix)
+				}
+				if !pos.IsZero() {
+					finalArgs = append(finalArgs, str(positionConfig.selectedAircraft, pos))
+				}
+			} else {
+				err = fmt.Errorf("%s: unable to evaluate function since no aircraft is selected.", arg)
+			}
+		}
+
+		funarg := func() string {
+			i++
+			if i < len(groupedArgs) {
+				return groupedArgs[i]
+			} else if err == nil {
+				err = fmt.Errorf("%s: no argument passed to function", arg)
+			}
+			return ""
+		}
+
+		// These currently all follow VRC/EuroScope..
+		// Missing ones:
+		// Variables: $callsign, $com1, $myrealname, $atiscode
+		// Functions: $type, $radioname, $freq, $atccallsign
+		switch arg[1:] {
+		case "aircraft":
+			acarg(func(ac *Aircraft) string { return ac.flightPlan.callsign })
+
+		case "alt":
+			acarg(func(ac *Aircraft) string {
+				if ac.tempAltitude != 0 {
+					return fmt.Sprintf("%d", ac.tempAltitude)
+				} else {
+					return fmt.Sprintf("%d", ac.flightPlan.altitude)
+				}
+			})
+
+		case "altim":
+			metararg(funarg(), func(m *METAR) string { return m.altimeter })
+
+		case "arr":
+			acarg(func(ac *Aircraft) string { return ac.flightPlan.arrive })
+
+		case "bear":
+			// this currently gives the direction to fix with respect to
+			// the aircraft, so e.g. "Kennedy is to your $bear(kjfk)"
+			fixarg(funarg(), func(ac *Aircraft, p Point2LL) string {
+				heading := headingp2ll(ac.Position(), p, world.MagneticVariation)
+				return compass(heading)
+			})
+
+		case "calt":
+			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.Altitude()) })
+
+		case "cruise":
+			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.flightPlan.altitude) })
+
+		case "dep":
+			acarg(func(ac *Aircraft) string { return ac.flightPlan.depart })
+
+		case "dist":
+			fixarg(funarg(), func(ac *Aircraft, p Point2LL) string {
+				dist := nmdistance2ll(ac.Position(), p)
+				idist := int(dist + 0.5)
+				if idist <= 1 {
+					return "1 mile"
+				} else {
+					return fmt.Sprintf("%d miles", idist)
+				}
+			})
+
+		case "ftime":
+			fa := funarg()
+			if fa == "" {
+				// nothing specified
+				finalArgs = append(finalArgs, time.Now().UTC().Format("15:04:05Z"))
+			} else if minutes, e := strconv.Atoi(fa); e != nil {
+				if err != nil {
+					err = fmt.Errorf("%s: expected integer number of minutes", fa)
+				}
+			} else {
+				dtime := time.Now().Add(time.Duration(minutes) * time.Minute)
+				finalArgs = append(finalArgs, dtime.UTC().Format("15:04:05Z"))
+			}
+
+		case "lc":
+			finalArgs = append(finalArgs, strings.ToLower(funarg()))
+
+		case "metar":
+			metararg(funarg(), func(m *METAR) string { return m.String() })
+
+		case "oclock":
+			fixarg(funarg(), func(ac *Aircraft, p Point2LL) string {
+				heading := headingp2ll(ac.Position(), p, world.MagneticVariation) - ac.Heading()
+				return fmt.Sprintf("%d", headingAsHour(heading))
+			})
+
+		case "route":
+			acarg(func(ac *Aircraft) string { return ac.flightPlan.route })
+
+		case "squawk":
+			acarg(func(ac *Aircraft) string {
+				if ac.assignedSquawk == Squawk(0) {
+					return ac.squawk.String()
+				} else {
+					return ac.assignedSquawk.String()
+				}
+			})
+
+		case "temp":
+			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.tempAltitude) })
+
+		case "time":
+			finalArgs = append(finalArgs, time.Now().UTC().Format("15:04:05Z"))
+
+		case "wind":
+			metararg(funarg(), func(m *METAR) string { return m.wind })
+
+		case "winds":
+			acarg(func(ac *Aircraft) string {
+				var airport, aptype string
+				if ac.OnGround() {
+					airport = strings.ToUpper(ac.flightPlan.depart)
+					aptype = "departure"
+				} else {
+					airport = strings.ToUpper(ac.flightPlan.arrive)
+					aptype = "arrival"
+				}
+
+				if m, ok := world.metar[airport]; ok {
+					return m.wind
+				} else if err == nil {
+					err = fmt.Errorf("%s: METAR for %s airport is not available.", airport, aptype)
+				}
+				return ""
+			})
+
+		case "uc":
+			finalArgs = append(finalArgs, strings.ToUpper(funarg()))
+
+		default:
+			return "", fmt.Errorf("%s: unknown variable", arg)
+		}
+	}
+
+	expanded = strings.Join(finalArgs, " ")
+	return
+}
+
+func (cli *CLIPane) runCommand(enteredText string) (string, error) {
+	expandedText, err := cli.expandVariables(enteredText)
+	if err != nil {
+		return "", err
+	}
+
+	fields := strings.Fields(expandedText)
 	if len(fields) == 0 {
-		lg.Printf("unexpected no fields in command: %s", cmd)
+		lg.Printf("unexpected no fields in command: %s", enteredText)
 		return "", nil
 	}
 
@@ -1673,4 +1951,20 @@ func (*ToDoCommand) Run(cli *CLIPane, args []string) (string, error) {
 	note := strings.Join(args[0:], " ")
 	positionConfig.todos = append(positionConfig.todos, ToDoReminderItem{note: note})
 	return "", nil
+}
+
+type EchoCommand struct{}
+
+func (*EchoCommand) Name() string { return "echo" }
+func (*EchoCommand) Usage() string {
+	return "<message...>"
+}
+func (*EchoCommand) Help() string {
+	return "Prints the parameters given to it."
+}
+func (*EchoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*EchoCommand) Run(cli *CLIPane, args []string) (string, error) {
+	return strings.Join(args[0:], " "), nil
 }
