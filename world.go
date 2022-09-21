@@ -14,6 +14,7 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
@@ -774,15 +775,54 @@ func parseSectorFile(sectorFilename string) (*sct2.SectorFile, error) {
 	if err != nil {
 		return nil, err
 	}
-	errorCallback := func(err string) {
-		lg.Errorf("%s: error parsing sector file: %s", sectorFilename, err)
+
+	type SctResult struct {
+		sf  *sct2.SectorFile
+		err error
 	}
-	sf, err := sct2.Parse(contents, sectorFilename, errorCallback)
-	if err != nil {
-		return nil, err
+	ch := make(chan SctResult)
+	panicStack := ""
+
+	// Parse the sector file in a goroutine so that we can catch any panics, put up
+	// a friendly error message, but continue running.
+	go func() {
+		var err error
+		var sf *sct2.SectorFile
+		defer func() {
+			if perr := recover(); perr != nil {
+				panicStack = string(debug.Stack())
+				lg.Errorf("Panic stack: %s", panicStack)
+				err = fmt.Errorf("sct2.Parse panicked: %v", perr)
+			}
+
+			// Use a channel for the result so that we wait for the
+			// goroutine to finish.
+			if err != nil {
+				ch <- SctResult{err: err}
+			} else {
+				ch <- SctResult{sf: sf}
+			}
+
+			close(ch)
+		}()
+
+		errorCallback := func(err string) {
+			lg.Errorf("%s: error parsing sector file: %s", sectorFilename, err)
+		}
+		sf, err = sct2.Parse(contents, sectorFilename, errorCallback)
+	}()
+
+	r := <-ch
+
+	if panicStack != "" {
+		// Have to do this here so that it's in the main thread...
+		ShowFatalErrorDialog("Unfortunately an unexpected error has occurred while parsing the sector file:\n" +
+			sectorFilename + "\n" +
+			"Apologies! Please do file a bug and include the vice.log file for this session\nso that " +
+			"this bug can be fixed.")
 	}
 
-	return sf, nil
+	return r.sf, r.err
 }
 
 func parsePositionFile(filename string) (map[string][]Position, error) {
