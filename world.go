@@ -302,6 +302,11 @@ func (w *World) LoadSectorFile(filename string) error {
 
 	w.regionColorMap = MakeColorMap()
 	for _, r := range sectorFile.Regions {
+		if len(r.P) == 0 {
+			lg.Printf("zero vertices in region \"%s\"?", r.Name)
+			continue
+		}
+
 		var poly earcut.Polygon
 		for _, p := range r.P {
 			v := earcut.Vertex{P: [2]float64{p.Longitude, p.Latitude}}
