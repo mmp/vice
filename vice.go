@@ -61,7 +61,7 @@ func main() {
 	defer func() {
 		if err := recover(); err != nil {
 			lg.Errorf("Panic stack: %s", string(debug.Stack()))
-			ShowFatalErrorDialog("Unfortunately an unexpected error has occured and vice is unable to recover.\n"+
+			ShowFatalErrorDialog("Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 				"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 				"this bug can be fixed.\n\nError: %v", err)
 		}
