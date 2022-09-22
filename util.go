@@ -9,10 +9,14 @@ import (
 	"golang.org/x/exp/constraints"
 	"math"
 	"sort"
+	"strings"
 	"unicode"
 
 	"github.com/klauspost/compress/zstd"
 )
+
+///////////////////////////////////////////////////////////////////////////
+// decompression
 
 var decoder, _ = zstd.NewReader(nil, zstd.WithDecoderConcurrency(0))
 
@@ -23,6 +27,9 @@ func decompressZstd(s string) string {
 	}
 	return string(b)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// text
 
 func detabify(s string) string {
 	var result strings.Builder
@@ -90,6 +97,31 @@ func wrapText(s string, columnLimit int, indent int) (string, int) {
 	return result.String(), lines
 }
 
+func stopShouting(orig string) string {
+	var s strings.Builder
+	wsLast := true
+	for _, ch := range orig {
+		if unicode.IsSpace(ch) {
+			wsLast = true
+		} else if unicode.IsLetter(ch) {
+			if wsLast {
+				// leave it alone
+				wsLast = false
+			} else {
+				ch = unicode.ToLower(ch)
+			}
+		}
+
+		// otherwise leave it alone
+
+		s.WriteRune(ch)
+	}
+	return s.String()
+}
+
+///////////////////////////////////////////////////////////////////////////
+// core math
+
 func argmin(v ...float32) int {
 	minval := v[0]
 	minidx := 0
@@ -142,6 +174,56 @@ func sign(v float32) float32 {
 	}
 	return 0
 }
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func fabs(x float32) float32 {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func min(a, b float32) float32 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func max(a, b float32) float32 {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func pow(a, b float32) float32 {
+	return float32(math.Pow(float64(a), float64(b)))
+}
+
+func sqr(v float32) float32 { return v * v }
+
+func clamp(x float32, low float32, high float32) float32 {
+	if x < low {
+		return low
+	} else if x > high {
+		return high
+	}
+	return x
+}
+
+func lerp(x, a, b float32) float32 {
+	return (1-x)*a + x*b
+}
+
+///////////////////////////////////////////////////////////////////////////
+// headings and directions
 
 func headingp2ll(from Point2LL, to Point2LL, magCorrection float32) float32 {
 	v := Point2LL{to[0] - from[0], to[1] - from[1]}
@@ -203,54 +285,8 @@ func headingAsHour(heading float32) int {
 	return 1 + int(heading/30)
 }
 
-func stopShouting(orig string) string {
-	var s string
-	wsLast := true
-	for _, ch := range orig {
-		if unicode.IsSpace(ch) {
-			wsLast = true
-		} else if unicode.IsLetter(ch) {
-			if wsLast {
-				// leave it alone
-				wsLast = false
-			} else {
-				ch = unicode.ToLower(ch)
-			}
-		}
-		// otherwise leave it alone
-
-		s += string(ch)
-	}
-	return s
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
-func fabs(x float32) float32 {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
-func min(a, b float32) float32 {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func max(a, b float32) float32 {
-	if a > b {
-		return a
-	}
-	return b
-}
+///////////////////////////////////////////////////////////////////////////
+// Extent2D
 
 type Extent2D struct {
 	p0, p1 [2]float32
@@ -357,6 +393,32 @@ func (e Extent2D) Offset(p [2]float32) Extent2D {
 	return Extent2D{p0: add2f(e.p0, p), p1: add2f(e.p1, p)}
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Geometry
+
+func LineLineIntersect(p1f, p2f, p3f, p4f [2]float32) ([2]float32, bool) {
+	// It's important to do this in float64, given differences of
+	// similar-ish values...
+	p1 := [2]float64{float64(p1f[0]), float64(p1f[1])}
+	p2 := [2]float64{float64(p2f[0]), float64(p2f[1])}
+	p3 := [2]float64{float64(p3f[0]), float64(p3f[1])}
+	p4 := [2]float64{float64(p4f[0]), float64(p4f[1])}
+
+	d12 := [2]float64{p1[0] - p2[0], p1[1] - p2[1]}
+	d34 := [2]float64{p3[0] - p4[0], p3[1] - p4[1]}
+	denom := d12[0]*d34[1] - d12[1]*d34[0]
+	if math.Abs(denom) < 1e-5 { // TODO: threshold?
+		return [2]float32{}, false
+	}
+	numx := (p1[0]*p2[1]-p1[1]*p2[0])*(p3[0]-p4[0]) - (p1[0]-p2[0])*(p3[0]*p4[1]-p3[1]*p4[0])
+	numy := (p1[0]*p2[1]-p1[1]*p2[0])*(p3[1]-p4[1]) - (p1[1]-p2[1])*(p3[0]*p4[1]-p3[1]*p4[0])
+
+	return [2]float32{float32(numx / denom), float32(numy / denom)}, true
+}
+
+///////////////////////////////////////////////////////////////////////////
+// RGB
+
 type RGB struct {
 	R, G, B float32
 }
@@ -365,20 +427,8 @@ func (r RGB) Equals(other RGB) bool {
 	return r.R == other.R && r.G == other.G && r.B == other.B
 }
 
-func pow(a, b float32) float32 {
-	return float32(math.Pow(float64(a), float64(b)))
-}
-
-func sqr(v float32) float32 { return v * v }
-
-func clamp(x float32, low float32, high float32) float32 {
-	if x < low {
-		return low
-	} else if x > high {
-		return high
-	}
-	return x
-}
+///////////////////////////////////////////////////////////////////////////
+// Point2LL
 
 // Important: 0 (x) is longitude, 1 (y) is latitude
 type Point2LL [2]float32
@@ -415,42 +465,6 @@ func (p Point2LL) String() string {
 
 func (p Point2LL) IsZero() bool {
 	return p[0] == 0 && p[1] == 0
-}
-
-func add2f(a [2]float32, b [2]float32) [2]float32 {
-	return [2]float32{a[0] + b[0], a[1] + b[1]}
-}
-
-func mid2f(a [2]float32, b [2]float32) [2]float32 {
-	return scale2f(add2f(a, b), 0.5)
-}
-
-func sub2f(a [2]float32, b [2]float32) [2]float32 {
-	return [2]float32{a[0] - b[0], a[1] - b[1]}
-}
-
-func scale2f(a [2]float32, s float32) [2]float32 {
-	return [2]float32{s * a[0], s * a[1]}
-}
-
-func lerp2f(x float32, a [2]float32, b [2]float32) [2]float32 {
-	return [2]float32{(1-x)*a[0] + x*b[0], (1-x)*a[1] + x*b[1]}
-}
-
-func length2f(v [2]float32) float32 {
-	return sqrt(v[0]*v[0] + v[1]*v[1])
-}
-
-func distance2f(a [2]float32, b [2]float32) float32 {
-	return length2f(sub2f(a, b))
-}
-
-// clockwise
-func rotator2f(angle float32) func([2]float32) [2]float32 {
-	s, c := sin(radians(angle)), cos(radians(angle))
-	return func(p [2]float32) [2]float32 {
-		return [2]float32{c*p[0] + s*p[1], -s*p[0] + c*p[1]}
-	}
 }
 
 func normalize2f(a Point2LL) [2]float32 {
@@ -513,6 +527,48 @@ func normalize2ll(a Point2LL) Point2LL {
 	return scale2ll(a, 1/l)
 }
 
+///////////////////////////////////////////////////////////////////////////
+// point 2f
+
+func add2f(a [2]float32, b [2]float32) [2]float32 {
+	return [2]float32{a[0] + b[0], a[1] + b[1]}
+}
+
+func mid2f(a [2]float32, b [2]float32) [2]float32 {
+	return scale2f(add2f(a, b), 0.5)
+}
+
+func sub2f(a [2]float32, b [2]float32) [2]float32 {
+	return [2]float32{a[0] - b[0], a[1] - b[1]}
+}
+
+func scale2f(a [2]float32, s float32) [2]float32 {
+	return [2]float32{s * a[0], s * a[1]}
+}
+
+func lerp2f(x float32, a [2]float32, b [2]float32) [2]float32 {
+	return [2]float32{(1-x)*a[0] + x*b[0], (1-x)*a[1] + x*b[1]}
+}
+
+func length2f(v [2]float32) float32 {
+	return sqrt(v[0]*v[0] + v[1]*v[1])
+}
+
+func distance2f(a [2]float32, b [2]float32) float32 {
+	return length2f(sub2f(a, b))
+}
+
+// clockwise
+func rotator2f(angle float32) func([2]float32) [2]float32 {
+	s, c := sin(radians(angle)), cos(radians(angle))
+	return func(p [2]float32) [2]float32 {
+		return [2]float32{c*p[0] + s*p[1], -s*p[0] + c*p[1]}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// generics
+
 func Map[T, V any](ts []T, fn func(T) V) []V {
 	result := make([]V, len(ts))
 	for i, t := range ts {
@@ -544,24 +600,4 @@ func SortedMapKeysPred[K comparable, V any](m map[K]V, pred func(a *K, b *K) boo
 	}
 	sort.Slice(keys, func(i, j int) bool { return pred(&keys[i], &keys[j]) })
 	return keys
-}
-
-func LineLineIntersect(p1f, p2f, p3f, p4f [2]float32) ([2]float32, bool) {
-	// It's important to do this in float64, given differences of
-	// similar-ish values...
-	p1 := [2]float64{float64(p1f[0]), float64(p1f[1])}
-	p2 := [2]float64{float64(p2f[0]), float64(p2f[1])}
-	p3 := [2]float64{float64(p3f[0]), float64(p3f[1])}
-	p4 := [2]float64{float64(p4f[0]), float64(p4f[1])}
-
-	d12 := [2]float64{p1[0] - p2[0], p1[1] - p2[1]}
-	d34 := [2]float64{p3[0] - p4[0], p3[1] - p4[1]}
-	denom := d12[0]*d34[1] - d12[1]*d34[0]
-	if math.Abs(denom) < 1e-5 { // TODO: threshold?
-		return [2]float32{}, false
-	}
-	numx := (p1[0]*p2[1]-p1[1]*p2[0])*(p3[0]-p4[0]) - (p1[0]-p2[0])*(p3[0]*p4[1]-p3[1]*p4[0])
-	numy := (p1[0]*p2[1]-p1[1]*p2[0])*(p3[1]-p4[1]) - (p1[1]-p2[1])*(p3[0]*p4[1]-p3[1]*p4[0])
-
-	return [2]float32{float32(numx / denom), float32(numy / denom)}, true
 }
