@@ -24,6 +24,72 @@ func decompressZstd(s string) string {
 	return string(b)
 }
 
+func detabify(s string) string {
+	var result strings.Builder
+	column := 0
+	for _, ch := range s {
+		if ch == '\t' {
+			for {
+				result.WriteRune(' ')
+				column++
+				if column%8 == 0 {
+					break
+				}
+			}
+		} else {
+			result.WriteRune(ch)
+			if ch == '\n' {
+				column = 0
+			}
+		}
+	}
+
+	return result.String()
+}
+
+func wrapText(s string, columnLimit int, indent int) (string, int) {
+	var accum, result strings.Builder
+
+	var wrapLine bool
+	column := 0
+	lines := 1
+
+	flush := func() {
+		if wrapLine && column > columnLimit {
+			result.WriteRune('\n')
+			lines++
+			for i := 0; i < indent; i++ {
+				result.WriteRune(' ')
+			}
+			column = indent + accum.Len()
+		}
+		result.WriteString(accum.String())
+		accum.Reset()
+	}
+
+	for _, ch := range s {
+		// If the line starts with a space, assume it is preformatted and
+		// just pass it through unchanged.
+		if column == 0 {
+			wrapLine = ch != ' '
+		}
+
+		accum.WriteRune(ch)
+		column++
+
+		if ch == '\n' {
+			flush()
+			column = 0
+			lines++
+		} else if ch == ' ' {
+			flush()
+		}
+	}
+
+	flush()
+	return result.String(), lines
+}
+
 func argmin(v ...float32) int {
 	minval := v[0]
 	minidx := 0
