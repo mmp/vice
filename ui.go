@@ -7,9 +7,12 @@ package main
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
+	"runtime/debug"
 	"strings"
 	"time"
 	"unicode"
@@ -44,6 +47,7 @@ var (
 		saveChangedDialog       *ModalDialogBox
 		errorDialog             *ModalDialogBox
 		confirmDisconnectDialog *ModalDialogBox
+		newReleaseDialog        *ModalDialogBox
 
 		openSectorFileDialog   *FileSelectDialogBox
 		openPositionFileDialog *FileSelectDialogBox
@@ -95,6 +99,11 @@ func uiInit(renderer Renderer) {
 	ui.newFromCurrentDialog = NewModalDialogBox(&NewModalClient{isBrandNew: false})
 	ui.renameDialog = NewModalDialogBox(&RenameModalClient{})
 	ui.deleteDialog = NewModalDialogBox(&DeleteModalClient{})
+
+	if nrc := checkForNewRelease(); nrc != nil {
+		ui.newReleaseDialog = NewModalDialogBox(nrc)
+		ui.newReleaseDialog.Activate()
+	}
 
 	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
 		func(filename string) {
@@ -265,14 +274,15 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	ui.renameDialog.Draw()
 	ui.deleteDialog.Draw()
 
+	if ui.newReleaseDialog != nil {
+		ui.newReleaseDialog.Draw()
+	}
 	if ui.errorDialog != nil {
 		ui.errorDialog.Draw()
 	}
-
 	if ui.saveChangedDialog != nil {
 		ui.saveChangedDialog.Draw()
 	}
-
 	if ui.confirmDisconnectDialog != nil {
 		ui.confirmDisconnectDialog.Draw()
 	}
@@ -886,6 +896,103 @@ func (yn *YesOrNoModalClient) Buttons() []ModalDialogButton {
 
 func (yn *YesOrNoModalClient) Draw() int {
 	imgui.Text(yn.query)
+	return -1
+}
+
+func checkForNewRelease() *NewReleaseModalClient {
+	url := "https://api.github.com/repos/mmp/vice/releases"
+
+	resp, err := http.Get(url)
+	if err != nil {
+		lg.Errorf("%s: get err: %v", url, err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	type Release struct {
+		TagName string    `json:"tag_name"`
+		Created time.Time `json:"created_at"`
+	}
+
+	decoder := json.NewDecoder(resp.Body)
+	var releases []Release
+	if err := decoder.Decode(&releases); err != nil {
+		lg.Errorf("JSON decode error: %v", err)
+		return nil
+	}
+	if len(releases) == 0 {
+		return nil
+	}
+
+	newestRelease := releases[0]
+	for i := range releases {
+		if releases[i].Created.After(newestRelease.Created) {
+			newestRelease = releases[i]
+		}
+	}
+
+	lg.Printf("newest release found: %v", newestRelease)
+
+	buildTime := ""
+	if bi, ok := debug.ReadBuildInfo(); !ok {
+		lg.Errorf("unable to read build info")
+		return nil
+	} else {
+		for _, setting := range bi.Settings {
+			if setting.Key == "vcs.time" {
+				buildTime = setting.Value
+				break
+			}
+		}
+
+		if buildTime == "" {
+			lg.Errorf("build time unavailable in BuildInfo.Settings")
+			return nil
+		}
+	}
+
+	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
+		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
+		return nil
+	} else if bt.UTC().After(newestRelease.Created.UTC()) {
+		lg.Printf("build time %s newest release %s -> build is newer",
+			bt.UTC().String(), newestRelease.Created.UTC().String())
+		return nil
+	} else {
+		lg.Printf("build time %s newest release %s -> release is newer",
+			bt.UTC().String(), newestRelease.Created.UTC().String())
+		return &NewReleaseModalClient{
+			version: newestRelease.TagName,
+			date:    newestRelease.Created}
+	}
+}
+
+type NewReleaseModalClient struct {
+	version string
+	date    time.Time
+}
+
+func (nr *NewReleaseModalClient) Title() string {
+	return "A new vice release is available"
+}
+func (nr *NewReleaseModalClient) Opening() {}
+
+func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Quit and update",
+			action: func() bool {
+				browser.OpenURL("https://vice.pharr.org/documentation#section-installation")
+				os.Exit(0)
+				return true
+			},
+		},
+		ModalDialogButton{text: "Update later"}}
+}
+
+func (nr *NewReleaseModalClient) Draw() int {
+	imgui.Text(fmt.Sprintf("vice version %s is the latest version", nr.version))
+	imgui.Text("Would you like to quit and open the vice downloads page?")
 	return -1
 }
 
