@@ -683,21 +683,20 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 			continue
 		}
 
-		fn := ""
 		if m := rsingle.FindStringSubmatch(arg); m != nil {
 			if len(m) != 3 {
 				lg.Errorf("%s -> %+v (length %d, not 3!)", arg, m, len(m))
 			} else {
-				fn = m[1]
 				groupedArgs = append(groupedArgs, m[1], m[2])
 			}
 		} else if m := ropen.FindStringSubmatch(arg); m != nil {
 			if len(m) != 3 {
 				lg.Errorf("%s -> %+v (length %d, not 3!)", arg, m, len(m))
-			} else {
-				fn = m[1]
-				groupedArgs = append(groupedArgs, m[1])
+				continue
 			}
+
+			fn := m[1]
+			groupedArgs = append(groupedArgs, m[1])
 
 			funArg := m[2]
 			// Now slurp up args until we reach one with the closing paren.
