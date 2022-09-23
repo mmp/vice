@@ -729,10 +729,10 @@ func (v *VATSIMServer) handleFP(sender string, args []string) error {
 
 	fp.actype = args[2]
 
-	if gs, err := strconv.ParseInt(args[3], 10, 32); err != nil {
+	if gs, err := strconv.Atoi(args[3]); err != nil {
 		return MalformedMessageError{"Unable to parse groundspeed: " + args[3]}
 	} else {
-		fp.groundspeed = int(gs)
+		fp.groundspeed = gs
 	}
 
 	fp.depart = args[4]
@@ -975,7 +975,7 @@ func (v *VATSIMServer) handleAt(args []string) error {
 		return err
 	}
 
-	var altitude, groundspeed int64
+	var altitude, groundspeed int
 	var surfaces uint64
 
 	latlong, err := parseLatitudeLongitude(args[4], args[5])
@@ -983,16 +983,16 @@ func (v *VATSIMServer) handleAt(args []string) error {
 		return err
 	}
 
-	if altitude, err = strconv.ParseInt(args[6], 10, 32); err != nil {
+	if altitude, err = strconv.Atoi(args[6]); err != nil {
 		return MalformedMessageError{"Error parsing altitude in update: " + args[6]}
 	}
-	if groundspeed, err = strconv.ParseInt(args[7], 10, 32); err != nil {
+	if groundspeed, err = strconv.Atoi(args[7]); err != nil {
 		return MalformedMessageError{"Error parsing ground speed in update: " + args[7]}
 	}
 	if surfaces, err = strconv.ParseUint(args[8], 10, 64); err != nil {
 		return MalformedMessageError{"Error parsing flight surfaces in update: " + args[8]}
 	}
-	if _, err = strconv.ParseInt(args[9], 10, 32); err != nil {
+	if _, err = strconv.Atoi(args[9]); err != nil {
 		// args[9] is a pressure delta: altitude + pressure gives pressure
 		// altitude (currently ignored--is this what we should be reporting
 		// on the scope, though?)
@@ -1033,7 +1033,7 @@ func (v *VATSIMServer) handlePct(args []string) error {
 		return err
 	}
 
-	facility, err := strconv.ParseInt(args[2], 10, 32)
+	facility, err := strconv.Atoi(args[2])
 	if err != nil {
 		return MalformedMessageError{"Malformed facility: " + args[2]}
 	}
@@ -1041,7 +1041,7 @@ func (v *VATSIMServer) handlePct(args []string) error {
 		return MalformedMessageError{"Invalid facility index: " + args[2]}
 	}
 
-	scopeRange, err := strconv.ParseInt(args[3], 10, 32)
+	scopeRange, err := strconv.Atoi(args[3])
 	if err != nil {
 		return MalformedMessageError{"Invalid scope range: " + args[3]}
 	}
@@ -1060,7 +1060,7 @@ func (v *VATSIMServer) handlePct(args []string) error {
 		callsign:   callsign,
 		facility:   Facility(facility),
 		frequency:  frequency,
-		scopeRange: int(scopeRange),
+		scopeRange: scopeRange,
 		rating:     rating,
 		location:   latlong}
 
@@ -1070,7 +1070,7 @@ func (v *VATSIMServer) handlePct(args []string) error {
 }
 
 func parseRating(s string) (NetworkRating, error) {
-	if rating, err := strconv.ParseInt(s, 10, 32); err != nil {
+	if rating, err := strconv.Atoi(s); err != nil {
 		return UndefinedRating, MalformedMessageError{"Invalid rating: " + s}
 	} else if rating < 0 || rating > AdministratorRating {
 		return UndefinedRating, MalformedMessageError{"Invalid rating: " + s}
@@ -1080,7 +1080,7 @@ func parseRating(s string) (NetworkRating, error) {
 }
 
 func parseFrequency(s string) (Frequency, error) {
-	if frequency, err := strconv.ParseInt(s, 10, 32); err != nil {
+	if frequency, err := strconv.Atoi(s); err != nil {
 		return 0, MalformedMessageError{"Invalid frequency: " + s}
 	} else {
 		return Frequency(100 + float32(frequency)/1000.), nil
@@ -1107,10 +1107,10 @@ func (v *VATSIMServer) assignAltitude(strs []string, csIndex int, altIndex int) 
 	}
 
 	callsign := strs[csIndex]
-	if alt, err := strconv.ParseInt(strs[altIndex], 10, 32); err != nil {
+	if alt, err := strconv.Atoi(strs[altIndex]); err != nil {
 		return MalformedMessageError{"invalid altitude: " + strs[altIndex]}
 	} else {
-		v.client.AltitudeAssigned(callsign, int(alt))
+		v.client.AltitudeAssigned(callsign, alt)
 		return nil
 	}
 }
@@ -1121,10 +1121,10 @@ func (v *VATSIMServer) assignTemporaryAltitude(strs []string, csIndex int, altIn
 	}
 
 	callsign := strs[csIndex]
-	if alt, err := strconv.ParseInt(strs[altIndex], 10, 32); err != nil {
+	if alt, err := strconv.Atoi(strs[altIndex]); err != nil {
 		return MalformedMessageError{"invalid temporary altitude: " + strs[altIndex]}
 	} else {
-		v.client.TemporaryAltitudeAssigned(callsign, int(alt))
+		v.client.TemporaryAltitudeAssigned(callsign, alt)
 		return nil
 	}
 }
