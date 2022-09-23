@@ -496,7 +496,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
 		// Delete char before the cursor
 		if cli.cursor > 0 {
-			if cli.cursor < len(cli.input)-1 {
+			if cli.cursor < len(cli.input) {
 				copy(cli.input[cli.cursor-1:], cli.input[cli.cursor:])
 			}
 			cli.input = cli.input[:len(cli.input)-1]
