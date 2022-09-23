@@ -558,20 +558,12 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext) []*DrawList {
 ///////////////////////////////////////////////////////////////////////////
 // NotesViewPane
 
-type NotesViewItem struct {
-	Note    *Note
-	Visible bool
-}
-
 type NotesViewPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
-	Items []NotesViewItem
-
-	selectedRow    int
-	dragStartIndex int
-	dragCopy       []NotesViewItem
+	expanded     map[*NotesNode]interface{}
+	scrollOffset int
 
 	td TextDrawable
 	dl DrawList
@@ -579,7 +571,10 @@ type NotesViewPane struct {
 
 func NewNotesViewPane() *NotesViewPane {
 	font := GetDefaultFont()
-	return &NotesViewPane{FontIdentifier: font.id, font: font}
+	return &NotesViewPane{
+		FontIdentifier: font.id,
+		font:           font,
+		expanded:       make(map[*NotesNode]interface{})}
 }
 
 func (nv *NotesViewPane) Activate(cs *ColorScheme) {
@@ -587,7 +582,7 @@ func (nv *NotesViewPane) Activate(cs *ColorScheme) {
 		nv.font = GetDefaultFont()
 		nv.FontIdentifier = nv.font.id
 	}
-	nv.selectedRow = -1
+	nv.expanded = make(map[*NotesNode]interface{})
 }
 
 func (nv *NotesViewPane) Deactivate() {}
@@ -595,91 +590,13 @@ func (nv *NotesViewPane) Deactivate() {}
 func (nv *NotesViewPane) Update(updates *WorldUpdates) {}
 
 func (nv *NotesViewPane) Duplicate(nameAsCopy bool) Pane {
-	n := &NotesViewPane{FontIdentifier: nv.FontIdentifier, font: nv.font}
-	n.Items = make([]NotesViewItem, len(nv.Items))
-	copy(n.Items, nv.Items)
-	return n
+	return &NotesViewPane{
+		FontIdentifier: nv.FontIdentifier,
+		font:           nv.font,
+		expanded:       make(map[*NotesNode]interface{})}
 }
 
 func (nv *NotesViewPane) DrawUI() {
-	// Following @unpacklo, https://gist.github.com/unpacklo/f4af1d688237a7d367f9
-	hovered := -1
-	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV // | imgui.TableFlagsRowBg
-	if imgui.BeginTableV(fmt.Sprintf("NotesView##%p", nv), 2, flags, imgui.Vec2{}, 0.0) {
-		imgui.TableSetupColumnV("Title", imgui.TableColumnFlagsWidthStretch, 0., 0)
-		imgui.TableSetupColumnV("Visible", imgui.TableColumnFlagsWidthFixed, 20., 0)
-		for i, item := range nv.Items {
-			imgui.TableNextColumn()
-			selFlags := imgui.SelectableFlagsSpanAllColumns
-			if imgui.SelectableV(item.Note.Title, i == nv.selectedRow, selFlags, imgui.Vec2{}) {
-				nv.selectedRow = i
-			}
-			imgui.SetItemAllowOverlap() // don't let the selectable steal the checkbox's clicks
-			if imgui.IsItemHoveredV(imgui.HoveredFlagsRectOnly) {
-				hovered = i
-			}
-
-			imgui.TableNextColumn()
-			imgui.Checkbox(fmt.Sprintf("##Active%d", i), &nv.Items[i].Visible)
-			imgui.TableNextRow()
-		}
-
-		if hovered != -1 {
-			if imgui.IsMouseDragging(0, 1.) {
-				// reorder list
-				//lg.Printf("reorder %d -> %d", nv.dragStartIndex, hovered)
-
-				item := nv.Items[nv.dragStartIndex]
-				if hovered < nv.dragStartIndex {
-					// number moving
-					n := nv.dragStartIndex - hovered
-					// move forward one
-					copy(nv.Items[hovered+1:], nv.Items[hovered:hovered+n])
-				} else if hovered > nv.dragStartIndex {
-					// number moving
-					n := hovered - nv.dragStartIndex
-					// move back one
-					copy(nv.Items[nv.dragStartIndex:nv.dragStartIndex+n], nv.Items[nv.dragStartIndex+1:])
-				}
-				nv.Items[hovered] = item
-				nv.dragStartIndex = hovered
-			} else if imgui.IsMouseDown(0) {
-				// drag logic
-				//lg.Printf("drag %d", hovered)
-				nv.dragStartIndex = hovered
-				nv.dragCopy = make([]NotesViewItem, len(nv.Items))
-				copy(nv.dragCopy, nv.Items)
-			}
-		}
-		imgui.EndTable()
-	}
-
-	if imgui.BeginCombo("Add note", "") {
-		notes := globalConfig.NotesSortedByTitle()
-		for _, n := range notes {
-			if imgui.Selectable(n.Title) {
-				nv.Items = append(nv.Items, NotesViewItem{Note: n, Visible: false})
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	disableRemove := nv.selectedRow == -1 || nv.selectedRow >= len(nv.Items)
-	if disableRemove {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
-	if imgui.Button("Remove") {
-		if nv.selectedRow < len(nv.Items)-1 {
-			copy(nv.Items[nv.selectedRow:], nv.Items[nv.selectedRow+1:])
-		}
-		nv.Items = nv.Items[:len(nv.Items)-1]
-	}
-	if disableRemove {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
-
 	if newFont, changed := DrawFontPicker(&nv.FontIdentifier, "Font"); changed {
 		nv.font = newFont
 	}
@@ -688,23 +605,115 @@ func (nv *NotesViewPane) DrawUI() {
 func (nv *NotesViewPane) Name() string { return "Notes View" }
 
 func (nv *NotesViewPane) Draw(ctx *PaneContext) []*DrawList {
-	s := ""
-	for _, item := range nv.Items {
-		if !item.Visible {
-			continue
+	nv.dl.Reset()
+	nv.td.Reset()
+
+	textStyle := TextStyle{font: nv.font, color: ctx.cs.Text}
+	headerStyle := TextStyle{font: nv.font, color: ctx.cs.TextHighlight}
+
+	edgeSpace := nv.font.size / 2
+	lineHeight := nv.font.size + 1
+	y0 := int(ctx.paneExtent.Height()) - edgeSpace
+	y0 += nv.scrollOffset * lineHeight
+	y := y0
+
+	spaceWidth, _ := nv.font.BoundText(" ", 0)
+	scrollbarWidth := float32(spaceWidth / 2)
+	columns := int(ctx.paneExtent.Width()-float32(2*edgeSpace)-scrollbarWidth) / spaceWidth
+
+	var draw func(*NotesNode, int)
+	draw = func(node *NotesNode, depth int) {
+		if node == nil {
+			return
 		}
-		// Indent each line by two spaces
-		lines := strings.Split(item.Note.Contents, "\n")
-		contents := "  " + strings.Join(lines, "\n  ")
-		s += item.Note.Title + "\n" + contents + "\n\n"
+
+		indent := edgeSpace + (depth-1)*spaceWidth
+		if node.title != "" {
+			_, expanded := nv.expanded[node]
+
+			hovered := func() bool {
+				return ctx.mouse != nil && ctx.mouse.pos[1] < float32(y) && ctx.mouse.pos[1] >= float32(y-lineHeight)
+			}
+			mouseReleased := func() bool {
+				return hovered() && ctx.mouse.released[0]
+			}
+
+			if hovered() {
+				rect := LinesDrawable{}
+				width := ctx.paneExtent.Width() - scrollbarWidth - 3*float32(edgeSpace)
+				rect.AddPolyline([2]float32{float32(edgeSpace) / 2, float32(y)}, ctx.cs.Text,
+					[][2]float32{[2]float32{0, 0},
+						[2]float32{width, 0},
+						[2]float32{width, float32(-lineHeight)},
+						[2]float32{0, float32(-lineHeight)}})
+				nv.dl.lines = append(nv.dl.lines, rect)
+			}
+			if mouseReleased() {
+				if expanded {
+					delete(nv.expanded, node)
+				} else {
+					nv.expanded[node] = nil
+				}
+				expanded = !expanded
+			}
+
+			title := ""
+			if expanded {
+				title = FontAwesomeIconCaretDown + node.title
+			} else {
+				title = FontAwesomeIconCaretRight + node.title
+			}
+			text, lines := wrapText(title, columns, 4)
+			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, headerStyle)
+			y -= lines * lineHeight
+
+			if !expanded {
+				return
+			}
+		}
+		for _, line := range node.text {
+			text, lines := wrapText(line, columns, 4)
+			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, textStyle)
+			y -= lines * lineHeight
+		}
+		for _, child := range node.children {
+			draw(child, depth+1)
+		}
+	}
+	draw(globalConfig.notesRoot, 0)
+
+	// Draw the scrollbar (maybe)
+	if nv.scrollOffset > 0 || y < edgeSpace {
+		// [y0,y1] is the full range of scanlines drawn
+		y1 := y
+		// [vy0,vy1] is the range of scanlines visible
+		vy0, vy1 := int(ctx.paneExtent.Height())-edgeSpace, edgeSpace
+		// [fy0,fy1] is the range of scanlines visible w.r.t. [0,1]
+		fy0, fy1 := float32(vy0-y0)/float32(y1-y0), float32(vy1-y0)/float32(y1-y0)
+		// [by0,by1] is the y extent of the scrollbar in window coordinates
+		by0, by1 := lerp(fy0, float32(vy0), float32(vy1)), lerp(fy1, float32(vy0), float32(vy1))
+
+		rect := LinesDrawable{}
+		rect.AddPolyline([2]float32{ctx.paneExtent.Width() - scrollbarWidth - float32(edgeSpace), by0}, ctx.cs.Text,
+			[][2]float32{[2]float32{0, 0}, [2]float32{scrollbarWidth, 0},
+				[2]float32{scrollbarWidth, by1 - by0}, [2]float32{0, by1 - by0}})
+		nv.dl.lines = append(nv.dl.lines, rect)
 	}
 
-	nv.td.Reset()
-	sz2 := float32(nv.font.size) / 2
-	nv.td.AddText(s, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
-		TextStyle{font: nv.font, color: ctx.cs.Text})
+	if ctx.mouse != nil {
+		ds := int(ctx.mouse.wheel[1])
+		nv.scrollOffset += ds
+		y += ds * lineHeight
+	}
 
-	nv.dl.Reset()
+	// Clamp scroll offset to prevent excess whitespace at top or bottom
+	if nv.scrollOffset > 0 && y > edgeSpace+lineHeight {
+		nv.scrollOffset -= (y - edgeSpace) / lineHeight
+	}
+	if nv.scrollOffset < 0 {
+		nv.scrollOffset = 0
+	}
+
 	nv.dl.AddText(nv.td)
 	nv.dl.clear = true
 	nv.dl.clearColor = ctx.cs.Background

@@ -29,6 +29,8 @@ var (
 	FontAwesomeIconArrowUp     = faUsedIcons["ArrowUp"]
 	FontAwesomeIconArrowDown   = faUsedIcons["ArrowDown"]
 	FontAwesomeIconBug         = faUsedIcons["Bug"]
+	FontAwesomeIconCaretDown   = faUsedIcons["CaretDown"]
+	FontAwesomeIconCaretRight  = faUsedIcons["CaretRight"]
 	FontAwesomeIconCopyright   = faUsedIcons["Copyright"]
 	FontAwesomeIconFile        = faUsedIcons["File"]
 	FontAwesomeIconFolder      = faUsedIcons["Folder"]
@@ -50,6 +52,8 @@ var (
 		"ArrowDown":   FontAwesomeString("ArrowDown"),
 		"ArrowUp":     FontAwesomeString("ArrowUp"),
 		"Bug":         FontAwesomeString("Bug"),
+		"CaretDown":   FontAwesomeString("CaretDown"),
+		"CaretRight":  FontAwesomeString("CaretRight"),
 		"Copyright":   FontAwesomeString("Copyright"),
 		"File":        FontAwesomeString("File"),
 		"Folder":      FontAwesomeString("Folder"),

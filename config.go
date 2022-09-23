@@ -12,7 +12,6 @@ import (
 	"io"
 	"os"
 	"path"
-	"sort"
 	"strings"
 	"time"
 
@@ -23,6 +22,7 @@ import (
 type GlobalConfig struct {
 	SectorFile   string
 	PositionFile string
+	NotesFile    string
 
 	PositionConfigs       map[string]*PositionConfig
 	ActivePosition        string
@@ -31,7 +31,14 @@ type GlobalConfig struct {
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 	AudioSettings         AudioSettings
-	Notes                 map[NoteID]*Note
+
+	notesRoot *NotesNode
+}
+
+type NotesNode struct {
+	title    string
+	text     []string
+	children []*NotesNode
 }
 
 type PositionConfig struct {
@@ -61,8 +68,27 @@ func (c *GlobalConfig) DrawUI() {
 	if imgui.Button("New...##positionfile") {
 		ui.openPositionFileDialog.Activate()
 	}
+	imgui.Text("Notes file: " + c.NotesFile)
+	imgui.SameLine()
+	if imgui.Button("New...##notesfile") {
+		ui.openNotesFileDialog.Activate()
+	}
 	imgui.Separator()
 	positionConfig.DrawUI()
+}
+
+func (gc *GlobalConfig) LoadNotesFile() {
+	if gc.NotesFile == "" {
+		return
+	}
+
+	notes, err := os.ReadFile(gc.NotesFile)
+	if err != nil {
+		lg.Printf("%s: unable to read notes file: %v", gc.NotesFile, err)
+		ShowErrorDialog("%s: unable to read notes file: %v.", gc.NotesFile, err)
+	} else {
+		gc.notesRoot = parseNotes(string(notes))
+	}
 }
 
 func configFilePath() string {
@@ -170,32 +196,6 @@ func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platfo
 		}})
 	ui.saveChangedDialog.Activate()
 	return true
-}
-
-type NoteID int64
-
-const InvalidNoteID = 0
-
-func (g *GlobalConfig) NotesSortedByTitle() []*Note {
-	var notes []*Note
-	for _, n := range g.Notes {
-		notes = append(notes, n)
-	}
-	sort.Slice(notes, func(i, j int) bool { return notes[i].Title < notes[j].Title })
-	return notes
-}
-
-type Note struct {
-	ID       NoteID
-	Title    string
-	Contents string
-}
-
-func AddNewNote(title string) NoteID {
-	id := NoteID(time.Now().UnixNano())
-	note := Note{ID: id, Title: title}
-	globalConfig.Notes[id] = &note
-	return id
 }
 
 func (pc *PositionConfig) NotifyAircraftSelected(ac *Aircraft) {
@@ -310,7 +310,47 @@ func LoadOrMakeDefaultConfig() {
 		ShowErrorDialog("%s: configuration file is corrupt: %v", fn, err)
 	}
 
+	globalConfig.LoadNotesFile()
+
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
+}
+
+func parseNotes(text string) *NotesNode {
+	root := &NotesNode{}
+	var hierarchy []*NotesNode
+	hierarchy = append(hierarchy, root)
+
+	for _, line := range strings.Split(text, "\n") {
+		depth := 0
+		for depth < len(line) && line[depth] == '*' {
+			depth++
+		}
+
+		current := hierarchy[len(hierarchy)-1]
+		isHeader := depth > 0
+		if !isHeader {
+			current.text = append(current.text, line)
+			continue
+		}
+
+		for depth > len(hierarchy) {
+			hierarchy = append(hierarchy, &NotesNode{})
+			n := len(hierarchy)
+			hierarchy[n-2].children = append(hierarchy[n-2].children, hierarchy[n-1])
+		}
+
+		newNode := &NotesNode{title: strings.TrimSpace(line[depth:])}
+		if depth == len(hierarchy) {
+			hierarchy = append(hierarchy, newNode)
+		} else {
+			hierarchy[depth] = newNode
+			hierarchy = hierarchy[:depth+1]
+		}
+		n := len(hierarchy)
+		hierarchy[n-2].children = append(hierarchy[n-2].children, newNode)
+	}
+	lg.Printf("notes: %+v", root)
+	return root
 }
 
 func (pc *PositionConfig) Update(*WorldUpdates) {

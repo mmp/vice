@@ -31,8 +31,6 @@ var (
 		showGeneralSettingsWindow bool
 		showColorEditor           bool
 		showSoundConfig           bool
-		showNotesEditor           bool
-		activeNoteID              NoteID
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
@@ -43,13 +41,13 @@ var (
 		newFromCurrentDialog    *ModalDialogBox
 		renameDialog            *ModalDialogBox
 		deleteDialog            *ModalDialogBox
-		deleteNoteDialog        *ModalDialogBox
 		saveChangedDialog       *ModalDialogBox
 		errorDialog             *ModalDialogBox
 		confirmDisconnectDialog *ModalDialogBox
 
 		openSectorFileDialog   *FileSelectDialogBox
 		openPositionFileDialog *FileSelectDialogBox
+		openNotesFileDialog    *FileSelectDialogBox
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -98,8 +96,6 @@ func uiInit(renderer Renderer) {
 	ui.renameDialog = NewModalDialogBox(&RenameModalClient{})
 	ui.deleteDialog = NewModalDialogBox(&DeleteModalClient{})
 
-	ui.deleteNoteDialog = NewModalDialogBox(&DeleteNoteModalClient{})
-
 	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
 		func(filename string) {
 			if err := world.LoadSectorFile(filename); err == nil {
@@ -127,6 +123,11 @@ func uiInit(renderer Renderer) {
 				delete(ui.errorText, "POSITIONFILE")
 				globalConfig.PositionFile = filename
 			}
+		})
+	ui.openNotesFileDialog = NewFileSelectDialogBox("Open Notes File...", []string{".txt"},
+		func(filename string) {
+			globalConfig.NotesFile = filename
+			globalConfig.LoadNotesFile()
 		})
 }
 
@@ -193,9 +194,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			}
 			if imgui.MenuItem("Sounds...") {
 				ui.showSoundConfig = true
-			}
-			if imgui.MenuItem("Notes...") {
-				ui.showNotesEditor = true
 			}
 			imgui.EndMenu()
 		}
@@ -271,8 +269,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		ui.errorDialog.Draw()
 	}
 
-	ui.deleteNoteDialog.Draw()
-
 	if ui.saveChangedDialog != nil {
 		ui.saveChangedDialog.Draw()
 	}
@@ -283,6 +279,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	ui.openSectorFileDialog.Draw()
 	ui.openPositionFileDialog.Draw()
+	ui.openNotesFileDialog.Draw()
 
 	if ui.showAboutDialog {
 		showAboutDialog()
@@ -313,10 +310,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		imgui.BeginV("Sound Configuration", &ui.showSoundConfig, imgui.WindowFlagsAlwaysAutoResize)
 		globalConfig.AudioSettings.DrawUI()
 		imgui.End()
-	}
-
-	if ui.showNotesEditor {
-		showNotesEditor(ui.deleteNoteDialog)
 	}
 
 	wmDrawUI(platform)
@@ -896,120 +889,8 @@ func (yn *YesOrNoModalClient) Draw() int {
 	return -1
 }
 
-/////////////////////////
-// Notes
-
-type DeleteNoteModalClient struct {
-	id NoteID
-}
-
-func (d *DeleteNoteModalClient) Title() string { return "Delete Note" }
-
-func (d *DeleteNoteModalClient) Opening() {
-	d.id = ui.activeNoteID
-}
-
-func (d *DeleteNoteModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel"})
-	b = append(b, ModalDialogButton{text: "Ok", action: func() bool {
-		delete(globalConfig.Notes, d.id)
-		ui.activeNoteID = InvalidNoteID
-		return true
-	}})
-	return b
-}
-
-func (d *DeleteNoteModalClient) Draw() int {
-	imgui.Text("Delete \"" + globalConfig.Notes[d.id].Title + "\"?")
-	return -1
-}
-
-func showNotesEditor(deleteDialog *ModalDialogBox) {
-	if globalConfig.Notes == nil {
-		globalConfig.Notes = make(map[NoteID]*Note)
-	}
-
-	imgui.BeginV("Notes Editor", &ui.showNotesEditor, imgui.WindowFlagsAlwaysAutoResize)
-	activeTitle := ""
-	if ui.activeNoteID != InvalidNoteID {
-		activeTitle = globalConfig.Notes[ui.activeNoteID].Title
-	}
-	if imgui.BeginCombo("##title", activeTitle) {
-		notes := globalConfig.NotesSortedByTitle()
-
-		for _, n := range notes {
-			flags := imgui.SelectableFlagsNone
-			selected := n.ID == ui.activeNoteID
-			if imgui.SelectableV(n.Title, selected, flags, imgui.Vec2{}) {
-				ui.activeNoteID = n.ID
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	if ui.activeNoteID != InvalidNoteID {
-		imgui.InputText("Title", &globalConfig.Notes[ui.activeNoteID].Title)
-
-		repeats := 0
-		for _, note := range globalConfig.Notes {
-			if note.Title == globalConfig.Notes[ui.activeNoteID].Title {
-				repeats++
-			}
-		}
-		if repeats > 1 {
-			color := positionConfig.GetColorScheme().TextError
-			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
-			imgui.Text("Warning: title is the same as that of another note.")
-			imgui.PopStyleColor()
-		}
-	}
-
-	// multiline text edit for editing contents
-	if ui.activeNoteID != InvalidNoteID {
-		contents := &globalConfig.Notes[ui.activeNoteID].Contents
-		imgui.PushFont(ui.fixedFont.ifont)
-		imgui.InputTextMultiline("##Contents", contents)
-		imgui.PopFont()
-	}
-
-	if imgui.Button("New") {
-		title := "(Untitled)"
-
-		titleInUse := func(t string) bool {
-			for _, n := range globalConfig.Notes {
-				if t == n.Title {
-					return true
-				}
-			}
-			return false
-		}
-
-		i := 1
-		for titleInUse(title) {
-			title = fmt.Sprintf("(Untitled %d)", i)
-			i++
-		}
-		ui.activeNoteID = AddNewNote(title)
-	}
-	imgui.SameLine()
-
-	// Only enable the Delete button if a note is selected
-	if ui.activeNoteID == InvalidNoteID {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
-	imgui.SameLine()
-	if imgui.Button("Delete") {
-		deleteDialog.Activate()
-	}
-	if ui.activeNoteID == InvalidNoteID {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
-
-	imgui.End()
-}
+///////////////////////////////////////////////////////////////////////////
+// "about" dialog box
 
 func showAboutDialog() {
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings
