@@ -740,11 +740,18 @@ func (v *VATSIMServer) handleFP(sender string, args []string) error {
 	// args[6]: actual departure time
 	fp.arrive = args[8]
 
-	if alt, err := strconv.ParseInt(args[7], 10, 32); err != nil {
+	if strings.HasPrefix(strings.ToUpper(args[7]), "FL") {
+		if alt, err := strconv.Atoi(args[7][2:]); err != nil {
+			return MalformedMessageError{"Unable to parse altitude: " + args[7]}
+		} else {
+			fp.altitude = alt * 100
+		}
+	} else if alt, err := strconv.Atoi(args[7]); err != nil {
 		return MalformedMessageError{"Unable to parse altitude: " + args[7]}
 	} else {
-		fp.altitude = int(alt)
+		fp.altitude = alt
 	}
+
 	// args[9]: hours enroute
 	// args[10]: minutes enroute
 	// args[11]: fuel available hours
