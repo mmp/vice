@@ -43,6 +43,10 @@ jobs:
         CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -tags static -o vice_arm64 .
         lipo -create -output vice vice_amd64 vice_arm64
 
+    - name: Run tests
+      run:
+        go test -v
+
     - name: Create icons
       run: |
         mkdir -p icon.iconset

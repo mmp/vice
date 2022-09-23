@@ -41,3 +41,7 @@ jobs:
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
         go build -tags imguifreetype -o ./ ./...
         ls
+
+    - name: Run tests
+      run:
+        go test -v

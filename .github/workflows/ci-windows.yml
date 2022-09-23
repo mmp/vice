@@ -55,6 +55,10 @@ jobs:
         go build -tags static -o ./vice.exe .
         ls
 
+    - name: Run tests
+      run:
+        go test -v
+
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
       shell: bash
