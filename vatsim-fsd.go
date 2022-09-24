@@ -916,7 +916,7 @@ func (v *VATSIMServer) handleTM(sender string, args []string) error {
 	// @[freq]     frequency
 	// (otherwise) private message
 	freq := args[0]
-	tm := TextMessage{sender: sender, contents: strings.Join(args[1:], "")}
+	tm := TextMessage{sender: sender, contents: strings.Join(args[1:], ":")}
 	if freq == "*" {
 		tm.messageType = TextBroadcast
 	} else if freq == "*S" {
