@@ -589,6 +589,7 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 			}
 		} else {
 			delete(rs.trackedAircraft, ac)
+			delete(rs.datablockUpdateAircraft, ac)
 		}
 	}
 
@@ -1413,6 +1414,11 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 
 		color := rs.datablockColor(ac, ctx.cs)
 		ta := rs.trackedAircraft[ac]
+		if ta == nil {
+			lg.Errorf("%s: in datablock update but not tracked?", ac.Callsign())
+			continue
+		}
+
 		db := ta.WindowDatablockBounds(pac)
 
 		for d := 0; d < 2; d++ {
