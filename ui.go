@@ -106,6 +106,7 @@ func uiInit(renderer Renderer) {
 	}
 
 	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
+		globalConfig.SectorFile,
 		func(filename string) {
 			if err := world.LoadSectorFile(filename); err == nil {
 				delete(ui.errorText, "SECTORFILE")
@@ -127,6 +128,7 @@ func uiInit(renderer Renderer) {
 			}
 		})
 	ui.openPositionFileDialog = NewFileSelectDialogBox("Open Position File...", []string{".pof"},
+		globalConfig.PositionFile,
 		func(filename string) {
 			if err := world.LoadPositionFile(filename); err == nil {
 				delete(ui.errorText, "POSITIONFILE")
@@ -134,6 +136,7 @@ func uiInit(renderer Renderer) {
 			}
 		})
 	ui.openNotesFileDialog = NewFileSelectDialogBox("Open Notes File...", []string{".txt"},
+		globalConfig.NotesFile,
 		func(filename string) {
 			globalConfig.NotesFile = filename
 			globalConfig.LoadNotesFile()
@@ -477,7 +480,9 @@ type VATSIMConnectionConfiguration struct {
 }
 
 func (v *VATSIMConnectionConfiguration) Initialize() {
-	v.address = ":6809"
+	if v.address == "" {
+		v.address = ":6809"
+	}
 }
 
 func (v *VATSIMConnectionConfiguration) DrawUI() bool {
@@ -533,10 +538,15 @@ type VATSIMReplayConfiguration struct {
 }
 
 func (v *VATSIMReplayConfiguration) Initialize() {
-	v.rate = 1
-	v.dialog = NewFileSelectDialogBox("Select VATSIM session file", []string{".vsess"},
-		func(fn string) { v.filename = fn })
-	v.dialog.Activate()
+	if v.rate == 0 {
+		v.rate = 1
+		v.offset = 0
+		v.dialog = NewFileSelectDialogBox("Select VATSIM session file", []string{".vsess"}, "",
+			func(fn string) { v.filename = fn })
+	}
+	if v.filename == "" {
+		v.dialog.Activate()
+	}
 }
 
 func (v *VATSIMReplayConfiguration) DrawUI() bool {
@@ -1034,13 +1044,10 @@ func showAboutDialog() {
 ///////////////////////////////////////////////////////////////////////////
 // FileSelectDialogBox
 
-var (
-	fileSelectDialogDirectory string
-)
-
 type FileSelectDialogBox struct {
 	show, isOpen bool
 	filename     string
+	directory    string
 
 	dirEntries            []os.DirEntry
 	dirEntriesLastUpdated time.Time
@@ -1050,21 +1057,25 @@ type FileSelectDialogBox struct {
 	callback func(string)
 }
 
-func NewFileSelectDialogBox(title string, filter []string, callback func(string)) *FileSelectDialogBox {
-	if fileSelectDialogDirectory == "" {
+func NewFileSelectDialogBox(title string, filter []string, filename string,
+	callback func(string)) *FileSelectDialogBox {
+	var dir string
+	if filename != "" {
+		dir = path.Dir(filename)
+	} else {
 		var err error
-		fileSelectDialogDirectory, err = os.UserHomeDir()
-		if err != nil {
+		if dir, err = os.UserHomeDir(); err != nil {
 			lg.Errorf("Unable to get user home directory: %v", err)
-			fileSelectDialogDirectory = "."
+			dir = "."
 		}
 	}
-	fileSelectDialogDirectory = path.Clean(fileSelectDialogDirectory)
+	dir = path.Clean(dir)
 
 	return &FileSelectDialogBox{
-		title:    title,
-		filter:   filter,
-		callback: callback}
+		title:     title,
+		directory: dir,
+		filter:    filter,
+		callback:  callback}
 }
 
 func (fs *FileSelectDialogBox) Activate() {
@@ -1090,29 +1101,29 @@ func (fs *FileSelectDialogBox) Draw() {
 
 		if imgui.Button(FontAwesomeIconHome) {
 			var err error
-			fileSelectDialogDirectory, err = os.UserHomeDir()
+			fs.directory, err = os.UserHomeDir()
 			if err != nil {
 				lg.Errorf("Unable to get user home dir: %v", err)
-				fileSelectDialogDirectory = "."
+				fs.directory = "."
 			}
 		}
 		imgui.SameLine()
 		if imgui.Button(FontAwesomeIconLevelUpAlt) {
-			fileSelectDialogDirectory, _ = path.Split(fileSelectDialogDirectory)
-			fileSelectDialogDirectory = path.Clean(fileSelectDialogDirectory) // get rid of trailing slash
+			fs.directory, _ = path.Split(fs.directory)
+			fs.directory = path.Clean(fs.directory) // get rid of trailing slash
 			fs.dirEntriesLastUpdated = time.Time{}
 			fs.filename = ""
 		}
 
 		imgui.SameLine()
-		imgui.Text(fileSelectDialogDirectory)
+		imgui.Text(fs.directory)
 
 		// Only rescan the directory contents once a second.
 		if time.Since(fs.dirEntriesLastUpdated) > 1*time.Second {
 			var err error
-			fs.dirEntries, err = os.ReadDir(fileSelectDialogDirectory)
+			fs.dirEntries, err = os.ReadDir(fs.directory)
 			if err != nil {
-				lg.Errorf("%s: unable to read directory: %v", fileSelectDialogDirectory, err)
+				lg.Errorf("%s: unable to read directory: %v", fs.directory, err)
 			}
 			fs.dirEntriesLastUpdated = time.Now()
 		}
@@ -1121,7 +1132,7 @@ func (fs *FileSelectDialogBox) Draw() {
 		fileSelected := false
 		// unique per-directory id maintains the scroll position in each
 		// directory (and starts newly visited ones at the top!)
-		if imgui.BeginTableV("Files##"+fileSelectDialogDirectory, 1, flags,
+		if imgui.BeginTableV("Files##"+fs.directory, 1, flags,
 			imgui.Vec2{500, float32(platform.WindowSize()[1] * 3 / 4)}, 0) {
 			imgui.TableSetupColumn("Filename")
 			for _, entry := range fs.dirEntries {
@@ -1154,7 +1165,7 @@ func (fs *FileSelectDialogBox) Draw() {
 				}
 				if imgui.IsItemHovered() && imgui.IsMouseDoubleClicked(0) {
 					if entry.IsDir() {
-						fileSelectDialogDirectory = path.Join(fileSelectDialogDirectory, entry.Name())
+						fs.directory = path.Join(fs.directory, entry.Name())
 						fs.filename = ""
 						fs.dirEntriesLastUpdated = time.Time{}
 					} else {
@@ -1186,7 +1197,7 @@ func (fs *FileSelectDialogBox) Draw() {
 			imgui.CloseCurrentPopup()
 			fs.show = false
 			fs.isOpen = false
-			fs.callback(path.Join(fileSelectDialogDirectory, fs.filename))
+			fs.callback(path.Join(fs.directory, fs.filename))
 			fs.filename = ""
 		}
 		if disableOk {
