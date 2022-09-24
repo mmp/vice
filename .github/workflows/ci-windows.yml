@@ -57,7 +57,7 @@ jobs:
 
     - name: Run tests
       run:
-        go test -v
+        go test -tags static -v
 
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
