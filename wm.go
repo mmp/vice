@@ -50,6 +50,7 @@ type SplitLine struct {
 	Pos  float32
 	Axis SplitType
 	dl   DrawList
+	dla  [1]*DrawList
 }
 
 func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
@@ -79,7 +80,8 @@ func (s *SplitLine) Draw(ctx *PaneContext) []*DrawList {
 	}
 
 	s.dl = DrawList{clear: true, clearColor: ctx.cs.SplitLine}
-	return []*DrawList{&s.dl}
+	s.dla[0] = &s.dl
+	return s.dla[:]
 }
 
 ///////////////////////////////////////////////////////////////////////////

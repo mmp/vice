@@ -578,8 +578,8 @@ func Map[T, V any](ts []T, fn func(T) V) []V {
 }
 
 func FlattenMap[K comparable, V any](m map[K]V) ([]K, []V) {
-	var keys []K
-	var values []V
+	keys := make([]K, 0, len(m))
+	values := make([]V, 0, len(m))
 	for k, v := range m {
 		keys = append(keys, k)
 		values = append(values, v)
@@ -594,7 +594,7 @@ func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
 }
 
 func SortedMapKeysPred[K comparable, V any](m map[K]V, pred func(a *K, b *K) bool) []K {
-	var keys []K
+	keys := make([]K, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
 	}
