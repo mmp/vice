@@ -34,7 +34,9 @@ jobs:
       run: go version
 
     - name: Install Linux dependencies
-      run: sudo apt install xorg-dev libsdl2-dev
+      run: |
+        sudo apt update
+        sudo apt install xorg-dev libsdl2-dev
 
     - name: Build
       run: |
