@@ -670,7 +670,7 @@ func (c *ConnectModalClient) Draw() int {
 	}
 
 	if enter {
-		return 0
+		return 1
 	} else {
 		return -1
 	}
@@ -762,7 +762,7 @@ func (n *NewModalClient) Draw() int {
 		imgui.PopStyleColor()
 	}
 	if enter {
-		return 0
+		return 1
 	} else {
 		return -1
 	}
@@ -823,7 +823,7 @@ func (r *RenameModalClient) Draw() int {
 		imgui.PopStyleColor()
 	}
 	if enter {
-		return 0
+		return 1
 	} else {
 		return -1
 	}
