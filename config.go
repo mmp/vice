@@ -329,8 +329,22 @@ func parseNotes(text string) *NotesNode {
 		current := hierarchy[len(hierarchy)-1]
 		isHeader := depth > 0
 		if !isHeader {
-			current.text = append(current.text, line)
+			if len(current.text) == 0 && strings.TrimSpace(line) == "" {
+				// drop leading blank lines
+			} else {
+				current.text = append(current.text, line)
+			}
 			continue
+		}
+
+		// We're done with the text for this node; drop any trailing lines
+		// in the text that are purely whitespace.
+		for i := len(current.text) - 1; i > 0; i-- {
+			if strings.TrimSpace(current.text[i]) == "" {
+				current.text = current.text[:i]
+			} else {
+				break
+			}
 		}
 
 		for depth > len(hierarchy) {
@@ -349,6 +363,7 @@ func parseNotes(text string) *NotesNode {
 		n := len(hierarchy)
 		hierarchy[n-2].children = append(hierarchy[n-2].children, newNode)
 	}
+
 	lg.Printf("notes: %+v", root)
 	return root
 }
