@@ -1602,8 +1602,14 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 		rs.linesDrawable.AddLine(pell, pill, ctx.cs.Compass)
 
 		if int(h)%30 == 0 {
-			label := fmt.Sprintf("%03d", int(h))
-			bx, by := rs.labelFont.BoundText(label, 0)
+			label := []byte{'0', '0', '0'}
+			hi := int(h)
+			for i := 2; i >= 0 && hi != 0; i-- {
+				label[i] = byte('0' + hi%10)
+				hi /= 10
+			}
+
+			bx, by := rs.labelFont.BoundText(string(label), 0)
 
 			// Initial inset
 			pText := add2f(pw, scale2f(dir, t-14))
@@ -1630,7 +1636,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 			}
 
 			td := rs.getTextDrawable()
-			td.AddText(label, pText, TextStyle{font: rs.labelFont, color: ctx.cs.Compass})
+			td.AddText(string(label), pText, TextStyle{font: rs.labelFont, color: ctx.cs.Compass})
 			rs.textDrawList.AddText(td)
 		}
 	}
