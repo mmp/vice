@@ -1447,8 +1447,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 	for _, ac := range aircraft {
 		ta := rs.trackedAircraft[ac]
 
-		// userOffset := ta.datablockManualOffset
-		drawLine := true // ??? userOffset[0] != 0 || userOffset[1] != 0
+		drawLine := rs.DataBlockFormat != DataBlockFormatNone
 
 		pac := windowFromLatLongP(ac.Position())
 		bbox := ta.WindowDatablockBounds(pac)
