@@ -100,7 +100,8 @@ type RadarScopePane struct {
 	// the ones that have an active track and are in our altitude range
 	trackedAircraft map[*Aircraft]*TrackedAircraft
 	// map from legit to their ghost, if present
-	ghostAircraft map[*Aircraft]*Aircraft
+	ghostAircraft           map[*Aircraft]*Aircraft
+	datablockUpdateAircraft map[*Aircraft]interface{}
 }
 
 const (
@@ -171,6 +172,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
 	c.activeAircraft = make(map[*Aircraft]interface{})
 	c.ghostAircraft = make(map[*Aircraft]*Aircraft)
+	c.datablockUpdateAircraft = make(map[*Aircraft]interface{})
 
 	font := GetDefaultFont()
 	c.DatablockFontIdentifier = font.id
@@ -227,6 +229,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 		ghost := *gh // make a copy
 		dupe.ghostAircraft[ac] = &ghost
 	}
+	dupe.datablockUpdateAircraft = make(map[*Aircraft]interface{})
 
 	// don't share those slices...
 	dupe.llDrawList = DrawList{}
@@ -280,6 +283,9 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	if rs.ghostAircraft == nil {
 		rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
 	}
+	if rs.datablockUpdateAircraft == nil {
+		rs.datablockUpdateAircraft = make(map[*Aircraft]interface{})
+	}
 	for _, ac := range world.aircraft {
 		rs.activeAircraft[ac] = nil
 		if !ac.LostTrack() && ac.Altitude() >= int(rs.MinAltitude) && ac.Altitude() <= int(rs.MaxAltitude) {
@@ -301,6 +307,7 @@ func (rs *RadarScopePane) Deactivate() {
 	rs.activeAircraft = nil
 	rs.trackedAircraft = nil
 	rs.ghostAircraft = nil
+	rs.datablockUpdateAircraft = nil
 
 	// Free up this memory, FWIW
 	rs.llDrawList = DrawList{}
@@ -396,6 +403,7 @@ func (rs *RadarScopePane) DrawUI() {
 					if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 						rs.ghostAircraft[ac] = ghost
 						rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
+						rs.datablockUpdateAircraft[ghost] = nil
 					}
 				}
 			}
@@ -526,6 +534,7 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 			rs.activeAircraft[ac] = nil
 			if track(ac) {
 				rs.trackedAircraft[ac] = &TrackedAircraft{}
+				rs.datablockUpdateAircraft[ac] = nil
 				if rs.CRDAEnabled {
 					if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 						rs.ghostAircraft[ac] = ghost
@@ -563,6 +572,7 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 		}
 
 		if track(ac) {
+			rs.datablockUpdateAircraft[ac] = nil
 			if ta, ok := rs.trackedAircraft[ac]; !ok {
 				rs.trackedAircraft[ac] = &TrackedAircraft{}
 			} else {
@@ -574,6 +584,7 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 				if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 					rs.ghostAircraft[ac] = ghost
 					rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
+					rs.datablockUpdateAircraft[ghost] = nil
 				}
 			}
 		} else {
@@ -1397,10 +1408,11 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 
 func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
 	latLongFromWindowP func(p [2]float32) Point2LL) {
-	for ac, ta := range rs.trackedAircraft {
+	for ac := range rs.datablockUpdateAircraft {
 		pac := windowFromLatLongP(ac.Position())
 
 		color := rs.datablockColor(ac, ctx.cs)
+		ta := rs.trackedAircraft[ac]
 		db := ta.WindowDatablockBounds(pac)
 
 		for d := 0; d < 2; d++ {
@@ -1421,6 +1433,9 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 					[2]float32{float32(0), float32(0)}})
 			rs.datablockTextDrawList.lines = append(rs.datablockTextDrawList.lines, ld)
 		}
+	}
+	if len(rs.datablockUpdateAircraft) > 0 {
+		rs.datablockUpdateAircraft = make(map[*Aircraft]interface{})
 	}
 
 	flashCycle := time.Now().Second() & 1
@@ -1786,6 +1801,8 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		return
 	}
 
+	scopeMoved := false
+
 	// Handle dragging the scope center
 	if ctx.mouse.dragging[mouseButtonPrimary] && rs.primaryButtonDoubleClicked {
 		rs.primaryDragEnd = add2f(rs.primaryDragEnd, ctx.mouse.dragDelta)
@@ -1797,12 +1814,14 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		if delta[0] != 0 || delta[1] != 0 {
 			deltaLL := latLongFromWindowV(delta)
 			rs.Center = sub2f(rs.Center, deltaLL)
+			scopeMoved = true
 		}
 	}
 
 	// Consume mouse wheel
 	if ctx.mouse.wheel[1] != 0 {
 		scale := pow(1.05, ctx.mouse.wheel[1])
+		scopeMoved = true
 
 		// We want to zoom in centered at the mouse position; this affects
 		// the scope center after the zoom, so we'll find the
@@ -1814,6 +1833,13 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		rs.Center = mul4p(&centerTransform, rs.Center)
 
 		rs.Range *= scale
+	}
+
+	if scopeMoved {
+		// All datablocks need to be redrawn (unfortunately...)
+		for ac := range rs.trackedAircraft {
+			rs.datablockUpdateAircraft[ac] = nil
+		}
 	}
 
 	if rs.acSelectedByDatablock != nil {
