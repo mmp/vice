@@ -768,8 +768,8 @@ func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	perf.Grow(512)
 
 	// First framerate
-	perf.WriteString(fmt.Sprintf("Average %.1f ms/frame (%.1f FPS)",
-		1000/imgui.CurrentIO().Framerate(), imgui.CurrentIO().Framerate()))
+	perf.WriteString(fmt.Sprintf("Redraws per second: %.1f",
+		float64(stats.redraws)/time.Since(stats.startTime).Seconds()))
 
 	// Runtime breakdown
 	update := func(d time.Duration, stat *float32) float32 {

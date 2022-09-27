@@ -157,8 +157,25 @@ func main() {
 	// Main event / rendering loop
 	lg.Printf("Starting main loop")
 	frameIndex := 0
+	var lastDrawTime time.Time
+	var lastDrawDisplaySize [2]float32
+	stats.startTime = time.Now()
 	for {
 		platform.SetWindowTitle("vice: " + globalConfig.ActivePosition + " " + world.WindowTitle())
+
+		// Inform imgui about input events from the user.
+		anyEvents := platform.ProcessEvents()
+
+		// Hold off if the user isn't interacting with vice and if there's
+		// nothing updated to be drawn.
+		if !anyEvents && time.Since(lastDrawTime) < 250*time.Millisecond &&
+			lastDrawDisplaySize == platform.DisplaySize() {
+			time.Sleep(10 * time.Millisecond)
+			continue
+		}
+		stats.redraws++
+		lastDrawDisplaySize = platform.DisplaySize()
+		lastDrawTime = time.Now()
 
 		lastTime := time.Now()
 		timeMarker := func(d *time.Duration) {
@@ -166,9 +183,6 @@ func main() {
 			*d = now.Sub(lastTime)
 			lastTime = now
 		}
-
-		// Inform imgui about input events from the user.
-		platform.ProcessEvents()
 
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
@@ -198,7 +212,7 @@ func main() {
 		platform.PostRender()
 
 		// Periodically log current memory use, etc.
-		if (*devmode && frameIndex%100 == 0) || frameIndex%1000 == 0 {
+		if (*devmode && frameIndex%10 == 0) || frameIndex%250 == 0 {
 			lg.LogStats(stats)
 		}
 		frameIndex++

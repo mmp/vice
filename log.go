@@ -13,8 +13,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/mmp/imgui-go/v4"
 )
 
 // Logger provides a simple logging system with a few different log levels;
@@ -217,13 +215,14 @@ type Stats struct {
 	processMessages time.Duration
 	drawImgui       time.Duration
 	drawPanes       time.Duration
+	startTime       time.Time
+	redraws         int
 }
 
 // LogStats adds the proivded Stats to the log and also includes information about
 // the current system performance, memory use, etc.
 func (l *Logger) LogStats(stats Stats) {
-	lg.Printf("Stats: average %.1f ms/frame (%.1f fps)",
-		1000/imgui.CurrentIO().Framerate(), imgui.CurrentIO().Framerate())
+	lg.Printf("Redraws per second: %.1f", float64(stats.redraws)/time.Since(stats.startTime).Seconds())
 
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)

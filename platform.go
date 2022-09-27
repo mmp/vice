@@ -22,8 +22,9 @@ import (
 type Platform interface {
 	// NewFrame marks the begin of a render pass; it forwards all current state to imgui IO.
 	NewFrame()
-	// ProcessEvents handles all pending window events.
-	ProcessEvents()
+	// ProcessEvents handles all pending window events. Returns true if
+	// there were any events and false otherwise.
+	ProcessEvents() bool
 	// PostRender performs the buffer swap.
 	PostRender()
 	// Dispose is called when the application is shutting down and is when
@@ -66,10 +67,12 @@ type GLFWPlatform struct {
 
 	window *glfw.Window
 
-	time             float64
-	mouseJustPressed [3]bool
-	mouseCursors     [imgui.MouseCursorCount]*glfw.Cursor
-	inputCharacters  string
+	time                   float64
+	mouseJustPressed       [3]bool
+	mouseCursors           [imgui.MouseCursorCount]*glfw.Cursor
+	inputCharacters        string
+	anyEvents              bool
+	lastMouseX, lastMouseY float64
 }
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
@@ -150,9 +153,29 @@ func (g *GLFWPlatform) CancelShouldStop() {
 	g.window.SetShouldClose(false)
 }
 
-func (g *GLFWPlatform) ProcessEvents() {
+func (g *GLFWPlatform) ProcessEvents() bool {
 	g.inputCharacters = ""
+	g.anyEvents = false
+
 	glfw.PollEvents()
+
+	if g.anyEvents {
+		return true
+	}
+
+	for i := 0; i < len(g.mouseJustPressed); i++ {
+		if g.window.GetMouseButton(glfwButtonIDByIndex[i]) == glfw.Press {
+			return true
+		}
+	}
+
+	x, y := g.window.GetCursorPos()
+	if x != g.lastMouseX || y != g.lastMouseY {
+		g.lastMouseX, g.lastMouseY = x, y
+		return true
+	}
+
+	return false
 }
 
 func (g *GLFWPlatform) DisplaySize() [2]float32 {
@@ -276,16 +299,19 @@ func (g *GLFWPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.Mou
 		return
 	}
 
+	g.anyEvents = true
 	if action == glfw.Press {
 		g.mouseJustPressed[buttonIndex] = true
 	}
 }
 
 func (g *GLFWPlatform) mouseScrollChange(window *glfw.Window, x, y float64) {
+	g.anyEvents = true
 	g.imguiIO.AddMouseWheelDelta(float32(x), float32(y))
 }
 
 func (g *GLFWPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	g.anyEvents = true
 	if action == glfw.Press {
 		g.imguiIO.KeyPress(int(key))
 	}
@@ -301,6 +327,7 @@ func (g *GLFWPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int
 }
 
 func (g *GLFWPlatform) charChange(window *glfw.Window, char rune) {
+	g.anyEvents = true
 	g.imguiIO.AddInputCharacters(string(char))
 	g.inputCharacters = g.inputCharacters + string(char)
 }
@@ -350,8 +377,9 @@ type SDLPlatform struct {
 	time        uint64
 	buttonsDown [mouseButtonCount]bool
 
-	inputCharacters string
-	mouseCursors    map[imgui.MouseCursorID]*sdl.Cursor
+	inputCharacters        string
+	mouseCursors           map[imgui.MouseCursorID]*sdl.Cursor
+	lastMouseX, lastMouseY int32
 }
 
 func NewSDLPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int) (Platform, error) {
@@ -457,11 +485,25 @@ func (s *SDLPlatform) CancelShouldStop() {
 	s.shouldStop = false
 }
 
-func (s *SDLPlatform) ProcessEvents() {
+func (s *SDLPlatform) ProcessEvents() bool {
 	s.inputCharacters = ""
+	anyEvents := false
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-		s.processEvent(event)
+		if s.processEvent(event) {
+			anyEvents = true
+		}
 	}
+
+	if anyEvents {
+		return true
+	}
+
+	x, y, state := sdl.GetMouseState()
+	if x != s.lastMouseX || y != s.lastMouseY {
+		s.lastMouseX, s.lastMouseY = x, y
+		return true
+	}
+	return state&(sdl.BUTTON_LEFT|sdl.BUTTON_RIGHT|sdl.BUTTON_MIDDLE) != 0
 }
 
 func (s *SDLPlatform) DisplaySize() [2]float32 {
@@ -547,10 +589,12 @@ func (s *SDLPlatform) setKeyMapping() {
 	}
 }
 
-func (s *SDLPlatform) processEvent(event sdl.Event) {
+func (s *SDLPlatform) processEvent(event sdl.Event) bool {
 	switch event.GetType() {
 	case sdl.QUIT:
 		s.shouldStop = true
+		return true
+
 	case sdl.MOUSEWHEEL:
 		wheelEvent := event.(*sdl.MouseWheelEvent)
 		var deltaX, deltaY float32
@@ -565,6 +609,8 @@ func (s *SDLPlatform) processEvent(event sdl.Event) {
 			deltaY--
 		}
 		s.imguiIO.AddMouseWheelDelta(deltaX, deltaY)
+		return true
+
 	case sdl.MOUSEBUTTONDOWN:
 		buttonEvent := event.(*sdl.MouseButtonEvent)
 		switch buttonEvent.Button {
@@ -575,6 +621,8 @@ func (s *SDLPlatform) processEvent(event sdl.Event) {
 		case sdl.BUTTON_MIDDLE:
 			s.buttonsDown[mouseButtonTertiary] = true
 		}
+		return true
+
 	case sdl.TEXTINPUT:
 		inputEvent := event.(*sdl.TextInputEvent)
 		s.imguiIO.AddInputCharacters(string(inputEvent.Text[:]))
@@ -584,15 +632,21 @@ func (s *SDLPlatform) processEvent(event sdl.Event) {
 			}
 			s.inputCharacters = s.inputCharacters + string(ch)
 		}
+		return true
+
 	case sdl.KEYDOWN:
 		keyEvent := event.(*sdl.KeyboardEvent)
 		s.imguiIO.KeyPress(int(keyEvent.Keysym.Scancode))
 		s.updateKeyModifier()
+		return true
+
 	case sdl.KEYUP:
 		keyEvent := event.(*sdl.KeyboardEvent)
 		s.imguiIO.KeyRelease(int(keyEvent.Keysym.Scancode))
 		s.updateKeyModifier()
+		return true
 	}
+	return false
 }
 
 func (s *SDLPlatform) updateKeyModifier() {
