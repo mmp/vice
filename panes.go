@@ -109,12 +109,6 @@ type AirportInfoPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
-	lastUpdate        time.Time
-	lastExtent        Extent2D
-	forceUpdate       bool
-	lastTextColor     RGB
-	lastSelectedColor RGB
-
 	td TextDrawBuilder
 	cb CommandBuffer
 }
@@ -143,7 +137,6 @@ func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe.Airports = DuplicateMap(a.Airports)
 	dupe.td = TextDrawBuilder{}
 	dupe.cb = CommandBuffer{}
-	dupe.lastUpdate = time.Time{}
 	return &dupe
 }
 
@@ -216,40 +209,10 @@ func getDistanceSortedArrivals() []Arrival {
 	return arr
 }
 
-func (a *AirportInfoPane) Update(updates *WorldUpdates) {
-	if updates != nil && !updates.NoUpdates() {
-		a.forceUpdate = true
-	}
-}
+func (a *AirportInfoPane) Update(updates *WorldUpdates) {}
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cs := ctx.cs
-
-	// Try to only update the CommandBuffer once a second. However, two
-	// number things can invalidate it before that:
-	//
-	// 1. World updates: we don't try to be clever and see if they are
-	// aircraft we care about but just go ahead if there are any.
-	// 2. Changes to the text color or selected text color.
-	//
-	// Changes to the background color are fine since we can always stuff
-	// that into the draw list without invalidating anything.  Note that
-	// this means that things like ATIS and METAR updates will be slightly
-	// delayed, though by no more than 1s.
-	d := time.Since(a.lastUpdate)
-	if d.Seconds() < 1 && !a.forceUpdate && cs.Text.Equals(a.lastTextColor) &&
-		cs.SelectedDataBlock.Equals(a.lastSelectedColor) &&
-		a.lastExtent.Width() == ctx.paneExtent.Width() &&
-		a.lastExtent.Height() == ctx.paneExtent.Height() {
-		// Use the command buffer as-is.
-		cb.Call(a.cb)
-		return
-	}
-	a.lastUpdate = time.Now()
-	a.lastExtent = ctx.paneExtent
-	a.forceUpdate = false
-	a.lastTextColor = cs.Text
-	a.lastSelectedColor = cs.SelectedDataBlock
 
 	var str strings.Builder
 	style := TextStyle{font: a.font, color: cs.Text}
