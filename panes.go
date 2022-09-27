@@ -471,9 +471,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 ///////////////////////////////////////////////////////////////////////////
 // EmptyPane
 
-type EmptyPane struct {
-	cb CommandBuffer
-}
+type EmptyPane struct{}
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
