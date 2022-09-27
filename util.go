@@ -423,6 +423,10 @@ type RGB struct {
 	R, G, B float32
 }
 
+type RGBA struct {
+	R, G, B, A float32
+}
+
 func (r RGB) Equals(other RGB) bool {
 	return r.R == other.R && r.G == other.G && r.B == other.B
 }
