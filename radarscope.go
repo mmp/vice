@@ -185,28 +185,18 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 		dupe.ScopeName += " Copy"
 	}
 
-	dupemap := func(m map[string]interface{}) map[string]interface{} {
-		dupe := make(map[string]interface{})
-		for k := range m {
-			dupe[k] = nil
-		}
-		return dupe
-	}
-	dupe.SelectedVORs = dupemap(rs.SelectedVORs)
-	dupe.SelectedNDBs = dupemap(rs.SelectedNDBs)
-	dupe.SelectedFixes = dupemap(rs.SelectedFixes)
-	dupe.SelectedAirports = dupemap(rs.SelectedAirports)
-	dupe.GeoDrawSet = dupemap(rs.GeoDrawSet)
-	dupe.SIDDrawSet = dupemap(rs.SIDDrawSet)
-	dupe.STARDrawSet = dupemap(rs.STARDrawSet)
-	dupe.ARTCCDrawSet = dupemap(rs.ARTCCDrawSet)
-	dupe.ARTCCLowDrawSet = dupemap(rs.ARTCCLowDrawSet)
-	dupe.ARTCCHighDrawSet = dupemap(rs.ARTCCHighDrawSet)
-
-	dupe.activeAircraft = make(map[*Aircraft]interface{})
-	for ac := range rs.activeAircraft {
-		dupe.activeAircraft[ac] = nil
-	}
+	dupe.SelectedVORs = DuplicateMap(rs.SelectedVORs)
+	dupe.SelectedNDBs = DuplicateMap(rs.SelectedNDBs)
+	dupe.SelectedFixes = DuplicateMap(rs.SelectedFixes)
+	dupe.SelectedAirports = DuplicateMap(rs.SelectedAirports)
+	dupe.GeoDrawSet = DuplicateMap(rs.GeoDrawSet)
+	dupe.SIDDrawSet = DuplicateMap(rs.SIDDrawSet)
+	dupe.STARDrawSet = DuplicateMap(rs.STARDrawSet)
+	dupe.ARTCCDrawSet = DuplicateMap(rs.ARTCCDrawSet)
+	dupe.ARTCCLowDrawSet = DuplicateMap(rs.ARTCCLowDrawSet)
+	dupe.ARTCCHighDrawSet = DuplicateMap(rs.ARTCCHighDrawSet)
+	dupe.activeAircraft = DuplicateMap(rs.activeAircraft)
+	dupe.rangeWarnings = DuplicateMap(rs.rangeWarnings)
 
 	dupe.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
 	for ac, tracked := range rs.trackedAircraft {
