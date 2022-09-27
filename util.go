@@ -605,3 +605,11 @@ func SortedMapKeysPred[K comparable, V any](m map[K]V, pred func(a *K, b *K) boo
 	sort.Slice(keys, func(i, j int) bool { return pred(&keys[i], &keys[j]) })
 	return keys
 }
+
+func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {
+	mnew := make(map[K]V)
+	for k, v := range m {
+		mnew[k] = v
+	}
+	return mnew
+}

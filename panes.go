@@ -140,6 +140,7 @@ func NewAirportInfoPane() *AirportInfoPane {
 
 func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe := *a
+	dupe.Airports = DuplicateMap(a.Airports)
 	dupe.td = TextDrawBuilder{}
 	dupe.cb = CommandBuffer{}
 	dupe.lastUpdate = time.Time{}
