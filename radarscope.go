@@ -113,8 +113,6 @@ type TrackedAircraft struct {
 	datablockText            [2]string
 	datablockTextCurrent     bool
 	datablockBounds          Extent2D // w.r.t. lower-left corner (so (0,0) p0 always)
-
-	textDrawBuilder [2]TextDrawBuilder
 }
 
 // Takes aircraft position in window coordinates

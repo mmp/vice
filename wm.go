@@ -47,10 +47,8 @@ const (
 )
 
 type SplitLine struct {
-	Pos     float32
-	Axis    SplitType
-	cb      CommandBuffer
-	cbArray [1]*CommandBuffer
+	Pos  float32
+	Axis SplitType
 }
 
 func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {

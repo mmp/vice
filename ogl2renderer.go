@@ -17,10 +17,6 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-var (
-	oglStats RendererStats
-)
-
 // OpenGL2Renderer implements a renderer based on github.com/go-gl/gl
 // (v2.1).
 type OpenGL2Renderer struct {
