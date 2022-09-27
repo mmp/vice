@@ -894,11 +894,15 @@ func (yn *YesOrNoModalClient) Opening() {}
 func (yn *YesOrNoModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
 	b = append(b, ModalDialogButton{text: "No", action: func() bool {
-		yn.notok()
+		if yn.notok != nil {
+			yn.notok()
+		}
 		return true
 	}})
 	b = append(b, ModalDialogButton{text: "Yes", action: func() bool {
-		yn.ok()
+		if yn.ok != nil {
+			yn.ok()
+		}
 		return true
 	}})
 	return b
