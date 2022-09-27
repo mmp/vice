@@ -107,7 +107,8 @@ func (c *WorldUpdates) Reset() {
 }
 
 func (c *WorldUpdates) NoUpdates() bool {
-	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0
+	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0 &&
+		len(c.messages) == 0
 }
 
 type Label struct {
