@@ -213,7 +213,7 @@ func format(levels int, f string, args ...interface{}) string {
 // Stats collects a few statistics related to rendering and time spent in
 // various phases of the system.
 type Stats struct {
-	draw            DrawStats
+	render          RendererStats
 	processMessages time.Duration
 	drawImgui       time.Duration
 	drawPanes       time.Duration
@@ -237,9 +237,7 @@ func (l *Logger) LogStats(stats Stats) {
 	lg.Printf("Stats: process messages %s draw panes %s draw imgui %s",
 		stats.processMessages.String(), stats.drawPanes.String(), stats.drawImgui.String())
 
-	lg.Printf("Stats: %d draw calls, %dk verts, %dk lines, %dk tris, %d chars",
-		stats.draw.drawCalls, stats.draw.vertices/1000, stats.draw.lines/1000,
-		stats.draw.tris/1000, stats.draw.chars)
+	lg.Printf("Stats: rendering: %s", stats.render.String())
 }
 
 func (l *Logger) SaveLogs() {

@@ -55,23 +55,26 @@ type World struct {
 	defaultAirport string
 	defaultCenter  Point2LL
 
-	VORs      map[string]Point2LL
-	NDBs      map[string]Point2LL
-	fixes     map[string]Point2LL
-	airports  map[string]Point2LL
-	runways   map[string][]Runway
-	ARTCC     []ARTCC
-	ARTCCLow  []ARTCC
-	ARTCCHigh []ARTCC
+	VORs     map[string]Point2LL
+	NDBs     map[string]Point2LL
+	fixes    map[string]Point2LL
+	airports map[string]Point2LL
+	runways  map[string][]Runway
 
 	// Static things to draw; derived from the sector file
-	runwayGeom                        LinesDrawable
-	geos                              []Geo
-	regionGeom                        []Region
-	regionColorMap                    ColorMap
-	SIDs, STARs                       []SidStar
+	//
+	// These only store geometry; no colors; the caller should set current
+	// RGB based on the active color scheme.
+	runwayCommandBuffer               CommandBuffer
+	lowAirwayCommandBuffer            CommandBuffer
+	highAirwayCommandBuffer           CommandBuffer
+	regions                           []StaticDrawable
+	ARTCC                             []StaticDrawable
+	ARTCCLow                          []StaticDrawable
+	ARTCCHigh                         []StaticDrawable
+	geos                              []StaticDrawable
+	SIDs, STARs                       []StaticDrawable
 	lowAirwayLabels, highAirwayLabels []Label
-	lowAirwayGeom, highAirwayGeom     LinesDrawable
 	labelColorMap                     ColorMap
 	labels                            []Label
 
@@ -117,25 +120,10 @@ type Label struct {
 	color RGB
 }
 
-type ARTCC struct {
-	name  string
-	lines LinesDrawable
-}
-
-type Geo struct {
+type StaticDrawable struct {
 	name     string
-	lines    LinesDrawable
-	colorMap ColorMap
-}
-
-type Region struct {
-	tris   TrianglesDrawable
-	bounds Extent2D
-}
-
-type SidStar struct {
-	name     string
-	lines    LinesDrawable
+	cb       CommandBuffer
+	rgbSlice []float32
 	bounds   Extent2D
 	colorMap ColorMap
 }
@@ -146,6 +134,37 @@ func Point2LLFromSct2(ll sct2.LatLong) Point2LL {
 
 func Point2LLFromLL64(latitude, longitude float64) Point2LL {
 	return Point2LL{float32(longitude), float32(latitude)}
+}
+
+// efficient mapping from names to offsets
+type ColorMap struct {
+	m   map[string]int
+	ids []int
+}
+
+func MakeColorMap() ColorMap { return ColorMap{m: make(map[string]int)} }
+
+func (c *ColorMap) Add(name string) {
+	if id, ok := c.m[name]; ok {
+		c.ids = append(c.ids, id)
+	} else {
+		newId := len(c.m) + 1
+		c.m[name] = newId
+		c.ids = append(c.ids, newId)
+	}
+}
+
+// returns indices of all ids that correspond
+func (c *ColorMap) Visit(name string, callback func(int)) {
+	if matchId, ok := c.m[name]; !ok {
+		return
+	} else {
+		for i, id := range c.ids {
+			if id == matchId {
+				callback(i)
+			}
+		}
+	}
 }
 
 var (
@@ -245,16 +264,15 @@ func (w *World) LoadSectorFile(filename string) error {
 	w.ARTCCHigh = nil
 
 	// Static things to draw; derived from the sector file
-	w.runwayGeom = LinesDrawable{}
+	w.runwayCommandBuffer = CommandBuffer{}
 	w.geos = nil
-	w.regionGeom = nil
-	w.regionColorMap = ColorMap{}
+	w.regions = nil
 	w.SIDs = nil
 	w.STARs = nil
 	w.lowAirwayLabels = nil
 	w.highAirwayLabels = nil
-	w.lowAirwayGeom = LinesDrawable{}
-	w.highAirwayGeom = LinesDrawable{}
+	w.lowAirwayCommandBuffer = CommandBuffer{}
+	w.highAirwayCommandBuffer = CommandBuffer{}
 	w.labelColorMap = ColorMap{}
 	w.labels = nil
 
@@ -283,18 +301,21 @@ func (w *World) LoadSectorFile(filename string) error {
 		}
 	}
 
-	setupARTCC := func(sfARTCC []sct2.ARTCC) []ARTCC {
-		var artccs []ARTCC
+	setupARTCC := func(sfARTCC []sct2.ARTCC) []StaticDrawable {
+		var artccs []StaticDrawable
 		for _, artcc := range sfARTCC {
-			a := ARTCC{name: artcc.Name}
+			ld := LinesDrawBuilder{}
 			for _, seg := range artcc.Segs {
 				if seg.P[0].Latitude != 0 || seg.P[0].Longitude != 0 {
 					v0 := Point2LLFromSct2(seg.P[0])
 					v1 := Point2LLFromSct2(seg.P[1])
-					a.lines.AddLine(v0, v1, RGB{})
+					ld.AddLine(v0, v1)
 				}
 			}
-			artccs = append(artccs, a)
+
+			sd := StaticDrawable{name: artcc.Name, bounds: ld.Bounds()}
+			ld.GenerateCommands(&sd.cb)
+			artccs = append(artccs, sd)
 		}
 		return artccs
 	}
@@ -302,11 +323,22 @@ func (w *World) LoadSectorFile(filename string) error {
 	w.ARTCCLow = setupARTCC(sectorFile.ARTCCLow)
 	w.ARTCCHigh = setupARTCC(sectorFile.ARTCCHigh)
 
-	w.regionColorMap = MakeColorMap()
-	for _, r := range sectorFile.Regions {
+	currentRegionName := "___UNSET___"
+	td := TrianglesDrawBuilder{}
+	for i, r := range sectorFile.Regions {
 		if len(r.P) == 0 {
 			lg.Printf("zero vertices in region \"%s\"?", r.Name)
 			continue
+		}
+
+		if r.Name != currentRegionName {
+			if len(td.indices) > 0 {
+				region := StaticDrawable{name: currentRegionName, bounds: td.Bounds()}
+				td.GenerateCommands(&region.cb)
+				w.regions = append(w.regions, region)
+				td.Reset()
+			}
+			currentRegionName = r.Name
 		}
 
 		var poly earcut.Polygon
@@ -316,27 +348,27 @@ func (w *World) LoadSectorFile(filename string) error {
 		}
 		tris := earcut.Triangulate(poly)
 
-		td := TrianglesDrawable{}
 		for _, tri := range tris {
 			v0 := Point2LL{float32(tri.Vertices[0].P[0]), float32(tri.Vertices[0].P[1])}
 			v1 := Point2LL{float32(tri.Vertices[1].P[0]), float32(tri.Vertices[1].P[1])}
 			v2 := Point2LL{float32(tri.Vertices[2].P[0]), float32(tri.Vertices[2].P[1])}
-			td.AddTriangle(v0, v1, v2, RGB{})
+			td.AddTriangle(v0, v1, v2)
 		}
 
-		w.regionGeom = append(w.regionGeom, Region{tris: td, bounds: td.Bounds()})
-		if r.Name == "" {
-			w.regionColorMap.Add("Region")
-		} else {
-			w.regionColorMap.Add(r.Name)
+		if i+1 == len(sectorFile.Regions) && len(td.indices) > 0 {
+			region := StaticDrawable{name: r.Name, bounds: td.Bounds()}
+			td.GenerateCommands(&region.cb)
+			w.regions = append(w.regions, region)
 		}
 	}
 
+	rld := LinesDrawBuilder{}
 	for _, runway := range sectorFile.Runways {
 		if runway.P[0].Latitude != 0 || runway.P[0].Longitude != 0 {
-			w.runwayGeom.AddLine(Point2LLFromSct2(runway.P[0]), Point2LLFromSct2(runway.P[1]), RGB{})
+			rld.AddLine(Point2LLFromSct2(runway.P[0]), Point2LLFromSct2(runway.P[1]))
 		}
 	}
+	rld.GenerateCommands(&w.runwayCommandBuffer)
 
 	w.labelColorMap = MakeColorMap()
 	for _, label := range sectorFile.Labels {
@@ -345,11 +377,11 @@ func (w *World) LoadSectorFile(filename string) error {
 		w.labels = append(w.labels, l)
 	}
 
-	w.lowAirwayGeom, w.lowAirwayLabels = getAirwayDrawables(sectorFile.LowAirways)
-	w.highAirwayGeom, w.highAirwayLabels = getAirwayDrawables(sectorFile.HighAirways)
+	w.lowAirwayCommandBuffer, w.lowAirwayLabels = getAirwayCommandBuffers(sectorFile.LowAirways)
+	w.highAirwayCommandBuffer, w.highAirwayLabels = getAirwayCommandBuffers(sectorFile.HighAirways)
 
-	sidStarGeom := func(cs []sct2.ColoredSegment, defaultColorName string) (LinesDrawable, ColorMap) {
-		ld := LinesDrawable{}
+	staticColoredLines := func(name string, cs []sct2.ColoredSegment, defaultColorName string) StaticDrawable {
+		ld := ColoredLinesDrawBuilder{}
 		colorMap := MakeColorMap()
 
 		for _, seg := range cs {
@@ -362,36 +394,25 @@ func (w *World) LoadSectorFile(filename string) error {
 				ld.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]), RGB{})
 			}
 		}
-		return ld, colorMap
-	}
-	for _, sid := range sectorFile.SIDs {
-		lines, colorMap := sidStarGeom(sid.Segs, "SID")
-		w.SIDs = append(w.SIDs, SidStar{
-			name:     sid.Name,
-			lines:    lines,
-			bounds:   lines.Bounds(),
-			colorMap: colorMap})
-	}
-	for _, star := range sectorFile.STARs {
-		lines, colorMap := sidStarGeom(star.Segs, "STAR")
-		w.STARs = append(w.STARs, SidStar{
-			name:     star.Name,
-			lines:    lines,
-			bounds:   lines.Bounds(),
-			colorMap: colorMap})
+		cb := CommandBuffer{}
+		start, len := ld.GenerateCommands(&cb)
+
+		return StaticDrawable{
+			name:     name,
+			cb:       cb,
+			rgbSlice: cb.FloatSlice(start, len),
+			bounds:   ld.Bounds(),
+			colorMap: colorMap}
 	}
 
+	for _, sid := range sectorFile.SIDs {
+		w.SIDs = append(w.SIDs, staticColoredLines(sid.Name, sid.Segs, "SID"))
+	}
+	for _, star := range sectorFile.STARs {
+		w.STARs = append(w.STARs, staticColoredLines(star.Name, star.Segs, "STAR"))
+	}
 	for _, geo := range sectorFile.Geo {
-		worldGeo := Geo{name: geo.Name, colorMap: MakeColorMap()}
-		for i, seg := range geo.Segments {
-			worldGeo.lines.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]), RGB{})
-			if geo.Colors[i] == "" {
-				worldGeo.colorMap.Add("Geo")
-			} else {
-				worldGeo.colorMap.Add(geo.Colors[i])
-			}
-		}
-		w.geos = append(w.geos, worldGeo)
+		w.geos = append(w.geos, staticColoredLines(geo.Name, geo.Segments, "Geo"))
 	}
 
 	w.sectorFileColors = make(map[string]RGB)
@@ -546,107 +567,54 @@ func (w *World) SetColorScheme(cs *ColorScheme) {
 	for name, color := range cs.DefinedColors {
 		w.NamedColorChanged(name, *color)
 	}
-	w.NamedColorChanged("ARTCC", cs.ARTCC)
 	w.NamedColorChanged("Geo", cs.Geo)
-	w.NamedColorChanged("HighAirway", cs.HighAirway)
-	w.NamedColorChanged("LowAirway", cs.LowAirway)
-	w.NamedColorChanged("Region", cs.Region)
-	w.NamedColorChanged("Runway", cs.Runway)
 	w.NamedColorChanged("SID", cs.SID)
 	w.NamedColorChanged("STAR", cs.STAR)
 }
 
 func (w *World) NamedColorChanged(name string, rgb RGB) {
-	switch name {
-	case "ARTCC":
-		updateARTCC := func(artcc []ARTCC) {
-			for _, a := range artcc {
-				for i := range a.lines.color {
-					a.lines.color[i] = rgb
-				}
-			}
-		}
-		updateARTCC(w.ARTCC)
-		updateARTCC(w.ARTCCLow)
-		updateARTCC(w.ARTCCHigh)
+	update := func(c ColorMap, slice []float32, name string, rgb RGB) {
+		c.Visit(name, func(i int) {
+			idx := 6 * i
+			slice[idx] = rgb.R
+			slice[idx+1] = rgb.G
+			slice[idx+2] = rgb.B
+			slice[idx+3] = rgb.R
+			slice[idx+4] = rgb.G
+			slice[idx+5] = rgb.B
+		})
+	}
 
+	switch name {
 	case "Geo":
 		for _, geo := range w.geos {
-			geo.colorMap.Visit("Geo", func(i int) {
-				geo.lines.color[2*i] = rgb
-				geo.lines.color[2*i+1] = rgb
-			})
-		}
-
-	case "HighAirway":
-		for i := range w.highAirwayGeom.color {
-			w.highAirwayGeom.color[i] = rgb
-		}
-		for i := range w.highAirwayLabels {
-			w.highAirwayLabels[i].color = rgb
-		}
-
-	case "LowAirway":
-		for i := range w.lowAirwayGeom.color {
-			w.lowAirwayGeom.color[i] = rgb
-		}
-		for i := range w.lowAirwayLabels {
-			w.lowAirwayLabels[i].color = rgb
-		}
-
-	case "Region":
-		w.regionColorMap.Visit("Region", func(i int) {
-			for j := range w.regionGeom[i].tris.color {
-				w.regionGeom[i].tris.color[j] = rgb
-			}
-		})
-
-	case "Runway":
-		for i := range w.runwayGeom.color {
-			w.runwayGeom.color[i] = rgb
+			update(geo.colorMap, geo.rgbSlice, "Geo", rgb)
 		}
 
 	case "SID":
 		for _, sid := range w.SIDs {
-			sid.colorMap.Visit("SID", func(i int) {
-				sid.lines.color[2*i] = rgb
-				sid.lines.color[2*i+1] = rgb
-			})
+			update(sid.colorMap, sid.rgbSlice, "SID", rgb)
 		}
 
 	case "STAR":
 		for _, star := range w.STARs {
-			star.colorMap.Visit("STAR", func(i int) {
-				star.lines.color[2*i] = rgb
-				star.lines.color[2*i+1] = rgb
-			})
+			update(star.colorMap, star.rgbSlice, "STAR", rgb)
 		}
 
 	default:
 		w.labelColorMap.Visit(name, func(i int) {
 			w.labels[i].color = rgb
 		})
-		w.regionColorMap.Visit(name, func(i int) {
-			for j := range w.regionGeom[i].tris.color {
-				w.regionGeom[i].tris.color[j] = rgb
-			}
-		})
-		for _, geo := range w.geos {
-			geo.colorMap.Visit(name, func(i int) {
-				geo.lines.color[i] = rgb
-			})
-		}
 
-		updateColors := func(sidstar []SidStar) {
-			for _, ss := range sidstar {
-				ss.colorMap.Visit(name, func(i int) {
-					ss.lines.color[2*i] = rgb
-					ss.lines.color[2*i+1] = rgb
-				})
-			}
+		for _, geo := range w.geos {
+			update(geo.colorMap, geo.rgbSlice, name, rgb)
 		}
-		updateColors(w.SIDs)
-		updateColors(w.STARs)
+		for _, sid := range w.SIDs {
+			update(sid.colorMap, sid.rgbSlice, name, rgb)
+		}
+		for _, star := range w.STARs {
+			update(star.colorMap, star.rgbSlice, name, rgb)
+		}
 	}
 }
 
@@ -910,7 +878,7 @@ func parseCallsigns() map[string]Callsign {
 	return callsigns
 }
 
-func getAirwayDrawables(airways []sct2.Airway) (LinesDrawable, []Label) {
+func getAirwayCommandBuffers(airways []sct2.Airway) (CommandBuffer, []Label) {
 	m := make(map[sct2.Segment][]string)
 	for _, a := range airways {
 		for _, seg := range a.Segs {
@@ -943,7 +911,7 @@ func getAirwayDrawables(airways []sct2.Airway) (LinesDrawable, []Label) {
 		}
 	}
 
-	lines := LinesDrawable{}
+	lines := LinesDrawBuilder{}
 	var labels []Label
 	for seg, l := range m {
 		label := strings.Join(l, "/")
@@ -951,10 +919,13 @@ func getAirwayDrawables(airways []sct2.Airway) (LinesDrawable, []Label) {
 			Longitude: (seg.P[0].Longitude + seg.P[1].Longitude) / 2}
 		labels = append(labels, Label{name: label, p: Point2LLFromSct2(mid), color: RGB{}})
 
-		lines.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]), RGB{})
+		lines.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]))
 	}
 
-	return lines, labels
+	cb := CommandBuffer{}
+	lines.GenerateCommands(&cb)
+
+	return cb, labels
 }
 
 ///////////////////////////////////////////////////////////////////////////

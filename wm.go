@@ -47,10 +47,10 @@ const (
 )
 
 type SplitLine struct {
-	Pos  float32
-	Axis SplitType
-	dl   DrawList
-	dla  [1]*DrawList
+	Pos     float32
+	Axis    SplitType
+	cb      CommandBuffer
+	cbArray [1]*CommandBuffer
 }
 
 func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
@@ -66,7 +66,7 @@ func (s *SplitLine) Name() string {
 	return "Split Line"
 }
 
-func (s *SplitLine) Draw(ctx *PaneContext) []*DrawList {
+func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if ctx.mouse != nil && ctx.mouse.dragging[mouseButtonSecondary] {
 		delta := ctx.mouse.dragDelta
 
@@ -79,9 +79,7 @@ func (s *SplitLine) Draw(ctx *PaneContext) []*DrawList {
 		s.Pos = clamp(s.Pos, .01, .99)
 	}
 
-	s.dl = DrawList{clear: true, clearColor: ctx.cs.SplitLine}
-	s.dla[0] = &s.dl
-	return s.dla[:]
+	cb.ClearRGB(ctx.cs.SplitLine)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -656,8 +654,10 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	}
 
 	// Get all of the draw lists
-	var drawLists []*DrawList
+	var commandBuffer CommandBuffer
 	if fbSize[0] > 0 && fbSize[1] > 0 {
+		commandBuffer.ClearRGB(positionConfig.GetColorScheme().Background)
+
 		positionConfig.DisplayRoot.VisitPanesWithBounds(wm.nodeFilter, fbFull, displayFull, displayFull, displayTrueFull,
 			func(fb Extent2D, disp Extent2D, parentDisp Extent2D, fullDisp Extent2D, pane Pane) {
 				ctx := PaneContext{
@@ -675,24 +675,31 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					ctx.InitializeMouse()
 				}
 
-				for _, dl := range pane.Draw(&ctx) {
-					dl.scissor = fb
-					drawLists = append(drawLists, dl)
-				}
-			})
+				commandBuffer.Scissor(int(fb.p0[0]), int(fb.p0[1]), int(fb.Width()+.5), int(fb.Height()+.5))
+				commandBuffer.Viewport(int(fb.p0[0]), int(fb.p0[1]), int(fb.Width()+.5), int(fb.Height()+.5))
+				pane.Draw(&ctx, &commandBuffer)
+				commandBuffer.ResetState()
 
-		stats.draw = DrawStats{}
-		for _, dl := range drawLists {
-			renderer.RenderDrawList(dl)
-			stats.draw.Add(dl.Stats())
-		}
-
-		positionConfig.DisplayRoot.VisitPanesWithBounds(wm.nodeFilter, fbFull, displayFull, displayFull, displayTrueFull,
-			func(fb Extent2D, disp Extent2D, parentDisp Extent2D, fullDisp Extent2D, pane Pane) {
 				if pane == mousePane && wm.handlePanePick != nil {
-					renderer.RenderPaneSelectionQuad(fb, displayFull)
+					// Blend in the plane selection quad
+					w, h := disp.Width(), disp.Height()
+					commandBuffer.UseWindowCoordinates(w, h)
+					commandBuffer.Blend()
+
+					p := [4][2]float32{[2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h}}
+					pidx := commandBuffer.Float2Buffer(p[:])
+
+					indices := [4]int32{0, 1, 2, 3}
+					indidx := commandBuffer.IntBuffer(indices[:])
+
+					commandBuffer.SetRGBA(RGBA{0.5, 0.5, 0.5, 0.5})
+					commandBuffer.VertexArray(pidx, 2, 2*4)
+					commandBuffer.DrawQuads(indidx, 4)
+					commandBuffer.ResetState()
 				}
 			})
+
+		stats.render = renderer.RenderCommandBuffer(&commandBuffer)
 	}
 }
 

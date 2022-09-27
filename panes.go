@@ -26,9 +26,7 @@ type Pane interface {
 	Deactivate()
 	Update(updates *WorldUpdates)
 
-	// Note: the caller should treat the returned DrawLists as read-only;
-	// the Pane may for example leave parts unchanged from frame to frame.
-	Draw(ctx *PaneContext) []*DrawList
+	Draw(ctx *PaneContext, cb *CommandBuffer)
 }
 
 type PaneUIDrawer interface {
@@ -117,8 +115,8 @@ type AirportInfoPane struct {
 	lastTextColor     RGB
 	lastSelectedColor RGB
 
-	td TextDrawable
-	dl DrawList
+	td TextDrawBuilder
+	cb CommandBuffer
 }
 
 func NewAirportInfoPane() *AirportInfoPane {
@@ -142,8 +140,9 @@ func NewAirportInfoPane() *AirportInfoPane {
 
 func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe := *a
-	dupe.td = TextDrawable{}
-	dupe.dl = DrawList{}
+	dupe.td = TextDrawBuilder{}
+	dupe.cb = CommandBuffer{}
+	dupe.lastUpdate = time.Time{}
 	return &dupe
 }
 
@@ -222,11 +221,11 @@ func (a *AirportInfoPane) Update(updates *WorldUpdates) {
 	}
 }
 
-func (a *AirportInfoPane) Draw(ctx *PaneContext) []*DrawList {
+func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cs := ctx.cs
 
-	// Try to only update the DrawList once a second. However, two number
-	// things can invalidate it before that:
+	// Try to only update the CommandBuffer once a second. However, two
+	// number things can invalidate it before that:
 	//
 	// 1. World updates: we don't try to be clever and see if they are
 	// aircraft we care about but just go ahead if there are any.
@@ -241,11 +240,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext) []*DrawList {
 		cs.SelectedDataBlock.Equals(a.lastSelectedColor) &&
 		a.lastExtent.Width() == ctx.paneExtent.Width() &&
 		a.lastExtent.Height() == ctx.paneExtent.Height() {
-		// Don't reset the draw list or text drawable, though do update the
-		// background color
-		a.dl.clearColor = cs.Background
-		a.dl.clear = true
-		return []*DrawList{&a.dl}
+		// Use the command buffer as-is.
+		cb.Call(a.cb)
+		return
 	}
 	a.lastUpdate = time.Now()
 	a.lastExtent = ctx.paneExtent
@@ -459,24 +456,22 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext) []*DrawList {
 
 	flush()
 
-	a.dl.Reset()
-	a.dl.clear = true
-	a.dl.clearColor = cs.Background
-	a.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
-
 	a.td.Reset()
 	sz2 := float32(a.font.size) / 2
 	a.td.AddTextMulti(strs, [2]float32{sz2, ctx.paneExtent.Height() - sz2}, styles)
-	a.dl.AddText(a.td)
 
-	return []*DrawList{&a.dl}
+	a.cb.Reset()
+	a.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	a.td.GenerateCommands(&a.cb)
+
+	cb.Call(a.cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // EmptyPane
 
 type EmptyPane struct {
-	dl DrawList
+	cb CommandBuffer
 }
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
@@ -488,10 +483,7 @@ func (ep *EmptyPane) Update(updates *WorldUpdates) {}
 func (ep *EmptyPane) Duplicate(nameAsCopy bool) Pane { return &EmptyPane{} }
 func (ep *EmptyPane) Name() string                   { return "(Empty)" }
 
-func (ep *EmptyPane) Draw(ctx *PaneContext) []*DrawList {
-	ep.dl = DrawList{clear: true, clearColor: ctx.cs.Background}
-	return []*DrawList{&ep.dl}
-}
+func (ep *EmptyPane) Draw(ctx *PaneContext, cb *CommandBuffer) {}
 
 ///////////////////////////////////////////////////////////////////////////
 // FlightPlanPane
@@ -502,8 +494,7 @@ type FlightPlanPane struct {
 
 	ShowRemarks bool
 
-	td TextDrawable
-	dl DrawList
+	td TextDrawBuilder
 }
 
 func NewFlightPlanPane() *FlightPlanPane {
@@ -534,7 +525,7 @@ func (fp *FlightPlanPane) Duplicate(nameAsCopy bool) Pane {
 
 func (fp *FlightPlanPane) Name() string { return "Flight Plan" }
 
-func (fp *FlightPlanPane) Draw(ctx *PaneContext) []*DrawList {
+func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	contents := ""
 
 	if positionConfig.selectedAircraft != nil {
@@ -546,13 +537,8 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext) []*DrawList {
 	fp.td.AddText(contents, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{font: fp.font, color: ctx.cs.Text})
 
-	fp.dl.Reset()
-	fp.dl.AddText(fp.td)
-	fp.dl.clear = true
-	fp.dl.clearColor = ctx.cs.Background
-	fp.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
-
-	return []*DrawList{&fp.dl}
+	cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	fp.td.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -565,8 +551,8 @@ type NotesViewPane struct {
 	expanded     map[*NotesNode]interface{}
 	scrollOffset int
 
-	td TextDrawable
-	dl DrawList
+	td TextDrawBuilder
+	cb CommandBuffer
 }
 
 func NewNotesViewPane() *NotesViewPane {
@@ -604,9 +590,11 @@ func (nv *NotesViewPane) DrawUI() {
 
 func (nv *NotesViewPane) Name() string { return "Notes View" }
 
-func (nv *NotesViewPane) Draw(ctx *PaneContext) []*DrawList {
-	nv.dl.Reset()
+func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	nv.td.Reset()
+
+	nv.cb.Reset()
+	nv.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
 
 	textStyle := TextStyle{font: nv.font, color: ctx.cs.Text}
 	headerStyle := TextStyle{font: nv.font, color: ctx.cs.TextHighlight}
@@ -639,14 +627,15 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext) []*DrawList {
 			}
 
 			if hovered() {
-				rect := LinesDrawable{}
+				rect := LinesDrawBuilder{}
 				width := ctx.paneExtent.Width() - scrollbarWidth - 3*float32(edgeSpace)
-				rect.AddPolyline([2]float32{float32(edgeSpace) / 2, float32(y)}, ctx.cs.Text,
+				rect.AddPolyline([2]float32{float32(edgeSpace) / 2, float32(y)},
 					[][2]float32{[2]float32{0, 0},
 						[2]float32{width, 0},
 						[2]float32{width, float32(-lineHeight)},
 						[2]float32{0, float32(-lineHeight)}})
-				nv.dl.lines = append(nv.dl.lines, rect)
+				nv.cb.SetRGB(ctx.cs.Text)
+				rect.GenerateCommands(&nv.cb)
 			}
 			if mouseReleased() {
 				if expanded {
@@ -693,11 +682,12 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext) []*DrawList {
 		// [by0,by1] is the y extent of the scrollbar in window coordinates
 		by0, by1 := lerp(fy0, float32(vy0), float32(vy1)), lerp(fy1, float32(vy0), float32(vy1))
 
-		rect := LinesDrawable{}
-		rect.AddPolyline([2]float32{ctx.paneExtent.Width() - scrollbarWidth - float32(edgeSpace), by0}, ctx.cs.Text,
+		rect := LinesDrawBuilder{}
+		rect.AddPolyline([2]float32{ctx.paneExtent.Width() - scrollbarWidth - float32(edgeSpace), by0},
 			[][2]float32{[2]float32{0, 0}, [2]float32{scrollbarWidth, 0},
 				[2]float32{scrollbarWidth, by1 - by0}, [2]float32{0, by1 - by0}})
-		nv.dl.lines = append(nv.dl.lines, rect)
+		nv.cb.SetRGB(ctx.cs.Text)
+		rect.GenerateCommands(&nv.cb)
 	}
 
 	if ctx.mouse != nil {
@@ -714,12 +704,9 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext) []*DrawList {
 		nv.scrollOffset = 0
 	}
 
-	nv.dl.AddText(nv.td)
-	nv.dl.clear = true
-	nv.dl.clearColor = ctx.cs.Background
-	nv.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	nv.td.GenerateCommands(&nv.cb)
 
-	return []*DrawList{&nv.dl}
+	cb.Call(nv.cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -739,8 +726,7 @@ type PerformancePane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
-	td TextDrawable
-	dl DrawList
+	td TextDrawBuilder
 }
 
 func NewPerformancePane() *PerformancePane {
@@ -774,7 +760,7 @@ func (pp *PerformancePane) DrawUI() {
 	}
 }
 
-func (pp *PerformancePane) Draw(ctx *PaneContext) []*DrawList {
+func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	const initialFrames = 10
 
 	pp.nFrames++
@@ -812,22 +798,15 @@ func (pp *PerformancePane) Draw(ctx *PaneContext) []*DrawList {
 		mallocsPerFrame, active1000s, mem.HeapAlloc/(1024*1024)))
 
 	// Rendering stats
-	perf.WriteString(fmt.Sprintf("\n%dk verts, %d draw calls, %dk lines, %dk tris, %d chars",
-		stats.draw.vertices/1000, stats.draw.drawCalls, stats.draw.lines/1000,
-		stats.draw.tris/1000, stats.draw.chars))
+	perf.WriteString("\n" + stats.render.String())
 
 	pp.td.Reset()
 	sz2 := float32(pp.font.size) / 2
 	pp.td.AddText(perf.String(), [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{font: pp.font, color: ctx.cs.Text})
 
-	pp.dl.Reset()
-	pp.dl.AddText(pp.td)
-	pp.dl.clear = true
-	pp.dl.clearColor = ctx.cs.Background
-	pp.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
-
-	return []*DrawList{&pp.dl}
+	cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	pp.td.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -837,7 +816,7 @@ type ReminderPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
-	dl DrawList
+	cb CommandBuffer
 }
 
 type ReminderItem interface {
@@ -910,7 +889,7 @@ func (rp *ReminderPane) DrawUI() {
 	}
 }
 
-func (rp *ReminderPane) Draw(ctx *PaneContext) []*DrawList {
+func (rp *ReminderPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// We're not using imgui, so we have to handle hovered and clicked by
 	// ourselves.  Here are the key quantities:
 	indent := int(rp.font.size / 2) // left and top spacing
@@ -922,13 +901,14 @@ func (rp *ReminderPane) Draw(ctx *PaneContext) []*DrawList {
 	// Current cursor position
 	x, y := textIndent, int(ctx.paneExtent.Height())-indent
 
-	// Reset the drawlist before we get going.
-	rp.dl.Reset()
+	// Initialize the command buffer before we get going.
+	rp.cb.Reset()
+	rp.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
 
 	text := func(s string, color RGB) {
-		td := TextDrawable{}
+		td := TextDrawBuilder{}
 		td.AddText(s, [2]float32{float32(x), float32(y)}, TextStyle{font: rp.font, color: color})
-		rp.dl.AddText(td)
+		td.GenerateCommands(&rp.cb)
 
 		bx, _ := rp.font.BoundText(s, 0)
 		x += bx
@@ -957,14 +937,15 @@ func (rp *ReminderPane) Draw(ctx *PaneContext) []*DrawList {
 			// Draw the selection box; we want this for both hovered() and
 			// buttonDown(), so handle it separately. (Note that
 			// buttonDown() implies hovered().)
-			rect := LinesDrawable{}
+			rect := LinesDrawBuilder{}
 			width := ctx.paneExtent.Width()
-			rect.AddPolyline([2]float32{float32(indent) / 2, float32(y)}, ctx.cs.Text,
+			rect.AddPolyline([2]float32{float32(indent) / 2, float32(y)},
 				[][2]float32{[2]float32{0, 0},
 					[2]float32{width - float32(indent), 0},
 					[2]float32{width - float32(indent), float32(-lineHeight)},
 					[2]float32{0, float32(-lineHeight)}})
-			rp.dl.lines = append(rp.dl.lines, rect)
+			rp.cb.SetRGB(ctx.cs.Text)
+			rect.GenerateCommands(&rp.cb)
 		}
 
 		// Draw a suitable box
@@ -1003,9 +984,5 @@ func (rp *ReminderPane) Draw(ctx *PaneContext) []*DrawList {
 		}
 	}
 
-	rp.dl.clear = true
-	rp.dl.clearColor = ctx.cs.Background
-	rp.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
-
-	return []*DrawList{&rp.dl}
+	cb.Call(rp.cb)
 }

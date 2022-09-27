@@ -117,8 +117,8 @@ func (e *ConsoleEntry) Add(t string, s ConsoleTextStyle) {
 	e.style = append(e.style, s)
 }
 
-func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *TextDrawable {
-	t := &TextDrawable{}
+func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *TextDrawBuilder {
+	t := &TextDrawBuilder{}
 	for i := range e.text {
 		switch e.style[i] {
 		case ConsoleTextRegular:
@@ -164,7 +164,7 @@ type CLIPane struct {
 
 	cursor int
 
-	dl DrawList
+	cb CommandBuffer
 }
 
 func NewCLIPane() *CLIPane {
@@ -291,8 +291,9 @@ func isspace(c byte) bool {
 	return c == ' '
 }
 
-func (cli *CLIPane) Draw(ctx *PaneContext) []*DrawList {
-	cli.dl.Reset()
+func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	cli.cb.Reset()
+	cli.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
 
 	style := TextStyle{font: cli.font, lineSpacing: 1, color: ctx.cs.Text}
 	cursorStyle := TextStyle{font: cli.font, lineSpacing: 0,
@@ -356,13 +357,13 @@ func (cli *CLIPane) Draw(ctx *PaneContext) []*DrawList {
 		idx := len(cli.console) - 1 - cli.consoleViewOffset - consoleLinesVisible + 1 + i
 		if idx >= 0 {
 			td := cli.console[idx].Draw([2]float32{left, y}, style, ctx.cs)
-			cli.dl.AddText(*td)
+			td.GenerateCommands(&cli.cb)
 		}
 		y -= lineHeight
 	}
 
 	// Draw text for the input, one line above the status line
-	td := TextDrawable{}
+	td := TextDrawBuilder{}
 	prompt := ""
 	if positionConfig.selectedAircraft != nil {
 		prompt = positionConfig.selectedAircraft.Callsign()
@@ -381,21 +382,17 @@ func (cli *CLIPane) Draw(ctx *PaneContext) []*DrawList {
 		styles := []TextStyle{style, cursorStyle, style}
 		td.AddTextMulti([]string{sb, sc, se}, inputPos, styles)
 	}
-	cli.dl.AddText(td)
+	td.GenerateCommands(&cli.cb)
 
 	// status
 	if cli.status != "" {
-		sd := TextDrawable{}
+		sd := TextDrawBuilder{}
 		// Half line of spacing below it
 		sd.AddText(cli.status, [2]float32{left, 1.5 * lineHeight}, statusStyle)
-		cli.dl.AddText(sd)
+		sd.GenerateCommands(&cli.cb)
 	}
 
-	cli.dl.clear = true
-	cli.dl.clearColor = ctx.cs.Background
-	cli.dl.UseWindowCoordiantes(ctx.paneExtent.Width(), ctx.paneExtent.Height())
-
-	return []*DrawList{&cli.dl}
+	cb.Call(cli.cb)
 }
 
 // Simple, one string, same style

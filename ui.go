@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
@@ -1267,5 +1268,220 @@ func ShowFatalErrorDialog(s string, args ...interface{}) {
 		imgui.Render()
 		renderer.RenderImgui(platform.DisplaySize(), platform.FramebufferSize(), imgui.RenderedDrawData())
 		platform.PostRender()
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ColorScheme
+
+type ColorScheme struct {
+	Background RGB
+	SplitLine  RGB
+
+	Text          RGB
+	TextHighlight RGB
+	TextError     RGB
+
+	Safe    RGB
+	Caution RGB
+	Error   RGB
+
+	// Datablock colors
+	SelectedDataBlock   RGB
+	UntrackedDataBlock  RGB
+	TrackedDataBlock    RGB
+	HandingOffDataBlock RGB
+	GhostDataBlock      RGB
+
+	Track RGB
+
+	Airport    RGB
+	VOR        RGB
+	NDB        RGB
+	Fix        RGB
+	Runway     RGB
+	Region     RGB
+	SID        RGB
+	STAR       RGB
+	Geo        RGB
+	ARTCC      RGB
+	LowAirway  RGB
+	HighAirway RGB
+	Compass    RGB
+
+	DefinedColors map[string]*RGB
+}
+
+func NewColorScheme() *ColorScheme {
+	cs := ColorScheme{
+		Background: RGB{0, 0, 0},
+		SplitLine:  RGB{0.5, 0.5, 0.5},
+
+		Text:          RGB{1, 1, 1},
+		TextHighlight: RGB{1, .6, .6},
+		TextError:     RGB{1, 0, 0},
+
+		Safe:    RGB{0, 1, 0},
+		Caution: RGB{1, 1, 0},
+		Error:   RGB{1, 0, 0},
+
+		SelectedDataBlock:   RGB{0, 0.8, 0.8},
+		UntrackedDataBlock:  RGB{0, 0, 0.8},
+		TrackedDataBlock:    RGB{0, 0.8, 0},
+		HandingOffDataBlock: RGB{0.8, 0, 0.8},
+		GhostDataBlock:      RGB{0.5, 0.5, 0.5},
+		Track:               RGB{1, 1, 1},
+
+		Airport:    RGB{.8, .7, .8},
+		VOR:        RGB{.8, .7, .8},
+		NDB:        RGB{.8, .7, .8},
+		Fix:        RGB{.8, .7, .8},
+		Runway:     RGB{.8, .8, .4},
+		Region:     RGB{.9, .9, .9},
+		Geo:        RGB{.5, .9, .9},
+		LowAirway:  RGB{.5, .5, .5},
+		HighAirway: RGB{.5, .5, .5},
+		SID:        RGB{0, 0, .9},
+		STAR:       RGB{.2, .7, .2},
+		ARTCC:      RGB{.7, .7, .7},
+		Compass:    RGB{.5, .5, .5}}
+
+	cs.DefinedColors = make(map[string]*RGB)
+	for name, rgb := range world.sectorFileColors {
+		c := rgb
+		cs.DefinedColors[name] = &c
+	}
+
+	return &cs
+}
+
+func (c *ColorScheme) IsDark() bool {
+	luminance := 0.2126*c.Background.R + 0.7152*c.Background.G + 0.0722*c.Background.B
+	return luminance < 0.35 // ad hoc..
+}
+
+func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
+	edit := func(uiName string, internalName string, c *RGB) {
+		// It's slightly grungy to hide this in here but it does simplify
+		// the code below...
+		imgui.TableNextColumn()
+		ptr := (*[3]float32)(unsafe.Pointer(c))
+		flags := imgui.ColorEditFlagsNoAlpha | imgui.ColorEditFlagsNoInputs |
+			imgui.ColorEditFlagsRGB | imgui.ColorEditFlagsInputRGB
+		if imgui.ColorEdit3V(uiName, ptr, flags) {
+			handleDefinedColorChange(internalName, *c)
+		}
+	}
+
+	names := SortedMapKeys(c.DefinedColors)
+	sfdIndex := 0
+	sfd := func() bool {
+		if sfdIndex < len(names) {
+			edit(names[sfdIndex], names[sfdIndex], c.DefinedColors[names[sfdIndex]])
+			sfdIndex++
+			return true
+		} else {
+			imgui.TableNextColumn()
+			return false
+		}
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg
+	if imgui.BeginTableV(fmt.Sprintf("ColorEditor##%p", c), 4, flags, imgui.Vec2{}, 0.0) {
+		// TODO: it would be nice to do this in a more data-driven way--to at least just
+		// be laying out the table by iterating over slices...
+		imgui.TableSetupColumn("General")
+		imgui.TableSetupColumn("Aircraft")
+		imgui.TableSetupColumn("Radar scope")
+		imgui.TableSetupColumn("Sector file definitions")
+		imgui.TableHeadersRow()
+
+		imgui.TableNextRow()
+		edit("Background", "Background", &c.Background)
+		edit("Track", "Track", &c.Track)
+		edit("Airport", "Airport", &c.Airport)
+		sfd()
+
+		imgui.TableNextRow()
+		edit("Text", "Text", &c.Text)
+		edit("Tracked data block", "Tracked Data Block", &c.TrackedDataBlock)
+		edit("ARTCC", "ARTCC", &c.ARTCC)
+		sfd()
+
+		imgui.TableNextRow()
+		edit("Highlighted text", "TextHighlight", &c.TextHighlight)
+		edit("Selected data block", "Selected Data Block", &c.SelectedDataBlock)
+		edit("Compass", "Compass", &c.Compass)
+		sfd()
+
+		imgui.TableNextRow()
+		edit("Error text", "TextError", &c.TextError)
+		edit("Handing-off data block", "HandingOff Data Block", &c.HandingOffDataBlock)
+		edit("Fix", "Fix", &c.Fix)
+		sfd()
+
+		imgui.TableNextRow()
+		edit("Split line", "Split Line", &c.SplitLine)
+		edit("Untracked data block", "Untracked Data Block", &c.UntrackedDataBlock)
+		edit("Geo", "Geo", &c.Geo)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		edit("Ghost data block", "Ghost Data Block", &c.GhostDataBlock)
+		edit("High airway", "HighAirway", &c.HighAirway)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		edit("Safe situation", "Safe", &c.Safe)
+		edit("Low airway", "LowAirway", &c.LowAirway)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		edit("Caution situation", "Caution", &c.Caution)
+		edit("NDB", "NDB", &c.NDB)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		edit("Error situation", "Error", &c.Error)
+		edit("Region", "Region", &c.Region)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.TableNextColumn()
+		edit("Runway", "Runway", &c.Runway)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.TableNextColumn()
+		edit("SID", "SID", &c.SID)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.TableNextColumn()
+		edit("STAR", "STAR", &c.STAR)
+		sfd()
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.TableNextColumn()
+		edit("VOR", "VOR", &c.VOR)
+		sfd()
+
+		for sfdIndex < len(names) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.TableNextColumn()
+			imgui.TableNextColumn()
+			sfd()
+		}
+
+		imgui.EndTable()
 	}
 }

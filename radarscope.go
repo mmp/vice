@@ -76,12 +76,11 @@ type RadarScopePane struct {
 	LabelFontIdentifier     FontIdentifier
 	labelFont               *Font
 
-	pointsDrawable        PointsDrawable
-	linesDrawable         LinesDrawable
-	highlightedDrawable   LinesDrawable
-	llDrawList            DrawList // things using lat-long coordiantes for vertices
-	textDrawList          DrawList // text, using window coordinates, but not datablocks (since they are not managed using textDrawablePool)
-	datablockTextDrawList DrawList // datablock text
+	pointsDrawBuilder      PointsDrawBuilder
+	linesDrawBuilder       ColoredLinesDrawBuilder
+	highlightedDrawBuilder ColoredLinesDrawBuilder
+	llCommandBuffer        CommandBuffer // things using lat-long coordiantes for vertices
+	textCommandBuffer      CommandBuffer // text, using window coordinates
 
 	acSelectedByDatablock *Aircraft
 
@@ -89,9 +88,7 @@ type RadarScopePane struct {
 	primaryDragStart           [2]float32
 	primaryDragEnd             [2]float32
 
-	// We cache these across frames to preserve their slice allocations for
-	// reuse.
-	textDrawablePool []TextDrawable
+	tdScratch TextDrawBuilder
 
 	lastRangeNotificationPlayed time.Time
 
@@ -100,8 +97,7 @@ type RadarScopePane struct {
 	// the ones that have an active track and are in our altitude range
 	trackedAircraft map[*Aircraft]*TrackedAircraft
 	// map from legit to their ghost, if present
-	ghostAircraft           map[*Aircraft]*Aircraft
-	datablockUpdateAircraft map[*Aircraft]interface{}
+	ghostAircraft map[*Aircraft]*Aircraft
 }
 
 const (
@@ -118,7 +114,7 @@ type TrackedAircraft struct {
 	datablockTextCurrent     bool
 	datablockBounds          Extent2D // w.r.t. lower-left corner (so (0,0) p0 always)
 
-	textDrawable [2]TextDrawable
+	textDrawBuilder [2]TextDrawBuilder
 }
 
 // Takes aircraft position in window coordinates
@@ -172,7 +168,6 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
 	c.activeAircraft = make(map[*Aircraft]interface{})
 	c.ghostAircraft = make(map[*Aircraft]*Aircraft)
-	c.datablockUpdateAircraft = make(map[*Aircraft]interface{})
 
 	font := GetDefaultFont()
 	c.DatablockFontIdentifier = font.id
@@ -217,7 +212,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 
 	dupe.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
 	for ac, tracked := range rs.trackedAircraft {
-		// NOTE: do not copy the TextDrawable over, since we'd be aliasing
+		// NOTE: do not copy the TextDrawBuilder over, since we'd be aliasing
 		// the slices.
 		dupe.trackedAircraft[ac] = &TrackedAircraft{
 			isGhost:       tracked.isGhost,
@@ -229,30 +224,20 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 		ghost := *gh // make a copy
 		dupe.ghostAircraft[ac] = &ghost
 	}
-	dupe.datablockUpdateAircraft = make(map[*Aircraft]interface{})
 
 	// don't share those slices...
-	dupe.llDrawList = DrawList{}
-	dupe.textDrawList = DrawList{}
-	dupe.datablockTextDrawList = DrawList{}
-	dupe.textDrawablePool = nil
-	dupe.pointsDrawable = PointsDrawable{}
-	dupe.linesDrawable = LinesDrawable{}
-	dupe.highlightedDrawable = LinesDrawable{}
+	dupe.llCommandBuffer = CommandBuffer{}
+	dupe.textCommandBuffer = CommandBuffer{}
+	dupe.pointsDrawBuilder = PointsDrawBuilder{}
+	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
+	dupe.highlightedDrawBuilder = ColoredLinesDrawBuilder{}
 
 	return dupe
 }
 
-func (rs *RadarScopePane) getTextDrawable() TextDrawable {
-	if len(rs.textDrawablePool) == 0 {
-		return TextDrawable{}
-	}
-
-	end := len(rs.textDrawablePool) - 1
-	td := rs.textDrawablePool[end]
-	td.Reset()
-	rs.textDrawablePool = rs.textDrawablePool[:end]
-	return td
+func (rs *RadarScopePane) getScratchTextDrawBuilder() *TextDrawBuilder {
+	rs.tdScratch.Reset()
+	return &rs.tdScratch
 }
 
 func (rs *RadarScopePane) Activate(cs *ColorScheme) {
@@ -283,9 +268,6 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	if rs.ghostAircraft == nil {
 		rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
 	}
-	if rs.datablockUpdateAircraft == nil {
-		rs.datablockUpdateAircraft = make(map[*Aircraft]interface{})
-	}
 	for _, ac := range world.aircraft {
 		rs.activeAircraft[ac] = nil
 		if !ac.LostTrack() && ac.Altitude() >= int(rs.MinAltitude) && ac.Altitude() <= int(rs.MaxAltitude) {
@@ -307,16 +289,13 @@ func (rs *RadarScopePane) Deactivate() {
 	rs.activeAircraft = nil
 	rs.trackedAircraft = nil
 	rs.ghostAircraft = nil
-	rs.datablockUpdateAircraft = nil
 
 	// Free up this memory, FWIW
-	rs.llDrawList = DrawList{}
-	rs.textDrawList = DrawList{}
-	rs.datablockTextDrawList = DrawList{}
-	rs.textDrawablePool = nil
-	rs.pointsDrawable = PointsDrawable{}
-	rs.linesDrawable = LinesDrawable{}
-	rs.highlightedDrawable = LinesDrawable{}
+	rs.llCommandBuffer = CommandBuffer{}
+	rs.textCommandBuffer = CommandBuffer{}
+	rs.pointsDrawBuilder = PointsDrawBuilder{}
+	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
+	rs.highlightedDrawBuilder = ColoredLinesDrawBuilder{}
 }
 
 func (rs *RadarScopePane) Name() string { return rs.ScopeName }
@@ -403,7 +382,6 @@ func (rs *RadarScopePane) DrawUI() {
 					if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 						rs.ghostAircraft[ac] = ghost
 						rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
-						rs.datablockUpdateAircraft[ghost] = nil
 					}
 				}
 			}
@@ -462,7 +440,7 @@ func (rs *RadarScopePane) DrawUI() {
 			imgui.TreePop()
 		}
 
-		sidStarHierarchy := func(title string, sidstar []SidStar, drawSet map[string]interface{}) {
+		sidStarHierarchy := func(title string, sidstar []StaticDrawable, drawSet map[string]interface{}) {
 			if imgui.TreeNode(title) {
 				depth := 1
 				active := true
@@ -497,7 +475,7 @@ func (rs *RadarScopePane) DrawUI() {
 		sidStarHierarchy("SIDs", world.SIDs, rs.SIDDrawSet)
 		sidStarHierarchy("STARs", world.STARs, rs.STARDrawSet)
 
-		artccCheckboxes := func(name string, artcc []ARTCC, drawSet map[string]interface{}) {
+		artccCheckboxes := func(name string, artcc []StaticDrawable, drawSet map[string]interface{}) {
 			if len(artcc) > 0 && imgui.TreeNode(name) {
 				for i, a := range artcc {
 					_, draw := drawSet[a.name]
@@ -534,7 +512,6 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 			rs.activeAircraft[ac] = nil
 			if track(ac) {
 				rs.trackedAircraft[ac] = &TrackedAircraft{}
-				rs.datablockUpdateAircraft[ac] = nil
 				if rs.CRDAEnabled {
 					if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 						rs.ghostAircraft[ac] = ghost
@@ -572,7 +549,6 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 		}
 
 		if track(ac) {
-			rs.datablockUpdateAircraft[ac] = nil
 			if ta, ok := rs.trackedAircraft[ac]; !ok {
 				rs.trackedAircraft[ac] = &TrackedAircraft{}
 			} else {
@@ -584,12 +560,10 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 				if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 					rs.ghostAircraft[ac] = ghost
 					rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
-					rs.datablockUpdateAircraft[ghost] = nil
 				}
 			}
 		} else {
 			delete(rs.trackedAircraft, ac)
-			delete(rs.datablockUpdateAircraft, ac)
 		}
 	}
 
@@ -625,7 +599,7 @@ func mul4p(m *mgl32.Mat4, p [2]float32) [2]float32 {
 	return add2f(mul4v(m, p), [2]float32{m[12], m[13]})
 }
 
-func (rs *RadarScopePane) Draw(ctx *PaneContext) []*DrawList {
+func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	latLongFromWindowMtx, ndcFromLatLongMtx := rs.getViewingMatrices(ctx)
 	windowFromLatLongMtx := latLongFromWindowMtx.Inv()
 
@@ -642,11 +616,11 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext) []*DrawList {
 	}
 
 	// Title in upper-left corner
-	td := rs.getTextDrawable()
+	td := rs.getScratchTextDrawBuilder()
 	height := ctx.paneExtent.Height()
 	td.AddText(rs.ScopeName, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
 		TextStyle{font: rs.labelFont, color: ctx.cs.Text})
-	rs.textDrawList.AddText(td)
+	td.GenerateCommands(&rs.textCommandBuffer)
 
 	// Static geometry: SIDs/STARs, runways, ...
 	rs.drawStatic(ctx, windowFromLatLongMtx, latLongFromWindowMtx)
@@ -667,11 +641,13 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext) []*DrawList {
 	// Mouse events last, so that the datablock bounds are current.
 	rs.consumeMouseEvents(ctx, latLongFromWindowP, latLongFromWindowV, windowFromLatLongP)
 
-	rs.llDrawList.AddPoints(rs.pointsDrawable)
-	rs.llDrawList.AddLines(rs.linesDrawable)
-	rs.llDrawList.AddLines(rs.highlightedDrawable)
+	rs.pointsDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
+	rs.linesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
+	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth * ctx.highDPIScale)
+	rs.highlightedDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 
-	return []*DrawList{&rs.llDrawList, &rs.textDrawList, &rs.datablockTextDrawList}
+	cb.Call(rs.llCommandBuffer)
+	cb.Call(rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) getViewingMatrices(ctx *PaneContext) (latLongFromWindow mgl32.Mat4, ndcFromLatLong mgl32.Mat4) {
@@ -705,33 +681,23 @@ func (rs *RadarScopePane) getViewingMatrices(ctx *PaneContext) (latLongFromWindo
 }
 
 func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl32.Mat4) {
-	// Take our text slices back from our DrawList now that it's been drawn, in preparation for reuse this frame.
-	rs.textDrawablePool = append(rs.textDrawablePool, rs.textDrawList.text...)
-	rs.textDrawList.text = nil
-
 	// Reset the slices so we can draw new lines and points
-	rs.linesDrawable.Reset()
-	rs.linesDrawable.width = rs.LineWidth * ctx.highDPIScale
-	rs.highlightedDrawable.Reset()
-	rs.highlightedDrawable.width = 3 * rs.LineWidth * ctx.highDPIScale
-	rs.pointsDrawable.Reset()
-	rs.pointsDrawable.size = rs.PointSize
+	rs.linesDrawBuilder.Reset()
+	rs.highlightedDrawBuilder.Reset()
+	rs.pointsDrawBuilder.Reset()
 
-	rs.llDrawList.Reset()
-	rs.llDrawList.clear = true // so must return this one first!
-	rs.llDrawList.clearColor = ctx.cs.Background
-	rs.llDrawList.projection = ndcFromLatLongMtx
-	rs.llDrawList.modelview = mgl32.Ident4()
+	rs.llCommandBuffer.Reset()
+	rs.llCommandBuffer.LoadProjectionMatrix(ndcFromLatLongMtx)
+	rs.llCommandBuffer.LoadModelViewMatrix(mgl32.Ident4())
+	rs.llCommandBuffer.PointSize(rs.PointSize)
+	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 
-	rs.textDrawList.Reset()
-	rs.textDrawList.clear = false
-	rs.textDrawList.UseWindowCoordiantes(width, height)
-
-	rs.datablockTextDrawList.Reset()
-	rs.datablockTextDrawList.clear = false
-	rs.datablockTextDrawList.UseWindowCoordiantes(width, height)
+	rs.textCommandBuffer.Reset()
+	rs.textCommandBuffer.UseWindowCoordinates(width, height)
+	rs.textCommandBuffer.PointSize(rs.PointSize)
+	rs.textCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 }
 
 func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl32.Mat4,
@@ -769,16 +735,25 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	*/
 
 	// Renormalize line width for high-DPI displays
-	lineWidth := rs.LineWidth * ctx.highDPIScale
+	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 
 	if rs.Everything || rs.Runways {
-		rs.llDrawList.AddLinesWithWidth(world.runwayGeom, lineWidth)
+		rs.llCommandBuffer.SetRGB(ctx.cs.Runway)
+		rs.llCommandBuffer.Call(world.runwayCommandBuffer)
 	}
 
 	if rs.Everything || rs.Regions {
-		for i := range world.regionGeom {
-			if Overlaps(world.regionGeom[i].bounds, viewBounds) {
-				rs.llDrawList.AddTriangles(world.regionGeom[i].tris)
+		for _, region := range world.regions {
+			if Overlaps(region.bounds, viewBounds) {
+				if region.name == "" {
+					rs.llCommandBuffer.SetRGB(ctx.cs.Region)
+				} else if rgb, ok := ctx.cs.DefinedColors[region.name]; ok {
+					rs.llCommandBuffer.SetRGB(*rgb)
+				} else {
+					lg.Errorf("%s: defined color not found for region", region.name)
+					rs.llCommandBuffer.SetRGB(RGB{0.5, 0.5, 0.5})
+				}
+				rs.llCommandBuffer.Call(region.cb)
 			}
 		}
 	}
@@ -795,14 +770,14 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	if rs.Everything || rs.VORs {
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, vor := range world.VORs {
-			rs.linesDrawable.AddPolyline(vor, ctx.cs.VOR, square)
+			rs.linesDrawBuilder.AddPolyline(vor, ctx.cs.VOR, square)
 		}
 	}
 	if rs.Everything || rs.NDBs {
 		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
 		for _, ndb := range world.NDBs {
 			// flipped triangles
-			rs.linesDrawable.AddPolyline(ndb, ctx.cs.NDB, fliptri)
+			rs.linesDrawBuilder.AddPolyline(ndb, ctx.cs.NDB, fliptri)
 		}
 	}
 
@@ -810,7 +785,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
 		for _, fix := range world.fixes {
 			// upward-pointing triangles
-			rs.linesDrawable.AddPolyline(fix, ctx.cs.Fix, uptri)
+			rs.linesDrawBuilder.AddPolyline(fix, ctx.cs.Fix, uptri)
 		}
 	} else {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
@@ -819,24 +794,25 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 				// May happen when a new sector file is loaded.
 				//lg.Printf("%s: selected fix not found in sector file data!", loc)
 			} else {
-				rs.linesDrawable.AddPolyline(loc, ctx.cs.Fix, uptri)
+				rs.linesDrawBuilder.AddPolyline(loc, ctx.cs.Fix, uptri)
 			}
 		}
 	}
 	if rs.Everything || rs.Airports {
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, ap := range world.airports {
-			rs.linesDrawable.AddPolyline(ap, ctx.cs.Airport, square)
+			rs.linesDrawBuilder.AddPolyline(ap, ctx.cs.Airport, square)
 		}
 	}
 
-	drawARTCCLines := func(artcc []ARTCC, drawSet map[string]interface{}) {
+	drawARTCCLines := func(artcc []StaticDrawable, drawSet map[string]interface{}) {
 		for _, artcc := range artcc {
-			if _, draw := drawSet[artcc.name]; draw || rs.Everything {
-				rs.llDrawList.AddLinesWithWidth(artcc.lines, lineWidth)
+			if _, draw := drawSet[artcc.name]; (draw || rs.Everything) && Overlaps(artcc.bounds, viewBounds) {
+				rs.llCommandBuffer.Call(artcc.cb)
 			}
 		}
 	}
+	rs.llCommandBuffer.SetRGB(ctx.cs.ARTCC)
 	drawARTCCLines(world.ARTCC, rs.ARTCCDrawSet)
 	drawARTCCLines(world.ARTCCLow, rs.ARTCCLowDrawSet)
 	drawARTCCLines(world.ARTCCHigh, rs.ARTCCHighDrawSet)
@@ -844,24 +820,25 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	for _, sid := range world.SIDs {
 		_, draw := rs.SIDDrawSet[sid.name]
 		if (rs.Everything || draw) && Overlaps(sid.bounds, viewBounds) {
-			rs.llDrawList.AddLinesWithWidth(sid.lines, lineWidth)
+			rs.llCommandBuffer.Call(sid.cb)
 		}
 	}
 	for _, star := range world.STARs {
 		_, draw := rs.STARDrawSet[star.name]
 		if (rs.Everything || draw) && Overlaps(star.bounds, viewBounds) {
-			rs.llDrawList.AddLinesWithWidth(star.lines, lineWidth)
+			rs.llCommandBuffer.Call(star.cb)
 		}
 	}
 
 	for _, geo := range world.geos {
 		_, draw := rs.GeoDrawSet[geo.name]
-		if rs.Everything || draw {
-			rs.llDrawList.AddLinesWithWidth(geo.lines, lineWidth)
+		if (rs.Everything || draw) && Overlaps(geo.bounds, viewBounds) {
+			rs.llCommandBuffer.Call(geo.cb)
 		}
 	}
 
 	drawAirwayLabels := func(labels []Label, color RGB) {
+		td := rs.getScratchTextDrawBuilder()
 		for _, label := range labels {
 			textPos := windowFromLatLongP(label.p)
 			if inWindow(textPos) {
@@ -870,51 +847,52 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 					color:           color,
 					drawBackground:  true,
 					backgroundColor: ctx.cs.Background}
-				td := rs.getTextDrawable()
 				td.AddTextCentered(label.name, textPos, style)
-				rs.textDrawList.AddText(td)
 			}
 		}
+		td.GenerateCommands(&rs.textCommandBuffer)
 	}
 
 	if rs.Everything || rs.LowAirways {
-		rs.llDrawList.AddLinesWithWidth(world.lowAirwayGeom, lineWidth)
+		rs.llCommandBuffer.SetRGB(ctx.cs.LowAirway)
+		rs.llCommandBuffer.Call(world.lowAirwayCommandBuffer)
 		drawAirwayLabels(world.lowAirwayLabels, ctx.cs.LowAirway)
 	}
 	if rs.Everything || rs.HighAirways {
-		rs.llDrawList.AddLinesWithWidth(world.highAirwayGeom, lineWidth)
+		rs.llCommandBuffer.SetRGB(ctx.cs.HighAirway)
+		rs.llCommandBuffer.Call(world.highAirwayCommandBuffer)
 		drawAirwayLabels(world.highAirwayLabels, ctx.cs.HighAirway)
 	}
 
 	// Labels
-	textAtLatLong := func(s string, p Point2LL, color RGB, offset [2]float32) {
+	textAtLatLong := func(s string, p Point2LL, color RGB, offset [2]float32,
+		td *TextDrawBuilder) {
 		pw := add2f(windowFromLatLongP(p), offset)
-
 		if inWindow(pw) {
-			td := rs.getTextDrawable()
 			td.AddText(s, [2]float32{pw[0], pw[1]}, TextStyle{font: rs.labelFont, color: color})
-			rs.textDrawList.AddText(td)
 		}
 	}
 
 	if rs.Everything || rs.Labels {
+		td := rs.getScratchTextDrawBuilder()
 		for _, label := range world.labels {
-			textAtLatLong(label.name, label.p, label.color, [2]float32{-4, 6})
+			textAtLatLong(label.name, label.p, label.color, [2]float32{-4, 6}, td)
 		}
+		td.GenerateCommands(&rs.textCommandBuffer)
 	}
 
 	// VORs, NDBs, fixes, and airports
-	fixtext := func(name string, p Point2LL, color RGB) {
+	fixtext := func(name string, p Point2LL, color RGB, td *TextDrawBuilder) {
 		if viewBounds.Inside(p) {
-			textAtLatLong(name, p, color, [2]float32{5, 9})
+			textAtLatLong(name, p, color, [2]float32{5, 9}, td)
 		}
 	}
 
 	drawloc := func(drawAll bool, selected map[string]interface{},
-		items map[string]Point2LL, color RGB) {
+		items map[string]Point2LL, color RGB, td *TextDrawBuilder) {
 		if drawAll {
 			for name, item := range items {
-				fixtext(name, item, color)
+				fixtext(name, item, color, td)
 			}
 		} else {
 			for name := range selected {
@@ -922,16 +900,18 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 					// May happen when a new sector file is loaded
 					//lg.Printf("%s: not present in sector file", name)
 				} else {
-					fixtext(name, loc, color)
+					fixtext(name, loc, color, td)
 				}
 			}
 		}
 	}
 
-	drawloc(rs.Everything || rs.VORNames, rs.SelectedVORs, world.VORs, ctx.cs.VOR)
-	drawloc(rs.Everything || rs.NDBNames, rs.SelectedNDBs, world.NDBs, ctx.cs.NDB)
-	drawloc(rs.Everything || rs.FixNames, rs.SelectedFixes, world.fixes, ctx.cs.Fix)
-	drawloc(rs.Everything || rs.AirportNames, rs.SelectedAirports, world.airports, ctx.cs.Airport)
+	td := rs.getScratchTextDrawBuilder()
+	drawloc(rs.Everything || rs.VORNames, rs.SelectedVORs, world.VORs, ctx.cs.VOR, td)
+	drawloc(rs.Everything || rs.NDBNames, rs.SelectedNDBs, world.NDBs, ctx.cs.NDB, td)
+	drawloc(rs.Everything || rs.FixNames, rs.SelectedFixes, world.fixes, ctx.cs.Fix, td)
+	drawloc(rs.Everything || rs.AirportNames, rs.SelectedAirports, world.airports, ctx.cs.Airport, td)
+	td.GenerateCommands(&rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
@@ -942,13 +922,13 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 		textPos := windowFromLatLongP(mid2ll(p0, p1))
 		// Cull text based on center point
 		if textPos[0] >= 0 && textPos[0] < width && textPos[1] >= 0 && textPos[1] < height {
-			td := rs.getTextDrawable()
+			td := rs.getScratchTextDrawBuilder()
 			style := TextStyle{font: rs.labelFont, color: color, drawBackground: true, backgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
-			rs.textDrawList.AddText(td)
+			td.GenerateCommands(&rs.textCommandBuffer)
 		}
 
-		rs.linesDrawable.AddLine(p0, p1, color)
+		rs.linesDrawBuilder.AddLine(p0, p1, color)
 	}
 
 	// Don't do AutoMIT if a sequence has been manually specified
@@ -1045,14 +1025,14 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 
 	// Draw tracks
 	if ac.mode == Standby {
-		rs.pointsDrawable.AddPoint(p, color)
+		rs.pointsDrawBuilder.AddPoint(p, color)
 	} else if ac.squawk == Squawk(1200) {
 		pxb := px * .7    // a little smaller
 		sc := float32(.8) // leave a little space at the corners
-		rs.linesDrawable.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), color)
-		rs.linesDrawable.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), color)
-		rs.linesDrawable.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), color)
-		rs.linesDrawable.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), color)
+		rs.linesDrawBuilder.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), color)
+		rs.linesDrawBuilder.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), color)
+		rs.linesDrawBuilder.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), color)
+		rs.linesDrawBuilder.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), color)
 	} else {
 		if ac.trackingController != "" {
 			if controller, ok := world.controllers[ac.trackingController]; !ok {
@@ -1070,18 +1050,18 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 				pw := windowFromLatLongP(p)
 				pw = add2f(pw, [2]float32{-float32(bx / 2), float32(by / 2)})
 
-				td := rs.getTextDrawable()
+				td := rs.getScratchTextDrawBuilder()
 				td.AddText(ch, pw, TextStyle{font: rs.datablockFont, color: color})
-				rs.textDrawList.AddText(td)
+				td.GenerateCommands(&rs.textCommandBuffer)
 				return
 			}
 		}
 		// diagonals
 		diagPx := px * 0.707107 /* 1/sqrt(2) */
-		rs.linesDrawable.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), color)
-		rs.linesDrawable.AddLine(delta(p, diagPx, -diagPx), delta(p, -diagPx, diagPx), color)
+		rs.linesDrawBuilder.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), color)
+		rs.linesDrawBuilder.AddLine(delta(p, diagPx, -diagPx), delta(p, -diagPx, diagPx), color)
 		// horizontal line
-		rs.linesDrawable.AddLine(delta(p, -px, 0), delta(p, px, 0), color)
+		rs.linesDrawBuilder.AddLine(delta(p, -px, 0), delta(p, px, 0), color)
 	}
 }
 
@@ -1409,42 +1389,6 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 
 func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
 	latLongFromWindowP func(p [2]float32) Point2LL) {
-	for ac := range rs.datablockUpdateAircraft {
-		pac := windowFromLatLongP(ac.Position())
-
-		color := rs.datablockColor(ac, ctx.cs)
-		ta := rs.trackedAircraft[ac]
-		if ta == nil {
-			lg.Errorf("%s: in datablock update but not tracked?", ac.Callsign())
-			continue
-		}
-
-		db := ta.WindowDatablockBounds(pac)
-
-		for d := 0; d < 2; d++ {
-			ta.textDrawable[d].Reset()
-			// Draw characters starting at the upper left.
-			ta.textDrawable[d].AddText(ta.datablockText[d], [2]float32{db.p0[0], db.p1[1]},
-				TextStyle{font: rs.datablockFont, color: color, lineSpacing: -2})
-		}
-
-		// visualize bounds
-		if false {
-			var ld LinesDrawable
-			bx, by := rs.datablockFont.BoundText(ta.datablockText[0], -2)
-			ld.AddPolyline([2]float32{db.p0[0], db.p1[1]}, RGB{1, 0, 0},
-				[][2]float32{[2]float32{float32(bx), 0},
-					[2]float32{float32(bx), float32(-by)},
-					[2]float32{float32(0), float32(-by)},
-					[2]float32{float32(0), float32(0)}})
-			rs.datablockTextDrawList.lines = append(rs.datablockTextDrawList.lines, ld)
-		}
-	}
-	if len(rs.datablockUpdateAircraft) > 0 {
-		rs.datablockUpdateAircraft = make(map[*Aircraft]interface{})
-	}
-
-	flashCycle := time.Now().Second() & 1
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	paneBounds := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{width, height}}
 
@@ -1465,54 +1409,75 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 			return bsel
 		}
 	})
+	td := rs.getScratchTextDrawBuilder()
 	for _, ac := range aircraft {
+		pac := windowFromLatLongP(ac.Position())
 		ta := rs.trackedAircraft[ac]
+		bbox := ta.WindowDatablockBounds(pac)
+
+		if !Overlaps(paneBounds, bbox) {
+			continue
+		}
+
+		color := rs.datablockColor(ac, ctx.cs)
+
+		// Draw characters starting at the upper left.
+		flashCycle := time.Now().Second() & 1
+		td.AddText(ta.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
+			TextStyle{font: rs.datablockFont, color: color, lineSpacing: -2})
+
+		// visualize bounds
+		if false {
+			var ld ColoredLinesDrawBuilder
+			bx, by := rs.datablockFont.BoundText(ta.datablockText[0], -2)
+			ld.AddPolyline([2]float32{bbox.p0[0], bbox.p1[1]}, RGB{1, 0, 0},
+				[][2]float32{[2]float32{float32(bx), 0},
+					[2]float32{float32(bx), float32(-by)},
+					[2]float32{float32(0), float32(-by)},
+					[2]float32{float32(0), float32(0)}})
+			ld.GenerateCommands(&rs.textCommandBuffer)
+		}
 
 		drawLine := rs.DataBlockFormat != DataBlockFormatNone
 
-		pac := windowFromLatLongP(ac.Position())
-		bbox := ta.WindowDatablockBounds(pac)
-		if Overlaps(paneBounds, bbox) {
-			rs.datablockTextDrawList.AddText(ta.textDrawable[flashCycle])
-
-			// quantized clamp
-			qclamp := func(x, a, b float32) float32 {
-				if x < a {
-					return a
-				} else if x > b {
-					return b
-				}
-				return (a + b) / 2
+		// quantized clamp
+		qclamp := func(x, a, b float32) float32 {
+			if x < a {
+				return a
+			} else if x > b {
+				return b
 			}
-			// the datablock has been moved, so let's make clear what it's connected to
-			if drawLine {
-				var ex, ey float32
-				wp := windowFromLatLongP(ac.Position())
-				if wp[1] < bbox.p0[1] {
-					ex = qclamp(wp[0], bbox.p0[0], bbox.p1[0])
-					ey = bbox.p0[1]
-				} else if wp[1] > bbox.p1[1] {
-					ex = qclamp(wp[0], bbox.p0[0], bbox.p1[0])
-					ey = bbox.p1[1]
-				} else if wp[0] < bbox.p0[0] {
-					ex = bbox.p0[0]
-					ey = qclamp(wp[1], bbox.p0[1], bbox.p1[1])
-				} else if wp[0] > bbox.p1[0] {
-					ex = bbox.p1[0]
-					ey = qclamp(wp[1], bbox.p0[1], bbox.p1[1])
-				} else {
-					// inside...
-					drawLine = false
-				}
+			return (a + b) / 2
+		}
+		// the datablock has been moved, so let's make clear what it's connected to
+		if drawLine {
+			var ex, ey float32
+			wp := windowFromLatLongP(ac.Position())
+			if wp[1] < bbox.p0[1] {
+				ex = qclamp(wp[0], bbox.p0[0], bbox.p1[0])
+				ey = bbox.p0[1]
+			} else if wp[1] > bbox.p1[1] {
+				ex = qclamp(wp[0], bbox.p0[0], bbox.p1[0])
+				ey = bbox.p1[1]
+			} else if wp[0] < bbox.p0[0] {
+				ex = bbox.p0[0]
+				ey = qclamp(wp[1], bbox.p0[1], bbox.p1[1])
+			} else if wp[0] > bbox.p1[0] {
+				ex = bbox.p1[0]
+				ey = qclamp(wp[1], bbox.p0[1], bbox.p1[1])
+			} else {
+				// inside...
+				drawLine = false
+			}
 
-				if drawLine {
-					color := rs.datablockColor(ac, ctx.cs)
-					pll := latLongFromWindowP([2]float32{ex, ey})
-					rs.linesDrawable.AddLine(ac.Position(), [2]float32{pll[0], pll[1]}, color)
-				}
+			if drawLine {
+				color := rs.datablockColor(ac, ctx.cs)
+				pll := latLongFromWindowP([2]float32{ex, ey})
+				rs.linesDrawBuilder.AddLine(ac.Position(), [2]float32{pll[0], pll[1]}, color)
 			}
 		}
 	}
+	td.GenerateCommands(&rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32,
@@ -1535,7 +1500,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 				// this point...
 				start = latLongFromWindowP(sw)
 			}
-			rs.linesDrawable.AddLine(start, end, ctx.cs.Track)
+			rs.linesDrawBuilder.AddLine(start, end, ctx.cs.Track)
 		}
 	}
 }
@@ -1607,6 +1572,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 		p0: [2]float32{0, 0},
 		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
 
+	td := rs.getScratchTextDrawBuilder()
 	for h := float32(10); h <= 360; h += 10 {
 		hr := h + rs.RotationAngle
 		dir := [2]float32{sin(radians(hr)), cos(radians(hr))}
@@ -1620,7 +1586,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 		pInset := add2f(pw, scale2f(dir, t-10))
 		pell := latLongFromWindowP(pEdge)
 		pill := latLongFromWindowP(pInset)
-		rs.linesDrawable.AddLine(pell, pill, ctx.cs.Compass)
+		rs.linesDrawBuilder.AddLine(pell, pill, ctx.cs.Compass)
 
 		if int(h)%30 == 0 {
 			label := []byte{'0', '0', '0'}
@@ -1656,11 +1622,10 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 				lg.Printf("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
 
-			td := rs.getTextDrawable()
 			td.AddText(string(label), pText, TextStyle{font: rs.labelFont, color: ctx.cs.Compass})
-			rs.textDrawList.AddText(td)
 		}
 	}
+	td.GenerateCommands(&rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
@@ -1695,7 +1660,7 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 			for i := 0; i < len(circlePoints)-1; i++ {
 				p0 := Point2LL{ap[0] + longScale*circlePoints[i][1], ap[1] + latScale*circlePoints[i][0]}
 				p1 := Point2LL{ap[0] + longScale*circlePoints[i+1][1], ap[1] + latScale*circlePoints[i+1][0]}
-				rs.linesDrawable.AddLine(p0, p1, color)
+				rs.linesDrawBuilder.AddLine(p0, p1, color)
 			}
 		}
 
@@ -1711,15 +1676,15 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 	case RangeIndicatorLine:
 		annotatedLine := func(p0 Point2LL, p1 Point2LL, color RGB, text string) {
 			textPos := windowFromLatLongP(mid2ll(p0, p1))
-			td := rs.getTextDrawable()
+			td := rs.getScratchTextDrawBuilder()
 			style := TextStyle{
 				font:            rs.labelFont,
 				color:           color,
 				drawBackground:  true,
 				backgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
-			rs.textDrawList.AddText(td)
-			rs.linesDrawable.AddLine(p0, p1, color)
+			td.GenerateCommands(&rs.textCommandBuffer)
+			rs.linesDrawBuilder.AddLine(p0, p1, color)
 		}
 
 		rangeText := func(ac0, ac1 *Aircraft) string {
@@ -1748,7 +1713,7 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 	p1 := latLongFromWindowP(rs.primaryDragEnd)
 
 	// TODO: separate color for this rather than piggybacking?
-	rs.linesDrawable.AddLine(p0, p1, ctx.cs.SelectedDataBlock)
+	rs.linesDrawBuilder.AddLine(p0, p1, ctx.cs.SelectedDataBlock)
 
 	// distance between the two points in nm
 	dist := nmdistance2ll(p0, p1)
@@ -1763,7 +1728,7 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 		rhdg -= 360
 	}
 	label := fmt.Sprintf(" %.1f nm \n%d / %d", dist, hdg, rhdg)
-	td := rs.getTextDrawable()
+	td := rs.getScratchTextDrawBuilder()
 	style := TextStyle{
 		font:            rs.labelFont,
 		color:           ctx.cs.SelectedDataBlock,
@@ -1771,8 +1736,7 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 		backgroundColor: ctx.cs.Background}
 	textPos := mid2f(rs.primaryDragStart, rs.primaryDragEnd)
 	td.AddTextCentered(label, textPos, style)
-	rs.textDrawList.AddText(td)
-
+	td.GenerateCommands(&rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {
@@ -1797,8 +1761,9 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV f
 	for i := 0; i < len(circlePoints)-1; i++ {
 		p0 := add2ll(p, add2ll(scale2ll(dx, circlePoints[i][0]), scale2ll(dy, circlePoints[i][1])))
 		p1 := add2ll(p, add2ll(scale2ll(dx, circlePoints[i+1][0]), scale2ll(dy, circlePoints[i+1][1])))
-		rs.highlightedDrawable.AddLine(p0, p1, color)
+		rs.highlightedDrawBuilder.AddLine(p0, p1, color)
 	}
+
 }
 
 func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL,
@@ -1806,8 +1771,6 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 	if ctx.mouse == nil {
 		return
 	}
-
-	scopeMoved := false
 
 	// Handle dragging the scope center
 	if ctx.mouse.dragging[mouseButtonPrimary] && rs.primaryButtonDoubleClicked {
@@ -1820,14 +1783,12 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		if delta[0] != 0 || delta[1] != 0 {
 			deltaLL := latLongFromWindowV(delta)
 			rs.Center = sub2f(rs.Center, deltaLL)
-			scopeMoved = true
 		}
 	}
 
 	// Consume mouse wheel
 	if ctx.mouse.wheel[1] != 0 {
 		scale := pow(1.05, ctx.mouse.wheel[1])
-		scopeMoved = true
 
 		// We want to zoom in centered at the mouse position; this affects
 		// the scope center after the zoom, so we'll find the
@@ -1839,13 +1800,6 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		rs.Center = mul4p(&centerTransform, rs.Center)
 
 		rs.Range *= scale
-	}
-
-	if scopeMoved {
-		// All datablocks need to be redrawn (unfortunately...)
-		for ac := range rs.trackedAircraft {
-			rs.datablockUpdateAircraft[ac] = nil
-		}
 	}
 
 	if rs.acSelectedByDatablock != nil {
@@ -2158,9 +2112,9 @@ func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
 			if !ok {
 				lg.Printf("no intersection between runways?!")
 			}
-			//		rs.linesDrawable.AddLine(src.threshold, src.end, RGB{0, 1, 0})
-			//		rs.linesDrawable.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
-			rs.pointsDrawable.AddPoint(p, RGB{1, 0, 0})
+			//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
+			//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
+			rs.pointsDrawBuilder.AddPoint(p, RGB{1, 0, 0})
 		}
 	}
 
@@ -2185,8 +2139,8 @@ func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
 
 	// Over to lat-long to draw the lines
 	vall, vbll := nm2ll(va), nm2ll(vb)
-	rs.linesDrawable.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
-	rs.linesDrawable.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
+	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
+	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
 }
 
 ///////////////////////////////////////////////////////////////////////////
