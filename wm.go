@@ -7,6 +7,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -416,16 +417,24 @@ func wmShareUpdates(worldUpdates *WorldUpdates) {
 }
 
 func wmAddPaneMenuSettings() {
+	var panes []Pane
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 		if _, ok := pane.(PaneUIDrawer); ok {
-			if imgui.MenuItem(pane.Name() + "...") {
-				// copy the name so that it can be edited...
-				wm.showPaneName[pane] = pane.Name()
-				t := true
-				wm.showPaneSettings[pane] = &t
-			}
+			panes = append(panes, pane)
 		}
 	})
+
+	// sort by name
+	sort.Slice(panes, func(i, j int) bool { return panes[i].Name() < panes[j].Name() })
+
+	for _, pane := range panes {
+		if imgui.MenuItem(pane.Name() + "...") {
+			// copy the name so that it can be edited...
+			wm.showPaneName[pane] = pane.Name()
+			t := true
+			wm.showPaneSettings[pane] = &t
+		}
+	}
 }
 
 func wmDrawUI(p Platform) {
