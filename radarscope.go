@@ -1180,7 +1180,8 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 }
 
 func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
-	latLongFromWindowV func(p [2]float32) Point2LL, windowFromLatLongP func(p Point2LL) [2]float32) {
+	latLongFromWindowV func(p [2]float32) Point2LL, windowFromLatLongP func(p Point2LL) [2]float32,
+	td *TextDrawBuilder) {
 	px := float32(3) // TODO: make configurable?
 	dx := latLongFromWindowV([2]float32{1, 0})
 	dy := latLongFromWindowV([2]float32{0, 1})
@@ -1211,14 +1212,8 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 			} else {
 				ch := controller.position.scope
 
-				// Offset to center the character on the track.
-				bx, by := rs.datablockFont.BoundText(ch, 0)
 				pw := windowFromLatLongP(p)
-				pw = add2f(pw, [2]float32{-float32(bx / 2), float32(by / 2)})
-
-				td := rs.getScratchTextDrawBuilder()
-				td.AddText(ch, pw, TextStyle{font: rs.datablockFont, color: color})
-				td.GenerateCommands(&rs.textCommandBuffer)
+				td.AddTextCentered(ch, pw, TextStyle{font: rs.datablockFont, color: color})
 				return
 			}
 		}
@@ -1233,6 +1228,7 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p [2]float32) Point2LL,
 	windowFromLatLongP func(p Point2LL) [2]float32) {
+	td := rs.getScratchTextDrawBuilder()
 	for ac := range rs.trackedAircraft {
 		pastColor := ctx.cs.Track
 
@@ -1243,10 +1239,11 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			pastColor.R = .8*pastColor.R + .2*ctx.cs.Background.R
 			pastColor.G = .8*pastColor.G + .2*ctx.cs.Background.G
 			pastColor.B = .8*pastColor.B + .2*ctx.cs.Background.B
-			rs.drawTrack(ac, ac.tracks[i].position, pastColor, latLongFromWindowV, windowFromLatLongP)
+			rs.drawTrack(ac, ac.tracks[i].position, pastColor, latLongFromWindowV, windowFromLatLongP, td)
 		}
-		rs.drawTrack(ac, ac.Position(), ctx.cs.Track, latLongFromWindowV, windowFromLatLongP)
+		rs.drawTrack(ac, ac.Position(), ctx.cs.Track, latLongFromWindowV, windowFromLatLongP, td)
 	}
+	td.GenerateCommands(&rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
