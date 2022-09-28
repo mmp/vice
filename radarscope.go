@@ -1205,8 +1205,12 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p [2]float32) Point2LL,
 	windowFromLatLongP func(p Point2LL) [2]float32) {
 	td := rs.getScratchTextDrawBuilder()
-	for ac := range rs.trackedAircraft {
-		pastColor := ctx.cs.Track
+	for ac, ta := range rs.trackedAircraft {
+		color := ctx.cs.Track
+		if ta.isGhost {
+			color = ctx.cs.GhostDataBlock
+		}
+		pastColor := color
 
 		// draw the history first so that if it's not moving, we still get something bright
 		// don't draw the full history
@@ -1217,7 +1221,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			pastColor.B = .8*pastColor.B + .2*ctx.cs.Background.B
 			rs.drawTrack(ac, ac.tracks[i].position, pastColor, latLongFromWindowV, windowFromLatLongP, td)
 		}
-		rs.drawTrack(ac, ac.Position(), ctx.cs.Track, latLongFromWindowV, windowFromLatLongP, td)
+		rs.drawTrack(ac, ac.Position(), color, latLongFromWindowV, windowFromLatLongP, td)
 	}
 	td.GenerateCommands(&rs.textCommandBuffer)
 }
@@ -1625,7 +1629,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 		return
 	}
 
-	for ac := range rs.trackedAircraft {
+	for ac, ta := range rs.trackedAircraft {
 		// Don't draw junk for the first few tracks until we have a good
 		// sense of the heading.
 		if ac.HaveHeading() {
@@ -1639,7 +1643,11 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 				// this point...
 				start = latLongFromWindowP(sw)
 			}
-			rs.linesDrawBuilder.AddLine(start, end, ctx.cs.Track)
+			if ta.isGhost {
+				rs.linesDrawBuilder.AddLine(start, end, ctx.cs.GhostDataBlock)
+			} else {
+				rs.linesDrawBuilder.AddLine(start, end, ctx.cs.Track)
+			}
 		}
 	}
 }
