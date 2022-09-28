@@ -219,6 +219,8 @@ type Stats struct {
 	redraws         int
 }
 
+var startupMallocs uint64
+
 // LogStats adds the proivded Stats to the log and also includes information about
 // the current system performance, memory use, etc.
 func (l *Logger) LogStats(stats Stats) {
@@ -227,8 +229,12 @@ func (l *Logger) LogStats(stats Stats) {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
 
+	if startupMallocs == 0 {
+		startupMallocs = mem.Mallocs
+	}
+
 	elapsed := time.Since(l.start).Seconds()
-	mallocsPerSecond := int(float64(mem.Mallocs) / elapsed)
+	mallocsPerSecond := int(float64(mem.Mallocs-startupMallocs) / elapsed)
 	active1000s := (mem.Mallocs - mem.Frees) / 1000
 	lg.Printf("Stats: mallocs/second %d (%dk active) %d MB in use", mallocsPerSecond, active1000s,
 		mem.HeapAlloc/(1024*1024))
