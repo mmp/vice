@@ -1023,42 +1023,41 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	}
 
 	// Labels
-	textAtLatLong := func(s string, p Point2LL, color RGB, offset [2]float32,
-		td *TextDrawBuilder) {
-		pw := add2f(windowFromLatLongP(p), offset)
-		if inWindow(pw) {
-			td.AddText(s, [2]float32{pw[0], pw[1]}, TextStyle{font: rs.labelFont, color: color})
-		}
-	}
-
 	if rs.Everything || rs.Labels {
 		td := rs.getScratchTextDrawBuilder()
 		for _, label := range world.labels {
-			textAtLatLong(label.name, label.p, label.color, [2]float32{-4, 6}, td)
+			if viewBounds.Inside(label.p) {
+				style := TextStyle{font: rs.labelFont, color: label.color}
+				td.AddTextCentered(label.name, windowFromLatLongP(label.p), style)
+			}
 		}
 		td.GenerateCommands(&rs.textCommandBuffer)
 	}
 
 	// VORs, NDBs, fixes, and airports
 	fixtext := func(name string, p Point2LL, color RGB, td *TextDrawBuilder) {
+		offset := [2]float32{5, 1 + float32(rs.labelFont.size/2)}
 		if viewBounds.Inside(p) {
-			textAtLatLong(name, p, color, [2]float32{5, 9}, td)
+			pw := add2f(windowFromLatLongP(p), offset)
+			if inWindow(pw) {
+				td.AddText(name, pw, TextStyle{font: rs.labelFont, color: color})
+			}
 		}
 	}
 
 	drawloc := func(selected map[string]interface{},
 		items map[string]Point2LL, color RGB, td *TextDrawBuilder) {
 		if rs.Everything {
-			for name, item := range items {
-				fixtext(name, item, color, td)
+			for name, p := range items {
+				fixtext(name, p, color, td)
 			}
 		} else {
 			for name := range selected {
-				if loc, ok := items[name]; !ok {
+				if p, ok := items[name]; !ok {
 					// May happen when a new sector file is loaded
 					//lg.Printf("%s: not present in sector file", name)
 				} else {
-					fixtext(name, loc, color, td)
+					fixtext(name, p, color, td)
 				}
 			}
 		}
