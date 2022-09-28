@@ -284,15 +284,15 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	}
 
 	// start tracking all of the active aircraft
-	if rs.activeAircraft == nil {
-		rs.activeAircraft = make(map[*Aircraft]interface{})
-	}
-	if rs.trackedAircraft == nil {
-		rs.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
-	}
-	if rs.ghostAircraft == nil {
-		rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
-	}
+	rs.initializeAircraft()
+}
+
+func (rs *RadarScopePane) initializeAircraft() {
+	// Reset and initialize all of these
+	rs.activeAircraft = make(map[*Aircraft]interface{})
+	rs.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
+	rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
+
 	for _, ac := range world.aircraft {
 		rs.activeAircraft[ac] = nil
 		if !ac.LostTrack() && ac.Altitude() >= int(rs.MinAltitude) && ac.Altitude() <= int(rs.MaxAltitude) {
@@ -306,7 +306,6 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 			}
 		}
 	}
-
 }
 
 func (rs *RadarScopePane) Deactivate() {
@@ -327,8 +326,12 @@ func (rs *RadarScopePane) Name() string { return rs.ScopeName }
 
 func (rs *RadarScopePane) DrawUI() {
 	imgui.InputText("Name", &rs.ScopeName)
-	imgui.InputIntV("Minimum altitude", &rs.MinAltitude, 100, 1000, 0 /* flags */)
-	imgui.InputIntV("Maximum altitude", &rs.MaxAltitude, 100, 1000, 0 /* flags */)
+	if imgui.InputIntV("Minimum altitude", &rs.MinAltitude, 100, 1000, 0 /* flags */) {
+		rs.initializeAircraft()
+	}
+	if imgui.InputIntV("Maximum altitude", &rs.MaxAltitude, 100, 1000, 0 /* flags */) {
+		rs.initializeAircraft()
+	}
 	if imgui.CollapsingHeader("Aircraft rendering") {
 		if rs.DataBlockFormat.DrawUI() {
 			for _, t := range rs.trackedAircraft {
@@ -394,30 +397,12 @@ func (rs *RadarScopePane) DrawUI() {
 			}
 		}
 
-		updateGhosts := func() {
-			// First, remove all existing ghosts.
-			for _, ghost := range rs.ghostAircraft {
-				delete(rs.trackedAircraft, ghost)
-			}
-			rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
-
-			if rs.CRDAEnabled {
-				// And make new ones if CRDA is enabled...
-				for ac := range rs.trackedAircraft {
-					if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
-						rs.ghostAircraft[ac] = ghost
-						rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
-					}
-				}
-			}
-		}
-
 		if imgui.Checkbox("Converging runway display aid (CRDA)", &rs.CRDAEnabled) {
-			updateGhosts()
+			rs.initializeAircraft() // this is overkill, but nbd
 		}
 		if rs.CRDAEnabled {
 			if rs.CRDAConfig.DrawUI() {
-				updateGhosts()
+				rs.initializeAircraft()
 			}
 		}
 	}
@@ -726,14 +711,6 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 			delete(rs.trackedAircraft, ac)
 		}
 	}
-
-	/*
-		for ac := range rs.activeAircraft {
-			if !track(ac) {
-				delete(rs.activeAircraft, ac)
-			}
-		}
-	*/
 
 	// For debugging: check the world's view of the active aircraft and
 	// make sure both are consistent...
