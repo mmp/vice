@@ -293,7 +293,7 @@ func isspace(c byte) bool {
 
 func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cli.cb.Reset()
-	cli.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	ctx.SetWindowCoordinateMatrices(&cli.cb)
 
 	style := TextStyle{font: cli.font, lineSpacing: 1, color: ctx.cs.Text}
 	cursorStyle := TextStyle{font: cli.font, lineSpacing: 0,

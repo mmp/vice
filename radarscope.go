@@ -680,10 +680,8 @@ func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl
 	rs.llCommandBuffer.PointSize(rs.PointSize)
 	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 
-	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
-
 	rs.textCommandBuffer.Reset()
-	rs.textCommandBuffer.UseWindowCoordinates(width, height)
+	ctx.SetWindowCoordinateMatrices(&rs.textCommandBuffer)
 	rs.textCommandBuffer.PointSize(rs.PointSize)
 	rs.textCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 }

@@ -680,10 +680,10 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 
 				if pane == mousePane && wm.handlePanePick != nil {
 					// Blend in the plane selection quad
-					w, h := disp.Width(), disp.Height()
-					commandBuffer.UseWindowCoordinates(w, h)
+					ctx.SetWindowCoordinateMatrices(&commandBuffer)
 					commandBuffer.Blend()
 
+					w, h := disp.Width(), disp.Height()
 					p := [4][2]float32{[2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h}}
 					pidx := commandBuffer.Float2Buffer(p[:])
 

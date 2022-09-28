@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -92,6 +93,14 @@ func (ctx *PaneContext) InitializeMouse() {
 			imgui.ResetMouseDragDelta(b)
 		}
 	}
+}
+
+func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {
+	w := float32(int(ctx.paneExtent.Width() + 0.5))
+	h := float32(int(ctx.paneExtent.Height() + 0.5))
+	proj := mgl32.Ortho2D(0, w, 0, h)
+	cb.LoadProjectionMatrix(proj)
+	cb.LoadModelViewMatrix(mgl32.Ident4())
 }
 
 type AirportInfoPane struct {
@@ -425,7 +434,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	a.td.AddTextMulti(strs, [2]float32{sz2, ctx.paneExtent.Height() - sz2}, styles)
 
 	a.cb.Reset()
-	a.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	ctx.SetWindowCoordinateMatrices(&a.cb)
 	a.td.GenerateCommands(&a.cb)
 
 	cb.Call(a.cb)
@@ -499,7 +508,7 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	fp.td.AddText(contents, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{font: fp.font, color: ctx.cs.Text})
 
-	cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	ctx.SetWindowCoordinateMatrices(cb)
 	fp.td.GenerateCommands(cb)
 }
 
@@ -556,7 +565,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	nv.td.Reset()
 
 	nv.cb.Reset()
-	nv.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	ctx.SetWindowCoordinateMatrices(&nv.cb)
 
 	textStyle := TextStyle{font: nv.font, color: ctx.cs.Text}
 	headerStyle := TextStyle{font: nv.font, color: ctx.cs.TextHighlight}
@@ -767,7 +776,7 @@ func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	pp.td.AddText(perf.String(), [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{font: pp.font, color: ctx.cs.Text})
 
-	cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	ctx.SetWindowCoordinateMatrices(cb)
 	pp.td.GenerateCommands(cb)
 }
 
@@ -865,7 +874,7 @@ func (rp *ReminderPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Initialize the command buffer before we get going.
 	rp.cb.Reset()
-	rp.cb.UseWindowCoordinates(ctx.paneExtent.Width(), ctx.paneExtent.Height())
+	ctx.SetWindowCoordinateMatrices(&rp.cb)
 
 	text := func(s string, color RGB) {
 		td := TextDrawBuilder{}

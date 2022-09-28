@@ -324,13 +324,6 @@ func (cb *CommandBuffer) ResetState() {
 	cb.appendInts(RendererResetState)
 }
 
-// TODO: this feels out of place here
-func (cb *CommandBuffer) UseWindowCoordinates(w, h float32) {
-	proj := mgl32.Ortho2D(0, w, 0, h)
-	cb.LoadProjectionMatrix(proj)
-	cb.LoadModelViewMatrix(mgl32.Ident4())
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // DrawBuilders
 
