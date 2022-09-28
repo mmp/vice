@@ -22,24 +22,24 @@ type RadarScopePane struct {
 	PointSize       float32
 	LineWidth       float32
 
-	Everything       bool
-	Runways          bool
-	Regions          bool
-	Labels           bool
-	LowAirways       bool
-	HighAirways      bool
-	VORs             bool
-	VORNames         bool
-	SelectedVORs     map[string]interface{}
-	NDBs             bool
-	NDBNames         bool
-	SelectedNDBs     map[string]interface{}
-	Fixes            bool
-	FixNames         bool
-	SelectedFixes    map[string]interface{}
-	Airports         bool
-	AirportNames     bool
-	SelectedAirports map[string]interface{}
+	Everything     bool
+	Runways        bool
+	Regions        bool
+	Labels         bool
+	LowAirways     bool
+	HighAirways    bool
+	VORs           bool
+	VORNames       bool
+	VORsToDraw     map[string]interface{}
+	NDBs           bool
+	NDBNames       bool
+	NDBsToDraw     map[string]interface{}
+	Fixes          bool
+	FixNames       bool
+	FixesToDraw    map[string]interface{}
+	Airports       bool
+	AirportNames   bool
+	AirportsToDraw map[string]interface{}
 
 	GeoDrawSet       map[string]interface{}
 	SIDDrawSet       map[string]interface{}
@@ -98,6 +98,14 @@ type RadarScopePane struct {
 	trackedAircraft map[*Aircraft]*TrackedAircraft
 	// map from legit to their ghost, if present
 	ghostAircraft map[*Aircraft]*Aircraft
+
+	// persistent state used in the uI
+	selectedVORs, selectedNDBs           map[string]interface{}
+	selectedFixes, selectedAirports      map[string]interface{}
+	lastSelectedVOR, lastSelectedNDB     string
+	lastSelectedFix, lastSelectedAirport string
+	newVOR, newNDB                       string
+	newFix, newAirport                   string
 }
 
 const (
@@ -185,10 +193,10 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 		dupe.ScopeName += " Copy"
 	}
 
-	dupe.SelectedVORs = DuplicateMap(rs.SelectedVORs)
-	dupe.SelectedNDBs = DuplicateMap(rs.SelectedNDBs)
-	dupe.SelectedFixes = DuplicateMap(rs.SelectedFixes)
-	dupe.SelectedAirports = DuplicateMap(rs.SelectedAirports)
+	dupe.VORsToDraw = DuplicateMap(rs.VORsToDraw)
+	dupe.NDBsToDraw = DuplicateMap(rs.NDBsToDraw)
+	dupe.FixesToDraw = DuplicateMap(rs.FixesToDraw)
+	dupe.AirportsToDraw = DuplicateMap(rs.AirportsToDraw)
 	dupe.GeoDrawSet = DuplicateMap(rs.GeoDrawSet)
 	dupe.SIDDrawSet = DuplicateMap(rs.SIDDrawSet)
 	dupe.STARDrawSet = DuplicateMap(rs.STARDrawSet)
@@ -220,6 +228,11 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	dupe.highlightedDrawBuilder = ColoredLinesDrawBuilder{}
 
+	dupe.selectedVORs = nil
+	dupe.selectedNDBs = nil
+	dupe.selectedFixes = nil
+	dupe.selectedAirports = nil
+
 	return dupe
 }
 
@@ -235,6 +248,30 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	}
 	if rs.GeoDrawSet == nil {
 		rs.GeoDrawSet = make(map[string]interface{})
+	}
+	if rs.VORsToDraw == nil {
+		rs.VORsToDraw = make(map[string]interface{})
+	}
+	if rs.NDBsToDraw == nil {
+		rs.NDBsToDraw = make(map[string]interface{})
+	}
+	if rs.FixesToDraw == nil {
+		rs.FixesToDraw = make(map[string]interface{})
+	}
+	if rs.AirportsToDraw == nil {
+		rs.AirportsToDraw = make(map[string]interface{})
+	}
+	if rs.selectedVORs == nil {
+		rs.selectedVORs = make(map[string]interface{})
+	}
+	if rs.selectedNDBs == nil {
+		rs.selectedNDBs = make(map[string]interface{})
+	}
+	if rs.selectedFixes == nil {
+		rs.selectedFixes = make(map[string]interface{})
+	}
+	if rs.selectedAirports == nil {
+		rs.selectedAirports = make(map[string]interface{})
 	}
 
 	if rs.datablockFont = GetFont(rs.DatablockFontIdentifier); rs.datablockFont == nil {
@@ -389,29 +426,164 @@ func (rs *RadarScopePane) DrawUI() {
 			imgui.Checkbox("Draw everything", &rs.Everything)
 		}
 
-		idx := 0
-		checkbox := func(s string, b *bool) {
-			if idx%4 == 0 {
-				imgui.TableNextRow()
-			}
-			imgui.TableSetColumnIndex(idx % 4)
-			idx++
-			imgui.Checkbox(s, b)
+		if imgui.BeginTable("drawbuttons", 5) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Checkbox("Regions", &rs.Regions)
+			imgui.TableNextColumn()
+			imgui.Checkbox("Labels", &rs.Labels)
+			imgui.TableNextColumn()
+			imgui.Checkbox("Low Airways", &rs.LowAirways)
+			imgui.TableNextColumn()
+			imgui.Checkbox("High Airways", &rs.HighAirways)
+			imgui.TableNextColumn()
+			imgui.Checkbox("Runways", &rs.Runways)
+			imgui.EndTable()
 		}
-		if imgui.BeginTable("drawbuttons", 4) {
-			checkbox("Regions", &rs.Regions)
-			checkbox("Labels", &rs.Labels)
-			checkbox("VORs", &rs.VORs)
-			checkbox("VOR Names", &rs.VORNames)
-			checkbox("NDBs", &rs.NDBs)
-			checkbox("NDB Names", &rs.NDBNames)
-			checkbox("Fixes", &rs.Fixes)
-			checkbox("Fix Names", &rs.FixNames)
-			checkbox("Airports", &rs.Airports)
-			checkbox("Airport Names", &rs.AirportNames)
-			checkbox("Low Airways", &rs.LowAirways)
-			checkbox("High Airways", &rs.HighAirways)
-			checkbox("Runways", &rs.Runways)
+
+		if imgui.BeginTable("voretal", 4) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("VORs")
+			imgui.TableNextColumn()
+			imgui.Text("NDBs")
+			imgui.TableNextColumn()
+			imgui.Text("Fixes")
+			imgui.TableNextColumn()
+			imgui.Text("Airports")
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Checkbox("Draw All##VORs", &rs.VORs)
+			imgui.SameLine()
+			imgui.Checkbox("Show Names##VORs", &rs.VORNames)
+			imgui.TableNextColumn()
+			imgui.Checkbox("Draw All##NDBs", &rs.NDBs)
+			imgui.SameLine()
+			imgui.Checkbox("Show Names##NDBs", &rs.NDBNames)
+			imgui.TableNextColumn()
+			imgui.Checkbox("Draw All##Fixes", &rs.Fixes)
+			imgui.SameLine()
+			imgui.Checkbox("Show Names##Fixes", &rs.FixNames)
+			imgui.TableNextColumn()
+			imgui.Checkbox("Draw All##Airports", &rs.Airports)
+			imgui.SameLine()
+			imgui.Checkbox("Show Names##Airports", &rs.AirportNames)
+
+			io := imgui.CurrentIO()
+			table := func(m *map[string]interface{}, selected map[string]interface{}, lastSelected string) string {
+				flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
+				if imgui.BeginTableV(fmt.Sprintf("##%p", m), 1, flags, imgui.Vec2{200, 200}, 0.0) {
+					for _, s := range SortedMapKeys(*m) {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						_, sel := selected[s]
+						if imgui.SelectableV(s, sel, imgui.SelectableFlagsSpanAllColumns, imgui.Vec2{}) {
+							if io.KeyCtrlPressed() {
+								// Toggle selection of this one
+								if sel {
+									delete(selected, s)
+								} else {
+									selected[s] = nil
+									lastSelected = s
+								}
+							} else if io.KeyShiftPressed() {
+								for _, k := range SortedMapKeys(*m) {
+									if s > lastSelected {
+										if k > lastSelected && k <= s {
+											selected[k] = nil
+										}
+									} else {
+										if k >= s && k <= lastSelected {
+											selected[k] = nil
+										}
+									}
+								}
+								lastSelected = s
+							} else {
+								// Select only this one
+								for k := range selected {
+									delete(selected, k)
+								}
+								selected[s] = nil
+								lastSelected = s
+							}
+						}
+					}
+					imgui.EndTable()
+				}
+				return lastSelected
+			}
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			rs.lastSelectedVOR = table(&rs.VORsToDraw, rs.selectedVORs, rs.lastSelectedVOR)
+			imgui.TableNextColumn()
+			rs.lastSelectedNDB = table(&rs.NDBsToDraw, rs.selectedNDBs, rs.lastSelectedNDB)
+			imgui.TableNextColumn()
+			rs.lastSelectedFix = table(&rs.FixesToDraw, rs.selectedFixes, rs.lastSelectedFix)
+			imgui.TableNextColumn()
+			rs.lastSelectedAirport = table(&rs.AirportsToDraw, rs.selectedAirports, rs.lastSelectedAirport)
+
+			buttons := func(selected map[string]interface{}, newName *string, m map[string]interface{},
+				valid map[string]Point2LL) {
+				_, validName := valid[*newName]
+
+				add := func(newName *string, m map[string]interface{}) {
+					if validName {
+						m[*newName] = nil
+						*newName = ""
+					}
+				}
+
+				flags := imgui.InputTextFlagsEnterReturnsTrue | imgui.InputTextFlagsCharsUppercase
+				if imgui.InputTextV(fmt.Sprintf("##new%p", newName), newName, flags, nil) {
+					add(newName, m)
+					imgui.SetKeyboardFocusHereV(-1)
+				}
+
+				enableAdd := len(*newName) > 0 && validName
+				if !enableAdd {
+					imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+					imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+				}
+				imgui.SameLine()
+				if imgui.Button(fmt.Sprintf("+##%p", newName)) {
+					add(newName, m)
+				}
+				if !enableAdd {
+					imgui.PopItemFlag()
+					imgui.PopStyleVar()
+				}
+
+				enableDelete := len(selected) > 0
+				if !enableDelete {
+					imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+					imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+				}
+				imgui.SameLine()
+				if imgui.Button(fmt.Sprintf(FontAwesomeIconTrash+"##%p", newName)) {
+					for s := range selected {
+						delete(m, s)
+						delete(selected, s)
+					}
+				}
+				if !enableDelete {
+					imgui.PopItemFlag()
+					imgui.PopStyleVar()
+				}
+			}
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			buttons(rs.selectedVORs, &rs.newVOR, rs.VORsToDraw, world.VORs)
+			imgui.TableNextColumn()
+			buttons(rs.selectedNDBs, &rs.newNDB, rs.NDBsToDraw, world.NDBs)
+			imgui.TableNextColumn()
+			buttons(rs.selectedFixes, &rs.newFix, rs.FixesToDraw, world.fixes)
+			imgui.TableNextColumn()
+			buttons(rs.selectedAirports, &rs.newAirport, rs.AirportsToDraw, world.airports)
+
 			imgui.EndTable()
 		}
 
@@ -775,7 +947,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		}
 	} else {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
-		for name := range rs.SelectedFixes {
+		for name := range rs.FixesToDraw {
 			if loc, ok := world.fixes[name]; !ok {
 				// May happen when a new sector file is loaded.
 				//lg.Printf("%s: selected fix not found in sector file data!", loc)
@@ -874,9 +1046,9 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		}
 	}
 
-	drawloc := func(drawAll bool, selected map[string]interface{},
+	drawloc := func(selected map[string]interface{},
 		items map[string]Point2LL, color RGB, td *TextDrawBuilder) {
-		if drawAll {
+		if rs.Everything {
 			for name, item := range items {
 				fixtext(name, item, color, td)
 			}
@@ -893,10 +1065,18 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	}
 
 	td := rs.getScratchTextDrawBuilder()
-	drawloc(rs.Everything || rs.VORNames, rs.SelectedVORs, world.VORs, ctx.cs.VOR, td)
-	drawloc(rs.Everything || rs.NDBNames, rs.SelectedNDBs, world.NDBs, ctx.cs.NDB, td)
-	drawloc(rs.Everything || rs.FixNames, rs.SelectedFixes, world.fixes, ctx.cs.Fix, td)
-	drawloc(rs.Everything || rs.AirportNames, rs.SelectedAirports, world.airports, ctx.cs.Airport, td)
+	if rs.VORNames {
+		drawloc(rs.VORsToDraw, world.VORs, ctx.cs.VOR, td)
+	}
+	if rs.NDBNames {
+		drawloc(rs.NDBsToDraw, world.NDBs, ctx.cs.NDB, td)
+	}
+	if rs.FixNames {
+		drawloc(rs.FixesToDraw, world.fixes, ctx.cs.Fix, td)
+	}
+	if rs.AirportNames {
+		drawloc(rs.AirportsToDraw, world.airports, ctx.cs.Airport, td)
+	}
 	td.GenerateCommands(&rs.textCommandBuffer)
 }
 

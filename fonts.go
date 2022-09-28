@@ -26,19 +26,20 @@ import (
 // Given that, code elsewhere uses the following variables to get the
 // string encoding that gives the corresponding icon.
 var (
-	FontAwesomeIconArrowUp     = faUsedIcons["ArrowUp"]
 	FontAwesomeIconArrowDown   = faUsedIcons["ArrowDown"]
+	FontAwesomeIconArrowUp     = faUsedIcons["ArrowUp"]
 	FontAwesomeIconBug         = faUsedIcons["Bug"]
 	FontAwesomeIconCaretDown   = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight  = faUsedIcons["CaretRight"]
+	FontAwesomeIconCheckSquare = faUsedIcons["CheckSquare"]
 	FontAwesomeIconCopyright   = faUsedIcons["Copyright"]
 	FontAwesomeIconFile        = faUsedIcons["File"]
 	FontAwesomeIconFolder      = faUsedIcons["Folder"]
-	FontAwesomeIconHome        = faUsedIcons["Home"]
 	FontAwesomeIconGithub      = faBrandsUsedIcons["Github"]
+	FontAwesomeIconHome        = faUsedIcons["Home"]
 	FontAwesomeIconLevelUpAlt  = faUsedIcons["LevelUpAlt"]
 	FontAwesomeIconSquare      = faUsedIcons["Square"]
-	FontAwesomeIconCheckSquare = faUsedIcons["CheckSquare"]
+	FontAwesomeIconTrash       = faUsedIcons["Trash"]
 )
 
 var (
@@ -54,13 +55,14 @@ var (
 		"Bug":         FontAwesomeString("Bug"),
 		"CaretDown":   FontAwesomeString("CaretDown"),
 		"CaretRight":  FontAwesomeString("CaretRight"),
+		"CheckSquare": FontAwesomeString("CheckSquare"),
 		"Copyright":   FontAwesomeString("Copyright"),
 		"File":        FontAwesomeString("File"),
 		"Folder":      FontAwesomeString("Folder"),
 		"Home":        FontAwesomeString("Home"),
 		"LevelUpAlt":  FontAwesomeString("LevelUpAlt"),
 		"Square":      FontAwesomeString("Square"),
-		"CheckSquare": FontAwesomeString("CheckSquare"),
+		"Trash":       FontAwesomeString("Trash"),
 	}
 	faBrandsUsedIcons map[string]string = map[string]string{
 		"Github": FontAwesomeBrandsString("Github"),
