@@ -1011,30 +1011,48 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		td.GenerateCommands(&rs.textCommandBuffer)
 	}
 
-	// VORs, NDBs, fixes, and airports
-	fixtext := func(name string, p Point2LL, color RGB, td *TextDrawBuilder) {
-		offset := [2]float32{5, 1 + float32(rs.labelFont.size/2)}
+	// VOR, NDB, fix, and airport names
+	const (
+		DrawLeft = iota
+		DrawRight
+		DrawBelow
+	)
+	fixtext := func(name string, p Point2LL, color RGB, td *TextDrawBuilder, mode int) {
+		var offset [2]float32
+		switch mode {
+		case DrawLeft:
+			bx, _ := rs.labelFont.BoundText(name, 0)
+			offset = [2]float32{float32(-5 - bx), 1 + float32(rs.labelFont.size/2)}
+		case DrawRight:
+			offset = [2]float32{7, 1 + float32(rs.labelFont.size/2)}
+		case DrawBelow:
+			offset = [2]float32{0, float32(-rs.labelFont.size)}
+		}
+
 		if viewBounds.Inside(p) {
 			pw := add2f(windowFromLatLongP(p), offset)
 			if inWindow(pw) {
-				td.AddText(name, pw, TextStyle{font: rs.labelFont, color: color})
+				if mode == DrawBelow {
+					td.AddTextCentered(name, pw, TextStyle{font: rs.labelFont, color: color})
+				} else {
+					td.AddText(name, pw, TextStyle{font: rs.labelFont, color: color})
+				}
 			}
 		}
 	}
 
-	drawloc := func(selected map[string]interface{},
-		items map[string]Point2LL, color RGB, td *TextDrawBuilder) {
-		if rs.Everything {
+	drawloc := func(drawEverything bool, selected map[string]interface{},
+		items map[string]Point2LL, color RGB, td *TextDrawBuilder, mode int) {
+		if drawEverything {
 			for name, p := range items {
-				fixtext(name, p, color, td)
+				fixtext(name, p, color, td, mode)
 			}
 		} else {
 			for name := range selected {
 				if p, ok := items[name]; !ok {
 					// May happen when a new sector file is loaded
-					//lg.Printf("%s: not present in sector file", name)
 				} else {
-					fixtext(name, p, color, td)
+					fixtext(name, p, color, td, mode)
 				}
 			}
 		}
@@ -1042,16 +1060,16 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	td := rs.getScratchTextDrawBuilder()
 	if rs.VORNames {
-		drawloc(rs.VORsToDraw, world.VORs, ctx.cs.VOR, td)
+		drawloc(rs.Everything || rs.VORs, rs.VORsToDraw, world.VORs, ctx.cs.VOR, td, DrawLeft)
 	}
 	if rs.NDBNames {
-		drawloc(rs.NDBsToDraw, world.NDBs, ctx.cs.NDB, td)
+		drawloc(rs.Everything || rs.NDBs, rs.NDBsToDraw, world.NDBs, ctx.cs.NDB, td, DrawLeft)
 	}
 	if rs.FixNames {
-		drawloc(rs.FixesToDraw, world.fixes, ctx.cs.Fix, td)
+		drawloc(rs.Everything || rs.Fixes, rs.FixesToDraw, world.fixes, ctx.cs.Fix, td, DrawRight)
 	}
 	if rs.AirportNames {
-		drawloc(rs.AirportsToDraw, world.airports, ctx.cs.Airport, td)
+		drawloc(rs.Everything || rs.Airports, rs.AirportsToDraw, world.airports, ctx.cs.Airport, td, DrawBelow)
 	}
 	td.GenerateCommands(&rs.textCommandBuffer)
 }
