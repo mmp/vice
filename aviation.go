@@ -317,6 +317,23 @@ func (a *Aircraft) Position() Point2LL {
 	return a.tracks[0].position
 }
 
+func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
+	if t < 0 {
+		// interpolate past tracks
+
+		t /= -5
+		idx := int(t)
+		dt := t - float32(idx)
+
+		return lerp2ll(dt, a.tracks[idx].position, a.tracks[idx+1].position)
+	} else {
+		// extrapolate from last track
+		dt := t / 5
+		vec := sub2ll(a.tracks[0].position, a.tracks[1].position)
+		return add2ll(a.tracks[0].position, scale2ll(vec, dt))
+	}
+}
+
 func (a *Aircraft) GroundSpeed() int {
 	return a.tracks[0].groundspeed
 }
