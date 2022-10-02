@@ -113,7 +113,6 @@ func main() {
 		// wall if the window is too large; lacking a better approach
 		// we'll just disable it ubiquitously on OSX.
 		multisample := runtime.GOOS != "darwin"
-		lg.Errorf("MS %v", multisample)
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
 			globalConfig.InitialWindowPosition, multisample)
 	} else {
