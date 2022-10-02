@@ -73,11 +73,12 @@ type GLFWPlatform struct {
 	inputCharacters        string
 	anyEvents              bool
 	lastMouseX, lastMouseY float64
+	multisample            bool
 }
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
 // of the specified size open at the specified position on the screen.
-func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int) (Platform, error) {
+func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool) (Platform, error) {
 	lg.Printf("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
@@ -99,8 +100,10 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int) (Pla
 
 	// Start with an invisible window so that we can position it first
 	glfw.WindowHint(glfw.Visible, 0)
-	// Enable multisampling. (TODO: make this an option?)
-	glfw.WindowHint(glfw.Samples, 4)
+	// Maybe enable multisampling
+	if multisample {
+		glfw.WindowHint(glfw.Samples, 4)
+	}
 	window, err := glfw.CreateWindow(windowSize[0], windowSize[1], "vice", nil, nil)
 	if err != nil {
 		glfw.Terminate()
@@ -111,8 +114,9 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int) (Pla
 	window.MakeContextCurrent()
 
 	platform := &GLFWPlatform{
-		imguiIO: io,
-		window:  window,
+		imguiIO:     io,
+		window:      window,
+		multisample: multisample,
 	}
 	platform.setKeyMapping()
 	platform.installCallbacks()
@@ -199,7 +203,9 @@ func (g *GLFWPlatform) FramebufferSize() [2]float32 {
 }
 
 func (g *GLFWPlatform) NewFrame() {
-	gl.Enable(gl.MULTISAMPLE)
+	if g.multisample {
+		gl.Enable(gl.MULTISAMPLE)
+	}
 
 	// Setup display size (every frame to accommodate for window resizing)
 	displaySize := g.DisplaySize()
