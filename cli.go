@@ -1806,11 +1806,6 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 	} else {
 		name := strings.ToUpper(args[0])
 
-		aircraft := matchingAircraft(name)
-		if len(aircraft) == 1 {
-			return acInfo(aircraft[0]), nil
-		}
-
 		// e.g. "fft" matches both a VOR and a callsign, so report both...
 		var info []string
 		if navaid, ok := world.FAA.navaids[name]; ok {
@@ -1837,6 +1832,11 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 		if len(info) > 0 {
 			return strings.Join(info, "\n"), nil
+		}
+
+		aircraft := matchingAircraft(name)
+		if len(aircraft) == 1 {
+			return acInfo(aircraft[0]), nil
 		} else if len(aircraft) > 1 {
 			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
 			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
