@@ -382,9 +382,17 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			ac := a.aircraft
 			alt := ac.Altitude()
 			alt = (alt + 50) / 100 * 100
-			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d  %5d %3dnm\n", ac.Callsign(),
+
+			// Try to extract the STAR from the flight plan.
+			route := ac.flightPlan.route
+			star := route[strings.LastIndex(route, " ")+1:]
+			if len(star) > 7 {
+				star = star[len(star)-7:]
+			}
+
+			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d  %5d %3dnm %s\n", ac.Callsign(),
 				ac.flightPlan.rules, ac.flightPlan.arrive, ac.flightPlan.actype, ac.scratchpad,
-				ac.tempAltitude, alt, int(a.distance)))
+				ac.tempAltitude, alt, int(a.distance), star))
 		}
 		str.WriteString("\n")
 	}
