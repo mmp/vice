@@ -1738,7 +1738,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
 
 	td := rs.getScratchTextDrawBuilder()
-	for h := float32(10); h <= 360; h += 10 {
+	for h := float32(5); h <= 360; h += 5 {
 		hr := h + rs.RotationAngle
 		dir := [2]float32{sin(radians(hr)), cos(radians(hr))}
 		isect, _, t := bounds.IntersectRay(pw, dir)
@@ -1753,7 +1753,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 		pill := latLongFromWindowP(pInset)
 		rs.linesDrawBuilder.AddLine(pell, pill, ctx.cs.Compass)
 
-		if int(h)%30 == 0 {
+		if int(h)%10 == 0 {
 			label := []byte{'0', '0', '0'}
 			hi := int(h)
 			for i := 2; i >= 0 && hi != 0; i-- {
