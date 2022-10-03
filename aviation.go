@@ -318,6 +318,18 @@ func (a *Aircraft) Position() Point2LL {
 }
 
 func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
+	// Return the first valid one; this makes things cleaner at the start when
+	// we don't have a full set of track history.
+	pos := func(idx int) Point2LL {
+		for idx > 0 {
+			if !a.tracks[idx].position.IsZero() {
+				break
+			}
+			idx--
+		}
+		return a.tracks[idx].position
+	}
+
 	if t < 0 {
 		// interpolate past tracks
 
@@ -325,12 +337,24 @@ func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 		idx := int(t)
 		dt := t - float32(idx)
 
-		return lerp2ll(dt, a.tracks[idx].position, a.tracks[idx+1].position)
+		return lerp2ll(dt, pos(idx), pos(idx+1))
 	} else {
-		// extrapolate from last track
-		dt := t / 5
-		vec := sub2ll(a.tracks[0].position, a.tracks[1].position)
-		return add2ll(a.tracks[0].position, scale2ll(vec, dt))
+		// extrapolate from last track. fit a parabola a t^2 + b t ^ c = x_i
+		// to the last three tracks, with associated times assumed to be
+		// 0, -5, and -10. We immediately have c=x_0 and are left with:
+		// 25 a - 5 b + x0 = x1
+		// 100 a - 10 b + x0 = x2
+		// Solving gives a = (x0 - 2 x1 + x2) / 50, b = (3 x0 - 4x1 + x2) / 10
+		fit := func(x0, x1, x2 float32) (a, b, c float32) {
+			a = (x0 - 2*x1 + x2) / 50
+			b = (3*x0 - 4*x1 + x2) / 10
+			c = x0
+			return
+		}
+		longa, longb, longc := fit(pos(0).Longitude(), pos(1).Longitude(), pos(2).Longitude())
+		lata, latb, latc := fit(pos(0).Latitude(), pos(1).Latitude(), pos(2).Latitude())
+
+		return Point2LL{longa*t*t + longb*t + longc, lata*t*t + latb*t + latc}
 	}
 }
 
