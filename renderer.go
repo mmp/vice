@@ -316,6 +316,10 @@ func (cb *CommandBuffer) DrawQuads(offset, count int) {
 }
 
 func (cb *CommandBuffer) Call(sub CommandBuffer) {
+	if sub.buf == nil {
+		// make it a no-op
+		return
+	}
 	up := uintptr(unsafe.Pointer(&sub.buf[0]))
 	cb.appendInts(RendererCallBuffer, int(up&0xffffffff), int(up>>32), len(sub.buf))
 }
