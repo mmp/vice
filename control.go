@@ -64,6 +64,8 @@ type ControlClient interface {
 	PilotRemoved(callsign string)
 	ControllerAdded(controller Controller)
 	ControllerRemoved(callsign string)
+	RequestRelief(callsign string)
+	CancelRequestRelief(callsign string)
 
 	SquawkAssigned(callsign string, squawk Squawk)
 	FlightPlanReceived(fp FlightPlan)

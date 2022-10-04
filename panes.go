@@ -397,8 +397,8 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		str.WriteString("\n")
 	}
 
-	if a.ShowControllers {
-		var cstr strings.Builder
+	if a.ShowControllers && len(world.controllers) > 0 {
+		str.WriteString("Controllers:\n")
 
 		sorted := SortedMapKeys(world.controllers)
 		for _, suffix := range []string{"CTR", "APP", "DEP", "TWR", "GND", "DEL", "FSS", "ATIS", "OBS"} {
@@ -414,24 +414,28 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				}
 
 				if first {
-					cstr.WriteString(fmt.Sprintf("  %-4s  ", suffix))
+					str.WriteString(fmt.Sprintf("  %-4s  ", suffix))
 					first = false
 				} else {
-					cstr.WriteString("        ")
+					str.WriteString("        ")
 				}
-				cstr.WriteString(fmt.Sprintf(" %-12s %s", ctrl.callsign, ctrl.frequency))
+
+				if ctrl.requestRelief {
+					flush()
+					style.color = cs.TextHighlight
+				}
+
+				str.WriteString(fmt.Sprintf(" %-12s %s", ctrl.callsign, ctrl.frequency))
+
+				if ctrl.requestRelief {
+					flush()
+				}
 
 				if ctrl.position != nil {
-					cstr.WriteString(fmt.Sprintf(" %-3s %s", ctrl.position.sectorId, ctrl.position.scope))
+					str.WriteString(fmt.Sprintf(" %-3s %s", ctrl.position.sectorId, ctrl.position.scope))
 				}
-				cstr.WriteString("\n")
+				str.WriteString("\n")
 			}
-		}
-
-		if cstr.Len() > 0 {
-			str.WriteString("Controllers:\n")
-			str.WriteString(cstr.String())
-			str.WriteString("\n")
 		}
 	}
 

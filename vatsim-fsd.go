@@ -483,7 +483,8 @@ func (v *VATSIMServer) handleCQ(sender string, args []string) error {
 
 	case "BY":
 		// Request relief -- actually this is .break
-		return IgnoredMessageError{"$CQ::BY"}
+		v.client.RequestRelief(sender)
+		return nil
 
 	case "CAPS":
 		// Capabilities
@@ -517,8 +518,8 @@ func (v *VATSIMServer) handleCQ(sender string, args []string) error {
 		return IgnoredMessageError{"$CQ::" + cmd}
 
 	case "HI":
-		// cancel request relief
-		return IgnoredMessageError{"$CQ::" + cmd}
+		v.client.CancelRequestRelief(sender)
+		return nil
 
 	case "HLP":
 		// request help

@@ -1024,6 +1024,18 @@ func (w *World) ControllerRemoved(position string) {
 	}
 }
 
+func (w *World) RequestRelief(callsign string) {
+	if c, ok := w.controllers[callsign]; ok {
+		c.requestRelief = true
+	}
+}
+
+func (w *World) CancelRequestRelief(callsign string) {
+	if c, ok := w.controllers[callsign]; ok {
+		c.requestRelief = false
+	}
+}
+
 func (w *World) SquawkAssigned(callsign string, squawk Squawk) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {

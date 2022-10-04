@@ -77,10 +77,11 @@ type Controller struct {
 	cid      string
 	rating   NetworkRating
 
-	frequency  Frequency
-	scopeRange int
-	facility   Facility
-	location   Point2LL
+	frequency     Frequency
+	scopeRange    int
+	facility      Facility
+	location      Point2LL
+	requestRelief bool
 
 	position *Position
 }
