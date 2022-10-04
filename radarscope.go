@@ -22,24 +22,24 @@ type RadarScopePane struct {
 	PointSize       float32
 	LineWidth       float32
 
-	Everything     bool
-	Runways        bool
-	Regions        bool
-	Labels         bool
-	LowAirways     bool
-	HighAirways    bool
-	VORs           bool
-	VORNames       bool
-	VORsToDraw     map[string]interface{}
-	NDBs           bool
-	NDBNames       bool
-	NDBsToDraw     map[string]interface{}
-	Fixes          bool
-	FixNames       bool
-	FixesToDraw    map[string]interface{}
-	Airports       bool
-	AirportNames   bool
-	AirportsToDraw map[string]interface{}
+	DrawEverything   bool
+	DrawRunways      bool
+	DrawRegions      bool
+	DrawLabels       bool
+	DrawLowAirways   bool
+	DrawHighAirways  bool
+	DrawVORs         bool
+	DrawVORNames     bool
+	VORsToDraw       map[string]interface{}
+	DrawNDBs         bool
+	DrawNDBNames     bool
+	NDBsToDraw       map[string]interface{}
+	DrawFixes        bool
+	DrawFixNames     bool
+	FixesToDraw      map[string]interface{}
+	DrawAirports     bool
+	DrawAirportNames bool
+	AirportsToDraw   map[string]interface{}
 
 	GeoDrawSet       map[string]interface{}
 	SIDDrawSet       map[string]interface{}
@@ -163,8 +163,8 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.MaxAltitude = 60000
 	c.Range = 15
 	c.DataBlockFormat = DataBlockFormatGround
-	c.Regions = true
-	c.Labels = true
+	c.DrawRegions = true
+	c.DrawLabels = true
 	c.GeoDrawSet = make(map[string]interface{})
 	c.SIDDrawSet = make(map[string]interface{})
 	c.STARDrawSet = make(map[string]interface{})
@@ -408,21 +408,21 @@ func (rs *RadarScopePane) DrawUI() {
 	}
 	if imgui.CollapsingHeader("Scope contents") {
 		if *devmode {
-			imgui.Checkbox("Draw everything", &rs.Everything)
+			imgui.Checkbox("Draw everything", &rs.DrawEverything)
 		}
 
 		if imgui.BeginTable("drawbuttons", 5) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Regions", &rs.Regions)
+			imgui.Checkbox("Regions", &rs.DrawRegions)
 			imgui.TableNextColumn()
-			imgui.Checkbox("Labels", &rs.Labels)
+			imgui.Checkbox("Labels", &rs.DrawLabels)
 			imgui.TableNextColumn()
-			imgui.Checkbox("Low Airways", &rs.LowAirways)
+			imgui.Checkbox("Low Airways", &rs.DrawLowAirways)
 			imgui.TableNextColumn()
-			imgui.Checkbox("High Airways", &rs.HighAirways)
+			imgui.Checkbox("High Airways", &rs.DrawHighAirways)
 			imgui.TableNextColumn()
-			imgui.Checkbox("Runways", &rs.Runways)
+			imgui.Checkbox("Runways", &rs.DrawRunways)
 			imgui.EndTable()
 		}
 
@@ -439,21 +439,21 @@ func (rs *RadarScopePane) DrawUI() {
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Draw All##VORs", &rs.VORs)
+			imgui.Checkbox("Draw All##VORs", &rs.DrawVORs)
 			imgui.SameLine()
-			imgui.Checkbox("Show Names##VORs", &rs.VORNames)
+			imgui.Checkbox("Show Names##VORs", &rs.DrawVORNames)
 			imgui.TableNextColumn()
-			imgui.Checkbox("Draw All##NDBs", &rs.NDBs)
+			imgui.Checkbox("Draw All##NDBs", &rs.DrawNDBs)
 			imgui.SameLine()
-			imgui.Checkbox("Show Names##NDBs", &rs.NDBNames)
+			imgui.Checkbox("Show Names##NDBs", &rs.DrawNDBNames)
 			imgui.TableNextColumn()
-			imgui.Checkbox("Draw All##Fixes", &rs.Fixes)
+			imgui.Checkbox("Draw All##Fixes", &rs.DrawFixes)
 			imgui.SameLine()
-			imgui.Checkbox("Show Names##Fixes", &rs.FixNames)
+			imgui.Checkbox("Show Names##Fixes", &rs.DrawFixNames)
 			imgui.TableNextColumn()
-			imgui.Checkbox("Draw All##Airports", &rs.Airports)
+			imgui.Checkbox("Draw All##Airports", &rs.DrawAirports)
 			imgui.SameLine()
-			imgui.Checkbox("Show Names##Airports", &rs.AirportNames)
+			imgui.Checkbox("Show Names##Airports", &rs.DrawAirportNames)
 
 			io := imgui.CurrentIO()
 			table := func(m *map[string]interface{}, selected map[string]interface{}, lastSelected string) string {
@@ -872,12 +872,12 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	// Renormalize line width for high-DPI displays
 	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 
-	if rs.Everything || rs.Runways {
+	if rs.DrawEverything || rs.DrawRunways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.Runway)
 		rs.llCommandBuffer.Call(world.runwayCommandBuffer)
 	}
 
-	if rs.Everything || rs.Regions {
+	if rs.DrawEverything || rs.DrawRegions {
 		for _, region := range world.regions {
 			if Overlaps(region.bounds, viewBounds) {
 				if region.name == "" {
@@ -902,13 +902,13 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		return add2f(scale2f(dx, x), scale2f(dy, y))
 	}
 
-	if rs.Everything || rs.VORs {
+	if rs.DrawEverything || rs.DrawVORs {
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, vor := range world.VORs {
 			rs.linesDrawBuilder.AddPolyline(vor, ctx.cs.VOR, square)
 		}
 	}
-	if rs.Everything || rs.NDBs {
+	if rs.DrawEverything || rs.DrawNDBs {
 		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
 		for _, ndb := range world.NDBs {
 			// flipped triangles
@@ -916,7 +916,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		}
 	}
 
-	if rs.Everything || rs.Fixes {
+	if rs.DrawEverything || rs.DrawFixes {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
 		for _, fix := range world.fixes {
 			// upward-pointing triangles
@@ -933,7 +933,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 			}
 		}
 	}
-	if rs.Everything || rs.Airports {
+	if rs.DrawEverything || rs.DrawAirports {
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, ap := range world.airports {
 			rs.linesDrawBuilder.AddPolyline(ap, ctx.cs.Airport, square)
@@ -942,7 +942,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	drawARTCCLines := func(artcc []StaticDrawable, drawSet map[string]interface{}) {
 		for _, artcc := range artcc {
-			if _, draw := drawSet[artcc.name]; (draw || rs.Everything) && Overlaps(artcc.bounds, viewBounds) {
+			if _, draw := drawSet[artcc.name]; (draw || rs.DrawEverything) && Overlaps(artcc.bounds, viewBounds) {
 				rs.llCommandBuffer.Call(artcc.cb)
 			}
 		}
@@ -954,20 +954,20 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	for _, sid := range world.SIDs {
 		_, draw := rs.SIDDrawSet[sid.name]
-		if (rs.Everything || draw) && Overlaps(sid.bounds, viewBounds) {
+		if (rs.DrawEverything || draw) && Overlaps(sid.bounds, viewBounds) {
 			rs.llCommandBuffer.Call(sid.cb)
 		}
 	}
 	for _, star := range world.STARs {
 		_, draw := rs.STARDrawSet[star.name]
-		if (rs.Everything || draw) && Overlaps(star.bounds, viewBounds) {
+		if (rs.DrawEverything || draw) && Overlaps(star.bounds, viewBounds) {
 			rs.llCommandBuffer.Call(star.cb)
 		}
 	}
 
 	for _, geo := range world.geos {
 		_, draw := rs.GeoDrawSet[geo.name]
-		if (rs.Everything || draw) && Overlaps(geo.bounds, viewBounds) {
+		if (rs.DrawEverything || draw) && Overlaps(geo.bounds, viewBounds) {
 			rs.llCommandBuffer.Call(geo.cb)
 		}
 	}
@@ -988,19 +988,19 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		td.GenerateCommands(&rs.textCommandBuffer)
 	}
 
-	if rs.Everything || rs.LowAirways {
+	if rs.DrawEverything || rs.DrawLowAirways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.LowAirway)
 		rs.llCommandBuffer.Call(world.lowAirwayCommandBuffer)
 		drawAirwayLabels(world.lowAirwayLabels, ctx.cs.LowAirway)
 	}
-	if rs.Everything || rs.HighAirways {
+	if rs.DrawEverything || rs.DrawHighAirways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.HighAirway)
 		rs.llCommandBuffer.Call(world.highAirwayCommandBuffer)
 		drawAirwayLabels(world.highAirwayLabels, ctx.cs.HighAirway)
 	}
 
 	// Labels
-	if rs.Everything || rs.Labels {
+	if rs.DrawEverything || rs.DrawLabels {
 		td := rs.getScratchTextDrawBuilder()
 		for _, label := range world.labels {
 			if viewBounds.Inside(label.p) {
@@ -1059,17 +1059,17 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	}
 
 	td := rs.getScratchTextDrawBuilder()
-	if rs.VORNames {
-		drawloc(rs.Everything || rs.VORs, rs.VORsToDraw, world.VORs, ctx.cs.VOR, td, DrawLeft)
+	if rs.DrawVORNames {
+		drawloc(rs.DrawEverything || rs.DrawVORs, rs.VORsToDraw, world.VORs, ctx.cs.VOR, td, DrawLeft)
 	}
-	if rs.NDBNames {
-		drawloc(rs.Everything || rs.NDBs, rs.NDBsToDraw, world.NDBs, ctx.cs.NDB, td, DrawLeft)
+	if rs.DrawNDBNames {
+		drawloc(rs.DrawEverything || rs.DrawNDBs, rs.NDBsToDraw, world.NDBs, ctx.cs.NDB, td, DrawLeft)
 	}
-	if rs.FixNames {
-		drawloc(rs.Everything || rs.Fixes, rs.FixesToDraw, world.fixes, ctx.cs.Fix, td, DrawRight)
+	if rs.DrawFixNames {
+		drawloc(rs.DrawEverything || rs.DrawFixes, rs.FixesToDraw, world.fixes, ctx.cs.Fix, td, DrawRight)
 	}
-	if rs.AirportNames {
-		drawloc(rs.Everything || rs.Airports, rs.AirportsToDraw, world.airports, ctx.cs.Airport, td, DrawBelow)
+	if rs.DrawAirportNames {
+		drawloc(rs.DrawEverything || rs.DrawAirports, rs.AirportsToDraw, world.airports, ctx.cs.Airport, td, DrawBelow)
 	}
 	td.GenerateCommands(&rs.textCommandBuffer)
 }
