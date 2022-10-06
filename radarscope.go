@@ -2356,7 +2356,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	}
 
 	alt100s := (ac.Altitude() + 50) / 100
-	speed := ac.tracks[0].groundspeed
+	speed := ac.GroundSpeed()
 	fp := ac.flightPlan
 	actype := fp.TypeWithoutSuffix()
 	if actype != "" {
@@ -2441,13 +2441,13 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 			return datablock.String()
 		}
 
-		ascending := (ac.tracks[0].altitude - ac.tracks[1].altitude) > 50
-		descending := (ac.tracks[0].altitude - ac.tracks[1].altitude) < -50
+		dalt := ac.AltitudeChange()
+		ascending, descending := dalt > 250, dalt < -250
 		altAnnotation := " "
-		if ac.tempAltitude != 0 && abs(ac.tracks[0].altitude-ac.tempAltitude) < 300 {
+		if ac.tempAltitude != 0 && abs(ac.Altitude()-ac.tempAltitude) < 300 {
 			altAnnotation = "T "
 		} else if ac.flightPlan.altitude != 0 &&
-			abs(ac.tracks[0].altitude-ac.flightPlan.altitude) < 300 {
+			abs(ac.Altitude()-ac.flightPlan.altitude) < 300 {
 			altAnnotation = "C "
 		} else if ascending {
 			altAnnotation = FontAwesomeIconArrowUp + " "

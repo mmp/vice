@@ -310,6 +310,11 @@ func (a *Aircraft) Altitude() int {
 	return a.tracks[0].altitude
 }
 
+// Reported in feet per minute
+func (a *Aircraft) AltitudeChange() int {
+	return 12 * (a.tracks[0].altitude - a.tracks[1].altitude)
+}
+
 func (a *Aircraft) HaveTrack() bool {
 	return a.Position()[0] != 0 || a.Position()[1] != 0
 }
