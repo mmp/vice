@@ -58,6 +58,7 @@ type RadarScopePane struct {
 	DrawVectorLine   bool
 	VectorLineExtent float32
 	VectorLineMode   int
+	RadarTracksDrawn int32
 
 	DrawRangeIndicators bool
 	RangeIndicatorStyle int
@@ -274,6 +275,11 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 		rs.selectedAirports = make(map[string]interface{})
 	}
 
+	// Upgrade old files
+	if rs.RadarTracksDrawn == 0 {
+		rs.RadarTracksDrawn = 5
+	}
+
 	if rs.datablockFont = GetFont(rs.DatablockFontIdentifier); rs.datablockFont == nil {
 		rs.datablockFont = GetDefaultFont()
 		rs.DatablockFontIdentifier = rs.datablockFont.id
@@ -338,6 +344,7 @@ func (rs *RadarScopePane) DrawUI() {
 				t.datablockTextCurrent = false
 			}
 		}
+		imgui.SliderIntV("Tracks shown", &rs.RadarTracksDrawn, 1, 10, "%d", 0 /* flags */)
 		imgui.Checkbox("Vector lines", &rs.DrawVectorLine)
 		if rs.DrawVectorLine {
 			imgui.SliderFloatV("Vector line extent", &rs.VectorLineExtent, 0.1, 10, "%.1f", 0)
@@ -1228,18 +1235,19 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 		if ta.isGhost {
 			color = ctx.cs.GhostDataBlock
 		}
-		pastColor := color
 
-		// draw the history first so that if it's not moving, we still get something bright
-		// don't draw the full history
-		for i := 1; i < 5; i++ {
-			// blend it a bit with the background color each time
-			pastColor.R = .8*pastColor.R + .2*ctx.cs.Background.R
-			pastColor.G = .8*pastColor.G + .2*ctx.cs.Background.G
-			pastColor.B = .8*pastColor.B + .2*ctx.cs.Background.B
-			rs.drawTrack(ac, ac.tracks[i].position, pastColor, latLongFromWindowV, windowFromLatLongP, td)
+		// Draw in reverse order so that if it's not moving, more recent tracks (which will have
+		// more contrast with the background), will be the ones that are visible.
+		for i := rs.RadarTracksDrawn; i > 0; i-- {
+			// blend the track color with the background color; more
+			// background further into history but only a 50/50 blend
+			// at the oldest track.
+			// 1e-6 addition to avoid NaN with RadarTracksDrawn == 1.
+			x := float32(i-1) / (1e-6 + float32(2*(rs.RadarTracksDrawn-1))) // 0 <= x <= 0.5
+			trackColor := lerpRGB(x, color, ctx.cs.Background)
+
+			rs.drawTrack(ac, ac.tracks[i-1].position, trackColor, latLongFromWindowV, windowFromLatLongP, td)
 		}
-		rs.drawTrack(ac, ac.Position(), color, latLongFromWindowV, windowFromLatLongP, td)
 	}
 	td.GenerateCommands(&rs.textCommandBuffer)
 }

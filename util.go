@@ -427,6 +427,10 @@ type RGBA struct {
 	R, G, B, A float32
 }
 
+func lerpRGB(x float32, a, b RGB) RGB {
+	return RGB{R: lerp(x, a.R, b.R), G: lerp(x, a.G, b.G), B: lerp(x, a.B, b.B)}
+}
+
 func (r RGB) Equals(other RGB) bool {
 	return r.R == other.R && r.G == other.G && r.B == other.B
 }
