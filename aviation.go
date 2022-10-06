@@ -402,42 +402,12 @@ func (a *Aircraft) HaveHeading() bool {
 	return !a.tracks[0].position.IsZero() && !a.tracks[1].position.IsZero()
 }
 
-func (a *Aircraft) ExtrapolatedHeadingVector() Point2LL {
-	// fit a parabola to the last three points, then return the tangent at p[0]
-	// a x^2 + b x + c = y
-	// x in [0,1,2], y last 3 latitudes / longitudes, respectively
-	// form the matrix:
-	// [x0^2  x0 1 ] [a]   [y0]
-	// [x1^2  x1 1 ] [b] = [y1]
-	// [x2^2  x2 1 ] [c]   [y2]
-	//
-	// or:
-	// [0 0 1] [a]   [y0]
-	// [1 1 1] [b] = [y1]
-	// [4 2 1] [c]   [y2]
-	//
-	// solving gives:
-	// a = 1/2 (y0 - 2 y1 + y2)
-	// b = 1/2 (-3 y0 + 4y1 - y2)
-	// c = y0
-	//
-	// The derivative of the parabola is:
-	// 1/2 (-3 y0 + 4 y1 - y2) + x (y0 - 2 y1 + y2)
-	//
-	// evaluated at x=0 we finally have:
-	// 1/2 (-3 y0 + 4 y1 - y2)
-	tangent0 := func(p0, p1, p2 float32) float32 {
-		return 0.5 * (-3*p0 + 4*p1 - p2)
-	}
-	p0 := a.tracks[0].position
-	p1 := a.tracks[1].position
-	p2 := a.tracks[2].position
-	if p2.IsZero() {
-		// not enough data yet
+func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
+	if !a.HaveHeading() {
 		return Point2LL{}
 	}
-	// Negate the tangent since we want to be considering going away from p0
-	return Point2LL{-tangent0(p0[0], p1[0], p2[0]), -tangent0(p0[1], p1[1], p2[1])}
+	t := float32(time.Since(a.tracks[0].time).Seconds()) - lag
+	return sub2ll(a.InterpolatedPosition(t+.5), a.InterpolatedPosition(t-0.5))
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
