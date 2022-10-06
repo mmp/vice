@@ -508,6 +508,29 @@ func (w *World) ConnectVATSIMReplay(filename string, offsetSeconds int, replayRa
 	return nil
 }
 
+func (w *World) Locate(name string) (Point2LL, bool) {
+	name = strings.ToUpper(name)
+	// We'll start with the sector file and then move on to the FAA
+	// database if we don't find it.
+	if pos, ok := world.VORs[name]; ok {
+		return pos, ok
+	} else if pos, ok := world.NDBs[name]; ok {
+		return pos, ok
+	} else if pos, ok := world.fixes[name]; ok {
+		return pos, ok
+	} else if pos, ok := world.airports[name]; ok {
+		return pos, ok
+	} else if n, ok := world.FAA.navaids[name]; ok {
+		return n.location, ok
+	} else if f, ok := world.FAA.fixes[name]; ok {
+		return f.location, ok
+	} else if ap, ok := world.FAA.airports[name]; ok {
+		return ap.location, ok
+	} else {
+		return Point2LL{}, false
+	}
+}
+
 func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	var ret []*Aircraft
 	for _, ac := range w.aircraft {

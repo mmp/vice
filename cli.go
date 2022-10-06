@@ -755,25 +755,9 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		fixarg := func(fix string, str func(a *Aircraft, pos Point2LL) string) {
 			if positionConfig.selectedAircraft != nil {
-				var pos Point2LL
-				fix = strings.ToUpper(fix)
-				// We'll start with the sector file and then move on to the
-				// FAA database if we don't find it.
-				var ok bool
-				if pos, ok = world.VORs[fix]; ok {
-				} else if pos, ok = world.NDBs[fix]; ok {
-				} else if pos, ok = world.fixes[fix]; ok {
-				} else if pos, ok = world.airports[fix]; ok {
-				} else if n, ok := world.FAA.navaids[fix]; ok {
-					pos = n.location
-				} else if f, ok := world.FAA.fixes[fix]; ok {
-					pos = f.location
-				} else if ap, ok := world.FAA.airports[fix]; ok {
-					pos = ap.location
-				} else {
+				if pos, ok := world.Locate(fix); !ok {
 					err = fmt.Errorf("%s: fix is unknown.", fix)
-				}
-				if !pos.IsZero() {
+				} else if !pos.IsZero() {
 					finalArgs = append(finalArgs, str(positionConfig.selectedAircraft, pos))
 				}
 			} else {
