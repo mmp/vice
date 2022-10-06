@@ -55,6 +55,8 @@ type PositionConfig struct {
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
+	drawnRoute                 string
+	drawnRouteEndTime          time.Time
 }
 
 func (c *GlobalConfig) DrawUI() {

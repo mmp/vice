@@ -77,11 +77,11 @@ type RadarScopePane struct {
 	LabelFontIdentifier     FontIdentifier
 	labelFont               *Font
 
-	pointsDrawBuilder      PointsDrawBuilder
-	linesDrawBuilder       ColoredLinesDrawBuilder
-	highlightedDrawBuilder ColoredLinesDrawBuilder
-	llCommandBuffer        CommandBuffer // things using lat-long coordiantes for vertices
-	textCommandBuffer      CommandBuffer // text, using window coordinates
+	pointsDrawBuilder     PointsDrawBuilder
+	linesDrawBuilder      ColoredLinesDrawBuilder
+	thickLinesDrawBuilder ColoredLinesDrawBuilder
+	llCommandBuffer       CommandBuffer // things using lat-long coordiantes for vertices
+	textCommandBuffer     CommandBuffer // text, using window coordinates
 
 	acSelectedByDatablock *Aircraft
 
@@ -227,7 +227,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.textCommandBuffer = CommandBuffer{}
 	dupe.pointsDrawBuilder = PointsDrawBuilder{}
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
-	dupe.highlightedDrawBuilder = ColoredLinesDrawBuilder{}
+	dupe.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
 	dupe.selectedVORs = nil
 	dupe.selectedNDBs = nil
@@ -325,7 +325,7 @@ func (rs *RadarScopePane) Deactivate() {
 	rs.textCommandBuffer = CommandBuffer{}
 	rs.pointsDrawBuilder = PointsDrawBuilder{}
 	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
-	rs.highlightedDrawBuilder = ColoredLinesDrawBuilder{}
+	rs.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 }
 
 func (rs *RadarScopePane) Name() string { return rs.ScopeName }
@@ -780,6 +780,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
 	rs.drawMeasuringLine(ctx, latLongFromWindowP)
 	rs.drawHighlighted(ctx, latLongFromWindowV)
+	rs.drawRoute(ctx, latLongFromWindowV)
 	rs.drawCRDARegions(ctx)
 
 	// Mouse events last, so that the datablock bounds are current.
@@ -788,7 +789,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.pointsDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.linesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth * ctx.highDPIScale)
-	rs.highlightedDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
+	rs.thickLinesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 
 	cb.Call(rs.llCommandBuffer)
 	cb.Call(rs.textCommandBuffer)
@@ -827,7 +828,7 @@ func (rs *RadarScopePane) getViewingMatrices(ctx *PaneContext) (latLongFromWindo
 func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl32.Mat4) {
 	// Reset the slices so we can draw new lines and points
 	rs.linesDrawBuilder.Reset()
-	rs.highlightedDrawBuilder.Reset()
+	rs.thickLinesDrawBuilder.Reset()
 	rs.pointsDrawBuilder.Reset()
 
 	rs.llCommandBuffer.Reset()
@@ -1923,9 +1924,7 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV f
 	fade := 1.5
 	if sec := remaining.Seconds(); sec < fade {
 		x := float32(sec / fade)
-		color.R = x*color.R + (1-x)*ctx.cs.Background.R
-		color.G = x*color.G + (1-x)*ctx.cs.Background.G
-		color.B = x*color.B + (1-x)*ctx.cs.Background.B
+		color = lerpRGB(x, ctx.cs.Background, color)
 	}
 
 	radius := float32(10)
@@ -1934,9 +1933,35 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV f
 	for i := 0; i < len(circlePoints)-1; i++ {
 		p0 := add2ll(p, add2ll(scale2ll(dx, circlePoints[i][0]), scale2ll(dy, circlePoints[i][1])))
 		p1 := add2ll(p, add2ll(scale2ll(dx, circlePoints[i+1][0]), scale2ll(dy, circlePoints[i+1][1])))
-		rs.highlightedDrawBuilder.AddLine(p0, p1, color)
+		rs.thickLinesDrawBuilder.AddLine(p0, p1, color)
 	}
 
+}
+
+func (rs *RadarScopePane) drawRoute(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {
+	remaining := time.Until(positionConfig.drawnRouteEndTime)
+	if remaining < 0 {
+		return
+	}
+
+	color := ctx.cs.Error
+	fade := 1.5
+	if sec := remaining.Seconds(); sec < fade {
+		x := float32(sec / fade)
+		color = lerpRGB(x, ctx.cs.Background, color)
+	}
+
+	var pPrev Point2LL
+	for _, waypoint := range strings.Split(positionConfig.drawnRoute, " ") {
+		if p, ok := world.Locate(waypoint); !ok {
+			// no worries; most likely it's a SID, STAR, or airway..
+		} else {
+			if !pPrev.IsZero() {
+				rs.thickLinesDrawBuilder.AddLine(pPrev, p, color)
+			}
+			pPrev = p
+		}
+	}
 }
 
 func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL,

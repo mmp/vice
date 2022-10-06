@@ -65,6 +65,7 @@ var (
 
 		&FindCommand{},
 		&MITCommand{},
+		&DrawRouteCommand{},
 
 		&InfoCommand{},
 		&TimerCommand{},
@@ -1741,6 +1742,44 @@ func (*MITCommand) Run(cli *CLIPane, args []string) (string, error) {
 		result += ac.Callsign() + " "
 	}
 	return result, nil
+}
+
+type DrawRouteCommand struct{}
+
+func (*DrawRouteCommand) Name() string { return "drawroute" }
+func (*DrawRouteCommand) Usage() string {
+	return "<callsign>"
+}
+func (*DrawRouteCommand) Help() string {
+	return "Draws the route of the specified aircraft in any radar scopes in which it is visible."
+}
+func (*DrawRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return nil
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*DrawRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
+	var ac *Aircraft
+	if len(args) == 0 {
+		ac = positionConfig.selectedAircraft
+	} else {
+		aircraft := matchingAircraft(strings.ToUpper(args[0]))
+		if len(aircraft) == 1 {
+			ac = aircraft[0]
+		} else if len(aircraft) > 1 {
+			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
+			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
+		} else {
+			return "", fmt.Errorf("%s: no matches found", args[0])
+		}
+	}
+
+	positionConfig.drawnRoute = ac.flightPlan.depart + " " + ac.flightPlan.route + " " +
+		ac.flightPlan.arrive
+	positionConfig.drawnRouteEndTime = time.Now().Add(5 * time.Second)
+	return "", nil
 }
 
 type InfoCommand struct{}
