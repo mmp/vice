@@ -2529,11 +2529,9 @@ func (rs *RadarScopePane) vectorLineEnd(ac *Aircraft) Point2LL {
 		return add2ll(ac.Position(), scale2ll(h, t))
 
 	case VectorLineMinutes:
-		// In theory we get messages every 5s. So 12x the heading vector
-		// should be one minute.  Probably better would be to use the
-		// groundspeed...
-		vectorEnd := ac.HeadingVector()
-		return add2ll(ac.Position(), scale2ll(vectorEnd, 12*rs.VectorLineExtent))
+		// HeadingVector() comes back scaled for one minute in the future.
+		vectorEnd := scale2ll(ac.HeadingVector(), rs.VectorLineExtent)
+		return add2ll(ac.Position(), vectorEnd)
 
 	default:
 		lg.Printf("unexpected vector line mode: %d", rs.VectorLineMode)

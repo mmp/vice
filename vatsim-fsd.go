@@ -1013,7 +1013,8 @@ func (v *VATSIMServer) handleAt(args []string) error {
 		position:    latlong,
 		altitude:    int(altitude),
 		groundspeed: int(groundspeed),
-		heading:     heading}
+		heading:     heading,
+		time:        time.Now()}
 
 	v.client.PositionReceived(callsign, pos, squawk, mode)
 

@@ -98,6 +98,7 @@ type RadarTrack struct {
 	altitude    int
 	groundspeed int
 	heading     float32
+	time        time.Time
 }
 
 type FlightRules int
@@ -168,7 +169,6 @@ type Aircraft struct {
 
 	tracks    [10]RadarTrack
 	firstSeen time.Time
-	lastSeen  time.Time // only updated when we get a radar return
 }
 
 type AircraftPair struct {
@@ -312,7 +312,12 @@ func (a *Aircraft) Altitude() int {
 
 // Reported in feet per minute
 func (a *Aircraft) AltitudeChange() int {
-	return 12 * (a.tracks[0].altitude - a.tracks[1].altitude)
+	if a.tracks[0].position.IsZero() || a.tracks[1].position.IsZero() {
+		return 0
+	}
+
+	dt := a.tracks[0].time.Sub(a.tracks[1].time)
+	return int(float64(a.tracks[0].altitude-a.tracks[1].altitude) / dt.Minutes())
 }
 
 func (a *Aircraft) HaveTrack() bool {
@@ -376,10 +381,13 @@ func (a *Aircraft) Heading() float32 {
 	return headingv2ll(a.HeadingVector(), world.MagneticVariation)
 }
 
+// Scale it so that it represents where it is expected to be one minute in
+// the future.
 func (a *Aircraft) HeadingVector() Point2LL {
-	p0 := a.tracks[0].position
-	p1 := a.tracks[1].position
-	return Point2LL{p0[0] - p1[0], p0[1] - p1[1]}
+	p0, p1 := a.tracks[0].position, a.tracks[1].position
+	s := 1 / a.tracks[0].time.Sub(a.tracks[1].time).Minutes()
+
+	return scale2ll(sub2ll(p0, p1), float32(s))
 }
 
 func (a *Aircraft) HaveHeading() bool {
@@ -429,8 +437,7 @@ func (a *Aircraft) HeadingTo(p Point2LL) float32 {
 }
 
 func (a *Aircraft) LostTrack() bool {
-	d := time.Since(a.lastSeen)
-	return d > 15*time.Second
+	return !a.tracks[0].position.IsZero() && time.Since(a.tracks[0].time) > 30*time.Second
 }
 
 func (a *Aircraft) Callsign() string {
@@ -505,8 +512,9 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 {
 	a0, av := a.Position(), a.HeadingVector()
 	b0, bv := b.Position(), b.HeadingVector()
-	afut := add2f(a0, scale2f(av, seconds/5)) // assume 5s per track
-	bfut := add2f(b0, scale2f(bv, seconds/5)) // ditto..
+	// Heading vector comes back in minutes
+	afut := add2f(a0, scale2f(av, seconds/60))
+	bfut := add2f(b0, scale2f(bv, seconds/60))
 	return nmdistance2ll(afut, bfut)
 }
 

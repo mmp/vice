@@ -32,6 +32,8 @@ type World struct {
 	metar       map[string]METAR
 	atis        map[string]string
 
+	lastAircraftUpdate map[*Aircraft]time.Time
+
 	user struct {
 		callsign string
 		facility Facility
@@ -194,7 +196,7 @@ func (w *World) GetOrCreateAircraft(callsign string) (*Aircraft, bool) {
 		ac = &Aircraft{firstSeen: time.Now()}
 		ac.flightPlan.callsign = callsign
 		w.aircraft[callsign] = ac
-		ac.lastSeen = time.Now()
+		w.lastAircraftUpdate[ac] = time.Now()
 		return ac, true
 	} else {
 		return ac, false
@@ -218,6 +220,7 @@ func NewWorld() *World {
 	w.metar = make(map[string]METAR)
 	w.atis = make(map[string]string)
 	w.users = make(map[string]User)
+	w.lastAircraftUpdate = make(map[*Aircraft]time.Time)
 
 	w.changes = NewWorldUpdates()
 
@@ -528,6 +531,7 @@ func (w *World) Update() *WorldUpdates {
 				updates.removedAircraft[ac] = nil
 			}
 			w.aircraft = make(map[string]*Aircraft)
+			w.lastAircraftUpdate = make(map[*Aircraft]time.Time)
 			return updates
 		} else {
 			return nil
@@ -538,8 +542,9 @@ func (w *World) Update() *WorldUpdates {
 
 	// Clean up anyone who we haven't heard from in 30 minutes
 	for callsign, ac := range w.aircraft {
-		if time.Since(ac.lastSeen).Minutes() > 30. {
+		if time.Since(w.lastAircraftUpdate[ac]).Minutes() > 30. {
 			delete(w.aircraft, callsign)
+			delete(w.lastAircraftUpdate, ac)
 			delete(w.changes.addedAircraft, ac)    // just in case
 			delete(w.changes.modifiedAircraft, ac) // just in case
 			//lg.Printf("removed 30 mins %s: %+v", callsign, ac)
@@ -1075,7 +1080,6 @@ func (w *World) PositionReceived(callsign string, pos RadarTrack, squawk Squawk,
 
 	ac.squawk = squawk
 	ac.mode = mode
-	ac.lastSeen = time.Now()
 
 	// Move everthing forward one to make space for the new one. We could
 	// be clever and use a circular buffer to skip the copies, though at
