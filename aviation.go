@@ -332,6 +332,14 @@ func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 	// Return the first valid one; this makes things cleaner at the start when
 	// we don't have a full set of track history.
 	pos := func(idx int) Point2LL {
+		if idx >= len(a.tracks) {
+			// Linearly extrapolate the last two. (We don't expect to be
+			// doing this often...)
+			steps := 1 + idx - len(a.tracks)
+			last := len(a.tracks) - 1
+			v := sub2ll(a.tracks[last].position, a.tracks[last-1].position)
+			return add2ll(a.tracks[last].position, scale2ll(v, float32(steps)))
+		}
 		for idx > 0 {
 			if !a.tracks[idx].position.IsZero() {
 				break
