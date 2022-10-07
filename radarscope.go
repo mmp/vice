@@ -138,19 +138,6 @@ const (
 	VectorLineMinutes
 )
 
-var (
-	// vertices of a circle at the origin. Last point repeats the first.
-	circlePoints [][2]float32
-)
-
-func init() {
-	for d := float32(0); d < 360; d++ {
-		angle := radians(d)
-		pt := [2]float32{sin(angle), cos(angle)}
-		circlePoints = append(circlePoints, pt)
-	}
-}
-
 func NewRadarScopePane(n string) *RadarScopePane {
 	c := &RadarScopePane{ScopeName: n}
 
@@ -1807,23 +1794,19 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 
 	switch rs.RangeIndicatorStyle {
 	case RangeIndicatorRings:
-		drawCircle := func(ap Point2LL, radius float32, color RGB) {
-			latScale := radius / world.NmPerLatitude
-			longScale := radius / world.NmPerLongitude
-			for i := 0; i < len(circlePoints)-1; i++ {
-				p0 := Point2LL{ap[0] + longScale*circlePoints[i][1], ap[1] + latScale*circlePoints[i][0]}
-				p1 := Point2LL{ap[0] + longScale*circlePoints[i+1][1], ap[1] + latScale*circlePoints[i+1][0]}
-				rs.linesDrawBuilder.AddLine(p0, p1, color)
-			}
-		}
-
 		for _, w := range warnings {
-			drawCircle(w.aircraft[0].Position(), w.limits.WarningLateral, ctx.cs.Caution)
-			drawCircle(w.aircraft[1].Position(), w.limits.WarningLateral, ctx.cs.Caution)
+			nsegs := 360
+			xradius := w.limits.WarningLateral / world.NmPerLongitude
+			yradius := w.limits.WarningLateral / world.NmPerLatitude
+			rs.linesDrawBuilder.AddCircle(w.aircraft[0].Position(), xradius, yradius, nsegs, ctx.cs.Caution)
+			rs.linesDrawBuilder.AddCircle(w.aircraft[1].Position(), xradius, yradius, nsegs, ctx.cs.Caution)
 		}
 		for _, v := range violations {
-			drawCircle(v.aircraft[0].Position(), v.limits.ViolationLateral, ctx.cs.Error)
-			drawCircle(v.aircraft[1].Position(), v.limits.ViolationLateral, ctx.cs.Error)
+			nsegs := 360
+			xradius := v.limits.ViolationLateral / world.NmPerLongitude
+			yradius := v.limits.ViolationLateral / world.NmPerLatitude
+			rs.linesDrawBuilder.AddCircle(v.aircraft[0].Position(), xradius, yradius, nsegs, ctx.cs.Error)
+			rs.linesDrawBuilder.AddCircle(v.aircraft[1].Position(), xradius, yradius, nsegs, ctx.cs.Error)
 		}
 
 	case RangeIndicatorLine:
@@ -1909,12 +1892,7 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV f
 	radius := float32(10)
 	dx := latLongFromWindowV([2]float32{radius, 0})
 	dy := latLongFromWindowV([2]float32{0, radius})
-	for i := 0; i < len(circlePoints)-1; i++ {
-		p0 := add2ll(p, add2ll(scale2ll(dx, circlePoints[i][0]), scale2ll(dy, circlePoints[i][1])))
-		p1 := add2ll(p, add2ll(scale2ll(dx, circlePoints[i+1][0]), scale2ll(dy, circlePoints[i+1][1])))
-		rs.thickLinesDrawBuilder.AddLine(p0, p1, color)
-	}
-
+	rs.thickLinesDrawBuilder.AddCircle(p, length2ll(dx), length2ll(dy), 360, color)
 }
 
 func (rs *RadarScopePane) drawRoute(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {

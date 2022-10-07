@@ -450,6 +450,40 @@ func (l *ColoredLinesDrawBuilder) AddPolyline(p [2]float32, color RGB, shape [][
 	}
 }
 
+var (
+	// Cache vertices of a circle at the origin for different numbers of
+	// segments.
+	circlePoints map[int][][2]float32
+)
+
+func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, xradius, yradius float32, nsegs int, color RGB) {
+	// Evaluate and cache the vertices of a canonical unit circle with
+	// nsegs segments, if needed.
+	if circlePoints == nil {
+		circlePoints = make(map[int][][2]float32)
+	}
+	if _, ok := circlePoints[nsegs]; !ok {
+		var pts [][2]float32
+		for d := 0; d < nsegs; d++ {
+			angle := radians(float32(d) / float32(nsegs) * 360)
+			pt := [2]float32{sin(angle), cos(angle)}
+			pts = append(pts, pt)
+		}
+		circlePoints[nsegs] = pts
+	}
+
+	circle := circlePoints[nsegs]
+	idx := int32(len(l.p))
+	for i := 0; i < nsegs; i++ {
+		pi := [2]float32{p[0] + xradius*circle[i][0], p[1] + yradius*circle[i][1]}
+		l.p = append(l.p, pi)
+		l.color = append(l.color, color)
+	}
+	for i := 0; i < nsegs; i++ {
+		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%nsegs))
+	}
+}
+
 func (l *ColoredLinesDrawBuilder) Bounds() Extent2D {
 	return Extent2DFromPoints(l.p)
 }
