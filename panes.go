@@ -197,8 +197,9 @@ type Departure struct {
 
 func getDistanceSortedArrivals() []Arrival {
 	var arr []Arrival
+	now := time.Now()
 	for _, ac := range world.aircraft {
-		if !positionConfig.IsActiveAirport(ac.flightPlan.arrive) || ac.OnGround() || ac.LostTrack() {
+		if !positionConfig.IsActiveAirport(ac.flightPlan.arrive) || ac.OnGround() || ac.LostTrack(now) {
 			continue
 		}
 
@@ -238,8 +239,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		style = TextStyle{font: a.font, color: cs.Text} // a reasonable default
 	}
 
+	now := time.Now()
 	if a.ShowTime {
-		str.WriteString(time.Now().UTC().Format("Time: 15:04:05Z\n\n"))
+		str.WriteString(now.UTC().Format("Time: 15:04:05Z\n\n"))
 	}
 
 	if a.ShowMETAR && len(world.metar) > 0 {
@@ -282,7 +284,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	var uncleared, departures, airborne []Departure
 	for _, ac := range world.aircraft {
-		if ac.LostTrack() {
+		if ac.LostTrack(now) {
 			continue
 		}
 

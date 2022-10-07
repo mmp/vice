@@ -414,8 +414,10 @@ func (a *Aircraft) HeadingTo(p Point2LL) float32 {
 	return headingp2ll(a.Position(), p, world.MagneticVariation)
 }
 
-func (a *Aircraft) LostTrack() bool {
-	return !a.tracks[0].position.IsZero() && time.Since(a.tracks[0].time) > 30*time.Second
+func (a *Aircraft) LostTrack(now time.Time) bool {
+	// Only return true if we have at least one valid track from the past
+	// but haven't heard from the aircraft recently.
+	return !a.tracks[0].position.IsZero() && now.Sub(a.tracks[0].time) > 30*time.Second
 }
 
 func (a *Aircraft) Callsign() string {
