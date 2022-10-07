@@ -93,8 +93,9 @@ type RadarScopePane struct {
 
 	lastRangeNotificationPlayed time.Time
 
-	// the ones that have an active track and are in our altitude range
-	activeAircraft map[*Aircraft]*ActiveAircraft
+	// All of the aircraft in the world, each with additional information
+	// carried along in an AircraftScopeState.
+	aircraft map[*Aircraft]*AircraftScopeState
 	// map from legit to their ghost, if present
 	ghostAircraft map[*Aircraft]*Aircraft
 
@@ -112,7 +113,7 @@ const (
 	RangeIndicatorLine
 )
 
-type ActiveAircraft struct {
+type AircraftScopeState struct {
 	isGhost bool
 
 	datablockAutomaticOffset [2]float32
@@ -123,7 +124,7 @@ type ActiveAircraft struct {
 }
 
 // Takes aircraft position in window coordinates
-func (t *ActiveAircraft) WindowDatablockBounds(p [2]float32) Extent2D {
+func (t *AircraftScopeState) WindowDatablockBounds(p [2]float32) Extent2D {
 	db := t.datablockBounds.Offset(p)
 	if t.datablockManualOffset[0] != 0 || t.datablockManualOffset[1] != 0 {
 		return db.Offset(t.datablockManualOffset)
@@ -170,7 +171,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.ARTCCDrawSet = make(map[string]interface{})
 	c.ARTCCLowDrawSet = make(map[string]interface{})
 	c.ARTCCHighDrawSet = make(map[string]interface{})
-	c.activeAircraft = make(map[*Aircraft]*ActiveAircraft)
+	c.aircraft = make(map[*Aircraft]*AircraftScopeState)
 	c.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
 	font := GetDefaultFont()
@@ -203,11 +204,11 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.ARTCCHighDrawSet = DuplicateMap(rs.ARTCCHighDrawSet)
 	dupe.rangeWarnings = DuplicateMap(rs.rangeWarnings)
 
-	dupe.activeAircraft = make(map[*Aircraft]*ActiveAircraft)
-	for ac, tracked := range rs.activeAircraft {
+	dupe.aircraft = make(map[*Aircraft]*AircraftScopeState)
+	for ac, tracked := range rs.aircraft {
 		// NOTE: do not copy the TextDrawBuilder over, since we'd be aliasing
 		// the slices.
-		dupe.activeAircraft[ac] = &ActiveAircraft{
+		dupe.aircraft[ac] = &AircraftScopeState{
 			isGhost:       tracked.isGhost,
 			datablockText: tracked.datablockText}
 	}
@@ -291,16 +292,16 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 
 func (rs *RadarScopePane) initializeAircraft() {
 	// Reset and initialize all of these
-	rs.activeAircraft = make(map[*Aircraft]*ActiveAircraft)
+	rs.aircraft = make(map[*Aircraft]*AircraftScopeState)
 	rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
 	for _, ac := range world.aircraft {
-		rs.activeAircraft[ac] = &ActiveAircraft{}
+		rs.aircraft[ac] = &AircraftScopeState{}
 
 		if rs.CRDAEnabled {
 			if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 				rs.ghostAircraft[ac] = ghost
-				rs.activeAircraft[ghost] = &ActiveAircraft{isGhost: true}
+				rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
 			}
 		}
 	}
@@ -308,7 +309,7 @@ func (rs *RadarScopePane) initializeAircraft() {
 
 func (rs *RadarScopePane) Deactivate() {
 	// Drop all of them
-	rs.activeAircraft = nil
+	rs.aircraft = nil
 	rs.ghostAircraft = nil
 
 	// Free up this memory, FWIW
@@ -331,8 +332,8 @@ func (rs *RadarScopePane) DrawUI() {
 	}
 	if imgui.CollapsingHeader("Aircraft rendering") {
 		if rs.DataBlockFormat.DrawUI() {
-			for _, t := range rs.activeAircraft {
-				t.datablockTextCurrent = false
+			for _, state := range rs.aircraft {
+				state.datablockTextCurrent = false
 			}
 		}
 		imgui.SliderIntV("Tracks shown", &rs.RadarTracksDrawn, 1, 10, "%d", 0 /* flags */)
@@ -644,20 +645,20 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 	}
 
 	for ac := range updates.addedAircraft {
-		rs.activeAircraft[ac] = &ActiveAircraft{}
+		rs.aircraft[ac] = &AircraftScopeState{}
 		if rs.CRDAEnabled {
 			if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 				rs.ghostAircraft[ac] = ghost
-				rs.activeAircraft[ghost] = &ActiveAircraft{isGhost: true}
+				rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
 			}
 		}
 	}
 
 	for ac := range updates.removedAircraft {
 		if ghost, ok := rs.ghostAircraft[ac]; ok {
-			delete(rs.activeAircraft, ghost)
+			delete(rs.aircraft, ghost)
 		}
-		delete(rs.activeAircraft, ac)
+		delete(rs.aircraft, ac)
 		delete(rs.ghostAircraft, ac)
 	}
 
@@ -665,22 +666,22 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 		if rs.CRDAEnabled {
 			// always start out by removing the old ghost
 			if oldGhost, ok := rs.ghostAircraft[ac]; ok {
-				delete(rs.activeAircraft, oldGhost)
+				delete(rs.aircraft, oldGhost)
 				delete(rs.ghostAircraft, ac)
 			}
 		}
 
-		if ta, ok := rs.activeAircraft[ac]; !ok {
-			rs.activeAircraft[ac] = &ActiveAircraft{}
+		if state, ok := rs.aircraft[ac]; !ok {
+			rs.aircraft[ac] = &AircraftScopeState{}
 		} else {
-			ta.datablockTextCurrent = false
+			state.datablockTextCurrent = false
 		}
 
 		// new ghost
 		if rs.CRDAEnabled {
 			if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
 				rs.ghostAircraft[ac] = ghost
-				rs.activeAircraft[ghost] = &ActiveAircraft{isGhost: true}
+				rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
 			}
 		}
 	}
@@ -1183,13 +1184,13 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 	windowFromLatLongP func(p Point2LL) [2]float32) {
 	td := rs.getScratchTextDrawBuilder()
 	now := time.Now()
-	for ac, ta := range rs.activeAircraft {
+	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
 		}
 
 		color := ctx.cs.Track
-		if ta.isGhost {
+		if state.isGhost {
 			color = ctx.cs.GhostDataBlock
 		}
 
@@ -1211,26 +1212,26 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 
 func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
 	squawkCount := make(map[Squawk]int)
-	for ac, ta := range rs.activeAircraft {
-		if !ta.isGhost {
+	for ac, state := range rs.aircraft {
+		if !state.isGhost {
 			squawkCount[ac.squawk]++
 		}
 	}
 	now := time.Now()
-	for ac, ta := range rs.activeAircraft {
+	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
 		}
 
-		if !ta.datablockTextCurrent {
-			ta.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 0)
-			ta.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 1)
-			ta.datablockTextCurrent = true
+		if !state.datablockTextCurrent {
+			state.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 0)
+			state.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 1)
+			state.datablockTextCurrent = true
 
-			bx0, by0 := rs.datablockFont.BoundText(ta.datablockText[0], -2)
-			bx1, by1 := rs.datablockFont.BoundText(ta.datablockText[1], -2)
+			bx0, by0 := rs.datablockFont.BoundText(state.datablockText[0], -2)
+			bx1, by1 := rs.datablockFont.BoundText(state.datablockText[1], -2)
 			bx, by := max(float32(bx0), float32(bx1)), max(float32(by0), float32(by1))
-			ta.datablockBounds = Extent2D{p0: [2]float32{0, -by}, p1: [2]float32{bx, 0}}
+			state.datablockBounds = Extent2D{p0: [2]float32{0, -by}, p1: [2]float32{bx, 0}}
 		}
 	}
 }
@@ -1271,7 +1272,7 @@ func datablockConnectP(bbox Extent2D, heading float32) ([2]float32, bool) {
 }
 
 func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32) {
-	offsetSelfOnly := func(ac *Aircraft, info *ActiveAircraft) [2]float32 {
+	offsetSelfOnly := func(ac *Aircraft, info *AircraftScopeState) [2]float32 {
 		bbox := info.datablockBounds.Expand(5)
 
 		// We want the heading w.r.t. the window
@@ -1293,17 +1294,17 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 	now := time.Now()
 	if !rs.AutomaticDatablockLayout {
 		// layout just wrt our own track; ignore everyone else
-		for ac, info := range rs.activeAircraft {
+		for ac, state := range rs.aircraft {
 			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 				continue
 			}
 
-			if info.datablockManualOffset[0] != 0 || info.datablockManualOffset[1] != 0 {
-				info.datablockAutomaticOffset = [2]float32{0, 0}
+			if state.datablockManualOffset[0] != 0 || state.datablockManualOffset[1] != 0 {
+				state.datablockAutomaticOffset = [2]float32{0, 0}
 				continue
 			}
 
-			info.datablockAutomaticOffset = offsetSelfOnly(ac, info)
+			state.datablockAutomaticOffset = offsetSelfOnly(ac, state)
 		}
 		return
 	} else {
@@ -1311,7 +1312,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 		// TODO: maybe sort by the ac pointer to be more fair across airlines?
 		var aircraft []*Aircraft
 		width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
-		for ac := range rs.activeAircraft {
+		for ac := range rs.aircraft {
 			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 				continue
 			}
@@ -1335,10 +1336,10 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 		// First pass: anyone who has a manual offset goes where they go,
 		// period.
 		for i, ac := range aircraft {
-			info := rs.activeAircraft[ac]
-			if info.datablockManualOffset[0] != 0 || info.datablockManualOffset[1] != 0 {
+			state := rs.aircraft[ac]
+			if state.datablockManualOffset[0] != 0 || state.datablockManualOffset[1] != 0 {
 				pw := windowFromLatLongP(ac.Position())
-				b := info.WindowDatablockBounds(pw).Expand(5)
+				b := state.WindowDatablockBounds(pw).Expand(5)
 				datablockBounds[i] = b
 				placed[i] = true
 			}
@@ -1358,19 +1359,19 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 			if placed[i] {
 				continue
 			}
-			info := rs.activeAircraft[ac]
-			offset := offsetSelfOnly(ac, info)
+			state := rs.aircraft[ac]
+			offset := offsetSelfOnly(ac, state)
 			// TODO: we could do this incrementally a few pixels per frame
 			// even if we could go all the way. Though then we would need
 			// to consider all datablocks along the path...
-			netOffset := sub2f(offset, info.datablockAutomaticOffset)
+			netOffset := sub2f(offset, state.datablockAutomaticOffset)
 
 			pw := windowFromLatLongP(ac.Position())
-			db := info.WindowDatablockBounds(pw).Expand(5).Offset(netOffset)
+			db := state.WindowDatablockBounds(pw).Expand(5).Offset(netOffset)
 			if allowed(db) {
 				placed[i] = true
 				datablockBounds[i] = db
-				info.datablockAutomaticOffset = offset
+				state.datablockAutomaticOffset = offset
 			}
 		}
 
@@ -1380,12 +1381,12 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 			if placed[i] {
 				continue
 			}
-			info := rs.activeAircraft[ac]
+			state := rs.aircraft[ac]
 
-			if info.datablockAutomaticOffset[0] == 0 && info.datablockAutomaticOffset[1] == 0 {
+			if state.datablockAutomaticOffset[0] == 0 && state.datablockAutomaticOffset[1] == 0 {
 				// First time seen: start with the ideal. Otherwise
 				// start with whatever we ended up with last time.
-				info.datablockAutomaticOffset = offsetSelfOnly(ac, info)
+				state.datablockAutomaticOffset = offsetSelfOnly(ac, state)
 			}
 		}
 
@@ -1394,10 +1395,10 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 			if placed[i] {
 				continue
 			}
-			info := rs.activeAircraft[ac]
+			state := rs.aircraft[ac]
 
 			pw := windowFromLatLongP(ac.Position())
-			datablockBounds[i] = info.WindowDatablockBounds(pw).Expand(5)
+			datablockBounds[i] = state.WindowDatablockBounds(pw).Expand(5)
 		}
 
 		// For any datablocks that would be invalid with their current
@@ -1437,8 +1438,8 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 					force = scale2f(force, maxlen/length2f(force))
 				}
 
-				info := rs.activeAircraft[ac]
-				info.datablockAutomaticOffset = add2f(info.datablockAutomaticOffset, force)
+				state := rs.aircraft[ac]
+				state.datablockAutomaticOffset = add2f(state.datablockAutomaticOffset, force)
 				datablockBounds[i] = db
 			}
 
@@ -1471,8 +1472,8 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 
 				db := datablockBounds[i]
 				// And attract our own datablock to the aircraft position.
-				info := rs.activeAircraft[ac]
-				goBack := sub2f(offsetSelfOnly(ac, info), info.datablockAutomaticOffset)
+				state := rs.aircraft[ac]
+				goBack := sub2f(offsetSelfOnly(ac, state), state.datablockAutomaticOffset)
 				if length2f(goBack) < 1 {
 					continue
 				}
@@ -1491,7 +1492,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 				if allowed(i, dbMoved) {
 					anyMoved = true
 					datablockBounds[i] = dbMoved
-					info.datablockAutomaticOffset = add2f(info.datablockAutomaticOffset, force)
+					state.datablockAutomaticOffset = add2f(state.datablockAutomaticOffset, force)
 				}
 			}
 			if !anyMoved {
@@ -1533,7 +1534,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 	// which can cause shimmering when datablocks overlap (especially if
 	// one is selected). We'll go with alphabetical by callsign, with the
 	// selected aircraft, if any, always drawn last.
-	aircraft := SortedMapKeysPred(rs.activeAircraft, func(a **Aircraft, b **Aircraft) bool {
+	aircraft := SortedMapKeysPred(rs.aircraft, func(a **Aircraft, b **Aircraft) bool {
 		asel := *a == positionConfig.selectedAircraft
 		bsel := *b == positionConfig.selectedAircraft
 		if asel == bsel {
@@ -1553,8 +1554,8 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		}
 
 		pac := windowFromLatLongP(ac.Position())
-		ta := rs.activeAircraft[ac]
-		bbox := ta.WindowDatablockBounds(pac)
+		state := rs.aircraft[ac]
+		bbox := state.WindowDatablockBounds(pac)
 
 		if !Overlaps(paneBounds, bbox) {
 			continue
@@ -1563,14 +1564,14 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		color := rs.datablockColor(ac, ctx.cs)
 
 		// Draw characters starting at the upper left.
-		flashCycle := time.Now().Second() & 1
-		td.AddText(ta.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
+		flashCycle := now.Second() & 1
+		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
 			TextStyle{font: rs.datablockFont, color: color, lineSpacing: -2})
 
 		// visualize bounds
 		if false {
 			var ld ColoredLinesDrawBuilder
-			bx, by := rs.datablockFont.BoundText(ta.datablockText[0], -2)
+			bx, by := rs.datablockFont.BoundText(state.datablockText[0], -2)
 			ld.AddPolyline([2]float32{bbox.p0[0], bbox.p1[1]}, RGB{1, 0, 0},
 				[][2]float32{[2]float32{float32(bx), 0},
 					[2]float32{float32(bx), float32(-by)},
@@ -1628,7 +1629,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 	}
 
 	now := time.Now()
-	for ac, ta := range rs.activeAircraft {
+	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
 		}
@@ -1646,7 +1647,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 				// this point...
 				start = latLongFromWindowP(sw)
 			}
-			if ta.isGhost {
+			if state.isGhost {
 				rs.linesDrawBuilder.AddLine(start, end, ctx.cs.GhostDataBlock)
 			} else {
 				rs.linesDrawBuilder.AddLine(start, end, ctx.cs.Track)
@@ -1661,18 +1662,18 @@ type Conflict struct {
 }
 
 func (rs *RadarScopePane) getConflicts() (warning []Conflict, violation []Conflict) {
-	aircraft, tracked := FlattenMap(rs.activeAircraft)
+	aircraft, state := FlattenMap(rs.aircraft)
 
 	now := time.Now()
 	for i, ac1 := range aircraft {
-		if tracked[i].isGhost || ac1.LostTrack(now) ||
+		if state[i].isGhost || ac1.LostTrack(now) ||
 			ac1.Altitude() < int(rs.MinAltitude) || ac1.Altitude() > int(rs.MaxAltitude) {
 			continue
 		}
 
 		for j := i + 1; j < len(aircraft); j++ {
 			ac2 := aircraft[j]
-			if tracked[j].isGhost || ac2.LostTrack(now) ||
+			if state[j].isGhost || ac2.LostTrack(now) ||
 				ac2.Altitude() < int(rs.MinAltitude) || ac2.Altitude() > int(rs.MaxAltitude) {
 				continue
 			}
@@ -1981,10 +1982,10 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 	if rs.acSelectedByDatablock != nil {
 		if ctx.mouse.dragging[mouseButtonPrimary] {
 			ac := rs.acSelectedByDatablock
-			rs.activeAircraft[ac].datablockManualOffset =
-				add2f(rs.activeAircraft[ac].datablockAutomaticOffset,
-					add2f(rs.activeAircraft[ac].datablockManualOffset, ctx.mouse.dragDelta))
-			rs.activeAircraft[ac].datablockAutomaticOffset = [2]float32{0, 0}
+			state := rs.aircraft[ac]
+			state.datablockManualOffset =
+				add2f(state.datablockAutomaticOffset, add2f(state.datablockManualOffset, ctx.mouse.dragDelta))
+			state.datablockAutomaticOffset = [2]float32{0, 0}
 		} else {
 			rs.acSelectedByDatablock = nil
 		}
@@ -2001,7 +2002,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		clickedDistance := float32(20) // in pixels; don't consider anything farther away
 
 		// Allow clicking on any track
-		for ac := range rs.activeAircraft {
+		for ac := range rs.aircraft {
 			pw := windowFromLatLongP(ac.Position())
 			dist := distance2f(pw, ctx.mouse.pos)
 
@@ -2013,13 +2014,13 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 
 		// And now check and see if we clicked on a datablock (TODO: check for held)
 		now := time.Now()
-		for ac, ta := range rs.activeAircraft {
+		for ac, state := range rs.aircraft {
 			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 				continue
 			}
 
 			pw := windowFromLatLongP(ac.Position())
-			db := ta.WindowDatablockBounds(pw)
+			db := state.WindowDatablockBounds(pw)
 			if db.Inside(ctx.mouse.pos) {
 				rs.acSelectedByDatablock = ac
 				clickedAircraft = ac
