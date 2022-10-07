@@ -93,8 +93,6 @@ type RadarScopePane struct {
 
 	lastRangeNotificationPlayed time.Time
 
-	// all of them
-	activeAircraft map[*Aircraft]interface{}
 	// the ones that have an active track and are in our altitude range
 	trackedAircraft map[*Aircraft]*TrackedAircraft
 	// map from legit to their ghost, if present
@@ -173,7 +171,6 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.ARTCCLowDrawSet = make(map[string]interface{})
 	c.ARTCCHighDrawSet = make(map[string]interface{})
 	c.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
-	c.activeAircraft = make(map[*Aircraft]interface{})
 	c.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
 	font := GetDefaultFont()
@@ -204,7 +201,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.ARTCCDrawSet = DuplicateMap(rs.ARTCCDrawSet)
 	dupe.ARTCCLowDrawSet = DuplicateMap(rs.ARTCCLowDrawSet)
 	dupe.ARTCCHighDrawSet = DuplicateMap(rs.ARTCCHighDrawSet)
-	dupe.activeAircraft = DuplicateMap(rs.activeAircraft)
 	dupe.rangeWarnings = DuplicateMap(rs.rangeWarnings)
 
 	dupe.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
@@ -295,12 +291,10 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 
 func (rs *RadarScopePane) initializeAircraft() {
 	// Reset and initialize all of these
-	rs.activeAircraft = make(map[*Aircraft]interface{})
 	rs.trackedAircraft = make(map[*Aircraft]*TrackedAircraft)
 	rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
 	for _, ac := range world.aircraft {
-		rs.activeAircraft[ac] = nil
 		if !ac.LostTrack() && ac.Altitude() >= int(rs.MinAltitude) && ac.Altitude() <= int(rs.MaxAltitude) {
 			rs.trackedAircraft[ac] = &TrackedAircraft{}
 
@@ -316,7 +310,6 @@ func (rs *RadarScopePane) initializeAircraft() {
 
 func (rs *RadarScopePane) Deactivate() {
 	// Drop all of them
-	rs.activeAircraft = nil
 	rs.trackedAircraft = nil
 	rs.ghostAircraft = nil
 
@@ -658,40 +651,26 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 	}
 
 	for ac := range updates.addedAircraft {
-		if _, ok := rs.activeAircraft[ac]; ok {
-			lg.Printf("%s: supposedly new but already active?", ac.Callsign())
-		} else {
-			rs.activeAircraft[ac] = nil
-			if track(ac) {
-				rs.trackedAircraft[ac] = &TrackedAircraft{}
-				if rs.CRDAEnabled {
-					if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
-						rs.ghostAircraft[ac] = ghost
-						rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
-					}
+		if track(ac) {
+			rs.trackedAircraft[ac] = &TrackedAircraft{}
+			if rs.CRDAEnabled {
+				if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
+					rs.ghostAircraft[ac] = ghost
+					rs.trackedAircraft[ghost] = &TrackedAircraft{isGhost: true}
 				}
 			}
 		}
 	}
+
 	for ac := range updates.removedAircraft {
-		if _, ok := rs.activeAircraft[ac]; !ok {
-			lg.Printf("%s: deleted but not active?", ac.Callsign())
-		} else {
-			if ghost, ok := rs.ghostAircraft[ac]; ok {
-				delete(rs.trackedAircraft, ghost)
-			}
-			delete(rs.activeAircraft, ac)
-			delete(rs.trackedAircraft, ac)
-			delete(rs.ghostAircraft, ac)
+		if ghost, ok := rs.ghostAircraft[ac]; ok {
+			delete(rs.trackedAircraft, ghost)
 		}
+		delete(rs.trackedAircraft, ac)
+		delete(rs.ghostAircraft, ac)
 	}
 
 	for ac := range updates.modifiedAircraft {
-		if _, ok := rs.activeAircraft[ac]; !ok {
-			lg.Printf("%s: modified but not yet active?", ac.Callsign())
-			rs.activeAircraft[ac] = nil
-		}
-
 		if rs.CRDAEnabled {
 			// always start out by removing the old ghost
 			if oldGhost, ok := rs.ghostAircraft[ac]; ok {
@@ -716,21 +695,6 @@ func (rs *RadarScopePane) Update(updates *WorldUpdates) {
 			}
 		} else {
 			delete(rs.trackedAircraft, ac)
-		}
-	}
-
-	// For debugging: check the world's view of the active aircraft and
-	// make sure both are consistent...
-	for _, ac := range world.aircraft {
-		if _, ok := rs.activeAircraft[ac]; !ok && track(ac) {
-			lg.Printf("%s: in world but not active?", ac.Callsign())
-			rs.activeAircraft[ac] = nil
-		}
-	}
-	for ac := range rs.activeAircraft {
-		if _, ok := world.aircraft[ac.Callsign()]; !ok {
-			lg.Printf("%s: in active but not world?", ac.Callsign())
-			delete(rs.activeAircraft, ac)
 		}
 	}
 }
