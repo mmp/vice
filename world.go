@@ -200,6 +200,7 @@ func (w *World) GetOrCreateAircraft(callsign string) (*Aircraft, bool) {
 		w.lastAircraftUpdate[ac] = t
 		return ac, true
 	} else {
+		w.lastAircraftUpdate[ac] = t
 		return ac, false
 	}
 }
