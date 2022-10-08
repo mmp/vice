@@ -67,6 +67,7 @@ func (fr *FlightRadarServer) SendTextMessage(m TextMessage)                     
 func (fr *FlightRadarServer) Description() string                                { return "FlightRadar" }
 func (fr *FlightRadarServer) GetWindowTitle() string                             { return "FlightRadar" }
 func (fr *FlightRadarServer) Disconnect()                                        {}
+func (fr *FlightRadarServer) CurrentTime() time.Time                             { return time.Now() }
 
 // GetUpdates is the only ControlServer interface method that
 // FlightRadarServer implements. It passes along as much information as it

@@ -50,18 +50,27 @@ func (u UnknownMessageError) Error() string {
 	return u.Err
 }
 
+type VATSIMMessage struct {
+	contents string
+	time     time.Time
+}
+
 type VATSIMServer struct {
 	callsign    string
 	client      ControlClient
-	messageChan chan string
+	messageChan chan VATSIMMessage
 	conn        *net.TCPConn
 	windowTitle string
+
+	lastMessageActualTime   time.Time
+	lastMessageReportedTime time.Time
+	timeRateMultiplier      float32
 }
 
 func NewVATSIMServer(callsign string, facility Facility, position *Position,
 	client ControlClient, address string) (*VATSIMServer, error) {
 	v := &VATSIMServer{callsign: callsign, client: client}
-	v.messageChan = make(chan string, 4096)
+	v.messageChan = make(chan VATSIMMessage, 4096)
 
 	if !strings.ContainsAny(address, ":") {
 		address += ":6809"
@@ -92,7 +101,7 @@ func NewVATSIMServer(callsign string, facility Facility, position *Position,
 		r := bufio.NewReader(v.conn)
 		for {
 			if str, err := r.ReadString('\n'); err == nil {
-				v.messageChan <- str
+				v.messageChan <- VATSIMMessage{contents: str, time: time.Now()}
 			} else if err == io.EOF {
 				lg.Printf("EOF--closing the channel etc")
 				close(v.messageChan)
@@ -113,7 +122,7 @@ func NewVATSIMReplayServer(filename string, offsetSeconds int, replayRate float3
 		filename, offsetSeconds, replayRate)
 
 	v := &VATSIMServer{callsign: "NO_CALLSIGN", client: client}
-	v.messageChan = make(chan string, 4096)
+	v.messageChan = make(chan VATSIMMessage, 4096)
 	v.windowTitle = filename + " replay"
 
 	var err error
@@ -158,7 +167,7 @@ func NewVATSIMReplayServer(filename string, offsetSeconds int, replayRate float3
 				// Don't send messages that the client originally sent
 				if !next.Sent {
 					msg := strings.TrimSpace(next.Contents) + "\n"
-					v.messageChan <- msg
+					v.messageChan <- VATSIMMessage{contents: msg, time: next.Time}
 				}
 
 				if err := decoder.Decode(&next); err == io.EOF {
@@ -238,6 +247,14 @@ func (v *VATSIMServer) Disconnect() {
 	v.windowTitle = "[Disconnected]"
 }
 
+func (v *VATSIMServer) CurrentTime() time.Time {
+	// Elapsed time in seconds (actual) since we last received a message
+	ds := time.Since(v.lastMessageActualTime).Seconds()
+	ds *= float64(v.timeRateMultiplier)
+	s := time.Duration(ds * float64(time.Second))
+	return v.lastMessageReportedTime.Add(s)
+}
+
 func (v *VATSIMServer) Description() string {
 	return "VATSIM"
 }
@@ -257,10 +274,11 @@ func (v *VATSIMServer) GetUpdates() {
 				return
 			}
 
-			msg = strings.TrimSpace(msg) // get rid of the trailing \n, etc.
+			v.lastMessageActualTime = time.Now()
+			v.lastMessageReportedTime = msg.time
 
 			// TODO: do we need to handle quoted ':'s?
-			strs := strings.Split(msg, ":")
+			strs := strings.Split(strings.TrimSpace(msg.contents), ":")
 			if len(strs) == 0 {
 				lg.Errorf("vatsim: empty message received?")
 				break
@@ -760,7 +778,7 @@ func (v *VATSIMServer) handleFP(sender string, args []string) error {
 	fp.alternate = args[13]
 	fp.remarks = args[14]
 	fp.route = args[15]
-	fp.filed = time.Now()
+	fp.filed = v.CurrentTime()
 	// TODO? amended by
 
 	v.client.FlightPlanReceived(fp)
@@ -1014,7 +1032,7 @@ func (v *VATSIMServer) handleAt(args []string) error {
 		altitude:    int(altitude),
 		groundspeed: int(groundspeed),
 		heading:     heading,
-		time:        time.Now()}
+		time:        v.CurrentTime()}
 
 	v.client.PositionReceived(callsign, pos, squawk, mode)
 

@@ -4,6 +4,8 @@
 
 package main
 
+import "time"
+
 // ControlServer defines the interface that servers must implement; these
 // are mostly things where vice is requesting the server to change some
 // thing--update the squawk code for an aircraft, etc.  The implementations
@@ -43,6 +45,10 @@ type ControlServer interface {
 
 	// Shut down the connection with the server and clean up detritus.
 	Disconnect()
+
+	// Returns the current time; getting it from the server lets us report
+	// the past time when replaying traces, etc.
+	CurrentTime() time.Time
 
 	Description() string
 	GetWindowTitle() string

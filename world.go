@@ -192,11 +192,12 @@ var (
 
 // Bool indicates whether created
 func (w *World) GetOrCreateAircraft(callsign string) (*Aircraft, bool) {
+	t := w.CurrentTime()
 	if ac, ok := w.aircraft[callsign]; !ok {
-		ac = &Aircraft{firstSeen: time.Now()}
+		ac = &Aircraft{firstSeen: t}
 		ac.flightPlan.callsign = callsign
 		w.aircraft[callsign] = ac
-		w.lastAircraftUpdate[ac] = time.Now()
+		w.lastAircraftUpdate[ac] = t
 		return ac, true
 	} else {
 		return ac, false
@@ -508,6 +509,13 @@ func (w *World) ConnectVATSIMReplay(filename string, offsetSeconds int, replayRa
 	return nil
 }
 
+func (w *World) CurrentTime() time.Time {
+	if w.server != nil {
+		return w.server.CurrentTime()
+	}
+	return time.Now()
+}
+
 func (w *World) Locate(name string) (Point2LL, bool) {
 	name = strings.ToUpper(name)
 	// We'll start with the sector file and then move on to the FAA
@@ -564,13 +572,13 @@ func (w *World) Update() *WorldUpdates {
 	w.server.GetUpdates()
 
 	// Clean up anyone who we haven't heard from in 30 minutes
+	now := w.CurrentTime()
 	for callsign, ac := range w.aircraft {
-		if time.Since(w.lastAircraftUpdate[ac]).Minutes() > 30. {
+		if now.Sub(w.lastAircraftUpdate[ac]).Minutes() > 30. {
 			delete(w.aircraft, callsign)
 			delete(w.lastAircraftUpdate, ac)
 			delete(w.changes.addedAircraft, ac)    // just in case
 			delete(w.changes.modifiedAircraft, ac) // just in case
-			//lg.Printf("removed 30 mins %s: %+v", callsign, ac)
 			w.changes.removedAircraft[ac] = nil
 		}
 	}

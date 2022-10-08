@@ -530,7 +530,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		}
 		word := string(cli.input[start:end])
 		var matches []string
-		now := time.Now()
+		now := world.CurrentTime()
 		for _, ac := range world.aircraft {
 			if ac.LostTrack(now) {
 				continue
@@ -635,7 +635,7 @@ func matchingAircraft(s string) []*Aircraft {
 	}
 
 	// Otherwise return all that match
-	now := time.Now()
+	now := world.CurrentTime()
 	for _, ac := range world.aircraft {
 		if !ac.LostTrack(now) && strings.Contains(ac.Callsign(), s) {
 			matches = append(matches, ac)
@@ -1815,7 +1815,7 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 		if ac.squawk != ac.assignedSquawk {
 			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.squawk)
 		}
-		if ac.LostTrack(time.Now()) {
+		if ac.LostTrack(world.CurrentTime()) {
 			result += fmt.Sprintf("\n%s*** Lost Track!", indstr)
 		}
 		return result
@@ -1889,7 +1889,7 @@ func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
 		ac       *Aircraft
 		distance float32
 	}
-	now := time.Now()
+	now := world.CurrentTime()
 	filter := func(a *Aircraft) bool {
 		return a.Callsign() == ac.Callsign() || a.LostTrack(now) || a.OnGround()
 	}

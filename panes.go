@@ -197,7 +197,7 @@ type Departure struct {
 
 func getDistanceSortedArrivals() []Arrival {
 	var arr []Arrival
-	now := time.Now()
+	now := world.CurrentTime()
 	for _, ac := range world.aircraft {
 		if !positionConfig.IsActiveAirport(ac.flightPlan.arrive) || ac.OnGround() || ac.LostTrack(now) {
 			continue
@@ -239,7 +239,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		style = TextStyle{font: a.font, color: cs.Text} // a reasonable default
 	}
 
-	now := time.Now()
+	now := world.CurrentTime()
 	if a.ShowTime {
 		str.WriteString(now.UTC().Format("Time: 15:04:05Z\n\n"))
 	}

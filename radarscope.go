@@ -1170,7 +1170,7 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p [2]float32) Point2LL,
 	windowFromLatLongP func(p Point2LL) [2]float32) {
 	td := rs.getScratchTextDrawBuilder()
-	now := time.Now()
+	now := world.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1204,7 +1204,7 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowF
 			squawkCount[ac.squawk]++
 		}
 	}
-	now := time.Now()
+	now := world.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1278,7 +1278,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 		return v
 	}
 
-	now := time.Now()
+	now := world.CurrentTime()
 	if !rs.AutomaticDatablockLayout {
 		// layout just wrt our own track; ignore everyone else
 		for ac, state := range rs.aircraft {
@@ -1534,7 +1534,8 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		}
 	})
 	td := rs.getScratchTextDrawBuilder()
-	now := time.Now()
+	now := world.CurrentTime()
+	actualNow := time.Now()
 	for _, ac := range aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1551,7 +1552,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		color := rs.datablockColor(ac, ctx.cs)
 
 		// Draw characters starting at the upper left.
-		flashCycle := now.Second() & 1
+		flashCycle := actualNow.Second() & 1
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
 			TextStyle{font: rs.datablockFont, color: color, lineSpacing: -2})
 
@@ -1615,7 +1616,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 		return
 	}
 
-	now := time.Now()
+	now := world.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1651,7 +1652,7 @@ type Conflict struct {
 func (rs *RadarScopePane) getConflicts() (warning []Conflict, violation []Conflict) {
 	aircraft, state := FlattenMap(rs.aircraft)
 
-	now := time.Now()
+	now := world.CurrentTime()
 	for i, ac1 := range aircraft {
 		if state[i].isGhost || ac1.LostTrack(now) ||
 			ac1.Altitude() < int(rs.MinAltitude) || ac1.Altitude() > int(rs.MaxAltitude) {
@@ -1991,7 +1992,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		}
 
 		// And now check and see if we clicked on a datablock (TODO: check for held)
-		now := time.Now()
+		now := world.CurrentTime()
 		for ac, state := range rs.aircraft {
 			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 				continue
