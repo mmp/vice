@@ -284,7 +284,7 @@ func (v *VATSIMServer) GetUpdates() {
 				break
 			}
 			if len(strs[0]) == 0 {
-				lg.Errorf("vatsim: empty first field? \"%s\"", msg)
+				lg.Errorf("vatsim: empty first field? \"%s\"", msg.contents)
 				break
 			}
 
@@ -354,7 +354,7 @@ func (v *VATSIMServer) GetUpdates() {
 				if _, ok := err.(IgnoredMessageError); ok {
 					// don't log it...
 				} else {
-					lg.Printf("FSD message error: %T: %s: %s", err, err, msg)
+					lg.Printf("FSD message error: %T: %s: %s", err, err, msg.contents)
 				}
 			}
 
