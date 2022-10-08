@@ -167,8 +167,10 @@ func (fr *FlightRadarServer) GetUpdates() {
 				if err != nil {
 					lg.Errorf("Error parsing squawk \"%s\": %v", f.squawkCode, err)
 				}
-				pos := RadarTrack{position: Point2LL{f.longitude, f.latitude},
-					altitude: f.altitude, groundspeed: f.speed}
+				pos := RadarTrack{
+					position: Point2LL{f.longitude, f.latitude},
+					altitude: f.altitude, groundspeed: f.speed,
+					time: time.Now()}
 				fr.client.PositionReceived(f.callsign, pos, squawk, Charlie)
 			}
 		}
