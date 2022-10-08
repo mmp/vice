@@ -511,15 +511,23 @@ func (fp *FlightPlanPane) Duplicate(nameAsCopy bool) Pane {
 func (fp *FlightPlanPane) Name() string { return "Flight Plan" }
 
 func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	contents := ""
-
-	if positionConfig.selectedAircraft != nil {
-		contents, _ = positionConfig.selectedAircraft.GetFormattedFlightPlan(fp.ShowRemarks)
+	ac := positionConfig.selectedAircraft
+	if ac == nil {
+		return
 	}
 
 	fp.td.Reset()
+	contents, _ := ac.GetFormattedFlightPlan(fp.ShowRemarks)
+
 	sz2 := float32(fp.font.size) / 2
-	fp.td.AddText(contents, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
+	spaceWidth, _ := fp.font.BoundText(" ", 0)
+	ncols := (int(ctx.paneExtent.Width()) - fp.font.size) / spaceWidth
+	indent := 3 + len(ac.Callsign())
+	if ac.voiceCapability != Voice {
+		indent += 2
+	}
+	wrapped, _ := wrapText(contents, ncols, indent, true)
+	fp.td.AddText(wrapped, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{font: fp.font, color: ctx.cs.Text})
 
 	ctx.SetWindowCoordinateMatrices(cb)

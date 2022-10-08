@@ -458,18 +458,19 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 			write("/" + a.voiceCapability.String())
 		}
 		write("\t")
-		write("rules: " + plan.rules.String() + "\t")
-		write("a/c: " + plan.actype + "\t")
-		write("dep/arr: " + plan.depart + "-" + plan.arrive + " (" + plan.alternate + ")\n")
+		nbsp := "\u00a0" // non-breaking space; wrapText honors these
+		write("rules:" + nbsp + plan.rules.String() + "\t")
+		write("a/c:" + nbsp + plan.actype + "\t")
+		write("dep/arr:" + nbsp + plan.depart + "-" + plan.arrive + nbsp + "(" + plan.alternate + ")\n")
 
 		write("\t")
-		write("alt:   " + fmt.Sprintf("%d", plan.altitude))
+		write("alt:" + nbsp + nbsp + nbsp + fmt.Sprintf("%d", plan.altitude))
 		if a.tempAltitude != 0 {
-			write(fmt.Sprintf(" (%d)", a.tempAltitude))
+			write(fmt.Sprintf(nbsp+"(%d)", a.tempAltitude))
 		}
 		write("\t")
-		write("sqk: " + a.assignedSquawk.String() + "\t")
-		write("scratch: " + a.scratchpad + "\n")
+		write("sqk:" + nbsp + a.assignedSquawk.String() + "\t")
+		write("scratch:" + nbsp + a.scratchpad + "\n")
 
 		w.Flush()
 		contents = sb.String()
@@ -479,9 +480,9 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 			indent += 1 + len(a.voiceCapability.String())
 		}
 		indstr := fmt.Sprintf("%*c", indent, ' ')
-		contents = contents + indstr + "route: " + plan.route + "\n"
+		contents = contents + indstr + "route:" + nbsp + plan.route + "\n"
 		if includeRemarks {
-			contents = contents + indstr + "rmks:  " + plan.remarks + "\n"
+			contents = contents + indstr + "rmks:" + nbsp + nbsp + plan.remarks + "\n"
 		}
 
 		return contents, indent
