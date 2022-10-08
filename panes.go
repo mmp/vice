@@ -637,7 +637,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			} else {
 				title = FontAwesomeIconCaretRight + node.title
 			}
-			text, lines := wrapText(title, columns, 4)
+			text, lines := wrapText(title, columns, 4, false)
 			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, headerStyle)
 			y -= lines * lineHeight
 
@@ -646,7 +646,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			}
 		}
 		for _, line := range node.text {
-			text, lines := wrapText(line, columns, 4)
+			text, lines := wrapText(line, columns, 4, false)
 			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, textStyle)
 			y -= lines * lineHeight
 		}

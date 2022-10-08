@@ -54,7 +54,7 @@ func detabify(s string) string {
 	return result.String()
 }
 
-func wrapText(s string, columnLimit int, indent int) (string, int) {
+func wrapText(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
 	var accum, result strings.Builder
 
 	var wrapLine bool
@@ -75,10 +75,10 @@ func wrapText(s string, columnLimit int, indent int) (string, int) {
 	}
 
 	for _, ch := range s {
-		// If the line starts with a space, assume it is preformatted and
-		// just pass it through unchanged.
+		// If wrapAll isn't enabled, then if the line starts with a space,
+		// assume it is preformatted and pass it through unchanged.
 		if column == 0 {
-			wrapLine = ch != ' '
+			wrapLine = wrapAll || ch != ' '
 		}
 
 		accum.WriteRune(ch)
