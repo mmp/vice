@@ -397,9 +397,10 @@ func (a *Aircraft) HeadingVector() Point2LL {
 	}
 
 	p0, p1 := a.tracks[0].position, a.tracks[1].position
-	s := 1 / a.tracks[0].time.Sub(a.tracks[1].time).Minutes()
-
-	return scale2ll(sub2ll(p0, p1), float32(s))
+	v := sub2ll(p0, p1)
+	nm := nmlength2ll(v)
+	// v's length should be groundspeed / 60 nm.
+	return scale2ll(v, float32(a.GroundSpeed())/(60*nm))
 }
 
 func (a *Aircraft) HaveHeading() bool {
