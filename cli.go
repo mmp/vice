@@ -1694,16 +1694,11 @@ func (*FindCommand) Run(cli *CLIPane, args []string) (string, error) {
 		} else if len(aircraft) > 1 {
 			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
 			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
-		} else if ac, ok := world.aircraft[name]; ok {
-			pos = ac.Position()
-		} else if nav, ok := world.FAA.navaids[name]; ok {
-			pos = nav.location
-		} else if fix, ok := world.FAA.fixes[name]; ok {
-			pos = fix.location
-		} else if ap, ok := world.FAA.airports[name]; ok {
-			pos = ap.location
 		} else {
-			return "", fmt.Errorf("%s: no matches found", args[0])
+			var ok bool
+			if pos, ok = world.Locate(name); !ok {
+				return "", fmt.Errorf("%s: no matches found", args[0])
+			}
 		}
 	}
 	positionConfig.highlightedLocation = pos
