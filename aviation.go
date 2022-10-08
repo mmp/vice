@@ -392,6 +392,10 @@ func (a *Aircraft) Heading() float32 {
 // Scale it so that it represents where it is expected to be one minute in
 // the future.
 func (a *Aircraft) HeadingVector() Point2LL {
+	if !a.HaveHeading() {
+		return Point2LL{}
+	}
+
 	p0, p1 := a.tracks[0].position, a.tracks[1].position
 	s := 1 / a.tracks[0].time.Sub(a.tracks[1].time).Minutes()
 
