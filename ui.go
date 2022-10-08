@@ -13,6 +13,7 @@ import (
 	"os"
 	"path"
 	"runtime/debug"
+	"sort"
 	"strings"
 	"time"
 	"unicode"
@@ -1054,12 +1055,17 @@ type FileSelectDialogBox struct {
 	filename     string
 	directory    string
 
-	dirEntries            []os.DirEntry
+	dirEntries            []DirEntry
 	dirEntriesLastUpdated time.Time
 
 	title    string
 	filter   []string
 	callback func(string)
+}
+
+type DirEntry struct {
+	name  string
+	isDir bool
 }
 
 func NewFileSelectDialogBox(title string, filter []string, filename string,
@@ -1125,10 +1131,28 @@ func (fs *FileSelectDialogBox) Draw() {
 
 		// Only rescan the directory contents once a second.
 		if time.Since(fs.dirEntriesLastUpdated) > 1*time.Second {
-			var err error
-			fs.dirEntries, err = os.ReadDir(fs.directory)
-			if err != nil {
+			if dirEntries, err := os.ReadDir(fs.directory); err != nil {
 				lg.Errorf("%s: unable to read directory: %v", fs.directory, err)
+			} else {
+				fs.dirEntries = nil
+				for _, entry := range dirEntries {
+					if entry.Type()&os.ModeSymlink != 0 {
+						info, err := os.Stat(path.Join(fs.directory, entry.Name()))
+						if err == nil {
+							e := DirEntry{name: entry.Name(), isDir: info.IsDir()}
+							fs.dirEntries = append(fs.dirEntries, e)
+						} else {
+							e := DirEntry{name: entry.Name(), isDir: false}
+							fs.dirEntries = append(fs.dirEntries, e)
+						}
+					} else {
+						e := DirEntry{name: entry.Name(), isDir: entry.IsDir()}
+						fs.dirEntries = append(fs.dirEntries, e)
+					}
+				}
+				sort.Slice(fs.dirEntries, func(i, j int) bool {
+					return fs.dirEntries[i].name < fs.dirEntries[j].name
+				})
 			}
 			fs.dirEntriesLastUpdated = time.Now()
 		}
@@ -1142,16 +1166,16 @@ func (fs *FileSelectDialogBox) Draw() {
 			imgui.TableSetupColumn("Filename")
 			for _, entry := range fs.dirEntries {
 				icon := ""
-				if entry.IsDir() {
+				if entry.isDir {
 					icon = FontAwesomeIconFolder
 				} else {
 					icon = FontAwesomeIconFile
 				}
 
-				canSelect := entry.IsDir()
-				if !entry.IsDir() {
+				canSelect := entry.isDir
+				if !entry.isDir {
 					for _, f := range fs.filter {
-						if strings.HasSuffix(strings.ToUpper(entry.Name()), strings.ToUpper(f)) {
+						if strings.HasSuffix(strings.ToUpper(entry.name), strings.ToUpper(f)) {
 							canSelect = true
 							break
 						}
@@ -1165,12 +1189,12 @@ func (fs *FileSelectDialogBox) Draw() {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				selFlags := imgui.SelectableFlagsSpanAllColumns
-				if imgui.SelectableV(icon+" "+entry.Name(), entry.Name() == fs.filename, selFlags, imgui.Vec2{}) {
-					fs.filename = entry.Name()
+				if imgui.SelectableV(icon+" "+entry.name, entry.name == fs.filename, selFlags, imgui.Vec2{}) {
+					fs.filename = entry.name
 				}
 				if imgui.IsItemHovered() && imgui.IsMouseDoubleClicked(0) {
-					if entry.IsDir() {
-						fs.directory = path.Join(fs.directory, entry.Name())
+					if entry.isDir {
+						fs.directory = path.Join(fs.directory, entry.name)
 						fs.filename = ""
 						fs.dirEntriesLastUpdated = time.Time{}
 					} else {
