@@ -143,10 +143,15 @@ func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *Tex
 
 const consoleLimit = 250
 
+type CLIInput struct {
+	cmd    string
+	cursor int
+}
+
 type CLIPane struct {
-	history       []string
+	history       []CLIInput
 	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
-	savedInput    string
+	savedInput    CLIInput
 	mutex         sync.Mutex
 
 	console           []*ConsoleEntry
@@ -158,12 +163,8 @@ type CLIPane struct {
 
 	SpecialKeys map[string]*string
 
-	// Note that we're not handling unicode here, though it's not
-	// evident that VATSIM does either.
-	input  []byte
+	input  CLIInput
 	status string
-
-	cursor int
 
 	cb CommandBuffer
 }
@@ -288,10 +289,6 @@ func (cli *CLIPane) DrawUI() {
 	}
 }
 
-func isspace(c byte) bool {
-	return c == ' '
-}
-
 func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cli.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&cli.cb)
@@ -317,17 +314,15 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Execute command if enter was typed
 		hitEnter := cli.updateInput(consoleLinesVisible, ctx.platform)
 		if hitEnter {
-			if len(cli.input) > 0 {
-				input := cli.input
+			if len(cli.input.cmd) > 0 {
+				cmd := string(cli.input.cmd)
+
+				cli.history = append(cli.history, cli.input)
 				// Reset this state here so that commands like 'editroute'
-				// can poplate the next command input.
-				cli.input = cli.input[:0]
-				cli.cursor = 0
+				// can populate the next command input.
+				cli.input = CLIInput{}
 
-				cmd := string(input)
 				output, err := cli.runCommand(cmd)
-
-				cli.history = append(cli.history, cmd)
 
 				// Add the command and its to the console history
 				if prevCallsign != "" {
@@ -371,15 +366,15 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	prompt = prompt + "> "
 	inputPos := [2]float32{left, 2.5 * lineHeight}
-	if cli.cursor == len(cli.input) {
+	if cli.input.cursor == len(cli.input.cmd) {
 		// cursor at the end
-		td.AddTextMulti([]string{prompt + string(cli.input), " "}, inputPos,
+		td.AddTextMulti([]string{prompt + string(cli.input.cmd), " "}, inputPos,
 			[]TextStyle{style, cursorStyle})
 	} else {
 		// cursor in the middle
-		sb := prompt + string(cli.input[:cli.cursor])
-		sc := string(cli.input[cli.cursor : cli.cursor+1])
-		se := string(cli.input[cli.cursor+1:])
+		sb := prompt + cli.input.cmd[:cli.input.cursor]
+		sc := cli.input.cmd[cli.input.cursor : cli.input.cursor+1]
+		se := cli.input.cmd[cli.input.cursor+1:]
 		styles := []TextStyle{style, cursorStyle, style}
 		td.AddTextMulti([]string{sb, sc, se}, inputPos, styles)
 	}
@@ -394,6 +389,25 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	cb.Call(cli.cb)
+}
+
+func (ci *CLIInput) insertAtCursor(s string) {
+	ci.cmd = ci.cmd[:ci.cursor] + s + ci.cmd[ci.cursor:]
+	// place cursor after the inserted text
+	ci.cursor += len(s)
+}
+
+func (ci *CLIInput) deleteBeforeCursor() {
+	if ci.cursor > 0 {
+		ci.cmd = ci.cmd[:ci.cursor-1] + ci.cmd[ci.cursor:]
+		ci.cursor--
+	}
+}
+
+func (ci *CLIInput) deleteAfterCursor() {
+	if ci.cursor < len(ci.cmd) {
+		ci.cmd = ci.cmd[:ci.cursor] + ci.cmd[ci.cursor+1:]
+	}
 }
 
 // Simple, one string, same style
@@ -433,30 +447,18 @@ func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 
 func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hitEnter bool) {
 	// Grab keyboard input
-	if ni := len(platform.InputCharacters()); ni > 0 {
-		for i := 0; i < ni; i++ {
-			cli.input = append(cli.input, ' ') // make space
-		}
-		// Move old text forward if we're inserting
-		nc := len(cli.input) - cli.cursor
-		if nc > 0 {
-			copy(cli.input[cli.cursor+ni:], cli.input[cli.cursor:])
-		}
-
-		copy(cli.input[cli.cursor:], []byte(platform.InputCharacters())[:])
-		cli.cursor += ni
-	}
+	cli.input.insertAtCursor(platform.InputCharacters())
 
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
 		if cli.historyOffset == len(cli.history) {
 			cli.status = "Reached end of history."
 		} else {
 			if cli.historyOffset == 0 {
-				cli.savedInput = string(cli.input) // save current input in case we return
+				cli.savedInput = cli.input // save current input in case we return
 			}
 			cli.historyOffset++
-			cli.input = []byte(cli.history[len(cli.history)-cli.historyOffset])
-			cli.cursor = len(cli.input)
+			cli.input = cli.history[len(cli.history)-cli.historyOffset]
+			cli.input.cursor = len(cli.input.cmd)
 			cli.status = ""
 		}
 	}
@@ -466,102 +468,45 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		} else {
 			cli.historyOffset--
 			if cli.historyOffset == 0 {
-				cli.input = []byte(cli.savedInput)
-				cli.savedInput = ""
+				cli.input = cli.savedInput
+				cli.savedInput = CLIInput{}
 			} else {
-				cli.input = []byte(cli.history[len(cli.history)-cli.historyOffset])
+				cli.input = cli.history[len(cli.history)-cli.historyOffset]
 			}
-			cli.cursor = len(cli.input)
+			cli.input.cursor = len(cli.input.cmd)
 		}
 	}
 
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
-		if cli.cursor > 0 {
-			cli.cursor--
+		if cli.input.cursor > 0 {
+			cli.input.cursor--
 		}
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
-		if cli.cursor < len(cli.input) {
-			cli.cursor++
+		if cli.input.cursor < len(cli.input.cmd) {
+			cli.input.cursor++
 		}
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
-		cli.cursor = 0
+		cli.input.cursor = 0
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
-		cli.cursor = len(cli.input)
+		cli.input.cursor = len(cli.input.cmd)
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
-		// Delete char before the cursor
-		if cli.cursor > 0 {
-			if cli.cursor < len(cli.input) {
-				copy(cli.input[cli.cursor-1:], cli.input[cli.cursor:])
-			}
-			cli.input = cli.input[:len(cli.input)-1]
-			cli.cursor--
-		}
+		cli.input.deleteBeforeCursor()
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
-		// Delete char after the cursor
-		if cli.cursor < len(cli.input) {
-			if cli.cursor+1 < len(cli.input) {
-				copy(cli.input[cli.cursor+1:], cli.input[cli.cursor+2:])
-			}
-			cli.input = cli.input[:len(cli.input)-1]
-		}
+		cli.input.deleteAfterCursor()
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
-		if cli.cursor > 0 {
-			// clear the current input
-			cli.cursor = 0
-			cli.input = []byte{}
+		if cli.input.cursor > 0 {
+			cli.input = CLIInput{}
 		} else {
 			positionConfig.selectedAircraft = nil
 		}
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
-		// get span of current word
-		start, end := cli.cursor, cli.cursor
-		for start > 0 && !isspace(cli.input[start-1]) {
-			start--
-		}
-		for end < len(cli.input) && !isspace(cli.input[end]) {
-			end++
-		}
-		word := string(cli.input[start:end])
-		var matches []string
-		now := world.CurrentTime()
-		for _, ac := range world.aircraft {
-			if ac.LostTrack(now) {
-				continue
-			}
-			if strings.Contains(strings.ToUpper(ac.Callsign()),
-				strings.ToUpper(word)) {
-				matches = append(matches, ac.Callsign())
-			}
-		}
-		switch len(matches) {
-		case 0:
-			cli.status = "No matches!"
-		case 1:
-			// delete the current word
-			copy(cli.input[start:], cli.input[end:])
-			cli.input = cli.input[:len(cli.input)-(end-start)]
-			// make space for the replacement
-			for i := 0; i < len(matches[0]); i++ {
-				cli.input = append(cli.input, '_')
-			}
-			copy(cli.input[end:], cli.input[start:])
-			// put the replacement in there
-			copy(cli.input[start:], []byte(matches[0]))
-			cli.cursor = start + len(matches[0])
-			cli.status = ""
-		default:
-			cli.status = "Multiple matches: "
-			for _, m := range matches {
-				cli.status += m + " "
-			}
-		}
 	}
 
 	// history-related
@@ -599,24 +544,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		}
 
 		if t, ok := cli.SpecialKeys[name]; ok {
-			// insert it at the start
-			text := strings.TrimRight(*t, " ")
-			text = text + " "
-
-			// don't insert if the text is already there
-			if strings.HasPrefix(string(cli.input), text) {
-				continue
-			}
-			// make space
-			cli.input = append(cli.input, []byte(text)...)
-			n := len([]byte(text))
-			if len(cli.input) > n {
-				// move any existing text forward
-				copy(cli.input[n:], cli.input)
-				copy(cli.input, []byte(text))
-			}
-			// place cursor after the inserted text
-			cli.cursor = len(text)
+			cli.input.insertAtCursor(*t)
 		}
 	}
 
@@ -1021,17 +949,8 @@ func (cli *CLIPane) runCommand(enteredText string) (string, error) {
 }
 
 func (cli *CLIPane) ConsumeAircraftSelection(ac *Aircraft) bool {
-	if ac != nil && len(cli.input) > 0 {
-		callsign := ac.Callsign()
-
-		// insert at the current cursor position
-		n := 1 + len(callsign)
-		for i := 0; i < n; i++ {
-			cli.input = append(cli.input, '_')
-		}
-		copy(cli.input[cli.cursor+n:], cli.input[cli.cursor:])
-		copy(cli.input[cli.cursor:], []byte(" "+callsign))
-		cli.cursor += n
+	if ac != nil && len(cli.input.cmd) > 0 {
+		cli.input.insertAtCursor(" " + ac.Callsign())
 		return true
 	}
 	return false
@@ -1309,9 +1228,10 @@ func (*EditRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
 	}
 
-	cli.input = []byte("route " + callsign + " ")
-	cli.cursor = len(cli.input)
-	cli.input = append(cli.input, []byte(ac.flightPlan.route)...)
+	cli.input.cmd = "route " + callsign + " "
+	cli.input.cursor = len(cli.input.cmd)
+	cli.input.cmd += ac.flightPlan.route
+
 	return "", nil
 }
 
