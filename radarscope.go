@@ -213,10 +213,10 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	dupe.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
-	dupe.selectedVORs = nil
-	dupe.selectedNDBs = nil
-	dupe.selectedFixes = nil
-	dupe.selectedAirports = nil
+	dupe.selectedVORs = make(map[string]interface{})
+	dupe.selectedNDBs = make(map[string]interface{})
+	dupe.selectedFixes = make(map[string]interface{})
+	dupe.selectedAirports = make(map[string]interface{})
 
 	return dupe
 }
