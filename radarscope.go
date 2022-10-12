@@ -152,6 +152,12 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.DataBlockFormat = DataBlockFormatGround
 	c.DrawRegions = true
 	c.DrawLabels = true
+
+	c.VORsToDraw = make(map[string]interface{})
+	c.NDBsToDraw = make(map[string]interface{})
+	c.FixesToDraw = make(map[string]interface{})
+	c.AirportsToDraw = make(map[string]interface{})
+
 	c.GeoDrawSet = make(map[string]interface{})
 	c.SIDDrawSet = make(map[string]interface{})
 	c.STARDrawSet = make(map[string]interface{})
@@ -168,6 +174,11 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.LabelFontIdentifier = font.id
 
 	c.CRDAConfig = NewCRDAConfig()
+
+	c.selectedVORs = make(map[string]interface{})
+	c.selectedNDBs = make(map[string]interface{})
+	c.selectedFixes = make(map[string]interface{})
+	c.selectedAirports = make(map[string]interface{})
 
 	return c
 }
