@@ -244,24 +244,29 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		str.WriteString(now.UTC().Format("Time: 15:04:05Z\n\n"))
 	}
 
-	if a.ShowMETAR && len(world.metar) > 0 {
+	if a.ShowMETAR {
 		var metar []METAR
 		for _, m := range world.metar {
-			metar = append(metar, m)
+			if _, ok := a.Airports[m.airport]; ok {
+				metar = append(metar, m)
+			}
 		}
-		sort.Slice(metar, func(i, j int) bool {
-			return metar[i].airport < metar[j].airport
-		})
-		str.WriteString("Weather:\n")
-		for _, m := range metar {
-			str.WriteString(fmt.Sprintf("  %4s ", m.airport))
-			flush()
-			style.color = cs.TextHighlight
-			str.WriteString(fmt.Sprintf("%s %s ", m.altimeter, m.wind))
-			flush()
-			str.WriteString(fmt.Sprintf("%s\n", m.weather))
+
+		if len(metar) > 0 {
+			sort.Slice(metar, func(i, j int) bool {
+				return metar[i].airport < metar[j].airport
+			})
+			str.WriteString("Weather:\n")
+			for _, m := range metar {
+				str.WriteString(fmt.Sprintf("  %4s ", m.airport))
+				flush()
+				style.color = cs.TextHighlight
+				str.WriteString(fmt.Sprintf("%s %s ", m.altimeter, m.wind))
+				flush()
+				str.WriteString(fmt.Sprintf("%s\n", m.weather))
+			}
+			str.WriteString("\n")
 		}
-		str.WriteString("\n")
 	}
 
 	if a.ShowATIS {
