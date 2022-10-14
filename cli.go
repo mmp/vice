@@ -144,8 +144,10 @@ func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *Tex
 const consoleLimit = 250
 
 type CLIInput struct {
-	cmd    string
-	cursor int
+	cmd      string
+	cursor   int
+	tabStops []int
+	paramSet []bool
 }
 
 type CLIPane struct {
@@ -197,6 +199,7 @@ func (cli *CLIPane) Activate(cs *ColorScheme) {
 		cli.SpecialKeys = make(map[string]*string)
 	}
 	lg.RegisterErrorMonitor(cli)
+
 	checkCommands(cliCommands)
 }
 
@@ -314,35 +317,40 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Execute command if enter was typed
 		hitEnter := cli.updateInput(consoleLinesVisible, ctx.platform)
 		if hitEnter {
-			if len(cli.input.cmd) > 0 {
-				cmd := string(cli.input.cmd)
+			if cli.input.AnyParametersUnset() {
+				cli.status = "Some alias parameters are still unset."
+			} else {
+				if len(cli.input.cmd) > 0 {
+					cmd := string(cli.input.cmd)
 
-				cli.history = append(cli.history, cli.input)
-				// Reset this state here so that commands like 'editroute'
-				// can populate the next command input.
-				cli.input = CLIInput{}
+					cli.history = append(cli.history, cli.input)
+					// Reset this state here so that aliases and commands
+					// like 'editroute' can populate the next command
+					// input.
+					cli.input = CLIInput{}
 
-				output, err := cli.runCommand(cmd)
+					output, err := cli.runCommand(cmd)
 
-				// Add the command and its to the console history
-				if prevCallsign != "" {
-					cli.AddBasicConsoleEntry(prevCallsign+"> "+cmd, ConsoleTextRegular)
-				} else {
-					cli.AddBasicConsoleEntry("> "+cmd, ConsoleTextRegular)
-				}
-				if err != nil {
-					cli.AddBasicConsoleEntry(err.Error(), ConsoleTextError)
-				}
-				for _, str := range strings.Split(output, "\n") {
-					if str != "" {
-						cli.AddBasicConsoleEntry(str, ConsoleTextRegular)
+					// Add the command and its output to the console history
+					if prevCallsign != "" {
+						cli.AddBasicConsoleEntry(prevCallsign+"> "+cmd, ConsoleTextRegular)
+					} else {
+						cli.AddBasicConsoleEntry("> "+cmd, ConsoleTextRegular)
+					}
+					if err != nil {
+						cli.AddBasicConsoleEntry(err.Error(), ConsoleTextError)
+					}
+					for _, str := range strings.Split(output, "\n") {
+						if str != "" {
+							cli.AddBasicConsoleEntry(str, ConsoleTextRegular)
+						}
 					}
 				}
-			}
 
-			cli.consoleViewOffset = 0
-			cli.historyOffset = 0
-			cli.status = ""
+				cli.consoleViewOffset = 0
+				cli.historyOffset = 0
+				cli.status = ""
+			}
 		}
 	}
 
@@ -359,26 +367,8 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	// Draw text for the input, one line above the status line
-	td := TextDrawBuilder{}
-	prompt := ""
-	if positionConfig.selectedAircraft != nil {
-		prompt = positionConfig.selectedAircraft.Callsign()
-	}
-	prompt = prompt + "> "
 	inputPos := [2]float32{left, 2.5 * lineHeight}
-	if cli.input.cursor == len(cli.input.cmd) {
-		// cursor at the end
-		td.AddTextMulti([]string{prompt + string(cli.input.cmd), " "}, inputPos,
-			[]TextStyle{style, cursorStyle})
-	} else {
-		// cursor in the middle
-		sb := prompt + cli.input.cmd[:cli.input.cursor]
-		sc := cli.input.cmd[cli.input.cursor : cli.input.cursor+1]
-		se := cli.input.cmd[cli.input.cursor+1:]
-		styles := []TextStyle{style, cursorStyle, style}
-		td.AddTextMulti([]string{sb, sc, se}, inputPos, styles)
-	}
-	td.GenerateCommands(&cli.cb)
+	cli.input.EmitDrawCommands(inputPos, style, cursorStyle, &cli.cb)
 
 	// status
 	if cli.status != "" {
@@ -391,22 +381,157 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cb.Call(cli.cb)
 }
 
-func (ci *CLIInput) insertAtCursor(s string) {
+func (ci *CLIInput) EmitDrawCommands(inputPos [2]float32, style TextStyle, cursorStyle TextStyle, cb *CommandBuffer) {
+	td := TextDrawBuilder{}
+	prompt := ""
+	if positionConfig.selectedAircraft != nil {
+		prompt = positionConfig.selectedAircraft.Callsign()
+	}
+	prompt = prompt + "> "
+	if ci.cursor == len(ci.cmd) {
+		// cursor at the end
+		td.AddTextMulti([]string{prompt + string(ci.cmd), " "}, inputPos,
+			[]TextStyle{style, cursorStyle})
+	} else {
+		// cursor in the middle
+		sb := prompt + ci.cmd[:ci.cursor]
+		sc := ci.cmd[ci.cursor : ci.cursor+1]
+		se := ci.cmd[ci.cursor+1:]
+		styles := []TextStyle{style, cursorStyle, style}
+		td.AddTextMulti([]string{sb, sc, se}, inputPos, styles)
+	}
+	td.GenerateCommands(cb)
+}
+
+func (ci *CLIInput) InsertAtCursor(s string) {
+	if len(s) == 0 {
+		return
+	}
+
+	// Is the cursor at a parameter stop that hasn't been set? Record that
+	// it's set and delete the "_" before the insertion.
+	if ci.InitialParameterSetting() {
+		ci.DeleteAfterCursor()
+	}
+
 	ci.cmd = ci.cmd[:ci.cursor] + s + ci.cmd[ci.cursor:]
+
+	// update parameter positions
+	for i := range ci.tabStops {
+		if ci.cursor <= ci.tabStops[i] {
+			ci.tabStops[i] += len(s)
+		}
+	}
+
 	// place cursor after the inserted text
 	ci.cursor += len(s)
 }
 
-func (ci *CLIInput) deleteBeforeCursor() {
+func (ci *CLIInput) DeleteBeforeCursor() {
 	if ci.cursor > 0 {
 		ci.cmd = ci.cmd[:ci.cursor-1] + ci.cmd[ci.cursor:]
+
+		// TODO: should we allow deleting tab stops? (e.g., if cursor == tabStops[i])?
+		for i := range ci.tabStops {
+			if ci.cursor <= ci.tabStops[i] {
+				ci.tabStops[i]--
+			}
+		}
+
 		ci.cursor--
 	}
 }
 
-func (ci *CLIInput) deleteAfterCursor() {
+func (ci *CLIInput) DeleteAfterCursor() {
 	if ci.cursor < len(ci.cmd) {
 		ci.cmd = ci.cmd[:ci.cursor] + ci.cmd[ci.cursor+1:]
+
+		// TODO: allow deleting tab stops?
+		for i := range ci.tabStops {
+			if ci.cursor < ci.tabStops[i] {
+				ci.tabStops[i]--
+			}
+		}
+	}
+}
+
+func (ci *CLIInput) InitialParameterSetting() bool {
+	for i, stop := range ci.tabStops {
+		if ci.cursor == stop && !ci.paramSet[i] {
+			// Arguably this is an obscure place to set this...
+			ci.paramSet[i] = true
+			return true
+		}
+	}
+	return false
+}
+
+func (ci *CLIInput) AnyParametersUnset() bool {
+	for _, s := range ci.paramSet {
+		if !s {
+			return true
+		}
+	}
+	return false
+}
+
+func (ci *CLIInput) InitializeParameters(cmd string) (string, bool) {
+	ci.tabStops = nil
+	ci.paramSet = nil
+	base := 0
+	c := cmd
+	for {
+		idx := strings.Index(c, "$_")
+		if idx == -1 {
+			break
+		}
+
+		base += idx
+		ci.tabStops = append(ci.tabStops, base)
+		ci.paramSet = append(ci.paramSet, false)
+		base++ // account for the _ we'll be adding
+		c = c[idx+2:]
+	}
+
+	return strings.ReplaceAll(cmd, "$_", "_"), len(ci.tabStops) > 0
+}
+
+func (ci *CLIInput) ParameterCursor() int {
+	if len(ci.tabStops) > 0 {
+		return ci.tabStops[0]
+	}
+	return 0
+}
+
+func (ci *CLIInput) TabNext() bool {
+	return ci.tab(1)
+}
+
+func (ci *CLIInput) TabPrev() bool {
+	return ci.tab(-1)
+}
+
+func (ci *CLIInput) tab(step int) bool {
+	start := ci.cursor
+	pos := start
+	for {
+		pos = (pos + step) % len(ci.cmd)
+		if pos < 0 {
+			pos += len(ci.cmd)
+		}
+
+		if pos == start {
+			lg.Errorf("tab went all the way around without finding a parameter? cursor %d, stops %+v",
+				ci.cursor, ci.tabStops)
+			return false
+		}
+
+		for _, stop := range ci.tabStops {
+			if pos == stop {
+				ci.cursor = stop
+				return true
+			}
+		}
 	}
 }
 
@@ -447,7 +572,7 @@ func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 
 func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hitEnter bool) {
 	// Grab keyboard input
-	cli.input.insertAtCursor(platform.InputCharacters())
+	cli.input.InsertAtCursor(platform.InputCharacters())
 
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
 		if cli.historyOffset == len(cli.history) {
@@ -494,19 +619,30 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		cli.input.cursor = len(cli.input.cmd)
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
-		cli.input.deleteBeforeCursor()
+		cli.input.DeleteBeforeCursor()
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
-		cli.input.deleteAfterCursor()
+		cli.input.DeleteAfterCursor()
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
 		if cli.input.cursor > 0 {
 			cli.input = CLIInput{}
+			cli.status = ""
 		} else {
 			positionConfig.selectedAircraft = nil
 		}
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
+		io := imgui.CurrentIO()
+		if io.KeyShiftPressed() {
+			if !cli.input.TabPrev() {
+				cli.status = "no parameter stops"
+			}
+		} else {
+			if !cli.input.TabNext() {
+				cli.status = "no parameter stops"
+			}
+		}
 	}
 
 	// history-related
@@ -544,7 +680,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		}
 
 		if t, ok := cli.SpecialKeys[name]; ok {
-			cli.input.insertAtCursor(*t)
+			cli.input.InsertAtCursor(*t)
 		}
 	}
 
@@ -835,15 +971,32 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 	return
 }
 
-func (cli *CLIPane) runCommand(enteredText string) (string, error) {
-	expandedText, err := cli.expandVariables(enteredText)
+func (cli *CLIPane) runCommand(cmd string) (string, error) {
+	cmdExpAliases, err := cli.ExpandAliases(cmd)
+	if err != nil {
+		return "", err
+	}
+	if cmdExpAliases != cmd {
+		// One or more aliases were expanded. Are there any parameters we
+		// need from the user?
+		if newCmd, ok := cli.input.InitializeParameters(cmdExpAliases); ok {
+			cli.input.cmd = newCmd
+			cli.input.cursor = cli.input.ParameterCursor()
+			// Back to the user for editing.
+			return "", nil
+		}
+		// Otherwise fall through and execute the command specified by the
+		// alias.
+	}
+
+	cmdExpAliasesVars, err := cli.expandVariables(cmdExpAliases)
 	if err != nil {
 		return "", err
 	}
 
-	fields := strings.Fields(expandedText)
+	fields := strings.Fields(cmdExpAliasesVars)
 	if len(fields) == 0 {
-		lg.Printf("unexpected no fields in command: %s", enteredText)
+		lg.Printf("unexpected no fields in command: %s", cmdExpAliasesVars)
 		return "", nil
 	}
 
@@ -948,9 +1101,40 @@ func (cli *CLIPane) runCommand(enteredText string) (string, error) {
 	return "", fmt.Errorf("%s: unknown command", fields[0])
 }
 
+func (cli *CLIPane) ExpandAliases(cmd string) (string, error) {
+	if globalConfig.aliases == nil {
+		return cmd, nil
+	}
+
+	// Syntax: <whitespace>.[A-Za-z0-9]+
+	re := regexp.MustCompile("(\\.[[:alnum:]]+)")
+	matches := re.FindAllStringIndex(cmd, -1)
+
+	expanded := ""
+	prevEnd := 0
+	for _, match := range matches {
+		expanded += cmd[prevEnd:match[0]]
+		alias := cmd[match[0]:match[1]]
+		if exp, ok := globalConfig.aliases[alias]; !ok {
+			return "", fmt.Errorf("%s: alias unknown", alias)
+		} else {
+			ea, err := cli.ExpandAliases(exp)
+			if err != nil {
+				return "", err
+			}
+
+			expanded += ea
+			prevEnd = match[1]
+		}
+	}
+	expanded += cmd[prevEnd:]
+
+	return expanded, nil
+}
+
 func (cli *CLIPane) ConsumeAircraftSelection(ac *Aircraft) bool {
 	if ac != nil && len(cli.input.cmd) > 0 {
-		cli.input.insertAtCursor(" " + ac.Callsign())
+		cli.input.InsertAtCursor(" " + ac.Callsign())
 		return true
 	}
 	return false
@@ -1701,7 +1885,7 @@ func (*DrawRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type InfoCommand struct{}
 
-func (*InfoCommand) Name() string { return "info" }
+func (*InfoCommand) Name() string { return "i" }
 func (*InfoCommand) Usage() string {
 	return "<callsign, fix, VOR, DME, airport...>"
 }
