@@ -72,6 +72,8 @@ var (
 		&ToDoCommand{},
 		&TrafficCommand{},
 
+		&WallopCommand{},
+
 		&EchoCommand{},
 	}
 )
@@ -1924,4 +1926,21 @@ func (*EchoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*EchoCommand) Run(cli *CLIPane, args []string) (string, error) {
 	return strings.Join(args[0:], " "), nil
+}
+
+type WallopCommand struct{}
+
+func (*WallopCommand) Name() string { return "wallop" }
+func (*WallopCommand) Usage() string {
+	return "[message]"
+}
+func (*WallopCommand) Help() string {
+	return "Send the specified message to all online supervisors."
+}
+func (*WallopCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*WallopCommand) Run(cli *CLIPane, args []string) (string, error) {
+	tm := TextMessage{messageType: TextWallop, contents: strings.Join(args, " ")}
+	return "", world.SendTextMessage(tm)
 }
