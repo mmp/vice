@@ -39,11 +39,6 @@ type World struct {
 	// Ones that we are tracking but have offered to another: callsign->offering controller
 	inboundHandoff map[string]string
 
-	user struct {
-		callsign string
-		facility Facility
-		position *Position // may be nil (e.g., OBS)
-	}
 	lastAircraftUpdate map[*Aircraft]time.Time
 
 	// From the FAA (et al.) databases
@@ -62,6 +57,7 @@ type World struct {
 
 	defaultAirport string
 	defaultCenter  Point2LL
+	sectorFileId   string
 
 	VORs     map[string]Point2LL
 	NDBs     map[string]Point2LL
@@ -267,6 +263,7 @@ func (w *World) LoadSectorFile(filename string) error {
 	w.NmPerLatitude = float32(sectorFile.NmPerLatitude)
 	w.NmPerLongitude = float32(sectorFile.NmPerLongitude)
 	w.MagneticVariation = float32(sectorFile.MagneticVariation)
+	w.sectorFileId = sectorFile.Id
 
 	// Clear out everything that is copied from the sector file in case
 	// we're loading a new one.
@@ -476,7 +473,7 @@ func (w *World) LoadPositionFile(filename string) error {
 }
 
 func (w *World) Connected() bool {
-	return w.server != nil
+	return w.server != nil && w.server.Connected()
 }
 
 func (w *World) ConnectFlightRadar() error {
@@ -1221,7 +1218,7 @@ func (w *World) PointOutReceived(callsign string, controller string) {
 	// TODO
 }
 
-func (w *World) HandoffRequested(callsign string, controller string, to string) {
+func (w *World) HandoffOffered(callsign string, controller string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
 		w.changes.addedAircraft[ac] = ac
@@ -1524,11 +1521,11 @@ func (w *World) Handoff(callsign string, controller string) error {
 		if tc, ok := w.trackingController[callsign]; !ok || tc != w.server.Callsign() {
 			return ErrNotTrackedByMe
 		}
-		w.server.Handoff(callsign, controller)
 
 		w.outboundHandoff[callsign] = controller
 		w.changes.modifiedAircraft[ac] = ac
 
+		w.server.Handoff(callsign, controller)
 		return nil
 	}
 }

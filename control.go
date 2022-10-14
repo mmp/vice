@@ -45,6 +45,8 @@ type ControlServer interface {
 
 	// Shut down the connection with the server and clean up detritus.
 	Disconnect()
+	Connected() bool
+
 	Callsign() string
 
 	// Returns the current time; getting it from the server lets us report
@@ -85,7 +87,7 @@ type ControlClient interface {
 
 	TrackInitiated(callsign string, controller string)
 	TrackDropped(callsign string, controller string)
-	HandoffRequested(callsign string, from string, to string)
+	HandoffOffered(callsign string, from string)
 	HandoffAccepted(callsign string, from string, to string)
 	PointOutReceived(callsign string, from string)
 

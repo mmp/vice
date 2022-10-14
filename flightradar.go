@@ -67,6 +67,7 @@ func (fr *FlightRadarServer) SendTextMessage(m TextMessage)                     
 func (fr *FlightRadarServer) Description() string                                { return "FlightRadar" }
 func (fr *FlightRadarServer) GetWindowTitle() string                             { return "FlightRadar" }
 func (fr *FlightRadarServer) Disconnect()                                        {}
+func (fr *FlightRadarServer) Connected() bool                                    { return true }
 func (fr *FlightRadarServer) Callsign() string                                   { return "(none)" }
 func (fr *FlightRadarServer) CurrentTime() time.Time                             { return time.Now() }
 

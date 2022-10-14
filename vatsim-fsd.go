@@ -56,11 +56,13 @@ type VATSIMMessage struct {
 }
 
 type VATSIMServer struct {
-	callsign    string
-	client      ControlClient
-	messageChan chan VATSIMMessage
-	conn        *net.TCPConn
-	windowTitle string
+	callsign string
+
+	client       ControlClient
+	messageChan  chan VATSIMMessage
+	conn         *net.TCPConn
+	disconnected bool
+	windowTitle  string
 
 	lastMessageActualTime   time.Time
 	lastMessageReportedTime time.Time
@@ -257,10 +259,14 @@ func (v *VATSIMServer) Callsign() string {
 	return v.callsign
 }
 
+func (v *VATSIMServer) Connected() bool {
+	return !v.disconnected
+}
+
 func (v *VATSIMServer) Disconnect() {
-	// Is this legit? (With a goroutine using it concurrently?) It
-	//v.conn.Close()
+	v.conn.Close()
 	v.windowTitle = "[Disconnected]"
+	v.disconnected = true
 }
 
 func (v *VATSIMServer) CurrentTime() time.Time {
@@ -842,7 +848,11 @@ func (v *VATSIMServer) handleHO(sender string, args []string) error {
 
 	receiver := args[0]
 	callsign := args[1]
-	v.client.HandoffRequested(callsign, sender, receiver)
+	if receiver == v.callsign {
+		v.client.HandoffOffered(callsign, sender)
+	} else {
+		lg.Printf("%s: ignoring handoff offer from %s to %s", callsign, sender, receiver)
+	}
 
 	return nil
 }
