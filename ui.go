@@ -45,6 +45,7 @@ var (
 
 		openSectorFileDialog   *FileSelectDialogBox
 		openPositionFileDialog *FileSelectDialogBox
+		openAliasesFileDialog  *FileSelectDialogBox
 		openNotesFileDialog    *FileSelectDialogBox
 	}
 
@@ -119,6 +120,12 @@ func uiInit(renderer Renderer) {
 				delete(ui.errorText, "POSITIONFILE")
 				globalConfig.PositionFile = filename
 			}
+		})
+	ui.openAliasesFileDialog = NewFileSelectDialogBox("Open Aliases File...", []string{".txt"},
+		globalConfig.AliasesFile,
+		func(filename string) {
+			globalConfig.AliasesFile = filename
+			globalConfig.LoadAliasesFile()
 		})
 	ui.openNotesFileDialog = NewFileSelectDialogBox("Open Notes File...", []string{".txt"},
 		globalConfig.NotesFile,
@@ -274,6 +281,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	ui.openSectorFileDialog.Draw()
 	ui.openPositionFileDialog.Draw()
+	ui.openAliasesFileDialog.Draw()
 	ui.openNotesFileDialog.Draw()
 
 	if ui.showAboutDialog {

@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	_ "embed"
 	"encoding/json"
@@ -24,6 +25,7 @@ type GlobalConfig struct {
 	SectorFile   string
 	PositionFile string
 	NotesFile    string
+	AliasesFile  string
 
 	VatsimName     string
 	VatsimCID      string
@@ -37,6 +39,8 @@ type GlobalConfig struct {
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 	AudioSettings         AudioSettings
+
+	aliases map[string]string
 
 	notesRoot *NotesNode
 }
@@ -73,23 +77,109 @@ type PositionConfig struct {
 }
 
 func (c *GlobalConfig) DrawUI() {
-	imgui.Text("Sector file: " + c.SectorFile)
-	imgui.SameLine()
-	if imgui.Button("New...##sectorfile") {
-		ui.openSectorFileDialog.Activate()
-	}
-	imgui.Text("Position file: " + c.PositionFile)
-	imgui.SameLine()
-	if imgui.Button("New...##positionfile") {
-		ui.openPositionFileDialog.Activate()
-	}
-	imgui.Text("Notes file: " + c.NotesFile)
-	imgui.SameLine()
-	if imgui.Button("New...##notesfile") {
-		ui.openNotesFileDialog.Activate()
+	if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Sector file: ")
+		imgui.TableNextColumn()
+		imgui.Text(c.SectorFile)
+		imgui.TableNextColumn()
+		if imgui.Button("New...##sectorfile") {
+			ui.openSectorFileDialog.Activate()
+		}
+		imgui.TableNextColumn()
+		if c.SectorFile != "" && imgui.Button("Reload##sectorfile") {
+			_ = world.LoadSectorFile(c.SectorFile)
+		}
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Position file: ")
+		imgui.TableNextColumn()
+		imgui.Text(c.PositionFile)
+		imgui.TableNextColumn()
+		if imgui.Button("New...##positionfile") {
+			ui.openPositionFileDialog.Activate()
+		}
+		imgui.TableNextColumn()
+		if c.PositionFile != "" && imgui.Button("Reload##positionfile") {
+			_ = world.LoadPositionFile(c.PositionFile)
+		}
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Aliases file: ")
+		imgui.TableNextColumn()
+		imgui.Text(c.AliasesFile)
+		imgui.TableNextColumn()
+		if imgui.Button("New...##aliasesfile") {
+			ui.openAliasesFileDialog.Activate()
+		}
+		imgui.TableNextColumn()
+		if c.AliasesFile != "" && imgui.Button("Reload##aliasesfile") {
+			c.LoadAliasesFile()
+		}
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Notes file: ")
+		imgui.TableNextColumn()
+		imgui.Text(c.NotesFile)
+		imgui.TableNextColumn()
+		if imgui.Button("New...##notesfile") {
+			ui.openNotesFileDialog.Activate()
+		}
+		imgui.TableNextColumn()
+		if c.NotesFile != "" && imgui.Button("Reload##notesfile") {
+			c.LoadNotesFile()
+		}
+
+		imgui.EndTable()
 	}
 	imgui.Separator()
 	positionConfig.DrawUI()
+}
+
+func (gc *GlobalConfig) LoadAliasesFile() {
+	if gc.AliasesFile == "" {
+		return
+	}
+	gc.aliases = make(map[string]string)
+
+	f, err := os.Open(gc.AliasesFile)
+	if err != nil {
+		lg.Printf("%s: unable to read aliases file: %v", gc.AliasesFile, err)
+		ShowErrorDialog("%s: unable to read aliases file: %v.", gc.AliasesFile, err)
+	}
+	defer f.Close()
+
+	errors := ""
+	sc := bufio.NewScanner(f)
+	for sc.Scan() {
+		line := sc.Text()
+		if len(line) == 0 || line[0] != '.' {
+			continue
+		}
+
+		def := strings.SplitAfterN(line, " ", 2)
+		lg.Errorf("%s -> %d %+v", line, len(def), def)
+		if len(def) != 2 {
+			errors += def[0] + ": no alias definition found\n"
+			continue
+		}
+
+		def[0] = strings.TrimSpace(def[0])
+		if _, ok := gc.aliases[def[0]]; ok {
+			errors += def[0] + ": multiple definitions in alias file\n"
+			// but continue and keep the latter one...
+		}
+
+		gc.aliases[def[0]] = def[1]
+	}
+
+	if len(errors) > 0 {
+		ShowErrorDialog("Errors found in alias file:\n%s", errors)
+	}
 }
 
 func (gc *GlobalConfig) LoadNotesFile() {
@@ -336,6 +426,7 @@ func LoadOrMakeDefaultConfig() {
 		ShowErrorDialog("%s: configuration file is corrupt: %v", fn, err)
 	}
 
+	globalConfig.LoadAliasesFile()
 	globalConfig.LoadNotesFile()
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
