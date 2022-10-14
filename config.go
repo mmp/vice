@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path"
@@ -23,6 +24,11 @@ type GlobalConfig struct {
 	SectorFile   string
 	PositionFile string
 	NotesFile    string
+
+	VatsimName     string
+	VatsimCID      string
+	VatsimPassword string
+	VatsimRating   NetworkRating
 
 	PositionConfigs       map[string]*PositionConfig
 	ActivePosition        string
@@ -46,6 +52,13 @@ type PositionConfig struct {
 	ActiveAirports  map[string]interface{}
 	DisplayRoot     *DisplayNode
 	SplitLineWidth  int32
+
+	VatsimCallsign        string
+	VatsimFacility        Facility
+	PrimaryRadarCenter    string
+	SecondaryRadarCenters [3]string
+	RadarRange            int32
+	PrimaryFrequency      Frequency
 
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
@@ -215,7 +228,10 @@ func NewPositionConfig() *PositionConfig {
 	c.ActiveAirports = make(map[string]interface{})
 	if world != nil && world.defaultAirport != "" {
 		c.ActiveAirports[world.defaultAirport] = nil
+		c.PrimaryRadarCenter = world.defaultAirport
 	}
+	c.RadarRange = 20
+
 	c.DisplayRoot = &DisplayNode{Pane: NewRadarScopePane("Main Scope")}
 	c.SplitLineWidth = 4
 	c.ColorSchemeName = "Dark"
@@ -247,6 +263,14 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 
 func (c *PositionConfig) DrawUI() {
 	c.ActiveAirports = drawAirportSelector(c.ActiveAirports, "Active airports")
+
+	imgui.InputTextV("Primary radar center", &c.PrimaryRadarCenter, imgui.InputTextFlagsCharsUppercase, nil)
+	imgui.Text("Secondary radar centers")
+	for i := range c.SecondaryRadarCenters {
+		imgui.SameLine()
+		imgui.InputTextV(fmt.Sprintf("##secondary%d", i), &c.SecondaryRadarCenters[i], imgui.InputTextFlagsCharsUppercase, nil)
+	}
+	imgui.InputIntV("Radar range", &c.RadarRange, 5, 25, 0 /* flags */)
 
 	imgui.SliderInt("Split line width", &c.SplitLineWidth, 1, 10)
 	if imgui.BeginCombo("Color scheme", c.ColorSchemeName) {

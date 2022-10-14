@@ -286,6 +286,36 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		imgui.End()
 	}
 
+	if ui.showRadioSettings {
+		imgui.BeginV("Radio Settings", &ui.showRadioSettings, imgui.WindowFlagsAlwaysAutoResize)
+
+		callsign := world.server.Callsign()
+		var mypos *Position
+		if controller := world.controllers[callsign]; controller != nil {
+			mypos = controller.position
+		}
+		freq := ""
+		if mypos != nil {
+			freq = fmt.Sprintf("%s: %s", mypos.frequency, mypos.name)
+		}
+		if imgui.BeginCombo("Frequency", freq) {
+			cs := strings.Split(callsign, "_")
+			callsign := cs[0] + "_" + cs[len(cs)-1] // simplify e.g. JFK_1_TWR, etc.
+			for i := range world.positions[callsign] {
+				pos := &world.positions[callsign][i]
+				name := fmt.Sprintf("%s: %s", pos.frequency, pos.name)
+				if imgui.SelectableV(name, pos == mypos, 0, imgui.Vec2{}) {
+					world.controllers[world.server.Callsign()].position = pos
+				}
+			}
+			imgui.EndCombo()
+		}
+
+		imgui.Checkbox("Radio primed", &world.radioPrimed)
+
+		imgui.End()
+	}
+
 	if ui.showColorEditor {
 		imgui.BeginV("Color Editor: "+positionConfig.ColorSchemeName, &ui.showColorEditor,
 			imgui.WindowFlagsAlwaysAutoResize)

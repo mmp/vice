@@ -89,6 +89,8 @@ type World struct {
 	// From the position file
 	positions map[string][]Position // map key is e.g. JFK_TWR
 
+	radioPrimed bool
+
 	server           ControlServer
 	sectorFileColors map[string]RGB
 
@@ -491,7 +493,7 @@ func (w *World) ConnectVATSIM(address string) error {
 	if w.server != nil {
 		return fmt.Errorf("Already connected")
 	}
-	s, err := NewVATSIMServer("CALLSIGN", FacilityOBS, nil, w, address)
+	s, err := NewVATSIMServer(address, w)
 	if err != nil {
 		return err
 	}
@@ -1267,9 +1269,19 @@ func (w *World) TextMessageReceived(sender string, m TextMessage) {
 func (w *World) MonitoredFrequencies(frequencies []Frequency) []Frequency {
 	var monitored []Frequency
 	for _, f := range frequencies {
-		monitored = append(monitored, f)
+		// For now it's just the primed frequency...
+		if w.radioPrimed && f == positionConfig.PrimaryFrequency {
+			monitored = append(monitored, f)
+		}
 	}
 	return monitored
+}
+
+func (w *World) PrimaryFrequency() Frequency {
+	if !w.radioPrimed {
+		return Frequency(0)
+	}
+	return positionConfig.PrimaryFrequency
 }
 
 func (w *World) Disconnect() error {
@@ -1284,6 +1296,7 @@ func (w *World) Disconnect() error {
 	w.controllers = make(map[string]*Controller)
 	w.metar = make(map[string]METAR)
 	w.atis = make(map[string]string)
+	w.radioPrimed = false
 
 	w.server = nil
 
@@ -1335,39 +1348,42 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 		return ErrNoAircraftForCallsign
 	} else if ac.flightPlan.rules != IFR {
 		return errors.New("non-IFR squawk codes must be set manually")
-	} else if w.user.position == nil {
-		return errors.New("Must be signed in to a control position")
 	} else {
-		pos := w.user.position
-		if pos.lowSquawk == pos.highSquawk {
-			return errors.New("Current position has not been assigned a squawk code range")
-		}
+		if c, ok := w.controllers[w.server.Callsign()]; !ok {
+			lg.Errorf("%s: no Controller for me?", w.server.Callsign())
+			return errors.New("Must be signed in to a control position")
+		} else {
+			pos := c.position
+			if pos.lowSquawk == pos.highSquawk {
+				return errors.New("Current position has not been assigned a squawk code range")
+			}
 
-		squawkUnused := func(sq Squawk) bool {
-			for _, ac := range w.aircraft {
-				if ac.assignedSquawk == sq {
-					return false
+			squawkUnused := func(sq Squawk) bool {
+				for _, ac := range w.aircraft {
+					if ac.assignedSquawk == sq {
+						return false
+					}
+				}
+				return true
+			}
+
+			// Start at a random point in the range and then go linearly from
+			// there.
+			n := int(pos.highSquawk - pos.lowSquawk)
+			offset := rand.Int() % n
+			for i := 0; i < n; i++ {
+				sq := pos.lowSquawk + Squawk((i+offset)%n)
+				if squawkUnused(sq) {
+					ac.assignedSquawk = sq
+					w.server.SetSquawk(callsign, sq)
+
+					w.changes.modifiedAircraft[ac] = ac
+					return nil
 				}
 			}
-			return true
+			return fmt.Errorf("No free squawk codes between %s and %s(!)",
+				pos.lowSquawk, pos.highSquawk)
 		}
-
-		// Start at a random point in the range and then go linearly from
-		// there.
-		n := int(pos.highSquawk - pos.lowSquawk)
-		offset := rand.Int() % n
-		for i := 0; i < n; i++ {
-			sq := pos.lowSquawk + Squawk((i+offset)%n)
-			if squawkUnused(sq) {
-				ac.assignedSquawk = sq
-				w.server.SetSquawk(callsign, sq)
-
-				w.changes.modifiedAircraft[ac] = ac
-				return nil
-			}
-		}
-		return fmt.Errorf("No free squawk codes between %s and %s(!)",
-			pos.lowSquawk, pos.highSquawk)
 	}
 }
 

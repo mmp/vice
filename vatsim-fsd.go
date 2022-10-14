@@ -67,10 +67,22 @@ type VATSIMServer struct {
 	timeRateMultiplier      float32
 }
 
-func NewVATSIMServer(callsign string, facility Facility, position *Position,
-	client ControlClient, address string) (*VATSIMServer, error) {
-	v := &VATSIMServer{callsign: callsign, client: client}
+func NewVATSIMServer(address string, client ControlClient) (*VATSIMServer, error) {
+	v := &VATSIMServer{
+		callsign: positionConfig.VatsimCallsign,
+		client:   client}
 	v.messageChan = make(chan VATSIMMessage, 4096)
+	v.timeRateMultiplier = 1
+
+	loc, _ := world.Locate(positionConfig.PrimaryRadarCenter)
+	client.ControllerAdded(Controller{
+		callsign:   positionConfig.VatsimCallsign,
+		name:       globalConfig.VatsimName,
+		cid:        globalConfig.VatsimCID,
+		rating:     globalConfig.VatsimRating,
+		scopeRange: int(positionConfig.RadarRange),
+		facility:   positionConfig.VatsimFacility,
+		location:   loc})
 
 	if !strings.ContainsAny(address, ":") {
 		address += ":6809"
