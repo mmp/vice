@@ -162,15 +162,13 @@ func ParseSquawk(s string) (Squawk, error) {
 }
 
 type Aircraft struct {
-	scratchpad         string
-	assignedSquawk     Squawk // from ATC
-	squawk             Squawk // actually squawking
-	mode               TransponderMode
-	tempAltitude       int
-	voiceCapability    VoiceCapability
-	flightPlan         FlightPlan
-	trackingController string
-	hoController       string // waiting for accept
+	scratchpad      string
+	assignedSquawk  Squawk // from ATC
+	squawk          Squawk // actually squawking
+	mode            TransponderMode
+	tempAltitude    int
+	voiceCapability VoiceCapability
+	flightPlan      FlightPlan
 
 	tracks    [10]RadarTrack
 	firstSeen time.Time

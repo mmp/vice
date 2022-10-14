@@ -1152,23 +1152,15 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 		rs.linesDrawBuilder.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), color)
 		rs.linesDrawBuilder.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), color)
 		rs.linesDrawBuilder.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), color)
-	} else {
-		if ac.trackingController != "" {
-			if controller, ok := world.controllers[ac.trackingController]; !ok {
-				// This happens briefly during handoffs...
-				//lg.Printf("%s: a/c is tracked by %s but world has never heard of that controller?!",
-				//ac.Callsign(), ac.trackingController)
-			} else if controller.position == nil {
-				// This seems to correspond to being unprimed.
-				//lg.Printf("%s: nil Position for tracking controller?", ac.trackingController)
-			} else {
-				ch := controller.position.scope
-
-				pw := windowFromLatLongP(p)
-				td.AddTextCentered(ch, pw, TextStyle{font: rs.datablockFont, color: color})
-				return
-			}
+	} else if tc, ok := world.trackingController[ac.Callsign()]; ok {
+		ch := "?"
+		if controller, ok := world.controllers[tc]; ok && controller.position != nil {
+			ch = controller.position.scope
 		}
+		pw := windowFromLatLongP(p)
+		td.AddTextCentered(ch, pw, TextStyle{font: rs.datablockFont, color: color})
+		return
+	} else {
 		// diagonals
 		diagPx := px * 0.707107 /* 1/sqrt(2) */
 		rs.linesDrawBuilder.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), color)
@@ -1512,8 +1504,12 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 		return cs.SelectedDataBlock
 	}
 
-	if ac.trackingController == world.user.callsign {
-		if ac.hoController != "" {
+	callsign := ac.Callsign()
+	if tc, ok := world.trackingController[callsign]; ok && tc == world.server.Callsign() {
+		if _, ok := world.inboundHandoff[callsign]; ok {
+			return cs.HandingOffDataBlock
+		}
+		if _, ok := world.outboundHandoff[callsign]; ok {
 			return cs.HandingOffDataBlock
 		}
 		return cs.TrackedDataBlock

@@ -32,13 +32,19 @@ type World struct {
 	metar       map[string]METAR
 	atis        map[string]string
 
-	lastAircraftUpdate map[*Aircraft]time.Time
+	// Map from callsign to the controller currently tracking the aircraft (if any)
+	trackingController map[string]string
+	// Ones that we are tracking but have offered to another: callsign->dest. controller
+	outboundHandoff map[string]string
+	// Ones that we are tracking but have offered to another: callsign->offering controller
+	inboundHandoff map[string]string
 
 	user struct {
 		callsign string
 		facility Facility
 		position *Position // may be nil (e.g., OBS)
 	}
+	lastAircraftUpdate map[*Aircraft]time.Time
 
 	// From the FAA (et al.) databases
 	FAA struct {
@@ -223,6 +229,9 @@ func NewWorld() *World {
 	w.atis = make(map[string]string)
 	w.users = make(map[string]User)
 	w.lastAircraftUpdate = make(map[*Aircraft]time.Time)
+	w.trackingController = make(map[string]string)
+	w.outboundHandoff = make(map[string]string)
+	w.inboundHandoff = make(map[string]string)
 
 	w.changes = NewWorldUpdates()
 
@@ -558,6 +567,10 @@ func (w *World) Update() *WorldUpdates {
 			}
 			w.aircraft = make(map[string]*Aircraft)
 			w.lastAircraftUpdate = make(map[*Aircraft]time.Time)
+			w.trackingController = make(map[string]string)
+			w.outboundHandoff = make(map[string]string)
+			w.inboundHandoff = make(map[string]string)
+
 			return updates
 		} else {
 			return nil
@@ -571,6 +584,9 @@ func (w *World) Update() *WorldUpdates {
 	for callsign, ac := range w.aircraft {
 		if now.Sub(w.lastAircraftUpdate[ac]).Minutes() > 30. {
 			delete(w.aircraft, callsign)
+			delete(w.trackingController, callsign)
+			delete(w.outboundHandoff, callsign)
+			delete(w.inboundHandoff, callsign)
 			delete(w.lastAircraftUpdate, ac)
 			delete(w.changes.addedAircraft, ac)    // just in case
 			delete(w.changes.modifiedAircraft, ac) // just in case
@@ -1166,11 +1182,11 @@ func (w *World) TrackInitiated(callsign string, controller string) {
 		w.changes.modifiedAircraft[ac] = ac
 	}
 
-	if ac.trackingController != "" {
+	if tc, ok := w.trackingController[callsign]; ok && tc != controller {
 		lg.Printf("%s: %s is tracking controller but %s initiated track?", callsign,
-			ac.trackingController, controller)
+			tc, controller)
 	}
-	ac.trackingController = controller
+	w.trackingController[callsign] = controller
 }
 
 func (w *World) TrackDropped(callsign string, controller string) {
@@ -1181,16 +1197,15 @@ func (w *World) TrackDropped(callsign string, controller string) {
 		w.changes.modifiedAircraft[ac] = ac
 	}
 
-	if ac.trackingController != controller {
-		// This fires a bunch, with trackingController == ""...
-		//lg.Printf("%s: %s dropped track but tracking controller is %s?",
-		//callsign, controller, ac.trackingController)
+	if tc, ok := w.trackingController[callsign]; ok && tc != controller {
+		lg.Printf("%s: %s dropped track but tracking controller is %s?",
+			callsign, controller, tc)
 	}
-	ac.trackingController = ""
+	delete(w.trackingController, callsign)
 }
 
-func (w *World) PointOutReceived(callsign string, fromController string, toController string) {
-	lg.Printf("%s: point out from %s to %s", callsign, fromController, toController)
+func (w *World) PointOutReceived(callsign string, controller string) {
+	lg.Printf("%s: point out from %s", callsign, controller)
 
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
@@ -1199,14 +1214,12 @@ func (w *World) PointOutReceived(callsign string, fromController string, toContr
 		w.changes.modifiedAircraft[ac] = ac
 	}
 
-	if toController == w.user.callsign {
-		globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
-	}
+	globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
 
 	// TODO
 }
 
-func (w *World) HandoffRequested(callsign string, from string, to string) {
+func (w *World) HandoffRequested(callsign string, controller string, to string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
 		w.changes.addedAircraft[ac] = ac
@@ -1214,21 +1227,15 @@ func (w *World) HandoffRequested(callsign string, from string, to string) {
 		w.changes.modifiedAircraft[ac] = ac
 	}
 
-	if ac.trackingController != from {
+	if tc, ok := world.trackingController[callsign]; !ok || tc != controller {
 		// But allow it anyway...
-		lg.Printf("%s offering h/o of %s to %s but doesn't control the a/c?",
-			to, callsign, from)
-		ac.trackingController = from
-	}
-	if ac.hoController != "" {
-		lg.Printf("%s: handoff has already been offered to %s", callsign, ac.hoController)
+		lg.Printf("%s offering h/o of %s but doesn't control the a/c?",
+			controller, callsign)
 	}
 
-	ac.hoController = to
+	world.inboundHandoff[callsign] = controller
 
-	if to == w.user.callsign {
-		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
-	}
+	globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
 }
 
 // Note that this is only called when other controllers accept handoffs
@@ -1240,24 +1247,15 @@ func (w *World) HandoffAccepted(callsign string, from string, to string) {
 		w.changes.modifiedAircraft[ac] = ac
 	}
 
-	if ac.hoController != from {
-		// This fires a lot, generally with hoController == ""
-		//lg.Printf("%s: %s is recorded as h/o controller but it was accepted by %s from %s",
-		// callsign, ac.hoController, to, from)
-	}
-
-	if ac.hoController == w.user.callsign {
-		// from user
+	if tc, ok := w.trackingController[callsign]; !ok || tc != from {
+		lg.Printf("%s: %s is tracking but h/o accepted from %s to %s?", callsign, tc, from, to)
+	} else if from == w.server.Callsign() {
+		// from us!
 		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
+		delete(w.outboundHandoff, callsign)
 	}
 
-	ac.trackingController = to
-	ac.hoController = ""
-}
-
-func (w *World) HandoffRejected(callsign string, fromController string, toController string) {
-	// TODO
-	globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
+	w.trackingController[callsign] = to
 }
 
 func (w *World) TextMessageReceived(sender string, m TextMessage) {
@@ -1491,13 +1489,14 @@ func (w *World) InitiateTrack(callsign string) error {
 	} else {
 		// ??? Or should we always go for it, send the message, and let the
 		// server tell us if we're unable?
-		if ac.trackingController != "" {
+		if _, ok := w.trackingController[callsign]; ok {
 			return ErrOtherControllerHasTrack
 		}
-		ac.trackingController = w.user.callsign
-		w.server.InitiateTrack(callsign)
 
+		w.trackingController[callsign] = w.server.Callsign()
 		w.changes.modifiedAircraft[ac] = ac
+
+		w.server.InitiateTrack(callsign)
 		return nil
 	}
 }
@@ -1506,16 +1505,14 @@ func (w *World) Handoff(callsign string, controller string) error {
 	if ac := w.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		if ac.trackingController != w.user.callsign {
+		if tc, ok := w.trackingController[callsign]; !ok || tc != w.server.Callsign() {
 			return ErrNotTrackedByMe
 		}
-		if ac.hoController != "" {
-			// TODO: do we need to cancel handoff request first?
-		}
-		ac.hoController = controller
 		w.server.Handoff(callsign, controller)
 
+		w.outboundHandoff[callsign] = controller
 		w.changes.modifiedAircraft[ac] = ac
+
 		return nil
 	}
 }
@@ -1524,14 +1521,14 @@ func (w *World) AcceptHandoff(callsign string) error {
 	if ac := w.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		if ac.hoController != w.user.callsign {
+		if _, ok := w.inboundHandoff[callsign]; !ok {
 			return ErrNotBeingHandedOffToMe
 		}
-		ac.hoController = ""
-		ac.trackingController = w.user.callsign
-		w.server.AcceptHandoff(callsign)
-
+		delete(w.inboundHandoff, callsign)
+		w.trackingController[callsign] = w.server.Callsign()
 		w.changes.modifiedAircraft[ac] = ac
+
+		w.server.AcceptHandoff(callsign)
 		return nil
 	}
 }
@@ -1540,10 +1537,10 @@ func (w *World) RejectHandoff(callsign string) error {
 	if ac := w.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		if ac.hoController != w.user.callsign {
+		if _, ok := w.inboundHandoff[callsign]; !ok {
 			return ErrNotBeingHandedOffToMe
 		}
-		ac.hoController = ""
+		delete(w.inboundHandoff, callsign)
 		w.server.RejectHandoff(callsign)
 
 		w.changes.modifiedAircraft[ac] = ac
@@ -1555,13 +1552,12 @@ func (w *World) DropTrack(callsign string) error {
 	if ac := w.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		if ac.trackingController != w.user.callsign {
+		if tc, ok := w.trackingController[callsign]; !ok || tc != w.server.Callsign() {
 			return ErrNotTrackedByMe
 		}
-		ac.trackingController = ""
-		w.server.DropTrack(callsign)
-
+		delete(w.trackingController, callsign)
 		w.changes.modifiedAircraft[ac] = ac
+		w.server.DropTrack(callsign)
 		return nil
 	}
 }

@@ -1742,11 +1742,14 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 		if tel := ac.flightPlan.Telephony(); tel != "" {
 			result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
 		}
-		if ac.trackingController != "" || ac.hoController != "" {
-			result += fmt.Sprintf("\n%sTracked by: %s", indstr, ac.trackingController)
-			if ac.hoController != "" {
-				result += fmt.Sprintf(" Handing off to: %s", ac.hoController)
-			}
+		if c, ok := world.trackingController[ac.Callsign()]; ok {
+			result += fmt.Sprintf("\n%sTracked by: %s", indstr, c)
+		}
+		if c, ok := world.inboundHandoff[ac.Callsign()]; ok {
+			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, c)
+		}
+		if c, ok := world.outboundHandoff[ac.Callsign()]; ok {
+			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, c)
 		}
 		if ac.squawk != ac.assignedSquawk {
 			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.squawk)

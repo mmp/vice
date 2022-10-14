@@ -241,6 +241,10 @@ func (v *VATSIMServer) PointOut(callsign string, controller string) {
 func (v *VATSIMServer) SendTextMessage(m TextMessage) {
 }
 
+func (v *VATSIMServer) Callsign() string {
+	return v.callsign
+}
+
 func (v *VATSIMServer) Disconnect() {
 	// Is this legit? (With a goroutine using it concurrently?) It
 	//v.conn.Close()
@@ -877,9 +881,8 @@ func (v *VATSIMServer) handlePC(sender string, args []string) error {
 		if len(args) < 4 {
 			return MalformedMessageError{"Insufficient number of arguments"}
 		}
-		to := args[1]
 		callsign := args[3]
-		v.client.PointOutReceived(callsign, sender, to)
+		v.client.PointOutReceived(callsign, sender)
 		return nil
 
 	case "SC":
