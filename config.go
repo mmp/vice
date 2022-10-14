@@ -246,7 +246,7 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 }
 
 func (c *PositionConfig) DrawUI() {
-	c.ActiveAirports = drawAirportSelector(c.ActiveAirports, "Active Airports")
+	c.ActiveAirports = drawAirportSelector(c.ActiveAirports, "Active airports")
 
 	imgui.SliderInt("Split line width", &c.SplitLineWidth, 1, 10)
 	if imgui.BeginCombo("Color scheme", c.ColorSchemeName) {

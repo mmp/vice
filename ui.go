@@ -445,15 +445,6 @@ func (*FlightRadarConnectionConfiguration) Connect(w *World) error {
 
 type VATSIMConnectionConfiguration struct {
 	address string
-	/*
-		callsign string
-		position *Position
-
-		// FIXME: these aren't connection specific...
-		facility Facility
-		CID      string
-		password string
-	*/
 }
 
 func (v *VATSIMConnectionConfiguration) Initialize() {
@@ -464,39 +455,7 @@ func (v *VATSIMConnectionConfiguration) Initialize() {
 
 func (v *VATSIMConnectionConfiguration) DrawUI() bool {
 	flags := imgui.InputTextFlagsEnterReturnsTrue
-	enter := imgui.InputTextV("Address", &v.address, flags, nil)
-	/*
-		enter = imgui.InputTextV("CID", &v.CID, flags, nil) || enter
-		enter = imgui.InputTextV("Password", &v.password, flags|imgui.InputTextFlagsPassword, nil) || enter
-		enter = imgui.InputTextV("Callsign", &v.callsign, flags, nil) || enter
-
-		freq := "(unset)"
-		if v.position != nil {
-			freq = fmt.Sprintf("%s: %s", v.position.frequency, v.position.name)
-		}
-		if imgui.BeginCombo("Frequency", freq) {
-			cs := strings.Split(v.callsign, "_")
-			callsign := cs[0] + "_" + cs[len(cs)-1] // simplify e.g. JFK_1_TWR, etc.
-			for i := range world.positions[callsign] {
-				pos := &world.positions[callsign][i]
-				name := fmt.Sprintf("%s: %s", pos.frequency, pos.name)
-				if imgui.SelectableV(name, pos == v.position, 0, imgui.Vec2{}) {
-					v.position = pos
-				}
-			}
-			imgui.EndCombo()
-		}
-		if imgui.BeginCombo("Facility", v.facility.String()) {
-			for i := 0; i < FacilityUndefined; i++ {
-				name := Facility(i).String()
-				if imgui.SelectableV(name, Facility(i) == v.facility, 0, imgui.Vec2{}) {
-					v.facility = Facility(i)
-				}
-			}
-			imgui.EndCombo()
-		}
-	*/
-	return enter
+	return imgui.InputTextV("Address", &v.address, flags, nil)
 }
 
 func (v *VATSIMConnectionConfiguration) Valid() bool {

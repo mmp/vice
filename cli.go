@@ -1925,7 +1925,7 @@ func (*EchoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
 func (*EchoCommand) Run(cli *CLIPane, args []string) (string, error) {
-	return strings.Join(args[0:], " "), nil
+	return strings.Join(args, " "), nil
 }
 
 type WallopCommand struct{}

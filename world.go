@@ -488,12 +488,6 @@ func (w *World) ConnectVATSIM(address string) error {
 	}
 	w.server = s
 
-	/*
-		w.user.callsign = callsign
-		w.user.facility = facility
-		w.user.position = position
-	*/
-
 	return nil
 }
 
@@ -1584,7 +1578,6 @@ func (w *World) PointOut(callsign string, controller string) error {
 }
 
 func (w *World) SendTextMessage(m TextMessage) error {
-	// TODO
 	w.server.SendTextMessage(m)
 	return nil
 }
