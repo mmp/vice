@@ -187,7 +187,7 @@ func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platfo
 		return false
 	}
 
-	ui.saveChangedDialog = NewModalDialogBox(&YesOrNoModalClient{
+	uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
 		title: "Save current configuration?",
 		query: "Configuration has changed since the last time it was saved to disk.\nSave current configuration?",
 		ok: func() {
@@ -195,8 +195,8 @@ func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platfo
 			if err != nil {
 				ShowErrorDialog("Unable to save configuration file: %v", err)
 			}
-		}})
-	ui.saveChangedDialog.Activate()
+		}}))
+
 	return true
 }
 

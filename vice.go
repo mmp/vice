@@ -161,6 +161,7 @@ func main() {
 	// Main event / rendering loop
 	lg.Printf("Starting main loop")
 	frameIndex := 0
+	wantExit := false
 	var lastDrawTime time.Time
 	var lastDrawDisplaySize [2]float32
 	stats.startTime = time.Now()
@@ -222,9 +223,11 @@ func main() {
 		frameIndex++
 
 		if platform.ShouldStop() {
-			if world.Connected() {
-				if ui.confirmDisconnectDialog == nil {
-					ui.confirmDisconnectDialog = NewModalDialogBox(&YesOrNoModalClient{
+			if !wantExit {
+				wantExit = true
+
+				if world.Connected() {
+					uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
 						title: "Disconnect?",
 						query: "Currently connected. Ok to disconnect?",
 						ok: func() {
@@ -234,32 +237,22 @@ func main() {
 							}
 						},
 						notok: func() {
-							ui.confirmDisconnectDialog = nil
 							platform.CancelShouldStop()
+							wantExit = false
 						},
-					})
-					ui.confirmDisconnectDialog.Activate()
+					}))
 				}
-			} else {
-				if ui.saveChangedDialog != nil && !ui.saveChangedDialog.show {
-					// The user has indicated whether they want to save the
-					// config, we're disconnected, so we're done.
-					break
-				} else if ui.saveChangedDialog == nil {
-					// Grab assorted things that may have changed during this session.
-					globalConfig.ImGuiSettings = imgui.SaveIniSettingsToMemory()
-					globalConfig.InitialWindowSize = platform.WindowSize()
-					globalConfig.InitialWindowPosition = platform.WindowPosition()
 
-					// Do this while we're still running the event loop.
-					globalConfig.PromptToSaveIfChanged(renderer, platform)
+				// Grab assorted things that may have changed during this session.
+				globalConfig.ImGuiSettings = imgui.SaveIniSettingsToMemory()
+				globalConfig.InitialWindowSize = platform.WindowSize()
+				globalConfig.InitialWindowPosition = platform.WindowPosition()
 
-					if ui.saveChangedDialog == nil {
-						// The config is unchanged, we're disconnected, so
-						// we can exit.
-						break
-					}
-				}
+				// Do this while we're still running the event loop.
+				globalConfig.PromptToSaveIfChanged(renderer, platform)
+			} else if len(ui.activeModalDialogs) == 0 {
+				// good to go
+				break
 			}
 		}
 	}

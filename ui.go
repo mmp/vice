@@ -36,20 +36,12 @@ var (
 		showGeneralSettingsWindow bool
 		showColorEditor           bool
 		showSoundConfig           bool
+		showRadioSettings         bool
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
 
-		connectDialog           *ModalDialogBox
-		disconnectDialog        *ModalDialogBox
-		newConfigDialog         *ModalDialogBox
-		newFromCurrentDialog    *ModalDialogBox
-		renameDialog            *ModalDialogBox
-		deleteDialog            *ModalDialogBox
-		saveChangedDialog       *ModalDialogBox
-		errorDialog             *ModalDialogBox
-		confirmDisconnectDialog *ModalDialogBox
-		newReleaseDialog        *ModalDialogBox
+		activeModalDialogs []*ModalDialogBox
 
 		openSectorFileDialog   *FileSelectDialogBox
 		openPositionFileDialog *FileSelectDialogBox
@@ -94,17 +86,8 @@ func uiInit(renderer Renderer) {
 		lg.Errorf("Unable to create sad tower icon texture: %v", err)
 	}
 
-	ui.connectDialog = NewModalDialogBox(&ConnectModalClient{})
-	ui.disconnectDialog = NewModalDialogBox(&DisconnectModalClient{})
-
-	ui.newConfigDialog = NewModalDialogBox(&NewModalClient{isBrandNew: true})
-	ui.newFromCurrentDialog = NewModalDialogBox(&NewModalClient{isBrandNew: false})
-	ui.renameDialog = NewModalDialogBox(&RenameModalClient{})
-	ui.deleteDialog = NewModalDialogBox(&DeleteModalClient{})
-
 	if nrc := checkForNewRelease(); nrc != nil {
-		ui.newReleaseDialog = NewModalDialogBox(nrc)
-		ui.newReleaseDialog.Activate()
+		uiShowModalDialog(NewModalDialogBox(nrc))
 	}
 
 	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
@@ -145,6 +128,10 @@ func uiInit(renderer Renderer) {
 		})
 }
 
+func uiShowModalDialog(d *ModalDialogBox) {
+	ui.activeModalDialogs = append(ui.activeModalDialogs, d)
+}
+
 func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
@@ -154,26 +141,29 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	if imgui.BeginMainMenuBar() {
 		if imgui.BeginMenu("Connection") {
 			if imgui.MenuItemV("Connect...", "", false, !world.Connected()) {
-				ui.connectDialog.Activate()
+				uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}))
 			}
 			if imgui.MenuItemV("Disconnect...", "", false, world.Connected()) {
-				ui.disconnectDialog.Activate()
+				uiShowModalDialog(NewModalDialogBox(&DisconnectModalClient{}))
+			}
+			if imgui.MenuItemV("Radio...", "", false, world.Connected()) {
+				ui.showRadioSettings = true
 			}
 			imgui.EndMenu()
 		}
 
 		if imgui.BeginMenu("Configs") {
 			if imgui.MenuItem("New...") {
-				ui.newConfigDialog.Activate()
+				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: true}))
 			}
 			if imgui.MenuItem("New from current...") {
-				ui.newFromCurrentDialog.Activate()
+				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: false}))
 			}
 			if imgui.MenuItem("Rename...") {
-				ui.renameDialog.Activate()
+				uiShowModalDialog(NewModalDialogBox(&RenameModalClient{}))
 			}
 			if imgui.MenuItemV("Delete...", "", false, len(globalConfig.PositionConfigs) > 1) {
-				ui.deleteDialog.Activate()
+				uiShowModalDialog(NewModalDialogBox(&DeleteModalClient{}))
 			}
 			if imgui.MenuItem("Edit layout...") {
 				wm.showConfigEditor = true
@@ -272,24 +262,14 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		}
 	}
 
-	ui.connectDialog.Draw()
-	ui.disconnectDialog.Draw()
-	ui.newConfigDialog.Draw()
-	ui.newFromCurrentDialog.Draw()
-	ui.renameDialog.Draw()
-	ui.deleteDialog.Draw()
-
-	if ui.newReleaseDialog != nil {
-		ui.newReleaseDialog.Draw()
-	}
-	if ui.errorDialog != nil {
-		ui.errorDialog.Draw()
-	}
-	if ui.saveChangedDialog != nil {
-		ui.saveChangedDialog.Draw()
-	}
-	if ui.confirmDisconnectDialog != nil {
-		ui.confirmDisconnectDialog.Draw()
+	for len(ui.activeModalDialogs) > 0 {
+		d := ui.activeModalDialogs[0]
+		if !d.closed {
+			d.Draw()
+			break
+		} else {
+			ui.activeModalDialogs = ui.activeModalDialogs[1:]
+		}
 	}
 
 	ui.openSectorFileDialog.Draw()
@@ -369,8 +349,8 @@ func drawAirportSelector(airports map[string]interface{}, title string) map[stri
 ///////////////////////////////////////////////////////////////////////////
 
 type ModalDialogBox struct {
-	show, isOpen bool
-	client       ModalDialogClient
+	closed, isOpen bool
+	client         ModalDialogClient
 }
 
 type ModalDialogButton struct {
@@ -390,13 +370,8 @@ func NewModalDialogBox(c ModalDialogClient) *ModalDialogBox {
 	return &ModalDialogBox{client: c}
 }
 
-func (m *ModalDialogBox) Activate() {
-	m.show = true
-	m.isOpen = false
-}
-
 func (m *ModalDialogBox) Draw() {
-	if !m.show {
+	if m.closed {
 		return
 	}
 
@@ -437,7 +412,7 @@ func (m *ModalDialogBox) Draw() {
 			if (imgui.Button(b.text) || i == selIndex) && !b.disabled {
 				if b.action == nil || b.action() {
 					imgui.CloseCurrentPopup()
-					m.show = false
+					m.closed = true
 					m.isOpen = false
 				}
 			}
@@ -1271,8 +1246,8 @@ func (e *ErrorModalClient) Draw() int {
 }
 
 func ShowErrorDialog(s string, args ...interface{}) {
-	ui.errorDialog = NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
-	ui.errorDialog.Activate()
+	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
+	uiShowModalDialog(d)
 
 	lg.ErrorfUp1(s, args...)
 }
@@ -1281,8 +1256,8 @@ func ShowFatalErrorDialog(s string, args ...interface{}) {
 	lg.ErrorfUp1(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
-	d.Activate()
-	for d.show {
+
+	for !d.closed {
 		platform.ProcessEvents()
 		platform.NewFrame()
 		imgui.NewFrame()
