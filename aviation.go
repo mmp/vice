@@ -15,6 +15,7 @@ import (
 type METAR struct {
 	airport   string
 	time      string
+	auto      bool
 	wind      string
 	weather   string
 	altimeter string
@@ -22,7 +23,11 @@ type METAR struct {
 }
 
 func (m METAR) String() string {
-	return strings.Join([]string{m.airport, m.time, m.wind, m.weather, m.altimeter, m.rmk}, " ")
+	auto := ""
+	if m.auto {
+		auto = "AUTO"
+	}
+	return strings.Join([]string{m.airport, m.time, auto, m.wind, m.weather, m.altimeter, m.rmk}, " ")
 }
 
 type NetworkRating int

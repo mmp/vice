@@ -448,28 +448,45 @@ func (v *VATSIMServer) handleAR(sender string, args []string) error {
 	if len(fields) < 3 {
 		return MalformedMessageError{"Expected >= 3 fields"}
 	}
+	i := 0
+	next := func() string {
+		if i == len(fields) {
+			return ""
+		}
+		s := fields[i]
+		i++
+		return s
+	}
 
-	airport := fields[0]
-	m := METAR{airport: airport, time: fields[1], wind: fields[2]}
-	// slurp up the weather
-	i := 3
-	for ; i < len(fields); i++ {
-		if fields[i][0] == 'A' || fields[i][0] == 'Q' {
+	m := METAR{airport: next(), time: next(), wind: next()}
+	if m.wind == "AUTO" {
+		m.auto = true
+		m.wind = next()
+	}
+
+	for {
+		s := next()
+		if s == "" {
 			break
 		}
-		m.weather += fields[i] + " "
+		if s[0] == 'A' || s[0] == 'Q' {
+			m.altimeter = s
+			break
+		}
+		m.weather += s + " "
 	}
 	m.weather = strings.TrimRight(m.weather, " ")
-	m.altimeter = fields[i]
-	i++
-	if fields[i] != "RMK" {
+
+	if s := next(); s != "RMK" {
 		// TODO: improve the METAR parser...
-		lg.Errorf("Expecting RMK where %s is in METAR \"%s\"", fields[i], args[2])
+		lg.Errorf("Expecting RMK where %s is in METAR \"%s\"", s, args[2])
+	} else {
+		for s != "" {
+			s = next()
+			m.rmk += s + " "
+		}
+		m.rmk = strings.TrimRight(m.rmk, " ")
 	}
-	for ; i < len(fields); i++ {
-		m.rmk += fields[i] + " "
-	}
-	m.rmk = strings.TrimRight(m.rmk, " ")
 
 	v.client.METARReceived(m)
 	return nil

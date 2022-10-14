@@ -261,7 +261,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				str.WriteString(fmt.Sprintf("  %4s ", m.airport))
 				flush()
 				style.color = cs.TextHighlight
-				str.WriteString(fmt.Sprintf("%s %s ", m.altimeter, m.wind))
+				str.WriteString(fmt.Sprintf("%s ", m.altimeter))
+				flush()
+				if m.auto {
+					str.WriteString("AUTO ")
+					flush()
+				}
+				style.color = cs.TextHighlight
+				str.WriteString(fmt.Sprintf("%s ", m.wind))
 				flush()
 				str.WriteString(fmt.Sprintf("%s\n", m.weather))
 			}
