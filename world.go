@@ -1267,25 +1267,17 @@ func (w *World) HandoffRejected(callsign string, fromController string, toContro
 }
 
 func (w *World) TextMessageReceived(sender string, m TextMessage) {
-	switch m.messageType {
-	case TextBroadcast:
-		w.changes.messages = append(w.changes.messages, m)
-
-	case TextWallop:
-		// Ignore
-
-	case TextATC:
-		w.changes.messages = append(w.changes.messages, m)
-
-	case TextFrequency:
-		// TODO: allow monitoring multiple frequencies
-		if w.user.position != nil && w.user.position.frequency == m.frequency {
-			w.changes.messages = append(w.changes.messages, m)
-		}
-
-	case TextPrivate:
+	if len(w.MonitoredFrequencies(m.frequencies)) > 0 {
 		w.changes.messages = append(w.changes.messages, m)
 	}
+}
+
+func (w *World) MonitoredFrequencies(frequencies []Frequency) []Frequency {
+	var monitored []Frequency
+	for _, f := range frequencies {
+		monitored = append(monitored, f)
+	}
+	return monitored
 }
 
 func (w *World) Disconnect() error {

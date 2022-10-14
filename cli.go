@@ -237,10 +237,24 @@ func (cli *CLIPane) ErrorReported(msg string) {
 func (cli *CLIPane) Update(updates *WorldUpdates) {
 	// Add any text/radio messages to the console
 	for _, m := range updates.messages {
-		if m.messageType == TextFrequency {
-			cli.AddConsoleEntry([]string{m.frequency.String() + ": ", m.contents},
+		switch m.messageType {
+		case TextBroadcast:
+			cli.AddConsoleEntry([]string{"[BROADCAST] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-		} else {
+		case TextWallop:
+			cli.AddConsoleEntry([]string{"[WALLOP] " + m.sender + ": ", m.contents},
+				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+		case TextATC:
+			cli.AddConsoleEntry([]string{"[ATC] " + m.sender + ": ", m.contents},
+				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+		case TextFrequency:
+			fm := world.MonitoredFrequencies(m.frequencies)
+			if len(fm) > 0 {
+				freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
+				cli.AddConsoleEntry([]string{freq + ": ", m.contents},
+					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			}
+		case TextPrivate:
 			cli.AddConsoleEntry([]string{m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 		}

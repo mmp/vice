@@ -960,12 +960,13 @@ func (v *VATSIMServer) handleTM(sender string, args []string) error {
 	} else if freq == "@49999" {
 		tm.messageType = TextATC
 	} else if freq[0] == '@' {
-		// TODO: apparently the frequency can come in like @33725&@33720,
-		// for multiple frequencies?
 		tm.messageType = TextFrequency
-		var err error
-		if tm.frequency, err = parseFrequency(freq[1:]); err != nil {
-			return err
+		for _, f := range strings.Split(freq, "&") {
+			if tf, err := parseFrequency(f[1:]); err != nil {
+				return err
+			} else {
+				tm.frequencies = append(tm.frequencies, tf)
+			}
 		}
 	} else {
 		tm.messageType = TextPrivate
