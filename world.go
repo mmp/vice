@@ -523,19 +523,19 @@ func (w *World) Locate(name string) (Point2LL, bool) {
 	name = strings.ToUpper(name)
 	// We'll start with the sector file and then move on to the FAA
 	// database if we don't find it.
-	if pos, ok := world.VORs[name]; ok {
+	if pos, ok := w.VORs[name]; ok {
 		return pos, ok
-	} else if pos, ok := world.NDBs[name]; ok {
+	} else if pos, ok := w.NDBs[name]; ok {
 		return pos, ok
-	} else if pos, ok := world.fixes[name]; ok {
+	} else if pos, ok := w.fixes[name]; ok {
 		return pos, ok
-	} else if pos, ok := world.airports[name]; ok {
+	} else if pos, ok := w.airports[name]; ok {
 		return pos, ok
-	} else if n, ok := world.FAA.navaids[name]; ok {
+	} else if n, ok := w.FAA.navaids[name]; ok {
 		return n.location, ok
-	} else if f, ok := world.FAA.fixes[name]; ok {
+	} else if f, ok := w.FAA.fixes[name]; ok {
 		return f.location, ok
-	} else if ap, ok := world.FAA.airports[name]; ok {
+	} else if ap, ok := w.FAA.airports[name]; ok {
 		return ap.location, ok
 	} else {
 		return Point2LL{}, false
@@ -995,9 +995,9 @@ func (w *World) PilotAdded(pilot Pilot) {
 	/*
 		ac, created := w.GetOrCreateAircraft(pilot.callsign)
 		if created {
-			w.changes.addedAircraft[ac] = ac
+			w.changes.addedAircraft[ac] = nil
 		} else {
-			w.changes.modifiedAircraft[ac] = ac
+			w.changes.modifiedAircraft[ac] = nil
 		}
 	*/
 }
@@ -1085,9 +1085,9 @@ func (w *World) CancelRequestRelief(callsign string) {
 func (w *World) SquawkAssigned(callsign string, squawk Squawk) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.assignedSquawk = squawk
@@ -1096,9 +1096,9 @@ func (w *World) SquawkAssigned(callsign string, squawk Squawk) {
 func (w *World) FlightPlanReceived(fp FlightPlan) {
 	ac, created := w.GetOrCreateAircraft(fp.callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.flightPlan = fp
@@ -1114,9 +1114,9 @@ func (w *World) FlightStripPushed(from string, to string, fs FlightStrip) {
 func (w *World) PositionReceived(callsign string, pos RadarTrack, squawk Squawk, mode TransponderMode) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.squawk = squawk
@@ -1132,9 +1132,9 @@ func (w *World) PositionReceived(callsign string, pos RadarTrack, squawk Squawk,
 func (w *World) AltitudeAssigned(callsign string, altitude int) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.flightPlan.altitude = altitude
@@ -1143,9 +1143,9 @@ func (w *World) AltitudeAssigned(callsign string, altitude int) {
 func (w *World) TemporaryAltitudeAssigned(callsign string, altitude int) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.tempAltitude = altitude
@@ -1154,9 +1154,9 @@ func (w *World) TemporaryAltitudeAssigned(callsign string, altitude int) {
 func (w *World) VoiceSet(callsign string, vc VoiceCapability) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.voiceCapability = vc
@@ -1165,9 +1165,9 @@ func (w *World) VoiceSet(callsign string, vc VoiceCapability) {
 func (w *World) ScratchpadSet(callsign string, contents string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	ac.scratchpad = contents
@@ -1176,9 +1176,9 @@ func (w *World) ScratchpadSet(callsign string, contents string) {
 func (w *World) TrackInitiated(callsign string, controller string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	if tc, ok := w.trackingController[callsign]; ok && tc != controller {
@@ -1191,9 +1191,9 @@ func (w *World) TrackInitiated(callsign string, controller string) {
 func (w *World) TrackDropped(callsign string, controller string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	if tc, ok := w.trackingController[callsign]; ok && tc != controller {
@@ -1208,9 +1208,9 @@ func (w *World) PointOutReceived(callsign string, controller string) {
 
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
@@ -1221,18 +1221,18 @@ func (w *World) PointOutReceived(callsign string, controller string) {
 func (w *World) HandoffOffered(callsign string, controller string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
-	if tc, ok := world.trackingController[callsign]; !ok || tc != controller {
+	if tc, ok := w.trackingController[callsign]; !ok || tc != controller {
 		// But allow it anyway...
 		lg.Printf("%s offering h/o of %s but doesn't control the a/c?",
 			controller, callsign)
 	}
 
-	world.inboundHandoff[callsign] = controller
+	w.inboundHandoff[callsign] = controller
 
 	globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
 }
@@ -1241,9 +1241,9 @@ func (w *World) HandoffOffered(callsign string, controller string) {
 func (w *World) HandoffAccepted(callsign string, from string, to string) {
 	ac, created := w.GetOrCreateAircraft(callsign)
 	if created {
-		w.changes.addedAircraft[ac] = ac
+		w.changes.addedAircraft[ac] = nil
 	} else {
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 	}
 
 	if tc, ok := w.trackingController[callsign]; !ok || tc != from {
@@ -1335,7 +1335,7 @@ func (w *World) SetSquawk(callsign string, squawk Squawk) error {
 		ac.assignedSquawk = squawk
 		w.server.SetSquawk(callsign, squawk)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1374,7 +1374,7 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 					ac.assignedSquawk = sq
 					w.server.SetSquawk(callsign, sq)
 
-					w.changes.modifiedAircraft[ac] = ac
+					w.changes.modifiedAircraft[ac] = nil
 					return nil
 				}
 			}
@@ -1393,7 +1393,7 @@ func (w *World) SetScratchpad(callsign string, scratchpad string) error {
 		ac.scratchpad = scratchpad
 		w.server.SetScratchpad(callsign, scratchpad)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1405,7 +1405,7 @@ func (w *World) SetRoute(callsign string, route string) error {
 		ac.flightPlan.route = route
 		w.server.SetRoute(callsign, route)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1419,7 +1419,7 @@ func (w *World) SetDeparture(callsign string, airport string) error {
 		ac.flightPlan.depart = airport
 		w.server.SetDeparture(callsign, airport)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1433,7 +1433,7 @@ func (w *World) SetArrival(callsign string, airport string) error {
 		ac.flightPlan.arrive = airport
 		w.server.SetArrival(callsign, airport)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1445,7 +1445,7 @@ func (w *World) SetAltitude(callsign string, altitude int) error {
 		ac.flightPlan.altitude = altitude
 		w.server.SetAltitude(callsign, altitude)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1457,7 +1457,7 @@ func (w *World) SetTemporaryAltitude(callsign string, altitude int) error {
 		ac.tempAltitude = altitude
 		w.server.SetTemporaryAltitude(callsign, altitude)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1469,7 +1469,7 @@ func (w *World) SetAircraftType(callsign string, actype string) error {
 		ac.flightPlan.actype = actype
 		w.server.SetAircraftType(callsign, actype)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1481,7 +1481,7 @@ func (w *World) SetFlightRules(callsign string, r FlightRules) error {
 		ac.flightPlan.rules = r
 		w.server.SetFlightRules(callsign, r)
 
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		return nil
 	}
 }
@@ -1507,7 +1507,7 @@ func (w *World) InitiateTrack(callsign string) error {
 		}
 
 		w.trackingController[callsign] = w.server.Callsign()
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 
 		w.server.InitiateTrack(callsign)
 		return nil
@@ -1523,7 +1523,7 @@ func (w *World) Handoff(callsign string, controller string) error {
 		}
 
 		w.outboundHandoff[callsign] = controller
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 
 		w.server.Handoff(callsign, controller)
 		return nil
@@ -1569,7 +1569,7 @@ func (w *World) DropTrack(callsign string) error {
 			return ErrNotTrackedByMe
 		}
 		delete(w.trackingController, callsign)
-		w.changes.modifiedAircraft[ac] = ac
+		w.changes.modifiedAircraft[ac] = nil
 		w.server.DropTrack(callsign)
 		return nil
 	}
