@@ -528,6 +528,10 @@ func (ci *CLIInput) TabPrev() bool {
 }
 
 func (ci *CLIInput) tab(step int) bool {
+	if len(ci.cmd) == 0 {
+		return false
+	}
+
 	start := ci.cursor
 	pos := start
 	for {
