@@ -81,12 +81,13 @@ type VATSIMServer struct {
 
 	// Various things we need to keep track of over the course of a
 	// session.
-	aircraft    map[string]*Aircraft
-	users       map[string]*User
-	controllers map[string]*Controller
-	pilots      map[string]*Pilot
-	metar       map[string]METAR
-	atis        map[string]string
+	aircraft          map[string]*Aircraft
+	users             map[string]*User
+	controllers       map[string]*Controller
+	controllerSectors map[string]*Controller
+	pilots            map[string]*Pilot
+	metar             map[string]METAR
+	atis              map[string]string
 
 	// Map from callsign to the controller currently tracking the aircraft (if any).
 	// Note that we don't require that we have the controller in |controllers|; we
@@ -106,6 +107,7 @@ func NewVATSIMServer() *VATSIMServer {
 	return &VATSIMServer{
 		aircraft:            make(map[string]*Aircraft),
 		controllers:         make(map[string]*Controller),
+		controllerSectors:   make(map[string]*Controller),
 		metar:               make(map[string]METAR),
 		atis:                make(map[string]string),
 		users:               make(map[string]*User),
@@ -206,7 +208,10 @@ func (v *VATSIMServer) GetUser(callsign string) *User {
 }
 
 func (v *VATSIMServer) GetController(callsign string) *Controller {
+	callsign = strings.ToUpper(callsign)
 	if controller, ok := v.controllers[callsign]; ok {
+		return controller
+	} else if controller, ok := v.controllerSectors[callsign]; ok {
 		return controller
 	} else {
 		return nil
@@ -439,9 +444,10 @@ func (v *VATSIMServer) Handoff(callsign string, controller string) error {
 	} else if c := v.GetController(controller); c == nil {
 		return ErrNoController
 	} else {
-		v.outboundHandoffs[callsign] = controller
+		// Use c.callsign in case we were given a sector id...
+		v.outboundHandoffs[callsign] = c.callsign
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.Handoff(callsign, controller)
+		v.controlDelegate.Handoff(callsign, c.callsign)
 		return nil
 	}
 }
@@ -487,7 +493,8 @@ func (v *VATSIMServer) PointOut(callsign string, controller string) error {
 	} else if c := v.GetController(controller); c == nil {
 		return ErrNoController
 	} else {
-		v.controlDelegate.PointOut(callsign, controller)
+		// Use c.callsign in case we were given a sector id...
+		v.controlDelegate.PointOut(callsign, c.callsign)
 		return nil
 	}
 }
@@ -581,6 +588,7 @@ func (v *VATSIMServer) Disconnect() {
 	v.users = make(map[string]*User)
 	v.pilots = make(map[string]*Pilot)
 	v.controllers = make(map[string]*Controller)
+	v.controllerSectors = make(map[string]*Controller)
 	v.metar = make(map[string]METAR)
 	v.atis = make(map[string]string)
 	v.trackingControllers = make(map[string]string)

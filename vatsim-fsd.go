@@ -353,13 +353,24 @@ func handlePct(v *VATSIMServer, sender string, args []string) error {
 		return err
 	}
 
-	v.controllers[sender] = &Controller{
+	if ctrl, ok := v.controllers[sender]; ok {
+		if pos := ctrl.GetPosition(); pos != nil {
+			delete(v.controllerSectors, pos.sectorId)
+		}
+	}
+
+	ctrl := &Controller{
 		callsign:   sender,
 		facility:   Facility(facility),
 		frequency:  frequency,
 		scopeRange: scopeRange,
 		rating:     rating,
 		location:   latlong}
+	v.controllers[sender] = ctrl
+
+	if pos := ctrl.GetPosition(); pos != nil {
+		v.controllerSectors[pos.sectorId] = ctrl
+	}
 
 	return nil
 }
@@ -620,7 +631,13 @@ func init() {
 	}))
 
 	r(NewMessageSpec("#DA", 1, nil, func(v *VATSIMServer, sender string, args []string) error {
-		delete(v.controllers, sender)
+		if ctrl, ok := v.controllers[sender]; ok {
+			if pos := ctrl.GetPosition(); pos != nil {
+				delete(v.controllerSectors, pos.sectorId)
+			}
+			delete(v.controllers, sender)
+		}
+
 		v.trackingControllers = FilterMap(v.trackingControllers,
 			func(callsign, controller string) bool { return controller != sender })
 		v.outboundHandoffs = FilterMap(v.outboundHandoffs,
