@@ -21,29 +21,56 @@ import (
 ///////////////////////////////////////////////////////////////////////////
 // VATSIMConnection
 
+// VATSIMMessage stores a single VATSIM network message, sent or received,
+// along with the time it was generated.
 type VATSIMMessage struct {
 	Contents string
 	Sent     bool
 	Time     time.Time
 }
 
+// VATSIMConnection provides a simple abstraction for connections to the
+// VATSIM network, including capabilities for sending and receiving
+// messages.
 type VATSIMConnection interface {
+	// GetMessages returns all of the messages (if any) that have arrived
+	// from the remote server since it was last called.
 	GetMessages() []VATSIMMessage
+
+	// SendMessage sends the specified message to the remote server. It takes the
+	// sender's callsign (e.g. "JFK_TWR") as its first parameter and then one or more
+	// untyped parameters. Parameters are then converted to strings and delineated by
+	// colons.  The provided callsign is appended to the end of the first parameter.
+	//
+	// Thus, the parameters ("ABE_DEP", "$HO", "ABE_APP", "FBX901") would lead to the
+	// string "$HOABE_DEP:ABE_APP:FDX901" being sent.
 	SendMessage(callsign string, m ...interface{})
 
+	// CurrentTime returns the current time, as far as the connection is concerned.
+	// Its main use is for when a network trace is being replayed; then, it returns
+	// time with respect to the time the trace was captured.
 	CurrentTime() time.Time
+
+	// Close closes the VATSIM connection.
 	Close()
 }
 
+// VATSIMNetConnection implements the VATSIMConnection interface and handles
+// the usual case of a true network connection to VATSIM.
 type VATSIMNetConnection struct {
 	address     string
 	messageChan chan VATSIMMessage
 	conn        *net.TCPConn
 
+	// All network traffic is logged in allMessages so that it can be saved
+	// for replays or debugging.  Access to the allMessages array is protected
+	// by messagesMutex.
 	messagesMutex sync.Mutex
 	allMessages   []VATSIMMessage
 }
 
+// NewVATSIMNetConnection attempts to initiate a VATSIM connection with the
+// provided network address.
 func NewVATSIMNetConnection(address string) (*VATSIMNetConnection, error) {
 	if !strings.ContainsAny(address, ":") {
 		address += ":6809"
@@ -63,9 +90,10 @@ func NewVATSIMNetConnection(address string) (*VATSIMNetConnection, error) {
 	if c.conn, err = net.DialTCP("tcp", nil, raddr); err != nil {
 		return nil, err
 	}
-	c.conn.SetNoDelay(true)
+	c.conn.SetNoDelay(true) // traffic on a 2 µm final...
 
-	// As messages arrive, send them along the channel
+	// Receive messages in a separate goroutine and send them along the channel; this
+	// lets us block on waiting for new messages without any bother.
 	go func(c *VATSIMNetConnection) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -76,11 +104,14 @@ func NewVATSIMNetConnection(address string) (*VATSIMNetConnection, error) {
 
 		r := bufio.NewReader(c.conn)
 		for {
+			// Make sure to read an entire line's worth, up to a newline.
 			if str, err := r.ReadString('\n'); err == nil {
 				msg := VATSIMMessage{Contents: str, Sent: false, Time: time.Now()}
+				// Add the message to the log
 				c.messagesMutex.Lock()
 				c.allMessages = append(c.allMessages, msg)
 				c.messagesMutex.Unlock()
+				// And send it on the chan
 				c.messageChan <- msg
 			} else {
 				close(c.messageChan)
@@ -99,22 +130,24 @@ func (c *VATSIMNetConnection) GetMessages() []VATSIMMessage {
 		select {
 		case msg, ok := <-c.messageChan:
 			if !ok {
-				// No more messages
+				// The channel is closed.
 				return messages
 			}
 			messages = append(messages, msg)
 
 		default:
-			// Nothing more on the channel
+			// Nothing more waiting on the channel.
 			return messages
 		}
 	}
-	return messages
 }
 
 func (c *VATSIMNetConnection) SendMessage(callsign string, fields ...interface{}) {
 	msg := ""
 	for i, f := range fields {
+		// Append the string representation of |f| to the message
+		// Currently, the message fields must be strings, integers, or
+		// floats.  (That's all that's currently used.)
 		switch v := f.(type) {
 		case string:
 			msg += v
@@ -127,9 +160,11 @@ func (c *VATSIMNetConnection) SendMessage(callsign string, fields ...interface{}
 			continue
 		}
 
+		// The first field gets our callsign appended
 		if i == 0 {
 			msg += callsign
 		}
+		// And colons in between fields until the last one.
 		if i < len(fields)-1 {
 			msg += ":"
 		}
@@ -150,10 +185,14 @@ func (c *VATSIMNetConnection) SendMessage(callsign string, fields ...interface{}
 }
 
 func (c *VATSIMNetConnection) CurrentTime() time.Time {
+	// For an actual network connection, the reported current time actually
+	// is the current time.
 	return time.Now()
 }
 
 func (c *VATSIMNetConnection) Close() {
+	// Closing the connection will cause the goroutine to see an error,
+	// close the chan, and exit.
 	c.conn.Close()
 
 	if *devmode && len(c.allMessages) > 0 {
@@ -189,21 +228,33 @@ func (c *VATSIMNetConnection) Close() {
 	}
 }
 
+// VATSIMReplayConnection implements the VATSIMConnection interface for the
+// purpose of replaying a captured network connection (e.g., using vsniff
+// or VATSIMNetConnection's functionality for doing so.
 type VATSIMReplayConnection struct {
 	// Timestamp of the first message
 	streamStart time.Time
-	// Time(*) at which we started replaying the stream. (*) adjusted to account for any requested
-	// offset into the stream as well as replay rate time scaling, so this is actually the time
-	// corresponding to the beginning of the stream.
+
+	// Time(*) at which we started replaying the stream. (*) adjusted to
+	// account for any requested offset into the stream as well as replay
+	// rate time scaling, so this is actually the time corresponding to the
+	// beginning of the stream.
 	replayStart        time.Time
 	timeRateMultiplier float32
 
+	// next always stores the next undelivered message, so that we can peek
+	// at its time and see when we should send it along.
 	next VATSIMMessage
 
 	f       io.ReadCloser
 	decoder *json.Decoder
 }
 
+// NewVATSIMReplayConnection tries to create a new VATSIMReplayConnection
+// from the specified file, which should contain a JSON-formatted array of
+// VATSIMMessages.  It further takes an offset into the trace at which to
+// start, specified in seconds, as well as a time rate multiplier for
+// slowing down or speeding up the replay.
 func NewVATSIMReplayConnection(filename string, offsetSeconds int, replayRate float32) (*VATSIMReplayConnection, error) {
 	offset := -time.Duration(time.Duration(float32(offsetSeconds)/replayRate) * time.Second)
 
@@ -236,6 +287,9 @@ func (r *VATSIMReplayConnection) GetMessages() []VATSIMMessage {
 	var messages []VATSIMMessage
 
 	streamNow := r.CurrentTime() // Current time w.r.t. the stream
+
+	// As long as the next message is before the current stream time, add
+	// it to the messages array.
 	for r.next.Time.Before(streamNow) {
 		// Don't report messages that the client originally sent
 		if !r.next.Sent {
