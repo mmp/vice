@@ -79,6 +79,7 @@ type PositionConfig struct {
 	drawnRouteEndTime          time.Time
 }
 
+// Some UI state that needs  to stick around
 var (
 	selectedServer   string
 	newServerName    string
@@ -191,7 +192,7 @@ func (c *GlobalConfig) DrawUI() {
 		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
 	}
 	imgui.SameLine()
-	if imgui.Button(fmt.Sprintf("+##newServer")) {
+	if imgui.Button("+##newServer") {
 		add()
 	}
 	if !enableAdd {

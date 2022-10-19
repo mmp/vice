@@ -470,13 +470,6 @@ func (m *ModalDialogBox) Draw() {
 	}
 }
 
-type ConnectionConfiguration interface {
-	Initialize()
-	DrawUI() bool /* hit enter */
-	Valid() bool
-	Connect() error
-}
-
 type FlightRadarConnectionConfiguration struct{}
 
 func (*FlightRadarConnectionConfiguration) Initialize()  {}

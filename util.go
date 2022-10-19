@@ -31,29 +31,6 @@ func decompressZstd(s string) string {
 ///////////////////////////////////////////////////////////////////////////
 // text
 
-func detabify(s string) string {
-	var result strings.Builder
-	column := 0
-	for _, ch := range s {
-		if ch == '\t' {
-			for {
-				result.WriteRune(' ')
-				column++
-				if column%8 == 0 {
-					break
-				}
-			}
-		} else {
-			result.WriteRune(ch)
-			if ch == '\n' {
-				column = 0
-			}
-		}
-	}
-
-	return result.String()
-}
-
 func wrapText(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
 	var accum, result strings.Builder
 

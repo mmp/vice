@@ -1491,10 +1491,10 @@ func (*EditRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
-		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+		return "", ErrNoAircraftForCallsign
 	}
 	if ac.flightPlan == nil {
-		return "", fmt.Errorf("%s: no flight plan filed", callsign)
+		return "", ErrNoFlightPlan
 	}
 
 	cli.input.cmd = "route " + callsign + " "
@@ -1542,13 +1542,13 @@ func (*NYPRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	}
 }
 func (*NYPRDCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, args := getCallsign(args)
+	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
-		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+		return "", ErrNoAircraftForCallsign
 	}
 	if ac.flightPlan == nil {
-		return "", fmt.Errorf("%s: no flight plan filed", callsign)
+		return "", ErrNoFlightPlan
 	}
 
 	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
@@ -1644,13 +1644,13 @@ func (*PRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	}
 }
 func (*PRDCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, args := getCallsign(args)
+	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
-		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+		return "", ErrNoAircraftForCallsign
 	}
 	if ac.flightPlan == nil {
-		return "", fmt.Errorf("%s: no flight plan filed", callsign)
+		return "", ErrNoFlightPlan
 	}
 
 	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
@@ -1970,7 +1970,7 @@ func (*DrawRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 		}
 	}
 	if ac.flightPlan == nil {
-		return "", fmt.Errorf("%s: no flight plan filed", ac.Callsign())
+		return "", ErrNoFlightPlan
 	}
 
 	positionConfig.drawnRoute = ac.flightPlan.depart + " " + ac.flightPlan.route + " " +

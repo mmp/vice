@@ -52,8 +52,7 @@ type FlightRadarResponse struct {
 func (fr *FlightRadarServer) GetAircraft(callsign string) *Aircraft {
 	if fr.aircraft == nil {
 		return nil
-	}
-	if ac, ok := fr.aircraft[callsign]; ok {
+	} else if ac, ok := fr.aircraft[callsign]; ok {
 		return ac
 	} else {
 		return nil

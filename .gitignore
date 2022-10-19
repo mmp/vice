@@ -10,3 +10,4 @@ osx/vice
 osx/vice_amd64
 osx/vice_arm64
 resources/version.txt
+vatsim-internal.go

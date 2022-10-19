@@ -12,6 +12,7 @@ import (
 var (
 	ErrNoConnection            = errors.New("Not connected to a server")
 	ErrNoAircraftForCallsign   = errors.New("No aircraft exists with specified callsign")
+	ErrNoFlightPlan            = errors.New("No flight plan has been filed for aircraft")
 	ErrScratchpadTooLong       = errors.New("Scratchpad too long: 3 character limit")
 	ErrAirportTooLong          = errors.New("Airport name too long: 5 character limit")
 	ErrOtherControllerHasTrack = errors.New("Another controller is already tracking the aircraft")

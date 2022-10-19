@@ -60,7 +60,7 @@ func (m MalformedMessageError) Error() string {
 }
 
 var (
-	// We maintain both of these as global variables so that they can be
+	// We maintain these as global variables so that they can be
 	// initialized by init() functions when we compile with the secret
 	// parts required for full VATSIM support.
 	vatsimMessageSpecs           []*VATSIMMessageSpec
@@ -360,7 +360,7 @@ func (v *VATSIMServer) SetVoiceType(callsign string, voice string) error {
 		return amendFlightPlan(callsign, func(fp *FlightPlan) {
 			voiceStr := "/" + voice + "/"
 			// Is the voice type already in the remarks?
-			if strings.Index(fp.remarks, voiceStr) != -1 {
+			if strings.Contains(fp.remarks, voiceStr) {
 				return
 			}
 

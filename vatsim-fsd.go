@@ -166,11 +166,11 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 	ac := v.getOrCreateAircraft(sender)
 	ac.flightPlan = &fp
 
-	if strings.Index(fp.remarks, "/v/") != -1 {
+	if strings.Contains(fp.remarks, "/v/") {
 		ac.voiceCapability = Voice
-	} else if strings.Index(fp.remarks, "/r/") != -1 {
+	} else if strings.Contains(fp.remarks, "/r/") {
 		ac.voiceCapability = Receive
-	} else if strings.Index(fp.remarks, "/t/") != -1 {
+	} else if strings.Contains(fp.remarks, "/t/") {
 		ac.voiceCapability = Text
 	}
 

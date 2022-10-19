@@ -144,7 +144,6 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.PointSize = 5
 	c.LineWidth = 1
 
-	// FIXME: initial center based on sector file, etc...
 	c.Center = database.defaultCenter
 	c.MinAltitude = 0
 	c.MaxAltitude = 60000

@@ -184,8 +184,7 @@ type Aircraft struct {
 	voiceCapability VoiceCapability
 	flightPlan      *FlightPlan
 
-	tracks    [10]RadarTrack
-	firstSeen time.Time
+	tracks [10]RadarTrack
 }
 
 type AircraftPair struct {
