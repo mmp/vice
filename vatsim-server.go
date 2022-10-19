@@ -273,6 +273,9 @@ func (v *VATSIMServer) SetSquawkAutomatic(callsign string) error {
 			return errors.New("Must be signed in to a control position")
 		} else {
 			pos := c.GetPosition()
+			if pos == nil {
+				return errors.New("Radio must be primed to assign squawk codes")
+			}
 			if pos.lowSquawk == pos.highSquawk {
 				return errors.New("Current position has not been assigned a squawk code range")
 			}
