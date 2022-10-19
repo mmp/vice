@@ -4,7 +4,23 @@
 
 package main
 
-import "time"
+import (
+	"errors"
+	"time"
+)
+
+var (
+	ErrNoConnection            = errors.New("Not connected to a server")
+	ErrNoAircraftForCallsign   = errors.New("No aircraft exists with specified callsign")
+	ErrScratchpadTooLong       = errors.New("Scratchpad too long: 3 character limit")
+	ErrAirportTooLong          = errors.New("Airport name too long: 5 character limit")
+	ErrOtherControllerHasTrack = errors.New("Another controller is already tracking the aircraft")
+	ErrNotTrackedByMe          = errors.New("Aircraft is not tracked by current controller")
+	ErrNotBeingHandedOffToMe   = errors.New("Aircraft not being handed off to current controller")
+	ErrNoFlightPlanFiled       = errors.New("No flight plan filed for aircraft")
+	ErrNoController            = errors.New("No controller with that callsign")
+	ErrNotController           = errors.New("Not signed in to a controller position")
+)
 
 // ControlServer defines the interface that servers must implement; these
 // are mostly things where vice is requesting the server to change some
@@ -15,81 +31,176 @@ import "time"
 // 1. All methods start with a verb: "do this thing".
 // 2. Aircraft and controllers are identified by their callsigns
 // represented by strings. We assume these are all unique!
-type ControlServer interface {
+type AircraftController interface {
 	// Clearance delivery (and related)
-	SetSquawk(callsign string, squawk Squawk)
-	SetScratchpad(callsign string, scratchpad string)
-	SetRoute(callsign string, route string)
-	SetDeparture(callsign string, airport string)
-	SetArrival(callsign string, airport string)
-	SetAltitude(callsign string, alt int)
-	SetTemporaryAltitude(callsign string, alt int)
-	SetAircraftType(callsign string, ac string)
-	SetFlightRules(callsign string, r FlightRules)
+	SetSquawk(callsign string, squawk Squawk) error
+	SetSquawkAutomatic(callsign string) error
+	SetScratchpad(callsign string, scratchpad string) error
+	SetTemporaryAltitude(callsign string, alt int) error
+	SetVoiceType(callsign string, voice string) error
+	AmendFlightPlan(callsign string, fp FlightPlan) error
 
-	PushFlightStrip(callsign string, controller string)
+	PushFlightStrip(fs FlightStrip, controller string) error
 
 	// Tracking aircraft
-	InitiateTrack(callsign string)
-	DropTrack(callsign string)
-	Handoff(callsign string, controller string)
-	AcceptHandoff(callsign string)
-	RejectHandoff(callsign string)
-	PointOut(callsign string, controller string)
+	InitiateTrack(callsign string) error
+	DropTrack(callsign string) error
+	Handoff(callsign string, controller string) error
+	AcceptHandoff(callsign string) error
+	RejectHandoff(callsign string) error
+	PointOut(callsign string, controller string) error
 
-	SendTextMessage(m TextMessage)
+	SendTextMessage(m TextMessage) error
+}
 
-	// Check for updates from the server, which will in turn call methods
-	// of its associated ControlClient to report what has changed.
+type ControlServer interface {
+	AircraftController
+
+	GetAircraft(callsign string) *Aircraft
+	GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft
+	GetAllAircraft() []*Aircraft
+	GetMETAR(location string) *METAR
+	GetATIS(airport string) string
+	GetUser(callsign string) *User
+	GetController(callsign string) *Controller
+	GetAllControllers() []*Controller
+	GetTrackingController(callsign string) string
+	InboundHandoffController(callsign string) string
+	OutboundHandoffController(callsign string) string
+
+	// Check for updates from the server.
 	GetUpdates()
 
 	// Shut down the connection with the server and clean up detritus.
 	Disconnect()
 	Connected() bool
 
+	// Returns the callsign the user is signed in under (e.g., "JFK_TWR")
 	Callsign() string
 
-	// Returns the current time; getting it from the server lets us report
+	// Returns the ~current time; getting it from the server lets us report
 	// the past time when replaying traces, etc.
 	CurrentTime() time.Time
 
-	Description() string
 	GetWindowTitle() string
 }
 
-// ControlClient defines the interface that ControlServers use to report
-// changes to the state of the world back to the rest of the system;
-// vice only includes a single implementation of this interface, in World,
-// though we still keep this interface around in order to carefully specify
-// the way in which the server reports back to vice.
-//
-// Note: all methods are named to indicate "this thing happened, FYI"
-type ControlClient interface {
-	METARReceived(m METAR)
-	ATISReceived(issuer string, letter byte, contents string)
+type ControlUpdates struct {
+	addedAircraft    map[*Aircraft]interface{}
+	modifiedAircraft map[*Aircraft]interface{}
+	removedAircraft  map[*Aircraft]interface{}
+	messages         []TextMessage
+}
 
-	UserAdded(callsign string, user User)
-	PilotAdded(pilot Pilot)
-	PilotRemoved(callsign string)
-	ControllerAdded(controller Controller)
-	ControllerRemoved(callsign string)
-	RequestRelief(callsign string)
-	CancelRequestRelief(callsign string)
+func NewControlUpdates() *ControlUpdates {
+	c := &ControlUpdates{}
+	c.addedAircraft = make(map[*Aircraft]interface{})
+	c.modifiedAircraft = make(map[*Aircraft]interface{})
+	c.removedAircraft = make(map[*Aircraft]interface{})
+	return c
+}
 
-	SquawkAssigned(callsign string, squawk Squawk)
-	FlightPlanReceived(fp FlightPlan)
-	PositionReceived(callsign string, pos RadarTrack, squawk Squawk, mode TransponderMode)
-	AltitudeAssigned(callsign string, altitude int)
-	TemporaryAltitudeAssigned(callsign string, altitude int)
-	VoiceSet(callsign string, vc VoiceCapability)
-	ScratchpadSet(callsign string, contents string)
-	FlightStripPushed(from string, to string, fs FlightStrip)
+func (c *ControlUpdates) Reset() {
+	c.addedAircraft = make(map[*Aircraft]interface{})
+	c.modifiedAircraft = make(map[*Aircraft]interface{})
+	c.removedAircraft = make(map[*Aircraft]interface{})
+	c.messages = c.messages[:0]
+}
 
-	TrackInitiated(callsign string, controller string)
-	TrackDropped(callsign string, controller string)
-	HandoffOffered(callsign string, from string)
-	HandoffAccepted(callsign string, from string, to string)
-	PointOutReceived(callsign string, from string)
+func (c *ControlUpdates) NoUpdates() bool {
+	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0 &&
+		len(c.messages) == 0
+}
 
-	TextMessageReceived(sender string, m TextMessage)
+///////////////////////////////////////////////////////////////////////////
+// InertAircraftController
+
+type InertAircraftController struct{}
+
+func (*InertAircraftController) SetSquawk(callsign string, squawk Squawk) error          { return nil }
+func (*InertAircraftController) SetSquawkAutomatic(callsign string) error                { return nil }
+func (*InertAircraftController) SetScratchpad(callsign string, scratchpad string) error  { return nil }
+func (*InertAircraftController) SetTemporaryAltitude(callsign string, alt int) error     { return nil }
+func (*InertAircraftController) SetVoiceType(callsign string, voice string) error        { return nil }
+func (*InertAircraftController) AmendFlightPlan(callsign string, fp FlightPlan) error    { return nil }
+func (*InertAircraftController) PushFlightStrip(fs FlightStrip, controller string) error { return nil }
+func (*InertAircraftController) InitiateTrack(callsign string) error                     { return nil }
+func (*InertAircraftController) DropTrack(callsign string) error                         { return nil }
+func (*InertAircraftController) Handoff(callsign string, controller string) error        { return nil }
+func (*InertAircraftController) AcceptHandoff(callsign string) error                     { return nil }
+func (*InertAircraftController) RejectHandoff(callsign string) error                     { return nil }
+func (*InertAircraftController) PointOut(callsign string, controller string) error       { return nil }
+func (*InertAircraftController) SendTextMessage(m TextMessage) error                     { return nil }
+
+///////////////////////////////////////////////////////////////////////////
+// DisconnectedControlServer
+
+type DisconnectedControlServer struct {
+	InertAircraftController
+}
+
+func (d *DisconnectedControlServer) GetAircraft(callsign string) *Aircraft {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetAllAircraft() []*Aircraft {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetMETAR(location string) *METAR {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetATIS(airport string) string {
+	return ""
+}
+
+func (d *DisconnectedControlServer) GetUser(callsign string) *User {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetController(callsign string) *Controller {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetAllControllers() []*Controller {
+	return nil
+}
+
+func (d *DisconnectedControlServer) GetTrackingController(callsign string) string {
+	return ""
+}
+
+func (d *DisconnectedControlServer) InboundHandoffController(callsign string) string {
+	return ""
+}
+
+func (d *DisconnectedControlServer) OutboundHandoffController(callsign string) string {
+	return ""
+}
+
+func (d *DisconnectedControlServer) GetUpdates() {
+}
+
+func (d *DisconnectedControlServer) Disconnect() {
+}
+
+func (d *DisconnectedControlServer) Connected() bool {
+	return false
+}
+
+func (d *DisconnectedControlServer) Callsign() string {
+	return "(none)"
+}
+
+func (d *DisconnectedControlServer) CurrentTime() time.Time {
+	return time.Now()
+}
+
+func (d *DisconnectedControlServer) GetWindowTitle() string {
+	return "[Disconnected]"
 }

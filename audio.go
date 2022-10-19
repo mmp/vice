@@ -114,6 +114,21 @@ func (a *AudioSettings) HandleEvent(e AudioEvent) {
 	}
 }
 
+func audioProcessUpdates(updates *ControlUpdates) {
+	// Audio for any new arrivals
+	for ac := range updates.addedAircraft {
+		if ac.flightPlan != nil && positionConfig.IsActiveAirport(ac.flightPlan.arrive) {
+			globalConfig.AudioSettings.HandleEvent(AudioEventNewArrival)
+			// Only once.
+			break
+		}
+	}
+
+	if len(updates.messages) > 0 {
+		globalConfig.AudioSettings.HandleEvent(AudioEventReceivedMessage)
+	}
+}
+
 type SoundEffect struct {
 	name     string
 	wav      []byte

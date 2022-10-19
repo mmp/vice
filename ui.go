@@ -88,16 +88,16 @@ func uiInit(renderer Renderer) {
 	}
 
 	if nrc := checkForNewRelease(); nrc != nil {
-		uiShowModalDialog(NewModalDialogBox(nrc))
+		uiShowModalDialog(NewModalDialogBox(nrc), false)
 	}
 
 	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
 		globalConfig.SectorFile,
 		func(filename string) {
-			if err := world.LoadSectorFile(filename); err == nil {
+			if err := database.LoadSectorFile(filename); err == nil {
 				delete(ui.errorText, "SECTORFILE")
 				globalConfig.SectorFile = filename
-				world.SetColorScheme(positionConfig.GetColorScheme())
+				database.SetColorScheme(positionConfig.GetColorScheme())
 
 				// This is probably the wrong place to do this, but it's
 				// convenient... Walk through the radar scopes and center
@@ -107,7 +107,7 @@ func uiInit(renderer Renderer) {
 				positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
 					if rs, ok := p.(*RadarScopePane); ok {
 						if rs.Center[0] == 0 && rs.Center[1] == 0 {
-							rs.Center = world.defaultCenter
+							rs.Center = database.defaultCenter
 						}
 					}
 				})
@@ -116,7 +116,7 @@ func uiInit(renderer Renderer) {
 	ui.openPositionFileDialog = NewFileSelectDialogBox("Open Position File...", []string{".pof"},
 		globalConfig.PositionFile,
 		func(filename string) {
-			if err := world.LoadPositionFile(filename); err == nil {
+			if err := database.LoadPositionFile(filename); err == nil {
 				delete(ui.errorText, "POSITIONFILE")
 				globalConfig.PositionFile = filename
 			}
@@ -135,8 +135,12 @@ func uiInit(renderer Renderer) {
 		})
 }
 
-func uiShowModalDialog(d *ModalDialogBox) {
-	ui.activeModalDialogs = append(ui.activeModalDialogs, d)
+func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
+	if atFront {
+		ui.activeModalDialogs = append([]*ModalDialogBox{d}, ui.activeModalDialogs...)
+	} else {
+		ui.activeModalDialogs = append(ui.activeModalDialogs, d)
+	}
 }
 
 func (c RGB) imgui() imgui.Vec4 {
@@ -147,13 +151,13 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
 		if imgui.BeginMenu("Connection") {
-			if imgui.MenuItemV("Connect...", "", false, !world.Connected()) {
-				uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}))
+			if imgui.MenuItemV("Connect...", "", false, !server.Connected()) {
+				uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 			}
-			if imgui.MenuItemV("Disconnect...", "", false, world.Connected()) {
-				uiShowModalDialog(NewModalDialogBox(&DisconnectModalClient{}))
+			if imgui.MenuItemV("Disconnect...", "", false, server.Connected()) {
+				uiShowModalDialog(NewModalDialogBox(&DisconnectModalClient{}), false)
 			}
-			if imgui.MenuItemV("Radio...", "", false, world.Connected()) {
+			if imgui.MenuItemV("Radio...", "", false, server.Connected()) {
 				ui.showRadioSettings = true
 			}
 			imgui.EndMenu()
@@ -161,16 +165,16 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 		if imgui.BeginMenu("Configs") {
 			if imgui.MenuItem("New...") {
-				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: true}))
+				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: true}), false)
 			}
 			if imgui.MenuItem("New from current...") {
-				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: false}))
+				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: false}), false)
 			}
 			if imgui.MenuItem("Rename...") {
-				uiShowModalDialog(NewModalDialogBox(&RenameModalClient{}))
+				uiShowModalDialog(NewModalDialogBox(&RenameModalClient{}), false)
 			}
 			if imgui.MenuItemV("Delete...", "", false, len(globalConfig.PositionConfigs) > 1) {
-				uiShowModalDialog(NewModalDialogBox(&DeleteModalClient{}))
+				uiShowModalDialog(NewModalDialogBox(&DeleteModalClient{}), false)
 			}
 			if imgui.MenuItem("Edit layout...") {
 				wm.showConfigEditor = true
@@ -297,10 +301,11 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	if ui.showRadioSettings {
 		imgui.BeginV("Radio Settings", &ui.showRadioSettings, imgui.WindowFlagsAlwaysAutoResize)
 
-		callsign := world.server.Callsign()
+		callsign := server.Callsign()
 		var mypos *Position
-		if controller := world.controllers[callsign]; controller != nil {
-			mypos = controller.position
+		var controller *Controller
+		if controller = server.GetController(callsign); controller != nil {
+			mypos = controller.GetPosition()
 		}
 		freq := ""
 		if mypos != nil {
@@ -309,17 +314,18 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		if imgui.BeginCombo("Frequency", freq) {
 			cs := strings.Split(callsign, "_")
 			callsign := cs[0] + "_" + cs[len(cs)-1] // simplify e.g. JFK_1_TWR, etc.
-			for i := range world.positions[callsign] {
-				pos := &world.positions[callsign][i]
+			for i := range database.positions[callsign] {
+				pos := &database.positions[callsign][i]
 				name := fmt.Sprintf("%s: %s", pos.frequency, pos.name)
 				if imgui.SelectableV(name, pos == mypos, 0, imgui.Vec2{}) {
-					world.controllers[world.server.Callsign()].position = pos
+					controller.frequency = pos.frequency // yuck
+					positionConfig.PrimaryFrequency = pos.frequency
 				}
 			}
 			imgui.EndCombo()
 		}
 
-		imgui.Checkbox("Radio primed", &world.radioPrimed)
+		imgui.Checkbox("Radio primed", &positionConfig.radioPrimed)
 
 		imgui.End()
 	}
@@ -334,7 +340,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			} else {
 				imgui.StyleColorsLight()
 			}
-			world.NamedColorChanged(name, rgb)
+			database.NamedColorChanged(name, rgb)
 		})
 		imgui.End()
 	}
@@ -468,7 +474,7 @@ type ConnectionConfiguration interface {
 	Initialize()
 	DrawUI() bool /* hit enter */
 	Valid() bool
-	Connect(w *World) error
+	Connect() error
 }
 
 type FlightRadarConnectionConfiguration struct{}
@@ -477,31 +483,83 @@ func (*FlightRadarConnectionConfiguration) Initialize()  {}
 func (*FlightRadarConnectionConfiguration) DrawUI() bool { return false }
 func (*FlightRadarConnectionConfiguration) Valid() bool  { return true }
 
-func (*FlightRadarConnectionConfiguration) Connect(w *World) error {
-	return w.ConnectFlightRadar()
+func (*FlightRadarConnectionConfiguration) Connect() error {
+	server = NewFlightRadarServer()
+	return nil
 }
 
 type VATSIMConnectionConfiguration struct {
+	name    string
 	address string
 }
 
-func (v *VATSIMConnectionConfiguration) Initialize() {
-	if v.address == "" {
-		v.address = ":6809"
-	}
-}
+func (v *VATSIMConnectionConfiguration) Initialize() {}
 
 func (v *VATSIMConnectionConfiguration) DrawUI() bool {
-	flags := imgui.InputTextFlagsEnterReturnsTrue
-	return imgui.InputTextV("Address", &v.address, flags, nil)
+	imgui.InputText("Name", &globalConfig.VatsimName)
+
+	cidFlags := imgui.InputTextFlagsCallbackCharFilter
+	imgui.InputTextV("VATSIM CID", &globalConfig.VatsimCID, cidFlags,
+		func(cb imgui.InputTextCallbackData) int32 {
+			switch cb.EventChar() {
+			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+				return 0
+			default:
+				return 1
+			}
+		})
+
+	imgui.InputTextV("VATSIM Password", &globalConfig.VatsimPassword, imgui.InputTextFlagsPassword, nil)
+
+	if imgui.BeginCombo("Rating", globalConfig.VatsimRating.String()) {
+		for i := ObserverRating; i <= AdministratorRating; i++ {
+			nr := NetworkRating(i)
+			s := nr.String()
+			if imgui.SelectableV(s, nr == globalConfig.VatsimRating, 0, imgui.Vec2{}) {
+				globalConfig.VatsimRating = nr
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	imgui.InputText("Callsign", &positionConfig.VatsimCallsign)
+
+	if imgui.BeginCombo("Facility", positionConfig.VatsimFacility.String()) {
+		for i := FacilityOBS; i <= FacilityUndefined; i++ {
+			f := Facility(i)
+			s := f.String()
+			if imgui.SelectableV(s, f == positionConfig.VatsimFacility, 0, imgui.Vec2{}) {
+				positionConfig.VatsimFacility = f
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	if imgui.BeginCombo("Server", v.name) {
+		for _, server := range SortedMapKeys(vatsimServers) {
+			if imgui.SelectableV(server, server == v.name, 0, imgui.Vec2{}) {
+				v.name = server
+				v.address = vatsimServers[server]
+			}
+		}
+		for _, server := range SortedMapKeys(globalConfig.CustomServers) {
+			if imgui.SelectableV(server, server == v.name, 0, imgui.Vec2{}) {
+				v.name = server
+				v.address = globalConfig.CustomServers[server]
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	return false
 }
 
-func (v *VATSIMConnectionConfiguration) Valid() bool {
-	return v.address != "" // && v.callsign != "" && v.position != nil
-}
+func (v *VATSIMConnectionConfiguration) Valid() bool { return v.address != "" }
 
-func (v *VATSIMConnectionConfiguration) Connect(w *World) error {
-	return w.ConnectVATSIM(v.address)
+func (v *VATSIMConnectionConfiguration) Connect() error {
+	var err error
+	server, err = NewVATSIMNetworkServer(v.address)
+	return err
 }
 
 type VATSIMReplayConfiguration struct {
@@ -542,8 +600,10 @@ func (v *VATSIMReplayConfiguration) Valid() bool {
 	return v.filename != ""
 }
 
-func (v *VATSIMReplayConfiguration) Connect(w *World) error {
-	return w.ConnectVATSIMReplay(v.filename, int(v.offset), v.rate)
+func (v *VATSIMReplayConfiguration) Connect() error {
+	var err error
+	server, err = NewVATSIMReplayServer(v.filename, int(v.offset), v.rate)
+	return err
 }
 
 type ConnectModalClient struct {
@@ -552,31 +612,31 @@ type ConnectModalClient struct {
 
 	// Store all three so that if the user switches back and forth any set
 	// values are retained.
-	flightRadar  FlightRadarConnectionConfiguration
 	vatsim       VATSIMConnectionConfiguration
 	vatsimReplay VATSIMReplayConfiguration
+	flightRadar  FlightRadarConnectionConfiguration
 }
 
 type ConnectionType int
 
 const (
-	ConnectionTypeFlightRadar = iota
-	ConnectionTypeVATSIM
+	ConnectionTypeVATSIM = iota
 	ConnectionTypeVATSIMReplay
+	ConnectionTypeFlightRadar
 	ConnectionTypeCount
 )
 
 func (c ConnectionType) String() string {
-	return [...]string{"Flight Radar", "VATSIM (not actually)", "VATSIM Replay"}[c]
+	return [...]string{"VATSIM Network", "VATSIM Replay", "Flight Radar"}[c]
 }
 
 func (c *ConnectModalClient) Title() string { return "New Connection" }
 
 func (c *ConnectModalClient) Opening() {
 	c.err = ""
-	c.flightRadar.Initialize()
 	c.vatsim.Initialize()
 	c.vatsimReplay.Initialize()
+	c.flightRadar.Initialize()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -587,13 +647,13 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		var err error
 		switch c.connectionType {
 		case ConnectionTypeFlightRadar:
-			err = c.flightRadar.Connect(world)
+			err = c.flightRadar.Connect()
 
 		case ConnectionTypeVATSIM:
-			err = c.vatsim.Connect(world)
+			err = c.vatsim.Connect()
 
 		case ConnectionTypeVATSIMReplay:
-			err = c.vatsimReplay.Connect(world)
+			err = c.vatsimReplay.Connect()
 
 		default:
 			lg.Errorf("Unhandled connection type")
@@ -660,14 +720,11 @@ func (c *ConnectModalClient) Draw() int {
 	}
 }
 
-type DisconnectModalClient struct {
-	err string
-}
+type DisconnectModalClient struct{}
 
 func (d *DisconnectModalClient) Title() string { return "Confirm Disconnection" }
 
 func (d *DisconnectModalClient) Opening() {
-	d.err = ""
 }
 
 func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
@@ -675,11 +732,8 @@ func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
 	b = append(b, ModalDialogButton{text: "Cancel"})
 
 	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		if err := world.Disconnect(); err != nil {
-			lg.Errorf("Disconnect: %v", err)
-			c.err = err.Error()
-			return false
-		}
+		server.Disconnect()
+		server = &DisconnectedControlServer{}
 		return true
 	}}
 	b = append(b, ok)
@@ -689,12 +743,6 @@ func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
 
 func (d *DisconnectModalClient) Draw() int {
 	imgui.Text("Are you sure you want to disconnect?")
-	if d.err != "" {
-		color := positionConfig.GetColorScheme().TextError
-		imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
-		imgui.Text(d.err)
-		imgui.PopStyleColor()
-	}
 	return -1
 }
 
@@ -1244,7 +1292,7 @@ func (e *ErrorModalClient) Draw() int {
 
 func ShowErrorDialog(s string, args ...interface{}) {
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
-	uiShowModalDialog(d)
+	uiShowModalDialog(d, true)
 
 	lg.ErrorfUp1(s, args...)
 }
@@ -1343,7 +1391,7 @@ func NewColorScheme() *ColorScheme {
 		Compass:    RGB{.5, .5, .5}}
 
 	cs.DefinedColors = make(map[string]*RGB)
-	for name, rgb := range world.sectorFileColors {
+	for name, rgb := range database.sectorFileColors {
 		c := rgb
 		cs.DefinedColors[name] = &c
 	}

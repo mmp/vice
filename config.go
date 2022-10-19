@@ -31,6 +31,7 @@ type GlobalConfig struct {
 	VatsimCID      string
 	VatsimPassword string
 	VatsimRating   NetworkRating
+	CustomServers  map[string]string
 
 	PositionConfigs       map[string]*PositionConfig
 	ActivePosition        string
@@ -64,6 +65,8 @@ type PositionConfig struct {
 	RadarRange            int32
 	PrimaryFrequency      Frequency
 
+	radioPrimed bool
+
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
 
@@ -75,6 +78,12 @@ type PositionConfig struct {
 	drawnRoute                 string
 	drawnRouteEndTime          time.Time
 }
+
+var (
+	selectedServer   string
+	newServerName    string
+	newServerAddress string
+)
 
 func (c *GlobalConfig) DrawUI() {
 	if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
@@ -89,7 +98,7 @@ func (c *GlobalConfig) DrawUI() {
 		}
 		imgui.TableNextColumn()
 		if c.SectorFile != "" && imgui.Button("Reload##sectorfile") {
-			_ = world.LoadSectorFile(c.SectorFile)
+			_ = database.LoadSectorFile(c.SectorFile)
 		}
 
 		imgui.TableNextRow()
@@ -103,7 +112,7 @@ func (c *GlobalConfig) DrawUI() {
 		}
 		imgui.TableNextColumn()
 		if c.PositionFile != "" && imgui.Button("Reload##positionfile") {
-			_ = world.LoadPositionFile(c.PositionFile)
+			_ = database.LoadPositionFile(c.PositionFile)
 		}
 
 		imgui.TableNextRow()
@@ -136,6 +145,75 @@ func (c *GlobalConfig) DrawUI() {
 
 		imgui.EndTable()
 	}
+
+	imgui.Separator()
+	imgui.Text("Custom servers")
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
+	if imgui.BeginTableV("##customServers", 2, flags, imgui.Vec2{300, 100}, 0.0) {
+		imgui.TableSetupColumn("Name")
+		imgui.TableSetupColumn("Address")
+		imgui.TableHeadersRow()
+		for _, server := range SortedMapKeys(globalConfig.CustomServers) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			if imgui.SelectableV(server, server == selectedServer, imgui.SelectableFlagsSpanAllColumns, imgui.Vec2{}) {
+				selectedServer = server
+			}
+			imgui.TableNextColumn()
+			imgui.Text(globalConfig.CustomServers[server])
+		}
+		imgui.EndTable()
+	}
+
+	add := func() {
+		globalConfig.CustomServers[newServerName] = newServerAddress
+		newServerName = ""
+		newServerAddress = ""
+	}
+
+	inputFlags := imgui.InputTextFlagsEnterReturnsTrue
+	if imgui.InputTextV("Name", &newServerName, inputFlags, nil) {
+		if newServerName != "" && newServerAddress != "" {
+			add()
+			imgui.SetKeyboardFocusHereV(-1)
+		}
+	}
+	if imgui.InputTextV("Address", &newServerAddress, inputFlags, nil) {
+		if newServerName != "" && newServerAddress != "" {
+			add()
+			imgui.SetKeyboardFocusHereV(-1)
+		}
+	}
+
+	enableAdd := newServerName != "" && newServerAddress != ""
+	if !enableAdd {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+	imgui.SameLine()
+	if imgui.Button(fmt.Sprintf("+##newServer")) {
+		add()
+	}
+	if !enableAdd {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
+	}
+
+	enableDelete := selectedServer != ""
+	if !enableDelete {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+	imgui.SameLine()
+	if imgui.Button(FontAwesomeIconTrash + "##newServer") {
+		delete(globalConfig.CustomServers, selectedServer)
+		selectedServer = ""
+	}
+	if !enableDelete {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
+	}
+
 	imgui.Separator()
 	positionConfig.DrawUI()
 }
@@ -269,7 +347,7 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 		style.SetColor(imgui.StyleColorChildBg, lightGray)
 		style.SetColor(imgui.StyleColorPopupBg, lightGray)
 	}
-	world.SetColorScheme(cs)
+	database.SetColorScheme(cs)
 }
 
 func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platform) bool {
@@ -298,7 +376,7 @@ func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platfo
 			if err != nil {
 				ShowErrorDialog("Unable to save configuration file: %v", err)
 			}
-		}}))
+		}}), false)
 
 	return true
 }
@@ -313,12 +391,23 @@ func (pc *PositionConfig) NotifyAircraftSelected(ac *Aircraft) {
 	})
 }
 
+func (pc *PositionConfig) MonitoredFrequencies(frequencies []Frequency) []Frequency {
+	var monitored []Frequency
+	for _, f := range frequencies {
+		// For now it's just the primed frequency...
+		if pc.radioPrimed && f == pc.PrimaryFrequency {
+			monitored = append(monitored, f)
+		}
+	}
+	return monitored
+}
+
 func NewPositionConfig() *PositionConfig {
 	c := &PositionConfig{}
 	c.ActiveAirports = make(map[string]interface{})
-	if world != nil && world.defaultAirport != "" {
-		c.ActiveAirports[world.defaultAirport] = nil
-		c.PrimaryRadarCenter = world.defaultAirport
+	if database != nil && database.defaultAirport != "" {
+		c.ActiveAirports[database.defaultAirport] = nil
+		c.PrimaryRadarCenter = database.defaultAirport
 	}
 	c.RadarRange = 20
 
@@ -416,14 +505,15 @@ func LoadOrMakeDefaultConfig() {
 		}
 	}
 
-	lg.Printf("Using config:\n%s", string(config))
-
 	r := bytes.NewReader(config)
 	d := json.NewDecoder(r)
 
 	globalConfig = &GlobalConfig{}
 	if err := d.Decode(globalConfig); err != nil {
 		ShowErrorDialog("%s: configuration file is corrupt: %v", fn, err)
+	}
+	if globalConfig.CustomServers == nil {
+		globalConfig.CustomServers = make(map[string]string)
 	}
 
 	globalConfig.LoadAliasesFile()
@@ -481,11 +571,10 @@ func parseNotes(text string) *NotesNode {
 		hierarchy[n-2].children = append(hierarchy[n-2].children, newNode)
 	}
 
-	lg.Printf("notes: %+v", root)
 	return root
 }
 
-func (pc *PositionConfig) Update(*WorldUpdates) {
+func (pc *PositionConfig) Update(*ControlUpdates) {
 	i := 0
 	for i < len(pc.mit) {
 		ac := pc.mit[i]

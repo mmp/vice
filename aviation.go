@@ -87,8 +87,22 @@ type Controller struct {
 	facility      Facility
 	location      Point2LL
 	requestRelief bool
+}
 
-	position *Position
+func (c *Controller) GetPosition() *Position {
+	// compute the basic callsign: e.g. NY_1_CTR -> NY_CTR, PHL_ND_APP -> PHL_APP
+	callsign := c.callsign
+	cf := strings.Split(callsign, "_")
+	if len(cf) > 2 {
+		callsign = cf[0] + "_" + cf[len(cf)-1]
+	}
+
+	for i, pos := range database.positions[callsign] {
+		if pos.frequency == c.frequency {
+			return &database.positions[callsign][i]
+		}
+	}
+	return nil
 }
 
 type Pilot struct {
@@ -121,20 +135,19 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	callsign       string
-	actype         string
-	groundspeed    int // what is this used for?
-	rules          FlightRules
-	depart, arrive string
-	alternate      string
-	altitude       int
-	route          string
-	remarks        string
-	filed          time.Time
-}
-
-func (f *FlightPlan) Filed() bool {
-	return !f.filed.IsZero()
+	rules                  FlightRules
+	actype                 string
+	cruiseSpeed            int
+	depart                 string
+	departTimeEst          int
+	departTimeActual       int
+	altitude               int
+	arrive                 string
+	hours, minutes         int
+	fuelHours, fuelMinutes int
+	alternate              string
+	route                  string
+	remarks                string
 }
 
 type FlightStrip struct {
@@ -162,13 +175,14 @@ func ParseSquawk(s string) (Squawk, error) {
 }
 
 type Aircraft struct {
+	callsign        string
 	scratchpad      string
 	assignedSquawk  Squawk // from ATC
 	squawk          Squawk // actually squawking
 	mode            TransponderMode
 	tempAltitude    int
 	voiceCapability VoiceCapability
-	flightPlan      FlightPlan
+	flightPlan      *FlightPlan
 
 	tracks    [10]RadarTrack
 	firstSeen time.Time
@@ -389,7 +403,7 @@ func (a *Aircraft) Heading() float32 {
 	// The heading reported by vatsim seems systemically off for some (but
 	// not all!) aircraft and not just magnetic variation. So take the
 	// heading vector, which is more reliable, and work from there...
-	return headingv2ll(a.HeadingVector(), world.MagneticVariation)
+	return headingv2ll(a.HeadingVector(), database.MagneticVariation)
 }
 
 // Scale it so that it represents where it is expected to be one minute in
@@ -419,7 +433,7 @@ func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.Position(), p, world.MagneticVariation)
+	return headingp2ll(a.Position(), p, database.MagneticVariation)
 }
 
 func (a *Aircraft) LostTrack(now time.Time) bool {
@@ -428,8 +442,25 @@ func (a *Aircraft) LostTrack(now time.Time) bool {
 	return !a.tracks[0].position.IsZero() && now.Sub(a.tracks[0].time) > 30*time.Second
 }
 
+func (a *Aircraft) AddTrack(t RadarTrack) {
+	// Move everthing forward one to make space for the new one. We could
+	// be clever and use a circular buffer to skip the copies, though at
+	// the cost of more painful indexing elsewhere...
+	copy(a.tracks[1:], a.tracks[:len(a.tracks)-1])
+	a.tracks[0] = t
+}
+
 func (a *Aircraft) Callsign() string {
-	return a.flightPlan.callsign
+	return a.callsign
+}
+
+func (a *Aircraft) Telephony() string {
+	cs := strings.TrimRight(a.callsign, "0123456789")
+	if sign, ok := database.callsigns[cs]; ok {
+		return sign.telephony
+	} else {
+		return ""
+	}
 }
 
 func (a *Aircraft) OnGround() bool {
@@ -437,21 +468,22 @@ func (a *Aircraft) OnGround() bool {
 		return true
 	}
 
-	for _, airport := range [2]string{a.flightPlan.depart, a.flightPlan.arrive} {
-		if ap, ok := world.FAA.airports[airport]; ok {
-			heightAGL := abs(a.Altitude() - ap.elevation)
-			return heightAGL < 100
+	if a.flightPlan != nil {
+		for _, airport := range [2]string{a.flightPlan.depart, a.flightPlan.arrive} {
+			if ap, ok := database.FAA.airports[airport]; ok {
+				heightAGL := abs(a.Altitude() - ap.elevation)
+				return heightAGL < 100
+			}
 		}
 	}
-	// Didn't know of the airports. Most likely no flight plan has been
-	// filed. We could be more fancy and find the closest airport in the
-	// sector file and then use its elevation, though it's not clear that
-	// is worth the work.
+	// Didn't know the airports. We could be more fancy and find the
+	// closest airport in the sector file and then use its elevation,
+	// though it's not clear that is worth the work.
 	return false
 }
 
 func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string, indent int) {
-	if a.Callsign() == "" {
+	if a.flightPlan == nil {
 		contents = "No flight plan"
 		return
 	} else {
@@ -525,14 +557,5 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 	default:
 		// Who knows, so leave it alone
 		return fp.actype
-	}
-}
-
-func (fp FlightPlan) Telephony() string {
-	cs := strings.TrimRight(fp.callsign, "0123456789")
-	if sign, ok := world.callsigns[cs]; ok {
-		return sign.telephony
-	} else {
-		return ""
 	}
 }

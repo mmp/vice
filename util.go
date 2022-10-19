@@ -235,7 +235,7 @@ func headingv2ll(v Point2LL, magCorrection float32) float32 {
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
-	angle := degrees(atan2(v[0]*world.NmPerLongitude, v[1]*world.NmPerLatitude))
+	angle := degrees(atan2(v[0]*database.NmPerLongitude, v[1]*database.NmPerLatitude))
 	angle += magCorrection
 	for angle < 0 {
 		angle += 360
@@ -508,23 +508,23 @@ func length2ll(v Point2LL) float32 {
 }
 
 func nmdistance2ll(a Point2LL, b Point2LL) float32 {
-	dlat := (a[1] - b[1]) * world.NmPerLatitude
-	dlong := (a[0] - b[0]) * world.NmPerLongitude
+	dlat := (a[1] - b[1]) * database.NmPerLatitude
+	dlong := (a[0] - b[0]) * database.NmPerLongitude
 	return sqrt(sqr(dlat) + sqr(dlong))
 }
 
 func nmlength2ll(a Point2LL) float32 {
-	x := a[0] * world.NmPerLongitude
-	y := a[1] * world.NmPerLatitude
+	x := a[0] * database.NmPerLongitude
+	y := a[1] * database.NmPerLatitude
 	return sqrt(sqr(x) + sqr(y))
 }
 
 func nm2ll(p [2]float32) Point2LL {
-	return Point2LL{p[0] / world.NmPerLongitude, p[1] / world.NmPerLatitude}
+	return Point2LL{p[0] / database.NmPerLongitude, p[1] / database.NmPerLatitude}
 }
 
 func ll2nm(p Point2LL) [2]float32 {
-	return [2]float32{p[0] * world.NmPerLongitude, p[1] * world.NmPerLatitude}
+	return [2]float32{p[0] * database.NmPerLongitude, p[1] * database.NmPerLatitude}
 }
 
 func normalize2ll(a Point2LL) Point2LL {
@@ -614,6 +614,16 @@ func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {
 	mnew := make(map[K]V)
 	for k, v := range m {
 		mnew[k] = v
+	}
+	return mnew
+}
+
+func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
+	mnew := make(map[K]V)
+	for k, v := range m {
+		if pred(k, v) {
+			mnew[k] = v
+		}
 	}
 	return mnew
 }

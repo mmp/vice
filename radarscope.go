@@ -145,7 +145,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.LineWidth = 1
 
 	// FIXME: initial center based on sector file, etc...
-	c.Center = world.defaultCenter
+	c.Center = database.defaultCenter
 	c.MinAltitude = 0
 	c.MaxAltitude = 60000
 	c.Range = 15
@@ -293,7 +293,7 @@ func (rs *RadarScopePane) initializeAircraft() {
 	rs.aircraft = make(map[*Aircraft]*AircraftScopeState)
 	rs.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
-	for _, ac := range world.aircraft {
+	for _, ac := range server.GetAllAircraft() {
 		rs.aircraft[ac] = &AircraftScopeState{}
 
 		if rs.CRDAEnabled {
@@ -558,19 +558,19 @@ func (rs *RadarScopePane) DrawUI() {
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			buttons(rs.selectedVORs, &rs.newVOR, rs.VORsToDraw, world.VORs)
+			buttons(rs.selectedVORs, &rs.newVOR, rs.VORsToDraw, database.VORs)
 			imgui.TableNextColumn()
-			buttons(rs.selectedNDBs, &rs.newNDB, rs.NDBsToDraw, world.NDBs)
+			buttons(rs.selectedNDBs, &rs.newNDB, rs.NDBsToDraw, database.NDBs)
 			imgui.TableNextColumn()
-			buttons(rs.selectedFixes, &rs.newFix, rs.FixesToDraw, world.fixes)
+			buttons(rs.selectedFixes, &rs.newFix, rs.FixesToDraw, database.fixes)
 			imgui.TableNextColumn()
-			buttons(rs.selectedAirports, &rs.newAirport, rs.AirportsToDraw, world.airports)
+			buttons(rs.selectedAirports, &rs.newAirport, rs.AirportsToDraw, database.airports)
 
 			imgui.EndTable()
 		}
 
-		if len(world.geos) > 0 && imgui.TreeNode("Geo") {
-			for _, geo := range world.geos {
+		if len(database.geos) > 0 && imgui.TreeNode("Geo") {
+			for _, geo := range database.geos {
 				_, draw := rs.GeoDrawSet[geo.name]
 				imgui.Checkbox(geo.name, &draw)
 				if draw {
@@ -614,8 +614,8 @@ func (rs *RadarScopePane) DrawUI() {
 				}
 			}
 		}
-		sidStarHierarchy("SIDs", world.SIDs, rs.SIDDrawSet)
-		sidStarHierarchy("STARs", world.STARs, rs.STARDrawSet)
+		sidStarHierarchy("SIDs", database.SIDs, rs.SIDDrawSet)
+		sidStarHierarchy("STARs", database.STARs, rs.STARDrawSet)
 
 		artccCheckboxes := func(name string, artcc []StaticDrawable, drawSet map[string]interface{}) {
 			if len(artcc) > 0 && imgui.TreeNode(name) {
@@ -631,13 +631,13 @@ func (rs *RadarScopePane) DrawUI() {
 				imgui.TreePop()
 			}
 		}
-		artccCheckboxes("ARTCC", world.ARTCC, rs.ARTCCDrawSet)
-		artccCheckboxes("ARTCC Low", world.ARTCCLow, rs.ARTCCLowDrawSet)
-		artccCheckboxes("ARTCC High", world.ARTCCHigh, rs.ARTCCHighDrawSet)
+		artccCheckboxes("ARTCC", database.ARTCC, rs.ARTCCDrawSet)
+		artccCheckboxes("ARTCC Low", database.ARTCCLow, rs.ARTCCLowDrawSet)
+		artccCheckboxes("ARTCC High", database.ARTCCHigh, rs.ARTCCHighDrawSet)
 	}
 }
 
-func (rs *RadarScopePane) Update(updates *WorldUpdates) {
+func (rs *RadarScopePane) Update(updates *ControlUpdates) {
 	if updates == nil {
 		return
 	}
@@ -750,11 +750,11 @@ func (rs *RadarScopePane) getViewingMatrices(ctx *PaneContext) (latLongFromWindo
 	ndcFromLatLong = mgl32.Translate3D(-rs.Center[0], -rs.Center[1], 0)
 
 	// Scale based on range and nm per latitude / longitude
-	sc := mgl32.Scale3D(world.NmPerLongitude/rs.Range, world.NmPerLatitude/rs.Range, 1)
+	sc := mgl32.Scale3D(database.NmPerLongitude/rs.Range, database.NmPerLatitude/rs.Range, 1)
 	ndcFromLatLong = sc.Mul4(ndcFromLatLong)
 
 	// Account for magnetic variation and any user-specified rotation
-	rot := -radians(rs.RotationAngle + world.MagneticVariation)
+	rot := -radians(rs.RotationAngle + database.MagneticVariation)
 	magRot := mgl32.HomogRotate3DZ(rot)
 	ndcFromLatLong = magRot.Mul4(ndcFromLatLong)
 
@@ -832,11 +832,11 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	if rs.DrawEverything || rs.DrawRunways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.Runway)
-		rs.llCommandBuffer.Call(world.runwayCommandBuffer)
+		rs.llCommandBuffer.Call(database.runwayCommandBuffer)
 	}
 
 	if rs.DrawEverything || rs.DrawRegions {
-		for _, region := range world.regions {
+		for _, region := range database.regions {
 			if Overlaps(region.bounds, viewBounds) {
 				if region.name == "" {
 					rs.llCommandBuffer.SetRGB(ctx.cs.Region)
@@ -862,13 +862,13 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	if rs.DrawEverything || rs.DrawVORs {
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
-		for _, vor := range world.VORs {
+		for _, vor := range database.VORs {
 			rs.linesDrawBuilder.AddPolyline(vor, ctx.cs.VOR, square)
 		}
 	}
 	if rs.DrawEverything || rs.DrawNDBs {
 		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
-		for _, ndb := range world.NDBs {
+		for _, ndb := range database.NDBs {
 			// flipped triangles
 			rs.linesDrawBuilder.AddPolyline(ndb, ctx.cs.NDB, fliptri)
 		}
@@ -876,14 +876,14 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	if rs.DrawEverything || rs.DrawFixes {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
-		for _, fix := range world.fixes {
+		for _, fix := range database.fixes {
 			// upward-pointing triangles
 			rs.linesDrawBuilder.AddPolyline(fix, ctx.cs.Fix, uptri)
 		}
 	} else {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
 		for name := range rs.FixesToDraw {
-			if loc, ok := world.fixes[name]; !ok {
+			if loc, ok := database.fixes[name]; !ok {
 				// May happen when a new sector file is loaded.
 				//lg.Printf("%s: selected fix not found in sector file data!", loc)
 			} else {
@@ -893,7 +893,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	}
 	if rs.DrawEverything || rs.DrawAirports {
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
-		for _, ap := range world.airports {
+		for _, ap := range database.airports {
 			rs.linesDrawBuilder.AddPolyline(ap, ctx.cs.Airport, square)
 		}
 	}
@@ -906,24 +906,24 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		}
 	}
 	rs.llCommandBuffer.SetRGB(ctx.cs.ARTCC)
-	drawARTCCLines(world.ARTCC, rs.ARTCCDrawSet)
-	drawARTCCLines(world.ARTCCLow, rs.ARTCCLowDrawSet)
-	drawARTCCLines(world.ARTCCHigh, rs.ARTCCHighDrawSet)
+	drawARTCCLines(database.ARTCC, rs.ARTCCDrawSet)
+	drawARTCCLines(database.ARTCCLow, rs.ARTCCLowDrawSet)
+	drawARTCCLines(database.ARTCCHigh, rs.ARTCCHighDrawSet)
 
-	for _, sid := range world.SIDs {
+	for _, sid := range database.SIDs {
 		_, draw := rs.SIDDrawSet[sid.name]
 		if (rs.DrawEverything || draw) && Overlaps(sid.bounds, viewBounds) {
 			rs.llCommandBuffer.Call(sid.cb)
 		}
 	}
-	for _, star := range world.STARs {
+	for _, star := range database.STARs {
 		_, draw := rs.STARDrawSet[star.name]
 		if (rs.DrawEverything || draw) && Overlaps(star.bounds, viewBounds) {
 			rs.llCommandBuffer.Call(star.cb)
 		}
 	}
 
-	for _, geo := range world.geos {
+	for _, geo := range database.geos {
 		_, draw := rs.GeoDrawSet[geo.name]
 		if (rs.DrawEverything || draw) && Overlaps(geo.bounds, viewBounds) {
 			rs.llCommandBuffer.Call(geo.cb)
@@ -948,19 +948,19 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	if rs.DrawEverything || rs.DrawLowAirways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.LowAirway)
-		rs.llCommandBuffer.Call(world.lowAirwayCommandBuffer)
-		drawAirwayLabels(world.lowAirwayLabels, ctx.cs.LowAirway)
+		rs.llCommandBuffer.Call(database.lowAirwayCommandBuffer)
+		drawAirwayLabels(database.lowAirwayLabels, ctx.cs.LowAirway)
 	}
 	if rs.DrawEverything || rs.DrawHighAirways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.HighAirway)
-		rs.llCommandBuffer.Call(world.highAirwayCommandBuffer)
-		drawAirwayLabels(world.highAirwayLabels, ctx.cs.HighAirway)
+		rs.llCommandBuffer.Call(database.highAirwayCommandBuffer)
+		drawAirwayLabels(database.highAirwayLabels, ctx.cs.HighAirway)
 	}
 
 	// Labels
 	if rs.DrawEverything || rs.DrawLabels {
 		td := rs.getScratchTextDrawBuilder()
-		for _, label := range world.labels {
+		for _, label := range database.labels {
 			if viewBounds.Inside(label.p) {
 				style := TextStyle{font: rs.labelFont, color: label.color}
 				td.AddTextCentered(label.name, windowFromLatLongP(label.p), style)
@@ -1018,16 +1018,16 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 
 	td := rs.getScratchTextDrawBuilder()
 	if rs.DrawVORNames {
-		drawloc(rs.DrawEverything || rs.DrawVORs, rs.VORsToDraw, world.VORs, ctx.cs.VOR, td, DrawLeft)
+		drawloc(rs.DrawEverything || rs.DrawVORs, rs.VORsToDraw, database.VORs, ctx.cs.VOR, td, DrawLeft)
 	}
 	if rs.DrawNDBNames {
-		drawloc(rs.DrawEverything || rs.DrawNDBs, rs.NDBsToDraw, world.NDBs, ctx.cs.NDB, td, DrawLeft)
+		drawloc(rs.DrawEverything || rs.DrawNDBs, rs.NDBsToDraw, database.NDBs, ctx.cs.NDB, td, DrawLeft)
 	}
 	if rs.DrawFixNames {
-		drawloc(rs.DrawEverything || rs.DrawFixes, rs.FixesToDraw, world.fixes, ctx.cs.Fix, td, DrawRight)
+		drawloc(rs.DrawEverything || rs.DrawFixes, rs.FixesToDraw, database.fixes, ctx.cs.Fix, td, DrawRight)
 	}
 	if rs.DrawAirportNames {
-		drawloc(rs.DrawEverything || rs.DrawAirports, rs.AirportsToDraw, world.airports, ctx.cs.Airport, td, DrawBelow)
+		drawloc(rs.DrawEverything || rs.DrawAirports, rs.AirportsToDraw, database.airports, ctx.cs.Airport, td, DrawBelow)
 	}
 	td.GenerateCommands(&rs.textCommandBuffer)
 }
@@ -1055,7 +1055,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 			dalt := back.aircraft.Altitude() - front.aircraft.Altitude()
 			backHeading := back.aircraft.Heading()
 			angle := headingp2ll(back.aircraft.Position(), front.aircraft.Position(),
-				world.MagneticVariation)
+				database.MagneticVariation)
 			diff := headingDifference(backHeading, angle)
 
 			return diff < 150 && dalt < 3000
@@ -1152,10 +1152,12 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 		rs.linesDrawBuilder.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), color)
 		rs.linesDrawBuilder.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), color)
 		rs.linesDrawBuilder.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), color)
-	} else if tc, ok := world.trackingController[ac.Callsign()]; ok {
+	} else if controller := server.GetTrackingController(ac.Callsign()); controller != "" {
 		ch := "?"
-		if controller, ok := world.controllers[tc]; ok && controller.position != nil {
-			ch = controller.position.scope
+		if ctrl := server.GetController(controller); ctrl != nil {
+			if pos := ctrl.GetPosition(); pos != nil {
+				ch = pos.scope
+			}
 		}
 		pw := windowFromLatLongP(p)
 		td.AddTextCentered(ch, pw, TextStyle{font: rs.datablockFont, color: color})
@@ -1173,7 +1175,7 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p [2]float32) Point2LL,
 	windowFromLatLongP func(p Point2LL) [2]float32) {
 	td := rs.getScratchTextDrawBuilder()
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1207,7 +1209,7 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowF
 			squawkCount[ac.squawk]++
 		}
 	}
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1281,7 +1283,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 		return v
 	}
 
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	if !rs.AutomaticDatablockLayout {
 		// layout just wrt our own track; ignore everyone else
 		for ac, state := range rs.aircraft {
@@ -1505,11 +1507,12 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 	}
 
 	callsign := ac.Callsign()
-	if tc, ok := world.trackingController[callsign]; ok && tc == world.server.Callsign() {
-		if _, ok := world.inboundHandoff[callsign]; ok {
+	controller := server.GetTrackingController(callsign)
+	if controller != "" && controller == server.Callsign() {
+		if server.InboundHandoffController(callsign) != "" {
 			return cs.HandingOffDataBlock
 		}
-		if _, ok := world.outboundHandoff[callsign]; ok {
+		if server.OutboundHandoffController(callsign) != "" {
 			return cs.HandingOffDataBlock
 		}
 		return cs.TrackedDataBlock
@@ -1541,7 +1544,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		}
 	})
 	td := rs.getScratchTextDrawBuilder()
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	actualNow := time.Now()
 	for _, ac := range aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
@@ -1623,7 +1626,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 		return
 	}
 
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1659,7 +1662,7 @@ type Conflict struct {
 func (rs *RadarScopePane) getConflicts() (warning []Conflict, violation []Conflict) {
 	aircraft, state := FlattenMap(rs.aircraft)
 
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	for i, ac1 := range aircraft {
 		if state[i].isGhost || ac1.LostTrack(now) ||
 			ac1.Altitude() < int(rs.MinAltitude) || ac1.Altitude() > int(rs.MaxAltitude) {
@@ -1674,14 +1677,14 @@ func (rs *RadarScopePane) getConflicts() (warning []Conflict, violation []Confli
 			}
 
 			var r RangeLimits
-			if ac1.flightPlan.rules == IFR {
-				if ac2.flightPlan.rules == IFR {
+			if ac1.flightPlan != nil && ac1.flightPlan.rules == IFR {
+				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
 					r = rs.RangeLimits[IFR_IFR]
 				} else {
 					r = rs.RangeLimits[IFR_VFR]
 				}
 			} else {
-				if ac2.flightPlan.rules == IFR {
+				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
 					r = rs.RangeLimits[IFR_VFR]
 				} else {
 					r = rs.RangeLimits[VFR_VFR]
@@ -1804,15 +1807,15 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 	case RangeIndicatorRings:
 		for _, w := range warnings {
 			nsegs := 360
-			xradius := w.limits.WarningLateral / world.NmPerLongitude
-			yradius := w.limits.WarningLateral / world.NmPerLatitude
+			xradius := w.limits.WarningLateral / database.NmPerLongitude
+			yradius := w.limits.WarningLateral / database.NmPerLatitude
 			rs.linesDrawBuilder.AddCircle(w.aircraft[0].Position(), xradius, yradius, nsegs, ctx.cs.Caution)
 			rs.linesDrawBuilder.AddCircle(w.aircraft[1].Position(), xradius, yradius, nsegs, ctx.cs.Caution)
 		}
 		for _, v := range violations {
 			nsegs := 360
-			xradius := v.limits.ViolationLateral / world.NmPerLongitude
-			yradius := v.limits.ViolationLateral / world.NmPerLatitude
+			xradius := v.limits.ViolationLateral / database.NmPerLongitude
+			yradius := v.limits.ViolationLateral / database.NmPerLatitude
 			rs.linesDrawBuilder.AddCircle(v.aircraft[0].Position(), xradius, yradius, nsegs, ctx.cs.Error)
 			rs.linesDrawBuilder.AddCircle(v.aircraft[1].Position(), xradius, yradius, nsegs, ctx.cs.Error)
 		}
@@ -1863,7 +1866,7 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 	dist := nmdistance2ll(p0, p1)
 
 	// heading and reciprocal
-	hdg := int(headingp2ll(p0, p1, world.MagneticVariation) + 0.5)
+	hdg := int(headingp2ll(p0, p1, database.MagneticVariation) + 0.5)
 	if hdg == 0 {
 		hdg = 360
 	}
@@ -1918,7 +1921,7 @@ func (rs *RadarScopePane) drawRoute(ctx *PaneContext, latLongFromWindowV func([2
 
 	var pPrev Point2LL
 	for _, waypoint := range strings.Split(positionConfig.drawnRoute, " ") {
-		if p, ok := world.Locate(waypoint); !ok {
+		if p, ok := database.Locate(waypoint); !ok {
 			// no worries; most likely it's a SID, STAR, or airway..
 		} else {
 			if !pPrev.IsZero() {
@@ -1999,7 +2002,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		}
 
 		// And now check and see if we clicked on a datablock (TODO: check for held)
-		now := world.CurrentTime()
+		now := server.CurrentTime()
 		for ac, state := range rs.aircraft {
 			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 				continue
@@ -2052,7 +2055,7 @@ func NewCRDAConfig() CRDAConfig {
 }
 
 func (c *CRDAConfig) getRunway(n string) *Runway {
-	for _, rwy := range world.runways[c.Airport] {
+	for _, rwy := range database.runways[c.Airport] {
 		if rwy.number == n {
 			return &rwy
 		}
@@ -2061,12 +2064,12 @@ func (c *CRDAConfig) getRunway(n string) *Runway {
 }
 
 func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway) {
-	for i, rwy := range world.runways[c.Airport] {
+	for i, rwy := range database.runways[c.Airport] {
 		if rwy.number == c.PrimaryRunway {
-			ghostSource = &world.runways[c.Airport][i]
+			ghostSource = &database.runways[c.Airport][i]
 		}
 		if rwy.number == c.SecondaryRunway {
-			ghostDestination = &world.runways[c.Airport][i]
+			ghostDestination = &database.runways[c.Airport][i]
 		}
 	}
 
@@ -2104,7 +2107,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		return nil
 	}
 
-	airport, ok := world.FAA.airports[c.Airport]
+	airport, ok := database.FAA.airports[c.Airport]
 	if !ok {
 		lg.Printf("%s: airport unknown?!", c.Airport)
 		return nil
@@ -2121,7 +2124,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	// Is it on the glideslope?
 	// Laterally: compute the heading to the threshold and compare to the
 	// glideslope's lateral spread.
-	h := headingp2ll(ac.Position(), src.threshold, world.MagneticVariation)
+	h := headingp2ll(ac.Position(), src.threshold, database.MagneticVariation)
 	if fabs(h-src.heading) > c.GlideslopeLateralSpread {
 		return nil
 	}
@@ -2186,7 +2189,7 @@ func (c *CRDAConfig) DrawUI() bool {
 
 	flags := imgui.InputTextFlagsCharsUppercase | imgui.InputTextFlagsCharsNoBlank
 	imgui.InputTextV("Airport", &c.Airport, flags, nil)
-	if runways, ok := world.runways[c.Airport]; !ok {
+	if runways, ok := database.runways[c.Airport]; !ok {
 		if c.Airport != "" {
 			color := positionConfig.GetColorScheme().TextError
 			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
@@ -2294,8 +2297,8 @@ func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
 
 	// we have the runway heading, but we want to go the opposite direction
 	// and then +/- HeadingTolerance.
-	rota := src.heading + 180 - rs.CRDAConfig.GlideslopeLateralSpread - world.MagneticVariation
-	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - world.MagneticVariation
+	rota := src.heading + 180 - rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
+	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
 	sa, ca := sin(radians(rota)), cos(radians(rota))
@@ -2354,6 +2357,11 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	alt100s := (ac.Altitude() + 50) / 100
 	speed := ac.GroundSpeed()
 	fp := ac.flightPlan
+
+	if fp == nil {
+		return ac.squawk.String() + fmt.Sprintf(" %03d", alt100s)
+	}
+
 	actype := fp.TypeWithoutSuffix()
 	if actype != "" {
 		// So we can unconditionally print it..
@@ -2521,7 +2529,7 @@ func (rs *RadarScopePane) vectorLineEnd(ac *Aircraft) Point2LL {
 		// solve (sx t hx)^2 + (hy t hy)^2 = l^2 ->
 		// t = sqrt(l^2 / ((sx hx)^2 + (sy hy)^2)
 		h := ac.HeadingVector()
-		t := sqrt(sqr(rs.VectorLineExtent) / (sqr(h[1]*world.NmPerLatitude) + sqr(h[0]*world.NmPerLongitude)))
+		t := sqrt(sqr(rs.VectorLineExtent) / (sqr(h[1]*database.NmPerLatitude) + sqr(h[0]*database.NmPerLongitude)))
 		return add2ll(ac.Position(), scale2ll(h, t))
 
 	case VectorLineMinutes:

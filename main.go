@@ -21,6 +21,8 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
+const ViceVersionString = "vice v0.1"
+
 var (
 	// There are a handful of widely-used global variables in vice, all
 	// defined here.  While in principle it would be nice to have fewer (or
@@ -34,13 +36,16 @@ var (
 	platform       Platform
 	renderer       Renderer
 	stats          Stats
-	world          *World
+	database       *StaticDatabase
+	server         ControlServer
+	controlUpdates *ControlUpdates
 	lg             *Logger
 
 	//go:embed resources/version.txt
 	buildVersion string
 
 	// Command-line options are only used for developer features.
+	logTraffic = flag.Bool("log-traffic", false, "log all network traffic")
 	cpuprofile = flag.String("cpuprofile", "", "write CPU profile to file")
 	memprofile = flag.String("memprofile", "", "write memory profile to this file")
 	devmode    = flag.Bool("devmode", false, "developer mode")
@@ -95,7 +100,8 @@ func main() {
 
 	context = imguiInit()
 
-	world = NewWorld()
+	database = InitializeStaticDatabase()
+	server = &DisconnectedControlServer{}
 
 	var err error
 	if err = audioInit(); err != nil {
@@ -132,6 +138,8 @@ func main() {
 	// Renderer is created since it creates the font atlas immediately.
 	fontsInit()
 
+	vatsimInit()
+
 	wmInit()
 
 	// We need to hold off on making the config active until after Platform
@@ -145,15 +153,17 @@ func main() {
 
 	uiInit(renderer)
 
+	controlUpdates = NewControlUpdates()
+
 	// These will appear the first time vice is launched and the user
 	// hasn't yet set these up.  (And also if the chosen files are moved or
 	// deleted, etc...)
-	if err = world.LoadSectorFile(globalConfig.SectorFile); err != nil {
+	if err = database.LoadSectorFile(globalConfig.SectorFile); err != nil {
 		ui.errorText["SECTORFILE"] = "Unable to load sector file. Please specify a new one using Settings/General..."
 	} else {
-		world.SetColorScheme(positionConfig.GetColorScheme())
+		database.SetColorScheme(positionConfig.GetColorScheme())
 	}
-	if err = world.LoadPositionFile(globalConfig.PositionFile); err != nil {
+	if err = database.LoadPositionFile(globalConfig.PositionFile); err != nil {
 		ui.errorText["POSITIONFILE"] = "Unable to load position file. Please specify a new one using Settings/General..."
 	}
 
@@ -166,7 +176,7 @@ func main() {
 	var lastDrawDisplaySize [2]float32
 	stats.startTime = time.Now()
 	for {
-		platform.SetWindowTitle("vice: " + globalConfig.ActivePosition + " " + world.WindowTitle())
+		platform.SetWindowTitle("vice: config: " + globalConfig.ActivePosition + server.GetWindowTitle())
 
 		// Inform imgui about input events from the user.
 		anyEvents := platform.ProcessEvents()
@@ -192,10 +202,15 @@ func main() {
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes and the active positionConfig.
-		worldUpdates := world.Update()
-		if worldUpdates != nil {
-			positionConfig.Update(worldUpdates)
-			wmShareUpdates(worldUpdates)
+		server.GetUpdates()
+		if !controlUpdates.NoUpdates() {
+			positionConfig.Update(controlUpdates)
+			wmShareUpdates(controlUpdates)
+			audioProcessUpdates(controlUpdates)
+
+			// Reset updates here since we may add new updates in the following
+			// draw calls that we'd like to have reported the next time around.
+			controlUpdates.Reset()
 		}
 		timeMarker(&stats.processMessages)
 
@@ -226,21 +241,19 @@ func main() {
 			if !wantExit {
 				wantExit = true
 
-				if world.Connected() {
+				if server.Connected() {
 					uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
 						title: "Disconnect?",
 						query: "Currently connected. Ok to disconnect?",
 						ok: func() {
-							err := world.Disconnect()
-							if err != nil {
-								lg.Errorf("Disconnect: %v", err)
-							}
+							server.Disconnect()
+							server = &DisconnectedControlServer{}
 						},
 						notok: func() {
 							platform.CancelShouldStop()
 							wantExit = false
 						},
-					}))
+					}), false)
 				}
 
 				// Grab assorted things that may have changed during this session.

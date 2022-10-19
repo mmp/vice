@@ -59,7 +59,7 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 
 func (s *SplitLine) Activate(cs *ColorScheme)     {}
 func (s *SplitLine) Deactivate()                  {}
-func (s *SplitLine) Update(updates *WorldUpdates) {}
+func (s *SplitLine) Update(updates *ControlUpdates) {}
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
@@ -410,7 +410,7 @@ func wmInit() {
 	lg.Printf("Finished wm initialization")
 }
 
-func wmShareUpdates(worldUpdates *WorldUpdates) {
+func wmShareUpdates(worldUpdates *ControlUpdates) {
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 		pane.Update(worldUpdates)
 	})

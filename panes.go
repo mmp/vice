@@ -25,7 +25,7 @@ type Pane interface {
 
 	Activate(cs *ColorScheme)
 	Deactivate()
-	Update(updates *WorldUpdates)
+	Update(updates *ControlUpdates)
 
 	Draw(ctx *PaneContext, cb *CommandBuffer)
 }
@@ -197,16 +197,15 @@ type Departure struct {
 
 func getDistanceSortedArrivals() []Arrival {
 	var arr []Arrival
-	now := world.CurrentTime()
-	for _, ac := range world.aircraft {
-		if !positionConfig.IsActiveAirport(ac.flightPlan.arrive) || ac.OnGround() || ac.LostTrack(now) {
-			continue
-		}
-
+	now := server.CurrentTime()
+	for _, ac := range server.GetFilteredAircraft(func(ac *Aircraft) bool {
+		return !ac.OnGround() && !ac.LostTrack(now) && ac.flightPlan != nil &&
+			positionConfig.IsActiveAirport(ac.flightPlan.arrive)
+	}) {
 		pos := ac.Position()
 		// Filter ones where we don't have a valid position
 		if pos[0] != 0 && pos[1] != 0 {
-			dist := nmdistance2ll(world.FAA.airports[ac.flightPlan.arrive].location, pos)
+			dist := nmdistance2ll(database.FAA.airports[ac.flightPlan.arrive].location, pos)
 			sortDist := dist + float32(ac.Altitude())/300.
 			arr = append(arr, Arrival{aircraft: ac, distance: dist, sortDistance: sortDist})
 		}
@@ -219,7 +218,7 @@ func getDistanceSortedArrivals() []Arrival {
 	return arr
 }
 
-func (a *AirportInfoPane) Update(updates *WorldUpdates) {}
+func (a *AirportInfoPane) Update(updates *ControlUpdates) {}
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cs := ctx.cs
@@ -239,15 +238,15 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		style = TextStyle{font: a.font, color: cs.Text} // a reasonable default
 	}
 
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	if a.ShowTime {
 		str.WriteString(now.UTC().Format("Time: 15:04:05Z\n\n"))
 	}
 
 	if a.ShowMETAR {
-		var metar []METAR
-		for _, m := range world.metar {
-			if _, ok := a.Airports[m.airport]; ok {
+		var metar []*METAR
+		for ap := range a.Airports {
+			if m := server.GetMETAR(ap); m != nil {
 				metar = append(metar, m)
 			}
 		}
@@ -278,9 +277,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	if a.ShowATIS {
 		var atis []string
-		for issuer, a := range world.atis {
-			if positionConfig.IsActiveAirport(issuer[:4]) {
-				atis = append(atis, fmt.Sprintf("  %-12s: %s", issuer, a))
+		for ap := range positionConfig.ActiveAirports {
+			if contents := server.GetATIS(ap); contents != "" {
+				atis = append(atis, fmt.Sprintf("  %-12s: %s", ap, contents))
 			}
 		}
 		if len(atis) > 0 {
@@ -295,11 +294,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	var uncleared, departures, airborne []Departure
-	for _, ac := range world.aircraft {
-		if ac.LostTrack(now) {
-			continue
-		}
-
+	for _, ac := range server.GetFilteredAircraft(func(ac *Aircraft) bool {
+		return ac.flightPlan != nil && !ac.LostTrack(now)
+	}) {
 		if positionConfig.IsActiveAirport(ac.flightPlan.depart) {
 			if ac.OnGround() {
 				if ac.assignedSquawk == 0 {
@@ -366,9 +363,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if a.ShowDeparted && len(airborne) > 0 {
 		sort.Slice(airborne, func(i, j int) bool {
 			ai := &airborne[i]
-			di := nmdistance2ll(world.FAA.airports[ai.flightPlan.arrive].location, ai.Position())
+			di := nmdistance2ll(database.FAA.airports[ai.flightPlan.arrive].location, ai.Position())
 			aj := &airborne[j]
-			dj := nmdistance2ll(world.FAA.airports[aj.flightPlan.arrive].location, aj.Position())
+			dj := nmdistance2ll(database.FAA.airports[aj.flightPlan.arrive].location, aj.Position())
 			return di < dj
 		})
 
@@ -411,18 +408,17 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		str.WriteString("\n")
 	}
 
-	if a.ShowControllers && len(world.controllers) > 0 {
+	controllers := server.GetAllControllers()
+	if a.ShowControllers && len(controllers) > 0 {
 		str.WriteString("Controllers:\n")
 
-		sorted := SortedMapKeys(world.controllers)
 		for _, suffix := range []string{"CTR", "APP", "DEP", "TWR", "GND", "DEL", "FSS", "ATIS", "OBS"} {
 			first := true
-			for _, c := range sorted {
-				if !strings.HasSuffix(c, suffix) {
+			for _, ctrl := range controllers {
+				if server.Callsign() == ctrl.callsign || !strings.HasSuffix(ctrl.callsign, suffix) {
 					continue
 				}
 
-				ctrl := world.controllers[c]
 				if ctrl.frequency == 0 {
 					continue
 				}
@@ -445,8 +441,8 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					flush()
 				}
 
-				if ctrl.position != nil {
-					str.WriteString(fmt.Sprintf(" %-3s %s", ctrl.position.sectorId, ctrl.position.scope))
+				if pos := ctrl.GetPosition(); pos != nil {
+					str.WriteString(fmt.Sprintf(" %-3s %s", pos.sectorId, pos.scope))
 				}
 				str.WriteString("\n")
 			}
@@ -473,9 +469,9 @@ type EmptyPane struct{}
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(cs *ColorScheme)     {}
-func (ep *EmptyPane) Deactivate()                  {}
-func (ep *EmptyPane) Update(updates *WorldUpdates) {}
+func (ep *EmptyPane) Activate(cs *ColorScheme)       {}
+func (ep *EmptyPane) Deactivate()                    {}
+func (ep *EmptyPane) Update(updates *ControlUpdates) {}
 
 func (ep *EmptyPane) Duplicate(nameAsCopy bool) Pane { return &EmptyPane{} }
 func (ep *EmptyPane) Name() string                   { return "(Empty)" }
@@ -506,8 +502,8 @@ func (fp *FlightPlanPane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (fp *FlightPlanPane) Deactivate()                  {}
-func (fp *FlightPlanPane) Update(updates *WorldUpdates) {}
+func (fp *FlightPlanPane) Deactivate()                    {}
+func (fp *FlightPlanPane) Update(updates *ControlUpdates) {}
 
 func (fp *FlightPlanPane) DrawUI() {
 	imgui.Checkbox("Show remarks", &fp.ShowRemarks)
@@ -578,7 +574,7 @@ func (nv *NotesViewPane) Activate(cs *ColorScheme) {
 
 func (nv *NotesViewPane) Deactivate() {}
 
-func (nv *NotesViewPane) Update(updates *WorldUpdates) {}
+func (nv *NotesViewPane) Update(updates *ControlUpdates) {}
 
 func (nv *NotesViewPane) Duplicate(nameAsCopy bool) Pane {
 	return &NotesViewPane{
@@ -751,8 +747,8 @@ func (pp *PerformancePane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (pp *PerformancePane) Deactivate()                  {}
-func (pp *PerformancePane) Update(updates *WorldUpdates) {}
+func (pp *PerformancePane) Deactivate()                    {}
+func (pp *PerformancePane) Update(updates *ControlUpdates) {}
 
 func (pp *PerformancePane) Name() string { return "Performance Information" }
 
@@ -884,9 +880,9 @@ func (rp *ReminderPane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (rp *ReminderPane) Deactivate()                  {}
-func (rp *ReminderPane) Update(updates *WorldUpdates) {}
-func (rp *ReminderPane) Name() string                 { return "Reminders" }
+func (rp *ReminderPane) Deactivate()                    {}
+func (rp *ReminderPane) Update(updates *ControlUpdates) {}
+func (rp *ReminderPane) Name() string                   { return "Reminders" }
 
 func (rp *ReminderPane) DrawUI() {
 	if newFont, changed := DrawFontPicker(&rp.FontIdentifier, "Font"); changed {

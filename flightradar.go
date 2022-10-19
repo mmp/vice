@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -19,8 +20,9 @@ import (
 // interface that serves aircraft data from flightradar24.com. Almost all
 // of the ControlServer method implementations are empty in that we aren't
 // able to control real-world aircraft from vice...
+
 type FlightRadarServer struct {
-	client      ControlClient
+	aircraft    map[string]*Aircraft
 	lastRequest time.Time
 }
 
@@ -47,36 +49,117 @@ type FlightRadarResponse struct {
 	airline      string
 }
 
-func (fr *FlightRadarServer) SetSquawk(callsign string, squawk Squawk)           {}
-func (fr *FlightRadarServer) SetScratchpad(callsign string, scratchpad string)   {}
-func (fr *FlightRadarServer) SetRoute(callsign string, route string)             {}
-func (fr *FlightRadarServer) SetDeparture(callsign string, airport string)       {}
-func (fr *FlightRadarServer) SetArrival(callsign string, airport string)         {}
-func (fr *FlightRadarServer) SetAltitude(callsign string, alt int)               {}
-func (fr *FlightRadarServer) SetTemporaryAltitude(callsign string, alt int)      {}
-func (fr *FlightRadarServer) SetAircraftType(callsign string, ac string)         {}
-func (fr *FlightRadarServer) SetFlightRules(callsign string, r FlightRules)      {}
-func (fr *FlightRadarServer) PushFlightStrip(callsign string, controller string) {}
-func (fr *FlightRadarServer) InitiateTrack(callsign string)                      {}
-func (fr *FlightRadarServer) Handoff(callsign string, controller string)         {}
-func (fr *FlightRadarServer) AcceptHandoff(callsign string)                      {}
-func (fr *FlightRadarServer) RejectHandoff(callsign string)                      {}
-func (fr *FlightRadarServer) DropTrack(callsign string)                          {}
-func (fr *FlightRadarServer) PointOut(callsign string, controller string)        {}
-func (fr *FlightRadarServer) SendTextMessage(m TextMessage)                      {}
-func (fr *FlightRadarServer) Description() string                                { return "FlightRadar" }
-func (fr *FlightRadarServer) GetWindowTitle() string                             { return "FlightRadar" }
-func (fr *FlightRadarServer) Disconnect()                                        {}
-func (fr *FlightRadarServer) Connected() bool                                    { return true }
-func (fr *FlightRadarServer) Callsign() string                                   { return "(none)" }
-func (fr *FlightRadarServer) CurrentTime() time.Time                             { return time.Now() }
+func (fr *FlightRadarServer) GetAircraft(callsign string) *Aircraft {
+	if fr.aircraft == nil {
+		return nil
+	}
+	if ac, ok := fr.aircraft[callsign]; ok {
+		return ac
+	} else {
+		return nil
+	}
+}
 
-// GetUpdates is the only ControlServer interface method that
-// FlightRadarServer implements. It passes along as much information as it
-// has at hand to its ControlClient.
+func (fr *FlightRadarServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
+	var filtered []*Aircraft
+	for _, ac := range fr.aircraft {
+		if filter(ac) {
+			filtered = append(filtered, ac)
+		}
+	}
+	return filtered
+}
+
+func (fr *FlightRadarServer) GetAllAircraft() []*Aircraft {
+	_, ac := FlattenMap(fr.aircraft)
+	return ac
+}
+
+var ControlUnsupported = errors.New("Controlling is not possible with a FlightRadar connection")
+
+func (fr *FlightRadarServer) GetMETAR(location string) *METAR                  { return nil }
+func (fr *FlightRadarServer) GetATIS(airport string) string                    { return "" }
+func (fr *FlightRadarServer) GetUser(callsign string) *User                    { return nil }
+func (fr *FlightRadarServer) GetController(callsign string) *Controller        { return nil }
+func (fr *FlightRadarServer) GetAllControllers() []*Controller                 { return nil }
+func (fr *FlightRadarServer) GetTrackingController(callsign string) string     { return "" }
+func (fr *FlightRadarServer) InboundHandoffController(callsign string) string  { return "" }
+func (fr *FlightRadarServer) OutboundHandoffController(callsign string) string { return "" }
+
+func (fr *FlightRadarServer) SetSquawk(callsign string, squawk Squawk) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) SetSquawkAutomatic(callsign string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) SetScratchpad(callsign string, scratchpad string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) SetTemporaryAltitude(callsign string, alt int) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) SetVoiceType(callsign string, voice string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) AmendFlightPlan(callsign string, fp FlightPlan) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) PushFlightStrip(fs FlightStrip, controller string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) InitiateTrack(callsign string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) Handoff(callsign string, controller string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) AcceptHandoff(callsign string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) RejectHandoff(callsign string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) DropTrack(callsign string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) PointOut(callsign string, controller string) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) SendTextMessage(m TextMessage) error {
+	return ControlUnsupported
+}
+
+func (fr *FlightRadarServer) GetWindowTitle() string { return "FlightRadar" }
+func (fr *FlightRadarServer) Connected() bool        { return fr.aircraft != nil }
+
+func (fr *FlightRadarServer) Disconnect() {
+	for _, ac := range fr.aircraft {
+		delete(controlUpdates.addedAircraft, ac)
+		delete(controlUpdates.modifiedAircraft, ac)
+		controlUpdates.removedAircraft[ac] = nil
+	}
+	fr.aircraft = nil
+}
+
+func (fr *FlightRadarServer) Callsign() string       { return "(none)" }
+func (fr *FlightRadarServer) CurrentTime() time.Time { return time.Now() }
+
 func (fr *FlightRadarServer) GetUpdates() {
 	// Don't poke flight rader more frequently than every 5s
-	if time.Since(fr.lastRequest) < 5*time.Second {
+	if fr.aircraft == nil || time.Since(fr.lastRequest) < 5*time.Second {
 		return
 	}
 
@@ -97,10 +180,10 @@ func (fr *FlightRadarServer) GetUpdates() {
 	})
 
 	request := fmt.Sprintf("https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds=%.2f,%.2f,%.2f,%.2f&faa=1&satellite=1&vehicles=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&estimated=1&maxage=30",
-		center.Latitude()+radius/world.NmPerLatitude,
-		center.Latitude()-radius/world.NmPerLatitude,
-		center.Longitude()-radius/world.NmPerLongitude,
-		center.Longitude()+radius/world.NmPerLongitude)
+		center.Latitude()+radius/database.NmPerLatitude,
+		center.Latitude()-radius/database.NmPerLatitude,
+		center.Longitude()-radius/database.NmPerLongitude,
+		center.Longitude()+radius/database.NmPerLongitude)
 
 	fr.lastRequest = time.Now()
 	response, err := http.Get(request)
@@ -173,12 +256,28 @@ func (fr *FlightRadarServer) GetUpdates() {
 					position: Point2LL{f.longitude, f.latitude},
 					altitude: f.altitude, groundspeed: f.speed,
 					time: time.Now()}
-				fr.client.PositionReceived(f.callsign, pos, squawk, Charlie)
+
+				var ac *Aircraft
+				var ok bool
+				if ac, ok = fr.aircraft[f.callsign]; !ok {
+					ac = &Aircraft{callsign: f.callsign}
+					ac.flightPlan = &FlightPlan{}
+					ac.flightPlan.depart = f.origin
+					ac.flightPlan.arrive = f.destination
+					ac.flightPlan.actype = f.model
+					fr.aircraft[f.callsign] = ac
+					ac.mode = Charlie
+					controlUpdates.addedAircraft[ac] = nil
+				} else {
+					controlUpdates.modifiedAircraft[ac] = nil
+				}
+				ac.squawk = squawk
+				ac.AddTrack(pos)
 			}
 		}
 	}
 }
 
-func NewFlightRadarServer(c ControlClient) *FlightRadarServer {
-	return &FlightRadarServer{client: c}
+func NewFlightRadarServer() *FlightRadarServer {
+	return &FlightRadarServer{aircraft: make(map[string]*Aircraft)}
 }

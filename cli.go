@@ -49,6 +49,7 @@ var (
 		&SetIFRCommand{},
 		&SetScratchpadCommand{},
 		&SetSquawkCommand{},
+		&SetVoiceCommand{},
 		&SetVFRCommand{},
 
 		&EditRouteCommand{},
@@ -239,7 +240,7 @@ func (cli *CLIPane) ErrorReported(msg string) {
 	}
 }
 
-func (cli *CLIPane) Update(updates *WorldUpdates) {
+func (cli *CLIPane) Update(updates *ControlUpdates) {
 	// Add any text/radio messages to the console
 	for _, m := range updates.messages {
 		switch m.messageType {
@@ -253,7 +254,7 @@ func (cli *CLIPane) Update(updates *WorldUpdates) {
 			cli.AddConsoleEntry([]string{"[ATC] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 		case TextFrequency:
-			fm := world.MonitoredFrequencies(m.frequencies)
+			fm := positionConfig.MonitoredFrequencies(m.frequencies)
 			if len(fm) > 0 {
 				freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
 				cli.AddConsoleEntry([]string{freq + ": ", m.contents},
@@ -709,24 +710,18 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 }
 
 func matchingAircraft(s string) []*Aircraft {
-	var matches []*Aircraft
 	s = strings.ToUpper(s)
 
 	// if there's an exact match, then take that.
-	if ac, ok := world.aircraft[s]; ok {
-		matches = append(matches, ac)
-		return matches
+	if ac := server.GetAircraft(s); ac != nil {
+		return []*Aircraft{ac}
 	}
 
 	// Otherwise return all that match
-	now := world.CurrentTime()
-	for _, ac := range world.aircraft {
-		if !ac.LostTrack(now) && strings.Contains(ac.Callsign(), s) {
-			matches = append(matches, ac)
-		}
-	}
-
-	return matches
+	now := server.CurrentTime()
+	return server.GetFilteredAircraft(func(ac *Aircraft) bool {
+		return !ac.LostTrack(now) && strings.Contains(ac.Callsign(), s)
+	})
 }
 
 func lookupCommand(n string) Command {
@@ -833,8 +828,8 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		}
 
 		metararg := func(airport string, str func(m *METAR) string) {
-			if m, ok := world.metar[strings.ToUpper(airport)]; ok {
-				finalArgs = append(finalArgs, str(&m))
+			if m := server.GetMETAR(strings.ToUpper(airport)); m != nil {
+				finalArgs = append(finalArgs, str(m))
 			} else if err == nil {
 				err = fmt.Errorf("%s: METAR for airport is not available.", airport)
 			}
@@ -842,7 +837,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		fixarg := func(fix string, str func(a *Aircraft, pos Point2LL) string) {
 			if positionConfig.selectedAircraft != nil {
-				if pos, ok := world.Locate(fix); !ok {
+				if pos, ok := database.Locate(fix); !ok {
 					err = fmt.Errorf("%s: fix is unknown.", fix)
 				} else if !pos.IsZero() {
 					finalArgs = append(finalArgs, str(positionConfig.selectedAircraft, pos))
@@ -868,14 +863,16 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		// Functions: $type, $radioname, $freq, $atccallsign
 		switch arg[1:] {
 		case "aircraft":
-			acarg(func(ac *Aircraft) string { return ac.flightPlan.callsign })
+			acarg(func(ac *Aircraft) string { return ac.callsign })
 
 		case "alt":
 			acarg(func(ac *Aircraft) string {
 				if ac.tempAltitude != 0 {
 					return fmt.Sprintf("%d", ac.tempAltitude)
-				} else {
+				} else if ac.flightPlan != nil {
 					return fmt.Sprintf("%d", ac.flightPlan.altitude)
+				} else {
+					return "???"
 				}
 			})
 
@@ -883,13 +880,19 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 			metararg(funarg(), func(m *METAR) string { return m.altimeter })
 
 		case "arr":
-			acarg(func(ac *Aircraft) string { return ac.flightPlan.arrive })
+			acarg(func(ac *Aircraft) string {
+				if ac.flightPlan != nil {
+					return ac.flightPlan.arrive
+				} else {
+					return "????"
+				}
+			})
 
 		case "bear":
 			// this currently gives the direction to fix with respect to
 			// the aircraft, so e.g. "Kennedy is to your $bear(kjfk)"
 			fixarg(funarg(), func(ac *Aircraft, p Point2LL) string {
-				heading := headingp2ll(ac.Position(), p, world.MagneticVariation)
+				heading := headingp2ll(ac.Position(), p, database.MagneticVariation)
 				return compass(heading)
 			})
 
@@ -897,10 +900,22 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.Altitude()) })
 
 		case "cruise":
-			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.flightPlan.altitude) })
+			acarg(func(ac *Aircraft) string {
+				if ac.flightPlan != nil {
+					return fmt.Sprintf("%d", ac.flightPlan.altitude)
+				} else {
+					return "????"
+				}
+			})
 
 		case "dep":
-			acarg(func(ac *Aircraft) string { return ac.flightPlan.depart })
+			acarg(func(ac *Aircraft) string {
+				if ac.flightPlan != nil {
+					return ac.flightPlan.depart
+				} else {
+					return "????"
+				}
+			})
 
 		case "dist":
 			fixarg(funarg(), func(ac *Aircraft, p Point2LL) string {
@@ -935,12 +950,18 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "oclock":
 			fixarg(funarg(), func(ac *Aircraft, p Point2LL) string {
-				heading := headingp2ll(ac.Position(), p, world.MagneticVariation) - ac.Heading()
+				heading := headingp2ll(ac.Position(), p, database.MagneticVariation) - ac.Heading()
 				return fmt.Sprintf("%d", headingAsHour(heading))
 			})
 
 		case "route":
-			acarg(func(ac *Aircraft) string { return ac.flightPlan.route })
+			acarg(func(ac *Aircraft) string {
+				if ac.flightPlan != nil {
+					return ac.flightPlan.route
+				} else {
+					return "????"
+				}
+			})
 
 		case "squawk":
 			acarg(func(ac *Aircraft) string {
@@ -962,6 +983,10 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "winds":
 			acarg(func(ac *Aircraft) string {
+				if ac.flightPlan == nil {
+					return "???"
+				}
+
 				var airport, aptype string
 				if ac.OnGround() {
 					airport = strings.ToUpper(ac.flightPlan.depart)
@@ -971,7 +996,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 					aptype = "arrival"
 				}
 
-				if m, ok := world.metar[airport]; ok {
+				if m := server.GetMETAR(airport); m != nil {
 					return m.wind
 				} else if err == nil {
 					err = fmt.Errorf("%s: METAR for %s airport is not available.", airport, aptype)
@@ -1189,7 +1214,9 @@ func (*SetACTypeCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*SetACTypeCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", world.SetAircraftType(callsign, strings.ToUpper(args[0]))
+	return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
+		fp.actype = strings.ToUpper(args[0])
+	})
 }
 
 type SetAltitudeCommand struct {
@@ -1232,9 +1259,11 @@ func (sa *SetAltitudeCommand) Run(cli *CLIPane, args []string) (string, error) {
 	}
 
 	if sa.isTemporary {
-		err = world.SetTemporaryAltitude(callsign, altitude)
+		err = server.SetTemporaryAltitude(callsign, altitude)
 	} else {
-		err = world.SetAltitude(callsign, altitude)
+		return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
+			fp.altitude = altitude
+		})
 	}
 	return "", err
 }
@@ -1257,7 +1286,12 @@ func (*SetArrivalCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*SetArrivalCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", world.SetArrival(callsign, strings.ToUpper(args[0]))
+	if len(args[0]) > 5 {
+		return "", ErrAirportTooLong
+	}
+	return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
+		fp.arrive = strings.ToUpper(args[0])
+	})
 }
 
 type SetDepartureCommand struct{}
@@ -1278,7 +1312,12 @@ func (*SetDepartureCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat 
 }
 func (*SetDepartureCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", world.SetDeparture(callsign, strings.ToUpper(args[0]))
+	if len(args[0]) > 5 {
+		return "", ErrAirportTooLong
+	}
+	return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
+		fp.depart = strings.ToUpper(args[0])
+	})
 }
 
 type SetEquipmentSuffixCommand struct{}
@@ -1299,17 +1338,19 @@ func (*SetEquipmentSuffixCommand) Syntax(isAircraftSelected bool) []CommandArgsF
 }
 func (*SetEquipmentSuffixCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	ac := world.GetAircraft(callsign)
-	if ac == nil {
-		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	if ac := server.GetAircraft(callsign); ac == nil {
+		return "", ErrNoAircraftForCallsign
+	} else if ac.flightPlan == nil {
+		return "", ErrNoFlightPlanFiled
+	} else {
+		atype := ac.flightPlan.TypeWithoutSuffix()
+		suffix := strings.ToUpper(args[0])
+		if suffix[0] != '/' {
+			suffix = "/" + suffix
+		}
+		ac.flightPlan.actype = atype + suffix
+		return "", server.AmendFlightPlan(callsign, *ac.flightPlan)
 	}
-
-	atype := ac.flightPlan.TypeWithoutSuffix()
-	suffix := strings.ToUpper(args[0])
-	if suffix[0] != '/' {
-		suffix = "/" + suffix
-	}
-	return "", world.SetAircraftType(callsign, atype+suffix)
 }
 
 type SetIFRCommand struct{}
@@ -1330,7 +1371,7 @@ func (*SetIFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*SetIFRCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", world.SetFlightRules(callsign, IFR)
+	return "", amendFlightPlan(callsign, func(fp *FlightPlan) { fp.rules = IFR })
 }
 
 type SetScratchpadCommand struct{}
@@ -1353,9 +1394,9 @@ func (*SetScratchpadCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if len(args) == 0 {
 		// clear scratchpad
-		return "", world.SetScratchpad(callsign, "")
+		return "", server.SetScratchpad(callsign, "")
 	} else {
-		return "", world.SetScratchpad(callsign, strings.ToUpper(args[0]))
+		return "", server.SetScratchpad(callsign, strings.ToUpper(args[0]))
 	}
 }
 
@@ -1378,14 +1419,35 @@ func (*SetSquawkCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 func (*SetSquawkCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if len(args) == 0 {
-		return "", world.SetSquawkAutomatic(callsign)
+		return "", server.SetSquawkAutomatic(callsign)
 	} else {
 		squawk, err := ParseSquawk(args[0])
 		if err != nil {
 			return "", err
 		}
-		return "", world.SetSquawk(callsign, squawk)
+		return "", server.SetSquawk(callsign, squawk)
 	}
+}
+
+type SetVoiceCommand struct{}
+
+func (*SetVoiceCommand) Name() string { return "voice" }
+func (*SetVoiceCommand) Usage() string {
+	return "<aircraft> <voice type:v, r, or t>"
+}
+func (*SetVoiceCommand) Help() string {
+	return "Sets the aircraft's voice communications type."
+}
+func (*SetVoiceCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsString}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
+	}
+}
+func (*SetVoiceCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", server.SetVoiceType(callsign, args[0])
 }
 
 type SetVFRCommand struct{}
@@ -1406,7 +1468,7 @@ func (*SetVFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*SetVFRCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", world.SetFlightRules(callsign, VFR)
+	return "", amendFlightPlan(callsign, func(fp *FlightPlan) { fp.rules = VFR })
 }
 
 type EditRouteCommand struct{}
@@ -1427,9 +1489,12 @@ func (*EditRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*EditRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	ac := world.GetAircraft(callsign)
+	ac := server.GetAircraft(callsign)
 	if ac == nil {
 		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+	if ac.flightPlan == nil {
+		return "", fmt.Errorf("%s: no flight plan filed", callsign)
 	}
 
 	cli.input.cmd = "route " + callsign + " "
@@ -1478,9 +1543,12 @@ func (*NYPRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*NYPRDCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	ac := world.GetAircraft(callsign)
+	ac := server.GetAircraft(callsign)
 	if ac == nil {
 		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+	if ac.flightPlan == nil {
+		return "", fmt.Errorf("%s: no flight plan filed", callsign)
 	}
 
 	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
@@ -1577,9 +1645,12 @@ func (*PRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*PRDCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	ac := world.GetAircraft(callsign)
+	ac := server.GetAircraft(callsign)
 	if ac == nil {
 		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
+	}
+	if ac.flightPlan == nil {
+		return "", fmt.Errorf("%s: no flight plan filed", callsign)
 	}
 
 	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
@@ -1590,7 +1661,7 @@ func (*PRDCommand) Run(cli *CLIPane, args []string) (string, error) {
 		arrive = arrive[1:]
 	}
 
-	if prdEntries, ok := world.FAA.prd[AirportPair{depart, arrive}]; !ok {
+	if prdEntries, ok := database.FAA.prd[AirportPair{depart, arrive}]; !ok {
 		return "", fmt.Errorf(depart + "-" + arrive + ": no entry in FAA PRD")
 	} else {
 		anyType := false
@@ -1660,7 +1731,9 @@ func (*SetRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*SetRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", world.SetRoute(callsign, strings.ToUpper(strings.Join(args, " ")))
+	return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
+		fp.route = strings.ToUpper(strings.Join(args, " "))
+	})
 }
 
 type AcceptHandoffCommand struct{}
@@ -1681,7 +1754,7 @@ func (*AcceptHandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 }
 func (*AcceptHandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", world.AcceptHandoff(callsign)
+	return "", server.AcceptHandoff(callsign)
 }
 
 type DropTrackCommand struct{}
@@ -1702,7 +1775,7 @@ func (*DropTrackCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*DropTrackCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", world.DropTrack(callsign)
+	return "", server.DropTrack(callsign)
 }
 
 type HandoffCommand struct{}
@@ -1723,7 +1796,7 @@ func (*HandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*HandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", world.Handoff(callsign, args[0])
+	return "", server.Handoff(callsign, args[0])
 }
 
 type PointOutCommand struct{}
@@ -1744,7 +1817,7 @@ func (*PointOutCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*PointOutCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", world.PointOut(callsign, args[0])
+	return "", server.PointOut(callsign, args[0])
 }
 
 type RejectHandoffCommand struct{}
@@ -1765,7 +1838,7 @@ func (*RejectHandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 }
 func (*RejectHandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", world.RejectHandoff(callsign)
+	return "", server.RejectHandoff(callsign)
 }
 
 type TrackAircraftCommand struct{}
@@ -1786,7 +1859,7 @@ func (*TrackAircraftCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 }
 func (*TrackAircraftCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", world.InitiateTrack(callsign)
+	return "", server.InitiateTrack(callsign)
 }
 
 type FindCommand struct{}
@@ -1820,7 +1893,7 @@ func (*FindCommand) Run(cli *CLIPane, args []string) (string, error) {
 			return "", fmt.Errorf("Multiple aircraft match: " + strings.Join(callsigns, ", "))
 		} else {
 			var ok bool
-			if pos, ok = world.Locate(name); !ok {
+			if pos, ok = database.Locate(name); !ok {
 				return "", fmt.Errorf("%s: no matches found", args[0])
 			}
 		}
@@ -1849,7 +1922,7 @@ func (*MITCommand) Run(cli *CLIPane, args []string) (string, error) {
 		positionConfig.mit = nil
 	} else {
 		for _, callsign := range args {
-			ac := world.GetAircraft(callsign)
+			ac := server.GetAircraft(callsign)
 			if ac == nil {
 				return "", fmt.Errorf("%s: aircraft does not exist", callsign)
 			}
@@ -1896,6 +1969,9 @@ func (*DrawRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 			return "", fmt.Errorf("%s: no matches found", args[0])
 		}
 	}
+	if ac.flightPlan == nil {
+		return "", fmt.Errorf("%s: no flight plan filed", ac.Callsign())
+	}
 
 	positionConfig.drawnRoute = ac.flightPlan.depart + " " + ac.flightPlan.route + " " +
 		ac.flightPlan.arrive
@@ -1921,28 +1997,38 @@ func (*InfoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 	acInfo := func(ac *Aircraft) string {
-		result, indent := ac.GetFormattedFlightPlan(true)
-		result = strings.TrimRight(result, "\n")
+		var result string
+		var indent int
+		if ac.flightPlan == nil {
+			result = ac.Callsign() + ": no flight plan filed"
+			indent = len(ac.Callsign()) + 1
+		} else {
+			result, indent = ac.GetFormattedFlightPlan(true)
+			result = strings.TrimRight(result, "\n")
+		}
+
 		indstr := fmt.Sprintf("%*c", indent, ' ')
-		if u, ok := world.users[ac.Callsign()]; ok {
+		if u := server.GetUser(ac.Callsign()); u != nil {
 			result += fmt.Sprintf("\n%spilot: %s %s (%s)", indstr, u.name, u.rating, u.note)
 		}
-		if tel := ac.flightPlan.Telephony(); tel != "" {
-			result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
+		if ac.flightPlan != nil {
+			if tel := ac.Telephony(); tel != "" {
+				result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
+			}
 		}
-		if c, ok := world.trackingController[ac.Callsign()]; ok {
+		if c := server.GetTrackingController(ac.Callsign()); c != "" {
 			result += fmt.Sprintf("\n%sTracked by: %s", indstr, c)
 		}
-		if c, ok := world.inboundHandoff[ac.Callsign()]; ok {
+		if c := server.InboundHandoffController(ac.Callsign()); c != "" {
 			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, c)
 		}
-		if c, ok := world.outboundHandoff[ac.Callsign()]; ok {
+		if c := server.OutboundHandoffController(ac.Callsign()); c != "" {
 			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, c)
 		}
 		if ac.squawk != ac.assignedSquawk {
 			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.squawk)
 		}
-		if ac.LostTrack(world.CurrentTime()) {
+		if ac.LostTrack(server.CurrentTime()) {
 			result += fmt.Sprintf("\n%s*** Lost Track!", indstr)
 		}
 		return result
@@ -1955,24 +2041,24 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 		// e.g. "fft" matches both a VOR and a callsign, so report both...
 		var info []string
-		if navaid, ok := world.FAA.navaids[name]; ok {
+		if navaid, ok := database.FAA.navaids[name]; ok {
 			info = append(info, fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.name),
 				navaid.navtype, navaid.location))
 		}
-		if fix, ok := world.FAA.fixes[name]; ok {
+		if fix, ok := database.FAA.fixes[name]; ok {
 			info = append(info, fmt.Sprintf("%s: Fix %s", name, fix.location))
 		}
-		if ap, ok := world.FAA.airports[name]; ok {
+		if ap, ok := database.FAA.airports[name]; ok {
 			info = append(info, fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.name),
 				ap.location, ap.elevation))
 		}
-		if cs, ok := world.callsigns[name]; ok {
+		if cs, ok := database.callsigns[name]; ok {
 			info = append(info, fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company))
 		}
-		if ct, ok := world.controllers[name]; ok {
+		if ct := server.GetController(name); ct != nil {
 			info = append(info, fmt.Sprintf("%s (%s) @ %7.3f, range %d", ct.callsign,
 				ct.rating, ct.frequency, ct.scopeRange))
-			if u, ok := world.users[name]; ok {
+			if u := server.GetUser(name); u != nil {
 				info = append(info, fmt.Sprintf("%s %s (%s)", u.name, u.rating, u.note))
 			}
 		}
@@ -2007,7 +2093,7 @@ func (*TrafficCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	ac := world.GetAircraft(callsign)
+	ac := server.GetAircraft(callsign)
 	if ac == nil {
 		return "", fmt.Errorf("%s: aircraft does not exist", callsign)
 	}
@@ -2016,7 +2102,7 @@ func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
 		ac       *Aircraft
 		distance float32
 	}
-	now := world.CurrentTime()
+	now := server.CurrentTime()
 	filter := func(a *Aircraft) bool {
 		return a.Callsign() == ac.Callsign() || a.LostTrack(now) || a.OnGround()
 	}
@@ -2025,7 +2111,7 @@ func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
 	verticalLimit := 1500
 
 	var traffic []Traffic
-	for _, other := range world.GetFilteredAircraft(filter) {
+	for _, other := range server.GetFilteredAircraft(filter) {
 		ldist := nmdistance2ll(ac.Position(), other.Position())
 		vdist := abs(ac.Altitude() - other.Altitude())
 		if ldist < lateralLimit && vdist < verticalLimit {
@@ -2043,12 +2129,16 @@ func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
 	str := ""
 	for _, t := range traffic {
 		alt := (t.ac.Altitude() + 250) / 500 * 500
-		hto := headingp2ll(ac.Position(), t.ac.Position(), world.MagneticVariation)
+		hto := headingp2ll(ac.Position(), t.ac.Position(), database.MagneticVariation)
 		hdiff := hto - ac.Heading()
 		clock := headingAsHour(hdiff)
+		actype := "???"
+		if t.ac.flightPlan != nil {
+			actype = t.ac.flightPlan.actype
+		}
 		str += fmt.Sprintf("  %-10s %2d o'c %2d mi %2s bound %-10s %5d' [%s]\n",
 			ac.Callsign(), clock, int(t.distance+0.5),
-			shortCompass(t.ac.Heading()), t.ac.flightPlan.actype, int(alt), t.ac.Callsign())
+			shortCompass(t.ac.Heading()), actype, int(alt), t.ac.Callsign())
 	}
 	if str != "" {
 		str += "\n"
@@ -2133,5 +2223,5 @@ func (*WallopCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*WallopCommand) Run(cli *CLIPane, args []string) (string, error) {
 	tm := TextMessage{messageType: TextWallop, contents: strings.Join(args, " ")}
-	return "", world.SendTextMessage(tm)
+	return "", server.SendTextMessage(tm)
 }
