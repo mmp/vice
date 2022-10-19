@@ -16,10 +16,10 @@ import (
 ///////////////////////////////////////////////////////////////////////////
 // FlightRadarServer
 
-// FlightRadarServer is a simple implementation of the ControlServer
-// interface that serves aircraft data from flightradar24.com. Almost all
-// of the ControlServer method implementations are empty in that we aren't
-// able to control real-world aircraft from vice...
+// FlightRadarServer is a simple implementation of the ATCServer interface
+// that serves aircraft data from flightradar24.com. Almost all of the
+// ATCServer method implementations are empty in that we aren't able to
+// control real-world aircraft from vice...
 
 type FlightRadarServer struct {
 	aircraft    map[string]*Aircraft

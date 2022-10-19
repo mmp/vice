@@ -156,7 +156,7 @@ func NewVATSIMReplayServer(filename string, offsetSeconds int, replayRate float3
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// ControlServer method implementations
+// ATCServer method implementations
 
 func (v *VATSIMServer) GetAircraft(callsign string) *Aircraft {
 	if ac, ok := v.aircraft[callsign]; ok {

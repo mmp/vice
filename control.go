@@ -23,7 +23,7 @@ var (
 	ErrNotController           = errors.New("Not signed in to a controller position")
 )
 
-// ControlServer defines the interface that servers must implement; these
+// ATCServer defines the interface that servers must implement; these
 // are mostly things where vice is requesting the server to change some
 // thing--update the squawk code for an aircraft, etc.  The implementations
 // of this interface in vice are FlightRadarServer and VATSIMServer.
@@ -54,7 +54,7 @@ type AircraftController interface {
 	SendTextMessage(m TextMessage) error
 }
 
-type ControlServer interface {
+type ATCServer interface {
 	AircraftController
 
 	GetAircraft(callsign string) *Aircraft
@@ -134,74 +134,74 @@ func (*InertAircraftController) PointOut(callsign string, controller string) err
 func (*InertAircraftController) SendTextMessage(m TextMessage) error                     { return nil }
 
 ///////////////////////////////////////////////////////////////////////////
-// DisconnectedControlServer
+// DisconnectedATCServer
 
-type DisconnectedControlServer struct {
+type DisconnectedATCServer struct {
 	InertAircraftController
 }
 
-func (d *DisconnectedControlServer) GetAircraft(callsign string) *Aircraft {
+func (d *DisconnectedATCServer) GetAircraft(callsign string) *Aircraft {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
+func (d *DisconnectedATCServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetAllAircraft() []*Aircraft {
+func (d *DisconnectedATCServer) GetAllAircraft() []*Aircraft {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetMETAR(location string) *METAR {
+func (d *DisconnectedATCServer) GetMETAR(location string) *METAR {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetATIS(airport string) string {
+func (d *DisconnectedATCServer) GetATIS(airport string) string {
 	return ""
 }
 
-func (d *DisconnectedControlServer) GetUser(callsign string) *User {
+func (d *DisconnectedATCServer) GetUser(callsign string) *User {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetController(callsign string) *Controller {
+func (d *DisconnectedATCServer) GetController(callsign string) *Controller {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetAllControllers() []*Controller {
+func (d *DisconnectedATCServer) GetAllControllers() []*Controller {
 	return nil
 }
 
-func (d *DisconnectedControlServer) GetTrackingController(callsign string) string {
+func (d *DisconnectedATCServer) GetTrackingController(callsign string) string {
 	return ""
 }
 
-func (d *DisconnectedControlServer) InboundHandoffController(callsign string) string {
+func (d *DisconnectedATCServer) InboundHandoffController(callsign string) string {
 	return ""
 }
 
-func (d *DisconnectedControlServer) OutboundHandoffController(callsign string) string {
+func (d *DisconnectedATCServer) OutboundHandoffController(callsign string) string {
 	return ""
 }
 
-func (d *DisconnectedControlServer) GetUpdates() {
+func (d *DisconnectedATCServer) GetUpdates() {
 }
 
-func (d *DisconnectedControlServer) Disconnect() {
+func (d *DisconnectedATCServer) Disconnect() {
 }
 
-func (d *DisconnectedControlServer) Connected() bool {
+func (d *DisconnectedATCServer) Connected() bool {
 	return false
 }
 
-func (d *DisconnectedControlServer) Callsign() string {
+func (d *DisconnectedATCServer) Callsign() string {
 	return "(none)"
 }
 
-func (d *DisconnectedControlServer) CurrentTime() time.Time {
+func (d *DisconnectedATCServer) CurrentTime() time.Time {
 	return time.Now()
 }
 
-func (d *DisconnectedControlServer) GetWindowTitle() string {
+func (d *DisconnectedATCServer) GetWindowTitle() string {
 	return "[Disconnected]"
 }

@@ -37,7 +37,7 @@ var (
 	renderer       Renderer
 	stats          Stats
 	database       *StaticDatabase
-	server         ControlServer
+	server         ATCServer
 	controlUpdates *ControlUpdates
 	lg             *Logger
 
@@ -101,7 +101,7 @@ func main() {
 	context = imguiInit()
 
 	database = InitializeStaticDatabase()
-	server = &DisconnectedControlServer{}
+	server = &DisconnectedATCServer{}
 
 	var err error
 	if err = audioInit(); err != nil {
@@ -247,7 +247,7 @@ func main() {
 						query: "Currently connected. Ok to disconnect?",
 						ok: func() {
 							server.Disconnect()
-							server = &DisconnectedControlServer{}
+							server = &DisconnectedATCServer{}
 						},
 						notok: func() {
 							platform.CancelShouldStop()
