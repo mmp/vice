@@ -436,7 +436,7 @@ func (v *VATSIMServer) Handoff(callsign string, controller string) error {
 		return ErrNoAircraftForCallsign
 	} else if v.trackedByAnotherController(callsign) {
 		return ErrOtherControllerHasTrack
-	} else if c := v.GetController(callsign); c == nil {
+	} else if c := v.GetController(controller); c == nil {
 		return ErrNoController
 	} else {
 		v.outboundHandoffs[callsign] = controller
@@ -484,7 +484,7 @@ func (v *VATSIMServer) PointOut(callsign string, controller string) error {
 		return ErrNoAircraftForCallsign
 	} else if v.trackedByAnotherController(callsign) {
 		return ErrOtherControllerHasTrack
-	} else if c := v.GetController(callsign); c == nil {
+	} else if c := v.GetController(controller); c == nil {
 		return ErrNoController
 	} else {
 		v.controlDelegate.PointOut(callsign, controller)
