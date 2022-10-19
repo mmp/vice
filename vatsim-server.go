@@ -508,47 +508,45 @@ func (v *VATSIMServer) SendTextMessage(m TextMessage) error {
 }
 
 func (v *VATSIMServer) GetUpdates() {
-	if v.connection == nil {
-		return
-	}
+	if v.connection != nil {
+		// Receive messages here; this runs in the same thread as the GUI et
+		// al., so there's nothing to worry about w.r.t. races.
+		messages := v.connection.GetMessages()
+		for _, msg := range messages {
+			strs := strings.Split(strings.TrimSpace(msg.Contents), ":")
+			if len(strs) == 0 {
+				lg.Printf("vatsim: empty message received?")
+				continue
+			}
+			if len(strs[0]) == 0 {
+				lg.Printf("vatsim: empty first field? \"%s\"", msg.Contents)
+				continue
+			}
 
-	// Receive messages here; this runs in the same thread as the GUI et
-	// al., so there's nothing to worry about w.r.t. races.
-	messages := v.connection.GetMessages()
-	for _, msg := range messages {
-		strs := strings.Split(strings.TrimSpace(msg.Contents), ":")
-		if len(strs) == 0 {
-			lg.Printf("vatsim: empty message received?")
-			continue
-		}
-		if len(strs[0]) == 0 {
-			lg.Printf("vatsim: empty first field? \"%s\"", msg.Contents)
-			continue
-		}
+			if *logTraffic {
+				lg.Printf("Received: %s", msg.Contents)
+			}
 
-		if *logTraffic {
-			lg.Printf("Received: %s", msg.Contents)
-		}
-
-		matches := 0
-		for _, spec := range vatsimMessageSpecs {
-			if sender, args, ok := spec.Match(strs); ok {
-				matches++
-				if spec.handler != nil {
-					if err := spec.handler(v, sender, args); err != nil {
-						lg.Printf("FSD message error: %T: %s: %s", err, err, msg.Contents)
+			matches := 0
+			for _, spec := range vatsimMessageSpecs {
+				if sender, args, ok := spec.Match(strs); ok {
+					matches++
+					if spec.handler != nil {
+						if err := spec.handler(v, sender, args); err != nil {
+							lg.Printf("FSD message error: %T: %s: %s", err, err, msg.Contents)
+						}
 					}
 				}
 			}
+			if matches == 0 {
+				lg.Printf("No rule matched: %s", msg.Contents)
+			}
 		}
-		if matches == 0 {
-			lg.Printf("No rule matched: %s", msg.Contents)
-		}
-	}
 
-	// Do this after processing the messages.
-	if vatsimUpdateCallback != nil {
-		vatsimUpdateCallback(v)
+		// Do this after processing the messages.
+		if vatsimUpdateCallback != nil {
+			vatsimUpdateCallback(v)
+		}
 	}
 
 	// Clean up anyone who we haven't heard from in 30 minutes
