@@ -536,10 +536,10 @@ func (v *VATSIMServer) GetUpdates() {
 
 			matches := 0
 			for _, spec := range vatsimMessageSpecs {
-				if sender, args, ok := spec.Match(strs); ok {
+				if sender, ok := spec.Match(strs); ok {
 					matches++
 					if spec.handler != nil {
-						if err := spec.handler(v, sender, args); err != nil {
+						if err := spec.handler(v, sender, strs); err != nil {
 							lg.Printf("FSD message error: %T: %s: %s", err, err, msg.Contents)
 						}
 					}

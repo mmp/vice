@@ -324,65 +324,69 @@ func (r *VATSIMReplayConnection) Close() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// VATSIMMessageSpec
 
-type VATSIMMessageFieldSpec struct {
-	idx     int
-	pattern string
-}
-
-func (s *VATSIMMessageFieldSpec) Match(str string) bool {
-	// TODO: regexp? Capture groups? ...
-	return strings.HasPrefix(str, s.pattern)
-}
-
+// VATSIMMessageSpec represents a specification of a type of VATSIM
+// message; it allows specifying a minimum number of fields and strings
+// that particular fields must match.  When a match is found, a provided
+// handler function can be called.
 type VATSIMMessageSpec struct {
-	id        string
 	minFields int
-	argFields []int
-	match     []VATSIMMessageFieldSpec
+	match     []string
 	handler   func(v *VATSIMServer, sender string, args []string) error
 }
 
-// Indexing in arg argFields has 0 as the first field of the sent message.
-// If it's nil, then all args are passed, including the one with the command.
-func NewMessageSpec(id string, minFields int, argFields []int,
+// NewMessageSpec returns a VATSIMMessageSpec corresponding to the provided
+// message specification.  The specification is given by both a string with
+// colon-separated matches as well as a minimum number of fields in the
+// VATSIM message.
+//
+// The first field string is interpreted as a prefix that the first field
+// in a VATSIM message must match; following field strings must be matched
+// completely.  Thus, given the specification "$CQ::BC", the message:
+//
+// $CQEWR_1_DEL:@94835:BC:UAL1549:2334
+//
+// would match, since the $CQ prefix matches the first field, there is no
+// match specified for the second field, and "BC" matches the third field.
+// However, the message:
+//
+// $CQCLT_AF_TWR:@94835:BY
+//
+// would not match that specification since the third field isn't "BC".
+//
+// The sender of the message is taken to be the text after the match in the
+// first field.
+func NewMessageSpec(pattern string, minFields int,
 	handler func(v *VATSIMServer, sender string, args []string) error) *VATSIMMessageSpec {
-	v := &VATSIMMessageSpec{minFields: minFields, argFields: argFields, handler: handler}
-	for i, f := range strings.Split(id, ":") {
-		if i == 0 {
-			v.id = f
-		} else {
-			v.match = append(v.match, VATSIMMessageFieldSpec{idx: i, pattern: f})
-		}
-	}
-	return v
+	return &VATSIMMessageSpec{
+		minFields: minFields,
+		match:     strings.Split(pattern, ":"),
+		handler:   handler}
 }
 
-func (s *VATSIMMessageSpec) Match(fields []string) (string, []string, bool) {
-	if len(fields) < s.minFields {
-		return "", nil, false
+// Match checks to see if the provided VATSIM message (already split at
+// colons into separate string fields) matches the VATSIMMessageSpec.  It
+// returns the sender of the message (i.e., the text after the match in the
+// first field), and a Boolean value indicating whether the match was
+// successful.
+func (s *VATSIMMessageSpec) Match(fields []string) (sender string, matched bool) {
+	if len(fields) < s.minFields || len(fields) < len(s.match) {
+		return
 	}
 
-	if !strings.HasPrefix(fields[0], s.id) {
-		return "", nil, false
-	}
-	sender := fields[0][len(s.id):]
-
-	for _, m := range s.match {
-		if !m.Match(fields[m.idx]) {
-			return "", nil, false
+	for i, m := range s.match {
+		if i == 0 {
+			if strings.HasPrefix(fields[0], m) {
+				sender = fields[0][len(m):]
+			} else {
+				return
+			}
+		} else if m != "" && fields[i] != m {
+			return
 		}
 	}
 
-	var args []string
-	if s.argFields == nil {
-		// Pass all of them, in order
-		args = fields
-	} else {
-		for _, i := range s.argFields {
-			args = append(args, fields[i])
-		}
-	}
-
-	return sender, args, true
+	matched = true
+	return
 }
