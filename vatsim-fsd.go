@@ -189,13 +189,15 @@ func handleHA(v *VATSIMServer, sender string, args []string) error {
 	if tc, ok := v.trackingControllers[callsign]; ok && tc != from {
 		lg.Printf("%s: %s is tracking but %s accepted h/o from %s?", callsign, tc, sender, from)
 	}
+
+	ac := v.getOrCreateAircraft(callsign) // make sure it's in the changes list
+
 	if from == v.callsign {
 		// from us!
 		delete(v.outboundHandoffs, callsign)
-		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
+		controlUpdates.acceptedHandoffs[ac] = nil
 	}
 
-	_ = v.getOrCreateAircraft(callsign) // make sure it's in the changes list
 	v.trackingControllers[callsign] = sender
 
 	return nil
@@ -206,9 +208,9 @@ func handleHA(v *VATSIMServer, sender string, args []string) error {
 func handleHO(v *VATSIMServer, sender string, args []string) error {
 	receiver, callsign := args[1], args[2]
 	if receiver == v.callsign {
-		_ = v.getOrCreateAircraft(callsign) // make sure it's in the changes list
 		v.inboundHandoffs[callsign] = sender
-		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
+		ac := v.getOrCreateAircraft(callsign)
+		controlUpdates.offeredHandoffs[ac] = nil
 	}
 
 	return nil
@@ -541,7 +543,10 @@ func init() {
 	r(NewMessageSpec("$CQ::HT", 5, nil, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[3]
 		v.trackingControllers[callsign] = sender
-		_ = v.getOrCreateAircraft(callsign)
+		ac := v.getOrCreateAircraft(callsign)
+		if _, ok := v.outboundHandoffs[callsign]; ok {
+			controlUpdates.acceptedHandoffs[ac] = nil
+		}
 		return nil
 	}))
 
@@ -632,9 +637,7 @@ func init() {
 		if ac := v.GetAircraft(callsign); ac != nil {
 			delete(v.inboundHandoffs, callsign)
 			delete(v.outboundHandoffs, callsign)
-			delete(controlUpdates.addedAircraft, ac)
-			delete(controlUpdates.modifiedAircraft, ac)
-			controlUpdates.removedAircraft[ac] = nil
+			controlUpdates.RemoveAircraft(ac)
 		}
 		delete(v.aircraft, callsign)
 		delete(v.pilots, callsign)
@@ -662,7 +665,8 @@ func init() {
 	r(NewMessageSpec("#PC::CCP:HC", 5, nil, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[4]
 		delete(v.outboundHandoffs, callsign)
-		_ = v.getOrCreateAircraft(callsign)
+		ac := v.getOrCreateAircraft(callsign)
+		controlUpdates.rejectedHandoffs[ac] = nil
 		return nil
 	}))
 
@@ -675,8 +679,8 @@ func init() {
 	r(NewMessageSpec("#PC::CCP:PT", 5, nil, func(v *VATSIMServer, sender string, args []string) error {
 		if args[1] == v.callsign {
 			callsign := args[4]
-			_ = v.getOrCreateAircraft(callsign)
-			globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
+			ac := v.getOrCreateAircraft(callsign)
+			controlUpdates.pointOuts[ac] = nil
 		}
 		return nil
 	}))

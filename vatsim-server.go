@@ -488,7 +488,6 @@ func (v *VATSIMServer) PointOut(callsign string, controller string) error {
 		return ErrNoController
 	} else {
 		v.controlDelegate.PointOut(callsign, controller)
-		// TODO: add to modified aircraft / do anything else?
 		return nil
 	}
 }
@@ -560,9 +559,8 @@ func (v *VATSIMServer) GetUpdates() {
 			delete(v.trackingControllers, callsign)
 			delete(v.outboundHandoffs, callsign)
 			delete(v.inboundHandoffs, callsign)
-			delete(controlUpdates.addedAircraft, ac)    // just in case
-			delete(controlUpdates.modifiedAircraft, ac) // just in case
-			controlUpdates.removedAircraft[ac] = nil
+
+			controlUpdates.RemoveAircraft(ac)
 		}
 	}
 }

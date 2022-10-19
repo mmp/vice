@@ -124,6 +124,18 @@ func audioProcessUpdates(updates *ControlUpdates) {
 		}
 	}
 
+	if len(updates.pointOuts) > 0 {
+		globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
+	}
+	if len(updates.acceptedHandoffs) > 0 {
+		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
+	}
+	if len(updates.offeredHandoffs) > 0 {
+		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
+	}
+	if len(updates.rejectedHandoffs) > 0 {
+		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
+	}
 	if len(updates.messages) > 0 {
 		globalConfig.AudioSettings.HandleEvent(AudioEventReceivedMessage)
 	}

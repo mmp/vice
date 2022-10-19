@@ -90,7 +90,12 @@ type ControlUpdates struct {
 	addedAircraft    map[*Aircraft]interface{}
 	modifiedAircraft map[*Aircraft]interface{}
 	removedAircraft  map[*Aircraft]interface{}
-	messages         []TextMessage
+	pointOuts        map[*Aircraft]interface{}
+	offeredHandoffs  map[*Aircraft]interface{}
+	acceptedHandoffs map[*Aircraft]interface{}
+	rejectedHandoffs map[*Aircraft]interface{}
+
+	messages []TextMessage
 }
 
 func NewControlUpdates() *ControlUpdates {
@@ -98,6 +103,10 @@ func NewControlUpdates() *ControlUpdates {
 	c.addedAircraft = make(map[*Aircraft]interface{})
 	c.modifiedAircraft = make(map[*Aircraft]interface{})
 	c.removedAircraft = make(map[*Aircraft]interface{})
+	c.pointOuts = make(map[*Aircraft]interface{})
+	c.offeredHandoffs = make(map[*Aircraft]interface{})
+	c.acceptedHandoffs = make(map[*Aircraft]interface{})
+	c.rejectedHandoffs = make(map[*Aircraft]interface{})
 	return c
 }
 
@@ -105,12 +114,28 @@ func (c *ControlUpdates) Reset() {
 	c.addedAircraft = make(map[*Aircraft]interface{})
 	c.modifiedAircraft = make(map[*Aircraft]interface{})
 	c.removedAircraft = make(map[*Aircraft]interface{})
+	c.pointOuts = make(map[*Aircraft]interface{})
+	c.offeredHandoffs = make(map[*Aircraft]interface{})
+	c.acceptedHandoffs = make(map[*Aircraft]interface{})
+	c.rejectedHandoffs = make(map[*Aircraft]interface{})
 	c.messages = c.messages[:0]
+}
+
+func (c *ControlUpdates) RemoveAircraft(ac *Aircraft) {
+	delete(c.addedAircraft, ac)
+	delete(c.modifiedAircraft, ac)
+	delete(c.pointOuts, ac)
+	delete(c.offeredHandoffs, ac)
+	delete(c.acceptedHandoffs, ac)
+	delete(c.rejectedHandoffs, ac)
+
+	controlUpdates.removedAircraft[ac] = nil
 }
 
 func (c *ControlUpdates) NoUpdates() bool {
 	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0 &&
-		len(c.messages) == 0
+		len(c.pointOuts) == 0 && len(c.offeredHandoffs) == 0 && len(c.acceptedHandoffs) == 0 &&
+		len(c.rejectedHandoffs) == 0 && len(c.messages) == 0
 }
 
 ///////////////////////////////////////////////////////////////////////////
