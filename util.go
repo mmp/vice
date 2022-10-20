@@ -9,6 +9,7 @@ import (
 	"golang.org/x/exp/constraints"
 	"math"
 	"sort"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -94,6 +95,15 @@ func stopShouting(orig string) string {
 		s.WriteRune(ch)
 	}
 	return s.String()
+}
+
+func atof(s string) float64 {
+	if v, err := strconv.ParseFloat(strings.TrimSpace(s), 64); err != nil {
+		lg.ErrorfUp1("%s: error converting to float: %s", s, err)
+		return 0
+	} else {
+		return v
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -415,6 +425,7 @@ func (r RGB) Equals(other RGB) bool {
 ///////////////////////////////////////////////////////////////////////////
 // Point2LL
 
+// Point2LL represents a 2D point on the Earth in latitude-longitude.
 // Important: 0 (x) is longitude, 1 (y) is latitude
 type Point2LL [2]float32
 
