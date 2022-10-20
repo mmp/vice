@@ -193,8 +193,9 @@ func (s *SoundEffect) Play() {
 		for {
 			time.Sleep(100 * time.Millisecond)
 			sdlMutex.Lock()
-			if sdl.GetQueuedAudioSize(audioDevice) == 0 {
-				sdlMutex.Unlock()
+			sz := sdl.GetQueuedAudioSize(audioDevice)
+			sdlMutex.Unlock()
+			if sz == 0 {
 				// and make sure it drains...
 				time.Sleep(100 * time.Millisecond)
 				break
