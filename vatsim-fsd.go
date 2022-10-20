@@ -195,7 +195,7 @@ func handleHA(v *VATSIMServer, sender string, args []string) error {
 	if from == v.callsign {
 		// from us!
 		delete(v.outboundHandoffs, callsign)
-		controlUpdates.acceptedHandoffs[ac] = nil
+		controlUpdates.acceptedHandoffs[ac] = sender
 	}
 
 	v.trackingControllers[callsign] = sender
@@ -210,7 +210,7 @@ func handleHO(v *VATSIMServer, sender string, args []string) error {
 	if receiver == v.callsign {
 		v.inboundHandoffs[callsign] = sender
 		ac := v.getOrCreateAircraft(callsign)
-		controlUpdates.offeredHandoffs[ac] = nil
+		controlUpdates.offeredHandoffs[ac] = sender
 	}
 
 	return nil
@@ -556,7 +556,7 @@ func init() {
 		v.trackingControllers[callsign] = sender
 		ac := v.getOrCreateAircraft(callsign)
 		if _, ok := v.outboundHandoffs[callsign]; ok {
-			controlUpdates.acceptedHandoffs[ac] = nil
+			controlUpdates.acceptedHandoffs[ac] = sender
 		}
 		return nil
 	}))
@@ -683,7 +683,7 @@ func init() {
 		callsign := args[4]
 		delete(v.outboundHandoffs, callsign)
 		ac := v.getOrCreateAircraft(callsign)
-		controlUpdates.rejectedHandoffs[ac] = nil
+		controlUpdates.rejectedHandoffs[ac] = sender
 		return nil
 	}))
 
@@ -697,7 +697,7 @@ func init() {
 		if args[1] == v.callsign {
 			callsign := args[4]
 			ac := v.getOrCreateAircraft(callsign)
-			controlUpdates.pointOuts[ac] = nil
+			controlUpdates.pointOuts[ac] = sender
 		}
 		return nil
 	}))

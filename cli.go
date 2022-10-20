@@ -241,6 +241,24 @@ func (cli *CLIPane) ErrorReported(msg string) {
 }
 
 func (cli *CLIPane) Update(updates *ControlUpdates) {
+	// Point outs and handoffs...
+	for ac, controller := range updates.pointOuts {
+		cli.AddConsoleEntry([]string{controller, ": point out " + ac.callsign},
+			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+	}
+	for ac, controller := range updates.offeredHandoffs {
+		cli.AddConsoleEntry([]string{controller, ": offered handoff " + ac.callsign},
+			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+	}
+	for ac, controller := range updates.acceptedHandoffs {
+		cli.AddConsoleEntry([]string{controller, ": accepted handoff " + ac.callsign},
+			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+	}
+	for ac, controller := range updates.rejectedHandoffs {
+		cli.AddConsoleEntry([]string{controller, ": rejected handoff " + ac.callsign},
+			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+	}
+
 	// Add any text/radio messages to the console
 	for _, m := range updates.messages {
 		switch m.messageType {

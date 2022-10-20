@@ -90,10 +90,10 @@ type ControlUpdates struct {
 	addedAircraft    map[*Aircraft]interface{}
 	modifiedAircraft map[*Aircraft]interface{}
 	removedAircraft  map[*Aircraft]interface{}
-	pointOuts        map[*Aircraft]interface{}
-	offeredHandoffs  map[*Aircraft]interface{}
-	acceptedHandoffs map[*Aircraft]interface{}
-	rejectedHandoffs map[*Aircraft]interface{}
+	pointOuts        map[*Aircraft]string
+	offeredHandoffs  map[*Aircraft]string
+	acceptedHandoffs map[*Aircraft]string
+	rejectedHandoffs map[*Aircraft]string
 
 	messages []TextMessage
 }
@@ -103,10 +103,10 @@ func NewControlUpdates() *ControlUpdates {
 	c.addedAircraft = make(map[*Aircraft]interface{})
 	c.modifiedAircraft = make(map[*Aircraft]interface{})
 	c.removedAircraft = make(map[*Aircraft]interface{})
-	c.pointOuts = make(map[*Aircraft]interface{})
-	c.offeredHandoffs = make(map[*Aircraft]interface{})
-	c.acceptedHandoffs = make(map[*Aircraft]interface{})
-	c.rejectedHandoffs = make(map[*Aircraft]interface{})
+	c.pointOuts = make(map[*Aircraft]string)
+	c.offeredHandoffs = make(map[*Aircraft]string)
+	c.acceptedHandoffs = make(map[*Aircraft]string)
+	c.rejectedHandoffs = make(map[*Aircraft]string)
 	return c
 }
 
@@ -114,10 +114,10 @@ func (c *ControlUpdates) Reset() {
 	c.addedAircraft = make(map[*Aircraft]interface{})
 	c.modifiedAircraft = make(map[*Aircraft]interface{})
 	c.removedAircraft = make(map[*Aircraft]interface{})
-	c.pointOuts = make(map[*Aircraft]interface{})
-	c.offeredHandoffs = make(map[*Aircraft]interface{})
-	c.acceptedHandoffs = make(map[*Aircraft]interface{})
-	c.rejectedHandoffs = make(map[*Aircraft]interface{})
+	c.pointOuts = make(map[*Aircraft]string)
+	c.offeredHandoffs = make(map[*Aircraft]string)
+	c.acceptedHandoffs = make(map[*Aircraft]string)
+	c.rejectedHandoffs = make(map[*Aircraft]string)
 	c.messages = c.messages[:0]
 }
 
