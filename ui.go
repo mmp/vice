@@ -409,7 +409,7 @@ func NewComboBoxState(ncols int) *ComboBoxState {
 }
 
 func DrawComboBox(id string, fieldNames []string, drawHeaders bool,
-	entries [][]string, state *ComboBoxState,
+	entries [][]string, inputFlags imgui.InputTextFlags, state *ComboBoxState,
 	inputValid func([]*string) bool, add func([]*string), deleteSelection func(map[string]interface{})) {
 	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
 	if imgui.BeginTableV("##"+id, len(fieldNames), flags, imgui.Vec2{300, 100}, 0.0) {
@@ -466,7 +466,7 @@ func DrawComboBox(id string, fieldNames []string, drawHeaders bool,
 		imgui.EndTable()
 	}
 
-	inputFlags := imgui.InputTextFlagsEnterReturnsTrue
+	inputFlags |= imgui.InputTextFlagsEnterReturnsTrue
 	valid := inputValid(state.inputValues)
 	for i, field := range fieldNames {
 		if imgui.InputTextV(field+"##"+id, state.inputValues[i], inputFlags, nil) && valid {

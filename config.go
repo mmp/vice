@@ -151,7 +151,8 @@ func (c *GlobalConfig) DrawUI() {
 	for _, k := range SortedMapKeys(globalConfig.CustomServers) {
 		entries = append(entries, []string{k, globalConfig.CustomServers[k]})
 	}
-	DrawComboBox("serverAddresses", []string{"Name", "Address"}, true, entries, serverComboState,
+	DrawComboBox("serverAddresses", []string{"Name", "Address"}, true, entries,
+		0 /* input text flags */, serverComboState,
 		/* valid */ func(entries []*string) bool {
 			for _, e := range entries {
 				if *e == "" {
