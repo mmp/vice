@@ -614,11 +614,7 @@ func init() {
 	ignore("$CR::ATC")
 	ignore("$CR::ATIS")
 	ignore("$CR::CAPS")
-
-	r(NewMessageSpec("$CR::IP", 4, func(v *VATSIMServer, s string, args []string) error {
-		v.myip = args[3]
-		return nil
-	}))
+	ignore("$CR::IP")
 
 	r(NewMessageSpec("$CR::RN", 6, func(v *VATSIMServer, sender string, args []string) error {
 		if rating, err := parseRating(args[5]); err != nil {

@@ -99,7 +99,6 @@ type VATSIMServer struct {
 	inboundHandoffs map[string]string
 
 	windowTitle string
-	myip        string
 	atcValid    bool
 }
 
