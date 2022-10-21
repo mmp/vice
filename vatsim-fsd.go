@@ -389,7 +389,7 @@ func parseFrequency(s string) (Frequency, error) {
 	if frequency, err := strconv.Atoi(s); err != nil {
 		return 0, MalformedMessageError{"Invalid frequency: " + s}
 	} else {
-		return Frequency(100 + float32(frequency)/1000.), nil
+		return Frequency(100000 + frequency), nil
 	}
 }
 

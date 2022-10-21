@@ -2078,8 +2078,8 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 			info = append(info, fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company))
 		}
 		if ct := server.GetController(name); ct != nil {
-			info = append(info, fmt.Sprintf("%s (%s) @ %7.3f, range %d", ct.callsign,
-				ct.rating, ct.frequency, ct.scopeRange))
+			info = append(info, fmt.Sprintf("%s (%s) @ %s, range %d", ct.callsign,
+				ct.rating, ct.frequency.String(), ct.scopeRange))
 			if u := server.GetUser(name); u != nil {
 				info = append(info, fmt.Sprintf("%s %s (%s)", u.name, u.rating, u.note))
 			}

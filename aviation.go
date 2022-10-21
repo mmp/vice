@@ -70,10 +70,15 @@ func (f Facility) String() string {
 	return [...]string{"Observer", "FSS", "Delivery", "Ground", "Tower", "Approach", "Center", "Undefined"}[f]
 }
 
-type Frequency float32
+// Frequencies are scaled by 1000 and then stored in integers.
+type Frequency int
 
 func (f Frequency) String() string {
-	return fmt.Sprintf("%07.3f", f)
+	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
+	for len(s) < 7 {
+		s += "0"
+	}
+	return s
 }
 
 type Controller struct {
