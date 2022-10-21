@@ -120,7 +120,7 @@ func (l *Logger) Printf(f string, args ...interface{}) {
 		return
 	}
 
-	msg := format(2, f, args...)
+	msg := l.format(2, f, args...)
 	if l.printToStderr {
 		fmt.Fprint(os.Stderr, msg)
 	}
@@ -146,7 +146,7 @@ func (l *Logger) ErrorfUp1(f string, args ...interface{}) {
 }
 
 func (l *Logger) errorf(levels int, f string, args ...interface{}) {
-	msg := format(levels, f, args...)
+	msg := l.format(levels, f, args...)
 
 	// Always print it
 	fmt.Fprint(os.Stderr, "ERROR: "+msg)
@@ -189,13 +189,16 @@ func (l *Logger) GetErrorLog() string {
 // format is a utility function for formatting logging messages. It
 // prepends the source file and line number of the logging call to the
 // returned message string.
-func format(levels int, f string, args ...interface{}) string {
+func (l *Logger) format(levels int, f string, args ...interface{}) string {
 	// Go up the call stack the specified nubmer of levels
 	_, fn, line, _ := runtime.Caller(levels)
 
+	// Elapsed time
+	s := fmt.Sprintf("%8.2fs ", time.Since(l.start).Seconds())
+
 	// Source file and line
 	fnline := path.Base(fn) + fmt.Sprintf(":%d", line)
-	s := fmt.Sprintf("%-20s ", fnline)
+	s += fmt.Sprintf("%-20s ", fnline)
 
 	// Add the provided logging message.
 	s += fmt.Sprintf(f, args...)
