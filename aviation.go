@@ -320,6 +320,7 @@ type TextMessage struct {
 	messageType TextMessageType
 	contents    string
 	frequencies []Frequency // only used for messageType == TextFrequency
+	recipient   string      // only used for TextPrivate
 }
 
 func (a *Aircraft) Altitude() int {
