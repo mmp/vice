@@ -81,9 +81,7 @@ type PositionConfig struct {
 
 // Some UI state that needs  to stick around
 var (
-	selectedServer   string
-	newServerName    string
-	newServerAddress string
+	serverComboState *ComboBoxState = NewComboBoxState(2)
 )
 
 func (c *GlobalConfig) DrawUI() {
@@ -149,71 +147,27 @@ func (c *GlobalConfig) DrawUI() {
 
 	imgui.Separator()
 	imgui.Text("Custom servers")
-	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
-	if imgui.BeginTableV("##customServers", 2, flags, imgui.Vec2{300, 100}, 0.0) {
-		imgui.TableSetupColumn("Name")
-		imgui.TableSetupColumn("Address")
-		imgui.TableHeadersRow()
-		for _, server := range SortedMapKeys(globalConfig.CustomServers) {
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			if imgui.SelectableV(server, server == selectedServer, imgui.SelectableFlagsSpanAllColumns, imgui.Vec2{}) {
-				selectedServer = server
+	var entries [][]string
+	for _, k := range SortedMapKeys(globalConfig.CustomServers) {
+		entries = append(entries, []string{k, globalConfig.CustomServers[k]})
+	}
+	DrawComboBox("serverAddresses", []string{"Name", "Address"}, true, entries, serverComboState,
+		/* valid */ func(entries []*string) bool {
+			for _, e := range entries {
+				if *e == "" {
+					return false
+				}
 			}
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.CustomServers[server])
-		}
-		imgui.EndTable()
-	}
-
-	add := func() {
-		globalConfig.CustomServers[newServerName] = newServerAddress
-		newServerName = ""
-		newServerAddress = ""
-	}
-
-	inputFlags := imgui.InputTextFlagsEnterReturnsTrue
-	if imgui.InputTextV("Name", &newServerName, inputFlags, nil) {
-		if newServerName != "" && newServerAddress != "" {
-			add()
-			imgui.SetKeyboardFocusHereV(-1)
-		}
-	}
-	if imgui.InputTextV("Address", &newServerAddress, inputFlags, nil) {
-		if newServerName != "" && newServerAddress != "" {
-			add()
-			imgui.SetKeyboardFocusHereV(-1)
-		}
-	}
-
-	enableAdd := newServerName != "" && newServerAddress != ""
-	if !enableAdd {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
-	imgui.SameLine()
-	if imgui.Button("+##newServer") {
-		add()
-	}
-	if !enableAdd {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
-
-	enableDelete := selectedServer != ""
-	if !enableDelete {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
-	imgui.SameLine()
-	if imgui.Button(FontAwesomeIconTrash + "##newServer") {
-		delete(globalConfig.CustomServers, selectedServer)
-		selectedServer = ""
-	}
-	if !enableDelete {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
+			return true
+		},
+		/* add */ func(entries []*string) {
+			globalConfig.CustomServers[*entries[0]] = *entries[1]
+		},
+		/* delete */ func(selected map[string]interface{}) {
+			for k := range selected {
+				delete(globalConfig.CustomServers, k)
+			}
+		})
 
 	imgui.Separator()
 	positionConfig.DrawUI()

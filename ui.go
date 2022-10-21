@@ -392,6 +392,128 @@ func drawAirportSelector(airports map[string]interface{}, title string) map[stri
 
 ///////////////////////////////////////////////////////////////////////////
 
+type ComboBoxState struct {
+	inputValues  []*string
+	selected     map[string]interface{}
+	lastSelected *string
+}
+
+func NewComboBoxState(ncols int) *ComboBoxState {
+	s := &ComboBoxState{}
+	for i := 0; i < ncols; i++ {
+		s.inputValues = append(s.inputValues, new(string))
+	}
+	s.selected = make(map[string]interface{})
+	s.lastSelected = new(string)
+	return s
+}
+
+func DrawComboBox(id string, fieldNames []string, drawHeaders bool,
+	entries [][]string, state *ComboBoxState,
+	inputValid func([]*string) bool, add func([]*string), deleteSelection func(map[string]interface{})) {
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
+	if imgui.BeginTableV("##"+id, len(fieldNames), flags, imgui.Vec2{300, 100}, 0.0) {
+		for _, name := range fieldNames {
+			imgui.TableSetupColumn(name)
+		}
+		if drawHeaders {
+			imgui.TableHeadersRow()
+		}
+
+		io := imgui.CurrentIO()
+		for _, line := range entries {
+			imgui.TableNextRow()
+			_, isSelected := state.selected[line[0]]
+			for i, entry := range line {
+				imgui.TableNextColumn()
+				if i == 0 {
+					if imgui.SelectableV(entry, isSelected, imgui.SelectableFlagsSpanAllColumns, imgui.Vec2{}) {
+						if io.KeyCtrlPressed() {
+							// Toggle selection of this one
+							if isSelected {
+								delete(state.selected, entry)
+							} else {
+								state.selected[entry] = nil
+								*state.lastSelected = entry
+							}
+						} else if io.KeyShiftPressed() {
+							for _, e := range entries {
+								if entry > *state.lastSelected {
+									if e[0] > *state.lastSelected && e[0] <= entry {
+										state.selected[e[0]] = nil
+									}
+								} else {
+									if e[0] >= entry && e[0] <= *state.lastSelected {
+										state.selected[e[0]] = nil
+									}
+								}
+							}
+							*state.lastSelected = entry
+						} else {
+							// Select only this one
+							for k := range state.selected {
+								delete(state.selected, k)
+							}
+							state.selected[entry] = nil
+							*state.lastSelected = entry
+						}
+					}
+				} else {
+					imgui.Text(entry)
+				}
+			}
+		}
+		imgui.EndTable()
+	}
+
+	inputFlags := imgui.InputTextFlagsEnterReturnsTrue
+	valid := inputValid(state.inputValues)
+	for i, field := range fieldNames {
+		if imgui.InputTextV(field+"##"+id, state.inputValues[i], inputFlags, nil) && valid {
+			add(state.inputValues)
+			for _, s := range state.inputValues {
+				*s = ""
+			}
+			imgui.SetKeyboardFocusHereV(-1)
+		}
+	}
+
+	if !valid {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+	imgui.SameLine()
+	if imgui.Button("+##" + id) {
+		add(state.inputValues)
+		for _, s := range state.inputValues {
+			*s = ""
+		}
+	}
+	if !valid {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
+	}
+
+	enableDelete := len(state.selected) > 0
+	if !enableDelete {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+	imgui.SameLine()
+	if imgui.Button(FontAwesomeIconTrash + "##" + id) {
+		deleteSelection(state.selected)
+		for k := range state.selected {
+			delete(state.selected, k)
+		}
+	}
+	if !enableDelete {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 type ModalDialogBox struct {
 	closed, isOpen bool
 	client         ModalDialogClient
