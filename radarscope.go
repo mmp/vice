@@ -100,12 +100,8 @@ type RadarScopePane struct {
 	ghostAircraft map[*Aircraft]*Aircraft
 
 	// persistent state used in the ui
-	selectedVORs, selectedNDBs           map[string]interface{}
-	selectedFixes, selectedAirports      map[string]interface{}
-	lastSelectedVOR, lastSelectedNDB     string
-	lastSelectedFix, lastSelectedAirport string
-	newVOR, newNDB                       string
-	newFix, newAirport                   string
+	vorsComboState, ndbsComboState      *ComboBoxState
+	fixesComboState, airportsComboState *ComboBoxState
 }
 
 const (
@@ -174,10 +170,10 @@ func NewRadarScopePane(n string) *RadarScopePane {
 
 	c.CRDAConfig = NewCRDAConfig()
 
-	c.selectedVORs = make(map[string]interface{})
-	c.selectedNDBs = make(map[string]interface{})
-	c.selectedFixes = make(map[string]interface{})
-	c.selectedAirports = make(map[string]interface{})
+	c.vorsComboState = NewComboBoxState(1)
+	c.ndbsComboState = NewComboBoxState(1)
+	c.fixesComboState = NewComboBoxState(1)
+	c.airportsComboState = NewComboBoxState(1)
 
 	return c
 }
@@ -223,10 +219,10 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	dupe.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
-	dupe.selectedVORs = make(map[string]interface{})
-	dupe.selectedNDBs = make(map[string]interface{})
-	dupe.selectedFixes = make(map[string]interface{})
-	dupe.selectedAirports = make(map[string]interface{})
+	dupe.vorsComboState = NewComboBoxState(1)
+	dupe.ndbsComboState = NewComboBoxState(1)
+	dupe.fixesComboState = NewComboBoxState(1)
+	dupe.airportsComboState = NewComboBoxState(1)
 
 	return dupe
 }
@@ -256,17 +252,17 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	if rs.AirportsToDraw == nil {
 		rs.AirportsToDraw = make(map[string]interface{})
 	}
-	if rs.selectedVORs == nil {
-		rs.selectedVORs = make(map[string]interface{})
+	if rs.vorsComboState == nil {
+		rs.vorsComboState = NewComboBoxState(1)
 	}
-	if rs.selectedNDBs == nil {
-		rs.selectedNDBs = make(map[string]interface{})
+	if rs.ndbsComboState == nil {
+		rs.ndbsComboState = NewComboBoxState(1)
 	}
-	if rs.selectedFixes == nil {
-		rs.selectedFixes = make(map[string]interface{})
+	if rs.fixesComboState == nil {
+		rs.fixesComboState = NewComboBoxState(1)
 	}
-	if rs.selectedAirports == nil {
-		rs.selectedAirports = make(map[string]interface{})
+	if rs.airportsComboState == nil {
+		rs.airportsComboState = NewComboBoxState(1)
 	}
 
 	// Upgrade old files
@@ -451,119 +447,78 @@ func (rs *RadarScopePane) DrawUI() {
 			imgui.SameLine()
 			imgui.Checkbox("Show Names##Airports", &rs.DrawAirportNames)
 
-			io := imgui.CurrentIO()
-			table := func(m *map[string]interface{}, selected map[string]interface{}, lastSelected string) string {
-				flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
-				if imgui.BeginTableV(fmt.Sprintf("##%p", m), 1, flags, imgui.Vec2{200, 200}, 0.0) {
-					for _, s := range SortedMapKeys(*m) {
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						_, sel := selected[s]
-						if imgui.SelectableV(s, sel, imgui.SelectableFlagsSpanAllColumns, imgui.Vec2{}) {
-							if io.KeyCtrlPressed() {
-								// Toggle selection of this one
-								if sel {
-									delete(selected, s)
-								} else {
-									selected[s] = nil
-									lastSelected = s
-								}
-							} else if io.KeyShiftPressed() {
-								for _, k := range SortedMapKeys(*m) {
-									if s > lastSelected {
-										if k > lastSelected && k <= s {
-											selected[k] = nil
-										}
-									} else {
-										if k >= s && k <= lastSelected {
-											selected[k] = nil
-										}
-									}
-								}
-								lastSelected = s
-							} else {
-								// Select only this one
-								for k := range selected {
-									delete(selected, k)
-								}
-								selected[s] = nil
-								lastSelected = s
-							}
-						}
-					}
-					imgui.EndTable()
-				}
-				return lastSelected
-			}
-
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			rs.lastSelectedVOR = table(&rs.VORsToDraw, rs.selectedVORs, rs.lastSelectedVOR)
-			imgui.TableNextColumn()
-			rs.lastSelectedNDB = table(&rs.NDBsToDraw, rs.selectedNDBs, rs.lastSelectedNDB)
-			imgui.TableNextColumn()
-			rs.lastSelectedFix = table(&rs.FixesToDraw, rs.selectedFixes, rs.lastSelectedFix)
-			imgui.TableNextColumn()
-			rs.lastSelectedAirport = table(&rs.AirportsToDraw, rs.selectedAirports, rs.lastSelectedAirport)
-
-			buttons := func(selected map[string]interface{}, newName *string, m map[string]interface{},
-				valid map[string]Point2LL) {
-				_, validName := valid[*newName]
-
-				add := func(newName *string, m map[string]interface{}) {
-					if validName {
-						m[*newName] = nil
-						*newName = ""
-					}
+			expand := func(strs []string) [][]string {
+				var e [][]string
+				for _, s := range strs {
+					e = append(e, []string{s})
 				}
-
-				flags := imgui.InputTextFlagsEnterReturnsTrue | imgui.InputTextFlagsCharsUppercase
-				if imgui.InputTextV(fmt.Sprintf("##new%p", newName), newName, flags, nil) {
-					add(newName, m)
-					imgui.SetKeyboardFocusHereV(-1)
-				}
-
-				enableAdd := len(*newName) > 0 && validName
-				if !enableAdd {
-					imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-					imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-				}
-				imgui.SameLine()
-				if imgui.Button(fmt.Sprintf("+##%p", newName)) {
-					add(newName, m)
-				}
-				if !enableAdd {
-					imgui.PopItemFlag()
-					imgui.PopStyleVar()
-				}
-
-				enableDelete := len(selected) > 0
-				if !enableDelete {
-					imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-					imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-				}
-				imgui.SameLine()
-				if imgui.Button(fmt.Sprintf(FontAwesomeIconTrash+"##%p", newName)) {
-					for s := range selected {
-						delete(m, s)
-						delete(selected, s)
-					}
-				}
-				if !enableDelete {
-					imgui.PopItemFlag()
-					imgui.PopStyleVar()
-				}
+				return e
 			}
-
-			imgui.TableNextRow()
+			DrawComboBox("vors", []string{"##name"}, false, expand(SortedMapKeys(rs.VORsToDraw)),
+				imgui.InputTextFlagsCharsUppercase, rs.vorsComboState,
+				/* valid */ func(entries []*string) bool {
+					e := *entries[0]
+					_, ok := database.VORs[e]
+					return e != "" && ok
+				},
+				/* add */ func(entries []*string) {
+					rs.VORsToDraw[*entries[0]] = nil
+				},
+				/* delete */ func(selected map[string]interface{}) {
+					for k := range selected {
+						delete(rs.VORsToDraw, k)
+					}
+				})
 			imgui.TableNextColumn()
-			buttons(rs.selectedVORs, &rs.newVOR, rs.VORsToDraw, database.VORs)
+			DrawComboBox("ndbs", []string{"##name"}, false, expand(SortedMapKeys(rs.NDBsToDraw)),
+				imgui.InputTextFlagsCharsUppercase, rs.ndbsComboState,
+				/* valid */ func(entries []*string) bool {
+					e := *entries[0]
+					_, ok := database.NDBs[e]
+					return e != "" && ok
+				},
+				/* add */ func(entries []*string) {
+					rs.NDBsToDraw[*entries[0]] = nil
+				},
+				/* delete */ func(selected map[string]interface{}) {
+					for k := range selected {
+						delete(rs.NDBsToDraw, k)
+					}
+				})
 			imgui.TableNextColumn()
-			buttons(rs.selectedNDBs, &rs.newNDB, rs.NDBsToDraw, database.NDBs)
+			DrawComboBox("fixes", []string{"##name"}, false, expand(SortedMapKeys(rs.FixesToDraw)),
+				imgui.InputTextFlagsCharsUppercase, rs.fixesComboState,
+				/* valid */ func(entries []*string) bool {
+					e := *entries[0]
+					_, ok := database.fixes[e]
+					return e != "" && ok
+				},
+				/* add */ func(entries []*string) {
+					rs.FixesToDraw[*entries[0]] = nil
+				},
+				/* delete */ func(selected map[string]interface{}) {
+					for k := range selected {
+						delete(rs.FixesToDraw, k)
+					}
+				})
 			imgui.TableNextColumn()
-			buttons(rs.selectedFixes, &rs.newFix, rs.FixesToDraw, database.fixes)
-			imgui.TableNextColumn()
-			buttons(rs.selectedAirports, &rs.newAirport, rs.AirportsToDraw, database.airports)
+			DrawComboBox("airports", []string{"##name"}, false, expand(SortedMapKeys(rs.AirportsToDraw)),
+				imgui.InputTextFlagsCharsUppercase, rs.airportsComboState,
+				/* valid */ func(entries []*string) bool {
+					e := *entries[0]
+					_, ok := database.airports[e]
+					return e != "" && ok
+				},
+				/* add */ func(entries []*string) {
+					rs.AirportsToDraw[*entries[0]] = nil
+				},
+				/* delete */ func(selected map[string]interface{}) {
+					for k := range selected {
+						delete(rs.AirportsToDraw, k)
+					}
+				})
 
 			imgui.EndTable()
 		}
