@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -73,6 +74,9 @@ var (
 		&ToDoCommand{},
 		&TrafficCommand{},
 
+		&ATCChatCommand{},
+		&PrivateMessageCommand{},
+		&TransmitCommand{},
 		&WallopCommand{},
 
 		&EchoCommand{},
@@ -2225,6 +2229,69 @@ func (*EchoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*EchoCommand) Run(cli *CLIPane, args []string) (string, error) {
 	return strings.Join(args, " "), nil
+}
+
+type ATCChatCommand struct{}
+
+func (*ATCChatCommand) Name() string { return "atc" }
+func (*ATCChatCommand) Usage() string {
+	return "[message]"
+}
+func (*ATCChatCommand) Help() string {
+	return "Send the specified message to all in-range controllers."
+}
+func (*ATCChatCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*ATCChatCommand) Run(cli *CLIPane, args []string) (string, error) {
+	tm := TextMessage{messageType: TextATC, contents: strings.Join(args, " ")}
+	return "", server.SendTextMessage(tm)
+}
+
+type PrivateMessageCommand struct{}
+
+func (*PrivateMessageCommand) Name() string { return "dm" }
+func (*PrivateMessageCommand) Usage() string {
+	return "<recipient> [message]"
+}
+func (*PrivateMessageCommand) Help() string {
+	return "Send the specified message to the recipient (aircraft or controller)."
+}
+func (*PrivateMessageCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*PrivateMessageCommand) Run(cli *CLIPane, args []string) (string, error) {
+	tm := TextMessage{
+		messageType: TextPrivate,
+		recipient:   strings.ToUpper(args[0]),
+		contents:    strings.Join(args[1:], " ")}
+	return "", server.SendTextMessage(tm)
+}
+
+type TransmitCommand struct{}
+
+func (*TransmitCommand) Name() string { return "tx" }
+func (*TransmitCommand) Usage() string {
+	return "[message]"
+}
+func (*TransmitCommand) Help() string {
+	return "Transmits the text message on the primed frequency."
+}
+func (*TransmitCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*TransmitCommand) Run(cli *CLIPane, args []string) (string, error) {
+	if !positionConfig.radioPrimed {
+		return "", errors.New("Not primed on a frequency")
+	} else if positionConfig.PrimaryFrequency == Frequency(0) {
+		return "", errors.New("No radio frequency has been selected")
+	} else {
+		tm := TextMessage{
+			messageType: TextFrequency,
+			frequencies: []Frequency{positionConfig.PrimaryFrequency},
+			contents:    strings.Join(args, " ")}
+		return "", server.SendTextMessage(tm)
+	}
 }
 
 type WallopCommand struct{}

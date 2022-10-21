@@ -20,6 +20,7 @@ var (
 	ErrNotBeingHandedOffToMe   = errors.New("Aircraft not being handed off to current controller")
 	ErrNoFlightPlanFiled       = errors.New("No flight plan filed for aircraft")
 	ErrNoController            = errors.New("No controller with that callsign")
+	ErrNoControllerOrAircraft  = errors.New("No controller or aircraft with that callsign")
 	ErrNotController           = errors.New("Not signed in to a controller position")
 )
 
