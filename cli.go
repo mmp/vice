@@ -283,7 +283,7 @@ func (cli *CLIPane) Update(updates *ControlUpdates) {
 					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 			}
 		case TextPrivate:
-			cli.AddConsoleEntry([]string{m.sender + ": ", m.contents},
+			cli.AddConsoleEntry([]string{"[DM] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 		}
 	}
