@@ -531,7 +531,7 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	spaceWidth, _ := fp.font.BoundText(" ", 0)
 	ncols := (int(ctx.paneExtent.Width()) - fp.font.size) / spaceWidth
 	indent := 3 + len(ac.Callsign())
-	if ac.voiceCapability != Voice {
+	if ac.voiceCapability != VoiceFull {
 		indent += 2
 	}
 	wrapped, _ := wrapText(contents, ncols, indent, true)

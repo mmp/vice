@@ -2374,9 +2374,9 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	datablock.WriteString(ac.Callsign())
 	// Otherwise a 3 line datablock
 	// Line 1: callsign and voice indicator
-	if ac.voiceCapability == Receive {
+	if ac.voiceCapability == VoiceReceive {
 		datablock.WriteString("/r")
-	} else if ac.voiceCapability == Text {
+	} else if ac.voiceCapability == VoiceText {
 		datablock.WriteString("/t")
 	}
 

@@ -291,10 +291,10 @@ type User struct {
 type VoiceCapability int
 
 const (
-	Unknown = iota
-	Voice
-	Receive
-	Text
+	VoiceUnknown = iota
+	VoiceFull
+	VoiceReceive
+	VoiceText
 )
 
 func (v VoiceCapability) String() string {
@@ -493,7 +493,7 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 		write := func(s string) { w.Write([]byte(s)) }
 
 		write(a.Callsign())
-		if a.voiceCapability != Voice {
+		if a.voiceCapability != VoiceFull {
 			write("/" + a.voiceCapability.String())
 		}
 		write("\t")
@@ -515,7 +515,7 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 		contents = sb.String()
 
 		indent = 1 + len(a.Callsign())
-		if a.voiceCapability != Voice {
+		if a.voiceCapability != VoiceFull {
 			indent += 1 + len(a.voiceCapability.String())
 		}
 		indstr := fmt.Sprintf("%*c", indent, ' ')

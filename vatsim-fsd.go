@@ -167,11 +167,11 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 	ac.flightPlan = &fp
 
 	if strings.Contains(fp.remarks, "/v/") {
-		ac.voiceCapability = Voice
+		ac.voiceCapability = VoiceFull
 	} else if strings.Contains(fp.remarks, "/r/") {
-		ac.voiceCapability = Receive
+		ac.voiceCapability = VoiceReceive
 	} else if strings.Contains(fp.remarks, "/t/") {
-		ac.voiceCapability = Text
+		ac.voiceCapability = VoiceText
 	}
 
 	if positionConfig.IsActiveAirport(fp.depart) {
@@ -472,13 +472,13 @@ func (v *VATSIMServer) voiceTypeSet(strs []string, csIndex int, vtIndex int) err
 	ac := v.getOrCreateAircraft(callsign)
 	switch strs[vtIndex] {
 	case "v":
-		ac.voiceCapability = Voice
+		ac.voiceCapability = VoiceFull
 	case "r":
-		ac.voiceCapability = Receive
+		ac.voiceCapability = VoiceReceive
 	case "t":
-		ac.voiceCapability = Text
+		ac.voiceCapability = VoiceText
 	case "":
-		ac.voiceCapability = Unknown
+		ac.voiceCapability = VoiceUnknown
 	default:
 		return MalformedMessageError{"Unexpected voice capability: " + strs[vtIndex]}
 	}

@@ -354,11 +354,11 @@ func (v *VATSIMServer) SetVoiceType(callsign string, voice string) error {
 
 		switch voice {
 		case "v":
-			ac.voiceCapability = Voice
+			ac.voiceCapability = VoiceFull
 		case "r":
-			ac.voiceCapability = Receive
+			ac.voiceCapability = VoiceReceive
 		case "t":
-			ac.voiceCapability = Text
+			ac.voiceCapability = VoiceText
 		default:
 			return errors.New("Invalid voice communications type specified")
 		}
