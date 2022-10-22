@@ -147,12 +147,17 @@ func (c *GlobalConfig) DrawUI() {
 
 	imgui.Separator()
 	imgui.Text("Custom servers")
-	var entries [][]string
-	for _, k := range SortedMapKeys(globalConfig.CustomServers) {
-		entries = append(entries, []string{k, globalConfig.CustomServers[k]})
+	config := ComboBoxDisplayConfig{
+		ColumnHeaders:    []string{"Name", "Address"},
+		DrawHeaders:      true,
+		SelectAllColumns: true,
+		EntryNames:       []string{"Name", "Address"},
+		TableFlags:       imgui.TableFlagsScrollY,
 	}
-	DrawComboBox("serverAddresses", []string{"Name", "Address"}, true, entries,
-		0 /* input text flags */, serverComboState,
+	DrawComboBox(serverComboState, config, SortedMapKeys(globalConfig.CustomServers),
+		/* draw column */ func(s string, col int) {
+			imgui.Text(globalConfig.CustomServers[s])
+		},
 		/* valid */ func(entries []*string) bool {
 			for _, e := range entries {
 				if *e == "" {

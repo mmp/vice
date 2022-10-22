@@ -398,9 +398,9 @@ type ComboBoxState struct {
 	lastSelected *string
 }
 
-func NewComboBoxState(ncols int) *ComboBoxState {
+func NewComboBoxState(nentry int) *ComboBoxState {
 	s := &ComboBoxState{}
-	for i := 0; i < ncols; i++ {
+	for i := 0; i < nentry; i++ {
 		s.inputValues = append(s.inputValues, new(string))
 	}
 	s.selected = make(map[string]interface{})
@@ -408,68 +408,89 @@ func NewComboBoxState(ncols int) *ComboBoxState {
 	return s
 }
 
-func DrawComboBox(id string, fieldNames []string, drawHeaders bool,
-	entries [][]string, inputFlags imgui.InputTextFlags, state *ComboBoxState,
+type ComboBoxDisplayConfig struct {
+	ColumnHeaders    []string
+	DrawHeaders      bool
+	EntryNames       []string
+	InputFlags       []imgui.InputTextFlags
+	TableFlags       imgui.TableFlags
+	SelectAllColumns bool
+	Size             imgui.Vec2
+}
+
+func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
+	firstColumn []string, drawColumn func(s string, col int),
 	inputValid func([]*string) bool, add func([]*string), deleteSelection func(map[string]interface{})) {
-	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsScrollY
-	if imgui.BeginTableV("##"+id, len(fieldNames), flags, imgui.Vec2{300, 100}, 0.0) {
-		for _, name := range fieldNames {
+	id := fmt.Sprintf("%p", state)
+	flags := config.TableFlags | imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV |
+		imgui.TableFlagsRowBg
+	sz := config.Size
+	if sz.X == 0 && sz.Y == 0 {
+		sz = imgui.Vec2{300, 100}
+	}
+	if imgui.BeginTableV("##"+id, len(config.ColumnHeaders), flags, sz, 0.0) {
+		for _, name := range config.ColumnHeaders {
 			imgui.TableSetupColumn(name)
 		}
-		if drawHeaders {
+		if config.DrawHeaders {
 			imgui.TableHeadersRow()
 		}
 
 		io := imgui.CurrentIO()
-		for _, line := range entries {
+		for _, entry := range firstColumn {
 			imgui.TableNextRow()
-			_, isSelected := state.selected[line[0]]
-			for i, entry := range line {
-				imgui.TableNextColumn()
-				if i == 0 {
-					if imgui.SelectableV(entry, isSelected, imgui.SelectableFlagsSpanAllColumns, imgui.Vec2{}) {
-						if io.KeyCtrlPressed() {
-							// Toggle selection of this one
-							if isSelected {
-								delete(state.selected, entry)
-							} else {
-								state.selected[entry] = nil
-								*state.lastSelected = entry
+			imgui.TableNextColumn()
+			_, isSelected := state.selected[entry]
+			var selFlags imgui.SelectableFlags
+			if config.SelectAllColumns {
+				selFlags = imgui.SelectableFlagsSpanAllColumns
+			}
+			if imgui.SelectableV(entry, isSelected, selFlags, imgui.Vec2{}) {
+				if io.KeyCtrlPressed() {
+					// Toggle selection of this one
+					if isSelected {
+						delete(state.selected, entry)
+					} else {
+						state.selected[entry] = nil
+						*state.lastSelected = entry
+					}
+				} else if io.KeyShiftPressed() {
+					for _, e := range firstColumn {
+						if entry > *state.lastSelected {
+							if e > *state.lastSelected && e <= entry {
+								state.selected[e] = nil
 							}
-						} else if io.KeyShiftPressed() {
-							for _, e := range entries {
-								if entry > *state.lastSelected {
-									if e[0] > *state.lastSelected && e[0] <= entry {
-										state.selected[e[0]] = nil
-									}
-								} else {
-									if e[0] >= entry && e[0] <= *state.lastSelected {
-										state.selected[e[0]] = nil
-									}
-								}
-							}
-							*state.lastSelected = entry
 						} else {
-							// Select only this one
-							for k := range state.selected {
-								delete(state.selected, k)
+							if e >= entry && e <= *state.lastSelected {
+								state.selected[e] = nil
 							}
-							state.selected[entry] = nil
-							*state.lastSelected = entry
 						}
 					}
+					*state.lastSelected = entry
 				} else {
-					imgui.Text(entry)
+					// Select only this one
+					for k := range state.selected {
+						delete(state.selected, k)
+					}
+					state.selected[entry] = nil
+					*state.lastSelected = entry
 				}
+			}
+			for i := 1; i < len(config.ColumnHeaders); i++ {
+				imgui.TableNextColumn()
+				drawColumn(entry, i)
 			}
 		}
 		imgui.EndTable()
 	}
 
-	inputFlags |= imgui.InputTextFlagsEnterReturnsTrue
 	valid := inputValid(state.inputValues)
-	for i, field := range fieldNames {
-		if imgui.InputTextV(field+"##"+id, state.inputValues[i], inputFlags, nil) && valid {
+	for i, entry := range config.EntryNames {
+		flags := imgui.InputTextFlagsEnterReturnsTrue
+		if config.InputFlags != nil {
+			flags |= config.InputFlags[i]
+		}
+		if imgui.InputTextV(entry+"##"+id, state.inputValues[i], flags, nil) && valid {
 			add(state.inputValues)
 			for _, s := range state.inputValues {
 				*s = ""

@@ -449,15 +449,15 @@ func (rs *RadarScopePane) DrawUI() {
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			expand := func(strs []string) [][]string {
-				var e [][]string
-				for _, s := range strs {
-					e = append(e, []string{s})
-				}
-				return e
+			config := ComboBoxDisplayConfig{
+				ColumnHeaders:    []string{"##name"},
+				DrawHeaders:      false,
+				SelectAllColumns: true,
+				EntryNames:       []string{"##name"},
+				InputFlags:       []imgui.InputTextFlags{imgui.InputTextFlagsCharsUppercase},
+				TableFlags:       imgui.TableFlagsScrollY,
 			}
-			DrawComboBox("vors", []string{"##name"}, false, expand(SortedMapKeys(rs.VORsToDraw)),
-				imgui.InputTextFlagsCharsUppercase, rs.vorsComboState,
+			DrawComboBox(rs.vorsComboState, config, SortedMapKeys(rs.VORsToDraw), nil,
 				/* valid */ func(entries []*string) bool {
 					e := *entries[0]
 					_, ok := database.VORs[e]
@@ -472,8 +472,7 @@ func (rs *RadarScopePane) DrawUI() {
 					}
 				})
 			imgui.TableNextColumn()
-			DrawComboBox("ndbs", []string{"##name"}, false, expand(SortedMapKeys(rs.NDBsToDraw)),
-				imgui.InputTextFlagsCharsUppercase, rs.ndbsComboState,
+			DrawComboBox(rs.ndbsComboState, config, SortedMapKeys(rs.NDBsToDraw), nil,
 				/* valid */ func(entries []*string) bool {
 					e := *entries[0]
 					_, ok := database.NDBs[e]
@@ -488,8 +487,7 @@ func (rs *RadarScopePane) DrawUI() {
 					}
 				})
 			imgui.TableNextColumn()
-			DrawComboBox("fixes", []string{"##name"}, false, expand(SortedMapKeys(rs.FixesToDraw)),
-				imgui.InputTextFlagsCharsUppercase, rs.fixesComboState,
+			DrawComboBox(rs.fixesComboState, config, SortedMapKeys(rs.FixesToDraw), nil,
 				/* valid */ func(entries []*string) bool {
 					e := *entries[0]
 					_, ok := database.fixes[e]
@@ -504,8 +502,7 @@ func (rs *RadarScopePane) DrawUI() {
 					}
 				})
 			imgui.TableNextColumn()
-			DrawComboBox("airports", []string{"##name"}, false, expand(SortedMapKeys(rs.AirportsToDraw)),
-				imgui.InputTextFlagsCharsUppercase, rs.airportsComboState,
+			DrawComboBox(rs.airportsComboState, config, SortedMapKeys(rs.AirportsToDraw), nil,
 				/* valid */ func(entries []*string) bool {
 					e := *entries[0]
 					_, ok := database.airports[e]
