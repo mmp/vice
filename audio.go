@@ -115,15 +115,6 @@ func (a *AudioSettings) HandleEvent(e AudioEvent) {
 }
 
 func audioProcessUpdates(updates *ControlUpdates) {
-	// Audio for any new arrivals
-	for ac := range updates.addedAircraft {
-		if ac.flightPlan != nil && positionConfig.IsActiveAirport(ac.flightPlan.arrive) {
-			globalConfig.AudioSettings.HandleEvent(AudioEventNewArrival)
-			// Only once.
-			break
-		}
-	}
-
 	if len(updates.pointOuts) > 0 {
 		globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
 	}

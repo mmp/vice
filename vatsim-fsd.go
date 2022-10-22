@@ -174,10 +174,6 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 		ac.voiceCapability = VoiceText
 	}
 
-	if positionConfig.IsActiveAirport(fp.depart) {
-		globalConfig.AudioSettings.HandleEvent(AudioEventFlightPlanFiled)
-	}
-
 	return nil
 }
 
@@ -583,10 +579,6 @@ func init() {
 			}
 			letter := args[3][5]
 			v.atis[sender] = string(letter) + " " + args[3][8:]
-		}
-		airport := strings.TrimSuffix(sender, "_ATIS")
-		if positionConfig.IsActiveAirport(airport) {
-			globalConfig.AudioSettings.HandleEvent(AudioEventUpdatedATIS)
 		}
 		return nil
 	}))

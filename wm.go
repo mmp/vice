@@ -57,8 +57,8 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(cs *ColorScheme)     {}
-func (s *SplitLine) Deactivate()                  {}
+func (s *SplitLine) Activate(cs *ColorScheme)       {}
+func (s *SplitLine) Deactivate()                    {}
 func (s *SplitLine) Update(updates *ControlUpdates) {}
 
 func (s *SplitLine) Name() string {

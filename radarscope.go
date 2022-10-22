@@ -65,7 +65,8 @@ type RadarScopePane struct {
 	RangeLimits         [NumRangeTypes]RangeLimits
 	rangeWarnings       map[AircraftPair]interface{}
 
-	AutoMIT bool
+	AutoMIT         bool
+	AutoMITAirports map[string]interface{}
 
 	CRDAEnabled bool
 	CRDAConfig  CRDAConfig
@@ -170,6 +171,8 @@ func NewRadarScopePane(n string) *RadarScopePane {
 
 	c.CRDAConfig = NewCRDAConfig()
 
+	c.AutoMITAirports = make(map[string]interface{})
+
 	c.vorsComboState = NewComboBoxState(1)
 	c.ndbsComboState = NewComboBoxState(1)
 	c.fixesComboState = NewComboBoxState(1)
@@ -211,6 +214,8 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 		ghost := *gh // make a copy
 		dupe.ghostAircraft[ac] = &ghost
 	}
+
+	dupe.AutoMITAirports = DuplicateMap(rs.AutoMITAirports)
 
 	// don't share those slices...
 	dupe.llCommandBuffer = CommandBuffer{}
@@ -263,6 +268,9 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	}
 	if rs.airportsComboState == nil {
 		rs.airportsComboState = NewComboBoxState(1)
+	}
+	if rs.AutoMITAirports == nil {
+		rs.AutoMITAirports = make(map[string]interface{})
 	}
 
 	// Upgrade old files
@@ -353,6 +361,9 @@ func (rs *RadarScopePane) DrawUI() {
 	}
 	if imgui.CollapsingHeader("Tools") {
 		imgui.Checkbox("Automatic MIT lines for arrivals", &rs.AutoMIT)
+		if rs.AutoMIT {
+			rs.AutoMITAirports = drawAirportSelector(rs.AutoMITAirports, "Arrival airports for auto MIT")
+		}
 		imgui.Checkbox("Draw compass directions at edges", &rs.DrawCompass)
 		imgui.Checkbox("Range indicators", &rs.DrawRangeIndicators)
 		if rs.DrawRangeIndicators {
@@ -1012,7 +1023,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 			return diff < 150 && dalt < 3000
 		}
 
-		arr := getDistanceSortedArrivals()
+		arr := getDistanceSortedArrivals(rs.AutoMITAirports)
 
 		for i := 1; i < len(arr); i++ {
 			ac := arr[i].aircraft

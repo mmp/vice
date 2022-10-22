@@ -195,12 +195,15 @@ type Departure struct {
 	*Aircraft
 }
 
-func getDistanceSortedArrivals() []Arrival {
+func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 	var arr []Arrival
 	now := server.CurrentTime()
 	for _, ac := range server.GetFilteredAircraft(func(ac *Aircraft) bool {
-		return !ac.OnGround() && !ac.LostTrack(now) && ac.flightPlan != nil &&
-			positionConfig.IsActiveAirport(ac.flightPlan.arrive)
+		if ac.OnGround() || ac.LostTrack(now) || ac.flightPlan == nil {
+			return false
+		}
+		_, ok := airports[ac.flightPlan.arrive]
+		return ok
 	}) {
 		pos := ac.Position()
 		// Filter ones where we don't have a valid position
@@ -277,7 +280,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	if a.ShowATIS {
 		var atis []string
-		for ap := range positionConfig.ActiveAirports {
+		for ap := range a.Airports {
 			if contents := server.GetATIS(ap); contents != "" {
 				atis = append(atis, fmt.Sprintf("  %-12s: %s", ap, contents))
 			}
@@ -297,7 +300,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	for _, ac := range server.GetFilteredAircraft(func(ac *Aircraft) bool {
 		return ac.flightPlan != nil && !ac.LostTrack(now)
 	}) {
-		if positionConfig.IsActiveAirport(ac.flightPlan.depart) {
+		if _, ok := a.Airports[ac.flightPlan.depart]; ok {
 			if ac.OnGround() {
 				if ac.assignedSquawk == 0 {
 					uncleared = append(uncleared, Departure{Aircraft: ac})
@@ -392,7 +395,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		str.WriteString("\n")
 	}
 
-	arr := getDistanceSortedArrivals()
+	arr := getDistanceSortedArrivals(a.Airports)
 	if a.ShowArrivals && len(arr) > 0 {
 		str.WriteString("Arrivals:\n")
 		for _, a := range arr {

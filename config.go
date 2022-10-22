@@ -55,7 +55,6 @@ type NotesNode struct {
 
 type PositionConfig struct {
 	ColorSchemeName string
-	ActiveAirports  map[string]interface{}
 	DisplayRoot     *DisplayNode
 
 	VatsimCallsign        string
@@ -370,9 +369,7 @@ func (pc *PositionConfig) MonitoredFrequencies(frequencies []Frequency) []Freque
 
 func NewPositionConfig() *PositionConfig {
 	c := &PositionConfig{}
-	c.ActiveAirports = make(map[string]interface{})
 	if database != nil && database.defaultAirport != "" {
-		c.ActiveAirports[database.defaultAirport] = nil
 		c.PrimaryRadarCenter = database.defaultAirport
 	}
 	c.RadarRange = 20
@@ -381,15 +378,6 @@ func NewPositionConfig() *PositionConfig {
 	c.DisplayRoot = &DisplayNode{Pane: NewRadarScopePane("Main Scope")}
 	c.ColorSchemeName = "Dark"
 	return c
-}
-
-func (c *PositionConfig) IsActiveAirport(id string) bool {
-	if c.ActiveAirports == nil {
-		return false
-	}
-
-	_, ok := c.ActiveAirports[id]
-	return ok
 }
 
 func (c *PositionConfig) GetColorScheme() *ColorScheme {
@@ -407,8 +395,6 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 }
 
 func (c *PositionConfig) DrawUI() {
-	c.ActiveAirports = drawAirportSelector(c.ActiveAirports, "Active airports")
-
 	imgui.InputTextV("Primary radar center", &c.PrimaryRadarCenter, imgui.InputTextFlagsCharsUppercase, nil)
 	imgui.Text("Secondary radar centers")
 	for i := range c.SecondaryRadarCenters {
@@ -508,10 +494,6 @@ func (c *PositionConfig) Duplicate() *PositionConfig {
 	nc := &PositionConfig{}
 	*nc = *c
 	nc.DisplayRoot = c.DisplayRoot.Duplicate()
-	nc.ActiveAirports = make(map[string]interface{})
-	for ap := range c.ActiveAirports {
-		nc.ActiveAirports[ap] = nil
-	}
 	nc.Frequencies = DuplicateMap(c.Frequencies)
 
 	nc.frequenciesComboBoxState = nil
