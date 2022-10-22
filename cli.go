@@ -2279,14 +2279,12 @@ func (*TransmitCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
 func (*TransmitCommand) Run(cli *CLIPane, args []string) (string, error) {
-	if !positionConfig.radioPrimed {
+	if positionConfig.primaryFrequency == Frequency(0) {
 		return "", errors.New("Not primed on a frequency")
-	} else if positionConfig.PrimaryFrequency == Frequency(0) {
-		return "", errors.New("No radio frequency has been selected")
 	} else {
 		tm := TextMessage{
 			messageType: TextFrequency,
-			frequencies: []Frequency{positionConfig.PrimaryFrequency},
+			frequencies: []Frequency{positionConfig.primaryFrequency},
 			contents:    strings.Join(args, " ")}
 		return "", server.SendTextMessage(tm)
 	}

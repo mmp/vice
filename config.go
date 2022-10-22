@@ -14,6 +14,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -63,9 +64,8 @@ type PositionConfig struct {
 	PrimaryRadarCenter    string
 	SecondaryRadarCenters [3]string
 	RadarRange            int32
-	PrimaryFrequency      Frequency
-
-	radioPrimed bool
+	primaryFrequency      Frequency // We don't save this in the config file
+	Frequencies           map[string]Frequency
 
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
@@ -77,6 +77,9 @@ type PositionConfig struct {
 	highlightedLocationEndTime time.Time
 	drawnRoute                 string
 	drawnRouteEndTime          time.Time
+
+	frequenciesComboBoxState     *ComboBoxState
+	txFrequencies, rxFrequencies map[Frequency]*bool
 }
 
 // Some UI state that needs  to stick around
@@ -291,6 +294,10 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 
 	cs := positionConfig.GetColorScheme()
 
+	if positionConfig.Frequencies == nil {
+		positionConfig.Frequencies = make(map[string]Frequency)
+	}
+
 	wmActivateNewConfig(oldConfig, positionConfig, cs)
 
 	if cs.IsDark() {
@@ -355,8 +362,7 @@ func (pc *PositionConfig) NotifyAircraftSelected(ac *Aircraft) {
 func (pc *PositionConfig) MonitoredFrequencies(frequencies []Frequency) []Frequency {
 	var monitored []Frequency
 	for _, f := range frequencies {
-		// For now it's just the primed frequency...
-		if pc.radioPrimed && f == pc.PrimaryFrequency {
+		if ptr, ok := pc.rxFrequencies[f]; ok && *ptr {
 			monitored = append(monitored, f)
 		}
 	}
@@ -371,6 +377,7 @@ func NewPositionConfig() *PositionConfig {
 		c.PrimaryRadarCenter = database.defaultAirport
 	}
 	c.RadarRange = 20
+	c.Frequencies = make(map[string]Frequency)
 
 	c.DisplayRoot = &DisplayNode{Pane: NewRadarScopePane("Main Scope")}
 	c.SplitLineWidth = 4
@@ -431,6 +438,75 @@ func (c *PositionConfig) DrawUI() {
 	}
 }
 
+func (c *PositionConfig) DrawRadioUI() {
+	imgui.Text("Radio frequencies")
+	if c.frequenciesComboBoxState == nil {
+		c.frequenciesComboBoxState = NewComboBoxState(2)
+	}
+	if c.txFrequencies == nil {
+		c.txFrequencies = make(map[Frequency]*bool)
+	}
+	if c.rxFrequencies == nil {
+		c.rxFrequencies = make(map[Frequency]*bool)
+	}
+
+	config := ComboBoxDisplayConfig{
+		ColumnHeaders:    []string{"Position", "Frequency", "Primed", "TX", "RX"},
+		DrawHeaders:      true,
+		SelectAllColumns: false,
+		EntryNames:       []string{"Position", "Frequency"},
+		InputFlags:       []imgui.InputTextFlags{imgui.InputTextFlagsCharsUppercase, imgui.InputTextFlagsCharsDecimal},
+	}
+	DrawComboBox(c.frequenciesComboBoxState, config, SortedMapKeys(c.Frequencies),
+		/* draw col */ func(s string, col int) {
+			freq := c.Frequencies[s]
+			switch col {
+			case 1:
+				imgui.Text(freq.String())
+			case 2:
+				imgui.RadioButtonInt("##prime-"+s, (*int)(&c.primaryFrequency), int(freq))
+			case 3:
+				if _, ok := c.txFrequencies[freq]; !ok {
+					c.txFrequencies[freq] = new(bool)
+				}
+				if freq == c.primaryFrequency {
+					*c.txFrequencies[freq] = true
+				}
+				imgui.Checkbox("##tx-"+s, c.txFrequencies[freq])
+			case 4:
+				if _, ok := c.rxFrequencies[freq]; !ok {
+					c.rxFrequencies[freq] = new(bool)
+				}
+				if freq == c.primaryFrequency {
+					*c.rxFrequencies[freq] = true
+				}
+				imgui.Checkbox("##rx-"+s, c.rxFrequencies[freq])
+			default:
+				lg.Errorf("%d: unexpected column from DrawComboBox", col)
+			}
+		},
+		/* valid */
+		func(entries []*string) bool {
+			_, ok := c.Frequencies[*entries[0]]
+			if ok {
+				return false
+			}
+			f, err := strconv.ParseFloat(*entries[1], 32)
+			// TODO: what range should we accept?
+			return *entries[0] != "" && err == nil && f >= 100 && f <= 150
+		},
+		/* add */ func(entries []*string) {
+			// Assume that valid has passed for this input
+			f, _ := strconv.ParseFloat(*entries[1], 32)
+			c.Frequencies[*entries[0]] = Frequency(int(f*1000 + 0.5))
+		},
+		/* delete */ func(selected map[string]interface{}) {
+			for k := range selected {
+				delete(c.Frequencies, k)
+			}
+		})
+}
+
 func (c *PositionConfig) Duplicate() *PositionConfig {
 	nc := &PositionConfig{}
 	*nc = *c
@@ -439,6 +515,12 @@ func (c *PositionConfig) Duplicate() *PositionConfig {
 	for ap := range c.ActiveAirports {
 		nc.ActiveAirports[ap] = nil
 	}
+	nc.Frequencies = DuplicateMap(c.Frequencies)
+
+	nc.frequenciesComboBoxState = nil
+	nc.txFrequencies = nil
+	nc.rxFrequencies = nil
+
 	// don't copy the todos or timers
 	return nc
 }

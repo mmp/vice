@@ -300,33 +300,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	if ui.showRadioSettings {
 		imgui.BeginV("Radio Settings", &ui.showRadioSettings, imgui.WindowFlagsAlwaysAutoResize)
-
-		callsign := server.Callsign()
-		var mypos *Position
-		var controller *Controller
-		if controller = server.GetController(callsign); controller != nil {
-			mypos = controller.GetPosition()
-		}
-		freq := ""
-		if mypos != nil {
-			freq = fmt.Sprintf("%s: %s", mypos.frequency, mypos.name)
-		}
-		if imgui.BeginCombo("Frequency", freq) {
-			cs := strings.Split(callsign, "_")
-			callsign := cs[0] + "_" + cs[len(cs)-1] // simplify e.g. JFK_1_TWR, etc.
-			for i := range database.positions[callsign] {
-				pos := &database.positions[callsign][i]
-				name := fmt.Sprintf("%s: %s", pos.frequency, pos.name)
-				if imgui.SelectableV(name, pos == mypos, 0, imgui.Vec2{}) {
-					controller.frequency = pos.frequency // yuck
-					positionConfig.PrimaryFrequency = pos.frequency
-				}
-			}
-			imgui.EndCombo()
-		}
-
-		imgui.Checkbox("Radio primed", &positionConfig.radioPrimed)
-
+		positionConfig.DrawRadioUI()
 		imgui.End()
 	}
 
