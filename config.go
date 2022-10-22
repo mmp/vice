@@ -57,7 +57,6 @@ type PositionConfig struct {
 	ColorSchemeName string
 	ActiveAirports  map[string]interface{}
 	DisplayRoot     *DisplayNode
-	SplitLineWidth  int32
 
 	VatsimCallsign        string
 	VatsimFacility        Facility
@@ -380,7 +379,6 @@ func NewPositionConfig() *PositionConfig {
 	c.Frequencies = make(map[string]Frequency)
 
 	c.DisplayRoot = &DisplayNode{Pane: NewRadarScopePane("Main Scope")}
-	c.SplitLineWidth = 4
 	c.ColorSchemeName = "Dark"
 	return c
 }
@@ -419,7 +417,6 @@ func (c *PositionConfig) DrawUI() {
 	}
 	imgui.InputIntV("Radar range", &c.RadarRange, 5, 25, 0 /* flags */)
 
-	imgui.SliderInt("Split line width", &c.SplitLineWidth, 1, 10)
 	if imgui.BeginCombo("Color scheme", c.ColorSchemeName) {
 		names := SortedMapKeys(globalConfig.ColorSchemes)
 

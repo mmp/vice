@@ -81,6 +81,10 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cb.ClearRGB(ctx.cs.SplitLine)
 }
 
+func splitLineWidth() int {
+	return int(3*dpiScale(platform) + 0.5)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // DisplayNode
 
@@ -250,20 +254,18 @@ func (d *DisplayNode) VisitPanesWithBounds(nodeFilter func(*DisplayNode) *Displa
 	visit func(Extent2D, Extent2D, Extent2D, Extent2D, Pane)) {
 	d = nodeFilter(d)
 
-	splitLineWidth := int32(float32(positionConfig.SplitLineWidth)*(framebufferExtent.Height()/displayExtent.Height()) + 0.5)
-
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(framebufferExtent, displayExtent, parentDisplayExtent, fullDisplayExtent, d.Pane)
 	case SplitAxisX:
-		f0, fs, f1 := framebufferExtent.SplitX(d.SplitLine.Pos, splitLineWidth)
-		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth)
+		f0, fs, f1 := framebufferExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
 		d.Children[0].VisitPanesWithBounds(nodeFilter, f0, d0, displayExtent, fullDisplayExtent, visit)
 		visit(fs, ds, displayExtent, fullDisplayExtent, &d.SplitLine)
 		d.Children[1].VisitPanesWithBounds(nodeFilter, f1, d1, displayExtent, fullDisplayExtent, visit)
 	case SplitAxisY:
-		f0, fs, f1 := framebufferExtent.SplitY(d.SplitLine.Pos, splitLineWidth)
-		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth)
+		f0, fs, f1 := framebufferExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
 		d.Children[0].VisitPanesWithBounds(nodeFilter, f0, d0, displayExtent, fullDisplayExtent, visit)
 		visit(fs, ds, displayExtent, fullDisplayExtent, &d.SplitLine)
 		d.Children[1].VisitPanesWithBounds(nodeFilter, f1, d1, displayExtent, fullDisplayExtent, visit)
@@ -295,9 +297,9 @@ func findPaneForMouse(node *DisplayNode, displayExtent Extent2D, p [2]float32) P
 	}
 	var d0, ds, d1 Extent2D
 	if node.SplitLine.Axis == SplitAxisX {
-		d0, ds, d1 = displayExtent.SplitX(node.SplitLine.Pos, positionConfig.SplitLineWidth)
+		d0, ds, d1 = displayExtent.SplitX(node.SplitLine.Pos, splitLineWidth())
 	} else {
-		d0, ds, d1 = displayExtent.SplitY(node.SplitLine.Pos, positionConfig.SplitLineWidth)
+		d0, ds, d1 = displayExtent.SplitY(node.SplitLine.Pos, splitLineWidth())
 	}
 	if d0.Inside(p) {
 		return findPaneForMouse(node.Children[0], d0, p)

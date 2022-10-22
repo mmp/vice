@@ -59,6 +59,11 @@ type Platform interface {
 	GetClipboard() imgui.Clipboard
 }
 
+// Scaling factor to account for Retina-style displays
+func dpiScale(p Platform) float32 {
+	return p.FramebufferSize()[0] / p.DisplaySize()[0]
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 // GLFWPlatform implements the Platform interface using GLFW.

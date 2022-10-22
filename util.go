@@ -318,7 +318,7 @@ func (e Extent2D) Expand(d float32) Extent2D {
 		p1: [2]float32{e.p1[0] + d, e.p1[1] + d}}
 }
 
-func (e Extent2D) SplitX(x float32, lineWidth int32) (Extent2D, Extent2D, Extent2D) {
+func (e Extent2D) SplitX(x float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
 	e0 := e
 	es := e
 	e1 := e
@@ -332,7 +332,7 @@ func (e Extent2D) SplitX(x float32, lineWidth int32) (Extent2D, Extent2D, Extent
 	return e0, es, e1
 }
 
-func (e Extent2D) SplitY(y float32, lineWidth int32) (Extent2D, Extent2D, Extent2D) {
+func (e Extent2D) SplitY(y float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
 	e0 := e
 	es := e
 	e1 := e
