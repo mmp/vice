@@ -371,6 +371,12 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		str.WriteString("Departed:\n")
 		for _, ac := range airborne {
+			route := ac.flightPlan.route
+			if len(route) > 10 {
+				route = route[:10]
+				route += ".."
+			}
+
 			alt := ac.Altitude()
 			alt = (alt + 50) / 100 * 100
 			var clearedAlt string
@@ -379,9 +385,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			} else {
 				clearedAlt = fmt.Sprintf("%5d ", ac.flightPlan.altitude)
 			}
-			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %s %5d\n", ac.Callsign(),
+			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %s %5d %12s\n", ac.Callsign(),
 				ac.flightPlan.rules, ac.flightPlan.depart, ac.flightPlan.actype,
-				ac.scratchpad, clearedAlt, alt))
+				ac.scratchpad, clearedAlt, alt, route))
 		}
 		str.WriteString("\n")
 	}
