@@ -98,6 +98,8 @@ type VATSIMServer struct {
 	// Ones that we are tracking but have offered to another: callsign->offering controller
 	inboundHandoffs map[string]string
 
+	airportsForWeather map[string]interface{}
+
 	atcValid bool
 }
 
@@ -113,6 +115,7 @@ func NewVATSIMServer() *VATSIMServer {
 		trackingControllers: make(map[string]string),
 		outboundHandoffs:    make(map[string]string),
 		inboundHandoffs:     make(map[string]string),
+		airportsForWeather:  make(map[string]interface{}),
 	}
 }
 
@@ -242,6 +245,10 @@ func (v *VATSIMServer) OutboundHandoffController(callsign string) string {
 	} else {
 		return ""
 	}
+}
+
+func (v *VATSIMServer) AddAirportForWeather(airport string) {
+	v.airportsForWeather[airport] = nil
 }
 
 func (v *VATSIMServer) SetSquawk(callsign string, code Squawk) error {

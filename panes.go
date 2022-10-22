@@ -224,6 +224,14 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 func (a *AirportInfoPane) Update(updates *ControlUpdates) {}
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	// It's slightly little wasteful to keep asking each time; better would
+	// be to only do so when either our airports change or there's a new
+	// server connection.  Not a big deal in the grand scheme of things,
+	// however.
+	for ap := range a.Airports {
+		server.AddAirportForWeather(ap)
+	}
+
 	cs := ctx.cs
 
 	var str strings.Builder

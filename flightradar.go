@@ -84,6 +84,7 @@ func (fr *FlightRadarServer) GetAllControllers() []*Controller                 {
 func (fr *FlightRadarServer) GetTrackingController(callsign string) string     { return "" }
 func (fr *FlightRadarServer) InboundHandoffController(callsign string) string  { return "" }
 func (fr *FlightRadarServer) OutboundHandoffController(callsign string) string { return "" }
+func (fr *FlightRadarServer) AddAirportForWeather(airport string)              {}
 
 func (fr *FlightRadarServer) SetSquawk(callsign string, squawk Squawk) error {
 	return ControlUnsupported

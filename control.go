@@ -70,6 +70,8 @@ type ATCServer interface {
 	InboundHandoffController(callsign string) string
 	OutboundHandoffController(callsign string) string
 
+	AddAirportForWeather(airport string)
+
 	// Check for updates from the server.
 	GetUpdates()
 
@@ -210,11 +212,11 @@ func (d *DisconnectedATCServer) OutboundHandoffController(callsign string) strin
 	return ""
 }
 
-func (d *DisconnectedATCServer) GetUpdates() {
-}
+func (d *DisconnectedATCServer) AddAirportForWeather(airport string) {}
 
-func (d *DisconnectedATCServer) Disconnect() {
-}
+func (d *DisconnectedATCServer) GetUpdates() {}
+
+func (d *DisconnectedATCServer) Disconnect() {}
 
 func (d *DisconnectedATCServer) Connected() bool {
 	return false
