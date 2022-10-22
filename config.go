@@ -85,7 +85,7 @@ var (
 	serverComboState *ComboBoxState = NewComboBoxState(2)
 )
 
-func (c *GlobalConfig) DrawUI() {
+func (c *GlobalConfig) DrawFilesUI() {
 	if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
@@ -145,9 +145,9 @@ func (c *GlobalConfig) DrawUI() {
 
 		imgui.EndTable()
 	}
+}
 
-	imgui.Separator()
-	imgui.Text("Custom servers")
+func (c *GlobalConfig) DrawServersUI() {
 	config := ComboBoxDisplayConfig{
 		ColumnHeaders:    []string{"Name", "Address"},
 		DrawHeaders:      true,
@@ -175,9 +175,6 @@ func (c *GlobalConfig) DrawUI() {
 				delete(globalConfig.CustomServers, k)
 			}
 		})
-
-	imgui.Separator()
-	positionConfig.DrawUI()
 }
 
 func (gc *GlobalConfig) LoadAliasesFile() {
@@ -394,30 +391,12 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 	}
 }
 
-func (c *PositionConfig) DrawUI() {
-	imgui.InputTextV("Primary radar center", &c.PrimaryRadarCenter, imgui.InputTextFlagsCharsUppercase, nil)
-	imgui.Text("Secondary radar centers")
-	for i := range c.SecondaryRadarCenters {
-		imgui.SameLine()
-		imgui.InputTextV(fmt.Sprintf("##secondary%d", i), &c.SecondaryRadarCenters[i], imgui.InputTextFlagsCharsUppercase, nil)
-	}
+func (c *PositionConfig) DrawRadarUI() {
 	imgui.InputIntV("Radar range", &c.RadarRange, 5, 25, 0 /* flags */)
-
-	if imgui.BeginCombo("Color scheme", c.ColorSchemeName) {
-		names := SortedMapKeys(globalConfig.ColorSchemes)
-
-		for _, name := range names {
-			flags := imgui.SelectableFlagsNone
-			if imgui.SelectableV(name, name == c.ColorSchemeName, flags, imgui.Vec2{}) &&
-				name != c.ColorSchemeName {
-				c.ColorSchemeName = name
-
-				// This is slightly wasteful (e.g., resets the DrawList allocations),
-				// but ensures that all of the panes get the new colors.
-				globalConfig.MakeConfigActive(globalConfig.ActivePosition)
-			}
-		}
-		imgui.EndCombo()
+	imgui.InputTextV("Primary center", &c.PrimaryRadarCenter, imgui.InputTextFlagsCharsUppercase, nil)
+	for i := range c.SecondaryRadarCenters {
+		imgui.InputTextV(fmt.Sprintf("Secondary center #%d", i+1), &c.SecondaryRadarCenters[i],
+			imgui.InputTextFlagsCharsUppercase, nil)
 	}
 }
 

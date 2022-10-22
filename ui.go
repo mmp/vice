@@ -32,11 +32,13 @@ var (
 		errorText         map[string]string
 		topControlsHeight float32
 
-		showAboutDialog           bool
-		showGeneralSettingsWindow bool
-		showColorEditor           bool
-		showSoundConfig           bool
-		showRadioSettings         bool
+		showAboutDialog         bool
+		showRadarSettingsWindow bool
+		showColorEditor         bool
+		showFilesEditor         bool
+		showServersEditor       bool
+		showSoundConfig         bool
+		showRadioSettings       bool
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
@@ -157,8 +159,32 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			if imgui.MenuItemV("Disconnect...", "", false, server.Connected()) {
 				uiShowModalDialog(NewModalDialogBox(&DisconnectModalClient{}), false)
 			}
+			imgui.EndMenu()
+		}
+
+		if imgui.BeginMenu("Settings") {
+			if imgui.MenuItem("Save") {
+				if err := globalConfig.Save(); err != nil {
+					ShowErrorDialog("Error saving configuration file: %v", err)
+				}
+			}
+			if imgui.MenuItem("Files...") {
+				ui.showFilesEditor = true
+			}
+			if imgui.MenuItem("Servers...") {
+				ui.showServersEditor = true
+			}
+			if imgui.MenuItem("Radar...") {
+				ui.showRadarSettingsWindow = true
+			}
 			if imgui.MenuItemV("Radio...", "", false, server.Connected()) {
 				ui.showRadioSettings = true
+			}
+			if imgui.MenuItem("Colors...") {
+				ui.showColorEditor = true
+			}
+			if imgui.MenuItem("Sounds...") {
+				ui.showSoundConfig = true
 			}
 			imgui.EndMenu()
 		}
@@ -193,23 +219,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 				}
 			}
 
-			imgui.EndMenu()
-		}
-		if imgui.BeginMenu("Settings") {
-			if imgui.MenuItem("Save") {
-				if err := globalConfig.Save(); err != nil {
-					ShowErrorDialog("Error saving configuration file: %v", err)
-				}
-			}
-			if imgui.MenuItem("General...") {
-				ui.showGeneralSettingsWindow = true
-			}
-			if imgui.MenuItem("Colors...") {
-				ui.showColorEditor = true
-			}
-			if imgui.MenuItem("Sounds...") {
-				ui.showSoundConfig = true
-			}
 			imgui.EndMenu()
 		}
 
@@ -292,9 +301,9 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		showAboutDialog()
 	}
 
-	if ui.showGeneralSettingsWindow {
-		imgui.BeginV("General Settings", &ui.showGeneralSettingsWindow, imgui.WindowFlagsAlwaysAutoResize)
-		globalConfig.DrawUI()
+	if ui.showRadarSettingsWindow {
+		imgui.BeginV("Radar Settings", &ui.showRadarSettingsWindow, imgui.WindowFlagsAlwaysAutoResize)
+		positionConfig.DrawRadarUI()
 		imgui.End()
 	}
 
@@ -304,9 +313,37 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		imgui.End()
 	}
 
+	if ui.showFilesEditor {
+		imgui.BeginV("Files", &ui.showFilesEditor, imgui.WindowFlagsAlwaysAutoResize)
+		globalConfig.DrawFilesUI()
+		imgui.End()
+	}
+
+	if ui.showServersEditor {
+		imgui.BeginV("Servers", &ui.showServersEditor, imgui.WindowFlagsAlwaysAutoResize)
+		globalConfig.DrawServersUI()
+		imgui.End()
+	}
+
 	if ui.showColorEditor {
-		imgui.BeginV("Color Editor: "+positionConfig.ColorSchemeName, &ui.showColorEditor,
-			imgui.WindowFlagsAlwaysAutoResize)
+		imgui.BeginV("Color Settings", &ui.showColorEditor, imgui.WindowFlagsAlwaysAutoResize)
+		if imgui.BeginCombo("Color scheme", positionConfig.ColorSchemeName) {
+			names := SortedMapKeys(globalConfig.ColorSchemes)
+
+			for _, name := range names {
+				flags := imgui.SelectableFlagsNone
+				if imgui.SelectableV(name, name == positionConfig.ColorSchemeName, flags, imgui.Vec2{}) &&
+					name != positionConfig.ColorSchemeName {
+					positionConfig.ColorSchemeName = name
+
+					// This is slightly wasteful (e.g., resets the DrawList allocations),
+					// but ensures that all of the panes get the new colors.
+					globalConfig.MakeConfigActive(globalConfig.ActivePosition)
+				}
+			}
+			imgui.EndCombo()
+		}
+
 		cs := positionConfig.GetColorScheme()
 		cs.ShowEditor(func(name string, rgb RGB) {
 			if positionConfig.GetColorScheme().IsDark() {
