@@ -551,22 +551,16 @@ func (ci *CLIInput) TabPrev() bool {
 }
 
 func (ci *CLIInput) tab(step int) bool {
-	if len(ci.cmd) == 0 {
+	if len(ci.cmd) == 0 || len(ci.tabStops) == 0 {
 		return false
 	}
 
 	start := ci.cursor
 	pos := start
-	for {
+	for i := 0; i < len(ci.cmd); i++ {
 		pos = (pos + step) % len(ci.cmd)
 		if pos < 0 {
 			pos += len(ci.cmd)
-		}
-
-		if pos == start {
-			lg.Errorf("tab went all the way around without finding a parameter? cursor %d, stops %+v",
-				ci.cursor, ci.tabStops)
-			return false
 		}
 
 		for _, stop := range ci.tabStops {
@@ -576,6 +570,10 @@ func (ci *CLIInput) tab(step int) bool {
 			}
 		}
 	}
+
+	lg.Errorf("tab went all the way around without finding a parameter? cursor %d, stops %+v",
+		ci.cursor, ci.tabStops)
+	return false
 }
 
 // Simple, one string, same style
