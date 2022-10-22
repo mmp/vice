@@ -98,8 +98,7 @@ type VATSIMServer struct {
 	// Ones that we are tracking but have offered to another: callsign->offering controller
 	inboundHandoffs map[string]string
 
-	windowTitle string
-	atcValid    bool
+	atcValid bool
 }
 
 func NewVATSIMServer() *VATSIMServer {
@@ -120,7 +119,6 @@ func NewVATSIMServer() *VATSIMServer {
 func NewVATSIMNetworkServer(address string) (*VATSIMServer, error) {
 	v := NewVATSIMServer()
 	v.callsign = positionConfig.VatsimCallsign
-	v.windowTitle = ", position: " + positionConfig.VatsimCallsign + " @ " + address
 
 	var err error
 	if v.connection, err = NewVATSIMNetConnection(address); err != nil {
@@ -145,7 +143,6 @@ func NewVATSIMNetworkServer(address string) (*VATSIMServer, error) {
 func NewVATSIMReplayServer(filename string, offsetSeconds int, replayRate float32) (*VATSIMServer, error) {
 	v := NewVATSIMServer()
 	v.callsign = "(none)"
-	v.windowTitle = ", replay: " + filename
 	v.controlDelegate = &InertAircraftController{}
 
 	var err error
@@ -576,7 +573,6 @@ func (v *VATSIMServer) Disconnect() {
 
 	v.connection.Close()
 	v.connection = nil
-	v.windowTitle = " [Disconnected]"
 	v.controlDelegate = &InertAircraftController{}
 
 	for _, ac := range v.aircraft {
@@ -611,7 +607,11 @@ func (v *VATSIMServer) CurrentTime() time.Time {
 }
 
 func (v *VATSIMServer) GetWindowTitle() string {
-	return v.windowTitle
+	if v.connection == nil {
+		return "[Disconnected]"
+	} else {
+		return v.connection.GetWindowTitle()
+	}
 }
 
 func (v *VATSIMServer) trackedByAnotherController(callsign string) bool {

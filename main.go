@@ -174,7 +174,7 @@ func main() {
 	wantExit := false
 	stats.startTime = time.Now()
 	for {
-		platform.SetWindowTitle("vice: config: " + globalConfig.ActivePosition + server.GetWindowTitle())
+		platform.SetWindowTitle("vice: " + server.GetWindowTitle())
 
 		// Inform imgui about input events from the user.
 		platform.ProcessEvents()

@@ -51,6 +51,10 @@ type VATSIMConnection interface {
 	// time with respect to the time the trace was captured.
 	CurrentTime() time.Time
 
+	// GetWindowTitle returns a string to use in the vice window's
+	// titlebar, indicating the connection type and general state.
+	GetWindowTitle() string
+
 	// Close closes the VATSIM connection.
 	Close()
 }
@@ -61,6 +65,7 @@ type VATSIMNetConnection struct {
 	address     string
 	messageChan chan VATSIMMessage
 	conn        *net.TCPConn
+	connected   bool
 
 	// All network traffic is logged in allMessages so that it can be saved
 	// for replays or debugging.  Access to the allMessages array is protected
@@ -92,6 +97,8 @@ func NewVATSIMNetConnection(address string) (*VATSIMNetConnection, error) {
 	}
 	c.conn.SetNoDelay(true) // traffic on a 2 µm final...
 
+	c.connected = true
+
 	// Receive messages in a separate goroutine and send them along the channel; this
 	// lets us block on waiting for new messages without any bother.
 	go func(c *VATSIMNetConnection) {
@@ -115,6 +122,7 @@ func NewVATSIMNetConnection(address string) (*VATSIMNetConnection, error) {
 				c.messageChan <- msg
 			} else {
 				close(c.messageChan)
+				c.connected = false
 				lg.Printf("Exiting VATSIMServer goroutine: %v", err)
 				return
 			}
@@ -190,6 +198,18 @@ func (c *VATSIMNetConnection) CurrentTime() time.Time {
 	return time.Now()
 }
 
+func (c *VATSIMNetConnection) GetWindowTitle() string {
+	status := func() string {
+		if c.connected {
+			return "Connected"
+		} else {
+			return "Disconnected"
+		}
+	}()
+	return fmt.Sprintf("%s @ %s [%s - %s]", positionConfig.VatsimCallsign,
+		positionConfig.primaryFrequency.String(), c.address, status)
+}
+
 func (c *VATSIMNetConnection) Close() {
 	// Closing the connection will cause the goroutine to see an error,
 	// close the chan, and exit.
@@ -246,8 +266,9 @@ type VATSIMReplayConnection struct {
 	// at its time and see when we should send it along.
 	next VATSIMMessage
 
-	f       io.ReadCloser
-	decoder *json.Decoder
+	filename string
+	f        io.ReadCloser
+	decoder  *json.Decoder
 }
 
 // NewVATSIMReplayConnection tries to create a new VATSIMReplayConnection
@@ -259,6 +280,7 @@ func NewVATSIMReplayConnection(filename string, offsetSeconds int, replayRate fl
 	offset := -time.Duration(time.Duration(float32(offsetSeconds)/replayRate) * time.Second)
 
 	c := &VATSIMReplayConnection{
+		filename:           filename,
 		replayStart:        time.Now().Add(offset),
 		timeRateMultiplier: replayRate,
 	}
@@ -308,6 +330,16 @@ func (r *VATSIMReplayConnection) GetMessages() []VATSIMMessage {
 }
 
 func (r *VATSIMReplayConnection) SendMessage(callsign string, m ...interface{}) {}
+
+func (r *VATSIMReplayConnection) GetWindowTitle() string {
+	t := "replay " + r.filename + " - "
+	if r.f != nil {
+		t += "active"
+	} else {
+		t += "finished"
+	}
+	return t
+}
 
 func (r *VATSIMReplayConnection) CurrentTime() time.Time {
 	// How many seconds into the stream are we?
