@@ -172,25 +172,14 @@ func main() {
 	lg.Printf("Starting main loop")
 	frameIndex := 0
 	wantExit := false
-	var lastDrawTime time.Time
-	var lastDrawDisplaySize [2]float32
 	stats.startTime = time.Now()
 	for {
 		platform.SetWindowTitle("vice: config: " + globalConfig.ActivePosition + server.GetWindowTitle())
 
 		// Inform imgui about input events from the user.
-		anyEvents := platform.ProcessEvents()
+		platform.ProcessEvents()
 
-		// Hold off if the user isn't interacting with vice and if there's
-		// nothing updated to be drawn.
-		if !anyEvents && time.Since(lastDrawTime) < 250*time.Millisecond &&
-			lastDrawDisplaySize == platform.DisplaySize() {
-			time.Sleep(10 * time.Millisecond)
-			continue
-		}
 		stats.redraws++
-		lastDrawDisplaySize = platform.DisplaySize()
-		lastDrawTime = time.Now()
 
 		lastTime := time.Now()
 		timeMarker := func(d *time.Duration) {
