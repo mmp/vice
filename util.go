@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/klauspost/compress/zstd"
@@ -614,4 +615,47 @@ func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
 		}
 	}
 	return mnew
+}
+
+///////////////////////////////////////////////////////////////////////////
+// TransientSet
+
+// TransientSet represents a set of objects with a built-in expiry time in
+// the future; after an item's time passes, it is automatically removed
+// from the set.
+type TransientSet[K comparable] struct {
+	m map[K]time.Time
+}
+
+func NewTransientSet[K comparable]() *TransientSet[K] {
+	return &TransientSet[K]{m: make(map[K]time.Time)}
+}
+
+func (t *TransientSet[K]) flush() {
+	now := time.Now()
+	for k, time := range t.m {
+		if now.After(time) {
+			delete(t.m, k)
+		}
+	}
+}
+
+// Add adds a given value to the set; it will no longer be there after the
+// specified duration has passed.
+func (t *TransientSet[K]) Add(key K, d time.Duration) {
+	t.m[key] = time.Now().Add(d)
+}
+
+// GetAll returns all of the item currently in the set.
+func (t *TransientSet[K]) GetAll() []K {
+	t.flush()
+	k, _ := FlattenMap(t.m)
+	return k
+}
+
+// Has indicates whether a given item is currently present in the set.
+func (t *TransientSet[K]) Has(key K) bool {
+	t.flush()
+	_, ok := t.m[key]
+	return ok
 }

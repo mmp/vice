@@ -6,6 +6,7 @@ package main
 
 import (
 	"testing"
+	"time"
 )
 
 func TestWrapText(t *testing.T) {
@@ -84,4 +85,48 @@ func TestHeadingDifference(t *testing.T) {
 				headingDifference(h.b, h.a), h.d)
 		}
 	}
+}
+
+func TestTransientSet(t *testing.T) {
+	ts := NewTransientSet[int]()
+	ts.Add(1, 250*time.Millisecond)
+	ts.Add(2, 750*time.Millisecond)
+
+	// Should have both
+	if !ts.Has(1) {
+		t.Errorf("transient set doesn't have 1")
+	}
+	if !ts.Has(2) {
+		t.Errorf("transient set doesn't have 2")
+	}
+	if a := ts.GetAll(); len(a) != 2 || !((a[0] == 1 && a[1] == 2) || (a[0] == 2 && a[1] == 1)) {
+		t.Errorf("transient set GetAll() not 1, 2? %+v", a)
+	}
+
+	// Note that after this point this test has the potential to be flaky,
+	// if the thread is not scheduled for ~250+ms; it's possible that more
+	// time will elapse than we think and thence some of the checks may not
+	// add up...
+	time.Sleep(500 * time.Millisecond)
+
+	// Should just have 2
+	if ts.Has(1) {
+		t.Errorf("transient set still has 1")
+	}
+	if !ts.Has(2) {
+		t.Errorf("transient set doesn't have 2")
+	}
+	if a := ts.GetAll(); len(a) != 1 || a[0] != 2 {
+		t.Errorf("transient set GetAll() not just 2? %+v", a)
+	}
+
+	time.Sleep(250 * time.Millisecond)
+
+	if ts.Has(2) {
+		t.Errorf("transient set still has 2")
+	}
+	if a := ts.GetAll(); len(a) != 0 {
+		t.Errorf("transient set GetAll() not empty? %+v", a)
+	}
+
 }
