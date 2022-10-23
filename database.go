@@ -51,6 +51,8 @@ type StaticDatabase struct {
 
 	sectorFileColors map[string]RGB
 
+	sectorFileLoadError error
+
 	// Static things to draw; derived from the sector file
 	//
 	// These only store geometry; no colors; the caller should set current
@@ -69,7 +71,8 @@ type StaticDatabase struct {
 	labels                            []Label
 
 	// From the position file
-	positions map[string][]Position // map key is e.g. JFK_TWR
+	positions             map[string][]Position // map key is e.g. JFK_TWR
+	positionFileLoadError error
 }
 
 // Label represents a labeled point on a map.
@@ -334,6 +337,7 @@ func Point2LLFromLL64(latitude, longitude float64) Point2LL {
 func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	lg.Printf("%s: loading sector file", filename)
 	sectorFile, err := parseSectorFile(filename)
+	db.sectorFileLoadError = err
 	if err != nil {
 		return err
 	}
@@ -686,12 +690,11 @@ func getAirwayCommandBuffers(airways []sct2.Airway) (CommandBuffer, []Label) {
 func (db *StaticDatabase) LoadPositionFile(filename string) error {
 	lg.Printf("%s: loading position file", filename)
 
-	var err error
-	db.positions, err = parsePositionFile(filename)
+	db.positions, db.positionFileLoadError = parsePositionFile(filename)
 
 	lg.Printf("%s: finished loading position file", filename)
 
-	return err
+	return db.positionFileLoadError
 }
 
 func parsePositionFile(filename string) (map[string][]Position, error) {

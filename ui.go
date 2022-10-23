@@ -29,7 +29,7 @@ var (
 		aboutFont *Font
 		fixedFont *Font
 
-		errorText         map[string]string
+		errorText         map[string]func() bool
 		topControlsHeight float32
 
 		showAboutDialog         bool
@@ -77,7 +77,7 @@ func uiInit(renderer Renderer) {
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
 	ui.fixedFont = GetFont(FontIdentifier{Name: "Source Code Pro Regular", Size: 16})
 
-	ui.errorText = make(map[string]string)
+	ui.errorText = make(map[string]func() bool)
 
 	var err error
 	ui.iconTextureID, err = renderer.CreateTextureFromPNG(bytes.NewReader([]byte(iconPNG)))
@@ -135,6 +135,14 @@ func uiInit(renderer Renderer) {
 			globalConfig.NotesFile = filename
 			globalConfig.LoadNotesFile()
 		})
+}
+
+// uiAddError lets the caller specify an error message to be displayed
+// until the provided callback function returns true.  If called multiple
+// times with the same error text, the error will only be displayed once.
+// (These error messages are currently shown under the main menu bar.)
+func uiAddError(text string, cleared func() bool) {
+	ui.errorText[text] = cleared
 }
 
 func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
@@ -254,6 +262,13 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	}
 	ui.topControlsHeight = 1.35 * float32(ui.font.size)
 
+	// See if any errors cleared
+	for k, cleared := range ui.errorText {
+		if cleared() {
+			delete(ui.errorText, k)
+		}
+	}
+
 	if len(ui.errorText) > 0 {
 		errorTextHeight := 20 + float32(len(ui.errorText))*float32(ui.font.size)
 
@@ -270,7 +285,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 		text := ""
 		for _, k := range SortedMapKeys(ui.errorText) {
-			text += ui.errorText[k] + "\n"
+			text += k + "\n"
 		}
 		text = strings.TrimRight(text, "\n")
 

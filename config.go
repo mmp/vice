@@ -391,6 +391,25 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 	}
 }
 
+func (c *PositionConfig) CheckPrimaryRadarCenter() {
+	if _, ok := database.Locate(c.PrimaryRadarCenter); !ok {
+		uiAddError("Primary radar center is unset or invalid. Set it via Settings/Radar...",
+			func() bool {
+				_, ok := database.Locate(c.PrimaryRadarCenter)
+				return ok || !server.Connected()
+			})
+	}
+}
+
+func (c *PositionConfig) CheckRadioPrimed() {
+	if c.primaryFrequency == Frequency(0) {
+		uiAddError("Primary radio frequency has not been set. Set it via Settings/Radio...",
+			func() bool {
+				return c.primaryFrequency != Frequency(0) || !server.Connected()
+			})
+	}
+}
+
 func (c *PositionConfig) DrawRadarUI() {
 	imgui.InputIntV("Radar range", &c.RadarRange, 5, 25, 0 /* flags */)
 	imgui.InputTextV("Primary center", &c.PrimaryRadarCenter, imgui.InputTextFlagsCharsUppercase, nil)

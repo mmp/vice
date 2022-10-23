@@ -159,12 +159,14 @@ func main() {
 	// hasn't yet set these up.  (And also if the chosen files are moved or
 	// deleted, etc...)
 	if err = database.LoadSectorFile(globalConfig.SectorFile); err != nil {
-		ui.errorText["SECTORFILE"] = "Unable to load sector file. Please specify a new one using Settings/General..."
+		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
+			func() bool { return database.sectorFileLoadError == nil })
 	} else {
 		database.SetColorScheme(positionConfig.GetColorScheme())
 	}
 	if err = database.LoadPositionFile(globalConfig.PositionFile); err != nil {
-		ui.errorText["POSITIONFILE"] = "Unable to load position file. Please specify a new one using Settings/General..."
+		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
+			func() bool { return database.positionFileLoadError == nil })
 	}
 
 	///////////////////////////////////////////////////////////////////////////
