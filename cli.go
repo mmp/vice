@@ -279,7 +279,7 @@ func (cli *CLIPane) Update(updates *ControlUpdates) {
 			fm := positionConfig.MonitoredFrequencies(m.frequencies)
 			if len(fm) > 0 {
 				freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
-				cli.AddConsoleEntry([]string{freq + ": ", m.contents},
+				cli.AddConsoleEntry([]string{"[" + freq + "] " + m.sender + ": ", m.contents},
 					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 			}
 		case TextPrivate:

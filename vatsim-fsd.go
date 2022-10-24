@@ -242,9 +242,7 @@ func handleTM(v *VATSIMServer, sender string, args []string) error {
 		tm.messageType = TextPrivate
 	}
 
-	if tm.messageType != TextFrequency || len(positionConfig.MonitoredFrequencies(tm.frequencies)) > 0 {
-		controlUpdates.messages = append(controlUpdates.messages, tm)
-	}
+	controlUpdates.messages = append(controlUpdates.messages, tm)
 
 	return nil
 }
