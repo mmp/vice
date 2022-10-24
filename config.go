@@ -57,13 +57,15 @@ type PositionConfig struct {
 	ColorSchemeName string
 	DisplayRoot     *DisplayNode
 
-	VatsimCallsign        string
-	VatsimFacility        Facility
-	PrimaryRadarCenter    string
-	SecondaryRadarCenters [3]string
-	RadarRange            int32
-	primaryFrequency      Frequency // We don't save this in the config file
-	Frequencies           map[string]Frequency
+	VatsimCallsign                string
+	VatsimFacility                Facility
+	PrimaryRadarCenter            string
+	primaryRadarCenterLocation    Point2LL
+	SecondaryRadarCenters         [3]string
+	secondaryRadarCentersLocation [3]Point2LL
+	RadarRange                    int32
+	primaryFrequency              Frequency // We don't save this in the config file
+	Frequencies                   map[string]Frequency
 
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
@@ -287,11 +289,9 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 		return
 	}
 
-	cs := positionConfig.GetColorScheme()
+	positionConfig.Activate()
 
-	if positionConfig.Frequencies == nil {
-		positionConfig.Frequencies = make(map[string]Frequency)
-	}
+	cs := positionConfig.GetColorScheme()
 
 	wmActivateNewConfig(oldConfig, positionConfig, cs)
 
@@ -342,6 +342,24 @@ func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platfo
 		}}), false)
 
 	return true
+}
+
+func (pc *PositionConfig) Activate() {
+	if pc.Frequencies == nil {
+		pc.Frequencies = make(map[string]Frequency)
+	}
+
+	pos, _ := database.Locate(pc.PrimaryRadarCenter)
+	pc.primaryRadarCenterLocation = pos
+	for i, ctr := range pc.SecondaryRadarCenters {
+		pos, _ := database.Locate(ctr)
+		pc.secondaryRadarCentersLocation[i] = pos
+	}
+}
+
+func (pc *PositionConfig) SendUpdates() {
+	server.SendRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
+		int(pc.RadarRange))
 }
 
 func (pc *PositionConfig) NotifyAircraftSelected(ac *Aircraft) {
@@ -412,9 +430,20 @@ func (c *PositionConfig) CheckRadioPrimed() {
 
 func (c *PositionConfig) DrawRadarUI() {
 	imgui.InputIntV("Radar range", &c.RadarRange, 5, 25, 0 /* flags */)
-	imgui.InputTextV("Primary center", &c.PrimaryRadarCenter, imgui.InputTextFlagsCharsUppercase, nil)
-	for i := range c.SecondaryRadarCenters {
-		imgui.InputTextV(fmt.Sprintf("Secondary center #%d", i+1), &c.SecondaryRadarCenters[i],
+	primaryNotOk := ""
+	var ok bool
+	if c.primaryRadarCenterLocation, ok = database.Locate(c.PrimaryRadarCenter); !ok {
+		primaryNotOk = FontAwesomeIconExclamationTriangle + " "
+	}
+	imgui.InputTextV(primaryNotOk+"Primary center###PrimaryCenter", &c.PrimaryRadarCenter,
+		imgui.InputTextFlagsCharsUppercase, nil)
+
+	for i, name := range c.SecondaryRadarCenters {
+		notOk := ""
+		if c.secondaryRadarCentersLocation[i], ok = database.Locate(name); name != "" && !ok {
+			notOk = FontAwesomeIconExclamationTriangle + " "
+		}
+		imgui.InputTextV(fmt.Sprintf(notOk+"Secondary center #%d###Secondary%d", i+1, i+1), &c.SecondaryRadarCenters[i],
 			imgui.InputTextFlagsCharsUppercase, nil)
 	}
 }

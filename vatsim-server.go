@@ -517,6 +517,14 @@ func (v *VATSIMServer) SendTextMessage(m TextMessage) error {
 	return nil
 }
 
+func (v *VATSIMServer) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+	if !v.atcValid {
+		// No error in this case; it's fine to silently ignore
+		return nil
+	}
+	return v.controlDelegate.SendRadarCenters(primary, secondary, rangeNm)
+}
+
 func (v *VATSIMServer) GetUpdates() {
 	if v.connection != nil {
 		// Receive messages here; this runs in the same thread as the GUI et

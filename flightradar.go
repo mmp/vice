@@ -142,6 +142,10 @@ func (fr *FlightRadarServer) SendTextMessage(m TextMessage) error {
 	return ControlUnsupported
 }
 
+func (fr *FlightRadarServer) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+	return nil
+}
+
 func (fr *FlightRadarServer) GetWindowTitle() string { return "FlightRadar" }
 func (fr *FlightRadarServer) Connected() bool        { return fr.aircraft != nil }
 

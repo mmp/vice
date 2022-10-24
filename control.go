@@ -53,6 +53,7 @@ type AircraftController interface {
 	PointOut(callsign string, controller string) error
 
 	SendTextMessage(m TextMessage) error
+	SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error
 }
 
 type ATCServer interface {
@@ -160,6 +161,9 @@ func (*InertAircraftController) AcceptHandoff(callsign string) error            
 func (*InertAircraftController) RejectHandoff(callsign string) error                     { return nil }
 func (*InertAircraftController) PointOut(callsign string, controller string) error       { return nil }
 func (*InertAircraftController) SendTextMessage(m TextMessage) error                     { return nil }
+func (*InertAircraftController) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+	return nil
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // DisconnectedATCServer

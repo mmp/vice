@@ -142,6 +142,18 @@ func main() {
 
 	wmInit()
 
+	// These will appear the first time vice is launched and the user
+	// hasn't yet set these up.  (And also if the chosen files are moved or
+	// deleted, etc...)
+	if database.LoadSectorFile(globalConfig.SectorFile) != nil {
+		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
+			func() bool { return database.sectorFileLoadError == nil })
+	}
+	if database.LoadPositionFile(globalConfig.PositionFile) != nil {
+		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
+			func() bool { return database.positionFileLoadError == nil })
+	}
+
 	// We need to hold off on making the config active until after Platform
 	// creation so we can set the window title...
 	globalConfig.MakeConfigActive(globalConfig.ActivePosition)
@@ -154,20 +166,6 @@ func main() {
 	uiInit(renderer)
 
 	controlUpdates = NewControlUpdates()
-
-	// These will appear the first time vice is launched and the user
-	// hasn't yet set these up.  (And also if the chosen files are moved or
-	// deleted, etc...)
-	if err = database.LoadSectorFile(globalConfig.SectorFile); err != nil {
-		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
-			func() bool { return database.sectorFileLoadError == nil })
-	} else {
-		database.SetColorScheme(positionConfig.GetColorScheme())
-	}
-	if err = database.LoadPositionFile(globalConfig.PositionFile); err != nil {
-		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
-			func() bool { return database.positionFileLoadError == nil })
-	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop
@@ -193,6 +191,7 @@ func main() {
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes and the active positionConfig.
+		positionConfig.SendUpdates()
 		server.GetUpdates()
 		if !controlUpdates.NoUpdates() {
 			positionConfig.Update(controlUpdates)
