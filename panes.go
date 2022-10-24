@@ -115,6 +115,10 @@ type AirportInfoPane struct {
 	ShowArrivals    bool
 	ShowControllers bool
 
+	lastATIS       map[string]string
+	seenDepartures map[string]interface{}
+	seenArrivals   map[string]interface{}
+
 	FontIdentifier FontIdentifier
 	font           *Font
 
@@ -136,6 +140,10 @@ func NewAirportInfoPane() *AirportInfoPane {
 		ShowArrivals:    true,
 		ShowControllers: true,
 
+		lastATIS:       make(map[string]string),
+		seenDepartures: make(map[string]interface{}),
+		seenArrivals:   make(map[string]interface{}),
+
 		font:           font,
 		FontIdentifier: font.id,
 	}
@@ -144,6 +152,9 @@ func NewAirportInfoPane() *AirportInfoPane {
 func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe := *a
 	dupe.Airports = DuplicateMap(a.Airports)
+	dupe.lastATIS = DuplicateMap(a.lastATIS)
+	dupe.seenDepartures = DuplicateMap(a.seenDepartures)
+	dupe.seenArrivals = DuplicateMap(a.seenArrivals)
 	dupe.td = TextDrawBuilder{}
 	dupe.cb = CommandBuffer{}
 	return &dupe
@@ -154,6 +165,16 @@ func (a *AirportInfoPane) Activate(cs *ColorScheme) {
 		a.font = GetDefaultFont()
 		a.FontIdentifier = a.font.id
 	}
+	if a.lastATIS == nil {
+		a.lastATIS = make(map[string]string)
+	}
+	if a.seenDepartures == nil {
+		a.seenDepartures = make(map[string]interface{})
+	}
+	if a.seenArrivals == nil {
+		a.seenArrivals = make(map[string]interface{})
+	}
+
 	// FIXME: temporary transition
 	if a.Airports == nil {
 		a.Airports = make(map[string]interface{})
@@ -291,6 +312,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		for ap := range a.Airports {
 			if contents := server.GetATIS(ap); contents != "" {
 				atis = append(atis, fmt.Sprintf("  %-12s: %s", ap, contents))
+
+				if oldATIS, ok := a.lastATIS[ap]; oldATIS != contents {
+					a.lastATIS[ap] = contents
+					// don't play a sound the first time we get the ATIS.
+					if ok {
+						globalConfig.AudioSettings.HandleEvent(AudioEventUpdatedATIS)
+					}
+				}
 			}
 		}
 		if len(atis) > 0 {
@@ -336,6 +365,11 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				str.WriteString("    ")
 				str.WriteString(ac.flightPlan.route)
 				str.WriteString("\n")
+			}
+
+			if _, ok := a.seenArrivals[ac.Callsign()]; !ok {
+				a.seenArrivals[ac.Callsign()] = nil
+				globalConfig.AudioSettings.HandleEvent(AudioEventFlightPlanFiled)
 			}
 		}
 		str.WriteString("\n")
@@ -403,11 +437,11 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		str.WriteString("\n")
 	}
 
-	arr := getDistanceSortedArrivals(a.Airports)
-	if a.ShowArrivals && len(arr) > 0 {
+	arrivals := getDistanceSortedArrivals(a.Airports)
+	if a.ShowArrivals && len(arrivals) > 0 {
 		str.WriteString("Arrivals:\n")
-		for _, a := range arr {
-			ac := a.aircraft
+		for _, arr := range arrivals {
+			ac := arr.aircraft
 			alt := ac.Altitude()
 			alt = (alt + 50) / 100 * 100
 
@@ -420,7 +454,12 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d  %5d %3dnm %s\n", ac.Callsign(),
 				ac.flightPlan.rules, ac.flightPlan.arrive, ac.flightPlan.actype, ac.scratchpad,
-				ac.tempAltitude, alt, int(a.distance), star))
+				ac.tempAltitude, alt, int(arr.distance), star))
+
+			if _, ok := a.seenArrivals[ac.Callsign()]; !ok {
+				globalConfig.AudioSettings.HandleEvent(AudioEventNewArrival)
+				a.seenArrivals[ac.Callsign()] = nil
+			}
 		}
 		str.WriteString("\n")
 	}
