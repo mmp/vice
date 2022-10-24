@@ -77,7 +77,9 @@ func uiInit(renderer Renderer) {
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
 	ui.fixedFont = GetFont(FontIdentifier{Name: "Source Code Pro Regular", Size: 16})
 
-	ui.errorText = make(map[string]func() bool)
+	if ui.errorText == nil {
+		ui.errorText = make(map[string]func() bool)
+	}
 
 	var err error
 	ui.iconTextureID, err = renderer.CreateTextureFromPNG(bytes.NewReader([]byte(iconPNG)))
@@ -142,6 +144,9 @@ func uiInit(renderer Renderer) {
 // times with the same error text, the error will only be displayed once.
 // (These error messages are currently shown under the main menu bar.)
 func uiAddError(text string, cleared func() bool) {
+	if ui.errorText == nil {
+		ui.errorText = make(map[string]func() bool)
+	}
 	ui.errorText[text] = cleared
 }
 

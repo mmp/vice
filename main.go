@@ -114,6 +114,18 @@ func main() {
 	// replaying a trace with a time offset.
 	globalConfig.AudioSettings.MuteFor(3 * time.Second)
 
+	// These will appear the first time vice is launched and the user
+	// hasn't yet set these up.  (And also if the chosen files are moved or
+	// deleted, etc...)
+	if database.LoadSectorFile(globalConfig.SectorFile) != nil {
+		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
+			func() bool { return database.sectorFileLoadError == nil })
+	}
+	if database.LoadPositionFile(globalConfig.PositionFile) != nil {
+		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
+			func() bool { return database.positionFileLoadError == nil })
+	}
+
 	if true {
 		// Multisampling on Retina displays seems to hit a performance
 		// wall if the window is too large; lacking a better approach
@@ -141,18 +153,6 @@ func main() {
 	vatsimInit()
 
 	wmInit()
-
-	// These will appear the first time vice is launched and the user
-	// hasn't yet set these up.  (And also if the chosen files are moved or
-	// deleted, etc...)
-	if database.LoadSectorFile(globalConfig.SectorFile) != nil {
-		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
-			func() bool { return database.sectorFileLoadError == nil })
-	}
-	if database.LoadPositionFile(globalConfig.PositionFile) != nil {
-		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
-			func() bool { return database.positionFileLoadError == nil })
-	}
 
 	// We need to hold off on making the config active until after Platform
 	// creation so we can set the window title...
