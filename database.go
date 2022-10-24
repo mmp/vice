@@ -218,7 +218,9 @@ func parseNavaids() map[string]Navaid {
 	mungeCSV("navaids", decompressZstd(navBaseRaw), func(s []string) {
 		n := Navaid{id: s[1], navtype: s[2], name: s[7],
 			location: Point2LLFromComponents(s[22:26], s[26:30])}
-		navaids[n.id] = n
+		if n.id != "" {
+			navaids[n.id] = n
+		}
 	})
 
 	return navaids
@@ -234,7 +236,9 @@ func parseAirports() map[string]Airport {
 		} else {
 			loc := Point2LLFromComponents(s[15:19], s[19:23])
 			ap := Airport{id: s[98], name: s[12], location: loc, elevation: int(elevation)}
-			airports[ap.id] = ap
+			if ap.id != "" {
+				airports[ap.id] = ap
+			}
 		}
 	})
 
@@ -253,11 +257,14 @@ func parseAirports() map[string]Airport {
 		} else {
 			elevation *= 3.28084 // meters to feet
 
-			airports[f[0]] = Airport{
+			ap := Airport{
 				id:        f[0],
 				name:      f[2],
 				location:  Point2LLFromStrings(f[14], f[15]),
 				elevation: int(elevation)}
+			if ap.id != "" {
+				airports[ap.id] = ap
+			}
 		}
 	}
 
@@ -268,9 +275,12 @@ func parseFixes() map[string]Fix {
 	fixes := make(map[string]Fix)
 
 	mungeCSV("fixes", decompressZstd(fixesRaw), func(s []string) {
-		fixes[s[1]] = Fix{
+		f := Fix{
 			id:       s[1],
 			location: Point2LLFromComponents(s[5:9], s[9:13])}
+		if f.id != "" {
+			fixes[f.id] = f
+		}
 	})
 
 	return fixes
@@ -293,8 +303,10 @@ func parsePRD() map[AirportPair][]PRDEntry {
 			Seq:          s[11],
 			DepCenter:    s[12],
 			ArriveCenter: s[13]}
-		prd[AirportPair{entry.Depart, entry.Arrive}] =
-			append(prd[AirportPair{entry.Depart, entry.Arrive}], entry)
+		if entry.Depart != "" && entry.Arrive != "" {
+			prd[AirportPair{entry.Depart, entry.Arrive}] =
+				append(prd[AirportPair{entry.Depart, entry.Arrive}], entry)
+		}
 	})
 
 	return prd
@@ -311,7 +323,7 @@ func parseCallsigns() map[string]Callsign {
 			country:   fix(s[1]),
 			telephony: fix(s[2]),
 			threeltr:  strings.TrimSpace(s[3])}
-		if cs.threeltr != "..." {
+		if cs.threeltr != "" && cs.threeltr != "..." {
 			callsigns[cs.threeltr] = cs
 		}
 	}
@@ -380,7 +392,9 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	loc := func(ls []sct2.NamedLatLong) map[string]Point2LL {
 		m := make(map[string]Point2LL)
 		for _, loc := range ls {
-			m[loc.Name] = Point2LLFromLL64(loc.Latitude, loc.Longitude)
+			if loc.Name != "" {
+				m[loc.Name] = Point2LLFromLL64(loc.Latitude, loc.Longitude)
+			}
 		}
 		return m
 	}
@@ -393,6 +407,9 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	// of their runways.
 	db.runways = make(map[string][]Runway)
 	for _, r := range sectorFile.Runways {
+		if r.Airport == "" {
+			continue
+		}
 		// Two entries--one for each end of the runway.
 		for i := 0; i < 2; i++ {
 			db.runways[r.Airport] = append(db.runways[r.Airport],
