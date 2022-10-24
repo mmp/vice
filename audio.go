@@ -85,7 +85,9 @@ type AudioSettings struct {
 	SoundEffects [AudioEventCount]string
 	AudioEnabled bool
 
-	muteUntil time.Time
+	muteUntil     time.Time
+	lastPlay      [AudioEventCount]time.Time
+	lastPlayMutex sync.Mutex
 }
 
 // Play no sounds for the specified period of time. This is mostly useful
@@ -110,7 +112,12 @@ func (a *AudioSettings) HandleEvent(e AudioEvent) {
 		lg.Printf("%s: sound effect disappeared?!", effect)
 		a.SoundEffects[e] = ""
 	} else {
-		se.Play()
+		a.lastPlayMutex.Lock()
+		defer a.lastPlayMutex.Unlock()
+		if time.Since(a.lastPlay[e]) > 2*time.Second {
+			a.lastPlay[e] = time.Now()
+			se.Play()
+		}
 	}
 }
 
