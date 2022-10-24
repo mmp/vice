@@ -266,29 +266,39 @@ func (cli *CLIPane) Update(updates *ControlUpdates) {
 	}
 
 	// Add any text/radio messages to the console
+	displayedMessages := false
 	for _, m := range updates.messages {
 		switch m.messageType {
 		case TextBroadcast:
 			cli.AddConsoleEntry([]string{"[BROADCAST] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			displayedMessages = true
 		case TextWallop:
 			cli.AddConsoleEntry([]string{"[WALLOP] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			displayedMessages = true
 		case TextATC:
 			cli.AddConsoleEntry([]string{"[ATC] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			displayedMessages = true
 		case TextFrequency:
 			fm := positionConfig.MonitoredFrequencies(m.frequencies)
 			if len(fm) > 0 {
 				freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
 				cli.AddConsoleEntry([]string{"[" + freq + "] " + m.sender + ": ", m.contents},
 					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+				displayedMessages = true
 			}
 		case TextPrivate:
 			cli.AddConsoleEntry([]string{"[DM] " + m.sender + ": ", m.contents},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			displayedMessages = true
 		}
 	}
+	if displayedMessages {
+		globalConfig.AudioSettings.HandleEvent(AudioEventReceivedMessage)
+	}
+
 }
 
 func (cli *CLIPane) Name() string { return "Command Line Interface" }

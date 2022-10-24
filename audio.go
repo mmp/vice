@@ -134,9 +134,6 @@ func audioProcessUpdates(updates *ControlUpdates) {
 	if len(updates.rejectedHandoffs) > 0 {
 		globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
 	}
-	if len(updates.messages) > 0 {
-		globalConfig.AudioSettings.HandleEvent(AudioEventReceivedMessage)
-	}
 }
 
 type SoundEffect struct {
