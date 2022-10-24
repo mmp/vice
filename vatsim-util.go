@@ -133,9 +133,6 @@ func NewVATSIMNetConnection(address string) (*VATSIMNetConnection, error) {
 }
 
 func (c *VATSIMNetConnection) GetMessages() []VATSIMMessage {
-	positionConfig.CheckPrimaryRadarCenter()
-	positionConfig.CheckRadioPrimed()
-
 	var messages []VATSIMMessage
 	for {
 		select {

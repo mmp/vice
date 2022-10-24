@@ -358,6 +358,9 @@ func (pc *PositionConfig) Activate() {
 }
 
 func (pc *PositionConfig) SendUpdates() {
+	pc.CheckRadarCenters()
+	pc.CheckRadioPrimed()
+
 	server.SendRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
 		int(pc.RadarRange))
 }
@@ -409,13 +412,31 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 	}
 }
 
-func (c *PositionConfig) CheckPrimaryRadarCenter() {
-	if _, ok := database.Locate(c.PrimaryRadarCenter); !ok {
-		uiAddError("Primary radar center is unset or invalid. Set it via Settings/Radar...",
-			func() bool {
-				_, ok := database.Locate(c.PrimaryRadarCenter)
-				return ok || !server.Connected()
-			})
+func (c *PositionConfig) CheckRadarCenters() {
+	// Only show error text in the main window if the radio settings window
+	// isn't open.
+	if ui.showRadarSettingsWindow {
+		return
+	}
+
+	if c.PrimaryRadarCenter == "" {
+		uiAddError("Primary radar center is unset. Set it via Settings/Radar...",
+			func() bool { return c.PrimaryRadarCenter != "" })
+	} else if c.primaryRadarCenterLocation.IsZero() {
+		msg := fmt.Sprintf("Primary radar center \"%s\" is invalid. Set it via Settings/Radar...", c.PrimaryRadarCenter)
+		ctr := c.PrimaryRadarCenter
+		uiAddError(msg, func() bool { return c.PrimaryRadarCenter != ctr || !c.primaryRadarCenterLocation.IsZero() })
+	}
+	for i, ctr := range c.SecondaryRadarCenters {
+		if ctr != "" && c.secondaryRadarCentersLocation[i].IsZero() {
+			ctr := ctr
+			i := i
+			uiAddError(fmt.Sprintf("Secondary radar center \"%s\" is invalid. Set it via Settings/Radar...", ctr),
+				func() bool {
+					return c.SecondaryRadarCenters[i] != ctr ||
+						!c.secondaryRadarCentersLocation[i].IsZero()
+				})
+		}
 	}
 }
 
@@ -435,16 +456,16 @@ func (c *PositionConfig) DrawRadarUI() {
 	if c.primaryRadarCenterLocation, ok = database.Locate(c.PrimaryRadarCenter); !ok {
 		primaryNotOk = FontAwesomeIconExclamationTriangle + " "
 	}
-	imgui.InputTextV(primaryNotOk+"Primary center###PrimaryCenter", &c.PrimaryRadarCenter,
-		imgui.InputTextFlagsCharsUppercase, nil)
+	flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
+	imgui.InputTextV(primaryNotOk+"Primary center###PrimaryCenter", &c.PrimaryRadarCenter, flags, nil)
 
 	for i, name := range c.SecondaryRadarCenters {
 		notOk := ""
 		if c.secondaryRadarCentersLocation[i], ok = database.Locate(name); name != "" && !ok {
 			notOk = FontAwesomeIconExclamationTriangle + " "
 		}
-		imgui.InputTextV(fmt.Sprintf(notOk+"Secondary center #%d###Secondary%d", i+1, i+1), &c.SecondaryRadarCenters[i],
-			imgui.InputTextFlagsCharsUppercase, nil)
+		imgui.InputTextV(fmt.Sprintf(notOk+"Secondary center #%d###SecondaryCenter-%d", i+1, i+1),
+			&c.SecondaryRadarCenters[i], flags, nil)
 	}
 }
 
