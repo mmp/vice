@@ -167,17 +167,17 @@ func (fr *FlightRadarServer) GetUpdates() {
 	// configurable...)
 	radius := float32(50)
 
-	// default center: JFK, represent
-	center := Point2LL{-73.779, 40.64}
-
-	// Try to find a more appropriate center for the flight radar query by
-	// taking the center of the first RadarScopePane we come across when
-	// walking the window hierarchy.
-	positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
-		if rs, ok := p.(*RadarScopePane); ok {
-			center = rs.Center
-		}
-	})
+	center, ok := database.Locate(positionConfig.PrimaryRadarCenter)
+	if !ok {
+		// Try to find a center for the flight radar query by taking the
+		// center of the last RadarScopePane we come across when walking
+		// the window hierarchy.
+		positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
+			if rs, ok := p.(*RadarScopePane); ok {
+				center = rs.Center
+			}
+		})
+	}
 
 	request := fmt.Sprintf("https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds=%.2f,%.2f,%.2f,%.2f&faa=1&satellite=1&vehicles=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&estimated=1&maxage=30",
 		center.Latitude()+radius/database.NmPerLatitude,
