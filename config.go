@@ -460,6 +460,7 @@ func (c *PositionConfig) DrawRadioUI() {
 		c.rxFrequencies = make(map[Frequency]*bool)
 	}
 
+	imgui.RadioButtonInt("Unprime radio", (*int)(&c.primaryFrequency), 0)
 	config := ComboBoxDisplayConfig{
 		ColumnHeaders:    []string{"Position", "Frequency", "Primed", "TX", "RX"},
 		DrawHeaders:      true,
