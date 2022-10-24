@@ -222,7 +222,7 @@ func main() {
 		platform.PostRender()
 
 		// Periodically log current memory use, etc.
-		if (*devmode && frameIndex%10 == 0) || frameIndex%250 == 0 {
+		if (*devmode && frameIndex%600 == 0) || frameIndex%3600 == 0 {
 			lg.LogStats(stats)
 		}
 		frameIndex++
