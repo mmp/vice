@@ -306,28 +306,6 @@ func (v VoiceCapability) String() string {
 	return [...]string{"?", "v", "r", "t"}[v]
 }
 
-type TextMessageType int
-
-const (
-	TextBroadcast = iota
-	TextWallop
-	TextATC
-	TextFrequency
-	TextPrivate
-)
-
-func (t TextMessageType) String() string {
-	return [...]string{"Broadcast", "Wallop", "ATC", "Frequency", "Private"}[t]
-}
-
-type TextMessage struct {
-	sender      string
-	messageType TextMessageType
-	contents    string
-	frequencies []Frequency // only used for messageType == TextFrequency
-	recipient   string      // only used for TextPrivate
-}
-
 func (a *Aircraft) Altitude() int {
 	return a.tracks[0].altitude
 }

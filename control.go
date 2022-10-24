@@ -142,6 +142,28 @@ func (c *ControlUpdates) NoUpdates() bool {
 		len(c.rejectedHandoffs) == 0 && len(c.messages) == 0
 }
 
+type TextMessageType int
+
+const (
+	TextBroadcast = iota
+	TextWallop
+	TextATC
+	TextFrequency
+	TextPrivate
+)
+
+func (t TextMessageType) String() string {
+	return [...]string{"Broadcast", "Wallop", "ATC", "Frequency", "Private"}[t]
+}
+
+type TextMessage struct {
+	sender      string
+	messageType TextMessageType
+	contents    string
+	frequencies []Frequency // only used for messageType == TextFrequency
+	recipient   string      // only used for TextPrivate
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // InertAircraftController
 
