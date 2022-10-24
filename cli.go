@@ -205,7 +205,9 @@ func (cli *CLIPane) Activate(cs *ColorScheme) {
 	if cli.SpecialKeys == nil {
 		cli.SpecialKeys = make(map[string]*string)
 	}
-	lg.RegisterErrorMonitor(cli)
+	if *devmode {
+		lg.RegisterErrorMonitor(cli)
+	}
 
 	checkCommands(cliCommands)
 }
