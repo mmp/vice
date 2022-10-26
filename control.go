@@ -169,22 +169,50 @@ type TextMessage struct {
 
 type InertAircraftController struct{}
 
-func (*InertAircraftController) SetSquawk(callsign string, squawk Squawk) error          { return nil }
-func (*InertAircraftController) SetSquawkAutomatic(callsign string) error                { return nil }
-func (*InertAircraftController) SetScratchpad(callsign string, scratchpad string) error  { return nil }
-func (*InertAircraftController) SetTemporaryAltitude(callsign string, alt int) error     { return nil }
-func (*InertAircraftController) SetVoiceType(callsign string, voice string) error        { return nil }
-func (*InertAircraftController) AmendFlightPlan(callsign string, fp FlightPlan) error    { return nil }
-func (*InertAircraftController) PushFlightStrip(fs FlightStrip, controller string) error { return nil }
-func (*InertAircraftController) InitiateTrack(callsign string) error                     { return nil }
-func (*InertAircraftController) DropTrack(callsign string) error                         { return nil }
-func (*InertAircraftController) Handoff(callsign string, controller string) error        { return nil }
-func (*InertAircraftController) AcceptHandoff(callsign string) error                     { return nil }
-func (*InertAircraftController) RejectHandoff(callsign string) error                     { return nil }
-func (*InertAircraftController) PointOut(callsign string, controller string) error       { return nil }
-func (*InertAircraftController) SendTextMessage(m TextMessage) error                     { return nil }
+func (*InertAircraftController) SetSquawk(callsign string, squawk Squawk) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) SetSquawkAutomatic(callsign string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) SetScratchpad(callsign string, scratchpad string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) SetTemporaryAltitude(callsign string, alt int) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) SetVoiceType(callsign string, voice string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) AmendFlightPlan(callsign string, fp FlightPlan) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) PushFlightStrip(fs FlightStrip, controller string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) InitiateTrack(callsign string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) DropTrack(callsign string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) Handoff(callsign string, controller string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) AcceptHandoff(callsign string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) RejectHandoff(callsign string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) PointOut(callsign string, controller string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) SendTextMessage(m TextMessage) error {
+	return ErrNoConnection
+}
 func (*InertAircraftController) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
-	return nil
+	return ErrNoConnection
 }
 
 ///////////////////////////////////////////////////////////////////////////
