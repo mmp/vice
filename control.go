@@ -145,7 +145,7 @@ func (c *ControlUpdates) RemoveAircraft(ac *Aircraft) {
 func (c *ControlUpdates) NoUpdates() bool {
 	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0 &&
 		len(c.pointOuts) == 0 && len(c.offeredHandoffs) == 0 && len(c.acceptedHandoffs) == 0 &&
-		len(c.rejectedHandoffs) == 0 && len(c.messages) == 0
+		len(c.rejectedHandoffs) == 0 && len(c.pushedFlightStrips) == 0 && len(c.messages) == 0
 }
 
 type TextMessageType int
