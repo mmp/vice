@@ -261,8 +261,7 @@ func (v *VATSIMServer) SetSquawk(callsign string, code Squawk) error {
 	} else {
 		ac.assignedSquawk = code
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.SetSquawk(callsign, code)
-		return nil
+		return v.controlDelegate.SetSquawk(callsign, code)
 	}
 }
 
@@ -325,8 +324,7 @@ func (v *VATSIMServer) SetScratchpad(callsign string, scratchpad string) error {
 	} else {
 		ac.scratchpad = scratchpad
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.SetScratchpad(callsign, scratchpad)
-		return nil
+		return v.controlDelegate.SetScratchpad(callsign, scratchpad)
 	}
 }
 
@@ -340,8 +338,7 @@ func (v *VATSIMServer) SetTemporaryAltitude(callsign string, altitude int) error
 	} else {
 		ac.tempAltitude = altitude
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.SetTemporaryAltitude(callsign, altitude)
-		return nil
+		return v.controlDelegate.SetTemporaryAltitude(callsign, altitude)
 	}
 }
 
@@ -366,9 +363,9 @@ func (v *VATSIMServer) SetVoiceType(callsign string, voice string) error {
 			return errors.New("Invalid voice communications type specified")
 		}
 
-		v.controlDelegate.SetVoiceType(callsign, voice)
+		err := v.controlDelegate.SetVoiceType(callsign, voice)
 
-		return amendFlightPlan(callsign, func(fp *FlightPlan) {
+		err2 := amendFlightPlan(callsign, func(fp *FlightPlan) {
 			voiceStr := "/" + voice + "/"
 			// Is the voice type already in the remarks?
 			if strings.Contains(fp.remarks, voiceStr) {
@@ -383,6 +380,14 @@ func (v *VATSIMServer) SetVoiceType(callsign string, voice string) error {
 			// And insert the one that was set
 			fp.remarks += " " + voiceStr
 		})
+
+		if err2 != nil {
+			if err == nil {
+				return err2
+			}
+			return fmt.Errorf("Multiple errors: %s, %s", err.Error(), err2.Error())
+		}
+		return err
 	}
 }
 
@@ -398,8 +403,7 @@ func (v *VATSIMServer) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	} else {
 		ac.flightPlan = &fp
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.AmendFlightPlan(callsign, fp)
-		return nil
+		return v.controlDelegate.AmendFlightPlan(callsign, fp)
 	}
 }
 
@@ -417,8 +421,7 @@ func (v *VATSIMServer) InitiateTrack(callsign string) error {
 	} else {
 		v.trackingControllers[callsign] = v.callsign
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.InitiateTrack(callsign)
-		return nil
+		return v.controlDelegate.InitiateTrack(callsign)
 	}
 }
 
@@ -432,8 +435,7 @@ func (v *VATSIMServer) DropTrack(callsign string) error {
 	} else {
 		delete(v.trackingControllers, callsign)
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.DropTrack(callsign)
-		return nil
+		return v.controlDelegate.DropTrack(callsign)
 	}
 }
 
@@ -450,8 +452,7 @@ func (v *VATSIMServer) Handoff(callsign string, controller string) error {
 		// Use c.callsign in case we were given a sector id...
 		v.outboundHandoffs[callsign] = c.callsign
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.Handoff(callsign, c.callsign)
-		return nil
+		return v.controlDelegate.Handoff(callsign, c.callsign)
 	}
 }
 
@@ -465,9 +466,9 @@ func (v *VATSIMServer) AcceptHandoff(callsign string) error {
 	} else {
 		v.trackingControllers[callsign] = v.callsign
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.AcceptHandoff(callsign)
-		delete(v.inboundHandoffs, callsign)
-		return nil
+		err := v.controlDelegate.AcceptHandoff(callsign)
+		delete(v.inboundHandoffs, callsign) // only do this now so delegate can get the controller
+		return err
 	}
 }
 
@@ -480,9 +481,9 @@ func (v *VATSIMServer) RejectHandoff(callsign string) error {
 		return ErrNotBeingHandedOffToMe
 	} else {
 		controlUpdates.modifiedAircraft[ac] = nil
-		v.controlDelegate.RejectHandoff(callsign)
-		delete(v.inboundHandoffs, callsign)
-		return nil
+		err := v.controlDelegate.RejectHandoff(callsign)
+		delete(v.inboundHandoffs, callsign) // only do this now so delegate can get the controller
+		return err
 	}
 }
 
@@ -497,8 +498,7 @@ func (v *VATSIMServer) PointOut(callsign string, controller string) error {
 		return ErrNoController
 	} else {
 		// Use c.callsign in case we were given a sector id...
-		v.controlDelegate.PointOut(callsign, c.callsign)
-		return nil
+		return v.controlDelegate.PointOut(callsign, c.callsign)
 	}
 }
 
@@ -513,8 +513,7 @@ func (v *VATSIMServer) SendTextMessage(m TextMessage) error {
 		return errors.New("Broadcast messages cannot be sent by non-supervisors")
 	}
 
-	v.controlDelegate.SendTextMessage(m)
-	return nil
+	return v.controlDelegate.SendTextMessage(m)
 }
 
 func (v *VATSIMServer) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
