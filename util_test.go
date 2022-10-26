@@ -129,3 +129,16 @@ func TestTransientMap(t *testing.T) {
 		t.Errorf("transient set still has value that it shouldn't")
 	}
 }
+
+func TestFilterSlice(t *testing.T) {
+	a := []int{1, 2, 3, 4, 5}
+	b := FilterSlice(a, func(i int) bool { return i%2 == 0 })
+	if len(b) != 2 || b[0] != 2 || b[1] != 4 {
+		t.Errorf("filter evens failed: %+v", b)
+	}
+
+	c := FilterSlice(a, func(i int) bool { return i >= 3 })
+	if len(c) != 3 || c[0] != 3 || c[1] != 4 || c[2] != 5 {
+		t.Errorf("filter >=3 failed: %+v", c)
+	}
+}

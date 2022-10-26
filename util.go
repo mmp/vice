@@ -617,6 +617,22 @@ func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
 	return mnew
 }
 
+func DuplicateSlice[V any](s []V) []V {
+	dupe := make([]V, len(s))
+	copy(dupe, s)
+	return dupe
+}
+
+func FilterSlice[V any](s []V, pred func(V) bool) []V {
+	var filtered []V
+	for _, item := range s {
+		if pred(item) {
+			filtered = append(filtered, item)
+		}
+	}
+	return filtered
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // TransientMap
 
