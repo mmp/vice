@@ -595,7 +595,8 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	if wm.showPaneAsRoot && wm.nodeFilterUnset {
 		pane := findPaneForMouse(positionConfig.DisplayRoot, displayFull,
 			[2]float32{mousePos.X, mousePos.Y})
-		if pane != nil {
+		// Don't maximize empty panes or split lines
+		if _, ok := pane.(*SplitLine); !ok && pane != nil {
 			wm.nodeFilter = func(node *DisplayNode) *DisplayNode {
 				return &DisplayNode{Pane: pane}
 			}
