@@ -99,6 +99,8 @@ type ControlUpdates struct {
 	acceptedHandoffs map[*Aircraft]string
 	rejectedHandoffs map[*Aircraft]string
 
+	pushedFlightStrips []FlightStrip
+
 	messages []TextMessage
 }
 
@@ -122,6 +124,7 @@ func (c *ControlUpdates) Reset() {
 	c.offeredHandoffs = make(map[*Aircraft]string)
 	c.acceptedHandoffs = make(map[*Aircraft]string)
 	c.rejectedHandoffs = make(map[*Aircraft]string)
+	c.pushedFlightStrips = c.pushedFlightStrips[:0]
 	c.messages = c.messages[:0]
 }
 
@@ -132,6 +135,9 @@ func (c *ControlUpdates) RemoveAircraft(ac *Aircraft) {
 	delete(c.offeredHandoffs, ac)
 	delete(c.acceptedHandoffs, ac)
 	delete(c.rejectedHandoffs, ac)
+
+	c.pushedFlightStrips = FilterSlice(c.pushedFlightStrips,
+		func(fs FlightStrip) bool { return fs.callsign != ac.Callsign() })
 
 	controlUpdates.removedAircraft[ac] = nil
 }

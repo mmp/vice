@@ -699,13 +699,15 @@ func init() {
 		}
 
 		fs := FlightStrip{callsign: args[4]}
-		if len(args) >= 5 {
-			fs.formatId = args[5]
-		}
 		if len(args) >= 7 {
-			fs.annotations = append(fs.annotations, args[6:]...)
+			for i, ann := range args[6:] {
+				if i == 9 {
+					break
+				}
+				fs.annotations[i] = ann
+			}
 		}
-		lg.Errorf("TODO handle pushed flight strip")
+		controlUpdates.pushedFlightStrips = append(controlUpdates.pushedFlightStrips, fs)
 		return nil
 	}))
 

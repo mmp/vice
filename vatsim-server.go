@@ -408,7 +408,13 @@ func (v *VATSIMServer) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (v *VATSIMServer) PushFlightStrip(fs FlightStrip, controller string) error {
-	return nil
+	if !v.atcValid {
+		return ErrNotController
+	} else if v.GetAircraft(fs.callsign) == nil {
+		return ErrNoAircraftForCallsign
+	} else {
+		return v.controlDelegate.PushFlightStrip(fs, controller)
+	}
 }
 
 func (v *VATSIMServer) InitiateTrack(callsign string) error {

@@ -1043,3 +1043,246 @@ func (rp *ReminderPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	cb.Call(rp.cb)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// FlightStripPane
+
+type FlightStripPane struct {
+	FontIdentifier FontIdentifier
+	font           *Font
+
+	AutoAddDepartures bool
+	AutoAddArrivals   bool
+	AddPushed         bool
+
+	Airports      map[string]interface{}
+	strips        []FlightStrip
+	addedAircraft map[string]interface{}
+
+	cb CommandBuffer
+}
+
+func NewFlightStripPane() *FlightStripPane {
+	font := GetDefaultFont()
+	return &FlightStripPane{
+		FontIdentifier: font.id,
+		font:           font,
+		AddPushed:      true,
+		Airports:       make(map[string]interface{}),
+		addedAircraft:  make(map[string]interface{}),
+	}
+}
+
+func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
+	return &FlightStripPane{
+		FontIdentifier:    fsp.FontIdentifier,
+		font:              fsp.font,
+		AutoAddDepartures: fsp.AutoAddDepartures,
+		AutoAddArrivals:   fsp.AutoAddArrivals,
+		AddPushed:         fsp.AddPushed,
+		Airports:          DuplicateMap(fsp.Airports),
+		strips:            DuplicateSlice(fsp.strips),
+		addedAircraft:     DuplicateMap(fsp.addedAircraft),
+	}
+}
+
+func (fsp *FlightStripPane) Activate(cs *ColorScheme) {
+	if fsp.font = GetFont(fsp.FontIdentifier); fsp.font == nil {
+		fsp.font = GetDefaultFont()
+		fsp.FontIdentifier = fsp.font.id
+	}
+	if fsp.addedAircraft == nil {
+		fsp.addedAircraft = make(map[string]interface{})
+	}
+	if fsp.Airports == nil {
+		fsp.Airports = make(map[string]interface{})
+	}
+}
+
+func (fsp *FlightStripPane) Deactivate() {}
+
+func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
+	inAirports := func(ap string) bool {
+		_, ok := fsp.Airports[ap]
+		return ok
+	}
+
+	possiblyAdd := func(ac *Aircraft) {
+		callsign := ac.Callsign()
+		if _, ok := fsp.addedAircraft[callsign]; ok {
+			return
+		}
+
+		if ac.flightPlan == nil {
+			return
+		}
+		if fsp.AutoAddDepartures && inAirports(ac.flightPlan.depart) {
+			fsp.strips = append(fsp.strips, FlightStrip{callsign: ac.callsign})
+			fsp.addedAircraft[callsign] = nil
+		} else if fsp.AutoAddArrivals && inAirports(ac.flightPlan.arrive) {
+			fsp.strips = append(fsp.strips, FlightStrip{callsign: ac.callsign})
+			fsp.addedAircraft[callsign] = nil
+		}
+	}
+
+	if fsp.AddPushed {
+		for _, fs := range updates.pushedFlightStrips {
+			fsp.strips = append(fsp.strips, fs)
+		}
+	}
+
+	for ac := range updates.addedAircraft {
+		possiblyAdd(ac)
+	}
+	for ac := range updates.modifiedAircraft {
+		possiblyAdd(ac)
+	}
+
+	for ac := range updates.removedAircraft {
+		// Thus, if we later see the same callsign from someone else, we'll
+		// treat them as new.
+		delete(fsp.addedAircraft, ac.Callsign())
+		fsp.strips = FilterSlice(fsp.strips, func(fs FlightStrip) bool {
+			return fs.callsign != ac.Callsign()
+		})
+	}
+}
+
+func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
+
+func (fsp *FlightStripPane) DrawUI() {
+	fsp.Airports = drawAirportSelector(fsp.Airports, "Airports")
+	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
+	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
+	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
+	if newFont, changed := DrawFontPicker(&fsp.FontIdentifier, "Font"); changed {
+		fsp.font = newFont
+	}
+
+}
+
+func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	// Font width and height
+	bx, _ := fsp.font.BoundText(" ", 0)
+	fw, fh := float32(bx), float32(fsp.font.size)
+
+	// 4 lines of text, 2 lines on top and below for padding, 1 pixel separator line
+	vpad := float32(2)
+	stripHeight := 1 + 2*vpad + 4*fh
+
+	indent := float32(int32(fw / 2))
+	// column widths
+	width0 := 10 * fw
+	width1 := 6 * fw
+	width2 := 5 * fw
+	widthAnn := 4 * fw
+	widthCenter := ctx.paneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
+	if widthCenter < 0 {
+		// not sure what to do here...
+		widthCenter = 20 * fw
+	}
+
+	// Draw from the bottom
+	td := TextDrawBuilder{}
+	ld := LinesDrawBuilder{}
+	for i, strip := range fsp.strips {
+		ac := server.GetAircraft(strip.callsign)
+		if ac == nil {
+			lg.Errorf("%s: no aircraft for callsign?!", strip.callsign)
+			continue
+		}
+		fp := ac.flightPlan
+
+		style := TextStyle{font: fsp.font, color: ctx.cs.Text}
+		if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft.Callsign() == strip.callsign {
+			style.color = ctx.cs.TextHighlight
+		}
+
+		y := float32(i)*stripHeight + stripHeight - 1 - vpad
+		x := indent
+
+		// First column
+		td.AddText(ac.Callsign(), [2]float32{x, y}, style)
+		if fp != nil {
+			td.AddText(fp.actype, [2]float32{x, y - fh*3/2}, style)
+			td.AddText(fp.rules.String(), [2]float32{x, y - fh*3}, style)
+		}
+		ld.AddLine([2]float32{width0, y}, [2]float32{width0, y - stripHeight})
+
+		// Second column
+		x += width0
+		td.AddText(ac.assignedSquawk.String(), [2]float32{x, y}, style)
+		td.AddText(fmt.Sprintf("%d", ac.tempAltitude), [2]float32{x, y - fh*3/2}, style)
+		if fp != nil {
+			td.AddText(fmt.Sprintf("%d", fp.altitude), [2]float32{x, y - fh*3}, style)
+		}
+		ld.AddLine([2]float32{width0, y - 4./3.*fh}, [2]float32{width0 + width1, y - 4./3.*fh})
+		ld.AddLine([2]float32{width0, y - 8./3.*fh}, [2]float32{width0 + width1, y - 8./3.*fh})
+		ld.AddLine([2]float32{width0 + width1, y}, [2]float32{width0 + width1, y - stripHeight})
+
+		// Third column
+		x += width1
+		if fp != nil {
+			td.AddText(fp.depart, [2]float32{x, y}, style)
+			td.AddText(fp.arrive, [2]float32{x, y - fh}, style)
+			td.AddText(fp.alternate, [2]float32{x, y - 2*fh}, style)
+		}
+		td.AddText(ac.scratchpad, [2]float32{x, y - 3*fh}, style)
+		ld.AddLine([2]float32{width0 + width1 + width2, y},
+			[2]float32{width0 + width1 + width2, y - stripHeight})
+
+		// Fourth column
+		x += width2
+		if fp != nil {
+			cols := int(widthCenter / fw)
+			// Line-wrap the route to fit the box and break it into lines.
+			route, _ := wrapText(fp.route, cols, 2 /* indent */, true)
+			text := strings.Split(route, "\n")
+			// Add a blank line if the route only used one line.
+			if len(text) < 2 {
+				text = append(text, "")
+			}
+			// Similarly for the remarks
+			remarks, _ := wrapText(fp.remarks, cols, 2 /* indent */, true)
+			text = append(text, strings.Split(remarks, "\n")...)
+			// Limit to the first four lines so we don't spill over.
+			if len(text) > 4 {
+				text = text[:4]
+			}
+			// Truncate all lines to the column limit; wrapText() lets things
+			// spill over if it's unable to break a long word by itself on a
+			// line, for example.
+			for i, line := range text {
+				if len(line) > cols {
+					text[i] = text[i][:cols]
+				}
+			}
+			td.AddText(strings.Join(text, "\n"), [2]float32{x, y}, style)
+		}
+
+		// Annotations
+		x = ctx.paneExtent.Width() - 3*widthAnn
+		for i, ann := range strip.annotations {
+			ix, iy := i%3, i/3
+			ann = fmt.Sprintf("%d", i) // HAX
+			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
+			td.AddText(ann, [2]float32{xp, yp}, style)
+		}
+		// Horizontal lines
+		ld.AddLine([2]float32{x, y - 4./3.*fh}, [2]float32{ctx.paneExtent.Width(), y - 4./3.*fh})
+		ld.AddLine([2]float32{x, y - 8./3.*fh}, [2]float32{ctx.paneExtent.Width(), y - 8./3.*fh})
+		// Vertical lines
+		for i := 0; i < 3; i++ {
+			xp := x + float32(i)*widthAnn
+			ld.AddLine([2]float32{xp, y}, [2]float32{xp, y - stripHeight})
+		}
+
+		// Line at the top
+		yl := float32(i+1) * stripHeight
+		ld.AddLine([2]float32{0, yl}, [2]float32{ctx.paneExtent.Width(), yl})
+	}
+
+	ctx.SetWindowCoordinateMatrices(cb)
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+}

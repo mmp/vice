@@ -202,6 +202,13 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 		}
 		d.Pane = &fp
 
+	case "*main.FlightStripPane":
+		var fs FlightStripPane
+		if err := json.Unmarshal(*m["Pane"], &fs); err != nil {
+			return err
+		}
+		d.Pane = &fs
+
 	case "*main.NotesViewPane":
 		var nv NotesViewPane
 		if err := json.Unmarshal(*m["Pane"], &nv); err != nil {
@@ -499,6 +506,11 @@ func wmDrawUI(p Platform) {
 				wm.paneCreatePrompt = "Flight plan"
 				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 				wm.handlePanePick = setPicked(NewFlightPlanPane())
+			}
+			if imgui.Selectable("Flight strip") {
+				wm.paneCreatePrompt = "Flight strip"
+				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+				wm.handlePanePick = setPicked(NewFlightStripPane())
 			}
 			if imgui.Selectable("Notes Viewer") {
 				wm.paneCreatePrompt = "Notes viewer"
