@@ -1469,14 +1469,15 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 	}
 
 	callsign := ac.Callsign()
+	if server.InboundHandoffController(callsign) != "" {
+		return cs.HandingOffDataBlock
+	}
+	if server.OutboundHandoffController(callsign) != "" {
+		return cs.HandingOffDataBlock
+	}
+
 	controller := server.GetTrackingController(callsign)
 	if controller != "" && controller == server.Callsign() {
-		if server.InboundHandoffController(callsign) != "" {
-			return cs.HandingOffDataBlock
-		}
-		if server.OutboundHandoffController(callsign) != "" {
-			return cs.HandingOffDataBlock
-		}
 		return cs.TrackedDataBlock
 	}
 
