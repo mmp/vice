@@ -100,6 +100,8 @@ type RadarScopePane struct {
 	// map from legit to their ghost, if present
 	ghostAircraft map[*Aircraft]*Aircraft
 
+	pointedOutAircraft *TransientMap[*Aircraft, string]
+
 	// persistent state used in the ui
 	vorsComboState, ndbsComboState      *ComboBoxState
 	fixesComboState, airportsComboState *ComboBoxState
@@ -162,6 +164,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.ARTCCHighDrawSet = make(map[string]interface{})
 	c.aircraft = make(map[*Aircraft]*AircraftScopeState)
 	c.ghostAircraft = make(map[*Aircraft]*Aircraft)
+	c.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
 
 	font := GetDefaultFont()
 	c.DatablockFontIdentifier = font.id
@@ -214,6 +217,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 		ghost := *gh // make a copy
 		dupe.ghostAircraft[ac] = &ghost
 	}
+	dupe.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
 
 	dupe.AutoMITAirports = DuplicateMap(rs.AutoMITAirports)
 
@@ -271,6 +275,9 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	}
 	if rs.AutoMITAirports == nil {
 		rs.AutoMITAirports = make(map[string]interface{})
+	}
+	if rs.pointedOutAircraft == nil {
+		rs.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
 	}
 
 	// Upgrade old files
@@ -644,6 +651,10 @@ func (rs *RadarScopePane) Update(updates *ControlUpdates) {
 				rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
 			}
 		}
+	}
+
+	for ac, controller := range updates.pointOuts {
+		rs.pointedOutAircraft.Add(ac, controller, 5*time.Second)
 	}
 }
 
@@ -1178,8 +1189,22 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowF
 		}
 
 		if !state.datablockTextCurrent {
-			state.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 0)
-			state.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 1)
+			hopo := ""
+			if controller := server.InboundHandoffController(ac.Callsign()); controller != "" {
+				hopo += FontAwesomeIconArrowLeft + controller
+			}
+			if controller := server.OutboundHandoffController(ac.Callsign()); controller != "" {
+				hopo += FontAwesomeIconArrowRight + controller
+			}
+			if controller, ok := rs.pointedOutAircraft.Get(ac); ok {
+				hopo += FontAwesomeIconExclamationTriangle + controller
+			}
+			if hopo != "" {
+				hopo = "\n" + hopo
+			}
+
+			state.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 0) + hopo
+			state.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 1) + hopo
 			state.datablockTextCurrent = true
 
 			bx0, by0 := rs.datablockFont.BoundText(state.datablockText[0], -2)
