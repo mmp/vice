@@ -349,6 +349,9 @@ func (pc *PositionConfig) Activate() {
 		pc.Frequencies = make(map[string]Frequency)
 	}
 
+	pc.CheckRadarCenters()
+	pc.CheckRadioPrimed()
+
 	pos, _ := database.Locate(pc.PrimaryRadarCenter)
 	pc.primaryRadarCenterLocation = pos
 	for i, ctr := range pc.SecondaryRadarCenters {
@@ -415,17 +418,20 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 func (c *PositionConfig) CheckRadarCenters() {
 	// Only show error text in the main window if the radio settings window
 	// isn't open.
-	if ui.showRadarSettingsWindow {
+	if ui.showRadarSettings || !server.Connected() {
 		return
 	}
 
 	if c.PrimaryRadarCenter == "" {
 		uiAddError("Primary radar center is unset. Set it via Settings/Radar...",
-			func() bool { return c.PrimaryRadarCenter != "" })
+			func() bool { return positionConfig != c || c.PrimaryRadarCenter != "" })
 	} else if c.primaryRadarCenterLocation.IsZero() {
 		msg := fmt.Sprintf("Primary radar center \"%s\" is invalid. Set it via Settings/Radar...", c.PrimaryRadarCenter)
 		ctr := c.PrimaryRadarCenter
-		uiAddError(msg, func() bool { return c.PrimaryRadarCenter != ctr || !c.primaryRadarCenterLocation.IsZero() })
+		uiAddError(msg, func() bool {
+			return positionConfig != c || c.PrimaryRadarCenter != ctr ||
+				!c.primaryRadarCenterLocation.IsZero()
+		})
 	}
 	for i, ctr := range c.SecondaryRadarCenters {
 		if ctr != "" && c.secondaryRadarCentersLocation[i].IsZero() {
@@ -433,7 +439,7 @@ func (c *PositionConfig) CheckRadarCenters() {
 			i := i
 			uiAddError(fmt.Sprintf("Secondary radar center \"%s\" is invalid. Set it via Settings/Radar...", ctr),
 				func() bool {
-					return c.SecondaryRadarCenters[i] != ctr ||
+					return positionConfig != c || c.SecondaryRadarCenters[i] != ctr ||
 						!c.secondaryRadarCentersLocation[i].IsZero()
 				})
 		}
@@ -441,10 +447,15 @@ func (c *PositionConfig) CheckRadarCenters() {
 }
 
 func (c *PositionConfig) CheckRadioPrimed() {
+	if ui.showRadioSettings || !server.Connected() || c.VatsimFacility == FacilityOBS {
+		return
+	}
+
 	if c.primaryFrequency == Frequency(0) {
+		pc := c
 		uiAddError("Primary radio frequency has not been set. Set it via Settings/Radio...",
 			func() bool {
-				return c.primaryFrequency != Frequency(0) || !server.Connected()
+				return pc != c || c.primaryFrequency != Frequency(0) || !server.Connected()
 			})
 	}
 }

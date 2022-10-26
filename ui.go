@@ -32,13 +32,13 @@ var (
 		errorText         map[string]func() bool
 		topControlsHeight float32
 
-		showAboutDialog         bool
-		showRadarSettingsWindow bool
-		showColorEditor         bool
-		showFilesEditor         bool
-		showServersEditor       bool
-		showSoundConfig         bool
-		showRadioSettings       bool
+		showAboutDialog   bool
+		showRadarSettings bool
+		showColorEditor   bool
+		showFilesEditor   bool
+		showServersEditor bool
+		showSoundConfig   bool
+		showRadioSettings bool
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
@@ -188,7 +188,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 				ui.showServersEditor = true
 			}
 			if imgui.MenuItem("Radar...") {
-				ui.showRadarSettingsWindow = true
+				ui.showRadarSettings = true
 			}
 			if imgui.MenuItemV("Radio...", "", false, server.Connected()) {
 				ui.showRadioSettings = true
@@ -321,8 +321,8 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		showAboutDialog()
 	}
 
-	if ui.showRadarSettingsWindow {
-		imgui.BeginV("Radar Settings", &ui.showRadarSettingsWindow, imgui.WindowFlagsAlwaysAutoResize)
+	if ui.showRadarSettings {
+		imgui.BeginV("Radar Settings", &ui.showRadarSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadarUI()
 		imgui.End()
 	}
