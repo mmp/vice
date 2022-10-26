@@ -87,20 +87,21 @@ func TestHeadingDifference(t *testing.T) {
 	}
 }
 
-func TestTransientSet(t *testing.T) {
-	ts := NewTransientSet[int]()
-	ts.Add(1, 250*time.Millisecond)
-	ts.Add(2, 750*time.Millisecond)
+func TestTransientMap(t *testing.T) {
+	ts := NewTransientMap[int, int]()
+	ts.Add(1, 10, 250*time.Millisecond)
+	ts.Add(2, 20, 750*time.Millisecond)
 
 	// Should have both
-	if !ts.Has(1) {
-		t.Errorf("transient set doesn't have 1")
+	if v, ok := ts.Get(1); !ok {
+		t.Errorf("transient set doesn't have expected entry")
+	} else if v != 10 {
+		t.Errorf("transient set didn't return expected value")
 	}
-	if !ts.Has(2) {
-		t.Errorf("transient set doesn't have 2")
-	}
-	if a := ts.GetAll(); len(a) != 2 || !((a[0] == 1 && a[1] == 2) || (a[0] == 2 && a[1] == 1)) {
-		t.Errorf("transient set GetAll() not 1, 2? %+v", a)
+	if v, ok := ts.Get(2); !ok {
+		t.Errorf("transient set doesn't have expected entry")
+	} else if v != 20 {
+		t.Errorf("transient set didn't return expected value")
 	}
 
 	// Note that after this point this test has the potential to be flaky,
@@ -110,23 +111,21 @@ func TestTransientSet(t *testing.T) {
 	time.Sleep(500 * time.Millisecond)
 
 	// Should just have 2
-	if ts.Has(1) {
-		t.Errorf("transient set still has 1")
+	if _, ok := ts.Get(1); ok {
+		t.Errorf("transient set still has value that it shouldn't")
 	}
-	if !ts.Has(2) {
-		t.Errorf("transient set doesn't have 2")
-	}
-	if a := ts.GetAll(); len(a) != 1 || a[0] != 2 {
-		t.Errorf("transient set GetAll() not just 2? %+v", a)
+	if v, ok := ts.Get(2); !ok {
+		t.Errorf("transient set doesn't have expected entry")
+	} else if v != 20 {
+		t.Errorf("transient set didn't return expected value")
 	}
 
 	time.Sleep(250 * time.Millisecond)
 
-	if ts.Has(2) {
-		t.Errorf("transient set still has 2")
+	if _, ok := ts.Get(1); ok {
+		t.Errorf("transient set still has value that it shouldn't")
 	}
-	if a := ts.GetAll(); len(a) != 0 {
-		t.Errorf("transient set GetAll() not empty? %+v", a)
+	if _, ok := ts.Get(2); ok {
+		t.Errorf("transient set still has value that it shouldn't")
 	}
-
 }

@@ -618,23 +618,28 @@ func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// TransientSet
+// TransientMap
 
-// TransientSet represents a set of objects with a built-in expiry time in
+// TransientMap represents a set of objects with a built-in expiry time in
 // the future; after an item's time passes, it is automatically removed
 // from the set.
-type TransientSet[K comparable] struct {
-	m map[K]time.Time
+type TransientMap[K comparable, V any] struct {
+	m map[K]valueTime[V]
 }
 
-func NewTransientSet[K comparable]() *TransientSet[K] {
-	return &TransientSet[K]{m: make(map[K]time.Time)}
+type valueTime[V any] struct {
+	v V
+	t time.Time
 }
 
-func (t *TransientSet[K]) flush() {
+func NewTransientMap[K comparable, V any]() *TransientMap[K, V] {
+	return &TransientMap[K, V]{m: make(map[K]valueTime[V])}
+}
+
+func (t *TransientMap[K, V]) flush() {
 	now := time.Now()
-	for k, time := range t.m {
-		if now.After(time) {
+	for k, vt := range t.m {
+		if now.After(vt.t) {
 			delete(t.m, k)
 		}
 	}
@@ -642,20 +647,13 @@ func (t *TransientSet[K]) flush() {
 
 // Add adds a given value to the set; it will no longer be there after the
 // specified duration has passed.
-func (t *TransientSet[K]) Add(key K, d time.Duration) {
-	t.m[key] = time.Now().Add(d)
-}
-
-// GetAll returns all of the item currently in the set.
-func (t *TransientSet[K]) GetAll() []K {
-	t.flush()
-	k, _ := FlattenMap(t.m)
-	return k
+func (t *TransientMap[K, V]) Add(key K, value V, d time.Duration) {
+	t.m[key] = valueTime[V]{v: value, t: time.Now().Add(d)}
 }
 
 // Has indicates whether a given item is currently present in the set.
-func (t *TransientSet[K]) Has(key K) bool {
+func (t *TransientMap[K, V]) Get(key K) (V, bool) {
 	t.flush()
-	_, ok := t.m[key]
-	return ok
+	vt, ok := t.m[key]
+	return vt.v, ok
 }
