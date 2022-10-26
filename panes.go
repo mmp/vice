@@ -521,7 +521,11 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 ///////////////////////////////////////////////////////////////////////////
 // EmptyPane
 
-type EmptyPane struct{}
+type EmptyPane struct {
+	// Empty struct types may all have the same address, which breaks
+	// assorted assumptions elsewhere in the system....
+	wtfgo int
+}
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
