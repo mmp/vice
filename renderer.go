@@ -521,6 +521,12 @@ func (t *TrianglesDrawBuilder) AddTriangle(p0, p1, p2 [2]float32) {
 	t.indices = append(t.indices, idx, idx+1, idx+2)
 }
 
+func (t *TrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32) {
+	idx := int32(len(t.p))
+	t.p = append(t.p, p0, p1, p2, p3)
+	t.indices = append(t.indices, idx, idx+1, idx+2, idx, idx+2, idx+3)
+}
+
 func (t *TrianglesDrawBuilder) Bounds() Extent2D {
 	return Extent2DFromPoints(t.p)
 }

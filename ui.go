@@ -1483,11 +1483,97 @@ func ShowFatalErrorDialog(s string, args ...interface{}) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// ScrollBar
+
+type ScrollBar struct {
+	offset            int
+	barWidth          int
+	nItems, nVisible  int
+	accumDrag         float32
+	invertY           bool
+	mouseClickedInBar bool
+}
+
+func NewScrollBar(width int, invertY bool) *ScrollBar {
+	return &ScrollBar{barWidth: width, invertY: invertY}
+}
+
+func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
+	sb.nItems = nItems
+	sb.nVisible = nVisible
+
+	if sb.nItems > sb.nVisible {
+		sign := float32(1)
+		if sb.invertY {
+			sign = -1
+		}
+
+		if ctx.mouse != nil {
+			sb.offset += int(sign * ctx.mouse.wheel[1])
+
+			if ctx.mouse.clicked[0] {
+				sb.mouseClickedInBar = ctx.mouse.pos[0] >= ctx.paneExtent.Width()-float32(sb.Width())
+				sb.accumDrag = 0
+			}
+
+			if ctx.mouse.dragging[0] && sb.mouseClickedInBar {
+				sb.accumDrag += -sign * ctx.mouse.dragDelta[1] * float32(sb.nItems) / ctx.paneExtent.Height()
+				if fabs(sb.accumDrag) >= 1 {
+					sb.offset += int(sb.accumDrag)
+					sb.accumDrag -= float32(int(sb.accumDrag))
+				}
+			}
+		}
+		sb.offset = clamp(sb.offset, 0, sb.nItems-sb.nVisible)
+	} else {
+		sb.offset = 0
+	}
+}
+
+func (sb *ScrollBar) Offset() int {
+	return sb.offset
+}
+
+func (sb *ScrollBar) Visible() bool {
+	return sb.nItems > sb.nVisible
+}
+
+func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	if !sb.Visible() {
+		return
+	}
+
+	pw, ph := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+	// The visible region is [offset,offset+nVisible].
+	// Visible region w.r.t. [0,1]
+	y0, y1 := float32(sb.offset)/float32(sb.nItems), float32(sb.offset+sb.nVisible)/float32(sb.nItems)
+	if sb.invertY {
+		y0, y1 = 1-y0, 1-y1
+	}
+	// Visible region in window coordinates
+	const edgeSpace = 2
+	wy0, wy1 := lerp(y0, ph-edgeSpace, edgeSpace), lerp(y1, ph-edgeSpace, edgeSpace)
+
+	quad := TrianglesDrawBuilder{}
+	quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
+		[2]float32{pw - float32(edgeSpace), wy0},
+		[2]float32{pw - float32(edgeSpace), wy1},
+		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1})
+	cb.SetRGB(ctx.cs.Scrollbar)
+	quad.GenerateCommands(cb)
+}
+
+func (sb *ScrollBar) Width() int {
+	return sb.barWidth + 4 /* for edge space... */
+}
+
+///////////////////////////////////////////////////////////////////////////
 // ColorScheme
 
 type ColorScheme struct {
 	Background RGB
 	SplitLine  RGB
+	Scrollbar  RGB
 
 	Text          RGB
 	TextHighlight RGB
@@ -1527,6 +1613,7 @@ func NewColorScheme() *ColorScheme {
 	cs := ColorScheme{
 		Background: RGB{0, 0, 0},
 		SplitLine:  RGB{0.5, 0.5, 0.5},
+		Scrollbar:  RGB{0.75, 0.75, 0.75},
 
 		Text:          RGB{1, 1, 1},
 		TextHighlight: RGB{1, .6, .6},
@@ -1638,7 +1725,7 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
+		edit("Scrollbar", "Scrollbar", &c.Scrollbar)
 		edit("Ghost data block", "Ghost Data Block", &c.GhostDataBlock)
 		edit("High airway", "HighAirway", &c.HighAirway)
 		sfd()
