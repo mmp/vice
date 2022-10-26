@@ -605,8 +605,8 @@ type NotesViewPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
-	expanded     map[*NotesNode]interface{}
-	scrollOffset int
+	expanded  map[*NotesNode]interface{}
+	scrollbar *ScrollBar
 
 	td TextDrawBuilder
 	cb CommandBuffer
@@ -617,6 +617,7 @@ func NewNotesViewPane() *NotesViewPane {
 	return &NotesViewPane{
 		FontIdentifier: font.id,
 		font:           font,
+		scrollbar:      NewScrollBar(4, false),
 		expanded:       make(map[*NotesNode]interface{})}
 }
 
@@ -626,6 +627,7 @@ func (nv *NotesViewPane) Activate(cs *ColorScheme) {
 		nv.FontIdentifier = nv.font.id
 	}
 	nv.expanded = make(map[*NotesNode]interface{})
+	nv.scrollbar = NewScrollBar(4, false)
 }
 
 func (nv *NotesViewPane) Deactivate() {}
@@ -636,7 +638,9 @@ func (nv *NotesViewPane) Duplicate(nameAsCopy bool) Pane {
 	return &NotesViewPane{
 		FontIdentifier: nv.FontIdentifier,
 		font:           nv.font,
-		expanded:       make(map[*NotesNode]interface{})}
+		expanded:       make(map[*NotesNode]interface{}),
+		scrollbar:      NewScrollBar(4, false),
+	}
 }
 
 func (nv *NotesViewPane) DrawUI() {
@@ -656,16 +660,19 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	textStyle := TextStyle{font: nv.font, color: ctx.cs.Text}
 	headerStyle := TextStyle{font: nv.font, color: ctx.cs.TextHighlight}
 
+	scrollOffset, scrollbarWidth := nv.scrollbar.Offset(), float32(nv.scrollbar.Width())
+
 	edgeSpace := nv.font.size / 2
 	lineHeight := nv.font.size + 1
+	visibleLines := (int(ctx.paneExtent.Height()) - edgeSpace) / lineHeight
+
 	y0 := int(ctx.paneExtent.Height()) - edgeSpace
-	y0 += nv.scrollOffset * lineHeight
+	y0 += scrollOffset * lineHeight
 	y := y0
 
 	spaceWidth, _ := nv.font.BoundText(" ", 0)
-	scrollbarWidth := float32(spaceWidth / 2)
 	columns := int(ctx.paneExtent.Width()-float32(2*edgeSpace)-scrollbarWidth) / spaceWidth
-
+	nLines := 0
 	var draw func(*NotesNode, int)
 	draw = func(node *NotesNode, depth int) {
 		if node == nil {
@@ -710,6 +717,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				title = FontAwesomeIconCaretRight + node.title
 			}
 			text, lines := wrapText(title, columns, 4, false)
+			nLines += lines
 			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, headerStyle)
 			y -= lines * lineHeight
 
@@ -719,6 +727,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		for _, line := range node.text {
 			text, lines := wrapText(line, columns, 4, false)
+			nLines += lines
 			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, textStyle)
 			y -= lines * lineHeight
 		}
@@ -728,38 +737,8 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	draw(globalConfig.notesRoot, 0)
 
-	// Draw the scrollbar (maybe)
-	if nv.scrollOffset > 0 || y < edgeSpace {
-		// [y0,y1] is the full range of scanlines drawn
-		y1 := y
-		// [vy0,vy1] is the range of scanlines visible
-		vy0, vy1 := int(ctx.paneExtent.Height())-edgeSpace, edgeSpace
-		// [fy0,fy1] is the range of scanlines visible w.r.t. [0,1]
-		fy0, fy1 := float32(vy0-y0)/float32(y1-y0), float32(vy1-y0)/float32(y1-y0)
-		// [by0,by1] is the y extent of the scrollbar in window coordinates
-		by0, by1 := lerp(fy0, float32(vy0), float32(vy1)), lerp(fy1, float32(vy0), float32(vy1))
-
-		rect := LinesDrawBuilder{}
-		rect.AddPolyline([2]float32{ctx.paneExtent.Width() - scrollbarWidth - float32(edgeSpace), by0},
-			[][2]float32{[2]float32{0, 0}, [2]float32{scrollbarWidth, 0},
-				[2]float32{scrollbarWidth, by1 - by0}, [2]float32{0, by1 - by0}})
-		nv.cb.SetRGB(ctx.cs.Text)
-		rect.GenerateCommands(&nv.cb)
-	}
-
-	if ctx.mouse != nil {
-		ds := int(ctx.mouse.wheel[1])
-		nv.scrollOffset += ds
-		y += ds * lineHeight
-	}
-
-	// Clamp scroll offset to prevent excess whitespace at top or bottom
-	if nv.scrollOffset > 0 && y > edgeSpace+lineHeight {
-		nv.scrollOffset -= (y - edgeSpace) / lineHeight
-	}
-	if nv.scrollOffset < 0 {
-		nv.scrollOffset = 0
-	}
+	nv.scrollbar.Draw(ctx, &nv.cb)
+	nv.scrollbar.Update(nLines, visibleLines, ctx)
 
 	nv.td.GenerateCommands(&nv.cb)
 
