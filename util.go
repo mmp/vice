@@ -177,14 +177,14 @@ func fabs(x float32) float32 {
 	return x
 }
 
-func min(a, b float32) float32 {
+func min[T constraints.Ordered](a, b T) T {
 	if a < b {
 		return a
 	}
 	return b
 }
 
-func max(a, b float32) float32 {
+func max[T constraints.Ordered](a, b T) T {
 	if a > b {
 		return a
 	}
@@ -197,7 +197,7 @@ func pow(a, b float32) float32 {
 
 func sqr(v float32) float32 { return v * v }
 
-func clamp(x float32, low float32, high float32) float32 {
+func clamp[T constraints.Ordered](x T, low T, high T) T {
 	if x < low {
 		return low
 	} else if x > high {
@@ -631,6 +631,15 @@ func FilterSlice[V any](s []V, pred func(V) bool) []V {
 		}
 	}
 	return filtered
+}
+
+func Find[V comparable](s []V, value V) int {
+	for i, v := range s {
+		if v == value {
+			return i
+		}
+	}
+	return -1
 }
 
 ///////////////////////////////////////////////////////////////////////////
