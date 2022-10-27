@@ -64,6 +64,7 @@ var (
 		&PointOutCommand{},
 		&RejectHandoffCommand{},
 		&TrackAircraftCommand{},
+		&PushFlightStripCommand{},
 
 		&FindCommand{},
 		&MITCommand{},
@@ -1892,6 +1893,27 @@ func (*TrackAircraftCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 func (*TrackAircraftCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	return "", server.InitiateTrack(callsign)
+}
+
+type PushFlightStripCommand struct{}
+
+func (*PushFlightStripCommand) Name() string { return "push" }
+func (*PushFlightStripCommand) Usage() string {
+	return "<callsign> <controller>"
+}
+func (*PushFlightStripCommand) Help() string {
+	return "Pushes the aircraft's flight strip to the specified controller."
+}
+func (*PushFlightStripCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return []CommandArgsFormat{CommandArgsController}
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsController}
+	}
+}
+func (*PushFlightStripCommand) Run(cli *CLIPane, args []string) (string, error) {
+	callsign, args := getCallsign(args)
+	return "", server.PushFlightStrip(callsign, args[0])
 }
 
 type FindCommand struct{}
