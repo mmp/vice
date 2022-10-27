@@ -698,7 +698,8 @@ func init() {
 			return nil
 		}
 
-		fs := FlightStrip{callsign: args[4]}
+		callsign := args[4]
+		fs := &FlightStrip{callsign: callsign}
 		if len(args) >= 7 {
 			for i, ann := range args[6:] {
 				if i == 9 {
@@ -707,7 +708,15 @@ func init() {
 				fs.annotations[i] = ann
 			}
 		}
+
+		if _, ok := v.flightStrips[callsign]; ok {
+			lg.Printf("%s: already have a flight strip but one was pushed. Taking the pushed one...?",
+				callsign)
+		}
+
+		v.flightStrips[callsign] = fs
 		controlUpdates.pushedFlightStrips = append(controlUpdates.pushedFlightStrips, fs)
+
 		return nil
 	}))
 

@@ -76,6 +76,7 @@ func (fr *FlightRadarServer) GetAllAircraft() []*Aircraft {
 
 var ControlUnsupported = errors.New("Controlling is not possible with a FlightRadar connection")
 
+func (fr *FlightRadarServer) GetFlightStrip(callsign string) *FlightStrip      { return nil }
 func (fr *FlightRadarServer) GetMETAR(location string) *METAR                  { return nil }
 func (fr *FlightRadarServer) GetATIS(airport string) string                    { return "" }
 func (fr *FlightRadarServer) GetUser(callsign string) *User                    { return nil }
@@ -110,7 +111,7 @@ func (fr *FlightRadarServer) AmendFlightPlan(callsign string, fp FlightPlan) err
 	return ControlUnsupported
 }
 
-func (fr *FlightRadarServer) PushFlightStrip(fs FlightStrip, controller string) error {
+func (fr *FlightRadarServer) PushFlightStrip(callsign string, controller string) error {
 	return ControlUnsupported
 }
 

@@ -1589,8 +1589,11 @@ type ColorScheme struct {
 	TrackedDataBlock    RGB
 	HandingOffDataBlock RGB
 	GhostDataBlock      RGB
+	Track               RGB
 
-	Track RGB
+	FlightStripText RGB
+	ArrivalStrip    RGB
+	DepartureStrip  RGB
 
 	Airport    RGB
 	VOR        RGB
@@ -1630,6 +1633,10 @@ func NewColorScheme() *ColorScheme {
 		GhostDataBlock:      RGB{0.5, 0.5, 0.5},
 		Track:               RGB{1, 1, 1},
 
+		FlightStripText: RGB{.9, .9, .9},
+		ArrivalStrip:    RGB{.07, .07, .4},
+		DepartureStrip:  RGB{.4, .07, .07},
+
 		Airport:    RGB{.8, .7, .8},
 		VOR:        RGB{.8, .7, .8},
 		NDB:        RGB{.8, .7, .8},
@@ -1658,15 +1665,19 @@ func (c *ColorScheme) IsDark() bool {
 	return luminance < 0.35 // ad hoc..
 }
 
+func (r *RGB) DrawUI(title string) bool {
+	ptr := (*[3]float32)(unsafe.Pointer(r))
+	flags := imgui.ColorEditFlagsNoAlpha | imgui.ColorEditFlagsNoInputs |
+		imgui.ColorEditFlagsRGB | imgui.ColorEditFlagsInputRGB
+	return imgui.ColorEdit3V(title, ptr, flags)
+}
+
 func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 	edit := func(uiName string, internalName string, c *RGB) {
 		// It's slightly grungy to hide this in here but it does simplify
 		// the code below...
 		imgui.TableNextColumn()
-		ptr := (*[3]float32)(unsafe.Pointer(c))
-		flags := imgui.ColorEditFlagsNoAlpha | imgui.ColorEditFlagsNoInputs |
-			imgui.ColorEditFlagsRGB | imgui.ColorEditFlagsInputRGB
-		if imgui.ColorEdit3V(uiName, ptr, flags) {
+		if c.DrawUI(uiName) {
 			handleDefinedColorChange(internalName, *c)
 		}
 	}
@@ -1750,19 +1761,19 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.TableNextColumn()
+		edit("Flight strip text", "Flight strip text", &c.FlightStripText)
 		edit("Runway", "Runway", &c.Runway)
 		sfd()
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.TableNextColumn()
+		edit("Departure flight strip", "Departure flight strip", &c.DepartureStrip)
 		edit("SID", "SID", &c.SID)
 		sfd()
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.TableNextColumn()
+		edit("Arrival flight strip", "Arrival flight strip", &c.ArrivalStrip)
 		edit("STAR", "STAR", &c.STAR)
 		sfd()
 

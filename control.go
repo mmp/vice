@@ -42,7 +42,7 @@ type AircraftController interface {
 	SetVoiceType(callsign string, voice string) error
 	AmendFlightPlan(callsign string, fp FlightPlan) error
 
-	PushFlightStrip(fs FlightStrip, controller string) error
+	PushFlightStrip(callsign string, controller string) error
 
 	// Tracking aircraft
 	InitiateTrack(callsign string) error
@@ -62,6 +62,7 @@ type ATCServer interface {
 	GetAircraft(callsign string) *Aircraft
 	GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft
 	GetAllAircraft() []*Aircraft
+	GetFlightStrip(callsign string) *FlightStrip
 	GetMETAR(location string) *METAR
 	GetATIS(airport string) string
 	GetUser(callsign string) *User
@@ -99,7 +100,7 @@ type ControlUpdates struct {
 	acceptedHandoffs map[*Aircraft]string
 	rejectedHandoffs map[*Aircraft]string
 
-	pushedFlightStrips []FlightStrip
+	pushedFlightStrips []*FlightStrip
 
 	messages []TextMessage
 }
@@ -137,7 +138,7 @@ func (c *ControlUpdates) RemoveAircraft(ac *Aircraft) {
 	delete(c.rejectedHandoffs, ac)
 
 	c.pushedFlightStrips = FilterSlice(c.pushedFlightStrips,
-		func(fs FlightStrip) bool { return fs.callsign != ac.Callsign() })
+		func(fs *FlightStrip) bool { return fs.callsign != ac.Callsign() })
 
 	controlUpdates.removedAircraft[ac] = nil
 }
@@ -193,7 +194,7 @@ func (*InertAircraftController) SetVoiceType(callsign string, voice string) erro
 func (*InertAircraftController) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return ErrNoConnection
 }
-func (*InertAircraftController) PushFlightStrip(fs FlightStrip, controller string) error {
+func (*InertAircraftController) PushFlightStrip(callsign string, controller string) error {
 	return ErrNoConnection
 }
 func (*InertAircraftController) InitiateTrack(callsign string) error {
@@ -237,6 +238,10 @@ func (d *DisconnectedATCServer) GetFilteredAircraft(filter func(*Aircraft) bool)
 }
 
 func (d *DisconnectedATCServer) GetAllAircraft() []*Aircraft {
+	return nil
+}
+
+func (d *DisconnectedATCServer) GetFlightStrip(callsign string) *FlightStrip {
 	return nil
 }
 

@@ -82,6 +82,7 @@ type VATSIMServer struct {
 	// Various things we need to keep track of over the course of a
 	// session.
 	aircraft          map[string]*Aircraft
+	flightStrips      map[string]*FlightStrip
 	users             map[string]*User
 	controllers       map[string]*Controller
 	controllerSectors map[string]*Controller
@@ -106,6 +107,7 @@ type VATSIMServer struct {
 func NewVATSIMServer() *VATSIMServer {
 	return &VATSIMServer{
 		aircraft:            make(map[string]*Aircraft),
+		flightStrips:        make(map[string]*FlightStrip),
 		controllers:         make(map[string]*Controller),
 		controllerSectors:   make(map[string]*Controller),
 		metar:               make(map[string]METAR),
@@ -180,6 +182,13 @@ func (v *VATSIMServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircr
 func (v *VATSIMServer) GetAllAircraft() []*Aircraft {
 	_, ac := FlattenMap(v.aircraft)
 	return ac
+}
+
+func (v *VATSIMServer) GetFlightStrip(callsign string) *FlightStrip {
+	if _, ok := v.flightStrips[callsign]; !ok {
+		v.flightStrips[callsign] = &FlightStrip{callsign: callsign}
+	}
+	return v.flightStrips[callsign]
 }
 
 func (v *VATSIMServer) GetMETAR(location string) *METAR {
@@ -407,13 +416,15 @@ func (v *VATSIMServer) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	}
 }
 
-func (v *VATSIMServer) PushFlightStrip(fs FlightStrip, controller string) error {
+func (v *VATSIMServer) PushFlightStrip(callsign string, controller string) error {
 	if !v.atcValid {
 		return ErrNotController
-	} else if v.GetAircraft(fs.callsign) == nil {
-		return ErrNoAircraftForCallsign
+	} else if c := v.GetController(controller); c == nil {
+		return ErrNoController
 	} else {
-		return v.controlDelegate.PushFlightStrip(fs, controller)
+		// Use c.callsign rather controller in case a sector id was
+		// specified.
+		return v.controlDelegate.PushFlightStrip(callsign, c.callsign)
 	}
 }
 

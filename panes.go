@@ -1034,38 +1034,46 @@ type FlightStripPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
-	AutoAddDepartures bool
-	AutoAddArrivals   bool
-	AddPushed         bool
+	AutoAddDepartures         bool
+	AutoAddArrivals           bool
+	AddPushed                 bool
+	CollectDeparturesArrivals bool
 
 	Airports      map[string]interface{}
-	strips        []FlightStrip
+	strips        []string // callsigns
 	addedAircraft map[string]interface{}
 
-	cb CommandBuffer
+	mouseDragging bool
+	lastMousePos  [2]float32
+
+	scrollbar *ScrollBar
+	cb        CommandBuffer
 }
 
 func NewFlightStripPane() *FlightStripPane {
 	font := GetDefaultFont()
 	return &FlightStripPane{
-		FontIdentifier: font.id,
-		font:           font,
-		AddPushed:      true,
-		Airports:       make(map[string]interface{}),
-		addedAircraft:  make(map[string]interface{}),
+		FontIdentifier:            font.id,
+		font:                      font,
+		AddPushed:                 true,
+		CollectDeparturesArrivals: true,
+		Airports:                  make(map[string]interface{}),
+		addedAircraft:             make(map[string]interface{}),
+		scrollbar:                 NewScrollBar(4, true),
 	}
 }
 
 func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
 	return &FlightStripPane{
-		FontIdentifier:    fsp.FontIdentifier,
-		font:              fsp.font,
-		AutoAddDepartures: fsp.AutoAddDepartures,
-		AutoAddArrivals:   fsp.AutoAddArrivals,
-		AddPushed:         fsp.AddPushed,
-		Airports:          DuplicateMap(fsp.Airports),
-		strips:            DuplicateSlice(fsp.strips),
-		addedAircraft:     DuplicateMap(fsp.addedAircraft),
+		FontIdentifier:            fsp.FontIdentifier,
+		font:                      fsp.font,
+		AutoAddDepartures:         fsp.AutoAddDepartures,
+		AutoAddArrivals:           fsp.AutoAddArrivals,
+		AddPushed:                 fsp.AddPushed,
+		CollectDeparturesArrivals: fsp.CollectDeparturesArrivals,
+		Airports:                  DuplicateMap(fsp.Airports),
+		strips:                    DuplicateSlice(fsp.strips),
+		addedAircraft:             DuplicateMap(fsp.addedAircraft),
 	}
 }
 
@@ -1080,16 +1088,30 @@ func (fsp *FlightStripPane) Activate(cs *ColorScheme) {
 	if fsp.Airports == nil {
 		fsp.Airports = make(map[string]interface{})
 	}
+	if fsp.scrollbar == nil {
+		fsp.scrollbar = NewScrollBar(4, true)
+	}
 }
 
 func (fsp *FlightStripPane) Deactivate() {}
 
-func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
-	inAirports := func(ap string) bool {
-		_, ok := fsp.Airports[ap]
-		return ok
+func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
+	if ac.flightPlan == nil {
+		return false
 	}
+	_, ok := fsp.Airports[ac.flightPlan.depart]
+	return ok
+}
 
+func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
+	if ac.flightPlan == nil {
+		return false
+	}
+	_, ok := fsp.Airports[ac.flightPlan.arrive]
+	return ok
+}
+
+func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
 	possiblyAdd := func(ac *Aircraft) {
 		callsign := ac.Callsign()
 		if _, ok := fsp.addedAircraft[callsign]; ok {
@@ -1099,18 +1121,20 @@ func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
 		if ac.flightPlan == nil {
 			return
 		}
-		if fsp.AutoAddDepartures && inAirports(ac.flightPlan.depart) {
-			fsp.strips = append(fsp.strips, FlightStrip{callsign: ac.callsign})
+		if fsp.AutoAddDepartures && fsp.isDeparture(ac) {
+			fsp.strips = append(fsp.strips, callsign)
 			fsp.addedAircraft[callsign] = nil
-		} else if fsp.AutoAddArrivals && inAirports(ac.flightPlan.arrive) {
-			fsp.strips = append(fsp.strips, FlightStrip{callsign: ac.callsign})
+		} else if fsp.AutoAddArrivals && fsp.isArrival(ac) {
+			fsp.strips = append(fsp.strips, callsign)
 			fsp.addedAircraft[callsign] = nil
 		}
 	}
 
 	if fsp.AddPushed {
 		for _, fs := range updates.pushedFlightStrips {
-			fsp.strips = append(fsp.strips, fs)
+			if Find(fsp.strips, fs.callsign) == -1 {
+				fsp.strips = append(fsp.strips, fs.callsign)
+			}
 		}
 	}
 
@@ -1125,9 +1149,30 @@ func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
 		// Thus, if we later see the same callsign from someone else, we'll
 		// treat them as new.
 		delete(fsp.addedAircraft, ac.Callsign())
-		fsp.strips = FilterSlice(fsp.strips, func(fs FlightStrip) bool {
-			return fs.callsign != ac.Callsign()
-		})
+	}
+	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
+		ac := server.GetAircraft(callsign)
+		if ac == nil {
+			return false
+		}
+		_, ok := updates.removedAircraft[ac]
+		return !ok
+	})
+
+	if fsp.CollectDeparturesArrivals {
+		isDeparture := func(callsign string) bool {
+			if ac := server.GetAircraft(callsign); ac == nil {
+				return false
+			} else {
+				return fsp.isDeparture(ac)
+			}
+		}
+		dep := FilterSlice(fsp.strips, isDeparture)
+		arr := FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })
+
+		fsp.strips = fsp.strips[:0]
+		fsp.strips = append(fsp.strips, dep...)
+		fsp.strips = append(fsp.strips, arr...)
 	}
 }
 
@@ -1138,10 +1183,11 @@ func (fsp *FlightStripPane) DrawUI() {
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
+	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
+
 	if newFont, changed := DrawFontPicker(&fsp.FontIdentifier, "Font"); changed {
 		fsp.font = newFont
 	}
-
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -1149,9 +1195,14 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	bx, _ := fsp.font.BoundText(" ", 0)
 	fw, fh := float32(bx), float32(fsp.font.size)
 
+	ctx.SetWindowCoordinateMatrices(cb)
+
 	// 4 lines of text, 2 lines on top and below for padding, 1 pixel separator line
 	vpad := float32(2)
 	stripHeight := 1 + 2*vpad + 4*fh
+
+	visibleStrips := int(ctx.paneExtent.Height() / stripHeight)
+	fsp.scrollbar.Update(len(fsp.strips), visibleStrips, ctx)
 
 	indent := float32(int32(fw / 2))
 	// column widths
@@ -1159,40 +1210,66 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	width1 := 6 * fw
 	width2 := 5 * fw
 	widthAnn := 4 * fw
+
 	widthCenter := ctx.paneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
+	if fsp.scrollbar.Visible() {
+		widthCenter -= float32(fsp.scrollbar.Width())
+	}
 	if widthCenter < 0 {
-		// not sure what to do here...
+		// not sure what to do if it comes to this...
 		widthCenter = 20 * fw
+	}
+
+	drawWidth := ctx.paneExtent.Width()
+	if fsp.scrollbar.Visible() {
+		drawWidth -= float32(fsp.scrollbar.Width())
 	}
 
 	// Draw from the bottom
 	td := TextDrawBuilder{}
 	ld := LinesDrawBuilder{}
-	for i, strip := range fsp.strips {
-		ac := server.GetAircraft(strip.callsign)
+	selectionLd := LinesDrawBuilder{}
+	scrollOffset := fsp.scrollbar.Offset()
+	y := stripHeight - 1 - vpad
+	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
+		callsign := fsp.strips[i]
+		strip := server.GetFlightStrip(callsign)
+		ac := server.GetAircraft(callsign)
 		if ac == nil {
 			lg.Errorf("%s: no aircraft for callsign?!", strip.callsign)
 			continue
 		}
 		fp := ac.flightPlan
 
-		style := TextStyle{font: fsp.font, color: ctx.cs.Text}
-		if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft.Callsign() == strip.callsign {
+		style := TextStyle{font: fsp.font, color: ctx.cs.FlightStripText}
+		if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft.Callsign() == callsign {
 			style.color = ctx.cs.TextHighlight
 		}
 
-		y := float32(i)*stripHeight + stripHeight - 1 - vpad
+		// Draw background quad for this flight strip
+		qb := TrianglesDrawBuilder{}
+		cb.SetRGB(func() RGB {
+			if fsp.isDeparture(ac) {
+				return ctx.cs.DepartureStrip
+			} else {
+				return ctx.cs.ArrivalStrip
+			}
+		}())
+		y0, y1 := y+1+vpad-stripHeight, y+1+vpad
+		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1})
+		qb.GenerateCommands(cb)
+
 		x := indent
 
-		// First column
-		td.AddText(ac.Callsign(), [2]float32{x, y}, style)
+		// First column; 3 entries
+		td.AddText(callsign, [2]float32{x, y}, style)
 		if fp != nil {
 			td.AddText(fp.actype, [2]float32{x, y - fh*3/2}, style)
 			td.AddText(fp.rules.String(), [2]float32{x, y - fh*3}, style)
 		}
 		ld.AddLine([2]float32{width0, y}, [2]float32{width0, y - stripHeight})
 
-		// Second column
+		// Second column; 3 entries
 		x += width0
 		td.AddText(ac.assignedSquawk.String(), [2]float32{x, y}, style)
 		td.AddText(fmt.Sprintf("%d", ac.tempAltitude), [2]float32{x, y - fh*3/2}, style)
@@ -1203,7 +1280,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		ld.AddLine([2]float32{width0, y - 8./3.*fh}, [2]float32{width0 + width1, y - 8./3.*fh})
 		ld.AddLine([2]float32{width0 + width1, y}, [2]float32{width0 + width1, y - stripHeight})
 
-		// Third column
+		// Third column; (up to) 4 entries
 		x += width1
 		if fp != nil {
 			td.AddText(fp.depart, [2]float32{x, y}, style)
@@ -1214,7 +1291,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		ld.AddLine([2]float32{width0 + width1 + width2, y},
 			[2]float32{width0 + width1 + width2, y - stripHeight})
 
-		// Fourth column
+		// Fourth column: route and remarks
 		x += width2
 		if fp != nil {
 			cols := int(widthCenter / fw)
@@ -1244,16 +1321,15 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 
 		// Annotations
-		x = ctx.paneExtent.Width() - 3*widthAnn
+		x += widthCenter
 		for i, ann := range strip.annotations {
 			ix, iy := i%3, i/3
-			ann = fmt.Sprintf("%d", i) // HAX
 			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
 			td.AddText(ann, [2]float32{xp, yp}, style)
 		}
 		// Horizontal lines
-		ld.AddLine([2]float32{x, y - 4./3.*fh}, [2]float32{ctx.paneExtent.Width(), y - 4./3.*fh})
-		ld.AddLine([2]float32{x, y - 8./3.*fh}, [2]float32{ctx.paneExtent.Width(), y - 8./3.*fh})
+		ld.AddLine([2]float32{x, y - 4./3.*fh}, [2]float32{drawWidth, y - 4./3.*fh})
+		ld.AddLine([2]float32{x, y - 8./3.*fh}, [2]float32{drawWidth, y - 8./3.*fh})
 		// Vertical lines
 		for i := 0; i < 3; i++ {
 			xp := x + float32(i)*widthAnn
@@ -1261,11 +1337,93 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 
 		// Line at the top
-		yl := float32(i+1) * stripHeight
-		ld.AddLine([2]float32{0, yl}, [2]float32{ctx.paneExtent.Width(), yl})
+		yl := y + 1 + vpad
+		ld.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
+
+		y += stripHeight
 	}
 
-	ctx.SetWindowCoordinateMatrices(cb)
+	// Handle selection, deletion, and reordering; do this after we've added the
+	if ctx.mouse != nil {
+		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
+		if ctx.mouse.clicked[0] && ctx.mouse.pos[0] <= drawWidth {
+			// from the bottom
+			stripIndex := int(ctx.mouse.pos[1] / stripHeight)
+			stripIndex += scrollOffset
+			if stripIndex < len(fsp.strips) {
+				io := imgui.CurrentIO()
+				if io.KeyShiftPressed() {
+					// delete the flight strip
+					copy(fsp.strips[stripIndex:], fsp.strips[stripIndex+1:])
+					fsp.strips = fsp.strips[:len(fsp.strips)-1]
+				} else {
+					// select the aircraft
+					callsign := fsp.strips[stripIndex]
+					positionConfig.selectedAircraft = server.GetAircraft(callsign)
+				}
+			}
+		}
+		if ctx.mouse.dragging[0] {
+			fsp.mouseDragging = true
+			fsp.lastMousePos = ctx.mouse.pos
+
+			// Offset so that the selection region is centered over the
+			// line between two strips; the index then is to the lower one.
+			splitIndex := int(ctx.mouse.pos[1]/stripHeight + 0.5)
+			yl := float32(splitIndex) * stripHeight
+			selectionLd.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
+		}
+	}
+	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.dragging[0]) {
+		fsp.mouseDragging = false
+
+		if positionConfig.selectedAircraft == nil {
+			lg.Printf("No selected aircraft for flight strip drag?!")
+		} else {
+			// Figure out the index for the selected aircraft.
+			selectedIndex := func() int {
+				callsign := positionConfig.selectedAircraft.Callsign()
+				for i, fs := range fsp.strips {
+					if fs == callsign {
+						return i
+					}
+				}
+				lg.Printf("Couldn't find %s in flight strips?!", callsign)
+				return -1
+			}()
+
+			// The selected aircraft was set from the original mouse down so
+			// now we just need to move it to be in the right place given where
+			// the button was released.
+			destinationIndex := int(fsp.lastMousePos[1]/stripHeight + 0.5)
+			destinationIndex = clamp(destinationIndex, 0, len(fsp.strips))
+
+			if selectedIndex != -1 && selectedIndex != destinationIndex {
+				// First remove it from the slice
+				fs := fsp.strips[selectedIndex]
+				fsp.strips = append(fsp.strips[:selectedIndex], fsp.strips[selectedIndex+1:]...)
+
+				if selectedIndex < destinationIndex {
+					destinationIndex--
+				}
+
+				// And stuff it in there
+				fin := fsp.strips[destinationIndex:]
+				fsp.strips = append([]string{}, fsp.strips[:destinationIndex]...)
+				fsp.strips = append(fsp.strips, fs)
+				fsp.strips = append(fsp.strips, fin...)
+			}
+		}
+	}
+
+	fsp.scrollbar.Draw(ctx, cb)
+
+	cb.SetRGB(ctx.cs.SplitLine)
+	cb.LineWidth(1 * ctx.highDPIScale)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
+
+	cb.SetRGB(ctx.cs.TextHighlight)
+	cb.LineWidth(3 * ctx.highDPIScale)
+	selectionLd.GenerateCommands(cb)
 }
