@@ -1396,6 +1396,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			// now we just need to move it to be in the right place given where
 			// the button was released.
 			destinationIndex := int(fsp.lastMousePos[1]/stripHeight + 0.5)
+			destinationIndex += scrollOffset
 			destinationIndex = clamp(destinationIndex, 0, len(fsp.strips))
 
 			if selectedIndex != -1 && selectedIndex != destinationIndex {
