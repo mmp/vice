@@ -397,19 +397,16 @@ func NewPositionConfig() *PositionConfig {
 	c.Frequencies = make(map[string]Frequency)
 
 	c.DisplayRoot = &DisplayNode{Pane: NewRadarScopePane("Main Scope")}
-	c.ColorSchemeName = "Dark"
+	c.ColorSchemeName = SortedMapKeys(builtinColorSchemes)[0]
 	return c
 }
 
 func (c *PositionConfig) GetColorScheme() *ColorScheme {
-	if cs, ok := globalConfig.ColorSchemes[c.ColorSchemeName]; !ok {
-		lg.Printf("%s: color scheme unknown", c.ColorSchemeName)
-		cs = NewColorScheme()
-		if globalConfig.ColorSchemes == nil {
-			globalConfig.ColorSchemes = make(map[string]*ColorScheme)
-		}
-		globalConfig.ColorSchemes[c.ColorSchemeName] = cs
+	if cs, ok := builtinColorSchemes[c.ColorSchemeName]; ok {
 		return cs
+	} else if cs, ok := globalConfig.ColorSchemes[c.ColorSchemeName]; !ok {
+		lg.Printf("%s: color scheme unknown; returning default", c.ColorSchemeName)
+		return builtinColorSchemes[SortedMapKeys(builtinColorSchemes)[0]]
 	} else {
 		return cs
 	}

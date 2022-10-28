@@ -42,6 +42,7 @@ var (
 	FontAwesomeIconHome                = faUsedIcons["Home"]
 	FontAwesomeIconHandPointLeft       = faUsedIcons["HandPointLeft"]
 	FontAwesomeIconLevelUpAlt          = faUsedIcons["LevelUpAlt"]
+	FontAwesomeIconLock                = faUsedIcons["Lock"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
 )
@@ -69,6 +70,7 @@ var (
 		"Home":                FontAwesomeString("Home"),
 		"HandPointLeft":       FontAwesomeString("HandPointLeft"),
 		"LevelUpAlt":          FontAwesomeString("LevelUpAlt"),
+		"Lock":                FontAwesomeString("Lock"),
 		"Square":              FontAwesomeString("Square"),
 		"Trash":               FontAwesomeString("Trash"),
 	}

@@ -815,6 +815,8 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 					rs.llCommandBuffer.SetRGB(ctx.cs.Region)
 				} else if rgb, ok := ctx.cs.DefinedColors[region.name]; ok {
 					rs.llCommandBuffer.SetRGB(*rgb)
+				} else if rgb, ok := database.sectorFileColors[region.name]; ok {
+					rs.llCommandBuffer.SetRGB(rgb)
 				} else {
 					lg.Errorf("%s: defined color not found for region", region.name)
 					rs.llCommandBuffer.SetRGB(RGB{0.5, 0.5, 0.5})

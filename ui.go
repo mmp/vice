@@ -347,32 +347,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	if ui.showColorEditor {
 		imgui.BeginV("Color Settings", &ui.showColorEditor, imgui.WindowFlagsAlwaysAutoResize)
-		if imgui.BeginCombo("Color scheme", positionConfig.ColorSchemeName) {
-			names := SortedMapKeys(globalConfig.ColorSchemes)
-
-			for _, name := range names {
-				flags := imgui.SelectableFlagsNone
-				if imgui.SelectableV(name, name == positionConfig.ColorSchemeName, flags, imgui.Vec2{}) &&
-					name != positionConfig.ColorSchemeName {
-					positionConfig.ColorSchemeName = name
-
-					// This is slightly wasteful (e.g., resets the DrawList allocations),
-					// but ensures that all of the panes get the new colors.
-					globalConfig.MakeConfigActive(globalConfig.ActivePosition)
-				}
-			}
-			imgui.EndCombo()
-		}
-
-		cs := positionConfig.GetColorScheme()
-		cs.ShowEditor(func(name string, rgb RGB) {
-			if positionConfig.GetColorScheme().IsDark() {
-				imgui.StyleColorsDark()
-			} else {
-				imgui.StyleColorsLight()
-			}
-			database.NamedColorChanged(name, rgb)
-		})
+		showColorEditor()
 		imgui.End()
 	}
 
@@ -1612,54 +1587,6 @@ type ColorScheme struct {
 	DefinedColors map[string]*RGB
 }
 
-func NewColorScheme() *ColorScheme {
-	cs := ColorScheme{
-		Background: RGB{0, 0, 0},
-		SplitLine:  RGB{0.5, 0.5, 0.5},
-		Scrollbar:  RGB{0.75, 0.75, 0.75},
-
-		Text:          RGB{1, 1, 1},
-		TextHighlight: RGB{1, .6, .6},
-		TextError:     RGB{1, 0, 0},
-
-		Safe:    RGB{0, 1, 0},
-		Caution: RGB{1, 1, 0},
-		Error:   RGB{1, 0, 0},
-
-		SelectedDataBlock:   RGB{0, 0.8, 0.8},
-		UntrackedDataBlock:  RGB{0, 0, 0.8},
-		TrackedDataBlock:    RGB{0, 0.8, 0},
-		HandingOffDataBlock: RGB{0.8, 0, 0.8},
-		GhostDataBlock:      RGB{0.5, 0.5, 0.5},
-		Track:               RGB{1, 1, 1},
-
-		FlightStripText: RGB{.9, .9, .9},
-		ArrivalStrip:    RGB{.07, .07, .4},
-		DepartureStrip:  RGB{.4, .07, .07},
-
-		Airport:    RGB{.8, .7, .8},
-		VOR:        RGB{.8, .7, .8},
-		NDB:        RGB{.8, .7, .8},
-		Fix:        RGB{.8, .7, .8},
-		Runway:     RGB{.8, .8, .4},
-		Region:     RGB{.9, .9, .9},
-		Geo:        RGB{.5, .9, .9},
-		LowAirway:  RGB{.5, .5, .5},
-		HighAirway: RGB{.5, .5, .5},
-		SID:        RGB{0, 0, .9},
-		STAR:       RGB{.2, .7, .2},
-		ARTCC:      RGB{.7, .7, .7},
-		Compass:    RGB{.5, .5, .5}}
-
-	cs.DefinedColors = make(map[string]*RGB)
-	for name, rgb := range database.sectorFileColors {
-		c := rgb
-		cs.DefinedColors[name] = &c
-	}
-
-	return &cs
-}
-
 func (c *ColorScheme) IsDark() bool {
 	luminance := 0.2126*c.Background.R + 0.7152*c.Background.G + 0.0722*c.Background.B
 	return luminance < 0.35 // ad hoc..
@@ -1684,25 +1611,32 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 
 	names := SortedMapKeys(c.DefinedColors)
 	sfdIndex := 0
-	sfd := func() bool {
+	sfd := func() {
+		if len(names) == 0 {
+			return
+		}
 		if sfdIndex < len(names) {
 			edit(names[sfdIndex], names[sfdIndex], c.DefinedColors[names[sfdIndex]])
 			sfdIndex++
-			return true
 		} else {
 			imgui.TableNextColumn()
-			return false
 		}
 	}
 
+	nCols := 4
+	if len(names) == 0 {
+		nCols--
+	}
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg
-	if imgui.BeginTableV(fmt.Sprintf("ColorEditor##%p", c), 4, flags, imgui.Vec2{}, 0.0) {
+	if imgui.BeginTableV(fmt.Sprintf("ColorEditor##%p", c), nCols, flags, imgui.Vec2{}, 0.0) {
 		// TODO: it would be nice to do this in a more data-driven way--to at least just
 		// be laying out the table by iterating over slices...
 		imgui.TableSetupColumn("General")
 		imgui.TableSetupColumn("Aircraft")
 		imgui.TableSetupColumn("Radar scope")
-		imgui.TableSetupColumn("Sector file definitions")
+		if nCols == 4 {
+			imgui.TableSetupColumn("Sector file definitions")
+		}
 		imgui.TableHeadersRow()
 
 		imgui.TableNextRow()
@@ -1792,5 +1726,262 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 		}
 
 		imgui.EndTable()
+	}
+}
+
+var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
+	"Dark (builtin)": &ColorScheme{
+		Background:          RGB{R: 0, G: 0, B: 0},
+		SplitLine:           RGB{R: 0.36120403, G: 0.36120403, B: 0.36120403},
+		Scrollbar:           RGB{R: 0.65254235, G: 0.65254235, B: 0.65254235},
+		Text:                RGB{R: 0.120606266, G: 0.8592058, B: 0.07444384},
+		TextHighlight:       RGB{R: 0.8997721, G: 0.90654206, B: 0.18215565},
+		TextError:           RGB{R: 0.91525424, G: 0.069807515, B: 0.069807515},
+		Safe:                RGB{R: 0.13225771, G: 0.5635748, B: 0.8519856},
+		Caution:             RGB{R: 0.8592058, G: 0.85245013, B: 0.062036503},
+		Error:               RGB{R: 1, G: 0, B: 0},
+		SelectedDataBlock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
+		UntrackedDataBlock:  RGB{R: 0.21454205, G: 0.94584835, B: 0.11609689},
+		TrackedDataBlock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
+		HandingOffDataBlock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
+		GhostDataBlock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
+		Track:               RGB{R: 0, G: 1, B: 0.084745646},
+		FlightStripText:     RGB{R: 0.9237288, G: 0.9237288, B: 0.9237288},
+		ArrivalStrip:        RGB{R: 0.05057959, G: 0.047579724, B: 0.2245763},
+		DepartureStrip:      RGB{R: 0.14406782, G: 0.04334244, B: 0.04334244},
+		Airport:             RGB{R: 0.46153843, G: 0.46153843, B: 0.46153843},
+		VOR:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
+		NDB:                 RGB{R: 0.44481605, G: 0.44481605, B: 0.44481605},
+		Fix:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
+		Runway:              RGB{R: 0.1864407, G: 0.3381213, B: 1},
+		Region:              RGB{R: 0.63983047, G: 0.63983047, B: 0.63983047},
+		SID:                 RGB{R: 0.29765886, G: 0.29765886, B: 0.29765886},
+		STAR:                RGB{R: 0.26835144, G: 0.29237288, B: 0.18335249},
+		Geo:                 RGB{R: 0.7923729, G: 0.7923729, B: 0.7923729},
+		ARTCC:               RGB{R: 0.7, G: 0.7, B: 0.7},
+		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
+		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
+		Compass:             RGB{R: 0.5270758, G: 0.5270758, B: 0.5270758},
+	},
+	"Light (builtin)": &ColorScheme{
+		Background:          RGB{R: 1, G: 1, B: 1},
+		SplitLine:           RGB{R: 0.8245098, G: 0.8250796, B: 0.90969896},
+		Scrollbar:           RGB{R: 0, G: 0, B: 0},
+		Text:                RGB{R: 0.107210346, G: 0.035419118, B: 0.65686274},
+		TextHighlight:       RGB{R: 0.5127119, G: 0.48472703, B: 0.18249066},
+		TextError:           RGB{R: 0.88559324, G: 0.16886309, B: 0.16886309},
+		Safe:                RGB{R: 0.5117057, G: 0.5247704, B: 1},
+		Caution:             RGB{R: 0.8601695, G: 0.6032181, B: 0.14214665},
+		Error:               RGB{R: 1, G: 0, B: 0},
+		SelectedDataBlock:   RGB{R: 0.63176894, G: 0.6059726, B: 0.08210714},
+		UntrackedDataBlock:  RGB{R: 0.15045157, G: 0.21625589, B: 0.80144405},
+		TrackedDataBlock:    RGB{R: 0.32058924, G: 0.8231047, B: 0.24069126},
+		HandingOffDataBlock: RGB{R: 0.8267148, G: 0.1790718, B: 0.1790718},
+		GhostDataBlock:      RGB{R: 0.44404334, G: 0.44404334, B: 0.44404334},
+		Track:               RGB{R: 0.37458193, G: 0.37458193, B: 0.37458193},
+		FlightStripText:     RGB{R: 0, G: 0, B: 0},
+		ArrivalStrip:        RGB{R: 0.73613906, G: 0.75123316, B: 0.84745765},
+		DepartureStrip:      RGB{R: 0.84745765, G: 0.7002298, B: 0.7002298},
+		Airport:             RGB{R: 0.627451, G: 0.627451, B: 0.627451},
+		VOR:                 RGB{R: 0.627451, G: 0.627451, B: 0.627451},
+		NDB:                 RGB{R: 0.627451, G: 0.627451, B: 0.627451},
+		Fix:                 RGB{R: 0.627451, G: 0.627451, B: 0.627451},
+		Runway:              RGB{R: 0.8, G: 0.8, B: 0.4},
+		Region:              RGB{R: 0.691375, G: 0.7966102, B: 0.6177105},
+		SID:                 RGB{R: 0.6694915, G: 0.54997474, B: 0.5077923},
+		STAR:                RGB{R: 0.4755817, G: 0.65254235, B: 0.48807308},
+		Geo:                 RGB{R: 0.38559324, G: 0.38559324, B: 0.38559324},
+		ARTCC:               RGB{R: 0.7, G: 0.7, B: 0.7},
+		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
+		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
+		Compass:             RGB{R: 0.279661, G: 0.279661, B: 0.279661},
+	},
+}
+
+func colorSchemeExists(n string) bool {
+	_, ok := builtinColorSchemes[n]
+	if ok {
+		return true
+	}
+	_, ok = globalConfig.ColorSchemes[n]
+	return ok
+}
+
+type NewColorSchemeModalClient struct {
+	name string
+	err  string
+}
+
+func (n *NewColorSchemeModalClient) Title() string { return "New Color Scheme" }
+
+func (n *NewColorSchemeModalClient) Opening() {
+	n.name = ""
+	n.err = ""
+}
+
+func (n *NewColorSchemeModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		dupe := *positionConfig.GetColorScheme()
+		dupe.DefinedColors = make(map[string]*RGB)
+		for name, color := range database.sectorFileColors {
+			c := color
+			dupe.DefinedColors[name] = &c
+		}
+
+		globalConfig.ColorSchemes[n.name] = &dupe
+		positionConfig.ColorSchemeName = n.name
+		globalConfig.MakeConfigActive(globalConfig.ActivePosition)
+
+		return true
+	}}
+	ok.disabled = n.name == ""
+	if colorSchemeExists(n.name) {
+		ok.disabled = true
+		n.err = "\"" + n.name + "\" already exists"
+	} else {
+		n.err = ""
+	}
+	b = append(b, ok)
+
+	return b
+}
+
+func (n *NewColorSchemeModalClient) Draw() int {
+	flags := imgui.InputTextFlagsEnterReturnsTrue
+	enter := imgui.InputTextV("Color scheme name", &n.name, flags, nil)
+	if n.err != "" {
+		cs := positionConfig.GetColorScheme()
+		imgui.PushStyleColor(imgui.StyleColorText, cs.Error.imgui())
+		imgui.Text(n.err)
+		imgui.PopStyleColor()
+	}
+	if enter {
+		return 1
+	} else {
+		return -1
+	}
+}
+
+type RenameColorSchemeModalClient struct {
+	newName string
+}
+
+func (r *RenameColorSchemeModalClient) Title() string { return "Rename Color Scheme" }
+
+func (r *RenameColorSchemeModalClient) Opening() {
+	r.newName = ""
+}
+
+func (r *RenameColorSchemeModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel"})
+
+	ok := ModalDialogButton{text: "Ok", action: func() bool {
+		oldName := positionConfig.ColorSchemeName
+		positionConfig.ColorSchemeName = r.newName
+		cs := globalConfig.ColorSchemes[oldName]
+		delete(globalConfig.ColorSchemes, oldName)
+		globalConfig.ColorSchemes[r.newName] = cs
+		return true
+	}}
+
+	// Disable "ok" if a new name hasn't been entered or if it's the same
+	// as an existing one.
+	ok.disabled = r.newName == "" || colorSchemeExists(r.newName)
+	b = append(b, ok)
+
+	return b
+}
+
+func (r *RenameColorSchemeModalClient) Draw() int {
+	flags := imgui.InputTextFlagsEnterReturnsTrue
+	enter := imgui.InputTextV("New name", &r.newName, flags, nil)
+
+	if colorSchemeExists(r.newName) {
+		color := positionConfig.GetColorScheme().TextError
+		imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
+		imgui.Text("Color scheme with that name already exits!")
+		imgui.PopStyleColor()
+	}
+	if enter {
+		return 1
+	} else {
+		return -1
+	}
+}
+
+func showColorEditor() {
+	displayName := func(n string) string {
+		if _, ok := builtinColorSchemes[n]; ok {
+			return FontAwesomeIconLock + " " + n
+		}
+		return n
+	}
+
+	if imgui.BeginCombo("Color scheme", displayName(positionConfig.ColorSchemeName)) {
+		names := SortedMapKeys(builtinColorSchemes)
+		names = append(names, SortedMapKeys(globalConfig.ColorSchemes)...)
+
+		for _, name := range names {
+			flags := imgui.SelectableFlagsNone
+			if imgui.SelectableV(displayName(name), name == positionConfig.ColorSchemeName, flags, imgui.Vec2{}) &&
+				name != positionConfig.ColorSchemeName {
+				positionConfig.ColorSchemeName = name
+
+				// This is slightly wasteful (e.g., resets the DrawList allocations),
+				// but ensures that all of the panes get the new colors.
+				globalConfig.MakeConfigActive(globalConfig.ActivePosition)
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	_, canEdit := globalConfig.ColorSchemes[positionConfig.ColorSchemeName]
+
+	if imgui.Button("Copy...") {
+		uiShowModalDialog(NewModalDialogBox(&NewColorSchemeModalClient{}), false)
+	}
+	if canEdit {
+		imgui.SameLine()
+		if imgui.Button("Rename...") {
+			uiShowModalDialog(NewModalDialogBox(&RenameColorSchemeModalClient{}), false)
+		}
+		imgui.SameLine()
+		if imgui.Button("Delete...") {
+			cur := positionConfig.ColorSchemeName
+			uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
+				title: "Delete current color scheme?",
+				query: fmt.Sprintf("Are you sure you want to delete the \"%s\" color scheme?", cur),
+				ok: func() {
+					delete(globalConfig.ColorSchemes, cur)
+					positionConfig.ColorSchemeName = SortedMapKeys(builtinColorSchemes)[0]
+					globalConfig.MakeConfigActive(globalConfig.ActivePosition)
+				},
+			}), false)
+		}
+	}
+
+	// Disable editing the builtin color schemes
+	if !canEdit {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+
+	cs := positionConfig.GetColorScheme()
+	cs.ShowEditor(func(name string, rgb RGB) {
+		if positionConfig.GetColorScheme().IsDark() {
+			imgui.StyleColorsDark()
+		} else {
+			imgui.StyleColorsLight()
+		}
+		database.NamedColorChanged(name, rgb)
+	})
+
+	if !canEdit {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
 	}
 }

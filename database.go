@@ -800,6 +800,11 @@ func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 }
 
 func (db *StaticDatabase) SetColorScheme(cs *ColorScheme) {
+	// Set the sector file colors by default; they may be overridden
+	// shortly, but no need to be more clever here.
+	for name, color := range db.sectorFileColors {
+		db.NamedColorChanged(name, color)
+	}
 	for name, color := range cs.DefinedColors {
 		db.NamedColorChanged(name, *color)
 	}
