@@ -55,6 +55,8 @@ type VATSIMConnection interface {
 	// titlebar, indicating the connection type and general state.
 	GetWindowTitle() string
 
+	Connected() bool
+
 	// Close closes the VATSIM connection.
 	Close()
 }
@@ -184,7 +186,7 @@ func (c *VATSIMNetConnection) SendMessage(callsign string, fields ...interface{}
 	}
 
 	if _, err := c.conn.Write([]byte(msg)); err != nil {
-		lg.Errorf("Send error: %v", err)
+		lg.Printf("Send error: %v", err)
 	}
 
 	c.messagesMutex.Lock()
@@ -208,6 +210,10 @@ func (c *VATSIMNetConnection) GetWindowTitle() string {
 	}()
 	return fmt.Sprintf("%s @ %s [%s - %s]", positionConfig.VatsimCallsign,
 		positionConfig.primaryFrequency.String(), c.address, status)
+}
+
+func (c *VATSIMNetConnection) Connected() bool {
+	return c.connected
 }
 
 func (c *VATSIMNetConnection) Close() {
@@ -347,6 +353,10 @@ func (r *VATSIMReplayConnection) CurrentTime() time.Time {
 	s := time.Duration(ds * float64(time.Second))
 	// Report time w.r.t. the stream
 	return r.streamStart.Add(s)
+}
+
+func (r *VATSIMReplayConnection) Connected() bool {
+	return r.f != nil
 }
 
 func (r *VATSIMReplayConnection) Close() {

@@ -623,7 +623,7 @@ func (v *VATSIMServer) Disconnect() {
 }
 
 func (v *VATSIMServer) Connected() bool {
-	return v.connection != nil
+	return v.connection != nil && v.connection.Connected()
 }
 
 func (v *VATSIMServer) Callsign() string {
