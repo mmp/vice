@@ -32,7 +32,7 @@ const (
 )
 
 type Command interface {
-	Name() string
+	Names() []string
 	Help() string
 	Usage() string
 	Syntax(isAircraftSelected bool) []CommandArgsFormat
@@ -58,11 +58,9 @@ var (
 		&PRDCommand{},
 		&SetRouteCommand{},
 
-		&AcceptHandoffCommand{},
 		&DropTrackCommand{},
 		&HandoffCommand{},
 		&PointOutCommand{},
-		&RejectHandoffCommand{},
 		&TrackAircraftCommand{},
 		&PushFlightStripCommand{},
 
@@ -87,22 +85,24 @@ var (
 func checkCommands(cmds []Command) {
 	seen := make(map[string]interface{})
 	for _, c := range cmds {
-		if _, ok := seen[c.Name()]; ok {
-			lg.Errorf("%s: command has multiple definitions", c.Name())
-		} else {
-			seen[c.Name()] = nil
+		for _, name := range c.Names() {
+			if _, ok := seen[name]; ok {
+				lg.Errorf("%s: command has multiple definitions", name)
+			} else {
+				seen[name] = nil
+			}
 		}
 
 		syntax := c.Syntax(false)
 		for i := 0; i < len(syntax)-1; i++ {
 			if syntax[i]&CommandArgsOptional != 0 {
-				lg.Errorf("%s: optional arguments can only be at the end", c.Name())
+				lg.Errorf("%v: optional arguments can only be at the end", c.Names())
 			}
 			if syntax[i]&CommandArgsMultiple != 0 {
-				lg.Errorf("%s: multiple arguments can only be at the end", c.Name())
+				lg.Errorf("%v: multiple arguments can only be at the end", c.Names())
 			}
 			if syntax[i]&CommandArgsOptional != 0 && syntax[i]&CommandArgsMultiple != 0 {
-				lg.Errorf("%s: cannot specify both optional and multiple arguments", c.Name())
+				lg.Errorf("%v: cannot specify both optional and multiple arguments", c.Names())
 			}
 		}
 	}
@@ -734,7 +734,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		}
 
 		if t, ok := cli.SpecialKeys[name]; ok {
-			cli.input.InsertAtCursor(*t)
+			cli.input.InsertAtCursor(*t + " ")
 		}
 	}
 
@@ -759,8 +759,10 @@ func matchingAircraft(s string) []*Aircraft {
 
 func lookupCommand(n string) Command {
 	for _, c := range cliCommands {
-		if c.Name() == n {
-			return c
+		for _, name := range c.Names() {
+			if name == n {
+				return c
+			}
 		}
 	}
 	return nil
@@ -1083,7 +1085,9 @@ func (cli *CLIPane) runCommand(cmd string) (string, error) {
 		case 1:
 			var names []string
 			for _, cmd := range cliCommands {
-				names = append(names, cmd.Name())
+				for _, name := range cmd.Names() {
+					names = append(names, name)
+				}
 			}
 			sort.Strings(names)
 			return fmt.Sprintf("available commands: %s", strings.Join(names, " ")), nil
@@ -1092,8 +1096,7 @@ func (cli *CLIPane) runCommand(cmd string) (string, error) {
 			if cmd == nil {
 				return "", fmt.Errorf("%s: unknown command", fields[1])
 			} else {
-				return fmt.Sprintf("%s: %s\nusage: %s %s", cmd.Name(), cmd.Help(),
-					cmd.Name(), cmd.Usage()), nil
+				return fmt.Sprintf("%s: %s\nusage: %s %s", fields[1], cmd.Help(), fields[1], cmd.Usage()), nil
 			}
 
 		default:
@@ -1129,11 +1132,9 @@ func (cli *CLIPane) runCommand(cmd string) (string, error) {
 		}
 
 		if len(args) < minArgc {
-			return "", fmt.Errorf("%s: insufficient arguments provided: %s",
-				cmd.Name(), cmd.Usage())
+			return "", fmt.Errorf("%s: insufficient arguments provided: %s", fields[0], cmd.Usage())
 		} else if len(args) > maxArgc {
-			return "", fmt.Errorf("%s: excessive arguments provided: %s",
-				cmd.Name(), cmd.Usage())
+			return "", fmt.Errorf("%s: excessive arguments provided: %s", fields[0], cmd.Usage())
 		}
 
 		argSyntax := func(i int) CommandArgsFormat {
@@ -1231,7 +1232,7 @@ func getCallsign(args []string) (string, []string) {
 
 type SetACTypeCommand struct{}
 
-func (*SetACTypeCommand) Name() string { return "actype" }
+func (*SetACTypeCommand) Names() []string { return []string{"actype", "ac"} }
 func (*SetACTypeCommand) Help() string {
 	return "Sets the aircraft's type."
 }
@@ -1256,11 +1257,11 @@ type SetAltitudeCommand struct {
 	isTemporary bool
 }
 
-func (sa *SetAltitudeCommand) Name() string {
+func (sa *SetAltitudeCommand) Names() []string {
 	if sa.isTemporary {
-		return "tempalt"
+		return []string{"tempalt", "ta"}
 	} else {
-		return "alt"
+		return []string{"alt"}
 	}
 }
 func (sa *SetAltitudeCommand) Usage() string {
@@ -1303,7 +1304,7 @@ func (sa *SetAltitudeCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetArrivalCommand struct{}
 
-func (*SetArrivalCommand) Name() string { return "arr" }
+func (*SetArrivalCommand) Names() []string { return []string{"arrive", "ar"} }
 func (*SetArrivalCommand) Usage() string {
 	return "<callsign> <airport>"
 }
@@ -1329,7 +1330,7 @@ func (*SetArrivalCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetDepartureCommand struct{}
 
-func (*SetDepartureCommand) Name() string { return "dep" }
+func (*SetDepartureCommand) Names() []string { return []string{"depart", "dp"} }
 func (*SetDepartureCommand) Usage() string {
 	return "<callsign> <airport>"
 }
@@ -1355,7 +1356,7 @@ func (*SetDepartureCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetEquipmentSuffixCommand struct{}
 
-func (*SetEquipmentSuffixCommand) Name() string { return "equip" }
+func (*SetEquipmentSuffixCommand) Names() []string { return []string{"equip", "eq"} }
 func (*SetEquipmentSuffixCommand) Usage() string {
 	return "<callsign> <suffix>"
 }
@@ -1388,7 +1389,7 @@ func (*SetEquipmentSuffixCommand) Run(cli *CLIPane, args []string) (string, erro
 
 type SetIFRCommand struct{}
 
-func (*SetIFRCommand) Name() string { return "ifr" }
+func (*SetIFRCommand) Names() []string { return []string{"ifr"} }
 func (*SetIFRCommand) Usage() string {
 	return "<callsign>"
 }
@@ -1409,7 +1410,7 @@ func (*SetIFRCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetScratchpadCommand struct{}
 
-func (*SetScratchpadCommand) Name() string { return "scratchpad" }
+func (*SetScratchpadCommand) Names() []string { return []string{"scratchpad", "sp"} }
 func (*SetScratchpadCommand) Usage() string {
 	return "<callsign> <contents--optional>"
 }
@@ -1435,7 +1436,7 @@ func (*SetScratchpadCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetSquawkCommand struct{}
 
-func (*SetSquawkCommand) Name() string { return "squawk" }
+func (*SetSquawkCommand) Names() []string { return []string{"squawk", "sq"} }
 func (*SetSquawkCommand) Usage() string {
 	return "<aircraft> <squawk--optional>"
 }
@@ -1464,7 +1465,7 @@ func (*SetSquawkCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetVoiceCommand struct{}
 
-func (*SetVoiceCommand) Name() string { return "voice" }
+func (*SetVoiceCommand) Names() []string { return []string{"voice", "v"} }
 func (*SetVoiceCommand) Usage() string {
 	return "<aircraft> <voice type:v, r, or t>"
 }
@@ -1485,7 +1486,7 @@ func (*SetVoiceCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetVFRCommand struct{}
 
-func (*SetVFRCommand) Name() string { return "vfr" }
+func (*SetVFRCommand) Names() []string { return []string{"vfr"} }
 func (*SetVFRCommand) Usage() string {
 	return "<callsign>"
 }
@@ -1506,7 +1507,7 @@ func (*SetVFRCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type EditRouteCommand struct{}
 
-func (*EditRouteCommand) Name() string { return "editroute" }
+func (*EditRouteCommand) Names() []string { return []string{"editroute", "er"} }
 func (*EditRouteCommand) Usage() string {
 	return "<callsign>"
 }
@@ -1560,7 +1561,7 @@ type NYPRDEntry struct {
 
 type NYPRDCommand struct{}
 
-func (*NYPRDCommand) Name() string { return "nyprd" }
+func (*NYPRDCommand) Names() []string { return []string{"nyprd"} }
 func (*NYPRDCommand) Usage() string {
 	return "<callsign>"
 }
@@ -1662,7 +1663,7 @@ func (*NYPRDCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type PRDCommand struct{}
 
-func (*PRDCommand) Name() string { return "faaprd" }
+func (*PRDCommand) Names() []string { return []string{"faaprd"} }
 func (*PRDCommand) Usage() string {
 	return "<callsign>"
 }
@@ -1748,7 +1749,7 @@ func (*PRDCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type SetRouteCommand struct{}
 
-func (*SetRouteCommand) Name() string { return "route" }
+func (*SetRouteCommand) Names() []string { return []string{"route", "rt"} }
 func (*SetRouteCommand) Usage() string {
 	return "<callsign> <route...>"
 }
@@ -1769,35 +1770,14 @@ func (*SetRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 	})
 }
 
-type AcceptHandoffCommand struct{}
-
-func (*AcceptHandoffCommand) Name() string { return "accept" }
-func (*AcceptHandoffCommand) Usage() string {
-	return "<callsign>"
-}
-func (*AcceptHandoffCommand) Help() string {
-	return "Accepts the requested handoff of the specified aircraft."
-}
-func (*AcceptHandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
-	if isAircraftSelected {
-		return []CommandArgsFormat{}
-	} else {
-		return []CommandArgsFormat{CommandArgsAircraft}
-	}
-}
-func (*AcceptHandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, _ := getCallsign(args)
-	return "", server.AcceptHandoff(callsign)
-}
-
 type DropTrackCommand struct{}
 
-func (*DropTrackCommand) Name() string { return "drop" }
+func (*DropTrackCommand) Names() []string { return []string{"drop", "dt", "refuse"} }
 func (*DropTrackCommand) Usage() string {
 	return "<callsign>"
 }
 func (*DropTrackCommand) Help() string {
-	return "Drops the track on the selected aircraft."
+	return "Drops the track or refuses an offered handoff of the selected aircraft."
 }
 func (*DropTrackCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	if isAircraftSelected {
@@ -1808,12 +1788,16 @@ func (*DropTrackCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*DropTrackCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", server.DropTrack(callsign)
+	if server.InboundHandoffController(callsign) != "" {
+		return "", server.RejectHandoff(callsign)
+	} else {
+		return "", server.DropTrack(callsign)
+	}
 }
 
 type HandoffCommand struct{}
 
-func (*HandoffCommand) Name() string { return "handoff" }
+func (*HandoffCommand) Names() []string { return []string{"handoff", "ho"} }
 func (*HandoffCommand) Usage() string {
 	return "<callsign> <controller>"
 }
@@ -1834,7 +1818,7 @@ func (*HandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type PointOutCommand struct{}
 
-func (*PointOutCommand) Name() string { return "pointout" }
+func (*PointOutCommand) Names() []string { return []string{"pointout", "po"} }
 func (*PointOutCommand) Usage() string {
 	return "<callsign> <controller>"
 }
@@ -1853,35 +1837,14 @@ func (*PointOutCommand) Run(cli *CLIPane, args []string) (string, error) {
 	return "", server.PointOut(callsign, args[0])
 }
 
-type RejectHandoffCommand struct{}
-
-func (*RejectHandoffCommand) Name() string { return "reject" }
-func (*RejectHandoffCommand) Usage() string {
-	return "<callsign>"
-}
-func (*RejectHandoffCommand) Help() string {
-	return "Rejects a handoff request for the specified aircraft."
-}
-func (*RejectHandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
-	if isAircraftSelected {
-		return []CommandArgsFormat{}
-	} else {
-		return []CommandArgsFormat{CommandArgsAircraft}
-	}
-}
-func (*RejectHandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
-	callsign, _ := getCallsign(args)
-	return "", server.RejectHandoff(callsign)
-}
-
 type TrackAircraftCommand struct{}
 
-func (*TrackAircraftCommand) Name() string { return "track" }
+func (*TrackAircraftCommand) Names() []string { return []string{"track", "tr"} }
 func (*TrackAircraftCommand) Usage() string {
 	return "<callsign>"
 }
 func (*TrackAircraftCommand) Help() string {
-	return "Initiates a track on the specified aircraft."
+	return "Initiates a track or accepts an offered handoff for the specified aircraft."
 }
 func (*TrackAircraftCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	if isAircraftSelected {
@@ -1892,12 +1855,17 @@ func (*TrackAircraftCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 }
 func (*TrackAircraftCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
-	return "", server.InitiateTrack(callsign)
+	if server.InboundHandoffController(callsign) != "" {
+		// it's being offered as a handoff
+		return "", server.AcceptHandoff(callsign)
+	} else {
+		return "", server.InitiateTrack(callsign)
+	}
 }
 
 type PushFlightStripCommand struct{}
 
-func (*PushFlightStripCommand) Name() string { return "push" }
+func (*PushFlightStripCommand) Names() []string { return []string{"push", "ps"} }
 func (*PushFlightStripCommand) Usage() string {
 	return "<callsign> <controller>"
 }
@@ -1918,7 +1886,7 @@ func (*PushFlightStripCommand) Run(cli *CLIPane, args []string) (string, error) 
 
 type FindCommand struct{}
 
-func (*FindCommand) Name() string { return "find" }
+func (*FindCommand) Names() []string { return []string{"find"} }
 func (*FindCommand) Usage() string {
 	return "<callsign, fix, VOR, DME, airport...>"
 }
@@ -1959,7 +1927,7 @@ func (*FindCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type MITCommand struct{}
 
-func (*MITCommand) Name() string { return "mit" }
+func (*MITCommand) Names() []string { return []string{"mit"} }
 func (*MITCommand) Usage() string {
 	return "<zero, one, or more callsigns...>"
 }
@@ -1994,7 +1962,7 @@ func (*MITCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type DrawRouteCommand struct{}
 
-func (*DrawRouteCommand) Name() string { return "drawroute" }
+func (*DrawRouteCommand) Names() []string { return []string{"drawroute", "dr"} }
 func (*DrawRouteCommand) Usage() string {
 	return "<callsign>"
 }
@@ -2035,7 +2003,7 @@ func (*DrawRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type InfoCommand struct{}
 
-func (*InfoCommand) Name() string { return "i" }
+func (*InfoCommand) Names() []string { return []string{"i", "info"} }
 func (*InfoCommand) Usage() string {
 	return "<callsign, fix, VOR, DME, airport...>"
 }
@@ -2135,7 +2103,7 @@ func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type TrafficCommand struct{}
 
-func (*TrafficCommand) Name() string { return "traffic" }
+func (*TrafficCommand) Names() []string { return []string{"traffic", "tf"} }
 func (*TrafficCommand) Usage() string {
 	return "<callsign>"
 }
@@ -2203,7 +2171,7 @@ func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type TimerCommand struct{}
 
-func (*TimerCommand) Name() string { return "timer" }
+func (*TimerCommand) Names() []string { return []string{"timer"} }
 func (*TimerCommand) Usage() string {
 	return "<minutes> <message...>"
 }
@@ -2231,7 +2199,7 @@ func (*TimerCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type ToDoCommand struct{}
 
-func (*ToDoCommand) Name() string { return "todo" }
+func (*ToDoCommand) Names() []string { return []string{"todo"} }
 func (*ToDoCommand) Usage() string {
 	return "<message...>"
 }
@@ -2249,7 +2217,7 @@ func (*ToDoCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type EchoCommand struct{}
 
-func (*EchoCommand) Name() string { return "echo" }
+func (*EchoCommand) Names() []string { return []string{"echo"} }
 func (*EchoCommand) Usage() string {
 	return "<message...>"
 }
@@ -2265,7 +2233,7 @@ func (*EchoCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type ATCChatCommand struct{}
 
-func (*ATCChatCommand) Name() string { return "atc" }
+func (*ATCChatCommand) Names() []string { return []string{"atc"} }
 func (*ATCChatCommand) Usage() string {
 	return "[message]"
 }
@@ -2282,7 +2250,7 @@ func (*ATCChatCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type PrivateMessageCommand struct{}
 
-func (*PrivateMessageCommand) Name() string { return "dm" }
+func (*PrivateMessageCommand) Names() []string { return []string{"dm"} }
 func (*PrivateMessageCommand) Usage() string {
 	return "<recipient> [message]"
 }
@@ -2302,7 +2270,7 @@ func (*PrivateMessageCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type TransmitCommand struct{}
 
-func (*TransmitCommand) Name() string { return "tx" }
+func (*TransmitCommand) Names() []string { return []string{"tx"} }
 func (*TransmitCommand) Usage() string {
 	return "[message]"
 }
@@ -2326,7 +2294,7 @@ func (*TransmitCommand) Run(cli *CLIPane, args []string) (string, error) {
 
 type WallopCommand struct{}
 
-func (*WallopCommand) Name() string { return "wallop" }
+func (*WallopCommand) Names() []string { return []string{"wallop"} }
 func (*WallopCommand) Usage() string {
 	return "[message]"
 }
