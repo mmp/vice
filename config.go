@@ -406,7 +406,8 @@ func (c *PositionConfig) GetColorScheme() *ColorScheme {
 		return cs
 	} else if cs, ok := globalConfig.ColorSchemes[c.ColorSchemeName]; !ok {
 		lg.Printf("%s: color scheme unknown; returning default", c.ColorSchemeName)
-		return builtinColorSchemes[SortedMapKeys(builtinColorSchemes)[0]]
+		c.ColorSchemeName = SortedMapKeys(builtinColorSchemes)[0]
+		return builtinColorSchemes[c.ColorSchemeName]
 	} else {
 		return cs
 	}
