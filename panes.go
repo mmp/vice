@@ -122,6 +122,7 @@ type AirportInfoPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
+	sb *ScrollBar
 	td TextDrawBuilder
 	cb CommandBuffer
 }
@@ -146,6 +147,7 @@ func NewAirportInfoPane() *AirportInfoPane {
 
 		font:           font,
 		FontIdentifier: font.id,
+		sb:             NewScrollBar(4, false),
 	}
 }
 
@@ -155,6 +157,7 @@ func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe.lastATIS = DuplicateMap(a.lastATIS)
 	dupe.seenDepartures = DuplicateMap(a.seenDepartures)
 	dupe.seenArrivals = DuplicateMap(a.seenArrivals)
+	dupe.sb = NewScrollBar(4, false)
 	dupe.td = TextDrawBuilder{}
 	dupe.cb = CommandBuffer{}
 	return &dupe
@@ -173,6 +176,9 @@ func (a *AirportInfoPane) Activate(cs *ColorScheme) {
 	}
 	if a.seenArrivals == nil {
 		a.seenArrivals = make(map[string]interface{})
+	}
+	if a.sb == nil {
+		a.sb = NewScrollBar(4, false)
 	}
 
 	// FIXME: temporary transition
@@ -259,12 +265,15 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	style := TextStyle{font: a.font, color: cs.Text}
 	var strs []string
 	var styles []TextStyle
+	nLines := 1
 
 	flush := func() {
 		if str.Len() == 0 {
 			return
 		}
-		strs = append(strs, str.String())
+		s := str.String()
+		nLines += strings.Count(s, "\n")
+		strs = append(strs, s)
 		str.Reset()
 		styles = append(styles, style)
 		style = TextStyle{font: a.font, color: cs.Text} // a reasonable default
@@ -507,13 +516,20 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	flush()
 
+	nVisibleLines := (int(ctx.paneExtent.Height()) - a.font.size) / a.font.size
+	a.sb.Update(nLines, nVisibleLines, ctx)
+	textOffset := a.sb.Offset()
+
 	a.td.Reset()
 	sz2 := float32(a.font.size) / 2
-	a.td.AddTextMulti(strs, [2]float32{sz2, ctx.paneExtent.Height() - sz2}, styles)
+	texty := ctx.paneExtent.Height() - sz2 + float32(textOffset*a.font.size)
+	a.td.AddTextMulti(strs, [2]float32{sz2, texty}, styles)
 
 	a.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&a.cb)
 	a.td.GenerateCommands(&a.cb)
+
+	a.sb.Draw(ctx, &a.cb)
 
 	cb.Call(a.cb)
 }
