@@ -284,9 +284,7 @@ func (v *VATSIMServer) SetSquawkAutomatic(callsign string) error {
 		return ErrNotController
 	} else if ac := v.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
-	} else if ac.flightPlan == nil {
-		return ErrNoFlightPlanFiled
-	} else if ac.flightPlan.rules != IFR {
+	} else if ac.flightPlan == nil || ac.flightPlan.rules != IFR {
 		return errors.New("non-IFR squawk codes must be set manually")
 	} else {
 		if c, ok := v.controllers[v.callsign]; !ok {
@@ -297,6 +295,7 @@ func (v *VATSIMServer) SetSquawkAutomatic(callsign string) error {
 			if pos == nil {
 				return errors.New("Radio must be primed to assign squawk codes")
 			}
+
 			if pos.lowSquawk == pos.highSquawk {
 				return errors.New("Current position has not been assigned a squawk code range")
 			}
