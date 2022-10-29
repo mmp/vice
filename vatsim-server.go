@@ -138,6 +138,7 @@ func NewVATSIMNetworkServer(address string) (*VATSIMServer, error) {
 		name:       globalConfig.VatsimName,
 		cid:        globalConfig.VatsimCID,
 		rating:     globalConfig.VatsimRating,
+		frequency:  positionConfig.primaryFrequency,
 		scopeRange: int(positionConfig.RadarRange),
 		facility:   positionConfig.VatsimFacility,
 		location:   loc}
@@ -258,6 +259,10 @@ func (v *VATSIMServer) OutboundHandoffController(callsign string) string {
 
 func (v *VATSIMServer) AddAirportForWeather(airport string) {
 	v.airportsForWeather[airport] = nil
+}
+
+func (v *VATSIMServer) SetPrimaryFrequency(f Frequency) {
+	v.controllers[v.callsign].frequency = f
 }
 
 func (v *VATSIMServer) SetSquawk(callsign string, code Squawk) error {

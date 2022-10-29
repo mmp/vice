@@ -490,7 +490,9 @@ func (c *PositionConfig) DrawRadioUI() {
 		c.rxFrequencies = make(map[Frequency]*bool)
 	}
 
-	imgui.RadioButtonInt("Unprime radio", (*int)(&c.primaryFrequency), 0)
+	if imgui.RadioButtonInt("Unprime radio", (*int)(&c.primaryFrequency), 0) {
+		server.SetPrimaryFrequency(c.primaryFrequency)
+	}
 	config := ComboBoxDisplayConfig{
 		ColumnHeaders:    []string{"Position", "Frequency", "Primed", "TX", "RX"},
 		DrawHeaders:      true,
@@ -505,7 +507,9 @@ func (c *PositionConfig) DrawRadioUI() {
 			case 1:
 				imgui.Text(freq.String())
 			case 2:
-				imgui.RadioButtonInt("##prime-"+s, (*int)(&c.primaryFrequency), int(freq))
+				if imgui.RadioButtonInt("##prime-"+s, (*int)(&c.primaryFrequency), int(freq)) {
+					server.SetPrimaryFrequency(c.primaryFrequency)
+				}
 			case 3:
 				if _, ok := c.txFrequencies[freq]; !ok {
 					c.txFrequencies[freq] = new(bool)

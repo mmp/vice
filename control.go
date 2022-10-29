@@ -73,6 +73,7 @@ type ATCServer interface {
 	OutboundHandoffController(callsign string) string
 
 	AddAirportForWeather(airport string)
+	SetPrimaryFrequency(f Frequency)
 
 	// Check for updates from the server.
 	GetUpdates()
@@ -278,6 +279,8 @@ func (d *DisconnectedATCServer) OutboundHandoffController(callsign string) strin
 }
 
 func (d *DisconnectedATCServer) AddAirportForWeather(airport string) {}
+
+func (d *DisconnectedATCServer) SetPrimaryFrequency(f Frequency) {}
 
 func (d *DisconnectedATCServer) GetUpdates() {}
 
