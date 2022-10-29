@@ -1552,6 +1552,78 @@ func (sb *ScrollBar) Width() int {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Text editing
+
+const (
+	TextEditReturnNone = iota
+	TextEditReturnEnter
+	TextEditReturnNext
+	TextEditReturnPrev
+)
+
+// uiDrawTextEdit handles the basics of interactive text editing; it takes
+// a string and cursor position and then renders them with the specified
+// style, processes keyboard inputs and updates the string accordingly.
+func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]float32, style,
+	cursorStyle TextStyle, cb *CommandBuffer) (exit int) {
+	// Make sure we can depend on it being sensible for the following
+	*cursor = clamp(*cursor, 0, len(*s))
+
+	// Draw the text and the cursor
+	td := TextDrawBuilder{}
+	if *cursor == len(*s) {
+		// cursor at the end
+		td.AddTextMulti([]string{*s, " "}, pos, []TextStyle{style, cursorStyle})
+	} else {
+		// cursor in the middle
+		sb, sc, se := (*s)[:*cursor], (*s)[*cursor:*cursor+1], (*s)[*cursor+1:]
+		styles := []TextStyle{style, cursorStyle, style}
+		td.AddTextMulti([]string{sb, sc, se}, pos, styles)
+	}
+	td.GenerateCommands(cb)
+
+	// Handle various special keys.
+	if keyboard.IsPressed(KeyBackspace) && *cursor > 0 {
+		*s = (*s)[:*cursor-1] + (*s)[*cursor:]
+		*cursor--
+	}
+	if keyboard.IsPressed(KeyDelete) && *cursor < len(*s)-1 {
+		*s = (*s)[:*cursor] + (*s)[*cursor+1:]
+	}
+	if keyboard.IsPressed(KeyLeftArrow) {
+		*cursor = max(*cursor-1, 0)
+	}
+	if keyboard.IsPressed(KeyRightArrow) {
+		*cursor = min(*cursor+1, len(*s))
+	}
+	if keyboard.IsPressed(KeyEscape) {
+		// clear out the string
+		*s = ""
+		*cursor = 0
+	}
+	if keyboard.IsPressed(KeyEnter) {
+		wmReleaseKeyboardFocus()
+		exit = TextEditReturnEnter
+	}
+	if keyboard.IsPressed(KeyTab) {
+		if keyboard.IsPressed(KeyShift) {
+			exit = TextEditReturnPrev
+		} else {
+			exit = TextEditReturnNext
+		}
+	}
+
+	// And finally insert any regular characters into the appropriate spot
+	// in the string.
+	if keyboard.input != "" {
+		*s = (*s)[:*cursor] + keyboard.input + (*s)[*cursor:]
+		*cursor += len(keyboard.input)
+	}
+
+	return
+}
+
+///////////////////////////////////////////////////////////////////////////
 // ColorScheme
 
 type ColorScheme struct {
