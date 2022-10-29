@@ -186,6 +186,9 @@ func (v *VATSIMServer) GetAllAircraft() []*Aircraft {
 }
 
 func (v *VATSIMServer) GetFlightStrip(callsign string) *FlightStrip {
+	if _, ok := v.aircraft[callsign]; !ok {
+		return nil
+	}
 	if _, ok := v.flightStrips[callsign]; !ok {
 		v.flightStrips[callsign] = &FlightStrip{callsign: callsign}
 	}
