@@ -454,6 +454,8 @@ func (v *VATSIMServer) DropTrack(callsign string) error {
 		return ErrNoAircraftForCallsign
 	} else if v.trackedByAnotherController(callsign) {
 		return ErrOtherControllerHasTrack
+	} else if _, ok := v.trackingControllers[callsign]; !ok {
+		return ErrNotTrackedByMe
 	} else {
 		delete(v.trackingControllers, callsign)
 		controlUpdates.modifiedAircraft[ac] = nil
