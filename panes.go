@@ -44,6 +44,7 @@ type PaneContext struct {
 	platform Platform
 	cs       *ColorScheme
 	mouse    *MouseState
+	keyboard *KeyboardState
 }
 
 type MouseState struct {
@@ -93,6 +94,117 @@ func (ctx *PaneContext) InitializeMouse() {
 			imgui.ResetMouseDragDelta(b)
 		}
 	}
+}
+
+type Key int
+
+const (
+	KeyEnter = iota
+	KeyUpArrow
+	KeyDownArrow
+	KeyLeftArrow
+	KeyRightArrow
+	KeyHome
+	KeyEnd
+	KeyBackspace
+	KeyDelete
+	KeyEscape
+	KeyTab
+	KeyPageUp
+	KeyPageDown
+	KeyShift
+	KeyControl
+	KeyF1
+	KeyF2
+	KeyF3
+	KeyF4
+	KeyF5
+	KeyF6
+	KeyF7
+	KeyF8
+	KeyF9
+	KeyF10
+	KeyF11
+	KeyF12
+)
+
+type KeyboardState struct {
+	input   string
+	pressed map[Key]interface{}
+}
+
+func NewKeyboardState() *KeyboardState {
+	keyboard := &KeyboardState{pressed: make(map[Key]interface{})}
+
+	keyboard.input = platform.InputCharacters()
+
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
+		keyboard.pressed[KeyEnter] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
+		keyboard.pressed[KeyDownArrow] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
+		keyboard.pressed[KeyUpArrow] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
+		keyboard.pressed[KeyLeftArrow] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
+		keyboard.pressed[KeyRightArrow] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
+		keyboard.pressed[KeyHome] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
+		keyboard.pressed[KeyEnd] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
+		keyboard.pressed[KeyBackspace] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
+		keyboard.pressed[KeyDelete] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
+		keyboard.pressed[KeyEscape] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
+		keyboard.pressed[KeyTab] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageUp)) {
+		keyboard.pressed[KeyPageUp] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
+		keyboard.pressed[KeyPageDown] = nil
+	}
+	const ImguiF1 = 290
+	for i := 0; i < 12; i++ {
+		if imgui.IsKeyPressed(ImguiF1 + i) {
+			keyboard.pressed[Key(int(KeyF1)+i)] = nil
+		}
+	}
+	io := imgui.CurrentIO()
+	if io.KeyShiftPressed() {
+		keyboard.pressed[KeyShift] = nil
+	}
+	if io.KeyCtrlPressed() {
+		keyboard.pressed[KeyControl] = nil
+	}
+
+	return keyboard
+}
+
+func (k *KeyboardState) Input() string {
+	return k.input
+}
+
+func (k *KeyboardState) IsPressed(key Key) bool {
+	_, ok := k.pressed[key]
+	return ok
+}
+
+func (ctx *PaneContext) InitializeKeyboard() {
+	ctx.keyboard = NewKeyboardState()
 }
 
 func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {

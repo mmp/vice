@@ -690,6 +690,8 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					platform:          platform,
 					cs:                positionConfig.GetColorScheme()}
 
+				ctx.InitializeKeyboard()
+
 				ownsMouse := wm.mouseConsumerOverride == pane ||
 					(wm.mouseConsumerOverride == nil && mouseInScope(mousePos, disp) &&
 						!io.WantCaptureMouse())

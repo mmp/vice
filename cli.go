@@ -367,7 +367,7 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 
 		// Execute command if enter was typed
-		hitEnter := cli.updateInput(consoleLinesVisible, ctx.platform)
+		hitEnter := cli.updateInput(consoleLinesVisible, ctx.keyboard)
 		if hitEnter {
 			if cli.input.AnyParametersUnset() {
 				cli.status = "Some alias parameters are still unset."
@@ -624,11 +624,15 @@ func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 	}
 }
 
-func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hitEnter bool) {
-	// Grab keyboard input
-	cli.input.InsertAtCursor(platform.InputCharacters())
+func (cli *CLIPane) updateInput(consoleLinesVisible int, keyboard *KeyboardState) (hitEnter bool) {
+	if keyboard == nil {
+		return false
+	}
 
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
+	// Grab keyboard input
+	cli.input.InsertAtCursor(keyboard.input)
+
+	if keyboard.IsPressed(KeyUpArrow) {
 		if cli.historyOffset == len(cli.history) {
 			cli.status = "Reached end of history."
 		} else {
@@ -641,7 +645,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 			cli.status = ""
 		}
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
+	if keyboard.IsPressed(KeyDownArrow) {
 		if cli.historyOffset == 0 {
 			cli.status = "Reached end of history."
 		} else {
@@ -656,29 +660,29 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		}
 	}
 
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
+	if keyboard.IsPressed(KeyLeftArrow) {
 		if cli.input.cursor > 0 {
 			cli.input.cursor--
 		}
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
+	if keyboard.IsPressed(KeyRightArrow) {
 		if cli.input.cursor < len(cli.input.cmd) {
 			cli.input.cursor++
 		}
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
+	if keyboard.IsPressed(KeyHome) {
 		cli.input.cursor = 0
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
+	if keyboard.IsPressed(KeyEnd) {
 		cli.input.cursor = len(cli.input.cmd)
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
+	if keyboard.IsPressed(KeyBackspace) {
 		cli.input.DeleteBeforeCursor()
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
+	if keyboard.IsPressed(KeyDelete) {
 		cli.input.DeleteAfterCursor()
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
+	if keyboard.IsPressed(KeyEscape) {
 		if cli.input.cursor > 0 {
 			cli.input = CLIInput{}
 			cli.status = ""
@@ -686,9 +690,8 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 			positionConfig.selectedAircraft = nil
 		}
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
-		io := imgui.CurrentIO()
-		if io.KeyShiftPressed() {
+	if keyboard.IsPressed(KeyTab) {
+		if keyboard.IsPressed(KeyShift) {
 			if !cli.input.TabPrev() {
 				cli.status = "no parameter stops"
 			}
@@ -700,7 +703,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 	}
 
 	// history-related
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageUp)) {
+	if keyboard.IsPressed(KeyPageUp) {
 		// Keep one line from before
 		cli.consoleViewOffset += consoleLinesVisible - 1
 		// Don't go past the end
@@ -712,7 +715,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 		}
 		return
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
+	if keyboard.IsPressed(KeyPageDown) {
 		cli.consoleViewOffset -= consoleLinesVisible - 1
 		if cli.consoleViewOffset < 0 {
 			cli.consoleViewOffset = 0
@@ -721,15 +724,13 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 	}
 
 	// Check the function keys
-	const F1 = 290
 	for i := 0; i < 12; i++ {
-		if !imgui.IsKeyPressed(F1 + i) {
+		if !keyboard.IsPressed(Key(int(KeyF1) + i)) {
 			continue
 		}
 
 		name := fmt.Sprintf("F%d", i+1)
-		io := imgui.CurrentIO()
-		if io.KeyShiftPressed() {
+		if keyboard.IsPressed(KeyShift) {
 			name = "Shift-" + name
 		}
 
@@ -739,7 +740,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, platform Platform) (hit
 	}
 
 	// Other than paging through history, everything henceforth changes the input.
-	return imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter))
+	return keyboard.IsPressed(KeyEnter)
 }
 
 func matchingAircraft(s string) []*Aircraft {
