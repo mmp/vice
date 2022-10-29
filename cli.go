@@ -247,6 +247,8 @@ func (cli *CLIPane) ErrorReported(msg string) {
 	}
 }
 
+func (cli *CLIPane) CanTakeKeyboardFocus() bool { return true }
+
 func (cli *CLIPane) Update(updates *ControlUpdates) {
 	// Point outs and handoffs...
 	for ac, controller := range updates.pointOuts {
@@ -347,6 +349,10 @@ func (cli *CLIPane) DrawUI() {
 func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cli.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&cli.cb)
+
+	if ctx.mouse != nil && ctx.mouse.doubleClicked[mouseButtonPrimary] {
+		wmTakeKeyboardFocus(cli, false)
+	}
 
 	style := TextStyle{font: cli.font, lineSpacing: 1, color: ctx.cs.Text}
 	cursorStyle := TextStyle{font: cli.font, lineSpacing: 0,

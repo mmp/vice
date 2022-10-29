@@ -606,6 +606,8 @@ func (rs *RadarScopePane) DrawUI() {
 	}
 }
 
+func (rs *RadarScopePane) CanTakeKeyboardFocus() bool { return false }
+
 func (rs *RadarScopePane) Update(updates *ControlUpdates) {
 	if updates == nil {
 		return

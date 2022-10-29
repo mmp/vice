@@ -27,6 +27,8 @@ type Pane interface {
 	Deactivate()
 	Update(updates *ControlUpdates)
 
+	CanTakeKeyboardFocus() bool
+
 	Draw(ctx *PaneContext, cb *CommandBuffer)
 }
 
@@ -360,6 +362,8 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 	return arr
 }
 
+func (a *AirportInfoPane) CanTakeKeyboardFocus() bool { return false }
+
 func (a *AirportInfoPane) Update(updates *ControlUpdates) {}
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -659,6 +663,7 @@ func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
 func (ep *EmptyPane) Activate(cs *ColorScheme)       {}
 func (ep *EmptyPane) Deactivate()                    {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool     { return false }
 func (ep *EmptyPane) Update(updates *ControlUpdates) {}
 
 func (ep *EmptyPane) Duplicate(nameAsCopy bool) Pane { return &EmptyPane{} }
@@ -691,6 +696,7 @@ func (fp *FlightPlanPane) Activate(cs *ColorScheme) {
 }
 
 func (fp *FlightPlanPane) Deactivate()                    {}
+func (fp *FlightPlanPane) CanTakeKeyboardFocus() bool     { return false }
 func (fp *FlightPlanPane) Update(updates *ControlUpdates) {}
 
 func (fp *FlightPlanPane) DrawUI() {
@@ -763,6 +769,8 @@ func (nv *NotesViewPane) Activate(cs *ColorScheme) {
 }
 
 func (nv *NotesViewPane) Deactivate() {}
+
+func (nv *NotesViewPane) CanTakeKeyboardFocus() bool { return false }
 
 func (nv *NotesViewPane) Update(updates *ControlUpdates) {}
 
@@ -915,6 +923,7 @@ func (pp *PerformancePane) Activate(cs *ColorScheme) {
 }
 
 func (pp *PerformancePane) Deactivate()                    {}
+func (pp *PerformancePane) CanTakeKeyboardFocus() bool     { return false }
 func (pp *PerformancePane) Update(updates *ControlUpdates) {}
 
 func (pp *PerformancePane) Name() string { return "Performance Information" }
@@ -1048,6 +1057,7 @@ func (rp *ReminderPane) Activate(cs *ColorScheme) {
 }
 
 func (rp *ReminderPane) Deactivate()                    {}
+func (rp *ReminderPane) CanTakeKeyboardFocus() bool     { return false }
 func (rp *ReminderPane) Update(updates *ControlUpdates) {}
 func (rp *ReminderPane) Name() string                   { return "Reminders" }
 
@@ -1238,6 +1248,8 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 	_, ok := fsp.Airports[ac.flightPlan.arrive]
 	return ok
 }
+
+func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false }
 
 func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
 	possiblyAdd := func(ac *Aircraft) {
@@ -1471,7 +1483,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		y += stripHeight
 	}
 
-	// Handle selection, deletion, and reordering; do this after we've added the
+	// Handle selection, deletion, and reordering
 	if ctx.mouse != nil {
 		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
 		if ctx.mouse.clicked[0] && ctx.mouse.pos[0] <= drawWidth {
@@ -1542,6 +1554,12 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				fsp.strips = append(fsp.strips, fs)
 				fsp.strips = append(fsp.strips, fin...)
 			}
+		}
+	}
+	// Take focus if the user double-clicks in the annotations
+	if ctx.mouse != nil && ctx.mouse.doubleClicked[mouseButtonPrimary] {
+		if xp := ctx.mouse.pos[0]; xp >= drawWidth-3*widthAnn && xp < drawWidth {
+			wmTakeKeyboardFocus(fsp, true)
 		}
 	}
 

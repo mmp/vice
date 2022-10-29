@@ -33,6 +33,8 @@ var (
 		topControlsHeight float32
 
 		mouseConsumerOverride Pane
+		keyboardFocusPane     Pane
+		keyboardFocusStack    []Pane
 	}
 )
 
@@ -59,6 +61,7 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 
 func (s *SplitLine) Activate(cs *ColorScheme)       {}
 func (s *SplitLine) Deactivate()                    {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool     { return false }
 func (s *SplitLine) Update(updates *ControlUpdates) {}
 
 func (s *SplitLine) Name() string {
@@ -484,18 +487,10 @@ func wmDrawUI(p Platform) {
 				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 				wm.handlePanePick = setPicked(NewAirportInfoPane())
 			}
-			haveCLI := false
-			positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-				if _, ok := pane.(*CLIPane); ok {
-					haveCLI = true
-				}
-			})
-			if !haveCLI {
-				if imgui.Selectable("Command-line interface") {
-					wm.paneCreatePrompt = "Command-line interface"
-					wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-					wm.handlePanePick = setPicked(NewCLIPane())
-				}
+			if imgui.Selectable("Command-line interface") {
+				wm.paneCreatePrompt = "Command-line interface"
+				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+				wm.handlePanePick = setPicked(NewCLIPane())
 			}
 			if imgui.Selectable("Empty") {
 				wm.paneCreatePrompt = "Empty"
@@ -581,7 +576,47 @@ func wmDrawUI(p Platform) {
 	})
 }
 
+func wmTakeKeyboardFocus(pane Pane, isTransient bool) {
+	if wm.keyboardFocusPane == pane {
+		return
+	}
+	if !isTransient && wm.keyboardFocusPane != nil {
+		wm.keyboardFocusStack = append(wm.keyboardFocusStack, wm.keyboardFocusPane)
+	}
+	wm.keyboardFocusPane = pane
+}
+
+func wmReleaseKeyboardFocus() {
+	if n := len(wm.keyboardFocusStack); n > 0 {
+		wm.keyboardFocusPane = wm.keyboardFocusStack[n-1]
+		wm.keyboardFocusStack = wm.keyboardFocusStack[:n-1]
+	}
+}
+
+func wmPaneIsPresent(pane Pane) bool {
+	found := false
+	positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
+		if p == pane {
+			found = true
+		}
+	})
+	return found
+}
+
 func wmDrawPanes(platform Platform, renderer Renderer) {
+	if !wmPaneIsPresent(wm.keyboardFocusPane) {
+		// It was deleted in the config editor or a new config was loaded.
+		wm.keyboardFocusPane = nil
+	}
+	if wm.keyboardFocusPane == nil {
+		// Pick one that can take it, arbitrarily
+		positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
+			if p.CanTakeKeyboardFocus() {
+				wm.keyboardFocusPane = p
+			}
+		})
+	}
+
 	io := imgui.CurrentIO()
 
 	fbSize := platform.FramebufferSize()
@@ -690,7 +725,9 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					platform:          platform,
 					cs:                positionConfig.GetColorScheme()}
 
-				ctx.InitializeKeyboard()
+				if pane == wm.keyboardFocusPane {
+					ctx.InitializeKeyboard()
+				}
 
 				ownsMouse := wm.mouseConsumerOverride == pane ||
 					(wm.mouseConsumerOverride == nil && mouseInScope(mousePos, disp) &&
@@ -719,6 +756,20 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					commandBuffer.SetRGBA(RGBA{0.5, 0.5, 0.5, 0.5})
 					commandBuffer.VertexArray(pidx, 2, 2*4)
 					commandBuffer.DrawQuads(indidx, 4)
+					commandBuffer.ResetState()
+				}
+				if pane == wm.keyboardFocusPane {
+					// Draw a border around it
+					ctx.SetWindowCoordinateMatrices(&commandBuffer)
+					w, h := disp.Width(), disp.Height()
+					p := [4][2]float32{[2]float32{1, 1}, [2]float32{w - 1, 1}, [2]float32{w - 1, h - 1}, [2]float32{1, h - 1}}
+					pidx := commandBuffer.Float2Buffer(p[:])
+
+					indidx := commandBuffer.IntBuffer([]int32{0, 1, 1, 2, 2, 3, 3, 0})
+
+					commandBuffer.SetRGB(ctx.cs.TextHighlight)
+					commandBuffer.VertexArray(pidx, 2, 2*4)
+					commandBuffer.DrawLines(indidx, 8)
 					commandBuffer.ResetState()
 				}
 			})
