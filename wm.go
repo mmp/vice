@@ -580,7 +580,7 @@ func wmTakeKeyboardFocus(pane Pane, isTransient bool) {
 	if wm.keyboardFocusPane == pane {
 		return
 	}
-	if !isTransient && wm.keyboardFocusPane != nil {
+	if isTransient && wm.keyboardFocusPane != nil {
 		wm.keyboardFocusStack = append(wm.keyboardFocusStack, wm.keyboardFocusPane)
 	}
 	wm.keyboardFocusPane = pane
