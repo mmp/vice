@@ -158,6 +158,24 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 	}
 }
 
+// If |b| is true, all following imgui elements will be disabled (and drawn
+// accordingly).
+func uiStartDisable(b bool) {
+	if b {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+}
+
+// Each call to uiStartDisable should have a matching call to uiEndDisable,
+// with the same Boolean value passed to it.
+func uiEndDisable(b bool) {
+	if b {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
+	}
+}
+
 func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
@@ -505,10 +523,7 @@ func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 		}
 	}
 
-	if !valid {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
+	uiStartDisable(!valid)
 	imgui.SameLine()
 	if imgui.Button("+##" + id) {
 		add(state.inputValues)
@@ -516,16 +531,10 @@ func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 			*s = ""
 		}
 	}
-	if !valid {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
+	uiEndDisable(!valid)
 
 	enableDelete := len(state.selected) > 0
-	if !enableDelete {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
+	uiStartDisable(!enableDelete)
 	imgui.SameLine()
 	if imgui.Button(FontAwesomeIconTrash + "##" + id) {
 		deleteSelection(state.selected)
@@ -533,10 +542,7 @@ func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 			delete(state.selected, k)
 		}
 	}
-	if !enableDelete {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
+	uiEndDisable(!enableDelete)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -595,10 +601,7 @@ func (m *ModalDialogBox) Draw() {
 		setCursorForRightButtons(allButtonText)
 
 		for i, b := range buttons {
-			if b.disabled {
-				imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-				imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-			}
+			uiStartDisable(b.disabled)
 			if i > 0 {
 				imgui.SameLine()
 			}
@@ -609,10 +612,7 @@ func (m *ModalDialogBox) Draw() {
 					m.isOpen = false
 				}
 			}
-			if b.disabled {
-				imgui.PopItemFlag()
-				imgui.PopStyleVar()
-			}
+			uiEndDisable(b.disabled)
 		}
 
 		imgui.EndPopup()
@@ -1344,10 +1344,7 @@ func (fs *FileSelectDialogBox) Draw() {
 					}
 				}
 
-				if !canSelect {
-					imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-					imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-				}
+				uiStartDisable(!canSelect)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				selFlags := imgui.SelectableFlagsSpanAllColumns
@@ -1363,10 +1360,7 @@ func (fs *FileSelectDialogBox) Draw() {
 						fileSelected = true
 					}
 				}
-				if !canSelect {
-					imgui.PopItemFlag()
-					imgui.PopStyleVar()
-				}
+				uiEndDisable(!canSelect)
 			}
 			imgui.EndTable()
 		}
@@ -1379,10 +1373,7 @@ func (fs *FileSelectDialogBox) Draw() {
 		}
 
 		disableOk := fs.filename == ""
-		if disableOk {
-			imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-			imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-		}
+		uiStartDisable(disableOk)
 		imgui.SameLine()
 		if imgui.Button("Ok") || fileSelected {
 			imgui.CloseCurrentPopup()
@@ -1391,10 +1382,7 @@ func (fs *FileSelectDialogBox) Draw() {
 			fs.callback(path.Join(fs.directory, fs.filename))
 			fs.filename = ""
 		}
-		if disableOk {
-			imgui.PopItemFlag()
-			imgui.PopStyleVar()
-		}
+		uiEndDisable(disableOk)
 
 		imgui.EndPopup()
 	}
@@ -1965,10 +1953,7 @@ func showColorEditor() {
 	}
 
 	// Disable editing the builtin color schemes
-	if !canEdit {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
+	uiStartDisable(!canEdit)
 
 	cs := positionConfig.GetColorScheme()
 	cs.ShowEditor(func(name string, rgb RGB) {
@@ -1980,8 +1965,5 @@ func showColorEditor() {
 		database.NamedColorChanged(name, rgb)
 	})
 
-	if !canEdit {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
+	uiEndDisable(!canEdit)
 }
