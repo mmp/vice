@@ -780,12 +780,13 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 
 func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig, cs *ColorScheme) {
 	// Position changed. First deactivate the old one
-	if positionConfig != nil {
-		positionConfig.DisplayRoot.VisitPanes(func(p Pane) { p.Deactivate() })
+	if old != nil {
+		old.DisplayRoot.VisitPanes(func(p Pane) { p.Deactivate() })
 	}
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
-	positionConfig.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(cs) })
+	nw.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(cs) })
+	wm.keyboardFocusPane = nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
