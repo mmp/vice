@@ -1181,8 +1181,11 @@ type FlightStripPane struct {
 	strips        []string // callsigns
 	addedAircraft map[string]interface{}
 
-	mouseDragging bool
-	lastMousePos  [2]float32
+	mouseDragging       bool
+	lastMousePos        [2]float32
+	selectedStrip       int
+	selectedAnnotation  int
+	annotationCursorPos int
 
 	scrollbar *ScrollBar
 	cb        CommandBuffer
@@ -1197,6 +1200,8 @@ func NewFlightStripPane() *FlightStripPane {
 		CollectDeparturesArrivals: true,
 		Airports:                  make(map[string]interface{}),
 		addedAircraft:             make(map[string]interface{}),
+		selectedStrip:             -1,
+		selectedAnnotation:        -1,
 		scrollbar:                 NewScrollBar(4, true),
 	}
 }
@@ -1212,6 +1217,9 @@ func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
 		Airports:                  DuplicateMap(fsp.Airports),
 		strips:                    DuplicateSlice(fsp.strips),
 		addedAircraft:             DuplicateMap(fsp.addedAircraft),
+		selectedStrip:             -1,
+		selectedAnnotation:        -1,
+		scrollbar:                 NewScrollBar(4, true),
 	}
 }
 
@@ -1249,7 +1257,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 	return ok
 }
 
-func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false }
+func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return true }
 
 func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
 	possiblyAdd := func(ac *Aircraft) {
@@ -1349,7 +1357,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	width0 := 10 * fw
 	width1 := 6 * fw
 	width2 := 5 * fw
-	widthAnn := 4 * fw
+	widthAnn := 5 * fw
 
 	widthCenter := ctx.paneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
 	if fsp.scrollbar.Visible() {
@@ -1363,6 +1371,16 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	drawWidth := ctx.paneExtent.Width()
 	if fsp.scrollbar.Visible() {
 		drawWidth -= float32(fsp.scrollbar.Width())
+	}
+
+	// This can happen if, for example, the last aircraft is selected and
+	// then another one is removed. It might be better if selectedAircraft
+	// was a pointer to something that FlightStripPane managed, so that
+	// this sort of case would be handled more naturally... (And note that
+	// tracking the callsign won't work if we want to have strips for the
+	// same aircraft twice in a pane, for what that's worth...)
+	if fsp.selectedStrip >= len(fsp.strips) {
+		fsp.selectedStrip = len(fsp.strips) - 1
 	}
 
 	// Draw from the bottom
@@ -1388,13 +1406,14 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		// Draw background quad for this flight strip
 		qb := TrianglesDrawBuilder{}
-		cb.SetRGB(func() RGB {
+		bgColor := func() RGB {
 			if fsp.isDeparture(ac) {
 				return ctx.cs.DepartureStrip
 			} else {
 				return ctx.cs.ArrivalStrip
 			}
-		}())
+		}()
+		cb.SetRGB(bgColor)
 		y0, y1 := y+1+vpad-stripHeight, y+1+vpad
 		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1})
 		qb.GenerateCommands(cb)
@@ -1462,11 +1481,47 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		// Annotations
 		x += widthCenter
-		for i, ann := range strip.annotations {
-			ix, iy := i%3, i/3
+		var editResult int
+		for ai, ann := range strip.annotations {
+			ix, iy := ai%3, ai/3
 			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
-			td.AddText(ann, [2]float32{xp, yp}, style)
+
+			if ctx.keyboard != nil && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
+				// If were currently editing this annotation, don't draw it
+				// normally but instead draw it including a cursor, update
+				// it according to keyboard input, etc.
+				cursorStyle := TextStyle{font: fsp.font, color: bgColor,
+					drawBackground: true, backgroundColor: style.color}
+				editResult = uiDrawTextEdit(&strip.annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
+					ctx.keyboard, [2]float32{xp, yp}, style, cursorStyle, cb)
+				if len(strip.annotations[fsp.selectedAnnotation]) >= 3 {
+					// Limit it to three characters
+					strip.annotations[fsp.selectedAnnotation] = strip.annotations[fsp.selectedAnnotation][:3]
+					fsp.annotationCursorPos = min(fsp.annotationCursorPos, len(strip.annotations[fsp.selectedAnnotation]))
+				}
+			} else {
+				td.AddText(ann, [2]float32{xp, yp}, style)
+			}
 		}
+
+		// Only process this after drawing all of the annotations since
+		// otherwise we can end up with cascading tabbing ahead and the
+		// like.
+		switch editResult {
+		case TextEditReturnNone:
+			// nothing to do
+		case TextEditReturnEnter:
+			fsp.selectedStrip = -1
+			wmReleaseKeyboardFocus()
+		case TextEditReturnNext:
+			fsp.selectedAnnotation = (fsp.selectedAnnotation + 1) % 9
+			fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+		case TextEditReturnPrev:
+			// +8 rather than -1 to keep it positive for the mod...
+			fsp.selectedAnnotation = (fsp.selectedAnnotation + 8) % 9
+			fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+		}
+
 		// Horizontal lines
 		ld.AddLine([2]float32{x, y - 4./3.*fh}, [2]float32{drawWidth, y - 4./3.*fh})
 		ld.AddLine([2]float32{x, y - 8./3.*fh}, [2]float32{drawWidth, y - 8./3.*fh})
@@ -1558,11 +1613,25 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	// Take focus if the user double-clicks in the annotations
 	if ctx.mouse != nil && ctx.mouse.doubleClicked[mouseButtonPrimary] {
-		if xp := ctx.mouse.pos[0]; xp >= drawWidth-3*widthAnn && xp < drawWidth {
-			wmTakeKeyboardFocus(fsp, true)
+		annotationStartX := drawWidth - 3*widthAnn
+		if xp := ctx.mouse.pos[0]; xp >= annotationStartX && xp < drawWidth {
+			stripIndex := int(ctx.mouse.pos[1]/stripHeight) + scrollOffset
+			if stripIndex < len(fsp.strips) {
+				wmTakeKeyboardFocus(fsp, true)
+				fsp.selectedStrip = stripIndex
+
+				// Figure out which annotation was selected
+				xa := int(ctx.mouse.pos[0]-annotationStartX) / int(widthAnn)
+				ya := 2 - (int(ctx.mouse.pos[1])%int(stripHeight))/(int(stripHeight)/3)
+				xa, ya = clamp(xa, 0, 2), clamp(ya, 0, 2) // just in case
+				fsp.selectedAnnotation = 3*ya + xa
+
+				callsign := fsp.strips[fsp.selectedStrip]
+				strip := server.GetFlightStrip(callsign)
+				fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+			}
 		}
 	}
-
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(ctx.cs.SplitLine)
