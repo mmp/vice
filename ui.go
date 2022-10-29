@@ -1448,6 +1448,9 @@ func ShowFatalErrorDialog(s string, args ...interface{}) {
 ///////////////////////////////////////////////////////////////////////////
 // ScrollBar
 
+// ScrollBar provides functionality for a basic scrollbar for use in Pane
+// implementations.  (Since those are not handled by imgui, we can't use
+// imgui's scrollbar there.)
 type ScrollBar struct {
 	offset            int
 	barWidth          int
@@ -1457,10 +1460,17 @@ type ScrollBar struct {
 	mouseClickedInBar bool
 }
 
+// NewScrollBar returns a new ScrollBar instance with the given width.
+// invertY indicates whether the scrolled items are drawn from the bottom
+// of the Pane or the top; invertY should be true if they are being drawn
+// from the bottom.
 func NewScrollBar(width int, invertY bool) *ScrollBar {
 	return &ScrollBar{barWidth: width, invertY: invertY}
 }
 
+// Update should be called once per frame, providing the total number of things
+// being drawn, the number of them that are visible, and the PaneContext passed
+// to the Pane's Draw method (so that mouse events can be handled, if appropriate.
 func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 	sb.nItems = nItems
 	sb.nVisible = nVisible
@@ -1493,14 +1503,25 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 	}
 }
 
+// Offset returns the offset into the items at which drawing should start
+// (i.e., the items before the offset are offscreen.)  Note that the scroll
+// offset is reported in units of the number of items passed to Update;
+// thus, if scrolling text, the number of items might be measured in lines
+// of text, or it might be measured in scanlines.  The choice determines
+// whether scrolling happens at the granularity of entire lines at a time
+// or is continuous.
 func (sb *ScrollBar) Offset() int {
 	return sb.offset
 }
 
+// Visible indicates whether the scrollbar will be drawn (it disappears if
+// all of the items can fit onscreen.)
 func (sb *ScrollBar) Visible() bool {
 	return sb.nItems > sb.nVisible
 }
 
+// Draw emits the drawing commands for the scrollbar into the provided
+// CommandBuffer.
 func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if !sb.Visible() {
 		return
