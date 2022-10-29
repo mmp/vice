@@ -517,7 +517,9 @@ func (c *PositionConfig) DrawRadioUI() {
 				if freq == c.primaryFrequency {
 					*c.txFrequencies[freq] = true
 				}
+				uiStartDisable(freq == c.primaryFrequency)
 				imgui.Checkbox("##tx-"+s, c.txFrequencies[freq])
+				uiEndDisable(freq == c.primaryFrequency)
 			case 4:
 				if _, ok := c.rxFrequencies[freq]; !ok {
 					c.rxFrequencies[freq] = new(bool)
@@ -525,7 +527,9 @@ func (c *PositionConfig) DrawRadioUI() {
 				if freq == c.primaryFrequency {
 					*c.rxFrequencies[freq] = true
 				}
+				uiStartDisable(freq == c.primaryFrequency)
 				imgui.Checkbox("##rx-"+s, c.rxFrequencies[freq])
+				uiEndDisable(freq == c.primaryFrequency)
 			default:
 				lg.Errorf("%d: unexpected column from DrawComboBox", col)
 			}
