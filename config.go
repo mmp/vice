@@ -364,7 +364,7 @@ func (pc *PositionConfig) SendUpdates() {
 	pc.CheckRadarCenters()
 	pc.CheckRadioPrimed()
 
-	server.SendRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
+	server.SetRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
 		int(pc.RadarRange))
 }
 

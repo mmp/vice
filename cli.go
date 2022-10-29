@@ -1488,7 +1488,20 @@ func (*SetVoiceCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*SetVoiceCommand) Run(cli *CLIPane, args []string) (string, error) {
 	callsign, args := getCallsign(args)
-	return "", server.SetVoiceType(callsign, args[0])
+
+	var cap VoiceCapability
+	switch strings.ToLower(args[0]) {
+	case "v":
+		cap = VoiceFull
+	case "r":
+		cap = VoiceReceive
+	case "t":
+		cap = VoiceText
+	default:
+		return "", errors.New("Invalid voice communications type specified")
+	}
+
+	return "", server.SetVoiceType(callsign, cap)
 }
 
 type SetVFRCommand struct{}

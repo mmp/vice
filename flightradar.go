@@ -104,7 +104,7 @@ func (fr *FlightRadarServer) SetTemporaryAltitude(callsign string, alt int) erro
 	return ControlUnsupported
 }
 
-func (fr *FlightRadarServer) SetVoiceType(callsign string, voice string) error {
+func (fr *FlightRadarServer) SetVoiceType(callsign string, cap VoiceCapability) error {
 	return ControlUnsupported
 }
 
@@ -144,7 +144,7 @@ func (fr *FlightRadarServer) SendTextMessage(m TextMessage) error {
 	return ControlUnsupported
 }
 
-func (fr *FlightRadarServer) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+func (fr *FlightRadarServer) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	return nil
 }
 

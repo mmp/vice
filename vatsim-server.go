@@ -355,7 +355,7 @@ func (v *VATSIMServer) SetTemporaryAltitude(callsign string, altitude int) error
 	}
 }
 
-func (v *VATSIMServer) SetVoiceType(callsign string, voice string) error {
+func (v *VATSIMServer) SetVoiceType(callsign string, cap VoiceCapability) error {
 	if !v.atcValid {
 		return ErrNotController
 	} else if ac := v.GetAircraft(callsign); ac == nil {
@@ -363,23 +363,10 @@ func (v *VATSIMServer) SetVoiceType(callsign string, voice string) error {
 	} else if v.trackedByAnotherController(callsign) {
 		return ErrOtherControllerHasTrack
 	} else {
-		voice = strings.ToLower(voice)
-
-		switch voice {
-		case "v":
-			ac.voiceCapability = VoiceFull
-		case "r":
-			ac.voiceCapability = VoiceReceive
-		case "t":
-			ac.voiceCapability = VoiceText
-		default:
-			return errors.New("Invalid voice communications type specified")
-		}
-
-		err := v.controlDelegate.SetVoiceType(callsign, voice)
+		err := v.controlDelegate.SetVoiceType(callsign, cap)
 
 		err2 := amendFlightPlan(callsign, func(fp *FlightPlan) {
-			voiceStr := "/" + voice + "/"
+			voiceStr := "/" + cap.String() + "/"
 			// Is the voice type already in the remarks?
 			if strings.Contains(fp.remarks, voiceStr) {
 				return
@@ -539,12 +526,12 @@ func (v *VATSIMServer) SendTextMessage(m TextMessage) error {
 	return v.controlDelegate.SendTextMessage(m)
 }
 
-func (v *VATSIMServer) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+func (v *VATSIMServer) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	if !v.atcValid {
 		// No error in this case; it's fine to silently ignore
 		return nil
 	}
-	return v.controlDelegate.SendRadarCenters(primary, secondary, rangeNm)
+	return v.controlDelegate.SetRadarCenters(primary, secondary, rangeNm)
 }
 
 func (v *VATSIMServer) GetUpdates() {

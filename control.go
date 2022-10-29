@@ -24,10 +24,11 @@ var (
 	ErrNotController           = errors.New("Not signed in to a controller position")
 )
 
-// ATCServer defines the interface that servers must implement; these
-// are mostly things where vice is requesting the server to change some
-// thing--update the squawk code for an aircraft, etc.  The implementations
-// of this interface in vice are FlightRadarServer and VATSIMServer.
+// AircraftController defines the interface that servers must implement to
+// allow control actions to be performed--things like assigning squawk
+// codes, etc.  Note that this is essentially a one-way interface: the only
+// response from these methods is error codes; using AircraftController,
+// the controller can't make any queries about aircraft, etc.
 //
 // Note that:
 // 1. All methods start with a verb: "do this thing".
@@ -35,13 +36,24 @@ var (
 // represented by strings. We assume these are all unique!
 type AircraftController interface {
 	// Clearance delivery (and related)
+	// SetSquawk assigns the specified beacon code to the aircraft.
 	SetSquawk(callsign string, squawk Squawk) error
-	SetSquawkAutomatic(callsign string) error
-	SetScratchpad(callsign string, scratchpad string) error
-	SetTemporaryAltitude(callsign string, alt int) error
-	SetVoiceType(callsign string, voice string) error
-	AmendFlightPlan(callsign string, fp FlightPlan) error
 
+	// SetSquawkAutomatic automatically assigns a squawk code to an IFR
+	// aircraft using an unused one from the range of valid squawk codes
+	// from the sector file. It returns an error for VFR aircraft.
+	SetSquawkAutomatic(callsign string) error
+
+	// SetScratchpad sets the aircraft's scratchpad string.  An empty string
+	// clears the scratchpad.
+	SetScratchpad(callsign string, scratchpad string) error
+
+	// SetTemporaryAltitude assigns the given temporary altitude (specified
+	// in feet) to the aircraft.
+	SetTemporaryAltitude(callsign string, alt int) error
+
+	SetVoiceType(callsign string, voice VoiceCapability) error
+	AmendFlightPlan(callsign string, fp FlightPlan) error
 	PushFlightStrip(callsign string, controller string) error
 
 	// Tracking aircraft
@@ -53,45 +65,106 @@ type AircraftController interface {
 	PointOut(callsign string, controller string) error
 
 	SendTextMessage(m TextMessage) error
-	SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error
+
+	// SetRadarCenters specifies the primary and up to 3 secondary radar
+	// centers for the controller (as well as the radar range).
+	SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error
 }
 
+// ATCServer includes both the AircraftController interface and adds
+// additional methods for querying the state of the world, as represented
+// by the remote server.  In a sense, it provides the second half of the
+// AircraftController interface.
 type ATCServer interface {
 	AircraftController
 
+	// GetAircraft returns an *Aircraft for the specified callsign (or nil
+	// if no such aircraft exists.)  This pointer may be safely stored by
+	// the caller; it will remain the same for the aircraft throughout the
+	// time it's being tracked by the controller.
 	GetAircraft(callsign string) *Aircraft
+
+	// GetFilteredAircraft returns a slice of all aircraft for which the
+	// provided filter callback function returns true.
 	GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft
+
+	// GetAllAircraft returns a slice of *Aircraft for all of the known
+	// aircraft.
 	GetAllAircraft() []*Aircraft
+
+	// GetFlightStrip returns the flightstrip for the specified aircraft.
+	// Like the *Aircraft returned by GetAircraft, the flightstrip pointer
+	// remains valid as long as the aircraft is present on the radar.
 	GetFlightStrip(callsign string) *FlightStrip
+
+	// AddAirportForWeather adds the specified airport to the list of airports
+	// for which the weather is requested.  (Note that there is currently no
+	// method to remove airports from this list.)
+	AddAirportForWeather(airport string)
+
+	// GetMETAR returns the most recent weather report for the specified
+	// airport.  (For a successful result, the airport must have previously
+	// been given to AddAirportForWeather.)
 	GetMETAR(location string) *METAR
+
+	// GetATIS returns the most recent ATIS that has been broadcast for the
+	// specified airport.  Note that unlike METAR, there's no need to
+	// specify the airport ahead of time.
 	GetATIS(airport string) string
+
 	GetUser(callsign string) *User
 	GetController(callsign string) *Controller
 	GetAllControllers() []*Controller
+
+	// GetTrackingController returns the callsign (e.g., PHL_TWR) of the
+	// controller that is tracking the aircraft with the given callsign.
+	// An empty string is returned if no controller is tracking it.
 	GetTrackingController(callsign string) string
+
+	// InboundHandoffController returns the callsign of the controller
+	// (e.g., JFK_APP), who has offered a handoff of the given aircraft to
+	// the current controller.  An empty string is returned if a handoff
+	// offer has not been made for the aircraft.
 	InboundHandoffController(callsign string) string
+
+	// OutboundHandoffController returns the controller to which the
+	// current controller has offered a handoff of the specified aircraft.
 	OutboundHandoffController(callsign string) string
 
-	AddAirportForWeather(airport string)
 	SetPrimaryFrequency(f Frequency)
 
-	// Check for updates from the server.
+	// GetUpdates causes the server to process inbound network messages to
+	// update its representation of the world.  In addition to updating its
+	// internal data structures (and thence, things like *Aircraft)
+	// returned earlier by methods like GetAircraft, it also updates the
+	// controlUpdates global variable with information about the changes seen.
 	GetUpdates()
 
-	// Shut down the connection with the server and clean up detritus.
+	// Disconnect shuts down the connection with the server and cleans up
+	// detritus.
 	Disconnect()
+
+	// Connected reports if the server connection is active.  (Note that
+	// the connection may unexpectedly be closed by the server for errors
+	// like an invalid password or a network timeout.)
 	Connected() bool
 
-	// Returns the callsign the user is signed in under (e.g., "JFK_TWR")
+	// Callsign eturns the callsign the user is signed in under (e.g.,
+	// "JFK_TWR")
 	Callsign() string
 
-	// Returns the ~current time; getting it from the server lets us report
-	// the past time when replaying traces, etc.
+	// CurrentTime returns the ~current time; getting it from the server
+	// lets us report the past time when replaying traces, etc.
 	CurrentTime() time.Time
 
+	// GetWindowTitle returns a string that summarizes useful details of
+	// the server connection for use in the titlebar of the vice window
 	GetWindowTitle() string
 }
 
+// ControlUpdates stores summary information about changes to the world representation
+// and various events that are relevant to multiple parts of the system.  It is updated
+// by the ATCServer GetUpdates method each frame.
 type ControlUpdates struct {
 	addedAircraft    map[*Aircraft]interface{}
 	modifiedAircraft map[*Aircraft]interface{}
@@ -144,26 +217,16 @@ func (c *ControlUpdates) RemoveAircraft(ac *Aircraft) {
 	controlUpdates.removedAircraft[ac] = nil
 }
 
+// NoUpdates returns true if there is nothing to see at the moment in the
+// ControlUpdates.
 func (c *ControlUpdates) NoUpdates() bool {
 	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0 &&
 		len(c.pointOuts) == 0 && len(c.offeredHandoffs) == 0 && len(c.acceptedHandoffs) == 0 &&
 		len(c.rejectedHandoffs) == 0 && len(c.pushedFlightStrips) == 0 && len(c.messages) == 0
 }
 
-type TextMessageType int
-
-const (
-	TextBroadcast = iota
-	TextWallop
-	TextATC
-	TextFrequency
-	TextPrivate
-)
-
-func (t TextMessageType) String() string {
-	return [...]string{"Broadcast", "Wallop", "ATC", "Frequency", "Private"}[t]
-}
-
+// TextMessage is used to represent all the types of text message that may be sent
+// and received.
 type TextMessage struct {
 	sender      string
 	messageType TextMessageType
@@ -172,9 +235,33 @@ type TextMessage struct {
 	recipient   string      // only used for TextPrivate
 }
 
+// TextMessageType is an enumerant that indicates the type of text message.
+type TextMessageType int
+
+const (
+	// Broadcast (only from supervisors / admins)
+	TextBroadcast = iota
+	// Wallop
+	TextWallop
+	// Inter-ATC messaging
+	TextATC
+	// Message sent on one or more radio frequencies
+	TextFrequency
+	// Private message to another controller or aircraft
+	TextPrivate
+)
+
+func (t TextMessageType) String() string {
+	return [...]string{"Broadcast", "Wallop", "ATC", "Frequency", "Private"}[t]
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // InertAircraftController
 
+// InertAircraftController implements the AircraftController interface but does nothing,
+// returning ErrNoConnection for all method calls.  With it, vice can assume that there
+// is always some AircraftController available; this is used when vice first starts up,
+// before the user has initiated a connection, for example.
 type InertAircraftController struct{}
 
 func (*InertAircraftController) SetSquawk(callsign string, squawk Squawk) error {
@@ -189,7 +276,7 @@ func (*InertAircraftController) SetScratchpad(callsign string, scratchpad string
 func (*InertAircraftController) SetTemporaryAltitude(callsign string, alt int) error {
 	return ErrNoConnection
 }
-func (*InertAircraftController) SetVoiceType(callsign string, voice string) error {
+func (*InertAircraftController) SetVoiceType(callsign string, cap VoiceCapability) error {
 	return ErrNoConnection
 }
 func (*InertAircraftController) AmendFlightPlan(callsign string, fp FlightPlan) error {
@@ -219,13 +306,17 @@ func (*InertAircraftController) PointOut(callsign string, controller string) err
 func (*InertAircraftController) SendTextMessage(m TextMessage) error {
 	return ErrNoConnection
 }
-func (*InertAircraftController) SendRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+func (*InertAircraftController) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	return ErrNoConnection
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // DisconnectedATCServer
 
+// DisconnectedATCServer continues the InertAircraftController theme and
+// implements the ATCServer interface, more or less without doing anything.
+// It is the initial server after vice starts up and is used as the server
+// after the user disconnects from an actual VATSIM server.
 type DisconnectedATCServer struct {
 	InertAircraftController
 }
