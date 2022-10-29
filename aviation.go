@@ -73,6 +73,11 @@ func (f Facility) String() string {
 // Frequencies are scaled by 1000 and then stored in integers.
 type Frequency int
 
+func NewFrequency(f float32) Frequency {
+	// 0.5 is key for handling rounding!
+	return Frequency(f*1000 + 0.5)
+}
+
 func (f Frequency) String() string {
 	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
 	for len(s) < 7 {

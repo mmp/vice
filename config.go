@@ -539,7 +539,7 @@ func (c *PositionConfig) DrawRadioUI() {
 		/* add */ func(entries []*string) {
 			// Assume that valid has passed for this input
 			f, _ := strconv.ParseFloat(*entries[1], 32)
-			c.Frequencies[*entries[0]] = Frequency(int(f*1000 + 0.5))
+			c.Frequencies[*entries[0]] = NewFrequency(float32(f))
 		},
 		/* delete */ func(selected map[string]interface{}) {
 			for k := range selected {

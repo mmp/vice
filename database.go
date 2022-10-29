@@ -759,7 +759,7 @@ func parsePositionFile(filename string) (map[string][]Position, error) {
 		p := Position{
 			name:      fields[0],
 			callsign:  fields[1],
-			frequency: Frequency(int(frequency * 1000)),
+			frequency: NewFrequency(float32(frequency)),
 			sectorId:  fields[3],
 			scope:     fields[4],
 			id:        id,
