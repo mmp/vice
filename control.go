@@ -110,7 +110,7 @@ type ATCServer interface {
 	// GetATIS returns the most recent ATIS that has been broadcast for the
 	// specified airport.  Note that unlike METAR, there's no need to
 	// specify the airport ahead of time.
-	GetATIS(airport string) string
+	GetATIS(airport string) []ATIS
 
 	GetUser(callsign string) *User
 	GetController(callsign string) *Controller
@@ -341,8 +341,8 @@ func (d *DisconnectedATCServer) GetMETAR(location string) *METAR {
 	return nil
 }
 
-func (d *DisconnectedATCServer) GetATIS(airport string) string {
-	return ""
+func (d *DisconnectedATCServer) GetATIS(airport string) []ATIS {
+	return nil
 }
 
 func (d *DisconnectedATCServer) GetUser(callsign string) *User {

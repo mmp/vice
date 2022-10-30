@@ -564,11 +564,12 @@ func init() {
 	}))
 
 	r(NewMessageSpec("$CQ::NEWATIS", 4, func(v *VATSIMServer, sender string, args []string) error {
+		var atis string
 		if len(args) == 5 {
 			// I think this is the expected way
 			// $CQKEKY_ATIS:@94835:NEWATIS:ATIS A:  VRB05KT - A3006
 			letter := args[3][len(args[3])-1]
-			v.atis[sender] = string(letter) + " " + args[4]
+			atis = string(letter) + " " + args[4]
 		} else {
 			// But occasionally it comes in like this
 			// CQKORF_ATIS:@94835:NEWATIS:ATIS D - wind 07009KT alt 3000
@@ -576,8 +577,28 @@ func init() {
 				return MalformedMessageError{"Insufficient ATIS text" + args[3]}
 			}
 			letter := args[3][5]
-			v.atis[sender] = string(letter) + " " + args[3][8:]
+			atis = string(letter) + " " + args[3][8:]
 		}
+
+		// First, figure out which airport this is for; we want to
+		// associate senders ranging from KPHL_ATIS to those like
+		// KPHL_A_ATIS and KPHL_D_ATIS with KPHL, so we'll just take
+		// everything up to the first _.
+		sc := strings.Split(sender, "_")
+		if len(sc) == 0 {
+			return MalformedMessageError{"Unexpected ATIS sender format" + sender}
+		}
+		airport := sc[0]
+
+		for i, a := range v.atis[airport] {
+			if a.callsign == sender {
+				// Replace pre-existing
+				v.atis[airport][i] = ATIS{callsign: sender, contents: atis}
+				return nil
+			}
+		}
+		// Add a new one
+		v.atis[airport] = append(v.atis[airport], ATIS{callsign: sender, contents: atis})
 		return nil
 	}))
 

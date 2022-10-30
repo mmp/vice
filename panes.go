@@ -435,11 +435,11 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if a.ShowATIS {
 		var atis []string
 		for ap := range a.Airports {
-			if contents := server.GetATIS(ap); contents != "" {
-				atis = append(atis, fmt.Sprintf("  %-12s: %s", ap, contents))
+			for _, at := range server.GetATIS(ap) {
+				atis = append(atis, fmt.Sprintf("  %-12s: %s", at.callsign, at.contents))
 
-				if oldATIS, ok := a.lastATIS[ap]; oldATIS != contents {
-					a.lastATIS[ap] = contents
+				if oldATIS, ok := a.lastATIS[at.callsign]; oldATIS != at.contents {
+					a.lastATIS[at.callsign] = at.contents
 					// don't play a sound the first time we get the ATIS.
 					if ok {
 						globalConfig.AudioSettings.HandleEvent(AudioEventUpdatedATIS)

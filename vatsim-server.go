@@ -88,7 +88,7 @@ type VATSIMServer struct {
 	controllerSectors map[string]*Controller
 	pilots            map[string]*Pilot
 	metar             map[string]METAR
-	atis              map[string]string
+	atis              map[string][]ATIS
 
 	// Map from callsign to the controller currently tracking the aircraft (if any).
 	// Note that we don't require that we have the controller in |controllers|; we
@@ -111,7 +111,7 @@ func NewVATSIMServer() *VATSIMServer {
 		controllers:         make(map[string]*Controller),
 		controllerSectors:   make(map[string]*Controller),
 		metar:               make(map[string]METAR),
-		atis:                make(map[string]string),
+		atis:                make(map[string][]ATIS),
 		users:               make(map[string]*User),
 		pilots:              make(map[string]*Pilot),
 		trackingControllers: make(map[string]string),
@@ -203,11 +203,11 @@ func (v *VATSIMServer) GetMETAR(location string) *METAR {
 	}
 }
 
-func (v *VATSIMServer) GetATIS(airport string) string {
+func (v *VATSIMServer) GetATIS(airport string) []ATIS {
 	if atis, ok := v.atis[airport]; ok {
 		return atis
 	} else {
-		return ""
+		return nil
 	}
 }
 
@@ -612,7 +612,7 @@ func (v *VATSIMServer) Disconnect() {
 	v.controllers = make(map[string]*Controller)
 	v.controllerSectors = make(map[string]*Controller)
 	v.metar = make(map[string]METAR)
-	v.atis = make(map[string]string)
+	v.atis = make(map[string][]ATIS)
 	v.trackingControllers = make(map[string]string)
 	v.outboundHandoffs = make(map[string]string)
 	v.inboundHandoffs = make(map[string]string)

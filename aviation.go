@@ -30,6 +30,11 @@ func (m METAR) String() string {
 	return strings.Join([]string{m.airport, m.time, auto, m.wind, m.weather, m.altimeter, m.rmk}, " ")
 }
 
+type ATIS struct {
+	callsign string
+	contents string
+}
+
 type NetworkRating int
 
 const (
