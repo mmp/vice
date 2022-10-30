@@ -1541,7 +1541,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Handle selection, deletion, and reordering
 	if ctx.mouse != nil {
 		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
-		if ctx.mouse.clicked[0] && ctx.mouse.pos[0] <= drawWidth {
+		if ctx.mouse.clicked[mouseButtonPrimary] && ctx.mouse.pos[0] <= drawWidth {
 			// from the bottom
 			stripIndex := int(ctx.mouse.pos[1] / stripHeight)
 			stripIndex += scrollOffset
@@ -1558,7 +1558,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				}
 			}
 		}
-		if ctx.mouse.dragging[0] {
+		if ctx.mouse.dragging[mouseButtonPrimary] {
 			fsp.mouseDragging = true
 			fsp.lastMousePos = ctx.mouse.pos
 
@@ -1569,7 +1569,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			selectionLd.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
 		}
 	}
-	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.dragging[0]) {
+	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.dragging[mouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
 		if positionConfig.selectedAircraft == nil {
@@ -1611,8 +1611,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			}
 		}
 	}
-	// Take focus if the user double-clicks in the annotations
-	if ctx.mouse != nil && ctx.mouse.doubleClicked[mouseButtonPrimary] {
+	// Take focus if the user clicks in the annotations
+	if ctx.mouse != nil && ctx.mouse.clicked[mouseButtonPrimary] {
 		annotationStartX := drawWidth - 3*widthAnn
 		if xp := ctx.mouse.pos[0]; xp >= annotationStartX && xp < drawWidth {
 			stripIndex := int(ctx.mouse.pos[1]/stripHeight) + scrollOffset

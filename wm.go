@@ -583,6 +583,9 @@ func wmTakeKeyboardFocus(pane Pane, isTransient bool) {
 	if isTransient && wm.keyboardFocusPane != nil {
 		wm.keyboardFocusStack = append(wm.keyboardFocusStack, wm.keyboardFocusPane)
 	}
+	if !isTransient {
+		wm.keyboardFocusStack = nil
+	}
 	wm.keyboardFocusPane = pane
 }
 
@@ -609,12 +612,22 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		wm.keyboardFocusPane = nil
 	}
 	if wm.keyboardFocusPane == nil {
-		// Pick one that can take it, arbitrarily
+		// Pick one that can take it. Try to find a CLI pane first since that's
+		// most likely where the user would prefer to start out...
 		positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
-			if p.CanTakeKeyboardFocus() {
+			if _, ok := p.(*CLIPane); ok {
 				wm.keyboardFocusPane = p
 			}
 		})
+		// If there's no CLIPane then go ahead and take any one that can
+		// take keyboard events.
+		if wm.keyboardFocusPane == nil {
+			positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
+				if p.CanTakeKeyboardFocus() {
+					wm.keyboardFocusPane = p
+				}
+			})
+		}
 	}
 
 	io := imgui.CurrentIO()

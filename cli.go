@@ -350,7 +350,7 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cli.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&cli.cb)
 
-	if ctx.mouse != nil && ctx.mouse.doubleClicked[mouseButtonPrimary] {
+	if ctx.mouse != nil && ctx.mouse.clicked[mouseButtonPrimary] {
 		wmTakeKeyboardFocus(cli, false)
 	}
 
@@ -426,7 +426,7 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Draw text for the input, one line above the status line
 	inputPos := [2]float32{left, 2.5 * lineHeight}
-	cli.input.EmitDrawCommands(inputPos, style, cursorStyle, &cli.cb)
+	cli.input.EmitDrawCommands(inputPos, style, cursorStyle, ctx.keyboard != nil, &cli.cb)
 
 	// status
 	if cli.status != "" {
@@ -439,14 +439,18 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cb.Call(cli.cb)
 }
 
-func (ci *CLIInput) EmitDrawCommands(inputPos [2]float32, style TextStyle, cursorStyle TextStyle, cb *CommandBuffer) {
+func (ci *CLIInput) EmitDrawCommands(inputPos [2]float32, style TextStyle, cursorStyle TextStyle,
+	haveFocus bool, cb *CommandBuffer) {
 	td := TextDrawBuilder{}
 	prompt := ""
 	if positionConfig.selectedAircraft != nil {
 		prompt = positionConfig.selectedAircraft.Callsign()
 	}
 	prompt = prompt + "> "
-	if ci.cursor == len(ci.cmd) {
+	if !haveFocus {
+		// Don't draw the cursor if we don't have keyboard focus
+		td.AddText(prompt+ci.cmd, inputPos, style)
+	} else if ci.cursor == len(ci.cmd) {
 		// cursor at the end
 		td.AddTextMulti([]string{prompt + string(ci.cmd), " "}, inputPos,
 			[]TextStyle{style, cursorStyle})
