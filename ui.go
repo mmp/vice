@@ -2075,9 +2075,10 @@ func showColorEditor() {
 				name != positionConfig.ColorSchemeName {
 				positionConfig.ColorSchemeName = name
 
-				// This is slightly wasteful (e.g., resets the DrawList allocations),
-				// but ensures that all of the panes get the new colors.
-				globalConfig.MakeConfigActive(globalConfig.ActivePosition)
+				// Update the things that depend on the color scheme.
+				cs := positionConfig.GetColorScheme()
+				uiUpdateColorScheme(cs)
+				database.SetColorScheme(cs)
 			}
 		}
 		imgui.EndCombo()
@@ -2125,7 +2126,7 @@ func showColorEditor() {
 }
 
 func uiUpdateColorScheme(cs *ColorScheme) {
-	// As far as I can tell, all imgui elements with "todo" below are not
+	// As far as I can tell, all imgui elements with "unused" below are not
 	// used by vice; if they are, now or in the future, it should be
 	// evident from the bright red color. (At which point it will be
 	// necessary to figure out which existing UI colors should be used for
