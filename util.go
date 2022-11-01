@@ -423,6 +423,11 @@ func (r RGB) Equals(other RGB) bool {
 	return r.R == other.R && r.G == other.G && r.B == other.B
 }
 
+func RGBFromHex(c int) RGB {
+	r, g, b := (c>>16)&255, (c>>8)&255, c&255
+	return RGB{R: float32(r) / 255, G: float32(g) / 255, B: float32(b) / 255}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Point2LL
 

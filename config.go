@@ -295,21 +295,8 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 
 	wmActivateNewConfig(oldConfig, positionConfig, cs)
 
-	if cs.IsDark() {
-		imgui.StyleColorsDark()
-		style := imgui.CurrentStyle()
-		darkGray := imgui.Vec4{.1, .1, .1, 1}
-		style.SetColor(imgui.StyleColorWindowBg, darkGray)
-		style.SetColor(imgui.StyleColorChildBg, darkGray)
-		style.SetColor(imgui.StyleColorPopupBg, darkGray)
-	} else {
-		imgui.StyleColorsLight()
-		style := imgui.CurrentStyle()
-		lightGray := imgui.Vec4{.9, .9, .9, 1}
-		style.SetColor(imgui.StyleColorWindowBg, lightGray)
-		style.SetColor(imgui.StyleColorChildBg, lightGray)
-		style.SetColor(imgui.StyleColorPopupBg, lightGray)
-	}
+	uiUpdateColorScheme(cs)
+
 	database.SetColorScheme(cs)
 }
 

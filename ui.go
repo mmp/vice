@@ -180,6 +180,10 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
+func (c RGBA) imgui() imgui.Vec4 {
+	return imgui.Vec4{c.R, c.G, c.B, c.A}
+}
+
 func drawUI(cs *ColorScheme, platform Platform) {
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
@@ -1543,7 +1547,7 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		[2]float32{pw - float32(edgeSpace), wy0},
 		[2]float32{pw - float32(edgeSpace), wy1},
 		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1})
-	cb.SetRGB(ctx.cs.Scrollbar)
+	cb.SetRGB(ctx.cs.UIControl)
 	quad.GenerateCommands(cb)
 }
 
@@ -1627,13 +1631,21 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 // ColorScheme
 
 type ColorScheme struct {
-	Background RGB
-	SplitLine  RGB
-	Scrollbar  RGB
-
 	Text          RGB
 	TextHighlight RGB
 	TextError     RGB
+	TextDisabled  RGB
+
+	// UI
+	Background          RGB
+	AltBackground       RGB
+	UITitleBackground   RGB
+	UIControl           RGB
+	UIControlBackground RGB
+	UIControlSeparator  RGB
+	UIControlHovered    RGB
+	UIInputBackground   RGB
+	UIControlActive     RGB
 
 	Safe    RGB
 	Caution RGB
@@ -1647,9 +1659,8 @@ type ColorScheme struct {
 	GhostDataBlock      RGB
 	Track               RGB
 
-	FlightStripText RGB
-	ArrivalStrip    RGB
-	DepartureStrip  RGB
+	ArrivalStrip   RGB
+	DepartureStrip RGB
 
 	Airport    RGB
 	VOR        RGB
@@ -1681,12 +1692,13 @@ func (r *RGB) DrawUI(title string) bool {
 }
 
 func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
-	edit := func(uiName string, internalName string, c *RGB) {
+	edit := func(uiName string, internalName string, color *RGB) {
 		// It's slightly grungy to hide this in here but it does simplify
 		// the code below...
 		imgui.TableNextColumn()
-		if c.DrawUI(uiName) {
-			handleDefinedColorChange(internalName, *c)
+		if color.DrawUI(uiName) {
+			handleDefinedColorChange(internalName, *color)
+			uiUpdateColorScheme(c)
 		}
 	}
 
@@ -1721,79 +1733,79 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 		imgui.TableHeadersRow()
 
 		imgui.TableNextRow()
-		edit("Background", "Background", &c.Background)
+		edit("Text", "Text", &c.Text)
 		edit("Track", "Track", &c.Track)
 		edit("Airport", "Airport", &c.Airport)
 		sfd()
 
 		imgui.TableNextRow()
-		edit("Text", "Text", &c.Text)
+		edit("Highlighted text", "TextHighlight", &c.TextHighlight)
 		edit("Tracked data block", "Tracked Data Block", &c.TrackedDataBlock)
 		edit("ARTCC", "ARTCC", &c.ARTCC)
 		sfd()
 
 		imgui.TableNextRow()
-		edit("Highlighted text", "TextHighlight", &c.TextHighlight)
+		edit("Error text", "TextError", &c.TextError)
 		edit("Selected data block", "Selected Data Block", &c.SelectedDataBlock)
 		edit("Compass", "Compass", &c.Compass)
 		sfd()
 
 		imgui.TableNextRow()
-		edit("Error text", "TextError", &c.TextError)
+		edit("Disabled text", "TextDisabled", &c.TextDisabled)
 		edit("Handing-off data block", "HandingOff Data Block", &c.HandingOffDataBlock)
 		edit("Fix", "Fix", &c.Fix)
 		sfd()
 
 		imgui.TableNextRow()
-		edit("Split line", "Split Line", &c.SplitLine)
+		edit("Background", "Background", &c.Background)
 		edit("Untracked data block", "Untracked Data Block", &c.UntrackedDataBlock)
 		edit("Geo", "Geo", &c.Geo)
 		sfd()
 
 		imgui.TableNextRow()
-		edit("Scrollbar", "Scrollbar", &c.Scrollbar)
+		edit("Alternate background", "AltBackground", &c.AltBackground)
 		edit("Ghost data block", "Ghost Data Block", &c.GhostDataBlock)
 		edit("High airway", "HighAirway", &c.HighAirway)
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
+		edit("UI title background", "UITitleBackground", &c.UITitleBackground)
 		edit("Safe situation", "Safe", &c.Safe)
 		edit("Low airway", "LowAirway", &c.LowAirway)
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
+		edit("UI control", "UIControl", &c.UIControl)
 		edit("Caution situation", "Caution", &c.Caution)
 		edit("NDB", "NDB", &c.NDB)
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
+		edit("UI control background", "UIControlBackground", &c.UIControlBackground)
 		edit("Error situation", "Error", &c.Error)
 		edit("Region", "Region", &c.Region)
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		edit("Flight strip text", "Flight strip text", &c.FlightStripText)
+		edit("UI control separator", "UIControlSeparator", &c.UIControlSeparator)
+		edit("Departure flight strip", "Departure flight strip", &c.DepartureStrip)
 		edit("Runway", "Runway", &c.Runway)
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		edit("Departure flight strip", "Departure flight strip", &c.DepartureStrip)
+		edit("UI hovered control", "UIControlHovered", &c.UIControlHovered)
+		edit("Arrival flight strip", "Arrival flight strip", &c.ArrivalStrip)
 		edit("SID", "SID", &c.SID)
 		sfd()
 
 		imgui.TableNextRow()
+		edit("UI input background", "UIInputBackground", &c.UIInputBackground)
 		imgui.TableNextColumn()
-		edit("Arrival flight strip", "Arrival flight strip", &c.ArrivalStrip)
 		edit("STAR", "STAR", &c.STAR)
 		sfd()
 
 		imgui.TableNextRow()
-		imgui.TableNextColumn()
+		edit("UI active control", "UIControlActive", &c.UIControlActive)
 		imgui.TableNextColumn()
 		edit("VOR", "VOR", &c.VOR)
 		sfd()
@@ -1812,24 +1824,30 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 
 var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 	"Dark (builtin)": &ColorScheme{
+		Text:                RGB{R: 0.85, G: 0.85, B: 0.85},
+		TextHighlight:       RGBFromHex(0xB2B338),
+		TextError:           RGBFromHex(0xE94242),
+		TextDisabled:        RGB{R: 0, G: 0.25, B: 0.01483053},
 		Background:          RGB{R: 0, G: 0, B: 0},
-		SplitLine:           RGB{R: 0.36120403, G: 0.36120403, B: 0.36120403},
-		Scrollbar:           RGB{R: 0.65254235, G: 0.65254235, B: 0.65254235},
-		Text:                RGB{R: 0.120606266, G: 0.8592058, B: 0.07444384},
-		TextHighlight:       RGB{R: 0.8997721, G: 0.90654206, B: 0.18215565},
-		TextError:           RGB{R: 0.91525424, G: 0.069807515, B: 0.069807515},
+		AltBackground:       RGB{R: 0.09322035, G: 0.09322035, B: 0.09322035},
+		UITitleBackground:   RGBFromHex(0x242435),
+		UIControl:           RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237},
+		UIControlBackground: RGB{R: 0.063559294, G: 0.063559294, B: 0.063559294},
+		UIControlSeparator:  RGB{R: 0, G: 0, B: 0},
+		UIControlHovered:    RGB{R: 0.44915253, G: 0.44915253, B: 0.44915253},
+		UIInputBackground:   RGB{R: 0.2881356, G: 0.2881356, B: 0.2881356},
+		UIControlActive:     RGB{R: 0.5677966, G: 0.56539065, B: 0.56539065},
 		Safe:                RGB{R: 0.13225771, G: 0.5635748, B: 0.8519856},
-		Caution:             RGB{R: 0.8592058, G: 0.85245013, B: 0.062036503},
-		Error:               RGB{R: 1, G: 0, B: 0},
+		Caution:             RGBFromHex(0xB7B513),
+		Error:               RGBFromHex(0xE94242),
 		SelectedDataBlock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
-		UntrackedDataBlock:  RGB{R: 0.21454205, G: 0.94584835, B: 0.11609689},
+		UntrackedDataBlock:  RGBFromHex(0x4E54A5),
 		TrackedDataBlock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
 		HandingOffDataBlock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
 		GhostDataBlock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
 		Track:               RGB{R: 0, G: 1, B: 0.084745646},
-		FlightStripText:     RGB{R: 0.9237288, G: 0.9237288, B: 0.9237288},
-		ArrivalStrip:        RGB{R: 0.05057959, G: 0.047579724, B: 0.2245763},
-		DepartureStrip:      RGB{R: 0.14406782, G: 0.04334244, B: 0.04334244},
+		ArrivalStrip:        RGBFromHex(0x080724),
+		DepartureStrip:      RGBFromHex(0x150707),
 		Airport:             RGB{R: 0.46153843, G: 0.46153843, B: 0.46153843},
 		VOR:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
 		NDB:                 RGB{R: 0.44481605, G: 0.44481605, B: 0.44481605},
@@ -1845,28 +1863,34 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		Compass:             RGB{R: 0.5270758, G: 0.5270758, B: 0.5270758},
 	},
 	"Light (builtin)": &ColorScheme{
-		Background:          RGB{R: 1, G: 1, B: 1},
-		SplitLine:           RGB{R: 0.8245098, G: 0.8250796, B: 0.90969896},
-		Scrollbar:           RGB{R: 0, G: 0, B: 0},
-		Text:                RGB{R: 0.107210346, G: 0.035419118, B: 0.65686274},
-		TextHighlight:       RGB{R: 0.5127119, G: 0.48472703, B: 0.18249066},
-		TextError:           RGB{R: 0.88559324, G: 0.16886309, B: 0.16886309},
+		Text:                RGBFromHex(0x092BA8),
+		TextHighlight:       RGBFromHex(0x148323),
+		TextError:           RGBFromHex(0xc63a3a),
+		TextDisabled:        RGB{R: 0, G: 0, B: 0},
+		Background:          RGBFromHex(0xfdfaf3),
+		AltBackground:       RGBFromHex(0xF5F2EB),
+		UITitleBackground:   RGBFromHex(0xC5C3BD),
+		UIControl:           RGBFromHex(0xd8d8d8),
+		UIControlBackground: RGB{R: 0.937, G: 0.937, B: 0.937},
+		UIControlSeparator:  RGB{R: 0.59745765, G: 0.59745765, B: 0.59745765},
+		UIControlHovered:    RGB{R: 0.63983047, G: 0.63983047, B: 0.63983047},
+		UIInputBackground:   RGBFromHex(0xe8e8e8),
+		UIControlActive:     RGB{R: 0.6864407, G: 0.6864407, B: 0.6864407},
 		Safe:                RGB{R: 0.5117057, G: 0.5247704, B: 1},
 		Caution:             RGB{R: 0.8601695, G: 0.6032181, B: 0.14214665},
 		Error:               RGB{R: 1, G: 0, B: 0},
-		SelectedDataBlock:   RGB{R: 0.63176894, G: 0.6059726, B: 0.08210714},
-		UntrackedDataBlock:  RGB{R: 0.15045157, G: 0.21625589, B: 0.80144405},
-		TrackedDataBlock:    RGB{R: 0.32058924, G: 0.8231047, B: 0.24069126},
+		SelectedDataBlock:   RGBFromHex(0x239438),
+		UntrackedDataBlock:  RGB{R: 0.32058924, G: 0.8231047, B: 0.24069126},
+		TrackedDataBlock:    RGB{R: 0.15045157, G: 0.21625589, B: 0.80144405},
 		HandingOffDataBlock: RGB{R: 0.8267148, G: 0.1790718, B: 0.1790718},
 		GhostDataBlock:      RGB{R: 0.44404334, G: 0.44404334, B: 0.44404334},
 		Track:               RGB{R: 0.37458193, G: 0.37458193, B: 0.37458193},
-		FlightStripText:     RGB{R: 0, G: 0, B: 0},
-		ArrivalStrip:        RGB{R: 0.73613906, G: 0.75123316, B: 0.84745765},
-		DepartureStrip:      RGB{R: 0.84745765, G: 0.7002298, B: 0.7002298},
-		Airport:             RGB{R: 0.627451, G: 0.627451, B: 0.627451},
-		VOR:                 RGB{R: 0.627451, G: 0.627451, B: 0.627451},
-		NDB:                 RGB{R: 0.627451, G: 0.627451, B: 0.627451},
-		Fix:                 RGB{R: 0.627451, G: 0.627451, B: 0.627451},
+		ArrivalStrip:        RGBFromHex(0xe8e8e3),
+		DepartureStrip:      RGBFromHex(0xf6f6f1),
+		Airport:             RGBFromHex(0x5A78AD),
+		VOR:                 RGBFromHex(0x5A78AD),
+		NDB:                 RGBFromHex(0x5A78AD),
+		Fix:                 RGBFromHex(0x5A78AD),
 		Runway:              RGB{R: 0.8, G: 0.8, B: 0.4},
 		Region:              RGB{R: 0.691375, G: 0.7966102, B: 0.6177105},
 		SID:                 RGB{R: 0.6694915, G: 0.54997474, B: 0.5077923},
@@ -2059,4 +2083,68 @@ func showColorEditor() {
 	})
 
 	uiEndDisable(!canEdit)
+}
+
+func uiUpdateColorScheme(cs *ColorScheme) {
+	// As far as I can tell, all imgui elements with "todo" below are not
+	// used by vice; if they are, now or in the future, it should be
+	// evident from the bright red color. (At which point it will be
+	// necessary to figure out which existing UI colors should be used for
+	// them or if new ones are needed.)
+	unused := RGB{1, 0, 0}.imgui()
+
+	style := imgui.CurrentStyle()
+	style.SetColor(imgui.StyleColorText, cs.Text.imgui())
+	style.SetColor(imgui.StyleColorTextDisabled, cs.TextDisabled.imgui())
+	style.SetColor(imgui.StyleColorWindowBg, cs.Background.imgui())
+	style.SetColor(imgui.StyleColorChildBg, cs.UIControlBackground.imgui())
+	style.SetColor(imgui.StyleColorPopupBg, cs.Background.imgui())
+	style.SetColor(imgui.StyleColorBorder, cs.AltBackground.imgui())
+	style.SetColor(imgui.StyleColorBorderShadow, unused)
+	style.SetColor(imgui.StyleColorFrameBg, cs.UIInputBackground.imgui())
+	style.SetColor(imgui.StyleColorFrameBgHovered, cs.UIControlHovered.imgui())
+	style.SetColor(imgui.StyleColorFrameBgActive, cs.UITitleBackground.imgui())
+	style.SetColor(imgui.StyleColorTitleBg, cs.UITitleBackground.imgui())
+	style.SetColor(imgui.StyleColorTitleBgActive, cs.UITitleBackground.imgui())
+	style.SetColor(imgui.StyleColorTitleBgCollapsed, cs.UITitleBackground.imgui())
+	style.SetColor(imgui.StyleColorMenuBarBg, cs.Background.imgui())
+	style.SetColor(imgui.StyleColorScrollbarBg, cs.AltBackground.imgui())
+	style.SetColor(imgui.StyleColorScrollbarGrab, cs.UIControl.imgui())
+	style.SetColor(imgui.StyleColorScrollbarGrabHovered, cs.UIControlHovered.imgui())
+	style.SetColor(imgui.StyleColorScrollbarGrabActive, cs.UIControlActive.imgui())
+	style.SetColor(imgui.StyleColorCheckMark, cs.Text.imgui())
+	style.SetColor(imgui.StyleColorSliderGrab, cs.UIControlActive.imgui())
+	style.SetColor(imgui.StyleColorSliderGrabActive, cs.UIControlActive.imgui())
+	style.SetColor(imgui.StyleColorButton, cs.UIControl.imgui())
+	style.SetColor(imgui.StyleColorButtonHovered, cs.UIControlHovered.imgui())
+	style.SetColor(imgui.StyleColorButtonActive, cs.UIControlActive.imgui())
+	style.SetColor(imgui.StyleColorHeader, cs.UITitleBackground.imgui())
+	style.SetColor(imgui.StyleColorHeaderHovered, cs.UIControlHovered.imgui())
+	style.SetColor(imgui.StyleColorHeaderActive, cs.UIControlActive.imgui())
+	style.SetColor(imgui.StyleColorSeparator, cs.UIControlSeparator.imgui())
+	style.SetColor(imgui.StyleColorSeparatorHovered, unused)
+	style.SetColor(imgui.StyleColorSeparatorActive, unused)
+	style.SetColor(imgui.StyleColorResizeGrip, unused)
+	style.SetColor(imgui.StyleColorResizeGripHovered, unused)
+	style.SetColor(imgui.StyleColorResizeGripActive, unused)
+	style.SetColor(imgui.StyleColorTab, unused)
+	style.SetColor(imgui.StyleColorTabHovered, unused)
+	style.SetColor(imgui.StyleColorTabActive, unused)
+	style.SetColor(imgui.StyleColorTabUnfocused, unused)
+	style.SetColor(imgui.StyleColorTabUnfocusedActive, unused)
+	style.SetColor(imgui.StyleColorPlotLines, unused)
+	style.SetColor(imgui.StyleColorPlotLinesHovered, unused)
+	style.SetColor(imgui.StyleColorPlotHistogram, unused)
+	style.SetColor(imgui.StyleColorPlotHistogramHovered, unused)
+	style.SetColor(imgui.StyleColorTableHeaderBg, cs.UITitleBackground.imgui())
+	style.SetColor(imgui.StyleColorTableBorderStrong, cs.UIControlSeparator.imgui())
+	style.SetColor(imgui.StyleColorTableBorderLight, cs.UIControlSeparator.imgui())
+	style.SetColor(imgui.StyleColorTableRowBg, cs.AltBackground.imgui())
+	style.SetColor(imgui.StyleColorTableRowBgAlt, cs.Background.imgui())
+	style.SetColor(imgui.StyleColorTextSelectedBg, cs.UIControlHovered.imgui())
+	style.SetColor(imgui.StyleColorDragDropTarget, unused)
+	style.SetColor(imgui.StyleColorNavHighlight, unused)
+	style.SetColor(imgui.StyleColorNavWindowingHighlight, unused)
+	style.SetColor(imgui.StyleColorNavWindowingDarkening, RGBA{0.5, 0.5, 0.5, 0.5}.imgui())
+	style.SetColor(imgui.StyleColorModalWindowDarkening, RGBA{0.3, 0.3, 0.3, 0.3}.imgui())
 }

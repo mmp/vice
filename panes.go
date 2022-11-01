@@ -1399,7 +1399,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		fp := ac.flightPlan
 
-		style := TextStyle{font: fsp.font, color: ctx.cs.FlightStripText}
+		style := TextStyle{font: fsp.font, color: ctx.cs.Text}
 		if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft.Callsign() == callsign {
 			style.color = ctx.cs.TextHighlight
 		}
@@ -1634,7 +1634,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	fsp.scrollbar.Draw(ctx, cb)
 
-	cb.SetRGB(ctx.cs.SplitLine)
+	cb.SetRGB(ctx.cs.UIControl)
 	cb.LineWidth(1 * ctx.highDPIScale)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)

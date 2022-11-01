@@ -81,7 +81,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		s.Pos = clamp(s.Pos, .01, .99)
 	}
 
-	cb.ClearRGB(ctx.cs.SplitLine)
+	cb.ClearRGB(ctx.cs.UIControl)
 }
 
 func splitLineWidth() int {
