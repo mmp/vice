@@ -58,3 +58,8 @@ All sound effect audio is CC0 licensed from freesound.org.  Many thanks to
 the following freesound users, whose sounds are used in vice: pan14,
 gabrielaraujo, dland, nsstudios, soundward, bbrocer, michaelatoz,
 bettlemuse, ranner, thisusernameis.
+
+*** Color Palettes ***
+
+The builtin "Nord" color palette is a slightly modified version of the Nord
+palette (https://www.nordtheme.com).
