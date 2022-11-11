@@ -377,8 +377,11 @@ func (v *VATSIMServer) SetVoiceType(callsign string, cap VoiceCapability) error 
 
 			// Remove any existing voice type
 			fp.remarks = strings.ReplaceAll(fp.remarks, "/v/", "")
+			fp.remarks = strings.ReplaceAll(fp.remarks, "/V/", "")
 			fp.remarks = strings.ReplaceAll(fp.remarks, "/r/", "")
+			fp.remarks = strings.ReplaceAll(fp.remarks, "/R/", "")
 			fp.remarks = strings.ReplaceAll(fp.remarks, "/t/", "")
+			fp.remarks = strings.ReplaceAll(fp.remarks, "/T/", "")
 
 			// And insert the one that was set
 			fp.remarks += " " + voiceStr
