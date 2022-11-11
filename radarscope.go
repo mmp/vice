@@ -2466,7 +2466,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		// TODO: Here add level if at wrong alt...
 
 		// Have already established it's not squawking standby.
-		if duplicateSquawk && ac.squawk != 0 {
+		if duplicateSquawk && ac.squawk != Squawk(1200) && ac.squawk != 0 {
 			if flashcycle&1 == 0 {
 				datablock.WriteString("CODE")
 			} else {
