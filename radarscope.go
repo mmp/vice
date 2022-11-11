@@ -150,6 +150,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.DataBlockFormat = DataBlockFormatGround
 	c.DrawRegions = true
 	c.DrawLabels = true
+	c.RadarTracksDrawn = 5
 
 	c.VORsToDraw = make(map[string]interface{})
 	c.NDBsToDraw = make(map[string]interface{})
