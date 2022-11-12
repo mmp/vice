@@ -601,6 +601,10 @@ func (v *VATSIMServer) Disconnect() {
 		return
 	}
 
+	if v.controlDelegate != nil {
+		v.controlDelegate.Disconnect()
+	}
+
 	v.connection.Close()
 	v.connection = nil
 	v.controlDelegate = &InertAircraftController{}

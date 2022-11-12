@@ -69,6 +69,10 @@ type AircraftController interface {
 	// SetRadarCenters specifies the primary and up to 3 secondary radar
 	// centers for the controller (as well as the radar range).
 	SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error
+
+	// Disconnect shuts down the connection with the server and cleans up
+	// detritus.
+	Disconnect()
 }
 
 // ATCServer includes both the AircraftController interface and adds
@@ -139,10 +143,6 @@ type ATCServer interface {
 	// returned earlier by methods like GetAircraft, it also updates the
 	// controlUpdates global variable with information about the changes seen.
 	GetUpdates()
-
-	// Disconnect shuts down the connection with the server and cleans up
-	// detritus.
-	Disconnect()
 
 	// Connected reports if the server connection is active.  (Note that
 	// the connection may unexpectedly be closed by the server for errors
@@ -309,6 +309,7 @@ func (*InertAircraftController) SendTextMessage(m TextMessage) error {
 func (*InertAircraftController) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	return ErrNoConnection
 }
+func (*InertAircraftController) Disconnect() {}
 
 ///////////////////////////////////////////////////////////////////////////
 // DisconnectedATCServer
@@ -374,8 +375,6 @@ func (d *DisconnectedATCServer) AddAirportForWeather(airport string) {}
 func (d *DisconnectedATCServer) SetPrimaryFrequency(f Frequency) {}
 
 func (d *DisconnectedATCServer) GetUpdates() {}
-
-func (d *DisconnectedATCServer) Disconnect() {}
 
 func (d *DisconnectedATCServer) Connected() bool {
 	return false
