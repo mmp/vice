@@ -116,11 +116,22 @@ func NewLogger(verbose bool, printToStderr bool, maxLines int) *Logger {
 // string, to the "verbose" log.  If verbose logging is not enabled, the
 // message is discarded.
 func (l *Logger) Printf(f string, args ...interface{}) {
+	l.printf(3, f, args...)
+}
+
+// PrintfUp1 adds the given message to the error log, but with reported the
+// source file and line number are one level up in the call stack from the
+// function that called it.
+func (l *Logger) PrintfUp1(f string, args ...interface{}) {
+	l.printf(4, f, args...)
+}
+
+func (l *Logger) printf(levels int, f string, args ...interface{}) {
 	if l.verbose == nil {
 		return
 	}
 
-	msg := l.format(2, f, args...)
+	msg := l.format(levels, f, args...)
 	if l.printToStderr {
 		fmt.Fprint(os.Stderr, msg)
 	}
