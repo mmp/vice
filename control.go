@@ -6,6 +6,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -233,6 +234,19 @@ type TextMessage struct {
 	contents    string
 	frequencies []Frequency // only used for messageType == TextFrequency
 	recipient   string      // only used for TextPrivate
+}
+
+func (t *TextMessage) String() string {
+	if t.messageType == TextFrequency {
+		return fmt.Sprintf("TextMessage: sender: %s, freq: %v, contents: %s", t.sender,
+			t.frequencies, t.contents)
+	} else if t.messageType == TextPrivate {
+		return fmt.Sprintf("TextMessage: sender: %s, recipient: %s, contents: %s", t.sender,
+			t.recipient, t.contents)
+	} else {
+		return fmt.Sprintf("TextMessage: sender: %s, type: %s, contents: %s", t.sender,
+			t.messageType.String(), t.contents)
+	}
 }
 
 // TextMessageType is an enumerant that indicates the type of text message.
