@@ -25,7 +25,6 @@ type Pane interface {
 
 	Activate(cs *ColorScheme)
 	Deactivate()
-	ProcessEvents(es *EventStream)
 
 	CanTakeKeyboardFocus() bool
 
@@ -47,6 +46,7 @@ type PaneContext struct {
 	cs       *ColorScheme
 	mouse    *MouseState
 	keyboard *KeyboardState
+	events   *EventStream
 }
 
 type MouseState struct {
@@ -364,8 +364,6 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 
 func (a *AirportInfoPane) CanTakeKeyboardFocus() bool { return false }
 
-func (a *AirportInfoPane) ProcessEvents(es *EventStream) {}
-
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// It's slightly little wasteful to keep asking each time; better would
 	// be to only do so when either our airports change or there's a new
@@ -661,10 +659,9 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(cs *ColorScheme)      {}
-func (ep *EmptyPane) Deactivate()                   {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool    { return false }
-func (ep *EmptyPane) ProcessEvents(es *EventStream) {}
+func (ep *EmptyPane) Activate(cs *ColorScheme)   {}
+func (ep *EmptyPane) Deactivate()                {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 
 func (ep *EmptyPane) Duplicate(nameAsCopy bool) Pane { return &EmptyPane{} }
 func (ep *EmptyPane) Name() string                   { return "(Empty)" }
@@ -695,9 +692,8 @@ func (fp *FlightPlanPane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (fp *FlightPlanPane) Deactivate()                   {}
-func (fp *FlightPlanPane) CanTakeKeyboardFocus() bool    { return false }
-func (fp *FlightPlanPane) ProcessEvents(es *EventStream) {}
+func (fp *FlightPlanPane) Deactivate()                {}
+func (fp *FlightPlanPane) CanTakeKeyboardFocus() bool { return false }
 
 func (fp *FlightPlanPane) DrawUI() {
 	imgui.Checkbox("Show remarks", &fp.ShowRemarks)
@@ -771,8 +767,6 @@ func (nv *NotesViewPane) Activate(cs *ColorScheme) {
 func (nv *NotesViewPane) Deactivate() {}
 
 func (nv *NotesViewPane) CanTakeKeyboardFocus() bool { return false }
-
-func (nv *NotesViewPane) ProcessEvents(es *EventStream) {}
 
 func (nv *NotesViewPane) Duplicate(nameAsCopy bool) Pane {
 	return &NotesViewPane{
@@ -895,9 +889,8 @@ type PerformancePane struct {
 	initialMallocs uint64
 
 	// exponential averages of various time measurements (in ms)
-	processMessages float32
-	drawPanes       float32
-	drawImgui       float32
+	drawPanes float32
+	drawImgui float32
 
 	FontIdentifier FontIdentifier
 	font           *Font
@@ -922,9 +915,8 @@ func (pp *PerformancePane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (pp *PerformancePane) Deactivate()                   {}
-func (pp *PerformancePane) CanTakeKeyboardFocus() bool    { return false }
-func (pp *PerformancePane) ProcessEvents(es *EventStream) {}
+func (pp *PerformancePane) Deactivate()                {}
+func (pp *PerformancePane) CanTakeKeyboardFocus() bool { return false }
 
 func (pp *PerformancePane) Name() string { return "Performance Information" }
 
@@ -955,8 +947,7 @@ func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		*stat = .99**stat + .01*dms
 		return *stat
 	}
-	perf.WriteString(fmt.Sprintf("\nmsgs %.2fms draw panes %.2fms draw gui %.2fms",
-		update(stats.processMessages, &pp.processMessages),
+	perf.WriteString(fmt.Sprintf("\ndraw panes %.2fms draw gui %.2fms",
 		update(stats.drawPanes, &pp.drawPanes),
 		update(stats.drawImgui, &pp.drawImgui)))
 
@@ -1056,10 +1047,9 @@ func (rp *ReminderPane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (rp *ReminderPane) Deactivate()                   {}
-func (rp *ReminderPane) CanTakeKeyboardFocus() bool    { return false }
-func (rp *ReminderPane) ProcessEvents(es *EventStream) {}
-func (rp *ReminderPane) Name() string                  { return "Reminders" }
+func (rp *ReminderPane) Deactivate()                {}
+func (rp *ReminderPane) CanTakeKeyboardFocus() bool { return false }
+func (rp *ReminderPane) Name() string               { return "Reminders" }
 
 func (rp *ReminderPane) DrawUI() {
 	if newFont, changed := DrawFontPicker(&rp.FontIdentifier, "Font"); changed {
@@ -1266,7 +1256,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return true }
 
-func (fsp *FlightStripPane) ProcessEvents(es *EventStream) {
+func (fsp *FlightStripPane) processEvents(es *EventStream) {
 	possiblyAdd := func(ac *Aircraft) {
 		callsign := ac.Callsign()
 		if _, ok := fsp.addedAircraft[callsign]; ok {
@@ -1341,6 +1331,8 @@ func (fsp *FlightStripPane) DrawUI() {
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	fsp.processEvents(ctx.events)
+
 	// Font width and height
 	bx, _ := fsp.font.BoundText(" ", 0)
 	fw, fh := float32(bx), float32(fsp.font.size)

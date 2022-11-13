@@ -620,7 +620,7 @@ func (rs *RadarScopePane) DrawUI() {
 
 func (rs *RadarScopePane) CanTakeKeyboardFocus() bool { return false }
 
-func (rs *RadarScopePane) ProcessEvents(es *EventStream) {
+func (rs *RadarScopePane) processEvents(es *EventStream) {
 	for _, event := range es.Get(rs.eventsId) {
 		switch v := event.(type) {
 		case *AddedAircraftEvent:
@@ -677,6 +677,8 @@ func mul4p(m *mgl32.Mat4, p [2]float32) [2]float32 {
 }
 
 func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	rs.processEvents(ctx.events)
+
 	latLongFromWindowMtx, ndcFromLatLongMtx := rs.getViewingMatrices(ctx)
 	windowFromLatLongMtx := latLongFromWindowMtx.Inv()
 

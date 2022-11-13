@@ -225,12 +225,11 @@ func (l *Logger) format(levels int, f string, args ...interface{}) string {
 // Stats collects a few statistics related to rendering and time spent in
 // various phases of the system.
 type Stats struct {
-	render          RendererStats
-	processMessages time.Duration
-	drawImgui       time.Duration
-	drawPanes       time.Duration
-	startTime       time.Time
-	redraws         int
+	render    RendererStats
+	drawImgui time.Duration
+	drawPanes time.Duration
+	startTime time.Time
+	redraws   int
 }
 
 var startupMallocs uint64
@@ -253,8 +252,7 @@ func (l *Logger) LogStats(stats Stats) {
 	lg.Printf("Stats: mallocs/second %d (%dk active) %d MB in use", mallocsPerSecond, active1000s,
 		mem.HeapAlloc/(1024*1024))
 
-	lg.Printf("Stats: process messages %s draw panes %s draw imgui %s",
-		stats.processMessages.String(), stats.drawPanes.String(), stats.drawImgui.String())
+	lg.Printf("Stats: draw panes %s draw imgui %s", stats.drawPanes.String(), stats.drawImgui.String())
 
 	lg.Printf("Stats: rendering: %s", stats.render.String())
 }

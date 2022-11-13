@@ -59,10 +59,9 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(cs *ColorScheme)      {}
-func (s *SplitLine) Deactivate()                   {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool    { return false }
-func (s *SplitLine) ProcessEvents(es *EventStream) {}
+func (s *SplitLine) Activate(cs *ColorScheme)   {}
+func (s *SplitLine) Deactivate()                {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
@@ -422,12 +421,6 @@ func wmInit() {
 	lg.Printf("Finished wm initialization")
 }
 
-func wmProcessEvents(es *EventStream) {
-	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-		pane.ProcessEvents(es)
-	})
-}
-
 func wmAddPaneMenuSettings() {
 	var panes []Pane
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
@@ -736,6 +729,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					fullDisplayExtent: fullDisp,
 					highDPIScale:      fbFull.Height() / displayFull.Height(),
 					platform:          platform,
+					events:            eventStream,
 					cs:                positionConfig.GetColorScheme()}
 
 				if pane == wm.keyboardFocusPane {

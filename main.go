@@ -195,9 +195,7 @@ func main() {
 		positionConfig.SendUpdates()
 		server.GetUpdates()
 		positionConfig.Update()
-		wmProcessEvents(eventStream)
 		audioProcessEvents(eventStream)
-		timeMarker(&stats.processMessages)
 
 		platform.NewFrame()
 		imgui.NewFrame()

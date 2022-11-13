@@ -257,7 +257,7 @@ func (cli *CLIPane) ErrorReported(msg string) {
 
 func (cli *CLIPane) CanTakeKeyboardFocus() bool { return true }
 
-func (cli *CLIPane) ProcessEvents(es *EventStream) {
+func (cli *CLIPane) processEvents(es *EventStream) {
 	for _, event := range es.Get(cli.eventsId) {
 		switch v := event.(type) {
 		case *PointOutEvent:
@@ -347,6 +347,8 @@ func (cli *CLIPane) DrawUI() {
 }
 
 func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	cli.processEvents(ctx.events)
+
 	cli.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&cli.cb)
 
