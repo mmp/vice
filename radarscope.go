@@ -688,7 +688,12 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Title in upper-left corner
 	td := rs.getScratchTextDrawBuilder()
 	height := ctx.paneExtent.Height()
-	td.AddText(rs.ScopeName, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
+	label := rs.ScopeName
+	if *devmode && ctx.mouse != nil {
+		mouseLatLong := latLongFromWindowP(ctx.mouse.pos)
+		label += "\nMouse position: " + mouseLatLong.String()
+	}
+	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
 		TextStyle{font: rs.labelFont, color: ctx.cs.Text})
 	td.GenerateCommands(&rs.textCommandBuffer)
 
