@@ -1570,6 +1570,8 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 
 		// Draw characters starting at the upper left.
 		flashCycle := actualNow.Second() & 1
+		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0] + 1, bbox.p1[1] - 1},
+			TextStyle{font: rs.datablockFont, color: ctx.cs.Background, lineSpacing: -2})
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
 			TextStyle{font: rs.datablockFont, color: color, lineSpacing: -2})
 
