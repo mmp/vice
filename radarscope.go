@@ -105,6 +105,8 @@ type RadarScopePane struct {
 	// persistent state used in the ui
 	vorsComboState, ndbsComboState      *ComboBoxState
 	fixesComboState, airportsComboState *ComboBoxState
+
+	eventsId EventSubscriberId
 }
 
 const (
@@ -182,6 +184,8 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.fixesComboState = NewComboBoxState(1)
 	c.airportsComboState = NewComboBoxState(1)
 
+	c.eventsId = eventStream.Subscribe()
+
 	return c
 }
 
@@ -233,6 +237,8 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.ndbsComboState = NewComboBoxState(1)
 	dupe.fixesComboState = NewComboBoxState(1)
 	dupe.airportsComboState = NewComboBoxState(1)
+
+	dupe.eventsId = eventStream.Subscribe()
 
 	return dupe
 }
@@ -295,6 +301,8 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 		rs.LabelFontIdentifier = rs.labelFont.id
 	}
 
+	rs.eventsId = eventStream.Subscribe()
+
 	// start tracking all of the active aircraft
 	rs.initializeAircraft()
 }
@@ -327,6 +335,9 @@ func (rs *RadarScopePane) Deactivate() {
 	rs.pointsDrawBuilder = PointsDrawBuilder{}
 	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	rs.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
+
+	eventStream.Unsubscribe(rs.eventsId)
+	rs.eventsId = InvalidEventSubscriberId
 }
 
 func (rs *RadarScopePane) Name() string { return rs.ScopeName }
@@ -609,55 +620,51 @@ func (rs *RadarScopePane) DrawUI() {
 
 func (rs *RadarScopePane) CanTakeKeyboardFocus() bool { return false }
 
-func (rs *RadarScopePane) Update(updates *ControlUpdates) {
-	if updates == nil {
-		return
-	}
-
-	for ac := range updates.addedAircraft {
-		rs.aircraft[ac] = &AircraftScopeState{}
-		if rs.CRDAEnabled {
-			if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
-				rs.ghostAircraft[ac] = ghost
-				rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
+func (rs *RadarScopePane) ProcessEvents(es *EventStream) {
+	for _, event := range es.Get(rs.eventsId) {
+		switch v := event.(type) {
+		case *AddedAircraftEvent:
+			rs.aircraft[v.ac] = &AircraftScopeState{}
+			if rs.CRDAEnabled {
+				if ghost := rs.CRDAConfig.GetGhost(v.ac); ghost != nil {
+					rs.ghostAircraft[v.ac] = ghost
+					rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
+				}
 			}
-		}
-	}
 
-	for ac := range updates.removedAircraft {
-		if ghost, ok := rs.ghostAircraft[ac]; ok {
-			delete(rs.aircraft, ghost)
-		}
-		delete(rs.aircraft, ac)
-		delete(rs.ghostAircraft, ac)
-	}
-
-	for ac := range updates.modifiedAircraft {
-		if rs.CRDAEnabled {
-			// always start out by removing the old ghost
-			if oldGhost, ok := rs.ghostAircraft[ac]; ok {
-				delete(rs.aircraft, oldGhost)
-				delete(rs.ghostAircraft, ac)
+		case *RemovedAircraftEvent:
+			if ghost, ok := rs.ghostAircraft[v.ac]; ok {
+				delete(rs.aircraft, ghost)
 			}
-		}
+			delete(rs.aircraft, v.ac)
+			delete(rs.ghostAircraft, v.ac)
 
-		if state, ok := rs.aircraft[ac]; !ok {
-			rs.aircraft[ac] = &AircraftScopeState{}
-		} else {
-			state.datablockTextCurrent = false
-		}
-
-		// new ghost
-		if rs.CRDAEnabled {
-			if ghost := rs.CRDAConfig.GetGhost(ac); ghost != nil {
-				rs.ghostAircraft[ac] = ghost
-				rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
+		case *ModifiedAircraftEvent:
+			if rs.CRDAEnabled {
+				// always start out by removing the old ghost
+				if oldGhost, ok := rs.ghostAircraft[v.ac]; ok {
+					delete(rs.aircraft, oldGhost)
+					delete(rs.ghostAircraft, v.ac)
+				}
 			}
-		}
-	}
 
-	for ac, controller := range updates.pointOuts {
-		rs.pointedOutAircraft.Add(ac, controller, 5*time.Second)
+			if state, ok := rs.aircraft[v.ac]; !ok {
+				rs.aircraft[v.ac] = &AircraftScopeState{}
+			} else {
+				state.datablockTextCurrent = false
+			}
+
+			// new ghost
+			if rs.CRDAEnabled {
+				if ghost := rs.CRDAConfig.GetGhost(v.ac); ghost != nil {
+					rs.ghostAircraft[v.ac] = ghost
+					rs.aircraft[ghost] = &AircraftScopeState{isGhost: true}
+				}
+			}
+
+		case *PointOutEvent:
+			rs.pointedOutAircraft.Add(v.ac, v.controller, 5*time.Second)
+		}
 	}
 }
 

@@ -191,7 +191,7 @@ func handleHA(v *VATSIMServer, sender string, args []string) error {
 	if from == v.callsign {
 		// from us!
 		delete(v.outboundHandoffs, callsign)
-		controlUpdates.acceptedHandoffs[ac] = sender
+		eventStream.Post(&AcceptedHandoffEvent{controller: sender, ac: ac})
 	}
 
 	v.trackingControllers[callsign] = sender
@@ -206,7 +206,7 @@ func handleHO(v *VATSIMServer, sender string, args []string) error {
 	if receiver == v.callsign {
 		v.inboundHandoffs[callsign] = sender
 		ac := v.getOrCreateAircraft(callsign)
-		controlUpdates.offeredHandoffs[ac] = sender
+		eventStream.Post(&OfferedHandoffEvent{controller: sender, ac: ac})
 	}
 
 	return nil
@@ -242,7 +242,7 @@ func handleTM(v *VATSIMServer, sender string, args []string) error {
 		tm.messageType = TextPrivate
 	}
 
-	controlUpdates.messages = append(controlUpdates.messages, tm)
+	eventStream.Post(&TextMessageEvent{message: &tm})
 
 	return nil
 }
@@ -410,7 +410,7 @@ func (v *VATSIMServer) altitudeAssigned(strs []string, csIndex int, altIndex int
 	if alt, err := strconv.Atoi(strs[altIndex]); err != nil {
 		return MalformedMessageError{"invalid altitude: " + strs[altIndex]}
 	} else if ac := v.GetAircraft(callsign); ac != nil && ac.flightPlan != nil {
-		controlUpdates.modifiedAircraft[ac] = nil
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		ac.flightPlan.altitude = alt
 	}
 	return nil
@@ -550,7 +550,7 @@ func init() {
 		v.trackingControllers[callsign] = sender
 		ac := v.getOrCreateAircraft(callsign)
 		if _, ok := v.outboundHandoffs[callsign]; ok {
-			controlUpdates.acceptedHandoffs[ac] = sender
+			eventStream.Post(&AcceptedHandoffEvent{controller: sender, ac: ac})
 		}
 		return nil
 	}))
@@ -661,7 +661,7 @@ func init() {
 		if ac := v.GetAircraft(callsign); ac != nil {
 			delete(v.inboundHandoffs, callsign)
 			delete(v.outboundHandoffs, callsign)
-			controlUpdates.RemoveAircraft(ac)
+			eventStream.Post(&RemovedAircraftEvent{ac: ac})
 		}
 		delete(v.aircraft, callsign)
 		delete(v.pilots, callsign)
@@ -690,7 +690,7 @@ func init() {
 		callsign := args[4]
 		delete(v.outboundHandoffs, callsign)
 		ac := v.getOrCreateAircraft(callsign)
-		controlUpdates.rejectedHandoffs[ac] = sender
+		eventStream.Post(&RejectedHandoffEvent{controller: sender, ac: ac})
 		return nil
 	}))
 
@@ -704,7 +704,7 @@ func init() {
 		if args[1] == v.callsign {
 			callsign := args[4]
 			ac := v.getOrCreateAircraft(callsign)
-			controlUpdates.pointOuts[ac] = sender
+			eventStream.Post(&PointOutEvent{controller: sender, ac: ac})
 		}
 		return nil
 	}))
@@ -736,7 +736,7 @@ func init() {
 		}
 
 		v.flightStrips[callsign] = fs
-		controlUpdates.pushedFlightStrips = append(controlUpdates.pushedFlightStrips, fs)
+		eventStream.Post(&PushedFlightStripEvent{callsign: callsign})
 
 		return nil
 	}))

@@ -142,7 +142,7 @@ type ATCServer interface {
 	// update its representation of the world.  In addition to updating its
 	// internal data structures (and thence, things like *Aircraft)
 	// returned earlier by methods like GetAircraft, it also updates the
-	// controlUpdates global variable with information about the changes seen.
+	// global EventStream with information about the changes seen.
 	GetUpdates()
 
 	// Connected reports if the server connection is active.  (Note that
@@ -161,69 +161,6 @@ type ATCServer interface {
 	// GetWindowTitle returns a string that summarizes useful details of
 	// the server connection for use in the titlebar of the vice window
 	GetWindowTitle() string
-}
-
-// ControlUpdates stores summary information about changes to the world representation
-// and various events that are relevant to multiple parts of the system.  It is updated
-// by the ATCServer GetUpdates method each frame.
-type ControlUpdates struct {
-	addedAircraft    map[*Aircraft]interface{}
-	modifiedAircraft map[*Aircraft]interface{}
-	removedAircraft  map[*Aircraft]interface{}
-	pointOuts        map[*Aircraft]string
-	offeredHandoffs  map[*Aircraft]string
-	acceptedHandoffs map[*Aircraft]string
-	rejectedHandoffs map[*Aircraft]string
-
-	pushedFlightStrips []*FlightStrip
-
-	messages []TextMessage
-}
-
-func NewControlUpdates() *ControlUpdates {
-	c := &ControlUpdates{}
-	c.addedAircraft = make(map[*Aircraft]interface{})
-	c.modifiedAircraft = make(map[*Aircraft]interface{})
-	c.removedAircraft = make(map[*Aircraft]interface{})
-	c.pointOuts = make(map[*Aircraft]string)
-	c.offeredHandoffs = make(map[*Aircraft]string)
-	c.acceptedHandoffs = make(map[*Aircraft]string)
-	c.rejectedHandoffs = make(map[*Aircraft]string)
-	return c
-}
-
-func (c *ControlUpdates) Reset() {
-	c.addedAircraft = make(map[*Aircraft]interface{})
-	c.modifiedAircraft = make(map[*Aircraft]interface{})
-	c.removedAircraft = make(map[*Aircraft]interface{})
-	c.pointOuts = make(map[*Aircraft]string)
-	c.offeredHandoffs = make(map[*Aircraft]string)
-	c.acceptedHandoffs = make(map[*Aircraft]string)
-	c.rejectedHandoffs = make(map[*Aircraft]string)
-	c.pushedFlightStrips = c.pushedFlightStrips[:0]
-	c.messages = c.messages[:0]
-}
-
-func (c *ControlUpdates) RemoveAircraft(ac *Aircraft) {
-	delete(c.addedAircraft, ac)
-	delete(c.modifiedAircraft, ac)
-	delete(c.pointOuts, ac)
-	delete(c.offeredHandoffs, ac)
-	delete(c.acceptedHandoffs, ac)
-	delete(c.rejectedHandoffs, ac)
-
-	c.pushedFlightStrips = FilterSlice(c.pushedFlightStrips,
-		func(fs *FlightStrip) bool { return fs.callsign != ac.Callsign() })
-
-	controlUpdates.removedAircraft[ac] = nil
-}
-
-// NoUpdates returns true if there is nothing to see at the moment in the
-// ControlUpdates.
-func (c *ControlUpdates) NoUpdates() bool {
-	return len(c.addedAircraft) == 0 && len(c.modifiedAircraft) == 0 && len(c.removedAircraft) == 0 &&
-		len(c.pointOuts) == 0 && len(c.offeredHandoffs) == 0 && len(c.acceptedHandoffs) == 0 &&
-		len(c.rejectedHandoffs) == 0 && len(c.pushedFlightStrips) == 0 && len(c.messages) == 0
 }
 
 // TextMessage is used to represent all the types of text message that may be sent

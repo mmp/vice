@@ -38,7 +38,7 @@ var (
 	stats          Stats
 	database       *StaticDatabase
 	server         ATCServer
-	controlUpdates *ControlUpdates
+	eventStream    *EventStream
 	lg             *Logger
 
 	//go:embed resources/version.txt
@@ -82,6 +82,9 @@ func main() {
 	// Global initialization and set up. Note that there are some subtle
 	// inter-dependencies in the following; the order is carefully crafted.
 	flag.Parse()
+
+	// Make this early so things can subscribe during their initalization
+	eventStream = NewEventStream()
 
 	// Initialize the logging system first and foremost.
 	lg = NewLogger(true, *devmode, 50000)
@@ -165,8 +168,6 @@ func main() {
 
 	uiInit(renderer)
 
-	controlUpdates = NewControlUpdates()
-
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop
 	lg.Printf("Starting main loop")
@@ -193,15 +194,9 @@ func main() {
 		// to the window panes and the active positionConfig.
 		positionConfig.SendUpdates()
 		server.GetUpdates()
-		if !controlUpdates.NoUpdates() {
-			positionConfig.Update(controlUpdates)
-			wmShareUpdates(controlUpdates)
-			audioProcessUpdates(controlUpdates)
-
-			// Reset updates here since we may add new updates in the following
-			// draw calls that we'd like to have reported the next time around.
-			controlUpdates.Reset()
-		}
+		positionConfig.Update()
+		wmProcessEvents(eventStream)
+		audioProcessEvents(eventStream)
 		timeMarker(&stats.processMessages)
 
 		platform.NewFrame()

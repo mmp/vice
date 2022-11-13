@@ -649,7 +649,7 @@ func parseNotes(text string) *NotesNode {
 	return root
 }
 
-func (pc *PositionConfig) Update(*ControlUpdates) {
+func (pc *PositionConfig) Update() {
 	i := 0
 	for i < len(pc.mit) {
 		ac := pc.mit[i]

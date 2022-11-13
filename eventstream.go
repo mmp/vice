@@ -165,3 +165,98 @@ func (e *EventStream) Dump() string {
 	}
 	return s
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+type SelectedAircraftEvent struct {
+	ac *Aircraft
+}
+
+func (e *SelectedAircraftEvent) String() string {
+	return "SelectedAircraftEvent: " + e.ac.callsign
+}
+
+type AddedAircraftEvent struct {
+	ac *Aircraft
+}
+
+func (e *AddedAircraftEvent) String() string {
+	return "AddedAircraftEvent: " + e.ac.callsign
+}
+
+type ModifiedAircraftEvent struct {
+	ac *Aircraft
+}
+
+func (e *ModifiedAircraftEvent) String() string {
+	return "ModifiedAircraftEvent: " + e.ac.callsign
+}
+
+type RemovedAircraftEvent struct {
+	ac *Aircraft
+}
+
+func (e *RemovedAircraftEvent) String() string {
+	return "RemovedAircraftEvent: " + e.ac.callsign
+}
+
+type UpdatedATISEvent struct {
+	airport string
+}
+
+func (e *UpdatedATISEvent) String() string {
+	return "UpdatedATISEvent: " + e.airport
+}
+
+type PushedFlightStripEvent struct {
+	callsign string
+}
+
+func (e *PushedFlightStripEvent) String() string {
+	return "PushedFlightStripEvent: " + e.callsign
+}
+
+type PointOutEvent struct {
+	controller string
+	ac         *Aircraft
+}
+
+func (e *PointOutEvent) String() string {
+	return "PointOutEvent: " + e.controller + " " + e.ac.callsign
+}
+
+type AcceptedHandoffEvent struct {
+	controller string
+	ac         *Aircraft
+}
+
+func (e *AcceptedHandoffEvent) String() string {
+	return "AcceptedHandoffEvent: " + e.controller + " " + e.ac.callsign
+}
+
+type OfferedHandoffEvent struct {
+	controller string
+	ac         *Aircraft
+}
+
+func (e *OfferedHandoffEvent) String() string {
+	return "OfferedHandoffEvent: " + e.controller + " " + e.ac.callsign
+}
+
+type RejectedHandoffEvent struct {
+	controller string
+	ac         *Aircraft
+}
+
+func (e *RejectedHandoffEvent) String() string {
+	return "RejectedHandoffEvent: " + e.controller + " " + e.ac.callsign
+}
+
+type TextMessageEvent struct {
+	message *TextMessage
+}
+
+func (e *TextMessageEvent) String() string {
+	return "TextMessageEvent: " + e.message.String()
+}
+

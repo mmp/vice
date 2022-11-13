@@ -59,10 +59,10 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(cs *ColorScheme)       {}
-func (s *SplitLine) Deactivate()                    {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool     { return false }
-func (s *SplitLine) Update(updates *ControlUpdates) {}
+func (s *SplitLine) Activate(cs *ColorScheme)      {}
+func (s *SplitLine) Deactivate()                   {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool    { return false }
+func (s *SplitLine) ProcessEvents(es *EventStream) {}
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
@@ -422,9 +422,9 @@ func wmInit() {
 	lg.Printf("Finished wm initialization")
 }
 
-func wmShareUpdates(worldUpdates *ControlUpdates) {
+func wmProcessEvents(es *EventStream) {
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-		pane.Update(worldUpdates)
+		pane.ProcessEvents(es)
 	})
 }
 

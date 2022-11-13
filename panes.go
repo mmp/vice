@@ -25,7 +25,7 @@ type Pane interface {
 
 	Activate(cs *ColorScheme)
 	Deactivate()
-	Update(updates *ControlUpdates)
+	ProcessEvents(es *EventStream)
 
 	CanTakeKeyboardFocus() bool
 
@@ -364,7 +364,7 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 
 func (a *AirportInfoPane) CanTakeKeyboardFocus() bool { return false }
 
-func (a *AirportInfoPane) Update(updates *ControlUpdates) {}
+func (a *AirportInfoPane) ProcessEvents(es *EventStream) {}
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// It's slightly little wasteful to keep asking each time; better would
@@ -442,7 +442,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					a.lastATIS[at.callsign] = at.contents
 					// don't play a sound the first time we get the ATIS.
 					if ok {
-						globalConfig.AudioSettings.HandleEvent(AudioEventUpdatedATIS)
+						eventStream.Post(&UpdatedATISEvent{airport: at.callsign})
 					}
 				}
 			}
@@ -661,10 +661,10 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(cs *ColorScheme)       {}
-func (ep *EmptyPane) Deactivate()                    {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool     { return false }
-func (ep *EmptyPane) Update(updates *ControlUpdates) {}
+func (ep *EmptyPane) Activate(cs *ColorScheme)      {}
+func (ep *EmptyPane) Deactivate()                   {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool    { return false }
+func (ep *EmptyPane) ProcessEvents(es *EventStream) {}
 
 func (ep *EmptyPane) Duplicate(nameAsCopy bool) Pane { return &EmptyPane{} }
 func (ep *EmptyPane) Name() string                   { return "(Empty)" }
@@ -695,9 +695,9 @@ func (fp *FlightPlanPane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (fp *FlightPlanPane) Deactivate()                    {}
-func (fp *FlightPlanPane) CanTakeKeyboardFocus() bool     { return false }
-func (fp *FlightPlanPane) Update(updates *ControlUpdates) {}
+func (fp *FlightPlanPane) Deactivate()                   {}
+func (fp *FlightPlanPane) CanTakeKeyboardFocus() bool    { return false }
+func (fp *FlightPlanPane) ProcessEvents(es *EventStream) {}
 
 func (fp *FlightPlanPane) DrawUI() {
 	imgui.Checkbox("Show remarks", &fp.ShowRemarks)
@@ -772,7 +772,7 @@ func (nv *NotesViewPane) Deactivate() {}
 
 func (nv *NotesViewPane) CanTakeKeyboardFocus() bool { return false }
 
-func (nv *NotesViewPane) Update(updates *ControlUpdates) {}
+func (nv *NotesViewPane) ProcessEvents(es *EventStream) {}
 
 func (nv *NotesViewPane) Duplicate(nameAsCopy bool) Pane {
 	return &NotesViewPane{
@@ -922,9 +922,9 @@ func (pp *PerformancePane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (pp *PerformancePane) Deactivate()                    {}
-func (pp *PerformancePane) CanTakeKeyboardFocus() bool     { return false }
-func (pp *PerformancePane) Update(updates *ControlUpdates) {}
+func (pp *PerformancePane) Deactivate()                   {}
+func (pp *PerformancePane) CanTakeKeyboardFocus() bool    { return false }
+func (pp *PerformancePane) ProcessEvents(es *EventStream) {}
 
 func (pp *PerformancePane) Name() string { return "Performance Information" }
 
@@ -1056,10 +1056,10 @@ func (rp *ReminderPane) Activate(cs *ColorScheme) {
 	}
 }
 
-func (rp *ReminderPane) Deactivate()                    {}
-func (rp *ReminderPane) CanTakeKeyboardFocus() bool     { return false }
-func (rp *ReminderPane) Update(updates *ControlUpdates) {}
-func (rp *ReminderPane) Name() string                   { return "Reminders" }
+func (rp *ReminderPane) Deactivate()                   {}
+func (rp *ReminderPane) CanTakeKeyboardFocus() bool    { return false }
+func (rp *ReminderPane) ProcessEvents(es *EventStream) {}
+func (rp *ReminderPane) Name() string                  { return "Reminders" }
 
 func (rp *ReminderPane) DrawUI() {
 	if newFont, changed := DrawFontPicker(&rp.FontIdentifier, "Font"); changed {
@@ -1187,6 +1187,7 @@ type FlightStripPane struct {
 	selectedAnnotation  int
 	annotationCursorPos int
 
+	eventsId  EventSubscriberId
 	scrollbar *ScrollBar
 	cb        CommandBuffer
 }
@@ -1202,6 +1203,7 @@ func NewFlightStripPane() *FlightStripPane {
 		addedAircraft:             make(map[string]interface{}),
 		selectedStrip:             -1,
 		selectedAnnotation:        -1,
+		eventsId:                  eventStream.Subscribe(),
 		scrollbar:                 NewScrollBar(4, true),
 	}
 }
@@ -1219,6 +1221,7 @@ func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
 		addedAircraft:             DuplicateMap(fsp.addedAircraft),
 		selectedStrip:             -1,
 		selectedAnnotation:        -1,
+		eventsId:                  eventStream.Subscribe(),
 		scrollbar:                 NewScrollBar(4, true),
 	}
 }
@@ -1237,9 +1240,13 @@ func (fsp *FlightStripPane) Activate(cs *ColorScheme) {
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewScrollBar(4, true)
 	}
+	fsp.eventsId = eventStream.Subscribe()
 }
 
-func (fsp *FlightStripPane) Deactivate() {}
+func (fsp *FlightStripPane) Deactivate() {
+	eventStream.Unsubscribe(fsp.eventsId)
+	fsp.eventsId = InvalidEventSubscriberId
+}
 
 func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
 	if ac.flightPlan == nil {
@@ -1259,7 +1266,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return true }
 
-func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
+func (fsp *FlightStripPane) ProcessEvents(es *EventStream) {
 	possiblyAdd := func(ac *Aircraft) {
 		callsign := ac.Callsign()
 		if _, ok := fsp.addedAircraft[callsign]; ok {
@@ -1278,33 +1285,28 @@ func (fsp *FlightStripPane) Update(updates *ControlUpdates) {
 		}
 	}
 
-	if fsp.AddPushed {
-		for _, fs := range updates.pushedFlightStrips {
-			if Find(fsp.strips, fs.callsign) == -1 {
-				fsp.strips = append(fsp.strips, fs.callsign)
+	for _, event := range es.Get(fsp.eventsId) {
+		switch v := event.(type) {
+		case *PushedFlightStripEvent:
+			if Find(fsp.strips, v.callsign) == -1 {
+				fsp.strips = append(fsp.strips, v.callsign)
 			}
+		case *AddedAircraftEvent:
+			possiblyAdd(v.ac)
+		case *ModifiedAircraftEvent:
+			possiblyAdd(v.ac)
+		case *RemovedAircraftEvent:
+			// Thus, if we later see the same callsign from someone else, we'll
+			// treat them as new.
+			delete(fsp.addedAircraft, v.ac.Callsign())
+			fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != v.ac.Callsign() })
 		}
 	}
 
-	for ac := range updates.addedAircraft {
-		possiblyAdd(ac)
-	}
-	for ac := range updates.modifiedAircraft {
-		possiblyAdd(ac)
-	}
-
-	for ac := range updates.removedAircraft {
-		// Thus, if we later see the same callsign from someone else, we'll
-		// treat them as new.
-		delete(fsp.addedAircraft, ac.Callsign())
-	}
+	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
 		ac := server.GetAircraft(callsign)
-		if ac == nil {
-			return false
-		}
-		_, ok := updates.removedAircraft[ac]
-		return !ok
+		return ac != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {

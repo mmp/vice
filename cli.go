@@ -173,8 +173,9 @@ type CLIPane struct {
 
 	SpecialKeys map[string]*string
 
-	input  CLIInput
-	status string
+	input    CLIInput
+	status   string
+	eventsId EventSubscriberId
 
 	cb CommandBuffer
 }
@@ -185,14 +186,18 @@ func NewCLIPane() *CLIPane {
 		FontIdentifier: font.id,
 		font:           font,
 		SpecialKeys:    make(map[string]*string),
-		errorCount:     make(map[string]int)}
+		errorCount:     make(map[string]int),
+		eventsId:       eventStream.Subscribe(),
+	}
 }
 
 func (cli *CLIPane) Duplicate(nameAsCopy bool) Pane {
 	return &CLIPane{
 		FontIdentifier: cli.FontIdentifier,
 		font:           cli.font,
-		errorCount:     make(map[string]int)}
+		errorCount:     make(map[string]int),
+		eventsId:       eventStream.Subscribe(),
+	}
 }
 
 func (cli *CLIPane) Activate(cs *ColorScheme) {
@@ -210,11 +215,14 @@ func (cli *CLIPane) Activate(cs *ColorScheme) {
 		lg.RegisterErrorMonitor(cli)
 	}
 
+	cli.eventsId = eventStream.Subscribe()
 	checkCommands(cliCommands)
 }
 
 func (cli *CLIPane) Deactivate() {
 	lg.DeregisterErrorMonitor(cli)
+	eventStream.Unsubscribe(cli.eventsId)
+	cli.eventsId = InvalidEventSubscriberId
 }
 
 func (cli *CLIPane) ErrorReported(msg string) {
@@ -249,59 +257,51 @@ func (cli *CLIPane) ErrorReported(msg string) {
 
 func (cli *CLIPane) CanTakeKeyboardFocus() bool { return true }
 
-func (cli *CLIPane) Update(updates *ControlUpdates) {
-	// Point outs and handoffs...
-	for ac, controller := range updates.pointOuts {
-		cli.AddConsoleEntry([]string{controller, ": point out " + ac.callsign},
-			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-	}
-	for ac, controller := range updates.offeredHandoffs {
-		cli.AddConsoleEntry([]string{controller, ": offered handoff " + ac.callsign},
-			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-	}
-	for ac, controller := range updates.acceptedHandoffs {
-		cli.AddConsoleEntry([]string{controller, ": accepted handoff " + ac.callsign},
-			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-	}
-	for ac, controller := range updates.rejectedHandoffs {
-		cli.AddConsoleEntry([]string{controller, ": rejected handoff " + ac.callsign},
-			[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-	}
+func (cli *CLIPane) ProcessEvents(es *EventStream) {
+	for _, event := range es.Get(cli.eventsId) {
+		switch v := event.(type) {
+		case *PointOutEvent:
+			cli.AddConsoleEntry([]string{v.controller, ": point out " + v.ac.callsign},
+				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 
-	// Add any text/radio messages to the console
-	displayedMessages := false
-	for _, m := range updates.messages {
-		switch m.messageType {
-		case TextBroadcast:
-			cli.AddConsoleEntry([]string{"[BROADCAST] " + m.sender + ": ", m.contents},
+		case *OfferedHandoffEvent:
+			cli.AddConsoleEntry([]string{v.controller, ": offered handoff " + v.ac.callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-			displayedMessages = true
-		case TextWallop:
-			cli.AddConsoleEntry([]string{"[WALLOP] " + m.sender + ": ", m.contents},
+
+		case *AcceptedHandoffEvent:
+			cli.AddConsoleEntry([]string{v.controller, ": accepted handoff " + v.ac.callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-			displayedMessages = true
-		case TextATC:
-			cli.AddConsoleEntry([]string{"[ATC] " + m.sender + ": ", m.contents},
+
+		case *RejectedHandoffEvent:
+			cli.AddConsoleEntry([]string{v.controller, ": rejected handoff " + v.ac.callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-			displayedMessages = true
-		case TextFrequency:
-			fm := positionConfig.MonitoredFrequencies(m.frequencies)
-			if len(fm) > 0 {
-				freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
-				cli.AddConsoleEntry([]string{"[" + freq + "] " + m.sender + ": ", m.contents},
+
+		case *TextMessageEvent:
+			m := v.message
+			switch m.messageType {
+			case TextBroadcast:
+				cli.AddConsoleEntry([]string{"[BROADCAST] " + m.sender + ": ", m.contents},
 					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-				displayedMessages = true
+			case TextWallop:
+				cli.AddConsoleEntry([]string{"[WALLOP] " + m.sender + ": ", m.contents},
+					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			case TextATC:
+				cli.AddConsoleEntry([]string{"[ATC] " + m.sender + ": ", m.contents},
+					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+			case TextFrequency:
+				fm := positionConfig.MonitoredFrequencies(m.frequencies)
+				if len(fm) > 0 {
+					freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
+					cli.AddConsoleEntry([]string{"[" + freq + "] " + m.sender + ": ", m.contents},
+						[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+				}
+
+			case TextPrivate:
+				cli.AddConsoleEntry([]string{"[DM] " + m.sender + ": ", m.contents},
+					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 			}
-		case TextPrivate:
-			cli.AddConsoleEntry([]string{"[DM] " + m.sender + ": ", m.contents},
-				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
-			displayedMessages = true
 		}
 	}
-	if displayedMessages {
-		globalConfig.AudioSettings.HandleEvent(AudioEventReceivedMessage)
-	}
-
 }
 
 func (cli *CLIPane) Name() string { return "Command Line Interface" }

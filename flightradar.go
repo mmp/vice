@@ -153,9 +153,7 @@ func (fr *FlightRadarServer) Connected() bool        { return fr.aircraft != nil
 
 func (fr *FlightRadarServer) Disconnect() {
 	for _, ac := range fr.aircraft {
-		delete(controlUpdates.addedAircraft, ac)
-		delete(controlUpdates.modifiedAircraft, ac)
-		controlUpdates.removedAircraft[ac] = nil
+		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
 	fr.aircraft = nil
 }
@@ -273,9 +271,9 @@ func (fr *FlightRadarServer) GetUpdates() {
 					ac.flightPlan.actype = f.model
 					fr.aircraft[f.callsign] = ac
 					ac.mode = Charlie
-					controlUpdates.addedAircraft[ac] = nil
+					eventStream.Post(&AddedAircraftEvent{ac: ac})
 				} else {
-					controlUpdates.modifiedAircraft[ac] = nil
+					eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 				}
 				ac.squawk = squawk
 				ac.AddTrack(pos)
