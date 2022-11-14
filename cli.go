@@ -36,7 +36,7 @@ type Command interface {
 	Help() string
 	Usage() string
 	Syntax(isAircraftSelected bool) []CommandArgsFormat
-	Run(cli *CLIPane, args []string) (string, error)
+	Run(cli *CLIPane, cmd string, args []string) (string, error)
 }
 
 var (
@@ -1169,7 +1169,7 @@ func (cli *CLIPane) runCommand(cmd string) (string, error) {
 			}
 		}
 
-		return cmd.Run(cli, args)
+		return cmd.Run(cli, fields[0], args)
 	}
 
 	// Otherwise see if we're selecting an aircraft...
@@ -1259,7 +1259,7 @@ func (*SetACTypeCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
 	}
 }
-func (*SetACTypeCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetACTypeCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
 		fp.actype = strings.ToUpper(args[0])
@@ -1294,7 +1294,7 @@ func (*SetAltitudeCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
 	}
 }
-func (sa *SetAltitudeCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (sa *SetAltitudeCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 
 	altitude, err := strconv.Atoi(args[0])
@@ -1331,7 +1331,7 @@ func (*SetArrivalCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
 	}
 }
-func (*SetArrivalCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetArrivalCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if len(args[0]) > 5 {
 		return "", ErrAirportTooLong
@@ -1357,7 +1357,7 @@ func (*SetDepartureCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat 
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
 	}
 }
-func (*SetDepartureCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetDepartureCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if len(args[0]) > 5 {
 		return "", ErrAirportTooLong
@@ -1383,7 +1383,7 @@ func (*SetEquipmentSuffixCommand) Syntax(isAircraftSelected bool) []CommandArgsF
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
 	}
 }
-func (*SetEquipmentSuffixCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetEquipmentSuffixCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if ac := server.GetAircraft(callsign); ac == nil {
 		return "", ErrNoAircraftForCallsign
@@ -1416,7 +1416,7 @@ func (*SetIFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*SetIFRCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetIFRCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	return "", amendFlightPlan(callsign, func(fp *FlightPlan) { fp.rules = IFR })
 }
@@ -1437,7 +1437,7 @@ func (*SetScratchpadCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString | CommandArgsOptional}
 	}
 }
-func (*SetScratchpadCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetScratchpadCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if len(args) == 0 {
 		// clear scratchpad
@@ -1463,7 +1463,7 @@ func (*SetSquawkCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString | CommandArgsOptional}
 	}
 }
-func (*SetSquawkCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetSquawkCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	if len(args) == 0 {
 		return "", server.SetSquawkAutomatic(callsign)
@@ -1492,7 +1492,7 @@ func (*SetVoiceCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString}
 	}
 }
-func (*SetVoiceCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetVoiceCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 
 	var cap VoiceCapability
@@ -1526,7 +1526,7 @@ func (*SetVFRCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*SetVFRCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetVFRCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	return "", amendFlightPlan(callsign, func(fp *FlightPlan) { fp.rules = VFR })
 }
@@ -1547,7 +1547,7 @@ func (*EditRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*EditRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*EditRouteCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
@@ -1601,7 +1601,7 @@ func (*NYPRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*NYPRDCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*NYPRDCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
@@ -1703,7 +1703,7 @@ func (*PRDCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*PRDCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*PRDCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
@@ -1789,7 +1789,7 @@ func (*SetRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsString | CommandArgsMultiple}
 	}
 }
-func (*SetRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*SetRouteCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	return "", amendFlightPlan(callsign, func(fp *FlightPlan) {
 		fp.route = strings.ToUpper(strings.Join(args, " "))
@@ -1812,7 +1812,7 @@ func (*DropTrackCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*DropTrackCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*DropTrackCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	if server.InboundHandoffController(callsign) != "" {
 		return "", server.RejectHandoff(callsign)
@@ -1837,7 +1837,7 @@ func (*HandoffCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsController}
 	}
 }
-func (*HandoffCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*HandoffCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	return "", server.Handoff(callsign, args[0])
 }
@@ -1858,7 +1858,7 @@ func (*PointOutCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsController}
 	}
 }
-func (*PointOutCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*PointOutCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	return "", server.PointOut(callsign, args[0])
 }
@@ -1879,7 +1879,7 @@ func (*TrackAircraftCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*TrackAircraftCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*TrackAircraftCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	if server.InboundHandoffController(callsign) != "" {
 		// it's being offered as a handoff
@@ -1905,7 +1905,7 @@ func (*PushFlightStripCommand) Syntax(isAircraftSelected bool) []CommandArgsForm
 		return []CommandArgsFormat{CommandArgsAircraft, CommandArgsController}
 	}
 }
-func (*PushFlightStripCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*PushFlightStripCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, args := getCallsign(args)
 	return "", server.PushFlightStrip(callsign, args[0])
 }
@@ -1926,7 +1926,7 @@ func (*FindCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft | CommandArgsString}
 	}
 }
-func (*FindCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*FindCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	var pos Point2LL
 	if len(args) == 0 && positionConfig.selectedAircraft != nil {
 		pos = positionConfig.selectedAircraft.Position()
@@ -1964,7 +1964,7 @@ func (*MITCommand) Help() string {
 func (*MITCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsAircraft | CommandArgsMultiple}
 }
-func (*MITCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*MITCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	if len(args) == 0 {
 		// clear it
 		positionConfig.mit = nil
@@ -2002,7 +2002,7 @@ func (*DrawRouteCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft}
 	}
 }
-func (*DrawRouteCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*DrawRouteCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	var ac *Aircraft
 	if len(args) == 0 {
 		ac = positionConfig.selectedAircraft
@@ -2043,7 +2043,7 @@ func (*InfoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 		return []CommandArgsFormat{CommandArgsAircraft | CommandArgsString}
 	}
 }
-func (*InfoCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*InfoCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	acInfo := func(ac *Aircraft) string {
 		var result string
 		var indent int
@@ -2139,7 +2139,7 @@ func (*TrafficCommand) Help() string {
 func (*TrafficCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsAircraft}
 }
-func (*TrafficCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*TrafficCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	callsign, _ := getCallsign(args)
 	ac := server.GetAircraft(callsign)
 	if ac == nil {
@@ -2207,7 +2207,7 @@ func (*TimerCommand) Help() string {
 func (*TimerCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*TimerCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*TimerCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	if minutes, err := strconv.ParseFloat(args[0], 64); err != nil {
 		return "", fmt.Errorf("\"%s\": expected time in minutes", args[0])
 	} else {
@@ -2235,7 +2235,7 @@ func (*ToDoCommand) Help() string {
 func (*ToDoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*ToDoCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*ToDoCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	note := strings.Join(args[0:], " ")
 	positionConfig.todos = append(positionConfig.todos, ToDoReminderItem{note: note})
 	return "", nil
@@ -2253,7 +2253,7 @@ func (*EchoCommand) Help() string {
 func (*EchoCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*EchoCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*EchoCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	return strings.Join(args, " "), nil
 }
 
@@ -2269,7 +2269,7 @@ func (*ATCChatCommand) Help() string {
 func (*ATCChatCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*ATCChatCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*ATCChatCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	tm := TextMessage{messageType: TextATC, contents: strings.Join(args, " ")}
 	return "", server.SendTextMessage(tm)
 }
@@ -2286,7 +2286,7 @@ func (*PrivateMessageCommand) Help() string {
 func (*PrivateMessageCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*PrivateMessageCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*PrivateMessageCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	tm := TextMessage{
 		messageType: TextPrivate,
 		recipient:   strings.ToUpper(args[0]),
@@ -2306,7 +2306,7 @@ func (*TransmitCommand) Help() string {
 func (*TransmitCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*TransmitCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*TransmitCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	if positionConfig.primaryFrequency == Frequency(0) {
 		return "", errors.New("Not primed on a frequency")
 	} else {
@@ -2330,7 +2330,7 @@ func (*WallopCommand) Help() string {
 func (*WallopCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
 }
-func (*WallopCommand) Run(cli *CLIPane, args []string) (string, error) {
+func (*WallopCommand) Run(cli *CLIPane, cmd string, args []string) (string, error) {
 	tm := TextMessage{messageType: TextWallop, contents: strings.Join(args, " ")}
 	return "", server.SendTextMessage(tm)
 }
