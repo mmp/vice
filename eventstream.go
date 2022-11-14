@@ -121,10 +121,6 @@ func (e *EventStream) Get(id EventSubscriberId) []interface{} {
 // is called periodically so that EventStream memory usage doesn't grow
 // without bound.
 func (e *EventStream) compact() {
-	if lg != nil {
-		lg.Printf("EventStream compact")
-	}
-
 	minOffset := len(e.stream)
 	for _, sub := range e.subscribers {
 		if sub.offset < minOffset {
