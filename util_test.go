@@ -130,6 +130,39 @@ func TestTransientMap(t *testing.T) {
 	}
 }
 
+func TestSliceEqual(t *testing.T) {
+	a := []int{1, 2, 3, 4, 5}
+	b := []int{1, 2, 3, 4, 5}
+	if !SliceEqual(a, b) {
+		t.Errorf("SliceEqual incorrect")
+	}
+
+	b = append(b, 6)
+	if SliceEqual(a, b) {
+		t.Errorf("SliceEqual incorrect")
+	}
+
+	a = append(a, 6)
+	if !SliceEqual(a, b) {
+		t.Errorf("SliceEqual incorrect")
+	}
+
+	a = a[1:]
+	if SliceEqual(a, b) {
+		t.Errorf("SliceEqual incorrect")
+	}
+
+	a = nil
+	if SliceEqual(a, b) {
+		t.Errorf("SliceEqual incorrect")
+	}
+
+	b = nil
+	if !SliceEqual(a, b) {
+		t.Errorf("SliceEqual incorrect")
+	}
+}
+
 func TestFilterSlice(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5}
 	b := FilterSlice(a, func(i int) bool { return i%2 == 0 })

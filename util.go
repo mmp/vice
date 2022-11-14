@@ -628,6 +628,18 @@ func DuplicateSlice[V any](s []V) []V {
 	return dupe
 }
 
+func SliceEqual[V comparable](a []V, b []V) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, f := range a {
+		if f != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func FilterSlice[V any](s []V, pred func(V) bool) []V {
 	var filtered []V
 	for _, item := range s {
