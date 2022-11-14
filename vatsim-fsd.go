@@ -623,7 +623,20 @@ func init() {
 	}))
 
 	ignore("$CR::ATC")
-	ignore("$CR::ATIS")
+
+	r(NewMessageSpec("$CR::ATIS", 5, func(v *VATSIMServer, sender string, args []string) error {
+		// Ignore all of the other subtypes
+		if args[3] == "T" {
+			tm := TextMessage{
+				messageType: TextPrivate,
+				sender:      sender,
+				contents:    "ATIS: " + args[4],
+			}
+			eventStream.Post(&TextMessageEvent{message: &tm})
+		}
+		return nil
+	}))
+
 	ignore("$CR::CAPS")
 	ignore("$CR::IP")
 

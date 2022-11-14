@@ -78,7 +78,8 @@ var ControlUnsupported = errors.New("Controlling is not possible with a FlightRa
 
 func (fr *FlightRadarServer) GetFlightStrip(callsign string) *FlightStrip      { return nil }
 func (fr *FlightRadarServer) GetMETAR(location string) *METAR                  { return nil }
-func (fr *FlightRadarServer) GetATIS(airport string) []ATIS                    { return nil }
+func (fr *FlightRadarServer) GetAirportATIS(airport string) []ATIS             { return nil }
+func (fr *FlightRadarServer) RequestControllerATIS(controller string) error    { return nil }
 func (fr *FlightRadarServer) GetUser(callsign string) *User                    { return nil }
 func (fr *FlightRadarServer) GetController(callsign string) *Controller        { return nil }
 func (fr *FlightRadarServer) GetAllControllers() []*Controller                 { return nil }

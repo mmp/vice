@@ -203,12 +203,20 @@ func (v *VATSIMServer) GetMETAR(location string) *METAR {
 	}
 }
 
-func (v *VATSIMServer) GetATIS(airport string) []ATIS {
+func (v *VATSIMServer) GetAirportATIS(airport string) []ATIS {
 	if atis, ok := v.atis[airport]; ok {
 		return atis
 	} else {
 		return nil
 	}
+}
+
+func (v *VATSIMServer) RequestControllerATIS(controller string) error {
+	c := v.GetController(controller)
+	if c == nil {
+		return ErrNoController
+	}
+	return v.controlDelegate.RequestControllerATIS(c.callsign)
 }
 
 func (v *VATSIMServer) GetUser(callsign string) *User {

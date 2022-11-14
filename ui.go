@@ -34,6 +34,7 @@ var (
 
 		showAboutDialog   bool
 		showRadarSettings bool
+		showATISSettings  bool
 		showColorEditor   bool
 		showFilesEditor   bool
 		showServersEditor bool
@@ -212,6 +213,9 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			if imgui.MenuItem("Radar...") {
 				ui.showRadarSettings = true
 			}
+			if imgui.MenuItem("Controller ATIS...") {
+				ui.showATISSettings = true
+			}
 			if imgui.MenuItemV("Radio...", "", false, server.Connected()) {
 				ui.showRadioSettings = true
 			}
@@ -346,6 +350,12 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	if ui.showRadarSettings {
 		imgui.BeginV("Radar Settings", &ui.showRadarSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadarUI()
+		imgui.End()
+	}
+
+	if ui.showATISSettings {
+		imgui.BeginV("ATIS Settings", &ui.showATISSettings, imgui.WindowFlagsAlwaysAutoResize)
+		imgui.InputTextMultiline("Controller ATIS", &positionConfig.ControllerATIS)
 		imgui.End()
 	}
 
@@ -680,6 +690,8 @@ func (v *VATSIMConnectionConfiguration) DrawUI() bool {
 		}
 		imgui.EndCombo()
 	}
+
+	imgui.InputTextMultiline("Controller ATIS", &positionConfig.ControllerATIS)
 
 	if imgui.BeginCombo("Server", v.name) {
 		for _, server := range SortedMapKeys(vatsimServers) {

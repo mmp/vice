@@ -67,6 +67,11 @@ type AircraftController interface {
 
 	SendTextMessage(m TextMessage) error
 
+	// RequestControllerATIS sends a request for the specified controller's
+	// current ATIS; the information will be returned asynchronously by the
+	// server via a text message.
+	RequestControllerATIS(controller string) error
+
 	// SetRadarCenters specifies the primary and up to 3 secondary radar
 	// centers for the controller (as well as the radar range).
 	SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error
@@ -112,10 +117,10 @@ type ATCServer interface {
 	// been given to AddAirportForWeather.)
 	GetMETAR(location string) *METAR
 
-	// GetATIS returns the most recent ATIS that has been broadcast for the
-	// specified airport.  Note that unlike METAR, there's no need to
-	// specify the airport ahead of time.
-	GetATIS(airport string) []ATIS
+	// GetAirportATIS returns the most recent ATIS that has been broadcast
+	// for the specified airport.  Note that unlike METAR, there's no need
+	// to specify the airport ahead of time.
+	GetAirportATIS(airport string) []ATIS
 
 	GetUser(callsign string) *User
 	GetController(callsign string) *Controller
@@ -257,6 +262,9 @@ func (*InertAircraftController) PointOut(callsign string, controller string) err
 func (*InertAircraftController) SendTextMessage(m TextMessage) error {
 	return ErrNoConnection
 }
+func (*InertAircraftController) RequestControllerATIS(controller string) error {
+	return ErrNoConnection
+}
 func (*InertAircraftController) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	return ErrNoConnection
 }
@@ -293,7 +301,7 @@ func (d *DisconnectedATCServer) GetMETAR(location string) *METAR {
 	return nil
 }
 
-func (d *DisconnectedATCServer) GetATIS(airport string) []ATIS {
+func (d *DisconnectedATCServer) GetAirportATIS(airport string) []ATIS {
 	return nil
 }
 

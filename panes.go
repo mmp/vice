@@ -433,7 +433,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if a.ShowATIS {
 		var atis []string
 		for ap := range a.Airports {
-			for _, at := range server.GetATIS(ap) {
+			for _, at := range server.GetAirportATIS(ap) {
 				atis = append(atis, fmt.Sprintf("  %-12s: %s", at.callsign, at.contents))
 
 				if oldATIS, ok := a.lastATIS[at.callsign]; oldATIS != at.contents {

@@ -66,6 +66,7 @@ type PositionConfig struct {
 	RadarRange                    int32
 	primaryFrequency              Frequency // We don't save this in the config file
 	Frequencies                   map[string]Frequency
+	ControllerATIS                string
 
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
