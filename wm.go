@@ -241,6 +241,7 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 
 	default:
 		lg.Errorf("%s: Unhandled type in config file", paneType)
+		d.Pane = NewEmptyPane() // don't crash at least
 	}
 
 	return nil
