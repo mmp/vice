@@ -31,11 +31,6 @@ type EventStream struct {
 	subscribers map[EventSubscriberId]*EventSubscriber
 }
 
-type Event interface {
-	EventDescription() string
-	String() string
-}
-
 type EventSubscriber struct {
 	// offset is offset in the EventStream stream array up to which the
 	// subscriber has consumed events so far.
