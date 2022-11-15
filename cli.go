@@ -74,8 +74,12 @@ var (
 
 		&ATCChatCommand{},
 		&PrivateMessageCommand{},
+		&PrivateMessageSelectedCommand{},
 		&TransmitCommand{},
 		&WallopCommand{},
+		&RequestATISCommand{},
+		&ContactMeCommand{},
+		&MessageReplyCommand{},
 
 		&EchoCommand{},
 	}
@@ -199,6 +203,9 @@ type CLIPane struct {
 	status   string
 	eventsId EventSubscriberId
 
+	messageReplyRecipients [10]*TextMessage
+	nextMessageReplyId     int
+
 	cb CommandBuffer
 }
 
@@ -300,30 +307,95 @@ func (cli *CLIPane) processEvents(es *EventStream) {
 
 		case *TextMessageEvent:
 			m := v.message
+
+			recordMessage := func(mtype string) {
+				time := server.CurrentTime().UTC().Format("15:04:05Z")
+				var id string
+				if i := cli.getReplyId(m); i >= 0 {
+					id = fmt.Sprintf("/%d ", i)
+				}
+
+				sendRecip := m.sender
+				if mtype != "" {
+					sendRecip += FontAwesomeIconArrowRight + mtype
+				}
+				cli.AddConsoleEntry([]string{id, "[" + time + "] " + sendRecip + ": ", m.contents},
+					[]ConsoleTextStyle{ConsoleTextRegular, ConsoleTextEmphasized, ConsoleTextRegular})
+			}
 			switch m.messageType {
 			case TextBroadcast:
-				cli.AddConsoleEntry([]string{"[BROADCAST] " + m.sender + ": ", m.contents},
-					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+				recordMessage("BROADCAST")
+
 			case TextWallop:
-				cli.AddConsoleEntry([]string{"[WALLOP] " + m.sender + ": ", m.contents},
-					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+				recordMessage("WALLOP")
+
 			case TextATC:
-				cli.AddConsoleEntry([]string{"[ATC] " + m.sender + ": ", m.contents},
-					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+				recordMessage("ATC")
+
 			case TextFrequency:
-				fm := positionConfig.MonitoredFrequencies(m.frequencies)
-				if len(fm) > 0 {
+				if fm := positionConfig.MonitoredFrequencies(m.frequencies); len(fm) > 0 {
 					freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
-					cli.AddConsoleEntry([]string{"[" + freq + "] " + m.sender + ": ", m.contents},
-						[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+					recordMessage(freq)
 				}
 
 			case TextPrivate:
-				cli.AddConsoleEntry([]string{"[DM] " + m.sender + ": ", m.contents},
-					[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+				if strings.ToUpper(m.sender) == "SERVER" {
+					// a "DM" from the server isn't the same as a regular DM...
+					recordMessage("")
+				} else {
+					recordMessage(server.Callsign())
+				}
 			}
 		}
 	}
+}
+
+func (cli *CLIPane) getReplyId(m *TextMessage) int {
+	if strings.ToUpper(m.sender) == "SERVER" {
+		return -1
+	}
+
+	// Pre-populate a TextMessage with the recipient for a reply to the
+	// given message.
+	var recip TextMessage
+	switch m.messageType {
+	case TextBroadcast, TextWallop, TextPrivate:
+		recip.messageType = TextPrivate
+		recip.recipient = m.sender
+
+	case TextATC:
+		recip.messageType = TextATC
+
+	case TextFrequency:
+		recip.messageType = TextFrequency
+		recip.frequencies = DuplicateSlice(m.frequencies)
+	}
+
+	// Is it there already?
+	for i, prev := range cli.messageReplyRecipients {
+		if prev == nil || prev.messageType != recip.messageType {
+			continue
+		}
+		switch prev.messageType {
+		case TextPrivate:
+			if prev.recipient == recip.recipient {
+				return i
+			}
+
+		case TextATC:
+			return i
+
+		case TextFrequency:
+			if SliceEqual(prev.frequencies, recip.frequencies) {
+				return i
+			}
+		}
+	}
+
+	id := cli.nextMessageReplyId
+	cli.messageReplyRecipients[id] = &recip
+	cli.nextMessageReplyId = (cli.nextMessageReplyId + 1) % 10
+	return id
 }
 
 func (cli *CLIPane) Name() string { return "Command Line Interface" }
@@ -1288,6 +1360,9 @@ func (cli *CLIPane) sendTextMessage(tm TextMessage) []*ConsoleEntry {
 func getCallsign(args []string) (string, []string) {
 	if positionConfig.selectedAircraft != nil {
 		return positionConfig.selectedAircraft.Callsign(), args
+	} else if len(args) == 0 {
+		lg.Errorf("Insufficient args passed to getCallsign!")
+		return "", nil
 	} else {
 		return args[0], args[1:]
 	}
@@ -2313,7 +2388,7 @@ func (*EchoCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEntry
 
 type ATCChatCommand struct{}
 
-func (*ATCChatCommand) Names() []string { return []string{"atc"} }
+func (*ATCChatCommand) Names() []string { return []string{"/atc"} }
 func (*ATCChatCommand) Usage() string {
 	return "[message]"
 }
@@ -2330,7 +2405,7 @@ func (*ATCChatCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEn
 
 type PrivateMessageCommand struct{}
 
-func (*PrivateMessageCommand) Names() []string { return []string{"dm"} }
+func (*PrivateMessageCommand) Names() []string { return []string{"/dm"} }
 func (*PrivateMessageCommand) Usage() string {
 	return "<recipient> [message]"
 }
@@ -2353,9 +2428,33 @@ func (*PrivateMessageCommand) Run(cli *CLIPane, cmd string, args []string) []*Co
 	return cli.sendTextMessage(tm)
 }
 
+type PrivateMessageSelectedCommand struct{}
+
+func (*PrivateMessageSelectedCommand) Names() []string { return []string{"/dmsel"} }
+func (*PrivateMessageSelectedCommand) Usage() string {
+	return "[message]"
+}
+func (*PrivateMessageSelectedCommand) Help() string {
+	return "Send the specified message to the currently selected aircraft."
+}
+func (*PrivateMessageSelectedCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*PrivateMessageSelectedCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEntry {
+	if positionConfig.selectedAircraft == nil {
+		return ErrorStringConsoleEntry("No aircraft is currently selected")
+	}
+
+	tm := TextMessage{
+		messageType: TextPrivate,
+		recipient:   positionConfig.selectedAircraft.callsign,
+		contents:    strings.Join(args[0:], " ")}
+	return cli.sendTextMessage(tm)
+}
+
 type TransmitCommand struct{}
 
-func (*TransmitCommand) Names() []string { return []string{"tx"} }
+func (*TransmitCommand) Names() []string { return []string{"/tx"} }
 func (*TransmitCommand) Usage() string {
 	return "[message]"
 }
@@ -2384,7 +2483,7 @@ func (*TransmitCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleE
 
 type WallopCommand struct{}
 
-func (*WallopCommand) Names() []string { return []string{"wallop"} }
+func (*WallopCommand) Names() []string { return []string{"/wallop"} }
 func (*WallopCommand) Usage() string {
 	return "[message]"
 }
@@ -2396,5 +2495,83 @@ func (*WallopCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
 }
 func (*WallopCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEntry {
 	tm := TextMessage{messageType: TextWallop, contents: strings.Join(args, " ")}
+	return cli.sendTextMessage(tm)
+}
+
+type RequestATISCommand struct{}
+
+func (*RequestATISCommand) Names() []string { return []string{"/atis"} }
+func (*RequestATISCommand) Usage() string {
+	return "<controller>"
+}
+func (*RequestATISCommand) Help() string {
+	return "Request the ATIS of the specified controller."
+}
+func (*RequestATISCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString}
+}
+func (*RequestATISCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEntry {
+	return ErrorConsoleEntry(server.RequestControllerATIS(args[0]))
+}
+
+type ContactMeCommand struct{}
+
+func (*ContactMeCommand) Names() []string { return []string{"/contactme", "/cme"} }
+func (*ContactMeCommand) Usage() string {
+	return "<callsign>"
+}
+func (*ContactMeCommand) Help() string {
+	return "Send a \"contact me\" request to the specified aircraft."
+}
+func (*ContactMeCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	if isAircraftSelected {
+		return nil
+	} else {
+		return []CommandArgsFormat{CommandArgsAircraft}
+	}
+}
+func (*ContactMeCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEntry {
+	if positionConfig.primaryFrequency == Frequency(0) {
+		return ErrorStringConsoleEntry("Unable to send contactme since no prime frequency is set.")
+	}
+
+	callsign, _ := getCallsign(args)
+	tm := TextMessage{
+		messageType: TextPrivate,
+		recipient:   callsign,
+		contents: fmt.Sprintf("Please contact me on %s. Please do not respond via private "+
+			"message - use the frequency instead.", positionConfig.primaryFrequency),
+	}
+
+	return cli.sendTextMessage(tm)
+}
+
+type MessageReplyCommand struct{}
+
+func (*MessageReplyCommand) Names() []string {
+	return []string{"/0", "/1", "/2", "/3", "/4", "/5", "/6", "/7", "/8", "/9"}
+}
+func (*MessageReplyCommand) Usage() string {
+	return "[message]"
+}
+func (*MessageReplyCommand) Help() string {
+	return "Send the specified message to the recipient."
+}
+func (*MessageReplyCommand) Syntax(isAircraftSelected bool) []CommandArgsFormat {
+	return []CommandArgsFormat{CommandArgsString, CommandArgsString | CommandArgsMultiple}
+}
+func (*MessageReplyCommand) Run(cli *CLIPane, cmd string, args []string) []*ConsoleEntry {
+	id := int([]byte(cmd)[1] - '0')
+	if id < 0 || id > len(cli.messageReplyRecipients) {
+		return ErrorStringConsoleEntry(cmd + ": unexpected reply id")
+	}
+	if cli.messageReplyRecipients[id] == nil {
+		return ErrorStringConsoleEntry(cmd + ": no conversation with that id")
+	}
+
+	// Initialize the new message using the reply template.
+	tm := *cli.messageReplyRecipients[id]
+	tm.contents = strings.Join(args, " ")
+
 	return cli.sendTextMessage(tm)
 }
