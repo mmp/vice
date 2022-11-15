@@ -486,17 +486,15 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					output := cli.runCommand(cmd)
 
 					// Add the command and its output to the console history
+					prompt := &ConsoleEntry{text: []string{""}, style: []ConsoleTextStyle{ConsoleTextRegular}}
 					if prevCallsign != "" {
-						cli.AddBasicConsoleEntry(prevCallsign+"> "+cmd, ConsoleTextRegular)
+						prompt.text[0] = prevCallsign + "> " + cmd
 					} else {
-						cli.AddBasicConsoleEntry("> "+cmd, ConsoleTextRegular)
+						prompt.text[0] = "> " + cmd
 					}
+					cli.console = append(cli.console, prompt)
 					cli.console = append(cli.console, output...)
-					if len(cli.console) > consoleLimit {
-						// FIXME: slow
-						copy(cli.console, cli.console[1:])
-						cli.console = cli.console[:consoleLimit]
-					}
+					cli.compactConsoleHistory()
 				}
 
 				cli.consoleViewOffset = 0
@@ -693,21 +691,6 @@ func (ci *CLIInput) tab(step int) bool {
 	return false
 }
 
-// Simple, one string, same style
-func (cli *CLIPane) AddBasicConsoleEntry(str string, style ConsoleTextStyle) {
-	e := &ConsoleEntry{}
-	e.text = append(e.text, str)
-	e.style = append(e.style, style)
-	cli.console = append(cli.console, e)
-
-	if len(cli.console) > consoleLimit {
-		// FIXME: this will be slow if consoleLimit is big. Use a ring
-		// buffer instead?
-		copy(cli.console, cli.console[1:])
-		cli.console = cli.console[:consoleLimit]
-	}
-}
-
 func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 	n := len(str)
 	if len(str) != len(style) {
@@ -721,10 +704,15 @@ func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 	e.text = append(e.text, str[:n]...)
 	e.style = append(e.style, style[:n]...)
 	cli.console = append(cli.console, e)
+	cli.compactConsoleHistory()
+}
 
-	if len(cli.console) > consoleLimit {
-		copy(cli.console, cli.console[1:])
-		cli.console = cli.console[:consoleLimit]
+func (cli *CLIPane) compactConsoleHistory() {
+	// Let it grow to 2x the limit before we compact, just so that we're
+	// not endlessly shuffling console entries around.
+	if len(cli.console) > 2*consoleLimit {
+		copy(cli.console, cli.console[consoleLimit:])
+		cli.console = cli.console[:len(cli.console)-consoleLimit]
 	}
 }
 
