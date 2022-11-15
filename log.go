@@ -42,7 +42,7 @@ type LogEntry struct {
 	offset  time.Duration
 }
 
-func (l *LogEntry) String() string {
+func (l LogEntry) String() string {
 	return fmt.Sprintf("%16s %s", l.offset.Round(time.Millisecond), l.message)
 }
 
@@ -50,36 +50,24 @@ func (l *LogEntry) String() string {
 // lets us hold on to logging messages for use in bug reports without worrying
 // about whether we're using too much memory to do so.
 type CircularLogBuffer struct {
-	entries []LogEntry
-	max     int
-	index   int
-	start   time.Time
+	rb    *RingBuffer[LogEntry]
+	start time.Time
 }
 
 func (c *CircularLogBuffer) Add(s string) {
-	e := LogEntry{message: s, offset: time.Since(c.start)}
-	if len(c.entries) < c.max {
-		// Append to the entries slice if it hasn't yet hit the limit.
-		c.entries = append(c.entries, e)
-	} else {
-		// Otherwise treat c.entries as a ring buffer where
-		// (c.index+1)%c.max is the oldest entry and successive newer
-		// entries follow.
-		c.entries[c.index%c.max] = e
-	}
-	c.index++
+	c.rb.Add(LogEntry{message: s, offset: time.Since(c.start)})
 }
 
 func (c *CircularLogBuffer) String() string {
 	var b strings.Builder
-	for i := 0; i < len(c.entries); i++ {
-		b.WriteString(c.entries[(c.index+i)%len(c.entries)].String())
+	for i := 0; i < c.rb.Size(); i++ {
+		b.WriteString(c.rb.Get(i).String())
 	}
 	return b.String()
 }
 
 func NewCircularLogBuffer(maxLines int) *CircularLogBuffer {
-	return &CircularLogBuffer{max: maxLines, start: time.Now()}
+	return &CircularLogBuffer{rb: NewRingBuffer[LogEntry](maxLines), start: time.Now()}
 }
 
 func NewLogger(verbose bool, printToStderr bool, maxLines int) *Logger {
@@ -176,9 +164,8 @@ func (l *Logger) RegisterErrorMonitor(m ErrorMonitor) {
 
 	// Poke into the error buffer and forward along anything that's already
 	// in there...
-	for i := 0; i < len(l.err.entries); i++ {
-		idx := (i + l.err.index) % len(l.err.entries)
-		m.ErrorReported(l.err.entries[idx].message)
+	for i := 0; i < l.err.rb.Size(); i++ {
+		m.ErrorReported(l.err.rb.Get(i).String())
 	}
 }
 

@@ -699,3 +699,39 @@ func (t *TransientMap[K, V]) Get(key K) (V, bool) {
 	vt, ok := t.m[key]
 	return vt.v, ok
 }
+
+///////////////////////////////////////////////////////////////////////////
+// RingBuffer
+
+type RingBuffer[V any] struct {
+	entries []V
+	max     int
+	index   int
+}
+
+func NewRingBuffer[V any](capacity int) *RingBuffer[V] {
+	return &RingBuffer[V]{max: capacity}
+}
+
+func (r *RingBuffer[V]) Add(values ...V) {
+	for _, v := range values {
+		if len(r.entries) < r.max {
+			// Append to the entries slice if it hasn't yet hit the limit.
+			r.entries = append(r.entries, v)
+		} else {
+			// Otherwise treat r.entries as a ring buffer where
+			// (r.index+1)%r.max is the oldest entry and successive newer
+			// entries follow.
+			r.entries[r.index%r.max] = v
+		}
+		r.index++
+	}
+}
+
+func (r *RingBuffer[V]) Size() int {
+	return min(len(r.entries), r.max)
+}
+
+func (r *RingBuffer[V]) Get(i int) V {
+	return r.entries[(r.index+i)%len(r.entries)]
+}

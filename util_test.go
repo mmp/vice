@@ -188,3 +188,33 @@ func TestFindSlice(t *testing.T) {
 		t.Errorf("find of nonexistent didn't return -1")
 	}
 }
+
+func TestRingBuffer(t *testing.T) {
+	rb := NewRingBuffer[int](10)
+
+	if rb.Size() != 0 {
+		t.Errorf("empty should have zero size")
+	}
+
+	rb.Add(0, 1, 2, 3, 4)
+	if rb.Size() != 5 {
+		t.Errorf("expected size 5; got %d", rb.Size())
+	}
+	for i := 0; i < 5; i++ {
+		if rb.Get(i) != i {
+			t.Errorf("returned unexpected value")
+		}
+	}
+
+	for i := 5; i < 18; i++ {
+		rb.Add(i)
+	}
+	if rb.Size() != 10 {
+		t.Errorf("expected size 10")
+	}
+	for i := 0; i < 10; i++ {
+		if rb.Get(i) != 8+i {
+			t.Errorf("after filling, at %d got %d, expected %d", i, rb.Get(i), 8+i)
+		}
+	}
+}
