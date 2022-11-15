@@ -147,11 +147,6 @@ func StringConsoleEntry(s string) []*ConsoleEntry {
 	return []*ConsoleEntry{e}
 }
 
-func (e *ConsoleEntry) Add(t string, s ConsoleTextStyle) {
-	e.text = append(e.text, t)
-	e.style = append(e.style, s)
-}
-
 func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *TextDrawBuilder {
 	t := &TextDrawBuilder{}
 	for i := range e.text {
@@ -175,7 +170,7 @@ func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *Tex
 	return t
 }
 
-const consoleLimit = 250
+const consoleLimit = 500
 
 type CLIInput struct {
 	cmd      string
@@ -190,7 +185,7 @@ type CLIPane struct {
 	savedInput    CLIInput
 	mutex         sync.Mutex
 
-	console           []*ConsoleEntry
+	console           *RingBuffer[*ConsoleEntry]
 	consoleViewOffset int // lines from the end (for pgup/down)
 	errorCount        map[string]int
 
@@ -215,6 +210,7 @@ func NewCLIPane() *CLIPane {
 		FontIdentifier: font.id,
 		font:           font,
 		SpecialKeys:    make(map[string]*string),
+		console:        NewRingBuffer[*ConsoleEntry](consoleLimit),
 		errorCount:     make(map[string]int),
 		eventsId:       eventStream.Subscribe(),
 	}
@@ -224,6 +220,8 @@ func (cli *CLIPane) Duplicate(nameAsCopy bool) Pane {
 	return &CLIPane{
 		FontIdentifier: cli.FontIdentifier,
 		font:           cli.font,
+		SpecialKeys:    DuplicateMap(cli.SpecialKeys),
+		console:        NewRingBuffer[*ConsoleEntry](consoleLimit),
 		errorCount:     make(map[string]int),
 		eventsId:       eventStream.Subscribe(),
 	}
@@ -236,6 +234,9 @@ func (cli *CLIPane) Activate(cs *ColorScheme) {
 	}
 	if cli.errorCount == nil {
 		cli.errorCount = make(map[string]int)
+	}
+	if cli.console == nil {
+		cli.console = NewRingBuffer[*ConsoleEntry](consoleLimit)
 	}
 	if cli.SpecialKeys == nil {
 		cli.SpecialKeys = make(map[string]*string)
@@ -492,9 +493,8 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					} else {
 						prompt.text[0] = "> " + cmd
 					}
-					cli.console = append(cli.console, prompt)
-					cli.console = append(cli.console, output...)
-					cli.compactConsoleHistory()
+					cli.console.Add(prompt)
+					cli.console.Add(output...)
 				}
 
 				cli.consoleViewOffset = 0
@@ -508,9 +508,9 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	left := float32(cli.font.size) / 2
 	y := (float32(consoleLinesVisible) + 2.5) * lineHeight // 2.5 for the stuff below
 	for i := 0; i < consoleLinesVisible; i++ {
-		idx := len(cli.console) - 1 - cli.consoleViewOffset - consoleLinesVisible + 1 + i
+		idx := cli.console.Size() - 1 - cli.consoleViewOffset - consoleLinesVisible + 1 + i
 		if idx >= 0 {
-			td := cli.console[idx].Draw([2]float32{left, y}, style, ctx.cs)
+			td := cli.console.Get(idx).Draw([2]float32{left, y}, style, ctx.cs)
 			td.GenerateCommands(&cli.cb)
 		}
 		y -= lineHeight
@@ -703,17 +703,7 @@ func (cli *CLIPane) AddConsoleEntry(str []string, style []ConsoleTextStyle) {
 	e := &ConsoleEntry{}
 	e.text = append(e.text, str[:n]...)
 	e.style = append(e.style, style[:n]...)
-	cli.console = append(cli.console, e)
-	cli.compactConsoleHistory()
-}
-
-func (cli *CLIPane) compactConsoleHistory() {
-	// Let it grow to 2x the limit before we compact, just so that we're
-	// not endlessly shuffling console entries around.
-	if len(cli.console) > 2*consoleLimit {
-		copy(cli.console, cli.console[consoleLimit:])
-		cli.console = cli.console[:len(cli.console)-consoleLimit]
-	}
+	cli.console.Add(e)
 }
 
 func (cli *CLIPane) updateInput(consoleLinesVisible int, keyboard *KeyboardState) (hitEnter bool) {
@@ -799,8 +789,8 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, keyboard *KeyboardState
 		// Keep one line from before
 		cli.consoleViewOffset += consoleLinesVisible - 1
 		// Don't go past the end
-		if cli.consoleViewOffset > len(cli.console)-consoleLinesVisible {
-			cli.consoleViewOffset = len(cli.console) - consoleLinesVisible
+		if cli.consoleViewOffset > cli.console.Size()-consoleLinesVisible {
+			cli.consoleViewOffset = cli.console.Size() - consoleLinesVisible
 			if cli.consoleViewOffset < 0 {
 				cli.consoleViewOffset = 0
 			}
