@@ -86,7 +86,7 @@ type RadarScopePane struct {
 	linesDrawBuilder      ColoredLinesDrawBuilder
 	thickLinesDrawBuilder ColoredLinesDrawBuilder
 	llCommandBuffer       CommandBuffer // things using lat-long coordiantes for vertices
-	textCommandBuffer     CommandBuffer // text, using window coordinates
+	wcCommandBuffer       CommandBuffer // window coordinates
 
 	acSelectedByDatablock *Aircraft
 
@@ -232,7 +232,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 
 	// don't share those slices...
 	dupe.llCommandBuffer = CommandBuffer{}
-	dupe.textCommandBuffer = CommandBuffer{}
+	dupe.wcCommandBuffer = CommandBuffer{}
 	dupe.pointsDrawBuilder = PointsDrawBuilder{}
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	dupe.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
@@ -335,7 +335,7 @@ func (rs *RadarScopePane) Deactivate() {
 
 	// Free up this memory, FWIW
 	rs.llCommandBuffer = CommandBuffer{}
-	rs.textCommandBuffer = CommandBuffer{}
+	rs.wcCommandBuffer = CommandBuffer{}
 	rs.pointsDrawBuilder = PointsDrawBuilder{}
 	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	rs.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
@@ -724,7 +724,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
 		TextStyle{font: rs.labelFont, color: ctx.cs.Text})
-	td.GenerateCommands(&rs.textCommandBuffer)
+	td.GenerateCommands(&rs.wcCommandBuffer)
 
 	// Static geometry: SIDs/STARs, runways, ...
 	rs.drawStatic(ctx, windowFromLatLongMtx, latLongFromWindowMtx)
@@ -753,7 +753,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.thickLinesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 
 	cb.Call(rs.llCommandBuffer)
-	cb.Call(rs.textCommandBuffer)
+	cb.Call(rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) getViewingMatrices(ctx *PaneContext) (latLongFromWindow mgl32.Mat4, ndcFromLatLong mgl32.Mat4) {
@@ -798,10 +798,10 @@ func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl
 	rs.llCommandBuffer.PointSize(rs.PointSize)
 	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 
-	rs.textCommandBuffer.Reset()
-	ctx.SetWindowCoordinateMatrices(&rs.textCommandBuffer)
-	rs.textCommandBuffer.PointSize(rs.PointSize)
-	rs.textCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	rs.wcCommandBuffer.Reset()
+	ctx.SetWindowCoordinateMatrices(&rs.wcCommandBuffer)
+	rs.wcCommandBuffer.PointSize(rs.PointSize)
+	rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
 }
 
 func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl32.Mat4,
@@ -956,7 +956,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 				td.AddTextCentered(label.name, textPos, style)
 			}
 		}
-		td.GenerateCommands(&rs.textCommandBuffer)
+		td.GenerateCommands(&rs.wcCommandBuffer)
 	}
 
 	if rs.DrawEverything || rs.DrawLowAirways {
@@ -979,7 +979,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 				td.AddTextCentered(label.name, windowFromLatLongP(label.p), style)
 			}
 		}
-		td.GenerateCommands(&rs.textCommandBuffer)
+		td.GenerateCommands(&rs.wcCommandBuffer)
 	}
 
 	// VOR, NDB, fix, and airport names
@@ -1042,7 +1042,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	if rs.DrawAirportNames {
 		drawloc(rs.DrawEverything || rs.DrawAirports, rs.AirportsToDraw, database.airports, ctx.cs.Airport, td, DrawBelow)
 	}
-	td.GenerateCommands(&rs.textCommandBuffer)
+	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
@@ -1056,7 +1056,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 			td := rs.getScratchTextDrawBuilder()
 			style := TextStyle{font: rs.labelFont, color: color, drawBackground: true, backgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
-			td.GenerateCommands(&rs.textCommandBuffer)
+			td.GenerateCommands(&rs.wcCommandBuffer)
 		}
 
 		rs.linesDrawBuilder.AddLine(p0, p1, color)
@@ -1212,7 +1212,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			rs.drawTrack(ac, ac.tracks[i-1].position, trackColor, latLongFromWindowV, windowFromLatLongP, td)
 		}
 	}
-	td.GenerateCommands(&rs.textCommandBuffer)
+	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
@@ -1605,7 +1605,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 					[2]float32{float32(bx), float32(-by)},
 					[2]float32{float32(0), float32(-by)},
 					[2]float32{float32(0), float32(0)}})
-			ld.GenerateCommands(&rs.textCommandBuffer)
+			ld.GenerateCommands(&rs.wcCommandBuffer)
 		}
 
 		drawLine := rs.DataBlockFormat != DataBlockFormatNone
@@ -1647,7 +1647,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 			}
 		}
 	}
-	td.GenerateCommands(&rs.textCommandBuffer)
+	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32,
@@ -1806,7 +1806,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 			td.AddText(string(label), pText, TextStyle{font: rs.labelFont, color: ctx.cs.Compass})
 		}
 	}
-	td.GenerateCommands(&rs.textCommandBuffer)
+	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
@@ -1860,7 +1860,7 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 				drawBackground:  true,
 				backgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
-			td.GenerateCommands(&rs.textCommandBuffer)
+			td.GenerateCommands(&rs.wcCommandBuffer)
 			rs.linesDrawBuilder.AddLine(p0, p1, color)
 		}
 
@@ -1904,9 +1904,8 @@ func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP fu
 		lines.AddCircle(centerWindow, r, r, 360, ctx.cs.RangeRing)
 	}
 
-	// TODO: rename textCommandBuffer
-	rs.textCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
-	lines.GenerateCommands(&rs.textCommandBuffer)
+	rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	lines.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL) {
@@ -1941,7 +1940,7 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 		backgroundColor: ctx.cs.Background}
 	textPos := mid2f(rs.primaryDragStart, rs.primaryDragEnd)
 	td.AddTextCentered(label, textPos, style)
-	td.GenerateCommands(&rs.textCommandBuffer)
+	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {
