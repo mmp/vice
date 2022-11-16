@@ -456,7 +456,7 @@ var (
 	circlePoints map[int][][2]float32
 )
 
-func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, xradius, yradius float32, nsegs int, color RGB) {
+func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, color RGB) {
 	// Evaluate and cache the vertices of a canonical unit circle with
 	// nsegs segments, if needed.
 	if circlePoints == nil {
@@ -475,7 +475,7 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, xradius, yradius float
 	circle := circlePoints[nsegs]
 	idx := int32(len(l.p))
 	for i := 0; i < nsegs; i++ {
-		pi := [2]float32{p[0] + xradius*circle[i][0], p[1] + yradius*circle[i][1]}
+		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
 		l.p = append(l.p, pi)
 		l.color = append(l.color, color)
 	}

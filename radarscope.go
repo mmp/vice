@@ -714,6 +714,11 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return mul4v(&latLongFromWindowMtx, p)
 	}
 
+	// Figure out the distance in nm that a pixel covers: offset one pixel
+	// in x, transform to lat-long, find the length.
+	ll := mul4v(&latLongFromWindowMtx, [2]float32{1, 0})
+	pixelDistanceNm := nmlength2ll(ll)
+
 	// Title in upper-left corner
 	td := rs.getScratchTextDrawBuilder()
 	height := ctx.paneExtent.Height()
@@ -735,12 +740,12 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.layoutDatablocks(ctx, windowFromLatLongP)
 	rs.drawDatablocks(ctx, windowFromLatLongP, latLongFromWindowP)
 	rs.drawVectorLines(ctx, windowFromLatLongP, latLongFromWindowP)
-	rs.drawRangeIndicators(ctx, windowFromLatLongP)
+	rs.drawRangeIndicators(ctx, windowFromLatLongP, pixelDistanceNm)
 	rs.drawMIT(ctx, windowFromLatLongP)
 	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
-	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP)
+	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP, pixelDistanceNm)
 	rs.drawMeasuringLine(ctx, latLongFromWindowP)
-	rs.drawHighlighted(ctx, latLongFromWindowV)
+	rs.drawHighlighted(ctx, windowFromLatLongP)
 	rs.drawRoute(ctx, latLongFromWindowV)
 	rs.drawCRDARegions(ctx)
 
@@ -1809,7 +1814,8 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
-func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
+func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
+	pixelDistanceNm float32) {
 	if !rs.DrawRangeIndicators {
 		return
 	}
@@ -1835,20 +1841,23 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 
 	switch rs.RangeIndicatorStyle {
 	case RangeIndicatorRings:
+		lines := ColoredLinesDrawBuilder{}
 		for _, w := range warnings {
 			nsegs := 360
-			xradius := w.limits.WarningLateral / database.NmPerLongitude
-			yradius := w.limits.WarningLateral / database.NmPerLatitude
-			rs.linesDrawBuilder.AddCircle(w.aircraft[0].Position(), xradius, yradius, nsegs, ctx.cs.Caution)
-			rs.linesDrawBuilder.AddCircle(w.aircraft[1].Position(), xradius, yradius, nsegs, ctx.cs.Caution)
+			p0 := windowFromLatLongP(w.aircraft[0].Position())
+			lines.AddCircle(p0, w.limits.WarningLateral/pixelDistanceNm, nsegs, ctx.cs.Caution)
+			p1 := windowFromLatLongP(w.aircraft[1].Position())
+			lines.AddCircle(p1, w.limits.WarningLateral/pixelDistanceNm, nsegs, ctx.cs.Caution)
 		}
 		for _, v := range violations {
 			nsegs := 360
-			xradius := v.limits.ViolationLateral / database.NmPerLongitude
-			yradius := v.limits.ViolationLateral / database.NmPerLatitude
-			rs.linesDrawBuilder.AddCircle(v.aircraft[0].Position(), xradius, yradius, nsegs, ctx.cs.Error)
-			rs.linesDrawBuilder.AddCircle(v.aircraft[1].Position(), xradius, yradius, nsegs, ctx.cs.Error)
+			p0 := windowFromLatLongP(v.aircraft[0].Position())
+			lines.AddCircle(p0, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
+			p1 := windowFromLatLongP(v.aircraft[1].Position())
+			lines.AddCircle(p1, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
 		}
+		rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+		lines.GenerateCommands(&rs.wcCommandBuffer)
 
 	case RangeIndicatorLine:
 		annotatedLine := func(p0 Point2LL, p1 Point2LL, color RGB, text string) {
@@ -1882,7 +1891,7 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 }
 
 func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
-	latLongFromWindowP func(p [2]float32) Point2LL) {
+	latLongFromWindowP func(p [2]float32) Point2LL, pixelDistanceNm float32) {
 	if !rs.DrawRangeRings {
 		return
 	}
@@ -1893,15 +1902,10 @@ func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP fu
 	}
 	centerWindow := windowFromLatLongP(centerLL)
 
-	deltaW := add2f(centerWindow, [2]float32{1, 0})
-	deltaLL := latLongFromWindowP(deltaW)
-	// Distance in nm for a single pixel step
-	pixelDistance := nmlength2ll(sub2f(deltaLL, centerLL))
-
 	lines := ColoredLinesDrawBuilder{}
 	for i := 1; i < 10; i++ {
-		r := float32(i) * rs.RangeRingRadius / pixelDistance
-		lines.AddCircle(centerWindow, r, r, 360, ctx.cs.RangeRing)
+		r := float32(i) * rs.RangeRingRadius / pixelDistanceNm
+		lines.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
 	}
 
 	rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
@@ -1943,13 +1947,12 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
-func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {
+func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32) {
 	remaining := time.Until(positionConfig.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
 
-	p := positionConfig.highlightedLocation
 	color := ctx.cs.Error
 	fade := 1.5
 	if sec := remaining.Seconds(); sec < fade {
@@ -1957,10 +1960,13 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, latLongFromWindowV f
 		color = lerpRGB(x, ctx.cs.Background, color)
 	}
 
-	radius := float32(10)
-	dx := latLongFromWindowV([2]float32{radius, 0})
-	dy := latLongFromWindowV([2]float32{0, radius})
-	rs.thickLinesDrawBuilder.AddCircle(p, length2ll(dx), length2ll(dy), 360, color)
+	p := windowFromLatLongP(positionConfig.highlightedLocation)
+	radius := float32(10) // 10 pixel radius
+	lines := ColoredLinesDrawBuilder{}
+	lines.AddCircle(p, radius, 360, color)
+
+	rs.wcCommandBuffer.LineWidth(3 * rs.LineWidth * ctx.highDPIScale)
+	lines.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawRoute(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {
