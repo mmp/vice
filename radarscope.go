@@ -48,6 +48,10 @@ type RadarScopePane struct {
 	ARTCCLowDrawSet  map[string]interface{}
 	ARTCCHighDrawSet map[string]interface{}
 
+	DrawRangeRings  bool
+	RangeRingRadius float32
+	RangeRingCenter string
+
 	RotationAngle float32
 
 	AutomaticDatablockLayout bool
@@ -382,9 +386,23 @@ func (rs *RadarScopePane) DrawUI() {
 		imgui.Checkbox("Automatic MIT lines for arrivals", &rs.AutoMIT)
 		if rs.AutoMIT {
 			rs.AutoMITAirports = drawAirportSelector(rs.AutoMITAirports, "Arrival airports for auto MIT")
+			imgui.Separator()
 		}
 		imgui.Checkbox("Draw compass directions at edges", &rs.DrawCompass)
-		imgui.Checkbox("Range indicators", &rs.DrawRangeIndicators)
+		imgui.Checkbox("Draw range rings", &rs.DrawRangeRings)
+		if rs.DrawRangeRings {
+			flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
+			imgui.InputTextV("Range rings center", &rs.RangeRingCenter, flags, nil)
+			if _, ok := database.Locate(rs.RangeRingCenter); !ok && rs.RangeRingCenter != "" {
+				imgui.Text("Center location unknown")
+			}
+			if rs.RangeRingRadius == 0 {
+				rs.RangeRingRadius = 5 // initial default
+			}
+			imgui.SliderFloatV("Range ring radius", &rs.RangeRingRadius, 0.1, 20., "%.1f", 0)
+			imgui.Separator()
+		}
+		imgui.Checkbox("Aircraft range indicators", &rs.DrawRangeIndicators)
 		if rs.DrawRangeIndicators {
 			imgui.Text("Indicator")
 			imgui.SameLine()
@@ -417,6 +435,7 @@ func (rs *RadarScopePane) DrawUI() {
 				}
 				imgui.EndTable()
 			}
+			imgui.Separator()
 		}
 
 		if imgui.Checkbox("Converging runway display aid (CRDA)", &rs.CRDAEnabled) {
@@ -426,6 +445,7 @@ func (rs *RadarScopePane) DrawUI() {
 			if rs.CRDAConfig.DrawUI() {
 				rs.initializeAircraft()
 			}
+			imgui.Separator()
 		}
 	}
 	if imgui.CollapsingHeader("Scope contents") {
@@ -718,6 +738,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawRangeIndicators(ctx, windowFromLatLongP)
 	rs.drawMIT(ctx, windowFromLatLongP)
 	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
+	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP)
 	rs.drawMeasuringLine(ctx, latLongFromWindowP)
 	rs.drawHighlighted(ctx, latLongFromWindowV)
 	rs.drawRoute(ctx, latLongFromWindowV)
@@ -1858,6 +1879,34 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 			annotatedLine(ac0.Position(), ac1.Position(), ctx.cs.Error, rangeText(ac0, ac1))
 		}
 	}
+}
+
+func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
+	latLongFromWindowP func(p [2]float32) Point2LL) {
+	if !rs.DrawRangeRings {
+		return
+	}
+
+	centerLL, ok := database.Locate(rs.RangeRingCenter)
+	if !ok {
+		return
+	}
+	centerWindow := windowFromLatLongP(centerLL)
+
+	deltaW := add2f(centerWindow, [2]float32{1, 0})
+	deltaLL := latLongFromWindowP(deltaW)
+	// Distance in nm for a single pixel step
+	pixelDistance := nmlength2ll(sub2f(deltaLL, centerLL))
+
+	lines := ColoredLinesDrawBuilder{}
+	for i := 1; i < 10; i++ {
+		r := float32(i) * rs.RangeRingRadius / pixelDistance
+		lines.AddCircle(centerWindow, r, r, 360, ctx.cs.RangeRing)
+	}
+
+	// TODO: rename textCommandBuffer
+	rs.textCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	lines.GenerateCommands(&rs.textCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL) {

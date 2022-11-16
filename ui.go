@@ -1687,6 +1687,7 @@ type ColorScheme struct {
 	LowAirway  RGB
 	HighAirway RGB
 	Compass    RGB
+	RangeRing  RGB
 
 	DefinedColors map[string]*RGB
 }
@@ -1822,6 +1823,12 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 		edit("VOR", "VOR", &c.VOR)
 		sfd()
 
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.TableNextColumn()
+		edit("Range rings", "Range rings", &c.RangeRing)
+		sfd()
+
 		for sfdIndex < len(names) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -1873,6 +1880,7 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
 		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
 		Compass:             RGB{R: 0.5270758, G: 0.5270758, B: 0.5270758},
+		RangeRing:           RGB{R: 0.26835144, G: 0.29237288, B: 0.18335249},
 	},
 	"Nord (builtin)": &ColorScheme{
 		Text:                RGB{R: 0.9254902, G: 0.9372549, B: 0.95686275},
@@ -1912,6 +1920,7 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		LowAirway:           RGB{R: 0.29803923, G: 0.3372549, B: 0.41568628},
 		HighAirway:          RGB{R: 0.29803923, G: 0.3372549, B: 0.41568628},
 		Compass:             RGB{R: 0.36862746, G: 0.5058824, B: 0.6745098},
+		RangeRing:           RGBFromHex(0x313d54),
 	},
 	"Light (builtin)": &ColorScheme{
 		Text:                RGBFromHex(0x092BA8),
@@ -1951,6 +1960,7 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
 		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
 		Compass:             RGB{R: 0.279661, G: 0.279661, B: 0.279661},
+		RangeRing:           RGBFromHex(0xd4d4d4),
 	},
 }
 
