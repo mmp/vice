@@ -456,7 +456,7 @@ var (
 	circlePoints map[int][][2]float32
 )
 
-func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, color RGB) {
+func getCirclePoints(nsegs int) [][2]float32 {
 	// Evaluate and cache the vertices of a canonical unit circle with
 	// nsegs segments, if needed.
 	if circlePoints == nil {
@@ -472,7 +472,12 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs 
 		circlePoints[nsegs] = pts
 	}
 
-	circle := circlePoints[nsegs]
+	return circlePoints[nsegs]
+}
+
+func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, color RGB) {
+	circle := getCirclePoints(nsegs)
+
 	idx := int32(len(l.p))
 	for i := 0; i < nsegs; i++ {
 		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
@@ -525,6 +530,20 @@ func (t *TrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32) {
 	idx := int32(len(t.p))
 	t.p = append(t.p, p0, p1, p2, p3)
 	t.indices = append(t.indices, idx, idx+1, idx+2, idx, idx+2, idx+3)
+}
+
+func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
+	circle := getCirclePoints(nsegs)
+
+	idx := int32(len(t.p))
+	t.p = append(t.p, p) // center point
+	for i := 0; i < nsegs; i++ {
+		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
+		t.p = append(t.p, pi)
+	}
+	for i := 0; i < nsegs; i++ {
+		t.indices = append(t.indices, idx, idx+1+int32(i), idx+1+int32((i+1)%nsegs))
+	}
 }
 
 func (t *TrianglesDrawBuilder) Bounds() Extent2D {
