@@ -8,8 +8,7 @@ package main
 import (
 	"C"
 	"fmt"
-	"image/png"
-	"io"
+	"image"
 	"math"
 	"unsafe"
 
@@ -179,12 +178,7 @@ func (ogl2 *OpenGL2Renderer) createFontsTexture() {
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
 }
 
-func (ogl2 *OpenGL2Renderer) CreateTextureFromPNG(r io.Reader) (uint32, error) {
-	img, err := png.Decode(r)
-	if err != nil {
-		return 0, err
-	}
-
+func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIPs bool) (uint32, error) {
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	rgba := make([]byte, nx*ny*4)
 	for y := 0; y < ny; y++ {
@@ -206,6 +200,35 @@ func (ogl2 *OpenGL2Renderer) CreateTextureFromPNG(r io.Reader) (uint32, error) {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(nx), int32(ny), 0, gl.RGBA, gl.UNSIGNED_BYTE, unsafe.Pointer(&rgba[0]))
+	if generateMIPs {
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
+		level := int32(1)
+		for nx != 1 || ny != 1 {
+			ox, oy := nx, ny
+			nx, ny = max(nx/2, 1), max(ny/2, 1)
+
+			next := make([]byte, nx*ny*4)
+			lookup := func(x, y, c int) int {
+				x, y = min(x, ox-1), min(y, oy-1)
+				return int(rgba[4*(ox*y+x)+c])
+			}
+			for y := 0; y < ny; y++ {
+				for x := 0; x < nx; x++ {
+					for c := 0; c < 4; c++ {
+						// living large with a box filter
+						v := (lookup(2*x, 2*y, c) + lookup(2*x+1, 2*y, c) +
+							lookup(2*x, 2*y+1, c) + lookup(2*x+1, 2*y+1, c) + 2 /*rounding? */) / 4
+						next[4*(nx*y+x)+c] = byte(v)
+					}
+				}
+			}
+			gl.TexImage2D(gl.TEXTURE_2D, level, gl.RGBA, int32(nx), int32(ny), 0, gl.RGBA, gl.UNSIGNED_BYTE,
+				unsafe.Pointer(&next[0]))
+			level++
+			rgba = next
+		}
+	}
+
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
 
 	ogl2.createdTextures = append(ogl2.createdTextures, texid)

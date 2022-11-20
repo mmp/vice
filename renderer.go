@@ -6,7 +6,7 @@ package main
 
 import (
 	"fmt"
-	"io"
+	"image"
 	"math"
 	"unsafe"
 
@@ -22,9 +22,9 @@ type Renderer interface {
 	// RenderImgui translates the ImGui draw data to OpenGL commands.
 	RenderImgui(displaySize [2]float32, framebufferSize [2]float32, drawData imgui.DrawData)
 
-	// CreateTextureFromPNG returns an identifier for a texture map defined
-	// by a PNG file from the provided Reader.
-	CreateTextureFromPNG(r io.Reader) (uint32, error)
+	// CreateTextureFromImage returns an identifier for a texture map defined
+	// by the specified image.
+	CreateTextureFromImage(image image.Image, generateMIPs bool) (id uint32, err error)
 
 	// RenderCommandBuffer executes all of the commands encoded in the
 	// provided command buffer, returning statistics about what was

@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"image/png"
 	"net/http"
 	"os"
 	"path"
@@ -82,14 +83,22 @@ func uiInit(renderer Renderer) {
 		ui.errorText = make(map[string]func() bool)
 	}
 
-	var err error
-	ui.iconTextureID, err = renderer.CreateTextureFromPNG(bytes.NewReader([]byte(iconPNG)))
-	if err != nil {
-		lg.Errorf("Unable to create icon texture: %v", err)
+	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
+		lg.Errorf("Unable to decode icon PNG: %v", err)
+	} else {
+		ui.iconTextureID, err = renderer.CreateTextureFromImage(iconImage, false)
+		if err != nil {
+			lg.Errorf("Unable to create icon texture: %v", err)
+		}
 	}
-	ui.sadTowerTextureID, err = renderer.CreateTextureFromPNG(bytes.NewReader([]byte(sadTowerPNG)))
-	if err != nil {
-		lg.Errorf("Unable to create sad tower icon texture: %v", err)
+
+	if sadTowerImage, err := png.Decode(bytes.NewReader([]byte(sadTowerPNG))); err != nil {
+		lg.Errorf("Unable to decode sad tower PNG: %v", err)
+	} else {
+		ui.sadTowerTextureID, err = renderer.CreateTextureFromImage(sadTowerImage, false)
+		if err != nil {
+			lg.Errorf("Unable to create sad tower icon texture: %v", err)
+		}
 	}
 
 	if nrc := checkForNewRelease(); nrc != nil {
