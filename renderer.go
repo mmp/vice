@@ -666,10 +666,8 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		p := cb.Float2Buffer(td.bgp)
 		cb.VertexArray(p, 2, 2*4)
 
-		if len(td.bgrgb) > 0 {
-			rgb := cb.RGBBuffer(td.bgrgb)
-			cb.ColorArray(rgb, 3, 3*4)
-		}
+		rgb := cb.RGBBuffer(td.bgrgb)
+		cb.ColorArray(rgb, 3, 3*4)
 
 		ind := cb.IntBuffer(td.bgindices)
 		cb.DrawQuads(ind, len(td.bgindices))
