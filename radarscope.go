@@ -728,7 +728,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		label += "\nMouse position: " + mouseLatLong.String()
 	}
 	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
-		TextStyle{font: rs.labelFont, color: ctx.cs.Text})
+		TextStyle{Font: rs.labelFont, Color: ctx.cs.Text})
 	td.GenerateCommands(&rs.wcCommandBuffer)
 
 	// Static geometry: SIDs/STARs, runways, ...
@@ -954,10 +954,10 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 			textPos := windowFromLatLongP(label.p)
 			if inWindow(textPos) {
 				style := TextStyle{
-					font:            rs.labelFont,
-					color:           color,
-					drawBackground:  true,
-					backgroundColor: ctx.cs.Background}
+					Font:            rs.labelFont,
+					Color:           color,
+					DrawBackground:  true,
+					BackgroundColor: ctx.cs.Background}
 				td.AddTextCentered(label.name, textPos, style)
 			}
 		}
@@ -980,7 +980,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 		td := rs.getScratchTextDrawBuilder()
 		for _, label := range database.labels {
 			if viewBounds.Inside(label.p) {
-				style := TextStyle{font: rs.labelFont, color: label.color}
+				style := TextStyle{Font: rs.labelFont, Color: label.color}
 				td.AddTextCentered(label.name, windowFromLatLongP(label.p), style)
 			}
 		}
@@ -1009,9 +1009,9 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 			pw := add2f(windowFromLatLongP(p), offset)
 			if inWindow(pw) {
 				if mode == DrawBelow {
-					td.AddTextCentered(name, pw, TextStyle{font: rs.labelFont, color: color})
+					td.AddTextCentered(name, pw, TextStyle{Font: rs.labelFont, Color: color})
 				} else {
-					td.AddText(name, pw, TextStyle{font: rs.labelFont, color: color})
+					td.AddText(name, pw, TextStyle{Font: rs.labelFont, Color: color})
 				}
 			}
 		}
@@ -1059,7 +1059,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 		// Cull text based on center point
 		if textPos[0] >= 0 && textPos[0] < width && textPos[1] >= 0 && textPos[1] < height {
 			td := rs.getScratchTextDrawBuilder()
-			style := TextStyle{font: rs.labelFont, color: color, drawBackground: true, backgroundColor: ctx.cs.Background}
+			style := TextStyle{Font: rs.labelFont, Color: color, DrawBackground: true, BackgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
 			td.GenerateCommands(&rs.wcCommandBuffer)
 		}
@@ -1178,7 +1178,7 @@ func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
 			}
 		}
 		pw := windowFromLatLongP(p)
-		td.AddTextCentered(ch, pw, TextStyle{font: rs.datablockFont, color: color})
+		td.AddTextCentered(ch, pw, TextStyle{Font: rs.datablockFont, Color: color})
 		return
 	} else {
 		// diagonals
@@ -1597,9 +1597,9 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		// Draw characters starting at the upper left.
 		flashCycle := actualNow.Second() & 1
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0] + 1, bbox.p1[1] - 1},
-			TextStyle{font: rs.datablockFont, color: ctx.cs.Background, lineSpacing: -2})
+			TextStyle{Font: rs.datablockFont, Color: ctx.cs.Background, LineSpacing: -2})
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
-			TextStyle{font: rs.datablockFont, color: color, lineSpacing: -2})
+			TextStyle{Font: rs.datablockFont, Color: color, LineSpacing: -2})
 
 		// visualize bounds
 		if false {
@@ -1808,7 +1808,7 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 				lg.Printf("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
 
-			td.AddText(string(label), pText, TextStyle{font: rs.labelFont, color: ctx.cs.Compass})
+			td.AddText(string(label), pText, TextStyle{Font: rs.labelFont, Color: ctx.cs.Compass})
 		}
 	}
 	td.GenerateCommands(&rs.wcCommandBuffer)
@@ -1864,10 +1864,10 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 			textPos := windowFromLatLongP(mid2ll(p0, p1))
 			td := rs.getScratchTextDrawBuilder()
 			style := TextStyle{
-				font:            rs.labelFont,
-				color:           color,
-				drawBackground:  true,
-				backgroundColor: ctx.cs.Background}
+				Font:            rs.labelFont,
+				Color:           color,
+				DrawBackground:  true,
+				BackgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
 			td.GenerateCommands(&rs.wcCommandBuffer)
 			rs.linesDrawBuilder.AddLine(p0, p1, color)
@@ -1938,10 +1938,10 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 	label := fmt.Sprintf(" %.1f nm \n%d / %d", dist, hdg, rhdg)
 	td := rs.getScratchTextDrawBuilder()
 	style := TextStyle{
-		font:            rs.labelFont,
-		color:           ctx.cs.SelectedDataBlock,
-		drawBackground:  true,
-		backgroundColor: ctx.cs.Background}
+		Font:            rs.labelFont,
+		Color:           ctx.cs.SelectedDataBlock,
+		DrawBackground:  true,
+		BackgroundColor: ctx.cs.Background}
 	textPos := mid2f(rs.primaryDragStart, rs.primaryDragEnd)
 	td.AddTextCentered(label, textPos, style)
 	td.GenerateCommands(&rs.wcCommandBuffer)

@@ -152,18 +152,18 @@ func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *Tex
 	for i := range e.text {
 		switch e.style[i] {
 		case ConsoleTextRegular:
-			style.color = cs.Text
+			style.Color = cs.Text
 
 		case ConsoleTextEmphasized:
-			style.color = cs.TextHighlight
+			style.Color = cs.TextHighlight
 
 		case ConsoleTextError:
-			style.color = cs.TextError
+			style.Color = cs.TextError
 		}
 
 		t.AddText(e.text[i], p, style)
 		if i < len(e.text)-1 {
-			bx, _ := style.font.BoundText(e.text[i], 0)
+			bx, _ := style.Font.BoundText(e.text[i], 0)
 			p[0] += float32(bx)
 		}
 	}
@@ -451,11 +451,11 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		wmTakeKeyboardFocus(cli, false)
 	}
 
-	style := TextStyle{font: cli.font, lineSpacing: 1, color: ctx.cs.Text}
-	cursorStyle := TextStyle{font: cli.font, lineSpacing: 0,
-		color: ctx.cs.Background, drawBackground: true, backgroundColor: ctx.cs.Text}
-	statusStyle := TextStyle{font: cli.font, lineSpacing: 0, color: ctx.cs.TextError}
-	lineHeight := float32(style.font.size + style.lineSpacing)
+	style := TextStyle{Font: cli.font, LineSpacing: 1, Color: ctx.cs.Text}
+	cursorStyle := TextStyle{Font: cli.font, LineSpacing: 0,
+		Color: ctx.cs.Background, DrawBackground: true, BackgroundColor: ctx.cs.Text}
+	statusStyle := TextStyle{Font: cli.font, LineSpacing: 0, Color: ctx.cs.TextError}
+	lineHeight := float32(style.Font.size + style.LineSpacing)
 
 	// Draw the console buffer.
 	// Save some space for top/bottom padding and the input and the status line.

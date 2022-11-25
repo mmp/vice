@@ -376,7 +376,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cs := ctx.cs
 
 	var str strings.Builder
-	style := TextStyle{font: a.font, color: cs.Text}
+	style := TextStyle{Font: a.font, Color: cs.Text}
 	var strs []string
 	var styles []TextStyle
 	nLines := 1
@@ -390,7 +390,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		strs = append(strs, s)
 		str.Reset()
 		styles = append(styles, style)
-		style = TextStyle{font: a.font, color: cs.Text} // a reasonable default
+		style = TextStyle{Font: a.font, Color: cs.Text} // a reasonable default
 	}
 
 	now := server.CurrentTime()
@@ -414,14 +414,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			for _, m := range metar {
 				str.WriteString(fmt.Sprintf("  %4s ", m.airport))
 				flush()
-				style.color = cs.TextHighlight
+				style.Color = cs.TextHighlight
 				str.WriteString(fmt.Sprintf("%s ", m.altimeter))
 				flush()
 				if m.auto {
 					str.WriteString("AUTO ")
 					flush()
 				}
-				style.color = cs.TextHighlight
+				style.Color = cs.TextHighlight
 				str.WriteString(fmt.Sprintf("%s ", m.wind))
 				flush()
 				str.WriteString(fmt.Sprintf("%s\n", m.weather))
@@ -611,7 +611,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 				if ctrl.requestRelief {
 					flush()
-					style.color = cs.TextHighlight
+					style.Color = cs.TextHighlight
 				}
 
 				str.WriteString(fmt.Sprintf(" %-12s %s", ctrl.callsign, ctrl.frequency))
@@ -726,7 +726,7 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	wrapped, _ := wrapText(contents, ncols, indent, true)
 	fp.td.AddText(wrapped, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
-		TextStyle{font: fp.font, color: ctx.cs.Text})
+		TextStyle{Font: fp.font, Color: ctx.cs.Text})
 
 	ctx.SetWindowCoordinateMatrices(cb)
 	fp.td.GenerateCommands(cb)
@@ -791,8 +791,8 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	nv.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&nv.cb)
 
-	textStyle := TextStyle{font: nv.font, color: ctx.cs.Text}
-	headerStyle := TextStyle{font: nv.font, color: ctx.cs.TextHighlight}
+	textStyle := TextStyle{Font: nv.font, Color: ctx.cs.Text}
+	headerStyle := TextStyle{Font: nv.font, Color: ctx.cs.TextHighlight}
 
 	scrollOffset, scrollbarWidth := nv.scrollbar.Offset(), float32(nv.scrollbar.Width())
 
@@ -971,7 +971,7 @@ func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	pp.td.Reset()
 	sz2 := float32(pp.font.size) / 2
 	pp.td.AddText(perf.String(), [2]float32{sz2, ctx.paneExtent.Height() - sz2},
-		TextStyle{font: pp.font, color: ctx.cs.Text})
+		TextStyle{Font: pp.font, Color: ctx.cs.Text})
 
 	ctx.SetWindowCoordinateMatrices(cb)
 	pp.td.GenerateCommands(cb)
@@ -1075,7 +1075,7 @@ func (rp *ReminderPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	text := func(s string, color RGB) {
 		td := TextDrawBuilder{}
-		td.AddText(s, [2]float32{float32(x), float32(y)}, TextStyle{font: rp.font, color: color})
+		td.AddText(s, [2]float32{float32(x), float32(y)}, TextStyle{Font: rp.font, Color: color})
 		td.GenerateCommands(&rp.cb)
 
 		bx, _ := rp.font.BoundText(s, 0)
@@ -1393,9 +1393,9 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		fp := ac.flightPlan
 
-		style := TextStyle{font: fsp.font, color: ctx.cs.Text}
+		style := TextStyle{Font: fsp.font, Color: ctx.cs.Text}
 		if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft.Callsign() == callsign {
-			style.color = ctx.cs.TextHighlight
+			style.Color = ctx.cs.TextHighlight
 		}
 
 		// Draw background quad for this flight strip
@@ -1484,8 +1484,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				// If were currently editing this annotation, don't draw it
 				// normally but instead draw it including a cursor, update
 				// it according to keyboard input, etc.
-				cursorStyle := TextStyle{font: fsp.font, color: bgColor,
-					drawBackground: true, backgroundColor: style.color}
+				cursorStyle := TextStyle{Font: fsp.font, Color: bgColor,
+					DrawBackground: true, BackgroundColor: style.Color}
 				editResult = uiDrawTextEdit(&strip.annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
 					ctx.keyboard, [2]float32{xp, yp}, style, cursorStyle, cb)
 				if len(strip.annotations[fsp.selectedAnnotation]) >= 3 {

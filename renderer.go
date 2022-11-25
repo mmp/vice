@@ -575,15 +575,15 @@ type TextDrawBuilder struct {
 }
 
 type TextStyle struct {
-	font            *Font
-	color           RGB
-	lineSpacing     int
-	drawBackground  bool
-	backgroundColor RGB
+	Font            *Font
+	Color           RGB
+	LineSpacing     int
+	DrawBackground  bool
+	BackgroundColor RGB
 }
 
 func (td *TextDrawBuilder) AddTextCentered(text string, p [2]float32, style TextStyle) {
-	bx, by := style.font.BoundText(text, 0)
+	bx, by := style.Font.BoundText(text, 0)
 	p[0] -= float32(bx) / 2
 	p[1] += float32(by) / 2
 	td.AddText(text, p, style)
@@ -602,7 +602,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 	for i := range text {
 		style := styles[i]
 
-		dy := float32(style.font.size + style.lineSpacing)
+		dy := float32(style.Font.size + style.LineSpacing)
 
 		// Bounds for the current line's background box, if needed
 		bx0, by0 := px, py
@@ -611,7 +611,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 			bx1, by1 := px, py-dy
 			// Add a quad to stake out the background for this line.
 			startIdx := int32(len(td.bgp))
-			color := style.backgroundColor
+			color := style.BackgroundColor
 			td.bgrgb = append(td.bgrgb, color, color, color, color)
 			padx, pady := float32(1), float32(0)
 			td.bgp = append(td.bgp, [][2]float32{{bx0 - padx, by0 - pady}, {bx1 + padx, by0 - pady}, {bx1 + padx, by1 + pady}, {bx0 - padx, by1 + pady}}...)
@@ -619,10 +619,10 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 		}
 
 		for _, ch := range text[i] {
-			glyph := style.font.LookupGlyph(ch)
+			glyph := style.Font.LookupGlyph(ch)
 
 			if ch == '\n' {
-				if style.drawBackground {
+				if style.DrawBackground {
 					flushbg()
 				}
 
@@ -640,14 +640,14 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 				// Add the quad for the glyph to the vertex/index buffers
 				startIdx := int32(len(td.p))
 				td.uv = append(td.uv, [][2]float32{{u0, v0}, {u1, v0}, {u1, v1}, {u0, v1}}...)
-				td.rgb = append(td.rgb, style.color, style.color, style.color, style.color)
+				td.rgb = append(td.rgb, style.Color, style.Color, style.Color, style.Color)
 				td.p = append(td.p, [][2]float32{{px + x0, py - y0}, {px + x1, py - y0}, {px + x1, py - y1}, {px + x0, py - y1}}...)
 				td.indices = append(td.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
 			}
 
 			px += glyph.AdvanceX
 		}
-		if style.drawBackground {
+		if style.DrawBackground {
 			flushbg()
 		}
 	}
