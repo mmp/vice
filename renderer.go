@@ -681,14 +681,11 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		p := cb.Float2Buffer(td.p)
 		cb.VertexArray(p, 2, 2*4)
 
-		if len(td.rgb) > 0 {
-			rgb := cb.RGBBuffer(td.rgb)
-			cb.ColorArray(rgb, 3, 3*4)
-		}
-		if len(td.uv) > 0 {
-			uv := cb.Float2Buffer(td.uv)
-			cb.TexCoordArray(uv, 2, 2*4)
-		}
+		rgb := cb.RGBBuffer(td.rgb)
+		cb.ColorArray(rgb, 3, 3*4)
+
+		uv := cb.Float2Buffer(td.uv)
+		cb.TexCoordArray(uv, 2, 2*4)
 
 		ind := cb.IntBuffer(td.indices)
 		cb.DrawQuads(ind, len(td.indices))
