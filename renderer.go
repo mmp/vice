@@ -366,11 +366,9 @@ func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 
 	pi := cb.Float2Buffer(p.p)
 	cb.VertexArray(pi, 2, 2*4)
+	rgb := cb.RGBBuffer(p.color)
+	cb.ColorArray(rgb, 3, 3*4)
 
-	if len(p.color) > 0 {
-		rgb := cb.RGBBuffer(p.color)
-		cb.ColorArray(rgb, 3, 3*4)
-	}
 
 	ind := cb.IntBuffer(p.indices)
 	cb.DrawPoints(ind, len(p.indices))
