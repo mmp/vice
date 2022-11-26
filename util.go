@@ -640,6 +640,14 @@ func SliceEqual[V comparable](a []V, b []V) bool {
 	return true
 }
 
+func MapSlice[F, T any](from []F, xform func(F) T) []T {
+	var to []T
+	for _, item := range from {
+		to = append(to, xform(item))
+	}
+	return to
+}
+
 func FilterSlice[V any](s []V, pred func(V) bool) []V {
 	var filtered []V
 	for _, item := range s {

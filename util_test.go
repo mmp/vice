@@ -163,6 +163,19 @@ func TestSliceEqual(t *testing.T) {
 	}
 }
 
+func TestMapSlice(t *testing.T) {
+	a := []int{1, 2, 3, 4, 5}
+	b := MapSlice[int, float32](a, func(i int) float32 { return 2 * float32(i) })
+	if len(a) != len(b) {
+		t.Errorf("lengths mismatch: %d vs %d", len(a), len(b))
+	}
+	for i := range a {
+		if float32(2*a[i]) != b[i] {
+			t.Errorf("value %d mismatch %f vs %f", i, float32(2*a[i]), b[i])
+		}
+	}
+}
+
 func TestFilterSlice(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5}
 	b := FilterSlice(a, func(i int) bool { return i%2 == 0 })
