@@ -726,14 +726,14 @@ func (td *TextDrawBuilder) AddTextCentered(text string, p [2]float32, style Text
 
 // AddText draws the specified text using the given position p as the
 // upper-left corner.
-func (td *TextDrawBuilder) AddText(s string, p [2]float32, style TextStyle) {
-	td.AddTextMulti([]string{s}, p, []TextStyle{style})
+func (td *TextDrawBuilder) AddText(s string, p [2]float32, style TextStyle) [2]float32 {
+	return td.AddTextMulti([]string{s}, p, []TextStyle{style})
 }
 
 // AddTextMulti draws multiple blocks of text with multiple styles, with
 // the first block of text starting at the specified point p.  Subsequent
 // blocks begin immediately after the end of the previous block.
-func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []TextStyle) {
+func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []TextStyle) [2]float32 {
 	// Initial state; start out pixel-perfect, at least.
 	x0, y0 := float32(int(p[0]+0.5)), float32(int(p[1]+0.5))
 	// Current cursor position
@@ -823,6 +823,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 			flushbg()
 		}
 	}
+	return [2]float32{px, py}
 }
 
 func (td *TextDrawBuilder) Reset() {

@@ -1604,7 +1604,7 @@ const (
 // a string and cursor position and then renders them with the specified
 // style, processes keyboard inputs and updates the string accordingly.
 func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]float32, style,
-	cursorStyle TextStyle, cb *CommandBuffer) (exit int) {
+	cursorStyle TextStyle, cb *CommandBuffer) (exit int, posOut [2]float32) {
 	// Make sure we can depend on it being sensible for the following
 	*cursor = clamp(*cursor, 0, len(*s))
 
@@ -1612,12 +1612,12 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 	td := TextDrawBuilder{}
 	if *cursor == len(*s) {
 		// cursor at the end
-		td.AddTextMulti([]string{*s, " "}, pos, []TextStyle{style, cursorStyle})
+		posOut = td.AddTextMulti([]string{*s, " "}, pos, []TextStyle{style, cursorStyle})
 	} else {
 		// cursor in the middle
 		sb, sc, se := (*s)[:*cursor], (*s)[*cursor:*cursor+1], (*s)[*cursor+1:]
 		styles := []TextStyle{style, cursorStyle, style}
-		td.AddTextMulti([]string{sb, sc, se}, pos, styles)
+		posOut = td.AddTextMulti([]string{sb, sc, se}, pos, styles)
 	}
 	td.GenerateCommands(cb)
 
