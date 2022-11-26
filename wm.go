@@ -769,21 +769,24 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				if pane == wm.keyboardFocusPane {
 					// Draw a border around it
 					ctx.SetWindowCoordinateMatrices(&commandBuffer)
-					w, h := disp.Width(), disp.Height()
-					p := [4][2]float32{[2]float32{1, 1}, [2]float32{w - 1, 1}, [2]float32{w - 1, h - 1}, [2]float32{1, h - 1}}
-					pidx := commandBuffer.Float2Buffer(p[:])
-
-					indidx := commandBuffer.IntBuffer([]int32{0, 1, 1, 2, 2, 3, 3, 0})
-
-					commandBuffer.SetRGB(ctx.cs.TextHighlight)
-					commandBuffer.VertexArray(pidx, 2, 2*4)
-					commandBuffer.DrawLines(indidx, 8)
-					commandBuffer.ResetState()
+					drawBorder(&commandBuffer, disp.Width(), disp.Height(), ctx.cs.TextHighlight)
 				}
 			})
 
 		stats.render = renderer.RenderCommandBuffer(&commandBuffer)
 	}
+}
+
+func drawBorder(cb *CommandBuffer, w, h float32, color RGB) {
+	p := [4][2]float32{[2]float32{1, 1}, [2]float32{w - 1, 1}, [2]float32{w - 1, h - 1}, [2]float32{1, h - 1}}
+	pidx := cb.Float2Buffer(p[:])
+
+	indidx := cb.IntBuffer([]int32{0, 1, 1, 2, 2, 3, 3, 0})
+
+	cb.SetRGB(color)
+	cb.VertexArray(pidx, 2, 2*4)
+	cb.DrawLines(indidx, 8)
+	cb.ResetState()
 }
 
 func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig, cs *ColorScheme) {
