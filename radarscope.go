@@ -2080,7 +2080,9 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 			}
 		}
 
-		positionConfig.NotifyAircraftSelected(clickedAircraft)
+		if clickedAircraft != nil {
+			eventStream.Post(&SelectedAircraftEvent{ac: clickedAircraft})
+		}
 	}
 }
 

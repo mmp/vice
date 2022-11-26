@@ -81,6 +81,8 @@ type PositionConfig struct {
 
 	frequenciesComboBoxState     *ComboBoxState
 	txFrequencies, rxFrequencies map[Frequency]*bool
+
+	eventsId EventSubscriberId
 }
 
 // Some UI state that needs  to stick around
@@ -291,6 +293,9 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 	}
 
 	positionConfig.Activate()
+	if oldConfig != nil {
+		oldConfig.Deactivate()
+	}
 
 	cs := positionConfig.GetColorScheme()
 
@@ -336,6 +341,9 @@ func (pc *PositionConfig) Activate() {
 	if pc.Frequencies == nil {
 		pc.Frequencies = make(map[string]Frequency)
 	}
+	if pc.eventsId == InvalidEventSubscriberId {
+		pc.eventsId = eventStream.Subscribe()
+	}
 
 	pc.CheckRadarCenters()
 	pc.CheckRadioPrimed()
@@ -348,22 +356,17 @@ func (pc *PositionConfig) Activate() {
 	}
 }
 
+func (pc *PositionConfig) Deactivate() {
+	eventStream.Unsubscribe(pc.eventsId)
+	pc.eventsId = InvalidEventSubscriberId
+}
+
 func (pc *PositionConfig) SendUpdates() {
 	pc.CheckRadarCenters()
 	pc.CheckRadioPrimed()
 
 	server.SetRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
 		int(pc.RadarRange))
-}
-
-func (pc *PositionConfig) NotifyAircraftSelected(ac *Aircraft) {
-	pc.DisplayRoot.VisitPanes(func(pane Pane) {
-		if cli, ok := pane.(*CLIPane); ok {
-			if !cli.ConsumeAircraftSelection(ac) {
-				pc.selectedAircraft = ac
-			}
-		}
-	})
 }
 
 func (pc *PositionConfig) MonitoredFrequencies(frequencies []Frequency) []Frequency {
@@ -651,6 +654,12 @@ func parseNotes(text string) *NotesNode {
 }
 
 func (pc *PositionConfig) Update() {
+	for _, event := range eventStream.Get(pc.eventsId) {
+		if sel, ok := event.(*SelectedAircraftEvent); ok {
+				pc.selectedAircraft = sel.ac
+		}
+	}
+
 	i := 0
 	for i < len(pc.mit) {
 		ac := pc.mit[i]

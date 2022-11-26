@@ -1293,14 +1293,6 @@ func (cli *CLIPane) ExpandAliases(cmd string) (string, error) {
 	return expanded, nil
 }
 
-func (cli *CLIPane) ConsumeAircraftSelection(ac *Aircraft) bool {
-	if ac != nil && len(cli.input.cmd) > 0 {
-		cli.input.InsertAtCursor(" " + ac.Callsign())
-		return true
-	}
-	return false
-}
-
 func (cli *CLIPane) sendTextMessage(tm TextMessage) []*ConsoleEntry {
 	sendRecip := server.Callsign() + FontAwesomeIconArrowRight
 	switch tm.messageType {
