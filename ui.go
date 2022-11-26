@@ -302,6 +302,17 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	}
 	ui.topControlsHeight = 1.35 * float32(ui.font.size)
 
+	ui.topControlsHeight += drawErrorText(cs)
+
+	drawActiveDialogBoxes()
+	drawActiveSettingsWindows()
+
+	wmDrawUI(platform)
+
+	imgui.PopFont()
+}
+
+func drawErrorText(cs *ColorScheme) float32 {
 	// See if any errors cleared
 	for k, cleared := range ui.errorText {
 		if cleared() {
@@ -309,34 +320,39 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		}
 	}
 
-	if len(ui.errorText) > 0 {
-		errorTextHeight := 20 + float32(len(ui.errorText))*float32(ui.font.size)
-
-		displaySize := platform.DisplaySize()
-		imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: ui.topControlsHeight}, imgui.ConditionAlways, imgui.Vec2{})
-		imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], errorTextHeight})
-		ui.topControlsHeight += errorTextHeight
-
-		var flags imgui.WindowFlags
-		flags = imgui.WindowFlagsNoDecoration
-		flags |= imgui.WindowFlagsNoSavedSettings
-		flags |= imgui.WindowFlagsNoNav
-		flags |= imgui.WindowFlagsNoResize
-
-		text := ""
-		for _, k := range SortedMapKeys(ui.errorText) {
-			text += k + "\n"
-		}
-		text = strings.TrimRight(text, "\n")
-
-		if imgui.BeginV("Errors", nil, flags) {
-			imgui.PushStyleColor(imgui.StyleColorText, cs.TextError.imgui())
-			imgui.Text(text)
-			imgui.PopStyleColor()
-			imgui.End()
-		}
+	if len(ui.errorText) == 0 {
+		return 0
 	}
 
+	errorTextHeight := 20 + float32(len(ui.errorText))*float32(ui.font.size)
+
+	displaySize := platform.DisplaySize()
+	imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: ui.topControlsHeight}, imgui.ConditionAlways, imgui.Vec2{})
+	imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], errorTextHeight})
+
+	var flags imgui.WindowFlags
+	flags = imgui.WindowFlagsNoDecoration
+	flags |= imgui.WindowFlagsNoSavedSettings
+	flags |= imgui.WindowFlagsNoNav
+	flags |= imgui.WindowFlagsNoResize
+
+	text := ""
+	for _, k := range SortedMapKeys(ui.errorText) {
+		text += k + "\n"
+	}
+	text = strings.TrimRight(text, "\n")
+
+	if imgui.BeginV("Errors", nil, flags) {
+		imgui.PushStyleColor(imgui.StyleColorText, cs.TextError.imgui())
+		imgui.Text(text)
+		imgui.PopStyleColor()
+		imgui.End()
+	}
+
+	return errorTextHeight
+}
+
+func drawActiveDialogBoxes() {
 	for len(ui.activeModalDialogs) > 0 {
 		d := ui.activeModalDialogs[0]
 		if !d.closed {
@@ -355,7 +371,9 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	if ui.showAboutDialog {
 		showAboutDialog()
 	}
+}
 
+func drawActiveSettingsWindows() {
 	if ui.showRadarSettings {
 		imgui.BeginV("Radar Settings", &ui.showRadarSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadarUI()
@@ -397,10 +415,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		globalConfig.AudioSettings.DrawUI()
 		imgui.End()
 	}
-
-	wmDrawUI(platform)
-
-	imgui.PopFont()
 }
 
 func setCursorForRightButtons(text []string) {
