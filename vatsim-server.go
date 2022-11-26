@@ -681,18 +681,6 @@ func (v *VATSIMServer) getOrCreateAircraft(callsign string) *Aircraft {
 	}
 }
 
-func amendFlightPlan(callsign string, amend func(fp *FlightPlan)) error {
-	if ac := server.GetAircraft(callsign); ac == nil {
-		return ErrNoAircraftForCallsign
-	} else {
-		if ac.flightPlan == nil {
-			ac.flightPlan = &FlightPlan{}
-		}
-		amend(ac.flightPlan)
-		return server.AmendFlightPlan(callsign, *ac.flightPlan)
-	}
-}
-
 func (v *VATSIMServer) trackInitiated(callsign string, controller string) error {
 	// Sometimes we get this message for a/c we haven't seen. Don't worry
 	// about it when it happens...

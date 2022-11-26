@@ -350,3 +350,20 @@ func (d *DisconnectedATCServer) CurrentTime() time.Time {
 func (d *DisconnectedATCServer) GetWindowTitle() string {
 	return "[Disconnected]"
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+// amendFlightPlan is a useful utility function for changing an entry in
+// the flightplan; the provided callback function should make the update
+// and the rest of the details are handled here.
+func amendFlightPlan(callsign string, amend func(fp *FlightPlan)) error {
+	if ac := server.GetAircraft(callsign); ac == nil {
+		return ErrNoAircraftForCallsign
+	} else {
+		if ac.flightPlan == nil {
+			ac.flightPlan = &FlightPlan{}
+		}
+		amend(ac.flightPlan)
+		return server.AmendFlightPlan(callsign, *ac.flightPlan)
+	}
+}
