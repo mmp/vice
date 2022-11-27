@@ -1889,7 +1889,7 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		Caution:             RGBFromHex(0xB7B513),
 		Error:               RGBFromHex(0xE94242),
 		SelectedDataBlock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
-		UntrackedDataBlock:  RGBFromHex(0x4E54A5),
+		UntrackedDataBlock:  RGBFromHex(0x8f92bc),
 		TrackedDataBlock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
 		HandingOffDataBlock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
 		GhostDataBlock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
@@ -1909,7 +1909,7 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
 		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
 		Compass:             RGB{R: 0.5270758, G: 0.5270758, B: 0.5270758},
-		RangeRing:           RGB{R: 0.26835144, G: 0.29237288, B: 0.18335249},
+		RangeRing:           RGBFromHex(0x282b1b),
 	},
 	"Nord (builtin)": &ColorScheme{
 		Text:                RGB{R: 0.9254902, G: 0.9372549, B: 0.95686275},
