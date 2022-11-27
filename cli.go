@@ -143,8 +143,12 @@ func StringConsoleEntry(s string) []*ConsoleEntry {
 	if s == "" {
 		return nil
 	}
-	e := &ConsoleEntry{text: []string{s}, style: []ConsoleTextStyle{ConsoleTextRegular}}
-	return []*ConsoleEntry{e}
+	var entries []*ConsoleEntry
+	for _, line := range strings.Split(s, "\n") {
+		e := &ConsoleEntry{text: []string{line}, style: []ConsoleTextStyle{ConsoleTextRegular}}
+		entries = append(entries, e)
+	}
+	return entries
 }
 
 func (e *ConsoleEntry) Draw(p [2]float32, style TextStyle, cs *ColorScheme) *TextDrawBuilder {
