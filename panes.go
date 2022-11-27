@@ -1502,7 +1502,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// otherwise we can end up with cascading tabbing ahead and the
 		// like.
 		switch editResult {
-		case TextEditReturnNone:
+		case TextEditReturnNone, TextEditReturnTextChanged:
 			// nothing to do
 		case TextEditReturnEnter:
 			fsp.selectedStrip = -1

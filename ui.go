@@ -1595,6 +1595,7 @@ func (sb *ScrollBar) Width() int {
 
 const (
 	TextEditReturnNone = iota
+	TextEditReturnTextChanged
 	TextEditReturnEnter
 	TextEditReturnNext
 	TextEditReturnPrev
@@ -1607,6 +1608,7 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 	cursorStyle TextStyle, cb *CommandBuffer) (exit int, posOut [2]float32) {
 	// Make sure we can depend on it being sensible for the following
 	*cursor = clamp(*cursor, 0, len(*s))
+	originalText := *s
 
 	// Draw the text and the cursor
 	td := TextDrawBuilder{}
@@ -1657,6 +1659,10 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 	if keyboard.input != "" {
 		*s = (*s)[:*cursor] + keyboard.input + (*s)[*cursor:]
 		*cursor += len(keyboard.input)
+	}
+
+	if exit == TextEditReturnNone && *s != originalText {
+		exit = TextEditReturnTextChanged
 	}
 
 	return
