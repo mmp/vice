@@ -293,7 +293,7 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 	}
 
 	positionConfig.Activate()
-	if oldConfig != nil {
+	if oldConfig != nil && oldConfig != positionConfig {
 		oldConfig.Deactivate()
 	}
 
