@@ -30,8 +30,8 @@ var (
 		aboutFont *Font
 		fixedFont *Font
 
-		errorText         map[string]func() bool
-		topControlsHeight float32
+		errorText     map[string]func() bool
+		menuBarHeight float32
 
 		showAboutDialog   bool
 		showRadarSettings bool
@@ -304,9 +304,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 		imgui.EndMainMenuBar()
 	}
-	ui.topControlsHeight = 1.35 * float32(ui.font.size)
-
-	ui.topControlsHeight += drawErrorText(cs)
+	ui.menuBarHeight = 1.35 * float32(ui.font.size)
 
 	drawActiveDialogBoxes()
 	drawActiveSettingsWindows()
@@ -314,46 +312,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	wmDrawUI(platform)
 
 	imgui.PopFont()
-}
-
-func drawErrorText(cs *ColorScheme) float32 {
-	// See if any errors cleared
-	for k, cleared := range ui.errorText {
-		if cleared() {
-			delete(ui.errorText, k)
-		}
-	}
-
-	if len(ui.errorText) == 0 {
-		return 0
-	}
-
-	errorTextHeight := 20 + float32(len(ui.errorText))*float32(ui.font.size)
-
-	displaySize := platform.DisplaySize()
-	imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: ui.topControlsHeight}, imgui.ConditionAlways, imgui.Vec2{})
-	imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], errorTextHeight})
-
-	var flags imgui.WindowFlags
-	flags = imgui.WindowFlagsNoDecoration
-	flags |= imgui.WindowFlagsNoSavedSettings
-	flags |= imgui.WindowFlagsNoNav
-	flags |= imgui.WindowFlagsNoResize
-
-	text := ""
-	for _, k := range SortedMapKeys(ui.errorText) {
-		text += k + "\n"
-	}
-	text = strings.TrimRight(text, "\n")
-
-	if imgui.BeginV("Errors", nil, flags) {
-		imgui.PushStyleColor(imgui.StyleColorText, cs.TextError.imgui())
-		imgui.Text(text)
-		imgui.PopStyleColor()
-		imgui.End()
-	}
-
-	return errorTextHeight
 }
 
 func drawActiveDialogBoxes() {

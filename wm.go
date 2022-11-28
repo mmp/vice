@@ -32,7 +32,7 @@ var (
 		nodeFilter      func(*DisplayNode) *DisplayNode
 		nodeFilterUnset bool
 
-		topControlsHeight float32
+		menuBarHeight float32
 
 		mouseConsumerOverride Pane
 		statusBarHasFocus     bool // overrides keyboardFocusPane
@@ -447,7 +447,7 @@ func wmAddPaneMenuSettings() {
 }
 
 func wmDrawUI(p Platform) {
-	wm.topControlsHeight = ui.topControlsHeight
+	wm.menuBarHeight = ui.menuBarHeight
 	if wm.showConfigEditor {
 		var flags imgui.WindowFlags
 		flags = imgui.WindowFlagsNoDecoration
@@ -456,9 +456,9 @@ func wmDrawUI(p Platform) {
 		flags |= imgui.WindowFlagsNoResize
 
 		displaySize := p.DisplaySize()
-		imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: ui.topControlsHeight}, imgui.ConditionAlways, imgui.Vec2{})
+		imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: ui.menuBarHeight}, imgui.ConditionAlways, imgui.Vec2{})
 		imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], 60}) //displaySize[1]})
-		wm.topControlsHeight += 60
+		wm.menuBarHeight += 60
 		imgui.BeginV("Config editor", nil, flags)
 
 		cs := positionConfig.GetColorScheme()
@@ -634,12 +634,12 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	heightRatio := fbSize[1] / displaySize[1]
 
 	statusBarHeight := globalConfig.statusBar.Height()
-	topControlsHeight := statusBarHeight + wm.topControlsHeight
+	menuBarHeight := statusBarHeight + wm.menuBarHeight
 
 	fbFull := Extent2D{p0: [2]float32{0, 0},
-		p1: [2]float32{fbSize[0], fbSize[1] - heightRatio*topControlsHeight}}
+		p1: [2]float32{fbSize[0], fbSize[1] - heightRatio*menuBarHeight}}
 	displayFull := Extent2D{p0: [2]float32{0, 0},
-		p1: [2]float32{displaySize[0], displaySize[1] - topControlsHeight}}
+		p1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight}}
 	displayTrueFull := Extent2D{p0: [2]float32{0, 0},
 		p1: [2]float32{displaySize[0], displaySize[1]}}
 
@@ -729,7 +729,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		commandBuffer.ClearRGB(positionConfig.GetColorScheme().Background)
 
 		// Draw the status bar underneath the menu bar
-		wmDrawStatusBar(fbSize, displaySize, heightRatio, topControlsHeight, &commandBuffer)
+		wmDrawStatusBar(fbSize, displaySize, heightRatio, menuBarHeight, &commandBuffer)
 
 		positionConfig.DisplayRoot.VisitPanesWithBounds(wm.nodeFilter, fbFull, displayFull, displayFull, displayTrueFull,
 			func(fb Extent2D, disp Extent2D, parentDisp Extent2D, fullDisp Extent2D, pane Pane) {
@@ -809,11 +809,11 @@ func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig, cs *ColorSchem
 	wm.keyboardFocusPane = nil
 }
 
-func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, heightRatio float32, topControlsHeight float32, cb *CommandBuffer) {
-	statusBarFbExtent := Extent2D{p0: [2]float32{0, fbSize[1] - heightRatio*topControlsHeight},
-		p1: [2]float32{fbSize[0], fbSize[1] - heightRatio*wm.topControlsHeight}}
-	statusBarDisplayExtent := Extent2D{p0: [2]float32{0, displaySize[1] - topControlsHeight},
-		p1: [2]float32{displaySize[0], displaySize[1] - wm.topControlsHeight}}
+func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, heightRatio float32, menuBarHeight float32, cb *CommandBuffer) {
+	statusBarFbExtent := Extent2D{p0: [2]float32{0, fbSize[1] - heightRatio*menuBarHeight},
+		p1: [2]float32{fbSize[0], fbSize[1] - heightRatio*wm.menuBarHeight}}
+	statusBarDisplayExtent := Extent2D{p0: [2]float32{0, displaySize[1] - menuBarHeight},
+		p1: [2]float32{displaySize[0], displaySize[1] - wm.menuBarHeight}}
 
 	cb.Scissor(int(statusBarFbExtent.p0[0]), int(statusBarFbExtent.p0[1]),
 		int(statusBarFbExtent.Width()+.5), int(statusBarFbExtent.Height()+.5))
@@ -948,7 +948,9 @@ func MakeStatusBar() *StatusBar {
 
 // Height returns the height of the status bar in pixels.
 func (sb *StatusBar) Height() float32 {
-	return float32(10 + ui.font.size) // One line plus some padding
+	// Reserve one line for f-key commands and then additional lines as
+	// needed for error text.
+	return float32(10 + (1+len(ui.errorText))*ui.font.size)
 }
 
 func (sb *StatusBar) Draw(ctx *PaneContext, cb *CommandBuffer) bool {
@@ -1046,11 +1048,6 @@ func (sb *StatusBar) draw(ctx *PaneContext, cb *CommandBuffer) bool {
 	cb.LineWidth(1 * ctx.highDPIScale)
 	ld.GenerateCommands(cb)
 
-	// Nothing more to do if there is no active command, so bail out here.
-	if sb.activeCommand == nil {
-		return false
-	}
-
 	cursorStyle := TextStyle{Font: ui.font, Color: ctx.cs.Background,
 		DrawBackground: true, BackgroundColor: ctx.cs.Text}
 	textStyle := TextStyle{Font: ui.font, Color: ctx.cs.Text}
@@ -1060,122 +1057,139 @@ func (sb *StatusBar) draw(ctx *PaneContext, cb *CommandBuffer) bool {
 	td := TextDrawBuilder{}
 	// Current cursor position for text drawing; this will advance as we
 	// start adding text.
-	textp := [2]float32{15, 5 + float32(ui.font.size)}
+	textp := [2]float32{15, 5 + float32((1+len(ui.errorText))*ui.font.size)}
 
-	// Command description
-	textp = td.AddText(sb.activeCommand.Name(), textp, textStyle)
+	if sb.activeCommand != nil {
+		// Command description
+		textp = td.AddText(sb.activeCommand.Name(), textp, textStyle)
 
-	// Draw text for all of the arguments, including both the prompt and the current value.
-	argTypes := sb.activeCommand.ArgTypes()
-	var textEditResult int
-	for i, arg := range sb.commandArgs {
-		// Prompt for the argument.
-		textp = td.AddText(" "+argTypes[i].Prompt()+": ", textp, textStyle)
-
-		if i == sb.inputFocus {
-			// If this argument currently has the cursor, draw a text editing field and handle
-			// keyboard events.
-			textEditResult, textp = uiDrawTextEdit(&sb.commandArgs[sb.inputFocus], &sb.inputCursor,
-				ctx.keyboard, textp, inputStyle, cursorStyle, cb)
-			// All of the commands expect upper-case args, so always ensure that immediately.
-			sb.commandArgs[sb.inputFocus] = strings.ToUpper(sb.commandArgs[sb.inputFocus])
-		} else {
-			// Otherwise it's an unfocused argument. If it's currently an
-			// empty string, draw an underbar.
-			if arg == "" {
-				textp = td.AddText("_", textp, inputStyle)
-			} else {
-				textp = td.AddText(arg, textp, inputStyle)
-			}
-		}
-
-		// If the user tried to run the command and there was an issue
-		// related to this argument, print the error message.
-		if sb.commandArgErrors[i] != "" {
-			textp = td.AddText(" "+sb.commandArgErrors[i]+" ", textp, errorStyle)
-		}
-
-		// Expand the argument and see how many completions we find.
-		completion, err := argTypes[i].Expand(arg)
-		if err == nil {
-			if completion != arg {
-				// We have a single completion that is different than what the user typed;
-				// draw an arrow and the completion text so the user can
-				// see what will actually be used.
-				textp = td.AddText(" "+FontAwesomeIconArrowRight+" "+completion, textp, textStyle)
-			}
-		} else {
-			// Completions are implicitly validated so if there are none the user input is
-			// not valid and if there are multiple it's ambiguous; either way, indicate
-			// the input is not valid.
-			textp = td.AddText(" "+FontAwesomeIconExclamationTriangle+" ", textp, errorStyle)
-		}
-	}
-
-	// Handle changes in focus, etc., based on the input to the text edit
-	// field.
-	switch textEditResult {
-	case TextEditReturnNone:
-		// nothing
-
-	case TextEditReturnTextChanged:
-		// The user input changed, so clear out any error message since it
-		// may no longer be valid.
-		sb.commandErrorString = ""
-		sb.commandArgErrors = make([]string, len(sb.commandArgErrors))
-
-	case TextEditReturnEnter:
-		// The user hit enter; try to run the command
-
-		// Run completion on all of the arguments; this also checks their validity.
-		var completedArgs []string
+		// Draw text for all of the arguments, including both the prompt and the current value.
 		argTypes := sb.activeCommand.ArgTypes()
-		sb.commandErrorString = ""
-		anyArgErrors := false
+		var textEditResult int
 		for i, arg := range sb.commandArgs {
-			if comp, err := argTypes[i].Expand(arg); err == nil {
-				completedArgs = append(completedArgs, comp)
-				sb.commandArgErrors[i] = ""
+			// Prompt for the argument.
+			textp = td.AddText(" "+argTypes[i].Prompt()+": ", textp, textStyle)
+
+			if i == sb.inputFocus {
+				// If this argument currently has the cursor, draw a text editing field and handle
+				// keyboard events.
+				textEditResult, textp = uiDrawTextEdit(&sb.commandArgs[sb.inputFocus], &sb.inputCursor,
+					ctx.keyboard, textp, inputStyle, cursorStyle, cb)
+				// All of the commands expect upper-case args, so always ensure that immediately.
+				sb.commandArgs[sb.inputFocus] = strings.ToUpper(sb.commandArgs[sb.inputFocus])
 			} else {
-				sb.commandArgErrors[i] = err.Error()
-				anyArgErrors = true
+				// Otherwise it's an unfocused argument. If it's currently an
+				// empty string, draw an underbar.
+				if arg == "" {
+					textp = td.AddText("_", textp, inputStyle)
+				} else {
+					textp = td.AddText(arg, textp, inputStyle)
+				}
+			}
+
+			// If the user tried to run the command and there was an issue
+			// related to this argument, print the error message.
+			if sb.commandArgErrors[i] != "" {
+				textp = td.AddText(" "+sb.commandArgErrors[i]+" ", textp, errorStyle)
+			}
+
+			// Expand the argument and see how many completions we find.
+			completion, err := argTypes[i].Expand(arg)
+			if err == nil {
+				if completion != arg {
+					// We have a single completion that is different than what the user typed;
+					// draw an arrow and the completion text so the user can
+					// see what will actually be used.
+					textp = td.AddText(" "+FontAwesomeIconArrowRight+" "+completion, textp, textStyle)
+				}
+			} else {
+				// Completions are implicitly validated so if there are none the user input is
+				// not valid and if there are multiple it's ambiguous; either way, indicate
+				// the input is not valid.
+				textp = td.AddText(" "+FontAwesomeIconExclamationTriangle+" ", textp, errorStyle)
 			}
 		}
 
-		// Something went wrong, so don't try running the command.
-		if anyArgErrors {
-			break
+		// Handle changes in focus, etc., based on the input to the text edit
+		// field.
+		switch textEditResult {
+		case TextEditReturnNone:
+			// nothing
+
+		case TextEditReturnTextChanged:
+			// The user input changed, so clear out any error message since it
+			// may no longer be valid.
+			sb.commandErrorString = ""
+			sb.commandArgErrors = make([]string, len(sb.commandArgErrors))
+
+		case TextEditReturnEnter:
+			// The user hit enter; try to run the command
+
+			// Run completion on all of the arguments; this also checks their validity.
+			var completedArgs []string
+			argTypes := sb.activeCommand.ArgTypes()
+			sb.commandErrorString = ""
+			anyArgErrors := false
+			for i, arg := range sb.commandArgs {
+				if comp, err := argTypes[i].Expand(arg); err == nil {
+					completedArgs = append(completedArgs, comp)
+					sb.commandArgErrors[i] = ""
+				} else {
+					sb.commandArgErrors[i] = err.Error()
+					anyArgErrors = true
+				}
+			}
+
+			// Something went wrong, so don't try running the command.
+			if anyArgErrors {
+				break
+			}
+
+			err := sb.activeCommand.Do(completedArgs)
+			if err != nil {
+				// Failure. Grab the command's error message to display.
+				sb.commandErrorString = err.Error()
+			} else {
+				// Success; clear out the command.
+				sb.activeCommand = nil
+				sb.commandArgs = nil
+				sb.commandArgErrors = nil
+			}
+
+		case TextEditReturnNext:
+			// Go to the next input field.
+			sb.inputFocus = (sb.inputFocus + 1) % len(sb.commandArgs)
+			sb.inputCursor = len(sb.commandArgs[sb.inputFocus])
+
+		case TextEditReturnPrev:
+			// Go to the previous input field.
+			sb.inputFocus = (sb.inputFocus + len(sb.commandArgs) - 1) % len(sb.commandArgs)
+			sb.inputCursor = len(sb.commandArgs[sb.inputFocus])
 		}
 
-		err := sb.activeCommand.Do(completedArgs)
-		if err != nil {
-			// Failure. Grab the command's error message to display.
-			sb.commandErrorString = err.Error()
-		} else {
-			// Success; clear out the command.
-			sb.activeCommand = nil
-			sb.commandArgs = nil
-			sb.commandArgErrors = nil
+		// Display the error string if it's set
+		if sb.commandErrorString != "" {
+			textp = td.AddText("   "+sb.commandErrorString, textp, errorStyle)
 		}
-
-	case TextEditReturnNext:
-		// Go to the next input field.
-		sb.inputFocus = (sb.inputFocus + 1) % len(sb.commandArgs)
-		sb.inputCursor = len(sb.commandArgs[sb.inputFocus])
-
-	case TextEditReturnPrev:
-		// Go to the previous input field.
-		sb.inputFocus = (sb.inputFocus + len(sb.commandArgs) - 1) % len(sb.commandArgs)
-		sb.inputCursor = len(sb.commandArgs[sb.inputFocus])
 	}
 
-	// Display the error string if it's set
-	if sb.commandErrorString != "" {
-		textp = td.AddText("   "+sb.commandErrorString, textp, errorStyle)
+	// Print the text for any general errors that the user needs to be
+	// alerted to.
+	textp = [2]float32{15, 5 + float32(len(ui.errorText)*ui.font.size)}
+
+	// First see if any of the errors have cleared
+	for k, cleared := range ui.errorText {
+		if cleared() {
+			delete(ui.errorText, k)
+		}
+	}
+
+	for _, k := range SortedMapKeys(ui.errorText) {
+		textp = td.AddText(k+"\n", textp, errorStyle)
 	}
 
 	// Finally, add the text drawing commands to the graphics command buffer.
 	td.GenerateCommands(cb)
 
-	return true
+	return sb.activeCommand != nil
 }
