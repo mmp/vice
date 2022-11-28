@@ -28,9 +28,7 @@ var (
 		showPaneSettings map[Pane]*bool
 		showPaneName     map[Pane]string
 
-		showPaneAsRoot  bool
-		nodeFilter      func(*DisplayNode) *DisplayNode
-		nodeFilterUnset bool
+		fullScreenDisplayNode *DisplayNode
 
 		menuBarHeight float32
 
@@ -261,27 +259,24 @@ func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 	}
 }
 
-func (d *DisplayNode) VisitPanesWithBounds(nodeFilter func(*DisplayNode) *DisplayNode,
-	framebufferExtent Extent2D, displayExtent Extent2D,
+func (d *DisplayNode) VisitPanesWithBounds(framebufferExtent Extent2D, displayExtent Extent2D,
 	parentDisplayExtent Extent2D, fullDisplayExtent Extent2D,
 	visit func(Extent2D, Extent2D, Extent2D, Extent2D, Pane)) {
-	d = nodeFilter(d)
-
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(framebufferExtent, displayExtent, parentDisplayExtent, fullDisplayExtent, d.Pane)
 	case SplitAxisX:
 		f0, fs, f1 := framebufferExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
 		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
-		d.Children[0].VisitPanesWithBounds(nodeFilter, f0, d0, displayExtent, fullDisplayExtent, visit)
+		d.Children[0].VisitPanesWithBounds(f0, d0, displayExtent, fullDisplayExtent, visit)
 		visit(fs, ds, displayExtent, fullDisplayExtent, &d.SplitLine)
-		d.Children[1].VisitPanesWithBounds(nodeFilter, f1, d1, displayExtent, fullDisplayExtent, visit)
+		d.Children[1].VisitPanesWithBounds(f1, d1, displayExtent, fullDisplayExtent, visit)
 	case SplitAxisY:
 		f0, fs, f1 := framebufferExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
 		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
-		d.Children[0].VisitPanesWithBounds(nodeFilter, f0, d0, displayExtent, fullDisplayExtent, visit)
+		d.Children[0].VisitPanesWithBounds(f0, d0, displayExtent, fullDisplayExtent, visit)
 		visit(fs, ds, displayExtent, fullDisplayExtent, &d.SplitLine)
-		d.Children[1].VisitPanesWithBounds(nodeFilter, f1, d1, displayExtent, fullDisplayExtent, visit)
+		d.Children[1].VisitPanesWithBounds(f1, d1, displayExtent, fullDisplayExtent, visit)
 	}
 }
 
@@ -328,8 +323,6 @@ func findPaneForMouse(node *DisplayNode, displayExtent Extent2D, p [2]float32) P
 
 func wmInit() {
 	lg.Printf("Starting wm initialization")
-	wm.nodeFilter = func(node *DisplayNode) *DisplayNode { return node }
-	wm.nodeFilterUnset = true
 
 	var pthelper func(indent string, node *DisplayNode) string
 	pthelper = func(indent string, node *DisplayNode) string {
@@ -643,34 +636,28 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	displayTrueFull := Extent2D{p0: [2]float32{0, 0},
 		p1: [2]float32{displaySize[0], displaySize[1]}}
 
-	if !io.WantCaptureKeyboard() && platform.IsControlFPressed() {
-		wm.showPaneAsRoot = !wm.showPaneAsRoot
-	}
-
 	mousePos := imgui.MousePos()
 	// Yaay, y flips
 	mousePos.Y = displaySize[1] - 1 - mousePos.Y
 
 	var mousePane Pane
-	if wm.showPaneAsRoot && wm.nodeFilterUnset {
-		pane := findPaneForMouse(positionConfig.DisplayRoot, displayFull,
-			[2]float32{mousePos.X, mousePos.Y})
-		// Don't maximize empty panes or split lines
-		if _, ok := pane.(*SplitLine); !ok && pane != nil {
-			wm.nodeFilter = func(node *DisplayNode) *DisplayNode {
-				return &DisplayNode{Pane: pane}
-			}
-			mousePane = pane
-			wm.nodeFilterUnset = false
-		}
-	}
-	if !wm.showPaneAsRoot {
-		if !wm.nodeFilterUnset {
-			wm.nodeFilter = func(node *DisplayNode) *DisplayNode { return node }
-			wm.nodeFilterUnset = true
-		}
+	if wm.fullScreenDisplayNode == nil {
 		mousePane = findPaneForMouse(positionConfig.DisplayRoot, displayFull,
 			[2]float32{mousePos.X, mousePos.Y})
+	} else {
+		mousePane = findPaneForMouse(wm.fullScreenDisplayNode, displayFull,
+			[2]float32{mousePos.X, mousePos.Y})
+	}
+
+	if !io.WantCaptureKeyboard() && platform.IsControlFPressed() {
+		if wm.fullScreenDisplayNode == nil {
+			// Don't maximize empty panes or split lines
+			if _, ok := mousePane.(*SplitLine); !ok && mousePane != nil {
+				wm.fullScreenDisplayNode = &DisplayNode{Pane: mousePane}
+			}
+		} else {
+			wm.fullScreenDisplayNode = nil
+		}
 	}
 
 	if wm.handlePanePick != nil && imgui.IsMouseClicked(mouseButtonPrimary) && mousePane != nil {
@@ -731,7 +718,11 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		// Draw the status bar underneath the menu bar
 		wmDrawStatusBar(fbSize, displaySize, heightRatio, menuBarHeight, &commandBuffer)
 
-		positionConfig.DisplayRoot.VisitPanesWithBounds(wm.nodeFilter, fbFull, displayFull, displayFull, displayTrueFull,
+		root := positionConfig.DisplayRoot
+		if wm.fullScreenDisplayNode != nil {
+			root = wm.fullScreenDisplayNode
+		}
+		root.VisitPanesWithBounds(fbFull, displayFull, displayFull, displayTrueFull,
 			func(fb Extent2D, disp Extent2D, parentDisp Extent2D, fullDisp Extent2D, pane Pane) {
 				ctx := PaneContext{
 					paneExtent:        disp,
