@@ -692,7 +692,7 @@ func matchingAircraft(s string) []*Aircraft {
 	})
 }
 
-func lookupCommand(n string) Command {
+func lookupCommand(n string) CLICommand {
 	for _, c := range cliCommands {
 		for _, name := range c.Names() {
 			if name == n {

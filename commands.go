@@ -630,7 +630,7 @@ const (
 	CommandArgsMultiple // Can only be at the end. Allows 0, 1, 2, ... args
 )
 
-type Command interface {
+type CLICommand interface {
 	Names() []string
 	Help() string
 	Usage() string
@@ -639,7 +639,7 @@ type Command interface {
 }
 
 var (
-	cliCommands []Command = []Command{
+	cliCommands []CLICommand = []CLICommand{
 		&SetACTypeCommand{},
 		&SetAltitudeCommand{isTemporary: false},
 		&SetAltitudeCommand{isTemporary: true},
@@ -685,7 +685,7 @@ var (
 	}
 )
 
-func checkCommands(cmds []Command) {
+func checkCommands(cmds []CLICommand) {
 	seen := make(map[string]interface{})
 	for _, c := range cmds {
 		for _, name := range c.Names() {
