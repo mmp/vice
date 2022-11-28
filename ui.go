@@ -35,6 +35,7 @@ var (
 
 		showAboutDialog   bool
 		showRadarSettings bool
+		showFKeySettings  bool
 		showATISSettings  bool
 		showColorEditor   bool
 		showFilesEditor   bool
@@ -222,6 +223,9 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			if imgui.MenuItem("Radar...") {
 				ui.showRadarSettings = true
 			}
+			if imgui.MenuItem("Function Keys...") {
+				ui.showFKeySettings = true
+			}
 			if imgui.MenuItem("Controller ATIS...") {
 				ui.showATISSettings = true
 			}
@@ -377,6 +381,52 @@ func drawActiveSettingsWindows() {
 	if ui.showRadarSettings {
 		imgui.BeginV("Radar Settings", &ui.showRadarSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadarUI()
+		imgui.End()
+	}
+
+	if ui.showFKeySettings {
+		imgui.BeginV("Function Key Settings", &ui.showFKeySettings, imgui.WindowFlagsAlwaysAutoResize)
+
+		commands := SortedMapKeys(allFKeyCommands)
+
+		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
+		if imgui.BeginTableV("SpecialKeys", 4, flags, imgui.Vec2{}, 0.0) {
+			imgui.TableSetupColumnV("Key", imgui.TableColumnFlagsWidthFixed, 50, 0)
+			imgui.TableSetupColumnV("Command", imgui.TableColumnFlagsWidthFixed, 250, 0)
+			imgui.TableSetupColumnV("Key##Shift", imgui.TableColumnFlagsWidthFixed, 50, 0)
+			imgui.TableSetupColumnV("Command##Shift", imgui.TableColumnFlagsWidthFixed, 250, 0)
+
+			imgui.TableHeadersRow()
+			for i := 1; i <= 12; i++ {
+				imgui.TableNextRow()
+
+				key := fmt.Sprintf("F%d", i)
+				imgui.TableNextColumn()
+				imgui.Text(key)
+				imgui.TableNextColumn()
+				if imgui.BeginCombo("##"+key, globalConfig.FKeyMappings[i]) {
+					for _, cmd := range commands {
+						if imgui.SelectableV(cmd, cmd == globalConfig.FKeyMappings[i], 0, imgui.Vec2{}) {
+							globalConfig.FKeyMappings[i] = cmd
+						}
+					}
+					imgui.EndCombo()
+				}
+				imgui.TableNextColumn()
+				imgui.Text("Shift-" + key)
+				imgui.TableNextColumn()
+				if imgui.BeginCombo("##Shift-"+key, globalConfig.ShiftFKeyMappings[i]) {
+					for _, cmd := range commands {
+						if imgui.SelectableV(cmd, cmd == globalConfig.ShiftFKeyMappings[i], 0, imgui.Vec2{}) {
+							globalConfig.ShiftFKeyMappings[i] = cmd
+						}
+					}
+					imgui.EndCombo()
+				}
+			}
+
+			imgui.EndTable()
+		}
 		imgui.End()
 	}
 
