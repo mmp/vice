@@ -803,6 +803,9 @@ func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig, cs *ColorSchem
 ///////////////////////////////////////////////////////////////////////////
 // ModalButtonSet
 
+// ModalButtonSet handles some of the housekeeping for the buttons used
+// when editing configs, allowing buttons to be shown or not depending on
+// external state and handling pane selection through provided callbacks.
 type ModalButtonSet struct {
 	active    string
 	names     []string
@@ -810,22 +813,34 @@ type ModalButtonSet struct {
 	show      []func() bool
 }
 
-func (m *ModalButtonSet) Add(name string, callback func() func(Pane) bool, show func() bool) {
-	m.names = append(m.names, name)
-	m.callbacks = append(m.callbacks, callback)
+// Add adds a button with the given text to the button set. The value
+// returned show callback determines whether the button is drawn, and the
+// selected callback is called if the button is pressed and a Pane is then
+// selected by the user.
+func (m *ModalButtonSet) Add(text string, selected func() func(Pane) bool, show func() bool) {
+	m.names = append(m.names, text)
+	m.callbacks = append(m.callbacks, selected)
 	m.show = append(m.show, show)
 }
 
+// Clear deselects the currently active button, if any.
 func (m *ModalButtonSet) Clear() {
 	m.active = ""
 }
 
+// Draw draws the buttons and handles user interaction.
 func (m *ModalButtonSet) Draw() {
 	for i, name := range m.names {
+		// Skip invisible buttons.
 		if !m.show[i]() {
 			continue
 		}
+
 		if m.active == name {
+			// If the button has already been pressed and we're waiting for
+			// a pane to be selected draw it in its 'hovered' state,
+			// regardless of whether the mouse is actually hovering over
+			// it.
 			imgui.PushID(m.active)
 
 			h := imgui.CurrentStyle().Color(imgui.StyleColorButtonHovered)
@@ -833,19 +848,25 @@ func (m *ModalButtonSet) Draw() {
 
 			imgui.Button(name)
 			if imgui.IsItemClicked() {
+				// If the button is clicked again, roll back and deselect
+				// it.
 				wm.handlePanePick = nil
 				m.active = ""
 			}
 			imgui.PopStyleColorV(1)
 			imgui.PopID()
 		} else if imgui.Button(name) {
+			// First click of the button. Make it active.
 			m.active = name
 
 			wm.paneFirstPick = nil
+
 			// Get the actual callback for pane selection (and allow the
 			// user to do some prep work, knowing they've been selected)
 			callback := m.callbacks[i]()
 
+			// Register the pane pick callback to dispatch pane selection
+			// to this button's callback.
 			wm.handlePanePick = func(pane Pane) bool {
 				// But now wrap the pick callback in our own function so
 				// that we can clear |active| after successful selection.
@@ -856,6 +877,7 @@ func (m *ModalButtonSet) Draw() {
 				return result
 			}
 		}
+		// Keep all of the buttons on the same line.
 		if i < len(m.names)-1 {
 			imgui.SameLine()
 		}
