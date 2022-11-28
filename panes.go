@@ -36,9 +36,8 @@ type PaneUIDrawer interface {
 }
 
 type PaneContext struct {
-	paneExtent        Extent2D
-	parentPaneExtent  Extent2D
-	fullDisplayExtent Extent2D // FIXME: this is only needed for mouse shenanegans.
+	paneExtent       Extent2D
+	parentPaneExtent Extent2D
 
 	highDPIScale float32
 
@@ -67,7 +66,7 @@ const (
 	mouseButtonCount     = 3
 )
 
-func (ctx *PaneContext) InitializeMouse() {
+func (ctx *PaneContext) InitializeMouse(fullDisplayExtent Extent2D) {
 	ctx.mouse = &MouseState{}
 
 	// Convert to pane coordinates:
@@ -77,7 +76,7 @@ func (ctx *PaneContext) InitializeMouse() {
 	// window, so we need to flip y w.r.t. the full window resolution.
 	pos := imgui.MousePos()
 	ctx.mouse.pos[0] = pos.X - ctx.paneExtent.p0[0]
-	ctx.mouse.pos[1] = ctx.fullDisplayExtent.p1[1] - 1 - ctx.paneExtent.p0[1] - pos.Y
+	ctx.mouse.pos[1] = fullDisplayExtent.p1[1] - 1 - ctx.paneExtent.p0[1] - pos.Y
 
 	io := imgui.CurrentIO()
 	wx, wy := io.MouseWheel()

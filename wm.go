@@ -327,24 +327,23 @@ func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 	}
 }
 
-func (d *DisplayNode) VisitPanesWithBounds(framebufferExtent Extent2D, displayExtent Extent2D,
-	parentDisplayExtent Extent2D, fullDisplayExtent Extent2D,
-	visit func(Extent2D, Extent2D, Extent2D, Extent2D, Pane)) {
+// VisitPanesWithBounds visits all of the panes in a DisplayNode hierarchy,
+// giving each one a number of useful bounding boxes.
+func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplayExtent Extent2D,
+	visit func(Extent2D, Extent2D, Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
-		visit(framebufferExtent, displayExtent, parentDisplayExtent, fullDisplayExtent, d.Pane)
+		visit(displayExtent, parentDisplayExtent, d.Pane)
 	case SplitAxisX:
-		f0, fs, f1 := framebufferExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
 		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
-		d.Children[0].VisitPanesWithBounds(f0, d0, displayExtent, fullDisplayExtent, visit)
-		visit(fs, ds, displayExtent, fullDisplayExtent, &d.SplitLine)
-		d.Children[1].VisitPanesWithBounds(f1, d1, displayExtent, fullDisplayExtent, visit)
+		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
+		visit(ds, displayExtent, &d.SplitLine)
+		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
 	case SplitAxisY:
-		f0, fs, f1 := framebufferExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
 		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
-		d.Children[0].VisitPanesWithBounds(f0, d0, displayExtent, fullDisplayExtent, visit)
-		visit(fs, ds, displayExtent, fullDisplayExtent, &d.SplitLine)
-		d.Children[1].VisitPanesWithBounds(f1, d1, displayExtent, fullDisplayExtent, visit)
+		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
+		visit(ds, displayExtent, &d.SplitLine)
+		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
 	}
 }
 
@@ -709,6 +708,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		p1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight}}
 	displayTrueFull := Extent2D{p0: [2]float32{0, 0},
 		p1: [2]float32{displaySize[0], displaySize[1]}}
+	highDPIScale := fbFull.Height() / displayFull.Height()
 
 	mousePos := imgui.MousePos()
 	// Yaay, y flips
@@ -796,16 +796,15 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		if wm.fullScreenDisplayNode != nil {
 			root = wm.fullScreenDisplayNode
 		}
-		root.VisitPanesWithBounds(fbFull, displayFull, displayFull, displayTrueFull,
-			func(fb Extent2D, disp Extent2D, parentDisp Extent2D, fullDisp Extent2D, pane Pane) {
+		root.VisitPanesWithBounds(displayFull, displayFull,
+			func(disp Extent2D, parentDisp Extent2D, pane Pane) {
 				ctx := PaneContext{
-					paneExtent:        disp,
-					parentPaneExtent:  parentDisp,
-					fullDisplayExtent: fullDisp,
-					highDPIScale:      fbFull.Height() / displayFull.Height(),
-					platform:          platform,
-					events:            eventStream,
-					cs:                positionConfig.GetColorScheme()}
+					paneExtent:       disp,
+					parentPaneExtent: parentDisp,
+					highDPIScale:     highDPIScale,
+					platform:         platform,
+					events:           eventStream,
+					cs:               positionConfig.GetColorScheme()}
 
 				if !wm.statusBarHasFocus && pane == wm.keyboardFocusPane {
 					ctx.InitializeKeyboard()
@@ -815,11 +814,13 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					(wm.mouseConsumerOverride == nil && mouseInScope(mousePos, disp) &&
 						!io.WantCaptureMouse())
 				if ownsMouse {
-					ctx.InitializeMouse()
+					ctx.InitializeMouse(displayTrueFull)
 				}
 
-				commandBuffer.Scissor(int(fb.p0[0]), int(fb.p0[1]), int(fb.Width()+.5), int(fb.Height()+.5))
-				commandBuffer.Viewport(int(fb.p0[0]), int(fb.p0[1]), int(fb.Width()+.5), int(fb.Height()+.5))
+				commandBuffer.Scissor(int(highDPIScale*disp.p0[0]), int(highDPIScale*disp.p0[1]),
+					int(highDPIScale*disp.Width()+.5), int(highDPIScale*disp.Height()+.5))
+				commandBuffer.Viewport(int(highDPIScale*disp.p0[0]), int(highDPIScale*disp.p0[1]),
+					int(highDPIScale*disp.Width()+.5), int(highDPIScale*disp.Height()+.5))
 				pane.Draw(&ctx, &commandBuffer)
 				commandBuffer.ResetState()
 
@@ -891,13 +892,12 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, heightRatio floa
 	cb.LoadModelViewMatrix(mgl32.Ident4())
 
 	ctx := PaneContext{
-		paneExtent:        statusBarDisplayExtent,
-		parentPaneExtent:  Extent2D{p1: displaySize},
-		fullDisplayExtent: Extent2D{p1: displaySize},
-		highDPIScale:      heightRatio,
-		platform:          platform,
-		events:            eventStream,
-		cs:                positionConfig.GetColorScheme(),
+		paneExtent:       statusBarDisplayExtent,
+		parentPaneExtent: Extent2D{p1: displaySize},
+		highDPIScale:     heightRatio,
+		platform:         platform,
+		events:           eventStream,
+		cs:               positionConfig.GetColorScheme(),
 	}
 	ctx.InitializeKeyboard()
 
