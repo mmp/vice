@@ -2,6 +2,13 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
+// This file contains functionality related to vice's "window manager",
+// which is more or less how we're describing the handling of the tiled
+// window layout.  Other than the main menu bar, which is handled
+// via imgui calls in ui.go, all of the rest of the window is managed here.
+// At the top is the StatusBar and then the rest of the window is
+// a kd-tree of Panes, separated by SplitLines.
+
 package main
 
 import (
@@ -15,27 +22,49 @@ import (
 )
 
 var (
+	// Assorted state related to the window tiling is collected in the wm
+	// struct.
 	wm struct {
-		showConfigEditor   bool
-		paneFirstPick      Pane
+		// Variables related to the config editors.
+		showConfigEditor bool
+		// When two Panes are to be selected (e.g., to exchange them), this
+		// records the first one.
+		paneFirstPick Pane
+		// Callback function for when a pane is picked during config
+		// editing.
 		handlePanePick     func(Pane) bool
 		paneCreatePrompt   string
 		paneConfigHelpText string
-		editorBackupRoot   *DisplayNode
-
+		// Backup copy of the Pane node hierarchy for use when the user
+		// clicks the discard button.
+		editorBackupRoot *DisplayNode
+		// Buttons that are displayed during config editing.
 		configButtons ModalButtonSet
 
+		// When a Pane's entry in the "Subwindows" menu is selected, these
+		// two maps are populated to indicate that the Pane's configuration
+		// window should be shown.
 		showPaneSettings map[Pane]*bool
 		showPaneName     map[Pane]string
 
+		// If a single Pane is to be displayed (via control-f), this is a
+		// *DisplayNode for it.
 		fullScreenDisplayNode *DisplayNode
 
-		menuBarHeight float32
+		menuBarHeight float32 // in pixels
 
+		// Normally the Pane that the mouse is over gets mouse events,
+		// though if the user has started a click-drag, then the Pane that
+		// received the click keeps getting events until the mouse button
+		// is released.  mouseConsumerOverride records such a pane.
 		mouseConsumerOverride Pane
-		statusBarHasFocus     bool // overrides keyboardFocusPane
-		keyboardFocusPane     Pane
-		keyboardFocusStack    []Pane
+		// Pane that currently holds the keyboard focus
+		keyboardFocusPane Pane
+		// Stack of Panes that previously held focus; if a Pane takes focus
+		// temporarily (e.g., the FlightStripPane), then this lets us pop
+		// back to the previous one (e.g., the CLIPane.)
+		keyboardFocusStack []Pane
+		statusBarHasFocus  bool // overrides keyboardFocusPane
 	}
 )
 
@@ -50,7 +79,11 @@ const (
 	SplitAxisY
 )
 
+// SplitLine represents a line separating two Panes in the display hierarchy.
+// It implements the Pane interface, which simplifies some of the details of
+// drawing and interacting with the display hierarchy.
 type SplitLine struct {
+	// Offset in [0,1] with respect to the parent Pane's bounds.
 	Pos  float32
 	Axis SplitType
 }
@@ -81,6 +114,9 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		s.Pos = clamp(s.Pos, .01, .99)
 	}
 
+	// The drawing code sets the scissor and viewport to cover just the
+	// pixel area of each pane so an easy way to draw a split line is to
+	// just issue a clear.
 	cb.ClearRGB(ctx.cs.UIControl)
 }
 
@@ -91,12 +127,17 @@ func splitLineWidth() int {
 ///////////////////////////////////////////////////////////////////////////
 // DisplayNode
 
+// DisplayNode represents a node in the Pane display hierarchy, which is a
+// kd-tree.
 type DisplayNode struct {
-	Pane      Pane // set iff splitAxis == SplitAxisNone
+	// non-nil only for leaf nodes: iff splitAxis == SplitAxisNone
+	Pane      Pane
 	SplitLine SplitLine
-	Children  [2]*DisplayNode // set iff splitAxis != SplitAxisNone
+	// non-nil only for interior notes: iff splitAxis != SplitAxisNone
+	Children [2]*DisplayNode
 }
 
+// Duplicate makes a deep copy of a display node hierarchy.
 func (d *DisplayNode) Duplicate() *DisplayNode {
 	dupe := &DisplayNode{}
 
@@ -112,11 +153,14 @@ func (d *DisplayNode) Duplicate() *DisplayNode {
 	return dupe
 }
 
+// NodeForPane searches a display node hierarchy for a given Pane,
+// returning the associated DisplayNode.
 func (d *DisplayNode) NodeForPane(pane Pane) *DisplayNode {
 	if d.Pane == pane {
 		return d
 	}
 	if d.Children[0] == nil {
+		// We've reached a leaf node without finding it.
 		return nil
 	}
 	d0 := d.Children[0].NodeForPane(pane)
@@ -126,6 +170,9 @@ func (d *DisplayNode) NodeForPane(pane Pane) *DisplayNode {
 	return d.Children[1].NodeForPane(pane)
 }
 
+// ParentNodeForPane returns both the DisplayNode one level up the
+// hierarchy from the specified Pane and the index into the children nodes
+// for that node that leads to the specified Pane.
 func (d *DisplayNode) ParentNodeForPane(pane Pane) (*DisplayNode, int) {
 	if d == nil {
 		return nil, -1
@@ -143,11 +190,24 @@ func (d *DisplayNode) ParentNodeForPane(pane Pane) (*DisplayNode, int) {
 	return d.Children[1].ParentNodeForPane(pane)
 }
 
+// TypedDisplayNodePane helps with marshaling to and unmarshaling from
+// JSON, which is how the configuration and settings are saved between
+// sessions. Most of this works out pretty much for free thanks to go's
+// JSON support and ability to automatically inspect and serialize structs.
+// The one messy bit is that when we save the DisplayNode hierarchy,
+// although the public member variables of Panes are automatically
+// serialized, the types of the Panes are not.  Therefore, we instead
+// marshal/unmarshal TypedDisplayNodePane instances, which carry along a
+// string representation of the associated Pane type stored at a
+// DisplayNode.
 type TypedDisplayNodePane struct {
 	DisplayNode
 	Type string
 }
 
+// MarshalJSON is called when a DisplayNode is to be marshaled into JSON.
+// Here we instead marshal out a TypedDisplayNodePane that also stores
+// the Pane's type.
 func (d *DisplayNode) MarshalJSON() ([]byte, error) {
 	td := TypedDisplayNodePane{DisplayNode: *d}
 	if d.Pane != nil {
@@ -156,12 +216,16 @@ func (d *DisplayNode) MarshalJSON() ([]byte, error) {
 	return json.Marshal(td)
 }
 
+// UnmarshalJSON unmarshals text into a DisplayNode; its main task is to
+// use the type sting that comes along in the TypedDisplayNodePane to
+// determine which Pane type to unmarshal the Pane's member variables into.
 func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 	var m map[string]*json.RawMessage
 	if err := json.Unmarshal(s, &m); err != nil {
 		return err
 	}
 
+	// First unmarshal the basics.
 	var paneType string
 	if err := json.Unmarshal(*m["Type"], &paneType); err != nil {
 		return err
@@ -173,6 +237,8 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 		return err
 	}
 
+	// Now create the appropriate Pane type based on the type string and
+	// then unmarshal its member variables.
 	switch paneType {
 	case "":
 		// nil pane
@@ -248,6 +314,8 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 	return nil
 }
 
+// VisitPanes visits all of the Panes in a DisplayNode hierarchy, calling
+// the provided callback function for each one.
 func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
@@ -419,6 +487,8 @@ func wmInit() {
 }
 
 func wmAddPaneMenuSettings() {
+	// Each Pane that implements the PaneUIDrawer interface gets an entry
+	// in the "Subwindows" menu in the main menu bar. First collect those.
 	var panes []Pane
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 		if _, ok := pane.(PaneUIDrawer); ok {
@@ -426,13 +496,17 @@ func wmAddPaneMenuSettings() {
 		}
 	})
 
-	// sort by name
+	// Sort them by name.
 	sort.Slice(panes, func(i, j int) bool { return panes[i].Name() < panes[j].Name() })
 
-	for _, pane := range panes {
-		if imgui.MenuItem(pane.Name() + "...") {
+	for i, pane := range panes {
+		// It's possible that multiple panes may have the same name;
+		// disambiguate their imgui tags via ## just in case.
+		if imgui.MenuItem(pane.Name() + "...##" + fmt.Sprintf("%d", i)) {
 			// copy the name so that it can be edited...
 			wm.showPaneName[pane] = pane.Name()
+			// Allocate a new bool that indicates whether the window for
+			// the pane is displayed.
 			t := true
 			wm.showPaneSettings[pane] = &t
 		}

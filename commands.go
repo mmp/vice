@@ -619,6 +619,10 @@ func (*TrackFKeyCommand) Do(args []string) error { return server.InitiateTrack(a
 ///////////////////////////////////////////////////////////////////////////
 // CLICommands
 
+// There is admittedly some redundancy between CLICommands and
+// FKeyCommands--"I take these parameters", "here are the parameters, now
+// run the command", etc. It would be nice to unify them at some point...
+
 type CommandArgsFormat int
 
 const (
