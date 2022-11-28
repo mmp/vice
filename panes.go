@@ -1179,7 +1179,6 @@ type FlightStripPane struct {
 
 	eventsId  EventSubscriberId
 	scrollbar *ScrollBar
-	cb        CommandBuffer
 }
 
 func NewFlightStripPane() *FlightStripPane {
