@@ -39,8 +39,6 @@ type PaneContext struct {
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D
 
-	highDPIScale float32
-
 	platform Platform
 	cs       *ColorScheme
 	mouse    *MouseState
@@ -1627,11 +1625,11 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(ctx.cs.UIControl)
-	cb.LineWidth(1 * ctx.highDPIScale)
+	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
 	cb.SetRGB(ctx.cs.TextHighlight)
-	cb.LineWidth(3 * ctx.highDPIScale)
+	cb.LineWidth(3)
 	selectionLd.GenerateCommands(cb)
 }

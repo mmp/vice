@@ -754,7 +754,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	rs.pointsDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.linesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
-	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth * ctx.highDPIScale)
+	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth)
 	rs.thickLinesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 
 	cb.Call(rs.llCommandBuffer)
@@ -801,12 +801,12 @@ func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl
 	rs.llCommandBuffer.LoadProjectionMatrix(ndcFromLatLongMtx)
 	rs.llCommandBuffer.LoadModelViewMatrix(mgl32.Ident4())
 	rs.llCommandBuffer.PointSize(rs.PointSize)
-	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	rs.llCommandBuffer.LineWidth(rs.LineWidth)
 
 	rs.wcCommandBuffer.Reset()
 	ctx.SetWindowCoordinateMatrices(&rs.wcCommandBuffer)
 	rs.wcCommandBuffer.PointSize(rs.PointSize)
-	rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	rs.wcCommandBuffer.LineWidth(rs.LineWidth)
 }
 
 func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl32.Mat4,
@@ -844,7 +844,7 @@ func (rs *RadarScopePane) drawStatic(ctx *PaneContext, windowFromLatLongMtx mgl3
 	*/
 
 	// Renormalize line width for high-DPI displays
-	rs.llCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	rs.llCommandBuffer.LineWidth(rs.LineWidth)
 
 	if rs.DrawEverything || rs.DrawRunways {
 		rs.llCommandBuffer.SetRGB(ctx.cs.Runway)
@@ -1856,7 +1856,7 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 			p1 := windowFromLatLongP(v.aircraft[1].Position())
 			lines.AddCircle(p1, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
 		}
-		rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+		rs.wcCommandBuffer.LineWidth(rs.LineWidth)
 		lines.GenerateCommands(&rs.wcCommandBuffer)
 
 	case RangeIndicatorLine:
@@ -1908,7 +1908,7 @@ func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP fu
 		lines.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
 	}
 
-	rs.wcCommandBuffer.LineWidth(rs.LineWidth * ctx.highDPIScale)
+	rs.wcCommandBuffer.LineWidth(rs.LineWidth)
 	lines.GenerateCommands(&rs.wcCommandBuffer)
 }
 
@@ -1965,7 +1965,7 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, windowFromLatLongP f
 	lines := ColoredLinesDrawBuilder{}
 	lines.AddCircle(p, radius, 360, color)
 
-	rs.wcCommandBuffer.LineWidth(3 * rs.LineWidth * ctx.highDPIScale)
+	rs.wcCommandBuffer.LineWidth(3 * rs.LineWidth)
 	lines.GenerateCommands(&rs.wcCommandBuffer)
 }
 

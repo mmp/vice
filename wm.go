@@ -801,7 +801,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				ctx := PaneContext{
 					paneExtent:       disp,
 					parentPaneExtent: parentDisp,
-					highDPIScale:     highDPIScale,
 					platform:         platform,
 					events:           eventStream,
 					cs:               positionConfig.GetColorScheme()}
@@ -894,7 +893,6 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, heightRatio floa
 	ctx := PaneContext{
 		paneExtent:       statusBarDisplayExtent,
 		parentPaneExtent: Extent2D{p1: displaySize},
-		highDPIScale:     heightRatio,
 		platform:         platform,
 		events:           eventStream,
 		cs:               positionConfig.GetColorScheme(),
@@ -1110,7 +1108,7 @@ func (sb *StatusBar) draw(ctx *PaneContext, cb *CommandBuffer) bool {
 	ld.AddLine([2]float32{5, 1}, [2]float32{ctx.paneExtent.p1[0] - 5, 1}, ctx.cs.UIControl)
 	h := ctx.paneExtent.Height() - 1
 	ld.AddLine([2]float32{5, h}, [2]float32{ctx.paneExtent.p1[0] - 5, h}, ctx.cs.UIControl)
-	cb.LineWidth(1 * ctx.highDPIScale)
+	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 
 	cursorStyle := TextStyle{Font: ui.font, Color: ctx.cs.Background,
