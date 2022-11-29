@@ -30,7 +30,6 @@ type GlobalConfig struct {
 
 	FKeyMappings      [13]string
 	ShiftFKeyMappings [13]string
-	statusBar         *StatusBar
 
 	VatsimName     string
 	VatsimCID      string
@@ -301,12 +300,11 @@ func (gc *GlobalConfig) MakeConfigActive(name string) {
 		oldConfig.Deactivate()
 	}
 
+	wmActivateNewConfig(oldConfig, positionConfig)
+
 	cs := positionConfig.GetColorScheme()
 
-	wmActivateNewConfig(oldConfig, positionConfig, cs)
-
 	uiUpdateColorScheme(cs)
-
 	database.SetColorScheme(cs)
 }
 
@@ -601,7 +599,6 @@ func LoadOrMakeDefaultConfig() {
 
 	globalConfig.LoadAliasesFile()
 	globalConfig.LoadNotesFile()
-	globalConfig.statusBar = MakeStatusBar()
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }

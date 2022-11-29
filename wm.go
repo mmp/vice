@@ -51,7 +51,9 @@ var (
 		// *DisplayNode for it.
 		fullScreenDisplayNode *DisplayNode
 
-		menuBarHeight float32 // in pixels
+		statusBar *StatusBar
+
+		configEditorHeight float32 // in pixels; zero if the config editor is not active
 
 		// Normally the Pane that the mouse is over gets mouse events,
 		// though if the user has started a click-drag, then the Pane that
@@ -121,7 +123,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 }
 
 func splitLineWidth() int {
-	return int(3*dpiScale(platform) + 0.5)
+	return int(2*dpiScale(platform) + 0.5)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -328,7 +330,8 @@ func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 }
 
 // VisitPanesWithBounds visits all of the panes in a DisplayNode hierarchy,
-// giving each one a number of useful bounding boxes.
+// giving each one both its own bounding box in window coordinates as well
+// the bounding box of its parent node in the DisplayNodeTree.
 func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplayExtent Extent2D,
 	visit func(Extent2D, Extent2D, Pane)) {
 	switch d.SplitLine.Axis {
@@ -347,6 +350,10 @@ func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplay
 	}
 }
 
+// SplitX returns a new DisplayNode that is the result of splitting the
+// provided node horizontally direction at the specified offset (which should
+// be between 0 and 1), storing the node as the new node's first child, and
+// storing newChild as the's second child.
 func (d *DisplayNode) SplitX(x float32, newChild *DisplayNode) *DisplayNode {
 	if d.SplitLine.Axis != SplitAxisNone {
 		lg.Errorf("splitting a non-leaf node: %v", d)
@@ -355,6 +362,8 @@ func (d *DisplayNode) SplitX(x float32, newChild *DisplayNode) *DisplayNode {
 		Children: [2]*DisplayNode{d, newChild}}
 }
 
+// SplitY returns a new DisplayNode from splitting the provided node
+// vertically, analogous to the SplitX method.
 func (d *DisplayNode) SplitY(y float32, newChild *DisplayNode) *DisplayNode {
 	if d.SplitLine.Axis != SplitAxisNone {
 		lg.Errorf("splitting a non-leaf node: %v", d)
@@ -363,48 +372,61 @@ func (d *DisplayNode) SplitY(y float32, newChild *DisplayNode) *DisplayNode {
 		Children: [2]*DisplayNode{d, newChild}}
 }
 
-func findPaneForMouse(node *DisplayNode, displayExtent Extent2D, p [2]float32) Pane {
+// FindPaneForMouse returns the Pane that the provided mouse position p is inside.
+func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pane {
 	if !displayExtent.Inside(p) {
 		return nil
 	}
-	if node.SplitLine.Axis == SplitAxisNone {
-		return node.Pane
+	if d.SplitLine.Axis == SplitAxisNone {
+		// We've reached a leaf node and found the pane.
+		return d.Pane
 	}
+
+	// Compute the extents of the two nodes and the split line.
 	var d0, ds, d1 Extent2D
-	if node.SplitLine.Axis == SplitAxisX {
-		d0, ds, d1 = displayExtent.SplitX(node.SplitLine.Pos, splitLineWidth())
+	if d.SplitLine.Axis == SplitAxisX {
+		d0, ds, d1 = displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
 	} else {
-		d0, ds, d1 = displayExtent.SplitY(node.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 = displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
 	}
+
+	// Now figure out which it is inside.
 	if d0.Inside(p) {
-		return findPaneForMouse(node.Children[0], d0, p)
+		return d.Children[0].FindPaneForMouse(d0, p)
 	} else if ds.Inside(p) {
-		return &node.SplitLine
+		return &d.SplitLine
 	} else if d1.Inside(p) {
-		return findPaneForMouse(node.Children[1], d1, p)
+		return d.Children[1].FindPaneForMouse(d1, p)
 	} else {
 		lg.Errorf("Mouse not overlapping anything?")
 		return nil
 	}
 }
 
+func (d *DisplayNode) String() string {
+	return d.getString("")
+}
+
+func (d *DisplayNode) getString(indent string) string {
+	if d == nil {
+		return ""
+	}
+	s := fmt.Sprintf(indent+"%p split %d pane %p (%T)\n", d, d.SplitLine.Axis, d.Pane, d.Pane)
+	s += d.Children[0].getString(indent + "     ")
+	s += d.Children[1].getString(indent + "     ")
+	return s
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// wmInit handles general initialization for the window (pane) management
+// system.
 func wmInit() {
 	lg.Printf("Starting wm initialization")
 
-	var pthelper func(indent string, node *DisplayNode) string
-	pthelper = func(indent string, node *DisplayNode) string {
-		if node == nil {
-			return ""
-		}
-		s := fmt.Sprintf(indent+"%p split %d pane %p (%T)\n", node, node.SplitLine.Axis, node.Pane, node.Pane)
-		s += pthelper(indent+"     ", node.Children[0])
-		s += pthelper(indent+"     ", node.Children[1])
-		return s
-	}
-	printtree := func() string {
-		return pthelper("", positionConfig.DisplayRoot)
-	}
+	wm.statusBar = MakeStatusBar()
 
+	// All that this function currently does is initialize the buttons for use in the config editor.
 	wm.configButtons.Add("Copy", func() func(pane Pane) bool {
 		wm.paneConfigHelpText = "Select window to copy"
 		return func(pane Pane) bool {
@@ -414,11 +436,13 @@ func wmInit() {
 				return false
 			} else {
 				node := positionConfig.DisplayRoot.NodeForPane(pane)
-				lg.Printf("about to copy %p %+T to node %v.\ntree: %s", pane, pane, node, printtree())
+				lg.Printf("about to copy %p %+T to node %v.\ntree: %s", pane, pane, node,
+					positionConfig.DisplayRoot.String())
 				node.Pane = wm.paneFirstPick.Duplicate(true)
 				wm.paneFirstPick = nil
 				wm.paneConfigHelpText = ""
-				lg.Printf("new tree:\n%s", printtree())
+				lg.Printf("new tree:\n%s",
+					positionConfig.DisplayRoot.String())
 				return true
 			}
 		}
@@ -436,13 +460,14 @@ func wmInit() {
 				} else {
 					n0 := positionConfig.DisplayRoot.NodeForPane(wm.paneFirstPick)
 					n1 := positionConfig.DisplayRoot.NodeForPane(pane)
-					lg.Printf("about echange nodes %p %+v %p %+v.\ntree: %s", n0, n0, n1, n1, printtree())
+					lg.Printf("about echange nodes %p %+v %p %+v.\ntree: %s", n0, n0, n1, n1,
+						positionConfig.DisplayRoot.String())
 					if pane != wm.paneFirstPick {
 						n0.Pane, n1.Pane = n1.Pane, n0.Pane
 					}
 					wm.paneFirstPick = nil
 					wm.paneConfigHelpText = ""
-					lg.Printf("new tree:\n%s", printtree())
+					lg.Printf("new tree:\n%s", positionConfig.DisplayRoot.String())
 					return true
 				}
 			}
@@ -452,7 +477,8 @@ func wmInit() {
 		return func() func(pane Pane) bool {
 			wm.paneConfigHelpText = "Select window to split"
 			return func(pane Pane) bool {
-				lg.Printf("about to split %p %+T.\ntree: %s", pane, pane, printtree())
+				lg.Printf("about to split %p %+T.\ntree: %s", pane, pane,
+					positionConfig.DisplayRoot.String())
 				node := positionConfig.DisplayRoot.NodeForPane(pane)
 				node.Children[0] = &DisplayNode{Pane: &EmptyPane{}}
 				node.Children[1] = &DisplayNode{Pane: pane}
@@ -460,7 +486,7 @@ func wmInit() {
 				node.SplitLine.Pos = 0.5
 				node.SplitLine.Axis = axis
 				wm.paneConfigHelpText = ""
-				lg.Printf("new tree:\n%s", printtree())
+				lg.Printf("new tree:\n%s", positionConfig.DisplayRoot.String())
 				return true
 			}
 		}
@@ -472,12 +498,13 @@ func wmInit() {
 	wm.configButtons.Add("Delete", func() func(pane Pane) bool {
 		wm.paneConfigHelpText = "Select window to delete"
 		return func(pane Pane) bool {
-			lg.Printf("about to delete %p %+T.\ntree: %s", pane, pane, printtree())
+			lg.Printf("about to delete %p %+T.\ntree: %s", pane, pane,
+				positionConfig.DisplayRoot.String())
 			node, idx := positionConfig.DisplayRoot.ParentNodeForPane(pane)
 			other := idx ^ 1
 			*node = *node.Children[other]
 			wm.paneConfigHelpText = ""
-			lg.Printf("new tree:\n%s", printtree())
+			lg.Printf("new tree:\n%s", positionConfig.DisplayRoot.String())
 			return true
 		}
 	}, func() bool { return positionConfig.DisplayRoot.Children[0] != nil })
@@ -485,6 +512,8 @@ func wmInit() {
 	lg.Printf("Finished wm initialization")
 }
 
+// wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
+// menu.
 func wmAddPaneMenuSettings() {
 	// Each Pane that implements the PaneUIDrawer interface gets an entry
 	// in the "Subwindows" menu in the main menu bar. First collect those.
@@ -512,122 +541,126 @@ func wmAddPaneMenuSettings() {
 	}
 }
 
-func wmDrawUI(p Platform) {
-	wm.menuBarHeight = ui.menuBarHeight
-	if wm.showConfigEditor {
-		var flags imgui.WindowFlags
-		flags = imgui.WindowFlagsNoDecoration
-		flags |= imgui.WindowFlagsNoSavedSettings
-		flags |= imgui.WindowFlagsNoNav
-		flags |= imgui.WindowFlagsNoResize
+func wmDrawConfigEditor(p Platform) {
+	imgui.PushFont(ui.font.ifont)
 
-		displaySize := p.DisplaySize()
-		imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: ui.menuBarHeight}, imgui.ConditionAlways, imgui.Vec2{})
-		imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], 60}) //displaySize[1]})
-		wm.menuBarHeight += 60
-		imgui.BeginV("Config editor", nil, flags)
+	var flags imgui.WindowFlags
+	flags = imgui.WindowFlagsNoDecoration
+	flags |= imgui.WindowFlagsNoSavedSettings
+	flags |= imgui.WindowFlagsNoNav
+	flags |= imgui.WindowFlagsNoResize
 
-		cs := positionConfig.GetColorScheme()
-		imgui.PushStyleColor(imgui.StyleColorText, cs.Text.imgui())
+	displaySize := p.DisplaySize()
+	y := ui.menuBarHeight + wm.statusBar.Height()
+	imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: y}, imgui.ConditionAlways, imgui.Vec2{})
+	imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], 60})
+	imgui.BeginV("Config editor", nil, flags)
 
-		setPicked := func(newPane Pane) func(pane Pane) bool {
-			return func(pane Pane) bool {
-				node := positionConfig.DisplayRoot.NodeForPane(pane)
-				node.Pane = newPane
-				wm.paneCreatePrompt = ""
-				wm.paneConfigHelpText = ""
-				return true
-			}
-		}
-		imgui.SetNextItemWidth(imgui.WindowWidth() * .2)
-		prompt := wm.paneCreatePrompt
-		if prompt == "" {
-			prompt = "Create New..."
-		}
-		if imgui.BeginCombo("##Set...", prompt) {
-			if imgui.Selectable("Airport information") {
-				wm.paneCreatePrompt = "Airport information"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewAirportInfoPane())
-			}
-			if imgui.Selectable("Command-line interface") {
-				wm.paneCreatePrompt = "Command-line interface"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewCLIPane())
-			}
-			if imgui.Selectable("Empty") {
-				wm.paneCreatePrompt = "Empty"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewEmptyPane())
-			}
-			if imgui.Selectable("Flight plan") {
-				wm.paneCreatePrompt = "Flight plan"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewFlightPlanPane())
-			}
-			if imgui.Selectable("Flight strip") {
-				wm.paneCreatePrompt = "Flight strip"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewFlightStripPane())
-			}
-			if imgui.Selectable("Notes Viewer") {
-				wm.paneCreatePrompt = "Notes viewer"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewNotesViewPane())
-			}
-			if imgui.Selectable("Performance statistics") {
-				wm.paneCreatePrompt = "Performance statistics"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewPerformancePane())
-			}
-			if imgui.Selectable("Radar Scope") {
-				wm.paneCreatePrompt = "Radar scope"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewRadarScopePane("(Unnamed)"))
-			}
-			if imgui.Selectable("Reminders") {
-				wm.paneCreatePrompt = "Reminders"
-				wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-				wm.handlePanePick = setPicked(NewReminderPane())
-			}
-			imgui.EndCombo()
-		}
+	cs := positionConfig.GetColorScheme()
+	imgui.PushStyleColor(imgui.StyleColorText, cs.Text.imgui())
 
-		imgui.SameLine()
-
-		wm.configButtons.Draw()
-
-		if wm.handlePanePick != nil {
-			imgui.SameLine()
-			if imgui.Button("Cancel") {
-				wm.handlePanePick = nil
-				wm.paneFirstPick = nil
-				wm.paneConfigHelpText = ""
-				wm.configButtons.Clear()
-			}
-		}
-
-		imgui.SameLine()
-		imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(110), imgui.CursorPosY()})
-		if imgui.Button("Save") {
-			wm.showConfigEditor = false
+	setPicked := func(newPane Pane) func(pane Pane) bool {
+		return func(pane Pane) bool {
+			node := positionConfig.DisplayRoot.NodeForPane(pane)
+			node.Pane = newPane
+			wm.paneCreatePrompt = ""
 			wm.paneConfigHelpText = ""
-			wm.editorBackupRoot = nil
+			return true
 		}
-		imgui.SameLine()
-		if imgui.Button("Revert") {
-			positionConfig.DisplayRoot = wm.editorBackupRoot
-			wm.showConfigEditor = false
-			wm.paneConfigHelpText = ""
-			wm.editorBackupRoot = nil
+	}
+	imgui.SetNextItemWidth(imgui.WindowWidth() * .2)
+	prompt := wm.paneCreatePrompt
+	if prompt == "" {
+		prompt = "Create New..."
+	}
+	if imgui.BeginCombo("##Set...", prompt) {
+		if imgui.Selectable("Airport information") {
+			wm.paneCreatePrompt = "Airport information"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewAirportInfoPane())
 		}
-
-		imgui.Text(wm.paneConfigHelpText)
-
-		imgui.PopStyleColor()
-		imgui.End()
+		if imgui.Selectable("Command-line interface") {
+			wm.paneCreatePrompt = "Command-line interface"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewCLIPane())
+		}
+		if imgui.Selectable("Empty") {
+			wm.paneCreatePrompt = "Empty"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewEmptyPane())
+		}
+		if imgui.Selectable("Flight plan") {
+			wm.paneCreatePrompt = "Flight plan"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewFlightPlanPane())
+		}
+		if imgui.Selectable("Flight strip") {
+			wm.paneCreatePrompt = "Flight strip"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewFlightStripPane())
+		}
+		if imgui.Selectable("Notes Viewer") {
+			wm.paneCreatePrompt = "Notes viewer"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewNotesViewPane())
+		}
+		if imgui.Selectable("Performance statistics") {
+			wm.paneCreatePrompt = "Performance statistics"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewPerformancePane())
+		}
+		if imgui.Selectable("Radar Scope") {
+			wm.paneCreatePrompt = "Radar scope"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewRadarScopePane("(Unnamed)"))
+		}
+		if imgui.Selectable("Reminders") {
+			wm.paneCreatePrompt = "Reminders"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewReminderPane())
+		}
+		imgui.EndCombo()
 	}
 
+	imgui.SameLine()
+
+	wm.configButtons.Draw()
+
+	if wm.handlePanePick != nil {
+		imgui.SameLine()
+		if imgui.Button("Cancel") {
+			wm.handlePanePick = nil
+			wm.paneFirstPick = nil
+			wm.paneConfigHelpText = ""
+			wm.configButtons.Clear()
+		}
+	}
+
+	imgui.SameLine()
+	imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(110), imgui.CursorPosY()})
+	if imgui.Button("Save") {
+		wm.showConfigEditor = false
+		wm.paneConfigHelpText = ""
+		wm.editorBackupRoot = nil
+	}
+	imgui.SameLine()
+	if imgui.Button("Revert") {
+		positionConfig.DisplayRoot = wm.editorBackupRoot
+		wm.showConfigEditor = false
+		wm.paneConfigHelpText = ""
+		wm.editorBackupRoot = nil
+	}
+
+	imgui.Text(wm.paneConfigHelpText)
+
+	imgui.PopStyleColor()
+	imgui.End()
+
+	imgui.PopFont()
+}
+
+// wmDrawUI draws any open Pane settings windows.
+func wmDrawUI(p Platform) {
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 		if show, ok := wm.showPaneSettings[pane]; ok && *show {
 			if uid, ok := pane.(PaneUIDrawer); ok {
@@ -639,6 +672,10 @@ func wmDrawUI(p Platform) {
 	})
 }
 
+// wmTakeKeyboardFocus allows a Pane to take the keyboard
+// focus. isTransient can be used to indicate that the focus will later be
+// given up, at which point the previously-focused Pane should get the
+// keyboard focus back.
 func wmTakeKeyboardFocus(pane Pane, isTransient bool) {
 	if wm.keyboardFocusPane == pane {
 		return
@@ -647,11 +684,15 @@ func wmTakeKeyboardFocus(pane Pane, isTransient bool) {
 		wm.keyboardFocusStack = append(wm.keyboardFocusStack, wm.keyboardFocusPane)
 	}
 	if !isTransient {
+		// We can discard anything in the stack if this pane is not
+		// planning on giving it back.
 		wm.keyboardFocusStack = nil
 	}
 	wm.keyboardFocusPane = pane
 }
 
+// wmReleaseKeyboardFocus allows a Pane to give up the keyboard focus; it
+// is returned to the last item on the stack.
 func wmReleaseKeyboardFocus() {
 	if n := len(wm.keyboardFocusStack); n > 0 {
 		wm.keyboardFocusPane = wm.keyboardFocusStack[n-1]
@@ -659,6 +700,8 @@ func wmReleaseKeyboardFocus() {
 	}
 }
 
+// wmPaneIsPresent checks to see if the specified Pane is present in the
+// display hierarchy.
 func wmPaneIsPresent(pane Pane) bool {
 	found := false
 	positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
@@ -669,6 +712,11 @@ func wmPaneIsPresent(pane Pane) bool {
 	return found
 }
 
+// wmDrawPanes is called each time through the main rendering loop; it
+// handles all of the details of drawing the Panes in the display
+// hierarchy, making sure they don't inadvertently draw over other panes,
+// and providing mouse and keyboard events only to the Pane that should
+// respectively be receiving them.
 func wmDrawPanes(platform Platform, renderer Renderer) {
 	if !wmPaneIsPresent(wm.keyboardFocusPane) {
 		// It was deleted in the config editor or a new config was loaded.
@@ -693,49 +741,52 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		}
 	}
 
-	io := imgui.CurrentIO()
-
+	// Useful values related to the display size.
 	fbSize := platform.FramebufferSize()
 	displaySize := platform.DisplaySize()
-	heightRatio := fbSize[1] / displaySize[1]
+	highDPIScale := fbSize[1] / displaySize[1]
 
-	statusBarHeight := globalConfig.statusBar.Height()
-	menuBarHeight := statusBarHeight + wm.menuBarHeight
+	if wm.showConfigEditor {
+		wm.configEditorHeight = 60 // FIXME: hardcoded
+	} else {
+		wm.configEditorHeight = 0
+	}
+	topItemsHeight := ui.menuBarHeight + wm.statusBar.Height() + wm.configEditorHeight
 
-	fbFull := Extent2D{p0: [2]float32{0, 0},
-		p1: [2]float32{fbSize[0], fbSize[1] - heightRatio*menuBarHeight}}
-	displayFull := Extent2D{p0: [2]float32{0, 0},
-		p1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight}}
-	displayTrueFull := Extent2D{p0: [2]float32{0, 0},
-		p1: [2]float32{displaySize[0], displaySize[1]}}
-	highDPIScale := fbFull.Height() / displayFull.Height()
+	// Area left for actually drawing Panes
+	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - topItemsHeight}}
 
-	mousePos := imgui.MousePos()
-	// Yaay, y flips
-	mousePos.Y = displaySize[1] - 1 - mousePos.Y
+	// Get the mouse position from imgui; flip y so that it lines up with
+	// our window coordinates.
+	mousePos := [2]float32{imgui.MousePos().X, displaySize[1] - 1 - imgui.MousePos().Y}
 
+	// Figure out which Pane the mouse is in.
 	var mousePane Pane
 	if wm.fullScreenDisplayNode == nil {
-		mousePane = findPaneForMouse(positionConfig.DisplayRoot, displayFull,
-			[2]float32{mousePos.X, mousePos.Y})
+		mousePane = positionConfig.DisplayRoot.FindPaneForMouse(paneDisplayExtent, mousePos)
 	} else {
-		mousePane = findPaneForMouse(wm.fullScreenDisplayNode, displayFull,
-			[2]float32{mousePos.X, mousePos.Y})
+		// mousePane = wm.fullScreenDisplayNode.Pane ?
+		mousePane = wm.fullScreenDisplayNode.FindPaneForMouse(paneDisplayExtent, mousePos)
 	}
 
+	io := imgui.CurrentIO()
+	// Handle control-F, which either makes a Pane take up the window, or
+	// goes back to the regular configuration.
 	if !io.WantCaptureKeyboard() && platform.IsControlFPressed() {
 		if wm.fullScreenDisplayNode == nil {
 			// Don't maximize empty panes or split lines
 			if _, ok := mousePane.(*SplitLine); !ok && mousePane != nil {
-				wm.fullScreenDisplayNode = &DisplayNode{Pane: mousePane}
+				wm.fullScreenDisplayNode = positionConfig.DisplayRoot.NodeForPane(mousePane)
 			}
 		} else {
 			wm.fullScreenDisplayNode = nil
 		}
 	}
 
+	// If the config editor is waiting for a Pane to be picked and the user
+	// clicked in a Pane, report that news back.
 	if wm.handlePanePick != nil && imgui.IsMouseClicked(mouseButtonPrimary) && mousePane != nil {
-		// Filter out splits
+		// Ignore clicks on  split lines, however.
 		if _, split := mousePane.(*SplitLine); !split {
 			if wm.handlePanePick(mousePane) {
 				wm.handlePanePick = nil
@@ -743,32 +794,35 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		}
 	}
 
-	// Clear the mouse override if imgui wants mouse events or if there
-	// is no longer any click or drag action.
+	// If the user has clicked or is dragging in a Pane, record it in
+	// mouseConsumerOverride so that we can continue to dispatch mouse
+	// events to that Pane until the mouse button is released, even if the
+	// mouse is no longer above it.
 	isDragging := imgui.IsMouseDragging(mouseButtonPrimary, 0.) ||
 		imgui.IsMouseDragging(mouseButtonSecondary, 0.) ||
 		imgui.IsMouseDragging(mouseButtonTertiary, 0.)
 	isClicked := imgui.IsMouseClicked(mouseButtonPrimary) ||
 		imgui.IsMouseClicked(mouseButtonSecondary) ||
 		imgui.IsMouseClicked(mouseButtonTertiary)
-	if io.WantCaptureMouse() || (!isDragging && !isClicked) {
-		wm.mouseConsumerOverride = nil
-	}
-	// Set the mouse override if it's unset but it should be.
 	if !io.WantCaptureMouse() && (isDragging || isClicked) && wm.mouseConsumerOverride == nil {
 		wm.mouseConsumerOverride = mousePane
+	} else if io.WantCaptureMouse() {
+		// However, clear the mouse override if imgui wants mouse events
+		wm.mouseConsumerOverride = nil
 	}
 
-	// Set the mouse cursor
+	// Set the mouse cursor depending on what the mouse is hovering over.
 	setCursorForPane := func(p Pane) {
 		if sl, ok := p.(*SplitLine); ok {
+			// For split lines, the cursor changes to indicate what a
+			// click-and-drag will do..
 			if sl.Axis == SplitAxisX {
 				imgui.SetMouseCursor(imgui.MouseCursorResizeEW)
 			} else {
 				imgui.SetMouseCursor(imgui.MouseCursorResizeNS)
 			}
 		} else {
-			imgui.SetMouseCursor(imgui.MouseCursorArrow) // just to be sure; may be already
+			imgui.SetMouseCursor(imgui.MouseCursorArrow) // just to be sure; it may be this already
 		}
 	}
 	if wm.mouseConsumerOverride != nil {
@@ -777,58 +831,87 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		setCursorForPane(mousePane)
 	}
 
-	mouseInScope := func(p imgui.Vec2, extent Extent2D) bool {
-		if io.WantCaptureMouse() {
-			return false
-		}
-		return extent.Inside([2]float32{p.X, p.Y})
-	}
-
-	// Get all of the draw lists
+	// All of the Panes' draw commands will be added to commandBuffer.
 	var commandBuffer CommandBuffer
+	// fbSize will be (0,0) if the window is minimized, in which case we
+	// can skip all this...
 	if fbSize[0] > 0 && fbSize[1] > 0 {
+		// Now traverse all of the Panes...
+		// First clear the entire window to the background color.
 		commandBuffer.ClearRGB(positionConfig.GetColorScheme().Background)
 
 		// Draw the status bar underneath the menu bar
-		wmDrawStatusBar(fbSize, displaySize, heightRatio, menuBarHeight, &commandBuffer)
+		wmDrawStatusBar(fbSize, displaySize, &commandBuffer)
 
+		// By default we'll visit the tree starting at
+		// DisplayRoot. However, if a Pane has been maximized to cover the
+		// whole screen, we will instead start with it.
 		root := positionConfig.DisplayRoot
 		if wm.fullScreenDisplayNode != nil {
 			root = wm.fullScreenDisplayNode
 		}
-		root.VisitPanesWithBounds(displayFull, displayFull,
-			func(disp Extent2D, parentDisp Extent2D, pane Pane) {
+
+		// Actually visit the panes.
+		root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
+			func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
 				ctx := PaneContext{
-					paneExtent:       disp,
-					parentPaneExtent: parentDisp,
+					paneExtent:       paneExtent,
+					parentPaneExtent: parentExtent,
 					platform:         platform,
 					events:           eventStream,
 					cs:               positionConfig.GetColorScheme()}
 
+				// Make keyboard events available if this Pane should be
+				// seeing them.
 				if !wm.statusBarHasFocus && pane == wm.keyboardFocusPane {
 					ctx.InitializeKeyboard()
 				}
 
+				// Similarly make the mouse events available only to the
+				// one Pane that should see them.
 				ownsMouse := wm.mouseConsumerOverride == pane ||
-					(wm.mouseConsumerOverride == nil && mouseInScope(mousePos, disp) &&
-						!io.WantCaptureMouse())
+					(wm.mouseConsumerOverride == nil &&
+						!io.WantCaptureMouse() &&
+						paneExtent.Inside(mousePos))
 				if ownsMouse {
+					// Full display size, including the menu and status bar.
+					displayTrueFull := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1]}}
 					ctx.InitializeMouse(displayTrueFull)
 				}
 
-				commandBuffer.Scissor(int(highDPIScale*disp.p0[0]), int(highDPIScale*disp.p0[1]),
-					int(highDPIScale*disp.Width()+.5), int(highDPIScale*disp.Height()+.5))
-				commandBuffer.Viewport(int(highDPIScale*disp.p0[0]), int(highDPIScale*disp.p0[1]),
-					int(highDPIScale*disp.Width()+.5), int(highDPIScale*disp.Height()+.5))
+				// Specify the scissor rectangle and viewport that
+				// correspond to the pixels that the Pane covers. In this
+				// way, not only can the Pane be implemented in terms of
+				// Pane coordinates, independent of where it is actually
+				// placed in the overall window, but this also ensures that
+				// the Pane can't inadvertently draw over other Panes.
+				//
+				// One messy detail here is that these windows are
+				// specified in framebuffer coordinates, not display
+				// coordinates, so they must be scaled by the DPI scale for
+				// e.g., retina displays.
+				x0, y0 := int(highDPIScale*paneExtent.p0[0]), int(highDPIScale*paneExtent.p0[1])
+				w, h := int(highDPIScale*paneExtent.Width()+.5), int(highDPIScale*paneExtent.Height()+.5)
+				commandBuffer.Scissor(x0, y0, w, h)
+				commandBuffer.Viewport(x0, y0, w, h)
+
+				// Let the Pane do its thing
 				pane.Draw(&ctx, &commandBuffer)
+
+				// And reset the graphics state to the standard baseline,
+				// so no state changes leak and affect subsequent drawing.
 				commandBuffer.ResetState()
 
+				// If the config editor is active and the user has clicked
+				// a button that is expecting a Pane to be selected (e.g.,
+				// to delete it, etc.), then blend a semi-transparent
+				// quadrilateral over the pane that the mouse is inside to
+				// indicate that it is selected.
 				if pane == mousePane && wm.handlePanePick != nil {
-					// Blend in the plane selection quad
 					ctx.SetWindowCoordinateMatrices(&commandBuffer)
 					commandBuffer.Blend()
 
-					w, h := disp.Width(), disp.Height()
+					w, h := paneExtent.Width(), paneExtent.Height()
 					p := [4][2]float32{[2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h}}
 					pidx := commandBuffer.Float2Buffer(p[:])
 
@@ -840,17 +923,34 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					commandBuffer.DrawQuads(indidx, 4)
 					commandBuffer.ResetState()
 				}
+
+				// Draw a border around the pane if it has keyboard focus.
 				if !wm.statusBarHasFocus && pane == wm.keyboardFocusPane {
-					// Draw a border around it
 					ctx.SetWindowCoordinateMatrices(&commandBuffer)
-					drawBorder(&commandBuffer, disp.Width(), disp.Height(), ctx.cs.TextHighlight)
+					w, h := paneExtent.Width(), paneExtent.Height()
+					drawBorder(&commandBuffer, w, h, ctx.cs.TextHighlight)
 				}
 			})
 
+		// Clear mouseConsumerOverride if the user has stopped dragging;
+		// only do this after visiting the Panes so that the override Pane
+		// still sees the mouse button release event.
+		if !isDragging && !isClicked {
+			wm.mouseConsumerOverride = nil
+		}
+
+		// Finally, render the entire command buffer for all of the Panes
+		// all at once.
 		stats.render = renderer.RenderCommandBuffer(&commandBuffer)
+	}
+
+	if wm.showConfigEditor {
+		wmDrawConfigEditor(platform)
 	}
 }
 
+// drawBorder emits drawing commands to the provided CommandBuffer to draw
+// a border rectangle with given dimensions, inset 1 pixel.
 func drawBorder(cb *CommandBuffer, w, h float32, color RGB) {
 	p := [4][2]float32{[2]float32{1, 1}, [2]float32{w - 1, 1}, [2]float32{w - 1, h - 1}, [2]float32{1, h - 1}}
 	pidx := cb.Float2Buffer(p[:])
@@ -863,29 +963,36 @@ func drawBorder(cb *CommandBuffer, w, h float32, color RGB) {
 	cb.ResetState()
 }
 
-func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig, cs *ColorScheme) {
+// wmActivateNewConfig is called when a new PositionConfig is activated so
+// that the window management code can take care of housekeeping.
+func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig) {
 	// Position changed. First deactivate the old one
-	if old != nil {
-		old.DisplayRoot.VisitPanes(func(p Pane) { p.Deactivate() })
+	if old != nw {
+		if old != nil {
+			old.DisplayRoot.VisitPanes(func(p Pane) { p.Deactivate() })
+		}
+		cs := nw.GetColorScheme()
+		nw.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(cs) })
 	}
+
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
-	nw.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(cs) })
 	wm.keyboardFocusPane = nil
 }
 
-func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, heightRatio float32, menuBarHeight float32, cb *CommandBuffer) {
-	statusBarFbExtent := Extent2D{p0: [2]float32{0, fbSize[1] - heightRatio*menuBarHeight},
-		p1: [2]float32{fbSize[0], fbSize[1] - heightRatio*wm.menuBarHeight}}
-	statusBarDisplayExtent := Extent2D{p0: [2]float32{0, displaySize[1] - menuBarHeight},
-		p1: [2]float32{displaySize[0], displaySize[1] - wm.menuBarHeight}}
+// wmDrawStatus bar draws the status bar underneath the main menu bar
+func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer) {
+	top := displaySize[1] - ui.menuBarHeight
+	bottom := displaySize[1] - ui.menuBarHeight - wm.statusBar.Height()
+	statusBarDisplayExtent := Extent2D{p0: [2]float32{0, bottom}, p1: [2]float32{displaySize[0], top}}
+	statusBarFbExtent := statusBarDisplayExtent.Scale(dpiScale(platform))
 
 	cb.Scissor(int(statusBarFbExtent.p0[0]), int(statusBarFbExtent.p0[1]),
 		int(statusBarFbExtent.Width()+.5), int(statusBarFbExtent.Height()+.5))
 	cb.Viewport(int(statusBarFbExtent.p0[0]), int(statusBarFbExtent.p0[1]),
 		int(statusBarFbExtent.Width()+.5), int(statusBarFbExtent.Height()+.5))
 
-	statusBarHeight := globalConfig.statusBar.Height()
+	statusBarHeight := wm.statusBar.Height()
 	proj := mgl32.Ortho2D(0, displaySize[0], 0, statusBarHeight)
 	cb.LoadProjectionMatrix(proj)
 	cb.LoadModelViewMatrix(mgl32.Ident4())
@@ -897,9 +1004,13 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, heightRatio floa
 		events:           eventStream,
 		cs:               positionConfig.GetColorScheme(),
 	}
+	// The status bar always gets access to the keyboard, since it takes
+	// focus when a command is active and otherwise needs to check to see
+	// if any f-keys have been pressed.
 	ctx.InitializeKeyboard()
 
-	wm.statusBarHasFocus = globalConfig.statusBar.Draw(&ctx, cb)
+	wm.statusBarHasFocus = wm.statusBar.Draw(&ctx, cb)
+
 	if wm.statusBarHasFocus {
 		drawBorder(cb, displaySize[0], statusBarHeight, ctx.cs.TextHighlight)
 	}

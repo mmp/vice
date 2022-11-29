@@ -381,6 +381,10 @@ func (e Extent2D) Offset(p [2]float32) Extent2D {
 	return Extent2D{p0: add2f(e.p0, p), p1: add2f(e.p1, p)}
 }
 
+func (e Extent2D) Scale(s float32) Extent2D {
+	return Extent2D{p0: scale2f(e.p0, s), p1: scale2f(e.p1, s)}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Geometry
 
