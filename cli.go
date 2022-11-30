@@ -50,8 +50,10 @@ func StringConsoleEntry(s string) []*ConsoleEntry {
 	}
 	var entries []*ConsoleEntry
 	for _, line := range strings.Split(s, "\n") {
-		e := &ConsoleEntry{text: []string{line}, style: []ConsoleTextStyle{ConsoleTextRegular}}
-		entries = append(entries, e)
+		if line != "" {
+			e := &ConsoleEntry{text: []string{line}, style: []ConsoleTextStyle{ConsoleTextRegular}}
+			entries = append(entries, e)
+		}
 	}
 	return entries
 }
@@ -148,6 +150,7 @@ func (cli *CLIPane) Activate(cs *ColorScheme) {
 	}
 
 	cli.eventsId = eventStream.Subscribe()
+
 	checkCommands(cliCommands)
 }
 
@@ -1040,57 +1043,32 @@ func (cli *CLIPane) runCommand(cmd string) []*ConsoleEntry {
 
 	// If it's a built-in command, run it
 	if cmd := lookupCommand(fields[0]); cmd != nil {
-		syntax := cmd.Syntax(positionConfig.selectedAircraft != nil)
 		args := fields[1:]
 
-		// Minimum and maximum number of args required from the user
-		minArgc, maxArgc := len(syntax), len(syntax)
-		if len(syntax) > 0 {
-			last := syntax[len(syntax)-1]
-			if last&CommandArgsOptional != 0 {
-				minArgc--
-			}
-			if last&CommandArgsMultiple != 0 {
-				minArgc--
-				maxArgc += 100000 // oughta be enough...
-			}
+		if cmd.TakesAircraft() && positionConfig.selectedAircraft == nil {
+			return ErrorStringConsoleEntry(fields[0] + ": an aircraft must be selected to run this command")
 		}
-		if positionConfig.selectedAircraft != nil {
-			for _, s := range syntax {
-				if s&CommandArgsAircraft != 0 {
-					// We can get this one from selected.
-					minArgc--
-					break
-				}
+		var ctrl *Controller
+		if cmd.TakesController() {
+			if len(args) == 0 {
+				return ErrorStringConsoleEntry(fields[0] + " : must specify a controller")
 			}
+			ctrl = server.GetController(args[0])
+			if ctrl == nil {
+				return ErrorStringConsoleEntry(args[0] + " : no such controller")
+			}
+			args = args[1:]
 		}
 
+		// Minimum and maximum number of args required from the user
+		minArgc, maxArgc := cmd.AdditionalArgs()
 		if len(args) < minArgc {
 			return ErrorStringConsoleEntry(fields[0] + " : insufficient arguments provided: " + cmd.Usage())
 		} else if len(args) > maxArgc {
 			return ErrorStringConsoleEntry(fields[0] + ": excessive arguments provided: " + cmd.Usage())
 		}
 
-		argSyntax := func(i int) CommandArgsFormat {
-			if i < len(syntax) {
-				return syntax[i]
-			} else {
-				return syntax[len(syntax)-1]
-			}
-		}
-
-		// Parameter expansion and normalization
-		for i := range args {
-			syn := argSyntax(i)
-			if syn&CommandArgsAircraft != 0 {
-				// TODO: expansion
-				args[i] = strings.ToUpper(args[i])
-			} else if syn&CommandArgsController != 0 {
-				args[i] = strings.ToUpper(args[i])
-			}
-		}
-
-		return cmd.Run(cli, fields[0], args)
+		return cmd.Run(fields[0], positionConfig.selectedAircraft, ctrl, args, cli)
 	}
 
 	// Otherwise see if we're selecting an aircraft...
