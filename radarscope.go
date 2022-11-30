@@ -146,7 +146,7 @@ const (
 func NewRadarScopePane(n string) *RadarScopePane {
 	c := &RadarScopePane{ScopeName: n}
 
-	c.PointSize = 5
+	c.PointSize = 3
 	c.LineWidth = 1
 
 	c.Center = database.defaultCenter
@@ -733,6 +733,10 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Static geometry: SIDs/STARs, runways, ...
 	rs.drawStatic(ctx, windowFromLatLongMtx, latLongFromWindowMtx)
+	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
+	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP, pixelDistanceNm)
+	rs.drawRoute(ctx, latLongFromWindowV)
+	rs.drawCRDARegions(ctx)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	rs.drawTracks(ctx, latLongFromWindowV, windowFromLatLongP)
@@ -742,12 +746,8 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawVectorLines(ctx, windowFromLatLongP, latLongFromWindowP)
 	rs.drawRangeIndicators(ctx, windowFromLatLongP, pixelDistanceNm)
 	rs.drawMIT(ctx, windowFromLatLongP)
-	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
-	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP, pixelDistanceNm)
 	rs.drawMeasuringLine(ctx, latLongFromWindowP)
 	rs.drawHighlighted(ctx, windowFromLatLongP)
-	rs.drawRoute(ctx, latLongFromWindowV)
-	rs.drawCRDARegions(ctx)
 
 	// Mouse events last, so that the datablock bounds are current.
 	rs.consumeMouseEvents(ctx, latLongFromWindowP, latLongFromWindowV, windowFromLatLongP)
