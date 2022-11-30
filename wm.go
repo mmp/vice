@@ -1134,37 +1134,49 @@ func (sb *StatusBar) Draw(ctx *PaneContext, cb *CommandBuffer) bool {
 }
 
 func (sb *StatusBar) processEvents(ctx *PaneContext) {
-	if sb.activeCommand == nil {
-		return
-	}
-
 	// Go through the event stream and see if an aircraft has been
 	// selected; if so, and if there is an active command that takes an
 	// aircraft callsign, use the selected aircraft's callsign for the
 	// corresponding command argument.
 	for _, event := range ctx.events.Get(sb.eventsId) {
-		if sel, ok := event.(*SelectedAircraftEvent); ok {
-			// Look for a command argument that takes an aircraft callsign.
-			for i, ty := range sb.activeCommand.ArgTypes() {
-				if _, ok := ty.(*AircraftCommandArg); ok {
-					// Found one; override the callsign.
-					sb.commandArgs[i] = sel.ac.callsign
-					sb.commandArgErrors[i] = ""
-					if sb.inputFocus == i {
-						if len(sb.commandArgs) > 0 {
-							// If the cursor is currently in the input
-							// field for the callsign, then skip to the
-							// next field, if there is another one.
-							sb.inputFocus = (sb.inputFocus + 1) % len(sb.commandArgs)
-							sb.inputCursor = 0
-						} else {
-							// Otherwise move the cursor to the end of the input.
-							sb.inputCursor = len(sb.commandArgs[i])
-						}
-					}
-					break
+		if sel, ok := event.(*SelectedAircraftEvent); ok && sb.activeCommand != nil {
+			// If the user selected an aircraft after initiating a command, use the aircraft
+			// regardless of whether the command things it's valid; assume the user knows
+			// what they are doing and that it will be valid when the command executes.
+			// (And if it's not, an error will be issued then!)
+			sb.setSelectedAircraft(sel.ac.callsign, false)
+		}
+	}
+}
+
+func (sb *StatusBar) setSelectedAircraft(callsign string, mustMatch bool) {
+	for i, ty := range sb.activeCommand.ArgTypes() {
+		// Look for a command argument that takes an aircraft callsign.
+		if _, ok := ty.(*AircraftCommandArg); ok {
+			if mustMatch {
+				// Make sure that the aircraft fulfills the arg's
+				// requirements. (The cs != callsign check should be
+				// unnecessary, but...)
+				if cs, err := ty.Expand(callsign); err != nil || cs != callsign {
+					continue
 				}
 			}
+
+			sb.commandArgs[i] = callsign
+			sb.commandArgErrors[i] = ""
+			if sb.inputFocus == i {
+				if len(sb.commandArgs) > 0 {
+					// If the cursor is currently in the input
+					// field for the callsign, then skip to the
+					// next field, if there is another one.
+					sb.inputFocus = (sb.inputFocus + 1) % len(sb.commandArgs)
+					sb.inputCursor = 0
+				} else {
+					// Otherwise move the cursor to the end of the input.
+					sb.inputCursor = len(sb.commandArgs[i])
+				}
+			}
+			break
 		}
 	}
 }
@@ -1201,6 +1213,13 @@ func (sb *StatusBar) processKeys(keyboard *KeyboardState) {
 					sb.commandErrorString = ""
 					sb.inputFocus = 0
 					sb.inputCursor = 0
+
+					if positionConfig.selectedAircraft != nil {
+						// If an aircraft is currently selected, try using it for the command.
+						// However, if it's invalid (e.g., the command is drop track, but we're
+						// not tracking it, then don't force it...)
+						sb.setSelectedAircraft(positionConfig.selectedAircraft.callsign, true)
+					}
 				}
 			}
 		}
