@@ -135,7 +135,7 @@ func (*ControllerCommandArg) Expand(s string) (string, error) {
 		// callsign or if it exactly matches the controller's sector id. We
 		// don't allow substring matches of the sector id, since that seems
 		// fairly arbitrary/obscure.
-		ok := strings.Contains(ctrl.callsign, s)
+		ok := strings.Contains(ctrl.callsign, s) && ctrl.callsign != server.Callsign()
 		if pos := ctrl.GetPosition(); pos != nil {
 			ok = ok || pos.sectorId == s
 		}
