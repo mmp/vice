@@ -26,6 +26,8 @@ type Renderer interface {
 	// by the specified image.
 	CreateTextureFromImage(image image.Image, generateMIPs bool) (id uint32, err error)
 
+	UpdateTextureFromImage(id uint32, image image.Image, generateMIPs bool) error
+
 	// RenderCommandBuffer executes all of the commands encoded in the
 	// provided command buffer, returning statistics about what was
 	// rendered.

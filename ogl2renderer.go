@@ -179,6 +179,12 @@ func (ogl2 *OpenGL2Renderer) createFontsTexture() {
 }
 
 func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIPs bool) (uint32, error) {
+	var texid uint32
+	gl.GenTextures(1, &texid)
+	return texid, ogl2.UpdateTextureFromImage(texid, img, generateMIPs)
+}
+
+func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image, generateMIPs bool) error {
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	rgba := make([]byte, nx*ny*4)
 	for y := 0; y < ny; y++ {
@@ -193,8 +199,6 @@ func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIP
 
 	var lastTexture int32
 	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
-	var texid uint32
-	gl.GenTextures(1, &texid)
 	gl.BindTexture(gl.TEXTURE_2D, texid)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -233,7 +237,7 @@ func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIP
 
 	ogl2.createdTextures = append(ogl2.createdTextures, texid)
 
-	return texid, nil
+	return nil
 }
 
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {
