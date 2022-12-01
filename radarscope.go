@@ -15,12 +15,13 @@ import (
 )
 
 type RadarScopePane struct {
-	ScopeName       string
-	Center          Point2LL
-	Range           float32
-	DataBlockFormat DataBlockFormat
-	PointSize       float32
-	LineWidth       float32
+	ScopeName          string
+	Center             Point2LL
+	Range              float32
+	DataBlockFormat    DataBlockFormat
+	DataBlockFrequency int32
+	PointSize          float32
+	LineWidth          float32
 
 	DrawEverything   bool
 	DrawRunways      bool
@@ -154,6 +155,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.MaxAltitude = 60000
 	c.Range = 15
 	c.DataBlockFormat = DataBlockFormatGround
+	c.DataBlockFrequency = 3
 	c.DrawRegions = true
 	c.DrawLabels = true
 	c.RadarTracksDrawn = 5
@@ -295,6 +297,9 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	if rs.RadarTracksDrawn == 0 {
 		rs.RadarTracksDrawn = 5
 	}
+	if rs.DataBlockFrequency == 0 {
+		rs.DataBlockFrequency = 3
+	}
 
 	if rs.datablockFont = GetFont(rs.DatablockFontIdentifier); rs.datablockFont == nil {
 		rs.datablockFont = GetDefaultFont()
@@ -360,6 +365,7 @@ func (rs *RadarScopePane) DrawUI() {
 				state.datablockTextCurrent = false
 			}
 		}
+		imgui.SliderIntV("Data block update frequency (seconds)", &rs.DataBlockFrequency, 1, 10, "%d", 0 /* flags */)
 		imgui.SliderIntV("Tracks shown", &rs.RadarTracksDrawn, 1, 10, "%d", 0 /* flags */)
 		imgui.Checkbox("Vector lines", &rs.DrawVectorLine)
 		if rs.DrawVectorLine {
@@ -1595,7 +1601,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		color := rs.datablockColor(ac, ctx.cs)
 
 		// Draw characters starting at the upper left.
-		flashCycle := actualNow.Second() & 1
+		flashCycle := (actualNow.Second() / int(rs.DataBlockFrequency)) & 1
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0] + 1, bbox.p1[1] - 1},
 			TextStyle{Font: rs.datablockFont, Color: ctx.cs.Background, LineSpacing: -2})
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
