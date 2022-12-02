@@ -87,19 +87,13 @@ func uiInit(renderer Renderer) {
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
 	} else {
-		ui.iconTextureID, err = renderer.CreateTextureFromImage(iconImage, false)
-		if err != nil {
-			lg.Errorf("Unable to create icon texture: %v", err)
-		}
+		ui.iconTextureID = renderer.CreateTextureFromImage(iconImage, false)
 	}
 
 	if sadTowerImage, err := png.Decode(bytes.NewReader([]byte(sadTowerPNG))); err != nil {
 		lg.Errorf("Unable to decode sad tower PNG: %v", err)
 	} else {
-		ui.sadTowerTextureID, err = renderer.CreateTextureFromImage(sadTowerImage, false)
-		if err != nil {
-			lg.Errorf("Unable to create sad tower icon texture: %v", err)
-		}
+		ui.sadTowerTextureID = renderer.CreateTextureFromImage(sadTowerImage, false)
 	}
 
 	if nrc := checkForNewRelease(); nrc != nil {

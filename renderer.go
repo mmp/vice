@@ -22,11 +22,17 @@ type Renderer interface {
 	// RenderImgui translates the ImGui draw data to OpenGL commands.
 	RenderImgui(displaySize [2]float32, framebufferSize [2]float32, drawData imgui.DrawData)
 
+	// CreateRGBA8Texture returns the identifier for a a texture defined by
+	// the provided 8-big RGBA pixel values.
+	CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) uint32
+
 	// CreateTextureFromImage returns an identifier for a texture map defined
 	// by the specified image.
-	CreateTextureFromImage(image image.Image, generateMIPs bool) (id uint32, err error)
+	CreateTextureFromImage(image image.Image, generateMIPs bool) uint32
 
-	UpdateTextureFromImage(id uint32, image image.Image, generateMIPs bool) error
+	// UpdateTextureFromImage updates the contents of an existing texture
+	// with the provided image.
+	UpdateTextureFromImage(id uint32, image image.Image, generateMIPs bool)
 
 	// RenderCommandBuffer executes all of the commands encoded in the
 	// provided command buffer, returning statistics about what was

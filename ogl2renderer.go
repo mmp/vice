@@ -21,7 +21,6 @@ import (
 type OpenGL2Renderer struct {
 	imguiIO imgui.IO
 
-	fontTexture     uint32
 	createdTextures []uint32
 }
 
@@ -36,21 +35,11 @@ func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
 	v, r := (*C.char)(unsafe.Pointer(vendor)), (*C.char)(unsafe.Pointer(renderer))
 	lg.Printf("OpenGL vendor %s renderer %s", C.GoString(v), C.GoString(r))
 
-	ogl2 := &OpenGL2Renderer{imguiIO: io}
-	lg.Printf("Creating fonts texture")
-	ogl2.createFontsTexture()
-
 	lg.Printf("Finished OpenGL2Renderer initialization")
-	return ogl2, nil
+	return &OpenGL2Renderer{imguiIO: io}, nil
 }
 
 func (ogl2 *OpenGL2Renderer) Dispose() {
-	if ogl2.fontTexture != 0 {
-		gl.DeleteTextures(1, &ogl2.fontTexture)
-		imgui.CurrentIO().Fonts().SetTextureID(0)
-		ogl2.fontTexture = 0
-	}
-
 	for _, texid := range ogl2.createdTextures {
 		gl.DeleteTextures(1, &texid)
 	}
@@ -155,36 +144,34 @@ func (ogl2 *OpenGL2Renderer) RenderImgui(displaySize [2]float32, framebufferSize
 	gl.Scissor(lastScissorBox[0], lastScissorBox[1], lastScissorBox[2], lastScissorBox[3])
 }
 
-func (ogl2 *OpenGL2Renderer) createFontsTexture() {
-	// Build texture atlas
-	image := ogl2.imguiIO.Fonts().TextureDataRGBA32()
-
-	// Upload texture to graphics system
+func (ogl2 *OpenGL2Renderer) CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) uint32 {
 	var lastTexture int32
 	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
-	gl.GenTextures(1, &ogl2.fontTexture)
-	gl.BindTexture(gl.TEXTURE_2D, ogl2.fontTexture)
+
+	var texid uint32
+	gl.GenTextures(1, &texid)
+	gl.BindTexture(gl.TEXTURE_2D, texid)
+
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(image.Width), int32(image.Height), 0, gl.RGBA, gl.UNSIGNED_BYTE, image.Pixels)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(w), int32(h), 0, gl.RGBA, gl.UNSIGNED_BYTE, rgba)
 
-	lg.Printf("Fonts texture used %.1f MB", float32(image.Width*image.Height*4)/(1024*1024))
-
-	// Store our identifier
-	ogl2.imguiIO.Fonts().SetTextureID(imgui.TextureID(ogl2.fontTexture))
-
-	// Restore state
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
+
+	ogl2.createdTextures = append(ogl2.createdTextures, texid)
+
+	return texid
 }
 
-func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIPs bool) (uint32, error) {
+func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIPs bool) uint32 {
 	var texid uint32
 	gl.GenTextures(1, &texid)
-	return texid, ogl2.UpdateTextureFromImage(texid, img, generateMIPs)
+	ogl2.UpdateTextureFromImage(texid, img, generateMIPs)
+	return texid
 }
 
-func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image, generateMIPs bool) error {
+func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image, generateMIPs bool) {
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	rgba := make([]byte, nx*ny*4)
 	for y := 0; y < ny; y++ {
@@ -236,8 +223,6 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Imag
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
 
 	ogl2.createdTextures = append(ogl2.createdTextures, texid)
-
-	return nil
 }
 
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {

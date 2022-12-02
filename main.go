@@ -149,9 +149,12 @@ func main() {
 	}
 	imgui.CurrentIO().SetClipboard(platform.GetClipboard())
 
-	// fonts--requires imgui to be set up and must be done before the
-	// Renderer is created since it creates the font atlas immediately.
-	fontsInit()
+	renderer, err = NewOpenGL2Renderer(imgui.CurrentIO())
+	if err != nil {
+		panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
+	}
+
+	fontsInit(renderer)
 
 	vatsimInit()
 
@@ -160,11 +163,6 @@ func main() {
 	// We need to hold off on making the config active until after Platform
 	// creation so we can set the window title...
 	globalConfig.MakeConfigActive(globalConfig.ActivePosition)
-
-	renderer, err = NewOpenGL2Renderer(imgui.CurrentIO())
-	if err != nil {
-		panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
-	}
 
 	uiInit(renderer)
 

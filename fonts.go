@@ -218,7 +218,7 @@ func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
 	return (*[unrealisticLargePointer / 2]uint16)(p)[:]
 }
 
-func fontsInit() {
+func fontsInit(r Renderer) {
 	lg.Printf("Starting to initialize fonts")
 	fonts = make(map[FontIdentifier]*Font)
 	io := imgui.CurrentIO()
@@ -299,6 +299,11 @@ func fontsInit() {
 	add(inconsolataUltraCondensedRegularTTF, true, "Inconsolata Ultra-Condensed Regular")
 	add(inconsolataRegularTTF, true, "Inconsolata Regular")
 	add(shareTechMonoRegularTTF, true, "ShareTech Mono Regular")
+
+	image := io.Fonts().TextureDataRGBA32()
+	lg.Printf("Fonts texture used %.1f MB", float32(image.Width*image.Height*4)/(1024*1024))
+	fontId := r.CreateRGBA8Texture(image.Width, image.Height, image.Pixels)
+	io.Fonts().SetTextureID(imgui.TextureID(fontId))
 
 	lg.Printf("Finished initializing fonts")
 }
