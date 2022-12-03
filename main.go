@@ -202,11 +202,8 @@ func main() {
 		wmDrawPanes(platform, renderer)
 		timeMarker(&stats.drawPanes)
 
-		// Prepare our imgui draw lists
+		// Draw the user interface
 		drawUI(positionConfig.GetColorScheme(), platform)
-		// Finalize and submit the imgui draw lists
-		imgui.Render()
-		renderer.RenderImgui(platform.DisplaySize(), platform.FramebufferSize(), imgui.RenderedDrawData())
 		timeMarker(&stats.drawImgui)
 
 		// Wait for vsync

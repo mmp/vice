@@ -306,6 +306,12 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	wmDrawUI(platform)
 
 	imgui.PopFont()
+
+	// Finalize and submit the imgui draw lists
+	imgui.Render()
+	var cb CommandBuffer
+	GenerateImguiCommandBuffer(&cb)
+	stats.renderUI = renderer.RenderCommandBuffer(&cb)
 }
 
 func drawActiveDialogBoxes() {
@@ -1480,8 +1486,12 @@ func ShowFatalErrorDialog(s string, args ...interface{}) {
 		imgui.PushFont(ui.font.ifont)
 		d.Draw()
 		imgui.PopFont()
+
 		imgui.Render()
-		renderer.RenderImgui(platform.DisplaySize(), platform.FramebufferSize(), imgui.RenderedDrawData())
+		var cb CommandBuffer
+		GenerateImguiCommandBuffer(&cb)
+		renderer.RenderCommandBuffer(&cb)
+
 		platform.PostRender()
 	}
 }

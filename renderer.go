@@ -19,9 +19,6 @@ import (
 // all of these details behind the Renderer interface would make it realtively easy
 // to write a Vulkan, Metal, or DirectX rendering backend.
 type Renderer interface {
-	// RenderImgui translates the ImGui draw data to OpenGL commands.
-	RenderImgui(displaySize [2]float32, framebufferSize [2]float32, drawData imgui.DrawData)
-
 	// CreateRGBA8Texture returns the identifier for a a texture defined by
 	// the provided 8-big RGBA pixel values.
 	CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) uint32
@@ -94,13 +91,15 @@ const (
 	RendererDisableBlend                // no args
 	RendererFloatBuffer                 // int32 size, then size*float32 values
 	RendererIntBuffer                   // int32: size, then size*int32 values
+	RendererRawBuffer                   // int32: size *in bytes*, then (3+size)/4 int32 values
 	RendererEnableTexture               // int32 handle
 	RendererDisableTexture              // no args
-	RendererVertexArray                 // int32 offset to array values, n components, stride (bytes)
+	RendererVertexArray                 // byte offset to array values, n components, stride (bytes)
 	RendererDisableVertexArray          // no args
-	RendererColorArray                  // int32 offset to array values, n components, stride (bytes)
+	RendererRGB8Array                   // byte offset to array values, n components, stride (bytes)
+	RendererRGB32Array                  // byte offset to array values, n components, stride (bytes)
 	RendererDisableColorArray           // no args
-	RendererTexCoordArray               // int32 offset to array values, n components, stride (bytes)
+	RendererTexCoordArray               // byte offset to array values, n components, stride (bytes)
 	RendererDisableTexCoordArray        // no args
 	RendererPointSize                   // float32
 	RendererDrawPoints                  // 2 int32: offset to the index buffer, count
@@ -169,7 +168,10 @@ func (cb *CommandBuffer) FloatSlice(start, length int) []float32 {
 	if length == 0 {
 		return nil
 	}
-	ptr := (*float32)(unsafe.Pointer(&cb.buf[start]))
+	if start%4 != 0 {
+		lg.ErrorfUp1("%d: unaligned offset passed to FloatSlice", start)
+	}
+	ptr := (*float32)(unsafe.Pointer(&cb.buf[start/4]))
 	return unsafe.Slice(ptr, length)
 }
 
@@ -236,12 +238,12 @@ func (cb *CommandBuffer) DisableBlend() {
 }
 
 // Float2Buffer stores the provided slice of [2]float32 values in the
-// CommandBuffer and returns the offset where the first value of the slice
-// is stored; this offset can then be passed to commands like VertexArray
-// to specify this array.
+// CommandBuffer and returns the byte offset where the first value of the
+// slice is stored; this offset can then be passed to commands like
+// VertexArray to specify this array.
 func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
 	cb.appendInts(RendererFloatBuffer, 2*len(buf))
-	offset := len(cb.buf)
+	offset := 4 * len(cb.buf)
 
 	n := 2 * len(buf)
 	cb.growFor(n)
@@ -252,11 +254,12 @@ func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
 	return offset
 }
 
-// RGBBuffer stores the provided slices of RGB values in the command buffer
-// and returns the offset where the first value of the slice is stored.
+// RGBBuffer stores the provided slice of RGB values in the command buffer
+// and returns the byte offset where the first value of the slice is
+// stored.
 func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
 	cb.appendInts(RendererFloatBuffer, 3*len(buf))
-	offset := len(cb.buf)
+	offset := 4 * len(cb.buf)
 
 	n := 3 * len(buf)
 	cb.growFor(n)
@@ -267,17 +270,35 @@ func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
 	return offset
 }
 
-// IntBuffer stores the provided slices of RGB values in the command buffer
-// and returns the offset where the first value of the slice is stored.
+// IntBuffer stores the provided slice of int32 values in the command buffer
+// and returns the byte offset where the first value of the slice is stored.
 func (cb *CommandBuffer) IntBuffer(buf []int32) int {
 	cb.appendInts(RendererIntBuffer, len(buf))
-	offset := len(cb.buf)
+	offset := 4 * len(cb.buf)
 
 	n := len(buf)
 	cb.growFor(n)
 	start := len(cb.buf)
 	copy(cb.buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
 	cb.buf = cb.buf[:start+n]
+
+	return offset
+}
+
+// RawBuffer stores the provided bytes, without further interpretation in
+// the command buffer and returns the byte offset from the start of the
+// buffer where they begin.
+func (cb *CommandBuffer) RawBuffer(buf []byte) int {
+	nints := (len(buf) + 3) / 4
+	cb.appendInts(RendererRawBuffer, nints)
+	offset := 4 * len(cb.buf)
+
+	cb.growFor(nints)
+	start := len(cb.buf)
+	ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(4*start)
+	slice := unsafe.Slice((*byte)(unsafe.Pointer(ptr)), len(buf))
+	copy(slice, buf)
+	cb.buf = cb.buf[:start+nints]
 
 	return offset
 }
@@ -311,10 +332,17 @@ func (cb *CommandBuffer) DisableVertexArray() {
 }
 
 // ColorArray adds a command to the command buffer that specifies an array
-// of RGB per-vertex colors to use for a subsequent draw command. Its
+// of float32 RGB colors to use for a subsequent draw command. Its
 // arguments are analogous to the ones passed to VertexArray.
-func (cb *CommandBuffer) ColorArray(offset, nComps, stride int) {
-	cb.appendInts(RendererColorArray, offset, nComps, stride)
+func (cb *CommandBuffer) RGB32Array(offset, nComps, stride int) {
+	cb.appendInts(RendererRGB32Array, offset, nComps, stride)
+}
+
+// ColorArray adds a command to the command buffer that specifies an array
+// of 8-bit RGBA colors to use for a subsequent draw command. Its arguments
+// are analogous to the ones passed to VertexArray.
+func (cb *CommandBuffer) RGB8Array(offset, nComps, stride int) {
+	cb.appendInts(RendererRGB8Array, offset, nComps, stride)
 }
 
 // DisableColorArray adds a command to the command buffer that disables
@@ -456,7 +484,7 @@ func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	pi := cb.Float2Buffer(p.p)
 	cb.VertexArray(pi, 2, 2*4)
 	rgb := cb.RGBBuffer(p.color)
-	cb.ColorArray(rgb, 3, 3*4)
+	cb.RGB32Array(rgb, 3, 3*4)
 
 	// Create an index buffer from the indices.
 	ind := cb.IntBuffer(p.indices)
@@ -624,7 +652,7 @@ func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) (int, int)
 	cb.VertexArray(p, 2, 2*4)
 
 	rgb := cb.RGBBuffer(l.color)
-	cb.ColorArray(rgb, 3, 3*4)
+	cb.RGB32Array(rgb, 3, 3*4)
 
 	ind := cb.IntBuffer(l.indices)
 	cb.DrawLines(ind, len(l.indices))
@@ -854,7 +882,7 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		cb.VertexArray(p, 2, 2*4)
 
 		rgb := cb.RGBBuffer(td.bgrgb)
-		cb.ColorArray(rgb, 3, 3*4)
+		cb.RGB32Array(rgb, 3, 3*4)
 
 		ind := cb.IntBuffer(td.bgindices)
 		cb.DrawQuads(ind, len(td.bgindices))
@@ -875,7 +903,7 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		cb.VertexArray(p, 2, 2*4)
 
 		rgb := cb.RGBBuffer(td.rgb)
-		cb.ColorArray(rgb, 3, 3*4)
+		cb.RGB32Array(rgb, 3, 3*4)
 
 		uv := cb.Float2Buffer(td.uv)
 		cb.TexCoordArray(uv, 2, 2*4)
@@ -888,4 +916,90 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		cb.DisableTexture()
 		cb.DisableBlend()
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// imgui draw list conversion
+
+// GenerateImguiCommandBuffer retrieves the imgui draw list for the current
+// frame and emits corresponding commands to the provided CommandBuffer.
+func GenerateImguiCommandBuffer(cb *CommandBuffer) {
+	displaySize := platform.DisplaySize()
+	framebufferSize := platform.FramebufferSize()
+	drawData := imgui.RenderedDrawData()
+
+	// Avoid rendering when minimized.
+	displayWidth, displayHeight := displaySize[0], displaySize[1]
+	fbWidth, fbHeight := framebufferSize[0], framebufferSize[1]
+	if (fbWidth <= 0) || (fbHeight <= 0) {
+		return
+	}
+
+	// Scale coordinates for retina displays (screen coordinates !=
+	// framebuffer coordinates)
+	drawData.ScaleClipRects(imgui.Vec2{
+		X: fbWidth / displayWidth,
+		Y: fbHeight / displayHeight,
+	})
+
+	cb.ResetState()
+
+	// Setup viewport, orthographic projection matrix.  Our visible imgui
+	// space lies from draw_data->DisplayPos (top left) to
+	// draw_data->DisplayPos+data_data->DisplaySize (bottom right).
+	// DisplayMin is typically (0,0) for single viewport apps.
+	cb.LoadProjectionMatrix(mgl32.Ortho(0, float32(displayWidth), float32(displayHeight), 0, -1, 1))
+	cb.LoadModelViewMatrix(mgl32.Ident4())
+	cb.Viewport(0, 0, int(fbWidth), int(fbHeight))
+	cb.Blend()
+
+	// Get the vertex and index buffer sizes and layout information.
+	vertexSize, vertexOffsetPos, vertexOffsetUV, vertexOffsetRGB := imgui.VertexBufferLayout()
+	indexSize := imgui.IndexBufferLayout()
+
+	// Handle each command list
+	for _, commandList := range drawData.CommandLists() {
+		vertexBufferPtr, vertexBufferSizeBytes := commandList.VertexBuffer()
+		indexBufferPtr, indexBufferSizeBytes := commandList.IndexBuffer()
+
+		// CommandBuffer only supports int32 for index buffers, so in the
+		// usual case that imgui has given uint16s, create a corresponding
+		// new int32 buffer.
+		if indexSize != 4 {
+			n := indexBufferSizeBytes / indexSize
+			buf16 := unsafe.Slice((*uint16)(indexBufferPtr), n)
+
+			buf32 := make([]int32, n)
+			for i := 0; i < n; i++ {
+				buf32[i] = int32(buf16[i])
+			}
+			indexBufferPtr = unsafe.Pointer(&buf32[0])
+			indexBufferSizeBytes = 4 * n
+		}
+		indexOffset := cb.IntBuffer(unsafe.Slice((*int32)(indexBufferPtr), indexBufferSizeBytes/4))
+
+		// Copy the vertex buffer into the command buffer and specify the
+		// various draw arrays.
+		vertexOffset := cb.RawBuffer(unsafe.Slice((*byte)(vertexBufferPtr), vertexBufferSizeBytes))
+		cb.VertexArray(vertexOffset+vertexOffsetPos, 2, vertexSize)
+		cb.TexCoordArray(vertexOffset+vertexOffsetUV, 2, vertexSize)
+		cb.RGB8Array(vertexOffset+vertexOffsetRGB, 4, vertexSize)
+
+		for _, command := range commandList.Commands() {
+			if command.HasUserCallback() {
+				lg.Errorf("Unexpected user callback in imgui draw list")
+			} else {
+				clipRect := command.ClipRect()
+				cb.Scissor(int(clipRect.X), int(fbHeight)-int(clipRect.W),
+					int(clipRect.Z-clipRect.X), int(clipRect.W-clipRect.Y))
+				cb.EnableTexture(uint32(command.TextureID()))
+				cb.DrawTriangles(indexOffset, command.ElementCount())
+			}
+
+			indexOffset += command.ElementCount() * 4
+		}
+	}
+
+	cb.DisableBlend()
+	cb.ResetState()
 }

@@ -213,6 +213,7 @@ func (l *Logger) format(levels int, f string, args ...interface{}) string {
 // various phases of the system.
 type Stats struct {
 	render    RendererStats
+	renderUI  RendererStats
 	drawImgui time.Duration
 	drawPanes time.Duration
 	startTime time.Time
@@ -242,6 +243,7 @@ func (l *Logger) LogStats(stats Stats) {
 	lg.Printf("Stats: draw panes %s draw imgui %s", stats.drawPanes.String(), stats.drawImgui.String())
 
 	lg.Printf("Stats: rendering: %s", stats.render.String())
+	lg.Printf("Stats: UI rendering: %s", stats.renderUI.String())
 }
 
 func (l *Logger) SaveLogs() {
