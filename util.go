@@ -626,6 +626,14 @@ func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
 	return mnew
 }
 
+func ReduceMap[K comparable, V any, R any](m map[K]V, reduce func(K, V, R) R, initial R) R {
+	result := initial
+	for k, v := range m {
+		result = reduce(k, v, result)
+	}
+	return result
+}
+
 func DuplicateSlice[V any](s []V) []V {
 	dupe := make([]V, len(s))
 	copy(dupe, s)

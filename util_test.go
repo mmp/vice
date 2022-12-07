@@ -231,3 +231,22 @@ func TestRingBuffer(t *testing.T) {
 		}
 	}
 }
+
+func TestReduceMap(t *testing.T) {
+	m := map[int]string{
+		0:  "hello",
+		16: "foobar",
+		2:  "greets",
+		7:  "x",
+	}
+
+	reduce := func(k int, v string, length int) int {
+		return length + len(v)
+	}
+
+	length := ReduceMap[int, string, int](m, reduce, 5)
+
+	if length != 5+5+6+6+1 {
+		t.Errorf("Expected %d from ReduceMap; got %d", 5+5+6+6+1, length)
+	}
+}
