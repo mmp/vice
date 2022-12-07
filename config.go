@@ -161,7 +161,6 @@ func (c *GlobalConfig) DrawServersUI() {
 		DrawHeaders:      true,
 		SelectAllColumns: true,
 		EntryNames:       []string{"Name", "Address"},
-		TableFlags:       imgui.TableFlagsScrollY,
 	}
 	DrawComboBox(serverComboState, config, SortedMapKeys(globalConfig.CustomServers),
 		/* draw column */ func(s string, col int) {
@@ -472,7 +471,6 @@ func (c *PositionConfig) DrawRadarUI() {
 }
 
 func (c *PositionConfig) DrawRadioUI() {
-	imgui.Text("Radio frequencies")
 	if c.frequenciesComboBoxState == nil {
 		c.frequenciesComboBoxState = NewComboBoxState(2)
 	}

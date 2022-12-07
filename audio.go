@@ -287,7 +287,7 @@ func (a *AudioSettings) DrawUI() {
 			if current == "" {
 				current = "(None)"
 			}
-			if imgui.BeginCombo(event, current) {
+			if imgui.BeginComboV(event, current, imgui.ComboFlagsHeightLarge) {
 				flags := imgui.SelectableFlagsNone
 				if imgui.SelectableV("(None)", a.SoundEffects[i] == "", flags, imgui.Vec2{}) {
 					a.SoundEffects[i] = ""

@@ -573,7 +573,7 @@ func wmDrawConfigEditor(p Platform) {
 	if prompt == "" {
 		prompt = "Create New..."
 	}
-	if imgui.BeginCombo("##Set...", prompt) {
+	if imgui.BeginComboV("##Set...", prompt, imgui.ComboFlagsHeightLarge) {
 		if imgui.Selectable("Airport information") {
 			wm.paneCreatePrompt = "Airport information"
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"

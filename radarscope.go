@@ -511,7 +511,7 @@ func (rs *RadarScopePane) DrawUI() {
 				SelectAllColumns: true,
 				EntryNames:       []string{"##name"},
 				InputFlags:       []imgui.InputTextFlags{imgui.InputTextFlagsCharsUppercase},
-				TableFlags:       imgui.TableFlagsScrollY,
+				FixedDisplayed:   8,
 			}
 			DrawComboBox(rs.vorsComboState, config, SortedMapKeys(rs.VORsToDraw), nil,
 				/* valid */ func(entries []*string) bool {
@@ -2271,7 +2271,7 @@ func (c *CRDAConfig) DrawUI() bool {
 		sort.Slice(runways, func(i, j int) bool { return runways[i].number < runways[j].number })
 
 		primary, secondary := c.getRunway(c.PrimaryRunway), c.getRunway(c.SecondaryRunway)
-		if imgui.BeginCombo("Primary runway", c.PrimaryRunway) {
+		if imgui.BeginComboV("Primary runway", c.PrimaryRunway, imgui.ComboFlagsHeightLarge) {
 			if imgui.SelectableV("(None)", c.PrimaryRunway == "", 0, imgui.Vec2{}) {
 				updateGhosts = true
 				c.PrimaryRunway = ""
@@ -2294,7 +2294,7 @@ func (c *CRDAConfig) DrawUI() bool {
 			}
 			imgui.EndCombo()
 		}
-		if imgui.BeginCombo("Secondary runway", c.SecondaryRunway) {
+		if imgui.BeginComboV("Secondary runway", c.SecondaryRunway, imgui.ComboFlagsHeightLarge) {
 			// Note: this is the exact same logic for primary runways
 			// above, just with the roles switched...
 			if imgui.SelectableV("(None)", c.SecondaryRunway == "", 0, imgui.Vec2{}) {

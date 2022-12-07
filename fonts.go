@@ -276,7 +276,7 @@ func fontsInit(r Renderer) {
 			id := FontIdentifier{Name: name, Size: size}
 			fonts[id] = &Font{
 				glyphs: make(map[rune]*Glyph),
-				size:   size,
+				size:   int(sp),
 				mono:   mono,
 				ifont:  ifont,
 				id:     id}
@@ -330,7 +330,7 @@ func GetAllFonts() []FontIdentifier {
 func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bool) {
 	f := GetAllFonts()
 	lastFontName := ""
-	if imgui.BeginCombo(label+fmt.Sprintf("##%p", id), id.Name) {
+	if imgui.BeginComboV(label+fmt.Sprintf("##%p", id), id.Name, imgui.ComboFlagsHeightLarge) {
 		// Take advantage of the sort order returned by GetAllFonts()--that
 		// all fonts of the same name come consecutively.
 		for _, font := range f {
@@ -350,7 +350,7 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginCombo(fmt.Sprintf("Size##%p", id), fmt.Sprintf("%d", id.Size)) {
+	if imgui.BeginComboV(fmt.Sprintf("Size##%p", id), fmt.Sprintf("%d", id.Size), imgui.ComboFlagsHeightLarge) {
 		for _, font := range f {
 			if font.Name == id.Name {
 				if imgui.SelectableV(fmt.Sprintf("%d", font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {

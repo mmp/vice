@@ -349,9 +349,9 @@ func drawActiveSettingsWindows() {
 
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
 		if imgui.BeginTableV("SpecialKeys", 4, flags, imgui.Vec2{}, 0.0) {
-			imgui.TableSetupColumnV("Key", imgui.TableColumnFlagsWidthFixed, 50, 0)
+			imgui.TableSetupColumn("Key")
 			imgui.TableSetupColumnV("Command", imgui.TableColumnFlagsWidthFixed, 250, 0)
-			imgui.TableSetupColumnV("Key##Shift", imgui.TableColumnFlagsWidthFixed, 50, 0)
+			imgui.TableSetupColumn("Key##Shift")
 			imgui.TableSetupColumnV("Command##Shift", imgui.TableColumnFlagsWidthFixed, 250, 0)
 
 			imgui.TableHeadersRow()
@@ -362,7 +362,8 @@ func drawActiveSettingsWindows() {
 				imgui.TableNextColumn()
 				imgui.Text(key)
 				imgui.TableNextColumn()
-				if imgui.BeginCombo("##"+key, globalConfig.FKeyMappings[i]) {
+				imgui.SetNextItemWidth(240)
+				if imgui.BeginComboV("##"+key, globalConfig.FKeyMappings[i], imgui.ComboFlagsHeightLarge) {
 					for _, cmd := range commands {
 						if imgui.SelectableV(cmd, cmd == globalConfig.FKeyMappings[i], 0, imgui.Vec2{}) {
 							globalConfig.FKeyMappings[i] = cmd
@@ -373,7 +374,8 @@ func drawActiveSettingsWindows() {
 				imgui.TableNextColumn()
 				imgui.Text("Shift-" + key)
 				imgui.TableNextColumn()
-				if imgui.BeginCombo("##Shift-"+key, globalConfig.ShiftFKeyMappings[i]) {
+				imgui.SetNextItemWidth(240)
+				if imgui.BeginComboV("##Shift-"+key, globalConfig.ShiftFKeyMappings[i], imgui.ComboFlagsHeightLarge) {
 					for _, cmd := range commands {
 						if imgui.SelectableV(cmd, cmd == globalConfig.ShiftFKeyMappings[i], 0, imgui.Vec2{}) {
 							globalConfig.ShiftFKeyMappings[i] = cmd
@@ -482,21 +484,29 @@ type ComboBoxDisplayConfig struct {
 	DrawHeaders      bool
 	EntryNames       []string
 	InputFlags       []imgui.InputTextFlags
-	TableFlags       imgui.TableFlags
 	SelectAllColumns bool
 	Size             imgui.Vec2
+	MaxDisplayed     int
+	FixedDisplayed   int
 }
 
 func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 	firstColumn []string, drawColumn func(s string, col int),
 	inputValid func([]*string) bool, add func([]*string), deleteSelection func(map[string]interface{})) {
 	id := fmt.Sprintf("%p", state)
-	flags := config.TableFlags | imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV |
-		imgui.TableFlagsRowBg
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
+
 	sz := config.Size
-	if sz.X == 0 && sz.Y == 0 {
-		sz = imgui.Vec2{300, 100}
+	if config.FixedDisplayed != 0 {
+		flags = flags | imgui.TableFlagsScrollY
+		sz.Y = float32(config.FixedDisplayed * (4 + ui.font.size))
+	} else if config.MaxDisplayed == 0 || len(firstColumn) < config.MaxDisplayed {
+		sz.Y = 0
+	} else {
+		flags = flags | imgui.TableFlagsScrollY
+		sz.Y = float32((1 + config.MaxDisplayed) * (6 + ui.font.size))
 	}
+
 	if imgui.BeginTableV("##"+id, len(config.ColumnHeaders), flags, sz, 0.0) {
 		for _, name := range config.ColumnHeaders {
 			imgui.TableSetupColumn(name)
@@ -698,7 +708,7 @@ func (v *VATSIMConnectionConfiguration) DrawUI() bool {
 
 	imgui.InputTextV("VATSIM Password", &globalConfig.VatsimPassword, imgui.InputTextFlagsPassword, nil)
 
-	if imgui.BeginCombo("Rating", globalConfig.VatsimRating.String()) {
+	if imgui.BeginComboV("Rating", globalConfig.VatsimRating.String(), imgui.ComboFlagsHeightLarge) {
 		for i := ObserverRating; i <= AdministratorRating; i++ {
 			nr := NetworkRating(i)
 			s := nr.String()
@@ -711,7 +721,7 @@ func (v *VATSIMConnectionConfiguration) DrawUI() bool {
 
 	imgui.InputText("Callsign", &positionConfig.VatsimCallsign)
 
-	if imgui.BeginCombo("Facility", positionConfig.VatsimFacility.String()) {
+	if imgui.BeginComboV("Facility", positionConfig.VatsimFacility.String(), imgui.ComboFlagsHeightLarge) {
 		for i := FacilityOBS; i <= FacilityUndefined; i++ {
 			f := Facility(i)
 			s := f.String()
@@ -724,7 +734,7 @@ func (v *VATSIMConnectionConfiguration) DrawUI() bool {
 
 	imgui.InputTextMultiline("Controller ATIS", &positionConfig.ControllerATIS)
 
-	if imgui.BeginCombo("Server", v.name) {
+	if imgui.BeginComboV("Server", v.name, imgui.ComboFlagsHeightLarge) {
 		for _, server := range SortedMapKeys(vatsimServers) {
 			if imgui.SelectableV(server, server == v.name, 0, imgui.Vec2{}) {
 				v.name = server
@@ -876,7 +886,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *ConnectModalClient) Draw() int {
-	if imgui.BeginCombo("Type", c.connectionType.String()) {
+	if imgui.BeginComboV("Type", c.connectionType.String(), imgui.ComboFlagsHeightLarge) {
 		for i := 0; i < ConnectionTypeCount; i++ {
 			ct := ConnectionType(i)
 			if imgui.SelectableV(ct.String(), ct == c.connectionType, 0, imgui.Vec2{}) {
@@ -1023,7 +1033,7 @@ func (r *RenameModalClient) Buttons() []ModalDialogButton {
 }
 
 func (r *RenameModalClient) Draw() int {
-	if imgui.BeginCombo("Config Name", r.selectedName) {
+	if imgui.BeginComboV("Config Name", r.selectedName, imgui.ComboFlagsHeightLarge) {
 		names := SortedMapKeys(globalConfig.PositionConfigs)
 
 		for _, name := range names {
@@ -1081,7 +1091,7 @@ func (d *DeleteModalClient) Buttons() []ModalDialogButton {
 }
 
 func (d *DeleteModalClient) Draw() int {
-	if imgui.BeginCombo("Config Name", d.name) {
+	if imgui.BeginComboV("Config Name", d.name, imgui.ComboFlagsHeightLarge) {
 		names := SortedMapKeys(globalConfig.PositionConfigs)
 		for _, name := range names {
 			if imgui.SelectableV(name, name == d.name, 0, imgui.Vec2{}) {
@@ -2128,7 +2138,7 @@ func showColorEditor() {
 		return n
 	}
 
-	if imgui.BeginCombo("Color scheme", displayName(positionConfig.ColorSchemeName)) {
+	if imgui.BeginComboV("Color scheme", displayName(positionConfig.ColorSchemeName), imgui.ComboFlagsHeightLarge) {
 		names := SortedMapKeys(builtinColorSchemes)
 		names = append(names, SortedMapKeys(globalConfig.ColorSchemes)...)
 
