@@ -18,7 +18,7 @@ import (
 type OpenGL2Renderer struct {
 	imguiIO imgui.IO
 
-	createdTextures []uint32
+	createdTextures map[uint32]int
 }
 
 // NewOpenGL2Renderer creates an OpenGL context and creates a texture for the imgui fonts.
@@ -33,11 +33,14 @@ func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
 	lg.Printf("OpenGL vendor %s renderer %s", C.GoString(v), C.GoString(r))
 
 	lg.Printf("Finished OpenGL2Renderer initialization")
-	return &OpenGL2Renderer{imguiIO: io}, nil
+	return &OpenGL2Renderer{
+		imguiIO:         io,
+		createdTextures: make(map[uint32]int),
+	}, nil
 }
 
 func (ogl2 *OpenGL2Renderer) Dispose() {
-	for _, texid := range ogl2.createdTextures {
+	for texid := range ogl2.createdTextures {
 		gl.DeleteTextures(1, &texid)
 	}
 }
@@ -57,9 +60,25 @@ func (ogl2 *OpenGL2Renderer) CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) u
 
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
 
-	ogl2.createdTextures = append(ogl2.createdTextures, texid)
+	ogl2.createdTexture(texid, w*h*4)
 
 	return texid
+}
+
+func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
+	_, exists := ogl2.createdTextures[texid]
+
+	ogl2.createdTextures[texid] = bytes
+
+	reduce := func(id uint32, bytes int, total int) int { return total + bytes }
+	total := ReduceMap[uint32, int, int](ogl2.createdTextures, reduce, 0)
+	mb := float32(total) / (1024 * 1024)
+
+	if exists {
+		lg.Printf("Updated tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
+	} else {
+		lg.Printf("Created tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
+	}
 }
 
 func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIPs bool) uint32 {
@@ -120,7 +139,11 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Imag
 
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
 
-	ogl2.createdTextures = append(ogl2.createdTextures, texid)
+	bytes := nx * ny * 4
+	if generateMIPs {
+		bytes = (bytes * 4) / 3
+	}
+	ogl2.createdTexture(texid, bytes)
 }
 
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {
