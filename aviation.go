@@ -551,3 +551,43 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 		return fp.actype
 	}
 }
+
+type Conflict struct {
+	aircraft [2]*Aircraft
+	limits   RangeLimits
+}
+
+func GetConflicts(aircraft []*Aircraft, rangeLimits [NumRangeTypes]RangeLimits) (warning []Conflict, violation []Conflict) {
+	for i, ac1 := range aircraft {
+		for j := i + 1; j < len(aircraft); j++ {
+			ac2 := aircraft[j]
+
+			var r RangeLimits
+			if ac1.flightPlan != nil && ac1.flightPlan.rules == IFR {
+				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
+					r = rangeLimits[IFR_IFR]
+				} else {
+					r = rangeLimits[IFR_VFR]
+				}
+			} else {
+				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
+					r = rangeLimits[IFR_VFR]
+				} else {
+					r = rangeLimits[VFR_VFR]
+				}
+			}
+
+			ldist := nmdistance2ll(ac1.Position(), ac2.Position())
+			vdist := int32(abs(ac1.Altitude() - ac2.Altitude()))
+			if ldist < r.ViolationLateral && vdist < r.ViolationVertical {
+				violation = append(violation,
+					Conflict{aircraft: [2]*Aircraft{ac1, ac2}, limits: r})
+			} else if ldist < r.WarningLateral && vdist < r.WarningVertical {
+				warning = append(warning,
+					Conflict{aircraft: [2]*Aircraft{ac1, ac2}, limits: r})
+			}
+		}
+	}
+
+	return
+}

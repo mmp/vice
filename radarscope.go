@@ -1337,65 +1337,17 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 	}
 }
 
-type Conflict struct {
-	aircraft [2]*Aircraft
-	limits   RangeLimits
-}
-
-func (rs *RadarScopePane) getConflicts() (warning []Conflict, violation []Conflict) {
-	aircraft, state := FlattenMap(rs.aircraft)
-
-	now := server.CurrentTime()
-	for i, ac1 := range aircraft {
-		if state[i].isGhost || ac1.LostTrack(now) ||
-			ac1.Altitude() < int(rs.MinAltitude) || ac1.Altitude() > int(rs.MaxAltitude) {
-			continue
-		}
-
-		for j := i + 1; j < len(aircraft); j++ {
-			ac2 := aircraft[j]
-			if state[j].isGhost || ac2.LostTrack(now) ||
-				ac2.Altitude() < int(rs.MinAltitude) || ac2.Altitude() > int(rs.MaxAltitude) {
-				continue
-			}
-
-			var r RangeLimits
-			if ac1.flightPlan != nil && ac1.flightPlan.rules == IFR {
-				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
-					r = rs.RangeLimits[IFR_IFR]
-				} else {
-					r = rs.RangeLimits[IFR_VFR]
-				}
-			} else {
-				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
-					r = rs.RangeLimits[IFR_VFR]
-				} else {
-					r = rs.RangeLimits[VFR_VFR]
-				}
-			}
-
-			ldist := nmdistance2ll(ac1.Position(), ac2.Position())
-			vdist := int32(abs(ac1.Altitude() - ac2.Altitude()))
-			if ldist < r.ViolationLateral && vdist < r.ViolationVertical {
-				violation = append(violation,
-					Conflict{aircraft: [2]*Aircraft{ac1, ac2}, limits: r})
-			} else if ldist < r.WarningLateral && vdist < r.WarningVertical {
-				warning = append(warning,
-					Conflict{aircraft: [2]*Aircraft{ac1, ac2}, limits: r})
-			}
-		}
-	}
-
-	return
-}
-
 func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
 	pixelDistanceNm float32) {
 	if !rs.DrawRangeIndicators {
 		return
 	}
 
-	warnings, violations := rs.getConflicts()
+	now := server.CurrentTime()
+	aircraft, _ := FlattenMap(FilterMap(rs.aircraft, func(ac *Aircraft, state *AircraftScopeState) bool {
+		return !state.isGhost && !ac.LostTrack(now) && ac.Altitude() >= int(rs.MinAltitude) && ac.Altitude() <= int(rs.MaxAltitude)
+	}))
+	warnings, violations := GetConflicts(aircraft, rs.RangeLimits)
 
 	// Reset it each frame
 	rs.rangeWarnings = make(map[AircraftPair]interface{})
