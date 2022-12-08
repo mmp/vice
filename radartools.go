@@ -761,7 +761,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Compass headings at window edges
+// Additional useful things we may draw on radar scopes...
 
 // DrawCompass emits drawing commands to draw compass heading directions at
 // the edges of the current window. It takes a center point p in lat-long
@@ -846,4 +846,27 @@ func DrawCompass(p Point2LL, windowFromLatLongP func(Point2LL) [2]float32,
 
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
+}
+
+// DrawRangeRings draws ten circles around the specified lat-long point in
+// steps of the specified radius (in nm).
+func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext,
+	windowFromLatLongP func(p Point2LL) [2]float32, latLongFromWindowV func(p [2]float32) Point2LL,
+	cb *CommandBuffer) {
+	ctx.SetWindowCoordinateMatrices(cb)
+
+	// Find the pixel spacing in nm
+	ll := latLongFromWindowV([2]float32{1, 0})
+	pixelDistanceNm := nmlength2ll(ll)
+
+	centerWindow := windowFromLatLongP(center)
+
+	lines := ColoredLinesDrawBuilder{}
+	for i := 1; i < 10; i++ {
+		// Radius of this ring in pixels
+		r := float32(i) * radius / pixelDistanceNm
+		lines.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
+	}
+
+	lines.GenerateCommands(cb)
 }

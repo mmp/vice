@@ -603,14 +603,27 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	td.GenerateCommands(&rs.wcCommandBuffer)
 
 	// Static geometry: SIDs/STARs, runways, ...
-	rs.drawWeather(ctx)
+	if rs.DrawWeather {
+		rs.WeatherRadar.Draw(&rs.llCommandBuffer)
+	}
 
 	cb.PointSize(rs.PointSize)
 	cb.LineWidth(rs.LineWidth)
 	rs.StaticDraw.Draw(ctx, rs.labelFont, ndcFromLatLongMtx, windowFromLatLongMtx, latLongFromWindowMtx, cb)
 
-	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
-	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP, pixelDistanceNm)
+	if rs.DrawCompass {
+		p := rs.Center
+		if positionConfig.selectedAircraft != nil {
+			p = positionConfig.selectedAircraft.Position()
+		}
+		DrawCompass(p, windowFromLatLongP, latLongFromWindowP, ctx, rs.RotationAngle, rs.labelFont, &rs.wcCommandBuffer)
+	}
+
+	if center, ok := database.Locate(rs.RangeRingCenter); ok && rs.DrawRangeRings {
+		cb.LineWidth(rs.LineWidth)
+		DrawRangeRings(center, rs.RangeRingRadius, ctx, windowFromLatLongP, latLongFromWindowV, cb)
+	}
+
 	rs.drawRoute(ctx, latLongFromWindowV)
 	rs.drawCRDARegions(ctx)
 
@@ -1376,19 +1389,6 @@ func (rs *RadarScopePane) getConflicts() (warning []Conflict, violation []Confli
 	return
 }
 
-func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32,
-	latLongFromWindowP func([2]float32) Point2LL) {
-	if !rs.DrawCompass {
-		return
-	}
-
-	p := rs.Center
-	if positionConfig.selectedAircraft != nil {
-		p = positionConfig.selectedAircraft.Position()
-	}
-	DrawCompass(p, windowFromLatLongP, latLongFromWindowP, ctx, rs.RotationAngle, rs.labelFont, &rs.wcCommandBuffer)
-}
-
 func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
 	pixelDistanceNm float32) {
 	if !rs.DrawRangeIndicators {
@@ -1463,34 +1463,6 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 			annotatedLine(ac0.Position(), ac1.Position(), ctx.cs.Error, rangeText(ac0, ac1))
 		}
 	}
-}
-
-func (rs *RadarScopePane) drawWeather(ctx *PaneContext) {
-	if rs.DrawWeather {
-		rs.WeatherRadar.Draw(&rs.llCommandBuffer)
-	}
-}
-
-func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
-	latLongFromWindowP func(p [2]float32) Point2LL, pixelDistanceNm float32) {
-	if !rs.DrawRangeRings {
-		return
-	}
-
-	centerLL, ok := database.Locate(rs.RangeRingCenter)
-	if !ok {
-		return
-	}
-	centerWindow := windowFromLatLongP(centerLL)
-
-	lines := ColoredLinesDrawBuilder{}
-	for i := 1; i < 10; i++ {
-		r := float32(i) * rs.RangeRingRadius / pixelDistanceNm
-		lines.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
-	}
-
-	rs.wcCommandBuffer.LineWidth(rs.LineWidth)
-	lines.GenerateCommands(&rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL) {
