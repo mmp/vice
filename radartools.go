@@ -511,50 +511,6 @@ func (c *CRDAConfig) DrawUI() bool {
 	return updateGhosts
 }
 
-func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
-	if !rs.CRDAConfig.ShowCRDARegions {
-		return
-	}
-
-	// Find the intersection of the two runways.  Work in nm space, not lat-long
-	if true {
-		src, dst := rs.CRDAConfig.getRunways()
-		if src != nil && dst != nil {
-			p, ok := runwayIntersection(src, dst)
-			if !ok {
-				lg.Printf("no intersection between runways?!")
-			}
-			//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
-			//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
-			rs.pointsDrawBuilder.AddPoint(p, RGB{1, 0, 0})
-		}
-	}
-
-	src, _ := rs.CRDAConfig.getRunways()
-	if src == nil {
-		return
-	}
-
-	// we have the runway heading, but we want to go the opposite direction
-	// and then +/- HeadingTolerance.
-	rota := src.heading + 180 - rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
-	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
-
-	// Lay out the vectors in nm space, not lat-long
-	sa, ca := sin(radians(rota)), cos(radians(rota))
-	va := [2]float32{sa, ca}
-	dist := float32(25)
-	va = scale2f(va, dist)
-
-	sb, cb := sin(radians(rotb)), cos(radians(rotb))
-	vb := scale2f([2]float32{sb, cb}, dist)
-
-	// Over to lat-long to draw the lines
-	vall, vbll := nm2ll(va), nm2ll(vb)
-	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
-	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // DataBlockFormat
 

@@ -62,7 +62,6 @@ type RadarScopePane struct {
 	LabelFontIdentifier     FontIdentifier
 	labelFont               *Font
 
-	pointsDrawBuilder     PointsDrawBuilder
 	linesDrawBuilder      ColoredLinesDrawBuilder
 	thickLinesDrawBuilder ColoredLinesDrawBuilder
 	llCommandBuffer       CommandBuffer // things using lat-long coordiantes for vertices
@@ -216,7 +215,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	// don't share those slices...
 	dupe.llCommandBuffer = CommandBuffer{}
 	dupe.wcCommandBuffer = CommandBuffer{}
-	dupe.pointsDrawBuilder = PointsDrawBuilder{}
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	dupe.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
@@ -376,7 +374,6 @@ func (rs *RadarScopePane) Deactivate() {
 	// Free up this memory, FWIW
 	rs.llCommandBuffer = CommandBuffer{}
 	rs.wcCommandBuffer = CommandBuffer{}
-	rs.pointsDrawBuilder = PointsDrawBuilder{}
 	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
 	rs.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
@@ -641,7 +638,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Mouse events last, so that the datablock bounds are current.
 	rs.consumeMouseEvents(ctx, latLongFromWindowP, latLongFromWindowV, windowFromLatLongP)
 
-	rs.pointsDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.linesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth)
 	rs.thickLinesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
@@ -684,7 +680,6 @@ func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl
 	// Reset the slices so we can draw new lines and points
 	rs.linesDrawBuilder.Reset()
 	rs.thickLinesDrawBuilder.Reset()
-	rs.pointsDrawBuilder.Reset()
 
 	rs.llCommandBuffer.Reset()
 	rs.llCommandBuffer.LoadProjectionMatrix(ndcFromLatLongMtx)
@@ -797,50 +792,11 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 	}
 }
 
-func (rs *RadarScopePane) drawTrack(ac *Aircraft, p Point2LL, color RGB,
-	latLongFromWindowV func(p [2]float32) Point2LL, windowFromLatLongP func(p Point2LL) [2]float32,
-	td *TextDrawBuilder) {
-	px := float32(3) // TODO: make configurable?
-	dx := latLongFromWindowV([2]float32{1, 0})
-	dy := latLongFromWindowV([2]float32{0, 1})
-	// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
-	delta := func(p Point2LL, x, y float32) Point2LL {
-		return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
-	}
-
-	// Draw tracks
-	if ac.mode == Standby {
-		rs.pointsDrawBuilder.AddPoint(p, color)
-	} else if ac.squawk == Squawk(1200) {
-		pxb := px * .7    // a little smaller
-		sc := float32(.8) // leave a little space at the corners
-		rs.linesDrawBuilder.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), color)
-		rs.linesDrawBuilder.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), color)
-		rs.linesDrawBuilder.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), color)
-		rs.linesDrawBuilder.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), color)
-	} else if controller := server.GetTrackingController(ac.Callsign()); controller != "" {
-		ch := "?"
-		if ctrl := server.GetController(controller); ctrl != nil {
-			if pos := ctrl.GetPosition(); pos != nil {
-				ch = pos.scope
-			}
-		}
-		pw := windowFromLatLongP(p)
-		td.AddTextCentered(ch, pw, TextStyle{Font: rs.datablockFont, Color: color})
-		return
-	} else {
-		// diagonals
-		diagPx := px * 0.707107 /* 1/sqrt(2) */
-		rs.linesDrawBuilder.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), color)
-		rs.linesDrawBuilder.AddLine(delta(p, diagPx, -diagPx), delta(p, -diagPx, diagPx), color)
-		// horizontal line
-		rs.linesDrawBuilder.AddLine(delta(p, -px, 0), delta(p, px, 0), color)
-	}
-}
-
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p [2]float32) Point2LL,
 	windowFromLatLongP func(p Point2LL) [2]float32) {
 	td := rs.getScratchTextDrawBuilder()
+	var pd PointsDrawBuilder
+
 	now := server.CurrentTime()
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
@@ -862,9 +818,47 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			x := float32(i-1) / (1e-6 + float32(2*(rs.RadarTracksDrawn-1))) // 0 <= x <= 0.5
 			trackColor := lerpRGB(x, color, ctx.cs.Background)
 
-			rs.drawTrack(ac, ac.tracks[i-1].position, trackColor, latLongFromWindowV, windowFromLatLongP, td)
+			p := ac.tracks[i-1].position
+			pw := windowFromLatLongP(p)
+
+			px := float32(3) // TODO: make configurable?
+			dx := latLongFromWindowV([2]float32{1, 0})
+			dy := latLongFromWindowV([2]float32{0, 1})
+			// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
+			delta := func(p Point2LL, x, y float32) Point2LL {
+				return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
+			}
+
+			// Draw tracks
+			if ac.mode == Standby {
+				pd.AddPoint(pw, trackColor)
+			} else if ac.squawk == Squawk(1200) {
+				pxb := px * .7    // a little smaller
+				sc := float32(.8) // leave a little space at the corners
+				rs.linesDrawBuilder.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), trackColor)
+				rs.linesDrawBuilder.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), trackColor)
+				rs.linesDrawBuilder.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), trackColor)
+				rs.linesDrawBuilder.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), trackColor)
+			} else if controller := server.GetTrackingController(ac.Callsign()); controller != "" {
+				ch := "?"
+				if ctrl := server.GetController(controller); ctrl != nil {
+					if pos := ctrl.GetPosition(); pos != nil {
+						ch = pos.scope
+					}
+				}
+				td.AddTextCentered(ch, pw, TextStyle{Font: rs.datablockFont, Color: trackColor})
+			} else {
+				// diagonals
+				diagPx := px * 0.707107 /* 1/sqrt(2) */
+				rs.linesDrawBuilder.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), trackColor)
+				rs.linesDrawBuilder.AddLine(delta(p, diagPx, -diagPx), delta(p, -diagPx, diagPx), trackColor)
+				// horizontal line
+				rs.linesDrawBuilder.AddLine(delta(p, -px, 0), delta(p, px, 0), trackColor)
+			}
 		}
 	}
+
+	pd.GenerateCommands(&rs.wcCommandBuffer)
 	td.GenerateCommands(&rs.wcCommandBuffer)
 }
 
@@ -1618,4 +1612,50 @@ func (rs *RadarScopePane) vectorLineEnd(ac *Aircraft) Point2LL {
 		lg.Printf("unexpected vector line mode: %d", rs.VectorLineMode)
 		return Point2LL{}
 	}
+}
+
+func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
+	if !rs.CRDAConfig.ShowCRDARegions {
+		return
+	}
+
+	// Find the intersection of the two runways.  Work in nm space, not lat-long
+	if true {
+		src, dst := rs.CRDAConfig.getRunways()
+		if src != nil && dst != nil {
+			p, ok := runwayIntersection(src, dst)
+			if !ok {
+				lg.Printf("no intersection between runways?!")
+			}
+			//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
+			//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
+			var pd PointsDrawBuilder
+			pd.AddPoint(p, RGB{1, 0, 0})
+			pd.GenerateCommands(&rs.llCommandBuffer)
+		}
+	}
+
+	src, _ := rs.CRDAConfig.getRunways()
+	if src == nil {
+		return
+	}
+
+	// we have the runway heading, but we want to go the opposite direction
+	// and then +/- HeadingTolerance.
+	rota := src.heading + 180 - rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
+	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
+
+	// Lay out the vectors in nm space, not lat-long
+	sa, ca := sin(radians(rota)), cos(radians(rota))
+	va := [2]float32{sa, ca}
+	dist := float32(25)
+	va = scale2f(va, dist)
+
+	sb, cb := sin(radians(rotb)), cos(radians(rotb))
+	vb := scale2f([2]float32{sb, cb}, dist)
+
+	// Over to lat-long to draw the lines
+	vall, vbll := nm2ll(va), nm2ll(vb)
+	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
+	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
 }
