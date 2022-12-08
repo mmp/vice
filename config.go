@@ -36,6 +36,7 @@ type GlobalConfig struct {
 	VatsimPassword string
 	VatsimRating   NetworkRating
 	CustomServers  map[string]string
+	LastServer     string
 
 	PositionConfigs       map[string]*PositionConfig
 	ActivePosition        string

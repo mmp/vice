@@ -690,7 +690,15 @@ type VATSIMConnectionConfiguration struct {
 	address string
 }
 
-func (v *VATSIMConnectionConfiguration) Initialize() {}
+func (v *VATSIMConnectionConfiguration) Initialize() {
+	if addr, ok := vatsimServers[globalConfig.LastServer]; ok {
+		v.name = globalConfig.LastServer
+		v.address = addr
+	} else if addr, ok := globalConfig.CustomServers[globalConfig.LastServer]; ok {
+		v.name = globalConfig.LastServer
+		v.address = addr
+	}
+}
 
 func (v *VATSIMConnectionConfiguration) DrawUI() bool {
 	imgui.InputText("Name", &globalConfig.VatsimName)
@@ -758,6 +766,9 @@ func (v *VATSIMConnectionConfiguration) Valid() bool { return v.address != "" }
 func (v *VATSIMConnectionConfiguration) Connect() error {
 	var err error
 	server, err = NewVATSIMNetworkServer(v.address)
+	if err == nil {
+		globalConfig.LastServer = v.name
+	}
 	return err
 }
 
