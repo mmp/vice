@@ -556,21 +556,14 @@ func (rs *RadarScopePane) processEvents(es *EventStream) {
 	}
 }
 
-func mul4v(m *mgl32.Mat4, v [2]float32) [2]float32 {
-	return [2]float32{m[0]*v[0] + m[4]*v[1], m[1]*v[0] + m[5]*v[1]}
-}
-
-func mul4p(m *mgl32.Mat4, p [2]float32) [2]float32 {
-	return add2f(mul4v(m, p), [2]float32{m[12], m[13]})
-}
-
 func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.processEvents(ctx.events)
 
-	latLongFromWindowMtx, ndcFromLatLongMtx := rs.getViewingMatrices(ctx)
-	windowFromLatLongMtx := latLongFromWindowMtx.Inv()
+	transforms := GetScopeTransformations(ctx, rs.Center, rs.Range, rs.RotationAngle)
+	latLongFromWindowMtx := transforms.latLongFromWindow
+	windowFromLatLongMtx := transforms.windowFromLatLong
 
-	rs.prepareForDraw(ctx, ndcFromLatLongMtx)
+	rs.prepareForDraw(ctx, transforms)
 
 	windowFromLatLongP := func(p Point2LL) [2]float32 {
 		return mul4p(&windowFromLatLongMtx, p)
@@ -587,6 +580,10 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	ll := mul4v(&latLongFromWindowMtx, [2]float32{1, 0})
 	pixelDistanceNm := nmlength2ll(ll)
 
+	if rs.DrawWeather {
+		rs.WeatherRadar.Draw(transforms, cb)
+	}
+
 	// Title in upper-left corner
 	td := rs.getScratchTextDrawBuilder()
 	height := ctx.paneExtent.Height()
@@ -597,16 +594,13 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
 		TextStyle{Font: rs.labelFont, Color: ctx.cs.Text})
-	td.GenerateCommands(&rs.wcCommandBuffer)
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 
 	// Static geometry: SIDs/STARs, runways, ...
-	if rs.DrawWeather {
-		rs.WeatherRadar.Draw(&rs.llCommandBuffer)
-	}
-
 	cb.PointSize(rs.PointSize)
 	cb.LineWidth(rs.LineWidth)
-	rs.StaticDraw.Draw(ctx, rs.labelFont, ndcFromLatLongMtx, windowFromLatLongMtx, latLongFromWindowMtx, cb)
+	rs.StaticDraw.Draw(ctx, rs.labelFont, transforms, cb)
 
 	if rs.DrawCompass {
 		p := rs.Center
@@ -646,49 +640,18 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cb.Call(rs.wcCommandBuffer)
 }
 
-func (rs *RadarScopePane) getViewingMatrices(ctx *PaneContext) (latLongFromWindow mgl32.Mat4, ndcFromLatLong mgl32.Mat4) {
-	// Translate to the center point
-	ndcFromLatLong = mgl32.Translate3D(-rs.Center[0], -rs.Center[1], 0)
-
-	// Scale based on range and nm per latitude / longitude
-	sc := mgl32.Scale3D(database.NmPerLongitude/rs.Range, database.NmPerLatitude/rs.Range, 1)
-	ndcFromLatLong = sc.Mul4(ndcFromLatLong)
-
-	// Account for magnetic variation and any user-specified rotation
-	rot := -radians(rs.RotationAngle + database.MagneticVariation)
-	magRot := mgl32.HomogRotate3DZ(rot)
-	ndcFromLatLong = magRot.Mul4(ndcFromLatLong)
-
-	// Final orthographic projection including the effect of the
-	// window's aspect ratio.
-	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
-	aspect := width / height
-	ortho := mgl32.Ortho2D(-aspect, aspect, -1, 1)
-	ndcFromLatLong = ortho.Mul4(ndcFromLatLong)
-
-	// FIXME: it's silly to have NDC at all involved here; we can compute
-	// latlong from window much more directly.
-	latLongFromNDC := ndcFromLatLong.Inv()
-	ndcFromWindow := mgl32.Scale3D(2/width, 2/height, 1)
-	ndcFromWindow = mgl32.Translate3D(-1, -1, 0).Mul4(ndcFromWindow)
-	latLongFromWindow = latLongFromNDC.Mul4(ndcFromWindow)
-
-	return
-}
-
-func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, ndcFromLatLongMtx mgl32.Mat4) {
+func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, transforms ScopeTransformations) {
 	// Reset the slices so we can draw new lines and points
 	rs.linesDrawBuilder.Reset()
 	rs.thickLinesDrawBuilder.Reset()
 
 	rs.llCommandBuffer.Reset()
-	rs.llCommandBuffer.LoadProjectionMatrix(ndcFromLatLongMtx)
-	rs.llCommandBuffer.LoadModelViewMatrix(mgl32.Ident4())
+	transforms.LoadLatLongViewingMatrices(&rs.llCommandBuffer)
 	rs.llCommandBuffer.PointSize(rs.PointSize)
 	rs.llCommandBuffer.LineWidth(rs.LineWidth)
 
 	rs.wcCommandBuffer.Reset()
-	ctx.SetWindowCoordinateMatrices(&rs.wcCommandBuffer)
+	transforms.LoadWindowViewingMatrices(&rs.wcCommandBuffer)
 	rs.wcCommandBuffer.PointSize(rs.PointSize)
 	rs.wcCommandBuffer.LineWidth(rs.LineWidth)
 }

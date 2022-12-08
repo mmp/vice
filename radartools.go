@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 	"github.com/nfnt/resize"
 )
@@ -205,7 +206,7 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 // available, it returns rather than stalling waiting for it). The provided
 // CommandBuffer should be set up with viewing matrices such that vertex
 // coordinates are provided in latitude-longitude.
-func (w *WeatherRadar) Draw(cb *CommandBuffer) {
+func (w *WeatherRadar) Draw(transforms ScopeTransformations, cb *CommandBuffer) {
 	// Try to receive an updated image from the fetchWather goroutine, if
 	// one is available.
 	select {
@@ -236,6 +237,7 @@ func (w *WeatherRadar) Draw(cb *CommandBuffer) {
 	}
 
 	// We have a valid radar image, so draw it.
+	transforms.LoadLatLongViewingMatrices(cb)
 	cb.SetRGBA(RGBA{1, 1, 1, w.BlendFactor})
 	cb.Blend()
 	cb.EnableTexture(w.texId)
@@ -825,4 +827,79 @@ func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext,
 	}
 
 	lines.GenerateCommands(cb)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ScopeTransformations
+
+type ScopeTransformations struct {
+	ndcFromLatLong                       mgl32.Mat4
+	ndcFromWindow                        mgl32.Mat4
+	latLongFromWindow, windowFromLatLong mgl32.Mat4
+}
+
+func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
+	// Translate to the center point
+	ndcFromLatLong := mgl32.Translate3D(-center[0], -center[1], 0)
+
+	// Scale based on range and nm per latitude / longitude
+	sc := mgl32.Scale3D(database.NmPerLongitude/rangenm, database.NmPerLatitude/rangenm, 1)
+	ndcFromLatLong = sc.Mul4(ndcFromLatLong)
+
+	// Account for magnetic variation and any user-specified rotation
+	rot := -radians(rotationAngle + database.MagneticVariation)
+	magRot := mgl32.HomogRotate3DZ(rot)
+	ndcFromLatLong = magRot.Mul4(ndcFromLatLong)
+
+	// Final orthographic projection including the effect of the
+	// window's aspect ratio.
+	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+	aspect := width / height
+	ortho := mgl32.Ortho2D(-aspect, aspect, -1, 1)
+	ndcFromLatLong = ortho.Mul4(ndcFromLatLong)
+
+	// FIXME: it's silly to have NDC at all involved here; we can compute
+	// latlong from window much more directly.
+	latLongFromNDC := ndcFromLatLong.Inv()
+	ndcFromWindow := mgl32.Scale3D(2/width, 2/height, 1)
+	ndcFromWindow = mgl32.Translate3D(-1, -1, 0).Mul4(ndcFromWindow)
+	latLongFromWindow := latLongFromNDC.Mul4(ndcFromWindow)
+	windowFromLatLong := latLongFromWindow.Inv()
+
+	return ScopeTransformations{
+		ndcFromLatLong:    ndcFromLatLong,
+		ndcFromWindow:     ndcFromWindow,
+		latLongFromWindow: latLongFromWindow,
+		windowFromLatLong: windowFromLatLong,
+	}
+}
+
+func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
+	cb.LoadProjectionMatrix(st.ndcFromLatLong)
+	cb.LoadModelViewMatrix(mgl32.Ident4())
+}
+
+func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *CommandBuffer) {
+	cb.LoadProjectionMatrix(st.ndcFromWindow)
+	cb.LoadModelViewMatrix(mgl32.Ident4())
+}
+
+func mul4v(m *mgl32.Mat4, v [2]float32) [2]float32 {
+	return [2]float32{m[0]*v[0] + m[4]*v[1], m[1]*v[0] + m[5]*v[1]}
+}
+
+func mul4p(m *mgl32.Mat4, p [2]float32) [2]float32 {
+	return add2f(mul4v(m, p), [2]float32{m[12], m[13]})
+}
+
+func (st *ScopeTransformations) WindowFromLatLongP(p Point2LL) [2]float32 {
+	return mul4p(&st.windowFromLatLong, p)
+}
+
+func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) Point2LL {
+	return mul4p(&st.latLongFromWindow, p)
+}
+
+func (st *ScopeTransformations) LatLongFromWindowV(p [2]float32) Point2LL {
+	return mul4v(&st.latLongFromWindow, p)
 }

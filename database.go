@@ -17,7 +17,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/earcut-go"
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/sct2"
@@ -1211,21 +1210,7 @@ func (s *StaticDrawConfig) DrawUI() {
 }
 
 // Draw draws all of the items that are selected in the StaticDrawConfig.
-func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLongMtx mgl32.Mat4,
-	windowFromLatLongMtx mgl32.Mat4, latLongFromWindowMtx mgl32.Mat4, cb *CommandBuffer) {
-	// Declare some helper functions for transformations among various
-	// coordinate spaces. The "P" suffix denotes a point-valued argument
-	// and "V" a vector-valued argument.
-	windowFromLatLongP := func(p Point2LL) [2]float32 {
-		return mul4p(&windowFromLatLongMtx, p)
-	}
-	latLongFromWindowP := func(p [2]float32) Point2LL {
-		return mul4p(&latLongFromWindowMtx, p)
-	}
-	latLongFromWindowV := func(p [2]float32) Point2LL {
-		return mul4v(&latLongFromWindowMtx, p)
-	}
-
+func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms ScopeTransformations, cb *CommandBuffer) {
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	inWindow := func(p [2]float32) bool {
 		return p[0] >= 0 && p[0] < width && p[1] >= 0 && p[1] < height
@@ -1234,15 +1219,14 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLon
 	// Start out with matrices set up for drawing vertices in lat-long
 	// space.  (We'll switch to window coordinates for text labels toward
 	// the end of this method.)
-	cb.LoadProjectionMatrix(ndcFromLatLongMtx)
-	cb.LoadModelViewMatrix(mgl32.Ident4())
+	transforms.LoadLatLongViewingMatrices(cb)
 
 	// Compute bounds for culling; need all four corners for viewBounds due
 	// to possible scope rotation...
-	p0 := latLongFromWindowP([2]float32{0, 0})
-	p1 := latLongFromWindowP([2]float32{width, 0})
-	p2 := latLongFromWindowP([2]float32{0, height})
-	p3 := latLongFromWindowP([2]float32{width, height})
+	p0 := transforms.LatLongFromWindowP([2]float32{0, 0})
+	p1 := transforms.LatLongFromWindowP([2]float32{width, 0})
+	p2 := transforms.LatLongFromWindowP([2]float32{0, height})
+	p3 := transforms.LatLongFromWindowP([2]float32{width, height})
 	viewBounds := Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
 
 	// shrink bounds for debugging culling
@@ -1288,8 +1272,8 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLon
 	// that we'd like to draw a little shape around.  First we find the
 	// appropriate offsets in lat-long space that give us 2 pixel steps in
 	// x and y in window coordinates.
-	dx := latLongFromWindowV([2]float32{2, 0})
-	dy := latLongFromWindowV([2]float32{0, 2})
+	dx := transforms.LatLongFromWindowV([2]float32{2, 0})
+	dy := transforms.LatLongFromWindowV([2]float32{0, 2})
 	// Lat-long vector for (x,y) window coordinates vector
 	vtx := func(x, y float32) [2]float32 {
 		return add2f(scale2f(dx, x), scale2f(dy, y))
@@ -1386,13 +1370,13 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLon
 	}
 
 	// Now switch to window coordinates for drawing text.
-	ctx.SetWindowCoordinateMatrices(cb)
+	transforms.LoadWindowViewingMatrices(cb)
 	td := &TextDrawBuilder{}
 
 	// Helper function to draw airway labels.
 	drawAirwayLabels := func(labels []Label, color RGB) {
 		for _, label := range labels {
-			textPos := windowFromLatLongP(label.p)
+			textPos := transforms.WindowFromLatLongP(label.p)
 			if inWindow(textPos) {
 				// Draw filled quads around each character with the
 				// background color so that the text stands out over things
@@ -1422,7 +1406,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLon
 		for _, label := range database.labels {
 			if viewBounds.Inside(label.p) {
 				style := TextStyle{Font: labelFont, Color: label.color}
-				td.AddTextCentered(label.name, windowFromLatLongP(label.p), style)
+				td.AddTextCentered(label.name, transforms.WindowFromLatLongP(label.p), style)
 			}
 		}
 	}
@@ -1451,7 +1435,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLon
 		}
 
 		if viewBounds.Inside(p) {
-			pw := add2f(windowFromLatLongP(p), offset)
+			pw := add2f(transforms.WindowFromLatLongP(p), offset)
 			if inWindow(pw) {
 				if mode == DrawBelow {
 					td.AddTextCentered(name, pw, TextStyle{Font: labelFont, Color: color})
