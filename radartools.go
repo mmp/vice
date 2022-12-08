@@ -759,3 +759,91 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		return "ERROR"
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Compass headings at window edges
+
+// DrawCompass emits drawing commands to draw compass heading directions at
+// the edges of the current window. It takes a center point p in lat-long
+// coordinates, transformation functions and the radar scope's current
+// rotation angle, if any.  Drawing commands are added to the provided
+// command buffer, which is assumed to have projection matrices set up for
+// drawing using window coordinates.
+func DrawCompass(p Point2LL, windowFromLatLongP func(Point2LL) [2]float32,
+	latLongFromWindowP func([2]float32) Point2LL, ctx *PaneContext, rotationAngle float32,
+	font *Font, cb *CommandBuffer) {
+	// Window coordinates of the center point.
+	// TODO: should we explicitly handle the case of this being outside the window?
+	pw := windowFromLatLongP(p)
+
+	// Bounding box of the current subwindow, in window coordinates.
+	bounds := Extent2D{
+		p0: [2]float32{0, 0},
+		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
+
+	td := TextDrawBuilder{}
+	ld := ColoredLinesDrawBuilder{}
+
+	// Draw lines at a 5 degree spacing.
+	for h := float32(5); h <= 360; h += 5 {
+		hr := h + rotationAngle
+		dir := [2]float32{sin(radians(hr)), cos(radians(hr))}
+		// Find the intersection of the line from the center point to the edge of the window.
+		isect, _, t := bounds.IntersectRay(pw, dir)
+		if !isect {
+			// Happens on initial launch w/o a sector file...
+			//lg.Printf("no isect?! p %+v dir %+v bounds %+v", pw, dir, ctx.paneExtent)
+			continue
+		}
+
+		// Draw a short line from the intersection point at the edge to the
+		// point ten pixels back inside the window toward the center.
+		pEdge := add2f(pw, scale2f(dir, t))
+		pInset := add2f(pw, scale2f(dir, t-10))
+		ld.AddLine(pEdge, pInset, ctx.cs.Compass)
+
+		// Every 10 degrees draw a heading label.
+		if int(h)%10 == 0 {
+			// Generate the label ourselves rather than via fmt.Sprintf,
+			// out of some probably irrelevant attempt at efficiency.
+			label := []byte{'0', '0', '0'}
+			hi := int(h)
+			for i := 2; i >= 0 && hi != 0; i-- {
+				label[i] = byte('0' + hi%10)
+				hi /= 10
+			}
+
+			bx, by := font.BoundText(string(label), 0)
+
+			// Initial inset to place the text--a little past the end of
+			// the line.
+			pText := add2f(pw, scale2f(dir, t-14))
+
+			// Finer text positioning depends on which edge of the window
+			// pane we're on; this is made more grungy because text drawing
+			// is specified w.r.t. the position of the upper-left corner...
+			if fabs(pEdge[0]) < .125 {
+				// left edge
+				pText[1] += float32(by) / 2
+			} else if fabs(pEdge[0]-bounds.p1[0]) < .125 {
+				// right edge
+				pText[0] -= float32(bx)
+				pText[1] += float32(by) / 2
+			} else if fabs(pEdge[1]) < .125 {
+				// bottom edge
+				pText[0] -= float32(bx) / 2
+				pText[1] += float32(by)
+			} else if fabs(pEdge[1]-bounds.p1[1]) < .125 {
+				// top edge
+				pText[0] -= float32(bx) / 2
+			} else {
+				lg.Printf("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
+			}
+
+			td.AddText(string(label), pText, TextStyle{Font: font, Color: ctx.cs.Compass})
+		}
+	}
+
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+}

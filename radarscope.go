@@ -1382,71 +1382,11 @@ func (rs *RadarScopePane) drawCompass(ctx *PaneContext, windowFromLatLongP func(
 		return
 	}
 
-	var pw [2]float32
+	p := rs.Center
 	if positionConfig.selectedAircraft != nil {
-		pw = windowFromLatLongP(positionConfig.selectedAircraft.Position())
-	} else {
-		pw = windowFromLatLongP(rs.Center)
+		p = positionConfig.selectedAircraft.Position()
 	}
-
-	bounds := Extent2D{
-		p0: [2]float32{0, 0},
-		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
-
-	td := rs.getScratchTextDrawBuilder()
-	for h := float32(5); h <= 360; h += 5 {
-		hr := h + rs.RotationAngle
-		dir := [2]float32{sin(radians(hr)), cos(radians(hr))}
-		isect, _, t := bounds.IntersectRay(pw, dir)
-		if !isect {
-			// Happens on initial launch w/o a sector file...
-			//lg.Printf("no isect?! p %+v dir %+v bounds %+v", pw, dir, ctx.paneExtent)
-			continue
-		}
-		pEdge := add2f(pw, scale2f(dir, t))
-		pInset := add2f(pw, scale2f(dir, t-10))
-		pell := latLongFromWindowP(pEdge)
-		pill := latLongFromWindowP(pInset)
-		rs.linesDrawBuilder.AddLine(pell, pill, ctx.cs.Compass)
-
-		if int(h)%10 == 0 {
-			label := []byte{'0', '0', '0'}
-			hi := int(h)
-			for i := 2; i >= 0 && hi != 0; i-- {
-				label[i] = byte('0' + hi%10)
-				hi /= 10
-			}
-
-			bx, by := rs.labelFont.BoundText(string(label), 0)
-
-			// Initial inset
-			pText := add2f(pw, scale2f(dir, t-14))
-
-			// Finer text positioning depends on which edge of the window
-			// pane we're on; this is made more grungy because text drawing
-			// is specified w.r.t. the position of the upper-left corner...
-			if fabs(pEdge[0]) < .125 {
-				// left edge
-				pText[1] += float32(by) / 2
-			} else if fabs(pEdge[0]-bounds.p1[0]) < .125 {
-				// right edge
-				pText[0] -= float32(bx)
-				pText[1] += float32(by) / 2
-			} else if fabs(pEdge[1]) < .125 {
-				// bottom edge
-				pText[0] -= float32(bx) / 2
-				pText[1] += float32(by)
-			} else if fabs(pEdge[1]-bounds.p1[1]) < .125 {
-				// top edge
-				pText[0] -= float32(bx) / 2
-			} else {
-				lg.Printf("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
-			}
-
-			td.AddText(string(label), pText, TextStyle{Font: rs.labelFont, Color: ctx.cs.Compass})
-		}
-	}
-	td.GenerateCommands(&rs.wcCommandBuffer)
+	DrawCompass(p, windowFromLatLongP, latLongFromWindowP, ctx, rs.RotationAngle, rs.labelFont, &rs.wcCommandBuffer)
 }
 
 func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
