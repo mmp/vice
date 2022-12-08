@@ -17,7 +17,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/earcut-go"
+	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/sct2"
 )
 
@@ -860,4 +862,638 @@ func (db *StaticDatabase) NamedColorChanged(name string, rgb RGB) {
 			update(star.colorBufferIndex, star.rgbSlice, name, rgb)
 		}
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// StaticDrawConfig
+
+// StaticDrawConfig tracks a subset of all of the drawable items that are
+// available in the StaticDatabase that are to be drawn for some purpose;
+// generally, each radar scope will maintain one or more of these, possibly
+// selecting among them in different situations.
+type StaticDrawConfig struct {
+	// For development and performance tests--draw absolutely everything.
+	DrawEverything bool
+
+	DrawRunways     bool
+	DrawRegions     bool
+	DrawLabels      bool
+	DrawLowAirways  bool
+	DrawHighAirways bool
+
+	// For each of VORs, NDBs, fixes, and airports, the user can both
+	// request that all of them be drawn or can select a subset of them to
+	// be drawn.  Further, text for their names is drawn optionally.
+	DrawVORs     bool
+	DrawVORNames bool
+	VORsToDraw   map[string]interface{}
+
+	DrawNDBs     bool
+	DrawNDBNames bool
+	NDBsToDraw   map[string]interface{}
+
+	DrawFixes    bool
+	DrawFixNames bool
+	FixesToDraw  map[string]interface{}
+
+	DrawAirports     bool
+	DrawAirportNames bool
+	AirportsToDraw   map[string]interface{}
+
+	// Geo, SIDs, STARs, and ARTCCs are individually selected from the ones
+	// listed in the sector file.
+	GeoDrawSet       map[string]interface{}
+	SIDDrawSet       map[string]interface{}
+	STARDrawSet      map[string]interface{}
+	ARTCCDrawSet     map[string]interface{}
+	ARTCCLowDrawSet  map[string]interface{}
+	ARTCCHighDrawSet map[string]interface{}
+
+	// Various persistent state used in the ui but not maintained across
+	// sessions.
+	vorsComboState, ndbsComboState      *ComboBoxState
+	fixesComboState, airportsComboState *ComboBoxState
+}
+
+func NewStaticDrawConfig() *StaticDrawConfig {
+	s := &StaticDrawConfig{}
+
+	s.DrawRegions = true
+	s.DrawLabels = true
+
+	s.VORsToDraw = make(map[string]interface{})
+	s.NDBsToDraw = make(map[string]interface{})
+	s.FixesToDraw = make(map[string]interface{})
+	s.AirportsToDraw = make(map[string]interface{})
+	s.GeoDrawSet = make(map[string]interface{})
+	s.SIDDrawSet = make(map[string]interface{})
+	s.STARDrawSet = make(map[string]interface{})
+	s.ARTCCDrawSet = make(map[string]interface{})
+	s.ARTCCLowDrawSet = make(map[string]interface{})
+	s.ARTCCHighDrawSet = make(map[string]interface{})
+
+	s.vorsComboState = NewComboBoxState(1)
+	s.ndbsComboState = NewComboBoxState(1)
+	s.fixesComboState = NewComboBoxState(1)
+	s.airportsComboState = NewComboBoxState(1)
+
+	return s
+}
+
+func (s *StaticDrawConfig) Duplicate() *StaticDrawConfig {
+	dupe := &StaticDrawConfig{}
+	// Copy everything over for starters, but then make copies of things
+	// that shouldn't be shared.
+	*dupe = *s
+
+	dupe.VORsToDraw = DuplicateMap(s.VORsToDraw)
+	dupe.NDBsToDraw = DuplicateMap(s.NDBsToDraw)
+	dupe.FixesToDraw = DuplicateMap(s.FixesToDraw)
+	dupe.AirportsToDraw = DuplicateMap(s.AirportsToDraw)
+	dupe.GeoDrawSet = DuplicateMap(s.GeoDrawSet)
+	dupe.SIDDrawSet = DuplicateMap(s.SIDDrawSet)
+	dupe.STARDrawSet = DuplicateMap(s.STARDrawSet)
+	dupe.ARTCCDrawSet = DuplicateMap(s.ARTCCDrawSet)
+	dupe.ARTCCLowDrawSet = DuplicateMap(s.ARTCCLowDrawSet)
+	dupe.ARTCCHighDrawSet = DuplicateMap(s.ARTCCHighDrawSet)
+
+	dupe.vorsComboState = NewComboBoxState(1)
+	dupe.ndbsComboState = NewComboBoxState(1)
+	dupe.fixesComboState = NewComboBoxState(1)
+	dupe.airportsComboState = NewComboBoxState(1)
+
+	return dupe
+}
+
+// Activate should be called before the either of the Draw or DrawUI
+// methods is called to make sure that assorted internal data structures
+// are initialized.
+func (s *StaticDrawConfig) Activate() {
+	if s.GeoDrawSet == nil {
+		s.GeoDrawSet = make(map[string]interface{})
+	}
+	if s.VORsToDraw == nil {
+		s.VORsToDraw = make(map[string]interface{})
+	}
+	if s.NDBsToDraw == nil {
+		s.NDBsToDraw = make(map[string]interface{})
+	}
+	if s.FixesToDraw == nil {
+		s.FixesToDraw = make(map[string]interface{})
+	}
+	if s.AirportsToDraw == nil {
+		s.AirportsToDraw = make(map[string]interface{})
+	}
+	if s.vorsComboState == nil {
+		s.vorsComboState = NewComboBoxState(1)
+	}
+	if s.ndbsComboState == nil {
+		s.ndbsComboState = NewComboBoxState(1)
+	}
+	if s.fixesComboState == nil {
+		s.fixesComboState = NewComboBoxState(1)
+	}
+	if s.airportsComboState == nil {
+		s.airportsComboState = NewComboBoxState(1)
+	}
+}
+
+func (s *StaticDrawConfig) Deactivate() {
+}
+
+// DrawUI draws a user interface that makes it possible to select which
+// items to draw with the StaticDrawConfig.
+func (s *StaticDrawConfig) DrawUI() {
+	if *devmode || s.DrawEverything {
+		imgui.Checkbox("Draw everything", &s.DrawEverything)
+	}
+
+	if imgui.BeginTable("drawbuttons", 5) {
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Checkbox("Regions", &s.DrawRegions)
+		imgui.TableNextColumn()
+		imgui.Checkbox("Labels", &s.DrawLabels)
+		imgui.TableNextColumn()
+		imgui.Checkbox("Low Airways", &s.DrawLowAirways)
+		imgui.TableNextColumn()
+		imgui.Checkbox("High Airways", &s.DrawHighAirways)
+		imgui.TableNextColumn()
+		imgui.Checkbox("Runways", &s.DrawRunways)
+		imgui.EndTable()
+	}
+
+	if imgui.BeginTable("voretal", 4) {
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("VORs")
+		imgui.TableNextColumn()
+		imgui.Text("NDBs")
+		imgui.TableNextColumn()
+		imgui.Text("Fixes")
+		imgui.TableNextColumn()
+		imgui.Text("Airports")
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Checkbox("Draw All##VORs", &s.DrawVORs)
+		imgui.SameLine()
+		imgui.Checkbox("Show Names##VORs", &s.DrawVORNames)
+		imgui.TableNextColumn()
+		imgui.Checkbox("Draw All##NDBs", &s.DrawNDBs)
+		imgui.SameLine()
+		imgui.Checkbox("Show Names##NDBs", &s.DrawNDBNames)
+		imgui.TableNextColumn()
+		imgui.Checkbox("Draw All##Fixes", &s.DrawFixes)
+		imgui.SameLine()
+		imgui.Checkbox("Show Names##Fixes", &s.DrawFixNames)
+		imgui.TableNextColumn()
+		imgui.Checkbox("Draw All##Airports", &s.DrawAirports)
+		imgui.SameLine()
+		imgui.Checkbox("Show Names##Airports", &s.DrawAirportNames)
+
+		// Allow VORs, NDBs, fixes, and airports to be selected individually.
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		config := ComboBoxDisplayConfig{
+			ColumnHeaders:    []string{"##name"},
+			DrawHeaders:      false,
+			SelectAllColumns: true,
+			EntryNames:       []string{"##name"},
+			InputFlags:       []imgui.InputTextFlags{imgui.InputTextFlagsCharsUppercase},
+			FixedDisplayed:   8,
+		}
+		DrawComboBox(s.vorsComboState, config, SortedMapKeys(s.VORsToDraw), nil,
+			/* valid */ func(entries []*string) bool {
+				e := *entries[0]
+				_, ok := database.VORs[e]
+				return e != "" && ok
+			},
+			/* add */ func(entries []*string) {
+				s.VORsToDraw[*entries[0]] = nil
+			},
+			/* delete */ func(selected map[string]interface{}) {
+				for k := range selected {
+					delete(s.VORsToDraw, k)
+				}
+			})
+
+		imgui.TableNextColumn()
+		DrawComboBox(s.ndbsComboState, config, SortedMapKeys(s.NDBsToDraw), nil,
+			/* valid */ func(entries []*string) bool {
+				e := *entries[0]
+				_, ok := database.NDBs[e]
+				return e != "" && ok
+			},
+			/* add */ func(entries []*string) {
+				s.NDBsToDraw[*entries[0]] = nil
+			},
+			/* delete */ func(selected map[string]interface{}) {
+				for k := range selected {
+					delete(s.NDBsToDraw, k)
+				}
+			})
+
+		imgui.TableNextColumn()
+		DrawComboBox(s.fixesComboState, config, SortedMapKeys(s.FixesToDraw), nil,
+			/* valid */ func(entries []*string) bool {
+				e := *entries[0]
+				_, ok := database.fixes[e]
+				return e != "" && ok
+			},
+			/* add */ func(entries []*string) {
+				s.FixesToDraw[*entries[0]] = nil
+			},
+			/* delete */ func(selected map[string]interface{}) {
+				for k := range selected {
+					delete(s.FixesToDraw, k)
+				}
+			})
+
+		imgui.TableNextColumn()
+		DrawComboBox(s.airportsComboState, config, SortedMapKeys(s.AirportsToDraw), nil,
+			/* valid */ func(entries []*string) bool {
+				e := *entries[0]
+				_, ok := database.airports[e]
+				return e != "" && ok
+			},
+			/* add */ func(entries []*string) {
+				s.AirportsToDraw[*entries[0]] = nil
+			},
+			/* delete */ func(selected map[string]interface{}) {
+				for k := range selected {
+					delete(s.AirportsToDraw, k)
+				}
+			})
+
+		imgui.EndTable()
+	}
+
+	if len(database.geos) > 0 && imgui.TreeNode("Geo") {
+		// Draw a check box to select each separate item in the Geo list.
+		for _, geo := range database.geos {
+			_, draw := s.GeoDrawSet[geo.name]
+			imgui.Checkbox(geo.name, &draw)
+			if draw {
+				s.GeoDrawSet[geo.name] = nil
+			} else {
+				delete(s.GeoDrawSet, geo.name)
+			}
+		}
+		imgui.TreePop()
+	}
+
+	// SIDs and STARS are presented hierarchically, where names that start
+	// with "===" are interpreted as separators that in turn are rendered
+	// using tree nodes so that the user can expand them individually.
+	sidStarHierarchy := func(title string, sidstar []StaticDrawable, drawSet map[string]interface{}) {
+		if imgui.TreeNode(title) {
+			depth := 1
+			active := true
+			for _, ss := range sidstar {
+				if strings.HasPrefix(ss.name, "===") {
+					if active && depth > 1 {
+						// We've gone into a subtree for another item, so
+						// end that one before we start one for the next
+						// one.
+						imgui.TreePop()
+						depth--
+					}
+					// Chop off the equals signs for the UI
+					n := strings.TrimLeft(ss.name, "= ")
+					n = strings.TrimRight(n, "= ")
+
+					// And start a new subtree; increment the current depth
+					// if the user has expanded it.
+					active = imgui.TreeNode(n)
+					if active {
+						depth++
+					}
+				} else if active {
+					// It's a regular entry; draw the checkbox for it.
+					_, draw := drawSet[ss.name]
+					imgui.Checkbox(ss.name, &draw)
+					if draw {
+						drawSet[ss.name] = nil
+					} else {
+						delete(drawSet, ss.name)
+					}
+				}
+			}
+			// Done; close any open subtrees.
+			for depth > 0 {
+				imgui.TreePop()
+				depth--
+			}
+		}
+	}
+	sidStarHierarchy("SIDs", database.SIDs, s.SIDDrawSet)
+	sidStarHierarchy("STARs", database.STARs, s.STARDrawSet)
+
+	// For the ARTCCs, just present a flat list of them with checkboxes.
+	artccCheckboxes := func(name string, artcc []StaticDrawable, drawSet map[string]interface{}) {
+		if len(artcc) > 0 && imgui.TreeNode(name) {
+			for i, a := range artcc {
+				_, draw := drawSet[a.name]
+				imgui.Checkbox(artcc[i].name, &draw)
+				if draw {
+					drawSet[a.name] = nil
+				} else {
+					delete(drawSet, a.name)
+				}
+			}
+			imgui.TreePop()
+		}
+	}
+	artccCheckboxes("ARTCC", database.ARTCC, s.ARTCCDrawSet)
+	artccCheckboxes("ARTCC Low", database.ARTCCLow, s.ARTCCLowDrawSet)
+	artccCheckboxes("ARTCC High", database.ARTCCHigh, s.ARTCCHighDrawSet)
+}
+
+// Draw draws all of the items that are selected in the StaticDrawConfig.
+func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, ndcFromLatLongMtx mgl32.Mat4,
+	windowFromLatLongMtx mgl32.Mat4, latLongFromWindowMtx mgl32.Mat4, cb *CommandBuffer) {
+	// Declare some helper functions for transformations among various
+	// coordinate spaces. The "P" suffix denotes a point-valued argument
+	// and "V" a vector-valued argument.
+	windowFromLatLongP := func(p Point2LL) [2]float32 {
+		return mul4p(&windowFromLatLongMtx, p)
+	}
+	latLongFromWindowP := func(p [2]float32) Point2LL {
+		return mul4p(&latLongFromWindowMtx, p)
+	}
+	latLongFromWindowV := func(p [2]float32) Point2LL {
+		return mul4v(&latLongFromWindowMtx, p)
+	}
+
+	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+	inWindow := func(p [2]float32) bool {
+		return p[0] >= 0 && p[0] < width && p[1] >= 0 && p[1] < height
+	}
+
+	// Start out with matrices set up for drawing vertices in lat-long
+	// space.  (We'll switch to window coordinates for text labels toward
+	// the end of this method.)
+	cb.LoadProjectionMatrix(ndcFromLatLongMtx)
+	cb.LoadModelViewMatrix(mgl32.Ident4())
+
+	// Compute bounds for culling; need all four corners for viewBounds due
+	// to possible scope rotation...
+	p0 := latLongFromWindowP([2]float32{0, 0})
+	p1 := latLongFromWindowP([2]float32{width, 0})
+	p2 := latLongFromWindowP([2]float32{0, height})
+	p3 := latLongFromWindowP([2]float32{width, height})
+	viewBounds := Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
+
+	// shrink bounds for debugging culling
+	/*
+		dx := .1 * (s.viewBounds.p1[0] - s.viewBounds.p0[0])
+		dy := .1 * (s.viewBounds.p1[1] - s.viewBounds.p0[1])
+		s.viewBounds.p0[0] += dx
+		s.viewBounds.p1[0] -= dx
+		s.viewBounds.p0[1] += dy
+		s.viewBounds.p1[1] -= dy
+	*/
+
+	if s.DrawEverything || s.DrawRunways {
+		// Runways are easy; there's no culling and a pregenerated command
+		// buffer already available.
+		cb.SetRGB(ctx.cs.Runway)
+		cb.Call(database.runwayCommandBuffer)
+	}
+
+	if s.DrawEverything || s.DrawRegions {
+		for _, region := range database.regions {
+			// Since regions are more work to draw (filled triangles!), we
+			// cull the ones that aren't visible.  For the visible ones,
+			// it's then just a matter of setting the right caller and
+			// calling out to its preexisting command buffer.
+			if Overlaps(region.bounds, viewBounds) {
+				if region.name == "" {
+					cb.SetRGB(ctx.cs.Region)
+				} else if rgb, ok := ctx.cs.DefinedColors[region.name]; ok {
+					cb.SetRGB(*rgb)
+				} else if rgb, ok := database.sectorFileColors[region.name]; ok {
+					cb.SetRGB(rgb)
+				} else {
+					lg.Errorf("%s: defined color not found for region", region.name)
+					cb.SetRGB(RGB{0.5, 0.5, 0.5})
+				}
+				cb.Call(region.cb)
+			}
+		}
+	}
+
+	// For VORs, NDBs, fixes, and airports, we have a lat-long location
+	// that we'd like to draw a little shape around.  First we find the
+	// appropriate offsets in lat-long space that give us 2 pixel steps in
+	// x and y in window coordinates.
+	dx := latLongFromWindowV([2]float32{2, 0})
+	dy := latLongFromWindowV([2]float32{0, 2})
+	// Lat-long vector for (x,y) window coordinates vector
+	vtx := func(x, y float32) [2]float32 {
+		return add2f(scale2f(dx, x), scale2f(dy, y))
+	}
+
+	linesDrawBuilder := &ColoredLinesDrawBuilder{}
+	if s.DrawEverything || s.DrawVORs {
+		// VORs are indicated by small squares
+		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
+		for _, vor := range database.VORs {
+			linesDrawBuilder.AddPolyline(vor, ctx.cs.VOR, square)
+		}
+	}
+	if s.DrawEverything || s.DrawNDBs {
+		// NDBs are shown with down-pointing triangles
+		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
+		for _, ndb := range database.NDBs {
+			// flipped triangles
+			linesDrawBuilder.AddPolyline(ndb, ctx.cs.NDB, fliptri)
+		}
+	}
+
+	if s.DrawEverything || s.DrawFixes {
+		// Fixes get triangles that point up
+		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
+		for _, fix := range database.fixes {
+			// upward-pointing triangles
+			linesDrawBuilder.AddPolyline(fix, ctx.cs.Fix, uptri)
+		}
+	} else {
+		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
+		for name := range s.FixesToDraw {
+			if loc, ok := database.fixes[name]; !ok {
+				// May happen when a new sector file is loaded.
+				//lg.Printf("%s: selected fix not found in sector file data!", loc)
+			} else {
+				linesDrawBuilder.AddPolyline(loc, ctx.cs.Fix, uptri)
+			}
+		}
+	}
+	if s.DrawEverything || s.DrawAirports {
+		// Airports are squares (like VORs)
+		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
+		for _, ap := range database.airports {
+			linesDrawBuilder.AddPolyline(ap, ctx.cs.Airport, square)
+		}
+	}
+	linesDrawBuilder.GenerateCommands(cb)
+	linesDrawBuilder = nil // make sure we don't try to reuse it after GenerateCommands
+
+	// ARTCCs
+	drawARTCCLines := func(artcc []StaticDrawable, drawSet map[string]interface{}) {
+		for _, artcc := range artcc {
+			if _, draw := drawSet[artcc.name]; (draw || s.DrawEverything) && Overlaps(artcc.bounds, viewBounds) {
+				cb.Call(artcc.cb)
+			}
+		}
+	}
+	cb.SetRGB(ctx.cs.ARTCC)
+	drawARTCCLines(database.ARTCC, s.ARTCCDrawSet)
+	drawARTCCLines(database.ARTCCLow, s.ARTCCLowDrawSet)
+	drawARTCCLines(database.ARTCCHigh, s.ARTCCHighDrawSet)
+
+	// SIDs, STARs, and Geos. These all have simple bounds checks for
+	// culling before calling out to pregenerated command buffers.
+	for _, sid := range database.SIDs {
+		_, draw := s.SIDDrawSet[sid.name]
+		if (s.DrawEverything || draw) && Overlaps(sid.bounds, viewBounds) {
+			cb.Call(sid.cb)
+		}
+	}
+	for _, star := range database.STARs {
+		_, draw := s.STARDrawSet[star.name]
+		if (s.DrawEverything || draw) && Overlaps(star.bounds, viewBounds) {
+			cb.Call(star.cb)
+		}
+	}
+	for _, geo := range database.geos {
+		_, draw := s.GeoDrawSet[geo.name]
+		if (s.DrawEverything || draw) && Overlaps(geo.bounds, viewBounds) {
+			cb.Call(geo.cb)
+		}
+	}
+
+	// Airways. For now just draw the lines, if requested. Labels will come
+	// shortly.
+	if s.DrawEverything || s.DrawLowAirways {
+		cb.SetRGB(ctx.cs.LowAirway)
+		cb.Call(database.lowAirwayCommandBuffer)
+	}
+	if s.DrawEverything || s.DrawHighAirways {
+		cb.SetRGB(ctx.cs.HighAirway)
+		cb.Call(database.highAirwayCommandBuffer)
+	}
+
+	// Now switch to window coordinates for drawing text.
+	ctx.SetWindowCoordinateMatrices(cb)
+	td := &TextDrawBuilder{}
+
+	// Helper function to draw airway labels.
+	drawAirwayLabels := func(labels []Label, color RGB) {
+		for _, label := range labels {
+			textPos := windowFromLatLongP(label.p)
+			if inWindow(textPos) {
+				// Draw filled quads around each character with the
+				// background color so that the text stands out over things
+				// drawn so far (in particular, from the airway lines).
+				style := TextStyle{
+					Font:            labelFont,
+					Color:           color,
+					DrawBackground:  true,
+					BackgroundColor: ctx.cs.Background}
+				td.AddTextCentered(label.name, textPos, style)
+			}
+		}
+	}
+
+	// Draw low and high airway labels, as requested.
+	if s.DrawEverything || s.DrawLowAirways {
+		cb.SetRGB(ctx.cs.LowAirway)
+		drawAirwayLabels(database.lowAirwayLabels, ctx.cs.LowAirway)
+	}
+	if s.DrawEverything || s.DrawHighAirways {
+		cb.SetRGB(ctx.cs.HighAirway)
+		drawAirwayLabels(database.highAirwayLabels, ctx.cs.HighAirway)
+	}
+
+	// Draw regular labels (e.g. taxiway letters) from the sector file.
+	if s.DrawEverything || s.DrawLabels {
+		for _, label := range database.labels {
+			if viewBounds.Inside(label.p) {
+				style := TextStyle{Font: labelFont, Color: label.color}
+				td.AddTextCentered(label.name, windowFromLatLongP(label.p), style)
+			}
+		}
+	}
+
+	// Helper function for drawing text for VORs, NDBs, fixes, and
+	// airports. Takes a latlong point at which to draw the label as well
+	// as an enum that indicates to which side of the point the label
+	// should be drawn.  This lets us, for example, draw an airport label
+	// in a different place relative to a point than a VOR label, so that
+	// text doesn't overlap if an airport and VOR are coincident.
+	const (
+		DrawLeft = iota
+		DrawRight
+		DrawBelow
+	)
+	fixtext := func(name string, p Point2LL, color RGB, mode int) {
+		var offset [2]float32
+		switch mode {
+		case DrawLeft:
+			bx, _ := labelFont.BoundText(name, 0)
+			offset = [2]float32{float32(-5 - bx), 1 + float32(labelFont.size/2)}
+		case DrawRight:
+			offset = [2]float32{7, 1 + float32(labelFont.size/2)}
+		case DrawBelow:
+			offset = [2]float32{0, float32(-labelFont.size)}
+		}
+
+		if viewBounds.Inside(p) {
+			pw := add2f(windowFromLatLongP(p), offset)
+			if inWindow(pw) {
+				if mode == DrawBelow {
+					td.AddTextCentered(name, pw, TextStyle{Font: labelFont, Color: color})
+				} else {
+					td.AddText(name, pw, TextStyle{Font: labelFont, Color: color})
+				}
+			}
+		}
+	}
+
+	// Helper function for drawing VOR, etc., labels that takes care of
+	// iterating over the stuff to be drawn and then dispatching to
+	// fixtext.
+	drawloc := func(drawEverything bool, selected map[string]interface{},
+		items map[string]Point2LL, color RGB, mode int) {
+		if drawEverything {
+			for name, p := range items {
+				fixtext(name, p, color, mode)
+			}
+		} else {
+			for name := range selected {
+				if p, ok := items[name]; !ok {
+					// May happen when a new sector file is loaded
+				} else {
+					fixtext(name, p, color, mode)
+				}
+			}
+		}
+	}
+
+	if s.DrawVORNames {
+		drawloc(s.DrawEverything || s.DrawVORs, s.VORsToDraw, database.VORs, ctx.cs.VOR, DrawLeft)
+	}
+	if s.DrawNDBNames {
+		drawloc(s.DrawEverything || s.DrawNDBs, s.NDBsToDraw, database.NDBs, ctx.cs.NDB, DrawLeft)
+	}
+	if s.DrawFixNames {
+		drawloc(s.DrawEverything || s.DrawFixes, s.FixesToDraw, database.fixes, ctx.cs.Fix, DrawRight)
+	}
+	if s.DrawAirportNames {
+		drawloc(s.DrawEverything || s.DrawAirports, s.AirportsToDraw, database.airports, ctx.cs.Airport, DrawBelow)
+	}
+
+	td.GenerateCommands(cb)
 }
