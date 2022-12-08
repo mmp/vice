@@ -42,6 +42,9 @@ type RadarScopePane struct {
 	DrawAirportNames bool
 	AirportsToDraw   map[string]interface{}
 
+	DrawWeather  bool
+	WeatherRadar WeatherRadar
+
 	GeoDrawSet       map[string]interface{}
 	SIDDrawSet       map[string]interface{}
 	STARDrawSet      map[string]interface{}
@@ -311,6 +314,9 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	}
 
 	rs.eventsId = eventStream.Subscribe()
+	if rs.DrawWeather {
+		rs.WeatherRadar.Activate(rs.Center)
+	}
 
 	// start tracking all of the active aircraft
 	rs.initializeAircraft()
@@ -347,6 +353,10 @@ func (rs *RadarScopePane) Deactivate() {
 
 	eventStream.Unsubscribe(rs.eventsId)
 	rs.eventsId = InvalidEventSubscriberId
+
+	if rs.DrawWeather {
+		rs.WeatherRadar.Deactivate()
+	}
 }
 
 func (rs *RadarScopePane) Name() string { return rs.ScopeName }
@@ -389,6 +399,17 @@ func (rs *RadarScopePane) DrawUI() {
 		}
 	}
 	if imgui.CollapsingHeader("Tools") {
+		if imgui.Checkbox("Weather radar", &rs.DrawWeather) {
+			if rs.DrawWeather {
+				// Kick off a request immediately so we get an updated image.
+				rs.WeatherRadar.Activate(rs.Center)
+			} else {
+				rs.WeatherRadar.Deactivate()
+			}
+		}
+		if rs.DrawWeather {
+			rs.WeatherRadar.DrawUI()
+		}
 		imgui.Checkbox("Automatic MIT lines for arrivals", &rs.AutoMIT)
 		if rs.AutoMIT {
 			rs.AutoMITAirports = drawAirportSelector(rs.AutoMITAirports, "Arrival airports for auto MIT")
@@ -738,6 +759,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	td.GenerateCommands(&rs.wcCommandBuffer)
 
 	// Static geometry: SIDs/STARs, runways, ...
+	rs.drawWeather(ctx)
 	rs.drawStatic(ctx, windowFromLatLongMtx, latLongFromWindowMtx)
 	rs.drawCompass(ctx, windowFromLatLongP, latLongFromWindowP)
 	rs.drawRangeRings(ctx, windowFromLatLongP, latLongFromWindowP, pixelDistanceNm)
@@ -1896,6 +1918,12 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 	}
 }
 
+func (rs *RadarScopePane) drawWeather(ctx *PaneContext) {
+	if rs.DrawWeather {
+		rs.WeatherRadar.Draw(&rs.llCommandBuffer)
+	}
+}
+
 func (rs *RadarScopePane) drawRangeRings(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
 	latLongFromWindowP func(p [2]float32) Point2LL, pixelDistanceNm float32) {
 	if !rs.DrawRangeRings {
@@ -2018,6 +2046,9 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		if delta[0] != 0 || delta[1] != 0 {
 			deltaLL := latLongFromWindowV(delta)
 			rs.Center = sub2f(rs.Center, deltaLL)
+			if rs.DrawWeather {
+				rs.WeatherRadar.UpdateCenter(rs.Center)
+			}
 		}
 	}
 
@@ -2033,6 +2064,9 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		centerTransform = mgl32.Scale3D(scale, scale, 1).Mul4(centerTransform)
 		centerTransform = mgl32.Translate3D(mouseLL[0], mouseLL[1], 0).Mul4(centerTransform)
 		rs.Center = mul4p(&centerTransform, rs.Center)
+		if rs.DrawWeather {
+			rs.WeatherRadar.UpdateCenter(rs.Center)
+		}
 
 		rs.Range *= scale
 	}

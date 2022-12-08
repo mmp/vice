@@ -23,6 +23,8 @@ github.com/mmp/sct2 v0.0.0-20220924145434-1945b50b65b0 h1:K+YrMZ3gq3rxec+6DHxgwi
 github.com/mmp/sct2 v0.0.0-20220924145434-1945b50b65b0/go.mod h1:XkPz4Pa/gM/BnaO6z6HOw2BKZ/SIODZ3v7nZ8Fx/Onw=
 github.com/mmp/sct2 v0.0.0-20220926140546-058f03014128 h1:9FkquJs0V94IcJooNj4zC+zKN7hknlCL7XlOjOCGJ8Q=
 github.com/mmp/sct2 v0.0.0-20220926140546-058f03014128/go.mod h1:XkPz4Pa/gM/BnaO6z6HOw2BKZ/SIODZ3v7nZ8Fx/Onw=
+github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 h1:zYyBkD/k9seD2A7fsi6Oo2LfFZAehjjQMERAvZLEDnQ=
+github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646/go.mod h1:jpp1/29i3P1S/RLdc7JQKbRpFeM1dOBd8T9ki5s+AY8=
 github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 h1:KoWmjvw+nsYOo29YJK9vDA65RGE3NrOnUtO7a+RF9HU=
 github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8/go.mod h1:HKlIX3XHQyzLZPlr7++PzdhaXEj94dEiJgZDTsxEqUI=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
