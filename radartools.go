@@ -12,6 +12,8 @@ import (
 	"image/png"
 	"net/http"
 	"net/url"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
@@ -257,4 +259,503 @@ func (w *WeatherRadar) Draw(cb *CommandBuffer) {
 
 	cb.DisableTexture()
 	cb.DisableBlend()
+}
+
+///////////////////////////////////////////////////////////////////////////
+// CRDA
+
+type CRDAConfig struct {
+	Airport                  string
+	PrimaryRunway            string
+	SecondaryRunway          string
+	Mode                     int
+	TieStaggerDistance       float32
+	ShowGhostsOnPrimary      bool
+	HeadingTolerance         float32
+	GlideslopeLateralSpread  float32
+	GlideslopeVerticalSpread float32
+	GlideslopeAngle          float32
+	ShowCRDARegions          bool
+}
+
+const (
+	CRDAModeStagger = iota
+	CRDAModeTie
+)
+
+func NewCRDAConfig() CRDAConfig {
+	return CRDAConfig{
+		Mode:                     CRDAModeStagger,
+		TieStaggerDistance:       3,
+		HeadingTolerance:         110,
+		GlideslopeLateralSpread:  10,
+		GlideslopeVerticalSpread: 10,
+		GlideslopeAngle:          3}
+
+}
+
+func (c *CRDAConfig) getRunway(n string) *Runway {
+	for _, rwy := range database.runways[c.Airport] {
+		if rwy.number == n {
+			return &rwy
+		}
+	}
+	return nil
+}
+
+func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway) {
+	for i, rwy := range database.runways[c.Airport] {
+		if rwy.number == c.PrimaryRunway {
+			ghostSource = &database.runways[c.Airport][i]
+		}
+		if rwy.number == c.SecondaryRunway {
+			ghostDestination = &database.runways[c.Airport][i]
+		}
+	}
+
+	if c.ShowGhostsOnPrimary {
+		ghostSource, ghostDestination = ghostDestination, ghostSource
+	}
+
+	return
+}
+
+func runwayIntersection(a *Runway, b *Runway) (Point2LL, bool) {
+	p1, p2 := ll2nm(a.threshold), ll2nm(a.end)
+	p3, p4 := ll2nm(b.threshold), ll2nm(b.end)
+	p, ok := LineLineIntersect(p1, p2, p3, p4)
+
+	centroid := mid2f(mid2f(p1, p2), mid2f(p3, p4))
+	d := distance2f(centroid, p)
+	if d > 30 {
+		// more like parallel; we don't care about super far away intersections...
+		ok = false
+	}
+
+	return nm2ll(p), ok
+}
+
+func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
+	src, dst := c.getRunways()
+	if src == nil || dst == nil {
+		return nil
+	}
+
+	pIntersect, ok := runwayIntersection(src, dst)
+	if !ok {
+		lg.Printf("No intersection between runways??!?")
+		return nil
+	}
+
+	airport, ok := database.FAA.airports[c.Airport]
+	if !ok {
+		lg.Printf("%s: airport unknown?!", c.Airport)
+		return nil
+	}
+
+	if ac.GroundSpeed() > 350 {
+		return nil
+	}
+
+	if headingDifference(ac.Heading(), src.heading) > c.HeadingTolerance {
+		return nil
+	}
+
+	// Is it on the glideslope?
+	// Laterally: compute the heading to the threshold and compare to the
+	// glideslope's lateral spread.
+	h := headingp2ll(ac.Position(), src.threshold, database.MagneticVariation)
+	if fabs(h-src.heading) > c.GlideslopeLateralSpread {
+		return nil
+	}
+
+	// Vertically: figure out the range of altitudes at the distance out.
+	// First figure out the aircraft's height AGL.
+	agl := ac.Altitude() - airport.elevation
+
+	// Find the glideslope height at the aircraft's distance to the
+	// threshold.
+	// tan(glideslope angle) = height / threshold distance
+	const nmToFeet = 6076.12
+	thresholdDistance := nmToFeet * nmdistance2ll(ac.Position(), src.threshold)
+	height := thresholdDistance * tan(radians(c.GlideslopeAngle))
+	// Assume 100 feet at the threshold
+	height += 100
+
+	// Similarly, find the allowed altitude difference
+	delta := thresholdDistance * tan(radians(c.GlideslopeVerticalSpread))
+
+	if fabs(float32(agl)-height) > delta {
+		return nil
+	}
+
+	// This aircraft gets a ghost.
+
+	// This is a little wasteful, but we're going to copy the entire
+	// Aircraft structure just to be sure we carry along everything we
+	// might want to have available when drawing the track and
+	// datablock for the ghost.
+	ghost := *ac
+
+	// Now we just need to update the track positions to be those for
+	// the ghost. We'll again do this in nm space before going to
+	// lat-long in the end.
+	pi := ll2nm(pIntersect)
+	for i, t := range ghost.tracks {
+		// Vector from the intersection point to the track location
+		v := sub2f(ll2nm(t.position), pi)
+
+		// For tie mode, offset further by the specified distance.
+		if c.Mode == CRDAModeTie {
+			length := length2f(v)
+			v = scale2f(v, (length+c.TieStaggerDistance)/length)
+		}
+
+		// Rotate it angle degrees clockwise
+		angle := dst.heading - src.heading
+		s, c := sin(radians(angle)), cos(radians(angle))
+		vr := [2]float32{c*v[0] + s*v[1], -s*v[0] + c*v[1]}
+		// Point along the other runway
+		pr := add2f(pi, vr)
+
+		// TODO: offset it as appropriate
+		ghost.tracks[i].position = nm2ll(pr)
+	}
+	return &ghost
+}
+
+func (c *CRDAConfig) DrawUI() bool {
+	updateGhosts := false
+
+	flags := imgui.InputTextFlagsCharsUppercase | imgui.InputTextFlagsCharsNoBlank
+	imgui.InputTextV("Airport", &c.Airport, flags, nil)
+	if runways, ok := database.runways[c.Airport]; !ok {
+		if c.Airport != "" {
+			color := positionConfig.GetColorScheme().TextError
+			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
+			imgui.Text("Airport unknown!")
+			imgui.PopStyleColor()
+		}
+	} else {
+		sort.Slice(runways, func(i, j int) bool { return runways[i].number < runways[j].number })
+
+		primary, secondary := c.getRunway(c.PrimaryRunway), c.getRunway(c.SecondaryRunway)
+		if imgui.BeginComboV("Primary runway", c.PrimaryRunway, imgui.ComboFlagsHeightLarge) {
+			if imgui.SelectableV("(None)", c.PrimaryRunway == "", 0, imgui.Vec2{}) {
+				updateGhosts = true
+				c.PrimaryRunway = ""
+			}
+			for _, rwy := range runways {
+				if secondary != nil {
+					// Don't include the selected secondary runway
+					if rwy.number == secondary.number {
+						continue
+					}
+					// Only list intersecting runways
+					if _, ok := runwayIntersection(&rwy, secondary); !ok {
+						continue
+					}
+				}
+				if imgui.SelectableV(rwy.number, rwy.number == c.PrimaryRunway, 0, imgui.Vec2{}) {
+					updateGhosts = true
+					c.PrimaryRunway = rwy.number
+				}
+			}
+			imgui.EndCombo()
+		}
+		if imgui.BeginComboV("Secondary runway", c.SecondaryRunway, imgui.ComboFlagsHeightLarge) {
+			// Note: this is the exact same logic for primary runways
+			// above, just with the roles switched...
+			if imgui.SelectableV("(None)", c.SecondaryRunway == "", 0, imgui.Vec2{}) {
+				updateGhosts = true
+				c.SecondaryRunway = ""
+			}
+			for _, rwy := range runways {
+				if primary != nil {
+					// Don't include the selected primary runway
+					if rwy.number == primary.number {
+						continue
+					}
+					// Only list intersecting runways
+					if _, ok := runwayIntersection(&rwy, primary); !ok {
+						continue
+					}
+				}
+				if imgui.SelectableV(rwy.number, rwy.number == c.SecondaryRunway, 0, imgui.Vec2{}) {
+					updateGhosts = true
+					c.SecondaryRunway = rwy.number
+				}
+			}
+			imgui.EndCombo()
+		}
+		if imgui.Checkbox("Ghosts on primary", &c.ShowGhostsOnPrimary) {
+			updateGhosts = true
+		}
+		imgui.Text("Mode")
+		imgui.SameLine()
+		updateGhosts = imgui.RadioButtonInt("Stagger", &c.Mode, 0) || updateGhosts
+		imgui.SameLine()
+		updateGhosts = imgui.RadioButtonInt("Tie", &c.Mode, 1) || updateGhosts
+		if c.Mode == CRDAModeTie {
+			imgui.SameLine()
+			updateGhosts = imgui.SliderFloatV("Tie stagger distance", &c.TieStaggerDistance, 0.1, 10, "%.1f", 0) ||
+				updateGhosts
+		}
+		updateGhosts = imgui.SliderFloatV("Heading tolerance (deg)", &c.HeadingTolerance, 5, 180, "%.0f", 0) || updateGhosts
+		updateGhosts = imgui.SliderFloatV("Glideslope angle (deg)", &c.GlideslopeAngle, 2, 5, "%.1f", 0) || updateGhosts
+		updateGhosts = imgui.SliderFloatV("Glideslope lateral spread (deg)", &c.GlideslopeLateralSpread, 1, 20, "%.0f", 0) || updateGhosts
+		updateGhosts = imgui.SliderFloatV("Glideslope vertical spread (deg)", &c.GlideslopeVerticalSpread, 1, 10, "%.1f", 0) || updateGhosts
+		updateGhosts = imgui.Checkbox("Show CRDA regions", &c.ShowCRDARegions) || updateGhosts
+	}
+
+	return updateGhosts
+}
+
+func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
+	if !rs.CRDAConfig.ShowCRDARegions {
+		return
+	}
+
+	// Find the intersection of the two runways.  Work in nm space, not lat-long
+	if true {
+		src, dst := rs.CRDAConfig.getRunways()
+		if src != nil && dst != nil {
+			p, ok := runwayIntersection(src, dst)
+			if !ok {
+				lg.Printf("no intersection between runways?!")
+			}
+			//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
+			//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
+			rs.pointsDrawBuilder.AddPoint(p, RGB{1, 0, 0})
+		}
+	}
+
+	src, _ := rs.CRDAConfig.getRunways()
+	if src == nil {
+		return
+	}
+
+	// we have the runway heading, but we want to go the opposite direction
+	// and then +/- HeadingTolerance.
+	rota := src.heading + 180 - rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
+	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
+
+	// Lay out the vectors in nm space, not lat-long
+	sa, ca := sin(radians(rota)), cos(radians(rota))
+	va := [2]float32{sa, ca}
+	dist := float32(25)
+	va = scale2f(va, dist)
+
+	sb, cb := sin(radians(rotb)), cos(radians(rotb))
+	vb := scale2f([2]float32{sb, cb}, dist)
+
+	// Over to lat-long to draw the lines
+	vall, vbll := nm2ll(va), nm2ll(vb)
+	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
+	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// DataBlockFormat
+
+// Loosely patterened after https://vrc.rosscarlson.dev/docs/single_page.html#the_various_radar_modes
+const (
+	DataBlockFormatNone = iota
+	DataBlockFormatSimple
+	DataBlockFormatGround
+	DataBlockFormatTower
+	DataBlockFormatFull
+	DataBlockFormatCount
+)
+
+type DataBlockFormat int
+
+func (d DataBlockFormat) String() string {
+	return [...]string{"None", "Simple", "Ground", "Tower", "Full"}[d]
+}
+
+func (d *DataBlockFormat) DrawUI() bool {
+	changed := false
+	if imgui.BeginCombo("Data block format", d.String()) {
+		var i DataBlockFormat
+		for ; i < DataBlockFormatCount; i++ {
+			if imgui.SelectableV(DataBlockFormat(i).String(), i == *d, 0, imgui.Vec2{}) {
+				*d = i
+				changed = true
+			}
+		}
+		imgui.EndCombo()
+	}
+	return changed
+}
+
+func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle int) string {
+	if d == DataBlockFormatNone {
+		return ""
+	}
+
+	alt100s := (ac.Altitude() + 50) / 100
+	speed := ac.GroundSpeed()
+	fp := ac.flightPlan
+
+	if fp == nil {
+		return ac.squawk.String() + fmt.Sprintf(" %03d", alt100s)
+	}
+
+	actype := fp.TypeWithoutSuffix()
+	if actype != "" {
+		// So we can unconditionally print it..
+		actype += " "
+	}
+
+	var datablock strings.Builder
+	datablock.Grow(64)
+
+	// All of the modes always start with the callsign and the voicce indicator
+	datablock.WriteString(ac.Callsign())
+	// Otherwise a 3 line datablock
+	// Line 1: callsign and voice indicator
+	if ac.voiceCapability == VoiceReceive {
+		datablock.WriteString("/r")
+	} else if ac.voiceCapability == VoiceText {
+		datablock.WriteString("/t")
+	}
+
+	switch d {
+	case DataBlockFormatSimple:
+		return datablock.String()
+
+	case DataBlockFormatGround:
+		datablock.WriteString("\n")
+		// Line 2: a/c type and groundspeed
+		datablock.WriteString(actype)
+
+		// normally it's groundspeed next, unless there's a squawk
+		// situation that we need to flag...
+		if duplicateSquawk && ac.mode != Standby && ac.squawk != Squawk(1200) && ac.squawk != 0 && flashcycle&1 == 0 {
+			datablock.WriteString("CODE")
+		} else if !duplicateSquawk && ac.mode != Standby && ac.squawk != ac.assignedSquawk && flashcycle&1 == 0 {
+			datablock.WriteString(ac.squawk.String())
+		} else {
+			datablock.WriteString(fmt.Sprintf("%02d", speed))
+			if fp.rules == VFR {
+				datablock.WriteString("V")
+			}
+		}
+		return datablock.String()
+
+	case DataBlockFormatTower:
+		// Line 2: first flash is [alt speed/10]. If we don't have
+		// destination and a/c type then just always show this rather than
+		// flashing a blank line.
+		datablock.WriteString("\n")
+		if flashcycle&1 == 0 || (fp.arrive == "" && actype == "") {
+			datablock.WriteString(fmt.Sprintf("%03d %02d", alt100s, (speed+5)/10))
+			if fp.rules == VFR {
+				datablock.WriteString("V")
+			}
+		} else {
+			// Second flash normally alternates between scratchpad (or dest) and
+			// filed altitude for the first thing, then has *[actype]
+			if flashcycle&2 == 0 {
+				if ac.scratchpad != "" {
+					datablock.WriteString(ac.scratchpad)
+				} else {
+					datablock.WriteString(fp.arrive)
+				}
+			} else {
+				// Second field is the altitude
+				datablock.WriteString(fmt.Sprintf("%03d", fp.altitude/100))
+			}
+
+			datablock.WriteString("*")
+			// Flag squawk issues
+			if duplicateSquawk && ac.mode != Standby && ac.squawk != 0 && flashcycle&1 == 0 {
+				datablock.WriteString("CODE")
+			} else if !duplicateSquawk && ac.mode != Standby && ac.squawk != ac.assignedSquawk && flashcycle&1 == 0 {
+				datablock.WriteString(ac.squawk.String())
+			} else {
+				datablock.WriteString(actype)
+			}
+		}
+		return datablock.String()
+
+	case DataBlockFormatFull:
+		if ac.mode == Standby {
+			return datablock.String()
+		}
+
+		dalt := ac.AltitudeChange()
+		ascending, descending := dalt > 250, dalt < -250
+		altAnnotation := " "
+		if ac.tempAltitude != 0 && abs(ac.Altitude()-ac.tempAltitude) < 300 {
+			altAnnotation = "T "
+		} else if ac.flightPlan.altitude != 0 &&
+			abs(ac.Altitude()-ac.flightPlan.altitude) < 300 {
+			altAnnotation = "C "
+		} else if ascending {
+			altAnnotation = FontAwesomeIconArrowUp + " "
+		} else if descending {
+			altAnnotation = FontAwesomeIconArrowDown + " "
+		}
+
+		if ac.squawk == Squawk(1200) {
+			// VFR
+			datablock.WriteString(fmt.Sprintf(" %03d", alt100s))
+			datablock.WriteString(altAnnotation)
+			return datablock.String()
+		}
+		datablock.WriteString("\n")
+
+		// Line 2: altitude, then scratchpad or temp/assigned altitude.
+		datablock.WriteString(fmt.Sprintf("%03d", alt100s))
+		datablock.WriteString(altAnnotation)
+		// TODO: Here add level if at wrong alt...
+
+		// Have already established it's not squawking standby.
+		if duplicateSquawk && ac.squawk != Squawk(1200) && ac.squawk != 0 {
+			if flashcycle&1 == 0 {
+				datablock.WriteString("CODE")
+			} else {
+				datablock.WriteString(ac.squawk.String())
+			}
+		} else if ac.squawk != ac.assignedSquawk {
+			// show what they are actually squawking
+			datablock.WriteString(ac.squawk.String())
+		} else {
+			if flashcycle&1 == 0 {
+				if ac.scratchpad != "" {
+					datablock.WriteString(ac.scratchpad)
+				} else if ac.tempAltitude != 0 {
+					datablock.WriteString(fmt.Sprintf("%03dT", ac.tempAltitude/100))
+				} else {
+					datablock.WriteString(fmt.Sprintf("%03d", fp.altitude/100))
+				}
+			} else {
+				if fp.arrive != "" {
+					datablock.WriteString(fp.arrive)
+				} else {
+					datablock.WriteString("????")
+				}
+			}
+		}
+		datablock.WriteString("\n")
+
+		// Line 3: a/c type and groundspeed
+		datablock.WriteString(actype)
+		datablock.WriteString(fmt.Sprintf("%03d", (speed+5)/10*10))
+		if fp.rules == VFR {
+			datablock.WriteString("V")
+		}
+
+		if ac.mode == Ident && flashcycle&1 == 0 {
+			datablock.WriteString("ID")
+		}
+
+		return datablock.String()
+
+	default:
+		lg.Printf("%d: unhandled datablock format", d)
+		return "ERROR"
+	}
 }
