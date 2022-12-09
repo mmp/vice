@@ -1025,3 +1025,41 @@ func (ml *MeasuringLine) Draw(ctx *PaneContext, font *Font, transforms ScopeTran
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Other utilities
+
+func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransformations,
+	center *Point2LL, rangeNM *float32) (moved bool) {
+	if mouse == nil {
+		return
+	}
+
+	// Handle dragging the scope center
+	if mouse.dragging[button] {
+		delta := mouse.dragDelta
+		if delta[0] != 0 || delta[1] != 0 {
+			deltaLL := transforms.LatLongFromWindowV(delta)
+			*center = sub2f(*center, deltaLL)
+			moved = true
+		}
+	}
+
+	// Consume mouse wheel
+	if mouse.wheel[1] != 0 {
+		scale := pow(1.05, mouse.wheel[1])
+
+		// We want to zoom in centered at the mouse position; this affects
+		// the scope center after the zoom, so we'll find the
+		// transformation that gives the new center position.
+		mouseLL := transforms.LatLongFromWindowP(mouse.pos)
+		centerTransform := mgl32.Translate3D(-mouseLL[0], -mouseLL[1], 0)
+		centerTransform = mgl32.Scale3D(scale, scale, 1).Mul4(centerTransform)
+		centerTransform = mgl32.Translate3D(mouseLL[0], mouseLL[1], 0).Mul4(centerTransform)
+
+		*center = mul4p(&centerTransform, *center)
+		*rangeNM *= scale
+		moved = true
+	}
+	return
+}

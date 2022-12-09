@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -1418,35 +1417,8 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 		return
 	}
 
-	// Handle dragging the scope center
-	if ctx.mouse.dragging[mouseButtonSecondary] {
-		delta := ctx.mouse.dragDelta
-		if delta[0] != 0 || delta[1] != 0 {
-			deltaLL := transforms.LatLongFromWindowV(delta)
-			rs.Center = sub2f(rs.Center, deltaLL)
-			if rs.DrawWeather {
-				rs.WeatherRadar.UpdateCenter(rs.Center)
-			}
-		}
-	}
-
-	// Consume mouse wheel
-	if ctx.mouse.wheel[1] != 0 {
-		scale := pow(1.05, ctx.mouse.wheel[1])
-
-		// We want to zoom in centered at the mouse position; this affects
-		// the scope center after the zoom, so we'll find the
-		// transformation that gives the new center position.
-		mouseLL := transforms.LatLongFromWindowP(ctx.mouse.pos)
-		centerTransform := mgl32.Translate3D(-mouseLL[0], -mouseLL[1], 0)
-		centerTransform = mgl32.Scale3D(scale, scale, 1).Mul4(centerTransform)
-		centerTransform = mgl32.Translate3D(mouseLL[0], mouseLL[1], 0).Mul4(centerTransform)
-		rs.Center = mul4p(&centerTransform, rs.Center)
-		if rs.DrawWeather {
-			rs.WeatherRadar.UpdateCenter(rs.Center)
-		}
-
-		rs.Range *= scale
+	if UpdateScopePosition(ctx.mouse, mouseButtonSecondary, transforms, &rs.Center, &rs.Range) && rs.DrawWeather {
+		rs.WeatherRadar.UpdateCenter(rs.Center)
 	}
 
 	if rs.acSelectedByDatablock != nil {
