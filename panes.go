@@ -893,6 +893,22 @@ type PerformancePane struct {
 	font           *Font
 
 	td TextDrawBuilder
+
+	// In order to measure frames per second over the last few seconds, we
+	// start by maintaining two one-second time intervals [a,a+1] and
+	// [a+1,a+2] (where numbers are seconds).  When a frame is drawn, a
+	// corresponding per-interval counter is incremented.  Thus,
+	// As long as the current time is in the full interval [a,a+2], then we
+	// can estimate fps as the sum of the two counts divided by the elapsed
+	// time since a.
+	//
+	// When the current time passes a+2, we discard the count for the first
+	// interval, replacing it with the second count before zeroing the second
+	// count.  The time a is then advanced by one second.
+	//
+	// In the implementation, we only store the starting time.
+	frameCountStart time.Time
+	framesCount     [2]int
 }
 
 func NewPerformancePane() *PerformancePane {
@@ -910,6 +926,9 @@ func (pp *PerformancePane) Activate(cs *ColorScheme) {
 		lg.Printf("want %+v got %+v", pp.FontIdentifier, pp.font)
 		pp.FontIdentifier = pp.font.id
 	}
+	pp.frameCountStart = time.Now()
+	pp.framesCount[0] = 0
+	pp.framesCount[1] = 0
 }
 
 func (pp *PerformancePane) Deactivate()                {}
@@ -934,14 +953,25 @@ func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	var perf strings.Builder
 	perf.Grow(512)
 
-	// First framerate
-	perf.WriteString(fmt.Sprintf("Redraws per second: %.1f",
-		float64(stats.redraws)/time.Since(stats.startTime).Seconds()))
+	// First report the framerate
+	now := time.Now()
+	if now.Before(pp.frameCountStart.Add(1 * time.Second)) {
+		pp.framesCount[0]++
+	} else if now.Before(pp.frameCountStart.Add(2 * time.Second)) {
+		pp.framesCount[1]++
+	} else {
+		// roll them over
+		pp.framesCount[0] = pp.framesCount[1]
+		pp.framesCount[1] = 0
+		pp.frameCountStart = pp.frameCountStart.Add(time.Second)
+	}
+	fps := float64(pp.framesCount[0]+pp.framesCount[1]) / time.Since(pp.frameCountStart).Seconds()
+	perf.WriteString(fmt.Sprintf("Redraws per second: %.1f", fps))
 
 	// Runtime breakdown
 	update := func(d time.Duration, stat *float32) float32 {
 		dms := float32(d.Microseconds()) / 1000. // duration in ms
-		*stat = .99**stat + .01*dms
+		*stat = .97**stat + .03*dms
 		return *stat
 	}
 	perf.WriteString(fmt.Sprintf("\ndraw panes %.2fms draw gui %.2fms",
