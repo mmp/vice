@@ -543,18 +543,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.processEvents(ctx.events)
 
 	transforms := GetScopeTransformations(ctx, rs.Center, rs.Range, rs.RotationAngle)
-	latLongFromWindowMtx := transforms.latLongFromWindow
-	windowFromLatLongMtx := transforms.windowFromLatLong
-
-	windowFromLatLongP := func(p Point2LL) [2]float32 {
-		return mul4p(&windowFromLatLongMtx, p)
-	}
-	latLongFromWindowP := func(p [2]float32) Point2LL {
-		return mul4p(&latLongFromWindowMtx, p)
-	}
-	latLongFromWindowV := func(p [2]float32) Point2LL {
-		return mul4v(&latLongFromWindowMtx, p)
-	}
 
 	if rs.DrawWeather {
 		rs.WeatherRadar.Draw(transforms, cb)
@@ -565,7 +553,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	height := ctx.paneExtent.Height()
 	label := rs.ScopeName
 	if *devmode && ctx.mouse != nil {
-		mouseLatLong := latLongFromWindowP(ctx.mouse.pos)
+		mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.pos)
 		label += "\nMouse position: " + mouseLatLong.String()
 	}
 	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
@@ -607,7 +595,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawHighlighted(ctx, transforms, cb)
 
 	// Mouse events last, so that the datablock bounds are current.
-	rs.consumeMouseEvents(ctx, latLongFromWindowP, latLongFromWindowV, windowFromLatLongP)
+	rs.consumeMouseEvents(ctx, transforms)
 }
 
 func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
@@ -1452,8 +1440,7 @@ func (rs *RadarScopePane) drawRoute(ctx *PaneContext, transforms ScopeTransforma
 	ld.GenerateCommands(cb)
 }
 
-func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL,
-	latLongFromWindowV func([2]float32) Point2LL, windowFromLatLongP func(Point2LL) [2]float32) {
+func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations) {
 	if ctx.mouse == nil {
 		return
 	}
@@ -1467,7 +1454,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 	if ctx.mouse.dragging[mouseButtonSecondary] {
 		delta := ctx.mouse.dragDelta
 		if delta[0] != 0 || delta[1] != 0 {
-			deltaLL := latLongFromWindowV(delta)
+			deltaLL := transforms.LatLongFromWindowV(delta)
 			rs.Center = sub2f(rs.Center, deltaLL)
 			if rs.DrawWeather {
 				rs.WeatherRadar.UpdateCenter(rs.Center)
@@ -1482,7 +1469,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 		// We want to zoom in centered at the mouse position; this affects
 		// the scope center after the zoom, so we'll find the
 		// transformation that gives the new center position.
-		mouseLL := latLongFromWindowP(ctx.mouse.pos)
+		mouseLL := transforms.LatLongFromWindowP(ctx.mouse.pos)
 		centerTransform := mgl32.Translate3D(-mouseLL[0], -mouseLL[1], 0)
 		centerTransform = mgl32.Scale3D(scale, scale, 1).Mul4(centerTransform)
 		centerTransform = mgl32.Translate3D(mouseLL[0], mouseLL[1], 0).Mul4(centerTransform)
@@ -1518,7 +1505,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 
 		// Allow clicking on any track
 		for ac := range rs.aircraft {
-			pw := windowFromLatLongP(ac.Position())
+			pw := transforms.WindowFromLatLongP(ac.Position())
 			dist := distance2f(pw, ctx.mouse.pos)
 
 			if dist < clickedDistance {
@@ -1534,7 +1521,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindow
 				continue
 			}
 
-			pw := windowFromLatLongP(ac.Position())
+			pw := transforms.WindowFromLatLongP(ac.Position())
 			db := state.WindowDatablockBounds(pw)
 			if db.Inside(ctx.mouse.pos) {
 				rs.acSelectedByDatablock = ac
