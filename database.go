@@ -15,6 +15,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/mmp/earcut-go"
@@ -152,11 +153,18 @@ func InitializeStaticDatabase() *StaticDatabase {
 	start := time.Now()
 
 	db := &StaticDatabase{}
-	db.FAA.navaids = parseNavaids()
-	db.FAA.airports = parseAirports()
-	db.FAA.fixes = parseFixes()
-	db.FAA.prd = parsePRD()
-	db.callsigns = parseCallsigns()
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() { db.FAA.navaids = parseNavaids(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.FAA.airports = parseAirports(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.FAA.fixes = parseFixes(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.FAA.prd = parsePRD(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.callsigns = parseCallsigns(); wg.Done() }()
+	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
 
