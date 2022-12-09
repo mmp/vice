@@ -62,9 +62,6 @@ type RadarScopePane struct {
 	LabelFontIdentifier     FontIdentifier
 	labelFont               *Font
 
-	llCommandBuffer CommandBuffer // things using lat-long coordiantes for vertices
-	wcCommandBuffer CommandBuffer // window coordinates
-
 	acSelectedByDatablock *Aircraft
 
 	primaryButtonDoubleClicked bool
@@ -209,10 +206,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
 
 	dupe.AutoMITAirports = DuplicateMap(rs.AutoMITAirports)
-
-	// don't share those slices...
-	dupe.llCommandBuffer = CommandBuffer{}
-	dupe.wcCommandBuffer = CommandBuffer{}
 
 	dupe.eventsId = eventStream.Subscribe()
 
@@ -366,10 +359,6 @@ func (rs *RadarScopePane) Deactivate() {
 	// Drop all of them
 	rs.aircraft = nil
 	rs.ghostAircraft = nil
-
-	// Free up this memory, FWIW
-	rs.llCommandBuffer = CommandBuffer{}
-	rs.wcCommandBuffer = CommandBuffer{}
 
 	eventStream.Unsubscribe(rs.eventsId)
 	rs.eventsId = InvalidEventSubscriberId
@@ -557,8 +546,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	latLongFromWindowMtx := transforms.latLongFromWindow
 	windowFromLatLongMtx := transforms.windowFromLatLong
 
-	rs.prepareForDraw(ctx, transforms)
-
 	windowFromLatLongP := func(p Point2LL) [2]float32 {
 		return mul4p(&windowFromLatLongMtx, p)
 	}
@@ -621,24 +608,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Mouse events last, so that the datablock bounds are current.
 	rs.consumeMouseEvents(ctx, latLongFromWindowP, latLongFromWindowV, windowFromLatLongP)
-
-	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth)
-
-	cb.Call(rs.llCommandBuffer)
-	cb.Call(rs.wcCommandBuffer)
-}
-
-func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, transforms ScopeTransformations) {
-	// Reset the slices so we can draw new lines and points
-	rs.llCommandBuffer.Reset()
-	transforms.LoadLatLongViewingMatrices(&rs.llCommandBuffer)
-	rs.llCommandBuffer.PointSize(rs.PointSize)
-	rs.llCommandBuffer.LineWidth(rs.LineWidth)
-
-	rs.wcCommandBuffer.Reset()
-	transforms.LoadWindowViewingMatrices(&rs.wcCommandBuffer)
-	rs.wcCommandBuffer.PointSize(rs.PointSize)
-	rs.wcCommandBuffer.LineWidth(rs.LineWidth)
 }
 
 func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
