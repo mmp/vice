@@ -612,11 +612,11 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawCRDARegions(ctx, transforms, cb)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
-	rs.drawTracks(ctx, latLongFromWindowV, windowFromLatLongP)
-	rs.updateDatablockTextAndBounds(ctx, windowFromLatLongP)
-	rs.layoutDatablocks(ctx, windowFromLatLongP)
-	rs.drawDatablocks(ctx, windowFromLatLongP, latLongFromWindowP)
-	rs.drawVectorLines(ctx, windowFromLatLongP, latLongFromWindowP)
+	rs.drawTracks(ctx, transforms, cb)
+	rs.updateDatablockTextAndBounds()
+	rs.layoutDatablocks(ctx, transforms)
+	rs.drawDatablocks(ctx, transforms, cb)
+	rs.drawVectorLines(ctx, transforms, cb)
 	rs.drawRangeIndicators(ctx, transforms, cb)
 	rs.drawMIT(ctx, windowFromLatLongP)
 	rs.drawMeasuringLine(ctx, latLongFromWindowP)
@@ -746,10 +746,10 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 	}
 }
 
-func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p [2]float32) Point2LL,
-	windowFromLatLongP func(p Point2LL) [2]float32) {
+func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	td := rs.getScratchTextDrawBuilder()
-	var pd PointsDrawBuilder
+	pd := PointsDrawBuilder{}
+	ld := ColoredLinesDrawBuilder{}
 
 	now := server.CurrentTime()
 	for ac, state := range rs.aircraft {
@@ -773,11 +773,11 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			trackColor := lerpRGB(x, color, ctx.cs.Background)
 
 			p := ac.tracks[i-1].position
-			pw := windowFromLatLongP(p)
+			pw := transforms.WindowFromLatLongP(p)
 
 			px := float32(3) // TODO: make configurable?
-			dx := latLongFromWindowV([2]float32{1, 0})
-			dy := latLongFromWindowV([2]float32{0, 1})
+			dx := transforms.LatLongFromWindowV([2]float32{1, 0})
+			dy := transforms.LatLongFromWindowV([2]float32{0, 1})
 			// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
 			delta := func(p Point2LL, x, y float32) Point2LL {
 				return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
@@ -785,14 +785,14 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 
 			// Draw tracks
 			if ac.mode == Standby {
-				pd.AddPoint(pw, trackColor)
+				pd.AddPoint(p, trackColor)
 			} else if ac.squawk == Squawk(0o1200) {
 				pxb := px * .7    // a little smaller
 				sc := float32(.8) // leave a little space at the corners
-				rs.linesDrawBuilder.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), trackColor)
-				rs.linesDrawBuilder.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), trackColor)
-				rs.linesDrawBuilder.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), trackColor)
-				rs.linesDrawBuilder.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), trackColor)
+				ld.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), trackColor)
+				ld.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), trackColor)
+				ld.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), trackColor)
+				ld.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), trackColor)
 			} else if controller := server.GetTrackingController(ac.Callsign()); controller != "" {
 				ch := "?"
 				if ctrl := server.GetController(controller); ctrl != nil {
@@ -804,19 +804,22 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			} else {
 				// diagonals
 				diagPx := px * 0.707107 /* 1/sqrt(2) */
-				rs.linesDrawBuilder.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), trackColor)
-				rs.linesDrawBuilder.AddLine(delta(p, diagPx, -diagPx), delta(p, -diagPx, diagPx), trackColor)
+				ld.AddLine(delta(p, -diagPx, -diagPx), delta(p, diagPx, diagPx), trackColor)
+				ld.AddLine(delta(p, diagPx, -diagPx), delta(p, -diagPx, diagPx), trackColor)
 				// horizontal line
-				rs.linesDrawBuilder.AddLine(delta(p, -px, 0), delta(p, px, 0), trackColor)
+				ld.AddLine(delta(p, -px, 0), delta(p, px, 0), trackColor)
 			}
 		}
 	}
 
-	pd.GenerateCommands(&rs.wcCommandBuffer)
-	td.GenerateCommands(&rs.wcCommandBuffer)
+	transforms.LoadLatLongViewingMatrices(cb)
+	pd.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 }
 
-func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
+func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 	squawkCount := make(map[Squawk]int)
 	for ac, state := range rs.aircraft {
 		if !state.isGhost {
@@ -891,7 +894,7 @@ func datablockConnectP(bbox Extent2D, heading float32) ([2]float32, bool) {
 	}
 }
 
-func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32) {
+func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, transforms ScopeTransformations) {
 	offsetSelfOnly := func(ac *Aircraft, info *AircraftScopeState) [2]float32 {
 		bbox := info.datablockBounds.Expand(5)
 
@@ -937,7 +940,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 				continue
 			}
 
-			pw := windowFromLatLongP(ac.Position())
+			pw := transforms.WindowFromLatLongP(ac.Position())
 			// Is it on screen (or getting there?)
 			if pw[0] > -100 && pw[0] < width+100 && pw[1] > -100 && pw[1] < height+100 {
 				aircraft = append(aircraft, ac)
@@ -958,7 +961,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 		for i, ac := range aircraft {
 			state := rs.aircraft[ac]
 			if state.datablockManualOffset[0] != 0 || state.datablockManualOffset[1] != 0 {
-				pw := windowFromLatLongP(ac.Position())
+				pw := transforms.WindowFromLatLongP(ac.Position())
 				b := state.WindowDatablockBounds(pw).Expand(5)
 				datablockBounds[i] = b
 				placed[i] = true
@@ -986,7 +989,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 			// to consider all datablocks along the path...
 			netOffset := sub2f(offset, state.datablockAutomaticOffset)
 
-			pw := windowFromLatLongP(ac.Position())
+			pw := transforms.WindowFromLatLongP(ac.Position())
 			db := state.WindowDatablockBounds(pw).Expand(5).Offset(netOffset)
 			if allowed(db) {
 				placed[i] = true
@@ -1017,7 +1020,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, windowFromLatLongP 
 			}
 			state := rs.aircraft[ac]
 
-			pw := windowFromLatLongP(ac.Position())
+			pw := transforms.WindowFromLatLongP(ac.Position())
 			datablockBounds[i] = state.WindowDatablockBounds(pw).Expand(5)
 		}
 
@@ -1150,8 +1153,7 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 	return cs.UntrackedDataBlock
 }
 
-func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
-	latLongFromWindowP func(p [2]float32) Point2LL) {
+func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	paneBounds := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{width, height}}
 
@@ -1172,15 +1174,18 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 			return bsel
 		}
 	})
+
 	td := rs.getScratchTextDrawBuilder()
+	ld := ColoredLinesDrawBuilder{}
 	now := server.CurrentTime()
 	actualNow := time.Now()
+
 	for _, ac := range aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
 		}
 
-		pac := windowFromLatLongP(ac.Position())
+		pac := transforms.WindowFromLatLongP(ac.Position())
 		state := rs.aircraft[ac]
 		bbox := state.WindowDatablockBounds(pac)
 
@@ -1206,7 +1211,8 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 					[2]float32{float32(bx), float32(-by)},
 					[2]float32{float32(0), float32(-by)},
 					[2]float32{float32(0), float32(0)}})
-			ld.GenerateCommands(&rs.wcCommandBuffer)
+			transforms.LoadWindowViewingMatrices(cb)
+			ld.GenerateCommands(cb)
 		}
 
 		drawLine := rs.DataBlockFormat != DataBlockFormatNone
@@ -1223,7 +1229,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 		// the datablock has been moved, so let's make clear what it's connected to
 		if drawLine {
 			var ex, ey float32
-			wp := windowFromLatLongP(ac.Position())
+			wp := transforms.WindowFromLatLongP(ac.Position())
 			if wp[1] < bbox.p0[1] {
 				ex = qclamp(wp[0], bbox.p0[0], bbox.p1[0])
 				ey = bbox.p0[1]
@@ -1243,21 +1249,25 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, windowFromLatLongP fu
 
 			if drawLine {
 				color := rs.datablockColor(ac, ctx.cs)
-				pll := latLongFromWindowP([2]float32{ex, ey})
-				rs.linesDrawBuilder.AddLine(ac.Position(), [2]float32{pll[0], pll[1]}, color)
+				pll := transforms.LatLongFromWindowP([2]float32{ex, ey})
+				ld.AddLine(ac.Position(), [2]float32{pll[0], pll[1]}, color)
 			}
 		}
 	}
-	td.GenerateCommands(&rs.wcCommandBuffer)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
+	transforms.LoadLatLongViewingMatrices(cb)
+	ld.GenerateCommands(cb)
 }
 
-func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32,
-	latLongFromWindowP func([2]float32) Point2LL) {
+func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	if !rs.DrawVectorLine {
 		return
 	}
 
 	now := server.CurrentTime()
+	ld := ColoredLinesDrawBuilder{}
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1267,22 +1277,25 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 		// sense of the heading.
 		if ac.HaveHeading() {
 			start, end := ac.Position(), rs.vectorLineEnd(ac)
-			sw, ew := windowFromLatLongP(start), windowFromLatLongP(end)
+			sw, ew := transforms.WindowFromLatLongP(start), transforms.WindowFromLatLongP(end)
 			v := sub2f(ew, sw)
 			if length2f(v) > 12 {
 				// advance the start by 6px to make room for the track blip
 				sw = add2f(sw, scale2f(normalize2f(v), 6))
 				// It's a little annoying to be xforming back to latlong at
 				// this point...
-				start = latLongFromWindowP(sw)
+				start = transforms.LatLongFromWindowP(sw)
 			}
 			if state.isGhost {
-				rs.linesDrawBuilder.AddLine(start, end, ctx.cs.GhostDataBlock)
+				ld.AddLine(start, end, ctx.cs.GhostDataBlock)
 			} else {
-				rs.linesDrawBuilder.AddLine(start, end, ctx.cs.Track)
+				ld.AddLine(start, end, ctx.cs.Track)
 			}
 		}
 	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	ld.GenerateCommands(cb)
 }
 
 func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
