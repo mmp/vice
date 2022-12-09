@@ -62,9 +62,8 @@ type RadarScopePane struct {
 	LabelFontIdentifier     FontIdentifier
 	labelFont               *Font
 
-	linesDrawBuilder ColoredLinesDrawBuilder
-	llCommandBuffer  CommandBuffer // things using lat-long coordiantes for vertices
-	wcCommandBuffer  CommandBuffer // window coordinates
+	llCommandBuffer CommandBuffer // things using lat-long coordiantes for vertices
+	wcCommandBuffer CommandBuffer // window coordinates
 
 	acSelectedByDatablock *Aircraft
 
@@ -214,7 +213,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	// don't share those slices...
 	dupe.llCommandBuffer = CommandBuffer{}
 	dupe.wcCommandBuffer = CommandBuffer{}
-	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
 
 	dupe.eventsId = eventStream.Subscribe()
 
@@ -372,7 +370,6 @@ func (rs *RadarScopePane) Deactivate() {
 	// Free up this memory, FWIW
 	rs.llCommandBuffer = CommandBuffer{}
 	rs.wcCommandBuffer = CommandBuffer{}
-	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
 
 	eventStream.Unsubscribe(rs.eventsId)
 	rs.eventsId = InvalidEventSubscriberId
@@ -618,14 +615,13 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawDatablocks(ctx, transforms, cb)
 	rs.drawVectorLines(ctx, transforms, cb)
 	rs.drawRangeIndicators(ctx, transforms, cb)
-	rs.drawMIT(ctx, windowFromLatLongP)
-	rs.drawMeasuringLine(ctx, latLongFromWindowP)
-	rs.drawHighlighted(ctx, windowFromLatLongP)
+	rs.drawMIT(ctx, transforms, cb)
+	rs.drawMeasuringLine(ctx, transforms, cb)
+	rs.drawHighlighted(ctx, transforms, cb)
 
 	// Mouse events last, so that the datablock bounds are current.
 	rs.consumeMouseEvents(ctx, latLongFromWindowP, latLongFromWindowV, windowFromLatLongP)
 
-	rs.linesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth)
 
 	cb.Call(rs.llCommandBuffer)
@@ -634,8 +630,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, transforms ScopeTransformations) {
 	// Reset the slices so we can draw new lines and points
-	rs.linesDrawBuilder.Reset()
-
 	rs.llCommandBuffer.Reset()
 	transforms.LoadLatLongViewingMatrices(&rs.llCommandBuffer)
 	rs.llCommandBuffer.PointSize(rs.PointSize)
@@ -647,21 +641,24 @@ func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, transforms ScopeTrans
 	rs.wcCommandBuffer.LineWidth(rs.LineWidth)
 }
 
-func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32) {
+func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+
+	td := rs.getScratchTextDrawBuilder()
+	ld := ColoredLinesDrawBuilder{}
+	drewAny := false
 
 	annotatedLine := func(p0 Point2LL, p1 Point2LL, color RGB, text string) {
 		// Center the text
-		textPos := windowFromLatLongP(mid2ll(p0, p1))
+		textPos := transforms.WindowFromLatLongP(mid2ll(p0, p1))
 		// Cull text based on center point
 		if textPos[0] >= 0 && textPos[0] < width && textPos[1] >= 0 && textPos[1] < height {
-			td := rs.getScratchTextDrawBuilder()
 			style := TextStyle{Font: rs.labelFont, Color: color, DrawBackground: true, BackgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
-			td.GenerateCommands(&rs.wcCommandBuffer)
 		}
 
-		rs.linesDrawBuilder.AddLine(p0, p1, color)
+		drewAny = true
+		ld.AddLine(p0, p1, color)
 	}
 
 	// Don't do AutoMIT if a sequence has been manually specified
@@ -743,6 +740,13 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, windowFromLatLongP func(p Po
 				annotatedLine(pfront, ptrailing, ctx.cs.Error, text)
 			}
 		}
+	}
+
+	if drewAny {
+		transforms.LoadLatLongViewingMatrices(cb)
+		ld.GenerateCommands(cb)
+		transforms.LoadWindowViewingMatrices(cb)
+		td.GenerateCommands(cb)
 	}
 }
 
@@ -1387,18 +1391,18 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms Scope
 	}
 }
 
-func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL) {
+func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	if !rs.primaryButtonDoubleClicked {
 		return
 	}
 
-	p0 := latLongFromWindowP(rs.primaryDragStart)
-	p1 := latLongFromWindowP(rs.primaryDragEnd)
-
 	// TODO: separate color for this rather than piggybacking?
-	rs.linesDrawBuilder.AddLine(p0, p1, ctx.cs.SelectedDataBlock)
+	ld := ColoredLinesDrawBuilder{}
+	ld.AddLine(rs.primaryDragStart, rs.primaryDragEnd, ctx.cs.SelectedDataBlock)
 
 	// distance between the two points in nm
+	p0 := transforms.LatLongFromWindowP(rs.primaryDragStart)
+	p1 := transforms.LatLongFromWindowP(rs.primaryDragEnd)
 	dist := nmdistance2ll(p0, p1)
 
 	// heading and reciprocal
@@ -1411,18 +1415,21 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, latLongFromWindowP
 		rhdg -= 360
 	}
 	label := fmt.Sprintf(" %.1f nm \n%d / %d", dist, hdg, rhdg)
-	td := rs.getScratchTextDrawBuilder()
 	style := TextStyle{
 		Font:            rs.labelFont,
 		Color:           ctx.cs.SelectedDataBlock,
 		DrawBackground:  true,
 		BackgroundColor: ctx.cs.Background}
 	textPos := mid2f(rs.primaryDragStart, rs.primaryDragEnd)
+	td := rs.getScratchTextDrawBuilder()
 	td.AddTextCentered(label, textPos, style)
-	td.GenerateCommands(&rs.wcCommandBuffer)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
-func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, windowFromLatLongP func(Point2LL) [2]float32) {
+func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	remaining := time.Until(positionConfig.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
@@ -1435,13 +1442,14 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, windowFromLatLongP f
 		color = lerpRGB(x, ctx.cs.Background, color)
 	}
 
-	p := windowFromLatLongP(positionConfig.highlightedLocation)
+	p := transforms.WindowFromLatLongP(positionConfig.highlightedLocation)
 	radius := float32(10) // 10 pixel radius
-	lines := ColoredLinesDrawBuilder{}
-	lines.AddCircle(p, radius, 360, color)
+	ld := ColoredLinesDrawBuilder{}
+	ld.AddCircle(p, radius, 360, color)
 
-	rs.wcCommandBuffer.LineWidth(3 * rs.LineWidth)
-	lines.GenerateCommands(&rs.wcCommandBuffer)
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(3 * rs.LineWidth)
+	ld.GenerateCommands(cb)
 }
 
 func (rs *RadarScopePane) drawRoute(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
