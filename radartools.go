@@ -727,12 +727,11 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p Point2LL, windowFromLatLongP func(Point2LL) [2]float32,
-	latLongFromWindowP func([2]float32) Point2LL, ctx *PaneContext, rotationAngle float32,
-	font *Font, cb *CommandBuffer) {
+func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font,
+	transforms ScopeTransformations, cb *CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
-	pw := windowFromLatLongP(p)
+	pw := transforms.WindowFromLatLongP(p)
 
 	// Bounding box of the current subwindow, in window coordinates.
 	bounds := Extent2D{
@@ -802,22 +801,17 @@ func DrawCompass(p Point2LL, windowFromLatLongP func(Point2LL) [2]float32,
 		}
 	}
 
+	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext,
-	windowFromLatLongP func(p Point2LL) [2]float32, latLongFromWindowV func(p [2]float32) Point2LL,
+func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext, transforms ScopeTransformations,
 	cb *CommandBuffer) {
-	ctx.SetWindowCoordinateMatrices(cb)
-
-	// Find the pixel spacing in nm
-	ll := latLongFromWindowV([2]float32{1, 0})
-	pixelDistanceNm := nmlength2ll(ll)
-
-	centerWindow := windowFromLatLongP(center)
+	pixelDistanceNm := transforms.PixelDistanceNM()
+	centerWindow := transforms.WindowFromLatLongP(center)
 
 	lines := ColoredLinesDrawBuilder{}
 	for i := 1; i < 10; i++ {
@@ -826,6 +820,7 @@ func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext,
 		lines.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
 	}
 
+	transforms.LoadWindowViewingMatrices(cb)
 	lines.GenerateCommands(cb)
 }
 
@@ -902,4 +897,10 @@ func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) Point2LL {
 
 func (st *ScopeTransformations) LatLongFromWindowV(p [2]float32) Point2LL {
 	return mul4v(&st.latLongFromWindow, p)
+}
+
+// Find the pixel spacing in nm
+func (st *ScopeTransformations) PixelDistanceNM() float32 {
+	ll := st.LatLongFromWindowV([2]float32{1, 0})
+	return nmlength2ll(ll)
 }

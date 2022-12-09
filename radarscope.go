@@ -62,10 +62,9 @@ type RadarScopePane struct {
 	LabelFontIdentifier     FontIdentifier
 	labelFont               *Font
 
-	linesDrawBuilder      ColoredLinesDrawBuilder
-	thickLinesDrawBuilder ColoredLinesDrawBuilder
-	llCommandBuffer       CommandBuffer // things using lat-long coordiantes for vertices
-	wcCommandBuffer       CommandBuffer // window coordinates
+	linesDrawBuilder ColoredLinesDrawBuilder
+	llCommandBuffer  CommandBuffer // things using lat-long coordiantes for vertices
+	wcCommandBuffer  CommandBuffer // window coordinates
 
 	acSelectedByDatablock *Aircraft
 
@@ -216,7 +215,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.llCommandBuffer = CommandBuffer{}
 	dupe.wcCommandBuffer = CommandBuffer{}
 	dupe.linesDrawBuilder = ColoredLinesDrawBuilder{}
-	dupe.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
 	dupe.eventsId = eventStream.Subscribe()
 
@@ -375,7 +373,6 @@ func (rs *RadarScopePane) Deactivate() {
 	rs.llCommandBuffer = CommandBuffer{}
 	rs.wcCommandBuffer = CommandBuffer{}
 	rs.linesDrawBuilder = ColoredLinesDrawBuilder{}
-	rs.thickLinesDrawBuilder = ColoredLinesDrawBuilder{}
 
 	eventStream.Unsubscribe(rs.eventsId)
 	rs.eventsId = InvalidEventSubscriberId
@@ -575,11 +572,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return mul4v(&latLongFromWindowMtx, p)
 	}
 
-	// Figure out the distance in nm that a pixel covers: offset one pixel
-	// in x, transform to lat-long, find the length.
-	ll := mul4v(&latLongFromWindowMtx, [2]float32{1, 0})
-	pixelDistanceNm := nmlength2ll(ll)
-
 	if rs.DrawWeather {
 		rs.WeatherRadar.Draw(transforms, cb)
 	}
@@ -607,16 +599,17 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		if positionConfig.selectedAircraft != nil {
 			p = positionConfig.selectedAircraft.Position()
 		}
-		DrawCompass(p, windowFromLatLongP, latLongFromWindowP, ctx, rs.RotationAngle, rs.labelFont, &rs.wcCommandBuffer)
+		DrawCompass(p, ctx, rs.RotationAngle, rs.labelFont, transforms, cb)
 	}
 
 	if center, ok := database.Locate(rs.RangeRingCenter); ok && rs.DrawRangeRings {
 		cb.LineWidth(rs.LineWidth)
-		DrawRangeRings(center, rs.RangeRingRadius, ctx, windowFromLatLongP, latLongFromWindowV, cb)
+		DrawRangeRings(center, rs.RangeRingRadius, ctx, transforms, cb)
 	}
 
-	rs.drawRoute(ctx, latLongFromWindowV)
-	rs.drawCRDARegions(ctx)
+	rs.drawRoute(ctx, transforms, cb)
+
+	rs.drawCRDARegions(ctx, transforms, cb)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	rs.drawTracks(ctx, latLongFromWindowV, windowFromLatLongP)
@@ -624,7 +617,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.layoutDatablocks(ctx, windowFromLatLongP)
 	rs.drawDatablocks(ctx, windowFromLatLongP, latLongFromWindowP)
 	rs.drawVectorLines(ctx, windowFromLatLongP, latLongFromWindowP)
-	rs.drawRangeIndicators(ctx, windowFromLatLongP, pixelDistanceNm)
+	rs.drawRangeIndicators(ctx, transforms, cb)
 	rs.drawMIT(ctx, windowFromLatLongP)
 	rs.drawMeasuringLine(ctx, latLongFromWindowP)
 	rs.drawHighlighted(ctx, windowFromLatLongP)
@@ -634,7 +627,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	rs.linesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 	rs.llCommandBuffer.LineWidth(3 * rs.LineWidth)
-	rs.thickLinesDrawBuilder.GenerateCommands(&rs.llCommandBuffer)
 
 	cb.Call(rs.llCommandBuffer)
 	cb.Call(rs.wcCommandBuffer)
@@ -643,7 +635,6 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 func (rs *RadarScopePane) prepareForDraw(ctx *PaneContext, transforms ScopeTransformations) {
 	// Reset the slices so we can draw new lines and points
 	rs.linesDrawBuilder.Reset()
-	rs.thickLinesDrawBuilder.Reset()
 
 	rs.llCommandBuffer.Reset()
 	transforms.LoadLatLongViewingMatrices(&rs.llCommandBuffer)
@@ -1294,8 +1285,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, windowFromLatLongP f
 	}
 }
 
-func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLongP func(p Point2LL) [2]float32,
-	pixelDistanceNm float32) {
+func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	if !rs.DrawRangeIndicators {
 		return
 	}
@@ -1323,38 +1313,42 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 		rs.lastRangeNotificationPlayed = time.Now()
 	}
 
+	pixelDistanceNm := transforms.PixelDistanceNM()
+
 	switch rs.RangeIndicatorStyle {
 	case RangeIndicatorRings:
-		lines := ColoredLinesDrawBuilder{}
+		ld := ColoredLinesDrawBuilder{}
 		for _, w := range warnings {
 			nsegs := 360
-			p0 := windowFromLatLongP(w.aircraft[0].Position())
-			lines.AddCircle(p0, w.limits.WarningLateral/pixelDistanceNm, nsegs, ctx.cs.Caution)
-			p1 := windowFromLatLongP(w.aircraft[1].Position())
-			lines.AddCircle(p1, w.limits.WarningLateral/pixelDistanceNm, nsegs, ctx.cs.Caution)
+			p0 := transforms.WindowFromLatLongP(w.aircraft[0].Position())
+			ld.AddCircle(p0, w.limits.WarningLateral/pixelDistanceNm, nsegs, ctx.cs.Caution)
+			p1 := transforms.WindowFromLatLongP(w.aircraft[1].Position())
+			ld.AddCircle(p1, w.limits.WarningLateral/pixelDistanceNm, nsegs, ctx.cs.Caution)
 		}
 		for _, v := range violations {
 			nsegs := 360
-			p0 := windowFromLatLongP(v.aircraft[0].Position())
-			lines.AddCircle(p0, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
-			p1 := windowFromLatLongP(v.aircraft[1].Position())
-			lines.AddCircle(p1, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
+			p0 := transforms.WindowFromLatLongP(v.aircraft[0].Position())
+			ld.AddCircle(p0, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
+			p1 := transforms.WindowFromLatLongP(v.aircraft[1].Position())
+			ld.AddCircle(p1, v.limits.ViolationLateral/pixelDistanceNm, nsegs, ctx.cs.Error)
 		}
-		rs.wcCommandBuffer.LineWidth(rs.LineWidth)
-		lines.GenerateCommands(&rs.wcCommandBuffer)
+
+		transforms.LoadWindowViewingMatrices(cb)
+		cb.LineWidth(rs.LineWidth)
+		ld.GenerateCommands(cb)
 
 	case RangeIndicatorLine:
+		ld := ColoredLinesDrawBuilder{}
+		td := rs.getScratchTextDrawBuilder()
 		annotatedLine := func(p0 Point2LL, p1 Point2LL, color RGB, text string) {
-			textPos := windowFromLatLongP(mid2ll(p0, p1))
-			td := rs.getScratchTextDrawBuilder()
+			textPos := transforms.WindowFromLatLongP(mid2ll(p0, p1))
 			style := TextStyle{
 				Font:            rs.labelFont,
 				Color:           color,
 				DrawBackground:  true,
 				BackgroundColor: ctx.cs.Background}
 			td.AddTextCentered(text, textPos, style)
-			td.GenerateCommands(&rs.wcCommandBuffer)
-			rs.linesDrawBuilder.AddLine(p0, p1, color)
+			ld.AddLine(p0, p1, color)
 		}
 
 		rangeText := func(ac0, ac1 *Aircraft) string {
@@ -1371,6 +1365,12 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, windowFromLatLon
 			ac0, ac1 := v.aircraft[0], v.aircraft[1]
 			annotatedLine(ac0.Position(), ac1.Position(), ctx.cs.Error, rangeText(ac0, ac1))
 		}
+
+		transforms.LoadLatLongViewingMatrices(cb)
+		cb.LineWidth(rs.LineWidth)
+		ld.GenerateCommands(cb)
+		transforms.LoadWindowViewingMatrices(cb)
+		td.GenerateCommands(cb)
 	}
 }
 
@@ -1431,7 +1431,7 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, windowFromLatLongP f
 	lines.GenerateCommands(&rs.wcCommandBuffer)
 }
 
-func (rs *RadarScopePane) drawRoute(ctx *PaneContext, latLongFromWindowV func([2]float32) Point2LL) {
+func (rs *RadarScopePane) drawRoute(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	remaining := time.Until(positionConfig.drawnRouteEndTime)
 	if remaining < 0 {
 		return
@@ -1444,17 +1444,22 @@ func (rs *RadarScopePane) drawRoute(ctx *PaneContext, latLongFromWindowV func([2
 		color = lerpRGB(x, ctx.cs.Background, color)
 	}
 
+	ld := ColoredLinesDrawBuilder{}
 	var pPrev Point2LL
 	for _, waypoint := range strings.Split(positionConfig.drawnRoute, " ") {
 		if p, ok := database.Locate(waypoint); !ok {
 			// no worries; most likely it's a SID, STAR, or airway..
 		} else {
 			if !pPrev.IsZero() {
-				rs.thickLinesDrawBuilder.AddLine(pPrev, p, color)
+				ld.AddLine(pPrev, p, color)
 			}
 			pPrev = p
 		}
 	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	cb.LineWidth(3 * rs.LineWidth)
+	ld.GenerateCommands(cb)
 }
 
 func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, latLongFromWindowP func([2]float32) Point2LL,
@@ -1577,10 +1582,12 @@ func (rs *RadarScopePane) vectorLineEnd(ac *Aircraft) Point2LL {
 	}
 }
 
-func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
+func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	if !rs.CRDAConfig.ShowCRDARegions {
 		return
 	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
 
 	// Find the intersection of the two runways.  Work in nm space, not lat-long
 	if true {
@@ -1594,7 +1601,7 @@ func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
 			//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
 			var pd PointsDrawBuilder
 			pd.AddPoint(p, RGB{1, 0, 0})
-			pd.GenerateCommands(&rs.llCommandBuffer)
+			pd.GenerateCommands(cb)
 		}
 	}
 
@@ -1609,16 +1616,18 @@ func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext) {
 	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
-	sa, ca := sin(radians(rota)), cos(radians(rota))
-	va := [2]float32{sa, ca}
+	sina, cosa := sin(radians(rota)), cos(radians(rota))
+	va := [2]float32{sina, cosa}
 	dist := float32(25)
 	va = scale2f(va, dist)
 
-	sb, cb := sin(radians(rotb)), cos(radians(rotb))
-	vb := scale2f([2]float32{sb, cb}, dist)
+	sinb, cosb := sin(radians(rotb)), cos(radians(rotb))
+	vb := scale2f([2]float32{sinb, cosb}, dist)
 
 	// Over to lat-long to draw the lines
 	vall, vbll := nm2ll(va), nm2ll(vb)
-	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
-	rs.linesDrawBuilder.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
+	ld := ColoredLinesDrawBuilder{}
+	ld.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
+	ld.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
+	ld.GenerateCommands(cb)
 }
