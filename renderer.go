@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"image"
 	"math"
+	"sync"
 	"unsafe"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -117,6 +118,19 @@ const (
 // by a Renderer and possibly reused over multiple frames.
 type CommandBuffer struct {
 	buf []uint32
+}
+
+// CommandBuffers are managed using a sync.Pool so that their buf slice
+// allocations persist across multiple uses.
+var commandBufferPool = sync.Pool{New: func() any { return &CommandBuffer{} }}
+
+func GetCommandBuffer() *CommandBuffer {
+	return commandBufferPool.Get().(*CommandBuffer)
+}
+
+func ReturnCommandBuffer(cb *CommandBuffer) {
+	cb.Reset()
+	commandBufferPool.Put(cb)
 }
 
 // Reset resets the command buffer's length to zero so that it can be
@@ -553,6 +567,19 @@ func (l *LinesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	cb.DrawLines(ind, len(l.indices))
 }
 
+// LinesDrawBuilders are managed using a sync.Pool so that their buf slice
+// allocations persist across multiple uses.
+var linesDrawBuilderPool = sync.Pool{New: func() any { return &LinesDrawBuilder{} }}
+
+func GetLinesDrawBuilder() *LinesDrawBuilder {
+	return linesDrawBuilderPool.Get().(*LinesDrawBuilder)
+}
+
+func ReturnLinesDrawBuilder(ld *LinesDrawBuilder) {
+	ld.Reset()
+	linesDrawBuilderPool.Put(ld)
+}
+
 // ColoredLinesDrawBuilder is similar to the LinesDrawBuilder though it
 // allows specifying the color of each line individually.  Its methods
 // otherwise mostly parallel those of LinesDrawBuilder; see the
@@ -658,6 +685,19 @@ func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) (int, int)
 	cb.DrawLines(ind, len(l.indices))
 
 	return rgb, 3 * len(l.color)
+}
+
+// ColoredLinesDrawBuilders are managed using a sync.Pool so that their buf
+// slice allocations persist across multiple uses.
+var coloredLinesDrawBuilderPool = sync.Pool{New: func() any { return &ColoredLinesDrawBuilder{} }}
+
+func GetColoredLinesDrawBuilder() *ColoredLinesDrawBuilder {
+	return coloredLinesDrawBuilderPool.Get().(*ColoredLinesDrawBuilder)
+}
+
+func ReturnColoredLinesDrawBuilder(ld *ColoredLinesDrawBuilder) {
+	ld.Reset()
+	coloredLinesDrawBuilderPool.Put(ld)
 }
 
 // TrianglesDrawBuilder collects triangles to be batched up in a single
@@ -916,6 +956,19 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		cb.DisableTexture()
 		cb.DisableBlend()
 	}
+}
+
+// TextDrawBuilders are managed using a sync.Pool so that their buf slice
+// allocations persist across multiple uses.
+var textDrawBuilderPool = sync.Pool{New: func() any { return &TextDrawBuilder{} }}
+
+func GetTextDrawBuilder() *TextDrawBuilder {
+	return textDrawBuilderPool.Get().(*TextDrawBuilder)
+}
+
+func ReturnTextDrawBuilder(td *TextDrawBuilder) {
+	td.Reset()
+	textDrawBuilderPool.Put(td)
 }
 
 ///////////////////////////////////////////////////////////////////////////

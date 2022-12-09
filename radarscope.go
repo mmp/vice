@@ -68,8 +68,6 @@ type RadarScopePane struct {
 	primaryDragStart           [2]float32
 	primaryDragEnd             [2]float32
 
-	tdScratch TextDrawBuilder
-
 	lastRangeNotificationPlayed time.Time
 
 	// All of the aircraft in the world, each with additional information
@@ -191,8 +189,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 
 	dupe.aircraft = make(map[*Aircraft]*AircraftScopeState)
 	for ac, tracked := range rs.aircraft {
-		// NOTE: do not copy the TextDrawBuilder over, since we'd be aliasing
-		// the slices.
 		dupe.aircraft[ac] = &AircraftScopeState{
 			isGhost:       tracked.isGhost,
 			datablockText: tracked.datablockText}
@@ -210,11 +206,6 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	dupe.eventsId = eventStream.Subscribe()
 
 	return dupe
-}
-
-func (rs *RadarScopePane) getScratchTextDrawBuilder() *TextDrawBuilder {
-	rs.tdScratch.Reset()
-	return &rs.tdScratch
 }
 
 func (rs *RadarScopePane) Activate(cs *ColorScheme) {
@@ -549,7 +540,8 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	// Title in upper-left corner
-	td := rs.getScratchTextDrawBuilder()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 	height := ctx.paneExtent.Height()
 	label := rs.ScopeName
 	if *devmode && ctx.mouse != nil {
@@ -601,8 +593,11 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 
-	td := rs.getScratchTextDrawBuilder()
-	ld := ColoredLinesDrawBuilder{}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	drewAny := false
 
 	annotatedLine := func(p0 Point2LL, p1 Point2LL, color RGB, text string) {
@@ -708,9 +703,11 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 }
 
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	td := rs.getScratchTextDrawBuilder()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 	pd := PointsDrawBuilder{}
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
 
 	now := server.CurrentTime()
 	for ac, state := range rs.aircraft {
@@ -1136,8 +1133,11 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTrans
 		}
 	})
 
-	td := rs.getScratchTextDrawBuilder()
-	ld := ColoredLinesDrawBuilder{}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	now := server.CurrentTime()
 	actualNow := time.Now()
 
@@ -1165,7 +1165,9 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTrans
 
 		// visualize bounds
 		if false {
-			var ld ColoredLinesDrawBuilder
+			ld := GetColoredLinesDrawBuilder()
+			defer ReturnColoredLinesDrawBuilder(ld)
+
 			bx, by := rs.datablockFont.BoundText(state.datablockText[0], -2)
 			ld.AddPolyline([2]float32{bbox.p0[0], bbox.p1[1]}, RGB{1, 0, 0},
 				[][2]float32{[2]float32{float32(bx), 0},
@@ -1228,7 +1230,9 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, transforms ScopeTran
 	}
 
 	now := server.CurrentTime()
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	for ac, state := range rs.aircraft {
 		if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
 			continue
@@ -1291,7 +1295,9 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms Scope
 
 	switch rs.RangeIndicatorStyle {
 	case RangeIndicatorRings:
-		ld := ColoredLinesDrawBuilder{}
+		ld := GetColoredLinesDrawBuilder()
+		defer ReturnColoredLinesDrawBuilder(ld)
+
 		for _, w := range warnings {
 			nsegs := 360
 			p0 := transforms.WindowFromLatLongP(w.aircraft[0].Position())
@@ -1312,8 +1318,11 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms Scope
 		ld.GenerateCommands(cb)
 
 	case RangeIndicatorLine:
-		ld := ColoredLinesDrawBuilder{}
-		td := rs.getScratchTextDrawBuilder()
+		ld := GetColoredLinesDrawBuilder()
+		defer ReturnColoredLinesDrawBuilder(ld)
+		td := GetTextDrawBuilder()
+		defer ReturnTextDrawBuilder(td)
+
 		annotatedLine := func(p0 Point2LL, p1 Point2LL, color RGB, text string) {
 			textPos := transforms.WindowFromLatLongP(mid2ll(p0, p1))
 			style := TextStyle{
@@ -1354,7 +1363,9 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, transforms ScopeTr
 	}
 
 	// TODO: separate color for this rather than piggybacking?
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	ld.AddLine(rs.primaryDragStart, rs.primaryDragEnd, ctx.cs.SelectedDataBlock)
 
 	// distance between the two points in nm
@@ -1378,7 +1389,8 @@ func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, transforms ScopeTr
 		DrawBackground:  true,
 		BackgroundColor: ctx.cs.Background}
 	textPos := mid2f(rs.primaryDragStart, rs.primaryDragEnd)
-	td := rs.getScratchTextDrawBuilder()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 	td.AddTextCentered(label, textPos, style)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1401,7 +1413,8 @@ func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, transforms ScopeTran
 
 	p := transforms.WindowFromLatLongP(positionConfig.highlightedLocation)
 	radius := float32(10) // 10 pixel radius
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
 	ld.AddCircle(p, radius, 360, color)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1422,7 +1435,8 @@ func (rs *RadarScopePane) drawRoute(ctx *PaneContext, transforms ScopeTransforma
 		color = lerpRGB(x, ctx.cs.Background, color)
 	}
 
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
 	var pPrev Point2LL
 	for _, waypoint := range strings.Split(positionConfig.drawnRoute, " ") {
 		if p, ok := database.Locate(waypoint); !ok {

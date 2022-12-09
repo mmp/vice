@@ -309,9 +309,10 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	// Finalize and submit the imgui draw lists
 	imgui.Render()
-	var cb CommandBuffer
-	GenerateImguiCommandBuffer(&cb)
-	stats.renderUI = renderer.RenderCommandBuffer(&cb)
+	cb := GetCommandBuffer()
+	defer ReturnCommandBuffer(cb)
+	GenerateImguiCommandBuffer(cb)
+	stats.renderUI = renderer.RenderCommandBuffer(cb)
 }
 
 func drawActiveDialogBoxes() {

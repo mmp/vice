@@ -528,7 +528,8 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	// ColorBufferIndex initialization so that the actual colors used for
 	// drawing them can be changed by the user.
 	staticColoredLines := func(name string, cs []sct2.ColoredSegment, defaultColorName string) StaticDrawable {
-		ld := ColoredLinesDrawBuilder{}
+		ld := GetColoredLinesDrawBuilder()
+		defer ReturnColoredLinesDrawBuilder(ld)
 		colorBufferIndex := NewColorBufferIndex()
 
 		for _, seg := range cs {
@@ -1279,12 +1280,14 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		return add2f(scale2f(dx, x), scale2f(dy, y))
 	}
 
-	linesDrawBuilder := &ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	if s.DrawEverything || s.DrawVORs {
 		// VORs are indicated by small squares
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, vor := range database.VORs {
-			linesDrawBuilder.AddPolyline(vor, ctx.cs.VOR, square)
+			ld.AddPolyline(vor, ctx.cs.VOR, square)
 		}
 	}
 	if s.DrawEverything || s.DrawNDBs {
@@ -1292,7 +1295,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
 		for _, ndb := range database.NDBs {
 			// flipped triangles
-			linesDrawBuilder.AddPolyline(ndb, ctx.cs.NDB, fliptri)
+			ld.AddPolyline(ndb, ctx.cs.NDB, fliptri)
 		}
 	}
 
@@ -1301,7 +1304,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
 		for _, fix := range database.fixes {
 			// upward-pointing triangles
-			linesDrawBuilder.AddPolyline(fix, ctx.cs.Fix, uptri)
+			ld.AddPolyline(fix, ctx.cs.Fix, uptri)
 		}
 	} else {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
@@ -1310,7 +1313,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 				// May happen when a new sector file is loaded.
 				//lg.Printf("%s: selected fix not found in sector file data!", loc)
 			} else {
-				linesDrawBuilder.AddPolyline(loc, ctx.cs.Fix, uptri)
+				ld.AddPolyline(loc, ctx.cs.Fix, uptri)
 			}
 		}
 	}
@@ -1318,11 +1321,11 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		// Airports are squares (like VORs)
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, ap := range database.airports {
-			linesDrawBuilder.AddPolyline(ap, ctx.cs.Airport, square)
+			ld.AddPolyline(ap, ctx.cs.Airport, square)
 		}
 	}
-	linesDrawBuilder.GenerateCommands(cb)
-	linesDrawBuilder = nil // make sure we don't try to reuse it after GenerateCommands
+	ld.GenerateCommands(cb)
+	ld.Reset() // after GenerateCommands...
 
 	// ARTCCs
 	drawARTCCLines := func(artcc []StaticDrawable, drawSet map[string]interface{}) {
@@ -1371,7 +1374,8 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 
 	// Now switch to window coordinates for drawing text.
 	transforms.LoadWindowViewingMatrices(cb)
-	td := &TextDrawBuilder{}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 
 	// Helper function to draw airway labels.
 	drawAirwayLabels := func(labels []Label, color RGB) {

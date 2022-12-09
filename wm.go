@@ -832,7 +832,9 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	}
 
 	// All of the Panes' draw commands will be added to commandBuffer.
-	var commandBuffer CommandBuffer
+	commandBuffer := GetCommandBuffer()
+	defer ReturnCommandBuffer(commandBuffer)
+
 	// fbSize will be (0,0) if the window is minimized, in which case we
 	// can skip all this...
 	if fbSize[0] > 0 && fbSize[1] > 0 {
@@ -841,7 +843,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		commandBuffer.ClearRGB(positionConfig.GetColorScheme().Background)
 
 		// Draw the status bar underneath the menu bar
-		wmDrawStatusBar(fbSize, displaySize, &commandBuffer)
+		wmDrawStatusBar(fbSize, displaySize, commandBuffer)
 
 		// By default we'll visit the tree starting at
 		// DisplayRoot. However, if a Pane has been maximized to cover the
@@ -896,7 +898,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				commandBuffer.Viewport(x0, y0, w, h)
 
 				// Let the Pane do its thing
-				pane.Draw(&ctx, &commandBuffer)
+				pane.Draw(&ctx, commandBuffer)
 
 				// And reset the graphics state to the standard baseline,
 				// so no state changes leak and affect subsequent drawing.
@@ -908,7 +910,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				// quadrilateral over the pane that the mouse is inside to
 				// indicate that it is selected.
 				if pane == mousePane && wm.handlePanePick != nil {
-					ctx.SetWindowCoordinateMatrices(&commandBuffer)
+					ctx.SetWindowCoordinateMatrices(commandBuffer)
 					commandBuffer.Blend()
 
 					w, h := paneExtent.Width(), paneExtent.Height()
@@ -926,9 +928,9 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 
 				// Draw a border around the pane if it has keyboard focus.
 				if !wm.statusBarHasFocus && pane == wm.keyboardFocusPane {
-					ctx.SetWindowCoordinateMatrices(&commandBuffer)
+					ctx.SetWindowCoordinateMatrices(commandBuffer)
 					w, h := paneExtent.Width(), paneExtent.Height()
-					drawBorder(&commandBuffer, w, h, ctx.cs.TextHighlight)
+					drawBorder(commandBuffer, w, h, ctx.cs.TextHighlight)
 				}
 			})
 
@@ -941,7 +943,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 
 		// Finally, render the entire command buffer for all of the Panes
 		// all at once.
-		stats.render = renderer.RenderCommandBuffer(&commandBuffer)
+		stats.render = renderer.RenderCommandBuffer(commandBuffer)
 	}
 
 	if wm.showConfigEditor {
@@ -1234,7 +1236,9 @@ func (sb *StatusBar) processKeys(keyboard *KeyboardState) {
 
 func (sb *StatusBar) draw(ctx *PaneContext, cb *CommandBuffer) bool {
 	// Draw lines to delineate the top and bottom of the status bar
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	ld.AddLine([2]float32{5, 1}, [2]float32{ctx.paneExtent.p1[0] - 5, 1}, ctx.cs.UIControl)
 	h := ctx.paneExtent.Height() - 1
 	ld.AddLine([2]float32{5, h}, [2]float32{ctx.paneExtent.p1[0] - 5, h}, ctx.cs.UIControl)

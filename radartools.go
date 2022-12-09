@@ -467,7 +467,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 
 	// Over to lat-long to draw the lines
 	vall, vbll := nm2ll(va), nm2ll(vb)
-	ld := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
 	ld.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
 	ld.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
 	ld.GenerateCommands(cb)
@@ -785,8 +786,10 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 		p0: [2]float32{0, 0},
 		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
 
-	td := TextDrawBuilder{}
-	ld := ColoredLinesDrawBuilder{}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
 
 	// Draw lines at a 5 degree spacing.
 	for h := float32(5); h <= 360; h += 5 {
@@ -860,15 +863,17 @@ func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext, transform
 	pixelDistanceNm := transforms.PixelDistanceNM()
 	centerWindow := transforms.WindowFromLatLongP(center)
 
-	lines := ColoredLinesDrawBuilder{}
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
 	for i := 1; i < 10; i++ {
 		// Radius of this ring in pixels
 		r := float32(i) * radius / pixelDistanceNm
-		lines.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
+		ld.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	lines.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
