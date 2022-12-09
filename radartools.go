@@ -956,3 +956,72 @@ func (st *ScopeTransformations) PixelDistanceNM() float32 {
 	ll := st.LatLongFromWindowV([2]float32{1, 0})
 	return nmlength2ll(ll)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Measuring line
+
+// MeasuringLine wraps up the functionality for measuring distances and
+// angles on radar scopes.  When a double-click is detected on a scope, it
+// records a starting location and then draws a measurement line between
+// that point and the current point as the user drags.  When the mouse
+// button is released, the line disappears.
+type MeasuringLine struct {
+	active bool
+	// Button selects which mouse button to monitor for measurements.  When zero-initialized,
+	// mouseButtonPrimary is used.
+	Button             int
+	dragStart, dragEnd [2]float32
+}
+
+// Draw processes mouse events and draws the measuring line, if it's active.
+func (ml *MeasuringLine) Draw(ctx *PaneContext, font *Font, transforms ScopeTransformations, cb *CommandBuffer) {
+	if ctx.mouse != nil && ctx.mouse.doubleClicked[ml.Button] {
+		ml.active = true
+		ml.dragStart = ctx.mouse.pos
+		ml.dragEnd = ml.dragStart
+	} else if ctx.mouse != nil && ctx.mouse.dragging[ml.Button] && ml.active {
+		ml.dragEnd = add2f(ml.dragEnd, ctx.mouse.dragDelta)
+	} else {
+		ml.active = false
+	}
+
+	if !ml.active {
+		return
+	}
+
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
+	// TODO: separate color for this rather than piggybacking?
+	ld.AddLine(ml.dragStart, ml.dragEnd, ctx.cs.SelectedDataBlock)
+
+	// distance between the two points in nm
+	p0 := transforms.LatLongFromWindowP(ml.dragStart)
+	p1 := transforms.LatLongFromWindowP(ml.dragEnd)
+	dist := nmdistance2ll(p0, p1)
+
+	// heading and reciprocal
+	hdg := int(headingp2ll(p0, p1, database.MagneticVariation) + 0.5)
+	if hdg == 0 {
+		hdg = 360
+	}
+	rhdg := hdg + 180
+	if rhdg > 360 {
+		rhdg -= 360
+	}
+	label := fmt.Sprintf(" %.1f nm \n%d / %d", dist, hdg, rhdg)
+	style := TextStyle{
+		Font:            font,
+		Color:           ctx.cs.SelectedDataBlock,
+		DrawBackground:  true,
+		BackgroundColor: ctx.cs.Background}
+	textPos := mid2f(ml.dragStart, ml.dragEnd)
+
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	td.AddTextCentered(label, textPos, style)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+}

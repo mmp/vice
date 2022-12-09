@@ -64,6 +64,8 @@ type RadarScopePane struct {
 
 	acSelectedByDatablock *Aircraft
 
+	measuringLine MeasuringLine
+
 	primaryButtonDoubleClicked bool
 	primaryDragStart           [2]float32
 	primaryDragEnd             [2]float32
@@ -583,7 +585,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawVectorLines(ctx, transforms, cb)
 	rs.drawRangeIndicators(ctx, transforms, cb)
 	rs.drawMIT(ctx, transforms, cb)
-	rs.drawMeasuringLine(ctx, transforms, cb)
+	rs.measuringLine.Draw(ctx, rs.labelFont, transforms, cb)
 	rs.drawHighlighted(ctx, transforms, cb)
 
 	// Mouse events last, so that the datablock bounds are current.
@@ -1355,47 +1357,6 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms Scope
 		transforms.LoadWindowViewingMatrices(cb)
 		td.GenerateCommands(cb)
 	}
-}
-
-func (rs *RadarScopePane) drawMeasuringLine(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	if !rs.primaryButtonDoubleClicked {
-		return
-	}
-
-	// TODO: separate color for this rather than piggybacking?
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-
-	ld.AddLine(rs.primaryDragStart, rs.primaryDragEnd, ctx.cs.SelectedDataBlock)
-
-	// distance between the two points in nm
-	p0 := transforms.LatLongFromWindowP(rs.primaryDragStart)
-	p1 := transforms.LatLongFromWindowP(rs.primaryDragEnd)
-	dist := nmdistance2ll(p0, p1)
-
-	// heading and reciprocal
-	hdg := int(headingp2ll(p0, p1, database.MagneticVariation) + 0.5)
-	if hdg == 0 {
-		hdg = 360
-	}
-	rhdg := hdg + 180
-	if rhdg > 360 {
-		rhdg -= 360
-	}
-	label := fmt.Sprintf(" %.1f nm \n%d / %d", dist, hdg, rhdg)
-	style := TextStyle{
-		Font:            rs.labelFont,
-		Color:           ctx.cs.SelectedDataBlock,
-		DrawBackground:  true,
-		BackgroundColor: ctx.cs.Background}
-	textPos := mid2f(rs.primaryDragStart, rs.primaryDragEnd)
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	td.AddTextCentered(label, textPos, style)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
 }
 
 func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
