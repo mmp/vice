@@ -386,8 +386,24 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pan
 	var d0, ds, d1 Extent2D
 	if d.SplitLine.Axis == SplitAxisX {
 		d0, ds, d1 = displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
+
+		// Round the X extents to integer coordinates, to benefit the split
+		// line--since it's relatively small, it's helpful to make it a
+		// larger target.
+		d0.p1[0] = floor(d0.p1[0])
+		ds.p0[0] = floor(ds.p0[0])
+		ds.p1[0] = ceil(ds.p1[0])
+		d1.p0[0] = ceil(d1.p0[0])
+
 	} else {
 		d0, ds, d1 = displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
+
+		// For a y split, similarly round y bounds up/down to integer
+		// coordinates to give the split line a better chance.
+		d0.p1[1] = floor(d0.p1[1])
+		ds.p0[1] = floor(ds.p0[1])
+		ds.p1[1] = ceil(ds.p1[1])
+		d1.p0[1] = ceil(d1.p0[1])
 	}
 
 	// Now figure out which it is inside.

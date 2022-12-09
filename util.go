@@ -163,6 +163,14 @@ func sign(v float32) float32 {
 	return 0
 }
 
+func floor(v float32) float32 {
+	return float32(math.Floor(float64(v)))
+}
+
+func ceil(v float32) float32 {
+	return float32(math.Ceil(float64(v)))
+}
+
 func abs(x int) int {
 	if x < 0 {
 		return -x
