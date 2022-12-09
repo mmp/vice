@@ -67,8 +67,6 @@ type RadarScopePane struct {
 	measuringLine MeasuringLine
 
 	primaryButtonDoubleClicked bool
-	primaryDragStart           [2]float32
-	primaryDragEnd             [2]float32
 
 	lastRangeNotificationPlayed time.Time
 
@@ -1421,11 +1419,6 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 	}
 
 	// Handle dragging the scope center
-	if ctx.mouse.dragging[mouseButtonPrimary] && rs.primaryButtonDoubleClicked {
-		rs.primaryDragEnd = add2f(rs.primaryDragEnd, ctx.mouse.dragDelta)
-	} else if rs.primaryButtonDoubleClicked {
-		rs.primaryButtonDoubleClicked = false
-	}
 	if ctx.mouse.dragging[mouseButtonSecondary] {
 		delta := ctx.mouse.dragDelta
 		if delta[0] != 0 || delta[1] != 0 {
@@ -1469,11 +1462,6 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 	}
 
 	// Update selected aircraft
-	if ctx.mouse.doubleClicked[mouseButtonPrimary] {
-		rs.primaryButtonDoubleClicked = true
-		rs.primaryDragStart = ctx.mouse.pos
-		rs.primaryDragEnd = rs.primaryDragStart
-	}
 	if ctx.mouse.clicked[mouseButtonPrimary] {
 		var clickedAircraft *Aircraft
 		clickedDistance := float32(20) // in pixels; don't consider anything farther away
