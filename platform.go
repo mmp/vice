@@ -75,10 +75,12 @@ type GLFWPlatform struct {
 	time                   float64
 	mouseJustPressed       [3]bool
 	mouseCursors           [imgui.MouseCursorCount]*glfw.Cursor
+	currentCursor          *glfw.Cursor
 	inputCharacters        string
 	anyEvents              bool
 	lastMouseX, lastMouseY float64
 	multisample            bool
+	windowTitle            string
 }
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
@@ -245,12 +247,15 @@ func (g *GLFWPlatform) NewFrame() {
 		//glfw.SetInputMode(g.window, glfw.Cursor, glfw.CursorHidden)
 	} else {
 		// Show OS mouse cursor
-		// FIXME-PLATFORM: Unfocused windows seems to fail changing the mouse cursor with Window 3.2, but 3.3 works here.
-		if g.mouseCursors[imgui_cursor] != nil {
-			g.window.SetCursor(g.mouseCursors[imgui_cursor])
-		} else {
-			g.window.SetCursor(g.mouseCursors[imgui.MouseCursorArrow])
+		cursor := g.mouseCursors[imgui_cursor]
+		if cursor == nil {
+			cursor = g.mouseCursors[imgui.MouseCursorArrow]
 		}
+		if cursor != g.currentCursor {
+			g.currentCursor = cursor
+			g.window.SetCursor(cursor)
+		}
+
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
 	}
 }
@@ -356,7 +361,10 @@ func (g *GLFWPlatform) createMouseCursors() {
 }
 
 func (g *GLFWPlatform) SetWindowTitle(text string) {
-	g.window.SetTitle(text)
+	if text != g.windowTitle {
+		g.window.SetTitle(text)
+		g.windowTitle = text
+	}
 }
 
 func (g *GLFWPlatform) GetClipboard() imgui.Clipboard {
