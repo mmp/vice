@@ -121,6 +121,8 @@ var (
 	fa5RegularTTF string
 	//go:embed "resources/Font Awesome 5 Free-Solid-900.otf.zst"
 	fa5SolidTTF string
+	//go:embed "resources/ibm_ega_8x14.ttf.zst"
+	ibmEGA8x14 string
 )
 
 // Each loaded (font,size) combination is represented by (surprise) a Font.
@@ -299,6 +301,7 @@ func fontsInit(r Renderer) {
 	add(inconsolataUltraCondensedRegularTTF, true, "Inconsolata Ultra-Condensed Regular")
 	add(inconsolataRegularTTF, true, "Inconsolata Regular")
 	add(shareTechMonoRegularTTF, true, "ShareTech Mono Regular")
+	add(ibmEGA8x14, true, "IBM EGA 8x14")
 
 	image := io.Fonts().TextureDataRGBA32()
 	lg.Printf("Fonts texture used %.1f MB", float32(image.Width*image.Height*4)/(1024*1024))
