@@ -590,7 +590,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 
 		// normally it's groundspeed next, unless there's a squawk
 		// situation that we need to flag...
-		if duplicateSquawk && ac.mode != Standby && ac.squawk != Squawk(1200) && ac.squawk != 0 && flashcycle&1 == 0 {
+		if duplicateSquawk && ac.mode != Standby && ac.squawk != Squawk(0o1200) && ac.squawk != 0 && flashcycle&1 == 0 {
 			datablock.WriteString("CODE")
 		} else if !duplicateSquawk && ac.mode != Standby && ac.squawk != ac.assignedSquawk && flashcycle&1 == 0 {
 			datablock.WriteString(ac.squawk.String())
@@ -657,7 +657,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 			altAnnotation = FontAwesomeIconArrowDown + " "
 		}
 
-		if ac.squawk == Squawk(1200) {
+		if ac.squawk == Squawk(0o1200) {
 			// VFR
 			datablock.WriteString(fmt.Sprintf(" %03d", alt100s))
 			datablock.WriteString(altAnnotation)
@@ -671,7 +671,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		// TODO: Here add level if at wrong alt...
 
 		// Have already established it's not squawking standby.
-		if duplicateSquawk && ac.squawk != Squawk(1200) && ac.squawk != 0 {
+		if duplicateSquawk && ac.squawk != Squawk(0o1200) && ac.squawk != 0 {
 			if flashcycle&1 == 0 {
 				datablock.WriteString("CODE")
 			} else {

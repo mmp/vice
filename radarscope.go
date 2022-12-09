@@ -786,7 +786,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, latLongFromWindowV func(p
 			// Draw tracks
 			if ac.mode == Standby {
 				pd.AddPoint(pw, trackColor)
-			} else if ac.squawk == Squawk(1200) {
+			} else if ac.squawk == Squawk(0o1200) {
 				pxb := px * .7    // a little smaller
 				sc := float32(.8) // leave a little space at the corners
 				rs.linesDrawBuilder.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), trackColor)
