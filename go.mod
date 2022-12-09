@@ -18,7 +18,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
-	github.com/mmp/sct2 v0.0.0-20221209001128-798175e4e112 // indirect
+	github.com/mmp/sct2 v0.0.0-20221209140800-db21d3a40e46 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	golang.org/x/image v0.0.0-20190321063152-3fc05d484e9f // indirect
 	golang.org/x/sys v0.1.0 // indirect
