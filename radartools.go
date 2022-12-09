@@ -426,6 +426,53 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	return &ghost
 }
 
+func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	if !c.ShowCRDARegions {
+		return
+	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+
+	// Find the intersection of the two runways.  Work in nm space, not lat-long
+	src, dst := c.getRunways()
+	if src == nil {
+		return
+	}
+
+	if dst != nil {
+		p, ok := runwayIntersection(src, dst)
+		if !ok {
+			lg.Printf("no intersection between runways?!")
+		}
+		//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
+		//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
+		var pd PointsDrawBuilder
+		pd.AddPoint(p, RGB{1, 0, 0})
+		pd.GenerateCommands(cb)
+	}
+
+	// we have the runway heading, but we want to go the opposite direction
+	// and then +/- HeadingTolerance.
+	rota := src.heading + 180 - c.GlideslopeLateralSpread - database.MagneticVariation
+	rotb := src.heading + 180 + c.GlideslopeLateralSpread - database.MagneticVariation
+
+	// Lay out the vectors in nm space, not lat-long
+	sina, cosa := sin(radians(rota)), cos(radians(rota))
+	va := [2]float32{sina, cosa}
+	dist := float32(25)
+	va = scale2f(va, dist)
+
+	sinb, cosb := sin(radians(rotb)), cos(radians(rotb))
+	vb := scale2f([2]float32{sinb, cosb}, dist)
+
+	// Over to lat-long to draw the lines
+	vall, vbll := nm2ll(va), nm2ll(vb)
+	ld := ColoredLinesDrawBuilder{}
+	ld.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
+	ld.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
+	ld.GenerateCommands(cb)
+}
+
 func (c *CRDAConfig) DrawUI() bool {
 	updateGhosts := false
 

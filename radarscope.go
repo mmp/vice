@@ -581,7 +581,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	rs.drawRoute(ctx, transforms, cb)
 
-	rs.drawCRDARegions(ctx, transforms, cb)
+	rs.CRDAConfig.DrawRegions(ctx, transforms, cb)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	rs.drawTracks(ctx, transforms, cb)
@@ -1557,54 +1557,4 @@ func (rs *RadarScopePane) vectorLineEnd(ac *Aircraft) Point2LL {
 		lg.Printf("unexpected vector line mode: %d", rs.VectorLineMode)
 		return Point2LL{}
 	}
-}
-
-func (rs *RadarScopePane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	if !rs.CRDAConfig.ShowCRDARegions {
-		return
-	}
-
-	transforms.LoadLatLongViewingMatrices(cb)
-
-	// Find the intersection of the two runways.  Work in nm space, not lat-long
-	if true {
-		src, dst := rs.CRDAConfig.getRunways()
-		if src != nil && dst != nil {
-			p, ok := runwayIntersection(src, dst)
-			if !ok {
-				lg.Printf("no intersection between runways?!")
-			}
-			//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
-			//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
-			var pd PointsDrawBuilder
-			pd.AddPoint(p, RGB{1, 0, 0})
-			pd.GenerateCommands(cb)
-		}
-	}
-
-	src, _ := rs.CRDAConfig.getRunways()
-	if src == nil {
-		return
-	}
-
-	// we have the runway heading, but we want to go the opposite direction
-	// and then +/- HeadingTolerance.
-	rota := src.heading + 180 - rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
-	rotb := src.heading + 180 + rs.CRDAConfig.GlideslopeLateralSpread - database.MagneticVariation
-
-	// Lay out the vectors in nm space, not lat-long
-	sina, cosa := sin(radians(rota)), cos(radians(rota))
-	va := [2]float32{sina, cosa}
-	dist := float32(25)
-	va = scale2f(va, dist)
-
-	sinb, cosb := sin(radians(rotb)), cos(radians(rotb))
-	vb := scale2f([2]float32{sinb, cosb}, dist)
-
-	// Over to lat-long to draw the lines
-	vall, vbll := nm2ll(va), nm2ll(vb)
-	ld := ColoredLinesDrawBuilder{}
-	ld.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
-	ld.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
-	ld.GenerateCommands(cb)
 }
