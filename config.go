@@ -554,6 +554,7 @@ func (c *PositionConfig) Duplicate() *PositionConfig {
 	nc.DisplayRoot = c.DisplayRoot.Duplicate()
 	nc.Frequencies = DuplicateMap(c.Frequencies)
 
+	nc.eventsId = InvalidEventSubscriberId
 	nc.frequenciesComboBoxState = nil
 	nc.txFrequencies = nil
 	nc.rxFrequencies = nil
