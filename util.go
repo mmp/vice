@@ -355,7 +355,7 @@ func (e Extent2D) SplitY(y float32, lineWidth int) (Extent2D, Extent2D, Extent2D
 }
 
 func (e Extent2D) Inside(p [2]float32) bool {
-	return p[0] >= e.p0[0] && p[0] < e.p1[0] && p[1] >= e.p0[1] && p[1] < e.p1[1]
+	return p[0] >= e.p0[0] && p[0] <= e.p1[0] && p[1] >= e.p0[1] && p[1] <= e.p1[1]
 }
 
 func Overlaps(a Extent2D, b Extent2D) bool {
