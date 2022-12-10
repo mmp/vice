@@ -57,6 +57,11 @@ type Platform interface {
 	// GetClipboard() returns an object that implements the imgui.Clipboard
 	// interface so that copy and paste can be supported.
 	GetClipboard() imgui.Clipboard
+	// Enables a mode where the mouse is constrained to be within the
+	// specified pixel extent, specified in window coordinates.
+	StartCaptureMouse(e Extent2D)
+	// Disable mouse capture.
+	EndCaptureMouse()
 }
 
 // Scaling factor to account for Retina-style displays
@@ -81,6 +86,7 @@ type GLFWPlatform struct {
 	lastMouseX, lastMouseY float64
 	multisample            bool
 	windowTitle            string
+	mouseCapture           Extent2D
 }
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
@@ -258,6 +264,19 @@ func (g *GLFWPlatform) NewFrame() {
 
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
 	}
+
+	// If mouse capture is enabled, check the mouse position and clamp it
+	// to the bounds if necessary.
+	if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 {
+		x, y := g.window.GetCursorPos()
+		xy32 := [2]float32{float32(x), float32(y)}
+		if !g.mouseCapture.Inside(xy32) {
+			lg.Printf("outside: %v / %v", xy32, g.mouseCapture)
+			xy32 = g.mouseCapture.ClosestPointInBox(xy32)
+			lg.Printf("clamped %v", xy32)
+			g.window.SetCursorPos(float64(xy32[0]), float64(xy32[1]))
+		}
+	}
 }
 
 func (g *GLFWPlatform) PostRender() {
@@ -381,6 +400,16 @@ func (cb GLFWClipboard) Text() (string, error) {
 
 func (cb GLFWClipboard) SetText(text string) {
 	cb.window.SetClipboardString(text)
+}
+
+func (g *GLFWPlatform) StartCaptureMouse(e Extent2D) {
+	g.mouseCapture = Extent2D{
+		p0: [2]float32{ceil(e.p0[0]), ceil(e.p0[1])},
+		p1: [2]float32{floor(e.p1[0]), floor(e.p1[1])}}
+}
+
+func (g *GLFWPlatform) EndCaptureMouse() {
+	g.mouseCapture = Extent2D{}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -696,4 +725,12 @@ func (cb SDLClipboard) Text() (string, error) {
 
 func (cb SDLClipboard) SetText(text string) {
 	_ = sdl.SetClipboardText(text)
+}
+
+func (s *SDLPlatform) StartCaptureMouse(e Extent2D) {
+	panic("unimplemented")
+}
+
+func (s *SDLPlatform) EndCaptureMouse() {
+	panic("unimplemented")
 }
