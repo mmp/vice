@@ -1,4 +1,4 @@
-// radarscope.go
+// scope-generic.go
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -64,8 +64,6 @@ type RadarScopePane struct {
 	acSelectedByDatablock *Aircraft
 
 	measuringLine MeasuringLine
-
-	primaryButtonDoubleClicked bool
 
 	lastRangeNotificationPlayed time.Time
 

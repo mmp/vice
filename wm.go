@@ -625,8 +625,8 @@ func wmDrawConfigEditor(p Platform) {
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewPerformancePane())
 		}
-		if imgui.Selectable("Radar Scope") {
-			wm.paneCreatePrompt = "Radar scope"
+		if imgui.Selectable("Radar Scope (Generic)") {
+			wm.paneCreatePrompt = "Radar scope (Generic)"
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewRadarScopePane("(Unnamed)"))
 		}
