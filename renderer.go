@@ -763,6 +763,19 @@ func (t *TrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	cb.DrawTriangles(ind, len(t.indices))
 }
 
+// TrianglesDrawBuilders are managed using a sync.Pool so that their buf
+// slice allocations persist across multiple uses.
+var trianglesDrawBuilderPool = sync.Pool{New: func() any { return &TrianglesDrawBuilder{} }}
+
+func GetTrianglesDrawBuilder() *TrianglesDrawBuilder {
+	return trianglesDrawBuilderPool.Get().(*TrianglesDrawBuilder)
+}
+
+func ReturnTrianglesDrawBuilder(td *TrianglesDrawBuilder) {
+	td.Reset()
+	trianglesDrawBuilderPool.Put(td)
+}
+
 // TextDrawBuilder accumulates text to be drawn, batching it up in a single
 // draw command.
 type TextDrawBuilder struct {
