@@ -858,7 +858,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext, transforms ScopeTransformations,
+func DrawRangeRings(center Point2LL, radius float32, color RGB, transforms ScopeTransformations,
 	cb *CommandBuffer) {
 	pixelDistanceNm := transforms.PixelDistanceNM()
 	centerWindow := transforms.WindowFromLatLongP(center)
@@ -866,10 +866,10 @@ func DrawRangeRings(center Point2LL, radius float32, ctx *PaneContext, transform
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 
-	for i := 1; i < 10; i++ {
+	for i := 1; i < 40; i++ {
 		// Radius of this ring in pixels
 		r := float32(i) * radius / pixelDistanceNm
-		ld.AddCircle(centerWindow, r, 360, ctx.cs.RangeRing)
+		ld.AddCircle(centerWindow, r, 360, color)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)

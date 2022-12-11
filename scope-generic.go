@@ -565,7 +565,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	if center, ok := database.Locate(rs.RangeRingCenter); ok && rs.DrawRangeRings {
 		cb.LineWidth(rs.LineWidth)
-		DrawRangeRings(center, rs.RangeRingRadius, ctx, transforms, cb)
+		DrawRangeRings(center, rs.RangeRingRadius, ctx.cs.RangeRing, transforms, cb)
 	}
 
 	rs.drawRoute(ctx, transforms, cb)
