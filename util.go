@@ -393,6 +393,10 @@ func (e Extent2D) Scale(s float32) Extent2D {
 	return Extent2D{p0: scale2f(e.p0, s), p1: scale2f(e.p1, s)}
 }
 
+func (e Extent2D) Lerp(p [2]float32) [2]float32 {
+	return [2]float32{lerp(p[0], e.p0[0], e.p1[0]), lerp(p[1], e.p0[1], e.p1[1])}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Geometry
 
@@ -433,6 +437,10 @@ func lerpRGB(x float32, a, b RGB) RGB {
 
 func (r RGB) Equals(other RGB) bool {
 	return r.R == other.R && r.G == other.G && r.B == other.B
+}
+
+func (r RGB) Scale(v float32) RGB {
+	return RGB{R: r.R * v, G: r.G * v, B: r.B * v}
 }
 
 func RGBFromHex(c int) RGB {
