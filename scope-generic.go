@@ -748,9 +748,9 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 				ld.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), trackColor)
 				ld.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), trackColor)
 				ld.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), trackColor)
-			} else if controller := server.GetTrackingController(ac.Callsign()); controller != "" {
+			} else if ac.trackingController != "" {
 				ch := "?"
-				if ctrl := server.GetController(controller); ctrl != nil {
+				if ctrl := server.GetController(ac.trackingController); ctrl != nil {
 					if pos := ctrl.GetPosition(); pos != nil {
 						ch = pos.scope
 					}
@@ -789,11 +789,11 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 
 		if !state.datablockTextCurrent {
 			hopo := ""
-			if controller := server.InboundHandoffController(ac.Callsign()); controller != "" {
-				hopo += FontAwesomeIconArrowLeft + controller
+			if ac.inboundHandoffController != "" {
+				hopo += FontAwesomeIconArrowLeft + ac.inboundHandoffController
 			}
-			if controller := server.OutboundHandoffController(ac.Callsign()); controller != "" {
-				hopo += FontAwesomeIconArrowRight + controller
+			if ac.outboundHandoffController != "" {
+				hopo += FontAwesomeIconArrowRight + ac.outboundHandoffController
 			}
 			if controller, ok := rs.pointedOutAircraft.Get(ac); ok {
 				hopo += FontAwesomeIconExclamationTriangle + controller
@@ -1092,16 +1092,14 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 		return cs.SelectedDataBlock
 	}
 
-	callsign := ac.Callsign()
-	if server.InboundHandoffController(callsign) != "" {
+	if ac.inboundHandoffController != "" {
 		return cs.HandingOffDataBlock
 	}
-	if server.OutboundHandoffController(callsign) != "" {
+	if ac.outboundHandoffController != "" {
 		return cs.HandingOffDataBlock
 	}
 
-	controller := server.GetTrackingController(callsign)
-	if controller != "" && controller == server.Callsign() {
+	if ac.trackingController != "" && ac.trackingController == server.Callsign() {
 		return cs.TrackedDataBlock
 	}
 

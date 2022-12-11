@@ -126,21 +126,6 @@ type ATCServer interface {
 	GetController(callsign string) *Controller
 	GetAllControllers() []*Controller
 
-	// GetTrackingController returns the callsign (e.g., PHL_TWR) of the
-	// controller that is tracking the aircraft with the given callsign.
-	// An empty string is returned if no controller is tracking it.
-	GetTrackingController(callsign string) string
-
-	// InboundHandoffController returns the callsign of the controller
-	// (e.g., JFK_APP), who has offered a handoff of the given aircraft to
-	// the current controller.  An empty string is returned if a handoff
-	// offer has not been made for the aircraft.
-	InboundHandoffController(callsign string) string
-
-	// OutboundHandoffController returns the controller to which the
-	// current controller has offered a handoff of the specified aircraft.
-	OutboundHandoffController(callsign string) string
-
 	SetPrimaryFrequency(f Frequency)
 
 	// GetUpdates causes the server to process inbound network messages to
@@ -315,18 +300,6 @@ func (d *DisconnectedATCServer) GetController(callsign string) *Controller {
 
 func (d *DisconnectedATCServer) GetAllControllers() []*Controller {
 	return nil
-}
-
-func (d *DisconnectedATCServer) GetTrackingController(callsign string) string {
-	return ""
-}
-
-func (d *DisconnectedATCServer) InboundHandoffController(callsign string) string {
-	return ""
-}
-
-func (d *DisconnectedATCServer) OutboundHandoffController(callsign string) string {
-	return ""
 }
 
 func (d *DisconnectedATCServer) AddAirportForWeather(airport string) {}

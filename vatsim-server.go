@@ -90,15 +90,6 @@ type VATSIMServer struct {
 	metar             map[string]METAR
 	atis              map[string][]ATIS
 
-	// Map from callsign to the controller currently tracking the aircraft (if any).
-	// Note that we don't require that we have the controller in |controllers|; we
-	// may see messages from out-of-range ones...
-	trackingControllers map[string]string
-	// Ones that we are tracking but have offered to another: callsign->dest. controller
-	outboundHandoffs map[string]string
-	// Ones that we are tracking but have offered to another: callsign->offering controller
-	inboundHandoffs map[string]string
-
 	airportsForWeather map[string]interface{}
 
 	atcValid bool
@@ -106,18 +97,15 @@ type VATSIMServer struct {
 
 func NewVATSIMServer() *VATSIMServer {
 	return &VATSIMServer{
-		aircraft:            make(map[string]*Aircraft),
-		flightStrips:        make(map[string]*FlightStrip),
-		controllers:         make(map[string]*Controller),
-		controllerSectors:   make(map[string]*Controller),
-		metar:               make(map[string]METAR),
-		atis:                make(map[string][]ATIS),
-		users:               make(map[string]*User),
-		pilots:              make(map[string]*Pilot),
-		trackingControllers: make(map[string]string),
-		outboundHandoffs:    make(map[string]string),
-		inboundHandoffs:     make(map[string]string),
-		airportsForWeather:  make(map[string]interface{}),
+		aircraft:           make(map[string]*Aircraft),
+		flightStrips:       make(map[string]*FlightStrip),
+		controllers:        make(map[string]*Controller),
+		controllerSectors:  make(map[string]*Controller),
+		metar:              make(map[string]METAR),
+		atis:               make(map[string][]ATIS),
+		users:              make(map[string]*User),
+		pilots:             make(map[string]*Pilot),
+		airportsForWeather: make(map[string]interface{}),
 	}
 }
 
@@ -242,30 +230,6 @@ func (v *VATSIMServer) GetAllControllers() []*Controller {
 	_, c := FlattenMap(v.controllers)
 	sort.Slice(c, func(i, j int) bool { return c[i].callsign < c[j].callsign })
 	return c
-}
-
-func (v *VATSIMServer) GetTrackingController(callsign string) string {
-	if tc, ok := v.trackingControllers[callsign]; ok {
-		return tc
-	} else {
-		return ""
-	}
-}
-
-func (v *VATSIMServer) InboundHandoffController(callsign string) string {
-	if controller, ok := v.inboundHandoffs[callsign]; ok {
-		return controller
-	} else {
-		return ""
-	}
-}
-
-func (v *VATSIMServer) OutboundHandoffController(callsign string) string {
-	if controller, ok := v.outboundHandoffs[callsign]; ok {
-		return controller
-	} else {
-		return ""
-	}
 }
 
 func (v *VATSIMServer) AddAirportForWeather(airport string) {
@@ -441,7 +405,7 @@ func (v *VATSIMServer) InitiateTrack(callsign string) error {
 	} else if v.trackedByAnotherController(callsign) {
 		return ErrOtherControllerHasTrack
 	} else {
-		v.trackingControllers[callsign] = v.callsign
+		ac.trackingController = v.callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		return v.controlDelegate.InitiateTrack(callsign)
 	}
@@ -454,10 +418,10 @@ func (v *VATSIMServer) DropTrack(callsign string) error {
 		return ErrNoAircraftForCallsign
 	} else if v.trackedByAnotherController(callsign) {
 		return ErrOtherControllerHasTrack
-	} else if _, ok := v.trackingControllers[callsign]; !ok {
+	} else if ac.trackingController != v.callsign {
 		return ErrNotTrackedByMe
 	} else {
-		delete(v.trackingControllers, callsign)
+		ac.trackingController = ""
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		return v.controlDelegate.DropTrack(callsign)
 	}
@@ -474,7 +438,7 @@ func (v *VATSIMServer) Handoff(callsign string, controller string) error {
 		return ErrNoController
 	} else {
 		// Use c.callsign in case we were given a sector id...
-		v.outboundHandoffs[callsign] = c.callsign
+		ac.outboundHandoffController = c.callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		return v.controlDelegate.Handoff(callsign, c.callsign)
 	}
@@ -485,13 +449,13 @@ func (v *VATSIMServer) AcceptHandoff(callsign string) error {
 		return ErrNotController
 	} else if ac := v.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
-	} else if _, ok := v.inboundHandoffs[callsign]; !ok {
+	} else if ac.inboundHandoffController == "" {
 		return ErrNotBeingHandedOffToMe
 	} else {
-		v.trackingControllers[callsign] = v.callsign
+		ac.trackingController = v.callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		err := v.controlDelegate.AcceptHandoff(callsign)
-		delete(v.inboundHandoffs, callsign) // only do this now so delegate can get the controller
+		ac.inboundHandoffController = "" // only do this now so delegate can get the controller
 		return err
 	}
 }
@@ -501,12 +465,12 @@ func (v *VATSIMServer) RejectHandoff(callsign string) error {
 		return ErrNotController
 	} else if ac := v.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
-	} else if _, ok := v.inboundHandoffs[callsign]; !ok {
+	} else if ac.inboundHandoffController == "" {
 		return ErrNotBeingHandedOffToMe
 	} else {
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		err := v.controlDelegate.RejectHandoff(callsign)
-		delete(v.inboundHandoffs, callsign) // only do this now so delegate can get the controller
+		ac.inboundHandoffController = "" // only do this now so delegate can get the controller
 		return err
 	}
 }
@@ -595,10 +559,6 @@ func (v *VATSIMServer) GetUpdates() {
 	for callsign, ac := range v.aircraft {
 		if now.Sub(ac.tracks[0].time).Minutes() > 30. {
 			delete(v.aircraft, callsign)
-			delete(v.trackingControllers, callsign)
-			delete(v.outboundHandoffs, callsign)
-			delete(v.inboundHandoffs, callsign)
-
 			eventStream.Post(&RemovedAircraftEvent{ac: ac})
 		}
 	}
@@ -628,9 +588,6 @@ func (v *VATSIMServer) Disconnect() {
 	v.controllerSectors = make(map[string]*Controller)
 	v.metar = make(map[string]METAR)
 	v.atis = make(map[string][]ATIS)
-	v.trackingControllers = make(map[string]string)
-	v.outboundHandoffs = make(map[string]string)
-	v.inboundHandoffs = make(map[string]string)
 }
 
 func (v *VATSIMServer) Connected() bool {
@@ -657,8 +614,8 @@ func (v *VATSIMServer) GetWindowTitle() string {
 }
 
 func (v *VATSIMServer) trackedByAnotherController(callsign string) bool {
-	c, ok := v.trackingControllers[callsign]
-	return ok && c != v.callsign
+	ac := v.GetAircraft(callsign)
+	return ac != nil && ac.trackingController != "" && ac.trackingController != v.callsign
 }
 
 func (v *VATSIMServer) send(fields ...interface{}) {
@@ -685,12 +642,12 @@ func (v *VATSIMServer) trackInitiated(callsign string, controller string) error 
 	// Sometimes we get this message for a/c we haven't seen. Don't worry
 	// about it when it happens...
 	if ac := v.GetAircraft(callsign); ac != nil {
-		if tc, ok := v.trackingControllers[callsign]; ok && tc != controller {
+		if ac.trackingController != "" {
 			// This seems to happen for far-away aircraft where we don't
 			// see all of the messages..
-			// lg.Printf("%s: %s is tracking controller but %s initiated track?", callsign, tc, controller)
+			// lg.Printf("%s: %s is tracking controller but %s initiated track?", callsign, ac.trackingController, controller)
 		}
-		v.trackingControllers[callsign] = controller
+		ac.trackingController = controller
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 	}
 	return nil

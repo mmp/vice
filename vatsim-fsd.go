@@ -181,20 +181,20 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 // $HAABE_TWR:ABE_APP:N11TV
 func handleHA(v *VATSIMServer, sender string, args []string) error {
 	from, callsign := args[1], args[2]
+	ac := v.getOrCreateAircraft(callsign)
 
-	if tc, ok := v.trackingControllers[callsign]; ok && tc != from {
-		lg.Printf("%s: %s is tracking but %s accepted h/o from %s?", callsign, tc, sender, from)
+	if ac.trackingController != from {
+		lg.Printf("%s: %s is tracking but %s accepted h/o from %s?", callsign, ac.trackingController,
+			sender, from)
 	}
-
-	ac := v.getOrCreateAircraft(callsign) // make sure it's in the changes list
 
 	if from == v.callsign {
 		// from us!
-		delete(v.outboundHandoffs, callsign)
+		ac.outboundHandoffController = ""
 		eventStream.Post(&AcceptedHandoffEvent{controller: sender, ac: ac})
 	}
 
-	v.trackingControllers[callsign] = sender
+	ac.trackingController = sender
 
 	return nil
 }
@@ -204,8 +204,8 @@ func handleHA(v *VATSIMServer, sender string, args []string) error {
 func handleHO(v *VATSIMServer, sender string, args []string) error {
 	receiver, callsign := args[1], args[2]
 	if receiver == v.callsign {
-		v.inboundHandoffs[callsign] = sender
 		ac := v.getOrCreateAircraft(callsign)
+		ac.inboundHandoffController = sender
 		eventStream.Post(&OfferedHandoffEvent{controller: sender, ac: ac})
 	}
 
@@ -519,12 +519,17 @@ func init() {
 
 	r(NewMessageSpec("$CQ::DR", 4, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[3]
-		if c, ok := v.trackingControllers[callsign]; ok && c != sender {
-			lg.Printf("%s: %s dropped track but currently tracked by %s", callsign, sender, c)
+		ac := v.getOrCreateAircraft(callsign)
+
+		if ac.trackingController != sender {
+			lg.Printf("%s: %s dropped track but currently tracked by %s", callsign, sender,
+				ac.trackingController)
 		}
-		delete(v.trackingControllers, callsign)
-		_ = v.getOrCreateAircraft(callsign)
-		// TODO: delete it from inbound / outbound handoffs?
+
+		ac.trackingController = ""
+		ac.inboundHandoffController = ""
+		ac.outboundHandoffController = ""
+
 		return nil
 	}))
 
@@ -547,9 +552,10 @@ func init() {
 
 	r(NewMessageSpec("$CQ::HT", 5, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[3]
-		v.trackingControllers[callsign] = sender
 		ac := v.getOrCreateAircraft(callsign)
-		if _, ok := v.outboundHandoffs[callsign]; ok {
+		ac.trackingController = sender
+		if ac.outboundHandoffController != "" {
+			ac.outboundHandoffController = ""
 			eventStream.Post(&AcceptedHandoffEvent{controller: sender, ac: ac})
 		}
 		return nil
@@ -658,12 +664,18 @@ func init() {
 			delete(v.controllers, sender)
 		}
 
-		v.trackingControllers = FilterMap(v.trackingControllers,
-			func(callsign, controller string) bool { return controller != sender })
-		v.outboundHandoffs = FilterMap(v.outboundHandoffs,
-			func(callsign, controller string) bool { return controller != sender })
-		v.inboundHandoffs = FilterMap(v.inboundHandoffs,
-			func(callsign, controller string) bool { return controller != sender })
+		for _, ac := range v.aircraft {
+			if ac.trackingController == sender {
+				ac.trackingController = ""
+				ac.inboundHandoffController = ""
+			}
+			if ac.outboundHandoffController == sender {
+				// TODO: send a rejected handoff event if we were trying to
+				// hand off to this controller?
+				ac.outboundHandoffController = ""
+			}
+		}
+
 		return nil
 	}))
 
@@ -672,8 +684,6 @@ func init() {
 
 	r(NewMessageSpec("#DP", 2, func(v *VATSIMServer, callsign string, args []string) error {
 		if ac := v.GetAircraft(callsign); ac != nil {
-			delete(v.inboundHandoffs, callsign)
-			delete(v.outboundHandoffs, callsign)
 			eventStream.Post(&RemovedAircraftEvent{ac: ac})
 		}
 		delete(v.aircraft, callsign)
@@ -701,8 +711,8 @@ func init() {
 
 	r(NewMessageSpec("#PC::CCP:HC", 5, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[4]
-		delete(v.outboundHandoffs, callsign)
 		ac := v.getOrCreateAircraft(callsign)
+		ac.outboundHandoffController = ""
 		eventStream.Post(&RejectedHandoffEvent{controller: sender, ac: ac})
 		return nil
 	}))

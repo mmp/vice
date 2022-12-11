@@ -84,15 +84,19 @@ func (a *AircraftCommandArg) Expand(s string) (string, error) {
 // user can edit the aircraft's properties, either because it is untracked
 // or because the user is tracking it.
 func canEditAircraftAssignments(callsign string) bool {
-	tc := server.GetTrackingController(callsign)
-	return tc == "" || tc == server.Callsign()
+	if ac := server.GetAircraft(callsign); ac == nil {
+		return false
+	} else {
+		return ac.trackingController == "" || ac.trackingController == server.Callsign()
+	}
 }
 
 // aircraftTrackedByMe is a utility function for the AircraftCommandArg's
 // validateCallsign callback.  It checks whether the aircraft is currently
 // tracked by the user.
 func aircraftTrackedByMe(callsign string) bool {
-	return server.GetTrackingController(callsign) == server.Callsign()
+	ac := server.GetAircraft(callsign)
+	return ac != nil && ac.trackingController == server.Callsign()
 }
 
 // aircraftHasFlightPlan is a utility function for the AircraftCommandArg's
@@ -107,14 +111,17 @@ func aircraftHasFlightPlan(callsign string) bool {
 // validateCallsign callback.  It checks whether the aircraft is not
 // tracked by any controller.
 func aircraftIsUntracked(callsign string) bool {
-	return server.GetTrackingController(callsign) == ""
+	ac := server.GetAircraft(callsign)
+	return ac != nil && ac.trackingController == ""
 }
 
-// aircraftTrackedByMe is a utility function for the AircraftCommandArg's
-// validateCallsign callback.  It checks whether the aircraft is being handed
-// off by another controller to the current controller.
+// aircraftIsInboundHandoff is a utility function for the
+// AircraftCommandArg's validateCallsign callback.  It checks whether the
+// aircraft is being handed off by another controller to the current
+// controller.
 func aircraftIsInboundHandoff(callsign string) bool {
-	return server.InboundHandoffController(callsign) != ""
+	ac := server.GetAircraft(callsign)
+	return ac != nil && ac.inboundHandoffController != ""
 }
 
 // ControllerCommandArg represents an argument that identifies another
@@ -1143,7 +1150,7 @@ func (*DropTrackCommand) Help() string {
 	return "Drops the track or refuses an offered handoff of the selected aircraft."
 }
 func (*DropTrackCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if server.InboundHandoffController(ac.callsign) != "" {
+	if ac.inboundHandoffController != "" {
 		return ErrorConsoleEntry(server.RejectHandoff(ac.callsign))
 	} else {
 		return ErrorConsoleEntry(server.DropTrack(ac.callsign))
@@ -1189,7 +1196,7 @@ func (*TrackAircraftCommand) Help() string {
 	return "Initiates a track or accepts an offered handoff for the specified aircraft."
 }
 func (*TrackAircraftCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if server.InboundHandoffController(ac.callsign) != "" {
+	if ac.inboundHandoffController != "" {
 		// it's being offered as a handoff
 		return ErrorConsoleEntry(server.AcceptHandoff(ac.callsign))
 	} else {
@@ -1325,14 +1332,14 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 				result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
 			}
 		}
-		if c := server.GetTrackingController(ac.Callsign()); c != "" {
-			result += fmt.Sprintf("\n%sTracked by: %s", indstr, c)
+		if ac.trackingController != "" {
+			result += fmt.Sprintf("\n%sTracked by: %s", indstr, ac.trackingController)
 		}
-		if c := server.InboundHandoffController(ac.Callsign()); c != "" {
-			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, c)
+		if ac.inboundHandoffController != "" {
+			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, ac.inboundHandoffController)
 		}
-		if c := server.OutboundHandoffController(ac.Callsign()); c != "" {
-			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, c)
+		if ac.outboundHandoffController != "" {
+			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, ac.outboundHandoffController)
 		}
 		if ac.squawk != ac.assignedSquawk {
 			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.squawk)

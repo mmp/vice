@@ -199,6 +199,10 @@ type Aircraft struct {
 	flightPlan      *FlightPlan
 
 	tracks [10]RadarTrack
+
+	trackingController        string
+	inboundHandoffController  string
+	outboundHandoffController string
 }
 
 type AircraftPair struct {

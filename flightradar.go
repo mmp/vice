@@ -76,18 +76,15 @@ func (fr *FlightRadarServer) GetAllAircraft() []*Aircraft {
 
 var ControlUnsupported = errors.New("Controlling is not possible with a FlightRadar connection")
 
-func (fr *FlightRadarServer) GetFlightStrip(callsign string) *FlightStrip      { return nil }
-func (fr *FlightRadarServer) GetMETAR(location string) *METAR                  { return nil }
-func (fr *FlightRadarServer) GetAirportATIS(airport string) []ATIS             { return nil }
-func (fr *FlightRadarServer) RequestControllerATIS(controller string) error    { return nil }
-func (fr *FlightRadarServer) GetUser(callsign string) *User                    { return nil }
-func (fr *FlightRadarServer) GetController(callsign string) *Controller        { return nil }
-func (fr *FlightRadarServer) GetAllControllers() []*Controller                 { return nil }
-func (fr *FlightRadarServer) GetTrackingController(callsign string) string     { return "" }
-func (fr *FlightRadarServer) InboundHandoffController(callsign string) string  { return "" }
-func (fr *FlightRadarServer) OutboundHandoffController(callsign string) string { return "" }
-func (fr *FlightRadarServer) AddAirportForWeather(airport string)              {}
-func (fr *FlightRadarServer) SetPrimaryFrequency(f Frequency)                  {}
+func (fr *FlightRadarServer) GetFlightStrip(callsign string) *FlightStrip   { return nil }
+func (fr *FlightRadarServer) GetMETAR(location string) *METAR               { return nil }
+func (fr *FlightRadarServer) GetAirportATIS(airport string) []ATIS          { return nil }
+func (fr *FlightRadarServer) RequestControllerATIS(controller string) error { return nil }
+func (fr *FlightRadarServer) GetUser(callsign string) *User                 { return nil }
+func (fr *FlightRadarServer) GetController(callsign string) *Controller     { return nil }
+func (fr *FlightRadarServer) GetAllControllers() []*Controller              { return nil }
+func (fr *FlightRadarServer) AddAirportForWeather(airport string)           {}
+func (fr *FlightRadarServer) SetPrimaryFrequency(f Frequency)               {}
 
 func (fr *FlightRadarServer) SetSquawk(callsign string, squawk Squawk) error {
 	return ControlUnsupported
