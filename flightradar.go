@@ -130,6 +130,10 @@ func (fr *FlightRadarServer) RejectHandoff(callsign string) error {
 	return ControlUnsupported
 }
 
+func (fr *FlightRadarServer) CancelHandoff(callsign string) error {
+	return ControlUnsupported
+}
+
 func (fr *FlightRadarServer) DropTrack(callsign string) error {
 	return ControlUnsupported
 }

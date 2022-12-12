@@ -19,6 +19,7 @@ var (
 	ErrOtherControllerHasTrack = errors.New("Another controller is already tracking the aircraft")
 	ErrNotTrackedByMe          = errors.New("Aircraft is not tracked by current controller")
 	ErrNotBeingHandedOffToMe   = errors.New("Aircraft not being handed off to current controller")
+	ErrNotHandingOffAircraft   = errors.New("Aircraft is not being handed off to another controller")
 	ErrNoFlightPlanFiled       = errors.New("No flight plan filed for aircraft")
 	ErrNoController            = errors.New("No controller with that callsign")
 	ErrNoControllerOrAircraft  = errors.New("No controller or aircraft with that callsign")
@@ -63,6 +64,7 @@ type AircraftController interface {
 	Handoff(callsign string, controller string) error
 	AcceptHandoff(callsign string) error
 	RejectHandoff(callsign string) error
+	CancelHandoff(callsign string) error
 	PointOut(callsign string, controller string) error
 
 	SendTextMessage(m TextMessage) error
@@ -239,6 +241,9 @@ func (*InertAircraftController) AcceptHandoff(callsign string) error {
 	return ErrNoConnection
 }
 func (*InertAircraftController) RejectHandoff(callsign string) error {
+	return ErrNoConnection
+}
+func (*InertAircraftController) CancelHandoff(callsign string) error {
 	return ErrNoConnection
 }
 func (*InertAircraftController) PointOut(callsign string, controller string) error {

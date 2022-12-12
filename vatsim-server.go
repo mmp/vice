@@ -475,6 +475,21 @@ func (v *VATSIMServer) RejectHandoff(callsign string) error {
 	}
 }
 
+func (v *VATSIMServer) CancelHandoff(callsign string) error {
+	if !v.atcValid {
+		return ErrNotController
+	} else if ac := v.GetAircraft(callsign); ac == nil {
+		return ErrNoAircraftForCallsign
+	} else if ac.outboundHandoffController == "" {
+		return ErrNotHandingOffAircraft
+	} else {
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
+		err := v.controlDelegate.CancelHandoff(callsign)
+		ac.outboundHandoffController = "" // only do this now so delegate can get the controller
+		return err
+	}
+}
+
 func (v *VATSIMServer) PointOut(callsign string, controller string) error {
 	if !v.atcValid {
 		return ErrNotController
