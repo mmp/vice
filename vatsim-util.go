@@ -165,6 +165,8 @@ func (c *VATSIMNetConnection) SendMessage(callsign string, fields ...interface{}
 			msg += fmt.Sprintf("%d", v)
 		case float32, float64:
 			msg += fmt.Sprintf("%f", v)
+		case Squawk:
+			msg += v.String()
 		default:
 			lg.Errorf("Unhandled type passed to SendMessage(): %T", v)
 			continue
