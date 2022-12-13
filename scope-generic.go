@@ -1435,6 +1435,12 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 
 	// Update selected aircraft
 	if ctx.mouse.clicked[mouseButtonPrimary] {
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) {
+			// copy current mouse lat-long to the clipboard
+			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.pos)
+			platform.GetClipboard().SetText(mouseLatLong.DMSString())
+		}
+
 		var clickedAircraft *Aircraft
 		clickedDistance := float32(20) // in pixels; don't consider anything farther away
 
