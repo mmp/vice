@@ -364,7 +364,7 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	}
 
 	// Copy over some basic stuff from the sector file
-	db.defaultAirport = sectorFile.DefaultAirport
+	db.defaultAirport = strings.TrimSpace(sectorFile.DefaultAirport) // TODO: sct2 should do this
 	db.defaultCenter = Point2LLFromSct2(sectorFile.Center)
 	db.NmPerLatitude = float32(sectorFile.NmPerLatitude)
 	db.NmPerLongitude = float32(sectorFile.NmPerLongitude)
