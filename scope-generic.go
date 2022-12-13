@@ -561,7 +561,10 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		if positionConfig.selectedAircraft != nil {
 			p = positionConfig.selectedAircraft.Position()
 		}
-		DrawCompass(p, ctx, rs.RotationAngle, rs.labelFont, transforms, cb)
+		bounds := Extent2D{
+			p0: [2]float32{0, 0},
+			p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
+		DrawCompass(p, ctx, rs.RotationAngle, rs.labelFont, ctx.cs.Compass, bounds, transforms, cb)
 	}
 
 	if center, ok := database.Locate(rs.RangeRingCenter); ok && rs.DrawRangeRings {

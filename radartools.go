@@ -771,16 +771,11 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font,
-	transforms ScopeTransformations, cb *CommandBuffer) {
+func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font, color RGB,
+	bounds Extent2D, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
 	pw := transforms.WindowFromLatLongP(p)
-
-	// Bounding box of the current subwindow, in window coordinates.
-	bounds := Extent2D{
-		p0: [2]float32{0, 0},
-		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
 
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
@@ -803,7 +798,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 		// point ten pixels back inside the window toward the center.
 		pEdge := add2f(pw, scale2f(dir, t))
 		pInset := add2f(pw, scale2f(dir, t-10))
-		ld.AddLine(pEdge, pInset, ctx.cs.Compass)
+		ld.AddLine(pEdge, pInset, color)
 
 		// Every 10 degrees draw a heading label.
 		if int(h)%10 == 0 {
@@ -843,7 +838,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 				lg.Printf("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
 
-			td.AddText(string(label), pText, TextStyle{Font: font, Color: ctx.cs.Compass})
+			td.AddText(string(label), pText, TextStyle{Font: font, Color: color})
 		}
 	}
 
