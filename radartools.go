@@ -1080,3 +1080,35 @@ func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransfor
 	}
 	return
 }
+
+////////////////////////////////////////////////////////////////////////////
+// Range limits
+
+type RangeLimitList [NumRangeTypes]RangeLimits
+
+func (rl *RangeLimitList) DrawUI() {
+	if imgui.BeginTable("RangeLimits", 4) {
+		for i := range rl {
+			rules := RangeLimitFlightRules(i).String()
+			imgui.TableNextColumn()
+			imgui.Text(rules)
+			imgui.TableNextColumn()
+			imgui.Text("Warning")
+			imgui.TableNextColumn()
+			imgui.SliderFloatV("Lateral (nm)##warn"+rules, &rl[i].WarningLateral, 0, 10, "%.1f", 0)
+			imgui.TableNextColumn()
+			imgui.InputIntV("Vertical (feet)##warn"+rules, &rl[i].WarningVertical, 100, 100, 0)
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.TableNextColumn()
+			imgui.Text("Violation")
+			imgui.TableNextColumn()
+			imgui.SliderFloatV("Lateral (nm)##viol"+rules, &rl[i].ViolationLateral,
+				0, 10, "%.1f", 0)
+			imgui.TableNextColumn()
+			imgui.InputIntV("Vertical (feet)##viol"+rules, &rl[i].ViolationVertical, 100, 100, 0)
+		}
+		imgui.EndTable()
+	}
+}

@@ -46,7 +46,7 @@ type RadarScopePane struct {
 
 	DrawRangeIndicators bool
 	RangeIndicatorStyle int
-	RangeLimits         [NumRangeTypes]RangeLimits
+	RangeLimits         RangeLimitList
 	rangeWarnings       map[AircraftPair]interface{}
 
 	AutoMIT         bool
@@ -435,31 +435,8 @@ func (rs *RadarScopePane) DrawUI() {
 			imgui.SameLine()
 			imgui.RadioButtonInt("Lines", &rs.RangeIndicatorStyle, RangeIndicatorLine)
 
-			if imgui.BeginTable("RangeLimits", 4) {
-				for i := range rs.RangeLimits {
-					rules := RangeLimitFlightRules(i).String()
-					imgui.TableNextColumn()
-					imgui.Text(rules)
-					imgui.TableNextColumn()
-					imgui.Text("Warning")
-					imgui.TableNextColumn()
-					imgui.SliderFloatV("Lateral (nm)##warn"+rules, &rs.RangeLimits[i].WarningLateral,
-						0, 10, "%.1f", 0)
-					imgui.TableNextColumn()
-					imgui.InputIntV("Vertical (feet)##warn"+rules, &rs.RangeLimits[i].WarningVertical, 100, 100, 0)
+			rs.RangeLimits.DrawUI()
 
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.TableNextColumn()
-					imgui.Text("Violation")
-					imgui.TableNextColumn()
-					imgui.SliderFloatV("Lateral (nm)##viol"+rules, &rs.RangeLimits[i].ViolationLateral,
-						0, 10, "%.1f", 0)
-					imgui.TableNextColumn()
-					imgui.InputIntV("Vertical (feet)##viol"+rules, &rs.RangeLimits[i].ViolationVertical, 100, 100, 0)
-				}
-				imgui.EndTable()
-			}
 			imgui.Separator()
 		}
 
