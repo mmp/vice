@@ -234,7 +234,11 @@ func (g *GLFWPlatform) NewFrame() {
 	// Setup inputs
 	if g.window.GetAttrib(glfw.Focused) != 0 {
 		x, y := g.window.GetCursorPos()
-		g.imguiIO.SetMousePosition(imgui.Vec2{X: float32(x), Y: float32(y)})
+		xy32 := [2]float32{float32(x), float32(y)}
+		if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 && !g.mouseCapture.Inside(xy32) {
+			xy32 = g.mouseCapture.ClosestPointInBox(xy32)
+		}
+		g.imguiIO.SetMousePosition(imgui.Vec2{X: xy32[0], Y: xy32[1]})
 	} else {
 		g.imguiIO.SetMousePosition(imgui.Vec2{X: -math.MaxFloat32, Y: -math.MaxFloat32})
 	}
