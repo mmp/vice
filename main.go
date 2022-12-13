@@ -49,6 +49,7 @@ var (
 	cpuprofile = flag.String("cpuprofile", "", "write CPU profile to file")
 	memprofile = flag.String("memprofile", "", "write memory profile to this file")
 	devmode    = flag.Bool("devmode", false, "developer mode")
+	replayFile = flag.String("replay", "", "*.vsess filename for replay")
 )
 
 func init() {
@@ -107,6 +108,12 @@ func main() {
 	server = &DisconnectedATCServer{}
 
 	var err error
+	if *replayFile != "" {
+		if server, err = NewVATSIMReplayServer(*replayFile, 0, 1); err != nil {
+			lg.Errorf("%s: unable to load replay file: %v", *replayFile, err)
+		}
+	}
+
 	if err = audioInit(); err != nil {
 		lg.Errorf("Unable to initialize audio: %v", err)
 	}
