@@ -258,7 +258,7 @@ func fontsInit(r Renderer) {
 
 	add := func(ttfZstd string, mono bool, name string) {
 		ttf := []byte(decompressZstd(ttfZstd))
-		for _, size := range []int{8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 24} {
+		for _, size := range []int{8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
 				// Fix font sizes to account for Windows using 96dpi but
