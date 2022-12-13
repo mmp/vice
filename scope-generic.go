@@ -553,7 +553,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Static geometry: SIDs/STARs, runways, ...
 	cb.PointSize(rs.PointSize)
 	cb.LineWidth(rs.LineWidth)
-	rs.StaticDraw.Draw(ctx, rs.labelFont, transforms, cb)
+	rs.StaticDraw.Draw(ctx, rs.labelFont, nil, transforms, cb)
 
 	if rs.DrawCompass {
 		p := rs.Center

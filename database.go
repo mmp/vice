@@ -67,7 +67,9 @@ type StaticDatabase struct {
 	ARTCCLow                          []StaticDrawable
 	ARTCCHigh                         []StaticDrawable
 	geos                              []StaticDrawable
+	geosNoColor                       []StaticDrawable
 	SIDs, STARs                       []StaticDrawable
+	SIDsNoColor, STARsNoColor         []StaticDrawable
 	lowAirwayLabels, highAirwayLabels []Label
 	labelColorBufferIndex             ColorBufferIndex
 	labels                            []Label
@@ -386,9 +388,12 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	// sector file.
 	db.runwayCommandBuffer = CommandBuffer{}
 	db.geos = nil
+	db.geosNoColor = nil
 	db.regions = nil
 	db.SIDs = nil
+	db.SIDsNoColor = nil
 	db.STARs = nil
+	db.STARsNoColor = nil
 	db.lowAirwayLabels = nil
 	db.highAirwayLabels = nil
 	db.lowAirwayCommandBuffer = CommandBuffer{}
@@ -563,15 +568,38 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 			bounds:           ld.Bounds(),
 			colorBufferIndex: colorBufferIndex}
 	}
+	// We'll also make a StaticDrawable for such things that doesn't
+	// include any color settings, for the use of scopes that prefer to set
+	// the color for these things themselves.
+	staticLines := func(name string, cs []sct2.ColoredSegment) StaticDrawable {
+		ld := GetLinesDrawBuilder()
+		defer ReturnLinesDrawBuilder(ld)
+
+		for _, seg := range cs {
+			if seg.P[0].Latitude != 0 || seg.P[0].Longitude != 0 {
+				ld.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]))
+			}
+		}
+		cb := CommandBuffer{}
+		ld.GenerateCommands(&cb)
+
+		return StaticDrawable{
+			name:   name,
+			cb:     cb,
+			bounds: ld.Bounds()}
+	}
 
 	for _, sid := range sectorFile.SIDs {
 		db.SIDs = append(db.SIDs, staticColoredLines(sid.Name, sid.Segs, "SID"))
+		db.SIDsNoColor = append(db.SIDsNoColor, staticLines(sid.Name, sid.Segs))
 	}
 	for _, star := range sectorFile.STARs {
 		db.STARs = append(db.STARs, staticColoredLines(star.Name, star.Segs, "STAR"))
+		db.STARsNoColor = append(db.STARsNoColor, staticLines(star.Name, star.Segs))
 	}
 	for _, geo := range sectorFile.Geo {
 		db.geos = append(db.geos, staticColoredLines(geo.Name, geo.Segments, "Geo"))
+		db.geosNoColor = append(db.geosNoColor, staticLines(geo.Name, geo.Segments))
 	}
 
 	// Record all of the names of colors set via #define statements in the
@@ -1223,7 +1251,10 @@ func (s *StaticDrawConfig) DrawUI() {
 }
 
 // Draw draws all of the items that are selected in the StaticDrawConfig.
-func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms ScopeTransformations, cb *CommandBuffer) {
+// If color is nil, colors are taken from the PaneContext's ColorScheme;
+// otherwise it overrides all color selections.
+func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
+	transforms ScopeTransformations, cb *CommandBuffer) {
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	inWindow := func(p [2]float32) bool {
 		return p[0] >= 0 && p[0] < width && p[1] >= 0 && p[1] < height
@@ -1252,10 +1283,21 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		s.viewBounds.p1[1] -= dy
 	*/
 
+	// Helper that returns the override color if provided.
+	filterColor := func(c RGB) RGB {
+		if color != nil {
+			return *color
+		}
+		return c
+	}
+	if color != nil {
+		cb.SetRGB(*color)
+	}
+
 	if s.DrawEverything || s.DrawRunways {
 		// Runways are easy; there's no culling and a pregenerated command
 		// buffer already available.
-		cb.SetRGB(ctx.cs.Runway)
+		cb.SetRGB(filterColor(ctx.cs.Runway))
 		cb.Call(database.runwayCommandBuffer)
 	}
 
@@ -1267,14 +1309,14 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 			// calling out to its preexisting command buffer.
 			if Overlaps(region.bounds, viewBounds) {
 				if region.name == "" {
-					cb.SetRGB(ctx.cs.Region)
+					cb.SetRGB(filterColor(ctx.cs.Region))
 				} else if rgb, ok := ctx.cs.DefinedColors[region.name]; ok {
-					cb.SetRGB(*rgb)
+					cb.SetRGB(filterColor(*rgb))
 				} else if rgb, ok := database.sectorFileColors[region.name]; ok {
-					cb.SetRGB(rgb)
+					cb.SetRGB(filterColor(rgb))
 				} else {
 					lg.Errorf("%s: defined color not found for region", region.name)
-					cb.SetRGB(RGB{0.5, 0.5, 0.5})
+					cb.SetRGB(filterColor(RGB{0.5, 0.5, 0.5}))
 				}
 				cb.Call(region.cb)
 			}
@@ -1299,7 +1341,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		// VORs are indicated by small squares
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, vor := range database.VORs {
-			ld.AddPolyline(vor, ctx.cs.VOR, square)
+			ld.AddPolyline(vor, filterColor(ctx.cs.VOR), square)
 		}
 	}
 	if s.DrawEverything || s.DrawNDBs {
@@ -1307,7 +1349,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
 		for _, ndb := range database.NDBs {
 			// flipped triangles
-			ld.AddPolyline(ndb, ctx.cs.NDB, fliptri)
+			ld.AddPolyline(ndb, filterColor(ctx.cs.NDB), fliptri)
 		}
 	}
 
@@ -1316,7 +1358,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
 		for _, fix := range database.fixes {
 			// upward-pointing triangles
-			ld.AddPolyline(fix, ctx.cs.Fix, uptri)
+			ld.AddPolyline(fix, filterColor(ctx.cs.Fix), uptri)
 		}
 	} else {
 		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
@@ -1325,7 +1367,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 				// May happen when a new sector file is loaded.
 				//lg.Printf("%s: selected fix not found in sector file data!", loc)
 			} else {
-				ld.AddPolyline(loc, ctx.cs.Fix, uptri)
+				ld.AddPolyline(loc, filterColor(ctx.cs.Fix), uptri)
 			}
 		}
 	}
@@ -1333,7 +1375,7 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 		// Airports are squares (like VORs)
 		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
 		for _, ap := range database.airports {
-			ld.AddPolyline(ap, ctx.cs.Airport, square)
+			ld.AddPolyline(ap, filterColor(ctx.cs.Airport), square)
 		}
 	}
 	ld.GenerateCommands(cb)
@@ -1347,26 +1389,38 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 			}
 		}
 	}
-	cb.SetRGB(ctx.cs.ARTCC)
+	cb.SetRGB(filterColor(ctx.cs.ARTCC))
 	drawARTCCLines(database.ARTCC, s.ARTCCDrawSet)
 	drawARTCCLines(database.ARTCCLow, s.ARTCCLowDrawSet)
 	drawARTCCLines(database.ARTCCHigh, s.ARTCCHighDrawSet)
 
 	// SIDs, STARs, and Geos. These all have simple bounds checks for
 	// culling before calling out to pregenerated command buffers.
-	for _, sid := range database.SIDs {
+	sids := database.SIDs
+	if color != nil {
+		sids = database.SIDsNoColor
+	}
+	for _, sid := range sids {
 		_, draw := s.SIDDrawSet[sid.name]
 		if (s.DrawEverything || draw) && Overlaps(sid.bounds, viewBounds) {
 			cb.Call(sid.cb)
 		}
 	}
-	for _, star := range database.STARs {
+	stars := database.STARs
+	if color != nil {
+		stars = database.STARsNoColor
+	}
+	for _, star := range stars {
 		_, draw := s.STARDrawSet[star.name]
 		if (s.DrawEverything || draw) && Overlaps(star.bounds, viewBounds) {
 			cb.Call(star.cb)
 		}
 	}
-	for _, geo := range database.geos {
+	geos := database.geos
+	if color != nil {
+		geos = database.geosNoColor
+	}
+	for _, geo := range geos {
 		_, draw := s.GeoDrawSet[geo.name]
 		if (s.DrawEverything || draw) && Overlaps(geo.bounds, viewBounds) {
 			cb.Call(geo.cb)
@@ -1376,11 +1430,11 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 	// Airways. For now just draw the lines, if requested. Labels will come
 	// shortly.
 	if s.DrawEverything || s.DrawLowAirways {
-		cb.SetRGB(ctx.cs.LowAirway)
+		cb.SetRGB(filterColor(ctx.cs.LowAirway))
 		cb.Call(database.lowAirwayCommandBuffer)
 	}
 	if s.DrawEverything || s.DrawHighAirways {
-		cb.SetRGB(ctx.cs.HighAirway)
+		cb.SetRGB(filterColor(ctx.cs.HighAirway))
 		cb.Call(database.highAirwayCommandBuffer)
 	}
 
@@ -1409,19 +1463,17 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 
 	// Draw low and high airway labels, as requested.
 	if s.DrawEverything || s.DrawLowAirways {
-		cb.SetRGB(ctx.cs.LowAirway)
-		drawAirwayLabels(database.lowAirwayLabels, ctx.cs.LowAirway)
+		drawAirwayLabels(database.lowAirwayLabels, filterColor(ctx.cs.LowAirway))
 	}
 	if s.DrawEverything || s.DrawHighAirways {
-		cb.SetRGB(ctx.cs.HighAirway)
-		drawAirwayLabels(database.highAirwayLabels, ctx.cs.HighAirway)
+		drawAirwayLabels(database.highAirwayLabels, filterColor(ctx.cs.HighAirway))
 	}
 
 	// Draw regular labels (e.g. taxiway letters) from the sector file.
 	if s.DrawEverything || s.DrawLabels {
 		for _, label := range database.labels {
 			if viewBounds.Inside(label.p) {
-				style := TextStyle{Font: labelFont, Color: label.color}
+				style := TextStyle{Font: labelFont, Color: filterColor(label.color)}
 				td.AddTextCentered(label.name, transforms.WindowFromLatLongP(label.p), style)
 			}
 		}
@@ -1483,16 +1535,20 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, transforms Sc
 	}
 
 	if s.DrawVORNames {
-		drawloc(s.DrawEverything || s.DrawVORs, s.VORsToDraw, database.VORs, ctx.cs.VOR, DrawLeft)
+		drawloc(s.DrawEverything || s.DrawVORs, s.VORsToDraw, database.VORs,
+			filterColor(ctx.cs.VOR), DrawLeft)
 	}
 	if s.DrawNDBNames {
-		drawloc(s.DrawEverything || s.DrawNDBs, s.NDBsToDraw, database.NDBs, ctx.cs.NDB, DrawLeft)
+		drawloc(s.DrawEverything || s.DrawNDBs, s.NDBsToDraw, database.NDBs,
+			filterColor(ctx.cs.NDB), DrawLeft)
 	}
 	if s.DrawFixNames {
-		drawloc(s.DrawEverything || s.DrawFixes, s.FixesToDraw, database.fixes, ctx.cs.Fix, DrawRight)
+		drawloc(s.DrawEverything || s.DrawFixes, s.FixesToDraw, database.fixes,
+			filterColor(ctx.cs.Fix), DrawRight)
 	}
 	if s.DrawAirportNames {
-		drawloc(s.DrawEverything || s.DrawAirports, s.AirportsToDraw, database.airports, ctx.cs.Airport, DrawBelow)
+		drawloc(s.DrawEverything || s.DrawAirports, s.AirportsToDraw, database.airports,
+			filterColor(ctx.cs.Airport), DrawBelow)
 	}
 
 	td.GenerateCommands(cb)
