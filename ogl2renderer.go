@@ -333,12 +333,8 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 			gl.Disable(gl.TEXTURE_2D)
 
 		case RendererCallBuffer:
-			low := ui32()
-			high := ui32()
-			length := ui32()
-			ptr := (*uint32)(unsafe.Pointer(uintptr((uint64(high) << 32) | uint64(low))))
-			cb2 := CommandBuffer{buf: unsafe.Slice(ptr, length)}
-			s2 := ogl2.RenderCommandBuffer(&cb2)
+			idx := ui32()
+			s2 := ogl2.RenderCommandBuffer(&cb.called[idx])
 			stats.Merge(s2)
 
 		default:

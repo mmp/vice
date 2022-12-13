@@ -108,7 +108,7 @@ const (
 	RendererDrawLines                   // 2 int32: offset to the index buffer, count
 	RendererDrawTriangles               // 2 int32: offset to the index buffer, count
 	RendererDrawQuads                   // 2 int32: offset to the index buffer, count
-	RendererCallBuffer                  // 2 int32: buffer ptr (low bits then high bits), length
+	RendererCallBuffer                  // 1 int32: buffer index
 	RendererResetState                  // no args
 )
 
@@ -117,7 +117,8 @@ const (
 // "pre-bake" rendering work into a form that can be efficiently processed
 // by a Renderer and possibly reused over multiple frames.
 type CommandBuffer struct {
-	buf []uint32
+	buf    []uint32
+	called []CommandBuffer
 }
 
 // CommandBuffers are managed using a sync.Pool so that their buf slice
@@ -137,6 +138,7 @@ func ReturnCommandBuffer(cb *CommandBuffer) {
 // reused.
 func (cb *CommandBuffer) Reset() {
 	cb.buf = cb.buf[:0]
+	cb.called = cb.called[:0]
 }
 
 // growFor ensures that at least n more values can be added to the end of
@@ -436,8 +438,10 @@ func (cb *CommandBuffer) Call(sub CommandBuffer) {
 		// make it a no-op
 		return
 	}
-	up := uintptr(unsafe.Pointer(&sub.buf[0]))
-	cb.appendInts(RendererCallBuffer, int(up&0xffffffff), int(up>>32), len(sub.buf))
+
+	cb.appendInts(RendererCallBuffer, len(cb.called))
+	// Make our own copy of the slice to ensure it isn't garbage collected.
+	cb.called = append(cb.called, sub)
 }
 
 // ResetState adds a command to the comment buffer that resets all of the
