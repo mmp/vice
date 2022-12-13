@@ -1012,6 +1012,8 @@ func (s *StaticDrawConfig) Deactivate() {
 // DrawUI draws a user interface that makes it possible to select which
 // items to draw with the StaticDrawConfig.
 func (s *StaticDrawConfig) DrawUI() {
+	imgui.PushID(fmt.Sprintf("%p", s))
+
 	if *devmode || s.DrawEverything {
 		imgui.Checkbox("Draw everything", &s.DrawEverything)
 	}
@@ -1216,6 +1218,8 @@ func (s *StaticDrawConfig) DrawUI() {
 	artccCheckboxes("ARTCC", database.ARTCC, s.ARTCCDrawSet)
 	artccCheckboxes("ARTCC Low", database.ARTCCLow, s.ARTCCLowDrawSet)
 	artccCheckboxes("ARTCC High", database.ARTCCHigh, s.ARTCCHighDrawSet)
+
+	imgui.PopID()
 }
 
 // Draw draws all of the items that are selected in the StaticDrawConfig.
