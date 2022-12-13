@@ -544,7 +544,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	label := rs.ScopeName
 	if *devmode && ctx.mouse != nil {
 		mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.pos)
-		label += "\nMouse position: " + mouseLatLong.String()
+		label += "\nMouse position: " + mouseLatLong.DDString() + " " + mouseLatLong.DMSString()
 	}
 	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
 		TextStyle{Font: rs.labelFont, Color: ctx.cs.Text})

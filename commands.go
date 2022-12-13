@@ -1357,14 +1357,14 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 		var info []string
 		if navaid, ok := database.FAA.navaids[name]; ok {
 			info = append(info, fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.name),
-				navaid.navtype, navaid.location))
+				navaid.navtype, navaid.location.DMSString()))
 		}
 		if fix, ok := database.FAA.fixes[name]; ok {
-			info = append(info, fmt.Sprintf("%s: Fix %s", name, fix.location))
+			info = append(info, fmt.Sprintf("%s: Fix %s", name, fix.location.DMSString()))
 		}
 		if ap, ok := database.FAA.airports[name]; ok {
 			info = append(info, fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.name),
-				ap.location, ap.elevation))
+				ap.location.DMSString(), ap.elevation))
 		}
 		if cs, ok := database.callsigns[name]; ok {
 			info = append(info, fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company))

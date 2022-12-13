@@ -481,8 +481,45 @@ func (p Point2LL) Latitude() float32 {
 	return p[1]
 }
 
-func (p Point2LL) String() string {
+// DDString returns the position in decimal degrees, e.g.:
+// (39.860901, -75.274864)
+func (p Point2LL) DDString() string {
 	return fmt.Sprintf("(%f, %f)", p[1], p[0]) // latitude, longitude
+}
+
+// DMSString returns the position in degrees minutes, seconds, e.g.
+// N039.51.39.243, W075.16.29.511
+func (p Point2LL) DMSString() string {
+	format := func(v float32) string {
+		s := fmt.Sprintf("%03d", int(v))
+		v -= floor(v)
+		v *= 60
+		s += fmt.Sprintf(".%02d", int(v))
+		v -= floor(v)
+		v *= 60
+		s += fmt.Sprintf(".%02d", int(v))
+		v -= floor(v)
+		v *= 1000
+		s += fmt.Sprintf(".%03d", int(v))
+		return s
+	}
+
+	var s string
+	if p[1] > 0 {
+		s = "N"
+	} else {
+		s = "S"
+	}
+	s += format(fabs(p[1]))
+
+	if p[0] > 0 {
+		s += ", E"
+	} else {
+		s += ", W"
+	}
+	s += format(fabs(p[0]))
+
+	return s
 }
 
 func (p Point2LL) IsZero() bool {
