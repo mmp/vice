@@ -101,10 +101,6 @@ func (w *WeatherRadar) UpdateCenter(center Point2LL) {
 	}
 }
 
-func (w *WeatherRadar) DrawUI() {
-	imgui.SliderFloatV("Weather radar blending factor", &w.BlendFactor, 0, 1, "%.2f", 0)
-}
-
 // fetchWeather runs asynchronously in a goroutine, receiving requests from
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on imageChan.  New images are also automatically
@@ -206,7 +202,7 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 // available, it returns rather than stalling waiting for it). The provided
 // CommandBuffer should be set up with viewing matrices such that vertex
 // coordinates are provided in latitude-longitude.
-func (w *WeatherRadar) Draw(transforms ScopeTransformations, cb *CommandBuffer) {
+func (w *WeatherRadar) Draw(intensity float32, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Try to receive an updated image from the fetchWather goroutine, if
 	// one is available.
 	select {
@@ -238,7 +234,7 @@ func (w *WeatherRadar) Draw(transforms ScopeTransformations, cb *CommandBuffer) 
 
 	// We have a valid radar image, so draw it.
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.SetRGBA(RGBA{1, 1, 1, w.BlendFactor})
+	cb.SetRGBA(RGBA{1, 1, 1, intensity})
 	cb.Blend()
 	cb.EnableTexture(w.texId)
 

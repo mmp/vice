@@ -24,8 +24,9 @@ type RadarScopePane struct {
 
 	StaticDraw *StaticDrawConfig
 
-	DrawWeather  bool
-	WeatherRadar WeatherRadar
+	DrawWeather      bool
+	WeatherIntensity float32
+	WeatherRadar     WeatherRadar
 
 	DrawRangeRings  bool
 	RangeRingRadius float32
@@ -405,7 +406,7 @@ func (rs *RadarScopePane) DrawUI() {
 			}
 		}
 		if rs.DrawWeather {
-			rs.WeatherRadar.DrawUI()
+			imgui.SliderFloatV("Weather radar blending factor", &rs.WeatherIntensity, 0, 1, "%.2f", 0)
 		}
 		imgui.Checkbox("Automatic MIT lines for arrivals", &rs.AutoMIT)
 		if rs.AutoMIT {
@@ -532,8 +533,8 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	transforms := GetScopeTransformations(ctx, rs.Center, rs.Range, rs.RotationAngle)
 
-	if rs.DrawWeather {
-		rs.WeatherRadar.Draw(transforms, cb)
+	if rs.DrawWeather && rs.WeatherIntensity > 0 {
+		rs.WeatherRadar.Draw(rs.WeatherIntensity, transforms, cb)
 	}
 
 	// Title in upper-left corner
