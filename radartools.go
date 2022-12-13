@@ -870,12 +870,18 @@ func DrawRangeRings(center Point2LL, radius float32, color RGB, transforms Scope
 ///////////////////////////////////////////////////////////////////////////
 // ScopeTransformations
 
+// ScopeTransformations manages various transformation matrices that are
+// useful when drawing radar scopes and provides a number of useful methods
+// to transform among related coordinate spaces.
 type ScopeTransformations struct {
 	ndcFromLatLong                       mgl32.Mat4
 	ndcFromWindow                        mgl32.Mat4
 	latLongFromWindow, windowFromLatLong mgl32.Mat4
 }
 
+// GetScopeTransformations returns a ScopeTransformations object
+// corresponding to the specified radar scope center, range, and rotation
+// angle.
 func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
 	// Translate to the center point
 	ndcFromLatLong := mgl32.Translate3D(-center[0], -center[1], 0)
@@ -912,11 +918,17 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 	}
 }
 
+// LoadLatLongViewingMatrices adds commands to the provided command buffer
+// to load viewing matrices so that latitude-longiture positions can be
+// provided for subsequent vertices.
 func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromLatLong)
 	cb.LoadModelViewMatrix(mgl32.Ident4())
 }
 
+// LoadWindowViewingMatrices adds commands to the provided command buffer
+// to load viewing matrices so that window-coordinate positions can be
+// provided for subsequent vertices.
 func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromWindow)
 	cb.LoadModelViewMatrix(mgl32.Ident4())
@@ -930,19 +942,33 @@ func mul4p(m *mgl32.Mat4, p [2]float32) [2]float32 {
 	return add2f(mul4v(m, p), [2]float32{m[12], m[13]})
 }
 
+// WindowFromLatLongP transforms a point given in latitude-longitude
+// coordinates to window coordinates.
 func (st *ScopeTransformations) WindowFromLatLongP(p Point2LL) [2]float32 {
 	return mul4p(&st.windowFromLatLong, p)
 }
 
+// LatLongFromWindowP transforms a point p in window coordinates to
+// latitude-longitude.
 func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) Point2LL {
 	return mul4p(&st.latLongFromWindow, p)
 }
 
+// NormalizedFromWindowP transforms a point p in window coordinates to
+// normalized [0,1]^2 coordinates.
+func (st *ScopeTransformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
+	pn := mul4p(&st.ndcFromWindow, p) // [-1,1]
+	return [2]float32{(pn[0] + 1) / 2, (pn[1] + 1) / 2}
+}
+
+// LatLongFromWindowV transforms a vector in window coordinates to a vector
+// in latitude-longitude coordinates.
 func (st *ScopeTransformations) LatLongFromWindowV(p [2]float32) Point2LL {
 	return mul4v(&st.latLongFromWindow, p)
 }
 
-// Find the pixel spacing in nm
+// PixelDistanceNM returns the space between adjacent pixels expressed in
+// nautical miles.
 func (st *ScopeTransformations) PixelDistanceNM() float32 {
 	ll := st.LatLongFromWindowV([2]float32{1, 0})
 	return nmlength2ll(ll)
