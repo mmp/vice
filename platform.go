@@ -275,9 +275,7 @@ func (g *GLFWPlatform) NewFrame() {
 		x, y := g.window.GetCursorPos()
 		xy32 := [2]float32{float32(x), float32(y)}
 		if !g.mouseCapture.Inside(xy32) {
-			lg.Printf("outside: %v / %v", xy32, g.mouseCapture)
 			xy32 = g.mouseCapture.ClosestPointInBox(xy32)
-			lg.Printf("clamped %v", xy32)
 			g.window.SetCursorPos(float64(xy32[0]), float64(xy32[1]))
 		}
 	}
