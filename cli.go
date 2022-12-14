@@ -393,10 +393,11 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// status
 	if cli.status != "" {
-		sd := TextDrawBuilder{}
+		td := GetTextDrawBuilder()
+		defer ReturnTextDrawBuilder(td)
 		// Half line of spacing below it
-		sd.AddText(cli.status, [2]float32{left, 1.5 * lineHeight}, statusStyle)
-		sd.GenerateCommands(&cli.cb)
+		td.AddText(cli.status, [2]float32{left, 1.5 * lineHeight}, statusStyle)
+		td.GenerateCommands(&cli.cb)
 	}
 
 	cb.Call(cli.cb)
@@ -404,7 +405,8 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 func (ci *CLIInput) EmitDrawCommands(inputPos [2]float32, style TextStyle, cursorStyle TextStyle,
 	haveFocus bool, cb *CommandBuffer) {
-	td := TextDrawBuilder{}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 	prompt := ""
 	if positionConfig.selectedAircraft != nil {
 		prompt = positionConfig.selectedAircraft.Callsign()

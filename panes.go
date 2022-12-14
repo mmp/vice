@@ -234,7 +234,6 @@ type AirportInfoPane struct {
 	font           *Font
 
 	sb *ScrollBar
-	td TextDrawBuilder
 	cb CommandBuffer
 }
 
@@ -269,7 +268,6 @@ func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe.seenDepartures = DuplicateMap(a.seenDepartures)
 	dupe.seenArrivals = DuplicateMap(a.seenArrivals)
 	dupe.sb = NewScrollBar(4, false)
-	dupe.td = TextDrawBuilder{}
 	dupe.cb = CommandBuffer{}
 	return &dupe
 }
@@ -631,14 +629,16 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	a.sb.Update(nLines, nVisibleLines, ctx)
 	textOffset := a.sb.Offset()
 
-	a.td.Reset()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+
 	sz2 := float32(a.font.size) / 2
 	texty := ctx.paneExtent.Height() - sz2 + float32(textOffset*a.font.size)
-	a.td.AddTextMulti(strs, [2]float32{sz2, texty}, styles)
+	td.AddTextMulti(strs, [2]float32{sz2, texty}, styles)
 
 	a.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&a.cb)
-	a.td.GenerateCommands(&a.cb)
+	td.GenerateCommands(&a.cb)
 
 	a.sb.Draw(ctx, &a.cb)
 
@@ -673,8 +673,6 @@ type FlightPlanPane struct {
 	font           *Font
 
 	ShowRemarks bool
-
-	td TextDrawBuilder
 }
 
 func NewFlightPlanPane() *FlightPlanPane {
@@ -711,7 +709,9 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return
 	}
 
-	fp.td.Reset()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+
 	contents, _ := ac.GetFormattedFlightPlan(fp.ShowRemarks)
 
 	sz2 := float32(fp.font.size) / 2
@@ -722,11 +722,11 @@ func (fp *FlightPlanPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		indent += 2
 	}
 	wrapped, _ := wrapText(contents, ncols, indent, true)
-	fp.td.AddText(wrapped, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
+	td.AddText(wrapped, [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{Font: fp.font, Color: ctx.cs.Text})
 
 	ctx.SetWindowCoordinateMatrices(cb)
-	fp.td.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -739,7 +739,6 @@ type NotesViewPane struct {
 	expanded  map[*NotesNode]interface{}
 	scrollbar *ScrollBar
 
-	td TextDrawBuilder
 	cb CommandBuffer
 }
 
@@ -783,7 +782,8 @@ func (nv *NotesViewPane) DrawUI() {
 func (nv *NotesViewPane) Name() string { return "Notes View" }
 
 func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	nv.td.Reset()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 
 	nv.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&nv.cb)
@@ -849,7 +849,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			}
 			text, lines := wrapText(title, columns, 4, false)
 			nLines += lines
-			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, headerStyle)
+			td.AddText(text, [2]float32{float32(indent), float32(y)}, headerStyle)
 			y -= lines * lineHeight
 
 			if !expanded {
@@ -859,7 +859,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		for _, line := range node.text {
 			text, lines := wrapText(line, columns, 4, false)
 			nLines += lines
-			nv.td.AddText(text, [2]float32{float32(indent), float32(y)}, textStyle)
+			td.AddText(text, [2]float32{float32(indent), float32(y)}, textStyle)
 			y -= lines * lineHeight
 		}
 		for _, child := range node.children {
@@ -871,7 +871,7 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	nv.scrollbar.Draw(ctx, &nv.cb)
 	nv.scrollbar.Update(nLines, visibleLines, ctx)
 
-	nv.td.GenerateCommands(&nv.cb)
+	td.GenerateCommands(&nv.cb)
 
 	cb.Call(nv.cb)
 }
@@ -891,8 +891,6 @@ type PerformancePane struct {
 
 	FontIdentifier FontIdentifier
 	font           *Font
-
-	td TextDrawBuilder
 
 	// In order to measure frames per second over the last few seconds, we
 	// start by maintaining two one-second time intervals [a,a+1] and
@@ -995,13 +993,14 @@ func (pp *PerformancePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Rendering stats
 	perf.WriteString("\n" + stats.render.String())
 
-	pp.td.Reset()
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 	sz2 := float32(pp.font.size) / 2
-	pp.td.AddText(perf.String(), [2]float32{sz2, ctx.paneExtent.Height() - sz2},
+	td.AddText(perf.String(), [2]float32{sz2, ctx.paneExtent.Height() - sz2},
 		TextStyle{Font: pp.font, Color: ctx.cs.Text})
 
 	ctx.SetWindowCoordinateMatrices(cb)
-	pp.td.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1101,7 +1100,8 @@ func (rp *ReminderPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	ctx.SetWindowCoordinateMatrices(&rp.cb)
 
 	text := func(s string, color RGB) {
-		td := TextDrawBuilder{}
+		td := GetTextDrawBuilder()
+		defer ReturnTextDrawBuilder(td)
 		td.AddText(s, [2]float32{float32(x), float32(y)}, TextStyle{Font: rp.font, Color: color})
 		td.GenerateCommands(&rp.cb)
 
@@ -1403,10 +1403,14 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		fsp.selectedStrip = len(fsp.strips) - 1
 	}
 
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	ld := GetLinesDrawBuilder()
+	defer ReturnLinesDrawBuilder(ld)
+	selectionLd := GetLinesDrawBuilder()
+	defer ReturnLinesDrawBuilder(selectionLd)
+
 	// Draw from the bottom
-	td := TextDrawBuilder{}
-	ld := LinesDrawBuilder{}
-	selectionLd := LinesDrawBuilder{}
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1 - vpad
 	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {

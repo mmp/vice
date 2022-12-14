@@ -1645,7 +1645,8 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 	originalText := *s
 
 	// Draw the text and the cursor
-	td := TextDrawBuilder{}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
 	if *cursor == len(*s) {
 		// cursor at the end
 		posOut = td.AddTextMulti([]string{*s, " "}, pos, []TextStyle{style, cursorStyle})
