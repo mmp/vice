@@ -237,7 +237,11 @@ func (v *VATSIMServer) AddAirportForWeather(airport string) {
 }
 
 func (v *VATSIMServer) SetPrimaryFrequency(f Frequency) {
-	v.controllers[v.callsign].frequency = f
+	if ctrl, ok := v.controllers[v.callsign]; !ok {
+		v.controllers[v.callsign] = &Controller{frequency: f}
+	} else {
+		ctrl.frequency = f
+	}
 }
 
 func (v *VATSIMServer) SetSquawk(callsign string, code Squawk) error {
