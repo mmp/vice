@@ -965,11 +965,12 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 // drawBorder emits drawing commands to the provided CommandBuffer to draw
 // a border rectangle with given dimensions, inset 1 pixel.
 func drawBorder(cb *CommandBuffer, w, h float32, color RGB) {
-	p := [4][2]float32{[2]float32{1, 1}, [2]float32{w - 1, 1}, [2]float32{w - 1, h - 1}, [2]float32{1, h - 1}}
+	p := [4][2]float32{[2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h}}
 	pidx := cb.Float2Buffer(p[:])
 
 	indidx := cb.IntBuffer([]int32{0, 1, 1, 2, 2, 3, 3, 0})
 
+	cb.LineWidth(2)
 	cb.SetRGB(color)
 	cb.VertexArray(pidx, 2, 2*4)
 	cb.DrawLines(indidx, 8)
