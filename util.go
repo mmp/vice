@@ -326,13 +326,16 @@ func (e Extent2D) Expand(d float32) Extent2D {
 		p1: [2]float32{e.p1[0] + d, e.p1[1] + d}}
 }
 
-func (e Extent2D) SplitX(x float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
+func (e Extent2D) SplitX(x float32, lineWidth int, round bool) (Extent2D, Extent2D, Extent2D) {
 	e0 := e
 	es := e
 	e1 := e
 	split := (1-x)*e.p0[0] + x*e.p1[0]
 	s0 := split - float32(lineWidth)/2
 	s1 := split + float32(lineWidth)/2
+	if round {
+		s0, s1 = floor(s0), ceil(s1)
+	}
 	e0.p1[0] = s0
 	es.p0[0] = s0
 	es.p1[0] = s1
@@ -340,13 +343,16 @@ func (e Extent2D) SplitX(x float32, lineWidth int) (Extent2D, Extent2D, Extent2D
 	return e0, es, e1
 }
 
-func (e Extent2D) SplitY(y float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
+func (e Extent2D) SplitY(y float32, lineWidth int, round bool) (Extent2D, Extent2D, Extent2D) {
 	e0 := e
 	es := e
 	e1 := e
 	split := (1-y)*e.p0[1] + y*e.p1[1]
 	s0 := split - float32(lineWidth)/2
 	s1 := split + float32(lineWidth)/2
+	if round {
+		s0, s1 = floor(s0), ceil(s1)
+	}
 	e0.p1[1] = s0
 	es.p0[1] = s0
 	es.p1[1] = s1

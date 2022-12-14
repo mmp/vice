@@ -334,12 +334,12 @@ func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplay
 	case SplitAxisNone:
 		visit(displayExtent, parentDisplayExtent, d.Pane)
 	case SplitAxisX:
-		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth(), true)
 		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
 		visit(ds, displayExtent, &d.SplitLine)
 		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
 	case SplitAxisY:
-		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth(), true)
 		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
 		visit(ds, displayExtent, &d.SplitLine)
 		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
@@ -381,7 +381,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pan
 	// Compute the extents of the two nodes and the split line.
 	var d0, ds, d1 Extent2D
 	if d.SplitLine.Axis == SplitAxisX {
-		d0, ds, d1 = displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 = displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth(), true)
 
 		// Round the X extents to integer coordinates, to benefit the split
 		// line--since it's relatively small, it's helpful to make it a
@@ -392,7 +392,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pan
 		d1.p0[0] = ceil(d1.p0[0])
 
 	} else {
-		d0, ds, d1 = displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 = displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth(), true)
 
 		// For a y split, similarly round y bounds up/down to integer
 		// coordinates to give the split line a better chance.
@@ -904,7 +904,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				// coordinates, so they must be scaled by the DPI scale for
 				// e.g., retina displays.
 				x0, y0 := int(highDPIScale*paneExtent.p0[0]), int(highDPIScale*paneExtent.p0[1])
-				w, h := int(highDPIScale*paneExtent.Width()+.5), int(highDPIScale*paneExtent.Height()+.5)
+				w, h := int(highDPIScale*paneExtent.Width()), int(highDPIScale*paneExtent.Height())
 				commandBuffer.Scissor(x0, y0, w, h)
 				commandBuffer.Viewport(x0, y0, w, h)
 
