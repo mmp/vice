@@ -298,7 +298,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 		imgui.EndMainMenuBar()
 	}
-	ui.menuBarHeight = 1.35 * float32(ui.font.size)
+	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	drawActiveDialogBoxes()
 	drawActiveSettingsWindows()
