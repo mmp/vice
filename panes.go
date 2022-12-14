@@ -39,11 +39,12 @@ type PaneContext struct {
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D
 
-	platform Platform
-	cs       *ColorScheme
-	mouse    *MouseState
-	keyboard *KeyboardState
-	events   *EventStream
+	platform  Platform
+	cs        *ColorScheme
+	mouse     *MouseState
+	keyboard  *KeyboardState
+	haveFocus bool
+	events    *EventStream
 }
 
 type MouseState struct {
@@ -200,10 +201,6 @@ func (k *KeyboardState) Input() string {
 func (k *KeyboardState) IsPressed(key Key) bool {
 	_, ok := k.pressed[key]
 	return ok
-}
-
-func (ctx *PaneContext) InitializeKeyboard() {
-	ctx.keyboard = NewKeyboardState()
 }
 
 func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {
@@ -1510,7 +1507,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			ix, iy := ai%3, ai/3
 			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
 
-			if ctx.keyboard != nil && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
+			if ctx.haveFocus && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
 				// If were currently editing this annotation, don't draw it
 				// normally but instead draw it including a cursor, update
 				// it according to keyboard input, etc.

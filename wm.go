@@ -870,20 +870,21 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		}
 
 		// Actually visit the panes.
+		var keyboard *KeyboardState
+		if !imgui.CurrentIO().WantCaptureKeyboard() {
+			keyboard = NewKeyboardState()
+		}
 		root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
 			func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
+				haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
 				ctx := PaneContext{
 					paneExtent:       paneExtent,
 					parentPaneExtent: parentExtent,
 					platform:         platform,
 					events:           eventStream,
+					keyboard:         keyboard,
+					haveFocus:        haveFocus,
 					cs:               positionConfig.GetColorScheme()}
-
-				// Make keyboard events available if this Pane should be
-				// seeing them.
-				if !wm.statusBarHasFocus && pane == wm.keyboardFocusPane {
-					ctx.InitializeKeyboard()
-				}
 
 				// Similarly make the mouse events available only to the
 				// one Pane that should see them.
@@ -1025,7 +1026,9 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 	// The status bar always gets access to the keyboard, since it takes
 	// focus when a command is active and otherwise needs to check to see
 	// if any f-keys have been pressed.
-	ctx.InitializeKeyboard()
+	if !imgui.CurrentIO().WantCaptureKeyboard() {
+		ctx.keyboard = NewKeyboardState()
+	}
 
 	wm.statusBarHasFocus = wm.statusBar.Draw(&ctx, cb)
 
