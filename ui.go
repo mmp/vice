@@ -364,10 +364,10 @@ func drawActiveSettingsWindows() {
 				imgui.Text(key)
 				imgui.TableNextColumn()
 				imgui.SetNextItemWidth(240)
-				if imgui.BeginComboV("##"+key, globalConfig.FKeyMappings[i], imgui.ComboFlagsHeightLarge) {
+				if imgui.BeginComboV("##"+key, positionConfig.FKeyMappings[i], imgui.ComboFlagsHeightLarge) {
 					for _, cmd := range commands {
-						if imgui.SelectableV(cmd, cmd == globalConfig.FKeyMappings[i], 0, imgui.Vec2{}) {
-							globalConfig.FKeyMappings[i] = cmd
+						if imgui.SelectableV(cmd, cmd == positionConfig.FKeyMappings[i], 0, imgui.Vec2{}) {
+							positionConfig.FKeyMappings[i] = cmd
 						}
 					}
 					imgui.EndCombo()
@@ -376,10 +376,10 @@ func drawActiveSettingsWindows() {
 				imgui.Text("Shift-" + key)
 				imgui.TableNextColumn()
 				imgui.SetNextItemWidth(240)
-				if imgui.BeginComboV("##Shift-"+key, globalConfig.ShiftFKeyMappings[i], imgui.ComboFlagsHeightLarge) {
+				if imgui.BeginComboV("##Shift-"+key, positionConfig.ShiftFKeyMappings[i], imgui.ComboFlagsHeightLarge) {
 					for _, cmd := range commands {
-						if imgui.SelectableV(cmd, cmd == globalConfig.ShiftFKeyMappings[i], 0, imgui.Vec2{}) {
-							globalConfig.ShiftFKeyMappings[i] = cmd
+						if imgui.SelectableV(cmd, cmd == positionConfig.ShiftFKeyMappings[i], 0, imgui.Vec2{}) {
+							positionConfig.ShiftFKeyMappings[i] = cmd
 						}
 					}
 					imgui.EndCombo()

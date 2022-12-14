@@ -12,8 +12,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/mmp/imgui-go/v4"
 )
 
 type ConsoleTextStyle int
@@ -110,11 +108,19 @@ type CLIPane struct {
 	messageReplyRecipients [10]*TextMessage
 	nextMessageReplyId     int
 
+	// fkey stuff
+	activeFKeyCommand FKeyCommand
+	fKeyFocusField    int      // which input field is focused
+	fKeyCursorPos     int      // cursor position in the current input field
+	fKeyArgs          []string // user input for each command argument
+	fKeyArgErrors     []string
+
 	cb CommandBuffer
 }
 
 func NewCLIPane() *CLIPane {
 	font := GetDefaultFont()
+
 	return &CLIPane{
 		FontIdentifier: font.id,
 		font:           font,
@@ -195,6 +201,16 @@ func (cli *CLIPane) CanTakeKeyboardFocus() bool { return true }
 func (cli *CLIPane) processEvents(es *EventStream) {
 	for _, event := range es.Get(cli.eventsId) {
 		switch v := event.(type) {
+		case *SelectedAircraftEvent:
+			if cli.activeFKeyCommand != nil {
+				// If the user selected an aircraft after initiating an fkey
+				// command, use the aircraft regardless of whether the command
+				// things it's valid; assume the user knows what they are doing
+				// and that it will be valid when the command executes.  (And
+				// if it's not, an error will be issued then!)
+				cli.setFKeyAircraft(v.ac.callsign, false)
+			}
+
 		case *PointOutEvent:
 			cli.AddConsoleEntry([]string{v.controller, ": point out " + v.ac.callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
@@ -333,44 +349,49 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	consoleLinesVisible := int((ctx.paneExtent.Height() - 3*lineHeight) / lineHeight)
 
 	// Process user input
-	io := imgui.CurrentIO()
-	if !io.WantCaptureKeyboard() {
-		prevCallsign := ""
-		if positionConfig.selectedAircraft != nil {
-			prevCallsign = positionConfig.selectedAircraft.Callsign()
-		}
+	if ctx.haveFocus && ctx.keyboard != nil {
+		cli.processFKeys(ctx.keyboard)
 
-		// Execute command if enter was typed
-		hitEnter := cli.updateInput(consoleLinesVisible, ctx.keyboard)
-		if hitEnter {
-			if cli.input.AnyParametersUnset() {
-				cli.status = "Some alias parameters are still unset."
-			} else {
-				if len(cli.input.cmd) > 0 {
-					cmd := string(cli.input.cmd)
+		// If an f-key command is active, it takes priority and we won't
+		// try to run a normal command.
+		if cli.activeFKeyCommand == nil {
+			prevCallsign := ""
+			if positionConfig.selectedAircraft != nil {
+				prevCallsign = positionConfig.selectedAircraft.Callsign()
+			}
 
-					cli.history = append(cli.history, cli.input)
-					// Reset this state here so that aliases and commands
-					// like 'editroute' can populate the next command
-					// input.
-					cli.input = CLIInput{}
+			// Execute command if enter was typed
+			hitEnter := cli.updateInput(consoleLinesVisible, ctx.keyboard)
+			if hitEnter {
+				if cli.input.AnyParametersUnset() {
+					cli.status = "Some alias parameters are still unset."
+				} else {
+					if len(cli.input.cmd) > 0 {
+						cmd := string(cli.input.cmd)
 
-					output := cli.runCommand(cmd)
+						cli.history = append(cli.history, cli.input)
+						// Reset this state here so that aliases and commands
+						// like 'editroute' can populate the next command
+						// input.
+						cli.input = CLIInput{}
 
-					// Add the command and its output to the console history
-					prompt := &ConsoleEntry{text: []string{""}, style: []ConsoleTextStyle{ConsoleTextRegular}}
-					if prevCallsign != "" {
-						prompt.text[0] = prevCallsign + "> " + cmd
-					} else {
-						prompt.text[0] = "> " + cmd
+						output := cli.runCommand(cmd)
+
+						// Add the command and its output to the console history
+						prompt := &ConsoleEntry{text: []string{""}, style: []ConsoleTextStyle{ConsoleTextRegular}}
+						if prevCallsign != "" {
+							prompt.text[0] = prevCallsign + "> " + cmd
+						} else {
+							prompt.text[0] = "> " + cmd
+						}
+						cli.console.Add(prompt)
+						cli.console.Add(output...)
 					}
-					cli.console.Add(prompt)
-					cli.console.Add(output...)
-				}
 
-				cli.consoleViewOffset = 0
-				cli.historyOffset = 0
-				cli.status = ""
+					cli.consoleViewOffset = 0
+					cli.historyOffset = 0
+					cli.status = ""
+				}
 			}
 		}
 	}
@@ -389,7 +410,11 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Draw text for the input, one line above the status line
 	inputPos := [2]float32{left, 2.5 * lineHeight}
-	cli.input.EmitDrawCommands(inputPos, style, cursorStyle, ctx.keyboard != nil, &cli.cb)
+	if cli.activeFKeyCommand != nil {
+		cli.drawFKeyStatus(inputPos, ctx)
+	} else {
+		cli.input.EmitDrawCommands(inputPos, style, cursorStyle, ctx.haveFocus, &cli.cb)
+	}
 
 	// status
 	if cli.status != "" {
@@ -401,6 +426,223 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	cb.Call(cli.cb)
+}
+
+func (cli *CLIPane) processFKeys(keyboard *KeyboardState) {
+	// See if any of the F-keys are pressed
+	for i := 1; i <= 12; i++ {
+		if keyboard.IsPressed(Key(KeyF1 - 1 + i)) {
+			// Figure out which FKeyCommand is bound to the f-key, if any.
+			var cmd string
+			if keyboard.IsPressed(KeyShift) {
+				if cmd = positionConfig.ShiftFKeyMappings[i]; cmd == "" {
+					cli.status = "No command bound to shift-F" + fmt.Sprintf("%d", i)
+				}
+			} else {
+				if cmd = positionConfig.FKeyMappings[i]; cmd == "" {
+					cli.status = "No command bound to F" + fmt.Sprintf("%d", i)
+				}
+			}
+
+			// If there's a command associated with the pressed f-key, set
+			// things up to get its argument values from the user.
+			if cmd != "" {
+				cli.activeFKeyCommand = allFKeyCommands[cmd]
+				if cli.activeFKeyCommand == nil {
+					// This shouldn't happen unless the config.json file is
+					// corrupt or a key used in the allFKeyCommands map has
+					// changed.
+					lg.Errorf(cmd + ": no f-key command of that name")
+				} else {
+					// Set things up to get the arguments for this command.
+					cli.fKeyArgs = make([]string, len(cli.activeFKeyCommand.ArgTypes()))
+					cli.fKeyArgErrors = make([]string, len(cli.activeFKeyCommand.ArgTypes()))
+					cli.status = ""
+					cli.fKeyFocusField = 0
+					cli.fKeyCursorPos = 0
+
+					if positionConfig.selectedAircraft != nil {
+						// If an aircraft is currently selected, try using it for the command.
+						// However, if it's invalid (e.g., the command is drop track, but we're
+						// not tracking it, then don't force it...)
+						cli.setFKeyAircraft(positionConfig.selectedAircraft.callsign, true)
+					}
+				}
+			}
+		}
+	}
+
+	if keyboard.IsPressed(KeyEscape) {
+		// Clear out the current command.
+		cli.activeFKeyCommand = nil
+		cli.status = ""
+	}
+}
+
+func (cli *CLIPane) setFKeyAircraft(callsign string, mustMatch bool) {
+	for i, ty := range cli.activeFKeyCommand.ArgTypes() {
+		// Look for a command argument that takes an aircraft callsign.
+		if _, ok := ty.(*AircraftCommandArg); ok {
+			if mustMatch {
+				// Make sure that the aircraft fulfills the arg's
+				// requirements. (The cs != callsign check should be
+				// unnecessary, but...)
+				if cs, err := ty.Expand(callsign); err != nil || cs != callsign {
+					continue
+				}
+			}
+
+			cli.fKeyArgs[i] = callsign
+			cli.fKeyArgErrors[i] = ""
+			if cli.fKeyFocusField == i {
+				if len(cli.fKeyArgs) > 0 {
+					// If the cursor is currently in the input
+					// field for the callsign, then skip to the
+					// next field, if there is another one.
+					cli.fKeyFocusField = (cli.fKeyFocusField + 1) % len(cli.fKeyArgs)
+					cli.fKeyCursorPos = 0
+				} else {
+					// Otherwise move the cursor to the end of the input.
+					cli.fKeyCursorPos = len(cli.fKeyArgs[i])
+				}
+			}
+			break
+		}
+	}
+}
+
+func (cli *CLIPane) drawFKeyStatus(textp [2]float32, ctx *PaneContext) {
+	if cli.activeFKeyCommand == nil {
+		return
+	}
+
+	// Draw lines to delineate the top and bottom of the status bar
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
+	ld.AddLine([2]float32{5, 1}, [2]float32{ctx.paneExtent.p1[0] - 5, 1}, ctx.cs.UIControl)
+	h := ctx.paneExtent.Height() - 1
+	ld.AddLine([2]float32{5, h}, [2]float32{ctx.paneExtent.p1[0] - 5, h}, ctx.cs.UIControl)
+	cli.cb.LineWidth(1)
+	ld.GenerateCommands(&cli.cb)
+
+	cursorStyle := TextStyle{Font: ui.font, Color: ctx.cs.Background,
+		DrawBackground: true, BackgroundColor: ctx.cs.Text}
+	textStyle := TextStyle{Font: ui.font, Color: ctx.cs.Text}
+	inputStyle := TextStyle{Font: ui.font, Color: ctx.cs.TextHighlight}
+	errorStyle := TextStyle{Font: ui.font, Color: ctx.cs.TextError}
+
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+
+	// Command description
+	textp = td.AddText(cli.activeFKeyCommand.Name(), textp, textStyle)
+
+	// Draw text for all of the arguments, including both the prompt and the current value.
+	argTypes := cli.activeFKeyCommand.ArgTypes()
+	var textEditResult int
+	for i, arg := range cli.fKeyArgs {
+		// Prompt for the argument.
+		textp = td.AddText(" "+argTypes[i].Prompt()+": ", textp, textStyle)
+
+		if i == cli.fKeyFocusField && ctx.haveFocus {
+			// If this argument currently has the cursor, draw a text editing field and handle
+			// keyboard events.
+			textEditResult, textp = uiDrawTextEdit(&cli.fKeyArgs[cli.fKeyFocusField], &cli.fKeyCursorPos,
+				ctx.keyboard, textp, inputStyle, cursorStyle, &cli.cb)
+			// All of the commands expect upper-case args, so always ensure that immediately.
+			cli.fKeyArgs[cli.fKeyFocusField] = strings.ToUpper(cli.fKeyArgs[cli.fKeyFocusField])
+		} else {
+			// Otherwise it's an unfocused argument. If it's currently an
+			// empty string, draw an underbar.
+			if arg == "" {
+				textp = td.AddText("_", textp, inputStyle)
+			} else {
+				textp = td.AddText(arg, textp, inputStyle)
+			}
+		}
+
+		// If the user tried to run the command and there was an issue
+		// related to this argument, print the error message.
+		if cli.fKeyArgErrors[i] != "" {
+			textp = td.AddText(" "+cli.fKeyArgErrors[i]+" ", textp, errorStyle)
+		}
+
+		// Expand the argument and see how many completions we find.
+		completion, err := argTypes[i].Expand(arg)
+		if err == nil {
+			if completion != arg {
+				// We have a single completion that is different than what the user typed;
+				// draw an arrow and the completion text so the user can
+				// see what will actually be used.
+				textp = td.AddText(" "+FontAwesomeIconArrowRight+" "+completion, textp, textStyle)
+			}
+		} else {
+			// Completions are implicitly validated so if there are none the user input is
+			// not valid and if there are multiple it's ambiguous; either way, indicate
+			// the input is not valid.
+			textp = td.AddText(" "+FontAwesomeIconExclamationTriangle+" ", textp, errorStyle)
+		}
+	}
+
+	// Handle changes in focus, etc., based on the input to the text edit
+	// field.
+	switch textEditResult {
+	case TextEditReturnNone:
+		// nothing
+
+	case TextEditReturnTextChanged:
+		// The user input changed, so clear out any error message since it
+		// may no longer be valid.
+		cli.status = ""
+		cli.fKeyArgErrors = make([]string, len(cli.fKeyArgErrors))
+
+	case TextEditReturnEnter:
+		// The user hit enter; try to run the command
+
+		// Run completion on all of the arguments; this also checks their validity.
+		var completedArgs []string
+		argTypes := cli.activeFKeyCommand.ArgTypes()
+		cli.status = ""
+		anyArgErrors := false
+		for i, arg := range cli.fKeyArgs {
+			if comp, err := argTypes[i].Expand(arg); err == nil {
+				completedArgs = append(completedArgs, comp)
+				cli.fKeyArgErrors[i] = ""
+			} else {
+				cli.fKeyArgErrors[i] = err.Error()
+				anyArgErrors = true
+			}
+		}
+
+		// Something went wrong, so don't try running the command.
+		if anyArgErrors {
+			break
+		}
+
+		err := cli.activeFKeyCommand.Do(completedArgs)
+		if err != nil {
+			// Failure. Grab the command's error message to display.
+			cli.status = err.Error()
+		} else {
+			// Success; clear out the command.
+			cli.activeFKeyCommand = nil
+			cli.fKeyArgs = nil
+			cli.fKeyArgErrors = nil
+		}
+
+	case TextEditReturnNext:
+		// Go to the next input field.
+		cli.fKeyFocusField = (cli.fKeyFocusField + 1) % len(cli.fKeyArgs)
+		cli.fKeyCursorPos = len(cli.fKeyArgs[cli.fKeyFocusField])
+
+	case TextEditReturnPrev:
+		// Go to the previous input field.
+		cli.fKeyFocusField = (cli.fKeyFocusField + len(cli.fKeyArgs) - 1) % len(cli.fKeyArgs)
+		cli.fKeyCursorPos = len(cli.fKeyArgs[cli.fKeyFocusField])
+	}
+
+	td.GenerateCommands(&cli.cb)
 }
 
 func (ci *CLIInput) EmitDrawCommands(inputPos [2]float32, style TextStyle, cursorStyle TextStyle,

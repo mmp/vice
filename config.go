@@ -28,9 +28,6 @@ type GlobalConfig struct {
 	NotesFile    string
 	AliasesFile  string
 
-	FKeyMappings      [13]string
-	ShiftFKeyMappings [13]string
-
 	VatsimName     string
 	VatsimCID      string
 	VatsimPassword string
@@ -71,6 +68,9 @@ type PositionConfig struct {
 	primaryFrequency              Frequency // We don't save this in the config file
 	Frequencies                   map[string]Frequency
 	ControllerATIS                string
+
+	FKeyMappings      [13]string
+	ShiftFKeyMappings [13]string
 
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
@@ -658,10 +658,7 @@ func parseNotes(text string) *NotesNode {
 func (pc *PositionConfig) Update() {
 	for _, event := range eventStream.Get(pc.eventsId) {
 		if sel, ok := event.(*SelectedAircraftEvent); ok {
-			// FIXME: It is unfortunate and hacky to be checking this here.
-			if !wm.statusBarHasFocus {
-				pc.selectedAircraft = sel.ac
-			}
+			pc.selectedAircraft = sel.ac
 		}
 	}
 
