@@ -1323,64 +1323,6 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 		}
 	}
 
-	// For VORs, NDBs, fixes, and airports, we have a lat-long location
-	// that we'd like to draw a little shape around.  First we find the
-	// appropriate offsets in lat-long space that give us 2 pixel steps in
-	// x and y in window coordinates.
-	dx := transforms.LatLongFromWindowV([2]float32{2, 0})
-	dy := transforms.LatLongFromWindowV([2]float32{0, 2})
-	// Lat-long vector for (x,y) window coordinates vector
-	vtx := func(x, y float32) [2]float32 {
-		return add2f(scale2f(dx, x), scale2f(dy, y))
-	}
-
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-
-	if s.DrawEverything || s.DrawVORs {
-		// VORs are indicated by small squares
-		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
-		for _, vor := range database.VORs {
-			ld.AddPolyline(vor, filterColor(ctx.cs.VOR), square)
-		}
-	}
-	if s.DrawEverything || s.DrawNDBs {
-		// NDBs are shown with down-pointing triangles
-		fliptri := [][2]float32{vtx(-1.5, 1.5), vtx(1.5, 1.5), vtx(0, -0.5)}
-		for _, ndb := range database.NDBs {
-			// flipped triangles
-			ld.AddPolyline(ndb, filterColor(ctx.cs.NDB), fliptri)
-		}
-	}
-
-	if s.DrawEverything || s.DrawFixes {
-		// Fixes get triangles that point up
-		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
-		for _, fix := range database.fixes {
-			// upward-pointing triangles
-			ld.AddPolyline(fix, filterColor(ctx.cs.Fix), uptri)
-		}
-	} else {
-		uptri := [][2]float32{vtx(-1.5, -0.5), vtx(1.5, -0.5), vtx(0, 1.5)}
-		for name := range s.FixesToDraw {
-			if loc, ok := database.fixes[name]; !ok {
-				// May happen when a new sector file is loaded.
-				//lg.Printf("%s: selected fix not found in sector file data!", loc)
-			} else {
-				ld.AddPolyline(loc, filterColor(ctx.cs.Fix), uptri)
-			}
-		}
-	}
-	if s.DrawEverything || s.DrawAirports {
-		// Airports are squares (like VORs)
-		square := [][2]float32{vtx(-1, -1), vtx(1, -1), vtx(1, 1), vtx(-1, 1)}
-		for _, ap := range database.airports {
-			ld.AddPolyline(ap, filterColor(ctx.cs.Airport), square)
-		}
-	}
-	ld.GenerateCommands(cb)
-	ld.Reset() // after GenerateCommands...
-
 	// ARTCCs
 	drawARTCCLines := func(artcc []StaticDrawable, drawSet map[string]interface{}) {
 		for _, artcc := range artcc {
@@ -1438,8 +1380,56 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 		cb.Call(database.highAirwayCommandBuffer)
 	}
 
-	// Now switch to window coordinates for drawing text.
+	// Now switch to window coordinates for drawing text, VORs, NDBs, fixes, and airports
 	transforms.LoadWindowViewingMatrices(cb)
+
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
+	if s.DrawEverything || s.DrawVORs {
+		// VORs are indicated by small squares
+		square := [][2]float32{[2]float32{-2, -2}, [2]float32{2, -2}, [2]float32{2, 2}, [2]float32{-2, 2}}
+		for _, vor := range database.VORs {
+			ld.AddPolyline(transforms.WindowFromLatLongP(vor), filterColor(ctx.cs.VOR), square)
+		}
+	}
+	if s.DrawEverything || s.DrawNDBs {
+		// NDBs are shown with down-pointing triangles
+		fliptri := EquilateralTriangleVertices(-5)
+		for _, ndb := range database.NDBs {
+			// flipped triangles
+			ld.AddPolyline(transforms.WindowFromLatLongP(ndb), filterColor(ctx.cs.NDB), fliptri[:])
+		}
+	}
+
+	if s.DrawEverything || s.DrawFixes {
+		// Fixes get triangles that point up
+		uptri := EquilateralTriangleVertices(5)
+		for _, fix := range database.fixes {
+			// upward-pointing triangles
+			ld.AddPolyline(transforms.WindowFromLatLongP(fix), filterColor(ctx.cs.Fix), uptri[:])
+		}
+	} else {
+		uptri := EquilateralTriangleVertices(5)
+		for name := range s.FixesToDraw {
+			if loc, ok := database.fixes[name]; !ok {
+				// May happen when a new sector file is loaded.
+				//lg.Printf("%s: selected fix not found in sector file data!", loc)
+			} else {
+				ld.AddPolyline(transforms.WindowFromLatLongP(loc), filterColor(ctx.cs.Fix), uptri[:])
+			}
+		}
+	}
+	if s.DrawEverything || s.DrawAirports {
+		// Airports are squares (like VORs)
+		square := [][2]float32{[2]float32{-2, -2}, [2]float32{2, -2}, [2]float32{2, 2}, [2]float32{-2, 2}}
+		for _, ap := range database.airports {
+			ld.AddPolyline(transforms.WindowFromLatLongP(ap), filterColor(ctx.cs.Airport), square)
+		}
+	}
+	ld.GenerateCommands(cb)
+	ld.Reset() // after GenerateCommands...
+
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 

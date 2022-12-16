@@ -426,6 +426,17 @@ func LineLineIntersect(p1f, p2f, p3f, p4f [2]float32) ([2]float32, bool) {
 	return [2]float32{float32(numx / denom), float32(numy / denom)}, true
 }
 
+// Returns the vertex coordinates of an equilateral triangle centered at
+// the origin with specified height.
+func EquilateralTriangleVertices(height float32) [3][2]float32 {
+	const InvSqrt3 = 0.577350269189626
+	return [3][2]float32{
+		[2]float32{0, height * 2 / 3},
+		[2]float32{height * InvSqrt3, -height / 3},
+		[2]float32{-height * InvSqrt3, -height / 3},
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // RGB
 
