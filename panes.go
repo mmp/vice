@@ -114,6 +114,7 @@ const (
 	KeyPageDown
 	KeyShift
 	KeyControl
+	KeyAlt
 	KeyF1
 	KeyF2
 	KeyF3
@@ -189,6 +190,9 @@ func NewKeyboardState() *KeyboardState {
 	}
 	if io.KeyCtrlPressed() {
 		keyboard.pressed[KeyControl] = nil
+	}
+	if io.KeyAltPressed() {
+		keyboard.pressed[KeyAlt] = nil
 	}
 
 	return keyboard
