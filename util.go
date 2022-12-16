@@ -638,14 +638,6 @@ func rotator2f(angle float32) func([2]float32) [2]float32 {
 ///////////////////////////////////////////////////////////////////////////
 // generics
 
-func Map[T, V any](ts []T, fn func(T) V) []V {
-	result := make([]V, len(ts))
-	for i, t := range ts {
-		result[i] = fn(t)
-	}
-	return result
-}
-
 func FlattenMap[K comparable, V any](m map[K]V) ([]K, []V) {
 	keys := make([]K, 0, len(m))
 	values := make([]V, 0, len(m))

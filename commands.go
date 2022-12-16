@@ -1237,7 +1237,7 @@ func (*FindCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 	if len(aircraft) == 1 {
 		pos = aircraft[0].Position()
 	} else if len(aircraft) > 1 {
-		callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
+		callsigns := MapSlice(aircraft, func(a *Aircraft) string { return a.Callsign() })
 		return ErrorStringConsoleEntry("Multiple aircraft match: " + strings.Join(callsigns, ", "))
 	} else {
 		var ok bool
@@ -1385,7 +1385,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 		if len(aircraft) == 1 {
 			return StringConsoleEntry(acInfo(aircraft[0]))
 		} else if len(aircraft) > 1 {
-			callsigns := Map(aircraft, func(a *Aircraft) string { return a.Callsign() })
+			callsigns := MapSlice(aircraft, func(a *Aircraft) string { return a.Callsign() })
 			return ErrorStringConsoleEntry("Multiple aircraft match: " + strings.Join(callsigns, ", "))
 		} else {
 			return ErrorStringConsoleEntry(name + ": unknown")

@@ -256,7 +256,7 @@ func (cli *CLIPane) processEvents(es *EventStream) {
 
 			case TextFrequency:
 				if fm := positionConfig.MonitoredFrequencies(m.frequencies); len(fm) > 0 {
-					freq := strings.Join(Map(fm, func(f Frequency) string { return f.String() }), ", ")
+					freq := strings.Join(MapSlice(fm, func(f Frequency) string { return f.String() }), ", ")
 					recordMessage(freq)
 				}
 
@@ -1380,7 +1380,7 @@ func (cli *CLIPane) sendTextMessage(tm TextMessage) []*ConsoleEntry {
 		sendRecip += "ATC"
 
 	case TextFrequency:
-		sendRecip += strings.Join(Map(tm.frequencies, func(f Frequency) string { return f.String() }), ",")
+		sendRecip += strings.Join(MapSlice(tm.frequencies, func(f Frequency) string { return f.String() }), ",")
 
 	case TextPrivate:
 		sendRecip += tm.recipient
