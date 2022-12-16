@@ -699,6 +699,15 @@ func DuplicateSlice[V any](s []V) []V {
 	return dupe
 }
 
+func DeleteSliceElement[V any](s []V, i int) []V {
+	// Delete i'th element from the slice by first moving any subsequent
+	// elements down one position and then reducing the slice's size by 1.
+	if i+1 < len(s) {
+		copy(s[i:], s[i+1:])
+	}
+	return s[:len(s)-1]
+}
+
 func SliceEqual[V comparable](a []V, b []V) bool {
 	if len(a) != len(b) {
 		return false

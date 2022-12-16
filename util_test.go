@@ -176,6 +176,30 @@ func TestMapSlice(t *testing.T) {
 	}
 }
 
+func TestDeleteSliceElement(t *testing.T) {
+	a := []int{1, 2, 3, 4, 5}
+	a = DeleteSliceElement(a, 2)
+	if !SliceEqual(a, []int{1, 2, 4, 5}) {
+		t.Errorf("Slice element delete incorrect")
+	}
+	a = DeleteSliceElement(a, 3)
+	if !SliceEqual(a, []int{1, 2, 4}) {
+		t.Errorf("Slice element delete incorrect")
+	}
+	a = DeleteSliceElement(a, 0)
+	if !SliceEqual(a, []int{2, 4}) {
+		t.Errorf("Slice element delete incorrect")
+	}
+	a = DeleteSliceElement(a, 1)
+	if !SliceEqual(a, []int{2}) {
+		t.Errorf("Slice element delete incorrect")
+	}
+	a = DeleteSliceElement(a, 0)
+	if !SliceEqual(a, nil) {
+		t.Errorf("Slice element delete incorrect")
+	}
+}
+
 func TestFilterSlice(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5}
 	b := FilterSlice(a, func(i int) bool { return i%2 == 0 })
