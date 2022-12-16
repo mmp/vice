@@ -334,12 +334,12 @@ func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplay
 	case SplitAxisNone:
 		visit(displayExtent, parentDisplayExtent, d.Pane)
 	case SplitAxisX:
-		d0, ds, d1 := displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth(), true)
+		d0, ds, d1 := splitX(displayExtent, d.SplitLine.Pos, splitLineWidth())
 		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
 		visit(ds, displayExtent, &d.SplitLine)
 		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
 	case SplitAxisY:
-		d0, ds, d1 := displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth(), true)
+		d0, ds, d1 := splitY(displayExtent, d.SplitLine.Pos, splitLineWidth())
 		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
 		visit(ds, displayExtent, &d.SplitLine)
 		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
@@ -368,6 +368,36 @@ func (d *DisplayNode) SplitY(y float32, newChild *DisplayNode) *DisplayNode {
 		Children: [2]*DisplayNode{d, newChild}}
 }
 
+func splitX(e Extent2D, x float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
+	e0 := e
+	es := e
+	e1 := e
+	split := (1-x)*e.p0[0] + x*e.p1[0]
+	s0 := split - float32(lineWidth)/2
+	s1 := split + float32(lineWidth)/2
+	s0, s1 = floor(s0), ceil(s1)
+	e0.p1[0] = s0
+	es.p0[0] = s0
+	es.p1[0] = s1
+	e1.p0[0] = s1
+	return e0, es, e1
+}
+
+func splitY(e Extent2D, y float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
+	e0 := e
+	es := e
+	e1 := e
+	split := (1-y)*e.p0[1] + y*e.p1[1]
+	s0 := split - float32(lineWidth)/2
+	s1 := split + float32(lineWidth)/2
+	s0, s1 = floor(s0), ceil(s1)
+	e0.p1[1] = s0
+	es.p0[1] = s0
+	es.p1[1] = s1
+	e1.p0[1] = s1
+	return e0, es, e1
+}
+
 // FindPaneForMouse returns the Pane that the provided mouse position p is inside.
 func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pane {
 	if !displayExtent.Inside(p) {
@@ -381,7 +411,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pan
 	// Compute the extents of the two nodes and the split line.
 	var d0, ds, d1 Extent2D
 	if d.SplitLine.Axis == SplitAxisX {
-		d0, ds, d1 = displayExtent.SplitX(d.SplitLine.Pos, splitLineWidth(), true)
+		d0, ds, d1 = splitX(displayExtent, d.SplitLine.Pos, splitLineWidth())
 
 		// Round the X extents to integer coordinates, to benefit the split
 		// line--since it's relatively small, it's helpful to make it a
@@ -392,7 +422,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pan
 		d1.p0[0] = ceil(d1.p0[0])
 
 	} else {
-		d0, ds, d1 = displayExtent.SplitY(d.SplitLine.Pos, splitLineWidth(), true)
+		d0, ds, d1 = splitY(displayExtent, d.SplitLine.Pos, splitLineWidth())
 
 		// For a y split, similarly round y bounds up/down to integer
 		// coordinates to give the split line a better chance.
