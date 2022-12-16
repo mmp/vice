@@ -1564,7 +1564,7 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 
 			if ctx.mouse.dragging[0] && sb.mouseClickedInBar {
 				sb.accumDrag += -sign * ctx.mouse.dragDelta[1] * float32(sb.nItems) / ctx.paneExtent.Height()
-				if fabs(sb.accumDrag) >= 1 {
+				if abs(sb.accumDrag) >= 1 {
 					sb.offset += int(sb.accumDrag)
 					sb.accumDrag -= float32(int(sb.accumDrag))
 				}

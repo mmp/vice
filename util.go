@@ -171,14 +171,7 @@ func ceil(v float32) float32 {
 	return float32(math.Ceil(float64(v)))
 }
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
-func fabs(x float32) float32 {
+func abs[V constraints.Integer | constraints.Float](x V) V {
 	if x < 0 {
 		return -x
 	}
@@ -527,14 +520,14 @@ func (p Point2LL) DMSString() string {
 	} else {
 		s = "S"
 	}
-	s += format(fabs(p[1]))
+	s += format(abs(p[1]))
 
 	if p[0] > 0 {
 		s += ", E"
 	} else {
 		s += ", W"
 	}
-	s += format(fabs(p[0]))
+	s += format(abs(p[0]))
 
 	return s
 }

@@ -363,7 +363,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	// Laterally: compute the heading to the threshold and compare to the
 	// glideslope's lateral spread.
 	h := headingp2ll(ac.Position(), src.threshold, database.MagneticVariation)
-	if fabs(h-src.heading) > c.GlideslopeLateralSpread {
+	if abs(h-src.heading) > c.GlideslopeLateralSpread {
 		return nil
 	}
 
@@ -383,7 +383,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	// Similarly, find the allowed altitude difference
 	delta := thresholdDistance * tan(radians(c.GlideslopeVerticalSpread))
 
-	if fabs(float32(agl)-height) > delta {
+	if abs(float32(agl)-height) > delta {
 		return nil
 	}
 
@@ -820,18 +820,18 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 			// Finer text positioning depends on which edge of the window
 			// pane we're on; this is made more grungy because text drawing
 			// is specified w.r.t. the position of the upper-left corner...
-			if fabs(pEdge[0]) < .125 {
+			if abs(pEdge[0]) < .125 {
 				// left edge
 				pText[1] += float32(by) / 2
-			} else if fabs(pEdge[0]-bounds.p1[0]) < .125 {
+			} else if abs(pEdge[0]-bounds.p1[0]) < .125 {
 				// right edge
 				pText[0] -= float32(bx)
 				pText[1] += float32(by) / 2
-			} else if fabs(pEdge[1]) < .125 {
+			} else if abs(pEdge[1]) < .125 {
 				// bottom edge
 				pText[0] -= float32(bx) / 2
 				pText[1] += float32(by)
-			} else if fabs(pEdge[1]-bounds.p1[1]) < .125 {
+			} else if abs(pEdge[1]-bounds.p1[1]) < .125 {
 				// top edge
 				pText[0] -= float32(bx) / 2
 			} else {
