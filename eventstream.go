@@ -73,7 +73,7 @@ func (e *EventStream) Unsubscribe(id EventSubscriberId) {
 // event is arbitrary; it's up to the EventStream users to establish
 // conventions.
 func (e *EventStream) Post(event interface{}) {
-	if *devmode {
+	if false && *devmode {
 		if s, ok := event.(interface{ String() string }); ok {
 			lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
 				s.String(), len(e.subscribers), len(e.stream), cap(e.stream))
@@ -250,4 +250,3 @@ type TextMessageEvent struct {
 func (e *TextMessageEvent) String() string {
 	return "TextMessageEvent: " + e.message.String()
 }
-
