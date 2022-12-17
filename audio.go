@@ -73,13 +73,14 @@ const (
 	AudioEventHandoffAccepted
 	AudioEventTimerFinished
 	AudioEventReceivedMessage
+	AudioEventAlert
 	AudioEventCount
 )
 
 func (ae AudioEvent) String() string {
 	return [...]string{"Flight Plan Filed", "New Arrival", "Conflict Alert", "Updated ATIS",
 		"Point Out", "Handoff Request", "Handoff Rejected", "Handoff Accepted",
-		"Timer Finished", "Message Received"}[ae]
+		"Timer Finished", "Message Received", "Alert"}[ae]
 }
 
 type AudioSettings struct {
