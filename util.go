@@ -499,6 +499,9 @@ func RGBFromHex(c int) RGB {
 ///////////////////////////////////////////////////////////////////////////
 // Point2LL
 
+const NauticalMilesToFeet = 6076.12
+const FeetToNauticalMiles = 1 / NauticalMilesToFeet
+
 // Point2LL represents a 2D point on the Earth in latitude-longitude.
 // Important: 0 (x) is longitude, 1 (y) is latitude
 type Point2LL [2]float32
