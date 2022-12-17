@@ -1081,6 +1081,32 @@ func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransfor
 	return
 }
 
+// If the user has run the "find" command to highlight a point in the
+// world, draw a red circle around that point for a few seconds.
+func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	remaining := time.Until(positionConfig.highlightedLocationEndTime)
+	if remaining < 0 {
+		return
+	}
+
+	color := ctx.cs.Error
+	fade := 1.5
+	if sec := remaining.Seconds(); sec < fade {
+		x := float32(sec / fade)
+		color = lerpRGB(x, ctx.cs.Background, color)
+	}
+
+	p := transforms.WindowFromLatLongP(positionConfig.highlightedLocation)
+	radius := float32(10) // 10 pixel radius
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+	ld.AddCircle(p, radius, 360, color)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(3)
+	ld.GenerateCommands(cb)
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // Range limits
 

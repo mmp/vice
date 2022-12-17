@@ -562,7 +562,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawRangeIndicators(ctx, transforms, cb)
 	rs.drawMIT(ctx, transforms, cb)
 	rs.measuringLine.Draw(ctx, rs.labelFont, transforms, cb)
-	rs.drawHighlighted(ctx, transforms, cb)
+	DrawHighlighted(ctx, transforms, cb)
 
 	// Mouse events last, so that the datablock bounds are current.
 	rs.consumeMouseEvents(ctx, transforms)
@@ -1331,30 +1331,6 @@ func (rs *RadarScopePane) drawRangeIndicators(ctx *PaneContext, transforms Scope
 		transforms.LoadWindowViewingMatrices(cb)
 		td.GenerateCommands(cb)
 	}
-}
-
-func (rs *RadarScopePane) drawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	remaining := time.Until(positionConfig.highlightedLocationEndTime)
-	if remaining < 0 {
-		return
-	}
-
-	color := ctx.cs.Error
-	fade := 1.5
-	if sec := remaining.Seconds(); sec < fade {
-		x := float32(sec / fade)
-		color = lerpRGB(x, ctx.cs.Background, color)
-	}
-
-	p := transforms.WindowFromLatLongP(positionConfig.highlightedLocation)
-	radius := float32(10) // 10 pixel radius
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	ld.AddCircle(p, radius, 360, color)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(3 * rs.LineWidth)
-	ld.GenerateCommands(cb)
 }
 
 func (rs *RadarScopePane) drawRoute(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
