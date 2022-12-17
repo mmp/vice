@@ -550,6 +550,56 @@ func (l *LinesDrawBuilder) AddPolyline(p [2]float32, shape [][2]float32) {
 	}
 }
 
+var (
+	// So that we can efficiently draw circles with various tessellations,
+	// circlePoints caches vertex positions of a unit circle at the origin
+	// for specified tessellation rates.
+	circlePoints map[int][][2]float32
+)
+
+// getCirclePoints returns the vertices for a unit circle at the origin
+// with the given number of segments; it creates the vertex slice if this
+// tessellation rate hasn't been seen before and otherwise returns a
+// preexisting one.
+func getCirclePoints(nsegs int) [][2]float32 {
+	if circlePoints == nil {
+		circlePoints = make(map[int][][2]float32)
+	}
+	if _, ok := circlePoints[nsegs]; !ok {
+		// Evaluate the vertices of the circle to initialize a new slice.
+		var pts [][2]float32
+		for d := 0; d < nsegs; d++ {
+			angle := radians(float32(d) / float32(nsegs) * 360)
+			pt := [2]float32{sin(angle), cos(angle)}
+			pts = append(pts, pt)
+		}
+		circlePoints[nsegs] = pts
+	}
+
+	// One way or another, it's now available in the map.
+	return circlePoints[nsegs]
+}
+
+// AddCircle adds lines that draw the outline of a circle with specified
+// and color centered at the specified point p. The nsegs parameter
+// specifies the tessellation rate for the circle.
+func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
+	circle := getCirclePoints(nsegs)
+
+	idx := int32(len(l.p))
+	for i := 0; i < nsegs; i++ {
+		// Translate the points to be centered around the point p with the
+		// given radius and add them to the vertex buffer.
+		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
+		l.p = append(l.p, pi)
+	}
+	for i := 0; i < nsegs; i++ {
+		// Initialize the index buffer; note that the first vertex is
+		// reused as the endpoint of the last line segment.
+		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%nsegs))
+	}
+}
+
 // Bounds returns the 2D bounding box of the specified lines.
 func (l *LinesDrawBuilder) Bounds() Extent2D {
 	return Extent2DFromPoints(l.p)
@@ -589,89 +639,36 @@ func ReturnLinesDrawBuilder(ld *LinesDrawBuilder) {
 // otherwise mostly parallel those of LinesDrawBuilder; see the
 // documentation there.
 type ColoredLinesDrawBuilder struct {
-	p       [][2]float32
-	color   []RGB
-	indices []int32
+	LinesDrawBuilder
+	color []RGB
 }
 
 func (l *ColoredLinesDrawBuilder) Reset() {
-	l.p = l.p[:0]
+	l.LinesDrawBuilder.Reset()
 	l.color = l.color[:0]
-	l.indices = l.indices[:0]
 }
 
 func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
-	idx := int32(len(l.p))
-	l.p = append(l.p, p0, p1)
+	l.LinesDrawBuilder.AddLine(p0, p1)
 	l.color = append(l.color, color, color)
-	l.indices = append(l.indices, idx, idx+1)
 }
 
 func (l *ColoredLinesDrawBuilder) AddPolyline(p [2]float32, color RGB, shape [][2]float32) {
-	idx := int32(len(l.p))
-	for _, delta := range shape {
-		pp := add2ll(p, delta)
-		l.p = append(l.p, pp)
+	l.LinesDrawBuilder.AddPolyline(p, shape)
+	for _ = range shape {
 		l.color = append(l.color, color)
 	}
-	for i := 0; i < len(shape); i++ {
-		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%len(shape)))
-	}
 }
 
-var (
-	// So that we can efficiently draw circles with various tessellations,
-	// circlePoints caches vertex positions of a unit circle at the origin
-	// for specified tessellation rates.
-	circlePoints map[int][][2]float32
-)
-
-// getCirclePoints returns the vertices for a unit circle at the origin
-// with the given number of segments; it creates the vertex slice if this
-// tessellation rate hasn't been seen before and otherwise returns a
-// preexisting one.
-func getCirclePoints(nsegs int) [][2]float32 {
-	if circlePoints == nil {
-		circlePoints = make(map[int][][2]float32)
-	}
-	if _, ok := circlePoints[nsegs]; !ok {
-		// Evaluate the vertices of the circle to initialize a new slice.
-		var pts [][2]float32
-		for d := 0; d < nsegs; d++ {
-			angle := radians(float32(d) / float32(nsegs) * 360)
-			pt := [2]float32{sin(angle), cos(angle)}
-			pts = append(pts, pt)
-		}
-		circlePoints[nsegs] = pts
-	}
-
-	// One way or another, it's now available in the map.
-	return circlePoints[nsegs]
-}
-
-// AddCircle adds lines that draw the outline of a circle with specified radius and color
-// centered at the specified point p. The nsegs parameter specifies the tessellation rate
-// for the circle.
+// AddCircle adds lines that draw the outline of a circle with specified
+// radius and color centered at the specified point p. The nsegs parameter
+// specifies the tessellation rate for the circle.
 func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, color RGB) {
-	circle := getCirclePoints(nsegs)
+	l.LinesDrawBuilder.AddCircle(p, radius, nsegs)
 
-	idx := int32(len(l.p))
 	for i := 0; i < nsegs; i++ {
-		// Translate the points to be centered around the point p with the
-		// given radius and add them to the vertex buffer.
-		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
-		l.p = append(l.p, pi)
 		l.color = append(l.color, color)
 	}
-	for i := 0; i < nsegs; i++ {
-		// Initialize the index buffer; note that the first vertex is
-		// reused as the endpoint of the last line segment.
-		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%nsegs))
-	}
-}
-
-func (l *ColoredLinesDrawBuilder) Bounds() Extent2D {
-	return Extent2DFromPoints(l.p)
 }
 
 func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) (int, int) {
@@ -679,14 +676,10 @@ func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) (int, int)
 		return 0, 0
 	}
 
-	p := cb.Float2Buffer(l.p)
-	cb.VertexArray(p, 2, 2*4)
-
 	rgb := cb.RGBBuffer(l.color)
 	cb.RGB32Array(rgb, 3, 3*4)
 
-	ind := cb.IntBuffer(l.indices)
-	cb.DrawLines(ind, len(l.indices))
+	l.LinesDrawBuilder.GenerateCommands(cb)
 
 	return rgb, 3 * len(l.color)
 }
