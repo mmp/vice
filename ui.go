@@ -1611,12 +1611,12 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	const edgeSpace = 2
 	wy0, wy1 := lerp(y0, ph-edgeSpace, edgeSpace), lerp(y1, ph-edgeSpace, edgeSpace)
 
-	quad := TrianglesDrawBuilder{}
+	quad := GetColoredTrianglesDrawBuilder()
+	defer ReturnColoredTrianglesDrawBuilder(quad)
 	quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
 		[2]float32{pw - float32(edgeSpace), wy0},
 		[2]float32{pw - float32(edgeSpace), wy1},
-		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1})
-	cb.SetRGB(ctx.cs.UIControl)
+		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, ctx.cs.UIControl)
 	quad.GenerateCommands(cb)
 }
 

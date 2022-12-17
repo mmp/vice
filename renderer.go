@@ -773,6 +773,67 @@ func ReturnTrianglesDrawBuilder(td *TrianglesDrawBuilder) {
 	trianglesDrawBuilderPool.Put(td)
 }
 
+// ColoredTrianglesDrawBuilder
+type ColoredTrianglesDrawBuilder struct {
+	TrianglesDrawBuilder
+	color []RGB
+}
+
+func (t *ColoredTrianglesDrawBuilder) Reset() {
+	t.TrianglesDrawBuilder.Reset()
+	t.color = t.color[:0]
+}
+
+// AddTriangle adds a triangle with the specified three vertices to be
+// drawn.
+func (t *ColoredTrianglesDrawBuilder) AddTriangle(p0, p1, p2 [2]float32, rgb RGB) {
+	t.TrianglesDrawBuilder.AddTriangle(p0, p1, p2)
+	t.color = append(t.color, rgb, rgb, rgb)
+}
+
+// AddQuad adds a quadrilateral with the specified four vertices to be
+// drawn; the quad is split into two triangles for drawing.
+func (t *ColoredTrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32, rgb RGB) {
+	t.TrianglesDrawBuilder.AddQuad(p0, p1, p2, p3)
+	t.color = append(t.color, rgb, rgb, rgb, rgb)
+}
+
+// AddCircle adds a filled circle with specified radius around the
+// specified position to be drawn using triangles. The specified number of
+// segments, nsegs, sets the tessellation rate for the circle.
+func (t *ColoredTrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, rgb RGB) {
+	t.TrianglesDrawBuilder.AddCircle(p, radius, nsegs)
+	for i := 0; i < nsegs; i++ {
+		t.color = append(t.color, rgb)
+	}
+}
+
+func (t *ColoredTrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
+	if len(t.indices) == 0 {
+		return
+	}
+
+	rgb := cb.RGBBuffer(t.color)
+	cb.RGB32Array(rgb, 3, 3*4)
+
+	t.TrianglesDrawBuilder.GenerateCommands(cb)
+
+	cb.DisableColorArray()
+}
+
+// ColoredTrianglesDrawBuilders are managed using a sync.Pool so that their buf
+// slice allocations persist across multiple uses.
+var coloredTrianglesDrawBuilderPool = sync.Pool{New: func() any { return &ColoredTrianglesDrawBuilder{} }}
+
+func GetColoredTrianglesDrawBuilder() *ColoredTrianglesDrawBuilder {
+	return coloredTrianglesDrawBuilderPool.Get().(*ColoredTrianglesDrawBuilder)
+}
+
+func ReturnColoredTrianglesDrawBuilder(td *ColoredTrianglesDrawBuilder) {
+	td.Reset()
+	coloredTrianglesDrawBuilderPool.Put(td)
+}
+
 // TextDrawBuilder accumulates text to be drawn, batching it up in a single
 // draw command.
 type TextDrawBuilder struct {

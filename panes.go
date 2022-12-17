@@ -1430,7 +1430,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 
 		// Draw background quad for this flight strip
-		qb := TrianglesDrawBuilder{}
+		qb := GetColoredTrianglesDrawBuilder()
+		defer ReturnColoredTrianglesDrawBuilder(qb)
 		bgColor := func() RGB {
 			if fsp.isDeparture(ac) {
 				return ctx.cs.DepartureStrip
@@ -1438,9 +1439,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				return ctx.cs.ArrivalStrip
 			}
 		}()
-		cb.SetRGB(bgColor)
 		y0, y1 := y+1+vpad-stripHeight, y+1+vpad
-		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1})
+		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
 		qb.GenerateCommands(cb)
 
 		x := indent
