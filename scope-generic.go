@@ -1134,10 +1134,13 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTrans
 
 		// Draw characters starting at the upper left.
 		flashCycle := (actualNow.Second() / int(rs.DataBlockFrequency)) & 1
-		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0] + 1, bbox.p1[1] - 1},
-			TextStyle{Font: rs.datablockFont, Color: ctx.cs.Background, LineSpacing: -2})
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
-			TextStyle{Font: rs.datablockFont, Color: color, LineSpacing: -2})
+			TextStyle{
+				Font:            rs.datablockFont,
+				Color:           color,
+				DropShadow:      true,
+				DropShadowColor: ctx.cs.Background,
+				LineSpacing:     -2})
 
 		// visualize bounds
 		if false {

@@ -837,16 +837,69 @@ func ReturnColoredTrianglesDrawBuilder(td *ColoredTrianglesDrawBuilder) {
 // TextDrawBuilder accumulates text to be drawn, batching it up in a single
 // draw command.
 type TextDrawBuilder struct {
-	// Buffers for regular text
+	// Vertex/index buffers for regular text and drop shadows, if enabled.
+	regular, shadow TextBuffers
+
+	// Buffers for background quads, if specified
+	background struct {
+		p       [][2]float32
+		rgb     []RGB
+		indices []int32
+	}
+}
+
+// TextBuffers is a helper class that maintains vertex and index buffers
+// for drawing text.
+type TextBuffers struct {
 	p       [][2]float32
 	uv      [][2]float32
 	rgb     []RGB
 	indices []int32
+}
 
-	// Buffers for background quads, if specified
-	bgp       [][2]float32
-	bgrgb     []RGB
-	bgindices []int32
+func (t *TextBuffers) Reset() {
+	t.p = t.p[:0]
+	t.uv = t.uv[:0]
+	t.rgb = t.rgb[:0]
+	t.indices = t.indices[:0]
+}
+
+// Add updates the buffers to draw the given glyph with the given color,
+// with upper-left coordinates specified by p.
+func (t *TextBuffers) Add(p [2]float32, glyph *Glyph, color RGB) {
+	// Get the vertex positions and texture coordinates for the
+	// glyph.
+	u0, v0, u1, v1 := glyph.U0, glyph.V0, glyph.U1, glyph.V1
+	x0, y0, x1, y1 := glyph.X0, glyph.Y0, glyph.X1, glyph.Y1
+
+	// Add the quad for the glyph to the vertex/index buffers
+	startIdx := int32(len(t.p))
+	t.uv = append(t.uv, [][2]float32{{u0, v0}, {u1, v0}, {u1, v1}, {u0, v1}}...)
+	t.rgb = append(t.rgb, color, color, color, color)
+	t.p = append(t.p, [][2]float32{
+		add2f(p, [2]float32{x0, -y0}),
+		add2f(p, [2]float32{x1, -y0}),
+		add2f(p, [2]float32{x1, -y1}),
+		add2f(p, [2]float32{x0, -y1})}...)
+	t.indices = append(t.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
+}
+
+func (t *TextBuffers) GenerateCommands(cb *CommandBuffer) {
+	if len(t.indices) == 0 {
+		return
+	}
+
+	// Enable the assorted vertex buffers.
+	p := cb.Float2Buffer(t.p)
+	cb.VertexArray(p, 2, 2*4)
+	rgb := cb.RGBBuffer(t.rgb)
+	cb.RGB32Array(rgb, 3, 3*4)
+	uv := cb.Float2Buffer(t.uv)
+	cb.TexCoordArray(uv, 2, 2*4)
+
+	// Enable the index buffer and issue the draw command.
+	ind := cb.IntBuffer(t.indices)
+	cb.DrawQuads(ind, len(t.indices))
 }
 
 // TextStyle specifies the style of text to be drawn.
@@ -862,6 +915,11 @@ type TextStyle struct {
 	// BackgroundColor specifies the color of the background; it is only used if
 	// DrawBackground is grue.
 	BackgroundColor RGB
+	// DropShadow controls whether a drop shadow of the text is drawn,
+	// offset one pixel to the right and one pixel down from the main text.
+	DropShadow bool
+	// DropShadowColor specifies the color to use for drop shadow text.
+	DropShadowColor RGB
 }
 
 // AddTextCentered draws the specified text centered at the specified
@@ -905,18 +963,18 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 			bx1, by1 := px, py-dy
 
 			// Add a quad to stake out the background for this line.
-			startIdx := int32(len(td.bgp))
+			startIdx := int32(len(td.background.p))
 			color := style.BackgroundColor
-			td.bgrgb = append(td.bgrgb, color, color, color, color)
+			td.background.rgb = append(td.background.rgb, color, color, color, color)
 			// Additional padding
 			padx, pady := float32(1), float32(0)
-			// Emit the four vertices of the line bound, padded.
-			td.bgp = append(td.bgp, [][2]float32{
+			// Emit the four vertices of the line's bound, padded.
+			td.background.p = append(td.background.p, [][2]float32{
 				{bx0 - padx, by0 - pady},
 				{bx1 + padx, by0 - pady},
 				{bx1 + padx, by1 + pady},
 				{bx0 - padx, by1 + pady}}...)
-			td.bgindices = append(td.bgindices, startIdx, startIdx+1, startIdx+2, startIdx+3)
+			td.background.indices = append(td.background.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
 		}
 
 		for _, ch := range text[i] {
@@ -945,21 +1003,11 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 			// beyond the small perf. cost, we'll end up getting "?" and
 			// the like if we do this anyway.
 			if glyph.Visible {
-				// Get the vertex positions and texture coordinates for the
-				// glyph.
-				u0, v0, u1, v1 := glyph.U0, glyph.V0, glyph.U1, glyph.V1
-				x0, y0, x1, y1 := glyph.X0, glyph.Y0, glyph.X1, glyph.Y1
+				td.regular.Add([2]float32{px, py}, glyph, style.Color)
 
-				// Add the quad for the glyph to the vertex/index buffers
-				startIdx := int32(len(td.p))
-				td.uv = append(td.uv, [][2]float32{{u0, v0}, {u1, v0}, {u1, v1}, {u0, v1}}...)
-				td.rgb = append(td.rgb, style.Color, style.Color, style.Color, style.Color)
-				td.p = append(td.p, [][2]float32{
-					{px + x0, py - y0},
-					{px + x1, py - y0},
-					{px + x1, py - y1},
-					{px + x0, py - y1}}...)
-				td.indices = append(td.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
+				if style.DropShadow {
+					td.shadow.Add([2]float32{px + 1, py - 1}, glyph, style.DropShadowColor)
+				}
 			}
 
 			// Visible or not, advance the x cursor position to move to the next character.
@@ -976,57 +1024,49 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 }
 
 func (td *TextDrawBuilder) Reset() {
-	td.p = td.p[:0]
-	td.uv = td.uv[:0]
-	td.rgb = td.rgb[:0]
-	td.indices = td.indices[:0]
-	td.bgp = td.bgp[:0]
-	td.bgrgb = td.bgrgb[:0]
-	td.bgindices = td.bgindices[:0]
+	td.regular.Reset()
+	td.shadow.Reset()
+
+	td.background.p = td.background.p[:0]
+	td.background.rgb = td.background.rgb[:0]
+	td.background.indices = td.background.indices[:0]
 }
 
 func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
+	if len(td.regular.indices) == 0 {
+		return
+	}
+
 	// Issue the commands to draw the background first, if any background
 	// quads have been specified.
-	if len(td.bgindices) > 0 {
-		p := cb.Float2Buffer(td.bgp)
+	if len(td.background.indices) > 0 {
+		p := cb.Float2Buffer(td.background.p)
 		cb.VertexArray(p, 2, 2*4)
 
-		rgb := cb.RGBBuffer(td.bgrgb)
+		rgb := cb.RGBBuffer(td.background.rgb)
 		cb.RGB32Array(rgb, 3, 3*4)
 
-		ind := cb.IntBuffer(td.bgindices)
-		cb.DrawQuads(ind, len(td.bgindices))
+		ind := cb.IntBuffer(td.background.indices)
+		cb.DrawQuads(ind, len(td.background.indices))
 	}
 
 	// Issue the drawing commands for the text itself.
-	if len(td.indices) > 0 {
-		// Enable blending so that we get antialiasing at character edges
-		// (which have fractional alpha in the atlas texture.)
-		cb.Blend()
 
-		// Enable the texture with the font atlas
-		texid := uint32(imgui.CurrentIO().Fonts().GetTextureID())
-		cb.EnableTexture(texid)
+	// Enable blending so that we get antialiasing at character edges
+	// (which have fractional alpha in the atlas texture.)
+	cb.Blend()
 
-		// Enable the assorted vertex buffers.
-		p := cb.Float2Buffer(td.p)
-		cb.VertexArray(p, 2, 2*4)
+	// Enable the texture with the font atlas
+	texid := uint32(imgui.CurrentIO().Fonts().GetTextureID())
+	cb.EnableTexture(texid)
 
-		rgb := cb.RGBBuffer(td.rgb)
-		cb.RGB32Array(rgb, 3, 3*4)
+	// Draw the drop shadows before the main text
+	td.shadow.GenerateCommands(cb)
+	td.regular.GenerateCommands(cb)
 
-		uv := cb.Float2Buffer(td.uv)
-		cb.TexCoordArray(uv, 2, 2*4)
-
-		// Enable the index buffer and issue the draw command.
-		ind := cb.IntBuffer(td.indices)
-		cb.DrawQuads(ind, len(td.indices))
-
-		// Clean up after ourselves.
-		cb.DisableTexture()
-		cb.DisableBlend()
-	}
+	// Clean up after ourselves.
+	cb.DisableTexture()
+	cb.DisableBlend()
 }
 
 // TextDrawBuilders are managed using a sync.Pool so that their buf slice

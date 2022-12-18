@@ -1463,7 +1463,11 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 	if s.DrawEverything || s.DrawLabels {
 		for _, label := range database.labels {
 			if viewBounds.Inside(label.p) {
-				style := TextStyle{Font: labelFont, Color: filterColor(label.color)}
+				style := TextStyle{
+					Font:            labelFont,
+					Color:           filterColor(label.color),
+					DropShadow:      true,
+					DropShadowColor: ctx.cs.Background}
 				td.AddTextCentered(label.name, transforms.WindowFromLatLongP(label.p), style)
 			}
 		}
