@@ -43,12 +43,6 @@ type WeatherRadar struct {
 	texId       uint32
 
 	lastDraw time.Time
-
-	// BlendFactor controls the blending of the radar image; 0 hides it and 1
-	// shows it as received from the sender (which is normally far too bright
-	// and obscures other things on the scope). Values around 0.1 or 0.2 are
-	// generally reasonable.
-	BlendFactor float32
 }
 
 // Latitude-longitude extent of the fetched image; the requests are +/-
