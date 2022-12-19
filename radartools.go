@@ -41,8 +41,6 @@ type WeatherRadar struct {
 	// received radar image, which has texId as its GPU texture it.
 	radarBounds Extent2D
 	texId       uint32
-
-	lastDraw time.Time
 }
 
 // Latitude-longitude extent of the fetched image; the requests are +/-
