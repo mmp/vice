@@ -21,10 +21,10 @@ func handleAA(v *VATSIMServer, sender string, args []string) error {
 		return err
 	} else {
 		v.controllers[sender] = &Controller{
-			callsign: sender,
-			name:     args[2],
-			cid:      args[3],
-			rating:   rating}
+			Callsign: sender,
+			Name:     args[2],
+			CID:      args[3],
+			Rating:   rating}
 		return nil
 	}
 }
@@ -354,12 +354,12 @@ func handlePct(v *VATSIMServer, sender string, args []string) error {
 	}
 
 	ctrl := &Controller{
-		callsign:   sender,
-		facility:   Facility(facility),
-		frequency:  frequency,
-		scopeRange: scopeRange,
-		rating:     rating,
-		location:   latlong}
+		Callsign:   sender,
+		Facility:   Facility(facility),
+		Frequency:  frequency,
+		ScopeRange: scopeRange,
+		Rating:     rating,
+		Location:   latlong}
 	v.controllers[sender] = ctrl
 
 	if pos := ctrl.GetPosition(); pos != nil {
@@ -509,7 +509,7 @@ func init() {
 
 	r(NewMessageSpec("$CQ::BY", 3, func(v *VATSIMServer, sender string, args []string) error {
 		if ctrl := v.GetController(sender); ctrl != nil {
-			ctrl.requestRelief = true
+			ctrl.RequestRelief = true
 		}
 		return nil
 	}))
@@ -543,7 +543,7 @@ func init() {
 
 	r(NewMessageSpec("$CQ::HI", 3, func(v *VATSIMServer, sender string, args []string) error {
 		if ctrl := v.GetController(sender); ctrl != nil {
-			ctrl.requestRelief = false
+			ctrl.RequestRelief = false
 		}
 		return nil
 	}))
@@ -651,7 +651,7 @@ func init() {
 			return err
 		} else {
 			name := args[3]
-			v.users[name] = &User{name: name, note: args[4], rating: rating}
+			v.users[name] = &User{Name: name, Note: args[4], Rating: rating}
 			return nil
 		}
 	}))

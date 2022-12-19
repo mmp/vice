@@ -122,14 +122,14 @@ func NewVATSIMNetworkServer(address string) (*VATSIMServer, error) {
 	loc, _ := database.Locate(positionConfig.PrimaryRadarCenter)
 
 	v.controllers[positionConfig.VatsimCallsign] = &Controller{
-		callsign:   positionConfig.VatsimCallsign,
-		name:       globalConfig.VatsimName,
-		cid:        globalConfig.VatsimCID,
-		rating:     globalConfig.VatsimRating,
-		frequency:  positionConfig.primaryFrequency,
-		scopeRange: int(positionConfig.RadarRange),
-		facility:   positionConfig.VatsimFacility,
-		location:   loc}
+		Callsign:   positionConfig.VatsimCallsign,
+		Name:       globalConfig.VatsimName,
+		CID:        globalConfig.VatsimCID,
+		Rating:     globalConfig.VatsimRating,
+		Frequency:  positionConfig.primaryFrequency,
+		ScopeRange: int(positionConfig.RadarRange),
+		Facility:   positionConfig.VatsimFacility,
+		Location:   loc}
 
 	return v, nil
 }
@@ -204,7 +204,7 @@ func (v *VATSIMServer) RequestControllerATIS(controller string) error {
 	if c == nil {
 		return ErrNoController
 	}
-	return v.controlDelegate.RequestControllerATIS(c.callsign)
+	return v.controlDelegate.RequestControllerATIS(c.Callsign)
 }
 
 func (v *VATSIMServer) GetUser(callsign string) *User {
@@ -228,7 +228,7 @@ func (v *VATSIMServer) GetController(callsign string) *Controller {
 
 func (v *VATSIMServer) GetAllControllers() []*Controller {
 	_, c := FlattenMap(v.controllers)
-	sort.Slice(c, func(i, j int) bool { return c[i].callsign < c[j].callsign })
+	sort.Slice(c, func(i, j int) bool { return c[i].Callsign < c[j].Callsign })
 	return c
 }
 
@@ -238,9 +238,9 @@ func (v *VATSIMServer) AddAirportForWeather(airport string) {
 
 func (v *VATSIMServer) SetPrimaryFrequency(f Frequency) {
 	if ctrl, ok := v.controllers[v.callsign]; !ok {
-		v.controllers[v.callsign] = &Controller{frequency: f}
+		v.controllers[v.callsign] = &Controller{Frequency: f}
 	} else {
-		ctrl.frequency = f
+		ctrl.Frequency = f
 	}
 }
 
@@ -397,7 +397,7 @@ func (v *VATSIMServer) PushFlightStrip(callsign string, controller string) error
 	} else {
 		// Use c.callsign rather controller in case a sector id was
 		// specified.
-		return v.controlDelegate.PushFlightStrip(callsign, c.callsign)
+		return v.controlDelegate.PushFlightStrip(callsign, c.Callsign)
 	}
 }
 
@@ -442,9 +442,9 @@ func (v *VATSIMServer) Handoff(callsign string, controller string) error {
 		return ErrNoController
 	} else {
 		// Use c.callsign in case we were given a sector id...
-		ac.outboundHandoffController = c.callsign
+		ac.outboundHandoffController = c.Callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		return v.controlDelegate.Handoff(callsign, c.callsign)
+		return v.controlDelegate.Handoff(callsign, c.Callsign)
 	}
 }
 
@@ -505,7 +505,7 @@ func (v *VATSIMServer) PointOut(callsign string, controller string) error {
 		return ErrNoController
 	} else {
 		// Use c.callsign in case we were given a sector id...
-		return v.controlDelegate.PointOut(callsign, c.callsign)
+		return v.controlDelegate.PointOut(callsign, c.Callsign)
 	}
 }
 

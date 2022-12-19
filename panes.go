@@ -345,7 +345,7 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 		pos := ac.Position()
 		// Filter ones where we don't have a valid position
 		if pos[0] != 0 && pos[1] != 0 {
-			dist := nmdistance2ll(database.FAA.airports[ac.flightPlan.arrive].location, pos)
+			dist := nmdistance2ll(database.FAA.airports[ac.flightPlan.arrive].Location, pos)
 			sortDist := dist + float32(ac.Altitude())/300.
 			arr = append(arr, Arrival{aircraft: ac, distance: dist, sortDistance: sortDist})
 		}
@@ -527,9 +527,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if a.ShowDeparted && len(airborne) > 0 {
 		sort.Slice(airborne, func(i, j int) bool {
 			ai := &airborne[i]
-			di := nmdistance2ll(database.FAA.airports[ai.flightPlan.arrive].location, ai.Position())
+			di := nmdistance2ll(database.FAA.airports[ai.flightPlan.arrive].Location, ai.Position())
 			aj := &airborne[j]
-			dj := nmdistance2ll(database.FAA.airports[aj.flightPlan.arrive].location, aj.Position())
+			dj := nmdistance2ll(database.FAA.airports[aj.flightPlan.arrive].Location, aj.Position())
 			return di < dj
 		})
 
@@ -590,11 +590,11 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		for _, suffix := range []string{"CTR", "APP", "DEP", "TWR", "GND", "DEL", "FSS", "ATIS", "OBS"} {
 			first := true
 			for _, ctrl := range controllers {
-				if server.Callsign() == ctrl.callsign || !strings.HasSuffix(ctrl.callsign, suffix) {
+				if server.Callsign() == ctrl.Callsign || !strings.HasSuffix(ctrl.Callsign, suffix) {
 					continue
 				}
 
-				if ctrl.frequency == 0 {
+				if ctrl.Frequency == 0 {
 					continue
 				}
 
@@ -605,14 +605,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					str.WriteString("        ")
 				}
 
-				if ctrl.requestRelief {
+				if ctrl.RequestRelief {
 					flush()
 					style.Color = cs.TextHighlight
 				}
 
-				str.WriteString(fmt.Sprintf(" %-12s %s", ctrl.callsign, ctrl.frequency))
+				str.WriteString(fmt.Sprintf(" %-12s %s", ctrl.Callsign, ctrl.Frequency))
 
-				if ctrl.requestRelief {
+				if ctrl.RequestRelief {
 					flush()
 				}
 

@@ -92,28 +92,28 @@ func (f Frequency) String() string {
 }
 
 type Controller struct {
-	callsign string // it's not exactly a callsign, but...
-	name     string
-	cid      string
-	rating   NetworkRating
+	Callsign string // it's not exactly a callsign, but...
+	Name     string
+	CID      string
+	Rating   NetworkRating
 
-	frequency     Frequency
-	scopeRange    int
-	facility      Facility
-	location      Point2LL
-	requestRelief bool
+	Frequency     Frequency
+	ScopeRange    int
+	Facility      Facility
+	Location      Point2LL
+	RequestRelief bool
 }
 
 func (c *Controller) GetPosition() *Position {
 	// compute the basic callsign: e.g. NY_1_CTR -> NY_CTR, PHL_ND_APP -> PHL_APP
-	callsign := c.callsign
+	callsign := c.Callsign
 	cf := strings.Split(callsign, "_")
 	if len(cf) > 2 {
 		callsign = cf[0] + "_" + cf[len(cf)-1]
 	}
 
 	for i, pos := range database.positions[callsign] {
-		if pos.frequency == c.frequency {
+		if pos.frequency == c.Frequency {
 			return &database.positions[callsign][i]
 		}
 	}
@@ -248,15 +248,15 @@ type Runway struct {
 }
 
 type Navaid struct {
-	id       string
-	navtype  string
-	name     string
-	location Point2LL
+	Id       string
+	Type     string
+	Name     string
+	Location Point2LL
 }
 
 type Fix struct {
-	id       string
-	location Point2LL
+	Id       string
+	Location Point2LL
 }
 
 type PRDEntry struct {
@@ -277,17 +277,17 @@ type AirportPair struct {
 }
 
 type Airport struct {
-	id        string
-	name      string
-	elevation int
-	location  Point2LL
+	Id        string
+	Name      string
+	Elevation int
+	Location  Point2LL
 }
 
 type Callsign struct {
-	company   string
-	country   string
-	telephony string
-	threeltr  string
+	Company     string
+	Country     string
+	Telephony   string
+	ThreeLetter string
 }
 
 type Position struct {
@@ -301,9 +301,9 @@ type Position struct {
 }
 
 type User struct {
-	name   string
-	note   string
-	rating NetworkRating
+	Name   string
+	Note   string
+	Rating NetworkRating
 }
 
 type VoiceCapability int
@@ -453,7 +453,7 @@ func (a *Aircraft) Callsign() string {
 func (a *Aircraft) Telephony() string {
 	cs := strings.TrimRight(a.callsign, "0123456789")
 	if sign, ok := database.callsigns[cs]; ok {
-		return sign.telephony
+		return sign.Telephony
 	} else {
 		return ""
 	}
@@ -471,7 +471,7 @@ func (a *Aircraft) OnGround() bool {
 	if a.flightPlan != nil {
 		for _, airport := range [2]string{a.flightPlan.depart, a.flightPlan.arrive} {
 			if ap, ok := database.FAA.airports[airport]; ok {
-				heightAGL := abs(a.Altitude() - ap.elevation)
+				heightAGL := abs(a.Altitude() - ap.Elevation)
 				return heightAGL < 100
 			}
 		}

@@ -142,13 +142,13 @@ func (*ControllerCommandArg) Expand(s string) (string, error) {
 		// callsign or if it exactly matches the controller's sector id. We
 		// don't allow substring matches of the sector id, since that seems
 		// fairly arbitrary/obscure.
-		ok := strings.Contains(ctrl.callsign, s) && ctrl.callsign != server.Callsign()
+		ok := strings.Contains(ctrl.Callsign, s) && ctrl.Callsign != server.Callsign()
 		if pos := ctrl.GetPosition(); pos != nil {
 			ok = ok || pos.sectorId == s
 		}
 
 		if ok {
-			matches = append(matches, ctrl.callsign)
+			matches = append(matches, ctrl.Callsign)
 		}
 	}
 
@@ -1168,7 +1168,7 @@ func (*HandoffCommand) Help() string {
 	return "Hands off the specified aircraft to the specified controller."
 }
 func (*HandoffCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.Handoff(ac.callsign, ctrl.callsign))
+	return ErrorConsoleEntry(server.Handoff(ac.callsign, ctrl.Callsign))
 }
 
 type PointOutCommand struct{}
@@ -1182,7 +1182,7 @@ func (*PointOutCommand) Help() string {
 	return "Points the specified aircraft out to the specified controller."
 }
 func (*PointOutCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.PointOut(ac.callsign, ctrl.callsign))
+	return ErrorConsoleEntry(server.PointOut(ac.callsign, ctrl.Callsign))
 }
 
 type TrackAircraftCommand struct{}
@@ -1215,7 +1215,7 @@ func (*PushFlightStripCommand) Help() string {
 	return "Pushes the aircraft's flight strip to the specified controller."
 }
 func (*PushFlightStripCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.PushFlightStrip(ac.callsign, ctrl.callsign))
+	return ErrorConsoleEntry(server.PushFlightStrip(ac.callsign, ctrl.Callsign))
 }
 
 type FindCommand struct{}
@@ -1325,7 +1325,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 
 		indstr := fmt.Sprintf("%*c", indent, ' ')
 		if u := server.GetUser(ac.Callsign()); u != nil {
-			result += fmt.Sprintf("\n%spilot: %s %s (%s)", indstr, u.name, u.rating, u.note)
+			result += fmt.Sprintf("\n%spilot: %s %s (%s)", indstr, u.Name, u.Rating, u.Note)
 		}
 		if ac.flightPlan != nil {
 			if tel := ac.Telephony(); tel != "" {
@@ -1356,24 +1356,24 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 		// e.g. "fft" matches both a VOR and a callsign, so report both...
 		var info []string
 		if navaid, ok := database.FAA.navaids[name]; ok {
-			info = append(info, fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.name),
-				navaid.navtype, navaid.location.DMSString()))
+			info = append(info, fmt.Sprintf("%s: %s %s %s", name, stopShouting(navaid.Name),
+				navaid.Type, navaid.Location.DMSString()))
 		}
 		if fix, ok := database.FAA.fixes[name]; ok {
-			info = append(info, fmt.Sprintf("%s: Fix %s", name, fix.location.DMSString()))
+			info = append(info, fmt.Sprintf("%s: Fix %s", name, fix.Location.DMSString()))
 		}
 		if ap, ok := database.FAA.airports[name]; ok {
-			info = append(info, fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.name),
-				ap.location.DMSString(), ap.elevation))
+			info = append(info, fmt.Sprintf("%s: %s: %s, alt %d", name, stopShouting(ap.Name),
+				ap.Location.DMSString(), ap.Elevation))
 		}
 		if cs, ok := database.callsigns[name]; ok {
-			info = append(info, fmt.Sprintf("%s: %s (%s)", name, cs.telephony, cs.company))
+			info = append(info, fmt.Sprintf("%s: %s (%s)", name, cs.Telephony, cs.Company))
 		}
 		if ct := server.GetController(name); ct != nil {
-			info = append(info, fmt.Sprintf("%s (%s) @ %s, range %d", ct.callsign,
-				ct.rating, ct.frequency.String(), ct.scopeRange))
+			info = append(info, fmt.Sprintf("%s (%s) @ %s, range %d", ct.Callsign,
+				ct.Rating, ct.Frequency.String(), ct.ScopeRange))
 			if u := server.GetUser(name); u != nil {
-				info = append(info, fmt.Sprintf("%s %s (%s)", u.name, u.rating, u.note))
+				info = append(info, fmt.Sprintf("%s %s (%s)", u.Name, u.Rating, u.Note))
 			}
 		}
 
@@ -1544,7 +1544,7 @@ func (*PrivateMessageCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, ar
 	if positionConfig.selectedAircraft != nil {
 		callsign = positionConfig.selectedAircraft.callsign
 	} else if ctrl := server.GetController(args[0]); ctrl != nil {
-		callsign = ctrl.callsign
+		callsign = ctrl.Callsign
 		args = args[1:]
 	} else {
 		return ErrorStringConsoleEntry(args[0] + ": message recipient unknown")
@@ -1618,7 +1618,7 @@ func (*RequestATISCommand) Help() string {
 	return "Request the ATIS of the specified controller."
 }
 func (*RequestATISCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.RequestControllerATIS(ctrl.callsign))
+	return ErrorConsoleEntry(server.RequestControllerATIS(ctrl.Callsign))
 }
 
 type ContactMeCommand struct{}

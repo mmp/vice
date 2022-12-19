@@ -363,7 +363,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 
 	// Vertically: figure out the range of altitudes at the distance out.
 	// First figure out the aircraft's height AGL.
-	agl := ac.Altitude() - airport.elevation
+	agl := ac.Altitude() - airport.Elevation
 
 	// Find the glideslope height at the aircraft's distance to the
 	// threshold.

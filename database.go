@@ -227,10 +227,10 @@ func parseNavaids() map[string]Navaid {
 	navaids := make(map[string]Navaid)
 
 	mungeCSV("navaids", decompressZstd(navBaseRaw), func(s []string) {
-		n := Navaid{id: s[1], navtype: s[2], name: s[7],
-			location: Point2LLFromComponents(s[22:26], s[26:30])}
-		if n.id != "" {
-			navaids[n.id] = n
+		n := Navaid{Id: s[1], Type: s[2], Name: s[7],
+			Location: Point2LLFromComponents(s[22:26], s[26:30])}
+		if n.Id != "" {
+			navaids[n.Id] = n
 		}
 	})
 
@@ -246,9 +246,9 @@ func parseAirports() map[string]Airport {
 			lg.Errorf("%s: error parsing elevation: %s", s[24], err)
 		} else {
 			loc := Point2LLFromComponents(s[15:19], s[19:23])
-			ap := Airport{id: s[98], name: s[12], location: loc, elevation: int(elevation)}
-			if ap.id != "" {
-				airports[ap.id] = ap
+			ap := Airport{Id: s[98], Name: s[12], Location: loc, Elevation: int(elevation)}
+			if ap.Id != "" {
+				airports[ap.Id] = ap
 			}
 		}
 	})
@@ -269,12 +269,12 @@ func parseAirports() map[string]Airport {
 			elevation *= 3.28084 // meters to feet
 
 			ap := Airport{
-				id:        f[0],
-				name:      f[2],
-				location:  Point2LLFromStrings(f[14], f[15]),
-				elevation: int(elevation)}
-			if ap.id != "" {
-				airports[ap.id] = ap
+				Id:        f[0],
+				Name:      f[2],
+				Location:  Point2LLFromStrings(f[14], f[15]),
+				Elevation: int(elevation)}
+			if ap.Id != "" {
+				airports[ap.Id] = ap
 			}
 		}
 	}
@@ -287,10 +287,10 @@ func parseFixes() map[string]Fix {
 
 	mungeCSV("fixes", decompressZstd(fixesRaw), func(s []string) {
 		f := Fix{
-			id:       s[1],
-			location: Point2LLFromComponents(s[5:9], s[9:13])}
-		if f.id != "" {
-			fixes[f.id] = f
+			Id:       s[1],
+			Location: Point2LLFromComponents(s[5:9], s[9:13])}
+		if f.Id != "" {
+			fixes[f.Id] = f
 		}
 	})
 
@@ -330,12 +330,12 @@ func parseCallsigns() map[string]Callsign {
 		fix := func(s string) string { return stopShouting(strings.TrimSpace(s)) }
 
 		cs := Callsign{
-			company:   fix(s[0]),
-			country:   fix(s[1]),
-			telephony: fix(s[2]),
-			threeltr:  strings.TrimSpace(s[3])}
-		if cs.threeltr != "" && cs.threeltr != "..." {
-			callsigns[cs.threeltr] = cs
+			Company:     fix(s[0]),
+			Country:     fix(s[1]),
+			Telephony:   fix(s[2]),
+			ThreeLetter: strings.TrimSpace(s[3])}
+		if cs.ThreeLetter != "" && cs.ThreeLetter != "..." {
+			callsigns[cs.ThreeLetter] = cs
 		}
 	}
 
@@ -827,11 +827,11 @@ func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 	} else if pos, ok := db.airports[name]; ok {
 		return pos, ok
 	} else if n, ok := db.FAA.navaids[name]; ok {
-		return n.location, ok
+		return n.Location, ok
 	} else if f, ok := db.FAA.fixes[name]; ok {
-		return f.location, ok
+		return f.Location, ok
 	} else if ap, ok := db.FAA.airports[name]; ok {
-		return ap.location, ok
+		return ap.Location, ok
 	} else {
 		return Point2LL{}, false
 	}
