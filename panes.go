@@ -404,23 +404,23 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		if len(metar) > 0 {
 			sort.Slice(metar, func(i, j int) bool {
-				return metar[i].airport < metar[j].airport
+				return metar[i].AirportICAO < metar[j].AirportICAO
 			})
 			str.WriteString("Weather:\n")
 			for _, m := range metar {
-				str.WriteString(fmt.Sprintf("  %4s ", m.airport))
+				str.WriteString(fmt.Sprintf("  %4s ", m.AirportICAO))
 				flush()
 				style.Color = cs.TextHighlight
-				str.WriteString(fmt.Sprintf("%s ", m.altimeter))
+				str.WriteString(fmt.Sprintf("%s ", m.Altimeter))
 				flush()
-				if m.auto {
+				if m.Auto {
 					str.WriteString("AUTO ")
 					flush()
 				}
 				style.Color = cs.TextHighlight
-				str.WriteString(fmt.Sprintf("%s ", m.wind))
+				str.WriteString(fmt.Sprintf("%s ", m.Wind))
 				flush()
-				str.WriteString(fmt.Sprintf("%s\n", m.weather))
+				str.WriteString(fmt.Sprintf("%s\n", m.Weather))
 			}
 			str.WriteString("\n")
 		}
@@ -430,13 +430,13 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		var atis []string
 		for ap := range a.Airports {
 			for _, at := range server.GetAirportATIS(ap) {
-				atis = append(atis, fmt.Sprintf("  %-12s: %s", at.callsign, at.contents))
+				atis = append(atis, fmt.Sprintf("  %-12s: %s", at.Airport, at.Contents))
 
-				if oldATIS, ok := a.lastATIS[at.callsign]; oldATIS != at.contents {
-					a.lastATIS[at.callsign] = at.contents
+				if oldATIS, ok := a.lastATIS[at.Airport]; oldATIS != at.Contents {
+					a.lastATIS[at.Airport] = at.Contents
 					// don't play a sound the first time we get the ATIS.
 					if ok {
-						eventStream.Post(&UpdatedATISEvent{airport: at.callsign})
+						eventStream.Post(&UpdatedATISEvent{airport: at.Airport})
 					}
 				}
 			}

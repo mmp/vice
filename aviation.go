@@ -13,26 +13,26 @@ import (
 )
 
 type METAR struct {
-	airport   string
-	time      string
-	auto      bool
-	wind      string
-	weather   string
-	altimeter string
-	rmk       string
+	AirportICAO string
+	Time        string
+	Auto        bool
+	Wind        string
+	Weather     string
+	Altimeter   string
+	Rmk         string
 }
 
 func (m METAR) String() string {
 	auto := ""
-	if m.auto {
+	if m.Auto {
 		auto = "AUTO"
 	}
-	return strings.Join([]string{m.airport, m.time, auto, m.wind, m.weather, m.altimeter, m.rmk}, " ")
+	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind, m.Weather, m.Altimeter, m.Rmk}, " ")
 }
 
 type ATIS struct {
-	callsign string
-	contents string
+	Airport  string
+	Contents string
 }
 
 type NetworkRating int
@@ -121,10 +121,10 @@ func (c *Controller) GetPosition() *Position {
 }
 
 type Pilot struct {
-	callsign string
-	name     string
-	cid      string
-	rating   NetworkRating
+	Callsign string
+	Name     string
+	CID      string
+	Rating   NetworkRating
 }
 
 type RadarTrack struct {
@@ -242,9 +242,9 @@ type RangeLimits struct {
 }
 
 type Runway struct {
-	number         string
-	heading        float32
-	threshold, end Point2LL
+	Number         string
+	Heading        float32
+	Threshold, End Point2LL
 }
 
 type Navaid struct {
@@ -457,6 +457,10 @@ func (a *Aircraft) Telephony() string {
 	} else {
 		return ""
 	}
+}
+
+func (a *Aircraft) IsAssociated() bool {
+	return a.flightPlan != nil && a.squawk == a.assignedSquawk && a.mode == Charlie
 }
 
 func (a *Aircraft) OnGround() bool {

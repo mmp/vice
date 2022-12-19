@@ -288,7 +288,7 @@ func NewCRDAConfig() CRDAConfig {
 
 func (c *CRDAConfig) getRunway(n string) *Runway {
 	for _, rwy := range database.runways[c.Airport] {
-		if rwy.number == n {
+		if rwy.Number == n {
 			return &rwy
 		}
 	}
@@ -297,10 +297,10 @@ func (c *CRDAConfig) getRunway(n string) *Runway {
 
 func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway) {
 	for i, rwy := range database.runways[c.Airport] {
-		if rwy.number == c.PrimaryRunway {
+		if rwy.Number == c.PrimaryRunway {
 			ghostSource = &database.runways[c.Airport][i]
 		}
-		if rwy.number == c.SecondaryRunway {
+		if rwy.Number == c.SecondaryRunway {
 			ghostDestination = &database.runways[c.Airport][i]
 		}
 	}
@@ -313,8 +313,8 @@ func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway
 }
 
 func runwayIntersection(a *Runway, b *Runway) (Point2LL, bool) {
-	p1, p2 := ll2nm(a.threshold), ll2nm(a.end)
-	p3, p4 := ll2nm(b.threshold), ll2nm(b.end)
+	p1, p2 := ll2nm(a.Threshold), ll2nm(a.End)
+	p3, p4 := ll2nm(b.Threshold), ll2nm(b.End)
 	p, ok := LineLineIntersect(p1, p2, p3, p4)
 
 	centroid := mid2f(mid2f(p1, p2), mid2f(p3, p4))
@@ -349,15 +349,15 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		return nil
 	}
 
-	if headingDifference(ac.Heading(), src.heading) > c.HeadingTolerance {
+	if headingDifference(ac.Heading(), src.Heading) > c.HeadingTolerance {
 		return nil
 	}
 
 	// Is it on the glideslope?
 	// Laterally: compute the heading to the threshold and compare to the
 	// glideslope's lateral spread.
-	h := headingp2ll(ac.Position(), src.threshold, database.MagneticVariation)
-	if abs(h-src.heading) > c.GlideslopeLateralSpread {
+	h := headingp2ll(ac.Position(), src.Threshold, database.MagneticVariation)
+	if abs(h-src.Heading) > c.GlideslopeLateralSpread {
 		return nil
 	}
 
@@ -369,7 +369,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	// threshold.
 	// tan(glideslope angle) = height / threshold distance
 	const nmToFeet = 6076.12
-	thresholdDistance := nmToFeet * nmdistance2ll(ac.Position(), src.threshold)
+	thresholdDistance := nmToFeet * nmdistance2ll(ac.Position(), src.Threshold)
 	height := thresholdDistance * tan(radians(c.GlideslopeAngle))
 	// Assume 100 feet at the threshold
 	height += 100
@@ -404,7 +404,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		}
 
 		// Rotate it angle degrees clockwise
-		angle := dst.heading - src.heading
+		angle := dst.Heading - src.Heading
 		s, c := sin(radians(angle)), cos(radians(angle))
 		vr := [2]float32{c*v[0] + s*v[1], -s*v[0] + c*v[1]}
 		// Point along the other runway
@@ -443,8 +443,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 
 	// we have the runway heading, but we want to go the opposite direction
 	// and then +/- HeadingTolerance.
-	rota := src.heading + 180 - c.GlideslopeLateralSpread - database.MagneticVariation
-	rotb := src.heading + 180 + c.GlideslopeLateralSpread - database.MagneticVariation
+	rota := src.Heading + 180 - c.GlideslopeLateralSpread - database.MagneticVariation
+	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - database.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
 	sina, cosa := sin(radians(rota)), cos(radians(rota))
@@ -459,8 +459,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 	vall, vbll := nm2ll(va), nm2ll(vb)
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
-	ld.AddLine(src.threshold, add2ll(src.threshold, vall), ctx.cs.Caution)
-	ld.AddLine(src.threshold, add2ll(src.threshold, vbll), ctx.cs.Caution)
+	ld.AddLine(src.Threshold, add2ll(src.Threshold, vall), ctx.cs.Caution)
+	ld.AddLine(src.Threshold, add2ll(src.Threshold, vbll), ctx.cs.Caution)
 	ld.GenerateCommands(cb)
 }
 
@@ -477,7 +477,7 @@ func (c *CRDAConfig) DrawUI() bool {
 			imgui.PopStyleColor()
 		}
 	} else {
-		sort.Slice(runways, func(i, j int) bool { return runways[i].number < runways[j].number })
+		sort.Slice(runways, func(i, j int) bool { return runways[i].Number < runways[j].Number })
 
 		primary, secondary := c.getRunway(c.PrimaryRunway), c.getRunway(c.SecondaryRunway)
 		if imgui.BeginComboV("Primary runway", c.PrimaryRunway, imgui.ComboFlagsHeightLarge) {
@@ -488,7 +488,7 @@ func (c *CRDAConfig) DrawUI() bool {
 			for _, rwy := range runways {
 				if secondary != nil {
 					// Don't include the selected secondary runway
-					if rwy.number == secondary.number {
+					if rwy.Number == secondary.Number {
 						continue
 					}
 					// Only list intersecting runways
@@ -496,9 +496,9 @@ func (c *CRDAConfig) DrawUI() bool {
 						continue
 					}
 				}
-				if imgui.SelectableV(rwy.number, rwy.number == c.PrimaryRunway, 0, imgui.Vec2{}) {
+				if imgui.SelectableV(rwy.Number, rwy.Number == c.PrimaryRunway, 0, imgui.Vec2{}) {
 					updateGhosts = true
-					c.PrimaryRunway = rwy.number
+					c.PrimaryRunway = rwy.Number
 				}
 			}
 			imgui.EndCombo()
@@ -513,7 +513,7 @@ func (c *CRDAConfig) DrawUI() bool {
 			for _, rwy := range runways {
 				if primary != nil {
 					// Don't include the selected primary runway
-					if rwy.number == primary.number {
+					if rwy.Number == primary.Number {
 						continue
 					}
 					// Only list intersecting runways
@@ -521,9 +521,9 @@ func (c *CRDAConfig) DrawUI() bool {
 						continue
 					}
 				}
-				if imgui.SelectableV(rwy.number, rwy.number == c.SecondaryRunway, 0, imgui.Vec2{}) {
+				if imgui.SelectableV(rwy.Number, rwy.Number == c.SecondaryRunway, 0, imgui.Vec2{}) {
 					updateGhosts = true
-					c.SecondaryRunway = rwy.number
+					c.SecondaryRunway = rwy.Number
 				}
 			}
 			imgui.EndCombo()

@@ -38,10 +38,10 @@ func handleAP(v *VATSIMServer, callsign string, args []string) error {
 		// We're ignoring things like protocol version (args[4]) and simulator
 		// type (args[5]) here...
 		v.pilots[callsign] = &Pilot{
-			callsign: callsign,
-			cid:      args[2],
-			name:     args[7],
-			rating:   rating}
+			Callsign: callsign,
+			CID:      args[2],
+			Name:     args[7],
+			Rating:   rating}
 		return nil
 	}
 }
@@ -62,10 +62,10 @@ func handleAR(v *VATSIMServer, sender string, args []string) error {
 		return s
 	}
 
-	m := METAR{airport: next(), time: next(), wind: next()}
-	if m.wind == "AUTO" {
-		m.auto = true
-		m.wind = next()
+	m := METAR{AirportICAO: next(), Time: next(), Wind: next()}
+	if m.Wind == "AUTO" {
+		m.Auto = true
+		m.Wind = next()
 	}
 
 	for {
@@ -74,12 +74,12 @@ func handleAR(v *VATSIMServer, sender string, args []string) error {
 			break
 		}
 		if s[0] == 'A' || s[0] == 'Q' {
-			m.altimeter = s
+			m.Altimeter = s
 			break
 		}
-		m.weather += s + " "
+		m.Weather += s + " "
 	}
-	m.weather = strings.TrimRight(m.weather, " ")
+	m.Weather = strings.TrimRight(m.Weather, " ")
 
 	if s := next(); s != "RMK" {
 		// TODO: improve the METAR parser...
@@ -87,12 +87,12 @@ func handleAR(v *VATSIMServer, sender string, args []string) error {
 	} else {
 		for s != "" {
 			s = next()
-			m.rmk += s + " "
+			m.Rmk += s + " "
 		}
-		m.rmk = strings.TrimRight(m.rmk, " ")
+		m.Rmk = strings.TrimRight(m.Rmk, " ")
 	}
 
-	v.metar[m.airport] = m
+	v.metar[m.AirportICAO] = m
 
 	return nil
 }
@@ -597,14 +597,14 @@ func init() {
 		airport := sc[0]
 
 		for i, a := range v.atis[airport] {
-			if a.callsign == sender {
+			if a.Airport == sender {
 				// Replace pre-existing
-				v.atis[airport][i] = ATIS{callsign: sender, contents: atis}
+				v.atis[airport][i] = ATIS{Airport: sender, Contents: atis}
 				return nil
 			}
 		}
 		// Add a new one
-		v.atis[airport] = append(v.atis[airport], ATIS{callsign: sender, contents: atis})
+		v.atis[airport] = append(v.atis[airport], ATIS{Airport: sender, Contents: atis})
 		return nil
 	}))
 

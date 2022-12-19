@@ -428,10 +428,10 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 		for i := 0; i < 2; i++ {
 			db.runways[r.Airport] = append(db.runways[r.Airport],
 				Runway{
-					number:    r.Number[i],
-					heading:   float32(r.Heading[i]),
-					threshold: Point2LLFromSct2(r.P[i]),
-					end:       Point2LLFromSct2(r.P[i^1])})
+					Number:    r.Number[i],
+					Heading:   float32(r.Heading[i]),
+					Threshold: Point2LLFromSct2(r.P[i]),
+					End:       Point2LLFromSct2(r.P[i^1])})
 		}
 	}
 

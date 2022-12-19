@@ -1094,7 +1094,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 			})
 
 		case "altim":
-			metararg(funarg(), func(m *METAR) string { return m.altimeter })
+			metararg(funarg(), func(m *METAR) string { return m.Altimeter })
 
 		case "arr":
 			acarg(func(ac *Aircraft) string {
@@ -1196,7 +1196,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 			finalArgs = append(finalArgs, time.Now().UTC().Format("15:04:05Z"))
 
 		case "wind":
-			metararg(funarg(), func(m *METAR) string { return m.wind })
+			metararg(funarg(), func(m *METAR) string { return m.Wind })
 
 		case "winds":
 			acarg(func(ac *Aircraft) string {
@@ -1214,7 +1214,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 				}
 
 				if m := server.GetMETAR(airport); m != nil {
-					return m.wind
+					return m.Wind
 				} else if err == nil {
 					err = fmt.Errorf("%s: METAR for %s airport is not available.", airport, aptype)
 				}
