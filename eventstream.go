@@ -164,7 +164,7 @@ type SelectedAircraftEvent struct {
 }
 
 func (e *SelectedAircraftEvent) String() string {
-	return "SelectedAircraftEvent: " + e.ac.callsign
+	return "SelectedAircraftEvent: " + e.ac.Callsign
 }
 
 type AddedAircraftEvent struct {
@@ -172,7 +172,7 @@ type AddedAircraftEvent struct {
 }
 
 func (e *AddedAircraftEvent) String() string {
-	return "AddedAircraftEvent: " + e.ac.callsign
+	return "AddedAircraftEvent: " + e.ac.Callsign
 }
 
 type ModifiedAircraftEvent struct {
@@ -180,7 +180,7 @@ type ModifiedAircraftEvent struct {
 }
 
 func (e *ModifiedAircraftEvent) String() string {
-	return "ModifiedAircraftEvent: " + e.ac.callsign
+	return "ModifiedAircraftEvent: " + e.ac.Callsign
 }
 
 type RemovedAircraftEvent struct {
@@ -188,7 +188,7 @@ type RemovedAircraftEvent struct {
 }
 
 func (e *RemovedAircraftEvent) String() string {
-	return "RemovedAircraftEvent: " + e.ac.callsign
+	return "RemovedAircraftEvent: " + e.ac.Callsign
 }
 
 type UpdatedATISEvent struct {
@@ -213,7 +213,7 @@ type PointOutEvent struct {
 }
 
 func (e *PointOutEvent) String() string {
-	return "PointOutEvent: " + e.controller + " " + e.ac.callsign
+	return "PointOutEvent: " + e.controller + " " + e.ac.Callsign
 }
 
 type AcceptedHandoffEvent struct {
@@ -222,7 +222,7 @@ type AcceptedHandoffEvent struct {
 }
 
 func (e *AcceptedHandoffEvent) String() string {
-	return "AcceptedHandoffEvent: " + e.controller + " " + e.ac.callsign
+	return "AcceptedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
 type OfferedHandoffEvent struct {
@@ -231,7 +231,7 @@ type OfferedHandoffEvent struct {
 }
 
 func (e *OfferedHandoffEvent) String() string {
-	return "OfferedHandoffEvent: " + e.controller + " " + e.ac.callsign
+	return "OfferedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
 type RejectedHandoffEvent struct {
@@ -240,7 +240,7 @@ type RejectedHandoffEvent struct {
 }
 
 func (e *RejectedHandoffEvent) String() string {
-	return "RejectedHandoffEvent: " + e.controller + " " + e.ac.callsign
+	return "RejectedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
 type TextMessageEvent struct {

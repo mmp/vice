@@ -267,18 +267,18 @@ func (fr *FlightRadarServer) GetUpdates() {
 				var ac *Aircraft
 				var ok bool
 				if ac, ok = fr.aircraft[f.callsign]; !ok {
-					ac = &Aircraft{callsign: f.callsign}
-					ac.flightPlan = &FlightPlan{}
-					ac.flightPlan.DepartureAirport = f.origin
-					ac.flightPlan.ArrivalAirport = f.destination
-					ac.flightPlan.AircraftType = f.model
+					ac = &Aircraft{Callsign: f.callsign}
+					ac.FlightPlan = &FlightPlan{}
+					ac.FlightPlan.DepartureAirport = f.origin
+					ac.FlightPlan.ArrivalAirport = f.destination
+					ac.FlightPlan.AircraftType = f.model
 					fr.aircraft[f.callsign] = ac
-					ac.mode = Charlie
+					ac.Mode = Charlie
 					eventStream.Post(&AddedAircraftEvent{ac: ac})
 				} else {
 					eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 				}
-				ac.squawk = squawk
+				ac.Squawk = squawk
 				ac.AddTrack(pos)
 			}
 		}

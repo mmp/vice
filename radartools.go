@@ -393,7 +393,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	// the ghost. We'll again do this in nm space before going to
 	// lat-long in the end.
 	pi := ll2nm(pIntersect)
-	for i, t := range ghost.tracks {
+	for i, t := range ghost.Tracks {
 		// Vector from the intersection point to the track location
 		v := sub2f(ll2nm(t.Position), pi)
 
@@ -411,7 +411,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		pr := add2f(pi, vr)
 
 		// TODO: offset it as appropriate
-		ghost.tracks[i].Position = nm2ll(pr)
+		ghost.Tracks[i].Position = nm2ll(pr)
 	}
 	return &ghost
 }
@@ -592,10 +592,10 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 
 	alt100s := (ac.Altitude() + 50) / 100
 	speed := ac.GroundSpeed()
-	fp := ac.flightPlan
+	fp := ac.FlightPlan
 
 	if fp == nil {
-		return ac.squawk.String() + fmt.Sprintf(" %03d", alt100s)
+		return ac.Squawk.String() + fmt.Sprintf(" %03d", alt100s)
 	}
 
 	actype := fp.TypeWithoutSuffix()
@@ -608,12 +608,12 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	datablock.Grow(64)
 
 	// All of the modes always start with the callsign and the voicce indicator
-	datablock.WriteString(ac.Callsign())
+	datablock.WriteString(ac.Callsign)
 	// Otherwise a 3 line datablock
 	// Line 1: callsign and voice indicator
-	if ac.voiceCapability == VoiceReceive {
+	if ac.VoiceCapability == VoiceReceive {
 		datablock.WriteString("/r")
-	} else if ac.voiceCapability == VoiceText {
+	} else if ac.VoiceCapability == VoiceText {
 		datablock.WriteString("/t")
 	}
 
@@ -628,10 +628,10 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 
 		// normally it's groundspeed next, unless there's a squawk
 		// situation that we need to flag...
-		if duplicateSquawk && ac.mode != Standby && ac.squawk != Squawk(0o1200) && ac.squawk != 0 && flashcycle&1 == 0 {
+		if duplicateSquawk && ac.Mode != Standby && ac.Squawk != Squawk(0o1200) && ac.Squawk != 0 && flashcycle&1 == 0 {
 			datablock.WriteString("CODE")
-		} else if !duplicateSquawk && ac.mode != Standby && ac.squawk != ac.assignedSquawk && flashcycle&1 == 0 {
-			datablock.WriteString(ac.squawk.String())
+		} else if !duplicateSquawk && ac.Mode != Standby && ac.Squawk != ac.AssignedSquawk && flashcycle&1 == 0 {
+			datablock.WriteString(ac.Squawk.String())
 		} else {
 			datablock.WriteString(fmt.Sprintf("%02d", speed))
 			if fp.Rules == VFR {
@@ -654,8 +654,8 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 			// Second flash normally alternates between scratchpad (or dest) and
 			// filed altitude for the first thing, then has *[actype]
 			if flashcycle&2 == 0 {
-				if ac.scratchpad != "" {
-					datablock.WriteString(ac.scratchpad)
+				if ac.Scratchpad != "" {
+					datablock.WriteString(ac.Scratchpad)
 				} else {
 					datablock.WriteString(fp.ArrivalAirport)
 				}
@@ -666,10 +666,10 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 
 			datablock.WriteString("*")
 			// Flag squawk issues
-			if duplicateSquawk && ac.mode != Standby && ac.squawk != 0 && flashcycle&1 == 0 {
+			if duplicateSquawk && ac.Mode != Standby && ac.Squawk != 0 && flashcycle&1 == 0 {
 				datablock.WriteString("CODE")
-			} else if !duplicateSquawk && ac.mode != Standby && ac.squawk != ac.assignedSquawk && flashcycle&1 == 0 {
-				datablock.WriteString(ac.squawk.String())
+			} else if !duplicateSquawk && ac.Mode != Standby && ac.Squawk != ac.AssignedSquawk && flashcycle&1 == 0 {
+				datablock.WriteString(ac.Squawk.String())
 			} else {
 				datablock.WriteString(actype)
 			}
@@ -677,17 +677,17 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		return datablock.String()
 
 	case DataBlockFormatFull:
-		if ac.mode == Standby {
+		if ac.Mode == Standby {
 			return datablock.String()
 		}
 
 		dalt := ac.AltitudeChange()
 		ascending, descending := dalt > 250, dalt < -250
 		altAnnotation := " "
-		if ac.tempAltitude != 0 && abs(ac.Altitude()-ac.tempAltitude) < 300 {
+		if ac.TempAltitude != 0 && abs(ac.Altitude()-ac.TempAltitude) < 300 {
 			altAnnotation = "T "
-		} else if ac.flightPlan.Altitude != 0 &&
-			abs(ac.Altitude()-ac.flightPlan.Altitude) < 300 {
+		} else if ac.FlightPlan.Altitude != 0 &&
+			abs(ac.Altitude()-ac.FlightPlan.Altitude) < 300 {
 			altAnnotation = "C "
 		} else if ascending {
 			altAnnotation = FontAwesomeIconArrowUp + " "
@@ -695,7 +695,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 			altAnnotation = FontAwesomeIconArrowDown + " "
 		}
 
-		if ac.squawk == Squawk(0o1200) {
+		if ac.Squawk == Squawk(0o1200) {
 			// VFR
 			datablock.WriteString(fmt.Sprintf(" %03d", alt100s))
 			datablock.WriteString(altAnnotation)
@@ -709,21 +709,21 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		// TODO: Here add level if at wrong alt...
 
 		// Have already established it's not squawking standby.
-		if duplicateSquawk && ac.squawk != Squawk(0o1200) && ac.squawk != 0 {
+		if duplicateSquawk && ac.Squawk != Squawk(0o1200) && ac.Squawk != 0 {
 			if flashcycle&1 == 0 {
 				datablock.WriteString("CODE")
 			} else {
-				datablock.WriteString(ac.squawk.String())
+				datablock.WriteString(ac.Squawk.String())
 			}
-		} else if ac.squawk != ac.assignedSquawk {
+		} else if ac.Squawk != ac.AssignedSquawk {
 			// show what they are actually squawking
-			datablock.WriteString(ac.squawk.String())
+			datablock.WriteString(ac.Squawk.String())
 		} else {
 			if flashcycle&1 == 0 {
-				if ac.scratchpad != "" {
-					datablock.WriteString(ac.scratchpad)
-				} else if ac.tempAltitude != 0 {
-					datablock.WriteString(fmt.Sprintf("%03dT", ac.tempAltitude/100))
+				if ac.Scratchpad != "" {
+					datablock.WriteString(ac.Scratchpad)
+				} else if ac.TempAltitude != 0 {
+					datablock.WriteString(fmt.Sprintf("%03dT", ac.TempAltitude/100))
 				} else {
 					datablock.WriteString(fmt.Sprintf("%03d", fp.Altitude/100))
 				}
@@ -744,7 +744,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 			datablock.WriteString("V")
 		}
 
-		if ac.mode == Ident && flashcycle&1 == 0 {
+		if ac.Mode == Ident && flashcycle&1 == 0 {
 			datablock.WriteString("ID")
 		}
 

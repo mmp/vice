@@ -208,23 +208,23 @@ func (cli *CLIPane) processEvents(es *EventStream) {
 				// things it's valid; assume the user knows what they are doing
 				// and that it will be valid when the command executes.  (And
 				// if it's not, an error will be issued then!)
-				cli.setFKeyAircraft(v.ac.callsign, false)
+				cli.setFKeyAircraft(v.ac.Callsign, false)
 			}
 
 		case *PointOutEvent:
-			cli.AddConsoleEntry([]string{v.controller, ": point out " + v.ac.callsign},
+			cli.AddConsoleEntry([]string{v.controller, ": point out " + v.ac.Callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 
 		case *OfferedHandoffEvent:
-			cli.AddConsoleEntry([]string{v.controller, ": offered handoff " + v.ac.callsign},
+			cli.AddConsoleEntry([]string{v.controller, ": offered handoff " + v.ac.Callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 
 		case *AcceptedHandoffEvent:
-			cli.AddConsoleEntry([]string{v.controller, ": accepted handoff " + v.ac.callsign},
+			cli.AddConsoleEntry([]string{v.controller, ": accepted handoff " + v.ac.Callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 
 		case *RejectedHandoffEvent:
-			cli.AddConsoleEntry([]string{v.controller, ": rejected handoff " + v.ac.callsign},
+			cli.AddConsoleEntry([]string{v.controller, ": rejected handoff " + v.ac.Callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 
 		case *TextMessageEvent:
@@ -357,7 +357,7 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		if cli.activeFKeyCommand == nil {
 			prevCallsign := ""
 			if positionConfig.selectedAircraft != nil {
-				prevCallsign = positionConfig.selectedAircraft.Callsign()
+				prevCallsign = positionConfig.selectedAircraft.Callsign
 			}
 
 			// Execute command if enter was typed
@@ -465,7 +465,7 @@ func (cli *CLIPane) processFKeys(keyboard *KeyboardState) {
 						// If an aircraft is currently selected, try using it for the command.
 						// However, if it's invalid (e.g., the command is drop track, but we're
 						// not tracking it, then don't force it...)
-						cli.setFKeyAircraft(positionConfig.selectedAircraft.callsign, true)
+						cli.setFKeyAircraft(positionConfig.selectedAircraft.Callsign, true)
 					}
 				}
 			}
@@ -651,7 +651,7 @@ func (ci *CLIInput) EmitDrawCommands(inputPos [2]float32, style TextStyle, curso
 	defer ReturnTextDrawBuilder(td)
 	prompt := ""
 	if positionConfig.selectedAircraft != nil {
-		prompt = positionConfig.selectedAircraft.Callsign()
+		prompt = positionConfig.selectedAircraft.Callsign
 	}
 	prompt = prompt + "> "
 	if !haveFocus {
@@ -935,7 +935,7 @@ func matchingAircraft(s string) []*Aircraft {
 	// Otherwise return all that match
 	now := server.CurrentTime()
 	return server.GetFilteredAircraft(func(ac *Aircraft) bool {
-		return !ac.LostTrack(now) && strings.Contains(ac.Callsign(), s)
+		return !ac.LostTrack(now) && strings.Contains(ac.Callsign, s)
 	})
 }
 
@@ -1080,14 +1080,14 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		// Functions: $type, $radioname, $freq, $atccallsign
 		switch arg[1:] {
 		case "aircraft":
-			acarg(func(ac *Aircraft) string { return ac.callsign })
+			acarg(func(ac *Aircraft) string { return ac.Callsign })
 
 		case "alt":
 			acarg(func(ac *Aircraft) string {
-				if ac.tempAltitude != 0 {
-					return fmt.Sprintf("%d", ac.tempAltitude)
-				} else if ac.flightPlan != nil {
-					return fmt.Sprintf("%d", ac.flightPlan.Altitude)
+				if ac.TempAltitude != 0 {
+					return fmt.Sprintf("%d", ac.TempAltitude)
+				} else if ac.FlightPlan != nil {
+					return fmt.Sprintf("%d", ac.FlightPlan.Altitude)
 				} else {
 					return "???"
 				}
@@ -1098,8 +1098,8 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "arr":
 			acarg(func(ac *Aircraft) string {
-				if ac.flightPlan != nil {
-					return ac.flightPlan.ArrivalAirport
+				if ac.FlightPlan != nil {
+					return ac.FlightPlan.ArrivalAirport
 				} else {
 					return "????"
 				}
@@ -1118,8 +1118,8 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "cruise":
 			acarg(func(ac *Aircraft) string {
-				if ac.flightPlan != nil {
-					return fmt.Sprintf("%d", ac.flightPlan.Altitude)
+				if ac.FlightPlan != nil {
+					return fmt.Sprintf("%d", ac.FlightPlan.Altitude)
 				} else {
 					return "????"
 				}
@@ -1127,8 +1127,8 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "dep":
 			acarg(func(ac *Aircraft) string {
-				if ac.flightPlan != nil {
-					return ac.flightPlan.DepartureAirport
+				if ac.FlightPlan != nil {
+					return ac.FlightPlan.DepartureAirport
 				} else {
 					return "????"
 				}
@@ -1173,8 +1173,8 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "route":
 			acarg(func(ac *Aircraft) string {
-				if ac.flightPlan != nil {
-					return ac.flightPlan.Route
+				if ac.FlightPlan != nil {
+					return ac.FlightPlan.Route
 				} else {
 					return "????"
 				}
@@ -1182,15 +1182,15 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "squawk":
 			acarg(func(ac *Aircraft) string {
-				if ac.assignedSquawk == Squawk(0) {
-					return ac.squawk.String()
+				if ac.AssignedSquawk == Squawk(0) {
+					return ac.Squawk.String()
 				} else {
-					return ac.assignedSquawk.String()
+					return ac.AssignedSquawk.String()
 				}
 			})
 
 		case "temp":
-			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.tempAltitude) })
+			acarg(func(ac *Aircraft) string { return fmt.Sprintf("%d", ac.TempAltitude) })
 
 		case "time":
 			finalArgs = append(finalArgs, time.Now().UTC().Format("15:04:05Z"))
@@ -1200,16 +1200,16 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 		case "winds":
 			acarg(func(ac *Aircraft) string {
-				if ac.flightPlan == nil {
+				if ac.FlightPlan == nil {
 					return "???"
 				}
 
 				var airport, aptype string
 				if ac.OnGround() {
-					airport = strings.ToUpper(ac.flightPlan.DepartureAirport)
+					airport = strings.ToUpper(ac.FlightPlan.DepartureAirport)
 					aptype = "departure"
 				} else {
-					airport = strings.ToUpper(ac.flightPlan.ArrivalAirport)
+					airport = strings.ToUpper(ac.FlightPlan.ArrivalAirport)
 					aptype = "arrival"
 				}
 
@@ -1327,7 +1327,7 @@ func (cli *CLIPane) runCommand(cmd string) []*ConsoleEntry {
 		default:
 			msg := "Error: multiple aircraft match: "
 			for _, ac := range matches {
-				msg += ac.Callsign() + " "
+				msg += ac.Callsign + " "
 			}
 			return ErrorStringConsoleEntry(msg)
 		}

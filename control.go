@@ -338,10 +338,10 @@ func amendFlightPlan(callsign string, amend func(fp *FlightPlan)) error {
 	if ac := server.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		if ac.flightPlan == nil {
-			ac.flightPlan = &FlightPlan{}
+		if ac.FlightPlan == nil {
+			ac.FlightPlan = &FlightPlan{}
 		}
-		amend(ac.flightPlan)
-		return server.AmendFlightPlan(callsign, *ac.flightPlan)
+		amend(ac.FlightPlan)
+		return server.AmendFlightPlan(callsign, *ac.FlightPlan)
 	}
 }

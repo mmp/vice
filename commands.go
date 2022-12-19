@@ -61,12 +61,12 @@ func (a *AircraftCommandArg) Expand(s string) (string, error) {
 	// validation function (if supplied) passes.
 	now := server.CurrentTime()
 	ac := server.GetFilteredAircraft(func(ac *Aircraft) bool {
-		return !ac.LostTrack(now) && strings.Contains(ac.Callsign(), s) &&
-			(a.validateCallsign == nil || a.validateCallsign(ac.Callsign()))
+		return !ac.LostTrack(now) && strings.Contains(ac.Callsign, s) &&
+			(a.validateCallsign == nil || a.validateCallsign(ac.Callsign))
 	})
 
 	// Convert matching *Aircraft into callsign strings.
-	matches := MapSlice[*Aircraft, string](ac, func(ac *Aircraft) string { return ac.Callsign() })
+	matches := MapSlice[*Aircraft, string](ac, func(ac *Aircraft) string { return ac.Callsign })
 
 	if len(matches) == 1 {
 		// A single match; all good.
@@ -87,7 +87,7 @@ func canEditAircraftAssignments(callsign string) bool {
 	if ac := server.GetAircraft(callsign); ac == nil {
 		return false
 	} else {
-		return ac.trackingController == "" || ac.trackingController == server.Callsign()
+		return ac.TrackingController == "" || ac.TrackingController == server.Callsign()
 	}
 }
 
@@ -96,7 +96,7 @@ func canEditAircraftAssignments(callsign string) bool {
 // tracked by the user.
 func aircraftTrackedByMe(callsign string) bool {
 	ac := server.GetAircraft(callsign)
-	return ac != nil && ac.trackingController == server.Callsign()
+	return ac != nil && ac.TrackingController == server.Callsign()
 }
 
 // aircraftHasFlightPlan is a utility function for the AircraftCommandArg's
@@ -104,7 +104,7 @@ func aircraftTrackedByMe(callsign string) bool {
 // flight plan.
 func aircraftHasFlightPlan(callsign string) bool {
 	ac := server.GetAircraft(callsign)
-	return ac != nil && ac.flightPlan != nil
+	return ac != nil && ac.FlightPlan != nil
 }
 
 // aircraftTrackedByMe is a utility function for the AircraftCommandArg's
@@ -112,7 +112,7 @@ func aircraftHasFlightPlan(callsign string) bool {
 // tracked by any controller.
 func aircraftIsUntracked(callsign string) bool {
 	ac := server.GetAircraft(callsign)
-	return ac != nil && ac.trackingController == ""
+	return ac != nil && ac.TrackingController == ""
 }
 
 // aircraftIsInboundHandoff is a utility function for the
@@ -121,7 +121,7 @@ func aircraftIsUntracked(callsign string) bool {
 // controller.
 func aircraftIsInboundHandoff(callsign string) bool {
 	ac := server.GetAircraft(callsign)
-	return ac != nil && ac.inboundHandoffController != ""
+	return ac != nil && ac.InboundHandoffController != ""
 }
 
 // ControllerCommandArg represents an argument that identifies another
@@ -411,12 +411,12 @@ func (*DrawRouteFKeyCommand) Do(args []string) error {
 	if ac == nil {
 		return ErrNoAircraftForCallsign
 	}
-	if ac.flightPlan == nil {
+	if ac.FlightPlan == nil {
 		return ErrNoFlightPlan
 	}
 
-	positionConfig.drawnRoute = ac.flightPlan.DepartureAirport + " " + ac.flightPlan.Route + " " +
-		ac.flightPlan.ArrivalAirport
+	positionConfig.drawnRoute = ac.FlightPlan.DepartureAirport + " " + ac.FlightPlan.Route + " " +
+		ac.FlightPlan.ArrivalAirport
 	positionConfig.drawnRouteEndTime = time.Now().Add(5 * time.Second)
 	return nil
 }
@@ -497,7 +497,7 @@ func (*RemoveFromMITListFKeyCommand) Name() string { return "remove from MIT lis
 func (*RemoveFromMITListFKeyCommand) ArgTypes() []FKeyCommandArg {
 	isInMITList := func(callsign string) bool {
 		for _, ac := range positionConfig.mit {
-			if ac.callsign == callsign {
+			if ac.Callsign == callsign {
 				return true
 			}
 		}
@@ -508,7 +508,7 @@ func (*RemoveFromMITListFKeyCommand) ArgTypes() []FKeyCommandArg {
 
 func (*RemoveFromMITListFKeyCommand) Do(args []string) error {
 	positionConfig.mit = FilterSlice(positionConfig.mit,
-		func(ac *Aircraft) bool { return ac.callsign != args[0] })
+		func(ac *Aircraft) bool { return ac.Callsign != args[0] })
 	return nil
 }
 
@@ -711,7 +711,7 @@ func (*SetACTypeCommand) TakesController() bool              { return false }
 func (*SetACTypeCommand) AdditionalArgs() (min int, max int) { return 1, 1 }
 
 func (*SetACTypeCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	err := amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
+	err := amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
 		fp.AircraftType = strings.ToUpper(args[0])
 	})
 	return ErrorConsoleEntry(err)
@@ -746,9 +746,9 @@ func (sa *SetAltitudeCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, ar
 		}
 
 		if sa.isTemporary {
-			return ErrorConsoleEntry(server.SetTemporaryAltitude(ac.callsign, altitude))
+			return ErrorConsoleEntry(server.SetTemporaryAltitude(ac.Callsign, altitude))
 		} else {
-			return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.Altitude = altitude }))
+			return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) { fp.Altitude = altitude }))
 		}
 	} else {
 		return ErrorConsoleEntry(err)
@@ -769,7 +769,7 @@ func (*SetArrivalCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args [
 	if len(args[0]) > 5 {
 		return ErrorConsoleEntry(ErrAirportTooLong)
 	}
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
+	return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
 		fp.ArrivalAirport = strings.ToUpper(args[0])
 	}))
 }
@@ -788,7 +788,7 @@ func (*SetDepartureCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args
 	if len(args[0]) > 5 {
 		return ErrorConsoleEntry(ErrAirportTooLong)
 	}
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
+	return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
 		fp.DepartureAirport = strings.ToUpper(args[0])
 	}))
 }
@@ -804,10 +804,10 @@ func (*SetEquipmentSuffixCommand) Help() string {
 	return "Sets the aircraft's equipment suffix."
 }
 func (*SetEquipmentSuffixCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.flightPlan == nil {
+	if ac.FlightPlan == nil {
 		return ErrorConsoleEntry(ErrNoFlightPlanFiled)
 	} else {
-		return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
+		return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
 			atype := fp.TypeWithoutSuffix()
 			suffix := strings.ToUpper(args[0])
 			if suffix[0] != '/' {
@@ -829,7 +829,7 @@ func (*SetIFRCommand) Help() string {
 	return "Marks the aircraft as an IFR flight."
 }
 func (*SetIFRCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.Rules = IFR }))
+	return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) { fp.Rules = IFR }))
 }
 
 type SetScratchpadCommand struct{}
@@ -845,9 +845,9 @@ func (*SetScratchpadCommand) Help() string {
 func (*SetScratchpadCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
 	if len(args) == 0 {
 		// clear scratchpad
-		return ErrorConsoleEntry(server.SetScratchpad(ac.callsign, ""))
+		return ErrorConsoleEntry(server.SetScratchpad(ac.Callsign, ""))
 	} else {
-		return ErrorConsoleEntry(server.SetScratchpad(ac.callsign, strings.ToUpper(args[0])))
+		return ErrorConsoleEntry(server.SetScratchpad(ac.Callsign, strings.ToUpper(args[0])))
 	}
 }
 
@@ -863,13 +863,13 @@ func (*SetSquawkCommand) Help() string {
 }
 func (*SetSquawkCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
 	if len(args) == 0 {
-		return ErrorConsoleEntry(server.SetSquawkAutomatic(ac.callsign))
+		return ErrorConsoleEntry(server.SetSquawkAutomatic(ac.Callsign))
 	} else {
 		squawk, err := ParseSquawk(args[0])
 		if err != nil {
 			return ErrorConsoleEntry(err)
 		}
-		return ErrorConsoleEntry(server.SetSquawk(ac.callsign, squawk))
+		return ErrorConsoleEntry(server.SetSquawk(ac.Callsign, squawk))
 	}
 }
 
@@ -896,7 +896,7 @@ func (*SetVoiceCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []s
 		return ErrorStringConsoleEntry("Invalid voice communications type specified")
 	}
 
-	return ErrorConsoleEntry(server.SetVoiceType(ac.callsign, cap))
+	return ErrorConsoleEntry(server.SetVoiceType(ac.Callsign, cap))
 }
 
 type SetVFRCommand struct{}
@@ -910,7 +910,7 @@ func (*SetVFRCommand) Help() string {
 	return "Marks the aircraft as a VFR flight."
 }
 func (*SetVFRCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.Rules = VFR }))
+	return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) { fp.Rules = VFR }))
 }
 
 type EditRouteCommand struct{}
@@ -924,13 +924,13 @@ func (*EditRouteCommand) Help() string {
 	return "Loads the aircraft's route into the command buffer for editing using the \"route\" command."
 }
 func (*EditRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.flightPlan == nil {
+	if ac.FlightPlan == nil {
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	}
 
 	cli.input.cmd = "route "
 	cli.input.cursor = len(cli.input.cmd)
-	cli.input.cmd += ac.flightPlan.Route
+	cli.input.cmd += ac.FlightPlan.Route
 
 	return nil
 }
@@ -967,11 +967,11 @@ func (*NYPRDCommand) Help() string {
 	return "Looks up the aircraft's route in the ZNY preferred route database."
 }
 func (*NYPRDCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.flightPlan == nil {
+	if ac.FlightPlan == nil {
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	}
 
-	depart, arrive := ac.flightPlan.DepartureAirport, ac.flightPlan.ArrivalAirport
+	depart, arrive := ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport
 	url := fmt.Sprintf("https://nyartcc.org/prd/search?depart=%s&arrive=%s", depart, arrive)
 
 	resp, err := http.Get(url)
@@ -1058,11 +1058,11 @@ func (*PRDCommand) Help() string {
 	return "Looks up the aircraft's route in the FAA preferred route database."
 }
 func (*PRDCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.flightPlan == nil {
+	if ac.FlightPlan == nil {
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	}
 
-	depart, arrive := ac.flightPlan.DepartureAirport, ac.flightPlan.ArrivalAirport
+	depart, arrive := ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport
 	if len(depart) == 4 && depart[0] == 'K' {
 		depart = depart[1:]
 	}
@@ -1133,7 +1133,7 @@ func (*SetRouteCommand) Help() string {
 	return "Sets the specified aircraft's route to the one provided."
 }
 func (*SetRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
+	return ErrorConsoleEntry(amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
 		fp.Route = strings.ToUpper(strings.Join(args, " "))
 	}))
 }
@@ -1150,10 +1150,10 @@ func (*DropTrackCommand) Help() string {
 	return "Drops the track or refuses an offered handoff of the selected aircraft."
 }
 func (*DropTrackCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.inboundHandoffController != "" {
-		return ErrorConsoleEntry(server.RejectHandoff(ac.callsign))
+	if ac.InboundHandoffController != "" {
+		return ErrorConsoleEntry(server.RejectHandoff(ac.Callsign))
 	} else {
-		return ErrorConsoleEntry(server.DropTrack(ac.callsign))
+		return ErrorConsoleEntry(server.DropTrack(ac.Callsign))
 	}
 }
 
@@ -1168,7 +1168,7 @@ func (*HandoffCommand) Help() string {
 	return "Hands off the specified aircraft to the specified controller."
 }
 func (*HandoffCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.Handoff(ac.callsign, ctrl.Callsign))
+	return ErrorConsoleEntry(server.Handoff(ac.Callsign, ctrl.Callsign))
 }
 
 type PointOutCommand struct{}
@@ -1182,7 +1182,7 @@ func (*PointOutCommand) Help() string {
 	return "Points the specified aircraft out to the specified controller."
 }
 func (*PointOutCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.PointOut(ac.callsign, ctrl.Callsign))
+	return ErrorConsoleEntry(server.PointOut(ac.Callsign, ctrl.Callsign))
 }
 
 type TrackAircraftCommand struct{}
@@ -1196,11 +1196,11 @@ func (*TrackAircraftCommand) Help() string {
 	return "Initiates a track or accepts an offered handoff for the specified aircraft."
 }
 func (*TrackAircraftCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.inboundHandoffController != "" {
+	if ac.InboundHandoffController != "" {
 		// it's being offered as a handoff
-		return ErrorConsoleEntry(server.AcceptHandoff(ac.callsign))
+		return ErrorConsoleEntry(server.AcceptHandoff(ac.Callsign))
 	} else {
-		return ErrorConsoleEntry(server.InitiateTrack(ac.callsign))
+		return ErrorConsoleEntry(server.InitiateTrack(ac.Callsign))
 	}
 }
 
@@ -1215,7 +1215,7 @@ func (*PushFlightStripCommand) Help() string {
 	return "Pushes the aircraft's flight strip to the specified controller."
 }
 func (*PushFlightStripCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(server.PushFlightStrip(ac.callsign, ctrl.Callsign))
+	return ErrorConsoleEntry(server.PushFlightStrip(ac.Callsign, ctrl.Callsign))
 }
 
 type FindCommand struct{}
@@ -1237,7 +1237,7 @@ func (*FindCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 	if len(aircraft) == 1 {
 		pos = aircraft[0].Position()
 	} else if len(aircraft) > 1 {
-		callsigns := MapSlice(aircraft, func(a *Aircraft) string { return a.Callsign() })
+		callsigns := MapSlice(aircraft, func(a *Aircraft) string { return a.Callsign })
 		return ErrorStringConsoleEntry("Multiple aircraft match: " + strings.Join(callsigns, ", "))
 	} else {
 		var ok bool
@@ -1272,7 +1272,7 @@ func (*MITCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string
 
 	result := "Current MIT list: "
 	for _, ac := range positionConfig.mit {
-		result += ac.Callsign() + " "
+		result += ac.Callsign + " "
 	}
 	return StringConsoleEntry(result)
 }
@@ -1288,11 +1288,11 @@ func (*DrawRouteCommand) Help() string {
 	return "Draws the route of the specified aircraft in any radar scopes in which it is visible."
 }
 func (*DrawRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if ac.flightPlan == nil {
+	if ac.FlightPlan == nil {
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	} else {
-		positionConfig.drawnRoute = ac.flightPlan.DepartureAirport + " " + ac.flightPlan.Route + " " +
-			ac.flightPlan.ArrivalAirport
+		positionConfig.drawnRoute = ac.FlightPlan.DepartureAirport + " " + ac.FlightPlan.Route + " " +
+			ac.FlightPlan.ArrivalAirport
 		positionConfig.drawnRouteEndTime = time.Now().Add(5 * time.Second)
 		return nil
 	}
@@ -1315,34 +1315,34 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 	acInfo := func(ac *Aircraft) string {
 		var result string
 		var indent int
-		if ac.flightPlan == nil {
-			result = ac.Callsign() + ": no flight plan filed"
-			indent = len(ac.Callsign()) + 1
+		if ac.FlightPlan == nil {
+			result = ac.Callsign + ": no flight plan filed"
+			indent = len(ac.Callsign) + 1
 		} else {
 			result, indent = ac.GetFormattedFlightPlan(true)
 			result = strings.TrimRight(result, "\n")
 		}
 
 		indstr := fmt.Sprintf("%*c", indent, ' ')
-		if u := server.GetUser(ac.Callsign()); u != nil {
+		if u := server.GetUser(ac.Callsign); u != nil {
 			result += fmt.Sprintf("\n%spilot: %s %s (%s)", indstr, u.Name, u.Rating, u.Note)
 		}
-		if ac.flightPlan != nil {
+		if ac.FlightPlan != nil {
 			if tel := ac.Telephony(); tel != "" {
 				result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
 			}
 		}
-		if ac.trackingController != "" {
-			result += fmt.Sprintf("\n%sTracked by: %s", indstr, ac.trackingController)
+		if ac.TrackingController != "" {
+			result += fmt.Sprintf("\n%sTracked by: %s", indstr, ac.TrackingController)
 		}
-		if ac.inboundHandoffController != "" {
-			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, ac.inboundHandoffController)
+		if ac.InboundHandoffController != "" {
+			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, ac.InboundHandoffController)
 		}
-		if ac.outboundHandoffController != "" {
-			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, ac.outboundHandoffController)
+		if ac.OutboundHandoffController != "" {
+			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, ac.OutboundHandoffController)
 		}
-		if ac.squawk != ac.assignedSquawk {
-			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.squawk)
+		if ac.Squawk != ac.AssignedSquawk {
+			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.Squawk)
 		}
 		if ac.LostTrack(server.CurrentTime()) {
 			result += fmt.Sprintf("\n%s*** Lost Track!", indstr)
@@ -1385,7 +1385,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 		if len(aircraft) == 1 {
 			return StringConsoleEntry(acInfo(aircraft[0]))
 		} else if len(aircraft) > 1 {
-			callsigns := MapSlice(aircraft, func(a *Aircraft) string { return a.Callsign() })
+			callsigns := MapSlice(aircraft, func(a *Aircraft) string { return a.Callsign })
 			return ErrorStringConsoleEntry("Multiple aircraft match: " + strings.Join(callsigns, ", "))
 		} else {
 			return ErrorStringConsoleEntry(name + ": unknown")
@@ -1414,7 +1414,7 @@ func (*TrafficCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []st
 	}
 	now := server.CurrentTime()
 	filter := func(a *Aircraft) bool {
-		return a.Callsign() != ac.Callsign() && !a.LostTrack(now) && !a.OnGround()
+		return a.Callsign != ac.Callsign && !a.LostTrack(now) && !a.OnGround()
 	}
 
 	lateralLimit := float32(6.)
@@ -1431,7 +1431,7 @@ func (*TrafficCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []st
 
 	sort.Slice(traffic, func(i, j int) bool {
 		if traffic[i].distance == traffic[j].distance {
-			return traffic[i].ac.Callsign() < traffic[j].ac.Callsign()
+			return traffic[i].ac.Callsign < traffic[j].ac.Callsign
 		}
 		return traffic[i].distance < traffic[j].distance
 	})
@@ -1443,12 +1443,12 @@ func (*TrafficCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []st
 		hdiff := hto - ac.Heading()
 		clock := headingAsHour(hdiff)
 		actype := "???"
-		if t.ac.flightPlan != nil {
-			actype = t.ac.flightPlan.AircraftType
+		if t.ac.FlightPlan != nil {
+			actype = t.ac.FlightPlan.AircraftType
 		}
 		str += fmt.Sprintf("  %-10s %2d o'c %2d mi %2s bound %-10s %5d' [%s]\n",
-			ac.Callsign(), clock, int(t.distance+0.5),
-			shortCompass(t.ac.Heading()), actype, int(alt), t.ac.Callsign())
+			ac.Callsign, clock, int(t.distance+0.5),
+			shortCompass(t.ac.Heading()), actype, int(alt), t.ac.Callsign)
 	}
 
 	return StringConsoleEntry(str)
@@ -1542,7 +1542,7 @@ func (*PrivateMessageCommand) Help() string {
 func (*PrivateMessageCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
 	var callsign string
 	if positionConfig.selectedAircraft != nil {
-		callsign = positionConfig.selectedAircraft.callsign
+		callsign = positionConfig.selectedAircraft.Callsign
 	} else if ctrl := server.GetController(args[0]); ctrl != nil {
 		callsign = ctrl.Callsign
 		args = args[1:]
@@ -1582,7 +1582,7 @@ func (*TransmitCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []s
 			contents:    strings.Join(args, " ")}
 
 		if positionConfig.selectedAircraft != nil {
-			tm.contents = positionConfig.selectedAircraft.callsign + ": " + tm.contents
+			tm.contents = positionConfig.selectedAircraft.Callsign + ": " + tm.contents
 		}
 
 		return cli.sendTextMessage(tm)
@@ -1602,7 +1602,7 @@ func (*WallopCommand) Help() string {
 func (*WallopCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
 	tm := TextMessage{messageType: TextWallop, contents: strings.Join(args, " ")}
 	if positionConfig.selectedAircraft != nil {
-		tm.contents = positionConfig.selectedAircraft.callsign + ": " + tm.contents
+		tm.contents = positionConfig.selectedAircraft.Callsign + ": " + tm.contents
 	}
 	return cli.sendTextMessage(tm)
 }
@@ -1638,7 +1638,7 @@ func (*ContactMeCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []
 
 	tm := TextMessage{
 		messageType: TextPrivate,
-		recipient:   ac.callsign,
+		recipient:   ac.Callsign,
 		contents: fmt.Sprintf("Please contact me on %s. Please do not respond via private "+
 			"message - use the frequency instead.", positionConfig.primaryFrequency),
 	}

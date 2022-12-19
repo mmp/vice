@@ -618,7 +618,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 				ac2 := arr[j].aircraft
 				dist := nmdistance2ll(ac.Position(), ac2.Position())
 
-				if i == j || ac2.flightPlan.ArrivalAirport != ac.flightPlan.ArrivalAirport {
+				if i == j || ac2.FlightPlan.ArrivalAirport != ac.FlightPlan.ArrivalAirport {
 					continue
 				}
 
@@ -708,7 +708,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 			x := float32(i-1) / (1e-6 + float32(2*(rs.RadarTracksDrawn-1))) // 0 <= x <= 0.5
 			trackColor := lerpRGB(x, color, ctx.cs.Background)
 
-			p := ac.tracks[i-1].Position
+			p := ac.Tracks[i-1].Position
 			pw := transforms.WindowFromLatLongP(p)
 
 			px := float32(3) // TODO: make configurable?
@@ -720,18 +720,18 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 			}
 
 			// Draw tracks
-			if ac.mode == Standby {
+			if ac.Mode == Standby {
 				pd.AddPoint(p, trackColor)
-			} else if ac.squawk == Squawk(0o1200) {
+			} else if ac.Squawk == Squawk(0o1200) {
 				pxb := px * .7    // a little smaller
 				sc := float32(.8) // leave a little space at the corners
 				ld.AddLine(delta(p, -sc*pxb, -pxb), delta(p, sc*pxb, -pxb), trackColor)
 				ld.AddLine(delta(p, pxb, -sc*pxb), delta(p, pxb, sc*pxb), trackColor)
 				ld.AddLine(delta(p, sc*pxb, pxb), delta(p, -sc*pxb, pxb), trackColor)
 				ld.AddLine(delta(p, -pxb, sc*pxb), delta(p, -pxb, -sc*pxb), trackColor)
-			} else if ac.trackingController != "" {
+			} else if ac.TrackingController != "" {
 				ch := "?"
-				if ctrl := server.GetController(ac.trackingController); ctrl != nil {
+				if ctrl := server.GetController(ac.TrackingController); ctrl != nil {
 					if pos := ctrl.GetPosition(); pos != nil {
 						ch = pos.Scope
 					}
@@ -759,7 +759,7 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 	squawkCount := make(map[Squawk]int)
 	for ac, state := range rs.aircraft {
 		if !state.isGhost {
-			squawkCount[ac.squawk]++
+			squawkCount[ac.Squawk]++
 		}
 	}
 	now := server.CurrentTime()
@@ -770,11 +770,11 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 
 		if !state.datablockTextCurrent {
 			hopo := ""
-			if ac.inboundHandoffController != "" {
-				hopo += FontAwesomeIconArrowLeft + ac.inboundHandoffController
+			if ac.InboundHandoffController != "" {
+				hopo += FontAwesomeIconArrowLeft + ac.InboundHandoffController
 			}
-			if ac.outboundHandoffController != "" {
-				hopo += FontAwesomeIconArrowRight + ac.outboundHandoffController
+			if ac.OutboundHandoffController != "" {
+				hopo += FontAwesomeIconArrowRight + ac.OutboundHandoffController
 			}
 			if controller, ok := rs.pointedOutAircraft.Get(ac); ok {
 				hopo += FontAwesomeIconExclamationTriangle + controller
@@ -783,8 +783,8 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 				hopo = "\n" + hopo
 			}
 
-			state.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 0) + hopo
-			state.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.squawk] != 1, 1) + hopo
+			state.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 0) + hopo
+			state.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 1) + hopo
 			state.datablockTextCurrent = true
 
 			bx0, by0 := rs.datablockFont.BoundText(state.datablockText[0], -2)
@@ -883,7 +883,7 @@ func (rs *RadarScopePane) layoutDatablocks(ctx *PaneContext, transforms ScopeTra
 			}
 		}
 		sort.Slice(aircraft, func(i, j int) bool {
-			return aircraft[i].Callsign() < aircraft[j].Callsign()
+			return aircraft[i].Callsign < aircraft[j].Callsign
 		})
 
 		// TODO: expand(5) consistency, ... ?
@@ -1073,14 +1073,14 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 		return cs.SelectedDataBlock
 	}
 
-	if ac.inboundHandoffController != "" {
+	if ac.InboundHandoffController != "" {
 		return cs.HandingOffDataBlock
 	}
-	if ac.outboundHandoffController != "" {
+	if ac.OutboundHandoffController != "" {
 		return cs.HandingOffDataBlock
 	}
 
-	if ac.trackingController != "" && ac.trackingController == server.Callsign() {
+	if ac.TrackingController != "" && ac.TrackingController == server.Callsign() {
 		return cs.TrackedDataBlock
 	}
 
@@ -1101,7 +1101,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTrans
 		bsel := *b == positionConfig.selectedAircraft
 		if asel == bsel {
 			// This is effectively that neither is selected; alphabetical
-			return (*a).Callsign() < (*b).Callsign()
+			return (*a).Callsign < (*b).Callsign
 		} else {
 			// Otherwise one of the two is; we want the selected one at the
 			// end.

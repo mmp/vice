@@ -164,14 +164,14 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 	fp.Route = args[16]
 
 	ac := v.getOrCreateAircraft(sender)
-	ac.flightPlan = &fp
+	ac.FlightPlan = &fp
 
 	if strings.Contains(fp.Remarks, "/v/") || strings.Contains(fp.Remarks, "/V/") {
-		ac.voiceCapability = VoiceFull
+		ac.VoiceCapability = VoiceFull
 	} else if strings.Contains(fp.Remarks, "/r/") || strings.Contains(fp.Remarks, "/R/") {
-		ac.voiceCapability = VoiceReceive
+		ac.VoiceCapability = VoiceReceive
 	} else if strings.Contains(fp.Remarks, "/t/") || strings.Contains(fp.Remarks, "/T/") {
-		ac.voiceCapability = VoiceText
+		ac.VoiceCapability = VoiceText
 	}
 
 	return nil
@@ -183,18 +183,18 @@ func handleHA(v *VATSIMServer, sender string, args []string) error {
 	from, callsign := args[1], args[2]
 	ac := v.getOrCreateAircraft(callsign)
 
-	if ac.trackingController != from {
-		lg.Printf("%s: %s is tracking but %s accepted h/o from %s?", callsign, ac.trackingController,
+	if ac.TrackingController != from {
+		lg.Printf("%s: %s is tracking but %s accepted h/o from %s?", callsign, ac.TrackingController,
 			sender, from)
 	}
 
 	if from == v.callsign {
 		// from us!
-		ac.outboundHandoffController = ""
+		ac.OutboundHandoffController = ""
 		eventStream.Post(&AcceptedHandoffEvent{controller: sender, ac: ac})
 	}
 
-	ac.trackingController = sender
+	ac.TrackingController = sender
 
 	return nil
 }
@@ -205,7 +205,7 @@ func handleHO(v *VATSIMServer, sender string, args []string) error {
 	receiver, callsign := args[1], args[2]
 	if receiver == v.callsign {
 		ac := v.getOrCreateAircraft(callsign)
-		ac.inboundHandoffController = sender
+		ac.InboundHandoffController = sender
 		eventStream.Post(&OfferedHandoffEvent{controller: sender, ac: ac})
 	}
 
@@ -303,8 +303,8 @@ func handleAt(v *VATSIMServer, trmode string, args []string) error {
 	}
 
 	ac := v.getOrCreateAircraft(callsign)
-	ac.squawk = squawk
-	ac.mode = mode
+	ac.Squawk = squawk
+	ac.Mode = mode
 	ac.AddTrack(RadarTrack{
 		Position:    latlong,
 		Altitude:    int(altitude),
@@ -409,9 +409,9 @@ func (v *VATSIMServer) altitudeAssigned(strs []string, csIndex int, altIndex int
 	callsign := strs[csIndex]
 	if alt, err := strconv.Atoi(strs[altIndex]); err != nil {
 		return MalformedMessageError{"invalid altitude: " + strs[altIndex]}
-	} else if ac := v.GetAircraft(callsign); ac != nil && ac.flightPlan != nil {
+	} else if ac := v.GetAircraft(callsign); ac != nil && ac.FlightPlan != nil {
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		ac.flightPlan.Altitude = alt
+		ac.FlightPlan.Altitude = alt
 	}
 	return nil
 }
@@ -426,7 +426,7 @@ func (v *VATSIMServer) temporaryAltitudeAssigned(strs []string, csIndex int, alt
 		return MalformedMessageError{"invalid temporary altitude: " + strs[altIndex]}
 	} else {
 		ac := v.getOrCreateAircraft(callsign)
-		ac.tempAltitude = alt
+		ac.TempAltitude = alt
 		return nil
 	}
 }
@@ -441,7 +441,7 @@ func (v *VATSIMServer) squawkCodeAssigned(strs []string, csIndex int, sqIndex in
 		return err
 	} else {
 		ac := v.getOrCreateAircraft(callsign)
-		ac.assignedSquawk = squawk
+		ac.AssignedSquawk = squawk
 		return nil
 	}
 }
@@ -453,7 +453,7 @@ func (v *VATSIMServer) scratchpadSet(strs []string, csIndex int, spIndex int) er
 
 	callsign := strs[csIndex]
 	ac := v.getOrCreateAircraft(callsign)
-	ac.scratchpad = strs[spIndex]
+	ac.Scratchpad = strs[spIndex]
 	return nil
 }
 
@@ -466,13 +466,13 @@ func (v *VATSIMServer) voiceTypeSet(strs []string, csIndex int, vtIndex int) err
 	ac := v.getOrCreateAircraft(callsign)
 	switch strs[vtIndex] {
 	case "v":
-		ac.voiceCapability = VoiceFull
+		ac.VoiceCapability = VoiceFull
 	case "r":
-		ac.voiceCapability = VoiceReceive
+		ac.VoiceCapability = VoiceReceive
 	case "t":
-		ac.voiceCapability = VoiceText
+		ac.VoiceCapability = VoiceText
 	case "":
-		ac.voiceCapability = VoiceUnknown
+		ac.VoiceCapability = VoiceUnknown
 	default:
 		return MalformedMessageError{"Unexpected voice capability: " + strs[vtIndex]}
 	}
@@ -521,14 +521,14 @@ func init() {
 		callsign := args[3]
 		ac := v.getOrCreateAircraft(callsign)
 
-		if ac.trackingController != sender {
+		if ac.TrackingController != sender {
 			lg.Printf("%s: %s dropped track but currently tracked by %s", callsign, sender,
-				ac.trackingController)
+				ac.TrackingController)
 		}
 
-		ac.trackingController = ""
-		ac.inboundHandoffController = ""
-		ac.outboundHandoffController = ""
+		ac.TrackingController = ""
+		ac.InboundHandoffController = ""
+		ac.OutboundHandoffController = ""
 
 		return nil
 	}))
@@ -553,9 +553,9 @@ func init() {
 	r(NewMessageSpec("$CQ::HT", 5, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[3]
 		ac := v.getOrCreateAircraft(callsign)
-		ac.trackingController = sender
-		if ac.outboundHandoffController != "" {
-			ac.outboundHandoffController = ""
+		ac.TrackingController = sender
+		if ac.OutboundHandoffController != "" {
+			ac.OutboundHandoffController = ""
 			eventStream.Post(&AcceptedHandoffEvent{controller: sender, ac: ac})
 		}
 		return nil
@@ -665,14 +665,14 @@ func init() {
 		}
 
 		for _, ac := range v.aircraft {
-			if ac.trackingController == sender {
-				ac.trackingController = ""
-				ac.inboundHandoffController = ""
+			if ac.TrackingController == sender {
+				ac.TrackingController = ""
+				ac.InboundHandoffController = ""
 			}
-			if ac.outboundHandoffController == sender {
+			if ac.OutboundHandoffController == sender {
 				// TODO: send a rejected handoff event if we were trying to
 				// hand off to this controller?
-				ac.outboundHandoffController = ""
+				ac.OutboundHandoffController = ""
 			}
 		}
 
@@ -712,7 +712,7 @@ func init() {
 	r(NewMessageSpec("#PC::CCP:HC", 5, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[4]
 		ac := v.getOrCreateAircraft(callsign)
-		ac.outboundHandoffController = ""
+		ac.OutboundHandoffController = ""
 		eventStream.Post(&RejectedHandoffEvent{controller: sender, ac: ac})
 		return nil
 	}))

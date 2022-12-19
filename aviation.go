@@ -189,20 +189,20 @@ func ParseSquawk(s string) (Squawk, error) {
 }
 
 type Aircraft struct {
-	callsign        string
-	scratchpad      string
-	assignedSquawk  Squawk // from ATC
-	squawk          Squawk // actually squawking
-	mode            TransponderMode
-	tempAltitude    int
-	voiceCapability VoiceCapability
-	flightPlan      *FlightPlan
+	Callsign        string
+	Scratchpad      string
+	AssignedSquawk  Squawk // from ATC
+	Squawk          Squawk // actually squawking
+	Mode            TransponderMode
+	TempAltitude    int
+	VoiceCapability VoiceCapability
+	FlightPlan      *FlightPlan
 
-	tracks [10]RadarTrack
+	Tracks [10]RadarTrack
 
-	trackingController        string
-	inboundHandoffController  string
-	outboundHandoffController string
+	TrackingController        string
+	InboundHandoffController  string
+	OutboundHandoffController string
 }
 
 type AircraftPair struct {
@@ -320,17 +320,17 @@ func (v VoiceCapability) String() string {
 }
 
 func (a *Aircraft) Altitude() int {
-	return a.tracks[0].Altitude
+	return a.Tracks[0].Altitude
 }
 
 // Reported in feet per minute
 func (a *Aircraft) AltitudeChange() int {
-	if a.tracks[0].Position.IsZero() || a.tracks[1].Position.IsZero() {
+	if a.Tracks[0].Position.IsZero() || a.Tracks[1].Position.IsZero() {
 		return 0
 	}
 
-	dt := a.tracks[0].Time.Sub(a.tracks[1].Time)
-	return int(float64(a.tracks[0].Altitude-a.tracks[1].Altitude) / dt.Minutes())
+	dt := a.Tracks[0].Time.Sub(a.Tracks[1].Time)
+	return int(float64(a.Tracks[0].Altitude-a.Tracks[1].Altitude) / dt.Minutes())
 }
 
 func (a *Aircraft) HaveTrack() bool {
@@ -338,28 +338,28 @@ func (a *Aircraft) HaveTrack() bool {
 }
 
 func (a *Aircraft) Position() Point2LL {
-	return a.tracks[0].Position
+	return a.Tracks[0].Position
 }
 
 func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 	// Return the first valid one; this makes things cleaner at the start when
 	// we don't have a full set of track history.
 	pos := func(idx int) Point2LL {
-		if idx >= len(a.tracks) {
+		if idx >= len(a.Tracks) {
 			// Linearly extrapolate the last two. (We don't expect to be
 			// doing this often...)
-			steps := 1 + idx - len(a.tracks)
-			last := len(a.tracks) - 1
-			v := sub2ll(a.tracks[last].Position, a.tracks[last-1].Position)
-			return add2ll(a.tracks[last].Position, scale2ll(v, float32(steps)))
+			steps := 1 + idx - len(a.Tracks)
+			last := len(a.Tracks) - 1
+			v := sub2ll(a.Tracks[last].Position, a.Tracks[last-1].Position)
+			return add2ll(a.Tracks[last].Position, scale2ll(v, float32(steps)))
 		}
 		for idx > 0 {
-			if !a.tracks[idx].Position.IsZero() {
+			if !a.Tracks[idx].Position.IsZero() {
 				break
 			}
 			idx--
 		}
-		return a.tracks[idx].Position
+		return a.Tracks[idx].Position
 	}
 
 	if t < 0 {
@@ -391,7 +391,7 @@ func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 }
 
 func (a *Aircraft) GroundSpeed() int {
-	return a.tracks[0].Groundspeed
+	return a.Tracks[0].Groundspeed
 }
 
 // Note: returned value includes the magnetic correction
@@ -409,7 +409,7 @@ func (a *Aircraft) HeadingVector() Point2LL {
 		return Point2LL{}
 	}
 
-	p0, p1 := a.tracks[0].Position, a.tracks[1].Position
+	p0, p1 := a.Tracks[0].Position, a.Tracks[1].Position
 	v := sub2ll(p0, p1)
 	nm := nmlength2ll(v)
 	// v's length should be groundspeed / 60 nm.
@@ -417,14 +417,14 @@ func (a *Aircraft) HeadingVector() Point2LL {
 }
 
 func (a *Aircraft) HaveHeading() bool {
-	return !a.tracks[0].Position.IsZero() && !a.tracks[1].Position.IsZero()
+	return !a.Tracks[0].Position.IsZero() && !a.Tracks[1].Position.IsZero()
 }
 
 func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
 	if !a.HaveHeading() {
 		return Point2LL{}
 	}
-	t := float32(time.Since(a.tracks[0].Time).Seconds()) - lag
+	t := float32(time.Since(a.Tracks[0].Time).Seconds()) - lag
 	return sub2ll(a.InterpolatedPosition(t+.5), a.InterpolatedPosition(t-0.5))
 }
 
@@ -435,23 +435,19 @@ func (a *Aircraft) HeadingTo(p Point2LL) float32 {
 func (a *Aircraft) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
-	return !a.tracks[0].Position.IsZero() && now.Sub(a.tracks[0].Time) > 30*time.Second
+	return !a.Tracks[0].Position.IsZero() && now.Sub(a.Tracks[0].Time) > 30*time.Second
 }
 
 func (a *Aircraft) AddTrack(t RadarTrack) {
 	// Move everthing forward one to make space for the new one. We could
 	// be clever and use a circular buffer to skip the copies, though at
 	// the cost of more painful indexing elsewhere...
-	copy(a.tracks[1:], a.tracks[:len(a.tracks)-1])
-	a.tracks[0] = t
-}
-
-func (a *Aircraft) Callsign() string {
-	return a.callsign
+	copy(a.Tracks[1:], a.Tracks[:len(a.Tracks)-1])
+	a.Tracks[0] = t
 }
 
 func (a *Aircraft) Telephony() string {
-	cs := strings.TrimRight(a.callsign, "0123456789")
+	cs := strings.TrimRight(a.Callsign, "0123456789")
 	if sign, ok := database.callsigns[cs]; ok {
 		return sign.Telephony
 	} else {
@@ -460,7 +456,7 @@ func (a *Aircraft) Telephony() string {
 }
 
 func (a *Aircraft) IsAssociated() bool {
-	return a.flightPlan != nil && a.squawk == a.assignedSquawk && a.mode == Charlie
+	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
 }
 
 func (a *Aircraft) OnGround() bool {
@@ -468,8 +464,8 @@ func (a *Aircraft) OnGround() bool {
 		return true
 	}
 
-	if a.flightPlan != nil {
-		for _, airport := range [2]string{a.flightPlan.DepartureAirport, a.flightPlan.ArrivalAirport} {
+	if fp := a.FlightPlan; fp != nil {
+		for _, airport := range [2]string{fp.DepartureAirport, fp.ArrivalAirport} {
 			if ap, ok := database.FAA.airports[airport]; ok {
 				heightAGL := abs(a.Altitude() - ap.Elevation)
 				return heightAGL < 100
@@ -483,19 +479,17 @@ func (a *Aircraft) OnGround() bool {
 }
 
 func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string, indent int) {
-	if a.flightPlan == nil {
+	if plan := a.FlightPlan; plan == nil {
 		contents = "No flight plan"
 		return
 	} else {
-		plan := a.flightPlan
-
 		var sb strings.Builder
 		w := tabwriter.NewWriter(&sb, 0, 1, 1, ' ', 0)
 		write := func(s string) { w.Write([]byte(s)) }
 
-		write(a.Callsign())
-		if a.voiceCapability != VoiceFull {
-			write("/" + a.voiceCapability.String())
+		write(a.Callsign)
+		if a.VoiceCapability != VoiceFull {
+			write("/" + a.VoiceCapability.String())
 		}
 		write("\t")
 		nbsp := "\u00a0" // non-breaking space; wrapText honors these
@@ -505,19 +499,19 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 
 		write("\t")
 		write("alt:" + nbsp + nbsp + nbsp + fmt.Sprintf("%d", plan.Altitude))
-		if a.tempAltitude != 0 {
-			write(fmt.Sprintf(nbsp+"(%d)", a.tempAltitude))
+		if a.TempAltitude != 0 {
+			write(fmt.Sprintf(nbsp+"(%d)", a.TempAltitude))
 		}
 		write("\t")
-		write("sqk:" + nbsp + a.assignedSquawk.String() + "\t")
-		write("scratch:" + nbsp + a.scratchpad + "\n")
+		write("sqk:" + nbsp + a.AssignedSquawk.String() + "\t")
+		write("scratch:" + nbsp + a.Scratchpad + "\n")
 
 		w.Flush()
 		contents = sb.String()
 
-		indent = 1 + len(a.Callsign())
-		if a.voiceCapability != VoiceFull {
-			indent += 1 + len(a.voiceCapability.String())
+		indent = 1 + len(a.Callsign)
+		if a.VoiceCapability != VoiceFull {
+			indent += 1 + len(a.VoiceCapability.String())
 		}
 		indstr := fmt.Sprintf("%*c", indent, ' ')
 		contents = contents + indstr + "route:" + nbsp + plan.Route + "\n"
@@ -571,14 +565,14 @@ func GetConflicts(aircraft []*Aircraft, rangeLimits [NumRangeTypes]RangeLimits) 
 			ac2 := aircraft[j]
 
 			var r RangeLimits
-			if ac1.flightPlan != nil && ac1.flightPlan.Rules == IFR {
-				if ac2.flightPlan != nil && ac2.flightPlan.Rules == IFR {
+			if ac1.FlightPlan != nil && ac1.FlightPlan.Rules == IFR {
+				if ac2.FlightPlan != nil && ac2.FlightPlan.Rules == IFR {
 					r = rangeLimits[IFR_IFR]
 				} else {
 					r = rangeLimits[IFR_VFR]
 				}
 			} else {
-				if ac2.flightPlan != nil && ac2.flightPlan.Rules == IFR {
+				if ac2.FlightPlan != nil && ac2.FlightPlan.Rules == IFR {
 					r = rangeLimits[IFR_VFR]
 				} else {
 					r = rangeLimits[VFR_VFR]
