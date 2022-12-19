@@ -509,6 +509,10 @@ func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 
 	// Add the draw command to the command buffer.
 	cb.DrawPoints(ind, len(p.indices))
+
+	// Clean up
+	cb.DisableVertexArray()
+	cb.DisableColorArray()
 }
 
 // LinesDrawBuilder accumulates lines to be drawn together. Note that it does
@@ -619,6 +623,9 @@ func (l *LinesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	// Add the vertex indices and issue the draw command.
 	ind := cb.IntBuffer(l.indices)
 	cb.DrawLines(ind, len(l.indices))
+
+	// Clean up
+	cb.DisableVertexArray()
 }
 
 // LinesDrawBuilders are managed using a sync.Pool so that their buf slice
@@ -758,6 +765,8 @@ func (t *TrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 
 	ind := cb.IntBuffer(t.indices)
 	cb.DrawTriangles(ind, len(t.indices))
+
+	cb.DisableVertexArray()
 }
 
 // TrianglesDrawBuilders are managed using a sync.Pool so that their buf
@@ -1065,6 +1074,9 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	td.regular.GenerateCommands(cb)
 
 	// Clean up after ourselves.
+	cb.DisableVertexArray()
+	cb.DisableColorArray()
+	cb.DisableTexCoordArray()
 	cb.DisableTexture()
 	cb.DisableBlend()
 }
