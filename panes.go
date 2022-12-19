@@ -339,13 +339,13 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 		if ac.OnGround() || ac.LostTrack(now) || ac.flightPlan == nil {
 			return false
 		}
-		_, ok := airports[ac.flightPlan.arrive]
+		_, ok := airports[ac.flightPlan.ArrivalAirport]
 		return ok
 	}) {
 		pos := ac.Position()
 		// Filter ones where we don't have a valid position
 		if pos[0] != 0 && pos[1] != 0 {
-			dist := nmdistance2ll(database.FAA.airports[ac.flightPlan.arrive].Location, pos)
+			dist := nmdistance2ll(database.FAA.airports[ac.flightPlan.ArrivalAirport].Location, pos)
 			sortDist := dist + float32(ac.Altitude())/300.
 			arr = append(arr, Arrival{aircraft: ac, distance: dist, sortDistance: sortDist})
 		}
@@ -456,7 +456,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	for _, ac := range server.GetFilteredAircraft(func(ac *Aircraft) bool {
 		return ac.flightPlan != nil && !ac.LostTrack(now)
 	}) {
-		if _, ok := a.Airports[ac.flightPlan.depart]; ok {
+		if _, ok := a.Airports[ac.flightPlan.DepartureAirport]; ok {
 			if ac.OnGround() {
 				if ac.assignedSquawk == 0 {
 					uncleared = append(uncleared, Departure{Aircraft: ac})
@@ -476,13 +476,13 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		})
 		for _, ac := range uncleared {
 			str.WriteString(fmt.Sprintf("  %-8s %3s %4s-%4s %8s %5d\n", ac.Callsign(),
-				ac.flightPlan.rules, ac.flightPlan.depart, ac.flightPlan.arrive,
-				ac.flightPlan.actype, ac.flightPlan.altitude))
+				ac.flightPlan.Rules, ac.flightPlan.DepartureAirport, ac.flightPlan.ArrivalAirport,
+				ac.flightPlan.AircraftType, ac.flightPlan.Altitude))
 
 			// Route
-			if len(ac.flightPlan.route) > 0 {
+			if len(ac.flightPlan.Route) > 0 {
 				str.WriteString("    ")
-				str.WriteString(ac.flightPlan.route)
+				str.WriteString(ac.flightPlan.Route)
 				str.WriteString("\n")
 			}
 
@@ -500,14 +500,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			return departures[i].Callsign() < departures[j].Callsign()
 		})
 		for _, ac := range departures {
-			route := ac.flightPlan.route
+			route := ac.flightPlan.Route
 			if len(route) > 10 {
 				route = route[:10]
 				route += ".."
 			}
 			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d %12s", ac.Callsign(),
-				ac.flightPlan.rules, ac.flightPlan.depart, ac.flightPlan.actype,
-				ac.scratchpad, ac.flightPlan.altitude, route))
+				ac.flightPlan.Rules, ac.flightPlan.DepartureAirport, ac.flightPlan.AircraftType,
+				ac.scratchpad, ac.flightPlan.Altitude, route))
 
 			// Make sure the squawk is good
 			if ac.mode != Charlie || ac.squawk != ac.assignedSquawk {
@@ -527,15 +527,15 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if a.ShowDeparted && len(airborne) > 0 {
 		sort.Slice(airborne, func(i, j int) bool {
 			ai := &airborne[i]
-			di := nmdistance2ll(database.FAA.airports[ai.flightPlan.arrive].Location, ai.Position())
+			di := nmdistance2ll(database.FAA.airports[ai.flightPlan.ArrivalAirport].Location, ai.Position())
 			aj := &airborne[j]
-			dj := nmdistance2ll(database.FAA.airports[aj.flightPlan.arrive].Location, aj.Position())
+			dj := nmdistance2ll(database.FAA.airports[aj.flightPlan.ArrivalAirport].Location, aj.Position())
 			return di < dj
 		})
 
 		str.WriteString("Departed:\n")
 		for _, ac := range airborne {
-			route := ac.flightPlan.route
+			route := ac.flightPlan.Route
 			if len(route) > 10 {
 				route = route[:10]
 				route += ".."
@@ -547,10 +547,10 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			if ac.tempAltitude != 0 {
 				clearedAlt = fmt.Sprintf("%5dT", ac.tempAltitude)
 			} else {
-				clearedAlt = fmt.Sprintf("%5d ", ac.flightPlan.altitude)
+				clearedAlt = fmt.Sprintf("%5d ", ac.flightPlan.Altitude)
 			}
 			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %s %5d %12s\n", ac.Callsign(),
-				ac.flightPlan.rules, ac.flightPlan.depart, ac.flightPlan.actype,
+				ac.flightPlan.Rules, ac.flightPlan.DepartureAirport, ac.flightPlan.AircraftType,
 				ac.scratchpad, clearedAlt, alt, route))
 		}
 		str.WriteString("\n")
@@ -565,14 +565,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			alt = (alt + 50) / 100 * 100
 
 			// Try to extract the STAR from the flight plan.
-			route := ac.flightPlan.route
+			route := ac.flightPlan.Route
 			star := route[strings.LastIndex(route, " ")+1:]
 			if len(star) > 7 {
 				star = star[len(star)-7:]
 			}
 
 			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d  %5d %3dnm %s\n", ac.Callsign(),
-				ac.flightPlan.rules, ac.flightPlan.arrive, ac.flightPlan.actype, ac.scratchpad,
+				ac.flightPlan.Rules, ac.flightPlan.ArrivalAirport, ac.flightPlan.AircraftType, ac.scratchpad,
 				ac.tempAltitude, alt, int(arr.distance), star))
 
 			if _, ok := a.seenArrivals[ac.Callsign()]; !ok {
@@ -1269,7 +1269,7 @@ func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
 	if ac.flightPlan == nil {
 		return false
 	}
-	_, ok := fsp.Airports[ac.flightPlan.depart]
+	_, ok := fsp.Airports[ac.flightPlan.DepartureAirport]
 	return ok
 }
 
@@ -1277,7 +1277,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 	if ac.flightPlan == nil {
 		return false
 	}
-	_, ok := fsp.Airports[ac.flightPlan.arrive]
+	_, ok := fsp.Airports[ac.flightPlan.ArrivalAirport]
 	return ok
 }
 
@@ -1448,8 +1448,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// First column; 3 entries
 		td.AddText(callsign, [2]float32{x, y}, style)
 		if fp != nil {
-			td.AddText(fp.actype, [2]float32{x, y - fh*3/2}, style)
-			td.AddText(fp.rules.String(), [2]float32{x, y - fh*3}, style)
+			td.AddText(fp.AircraftType, [2]float32{x, y - fh*3/2}, style)
+			td.AddText(fp.Rules.String(), [2]float32{x, y - fh*3}, style)
 		}
 		ld.AddLine([2]float32{width0, y}, [2]float32{width0, y - stripHeight})
 
@@ -1458,7 +1458,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		td.AddText(ac.assignedSquawk.String(), [2]float32{x, y}, style)
 		td.AddText(fmt.Sprintf("%d", ac.tempAltitude), [2]float32{x, y - fh*3/2}, style)
 		if fp != nil {
-			td.AddText(fmt.Sprintf("%d", fp.altitude), [2]float32{x, y - fh*3}, style)
+			td.AddText(fmt.Sprintf("%d", fp.Altitude), [2]float32{x, y - fh*3}, style)
 		}
 		ld.AddLine([2]float32{width0, y - 4./3.*fh}, [2]float32{width0 + width1, y - 4./3.*fh})
 		ld.AddLine([2]float32{width0, y - 8./3.*fh}, [2]float32{width0 + width1, y - 8./3.*fh})
@@ -1467,9 +1467,9 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Third column; (up to) 4 entries
 		x += width1
 		if fp != nil {
-			td.AddText(fp.depart, [2]float32{x, y}, style)
-			td.AddText(fp.arrive, [2]float32{x, y - fh}, style)
-			td.AddText(fp.alternate, [2]float32{x, y - 2*fh}, style)
+			td.AddText(fp.DepartureAirport, [2]float32{x, y}, style)
+			td.AddText(fp.ArrivalAirport, [2]float32{x, y - fh}, style)
+			td.AddText(fp.AlternateAirport, [2]float32{x, y - 2*fh}, style)
 		}
 		td.AddText(ac.scratchpad, [2]float32{x, y - 3*fh}, style)
 		ld.AddLine([2]float32{width0 + width1 + width2, y},
@@ -1480,14 +1480,14 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		if fp != nil {
 			cols := int(widthCenter / fw)
 			// Line-wrap the route to fit the box and break it into lines.
-			route, _ := wrapText(fp.route, cols, 2 /* indent */, true)
+			route, _ := wrapText(fp.Route, cols, 2 /* indent */, true)
 			text := strings.Split(route, "\n")
 			// Add a blank line if the route only used one line.
 			if len(text) < 2 {
 				text = append(text, "")
 			}
 			// Similarly for the remarks
-			remarks, _ := wrapText(fp.remarks, cols, 2 /* indent */, true)
+			remarks, _ := wrapText(fp.Remarks, cols, 2 /* indent */, true)
 			text = append(text, strings.Split(remarks, "\n")...)
 			// Limit to the first four lines so we don't spill over.
 			if len(text) > 4 {

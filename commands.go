@@ -321,7 +321,7 @@ func (*AssignFinalAltitudeFKeyCommand) Do(args []string) error {
 		altitude *= 100
 	}
 
-	return amendFlightPlan(args[0], func(fp *FlightPlan) { fp.altitude = altitude })
+	return amendFlightPlan(args[0], func(fp *FlightPlan) { fp.Altitude = altitude })
 }
 
 // AssignSquawkFKeyCommand assigns a squawk code to an aircraft.
@@ -415,8 +415,8 @@ func (*DrawRouteFKeyCommand) Do(args []string) error {
 		return ErrNoFlightPlan
 	}
 
-	positionConfig.drawnRoute = ac.flightPlan.depart + " " + ac.flightPlan.route + " " +
-		ac.flightPlan.arrive
+	positionConfig.drawnRoute = ac.flightPlan.DepartureAirport + " " + ac.flightPlan.Route + " " +
+		ac.flightPlan.ArrivalAirport
 	positionConfig.drawnRouteEndTime = time.Now().Add(5 * time.Second)
 	return nil
 }
@@ -540,7 +540,7 @@ func (*SetAircraftTypeFKeyCommand) ArgTypes() []FKeyCommandArg {
 
 func (*SetAircraftTypeFKeyCommand) Do(args []string) error {
 	return amendFlightPlan(args[0], func(fp *FlightPlan) {
-		fp.actype = args[1]
+		fp.AircraftType = args[1]
 	})
 }
 
@@ -558,7 +558,7 @@ func (*SetEquipmentSuffixFKeyCommand) ArgTypes() []FKeyCommandArg {
 
 func (*SetEquipmentSuffixFKeyCommand) Do(args []string) error {
 	return amendFlightPlan(args[0], func(fp *FlightPlan) {
-		fp.actype = fp.TypeWithoutSuffix() + "/" + args[1]
+		fp.AircraftType = fp.TypeWithoutSuffix() + "/" + args[1]
 	})
 }
 
@@ -572,7 +572,7 @@ func (*SetIFRFKeyCommand) ArgTypes() []FKeyCommandArg {
 }
 
 func (*SetIFRFKeyCommand) Do(args []string) error {
-	return amendFlightPlan(args[0], func(fp *FlightPlan) { fp.rules = IFR })
+	return amendFlightPlan(args[0], func(fp *FlightPlan) { fp.Rules = IFR })
 }
 
 // SetVFRFKeyCommand sets the flight rules for an aircraft to be VFR.
@@ -585,7 +585,7 @@ func (*SetVFRFKeyCommand) ArgTypes() []FKeyCommandArg {
 }
 
 func (*SetVFRFKeyCommand) Do(args []string) error {
-	return amendFlightPlan(args[0], func(fp *FlightPlan) { fp.rules = VFR })
+	return amendFlightPlan(args[0], func(fp *FlightPlan) { fp.Rules = VFR })
 }
 
 // SetVoiceCapabilityFKeyCommand sets an aircraft's voice capability.
@@ -712,7 +712,7 @@ func (*SetACTypeCommand) AdditionalArgs() (min int, max int) { return 1, 1 }
 
 func (*SetACTypeCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
 	err := amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
-		fp.actype = strings.ToUpper(args[0])
+		fp.AircraftType = strings.ToUpper(args[0])
 	})
 	return ErrorConsoleEntry(err)
 }
@@ -748,7 +748,7 @@ func (sa *SetAltitudeCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, ar
 		if sa.isTemporary {
 			return ErrorConsoleEntry(server.SetTemporaryAltitude(ac.callsign, altitude))
 		} else {
-			return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.altitude = altitude }))
+			return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.Altitude = altitude }))
 		}
 	} else {
 		return ErrorConsoleEntry(err)
@@ -770,7 +770,7 @@ func (*SetArrivalCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args [
 		return ErrorConsoleEntry(ErrAirportTooLong)
 	}
 	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
-		fp.arrive = strings.ToUpper(args[0])
+		fp.ArrivalAirport = strings.ToUpper(args[0])
 	}))
 }
 
@@ -789,7 +789,7 @@ func (*SetDepartureCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args
 		return ErrorConsoleEntry(ErrAirportTooLong)
 	}
 	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
-		fp.depart = strings.ToUpper(args[0])
+		fp.DepartureAirport = strings.ToUpper(args[0])
 	}))
 }
 
@@ -813,7 +813,7 @@ func (*SetEquipmentSuffixCommand) Run(cmd string, ac *Aircraft, ctrl *Controller
 			if suffix[0] != '/' {
 				suffix = "/" + suffix
 			}
-			fp.actype = atype + suffix
+			fp.AircraftType = atype + suffix
 		}))
 	}
 }
@@ -829,7 +829,7 @@ func (*SetIFRCommand) Help() string {
 	return "Marks the aircraft as an IFR flight."
 }
 func (*SetIFRCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.rules = IFR }))
+	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.Rules = IFR }))
 }
 
 type SetScratchpadCommand struct{}
@@ -910,7 +910,7 @@ func (*SetVFRCommand) Help() string {
 	return "Marks the aircraft as a VFR flight."
 }
 func (*SetVFRCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.rules = VFR }))
+	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) { fp.Rules = VFR }))
 }
 
 type EditRouteCommand struct{}
@@ -930,7 +930,7 @@ func (*EditRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []
 
 	cli.input.cmd = "route "
 	cli.input.cursor = len(cli.input.cmd)
-	cli.input.cmd += ac.flightPlan.route
+	cli.input.cmd += ac.flightPlan.Route
 
 	return nil
 }
@@ -971,7 +971,7 @@ func (*NYPRDCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []stri
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	}
 
-	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
+	depart, arrive := ac.flightPlan.DepartureAirport, ac.flightPlan.ArrivalAirport
 	url := fmt.Sprintf("https://nyartcc.org/prd/search?depart=%s&arrive=%s", depart, arrive)
 
 	resp, err := http.Get(url)
@@ -1062,7 +1062,7 @@ func (*PRDCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	}
 
-	depart, arrive := ac.flightPlan.depart, ac.flightPlan.arrive
+	depart, arrive := ac.flightPlan.DepartureAirport, ac.flightPlan.ArrivalAirport
 	if len(depart) == 4 && depart[0] == 'K' {
 		depart = depart[1:]
 	}
@@ -1134,7 +1134,7 @@ func (*SetRouteCommand) Help() string {
 }
 func (*SetRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
 	return ErrorConsoleEntry(amendFlightPlan(ac.callsign, func(fp *FlightPlan) {
-		fp.route = strings.ToUpper(strings.Join(args, " "))
+		fp.Route = strings.ToUpper(strings.Join(args, " "))
 	}))
 }
 
@@ -1291,8 +1291,8 @@ func (*DrawRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []
 	if ac.flightPlan == nil {
 		return ErrorConsoleEntry(ErrNoFlightPlan)
 	} else {
-		positionConfig.drawnRoute = ac.flightPlan.depart + " " + ac.flightPlan.route + " " +
-			ac.flightPlan.arrive
+		positionConfig.drawnRoute = ac.flightPlan.DepartureAirport + " " + ac.flightPlan.Route + " " +
+			ac.flightPlan.ArrivalAirport
 		positionConfig.drawnRouteEndTime = time.Now().Add(5 * time.Second)
 		return nil
 	}
@@ -1444,7 +1444,7 @@ func (*TrafficCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []st
 		clock := headingAsHour(hdiff)
 		actype := "???"
 		if t.ac.flightPlan != nil {
-			actype = t.ac.flightPlan.actype
+			actype = t.ac.flightPlan.AircraftType
 		}
 		str += fmt.Sprintf("  %-10s %2d o'c %2d mi %2s bound %-10s %5d' [%s]\n",
 			ac.Callsign(), clock, int(t.distance+0.5),

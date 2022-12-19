@@ -1087,7 +1087,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 				if ac.tempAltitude != 0 {
 					return fmt.Sprintf("%d", ac.tempAltitude)
 				} else if ac.flightPlan != nil {
-					return fmt.Sprintf("%d", ac.flightPlan.altitude)
+					return fmt.Sprintf("%d", ac.flightPlan.Altitude)
 				} else {
 					return "???"
 				}
@@ -1099,7 +1099,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		case "arr":
 			acarg(func(ac *Aircraft) string {
 				if ac.flightPlan != nil {
-					return ac.flightPlan.arrive
+					return ac.flightPlan.ArrivalAirport
 				} else {
 					return "????"
 				}
@@ -1119,7 +1119,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		case "cruise":
 			acarg(func(ac *Aircraft) string {
 				if ac.flightPlan != nil {
-					return fmt.Sprintf("%d", ac.flightPlan.altitude)
+					return fmt.Sprintf("%d", ac.flightPlan.Altitude)
 				} else {
 					return "????"
 				}
@@ -1128,7 +1128,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		case "dep":
 			acarg(func(ac *Aircraft) string {
 				if ac.flightPlan != nil {
-					return ac.flightPlan.depart
+					return ac.flightPlan.DepartureAirport
 				} else {
 					return "????"
 				}
@@ -1174,7 +1174,7 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 		case "route":
 			acarg(func(ac *Aircraft) string {
 				if ac.flightPlan != nil {
-					return ac.flightPlan.route
+					return ac.flightPlan.Route
 				} else {
 					return "????"
 				}
@@ -1206,10 +1206,10 @@ func (cli *CLIPane) expandVariables(cmd string) (expanded string, err error) {
 
 				var airport, aptype string
 				if ac.OnGround() {
-					airport = strings.ToUpper(ac.flightPlan.depart)
+					airport = strings.ToUpper(ac.flightPlan.DepartureAirport)
 					aptype = "departure"
 				} else {
-					airport = strings.ToUpper(ac.flightPlan.arrive)
+					airport = strings.ToUpper(ac.flightPlan.ArrivalAirport)
 					aptype = "arrival"
 				}
 

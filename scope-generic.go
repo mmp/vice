@@ -618,7 +618,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 				ac2 := arr[j].aircraft
 				dist := nmdistance2ll(ac.Position(), ac2.Position())
 
-				if i == j || ac2.flightPlan.arrive != ac.flightPlan.arrive {
+				if i == j || ac2.flightPlan.ArrivalAirport != ac.flightPlan.ArrivalAirport {
 					continue
 				}
 

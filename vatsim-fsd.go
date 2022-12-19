@@ -103,30 +103,30 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 
 	switch args[2] {
 	case "I":
-		fp.rules = IFR
+		fp.Rules = IFR
 	case "V":
-		fp.rules = VFR
+		fp.Rules = VFR
 	case "D":
-		fp.rules = DVFR
+		fp.Rules = DVFR
 	case "S":
-		fp.rules = SVFR
+		fp.Rules = SVFR
 	default:
 		return MalformedMessageError{"Unexpected flight rules: " + args[2]}
 	}
 
-	fp.actype = args[3]
+	fp.AircraftType = args[3]
 
 	var err error
-	if fp.cruiseSpeed, err = strconv.Atoi(args[4]); err != nil {
+	if fp.CruiseSpeed, err = strconv.Atoi(args[4]); err != nil {
 		return MalformedMessageError{"Unable to parse cruise airspeed: " + args[4]}
 	}
 
-	fp.depart = args[5]
+	fp.DepartureAirport = args[5]
 
-	if fp.departTimeEst, err = strconv.Atoi(args[6]); err != nil {
+	if fp.DepartTimeEst, err = strconv.Atoi(args[6]); err != nil {
 		return MalformedMessageError{"Unable to parse departTime: " + args[6]}
 	}
-	if fp.departTimeActual, err = strconv.Atoi(args[7]); err != nil {
+	if fp.DepartTimeActual, err = strconv.Atoi(args[7]); err != nil {
 		return MalformedMessageError{"Unable to parse departTime: " + args[7]}
 	}
 
@@ -135,42 +135,42 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 			if alt, err := strconv.Atoi(args[8][2:]); err != nil {
 				return MalformedMessageError{"Unable to parse altitude: " + args[8]}
 			} else {
-				fp.altitude = alt * 100
+				fp.Altitude = alt * 100
 			}
 		} else if alt, err := strconv.Atoi(args[8]); err != nil {
 			return MalformedMessageError{"Unable to parse altitude: " + args[8]}
 		} else {
-			fp.altitude = alt
+			fp.Altitude = alt
 		}
 	}
 
-	fp.arrive = args[9]
+	fp.ArrivalAirport = args[9]
 
-	if fp.hours, err = strconv.Atoi(args[10]); err != nil {
+	if fp.Hours, err = strconv.Atoi(args[10]); err != nil {
 		return MalformedMessageError{"Unable to parse enroute hours: " + args[10]}
 	}
-	if fp.minutes, err = strconv.Atoi(args[11]); err != nil {
+	if fp.Minutes, err = strconv.Atoi(args[11]); err != nil {
 		return MalformedMessageError{"Unable to parse enroute minutes: " + args[11]}
 	}
-	if fp.fuelHours, err = strconv.Atoi(args[12]); err != nil {
+	if fp.FuelHours, err = strconv.Atoi(args[12]); err != nil {
 		return MalformedMessageError{"Unable to parse fuel hours: " + args[12]}
 	}
-	if fp.fuelMinutes, err = strconv.Atoi(args[13]); err != nil {
+	if fp.FuelMinutes, err = strconv.Atoi(args[13]); err != nil {
 		return MalformedMessageError{"Unable to parse fuel minutes: " + args[13]}
 	}
 
-	fp.alternate = args[14]
-	fp.remarks = args[15]
-	fp.route = args[16]
+	fp.AlternateAirport = args[14]
+	fp.Remarks = args[15]
+	fp.Route = args[16]
 
 	ac := v.getOrCreateAircraft(sender)
 	ac.flightPlan = &fp
 
-	if strings.Contains(fp.remarks, "/v/") || strings.Contains(fp.remarks, "/V/") {
+	if strings.Contains(fp.Remarks, "/v/") || strings.Contains(fp.Remarks, "/V/") {
 		ac.voiceCapability = VoiceFull
-	} else if strings.Contains(fp.remarks, "/r/") || strings.Contains(fp.remarks, "/R/") {
+	} else if strings.Contains(fp.Remarks, "/r/") || strings.Contains(fp.Remarks, "/R/") {
 		ac.voiceCapability = VoiceReceive
-	} else if strings.Contains(fp.remarks, "/t/") || strings.Contains(fp.remarks, "/T/") {
+	} else if strings.Contains(fp.Remarks, "/t/") || strings.Contains(fp.Remarks, "/T/") {
 		ac.voiceCapability = VoiceText
 	}
 
@@ -411,7 +411,7 @@ func (v *VATSIMServer) altitudeAssigned(strs []string, csIndex int, altIndex int
 		return MalformedMessageError{"invalid altitude: " + strs[altIndex]}
 	} else if ac := v.GetAircraft(callsign); ac != nil && ac.flightPlan != nil {
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		ac.flightPlan.altitude = alt
+		ac.flightPlan.Altitude = alt
 	}
 	return nil
 }

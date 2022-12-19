@@ -150,19 +150,19 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	rules                  FlightRules
-	actype                 string
-	cruiseSpeed            int
-	depart                 string
-	departTimeEst          int
-	departTimeActual       int
-	altitude               int
-	arrive                 string
-	hours, minutes         int
-	fuelHours, fuelMinutes int
-	alternate              string
-	route                  string
-	remarks                string
+	Rules                  FlightRules
+	AircraftType           string
+	CruiseSpeed            int
+	DepartureAirport       string
+	DepartTimeEst          int
+	DepartTimeActual       int
+	Altitude               int
+	ArrivalAirport         string
+	Hours, Minutes         int
+	FuelHours, FuelMinutes int
+	AlternateAirport       string
+	Route                  string
+	Remarks                string
 }
 
 type FlightStrip struct {
@@ -469,7 +469,7 @@ func (a *Aircraft) OnGround() bool {
 	}
 
 	if a.flightPlan != nil {
-		for _, airport := range [2]string{a.flightPlan.depart, a.flightPlan.arrive} {
+		for _, airport := range [2]string{a.flightPlan.DepartureAirport, a.flightPlan.ArrivalAirport} {
 			if ap, ok := database.FAA.airports[airport]; ok {
 				heightAGL := abs(a.Altitude() - ap.Elevation)
 				return heightAGL < 100
@@ -499,12 +499,12 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 		}
 		write("\t")
 		nbsp := "\u00a0" // non-breaking space; wrapText honors these
-		write("rules:" + nbsp + plan.rules.String() + "\t")
-		write("a/c:" + nbsp + plan.actype + "\t")
-		write("dep/arr:" + nbsp + plan.depart + "-" + plan.arrive + nbsp + "(" + plan.alternate + ")\n")
+		write("rules:" + nbsp + plan.Rules.String() + "\t")
+		write("a/c:" + nbsp + plan.AircraftType + "\t")
+		write("dep/arr:" + nbsp + plan.DepartureAirport + "-" + plan.ArrivalAirport + nbsp + "(" + plan.AlternateAirport + ")\n")
 
 		write("\t")
-		write("alt:" + nbsp + nbsp + nbsp + fmt.Sprintf("%d", plan.altitude))
+		write("alt:" + nbsp + nbsp + nbsp + fmt.Sprintf("%d", plan.Altitude))
 		if a.tempAltitude != 0 {
 			write(fmt.Sprintf(nbsp+"(%d)", a.tempAltitude))
 		}
@@ -520,9 +520,9 @@ func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string,
 			indent += 1 + len(a.voiceCapability.String())
 		}
 		indstr := fmt.Sprintf("%*c", indent, ' ')
-		contents = contents + indstr + "route:" + nbsp + plan.route + "\n"
+		contents = contents + indstr + "route:" + nbsp + plan.Route + "\n"
 		if includeRemarks {
-			contents = contents + indstr + "rmks:" + nbsp + nbsp + plan.remarks + "\n"
+			contents = contents + indstr + "rmks:" + nbsp + nbsp + plan.Remarks + "\n"
 		}
 
 		return contents, indent
@@ -541,7 +541,7 @@ func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 
 
 func (fp FlightPlan) TypeWithoutSuffix() string {
 	// try to chop off equipment suffix
-	actypeFields := strings.Split(fp.actype, "/")
+	actypeFields := strings.Split(fp.AircraftType, "/")
 	switch len(actypeFields) {
 	case 3:
 		// Heavy (presumably), with suffix
@@ -556,7 +556,7 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 		}
 	default:
 		// Who knows, so leave it alone
-		return fp.actype
+		return fp.AircraftType
 	}
 }
 
@@ -571,14 +571,14 @@ func GetConflicts(aircraft []*Aircraft, rangeLimits [NumRangeTypes]RangeLimits) 
 			ac2 := aircraft[j]
 
 			var r RangeLimits
-			if ac1.flightPlan != nil && ac1.flightPlan.rules == IFR {
-				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
+			if ac1.flightPlan != nil && ac1.flightPlan.Rules == IFR {
+				if ac2.flightPlan != nil && ac2.flightPlan.Rules == IFR {
 					r = rangeLimits[IFR_IFR]
 				} else {
 					r = rangeLimits[IFR_VFR]
 				}
 			} else {
-				if ac2.flightPlan != nil && ac2.flightPlan.rules == IFR {
+				if ac2.flightPlan != nil && ac2.flightPlan.Rules == IFR {
 					r = rangeLimits[IFR_VFR]
 				} else {
 					r = rangeLimits[VFR_VFR]

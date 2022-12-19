@@ -263,7 +263,7 @@ func (v *VATSIMServer) SetSquawkAutomatic(callsign string) error {
 		return ErrNotController
 	} else if ac := v.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
-	} else if ac.flightPlan == nil || ac.flightPlan.rules != IFR {
+	} else if ac.flightPlan == nil || ac.flightPlan.Rules != IFR {
 		return errors.New("non-IFR squawk codes must be set manually")
 	} else {
 		if c, ok := v.controllers[v.callsign]; !ok {
@@ -347,20 +347,20 @@ func (v *VATSIMServer) SetVoiceType(callsign string, cap VoiceCapability) error 
 		err2 := amendFlightPlan(callsign, func(fp *FlightPlan) {
 			voiceStr := "/" + cap.String() + "/"
 			// Is the voice type already in the remarks?
-			if strings.Contains(fp.remarks, voiceStr) {
+			if strings.Contains(fp.Remarks, voiceStr) {
 				return
 			}
 
 			// Remove any existing voice type
-			fp.remarks = strings.ReplaceAll(fp.remarks, "/v/", "")
-			fp.remarks = strings.ReplaceAll(fp.remarks, "/V/", "")
-			fp.remarks = strings.ReplaceAll(fp.remarks, "/r/", "")
-			fp.remarks = strings.ReplaceAll(fp.remarks, "/R/", "")
-			fp.remarks = strings.ReplaceAll(fp.remarks, "/t/", "")
-			fp.remarks = strings.ReplaceAll(fp.remarks, "/T/", "")
+			fp.Remarks = strings.ReplaceAll(fp.Remarks, "/v/", "")
+			fp.Remarks = strings.ReplaceAll(fp.Remarks, "/V/", "")
+			fp.Remarks = strings.ReplaceAll(fp.Remarks, "/r/", "")
+			fp.Remarks = strings.ReplaceAll(fp.Remarks, "/R/", "")
+			fp.Remarks = strings.ReplaceAll(fp.Remarks, "/t/", "")
+			fp.Remarks = strings.ReplaceAll(fp.Remarks, "/T/", "")
 
 			// And insert the one that was set
-			fp.remarks += " " + voiceStr
+			fp.Remarks += " " + voiceStr
 		})
 
 		if err2 != nil {

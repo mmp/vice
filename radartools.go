@@ -634,7 +634,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 			datablock.WriteString(ac.squawk.String())
 		} else {
 			datablock.WriteString(fmt.Sprintf("%02d", speed))
-			if fp.rules == VFR {
+			if fp.Rules == VFR {
 				datablock.WriteString("V")
 			}
 		}
@@ -645,9 +645,9 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		// destination and a/c type then just always show this rather than
 		// flashing a blank line.
 		datablock.WriteString("\n")
-		if flashcycle&1 == 0 || (fp.arrive == "" && actype == "") {
+		if flashcycle&1 == 0 || (fp.ArrivalAirport == "" && actype == "") {
 			datablock.WriteString(fmt.Sprintf("%03d %02d", alt100s, (speed+5)/10))
-			if fp.rules == VFR {
+			if fp.Rules == VFR {
 				datablock.WriteString("V")
 			}
 		} else {
@@ -657,11 +657,11 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 				if ac.scratchpad != "" {
 					datablock.WriteString(ac.scratchpad)
 				} else {
-					datablock.WriteString(fp.arrive)
+					datablock.WriteString(fp.ArrivalAirport)
 				}
 			} else {
 				// Second field is the altitude
-				datablock.WriteString(fmt.Sprintf("%03d", fp.altitude/100))
+				datablock.WriteString(fmt.Sprintf("%03d", fp.Altitude/100))
 			}
 
 			datablock.WriteString("*")
@@ -686,8 +686,8 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		altAnnotation := " "
 		if ac.tempAltitude != 0 && abs(ac.Altitude()-ac.tempAltitude) < 300 {
 			altAnnotation = "T "
-		} else if ac.flightPlan.altitude != 0 &&
-			abs(ac.Altitude()-ac.flightPlan.altitude) < 300 {
+		} else if ac.flightPlan.Altitude != 0 &&
+			abs(ac.Altitude()-ac.flightPlan.Altitude) < 300 {
 			altAnnotation = "C "
 		} else if ascending {
 			altAnnotation = FontAwesomeIconArrowUp + " "
@@ -725,11 +725,11 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 				} else if ac.tempAltitude != 0 {
 					datablock.WriteString(fmt.Sprintf("%03dT", ac.tempAltitude/100))
 				} else {
-					datablock.WriteString(fmt.Sprintf("%03d", fp.altitude/100))
+					datablock.WriteString(fmt.Sprintf("%03d", fp.Altitude/100))
 				}
 			} else {
-				if fp.arrive != "" {
-					datablock.WriteString(fp.arrive)
+				if fp.ArrivalAirport != "" {
+					datablock.WriteString(fp.ArrivalAirport)
 				} else {
 					datablock.WriteString("????")
 				}
@@ -740,7 +740,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		// Line 3: a/c type and groundspeed
 		datablock.WriteString(actype)
 		datablock.WriteString(fmt.Sprintf("%03d", (speed+5)/10*10))
-		if fp.rules == VFR {
+		if fp.Rules == VFR {
 			datablock.WriteString("V")
 		}
 
