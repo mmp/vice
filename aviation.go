@@ -113,7 +113,7 @@ func (c *Controller) GetPosition() *Position {
 	}
 
 	for i, pos := range database.positions[callsign] {
-		if pos.frequency == c.Frequency {
+		if pos.Frequency == c.Frequency {
 			return &database.positions[callsign][i]
 		}
 	}
@@ -128,11 +128,11 @@ type Pilot struct {
 }
 
 type RadarTrack struct {
-	position    Point2LL
-	altitude    int
-	groundspeed int
-	heading     float32
-	time        time.Time
+	Position    Point2LL
+	Altitude    int
+	Groundspeed int
+	Heading     float32
+	Time        time.Time
 }
 
 type FlightRules int
@@ -291,13 +291,13 @@ type Callsign struct {
 }
 
 type Position struct {
-	name                  string // e.g., Kennedy Local 1
-	callsign              string // e.g., Kennedy Tower
-	frequency             Frequency
-	sectorId              string // For handoffs, etc--e.g., 2W
-	scope                 string // For tracked a/c on the scope--e.g., T
-	id                    string // e.g. JFK_TWR
-	lowSquawk, highSquawk Squawk
+	Name                  string // e.g., Kennedy Local 1
+	Callsign              string // e.g., Kennedy Tower
+	Frequency             Frequency
+	SectorId              string // For handoffs, etc--e.g., 2W
+	Scope                 string // For tracked a/c on the scope--e.g., T
+	Id                    string // e.g. JFK_TWR
+	LowSquawk, HighSquawk Squawk
 }
 
 type User struct {
@@ -320,17 +320,17 @@ func (v VoiceCapability) String() string {
 }
 
 func (a *Aircraft) Altitude() int {
-	return a.tracks[0].altitude
+	return a.tracks[0].Altitude
 }
 
 // Reported in feet per minute
 func (a *Aircraft) AltitudeChange() int {
-	if a.tracks[0].position.IsZero() || a.tracks[1].position.IsZero() {
+	if a.tracks[0].Position.IsZero() || a.tracks[1].Position.IsZero() {
 		return 0
 	}
 
-	dt := a.tracks[0].time.Sub(a.tracks[1].time)
-	return int(float64(a.tracks[0].altitude-a.tracks[1].altitude) / dt.Minutes())
+	dt := a.tracks[0].Time.Sub(a.tracks[1].Time)
+	return int(float64(a.tracks[0].Altitude-a.tracks[1].Altitude) / dt.Minutes())
 }
 
 func (a *Aircraft) HaveTrack() bool {
@@ -338,7 +338,7 @@ func (a *Aircraft) HaveTrack() bool {
 }
 
 func (a *Aircraft) Position() Point2LL {
-	return a.tracks[0].position
+	return a.tracks[0].Position
 }
 
 func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
@@ -350,16 +350,16 @@ func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 			// doing this often...)
 			steps := 1 + idx - len(a.tracks)
 			last := len(a.tracks) - 1
-			v := sub2ll(a.tracks[last].position, a.tracks[last-1].position)
-			return add2ll(a.tracks[last].position, scale2ll(v, float32(steps)))
+			v := sub2ll(a.tracks[last].Position, a.tracks[last-1].Position)
+			return add2ll(a.tracks[last].Position, scale2ll(v, float32(steps)))
 		}
 		for idx > 0 {
-			if !a.tracks[idx].position.IsZero() {
+			if !a.tracks[idx].Position.IsZero() {
 				break
 			}
 			idx--
 		}
-		return a.tracks[idx].position
+		return a.tracks[idx].Position
 	}
 
 	if t < 0 {
@@ -391,7 +391,7 @@ func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 }
 
 func (a *Aircraft) GroundSpeed() int {
-	return a.tracks[0].groundspeed
+	return a.tracks[0].Groundspeed
 }
 
 // Note: returned value includes the magnetic correction
@@ -409,7 +409,7 @@ func (a *Aircraft) HeadingVector() Point2LL {
 		return Point2LL{}
 	}
 
-	p0, p1 := a.tracks[0].position, a.tracks[1].position
+	p0, p1 := a.tracks[0].Position, a.tracks[1].Position
 	v := sub2ll(p0, p1)
 	nm := nmlength2ll(v)
 	// v's length should be groundspeed / 60 nm.
@@ -417,14 +417,14 @@ func (a *Aircraft) HeadingVector() Point2LL {
 }
 
 func (a *Aircraft) HaveHeading() bool {
-	return !a.tracks[0].position.IsZero() && !a.tracks[1].position.IsZero()
+	return !a.tracks[0].Position.IsZero() && !a.tracks[1].Position.IsZero()
 }
 
 func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
 	if !a.HaveHeading() {
 		return Point2LL{}
 	}
-	t := float32(time.Since(a.tracks[0].time).Seconds()) - lag
+	t := float32(time.Since(a.tracks[0].Time).Seconds()) - lag
 	return sub2ll(a.InterpolatedPosition(t+.5), a.InterpolatedPosition(t-0.5))
 }
 
@@ -435,7 +435,7 @@ func (a *Aircraft) HeadingTo(p Point2LL) float32 {
 func (a *Aircraft) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
-	return !a.tracks[0].position.IsZero() && now.Sub(a.tracks[0].time) > 30*time.Second
+	return !a.tracks[0].Position.IsZero() && now.Sub(a.tracks[0].Time) > 30*time.Second
 }
 
 func (a *Aircraft) AddTrack(t RadarTrack) {

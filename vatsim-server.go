@@ -275,7 +275,7 @@ func (v *VATSIMServer) SetSquawkAutomatic(callsign string) error {
 				return errors.New("Radio must be primed to assign squawk codes")
 			}
 
-			if pos.lowSquawk == pos.highSquawk {
+			if pos.LowSquawk == pos.HighSquawk {
 				return errors.New("Current position has not been assigned a squawk code range")
 			}
 
@@ -290,16 +290,16 @@ func (v *VATSIMServer) SetSquawkAutomatic(callsign string) error {
 
 			// Start at a random point in the range and then go linearly from
 			// there.
-			n := int(pos.highSquawk - pos.lowSquawk)
+			n := int(pos.HighSquawk - pos.LowSquawk)
 			offset := rand.Int() % n
 			for i := 0; i < n; i++ {
-				sq := pos.lowSquawk + Squawk((i+offset)%n)
+				sq := pos.LowSquawk + Squawk((i+offset)%n)
 				if squawkUnused(sq) {
 					return v.SetSquawk(callsign, sq)
 				}
 			}
 			return fmt.Errorf("No free squawk codes between %s and %s(!)",
-				pos.lowSquawk, pos.highSquawk)
+				pos.LowSquawk, pos.HighSquawk)
 		}
 	}
 }
@@ -576,7 +576,7 @@ func (v *VATSIMServer) GetUpdates() {
 	// Clean up anyone who we haven't heard from in 30 minutes
 	now := v.CurrentTime()
 	for callsign, ac := range v.aircraft {
-		if now.Sub(ac.tracks[0].time).Minutes() > 30. {
+		if now.Sub(ac.tracks[0].Time).Minutes() > 30. {
 			delete(v.aircraft, callsign)
 			eventStream.Post(&RemovedAircraftEvent{ac: ac})
 		}

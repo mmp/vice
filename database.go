@@ -795,15 +795,15 @@ func parsePositionFile(filename string) (map[string][]Position, error) {
 
 		id := fields[5] + "_" + fields[6]
 		p := Position{
-			name:      fields[0],
-			callsign:  fields[1],
-			frequency: NewFrequency(float32(frequency)),
-			sectorId:  fields[3],
-			scope:     fields[4],
-			id:        id,
+			Name:      fields[0],
+			Callsign:  fields[1],
+			Frequency: NewFrequency(float32(frequency)),
+			SectorId:  fields[3],
+			Scope:     fields[4],
+			Id:        id,
 			// ignore fields 7/8
-			lowSquawk:  Squawk(lowSquawk),
-			highSquawk: Squawk(highSquawk)}
+			LowSquawk:  Squawk(lowSquawk),
+			HighSquawk: Squawk(highSquawk)}
 
 		m[id] = append(m[id], p)
 	}

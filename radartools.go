@@ -395,7 +395,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 	pi := ll2nm(pIntersect)
 	for i, t := range ghost.tracks {
 		// Vector from the intersection point to the track location
-		v := sub2f(ll2nm(t.position), pi)
+		v := sub2f(ll2nm(t.Position), pi)
 
 		// For tie mode, offset further by the specified distance.
 		if c.Mode == CRDAModeTie {
@@ -411,7 +411,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		pr := add2f(pi, vr)
 
 		// TODO: offset it as appropriate
-		ghost.tracks[i].position = nm2ll(pr)
+		ghost.tracks[i].Position = nm2ll(pr)
 	}
 	return &ghost
 }

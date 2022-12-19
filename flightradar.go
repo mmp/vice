@@ -259,9 +259,10 @@ func (fr *FlightRadarServer) GetUpdates() {
 					lg.Errorf("Error parsing squawk \"%s\": %v", f.squawkCode, err)
 				}
 				pos := RadarTrack{
-					position: Point2LL{f.longitude, f.latitude},
-					altitude: f.altitude, groundspeed: f.speed,
-					time: time.Now()}
+					Position:    Point2LL{f.longitude, f.latitude},
+					Altitude:    f.altitude,
+					Groundspeed: f.speed,
+					Time:        time.Now()}
 
 				var ac *Aircraft
 				var ok bool

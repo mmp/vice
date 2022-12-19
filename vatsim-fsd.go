@@ -306,11 +306,11 @@ func handleAt(v *VATSIMServer, trmode string, args []string) error {
 	ac.squawk = squawk
 	ac.mode = mode
 	ac.AddTrack(RadarTrack{
-		position:    latlong,
-		altitude:    int(altitude),
-		groundspeed: int(groundspeed),
-		heading:     heading,
-		time:        v.CurrentTime()})
+		Position:    latlong,
+		Altitude:    int(altitude),
+		Groundspeed: int(groundspeed),
+		Heading:     heading,
+		Time:        v.CurrentTime()})
 
 	return nil
 }
@@ -349,7 +349,7 @@ func handlePct(v *VATSIMServer, sender string, args []string) error {
 
 	if ctrl, ok := v.controllers[sender]; ok {
 		if pos := ctrl.GetPosition(); pos != nil {
-			delete(v.controllerSectors, pos.sectorId)
+			delete(v.controllerSectors, pos.SectorId)
 		}
 	}
 
@@ -363,7 +363,7 @@ func handlePct(v *VATSIMServer, sender string, args []string) error {
 	v.controllers[sender] = ctrl
 
 	if pos := ctrl.GetPosition(); pos != nil {
-		v.controllerSectors[pos.sectorId] = ctrl
+		v.controllerSectors[pos.SectorId] = ctrl
 	}
 
 	return nil
@@ -659,7 +659,7 @@ func init() {
 	r(NewMessageSpec("#DA", 1, func(v *VATSIMServer, sender string, args []string) error {
 		if ctrl, ok := v.controllers[sender]; ok {
 			if pos := ctrl.GetPosition(); pos != nil {
-				delete(v.controllerSectors, pos.sectorId)
+				delete(v.controllerSectors, pos.SectorId)
 			}
 			delete(v.controllers, sender)
 		}

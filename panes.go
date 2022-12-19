@@ -617,7 +617,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				}
 
 				if pos := ctrl.GetPosition(); pos != nil {
-					str.WriteString(fmt.Sprintf(" %-3s %s", pos.sectorId, pos.scope))
+					str.WriteString(fmt.Sprintf(" %-3s %s", pos.SectorId, pos.Scope))
 				}
 				str.WriteString("\n")
 			}

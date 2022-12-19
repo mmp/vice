@@ -144,7 +144,7 @@ func (*ControllerCommandArg) Expand(s string) (string, error) {
 		// fairly arbitrary/obscure.
 		ok := strings.Contains(ctrl.Callsign, s) && ctrl.Callsign != server.Callsign()
 		if pos := ctrl.GetPosition(); pos != nil {
-			ok = ok || pos.sectorId == s
+			ok = ok || pos.SectorId == s
 		}
 
 		if ok {

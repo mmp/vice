@@ -708,7 +708,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 			x := float32(i-1) / (1e-6 + float32(2*(rs.RadarTracksDrawn-1))) // 0 <= x <= 0.5
 			trackColor := lerpRGB(x, color, ctx.cs.Background)
 
-			p := ac.tracks[i-1].position
+			p := ac.tracks[i-1].Position
 			pw := transforms.WindowFromLatLongP(p)
 
 			px := float32(3) // TODO: make configurable?
@@ -733,7 +733,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 				ch := "?"
 				if ctrl := server.GetController(ac.trackingController); ctrl != nil {
 					if pos := ctrl.GetPosition(); pos != nil {
-						ch = pos.scope
+						ch = pos.Scope
 					}
 				}
 				td.AddTextCentered(ch, pw, TextStyle{Font: rs.datablockFont, Color: trackColor})
