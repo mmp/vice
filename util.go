@@ -232,6 +232,46 @@ func lerp(x, a, b float32) float32 {
 ///////////////////////////////////////////////////////////////////////////
 // headings and directions
 
+type CardinalOrdinalDirection int
+
+const (
+	North = iota
+	NorthEast
+	East
+	SouthEast
+	South
+	SouthWest
+	West
+	NorthWest
+)
+
+func (co CardinalOrdinalDirection) Heading() float32 {
+	return float32(co) * 45
+}
+
+func (co CardinalOrdinalDirection) ShortString() string {
+	switch co {
+	case North:
+		return "N"
+	case NorthEast:
+		return "NE"
+	case East:
+		return "E"
+	case SouthEast:
+		return "SE"
+	case South:
+		return "S"
+	case SouthWest:
+		return "SW"
+	case West:
+		return "W"
+	case NorthWest:
+		return "NW"
+	default:
+		return "ERROR"
+	}
+}
+
 // headingp2ll returns the heading from the point |from| to the point |to|
 // in degrees.  The provided points should be in latitude-longitude
 // coordinates and the provided magnetic correction is applied to the
