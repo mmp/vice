@@ -520,7 +520,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	height := ctx.paneExtent.Height()
 	label := rs.ScopeName
 	if *devmode && ctx.mouse != nil {
-		mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.pos)
+		mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 		label += "\nMouse position: " + mouseLatLong.DDString() + " " + mouseLatLong.DMSString()
 	}
 	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
@@ -1373,16 +1373,16 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 		return
 	}
 
-	if UpdateScopePosition(ctx.mouse, mouseButtonSecondary, transforms, &rs.Center, &rs.Range) && rs.DrawWeather {
+	if UpdateScopePosition(ctx.mouse, MouseButtonSecondary, transforms, &rs.Center, &rs.Range) && rs.DrawWeather {
 		rs.WeatherRadar.UpdateCenter(rs.Center)
 	}
 
 	if rs.acSelectedByDatablock != nil {
-		if ctx.mouse.dragging[mouseButtonPrimary] {
+		if ctx.mouse.Dragging[MouseButtonPrimary] {
 			ac := rs.acSelectedByDatablock
 			state := rs.aircraft[ac]
 			state.datablockManualOffset =
-				add2f(state.datablockAutomaticOffset, add2f(state.datablockManualOffset, ctx.mouse.dragDelta))
+				add2f(state.datablockAutomaticOffset, add2f(state.datablockManualOffset, ctx.mouse.DragDelta))
 			state.datablockAutomaticOffset = [2]float32{0, 0}
 		} else {
 			rs.acSelectedByDatablock = nil
@@ -1390,10 +1390,10 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 	}
 
 	// Update selected aircraft
-	if ctx.mouse.clicked[mouseButtonPrimary] {
+	if ctx.mouse.Clicked[MouseButtonPrimary] {
 		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) {
 			// copy current mouse lat-long to the clipboard
-			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.pos)
+			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			platform.GetClipboard().SetText(mouseLatLong.DMSString())
 		}
 
@@ -1403,7 +1403,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 		// Allow clicking on any track
 		for ac := range rs.aircraft {
 			pw := transforms.WindowFromLatLongP(ac.Position())
-			dist := distance2f(pw, ctx.mouse.pos)
+			dist := distance2f(pw, ctx.mouse.Pos)
 
 			if dist < clickedDistance {
 				clickedAircraft = ac
@@ -1420,7 +1420,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 
 			pw := transforms.WindowFromLatLongP(ac.Position())
 			db := state.WindowDatablockBounds(pw)
-			if db.Inside(ctx.mouse.pos) {
+			if db.Inside(ctx.mouse.Pos) {
 				rs.acSelectedByDatablock = ac
 				clickedAircraft = ac
 				break

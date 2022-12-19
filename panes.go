@@ -48,21 +48,21 @@ type PaneContext struct {
 }
 
 type MouseState struct {
-	pos           [2]float32
-	down          [mouseButtonCount]bool
-	clicked       [mouseButtonCount]bool
-	released      [mouseButtonCount]bool
-	doubleClicked [mouseButtonCount]bool
-	dragging      [mouseButtonCount]bool
-	dragDelta     [2]float32
-	wheel         [2]float32
+	Pos           [2]float32
+	Down          [MouseButtonCount]bool
+	Clicked       [MouseButtonCount]bool
+	Released      [MouseButtonCount]bool
+	DoubleClicked [MouseButtonCount]bool
+	Dragging      [MouseButtonCount]bool
+	DragDelta     [2]float32
+	Wheel         [2]float32
 }
 
 const (
-	mouseButtonPrimary   = 0
-	mouseButtonSecondary = 1
-	mouseButtonTertiary  = 2
-	mouseButtonCount     = 3
+	MouseButtonPrimary   = 0
+	MouseButtonSecondary = 1
+	MouseButtonTertiary  = 2
+	MouseButtonCount     = 3
 )
 
 func (ctx *PaneContext) InitializeMouse(fullDisplayExtent Extent2D) {
@@ -74,23 +74,23 @@ func (ctx *PaneContext) InitializeMouse(fullDisplayExtent Extent2D) {
 	// current pane.  Further, it has (0,0) in the upper left corner of the
 	// window, so we need to flip y w.r.t. the full window resolution.
 	pos := imgui.MousePos()
-	ctx.mouse.pos[0] = pos.X - ctx.paneExtent.p0[0]
-	ctx.mouse.pos[1] = fullDisplayExtent.p1[1] - 1 - ctx.paneExtent.p0[1] - pos.Y
+	ctx.mouse.Pos[0] = pos.X - ctx.paneExtent.p0[0]
+	ctx.mouse.Pos[1] = fullDisplayExtent.p1[1] - 1 - ctx.paneExtent.p0[1] - pos.Y
 
 	io := imgui.CurrentIO()
 	wx, wy := io.MouseWheel()
-	ctx.mouse.wheel = [2]float32{wx, -wy}
+	ctx.mouse.Wheel = [2]float32{wx, -wy}
 
-	for b := 0; b < mouseButtonCount; b++ {
-		ctx.mouse.down[b] = imgui.IsMouseDown(b)
-		ctx.mouse.released[b] = imgui.IsMouseReleased(b)
-		ctx.mouse.clicked[b] = imgui.IsMouseClicked(b)
-		ctx.mouse.doubleClicked[b] = imgui.IsMouseDoubleClicked(b)
-		ctx.mouse.dragging[b] = imgui.IsMouseDragging(b, 0)
-		if ctx.mouse.dragging[b] {
+	for b := 0; b < MouseButtonCount; b++ {
+		ctx.mouse.Down[b] = imgui.IsMouseDown(b)
+		ctx.mouse.Released[b] = imgui.IsMouseReleased(b)
+		ctx.mouse.Clicked[b] = imgui.IsMouseClicked(b)
+		ctx.mouse.DoubleClicked[b] = imgui.IsMouseDoubleClicked(b)
+		ctx.mouse.Dragging[b] = imgui.IsMouseDragging(b, 0)
+		if ctx.mouse.Dragging[b] {
 			delta := imgui.MouseDragDelta(b, 0.)
 			// Negate y to go to pane coordinates
-			ctx.mouse.dragDelta = [2]float32{delta.X, -delta.Y}
+			ctx.mouse.DragDelta = [2]float32{delta.X, -delta.Y}
 			imgui.ResetMouseDragDelta(b)
 		}
 	}
@@ -130,80 +130,76 @@ const (
 )
 
 type KeyboardState struct {
-	input   string
-	pressed map[Key]interface{}
+	Input   string
+	Pressed map[Key]interface{}
 }
 
 func NewKeyboardState() *KeyboardState {
-	keyboard := &KeyboardState{pressed: make(map[Key]interface{})}
+	keyboard := &KeyboardState{Pressed: make(map[Key]interface{})}
 
-	keyboard.input = platform.InputCharacters()
+	keyboard.Input = platform.InputCharacters()
 
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
-		keyboard.pressed[KeyEnter] = nil
+		keyboard.Pressed[KeyEnter] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
-		keyboard.pressed[KeyDownArrow] = nil
+		keyboard.Pressed[KeyDownArrow] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
-		keyboard.pressed[KeyUpArrow] = nil
+		keyboard.Pressed[KeyUpArrow] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
-		keyboard.pressed[KeyLeftArrow] = nil
+		keyboard.Pressed[KeyLeftArrow] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
-		keyboard.pressed[KeyRightArrow] = nil
+		keyboard.Pressed[KeyRightArrow] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
-		keyboard.pressed[KeyHome] = nil
+		keyboard.Pressed[KeyHome] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
-		keyboard.pressed[KeyEnd] = nil
+		keyboard.Pressed[KeyEnd] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
-		keyboard.pressed[KeyBackspace] = nil
+		keyboard.Pressed[KeyBackspace] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
-		keyboard.pressed[KeyDelete] = nil
+		keyboard.Pressed[KeyDelete] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
-		keyboard.pressed[KeyEscape] = nil
+		keyboard.Pressed[KeyEscape] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
-		keyboard.pressed[KeyTab] = nil
+		keyboard.Pressed[KeyTab] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageUp)) {
-		keyboard.pressed[KeyPageUp] = nil
+		keyboard.Pressed[KeyPageUp] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
-		keyboard.pressed[KeyPageDown] = nil
+		keyboard.Pressed[KeyPageDown] = nil
 	}
 	const ImguiF1 = 290
 	for i := 0; i < 12; i++ {
 		if imgui.IsKeyPressed(ImguiF1 + i) {
-			keyboard.pressed[Key(int(KeyF1)+i)] = nil
+			keyboard.Pressed[Key(int(KeyF1)+i)] = nil
 		}
 	}
 	io := imgui.CurrentIO()
 	if io.KeyShiftPressed() {
-		keyboard.pressed[KeyShift] = nil
+		keyboard.Pressed[KeyShift] = nil
 	}
 	if io.KeyCtrlPressed() {
-		keyboard.pressed[KeyControl] = nil
+		keyboard.Pressed[KeyControl] = nil
 	}
 	if io.KeyAltPressed() {
-		keyboard.pressed[KeyAlt] = nil
+		keyboard.Pressed[KeyAlt] = nil
 	}
 
 	return keyboard
 }
 
-func (k *KeyboardState) Input() string {
-	return k.input
-}
-
 func (k *KeyboardState) IsPressed(key Key) bool {
-	_, ok := k.pressed[key]
+	_, ok := k.Pressed[key]
 	return ok
 }
 
@@ -816,10 +812,10 @@ func (nv *NotesViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			_, expanded := nv.expanded[node]
 
 			hovered := func() bool {
-				return ctx.mouse != nil && ctx.mouse.pos[1] < float32(y) && ctx.mouse.pos[1] >= float32(y-lineHeight)
+				return ctx.mouse != nil && ctx.mouse.Pos[1] < float32(y) && ctx.mouse.Pos[1] >= float32(y-lineHeight)
 			}
 			mouseReleased := func() bool {
-				return hovered() && ctx.mouse.released[0]
+				return hovered() && ctx.mouse.Released[0]
 			}
 
 			if hovered() {
@@ -1110,13 +1106,13 @@ func (rp *ReminderPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		x += bx
 	}
 	hovered := func() bool {
-		return ctx.mouse != nil && ctx.mouse.pos[1] < float32(y) && ctx.mouse.pos[1] >= float32(y-lineHeight)
+		return ctx.mouse != nil && ctx.mouse.Pos[1] < float32(y) && ctx.mouse.Pos[1] >= float32(y-lineHeight)
 	}
 	buttonDown := func() bool {
-		return hovered() && ctx.mouse.down[0]
+		return hovered() && ctx.mouse.Down[0]
 	}
 	released := func() bool {
-		return hovered() && ctx.mouse.released[0]
+		return hovered() && ctx.mouse.Released[0]
 	}
 
 	var items []ReminderItem
@@ -1566,9 +1562,9 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Handle selection, deletion, and reordering
 	if ctx.mouse != nil {
 		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
-		if ctx.mouse.clicked[mouseButtonPrimary] && ctx.mouse.pos[0] <= drawWidth {
+		if ctx.mouse.Clicked[MouseButtonPrimary] && ctx.mouse.Pos[0] <= drawWidth {
 			// from the bottom
-			stripIndex := int(ctx.mouse.pos[1] / stripHeight)
+			stripIndex := int(ctx.mouse.Pos[1] / stripHeight)
 			stripIndex += scrollOffset
 			if stripIndex < len(fsp.strips) {
 				io := imgui.CurrentIO()
@@ -1583,18 +1579,18 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				}
 			}
 		}
-		if ctx.mouse.dragging[mouseButtonPrimary] {
+		if ctx.mouse.Dragging[MouseButtonPrimary] {
 			fsp.mouseDragging = true
-			fsp.lastMousePos = ctx.mouse.pos
+			fsp.lastMousePos = ctx.mouse.Pos
 
 			// Offset so that the selection region is centered over the
 			// line between two strips; the index then is to the lower one.
-			splitIndex := int(ctx.mouse.pos[1]/stripHeight + 0.5)
+			splitIndex := int(ctx.mouse.Pos[1]/stripHeight + 0.5)
 			yl := float32(splitIndex) * stripHeight
 			selectionLd.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
 		}
 	}
-	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.dragging[mouseButtonPrimary]) {
+	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[MouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
 		if positionConfig.selectedAircraft == nil {
@@ -1637,17 +1633,17 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 	// Take focus if the user clicks in the annotations
-	if ctx.mouse != nil && ctx.mouse.clicked[mouseButtonPrimary] {
+	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
 		annotationStartX := drawWidth - 3*widthAnn
-		if xp := ctx.mouse.pos[0]; xp >= annotationStartX && xp < drawWidth {
-			stripIndex := int(ctx.mouse.pos[1]/stripHeight) + scrollOffset
+		if xp := ctx.mouse.Pos[0]; xp >= annotationStartX && xp < drawWidth {
+			stripIndex := int(ctx.mouse.Pos[1]/stripHeight) + scrollOffset
 			if stripIndex < len(fsp.strips) {
 				wmTakeKeyboardFocus(fsp, true)
 				fsp.selectedStrip = stripIndex
 
 				// Figure out which annotation was selected
-				xa := int(ctx.mouse.pos[0]-annotationStartX) / int(widthAnn)
-				ya := 2 - (int(ctx.mouse.pos[1])%int(stripHeight))/(int(stripHeight)/3)
+				xa := int(ctx.mouse.Pos[0]-annotationStartX) / int(widthAnn)
+				ya := 2 - (int(ctx.mouse.Pos[1])%int(stripHeight))/(int(stripHeight)/3)
 				xa, ya = clamp(xa, 0, 2), clamp(ya, 0, 2) // just in case
 				fsp.selectedAnnotation = 3*ya + xa
 

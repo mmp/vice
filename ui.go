@@ -1555,15 +1555,15 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 		}
 
 		if ctx.mouse != nil {
-			sb.offset += int(sign * ctx.mouse.wheel[1])
+			sb.offset += int(sign * ctx.mouse.Wheel[1])
 
-			if ctx.mouse.clicked[0] {
-				sb.mouseClickedInBar = ctx.mouse.pos[0] >= ctx.paneExtent.Width()-float32(sb.Width())
+			if ctx.mouse.Clicked[0] {
+				sb.mouseClickedInBar = ctx.mouse.Pos[0] >= ctx.paneExtent.Width()-float32(sb.Width())
 				sb.accumDrag = 0
 			}
 
-			if ctx.mouse.dragging[0] && sb.mouseClickedInBar {
-				sb.accumDrag += -sign * ctx.mouse.dragDelta[1] * float32(sb.nItems) / ctx.paneExtent.Height()
+			if ctx.mouse.Dragging[0] && sb.mouseClickedInBar {
+				sb.accumDrag += -sign * ctx.mouse.DragDelta[1] * float32(sb.nItems) / ctx.paneExtent.Height()
 				if abs(sb.accumDrag) >= 1 {
 					sb.offset += int(sb.accumDrag)
 					sb.accumDrag -= float32(int(sb.accumDrag))
@@ -1692,9 +1692,9 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 
 		// And finally insert any regular characters into the appropriate spot
 		// in the string.
-		if keyboard.input != "" {
-			*s = (*s)[:*cursor] + keyboard.input + (*s)[*cursor:]
-			*cursor += len(keyboard.input)
+		if keyboard.Input != "" {
+			*s = (*s)[:*cursor] + keyboard.Input + (*s)[*cursor:]
+			*cursor += len(keyboard.Input)
 		}
 	}
 

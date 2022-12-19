@@ -100,8 +100,8 @@ func (s *SplitLine) Name() string {
 }
 
 func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	if ctx.mouse != nil && ctx.mouse.dragging[mouseButtonSecondary] {
-		delta := ctx.mouse.dragDelta
+	if ctx.mouse != nil && ctx.mouse.Dragging[MouseButtonSecondary] {
+		delta := ctx.mouse.DragDelta
 
 		if s.Axis == SplitAxisX {
 			s.Pos += delta[0] / ctx.parentPaneExtent.Width()
@@ -825,7 +825,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 
 	// If the config editor is waiting for a Pane to be picked and the user
 	// clicked in a Pane, report that news back.
-	if wm.handlePanePick != nil && imgui.IsMouseClicked(mouseButtonPrimary) && mousePane != nil {
+	if wm.handlePanePick != nil && imgui.IsMouseClicked(MouseButtonPrimary) && mousePane != nil {
 		// Ignore clicks on  split lines, however.
 		if _, split := mousePane.(*SplitLine); !split {
 			if wm.handlePanePick(mousePane) {
@@ -838,12 +838,12 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	// mouseConsumerOverride so that we can continue to dispatch mouse
 	// events to that Pane until the mouse button is released, even if the
 	// mouse is no longer above it.
-	isDragging := imgui.IsMouseDragging(mouseButtonPrimary, 0.) ||
-		imgui.IsMouseDragging(mouseButtonSecondary, 0.) ||
-		imgui.IsMouseDragging(mouseButtonTertiary, 0.)
-	isClicked := imgui.IsMouseClicked(mouseButtonPrimary) ||
-		imgui.IsMouseClicked(mouseButtonSecondary) ||
-		imgui.IsMouseClicked(mouseButtonTertiary)
+	isDragging := imgui.IsMouseDragging(MouseButtonPrimary, 0.) ||
+		imgui.IsMouseDragging(MouseButtonSecondary, 0.) ||
+		imgui.IsMouseDragging(MouseButtonTertiary, 0.)
+	isClicked := imgui.IsMouseClicked(MouseButtonPrimary) ||
+		imgui.IsMouseClicked(MouseButtonSecondary) ||
+		imgui.IsMouseClicked(MouseButtonTertiary)
 	if !io.WantCaptureMouse() && (isDragging || isClicked) && wm.mouseConsumerOverride == nil {
 		wm.mouseConsumerOverride = mousePane
 	} else if io.WantCaptureMouse() {

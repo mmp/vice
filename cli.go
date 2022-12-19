@@ -334,7 +334,7 @@ func (cli *CLIPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cli.cb.Reset()
 	ctx.SetWindowCoordinateMatrices(&cli.cb)
 
-	if ctx.mouse != nil && ctx.mouse.clicked[mouseButtonPrimary] {
+	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
 		wmTakeKeyboardFocus(cli, false)
 	}
 
@@ -827,7 +827,7 @@ func (cli *CLIPane) updateInput(consoleLinesVisible int, keyboard *KeyboardState
 	}
 
 	// Grab keyboard input
-	cli.input.InsertAtCursor(keyboard.input)
+	cli.input.InsertAtCursor(keyboard.Input)
 
 	if keyboard.IsPressed(KeyUpArrow) {
 		if cli.historyOffset == len(cli.history) {

@@ -318,15 +318,15 @@ func (g *GLFWPlatform) installCallbacks() {
 }
 
 var glfwButtonIndexByID = map[glfw.MouseButton]int{
-	glfw.MouseButton1: mouseButtonPrimary,
-	glfw.MouseButton2: mouseButtonSecondary,
-	glfw.MouseButton3: mouseButtonTertiary,
+	glfw.MouseButton1: MouseButtonPrimary,
+	glfw.MouseButton2: MouseButtonSecondary,
+	glfw.MouseButton3: MouseButtonTertiary,
 }
 
 var glfwButtonIDByIndex = map[int]glfw.MouseButton{
-	mouseButtonPrimary:   glfw.MouseButton1,
-	mouseButtonSecondary: glfw.MouseButton2,
-	mouseButtonTertiary:  glfw.MouseButton3,
+	MouseButtonPrimary:   glfw.MouseButton1,
+	MouseButtonSecondary: glfw.MouseButton2,
+	MouseButtonTertiary:  glfw.MouseButton3,
 }
 
 func (g *GLFWPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
@@ -425,7 +425,7 @@ type SDLPlatform struct {
 	shouldStop bool
 
 	time        uint64
-	buttonsDown [mouseButtonCount]bool
+	buttonsDown [MouseButtonCount]bool
 
 	inputCharacters        string
 	mouseCursors           map[imgui.MouseCursorID]*sdl.Cursor
@@ -665,11 +665,11 @@ func (s *SDLPlatform) processEvent(event sdl.Event) bool {
 		buttonEvent := event.(*sdl.MouseButtonEvent)
 		switch buttonEvent.Button {
 		case sdl.BUTTON_LEFT:
-			s.buttonsDown[mouseButtonPrimary] = true
+			s.buttonsDown[MouseButtonPrimary] = true
 		case sdl.BUTTON_RIGHT:
-			s.buttonsDown[mouseButtonSecondary] = true
+			s.buttonsDown[MouseButtonSecondary] = true
 		case sdl.BUTTON_MIDDLE:
-			s.buttonsDown[mouseButtonTertiary] = true
+			s.buttonsDown[MouseButtonTertiary] = true
 		}
 		return true
 

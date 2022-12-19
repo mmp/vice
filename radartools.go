@@ -986,12 +986,12 @@ type MeasuringLine struct {
 
 // Draw processes mouse events and draws the measuring line, if it's active.
 func (ml *MeasuringLine) Draw(ctx *PaneContext, font *Font, transforms ScopeTransformations, cb *CommandBuffer) {
-	if ctx.mouse != nil && ctx.mouse.doubleClicked[ml.Button] {
+	if ctx.mouse != nil && ctx.mouse.DoubleClicked[ml.Button] {
 		ml.active = true
-		ml.dragStart = ctx.mouse.pos
+		ml.dragStart = ctx.mouse.Pos
 		ml.dragEnd = ml.dragStart
-	} else if ctx.mouse != nil && ctx.mouse.dragging[ml.Button] && ml.active {
-		ml.dragEnd = add2f(ml.dragEnd, ctx.mouse.dragDelta)
+	} else if ctx.mouse != nil && ctx.mouse.Dragging[ml.Button] && ml.active {
+		ml.dragEnd = add2f(ml.dragEnd, ctx.mouse.DragDelta)
 	} else {
 		ml.active = false
 	}
@@ -1047,8 +1047,8 @@ func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransfor
 	}
 
 	// Handle dragging the scope center
-	if mouse.dragging[button] {
-		delta := mouse.dragDelta
+	if mouse.Dragging[button] {
+		delta := mouse.DragDelta
 		if delta[0] != 0 || delta[1] != 0 {
 			deltaLL := transforms.LatLongFromWindowV(delta)
 			*center = sub2f(*center, deltaLL)
@@ -1057,13 +1057,13 @@ func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransfor
 	}
 
 	// Consume mouse wheel
-	if mouse.wheel[1] != 0 {
-		scale := pow(1.05, mouse.wheel[1])
+	if mouse.Wheel[1] != 0 {
+		scale := pow(1.05, mouse.Wheel[1])
 
 		// We want to zoom in centered at the mouse position; this affects
 		// the scope center after the zoom, so we'll find the
 		// transformation that gives the new center position.
-		mouseLL := transforms.LatLongFromWindowP(mouse.pos)
+		mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
 		centerTransform := mgl32.Translate3D(-mouseLL[0], -mouseLL[1], 0)
 		centerTransform = mgl32.Scale3D(scale, scale, 1).Mul4(centerTransform)
 		centerTransform = mgl32.Translate3D(mouseLL[0], mouseLL[1], 0).Mul4(centerTransform)
