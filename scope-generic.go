@@ -17,8 +17,8 @@ type RadarScopePane struct {
 	ScopeName          string
 	Center             Point2LL
 	Range              float32
-	DataBlockFormat    DataBlockFormat
-	DataBlockFrequency int32
+	DatablockFormat    DatablockFormat `json:"DataBlockFormat"`
+	DatablockFrequency int32           `json:"DataBlockFrequency"`
 	PointSize          float32
 	LineWidth          float32
 
@@ -151,8 +151,8 @@ func NewRadarScopePane(n string) *RadarScopePane {
 	c.MinAltitude = 0
 	c.MaxAltitude = 60000
 	c.Range = 15
-	c.DataBlockFormat = DataBlockFormatGround
-	c.DataBlockFrequency = 3
+	c.DatablockFormat = DatablockFormatGround
+	c.DatablockFrequency = 3
 	c.RadarTracksDrawn = 5
 
 	c.aircraft = make(map[*Aircraft]*AircraftScopeState)
@@ -293,8 +293,8 @@ func (rs *RadarScopePane) Activate(cs *ColorScheme) {
 	if rs.RadarTracksDrawn == 0 {
 		rs.RadarTracksDrawn = 5
 	}
-	if rs.DataBlockFrequency == 0 {
-		rs.DataBlockFrequency = 3
+	if rs.DatablockFrequency == 0 {
+		rs.DatablockFrequency = 3
 	}
 
 	rs.StaticDraw.Activate()
@@ -368,12 +368,12 @@ func (rs *RadarScopePane) DrawUI() {
 		rs.initializeAircraft()
 	}
 	if imgui.CollapsingHeader("Aircraft rendering") {
-		if rs.DataBlockFormat.DrawUI() {
+		if rs.DatablockFormat.DrawUI() {
 			for _, state := range rs.aircraft {
 				state.datablockTextCurrent = false
 			}
 		}
-		imgui.SliderIntV("Data block update frequency (seconds)", &rs.DataBlockFrequency, 1, 10, "%d", 0 /* flags */)
+		imgui.SliderIntV("Data block update frequency (seconds)", &rs.DatablockFrequency, 1, 10, "%d", 0 /* flags */)
 		imgui.SliderIntV("Tracks shown", &rs.RadarTracksDrawn, 1, 10, "%d", 0 /* flags */)
 		imgui.Checkbox("Vector lines", &rs.DrawVectorLine)
 		if rs.DrawVectorLine {
@@ -695,7 +695,7 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 
 		color := ctx.cs.Track
 		if state.isGhost {
-			color = ctx.cs.GhostDataBlock
+			color = ctx.cs.GhostDatablock
 		}
 
 		// Draw in reverse order so that if it's not moving, more recent tracks (which will have
@@ -783,8 +783,8 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 				hopo = "\n" + hopo
 			}
 
-			state.datablockText[0] = rs.DataBlockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 0) + hopo
-			state.datablockText[1] = rs.DataBlockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 1) + hopo
+			state.datablockText[0] = rs.DatablockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 0) + hopo
+			state.datablockText[1] = rs.DatablockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 1) + hopo
 			state.datablockTextCurrent = true
 
 			bx0, by0 := rs.datablockFont.BoundText(state.datablockText[0], -2)
@@ -1065,26 +1065,26 @@ func (rs *RadarScopePane) datablockColor(ac *Aircraft, cs *ColorScheme) RGB {
 	// This is not super efficient, but let's assume there aren't tons of ghost aircraft...
 	for _, ghost := range rs.ghostAircraft {
 		if ac == ghost {
-			return cs.GhostDataBlock
+			return cs.GhostDatablock
 		}
 	}
 
 	if positionConfig.selectedAircraft == ac {
-		return cs.SelectedDataBlock
+		return cs.SelectedDatablock
 	}
 
 	if ac.InboundHandoffController != "" {
-		return cs.HandingOffDataBlock
+		return cs.HandingOffDatablock
 	}
 	if ac.OutboundHandoffController != "" {
-		return cs.HandingOffDataBlock
+		return cs.HandingOffDatablock
 	}
 
 	if ac.TrackingController != "" && ac.TrackingController == server.Callsign() {
-		return cs.TrackedDataBlock
+		return cs.TrackedDatablock
 	}
 
-	return cs.UntrackedDataBlock
+	return cs.UntrackedDatablock
 }
 
 func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
@@ -1133,7 +1133,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTrans
 		color := rs.datablockColor(ac, ctx.cs)
 
 		// Draw characters starting at the upper left.
-		flashCycle := (actualNow.Second() / int(rs.DataBlockFrequency)) & 1
+		flashCycle := (actualNow.Second() / int(rs.DatablockFrequency)) & 1
 		td.AddText(state.datablockText[flashCycle], [2]float32{bbox.p0[0], bbox.p1[1]},
 			TextStyle{
 				Font:            rs.datablockFont,
@@ -1157,7 +1157,7 @@ func (rs *RadarScopePane) drawDatablocks(ctx *PaneContext, transforms ScopeTrans
 			ld.GenerateCommands(cb)
 		}
 
-		drawLine := rs.DataBlockFormat != DataBlockFormatNone
+		drawLine := rs.DatablockFormat != DatablockFormatNone
 
 		// quantized clamp
 		qclamp := func(x, a, b float32) float32 {
@@ -1231,7 +1231,7 @@ func (rs *RadarScopePane) drawVectorLines(ctx *PaneContext, transforms ScopeTran
 				start = transforms.LatLongFromWindowP(sw)
 			}
 			if state.isGhost {
-				ld.AddLine(start, end, ctx.cs.GhostDataBlock)
+				ld.AddLine(start, end, ctx.cs.GhostDatablock)
 			} else {
 				ld.AddLine(start, end, ctx.cs.Track)
 			}

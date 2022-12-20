@@ -1730,11 +1730,11 @@ type ColorScheme struct {
 	Error   RGB
 
 	// Datablock colors
-	SelectedDataBlock   RGB
-	UntrackedDataBlock  RGB
-	TrackedDataBlock    RGB
-	HandingOffDataBlock RGB
-	GhostDataBlock      RGB
+	SelectedDatablock   RGB
+	UntrackedDatablock  RGB
+	TrackedDatablock    RGB
+	HandingOffDatablock RGB
+	GhostDatablock      RGB
 	Track               RGB
 
 	ArrivalStrip   RGB
@@ -1819,31 +1819,31 @@ func (c *ColorScheme) ShowEditor(handleDefinedColorChange func(string, RGB)) {
 
 		imgui.TableNextRow()
 		edit("Highlighted text", "TextHighlight", &c.TextHighlight)
-		edit("Tracked data block", "Tracked Data Block", &c.TrackedDataBlock)
+		edit("Tracked data block", "Tracked Data Block", &c.TrackedDatablock)
 		edit("ARTCC", "ARTCC", &c.ARTCC)
 		sfd()
 
 		imgui.TableNextRow()
 		edit("Error text", "TextError", &c.TextError)
-		edit("Selected data block", "Selected Data Block", &c.SelectedDataBlock)
+		edit("Selected data block", "Selected Data Block", &c.SelectedDatablock)
 		edit("Compass", "Compass", &c.Compass)
 		sfd()
 
 		imgui.TableNextRow()
 		edit("Disabled text", "TextDisabled", &c.TextDisabled)
-		edit("Handing-off data block", "HandingOff Data Block", &c.HandingOffDataBlock)
+		edit("Handing-off data block", "HandingOff Data Block", &c.HandingOffDatablock)
 		edit("Fix", "Fix", &c.Fix)
 		sfd()
 
 		imgui.TableNextRow()
 		edit("Background", "Background", &c.Background)
-		edit("Untracked data block", "Untracked Data Block", &c.UntrackedDataBlock)
+		edit("Untracked data block", "Untracked Data Block", &c.UntrackedDatablock)
 		edit("Geo", "Geo", &c.Geo)
 		sfd()
 
 		imgui.TableNextRow()
 		edit("Alternate background", "AltBackground", &c.AltBackground)
-		edit("Ghost data block", "Ghost Data Block", &c.GhostDataBlock)
+		edit("Ghost data block", "Ghost Data Block", &c.GhostDatablock)
 		edit("High airway", "HighAirway", &c.HighAirway)
 		sfd()
 
@@ -1925,11 +1925,11 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		Safe:                RGB{R: 0.13225771, G: 0.5635748, B: 0.8519856},
 		Caution:             RGBFromHex(0xB7B513),
 		Error:               RGBFromHex(0xE94242),
-		SelectedDataBlock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
-		UntrackedDataBlock:  RGBFromHex(0x8f92bc),
-		TrackedDataBlock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
-		HandingOffDataBlock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
-		GhostDataBlock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
+		SelectedDatablock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
+		UntrackedDatablock:  RGBFromHex(0x8f92bc),
+		TrackedDatablock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
+		HandingOffDatablock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
+		GhostDatablock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
 		Track:               RGB{R: 0, G: 1, B: 0.084745646},
 		ArrivalStrip:        RGBFromHex(0x080724),
 		DepartureStrip:      RGBFromHex(0x150707),
@@ -1965,11 +1965,11 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		Safe:                RGB{R: 0.6392157, G: 0.74509805, B: 0.54901963},
 		Caution:             RGB{R: 0.92156863, G: 0.79607844, B: 0.54509807},
 		Error:               RGB{R: 0.7490196, G: 0.38039216, B: 0.41568628},
-		SelectedDataBlock:   RGB{R: 0.56078434, G: 0.7372549, B: 0.73333335},
-		UntrackedDataBlock:  RGB{R: 0.5058824, G: 0.6313726, B: 0.75686276},
-		TrackedDataBlock:    RGB{R: 0.8980392, G: 0.9137255, B: 0.9411765},
-		HandingOffDataBlock: RGBFromHex(0xbf616a),
-		GhostDataBlock:      RGB{R: 0.84705883, G: 0.87058824, B: 0.9137255},
+		SelectedDatablock:   RGB{R: 0.56078434, G: 0.7372549, B: 0.73333335},
+		UntrackedDatablock:  RGB{R: 0.5058824, G: 0.6313726, B: 0.75686276},
+		TrackedDatablock:    RGB{R: 0.8980392, G: 0.9137255, B: 0.9411765},
+		HandingOffDatablock: RGBFromHex(0xbf616a),
+		GhostDatablock:      RGB{R: 0.84705883, G: 0.87058824, B: 0.9137255},
 		Track:               RGB{R: 0.84705883, G: 0.87058824, B: 0.9137255},
 		ArrivalStrip:        RGBFromHex(0x292E3B),
 		DepartureStrip:      RGBFromHex(0x1F242C),
@@ -2005,11 +2005,11 @@ var builtinColorSchemes map[string]*ColorScheme = map[string]*ColorScheme{
 		Safe:                RGB{R: 0.5117057, G: 0.5247704, B: 1},
 		Caution:             RGB{R: 0.8601695, G: 0.6032181, B: 0.14214665},
 		Error:               RGB{R: 1, G: 0, B: 0},
-		SelectedDataBlock:   RGBFromHex(0x239438),
-		UntrackedDataBlock:  RGB{R: 0.32058924, G: 0.8231047, B: 0.24069126},
-		TrackedDataBlock:    RGB{R: 0.15045157, G: 0.21625589, B: 0.80144405},
-		HandingOffDataBlock: RGB{R: 0.8267148, G: 0.1790718, B: 0.1790718},
-		GhostDataBlock:      RGB{R: 0.44404334, G: 0.44404334, B: 0.44404334},
+		SelectedDatablock:   RGBFromHex(0x239438),
+		UntrackedDatablock:  RGB{R: 0.32058924, G: 0.8231047, B: 0.24069126},
+		TrackedDatablock:    RGB{R: 0.15045157, G: 0.21625589, B: 0.80144405},
+		HandingOffDatablock: RGB{R: 0.8267148, G: 0.1790718, B: 0.1790718},
+		GhostDatablock:      RGB{R: 0.44404334, G: 0.44404334, B: 0.44404334},
 		Track:               RGB{R: 0.37458193, G: 0.37458193, B: 0.37458193},
 		ArrivalStrip:        RGBFromHex(0xe8e8e3),
 		DepartureStrip:      RGBFromHex(0xf6f6f1),

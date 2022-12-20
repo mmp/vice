@@ -550,30 +550,30 @@ func (c *CRDAConfig) DrawUI() bool {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// DataBlockFormat
+// DatablockFormat
 
 // Loosely patterened after https://vrc.rosscarlson.dev/docs/single_page.html#the_various_radar_modes
 const (
-	DataBlockFormatNone = iota
-	DataBlockFormatSimple
-	DataBlockFormatGround
-	DataBlockFormatTower
-	DataBlockFormatFull
-	DataBlockFormatCount
+	DatablockFormatNone = iota
+	DatablockFormatSimple
+	DatablockFormatGround
+	DatablockFormatTower
+	DatablockFormatFull
+	DatablockFormatCount
 )
 
-type DataBlockFormat int
+type DatablockFormat int
 
-func (d DataBlockFormat) String() string {
+func (d DatablockFormat) String() string {
 	return [...]string{"None", "Simple", "Ground", "Tower", "Full"}[d]
 }
 
-func (d *DataBlockFormat) DrawUI() bool {
+func (d *DatablockFormat) DrawUI() bool {
 	changed := false
 	if imgui.BeginCombo("Data block format", d.String()) {
-		var i DataBlockFormat
-		for ; i < DataBlockFormatCount; i++ {
-			if imgui.SelectableV(DataBlockFormat(i).String(), i == *d, 0, imgui.Vec2{}) {
+		var i DatablockFormat
+		for ; i < DatablockFormatCount; i++ {
+			if imgui.SelectableV(DatablockFormat(i).String(), i == *d, 0, imgui.Vec2{}) {
 				*d = i
 				changed = true
 			}
@@ -583,8 +583,8 @@ func (d *DataBlockFormat) DrawUI() bool {
 	return changed
 }
 
-func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle int) string {
-	if d == DataBlockFormatNone {
+func (d DatablockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle int) string {
+	if d == DatablockFormatNone {
 		return ""
 	}
 
@@ -616,10 +616,10 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	}
 
 	switch d {
-	case DataBlockFormatSimple:
+	case DatablockFormatSimple:
 		return datablock.String()
 
-	case DataBlockFormatGround:
+	case DatablockFormatGround:
 		datablock.WriteString("\n")
 		// Line 2: a/c type and groundspeed
 		datablock.WriteString(actype)
@@ -638,7 +638,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		}
 		return datablock.String()
 
-	case DataBlockFormatTower:
+	case DatablockFormatTower:
 		// Line 2: first flash is [alt speed/10]. If we don't have
 		// destination and a/c type then just always show this rather than
 		// flashing a blank line.
@@ -674,7 +674,7 @@ func (d DataBlockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		}
 		return datablock.String()
 
-	case DataBlockFormatFull:
+	case DatablockFormatFull:
 		if ac.Mode == Standby {
 			return datablock.String()
 		}
@@ -1002,7 +1002,7 @@ func (ml *MeasuringLine) Draw(ctx *PaneContext, font *Font, transforms ScopeTran
 	defer ReturnColoredLinesDrawBuilder(ld)
 
 	// TODO: separate color for this rather than piggybacking?
-	ld.AddLine(ml.dragStart, ml.dragEnd, ctx.cs.SelectedDataBlock)
+	ld.AddLine(ml.dragStart, ml.dragEnd, ctx.cs.SelectedDatablock)
 
 	// distance between the two points in nm
 	p0 := transforms.LatLongFromWindowP(ml.dragStart)
@@ -1021,7 +1021,7 @@ func (ml *MeasuringLine) Draw(ctx *PaneContext, font *Font, transforms ScopeTran
 	label := fmt.Sprintf(" %.1f nm \n%d / %d", dist, hdg, rhdg)
 	style := TextStyle{
 		Font:            font,
-		Color:           ctx.cs.SelectedDataBlock,
+		Color:           ctx.cs.SelectedDatablock,
 		DrawBackground:  true,
 		BackgroundColor: ctx.cs.Background}
 	textPos := mid2f(ml.dragStart, ml.dragEnd)
