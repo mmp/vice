@@ -523,9 +523,9 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if a.ShowDeparted && len(airborne) > 0 {
 		sort.Slice(airborne, func(i, j int) bool {
 			ai := &airborne[i]
-			di := nmdistance2ll(database.FAA.airports[ai.FlightPlan.ArrivalAirport].Location, ai.Position())
+			di := nmdistance2ll(database.FAA.airports[ai.FlightPlan.DepartureAirport].Location, ai.Position())
 			aj := &airborne[j]
-			dj := nmdistance2ll(database.FAA.airports[aj.FlightPlan.ArrivalAirport].Location, aj.Position())
+			dj := nmdistance2ll(database.FAA.airports[aj.FlightPlan.DepartureAirport].Location, aj.Position())
 			return di < dj
 		})
 
