@@ -712,8 +712,13 @@ func init() {
 	r(NewMessageSpec("#PC::CCP:HC", 5, func(v *VATSIMServer, sender string, args []string) error {
 		callsign := args[4]
 		ac := v.getOrCreateAircraft(callsign)
-		ac.OutboundHandoffController = ""
-		eventStream.Post(&RejectedHandoffEvent{controller: sender, ac: ac})
+		if ac.OutboundHandoffController != "" {
+			ac.OutboundHandoffController = ""
+			eventStream.Post(&RejectedHandoffEvent{controller: sender, ac: ac})
+		} else if ac.InboundHandoffController != "" {
+			ac.InboundHandoffController = ""
+			eventStream.Post(&CanceledHandoffEvent{controller: sender, ac: ac})
+		}
 		return nil
 	}))
 

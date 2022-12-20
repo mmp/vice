@@ -1199,6 +1199,9 @@ func (*TrackAircraftCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, arg
 	if ac.InboundHandoffController != "" {
 		// it's being offered as a handoff
 		return ErrorConsoleEntry(server.AcceptHandoff(ac.Callsign))
+	} else if ac.OutboundHandoffController != "" {
+		// We're trying to hand it off
+		return ErrorConsoleEntry(server.CancelHandoff(args[0]))
 	} else {
 		return ErrorConsoleEntry(server.InitiateTrack(ac.Callsign))
 	}

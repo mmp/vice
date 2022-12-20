@@ -227,6 +227,10 @@ func (cli *CLIPane) processEvents(es *EventStream) {
 			cli.AddConsoleEntry([]string{v.controller, ": rejected handoff " + v.ac.Callsign},
 				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
 
+		case *CanceledHandoffEvent:
+			cli.AddConsoleEntry([]string{v.controller, ": canceled handoff offer " + v.ac.Callsign},
+				[]ConsoleTextStyle{ConsoleTextEmphasized, ConsoleTextRegular})
+
 		case *TextMessageEvent:
 			m := v.message
 
