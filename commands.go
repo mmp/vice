@@ -257,6 +257,8 @@ var allFKeyCommands map[string]FKeyCommand = map[string]FKeyCommand{
 	"Drop track":               &DropTrackFKeyCommand{},
 	"Handoff":                  &HandoffFKeyCommand{},
 	"Initiate track":           &TrackFKeyCommand{},
+	"Multi-drop track":         &MultiDropTrackFKeyCommand{},
+	"Multi-track":              &MultiTrackFKeyCommand{},
 	"Point out":                &PointOutFKeyCommand{},
 	"Push flight strip":        &PushFlightStripFKeyCommand{},
 	"Reject handoff":           &RejectHandoffFKeyCommand{},
@@ -445,6 +447,60 @@ func (*HandoffFKeyCommand) ArgTypes() []FKeyCommandArg {
 }
 
 func (*HandoffFKeyCommand) Do(args []string) error { return server.Handoff(args[0], args[1]) }
+
+// MultiDropTrackFKeyCommand drops track on an aircraft if we're tracking
+// it or rejects a handoff from another controller.
+type MultiDropTrackFKeyCommand struct{}
+
+func (*MultiDropTrackFKeyCommand) Name() string { return "multidrop" }
+
+func (*MultiDropTrackFKeyCommand) ArgTypes() []FKeyCommandArg {
+	return []FKeyCommandArg{
+		&AircraftCommandArg{validateCallsign: func(callsign string) bool {
+			ac := server.GetAircraft(callsign)
+			// Either we must be tracking it or someone must be trying to
+			// hand the aircraft off to us.
+			return ac != nil && (ac.TrackingController == server.Callsign() || ac.InboundHandoffController != "")
+		}}}
+}
+
+func (*MultiDropTrackFKeyCommand) Do(args []string) error {
+	ac := server.GetAircraft(args[0])
+	if ac != nil && ac.TrackingController == server.Callsign() {
+		return server.DropTrack(args[0])
+	} else {
+		return server.RejectHandoff(args[0])
+	}
+}
+
+// MultiTrackFKeyCommand tracks an untracked aircraft, cancels an outbound
+// handoff, or accepts an inbound handoff, as appropriate.
+type MultiTrackFKeyCommand struct{}
+
+func (*MultiTrackFKeyCommand) Name() string { return "multitrack" }
+
+func (*MultiTrackFKeyCommand) ArgTypes() []FKeyCommandArg {
+	return []FKeyCommandArg{
+		&AircraftCommandArg{validateCallsign: func(callsign string) bool {
+			ac := server.GetAircraft(callsign)
+			return ac != nil &&
+				(ac.TrackingController == "" || // No one's tracking it
+					ac.OutboundHandoffController != "" || // We're trying to hand it off
+					ac.InboundHandoffController != "") // Someone's handing it off to us
+		}}}
+}
+
+func (*MultiTrackFKeyCommand) Do(args []string) error {
+	if ac := server.GetAircraft(args[0]); ac == nil {
+		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController == "" {
+		return server.InitiateTrack(args[0])
+	} else if ac.OutboundHandoffController != "" {
+		return server.CancelHandoff(args[0])
+	} else {
+		return server.AcceptHandoff(args[0])
+	}
+}
 
 // PointOutFKeyCommand points an aircraft out to a controller.
 type PointOutFKeyCommand struct{}
