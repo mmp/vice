@@ -104,7 +104,6 @@ func main() {
 
 	context = imguiInit()
 
-	database = InitializeStaticDatabase()
 	server = &DisconnectedATCServer{}
 
 	var err error
@@ -124,17 +123,8 @@ func main() {
 	// replaying a trace with a time offset.
 	globalConfig.AudioSettings.MuteFor(3 * time.Second)
 
-	// These will appear the first time vice is launched and the user
-	// hasn't yet set these up.  (And also if the chosen files are moved or
-	// deleted, etc...)
-	if database.LoadSectorFile(globalConfig.SectorFile) != nil {
-		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
-			func() bool { return database.sectorFileLoadError == nil })
-	}
-	if database.LoadPositionFile(globalConfig.PositionFile) != nil {
-		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
-			func() bool { return database.positionFileLoadError == nil })
-	}
+	dbChan := make(chan *StaticDatabase)
+	go InitializeStaticDatabase(dbChan, globalConfig.SectorFile, globalConfig.PositionFile)
 
 	if true {
 		// Multisampling on Retina displays seems to hit a performance
@@ -162,6 +152,8 @@ func main() {
 	}
 
 	fontsInit(renderer)
+
+	database = <-dbChan
 
 	vatsimInit()
 

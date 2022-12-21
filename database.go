@@ -151,7 +151,7 @@ func (c *ColorBufferIndex) Visit(name string, callback func(int)) {
 	}
 }
 
-func InitializeStaticDatabase() *StaticDatabase {
+func InitializeStaticDatabase(dbChan chan *StaticDatabase, sectorFile, positionFile string) {
 	start := time.Now()
 
 	db := &StaticDatabase{}
@@ -170,7 +170,19 @@ func InitializeStaticDatabase() *StaticDatabase {
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
 
-	return db
+	// These errors will appear the first time vice is launched and the
+	// user hasn't yet set these up.  (And also if the chosen files are
+	// moved or deleted, etc...)
+	if db.LoadSectorFile(sectorFile) != nil {
+		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
+			func() bool { return db.sectorFileLoadError == nil })
+	}
+	if db.LoadPositionFile(positionFile) != nil {
+		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
+			func() bool { return db.positionFileLoadError == nil })
+	}
+
+	dbChan <- db
 }
 
 ///////////////////////////////////////////////////////////////////////////
