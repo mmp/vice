@@ -52,6 +52,8 @@ var (
 		openPositionFileDialog *FileSelectDialogBox
 		openAliasesFileDialog  *FileSelectDialogBox
 		openNotesFileDialog    *FileSelectDialogBox
+
+		newReleaseDialogChan chan *NewReleaseModalClient
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -96,9 +98,10 @@ func uiInit(renderer Renderer) {
 		ui.sadTowerTextureID = renderer.CreateTextureFromImage(sadTowerImage, false)
 	}
 
-	if nrc := checkForNewRelease(); nrc != nil {
-		uiShowModalDialog(NewModalDialogBox(nrc), false)
-	}
+	// Do this asynchronously since it involves network traffic and may
+	// take some time (or may even time out, etc.)
+	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
+	go checkForNewRelease(ui.newReleaseDialogChan)
 
 	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
 		globalConfig.SectorFile,
@@ -190,6 +193,20 @@ func (c RGBA) imgui() imgui.Vec4 {
 }
 
 func drawUI(cs *ColorScheme, platform Platform) {
+	if ui.newReleaseDialogChan != nil {
+		select {
+		case dialog, ok := <-ui.newReleaseDialogChan:
+			if ok {
+				uiShowModalDialog(NewModalDialogBox(dialog), false)
+			} else {
+				// channel was closed
+				ui.newReleaseDialogChan = nil
+			}
+		default:
+			// don't block on the chan if there's nothing there and it's still open...
+		}
+	}
+
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
 		if imgui.BeginMenu("Connection") {
@@ -1146,13 +1163,15 @@ func (yn *YesOrNoModalClient) Draw() int {
 	return -1
 }
 
-func checkForNewRelease() *NewReleaseModalClient {
+func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
+	defer close(newReleaseDialogChan)
+
 	url := "https://api.github.com/repos/mmp/vice/releases"
 
 	resp, err := http.Get(url)
 	if err != nil {
 		lg.Errorf("%s: get err: %v", url, err)
-		return nil
+		return
 	}
 	defer resp.Body.Close()
 
@@ -1165,10 +1184,10 @@ func checkForNewRelease() *NewReleaseModalClient {
 	var releases []Release
 	if err := decoder.Decode(&releases); err != nil {
 		lg.Errorf("JSON decode error: %v", err)
-		return nil
+		return
 	}
 	if len(releases) == 0 {
-		return nil
+		return
 	}
 
 	newestRelease := releases[0]
@@ -1183,7 +1202,7 @@ func checkForNewRelease() *NewReleaseModalClient {
 	buildTime := ""
 	if bi, ok := debug.ReadBuildInfo(); !ok {
 		lg.Errorf("unable to read build info")
-		return nil
+		return
 	} else {
 		for _, setting := range bi.Settings {
 			if setting.Key == "vcs.time" {
@@ -1194,21 +1213,19 @@ func checkForNewRelease() *NewReleaseModalClient {
 
 		if buildTime == "" {
 			lg.Errorf("build time unavailable in BuildInfo.Settings")
-			return nil
+			return
 		}
 	}
 
 	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
 		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
-		return nil
 	} else if bt.UTC().After(newestRelease.Created.UTC()) {
 		lg.Printf("build time %s newest release %s -> build is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
-		return nil
 	} else {
 		lg.Printf("build time %s newest release %s -> release is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
-		return &NewReleaseModalClient{
+		newReleaseDialogChan <- &NewReleaseModalClient{
 			version: newestRelease.TagName,
 			date:    newestRelease.Created}
 	}
