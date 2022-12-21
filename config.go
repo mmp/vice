@@ -195,7 +195,7 @@ func (gc *GlobalConfig) LoadAliasesFile() {
 	f, err := os.Open(gc.AliasesFile)
 	if err != nil {
 		lg.Printf("%s: unable to read aliases file: %v", gc.AliasesFile, err)
-		ShowErrorDialog("%s: unable to read aliases file: %v.", gc.AliasesFile, err)
+		ShowErrorDialog("Unable to read aliases file: %v.", err)
 	}
 	defer f.Close()
 
@@ -236,7 +236,7 @@ func (gc *GlobalConfig) LoadNotesFile() {
 	notes, err := os.ReadFile(gc.NotesFile)
 	if err != nil {
 		lg.Printf("%s: unable to read notes file: %v", gc.NotesFile, err)
-		ShowErrorDialog("%s: unable to read notes file: %v.", gc.NotesFile, err)
+		ShowErrorDialog("Unable to read notes file: %v.", err)
 	} else {
 		gc.notesRoot = parseNotes(string(notes))
 	}
@@ -621,8 +621,7 @@ func LoadOrMakeDefaultConfig() {
 			_ = os.WriteFile(fn, config, 0o600)
 		} else {
 			lg.Printf("%s: unable to read config file: %v", fn, err)
-			ShowErrorDialog("%s: unable to read config file: %v\nUsing default configuration.",
-				fn, err)
+			ShowErrorDialog("Unable to read config file: %v\nUsing default configuration.", err)
 			fn = "default.config"
 		}
 	}
@@ -632,7 +631,7 @@ func LoadOrMakeDefaultConfig() {
 
 	globalConfig = &GlobalConfig{}
 	if err := d.Decode(globalConfig); err != nil {
-		ShowErrorDialog("%s: configuration file is corrupt: %v", fn, err)
+		ShowErrorDialog("Configuration file is corrupt: %v", err)
 	}
 	if globalConfig.CustomServers == nil {
 		globalConfig.CustomServers = make(map[string]string)

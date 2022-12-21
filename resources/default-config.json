@@ -155,7 +155,6 @@
                                         "GlideslopeAngle": 3,
                                         "ShowCRDARegions": false
                                     },
-                                    "DrawCompass": true,
                                     "DatablockFontIdentifier": {
                                         "Name": "PT Mono Regular",
                                         "Size": 14
@@ -180,8 +179,7 @@
                     }
                 ],
                 "Type": ""
-            },
-            "SplitLineWidth": 4
+            }
         }
     },
     "ActivePosition": "Default",
@@ -205,9 +203,9 @@
             "",
             "",
             "",
-            ""
+            "",
+            "Alert"
         ],
-        "AudioEnabled": false
-    },
-    "Notes": null
+        "AudioEnabled": true
+    }
 }
