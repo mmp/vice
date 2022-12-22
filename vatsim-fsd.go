@@ -20,11 +20,14 @@ func handleAA(v *VATSIMServer, sender string, args []string) error {
 	if rating, err := parseRating(args[5]); err != nil {
 		return err
 	} else {
-		v.controllers[sender] = &Controller{
+		ctrl := &Controller{
 			Callsign: sender,
 			Name:     args[2],
 			CID:      args[3],
-			Rating:   rating}
+			Rating:   rating,
+		}
+		eventStream.Post(&AddedControllerEvent{Controller: ctrl})
+		v.controllers[sender] = ctrl
 		return nil
 	}
 }
@@ -37,11 +40,13 @@ func handleAP(v *VATSIMServer, callsign string, args []string) error {
 	} else {
 		// We're ignoring things like protocol version (args[4]) and simulator
 		// type (args[5]) here...
-		v.pilots[callsign] = &Pilot{
+		pilot := &Pilot{
 			Callsign: callsign,
 			CID:      args[2],
 			Name:     args[7],
 			Rating:   rating}
+		eventStream.Post(&AddedPilotEvent{Pilot: pilot})
+		v.pilots[callsign] = pilot
 		return nil
 	}
 }
@@ -93,7 +98,7 @@ func handleAR(v *VATSIMServer, sender string, args []string) error {
 	}
 
 	v.metar[m.AirportICAO] = m
-
+	eventStream.Post(&ReceivedMETAREvent{METAR: m})
 	return nil
 }
 
@@ -361,6 +366,7 @@ func handlePct(v *VATSIMServer, sender string, args []string) error {
 		Rating:     rating,
 		Location:   latlong}
 	v.controllers[sender] = ctrl
+	eventStream.Post(&ModifiedControllerEvent{ctrl})
 
 	if pos := ctrl.GetPosition(); pos != nil {
 		v.controllerSectors[pos.SectorId] = ctrl
@@ -596,6 +602,7 @@ func init() {
 		}
 		airport := sc[0]
 
+		eventStream.Post(&ReceivedATISEvent{ATIS: ATIS{Airport: sender, Contents: atis}})
 		for i, a := range v.atis[airport] {
 			if a.Airport == sender {
 				// Replace pre-existing
@@ -658,6 +665,7 @@ func init() {
 
 	r(NewMessageSpec("#DA", 1, func(v *VATSIMServer, sender string, args []string) error {
 		if ctrl, ok := v.controllers[sender]; ok {
+			eventStream.Post(&RemovedControllerEvent{Controller: ctrl})
 			if pos := ctrl.GetPosition(); pos != nil {
 				delete(v.controllerSectors, pos.SectorId)
 			}

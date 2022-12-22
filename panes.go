@@ -428,12 +428,10 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			for _, at := range server.GetAirportATIS(ap) {
 				atis = append(atis, fmt.Sprintf("  %-12s: %s", at.Airport, at.Contents))
 
-				if oldATIS, ok := a.lastATIS[at.Airport]; oldATIS != at.Contents {
+				if oldATIS, ok := a.lastATIS[at.Airport]; ok && oldATIS != at.Contents {
+					// it's been updated
+					// TODO: we could just watch events...
 					a.lastATIS[at.Airport] = at.Contents
-					// don't play a sound the first time we get the ATIS.
-					if ok {
-						eventStream.Post(&UpdatedATISEvent{airport: at.Airport})
-					}
 				}
 			}
 		}

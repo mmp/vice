@@ -191,12 +191,60 @@ func (e *RemovedAircraftEvent) String() string {
 	return "RemovedAircraftEvent: " + e.ac.Callsign
 }
 
-type UpdatedATISEvent struct {
-	airport string
+type AddedControllerEvent struct {
+	Controller *Controller
 }
 
-func (e *UpdatedATISEvent) String() string {
-	return "UpdatedATISEvent: " + e.airport
+func (e *AddedControllerEvent) String() string {
+	return "AddedControllerEvent: " + e.Controller.Callsign
+}
+
+type ModifiedControllerEvent struct {
+	Controller *Controller
+}
+
+func (e *ModifiedControllerEvent) String() string {
+	return "ModifiedControllerEvent: " + e.Controller.Callsign
+}
+
+type RemovedControllerEvent struct {
+	Controller *Controller
+}
+
+func (e *RemovedControllerEvent) String() string {
+	return "RemovedControllerEvent: " + e.Controller.Callsign
+}
+
+type AddedPilotEvent struct {
+	Pilot *Pilot
+}
+
+func (e *AddedPilotEvent) String() string {
+	return "AddedPilotEvent: " + e.Pilot.Callsign
+}
+
+type RemovedPilotEvent struct {
+	Pilot *Pilot
+}
+
+func (e *RemovedPilotEvent) String() string {
+	return "RemovedPilotEvent: " + e.Pilot.Callsign
+}
+
+type ReceivedMETAREvent struct {
+	METAR METAR
+}
+
+func (e *ReceivedMETAREvent) String() string {
+	return "ReceivedMETAREvent: " + e.METAR.String()
+}
+
+type ReceivedATISEvent struct {
+	ATIS ATIS
+}
+
+func (e *ReceivedATISEvent) String() string {
+	return "ReceivedATISEvent: " + e.ATIS.Airport
 }
 
 type PushedFlightStripEvent struct {
