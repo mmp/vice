@@ -276,6 +276,9 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 	case "*main.ReminderPane":
 		pane, err = unmarshalPane[*ReminderPane](*m["Pane"])
 
+	case "*main.STARSPane":
+		pane, err = unmarshalPane[*STARSPane](*m["Pane"])
+
 	default:
 		lg.Errorf("%s: Unhandled type in config file", paneType)
 		pane = NewEmptyPane() // don't crash at least
@@ -634,6 +637,11 @@ func wmDrawConfigEditor(p Platform) {
 			wm.paneCreatePrompt = "Radar scope (Generic)"
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewRadarScopePane("(Unnamed)"))
+		}
+		if imgui.Selectable("Radar Scope (STARS)") {
+			wm.paneCreatePrompt = "Radar scope (STARS)"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewSTARSPane("(Unnamed)"))
 		}
 		if imgui.Selectable("Reminders") {
 			wm.paneCreatePrompt = "Reminders"
