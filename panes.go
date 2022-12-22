@@ -23,7 +23,7 @@ type Pane interface {
 
 	Duplicate(nameAsCopy bool) Pane
 
-	Activate(cs *ColorScheme)
+	Activate()
 	Deactivate()
 
 	CanTakeKeyboardFocus() bool
@@ -236,7 +236,6 @@ type AirportInfoPane struct {
 
 func NewAirportInfoPane() *AirportInfoPane {
 	// Reasonable (I hope) defaults...
-	font := GetDefaultFont()
 	return &AirportInfoPane{
 		Airports:        make(map[string]interface{}),
 		ShowTime:        true,
@@ -247,14 +246,6 @@ func NewAirportInfoPane() *AirportInfoPane {
 		ShowDeparted:    true,
 		ShowArrivals:    true,
 		ShowControllers: true,
-
-		lastATIS:       make(map[string]string),
-		seenDepartures: make(map[string]interface{}),
-		seenArrivals:   make(map[string]interface{}),
-
-		font:           font,
-		FontIdentifier: font.id,
-		sb:             NewScrollBar(4, false),
 	}
 }
 
@@ -269,7 +260,7 @@ func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	return &dupe
 }
 
-func (a *AirportInfoPane) Activate(cs *ColorScheme) {
+func (a *AirportInfoPane) Activate() {
 	if a.font = GetFont(a.FontIdentifier); a.font == nil {
 		a.font = GetDefaultFont()
 		a.FontIdentifier = a.font.id
@@ -285,11 +276,6 @@ func (a *AirportInfoPane) Activate(cs *ColorScheme) {
 	}
 	if a.sb == nil {
 		a.sb = NewScrollBar(4, false)
-	}
-
-	// FIXME: temporary transition
-	if a.Airports == nil {
-		a.Airports = make(map[string]interface{})
 	}
 }
 
@@ -651,7 +637,7 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(cs *ColorScheme)   {}
+func (ep *EmptyPane) Activate()                  {}
 func (ep *EmptyPane) Deactivate()                {}
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 
@@ -671,11 +657,10 @@ type FlightPlanPane struct {
 }
 
 func NewFlightPlanPane() *FlightPlanPane {
-	font := GetDefaultFont()
-	return &FlightPlanPane{FontIdentifier: font.id, font: font}
+	return &FlightPlanPane{}
 }
 
-func (fp *FlightPlanPane) Activate(cs *ColorScheme) {
+func (fp *FlightPlanPane) Activate() {
 	if fp.font = GetFont(fp.FontIdentifier); fp.font == nil {
 		fp.font = GetDefaultFont()
 		fp.FontIdentifier = fp.font.id
@@ -738,15 +723,10 @@ type NotesViewPane struct {
 }
 
 func NewNotesViewPane() *NotesViewPane {
-	font := GetDefaultFont()
-	return &NotesViewPane{
-		FontIdentifier: font.id,
-		font:           font,
-		scrollbar:      NewScrollBar(4, false),
-		expanded:       make(map[*NotesNode]interface{})}
+	return &NotesViewPane{}
 }
 
-func (nv *NotesViewPane) Activate(cs *ColorScheme) {
+func (nv *NotesViewPane) Activate() {
 	if nv.font = GetFont(nv.FontIdentifier); nv.font == nil {
 		nv.font = GetDefaultFont()
 		nv.FontIdentifier = nv.font.id
@@ -905,20 +885,20 @@ type PerformancePane struct {
 }
 
 func NewPerformancePane() *PerformancePane {
-	font := GetDefaultFont()
-	return &PerformancePane{FontIdentifier: font.id, font: font}
+	return &PerformancePane{}
 }
 
 func (pp *PerformancePane) Duplicate(nameAsCopy bool) Pane {
 	return &PerformancePane{FontIdentifier: pp.FontIdentifier, font: pp.font}
 }
 
-func (pp *PerformancePane) Activate(cs *ColorScheme) {
+func (pp *PerformancePane) Activate() {
 	if pp.font = GetFont(pp.FontIdentifier); pp.font == nil {
 		pp.font = GetDefaultFont()
 		lg.Printf("want %+v got %+v", pp.FontIdentifier, pp.font)
 		pp.FontIdentifier = pp.font.id
 	}
+
 	pp.frameCountStart = time.Now()
 	pp.framesCount[0] = 0
 	pp.framesCount[1] = 0
@@ -1053,15 +1033,14 @@ func (t *ToDoReminderItem) Draw(text func(s string, color RGB), ctx *PaneContext
 }
 
 func NewReminderPane() *ReminderPane {
-	font := GetDefaultFont()
-	return &ReminderPane{FontIdentifier: font.id, font: font}
+	return &ReminderPane{}
 }
 
 func (rp *ReminderPane) Duplicate(nameAsCopy bool) Pane {
 	return &ReminderPane{FontIdentifier: rp.FontIdentifier, font: rp.font}
 }
 
-func (rp *ReminderPane) Activate(cs *ColorScheme) {
+func (rp *ReminderPane) Activate() {
 	if rp.font = GetFont(rp.FontIdentifier); rp.font == nil {
 		rp.font = GetDefaultFont()
 		rp.FontIdentifier = rp.font.id
@@ -1204,18 +1183,12 @@ type FlightStripPane struct {
 }
 
 func NewFlightStripPane() *FlightStripPane {
-	font := GetDefaultFont()
 	return &FlightStripPane{
-		FontIdentifier:            font.id,
-		font:                      font,
 		AddPushed:                 true,
 		CollectDeparturesArrivals: true,
 		Airports:                  make(map[string]interface{}),
-		addedAircraft:             make(map[string]interface{}),
 		selectedStrip:             -1,
 		selectedAnnotation:        -1,
-		eventsId:                  eventStream.Subscribe(),
-		scrollbar:                 NewScrollBar(4, true),
 	}
 }
 
@@ -1237,16 +1210,13 @@ func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(cs *ColorScheme) {
+func (fsp *FlightStripPane) Activate() {
 	if fsp.font = GetFont(fsp.FontIdentifier); fsp.font == nil {
 		fsp.font = GetDefaultFont()
 		fsp.FontIdentifier = fsp.font.id
 	}
 	if fsp.addedAircraft == nil {
 		fsp.addedAircraft = make(map[string]interface{})
-	}
-	if fsp.Airports == nil {
-		fsp.Airports = make(map[string]interface{})
 	}
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewScrollBar(4, true)

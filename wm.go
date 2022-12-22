@@ -91,7 +91,7 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(cs *ColorScheme)   {}
+func (s *SplitLine) Activate()                  {}
 func (s *SplitLine) Deactivate()                {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool { return false }
 
@@ -577,6 +577,12 @@ func wmDrawConfigEditor(p Platform) {
 	setPicked := func(newPane Pane) func(pane Pane) bool {
 		return func(pane Pane) bool {
 			node := positionConfig.DisplayRoot.NodeForPane(pane)
+			if pane != nil {
+				pane.Deactivate()
+			}
+			if newPane != nil {
+				newPane.Activate()
+			}
 			node.Pane = newPane
 			wm.paneCreatePrompt = ""
 			wm.paneConfigHelpText = ""
@@ -990,8 +996,7 @@ func wmActivateNewConfig(old *PositionConfig, nw *PositionConfig) {
 		if old != nil {
 			old.DisplayRoot.VisitPanes(func(p Pane) { p.Deactivate() })
 		}
-		cs := nw.GetColorScheme()
-		nw.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(cs) })
+		nw.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
 	}
 
 	wm.showPaneSettings = make(map[Pane]*bool)

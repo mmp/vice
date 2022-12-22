@@ -119,15 +119,7 @@ type CLIPane struct {
 }
 
 func NewCLIPane() *CLIPane {
-	font := GetDefaultFont()
-
-	return &CLIPane{
-		FontIdentifier: font.id,
-		font:           font,
-		console:        NewRingBuffer[*ConsoleEntry](consoleLimit),
-		errorCount:     make(map[string]int),
-		eventsId:       eventStream.Subscribe(),
-	}
+	return &CLIPane{}
 }
 
 func (cli *CLIPane) Duplicate(nameAsCopy bool) Pane {
@@ -140,7 +132,7 @@ func (cli *CLIPane) Duplicate(nameAsCopy bool) Pane {
 	}
 }
 
-func (cli *CLIPane) Activate(cs *ColorScheme) {
+func (cli *CLIPane) Activate() {
 	if cli.font = GetFont(cli.FontIdentifier); cli.font == nil {
 		cli.font = GetDefaultFont()
 		cli.FontIdentifier = cli.font.id

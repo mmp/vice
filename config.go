@@ -430,6 +430,8 @@ func NewPositionConfig() *PositionConfig {
 			&DisplayNode{Pane: NewRadarScopePane("Main Scope")},
 		},
 	}
+	c.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
+
 	c.ColorSchemeName = SortedMapKeys(builtinColorSchemes)[0]
 
 	return c

@@ -140,38 +140,21 @@ const (
 )
 
 func NewRadarScopePane(n string) *RadarScopePane {
-	c := &RadarScopePane{ScopeName: n}
-
-	c.PointSize = 3
-	c.LineWidth = 1
-
-	c.StaticDraw = NewStaticDrawConfig()
-
-	c.Center = database.defaultCenter
-	c.MinAltitude = 0
-	c.MaxAltitude = 60000
-	c.Range = 15
-	c.DatablockFormat = DatablockFormatGround
-	c.DatablockFrequency = 3
-	c.RadarTracksDrawn = 5
-
-	c.aircraft = make(map[*Aircraft]*AircraftScopeState)
-	c.ghostAircraft = make(map[*Aircraft]*Aircraft)
-	c.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
-
-	font := GetDefaultFont()
-	c.DatablockFontIdentifier = font.id
-	c.datablockFont = font
-	c.labelFont = font
-	c.LabelFontIdentifier = font.id
-
-	c.CRDAConfig = NewCRDAConfig()
-
-	c.AutoMITAirports = make(map[string]interface{})
-
-	c.eventsId = eventStream.Subscribe()
-
-	return c
+	return &RadarScopePane{
+		ScopeName:          n,
+		PointSize:          3,
+		LineWidth:          1,
+		StaticDraw:         NewStaticDrawConfig(),
+		Center:             database.defaultCenter,
+		MinAltitude:        0,
+		MaxAltitude:        60000,
+		Range:              15,
+		DatablockFormat:    DatablockFormatGround,
+		DatablockFrequency: 3,
+		RadarTracksDrawn:   5,
+		CRDAConfig:         NewCRDAConfig(),
+		AutoMITAirports:    make(map[string]interface{}),
+	}
 }
 
 func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
@@ -206,7 +189,7 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 	return dupe
 }
 
-func (rs *RadarScopePane) Activate(cs *ColorScheme) {
+func (rs *RadarScopePane) Activate() {
 	// Temporary: catch unset ones from old config files
 	if rs.CRDAConfig.GlideslopeLateralSpread == 0 {
 		rs.CRDAConfig = NewCRDAConfig()
