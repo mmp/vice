@@ -214,6 +214,13 @@ func (d *DisplayNode) MarshalJSON() ([]byte, error) {
 	return json.Marshal(td)
 }
 
+// Helper function to unmarshal the JSON of a Pane of a given type T.
+func unmarshalPane[T Pane](data []byte) (Pane, error) {
+	var p T
+	err := json.Unmarshal(data, &p)
+	return p, err
+}
+
 // UnmarshalJSON unmarshals text into a DisplayNode; its main task is to
 // use the type sting that comes along in the TypedDisplayNodePane to
 // determine which Pane type to unmarshal the Pane's member variables into.
@@ -235,81 +242,49 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 		return err
 	}
 
-	// Now create the appropriate Pane type based on the type string and
-	// then unmarshal its member variables.
+	// Now create the appropriate Pane type based on the type string.
+	var pane Pane
+	var err error
 	switch paneType {
 	case "":
 		// nil pane
 
 	case "*main.AirportInfoPane":
-		var aip AirportInfoPane
-		if err := json.Unmarshal(*m["Pane"], &aip); err != nil {
-			return err
-		}
-		d.Pane = &aip
+		pane, err = unmarshalPane[*AirportInfoPane](*m["Pane"])
 
 	case "*main.CLIPane":
-		var clip CLIPane
-		if err := json.Unmarshal(*m["Pane"], &clip); err != nil {
-			return err
-		}
-		d.Pane = &clip
+		pane, err = unmarshalPane[*CLIPane](*m["Pane"])
 
 	case "*main.EmptyPane":
-		var ep EmptyPane
-		if err := json.Unmarshal(*m["Pane"], &ep); err != nil {
-			return err
-		}
-		d.Pane = &ep
+		pane, err = unmarshalPane[*EmptyPane](*m["Pane"])
 
 	case "*main.FlightPlanPane":
-		var fp FlightPlanPane
-		if err := json.Unmarshal(*m["Pane"], &fp); err != nil {
-			return err
-		}
-		d.Pane = &fp
+		pane, err = unmarshalPane[*FlightPlanPane](*m["Pane"])
 
 	case "*main.FlightStripPane":
-		var fs FlightStripPane
-		if err := json.Unmarshal(*m["Pane"], &fs); err != nil {
-			return err
-		}
-		d.Pane = &fs
+		pane, err = unmarshalPane[*FlightStripPane](*m["Pane"])
 
 	case "*main.NotesViewPane":
-		var nv NotesViewPane
-		if err := json.Unmarshal(*m["Pane"], &nv); err != nil {
-			return err
-		}
-		d.Pane = &nv
+		pane, err = unmarshalPane[*NotesViewPane](*m["Pane"])
 
 	case "*main.PerformancePane":
-		var pp PerformancePane
-		if err := json.Unmarshal(*m["Pane"], &pp); err != nil {
-			return err
-		}
-		d.Pane = &pp
+		pane, err = unmarshalPane[*PerformancePane](*m["Pane"])
 
 	case "*main.RadarScopePane":
-		var rsp RadarScopePane
-		if err := json.Unmarshal(*m["Pane"], &rsp); err != nil {
-			return err
-		}
-		d.Pane = &rsp
+		pane, err = unmarshalPane[*RadarScopePane](*m["Pane"])
 
 	case "*main.ReminderPane":
-		var rp ReminderPane
-		if err := json.Unmarshal(*m["Pane"], &rp); err != nil {
-			return err
-		}
-		d.Pane = &rp
+		pane, err = unmarshalPane[*ReminderPane](*m["Pane"])
 
 	default:
 		lg.Errorf("%s: Unhandled type in config file", paneType)
-		d.Pane = NewEmptyPane() // don't crash at least
+		pane = NewEmptyPane() // don't crash at least
 	}
 
-	return nil
+	if err == nil {
+		d.Pane = pane
+	}
+	return err
 }
 
 // VisitPanes visits all of the Panes in a DisplayNode hierarchy, calling
