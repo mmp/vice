@@ -3,32 +3,11 @@ vice
 
 ![dall-e 2 tower](https://github.com/mmp/vice/blob/master/icons/tower-rounded-inset-256x256.png?raw=true)
 
-*A cross-platform, open-source, possibly-future VATSIM client*
+*A fun folly writing an ATC client*.
 
 [<img src="https://github.com/mmp/vice/actions/workflows/ci-windows.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-windows)
 [<img src="https://github.com/mmp/vice/actions/workflows/ci-mac.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-mac)
 [<img src="https://github.com/mmp/vice/actions/workflows/ci-linux.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-linux)
-
-Features
---------
-* Cross-platform: runs on Windows, Macintosh, and Linux.
-* Open source: licensed under the [GNU General Public License, version 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
-* Tiled window interface allows flexible use of multiple radar scopes for VATSIM's
-  top-down controlling environment.
-* Support for VATSIM's standard `sct2` sector files and `pof` position
-  files makes it easy to get started using *vice*.
-* Full-featured: all of the basics necessary for ATC as well as more
-  advanced features like automatic generation of miles in trail separation
-  indicators for arrivals and converging runway display aid (CRDA).
-
-See the [vice website](https://vice.pharr.org/) for
-more details about *vice*'s features and capabilities as well as for
-information about getting starting using it. (The [website source is on
-github as well](https://github.com/mmp/vice-website).)
-
-Note that it is **not** currently possible to connect to VATSIM and to
-control aircraft using *vice*; the system is a full-featured prototype at
-the moment and not an official client.
 
 Building vice
 -------------
