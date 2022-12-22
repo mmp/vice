@@ -77,36 +77,6 @@ type RadarScopePane struct {
 	pointedOutAircraft *TransientMap[*Aircraft, string]
 
 	eventsId EventSubscriberId
-
-	// Backwards compatibility for config.json files written before
-	// StaticDrawConfig was introduced; this allows us to grab the old
-	// configuration and then copy its into StaticDraw.
-	//
-	// TODO: remove this at some point in the future
-	OldDrawEverything   bool                   `json:"DrawEverything,omitempty"`
-	OldDrawRunways      bool                   `json:"DrawRunways,omitempty"`
-	OldDrawRegions      bool                   `json:"DrawRegions,omitempty"`
-	OldDrawLabels       bool                   `json:"DrawLabels,omitempty"`
-	OldDrawLowAirways   bool                   `json:"DrawLowAirways,omitempty"`
-	OldDrawHighAirways  bool                   `json:"DrawHighAirways,omitempty"`
-	OldDrawVORs         bool                   `json:"DrawVORs,omitempty"`
-	OldDrawVORNames     bool                   `json:"DrawVORNames,omitempty"`
-	OldVORsToDraw       map[string]interface{} `json:"VORsToDraw,omitempty"`
-	OldDrawNDBs         bool                   `json:"DrawNDBs,omitempty"`
-	OldDrawNDBNames     bool                   `json:"DrawNDBNames,omitempty"`
-	OldNDBsToDraw       map[string]interface{} `json:"NDBsToDraw,omitempty"`
-	OldDrawFixes        bool                   `json:"DrawFixes,omitempty"`
-	OldDrawFixNames     bool                   `json:"DrawFixNames,omitempty"`
-	OldFixesToDraw      map[string]interface{} `json:"FixesToDraw,omitempty"`
-	OldDrawAirports     bool                   `json:"DrawAirports,omitempty"`
-	OldDrawAirportNames bool                   `json:"DrawAirportNames,omitempty"`
-	OldAirportsToDraw   map[string]interface{} `json:"AirportsToDraw,omitempty"`
-	OldGeoDrawSet       map[string]interface{} `json:"GeoDrawSet,omitempty"`
-	OldSIDDrawSet       map[string]interface{} `json:"SIDDrawSet,omitempty"`
-	OldSTARDrawSet      map[string]interface{} `json:"STARDrawSet,omitempty"`
-	OldARTCCDrawSet     map[string]interface{} `json:"ARTCCDrawSet,omitempty"`
-	OldARTCCLowDrawSet  map[string]interface{} `json:"ARTCCLowDrawSet,omitempty"`
-	OldARTCCHighDrawSet map[string]interface{} `json:"ARTCCHighDrawSet,omitempty"`
 }
 
 const (
@@ -190,101 +160,8 @@ func (rs *RadarScopePane) Duplicate(nameAsCopy bool) Pane {
 }
 
 func (rs *RadarScopePane) Activate() {
-	// Temporary: catch unset ones from old config files
-	if rs.CRDAConfig.GlideslopeLateralSpread == 0 {
-		rs.CRDAConfig = NewCRDAConfig()
-	}
-
-	// Upgrade old files
-	if rs.StaticDraw == nil {
-		rs.StaticDraw = NewStaticDrawConfig()
-
-		// Copy over any values set from before StaticDrawConfig was
-		// introduced and then zero the old ones out; they will then not be
-		// included when the config.json file is written, thanks to
-		// "omitempty"...
-		rs.StaticDraw.DrawEverything = rs.OldDrawEverything
-		rs.OldDrawEverything = false
-		rs.StaticDraw.DrawRunways = rs.OldDrawRunways
-		rs.OldDrawRunways = false
-		rs.StaticDraw.DrawRegions = rs.OldDrawRegions
-		rs.OldDrawRegions = false
-		rs.StaticDraw.DrawLabels = rs.OldDrawLabels
-		rs.OldDrawLabels = false
-		rs.StaticDraw.DrawLowAirways = rs.OldDrawLowAirways
-		rs.OldDrawLowAirways = false
-		rs.StaticDraw.DrawHighAirways = rs.OldDrawHighAirways
-		rs.OldDrawHighAirways = false
-		rs.StaticDraw.DrawVORs = rs.OldDrawVORs
-		rs.OldDrawVORs = false
-		rs.StaticDraw.DrawVORNames = rs.OldDrawVORNames
-		rs.OldDrawVORNames = false
-		if len(rs.OldVORsToDraw) > 0 {
-			rs.StaticDraw.VORsToDraw = rs.OldVORsToDraw
-			rs.OldVORsToDraw = nil
-		}
-		rs.StaticDraw.DrawNDBs = rs.OldDrawNDBs
-		rs.OldDrawNDBs = false
-		rs.StaticDraw.DrawNDBNames = rs.OldDrawNDBNames
-		rs.OldDrawNDBNames = false
-		if len(rs.OldNDBsToDraw) > 0 {
-			rs.StaticDraw.NDBsToDraw = rs.OldNDBsToDraw
-			rs.OldNDBsToDraw = nil
-		}
-		rs.StaticDraw.DrawFixes = rs.OldDrawFixes
-		rs.OldDrawFixes = false
-		rs.StaticDraw.DrawFixNames = rs.OldDrawFixNames
-		rs.OldDrawFixNames = false
-		if len(rs.OldFixesToDraw) > 0 {
-			rs.StaticDraw.FixesToDraw = rs.OldFixesToDraw
-			rs.OldFixesToDraw = nil
-		}
-		rs.StaticDraw.DrawAirports = rs.OldDrawAirports
-		rs.OldDrawAirports = false
-		rs.StaticDraw.DrawAirportNames = rs.OldDrawAirportNames
-		rs.OldDrawAirportNames = false
-		if len(rs.OldAirportsToDraw) > 0 {
-			rs.StaticDraw.AirportsToDraw = rs.OldAirportsToDraw
-			rs.OldAirportsToDraw = nil
-		}
-		if len(rs.OldGeoDrawSet) > 0 {
-			rs.StaticDraw.GeoDrawSet = rs.OldGeoDrawSet
-			rs.OldGeoDrawSet = nil
-		}
-		if len(rs.OldSIDDrawSet) > 0 {
-			rs.StaticDraw.SIDDrawSet = rs.OldSIDDrawSet
-			rs.OldSIDDrawSet = nil
-		}
-		if len(rs.OldSTARDrawSet) > 0 {
-			rs.StaticDraw.STARDrawSet = rs.OldSTARDrawSet
-			rs.OldSTARDrawSet = nil
-		}
-		if len(rs.OldARTCCDrawSet) > 0 {
-			rs.StaticDraw.ARTCCDrawSet = rs.OldARTCCDrawSet
-			rs.OldARTCCDrawSet = nil
-		}
-		if len(rs.OldARTCCLowDrawSet) > 0 {
-			rs.StaticDraw.ARTCCLowDrawSet = rs.OldARTCCLowDrawSet
-			rs.OldARTCCLowDrawSet = nil
-		}
-		if len(rs.OldARTCCHighDrawSet) > 0 {
-			rs.StaticDraw.ARTCCHighDrawSet = rs.OldARTCCHighDrawSet
-			rs.OldARTCCHighDrawSet = nil
-		}
-	}
-
-	if rs.RadarTracksDrawn == 0 {
-		rs.RadarTracksDrawn = 5
-	}
-	if rs.DatablockFrequency == 0 {
-		rs.DatablockFrequency = 3
-	}
-
 	rs.StaticDraw.Activate()
 
-	if rs.AutoMITAirports == nil {
-		rs.AutoMITAirports = make(map[string]interface{})
-	}
 	if rs.pointedOutAircraft == nil {
 		rs.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
 	}
