@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"sort"
 	"strings"
 	"time"
 )
@@ -228,7 +227,6 @@ func (v *VATSIMServer) GetController(callsign string) *Controller {
 
 func (v *VATSIMServer) GetAllControllers() []*Controller {
 	_, c := FlattenMap(v.controllers)
-	sort.Slice(c, func(i, j int) bool { return c[i].Callsign < c[j].Callsign })
 	return c
 }
 

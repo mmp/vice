@@ -566,6 +566,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	controllers := server.GetAllControllers()
 	if a.ShowControllers && len(controllers) > 0 {
 		str.WriteString("Controllers:\n")
+		sort.Slice(controllers, func(i, j int) bool { return controllers[i].Callsign < controllers[j].Callsign })
 
 		for _, suffix := range []string{"CTR", "APP", "DEP", "TWR", "GND", "DEL", "FSS", "ATIS", "OBS"} {
 			first := true
