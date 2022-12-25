@@ -8,8 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"time"
 )
 
@@ -192,15 +190,10 @@ func (fr *FlightRadarServer) GetUpdates() {
 		center.Longitude()+radius/database.NmPerLongitude)
 
 	fr.lastRequest = time.Now()
-	response, err := http.Get(request)
-	if err != nil {
-		lg.Errorf("Error with flightradar GET: %v", err)
-		return
-	}
-	defer response.Body.Close()
 
 	var text []byte
-	if text, err = io.ReadAll(response.Body); err != nil {
+	var err error
+	if text, err = FetchURL(request); err != nil {
 		lg.Errorf("Error reading flightradar response: %v", err)
 		return
 	}

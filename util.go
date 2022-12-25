@@ -7,7 +7,9 @@ package main
 import (
 	"fmt"
 	"golang.org/x/exp/constraints"
+	"io"
 	"math"
+	"net/http"
 	"sort"
 	"strconv"
 	"strings"
@@ -975,4 +977,22 @@ func (r *RingBuffer[V]) Size() int {
 // is between 0 and Size()-1 and 0 is the oldest element in the buffer.
 func (r *RingBuffer[V]) Get(i int) V {
 	return r.entries[(r.index+i)%len(r.entries)]
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Networking miscellany
+
+func FetchURL(url string) ([]byte, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	var text []byte
+	if text, err = io.ReadAll(response.Body); err != nil {
+		return nil, err
+	}
+
+	return text, nil
 }
