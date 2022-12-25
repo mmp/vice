@@ -536,20 +536,20 @@ func init() {
 	}))
 
 	r(NewMessageSpec("$CQ::NEWATIS", 4, func(v *VATSIMServer, sender string, args []string) error {
-		var atis string
+		var contents, code string
 		if len(args) == 5 {
 			// I think this is the expected way
 			// $CQKEKY_ATIS:@94835:NEWATIS:ATIS A:  VRB05KT - A3006
-			letter := args[3][len(args[3])-1]
-			atis = string(letter) + " " + args[4]
+			code = string(args[3][len(args[3])-1])
+			contents = args[4]
 		} else {
 			// But occasionally it comes in like this
 			// CQKORF_ATIS:@94835:NEWATIS:ATIS D - wind 07009KT alt 3000
 			if len(args[3]) < 8 {
 				return MalformedMessageError{"Insufficient ATIS text" + args[3]}
 			}
-			letter := args[3][5]
-			atis = string(letter) + " " + args[3][8:]
+			code = string(args[3][5])
+			contents = args[3][8:]
 		}
 
 		// First, figure out which airport this is for; we want to
@@ -562,16 +562,17 @@ func init() {
 		}
 		airport := sc[0]
 
-		eventStream.Post(&ReceivedATISEvent{ATIS: ATIS{Airport: sender, Contents: atis}})
+		atis := ATIS{Airport: sender, Code: code, Contents: contents}
+		eventStream.Post(&ReceivedATISEvent{atis})
 		for i, a := range v.atis[airport] {
 			if a.Airport == sender {
 				// Replace pre-existing
-				v.atis[airport][i] = ATIS{Airport: sender, Contents: atis}
+				v.atis[airport][i] = atis
 				return nil
 			}
 		}
 		// Add a new one
-		v.atis[airport] = append(v.atis[airport], ATIS{Airport: sender, Contents: atis})
+		v.atis[airport] = append(v.atis[airport], atis)
 		return nil
 	}))
 

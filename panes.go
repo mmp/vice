@@ -412,7 +412,14 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		var atis []string
 		for ap := range a.Airports {
 			for _, at := range server.GetAirportATIS(ap) {
-				atis = append(atis, fmt.Sprintf("  %-12s: %s", at.Airport, at.Contents))
+				astr := fmt.Sprintf("  %-12s: %s ", at.Airport, at.Code)
+				if len(at.Contents) > 20 { // TODO: base on actual number of columns
+					astr += at.Contents[:20] + "..."
+				} else {
+					astr += at.Contents
+				}
+
+				atis = append(atis, astr)
 
 				if oldATIS, ok := a.lastATIS[at.Airport]; ok && oldATIS != at.Contents {
 					// it's been updated

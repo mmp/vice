@@ -80,6 +80,7 @@ func ParseMETAR(str string) (*METAR, error) {
 
 type ATIS struct {
 	Airport  string
+	Code     string
 	Contents string
 }
 
