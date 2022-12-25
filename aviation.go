@@ -30,6 +30,54 @@ func (m METAR) String() string {
 	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind, m.Weather, m.Altimeter, m.Rmk}, " ")
 }
 
+func ParseMETAR(str string) (*METAR, error) {
+	fields := strings.Fields(str)
+	if len(fields) < 3 {
+		return nil, MalformedMessageError{"Expected >= 3 fields in METAR text"}
+	}
+
+	i := 0
+	next := func() string {
+		if i == len(fields) {
+			return ""
+		}
+		s := fields[i]
+		i++
+		return s
+	}
+
+	m := &METAR{AirportICAO: next(), Time: next(), Wind: next()}
+	if m.Wind == "AUTO" {
+		m.Auto = true
+		m.Wind = next()
+	}
+
+	for {
+		s := next()
+		if s == "" {
+			break
+		}
+		if s[0] == 'A' || s[0] == 'Q' {
+			m.Altimeter = s
+			break
+		}
+		m.Weather += s + " "
+	}
+	m.Weather = strings.TrimRight(m.Weather, " ")
+
+	if s := next(); s != "RMK" {
+		// TODO: improve the METAR parser...
+		lg.Printf("Expecting RMK where %s is in METAR \"%s\"", s, str)
+	} else {
+		for s != "" {
+			s = next()
+			m.Rmk += s + " "
+		}
+		m.Rmk = strings.TrimRight(m.Rmk, " ")
+	}
+	return m, nil
+}
+
 type ATIS struct {
 	Airport  string
 	Contents string

@@ -53,52 +53,12 @@ func handleAP(v *VATSIMServer, callsign string, args []string) error {
 
 // $ARserver:ABE_APP:METAR:KABE 232251Z 24006KT ...
 func handleAR(v *VATSIMServer, sender string, args []string) error {
-	fields := strings.Fields(args[3])
-	if len(fields) < 3 {
-		return MalformedMessageError{"Expected >= 3 fields in METAR text"}
-	}
-	i := 0
-	next := func() string {
-		if i == len(fields) {
-			return ""
-		}
-		s := fields[i]
-		i++
-		return s
-	}
-
-	m := METAR{AirportICAO: next(), Time: next(), Wind: next()}
-	if m.Wind == "AUTO" {
-		m.Auto = true
-		m.Wind = next()
-	}
-
-	for {
-		s := next()
-		if s == "" {
-			break
-		}
-		if s[0] == 'A' || s[0] == 'Q' {
-			m.Altimeter = s
-			break
-		}
-		m.Weather += s + " "
-	}
-	m.Weather = strings.TrimRight(m.Weather, " ")
-
-	if s := next(); s != "RMK" {
-		// TODO: improve the METAR parser...
-		lg.Printf("Expecting RMK where %s is in METAR \"%s\"", s, args[3])
+	if metar, err := ParseMETAR(args[3]); err == nil {
+		v.metar[metar.AirportICAO] = *metar
+		eventStream.Post(&ReceivedMETAREvent{METAR: *metar})
 	} else {
-		for s != "" {
-			s = next()
-			m.Rmk += s + " "
-		}
-		m.Rmk = strings.TrimRight(m.Rmk, " ")
+		lg.Errorf("%s: %v", args[3], err)
 	}
-
-	v.metar[m.AirportICAO] = m
-	eventStream.Post(&ReceivedMETAREvent{METAR: m})
 	return nil
 }
 
