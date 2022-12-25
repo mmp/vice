@@ -105,19 +105,7 @@ type Controller struct {
 }
 
 func (c *Controller) GetPosition() *Position {
-	// compute the basic callsign: e.g. NY_1_CTR -> NY_CTR, PHL_ND_APP -> PHL_APP
-	callsign := c.Callsign
-	cf := strings.Split(callsign, "_")
-	if len(cf) > 2 {
-		callsign = cf[0] + "_" + cf[len(cf)-1]
-	}
-
-	for i, pos := range database.positions[callsign] {
-		if pos.Frequency == c.Frequency {
-			return &database.positions[callsign][i]
-		}
-	}
-	return nil
+	return database.LookupPosition(c.Callsign, c.Frequency)
 }
 
 type Pilot struct {

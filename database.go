@@ -871,6 +871,21 @@ func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 	}
 }
 
+func (db *StaticDatabase) LookupPosition(callsign string, frequency Frequency) *Position {
+	// compute the basic callsign: e.g. NY_1_CTR -> NY_CTR, PHL_ND_APP -> PHL_APP
+	cf := strings.Split(callsign, "_")
+	if len(cf) > 2 {
+		callsign = cf[0] + "_" + cf[len(cf)-1]
+	}
+
+	for i, pos := range db.positions[callsign] {
+		if pos.Frequency == frequency {
+			return &db.positions[callsign][i]
+		}
+	}
+	return nil
+}
+
 func (db *StaticDatabase) SetColorScheme(cs *ColorScheme) {
 	// Set the sector file colors by default; they may be overridden
 	// shortly, but no need to be more clever here.
