@@ -35,6 +35,7 @@ type StaticDatabase struct {
 		prd      map[AirportPair][]PRDEntry
 	}
 	callsigns map[string]Callsign
+	aircraft  map[string]string
 
 	// From the sector file
 	NmPerLatitude     float32
@@ -166,6 +167,8 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase, sectorFile, positionF
 	go func() { db.FAA.prd = parsePRD(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.callsigns = parseCallsigns(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.aircraft = parseAircraft(); wg.Done() }()
 	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
@@ -207,6 +210,10 @@ var (
 	// https://www.partow.net/miscellaneous/airportdatabase/
 	//go:embed resources/GlobalAirportDatabase.txt.zst
 	globalAirportsRaw string
+
+	// Via wikipedia...
+	//go:embed resources/aircraft.csv
+	aircraftRaw string
 )
 
 // Utility function for parsing CSV files as strings; it breaks each line
@@ -356,6 +363,21 @@ func parseCallsigns() map[string]Callsign {
 	mungeCSV("virtual callsigns", decompressZstd(virtualCallsignsRaw), addCallsign)
 
 	return callsigns
+}
+
+func parseAircraft() map[string]string {
+	aircraft := make(map[string]string)
+
+	mungeCSV("aircraft", aircraftRaw, func(s []string) {
+		code := strings.TrimSpace(s[0])
+		if _, ok := aircraft[code]; ok {
+			lg.Errorf("%s: duplicate aircraft DB entry", code)
+		} else {
+			aircraft[code] = strings.TrimSpace(s[1])
+		}
+	})
+
+	return aircraft
 }
 
 ///////////////////////////////////////////////////////////////////////////
