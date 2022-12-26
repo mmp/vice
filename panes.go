@@ -601,7 +601,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				writeWakeTurbulence(nil, nil)
 			}
 
-			str.WriteString(" " + star + "\n")
+			str.WriteString(fmt.Sprintf(" %4s %s\n", ac.Squawk, star))
 
 			if _, ok := a.seenArrivals[ac.Callsign]; !ok {
 				globalConfig.AudioSettings.HandleEvent(AudioEventNewArrival)
