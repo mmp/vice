@@ -307,3 +307,15 @@ type TextMessageEvent struct {
 func (e *TextMessageEvent) String() string {
 	return "TextMessageEvent: " + e.message.String()
 }
+
+type NewServerConnectionEvent struct{}
+
+func (e *NewServerConnectionEvent) String() string {
+	return "NewServerConnectionEvent"
+}
+
+type ClosedServerConnectionEvent struct{}
+
+func (e *ClosedServerConnectionEvent) String() string {
+	return "ClosedServerConnectionEvent"
+}

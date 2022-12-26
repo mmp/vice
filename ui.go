@@ -891,6 +891,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 		if err == nil {
 			c.err = ""
+			eventStream.Post(&NewServerConnectionEvent{})
 		} else {
 			c.err = err.Error()
 		}
@@ -963,6 +964,7 @@ func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
 	ok := ModalDialogButton{text: "Ok", action: func() bool {
 		server.Disconnect()
 		server = &DisconnectedATCServer{}
+		eventStream.Post(&ClosedServerConnectionEvent{})
 		return true
 	}}
 	b = append(b, ok)

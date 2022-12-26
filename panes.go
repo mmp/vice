@@ -230,6 +230,8 @@ type AirportInfoPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 
+	eventsId EventSubscriberId
+
 	sb *ScrollBar
 	cb CommandBuffer
 }
@@ -255,6 +257,7 @@ func (a *AirportInfoPane) Duplicate(nameAsCopy bool) Pane {
 	dupe.lastATIS = DuplicateMap(a.lastATIS)
 	dupe.seenDepartures = DuplicateMap(a.seenDepartures)
 	dupe.seenArrivals = DuplicateMap(a.seenArrivals)
+	dupe.eventsId = eventStream.Subscribe()
 	dupe.sb = NewScrollBar(4, false)
 	dupe.cb = CommandBuffer{}
 	return &dupe
@@ -277,9 +280,16 @@ func (a *AirportInfoPane) Activate() {
 	if a.sb == nil {
 		a.sb = NewScrollBar(4, false)
 	}
+	for ap := range a.Airports {
+		server.AddAirportForWeather(ap)
+	}
+	a.eventsId = eventStream.Subscribe()
 }
 
-func (a *AirportInfoPane) Deactivate() {}
+func (a *AirportInfoPane) Deactivate() {
+	eventStream.Unsubscribe(a.eventsId)
+	a.eventsId = InvalidEventSubscriberId
+}
 
 func (a *AirportInfoPane) Name() string {
 	n := "Airport Information"
@@ -344,12 +354,13 @@ func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 func (a *AirportInfoPane) CanTakeKeyboardFocus() bool { return false }
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	// It's slightly little wasteful to keep asking each time; better would
-	// be to only do so when either our airports change or there's a new
-	// server connection.  Not a big deal in the grand scheme of things,
-	// however.
-	for ap := range a.Airports {
-		server.AddAirportForWeather(ap)
+	for _, event := range eventStream.Get(a.eventsId) {
+		if _, ok := event.(*NewServerConnectionEvent); ok {
+			// Let the server know which airports we want weather for.
+			for ap := range a.Airports {
+				server.AddAirportForWeather(ap)
+			}
+		}
 	}
 
 	cs := ctx.cs
