@@ -709,19 +709,19 @@ func (ac *AircraftType) ApproachCategory() string {
 func (ac *AircraftType) RECATCategory() string {
 	code := "unknown"
 	switch ac.RECAT {
-	case "Light":
-		code = "F"
-	case "Lower Medium":
-		code = "E"
-	case "Upper Medium":
-		code = "D"
-	case "Lower Heavy":
-		code = "C"
-	case "Upper Heavy":
-		code = "B"
-	case "Super Heavy":
-		code = "A"
+	case "F":
+		code = "Light"
+	case "E":
+		code = "Lower Medium"
+	case "D":
+		code = "Upper Medium"
+	case "C":
+		code = "Lower Heavy"
+	case "B":
+		code = "Upper Heavy"
+	case "A":
+		code = "Super Heavy"
 	}
 
-	return code + ": " + ac.RECAT
+	return ac.RECAT + ": " + code
 }

@@ -568,17 +568,17 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 					// category. Use sqrts so that we're effectively
 					// scaling area.
 					switch info.RECAT {
-					case "Light":
+					case "F":
 						size *= 0.707106781186548 // sqrt(1/2)
-					case "Lower Medium":
+					case "E":
 						size *= 0.866025403784439 // sqrt(3/4)
-					case "Upper Medium":
+					case "D":
 						// size *= 1
-					case "Lower Heavy":
+					case "C":
 						size *= 1.118033988749895 // sqrt(5/4)
-					case "Upper Heavy":
+					case "B":
 						size *= 1.224744871391589 // sqrt(6/4)
-					case "Super Heavy":
+					case "A":
 						size *= 1.414213562373095 // sqrt(2)
 					}
 				}

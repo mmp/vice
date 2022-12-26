@@ -24,7 +24,7 @@
     },
     "Manufacturer": "FAIRCHILD-DORNIER",
     "Name": "A10 Thunderbolt 2",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -51,7 +51,7 @@
     },
     "Manufacturer": "AgustaWestland",
     "Name": "AW109 Power",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -81,7 +81,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An124 Ruslan",
-    "RECAT": "Super Heavy",
+    "RECAT": "A",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -108,7 +108,7 @@
     },
     "Manufacturer": "AGUSTA",
     "Name": "Mangusta",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -138,7 +138,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A319neo",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -168,7 +168,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A320neo",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -198,7 +198,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A321neo",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -258,7 +258,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A300",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -288,7 +288,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A300",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -318,7 +318,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A310",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -348,7 +348,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A318",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -378,7 +378,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A319",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -408,7 +408,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A320",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -438,7 +438,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A321",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -468,7 +468,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A330-200",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -498,7 +498,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A330-300",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -528,7 +528,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A330-800",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -558,7 +558,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A330-900",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -588,7 +588,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A340-200",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -618,7 +618,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A340-300",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -648,7 +648,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A340-500",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -678,7 +678,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A340-600",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -708,7 +708,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A-350-900",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -738,7 +738,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A350-1000 XWB",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -768,7 +768,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A-380-800",
-    "RECAT": "Super Heavy",
+    "RECAT": "A",
     "Type": "L4J",
     "WTC": "J"
   },
@@ -798,7 +798,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A300ST Beluga",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -828,7 +828,7 @@
     },
     "Manufacturer": "McDonnell Douglas Corporation (United States)",
     "Name": "Skyhawk",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -858,7 +858,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "A-400M Atlas",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4T",
     "WTC": "H"
   },
@@ -887,7 +887,7 @@
     },
     "Manufacturer": "Grumman",
     "Name": "A6 Intruder,Prowler",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -915,7 +915,7 @@
     },
     "Manufacturer": "AVRO",
     "Name": "748",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -943,7 +943,7 @@
     },
     "Manufacturer": "COMMANDER",
     "Name": "112 Commander 112",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -970,7 +970,7 @@
     },
     "Manufacturer": "Rockwell International Corporation (United States)",
     "Name": "500 Commander 500",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -997,7 +997,7 @@
     },
     "Manufacturer": "AERO (1)",
     "Name": "560 Commander 560",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -1023,7 +1023,7 @@
     },
     "Manufacturer": "AERO (1)",
     "Name": "680F Commander 680F",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -1049,7 +1049,7 @@
     },
     "Manufacturer": "AERO COMMANDER",
     "Name": "680FL Grand Commander",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -1076,7 +1076,7 @@
     },
     "Manufacturer": "Gulfstream Aerospace",
     "Name": "695 Jetprop Commander",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -1103,7 +1103,7 @@
     },
     "Manufacturer": "AEROSTAR (1)",
     "Name": "600,601 (AEROSTAR)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -1132,7 +1132,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Alpha Jet",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -1189,7 +1189,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An12",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -1215,7 +1215,7 @@
     },
     "Manufacturer": "PZL-MIELEC",
     "Name": "AICSA An-2",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -1231,7 +1231,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An22 Antheus",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4T",
     "WTC": "H"
   },
@@ -1259,7 +1259,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An24",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1287,7 +1287,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An26",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1314,7 +1314,7 @@
     },
     "Manufacturer": "PZL-MIELEC",
     "Name": "An28",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -1341,7 +1341,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An-30",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1368,7 +1368,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An-32",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1395,7 +1395,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An-38",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1424,7 +1424,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An-70",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -1454,7 +1454,7 @@
     },
     "Manufacturer": "Antonov",
     "Name": "An-72/74",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -1481,7 +1481,7 @@
     },
     "Manufacturer": "EUROCOPTER",
     "Name": "Super Puma",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -1511,7 +1511,7 @@
     },
     "Manufacturer": "Israel Aerospace Industries (IAI)",
     "Name": "Astra",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -1539,7 +1539,7 @@
     },
     "Manufacturer": "ATR",
     "Name": "ALENIA ATR-42-300/320",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1567,7 +1567,7 @@
     },
     "Manufacturer": "ATR",
     "Name": "ATR-42-400",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1595,7 +1595,7 @@
     },
     "Manufacturer": "ATR",
     "Name": "ALENIA ATR-42-500",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1623,7 +1623,7 @@
     },
     "Manufacturer": "ATR",
     "Name": "ALENIA ATR-72",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1651,7 +1651,7 @@
     },
     "Manufacturer": "ATR",
     "Name": "ATR-72-212A (500)",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1679,7 +1679,7 @@
     },
     "Manufacturer": "BREGUET",
     "Name": "1150 Atlantic",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1707,7 +1707,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "ATP",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1719,7 +1719,7 @@
     },
     "Manufacturer": "Bell Aircraft Corporation (United States)",
     "Name": "Bell JetRanger",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H1T",
     "WTC": "L"
   },
@@ -1745,7 +1745,7 @@
     },
     "Manufacturer": "ROCKWELL",
     "Name": "B-1 Lancer",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -1773,7 +1773,7 @@
     },
     "Manufacturer": "RAYTHEON",
     "Name": "1900 (C-12J)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -1829,7 +1829,7 @@
     },
     "Manufacturer": "Bell Aircraft Corporation (United States)",
     "Name": "Bell 230",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -1858,7 +1858,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "B300 Super King Air 350",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -1888,7 +1888,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737 MAX 7",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -1918,7 +1918,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737 MAX 8",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -1948,7 +1948,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737 MAX 9",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -1978,7 +1978,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737 MAX 10",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2005,7 +2005,7 @@
     },
     "Manufacturer": "BELL",
     "Name": "Agusta-Bell 412 Grifone",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -2024,7 +2024,7 @@
     },
     "Manufacturer": "Bell Aircraft Corporation (United States)",
     "Name": "Bell 430",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -2054,7 +2054,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "BAe,",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -2084,7 +2084,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "BAe-146-200",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -2114,7 +2114,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "BAe-146-300",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -2170,7 +2170,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "707-100",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -2200,7 +2200,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "707-300",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2229,7 +2229,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "717-200",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2259,7 +2259,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "720",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -2289,7 +2289,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "727-200",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L3J",
     "WTC": "M"
   },
@@ -2319,7 +2319,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-100",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2349,7 +2349,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-200",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2379,7 +2379,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-300",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2409,7 +2409,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-400",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2439,7 +2439,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-500",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2469,7 +2469,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-600",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2499,7 +2499,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-700",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2529,7 +2529,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-800",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2559,7 +2559,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "737-900",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2589,7 +2589,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747-100",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2619,7 +2619,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747-200",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2649,7 +2649,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747-300",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2679,7 +2679,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747-400",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2709,7 +2709,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747-8",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2739,7 +2739,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747-400 Domestic",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2768,7 +2768,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747SR",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2798,7 +2798,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "747SP",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -2828,7 +2828,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "757-200",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2858,7 +2858,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "757-300",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -2888,7 +2888,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "767-200ER",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -2918,7 +2918,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "767-300ER",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -2948,7 +2948,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "767-400",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -2978,7 +2978,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "777-200",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -3008,7 +3008,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "777-300",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -3038,7 +3038,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "777-200LR",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -3068,7 +3068,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "777-300ER",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -3098,7 +3098,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "787-8 BBJ",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -3128,7 +3128,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "787-8 BBJ",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
@@ -3158,7 +3158,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "BAC 1-11",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -3188,7 +3188,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "Airbus A220-100",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -3218,7 +3218,7 @@
     },
     "Manufacturer": "Airbus",
     "Name": "Airbus A-220-300",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -3246,7 +3246,7 @@
     },
     "Manufacturer": "Scottish Aviation (Bulldog) Ltd.",
     "Name": "Bulldog",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3274,7 +3274,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "100 King Air",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -3303,7 +3303,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "200 Super King Air",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -3330,7 +3330,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "23 Musketeer,Sundowner",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3358,7 +3358,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "33 Debonair,Bonanza (E-24)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3386,7 +3386,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "36 Bonanza (piston)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3416,7 +3416,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "Beech 400 Beechjet",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -3443,7 +3443,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "50 Twin Bonanza",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3470,7 +3470,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "55 Baron",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3498,7 +3498,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "58 Baron",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3526,7 +3526,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "60 Duke",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3553,7 +3553,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "70 Queen Air",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3580,7 +3580,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "76 Duchess",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3607,7 +3607,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "80 Queen Air",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3635,7 +3635,7 @@
     },
     "Manufacturer": "Beech Aircraft Corporation (United States)",
     "Name": "95 Travel Air",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -3663,7 +3663,7 @@
     },
     "Manufacturer": "Beech",
     "Name": "99 Airliner",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -3692,7 +3692,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "A90 to E90 King Air",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -3722,7 +3722,7 @@
     },
     "Manufacturer": "Beriev OKB (Russia)",
     "Name": "A-4 Albatross",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "A2J",
     "WTC": "M"
   },
@@ -3750,7 +3750,7 @@
     },
     "Manufacturer": "PILATUS BRITTEN-NORMAN",
     "Name": "BN-2T Turbine Islander",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -3778,7 +3778,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "206 (turbine)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -3807,7 +3807,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "Aya",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -3837,7 +3837,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "C-135 Startolifter",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -3867,7 +3867,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "C-141 Starlifter",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -3879,7 +3879,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Commuter / Aerobat",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3891,7 +3891,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Aerobat",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3919,7 +3919,7 @@
     },
     "Manufacturer": "TRANSALL",
     "Name": "C-160",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -3949,7 +3949,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "C-17 Globemaster 3",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -3968,7 +3968,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Skyhawk",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -3987,7 +3987,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Cardinal",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -4015,7 +4015,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Skylane",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -4043,7 +4043,7 @@
     },
     "Manufacturer": "Grumman",
     "Name": "C-2 Greyhound",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -4071,7 +4071,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "206 (Cessna)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -4098,7 +4098,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Skywagon",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -4126,7 +4126,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Caravan 1 / (Super)Cargomaster",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -4153,7 +4153,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Centurion",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -4181,7 +4181,7 @@
     },
     "Manufacturer": "CASA",
     "Name": "Aviocar",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -4211,7 +4211,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation CJ2",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -4241,7 +4241,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation CJ3",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -4271,7 +4271,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation CJ4",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -4299,7 +4299,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "AVIONES COLOMBIA T303",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4328,7 +4328,7 @@
     },
     "Manufacturer": "Lockheed MARTIN",
     "Name": "C-130J Hercules",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -4356,7 +4356,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "310,T310 (U-3,L-27)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4384,7 +4384,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "337,M337,MC337,T337B/C/D/E/F/H",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4412,7 +4412,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "340 (Cessna)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4440,7 +4440,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Utililiner / Businessliner",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4468,7 +4468,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Titan",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4496,7 +4496,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Chancellor",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4524,7 +4524,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Executive Commuter",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -4552,7 +4552,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Corsair / Conquest 1",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -4580,7 +4580,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Conquest / Conquest 2",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -4610,7 +4610,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "C-5 Galaxy",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -4640,7 +4640,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "CitationJet",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -4670,7 +4670,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation 526",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -4700,7 +4700,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation 2",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -4730,7 +4730,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation 5 Ultra Encore",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4760,7 +4760,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation Excel",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4790,7 +4790,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation 3/6/7",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4820,7 +4820,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation Sovereign",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4850,7 +4850,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation Longitude",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4880,7 +4880,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "Citation 10",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4908,7 +4908,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "AVIONES COLOMBIA R182",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -4936,7 +4936,7 @@
     },
     "Manufacturer": "Canadair",
     "Name": "CL-415 SuperScooper",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "A2T",
     "WTC": "M"
   },
@@ -4966,7 +4966,7 @@
     },
     "Manufacturer": "Bombardier Aerospace (Canada)",
     "Name": "BD-100 Challenger 300",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -4996,7 +4996,7 @@
     },
     "Manufacturer": "Bombardier Aerospace (Canada)",
     "Name": "BD-100 Challenger 350",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5026,7 +5026,7 @@
     },
     "Manufacturer": "Canadair",
     "Name": "Challenger",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5054,7 +5054,7 @@
     },
     "Manufacturer": "AIRTECH (2)",
     "Name": "AIRTECH CN-235 MP Persuader",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -5112,7 +5112,7 @@
     },
     "Manufacturer": "MUDRY",
     "Name": "CAP-230/231/232",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -5142,7 +5142,7 @@
     },
     "Manufacturer": "Canadair",
     "Name": "RJ-100 Regional Jet",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5172,7 +5172,7 @@
     },
     "Manufacturer": "Canadair",
     "Name": "RJ-200 Regional Jet",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5202,7 +5202,7 @@
     },
     "Manufacturer": "Canadair",
     "Name": "RJ-700 Regional Jet",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5232,7 +5232,7 @@
     },
     "Manufacturer": "Bombardier Aerospace (Canada)",
     "Name": "CL-600 Challenger 890",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5262,7 +5262,7 @@
     },
     "Manufacturer": "Bombardier Aerospace (Canada)",
     "Name": "CRJ 1000",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5290,7 +5290,7 @@
     },
     "Manufacturer": "FAIRCHILD-DORNIER",
     "Name": "228 (DORNIER)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -5318,7 +5318,7 @@
     },
     "Manufacturer": "Dornier Luftfahrt GmbH (Germany)",
     "Name": "Do28 Skyservant",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -5347,7 +5347,7 @@
     },
     "Manufacturer": "FAIRCHILD-DORNIER",
     "Name": "328 (DORNIER)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -5377,7 +5377,7 @@
     },
     "Manufacturer": "Diamond Aircraft Industries (Canada/Austria)",
     "Name": "Diamond",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -5407,7 +5407,7 @@
     },
     "Manufacturer": "Diamond Aircraft Industries (Canada/Austria)",
     "Name": "Diamond Twinstar",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -5435,7 +5435,7 @@
     },
     "Manufacturer": "Diamond Aircraft Industries (Canada/Austria)",
     "Name": "SuperStar/Magnum",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -5443,7 +5443,7 @@
     "APC": "A",
     "Manufacturer": "Daher",
     "Name": "Kodiak",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -5473,7 +5473,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "DC-10",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L3J",
     "WTC": "H"
   },
@@ -5503,7 +5503,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC-8-50",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -5533,7 +5533,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC-8-60",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -5563,7 +5563,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC-8-70",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -5593,7 +5593,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC9-10 , DC9-15",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5623,7 +5623,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC9-20",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5653,7 +5653,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC-9-30",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5683,7 +5683,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC9-40",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5713,7 +5713,7 @@
     },
     "Manufacturer": "Douglas",
     "Name": "DC-9-50",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -5741,7 +5741,7 @@
     },
     "Manufacturer": "DE HAVILLAND CANADA",
     "Name": "CC-142",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -5769,7 +5769,7 @@
     },
     "Manufacturer": "Bombardier",
     "Name": "Dash 8 Q300",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -5797,7 +5797,7 @@
     },
     "Manufacturer": "Bombardier",
     "Name": "Dash 8 Q400",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -5825,7 +5825,7 @@
     },
     "Manufacturer": "DE HAVILLAND CANADA",
     "Name": "CC-138",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -5853,7 +5853,7 @@
     },
     "Manufacturer": "DE HAVILLAND CANADA",
     "Name": "Dash 7",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -5881,7 +5881,7 @@
     },
     "Manufacturer": "ROBIN",
     "Name": "Cadet",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -5909,7 +5909,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Bandeirante",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -5938,7 +5938,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Brasilia",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -5966,7 +5966,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "EC-9",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -5996,7 +5996,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Embraer ERJ-135",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6026,7 +6026,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "EMB-145",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6056,7 +6056,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Embraer 170",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6086,7 +6086,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Embraer 190",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6116,7 +6116,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "195",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6144,7 +6144,7 @@
     },
     "Manufacturer": "Grumman",
     "Name": "Daya",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -6174,7 +6174,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "AWACS",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -6204,7 +6204,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "AWACS",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -6234,7 +6234,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Embraer 500 Phenom 100",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -6264,7 +6264,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "Embraer 505 Phenom 300",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6292,7 +6292,7 @@
     },
     "Manufacturer": "EUROCOPTER",
     "Name": "EUROCOPTER EC-135",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -6320,7 +6320,7 @@
     },
     "Manufacturer": "AgustaWestland",
     "Name": "AW101 Merlin",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L3T",
     "WTC": "M"
   },
@@ -6350,7 +6350,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Dassault Etendard 4",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -6380,7 +6380,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "Eurofighter 2000",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6410,7 +6410,7 @@
     },
     "Manufacturer": "MITSUBISHI",
     "Name": "Mitsubishi F-1",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -6440,7 +6440,7 @@
     },
     "Manufacturer": "Fokker",
     "Name": "100 (Fokker)",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6470,7 +6470,7 @@
     },
     "Manufacturer": "Lockheed Aircraft Corporation (United States)",
     "Name": "AERITALIA F-104 Starfighter",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -6500,7 +6500,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "F-117 Nighthawk",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6530,7 +6530,7 @@
     },
     "Manufacturer": "Grumman",
     "Name": "F-14 Tomcat",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6560,7 +6560,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "F-15 Strike Eagle",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6590,7 +6590,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "F-16 Fighting Falcon",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -6620,7 +6620,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "F/A-18 Hornet",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6650,7 +6650,7 @@
     },
     "Manufacturer": "MITSUBISHI",
     "Name": "F-2",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -6677,7 +6677,7 @@
     },
     "Manufacturer": "AERMACCHI",
     "Name": "AERMACCHI SF-260TP",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -6705,7 +6705,7 @@
     },
     "Manufacturer": "Fokker",
     "Name": "F-27 Friendship",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -6735,7 +6735,7 @@
     },
     "Manufacturer": "Fokker",
     "Name": "F-28 Fellowship",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6765,7 +6765,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Dassault Falcon 2000",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6795,7 +6795,7 @@
     },
     "Manufacturer": "Lockheed Martin Corporation (United States)",
     "Name": "F-35 Lightning II",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -6825,7 +6825,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "F4",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6853,7 +6853,7 @@
     },
     "Manufacturer": "REIMS",
     "Name": "Caravan 2",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -6883,7 +6883,7 @@
     },
     "Manufacturer": "Northrop",
     "Name": "A-9",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6911,7 +6911,7 @@
     },
     "Manufacturer": "Fokker",
     "Name": "Fokker 50",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -6941,7 +6941,7 @@
     },
     "Manufacturer": "Fokker",
     "Name": "70 (Fokker)",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -6971,7 +6971,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Falcon 900",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L3J",
     "WTC": "M"
   },
@@ -7001,7 +7001,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Falcon 10/100",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7031,7 +7031,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Dassault-BREGUET Falcon 20/200",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7061,7 +7061,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Dassault-BREGUET T-16",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L3J",
     "WTC": "M"
   },
@@ -7091,7 +7091,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Falcon 7X",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L3J",
     "WTC": "M"
   },
@@ -7117,7 +7117,7 @@
     },
     "Manufacturer": "GROB",
     "Name": "Bavarian",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -7147,7 +7147,7 @@
     },
     "Manufacturer": "Gulfstream Aerospace Corporation (United States)",
     "Name": "Gulfstream 150",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7176,7 +7176,7 @@
     },
     "Manufacturer": "ALENIA",
     "Name": "AERITALIA G-222",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -7226,7 +7226,7 @@
     },
     "Manufacturer": "REMOS",
     "Name": "Mirage G3",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -7256,7 +7256,7 @@
     },
     "Manufacturer": "Israel Aerospace Industries (IAI)",
     "Name": "Galaxy (1126)",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7286,7 +7286,7 @@
     },
     "Manufacturer": "Bombardier Aerospace (Canada)",
     "Name": "BD-700 Global 5000",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7316,7 +7316,7 @@
     },
     "Manufacturer": "Bombardier",
     "Name": "BD-700 Global Express",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7346,7 +7346,7 @@
     },
     "Manufacturer": "Gulfstream Aerospace",
     "Name": "G-1159A Gulfstream 3",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7376,7 +7376,7 @@
     },
     "Manufacturer": "Gulfstream Aerospace",
     "Name": "Gulfstream 4",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7406,7 +7406,7 @@
     },
     "Manufacturer": "Gulfstream Aerospace",
     "Name": "C-37 Gulfstream 5",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7436,7 +7436,7 @@
     },
     "Manufacturer": "Hawker Siddely Aviation Ltd (United Kingdom)",
     "Name": "HS125",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7466,7 +7466,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "British Aerospace BAe-125-700/800",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7496,7 +7496,7 @@
     },
     "Manufacturer": "RAYTHEON",
     "Name": "BAe-125-1000",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7524,7 +7524,7 @@
     },
     "Manufacturer": "Boeing Helicopters (United States)",
     "Name": "Chinook CH-47F",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -7552,7 +7552,7 @@
     },
     "Manufacturer": "Sikorsky Aircraft Division of United Aircraft  Corporation (United States)",
     "Name": "Black Hawk",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -7580,7 +7580,7 @@
     },
     "Manufacturer": "Boeing Helicopters (United States)",
     "Name": "AH-64 Apache Longbow",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -7630,7 +7630,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "AV-8 Harrier",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -7660,7 +7660,7 @@
     },
     "Manufacturer": "British Aerospace",
     "Name": "T-45 Goshawk",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -7690,7 +7690,7 @@
     },
     "Manufacturer": "ILYUSHIN",
     "Name": "Il-18/20/22/24",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -7720,7 +7720,7 @@
     },
     "Manufacturer": "ILYUSHIN",
     "Name": "Il-62",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -7750,7 +7750,7 @@
     },
     "Manufacturer": "ILYUSHIN",
     "Name": "Candid",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -7780,7 +7780,7 @@
     },
     "Manufacturer": "ILYUSHIN",
     "Name": "Il-86/87",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -7810,7 +7810,7 @@
     },
     "Manufacturer": "ILYUSHIN",
     "Name": "Il-96",
-    "RECAT": "Upper Heavy",
+    "RECAT": "B",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -7840,7 +7840,7 @@
     },
     "Manufacturer": "FAIRCHILD-DORNIER",
     "Name": "328JET",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7870,7 +7870,7 @@
     },
     "Manufacturer": "SEPECAT",
     "Name": "British Aerospace Jaguar",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -7899,7 +7899,7 @@
     },
     "Manufacturer": "Handley Page Ltd (United Kingdom)",
     "Name": "Jetstream 1",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -7928,7 +7928,7 @@
     },
     "Manufacturer": "Scottish Aviation Ltd.",
     "Name": "Jetstream 2 ",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -7957,7 +7957,7 @@
     },
     "Manufacturer": "Handley Page Ltd (United Kingdom)",
     "Name": "Jetstream 3",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -7985,7 +7985,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "BAe-3100 Jetstream 31",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -8013,7 +8013,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "BAe-3200 Jetstream Super 31",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -8041,7 +8041,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "BAe-4100 Jetstream 41",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -8071,7 +8071,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "KC-135 Stratotanker",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -8101,7 +8101,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "KC-135R/T Stratotanker (CFM56)",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -8129,7 +8129,7 @@
     },
     "Manufacturer": "Kamov Kompaniya (Russia)",
     "Name": "Kamov KA-50 Black Shark",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -8157,7 +8157,7 @@
     },
     "Manufacturer": "Kamov Kompaniya (Russia)",
     "Name": "Kamov KA-52 Alligator",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -8187,7 +8187,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "L-1011 TriStar",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L3J",
     "WTC": "H"
   },
@@ -8217,7 +8217,7 @@
     },
     "Manufacturer": "AERO (2)",
     "Name": "AERO (2) L-159",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -8246,7 +8246,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "Electra",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -8276,7 +8276,7 @@
     },
     "Manufacturer": "Lockheed",
     "Name": "Jetstar 2/731",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -8306,7 +8306,7 @@
     },
     "Manufacturer": "Aero Vodochody",
     "Name": "AERO (2) L-39/139 Albatross",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "L"
   },
@@ -8334,7 +8334,7 @@
     },
     "Manufacturer": "Let AS",
     "Name": "AYRES L-410/420 Turbolet",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -8362,7 +8362,7 @@
     },
     "Manufacturer": "Let AS",
     "Name": "700 (AYRES)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -8392,7 +8392,7 @@
     },
     "Manufacturer": "Lear Jet",
     "Name": "25 (LEARJET)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -8422,7 +8422,7 @@
     },
     "Manufacturer": "LEARJET",
     "Name": "31 (LEARJET)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8452,7 +8452,7 @@
     },
     "Manufacturer": "LEARJET",
     "Name": "35,36 (LEARJET)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8482,7 +8482,7 @@
     },
     "Manufacturer": "Bombardier Aerospace (Canada)",
     "Name": "Learjet 40",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8512,7 +8512,7 @@
     },
     "Manufacturer": "LEARJET",
     "Name": "45 (LEARJET)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8542,7 +8542,7 @@
     },
     "Manufacturer": "LEARJET",
     "Name": "55 (LEARJET)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8572,7 +8572,7 @@
     },
     "Manufacturer": "LEARJET",
     "Name": "60 (LEARJET)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8599,7 +8599,7 @@
     },
     "Manufacturer": "PZL-MIELEC",
     "Name": "Dromader",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -8627,7 +8627,7 @@
     },
     "Manufacturer": "MOONEY",
     "Name": "220 (AEROSTAR)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -8655,7 +8655,7 @@
     },
     "Manufacturer": "MOONEY",
     "Name": "Bravo (M-20K)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -8685,7 +8685,7 @@
     },
     "Manufacturer": "AERMACCHI",
     "Name": "AERMACCHI MB-339",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "L"
   },
@@ -8715,7 +8715,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "MD-11",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L3J",
     "WTC": "H"
   },
@@ -8745,7 +8745,7 @@
     },
     "Manufacturer": "McDonnell Douglas Corporation (United States)",
     "Name": "MD-81",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8775,7 +8775,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "MD-82",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8805,7 +8805,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "MD-83",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8835,7 +8835,7 @@
     },
     "Manufacturer": "McDonnell Douglas",
     "Name": "MD-87",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8865,7 +8865,7 @@
     },
     "Manufacturer": "McDonnell Douglas Corporation (United States)",
     "Name": "MD-88",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8895,7 +8895,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "MD-90",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -8925,7 +8925,7 @@
     },
     "Manufacturer": "MIKOYAN",
     "Name": "FISHBED",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -8955,7 +8955,7 @@
     },
     "Manufacturer": "MIKOYAN",
     "Name": "FLOGGER",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -8985,7 +8985,7 @@
     },
     "Manufacturer": "MIKOYAN",
     "Name": "MiG-25 ",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -9015,7 +9015,7 @@
     },
     "Manufacturer": "MIKOYAN",
     "Name": "FULCRUM",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -9045,7 +9045,7 @@
     },
     "Manufacturer": "MIKOYAN",
     "Name": "FOXHOUND",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -9065,7 +9065,7 @@
     },
     "Manufacturer": "PZL-SWIDNIK",
     "Name": "Mil Mi-2 Hoplite",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -9073,7 +9073,7 @@
     "APC": "A",
     "Manufacturer": "Kazan Helicopter Plant JSC (Russia)",
     "Name": "Mil Mi-8 Hip",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -9103,7 +9103,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Mirage 2000",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -9133,7 +9133,7 @@
     },
     "Manufacturer": "Dassault",
     "Name": "Dassault-BREGUET Mirage F1",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -9161,7 +9161,7 @@
     },
     "Manufacturer": "MITSUBISHI",
     "Name": "LR-1",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -9189,7 +9189,7 @@
     },
     "Manufacturer": "AEROSPATIALE",
     "Name": "FRAKES Mohawk 298",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -9217,7 +9217,7 @@
     },
     "Manufacturer": "NH Industries SARL (France/Germany/Italy)",
     "Name": "NH Industries NH-90",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -9247,7 +9247,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "Nimrod",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -9276,7 +9276,7 @@
     },
     "Manufacturer": "PIAGGIO",
     "Name": "Avanti",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -9302,7 +9302,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Archer",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9328,7 +9328,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "AICSA PA-28R Cherokee Arrow,Turbo Arrow 3",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9356,7 +9356,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Arrow 4",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9386,7 +9386,7 @@
     },
     "Manufacturer": "Lockheed Martin Corporation (United States)",
     "Name": "Orion",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4T",
     "WTC": "M"
   },
@@ -9414,7 +9414,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Cherokee Lance",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9443,7 +9443,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Malibu Meridian",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -9501,7 +9501,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "L-18C",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9529,7 +9529,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Apache",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -9557,7 +9557,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Aztec",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -9585,7 +9585,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Chieftain",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -9613,7 +9613,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Cherokee Six",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9641,7 +9641,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "PA-34 Seneca",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -9669,7 +9669,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "AICSA PA-38 Tomahawk",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9697,7 +9697,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "AICSA PA-44 Seminole",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "L"
   },
@@ -9726,7 +9726,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Malibu",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -9754,7 +9754,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Cheyenne 2",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -9782,7 +9782,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Cheyenne 3",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -9810,7 +9810,7 @@
     },
     "Manufacturer": "PIPER",
     "Name": "Cheyenne 400",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -9838,7 +9838,7 @@
     },
     "Manufacturer": "PILATUS",
     "Name": "PC-12",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -9866,7 +9866,7 @@
     },
     "Manufacturer": "PILATUS",
     "Name": "Chiricahua",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -9894,7 +9894,7 @@
     },
     "Manufacturer": "PILATUS",
     "Name": "Astra (PC-7)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -9922,7 +9922,7 @@
     },
     "Manufacturer": "PILATUS",
     "Name": "Beech PD-373 Beech, PC-9",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -9952,7 +9952,7 @@
     },
     "Manufacturer": "Hawker Beechcraft",
     "Name": "390 Premier 1",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -9980,7 +9980,7 @@
     },
     "Manufacturer": "PZL-OKECIE",
     "Name": "Gelatik",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -10010,7 +10010,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "RC-135",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -10030,7 +10030,7 @@
     },
     "Manufacturer": "Robinson Helicopter Company (United States)",
     "Name": "Robinson R44",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H1P",
     "WTC": "L"
   },
@@ -10058,7 +10058,7 @@
     },
     "Manufacturer": "SOCATA",
     "Name": "Commodore",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -10088,7 +10088,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "AVRO RJ-100 Avroliner",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -10118,7 +10118,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "AVRO RJ-70 Avroliner",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -10148,7 +10148,7 @@
     },
     "Manufacturer": "BAE Systems",
     "Name": "AVRO RJ-85 Avroliner",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L4J",
     "WTC": "M"
   },
@@ -10156,7 +10156,7 @@
     "APC": "A",
     "Manufacturer": "Van's Aircraft",
     "Name": "RV14",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -10187,7 +10187,7 @@
     },
     "Manufacturer": "AEROSPATIALE",
     "Name": "AEROSPATIALE SN-601 Corvette",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -10207,7 +10207,7 @@
     },
     "Manufacturer": "Sikorsky Aircraft Division of United Aircraft  Corporation (United States)",
     "Name": "Sea King S-61",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
   },
@@ -10227,7 +10227,7 @@
     },
     "Manufacturer": "Sikorsky Aircraft Division of United Aircraft  Corporation (United States)",
     "Name": "Sikorsky S-76",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
   },
@@ -10257,7 +10257,7 @@
     },
     "Manufacturer": "Saab",
     "Name": "105 (Sk60)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -10286,7 +10286,7 @@
     },
     "Manufacturer": "Saab",
     "Name": "2000 (Saab)",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -10316,7 +10316,7 @@
     },
     "Manufacturer": "Saab",
     "Name": "Saab 32 Lansen",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -10346,7 +10346,7 @@
     },
     "Manufacturer": "Saab",
     "Name": "37 Viggen",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -10376,7 +10376,7 @@
     },
     "Manufacturer": "Saab",
     "Name": "39 Gripen",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -10406,7 +10406,7 @@
     },
     "Manufacturer": "ROCKWELL",
     "Name": "NA-265 Sabre 75",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10434,7 +10434,7 @@
     },
     "Manufacturer": "SHORT",
     "Name": "SC-7 Skyvan",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -10463,7 +10463,7 @@
     },
     "Manufacturer": "Saab",
     "Name": "340 (Saab)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -10491,7 +10491,7 @@
     },
     "Manufacturer": "SHORT",
     "Name": "C-23",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -10519,7 +10519,7 @@
     },
     "Manufacturer": "SHORT",
     "Name": "SD3-360",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
   },
@@ -10547,7 +10547,7 @@
     },
     "Manufacturer": "Cirrus Design Corporation (United States)",
     "Name": "Cirrus SR20",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -10575,7 +10575,7 @@
     },
     "Manufacturer": "Cirrus Design Corporation (United States)",
     "Name": "Cirrus SR22",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -10605,7 +10605,7 @@
     },
     "Manufacturer": "SUKHOI",
     "Name": "Fitter",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L1J",
     "WTC": "M"
   },
@@ -10635,7 +10635,7 @@
     },
     "Manufacturer": "SUKHOI",
     "Name": "Fencer",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10665,7 +10665,7 @@
     },
     "Manufacturer": "SUKHOI",
     "Name": "Frogfoot",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10695,7 +10695,7 @@
     },
     "Manufacturer": "SUKHOI",
     "Name": "Flanker",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10725,7 +10725,7 @@
     },
     "Manufacturer": "SUKHOI",
     "Name": "Superjet 100",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10754,7 +10754,7 @@
     },
     "Manufacturer": "Fairchild Swearingen Corporation (United States)",
     "Name": "Merlin II",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -10783,7 +10783,7 @@
     },
     "Manufacturer": "SWEARINGEN",
     "Name": "FAIRCHILD (1) SA-227TT Merlin 3,Fairchild 300",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
   },
@@ -10811,7 +10811,7 @@
     },
     "Manufacturer": "Fairchild Swearingen Corporation (United States)",
     "Name": "Metro 23",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2P",
     "WTC": "M"
   },
@@ -10841,7 +10841,7 @@
     },
     "Manufacturer": "Tupolev",
     "Name": "Tu-134",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10871,7 +10871,7 @@
     },
     "Manufacturer": "Tupolev",
     "Name": "Tu-154",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L3J",
     "WTC": "M"
   },
@@ -10901,7 +10901,7 @@
     },
     "Manufacturer": "Tupolev",
     "Name": "Tu-204/214/224/234",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10931,7 +10931,7 @@
     },
     "Manufacturer": "Tupolev",
     "Name": "Tu-22M",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -10961,7 +10961,7 @@
     },
     "Manufacturer": "Cessna",
     "Name": "318A/B/C (Cessna)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -10991,7 +10991,7 @@
     },
     "Manufacturer": "Northrop",
     "Name": "AT-38 Talon",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L2J",
     "WTC": "L"
   },
@@ -11019,7 +11019,7 @@
     },
     "Manufacturer": "SOCATA",
     "Name": "SOCATA TB-9 Tampico, Sprint",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -11047,7 +11047,7 @@
     },
     "Manufacturer": "AEROSPATIALE",
     "Name": "AEROSPATIALE TB-30 Epsilon",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -11076,7 +11076,7 @@
     },
     "Manufacturer": "SOCATA",
     "Name": "SOCATA TBM-700",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -11106,7 +11106,7 @@
     },
     "Manufacturer": "SOCATA",
     "Name": "DAHER TBM-850",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -11134,7 +11134,7 @@
     },
     "Manufacturer": "SOCATA",
     "Name": "SOCATA TB-10/200 Tobago",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -11164,7 +11164,7 @@
     },
     "Manufacturer": "PANAVIA",
     "Name": "AERITALIA Tornado",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L2J",
     "WTC": "M"
   },
@@ -11192,7 +11192,7 @@
     },
     "Manufacturer": "SOCATA",
     "Name": "Pashosh",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
   },
@@ -11220,7 +11220,7 @@
     },
     "Manufacturer": "Embraer",
     "Name": "A-27",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
   },
@@ -11248,7 +11248,7 @@
     },
     "Manufacturer": "Bell Aircraft Corporation (United States)",
     "Name": "Bell UH-1 Iroquois (Huey)",
-    "RECAT": "Light",
+    "RECAT": "F",
     "Type": "H1T",
     "WTC": "L"
   },
@@ -11278,7 +11278,7 @@
     },
     "Manufacturer": "VICKERS",
     "Name": "BAC VC-10",
-    "RECAT": "Lower Heavy",
+    "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
   },
@@ -11306,7 +11306,7 @@
     },
     "Manufacturer": "YAKOVLEV",
     "Name": "Yak-40",
-    "RECAT": "Lower Medium",
+    "RECAT": "E",
     "Type": "L3J",
     "WTC": "M"
   },
@@ -11336,7 +11336,7 @@
     },
     "Manufacturer": "YAKOVLEV",
     "Name": "Yak-42/142",
-    "RECAT": "Upper Medium",
+    "RECAT": "D",
     "Type": "L3J",
     "WTC": "M"
   }
