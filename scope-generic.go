@@ -561,9 +561,32 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 				continue
 			}
 
+			size := 16 * rs.GroundTracksScale
+			if fp := ac.FlightPlan; fp != nil {
+				if info, ok := database.AircraftTypes[fp.BaseType()]; ok {
+					// Scale icon size based on the wake turbulence
+					// category. Use sqrts so that we're effectively
+					// scaling area.
+					switch info.RECAT {
+					case "Light":
+						size *= 0.707106781186548 // sqrt(1/2)
+					case "Lower Medium":
+						size *= 0.866025403784439 // sqrt(3/4)
+					case "Upper Medium":
+						// size *= 1
+					case "Lower Heavy":
+						size *= 1.118033988749895 // sqrt(5/4)
+					case "Upper Heavy":
+						size *= 1.224744871391589 // sqrt(6/4)
+					case "Super Heavy":
+						size *= 1.414213562373095 // sqrt(2)
+					}
+				}
+			}
+
 			iconSpecs = append(iconSpecs, PlaneIconSpec{
 				P:       transforms.WindowFromLatLongP(ac.Position()),
-				Size:    16 * rs.GroundTracksScale,
+				Size:    size,
 				Heading: ac.Heading()})
 		}
 
