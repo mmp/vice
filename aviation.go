@@ -433,21 +433,23 @@ func (a *Aircraft) GroundSpeed() int {
 
 // Note: returned value includes the magnetic correction
 func (a *Aircraft) Heading() float32 {
-	// The heading reported by vatsim seems systemically off for some (but
-	// not all!) aircraft and not just magnetic variation. So take the
-	// heading vector, which is more reliable, and work from there...
-	return headingv2ll(a.HeadingVector(), database.MagneticVariation)
+	return a.Tracks[0].Heading + database.MagneticVariation
 }
 
-// Scale it so that it represents where it is expected to be one minute in
-// the future.
+// Perhaps confusingly, the vector returned by HeadingVector() is not
+// aligned with the reported heading but is instead along the aircraft's
+// extrapolated path.  Thus, it includes the effect of wind.  The returned
+// vector is scaled so that it represents where it is expected to be one
+// minute in the future.
 func (a *Aircraft) HeadingVector() Point2LL {
+	var v [2]float32
 	if !a.HaveHeading() {
-		return Point2LL{}
+		v = [2]float32{cos(radians(a.Heading())), sin(radians(a.Heading()))}
+	} else {
+		p0, p1 := a.Tracks[0].Position, a.Tracks[1].Position
+		v = sub2ll(p0, p1)
 	}
 
-	p0, p1 := a.Tracks[0].Position, a.Tracks[1].Position
-	v := sub2ll(p0, p1)
 	nm := nmlength2ll(v)
 	// v's length should be groundspeed / 60 nm.
 	return scale2ll(v, float32(a.GroundSpeed())/(60*nm))
