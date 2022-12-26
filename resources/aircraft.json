@@ -1887,7 +1887,7 @@
       "ROC": 2800
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 737 MAX 7",
+    "Name": "737 MAX 7",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -1917,7 +1917,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 737 MAX 8",
+    "Name": "737 MAX 8",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -1947,7 +1947,7 @@
       "ROC": 2300
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 737 MAX 9",
+    "Name": "737 MAX 9",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -1977,7 +1977,7 @@
       "ROC": 2000
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 737 MAX 10",
+    "Name": "737 MAX 10",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -2258,7 +2258,7 @@
       "ROC": 1700
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 720",
+    "Name": "720",
     "RECAT": "Lower Heavy",
     "Type": "L4J",
     "WTC": "M"
@@ -2708,7 +2708,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 747-8",
+    "Name": "747-8",
     "RECAT": "Upper Heavy",
     "Type": "L4J",
     "WTC": "H"
@@ -2738,7 +2738,7 @@
       "ROC": 1500
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 747-400 Domestic",
+    "Name": "747-400 Domestic",
     "RECAT": "Upper Heavy",
     "Type": "L4J",
     "WTC": "H"
@@ -2977,7 +2977,7 @@
       "ROC": 3000
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 777-200",
+    "Name": "777-200",
     "RECAT": "Upper Heavy",
     "Type": "L2J",
     "WTC": "H"
@@ -3007,7 +3007,7 @@
       "ROC": 3000
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 777-300",
+    "Name": "777-300",
     "RECAT": "Upper Heavy",
     "Type": "L2J",
     "WTC": "H"
@@ -3037,7 +3037,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing 777-200LR",
+    "Name": "777-200LR",
     "RECAT": "Upper Heavy",
     "Type": "L2J",
     "WTC": "H"
@@ -3634,7 +3634,7 @@
       "ROC": 1400
     },
     "Manufacturer": "Beech Aircraft Corporation (United States)",
-    "Name": "Beech 95 Travel Air",
+    "Name": "95 Travel Air",
     "RECAT": "Light",
     "Type": "L2P",
     "WTC": "L"
@@ -3836,7 +3836,7 @@
       "ROC": 1500
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing C-135 Startolifter",
+    "Name": "C-135 Startolifter",
     "RECAT": "Lower Heavy",
     "Type": "L4J",
     "WTC": "H"
@@ -3878,7 +3878,7 @@
       "ROC": 400
     },
     "Manufacturer": "Cessna",
-    "Name": "150,A150,Commuter,Aerobat",
+    "Name": "Commuter / Aerobat",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -3890,7 +3890,7 @@
       "ROC": 500
     },
     "Manufacturer": "Cessna",
-    "Name": "152,A152,Aerobat",
+    "Name": "Aerobat",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -3948,7 +3948,7 @@
       "ROC": 2000
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing C-17 Globemaster 3",
+    "Name": "C-17 Globemaster 3",
     "RECAT": "Lower Heavy",
     "Type": "L4J",
     "WTC": "H"
@@ -3967,7 +3967,7 @@
       "ROC": 400
     },
     "Manufacturer": "Cessna",
-    "Name": "172 Skyhawk",
+    "Name": "Skyhawk",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -3986,7 +3986,7 @@
       "ROC": 500
     },
     "Manufacturer": "Cessna",
-    "Name": "177,Cardinal",
+    "Name": "Cardinal",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -4014,7 +4014,7 @@
       "ROC": 500
     },
     "Manufacturer": "Cessna",
-    "Name": "182,Skylane",
+    "Name": "Skylane",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -4097,7 +4097,7 @@
       "ROC": 500
     },
     "Manufacturer": "Cessna",
-    "Name": "207 (Turbo)Skywagon 207",
+    "Name": "Skywagon",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -4125,7 +4125,7 @@
       "ROC": 800
     },
     "Manufacturer": "Cessna",
-    "Name": "208 Caravan 1,(Super)Cargomaster",
+    "Name": "Caravan 1 / (Super)Cargomaster",
     "RECAT": "Light",
     "Type": "L1T",
     "WTC": "L"
@@ -4152,7 +4152,7 @@
       "ROC": 500
     },
     "Manufacturer": "Cessna",
-    "Name": "210 Centurion",
+    "Name": "Centurion",
     "RECAT": "Light",
     "Type": "L1P",
     "WTC": "L"
@@ -4210,7 +4210,7 @@
       "ROC": 3500
     },
     "Manufacturer": "Cessna",
-    "Name": "525A Citation CJ2",
+    "Name": "Citation CJ2",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "L"
@@ -4240,7 +4240,7 @@
       "ROC": 3500
     },
     "Manufacturer": "Cessna",
-    "Name": "525C Citation CJ3",
+    "Name": "Citation CJ3",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "L"
@@ -4270,7 +4270,7 @@
       "ROC": 3500
     },
     "Manufacturer": "Cessna",
-    "Name": "525C Citation CJ4",
+    "Name": "Citation CJ4",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "L"
@@ -4439,7 +4439,7 @@
       "ROC": 1200
     },
     "Manufacturer": "Cessna",
-    "Name": "401,402,Utililiner,Businessliner",
+    "Name": "Utililiner / Businessliner",
     "RECAT": "Light",
     "Type": "L2P",
     "WTC": "L"
@@ -4467,7 +4467,7 @@
       "ROC": 1200
     },
     "Manufacturer": "Cessna",
-    "Name": "404 Titan",
+    "Name": "Titan",
     "RECAT": "Light",
     "Type": "L2P",
     "WTC": "L"
@@ -4495,7 +4495,7 @@
       "ROC": 1200
     },
     "Manufacturer": "Cessna",
-    "Name": "414,Chancellor",
+    "Name": "Chancellor",
     "RECAT": "Light",
     "Type": "L2P",
     "WTC": "L"
@@ -4523,7 +4523,7 @@
       "ROC": 1500
     },
     "Manufacturer": "Cessna",
-    "Name": "421,Executive Commuter",
+    "Name": "Executive Commuter",
     "RECAT": "Light",
     "Type": "L2P",
     "WTC": "L"
@@ -4551,7 +4551,7 @@
       "ROC": 2000
     },
     "Manufacturer": "Cessna",
-    "Name": "425 Corsair,Conquest 1",
+    "Name": "Corsair / Conquest 1",
     "RECAT": "Light",
     "Type": "L2T",
     "WTC": "L"
@@ -4579,7 +4579,7 @@
       "ROC": 2000
     },
     "Manufacturer": "Cessna",
-    "Name": "441 Conquest,Conquest 2",
+    "Name": "Conquest / Conquest 2",
     "RECAT": "Light",
     "Type": "L2T",
     "WTC": "L"
@@ -4639,7 +4639,7 @@
       "ROC": 3000
     },
     "Manufacturer": "Cessna",
-    "Name": "525 CitationJet, Citation CJ1",
+    "Name": "CitationJet",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "L"
@@ -4699,7 +4699,7 @@
       "ROC": 2000
     },
     "Manufacturer": "Cessna",
-    "Name": "550 Citation 2",
+    "Name": "Citation 2",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "L"
@@ -4729,7 +4729,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Cessna",
-    "Name": "560 Citation 5 Ultra Encore",
+    "Name": "Citation 5 Ultra Encore",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "M"
@@ -4759,7 +4759,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Cessna",
-    "Name": "560XL Citation Excel",
+    "Name": "Citation Excel",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "M"
@@ -4789,7 +4789,7 @@
       "ROC": 4000
     },
     "Manufacturer": "Cessna",
-    "Name": "650 Citation 3/6/7",
+    "Name": "Citation 3/6/7",
     "RECAT": "Light",
     "Type": "L2J",
     "WTC": "M"
@@ -4879,7 +4879,7 @@
       "ROC": 3500
     },
     "Manufacturer": "Cessna",
-    "Name": "750 Citation 10",
+    "Name": "Citation 10",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -4935,7 +4935,7 @@
       "ROC": 1500
     },
     "Manufacturer": "Canadair",
-    "Name": "Canadair CL-415 SuperScooper",
+    "Name": "CL-415 SuperScooper",
     "RECAT": "Lower Medium",
     "Type": "A2T",
     "WTC": "M"
@@ -5025,7 +5025,7 @@
       "ROC": 4500
     },
     "Manufacturer": "Canadair",
-    "Name": "Canadair Challenger ",
+    "Name": "Challenger",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -5083,7 +5083,7 @@
       "ROC": 4000
     },
     "Manufacturer": "AEROSPATIALE - British Aerospace",
-    "Name": "AEROSPATIALE Concorde",
+    "Name": "Concorde",
     "RECAT": "No code",
     "Type": "L4J",
     "WTC": "H"
@@ -5141,7 +5141,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Canadair",
-    "Name": "Canadair RJ-100 Regional Jet",
+    "Name": "RJ-100 Regional Jet",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -5171,7 +5171,7 @@
       "ROC": 3000
     },
     "Manufacturer": "Canadair",
-    "Name": "Canadair RJ-200 Regional Jet",
+    "Name": "RJ-200 Regional Jet",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -5201,7 +5201,7 @@
       "ROC": 3000
     },
     "Manufacturer": "Canadair",
-    "Name": "Canadair RJ-700 Regional Jet",
+    "Name": "RJ-700 Regional Jet",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -6378,8 +6378,8 @@
       "IAS": 175,
       "ROC": 45000
     },
-    "Manufacturer": "EUROFIGHTER",
-    "Name": "British Aerospace Eurofighter 2000",
+    "Manufacturer": "British Aerospace",
+    "Name": "Eurofighter 2000",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -6619,7 +6619,7 @@
       "ROC": 30000
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing F/A-18 Hornet, Super Hornet",
+    "Name": "F/A-18 Hornet",
     "RECAT": "Lower Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -6970,7 +6970,7 @@
       "ROC": 3000
     },
     "Manufacturer": "Dassault",
-    "Name": "Dassault-BREGUET Falcon 900",
+    "Name": "Falcon 900",
     "RECAT": "Lower Medium",
     "Type": "L3J",
     "WTC": "M"
@@ -7659,7 +7659,7 @@
       "ROC": 9300
     },
     "Manufacturer": "British Aerospace",
-    "Name": "Boeing T-45 Goshawk",
+    "Name": "T-45 Goshawk",
     "RECAT": "Light",
     "Type": "L1J",
     "WTC": "M"
@@ -8100,7 +8100,7 @@
       "ROC": 2500
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing KC-135R/T Stratotanker (CFM56)",
+    "Name": "KC-135R/T Stratotanker (CFM56)",
     "RECAT": "Lower Heavy",
     "Type": "L4J",
     "WTC": "H"
@@ -8714,7 +8714,7 @@
       "ROC": 2000
     },
     "Manufacturer": "McDonnell Douglas",
-    "Name": "Boeing MD-11",
+    "Name": "MD-11",
     "RECAT": "Lower Heavy",
     "Type": "L3J",
     "WTC": "H"
@@ -8774,7 +8774,7 @@
       "ROC": 2500
     },
     "Manufacturer": "McDonnell Douglas",
-    "Name": "McDonnell Douglas MD-82",
+    "Name": "MD-82",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -8804,7 +8804,7 @@
       "ROC": 2500
     },
     "Manufacturer": "McDonnell Douglas",
-    "Name": "McDonnell Douglas MD-83",
+    "Name": "MD-83",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -8834,7 +8834,7 @@
       "ROC": 3000
     },
     "Manufacturer": "McDonnell Douglas",
-    "Name": "McDonnell Douglas MD-87",
+    "Name": "MD-87",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -8894,7 +8894,7 @@
       "ROC": 3200
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing MD-90",
+    "Name": "MD-90",
     "RECAT": "Upper Medium",
     "Type": "L2J",
     "WTC": "M"
@@ -9246,7 +9246,7 @@
       "ROC": 1800
     },
     "Manufacturer": "BAE Systems",
-    "Name": "British Aerospace Nimrod",
+    "Name": "Nimrod",
     "RECAT": "Upper Medium",
     "Type": "L4J",
     "WTC": "M"
@@ -10009,7 +10009,7 @@
       "ROC": 4800
     },
     "Manufacturer": "Boeing",
-    "Name": "Boeing  RC-135",
+    "Name": "RC-135",
     "RECAT": "Lower Heavy",
     "Type": "L4J",
     "WTC": "H"
