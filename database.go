@@ -9,6 +9,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -34,8 +35,8 @@ type StaticDatabase struct {
 		fixes    map[string]Fix
 		prd      map[AirportPair][]PRDEntry
 	}
-	callsigns map[string]Callsign
-	aircraft  map[string]string
+	callsigns     map[string]Callsign
+	AircraftTypes map[string]AircraftType
 
 	// From the sector file
 	NmPerLatitude     float32
@@ -168,7 +169,7 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase, sectorFile, positionF
 	wg.Add(1)
 	go func() { db.callsigns = parseCallsigns(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.aircraft = parseAircraft(); wg.Done() }()
+	go func() { db.AircraftTypes = parseAircraftTypes(); wg.Done() }()
 	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
@@ -211,9 +212,8 @@ var (
 	//go:embed resources/GlobalAirportDatabase.txt.zst
 	globalAirportsRaw string
 
-	// Via wikipedia...
-	//go:embed resources/aircraft.csv
-	aircraftRaw string
+	//go:embed resources/aircraft.json
+	aircraftTypesRaw string
 )
 
 // Utility function for parsing CSV files as strings; it breaks each line
@@ -365,19 +365,15 @@ func parseCallsigns() map[string]Callsign {
 	return callsigns
 }
 
-func parseAircraft() map[string]string {
-	aircraft := make(map[string]string)
+func parseAircraftTypes() map[string]AircraftType {
+	aircraftTypes := make(map[string]AircraftType)
 
-	mungeCSV("aircraft", aircraftRaw, func(s []string) {
-		code := strings.TrimSpace(s[0])
-		if _, ok := aircraft[code]; ok {
-			lg.Errorf("%s: duplicate aircraft DB entry", code)
-		} else {
-			aircraft[code] = strings.TrimSpace(s[1])
-		}
-	})
+	err := json.Unmarshal([]byte(aircraftTypesRaw), &aircraftTypes)
+	if err != nil {
+		lg.Errorf("%v", err)
+	}
 
-	return aircraft
+	return aircraftTypes
 }
 
 ///////////////////////////////////////////////////////////////////////////

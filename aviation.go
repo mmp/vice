@@ -572,6 +572,10 @@ func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 
 	return nmdistance2ll(afut, bfut)
 }
 
+func (fp FlightPlan) BaseType() string {
+	return strings.TrimPrefix(strings.TrimPrefix(fp.TypeWithoutSuffix(), "H/"), "S/")
+}
+
 func (fp FlightPlan) TypeWithoutSuffix() string {
 	// try to chop off equipment suffix
 	actypeFields := strings.Split(fp.AircraftType, "/")
@@ -631,4 +635,33 @@ func GetConflicts(aircraft []*Aircraft, rangeLimits [NumRangeTypes]RangeLimits) 
 	}
 
 	return
+}
+
+type AircraftType struct {
+	Name         string
+	Manufacturer string
+
+	RECAT string
+	Type  string // [ALH]#[JTP] -> { L->land, H->heli, A -> water}, # engines, { Jet, Turboprop, Prop}
+	WTC   string // Wake turbulence category
+	APC   string // Approach category: Vat: A 0-90, B 91-120 C 121-140 D 141-165 E >165
+
+	Initial struct {
+		IAS, ROC int
+	}
+	ClimbFL150 struct {
+		IAS, ROC int
+	}
+	ClimbFL240 struct {
+		IAS, ROC int
+	}
+	Cruise struct {
+		Ceiling int // FL
+		TAS     int
+		ROC     int
+		Mach    float32
+	}
+	Approach struct {
+		IAS, MCS int
+	}
 }

@@ -1391,11 +1391,8 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 				result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
 			}
 
-			t := ac.FlightPlan.TypeWithoutSuffix()
-			t = strings.TrimPrefix(t, "H/")
-			t = strings.TrimPrefix(t, "S/")
-			if a, ok := database.aircraft[t]; ok {
-				result += fmt.Sprintf("\n%stype:  %s", indstr, a)
+			if a, ok := database.AircraftTypes[ac.FlightPlan.BaseType()]; ok {
+				result += fmt.Sprintf("\n%stype:  %s", indstr, a.Name)
 			}
 		}
 		if ac.TrackingController != "" {
