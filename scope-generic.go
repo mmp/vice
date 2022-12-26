@@ -281,7 +281,7 @@ func (rs *RadarScopePane) DrawUI() {
 		}
 		imgui.Checkbox("Automatic MIT lines for arrivals", &rs.AutoMIT)
 		if rs.AutoMIT {
-			rs.AutoMITAirports = drawAirportSelector(rs.AutoMITAirports, "Arrival airports for auto MIT")
+			rs.AutoMITAirports, _ = drawAirportSelector(rs.AutoMITAirports, "Arrival airports for auto MIT")
 			imgui.Separator()
 		}
 		imgui.Checkbox("Draw compass directions at edges", &rs.DrawCompass)

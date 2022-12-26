@@ -462,7 +462,7 @@ func setCursorForRightButtons(text []string) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func drawAirportSelector(airports map[string]interface{}, title string) map[string]interface{} {
+func drawAirportSelector(airports map[string]interface{}, title string) (map[string]interface{}, bool) {
 	airportsString := strings.Join(SortedMapKeys(airports), ",")
 
 	if imgui.InputTextV(title, &airportsString, imgui.InputTextFlagsCharsUppercase, nil) {
@@ -474,9 +474,10 @@ func drawAirportSelector(airports map[string]interface{}, title string) map[stri
 		for _, a := range ap {
 			airports[a] = nil
 		}
+		return airports, true
 	}
 
-	return airports
+	return airports, false
 }
 
 ///////////////////////////////////////////////////////////////////////////

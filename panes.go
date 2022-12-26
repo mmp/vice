@@ -290,7 +290,12 @@ func (a *AirportInfoPane) Name() string {
 }
 
 func (a *AirportInfoPane) DrawUI() {
-	a.Airports = drawAirportSelector(a.Airports, "Airports")
+	var changed bool
+	if a.Airports, changed = drawAirportSelector(a.Airports, "Airports"); changed {
+		for ap := range a.Airports {
+			server.AddAirportForWeather(ap)
+		}
+	}
 	if newFont, changed := DrawFontPicker(&a.FontIdentifier, "Font"); changed {
 		a.font = newFont
 	}
@@ -1359,7 +1364,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI() {
-	fsp.Airports = drawAirportSelector(fsp.Airports, "Airports")
+	fsp.Airports, _ = drawAirportSelector(fsp.Airports, "Airports")
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
