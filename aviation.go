@@ -665,3 +665,63 @@ type AircraftType struct {
 		IAS, MCS int
 	}
 }
+
+func (ac *AircraftType) NumEngines() int {
+	if len(ac.Type) != 3 {
+		return 0
+	}
+	return int([]byte(ac.Type)[1] - '0')
+}
+
+func (ac *AircraftType) EngineType() string {
+	if len(ac.Type) != 3 {
+		return "unknown"
+	}
+	switch ac.Type[2] {
+	case 'P':
+		return "piston"
+	case 'T':
+		return "turboprop"
+	case 'J':
+		return "jet"
+	default:
+		return "unknown"
+	}
+}
+
+func (ac *AircraftType) ApproachCategory() string {
+	switch ac.APC {
+	case "A":
+		return "A: Vat <90, initial 90-150 kts final 70-110 kts"
+	case "B":
+		return "B: Vat 91-120, initial 120-180 kts final 85-130 kts"
+	case "C":
+		return "C: Vat 121-140, initial 160-240 kts final 115-160 kts"
+	case "D":
+		return "D: Vat 141-165, initial 185-250 kts final 180-185 kts"
+	case "E":
+		return "E: Vat 166-210, initial 185-250 kts final 155-230 kts"
+	default:
+		return "unknown"
+	}
+}
+
+func (ac *AircraftType) RECATCategory() string {
+	code := "unknown"
+	switch ac.RECAT {
+	case "Light":
+		code = "F"
+	case "Lower Medium":
+		code = "E"
+	case "Upper Medium":
+		code = "D"
+	case "Lower Heavy":
+		code = "C"
+	case "Upper Heavy":
+		code = "B"
+	case "Super Heavy":
+		code = "A"
+	}
+
+	return code + ": " + ac.RECAT
+}

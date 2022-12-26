@@ -1439,6 +1439,13 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 				info = append(info, fmt.Sprintf("%s %s (%s)", u.Name, u.Rating, u.Note))
 			}
 		}
+		if ac, ok := database.AircraftTypes[name]; ok {
+			indent := fmt.Sprintf("%*c", len(ac.Name)+2, ' ')
+			info = append(info, fmt.Sprintf("%s: %d engine %s (%s)",
+				ac.Name, ac.NumEngines(), ac.EngineType(), ac.Manufacturer))
+			info = append(info, indent+"Approach: "+ac.ApproachCategory())
+			info = append(info, indent+"RECAT: "+ac.RECATCategory())
+		}
 
 		if len(info) > 0 {
 			return StringConsoleEntry(strings.Join(info, "\n"))
