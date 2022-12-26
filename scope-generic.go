@@ -39,6 +39,9 @@ type RadarScopePane struct {
 	MinAltitude int32
 	MaxAltitude int32
 
+	GroundRadarTracks bool
+	GroundTracksScale float32
+
 	DrawVectorLine   bool
 	VectorLineExtent float32
 	VectorLineMode   int
@@ -122,6 +125,7 @@ func NewRadarScopePane(n string) *RadarScopePane {
 		DatablockFormat:    DatablockFormatGround,
 		DatablockFrequency: 3,
 		RadarTracksDrawn:   5,
+		GroundTracksScale:  1,
 		CRDAConfig:         NewCRDAConfig(),
 		AutoMITAirports:    make(map[string]interface{}),
 	}
@@ -232,6 +236,13 @@ func (rs *RadarScopePane) DrawUI() {
 			for _, state := range rs.aircraft {
 				state.datablockTextCurrent = false
 			}
+		}
+		imgui.Checkbox("Ground radar tracks", &rs.GroundRadarTracks)
+		if rs.GroundRadarTracks {
+			if rs.GroundTracksScale == 0 {
+				rs.GroundTracksScale = 1
+			}
+			imgui.SliderFloatV("Ground track scale", &rs.GroundTracksScale, 0.1, 5, "%.1f", 0)
 		}
 		imgui.SliderIntV("Data block update frequency (seconds)", &rs.DatablockFrequency, 1, 10, "%d", 0 /* flags */)
 		imgui.SliderIntV("Tracks shown", &rs.RadarTracksDrawn, 1, 10, "%d", 0 /* flags */)
@@ -541,6 +552,26 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 }
 
 func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	if rs.GroundRadarTracks {
+		var iconSpecs []PlaneIconSpec
+
+		now := server.CurrentTime()
+		for ac := range rs.aircraft {
+			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
+				continue
+			}
+
+			iconSpecs = append(iconSpecs, PlaneIconSpec{
+				P:       transforms.WindowFromLatLongP(ac.Position()),
+				Size:    16 * rs.GroundTracksScale,
+				Heading: ac.Heading()})
+		}
+
+		transforms.LoadWindowViewingMatrices(cb)
+		DrawPlaneIcons(iconSpecs, ctx.cs.Track, cb)
+		return
+	}
+
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 	pd := PointsDrawBuilder{}

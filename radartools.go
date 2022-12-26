@@ -5,6 +5,8 @@
 package main
 
 import (
+	"bytes"
+	_ "embed"
 	"fmt"
 	"image"
 	"image/color"
@@ -1129,4 +1131,56 @@ func (rl *RangeLimitList) DrawUI() {
 		}
 		imgui.EndTable()
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Plane icon
+
+var (
+	planeIconTextureId uint32
+
+	//go:embed resources/plane-solid.png
+	planeIconPNG string
+)
+
+// PlaneIconSpec is a simple structure that specifies the position,
+// heading, and size of an aircraft icon to be drawn by DrawPlaneIcons.
+type PlaneIconSpec struct {
+	P       [2]float32 // should be window coordinates
+	Heading float32
+	Size    float32
+}
+
+// DrawPlaneIcons issues draw commands to the provided command buffer that
+// draw aircraft icons with the specified color, as specified by the slice
+// of PlaneIconSpec structs.
+func DrawPlaneIcons(specs []PlaneIconSpec, color RGB, cb *CommandBuffer) {
+	if planeIconTextureId == 0 {
+		if iconImage, err := png.Decode(bytes.NewReader([]byte(planeIconPNG))); err != nil {
+			lg.Errorf("Unable to decode plane icon PNG: %v", err)
+		} else {
+			planeIconTextureId = renderer.CreateTextureFromImage(iconImage, true)
+		}
+	}
+
+	td := GetTexturedTrianglesDrawBuilder()
+	defer ReturnTexturedTrianglesDrawBuilder(td)
+
+	for _, s := range specs {
+		// Start with a one-pixel big quad
+		p := [4][2]float32{[2]float32{-.5, -.5}, [2]float32{.5, -.5}, [2]float32{.5, .5}, [2]float32{-.5, .5}}
+		uv := [4][2]float32{[2]float32{0, 0}, [2]float32{1, 0}, [2]float32{1, 1}, [2]float32{0, 1}}
+
+		// Transform the corner vertices: scale, rotate, translate...
+		for i := range p {
+			p[i] = scale2f(p[i], s.Size)
+			rot := rotator2f(s.Heading - 90)
+			p[i] = rot(p[i])
+			p[i] = add2f(p[i], s.P)
+		}
+		td.AddQuad(p[0], p[1], p[2], p[3], uv[0], uv[1], uv[2], uv[3])
+	}
+
+	cb.SetRGB(color)
+	td.GenerateCommands(planeIconTextureId, cb)
 }

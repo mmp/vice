@@ -843,6 +843,64 @@ func ReturnColoredTrianglesDrawBuilder(td *ColoredTrianglesDrawBuilder) {
 	coloredTrianglesDrawBuilderPool.Put(td)
 }
 
+// TexturedTrianglesDrawBuilder generates commands for drawing a set of
+// triangles with associated uv texture coordinates using a specified
+// single texture map.
+type TexturedTrianglesDrawBuilder struct {
+	TrianglesDrawBuilder
+	uv [][2]float32
+}
+
+func (t *TexturedTrianglesDrawBuilder) Reset() {
+	t.TrianglesDrawBuilder.Reset()
+	t.uv = t.uv[:0]
+}
+
+// AddTriangle adds a triangle with the specified three vertices and uv
+// coordinates to be drawn.
+func (t *TexturedTrianglesDrawBuilder) AddTriangle(p0, p1, p2 [2]float32, uv0, uv1, uv2 [2]float32) {
+	t.TrianglesDrawBuilder.AddTriangle(p0, p1, p2)
+	t.uv = append(t.uv, uv0, uv1, uv2)
+}
+
+// AddQuad adds a quadrilateral with the specified four vertices and
+// associated texture coordinates to the list to be drawn; the quad is
+// split into two triangles for drawing.
+func (t *TexturedTrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32, uv0, uv1, uv2, uv3 [2]float32) {
+	t.TrianglesDrawBuilder.AddQuad(p0, p1, p2, p3)
+	t.uv = append(t.uv, uv0, uv1, uv2, uv3)
+}
+
+func (t *TexturedTrianglesDrawBuilder) GenerateCommands(texid uint32, cb *CommandBuffer) {
+	if len(t.indices) == 0 {
+		return
+	}
+
+	cb.Blend() // alpha blending...
+	cb.EnableTexture(texid)
+
+	uv := cb.Float2Buffer(t.uv)
+	cb.TexCoordArray(uv, 2, 2*4)
+
+	t.TrianglesDrawBuilder.GenerateCommands(cb)
+
+	cb.DisableTexCoordArray()
+	cb.DisableTexture()
+	cb.DisableBlend()
+}
+
+// And as above, these are also managed in a pool.
+var texturedTrianglesDrawBuilderPool = sync.Pool{New: func() any { return &TexturedTrianglesDrawBuilder{} }}
+
+func GetTexturedTrianglesDrawBuilder() *TexturedTrianglesDrawBuilder {
+	return texturedTrianglesDrawBuilderPool.Get().(*TexturedTrianglesDrawBuilder)
+}
+
+func ReturnTexturedTrianglesDrawBuilder(td *TexturedTrianglesDrawBuilder) {
+	td.Reset()
+	texturedTrianglesDrawBuilderPool.Put(td)
+}
+
 // TextDrawBuilder accumulates text to be drawn, batching it up in a single
 // draw command.
 type TextDrawBuilder struct {
