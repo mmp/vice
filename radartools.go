@@ -345,7 +345,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		return nil
 	}
 
-	if ac.GroundSpeed() > 350 {
+	if ac.Groundspeed() > 350 {
 		return nil
 	}
 
@@ -591,7 +591,7 @@ func (d DatablockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	}
 
 	alt100s := (ac.Altitude() + 50) / 100
-	speed := ac.GroundSpeed()
+	speed := ac.Groundspeed()
 	fp := ac.FlightPlan
 
 	if fp == nil {

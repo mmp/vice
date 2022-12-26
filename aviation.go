@@ -427,7 +427,7 @@ func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
 	}
 }
 
-func (a *Aircraft) GroundSpeed() int {
+func (a *Aircraft) Groundspeed() int {
 	return a.Tracks[0].Groundspeed
 }
 
@@ -452,7 +452,7 @@ func (a *Aircraft) HeadingVector() Point2LL {
 
 	nm := nmlength2ll(v)
 	// v's length should be groundspeed / 60 nm.
-	return scale2ll(v, float32(a.GroundSpeed())/(60*nm))
+	return scale2ll(v, float32(a.Groundspeed())/(60*nm))
 }
 
 func (a *Aircraft) HaveHeading() bool {
@@ -499,7 +499,7 @@ func (a *Aircraft) IsAssociated() bool {
 }
 
 func (a *Aircraft) OnGround() bool {
-	if a.GroundSpeed() < 40 {
+	if a.Groundspeed() < 40 {
 		return true
 	}
 

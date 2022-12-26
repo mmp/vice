@@ -3459,7 +3459,7 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 
 		// Unassociated with LDB should be 2 lines: squawk, altitude--unless
 		// beacon codes are inhibited in LDBs.
-		as := fmt.Sprintf("%03d  %02d", (ac.Altitude()+50)/100, (ac.GroundSpeed()+5)/10)
+		as := fmt.Sprintf("%03d  %02d", (ac.Altitude()+50)/100, (ac.Groundspeed()+5)/10)
 		mainblock[0] = append(mainblock[0], as)
 		mainblock[1] = append(mainblock[1], as)
 		return
@@ -3500,7 +3500,7 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 		if ac.LostTrack(server.CurrentTime()) {
 			alt = "CST"
 		}
-		speed := fmt.Sprintf("%02d", (ac.GroundSpeed()+5)/10)
+		speed := fmt.Sprintf("%02d", (ac.Groundspeed()+5)/10)
 		// TODO: pilot reported altitude. Asterisk after alt when showing.
 		mainblock[0] = append(mainblock[0], alt+ho+speed)
 
