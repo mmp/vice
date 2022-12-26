@@ -253,6 +253,7 @@ func (fr *FlightRadarServer) GetUpdates() {
 				}
 				pos := RadarTrack{
 					Position:    Point2LL{f.longitude, f.latitude},
+					Heading:     float32(f.bearing),
 					Altitude:    f.altitude,
 					Groundspeed: f.speed,
 					Time:        time.Now()}
