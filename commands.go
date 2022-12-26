@@ -1396,13 +1396,24 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 			}
 		}
 		if ac.TrackingController != "" {
-			result += fmt.Sprintf("\n%sTracked by: %s", indstr, ac.TrackingController)
+			result += fmt.Sprintf("\n%sctrl:  %s", indstr, ac.TrackingController)
 		}
 		if ac.InboundHandoffController != "" {
-			result += fmt.Sprintf("\n%sInbound handoff from %s", indstr, ac.InboundHandoffController)
+			result += fmt.Sprintf("\n%sin h/o:  %s", indstr, ac.InboundHandoffController)
 		}
 		if ac.OutboundHandoffController != "" {
-			result += fmt.Sprintf("\n%sOutbound handoff from %s", indstr, ac.OutboundHandoffController)
+			result += fmt.Sprintf("\n%sout h/o: %s", indstr, ac.OutboundHandoffController)
+		}
+		if ac.FlightPlan != nil {
+			if acType, ok := database.AircraftTypes[ac.FlightPlan.BaseType()]; ok {
+				result += fmt.Sprintf("\n%stype:  %d engine %s (%s)", indstr, acType.NumEngines(),
+					acType.EngineType(), acType.Manufacturer)
+				result += fmt.Sprintf("\n%sappr:  %s", indstr, acType.ApproachCategory())
+				result += fmt.Sprintf("\n%srecat: %s", indstr, acType.RECATCategory())
+			}
+		}
+		if ac.HaveTrack() {
+			result += fmt.Sprintf("\n%scralt: %d", indstr, ac.Altitude())
 		}
 		if ac.Squawk != ac.AssignedSquawk {
 			result += fmt.Sprintf("\n%s*** Actual squawk: %s", indstr, ac.Squawk)
