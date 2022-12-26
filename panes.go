@@ -310,10 +310,6 @@ type Arrival struct {
 	sortDistance float32
 }
 
-type Departure struct {
-	*Aircraft
-}
-
 func getDistanceSortedArrivals(airports map[string]interface{}) []Arrival {
 	var arr []Arrival
 	now := server.CurrentTime()
@@ -439,19 +435,19 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 
-	var uncleared, departures, airborne []Departure
+	var uncleared, departures, airborne []*Aircraft
 	for _, ac := range server.GetFilteredAircraft(func(ac *Aircraft) bool {
 		return ac.FlightPlan != nil && !ac.LostTrack(now)
 	}) {
 		if _, ok := a.Airports[ac.FlightPlan.DepartureAirport]; ok {
 			if ac.OnGround() {
 				if ac.AssignedSquawk == 0 {
-					uncleared = append(uncleared, Departure{Aircraft: ac})
+					uncleared = append(uncleared, ac)
 				} else {
-					departures = append(departures, Departure{Aircraft: ac})
+					departures = append(departures, ac)
 				}
 			} else {
-				airborne = append(airborne, Departure{Aircraft: ac})
+				airborne = append(airborne, ac)
 			}
 		}
 	}
@@ -511,17 +507,45 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		str.WriteString("\n")
 	}
 
+	writeWakeTurbulence := func(leader, follower *Aircraft) {
+		if leader == nil || follower == nil {
+			str.WriteString("       ")
+			return
+		}
+
+		if req, err := RECATAircraftDistance(leader, follower); err != nil {
+			str.WriteString("       ")
+			return
+		} else {
+			if req == 0 { // minimum radar separation
+				req = 3
+			}
+			d := nmdistance2ll(leader.Position(), follower.Position())
+			if d > 9.9 {
+				d = 9.9
+			}
+			if d < float32(req) {
+				flush()
+				style.Color = cs.TextHighlight
+				str.WriteString(fmt.Sprintf("%3.1f/%dnm", d, req))
+				flush()
+			} else {
+				str.WriteString(fmt.Sprintf("%3.1f/%dnm", d, req))
+			}
+		}
+	}
+
 	if a.ShowDeparted && len(airborne) > 0 {
 		sort.Slice(airborne, func(i, j int) bool {
-			ai := &airborne[i]
+			ai := airborne[i]
 			di := nmdistance2ll(database.FAA.airports[ai.FlightPlan.DepartureAirport].Location, ai.Position())
-			aj := &airborne[j]
+			aj := airborne[j]
 			dj := nmdistance2ll(database.FAA.airports[aj.FlightPlan.DepartureAirport].Location, aj.Position())
 			return di < dj
 		})
 
 		str.WriteString("Departed:\n")
-		for _, ac := range airborne {
+		for i, ac := range airborne {
 			route := ac.FlightPlan.Route
 			if len(route) > 10 {
 				route = route[:10]
@@ -536,9 +560,18 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			} else {
 				clearedAlt = fmt.Sprintf("%5d ", ac.FlightPlan.Altitude)
 			}
-			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %s %5d %12s\n", ac.Callsign,
+
+			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %s %5d ", ac.Callsign,
 				ac.FlightPlan.Rules, ac.FlightPlan.DepartureAirport, ac.FlightPlan.AircraftType,
-				ac.Scratchpad, clearedAlt, alt, route))
+				ac.Scratchpad, clearedAlt, alt))
+
+			if i+1 < len(airborne) {
+				writeWakeTurbulence(airborne[i+1], ac)
+			} else {
+				writeWakeTurbulence(nil, ac)
+			}
+
+			str.WriteString(fmt.Sprintf(" %12s\n", route))
 		}
 		str.WriteString("\n")
 	}
@@ -546,7 +579,7 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	arrivals := getDistanceSortedArrivals(a.Airports)
 	if a.ShowArrivals && len(arrivals) > 0 {
 		str.WriteString("Arrivals:\n")
-		for _, arr := range arrivals {
+		for i, arr := range arrivals {
 			ac := arr.aircraft
 			alt := ac.Altitude()
 			alt = (alt + 50) / 100 * 100
@@ -558,9 +591,17 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				star = star[len(star)-7:]
 			}
 
-			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d  %5d %3dnm %s\n", ac.Callsign,
+			str.WriteString(fmt.Sprintf("  %-8s %s %s %8s %3s %5d  %5d %3dnm ", ac.Callsign,
 				ac.FlightPlan.Rules, ac.FlightPlan.ArrivalAirport, ac.FlightPlan.AircraftType, ac.Scratchpad,
-				ac.TempAltitude, alt, int(arr.distance), star))
+				ac.TempAltitude, alt, int(arr.distance)))
+
+			if i > 0 {
+				writeWakeTurbulence(arrivals[i-1].aircraft, arrivals[i].aircraft)
+			} else {
+				writeWakeTurbulence(nil, nil)
+			}
+
+			str.WriteString(" " + star + "\n")
 
 			if _, ok := a.seenArrivals[ac.Callsign]; !ok {
 				globalConfig.AudioSettings.HandleEvent(AudioEventNewArrival)

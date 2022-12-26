@@ -39,3 +39,27 @@ func TestParseSquawk(t *testing.T) {
 		}
 	}
 }
+
+func TestRECATDistances(t *testing.T) {
+	if dist, err := RECATDistance("A", "C"); err != nil {
+		t.Errorf("unexpected RECAT error %v", err)
+	} else if dist != 5 {
+		t.Errorf("RECAT got %d expected 5", dist)
+	}
+
+	if dist, err := RECATDistance("B", "D"); err != nil {
+		t.Errorf("unexpected RECAT error %v", err)
+	} else if dist != 4 {
+		t.Errorf("RECAT got %d expected 4", dist)
+	}
+
+	if dist, err := RECATDistance("B", "F"); err != nil {
+		t.Errorf("unexpected RECAT error %v", err)
+	} else if dist != 7 {
+		t.Errorf("RECAT got %d expected 7", dist)
+	}
+
+	if _, err := RECATDistance("G", "A"); err == nil {
+		lg.Errorf("did not get error for invalid RECAT category")
+	}
+}

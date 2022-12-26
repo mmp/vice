@@ -24,6 +24,7 @@ var (
 	ErrNoController            = errors.New("No controller with that callsign")
 	ErrNoControllerOrAircraft  = errors.New("No controller or aircraft with that callsign")
 	ErrNotController           = errors.New("Not signed in to a controller position")
+	ErrUnknownAircraftType     = errors.New("Unknown aircraft type")
 )
 
 // AircraftController defines the interface that servers must implement to

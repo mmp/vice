@@ -725,3 +725,48 @@ func (ac *AircraftType) RECATCategory() string {
 
 	return ac.RECAT + ": " + code
 }
+
+func RECATDistance(leader, follower string) (int, error) {
+	dist := [6][6]int{
+		[6]int{3, 4, 5, 5, 6, 8},
+		[6]int{0, 3, 4, 4, 5, 7},
+		[6]int{0, 0, 3, 3, 4, 6},
+		[6]int{0, 0, 0, 0, 0, 5},
+		[6]int{0, 0, 0, 0, 0, 4},
+		[6]int{0, 0, 0, 0, 0, 3},
+	}
+
+	if len(leader) != 1 {
+		return 0, fmt.Errorf("invalid RECAT leader")
+	}
+	if len(follower) != 1 {
+		return 0, fmt.Errorf("invalid RECAT follower")
+	}
+
+	l := int([]byte(leader)[0] - 'A')
+	if l < 0 || l >= len(dist) {
+		return 0, fmt.Errorf("%s: invalid RECAT leader", leader)
+	}
+
+	f := int([]byte(follower)[0] - 'A')
+	if f < 0 || f >= len(dist) {
+		return 0, fmt.Errorf("%s: invalid follower", follower)
+	}
+
+	return dist[l][f], nil
+}
+
+func RECATAircraftDistance(leader, follower *Aircraft) (int, error) {
+	if leader.FlightPlan == nil || follower.FlightPlan == nil {
+		return 0, ErrNoFlightPlan
+	}
+	if lac, ok := database.AircraftTypes[leader.FlightPlan.BaseType()]; !ok {
+		return 0, ErrUnknownAircraftType
+	} else {
+		if fac, ok := database.AircraftTypes[follower.FlightPlan.BaseType()]; !ok {
+			return 0, ErrUnknownAircraftType
+		} else {
+			return RECATDistance(lac.RECAT, fac.RECAT)
+		}
+	}
+}
