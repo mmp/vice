@@ -1446,6 +1446,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 		if ct := server.GetController(name); ct != nil {
 			info = append(info, fmt.Sprintf("%s (%s) @ %s, range %d", ct.Callsign,
 				ct.Rating, ct.Frequency.String(), ct.ScopeRange))
+			_ = server.RequestControllerATIS(name)
 			if u := server.GetUser(name); u != nil {
 				info = append(info, fmt.Sprintf("%s %s (%s)", u.Name, u.Rating, u.Note))
 			}
