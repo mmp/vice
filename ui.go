@@ -835,6 +835,18 @@ func (v *VATSIMReplayConfiguration) Connect() error {
 	return err
 }
 
+type VATSIMPublicConfiguration struct {
+}
+
+func (v *VATSIMPublicConfiguration) Initialize()  {}
+func (v *VATSIMPublicConfiguration) DrawUI() bool { return false }
+func (v *VATSIMPublicConfiguration) Valid() bool  { return true }
+
+func (v *VATSIMPublicConfiguration) Connect() error {
+	server = NewVATSIMPublicServer()
+	return nil
+}
+
 type ConnectModalClient struct {
 	connectionType ConnectionType
 	err            string
@@ -844,6 +856,7 @@ type ConnectModalClient struct {
 	vatsim       VATSIMConnectionConfiguration
 	vatsimReplay VATSIMReplayConfiguration
 	flightRadar  FlightRadarConnectionConfiguration
+	vatsimPublic VATSIMPublicConfiguration
 }
 
 type ConnectionType int
@@ -852,11 +865,12 @@ const (
 	ConnectionTypeVATSIM = iota
 	ConnectionTypeVATSIMReplay
 	ConnectionTypeFlightRadar
+	ConnectionTypeVATSIMPublic
 	ConnectionTypeCount
 )
 
 func (c ConnectionType) String() string {
-	return [...]string{"VATSIM Network", "VATSIM Replay", "Flight Radar"}[c]
+	return [...]string{"VATSIM Network", "VATSIM Replay", "Flight Radar", "VATSIM Public Data"}[c]
 }
 
 func (c *ConnectModalClient) Title() string { return "New Connection" }
@@ -866,6 +880,7 @@ func (c *ConnectModalClient) Opening() {
 	c.vatsim.Initialize()
 	c.vatsimReplay.Initialize()
 	c.flightRadar.Initialize()
+	c.vatsimPublic.Initialize()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -883,6 +898,9 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 		case ConnectionTypeVATSIMReplay:
 			err = c.vatsimReplay.Connect()
+
+		case ConnectionTypeVATSIMPublic:
+			err = c.vatsimPublic.Connect()
 
 		default:
 			lg.Errorf("Unhandled connection type")
@@ -907,6 +925,9 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 	case ConnectionTypeVATSIMReplay:
 		ok.disabled = !c.vatsimReplay.Valid()
+
+	case ConnectionTypeVATSIMPublic:
+		ok.disabled = !c.vatsimPublic.Valid()
 
 	default:
 		lg.Errorf("Unhandled connection type")
@@ -937,6 +958,9 @@ func (c *ConnectModalClient) Draw() int {
 
 	case ConnectionTypeVATSIMReplay:
 		enter = c.vatsimReplay.DrawUI()
+
+	case ConnectionTypeVATSIMPublic:
+		enter = c.vatsimPublic.DrawUI()
 	}
 
 	if c.err != "" {
@@ -1425,6 +1449,9 @@ func (fs *FileSelectDialogBox) Draw() {
 
 				canSelect := entry.isDir
 				if !entry.isDir {
+					if fs.filter == nil {
+						canSelect = true
+					}
 					for _, f := range fs.filter {
 						if strings.HasSuffix(strings.ToUpper(entry.name), strings.ToUpper(f)) {
 							canSelect = true
