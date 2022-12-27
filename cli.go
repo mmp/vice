@@ -237,8 +237,11 @@ func (cli *CLIPane) processEvents(es *EventStream) {
 				if mtype != "" {
 					sendRecip += FontAwesomeIconArrowRight + mtype
 				}
-				cli.AddConsoleEntry([]string{id, "[" + time + "] " + sendRecip + ": ", m.contents},
-					[]ConsoleTextStyle{ConsoleTextRegular, ConsoleTextEmphasized, ConsoleTextRegular})
+
+				for _, line := range strings.Split(m.contents, "\n") {
+					cli.AddConsoleEntry([]string{id, "[" + time + "] " + sendRecip + ": ", line},
+						[]ConsoleTextStyle{ConsoleTextRegular, ConsoleTextEmphasized, ConsoleTextRegular})
+				}
 			}
 			switch m.messageType {
 			case TextBroadcast:
