@@ -20,10 +20,6 @@ import (
 // all of these details behind the Renderer interface would make it realtively easy
 // to write a Vulkan, Metal, or DirectX rendering backend.
 type Renderer interface {
-	// CreateRGBA8Texture returns the identifier for a a texture defined by
-	// the provided 8-bit RGBA pixel values.
-	CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) uint32
-
 	// CreateTextureFromImage returns an identifier for a texture map defined
 	// by the specified image.
 	CreateTextureFromImage(image image.Image) uint32

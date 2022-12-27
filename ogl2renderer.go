@@ -46,26 +46,6 @@ func (ogl2 *OpenGL2Renderer) Dispose() {
 	}
 }
 
-func (ogl2 *OpenGL2Renderer) CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) uint32 {
-	var lastTexture int32
-	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
-
-	var texid uint32
-	gl.GenTextures(1, &texid)
-	gl.BindTexture(gl.TEXTURE_2D, texid)
-
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(w), int32(h), 0, gl.RGBA, gl.UNSIGNED_BYTE, rgba)
-
-	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
-
-	ogl2.createdTexture(texid, w*h*4)
-
-	return texid
-}
-
 func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
 	_, exists := ogl2.createdTextures[texid]
 

@@ -8,6 +8,7 @@ import (
 	"C"
 	_ "embed"
 	"fmt"
+	"image"
 	"math"
 	"runtime"
 	"sort"
@@ -303,9 +304,13 @@ func fontsInit(r Renderer) {
 	add(shareTechMonoRegularTTF, true, "ShareTech Mono Regular")
 	add(ibmEGA8x14, true, "IBM EGA 8x14")
 
-	image := io.Fonts().TextureDataRGBA32()
-	lg.Printf("Fonts texture used %.1f MB", float32(image.Width*image.Height*4)/(1024*1024))
-	fontId := r.CreateRGBA8Texture(image.Width, image.Height, image.Pixels)
+	img := io.Fonts().TextureDataRGBA32()
+	lg.Printf("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
+	rgb8Image := &image.RGBA{
+		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
+		Stride: 4 * img.Width,
+		Rect:   image.Rectangle{Max: image.Point{X: img.Width, Y: img.Height}}}
+	fontId := r.CreateTextureFromImage(rgb8Image)
 	io.Fonts().SetTextureID(imgui.TextureID(fontId))
 
 	lg.Printf("Finished initializing fonts")
