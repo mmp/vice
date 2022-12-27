@@ -532,7 +532,7 @@ func (vp *VATSIMPublicServer) fetchVATSIMPublicAsync() {
 					Remarks:          p.FlightPlan.Remarks,
 				}
 
-				fp.Altitude, err = strconv.Atoi(p.FlightPlan.Altitude)
+				fp.Altitude, err = ParseAltitude(p.FlightPlan.Altitude)
 				if p.FlightPlan.Altitude != "" && err != nil {
 					lg.Errorf("%s: bogus altitude %s: %v", p.Callsign, p.FlightPlan.Altitude, err)
 				}

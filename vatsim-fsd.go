@@ -95,18 +95,8 @@ func handleFP(v *VATSIMServer, sender string, args []string) error {
 		return MalformedMessageError{"Unable to parse departTime: " + args[7]}
 	}
 
-	if args[8] != "" {
-		if strings.HasPrefix(strings.ToUpper(args[8]), "FL") {
-			if alt, err := strconv.Atoi(args[8][2:]); err != nil {
-				return MalformedMessageError{"Unable to parse altitude: " + args[8]}
-			} else {
-				fp.Altitude = alt * 100
-			}
-		} else if alt, err := strconv.Atoi(args[8]); err != nil {
-			return MalformedMessageError{"Unable to parse altitude: " + args[8]}
-		} else {
-			fp.Altitude = alt
-		}
+	if fp.Altitude, err = ParseAltitude(args[8]); err != nil && args[8] != "" {
+		return MalformedMessageError{err.Error()}
 	}
 
 	fp.ArrivalAirport = args[9]
