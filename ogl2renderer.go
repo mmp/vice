@@ -8,6 +8,7 @@ import (
 	"C"
 	"fmt"
 	"image"
+	"image/draw"
 	"math"
 	"unsafe"
 
@@ -81,65 +82,46 @@ func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
 	}
 }
 
-func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, generateMIPs bool) uint32 {
+func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image) uint32 {
+	return ogl2.CreateTextureFromImages([]image.Image{img})
+}
+
+func (ogl2 *OpenGL2Renderer) CreateTextureFromImages(pyramid []image.Image) uint32 {
 	var texid uint32
 	gl.GenTextures(1, &texid)
-	ogl2.UpdateTextureFromImage(texid, img, generateMIPs)
+	ogl2.UpdateTextureFromImages(texid, pyramid)
 	return texid
 }
 
-func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image, generateMIPs bool) {
-	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
-	rgba := make([]byte, nx*ny*4)
-	for y := 0; y < ny; y++ {
-		for x := 0; x < nx; x++ {
-			r, g, b, a := img.At(x, y).RGBA()
-			rgba[4*(nx*y+x)] = byte(r >> 8)
-			rgba[4*(nx*y+x)+1] = byte(g >> 8)
-			rgba[4*(nx*y+x)+2] = byte(b >> 8)
-			rgba[4*(nx*y+x)+3] = byte(a >> 8)
-		}
-	}
+func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image) {
+	ogl2.UpdateTextureFromImages(texid, []image.Image{img})
+}
 
-	bytes := nx * ny * 4
-	if generateMIPs {
-		bytes = (bytes * 4) / 3
-	}
-
+func (ogl2 *OpenGL2Renderer) UpdateTextureFromImages(texid uint32, pyramid []image.Image) {
 	var lastTexture int32
 	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
+
 	gl.BindTexture(gl.TEXTURE_2D, texid)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	if len(pyramid) == 1 {
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	} else {
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
+	}
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(nx), int32(ny), 0, gl.RGBA, gl.UNSIGNED_BYTE, unsafe.Pointer(&rgba[0]))
-	if generateMIPs {
-		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
-		level := int32(1)
-		for nx != 1 || ny != 1 {
-			ox, oy := nx, ny
-			nx, ny = max(nx/2, 1), max(ny/2, 1)
 
-			next := make([]byte, nx*ny*4)
-			lookup := func(x, y, c int) int {
-				x, y = min(x, ox-1), min(y, oy-1)
-				return int(rgba[4*(ox*y+x)+c])
-			}
-			for y := 0; y < ny; y++ {
-				for x := 0; x < nx; x++ {
-					for c := 0; c < 4; c++ {
-						// living large with a box filter
-						v := (lookup(2*x, 2*y, c) + lookup(2*x+1, 2*y, c) +
-							lookup(2*x, 2*y+1, c) + lookup(2*x+1, 2*y+1, c) + 2 /*rounding? */) / 4
-						next[4*(nx*y+x)+c] = byte(v)
-					}
-				}
-			}
-			gl.TexImage2D(gl.TEXTURE_2D, level, gl.RGBA, int32(nx), int32(ny), 0, gl.RGBA, gl.UNSIGNED_BYTE,
-				unsafe.Pointer(&next[0]))
-			level++
-			rgba = next
+	bytes := 0
+	for level, img := range pyramid {
+		ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
+		bytes += 4 * nx * ny
+
+		rgba, ok := img.(*image.RGBA)
+		if !ok {
+			rgba = image.NewRGBA(image.Rect(0, 0, nx, ny))
+			draw.Draw(rgba, rgba.Bounds(), img, img.Bounds().Min, draw.Src)
 		}
+		gl.TexImage2D(gl.TEXTURE_2D, int32(level), gl.RGBA, int32(nx), int32(ny), 0, gl.RGBA,
+			gl.UNSIGNED_BYTE, unsafe.Pointer(&rgba.Pix[0]))
 	}
 
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))

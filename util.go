@@ -7,6 +7,9 @@ package main
 import (
 	"fmt"
 	"golang.org/x/exp/constraints"
+	"image"
+	"image/color"
+	"image/draw"
 	"io"
 	"math"
 	"net/http"
@@ -995,4 +998,51 @@ func FetchURL(url string) ([]byte, error) {
 	}
 
 	return text, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Image processing
+
+func GenerateImagePyramid(img image.Image) []image.Image {
+	var pyramid []image.Image
+
+	// We always work with image.RGBA in the following..
+	nx, ny := img.Bounds().Dx(), img.Bounds().Dy()
+	prevLevel, ok := img.(*image.RGBA)
+	if !ok {
+		prevLevel = image.NewRGBA(image.Rect(0, 0, nx, ny))
+		draw.Draw(prevLevel, prevLevel.Bounds(), img, img.Bounds().Min, draw.Src)
+	}
+	pyramid = append(pyramid, prevLevel)
+
+	for nx != 1 || ny != 1 {
+		ox, oy := nx, ny
+		nx, ny = max(nx/2, 1), max(ny/2, 1)
+
+		next := make([]uint8, nx*ny*4)
+		lookup := func(x, y int) color.RGBA {
+			x, y = min(x, ox-1), min(y, oy-1)
+			return prevLevel.RGBAAt(x, y)
+		}
+		for y := 0; y < ny; y++ {
+			for x := 0; x < nx; x++ {
+				v := [4]color.RGBA{lookup(2*x, 2*y), lookup(2*x+1, 2*y), lookup(2*x, 2*y+1), lookup(2*x+1, 2*y+1)}
+
+				// living large with a box filter
+				next[4*(x+y*nx)+0] = uint8((int(v[0].R) + int(v[1].R) + int(v[2].R) + int(v[3].R) + 2) / 4)
+				next[4*(x+y*nx)+1] = uint8((int(v[0].G) + int(v[1].G) + int(v[2].G) + int(v[3].G) + 2) / 4)
+				next[4*(x+y*nx)+2] = uint8((int(v[0].B) + int(v[1].B) + int(v[2].B) + int(v[3].B) + 2) / 4)
+				next[4*(x+y*nx)+3] = uint8((int(v[0].A) + int(v[1].A) + int(v[2].A) + int(v[3].A) + 2) / 4)
+			}
+		}
+
+		nextLevel := &image.RGBA{
+			Pix:    next,
+			Stride: 4 * nx,
+			Rect:   image.Rectangle{Max: image.Point{X: nx, Y: ny}}}
+		pyramid = append(pyramid, nextLevel)
+		prevLevel = nextLevel
+	}
+
+	return pyramid
 }

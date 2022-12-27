@@ -204,9 +204,9 @@ func (w *WeatherRadar) Draw(intensity float32, transforms ScopeTransformations, 
 		if ok {
 			w.radarBounds = ib.bounds
 			if w.texId == 0 {
-				w.texId = renderer.CreateTextureFromImage(ib.img, false)
+				w.texId = renderer.CreateTextureFromImage(ib.img)
 			} else {
-				renderer.UpdateTextureFromImage(w.texId, ib.img, false)
+				renderer.UpdateTextureFromImage(w.texId, ib.img)
 			}
 		}
 	default:
@@ -1159,7 +1159,8 @@ func DrawPlaneIcons(specs []PlaneIconSpec, color RGB, cb *CommandBuffer) {
 		if iconImage, err := png.Decode(bytes.NewReader([]byte(planeIconPNG))); err != nil {
 			lg.Errorf("Unable to decode plane icon PNG: %v", err)
 		} else {
-			planeIconTextureId = renderer.CreateTextureFromImage(iconImage, true)
+			pyramid := GenerateImagePyramid(iconImage)
+			planeIconTextureId = renderer.CreateTextureFromImages(pyramid)
 		}
 	}
 
