@@ -147,6 +147,11 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Imag
 	ogl2.createdTexture(texid, bytes)
 }
 
+func (ogl2 *OpenGL2Renderer) DestroyTexture(texid uint32) {
+	gl.DeleteTextures(1, &texid)
+	delete(ogl2.createdTextures, texid)
+}
+
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {
 	var stats RendererStats
 	stats.nBuffers++

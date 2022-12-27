@@ -21,7 +21,7 @@ import (
 // to write a Vulkan, Metal, or DirectX rendering backend.
 type Renderer interface {
 	// CreateRGBA8Texture returns the identifier for a a texture defined by
-	// the provided 8-big RGBA pixel values.
+	// the provided 8-bit RGBA pixel values.
 	CreateRGBA8Texture(w, h int, rgba unsafe.Pointer) uint32
 
 	// CreateTextureFromImage returns an identifier for a texture map defined
@@ -31,6 +31,9 @@ type Renderer interface {
 	// UpdateTextureFromImage updates the contents of an existing texture
 	// with the provided image.
 	UpdateTextureFromImage(id uint32, image image.Image, generateMIPs bool)
+
+	// DestroyTexture frees the resources associated with the given texture id.
+	DestroyTexture(id uint32)
 
 	// RenderCommandBuffer executes all of the commands encoded in the
 	// provided command buffer, returning statistics about what was
