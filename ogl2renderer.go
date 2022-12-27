@@ -101,6 +101,11 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Imag
 		}
 	}
 
+	bytes := nx * ny * 4
+	if generateMIPs {
+		bytes = (bytes * 4) / 3
+	}
+
 	var lastTexture int32
 	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
 	gl.BindTexture(gl.TEXTURE_2D, texid)
@@ -139,10 +144,6 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Imag
 
 	gl.BindTexture(gl.TEXTURE_2D, uint32(lastTexture))
 
-	bytes := nx * ny * 4
-	if generateMIPs {
-		bytes = (bytes * 4) / 3
-	}
 	ogl2.createdTexture(texid, bytes)
 }
 
