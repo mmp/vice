@@ -1305,7 +1305,7 @@ func showAboutDialog() {
 	}
 
 	imgui.PushFont(ui.aboutFont.ifont)
-	center("vice: a client for VATSIM")
+	center("vice")
 	center(FontAwesomeIconCopyright + "2022 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
