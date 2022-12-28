@@ -658,7 +658,7 @@ type AircraftType struct {
 
 	RECAT string
 	Type  string // [ALH]#[JTP] -> { L->land, H->heli, A -> water}, # engines, { Jet, Turboprop, Prop}
-	WTC   string // Wake turbulence category
+	WTC   string // Wake turbulence category: L -> light, M -> medium, H -> heavy, J -> super
 	APC   string // Approach category: Vat: A 0-90, B 91-120 C 121-140 D 141-165 E >165
 
 	Initial struct {
@@ -775,10 +775,10 @@ func RECATAircraftDistance(leader, follower *Aircraft) (int, error) {
 	if leader.FlightPlan == nil || follower.FlightPlan == nil {
 		return 0, ErrNoFlightPlan
 	}
-	if lac, ok := database.AircraftTypes[leader.FlightPlan.BaseType()]; !ok {
+	if lac, ok := database.LookupAircraftType(leader.FlightPlan.BaseType()); !ok {
 		return 0, ErrUnknownAircraftType
 	} else {
-		if fac, ok := database.AircraftTypes[follower.FlightPlan.BaseType()]; !ok {
+		if fac, ok := database.LookupAircraftType(follower.FlightPlan.BaseType()); !ok {
 			return 0, ErrUnknownAircraftType
 		} else {
 			return RECATDistance(lac.RECAT, fac.RECAT)

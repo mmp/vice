@@ -1,4 +1,12 @@
 {
+  "Aliases": {
+      "A330": "A332",
+      "BBJ1": "B737",
+      "B787": "B788",
+      "DV20": "DA20",
+      "E75L": "E175"
+    },
+    "Aircraft" : {
   "A10": {
     "APC": "C",
     "Approach": {
@@ -106,8 +114,16 @@
       "IAS": 90,
       "ROC": 2050
     },
-    "Manufacturer": "AGUSTA",
+    "Manufacturer": "Agusta Westland",
     "Name": "Mangusta",
+    "RECAT": "F",
+    "Type": "H2T",
+    "WTC": "L"
+  },
+  "A139": {
+    "APC": "A",
+    "Manufacturer": "Agusta Westland",
+    "Name": "AW139",
     "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
@@ -1481,6 +1497,14 @@
     },
     "Manufacturer": "EUROCOPTER",
     "Name": "Super Puma",
+    "RECAT": "F",
+    "Type": "H2T",
+    "WTC": "M"
+  },
+  "AS65": {
+    "APC": "A",
+    "Manufacturer": "Eurocopter",
+    "Name": "Dauphin",
     "RECAT": "F",
     "Type": "H2T",
     "WTC": "M"
@@ -3072,7 +3096,15 @@
     "Type": "L2J",
     "WTC": "H"
   },
-  "B788": {
+  "B78X": {
+    "APC": "C",
+    "Manufacturer": "Boeing",
+    "Name": "787-10 Dreamliner",
+    "RECAT": "B",
+    "Type": "L2J",
+    "WTC": "H"
+  },
+  "B789": {
     "APC": "C",
     "Approach": {
       "IAS": 240,
@@ -3128,6 +3160,7 @@
     },
     "Manufacturer": "Boeing",
     "Name": "787-8 BBJ",
+    "Name": "787-8",
     "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
@@ -3358,6 +3391,14 @@
     },
     "Manufacturer": "Beech",
     "Name": "33 Debonair,Bonanza (E-24)",
+    "RECAT": "F",
+    "Type": "L1P",
+    "WTC": "L"
+  },
+  "BE35": {
+    "APC": "A",
+    "Manufacturer": "Beechcraft",
+    "Name": "Bonanza",
     "RECAT": "F",
     "Type": "L1P",
     "WTC": "L"
@@ -3952,6 +3993,14 @@
     "RECAT": "C",
     "Type": "L4J",
     "WTC": "H"
+  },
+  "C162": {
+    "APC": "A",
+    "Manufacturer": "Cessna",
+    "Name": "Skycatcher",
+    "RECAT": "F",
+    "Type": "L1P",
+    "WTC": "L"
   },
   "C172": {
     "APC": "A",
@@ -5351,6 +5400,14 @@
     "Type": "L2T",
     "WTC": "M"
   },
+  "DA20": {
+    "APC": "A",
+    "Manufacturer": "Diamond Aircraft Industries",
+    "Name": "Katana",
+    "RECAT": "F",
+    "Type": "L1P",
+    "WTC": "L"
+  },
   "DA40": {
     "APC": "A",
     "Approach": {
@@ -5446,6 +5503,22 @@
     "RECAT": "F",
     "Type": "L1T",
     "WTC": "L"
+  },
+  "DC3": {
+    "APC": "C",
+    "Manufacturer": "Douglas",
+    "Name": "DC-3",
+    "RECAT": "E",
+    "Type": "L2P",
+    "WTC": "M"
+  },
+  "DC6": {
+    "APC": "C",
+    "Manufacturer": "Douglas",
+    "Name": "DC-6",
+    "RECAT": "E",
+    "Type": "L4P",
+    "WTC": "M"
   },
   "DC10": {
     "APC": "D",
@@ -5801,6 +5874,38 @@
     "Type": "L2T",
     "WTC": "M"
   },
+  "DHC2": {
+    "APC": "A",
+    "Manufacturer": "DE HAVILLAND CANADA",
+    "Name": "Beaver",
+    "RECAT": "F",
+    "type": "L1P",
+    "WTC": "L"
+  },
+  "DHC3": {
+    "APC": "A",
+    "Manufacturer": "DE HAVILLAND CANADA",
+    "Name": "Otter",
+    "RECAT": "F",
+    "type": "L1P",
+    "WTC": "L"
+  },
+  "DHC4": {
+    "APC": "A",
+    "Manufacturer": "DE HAVILLAND CANADA",
+    "Name": "Caribou",
+    "RECAT": "F",
+    "type": "L1P",
+    "WTC": "L"
+  },
+  "DHC5": {
+    "APC": "A",
+    "Manufacturer": "DE HAVILLAND CANADA",
+    "Name": "Buffalo",
+    "RECAT": "F",
+    "type": "L2P",
+    "WTC": "L"
+  },
   "DHC6": {
     "APC": "A",
     "Approach": {
@@ -5824,7 +5929,7 @@
       "ROC": 1000
     },
     "Manufacturer": "DE HAVILLAND CANADA",
-    "Name": "CC-138",
+    "Name": "Twin Otter",
     "RECAT": "F",
     "Type": "L2T",
     "WTC": "L"
@@ -6060,6 +6165,14 @@
     "Type": "L2J",
     "WTC": "M"
   },
+  "E175": {
+    "APC": "C",
+    "Manufacturer": "Embraer",
+    "Name": "Embraer 175",
+    "RECAT": "E",
+    "Type": "L2J",
+    "WTC": "M"
+  },
   "E190": {
     "APC": "C",
     "Approach": {
@@ -6147,6 +6260,14 @@
     "RECAT": "E",
     "Type": "L2T",
     "WTC": "M"
+  },
+  "E314": {
+    "APC": "B",
+    "Manufacturer": "Embraer",
+    "Name": "Super Tucano",
+    "RECAT": "F",
+    "Type": "L1T",
+    "WTC": "L"
   },
   "E3CF": {
     "APC": "D",
@@ -6292,6 +6413,14 @@
     },
     "Manufacturer": "EUROCOPTER",
     "Name": "EUROCOPTER EC-135",
+    "RECAT": "F",
+    "Type": "H2T",
+    "WTC": "L"
+  },
+  "EC45": {
+    "APC": "A",
+    "Manufacturer": "EUROCOPTER",
+    "Name": "EUROCOPTER EC-145",
     "RECAT": "F",
     "Type": "H2T",
     "WTC": "L"
@@ -7150,6 +7279,14 @@
     "RECAT": "F",
     "Type": "L2J",
     "WTC": "M"
+  },
+  "G2CA": {
+    "APC": "A",
+    "Manufacturer": "Giumbal",
+    "Name": "Cabri G2",
+    "RECAT": "F",
+    "Type": "H2T",
+    "WTC": "L"
   },
   "G222": {
     "APC": "B",
@@ -8045,6 +8182,15 @@
     "Type": "L2T",
     "WTC": "M"
   },
+  "K100": {
+    "APC": "A",
+    "Manufacturer": "Daher",
+    "Name": "Kodiak 100",
+    "RECAT": "F",
+    "Type": "L1T",
+    "WTC": "L"
+  },
+
   "K35E": {
     "APC": "C",
     "Approach": {
@@ -9921,9 +10067,17 @@
       "ROC": 4100
     },
     "Manufacturer": "PILATUS",
-    "Name": "Beech PD-373 Beech, PC-9",
+    "Name": "Beech PC-9",
     "RECAT": "F",
     "Type": "L1T",
+    "WTC": "L"
+  },
+  "PJ3C": {
+    "APC": "A",
+    "Manufacturer": "Piper",
+    "Name": "Cub",
+    "RECAT": "F",
+    "Type": "L1P",
     "WTC": "L"
   },
   "PRM1": {
@@ -10467,6 +10621,14 @@
     "Type": "L2T",
     "WTC": "M"
   },
+  "SF50": {
+    "APC": "B",
+    "Manufacturer": "Cirrus",
+    "Name": "Vision SF50",
+    "RECAT": "F",
+    "Type": "L1J",
+    "WTC": "L"
+  },
   "SH33": {
     "APC": "B",
     "Approach": {
@@ -10522,6 +10684,22 @@
     "RECAT": "F",
     "Type": "L2T",
     "WTC": "M"
+  },
+  "SLG2": {
+    "APC": "A",
+    "Manufacturer": "Sling",
+    "Name": "Sling 2",
+    "RECAT": "F",
+    "Type": "L1P",
+    "WTC": "L"
+   },
+   "SLG4": {
+    "APC": "A",
+    "Manufacturer": "Sling",
+    "Name": "Sling 4",
+    "RECAT": "F",
+    "Type": "L1P",
+    "WTC": "L"
   },
   "SR20": {
     "APC": "A",
@@ -11110,6 +11288,14 @@
     "Type": "L1T",
     "WTC": "L"
   },
+  "TBM9": {
+    "APC": "B",
+    "Manufacturer": "SOCATA",
+    "Name": "TBM-900",
+    "RECAT": "F",
+    "Type": "L1T",
+    "WTC": "L"
+  },
   "TOBA": {
     "APC": "A",
     "Approach": {
@@ -11341,3 +11527,5 @@
     "WTC": "M"
   }
 }
+}
+

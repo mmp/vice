@@ -35,8 +35,9 @@ type StaticDatabase struct {
 		fixes    map[string]Fix
 		prd      map[AirportPair][]PRDEntry
 	}
-	callsigns     map[string]Callsign
-	AircraftTypes map[string]AircraftType
+	callsigns           map[string]Callsign
+	AircraftTypes       map[string]AircraftType
+	AircraftTypeAliases map[string]string
 
 	// From the sector file
 	NmPerLatitude     float32
@@ -169,7 +170,7 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase, sectorFile, positionF
 	wg.Add(1)
 	go func() { db.callsigns = parseCallsigns(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.AircraftTypes = parseAircraftTypes(); wg.Done() }()
+	go func() { db.AircraftTypes, db.AircraftTypeAliases = parseAircraftTypes(); wg.Done() }()
 	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
@@ -365,15 +366,19 @@ func parseCallsigns() map[string]Callsign {
 	return callsigns
 }
 
-func parseAircraftTypes() map[string]AircraftType {
-	aircraftTypes := make(map[string]AircraftType)
+func parseAircraftTypes() (map[string]AircraftType, map[string]string) {
+	var ac struct {
+		AircraftTypes       map[string]AircraftType `json:"Aircraft"`
+		AircraftTypeAliases map[string]string       `json:"Aliases"`
+	}
+	ac.AircraftTypes = make(map[string]AircraftType)
+	ac.AircraftTypeAliases = make(map[string]string)
 
-	err := json.Unmarshal([]byte(aircraftTypesRaw), &aircraftTypes)
-	if err != nil {
+	if err := json.Unmarshal([]byte(aircraftTypesRaw), &ac); err != nil {
 		lg.Errorf("%v", err)
 	}
 
-	return aircraftTypes
+	return ac.AircraftTypes, ac.AircraftTypeAliases
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -880,6 +885,20 @@ func (db *StaticDatabase) LookupPosition(callsign string, frequency Frequency) *
 		}
 	}
 	return nil
+}
+
+func (db *StaticDatabase) LookupAircraftType(ac string) (AircraftType, bool) {
+	if t, ok := db.AircraftTypes[ac]; ok {
+		return t, true
+	}
+	if ac, ok := db.AircraftTypeAliases[ac]; ok {
+		t, ok := db.AircraftTypes[ac]
+		if !ok {
+			lg.Errorf("%s: alias not found in aircraft types database", ac)
+		}
+		return t, ok
+	}
+	return AircraftType{}, false
 }
 
 func (db *StaticDatabase) SetColorScheme(cs *ColorScheme) {

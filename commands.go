@@ -1391,7 +1391,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 				result += fmt.Sprintf("\n%stele:  %s", indstr, tel)
 			}
 
-			if a, ok := database.AircraftTypes[ac.FlightPlan.BaseType()]; ok {
+			if a, ok := database.LookupAircraftType(ac.FlightPlan.BaseType()); ok {
 				result += fmt.Sprintf("\n%stype:  %s", indstr, a.Name)
 			}
 		}
@@ -1405,7 +1405,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 			result += fmt.Sprintf("\n%sout h/o: %s", indstr, ac.OutboundHandoffController)
 		}
 		if ac.FlightPlan != nil {
-			if acType, ok := database.AircraftTypes[ac.FlightPlan.BaseType()]; ok {
+			if acType, ok := database.LookupAircraftType(ac.FlightPlan.BaseType()); ok {
 				result += fmt.Sprintf("\n%stype:  %d engine %s (%s)", indstr, acType.NumEngines(),
 					acType.EngineType(), acType.Manufacturer)
 				result += fmt.Sprintf("\n%sappr:  %s", indstr, acType.ApproachCategory())
@@ -1451,7 +1451,7 @@ func (*InfoCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 				info = append(info, fmt.Sprintf("%s %s (%s)", u.Name, u.Rating, u.Note))
 			}
 		}
-		if ac, ok := database.AircraftTypes[name]; ok {
+		if ac, ok := database.LookupAircraftType(name); ok {
 			indent := fmt.Sprintf("%*c", len(ac.Name)+2, ' ')
 			info = append(info, fmt.Sprintf("%s: %d engine %s (%s)",
 				ac.Name, ac.NumEngines(), ac.EngineType(), ac.Manufacturer))

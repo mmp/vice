@@ -322,6 +322,11 @@ func (vp *VATSIMPublicServer) GetUpdates() {
 			if ourac, ok := vp.aircraft[callsign]; !ok {
 				eventStream.Post(&AddedAircraftEvent{ac: ac})
 				vp.aircraft[callsign] = ac
+
+				actype := ac.FlightPlan.BaseType()
+				if _, ok := database.LookupAircraftType(actype); !ok && actype != "" {
+					lg.Errorf("%s: unknown ac type %s", ac.Callsign, actype)
+				}
 			} else {
 				eventStream.Post(&ModifiedAircraftEvent{ac: ourac})
 				//lg.Printf("%s: proper track %+v", ac.Callsign, ac.Tracks[0])
