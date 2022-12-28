@@ -5,7 +5,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/jpeg"
+	"image/png"
+	"os"
+	"path"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
@@ -1696,4 +1705,482 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cb.SetRGB(ctx.cs.TextHighlight)
 	cb.LineWidth(3)
 	selectionLd.GenerateCommands(cb)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ImageViewPane
+
+type ImageViewPane struct {
+	Directory         string
+	SelectedImage     string
+	ImageCalibrations map[string]*ImageCalibration
+	InvertImages      bool
+
+	DrawAircraft bool
+	AircraftSize int32
+
+	enteredFixPos    [2]float32
+	enteredFix       string
+	enteredFixCursor int
+
+	nImagesLoading int
+	ctx            context.Context
+	cancel         context.CancelFunc
+	loadChan       chan LoadedImage
+
+	loadedImages    map[string]*ImageViewImage
+	showImageList   bool
+	scrollBar       *ScrollBar
+	dirSelectDialog *FileSelectDialogBox
+}
+
+type ImageCalibration struct {
+	Fix     [2]string
+	Pimage  [2][2]float32
+	lastSet int
+}
+
+type LoadedImage struct {
+	Name    string
+	Pyramid []image.Image
+}
+
+type ImageViewImage struct {
+	Name        string
+	TexId       uint32
+	AspectRatio float32
+}
+
+func NewImageViewPane() *ImageViewPane {
+	return &ImageViewPane{
+		Directory:         "/Users/mmp/vatsim/KPHL",
+		ImageCalibrations: make(map[string]*ImageCalibration),
+		AircraftSize:      16,
+	}
+}
+
+func (iv *ImageViewPane) Duplicate(nameAsCopy bool) Pane {
+	dupe := &ImageViewPane{
+		Directory:         iv.Directory,
+		SelectedImage:     iv.SelectedImage,
+		ImageCalibrations: DuplicateMap(iv.ImageCalibrations),
+		InvertImages:      iv.InvertImages,
+		DrawAircraft:      iv.DrawAircraft,
+		AircraftSize:      iv.AircraftSize,
+		scrollBar:         NewScrollBar(4, true),
+	}
+	dupe.loadImages()
+	return dupe
+}
+
+func (iv *ImageViewPane) Activate() {
+	iv.scrollBar = NewScrollBar(4, true)
+	iv.loadImages()
+}
+
+func (iv *ImageViewPane) loadImages() {
+	iv.loadedImages = make(map[string]*ImageViewImage)
+	iv.ctx, iv.cancel = context.WithCancel(context.Background())
+	iv.loadChan = make(chan LoadedImage, 64)
+	iv.nImagesLoading = 0
+
+	de, err := os.ReadDir(iv.Directory)
+	if err != nil {
+		lg.Errorf("%s: %v", iv.Directory, err)
+	}
+
+	// Load the selected one first
+	if FindIf(de, func(de os.DirEntry) bool { return de.Name() == iv.SelectedImage }) != -1 {
+		iv.nImagesLoading++
+		loadImage(iv.ctx, path.Join(iv.Directory, iv.SelectedImage), iv.InvertImages, iv.loadChan)
+	}
+
+	for _, entry := range de {
+		ext := filepath.Ext(strings.ToUpper(entry.Name()))
+		if entry.IsDir() || (ext != ".PNG" && ext != ".JPG" && ext != ".JPEG") {
+			continue
+		}
+		if entry.Name() == iv.SelectedImage {
+			// Already loaded it
+			continue
+		}
+
+		filename := path.Join(iv.Directory, entry.Name())
+		iv.nImagesLoading++
+		go loadImage(iv.ctx, filename, iv.InvertImages, iv.loadChan)
+	}
+}
+
+func loadImage(ctx context.Context, path string, invertImage bool, loadChan chan LoadedImage) {
+	f, err := os.Open(path)
+	if err != nil {
+		lg.Errorf("%s: %v", path, err)
+		return
+	}
+	defer f.Close()
+
+	var img image.Image
+	switch filepath.Ext(strings.ToUpper(path)) {
+	case ".PNG":
+		img, err = png.Decode(f)
+
+	case ".JPG", ".JPEG":
+		img, err = jpeg.Decode(f)
+	}
+
+	if err != nil {
+		lg.Errorf("%s: unable to decode image: %v", path, err)
+		return
+	}
+
+	if img != nil {
+		if invertImage {
+			rgbaImage, ok := img.(*image.RGBA)
+			if !ok {
+				rgbaImage = image.NewRGBA(image.Rect(0, 0, img.Bounds().Dx(), img.Bounds().Dy()))
+				draw.Draw(rgbaImage, rgbaImage.Bounds(), img, img.Bounds().Min, draw.Src)
+			}
+
+			b := rgbaImage.Bounds()
+			for py := b.Min.Y; py < b.Max.Y; py++ {
+				for px := b.Min.X; px < b.Max.X; px++ {
+					rgba := rgbaImage.RGBAAt(px, py)
+					r, g, b := float32(rgba.R)/255, float32(rgba.G)/255, float32(rgba.B)/255
+					// convert to YIQ
+					y, i, q := .299*r+.587*g+.114*b, .596*r-.274*g-.321*b, .211*r-.523*g+.311*b
+					// invert luminance
+					y = 1 - y
+					// And back...
+					r, g, b = y+.956*i+.621*q, y-.272*i-.647*q, y-1.107*i+1.705*q
+					quant := func(f float32) uint8 { return uint8(clamp(f*255, 0, 255)) }
+					rgbaImage.SetRGBA(px, py, color.RGBA{R: quant(r), G: quant(g), B: quant(b), A: rgba.A})
+				}
+			}
+			img = rgbaImage
+		}
+
+		pyramid := GenerateImagePyramid(img)
+		for {
+			select {
+			case <-ctx.Done():
+				// Canceled; exit
+				return
+
+			case loadChan <- LoadedImage{Name: path, Pyramid: pyramid}:
+				// success
+				return
+
+			case <-time.After(250 * time.Millisecond):
+				// sleep
+			}
+		}
+	}
+}
+
+func (iv *ImageViewPane) Deactivate() {
+	iv.clearImages()
+}
+
+func (iv *ImageViewPane) clearImages() {
+	iv.cancel()
+	iv.loadChan = nil
+
+	for _, im := range iv.loadedImages {
+		renderer.DestroyTexture(im.TexId)
+	}
+	iv.loadedImages = nil
+	iv.nImagesLoading = 0
+}
+
+func (iv *ImageViewPane) CanTakeKeyboardFocus() bool { return true }
+
+func (iv *ImageViewPane) Name() string { return "ImageView: " + path.Base(iv.Directory) }
+
+func (iv *ImageViewPane) DrawUI() {
+	imgui.Checkbox("Draw aircraft", &iv.DrawAircraft)
+	if iv.DrawAircraft {
+		imgui.SliderIntV("Aircraft size", &iv.AircraftSize, 4, 64, "%d", 0)
+	}
+
+	imgui.Text("Directory: " + iv.Directory)
+	imgui.SameLine()
+	if imgui.Button("Select...") {
+		if iv.dirSelectDialog == nil {
+			iv.dirSelectDialog = NewDirectorySelectDialogBox("Select image directory...",
+				iv.Directory, func(d string) {
+					if d == iv.Directory {
+						return
+					}
+					iv.clearImages()
+					iv.Directory = d
+					iv.SelectedImage = ""
+					iv.loadImages()
+				})
+		}
+		iv.dirSelectDialog.Activate()
+	}
+	if iv.dirSelectDialog != nil {
+		iv.dirSelectDialog.Draw()
+	}
+
+	if imgui.Checkbox("Invert images", &iv.InvertImages) {
+		iv.clearImages()
+		iv.loadImages()
+	}
+
+	// TODO?: refresh button
+}
+
+func (iv *ImageViewPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	if iv.nImagesLoading > 0 {
+		select {
+		case im := <-iv.loadChan:
+			texid := renderer.CreateTextureFromImages(im.Pyramid)
+			aspect := float32(im.Pyramid[0].Bounds().Max.X-im.Pyramid[0].Bounds().Min.X) /
+				float32(im.Pyramid[0].Bounds().Max.Y-im.Pyramid[0].Bounds().Min.Y)
+
+			iv.loadedImages[im.Name] = &ImageViewImage{
+				Name:        im.Name,
+				TexId:       texid,
+				AspectRatio: aspect,
+			}
+
+			iv.nImagesLoading--
+
+		default:
+		}
+	}
+
+	ctx.SetWindowCoordinateMatrices(cb)
+
+	enteringCalibration := wm.keyboardFocusPane == iv
+
+	if !enteringCalibration {
+		if !iv.showImageList {
+			if ctx.mouse != nil && ctx.mouse.Released[0] {
+				iv.showImageList = true
+			}
+		} else {
+			iv.drawImageList(ctx, cb)
+			return
+		}
+	}
+
+	iv.drawImage(ctx, cb)
+	iv.drawAircraft(ctx, cb)
+	iv.handleCalibration(ctx, cb)
+}
+
+func (iv *ImageViewPane) drawImageList(ctx *PaneContext, cb *CommandBuffer) {
+	font := ui.fixedFont
+	indent := float32(int(font.size / 2)) // left and top spacing
+	lineHeight := font.size
+
+	nVisibleLines := (int(ctx.paneExtent.Height()) - font.size) / font.size
+	iv.scrollBar.Update(len(iv.loadedImages), nVisibleLines, ctx)
+	iv.scrollBar.Draw(ctx, cb)
+	textOffset := iv.scrollBar.Offset()
+
+	// Current cursor position
+	pText := [2]float32{indent, ctx.paneExtent.Height() - indent + float32(textOffset*font.size)}
+
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	style := TextStyle{Font: font, Color: ctx.cs.Text}
+
+	for _, name := range SortedMapKeys(iv.loadedImages) {
+		hovered := func() bool {
+			return ctx.mouse != nil && ctx.mouse.Pos[1] < pText[1] && ctx.mouse.Pos[1] >= pText[1]-float32(lineHeight)
+		}
+		if hovered() {
+			// Draw the selection box.
+			rect := LinesDrawBuilder{}
+			width := ctx.paneExtent.Width()
+			rect.AddPolyline([2]float32{indent / 2, float32(pText[1])},
+				[][2]float32{[2]float32{0, 0},
+					[2]float32{width - indent, 0},
+					[2]float32{width - indent, float32(-lineHeight)},
+					[2]float32{0, float32(-lineHeight)}})
+			cb.SetRGB(ctx.cs.Text)
+			rect.GenerateCommands(cb)
+
+			if ctx.mouse.Released[0] {
+				iv.SelectedImage = name
+				iv.showImageList = false
+			}
+		}
+
+		pText = td.AddText(filepath.Base(name)+"\n", pText, style)
+	}
+	td.GenerateCommands(cb)
+}
+
+func (iv *ImageViewPane) drawImage(ctx *PaneContext, cb *CommandBuffer) {
+	image, ok := iv.loadedImages[iv.SelectedImage]
+	if !ok {
+		return
+	}
+
+	// Draw the selected image
+	td := GetTexturedTrianglesDrawBuilder()
+	defer ReturnTexturedTrianglesDrawBuilder(td)
+
+	e := iv.getImageExtent(image, ctx)
+	p := [4][2]float32{e.p0, [2]float32{e.p1[0], e.p0[1]}, e.p1, [2]float32{e.p0[0], e.p1[1]}}
+
+	td.AddQuad(p[0], p[1], p[2], p[3], [2]float32{0, 1}, [2]float32{1, 1}, [2]float32{1, 0}, [2]float32{0, 0})
+
+	cb.SetRGB(RGB{1, 1, 1})
+	td.GenerateCommands(image.TexId, cb)
+
+	// Possibly start calibration specification
+	if ctx.mouse != nil && ctx.mouse.Released[1] {
+		// remap mouse position from window coordinates to normalized [0,1]^2 image coordinates
+		iv.enteredFixPos = sub2f(ctx.mouse.Pos, e.p0)
+		iv.enteredFixPos[0] /= e.Width()
+		iv.enteredFixPos[1] /= e.Height()
+		iv.enteredFix = ""
+		iv.enteredFixCursor = 0
+		wmTakeKeyboardFocus(iv, true)
+		return
+	}
+}
+
+// returns window-space extent
+func (iv *ImageViewPane) getImageExtent(image *ImageViewImage, ctx *PaneContext) Extent2D {
+	w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+	var dw, dh float32
+	if image.AspectRatio > w/h {
+		h = w / image.AspectRatio
+		dh = (ctx.paneExtent.Height() - h) / 2
+	} else {
+		w = h * image.AspectRatio
+		dw = (ctx.paneExtent.Width() - w) / 2
+	}
+
+	p0 := [2]float32{dw, dh}
+	return Extent2D{p0: p0, p1: add2f(p0, [2]float32{w, h})}
+}
+
+func (iv *ImageViewPane) drawAircraft(ctx *PaneContext, cb *CommandBuffer) {
+	if !iv.DrawAircraft {
+		return
+	}
+
+	cal, ok := iv.ImageCalibrations[iv.SelectedImage]
+	if !ok {
+		return
+	}
+
+	var pll [2]Point2LL
+	if pll[0], ok = database.Locate(cal.Fix[0]); !ok {
+		return
+	}
+	if pll[1], ok = database.Locate(cal.Fix[1]); !ok {
+		return
+	}
+
+	var image *ImageViewImage
+	if image, ok = iv.loadedImages[iv.SelectedImage]; !ok {
+		return
+	}
+
+	// Find the  window coordinates of the marked points
+	var pw [2][2]float32
+	e := iv.getImageExtent(image, ctx)
+	for i := 0; i < 2; i++ {
+		pw[i] = e.Lerp(cal.Pimage[i])
+	}
+
+	// rotate to align
+	llTheta := atan2(pll[1][1]-pll[0][1], pll[1][0]-pll[0][0])
+	wTheta := atan2(pw[1][1]-pw[0][1], pw[1][0]-pw[0][0])
+	rot := mgl32.Rotate2D(wTheta - llTheta)
+	scale := distance2f(pw[0], pw[1]) / distance2f(pll[0], pll[1])
+
+	windowFromLatLong := func(p Point2LL) [2]float32 {
+		// translate so pll[0] is the origin
+		p = sub2f(p, pll[0])
+		// rotate to align the vector from p0 to p1 in texture space
+		// with the vector from p0 to p1 in window space
+		p = [2]float32{rot[0]*p[0] + rot[2]*p[1], rot[1]*p[0] + rot[3]*p[1]}
+		// scale it so that the second points line up
+		p[0] *= scale
+		p[1] *= scale
+		// translate so that the origin is at pw[0]
+		return add2f(p, pw[0])
+	}
+
+	var icons []PlaneIconSpec
+	// FIXME: draw in consistent order
+	for _, ac := range server.GetAllAircraft() {
+		// FIXME: cull based on altitude range
+		icons = append(icons, PlaneIconSpec{
+			P:       windowFromLatLong(ac.Position()),
+			Heading: ac.Heading(),
+			Size:    float32(iv.AircraftSize)})
+	}
+	DrawPlaneIcons(icons, ctx.cs.Track, cb)
+}
+
+func (iv *ImageViewPane) handleCalibration(ctx *PaneContext, cb *CommandBuffer) {
+	enteringCalibration := wm.keyboardFocusPane == iv
+
+	if !enteringCalibration {
+		return
+	}
+
+	if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyEscape) {
+		wmReleaseKeyboardFocus()
+		return
+	}
+
+	// indicate if it's invalid
+	pInput := [2]float32{10, 20}
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	if _, ok := database.Locate(iv.enteredFix); iv.enteredFix != "" && !ok {
+		style := TextStyle{Font: ui.fixedFont, Color: ctx.cs.Error}
+		pInput = td.AddText(FontAwesomeIconExclamationTriangle+" ", pInput, style)
+	}
+
+	inputStyle := TextStyle{Font: ui.fixedFont, Color: ctx.cs.Text}
+	pInput = td.AddText("> ", pInput, inputStyle)
+	td.GenerateCommands(cb)
+
+	cursorStyle := TextStyle{Font: ui.fixedFont, Color: ctx.cs.Background,
+		DrawBackground: true, BackgroundColor: ctx.cs.Text}
+	exit, _ := uiDrawTextEdit(&iv.enteredFix, &iv.enteredFixCursor, ctx.keyboard, pInput,
+		inputStyle, cursorStyle, cb)
+	iv.enteredFix = strings.ToUpper(iv.enteredFix)
+
+	if exit == TextEditReturnEnter {
+		cal, ok := iv.ImageCalibrations[iv.SelectedImage]
+		if !ok {
+			cal = &ImageCalibration{}
+			iv.ImageCalibrations[iv.SelectedImage] = cal
+		}
+
+		for i, fix := range cal.Fix {
+			if fix == iv.enteredFix {
+				// new location for existing one
+				cal.Pimage[i] = iv.enteredFixPos
+				return
+			}
+		}
+		// find a slot. any unset?
+		for i, fix := range cal.Fix {
+			if fix == "" {
+				cal.Pimage[i] = iv.enteredFixPos
+				cal.Fix[i] = iv.enteredFix
+				return
+			}
+		}
+
+		// alternate between the two
+		i := (cal.lastSet + 1) % len(cal.Fix)
+		cal.Pimage[i] = iv.enteredFixPos
+		cal.Fix[i] = iv.enteredFix
+		cal.lastSet = i
+	}
 }

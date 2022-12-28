@@ -267,6 +267,9 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 	case "*main.NotesViewPane":
 		pane, err = unmarshalPane[*NotesViewPane](*m["Pane"])
 
+	case "*main.ImageViewPane":
+		pane, err = unmarshalPane[*ImageViewPane](*m["Pane"])
+
 	case "*main.PerformancePane":
 		pane, err = unmarshalPane[*PerformancePane](*m["Pane"])
 
@@ -623,7 +626,12 @@ func wmDrawConfigEditor(p Platform) {
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewFlightStripPane())
 		}
-		if imgui.Selectable("Notes Viewer") {
+		if imgui.Selectable("Image viewer") {
+			wm.paneCreatePrompt = "Image viewer"
+			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+			wm.handlePanePick = setPicked(NewImageViewPane())
+		}
+		if imgui.Selectable("Notes viewer") {
 			wm.paneCreatePrompt = "Notes viewer"
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewNotesViewPane())
@@ -633,12 +641,12 @@ func wmDrawConfigEditor(p Platform) {
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewPerformancePane())
 		}
-		if imgui.Selectable("Radar Scope (Generic)") {
+		if imgui.Selectable("Radar scope (generic)") {
 			wm.paneCreatePrompt = "Radar scope (Generic)"
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewRadarScopePane("(Unnamed)"))
 		}
-		if imgui.Selectable("Radar Scope (STARS)") {
+		if imgui.Selectable("Radar scope (STARS)") {
 			wm.paneCreatePrompt = "Radar scope (STARS)"
 			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
 			wm.handlePanePick = setPicked(NewSTARSPane("(Unnamed)"))
