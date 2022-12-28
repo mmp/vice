@@ -1333,9 +1333,10 @@ type FileSelectDialogBox struct {
 	dirEntries            []DirEntry
 	dirEntriesLastUpdated time.Time
 
-	title    string
-	filter   []string
-	callback func(string)
+	selectDirectory bool
+	title           string
+	filter          []string
+	callback        func(string)
 }
 
 type DirEntry struct {
@@ -1345,6 +1346,28 @@ type DirEntry struct {
 
 func NewFileSelectDialogBox(title string, filter []string, filename string,
 	callback func(string)) *FileSelectDialogBox {
+	return &FileSelectDialogBox{
+		title:     title,
+		directory: defaultDirectory(filename),
+		filter:    filter,
+		callback:  callback}
+}
+
+func NewDirectorySelectDialogBox(title string, current string,
+	callback func(string)) *FileSelectDialogBox {
+	fsd := &FileSelectDialogBox{
+		title:           title,
+		selectDirectory: true,
+		callback:        callback}
+	if current != "" {
+		fsd.directory = current
+	} else {
+		fsd.directory = defaultDirectory("")
+	}
+	return fsd
+}
+
+func defaultDirectory(filename string) string {
 	var dir string
 	if filename != "" {
 		dir = path.Dir(filename)
@@ -1355,13 +1378,7 @@ func NewFileSelectDialogBox(title string, filter []string, filename string,
 			dir = "."
 		}
 	}
-	dir = path.Clean(dir)
-
-	return &FileSelectDialogBox{
-		title:     title,
-		directory: dir,
-		filter:    filter,
-		callback:  callback}
+	return path.Clean(dir)
 }
 
 func (fs *FileSelectDialogBox) Activate() {
@@ -1449,7 +1466,7 @@ func (fs *FileSelectDialogBox) Draw() {
 
 				canSelect := entry.isDir
 				if !entry.isDir {
-					if fs.filter == nil {
+					if fs.filter == nil && !fs.selectDirectory {
 						canSelect = true
 					}
 					for _, f := range fs.filter {
@@ -1488,7 +1505,7 @@ func (fs *FileSelectDialogBox) Draw() {
 			fs.filename = ""
 		}
 
-		disableOk := fs.filename == ""
+		disableOk := fs.filename == "" && !fs.selectDirectory
 		uiStartDisable(disableOk)
 		imgui.SameLine()
 		if imgui.Button("Ok") || fileSelected {
