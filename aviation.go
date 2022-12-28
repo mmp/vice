@@ -588,7 +588,10 @@ func ParseAltitude(s string) (int, error) {
 }
 
 func (fp FlightPlan) BaseType() string {
-	return strings.TrimPrefix(strings.TrimPrefix(fp.TypeWithoutSuffix(), "H/"), "S/")
+	s := strings.TrimPrefix(fp.TypeWithoutSuffix(), "H/")
+	s = strings.TrimPrefix(s, "S/")
+	s = strings.TrimPrefix(s, "J/")
+	return s
 }
 
 func (fp FlightPlan) TypeWithoutSuffix() string {

@@ -3522,7 +3522,7 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 		} else if strings.HasPrefix(actype, "H/") {
 			actype = strings.TrimPrefix(actype, "H/")
 			suffix += " H"
-		} else if strings.HasPrefix(actype, "S/") {
+		} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
 			actype = strings.TrimPrefix(actype, "S/")
 			suffix += " J"
 		}
