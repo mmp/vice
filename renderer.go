@@ -11,7 +11,6 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -198,18 +197,22 @@ func (cb *CommandBuffer) FloatSlice(start, length int) []float32 {
 	return unsafe.Slice(ptr, length)
 }
 
-func (cb *CommandBuffer) LoadProjectionMatrix(m mgl32.Mat4) {
+func (cb *CommandBuffer) LoadProjectionMatrix(m Matrix3) {
 	cb.appendInts(RendererLoadProjectionMatrix)
-	for i := 0; i < 16; i++ {
-		cb.appendFloats(m[i])
-	}
+	cb.appendFloats(
+		m[0][0], m[1][0], 0, m[2][0],
+		m[0][1], m[1][1], 0, m[2][1],
+		0, 0, 1, 0,
+		m[0][2], m[1][2], 0, m[2][2])
 }
 
-func (cb *CommandBuffer) LoadModelViewMatrix(m mgl32.Mat4) {
+func (cb *CommandBuffer) LoadModelViewMatrix(m Matrix3) {
 	cb.appendInts(RendererLoadModelViewMatrix)
-	for i := 0; i < 16; i++ {
-		cb.appendFloats(m[i])
-	}
+	cb.appendFloats(
+		m[0][0], m[1][0], 0, m[2][0],
+		m[0][1], m[1][1], 0, m[2][1],
+		0, 0, 1, 0,
+		m[0][2], m[1][2], 0, m[2][2])
 }
 
 // ClearRGB adds a command to the command buffer to clear the framebuffer
@@ -1189,8 +1192,8 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer) {
 	// space lies from draw_data->DisplayPos (top left) to
 	// draw_data->DisplayPos+data_data->DisplaySize (bottom right).
 	// DisplayMin is typically (0,0) for single viewport apps.
-	cb.LoadProjectionMatrix(mgl32.Ortho(0, float32(displayWidth), float32(displayHeight), 0, -1, 1))
-	cb.LoadModelViewMatrix(mgl32.Ident4())
+	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, float32(displayWidth), float32(displayHeight), 0))
+	cb.LoadModelViewMatrix(Identity3x3())
 	cb.Viewport(0, 0, int(fbWidth), int(fbHeight))
 	cb.Blend()
 

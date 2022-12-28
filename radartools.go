@@ -18,7 +18,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 	"github.com/nfnt/resize"
 )
@@ -868,41 +867,35 @@ func DrawRangeRings(center Point2LL, radius float32, color RGB, transforms Scope
 // useful when drawing radar scopes and provides a number of useful methods
 // to transform among related coordinate spaces.
 type ScopeTransformations struct {
-	ndcFromLatLong                       mgl32.Mat4
-	ndcFromWindow                        mgl32.Mat4
-	latLongFromWindow, windowFromLatLong mgl32.Mat4
+	ndcFromLatLong                       Matrix3
+	ndcFromWindow                        Matrix3
+	latLongFromWindow, windowFromLatLong Matrix3
 }
 
 // GetScopeTransformations returns a ScopeTransformations object
 // corresponding to the specified radar scope center, range, and rotation
 // angle.
 func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
-	// Translate to the center point
-	ndcFromLatLong := mgl32.Translate3D(-center[0], -center[1], 0)
-
-	// Scale based on range and nm per latitude / longitude
-	sc := mgl32.Scale3D(database.NmPerLongitude/rangenm, database.NmPerLatitude/rangenm, 1)
-	ndcFromLatLong = sc.Mul4(ndcFromLatLong)
-
-	// Account for magnetic variation and any user-specified rotation
-	rot := -radians(rotationAngle + database.MagneticVariation)
-	magRot := mgl32.HomogRotate3DZ(rot)
-	ndcFromLatLong = magRot.Mul4(ndcFromLatLong)
-
-	// Final orthographic projection including the effect of the
-	// window's aspect ratio.
 	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	aspect := width / height
-	ortho := mgl32.Ortho2D(-aspect, aspect, -1, 1)
-	ndcFromLatLong = ortho.Mul4(ndcFromLatLong)
+	ndcFromLatLong := Identity3x3().
+		// Final orthographic projection including the effect of the
+		// window's aspect ratio.
+		Ortho(-aspect, aspect, -1, 1).
+		// Account for magnetic variation and any user-specified rotation
+		Rotate(-radians(rotationAngle+database.MagneticVariation)).
+		// Scale based on range and nm per latitude / longitude
+		Scale(database.NmPerLongitude/rangenm, database.NmPerLatitude/rangenm).
+		// Translate to center point
+		Translate(-center[0], -center[1])
 
-	// FIXME: it's silly to have NDC at all involved here; we can compute
-	// latlong from window much more directly.
-	latLongFromNDC := ndcFromLatLong.Inv()
-	ndcFromWindow := mgl32.Scale3D(2/width, 2/height, 1)
-	ndcFromWindow = mgl32.Translate3D(-1, -1, 0).Mul4(ndcFromWindow)
-	latLongFromWindow := latLongFromNDC.Mul4(ndcFromWindow)
-	windowFromLatLong := latLongFromWindow.Inv()
+	ndcFromWindow := Identity3x3().
+		Translate(-1, -1).
+		Scale(2/width, 2/height)
+
+	latLongFromNDC := ndcFromLatLong.Inverse()
+	latLongFromWindow := latLongFromNDC.PostMultiply(ndcFromWindow)
+	windowFromLatLong := latLongFromWindow.Inverse()
 
 	return ScopeTransformations{
 		ndcFromLatLong:    ndcFromLatLong,
@@ -917,7 +910,7 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 // provided for subsequent vertices.
 func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromLatLong)
-	cb.LoadModelViewMatrix(mgl32.Ident4())
+	cb.LoadModelViewMatrix(Identity3x3())
 }
 
 // LoadWindowViewingMatrices adds commands to the provided command buffer
@@ -925,40 +918,32 @@ func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
 // provided for subsequent vertices.
 func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromWindow)
-	cb.LoadModelViewMatrix(mgl32.Ident4())
-}
-
-func mul4v(m *mgl32.Mat4, v [2]float32) [2]float32 {
-	return [2]float32{m[0]*v[0] + m[4]*v[1], m[1]*v[0] + m[5]*v[1]}
-}
-
-func mul4p(m *mgl32.Mat4, p [2]float32) [2]float32 {
-	return add2f(mul4v(m, p), [2]float32{m[12], m[13]})
+	cb.LoadModelViewMatrix(Identity3x3())
 }
 
 // WindowFromLatLongP transforms a point given in latitude-longitude
 // coordinates to window coordinates.
 func (st *ScopeTransformations) WindowFromLatLongP(p Point2LL) [2]float32 {
-	return mul4p(&st.windowFromLatLong, p)
+	return st.windowFromLatLong.TransformPoint(p)
 }
 
 // LatLongFromWindowP transforms a point p in window coordinates to
 // latitude-longitude.
 func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) Point2LL {
-	return mul4p(&st.latLongFromWindow, p)
+	return st.latLongFromWindow.TransformPoint(p)
 }
 
 // NormalizedFromWindowP transforms a point p in window coordinates to
 // normalized [0,1]^2 coordinates.
 func (st *ScopeTransformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
-	pn := mul4p(&st.ndcFromWindow, p) // [-1,1]
+	pn := st.ndcFromWindow.TransformPoint(p) // [-1,1]
 	return [2]float32{(pn[0] + 1) / 2, (pn[1] + 1) / 2}
 }
 
 // LatLongFromWindowV transforms a vector in window coordinates to a vector
 // in latitude-longitude coordinates.
-func (st *ScopeTransformations) LatLongFromWindowV(p [2]float32) Point2LL {
-	return mul4v(&st.latLongFromWindow, p)
+func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) Point2LL {
+	return st.latLongFromWindow.TransformVector(v)
 }
 
 // PixelDistanceNM returns the space between adjacent pixels expressed in
@@ -1064,11 +1049,12 @@ func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransfor
 		// the scope center after the zoom, so we'll find the
 		// transformation that gives the new center position.
 		mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
-		centerTransform := mgl32.Translate3D(-mouseLL[0], -mouseLL[1], 0)
-		centerTransform = mgl32.Scale3D(scale, scale, 1).Mul4(centerTransform)
-		centerTransform = mgl32.Translate3D(mouseLL[0], mouseLL[1], 0).Mul4(centerTransform)
+		centerTransform := Identity3x3().
+			Translate(mouseLL[0], mouseLL[1]).
+			Scale(scale, scale).
+			Translate(-mouseLL[0], -mouseLL[1])
 
-		*center = mul4p(&centerTransform, *center)
+		*center = centerTransform.TransformPoint(*center)
 		*rangeNM *= scale
 		moved = true
 	}

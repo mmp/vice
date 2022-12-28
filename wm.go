@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -1044,9 +1043,8 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 		int(statusBarFbExtent.Width()+.5), int(statusBarFbExtent.Height()+.5))
 
 	statusBarHeight := wmStatusBarHeight()
-	proj := mgl32.Ortho2D(0, displaySize[0], 0, statusBarHeight)
-	cb.LoadProjectionMatrix(proj)
-	cb.LoadModelViewMatrix(mgl32.Ident4())
+	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, displaySize[0], 0, statusBarHeight))
+	cb.LoadModelViewMatrix(Identity3x3())
 
 	ctx := PaneContext{
 		paneExtent:       statusBarDisplayExtent,

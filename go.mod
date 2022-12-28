@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
 	github.com/go-gl/glfw v0.0.0-20191125211704-12ad95a8df72
-	github.com/go-gl/mathgl v1.0.0
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20220810122213-9ac08159e8b5

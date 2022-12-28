@@ -20,7 +20,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -215,9 +214,8 @@ func (k *KeyboardState) IsPressed(key Key) bool {
 func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {
 	w := float32(int(ctx.paneExtent.Width() + 0.5))
 	h := float32(int(ctx.paneExtent.Height() + 0.5))
-	proj := mgl32.Ortho2D(0, w, 0, h)
-	cb.LoadProjectionMatrix(proj)
-	cb.LoadModelViewMatrix(mgl32.Ident4())
+	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, w, 0, h))
+	cb.LoadModelViewMatrix(Identity3x3())
 }
 
 type AirportInfoPane struct {
@@ -2095,28 +2093,25 @@ func (iv *ImageViewPane) drawAircraft(ctx *PaneContext, cb *CommandBuffer) {
 	// rotate to align
 	llTheta := atan2(pll[1][1]-pll[0][1], pll[1][0]-pll[0][0])
 	wTheta := atan2(pw[1][1]-pw[0][1], pw[1][0]-pw[0][0])
-	rot := mgl32.Rotate2D(wTheta - llTheta)
 	scale := distance2f(pw[0], pw[1]) / distance2f(pll[0], pll[1])
 
-	windowFromLatLong := func(p Point2LL) [2]float32 {
-		// translate so pll[0] is the origin
-		p = sub2f(p, pll[0])
+	windowFromLatLong := Identity3x3().
+		// translate so that the origin is at pw[0]
+		Translate(pw[0][0], pw[0][1]).
+		// scale it so that the second points line up
+		Scale(scale, scale).
 		// rotate to align the vector from p0 to p1 in texture space
 		// with the vector from p0 to p1 in window space
-		p = [2]float32{rot[0]*p[0] + rot[2]*p[1], rot[1]*p[0] + rot[3]*p[1]}
-		// scale it so that the second points line up
-		p[0] *= scale
-		p[1] *= scale
-		// translate so that the origin is at pw[0]
-		return add2f(p, pw[0])
-	}
+		Rotate(wTheta-llTheta).
+		// translate so pll[0] is the origin
+		Translate(-pll[0][0], -pll[0][1])
 
 	var icons []PlaneIconSpec
 	// FIXME: draw in consistent order
 	for _, ac := range server.GetAllAircraft() {
 		// FIXME: cull based on altitude range
 		icons = append(icons, PlaneIconSpec{
-			P:       windowFromLatLong(ac.Position()),
+			P:       windowFromLatLong.TransformPoint(ac.Position()),
 			Heading: ac.Heading(),
 			Size:    float32(iv.AircraftSize)})
 	}

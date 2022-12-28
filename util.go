@@ -1046,3 +1046,89 @@ func GenerateImagePyramid(img image.Image) []image.Image {
 
 	return pyramid
 }
+
+///////////////////////////////////////////////////////////////////////////
+// 3x3 matrix
+
+type Matrix3 [3][3]float32
+
+func MakeMatrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22 float32) Matrix3 {
+	return [3][3]float32{
+		[3]float32{m00, m01, m02},
+		[3]float32{m10, m11, m12},
+		[3]float32{m20, m21, m22}}
+}
+
+func Identity3x3() Matrix3 {
+	var m Matrix3
+	m[0][0] = 1
+	m[1][1] = 1
+	m[2][2] = 1
+	return m
+}
+
+func (m Matrix3) PostMultiply(m2 Matrix3) Matrix3 {
+	var result Matrix3
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			result[i][j] = m[i][0]*m2[0][j] + m[i][1]*m2[1][j] + m[i][2]*m2[2][j]
+		}
+	}
+	return result
+}
+
+func (m Matrix3) Scale(x, y float32) Matrix3 {
+	return m.PostMultiply(MakeMatrix3(x, 0, 0, 0, y, 0, 0, 0, 1))
+}
+
+func (m Matrix3) Translate(x, y float32) Matrix3 {
+	return m.PostMultiply(MakeMatrix3(1, 0, x, 0, 1, y, 0, 0, 1))
+}
+
+func (m Matrix3) Ortho(x0, x1, y0, y1 float32) Matrix3 {
+	return m.PostMultiply(MakeMatrix3(
+		2/(x1-x0), 0, -(x0+x1)/(x1-x0),
+		0, 2/(y1-y0), -(y0+y1)/(y1-y0),
+		0, 0, 1))
+}
+
+func (m Matrix3) Rotate(theta float32) Matrix3 {
+	s, c := sin(theta), cos(theta)
+	return m.PostMultiply(MakeMatrix3(c, -s, 0, s, c, 0, 0, 0, 1))
+}
+
+func (m Matrix3) Determinant() float32 {
+	minor12 := m[1][1]*m[2][2] - m[1][2]*m[2][1]
+	minor02 := m[1][0]*m[2][2] - m[1][2]*m[2][0]
+	minor01 := m[1][0]*m[2][1] - m[1][1]*m[2][0]
+	return m[0][2]*minor01 + (m[0][0]*minor12 - m[0][1]*minor02)
+}
+
+func (m Matrix3) Inverse() Matrix3 {
+	invDet := 1 / m.Determinant()
+	var r Matrix3
+	r[0][0] = invDet * (m[1][1]*m[2][2] - m[1][2]*m[2][1])
+	r[1][0] = invDet * (m[1][2]*m[2][0] - m[1][0]*m[2][2])
+	r[2][0] = invDet * (m[1][0]*m[2][1] - m[1][1]*m[2][0])
+	r[0][1] = invDet * (m[0][2]*m[2][1] - m[0][1]*m[2][2])
+	r[1][1] = invDet * (m[0][0]*m[2][2] - m[0][2]*m[2][0])
+	r[2][1] = invDet * (m[0][1]*m[2][0] - m[0][0]*m[2][1])
+	r[0][2] = invDet * (m[0][1]*m[1][2] - m[0][2]*m[1][1])
+	r[1][2] = invDet * (m[0][2]*m[1][0] - m[0][0]*m[1][2])
+	r[2][2] = invDet * (m[0][0]*m[1][1] - m[0][1]*m[1][0])
+	return r
+}
+
+func (m Matrix3) TransformPoint(p [2]float32) [2]float32 {
+	return [2]float32{
+		m[0][0]*p[0] + m[0][1]*p[1] + m[0][2],
+		m[1][0]*p[0] + m[1][1]*p[1] + m[1][2],
+	}
+}
+
+func (m Matrix3) TransformVector(p [2]float32) [2]float32 {
+	return [2]float32{
+		m[0][0]*p[0] + m[0][1]*p[1],
+		m[1][0]*p[0] + m[1][1]*p[1],
+	}
+}
