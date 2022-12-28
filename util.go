@@ -883,7 +883,7 @@ func Find[V comparable](s []V, value V) int {
 
 // Find returns the index of the first instance of the given value in the
 // slice or -1 if it is not present.
-func FindIf[V comparable](s []V, pred func(V) bool) int {
+func FindIf[V any](s []V, pred func(V) bool) int {
 	for i, v := range s {
 		if pred(v) {
 			return i
