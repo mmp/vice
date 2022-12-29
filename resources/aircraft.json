@@ -3129,12 +3129,12 @@
       "ROC": 2700
     },
     "Manufacturer": "Boeing",
-    "Name": "787-8 BBJ",
+    "Name": "787-9",
     "RECAT": "B",
     "Type": "L2J",
     "WTC": "H"
   },
-  "B787": {
+  "B788": {
     "APC": "C",
     "Approach": {
       "IAS": 240,
@@ -3159,7 +3159,6 @@
       "ROC": 2700
     },
     "Manufacturer": "Boeing",
-    "Name": "787-8 BBJ",
     "Name": "787-8",
     "RECAT": "B",
     "Type": "L2J",
