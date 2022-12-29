@@ -76,7 +76,6 @@ type PositionConfig struct {
 	todos  []ToDoReminderItem
 	timers []TimerReminderItem
 
-	mit              []*Aircraft
 	selectedAircraft *Aircraft
 
 	highlightedLocation        Point2LL
@@ -701,20 +700,6 @@ func (pc *PositionConfig) Update() {
 	for _, event := range eventStream.Get(pc.eventsId) {
 		if sel, ok := event.(*SelectedAircraftEvent); ok {
 			pc.selectedAircraft = sel.ac
-		}
-	}
-
-	i := 0
-	for i < len(pc.mit) {
-		ac := pc.mit[i]
-		if ac == nil {
-			//lg.Printf("%s: lost a/c for mit. removing it.", pc.mit[i].Callsign())
-			pc.mit = append(pc.mit[:i], pc.mit[i+1:]...)
-		} else if ac.OnGround() || ac.Position().IsZero() {
-			pc.mit = append(pc.mit[:i], pc.mit[i+1:]...)
-		} else {
-			// Only increment i if the aircraft survived
-			i++
 		}
 	}
 }

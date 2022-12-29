@@ -70,6 +70,7 @@ type RadarScopePane struct {
 	measuringLine     MeasuringLine
 	minSepLines       [][2]*Aircraft
 	rangeBearingLines []RangeBearingLine
+	mitList           []*Aircraft
 
 	lastRangeNotificationPlayed time.Time
 
@@ -221,6 +222,7 @@ func (rs *RadarScopePane) Deactivate() {
 	rs.ghostAircraft = nil
 	rs.minSepLines = nil
 	rs.rangeBearingLines = nil
+	rs.mitList = nil
 	rs.acSelectedByDatablock = nil
 
 	eventStream.Unsubscribe(rs.eventsId)
@@ -363,6 +365,8 @@ func (rs *RadarScopePane) processEvents(es *EventStream) {
 				func(msa [2]*Aircraft) bool { return msa[0] != v.ac && msa[1] != v.ac })
 			rs.rangeBearingLines = FilterSlice(rs.rangeBearingLines,
 				func(rbl RangeBearingLine) bool { return rbl.ac != v.ac })
+			rs.mitList = FilterSlice(rs.mitList,
+				func(ac *Aircraft) bool { return ac != v.ac })
 
 		case *ModifiedAircraftEvent:
 			if rs.CRDAEnabled {
@@ -377,6 +381,10 @@ func (rs *RadarScopePane) processEvents(es *EventStream) {
 				rs.aircraft[v.ac] = &AircraftScopeState{}
 			} else {
 				state.datablockTextCurrent = false
+			}
+
+			if mitIdx := Find(rs.mitList, v.ac); mitIdx != -1 && v.ac.OnGround() {
+				rs.mitList = DeleteSliceElement(rs.mitList, mitIdx)
 			}
 
 			// new ghost
@@ -479,7 +487,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 	}
 
 	// Don't do AutoMIT if a sequence has been manually specified
-	if rs.AutoMIT && len(positionConfig.mit) == 0 {
+	if rs.AutoMIT && len(rs.mitList) == 0 {
 		inTrail := func(front Arrival, back Arrival) bool {
 			dalt := back.aircraft.Altitude() - front.aircraft.Altitude()
 			backHeading := back.aircraft.Heading()
@@ -537,8 +545,8 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 			}
 		}
 	} else {
-		for i := 1; i < len(positionConfig.mit); i++ {
-			front, trailing := positionConfig.mit[i-1], positionConfig.mit[i]
+		for i := 1; i < len(rs.mitList); i++ {
+			front, trailing := rs.mitList[i-1], rs.mitList[i]
 
 			// As above, don't draw if there's a range warning for these two
 			if _, ok := rs.rangeWarnings[AircraftPair{front, trailing}]; ok {
@@ -547,7 +555,7 @@ func (rs *RadarScopePane) drawMIT(ctx *PaneContext, transforms ScopeTransformati
 
 			pfront, ptrailing := front.Position(), trailing.Position()
 			dist := nmdistance2ll(pfront, ptrailing)
-			estDist := EstimatedFutureDistance(positionConfig.mit[i-1], positionConfig.mit[i], 30)
+			estDist := EstimatedFutureDistance(front, trailing, 30)
 			text := fmt.Sprintf("%.1f (%.1f) nm", dist, estDist)
 			if dist > 5 {
 				annotatedLine(pfront, ptrailing, ctx.cs.Safe, text)
@@ -1413,8 +1421,11 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 			if clickedAircraft == nil {
 				return
 			}
-			// TODO...
-
+			if idx := Find(rs.mitList, clickedAircraft); idx != -1 {
+				rs.mitList = DeleteSliceElement(rs.mitList, idx)
+			} else {
+				rs.mitList = append(rs.mitList, clickedAircraft)
+			}
 		} else if ctx.keyboard.IsPressed(KeyShift) {
 			// Shift-click -> update range bearing lines / minimum separation lines
 			if clickedAircraft == nil {

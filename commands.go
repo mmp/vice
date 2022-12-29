@@ -247,28 +247,26 @@ type FKeyCommand interface {
 // human-readable description; this description is used in the UI for
 // associating f-keys with commands.
 var allFKeyCommands map[string]FKeyCommand = map[string]FKeyCommand{
-	"Accept handoff":           &AcceptHandoffFKeyCommand{},
-	"Add to MIT sequence":      &AddToMITListFKeyCommand{},
-	"Assign final altitude":    &AssignFinalAltitudeFKeyCommand{},
-	"Assign temp. altitude":    &AssignTemporaryAltitudeFKeyCommand{},
-	"Assign squawk code":       &AssignSquawkFKeyCommand{},
-	"Contact me":               &ContactMeFKeyCommand{},
-	"Draw route":               &DrawRouteFKeyCommand{},
-	"Drop track":               &DropTrackFKeyCommand{},
-	"Handoff":                  &HandoffFKeyCommand{},
-	"Initiate track":           &TrackFKeyCommand{},
-	"Multi-drop track":         &MultiDropTrackFKeyCommand{},
-	"Multi-track":              &MultiTrackFKeyCommand{},
-	"Point out":                &PointOutFKeyCommand{},
-	"Push flight strip":        &PushFlightStripFKeyCommand{},
-	"Reject handoff":           &RejectHandoffFKeyCommand{},
-	"Remove from MIT sequence": &RemoveFromMITListFKeyCommand{},
-	"Set aircraft type":        &SetAircraftTypeFKeyCommand{},
-	"Set equipment suffix":     &SetEquipmentSuffixFKeyCommand{},
-	"Set IFR":                  &SetIFRFKeyCommand{},
-	"Set VFR":                  &SetVFRFKeyCommand{},
-	"Set voice capability":     &SetVoiceCapabilityFKeyCommand{},
-	"Set scratchpad":           &ScratchpadFKeyCommand{},
+	"Accept handoff":        &AcceptHandoffFKeyCommand{},
+	"Assign final altitude": &AssignFinalAltitudeFKeyCommand{},
+	"Assign temp. altitude": &AssignTemporaryAltitudeFKeyCommand{},
+	"Assign squawk code":    &AssignSquawkFKeyCommand{},
+	"Contact me":            &ContactMeFKeyCommand{},
+	"Draw route":            &DrawRouteFKeyCommand{},
+	"Drop track":            &DropTrackFKeyCommand{},
+	"Handoff":               &HandoffFKeyCommand{},
+	"Initiate track":        &TrackFKeyCommand{},
+	"Multi-drop track":      &MultiDropTrackFKeyCommand{},
+	"Multi-track":           &MultiTrackFKeyCommand{},
+	"Point out":             &PointOutFKeyCommand{},
+	"Push flight strip":     &PushFlightStripFKeyCommand{},
+	"Reject handoff":        &RejectHandoffFKeyCommand{},
+	"Set aircraft type":     &SetAircraftTypeFKeyCommand{},
+	"Set equipment suffix":  &SetEquipmentSuffixFKeyCommand{},
+	"Set IFR":               &SetIFRFKeyCommand{},
+	"Set VFR":               &SetVFRFKeyCommand{},
+	"Set voice capability":  &SetVoiceCapabilityFKeyCommand{},
+	"Set scratchpad":        &ScratchpadFKeyCommand{},
 }
 
 // AcceptHandoffFKeyCommand accepts a handoff from another controller
@@ -282,26 +280,6 @@ func (*AcceptHandoffFKeyCommand) ArgTypes() []FKeyCommandArg {
 }
 
 func (*AcceptHandoffFKeyCommand) Do(args []string) error { return server.AcceptHandoff(args[0]) }
-
-// AddToMITListFKeyCommand adds an aircraft to the miles in trail sequence
-// that's shown on the radar scope.
-type AddToMITListFKeyCommand struct{}
-
-func (*AddToMITListFKeyCommand) Name() string { return "add to MIT" }
-
-func (*AddToMITListFKeyCommand) ArgTypes() []FKeyCommandArg {
-	return []FKeyCommandArg{&AircraftCommandArg{}}
-}
-
-func (*AddToMITListFKeyCommand) Do(args []string) error {
-	if ac := server.GetAircraft(args[0]); ac == nil {
-		// This shouldn't happen, but...
-		return ErrNoAircraftForCallsign
-	} else {
-		positionConfig.mit = append(positionConfig.mit, ac)
-		return nil
-	}
-}
 
 // AssignFinalAltitudeFKeyCommand assigns a final altitude to an aircraft.
 type AssignFinalAltitudeFKeyCommand struct{}
@@ -544,30 +522,6 @@ func (*RejectHandoffFKeyCommand) ArgTypes() []FKeyCommandArg {
 
 func (*RejectHandoffFKeyCommand) Do(args []string) error { return server.RejectHandoff(args[0]) }
 
-// RemoveFromMITListFKeyCommand removes an aircraft from the miles in trail
-// sequence.
-type RemoveFromMITListFKeyCommand struct{}
-
-func (*RemoveFromMITListFKeyCommand) Name() string { return "remove from MIT list" }
-
-func (*RemoveFromMITListFKeyCommand) ArgTypes() []FKeyCommandArg {
-	isInMITList := func(callsign string) bool {
-		for _, ac := range positionConfig.mit {
-			if ac.Callsign == callsign {
-				return true
-			}
-		}
-		return false
-	}
-	return []FKeyCommandArg{&AircraftCommandArg{validateCallsign: isInMITList}}
-}
-
-func (*RemoveFromMITListFKeyCommand) Do(args []string) error {
-	positionConfig.mit = FilterSlice(positionConfig.mit,
-		func(ac *Aircraft) bool { return ac.Callsign != args[0] })
-	return nil
-}
-
 // ScratchpadFKeyCommand sets the scratchpad for an aircraft.
 type ScratchpadFKeyCommand struct{}
 
@@ -722,7 +676,6 @@ var (
 		&PushFlightStripCommand{},
 
 		&FindCommand{},
-		&MITCommand{},
 		&DrawRouteCommand{},
 
 		&InfoCommand{},
@@ -1308,32 +1261,6 @@ func (*FindCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []strin
 	positionConfig.highlightedLocation = pos
 	positionConfig.highlightedLocationEndTime = time.Now().Add(3 * time.Second)
 	return nil
-}
-
-type MITCommand struct{}
-
-func (*MITCommand) Names() []string                    { return []string{"mit"} }
-func (*MITCommand) Usage() string                      { return "" }
-func (*MITCommand) TakesAircraft() bool                { return false }
-func (*MITCommand) TakesController() bool              { return false }
-func (*MITCommand) AdditionalArgs() (min int, max int) { return 0, 0 }
-func (*MITCommand) Help() string {
-	return "With no aircraft selected, this clears the current miles in trail list. " +
-		"Otherwise, the selected aircraft is added to it."
-}
-func (*MITCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
-	if positionConfig.selectedAircraft == nil {
-		// clear it
-		positionConfig.mit = nil
-	} else {
-		positionConfig.mit = append(positionConfig.mit, ac)
-	}
-
-	result := "Current MIT list: "
-	for _, ac := range positionConfig.mit {
-		result += ac.Callsign + " "
-	}
-	return StringConsoleEntry(result)
 }
 
 type DrawRouteCommand struct{}
