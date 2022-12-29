@@ -1765,14 +1765,14 @@ func (iv *ImageViewPane) Duplicate(nameAsCopy bool) Pane {
 		InvertImages:      iv.InvertImages,
 		DrawAircraft:      iv.DrawAircraft,
 		AircraftSize:      iv.AircraftSize,
-		scrollBar:         NewScrollBar(4, true),
+		scrollBar:         NewScrollBar(4, false),
 	}
 	dupe.loadImages()
 	return dupe
 }
 
 func (iv *ImageViewPane) Activate() {
-	iv.scrollBar = NewScrollBar(4, true)
+	iv.scrollBar = NewScrollBar(4, false)
 	iv.loadImages()
 }
 
