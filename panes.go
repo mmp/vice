@@ -2003,6 +2003,26 @@ func (iv *ImageViewPane) drawImageList(ctx *PaneContext, cb *CommandBuffer) {
 	defer ReturnTextDrawBuilder(td)
 	style := TextStyle{Font: font, Color: ctx.cs.Text}
 
+	var previousLine []string
+	matchPrevious := func(s string) string {
+		cur := strings.Fields(s)
+		var result []string
+		spaces := 0
+		for i, str := range cur {
+			if i == len(previousLine) || str != previousLine[i] {
+				result = cur[i:]
+				break
+			} else {
+				spaces += 1 + len(str)
+				if i == 0 {
+					spaces++
+				}
+			}
+		}
+		previousLine = cur
+		return fmt.Sprintf("%*c", spaces, ' ') + strings.Join(result, " ")
+	}
+
 	for _, name := range SortedMapKeys(iv.loadedImages) {
 		hovered := func() bool {
 			return ctx.mouse != nil && ctx.mouse.Pos[1] < pText[1] && ctx.mouse.Pos[1] >= pText[1]-float32(lineHeight)
@@ -2025,7 +2045,8 @@ func (iv *ImageViewPane) drawImageList(ctx *PaneContext, cb *CommandBuffer) {
 			}
 		}
 
-		pText = td.AddText(filepath.Base(name)+"\n", pText, style)
+		text := matchPrevious(filepath.Base(name))
+		pText = td.AddText(text+"\n", pText, style)
 	}
 	td.GenerateCommands(cb)
 }
