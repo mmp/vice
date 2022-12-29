@@ -67,7 +67,9 @@ type RadarScopePane struct {
 
 	acSelectedByDatablock *Aircraft
 
-	measuringLine MeasuringLine
+	measuringLine     MeasuringLine
+	minSepLines       [][2]*Aircraft
+	rangeBearingLines []RangeBearingLine
 
 	lastRangeNotificationPlayed time.Time
 
@@ -86,6 +88,11 @@ const (
 	RangeIndicatorRings = iota
 	RangeIndicatorLine
 )
+
+type RangeBearingLine struct {
+	ac *Aircraft
+	p  Point2LL
+}
 
 type AircraftScopeState struct {
 	isGhost bool
@@ -212,6 +219,9 @@ func (rs *RadarScopePane) Deactivate() {
 	// Drop all of them
 	rs.aircraft = nil
 	rs.ghostAircraft = nil
+	rs.minSepLines = nil
+	rs.rangeBearingLines = nil
+	rs.acSelectedByDatablock = nil
 
 	eventStream.Unsubscribe(rs.eventsId)
 	rs.eventsId = InvalidEventSubscriberId
@@ -346,6 +356,13 @@ func (rs *RadarScopePane) processEvents(es *EventStream) {
 			}
 			delete(rs.aircraft, v.ac)
 			delete(rs.ghostAircraft, v.ac)
+			if rs.acSelectedByDatablock == v.ac {
+				rs.acSelectedByDatablock = nil
+			}
+			rs.minSepLines = FilterSlice(rs.minSepLines,
+				func(msa [2]*Aircraft) bool { return msa[0] != v.ac && msa[1] != v.ac })
+			rs.rangeBearingLines = FilterSlice(rs.rangeBearingLines,
+				func(rbl RangeBearingLine) bool { return rbl.ac != v.ac })
 
 		case *ModifiedAircraftEvent:
 			if rs.CRDAEnabled {
@@ -426,13 +443,12 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	rs.drawTracks(ctx, transforms, cb)
+	rs.drawTools(ctx, transforms, cb)
+
 	rs.updateDatablockTextAndBounds()
 	rs.layoutDatablocks(ctx, transforms)
 	rs.drawDatablocks(ctx, transforms, cb)
 	rs.drawVectorLines(ctx, transforms, cb)
-	rs.drawRangeIndicators(ctx, transforms, cb)
-	rs.drawMIT(ctx, transforms, cb)
-	rs.measuringLine.Draw(ctx, rs.labelFont, transforms, cb)
 	DrawHighlighted(ctx, transforms, cb)
 
 	// Mouse events last, so that the datablock bounds are current.
@@ -664,6 +680,55 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	pd.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
+}
+
+func (rs *RadarScopePane) drawTools(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	rs.drawRangeIndicators(ctx, transforms, cb)
+	rs.drawMIT(ctx, transforms, cb)
+	rs.measuringLine.Draw(ctx, rs.labelFont, transforms, cb)
+	for _, msl := range rs.minSepLines {
+		DrawMinimumSeparationLine(msl[0], msl[1], ctx.cs.Caution, ctx.cs.Background,
+			rs.labelFont, ctx, transforms, cb)
+	}
+	rs.drawRangeBearingLines(ctx, transforms, cb)
+}
+
+func (rs *RadarScopePane) drawRangeBearingLines(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	if len(rs.rangeBearingLines) == 0 {
+		return
+	}
+
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
+	color := ctx.cs.Caution
+	style := TextStyle{
+		Font:            rs.labelFont,
+		Color:           color,
+		DrawBackground:  true,
+		BackgroundColor: ctx.cs.Background,
+	}
+
+	for _, rbl := range rs.rangeBearingLines {
+		p0, p1 := rbl.ac.Position(), rbl.p
+
+		hdg := headingp2ll(p0, p1, database.MagneticVariation)
+		dist := nmdistance2ll(p0, p1)
+		oclock := headingAsHour(hdg - rbl.ac.Heading())
+		text := fmt.Sprintf("%d°/%d\n%.1f nm", int(hdg+.5), oclock, dist)
+
+		// Draw the line and the text.
+		pText := transforms.WindowFromLatLongP(mid2ll(p0, p1))
+		td.AddTextCentered(text, pText, style)
+		ld.AddLine(p0, p1, color)
+	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
@@ -1303,19 +1368,22 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 		}
 	}
 
-	// Update selected aircraft
+	// Handle a primary mouse button click. It does many things, depending
+	// on what's clicked and what modifier keys are down...
 	if ctx.mouse.Clicked[MouseButtonPrimary] {
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) {
-			// copy current mouse lat-long to the clipboard
-			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
-			platform.GetClipboard().SetText(mouseLatLong.DMSString())
-		}
+		now := server.CurrentTime()
+		candidateAircraft := FilterMap(rs.aircraft,
+			func(ac *Aircraft, state *AircraftScopeState) bool {
+				return !ac.LostTrack(now) && ac.Altitude() >= int(rs.MinAltitude) && ac.Altitude() <= int(rs.MaxAltitude)
+			})
 
+		// See if an aircraft is under (or around) the mouse.
 		var clickedAircraft *Aircraft
 		clickedDistance := float32(20) // in pixels; don't consider anything farther away
 
-		// Allow clicking on any track
-		for ac := range rs.aircraft {
+		// Find the closest aircraft to the mouse, if any, that is closer
+		// than the initial value of clickedDistance.
+		for ac := range candidateAircraft {
 			pw := transforms.WindowFromLatLongP(ac.Position())
 			dist := distance2f(pw, ctx.mouse.Pos)
 
@@ -1325,13 +1393,8 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 			}
 		}
 
-		// And now check and see if we clicked on a datablock (TODO: check for held)
-		now := server.CurrentTime()
-		for ac, state := range rs.aircraft {
-			if ac.LostTrack(now) || ac.Altitude() < int(rs.MinAltitude) || ac.Altitude() > int(rs.MaxAltitude) {
-				continue
-			}
-
+		// And now check and see if a datablock was selected.
+		for ac, state := range candidateAircraft {
 			pw := transforms.WindowFromLatLongP(ac.Position())
 			db := state.WindowDatablockBounds(pw)
 			if db.Inside(ctx.mouse.Pos) {
@@ -1341,7 +1404,58 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 			}
 		}
 
-		if clickedAircraft != nil {
+		if ctx.keyboard.IsPressed(KeyShift) && ctx.keyboard.IsPressed(KeyControl) {
+			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
+			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
+			platform.GetClipboard().SetText(mouseLatLong.DMSString())
+		} else if ctx.keyboard.IsPressed(KeyControl) {
+			// Control-click on an aircraft -> add or remove from MIT list
+			if clickedAircraft == nil {
+				return
+			}
+			// TODO...
+
+		} else if ctx.keyboard.IsPressed(KeyShift) {
+			// Shift-click -> update range bearing lines / minimum separation lines
+			if clickedAircraft == nil {
+				// No aircraft was clicked. However, if one is currently
+				// selected, make a range-bearing line from it to the clicked
+				// point.
+				if positionConfig.selectedAircraft != nil {
+					p := transforms.LatLongFromWindowP(ctx.mouse.Pos)
+					rs.rangeBearingLines = append(rs.rangeBearingLines,
+						RangeBearingLine{ac: positionConfig.selectedAircraft, p: p})
+				}
+			} else if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft != clickedAircraft {
+				// Create a minimum separation line between the currently
+				// selected aircraft and the one that was just
+				// shift-clicked.
+
+				// Do we already have a minimum separation line between
+				// these two?
+				for _, line := range rs.minSepLines {
+					if (line[0] == clickedAircraft && line[1] == positionConfig.selectedAircraft) ||
+						(line[1] == clickedAircraft && line[0] == positionConfig.selectedAircraft) {
+						return
+					}
+				}
+				rs.minSepLines = append(rs.minSepLines,
+					[2]*Aircraft{positionConfig.selectedAircraft, clickedAircraft})
+
+				// Deselect a/c since we consumed it...
+				// eventStream.Post(&SelectedAircraftEvent{ac: nil})
+			} else {
+				// Shift-click on an aircraft with none currently selected
+				// or shift-click on the selected aircraft: delete all
+				// min-sep lines and range-bearing lines that it's involved with.
+				rs.minSepLines = FilterSlice(rs.minSepLines,
+					func(ac [2]*Aircraft) bool { return ac[0] != clickedAircraft && ac[1] != clickedAircraft })
+				rs.rangeBearingLines = FilterSlice(rs.rangeBearingLines,
+					func(rbl RangeBearingLine) bool { return rbl.ac != clickedAircraft })
+			}
+		} else {
+			// Regular old clicked-on-an-aircraft with no modifier keys
+			// held.
 			eventStream.Post(&SelectedAircraftEvent{ac: clickedAircraft})
 		}
 	}

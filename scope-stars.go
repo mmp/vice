@@ -3788,75 +3788,11 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 		return
 	}
 
-	// Find the parametric distance along the respective rays of the
-	// aircrafts' courses where they at at a minimum distance.
-	p0, d0 := ac0.Position(), ac0.HeadingVector()
-	p1, d1 := ac1.Position(), ac1.HeadingVector()
-	tmin := RayRayMinimumDistance(p0, d0, p1, d1)
-
-	// If something blew up in  RayRayMinimumDistance then just bail out here.
-	if math.IsInf(float64(tmin), 0) || math.IsNaN(float64(tmin)) {
-		return
-	}
-
-	// Drawing prep.
 	ps := sp.currentPreferenceSet
 	color := ps.Brightness.Lines.RGB()
 
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	trid := GetTrianglesDrawBuilder()
-	defer ReturnTrianglesDrawBuilder(trid)
-
-	// Draw the separator lines (and triangles, if appropriate.)
-	// distance line.
-	var pw0, pw1 [2]float32     // Window coordinates of the points of minimum approach
-	var p0tmin, p1tmin Point2LL // Lat-long coordinates of the points of minimum approach
-	if tmin < 0 {
-		// The closest approach was in the past; just draw a line between
-		// the two tracks and initialize the above coordinates.
-		ld.AddLine(p0, p1, color)
-		p0tmin, p1tmin = p0, p1
-		pw0, pw1 = transforms.WindowFromLatLongP(p0), transforms.WindowFromLatLongP(p1)
-	} else {
-		// Closest approach in the future: draw a line from each track to
-		// the minimum separation line as well as the minimum separation
-		// line itself.
-		p0tmin, p1tmin = add2f(p0, scale2f(d0, tmin)), add2f(p1, scale2f(d1, tmin))
-		ld.AddLine(p0, p0tmin, color)
-		ld.AddLine(p0tmin, p1tmin, color)
-		ld.AddLine(p1tmin, p1, color)
-
-		// Draw small filled triangles centered at p0tmin and p1tmin.
-		pw0, pw1 = transforms.WindowFromLatLongP(p0tmin), transforms.WindowFromLatLongP(p1tmin)
-		uptri := EquilateralTriangleVertices(6)
-		trid.AddTriangle(add2f(pw0, uptri[0]), add2f(pw0, uptri[1]), add2f(pw0, uptri[2]))
-		trid.AddTriangle(add2f(pw1, uptri[0]), add2f(pw1, uptri[1]), add2f(pw1, uptri[2]))
-	}
-
-	// Draw the text for the minimum distance
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	// Center the text along the minimum distance line
-	pText := mid2f(pw0, pw1)
-	style := TextStyle{
-		Font:           sp.systemFont[ps.CharSize.Tools],
-		Color:          color,
-		DrawBackground: true, // default BackgroundColor is fine
-	}
-	text := fmt.Sprintf("%.2f NM", nmdistance2ll(p0tmin, p1tmin))
-	if tmin < 0 {
-		text = "NO XING\n" + text
-	}
-	td.AddTextCentered(text, pText, style)
-
-	// Dump the drawing commands out into the CommandBuffer.
-	transforms.LoadLatLongViewingMatrices(cb)
-	ld.GenerateCommands(cb)
-	transforms.LoadWindowViewingMatrices(cb)
-	cb.SetRGB(color)
-	trid.GenerateCommands(cb)
-	td.GenerateCommands(cb)
+	DrawMinimumSeparationLine(ac0, ac1, color, RGB{}, sp.systemFont[ps.CharSize.Tools],
+		ctx, transforms, cb)
 }
 
 func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations) {
