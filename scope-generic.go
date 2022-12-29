@@ -1379,7 +1379,7 @@ func (rs *RadarScopePane) consumeMouseEvents(ctx *PaneContext, transforms ScopeT
 
 		// See if an aircraft is under (or around) the mouse.
 		var clickedAircraft *Aircraft
-		clickedDistance := float32(20) // in pixels; don't consider anything farther away
+		clickedDistance := float32(15) // in pixels; don't consider anything farther away
 
 		// Find the closest aircraft to the mouse, if any, that is closer
 		// than the initial value of clickedDistance.
