@@ -1021,8 +1021,18 @@ func GenerateImagePyramid(img image.Image) []image.Image {
 
 		next := make([]uint8, nx*ny*4)
 		lookup := func(x, y int) color.RGBA {
-			x, y = min(x, ox-1), min(y, oy-1)
-			return prevLevel.RGBAAt(x, y)
+			if x > ox-1 {
+				x = ox - 1
+			}
+			if y > oy-1 {
+				y = oy - 1
+			}
+			offset := 4*x + prevLevel.Stride*y
+			return color.RGBA{
+				R: prevLevel.Pix[offset],
+				G: prevLevel.Pix[offset+1],
+				B: prevLevel.Pix[offset+2],
+				A: prevLevel.Pix[offset+3]}
 		}
 		for y := 0; y < ny; y++ {
 			for x := 0; x < nx; x++ {

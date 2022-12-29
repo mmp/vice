@@ -1842,7 +1842,13 @@ func loadImage(ctx context.Context, path string, invertImage bool, loadChan chan
 			b := rgbaImage.Bounds()
 			for py := b.Min.Y; py < b.Max.Y; py++ {
 				for px := b.Min.X; px < b.Max.X; px++ {
-					rgba := rgbaImage.RGBAAt(px, py)
+					offset := 4*px + rgbaImage.Stride*py
+					rgba := color.RGBA{
+						R: rgbaImage.Pix[offset],
+						G: rgbaImage.Pix[offset+1],
+						B: rgbaImage.Pix[offset+2],
+						A: rgbaImage.Pix[offset+3]}
+
 					r, g, b := float32(rgba.R)/255, float32(rgba.G)/255, float32(rgba.B)/255
 					// convert to YIQ
 					y, i, q := .299*r+.587*g+.114*b, .596*r-.274*g-.321*b, .211*r-.523*g+.311*b
@@ -1850,8 +1856,19 @@ func loadImage(ctx context.Context, path string, invertImage bool, loadChan chan
 					y = 1 - y
 					// And back...
 					r, g, b = y+.956*i+.621*q, y-.272*i-.647*q, y-1.107*i+1.705*q
-					quant := func(f float32) uint8 { return uint8(clamp(f*255, 0, 255)) }
-					rgbaImage.SetRGBA(px, py, color.RGBA{R: quant(r), G: quant(g), B: quant(b), A: rgba.A})
+					quant := func(f float32) uint8 {
+						f *= 255
+						if f < 0 {
+							f = 0
+						} else if f > 255 {
+							f = 255
+						}
+						return uint8(f)
+					}
+
+					rgbaImage.Pix[offset] = quant(r)
+					rgbaImage.Pix[offset+1] = quant(g)
+					rgbaImage.Pix[offset+2] = quant(b)
 				}
 			}
 			img = rgbaImage
@@ -1868,7 +1885,7 @@ func loadImage(ctx context.Context, path string, invertImage bool, loadChan chan
 				// success
 				return
 
-			case <-time.After(250 * time.Millisecond):
+			case <-time.After(50 * time.Millisecond):
 				// sleep
 			}
 		}
