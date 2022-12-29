@@ -177,6 +177,10 @@ func handleTM(v *VATSIMServer, sender string, args []string) error {
 	// @[freq]     frequency
 	// (otherwise) private message
 	freq := args[1]
+	if freq == "FP" || freq == "DCLIENT3" {
+		// Ignore: it's a flight plan request or ID reply.
+		return nil
+	}
 	tm := TextMessage{sender: sender, contents: strings.Join(args[2:], ":")}
 	if freq == "*" {
 		tm.messageType = TextBroadcast

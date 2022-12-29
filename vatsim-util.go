@@ -321,11 +321,11 @@ func (r *VATSIMReplayConnection) GetMessages() []VATSIMMessage {
 	// As long as the next message is before the current stream time, add
 	// it to the messages array.
 	for r.next.Time.Before(streamNow) {
-		// Don't report messages that the client originally sent
-		if !r.next.Sent {
-			msg := strings.TrimSpace(r.next.Contents) + "\r\n"
-			messages = append(messages, VATSIMMessage{Contents: msg, Sent: false, Time: r.next.Time})
-		}
+		messages = append(messages, VATSIMMessage{
+			Contents: strings.TrimSpace(r.next.Contents) + "\r\n",
+			Sent:     r.next.Sent,
+			Time:     r.next.Time,
+		})
 
 		if err := r.decoder.Decode(&r.next); err == io.EOF {
 			r.f.Close()
