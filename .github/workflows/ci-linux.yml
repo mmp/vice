@@ -36,7 +36,7 @@ jobs:
     - name: Install Linux dependencies
       run: |
         sudo apt update
-        sudo apt install xorg-dev libsdl2-dev
+        sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
     - name: Build
       run: |
