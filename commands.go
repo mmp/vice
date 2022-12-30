@@ -677,6 +677,7 @@ var (
 
 		&FindCommand{},
 		&DrawRouteCommand{},
+		&AddToSessionDrawListCommand{},
 
 		&InfoCommand{},
 		&TimerCommand{},
@@ -1280,6 +1281,39 @@ func (*DrawRouteCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []
 		positionConfig.drawnRoute = ac.FlightPlan.DepartureAirport + " " + ac.FlightPlan.Route + " " +
 			ac.FlightPlan.ArrivalAirport
 		positionConfig.drawnRouteEndTime = time.Now().Add(5 * time.Second)
+		return nil
+	}
+}
+
+type AddToSessionDrawListCommand struct{}
+
+func (*AddToSessionDrawListCommand) Names() []string                    { return []string{"show"} }
+func (*AddToSessionDrawListCommand) Usage() string                      { return "" }
+func (*AddToSessionDrawListCommand) TakesAircraft() bool                { return false }
+func (*AddToSessionDrawListCommand) TakesController() bool              { return false }
+func (*AddToSessionDrawListCommand) AdditionalArgs() (min int, max int) { return 1, 1000 }
+func (*AddToSessionDrawListCommand) Help() string {
+	return "Show the specified fixes, VORs, NDBs, or airports on scopes just for this session"
+}
+func (*AddToSessionDrawListCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
+	var unknown []string
+	for _, item := range args {
+		item = strings.ToUpper(item)
+		if _, ok := database.VORs[item]; ok {
+			positionConfig.sessionDrawVORs[item] = nil
+		} else if _, ok := database.NDBs[item]; ok {
+			positionConfig.sessionDrawNDBs[item] = nil
+		} else if _, ok := database.fixes[item]; ok {
+			positionConfig.sessionDrawFixes[item] = nil
+		} else if _, ok := database.airports[item]; ok {
+			positionConfig.sessionDrawAirports[item] = nil
+		} else {
+			unknown = append(unknown, item)
+		}
+	}
+	if len(unknown) > 0 {
+		return ErrorStringConsoleEntry(strings.Join(unknown, ", ") + ": not found")
+	} else {
 		return nil
 	}
 }

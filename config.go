@@ -82,6 +82,10 @@ type PositionConfig struct {
 	highlightedLocationEndTime time.Time
 	drawnRoute                 string
 	drawnRouteEndTime          time.Time
+	sessionDrawVORs            map[string]interface{}
+	sessionDrawNDBs            map[string]interface{}
+	sessionDrawFixes           map[string]interface{}
+	sessionDrawAirports        map[string]interface{}
 
 	frequenciesComboBoxState     *ComboBoxState
 	txFrequencies, rxFrequencies map[Frequency]*bool
@@ -345,6 +349,18 @@ func (pc *PositionConfig) Activate() {
 	}
 	if pc.eventsId == InvalidEventSubscriberId {
 		pc.eventsId = eventStream.Subscribe()
+	}
+	if pc.sessionDrawVORs == nil {
+		pc.sessionDrawVORs = make(map[string]interface{})
+	}
+	if pc.sessionDrawNDBs == nil {
+		pc.sessionDrawNDBs = make(map[string]interface{})
+	}
+	if pc.sessionDrawFixes == nil {
+		pc.sessionDrawFixes = make(map[string]interface{})
+	}
+	if pc.sessionDrawAirports == nil {
+		pc.sessionDrawAirports = make(map[string]interface{})
 	}
 
 	pc.CheckRadarCenters()
