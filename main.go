@@ -45,11 +45,13 @@ var (
 	buildVersion string
 
 	// Command-line options are only used for developer features.
-	logTraffic = flag.Bool("log-traffic", false, "log all network traffic")
-	cpuprofile = flag.String("cpuprofile", "", "write CPU profile to file")
-	memprofile = flag.String("memprofile", "", "write memory profile to this file")
-	devmode    = flag.Bool("devmode", false, "developer mode")
-	replayFile = flag.String("replay", "", "*.vsess filename for replay")
+	logTraffic   = flag.Bool("log-traffic", false, "log all network traffic")
+	cpuprofile   = flag.String("cpuprofile", "", "write CPU profile to file")
+	memprofile   = flag.String("memprofile", "", "write memory profile to this file")
+	devmode      = flag.Bool("devmode", false, "developer mode")
+	replayFile   = flag.String("replay", "", "*.vsess filename for replay")
+	replayRate   = flag.Float64("replay-rate", 1., "replay rate muliplier")
+	replayOffset = flag.Int("replay-offset", 0, "replay offset (seconds)")
 )
 
 func init() {
@@ -108,7 +110,7 @@ func main() {
 
 	var err error
 	if *replayFile != "" {
-		if server, err = NewVATSIMReplayServer(*replayFile, 0, 1); err != nil {
+		if server, err = NewVATSIMReplayServer(*replayFile, *replayOffset, float32(*replayRate)); err != nil {
 			lg.Errorf("%s: unable to load replay file: %v", *replayFile, err)
 		}
 	}
