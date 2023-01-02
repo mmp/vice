@@ -458,6 +458,8 @@ func init() {
 
 	r(NewMessageSpec("$AR::METAR", 4, handleAR))
 
+	ignore("$AX")
+
 	ignore("#CD")
 
 	ignore("$CQ::ACC")
