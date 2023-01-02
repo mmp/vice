@@ -264,7 +264,7 @@ func (cli *CLIPane) processEvents(es *EventStream) {
 					// a "DM" from the server isn't the same as a regular DM...
 					recordMessage("")
 				} else {
-					recordMessage(server.Callsign())
+					recordMessage(m.recipient)
 				}
 			}
 		}
