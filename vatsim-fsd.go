@@ -198,6 +198,7 @@ func handleTM(v *VATSIMServer, sender string, args []string) error {
 			}
 		}
 	} else {
+		tm.recipient = freq
 		tm.messageType = TextPrivate
 	}
 
