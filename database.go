@@ -267,6 +267,9 @@ func parseAirports() map[string]Airport {
 		} else {
 			loc := Point2LLFromComponents(s[15:19], s[19:23])
 			ap := Airport{Id: s[98], Name: s[12], Location: loc, Elevation: int(elevation)}
+			if ap.Id == "" {
+				ap.Id = s[4] // No ICAO code so grab the FAA airport id
+			}
 			if ap.Id != "" {
 				airports[ap.Id] = ap
 			}
