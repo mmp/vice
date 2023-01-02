@@ -6,6 +6,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"image"
 	"image/color"
@@ -217,6 +218,61 @@ func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, w, 0, h))
 	cb.LoadModelViewMatrix(Identity3x3())
 }
+
+// Helper function to unmarshal the JSON of a Pane of a given type T.
+func unmarshalPaneHelper[T Pane](data []byte) (Pane, error) {
+	var p T
+	err := json.Unmarshal(data, &p)
+	return p, err
+}
+
+func unmarshalPane(paneType string, data []byte) (Pane, error) {
+	switch paneType {
+	case "":
+		// nil pane
+		return nil, nil
+
+	case "*main.AirportInfoPane":
+		return unmarshalPaneHelper[*AirportInfoPane](data)
+
+	case "*main.CLIPane":
+		return unmarshalPaneHelper[*CLIPane](data)
+
+	case "*main.EmptyPane":
+		return unmarshalPaneHelper[*EmptyPane](data)
+
+	case "*main.FlightPlanPane":
+		return unmarshalPaneHelper[*FlightPlanPane](data)
+
+	case "*main.FlightStripPane":
+		return unmarshalPaneHelper[*FlightStripPane](data)
+
+	case "*main.NotesViewPane":
+		return unmarshalPaneHelper[*NotesViewPane](data)
+
+	case "*main.ImageViewPane":
+		return unmarshalPaneHelper[*ImageViewPane](data)
+
+	case "*main.PerformancePane":
+		return unmarshalPaneHelper[*PerformancePane](data)
+
+	case "*main.RadarScopePane":
+		return unmarshalPaneHelper[*RadarScopePane](data)
+
+	case "*main.ReminderPane":
+		return unmarshalPaneHelper[*ReminderPane](data)
+
+	case "*main.STARSPane":
+		return unmarshalPaneHelper[*STARSPane](data)
+
+	default:
+		lg.Errorf("%s: Unhandled type in config file", paneType)
+		return NewEmptyPane(), nil // don't crash at least
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AirportInfoPane
 
 type AirportInfoPane struct {
 	Airports map[string]interface{}
@@ -2216,4 +2272,49 @@ func (iv *ImageViewPane) handleCalibration(ctx *PaneContext, cb *CommandBuffer) 
 		cal.Fix[i] = iv.enteredFix
 		cal.lastSet = i
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// TabbedPane
+
+type TabbedPane struct {
+	Panes []Pane
+}
+
+func NewTabbedPane() *TabbedPane {
+	tp := &TabbedPane{}
+	return tp
+}
+
+func (tp *TabbedPane) Duplicate(nameAsCopy bool) Pane {
+	dupe := &TabbedPane{}
+	for _, p := range tp.Panes {
+		dupe.Panes = append(dupe.Panes, p.Duplicate(nameAsCopy))
+	}
+	return dupe
+}
+
+func (tp *TabbedPane) Activate() {
+}
+
+func (tp *TabbedPane) Deactivate() {
+}
+
+func (tp *TabbedPane) CanTakeKeyboardFocus() bool {
+	for _, p := range tp.Panes {
+		if p.CanTakeKeyboardFocus() {
+			return true
+		}
+	}
+	return false
+}
+
+func (tp *TabbedPane) Name() string {
+	return "Tabbed window"
+}
+
+func (tp *TabbedPane) DrawUI() {
+}
+
+func (tp *TabbedPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 }
