@@ -72,34 +72,6 @@ jobs:
         cp icon.icns Vice.app/Contents/Resources
         cp vice Vice.app/Contents/MacOS/
 
-    - name: Set up keychain for signing binary
-      env:
-        APPLE_DEVELOPER_ID_CERT_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERT_PASSWORD }}
-        APPLE_DEVELOPER_ID_CERT_FILE: ${{ secrets.APPLE_DEVELOPER_ID_CERT_FILE }}
-      # https://medium.com/anchore-engineering/developers-need-to-handle-macos-binary-signing-how-we-automated-the-solution-part-2-ad1e08caff0f
-      run: |
-        EPHEMERAL_KEYCHAIN="ci-ephemeral-keychain"
-        EPHEMERAL_KEYCHAIN_PASSWORD="$(openssl rand -base64 100)"
-        security create-keychain -p "${EPHEMERAL_KEYCHAIN_PASSWORD}" "${EPHEMERAL_KEYCHAIN}"
-        EPHEMERAL_KEYCHAIN_FULL_PATH="$HOME/Library/Keychains/${EPHEMERAL_KEYCHAIN}-db"
-        echo ${APPLE_DEVELOPER_ID_CERT_FILE} | base64 -d > cert.p12
-        security import ./cert.p12 -k "${EPHEMERAL_KEYCHAIN_FULL_PATH}" -P ${APPLE_DEVELOPER_ID_CERT_PASSWORD} -T "$(command -v codesign)"
-        security -q set-key-partition-list -S "apple-tool:,apple:" -s -k "${EPHEMERAL_KEYCHAIN_PASSWORD}" "${EPHEMERAL_KEYCHAIN_FULL_PATH}"
-        security default-keychain -d "user" -s "${EPHEMERAL_KEYCHAIN_FULL_PATH}"
-
-    - name: Sign Vice.app
-      env:
-        APPLE_DEVELOPER_ID_APPLICATION: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION }}
-      run: |
-        codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime Vice.app
-
-    - name: Notarize Vice.app
-      env:
-        APPLE_CODESIGN_PASSWORD: ${{ secrets.APPLE_CODESIGN_PASSWORD }}
-        APPLE_CODESIGN_ID: ${{ secrets.APPLE_CODESIGN_ID }}
-      run:
-        zsh osx/notarize-app.sh
-
     - name: Create zip file for notarized app
       run:
         zip -rv Vice-osx.zip Vice.app
