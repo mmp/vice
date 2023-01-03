@@ -1770,6 +1770,55 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// New pane creation
+
+func uiDrawNewPaneSelector(label, preview string) (name string, pane Pane) {
+	if imgui.BeginComboV(label, preview, imgui.ComboFlagsHeightLarge) {
+		if imgui.Selectable("Airport information") {
+			name, pane = "Airport information", NewAirportInfoPane()
+		}
+		if imgui.Selectable("Command-line interface") {
+			name, pane = "Command-line interface", NewCLIPane()
+		}
+		if imgui.Selectable("Empty") {
+			name, pane = "Empty", NewEmptyPane()
+		}
+		if imgui.Selectable("External plugin") {
+			name, pane = "External plugin", NewPluginPane("(Unnamed)")
+		}
+		if imgui.Selectable("Flight plan") {
+			name, pane = "Flight plan", NewFlightPlanPane()
+		}
+		if imgui.Selectable("Flight strip") {
+			name, pane = "Flight strip", NewFlightStripPane()
+		}
+		if imgui.Selectable("Image viewer") {
+			name, pane = "Image viewer", NewImageViewPane()
+		}
+		if imgui.Selectable("Notes viewer") {
+			name, pane = "Notes viewer", NewNotesViewPane()
+		}
+		if imgui.Selectable("Performance statistics") {
+			name, pane = "Performance statistics", NewPerformancePane()
+		}
+		if imgui.Selectable("Radar scope (generic)") {
+			name, pane = "Radar scope (Generic)", NewRadarScopePane("(Unnamed)")
+		}
+		if imgui.Selectable("Radar scope (STARS)") {
+			name, pane = "Radar scope (STARS)", NewSTARSPane("(Unnamed)")
+		}
+		if imgui.Selectable("Reminders") {
+			name, pane = "Reminders", NewReminderPane()
+		}
+		if imgui.Selectable("Tabbed Window") {
+			name, pane = "Tabbed window", NewTabbedPane()
+		}
+		imgui.EndCombo()
+	}
+	return
+}
+
+///////////////////////////////////////////////////////////////////////////
 // ColorScheme
 
 type ColorScheme struct {
