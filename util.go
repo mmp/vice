@@ -834,6 +834,15 @@ func DeleteSliceElement[V any](s []V, i int) []V {
 	return s[:len(s)-1]
 }
 
+// InsertSliceElement inserts the given value v at the index i in the slice
+// s, moving all elements after i one place forward.
+func InsertSliceElement[V any](s []V, i int, v V) []V {
+	s = append(s, v) // just to grow the slice (unless i == len(s))
+	copy(s[i+1:], s[i:])
+	s[i] = v
+	return s
+}
+
 // SliceEqual checks whether two slices are equal.
 func SliceEqual[V comparable](a []V, b []V) bool {
 	if len(a) != len(b) {

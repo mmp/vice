@@ -200,6 +200,24 @@ func TestDeleteSliceElement(t *testing.T) {
 	}
 }
 
+func TestInsertSliceElement(t *testing.T) {
+	a := []int{1, 2, 4, 5}
+	a = InsertSliceElement(a, 2, 3)
+	if !SliceEqual(a, []int{1, 2, 3, 4, 5}) {
+		t.Errorf("Slice insert incorrect: %+v", a)
+	}
+
+	a = InsertSliceElement(a, 0, 0)
+	if !SliceEqual(a, []int{0, 1, 2, 3, 4, 5}) {
+		t.Errorf("Slice insert incorrect: %+v", a)
+	}
+
+	a = InsertSliceElement(a, 6, 6)
+	if !SliceEqual(a, []int{0, 1, 2, 3, 4, 5, 6}) {
+		t.Errorf("Slice insert incorrect: %+v", a)
+	}
+}
+
 func TestFilterSlice(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5}
 	b := FilterSlice(a, func(i int) bool { return i%2 == 0 })
