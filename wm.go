@@ -553,63 +553,10 @@ func wmDrawConfigEditor(p Platform) {
 	if prompt == "" {
 		prompt = "Create New..."
 	}
-	if imgui.BeginComboV("##Set...", prompt, imgui.ComboFlagsHeightLarge) {
-		if imgui.Selectable("Airport information") {
-			wm.paneCreatePrompt = "Airport information"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewAirportInfoPane())
-		}
-		if imgui.Selectable("Command-line interface") {
-			wm.paneCreatePrompt = "Command-line interface"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewCLIPane())
-		}
-		if imgui.Selectable("Empty") {
-			wm.paneCreatePrompt = "Empty"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewEmptyPane())
-		}
-		if imgui.Selectable("Flight plan") {
-			wm.paneCreatePrompt = "Flight plan"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewFlightPlanPane())
-		}
-		if imgui.Selectable("Flight strip") {
-			wm.paneCreatePrompt = "Flight strip"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewFlightStripPane())
-		}
-		if imgui.Selectable("Image viewer") {
-			wm.paneCreatePrompt = "Image viewer"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewImageViewPane())
-		}
-		if imgui.Selectable("Notes viewer") {
-			wm.paneCreatePrompt = "Notes viewer"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewNotesViewPane())
-		}
-		if imgui.Selectable("Performance statistics") {
-			wm.paneCreatePrompt = "Performance statistics"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewPerformancePane())
-		}
-		if imgui.Selectable("Radar scope (generic)") {
-			wm.paneCreatePrompt = "Radar scope (Generic)"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewRadarScopePane("(Unnamed)"))
-		}
-		if imgui.Selectable("Radar scope (STARS)") {
-			wm.paneCreatePrompt = "Radar scope (STARS)"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewSTARSPane("(Unnamed)"))
-		}
-		if imgui.Selectable("Reminders") {
-			wm.paneCreatePrompt = "Reminders"
-			wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-			wm.handlePanePick = setPicked(NewReminderPane())
-		}
-		imgui.EndCombo()
+	if name, pane := uiDrawNewPaneSelector("##newpane", prompt); pane != nil {
+		wm.paneCreatePrompt = name
+		wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
+		wm.handlePanePick = setPicked(pane)
 	}
 
 	imgui.SameLine()
