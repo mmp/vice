@@ -411,25 +411,27 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	// Title in upper-left corner
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	height := ctx.paneExtent.Height()
-	label := rs.ScopeName
-	/*if *devmode && ctx.mouse != nil {
-		mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
-		label += "\nMouse position: " + mouseLatLong.DDString() + " " + mouseLatLong.DMSString()
-	}*/
-	td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
-		TextStyle{Font: rs.labelFont, Color: ctx.cs.Text})
-	transforms.LoadWindowViewingMatrices(cb)
-	td.GenerateCommands(cb)
+	if !ctx.thumbnail {
+		td := GetTextDrawBuilder()
+		defer ReturnTextDrawBuilder(td)
+		height := ctx.paneExtent.Height()
+		label := rs.ScopeName
+		/*if *devmode && ctx.mouse != nil {
+			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
+			label += "\nMouse position: " + mouseLatLong.DDString() + " " + mouseLatLong.DMSString()
+		}*/
+		td.AddText(label, [2]float32{float32(rs.labelFont.size) / 2, height - float32(rs.labelFont.size)/2},
+			TextStyle{Font: rs.labelFont, Color: ctx.cs.Text})
+		transforms.LoadWindowViewingMatrices(cb)
+		td.GenerateCommands(cb)
+	}
 
 	// Static geometry: SIDs/STARs, runways, ...
 	cb.PointSize(rs.PointSize)
 	cb.LineWidth(rs.LineWidth)
 	rs.StaticDraw.Draw(ctx, rs.labelFont, nil, transforms, cb)
 
-	if rs.DrawCompass {
+	if rs.DrawCompass && !ctx.thumbnail {
 		p := rs.Center
 		if positionConfig.selectedAircraft != nil {
 			p = positionConfig.selectedAircraft.Position()
@@ -453,7 +455,7 @@ func (rs *RadarScopePane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	rs.drawTracks(ctx, transforms, cb)
 	rs.drawTools(ctx, transforms, cb)
 
-	rs.updateDatablockTextAndBounds()
+	rs.updateDatablockTextAndBounds(ctx)
 	rs.layoutDatablocks(ctx, transforms)
 	rs.drawDatablocks(ctx, transforms, cb)
 	rs.drawVectorLines(ctx, transforms, cb)
@@ -694,6 +696,10 @@ func (rs *RadarScopePane) drawTracks(ctx *PaneContext, transforms ScopeTransform
 }
 
 func (rs *RadarScopePane) drawTools(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	if ctx.thumbnail {
+		return
+	}
+
 	rs.drawRangeIndicators(ctx, transforms, cb)
 	rs.drawMIT(ctx, transforms, cb)
 	rs.measuringLine.Draw(ctx, rs.labelFont, transforms, cb)
@@ -742,7 +748,7 @@ func (rs *RadarScopePane) drawRangeBearingLines(ctx *PaneContext, transforms Sco
 	td.GenerateCommands(cb)
 }
 
-func (rs *RadarScopePane) updateDatablockTextAndBounds() {
+func (rs *RadarScopePane) updateDatablockTextAndBounds(ctx *PaneContext) {
 	squawkCount := make(map[Squawk]int)
 	for ac, state := range rs.aircraft {
 		if !state.isGhost {
@@ -756,23 +762,29 @@ func (rs *RadarScopePane) updateDatablockTextAndBounds() {
 		}
 
 		if !state.datablockTextCurrent {
-			hopo := ""
-			if ac.InboundHandoffController != "" {
-				hopo += FontAwesomeIconArrowLeft + ac.InboundHandoffController
-			}
-			if ac.OutboundHandoffController != "" {
-				hopo += FontAwesomeIconArrowRight + ac.OutboundHandoffController
-			}
-			if controller, ok := rs.pointedOutAircraft.Get(ac); ok {
-				hopo += FontAwesomeIconExclamationTriangle + controller
-			}
-			if hopo != "" {
-				hopo = "\n" + hopo
-			}
+			if ctx.thumbnail {
+				state.datablockText[0] = ac.Callsign
+				state.datablockText[1] = ac.Callsign
+				state.datablockTextCurrent = true
+			} else {
+				hopo := ""
+				if ac.InboundHandoffController != "" {
+					hopo += FontAwesomeIconArrowLeft + ac.InboundHandoffController
+				}
+				if ac.OutboundHandoffController != "" {
+					hopo += FontAwesomeIconArrowRight + ac.OutboundHandoffController
+				}
+				if controller, ok := rs.pointedOutAircraft.Get(ac); ok {
+					hopo += FontAwesomeIconExclamationTriangle + controller
+				}
+				if hopo != "" {
+					hopo = "\n" + hopo
+				}
 
-			state.datablockText[0] = rs.DatablockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 0) + hopo
-			state.datablockText[1] = rs.DatablockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 1) + hopo
-			state.datablockTextCurrent = true
+				state.datablockText[0] = rs.DatablockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 0) + hopo
+				state.datablockText[1] = rs.DatablockFormat.Format(ac, squawkCount[ac.Squawk] != 1, 1) + hopo
+				state.datablockTextCurrent = true
+			}
 
 			bx0, by0 := rs.datablockFont.BoundText(state.datablockText[0], -2)
 			bx1, by1 := rs.datablockFont.BoundText(state.datablockText[1], -2)
