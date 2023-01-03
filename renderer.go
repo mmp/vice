@@ -175,7 +175,7 @@ func (cb *CommandBuffer) appendFloats(floats ...float32) {
 func (cb *CommandBuffer) appendInts(ints ...int) {
 	for _, i := range ints {
 		if i != int(uint32(i)) {
-			lg.Errorf("%d: attempting to add non-32-bit value to CommandBuffer", i)
+			lg.ErrorfUp1("%d: attempting to add non-32-bit value to CommandBuffer", i)
 		}
 		cb.buf = append(cb.buf, uint32(i))
 	}
