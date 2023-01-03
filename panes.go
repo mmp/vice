@@ -265,6 +265,9 @@ func unmarshalPane(paneType string, data []byte) (Pane, error) {
 	case "*main.STARSPane":
 		return unmarshalPaneHelper[*STARSPane](data)
 
+	case "*main.TabbedPane":
+		return unmarshalPaneHelper[*TabbedPane](data)
+
 	default:
 		lg.Errorf("%s: Unhandled type in config file", paneType)
 		return NewEmptyPane(), nil // don't crash at least
@@ -2278,12 +2281,72 @@ func (iv *ImageViewPane) handleCalibration(ctx *PaneContext, cb *CommandBuffer) 
 // TabbedPane
 
 type TabbedPane struct {
-	Panes []Pane
+	ThumbnailHeight int32
+	ActivePane      int
+	Panes           []Pane `json:"-"` // These are serialized manually below...
+
+	dragPane Pane
 }
 
 func NewTabbedPane() *TabbedPane {
-	tp := &TabbedPane{}
-	return tp
+	return &TabbedPane{
+		ThumbnailHeight: 128,
+	}
+}
+
+func (tp *TabbedPane) MarshalJSON() ([]byte, error) {
+	// We actually do want the Panes marshaled automatically, though we
+	// need to carry along their types as well.
+	type JSONTabbedPane struct {
+		TabbedPane
+		PanesCopy []Pane `json:"Panes"`
+		PaneTypes []string
+	}
+
+	jtp := JSONTabbedPane{TabbedPane: *tp}
+	jtp.PanesCopy = tp.Panes
+	for _, p := range tp.Panes {
+		jtp.PaneTypes = append(jtp.PaneTypes, fmt.Sprintf("%T", p))
+	}
+
+	return json.Marshal(jtp)
+}
+
+func (tp *TabbedPane) UnmarshalJSON(data []byte) error {
+	// First unmarshal all of the stuff that can be done automatically; using
+	// a separate type avoids an infinite loop of UnmarshalJSON calls.
+	type LocalTabbedPane TabbedPane
+	var ltp LocalTabbedPane
+	if err := json.Unmarshal(data, &ltp); err != nil {
+		return err
+	}
+	*tp = (TabbedPane)(ltp)
+
+	// Now do the panes.
+	var p struct {
+		PaneTypes []string
+		Panes     []any
+	}
+	if err := json.Unmarshal(data, &p); err != nil {
+		return err
+	}
+
+	for i, paneType := range p.PaneTypes {
+		// It's a little messy to round trip from unmarshaling into []any
+		// and then re-marshaling each one individually into bytes, but I
+		// haven't found a cleaner way.
+		data, err := json.Marshal(p.Panes[i])
+		if err != nil {
+			return err
+		}
+		if pane, err := unmarshalPane(paneType, data); err != nil {
+			return err
+		} else {
+			tp.Panes = append(tp.Panes, pane)
+		}
+	}
+
+	return nil
 }
 
 func (tp *TabbedPane) Duplicate(nameAsCopy bool) Pane {
@@ -2295,9 +2358,15 @@ func (tp *TabbedPane) Duplicate(nameAsCopy bool) Pane {
 }
 
 func (tp *TabbedPane) Activate() {
+	for _, p := range tp.Panes {
+		p.Activate()
+	}
 }
 
 func (tp *TabbedPane) Deactivate() {
+	for _, p := range tp.Panes {
+		p.Deactivate()
+	}
 }
 
 func (tp *TabbedPane) CanTakeKeyboardFocus() bool {
@@ -2314,7 +2383,159 @@ func (tp *TabbedPane) Name() string {
 }
 
 func (tp *TabbedPane) DrawUI() {
+	imgui.SliderIntV("Thumbnail height", &tp.ThumbnailHeight, 8, 256, "%d", 0)
+	name, pane := uiDrawNewPaneSelector("Add new window...", "")
+	if name != "" {
+		pane.Activate()
+		tp.Panes = append(tp.Panes, pane)
+	}
+
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
+	if imgui.BeginTableV("##panes", 4, flags, imgui.Vec2{}, 0.0) {
+		imgui.TableSetupColumn("Windows")
+		imgui.TableSetupColumn("Up")
+		imgui.TableSetupColumn("Down")
+		imgui.TableSetupColumn("Trash")
+		for i, pane := range tp.Panes {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+
+			imgui.PushID(fmt.Sprintf("%d", i))
+			if imgui.SelectableV(pane.Name(), i == tp.ActivePane, 0, imgui.Vec2{}) {
+				tp.ActivePane = i
+			}
+
+			imgui.TableNextColumn()
+			if i > 0 && len(tp.Panes) > 1 {
+				if imgui.Button(FontAwesomeIconArrowUp) {
+					tp.Panes[i], tp.Panes[i-1] = tp.Panes[i-1], tp.Panes[i]
+					if tp.ActivePane == i {
+						tp.ActivePane = i - 1
+					}
+				}
+			}
+			imgui.TableNextColumn()
+			if i+1 < len(tp.Panes) {
+				if imgui.Button(FontAwesomeIconArrowDown) {
+					tp.Panes[i], tp.Panes[i+1] = tp.Panes[i+1], tp.Panes[i]
+					if tp.ActivePane == i {
+						tp.ActivePane = i + 1
+					}
+				}
+			}
+			imgui.TableNextColumn()
+			if imgui.Button(FontAwesomeIconTrash) {
+				tp.Panes = FilterSlice(tp.Panes, func(p Pane) bool { return p != pane })
+			}
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+
+	if tp.ActivePane < len(tp.Panes) {
+		if uid, ok := tp.Panes[tp.ActivePane].(PaneUIDrawer); ok {
+			imgui.Separator()
+			imgui.Text(tp.Panes[tp.ActivePane].Name() + " configuration")
+			uid.DrawUI()
+		}
+	}
 }
 
 func (tp *TabbedPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	// final aspect ratio, after the thumbnails at the top:
+	// TODO (adjust to fit)
+	w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+	thumbHeight := float32(tp.ThumbnailHeight)
+	aspect := w / (h - thumbHeight)
+	thumbWidth := float32(int(aspect * thumbHeight))
+	highDPIScale := platform.FramebufferSize()[1] / platform.DisplaySize()[1]
+
+	nThumbs := len(tp.Panes) - 1
+	if thumbWidth*float32(nThumbs) > w {
+		thumbWidth = floor(w / float32(nThumbs))
+		// aspect = w / (h - thumbHeight)
+		// aspect = w / (h - (thumbWidth / aspect)) ->
+		aspect = (w + thumbWidth) / h
+		thumbHeight = floor(thumbWidth / aspect)
+	}
+
+	// Draw the thumbnail panes
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
+	// Center them horizontally
+	x0 := (w - thumbWidth*float32(nThumbs)) / 2
+	x1 := x0 + thumbWidth*float32(nThumbs)
+	// Draw top/bottom lines
+	ld.AddLine([2]float32{x0, h}, [2]float32{x1, h}, ctx.cs.UIControl)
+	ld.AddLine([2]float32{x0, h - thumbHeight}, [2]float32{x1, h - thumbHeight}, ctx.cs.UIControl)
+
+	// Vertical separator lines
+	for i := 0; i <= nThumbs; i++ {
+		x := x0 + float32(i)*thumbWidth
+		ld.AddLine([2]float32{x, h}, [2]float32{x, h - thumbHeight}, ctx.cs.UIControl)
+	}
+
+	ctx.SetWindowCoordinateMatrices(cb)
+	cb.LineWidth(1)
+	ld.GenerateCommands(cb)
+
+	// Draw the thumbnail contents
+	px0 := x0
+	for i, pane := range tp.Panes {
+		if i == tp.ActivePane {
+			continue
+		}
+		paneCtx := *ctx
+		paneCtx.mouse = nil
+
+		// 1px offsets to preserve separator lines
+		paneCtx.paneExtent = Extent2D{
+			p0: [2]float32{ctx.paneExtent.p0[0] + px0 + 1, ctx.paneExtent.p0[1] + h - thumbHeight + 1},
+			p1: [2]float32{ctx.paneExtent.p0[0] + px0 + thumbWidth - 1, ctx.paneExtent.p0[1] + h - 1},
+		}
+		sv := paneCtx.paneExtent.Scale(highDPIScale)
+
+		cb.Scissor(int(sv.p0[0]), int(sv.p0[1]), int(sv.Width()), int(sv.Height()))
+		cb.Viewport(int(sv.p0[0]), int(sv.p0[1]), int(sv.Width()), int(sv.Height()))
+
+		// FIXME: what if pane calls wmTakeKeyboard focus. Will things get
+		// confused?
+		pane.Draw(&paneCtx, cb)
+		cb.ResetState()
+
+		px0 += thumbWidth
+	}
+
+	// Draw the active pane
+	if tp.ActivePane < len(tp.Panes) {
+		// Scissor to limit to the region below the thumbnails
+		paneCtx := *ctx
+		paneCtx.paneExtent.p1[1] = paneCtx.paneExtent.p0[1] + h - thumbHeight
+		sv := paneCtx.paneExtent.Scale(highDPIScale)
+		cb.Scissor(int(sv.p0[0]), int(sv.p0[1]), int(sv.Width()), int(sv.Height()))
+		cb.Viewport(int(sv.p0[0]), int(sv.p0[1]), int(sv.Width()), int(sv.Height()))
+
+		// Don't pass along mouse events if the mouse is outside of the
+		// draw region (e.g., a thumbnail is being clicked...)
+		if paneCtx.mouse != nil && paneCtx.mouse.Pos[1] >= h-thumbHeight {
+			paneCtx.mouse = nil
+		}
+
+		tp.Panes[tp.ActivePane].Draw(&paneCtx, cb)
+
+		cb.ResetState()
+	}
+
+	// See if a thumbnail was clicked on
+	if ctx.mouse != nil && ctx.mouse.Released[MouseButtonPrimary] && ctx.mouse.Pos[1] >= h-thumbHeight {
+		i := int((ctx.mouse.Pos[0] - x0) / thumbWidth)
+		if i >= tp.ActivePane {
+			// account for the active pane's thumbnail not being drawn
+			i++
+		}
+		if i >= 0 && i < len(tp.Panes) {
+			tp.ActivePane = i
+		}
+	}
 }
