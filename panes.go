@@ -48,6 +48,7 @@ type PaneContext struct {
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D
 
+	thumbnail bool
 	platform  Platform
 	cs        *ColorScheme
 	mouse     *MouseState
@@ -2488,6 +2489,7 @@ func (tp *TabbedPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		paneCtx := *ctx
 		paneCtx.mouse = nil
+		paneCtx.thumbnail = true
 
 		// 1px offsets to preserve separator lines
 		paneCtx.paneExtent = Extent2D{

@@ -1447,6 +1447,12 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 		cb.Call(database.highAirwayCommandBuffer)
 	}
 
+	// Everything after this is either very small (VOR markers, etc) or is
+	// text, so we won't include it if we're just rendering a thumbnail.
+	if ctx.thumbnail {
+		return
+	}
+
 	// Now switch to window coordinates for drawing text, VORs, NDBs, fixes, and airports
 	transforms.LoadWindowViewingMatrices(cb)
 
