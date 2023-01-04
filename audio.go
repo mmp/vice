@@ -134,8 +134,6 @@ func audioProcessEvents(es *EventStream) {
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
 		case *RejectedHandoffEvent, *CanceledHandoffEvent:
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
-		case *ReceivedATISEvent:
-			globalConfig.AudioSettings.HandleEvent(AudioEventUpdatedATIS)
 		case *TextMessageEvent:
 			m := v.message
 			if m.messageType != TextFrequency ||

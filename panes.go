@@ -290,7 +290,7 @@ type AirportInfoPane struct {
 	ShowArrivals    bool
 	ShowControllers bool
 
-	lastATIS       map[string]string
+	lastATIS       map[string][]ATIS
 	seenDepartures map[string]interface{}
 	seenArrivals   map[string]interface{}
 
@@ -336,7 +336,7 @@ func (a *AirportInfoPane) Activate() {
 		a.FontIdentifier = a.font.id
 	}
 	if a.lastATIS == nil {
-		a.lastATIS = make(map[string]string)
+		a.lastATIS = make(map[string][]ATIS)
 	}
 	if a.seenDepartures == nil {
 		a.seenDepartures = make(map[string]interface{})
@@ -422,10 +422,30 @@ func (a *AirportInfoPane) CanTakeKeyboardFocus() bool { return false }
 
 func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	for _, event := range eventStream.Get(a.eventsId) {
-		if _, ok := event.(*NewServerConnectionEvent); ok {
+		switch ev := event.(type) {
+		case *NewServerConnectionEvent:
 			// Let the server know which airports we want weather for.
 			for ap := range a.Airports {
 				server.AddAirportForWeather(ap)
+			}
+
+		case *ReceivedATISEvent:
+			if _, ok := a.Airports[ev.ATIS.Airport]; ok {
+				newATIS := ev.ATIS
+				idx := FindIf(a.lastATIS[newATIS.Airport], func(a ATIS) bool { return a.AppDep == newATIS.AppDep })
+				if idx == -1 {
+					// First time we've ever seen it
+					a.lastATIS[newATIS.Airport] = append(a.lastATIS[newATIS.Airport], newATIS)
+				} else {
+					oldATIS := a.lastATIS[newATIS.Airport][idx]
+					if oldATIS.Code != newATIS.Code || oldATIS.Contents != newATIS.Contents {
+						// It's an updated ATIS rather than the first time we're
+						// seeing it (or a repeat), so play the notification sound,
+						// if it's enabled.
+						a.lastATIS[newATIS.Airport][idx] = newATIS
+						globalConfig.AudioSettings.HandleEvent(AudioEventUpdatedATIS)
+					}
+				}
 			}
 		}
 	}
@@ -491,20 +511,12 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		var atis []string
 		for ap := range a.Airports {
 			for _, at := range server.GetAirportATIS(ap) {
-				astr := fmt.Sprintf("  %-12s: %s ", at.Airport, at.Code)
-				if len(at.Contents) > 20 { // TODO: base on actual number of columns
-					astr += at.Contents[:20] + "..."
-				} else {
-					astr += at.Contents
+				airport := at.Airport
+				if len(at.AppDep) > 0 {
+					airport += "_" + at.AppDep
 				}
-
+				astr := fmt.Sprintf("  %-6s %s %s", airport, at.Code, at.Contents)
 				atis = append(atis, astr)
-
-				if oldATIS, ok := a.lastATIS[at.Airport]; ok && oldATIS != at.Contents {
-					// it's been updated
-					// TODO: we could just watch events...
-					a.lastATIS[at.Airport] = at.Contents
-				}
 			}
 		}
 		if len(atis) > 0 {
