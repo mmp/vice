@@ -548,28 +548,33 @@ func init() {
 			code = string(args[3][5])
 			contents = args[3][8:]
 		}
+		contents = strings.TrimSpace(contents)
 
 		// First, figure out which airport this is for; we want to
 		// associate senders ranging from KPHL_ATIS to those like
 		// KPHL_A_ATIS and KPHL_D_ATIS with KPHL, so we'll just take
 		// everything up to the first _.
-		sc := strings.Split(sender, "_")
-		if len(sc) == 0 {
+		apFields := strings.Split(strings.TrimSuffix(sender, "_ATIS"), "_")
+		var atis ATIS
+		switch len(apFields) {
+		case 1:
+			atis = ATIS{Airport: apFields[0], Code: code, Contents: contents}
+		case 2:
+			atis = ATIS{Airport: apFields[0], AppDep: apFields[1], Code: code, Contents: contents}
+		default:
 			return MalformedMessageError{"Unexpected ATIS sender format" + sender}
 		}
-		airport := sc[0]
-
-		atis := ATIS{Airport: sender, Code: code, Contents: contents}
 		eventStream.Post(&ReceivedATISEvent{atis})
-		for i, a := range v.atis[airport] {
-			if a.Airport == sender {
+
+		for i, a := range v.atis[atis.Airport] {
+			if a.AppDep == atis.AppDep {
 				// Replace pre-existing
-				v.atis[airport][i] = atis
+				v.atis[atis.Airport][i] = atis
 				return nil
 			}
 		}
 		// Add a new one
-		v.atis[airport] = append(v.atis[airport], atis)
+		v.atis[atis.Airport] = append(v.atis[atis.Airport], atis)
 		return nil
 	}))
 
