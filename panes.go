@@ -257,6 +257,9 @@ func unmarshalPane(paneType string, data []byte) (Pane, error) {
 	case "*main.PerformancePane":
 		return unmarshalPaneHelper[*PerformancePane](data)
 
+	case "*main.PluginPane":
+		return unmarshalPaneHelper[*PluginPane](data)
+
 	case "*main.RadarScopePane":
 		return unmarshalPaneHelper[*RadarScopePane](data)
 
