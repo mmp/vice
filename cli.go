@@ -96,7 +96,8 @@ type CLIPane struct {
 
 	console           *RingBuffer[*ConsoleEntry]
 	consoleViewOffset int // lines from the end (for pgup/down)
-	errorCount        map[string]int
+	lastErrorMessage  string
+	lastErrorCount    int
 
 	FontIdentifier FontIdentifier
 	font           *Font
@@ -127,7 +128,6 @@ func (cli *CLIPane) Duplicate(nameAsCopy bool) Pane {
 		FontIdentifier: cli.FontIdentifier,
 		font:           cli.font,
 		console:        NewRingBuffer[*ConsoleEntry](consoleLimit),
-		errorCount:     make(map[string]int),
 		eventsId:       eventStream.Subscribe(),
 	}
 }
@@ -136,9 +136,6 @@ func (cli *CLIPane) Activate() {
 	if cli.font = GetFont(cli.FontIdentifier); cli.font == nil {
 		cli.font = GetDefaultFont()
 		cli.FontIdentifier = cli.font.id
-	}
-	if cli.errorCount == nil {
-		cli.errorCount = make(map[string]int)
 	}
 	if cli.console == nil {
 		cli.console = NewRingBuffer[*ConsoleEntry](consoleLimit)
@@ -165,7 +162,12 @@ func (cli *CLIPane) ErrorReported(msg string) {
 	// get concurrent calls to this...
 	cli.mutex.Lock()
 	defer cli.mutex.Unlock()
-	cli.errorCount[msg] = cli.errorCount[msg] + 1
+	if msg != cli.lastErrorMessage {
+		cli.lastErrorMessage = msg
+		cli.lastErrorCount = 1
+	} else {
+		cli.lastErrorCount++
+	}
 
 	isPow10 := func(v int) bool {
 		for v != 0 {
@@ -179,11 +181,14 @@ func (cli *CLIPane) ErrorReported(msg string) {
 		}
 		return false
 	}
-	n := cli.errorCount[msg]
-	if n == 1 {
+
+	if cli.lastErrorCount < 10 {
 		cli.AddConsoleEntry([]string{"Internal Error: ", msg}, []ConsoleTextStyle{ConsoleTextError, ConsoleTextRegular})
-	} else if isPow10(n) {
-		cli.AddConsoleEntry([]string{fmt.Sprintf("Internal Error (%dx): ", n), msg},
+	} else if cli.lastErrorCount == 10 {
+		cli.AddConsoleEntry([]string{"Internal Error: ", msg}, []ConsoleTextStyle{ConsoleTextError, ConsoleTextRegular})
+		cli.AddConsoleEntry([]string{"Not all subsequent errors will be printed."}, []ConsoleTextStyle{ConsoleTextError})
+	} else if isPow10(cli.lastErrorCount) {
+		cli.AddConsoleEntry([]string{fmt.Sprintf("Internal Error (%dx): ", cli.lastErrorCount), msg},
 			[]ConsoleTextStyle{ConsoleTextError, ConsoleTextRegular})
 	}
 }
