@@ -132,6 +132,10 @@ func (l *Logger) printf(levels int, f string, args ...interface{}) {
 // Errorf adds the given message, specified using Printf-style format
 // string, to the error log.
 func (l *Logger) Errorf(f string, args ...interface{}) {
+	if l == nil {
+		fmt.Fprintf(os.Stderr, "ERROR: "+f, args...)
+		return
+	}
 	l.errorf(3, f, args...)
 }
 
