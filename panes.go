@@ -518,7 +518,13 @@ func (a *AirportInfoPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				if len(at.AppDep) > 0 {
 					airport += "_" + at.AppDep
 				}
-				astr := fmt.Sprintf("  %-6s %s %s", airport, at.Code, at.Contents)
+				var astr string
+				if len(at.Contents) > 40 {
+					contents := at.Contents[:37] + "..."
+					astr = fmt.Sprintf("  %-6s %s %s", airport, at.Code, contents)
+				} else {
+					astr = fmt.Sprintf("  %-6s %s %s", airport, at.Code, at.Contents)
+				}
 				atis = append(atis, astr)
 			}
 		}

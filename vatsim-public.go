@@ -607,11 +607,19 @@ func (vp *VATSIMPublicServer) fetchVATSIMPublicAsync() {
 			}
 
 			for _, a := range vsd.ATIS {
-				if airport, _, ok := strings.Cut(a.Callsign, "_"); ok {
-					atis := ATIS{Airport: a.Callsign, Code: a.ATISCode, Contents: strings.Join(a.ATIS, "\n")}
-					resp.airportATIS[airport] = append(resp.airportATIS[airport], atis)
-				} else {
-					lg.Errorf("%s: unexpected airport for ATIS", a.Callsign)
+				apFields := strings.Split(strings.TrimSuffix(a.Callsign, "_ATIS"), "_")
+				var atis ATIS
+				switch len(apFields) {
+				case 1:
+					atis = ATIS{Airport: apFields[0], Code: a.ATISCode, Contents: strings.Join(a.ATIS, "\n")}
+					resp.airportATIS[atis.Airport] = append(resp.airportATIS[atis.Airport], atis)
+
+				case 2:
+					atis = ATIS{Airport: apFields[0], AppDep: apFields[1], Code: a.ATISCode, Contents: strings.Join(a.ATIS, "\n")}
+					resp.airportATIS[atis.Airport] = append(resp.airportATIS[atis.Airport], atis)
+
+				default:
+					lg.Errorf("%s: unexpected ATIS airport", a.Callsign)
 				}
 			}
 
