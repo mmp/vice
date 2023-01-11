@@ -876,6 +876,7 @@ func (c ConnectionType) String() string {
 func (c *ConnectModalClient) Title() string { return "New Connection" }
 
 func (c *ConnectModalClient) Opening() {
+	c.connectionType = ConnectionTypeVATSIMPublic
 	c.err = ""
 	c.vatsim.Initialize()
 	c.vatsimReplay.Initialize()
