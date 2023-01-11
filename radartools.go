@@ -595,7 +595,7 @@ func (d DatablockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 	fp := ac.FlightPlan
 
 	if fp == nil {
-		return ac.Squawk.String() + fmt.Sprintf(" %03d", alt100s)
+		return ac.Callsign + " " + ac.Squawk.String() + fmt.Sprintf("%03d %02d", alt100s, (speed+5)/10)
 	}
 
 	actype := fp.TypeWithoutSuffix()
@@ -677,9 +677,10 @@ func (d DatablockFormat) Format(ac *Aircraft, duplicateSquawk bool, flashcycle i
 		return datablock.String()
 
 	case DatablockFormatFull:
-		if ac.Mode == Standby {
+		// This is borky with vatsim public data...
+		/*if ac.Mode == Standby {
 			return datablock.String()
-		}
+		}*/
 
 		dalt := ac.AltitudeChange()
 		ascending, descending := dalt > 250, dalt < -250
