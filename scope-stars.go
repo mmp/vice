@@ -87,6 +87,8 @@ type STARSPane struct {
 
 	selectedMapIndex        int
 	havePlayedSPCAlertSound map[*Aircraft]interface{}
+
+	lastCASoundTime time.Time
 }
 
 type STARSRangeBearingLine struct {
@@ -1134,6 +1136,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawRingsAndCones(aircraft, ctx, transforms, cb)
 	sp.drawRBLs(ctx, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
+	sp.drawCARings(ctx, transforms, cb)
 
 	DrawHighlighted(ctx, transforms, cb)
 
@@ -3426,20 +3429,43 @@ func (sp *STARSPane) datablockType(ac *Aircraft) DatablockType {
 	return FullDatablock
 }
 
+func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
+	if ac.Altitude() < int(sp.Facility.CA.Floor) {
+		return false
+	}
+
+	for other := range sp.aircraft {
+		if other == ac || other.Altitude() < int(sp.Facility.CA.Floor) {
+			continue
+		}
+		if nmdistance2ll(ac.Position(), other.Position()) <= sp.Facility.CA.LateralMinimum &&
+			abs(ac.Altitude()-other.Altitude()) <= int(sp.Facility.CA.VerticalMinimum+50 /*small slop for fp error*/) {
+			return true
+		}
+	}
+	return false
+}
+
 func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [2][]string) {
 	state := sp.aircraft[ac]
+
+	var errs []string
 	if ac.Squawk == Squawk(0o7500) || state.spcOverride == "HJ" {
-		errblock = "HJ"
+		errs = append(errs, "HJ")
 	} else if ac.Squawk == Squawk(0o7600) || state.spcOverride == "RF" {
-		errblock = "RF"
+		errs = append(errs, "RF")
 	} else if ac.Squawk == Squawk(0o7700) || state.spcOverride == "EM" {
-		errblock = "EM"
+		errs = append(errs, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.spcOverride == "MI" {
-		errblock = "MI"
+		errs = append(errs, "MI")
 	} else if ac.Squawk == Squawk(0o1236) {
-		errblock = "SA"
+		errs = append(errs, "SA")
 	}
-	// TODO: LA, CA in errblock. e.g. EM/LA if multiple things going on
+	if sp.IsCAActive(ac) {
+		errs = append(errs, "CA")
+	}
+	// TODO: LA
+	errblock = strings.Join(errs, "/") // want e.g., EM/LA if multiple things going on
 
 	if ac.Mode == Standby {
 		return
@@ -3793,6 +3819,30 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 
 	DrawMinimumSeparationLine(ac0, ac1, color, RGB{}, sp.systemFont[ps.CharSize.Tools],
 		ctx, transforms, cb)
+}
+
+func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	ld := GetLinesDrawBuilder()
+	defer ReturnLinesDrawBuilder(ld)
+
+	for ac := range sp.aircraft {
+		if !sp.IsCAActive(ac) {
+			continue
+		}
+
+		pc := transforms.WindowFromLatLongP(ac.Position())
+		radius := sp.Facility.CA.LateralMinimum / transforms.PixelDistanceNM()
+		ld.AddCircle(pc, radius, 360 /* nsegs */)
+
+		if time.Since(sp.lastCASoundTime) > 2*time.Second {
+			globalConfig.AudioSettings.HandleEvent(AudioEventConflictAlert)
+			sp.lastCASoundTime = time.Now()
+		}
+	}
+
+	cb.LineWidth(1)
+	ps := sp.currentPreferenceSet
+	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 }
 
 func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations) {
