@@ -1093,6 +1093,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.weatherRadar.Draw(weatherIntensity, transforms, cb)
 
 	color := ps.Brightness.RangeRings.RGB()
+	cb.LineWidth(1)
 	DrawRangeRings(ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1106,6 +1107,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			if sp.Facility.Maps[i].Group == 1 {
 				color = ps.Brightness.VideoGroupB.RGB()
 			}
+			cb.LineWidth(1)
 			sp.Facility.Maps[i].Draw.Draw(ctx, sp.labelFont, &color, transforms, cb)
 		}
 	}
@@ -2157,7 +2159,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						status.err = ErrSTARSIllegalParam
 					}
 					return
-
 				}
 			}
 
@@ -2435,8 +2436,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			status.clear = true
 			return
 		} else if len(cmd) == 2 && cmd[0] == 'P' {
-			if idx, err := strconv.Atoi(cmd[1:]); err == nil && idx >= 0 && idx < 3 {
-				ps.TowerLists[idx].Position = transforms.NormalizedFromWindowP(mousePosition)
+			if idx, err := strconv.Atoi(cmd[1:]); err == nil && idx > 0 && idx <= 3 {
+				ps.TowerLists[idx-1].Position = transforms.NormalizedFromWindowP(mousePosition)
 				status.clear = true
 				return
 			}
@@ -3120,7 +3121,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	}
 
 	if ps.CoastList.Visible {
-		text := "COST/SUSPEND"
+		text := "COAST/SUSPEND"
 		// TODO
 		drawList(text, ps.CoastList.Position)
 	}
@@ -3184,31 +3185,26 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			} else if requirePosition {
 				return ""
 			}
-			return fmt.Sprintf("%-3s", id) + " " + ctrl.Frequency.String() + " " + ctrl.Callsign
+			return fmt.Sprintf("%3s", id) + " " + ctrl.Frequency.String() + " " + ctrl.Callsign
 		}
 
 		// User first
 		text := ""
 		userCtrl := server.GetController(server.Callsign())
 		if userCtrl != nil {
-			text += format(userCtrl, false)
+			text += format(userCtrl, false) + "\n"
 		}
 
-		// Sort the rest by distance to the scope center
-		m := make(map[float32]*Controller)
-		for _, ctrl := range server.GetAllControllers() {
-			if ctrl != userCtrl {
-				dist := nmdistance2ll(ps.Center, ctrl.Location)
-				m[dist] = ctrl
+		ctrl := server.GetAllControllers()
+		sort.Slice(ctrl, func(i, j int) bool { return ctrl[i].Callsign < ctrl[j].Callsign })
+		for _, c := range ctrl {
+			if c != userCtrl {
+				if ctext := format(c, true); ctext != "" {
+					text += ctext + "\n"
+				}
 			}
 		}
 
-		for _, key := range SortedMapKeys(m) {
-			ctext := format(m[key], true)
-			if ctext != "" {
-				text += ctext + "\n"
-			}
-		}
 		drawList(text, ps.SignOnList.Position)
 	}
 
@@ -3601,6 +3597,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 	defer ReturnColoredLinesDrawBuilder(ld)
 
 	now := server.CurrentTime()
+	realNow := time.Now() // for flashing rate...
 	ps := sp.currentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 
@@ -3620,7 +3617,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 		color := sp.datablockColor(ac)
 		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: -2}
-		dbText := state.datablockText[now.Second()&1]
+		dbText := state.datablockText[(realNow.Second()/2)&1] // 2 second cycle
 
 		// Draw characters starting at the upper left.
 		pac := transforms.WindowFromLatLongP(ac.Position())
