@@ -857,6 +857,7 @@ type ConnectModalClient struct {
 	vatsimReplay VATSIMReplayConfiguration
 	flightRadar  FlightRadarConnectionConfiguration
 	vatsimPublic VATSIMPublicConfiguration
+	simServer    SimServerConnectionConfiguration
 }
 
 type ConnectionType int
@@ -866,22 +867,24 @@ const (
 	ConnectionTypeVATSIMReplay
 	ConnectionTypeFlightRadar
 	ConnectionTypeVATSIMPublic
+	ConnectionTypeSimServer
 	ConnectionTypeCount
 )
 
 func (c ConnectionType) String() string {
-	return [...]string{"VATSIM Network", "VATSIM Replay", "Flight Radar", "VATSIM Public Data"}[c]
+	return [...]string{"VATSIM Network", "VATSIM Replay", "Flight Radar", "VATSIM Public Data", "Sim Server"}[c]
 }
 
 func (c *ConnectModalClient) Title() string { return "New Connection" }
 
 func (c *ConnectModalClient) Opening() {
-	c.connectionType = ConnectionTypeVATSIMPublic
+	c.connectionType = ConnectionTypeSimServer
 	c.err = ""
 	c.vatsim.Initialize()
 	c.vatsimReplay.Initialize()
 	c.flightRadar.Initialize()
 	c.vatsimPublic.Initialize()
+	c.simServer.Initialize()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -902,6 +905,9 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 		case ConnectionTypeVATSIMPublic:
 			err = c.vatsimPublic.Connect()
+
+		case ConnectionTypeSimServer:
+			err = c.simServer.Connect()
 
 		default:
 			lg.Errorf("Unhandled connection type")
@@ -929,6 +935,9 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 	case ConnectionTypeVATSIMPublic:
 		ok.disabled = !c.vatsimPublic.Valid()
+
+	case ConnectionTypeSimServer:
+		ok.disabled = !c.simServer.Valid()
 
 	default:
 		lg.Errorf("Unhandled connection type")
@@ -962,6 +971,9 @@ func (c *ConnectModalClient) Draw() int {
 
 	case ConnectionTypeVATSIMPublic:
 		enter = c.vatsimPublic.DrawUI()
+
+	case ConnectionTypeSimServer:
+		enter = c.simServer.DrawUI()
 	}
 
 	if c.err != "" {

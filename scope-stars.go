@@ -2140,11 +2140,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					}
 					return
 				} else {
-					status.clear = true
-					status.err = amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
-						fp.AircraftType = strings.TrimRight(cmd, "*")
-					})
-					return
+					// HACK: disable this for training command mode...
+					/*
+						status.clear = true
+						status.err = amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
+							fp.AircraftType = strings.TrimRight(cmd, "*")
+						})
+						return
+					*/
 				}
 
 			case 5:
@@ -2185,6 +2188,82 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				} else {
 					status.err = ErrSTARSIllegalParam
 				}
+				return
+			}
+
+			if len(cmd) >= 3 && (cmd[0] == 'D' || cmd[0] == 'H' || cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'A' || cmd[0] == 'C') {
+				sim, ok := server.(*SimServer)
+				if !ok {
+					status.err = errors.New("Can't issue control commands to a/c")
+					return
+				}
+
+				b := []byte(cmd)
+				for len(b) >= 3 {
+					lg.Printf("cur [%s]", string(b))
+					getnum := func() (int, int, error) {
+						end := 1
+						for ; end < len(b); end++ {
+							if b[end] < '0' || b[end] > '9' {
+								break
+							}
+						}
+						n, err := strconv.Atoi(string(b[1:end]))
+						return n, end, err
+					}
+
+					switch b[0] {
+					case 'D':
+						// TODO
+						if _, ok := database.Locate(string(b[1:4])); ok && (len(b) == 4 || b[4] == 'H' || b[4] == 'L' || b[4] == 'R' || b[4] == 'A') {
+							status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
+							b = b[4:]
+						} else if len(b) >= 6 {
+							status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
+							b = b[6:]
+						}
+
+					case 'H':
+						hdg, end, err := getnum()
+						b = b[end:]
+						status.err = err
+						if err == nil {
+							status.err = sim.AssignHeading(ac.Callsign, hdg, 0)
+						}
+
+					case 'L':
+						hdg, end, err := getnum()
+						b = b[end:]
+						status.err = err
+						if err == nil {
+							status.err = sim.AssignHeading(ac.Callsign, hdg, -1)
+						}
+
+					case 'R':
+						hdg, end, err := getnum()
+						b = b[end:]
+						status.err = err
+						if err == nil {
+							status.err = sim.AssignHeading(ac.Callsign, hdg, 1)
+						}
+
+					case 'C', 'A':
+						alt, end, err := getnum()
+						b = b[end:]
+						status.err = err
+						if err == nil {
+							status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
+						}
+
+					default:
+						status.err = errors.New("Unknown command: " + string(b))
+					}
+
+					if status.err != nil {
+						return
+					}
+				}
+				status.clear = true
 				return
 			}
 
