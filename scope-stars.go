@@ -2213,16 +2213,22 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 					switch b[0] {
 					case 'D':
-						if _, ok := database.Locate(string(b[1:4])); ok && (len(b) == 4 || b[4] == 'H' || b[4] == 'L' || b[4] == 'R' || b[4] == 'A') {
-							status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
-							b = b[4:]
-						} else if len(b) >= 6 {
-							status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
-							b = b[6:]
-						} else {
-							status.err = fmt.Errorf("%s: unsure how to parse fix/vor", string(b[1:]))
-							return
+						if len(b) >= 6 { // try being greedy first
+							if _, ok := database.Locate(string(b[1:6])); ok {
+								status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
+								b = b[6:]
+								continue
+							}
 						}
+						if len(b) >= 4 {
+							if _, ok := database.Locate(string(b[1:4])); ok {
+								status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
+								b = b[4:]
+								continue
+							}
+						}
+						status.err = fmt.Errorf("%s: unsure how to parse fix/vor", string(b[1:]))
+						return
 
 					case 'H':
 						hdg, end, err := getnum()
