@@ -5,14 +5,13 @@ package main
 /*
 TODO:
 
-- think about pause option
-
 - config scenarios via json files (directory of them?)
 
-- checkboxes to select which spawners to use, configure them...
-  enabled bool?
-  spec w.r.t ADR -- avg departure rate
-  have a 50/50 of launching to the same gate (or make configurable)
+- DRBVC110 nogo
+
+- auto add flight strip on track, remove on drop
+
+- have valid(ish) flight plans
 
 - fix LGA spawn prop/non prop overlaps
 
@@ -21,6 +20,7 @@ TODO:
 - callsign formats... @ stuff for letters...
 
 - winds (IAS vs ground speed...)
+
 */
 
 import (
@@ -122,15 +122,15 @@ type SimSpawnerConfig struct {
 }
 
 type SimServerConnectionConfiguration struct {
-	spawnRate      int32
-	spawnRateDelta int32
-	simRate        float32
-	configs        map[string]*SimSpawnerConfig
+	spawnRate   int32
+	simRate     float32
+	numAircraft int32
+	configs     map[string]*SimSpawnerConfig
 }
 
 func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.spawnRate = 120
-	ssc.spawnRateDelta = 15
+	ssc.numAircraft = 30
 	ssc.simRate = 1
 	ssc.configs = make(map[string]*SimSpawnerConfig)
 	ssc.configs["JFK31L"] = &SimSpawnerConfig{adr: 45, challenge: 0.5, create: NewJFK31LSimSpawner, enabled: true}
@@ -147,6 +147,7 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	imgui.InputText("Callsign", &positionConfig.VatsimCallsign)
 
+	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
 	imgui.SliderFloatV("Simulation rate", &ssc.simRate, 0.25, 10, "%.1f", 0)
 
 	imgui.Text("Configs:")
@@ -252,8 +253,11 @@ type SimServer struct {
 	handoffs    map[string]time.Time
 	controllers map[string]*Controller
 
-	startTime time.Time
-	simRate   float32
+	currentTime       time.Time // this is our fake time--accounting for pauses & simRate..
+	lastUpdateTime    time.Time // this is w.r.t. true wallclock time
+	simRate           float32
+	paused            bool
+	remainingLaunches int
 
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
@@ -305,19 +309,13 @@ func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimSer
 	}
 
 	ss := &SimServer{
-		callsign:    callsign,
-		aircraft:    make(map[string]*SSAircraft),
-		handoffs:    make(map[string]time.Time),
-		controllers: make(map[string]*Controller),
-		startTime:   time.Now().Add(-60 * time.Second), // hack, part 1 to prime the sim pump...
-		simRate:     ssc.simRate,
-	}
-
-	now := ss.startTime
-	for _, config := range ssc.configs { // FIXME: "config" overload...
-		if config.enabled {
-			ss.spawners = append(ss.spawners, config.create(config, now))
-		}
+		callsign:          callsign,
+		aircraft:          make(map[string]*SSAircraft),
+		handoffs:          make(map[string]time.Time),
+		controllers:       make(map[string]*Controller),
+		currentTime:       time.Now(),
+		remainingLaunches: int(ssc.numAircraft),
+		simRate:           ssc.simRate,
 	}
 
 	addController := func(cs string, loc string, freq float32) {
@@ -340,8 +338,18 @@ func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimSer
 	addController("NY_F_CTR", "KEWR", 128.3)    // N66
 	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
 
+	for _, config := range ssc.configs { // FIXME: "config" overload...
+		if config.enabled {
+			// Give them a past time so they start spawning
+			ss.spawners = append(ss.spawners,
+				config.create(config, ss.currentTime.Add(-60*time.Second)))
+		}
+	}
+
 	for _, spawner := range ss.spawners {
-		spawner.MaybeSpawn(ss)
+		if ss.remainingLaunches > 0 {
+			spawner.MaybeSpawn(ss)
+		}
 	}
 	for i := 0; i < 60; i++ {
 		ss.updateSim()
@@ -547,6 +555,16 @@ func (ss *SimServer) SetPrimaryFrequency(f Frequency) {
 }
 
 func (ss *SimServer) GetUpdates() {
+	if ss.paused {
+		return
+	}
+
+	// Update the current time
+	elapsed := time.Since(ss.lastUpdateTime)
+	elapsed = time.Duration(ss.simRate * float32(elapsed))
+	ss.currentTime = ss.currentTime.Add(elapsed)
+	ss.lastUpdateTime = time.Now()
+
 	// Accept any handoffs whose time has time...
 	now := ss.CurrentTime()
 	for callsign, t := range ss.handoffs {
@@ -582,7 +600,9 @@ func (ss *SimServer) GetUpdates() {
 	}
 
 	for _, spawner := range ss.spawners {
-		spawner.MaybeSpawn(ss)
+		if ss.remainingLaunches > 0 {
+			spawner.MaybeSpawn(ss)
+		}
 	}
 }
 
@@ -710,9 +730,7 @@ func (ss *SimServer) Callsign() string {
 }
 
 func (ss *SimServer) CurrentTime() time.Time {
-	elapsed := time.Since(ss.startTime)
-	elapsed = time.Duration(float64(elapsed) * float64(ss.simRate))
-	return ss.startTime.Add(elapsed)
+	return ss.currentTime
 }
 
 func (ss *SimServer) GetWindowTitle() string {
@@ -771,6 +789,8 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, alt int, altAssigned int, speed
 	ssa.Route = ssa.Route[1:]
 
 	ss.aircraft[ac.Callsign] = ssa
+
+	ss.remainingLaunches--
 
 	eventStream.Post(&AddedAircraftEvent{ac: ssa.AC})
 }
@@ -869,6 +889,8 @@ func (ss *SimServer) DeleteAircraft(callsign string) error {
 }
 
 func (ss *SimServer) TogglePause() error {
+	ss.paused = !ss.paused
+	ss.lastUpdateTime = time.Now() // ignore time passage...
 	return nil
 }
 
