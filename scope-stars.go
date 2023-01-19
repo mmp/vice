@@ -2079,10 +2079,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				} else if dir, err := strconv.Atoi(cmd); err == nil && dir != 0 {
 					state.leaderLineDirection = dir
 					status.clear = true
-				} else {
-					status.err = ErrSTARSCommandFormat
 				}
-				return
 
 			case 2:
 				if isControllerId(cmd) {
@@ -2191,7 +2188,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				return
 			}
 
-			if len(cmd) >= 3 && (cmd[0] == 'D' || cmd[0] == 'H' || cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'A' || cmd[0] == 'C') {
+			if len(cmd) > 0 && (cmd[0] == 'D' || cmd[0] == 'H' || cmd[0] == 'L' ||
+				cmd[0] == 'R' || cmd[0] == 'A' || cmd[0] == 'C' || cmd[0] == '?' ||
+				cmd[0] == 'X' || cmd[0] == 'P') {
 				sim, ok := server.(*SimServer)
 				if !ok {
 					status.err = errors.New("Can't issue control commands to a/c")
@@ -2199,7 +2198,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				}
 
 				b := []byte(cmd)
-				for len(b) >= 3 {
+				for len(b) > 0 {
 					lg.Printf("cur [%s]", string(b))
 					getnum := func() (int, int, error) {
 						end := 1
@@ -2214,13 +2213,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 					switch b[0] {
 					case 'D':
-						// TODO
 						if _, ok := database.Locate(string(b[1:4])); ok && (len(b) == 4 || b[4] == 'H' || b[4] == 'L' || b[4] == 'R' || b[4] == 'A') {
 							status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
 							b = b[4:]
 						} else if len(b) >= 6 {
 							status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
 							b = b[6:]
+						} else {
+							status.err = fmt.Errorf("%s: unsure how to parse fix/vor", string(b[1:]))
+							return
 						}
 
 					case 'H':
@@ -2254,6 +2255,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						if err == nil {
 							status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
 						}
+
+					case '?':
+						b = b[1:]
+						status.err = sim.PrintInfo(ac.Callsign)
+
+					case 'X':
+						b = b[1:]
+						status.err = sim.DeleteAircraft(ac.Callsign)
+
+					case 'P':
+						b = b[1:]
+						status.err = sim.TogglePause()
 
 					default:
 						status.err = errors.New("Unknown command: " + string(b))
@@ -3514,7 +3527,7 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 			continue
 		}
 		if nmdistance2ll(ac.Position(), other.Position()) <= sp.Facility.CA.LateralMinimum &&
-			abs(ac.Altitude()-other.Altitude()) <= int(sp.Facility.CA.VerticalMinimum+50 /*small slop for fp error*/) {
+			abs(ac.Altitude()-other.Altitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
 			return true
 		}
 	}
