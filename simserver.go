@@ -5,21 +5,23 @@ package main
 /*
 TODO:
 
+- direct after left/right turns borky
+- directs sometimes turning around hte long way???
+
+- scenarios:
+  LGA: multiple runways, better departure flows
+  FRG: multiple runways, better departure flows
+  ISP: multiple runways, better departure flows
+
+- LGA handoffs not showing in flight strip bay
+
 - config scenarios via json files (directory of them?)
 
-- DRBVC110 nogo
+- wind vector: groundspeed = TAS+wind
 
-- auto add flight strip on track, remove on drop
+- review: make sure things like *T and MIN distance estimates just use track and not reported airspeed...
 
-- have valid(ish) flight plans
-
-- fix LGA spawn prop/non prop overlaps
-
-- go faster when higher... (not just 10k faster.)
-
-- callsign formats... @ stuff for letters...
-
-- winds (IAS vs ground speed...)
+- actually make sure that GS is what is reported in datablocks
 
 */
 
@@ -114,34 +116,49 @@ var configPositions map[string]Point2LL = map[string]Point2LL{
 	"_KLGA_HO":    Point2LL{parseLatLong("W073.45.41.940"), parseLatLong("N040.45.07.388")},
 }
 
-type SimSpawnerConfig struct {
-	adr       int32
-	challenge float32
-	enabled   bool
-	create    func(c *SimSpawnerConfig, now time.Time) *SimSpawner
+type RunwayConfig struct {
+	adr             int32
+	challenge       float32
+	enabled         bool
+	categoryEnabled map[string]*bool
+}
+
+func NewRunwayConfig() *RunwayConfig {
+	return &RunwayConfig{
+		adr:             30,
+		challenge:       0.5,
+		categoryEnabled: make(map[string]*bool),
+	}
 }
 
 type SimServerConnectionConfiguration struct {
-	spawnRate   int32
-	simRate     float32
-	numAircraft int32
-	configs     map[string]*SimSpawnerConfig
+	simRate       float32
+	numAircraft   int32
+	runwayConfigs map[string]*RunwayConfig // "KJFK/31L", etc
+	routes        []*Route
 }
 
 func (ssc *SimServerConnectionConfiguration) Initialize() {
-	ssc.spawnRate = 120
 	ssc.numAircraft = 30
 	ssc.simRate = 1
-	ssc.configs = make(map[string]*SimSpawnerConfig)
-	ssc.configs["JFK31L"] = &SimSpawnerConfig{adr: 45, challenge: 0.5, create: NewJFK31LSimSpawner, enabled: true}
-	ssc.configs["JFK31R"] = &SimSpawnerConfig{adr: 10, challenge: 0.5, create: NewJFK31RSimSpawner}
-	ssc.configs["JFK22R"] = &SimSpawnerConfig{adr: 45, challenge: 0.5, create: NewJFK22RSimSpawner}
-	ssc.configs["JFK13R"] = &SimSpawnerConfig{adr: 45, challenge: 0.5, create: NewJFK13RSimSpawner}
-	ssc.configs["JFK4L"] = &SimSpawnerConfig{adr: 45, challenge: 0.5, create: NewJFK4LSimSpawner}
-	ssc.configs["FRG"] = &SimSpawnerConfig{adr: 15, challenge: 0.5, create: NewKFRGSimSpawner, enabled: true}
-	ssc.configs["ISP"] = &SimSpawnerConfig{adr: 15, challenge: 0.5, create: NewKISPSimSpawner, enabled: true}
-	ssc.configs["LGA"] = &SimSpawnerConfig{adr: 20, challenge: 0.5, create: NewKLGASimSpawner, enabled: true}
-	ssc.configs["LGA Prop"] = &SimSpawnerConfig{adr: 5, challenge: 0.5, create: NewKLGAPropSimSpawner}
+	ssc.runwayConfigs = make(map[string]*RunwayConfig)
+
+	ssc.routes = GetJFKRoutes()
+	ssc.routes = append(ssc.routes, GetLGARoutes()...)
+	ssc.routes = append(ssc.routes, GetFRGRoutes()...)
+	ssc.routes = append(ssc.routes, GetISPRoutes()...)
+
+	for _, route := range ssc.routes {
+		id := route.DepartureAirport + "/" + route.DepartureRunway
+		if _, ok := ssc.runwayConfigs[id]; !ok {
+			ssc.runwayConfigs[id] = NewRunwayConfig()
+		}
+		c := ssc.runwayConfigs[id]
+
+		if _, ok := c.categoryEnabled[route.Category]; !ok {
+			c.categoryEnabled[route.Category] = new(bool)
+		}
+	}
 }
 
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
@@ -150,28 +167,76 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
 	imgui.SliderFloatV("Simulation rate", &ssc.simRate, 0.25, 10, "%.1f", 0)
 
-	imgui.Text("Configs:")
-	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV("configs", 4, flags, imgui.Vec2{600, 0}, 0.) {
-		imgui.TableSetupColumn("Enabled")
-		imgui.TableSetupColumn("Name")
-		imgui.TableSetupColumn("ADR")
-		imgui.TableSetupColumn("Challenge level")
-		imgui.TableHeadersRow()
-		for _, conf := range SortedMapKeys(ssc.configs) {
-			imgui.PushID(conf)
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Checkbox("##check", &ssc.configs[conf].enabled)
-			imgui.TableNextColumn()
-			imgui.Text(conf)
-			imgui.TableNextColumn()
-			imgui.InputIntV("##adr", &ssc.configs[conf].adr, 1, 120, 0)
-			imgui.TableNextColumn()
-			imgui.SliderFloatV("##challenge", &ssc.configs[conf].challenge, 0, 1, "%.01f", 0)
-			imgui.PopID()
+	airports := make(map[string]interface{})
+	for _, route := range ssc.routes {
+		airports[route.DepartureAirport] = nil
+	}
+
+	anyRunwaysActive := false
+	for _, ap := range SortedMapKeys(airports) {
+		if !imgui.CollapsingHeader(ap) {
+			continue
 		}
-		imgui.EndTable()
+
+		imgui.Text("Runways:")
+		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{600, 0}, 0.) {
+			imgui.TableSetupColumn("Enabled")
+			imgui.TableSetupColumn("Runway")
+			imgui.TableSetupColumn("ADR")
+			imgui.TableSetupColumn("Challenge level")
+			imgui.TableHeadersRow()
+
+			for _, rwy := range SortedMapKeys(ssc.runwayConfigs) {
+				if !strings.HasPrefix(rwy, ap+"/") {
+					continue
+				}
+				config := ssc.runwayConfigs[rwy]
+
+				imgui.PushID(rwy)
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Checkbox("##enabled", &config.enabled)
+				anyRunwaysActive = anyRunwaysActive || config.enabled
+				imgui.TableNextColumn()
+				imgui.Text(strings.TrimPrefix(rwy, ap+"/"))
+				imgui.TableNextColumn()
+				imgui.InputIntV("##adr", &config.adr, 1, 120, 0)
+				imgui.TableNextColumn()
+				imgui.SliderFloatV("##challenge", &config.challenge, 0, 1, "%.01f", 0)
+				imgui.PopID()
+			}
+			imgui.EndTable()
+		}
+	}
+
+	if anyRunwaysActive {
+		imgui.Separator()
+		imgui.Text("Scenarios:")
+		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+		if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{600, 0}, 0.) {
+			imgui.TableSetupColumn("Enabled")
+			imgui.TableSetupColumn("Runway/Gate")
+			imgui.TableHeadersRow()
+			for _, rwy := range SortedMapKeys(ssc.runwayConfigs) {
+				conf := ssc.runwayConfigs[rwy]
+				if !conf.enabled {
+					continue
+				}
+				imgui.PushID(rwy)
+				for _, category := range SortedMapKeys(conf.categoryEnabled) {
+					imgui.PushID(category)
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Checkbox("##check", conf.categoryEnabled[category])
+					imgui.TableNextColumn()
+					imgui.Text(rwy + "/" + category)
+					imgui.PopID()
+				}
+				imgui.PopID()
+			}
+			imgui.EndTable()
+		}
 	}
 
 	return false
@@ -215,9 +280,11 @@ type SimAircraft struct {
 var openscopeAirlines string
 
 type SimAirline struct {
-	ICAO string `json:"icao"`
-	Name string `json:"name"`
-	// TODO: callsignFormats...
+	ICAO     string `json:"icao"`
+	Name     string `json:"name"`
+	Callsign struct {
+		CallsignFormats []string `json:"callsignFormats"`
+	} `json:"callsign"`
 	JSONFleets map[string][][2]interface{} `json:"fleets"`
 	Fleets     map[string][]FleetAircraft
 }
@@ -231,20 +298,27 @@ var AllSimAircraft map[string]*SimAircraft
 var AllSimAirlines map[string]*SimAirline
 
 type SSAircraft struct {
-	AC    *Aircraft
-	SimAC *SimAircraft
-	Strip FlightStrip
-	Route []string
+	AC        *Aircraft
+	SimAC     *SimAircraft
+	Strip     FlightStrip
+	Waypoints []string
 
 	Position Point2LL
 	Heading  float32
 	Altitude float32
-	Airspeed float32
+	Airspeed float32 // IAS
 
 	AssignedAltitude int
 
 	AssignedHeading *int
 	TurnDirection   *int
+}
+
+func (ac *SSAircraft) Groundspeed() float32 {
+	tas := ac.Airspeed * (1 + .02*ac.Altitude/1000)
+	// TODO wind
+	gs := tas
+	return gs
 }
 
 type SimServer struct {
@@ -262,7 +336,7 @@ type SimServer struct {
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
-	spawners []*SimSpawner
+	spawners []*RunwaySpawner
 }
 
 func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimServer {
@@ -338,11 +412,32 @@ func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimSer
 	addController("NY_F_CTR", "KEWR", 128.3)    // N66
 	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
 
-	for _, config := range ssc.configs { // FIXME: "config" overload...
-		if config.enabled {
-			// Give them a past time so they start spawning
-			ss.spawners = append(ss.spawners,
-				config.create(config, ss.currentTime.Add(-60*time.Second)))
+	for rwy, conf := range ssc.runwayConfigs {
+		if !conf.enabled {
+			continue
+		}
+
+		// Find the active routes for this runway
+		var routes []*Route
+		for _, route := range ssc.routes {
+			id := route.DepartureAirport + "/" + route.DepartureRunway
+			if id != rwy {
+				continue
+			}
+
+			if *conf.categoryEnabled[route.Category] {
+				routes = append(routes, route)
+			}
+		}
+
+		if len(routes) > 0 {
+			spawner := &RunwaySpawner{
+				nextSpawn: ss.currentTime.Add(-60 * time.Second),
+				adr:       int(conf.adr),
+				challenge: conf.challenge,
+				routes:    routes,
+			}
+			ss.spawners = append(ss.spawners, spawner)
 		}
 	}
 
@@ -589,11 +684,12 @@ func (ss *SimServer) GetUpdates() {
 	if now.Sub(ss.lastTrackUpdate) >= 5*time.Second {
 		ss.lastTrackUpdate = now
 
+		// Calculate groundspeed
 		for _, ac := range ss.aircraft {
 			ac.AC.AddTrack(RadarTrack{
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
-				Groundspeed: int(ac.Airspeed),
+				Groundspeed: int(ac.Groundspeed()),
 				Heading:     ac.Heading - database.MagneticVariation,
 				Time:        now,
 			})
@@ -614,10 +710,10 @@ func (ss *SimServer) updateSim() {
 		//lg.Printf("%+v", ac)
 
 		// Time for a handoff?
-		if len(ac.Route) > 0 && ac.Route[0] == "@" {
+		if len(ac.Waypoints) > 0 && ac.Waypoints[0] == "@" {
 			ac.AC.InboundHandoffController = ss.callsign
 			eventStream.Post(&OfferedHandoffEvent{controller: ac.AC.TrackingController, ac: ac.AC})
-			ac.Route = ac.Route[1:]
+			ac.Waypoints = ac.Waypoints[1:]
 		}
 
 		// Update speed; only worry about accelerate for departures (until
@@ -668,19 +764,19 @@ func (ss *SimServer) updateSim() {
 				}
 				//lg.Errorf("From %f to %f, turn %f", ac.Heading, targetHeading, turn)
 			}
-		} else if len(ac.Route) > 0 {
-			if ac.Route[0][0] == '#' {
-				hdg, err := strconv.ParseFloat(ac.Route[0][1:], 32)
+		} else if len(ac.Waypoints) > 0 {
+			if ac.Waypoints[0][0] == '#' {
+				hdg, err := strconv.ParseFloat(ac.Waypoints[0][1:], 32)
 				if err != nil {
-					lg.Errorf("%s: %v", ac.Route[0], err)
+					lg.Errorf("%s: %v", ac.Waypoints[0], err)
 				}
 				targetHeading = float32(hdg)
 			} else {
 				var pos Point2LL
 				var ok bool
-				if pos, ok = database.Locate(ac.Route[0]); !ok {
-					if pos, ok = configPositions[ac.Route[0]]; !ok {
-						lg.Errorf("%s: unknown route position", ac.Route[0])
+				if pos, ok = database.Locate(ac.Waypoints[0]); !ok {
+					if pos, ok = configPositions[ac.Waypoints[0]]; !ok {
+						lg.Errorf("%s: unknown route position", ac.Waypoints[0])
 						continue
 					}
 				}
@@ -691,7 +787,7 @@ func (ss *SimServer) updateSim() {
 				// Have we passed the fix?
 				if nmdistance2ll(ac.Position, pos) < .5 {
 					//lg.Errorf("%s: CALLING IT THAT WE PASSED IT", ac.Route[0])
-					ac.Route = ac.Route[1:]
+					ac.Waypoints = ac.Waypoints[1:]
 					//lg.Errorf("New route: %v", ac.Route)
 					targetHeading = ac.Heading // keep it sensible until next time through
 				}
@@ -720,7 +816,7 @@ func (ss *SimServer) updateSim() {
 		// Update position given current heading
 		hdg := ac.Heading - database.MagneticVariation
 		v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-		ac.Position = nm2ll(add2f(ll2nm(ac.Position), scale2f(v, ac.Airspeed/3600)))
+		ac.Position = nm2ll(add2f(ll2nm(ac.Position), scale2f(v, ac.Groundspeed()/3600)))
 	}
 }
 
@@ -740,7 +836,7 @@ func (ss *SimServer) GetWindowTitle() string {
 	return "SimServer: " + ss.callsign
 }
 
-func (ss *SimServer) SpawnAircraft(ac *Aircraft, alt int, altAssigned int, speed int) {
+func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, speed int) {
 	acInfo, ok := AllSimAircraft[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
@@ -748,9 +844,9 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, alt int, altAssigned int, speed
 	}
 
 	ssa := &SSAircraft{
-		AC:    ac,
-		SimAC: acInfo,
-		Route: strings.Split(ac.FlightPlan.Route, "."),
+		AC:        ac,
+		SimAC:     acInfo,
+		Waypoints: strings.Split(waypoints, "."),
 
 		Altitude:         float32(alt),
 		AssignedAltitude: altAssigned,
@@ -763,24 +859,24 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, alt int, altAssigned int, speed
 	}
 
 	var pos0, pos1 Point2LL
-	if pos0, ok = database.Locate(ssa.Route[0]); !ok {
-		if pos0, ok = configPositions[ssa.Route[0]]; !ok {
-			lg.Errorf("%s: unknown initial route position", ssa.Route[0])
+	if pos0, ok = database.Locate(ssa.Waypoints[0]); !ok {
+		if pos0, ok = configPositions[ssa.Waypoints[0]]; !ok {
+			lg.Errorf("%s: unknown initial route position", ssa.Waypoints[0])
 			return
 		}
 	}
 	ssa.Position = pos0
 
-	if ssa.Route[1][0] == '#' {
-		hdg, err := strconv.ParseFloat(ssa.Route[1][1:], 32)
+	if ssa.Waypoints[1][0] == '#' {
+		hdg, err := strconv.ParseFloat(ssa.Waypoints[1][1:], 32)
 		if err != nil {
-			lg.Errorf("%s: %v", ssa.Route[1], err)
+			lg.Errorf("%s: %v", ssa.Waypoints[1], err)
 		}
 		ssa.Heading = float32(hdg)
 	} else {
-		if pos1, ok = database.Locate(ssa.Route[1]); !ok {
-			if pos1, ok = configPositions[ssa.Route[1]]; !ok {
-				lg.Errorf("%s: unknown route position", ssa.Route[1])
+		if pos1, ok = database.Locate(ssa.Waypoints[1]); !ok {
+			if pos1, ok = configPositions[ssa.Waypoints[1]]; !ok {
+				lg.Errorf("%s: unknown route position", ssa.Waypoints[1])
 				return
 			}
 		}
@@ -789,7 +885,7 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, alt int, altAssigned int, speed
 
 	// Take off the initial point to maintain the invariant that the first
 	// item in the route is what we're following..
-	ssa.Route = ssa.Route[1:]
+	ssa.Waypoints = ssa.Waypoints[1:]
 
 	ss.aircraft[ac.Callsign] = ssa
 
@@ -851,9 +947,9 @@ func (ss *SimServer) DirectFix(callsign string, fix string) error {
 		return ErrNoAircraftForCallsign
 	} else {
 		fix = strings.ToUpper(fix)
-		for i, f := range ac.Route {
+		for i, f := range ac.Waypoints {
 			if f == fix {
-				ac.Route = ac.Route[i:]
+				ac.Waypoints = ac.Waypoints[i:]
 				ac.AssignedHeading = nil
 				ac.TurnDirection = nil
 				pilotResponse(callsign, "direct %s", fix)
@@ -875,7 +971,7 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 				s += fmt.Sprintf(" turn direction %d", *ac.TurnDirection)
 			}
 		}
-		s += fmt.Sprintf(", route %+v", ac.Route)
+		s += fmt.Sprintf(", route %+v", ac.Waypoints)
 		lg.Errorf("%s", s)
 	}
 	return nil
@@ -899,62 +995,94 @@ func (ss *SimServer) TogglePause() error {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type SimSpawner struct {
+type Route struct {
+	Waypoints       string
+	Scratchpad      string
+	Route           string
+	InitialAltitude int
+	ClearedAltitude int
+	InitialSpeed    int
+	Destinations    []string
+
+	DepartureAirport string
+	DepartureRunway  string
+	Category         string
+
+	InitialController string
+	Airlines          []string
+	Fleet             string
+}
+
+type RunwaySpawner struct {
 	nextSpawn time.Time
 
 	adr       int
 	challenge float32
 
-	departureAirport  string
-	initialController string
-
-	airlines []string
-	fleet    string
-	routes   map[string][]*Route
+	routes []*Route
 
 	lastRouteCategory string
 	lastRoute         *Route
 }
 
-type Route struct {
-	Waypoints       string
-	Scratchpad      string
-	InitialAltitude int
-	ClearedAltitude int
-	InitialSpeed    int
-	Destinations    []string
-}
-
-func (s *SimSpawner) AddRoute(name string, r *Route) {
-	if s.routes == nil {
-		s.routes = make(map[string][]*Route)
-	}
-	s.routes[name] = append(s.routes[name], r)
-}
-
-func (s *SimSpawner) MaybeSpawn(ss *SimServer) {
-	if ss.CurrentTime().Before(s.nextSpawn) {
+func (rs *RunwaySpawner) MaybeSpawn(ss *SimServer) {
+	if ss.CurrentTime().Before(rs.nextSpawn) {
 		return
 	}
 
+	// Pick a route
+	var route *Route
+	u := rand.Float32()
+	if u < rs.challenge/2 {
+		route = rs.lastRoute // note: may be nil the first time...
+	} else if u < rs.challenge {
+		// Try to find one with the same category; reservoir sampling
+		n := float32(0)
+		for _, r := range rs.routes {
+			if r.Category == rs.lastRouteCategory {
+				n++
+				if rand.Float32() < 1/n {
+					route = r
+				}
+			}
+		}
+	}
+
+	// Either the challenge cases didn't hit or they did and it's the first
+	// time through...
+	if route == nil {
+		route = rs.routes[rand.Intn(len(rs.routes))]
+	}
+	rs.lastRouteCategory = route.Category
+	rs.lastRoute = route
+
 	// Pick an airline; go randomizes iteration, so there ya go...
-	al := s.airlines[rand.Intn(len(s.airlines))]
+	al := route.Airlines[rand.Intn(len(route.Airlines))]
 	airline, ok := AllSimAirlines[al]
 	if !ok {
 		lg.Errorf("%s: unknown airline!", al)
 		return
 	}
-	// lg.Printf("AIRLINE %+v", airline)
 
-	callsign := strings.ToUpper(airline.ICAO) + fmt.Sprintf("%d", rand.Intn(1999))
+	// random callsign
+	callsign := strings.ToUpper(airline.ICAO)
+	for _, ch := range airline.Callsign.CallsignFormats[rand.Intn(len(airline.Callsign.CallsignFormats))] {
+		switch ch {
+		case '#':
+			callsign += fmt.Sprintf("%d", rand.Intn(10))
+
+		case '@':
+			callsign += string(rune('A' + rand.Intn(26)))
+		}
+	}
 
 	// Pick an aircraft.
 	var aircraft FleetAircraft
 	count := 0
 
-	fleet, ok := airline.Fleets[s.fleet]
+	fleet, ok := airline.Fleets[route.Fleet]
 	if !ok {
-		lg.Errorf("%s: didn't find fleet %s -- %+v", airline.ICAO, s.fleet, airline)
+		lg.Errorf("%s: didn't find fleet %s -- %+v", airline.ICAO, route.Fleet, airline)
 		for _, fl := range airline.Fleets {
 			fleet = fl
 			break
@@ -968,41 +1096,21 @@ func (s *SimSpawner) MaybeSpawn(ss *SimServer) {
 			aircraft = ac
 		}
 	}
-	//lg.Printf("AC %+v", aircraft)
 
 	if _, ok := AllSimAircraft[aircraft.ICAO]; !ok {
 		lg.Errorf("%s: chose aircraft but not in DB!", aircraft.ICAO)
 		return // try again next time...
 	}
 
-	// pick a route...
-	// equal chance of reuse last route, reuse last exit, brand new route
-	var route *Route
-	u := rand.Float32()
-	if u < s.challenge/2 {
-		route = s.lastRoute // note: may be nil the first time...
-	} else if u < s.challenge {
-		if routes, ok := s.routes[s.lastRouteCategory]; ok {
-			route = routes[rand.Intn(len(routes))]
-		}
-	}
-
-	// Either the challenge cases didn't hit or they did and it's the first
-	// time through...
-	if route == nil {
-		for category, routes := range s.routes {
-			// yaay for randomized map iteration
-			route = routes[rand.Intn(len(routes))]
-			s.lastRouteCategory = category
-			break
-		}
-	}
-	s.lastRoute = route
-
 	// Pick a destination airport
 	destination := route.Destinations[rand.Intn(len(route.Destinations))]
 
 	squawk := Squawk(rand.Intn(0o7000))
+	alt := 20000 + 1000*rand.Intn(22)
+	if rand.Float32() < .3 {
+		alt = 7000 + 1000*rand.Intn(11)
+	}
+
 	ac := &Aircraft{
 		Callsign:           callsign,
 		Scratchpad:         route.Scratchpad,
@@ -1010,13 +1118,14 @@ func (s *SimSpawner) MaybeSpawn(ss *SimServer) {
 		Squawk:             squawk,
 		Mode:               Charlie,
 		VoiceCapability:    VoiceFull,
-		TrackingController: s.initialController,
+		TrackingController: route.InitialController,
 		FlightPlan: &FlightPlan{
 			Rules:            IFR,
 			AircraftType:     aircraft.ICAO,
-			DepartureAirport: s.departureAirport,
+			DepartureAirport: route.DepartureAirport,
 			ArrivalAirport:   destination,
-			Route:            route.Waypoints,
+			Altitude:         alt,
+			Route:            route.Route + " DCT " + destination,
 		},
 	}
 
@@ -1032,10 +1141,10 @@ func (s *SimSpawner) MaybeSpawn(ss *SimServer) {
 		ac.FlightPlan.AircraftType = "J/" + ac.FlightPlan.AircraftType
 	}
 
-	ss.SpawnAircraft(ac, route.InitialAltitude, route.ClearedAltitude, route.InitialSpeed)
+	ss.SpawnAircraft(ac, route.Waypoints, route.InitialAltitude, route.ClearedAltitude, route.InitialSpeed)
 
-	seconds := 3600/s.adr - 10 + rand.Intn(21)
-	s.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
+	seconds := 3600/rs.adr - 10 + rand.Intn(21)
+	rs.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
 }
 
 var jfkWater = [][2]string{
@@ -1068,461 +1177,341 @@ var jfkNorth = [][2]string{
 	[2]string{"DEEZZ", "DEZ"},
 }
 
-func NewJFK31LSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:        now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport: "KJFK",
-		adr:              int(c.adr),
-		challenge:        c.challenge,
-		fleet:            "default",
-		airlines: []string{
-			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
-			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
+func GetJFKRoutes() (routes []*Route) {
+	proto := Route{
+		InitialAltitude:  13,
+		DepartureAirport: "KJFK",
 	}
 
+	jetProto := proto
+	jetProto.ClearedAltitude = 5000
+	jetProto.Fleet = "default"
+	jetProto.Airlines = []string{
+		"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
+		"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"}
+
 	for _, exit := range jfkWater {
-		ss.AddRoute("water", &Route{
-			Waypoints:       "_JFK_31L._JFK_13R.CRI.#176." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-			},
-		})
+		r := jetProto
+		r.Scratchpad = exit[1]
+		r.Destinations = []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"}
+		r.Category = "Water"
+
+		// 31L
+		r31L := r
+		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#176." + exit[0]
+		r31L.Route = "SKORR5.YNKEE " + exit[0]
+		r31L.DepartureRunway = "31L"
+		routes = append(routes, &r31L)
+
+		// 22R
+		r22R := r
+		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
+		r22R.Route = "JFK5 " + exit[0]
+		r22R.DepartureRunway = "22R"
+		routes = append(routes, &r22R)
+
+		// 13R
+		r13R := r
+		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
+		r13R.Route = "JFK5 " + exit[0]
+		r13R.DepartureRunway = "13R"
+		routes = append(routes, &r13R)
+
+		// 4L
+		r4L := r
+		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
+		r4L.Route = "JFK5 " + exit[0]
+		r4L.DepartureRunway = "4L"
+		routes = append(routes, &r4L)
 	}
+
 	for _, exit := range jfkEast {
-		ss.AddRoute("east", &Route{
-			Waypoints:       "_JFK_31L._JFK_13R.CRI.#176." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-			},
-		})
+		r := jetProto
+		r.Scratchpad = exit[1]
+		r.Destinations = []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"}
+		r.Category = "East"
+
+		// 31L
+		r31L := r
+		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#176." + exit[0]
+		r31L.Route = "SKORR5.YNKEE " + exit[0]
+		r31L.DepartureRunway = "31L"
+		routes = append(routes, &r31L)
+
+		// 22R
+		r22R := r
+		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
+		r22R.Route = "JFK5 " + exit[0]
+		r22R.DepartureRunway = "22R"
+		routes = append(routes, &r22R)
+
+		// 13R
+		r13R := r
+		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
+		r13R.Route = "JFK5 " + exit[0]
+		r13R.DepartureRunway = "13R"
+		routes = append(routes, &r13R)
+
+		// 4L
+		r4L := r
+		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
+		r4L.Route = "JFK5 " + exit[0]
+		r4L.DepartureRunway = "4L"
+		routes = append(routes, &r4L)
 	}
+
 	for _, exit := range jfkNorth {
-		ss.AddRoute("north", &Route{
-			Waypoints:       "_JFK_31L._JFK_13R.CRI.#176." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-			},
-		})
+		r := jetProto
+		r.Scratchpad = exit[1]
+		r.Destinations = []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"}
+		r.Category = "North"
+
+		// 31L
+		r31L := r
+		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#176." + exit[0]
+		r31L.Route = "SKORR5.YNKEE " + exit[0]
+		r31L.DepartureRunway = "31L"
+		routes = append(routes, &r31L)
+
+		// 22R
+		r22R := r
+		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
+		r22R.Route = "JFK5 " + exit[0]
+		r22R.DepartureRunway = "22R"
+		routes = append(routes, &r22R)
+
+		// 13R
+		r13R := r
+		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
+		r13R.Route = "JFK5 " + exit[0]
+		r13R.DepartureRunway = "13R"
+		routes = append(routes, &r13R)
+
+		// 4L
+		r4L := r
+		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
+		r4L.Route = "JFK5 " + exit[0]
+		r4L.DepartureRunway = "4L"
+		routes = append(routes, &r4L)
 	}
+
 	for _, exit := range jfkSouthWest {
-		ss.AddRoute("sw", &Route{
-			Waypoints:       "_JFK_31L._JFK_13R.CRI.#223." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-			},
-		})
+		r := jetProto
+		r.Scratchpad = exit[1]
+		r.Destinations = []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"}
+		r.Category = "SouthWest"
+
+		// 31L
+		r31L := r
+		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#223." + exit[0]
+		r31L.Route = "SKORR5.RNGRR " + exit[0]
+		r31L.DepartureRunway = "31L"
+		routes = append(routes, &r31L)
+
+		// 22R
+		r22R := r
+		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
+		r22R.Route = "JFK5 " + exit[0]
+		r22R.DepartureRunway = "22R"
+		routes = append(routes, &r22R)
+
+		// 13R
+		r13R := r
+		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
+		r13R.Route = "JFK5 " + exit[0]
+		r13R.DepartureRunway = "13R"
+		routes = append(routes, &r13R)
+
+		// 4L
+		r4L := r
+		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
+		r4L.Route = "JFK5 " + exit[0]
+		r4L.DepartureRunway = "4L"
+		routes = append(routes, &r4L)
 	}
 
-	return ss
-}
-
-func NewJFK31RSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:        now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport: "KJFK",
-		adr:              int(c.adr),
-		challenge:        c.challenge,
-		airlines:         []string{"N"},
-		fleet:            "lightGA",
-	}
-
-	for _, exit := range jfkWater {
-		ss.AddRoute("water", &Route{
-			Waypoints:       "_JFK_31R._JFK_13L.#090." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 2000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-			},
-		})
-	}
-	for _, exit := range jfkEast {
-		ss.AddRoute("east", &Route{
-			Waypoints:       "_JFK_31R._JFK_13L.#090." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 2000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-			},
-		})
-	}
-	for _, exit := range jfkNorth {
-		ss.AddRoute("north", &Route{
-			Waypoints:       "_JFK_31R._JFK_13L.#090." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 2000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-			},
-		})
-	}
-
-	// Southwest gates go from 31L, SKORR4...
-
-	return ss
-}
-
-func NewJFK22RSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:        now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport: "KJFK",
-		adr:              int(c.adr),
-		challenge:        c.challenge,
-		fleet:            "default",
-		airlines: []string{
-			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
-			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
-	}
+	// 31R idlewild
+	propProto := proto
+	propProto.ClearedAltitude = 2000
+	propProto.Airlines = []string{"N"}
+	propProto.Fleet = "lightGA"
+	propProto.DepartureRunway = "31R"
 
 	for _, exit := range jfkWater {
-		ss.AddRoute("water", &Route{
-			Waypoints:       "_JFK_22R._JFK_4L.#222." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-			},
-		})
+		r := propProto
+		r.Category = "Water (Idlewild)"
+		r.Scratchpad = exit[1]
+		r.Route = "JFK5 " + exit[0]
+		r.Destinations = []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"}
+		r.Waypoints = "_JFK_31R._JFK_13L.#090." + exit[0]
+		routes = append(routes, &r)
 	}
+
 	for _, exit := range jfkEast {
-		ss.AddRoute("east", &Route{
-			Waypoints:       "_JFK_22R._JFK_4L.#222." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-			},
-		})
-	}
-	for _, exit := range jfkNorth {
-		ss.AddRoute("north", &Route{
-			Waypoints:       "_JFK_22R._JFK_4L.#222." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-			},
-		})
-	}
-	for _, exit := range jfkSouthWest {
-		ss.AddRoute("sw", &Route{
-			Waypoints:       "_JFK_22R._JFK_4L.#222." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-			},
-		})
-	}
-
-	return ss
-}
-
-func NewJFK13RSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:        now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport: "KJFK",
-		adr:              int(c.adr),
-		challenge:        c.challenge,
-		fleet:            "default",
-		airlines: []string{
-			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
-			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
-	}
-
-	for _, exit := range jfkWater {
-		ss.AddRoute("water", &Route{
-			Waypoints:       "_JFK_13R._JFK_31L.#109." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-			},
-		})
-	}
-	for _, exit := range jfkEast {
-		ss.AddRoute("east", &Route{
-			Waypoints:       "_JFK_13R._JFK_31L.#109." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-			},
-		})
-	}
-	for _, exit := range jfkNorth {
-		ss.AddRoute("north", &Route{
-			Waypoints:       "_JFK_13R._JFK_31L.#109." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-			},
-		})
-	}
-	for _, exit := range jfkSouthWest {
-		ss.AddRoute("sw", &Route{
-			Waypoints:       "_JFK_13R._JFK_31L.#109." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-			},
-		})
-	}
-
-	return ss
-}
-
-func NewJFK4LSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:        now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport: "KJFK",
-		adr:              int(c.adr),
-		challenge:        c.challenge,
-		fleet:            "default",
-		airlines: []string{
-			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
-			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
-	}
-
-	for _, exit := range jfkWater {
-		ss.AddRoute("water", &Route{
-			Waypoints:       "_JFK_4L._JFK_4La.#099." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-			},
-		})
-	}
-	for _, exit := range jfkEast {
-		ss.AddRoute("east", &Route{
-			Waypoints:       "_JFK_4L._JFK_4La.#099." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-			},
-		})
-	}
-	for _, exit := range jfkNorth {
-		ss.AddRoute("north", &Route{
-			Waypoints:       "_JFK_4L._JFK_4La.#099." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-			},
-		})
-	}
-	for _, exit := range jfkSouthWest {
-		ss.AddRoute("sw", &Route{
-			Waypoints:       "_JFK_4L._JFK_4La.#099." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 13,
-			ClearedAltitude: 5000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-			},
-		})
-	}
-
-	return ss
-}
-
-func NewKFRGSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:         now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport:  "KFRG",
-		adr:               int(c.adr),
-		fleet:             "default",
-		initialController: "JFK_APP",
-		airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-	}
-
-	for _, ho := range []string{"_KFRG_0", "_KFRG_1", "_KFRG_2", "_KFRG_3"} {
-		for _, exit := range jfkWater {
-			ss.AddRoute("water", &Route{
-				Waypoints:       "KFRG." + ho + ".@." + exit[0],
-				Scratchpad:      exit[1],
-				InitialAltitude: 70,
-				ClearedAltitude: 5000,
-				InitialSpeed:    0,
-				Destinations: []string{
-					"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-				},
-			})
-		}
-		for _, exit := range jfkEast {
-			ss.AddRoute("east", &Route{
-				Waypoints:       "KFRG." + ho + ".@." + exit[0],
-				Scratchpad:      exit[1],
-				InitialAltitude: 70,
-				ClearedAltitude: 5000,
-				InitialSpeed:    0,
-				Destinations: []string{
-					"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-				},
-			})
-		}
-		for _, exit := range jfkNorth {
-			ss.AddRoute("north", &Route{
-				Waypoints:       "KFRG." + ho + ".@." + exit[0],
-				Scratchpad:      exit[1],
-				InitialAltitude: 70,
-				ClearedAltitude: 5000,
-				InitialSpeed:    0,
-				Destinations: []string{
-					"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-				},
-			})
-		}
-		for _, exit := range jfkSouthWest {
-			ss.AddRoute("sw", &Route{
-				Waypoints:       "KFRG." + ho + ".@." + ho + "a." + exit[0],
-				Scratchpad:      exit[1],
-				InitialAltitude: 70,
-				ClearedAltitude: 5000,
-				InitialSpeed:    0,
-				Destinations: []string{
-					"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-				},
-			})
-		}
-	}
-
-	return ss
-}
-
-func NewKISPSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:         now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport:  "KISP",
-		adr:               int(c.adr),
-		fleet:             "default",
-		initialController: "ISP_APP",
-		airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+		r := propProto
+		r.Category = "East (Idlewild)"
+		r.Scratchpad = exit[1]
+		r.Route = "JFK5 " + exit[0]
+		r.Destinations = []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"}
+		r.Waypoints = "_JFK_31R._JFK_13L.#090." + exit[0]
+		routes = append(routes, &r)
 	}
 
 	for _, exit := range jfkNorth {
-		ss.AddRoute("north", &Route{
-			Waypoints:       "KISP._KISP_CLIMB._KISP_HO.@.#275." + exit[0],
-			Scratchpad:      exit[1],
-			InitialAltitude: 70,
-			ClearedAltitude: 8000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-			},
-		})
+		r := propProto
+		r.Category = "North (Idlewild)"
+		r.Scratchpad = exit[1]
+		r.Route = "JFK5 " + exit[0]
+		r.Destinations = []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"}
+		r.Waypoints = "_JFK_31R._JFK_13L.#090." + exit[0]
+		routes = append(routes, &r)
 	}
 
-	return ss
+	return
 }
 
-func NewKLGASimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:         now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport:  "KLGA",
-		adr:               int(c.adr),
-		fleet:             "default",
-		initialController: "LGA_DEP",
-		airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-	}
+func GetFRGRoutes() (routes []*Route) {
+	/*
+		proto := Route{
+			InitialAltitude:  70,
+			DepartureAirport: "KFRG",
+			ClearedAltitude:  5000,
+			Fleet: "default",
+			Airlines: []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+		}
 
-	ss.AddRoute("dix", &Route{
-		Waypoints:       "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK.DIXIE",
-		Scratchpad:      "DIX",
-		InitialAltitude: 70,
-		ClearedAltitude: 6000,
-		InitialSpeed:    0,
+		for _, ho := range []string{"_KFRG_0", "_KFRG_1", "_KFRG_2", "_KFRG_3"} {
+			for _, exit := range jfkWater {
+				r := proto
+					Waypoints:       "KFRG." + ho + ".@." + exit[0],
+					Route:           "REP1 " + exit[0],
+				Scratchpad:      exit[1],
+				Category: "Water",
+					Destinations: []string{
+						"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
+					},
+				})
+			}
+			for _, exit := range jfkEast {
+				ss.AddRoute("east", &Route{
+					Waypoints:       "KFRG." + ho + ".@." + exit[0],
+					Route:           "REP1 " + exit[0],
+					Scratchpad:      exit[1],
+					InitialAltitude: 70,
+					ClearedAltitude: 5000,
+					InitialSpeed:    0,
+					Destinations: []string{
+						"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
+					},
+				})
+			}
+			for _, exit := range jfkNorth {
+				ss.AddRoute("north", &Route{
+					Waypoints:       "KFRG." + ho + ".@." + exit[0],
+					Route:           "REP1 " + exit[0],
+					Scratchpad:      exit[1],
+					InitialAltitude: 70,
+					ClearedAltitude: 5000,
+					InitialSpeed:    0,
+					Destinations: []string{
+						"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
+					},
+				})
+			}
+			for _, exit := range jfkSouthWest {
+				ss.AddRoute("sw", &Route{
+					Waypoints:       "KFRG." + ho + ".@." + ho + "a." + exit[0],
+					Route:           "REP1 " + exit[0],
+					Scratchpad:      exit[1],
+					InitialAltitude: 70,
+					ClearedAltitude: 5000,
+					InitialSpeed:    0,
+					Destinations: []string{
+						"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+					},
+				})
+			}
+		}
+
+		return ss
+	*/
+	return
+}
+
+func GetISPRoutes() (routes []*Route) {
+	proto := Route{
+		InitialAltitude:   70,
+		DepartureAirport:  "KISP",
+		ClearedAltitude:   8000,
+		Fleet:             "default",
+		InitialController: "ISP_APP",
+		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+		DepartureRunway:   "24",
 		Destinations: []string{
-			"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+			"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
 		},
-	})
+	}
+
+	for _, exit := range jfkNorth {
+		r := proto
+		r.Waypoints = "KISP._KISP_CLIMB._KISP_HO.@.#275." + exit[0]
+		r.Route = "LONGI7 " + exit[0]
+		r.Scratchpad = exit[1]
+		r.Category = "North"
+
+		routes = append(routes, &r)
+	}
+
+	return
+}
+
+func GetLGARoutes() (routes []*Route) {
+	proto := Route{
+		DepartureAirport:  "KLGA",
+		InitialController: "LGA_DEP",
+		InitialAltitude:   70,
+		Fleet:             "default",
+		DepartureRunway:   "22",
+		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+	}
+
+	dix := proto
+	dix.Waypoints = "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK.DIXIE"
+	dix.Route = "LGA7 DIXIE"
+	dix.Scratchpad = "DIX"
+	dix.ClearedAltitude = 6000
+	dix.Category = "Southwest"
+	dix.Destinations = []string{
+		"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+	}
+	routes = append(routes, &dix)
+
 	for i, water := range []string{"SHIPP", "WAVEY", "BETTE"} {
 		sp := []string{"SHI", "WAV", "BET"}
-		ss.AddRoute("water", &Route{
-			Waypoints:       "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK." + water,
-			Scratchpad:      sp[i],
-			InitialAltitude: 70,
-			ClearedAltitude: 8000,
-			InitialSpeed:    0,
-			Destinations: []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-			},
-		})
+		r := proto
+		r.Category = "Water"
+		r.Waypoints = "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK." + water
+		r.Route = "LGA7 " + water
+		r.Scratchpad = sp[i]
+		r.ClearedAltitude = 8000
+		r.Destinations = []string{
+			"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
+		}
+
+		routes = append(routes, &r)
 	}
 
-	return ss
-}
-
-func NewKLGAPropSimSpawner(c *SimSpawnerConfig, now time.Time) *SimSpawner {
-	ss := &SimSpawner{
-		nextSpawn:         now.Add(time.Duration(rand.Intn(int(3600/c.adr))) * time.Second),
-		departureAirport:  "KLGA",
-		initialController: "LGA_DEP",
-		airlines:          []string{"N"},
-		adr:               int(c.adr),
-		fleet:             "lightGA",
+	white := proto
+	white.Airlines = []string{"N"}
+	white.Fleet = "lightGA"
+	white.Waypoints = "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK.WHITE"
+	white.Route = "LGA7 WHITE"
+	white.Scratchpad = "WHI"
+	white.ClearedAltitude = 7000
+	white.Destinations = []string{
+		"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
 	}
+	routes = append(routes, &white)
 
-	ss.AddRoute("white", &Route{
-		Waypoints:       "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK.WHITE",
-		Scratchpad:      "WHI",
-		InitialAltitude: 70,
-		ClearedAltitude: 7000,
-		InitialSpeed:    0,
-		Destinations: []string{
-			"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-		},
-	})
-
-	return ss
+	return
 }
