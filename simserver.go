@@ -402,6 +402,7 @@ func (ss *SimServer) InitiateTrack(callsign string) error {
 	} else {
 		ac.AC.TrackingController = ss.callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
+		eventStream.Post(&InitiatedTrackEvent{ac: ac.AC})
 		return nil
 	}
 }
@@ -414,6 +415,7 @@ func (ss *SimServer) DropTrack(callsign string) error {
 	} else {
 		ac.AC.TrackingController = ""
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
+		eventStream.Post(&DroppedTrackEvent{ac: ac.AC})
 		return nil
 	}
 }
@@ -428,6 +430,7 @@ func (ss *SimServer) Handoff(callsign string, controller string) error {
 	} else {
 		ac.AC.OutboundHandoffController = ctrl.Callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
+		eventStream.Post(&OfferedHandoffEvent{ac: ac.AC})
 		acceptDelay := 2 + rand.Intn(10)
 		ss.handoffs[callsign] = ss.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 		return nil

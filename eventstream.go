@@ -191,6 +191,22 @@ func (e *RemovedAircraftEvent) String() string {
 	return "RemovedAircraftEvent: " + e.ac.Callsign
 }
 
+type InitiatedTrackEvent struct {
+	ac *Aircraft
+}
+
+func (e *InitiatedTrackEvent) String() string {
+	return "InitiatedTrackEvent: " + e.ac.Callsign
+}
+
+type DroppedTrackEvent struct {
+	ac *Aircraft
+}
+
+func (e *DroppedTrackEvent) String() string {
+	return "DroppedTrackEvent: " + e.ac.Callsign
+}
+
 type AddedControllerEvent struct {
 	Controller *Controller
 }
