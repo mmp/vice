@@ -1318,6 +1318,10 @@ type FlightStripPane struct {
 
 	AutoAddDepartures         bool
 	AutoAddArrivals           bool
+	AutoAddTracked            bool
+	AutoAddAcceptedHandoffs   bool
+	AutoRemoveDropped         bool
+	AutoRemoveHandoffs        bool
 	AddPushed                 bool
 	CollectDeparturesArrivals bool
 
@@ -1351,6 +1355,10 @@ func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
 		font:                      fsp.font,
 		AutoAddDepartures:         fsp.AutoAddDepartures,
 		AutoAddArrivals:           fsp.AutoAddArrivals,
+		AutoAddTracked:            fsp.AutoAddTracked,
+		AutoAddAcceptedHandoffs:   fsp.AutoAddAcceptedHandoffs,
+		AutoRemoveDropped:         fsp.AutoRemoveDropped,
+		AutoRemoveHandoffs:        fsp.AutoRemoveHandoffs,
 		AddPushed:                 fsp.AddPushed,
 		CollectDeparturesArrivals: fsp.CollectDeparturesArrivals,
 		Airports:                  DuplicateMap(fsp.Airports),
@@ -1410,13 +1418,16 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 		if ac.FlightPlan == nil {
 			return
 		}
-		if fsp.AutoAddDepartures && fsp.isDeparture(ac) {
-			fsp.strips = append(fsp.strips, callsign)
-			fsp.addedAircraft[callsign] = nil
-		} else if fsp.AutoAddArrivals && fsp.isArrival(ac) {
-			fsp.strips = append(fsp.strips, callsign)
-			fsp.addedAircraft[callsign] = nil
-		}
+
+		fsp.strips = append(fsp.strips, callsign)
+		fsp.addedAircraft[callsign] = nil
+	}
+
+	remove := func(ac *Aircraft) {
+		// Thus, if we later see the same callsign from someone else, we'll
+		// treat them as new.
+		delete(fsp.addedAircraft, ac.Callsign)
+		fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != ac.Callsign })
 	}
 
 	for _, event := range es.Get(fsp.eventsId) {
@@ -1425,15 +1436,36 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			if Find(fsp.strips, v.callsign) == -1 {
 				fsp.strips = append(fsp.strips, v.callsign)
 			}
+
 		case *AddedAircraftEvent:
-			possiblyAdd(v.ac)
+			if (fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac)) {
+				possiblyAdd(v.ac)
+			}
+
 		case *ModifiedAircraftEvent:
-			possiblyAdd(v.ac)
+			if (fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac)) {
+				possiblyAdd(v.ac)
+			}
+
+		case *InitiatedTrackEvent:
+			if fsp.AutoAddTracked && v.ac.TrackingController == server.Callsign() {
+				possiblyAdd(v.ac)
+			}
+
+		case *DroppedTrackEvent:
+			if fsp.AutoRemoveDropped {
+				remove(v.ac)
+			}
+
+		case *AcceptedHandoffEvent:
+			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == server.Callsign() {
+				possiblyAdd(v.ac)
+			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != server.Callsign() {
+				remove(v.ac)
+			}
+
 		case *RemovedAircraftEvent:
-			// Thus, if we later see the same callsign from someone else, we'll
-			// treat them as new.
-			delete(fsp.addedAircraft, v.ac.Callsign)
-			fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != v.ac.Callsign })
+			remove(v.ac)
 		}
 	}
 
@@ -1467,6 +1499,11 @@ func (fsp *FlightStripPane) DrawUI() {
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
+	imgui.Checkbox("Automatically add when track is initiated", &fsp.AutoAddTracked)
+	imgui.Checkbox("Automatically add handoffs", &fsp.AutoAddAcceptedHandoffs)
+	imgui.Checkbox("Automatically remove dropped tracks", &fsp.AutoRemoveDropped)
+	imgui.Checkbox("Automatically remove accepted handoffs", &fsp.AutoRemoveHandoffs)
+
 	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
 
 	if newFont, changed := DrawFontPicker(&fsp.FontIdentifier, "Font"); changed {
