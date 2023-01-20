@@ -408,7 +408,8 @@ func (v *VATSIMServer) InitiateTrack(callsign string) error {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.TrackingController = v.callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac}) // FIXME: redundant; need to review consumers
+		eventStream.Post(&InitiatedTrackEvent{ac: ac})
 		return v.controlDelegate.InitiateTrack(callsign)
 	}
 }
@@ -424,7 +425,8 @@ func (v *VATSIMServer) DropTrack(callsign string) error {
 		return ErrNotTrackedByMe
 	} else {
 		ac.TrackingController = ""
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac}) // FIXME: redundant, as above
+		eventStream.Post(&DroppedTrackEvent{ac: ac})
 		return v.controlDelegate.DropTrack(callsign)
 	}
 }
