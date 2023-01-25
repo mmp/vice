@@ -1,29 +1,8 @@
 // simserver.go
+// Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
 
 package main
-
-/*
-TODO:
-
-- direct after left/right turns borky
-- directs sometimes turning around hte long way???
-
-- scenarios:
-  LGA: multiple runways, better departure flows
-  FRG: multiple runways, better departure flows
-  ISP: multiple runways, better departure flows
-
-- LGA handoffs not showing in flight strip bay
-
-- config scenarios via json files (directory of them?)
-
-- wind vector: groundspeed = TAS+wind
-
-- review: make sure things like *T and MIN distance estimates just use track and not reported airspeed...
-
-- actually make sure that GS is what is reported in datablocks
-
-*/
 
 import (
 	_ "embed"
@@ -101,19 +80,41 @@ var configPositions map[string]Point2LL = map[string]Point2LL{
 	"_JFK_13R": Point2LL{parseLatLong("W073.49.00.188"), parseLatLong("N040.38.53.537")},
 	"_JFK_13L": Point2LL{parseLatLong("W073.47.24.277"), parseLatLong("N040.39.26.976")},
 
-	"_KFRG_0":  Point2LL{parseLatLong("W073.24.56.035"), parseLatLong("N040.45.12.277")},
-	"_KFRG_0a": Point2LL{parseLatLong("W073.25.03.149"), parseLatLong("N040.46.18.469")},
-	"_KFRG_1":  Point2LL{parseLatLong("W073.23.27.925"), parseLatLong("N040.42.51.432")},
-	"_KFRG_1a": Point2LL{parseLatLong("W073.22.33.158"), parseLatLong("N040.42.12.417")},
-	"_KFRG_2":  Point2LL{parseLatLong("W073.24.46.395"), parseLatLong("N040.42.15.026")},
-	"_KFRG_2a": Point2LL{parseLatLong("W073.24.34.584"), parseLatLong("N040.39.58.466")},
-	"_KFRG_3":  Point2LL{parseLatLong("W073.26.23.706"), parseLatLong("N040.44.49.233")},
-	"_KFRG_3a": Point2LL{parseLatLong("W073.27.58.683"), parseLatLong("N040.45.56.716")},
+	"_LGA_13":  Point2LL{parseLatLong("W073.52.42.359"), parseLatLong("N040.46.56.029")},
+	"_LGA_13a": Point2LL{parseLatLong("W073.55.40.914"), parseLatLong("N040.48.06.479")},
+	"_LGA_31":  Point2LL{parseLatLong("W073.51.25.949"), parseLatLong("N040.46.19.788")},
+	"_LGA_31a": Point2LL{parseLatLong("W073.49.52.922"), parseLatLong("N040.45.34.950")},
+	"_LGA_31b": Point2LL{parseLatLong("W073.46.42.200"), parseLatLong("N040.48.50.809")},
+	"_LGA_22":  Point2LL{parseLatLong("W073.52.14.811"), parseLatLong("N040.47.06.864")},
+	"_LGA_22a": Point2LL{parseLatLong("W073.49.30.483"), parseLatLong("N040.51.18.890")},
+	"_LGA_4":   Point2LL{parseLatLong("W073.53.02.574"), parseLatLong("N040.46.09.447")},
+	"_LGA_4a":  Point2LL{parseLatLong("W073.51.53.497"), parseLatLong("N040.44.56.662")},
+	"_LGA_4b":  Point2LL{parseLatLong("W073.47.11.533"), parseLatLong("N040.47.59.557")},
 
-	"_KISP_CLIMB": Point2LL{parseLatLong("W073.02.06.672"), parseLatLong("N040.49.24.523")},
-	"_KISP_HO":    Point2LL{parseLatLong("W073.11.01.019"), parseLatLong("N040.47.39.411")},
-	"_KLGA_CLIMB": Point2LL{parseLatLong("W073.46.46.402"), parseLatLong("N040.48.36.210")},
-	"_KLGA_HO":    Point2LL{parseLatLong("W073.45.41.940"), parseLatLong("N040.45.07.388")},
+	"_FRG_1":   Point2LL{parseLatLong("W073.24.51.229"), parseLatLong("N040.43.20.230")},
+	"_FRG_1a":  Point2LL{parseLatLong("W073.24.58.809"), parseLatLong("N040.46.52.637")},
+	"_FRG_19":  Point2LL{parseLatLong("W073.24.50.982"), parseLatLong("N040.44.10.396")},
+	"_FRG_19a": Point2LL{parseLatLong("W073.26.45.267"), parseLatLong("N040.41.03.313")},
+	"_FRG_14":  Point2LL{parseLatLong("W073.25.17.486"), parseLatLong("N040.44.02.898")},
+	"_FRG_14a": Point2LL{parseLatLong("W073.22.41.398"), parseLatLong("N040.38.37.868")},
+	"_FRG_32":  Point2LL{parseLatLong("W073.24.13.848"), parseLatLong("N040.43.20.436")},
+	"_FRG_32a": Point2LL{parseLatLong("W073.27.08.421"), parseLatLong("N040.45.28.921")},
+
+	"_ISP_6":    Point2LL{parseLatLong("W073.06.44.022"), parseLatLong("N040.47.18.743")},
+	"_ISP_6a":   Point2LL{parseLatLong("W073.02.11.698"), parseLatLong("N040.50.43.281")},
+	"_ISP_6b":   Point2LL{parseLatLong("W073.09.10.827"), parseLatLong("N040.50.28.573")},
+	"_ISP_24":   Point2LL{parseLatLong("W073.05.39.202"), parseLatLong("N040.48.06.643")},
+	"_ISP_24a":  Point2LL{parseLatLong("W073.08.58.879"), parseLatLong("N040.45.56.414")},
+	"_ISP_24b":  Point2LL{parseLatLong("W073.06.08.371"), parseLatLong("N040.47.41.032")},
+	"_ISP_24c":  Point2LL{parseLatLong("W073.07.30.466"), parseLatLong("N040.48.48.350")},
+	"_ISP_15R":  Point2LL{parseLatLong("W073.06.24.356"), parseLatLong("N040.48.05.462")},
+	"_ISP_15Ra": Point2LL{parseLatLong("W073.02.36.555"), parseLatLong("N040.45.33.934")},
+	"_ISP_15Rb": Point2LL{parseLatLong("W073.03.43.379"), parseLatLong("N040.49.18.755")},
+	"_ISP_15Rc": Point2LL{parseLatLong("W073.09.11.211"), parseLatLong("N040.48.34.288")},
+	"_ISP_33L":  Point2LL{parseLatLong("W073.05.41.702"), parseLatLong("N040.47.32.819")},
+	"_ISP_33La": Point2LL{parseLatLong("W073.08.43.141"), parseLatLong("N040.49.52.085")},
+	"_ISP_33Lb": Point2LL{parseLatLong("W073.06.31.250"), parseLatLong("N040.49.21.515")},
+	"_ISP_33Lc": Point2LL{parseLatLong("W073.10.31.686"), parseLatLong("N040.48.20.019")},
 }
 
 type RunwayConfig struct {
@@ -136,12 +137,20 @@ type SimServerConnectionConfiguration struct {
 	numAircraft   int32
 	runwayConfigs map[string]*RunwayConfig // "KJFK/31L", etc
 	routes        []*Route
+	wind          struct {
+		dir   int32
+		speed int32
+		gust  int32
+	}
 }
 
 func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.numAircraft = 30
 	ssc.simRate = 1
 	ssc.runwayConfigs = make(map[string]*RunwayConfig)
+	ssc.wind.dir = 50
+	ssc.wind.speed = 10
+	ssc.wind.gust = 15
 
 	ssc.routes = GetJFKRoutes()
 	ssc.routes = append(ssc.routes, GetLGARoutes()...)
@@ -167,18 +176,23 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
 	imgui.SliderFloatV("Simulation rate", &ssc.simRate, 0.25, 10, "%.1f", 0)
 
+	imgui.SliderIntV("Wind heading", &ssc.wind.dir, 0, 360, "%d", 0)
+	imgui.SliderIntV("Wind speed", &ssc.wind.speed, 0, 50, "%d", 0)
+	imgui.SliderIntV("Wind gust", &ssc.wind.gust, 0, 50, "%d", 0)
+	ssc.wind.gust = max(ssc.wind.gust, ssc.wind.speed)
+
 	airports := make(map[string]interface{})
 	for _, route := range ssc.routes {
 		airports[route.DepartureAirport] = nil
 	}
 
-	anyRunwaysActive := false
 	for _, ap := range SortedMapKeys(airports) {
 		if !imgui.CollapsingHeader(ap) {
 			continue
 		}
 
-		imgui.Text("Runways:")
+		anyRunwaysActive := false
+
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{600, 0}, 0.) {
 			imgui.TableSetupColumn("Enabled")
@@ -196,7 +210,19 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 				imgui.PushID(rwy)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Checkbox("##enabled", &config.enabled)
+				if imgui.Checkbox("##enabled", &config.enabled) {
+					if config.enabled {
+						// enable all corresponding categories by default
+						for _, enabled := range config.categoryEnabled {
+							*enabled = true
+						}
+					} else {
+						// disable all corresponding configs
+						for _, enabled := range config.categoryEnabled {
+							*enabled = false
+						}
+					}
+				}
 				anyRunwaysActive = anyRunwaysActive || config.enabled
 				imgui.TableNextColumn()
 				imgui.Text(strings.TrimPrefix(rwy, ap+"/"))
@@ -208,41 +234,59 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 			}
 			imgui.EndTable()
 		}
-	}
 
-	if anyRunwaysActive {
-		imgui.Separator()
-		imgui.Text("Scenarios:")
-		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{600, 0}, 0.) {
-			imgui.TableSetupColumn("Enabled")
-			imgui.TableSetupColumn("Runway/Gate")
-			imgui.TableHeadersRow()
-			for _, rwy := range SortedMapKeys(ssc.runwayConfigs) {
-				conf := ssc.runwayConfigs[rwy]
-				if !conf.enabled {
-					continue
-				}
-				imgui.PushID(rwy)
-				for _, category := range SortedMapKeys(conf.categoryEnabled) {
-					imgui.PushID(category)
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Checkbox("##check", conf.categoryEnabled[category])
-					imgui.TableNextColumn()
-					imgui.Text(rwy + "/" + category)
+		if anyRunwaysActive {
+			imgui.Separator()
+			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{600, 0}, 0.) {
+				imgui.TableSetupColumn("Enabled")
+				imgui.TableSetupColumn("Runway/Gate")
+				imgui.TableHeadersRow()
+				for _, rwy := range SortedMapKeys(ssc.runwayConfigs) {
+					if !strings.HasPrefix(rwy, ap+"/") {
+						continue
+					}
+					conf := ssc.runwayConfigs[rwy]
+					if !conf.enabled {
+						continue
+					}
+
+					imgui.PushID(rwy)
+					for _, category := range SortedMapKeys(conf.categoryEnabled) {
+						imgui.PushID(category)
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Checkbox("##check", conf.categoryEnabled[category])
+						imgui.TableNextColumn()
+						imgui.Text(rwy + "/" + category)
+						imgui.PopID()
+					}
 					imgui.PopID()
 				}
-				imgui.PopID()
+				imgui.EndTable()
 			}
-			imgui.EndTable()
 		}
 	}
 
 	return false
 }
 
-func (*SimServerConnectionConfiguration) Valid() bool { return positionConfig.VatsimCallsign != "" }
+func (ssc *SimServerConnectionConfiguration) Valid() bool {
+	if positionConfig.VatsimCallsign == "" {
+		return false
+	}
+
+	// Make sure that at least one scenario is selected
+	for _, config := range ssc.runwayConfigs {
+		for _, enabled := range config.categoryEnabled {
+			if *enabled {
+				return true
+			}
+		}
+	}
+
+	return false
+}
 
 func (ssc *SimServerConnectionConfiguration) Connect() error {
 	server = NewSimServer(positionConfig.VatsimCallsign, *ssc)
@@ -306,7 +350,7 @@ type SSAircraft struct {
 	Position Point2LL
 	Heading  float32
 	Altitude float32
-	Airspeed float32 // IAS
+	IAS, GS  float32 // speeds...
 
 	AssignedAltitude int
 
@@ -314,11 +358,8 @@ type SSAircraft struct {
 	TurnDirection   *int
 }
 
-func (ac *SSAircraft) Groundspeed() float32 {
-	tas := ac.Airspeed * (1 + .02*ac.Altitude/1000)
-	// TODO wind
-	gs := tas
-	return gs
+func (ac *SSAircraft) TAS() float32 {
+	return ac.IAS * (1 + .02*ac.Altitude/1000)
 }
 
 type SimServer struct {
@@ -332,6 +373,12 @@ type SimServer struct {
 	simRate           float32
 	paused            bool
 	remainingLaunches int
+
+	wind struct {
+		dir   int
+		speed int
+		gust  int
+	}
 
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
@@ -391,6 +438,9 @@ func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimSer
 		remainingLaunches: int(ssc.numAircraft),
 		simRate:           ssc.simRate,
 	}
+	ss.wind.dir = int(ssc.wind.dir)
+	ss.wind.speed = int(ssc.wind.speed)
+	ss.wind.gust = int(ssc.wind.gust)
 
 	addController := func(cs string, loc string, freq float32) {
 		pos, _ := database.Locate(loc)
@@ -582,6 +632,9 @@ func (ss *SimServer) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, ra
 }
 
 func (ss *SimServer) Disconnect() {
+	for _, ac := range ss.aircraft {
+		eventStream.Post(&RemovedAircraftEvent{ac: ac.AC})
+	}
 }
 
 func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
@@ -689,7 +742,7 @@ func (ss *SimServer) GetUpdates() {
 			ac.AC.AddTrack(RadarTrack{
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
-				Groundspeed: int(ac.Groundspeed()),
+				Groundspeed: int(ac.GS),
 				Heading:     ac.Heading - database.MagneticVariation,
 				Time:        now,
 			})
@@ -722,13 +775,14 @@ func (ss *SimServer) updateSim() {
 		if ac.Altitude < 10000 {
 			targetSpeed = min(targetSpeed, 250)
 		}
-		if ac.Airspeed < float32(targetSpeed) {
+		if ac.IAS < float32(targetSpeed) {
 			accel := ac.SimAC.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
-			ac.Airspeed = min(float32(targetSpeed), ac.Airspeed+accel)
+			ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
 		}
 
-		// Don't climb if it isn't going fast enough to fly
-		if ac.Airspeed >= 1.1*float32(ac.SimAC.Speed.Min) {
+		// Don't climb unless it's going fast enough to be airborne
+		airborne := ac.IAS >= 1.1*float32(ac.SimAC.Speed.Min)
+		if airborne {
 			if ac.Altitude < float32(ac.AssignedAltitude) {
 				climb := ac.SimAC.Rate.Climb
 				if climb >= 2500 && ac.Altitude > 5000 {
@@ -814,9 +868,22 @@ func (ss *SimServer) updateSim() {
 		}
 
 		// Update position given current heading
+		prev := ac.Position
 		hdg := ac.Heading - database.MagneticVariation
 		v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-		ac.Position = nm2ll(add2f(ll2nm(ac.Position), scale2f(v, ac.Groundspeed()/3600)))
+		newPos := add2f(ll2nm(ac.Position), scale2f(v, ac.TAS()/3600))
+
+		// add wind...
+		if airborne {
+			windKts := float32(ss.wind.speed + rand.Intn(ss.wind.gust))
+			// wind.dir is where it's coming from, so +180 to get its vector
+			d := float32(ss.wind.dir + 180)
+			vWind := [2]float32{sin(radians(d)), cos(radians(d))}
+			newPos = add2f(newPos, scale2f(vWind, windKts/3600))
+		}
+
+		ac.Position = nm2ll(newPos)
+		ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 	}
 }
 
@@ -836,7 +903,7 @@ func (ss *SimServer) GetWindowTitle() string {
 	return "SimServer: " + ss.callsign
 }
 
-func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, speed int) {
+func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, ias int) {
 	acInfo, ok := AllSimAircraft[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
@@ -850,7 +917,7 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altA
 
 		Altitude:         float32(alt),
 		AssignedAltitude: altAssigned,
-		Airspeed:         float32(speed),
+		IAS:              float32(ias),
 	}
 
 	if _, ok := ss.aircraft[ssa.AC.Callsign]; ok {
@@ -1161,7 +1228,7 @@ var jfkEast = [][2]string{
 	[2]string{"BDR", "BDR"},
 }
 
-var jfkSouthWest = [][2]string{
+var jfkSouthwest = [][2]string{
 	[2]string{"DIXIE", "DIX"},
 	[2]string{"WHITE", "WHI"},
 	[2]string{"RBV", "RBV"},
@@ -1295,11 +1362,11 @@ func GetJFKRoutes() (routes []*Route) {
 		routes = append(routes, &r4L)
 	}
 
-	for _, exit := range jfkSouthWest {
+	for _, exit := range jfkSouthwest {
 		r := jetProto
 		r.Scratchpad = exit[1]
 		r.Destinations = []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"}
-		r.Category = "SouthWest"
+		r.Category = "Southwest"
 
 		// 31L
 		r31L := r
@@ -1371,70 +1438,70 @@ func GetJFKRoutes() (routes []*Route) {
 }
 
 func GetFRGRoutes() (routes []*Route) {
-	/*
-		proto := Route{
-			InitialAltitude:  70,
-			DepartureAirport: "KFRG",
-			ClearedAltitude:  5000,
-			Fleet: "default",
-			Airlines: []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+	proto := Route{
+		InitialAltitude:   70,
+		DepartureAirport:  "KFRG",
+		ClearedAltitude:   5000,
+		InitialController: "JFK_APP",
+		Fleet:             "default",
+		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+	}
+
+	runways := map[string]string{
+		"1":  "_FRG_1._FRG_19._FRG_1a.@.#013.",
+		"19": "_FRG_19._FRG_1._FRG_19a.@.#220.",
+		"14": "_FRG_14._FRG_32._FRG_14a.@.#220.",
+		"32": "_FRG_32._FRG_14._FRG_32a.@.#010.",
+	}
+
+	for rwy, way := range runways {
+		rproto := proto
+		rproto.DepartureRunway = rwy
+		rproto.Waypoints = way
+
+		for _, exit := range jfkWater {
+			r := rproto
+			r.Waypoints += exit[0]
+			r.Route = "REP1 " + exit[0]
+			r.Scratchpad = exit[1]
+			r.Category = "Water"
+			r.Destinations = []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"}
+
+			routes = append(routes, &r)
 		}
 
-		for _, ho := range []string{"_KFRG_0", "_KFRG_1", "_KFRG_2", "_KFRG_3"} {
-			for _, exit := range jfkWater {
-				r := proto
-					Waypoints:       "KFRG." + ho + ".@." + exit[0],
-					Route:           "REP1 " + exit[0],
-				Scratchpad:      exit[1],
-				Category: "Water",
-					Destinations: []string{
-						"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
-					},
-				})
-			}
-			for _, exit := range jfkEast {
-				ss.AddRoute("east", &Route{
-					Waypoints:       "KFRG." + ho + ".@." + exit[0],
-					Route:           "REP1 " + exit[0],
-					Scratchpad:      exit[1],
-					InitialAltitude: 70,
-					ClearedAltitude: 5000,
-					InitialSpeed:    0,
-					Destinations: []string{
-						"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR",
-					},
-				})
-			}
-			for _, exit := range jfkNorth {
-				ss.AddRoute("north", &Route{
-					Waypoints:       "KFRG." + ho + ".@." + exit[0],
-					Route:           "REP1 " + exit[0],
-					Scratchpad:      exit[1],
-					InitialAltitude: 70,
-					ClearedAltitude: 5000,
-					InitialSpeed:    0,
-					Destinations: []string{
-						"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-					},
-				})
-			}
-			for _, exit := range jfkSouthWest {
-				ss.AddRoute("sw", &Route{
-					Waypoints:       "KFRG." + ho + ".@." + ho + "a." + exit[0],
-					Route:           "REP1 " + exit[0],
-					Scratchpad:      exit[1],
-					InitialAltitude: 70,
-					ClearedAltitude: 5000,
-					InitialSpeed:    0,
-					Destinations: []string{
-						"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-					},
-				})
-			}
-		}
+		for _, exit := range jfkEast {
+			r := rproto
+			r.Waypoints += exit[0]
+			r.Route = "REP1 " + exit[0]
+			r.Scratchpad = exit[1]
+			r.Category = "East"
+			r.Destinations = []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"}
 
-		return ss
-	*/
+			routes = append(routes, &r)
+		}
+		for _, exit := range jfkNorth {
+			r := rproto
+			r.Waypoints += exit[0]
+			r.Route = "REP1 " + exit[0]
+			r.Scratchpad = exit[1]
+			r.Category = "North"
+			r.Destinations = []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"}
+
+			routes = append(routes, &r)
+		}
+		for _, exit := range jfkSouthwest {
+			r := rproto
+			r.Waypoints += exit[0]
+			r.Route = "REP1 " + exit[0]
+			r.Scratchpad = exit[1]
+			r.Category = "Southwest"
+			r.Destinations = []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"}
+
+			routes = append(routes, &r)
+		}
+	}
+
 	return
 }
 
@@ -1446,20 +1513,27 @@ func GetISPRoutes() (routes []*Route) {
 		Fleet:             "default",
 		InitialController: "ISP_APP",
 		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-		DepartureRunway:   "24",
-		Destinations: []string{
-			"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW",
-		},
+		Destinations:      []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"},
+	}
+
+	runways := map[string]string{
+		"6":   "_ISP_6._ISP_6a._ISP_6b.@.#270",
+		"24":  "_ISP_24._ISP_24a._ISP_24b._ISP_24c.@.#275",
+		"15R": "_ISP_15R._ISP_15Ra._ISP_15Rb._ISP_15Rc.@.#275",
+		"33L": "_ISP_33L._ISP_33La._ISP_33Lb._ISP_33Lc.@.#275",
 	}
 
 	for _, exit := range jfkNorth {
-		r := proto
-		r.Waypoints = "KISP._KISP_CLIMB._KISP_HO.@.#275." + exit[0]
-		r.Route = "LONGI7 " + exit[0]
-		r.Scratchpad = exit[1]
-		r.Category = "North"
+		for rwy, way := range runways {
+			r := proto
+			r.DepartureRunway = rwy
+			r.Waypoints = way + "." + exit[0]
+			r.Route = "LONGI7 " + exit[0]
+			r.Scratchpad = exit[1]
+			r.Category = "North"
 
-		routes = append(routes, &r)
+			routes = append(routes, &r)
+		}
 	}
 
 	return
@@ -1475,43 +1549,55 @@ func GetLGARoutes() (routes []*Route) {
 		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
 	}
 
-	dix := proto
-	dix.Waypoints = "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK.DIXIE"
-	dix.Route = "LGA7 DIXIE"
-	dix.Scratchpad = "DIX"
-	dix.ClearedAltitude = 6000
-	dix.Category = "Southwest"
-	dix.Destinations = []string{
-		"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+	runways := map[string]string{
+		"4":  "_LGA_4._LGA_22._LGA_22a.@.JFK",
+		"22": "_LGA_22._LGA_4._LGA_4a._LGA_4b.@.JFK",
+		"13": "_LGA_13._LGA_31._LGA_31a._LGA_31b.@.JFK",
+		"31": "_LGA_31._LGA_13._LGA_13a.@.JFK",
 	}
-	routes = append(routes, &dix)
 
-	for i, water := range []string{"SHIPP", "WAVEY", "BETTE"} {
-		sp := []string{"SHI", "WAV", "BET"}
-		r := proto
-		r.Category = "Water"
-		r.Waypoints = "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK." + water
-		r.Route = "LGA7 " + water
-		r.Scratchpad = sp[i]
-		r.ClearedAltitude = 8000
-		r.Destinations = []string{
-			"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
+	for rwy, wp := range runways {
+		rproto := proto
+		rproto.DepartureRunway = rwy
+		rproto.Waypoints = wp
+
+		dix := rproto
+		dix.Waypoints += ".#190.DIXIE"
+		dix.Route = "LGA7 DIXIE"
+		dix.Scratchpad = "DIX"
+		dix.ClearedAltitude = 6000
+		dix.Category = "Southwest"
+		dix.Destinations = []string{
+			"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
 		}
+		routes = append(routes, &dix)
 
-		routes = append(routes, &r)
-	}
+		white := rproto
+		white.Airlines = []string{"N"}
+		white.Fleet = "lightGA"
+		white.Waypoints += ".#190.WHITE"
+		white.Route = "LGA7 WHITE"
+		white.Category = "White (props)"
+		white.Scratchpad = "WHI"
+		white.ClearedAltitude = 7000
+		white.Destinations = []string{
+			"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+		}
+		routes = append(routes, &white)
 
-	white := proto
-	white.Airlines = []string{"N"}
-	white.Fleet = "lightGA"
-	white.Waypoints = "KLGA._KLGA_CLIMB._KLGA_HO.@.JFK.WHITE"
-	white.Route = "LGA7 WHITE"
-	white.Scratchpad = "WHI"
-	white.ClearedAltitude = 7000
-	white.Destinations = []string{
-		"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+		for _, water := range []string{"SHIPP", "WAVEY", "BETTE"} {
+			r := rproto
+			r.Waypoints += "." + water
+			r.Category = "Water"
+			r.Route = "LGA7 " + water
+			r.Scratchpad = water[:3]
+			r.ClearedAltitude = 8000
+			r.Destinations = []string{
+				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
+			}
+			routes = append(routes, &r)
+		}
 	}
-	routes = append(routes, &white)
 
 	return
 }
