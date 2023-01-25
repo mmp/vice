@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"sort"
 	"strconv"
@@ -683,6 +684,8 @@ var (
 		&TimerCommand{},
 		&ToDoCommand{},
 		&TrafficCommand{},
+
+		&StudyCommand{},
 
 		&ATCChatCommand{},
 		&PrivateMessageCommand{},
@@ -1495,6 +1498,149 @@ func (*TrafficCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []st
 	}
 
 	return StringConsoleEntry(str)
+}
+
+type StudyCommand struct{}
+
+func (*StudyCommand) Names() []string                    { return []string{"study"} }
+func (*StudyCommand) Usage() string                      { return "" }
+func (*StudyCommand) TakesAircraft() bool                { return false }
+func (*StudyCommand) TakesController() bool              { return false }
+func (*StudyCommand) AdditionalArgs() (min int, max int) { return 0, 0 }
+func (*StudyCommand) Help() string {
+	return "Chooses a random nearby VOR/fix/airport, prints its name, then shows its location a few seconds later"
+}
+func (*StudyCommand) Run(cmd string, ac *Aircraft, ctrl *Controller, args []string, cli *CLIPane) []*ConsoleEntry {
+	var prompt string
+	var location Point2LL
+	switch rand.Intn(3) {
+	case 0:
+		// VOR
+		close := FilterMap(database.VORs, func(name string, p Point2LL) bool {
+			return nmdistance2ll(p, positionConfig.primaryRadarCenterLocation) < 50
+		})
+		closeVORNames, _ := FlattenMap(close)
+		choice := closeVORNames[rand.Intn(len(closeVORNames))]
+		navaid, ok := database.FAA.navaids[choice]
+		if !ok {
+			lg.Errorf("%s: no such navaid?!", choice)
+			return nil
+		}
+		prompt = navaid.Name + " VOR"
+		location = navaid.Location
+
+	case 1:
+		// Airport
+		closeAirportIds := []string{
+			"KILG",
+			"KTTN",
+			"KPNE",
+			"17N",
+			"3NJ6",
+			"3NJ6",
+			"58M",
+			"7N7",
+			"9N1",
+			"KCKZ",
+			"KDYL",
+			"KEVY",
+			"KLOM",
+			"KMQS",
+			"N10",
+			"N47",
+			"N57",
+			"NJ74",
+			"KOQN",
+			"KPTW",
+			"KUKT",
+		}
+		choice := closeAirportIds[rand.Intn(len(closeAirportIds))]
+		if ap, ok := database.FAA.airports[choice]; !ok {
+			lg.Errorf("%s: airport not found", choice)
+			return nil
+		} else {
+			location = ap.Location
+			prompt = stopShouting(ap.Name) + " Airport (" + choice + ")"
+		}
+
+	case 2:
+		// FIX
+		closeFixNames := []string{
+			"ANMAR",
+			"ASOCI",
+			"BEELZ",
+			"BOJID",
+			"BRAND",
+			"BRIGS",
+			"BUNTS",
+			"BWINE",
+			"CANNY",
+			"CHEAZ",
+			"COWAD",
+			"DUCVA",
+			"ENZEW",
+			"ESKOE",
+			"ESSSO",
+			"EXPRS",
+			"EYRIE",
+			"FERUS",
+			"FOSOM",
+			"HADNI",
+			"HARLU",
+			"HEKMN",
+			"HIFAL",
+			"HOLEY",
+			"HYILL",
+			"IROKT",
+			"JAKIE",
+			"JALTO",
+			"JEPUG",
+			"JIIMS",
+			"KELEE",
+			"KORRY",
+			"KYILL",
+			"MAZIE",
+			"MENGE",
+			"MRTIN",
+			"NUGGY",
+			"ODESA",
+			"PAATS",
+			"PSOUT",
+			"RAADS",
+			"REGLE",
+			"RLUKS",
+			"RROLL",
+			"RUUTH",
+			"SCOOL",
+			"SLATT",
+			"SNEDE",
+			"SPUDS",
+			"STAYK",
+			"TEBEE",
+			"TLUKS",
+			"TRAGG",
+			"WACKI",
+			"WHEYY",
+			"WNSTN",
+			"WOJIK",
+		}
+		choice := closeFixNames[rand.Intn(len(closeFixNames))]
+		fix, ok := database.fixes[choice]
+		if !ok {
+			lg.Errorf("%s: no such fix?!", choice)
+			return nil
+		}
+		prompt = choice
+		location = fix
+	}
+
+	go func() {
+		time.Sleep(4 * time.Second)
+		positionConfig.highlightedLocation = location
+		positionConfig.highlightedLocationEndTime = time.Now().Add(3 * time.Second)
+	}()
+
+	return StringConsoleEntry(prompt)
 }
 
 type TimerCommand struct{}
