@@ -133,6 +133,7 @@ func NewRunwayConfig() *RunwayConfig {
 }
 
 type SimServerConnectionConfiguration struct {
+	callsign      string
 	simRate       float32
 	numAircraft   int32
 	runwayConfigs map[string]*RunwayConfig // "KJFK/31L", etc
@@ -145,6 +146,7 @@ type SimServerConnectionConfiguration struct {
 }
 
 func (ssc *SimServerConnectionConfiguration) Initialize() {
+	ssc.callsign = "JFK_DEP"
 	ssc.numAircraft = 30
 	ssc.simRate = 1
 	ssc.runwayConfigs = make(map[string]*RunwayConfig)
@@ -171,8 +173,7 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 }
 
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
-	imgui.InputText("Callsign", &positionConfig.VatsimCallsign)
-
+	imgui.InputText("Callsign", &ssc.callsign)
 	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
 	imgui.SliderFloatV("Simulation rate", &ssc.simRate, 0.25, 10, "%.1f", 0)
 
@@ -272,10 +273,6 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 }
 
 func (ssc *SimServerConnectionConfiguration) Valid() bool {
-	if positionConfig.VatsimCallsign == "" {
-		return false
-	}
-
 	// Make sure that at least one scenario is selected
 	for _, config := range ssc.runwayConfigs {
 		for _, enabled := range config.categoryEnabled {
@@ -289,7 +286,7 @@ func (ssc *SimServerConnectionConfiguration) Valid() bool {
 }
 
 func (ssc *SimServerConnectionConfiguration) Connect() error {
-	server = NewSimServer(positionConfig.VatsimCallsign, *ssc)
+	server = NewSimServer(*ssc)
 	return nil
 }
 
@@ -386,7 +383,7 @@ type SimServer struct {
 	spawners []*RunwaySpawner
 }
 
-func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimServer {
+func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	rand.Seed(time.Now().UnixNano())
 
 	var acStruct struct {
@@ -430,7 +427,7 @@ func NewSimServer(callsign string, ssc SimServerConnectionConfiguration) *SimSer
 	}
 
 	ss := &SimServer{
-		callsign:          callsign,
+		callsign:          ssc.callsign,
 		aircraft:          make(map[string]*SSAircraft),
 		handoffs:          make(map[string]time.Time),
 		controllers:       make(map[string]*Controller),

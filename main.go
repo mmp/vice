@@ -31,15 +31,14 @@ var (
 	// Note that in some cases they are passed down from main (e.g.,
 	// platform); this is plumbing in preparation for possibly reducing the
 	// number of these in the future.
-	globalConfig   *GlobalConfig
-	positionConfig *PositionConfig
-	platform       Platform
-	renderer       Renderer
-	stats          Stats
-	database       *StaticDatabase
-	server         ATCServer
-	eventStream    *EventStream
-	lg             *Logger
+	globalConfig *GlobalConfig
+	platform     Platform
+	renderer     Renderer
+	stats        Stats
+	database     *StaticDatabase
+	server       ATCServer
+	eventStream  *EventStream
+	lg           *Logger
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -111,12 +110,10 @@ func main() {
 
 	LoadOrMakeDefaultConfig()
 
-	// Avoid a flurry of sounds at the start, especially when we're
-	// replaying a trace with a time offset.
-	globalConfig.AudioSettings.MuteFor(3 * time.Second)
-
 	dbChan := make(chan *StaticDatabase)
-	go InitializeStaticDatabase(dbChan, globalConfig.SectorFile, globalConfig.PositionFile)
+	SectorFile := "/Users/mmp/vatsim/sectorfiles/ZNY_Combined_VRC.sct2"
+	PositionFile := "/Users/mmp/go/src/github.com/mmp/vatce/resources/ZNY.pof"
+	go InitializeStaticDatabase(dbChan, SectorFile, PositionFile)
 
 	if true {
 		// Multisampling on Retina displays seems to hit a performance
@@ -149,11 +146,9 @@ func main() {
 
 	wmInit()
 
-	// We need to hold off on making the config active until after Platform
-	// creation so we can set the window title...
-	globalConfig.MakeConfigActive(globalConfig.ActivePosition)
-
 	uiInit(renderer)
+
+	globalConfig.Activate()
 
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop
@@ -178,10 +173,8 @@ func main() {
 
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
-		// to the window panes and the active positionConfig.
-		positionConfig.SendUpdates()
+		// to the window panes.
 		server.GetUpdates()
-		positionConfig.Update()
 		audioProcessEvents(eventStream)
 
 		platform.NewFrame()
@@ -192,7 +185,7 @@ func main() {
 		timeMarker(&stats.drawPanes)
 
 		// Draw the user interface
-		drawUI(positionConfig.GetColorScheme(), platform)
+		drawUI(globalConfig.GetColorScheme(), platform)
 		timeMarker(&stats.drawImgui)
 
 		// Wait for vsync
@@ -229,7 +222,7 @@ func main() {
 				globalConfig.InitialWindowPosition = platform.WindowPosition()
 
 				// Do this while we're still running the event loop.
-				globalConfig.PromptToSaveIfChanged(renderer, platform)
+				globalConfig.SaveIfChanged(renderer, platform)
 			} else if len(ui.activeModalDialogs) == 0 {
 				// good to go
 				break

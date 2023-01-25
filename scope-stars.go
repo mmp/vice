@@ -46,8 +46,6 @@ const NumSTARSRadarSites = 16
 const NumSTARSMaps = 28
 
 type STARSPane struct {
-	ScopeName string
-
 	currentPreferenceSet  STARSPreferenceSet
 	SelectedPreferenceSet int
 	PreferenceSets        []STARSPreferenceSet
@@ -628,56 +626,16 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 // STARSPane proper
 
 // Takes aircraft position in window coordinates
-func NewSTARSPane(n string) *STARSPane {
+func NewSTARSPane() *STARSPane {
 	uiFont := GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 12})
 	return &STARSPane{
-		ScopeName:             n,
 		Facility:              MakeDefaultFacility(),
 		SelectedPreferenceSet: -1,
 		UIFontIdentifier:      uiFont.id,
 	}
 }
 
-func (sp *STARSPane) Duplicate(nameAsCopy bool) Pane {
-	dupe := &STARSPane{}
-	*dupe = *sp // get the easy stuff
-	if nameAsCopy {
-		dupe.ScopeName += " Copy"
-	}
-
-	// Facility
-	dupe.Facility.Airports = DuplicateSlice(sp.Facility.Airports)
-	for i := range sp.Facility.Maps {
-		dupe.Facility.Maps[i].Draw = sp.Facility.Maps[i].Draw.Duplicate()
-	}
-
-	dupe.PreferenceSets = make([]STARSPreferenceSet, len(sp.PreferenceSets))
-	for i := range sp.PreferenceSets {
-		dupe.PreferenceSets[i] = sp.PreferenceSets[i].Duplicate()
-	}
-
-	// Internal state
-	dupe.aircraft = make(map[*Aircraft]*STARSAircraftState)
-	for ac, tracked := range sp.aircraft {
-		dupe.aircraft[ac] = &STARSAircraftState{}
-		*dupe.aircraft[ac] = *tracked
-	}
-
-	dupe.ghostAircraft = make(map[*Aircraft]*Aircraft)
-	for ac, gh := range sp.ghostAircraft {
-		ghost := *gh // make a copy
-		dupe.ghostAircraft[ac] = &ghost
-	}
-
-	dupe.havePlayedSPCAlertSound = DuplicateMap(sp.havePlayedSPCAlertSound)
-
-	dupe.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
-	dupe.queryUnassociated = NewTransientMap[*Aircraft, interface{}]()
-
-	dupe.eventsId = eventStream.Subscribe()
-
-	return dupe
-}
+func (sp *STARSPane) Name() string { return "STARS" }
 
 func (sp *STARSPane) Activate() {
 	if sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets) {
@@ -735,17 +693,13 @@ func (sp *STARSPane) Deactivate() {
 	sp.weatherRadar.Deactivate()
 }
 
-func (sp *STARSPane) Name() string { return sp.ScopeName }
-
 func (sp *STARSPane) DrawUI() {
-	imgui.InputText("Name", &sp.ScopeName)
-
 	if newFont, changed := DrawFontPicker(&sp.LabelFontIdentifier, "Label font"); changed {
 		sp.labelFont = newFont
 	}
 
 	errorExclamationTriangle := func() {
-		color := positionConfig.GetColorScheme().TextError
+		color := globalConfig.GetColorScheme().TextError
 		imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
 		imgui.Text(FontAwesomeIconExclamationTriangle)
 		imgui.PopStyleColor()
@@ -3677,8 +3631,6 @@ func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
 	if _, ok := sp.pointedOutAircraft.Get(ac); ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
-	} else if ac == positionConfig.selectedAircraft {
-		return br.ScaleRGB(STARSSelectedAircraftColor)
 	} else if ac.TrackingController == server.Callsign() {
 		// white if are tracking
 		return br.ScaleRGB(STARSTrackedAircraftColor)

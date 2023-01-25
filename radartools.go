@@ -471,7 +471,7 @@ func (c *CRDAConfig) DrawUI() bool {
 	imgui.InputTextV("Airport", &c.Airport, flags, nil)
 	if runways, ok := database.runways[c.Airport]; !ok {
 		if c.Airport != "" {
-			color := positionConfig.GetColorScheme().TextError
+			color := globalConfig.GetColorScheme().TextError
 			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
 			imgui.Text("Airport unknown!")
 			imgui.PopStyleColor()
@@ -1066,7 +1066,7 @@ func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransfor
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
 func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	remaining := time.Until(positionConfig.highlightedLocationEndTime)
+	remaining := time.Until(globalConfig.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
@@ -1078,7 +1078,7 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *Comm
 		color = lerpRGB(x, ctx.cs.Background, color)
 	}
 
-	p := transforms.WindowFromLatLongP(positionConfig.highlightedLocation)
+	p := transforms.WindowFromLatLongP(globalConfig.highlightedLocation)
 	radius := float32(10) // 10 pixel radius
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)

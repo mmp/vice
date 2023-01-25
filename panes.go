@@ -18,8 +18,6 @@ import (
 type Pane interface {
 	Name() string
 
-	Duplicate(nameAsCopy bool) Pane
-
 	Activate()
 	Deactivate()
 
@@ -251,8 +249,7 @@ func (ep *EmptyPane) Activate()                  {}
 func (ep *EmptyPane) Deactivate()                {}
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 
-func (ep *EmptyPane) Duplicate(nameAsCopy bool) Pane { return &EmptyPane{} }
-func (ep *EmptyPane) Name() string                   { return "(Empty)" }
+func (ep *EmptyPane) Name() string { return "(Empty)" }
 
 func (ep *EmptyPane) Draw(ctx *PaneContext, cb *CommandBuffer) {}
 
@@ -284,6 +281,8 @@ type FlightStripPane struct {
 
 	eventsId  EventSubscriberId
 	scrollbar *ScrollBar
+
+	selectedAircraft *Aircraft
 }
 
 func NewFlightStripPane() *FlightStripPane {
@@ -293,28 +292,6 @@ func NewFlightStripPane() *FlightStripPane {
 		Airports:                  make(map[string]interface{}),
 		selectedStrip:             -1,
 		selectedAnnotation:        -1,
-	}
-}
-
-func (fsp *FlightStripPane) Duplicate(nameAsCopy bool) Pane {
-	return &FlightStripPane{
-		FontIdentifier:            fsp.FontIdentifier,
-		font:                      fsp.font,
-		AutoAddDepartures:         fsp.AutoAddDepartures,
-		AutoAddArrivals:           fsp.AutoAddArrivals,
-		AutoAddTracked:            fsp.AutoAddTracked,
-		AutoAddAcceptedHandoffs:   fsp.AutoAddAcceptedHandoffs,
-		AutoRemoveDropped:         fsp.AutoRemoveDropped,
-		AutoRemoveHandoffs:        fsp.AutoRemoveHandoffs,
-		AddPushed:                 fsp.AddPushed,
-		CollectDeparturesArrivals: fsp.CollectDeparturesArrivals,
-		Airports:                  DuplicateMap(fsp.Airports),
-		strips:                    DuplicateSlice(fsp.strips),
-		addedAircraft:             DuplicateMap(fsp.addedAircraft),
-		selectedStrip:             -1,
-		selectedAnnotation:        -1,
-		eventsId:                  eventStream.Subscribe(),
-		scrollbar:                 NewScrollBar(4, true),
 	}
 }
 
@@ -526,9 +503,6 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		fp := ac.FlightPlan
 
 		style := TextStyle{Font: fsp.font, Color: ctx.cs.Text}
-		if positionConfig.selectedAircraft != nil && positionConfig.selectedAircraft.Callsign == callsign {
-			style.Color = ctx.cs.TextHighlight
-		}
 
 		// Draw background quad for this flight strip
 		qb := GetColoredTrianglesDrawBuilder()
@@ -680,7 +654,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				} else {
 					// select the aircraft
 					callsign := fsp.strips[stripIndex]
-					positionConfig.selectedAircraft = server.GetAircraft(callsign)
+					fsp.selectedAircraft = server.GetAircraft(callsign)
 				}
 			}
 		}
@@ -698,12 +672,12 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[MouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
-		if positionConfig.selectedAircraft == nil {
+		if fsp.selectedAircraft == nil {
 			lg.Printf("No selected aircraft for flight strip drag?!")
 		} else {
 			// Figure out the index for the selected aircraft.
 			selectedIndex := func() int {
-				callsign := positionConfig.selectedAircraft.Callsign
+				callsign := fsp.selectedAircraft.Callsign
 				for i, fs := range fsp.strips {
 					if fs == callsign {
 						return i

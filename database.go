@@ -647,18 +647,6 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 		db.sectorFileColors[color.Name] = RGB{R: color.R, G: color.G, B: color.B}
 	}
 
-	// Various post-load tidying.
-	for _, scheme := range globalConfig.ColorSchemes {
-		// Add any colors in the sector file that aren't in scopes'
-		// color schemes.
-		for name, color := range db.sectorFileColors {
-			if _, ok := scheme.DefinedColors[name]; !ok {
-				c := color
-				scheme.DefinedColors[name] = &c
-			}
-		}
-	}
-
 	lg.Printf("%s: finished loading sector file", filename)
 
 	return nil

@@ -9,7 +9,6 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"path"
@@ -23,36 +22,16 @@ type GlobalConfig struct {
 	SectorFile   string
 	PositionFile string
 
-	PositionConfigs       map[string]*PositionConfig
-	ActivePosition        string
-	ColorSchemes          map[string]*ColorScheme
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
-	AudioSettings         AudioSettings
 
-	aliases map[string]string
-}
+	AudioSettings AudioSettings
 
-type PositionConfig struct {
-	ColorSchemeName string
-	DisplayRoot     *DisplayNode
-
-	VatsimCallsign                string
-	PrimaryRadarCenter            string
-	primaryRadarCenterLocation    Point2LL
-	SecondaryRadarCenters         [3]string
-	secondaryRadarCentersLocation [3]Point2LL
-	RadarRange                    int32
-	primaryFrequency              Frequency // We don't save this in the config file
-	Frequencies                   map[string]Frequency
-
-	selectedAircraft *Aircraft
+	DisplayRoot *DisplayNode
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
-
-	eventsId EventSubscriberId
 }
 
 func configFilePath() string {
@@ -88,41 +67,7 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) MakeConfigActive(name string) {
-	if globalConfig.PositionConfigs == nil {
-		globalConfig.PositionConfigs = make(map[string]*PositionConfig)
-	}
-	if len(globalConfig.PositionConfigs) == 0 {
-		name = "Default"
-		globalConfig.PositionConfigs["Default"] = NewPositionConfig()
-	}
-
-	oldConfig := positionConfig
-
-	// NOTE: do not be clever and try to skip this work if
-	// ActivePosition==name already; this function used e.g. when the color
-	// scheme changes and we need to reset everything derived from that.
-	gc.ActivePosition = name
-	var ok bool
-	if positionConfig, ok = gc.PositionConfigs[name]; !ok {
-		lg.Errorf("%s: unknown position config!", name)
-		return
-	}
-
-	positionConfig.Activate()
-	if oldConfig != nil && oldConfig != positionConfig {
-		oldConfig.Deactivate()
-	}
-
-	wmActivateNewConfig(oldConfig, positionConfig)
-
-	cs := positionConfig.GetColorScheme()
-
-	uiUpdateColorScheme(cs)
-	database.SetColorScheme(cs)
-}
-
-func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platform) bool {
+func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
 	fn := configFilePath()
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
@@ -140,158 +85,68 @@ func (gc *GlobalConfig) PromptToSaveIfChanged(renderer Renderer, platform Platfo
 		return false
 	}
 
-	uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
-		title: "Save current configuration?",
-		query: "Configuration has changed since the last time it was saved to disk.\nSave current configuration?",
-		ok: func() {
-			err := globalConfig.Save()
-			if err != nil {
-				ShowErrorDialog("Unable to save configuration file: %v", err)
-			}
-		}}), false)
+	if err := globalConfig.Save(); err != nil {
+		ShowErrorDialog("Error saving configuration file: %v", err)
+	}
 
 	return true
 }
 
-func (pc *PositionConfig) Activate() {
-	if pc.Frequencies == nil {
-		pc.Frequencies = make(map[string]Frequency)
-	}
-	if pc.eventsId == InvalidEventSubscriberId {
-		pc.eventsId = eventStream.Subscribe()
-	}
-
-	pc.CheckRadarCenters()
-
-	pos, _ := database.Locate(pc.PrimaryRadarCenter)
-	pc.primaryRadarCenterLocation = pos
-	for i, ctr := range pc.SecondaryRadarCenters {
-		pos, _ := database.Locate(ctr)
-		pc.secondaryRadarCentersLocation[i] = pos
-	}
-}
-
-func (pc *PositionConfig) Deactivate() {
-	eventStream.Unsubscribe(pc.eventsId)
-	pc.eventsId = InvalidEventSubscriberId
-}
-
-func (pc *PositionConfig) SendUpdates() {
-	pc.CheckRadarCenters()
-
-	server.SetRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
-		int(pc.RadarRange))
-}
-
-func NewPositionConfig() *PositionConfig {
-	c := &PositionConfig{}
-	if database != nil && database.defaultAirport != "" {
-		c.PrimaryRadarCenter = database.defaultAirport
-	}
-	c.RadarRange = 20
-	c.Frequencies = make(map[string]Frequency)
-
-	// Give the user a semi-useful default configuration.
-	c.DisplayRoot = &DisplayNode{
-		SplitLine: SplitLine{Pos: 0.15, Axis: SplitAxisY},
-		Children: [2]*DisplayNode{
-			&DisplayNode{Pane: NewSTARSPane("Scope")},
-			&DisplayNode{Pane: NewFlightStripPane()},
-		},
-	}
-	c.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
-
-	c.ColorSchemeName = SortedMapKeys(builtinColorSchemes)[0]
-
-	return c
-}
-
-func (c *PositionConfig) GetColorScheme() *ColorScheme {
-	if cs, ok := builtinColorSchemes[c.ColorSchemeName]; ok {
-		return cs
-	} else if cs, ok := globalConfig.ColorSchemes[c.ColorSchemeName]; !ok {
-		lg.Printf("%s: color scheme unknown; returning default", c.ColorSchemeName)
-		c.ColorSchemeName = SortedMapKeys(builtinColorSchemes)[0]
-		return builtinColorSchemes[c.ColorSchemeName]
-	} else {
-		return cs
+func (c *GlobalConfig) GetColorScheme() *ColorScheme {
+	return &ColorScheme{
+		Text:                RGB{R: 0.85, G: 0.85, B: 0.85},
+		TextHighlight:       RGBFromHex(0xB2B338),
+		TextError:           RGBFromHex(0xE94242),
+		TextDisabled:        RGB{R: 0, G: 0.25, B: 0.01483053},
+		Background:          RGB{R: 0, G: 0, B: 0},
+		AltBackground:       RGB{R: 0.09322035, G: 0.09322035, B: 0.09322035},
+		UITitleBackground:   RGBFromHex(0x242435),
+		UIControl:           RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237},
+		UIControlBackground: RGB{R: 0.063559294, G: 0.063559294, B: 0.063559294},
+		UIControlSeparator:  RGB{R: 0, G: 0, B: 0},
+		UIControlHovered:    RGB{R: 0.44915253, G: 0.44915253, B: 0.44915253},
+		UIInputBackground:   RGB{R: 0.2881356, G: 0.2881356, B: 0.2881356},
+		UIControlActive:     RGB{R: 0.5677966, G: 0.56539065, B: 0.56539065},
+		Safe:                RGB{R: 0.13225771, G: 0.5635748, B: 0.8519856},
+		Caution:             RGBFromHex(0xB7B513),
+		Error:               RGBFromHex(0xE94242),
+		SelectedDatablock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
+		UntrackedDatablock:  RGBFromHex(0x8f92bc),
+		TrackedDatablock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
+		HandingOffDatablock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
+		GhostDatablock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
+		Track:               RGB{R: 0, G: 1, B: 0.084745646},
+		ArrivalStrip:        RGBFromHex(0x080724),
+		DepartureStrip:      RGBFromHex(0x150707),
+		Airport:             RGB{R: 0.46153843, G: 0.46153843, B: 0.46153843},
+		VOR:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
+		NDB:                 RGB{R: 0.44481605, G: 0.44481605, B: 0.44481605},
+		Fix:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
+		Runway:              RGB{R: 0.1864407, G: 0.3381213, B: 1},
+		Region:              RGB{R: 0.63983047, G: 0.63983047, B: 0.63983047},
+		SID:                 RGB{R: 0.29765886, G: 0.29765886, B: 0.29765886},
+		STAR:                RGB{R: 0.26835144, G: 0.29237288, B: 0.18335249},
+		Geo:                 RGB{R: 0.7923729, G: 0.7923729, B: 0.7923729},
+		ARTCC:               RGB{R: 0.7, G: 0.7, B: 0.7},
+		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
+		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
+		Compass:             RGB{R: 0.5270758, G: 0.5270758, B: 0.5270758},
+		RangeRing:           RGBFromHex(0x282b1b),
 	}
 }
-
-func (c *PositionConfig) CheckRadarCenters() {
-	// Only show error text in the main window if the radio settings window
-	// isn't open.
-	if ui.showRadarSettings || !server.Connected() {
-		return
-	}
-
-	if c.PrimaryRadarCenter == "" {
-		uiAddError("Primary radar center is unset. Set it via Settings/Radar...",
-			func() bool { return positionConfig != c || c.PrimaryRadarCenter != "" })
-	} else if c.primaryRadarCenterLocation.IsZero() {
-		msg := fmt.Sprintf("Primary radar center \"%s\" is invalid. Set it via Settings/Radar...", c.PrimaryRadarCenter)
-		ctr := c.PrimaryRadarCenter
-		uiAddError(msg, func() bool {
-			return positionConfig != c || c.PrimaryRadarCenter != ctr ||
-				!c.primaryRadarCenterLocation.IsZero()
-		})
-	}
-	for i, ctr := range c.SecondaryRadarCenters {
-		if ctr != "" && c.secondaryRadarCentersLocation[i].IsZero() {
-			ctr := ctr
-			i := i
-			uiAddError(fmt.Sprintf("Secondary radar center \"%s\" is invalid. Set it via Settings/Radar...", ctr),
-				func() bool {
-					return positionConfig != c || c.SecondaryRadarCenters[i] != ctr ||
-						!c.secondaryRadarCentersLocation[i].IsZero()
-				})
-		}
-	}
-}
-
-func (c *PositionConfig) DrawRadarUI() {
-	imgui.InputIntV("Radar range", &c.RadarRange, 5, 25, 0 /* flags */)
-	primaryNotOk := ""
-	var ok bool
-	if c.primaryRadarCenterLocation, ok = database.Locate(c.PrimaryRadarCenter); !ok {
-		primaryNotOk = FontAwesomeIconExclamationTriangle + " "
-	}
-	flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
-	imgui.InputTextV(primaryNotOk+"Primary center###PrimaryCenter", &c.PrimaryRadarCenter, flags, nil)
-
-	for i, name := range c.SecondaryRadarCenters {
-		notOk := ""
-		if c.secondaryRadarCentersLocation[i], ok = database.Locate(name); name != "" && !ok {
-			notOk = FontAwesomeIconExclamationTriangle + " "
-		}
-		imgui.InputTextV(fmt.Sprintf(notOk+"Secondary center #%d###SecondaryCenter-%d", i+1, i+1),
-			&c.SecondaryRadarCenters[i], flags, nil)
-	}
-}
-
-func (c *PositionConfig) Duplicate() *PositionConfig {
-	nc := &PositionConfig{}
-	*nc = *c
-	nc.DisplayRoot = c.DisplayRoot.Duplicate()
-	nc.Frequencies = DuplicateMap(c.Frequencies)
-
-	nc.eventsId = InvalidEventSubscriberId
-
-	return nc
-}
-
-var (
-	//go:embed resources/default-config.json
-	defaultConfig string
-)
 
 func LoadOrMakeDefaultConfig() {
 	fn := configFilePath()
 	lg.Printf("Loading config from: %s", fn)
 
+	globalConfig = &GlobalConfig{}
 	config, err := os.ReadFile(fn)
 	if err != nil {
-		config = []byte(defaultConfig)
+		globalConfig.InitialWindowSize[0] = 1920
+		globalConfig.InitialWindowSize[1] = 1080
+		globalConfig.InitialWindowPosition[0] = 100
+		globalConfig.InitialWindowPosition[1] = 100
+
 		if errors.Is(err, os.ErrNotExist) {
 			lg.Printf("%s: config file doesn't exist", fn)
 			_ = os.WriteFile(fn, config, 0o600)
@@ -300,23 +155,31 @@ func LoadOrMakeDefaultConfig() {
 			ShowErrorDialog("Unable to read config file: %v\nUsing default configuration.", err)
 			fn = "default.config"
 		}
-	}
+	} else {
+		r := bytes.NewReader(config)
+		d := json.NewDecoder(r)
 
-	r := bytes.NewReader(config)
-	d := json.NewDecoder(r)
-
-	globalConfig = &GlobalConfig{}
-	if err := d.Decode(globalConfig); err != nil {
-		ShowErrorDialog("Configuration file is corrupt: %v", err)
+		if err := d.Decode(globalConfig); err != nil {
+			ShowErrorDialog("Configuration file is corrupt: %v", err)
+		}
 	}
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (pc *PositionConfig) Update() {
-	for _, event := range eventStream.Get(pc.eventsId) {
-		if sel, ok := event.(*SelectedAircraftEvent); ok {
-			pc.selectedAircraft = sel.ac
+func (gc *GlobalConfig) Activate() {
+	if gc.DisplayRoot == nil {
+		gc.DisplayRoot = &DisplayNode{
+			SplitLine: SplitLine{
+				Pos:  0.85,
+				Axis: SplitAxisX,
+			},
+			Children: [2]*DisplayNode{
+				&DisplayNode{Pane: NewSTARSPane()},
+				&DisplayNode{Pane: NewFlightStripPane()},
+			},
 		}
 	}
+
+	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
 }
