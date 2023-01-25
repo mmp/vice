@@ -35,7 +35,6 @@ var (
 
 		showAboutDialog   bool
 		showRadarSettings bool
-		showFKeySettings  bool
 		showATISSettings  bool
 		showColorEditor   bool
 		showFilesEditor   bool
@@ -110,19 +109,6 @@ func uiInit(renderer Renderer) {
 				delete(ui.errorText, "SECTORFILE")
 				globalConfig.SectorFile = filename
 				database.SetColorScheme(positionConfig.GetColorScheme())
-
-				// This is probably the wrong place to do this, but it's
-				// convenient... Walk through the radar scopes and center
-				// any that have a (0,0) center according to the position
-				// file center. This fixes things up with the default scope
-				// on a first run.
-				positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
-					if rs, ok := p.(*RadarScopePane); ok {
-						if rs.Center[0] == 0 && rs.Center[1] == 0 {
-							rs.Center = database.defaultCenter
-						}
-					}
-				})
 			}
 		})
 	ui.openPositionFileDialog = NewFileSelectDialogBox("Open Position File...", []string{".pof"},
@@ -233,9 +219,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			}
 			if imgui.MenuItem("Radar...") {
 				ui.showRadarSettings = true
-			}
-			if imgui.MenuItem("Function Keys...") {
-				ui.showFKeySettings = true
 			}
 			if imgui.MenuItem("Controller ATIS...") {
 				ui.showATISSettings = true
@@ -357,54 +340,6 @@ func drawActiveSettingsWindows() {
 	if ui.showRadarSettings {
 		imgui.BeginV("Radar Settings", &ui.showRadarSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadarUI()
-		imgui.End()
-	}
-
-	if ui.showFKeySettings {
-		imgui.BeginV("Function Key Settings", &ui.showFKeySettings, imgui.WindowFlagsAlwaysAutoResize)
-
-		commands := SortedMapKeys(allFKeyCommands)
-
-		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
-		if imgui.BeginTableV("SpecialKeys", 4, flags, imgui.Vec2{}, 0.0) {
-			imgui.TableSetupColumn("Key")
-			imgui.TableSetupColumnV("Command", imgui.TableColumnFlagsWidthFixed, 250, 0)
-			imgui.TableSetupColumn("Key##Shift")
-			imgui.TableSetupColumnV("Command##Shift", imgui.TableColumnFlagsWidthFixed, 250, 0)
-
-			imgui.TableHeadersRow()
-			for i := 1; i <= 12; i++ {
-				imgui.TableNextRow()
-
-				key := fmt.Sprintf("F%d", i)
-				imgui.TableNextColumn()
-				imgui.Text(key)
-				imgui.TableNextColumn()
-				imgui.SetNextItemWidth(240)
-				if imgui.BeginComboV("##"+key, positionConfig.FKeyMappings[i], imgui.ComboFlagsHeightLarge) {
-					for _, cmd := range commands {
-						if imgui.SelectableV(cmd, cmd == positionConfig.FKeyMappings[i], 0, imgui.Vec2{}) {
-							positionConfig.FKeyMappings[i] = cmd
-						}
-					}
-					imgui.EndCombo()
-				}
-				imgui.TableNextColumn()
-				imgui.Text("Shift-" + key)
-				imgui.TableNextColumn()
-				imgui.SetNextItemWidth(240)
-				if imgui.BeginComboV("##Shift-"+key, positionConfig.ShiftFKeyMappings[i], imgui.ComboFlagsHeightLarge) {
-					for _, cmd := range commands {
-						if imgui.SelectableV(cmd, cmd == positionConfig.ShiftFKeyMappings[i], 0, imgui.Vec2{}) {
-							positionConfig.ShiftFKeyMappings[i] = cmd
-						}
-					}
-					imgui.EndCombo()
-				}
-			}
-
-			imgui.EndTable()
-		}
 		imgui.End()
 	}
 
@@ -691,17 +626,6 @@ func (m *ModalDialogBox) Draw() {
 
 		imgui.EndPopup()
 	}
-}
-
-type FlightRadarConnectionConfiguration struct{}
-
-func (*FlightRadarConnectionConfiguration) Initialize()  {}
-func (*FlightRadarConnectionConfiguration) DrawUI() bool { return false }
-func (*FlightRadarConnectionConfiguration) Valid() bool  { return true }
-
-func (*FlightRadarConnectionConfiguration) Connect() error {
-	server = NewFlightRadarServer()
-	return nil
 }
 
 type ConnectModalClient struct {
@@ -1599,9 +1523,6 @@ func uiDrawNewPaneSelector(label, preview string) (name string, pane Pane) {
 		if imgui.Selectable("Airport information") {
 			name, pane = "Airport information", NewAirportInfoPane()
 		}
-		if imgui.Selectable("Command-line interface") {
-			name, pane = "Command-line interface", NewCLIPane()
-		}
 		if imgui.Selectable("Empty") {
 			name, pane = "Empty", NewEmptyPane()
 		}
@@ -1622,9 +1543,6 @@ func uiDrawNewPaneSelector(label, preview string) (name string, pane Pane) {
 		}
 		if imgui.Selectable("Performance statistics") {
 			name, pane = "Performance statistics", NewPerformancePane()
-		}
-		if imgui.Selectable("Radar scope (generic)") {
-			name, pane = "Radar scope (Generic)", NewRadarScopePane("(Unnamed)")
 		}
 		if imgui.Selectable("Radar scope (STARS)") {
 			name, pane = "Radar scope (STARS)", NewSTARSPane("(Unnamed)")

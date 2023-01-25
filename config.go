@@ -14,7 +14,6 @@ import (
 	"io"
 	"os"
 	"path"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -405,44 +404,12 @@ func NewPositionConfig() *PositionConfig {
 	c.RadarRange = 20
 	c.Frequencies = make(map[string]Frequency)
 
-	// Default f-key bindings
-	// It's a little awkward here to have to do this to get the string
-	// associated with each one..
-	commandName := func(i any) string {
-		t := reflect.TypeOf(i)
-		for k, v := range allFKeyCommands {
-			if reflect.TypeOf(v) == t {
-				return k
-			}
-		}
-		lg.Errorf("%s: type not found in allFKeyCommands", t.Name())
-		return ""
-	}
-	c.FKeyMappings[1] = commandName(&PointOutFKeyCommand{})
-	c.FKeyMappings[2] = commandName(&AssignSquawkFKeyCommand{})
-	c.FKeyMappings[3] = commandName(&MultiTrackFKeyCommand{})
-	c.FKeyMappings[4] = commandName(&MultiDropTrackFKeyCommand{})
-	c.FKeyMappings[5] = commandName(&AssignTemporaryAltitudeFKeyCommand{})
-	c.FKeyMappings[6] = commandName(&AssignFinalAltitudeFKeyCommand{})
-	c.FKeyMappings[7] = commandName(&ScratchpadFKeyCommand{})
-	c.FKeyMappings[8] = commandName(&ContactMeFKeyCommand{})
-	c.FKeyMappings[9] = commandName(&SetVoiceCapabilityFKeyCommand{})
-	c.FKeyMappings[10] = commandName(&SetIFRFKeyCommand{})
-	c.ShiftFKeyMappings[10] = commandName(&SetVFRFKeyCommand{})
-	c.FKeyMappings[11] = commandName(&SetEquipmentSuffixFKeyCommand{})
-
 	// Give the user a semi-useful default configuration.
 	c.DisplayRoot = &DisplayNode{
 		SplitLine: SplitLine{Pos: 0.15, Axis: SplitAxisY},
 		Children: [2]*DisplayNode{
-			&DisplayNode{
-				SplitLine: SplitLine{Pos: 0.7, Axis: SplitAxisX},
-				Children: [2]*DisplayNode{
-					&DisplayNode{Pane: NewCLIPane()},
-					&DisplayNode{Pane: NewFlightPlanPane()},
-				},
-			},
-			&DisplayNode{Pane: NewRadarScopePane("Main Scope")},
+			&DisplayNode{Pane: NewSTARSPane("Scope")},
+			&DisplayNode{Pane: NewFlightStripPane()},
 		},
 	}
 	c.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })

@@ -236,9 +236,6 @@ func unmarshalPane(paneType string, data []byte) (Pane, error) {
 	case "*main.AirportInfoPane":
 		return unmarshalPaneHelper[*AirportInfoPane](data)
 
-	case "*main.CLIPane":
-		return unmarshalPaneHelper[*CLIPane](data)
-
 	case "*main.EmptyPane":
 		return unmarshalPaneHelper[*EmptyPane](data)
 
@@ -259,9 +256,6 @@ func unmarshalPane(paneType string, data []byte) (Pane, error) {
 
 	case "*main.PluginPane":
 		return unmarshalPaneHelper[*PluginPane](data)
-
-	case "*main.RadarScopePane":
-		return unmarshalPaneHelper[*RadarScopePane](data)
 
 	case "*main.ReminderPane":
 		return unmarshalPaneHelper[*ReminderPane](data)

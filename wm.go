@@ -660,15 +660,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		wm.keyboardFocusPane = nil
 	}
 	if wm.keyboardFocusPane == nil {
-		// Pick one that can take it. Try to find a CLI pane first since that's
-		// most likely where the user would prefer to start out...
-		positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
-			if _, ok := p.(*CLIPane); ok {
-				wm.keyboardFocusPane = p
-			}
-		})
-		// If there's no CLIPane then go ahead and take any one that can
-		// take keyboard events.
+		// Take any one that can take keyboard events.
 		if wm.keyboardFocusPane == nil {
 			positionConfig.DisplayRoot.VisitPanes(func(p Pane) {
 				if p.CanTakeKeyboardFocus() {
