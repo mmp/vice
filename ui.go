@@ -37,7 +37,6 @@ var (
 		showRadarSettings bool
 		showColorEditor   bool
 		showSoundConfig   bool
-		showRadioSettings bool
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
@@ -176,42 +175,12 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			if imgui.MenuItem("Radar...") {
 				ui.showRadarSettings = true
 			}
-			if imgui.MenuItemV("Radio...", "", false, server.Connected()) {
-				ui.showRadioSettings = true
-			}
 			if imgui.MenuItem("Colors...") {
 				ui.showColorEditor = true
 			}
 			if imgui.MenuItem("Sounds...") {
 				ui.showSoundConfig = true
 			}
-			imgui.EndMenu()
-		}
-
-		if imgui.BeginMenu("Configs") {
-			if imgui.MenuItem("New...") {
-				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: true}), false)
-			}
-			if imgui.MenuItem("New from current...") {
-				uiShowModalDialog(NewModalDialogBox(&NewModalClient{isBrandNew: false}), false)
-			}
-			if imgui.MenuItem("Rename...") {
-				uiShowModalDialog(NewModalDialogBox(&RenameModalClient{}), false)
-			}
-			if imgui.MenuItemV("Delete...", "", false, len(globalConfig.PositionConfigs) > 1) {
-				uiShowModalDialog(NewModalDialogBox(&DeleteModalClient{}), false)
-			}
-			imgui.Separator()
-
-			// Sort them by name
-			names := SortedMapKeys(globalConfig.PositionConfigs)
-			for _, name := range names {
-				if imgui.MenuItemV(name, "", name == globalConfig.ActivePosition, true) &&
-					name != globalConfig.ActivePosition {
-					globalConfig.MakeConfigActive(name)
-				}
-			}
-
 			imgui.EndMenu()
 		}
 
@@ -282,12 +251,6 @@ func drawActiveSettingsWindows() {
 	if ui.showRadarSettings {
 		imgui.BeginV("Radar Settings", &ui.showRadarSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadarUI()
-		imgui.End()
-	}
-
-	if ui.showRadioSettings {
-		imgui.BeginV("Radio Settings", &ui.showRadioSettings, imgui.WindowFlagsAlwaysAutoResize)
-		positionConfig.DrawRadioUI()
 		imgui.End()
 	}
 
@@ -671,164 +634,6 @@ func (d *DisconnectModalClient) Draw() int {
 	return -1
 }
 
-type NewModalClient struct {
-	name       string
-	err        string
-	isBrandNew bool
-}
-
-func (n *NewModalClient) Title() string { return "Create New Config" }
-
-func (n *NewModalClient) Opening() {
-	n.name = ""
-	n.err = ""
-}
-
-func (n *NewModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel"})
-
-	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		if n.isBrandNew {
-			globalConfig.PositionConfigs[n.name] = NewPositionConfig()
-		} else {
-			globalConfig.PositionConfigs[n.name] = positionConfig.Duplicate()
-		}
-		globalConfig.MakeConfigActive(n.name)
-		return true
-	}}
-	ok.disabled = n.name == ""
-	if _, exists := globalConfig.PositionConfigs[n.name]; exists {
-		ok.disabled = true
-		n.err = "\"" + n.name + "\" already exists"
-	} else {
-		n.err = ""
-	}
-	b = append(b, ok)
-
-	return b
-}
-
-func (n *NewModalClient) Draw() int {
-	flags := imgui.InputTextFlagsEnterReturnsTrue
-	enter := imgui.InputTextV("Configuration name", &n.name, flags, nil)
-	if n.err != "" {
-		cs := positionConfig.GetColorScheme()
-		imgui.PushStyleColor(imgui.StyleColorText, cs.Error.imgui())
-		imgui.Text(n.err)
-		imgui.PopStyleColor()
-	}
-	if enter {
-		return 1
-	} else {
-		return -1
-	}
-}
-
-type RenameModalClient struct {
-	selectedName, newName string
-}
-
-func (r *RenameModalClient) Title() string { return "Rename Config" }
-
-func (r *RenameModalClient) Opening() {
-	r.selectedName = ""
-	r.newName = ""
-}
-
-func (r *RenameModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel"})
-
-	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		if globalConfig.ActivePosition == r.selectedName {
-			globalConfig.ActivePosition = r.newName
-		}
-		pc := globalConfig.PositionConfigs[r.selectedName]
-		delete(globalConfig.PositionConfigs, r.selectedName)
-		globalConfig.PositionConfigs[r.newName] = pc
-		return true
-	}}
-	ok.disabled = r.selectedName == ""
-	if !ok.disabled {
-		_, ok.disabled = globalConfig.PositionConfigs[r.newName]
-	}
-	b = append(b, ok)
-
-	return b
-}
-
-func (r *RenameModalClient) Draw() int {
-	if imgui.BeginComboV("Config Name", r.selectedName, imgui.ComboFlagsHeightLarge) {
-		names := SortedMapKeys(globalConfig.PositionConfigs)
-
-		for _, name := range names {
-			if imgui.SelectableV(name, name == r.selectedName, 0, imgui.Vec2{}) {
-				r.selectedName = name
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	flags := imgui.InputTextFlagsEnterReturnsTrue
-	enter := imgui.InputTextV("New name", &r.newName, flags, nil)
-
-	if _, ok := globalConfig.PositionConfigs[r.newName]; ok {
-		color := positionConfig.GetColorScheme().TextError
-		imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
-		imgui.Text("Config with that name already exits!")
-		imgui.PopStyleColor()
-	}
-	if enter {
-		return 1
-	} else {
-		return -1
-	}
-}
-
-type DeleteModalClient struct {
-	name string
-}
-
-func (d *DeleteModalClient) Title() string { return "Delete Config" }
-
-func (d *DeleteModalClient) Opening() { d.name = "" }
-
-func (d *DeleteModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel"})
-
-	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		if globalConfig.ActivePosition == d.name {
-			for name := range globalConfig.PositionConfigs {
-				if name != d.name {
-					globalConfig.MakeConfigActive(name)
-					break
-				}
-			}
-		}
-		delete(globalConfig.PositionConfigs, d.name)
-		return true
-	}}
-	ok.disabled = d.name == ""
-	b = append(b, ok)
-
-	return b
-}
-
-func (d *DeleteModalClient) Draw() int {
-	if imgui.BeginComboV("Config Name", d.name, imgui.ComboFlagsHeightLarge) {
-		names := SortedMapKeys(globalConfig.PositionConfigs)
-		for _, name := range names {
-			if imgui.SelectableV(name, name == d.name, 0, imgui.Vec2{}) {
-				d.name = name
-			}
-		}
-		imgui.EndCombo()
-	}
-	return -1
-}
-
 type YesOrNoModalClient struct {
 	title, query string
 	ok, notok    func()
@@ -976,7 +781,7 @@ func showAboutDialog() {
 
 	imgui.PushFont(ui.aboutFont.ifont)
 	center("vice")
-	center(FontAwesomeIconCopyright + "2022 Matt Pharr")
+	center(FontAwesomeIconCopyright + "2023 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")

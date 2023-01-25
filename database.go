@@ -1471,11 +1471,6 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.VOR), VORsquare)
 			}
 		}
-		for name := range positionConfig.sessionDrawVORs {
-			if pos, ok := database.VORs[name]; ok {
-				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.VOR), VORsquare)
-			}
-		}
 	}
 
 	// NDBs are shown with down-pointing triangles
@@ -1487,11 +1482,6 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 		}
 	} else {
 		for name := range s.NDBsToDraw {
-			if pos, ok := database.NDBs[name]; ok {
-				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.NDB), NDBtri[:])
-			}
-		}
-		for name := range positionConfig.sessionDrawNDBs {
 			if pos, ok := database.NDBs[name]; ok {
 				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.NDB), NDBtri[:])
 			}
@@ -1510,11 +1500,6 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.Fix), fixTri[:])
 			}
 		}
-		for name := range positionConfig.sessionDrawFixes {
-			if pos, ok := database.fixes[name]; ok {
-				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.Fix), fixTri[:])
-			}
-		}
 	}
 
 	// Airports are squares (like VORs)
@@ -1525,11 +1510,6 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 		}
 	} else {
 		for name := range s.AirportsToDraw {
-			if pos, ok := database.airports[name]; ok {
-				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.Airport), airportSquare)
-			}
-		}
-		for name := range positionConfig.sessionDrawAirports {
 			if pos, ok := database.airports[name]; ok {
 				ld.AddPolyline(transforms.WindowFromLatLongP(pos), filterColor(ctx.cs.Airport), airportSquare)
 			}
@@ -1641,19 +1621,19 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 	}
 
 	if s.DrawVORNames {
-		drawloc(s.DrawEverything || s.DrawVORs, s.VORsToDraw, positionConfig.sessionDrawVORs,
+		drawloc(s.DrawEverything || s.DrawVORs, s.VORsToDraw, nil,
 			database.VORs, filterColor(ctx.cs.VOR), DrawLeft)
 	}
 	if s.DrawNDBNames {
-		drawloc(s.DrawEverything || s.DrawNDBs, s.NDBsToDraw, positionConfig.sessionDrawNDBs,
+		drawloc(s.DrawEverything || s.DrawNDBs, s.NDBsToDraw, nil,
 			database.NDBs, filterColor(ctx.cs.NDB), DrawLeft)
 	}
 	if s.DrawFixNames {
-		drawloc(s.DrawEverything || s.DrawFixes, s.FixesToDraw, positionConfig.sessionDrawFixes,
+		drawloc(s.DrawEverything || s.DrawFixes, s.FixesToDraw, nil,
 			database.fixes, filterColor(ctx.cs.Fix), DrawRight)
 	}
 	if s.DrawAirportNames {
-		drawloc(s.DrawEverything || s.DrawAirports, s.AirportsToDraw, positionConfig.sessionDrawAirports,
+		drawloc(s.DrawEverything || s.DrawAirports, s.AirportsToDraw, nil,
 			database.airports, filterColor(ctx.cs.Airport), DrawBelow)
 	}
 

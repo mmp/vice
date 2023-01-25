@@ -125,7 +125,7 @@ func (a *AudioSettings) HandleEvent(e AudioEvent) {
 
 func audioProcessEvents(es *EventStream) {
 	for _, event := range es.Get(audioEventId) {
-		switch v := event.(type) {
+		switch event.(type) {
 		case *PointOutEvent:
 			globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
 		case *AcceptedHandoffEvent:
@@ -134,12 +134,6 @@ func audioProcessEvents(es *EventStream) {
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
 		case *RejectedHandoffEvent, *CanceledHandoffEvent:
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
-		case *TextMessageEvent:
-			m := v.message
-			if m.messageType != TextFrequency ||
-				len(positionConfig.MonitoredFrequencies(m.frequencies)) > 0 {
-				globalConfig.AudioSettings.HandleEvent(AudioEventReceivedMessage)
-			}
 		}
 	}
 }

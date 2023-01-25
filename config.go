@@ -13,26 +13,15 @@ import (
 	"io"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
 )
 
-// Things that apply to all configs
 type GlobalConfig struct {
 	SectorFile   string
 	PositionFile string
-	NotesFile    string
-	AliasesFile  string
-
-	VatsimName     string
-	VatsimCID      string
-	VatsimPassword string
-	VatsimRating   NetworkRating
-	CustomServers  map[string]string
-	LastServer     string
 
 	PositionConfigs       map[string]*PositionConfig
 	ActivePosition        string
@@ -62,15 +51,6 @@ type PositionConfig struct {
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
-	drawnRoute                 string
-	drawnRouteEndTime          time.Time
-	sessionDrawVORs            map[string]interface{}
-	sessionDrawNDBs            map[string]interface{}
-	sessionDrawFixes           map[string]interface{}
-	sessionDrawAirports        map[string]interface{}
-
-	frequenciesComboBoxState     *ComboBoxState
-	txFrequencies, rxFrequencies map[Frequency]*bool
 
 	eventsId EventSubscriberId
 }
@@ -180,18 +160,6 @@ func (pc *PositionConfig) Activate() {
 	if pc.eventsId == InvalidEventSubscriberId {
 		pc.eventsId = eventStream.Subscribe()
 	}
-	if pc.sessionDrawVORs == nil {
-		pc.sessionDrawVORs = make(map[string]interface{})
-	}
-	if pc.sessionDrawNDBs == nil {
-		pc.sessionDrawNDBs = make(map[string]interface{})
-	}
-	if pc.sessionDrawFixes == nil {
-		pc.sessionDrawFixes = make(map[string]interface{})
-	}
-	if pc.sessionDrawAirports == nil {
-		pc.sessionDrawAirports = make(map[string]interface{})
-	}
 
 	pc.CheckRadarCenters()
 
@@ -213,16 +181,6 @@ func (pc *PositionConfig) SendUpdates() {
 
 	server.SetRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
 		int(pc.RadarRange))
-}
-
-func (pc *PositionConfig) MonitoredFrequencies(frequencies []Frequency) []Frequency {
-	var monitored []Frequency
-	for _, f := range frequencies {
-		if ptr, ok := pc.rxFrequencies[f]; ok && *ptr {
-			monitored = append(monitored, f)
-		}
-	}
-	return monitored
 }
 
 func NewPositionConfig() *PositionConfig {
@@ -311,83 +269,6 @@ func (c *PositionConfig) DrawRadarUI() {
 	}
 }
 
-func (c *PositionConfig) DrawRadioUI() {
-	if c.frequenciesComboBoxState == nil {
-		c.frequenciesComboBoxState = NewComboBoxState(2)
-	}
-	if c.txFrequencies == nil {
-		c.txFrequencies = make(map[Frequency]*bool)
-	}
-	if c.rxFrequencies == nil {
-		c.rxFrequencies = make(map[Frequency]*bool)
-	}
-
-	if imgui.RadioButtonInt("Unprime radio", (*int)(&c.primaryFrequency), 0) {
-		server.SetPrimaryFrequency(c.primaryFrequency)
-	}
-	config := ComboBoxDisplayConfig{
-		ColumnHeaders:    []string{"Position", "Frequency", "Primed", "TX", "RX"},
-		DrawHeaders:      true,
-		SelectAllColumns: false,
-		EntryNames:       []string{"Position", "Frequency"},
-		InputFlags:       []imgui.InputTextFlags{imgui.InputTextFlagsCharsUppercase, imgui.InputTextFlagsCharsDecimal},
-	}
-	DrawComboBox(c.frequenciesComboBoxState, config, SortedMapKeys(c.Frequencies),
-		/* draw col */ func(s string, col int) {
-			freq := c.Frequencies[s]
-			switch col {
-			case 1:
-				imgui.Text(freq.String())
-			case 2:
-				if imgui.RadioButtonInt("##prime-"+s, (*int)(&c.primaryFrequency), int(freq)) {
-					server.SetPrimaryFrequency(c.primaryFrequency)
-				}
-			case 3:
-				if _, ok := c.txFrequencies[freq]; !ok {
-					c.txFrequencies[freq] = new(bool)
-				}
-				if freq == c.primaryFrequency {
-					*c.txFrequencies[freq] = true
-				}
-				uiStartDisable(freq == c.primaryFrequency)
-				imgui.Checkbox("##tx-"+s, c.txFrequencies[freq])
-				uiEndDisable(freq == c.primaryFrequency)
-			case 4:
-				if _, ok := c.rxFrequencies[freq]; !ok {
-					c.rxFrequencies[freq] = new(bool)
-				}
-				if freq == c.primaryFrequency {
-					*c.rxFrequencies[freq] = true
-				}
-				uiStartDisable(freq == c.primaryFrequency)
-				imgui.Checkbox("##rx-"+s, c.rxFrequencies[freq])
-				uiEndDisable(freq == c.primaryFrequency)
-			default:
-				lg.Errorf("%d: unexpected column from DrawComboBox", col)
-			}
-		},
-		/* valid */
-		func(entries []*string) bool {
-			_, ok := c.Frequencies[*entries[0]]
-			if ok {
-				return false
-			}
-			f, err := strconv.ParseFloat(*entries[1], 32)
-			// TODO: what range should we accept?
-			return *entries[0] != "" && err == nil && f >= 100 && f <= 150
-		},
-		/* add */ func(entries []*string) {
-			// Assume that valid has passed for this input
-			f, _ := strconv.ParseFloat(*entries[1], 32)
-			c.Frequencies[*entries[0]] = NewFrequency(float32(f))
-		},
-		/* delete */ func(selected map[string]interface{}) {
-			for k := range selected {
-				delete(c.Frequencies, k)
-			}
-		})
-}
-
 func (c *PositionConfig) Duplicate() *PositionConfig {
 	nc := &PositionConfig{}
 	*nc = *c
@@ -395,11 +276,7 @@ func (c *PositionConfig) Duplicate() *PositionConfig {
 	nc.Frequencies = DuplicateMap(c.Frequencies)
 
 	nc.eventsId = InvalidEventSubscriberId
-	nc.frequenciesComboBoxState = nil
-	nc.txFrequencies = nil
-	nc.rxFrequencies = nil
 
-	// don't copy the todos or timers
 	return nc
 }
 
@@ -431,9 +308,6 @@ func LoadOrMakeDefaultConfig() {
 	globalConfig = &GlobalConfig{}
 	if err := d.Decode(globalConfig); err != nil {
 		ShowErrorDialog("Configuration file is corrupt: %v", err)
-	}
-	if globalConfig.CustomServers == nil {
-		globalConfig.CustomServers = make(map[string]string)
 	}
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
