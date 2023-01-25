@@ -704,175 +704,24 @@ func (*FlightRadarConnectionConfiguration) Connect() error {
 	return nil
 }
 
-type VATSIMConnectionConfiguration struct {
-	name    string
-	address string
-}
-
-func (v *VATSIMConnectionConfiguration) Initialize() {
-	if addr, ok := vatsimServers[globalConfig.LastServer]; ok {
-		v.name = globalConfig.LastServer
-		v.address = addr
-	} else if addr, ok := globalConfig.CustomServers[globalConfig.LastServer]; ok {
-		v.name = globalConfig.LastServer
-		v.address = addr
-	}
-}
-
-func (v *VATSIMConnectionConfiguration) DrawUI() bool {
-	imgui.InputText("Name", &globalConfig.VatsimName)
-
-	cidFlags := imgui.InputTextFlagsCallbackCharFilter
-	imgui.InputTextV("VATSIM CID", &globalConfig.VatsimCID, cidFlags,
-		func(cb imgui.InputTextCallbackData) int32 {
-			switch cb.EventChar() {
-			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-				return 0
-			default:
-				return 1
-			}
-		})
-
-	imgui.InputTextV("VATSIM Password", &globalConfig.VatsimPassword, imgui.InputTextFlagsPassword, nil)
-
-	if imgui.BeginComboV("Rating", globalConfig.VatsimRating.String(), imgui.ComboFlagsHeightLarge) {
-		for i := ObserverRating; i <= AdministratorRating; i++ {
-			nr := NetworkRating(i)
-			s := nr.String()
-			if imgui.SelectableV(s, nr == globalConfig.VatsimRating, 0, imgui.Vec2{}) {
-				globalConfig.VatsimRating = nr
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	imgui.InputText("Callsign", &positionConfig.VatsimCallsign)
-
-	if imgui.BeginComboV("Facility", positionConfig.VatsimFacility.String(), imgui.ComboFlagsHeightLarge) {
-		for i := FacilityOBS; i <= FacilityUndefined; i++ {
-			f := Facility(i)
-			s := f.String()
-			if imgui.SelectableV(s, f == positionConfig.VatsimFacility, 0, imgui.Vec2{}) {
-				positionConfig.VatsimFacility = f
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	imgui.InputTextMultiline("Controller ATIS", &positionConfig.ControllerATIS)
-
-	if imgui.BeginComboV("Server", v.name, imgui.ComboFlagsHeightLarge) {
-		for _, server := range SortedMapKeys(vatsimServers) {
-			if imgui.SelectableV(server, server == v.name, 0, imgui.Vec2{}) {
-				v.name = server
-				v.address = vatsimServers[server]
-			}
-		}
-		for _, server := range SortedMapKeys(globalConfig.CustomServers) {
-			if imgui.SelectableV(server, server == v.name, 0, imgui.Vec2{}) {
-				v.name = server
-				v.address = globalConfig.CustomServers[server]
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	return false
-}
-
-func (v *VATSIMConnectionConfiguration) Valid() bool { return v.address != "" }
-
-func (v *VATSIMConnectionConfiguration) Connect() error {
-	var err error
-	server, err = NewVATSIMNetworkServer(v.address)
-	if err == nil {
-		globalConfig.LastServer = v.name
-	}
-	return err
-}
-
-type VATSIMReplayConfiguration struct {
-	filename string
-	rate     float32
-	offset   int32
-	dialog   *FileSelectDialogBox
-}
-
-func (v *VATSIMReplayConfiguration) Initialize() {
-	if v.rate == 0 {
-		v.rate = 1
-		v.offset = 0
-		v.dialog = NewFileSelectDialogBox("Select VATSIM session file", []string{".vsess"}, "",
-			func(fn string) { v.filename = fn })
-	}
-	if v.filename == "" {
-		v.dialog.Activate()
-	}
-}
-
-func (v *VATSIMReplayConfiguration) DrawUI() bool {
-	imgui.Text("Filename: " + v.filename)
-	imgui.SameLine()
-	if imgui.Button("Select...") {
-		v.dialog.Activate()
-	}
-	v.dialog.Draw()
-
-	imgui.SliderFloatV("Playback rate multiplier", &v.rate, 0.1, 300, "%.1f",
-		imgui.SliderFlagsLogarithmic)
-	imgui.InputIntV("Playback starting offset (seconds)", &v.offset, 0, 3600, 0)
-
-	return false
-}
-
-func (v *VATSIMReplayConfiguration) Valid() bool {
-	return v.filename != ""
-}
-
-func (v *VATSIMReplayConfiguration) Connect() error {
-	var err error
-	server, err = NewVATSIMReplayServer(v.filename, int(v.offset), v.rate)
-	return err
-}
-
-type VATSIMPublicConfiguration struct {
-}
-
-func (v *VATSIMPublicConfiguration) Initialize()  {}
-func (v *VATSIMPublicConfiguration) DrawUI() bool { return false }
-func (v *VATSIMPublicConfiguration) Valid() bool  { return true }
-
-func (v *VATSIMPublicConfiguration) Connect() error {
-	server = NewVATSIMPublicServer()
-	return nil
-}
-
 type ConnectModalClient struct {
 	connectionType ConnectionType
 	err            string
 
 	// Store all three so that if the user switches back and forth any set
 	// values are retained.
-	vatsim       VATSIMConnectionConfiguration
-	vatsimReplay VATSIMReplayConfiguration
-	flightRadar  FlightRadarConnectionConfiguration
-	vatsimPublic VATSIMPublicConfiguration
-	simServer    SimServerConnectionConfiguration
+	simServer SimServerConnectionConfiguration
 }
 
 type ConnectionType int
 
 const (
-	ConnectionTypeVATSIM = iota
-	ConnectionTypeVATSIMReplay
-	ConnectionTypeFlightRadar
-	ConnectionTypeVATSIMPublic
-	ConnectionTypeSimServer
+	ConnectionTypeSimServer = iota
 	ConnectionTypeCount
 )
 
 func (c ConnectionType) String() string {
-	return [...]string{"VATSIM Network", "VATSIM Replay", "Flight Radar", "VATSIM Public Data", "Sim Server"}[c]
+	return [...]string{"Sim Server"}[c]
 }
 
 func (c *ConnectModalClient) Title() string { return "New Connection" }
@@ -880,10 +729,6 @@ func (c *ConnectModalClient) Title() string { return "New Connection" }
 func (c *ConnectModalClient) Opening() {
 	c.connectionType = ConnectionTypeSimServer
 	c.err = ""
-	c.vatsim.Initialize()
-	c.vatsimReplay.Initialize()
-	c.flightRadar.Initialize()
-	c.vatsimPublic.Initialize()
 	c.simServer.Initialize()
 }
 
@@ -894,18 +739,6 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	ok := ModalDialogButton{text: "Ok", action: func() bool {
 		var err error
 		switch c.connectionType {
-		case ConnectionTypeFlightRadar:
-			err = c.flightRadar.Connect()
-
-		case ConnectionTypeVATSIM:
-			err = c.vatsim.Connect()
-
-		case ConnectionTypeVATSIMReplay:
-			err = c.vatsimReplay.Connect()
-
-		case ConnectionTypeVATSIMPublic:
-			err = c.vatsimPublic.Connect()
-
 		case ConnectionTypeSimServer:
 			err = c.simServer.Connect()
 
@@ -924,18 +757,6 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	}}
 
 	switch c.connectionType {
-	case ConnectionTypeFlightRadar:
-		ok.disabled = !c.flightRadar.Valid()
-
-	case ConnectionTypeVATSIM:
-		ok.disabled = !c.vatsim.Valid()
-
-	case ConnectionTypeVATSIMReplay:
-		ok.disabled = !c.vatsimReplay.Valid()
-
-	case ConnectionTypeVATSIMPublic:
-		ok.disabled = !c.vatsimPublic.Valid()
-
 	case ConnectionTypeSimServer:
 		ok.disabled = !c.simServer.Valid()
 
@@ -960,18 +781,6 @@ func (c *ConnectModalClient) Draw() int {
 
 	var enter bool
 	switch c.connectionType {
-	case ConnectionTypeFlightRadar:
-		enter = c.flightRadar.DrawUI()
-
-	case ConnectionTypeVATSIM:
-		enter = c.vatsim.DrawUI()
-
-	case ConnectionTypeVATSIMReplay:
-		enter = c.vatsimReplay.DrawUI()
-
-	case ConnectionTypeVATSIMPublic:
-		enter = c.vatsimPublic.DrawUI()
-
 	case ConnectionTypeSimServer:
 		enter = c.simServer.DrawUI()
 	}

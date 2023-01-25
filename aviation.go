@@ -33,7 +33,7 @@ func (m METAR) String() string {
 func ParseMETAR(str string) (*METAR, error) {
 	fields := strings.Fields(str)
 	if len(fields) < 3 {
-		return nil, MalformedMessageError{"Expected >= 3 fields in METAR text"}
+		return nil, fmt.Errorf("Expected >= 3 fields in METAR text")
 	}
 
 	i := 0
