@@ -23,8 +23,6 @@ var (
 	// Assorted state related to the window tiling is collected in the wm
 	// struct.
 	wm struct {
-		// Variables related to the config editors.
-		showConfigEditor bool
 		// When two Panes are to be selected (e.g., to exchange them), this
 		// records the first one.
 		paneFirstPick Pane
@@ -48,8 +46,6 @@ var (
 		// If a single Pane is to be displayed (via control-f), this is a
 		// *DisplayNode for it.
 		fullScreenDisplayNode *DisplayNode
-
-		configEditorHeight float32 // in pixels; zero if the config editor is not active
 
 		// Normally the Pane that the mouse is over gets mouse events,
 		// though if the user has started a click-drag, then the Pane that
@@ -515,87 +511,6 @@ func wmAddPaneMenuSettings() {
 	}
 }
 
-func wmDrawConfigEditor(p Platform) {
-	imgui.PushFont(ui.font.ifont)
-
-	var flags imgui.WindowFlags
-	flags = imgui.WindowFlagsNoDecoration
-	flags |= imgui.WindowFlagsNoSavedSettings
-	flags |= imgui.WindowFlagsNoNav
-	flags |= imgui.WindowFlagsNoResize
-
-	displaySize := p.DisplaySize()
-	y := ui.menuBarHeight + wmStatusBarHeight()
-	imgui.SetNextWindowPosV(imgui.Vec2{X: 0, Y: y}, imgui.ConditionAlways, imgui.Vec2{})
-	imgui.SetNextWindowSize(imgui.Vec2{displaySize[0], 60})
-	imgui.BeginV("Config editor", nil, flags)
-
-	cs := positionConfig.GetColorScheme()
-	imgui.PushStyleColor(imgui.StyleColorText, cs.Text.imgui())
-
-	setPicked := func(newPane Pane) func(pane Pane) bool {
-		return func(pane Pane) bool {
-			node := positionConfig.DisplayRoot.NodeForPane(pane)
-			if pane != nil {
-				pane.Deactivate()
-			}
-			if newPane != nil {
-				newPane.Activate()
-			}
-			node.Pane = newPane
-			wm.paneCreatePrompt = ""
-			wm.paneConfigHelpText = ""
-			return true
-		}
-	}
-	imgui.SetNextItemWidth(imgui.WindowWidth() * .2)
-	prompt := wm.paneCreatePrompt
-	if prompt == "" {
-		prompt = "Create New..."
-	}
-	if name, pane := uiDrawNewPaneSelector("##newpane", prompt); pane != nil {
-		wm.paneCreatePrompt = name
-		wm.paneConfigHelpText = "Select location for new " + wm.paneCreatePrompt + " window"
-		wm.handlePanePick = setPicked(pane)
-	}
-
-	imgui.SameLine()
-
-	wm.configButtons.Draw()
-
-	if wm.handlePanePick != nil {
-		imgui.SameLine()
-		if imgui.Button("Cancel") {
-			wm.handlePanePick = nil
-			wm.paneFirstPick = nil
-			wm.paneConfigHelpText = ""
-			wm.configButtons.Clear()
-		}
-	}
-
-	imgui.SameLine()
-	imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(110), imgui.CursorPosY()})
-	if imgui.Button("Save") {
-		wm.showConfigEditor = false
-		wm.paneConfigHelpText = ""
-		wm.editorBackupRoot = nil
-	}
-	imgui.SameLine()
-	if imgui.Button("Revert") {
-		positionConfig.DisplayRoot = wm.editorBackupRoot
-		wm.showConfigEditor = false
-		wm.paneConfigHelpText = ""
-		wm.editorBackupRoot = nil
-	}
-
-	imgui.Text(wm.paneConfigHelpText)
-
-	imgui.PopStyleColor()
-	imgui.End()
-
-	imgui.PopFont()
-}
-
 // wmDrawUI draws any open Pane settings windows.
 func wmDrawUI(p Platform) {
 	positionConfig.DisplayRoot.VisitPanes(func(pane Pane) {
@@ -675,12 +590,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	displaySize := platform.DisplaySize()
 	highDPIScale := fbSize[1] / displaySize[1]
 
-	if wm.showConfigEditor {
-		wm.configEditorHeight = 60 // FIXME: hardcoded
-	} else {
-		wm.configEditorHeight = 0
-	}
-	topItemsHeight := ui.menuBarHeight + wmStatusBarHeight() + wm.configEditorHeight
+	topItemsHeight := ui.menuBarHeight + wmStatusBarHeight()
 
 	// Area left for actually drawing Panes
 	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - topItemsHeight}}
@@ -874,10 +784,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		// Finally, render the entire command buffer for all of the Panes
 		// all at once.
 		stats.render = renderer.RenderCommandBuffer(commandBuffer)
-	}
-
-	if wm.showConfigEditor {
-		wmDrawConfigEditor(platform)
 	}
 }
 

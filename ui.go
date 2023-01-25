@@ -35,10 +35,7 @@ var (
 
 		showAboutDialog   bool
 		showRadarSettings bool
-		showATISSettings  bool
 		showColorEditor   bool
-		showFilesEditor   bool
-		showServersEditor bool
 		showSoundConfig   bool
 		showRadioSettings bool
 
@@ -46,11 +43,6 @@ var (
 		sadTowerTextureID uint32
 
 		activeModalDialogs []*ModalDialogBox
-
-		openSectorFileDialog   *FileSelectDialogBox
-		openPositionFileDialog *FileSelectDialogBox
-		openAliasesFileDialog  *FileSelectDialogBox
-		openNotesFileDialog    *FileSelectDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
 	}
@@ -101,36 +93,6 @@ func uiInit(renderer Renderer) {
 	// take some time (or may even time out, etc.)
 	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
 	go checkForNewRelease(ui.newReleaseDialogChan)
-
-	ui.openSectorFileDialog = NewFileSelectDialogBox("Open Sector File...", []string{".sct", ".sct2"},
-		globalConfig.SectorFile,
-		func(filename string) {
-			if err := database.LoadSectorFile(filename); err == nil {
-				delete(ui.errorText, "SECTORFILE")
-				globalConfig.SectorFile = filename
-				database.SetColorScheme(positionConfig.GetColorScheme())
-			}
-		})
-	ui.openPositionFileDialog = NewFileSelectDialogBox("Open Position File...", []string{".pof"},
-		globalConfig.PositionFile,
-		func(filename string) {
-			if err := database.LoadPositionFile(filename); err == nil {
-				delete(ui.errorText, "POSITIONFILE")
-				globalConfig.PositionFile = filename
-			}
-		})
-	ui.openAliasesFileDialog = NewFileSelectDialogBox("Open Aliases File...", []string{".txt"},
-		globalConfig.AliasesFile,
-		func(filename string) {
-			globalConfig.AliasesFile = filename
-			globalConfig.LoadAliasesFile()
-		})
-	ui.openNotesFileDialog = NewFileSelectDialogBox("Open Notes File...", []string{".txt"},
-		globalConfig.NotesFile,
-		func(filename string) {
-			globalConfig.NotesFile = filename
-			globalConfig.LoadNotesFile()
-		})
 }
 
 // uiAddError lets the caller specify an error message to be displayed
@@ -211,17 +173,8 @@ func drawUI(cs *ColorScheme, platform Platform) {
 					ShowErrorDialog("Error saving configuration file: %v", err)
 				}
 			}
-			if imgui.MenuItem("Files...") {
-				ui.showFilesEditor = true
-			}
-			if imgui.MenuItem("Servers...") {
-				ui.showServersEditor = true
-			}
 			if imgui.MenuItem("Radar...") {
 				ui.showRadarSettings = true
-			}
-			if imgui.MenuItem("Controller ATIS...") {
-				ui.showATISSettings = true
 			}
 			if imgui.MenuItemV("Radio...", "", false, server.Connected()) {
 				ui.showRadioSettings = true
@@ -248,12 +201,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 			if imgui.MenuItemV("Delete...", "", false, len(globalConfig.PositionConfigs) > 1) {
 				uiShowModalDialog(NewModalDialogBox(&DeleteModalClient{}), false)
 			}
-			if imgui.MenuItem("Edit layout...") {
-				wm.showConfigEditor = true
-				// FIXME: this is the wrong place to be doing this...
-				wm.editorBackupRoot = positionConfig.DisplayRoot.Duplicate()
-			}
-
 			imgui.Separator()
 
 			// Sort them by name
@@ -326,11 +273,6 @@ func drawActiveDialogBoxes() {
 		}
 	}
 
-	ui.openSectorFileDialog.Draw()
-	ui.openPositionFileDialog.Draw()
-	ui.openAliasesFileDialog.Draw()
-	ui.openNotesFileDialog.Draw()
-
 	if ui.showAboutDialog {
 		showAboutDialog()
 	}
@@ -343,27 +285,9 @@ func drawActiveSettingsWindows() {
 		imgui.End()
 	}
 
-	if ui.showATISSettings {
-		imgui.BeginV("ATIS Settings", &ui.showATISSettings, imgui.WindowFlagsAlwaysAutoResize)
-		imgui.InputTextMultiline("Controller ATIS", &positionConfig.ControllerATIS)
-		imgui.End()
-	}
-
 	if ui.showRadioSettings {
 		imgui.BeginV("Radio Settings", &ui.showRadioSettings, imgui.WindowFlagsAlwaysAutoResize)
 		positionConfig.DrawRadioUI()
-		imgui.End()
-	}
-
-	if ui.showFilesEditor {
-		imgui.BeginV("Files", &ui.showFilesEditor, imgui.WindowFlagsAlwaysAutoResize)
-		globalConfig.DrawFilesUI()
-		imgui.End()
-	}
-
-	if ui.showServersEditor {
-		imgui.BeginV("Servers", &ui.showServersEditor, imgui.WindowFlagsAlwaysAutoResize)
-		globalConfig.DrawServersUI()
 		imgui.End()
 	}
 
@@ -1512,49 +1436,6 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 		exit = TextEditReturnTextChanged
 	}
 
-	return
-}
-
-///////////////////////////////////////////////////////////////////////////
-// New pane creation
-
-func uiDrawNewPaneSelector(label, preview string) (name string, pane Pane) {
-	if imgui.BeginComboV(label, preview, imgui.ComboFlagsHeightLarge) {
-		if imgui.Selectable("Airport information") {
-			name, pane = "Airport information", NewAirportInfoPane()
-		}
-		if imgui.Selectable("Empty") {
-			name, pane = "Empty", NewEmptyPane()
-		}
-		if imgui.Selectable("External plugin") {
-			name, pane = "External plugin", NewPluginPane("(Unnamed)")
-		}
-		if imgui.Selectable("Flight plan") {
-			name, pane = "Flight plan", NewFlightPlanPane()
-		}
-		if imgui.Selectable("Flight strip") {
-			name, pane = "Flight strip", NewFlightStripPane()
-		}
-		if imgui.Selectable("Image viewer") {
-			name, pane = "Image viewer", NewImageViewPane()
-		}
-		if imgui.Selectable("Notes viewer") {
-			name, pane = "Notes viewer", NewNotesViewPane()
-		}
-		if imgui.Selectable("Performance statistics") {
-			name, pane = "Performance statistics", NewPerformancePane()
-		}
-		if imgui.Selectable("Radar scope (STARS)") {
-			name, pane = "Radar scope (STARS)", NewSTARSPane("(Unnamed)")
-		}
-		if imgui.Selectable("Reminders") {
-			name, pane = "Reminders", NewReminderPane()
-		}
-		if imgui.Selectable("Tabbed Window") {
-			name, pane = "Tabbed window", NewTabbedPane()
-		}
-		imgui.EndCombo()
-	}
 	return
 }
 

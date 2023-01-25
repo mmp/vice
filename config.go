@@ -5,7 +5,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	_ "embed"
 	"encoding/json"
@@ -44,14 +43,6 @@ type GlobalConfig struct {
 	AudioSettings         AudioSettings
 
 	aliases map[string]string
-
-	notesRoot *NotesNode
-}
-
-type NotesNode struct {
-	title    string
-	text     []string
-	children []*NotesNode
 }
 
 type PositionConfig struct {
@@ -59,7 +50,6 @@ type PositionConfig struct {
 	DisplayRoot     *DisplayNode
 
 	VatsimCallsign                string
-	VatsimFacility                Facility
 	PrimaryRadarCenter            string
 	primaryRadarCenterLocation    Point2LL
 	SecondaryRadarCenters         [3]string
@@ -67,13 +57,6 @@ type PositionConfig struct {
 	RadarRange                    int32
 	primaryFrequency              Frequency // We don't save this in the config file
 	Frequencies                   map[string]Frequency
-	ControllerATIS                string
-
-	FKeyMappings      [13]string // The first entry is unused; in this way F1 corresponds to FKeyMappings[1], etc.
-	ShiftFKeyMappings [13]string
-
-	todos  []ToDoReminderItem
-	timers []TimerReminderItem
 
 	selectedAircraft *Aircraft
 
@@ -90,158 +73,6 @@ type PositionConfig struct {
 	txFrequencies, rxFrequencies map[Frequency]*bool
 
 	eventsId EventSubscriberId
-}
-
-// Some UI state that needs  to stick around
-var (
-	serverComboState *ComboBoxState = NewComboBoxState(2)
-)
-
-func (c *GlobalConfig) DrawFilesUI() {
-	if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Sector file: ")
-		imgui.TableNextColumn()
-		imgui.Text(c.SectorFile)
-		imgui.TableNextColumn()
-		if imgui.Button("New...##sectorfile") {
-			ui.openSectorFileDialog.Activate()
-		}
-		imgui.TableNextColumn()
-		if c.SectorFile != "" && imgui.Button("Reload##sectorfile") {
-			_ = database.LoadSectorFile(c.SectorFile)
-		}
-
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Position file: ")
-		imgui.TableNextColumn()
-		imgui.Text(c.PositionFile)
-		imgui.TableNextColumn()
-		if imgui.Button("New...##positionfile") {
-			ui.openPositionFileDialog.Activate()
-		}
-		imgui.TableNextColumn()
-		if c.PositionFile != "" && imgui.Button("Reload##positionfile") {
-			_ = database.LoadPositionFile(c.PositionFile)
-		}
-
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Aliases file: ")
-		imgui.TableNextColumn()
-		imgui.Text(c.AliasesFile)
-		imgui.TableNextColumn()
-		if imgui.Button("New...##aliasesfile") {
-			ui.openAliasesFileDialog.Activate()
-		}
-		imgui.TableNextColumn()
-		if c.AliasesFile != "" && imgui.Button("Reload##aliasesfile") {
-			c.LoadAliasesFile()
-		}
-
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Notes file: ")
-		imgui.TableNextColumn()
-		imgui.Text(c.NotesFile)
-		imgui.TableNextColumn()
-		if imgui.Button("New...##notesfile") {
-			ui.openNotesFileDialog.Activate()
-		}
-		imgui.TableNextColumn()
-		if c.NotesFile != "" && imgui.Button("Reload##notesfile") {
-			c.LoadNotesFile()
-		}
-
-		imgui.EndTable()
-	}
-}
-
-func (c *GlobalConfig) DrawServersUI() {
-	config := ComboBoxDisplayConfig{
-		ColumnHeaders:    []string{"Name", "Address"},
-		DrawHeaders:      true,
-		SelectAllColumns: true,
-		EntryNames:       []string{"Name", "Address"},
-	}
-	DrawComboBox(serverComboState, config, SortedMapKeys(globalConfig.CustomServers),
-		/* draw column */ func(s string, col int) {
-			imgui.Text(globalConfig.CustomServers[s])
-		},
-		/* valid */ func(entries []*string) bool {
-			for _, e := range entries {
-				if *e == "" {
-					return false
-				}
-			}
-			return true
-		},
-		/* add */ func(entries []*string) {
-			globalConfig.CustomServers[*entries[0]] = *entries[1]
-		},
-		/* delete */ func(selected map[string]interface{}) {
-			for k := range selected {
-				delete(globalConfig.CustomServers, k)
-			}
-		})
-}
-
-func (gc *GlobalConfig) LoadAliasesFile() {
-	if gc.AliasesFile == "" {
-		return
-	}
-	gc.aliases = make(map[string]string)
-
-	f, err := os.Open(gc.AliasesFile)
-	if err != nil {
-		lg.Printf("%s: unable to read aliases file: %v", gc.AliasesFile, err)
-		ShowErrorDialog("Unable to read aliases file: %v.", err)
-	}
-	defer f.Close()
-
-	errors := ""
-	sc := bufio.NewScanner(f)
-	for sc.Scan() {
-		line := sc.Text()
-		if len(line) == 0 || line[0] != '.' {
-			continue
-		}
-
-		def := strings.SplitAfterN(line, " ", 2)
-		lg.Errorf("%s -> %d %+v", line, len(def), def)
-		if len(def) != 2 {
-			errors += def[0] + ": no alias definition found\n"
-			continue
-		}
-
-		def[0] = strings.TrimSpace(def[0])
-		if _, ok := gc.aliases[def[0]]; ok {
-			errors += def[0] + ": multiple definitions in alias file\n"
-			// but continue and keep the latter one...
-		}
-
-		gc.aliases[def[0]] = def[1]
-	}
-
-	if len(errors) > 0 {
-		ShowErrorDialog("Errors found in alias file:\n%s", errors)
-	}
-}
-
-func (gc *GlobalConfig) LoadNotesFile() {
-	if gc.NotesFile == "" {
-		return
-	}
-
-	notes, err := os.ReadFile(gc.NotesFile)
-	if err != nil {
-		lg.Printf("%s: unable to read notes file: %v", gc.NotesFile, err)
-		ShowErrorDialog("Unable to read notes file: %v.", err)
-	} else {
-		gc.notesRoot = parseNotes(string(notes))
-	}
 }
 
 func configFilePath() string {
@@ -363,7 +194,6 @@ func (pc *PositionConfig) Activate() {
 	}
 
 	pc.CheckRadarCenters()
-	pc.CheckRadioPrimed()
 
 	pos, _ := database.Locate(pc.PrimaryRadarCenter)
 	pc.primaryRadarCenterLocation = pos
@@ -380,7 +210,6 @@ func (pc *PositionConfig) Deactivate() {
 
 func (pc *PositionConfig) SendUpdates() {
 	pc.CheckRadarCenters()
-	pc.CheckRadioPrimed()
 
 	server.SetRadarCenters(pc.primaryRadarCenterLocation, pc.secondaryRadarCentersLocation,
 		int(pc.RadarRange))
@@ -459,20 +288,6 @@ func (c *PositionConfig) CheckRadarCenters() {
 						!c.secondaryRadarCentersLocation[i].IsZero()
 				})
 		}
-	}
-}
-
-func (c *PositionConfig) CheckRadioPrimed() {
-	if ui.showRadioSettings || !server.Connected() || c.VatsimFacility == FacilityOBS {
-		return
-	}
-
-	if c.primaryFrequency == Frequency(0) {
-		pc := c
-		uiAddError("Primary radio frequency has not been set. Set it via Settings/Radio...",
-			func() bool {
-				return pc != c || c.primaryFrequency != Frequency(0) || !server.Connected()
-			})
 	}
 }
 
@@ -621,62 +436,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.CustomServers = make(map[string]string)
 	}
 
-	globalConfig.LoadAliasesFile()
-	globalConfig.LoadNotesFile()
-
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
-}
-
-func parseNotes(text string) *NotesNode {
-	root := &NotesNode{}
-	var hierarchy []*NotesNode
-	hierarchy = append(hierarchy, root)
-
-	for _, line := range strings.Split(text, "\n") {
-		depth := 0
-		for depth < len(line) && line[depth] == '*' {
-			depth++
-		}
-
-		current := hierarchy[len(hierarchy)-1]
-		isHeader := depth > 0
-		if !isHeader {
-			if len(current.text) == 0 && strings.TrimSpace(line) == "" {
-				// drop leading blank lines
-			} else {
-				current.text = append(current.text, line)
-			}
-			continue
-		}
-
-		// We're done with the text for this node; drop any trailing lines
-		// in the text that are purely whitespace.
-		for i := len(current.text) - 1; i > 0; i-- {
-			if strings.TrimSpace(current.text[i]) == "" {
-				current.text = current.text[:i]
-			} else {
-				break
-			}
-		}
-
-		for depth > len(hierarchy) {
-			hierarchy = append(hierarchy, &NotesNode{})
-			n := len(hierarchy)
-			hierarchy[n-2].children = append(hierarchy[n-2].children, hierarchy[n-1])
-		}
-
-		newNode := &NotesNode{title: strings.TrimSpace(line[depth:])}
-		if depth == len(hierarchy) {
-			hierarchy = append(hierarchy, newNode)
-		} else {
-			hierarchy[depth] = newNode
-			hierarchy = hierarchy[:depth+1]
-		}
-		n := len(hierarchy)
-		hierarchy[n-2].children = append(hierarchy[n-2].children, newNode)
-	}
-
-	return root
 }
 
 func (pc *PositionConfig) Update() {
