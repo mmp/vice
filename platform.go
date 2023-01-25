@@ -36,10 +36,6 @@ type Platform interface {
 	CancelShouldStop()
 	// SetWindowTitle sets the title of the appllication window.
 	SetWindowTitle(text string)
-	// IsControlFPressed is annoyingly specialized and returns what its
-	// name indicates, though it seems to be the best way to handle this,
-	// given different handling of keycodes/scancodes in GLFW/SDL2.
-	IsControlFPressed() bool
 	// InputCharacters returns a string of all the characters (generally at most one!) that have
 	// been entered since the last call to ProcessEvents.
 	InputCharacters() string
@@ -146,11 +142,6 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 	} else {
 		glfw.SwapInterval(0)
 	}
-}
-
-func (g *GLFWPlatform) IsControlFPressed() bool {
-	io := imgui.CurrentIO()
-	return imgui.IsKeyPressed('F') && io.KeyCtrlPressed()
 }
 
 func (g *GLFWPlatform) Dispose() {
@@ -494,11 +485,6 @@ func (*SDLPlatform) EnableVSync(sync bool) {
 	} else {
 		_ = sdl.GLSetSwapInterval(0)
 	}
-}
-
-func (s *SDLPlatform) IsControlFPressed() bool {
-	io := imgui.CurrentIO()
-	return imgui.IsKeyPressed(int(sdl.SCANCODE_F)) && io.KeyCtrlPressed()
 }
 
 func (s *SDLPlatform) SetWindowTitle(t string) {

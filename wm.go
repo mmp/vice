@@ -43,10 +43,6 @@ var (
 		showPaneSettings map[Pane]*bool
 		showPaneName     map[Pane]string
 
-		// If a single Pane is to be displayed (via control-f), this is a
-		// *DisplayNode for it.
-		fullScreenDisplayNode *DisplayNode
-
 		// Normally the Pane that the mouse is over gets mouse events,
 		// though if the user has started a click-drag, then the Pane that
 		// received the click keeps getting events until the mouse button
@@ -600,27 +596,9 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	mousePos := [2]float32{imgui.MousePos().X, displaySize[1] - 1 - imgui.MousePos().Y}
 
 	// Figure out which Pane the mouse is in.
-	var mousePane Pane
-	if wm.fullScreenDisplayNode == nil {
-		mousePane = positionConfig.DisplayRoot.FindPaneForMouse(paneDisplayExtent, mousePos)
-	} else {
-		// mousePane = wm.fullScreenDisplayNode.Pane ?
-		mousePane = wm.fullScreenDisplayNode.FindPaneForMouse(paneDisplayExtent, mousePos)
-	}
+	mousePane := positionConfig.DisplayRoot.FindPaneForMouse(paneDisplayExtent, mousePos)
 
 	io := imgui.CurrentIO()
-	// Handle control-F, which either makes a Pane take up the window, or
-	// goes back to the regular configuration.
-	if !io.WantCaptureKeyboard() && platform.IsControlFPressed() {
-		if wm.fullScreenDisplayNode == nil {
-			// Don't maximize empty panes or split lines
-			if _, ok := mousePane.(*SplitLine); !ok && mousePane != nil {
-				wm.fullScreenDisplayNode = positionConfig.DisplayRoot.NodeForPane(mousePane)
-			}
-		} else {
-			wm.fullScreenDisplayNode = nil
-		}
-	}
 
 	// If the config editor is waiting for a Pane to be picked and the user
 	// clicked in a Pane, report that news back.
@@ -688,9 +666,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		// DisplayRoot. However, if a Pane has been maximized to cover the
 		// whole screen, we will instead start with it.
 		root := positionConfig.DisplayRoot
-		if wm.fullScreenDisplayNode != nil {
-			root = wm.fullScreenDisplayNode
-		}
 
 		// Actually visit the panes.
 		var keyboard *KeyboardState
