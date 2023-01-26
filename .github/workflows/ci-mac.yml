@@ -1,0 +1,94 @@
+name: build-osx
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-11 ]
+
+    name: Build ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+    - name: Setup go
+      uses: actions/setup-go@v3
+      with:
+        go-version-file: go.mod
+        cache: true
+        cache-dependency-path: go.sum
+
+    - name: Check go install
+      run: go version
+
+    - name: Install Mac dependencies
+      run: brew install sdl2
+    
+    - name: Build universal binary
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
+        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -tags static -o vice_amd64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -tags static -o vice_arm64 .
+        lipo -create -output vice vice_amd64 vice_arm64
+
+    - name: Run tests
+      run:
+        go test -v
+
+    - name: Create icons
+      run: |
+        mkdir -p icon.iconset
+        cp icons/tower-rounded-inset-16x16.png icon.iconset/icon_16x16.png
+        cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_16x16@2.png
+        cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_32x32.png
+        cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_32x32@2.png
+        cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_64x64.png
+        cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_64x64@2.png
+        cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_128x128.png
+        cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_128x128@2.png
+        cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_256x256.png
+        cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_256x256@2.png
+        cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_512x512.png
+        cp icons/tower-rounded-inset-1024x1024.png icon.iconset/icon_512x512@2.png
+        iconutil -c icns icon.iconset
+
+    - name: Create Vice.app
+      run: |
+        mkdir -p Vice.app/Contents/MacOS
+        cp osx/Info.plist Vice.App/Contents/
+        mkdir Vice.app/Contents/Resources
+        cp icon.icns Vice.app/Contents/Resources
+        cp vice Vice.app/Contents/MacOS/
+
+    - name: Create zip file for notarized app
+      run:
+        zip -rv Vice-osx.zip Vice.app
+
+    - name: Save zip file as build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Vice-osx.zip
+        path: Vice-osx.zip
+
+    - name: Rename zip for release (maybe)
+      if: startsWith(github.ref, 'refs/tags/')
+      run:
+        mv Vice-osx.zip 'Vice-${{ github.ref_name }}-osx.zip'
+
+    - name: Upload release (maybe)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'Vice-${{ github.ref_name }}-osx.zip'

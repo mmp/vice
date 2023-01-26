@@ -1,0 +1,49 @@
+name: build-linux
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-20.04 ]
+
+    name: Build ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+    - name: Setup go
+      uses: actions/setup-go@v3
+      with:
+        go-version-file: go.mod
+        cache: true
+        cache-dependency-path: go.sum
+
+    - name: Check go install
+      run: go version
+
+    - name: Install Linux dependencies
+      run: |
+        sudo apt update
+        sudo apt install xorg-dev libsdl2-dev libsystemd-dev
+
+    - name: Build
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
+        go build -tags imguifreetype -o ./ ./...
+        ls
+
+    - name: Run tests
+      run:
+        go test -v
