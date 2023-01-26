@@ -90,6 +90,8 @@ func uiInit(renderer Renderer) {
 	// take some time (or may even time out, etc.)
 	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
 	go checkForNewRelease(ui.newReleaseDialogChan)
+
+	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 }
 
 // uiAddError lets the caller specify an error message to be displayed
@@ -154,31 +156,25 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
-		if imgui.BeginMenu("Connection") {
-			if imgui.MenuItemV("Connect...", "", false, !server.Connected()) {
-				uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
-			}
-			if imgui.MenuItemV("Disconnect...", "", false, server.Connected()) {
-				uiShowModalDialog(NewModalDialogBox(&DisconnectModalClient{}), false)
-			}
-			imgui.EndMenu()
-		}
-
-		if imgui.BeginMenu("Settings") {
-			if imgui.MenuItem("Save") {
-				if err := globalConfig.Save(); err != nil {
-					ShowErrorDialog("Error saving configuration file: %v", err)
+		// SimServer is all it can be at this point....
+		if ss, ok := server.(*SimServer); ok {
+			if imgui.BeginMenu("Simulation") {
+				if ss.Paused() {
+					if imgui.MenuItem("Resume") {
+						ss.TogglePause()
+					}
+				} else {
+					if imgui.MenuItem("Pause") {
+						ss.TogglePause()
+					}
 				}
+				imgui.Separator()
+				if imgui.MenuItem("Settings...") {
+					ss.ActivateSettingsWindow()
+				}
+				ss.DrawSettingsWindow()
+				imgui.EndMenu()
 			}
-			if imgui.MenuItem("Sounds...") {
-				ui.showSoundConfig = true
-			}
-			imgui.EndMenu()
-		}
-
-		if imgui.BeginMenu("Subwindows") {
-			wmAddPaneMenuSettings()
-			imgui.EndMenu()
 		}
 
 		if imgui.BeginMenu("Help") {
@@ -515,7 +511,7 @@ func (c ConnectionType) String() string {
 	return [...]string{"Sim Server"}[c]
 }
 
-func (c *ConnectModalClient) Title() string { return "New Connection" }
+func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.connectionType = ConnectionTypeSimServer
@@ -560,16 +556,17 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *ConnectModalClient) Draw() int {
-	if imgui.BeginComboV("Type", c.connectionType.String(), imgui.ComboFlagsHeightLarge) {
-		for i := 0; i < ConnectionTypeCount; i++ {
-			ct := ConnectionType(i)
-			if imgui.SelectableV(ct.String(), ct == c.connectionType, 0, imgui.Vec2{}) {
-				c.connectionType = ct
+	/*
+		if imgui.BeginComboV("Type", c.connectionType.String(), imgui.ComboFlagsHeightLarge) {
+			for i := 0; i < ConnectionTypeCount; i++ {
+				ct := ConnectionType(i)
+				if imgui.SelectableV(ct.String(), ct == c.connectionType, 0, imgui.Vec2{}) {
+					c.connectionType = ct
+				}
 			}
+			imgui.EndCombo()
 		}
-		imgui.EndCombo()
-	}
-
+	*/
 	var enter bool
 	switch c.connectionType {
 	case ConnectionTypeSimServer:

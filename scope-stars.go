@@ -68,6 +68,11 @@ type STARSPane struct {
 	// map from legit to their ghost, if present
 	ghostAircraft map[*Aircraft]*Aircraft
 
+	aircraftToIndex map[*Aircraft]int // for use in lists
+	indexToAircraft map[int]*Aircraft // map is sort of wasteful since it's dense, but...
+
+	AutoTrackDepartures map[string]interface{}
+
 	pointedOutAircraft *TransientMap[*Aircraft, string]
 	queryUnassociated  *TransientMap[*Aircraft, interface{}]
 
@@ -278,7 +283,10 @@ func (rs *STARSRadarSite) CheckVisibility(p Point2LL, altitude int) (primary, se
 }
 
 func MakeSTARSMap() STARSMap {
-	return STARSMap{Draw: NewStaticDrawConfig()}
+	sm := STARSMap{Draw: NewStaticDrawConfig()}
+	sm.Draw.DrawRegions = false
+	sm.Draw.DrawLabels = false
+	return sm
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -465,9 +473,11 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.RadarSiteSelected = make([]bool, len(facility.RadarSites))
 	ps.MapVisible = make([]bool, len(facility.Maps))
-
+	if len(facility.Maps) > 0 {
+		ps.MapVisible[0] = true
+	}
 	ps.LeaderLineDirection = North
-	ps.LeaderLineLength = 3
+	ps.LeaderLineLength = 1
 
 	ps.AltitudeFilters.Unassociated = [2]int{100, 60000}
 	ps.AltitudeFilters.Associated = [2]int{100, 60000}
@@ -497,17 +507,17 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 	ps.CharSize.Tools = 1
 	ps.CharSize.PositionSymbols = 0
 
-	ps.PreviewAreaPosition = [2]float32{.05, .6}
+	ps.PreviewAreaPosition = [2]float32{.05, .8}
 
 	ps.SSAList.Position = [2]float32{.05, .95}
 	ps.SSAList.Visible = true
 	ps.SSAList.Filter.All = true
 
-	ps.TABList.Position = [2]float32{.85, .8}
+	ps.TABList.Position = [2]float32{.05, .7}
 	ps.TABList.Lines = 5
 	ps.TABList.Visible = true
 
-	ps.VFRList.Position = [2]float32{.85, .4}
+	ps.VFRList.Position = [2]float32{.05, .2}
 	ps.VFRList.Lines = 5
 	ps.VFRList.Visible = true
 
@@ -517,13 +527,13 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.CoastList.Position = [2]float32{.85, .65}
 	ps.CoastList.Lines = 5
-	ps.CoastList.Visible = true
+	ps.CoastList.Visible = false
 
 	ps.SignOnList.Position = [2]float32{.85, .95}
 	ps.SignOnList.Visible = true
 
 	ps.VideoMapsList.Position = [2]float32{.85, .5}
-	ps.VideoMapsList.Visible = true
+	ps.VideoMapsList.Visible = false
 
 	ps.CRDAStatusList.Position = [2]float32{.05, .7}
 
@@ -670,6 +680,13 @@ func (sp *STARSPane) Activate() {
 		sp.UIFontIdentifier = sp.uiFont.id
 	}
 
+	sp.aircraftToIndex = make(map[*Aircraft]int)
+	sp.indexToAircraft = make(map[int]*Aircraft)
+
+	if sp.AutoTrackDepartures == nil {
+		sp.AutoTrackDepartures = make(map[string]interface{})
+	}
+
 	sp.eventsId = eventStream.Subscribe()
 
 	sp.weatherRadar.Activate(sp.currentPreferenceSet.Center)
@@ -694,6 +711,8 @@ func (sp *STARSPane) Deactivate() {
 }
 
 func (sp *STARSPane) DrawUI() {
+	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
+
 	if newFont, changed := DrawFontPicker(&sp.LabelFontIdentifier, "Label font"); changed {
 		sp.labelFont = newFont
 	}
@@ -993,6 +1012,15 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 				sp.aircraft[v.ac] = &STARSAircraftState{}
 			}
 
+			// Heuristic to find recent departures...
+			if fp := v.ac.FlightPlan; fp != nil {
+				if v.ac.TrackingController == "" && v.ac.Altitude() < 1000 && v.ac.AltitudeChange() > 0 {
+					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
+						server.InitiateTrack(v.ac.Callsign) // ignore error...
+					}
+				}
+			}
+
 			// new ghost
 			if !ps.DisableCRDA {
 				if ghost := sp.Facility.CRDAConfig.GetGhost(v.ac); ghost != nil {
@@ -1268,6 +1296,17 @@ func (sp *STARSPane) activateMenuSpinner(ptr unsafe.Pointer) {
 	activeSpinner = ptr
 }
 
+func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
+	if idx, ok := sp.aircraftToIndex[ac]; ok {
+		return idx
+	} else {
+		idx := len(sp.aircraftToIndex) + 1
+		sp.aircraftToIndex[ac] = idx
+		sp.indexToAircraft[idx] = ac
+		return idx
+	}
+}
+
 func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus) {
 	lookupCallsign := func(callsign string) string {
 		if server.GetAircraft(callsign) != nil {
@@ -1280,7 +1319,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			}
 		}
 
-		// TODO: handle list number
+		if idx, err := strconv.Atoi(callsign); err == nil {
+			if ac, ok := sp.indexToAircraft[idx]; ok {
+				return ac.Callsign
+			}
+		}
 
 		return callsign
 	}
@@ -1338,8 +1381,39 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			return
 		}
 
+		f := strings.Fields(cmd)
+		if len(f) > 1 && f[0] == ".AUTOTRACK" {
+			for _, airport := range f[1:] {
+				if airport == "NONE" {
+					sp.AutoTrackDepartures = make(map[string]interface{})
+				} else if airport == "ALL" {
+					for _, ap := range sp.Facility.Airports {
+						sp.AutoTrackDepartures[ap.ICAOCode] = nil
+					}
+				} else {
+					// See if it's in the facility
+					found := false
+					for _, ap := range sp.Facility.Airports {
+						if ap.ICAOCode == airport {
+							found = true
+							break
+						}
+					}
+					if found {
+						sp.AutoTrackDepartures[airport] = nil
+					} else {
+						status.err = ErrSTARSIllegalParam
+						return
+					}
+				}
+			}
+			status.clear = true
+			return
+		}
+
 	case CommandModeInitiateControl:
 		status.err = server.InitiateTrack(lookupCallsign(cmd))
+		status.clear = true
 		return
 
 	case CommandModeTerminateControl:
@@ -1871,7 +1945,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		psave := sp.currentPreferenceSet.Duplicate()
 		psave.Name = cmd
 		sp.PreferenceSets = append(sp.PreferenceSets, psave)
+		sp.SelectedPreferenceSet = len(sp.PreferenceSets) - 1
 		status.clear = true
+		globalConfig.Save()
 		return
 
 	case CommandModeMapsMenu:
@@ -2144,7 +2220,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 			if len(cmd) > 0 && (cmd[0] == 'D' || cmd[0] == 'H' || cmd[0] == 'L' ||
 				cmd[0] == 'R' || cmd[0] == 'A' || cmd[0] == 'C' || cmd[0] == '?' ||
-				cmd[0] == 'X' || cmd[0] == 'P') {
+				cmd[0] == 'X' || cmd[0] == 'S') {
 				sim, ok := server.(*SimServer)
 				if !ok {
 					status.err = errors.New("Can't issue control commands to a/c")
@@ -2216,6 +2292,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 							status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
 						}
 
+					case 'S':
+						kts, end, err := getnum()
+						b = b[end:]
+						status.err = err
+						if err == nil {
+							status.err = sim.AssignSpeed(ac.Callsign, kts)
+						}
+
 					case '?':
 						b = b[1:]
 						status.err = sim.PrintInfo(ac.Callsign)
@@ -2223,10 +2307,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					case 'X':
 						b = b[1:]
 						status.err = sim.DeleteAircraft(ac.Callsign)
-
-					case 'P':
-						b = b[1:]
-						status.err = sim.TogglePause()
 
 					default:
 						status.err = errors.New("Unknown command: " + string(b))
@@ -2730,7 +2810,11 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 	case DCBMenuPref:
 		for i := range sp.PreferenceSets {
 			text := fmt.Sprintf("%d\n%s", i+1, sp.PreferenceSets[i].Name)
-			if STARSSelectButton(text, STARSButtonHalfVertical) {
+			flags := STARSButtonHalfVertical
+			if i == sp.SelectedPreferenceSet {
+				flags = flags | STARSButtonSelected
+			}
+			if STARSSelectButton(text, flags) {
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.currentPreferenceSet = sp.PreferenceSets[i]
@@ -2752,6 +2836,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		if validSelection {
 			if STARSSelectButton("SAVE", STARSButtonHalfVertical) {
 				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.currentPreferenceSet
+				globalConfig.Save()
 			}
 		} else {
 			STARSDisabledButton("SAVE", STARSButtonHalfVertical)
@@ -3120,49 +3205,55 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	}
 
 	if ps.VFRList.Visible {
-		var vfr []string
+		vfr := make(map[int]*Aircraft)
 		// Find all untracked VFR aircraft
 		for _, ac := range aircraft {
 			if ac.Squawk == Squawk(0o1200) && ac.TrackingController == "" {
-				vfr = append(vfr, ac.Callsign)
+				vfr[sp.getAircraftIndex(ac)] = ac
 			}
 		}
-		sort.Strings(vfr)
 
-		// Limit to the maximum the user set
-		if len(vfr) > ps.VFRList.Lines {
-			vfr = vfr[:ps.VFRList.Lines]
-		}
-		for i, callsign := range vfr {
-			vfr[i] = fmt.Sprintf("%2d %-7s VFR", i+1, callsign)
+		text := "VFR LIST\n"
+		for i, acIdx := range SortedMapKeys(vfr) {
+			ac := vfr[acIdx]
+			text += fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign)
+
+			// Limit to the user limit
+			if i == ps.TABList.Lines {
+				text += fmt.Sprintf("%d/%d AIRCRAFT", i, len(vfr))
+				break
+			}
 		}
 
-		text := "VFR LIST\n" + strings.Join(vfr, "\n")
 		drawList(text, ps.VFRList.Position)
 	}
 
 	if ps.TABList.Visible {
-		var dep []string
+		dep := make(map[int]*Aircraft)
 		// Untracked departures departing from one of our airports
 		for _, ac := range aircraft {
 			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
 				for _, ap := range sp.Facility.Airports {
 					if fp.DepartureAirport == ap.ICAOCode {
-						dep = append(dep, fmt.Sprintf("%-7s %s", ac.Callsign, ac.Squawk.String()))
+						dep[sp.getAircraftIndex(ac)] = ac
 						break
 					}
 				}
 			}
 		}
-		sort.Strings(dep)
-		// Limit to the user limit
-		if len(dep) > ps.TABList.Lines {
-			dep = dep[:ps.TABList.Lines]
+
+		text := "FLIGHT PLAN\n"
+		for i, acIdx := range SortedMapKeys(dep) {
+			ac := dep[acIdx]
+			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
+
+			// Limit to the user limit
+			if i == ps.TABList.Lines {
+				text += fmt.Sprintf("%d/%d AIRCRAFT", i, len(dep))
+				break
+			}
 		}
-		for i, departure := range dep {
-			dep[i] = fmt.Sprintf("%2d %s", i+1, departure)
-		}
-		text := "FLIGHT PLAN\n" + strings.Join(dep, "\n")
+
 		drawList(text, ps.TABList.Position)
 	}
 
@@ -3306,13 +3397,14 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 		color := brightness.ScaleRGB(STARSTrackBlockColor)
-		if _, secondary, _ := sp.radarVisibility(ac.Position(), ac.Altitude()); secondary {
+		primary, secondary, _ := sp.radarVisibility(ac.Position(), ac.Altitude())
+		if primary {
+			// Draw a filled box
+			trid.AddQuad(box[0], box[1], box[2], box[3], color)
+		} else if secondary {
 			// If it's just a secondary return, only draw the box outline.
 			// TODO: is this 40nm, or secondary?
 			ld.AddPolyline([2]float32{}, color, box[:])
-		} else {
-			// Draw a filled box
-			trid.AddQuad(box[0], box[1], box[2], box[3], color)
 		}
 
 		if !ps.multiRadarMode() {
@@ -3519,7 +3611,12 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 		return
 	}
 
-	switch sp.datablockType(ac) {
+	ty := sp.datablockType(ac)
+	if ac.TrackingController == server.Callsign() {
+		ty = FullDatablock // always full if we're tracking it
+	}
+
+	switch ty {
 	case LimitedDatablock:
 		mainblock[0] = append(mainblock[0], "TODO LIMITED DATABLOCK")
 		mainblock[1] = append(mainblock[1], "TODO LIMITED DATABLOCK")
@@ -3941,20 +4038,20 @@ var (
 )
 
 const (
-	STARSButtonFull = iota
+	STARSButtonFull = 1 << iota
 	STARSButtonHalfVertical
 	STARSButtonHalfHorizontal
+	STARSButtonSelected
 )
 
 func starsButtonSize(flags int) imgui.Vec2 {
-	switch flags {
-	case STARSButtonFull:
+	if (flags & STARSButtonFull) != 0 {
 		return imgui.Vec2{X: STARSButtonWidth, Y: STARSButtonHeight}
-	case STARSButtonHalfVertical:
+	} else if (flags & STARSButtonHalfVertical) != 0 {
 		return imgui.Vec2{X: STARSButtonWidth, Y: STARSButtonHeight / 2}
-	case STARSButtonHalfHorizontal:
+	} else if (flags & STARSButtonHalfHorizontal) != 0 {
 		return imgui.Vec2{X: STARSButtonWidth / 2, Y: STARSButtonHeight}
-	default:
+	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
 		return imgui.Vec2{X: STARSButtonWidth, Y: STARSButtonHeight}
 	}
@@ -4004,18 +4101,15 @@ func (sp *STARSPane) EndDrawDCB() {
 }
 
 func updateImguiCursor(flags int, pos imgui.Vec2) {
-	switch flags {
-	case STARSButtonFull, STARSButtonHalfHorizontal:
+	if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfHorizontal) != 0 {
 		imgui.SameLine()
-
-	case STARSButtonHalfVertical:
+	} else if (flags & STARSButtonHalfVertical) != 0 {
 		if pos.Y == 0 {
 			imgui.SetCursorPos(imgui.Vec2{X: pos.X, Y: STARSButtonHeight / 2})
 		} else {
 			imgui.SetCursorPos(imgui.Vec2{X: pos.X + STARSButtonWidth, Y: 0})
 		}
-
-	default:
+	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
 	}
 }
@@ -4125,7 +4219,13 @@ func STARSBrightnessSpinner(text string, b *STARSBrightness, flags int) {
 
 func STARSSelectButton(text string, flags int) bool {
 	pos := imgui.CursorPos()
+	if flags&STARSButtonSelected != 0 {
+		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorButtonActive))
+	}
 	result := imgui.ButtonV(text, starsButtonSize(flags))
+	if flags&STARSButtonSelected != 0 {
+		imgui.PopStyleColorV(1)
+	}
 	updateImguiCursor(flags, pos)
 	return result
 }
@@ -4240,6 +4340,7 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 			if site.Valid() {
 				if p, s, _ := site.CheckVisibility(ac.Position(), ac.Altitude()); p || s {
 					aircraft = append(aircraft, ac)
+					break
 				}
 			}
 		}

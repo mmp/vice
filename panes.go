@@ -330,7 +330,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 	return ok
 }
 
-func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return true }
+func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
 func (fsp *FlightStripPane) processEvents(es *EventStream) {
 	possiblyAdd := func(ac *Aircraft) {
@@ -348,9 +348,6 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 	}
 
 	remove := func(ac *Aircraft) {
-		// Thus, if we later see the same callsign from someone else, we'll
-		// treat them as new.
-		delete(fsp.addedAircraft, ac.Callsign)
 		fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != ac.Callsign })
 	}
 
@@ -502,17 +499,18 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		fp := ac.FlightPlan
 
-		style := TextStyle{Font: fsp.font, Color: ctx.cs.Text}
+		style := TextStyle{Font: fsp.font, Color: RGB{.1, .1, .1}}
 
 		// Draw background quad for this flight strip
 		qb := GetColoredTrianglesDrawBuilder()
 		defer ReturnColoredTrianglesDrawBuilder(qb)
 		bgColor := func() RGB {
-			if fsp.isDeparture(ac) {
+			/*if fsp.isDeparture(ac) {
 				return ctx.cs.DepartureStrip
 			} else {
 				return ctx.cs.ArrivalStrip
-			}
+			}*/
+			return RGB{.9, .9, .85}
 		}()
 		y0, y1 := y+1+vpad-stripHeight, y+1+vpad
 		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
@@ -712,26 +710,28 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 	// Take focus if the user clicks in the annotations
-	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
-		annotationStartX := drawWidth - 3*widthAnn
-		if xp := ctx.mouse.Pos[0]; xp >= annotationStartX && xp < drawWidth {
-			stripIndex := int(ctx.mouse.Pos[1]/stripHeight) + scrollOffset
-			if stripIndex < len(fsp.strips) {
-				wmTakeKeyboardFocus(fsp, true)
-				fsp.selectedStrip = stripIndex
+	/*
+		if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
+			annotationStartX := drawWidth - 3*widthAnn
+			if xp := ctx.mouse.Pos[0]; xp >= annotationStartX && xp < drawWidth {
+				stripIndex := int(ctx.mouse.Pos[1]/stripHeight) + scrollOffset
+				if stripIndex < len(fsp.strips) {
+					wmTakeKeyboardFocus(fsp, true)
+					fsp.selectedStrip = stripIndex
 
-				// Figure out which annotation was selected
-				xa := int(ctx.mouse.Pos[0]-annotationStartX) / int(widthAnn)
-				ya := 2 - (int(ctx.mouse.Pos[1])%int(stripHeight))/(int(stripHeight)/3)
-				xa, ya = clamp(xa, 0, 2), clamp(ya, 0, 2) // just in case
-				fsp.selectedAnnotation = 3*ya + xa
+					// Figure out which annotation was selected
+					xa := int(ctx.mouse.Pos[0]-annotationStartX) / int(widthAnn)
+					ya := 2 - (int(ctx.mouse.Pos[1])%int(stripHeight))/(int(stripHeight)/3)
+					xa, ya = clamp(xa, 0, 2), clamp(ya, 0, 2) // just in case
+					fsp.selectedAnnotation = 3*ya + xa
 
-				callsign := fsp.strips[fsp.selectedStrip]
-				strip := server.GetFlightStrip(callsign)
-				fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+					callsign := fsp.strips[fsp.selectedStrip]
+					strip := server.GetFlightStrip(callsign)
+					fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+				}
 			}
 		}
-	}
+	*/
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(ctx.cs.UIControl)

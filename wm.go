@@ -15,6 +15,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -54,6 +55,9 @@ var (
 		// temporarily (e.g., the FlightStripPane), then this lets us pop
 		// back to the previous one (e.g., the CLIPane.)
 		keyboardFocusStack []Pane
+
+		lastAircraftResponse string
+		eventsId             EventSubscriberId
 	}
 )
 
@@ -376,6 +380,7 @@ func (d *DisplayNode) getString(indent string) string {
 func wmInit() {
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
+	wm.eventsId = eventStream.Subscribe()
 }
 
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
@@ -686,7 +691,48 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 		}
 	}
 
-	if len(ui.errorText) == 0 {
+	var texts []string
+	textCallsign := ""
+	for _, event := range eventStream.Get(wm.eventsId) {
+		switch v := event.(type) {
+		case *TextMessageEvent:
+			tm := v.message
+			if tm.messageType == TextBroadcast {
+				// Split the callsign into the ICAO and the flight number
+				// Note: this is buggy if we process multiple senders in a
+				// single call here, but that shouldn't happen...
+				idx := strings.IndexAny(tm.sender, "0123456789")
+				if idx == -1 {
+					textCallsign = tm.sender
+				} else {
+					// Try to get the telephony.
+					icao, flight := tm.sender[:idx], tm.sender[idx:]
+					if cs, ok := database.callsigns[icao]; ok {
+						textCallsign = cs.Telephony + " " + flight
+						if ac := server.GetAircraft(tm.sender); ac != nil {
+							if fp := ac.FlightPlan; fp != nil {
+								if strings.HasPrefix(fp.AircraftType, "H/") {
+									textCallsign += " heavy"
+								} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+									textCallsign += " super"
+								}
+							}
+						}
+					} else {
+						textCallsign = tm.sender
+					}
+				}
+
+				texts = append(texts, tm.contents)
+			}
+		}
+	}
+	if texts != nil {
+		wm.lastAircraftResponse = strings.Join(texts, ", ") + ", " + textCallsign
+		lg.Errorf("response: %s", wm.lastAircraftResponse)
+	}
+
+	if wm.lastAircraftResponse == "" && len(ui.errorText) == 0 {
 		return
 	}
 
@@ -714,24 +760,25 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
-	textp := [2]float32{15, 5 + float32(len(ui.errorText)*ui.font.size)}
+	textp := [2]float32{15, 5 + float32((1+len(ui.errorText))*ui.font.size)}
+	style := TextStyle{Font: ui.font, Color: ctx.cs.Text}
+	textp = td.AddText(wm.lastAircraftResponse+"\n", textp, style)
+
 	errorStyle := TextStyle{Font: ui.font, Color: ctx.cs.TextError}
 	for _, k := range SortedMapKeys(ui.errorText) {
 		textp = td.AddText(k+"\n", textp, errorStyle)
 	}
 
 	// Finally, add the text drawing commands to the graphics command buffer.
+	cb.ResetState()
 	td.GenerateCommands(cb)
 
 	cb.ResetState()
 }
 
 func wmStatusBarHeight() float32 {
-	if len(ui.errorText) == 0 {
-		return 0
-	}
 	// Reserve lines as needed for error text.
-	return float32(10 + (len(ui.errorText))*ui.font.size)
+	return float32(10 + (1+len(ui.errorText))*ui.font.size)
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,6 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"errors"
 	"io"
 	"os"
 	"path"
@@ -146,15 +145,6 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.InitialWindowSize[1] = 1080
 		globalConfig.InitialWindowPosition[0] = 100
 		globalConfig.InitialWindowPosition[1] = 100
-
-		if errors.Is(err, os.ErrNotExist) {
-			lg.Printf("%s: config file doesn't exist", fn)
-			_ = os.WriteFile(fn, config, 0o600)
-		} else {
-			lg.Printf("%s: unable to read config file: %v", fn, err)
-			ShowErrorDialog("Unable to read config file: %v\nUsing default configuration.", err)
-			fn = "default.config"
-		}
 	} else {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)
@@ -169,14 +159,112 @@ func LoadOrMakeDefaultConfig() {
 
 func (gc *GlobalConfig) Activate() {
 	if gc.DisplayRoot == nil {
+		stars := NewSTARSPane()
+		// hardcoded facility engineering here...
+		stars.Facility.Center = Point2LL{-73.7765, 40.6401}
+		stars.Facility.Airports = append(stars.Facility.Airports,
+			STARSAirport{ICAOCode: "KJFK", Range: 50, IncludeInSSA: true, TowerListIndex: 1},
+			STARSAirport{ICAOCode: "KFRG", Range: 30, IncludeInSSA: true, TowerListIndex: 2})
+
+		addMap := func(name string, group int, sid string, star string) {
+			m := MakeSTARSMap()
+			m.Name = name
+			m.Group = group
+			if sid != "" {
+				m.Draw.SIDDrawSet[sid] = nil
+			}
+			if star != "" {
+				m.Draw.STARDrawSet[star] = nil
+			}
+
+			stars.Facility.Maps = append(stars.Facility.Maps, m)
+			stars.currentPreferenceSet.MapVisible = append(stars.currentPreferenceSet.MapVisible, false)
+		}
+		addMap("JFK4", 0, "N90 JFK - 4s", "")
+		addMap("JFK13", 0, "N90 JFK - 13s", "")
+		addMap("JFK22", 0, "N90 JFK - 22s", "")
+		addMap("JFK31", 0, "N90 JFK - 31s", "")
+		addMap("NY B", 0, "", "New York Class B")
+		addMap("MVA", 0, "", "N90 - MVA")
+
+		addMap("JFK22 ILS", 0, "N90 JFK - ILS 22s", "")
+		addMap("JFK31 NTZ", 0, "N90 JFK - 31s NTZ", "")
+
+		addMap("LGA", 0, "N90 LGA - Video Map", "")
+		addMap("LIB D", 0, "N90 LIB - Departure", "")
+		addMap("LIB C", 0, "N90 LIB - Catskill", "")
+		addMap("EWR", 0, "N90 EWR - Video Map", "")
+		addMap("EWR SAT", 0, "N90 EWR - Satellite", "")
+		addMap("EWR CRDA", 0, "N90 EWR - CRDA", "")
+		addMap("ISP", 0, "N90 ISP - Video Map", "")
+
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
+			STARSRadarSite{Char: "E",
+				Id:             "EWR",
+				Position:       "KEWR",
+				Elevation:      136,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			})
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
+			STARSRadarSite{Char: "J",
+				Id:             "JFK",
+				Position:       "KJFK",
+				Elevation:      143,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			})
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
+			STARSRadarSite{Char: "I",
+				Id:             "ISP",
+				Position:       "KISP",
+				Elevation:      185,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			})
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
+			STARSRadarSite{Char: "H",
+				Id:             "HPN",
+				Position:       "KHPN",
+				Elevation:      708,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			})
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
+			STARSRadarSite{Char: "S",
+				Id:             "SWF",
+				Position:       "KSWF",
+				Elevation:      972,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			})
+
+		fsp := NewFlightStripPane()
+		fsp.Airports["KJFK"] = nil
+		fsp.AutoAddDepartures = true
+		fsp.AutoAddTracked = true
+		fsp.AutoAddAcceptedHandoffs = true
+		fsp.AutoRemoveDropped = true
+		fsp.AutoRemoveHandoffs = true
+
 		gc.DisplayRoot = &DisplayNode{
 			SplitLine: SplitLine{
-				Pos:  0.85,
+				Pos:  0.75,
 				Axis: SplitAxisX,
 			},
 			Children: [2]*DisplayNode{
-				&DisplayNode{Pane: NewSTARSPane()},
-				&DisplayNode{Pane: NewFlightStripPane()},
+				&DisplayNode{Pane: stars},
+				&DisplayNode{Pane: fsp},
 			},
 		}
 	}

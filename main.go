@@ -111,9 +111,7 @@ func main() {
 	LoadOrMakeDefaultConfig()
 
 	dbChan := make(chan *StaticDatabase)
-	SectorFile := "/Users/mmp/vatsim/sectorfiles/ZNY_Combined_VRC.sct2"
-	PositionFile := "/Users/mmp/go/src/github.com/mmp/vatce/resources/ZNY.pof"
-	go InitializeStaticDatabase(dbChan, SectorFile, PositionFile)
+	go InitializeStaticDatabase(dbChan)
 
 	if true {
 		// Multisampling on Retina displays seems to hit a performance

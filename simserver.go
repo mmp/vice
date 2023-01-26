@@ -19,6 +19,7 @@ import (
 type Simulator interface {
 	AssignAltitude(callsign string, altitude int) error
 	AssignHeading(callsign string, heading int) error
+	AssignSpeed(callsign string, kts int) error
 	DirectFix(callsign string, fix string) error
 	PrintInfo(callsign string) error
 	DeleteAircraft(callsign string) error
@@ -134,7 +135,6 @@ func NewRunwayConfig() *RunwayConfig {
 
 type SimServerConnectionConfiguration struct {
 	callsign      string
-	simRate       float32
 	numAircraft   int32
 	runwayConfigs map[string]*RunwayConfig // "KJFK/31L", etc
 	routes        []*Route
@@ -148,7 +148,6 @@ type SimServerConnectionConfiguration struct {
 func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.callsign = "JFK_DEP"
 	ssc.numAircraft = 30
-	ssc.simRate = 1
 	ssc.runwayConfigs = make(map[string]*RunwayConfig)
 	ssc.wind.dir = 50
 	ssc.wind.speed = 10
@@ -173,9 +172,8 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 }
 
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
-	imgui.InputText("Callsign", &ssc.callsign)
+	// imgui.InputText("Callsign", &ssc.callsign)
 	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
-	imgui.SliderFloatV("Simulation rate", &ssc.simRate, 0.25, 10, "%.1f", 0)
 
 	imgui.SliderIntV("Wind heading", &ssc.wind.dir, 0, 360, "%d", 0)
 	imgui.SliderIntV("Wind speed", &ssc.wind.speed, 0, 50, "%d", 0)
@@ -188,7 +186,11 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	}
 
 	for _, ap := range SortedMapKeys(airports) {
-		if !imgui.CollapsingHeader(ap) {
+		var headerFlags imgui.TreeNodeFlags
+		if ap == "KJFK" { // FIXME: make configurable to the scenario...
+			headerFlags = imgui.TreeNodeFlagsDefaultOpen
+		}
+		if !imgui.CollapsingHeaderV(ap, headerFlags) {
 			continue
 		}
 
@@ -350,6 +352,7 @@ type SSAircraft struct {
 	IAS, GS  float32 // speeds...
 
 	AssignedAltitude int
+	AssignedSpeed    int
 
 	AssignedHeading *int
 	TurnDirection   *int
@@ -433,7 +436,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		controllers:       make(map[string]*Controller),
 		currentTime:       time.Now(),
 		remainingLaunches: int(ssc.numAircraft),
-		simRate:           ssc.simRate,
+		simRate:           1,
 	}
 	ss.wind.dir = int(ssc.wind.dir)
 	ss.wind.speed = int(ssc.wind.speed)
@@ -772,9 +775,16 @@ func (ss *SimServer) updateSim() {
 		if ac.Altitude < 10000 {
 			targetSpeed = min(targetSpeed, 250)
 		}
-		if ac.IAS < float32(targetSpeed) {
+		// Don't allow an assigned speed that's faster than the a/c can handle.
+		if ac.AssignedSpeed != 0 && ac.AssignedSpeed < ac.SimAC.Speed.Cruise {
+			targetSpeed = ac.AssignedSpeed
+		}
+		if ac.IAS+1 < float32(targetSpeed) {
 			accel := ac.SimAC.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 			ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
+		} else if ac.IAS-1 > float32(targetSpeed) {
+			decel := ac.SimAC.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
+			ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
 		}
 
 		// Don't climb unless it's going fast enough to be airborne
@@ -1006,6 +1016,23 @@ func (ss *SimServer) AssignHeading(callsign string, heading int, turn int) error
 	}
 }
 
+func (ss *SimServer) AssignSpeed(callsign string, speed int) error {
+	if ac, ok := ss.aircraft[callsign]; !ok {
+		return ErrNoAircraftForCallsign
+	} else {
+		if speed == 0 {
+			pilotResponse(callsign, "cancel speed restrictions")
+		} else if speed == ac.AssignedSpeed {
+			pilotResponse(callsign, "we'll maintain %d knots", speed)
+		} else {
+			pilotResponse(callsign, "maintain %d knots", speed)
+		}
+
+		ac.AssignedSpeed = speed
+		return nil
+	}
+}
+
 func (ss *SimServer) DirectFix(callsign string, fix string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
@@ -1035,6 +1062,9 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 				s += fmt.Sprintf(" turn direction %d", *ac.TurnDirection)
 			}
 		}
+		if ac.AssignedSpeed != 0 {
+			s += fmt.Sprintf(", speed %d", ac.AssignedSpeed)
+		}
 		s += fmt.Sprintf(", route %+v", ac.Waypoints)
 		lg.Errorf("%s", s)
 	}
@@ -1051,10 +1081,36 @@ func (ss *SimServer) DeleteAircraft(callsign string) error {
 	}
 }
 
+func (ss *SimServer) Paused() bool {
+	return ss.paused
+}
+
 func (ss *SimServer) TogglePause() error {
 	ss.paused = !ss.paused
 	ss.lastUpdateTime = time.Now() // ignore time passage...
 	return nil
+}
+
+func (ss *SimServer) ActivateSettingsWindow() {
+}
+
+func (ss *SimServer) DrawSettingsWindow() {
+	/*
+	   // wmDrawUI draws any open Pane settings windows.
+	   func wmDrawUI(p Platform) {
+	   	globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
+	   		if show, ok := wm.showPaneSettings[pane]; ok && *show {
+	   			if uid, ok := pane.(PaneUIDrawer); ok {
+	   				imgui.BeginV(wm.showPaneName[pane]+" settings", show, imgui.WindowFlagsAlwaysAutoResize)
+	   				uid.DrawUI()
+	   				imgui.End()
+	   			}
+	   		}
+	   	})
+	   }
+
+	*/
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

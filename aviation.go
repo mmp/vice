@@ -487,6 +487,7 @@ func (a *Aircraft) AddTrack(t RadarTrack) {
 }
 
 func (a *Aircraft) Telephony() string {
+	// FIXME: this doesn't handle trailing characters: DAL42E
 	cs := strings.TrimRight(a.Callsign, "0123456789")
 	if sign, ok := database.callsigns[cs]; ok {
 		return sign.Telephony

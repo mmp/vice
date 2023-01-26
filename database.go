@@ -12,7 +12,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -154,7 +153,14 @@ func (c *ColorBufferIndex) Visit(name string, callback func(int)) {
 	}
 }
 
-func InitializeStaticDatabase(dbChan chan *StaticDatabase, sectorFile, positionFile string) {
+var (
+	//go:embed resources/ZNY_Combined_VRC.sct2.zst
+	sectorFile string
+	//go:embed resources/ZNY.pof.zst
+	positionFile string
+)
+
+func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 	start := time.Now()
 
 	db := &StaticDatabase{}
@@ -178,11 +184,11 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase, sectorFile, positionF
 	// These errors will appear the first time vice is launched and the
 	// user hasn't yet set these up.  (And also if the chosen files are
 	// moved or deleted, etc...)
-	if db.LoadSectorFile(sectorFile) != nil {
+	if db.LoadSectorFile("zny.sct2") != nil {
 		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
 			func() bool { return db.sectorFileLoadError == nil })
 	}
-	if db.LoadPositionFile(positionFile) != nil {
+	if db.LoadPositionFile("zny.pof") != nil {
 		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
 			func() bool { return db.positionFileLoadError == nil })
 	}
@@ -653,10 +659,7 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 }
 
 func parseSectorFile(sectorFilename string) (*sct2.SectorFile, error) {
-	contents, err := os.ReadFile(sectorFilename)
-	if err != nil {
-		return nil, err
-	}
+	contents := decompressZstd(sectorFile)
 
 	type SctResult struct {
 		sf  *sct2.SectorFile
@@ -691,7 +694,7 @@ func parseSectorFile(sectorFilename string) (*sct2.SectorFile, error) {
 		errorCallback := func(err string) {
 			lg.Errorf("%s: error parsing sector file: %s", sectorFilename, err)
 		}
-		sf, err = sct2.Parse(contents, sectorFilename, errorCallback)
+		sf, err = sct2.Parse([]byte(contents), sectorFilename, errorCallback)
 	}()
 
 	r := <-ch
@@ -780,14 +783,9 @@ func (db *StaticDatabase) LoadPositionFile(filename string) error {
 
 func parsePositionFile(filename string) (map[string][]Position, error) {
 	m := make(map[string][]Position)
+	contents := decompressZstd(positionFile)
 
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	scan := bufio.NewScanner(f)
+	scan := bufio.NewScanner(bytes.NewReader([]byte(contents)))
 	for scan.Scan() {
 		line := scan.Text()
 		if line == "" || line[0] == ';' {
