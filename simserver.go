@@ -288,6 +288,11 @@ func (ssc *SimServerConnectionConfiguration) Valid() bool {
 }
 
 func (ssc *SimServerConnectionConfiguration) Connect() error {
+	// Send out events to remove any existing aircraft (necessary for when
+	// we restart...)
+	for _, ac := range server.GetAllAircraft() {
+		eventStream.Post(&RemovedAircraftEvent{ac: ac})
+	}
 	server = NewSimServer(*ssc)
 	return nil
 }
@@ -384,6 +389,8 @@ type SimServer struct {
 	lastSimUpdate   time.Time
 
 	spawners []*RunwaySpawner
+
+	showSettings bool
 }
 
 func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
@@ -575,7 +582,7 @@ func (ss *SimServer) Handoff(callsign string, controller string) error {
 	} else {
 		ac.AC.OutboundHandoffController = ctrl.Callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
-		eventStream.Post(&OfferedHandoffEvent{ac: ac.AC})
+		eventStream.Post(&OfferedHandoffEvent{controller: ss.callsign, ac: ac.AC})
 		acceptDelay := 2 + rand.Intn(10)
 		ss.handoffs[callsign] = ss.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 		return nil
@@ -1092,25 +1099,41 @@ func (ss *SimServer) TogglePause() error {
 }
 
 func (ss *SimServer) ActivateSettingsWindow() {
+	ss.showSettings = true
+
 }
 
 func (ss *SimServer) DrawSettingsWindow() {
-	/*
-	   // wmDrawUI draws any open Pane settings windows.
-	   func wmDrawUI(p Platform) {
-	   	globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-	   		if show, ok := wm.showPaneSettings[pane]; ok && *show {
-	   			if uid, ok := pane.(PaneUIDrawer); ok {
-	   				imgui.BeginV(wm.showPaneName[pane]+" settings", show, imgui.WindowFlagsAlwaysAutoResize)
-	   				uid.DrawUI()
-	   				imgui.End()
-	   			}
-	   		}
-	   	})
-	   }
+	if !ss.showSettings {
+		return
+	}
 
-	*/
+	imgui.BeginV("Simulation Settings", &ss.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
+	imgui.SliderFloatV("Simulation speed", &ss.simRate, 1, 10, "%.1f", 0)
+	imgui.Separator()
+
+	var fsp *FlightStripPane
+	var stars *STARSPane
+	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+		switch pane := p.(type) {
+		case *FlightStripPane:
+			fsp = pane
+		case *STARSPane:
+			stars = pane
+		}
+	})
+	if imgui.CollapsingHeader("Audio") {
+		globalConfig.AudioSettings.DrawUI()
+	}
+	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
+		fsp.DrawUI()
+	}
+	if stars != nil && imgui.CollapsingHeader("STARS Radar Scope") {
+		stars.DrawUI()
+	}
+
+	imgui.End()
 }
 
 ///////////////////////////////////////////////////////////////////////////

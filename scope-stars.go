@@ -717,246 +717,255 @@ func (sp *STARSPane) DrawUI() {
 		sp.labelFont = newFont
 	}
 
-	errorExclamationTriangle := func() {
-		color := globalConfig.GetColorScheme().TextError
-		imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
-		imgui.Text(FontAwesomeIconExclamationTriangle)
-		imgui.PopStyleColor()
-	}
-
-	if imgui.CollapsingHeader("Airports") {
-		tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchSame
-		if imgui.BeginTableV("airports", 8, tableFlags, imgui.Vec2{800, 0}, 0) {
-			imgui.TableSetupColumn("ICAO code")
-			imgui.TableSetupColumn("Range")
-			imgui.TableSetupColumn("In SSA")
-			imgui.TableSetupColumn("List 1\n")
-			imgui.TableSetupColumn("List 2\n")
-			imgui.TableSetupColumn("List 3\n")
-			imgui.TableSetupColumn("No list\n")
-			imgui.TableSetupColumn("##trash")
-
-			imgui.TableHeadersRow()
-
-			deleteIndex := -1
-			for i := range sp.Facility.Airports {
-				ap := &sp.Facility.Airports[i]
-				imgui.PushID(fmt.Sprintf("%d", i))
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
-				imgui.InputTextV("##ICAO", &ap.ICAOCode, flags, nil)
-				if ap.ICAOCode != "" {
-					invalid := false
-					for j := 0; j < i; j++ {
-						if sp.Facility.Airports[j].ICAOCode == ap.ICAOCode {
-							invalid = true
-						}
-					}
-					if _, ok := database.Locate(ap.ICAOCode); !ok {
-						invalid = true
-					}
-
-					if invalid {
-						imgui.SameLine()
-						errorExclamationTriangle()
-					}
-				}
-
-				imgui.TableNextColumn()
-				imgui.InputIntV("##pr", &ap.Range, 0, 0, 0)
-
-				imgui.TableNextColumn()
-				imgui.Checkbox("##check", &ap.IncludeInSSA)
-
-				for list := 1; list <= 3; list++ {
-					imgui.TableNextColumn()
-					if imgui.RadioButtonInt(fmt.Sprintf("##list%d", list), &ap.TowerListIndex, list) {
-						for j := range sp.Facility.Airports {
-							if j != i && sp.Facility.Airports[j].TowerListIndex == list {
-								sp.Facility.Airports[j].TowerListIndex = 0
-							}
-						}
-					}
-				}
-
-				imgui.TableNextColumn()
-				imgui.RadioButtonInt("##list0", &ap.TowerListIndex, 0)
-
-				imgui.TableNextColumn()
-				if imgui.Button(FontAwesomeIconTrash) {
-					deleteIndex = i
-				}
-
-				imgui.PopID()
-			}
-
-			imgui.EndTable()
-
-			if deleteIndex != -1 {
-				sp.Facility.Airports = DeleteSliceElement(sp.Facility.Airports, deleteIndex)
-			}
-			if imgui.Button("Add airport") {
-				sp.Facility.Airports = append(sp.Facility.Airports, STARSAirport{})
-			}
-		}
-	}
-
-	if imgui.CollapsingHeader("Radar sites") {
-		tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchSame
-		deleteIndex := -1
-		if imgui.BeginTableV("sites", 9, tableFlags, imgui.Vec2{900, 0}, 0) {
-			imgui.TableSetupColumn("Char")
-			imgui.TableSetupColumn("Id")
-			imgui.TableSetupColumn("Position")
-			imgui.TableSetupColumn("Elevation")
-			imgui.TableSetupColumn("Primary range")
-			imgui.TableSetupColumn("Secondary range")
-			imgui.TableSetupColumn("Slope angle")
-			imgui.TableSetupColumn("Silence angle")
-			imgui.TableSetupColumn("##trash")
-
-			imgui.TableHeadersRow()
-
-			for i := range sp.Facility.RadarSites {
-				site := &sp.Facility.RadarSites[i]
-				imgui.PushID(fmt.Sprintf("%d", i))
-				flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
-
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.InputTextV("##Char", &site.Char, flags, nil)
-				if len(site.Char) > 1 {
-					site.Char = site.Char[:1]
-				}
-				// Indicate an error if a Char is repeated
-				if site.Char != "" {
-					for j, other := range sp.Facility.RadarSites {
-						if j != i && other.Char == site.Char {
-							imgui.SameLine()
-							errorExclamationTriangle()
-							break
-						}
-					}
-				}
-
-				imgui.TableNextColumn()
-				imgui.InputTextV("##Id", &site.Id, flags, nil)
-				if len(site.Id) > 3 {
-					site.Id = site.Id[:3]
-				}
-				// Indicate an error if an Id is repeated
-				if site.Id != "" {
-					for j, other := range sp.Facility.RadarSites {
-						if j != i && other.Id == site.Id {
-							imgui.SameLine()
-							errorExclamationTriangle()
-							break
-						}
-					}
-				}
-
-				imgui.TableNextColumn()
-				imgui.InputTextV("##position", &site.Position, flags, nil)
-				if _, ok := database.Locate(site.Position); site.Position != "" && !ok {
-					imgui.SameLine()
-					errorExclamationTriangle()
-				}
-
-				imgui.TableNextColumn()
-				imgui.InputIntV("##elev", &site.Elevation, 0, 0, 0)
-
-				imgui.TableNextColumn()
-				imgui.InputIntV("##pr", &site.PrimaryRange, 0, 0, 0)
-
-				imgui.TableNextColumn()
-				imgui.InputIntV("##sr", &site.SecondaryRange, 0, 0, 0)
-
-				imgui.TableNextColumn()
-				imgui.SliderFloat("##slope", &site.SlopeAngle, 0, 90)
-
-				imgui.TableNextColumn()
-				imgui.SliderFloat("##silence", &site.SilenceAngle, 0, 90)
-
-				imgui.TableNextColumn()
-				if imgui.Button(FontAwesomeIconTrash) {
-					deleteIndex = i
-				}
-
-				imgui.PopID()
-			}
-			imgui.EndTable()
-
-			if deleteIndex != -1 {
-				sp.Facility.RadarSites = DeleteSliceElement(sp.Facility.RadarSites, deleteIndex)
-				sp.currentPreferenceSet.RadarSiteSelected =
-					DeleteSliceElement(sp.currentPreferenceSet.RadarSiteSelected, deleteIndex)
-				for i := range sp.PreferenceSets {
-					sp.PreferenceSets[i].RadarSiteSelected =
-						DeleteSliceElement(sp.PreferenceSets[i].RadarSiteSelected, deleteIndex)
-				}
-			}
-			if len(sp.Facility.RadarSites) < NumSTARSRadarSites && imgui.Button("Add radar site") {
-				sp.Facility.RadarSites = append(sp.Facility.RadarSites, STARSRadarSite{})
-				sp.currentPreferenceSet.RadarSiteSelected =
-					append(sp.currentPreferenceSet.RadarSiteSelected, false)
-				for i := range sp.PreferenceSets {
-					sp.PreferenceSets[i].RadarSiteSelected =
-						append(sp.PreferenceSets[i].RadarSiteSelected, false)
-				}
-			}
-		}
-	}
-
-	if imgui.CollapsingHeader("Maps") {
-		selected := ""
-		if sp.selectedMapIndex < len(sp.Facility.Maps) {
-			selected = sp.Facility.Maps[sp.selectedMapIndex].Name
-		}
-
-		if imgui.BeginCombo("##MapName", selected) {
-			for i, m := range sp.Facility.Maps {
-				if imgui.SelectableV(m.Name, i == sp.selectedMapIndex, 0, imgui.Vec2{}) {
-					sp.selectedMapIndex = i
-				}
-			}
-
-			if len(sp.Facility.Maps) < NumSTARSMaps && imgui.Selectable("New...##new") {
-				sp.Facility.Maps = append(sp.Facility.Maps, MakeSTARSMap())
-				sp.selectedMapIndex = len(sp.Facility.Maps) - 1
-				sp.currentPreferenceSet.MapVisible =
-					append(sp.currentPreferenceSet.MapVisible, false)
-				for i := range sp.PreferenceSets {
-					sp.PreferenceSets[i].MapVisible =
-						append(sp.PreferenceSets[i].MapVisible, false)
-				}
-			}
-
-			imgui.EndCombo()
-		}
-
-		if sp.selectedMapIndex < len(sp.Facility.Maps) {
-			m := &sp.Facility.Maps[sp.selectedMapIndex]
-			imgui.InputTextV("Name##map", &m.Name, imgui.InputTextFlagsCharsUppercase, nil)
-			imgui.RadioButtonInt("A", &m.Group, 0)
-			imgui.SameLine()
-			imgui.RadioButtonInt("B", &m.Group, 1)
-			imgui.SameLine()
-			imgui.Text("Draw group")
-			m.Draw.DrawUI()
-			imgui.Separator()
-		}
-	}
-
 	if imgui.CollapsingHeader("Collision alerts") {
 		imgui.SliderFloatV("Lateral minimum (nm)", &sp.Facility.CA.LateralMinimum, 0, 10, "%.1f", 0)
 		imgui.InputIntV("Vertical minimum (feet)", &sp.Facility.CA.VerticalMinimum, 100, 100, 0)
 		imgui.InputIntV("Altitude floor (feet)", &sp.Facility.CA.Floor, 100, 100, 0)
 	}
 
-	if imgui.CollapsingHeader("CRDA") {
-		sp.Facility.CRDAConfig.DrawUI()
+	if imgui.TreeNode("Facility Engineering") {
+		errorExclamationTriangle := func() {
+			color := globalConfig.GetColorScheme().TextError
+			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
+			imgui.Text(FontAwesomeIconExclamationTriangle)
+			imgui.PopStyleColor()
+		}
+
+		if imgui.TreeNode("Airports") {
+			tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchSame
+			if imgui.BeginTableV("airports", 8, tableFlags, imgui.Vec2{800, 0}, 0) {
+				imgui.TableSetupColumn("ICAO code")
+				imgui.TableSetupColumn("Range")
+				imgui.TableSetupColumn("In SSA")
+				imgui.TableSetupColumn("List 1\n")
+				imgui.TableSetupColumn("List 2\n")
+				imgui.TableSetupColumn("List 3\n")
+				imgui.TableSetupColumn("No list\n")
+				imgui.TableSetupColumn("##trash")
+
+				imgui.TableHeadersRow()
+
+				deleteIndex := -1
+				for i := range sp.Facility.Airports {
+					ap := &sp.Facility.Airports[i]
+					imgui.PushID(fmt.Sprintf("%d", i))
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
+					imgui.InputTextV("##ICAO", &ap.ICAOCode, flags, nil)
+					if ap.ICAOCode != "" {
+						invalid := false
+						for j := 0; j < i; j++ {
+							if sp.Facility.Airports[j].ICAOCode == ap.ICAOCode {
+								invalid = true
+							}
+						}
+						if _, ok := database.Locate(ap.ICAOCode); !ok {
+							invalid = true
+						}
+
+						if invalid {
+							imgui.SameLine()
+							errorExclamationTriangle()
+						}
+					}
+
+					imgui.TableNextColumn()
+					imgui.InputIntV("##pr", &ap.Range, 0, 0, 0)
+
+					imgui.TableNextColumn()
+					imgui.Checkbox("##check", &ap.IncludeInSSA)
+
+					for list := 1; list <= 3; list++ {
+						imgui.TableNextColumn()
+						if imgui.RadioButtonInt(fmt.Sprintf("##list%d", list), &ap.TowerListIndex, list) {
+							for j := range sp.Facility.Airports {
+								if j != i && sp.Facility.Airports[j].TowerListIndex == list {
+									sp.Facility.Airports[j].TowerListIndex = 0
+								}
+							}
+						}
+					}
+
+					imgui.TableNextColumn()
+					imgui.RadioButtonInt("##list0", &ap.TowerListIndex, 0)
+
+					imgui.TableNextColumn()
+					if imgui.Button(FontAwesomeIconTrash) {
+						deleteIndex = i
+					}
+
+					imgui.PopID()
+				}
+
+				imgui.EndTable()
+
+				if deleteIndex != -1 {
+					sp.Facility.Airports = DeleteSliceElement(sp.Facility.Airports, deleteIndex)
+				}
+				if imgui.Button("Add airport") {
+					sp.Facility.Airports = append(sp.Facility.Airports, STARSAirport{})
+				}
+			}
+			imgui.TreePop()
+		}
+
+		if imgui.TreeNode("Radar sites") {
+			tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchSame
+			deleteIndex := -1
+			if imgui.BeginTableV("sites", 9, tableFlags, imgui.Vec2{900, 0}, 0) {
+				imgui.TableSetupColumn("Char")
+				imgui.TableSetupColumn("Id")
+				imgui.TableSetupColumn("Position")
+				imgui.TableSetupColumn("Elevation")
+				imgui.TableSetupColumn("Primary range")
+				imgui.TableSetupColumn("Secondary range")
+				imgui.TableSetupColumn("Slope angle")
+				imgui.TableSetupColumn("Silence angle")
+				imgui.TableSetupColumn("##trash")
+
+				imgui.TableHeadersRow()
+
+				for i := range sp.Facility.RadarSites {
+					site := &sp.Facility.RadarSites[i]
+					imgui.PushID(fmt.Sprintf("%d", i))
+					flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
+
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.InputTextV("##Char", &site.Char, flags, nil)
+					if len(site.Char) > 1 {
+						site.Char = site.Char[:1]
+					}
+					// Indicate an error if a Char is repeated
+					if site.Char != "" {
+						for j, other := range sp.Facility.RadarSites {
+							if j != i && other.Char == site.Char {
+								imgui.SameLine()
+								errorExclamationTriangle()
+								break
+							}
+						}
+					}
+
+					imgui.TableNextColumn()
+					imgui.InputTextV("##Id", &site.Id, flags, nil)
+					if len(site.Id) > 3 {
+						site.Id = site.Id[:3]
+					}
+					// Indicate an error if an Id is repeated
+					if site.Id != "" {
+						for j, other := range sp.Facility.RadarSites {
+							if j != i && other.Id == site.Id {
+								imgui.SameLine()
+								errorExclamationTriangle()
+								break
+							}
+						}
+					}
+
+					imgui.TableNextColumn()
+					imgui.InputTextV("##position", &site.Position, flags, nil)
+					if _, ok := database.Locate(site.Position); site.Position != "" && !ok {
+						imgui.SameLine()
+						errorExclamationTriangle()
+					}
+
+					imgui.TableNextColumn()
+					imgui.InputIntV("##elev", &site.Elevation, 0, 0, 0)
+
+					imgui.TableNextColumn()
+					imgui.InputIntV("##pr", &site.PrimaryRange, 0, 0, 0)
+
+					imgui.TableNextColumn()
+					imgui.InputIntV("##sr", &site.SecondaryRange, 0, 0, 0)
+
+					imgui.TableNextColumn()
+					imgui.SliderFloat("##slope", &site.SlopeAngle, 0, 90)
+
+					imgui.TableNextColumn()
+					imgui.SliderFloat("##silence", &site.SilenceAngle, 0, 90)
+
+					imgui.TableNextColumn()
+					if imgui.Button(FontAwesomeIconTrash) {
+						deleteIndex = i
+					}
+
+					imgui.PopID()
+				}
+				imgui.EndTable()
+
+				if deleteIndex != -1 {
+					sp.Facility.RadarSites = DeleteSliceElement(sp.Facility.RadarSites, deleteIndex)
+					sp.currentPreferenceSet.RadarSiteSelected =
+						DeleteSliceElement(sp.currentPreferenceSet.RadarSiteSelected, deleteIndex)
+					for i := range sp.PreferenceSets {
+						sp.PreferenceSets[i].RadarSiteSelected =
+							DeleteSliceElement(sp.PreferenceSets[i].RadarSiteSelected, deleteIndex)
+					}
+				}
+				if len(sp.Facility.RadarSites) < NumSTARSRadarSites && imgui.Button("Add radar site") {
+					sp.Facility.RadarSites = append(sp.Facility.RadarSites, STARSRadarSite{})
+					sp.currentPreferenceSet.RadarSiteSelected =
+						append(sp.currentPreferenceSet.RadarSiteSelected, false)
+					for i := range sp.PreferenceSets {
+						sp.PreferenceSets[i].RadarSiteSelected =
+							append(sp.PreferenceSets[i].RadarSiteSelected, false)
+					}
+				}
+			}
+			imgui.TreePop()
+		}
+
+		if imgui.TreeNode("Maps") {
+			selected := ""
+			if sp.selectedMapIndex < len(sp.Facility.Maps) {
+				selected = sp.Facility.Maps[sp.selectedMapIndex].Name
+			}
+
+			if imgui.BeginCombo("##MapName", selected) {
+				for i, m := range sp.Facility.Maps {
+					if imgui.SelectableV(m.Name, i == sp.selectedMapIndex, 0, imgui.Vec2{}) {
+						sp.selectedMapIndex = i
+					}
+				}
+
+				if len(sp.Facility.Maps) < NumSTARSMaps && imgui.Selectable("New...##new") {
+					sp.Facility.Maps = append(sp.Facility.Maps, MakeSTARSMap())
+					sp.selectedMapIndex = len(sp.Facility.Maps) - 1
+					sp.currentPreferenceSet.MapVisible =
+						append(sp.currentPreferenceSet.MapVisible, false)
+					for i := range sp.PreferenceSets {
+						sp.PreferenceSets[i].MapVisible =
+							append(sp.PreferenceSets[i].MapVisible, false)
+					}
+				}
+
+				imgui.EndCombo()
+			}
+
+			if sp.selectedMapIndex < len(sp.Facility.Maps) {
+				m := &sp.Facility.Maps[sp.selectedMapIndex]
+				imgui.InputTextV("Name##map", &m.Name, imgui.InputTextFlagsCharsUppercase, nil)
+				imgui.RadioButtonInt("A", &m.Group, 0)
+				imgui.SameLine()
+				imgui.RadioButtonInt("B", &m.Group, 1)
+				imgui.SameLine()
+				imgui.Text("Draw group")
+				m.Draw.DrawUI()
+				imgui.Separator()
+			}
+
+			imgui.TreePop()
+		}
+		imgui.TreePop()
 	}
+
+	/*
+		if imgui.CollapsingHeader("CRDA") {
+			sp.Facility.CRDAConfig.DrawUI()
+		}
+	*/
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -981,7 +990,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			if squawkingSPC(v.ac.Squawk) {
 				if _, ok := sp.havePlayedSPCAlertSound[v.ac]; !ok {
 					sp.havePlayedSPCAlertSound[v.ac] = nil
-					globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
+					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 				}
 			}
 
@@ -996,7 +1005,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			if squawkingSPC(v.ac.Squawk) {
 				if _, ok := sp.havePlayedSPCAlertSound[v.ac]; !ok {
 					sp.havePlayedSPCAlertSound[v.ac] = nil
-					globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
+					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 				}
 			}
 

@@ -145,6 +145,12 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.InitialWindowSize[1] = 1080
 		globalConfig.InitialWindowPosition[0] = 100
 		globalConfig.InitialWindowPosition[1] = 100
+
+		globalConfig.AudioSettings.SoundEffects[AudioEventConflictAlert] = "Alert 2"
+		globalConfig.AudioSettings.SoundEffects[AudioEventPointOut] = "Hint"
+		globalConfig.AudioSettings.SoundEffects[AudioEventHandoffRequest] = "Beep Up"
+		globalConfig.AudioSettings.SoundEffects[AudioEventHandoffRejected] = "Beep Negative"
+		globalConfig.AudioSettings.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 	} else {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)

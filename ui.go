@@ -168,11 +168,13 @@ func drawUI(cs *ColorScheme, platform Platform) {
 						ss.TogglePause()
 					}
 				}
+				if imgui.MenuItem("Restart...") {
+					uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+				}
 				imgui.Separator()
 				if imgui.MenuItem("Settings...") {
 					ss.ActivateSettingsWindow()
 				}
-				ss.DrawSettingsWindow()
 				imgui.EndMenu()
 			}
 		}
@@ -203,6 +205,10 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		imgui.EndMainMenuBar()
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
+
+	if ss, ok := server.(*SimServer); ok {
+		ss.DrawSettingsWindow()
+	}
 
 	drawActiveDialogBoxes()
 	drawActiveSettingsWindows()

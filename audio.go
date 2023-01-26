@@ -63,24 +63,31 @@ var (
 type AudioEvent int
 
 const (
-	AudioEventFlightPlanFiled = iota
-	AudioEventNewArrival
-	AudioEventConflictAlert
-	AudioEventUpdatedATIS
+	/*	AudioEventFlightPlanFiled = iota
+		AudioEventNewArrival
+	*/
+	AudioEventConflictAlert = iota
+	/*AudioEventUpdatedATIS
+	 */
 	AudioEventPointOut
 	AudioEventHandoffRequest
 	AudioEventHandoffRejected
 	AudioEventHandoffAccepted
-	AudioEventTimerFinished
-	AudioEventReceivedMessage
-	AudioEventAlert
+	/*	AudioEventTimerFinished
+		AudioEventReceivedMessage
+	*/
+	//AudioEventAlert
 	AudioEventCount
 )
 
 func (ae AudioEvent) String() string {
-	return [...]string{"Flight Plan Filed", "New Arrival", "Conflict Alert", "Updated ATIS",
+	return [...]string{ // "Flight Plan Filed", "New Arrival",
+		"Conflict Alert",
+		//"Updated ATIS",
 		"Point Out", "Handoff Request", "Handoff Rejected", "Handoff Accepted",
-		"Timer Finished", "Message Received", "Alert"}[ae]
+		//"Timer Finished", "Message Received",
+		//"Alert"
+	}[ae]
 }
 
 type AudioSettings struct {
@@ -125,13 +132,17 @@ func (a *AudioSettings) HandleEvent(e AudioEvent) {
 
 func audioProcessEvents(es *EventStream) {
 	for _, event := range es.Get(audioEventId) {
-		switch event.(type) {
+		switch v := event.(type) {
 		case *PointOutEvent:
 			globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
 		case *AcceptedHandoffEvent:
-			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
+			if v.controller != server.Callsign() {
+				globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
+			}
 		case *OfferedHandoffEvent:
-			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
+			if v.controller != server.Callsign() {
+				globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
+			}
 		case *RejectedHandoffEvent, *CanceledHandoffEvent:
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
 		}
