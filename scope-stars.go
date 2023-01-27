@@ -3,7 +3,6 @@
 // SPDX: GPL-3.0-only
 
 // Main missing features:
-// Collision alerts
 // Altitude alerts
 // CDRA (can build off of CRDAConfig, however)
 // Quicklook
@@ -137,7 +136,7 @@ type STARSAircraftState struct {
 
 	forceGhost bool // for non-ghost only
 
-	partialDatablockIfAssociated bool
+	datablockType DatablockType
 
 	datablockErrText    string
 	datablockText       [2][]string
@@ -160,6 +159,9 @@ type STARSAircraftState struct {
 	inhibitMSAWAlert      bool // only applies if in an alert. clear when alert is over?
 
 	spcOverride string
+
+	outboundHandoffAccepted bool
+	outboundHandoffFlashEnd time.Time
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -574,9 +576,9 @@ func (ps *STARSPreferenceSet) multiRadarMode() bool {
 type DatablockType int
 
 const (
-	FullDatablock = iota
-	PartialDatablock
+	PartialDatablock = iota
 	LimitedDatablock
+	FullDatablock
 )
 
 func flightPlanSTARS(ac *Aircraft) (string, error) {
@@ -970,7 +972,12 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 	for _, event := range es.Get(sp.eventsId) {
 		switch v := event.(type) {
 		case *AddedAircraftEvent:
-			sp.aircraft[v.ac] = &STARSAircraftState{}
+			sa := &STARSAircraftState{}
+			if v.ac.TrackingController == server.Callsign() {
+				sa.datablockType = FullDatablock
+			}
+			sp.aircraft[v.ac] = sa
+
 			if !ps.DisableCRDA {
 				if ghost := sp.Facility.CRDAConfig.GetGhost(v.ac); ghost != nil {
 					sp.ghostAircraft[v.ac] = ghost
@@ -1034,6 +1041,16 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 
 		case *PointOutEvent:
 			sp.pointedOutAircraft.Add(v.ac, v.controller, 10*time.Second)
+
+		case *AcceptedHandoffEvent:
+			// Note that we only want to do that if we were the handing-off
+			// from controller, but that info isn't available to us
+			// currently. For the purposes of SimServer, that's fine...
+			if v.controller != server.Callsign() {
+				state := sp.aircraft[v.ac]
+				state.outboundHandoffAccepted = true
+				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+			}
 		}
 	}
 }
@@ -1313,23 +1330,31 @@ func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
 }
 
 func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus) {
-	lookupCallsign := func(callsign string) string {
-		if server.GetAircraft(callsign) != nil {
-			return callsign
+	lookupAircraft := func(callsign string) *Aircraft {
+		if ac := server.GetAircraft(callsign); ac != nil {
+			return ac
 		}
+
 		// try to match squawk code
 		for _, ac := range sp.visibleAircraft() {
 			if ac.Squawk.String() == callsign {
-				return ac.Callsign
+				return ac
 			}
 		}
 
 		if idx, err := strconv.Atoi(callsign); err == nil {
 			if ac, ok := sp.indexToAircraft[idx]; ok {
-				return ac.Callsign
+				return ac
 			}
 		}
 
+		return nil
+	}
+	lookupCallsign := func(callsign string) string {
+		ac := lookupAircraft(callsign)
+		if ac != nil {
+			return ac.Callsign
+		}
 		return callsign
 	}
 
@@ -1417,8 +1442,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		}
 
 	case CommandModeInitiateControl:
-		status.err = server.InitiateTrack(lookupCallsign(cmd))
-		status.clear = true
+		if ac := lookupAircraft(cmd); ac == nil {
+			status.err = ErrSTARSIllegalTrack // error code?
+		} else {
+			status.err = server.InitiateTrack(lookupCallsign(cmd))
+			status.clear = true
+			state := sp.aircraft[ac]
+			state.datablockType = FullDatablock
+		}
 		return
 
 	case CommandModeTerminateControl:
@@ -2070,6 +2101,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					// Accept inbound h/o
 					status.clear = true
 					status.err = server.AcceptHandoff(ac.Callsign)
+					state.datablockType = FullDatablock
 					return
 				} else if ac.OutboundHandoffController != "" {
 					// cancel offered handoff offered
@@ -2081,14 +2113,21 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					sp.pointedOutAircraft.Delete(ac)
 					status.clear = true
 					return
-				} else if ac.TrackingController == server.Callsign() {
-					// TODO: display reported and assigned beacon codes for owned track (where?)
-				} else if ac.IsAssociated() {
-					state.partialDatablockIfAssociated = !state.partialDatablockIfAssociated
-				} else {
-					sp.queryUnassociated.Add(ac, nil, 5*time.Second)
+				} else if state.outboundHandoffAccepted {
+					// ack accepted handoff by other controller
+					state.outboundHandoffAccepted = false
+					state.outboundHandoffFlashEnd = time.Now()
+				} else { //if ac.IsAssociated() {
+					if state.datablockType != FullDatablock {
+						state.datablockType = FullDatablock
+					} else {
+						state.datablockType = PartialDatablock
+					}
 				}
-				// TODO: ack SPC alert
+			//} else {
+			//sp.queryUnassociated.Add(ac, nil, 5*time.Second)
+			//}
+			// TODO: ack SPC alert
 
 			case 1:
 				if cmd == "." {
@@ -2329,6 +2368,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			// TODO: error if cmd != ""?
 			status.clear = true
 			status.err = server.InitiateTrack(ac.Callsign)
+			state.datablockType = FullDatablock
 			return
 
 		case CommandModeTerminateControl:
@@ -3359,6 +3399,23 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	td.GenerateCommands(cb)
 }
 
+func (sp *STARSPane) datablockType(ac *Aircraft) DatablockType {
+	state := sp.aircraft[ac]
+	dt := state.datablockType
+
+	// TODO: when do we do a partial vs limited datablock?
+	if ac.Squawk != ac.AssignedSquawk {
+		dt = PartialDatablock
+	}
+
+	if ac.InboundHandoffController == server.Callsign() {
+		// it's being handed off to us
+		dt = FullDatablock
+	}
+
+	return dt
+}
+
 func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
 	cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
@@ -3381,7 +3438,10 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		}
 
 		brightness := ps.Brightness.Positions
-		if dt := sp.datablockType(ac); dt == PartialDatablock || dt == LimitedDatablock {
+
+		dt := sp.datablockType(ac)
+
+		if dt == PartialDatablock || dt == LimitedDatablock {
 			brightness = ps.Brightness.LimitedDatablocks
 		}
 
@@ -3556,24 +3616,6 @@ func (sp *STARSPane) updateDatablockTextAndPosition(aircraft []*Aircraft) {
 
 }
 
-func (sp *STARSPane) datablockType(ac *Aircraft) DatablockType {
-	state := sp.aircraft[ac]
-
-	if _, queryUnassociated := sp.queryUnassociated.Get(ac); queryUnassociated {
-		return FullDatablock
-	}
-
-	// TODO: when do we do a partial vs limited datablock?
-	if ac.Squawk != ac.AssignedSquawk {
-		return PartialDatablock
-	}
-	if !ac.IsAssociated() || state.partialDatablockIfAssociated {
-		return PartialDatablock
-	}
-
-	return FullDatablock
-}
-
 func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 	if ac.Altitude() < int(sp.Facility.CA.Floor) {
 		return false
@@ -3617,9 +3659,6 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 	}
 
 	ty := sp.datablockType(ac)
-	if ac.TrackingController == server.Callsign() {
-		ty = FullDatablock // always full if we're tracking it
-	}
 
 	switch ty {
 	case LimitedDatablock:
@@ -3717,26 +3756,33 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 }
 
 func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
-	// This is not super efficient, but let's assume there aren't tons of ghost aircraft...
-	/*
-		for _, ghost := range sp.ghostAircraft {
-			if ac == ghost {
-				return cs.GhostDatablock
-			}
-		}
-	*/
-
 	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.currentPreferenceSet
 	br := ps.Brightness.FullDatablocks
+	state := sp.aircraft[ac]
 
 	if _, ok := sp.pointedOutAircraft.Get(ac); ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
 	} else if ac.TrackingController == server.Callsign() {
-		// white if are tracking
+		// white if we are tracking
+		return br.ScaleRGB(STARSTrackedAircraftColor)
+	} else if ac.InboundHandoffController == server.Callsign() {
+		// flashing white if it's being handed off to us.
+		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
+			br /= 3
+		}
+		return br.ScaleRGB(STARSTrackedAircraftColor)
+	} else if state.outboundHandoffAccepted {
+		// we handed it off, it was accepted, but we haven't yet acknowledged
+		now := time.Now()
+		if now.Before(state.outboundHandoffFlashEnd) && now.Second()&1 == 0 { // TODO: is a one second cycle right?
+			// flash for 10 seconds after accept
+			br /= 3
+		}
 		return br.ScaleRGB(STARSTrackedAircraftColor)
 	}
+
 	// green otherwise
 	return br.ScaleRGB(STARSUntrackedAircraftColor)
 }
