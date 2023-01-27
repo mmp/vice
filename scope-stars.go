@@ -54,11 +54,8 @@ type STARSPane struct {
 
 	weatherRadar WeatherRadar
 
-	systemFont          [6]*Font
-	LabelFontIdentifier FontIdentifier
-	labelFont           *Font
-	UIFontIdentifier    FontIdentifier
-	uiFont              *Font
+	systemFont [6]*Font
+	buttonFont *Font
 
 	eventsId EventSubscriberId
 
@@ -637,11 +634,9 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 
 // Takes aircraft position in window coordinates
 func NewSTARSPane() *STARSPane {
-	uiFont := GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 12})
 	return &STARSPane{
 		Facility:              MakeDefaultFacility(),
 		SelectedPreferenceSet: -1,
-		UIFontIdentifier:      uiFont.id,
 	}
 }
 
@@ -671,13 +666,10 @@ func (sp *STARSPane) Activate() {
 
 	sp.initializeSystemFonts()
 
-	if sp.labelFont = GetFont(sp.LabelFontIdentifier); sp.labelFont == nil {
-		sp.labelFont = GetDefaultFont()
-		sp.LabelFontIdentifier = sp.labelFont.id
-	}
-	if sp.uiFont = GetFont(sp.UIFontIdentifier); sp.uiFont == nil {
-		sp.uiFont = GetDefaultFont()
-		sp.UIFontIdentifier = sp.uiFont.id
+	sp.buttonFont = GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 12})
+	if sp.buttonFont == nil {
+		lg.Errorf("nil buttonFont??")
+		sp.buttonFont = GetDefaultFont()
 	}
 
 	sp.aircraftToIndex = make(map[*Aircraft]int)
@@ -713,9 +705,11 @@ func (sp *STARSPane) Deactivate() {
 func (sp *STARSPane) DrawUI() {
 	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
 
-	if newFont, changed := DrawFontPicker(&sp.LabelFontIdentifier, "Label font"); changed {
-		sp.labelFont = newFont
-	}
+	/*
+		if newFont, changed := DrawFontPicker(&sp.LabelFontIdentifier, "Label font"); changed {
+			sp.labelFont = newFont
+		}
+	*/
 
 	if imgui.CollapsingHeader("Collision alerts") {
 		imgui.SliderFloatV("Lateral minimum (nm)", &sp.Facility.CA.LateralMinimum, 0, 10, "%.1f", 0)
@@ -1099,14 +1093,16 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				color = ps.Brightness.VideoGroupB.RGB()
 			}
 			cb.LineWidth(1)
-			sp.Facility.Maps[i].Draw.Draw(ctx, sp.labelFont, &color, transforms, cb)
+			font := sp.systemFont[ps.CharSize.Tools]
+			sp.Facility.Maps[i].Draw.Draw(ctx, font, &color, transforms, cb)
 		}
 	}
 
 	if ps.Brightness.Compass > 0 {
 		cb.LineWidth(1)
 		cbright := ps.Brightness.Compass.RGB()
-		DrawCompass(ps.currentCenter, ctx, 0, sp.labelFont, cbright, drawBounds, transforms, cb)
+		font := sp.systemFont[ps.CharSize.Tools]
+		DrawCompass(ps.currentCenter, ctx, 0, font, cbright, drawBounds, transforms, cb)
 	}
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
@@ -4085,7 +4081,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext) {
 	//	imgui.WindowDrawList().AddRectFilledV(imgui.Vec2{}, imgui.Vec2{X: ctx.paneExtent.Width() - 2, Y: STARSButtonHeight},
 	//		0xff0000ff, 1, 0)
 
-	imgui.PushFont(sp.uiFont.ifont)
+	imgui.PushFont(sp.buttonFont.ifont)
 
 	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, imgui.Vec2{1, 0})
 	imgui.PushStyleVarVec2(imgui.StyleVarFramePadding, imgui.Vec2{1, 1})
@@ -4253,7 +4249,7 @@ func STARSDisabledButton(text string, flags int) {
 // STARSPane utility methods
 
 func (sp *STARSPane) initializeSystemFonts() {
-	for i, sz := range []int{14, 16, 18, 20, 22, 24} {
+	for i, sz := range []int{16, 18, 20, 22, 24, 28} {
 		id := FontIdentifier{Name: "VT323 Regular", Size: sz}
 		sp.systemFont[i] = GetFont(id)
 		if sp.systemFont[i] == nil {

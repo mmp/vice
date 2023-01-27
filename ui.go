@@ -28,7 +28,6 @@ var (
 	ui struct {
 		font      *Font
 		aboutFont *Font
-		fixedFont *Font
 
 		errorText     map[string]func() bool
 		menuBarHeight float32
@@ -68,7 +67,6 @@ func imguiInit() *imgui.Context {
 func uiInit(renderer Renderer) {
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 16})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
-	ui.fixedFont = GetFont(FontIdentifier{Name: "Source Code Pro Regular", Size: 16})
 
 	if ui.errorText == nil {
 		ui.errorText = make(map[string]func() bool)
