@@ -179,10 +179,10 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 		if imgui.BeginMenu("Help") {
 			if imgui.MenuItem("Documentation...") {
-				browser.OpenURL("https://vice.pharr.org/documentation.html")
+				browser.OpenURL("https://pharr.org/vice/index.html")
 			}
 			if imgui.MenuItem("Report a bug...") {
-				browser.OpenURL("https://vice.pharr.org/documentation.html#bugs")
+				browser.OpenURL("https://pharr.org/vice/index.html#bugs")
 			}
 			imgui.Separator()
 			if imgui.MenuItem("About vice...") {
@@ -196,7 +196,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 		imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(width+10), 0})
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 		if imgui.Button(t) {
-			browser.OpenURL("https://vice.pharr.org/documentation.html#bugs")
+			browser.OpenURL("https://pharr.org/vice/index.html#bugs")
 		}
 		imgui.PopStyleColor()
 

@@ -264,7 +264,7 @@ func (gc *GlobalConfig) Activate() {
 
 		gc.DisplayRoot = &DisplayNode{
 			SplitLine: SplitLine{
-				Pos:  0.75,
+				Pos:  0.8,
 				Axis: SplitAxisX,
 			},
 			Children: [2]*DisplayNode{

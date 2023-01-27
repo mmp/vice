@@ -29,7 +29,7 @@ var (
 	STARSTextAlertColor          = RGB{.7, .1, .1}
 	STARSTrackBlockColor         = RGB{0.1, 0.4, 1}
 	STARSTrackHistoryColor       = RGB{.2, 0, 1}
-	STARSJRingConeColor          = RGB{.4, .4, 1}
+	STARSJRingConeColor          = RGB{.5, .5, 1}
 	STARSTrackedAircraftColor    = RGB{1, 1, 1}
 	STARSUntrackedAircraftColor  = RGB{.1, .9, .1}
 	STARSPointedOutAircraftColor = RGB{.9, .9, .1}
