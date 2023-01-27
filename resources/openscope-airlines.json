@@ -32595,7 +32595,7 @@
     "name": "Provincial Airlines",
     "callsign": {
       "name": "Provincial",
-      "callsignFormat": [
+      "callsignFormats": [
         "####",
         "###"
       ]
@@ -40021,7 +40021,7 @@
     "name": "Tigerair Taiwan",
     "callsign": {
       "name": "Smart Cat",
-      "callsignFormats": "###"
+      "callsignFormats": [ "###" ]
     },
     "fleets": {
       "default": [
