@@ -442,6 +442,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		handoffs:          make(map[string]time.Time),
 		controllers:       make(map[string]*Controller),
 		currentTime:       time.Now(),
+		lastUpdateTime:    time.Now(),
 		remainingLaunches: int(ssc.numAircraft),
 		simRate:           1,
 	}
