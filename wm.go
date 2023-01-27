@@ -729,7 +729,6 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 	}
 	if texts != nil {
 		wm.lastAircraftResponse = strings.Join(texts, ", ") + ", " + textCallsign
-		lg.Errorf("response: %s", wm.lastAircraftResponse)
 	}
 
 	if wm.lastAircraftResponse == "" && len(ui.errorText) == 0 {

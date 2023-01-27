@@ -197,7 +197,7 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 		anyRunwaysActive := false
 
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{600, 0}, 0.) {
+		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{800, 0}, 0.) {
 			imgui.TableSetupColumn("Enabled")
 			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("ADR")
@@ -241,7 +241,7 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 		if anyRunwaysActive {
 			imgui.Separator()
 			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{600, 0}, 0.) {
+			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{800, 0}, 0.) {
 				imgui.TableSetupColumn("Enabled")
 				imgui.TableSetupColumn("Runway/Gate")
 				imgui.TableHeadersRow()
