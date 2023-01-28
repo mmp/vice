@@ -1450,6 +1450,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			status.clear = true
 			state := sp.aircraft[ac]
 			state.datablockType = FullDatablock
+			// Display flight plan
+			if status.err == nil {
+				status.output, _ = flightPlanSTARS(ac)
+			}
 		}
 		return
 
@@ -1485,6 +1489,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 			if closest != nil {
 				status.err = server.AcceptHandoff(closest.Callsign)
+				// Display flight plan
+				if status.err == nil {
+					status.output, _ = flightPlanSTARS(closest)
+				}
 			}
 			status.clear = true
 			return
@@ -2103,6 +2111,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					status.clear = true
 					status.err = server.AcceptHandoff(ac.Callsign)
 					state.datablockType = FullDatablock
+					// Display flight plan
+					if status.err == nil {
+						status.output, _ = flightPlanSTARS(ac)
+					}
 					return
 				} else if ac.OutboundHandoffController != "" {
 					// cancel offered handoff offered
@@ -2368,6 +2380,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			status.clear = true
 			status.err = server.InitiateTrack(ac.Callsign)
 			state.datablockType = FullDatablock
+			if status.err == nil {
+				// Display flight plan
+				status.output, _ = flightPlanSTARS(ac)
+			}
 			return
 
 		case CommandModeTerminateControl:
