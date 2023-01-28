@@ -551,24 +551,6 @@ const FeetToNauticalMiles = 1 / NauticalMilesToFeet
 // Important: 0 (x) is longitude, 1 (y) is latitude
 type Point2LL [2]float32
 
-// lat and long should be 4-long slices, e.g.: [42 7 12.68 N]
-func Point2LLFromComponents(lat []string, long []string) Point2LL {
-	latitude := atof(lat[0]) + atof(lat[1])/60. + atof(lat[2])/3600.
-	if lat[3] == "S" {
-		latitude = -latitude
-	}
-	longitude := atof(long[0]) + atof(long[1])/60. + atof(long[2])/3600.
-	if long[3] == "W" {
-		longitude = -longitude
-	}
-
-	return Point2LL{float32(longitude), float32(latitude)}
-}
-
-func Point2LLFromStrings(lat, long string) Point2LL {
-	return Point2LL{float32(atof(long)), float32(atof(lat))}
-}
-
 func (p Point2LL) Longitude() float32 {
 	return p[0]
 }

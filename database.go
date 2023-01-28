@@ -249,12 +249,30 @@ func mungeCSV(filename string, raw string, callback func([]string)) {
 	}
 }
 
+// lat and long should be 4-long slices, e.g.: [42 7 12.68 N]
+func point2LLFromComponents(lat []string, long []string) Point2LL {
+	latitude := atof(lat[0]) + atof(lat[1])/60. + atof(lat[2])/3600.
+	if lat[3] == "S" {
+		latitude = -latitude
+	}
+	longitude := atof(long[0]) + atof(long[1])/60. + atof(long[2])/3600.
+	if long[3] == "W" {
+		longitude = -longitude
+	}
+
+	return Point2LL{float32(longitude), float32(latitude)}
+}
+
+func point2LLFromStrings(lat, long string) Point2LL {
+	return Point2LL{float32(atof(long)), float32(atof(lat))}
+}
+
 func parseNavaids() map[string]Navaid {
 	navaids := make(map[string]Navaid)
 
 	mungeCSV("navaids", decompressZstd(navBaseRaw), func(s []string) {
 		n := Navaid{Id: s[1], Type: s[2], Name: s[7],
-			Location: Point2LLFromComponents(s[22:26], s[26:30])}
+			Location: point2LLFromComponents(s[22:26], s[26:30])}
 		if n.Id != "" {
 			navaids[n.Id] = n
 		}
@@ -271,7 +289,7 @@ func parseAirports() map[string]Airport {
 		if elevation, err := strconv.ParseFloat(s[24], 64); err != nil {
 			lg.Errorf("%s: error parsing elevation: %s", s[24], err)
 		} else {
-			loc := Point2LLFromComponents(s[15:19], s[19:23])
+			loc := point2LLFromComponents(s[15:19], s[19:23])
 			ap := Airport{Id: s[98], Name: s[12], Location: loc, Elevation: int(elevation)}
 			if ap.Id == "" {
 				ap.Id = s[4] // No ICAO code so grab the FAA airport id
@@ -300,7 +318,7 @@ func parseAirports() map[string]Airport {
 			ap := Airport{
 				Id:        f[0],
 				Name:      f[2],
-				Location:  Point2LLFromStrings(f[14], f[15]),
+				Location:  point2LLFromStrings(f[14], f[15]),
 				Elevation: int(elevation)}
 			if ap.Id != "" {
 				airports[ap.Id] = ap
@@ -317,7 +335,7 @@ func parseFixes() map[string]Fix {
 	mungeCSV("fixes", decompressZstd(fixesRaw), func(s []string) {
 		f := Fix{
 			Id:       s[1],
-			Location: Point2LLFromComponents(s[5:9], s[9:13])}
+			Location: point2LLFromComponents(s[5:9], s[9:13])}
 		if f.Id != "" {
 			fixes[f.Id] = f
 		}
