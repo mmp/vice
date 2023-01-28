@@ -604,7 +604,7 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 		// Heavy (presumably), with suffix
 		return actypeFields[0] + "/" + actypeFields[1]
 	case 2:
-		if actypeFields[0] == "H" || actypeFields[0] == "S" {
+		if actypeFields[0] == "H" || actypeFields[0] == "S" || actypeFields[0] == "J" {
 			// Heavy or super, no suffix
 			return actypeFields[0] + "/" + actypeFields[1]
 		} else {
