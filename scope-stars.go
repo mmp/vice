@@ -2161,8 +2161,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					}
 					return
 				} else if dir, err := strconv.Atoi(cmd); err == nil && dir != 0 {
-					state.leaderLineDirection = dir
+					state.leaderLineDirection = dir // 0 denotes unset...
 					status.clear = true
+					return
 				}
 
 			case 2:
@@ -4481,7 +4482,7 @@ func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft) CardinalOrdinalDirecti
 	if lld := sp.aircraft[ac].leaderLineDirection; lld != 0 {
 		// these are offset +1 so that we can use default-initialized 0
 		// for unset.
-		return CardinalOrdinalDirection(lld - 1)
+		return CardinalOrdinalDirection((lld - 1) % 8)
 	}
 	return sp.currentPreferenceSet.LeaderLineDirection
 }
