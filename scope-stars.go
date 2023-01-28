@@ -976,6 +976,15 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			}
 			sp.aircraft[v.ac] = sa
 
+			if fp := v.ac.FlightPlan; fp != nil {
+				if v.ac.TrackingController == "" {
+					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
+						server.InitiateTrack(v.ac.Callsign) // ignore error...
+						sp.aircraft[v.ac].datablockType = FullDatablock
+					}
+				}
+			}
+
 			if !ps.DisableCRDA {
 				if ghost := sp.Facility.CRDAConfig.GetGhost(v.ac); ghost != nil {
 					sp.ghostAircraft[v.ac] = ghost
@@ -1018,16 +1027,6 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 
 			if _, ok := sp.aircraft[v.ac]; !ok {
 				sp.aircraft[v.ac] = &STARSAircraftState{}
-			}
-
-			// Heuristic to find recent departures...
-			if fp := v.ac.FlightPlan; fp != nil {
-				if v.ac.TrackingController == "" && v.ac.Altitude() < 1000 && v.ac.AltitudeChange() > 0 {
-					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
-						server.InitiateTrack(v.ac.Callsign) // ignore error...
-						sp.aircraft[v.ac].datablockType = FullDatablock
-					}
-				}
 			}
 
 			// new ghost
