@@ -2250,7 +2250,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				return
 			}
 			if len(cmd) > 2 && cmd[:2] == "*P" {
-				lg.Printf("cone cmd %s :2 %s", cmd, cmd[2:])
 				if r, err := strconv.Atoi(cmd[2:]); err == nil {
 					state.coneLength = clamp(float32(r), 1, 30)
 					status.clear = true
@@ -2274,7 +2273,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 				b := []byte(cmd)
 				for len(b) > 0 {
-					lg.Printf("cur [%s]", string(b))
 					getnum := func() (int, int, error) {
 						end := 1
 						for ; end < len(b); end++ {
@@ -3260,13 +3258,15 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		text := "VFR LIST\n"
+		if len(vfr) > ps.VFRList.Lines {
+			text += fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr))
+		}
 		for i, acIdx := range SortedMapKeys(vfr) {
 			ac := vfr[acIdx]
 			text += fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign)
 
 			// Limit to the user limit
-			if i == ps.TABList.Lines {
-				text += fmt.Sprintf("%d/%d AIRCRAFT", i, len(vfr))
+			if i == ps.VFRList.Lines {
 				break
 			}
 		}
@@ -3289,13 +3289,15 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		text := "FLIGHT PLAN\n"
+		if len(dep) > ps.TABList.Lines {
+			text += fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep))
+		}
 		for i, acIdx := range SortedMapKeys(dep) {
 			ac := dep[acIdx]
 			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
 
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
-				text += fmt.Sprintf("%d/%d AIRCRAFT", i, len(dep))
 				break
 			}
 		}
