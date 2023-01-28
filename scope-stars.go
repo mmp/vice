@@ -4130,6 +4130,12 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 	}
 
 	if ctx.mouse.Clicked[MouseButtonPrimary] {
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyShift) && ctx.keyboard.IsPressed(KeyControl) {
+			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
+			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
+			platform.GetClipboard().SetText(mouseLatLong.DMSString())
+		}
+
 		// If a scope click handler has been registered, give it the click
 		// and then clear it out.
 		var status STARSCommandStatus
