@@ -3736,9 +3736,20 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 
 		// Unassociated with LDB should be 2 lines: squawk, altitude--unless
 		// beacon codes are inhibited in LDBs.
-		as := fmt.Sprintf("%03d  %02d", (ac.Altitude()+50)/100, (ac.Groundspeed()+5)/10)
-		mainblock[0] = append(mainblock[0], as)
-		mainblock[1] = append(mainblock[1], as)
+
+		if fp := ac.FlightPlan; fp != nil && fp.Rules == IFR {
+			// Alternate between altitude and either scratchpad or destination airport.
+			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (ac.Altitude()+50)/100))
+			if ac.Scratchpad != "" {
+				mainblock[1] = append(mainblock[1], ac.Scratchpad)
+			} else {
+				mainblock[1] = append(mainblock[1], fp.ArrivalAirport)
+			}
+		} else {
+			as := fmt.Sprintf("%03d  %02d", (ac.Altitude()+50)/100, (ac.Groundspeed()+5)/10)
+			mainblock[0] = append(mainblock[0], as)
+			mainblock[1] = append(mainblock[1], as)
+		}
 		return
 
 	case FullDatablock:
