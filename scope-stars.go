@@ -468,8 +468,6 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.RadarTrackHistory = 5
 
-	ps.WeatherIntensity[1] = true
-
 	ps.RadarSiteSelected = make([]bool, len(facility.RadarSites))
 	ps.MapVisible = make([]bool, len(facility.Maps))
 	if len(facility.Maps) > 0 {
