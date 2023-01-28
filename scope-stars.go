@@ -2298,22 +2298,31 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 					switch b[0] {
 					case 'D':
-						if len(b) >= 6 { // try being greedy first
-							if _, ok := database.Locate(string(b[1:6])); ok {
-								status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
-								b = b[6:]
-								continue
+						// Is it an altitude?
+						if b[1] >= '0' && b[1] <= '9' {
+							alt, end, err := getnum()
+							b = b[end:]
+							status.err = err
+							if err == nil {
+								status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
 							}
-						}
-						if len(b) >= 4 {
-							if _, ok := database.Locate(string(b[1:4])); ok {
-								status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
-								b = b[4:]
-								continue
+						} else {
+							if len(b) >= 6 { // try being greedy first
+								if _, ok := database.Locate(string(b[1:6])); ok {
+									status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
+									b = b[6:]
+									continue
+								}
 							}
+							if len(b) >= 4 {
+								if _, ok := database.Locate(string(b[1:4])); ok {
+									status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
+									b = b[4:]
+									continue
+								}
+							}
+							status.err = fmt.Errorf("%s: unsure how to parse fix/vor", string(b[1:]))
 						}
-						status.err = fmt.Errorf("%s: unsure how to parse fix/vor", string(b[1:]))
-						return
 
 					case 'H':
 						hdg, end, err := getnum()
