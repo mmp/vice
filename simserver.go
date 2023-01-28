@@ -30,96 +30,60 @@ type Simulator interface {
 	TogglePause() error
 }
 
-func parseLatLong(l string) float32 {
-	if l[0] != 'N' && l[0] != 'S' && l[0] != 'E' && l[0] != 'W' {
-		panic("bad lat long")
+func mustParseLatLong(l string) Point2LL {
+	ll, err := ParseLatLong(l)
+	if err != nil {
+		panic(l + ": " + err.Error())
 	}
-
-	bytes := []byte(l)
-	idx := 1
-	parseInt := func() (value int, digits int) {
-		for idx < len(bytes) && bytes[idx] != '.' {
-			value *= 10
-			digit := int(bytes[idx] - '0')
-			if digit < 0 || digit > 9 {
-				panic("bad lat long")
-			}
-			value += digit
-			idx++
-			digits++
-		}
-		return
-	}
-
-	// Get the whole degrees up to the first "."
-	value, _ := parseInt()
-	ll := float64(value)
-	idx++ // skip .
-	value, _ = parseInt()
-	ll += float64(value) / 60
-	idx++ // skip .
-	value, _ = parseInt()
-	ll += float64(value) / 3600
-	idx++ // skip .
-	value, digits := parseInt()
-	for digits < 3 {
-		digits++
-		value *= 10
-	}
-	ll += float64(value) / 3600000
-
-	if l[0] == 'S' || l[0] == 'W' {
-		ll = -ll
-	}
-	return float32(ll)
+	return ll
 }
 
 var configPositions map[string]Point2LL = map[string]Point2LL{
-	"_JFK_31L": Point2LL{parseLatLong("W073.46.20.227"), parseLatLong("N040.37.41.000")},
-	"_JFK_31R": Point2LL{parseLatLong("W073.45.34.963"), parseLatLong("N040.38.36.961")},
-	"_JFK_22R": Point2LL{parseLatLong("W073.45.49.053"), parseLatLong("N040.39.00.362")},
-	"_JFK_22L": Point2LL{parseLatLong("W073.45.18.511"), parseLatLong("N040.38.41.232")},
-	"_JFK_4L":  Point2LL{parseLatLong("W073.47.08.045"), parseLatLong("N040.37.19.370")},
-	"_JFK_4La": Point2LL{parseLatLong("W073.45.32.849"), parseLatLong("N040.39.21.332")}, // turn for 4L deps
-	"_JFK_4R":  Point2LL{parseLatLong("W073.46.12.894"), parseLatLong("N040.37.31.661")},
-	"_JFK_13R": Point2LL{parseLatLong("W073.49.00.188"), parseLatLong("N040.38.53.537")},
-	"_JFK_13L": Point2LL{parseLatLong("W073.47.24.277"), parseLatLong("N040.39.26.976")},
+	"_JFK_31L": mustParseLatLong("N040.37.41.000, W073.46.20.227"),
+	"_JFK_31R": mustParseLatLong("N040.38.36.961, W073.45.34.963"),
+	"_JFK_22R": mustParseLatLong("N040.39.00.362, W073.45.49.053"),
+	"_JFK_22L": mustParseLatLong("N040.38.41.232, W073.45.18.511"),
+	"_JFK_4L":  mustParseLatLong("N040.37.19.370, W073.47.08.045"),
+	"_JFK_4La": mustParseLatLong("N040.39.21.332, W073.45.32.849"),
+	"_JFK_4R":  mustParseLatLong("N040.37.31.661, W073.46.12.894"),
+	"_JFK_13R": mustParseLatLong("N040.38.53.537, W073.49.00.188"),
+	"_JFK_13L": mustParseLatLong("N040.39.26.976, W073.47.24.277"),
 
-	"_LGA_13":  Point2LL{parseLatLong("W073.52.42.359"), parseLatLong("N040.46.56.029")},
-	"_LGA_13a": Point2LL{parseLatLong("W073.55.40.914"), parseLatLong("N040.48.06.479")},
-	"_LGA_31":  Point2LL{parseLatLong("W073.51.25.949"), parseLatLong("N040.46.19.788")},
-	"_LGA_31a": Point2LL{parseLatLong("W073.49.52.922"), parseLatLong("N040.45.34.950")},
-	"_LGA_31b": Point2LL{parseLatLong("W073.46.42.200"), parseLatLong("N040.48.50.809")},
-	"_LGA_22":  Point2LL{parseLatLong("W073.52.14.811"), parseLatLong("N040.47.06.864")},
-	"_LGA_22a": Point2LL{parseLatLong("W073.49.30.483"), parseLatLong("N040.51.18.890")},
-	"_LGA_4":   Point2LL{parseLatLong("W073.53.02.574"), parseLatLong("N040.46.09.447")},
-	"_LGA_4a":  Point2LL{parseLatLong("W073.51.53.497"), parseLatLong("N040.44.56.662")},
-	"_LGA_4b":  Point2LL{parseLatLong("W073.47.11.533"), parseLatLong("N040.47.59.557")},
+	"_LGA_13":  mustParseLatLong("N040.46.56.029, W073.52.42.359"),
+	"_LGA_13a": mustParseLatLong("N040.48.06.479, W073.55.40.914"),
+	"_LGA_31":  mustParseLatLong("N040.46.19.788, W073.51.25.949"),
+	"_LGA_31a": mustParseLatLong("N040.45.34.950, W073.49.52.922"),
+	"_LGA_31b": mustParseLatLong("N040.48.50.809, W073.46.42.200"),
+	"_LGA_22":  mustParseLatLong("N040.47.06.864, W073.52.14.811"),
+	"_LGA_22a": mustParseLatLong("N040.51.18.890, W073.49.30.483"),
+	"_LGA_4":   mustParseLatLong("N040.46.09.447, W073.53.02.574"),
+	"_LGA_4a":  mustParseLatLong("N040.44.56.662, W073.51.53.497"),
+	"_LGA_4b":  mustParseLatLong("N040.47.59.557, W073.47.11.533"),
 
-	"_FRG_1":   Point2LL{parseLatLong("W073.24.51.229"), parseLatLong("N040.43.20.230")},
-	"_FRG_1a":  Point2LL{parseLatLong("W073.24.58.809"), parseLatLong("N040.46.52.637")},
-	"_FRG_19":  Point2LL{parseLatLong("W073.24.50.982"), parseLatLong("N040.44.10.396")},
-	"_FRG_19a": Point2LL{parseLatLong("W073.26.45.267"), parseLatLong("N040.41.03.313")},
-	"_FRG_14":  Point2LL{parseLatLong("W073.25.17.486"), parseLatLong("N040.44.02.898")},
-	"_FRG_14a": Point2LL{parseLatLong("W073.22.41.398"), parseLatLong("N040.38.37.868")},
-	"_FRG_32":  Point2LL{parseLatLong("W073.24.13.848"), parseLatLong("N040.43.20.436")},
-	"_FRG_32a": Point2LL{parseLatLong("W073.27.08.421"), parseLatLong("N040.45.28.921")},
+	"_FRG_1":   mustParseLatLong("N040.43.20.230, W073.24.51.229"),
+	"_FRG_1a":  mustParseLatLong("N040.46.52.637, W073.24.58.809"),
+	"_FRG_19":  mustParseLatLong("N040.44.10.396, W073.24.50.982"),
+	"_FRG_19a": mustParseLatLong("N040.41.03.313, W073.26.45.267"),
+	"_FRG_14":  mustParseLatLong("N040.44.02.898, W073.25.17.486"),
+	"_FRG_14a": mustParseLatLong("N040.38.37.868, W073.22.41.398"),
+	"_FRG_32":  mustParseLatLong("N040.43.20.436, W073.24.13.848"),
+	"_FRG_32a": mustParseLatLong("N040.45.28.921, W073.27.08.421"),
 
-	"_ISP_6":    Point2LL{parseLatLong("W073.06.44.022"), parseLatLong("N040.47.18.743")},
-	"_ISP_6a":   Point2LL{parseLatLong("W073.02.11.698"), parseLatLong("N040.50.43.281")},
-	"_ISP_6b":   Point2LL{parseLatLong("W073.09.10.827"), parseLatLong("N040.50.28.573")},
-	"_ISP_24":   Point2LL{parseLatLong("W073.05.39.202"), parseLatLong("N040.48.06.643")},
-	"_ISP_24a":  Point2LL{parseLatLong("W073.08.58.879"), parseLatLong("N040.45.56.414")},
-	"_ISP_24b":  Point2LL{parseLatLong("W073.06.08.371"), parseLatLong("N040.47.41.032")},
-	"_ISP_24c":  Point2LL{parseLatLong("W073.07.30.466"), parseLatLong("N040.48.48.350")},
-	"_ISP_15R":  Point2LL{parseLatLong("W073.06.24.356"), parseLatLong("N040.48.05.462")},
-	"_ISP_15Ra": Point2LL{parseLatLong("W073.02.36.555"), parseLatLong("N040.45.33.934")},
-	"_ISP_15Rb": Point2LL{parseLatLong("W073.03.43.379"), parseLatLong("N040.49.18.755")},
-	"_ISP_15Rc": Point2LL{parseLatLong("W073.09.11.211"), parseLatLong("N040.48.34.288")},
-	"_ISP_33L":  Point2LL{parseLatLong("W073.05.41.702"), parseLatLong("N040.47.32.819")},
-	"_ISP_33La": Point2LL{parseLatLong("W073.08.43.141"), parseLatLong("N040.49.52.085")},
-	"_ISP_33Lb": Point2LL{parseLatLong("W073.06.31.250"), parseLatLong("N040.49.21.515")},
-	"_ISP_33Lc": Point2LL{parseLatLong("W073.10.31.686"), parseLatLong("N040.48.20.019")},
+	"_ISP_6":    mustParseLatLong("N040.47.18.743, W073.06.44.022"),
+	"_ISP_6a":   mustParseLatLong("N040.50.43.281, W073.02.11.698"),
+	"_ISP_6b":   mustParseLatLong("N040.50.28.573, W073.09.10.827"),
+	"_ISP_24":   mustParseLatLong("N040.48.06.643, W073.05.39.202"),
+	"_ISP_24a":  mustParseLatLong("N040.45.56.414, W073.08.58.879"),
+	"_ISP_24b":  mustParseLatLong("N040.47.41.032, W073.06.08.371"),
+	"_ISP_24c":  mustParseLatLong("N040.48.48.350, W073.07.30.466"),
+	"_ISP_15R":  mustParseLatLong("N040.48.05.462, W073.06.24.356"),
+	"_ISP_15Ra": mustParseLatLong("N040.45.33.934, W073.02.36.555"),
+	"_ISP_15Rb": mustParseLatLong("N040.49.18.755, W073.03.43.379"),
+	"_ISP_15Rc": mustParseLatLong("N040.48.34.288, W073.09.11.211"),
+	"_ISP_33L":  mustParseLatLong("N040.47.32.819, W073.05.41.702"),
+	"_ISP_33La": mustParseLatLong("N040.49.52.085, W073.08.43.141"),
+	"_ISP_33Lb": mustParseLatLong("N040.49.21.515, W073.06.31.250"),
+	"_ISP_33Lc": mustParseLatLong("N040.48.20.019, W073.10.31.686"),
 }
 
 type RunwayConfig struct {
