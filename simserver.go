@@ -7,6 +7,7 @@ package main
 import (
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -21,6 +22,9 @@ type Simulator interface {
 	AssignHeading(callsign string, heading int) error
 	AssignSpeed(callsign string, kts int) error
 	DirectFix(callsign string, fix string) error
+	ExpectApproach(callsign string, approach string) error
+	ClearedApproach(callsign string, approach string) error
+
 	PrintInfo(callsign string) error
 	DeleteAircraft(callsign string) error
 	TogglePause() error
@@ -1057,6 +1061,24 @@ func (ss *SimServer) DirectFix(callsign string, fix string) error {
 		}
 		return fmt.Errorf("%s: fix not found in route", fix)
 	}
+}
+
+func (ss *SimServer) ExpectApproach(callsign string, approach string) error {
+	if approach != "I13L" {
+		return errors.New("Unknown approach")
+	}
+
+	pilotResponse(callsign, "we'll expect the "+approach)
+	return nil
+}
+
+func (ss *SimServer) ClearedApproach(callsign string, approach string) error {
+	if approach != "I13L" {
+		return errors.New("Unknown approach")
+	}
+
+	pilotResponse(callsign, "cleared "+approach+" approach")
+	return nil
 }
 
 func (ss *SimServer) PrintInfo(callsign string) error {

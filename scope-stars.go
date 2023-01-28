@@ -2271,9 +2271,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				return
 			}
 
-			if len(cmd) > 0 && (cmd[0] == 'D' || cmd[0] == 'H' || cmd[0] == 'L' ||
-				cmd[0] == 'R' || cmd[0] == 'A' || cmd[0] == 'C' || cmd[0] == '?' ||
-				cmd[0] == 'X' || cmd[0] == 'S') {
+			if len(cmd) > 0 {
 				sim, ok := server.(*SimServer)
 				if !ok {
 					status.err = errors.New("Can't issue control commands to a/c")
@@ -2346,6 +2344,28 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'C', 'A':
+						if b[0] == 'C' && len(b) > 0 && (b[1] < '0' || b[1] > '9') {
+							// Cleared approach. Keep trying additional
+							// characters until the first time we find an
+							// approach that's accepted by the SimServer or
+							// run out of characters.  (This is a little
+							// hacky but should be fine in practice.)
+							found := false
+							for end := 2; end <= len(b); end++ {
+								err := sim.ClearedApproach(ac.Callsign, string(b[1:end]))
+								if err == nil {
+									b = b[end:]
+									found = true
+									break
+								}
+							}
+							if !found {
+								status.err = errors.New("Unknown approach: " + string(b[1:]))
+							}
+							break
+						}
+
+						// Otherwise look for an altitude
 						alt, end, err := getnum()
 						b = b[end:]
 						status.err = err
@@ -2359,6 +2379,22 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						status.err = err
 						if err == nil {
 							status.err = sim.AssignSpeed(ac.Callsign, kts)
+						}
+
+					case 'E':
+						// Expect approach. Same strategy as in cleared
+						// approach for parsing the approach name.
+						found := false
+						for end := 2; end <= len(b); end++ {
+							err := sim.ExpectApproach(ac.Callsign, string(b[1:end]))
+							if err == nil {
+								b = b[end:]
+								found = true
+								break
+							}
+						}
+						if !found {
+							status.err = errors.New("Unknown approach: " + string(b[1:]))
 						}
 
 					case '?':
