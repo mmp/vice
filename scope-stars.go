@@ -1027,6 +1027,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 				if v.ac.TrackingController == "" && v.ac.Altitude() < 1000 && v.ac.AltitudeChange() > 0 {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
 						server.InitiateTrack(v.ac.Callsign) // ignore error...
+						sp.aircraft[v.ac].datablockType = FullDatablock
 					}
 				}
 			}
