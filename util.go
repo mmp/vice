@@ -13,6 +13,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -598,6 +599,69 @@ func (p Point2LL) DMSString() string {
 	s += format(abs(p[0]))
 
 	return s
+}
+
+var (
+	// e.g. N040.37.48.704
+	reWaypointDotted = regexp.MustCompile(`^([NS][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+), *([EW][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
+	// pair of floats (no exponents)
+	reWaypointFloat = regexp.MustCompile(`^(\-?[0-9]+\.[0-9]+), *(\-?[0-9]+\.[0-9]+)`)
+)
+
+func ParseLatLong(llstr string) (Point2LL, error) {
+	if strs := reWaypointFloat.FindStringSubmatch(llstr); len(strs) == 3 {
+		var p Point2LL
+		if l, err := strconv.ParseFloat(strs[1], 32); err != nil {
+			return Point2LL{}, err
+		} else {
+			p[1] = float32(l)
+		}
+		if l, err := strconv.ParseFloat(strs[2], 32); err != nil {
+			return Point2LL{}, err
+		} else {
+			p[0] = float32(l)
+		}
+		return p, nil
+	}
+
+	var p Point2LL
+	if strs := reWaypointDotted.FindStringSubmatch(llstr); len(strs) == 3 {
+		for i, lstr := range strs[1:] {
+			comps := strings.Split(lstr[1:], ".")
+			if len(comps) != 4 {
+				return Point2LL{}, fmt.Errorf("Didn't find 4 components")
+			}
+
+			var ll float64
+			scales := [4]float64{1, 60, 3600, 3600000}
+			for j, comp := range comps {
+				value, err := strconv.Atoi(comp)
+				if err != nil {
+					return Point2LL{}, err
+				}
+				if j == 3 {
+					// Treat the last set of digits as a decimal, so that
+					// Nxx.yy.zz.1 is handled like Nxx.yy.zz.100.
+					for k := len(comp); k < 3; k++ {
+						value *= 10
+					}
+				}
+				ll += float64(value) / scales[j]
+			}
+
+			if lstr[0] == 'S' || lstr[0] == 'W' {
+				ll = -ll
+			}
+
+			// latitude is specified first but is the second component in
+			// Point2LL...
+			p[i^1] = float32(ll)
+		}
+	} else {
+		return Point2LL{}, fmt.Errorf("Invalid latlong string")
+	}
+
+	return p, nil
 }
 
 func (p Point2LL) IsZero() bool {

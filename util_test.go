@@ -292,3 +292,39 @@ func TestReduceMap(t *testing.T) {
 		t.Errorf("Expected %d from ReduceMap; got %d", 5+5+6+6+1, length)
 	}
 }
+
+func TestParseLatLong(t *testing.T) {
+	type LL struct {
+		str string
+		pos Point2LL
+	}
+	latlongs := []LL{
+		LL{str: "N40.37.58.400, W073.46.17.000", pos: Point2LL{-73.771385, 40.6328888}}, // JFK VOR
+		LL{str: "N40.37.58.4,W073.46.17.000", pos: Point2LL{-73.771385, 40.6328888}},    // JFK VOR
+		LL{str: "40.6328888, -73.771385", pos: Point2LL{-73.771385, 40.6328888}},        // JFK VOR
+	}
+
+	for _, ll := range latlongs {
+		p, err := ParseLatLong(ll.str)
+		if err != nil {
+			t.Errorf("%s: unexpected error: %v", ll.str, err)
+		}
+		if p[0] != ll.pos[0] {
+			t.Errorf("%s: got %.9g for latitude, expected %.9g", ll.str, p[0], ll.pos[0])
+		}
+		if p[1] != ll.pos[1] {
+			t.Errorf("%s: got %.9g for longitude, expected %.9g", ll.str, p[1], ll.pos[1])
+		}
+	}
+
+	for _, invalid := range []string{
+		"E40.37.58.400, W073.46.17.000",
+		"40.37.58.400, W073.46.17.000",
+		"N40.37.58.400, -73.22",
+		"N40.37.58.400, W073.46.17",
+	} {
+		if _, err := ParseLatLong(invalid); err == nil {
+			t.Errorf("%s: no error was returned for invalid latlong string!", invalid)
+		}
+	}
+}
