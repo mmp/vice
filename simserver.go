@@ -1158,6 +1158,56 @@ type Route struct {
 	Fleet             string
 }
 
+func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraftICAO string, err error) {
+	al := airlines[rand.Intn(len(airlines))]
+	airline, ok := AllSimAirlines[al]
+	if !ok {
+		err = fmt.Errorf("%s: unknown airline!", al)
+		return
+	}
+
+	// random callsign
+	callsign = strings.ToUpper(airline.ICAO)
+	for _, ch := range airline.Callsign.CallsignFormats[rand.Intn(len(airline.Callsign.CallsignFormats))] {
+		switch ch {
+		case '#':
+			callsign += fmt.Sprintf("%d", rand.Intn(10))
+
+		case '@':
+			callsign += string(rune('A' + rand.Intn(26)))
+		}
+	}
+
+	// Pick an aircraft.
+	var aircraft FleetAircraft
+	count := 0
+
+	fleet, ok := airline.Fleets[fleetId]
+	if !ok {
+		lg.Errorf("%s: didn't find fleet %s -- %+v", airline.ICAO, fleetId, airline)
+		for _, fl := range airline.Fleets {
+			fleet = fl
+			break
+		}
+	}
+
+	for _, ac := range fleet {
+		// Reservoir sampling...
+		count += ac.Count
+		if rand.Float32() < float32(ac.Count)/float32(count) {
+			aircraft = ac
+		}
+	}
+
+	if _, ok := AllSimAircraft[aircraft.ICAO]; !ok {
+		err = fmt.Errorf("%s: chose aircraft but not in DB!", aircraft.ICAO)
+		return
+	}
+
+	aircraftICAO = aircraft.ICAO
+	return
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // DepartureSpawner
 
@@ -1204,50 +1254,10 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	ds.lastRouteCategory = route.Category
 	ds.lastRoute = route
 
-	// Pick an airline; go randomizes iteration, so there ya go...
-	al := route.Airlines[rand.Intn(len(route.Airlines))]
-	airline, ok := AllSimAirlines[al]
-	if !ok {
-		lg.Errorf("%s: unknown airline!", al)
+	callsign, aircraftICAO, err := chooseAircraft(route.Airlines, route.Fleet)
+	if err != nil {
+		lg.Errorf("%+v", err)
 		return
-	}
-
-	// random callsign
-	callsign := strings.ToUpper(airline.ICAO)
-	for _, ch := range airline.Callsign.CallsignFormats[rand.Intn(len(airline.Callsign.CallsignFormats))] {
-		switch ch {
-		case '#':
-			callsign += fmt.Sprintf("%d", rand.Intn(10))
-
-		case '@':
-			callsign += string(rune('A' + rand.Intn(26)))
-		}
-	}
-
-	// Pick an aircraft.
-	var aircraft FleetAircraft
-	count := 0
-
-	fleet, ok := airline.Fleets[route.Fleet]
-	if !ok {
-		lg.Errorf("%s: didn't find fleet %s -- %+v", airline.ICAO, route.Fleet, airline)
-		for _, fl := range airline.Fleets {
-			fleet = fl
-			break
-		}
-	}
-
-	for _, ac := range fleet {
-		// Reservoir sampling...
-		count += ac.Count
-		if rand.Float32() < float32(ac.Count)/float32(count) {
-			aircraft = ac
-		}
-	}
-
-	if _, ok := AllSimAircraft[aircraft.ICAO]; !ok {
-		lg.Errorf("%s: chose aircraft but not in DB!", aircraft.ICAO)
-		return // try again next time...
 	}
 
 	// Pick a destination airport
@@ -1269,7 +1279,7 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 		TrackingController: route.InitialController,
 		FlightPlan: &FlightPlan{
 			Rules:            IFR,
-			AircraftType:     aircraft.ICAO,
+			AircraftType:     aircraftICAO,
 			DepartureAirport: route.DepartureAirport,
 			ArrivalAirport:   destination,
 			Altitude:         alt,
@@ -1277,9 +1287,9 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 		},
 	}
 
-	acInfo, ok := AllSimAircraft[aircraft.ICAO]
+	acInfo, ok := AllSimAircraft[aircraftICAO]
 	if !ok {
-		lg.Errorf("%s: ICAO not in db", aircraft.ICAO)
+		lg.Errorf("%s: ICAO not in db", aircraftICAO)
 		return
 	}
 	if acInfo.WeightClass == "H" {
