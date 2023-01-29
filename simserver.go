@@ -1047,12 +1047,13 @@ func (ss *SimServer) DrawSettingsWindow() {
 ///////////////////////////////////////////////////////////////////////////
 
 type RouteTemplate struct {
-	Waypoints       string
-	Scratchpad      string
-	Route           string
-	InitialAltitude int
-	ClearedAltitude int
-	InitialSpeed    int
+	Waypoints        string
+	Scratchpad       string
+	Route            string
+	InitialAltitude  int
+	ClearedAltitude  int
+	InitialSpeed     int
+	SpeedRestriction int
 
 	DestinationAirports []string
 	DepartureAirports   []string
@@ -1235,6 +1236,7 @@ func (as *AircraftSpawner) MaybeSpawn(ss *SimServer) {
 		Altitude:         float32(rt.InitialAltitude),
 		AssignedAltitude: rt.ClearedAltitude,
 		IAS:              float32(rt.InitialSpeed),
+		AssignedSpeed:    rt.SpeedRestriction,
 	})
 
 	seconds := 3600/as.rate - 10 + rand.Intn(21)
