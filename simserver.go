@@ -92,18 +92,18 @@ type AirportConfig struct {
 
 type DepartureConfig struct {
 	name            string
-	adr             int32
+	rate            int32
 	challenge       float32
 	enabled         bool
 	categoryEnabled map[string]*bool
-	makeSpawner     func(*DepartureConfig) Spawner
+	makeSpawner     func(*DepartureConfig) *AircraftSpawner
 }
 
 type ArrivalConfig struct {
 	name        string
-	aar         int32
+	rate        int32
 	enabled     bool
-	makeSpawner func(*ArrivalConfig) Spawner
+	makeSpawner func(*ArrivalConfig) *AircraftSpawner
 }
 
 type SimServerConnectionConfiguration struct {
@@ -192,7 +192,7 @@ func drawDepartureUI(configs []*DepartureConfig) {
 			imgui.TableNextColumn()
 			imgui.Text(configs[i].name)
 			imgui.TableNextColumn()
-			imgui.InputIntV("##adr", &configs[i].adr, 1, 120, 0)
+			imgui.InputIntV("##adr", &configs[i].rate, 1, 120, 0)
 			imgui.TableNextColumn()
 			imgui.SliderFloatV("##challenge", &configs[i].challenge, 0, 1, "%.01f", 0)
 			imgui.PopID()
@@ -249,7 +249,7 @@ func drawArrivalUI(configs []*ArrivalConfig) {
 			imgui.TableNextColumn()
 			imgui.Text(configs[i].name)
 			imgui.TableNextColumn()
-			imgui.InputIntV("##aar", &configs[i].aar, 1, 120, 0)
+			imgui.InputIntV("##aar", &configs[i].rate, 1, 120, 0)
 			imgui.PopID()
 		}
 		imgui.EndTable()
@@ -329,7 +329,7 @@ type SimServer struct {
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
-	spawners []Spawner
+	spawners []*AircraftSpawner
 
 	showSettings bool
 }
@@ -1046,10 +1046,6 @@ func (ss *SimServer) DrawSettingsWindow() {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type Spawner interface {
-	MaybeSpawn(ss *SimServer)
-}
-
 type RouteTemplate struct {
 	Waypoints       string
 	Scratchpad      string
@@ -1176,30 +1172,12 @@ func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraf
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// ArrivalSpawner
+// AircraftSpawner
 
-type ArrivalSpawner struct {
+type AircraftSpawner struct {
 	nextSpawn time.Time
 
-	rate int
-
-	waypoints        []string
-	altitude         int
-	speed            int
-	speedRestriction int
-
-	initialController string
-	airlines          []string
-	fleet             string
-}
-
-///////////////////////////////////////////////////////////////////////////
-// DepartureSpawner
-
-type DepartureSpawner struct {
-	nextSpawn time.Time
-
-	adr       int
+	rate      int
 	challenge float32
 
 	routeTemplates []RouteTemplate
@@ -1208,21 +1186,21 @@ type DepartureSpawner struct {
 	lastRouteTemplate         *RouteTemplate
 }
 
-func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
-	if ss.CurrentTime().Before(ds.nextSpawn) {
+func (as *AircraftSpawner) MaybeSpawn(ss *SimServer) {
+	if ss.CurrentTime().Before(as.nextSpawn) {
 		return
 	}
 
 	// Pick a route
 	var rt *RouteTemplate
 	u := rand.Float32()
-	if u < ds.challenge/2 {
-		rt = ds.lastRouteTemplate // note: may be nil the first time...
-	} else if u < ds.challenge {
+	if u < as.challenge/2 {
+		rt = as.lastRouteTemplate // note: may be nil the first time...
+	} else if u < as.challenge {
 		// Try to find one with the same category; reservoir sampling
 		n := float32(0)
-		for _, r := range ds.routeTemplates {
-			if r.Category == ds.lastRouteTemplateCategory {
+		for _, r := range as.routeTemplates {
+			if r.Category == as.lastRouteTemplateCategory {
 				n++
 				if rand.Float32() < 1/n {
 					rt = &r
@@ -1234,10 +1212,10 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	// Either the challenge cases didn't hit or they did and it's the first
 	// time through...
 	if rt == nil {
-		rt = &ds.routeTemplates[rand.Intn(len(ds.routeTemplates))]
+		rt = &as.routeTemplates[rand.Intn(len(as.routeTemplates))]
 	}
-	ds.lastRouteTemplateCategory = rt.Category
-	ds.lastRouteTemplate = rt
+	as.lastRouteTemplateCategory = rt.Category
+	as.lastRouteTemplate = rt
 
 	ac := rt.RandomAircraft()
 	if ac == nil {
@@ -1259,8 +1237,8 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 		IAS:              float32(rt.InitialSpeed),
 	})
 
-	seconds := 3600/ds.adr - 10 + rand.Intn(21)
-	ds.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
+	seconds := 3600/as.rate - 10 + rand.Intn(21)
+	as.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1316,7 +1294,7 @@ var jfkDEEZZ = Exit{
 
 func jfkRunwayConfig() *DepartureConfig {
 	c := &DepartureConfig{
-		adr:             45,
+		rate:            45,
 		challenge:       0.5,
 		categoryEnabled: make(map[string]*bool),
 	}
@@ -1365,7 +1343,7 @@ func (e Exit) GetRouteTemplates(r RouteTemplate, waypoints, route string) []Rout
 func jfk31LRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "31L"
-	c.makeSpawner = func(config *DepartureConfig) Spawner {
+	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
@@ -1384,8 +1362,8 @@ func jfk31LRunwayConfig() *DepartureConfig {
 			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_31L._JFK_13R.SKORR.CESID.YNKEE.#172", "DEEZZ5.CANDR J60")...)
 		}
 
-		return &DepartureSpawner{
-			adr:            int(config.adr),
+		return &AircraftSpawner{
+			rate:           int(config.rate),
 			challenge:      config.challenge,
 			routeTemplates: routeTemplates,
 		}
@@ -1396,7 +1374,7 @@ func jfk31LRunwayConfig() *DepartureConfig {
 func jfk22RRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "22R"
-	c.makeSpawner = func(config *DepartureConfig) Spawner {
+	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
@@ -1415,8 +1393,8 @@ func jfk22RRunwayConfig() *DepartureConfig {
 			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_22R._JFK_4L.#224", "DEEZZ5.CANDR J60")...)
 		}
 
-		return &DepartureSpawner{
-			adr:            int(config.adr),
+		return &AircraftSpawner{
+			rate:           int(config.rate),
 			challenge:      config.challenge,
 			routeTemplates: routeTemplates,
 		}
@@ -1427,7 +1405,7 @@ func jfk22RRunwayConfig() *DepartureConfig {
 func jfk13RRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "13R"
-	c.makeSpawner = func(config *DepartureConfig) Spawner {
+	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
@@ -1446,8 +1424,8 @@ func jfk13RRunwayConfig() *DepartureConfig {
 			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_13R._JFK_31L.#109", "DEEZZ5.CANDR J60")...)
 		}
 
-		return &DepartureSpawner{
-			adr:            int(config.adr),
+		return &AircraftSpawner{
+			rate:           int(config.rate),
 			challenge:      config.challenge,
 			routeTemplates: routeTemplates,
 		}
@@ -1458,7 +1436,7 @@ func jfk13RRunwayConfig() *DepartureConfig {
 func jfk4LRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "4L"
-	c.makeSpawner = func(config *DepartureConfig) Spawner {
+	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
@@ -1477,8 +1455,8 @@ func jfk4LRunwayConfig() *DepartureConfig {
 			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_4L._JFK_4La.#099", "DEEZZ5.CANDR J60")...)
 		}
 
-		return &DepartureSpawner{
-			adr:            int(config.adr),
+		return &AircraftSpawner{
+			rate:           int(config.rate),
 			challenge:      config.challenge,
 			routeTemplates: routeTemplates,
 		}
@@ -1491,7 +1469,7 @@ func jfk31RRunwayConfig() *DepartureConfig {
 	delete(c.categoryEnabled, "Southwest")
 
 	c.name = "31R"
-	c.makeSpawner = func(config *DepartureConfig) Spawner {
+	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 		var routeTemplates []RouteTemplate
 
 		rp := jfkPropProto()
@@ -1506,8 +1484,8 @@ func jfk31RRunwayConfig() *DepartureConfig {
 			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 
-		return &DepartureSpawner{
-			adr:            int(config.adr),
+		return &AircraftSpawner{
+			rate:           int(config.rate),
 			challenge:      config.challenge,
 			routeTemplates: routeTemplates,
 		}
@@ -1540,7 +1518,7 @@ func GetFRGConfig() *AirportConfig {
 	for rwy, way := range runways {
 		config := &DepartureConfig{
 			name:            rwy,
-			adr:             30,
+			rate:            30,
 			challenge:       0.5,
 			categoryEnabled: make(map[string]*bool),
 		}
@@ -1549,7 +1527,7 @@ func GetFRGConfig() *AirportConfig {
 		config.categoryEnabled["Southwest"] = new(bool)
 		config.categoryEnabled["North"] = new(bool)
 
-		config.makeSpawner = func(config *DepartureConfig) Spawner {
+		config.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 			rp := RouteTemplate{
 				InitialAltitude:   70,
 				DepartureAirports: []string{"KFRG"},
@@ -1575,8 +1553,8 @@ func GetFRGConfig() *AirportConfig {
 				routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, way, "REP1")...)
 			}
 
-			return &DepartureSpawner{
-				adr:            int(config.adr),
+			return &AircraftSpawner{
+				rate:           int(config.rate),
 				challenge:      config.challenge,
 				routeTemplates: routeTemplates,
 			}
@@ -1601,13 +1579,13 @@ func GetISPConfig() *AirportConfig {
 	for rwy, way := range runways {
 		config := &DepartureConfig{
 			name:            rwy,
-			adr:             20,
+			rate:            20,
 			challenge:       0.5,
 			categoryEnabled: make(map[string]*bool),
 		}
 		config.categoryEnabled["North"] = new(bool)
 
-		config.makeSpawner = func(config *DepartureConfig) Spawner {
+		config.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 			rp := RouteTemplate{
 				InitialAltitude:   70,
 				DepartureAirports: []string{"KISP"},
@@ -1623,8 +1601,8 @@ func GetISPConfig() *AirportConfig {
 				routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, way, "LONGI7")...)
 			}
 
-			return &DepartureSpawner{
-				adr:            int(config.adr),
+			return &AircraftSpawner{
+				rate:           int(config.rate),
 				challenge:      config.challenge,
 				routeTemplates: routeTemplates,
 			}
@@ -1649,7 +1627,7 @@ func GetLGAConfig() *AirportConfig {
 	for rwy, way := range runways {
 		config := &DepartureConfig{
 			name:            rwy,
-			adr:             30,
+			rate:            30,
 			challenge:       0.5,
 			categoryEnabled: make(map[string]*bool),
 		}
@@ -1657,7 +1635,7 @@ func GetLGAConfig() *AirportConfig {
 		config.categoryEnabled["Southwest"] = new(bool)
 		config.categoryEnabled["Southwest Props"] = new(bool)
 
-		config.makeSpawner = func(config *DepartureConfig) Spawner {
+		config.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
 			proto := RouteTemplate{
 				InitialAltitude:   70,
 				DepartureAirports: []string{"KLGA"},
@@ -1687,8 +1665,8 @@ func GetLGAConfig() *AirportConfig {
 				routeTemplates = append(routeTemplates, jfkWHITE.GetRouteTemplates(rp, way, "LGA7")...)
 			}
 
-			return &DepartureSpawner{
-				adr:            int(config.adr),
+			return &AircraftSpawner{
+				rate:           int(config.rate),
 				challenge:      config.challenge,
 				routeTemplates: routeTemplates,
 			}
