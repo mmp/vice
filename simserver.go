@@ -1050,7 +1050,7 @@ type Spawner interface {
 	MaybeSpawn(ss *SimServer)
 }
 
-type Route struct {
+type RouteTemplate struct {
 	Waypoints       string
 	Scratchpad      string
 	Route           string
@@ -1068,7 +1068,7 @@ type Route struct {
 	Fleet             string
 }
 
-func (r *Route) RandomAircraft() *Aircraft {
+func (r *RouteTemplate) RandomAircraft() *Aircraft {
 	callsign, aircraftICAO, err := chooseAircraft(r.Airlines, r.Fleet)
 	if err != nil {
 		lg.Errorf("%+v", err)
@@ -1202,10 +1202,10 @@ type DepartureSpawner struct {
 	adr       int
 	challenge float32
 
-	routes []Route
+	routeTemplates []RouteTemplate
 
-	lastRouteCategory string
-	lastRoute         *Route
+	lastRouteTemplateCategory string
+	lastRouteTemplate         *RouteTemplate
 }
 
 func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
@@ -1214,18 +1214,18 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	}
 
 	// Pick a route
-	var route *Route
+	var rt *RouteTemplate
 	u := rand.Float32()
 	if u < ds.challenge/2 {
-		route = ds.lastRoute // note: may be nil the first time...
+		rt = ds.lastRouteTemplate // note: may be nil the first time...
 	} else if u < ds.challenge {
 		// Try to find one with the same category; reservoir sampling
 		n := float32(0)
-		for _, r := range ds.routes {
-			if r.Category == ds.lastRouteCategory {
+		for _, r := range ds.routeTemplates {
+			if r.Category == ds.lastRouteTemplateCategory {
 				n++
 				if rand.Float32() < 1/n {
-					route = &r
+					rt = &r
 				}
 			}
 		}
@@ -1233,13 +1233,13 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 
 	// Either the challenge cases didn't hit or they did and it's the first
 	// time through...
-	if route == nil {
-		route = &ds.routes[rand.Intn(len(ds.routes))]
+	if rt == nil {
+		rt = &ds.routeTemplates[rand.Intn(len(ds.routeTemplates))]
 	}
-	ds.lastRouteCategory = route.Category
-	ds.lastRoute = route
+	ds.lastRouteTemplateCategory = rt.Category
+	ds.lastRouteTemplate = rt
 
-	ac := route.RandomAircraft()
+	ac := rt.RandomAircraft()
 	if ac == nil {
 		return
 	}
@@ -1253,10 +1253,10 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	ss.SpawnAircraft(&SSAircraft{
 		AC:               ac,
 		Performance:      acInfo,
-		Waypoints:        strings.Split(route.Waypoints, "."),
-		Altitude:         float32(route.InitialAltitude),
-		AssignedAltitude: route.ClearedAltitude,
-		IAS:              float32(route.InitialSpeed),
+		Waypoints:        strings.Split(rt.Waypoints, "."),
+		Altitude:         float32(rt.InitialAltitude),
+		AssignedAltitude: rt.ClearedAltitude,
+		IAS:              float32(rt.InitialSpeed),
 	})
 
 	seconds := 3600/ds.adr - 10 + rand.Intn(21)
@@ -1327,8 +1327,8 @@ func jfkRunwayConfig() *DepartureConfig {
 	return c
 }
 
-func jfkJetProto() Route {
-	return Route{
+func jfkJetProto() RouteTemplate {
+	return RouteTemplate{
 		InitialAltitude:   13,
 		DepartureAirports: []string{"KJFK"},
 		ClearedAltitude:   5000,
@@ -1339,8 +1339,8 @@ func jfkJetProto() Route {
 	}
 }
 
-func jfkPropProto() Route {
-	return Route{
+func jfkPropProto() RouteTemplate {
+	return RouteTemplate{
 		InitialAltitude:   13,
 		DepartureAirports: []string{"KJFK"},
 		ClearedAltitude:   2000,
@@ -1349,45 +1349,45 @@ func jfkPropProto() Route {
 	}
 }
 
-func (e Exit) GetRoutes(r Route, waypoints, route string) []Route {
-	var routes []Route
+func (e Exit) GetRouteTemplates(r RouteTemplate, waypoints, route string) []RouteTemplate {
+	var routeTemplates []RouteTemplate
 	for _, fix := range e.fixes {
 		r.Waypoints = waypoints + "." + fix[0]
 		r.Route = route + " " + fix[0]
 		r.Category = e.name
 		r.Scratchpad = fix[1]
 		r.DestinationAirports = e.destinations
-		routes = append(routes, r)
+		routeTemplates = append(routeTemplates, r)
 	}
-	return routes
+	return routeTemplates
 }
 
 func jfk31LRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "31L"
 	c.makeSpawner = func(config *DepartureConfig) Spawner {
-		var routes []Route
+		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#223", "SKORR5.RNGRR")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_31L._JFK_13R.CRI.#223", "SKORR5.RNGRR")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
-			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_31L._JFK_13R.SKORR.CESID.YNKEE.#172", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_31L._JFK_13R.SKORR.CESID.YNKEE.#172", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &DepartureSpawner{
-			adr:       int(config.adr),
-			challenge: config.challenge,
-			routes:    routes,
+			adr:            int(config.adr),
+			challenge:      config.challenge,
+			routeTemplates: routeTemplates,
 		}
 	}
 	return c
@@ -1397,28 +1397,28 @@ func jfk22RRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "22R"
 	c.makeSpawner = func(config *DepartureConfig) Spawner {
-		var routes []Route
+		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
-			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_22R._JFK_4L.#224", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_22R._JFK_4L.#224", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &DepartureSpawner{
-			adr:       int(config.adr),
-			challenge: config.challenge,
-			routes:    routes,
+			adr:            int(config.adr),
+			challenge:      config.challenge,
+			routeTemplates: routeTemplates,
 		}
 	}
 	return c
@@ -1428,28 +1428,28 @@ func jfk13RRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "13R"
 	c.makeSpawner = func(config *DepartureConfig) Spawner {
-		var routes []Route
+		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
-			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_13R._JFK_31L.#109", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &DepartureSpawner{
-			adr:       int(config.adr),
-			challenge: config.challenge,
-			routes:    routes,
+			adr:            int(config.adr),
+			challenge:      config.challenge,
+			routeTemplates: routeTemplates,
 		}
 	}
 	return c
@@ -1459,28 +1459,28 @@ func jfk4LRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	c.name = "4L"
 	c.makeSpawner = func(config *DepartureConfig) Spawner {
-		var routes []Route
+		var routeTemplates []RouteTemplate
 
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
-			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_4L._JFK_4La.#099", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &DepartureSpawner{
-			adr:       int(config.adr),
-			challenge: config.challenge,
-			routes:    routes,
+			adr:            int(config.adr),
+			challenge:      config.challenge,
+			routeTemplates: routeTemplates,
 		}
 	}
 	return c
@@ -1492,24 +1492,24 @@ func jfk31RRunwayConfig() *DepartureConfig {
 
 	c.name = "31R"
 	c.makeSpawner = func(config *DepartureConfig) Spawner {
-		var routes []Route
+		var routeTemplates []RouteTemplate
 
 		rp := jfkPropProto()
 
 		if *config.categoryEnabled["Water"] {
-			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 
 		return &DepartureSpawner{
-			adr:       int(config.adr),
-			challenge: config.challenge,
-			routes:    routes,
+			adr:            int(config.adr),
+			challenge:      config.challenge,
+			routeTemplates: routeTemplates,
 		}
 	}
 	return c
@@ -1550,7 +1550,7 @@ func GetFRGConfig() *AirportConfig {
 		config.categoryEnabled["North"] = new(bool)
 
 		config.makeSpawner = func(config *DepartureConfig) Spawner {
-			rp := Route{
+			rp := RouteTemplate{
 				InitialAltitude:   70,
 				DepartureAirports: []string{"KFRG"},
 				ClearedAltitude:   5000,
@@ -1559,26 +1559,26 @@ func GetFRGConfig() *AirportConfig {
 				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
 			}
 
-			var routes []Route
+			var routeTemplates []RouteTemplate
 
 			if *config.categoryEnabled["Water"] {
-				routes = append(routes, jfkWater.GetRoutes(rp, way, "REP1")...)
+				routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, way, "REP1")...)
 			}
 			if *config.categoryEnabled["East"] {
-				routes = append(routes, jfkEast.GetRoutes(rp, way, "REP1")...)
+				routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, way, "REP1")...)
 			}
 			if *config.categoryEnabled["Southwest"] {
-				routes = append(routes, jfkSouthwest.GetRoutes(rp, way, "REP1")...)
+				routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, way, "REP1")...)
 			}
 			if *config.categoryEnabled["North"] {
-				routes = append(routes, jfkNorth.GetRoutes(rp, way, "REP1")...)
-				routes = append(routes, jfkDEEZZ.GetRoutes(rp, way, "REP1")...)
+				routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, way, "REP1")...)
+				routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, way, "REP1")...)
 			}
 
 			return &DepartureSpawner{
-				adr:       int(config.adr),
-				challenge: config.challenge,
-				routes:    routes,
+				adr:            int(config.adr),
+				challenge:      config.challenge,
+				routeTemplates: routeTemplates,
 			}
 		}
 
@@ -1608,7 +1608,7 @@ func GetISPConfig() *AirportConfig {
 		config.categoryEnabled["North"] = new(bool)
 
 		config.makeSpawner = func(config *DepartureConfig) Spawner {
-			rp := Route{
+			rp := RouteTemplate{
 				InitialAltitude:   70,
 				DepartureAirports: []string{"KISP"},
 				ClearedAltitude:   8000,
@@ -1617,16 +1617,16 @@ func GetISPConfig() *AirportConfig {
 				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
 			}
 
-			var routes []Route
+			var routeTemplates []RouteTemplate
 
 			if *config.categoryEnabled["North"] {
-				routes = append(routes, jfkNorth.GetRoutes(rp, way, "LONGI7")...)
+				routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, way, "LONGI7")...)
 			}
 
 			return &DepartureSpawner{
-				adr:       int(config.adr),
-				challenge: config.challenge,
-				routes:    routes,
+				adr:            int(config.adr),
+				challenge:      config.challenge,
+				routeTemplates: routeTemplates,
 			}
 		}
 
@@ -1658,7 +1658,7 @@ func GetLGAConfig() *AirportConfig {
 		config.categoryEnabled["Southwest Props"] = new(bool)
 
 		config.makeSpawner = func(config *DepartureConfig) Spawner {
-			proto := Route{
+			proto := RouteTemplate{
 				InitialAltitude:   70,
 				DepartureAirports: []string{"KLGA"},
 				InitialController: "LGA_DEP",
@@ -1666,17 +1666,17 @@ func GetLGAConfig() *AirportConfig {
 				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
 			}
 
-			var routes []Route
+			var routeTemplates []RouteTemplate
 
 			if *config.categoryEnabled["Water"] {
 				rp := proto
 				rp.ClearedAltitude = 8000
-				routes = append(routes, jfkWater.GetRoutes(rp, way, "LGA7")...)
+				routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, way, "LGA7")...)
 			}
 			if *config.categoryEnabled["Southwest"] {
 				rp := proto
 				rp.ClearedAltitude = 6000
-				routes = append(routes, jfkDIXIE.GetRoutes(rp, way, "LGA7")...)
+				routeTemplates = append(routeTemplates, jfkDIXIE.GetRouteTemplates(rp, way, "LGA7")...)
 			}
 			if *config.categoryEnabled["Southwest Props"] {
 				// WHITE Props
@@ -1684,13 +1684,13 @@ func GetLGAConfig() *AirportConfig {
 				rp.ClearedAltitude = 7000
 				rp.Fleet = "short"
 				rp.Airlines = []string{"QXE", "BWA", "FDX"}
-				routes = append(routes, jfkWHITE.GetRoutes(rp, way, "LGA7")...)
+				routeTemplates = append(routeTemplates, jfkWHITE.GetRouteTemplates(rp, way, "LGA7")...)
 			}
 
 			return &DepartureSpawner{
-				adr:       int(config.adr),
-				challenge: config.challenge,
-				routes:    routes,
+				adr:            int(config.adr),
+				challenge:      config.challenge,
+				routeTemplates: routeTemplates,
 			}
 		}
 
