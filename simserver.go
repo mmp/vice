@@ -5,8 +5,6 @@
 package main
 
 import (
-	_ "embed"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -288,57 +286,9 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 	return nil
 }
 
-//go:embed resources/openscope-aircraft.json
-var openscopeAircraft string
-
-type AircraftPerformance struct {
-	Name string `json:"name"`
-	ICAO string `json:"icao"`
-	// engines, weight class, category
-	WeightClass string `json:"weightClass"`
-	Ceiling     int    `json:"ceiling"`
-	Rate        struct {
-		Climb      int     `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500
-		Descent    int     `json:"descent"`
-		Accelerate float32 `json:"accelerate"` // kts / 2 seconds
-		Decelerate float32 `json:"decelerate"`
-	} `json:"rate"`
-	Runway struct {
-		Takeoff float32 `json:"takeoff"` // nm
-		Landing float32 `json:"landing"` // nm
-	} `json:"runway"`
-	Speed struct {
-		Min     int `json:"min"`
-		Landing int `json:"landing"`
-		Cruise  int `json:"cruise"`
-		Max     int `json:"max"`
-	} `json:"speed"`
-}
-
-//go:embed resources/openscope-airlines.json
-var openscopeAirlines string
-
-type Airline struct {
-	ICAO     string `json:"icao"`
-	Name     string `json:"name"`
-	Callsign struct {
-		CallsignFormats []string `json:"callsignFormats"`
-	} `json:"callsign"`
-	JSONFleets map[string][][2]interface{} `json:"fleets"`
-	Fleets     map[string][]FleetAircraft
-}
-
-type FleetAircraft struct {
-	ICAO  string
-	Count int
-}
-
-var AllAircraftPerformance map[string]*AircraftPerformance
-var AllAirlines map[string]*Airline
-
 type SSAircraft struct {
 	AC          *Aircraft
-	Performance *AircraftPerformance
+	Performance AircraftPerformance
 	Strip       FlightStrip
 	Waypoints   []string
 
@@ -386,46 +336,6 @@ type SimServer struct {
 
 func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	rand.Seed(time.Now().UnixNano())
-
-	var acStruct struct {
-		Aircraft []AircraftPerformance `json:"aircraft"`
-	}
-	if err := json.Unmarshal([]byte(openscopeAircraft), &acStruct); err != nil {
-		lg.Errorf("%v", err)
-	}
-
-	AllAircraftPerformance = make(map[string]*AircraftPerformance)
-	for i, ac := range acStruct.Aircraft {
-		AllAircraftPerformance[ac.ICAO] = &acStruct.Aircraft[i]
-	}
-
-	var alStruct struct {
-		Airlines []Airline `json:"airlines"`
-	}
-	if err := json.Unmarshal([]byte(openscopeAirlines), &alStruct); err != nil {
-		lg.Errorf("%v", err)
-	}
-	// Fix up the fleets...
-	AllAirlines = make(map[string]*Airline)
-	for _, al := range alStruct.Airlines {
-		fixedAirline := al
-		fixedAirline.Fleets = make(map[string][]FleetAircraft)
-		for name, aircraft := range fixedAirline.JSONFleets {
-			for _, ac := range aircraft {
-				fleetAC := FleetAircraft{
-					ICAO:  strings.ToUpper(ac[0].(string)),
-					Count: int(ac[1].(float64)),
-				}
-				if _, ok := AllAircraftPerformance[fleetAC.ICAO]; !ok {
-					lg.Errorf("%s: unknown aircraft in airlines database", fleetAC.ICAO)
-				}
-				fixedAirline.Fleets[name] = append(fixedAirline.Fleets[name], fleetAC)
-			}
-		}
-		fixedAirline.JSONFleets = nil
-
-		AllAirlines[strings.ToUpper(al.ICAO)] = &fixedAirline
-	}
 
 	ss := &SimServer{
 		callsign:          ssc.callsign,
@@ -913,7 +823,7 @@ func locateWaypoint(wp string) (Point2LL, bool) {
 }
 
 func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, ias int) {
-	acInfo, ok := AllAircraftPerformance[ac.FlightPlan.BaseType()]
+	acInfo, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
 		return
@@ -1184,7 +1094,7 @@ type Approach struct {
 
 func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraftICAO string, err error) {
 	al := airlines[rand.Intn(len(airlines))]
-	airline, ok := AllAirlines[al]
+	airline, ok := database.Airlines[al]
 	if !ok {
 		err = fmt.Errorf("%s: unknown airline!", al)
 		return
@@ -1223,7 +1133,7 @@ func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraf
 		}
 	}
 
-	if _, ok := AllAircraftPerformance[aircraft.ICAO]; !ok {
+	if _, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
 		err = fmt.Errorf("%s: chose aircraft but not in DB!", aircraft.ICAO)
 		return
 	}
@@ -1329,7 +1239,7 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 		},
 	}
 
-	acInfo, ok := AllAircraftPerformance[aircraftICAO]
+	acInfo, ok := database.AircraftPerformance[aircraftICAO]
 	if !ok {
 		lg.Errorf("%s: ICAO not in db", aircraftICAO)
 		return

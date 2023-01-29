@@ -37,6 +37,8 @@ type StaticDatabase struct {
 	callsigns           map[string]Callsign
 	AircraftTypes       map[string]AircraftType
 	AircraftTypeAliases map[string]string
+	AircraftPerformance map[string]AircraftPerformance
+	Airlines            map[string]Airline
 
 	// From the sector file
 	NmPerLatitude     float32
@@ -79,6 +81,45 @@ type StaticDatabase struct {
 	// From the position file
 	positions             map[string][]Position // map key is e.g. JFK_TWR
 	positionFileLoadError error
+}
+
+type AircraftPerformance struct {
+	Name string `json:"name"`
+	ICAO string `json:"icao"`
+	// engines, weight class, category
+	WeightClass string `json:"weightClass"`
+	Ceiling     int    `json:"ceiling"`
+	Rate        struct {
+		Climb      int     `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500
+		Descent    int     `json:"descent"`
+		Accelerate float32 `json:"accelerate"` // kts / 2 seconds
+		Decelerate float32 `json:"decelerate"`
+	} `json:"rate"`
+	Runway struct {
+		Takeoff float32 `json:"takeoff"` // nm
+		Landing float32 `json:"landing"` // nm
+	} `json:"runway"`
+	Speed struct {
+		Min     int `json:"min"`
+		Landing int `json:"landing"`
+		Cruise  int `json:"cruise"`
+		Max     int `json:"max"`
+	} `json:"speed"`
+}
+
+type Airline struct {
+	ICAO     string `json:"icao"`
+	Name     string `json:"name"`
+	Callsign struct {
+		CallsignFormats []string `json:"callsignFormats"`
+	} `json:"callsign"`
+	JSONFleets map[string][][2]interface{} `json:"fleets"`
+	Fleets     map[string][]FleetAircraft
+}
+
+type FleetAircraft struct {
+	ICAO  string
+	Count int
 }
 
 // Label represents a labeled point on a map.
@@ -177,6 +218,10 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 	go func() { db.callsigns = parseCallsigns(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.AircraftTypes, db.AircraftTypeAliases = parseAircraftTypes(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.Airlines = parseAirlines(); wg.Done() }()
 	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
@@ -406,6 +451,56 @@ func parseAircraftTypes() (map[string]AircraftType, map[string]string) {
 	}
 
 	return ac.AircraftTypes, ac.AircraftTypeAliases
+}
+
+//go:embed resources/openscope-aircraft.json
+var openscopeAircraft string
+
+func parseAircraftPerformance() map[string]AircraftPerformance {
+	var acStruct struct {
+		Aircraft []AircraftPerformance `json:"aircraft"`
+	}
+	if err := json.Unmarshal([]byte(openscopeAircraft), &acStruct); err != nil {
+		lg.Errorf("%v", err)
+	}
+
+	ap := make(map[string]AircraftPerformance)
+	for i, ac := range acStruct.Aircraft {
+		ap[ac.ICAO] = acStruct.Aircraft[i]
+	}
+
+	return ap
+}
+
+//go:embed resources/openscope-airlines.json
+var openscopeAirlines string
+
+func parseAirlines() map[string]Airline {
+	var alStruct struct {
+		Airlines []Airline `json:"airlines"`
+	}
+	if err := json.Unmarshal([]byte(openscopeAirlines), &alStruct); err != nil {
+		lg.Errorf("%v", err)
+	}
+
+	airlines := make(map[string]Airline)
+	for _, al := range alStruct.Airlines {
+		fixedAirline := al
+		fixedAirline.Fleets = make(map[string][]FleetAircraft)
+		for name, aircraft := range fixedAirline.JSONFleets {
+			for _, ac := range aircraft {
+				fleetAC := FleetAircraft{
+					ICAO:  strings.ToUpper(ac[0].(string)),
+					Count: int(ac[1].(float64)),
+				}
+				fixedAirline.Fleets[name] = append(fixedAirline.Fleets[name], fleetAC)
+			}
+		}
+		fixedAirline.JSONFleets = nil
+
+		airlines[strings.ToUpper(al.ICAO)] = fixedAirline
+	}
+	return airlines
 }
 
 ///////////////////////////////////////////////////////////////////////////
