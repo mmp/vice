@@ -235,7 +235,7 @@ func drawArrivalUI(configs []*ArrivalConfig) {
 	}
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV("arrivals", 3, flags, imgui.Vec2{800, 0}, 0.) {
+	if imgui.BeginTableV("arrivals", 3, flags, imgui.Vec2{600, 0}, 0.) {
 		imgui.TableSetupColumn("Enabled")
 		imgui.TableSetupColumn("Arrival")
 		imgui.TableSetupColumn("AAR")
@@ -1503,6 +1503,86 @@ func GetJFKConfig() *AirportConfig {
 	ac.departureConfigs = append(ac.departureConfigs, jfk22RRunwayConfig())
 	ac.departureConfigs = append(ac.departureConfigs, jfk13RRunwayConfig())
 	ac.departureConfigs = append(ac.departureConfigs, jfk4LRunwayConfig())
+
+	camrn4 := &ArrivalConfig{
+		name: "CAMRN4",
+		rate: 30,
+		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
+			return &AircraftSpawner{
+				rate: int(ac.rate),
+				routeTemplates: []RouteTemplate{
+					RouteTemplate{
+						Waypoints:           "N039.46.43.120, W074.03.15.529/KARRS/@/CAMRN/#041",
+						Route:               "/. CAMRN4",
+						InitialAltitude:     15000,
+						ClearedAltitude:     11000,
+						InitialSpeed:        300,
+						SpeedRestriction:    250,
+						DepartureAirports:   []string{"KATL", "KFLL", "KIAD"}, // TODO
+						DestinationAirports: []string{"KJFK"},
+						InitialController:   "NY_F_CTR",
+						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+						Fleet:               "default",
+					},
+				},
+			}
+		},
+	}
+	ac.arrivalConfigs = append(ac.arrivalConfigs, camrn4)
+
+	lendy8 := &ArrivalConfig{
+		name: "LENDY8",
+		rate: 30,
+		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
+			return &AircraftSpawner{
+				rate: int(ac.rate),
+				routeTemplates: []RouteTemplate{
+					RouteTemplate{
+						Waypoints:           "N040.56.09.863, W074.30.33.013/N040.55.09.974, W074.25.19.628/@/LENDY/#135",
+						Route:               "/. LENDY8",
+						InitialAltitude:     20000,
+						ClearedAltitude:     19000,
+						InitialSpeed:        300,
+						SpeedRestriction:    250,
+						DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
+						DestinationAirports: []string{"KJFK"},
+						InitialController:   "NY_F_CTR",
+						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+						Fleet:               "default",
+					},
+				},
+			}
+		},
+	}
+	ac.arrivalConfigs = append(ac.arrivalConfigs, lendy8)
+
+	parch3 := &ArrivalConfig{
+		name: "PARCH3",
+		rate: 30,
+		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
+			return &AircraftSpawner{
+				rate: int(ac.rate),
+				routeTemplates: []RouteTemplate{
+					RouteTemplate{
+						Waypoints:           "N041.02.38.230, W072.23.00.102/N040.57.31.959, W072.42.21.494/@/CCC/ROBER/#278",
+						Route:               "/. PARCH3",
+						InitialAltitude:     13000,
+						ClearedAltitude:     12000,
+						InitialSpeed:        275,
+						SpeedRestriction:    250,
+						DepartureAirports:   []string{"KBOS"}, // TODO
+						DestinationAirports: []string{"KJFK"},
+						InitialController:   "NY_F_CTR",
+						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+						Fleet:               "default",
+					},
+				},
+			}
+		},
+	}
+	ac.arrivalConfigs = append(ac.arrivalConfigs, parch3)
+
+	// TODO? PAWLING2 (turboprop <= 250KT)
 
 	return ac
 }
