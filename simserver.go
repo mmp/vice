@@ -356,7 +356,7 @@ type SimServer struct {
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
-	spawners []*RunwaySpawner
+	spawners []*DepartureSpawner
 
 	showSettings bool
 }
@@ -457,7 +457,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		}
 
 		if len(routes) > 0 {
-			spawner := &RunwaySpawner{
+			spawner := &DepartureSpawner{
 				nextSpawn: ss.currentTime.Add(-60 * time.Second),
 				adr:       int(conf.adr),
 				challenge: conf.challenge,
@@ -1158,7 +1158,10 @@ type Route struct {
 	Fleet             string
 }
 
-type RunwaySpawner struct {
+///////////////////////////////////////////////////////////////////////////
+// DepartureSpawner
+
+type DepartureSpawner struct {
 	nextSpawn time.Time
 
 	adr       int
@@ -1170,21 +1173,21 @@ type RunwaySpawner struct {
 	lastRoute         *Route
 }
 
-func (rs *RunwaySpawner) MaybeSpawn(ss *SimServer) {
-	if ss.CurrentTime().Before(rs.nextSpawn) {
+func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
+	if ss.CurrentTime().Before(ds.nextSpawn) {
 		return
 	}
 
 	// Pick a route
 	var route *Route
 	u := rand.Float32()
-	if u < rs.challenge/2 {
-		route = rs.lastRoute // note: may be nil the first time...
-	} else if u < rs.challenge {
+	if u < ds.challenge/2 {
+		route = ds.lastRoute // note: may be nil the first time...
+	} else if u < ds.challenge {
 		// Try to find one with the same category; reservoir sampling
 		n := float32(0)
-		for _, r := range rs.routes {
-			if r.Category == rs.lastRouteCategory {
+		for _, r := range ds.routes {
+			if r.Category == ds.lastRouteCategory {
 				n++
 				if rand.Float32() < 1/n {
 					route = r
@@ -1196,10 +1199,10 @@ func (rs *RunwaySpawner) MaybeSpawn(ss *SimServer) {
 	// Either the challenge cases didn't hit or they did and it's the first
 	// time through...
 	if route == nil {
-		route = rs.routes[rand.Intn(len(rs.routes))]
+		route = ds.routes[rand.Intn(len(ds.routes))]
 	}
-	rs.lastRouteCategory = route.Category
-	rs.lastRoute = route
+	ds.lastRouteCategory = route.Category
+	ds.lastRoute = route
 
 	// Pick an airline; go randomizes iteration, so there ya go...
 	al := route.Airlines[rand.Intn(len(route.Airlines))]
@@ -1288,8 +1291,8 @@ func (rs *RunwaySpawner) MaybeSpawn(ss *SimServer) {
 
 	ss.SpawnAircraft(ac, route.Waypoints, route.InitialAltitude, route.ClearedAltitude, route.InitialSpeed)
 
-	seconds := 3600/rs.adr - 10 + rand.Intn(21)
-	rs.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
+	seconds := 3600/ds.adr - 10 + rand.Intn(21)
+	ds.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
 }
 
 var jfkWater = [][2]string{
