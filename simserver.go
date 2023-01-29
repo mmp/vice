@@ -811,7 +811,7 @@ func (ss *SimServer) updateSim() {
 			} else {
 				var pos Point2LL
 				var ok bool
-				if pos, ok = database.Locate(ac.Waypoints[0]); !ok {
+				if pos, ok = locateWaypoint(ac.Waypoints[0]); !ok {
 					if pos, ok = configPositions[ac.Waypoints[0]]; !ok {
 						lg.Errorf("%s: unknown route position", ac.Waypoints[0])
 						continue
@@ -886,6 +886,21 @@ func (ss *SimServer) GetWindowTitle() string {
 	return "SimServer: " + ss.callsign
 }
 
+func locateWaypoint(wp string) (Point2LL, bool) {
+	// is it a fix, VOR, airport, etc?
+	if pos, ok := database.Locate(wp); ok {
+		return pos, ok
+	}
+
+	// Is it a lat-long position?
+	if pos, err := ParseLatLong(wp); err == nil {
+		return pos, true
+	}
+
+	// Failure...
+	return Point2LL{}, false
+}
+
 func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, ias int) {
 	acInfo, ok := AllSimAircraft[ac.FlightPlan.BaseType()]
 	if !ok {
@@ -909,7 +924,7 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altA
 	}
 
 	var pos0, pos1 Point2LL
-	if pos0, ok = database.Locate(ssa.Waypoints[0]); !ok {
+	if pos0, ok = locateWaypoint(ssa.Waypoints[0]); !ok {
 		if pos0, ok = configPositions[ssa.Waypoints[0]]; !ok {
 			lg.Errorf("%s: unknown initial route position", ssa.Waypoints[0])
 			return
@@ -924,7 +939,7 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altA
 		}
 		ssa.Heading = float32(hdg)
 	} else {
-		if pos1, ok = database.Locate(ssa.Waypoints[1]); !ok {
+		if pos1, ok = locateWaypoint(ssa.Waypoints[1]); !ok {
 			if pos1, ok = configPositions[ssa.Waypoints[1]]; !ok {
 				lg.Errorf("%s: unknown route position", ssa.Waypoints[1])
 				return
