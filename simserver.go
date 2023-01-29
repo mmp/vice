@@ -86,57 +86,52 @@ var configPositions map[string]Point2LL = map[string]Point2LL{
 	"_ISP_33Lc": mustParseLatLong("N040.48.20.019, W073.10.31.686"),
 }
 
+type AirportConfig struct {
+	name             string
+	departureConfigs []*DepartureConfig
+	arrivalConfigs   []*ArrivalConfig
+}
+
 type DepartureConfig struct {
+	name            string
 	adr             int32
 	challenge       float32
 	enabled         bool
 	categoryEnabled map[string]*bool
+	makeSpawner     func(*DepartureConfig) Spawner
 }
 
-func NewDepartureConfig() *DepartureConfig {
-	return &DepartureConfig{
-		adr:             30,
-		challenge:       0.5,
-		categoryEnabled: make(map[string]*bool),
-	}
+type ArrivalConfig struct {
+	name        string
+	aar         int32
+	enabled     bool
+	makeSpawner func(*ArrivalConfig) Spawner
 }
 
 type SimServerConnectionConfiguration struct {
-	callsign        string
-	numAircraft     int32
-	routes          []*Route
-	departureConfig map[string]*DepartureConfig // "KJFK/31L", etc.
-	wind            struct {
+	callsign    string
+	numAircraft int32
+
+	wind struct {
 		dir   int32
 		speed int32
 		gust  int32
 	}
+
+	airportConfigs []*AirportConfig
 }
 
 func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.callsign = "JFK_DEP"
 	ssc.numAircraft = 30
-	ssc.departureConfig = make(map[string]*DepartureConfig)
 	ssc.wind.dir = 50
 	ssc.wind.speed = 10
 	ssc.wind.gust = 15
 
-	ssc.routes = GetJFKRoutes()
-	ssc.routes = append(ssc.routes, GetLGARoutes()...)
-	ssc.routes = append(ssc.routes, GetFRGRoutes()...)
-	ssc.routes = append(ssc.routes, GetISPRoutes()...)
-
-	for _, route := range ssc.routes {
-		id := route.DepartureAirport + "/" + route.DepartureRunway
-		if _, ok := ssc.departureConfig[id]; !ok {
-			ssc.departureConfig[id] = NewDepartureConfig()
-		}
-		c := ssc.departureConfig[id]
-
-		if _, ok := c.categoryEnabled[route.Category]; !ok {
-			c.categoryEnabled[route.Category] = new(bool)
-		}
-	}
+	ssc.airportConfigs = append(ssc.airportConfigs, GetJFKConfig())
+	ssc.airportConfigs = append(ssc.airportConfigs, GetFRGConfig())
+	ssc.airportConfigs = append(ssc.airportConfigs, GetISPConfig())
+	ssc.airportConfigs = append(ssc.airportConfigs, GetLGAConfig())
 }
 
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
@@ -148,105 +143,133 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	imgui.SliderIntV("Wind gust", &ssc.wind.gust, 0, 50, "%d", 0)
 	ssc.wind.gust = max(ssc.wind.gust, ssc.wind.speed)
 
-	airports := make(map[string]interface{})
-	for _, route := range ssc.routes {
-		airports[route.DepartureAirport] = nil
-	}
-
-	for _, ap := range SortedMapKeys(airports) {
+	for i, apConfig := range ssc.airportConfigs {
 		var headerFlags imgui.TreeNodeFlags
-		if ap == "KJFK" { // FIXME: make configurable to the scenario...
+		if i == 0 {
 			headerFlags = imgui.TreeNodeFlagsDefaultOpen
 		}
-		if !imgui.CollapsingHeaderV(ap, headerFlags) {
+		if !imgui.CollapsingHeaderV(apConfig.name, headerFlags) {
 			continue
 		}
 
-		anyRunwaysActive := false
-
-		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{800, 0}, 0.) {
-			imgui.TableSetupColumn("Enabled")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("ADR")
-			imgui.TableSetupColumn("Challenge level")
-			imgui.TableHeadersRow()
-
-			for _, rwy := range SortedMapKeys(ssc.departureConfig) {
-				if !strings.HasPrefix(rwy, ap+"/") {
-					continue
-				}
-				config := ssc.departureConfig[rwy]
-
-				imgui.PushID(rwy)
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				if imgui.Checkbox("##enabled", &config.enabled) {
-					if config.enabled {
-						// enable all corresponding categories by default
-						for _, enabled := range config.categoryEnabled {
-							*enabled = true
-						}
-					} else {
-						// disable all corresponding configs
-						for _, enabled := range config.categoryEnabled {
-							*enabled = false
-						}
-					}
-				}
-				anyRunwaysActive = anyRunwaysActive || config.enabled
-				imgui.TableNextColumn()
-				imgui.Text(strings.TrimPrefix(rwy, ap+"/"))
-				imgui.TableNextColumn()
-				imgui.InputIntV("##adr", &config.adr, 1, 120, 0)
-				imgui.TableNextColumn()
-				imgui.SliderFloatV("##challenge", &config.challenge, 0, 1, "%.01f", 0)
-				imgui.PopID()
-			}
-			imgui.EndTable()
-		}
-
-		if anyRunwaysActive {
-			imgui.Separator()
-			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{800, 0}, 0.) {
-				imgui.TableSetupColumn("Enabled")
-				imgui.TableSetupColumn("Runway/Gate")
-				imgui.TableHeadersRow()
-				for _, rwy := range SortedMapKeys(ssc.departureConfig) {
-					if !strings.HasPrefix(rwy, ap+"/") {
-						continue
-					}
-					conf := ssc.departureConfig[rwy]
-					if !conf.enabled {
-						continue
-					}
-
-					imgui.PushID(rwy)
-					for _, category := range SortedMapKeys(conf.categoryEnabled) {
-						imgui.PushID(category)
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						imgui.Checkbox("##check", conf.categoryEnabled[category])
-						imgui.TableNextColumn()
-						imgui.Text(rwy + "/" + category)
-						imgui.PopID()
-					}
-					imgui.PopID()
-				}
-				imgui.EndTable()
-			}
-		}
+		drawDepartureUI(apConfig.departureConfigs)
+		drawArrivalUI(apConfig.arrivalConfigs)
 	}
 
 	return false
 }
 
+func drawDepartureUI(configs []*DepartureConfig) {
+	if len(configs) == 0 {
+		return
+	}
+
+	anyRunwaysActive := false
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{800, 0}, 0.) {
+		imgui.TableSetupColumn("Enabled")
+		imgui.TableSetupColumn("Runway")
+		imgui.TableSetupColumn("ADR")
+		imgui.TableSetupColumn("Challenge level")
+		imgui.TableHeadersRow()
+
+		for i := range configs {
+			imgui.PushID(configs[i].name)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			if imgui.Checkbox("##enabled", &configs[i].enabled) {
+				if configs[i].enabled {
+					// enable all corresponding categories by default
+					for _, enabled := range configs[i].categoryEnabled {
+						*enabled = true
+					}
+				} else {
+					// disable all corresponding configs
+					for _, enabled := range configs[i].categoryEnabled {
+						*enabled = false
+					}
+				}
+			}
+			anyRunwaysActive = anyRunwaysActive || configs[i].enabled
+			imgui.TableNextColumn()
+			imgui.Text(configs[i].name)
+			imgui.TableNextColumn()
+			imgui.InputIntV("##adr", &configs[i].adr, 1, 120, 0)
+			imgui.TableNextColumn()
+			imgui.SliderFloatV("##challenge", &configs[i].challenge, 0, 1, "%.01f", 0)
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+
+	if anyRunwaysActive {
+		imgui.Separator()
+		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+		if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{800, 0}, 0.) {
+			imgui.TableSetupColumn("Enabled")
+			imgui.TableSetupColumn("Runway/Gate")
+			imgui.TableHeadersRow()
+			for i := range configs {
+				if !configs[i].enabled {
+					continue
+				}
+
+				imgui.PushID(configs[i].name)
+				for _, category := range SortedMapKeys(configs[i].categoryEnabled) {
+					imgui.PushID(category)
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Checkbox("##check", configs[i].categoryEnabled[category])
+					imgui.TableNextColumn()
+					imgui.Text(configs[i].name + "/" + category)
+					imgui.PopID()
+				}
+				imgui.PopID()
+			}
+			imgui.EndTable()
+		}
+	}
+}
+
+func drawArrivalUI(configs []*ArrivalConfig) {
+	if len(configs) == 0 {
+		return
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV("arrivals", 3, flags, imgui.Vec2{800, 0}, 0.) {
+		imgui.TableSetupColumn("Enabled")
+		imgui.TableSetupColumn("Arrival")
+		imgui.TableSetupColumn("AAR")
+		imgui.TableHeadersRow()
+
+		for i := range configs {
+			imgui.PushID(configs[i].name)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Checkbox("##enabled", &configs[i].enabled)
+			imgui.TableNextColumn()
+			imgui.Text(configs[i].name)
+			imgui.TableNextColumn()
+			imgui.InputIntV("##aar", &configs[i].aar, 1, 120, 0)
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+}
+
 func (ssc *SimServerConnectionConfiguration) Valid() bool {
 	// Make sure that at least one scenario is selected
-	for _, config := range ssc.departureConfig {
-		for _, enabled := range config.categoryEnabled {
-			if *enabled {
+	for _, apConfig := range ssc.airportConfigs {
+		for _, d := range apConfig.departureConfigs {
+			for _, enabled := range d.categoryEnabled {
+				if *enabled {
+					return true
+				}
+			}
+		}
+		for _, a := range apConfig.arrivalConfigs {
+			if a.enabled {
 				return true
 			}
 		}
@@ -356,7 +379,7 @@ type SimServer struct {
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
-	spawners []*DepartureSpawner
+	spawners []Spawner
 
 	showSettings bool
 }
@@ -438,35 +461,23 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	addController("NY_F_CTR", "KEWR", 128.3)    // N66
 	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
 
-	for rwy, conf := range ssc.departureConfig {
-		if !conf.enabled {
-			continue
-		}
-
-		// Find the active routes for this runway
-		var routes []*Route
-		for _, route := range ssc.routes {
-			id := route.DepartureAirport + "/" + route.DepartureRunway
-			if id != rwy {
-				continue
-			}
-
-			if *conf.categoryEnabled[route.Category] {
-				routes = append(routes, route)
+	for _, ap := range ssc.airportConfigs {
+		for _, d := range ap.departureConfigs {
+			if d.enabled {
+				ss.spawners = append(ss.spawners, d.makeSpawner(d))
 			}
 		}
-
-		if len(routes) > 0 {
-			spawner := &DepartureSpawner{
-				nextSpawn: ss.currentTime.Add(-60 * time.Second),
-				adr:       int(conf.adr),
-				challenge: conf.challenge,
-				routes:    routes,
+		for _, a := range ap.arrivalConfigs {
+			if a.enabled {
+				ss.spawners = append(ss.spawners, a.makeSpawner(a))
 			}
-			ss.spawners = append(ss.spawners, spawner)
 		}
 	}
+	if len(ss.spawners) == 0 {
+		panic("NO SPAWNERS?!??!?")
+	}
 
+	// Prime the pump before the user gets involved
 	for _, spawner := range ss.spawners {
 		if ss.remainingLaunches > 0 {
 			spawner.MaybeSpawn(ss)
@@ -1140,6 +1151,10 @@ func (ss *SimServer) DrawSettingsWindow() {
 
 ///////////////////////////////////////////////////////////////////////////
 
+type Spawner interface {
+	MaybeSpawn(ss *SimServer)
+}
+
 type Route struct {
 	Waypoints       string
 	Scratchpad      string
@@ -1156,6 +1171,15 @@ type Route struct {
 	InitialController string
 	Airlines          []string
 	Fleet             string
+}
+
+type ApproachWaypoint struct {
+	Fix      string
+	Altitude int
+}
+
+type Approach struct {
+	Waypoints []ApproachWaypoint
 }
 
 func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraftICAO string, err error) {
@@ -1209,6 +1233,24 @@ func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraf
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// ArrivalSpawner
+
+type ArrivalSpawner struct {
+	nextSpawn time.Time
+
+	rate int
+
+	waypoints        []string
+	altitude         int
+	speed            int
+	speedRestriction int
+
+	initialController string
+	airlines          []string
+	fleet             string
+}
+
+///////////////////////////////////////////////////////////////////////////
 // DepartureSpawner
 
 type DepartureSpawner struct {
@@ -1217,7 +1259,7 @@ type DepartureSpawner struct {
 	adr       int
 	challenge float32
 
-	routes []*Route
+	routes []Route
 
 	lastRouteCategory string
 	lastRoute         *Route
@@ -1240,7 +1282,7 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 			if r.Category == ds.lastRouteCategory {
 				n++
 				if rand.Float32() < 1/n {
-					route = r
+					route = &r
 				}
 			}
 		}
@@ -1249,7 +1291,7 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	// Either the challenge cases didn't hit or they did and it's the first
 	// time through...
 	if route == nil {
-		route = ds.routes[rand.Intn(len(ds.routes))]
+		route = &ds.routes[rand.Intn(len(ds.routes))]
 	}
 	ds.lastRouteCategory = route.Category
 	ds.lastRoute = route
@@ -1305,307 +1347,339 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	ds.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
 }
 
-var jfkWater = [][2]string{
-	[2]string{"WAVEY", "WAV"},
-	[2]string{"SHIPP", "SHI"},
-	[2]string{"HAPIE", "HAP"},
-	[2]string{"BETTE", "BET"},
+///////////////////////////////////////////////////////////////////////////
+// KJFK
+
+type Exit struct {
+	name         string
+	fixes        [][2]string // fix and scratchpad
+	destinations []string
 }
 
-var jfkEast = [][2]string{
-	[2]string{"MERIT", "MER"},
-	[2]string{"GREKI", "GRE"},
-	[2]string{"BAYYS", "BAY"},
-	[2]string{"BDR", "BDR"},
+var jfkWater = Exit{
+	name:         "Water",
+	fixes:        [][2]string{[2]string{"WAVEY", "WAV"}, [2]string{"SHIPP", "SHI"}, [2]string{"HAPIE", "HAP"}, [2]string{"BETTE", "BET"}},
+	destinations: []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"},
 }
 
-var jfkSouthwest = [][2]string{
-	[2]string{"DIXIE", "DIX"},
-	[2]string{"WHITE", "WHI"},
-	[2]string{"RBV", "RBV"},
-	[2]string{"ARD", "ARD"},
+var jfkEast = Exit{
+	name:         "East",
+	fixes:        [][2]string{[2]string{"MERIT", "MER"}, [2]string{"GREKI", "GRE"}, [2]string{"BAYYS", "BAY"}, [2]string{"BDR", "BDR"}},
+	destinations: []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"},
 }
 
-var jfkNorth = [][2]string{
-	//[2]string{"SAX", "SAX"},
-	[2]string{"COATE", "COA"},
-	[2]string{"NEION", "NEI"},
-	[2]string{"HAAYS", "HAY"},
-	[2]string{"GAYEL", "GAY"},
-	[2]string{"DEEZZ", "DEZ"},
+var jfkSouthwest = Exit{
+	name:         "Southwest",
+	fixes:        [][2]string{[2]string{"DIXIE", "DIX"}, [2]string{"WHITE", "WHI"}, [2]string{"RBV", "RBV"}, [2]string{"ARD", "ARD"}},
+	destinations: []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"},
 }
 
-func GetJFKRoutes() (routes []*Route) {
-	proto := Route{
+var jfkDIXIE = Exit{
+	name:         "DIXIE",
+	fixes:        [][2]string{[2]string{"DIXIE", "DIX"}},
+	destinations: []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"},
+}
+
+var jfkWHITE = Exit{
+	name:         "WHITE",
+	fixes:        [][2]string{[2]string{"WHITE", "WHI"}},
+	destinations: []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"},
+}
+
+var jfkNorth = Exit{
+	name:         "North",
+	fixes:        [][2]string{[2]string{"COATE", "COA"}, [2]string{"NEION", "NEI"}, [2]string{"HAAYS", "HAY"}, [2]string{"GAYEL", "GAY"}},
+	destinations: []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"},
+}
+
+var jfkDEEZZ = Exit{
+	name:         "North",
+	fixes:        [][2]string{[2]string{"DEEZZ", "DEZ"}},
+	destinations: []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"},
+}
+
+func jfkRunwayConfig() *DepartureConfig {
+	c := &DepartureConfig{
+		adr:             45,
+		challenge:       0.5,
+		categoryEnabled: make(map[string]*bool),
+	}
+	c.categoryEnabled["Water"] = new(bool)
+	c.categoryEnabled["East"] = new(bool)
+	c.categoryEnabled["Southwest"] = new(bool)
+	c.categoryEnabled["North"] = new(bool)
+	return c
+}
+
+func jfkJetProto() Route {
+	return Route{
 		InitialAltitude:  13,
 		DepartureAirport: "KJFK",
+		ClearedAltitude:  5000,
+		Fleet:            "default",
+		Airlines: []string{
+			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
+			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
 	}
-
-	jetProto := proto
-	jetProto.ClearedAltitude = 5000
-	jetProto.Fleet = "default"
-	jetProto.Airlines = []string{
-		"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
-		"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"}
-
-	for _, exit := range jfkWater {
-		r := jetProto
-		r.Scratchpad = exit[1]
-		r.Destinations = []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"}
-		r.Category = "Water"
-
-		// 31L
-		r31L := r
-		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#176." + exit[0]
-		r31L.Route = "SKORR5.YNKEE " + exit[0]
-		r31L.DepartureRunway = "31L"
-		routes = append(routes, &r31L)
-
-		// 22R
-		r22R := r
-		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
-		r22R.Route = "JFK5 " + exit[0]
-		r22R.DepartureRunway = "22R"
-		routes = append(routes, &r22R)
-
-		// 13R
-		r13R := r
-		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
-		r13R.Route = "JFK5 " + exit[0]
-		r13R.DepartureRunway = "13R"
-		routes = append(routes, &r13R)
-
-		// 4L
-		r4L := r
-		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
-		r4L.Route = "JFK5 " + exit[0]
-		r4L.DepartureRunway = "4L"
-		routes = append(routes, &r4L)
-	}
-
-	for _, exit := range jfkEast {
-		r := jetProto
-		r.Scratchpad = exit[1]
-		r.Destinations = []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"}
-		r.Category = "East"
-
-		// 31L
-		r31L := r
-		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#176." + exit[0]
-		r31L.Route = "SKORR5.YNKEE " + exit[0]
-		r31L.DepartureRunway = "31L"
-		routes = append(routes, &r31L)
-
-		// 22R
-		r22R := r
-		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
-		r22R.Route = "JFK5 " + exit[0]
-		r22R.DepartureRunway = "22R"
-		routes = append(routes, &r22R)
-
-		// 13R
-		r13R := r
-		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
-		r13R.Route = "JFK5 " + exit[0]
-		r13R.DepartureRunway = "13R"
-		routes = append(routes, &r13R)
-
-		// 4L
-		r4L := r
-		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
-		r4L.Route = "JFK5 " + exit[0]
-		r4L.DepartureRunway = "4L"
-		routes = append(routes, &r4L)
-	}
-
-	for _, exit := range jfkNorth {
-		r := jetProto
-		r.Scratchpad = exit[1]
-		r.Destinations = []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"}
-		r.Category = "North"
-
-		// 31L
-		r31L := r
-		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#176." + exit[0]
-		r31L.Route = "SKORR5.YNKEE " + exit[0]
-		r31L.DepartureRunway = "31L"
-		routes = append(routes, &r31L)
-
-		// 22R
-		r22R := r
-		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
-		r22R.Route = "JFK5 " + exit[0]
-		r22R.DepartureRunway = "22R"
-		routes = append(routes, &r22R)
-
-		// 13R
-		r13R := r
-		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
-		r13R.Route = "JFK5 " + exit[0]
-		r13R.DepartureRunway = "13R"
-		routes = append(routes, &r13R)
-
-		// 4L
-		r4L := r
-		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
-		r4L.Route = "JFK5 " + exit[0]
-		r4L.DepartureRunway = "4L"
-		routes = append(routes, &r4L)
-	}
-
-	for _, exit := range jfkSouthwest {
-		r := jetProto
-		r.Scratchpad = exit[1]
-		r.Destinations = []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"}
-		r.Category = "Southwest"
-
-		// 31L
-		r31L := r
-		r31L.Waypoints = "_JFK_31L._JFK_13R.CRI.#223." + exit[0]
-		r31L.Route = "SKORR5.RNGRR " + exit[0]
-		r31L.DepartureRunway = "31L"
-		routes = append(routes, &r31L)
-
-		// 22R
-		r22R := r
-		r22R.Waypoints = "_JFK_22R._JFK_4L.#222." + exit[0]
-		r22R.Route = "JFK5 " + exit[0]
-		r22R.DepartureRunway = "22R"
-		routes = append(routes, &r22R)
-
-		// 13R
-		r13R := r
-		r13R.Waypoints = "_JFK_13R._JFK_31L.#109." + exit[0]
-		r13R.Route = "JFK5 " + exit[0]
-		r13R.DepartureRunway = "13R"
-		routes = append(routes, &r13R)
-
-		// 4L
-		r4L := r
-		r4L.Waypoints = "_JFK_4L._JFK_4La.#099." + exit[0]
-		r4L.Route = "JFK5 " + exit[0]
-		r4L.DepartureRunway = "4L"
-		routes = append(routes, &r4L)
-	}
-
-	// 31R idlewild
-	propProto := proto
-	propProto.ClearedAltitude = 2000
-	propProto.Airlines = []string{"N"}
-	propProto.Fleet = "lightGA"
-	propProto.DepartureRunway = "31R"
-
-	for _, exit := range jfkWater {
-		r := propProto
-		r.Category = "Water (Idlewild)"
-		r.Scratchpad = exit[1]
-		r.Route = "JFK5 " + exit[0]
-		r.Destinations = []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"}
-		r.Waypoints = "_JFK_31R._JFK_13L.#090." + exit[0]
-		routes = append(routes, &r)
-	}
-
-	for _, exit := range jfkEast {
-		r := propProto
-		r.Category = "East (Idlewild)"
-		r.Scratchpad = exit[1]
-		r.Route = "JFK5 " + exit[0]
-		r.Destinations = []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"}
-		r.Waypoints = "_JFK_31R._JFK_13L.#090." + exit[0]
-		routes = append(routes, &r)
-	}
-
-	for _, exit := range jfkNorth {
-		r := propProto
-		r.Category = "North (Idlewild)"
-		r.Scratchpad = exit[1]
-		r.Route = "JFK5 " + exit[0]
-		r.Destinations = []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"}
-		r.Waypoints = "_JFK_31R._JFK_13L.#090." + exit[0]
-		routes = append(routes, &r)
-	}
-
-	return
 }
 
-func GetFRGRoutes() (routes []*Route) {
-	proto := Route{
-		InitialAltitude:   70,
-		DepartureAirport:  "KFRG",
-		ClearedAltitude:   5000,
-		InitialController: "JFK_APP",
-		Fleet:             "default",
-		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+func jfkPropProto() Route {
+	return Route{
+		InitialAltitude:  13,
+		DepartureAirport: "KJFK",
+		ClearedAltitude:  2000,
+		Fleet:            "short",
+		Airlines:         []string{"QXE", "BWA", "FDX"},
 	}
+}
+
+func (e Exit) GetRoutes(r Route, waypoints, route string) []Route {
+	var routes []Route
+	for _, fix := range e.fixes {
+		r.Waypoints = waypoints + "." + fix[0]
+		r.Route = route + " " + fix[0]
+		r.Category = e.name
+		r.Scratchpad = fix[1]
+		r.Destinations = e.destinations
+		routes = append(routes, r)
+	}
+	return routes
+}
+
+func jfk31LRunwayConfig() *DepartureConfig {
+	c := jfkRunwayConfig()
+	c.name = "31L"
+	c.makeSpawner = func(config *DepartureConfig) Spawner {
+		var routes []Route
+
+		rp := jfkJetProto()
+		rp.DepartureRunway = "31L"
+
+		if *config.categoryEnabled["Water"] {
+			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
+		}
+		if *config.categoryEnabled["East"] {
+			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
+		}
+		if *config.categoryEnabled["Southwest"] {
+			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#223", "SKORR5.RNGRR")...)
+		}
+		if *config.categoryEnabled["North"] {
+			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
+			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_31L._JFK_13R.SKORR.CESID.YNKEE.#172", "DEEZZ5.CANDR J60")...)
+		}
+
+		return &DepartureSpawner{
+			adr:       int(config.adr),
+			challenge: config.challenge,
+			routes:    routes,
+		}
+	}
+	return c
+}
+
+func jfk22RRunwayConfig() *DepartureConfig {
+	c := jfkRunwayConfig()
+	c.name = "22R"
+	c.makeSpawner = func(config *DepartureConfig) Spawner {
+		var routes []Route
+
+		rp := jfkJetProto()
+		rp.DepartureRunway = "22R"
+
+		if *config.categoryEnabled["Water"] {
+			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+		}
+		if *config.categoryEnabled["East"] {
+			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+		}
+		if *config.categoryEnabled["Southwest"] {
+			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+		}
+		if *config.categoryEnabled["North"] {
+			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
+			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_22R._JFK_4L.#224", "DEEZZ5.CANDR J60")...)
+		}
+
+		return &DepartureSpawner{
+			adr:       int(config.adr),
+			challenge: config.challenge,
+			routes:    routes,
+		}
+	}
+	return c
+}
+
+func jfk13RRunwayConfig() *DepartureConfig {
+	c := jfkRunwayConfig()
+	c.name = "13R"
+	c.makeSpawner = func(config *DepartureConfig) Spawner {
+		var routes []Route
+
+		rp := jfkJetProto()
+		rp.DepartureRunway = "13R"
+
+		if *config.categoryEnabled["Water"] {
+			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+		}
+		if *config.categoryEnabled["East"] {
+			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+		}
+		if *config.categoryEnabled["Southwest"] {
+			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+		}
+		if *config.categoryEnabled["North"] {
+			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
+			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "DEEZZ5.CANDR J60")...)
+		}
+
+		return &DepartureSpawner{
+			adr:       int(config.adr),
+			challenge: config.challenge,
+			routes:    routes,
+		}
+	}
+	return c
+}
+
+func jfk4LRunwayConfig() *DepartureConfig {
+	c := jfkRunwayConfig()
+	c.name = "4L"
+	c.makeSpawner = func(config *DepartureConfig) Spawner {
+		var routes []Route
+
+		rp := jfkJetProto()
+		rp.DepartureRunway = "4L"
+
+		if *config.categoryEnabled["Water"] {
+			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+		}
+		if *config.categoryEnabled["East"] {
+			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+		}
+		if *config.categoryEnabled["Southwest"] {
+			routes = append(routes, jfkSouthwest.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+		}
+		if *config.categoryEnabled["North"] {
+			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
+			routes = append(routes, jfkDEEZZ.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "DEEZZ5.CANDR J60")...)
+		}
+
+		return &DepartureSpawner{
+			adr:       int(config.adr),
+			challenge: config.challenge,
+			routes:    routes,
+		}
+	}
+	return c
+}
+
+func jfk31RRunwayConfig() *DepartureConfig {
+	c := jfkRunwayConfig()
+	delete(c.categoryEnabled, "Southwest")
+
+	c.name = "31R"
+	c.makeSpawner = func(config *DepartureConfig) Spawner {
+		var routes []Route
+
+		rp := jfkPropProto()
+		rp.DepartureRunway = "31R"
+
+		if *config.categoryEnabled["Water"] {
+			routes = append(routes, jfkWater.GetRoutes(jfkPropProto(), "_JFK_31R._JFK_13L.#090", "JFK5")...)
+		}
+		if *config.categoryEnabled["East"] {
+			routes = append(routes, jfkEast.GetRoutes(jfkPropProto(), "_JFK_31R._JFK_13L.#090", "JFK5")...)
+		}
+		if *config.categoryEnabled["North"] {
+			routes = append(routes, jfkNorth.GetRoutes(jfkPropProto(), "_JFK_31R._JFK_13L.#090", "JFK5")...)
+		}
+
+		return &DepartureSpawner{
+			adr:       int(config.adr),
+			challenge: config.challenge,
+			routes:    routes,
+		}
+	}
+	return c
+}
+
+func GetJFKConfig() *AirportConfig {
+	ac := &AirportConfig{name: "KJFK"}
+
+	ac.departureConfigs = append(ac.departureConfigs, jfk31LRunwayConfig())
+	ac.departureConfigs = append(ac.departureConfigs, jfk31RRunwayConfig())
+	ac.departureConfigs = append(ac.departureConfigs, jfk22RRunwayConfig())
+	ac.departureConfigs = append(ac.departureConfigs, jfk13RRunwayConfig())
+	ac.departureConfigs = append(ac.departureConfigs, jfk4LRunwayConfig())
+
+	return ac
+}
+
+func GetFRGConfig() *AirportConfig {
+	ac := &AirportConfig{name: "KFRG"}
 
 	runways := map[string]string{
-		"1":  "_FRG_1._FRG_19._FRG_1a.@.#013.",
-		"19": "_FRG_19._FRG_1._FRG_19a.@.#220.",
-		"14": "_FRG_14._FRG_32._FRG_14a.@.#220.",
-		"32": "_FRG_32._FRG_14._FRG_32a.@.#010.",
+		"1":  "_FRG_1._FRG_19._FRG_1a.@.#013",
+		"19": "_FRG_19._FRG_1._FRG_19a.@.#220",
+		"14": "_FRG_14._FRG_32._FRG_14a.@.#220",
+		"32": "_FRG_32._FRG_14._FRG_32a.@.#010",
 	}
 
 	for rwy, way := range runways {
-		rproto := proto
-		rproto.DepartureRunway = rwy
-		rproto.Waypoints = way
+		config := &DepartureConfig{
+			name:            rwy,
+			adr:             30,
+			challenge:       0.5,
+			categoryEnabled: make(map[string]*bool),
+		}
+		config.categoryEnabled["Water"] = new(bool)
+		config.categoryEnabled["East"] = new(bool)
+		config.categoryEnabled["Southwest"] = new(bool)
+		config.categoryEnabled["North"] = new(bool)
 
-		for _, exit := range jfkWater {
-			r := rproto
-			r.Waypoints += exit[0]
-			r.Route = "REP1 " + exit[0]
-			r.Scratchpad = exit[1]
-			r.Category = "Water"
-			r.Destinations = []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"}
+		config.makeSpawner = func(config *DepartureConfig) Spawner {
+			rp := Route{
+				InitialAltitude:   70,
+				DepartureAirport:  "KFRG",
+				DepartureRunway:   rwy,
+				ClearedAltitude:   5000,
+				InitialController: "JFK_APP",
+				Fleet:             "default",
+				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+			}
 
-			routes = append(routes, &r)
+			var routes []Route
+
+			if *config.categoryEnabled["Water"] {
+				routes = append(routes, jfkWater.GetRoutes(rp, way, "REP1")...)
+			}
+			if *config.categoryEnabled["East"] {
+				routes = append(routes, jfkEast.GetRoutes(rp, way, "REP1")...)
+			}
+			if *config.categoryEnabled["Southwest"] {
+				routes = append(routes, jfkSouthwest.GetRoutes(rp, way, "REP1")...)
+			}
+			if *config.categoryEnabled["North"] {
+				routes = append(routes, jfkNorth.GetRoutes(rp, way, "REP1")...)
+				routes = append(routes, jfkDEEZZ.GetRoutes(rp, way, "REP1")...)
+			}
+
+			return &DepartureSpawner{
+				adr:       int(config.adr),
+				challenge: config.challenge,
+				routes:    routes,
+			}
 		}
 
-		for _, exit := range jfkEast {
-			r := rproto
-			r.Waypoints += exit[0]
-			r.Route = "REP1 " + exit[0]
-			r.Scratchpad = exit[1]
-			r.Category = "East"
-			r.Destinations = []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"}
-
-			routes = append(routes, &r)
-		}
-		for _, exit := range jfkNorth {
-			r := rproto
-			r.Waypoints += exit[0]
-			r.Route = "REP1 " + exit[0]
-			r.Scratchpad = exit[1]
-			r.Category = "North"
-			r.Destinations = []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"}
-
-			routes = append(routes, &r)
-		}
-		for _, exit := range jfkSouthwest {
-			r := rproto
-			r.Waypoints += exit[0]
-			r.Route = "REP1 " + exit[0]
-			r.Scratchpad = exit[1]
-			r.Category = "Southwest"
-			r.Destinations = []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"}
-
-			routes = append(routes, &r)
-		}
+		ac.departureConfigs = append(ac.departureConfigs, config)
 	}
 
-	return
+	return ac
 }
 
-func GetISPRoutes() (routes []*Route) {
-	proto := Route{
-		InitialAltitude:   70,
-		DepartureAirport:  "KISP",
-		ClearedAltitude:   8000,
-		Fleet:             "default",
-		InitialController: "ISP_APP",
-		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-		Destinations:      []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"},
-	}
+func GetISPConfig() *AirportConfig {
+	ac := &AirportConfig{name: "KISP"}
 
 	runways := map[string]string{
 		"6":   "_ISP_6._ISP_6a._ISP_6b.@.#270",
@@ -1614,31 +1688,47 @@ func GetISPRoutes() (routes []*Route) {
 		"33L": "_ISP_33L._ISP_33La._ISP_33Lb._ISP_33Lc.@.#275",
 	}
 
-	for _, exit := range jfkNorth {
-		for rwy, way := range runways {
-			r := proto
-			r.DepartureRunway = rwy
-			r.Waypoints = way + "." + exit[0]
-			r.Route = "LONGI7 " + exit[0]
-			r.Scratchpad = exit[1]
-			r.Category = "North"
-
-			routes = append(routes, &r)
+	for rwy, way := range runways {
+		config := &DepartureConfig{
+			name:            rwy,
+			adr:             20,
+			challenge:       0.5,
+			categoryEnabled: make(map[string]*bool),
 		}
+		config.categoryEnabled["North"] = new(bool)
+
+		config.makeSpawner = func(config *DepartureConfig) Spawner {
+			rp := Route{
+				InitialAltitude:   70,
+				DepartureAirport:  "KISP",
+				DepartureRunway:   rwy,
+				ClearedAltitude:   8000,
+				InitialController: "ISP",
+				Fleet:             "default",
+				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
+			}
+
+			var routes []Route
+
+			if *config.categoryEnabled["North"] {
+				routes = append(routes, jfkNorth.GetRoutes(rp, way, "LONGI7")...)
+			}
+
+			return &DepartureSpawner{
+				adr:       int(config.adr),
+				challenge: config.challenge,
+				routes:    routes,
+			}
+		}
+
+		ac.departureConfigs = append(ac.departureConfigs, config)
 	}
 
-	return
+	return ac
 }
 
-func GetLGARoutes() (routes []*Route) {
-	proto := Route{
-		DepartureAirport:  "KLGA",
-		InitialController: "LGA_DEP",
-		InitialAltitude:   70,
-		Fleet:             "default",
-		DepartureRunway:   "22",
-		Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-	}
+func GetLGAConfig() *AirportConfig {
+	ac := &AirportConfig{name: "KLGA"}
 
 	runways := map[string]string{
 		"4":  "_LGA_4._LGA_22._LGA_22a.@.JFK",
@@ -1647,48 +1737,57 @@ func GetLGARoutes() (routes []*Route) {
 		"31": "_LGA_31._LGA_13._LGA_13a.@.JFK",
 	}
 
-	for rwy, wp := range runways {
-		rproto := proto
-		rproto.DepartureRunway = rwy
-		rproto.Waypoints = wp
-
-		dix := rproto
-		dix.Waypoints += ".#190.DIXIE"
-		dix.Route = "LGA7 DIXIE"
-		dix.Scratchpad = "DIX"
-		dix.ClearedAltitude = 6000
-		dix.Category = "Southwest"
-		dix.Destinations = []string{
-			"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
+	for rwy, way := range runways {
+		config := &DepartureConfig{
+			name:            rwy,
+			adr:             30,
+			challenge:       0.5,
+			categoryEnabled: make(map[string]*bool),
 		}
-		routes = append(routes, &dix)
+		config.categoryEnabled["Water"] = new(bool)
+		config.categoryEnabled["Southwest"] = new(bool)
+		config.categoryEnabled["Southwest Props"] = new(bool)
 
-		white := rproto
-		white.Airlines = []string{"N"}
-		white.Fleet = "lightGA"
-		white.Waypoints += ".#190.WHITE"
-		white.Route = "LGA7 WHITE"
-		white.Category = "White (props)"
-		white.Scratchpad = "WHI"
-		white.ClearedAltitude = 7000
-		white.Destinations = []string{
-			"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL",
-		}
-		routes = append(routes, &white)
-
-		for _, water := range []string{"SHIPP", "WAVEY", "BETTE"} {
-			r := rproto
-			r.Waypoints += "." + water
-			r.Category = "Water"
-			r.Route = "LGA7 " + water
-			r.Scratchpad = water[:3]
-			r.ClearedAltitude = 8000
-			r.Destinations = []string{
-				"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN",
+		config.makeSpawner = func(config *DepartureConfig) Spawner {
+			proto := Route{
+				InitialAltitude:   70,
+				DepartureAirport:  "KLGA",
+				DepartureRunway:   rwy,
+				InitialController: "LGA_DEP",
+				Fleet:             "default",
+				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
 			}
-			routes = append(routes, &r)
+
+			var routes []Route
+
+			if *config.categoryEnabled["Water"] {
+				rp := proto
+				rp.ClearedAltitude = 8000
+				routes = append(routes, jfkWater.GetRoutes(rp, way, "LGA7")...)
+			}
+			if *config.categoryEnabled["Southwest"] {
+				rp := proto
+				rp.ClearedAltitude = 6000
+				routes = append(routes, jfkDIXIE.GetRoutes(rp, way, "LGA7")...)
+			}
+			if *config.categoryEnabled["Southwest Props"] {
+				// WHITE Props
+				rp := proto
+				rp.ClearedAltitude = 7000
+				rp.Fleet = "short"
+				rp.Airlines = []string{"QXE", "BWA", "FDX"}
+				routes = append(routes, jfkWHITE.GetRoutes(rp, way, "LGA7")...)
+			}
+
+			return &DepartureSpawner{
+				adr:       int(config.adr),
+				challenge: config.challenge,
+				routes:    routes,
+			}
 		}
+
+		ac.departureConfigs = append(ac.departureConfigs, config)
 	}
 
-	return
+	return ac
 }
