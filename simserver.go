@@ -822,28 +822,13 @@ func locateWaypoint(wp string) (Point2LL, bool) {
 	return Point2LL{}, false
 }
 
-func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, ias int) {
-	acInfo, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
-	if !ok {
-		lg.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
-		return
-	}
-
-	ssa := &SSAircraft{
-		AC:          ac,
-		Performance: acInfo,
-		Waypoints:   strings.Split(waypoints, "."),
-
-		Altitude:         float32(alt),
-		AssignedAltitude: altAssigned,
-		IAS:              float32(ias),
-	}
-
+func (ss *SimServer) SpawnAircraft(ssa *SSAircraft) {
 	if _, ok := ss.aircraft[ssa.AC.Callsign]; ok {
 		lg.Errorf("%s: already have an aircraft with that callsign!", ssa.AC.Callsign)
 		return
 	}
 
+	var ok bool
 	var pos0, pos1 Point2LL
 	if pos0, ok = locateWaypoint(ssa.Waypoints[0]); !ok {
 		if pos0, ok = configPositions[ssa.Waypoints[0]]; !ok {
@@ -873,7 +858,7 @@ func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altA
 	// item in the route is what we're following..
 	ssa.Waypoints = ssa.Waypoints[1:]
 
-	ss.aircraft[ac.Callsign] = ssa
+	ss.aircraft[ssa.AC.Callsign] = ssa
 
 	ss.remainingLaunches--
 
@@ -1072,14 +1057,63 @@ type Route struct {
 	InitialAltitude int
 	ClearedAltitude int
 	InitialSpeed    int
-	Destinations    []string
 
-	DepartureAirport string
-	Category         string
+	DestinationAirports []string
+	DepartureAirports   []string
+
+	Category string
 
 	InitialController string
 	Airlines          []string
 	Fleet             string
+}
+
+func (r *Route) RandomAircraft() *Aircraft {
+	callsign, aircraftICAO, err := chooseAircraft(r.Airlines, r.Fleet)
+	if err != nil {
+		lg.Errorf("%+v", err)
+		return nil
+	}
+
+	departure := r.DepartureAirports[rand.Intn(len(r.DepartureAirports))]
+	destination := r.DestinationAirports[rand.Intn(len(r.DestinationAirports))]
+	squawk := Squawk(rand.Intn(0o7000))
+	alt := 20000 + 1000*rand.Intn(22)
+	if rand.Float32() < .3 {
+		alt = 7000 + 1000*rand.Intn(11)
+	}
+
+	ac := &Aircraft{
+		Callsign:           callsign,
+		Scratchpad:         r.Scratchpad,
+		AssignedSquawk:     squawk,
+		Squawk:             squawk,
+		Mode:               Charlie,
+		VoiceCapability:    VoiceFull,
+		TrackingController: r.InitialController,
+		FlightPlan: &FlightPlan{
+			Rules:            IFR,
+			AircraftType:     aircraftICAO,
+			DepartureAirport: departure,
+			ArrivalAirport:   destination,
+			Altitude:         alt,
+			Route:            r.Route + " DCT " + destination,
+		},
+	}
+
+	acInfo, ok := database.AircraftPerformance[aircraftICAO]
+	if !ok {
+		lg.Errorf("%s: ICAO not in db", aircraftICAO)
+		return nil
+	}
+	if acInfo.WeightClass == "H" {
+		ac.FlightPlan.AircraftType = "H/" + ac.FlightPlan.AircraftType
+	}
+	if acInfo.WeightClass == "J" {
+		ac.FlightPlan.AircraftType = "J/" + ac.FlightPlan.AircraftType
+	}
+
+	return ac
 }
 
 type ApproachWaypoint struct {
@@ -1205,52 +1239,25 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 	ds.lastRouteCategory = route.Category
 	ds.lastRoute = route
 
-	callsign, aircraftICAO, err := chooseAircraft(route.Airlines, route.Fleet)
-	if err != nil {
-		lg.Errorf("%+v", err)
+	ac := route.RandomAircraft()
+	if ac == nil {
 		return
 	}
 
-	// Pick a destination airport
-	destination := route.Destinations[rand.Intn(len(route.Destinations))]
-
-	squawk := Squawk(rand.Intn(0o7000))
-	alt := 20000 + 1000*rand.Intn(22)
-	if rand.Float32() < .3 {
-		alt = 7000 + 1000*rand.Intn(11)
-	}
-
-	ac := &Aircraft{
-		Callsign:           callsign,
-		Scratchpad:         route.Scratchpad,
-		AssignedSquawk:     squawk,
-		Squawk:             squawk,
-		Mode:               Charlie,
-		VoiceCapability:    VoiceFull,
-		TrackingController: route.InitialController,
-		FlightPlan: &FlightPlan{
-			Rules:            IFR,
-			AircraftType:     aircraftICAO,
-			DepartureAirport: route.DepartureAirport,
-			ArrivalAirport:   destination,
-			Altitude:         alt,
-			Route:            route.Route + " DCT " + destination,
-		},
-	}
-
-	acInfo, ok := database.AircraftPerformance[aircraftICAO]
+	acInfo, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
-		lg.Errorf("%s: ICAO not in db", aircraftICAO)
+		lg.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
 		return
 	}
-	if acInfo.WeightClass == "H" {
-		ac.FlightPlan.AircraftType = "H/" + ac.FlightPlan.AircraftType
-	}
-	if acInfo.WeightClass == "J" {
-		ac.FlightPlan.AircraftType = "J/" + ac.FlightPlan.AircraftType
-	}
 
-	ss.SpawnAircraft(ac, route.Waypoints, route.InitialAltitude, route.ClearedAltitude, route.InitialSpeed)
+	ss.SpawnAircraft(&SSAircraft{
+		AC:               ac,
+		Performance:      acInfo,
+		Waypoints:        strings.Split(route.Waypoints, "."),
+		Altitude:         float32(route.InitialAltitude),
+		AssignedAltitude: route.ClearedAltitude,
+		IAS:              float32(route.InitialSpeed),
+	})
 
 	seconds := 3600/ds.adr - 10 + rand.Intn(21)
 	ds.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
@@ -1322,10 +1329,10 @@ func jfkRunwayConfig() *DepartureConfig {
 
 func jfkJetProto() Route {
 	return Route{
-		InitialAltitude:  13,
-		DepartureAirport: "KJFK",
-		ClearedAltitude:  5000,
-		Fleet:            "default",
+		InitialAltitude:   13,
+		DepartureAirports: []string{"KJFK"},
+		ClearedAltitude:   5000,
+		Fleet:             "default",
 		Airlines: []string{
 			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
 			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
@@ -1334,11 +1341,11 @@ func jfkJetProto() Route {
 
 func jfkPropProto() Route {
 	return Route{
-		InitialAltitude:  13,
-		DepartureAirport: "KJFK",
-		ClearedAltitude:  2000,
-		Fleet:            "short",
-		Airlines:         []string{"QXE", "BWA", "FDX"},
+		InitialAltitude:   13,
+		DepartureAirports: []string{"KJFK"},
+		ClearedAltitude:   2000,
+		Fleet:             "short",
+		Airlines:          []string{"QXE", "BWA", "FDX"},
 	}
 }
 
@@ -1349,7 +1356,7 @@ func (e Exit) GetRoutes(r Route, waypoints, route string) []Route {
 		r.Route = route + " " + fix[0]
 		r.Category = e.name
 		r.Scratchpad = fix[1]
-		r.Destinations = e.destinations
+		r.DestinationAirports = e.destinations
 		routes = append(routes, r)
 	}
 	return routes
@@ -1545,7 +1552,7 @@ func GetFRGConfig() *AirportConfig {
 		config.makeSpawner = func(config *DepartureConfig) Spawner {
 			rp := Route{
 				InitialAltitude:   70,
-				DepartureAirport:  "KFRG",
+				DepartureAirports: []string{"KFRG"},
 				ClearedAltitude:   5000,
 				InitialController: "JFK_APP",
 				Fleet:             "default",
@@ -1603,7 +1610,7 @@ func GetISPConfig() *AirportConfig {
 		config.makeSpawner = func(config *DepartureConfig) Spawner {
 			rp := Route{
 				InitialAltitude:   70,
-				DepartureAirport:  "KISP",
+				DepartureAirports: []string{"KISP"},
 				ClearedAltitude:   8000,
 				InitialController: "ISP",
 				Fleet:             "default",
@@ -1653,7 +1660,7 @@ func GetLGAConfig() *AirportConfig {
 		config.makeSpawner = func(config *DepartureConfig) Spawner {
 			proto := Route{
 				InitialAltitude:   70,
-				DepartureAirport:  "KLGA",
+				DepartureAirports: []string{"KLGA"},
 				InitialController: "LGA_DEP",
 				Fleet:             "default",
 				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
