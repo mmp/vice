@@ -1075,7 +1075,6 @@ type Route struct {
 	Destinations    []string
 
 	DepartureAirport string
-	DepartureRunway  string
 	Category         string
 
 	InitialController string
@@ -1363,7 +1362,6 @@ func jfk31LRunwayConfig() *DepartureConfig {
 		var routes []Route
 
 		rp := jfkJetProto()
-		rp.DepartureRunway = "31L"
 
 		if *config.categoryEnabled["Water"] {
 			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_31L._JFK_13R.CRI.#176", "SKORR5.YNKEE")...)
@@ -1395,7 +1393,6 @@ func jfk22RRunwayConfig() *DepartureConfig {
 		var routes []Route
 
 		rp := jfkJetProto()
-		rp.DepartureRunway = "22R"
 
 		if *config.categoryEnabled["Water"] {
 			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_22R._JFK_4L.#222", "JFK5")...)
@@ -1427,7 +1424,6 @@ func jfk13RRunwayConfig() *DepartureConfig {
 		var routes []Route
 
 		rp := jfkJetProto()
-		rp.DepartureRunway = "13R"
 
 		if *config.categoryEnabled["Water"] {
 			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_13R._JFK_31L.#109", "JFK5")...)
@@ -1459,7 +1455,6 @@ func jfk4LRunwayConfig() *DepartureConfig {
 		var routes []Route
 
 		rp := jfkJetProto()
-		rp.DepartureRunway = "4L"
 
 		if *config.categoryEnabled["Water"] {
 			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_4L._JFK_4La.#099", "JFK5")...)
@@ -1493,16 +1488,15 @@ func jfk31RRunwayConfig() *DepartureConfig {
 		var routes []Route
 
 		rp := jfkPropProto()
-		rp.DepartureRunway = "31R"
 
 		if *config.categoryEnabled["Water"] {
-			routes = append(routes, jfkWater.GetRoutes(jfkPropProto(), "_JFK_31R._JFK_13L.#090", "JFK5")...)
+			routes = append(routes, jfkWater.GetRoutes(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routes = append(routes, jfkEast.GetRoutes(jfkPropProto(), "_JFK_31R._JFK_13L.#090", "JFK5")...)
+			routes = append(routes, jfkEast.GetRoutes(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routes = append(routes, jfkNorth.GetRoutes(jfkPropProto(), "_JFK_31R._JFK_13L.#090", "JFK5")...)
+			routes = append(routes, jfkNorth.GetRoutes(rp, "_JFK_31R._JFK_13L.#090", "JFK5")...)
 		}
 
 		return &DepartureSpawner{
@@ -1552,7 +1546,6 @@ func GetFRGConfig() *AirportConfig {
 			rp := Route{
 				InitialAltitude:   70,
 				DepartureAirport:  "KFRG",
-				DepartureRunway:   rwy,
 				ClearedAltitude:   5000,
 				InitialController: "JFK_APP",
 				Fleet:             "default",
@@ -1611,7 +1604,6 @@ func GetISPConfig() *AirportConfig {
 			rp := Route{
 				InitialAltitude:   70,
 				DepartureAirport:  "KISP",
-				DepartureRunway:   rwy,
 				ClearedAltitude:   8000,
 				InitialController: "ISP",
 				Fleet:             "default",
@@ -1662,7 +1654,6 @@ func GetLGAConfig() *AirportConfig {
 			proto := Route{
 				InitialAltitude:   70,
 				DepartureAirport:  "KLGA",
-				DepartureRunway:   rwy,
 				InitialController: "LGA_DEP",
 				Fleet:             "default",
 				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
