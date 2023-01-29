@@ -291,7 +291,7 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 //go:embed resources/openscope-aircraft.json
 var openscopeAircraft string
 
-type SimAircraft struct {
+type AircraftPerformance struct {
 	Name string `json:"name"`
 	ICAO string `json:"icao"`
 	// engines, weight class, category
@@ -318,7 +318,7 @@ type SimAircraft struct {
 //go:embed resources/openscope-airlines.json
 var openscopeAirlines string
 
-type SimAirline struct {
+type Airline struct {
 	ICAO     string `json:"icao"`
 	Name     string `json:"name"`
 	Callsign struct {
@@ -333,14 +333,14 @@ type FleetAircraft struct {
 	Count int
 }
 
-var AllSimAircraft map[string]*SimAircraft
-var AllSimAirlines map[string]*SimAirline
+var AllAircraftPerformance map[string]*AircraftPerformance
+var AllAirlines map[string]*Airline
 
 type SSAircraft struct {
-	AC        *Aircraft
-	SimAC     *SimAircraft
-	Strip     FlightStrip
-	Waypoints []string
+	AC          *Aircraft
+	Performance *AircraftPerformance
+	Strip       FlightStrip
+	Waypoints   []string
 
 	Position Point2LL
 	Heading  float32
@@ -388,25 +388,25 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	rand.Seed(time.Now().UnixNano())
 
 	var acStruct struct {
-		Aircraft []SimAircraft `json:"aircraft"`
+		Aircraft []AircraftPerformance `json:"aircraft"`
 	}
 	if err := json.Unmarshal([]byte(openscopeAircraft), &acStruct); err != nil {
 		lg.Errorf("%v", err)
 	}
 
-	AllSimAircraft = make(map[string]*SimAircraft)
+	AllAircraftPerformance = make(map[string]*AircraftPerformance)
 	for i, ac := range acStruct.Aircraft {
-		AllSimAircraft[ac.ICAO] = &acStruct.Aircraft[i]
+		AllAircraftPerformance[ac.ICAO] = &acStruct.Aircraft[i]
 	}
 
 	var alStruct struct {
-		Airlines []SimAirline `json:"airlines"`
+		Airlines []Airline `json:"airlines"`
 	}
 	if err := json.Unmarshal([]byte(openscopeAirlines), &alStruct); err != nil {
 		lg.Errorf("%v", err)
 	}
 	// Fix up the fleets...
-	AllSimAirlines = make(map[string]*SimAirline)
+	AllAirlines = make(map[string]*Airline)
 	for _, al := range alStruct.Airlines {
 		fixedAirline := al
 		fixedAirline.Fleets = make(map[string][]FleetAircraft)
@@ -416,7 +416,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 					ICAO:  strings.ToUpper(ac[0].(string)),
 					Count: int(ac[1].(float64)),
 				}
-				if _, ok := AllSimAircraft[fleetAC.ICAO]; !ok {
+				if _, ok := AllAircraftPerformance[fleetAC.ICAO]; !ok {
 					lg.Errorf("%s: unknown aircraft in airlines database", fleetAC.ICAO)
 				}
 				fixedAirline.Fleets[name] = append(fixedAirline.Fleets[name], fleetAC)
@@ -424,7 +424,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		}
 		fixedAirline.JSONFleets = nil
 
-		AllSimAirlines[strings.ToUpper(al.ICAO)] = &fixedAirline
+		AllAirlines[strings.ToUpper(al.ICAO)] = &fixedAirline
 	}
 
 	ss := &SimServer{
@@ -758,33 +758,33 @@ func (ss *SimServer) updateSim() {
 
 		// Update speed; only worry about accelerate for departures (until
 		// we have speed assignments at least...)
-		targetSpeed := ac.SimAC.Speed.Cruise
+		targetSpeed := ac.Performance.Speed.Cruise
 		if ac.Altitude < 10000 {
 			targetSpeed = min(targetSpeed, 250)
 		}
 		// Don't allow an assigned speed that's faster than the a/c can handle.
-		if ac.AssignedSpeed != 0 && ac.AssignedSpeed < ac.SimAC.Speed.Cruise {
+		if ac.AssignedSpeed != 0 && ac.AssignedSpeed < ac.Performance.Speed.Cruise {
 			targetSpeed = ac.AssignedSpeed
 		}
 		if ac.IAS+1 < float32(targetSpeed) {
-			accel := ac.SimAC.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
+			accel := ac.Performance.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 			ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
 		} else if ac.IAS-1 > float32(targetSpeed) {
-			decel := ac.SimAC.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
+			decel := ac.Performance.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 			ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
 		}
 
 		// Don't climb unless it's going fast enough to be airborne
-		airborne := ac.IAS >= 1.1*float32(ac.SimAC.Speed.Min)
+		airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
 		if airborne {
 			if ac.Altitude < float32(ac.AssignedAltitude) {
-				climb := ac.SimAC.Rate.Climb
+				climb := ac.Performance.Rate.Climb
 				if climb >= 2500 && ac.Altitude > 5000 {
 					climb -= 500
 				}
 				ac.Altitude = min(float32(ac.AssignedAltitude), ac.Altitude+float32(climb)/60)
 			} else if ac.Altitude > float32(ac.AssignedAltitude) {
-				ac.Altitude = max(float32(ac.AssignedAltitude), ac.Altitude-float32(ac.SimAC.Rate.Descent)/60)
+				ac.Altitude = max(float32(ac.AssignedAltitude), ac.Altitude-float32(ac.Performance.Rate.Descent)/60)
 			}
 		}
 
@@ -913,16 +913,16 @@ func locateWaypoint(wp string) (Point2LL, bool) {
 }
 
 func (ss *SimServer) SpawnAircraft(ac *Aircraft, waypoints string, alt int, altAssigned int, ias int) {
-	acInfo, ok := AllSimAircraft[ac.FlightPlan.BaseType()]
+	acInfo, ok := AllAircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
 		return
 	}
 
 	ssa := &SSAircraft{
-		AC:        ac,
-		SimAC:     acInfo,
-		Waypoints: strings.Split(waypoints, "."),
+		AC:          ac,
+		Performance: acInfo,
+		Waypoints:   strings.Split(waypoints, "."),
 
 		Altitude:         float32(alt),
 		AssignedAltitude: altAssigned,
@@ -1184,7 +1184,7 @@ type Approach struct {
 
 func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraftICAO string, err error) {
 	al := airlines[rand.Intn(len(airlines))]
-	airline, ok := AllSimAirlines[al]
+	airline, ok := AllAirlines[al]
 	if !ok {
 		err = fmt.Errorf("%s: unknown airline!", al)
 		return
@@ -1223,7 +1223,7 @@ func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraf
 		}
 	}
 
-	if _, ok := AllSimAircraft[aircraft.ICAO]; !ok {
+	if _, ok := AllAircraftPerformance[aircraft.ICAO]; !ok {
 		err = fmt.Errorf("%s: chose aircraft but not in DB!", aircraft.ICAO)
 		return
 	}
@@ -1329,7 +1329,7 @@ func (ds *DepartureSpawner) MaybeSpawn(ss *SimServer) {
 		},
 	}
 
-	acInfo, ok := AllSimAircraft[aircraftICAO]
+	acInfo, ok := AllAircraftPerformance[aircraftICAO]
 	if !ok {
 		lg.Errorf("%s: ICAO not in db", aircraftICAO)
 		return
