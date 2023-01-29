@@ -86,15 +86,15 @@ var configPositions map[string]Point2LL = map[string]Point2LL{
 	"_ISP_33Lc": mustParseLatLong("N040.48.20.019, W073.10.31.686"),
 }
 
-type RunwayConfig struct {
+type DepartureConfig struct {
 	adr             int32
 	challenge       float32
 	enabled         bool
 	categoryEnabled map[string]*bool
 }
 
-func NewRunwayConfig() *RunwayConfig {
-	return &RunwayConfig{
+func NewDepartureConfig() *DepartureConfig {
+	return &DepartureConfig{
 		adr:             30,
 		challenge:       0.5,
 		categoryEnabled: make(map[string]*bool),
@@ -102,11 +102,11 @@ func NewRunwayConfig() *RunwayConfig {
 }
 
 type SimServerConnectionConfiguration struct {
-	callsign      string
-	numAircraft   int32
-	runwayConfigs map[string]*RunwayConfig // "KJFK/31L", etc
-	routes        []*Route
-	wind          struct {
+	callsign        string
+	numAircraft     int32
+	routes          []*Route
+	departureConfig map[string]*DepartureConfig // "KJFK/31L", etc.
+	wind            struct {
 		dir   int32
 		speed int32
 		gust  int32
@@ -116,7 +116,7 @@ type SimServerConnectionConfiguration struct {
 func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.callsign = "JFK_DEP"
 	ssc.numAircraft = 30
-	ssc.runwayConfigs = make(map[string]*RunwayConfig)
+	ssc.departureConfig = make(map[string]*DepartureConfig)
 	ssc.wind.dir = 50
 	ssc.wind.speed = 10
 	ssc.wind.gust = 15
@@ -128,10 +128,10 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 
 	for _, route := range ssc.routes {
 		id := route.DepartureAirport + "/" + route.DepartureRunway
-		if _, ok := ssc.runwayConfigs[id]; !ok {
-			ssc.runwayConfigs[id] = NewRunwayConfig()
+		if _, ok := ssc.departureConfig[id]; !ok {
+			ssc.departureConfig[id] = NewDepartureConfig()
 		}
-		c := ssc.runwayConfigs[id]
+		c := ssc.departureConfig[id]
 
 		if _, ok := c.categoryEnabled[route.Category]; !ok {
 			c.categoryEnabled[route.Category] = new(bool)
@@ -172,11 +172,11 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 			imgui.TableSetupColumn("Challenge level")
 			imgui.TableHeadersRow()
 
-			for _, rwy := range SortedMapKeys(ssc.runwayConfigs) {
+			for _, rwy := range SortedMapKeys(ssc.departureConfig) {
 				if !strings.HasPrefix(rwy, ap+"/") {
 					continue
 				}
-				config := ssc.runwayConfigs[rwy]
+				config := ssc.departureConfig[rwy]
 
 				imgui.PushID(rwy)
 				imgui.TableNextRow()
@@ -213,11 +213,11 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 				imgui.TableSetupColumn("Enabled")
 				imgui.TableSetupColumn("Runway/Gate")
 				imgui.TableHeadersRow()
-				for _, rwy := range SortedMapKeys(ssc.runwayConfigs) {
+				for _, rwy := range SortedMapKeys(ssc.departureConfig) {
 					if !strings.HasPrefix(rwy, ap+"/") {
 						continue
 					}
-					conf := ssc.runwayConfigs[rwy]
+					conf := ssc.departureConfig[rwy]
 					if !conf.enabled {
 						continue
 					}
@@ -244,7 +244,7 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 
 func (ssc *SimServerConnectionConfiguration) Valid() bool {
 	// Make sure that at least one scenario is selected
-	for _, config := range ssc.runwayConfigs {
+	for _, config := range ssc.departureConfig {
 		for _, enabled := range config.categoryEnabled {
 			if *enabled {
 				return true
@@ -438,7 +438,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	addController("NY_F_CTR", "KEWR", 128.3)    // N66
 	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
 
-	for rwy, conf := range ssc.runwayConfigs {
+	for rwy, conf := range ssc.departureConfig {
 		if !conf.enabled {
 			continue
 		}
