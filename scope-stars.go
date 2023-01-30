@@ -2345,7 +2345,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'C', 'A':
-						if b[0] == 'C' && len(b) > 0 && (b[1] < '0' || b[1] > '9') {
+						if b[0] == 'C' && len(b) > 1 && (b[1] < '0' || b[1] > '9') {
 							// Cleared approach. Keep trying additional
 							// characters until the first time we find an
 							// approach that's accepted by the SimServer or
