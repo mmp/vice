@@ -2279,141 +2279,85 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					return
 				}
 
-				b := []byte(cmd)
-				for len(b) > 0 {
-					getnum := func() (int, int, error) {
-						end := 1
-						for ; end < len(b); end++ {
-							if b[end] < '0' || b[end] > '9' {
-								break
-							}
-						}
-						n, err := strconv.Atoi(string(b[1:end]))
-						return n, end, err
-					}
-
-					switch b[0] {
+				commands := strings.Fields(cmd)
+				for i, command := range commands {
+					switch command[0] {
 					case 'D':
 						// Is it an altitude?
-						if len(b) > 1 && b[1] >= '0' && b[1] <= '9' {
-							alt, end, err := getnum()
-							b = b[end:]
+						if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
+							alt, err := strconv.Atoi(command[1:])
 							status.err = err
 							if err == nil {
 								status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
 							}
+						} else if _, ok := database.Locate(string(command[1:])); ok {
+							status.err = sim.DirectFix(ac.Callsign, command[1:])
 						} else {
-							if len(b) >= 6 { // try being greedy first
-								if _, ok := database.Locate(string(b[1:6])); ok {
-									status.err = sim.DirectFix(ac.Callsign, string(b[1:6]))
-									b = b[6:]
-									continue
-								}
-							}
-							if len(b) >= 4 {
-								if _, ok := database.Locate(string(b[1:4])); ok {
-									status.err = sim.DirectFix(ac.Callsign, string(b[1:4]))
-									b = b[4:]
-									continue
-								}
-							}
-							status.err = fmt.Errorf("%s: unsure how to parse fix/vor", string(b[1:]))
+							status.err = fmt.Errorf("%s: fix/vor unknown", command[1:])
 						}
 
 					case 'H':
-						hdg, end, err := getnum()
-						b = b[end:]
+						hdg, err := strconv.Atoi(command[1:])
 						status.err = err
 						if err == nil {
 							status.err = sim.AssignHeading(ac.Callsign, hdg, 0)
 						}
 
 					case 'L':
-						hdg, end, err := getnum()
-						b = b[end:]
+						hdg, err := strconv.Atoi(command[1:])
 						status.err = err
 						if err == nil {
 							status.err = sim.AssignHeading(ac.Callsign, hdg, -1)
 						}
 
 					case 'R':
-						hdg, end, err := getnum()
-						b = b[end:]
+						hdg, err := strconv.Atoi(command[1:])
 						status.err = err
 						if err == nil {
 							status.err = sim.AssignHeading(ac.Callsign, hdg, 1)
 						}
 
 					case 'C', 'A':
-						if b[0] == 'C' && len(b) > 1 && (b[1] < '0' || b[1] > '9') {
-							// Cleared approach. Keep trying additional
-							// characters until the first time we find an
-							// approach that's accepted by the SimServer or
-							// run out of characters.  (This is a little
-							// hacky but should be fine in practice.)
-							found := false
-							for end := 2; end <= len(b); end++ {
-								err := sim.ClearedApproach(ac.Callsign, string(b[1:end]))
-								if err == nil {
-									b = b[end:]
-									found = true
-									break
-								}
+						if command[0] == 'C' && len(command) > 1 && (command[1] < '0' || command[1] > '9') {
+							// Cleared approach.
+							status.err = sim.ClearedApproach(ac.Callsign, command[1:])
+						} else {
+							// Otherwise look for an altitude
+							alt, err := strconv.Atoi(command[1:])
+							status.err = err
+							if err == nil {
+								status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
 							}
-							if !found {
-								status.err = errors.New("Unknown approach: " + string(b[1:]))
-							}
-							break
-						}
-
-						// Otherwise look for an altitude
-						alt, end, err := getnum()
-						b = b[end:]
-						status.err = err
-						if err == nil {
-							status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
 						}
 
 					case 'S':
-						kts, end, err := getnum()
-						b = b[end:]
+						kts, err := strconv.Atoi(command[1:])
 						status.err = err
 						if err == nil {
 							status.err = sim.AssignSpeed(ac.Callsign, kts)
 						}
 
 					case 'E':
-						// Expect approach. Same strategy as in cleared
-						// approach for parsing the approach name.
-						found := false
-						for end := 2; end <= len(b); end++ {
-							err := sim.ExpectApproach(ac.Callsign, string(b[1:end]))
-							if err == nil {
-								b = b[end:]
-								found = true
-								break
-							}
-						}
-						if !found {
-							status.err = errors.New("Unknown approach: " + string(b[1:]))
-						}
+						// Expect approach.
+						status.err = sim.ExpectApproach(ac.Callsign, command[1:])
 
 					case '?':
-						b = b[1:]
 						status.err = sim.PrintInfo(ac.Callsign)
 
 					case 'X':
-						b = b[1:]
 						status.err = sim.DeleteAircraft(ac.Callsign)
 
 					default:
-						status.err = errors.New("Unknown command: " + string(b))
+						status.err = errors.New("Unknown command: " + command)
 					}
 
 					if status.err != nil {
+						// Leave the unexecuted commands for editing, etc.
+						sp.previewAreaInput = strings.Join(commands[i:], " ")
 						return
 					}
 				}
+
 				status.clear = true
 				return
 			}
