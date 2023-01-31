@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"text/tabwriter"
 	"time"
 )
 
@@ -85,46 +84,6 @@ type ATIS struct {
 	Contents string
 }
 
-type NetworkRating int
-
-const (
-	UndefinedRating = iota
-	ObserverRating
-	S1Rating
-	S2Rating
-	S3Rating
-	C1Rating
-	C2Rating
-	C3Rating
-	I1Rating
-	I2Rating
-	I3Rating
-	SupervisorRating
-	AdministratorRating
-)
-
-func (r NetworkRating) String() string {
-	return [...]string{"Undefined", "Observer", "S1", "S2", "S3", "C1", "C2", "C3",
-		"I1", "I2", "I3", "Supervisor", "Administrator"}[r]
-}
-
-type Facility int
-
-const (
-	FacilityOBS = iota
-	FacilityFSS
-	FacilityDEL
-	FacilityGND
-	FacilityTWR
-	FacilityAPP
-	FacilityCTR
-	FacilityUndefined
-)
-
-func (f Facility) String() string {
-	return [...]string{"Observer", "FSS", "Delivery", "Ground", "Tower", "Approach", "Center", "Undefined"}[f]
-}
-
 // Frequencies are scaled by 1000 and then stored in integers.
 type Frequency int
 
@@ -144,25 +103,14 @@ func (f Frequency) String() string {
 type Controller struct {
 	Callsign string // it's not exactly a callsign, but...
 	Name     string
-	CID      string
-	Rating   NetworkRating
 
-	Frequency     Frequency
-	ScopeRange    int
-	Facility      Facility
-	Location      Point2LL
-	RequestRelief bool
+	Frequency  Frequency
+	ScopeRange int
+	Location   Point2LL
 }
 
 func (c *Controller) GetPosition() *Position {
 	return database.LookupPosition(c.Callsign, c.Frequency)
-}
-
-type Pilot struct {
-	Callsign string
-	Name     string
-	CID      string
-	Rating   NetworkRating
 }
 
 type RadarTrack struct {
@@ -227,14 +175,13 @@ func ParseSquawk(s string) (Squawk, error) {
 }
 
 type Aircraft struct {
-	Callsign        string
-	Scratchpad      string
-	AssignedSquawk  Squawk // from ATC
-	Squawk          Squawk // actually squawking
-	Mode            TransponderMode
-	TempAltitude    int
-	VoiceCapability VoiceCapability
-	FlightPlan      *FlightPlan
+	Callsign       string
+	Scratchpad     string
+	AssignedSquawk Squawk // from ATC
+	Squawk         Squawk // actually squawking
+	Mode           TransponderMode
+	TempAltitude   int
+	FlightPlan     *FlightPlan
 
 	Tracks [10]RadarTrack
 
@@ -259,26 +206,6 @@ func (t TransponderMode) String() string {
 	return [...]string{"Standby", "C", "Ident"}[t]
 }
 
-type RangeLimitFlightRules int
-
-const (
-	IFR_IFR = iota
-	IFR_VFR
-	VFR_VFR
-	NumRangeTypes
-)
-
-func (r RangeLimitFlightRules) String() string {
-	return [...]string{"IFR-IFR", "IFR-VFR", "VFR-VFR"}[r]
-}
-
-type RangeLimits struct {
-	WarningLateral    float32 // nm
-	WarningVertical   int32   // feet
-	ViolationLateral  float32
-	ViolationVertical int32
-}
-
 type Runway struct {
 	Number         string
 	Heading        float32
@@ -295,19 +222,6 @@ type Navaid struct {
 type Fix struct {
 	Id       string
 	Location Point2LL
-}
-
-type PRDEntry struct {
-	Depart, Arrive          string
-	Route                   string
-	Hours                   [3]string
-	Type                    string
-	Area                    string
-	Altitude                string
-	Aircraft                string
-	Direction               string
-	Seq                     string
-	DepCenter, ArriveCenter string
 }
 
 type AirportPair struct {
@@ -336,25 +250,6 @@ type Position struct {
 	Scope                 string // For tracked a/c on the scope--e.g., T
 	Id                    string // e.g. JFK_TWR
 	LowSquawk, HighSquawk Squawk
-}
-
-type User struct {
-	Name   string
-	Note   string
-	Rating NetworkRating
-}
-
-type VoiceCapability int
-
-const (
-	VoiceUnknown = iota
-	VoiceFull
-	VoiceReceive
-	VoiceText
-)
-
-func (v VoiceCapability) String() string {
-	return [...]string{"?", "v", "r", "t"}[v]
 }
 
 func (a *Aircraft) Altitude() int {
@@ -519,51 +414,6 @@ func (a *Aircraft) OnGround() bool {
 	return false
 }
 
-func (a *Aircraft) GetFormattedFlightPlan(includeRemarks bool) (contents string, indent int) {
-	if plan := a.FlightPlan; plan == nil {
-		contents = "No flight plan"
-		return
-	} else {
-		var sb strings.Builder
-		w := tabwriter.NewWriter(&sb, 0, 1, 1, ' ', 0)
-		write := func(s string) { w.Write([]byte(s)) }
-
-		write(a.Callsign)
-		if a.VoiceCapability != VoiceFull {
-			write("/" + a.VoiceCapability.String())
-		}
-		write("\t")
-		nbsp := "\u00a0" // non-breaking space; wrapText honors these
-		write("rules:" + nbsp + plan.Rules.String() + "\t")
-		write("a/c:" + nbsp + plan.AircraftType + "\t")
-		write("dep/arr:" + nbsp + plan.DepartureAirport + "-" + plan.ArrivalAirport + nbsp + "(" + plan.AlternateAirport + ")\n")
-
-		write("\t")
-		write("alt:" + nbsp + nbsp + nbsp + fmt.Sprintf("%d", plan.Altitude))
-		if a.TempAltitude != 0 {
-			write(fmt.Sprintf(nbsp+"(%d)", a.TempAltitude))
-		}
-		write("\t")
-		write("sqk:" + nbsp + a.AssignedSquawk.String() + "\t")
-		write("scratch:" + nbsp + a.Scratchpad + "\n")
-
-		w.Flush()
-		contents = sb.String()
-
-		indent = 1 + len(a.Callsign)
-		if a.VoiceCapability != VoiceFull {
-			indent += 1 + len(a.VoiceCapability.String())
-		}
-		indstr := fmt.Sprintf("%*c", indent, ' ')
-		contents = contents + indstr + "route:" + nbsp + plan.Route + "\n"
-		if includeRemarks {
-			contents = contents + indstr + "rmks:" + nbsp + nbsp + plan.Remarks + "\n"
-		}
-
-		return contents, indent
-	}
-}
-
 // Returns nm
 func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 {
 	a0, av := a.Position(), a.HeadingVector()
@@ -615,46 +465,6 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 		// Who knows, so leave it alone
 		return fp.AircraftType
 	}
-}
-
-type Conflict struct {
-	aircraft [2]*Aircraft
-	limits   RangeLimits
-}
-
-func GetConflicts(aircraft []*Aircraft, rangeLimits [NumRangeTypes]RangeLimits) (warning []Conflict, violation []Conflict) {
-	for i, ac1 := range aircraft {
-		for j := i + 1; j < len(aircraft); j++ {
-			ac2 := aircraft[j]
-
-			var r RangeLimits
-			if ac1.FlightPlan != nil && ac1.FlightPlan.Rules == IFR {
-				if ac2.FlightPlan != nil && ac2.FlightPlan.Rules == IFR {
-					r = rangeLimits[IFR_IFR]
-				} else {
-					r = rangeLimits[IFR_VFR]
-				}
-			} else {
-				if ac2.FlightPlan != nil && ac2.FlightPlan.Rules == IFR {
-					r = rangeLimits[IFR_VFR]
-				} else {
-					r = rangeLimits[VFR_VFR]
-				}
-			}
-
-			ldist := nmdistance2ll(ac1.Position(), ac2.Position())
-			vdist := int32(abs(ac1.Altitude() - ac2.Altitude()))
-			if ldist < r.ViolationLateral && vdist < r.ViolationVertical {
-				violation = append(violation,
-					Conflict{aircraft: [2]*Aircraft{ac1, ac2}, limits: r})
-			} else if ldist < r.WarningLateral && vdist < r.WarningVertical {
-				warning = append(warning,
-					Conflict{aircraft: [2]*Aircraft{ac1, ac2}, limits: r})
-			}
-		}
-	}
-
-	return
 }
 
 type AircraftType struct {

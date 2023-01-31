@@ -2502,18 +2502,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				status.clear = true
 				status.err = server.SetSquawkAutomatic(ac.Callsign)
 				return
-			} else if cmd == "V" {
-				status.clear = true
-				status.err = server.SetVoiceType(ac.Callsign, VoiceFull)
-				return
-			} else if cmd == "R" {
-				status.clear = true
-				status.err = server.SetVoiceType(ac.Callsign, VoiceReceive)
-				return
-			} else if cmd == "T" {
-				status.clear = true
-				status.err = server.SetVoiceType(ac.Callsign, VoiceText)
-				return
 			} else {
 				if squawk, err := ParseSquawk(cmd); err == nil {
 					status.err = server.SetSquawk(ac.Callsign, squawk)

@@ -424,10 +424,6 @@ func (ss *SimServer) SetTemporaryAltitude(callsign string, alt int) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) SetVoiceType(callsign string, voice VoiceCapability) error {
-	return nil // UNIMPLEMENTED
-}
-
 func (ss *SimServer) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
@@ -572,11 +568,6 @@ func (ss *SimServer) GetMETAR(location string) *METAR {
 }
 
 func (ss *SimServer) GetAirportATIS(airport string) []ATIS {
-	// UNIMPLEMENTED
-	return nil
-}
-
-func (ss *SimServer) GetUser(callsign string) *User {
 	// UNIMPLEMENTED
 	return nil
 }

@@ -122,6 +122,19 @@ type FleetAircraft struct {
 	Count int
 }
 
+type PRDEntry struct {
+	Depart, Arrive          string
+	Route                   string
+	Hours                   [3]string
+	Type                    string
+	Area                    string
+	Altitude                string
+	Aircraft                string
+	Direction               string
+	Seq                     string
+	DepCenter, ArriveCenter string
+}
+
 // Label represents a labeled point on a map.
 type Label struct {
 	name  string

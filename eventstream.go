@@ -231,22 +231,6 @@ func (e *RemovedControllerEvent) String() string {
 	return "RemovedControllerEvent: " + e.Controller.Callsign
 }
 
-type AddedPilotEvent struct {
-	Pilot *Pilot
-}
-
-func (e *AddedPilotEvent) String() string {
-	return "AddedPilotEvent: " + e.Pilot.Callsign
-}
-
-type RemovedPilotEvent struct {
-	Pilot *Pilot
-}
-
-func (e *RemovedPilotEvent) String() string {
-	return "RemovedPilotEvent: " + e.Pilot.Callsign
-}
-
 type ReceivedMETAREvent struct {
 	METAR METAR
 }

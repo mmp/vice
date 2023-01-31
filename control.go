@@ -55,7 +55,6 @@ type AircraftController interface {
 	// in feet) to the aircraft.
 	SetTemporaryAltitude(callsign string, alt int) error
 
-	SetVoiceType(callsign string, voice VoiceCapability) error
 	AmendFlightPlan(callsign string, fp FlightPlan) error
 	PushFlightStrip(callsign string, controller string) error
 
@@ -125,7 +124,6 @@ type ATCServer interface {
 	// to specify the airport ahead of time.
 	GetAirportATIS(airport string) []ATIS
 
-	GetUser(callsign string) *User
 	GetController(callsign string) *Controller
 	GetAllControllers() []*Controller
 
@@ -220,9 +218,6 @@ func (*InertAircraftController) SetScratchpad(callsign string, scratchpad string
 func (*InertAircraftController) SetTemporaryAltitude(callsign string, alt int) error {
 	return ErrNoConnection
 }
-func (*InertAircraftController) SetVoiceType(callsign string, cap VoiceCapability) error {
-	return ErrNoConnection
-}
 func (*InertAircraftController) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return ErrNoConnection
 }
@@ -293,10 +288,6 @@ func (d *DisconnectedATCServer) GetMETAR(location string) *METAR {
 }
 
 func (d *DisconnectedATCServer) GetAirportATIS(airport string) []ATIS {
-	return nil
-}
-
-func (d *DisconnectedATCServer) GetUser(callsign string) *User {
 	return nil
 }
 
