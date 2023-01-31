@@ -603,9 +603,9 @@ func (p Point2LL) DMSString() string {
 	s += format(abs(p[1]))
 
 	if p[0] > 0 {
-		s += ", E"
+		s += ",E"
 	} else {
-		s += ", W"
+		s += ",W"
 	}
 	s += format(abs(p[0]))
 

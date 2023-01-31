@@ -1695,7 +1695,7 @@ func (as *AircraftSpawner) MaybeSpawn(ss *SimServer) error {
 
 func parseWaypoints(str string) ([]Waypoint, error) {
 	var waypoints []Waypoint
-	for _, wp := range strings.Split(str, "/") {
+	for _, wp := range strings.Fields(str) {
 		if len(wp) == 0 {
 			return nil, fmt.Errorf("Empty waypoint in string: \"%s\"", str)
 		}
@@ -1822,7 +1822,7 @@ func jfkPropProto() RouteTemplate {
 func (e Exit) GetRouteTemplates(r RouteTemplate, waypoints, route string) []RouteTemplate {
 	var routeTemplates []RouteTemplate
 	for _, fix := range e.fixes {
-		r.Waypoints = waypoints + "/" + fix[0]
+		r.Waypoints = waypoints + " " + fix[0]
 		r.Route = route + " " + fix[0]
 		r.Category = e.name
 		r.Scratchpad = fix[1]
@@ -1841,17 +1841,17 @@ func jfk31LRunwayConfig() *DepartureConfig {
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31L/_JFK_13R/CRI/#176", "SKORR5.YNKEE")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #176", "SKORR5.YNKEE")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31L/_JFK_13R/CRI/#176", "SKORR5.YNKEE")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #176", "SKORR5.YNKEE")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_31L/_JFK_13R/CRI/#223", "SKORR5.RNGRR")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #223", "SKORR5.RNGRR")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31L/_JFK_13R/CRI/#176", "SKORR5.YNKEE")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_31L/_JFK_13R/SKORR/CESID/YNKEE/#172", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #176", "SKORR5.YNKEE")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_31L _JFK_13R SKORR CESID YNKEE #172", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &AircraftSpawner{
@@ -1872,17 +1872,17 @@ func jfk22RRunwayConfig() *DepartureConfig {
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_22R/_JFK_4L/#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_22R/_JFK_4L/#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_22R/_JFK_4L/#222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_22R/_JFK_4L/#222", "JFK5")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_22R/_JFK_4L/#224", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #224", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &AircraftSpawner{
@@ -1903,17 +1903,17 @@ func jfk13RRunwayConfig() *DepartureConfig {
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_13R/_JFK_31L/#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_13R/_JFK_31L/#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_13R/_JFK_31L/#109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_13R/_JFK_31L/#109", "JFK5")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_13R/_JFK_31L/#109", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &AircraftSpawner{
@@ -1934,17 +1934,17 @@ func jfk4LRunwayConfig() *DepartureConfig {
 		rp := jfkJetProto()
 
 		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_4L/_JFK_4La/#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_4L/_JFK_4La/#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
 		}
 		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_4L/_JFK_4La/#099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_4L/_JFK_4La/#099", "JFK5")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_4L/_JFK_4La/#099", "DEEZZ5.CANDR J60")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "DEEZZ5.CANDR J60")...)
 		}
 
 		return &AircraftSpawner{
@@ -1967,13 +1967,13 @@ func jfk31RRunwayConfig() *DepartureConfig {
 		rp := jfkPropProto()
 
 		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31R/_JFK_13L/#090", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31R _JFK_13L #090", "JFK5")...)
 		}
 		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31R/_JFK_13L/#090", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31R _JFK_13L #090", "JFK5")...)
 		}
 		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31R/_JFK_13L/#090", "JFK5")...)
+			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31R _JFK_13L #090", "JFK5")...)
 		}
 
 		return &AircraftSpawner{
@@ -2290,7 +2290,7 @@ func GetJFKConfig() *AirportConfig {
 				rate: int(ac.rate),
 				routeTemplates: []RouteTemplate{
 					RouteTemplate{
-						Waypoints:           "N039.46.43.120, W074.03.15.529/KARRS/@/CAMRN/#041",
+						Waypoints:           "N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041",
 						Route:               "/. CAMRN4",
 						InitialAltitude:     15000,
 						ClearedAltitude:     11000,
@@ -2316,7 +2316,7 @@ func GetJFKConfig() *AirportConfig {
 				rate: int(ac.rate),
 				routeTemplates: []RouteTemplate{
 					RouteTemplate{
-						Waypoints:           "N040.56.09.863, W074.30.33.013/N040.55.09.974, W074.25.19.628/@/LENDY/#135",
+						Waypoints:           "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135",
 						Route:               "/. LENDY8",
 						InitialAltitude:     20000,
 						ClearedAltitude:     19000,
@@ -2342,7 +2342,7 @@ func GetJFKConfig() *AirportConfig {
 				rate: int(ac.rate),
 				routeTemplates: []RouteTemplate{
 					RouteTemplate{
-						Waypoints:           "N040.20.22.874, W073.48.09.981/N040.21.34.834, W073.51.11.997/@/#360",
+						Waypoints:           "N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360",
 						Route:               "/. DEBUG",
 						InitialAltitude:     3000,
 						ClearedAltitude:     2000,
@@ -2367,7 +2367,7 @@ func GetJFKConfig() *AirportConfig {
 				rate: int(ac.rate),
 				routeTemplates: []RouteTemplate{
 					RouteTemplate{
-						Waypoints:           "N041.02.38.230, W072.23.00.102/N040.57.31.959, W072.42.21.494/@/CCC/ROBER/#278",
+						Waypoints:           "N041.02.38.230,W072.23.00.102 N040.57.31.959,W072.42.21.494 @ CCC ROBER #278",
 						Route:               "/. PARCH3",
 						InitialAltitude:     13000,
 						ClearedAltitude:     12000,
@@ -2394,10 +2394,10 @@ func GetFRGConfig() *AirportConfig {
 	ac := &AirportConfig{name: "KFRG"}
 
 	runways := map[string]string{
-		"1":  "_FRG_1/_FRG_19/_FRG_1a/@/#013",
-		"19": "_FRG_19/_FRG_1/_FRG_19a/@/#220",
-		"14": "_FRG_14/_FRG_32/_FRG_14a/@/#220",
-		"32": "_FRG_32/_FRG_14/_FRG_32a/@/#010",
+		"1":  "_FRG_1 _FRG_19 _FRG_1a @ #013",
+		"19": "_FRG_19 _FRG_1 _FRG_19a @ #220",
+		"14": "_FRG_14 _FRG_32 _FRG_14a @ #220",
+		"32": "_FRG_32 _FRG_14 _FRG_32a @ #010",
 	}
 
 	for rwy, way := range runways {
@@ -2455,10 +2455,10 @@ func GetISPConfig() *AirportConfig {
 	ac := &AirportConfig{name: "KISP"}
 
 	runways := map[string]string{
-		"6":   "_ISP_6/_ISP_6a/_ISP_6b/@/#270",
-		"24":  "_ISP_24/_ISP_24a/_ISP_24b/_ISP_24c/@/#275",
-		"15R": "_ISP_15R/_ISP_15Ra/_ISP_15Rb/_ISP_15Rc/@/#275",
-		"33L": "_ISP_33L/_ISP_33La/_ISP_33Lb/_ISP_33Lc/@/#275",
+		"6":   "_ISP_6 _ISP_6a _ISP_6b @ #270",
+		"24":  "_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275",
+		"15R": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275",
+		"33L": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc @ #275",
 	}
 
 	for rwy, way := range runways {
@@ -2503,10 +2503,10 @@ func GetLGAConfig() *AirportConfig {
 	ac := &AirportConfig{name: "KLGA"}
 
 	runways := map[string]string{
-		"4":  "_LGA_4/_LGA_22/_LGA_22a/@/JFK",
-		"22": "_LGA_22/_LGA_4/_LGA_4a/_LGA_4b/@/JFK",
-		"13": "_LGA_13/_LGA_31/_LGA_31a/_LGA_31b/@/JFK",
-		"31": "_LGA_31/_LGA_13/_LGA_13a/@/JFK",
+		"4":  "_LGA_4 _LGA_22 _LGA_22a @ JFK",
+		"22": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK",
+		"13": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK",
+		"31": "_LGA_31 _LGA_13 _LGA_13a @ JFK",
 	}
 
 	for rwy, way := range runways {
