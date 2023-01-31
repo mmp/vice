@@ -2295,7 +2295,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					switch b[0] {
 					case 'D':
 						// Is it an altitude?
-						if b[1] >= '0' && b[1] <= '9' {
+						if len(b) > 1 && b[1] >= '0' && b[1] <= '9' {
 							alt, end, err := getnum()
 							b = b[end:]
 							status.err = err
