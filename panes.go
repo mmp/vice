@@ -287,12 +287,11 @@ type FlightStripPane struct {
 
 func NewFlightStripPane() *FlightStripPane {
 	return &FlightStripPane{
-		AddPushed:                 true,
-		CollectDeparturesArrivals: true,
-		Airports:                  make(map[string]interface{}),
-		FontIdentifier:            FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 14},
-		selectedStrip:             -1,
-		selectedAnnotation:        -1,
+		AddPushed:          true,
+		Airports:           make(map[string]interface{}),
+		FontIdentifier:     FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 14},
+		selectedStrip:      -1,
+		selectedAnnotation: -1,
 	}
 }
 
