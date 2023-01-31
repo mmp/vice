@@ -2542,12 +2542,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					return
 				} else {
 					// Is it an altitude or a scratchpad update?
-					if alt, err := strconv.Atoi(cmd[1:]); err == nil && len(cmd[1:]) == 3 {
+					if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
 						state.pilotAltitude = alt * 100
 						status.clear = true
 					} else {
 						status.clear = true
-						status.err = server.SetScratchpad(ac.Callsign, cmd[1:])
+						status.err = server.SetScratchpad(ac.Callsign, cmd)
 					}
 					return
 				}
