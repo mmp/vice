@@ -1410,33 +1410,45 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		}
 
 		f := strings.Fields(cmd)
-		if len(f) > 1 && f[0] == ".AUTOTRACK" {
-			for _, airport := range f[1:] {
-				if airport == "NONE" {
-					sp.AutoTrackDepartures = make(map[string]interface{})
-				} else if airport == "ALL" {
-					for _, ap := range sp.Facility.Airports {
-						sp.AutoTrackDepartures[ap.ICAOCode] = nil
-					}
-				} else {
-					// See if it's in the facility
-					found := false
-					for _, ap := range sp.Facility.Airports {
-						if ap.ICAOCode == airport {
-							found = true
-							break
+		if len(f) > 1 {
+			if f[0] == ".AUTOTRACK" {
+				for _, airport := range f[1:] {
+					if airport == "NONE" {
+						sp.AutoTrackDepartures = make(map[string]interface{})
+					} else if airport == "ALL" {
+						for _, ap := range sp.Facility.Airports {
+							sp.AutoTrackDepartures[ap.ICAOCode] = nil
+						}
+					} else {
+						// See if it's in the facility
+						found := false
+						for _, ap := range sp.Facility.Airports {
+							if ap.ICAOCode == airport {
+								found = true
+								break
+							}
+						}
+						if found {
+							sp.AutoTrackDepartures[airport] = nil
+						} else {
+							status.err = ErrSTARSIllegalParam
+							return
 						}
 					}
-					if found {
-						sp.AutoTrackDepartures[airport] = nil
-					} else {
-						status.err = ErrSTARSIllegalParam
-						return
-					}
+				}
+				status.clear = true
+				return
+			} else if f[0] == ".FIND" {
+				if pos, ok := database.Locate(f[1]); ok {
+					globalConfig.highlightedLocation = pos
+					globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
+					status.clear = true
+					return
+				} else {
+					status.err = ErrSTARSIllegalParam
+					return
 				}
 			}
-			status.clear = true
-			return
 		}
 
 	case CommandModeInitiateControl:
