@@ -130,10 +130,10 @@ type DepartureConfig struct {
 }
 
 type ArrivalConfig struct {
-	name        string
-	rate        int32
-	enabled     bool
-	makeSpawner func(*ArrivalConfig) *AircraftSpawner
+	name    string
+	rate    int32
+	enabled bool
+	routes  []RouteTemplate
 }
 
 type ApproachType int
@@ -589,7 +589,7 @@ func (ac *SSAircraft) UpdateHeading() {
 			dist := distance2f(pos, isect)
 			eta := dist / float32(ac.AC.Groundspeed()) * 3600 // in seconds
 			turn := abs(headingDifference(hdg, float32(ap.Heading())-database.MagneticVariation))
-			lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
+			//lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
 
 			// Assuming 3 degree/second turns, then we might start to turn to
 			// intercept when the eta until intercept is 1/3 the number of
@@ -881,7 +881,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		}
 		for _, a := range ap.arrivalConfigs {
 			if a.enabled {
-				ss.spawners = append(ss.spawners, a.makeSpawner(a))
+				ss.spawners = append(ss.spawners, &AircraftSpawner{rate: int(a.rate), routeTemplates: a.routes})
 			}
 		}
 	}
@@ -2285,25 +2285,20 @@ func GetJFKConfig() *AirportConfig {
 	camrn4 := &ArrivalConfig{
 		name: "CAMRN4",
 		rate: 30,
-		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
-			return &AircraftSpawner{
-				rate: int(ac.rate),
-				routeTemplates: []RouteTemplate{
-					RouteTemplate{
-						Waypoints:           "N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041",
-						Route:               "/. CAMRN4",
-						InitialAltitude:     15000,
-						ClearedAltitude:     11000,
-						InitialSpeed:        300,
-						SpeedRestriction:    250,
-						DepartureAirports:   []string{"KATL", "KFLL", "KIAD"}, // TODO
-						DestinationAirports: []string{"KJFK"},
-						InitialController:   "NY_F_CTR",
-						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-						Fleet:               "default",
-					},
-				},
-			}
+		routes: []RouteTemplate{
+			RouteTemplate{
+				Waypoints:           "N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041",
+				Route:               "/. CAMRN4",
+				InitialAltitude:     15000,
+				ClearedAltitude:     11000,
+				InitialSpeed:        300,
+				SpeedRestriction:    250,
+				DepartureAirports:   []string{"KATL", "KFLL", "KIAD"}, // TODO
+				DestinationAirports: []string{"KJFK"},
+				InitialController:   "NY_F_CTR",
+				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+				Fleet:               "default",
+			},
 		},
 	}
 	ac.arrivalConfigs = append(ac.arrivalConfigs, camrn4)
@@ -2311,25 +2306,20 @@ func GetJFKConfig() *AirportConfig {
 	lendy8 := &ArrivalConfig{
 		name: "LENDY8",
 		rate: 30,
-		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
-			return &AircraftSpawner{
-				rate: int(ac.rate),
-				routeTemplates: []RouteTemplate{
-					RouteTemplate{
-						Waypoints:           "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135",
-						Route:               "/. LENDY8",
-						InitialAltitude:     20000,
-						ClearedAltitude:     19000,
-						InitialSpeed:        300,
-						SpeedRestriction:    250,
-						DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
-						DestinationAirports: []string{"KJFK"},
-						InitialController:   "NY_F_CTR",
-						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-						Fleet:               "default",
-					},
-				},
-			}
+		routes: []RouteTemplate{
+			RouteTemplate{
+				Waypoints:           "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135",
+				Route:               "/. LENDY8",
+				InitialAltitude:     20000,
+				ClearedAltitude:     19000,
+				InitialSpeed:        300,
+				SpeedRestriction:    250,
+				DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
+				DestinationAirports: []string{"KJFK"},
+				InitialController:   "NY_F_CTR",
+				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+				Fleet:               "default",
+			},
 		},
 	}
 	ac.arrivalConfigs = append(ac.arrivalConfigs, lendy8)
@@ -2337,24 +2327,19 @@ func GetJFKConfig() *AirportConfig {
 	debug := &ArrivalConfig{
 		name: "DEBUG",
 		rate: 30,
-		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
-			return &AircraftSpawner{
-				rate: int(ac.rate),
-				routeTemplates: []RouteTemplate{
-					RouteTemplate{
-						Waypoints:           "N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360",
-						Route:               "/. DEBUG",
-						InitialAltitude:     3000,
-						ClearedAltitude:     2000,
-						InitialSpeed:        250,
-						DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
-						DestinationAirports: []string{"KJFK"},
-						InitialController:   "NY_F_CTR",
-						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-						Fleet:               "default",
-					},
-				},
-			}
+		routes: []RouteTemplate{
+			RouteTemplate{
+				Waypoints:           "N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360",
+				Route:               "/. DEBUG",
+				InitialAltitude:     3000,
+				ClearedAltitude:     2000,
+				InitialSpeed:        250,
+				DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
+				DestinationAirports: []string{"KJFK"},
+				InitialController:   "NY_F_CTR",
+				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+				Fleet:               "default",
+			},
 		},
 	}
 	ac.arrivalConfigs = append(ac.arrivalConfigs, debug)
@@ -2362,25 +2347,20 @@ func GetJFKConfig() *AirportConfig {
 	parch3 := &ArrivalConfig{
 		name: "PARCH3",
 		rate: 30,
-		makeSpawner: func(ac *ArrivalConfig) *AircraftSpawner {
-			return &AircraftSpawner{
-				rate: int(ac.rate),
-				routeTemplates: []RouteTemplate{
-					RouteTemplate{
-						Waypoints:           "N041.02.38.230,W072.23.00.102 N040.57.31.959,W072.42.21.494 @ CCC ROBER #278",
-						Route:               "/. PARCH3",
-						InitialAltitude:     13000,
-						ClearedAltitude:     12000,
-						InitialSpeed:        275,
-						SpeedRestriction:    250,
-						DepartureAirports:   []string{"KBOS"}, // TODO
-						DestinationAirports: []string{"KJFK"},
-						InitialController:   "NY_F_CTR",
-						Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-						Fleet:               "default",
-					},
-				},
-			}
+		routes: []RouteTemplate{
+			RouteTemplate{
+				Waypoints:           "N041.02.38.230,W072.23.00.102 N040.57.31.959,W072.42.21.494 @ CCC ROBER #278",
+				Route:               "/. PARCH3",
+				InitialAltitude:     13000,
+				ClearedAltitude:     12000,
+				InitialSpeed:        275,
+				SpeedRestriction:    250,
+				DepartureAirports:   []string{"KBOS"}, // TODO
+				DestinationAirports: []string{"KJFK"},
+				InitialController:   "NY_F_CTR",
+				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
+				Fleet:               "default",
+			},
 		},
 	}
 	ac.arrivalConfigs = append(ac.arrivalConfigs, parch3)
