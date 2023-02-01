@@ -12,6 +12,7 @@ import (
 	"image/draw"
 	"io"
 	"math"
+	"math/rand"
 	"net/http"
 	"regexp"
 	"sort"
@@ -956,6 +957,30 @@ func FindIf[V any](s []V, pred func(V) bool) int {
 		}
 	}
 	return -1
+}
+
+// Sample uniformly randomly samples an element of a non-empty slice.
+func Sample[T any](slice []T) T {
+	return slice[rand.Intn(len(slice))]
+}
+
+// SampleFiltered uniformly randomly samples a slice, returning the index
+// of the sampled item, using provided predicate function to filter the
+// items that may be sampled.  An index of -1 is returned if the slice is
+// empty or the predicate returns false for all items.
+func SampleFiltered[T any](slice []T, pred func(T) bool) int {
+	idx := -1
+	candidates := 0
+	for i, v := range slice {
+		if pred(v) {
+			candidates++
+			p := float32(1) / float32(candidates)
+			if rand.Float32() < p {
+				idx = i
+			}
+		}
+	}
+	return idx
 }
 
 ///////////////////////////////////////////////////////////////////////////

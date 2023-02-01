@@ -328,3 +328,31 @@ func TestParseLatLong(t *testing.T) {
 		}
 	}
 }
+
+func TestSampleFiltered(t *testing.T) {
+	if SampleFiltered([]int{}, func(int) bool { return true }) != -1 {
+		t.Errorf("Returned non-zero for empty slice")
+	}
+	if SampleFiltered([]int{0, 1, 2, 3, 4}, func(int) bool { return false }) != -1 {
+		t.Errorf("Returned non-zero for fully filtered")
+	}
+	if idx := SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v == 3 }); idx != 3 {
+		t.Errorf("Returned %d rather than 3 for filtered slice", idx)
+	}
+
+	var counts [5]int
+	for i := 0; i < 3000; i++ {
+		idx := SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v&1 == 0 })
+		counts[idx]++
+	}
+	if counts[1] != 0 || counts[3] != 0 {
+		t.Errorf("Incorrectly sampled odd items. Counts: %+v", counts)
+	}
+
+	slop := 30
+	if counts[0] < 1000-slop || counts[0] > 1000+slop ||
+		counts[2] < 1000-slop || counts[2] > 1000+slop ||
+		counts[4] < 1000-slop || counts[4] > 1000+slop {
+		t.Errorf("Didn't find roughly 1000 samples for the even items. Counts: %+v", counts)
+	}
+}
