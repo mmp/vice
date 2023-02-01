@@ -1371,7 +1371,7 @@ func (ss *SimServer) ClearedApproach(callsign string, approach string) error {
 		return nil
 	}
 
-	if ac.Approach.Type == ILSApproach && len(ap.Waypoints) == 0 {
+	if ac.Approach.Type == ILSApproach && len(ac.Waypoints) == 0 {
 		if ac.AssignedHeading == 0 {
 			pilotResponse(callsign, "we need either direct or a heading to intercept")
 			return nil
