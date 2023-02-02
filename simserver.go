@@ -2576,6 +2576,24 @@ func JFKAirport() *AirportConfig {
 			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL"}},
 		},
 		Departure{
+			Exit:        "DIXIE",
+			Route:       "V276 RBV V249 SBJ",
+			Destination: "KTEB",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}},
+		},
+		Departure{
+			Exit:        "DIXIE",
+			Route:       "V16 VCN V184 OOD",
+			Destination: "KPHL",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}},
+		},
+		Departure{
+			Exit:        "WHITE",
+			Route:       "V276 RBV V249 SBJ",
+			Destination: "KTEB",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}},
+		},
+		Departure{
 			Exit:        "COATE",
 			Route:       "Q436 EMMMA WYNDE2",
 			Destination: "KORD",
@@ -2750,6 +2768,22 @@ func JFKAirport() *AirportConfig {
 			Destination: "PANC",
 			Airlines: []AirlineConfig{
 				AirlineConfig{ICAO: "CAL", Fleet: "long"},
+			},
+		},
+		Departure{
+			Exit:        "HAAYS",
+			Route:       "J223 CORDS ULW GIBBE",
+			Destination: "KROC",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA"},
+			},
+		},
+		Departure{
+			Exit:        "BAYYS",
+			Route:       "SEALL V188 GON V374 MINNK",
+			Destination: "KPVD",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "EJA"},
 			},
 		},
 
