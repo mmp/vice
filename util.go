@@ -5,6 +5,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"golang.org/x/exp/constraints"
 	"image"
@@ -739,6 +740,31 @@ func normalize2ll(a Point2LL) Point2LL {
 		return Point2LL{0, 0}
 	}
 	return scale2ll(a, 1/l)
+}
+
+// Store Point2LLs as strings is JSON, for compactness/friendliness...
+func (p Point2LL) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + p.DMSString() + "\""), nil
+}
+
+func (p *Point2LL) UnmarshalJSON(b []byte) error {
+	if b[0] == '[' {
+		// Backwards compatibility for arrays of two floats...
+		var pt [2]float32
+		err := json.Unmarshal(b, &pt)
+		if err == nil {
+			*p = pt
+		}
+		return err
+	} else {
+		n := len(b)
+		// Remove the quotes before parsing
+		pt, err := ParseLatLong(string(b[1 : n-1]))
+		if err == nil {
+			*p = pt
+		}
+		return err
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
