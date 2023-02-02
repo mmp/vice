@@ -101,12 +101,8 @@ func (f Frequency) String() string {
 }
 
 type Controller struct {
-	Callsign string // it's not exactly a callsign, but...
-	Name     string
-
-	Frequency  Frequency
-	ScopeRange int
-	Location   Point2LL
+	Callsign  string    `json:"callsign"`
+	Frequency Frequency `json:"frequency"`
 }
 
 func (c *Controller) GetPosition() *Position {

@@ -5,9 +5,11 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -43,97 +45,139 @@ func mustParseLatLong(l string) Point2LL {
 	return ll
 }
 
-var configPositions map[string]Point2LL = map[string]Point2LL{
-	"_JFK_31L": mustParseLatLong("N040.37.41.000, W073.46.20.227"),
-	"_JFK_31R": mustParseLatLong("N040.38.35.986, W073.45.31.503"),
-	"_JFK_22R": mustParseLatLong("N040.39.00.362, W073.45.49.053"),
-	"_JFK_22L": mustParseLatLong("N040.38.41.232, W073.45.18.511"),
-	"_JFK_4L":  mustParseLatLong("N040.37.19.370, W073.47.08.045"),
-	"_JFK_4La": mustParseLatLong("N040.39.21.332, W073.45.32.849"),
-	"_JFK_4R":  mustParseLatLong("N040.37.31.661, W073.46.12.894"),
-	"_JFK_13R": mustParseLatLong("N040.38.53.537, W073.49.00.188"),
-	"_JFK_13L": mustParseLatLong("N040.39.26.976, W073.47.24.277"),
-
-	"_LGA_13":  mustParseLatLong("N040.46.56.029, W073.52.42.359"),
-	"_LGA_13a": mustParseLatLong("N040.48.06.479, W073.55.40.914"),
-	"_LGA_31":  mustParseLatLong("N040.46.19.788, W073.51.25.949"),
-	"_LGA_31a": mustParseLatLong("N040.45.34.950, W073.49.52.922"),
-	"_LGA_31b": mustParseLatLong("N040.48.50.809, W073.46.42.200"),
-	"_LGA_22":  mustParseLatLong("N040.47.06.864, W073.52.14.811"),
-	"_LGA_22a": mustParseLatLong("N040.51.18.890, W073.49.30.483"),
-	"_LGA_4":   mustParseLatLong("N040.46.09.447, W073.53.02.574"),
-	"_LGA_4a":  mustParseLatLong("N040.44.56.662, W073.51.53.497"),
-	"_LGA_4b":  mustParseLatLong("N040.47.59.557, W073.47.11.533"),
-
-	"_FRG_1":   mustParseLatLong("N040.43.20.230, W073.24.51.229"),
-	"_FRG_1a":  mustParseLatLong("N040.46.52.637, W073.24.58.809"),
-	"_FRG_19":  mustParseLatLong("N040.44.10.396, W073.24.50.982"),
-	"_FRG_19a": mustParseLatLong("N040.41.03.313, W073.26.45.267"),
-	"_FRG_14":  mustParseLatLong("N040.44.02.898, W073.25.17.486"),
-	"_FRG_14a": mustParseLatLong("N040.38.37.868, W073.22.41.398"),
-	"_FRG_32":  mustParseLatLong("N040.43.20.436, W073.24.13.848"),
-	"_FRG_32a": mustParseLatLong("N040.45.28.921, W073.27.08.421"),
-
-	"_ISP_6":    mustParseLatLong("N040.47.18.743, W073.06.44.022"),
-	"_ISP_6a":   mustParseLatLong("N040.50.43.281, W073.02.11.698"),
-	"_ISP_6b":   mustParseLatLong("N040.50.28.573, W073.09.10.827"),
-	"_ISP_24":   mustParseLatLong("N040.48.06.643, W073.05.39.202"),
-	"_ISP_24a":  mustParseLatLong("N040.45.56.414, W073.08.58.879"),
-	"_ISP_24b":  mustParseLatLong("N040.47.41.032, W073.06.08.371"),
-	"_ISP_24c":  mustParseLatLong("N040.48.48.350, W073.07.30.466"),
-	"_ISP_15R":  mustParseLatLong("N040.48.05.462, W073.06.24.356"),
-	"_ISP_15Ra": mustParseLatLong("N040.45.33.934, W073.02.36.555"),
-	"_ISP_15Rb": mustParseLatLong("N040.49.18.755, W073.03.43.379"),
-	"_ISP_15Rc": mustParseLatLong("N040.48.34.288, W073.09.11.211"),
-	"_ISP_33L":  mustParseLatLong("N040.47.32.819, W073.05.41.702"),
-	"_ISP_33La": mustParseLatLong("N040.49.52.085, W073.08.43.141"),
-	"_ISP_33Lb": mustParseLatLong("N040.49.21.515, W073.06.31.250"),
-	"_ISP_33Lc": mustParseLatLong("N040.48.20.019, W073.10.31.686"),
+type Scenario struct {
+	Callsign    string           `json:"callsign"`
+	Controllers []*Controller    `json:"controllers"`
+	Airports    []*AirportConfig `json:"airports"`
 }
 
 type AirportConfig struct {
-	name             string
-	departureConfigs []*DepartureConfig
-	arrivalConfigs   []*ArrivalConfig
-	approaches       []Approach
+	ICAO string `json:"ICAO"`
+
+	NamedLocations map[string]Point2LL `json:"named_locations"`
+
+	Arrivals   []Arrival   `json:"arrivals"`
+	Approaches []Approach  `json:"approaches"`
+	Departures []Departure `json:"departures"`
+
+	ExitCategories map[string]string `json:"exit_categories"`
+
+	Scratchpads map[string]string `json:"scratchpads"`
+
+	RunwayConfigs []RunwayConfig `json:"runway_configs"`
 }
 
-func (ac *AirportConfig) AddApproach(ap Approach) error {
-	for i := range ap.Waypoints {
-		n := len(ap.Waypoints[i])
-		ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
+func (ac *AirportConfig) PostDeserialize() error {
+	for _, ap := range ac.Approaches {
+		for i := range ap.Waypoints {
+			n := len(ap.Waypoints[i])
+			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
 
-		for j, wp := range ap.Waypoints[i] {
-			if pos, ok := database.Locate(wp.Fix); ok {
-				ap.Waypoints[i][j].Location = pos
-			} else if pos, ok := configPositions[wp.Fix]; ok {
-				ap.Waypoints[i][j].Location = pos
-			} else if pos, err := ParseLatLong(wp.Fix); err == nil {
-				ap.Waypoints[i][j].Location = pos
-			} else {
-				return fmt.Errorf("%s: unable to locate waypoint", wp.Fix)
+			if err := ac.InitializeWaypointLocations(ap.Waypoints[i]); err != nil {
+				return err
 			}
 		}
 	}
 
-	ac.approaches = append(ac.approaches, ap)
+	for _, ar := range ac.Arrivals {
+		if err := ac.InitializeWaypointLocations(ar.Waypoints); err != nil {
+			return err
+		}
+	}
+
+	for i, dep := range ac.Departures {
+		wp := []Waypoint{Waypoint{Fix: dep.Exit}}
+		if err := ac.InitializeWaypointLocations(wp); err != nil {
+			return err
+		}
+		ac.Departures[i].exitWaypoint = wp[0]
+	}
+
+	for i, rwy := range ac.RunwayConfigs {
+		ac.RunwayConfigs[i].departureCategoryEnabled = make(map[string]*bool)
+
+		for _, er := range rwy.ExitRoutes {
+			if err := ac.InitializeWaypointLocations(er.Waypoints); err != nil {
+				return err
+			}
+		}
+
+		for _, cat := range ac.ExitCategories {
+			// This is sort of wasteful, but...
+			ac.RunwayConfigs[i].departureCategoryEnabled[cat] = new(bool)
+		}
+	}
+
 	return nil
 }
 
-type DepartureConfig struct {
-	name            string
-	rate            int32
-	challenge       float32
-	enabled         bool
-	categoryEnabled map[string]*bool
-	makeSpawner     func(*DepartureConfig) *AircraftSpawner
+func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) error {
+	for i, wp := range waypoints {
+		if pos, ok := database.Locate(wp.Fix); ok {
+			waypoints[i].Location = pos
+		} else if pos, ok := ac.NamedLocations[wp.Fix]; ok {
+			waypoints[i].Location = pos
+		} else if pos, err := ParseLatLong(wp.Fix); err == nil {
+			waypoints[i].Location = pos
+		} else {
+			return fmt.Errorf("%s: unable to locate waypoint", wp.Fix)
+		}
+	}
+	return nil
 }
 
-type ArrivalConfig struct {
-	name    string
-	rate    int32
-	enabled bool
-	routes  []RouteTemplate
+type RunwayConfig struct {
+	Runway     string               `json:"runway"`
+	Altitude   int                  `json:"altitude"`
+	Enabled    bool                 `json:"-"`
+	Rate       int32                `json:"rate"`
+	ExitRoutes map[string]ExitRoute `json:"exit_routes"`
+
+	departureCategoryEnabled map[string]*bool
+	nextSpawn                time.Time
+	challenge                float32
+	lastDeparture            *Departure
+}
+
+type ExitRoute struct {
+	InitialRoute    string        `json:"route"`
+	ClearedAltitude int           `json:"cleared_altitude"`
+	Waypoints       WaypointArray `json:"waypoints"`
+}
+
+type Departure struct {
+	Exit         string `json:"exit"`
+	exitWaypoint Waypoint
+
+	Destination string          `json:"destination"`
+	Altitude    int             `json:"altitude,omitempty"`
+	Route       string          `json:"route"`
+	Airlines    []AirlineConfig `json:"airlines"`
+}
+
+type Arrival struct {
+	Name      string        `json:"name"`
+	Rate      int32         `json:"rate"`
+	Enabled   bool          `json:"-"`
+	Waypoints WaypointArray `json:"waypoints"`
+	Route     string        `json:"route"`
+
+	InitialController string `json:"initial_controller"`
+	InitialAltitude   int    `json:"initial_altitude"`
+	ClearedAltitude   int    `json:"cleared_altitude"`
+	InitialSpeed      int    `json:"initial_speed"`
+	SpeedRestriction  int    `json:"speed_restriction"`
+
+	Airlines []AirlineConfig `json:"airlines"`
+
+	nextSpawn time.Time
+}
+
+// for a single departure / arrival
+type AirlineConfig struct {
+	ICAO    string `json:"icao"`
+	Airport string `json:"airport,omitempty"`
+	Fleet   string `json:"fleet"`
 }
 
 type ApproachType int
@@ -143,11 +187,37 @@ const (
 	RNAVApproach
 )
 
+func (at ApproachType) MarshalJSON() ([]byte, error) {
+	switch at {
+	case ILSApproach:
+		return []byte("\"ILS\""), nil
+	case RNAVApproach:
+		return []byte("\"RNAV\""), nil
+	default:
+		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
+	}
+}
+
+func (at *ApproachType) UnmarshalJSON(b []byte) error {
+	switch string(b) {
+	case "\"ILS\"":
+		*at = ILSApproach
+		return nil
+
+	case "\"RNAV\"":
+		*at = RNAVApproach
+		return nil
+
+	default:
+		return fmt.Errorf("%s: unknown approach_type", string(b))
+	}
+}
+
 type Approach struct {
-	ShortName string
-	FullName  string
-	Type      ApproachType
-	Waypoints [][]Waypoint // RNAV may e.g. have multiple (partially overlapping) options...
+	ShortName string          `json:"short_name"`
+	FullName  string          `json:"full_name"`
+	Type      ApproachType    `json:"type"`
+	Waypoints []WaypointArray `json:"waypoints"`
 }
 
 func (ap *Approach) Line() [2]Point2LL {
@@ -171,18 +241,90 @@ const (
 	WaypointCommandDelete
 )
 
-type Waypoint struct {
-	Fix      string
-	Location Point2LL
-	Altitude int
-	Speed    int
-	Heading  int // outbound heading after waypoint
-	// Commands run when we reach the waypoint(ish)
-	Commands []WaypointCommand
+func (wc WaypointCommand) MarshalJSON() ([]byte, error) {
+	switch wc {
+	case WaypointCommandHandoff:
+		return []byte("\"handoff\""), nil
+
+	case WaypointCommandDelete:
+		return []byte("\"delete\""), nil
+
+	default:
+		return nil, fmt.Errorf("unhandled WaypointCommand in MarshalJSON")
+	}
 }
 
+func (wc *WaypointCommand) UnmarshalJSON(b []byte) error {
+	switch string(b) {
+	case "\"handoff\"":
+		*wc = WaypointCommandHandoff
+		return nil
+
+	case "\"delete\"":
+		*wc = WaypointCommandDelete
+		return nil
+
+	default:
+		return fmt.Errorf("%s: unknown waypoint command", string(b))
+	}
+}
+
+type Waypoint struct {
+	Fix      string            `json:"fix"`
+	Location Point2LL          `json:"-"` // never serialized, derived from fix
+	Altitude int               `json:"altitude,omitempty"`
+	Speed    int               `json:"speed,omitempty"`
+	Heading  int               `json:"heading,omitempty"` // outbound heading after waypoint
+	Commands []WaypointCommand `json:"commands,omitempty"`
+}
+
+type WaypointArray []Waypoint
+
+func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
+	var entries []string
+	for _, w := range wslice {
+		s := w.Fix
+		if w.Altitude != 0 {
+			s += fmt.Sprintf("@a%d", w.Altitude)
+		}
+		if w.Speed != 0 {
+			s += fmt.Sprintf("@s%d", w.Speed)
+		}
+		entries = append(entries, s)
+
+		if w.Heading != 0 {
+			entries = append(entries, fmt.Sprintf("#%d", w.Heading))
+		}
+
+		for _, c := range w.Commands {
+			switch c {
+			case WaypointCommandHandoff:
+				entries = append(entries, "@")
+
+			case WaypointCommandDelete:
+				entries = append(entries, "*")
+			}
+		}
+	}
+
+	return []byte("\"" + strings.Join(entries, " ") + "\""), nil
+}
+
+func (w *WaypointArray) UnmarshalJSON(b []byte) error {
+	if len(b) < 2 {
+		*w = nil
+		return nil
+	}
+	wp, err := parseWaypoints(string(b[1 : len(b)-1]))
+	if err == nil {
+		*w = wp
+	}
+	return err
+}
+
+var scenarios []*Scenario
+
 type SimServerConnectionConfiguration struct {
-	callsign    string
 	numAircraft int32
 
 	wind struct {
@@ -191,20 +333,30 @@ type SimServerConnectionConfiguration struct {
 		gust  int32
 	}
 
-	airportConfigs []*AirportConfig
+	scenario *Scenario
 }
 
 func (ssc *SimServerConnectionConfiguration) Initialize() {
-	ssc.callsign = "JFK_DEP"
+	if len(scenarios) == 0 {
+		scenarios = append(scenarios, JFKApproachScenario())
+		e := json.NewEncoder(os.Stdout)
+		err := e.Encode(scenarios)
+		if err != nil {
+			panic(err)
+		}
+	}
+	for _, sc := range scenarios {
+		for _, ap := range sc.Airports {
+			ap.PostDeserialize()
+		}
+	}
+
 	ssc.numAircraft = 30
 	ssc.wind.dir = 50
 	ssc.wind.speed = 10
 	ssc.wind.gust = 15
 
-	ssc.airportConfigs = append(ssc.airportConfigs, GetJFKConfig())
-	ssc.airportConfigs = append(ssc.airportConfigs, GetFRGConfig())
-	ssc.airportConfigs = append(ssc.airportConfigs, GetISPConfig())
-	ssc.airportConfigs = append(ssc.airportConfigs, GetLGAConfig())
+	ssc.scenario = scenarios[0]
 }
 
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
@@ -216,87 +368,108 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	imgui.SliderIntV("Wind gust", &ssc.wind.gust, 0, 50, "%d", 0)
 	ssc.wind.gust = max(ssc.wind.gust, ssc.wind.speed)
 
-	for i, apConfig := range ssc.airportConfigs {
+	for i, apConfig := range ssc.scenario.Airports {
 		var headerFlags imgui.TreeNodeFlags
 		if i == 0 {
 			headerFlags = imgui.TreeNodeFlagsDefaultOpen
 		}
-		if !imgui.CollapsingHeaderV(apConfig.name, headerFlags) {
+		if !imgui.CollapsingHeaderV(apConfig.ICAO, headerFlags) {
 			continue
 		}
 
-		drawDepartureUI(apConfig.departureConfigs)
-		drawArrivalUI(apConfig.arrivalConfigs)
+		apConfig.DrawUI()
 	}
 
 	return false
 }
 
-func drawDepartureUI(configs []*DepartureConfig) {
-	if len(configs) == 0 {
-		return
-	}
-
-	anyRunwaysActive := false
-	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{800, 0}, 0.) {
-		imgui.TableSetupColumn("Enabled")
-		imgui.TableSetupColumn("Runway")
-		imgui.TableSetupColumn("ADR")
-		imgui.TableSetupColumn("Challenge level")
-		imgui.TableHeadersRow()
-
-		for i := range configs {
-			imgui.PushID(configs[i].name)
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			if imgui.Checkbox("##enabled", &configs[i].enabled) {
-				if configs[i].enabled {
-					// enable all corresponding categories by default
-					for _, enabled := range configs[i].categoryEnabled {
-						*enabled = true
-					}
-				} else {
-					// disable all corresponding configs
-					for _, enabled := range configs[i].categoryEnabled {
-						*enabled = false
-					}
-				}
-			}
-			anyRunwaysActive = anyRunwaysActive || configs[i].enabled
-			imgui.TableNextColumn()
-			imgui.Text(configs[i].name)
-			imgui.TableNextColumn()
-			imgui.InputIntV("##adr", &configs[i].rate, 1, 120, 0)
-			imgui.TableNextColumn()
-			imgui.SliderFloatV("##challenge", &configs[i].challenge, 0, 1, "%.01f", 0)
-			imgui.PopID()
-		}
-		imgui.EndTable()
-	}
-
-	if anyRunwaysActive {
-		imgui.Separator()
+func (ac *AirportConfig) DrawUI() {
+	if len(ac.Departures) > 0 {
+		anyRunwaysActive := false
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{800, 0}, 0.) {
-			imgui.TableSetupColumn("Enabled")
-			imgui.TableSetupColumn("Runway/Gate")
-			imgui.TableHeadersRow()
-			for i := range configs {
-				if !configs[i].enabled {
-					continue
-				}
 
-				imgui.PushID(configs[i].name)
-				for _, category := range SortedMapKeys(configs[i].categoryEnabled) {
-					imgui.PushID(category)
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Checkbox("##check", configs[i].categoryEnabled[category])
-					imgui.TableNextColumn()
-					imgui.Text(configs[i].name + "/" + category)
+		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{800, 0}, 0.) {
+			imgui.TableSetupColumn("Enabled")
+			imgui.TableSetupColumn("Runway")
+			imgui.TableSetupColumn("ADR")
+			imgui.TableSetupColumn("Challenge level")
+			imgui.TableHeadersRow()
+
+			for i, conf := range ac.RunwayConfigs {
+				imgui.PushID(conf.Runway)
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				if imgui.Checkbox("##enabled", &ac.RunwayConfigs[i].Enabled) {
+					if ac.RunwayConfigs[i].Enabled {
+						// enable all corresponding categories by default
+						for _, enabled := range conf.departureCategoryEnabled {
+							*enabled = true
+						}
+					} else {
+						// disable all corresponding configs
+						for _, enabled := range conf.departureCategoryEnabled {
+							*enabled = false
+						}
+					}
+				}
+				anyRunwaysActive = anyRunwaysActive || ac.RunwayConfigs[i].Enabled
+				imgui.TableNextColumn()
+				imgui.Text(conf.Runway)
+				imgui.TableNextColumn()
+				imgui.InputIntV("##adr", &ac.RunwayConfigs[i].Rate, 1, 120, 0)
+				imgui.TableNextColumn()
+				imgui.SliderFloatV("##challenge", &ac.RunwayConfigs[i].challenge, 0, 1, "%.01f", 0)
+				imgui.PopID()
+			}
+			imgui.EndTable()
+		}
+
+		if anyRunwaysActive {
+			imgui.Separator()
+			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{800, 0}, 0.) {
+				imgui.TableSetupColumn("Enabled")
+				imgui.TableSetupColumn("Runway/Gate")
+				imgui.TableHeadersRow()
+				for _, conf := range ac.RunwayConfigs {
+					if !conf.Enabled {
+						continue
+					}
+
+					imgui.PushID(conf.Runway)
+					for _, category := range SortedMapKeys(conf.departureCategoryEnabled) {
+						imgui.PushID(category)
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Checkbox("##check", conf.departureCategoryEnabled[category])
+						imgui.TableNextColumn()
+						imgui.Text(conf.Runway + "/" + category)
+						imgui.PopID()
+					}
 					imgui.PopID()
 				}
+				imgui.EndTable()
+			}
+		}
+	}
+
+	if len(ac.Arrivals) > 0 {
+		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+		if imgui.BeginTableV("arrivals", 3, flags, imgui.Vec2{600, 0}, 0.) {
+			imgui.TableSetupColumn("Enabled")
+			imgui.TableSetupColumn("Arrival")
+			imgui.TableSetupColumn("AAR")
+			imgui.TableHeadersRow()
+
+			for i := range ac.Arrivals {
+				imgui.PushID(ac.Arrivals[i].Name)
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Checkbox("##enabled", &ac.Arrivals[i].Enabled)
+				imgui.TableNextColumn()
+				imgui.Text(ac.Arrivals[i].Name)
+				imgui.TableNextColumn()
+				imgui.InputIntV("##aar", &ac.Arrivals[i].Rate, 1, 120, 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
@@ -304,45 +477,22 @@ func drawDepartureUI(configs []*DepartureConfig) {
 	}
 }
 
-func drawArrivalUI(configs []*ArrivalConfig) {
-	if len(configs) == 0 {
-		return
-	}
-
-	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV("arrivals", 3, flags, imgui.Vec2{600, 0}, 0.) {
-		imgui.TableSetupColumn("Enabled")
-		imgui.TableSetupColumn("Arrival")
-		imgui.TableSetupColumn("AAR")
-		imgui.TableHeadersRow()
-
-		for i := range configs {
-			imgui.PushID(configs[i].name)
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Checkbox("##enabled", &configs[i].enabled)
-			imgui.TableNextColumn()
-			imgui.Text(configs[i].name)
-			imgui.TableNextColumn()
-			imgui.InputIntV("##aar", &configs[i].rate, 1, 120, 0)
-			imgui.PopID()
-		}
-		imgui.EndTable()
-	}
-}
-
 func (ssc *SimServerConnectionConfiguration) Valid() bool {
 	// Make sure that at least one scenario is selected
-	for _, apConfig := range ssc.airportConfigs {
-		for _, d := range apConfig.departureConfigs {
-			for _, enabled := range d.categoryEnabled {
-				if *enabled {
+	for _, ap := range ssc.scenario.Airports {
+		for _, rwy := range ap.RunwayConfigs {
+			if !rwy.Enabled {
+				continue
+			}
+			for _, active := range rwy.departureCategoryEnabled {
+				if *active {
 					return true
 				}
 			}
 		}
-		for _, a := range apConfig.arrivalConfigs {
-			if a.enabled {
+
+		for _, a := range ap.Arrivals {
+			if a.Enabled {
 				return true
 			}
 		}
@@ -362,7 +512,7 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SSAircraft
+// SSAircr
 
 type SSAircraft struct {
 	AC          *Aircraft
@@ -721,16 +871,15 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 			// we'll call that good enough. Now we need to figure out which
 			// fixes in the approach are still ahead and then add them to
 			// the aircraft's waypoints..
-			if len(ap.Waypoints) != 1 {
-				lg.Errorf("ILS approaches should only have a single set of waypoints?!")
-			}
-
 			pos := ll2nm(ac.Position)
 			hdg := ac.Heading - database.MagneticVariation
 			headingVector := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 
 			ac.Waypoints = nil
 			found := false
+			// Note that we only use the first set of waypoints
+			// here--effectively assuming an intercept in the common
+			// segment if there are multiple.
 			for _, wp := range ap.Waypoints[0] {
 				if wp.Altitude != 0 && int(ac.Altitude) < wp.Altitude {
 					continue
@@ -784,7 +933,19 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
 	lg.Errorf("waypoint update %+v, ac %+v", wp, ac)
 
-	// Handle altitude/speed restriction at waypoint.
+	// For starters, convert a previous crossing restriction to a current
+	// assignment.  Clear out the previous crossing restriction.
+	if ac.AssignedAltitude == 0 {
+		ac.AssignedAltitude = ac.CrossingAltitude
+	}
+	ac.CrossingAltitude = 0
+
+	if ac.AssignedSpeed == 0 {
+		ac.AssignedSpeed = ac.CrossingSpeed
+	}
+	ac.CrossingSpeed = 0
+
+	// Now handle any altitude/speed restriction at the next waypoint.
 	if wp.Altitude != 0 {
 		ac.CrossingAltitude = wp.Altitude
 		ac.AssignedAltitude = 0
@@ -809,17 +970,19 @@ func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
 // SimServer
 
 type SimServer struct {
-	callsign    string
-	aircraft    map[string]*SSAircraft
-	handoffs    map[string]time.Time
-	controllers map[string]*Controller
+	// These come from the scenario
+	callsign       string
+	airportConfigs []*AirportConfig
+	controllers    map[string]*Controller
+
+	aircraft map[string]*SSAircraft
+	handoffs map[string]time.Time
 
 	currentTime       time.Time // this is our fake time--accounting for pauses & simRate..
 	lastUpdateTime    time.Time // this is w.r.t. true wallclock time
 	simRate           float32
 	paused            bool
 	remainingLaunches int
-	airportConfigs    []*AirportConfig
 
 	wind struct {
 		dir   int
@@ -830,8 +993,6 @@ type SimServer struct {
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
-	spawners []*AircraftSpawner
-
 	showSettings bool
 }
 
@@ -839,65 +1000,28 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	rand.Seed(time.Now().UnixNano())
 
 	ss := &SimServer{
-		callsign:          ssc.callsign,
+		callsign:       ssc.scenario.Callsign,
+		airportConfigs: ssc.scenario.Airports,
+		controllers:    make(map[string]*Controller),
+
 		aircraft:          make(map[string]*SSAircraft),
 		handoffs:          make(map[string]time.Time),
-		controllers:       make(map[string]*Controller),
 		currentTime:       time.Now(),
 		lastUpdateTime:    time.Now(),
 		remainingLaunches: int(ssc.numAircraft),
-		airportConfigs:    ssc.airportConfigs,
 		simRate:           1,
 	}
+
+	for _, ctrl := range ssc.scenario.Controllers {
+		ss.controllers[ctrl.Callsign] = ctrl
+	}
+
 	ss.wind.dir = int(ssc.wind.dir)
 	ss.wind.speed = int(ssc.wind.speed)
 	ss.wind.gust = int(ssc.wind.gust)
 
-	addController := func(cs string, loc string, freq float32) {
-		pos, _ := database.Locate(loc)
-		ss.controllers[cs] = &Controller{
-			Callsign:  cs,
-			Location:  pos,
-			Frequency: NewFrequency(freq),
-		}
-	}
-
-	// Us.
-	addController("JFK_DEP", "KJFK", 135.9) //  2A
-
-	addController("LGA_DEP", "KLGA", 120.4)     //  1L
-	addController("ISP_APP", "KISP", 120.05)    //  3H
-	addController("JFK_APP", "KJFK", 132.4)     //  2A
-	addController("NY_LE_DEP", "MERIT", 126.8)  //  5E
-	addController("NY_LS_DEP", "DIXIE", 124.75) //  5S
-	addController("NY_F_CTR", "KEWR", 128.3)    // N66
-	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
-
-	for _, ap := range ssc.airportConfigs {
-		for _, d := range ap.departureConfigs {
-			if d.enabled {
-				ss.spawners = append(ss.spawners, d.makeSpawner(d))
-			}
-		}
-		for _, a := range ap.arrivalConfigs {
-			if a.enabled {
-				ss.spawners = append(ss.spawners, &AircraftSpawner{rate: int(a.rate), routeTemplates: a.routes})
-			}
-		}
-	}
-	if len(ss.spawners) == 0 {
-		panic("NO SPAWNERS?!??!?")
-	}
-
 	// Prime the pump before the user gets involved
-	for _, spawner := range ss.spawners {
-		if ss.remainingLaunches > 0 {
-			err := spawner.MaybeSpawn(ss)
-			if err != nil {
-				lg.Errorf("Spawn error: %v", err)
-			}
-		}
-	}
+	ss.SpawnAircraft()
 	for i := 0; i < 60; i++ {
 		ss.updateSim()
 	}
@@ -1145,13 +1269,7 @@ func (ss *SimServer) GetUpdates() {
 		}
 	}
 
-	// And give all of the spawners a chance to launch aircraft, if they
-	// feel like it.
-	if ss.remainingLaunches > 0 {
-		for _, spawner := range ss.spawners {
-			spawner.MaybeSpawn(ss)
-		}
-	}
+	ss.SpawnAircraft()
 }
 
 func (ss *SimServer) updateSim() {
@@ -1178,35 +1296,6 @@ func (ss *SimServer) CurrentTime() time.Time {
 
 func (ss *SimServer) GetWindowTitle() string {
 	return "SimServer: " + ss.callsign
-}
-
-func (ss *SimServer) SpawnAircraft(ssa *SSAircraft) {
-	if _, ok := ss.aircraft[ssa.AC.Callsign]; ok {
-		lg.Errorf("%s: already have an aircraft with that callsign!", ssa.AC.Callsign)
-		return
-	}
-
-	if len(ssa.Waypoints) == 0 {
-		lg.Errorf("%s: no waypoints specified", ssa.AC.Callsign)
-		return
-	}
-
-	ss.RunWaypointCommands(ssa, ssa.Waypoints[0].Commands)
-
-	ssa.Position = ssa.Waypoints[0].Location
-	ssa.Heading = float32(ssa.Waypoints[0].Heading)
-
-	if ssa.Heading == 0 { // unassigned, so get the heading from the next fix
-		ssa.Heading = headingp2ll(ssa.Position, ssa.Waypoints[1].Location, database.MagneticVariation)
-	}
-
-	ssa.Waypoints = ssa.Waypoints[1:]
-
-	ss.aircraft[ssa.AC.Callsign] = ssa
-
-	ss.remainingLaunches--
-
-	eventStream.Post(&AddedAircraftEvent{ac: ssa.AC})
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
@@ -1325,13 +1414,13 @@ func (ss *SimServer) getApproach(callsign string, approach string) (*Approach, *
 	}
 
 	for _, ap := range ss.airportConfigs {
-		if ap.name == fp.ArrivalAirport {
-			for i, appr := range ap.approaches {
+		if ap.ICAO == fp.ArrivalAirport {
+			for i, appr := range ap.Approaches {
 				if appr.ShortName == approach {
-					return &ap.approaches[i], ac, nil
+					return &ap.Approaches[i], ac, nil
 				}
 			}
-			lg.Errorf("wanted approach %s; airport %s options -> %+v", approach, ap.name, ap.approaches)
+			lg.Errorf("wanted approach %s; airport %s options -> %+v", approach, ap.ICAO, ap.Approaches)
 			return nil, nil, ErrUnknownApproach
 		}
 	}
@@ -1501,232 +1590,246 @@ func (ss *SimServer) DrawSettingsWindow() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Spawning aircraft
 
-type RouteTemplate struct {
-	Waypoints        string
-	Scratchpad       string
-	Route            string
-	InitialAltitude  int
-	ClearedAltitude  int
-	InitialSpeed     int
-	SpeedRestriction int
+func (ss *SimServer) SpawnAircraft() {
+	now := ss.CurrentTime()
 
-	DestinationAirports []string
-	DepartureAirports   []string
-
-	Category string
-
-	InitialController string
-	Airlines          []string
-	Fleet             string
-}
-
-func (r *RouteTemplate) RandomAircraft() (*Aircraft, error) {
-	callsign, aircraftICAO, err := chooseAircraft(r.Airlines, r.Fleet)
-	if err != nil {
-		return nil, err
-	}
-
-	departure := r.DepartureAirports[rand.Intn(len(r.DepartureAirports))]
-	destination := r.DestinationAirports[rand.Intn(len(r.DestinationAirports))]
-	squawk := Squawk(rand.Intn(0o7000))
-	alt := 20000 + 1000*rand.Intn(22)
-	if rand.Float32() < .3 {
-		alt = 7000 + 1000*rand.Intn(11)
-	}
-
-	ac := &Aircraft{
-		Callsign:           callsign,
-		Scratchpad:         r.Scratchpad,
-		AssignedSquawk:     squawk,
-		Squawk:             squawk,
-		Mode:               Charlie,
-		TrackingController: r.InitialController,
-		FlightPlan: &FlightPlan{
-			Rules:            IFR,
-			AircraftType:     aircraftICAO,
-			DepartureAirport: departure,
-			ArrivalAirport:   destination,
-			Altitude:         alt,
-			Route:            r.Route + " DCT " + destination,
-		},
-	}
-
-	acInfo, ok := database.AircraftPerformance[aircraftICAO]
-	if !ok {
-		return nil, fmt.Errorf("%s: ICAO not in db", aircraftICAO)
-	}
-	if acInfo.WeightClass == "H" {
-		ac.FlightPlan.AircraftType = "H/" + ac.FlightPlan.AircraftType
-	}
-	if acInfo.WeightClass == "J" {
-		ac.FlightPlan.AircraftType = "J/" + ac.FlightPlan.AircraftType
-	}
-
-	return ac, nil
-}
-
-func chooseAircraft(airlines []string, fleetId string) (callsign string, aircraftICAO string, err error) {
-	al := airlines[rand.Intn(len(airlines))]
-	airline, ok := database.Airlines[al]
-	if !ok {
-		err = fmt.Errorf("%s: unknown airline!", al)
-		return
-	}
-
-	// random callsign
-	callsign = strings.ToUpper(airline.ICAO)
-	for _, ch := range airline.Callsign.CallsignFormats[rand.Intn(len(airline.Callsign.CallsignFormats))] {
-		switch ch {
-		case '#':
-			callsign += fmt.Sprintf("%d", rand.Intn(10))
-
-		case '@':
-			callsign += string(rune('A' + rand.Intn(26)))
+	addAircraft := func(ssa *SSAircraft) {
+		if _, ok := ss.aircraft[ssa.AC.Callsign]; ok {
+			lg.Errorf("%s: already have an aircraft with that callsign!", ssa.AC.Callsign)
+			return
 		}
-	}
+		ss.aircraft[ssa.AC.Callsign] = ssa
 
-	// Pick an aircraft.
-	var aircraft FleetAircraft
-	count := 0
+		ss.RunWaypointCommands(ssa, ssa.Waypoints[0].Commands)
 
-	fleet, ok := airline.Fleets[fleetId]
-	if !ok {
-		lg.Errorf("%s: didn't find fleet %s -- %+v", airline.ICAO, fleetId, airline)
-		for _, fl := range airline.Fleets {
-			fleet = fl
-			break
+		ssa.Position = ssa.Waypoints[0].Location
+		ssa.Heading = float32(ssa.Waypoints[0].Heading)
+		if ssa.Heading == 0 { // unassigned, so get the heading from the next fix
+			ssa.Heading = headingp2ll(ssa.Position, ssa.Waypoints[1].Location, database.MagneticVariation)
 		}
+		ssa.Waypoints = ssa.Waypoints[1:]
+
+		lg.Errorf("ADD %+v", ssa)
+
+		ss.remainingLaunches--
+		eventStream.Post(&AddedAircraftEvent{ac: ssa.AC})
 	}
 
-	for _, ac := range fleet {
-		// Reservoir sampling...
-		count += ac.Count
-		if rand.Float32() < float32(ac.Count)/float32(count) {
-			aircraft = ac
+	for _, ap := range ss.airportConfigs {
+		for i, arr := range ap.Arrivals {
+			if arr.Enabled && ss.remainingLaunches > 0 && now.After(arr.nextSpawn) {
+				if ac := ss.SpawnArrival(arr); ac != nil {
+					ac.AC.FlightPlan.ArrivalAirport = ap.ICAO
+					addAircraft(ac)
+					seconds := 3600/int(arr.Rate) - 10 + rand.Intn(21)
+					ap.Arrivals[i].nextSpawn = now.Add(time.Duration(seconds) * time.Second)
+				}
+			}
 		}
-	}
 
-	if _, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
-		err = fmt.Errorf("%s: chose aircraft but not in DB!", aircraft.ICAO)
-		return
-	}
-
-	aircraftICAO = aircraft.ICAO
-	return
-}
-
-///////////////////////////////////////////////////////////////////////////
-// AircraftSpawner
-
-type AircraftSpawner struct {
-	nextSpawn time.Time
-
-	rate      int
-	challenge float32
-
-	routeTemplates []RouteTemplate
-
-	lastRouteTemplateCategory string
-	lastRouteTemplate         *RouteTemplate
-}
-
-func (as *AircraftSpawner) MaybeSpawn(ss *SimServer) error {
-	if ss.CurrentTime().Before(as.nextSpawn) {
-		return nil
-	}
-
-	// Pick a route
-	var rt *RouteTemplate
-	u := rand.Float32()
-	if u < as.challenge/2 {
-		rt = as.lastRouteTemplate // note: may be nil the first time...
-	} else if u < as.challenge {
-		// Try to find one with the same category; reservoir sampling
-		n := float32(0)
-		for _, r := range as.routeTemplates {
-			if r.Category == as.lastRouteTemplateCategory {
-				n++
-				if rand.Float32() < 1/n {
-					rt = &r
+		for i, rwy := range ap.RunwayConfigs {
+			if rwy.Enabled && ss.remainingLaunches > 0 && now.After(rwy.nextSpawn) {
+				if ac := ss.SpawnDeparture(ap, &ap.RunwayConfigs[i]); ac != nil {
+					ac.AC.FlightPlan.DepartureAirport = ap.ICAO
+					addAircraft(ac)
+					seconds := 3600/int(rwy.Rate) - 10 + rand.Intn(21)
+					ap.RunwayConfigs[i].nextSpawn = now.Add(time.Duration(seconds) * time.Second)
 				}
 			}
 		}
 	}
-
-	// Either the challenge cases didn't hit or they did and it's the first
-	// time through...
-	if rt == nil {
-		rt = &as.routeTemplates[rand.Intn(len(as.routeTemplates))]
-	}
-	as.lastRouteTemplateCategory = rt.Category
-	as.lastRouteTemplate = rt
-
-	ac, err := rt.RandomAircraft()
-	if err != nil {
-		return err
-	}
-
-	acInfo, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
-	if !ok {
-		return fmt.Errorf("%s: ICAO not in db", ac.FlightPlan.BaseType())
-	}
-
-	wp, err := parseWaypoints(rt.Waypoints)
-	if err != nil {
-		return err
-	}
-
-	ss.SpawnAircraft(&SSAircraft{
-		AC:               ac,
-		Performance:      acInfo,
-		Waypoints:        wp,
-		Altitude:         float32(rt.InitialAltitude),
-		AssignedAltitude: rt.ClearedAltitude,
-		IAS:              float32(rt.InitialSpeed),
-		AssignedSpeed:    rt.SpeedRestriction,
-	})
-
-	seconds := 3600/as.rate - 10 + rand.Intn(21)
-	as.nextSpawn = ss.CurrentTime().Add(time.Duration(seconds) * time.Second)
-
-	return nil
 }
 
+func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
+	airline := Sample(airlines)
+	al, ok := database.Airlines[airline.ICAO]
+	if !ok {
+		// TODO: this should be caught at load validation time...
+		lg.Errorf("Chose airline %+v, not found in database", airline)
+		return nil
+	}
+
+	fleet, ok := al.Fleets[airline.Fleet]
+	if !ok {
+		// TODO: this also should be caught at validation time...
+		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", airline.ICAO, airline.Fleet)
+		return nil
+	}
+
+	// Sample according to fleet count
+	var aircraft string
+	acCount := 0
+	for _, ac := range fleet {
+		// Reservoir sampling...
+		acCount += ac.Count
+		if rand.Float32() < float32(ac.Count)/float32(acCount) {
+			aircraft = ac.ICAO
+		}
+	}
+
+	perf, ok := database.AircraftPerformance[aircraft]
+	if !ok {
+		// TODO: validation stage...
+		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
+			aircraft, fleet, airline.ICAO)
+		return nil
+	}
+
+	// random callsign
+	callsign := strings.ToUpper(airline.ICAO)
+	for _, ch := range al.Callsign.CallsignFormats[rand.Intn(len(al.Callsign.CallsignFormats))] {
+		switch ch {
+		case '#':
+			callsign += fmt.Sprintf("%d", rand.Intn(10))
+		case '@':
+			callsign += string(rune('A' + rand.Intn(26)))
+		}
+	}
+	// TODO: retry if we're trying to use 0 as the flight number...
+
+	squawk := Squawk(rand.Intn(0o7000))
+
+	acType := aircraft
+	if perf.WeightClass == "H" {
+		acType = "H/" + acType
+	}
+	if perf.WeightClass == "J" {
+		acType = "J/" + acType
+	}
+
+	return &SSAircraft{
+		AC: &Aircraft{
+			Callsign:       callsign,
+			AssignedSquawk: squawk,
+			Squawk:         squawk,
+			Mode:           Charlie,
+			FlightPlan: &FlightPlan{
+				Rules:            IFR,
+				AircraftType:     acType,
+				DepartureAirport: airline.Airport,
+			},
+		},
+		Performance: perf,
+	}
+}
+
+func (ss *SimServer) SpawnArrival(arr Arrival) *SSAircraft {
+	ac := sampleAircraft(arr.Airlines)
+	if ac == nil {
+		return nil
+	}
+
+	ac.AC.TrackingController = arr.InitialController
+	ac.AC.FlightPlan.Altitude = 39000
+	ac.AC.FlightPlan.Route = arr.Route
+	ac.Waypoints = arr.Waypoints
+	ac.Altitude = float32(arr.InitialAltitude)
+	ac.IAS = float32(arr.InitialSpeed)
+	ac.CrossingAltitude = arr.ClearedAltitude
+	ac.CrossingSpeed = arr.SpeedRestriction
+
+	return ac
+}
+
+func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *RunwayConfig) *SSAircraft {
+	idx := SampleFiltered(ap.Departures,
+		func(d Departure) bool {
+			category := ap.ExitCategories[d.Exit]
+			return *rwy.departureCategoryEnabled[category]
+		})
+	if idx == -1 {
+		return nil
+	}
+
+	// TODO: support rwy.challenge
+
+	dep := ap.Departures[idx]
+	rwy.lastDeparture = &ap.Departures[idx]
+
+	ac := sampleAircraft(dep.Airlines)
+
+	exitRoute := rwy.ExitRoutes[dep.Exit]
+	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
+	ac.Waypoints = append(ac.Waypoints, dep.exitWaypoint)
+
+	ac.AC.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Exit + " " + dep.Route
+	ac.AC.FlightPlan.ArrivalAirport = dep.Destination
+	ac.AC.Scratchpad = ap.Scratchpads[dep.Exit]
+	if dep.Altitude == 0 {
+		// If unspecified, pick something in the flight levels...
+		// TODO: get altitudes right considering East/West-bound...
+		ac.AC.FlightPlan.Altitude = 28000 + 1000*rand.Intn(13)
+	} else {
+		ac.AC.FlightPlan.Altitude = dep.Altitude
+	}
+
+	ac.Altitude = float32(rwy.Altitude)
+	ac.AssignedAltitude = exitRoute.ClearedAltitude
+
+	return ac
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+func mustParseWaypoints(str string) []Waypoint {
+	if wp, err := parseWaypoints(str); err != nil {
+		panic(err)
+	} else {
+		return wp
+	}
+}
 func parseWaypoints(str string) ([]Waypoint, error) {
 	var waypoints []Waypoint
-	for _, wp := range strings.Fields(str) {
-		if len(wp) == 0 {
+	for _, field := range strings.Fields(str) {
+		if len(field) == 0 {
 			return nil, fmt.Errorf("Empty waypoint in string: \"%s\"", str)
 		}
 
-		if wp == "@" {
+		if field == "@" {
 			if len(waypoints) == 0 {
 				return nil, fmt.Errorf("No previous waypoint before handoff specifier")
 			}
 			waypoints[len(waypoints)-1].Commands =
 				append(waypoints[len(waypoints)-1].Commands, WaypointCommandHandoff)
-		} else if wp[0] == '#' {
+		} else if field[0] == '#' {
 			if len(waypoints) == 0 {
 				return nil, fmt.Errorf("No previous waypoint before heading specifier")
 			}
-			if hdg, err := strconv.Atoi(wp[1:]); err != nil {
-				return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", wp[1:], err)
+			if hdg, err := strconv.Atoi(field[1:]); err != nil {
+				return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", field[1:], err)
 			} else {
 				waypoints[len(waypoints)-1].Heading = hdg
 			}
 		} else {
-			var pos Point2LL
-			var ok bool
-			if pos, ok = database.Locate(wp); !ok {
-				if pos, ok = configPositions[wp]; !ok {
-					var err error
-					if pos, err = ParseLatLong(wp); err != nil {
-						return nil, fmt.Errorf("%s: unable to locate waypoint", wp)
+			wp := Waypoint{}
+			for i, f := range strings.Split(field, "@") {
+				if i == 0 {
+					wp.Fix = f
+				} else {
+					switch f[0] {
+					case 'a':
+						alt, err := strconv.Atoi(f[1:])
+						if err != nil {
+							return nil, err
+						}
+						wp.Altitude = alt
+
+					case 's':
+						kts, err := strconv.Atoi(f[1:])
+						if err != nil {
+							return nil, err
+						}
+						wp.Speed = kts
+
+					default:
+						return nil, fmt.Errorf("%s: unknown @ command '%c", field, f[0])
 					}
 				}
 			}
-			waypoints = append(waypoints, Waypoint{Fix: wp, Location: pos})
+
+			waypoints = append(waypoints, wp)
 		}
 	}
 
@@ -1736,226 +1839,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 ///////////////////////////////////////////////////////////////////////////
 // KJFK
 
-type Exit struct {
-	name         string
-	fixes        [][2]string // fix and scratchpad
-	destinations []string
-}
-
-var jfkWater = Exit{
-	name:         "Water",
-	fixes:        [][2]string{[2]string{"WAVEY", "WAV"}, [2]string{"SHIPP", "SHI"}, [2]string{"HAPIE", "HAP"}, [2]string{"BETTE", "BET"}},
-	destinations: []string{"TAPA", "TXKF", "KMCO", "KFLL", "KSAV", "KATL", "EGLL", "EDDF", "LFPG", "EINN"},
-}
-
-var jfkEast = Exit{
-	name:         "East",
-	fixes:        [][2]string{[2]string{"MERIT", "MER"}, [2]string{"GREKI", "GRE"}, [2]string{"BAYYS", "BAY"}, [2]string{"BDR", "BDR"}},
-	destinations: []string{"KBOS", "KPVD", "KACK", "KBDL", "KPWM", "KSYR"},
-}
-
-var jfkSouthwest = Exit{
-	name:         "Southwest",
-	fixes:        [][2]string{[2]string{"DIXIE", "DIX"}, [2]string{"WHITE", "WHI"}, [2]string{"RBV", "RBV"}, [2]string{"ARD", "ARD"}},
-	destinations: []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"},
-}
-
-var jfkDIXIE = Exit{
-	name:         "DIXIE",
-	fixes:        [][2]string{[2]string{"DIXIE", "DIX"}},
-	destinations: []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"},
-}
-
-var jfkWHITE = Exit{
-	name:         "WHITE",
-	fixes:        [][2]string{[2]string{"WHITE", "WHI"}},
-	destinations: []string{"KAUS", "KMSY", "KDFW", "KACY", "KDCA", "KIAH", "KIAD", "KBWI", "KCLT", "KPHL"},
-}
-
-var jfkNorth = Exit{
-	name:         "North",
-	fixes:        [][2]string{[2]string{"COATE", "COA"}, [2]string{"NEION", "NEI"}, [2]string{"HAAYS", "HAY"}, [2]string{"GAYEL", "GAY"}},
-	destinations: []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"},
-}
-
-var jfkDEEZZ = Exit{
-	name:         "North",
-	fixes:        [][2]string{[2]string{"DEEZZ", "DEZ"}},
-	destinations: []string{"KSAN", "KLAX", "KSFO", "KSEA", "KYYZ", "KORD", "KDEN", "KLAS", "KPHX", "KDTW"},
-}
-
-func jfkRunwayConfig() *DepartureConfig {
-	c := &DepartureConfig{
-		rate:            45,
-		challenge:       0.5,
-		categoryEnabled: make(map[string]*bool),
-	}
-	c.categoryEnabled["Water"] = new(bool)
-	c.categoryEnabled["East"] = new(bool)
-	c.categoryEnabled["Southwest"] = new(bool)
-	c.categoryEnabled["North"] = new(bool)
-	return c
-}
-
-func jfkJetProto() RouteTemplate {
-	return RouteTemplate{
-		InitialAltitude:   13,
-		DepartureAirports: []string{"KJFK"},
-		ClearedAltitude:   5000,
-		Fleet:             "default",
-		Airlines: []string{
-			"AAL", "AFR", "AIC", "AMX", "ANA", "ASA", "BAW", "BWA", "CCA", "CLX", "CPA", "DAL", "DLH", "EDV", "EIN",
-			"ELY", "FDX", "FFT", "GEC", "IBE", "JBU", "KAL", "KLM", "LXJ", "NKS", "QXE", "SAS", "UAE", "UAL", "UPS"},
-	}
-}
-
-func jfkPropProto() RouteTemplate {
-	return RouteTemplate{
-		InitialAltitude:   13,
-		DepartureAirports: []string{"KJFK"},
-		ClearedAltitude:   2000,
-		Fleet:             "short",
-		Airlines:          []string{"QXE", "BWA", "FDX"},
-	}
-}
-
-func (e Exit) GetRouteTemplates(r RouteTemplate, waypoints, route string) []RouteTemplate {
-	var routeTemplates []RouteTemplate
-	for _, fix := range e.fixes {
-		r.Waypoints = waypoints + " " + fix[0]
-		r.Route = route + " " + fix[0]
-		r.Category = e.name
-		r.Scratchpad = fix[1]
-		r.DestinationAirports = e.destinations
-		routeTemplates = append(routeTemplates, r)
-	}
-	return routeTemplates
-}
-
-func jfk31LRunwayConfig() *DepartureConfig {
-	c := jfkRunwayConfig()
-	c.name = "31L"
-	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-		var routeTemplates []RouteTemplate
-
-		rp := jfkJetProto()
-
-		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #176", "SKORR5.YNKEE")...)
-		}
-		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #176", "SKORR5.YNKEE")...)
-		}
-		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #223", "SKORR5.RNGRR")...)
-		}
-		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_31L _JFK_13R CRI #176", "SKORR5.YNKEE")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_31L _JFK_13R SKORR CESID YNKEE #172", "DEEZZ5.CANDR J60")...)
-		}
-
-		return &AircraftSpawner{
-			rate:           int(config.rate),
-			challenge:      config.challenge,
-			routeTemplates: routeTemplates,
-		}
-	}
-	return c
-}
-
-func jfk22RRunwayConfig() *DepartureConfig {
-	c := jfkRunwayConfig()
-	c.name = "22R"
-	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-		var routeTemplates []RouteTemplate
-
-		rp := jfkJetProto()
-
-		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
-		}
-		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
-		}
-		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
-		}
-		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #222", "JFK5")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_22R _JFK_4L #224", "DEEZZ5.CANDR J60")...)
-		}
-
-		return &AircraftSpawner{
-			rate:           int(config.rate),
-			challenge:      config.challenge,
-			routeTemplates: routeTemplates,
-		}
-	}
-	return c
-}
-
-func jfk13RRunwayConfig() *DepartureConfig {
-	c := jfkRunwayConfig()
-	c.name = "13R"
-	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-		var routeTemplates []RouteTemplate
-
-		rp := jfkJetProto()
-
-		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
-		}
-		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
-		}
-		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
-		}
-		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "JFK5")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_13R _JFK_31L #109", "DEEZZ5.CANDR J60")...)
-		}
-
-		return &AircraftSpawner{
-			rate:           int(config.rate),
-			challenge:      config.challenge,
-			routeTemplates: routeTemplates,
-		}
-	}
-	return c
-}
-
-func jfk4LRunwayConfig() *DepartureConfig {
-	c := jfkRunwayConfig()
-	c.name = "4L"
-	c.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-		var routeTemplates []RouteTemplate
-
-		rp := jfkJetProto()
-
-		if *config.categoryEnabled["Water"] {
-			routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
-		}
-		if *config.categoryEnabled["East"] {
-			routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
-		}
-		if *config.categoryEnabled["Southwest"] {
-			routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
-		}
-		if *config.categoryEnabled["North"] {
-			routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "JFK5")...)
-			routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, "_JFK_4L _JFK_4La #099", "DEEZZ5.CANDR J60")...)
-		}
-
-		return &AircraftSpawner{
-			rate:           int(config.rate),
-			challenge:      config.challenge,
-			routeTemplates: routeTemplates,
-		}
-	}
-	return c
-}
-
+/*
 func jfk31RRunwayConfig() *DepartureConfig {
 	c := jfkRunwayConfig()
 	delete(c.categoryEnabled, "Southwest")
@@ -1984,77 +1868,135 @@ func jfk31RRunwayConfig() *DepartureConfig {
 	}
 	return c
 }
+*/
 
-func GetJFKConfig() *AirportConfig {
-	ac := &AirportConfig{name: "KJFK"}
+func JFKApproachScenario() *Scenario {
+	s := &Scenario{}
 
-	ac.departureConfigs = append(ac.departureConfigs, jfk31LRunwayConfig())
-	ac.departureConfigs = append(ac.departureConfigs, jfk31RRunwayConfig())
-	ac.departureConfigs = append(ac.departureConfigs, jfk22RRunwayConfig())
-	ac.departureConfigs = append(ac.departureConfigs, jfk13RRunwayConfig())
-	ac.departureConfigs = append(ac.departureConfigs, jfk4LRunwayConfig())
+	s.Callsign = "JFK_APP"
+
+	addController := func(cs string, loc string, freq float32) {
+		s.Controllers = append(s.Controllers, &Controller{
+			Callsign:  cs,
+			Frequency: NewFrequency(freq),
+		})
+	}
+
+	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
+	addController("ISP_APP", "KISP", 120.05)    //  3H
+	addController("JFK_APP", "KJFK", 128.125)   //  2G
+	addController("JFK_DEP", "KJFK", 135.9)     //  2A
+	addController("JFK_TWR", "KJFK", 119.1)     //  2W
+	addController("LGA_DEP", "KLGA", 120.4)     //  1L
+	addController("NY_F_CTR", "KEWR", 128.3)    // N66
+	addController("NY_LE_DEP", "MERIT", 126.8)  //  5E
+	addController("NY_LS_DEP", "DIXIE", 124.75) //  5S
+
+	jfk := JFKAirport()
+	s.Airports = append(s.Airports, jfk)
+	lga := LGAAirport()
+	lga.Scratchpads = jfk.Scratchpads
+	lga.ExitCategories = jfk.ExitCategories
+	s.Airports = append(s.Airports, LGAAirport())
+	isp := ISPAirport()
+	isp.Scratchpads = jfk.Scratchpads
+	isp.ExitCategories = jfk.ExitCategories
+	s.Airports = append(s.Airports, ISPAirport())
+	frg := FRGAirport()
+	frg.Scratchpads = jfk.Scratchpads
+	frg.ExitCategories = jfk.ExitCategories
+	s.Airports = append(s.Airports, FRGAirport())
+
+	return s
+}
+
+func JFKAirport() *AirportConfig {
+	ac := &AirportConfig{ICAO: "KJFK"}
+	ac.NamedLocations = map[string]Point2LL{
+		"_JFK_31L": mustParseLatLong("N040.37.41.000, W073.46.20.227"),
+		"_JFK_31R": mustParseLatLong("N040.38.35.986, W073.45.31.503"),
+		"_JFK_22R": mustParseLatLong("N040.39.00.362, W073.45.49.053"),
+		"_JFK_22L": mustParseLatLong("N040.38.41.232, W073.45.18.511"),
+		"_JFK_4L":  mustParseLatLong("N040.37.19.370, W073.47.08.045"),
+		"_JFK_4La": mustParseLatLong("N040.39.21.332, W073.45.32.849"),
+		"_JFK_4R":  mustParseLatLong("N040.37.31.661, W073.46.12.894"),
+		"_JFK_13R": mustParseLatLong("N040.38.53.537, W073.49.00.188"),
+		"_JFK_13L": mustParseLatLong("N040.39.26.976, W073.47.24.277"),
+	}
+
+	ac.ExitCategories = map[string]string{
+		"WAVEY": "Water",
+		"SHIPP": "Water",
+		"HAPIE": "Water",
+		"BETTE": "Water",
+		"MERIT": "East",
+		"GREKI": "East",
+		"BAYYS": "East",
+		"BDR":   "East",
+		"DIXIE": "Southwest",
+		"WHITE": "Southwest",
+		"RBV":   "Southwest",
+		"ARD":   "Southwest",
+		"COATE": "North",
+		"NEION": "North",
+		"HAAYS": "North",
+		"GAYEL": "North",
+		"DEEZZ": "North",
+	}
 
 	i4l := Approach{
 		ShortName: "I4L",
 		FullName:  "ILS 4 Left",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "AROKE", Altitude: 2000},
 			Waypoint{Fix: "KRSTL", Altitude: 1500},
 			Waypoint{Fix: "_JFK_4L", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(i4l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i4l)
 
 	i4r := Approach{
 		ShortName: "I4R",
 		FullName:  "ILS 4 Right",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "ZETAL", Altitude: 2000},
 			Waypoint{Fix: "EBBEE", Altitude: 1500},
 			Waypoint{Fix: "_JFK_4R", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(i4r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i4r)
 
 	rz4l := Approach{
 		ShortName: "R4L",
 		FullName:  "RNAV Zulu 4 Left",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "REPRE", Altitude: 2000},
 			Waypoint{Fix: "KRSTL", Altitude: 1500},
 			Waypoint{Fix: "_JFK_4L", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(rz4l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz4l)
 
 	rz4r := Approach{
 		ShortName: "R4R",
 		FullName:  "RNAV Zulu 4 Right",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "VERRU", Altitude: 2000},
 			Waypoint{Fix: "EBBEE", Altitude: 1500},
 			Waypoint{Fix: "_JFK_4R", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(rz4r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz4r)
 
 	i13l := Approach{
 		ShortName: "I3L",
 		FullName:  "ILS 13 Left",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "COVIR", Altitude: 3000},
 			Waypoint{Fix: "KMCHI", Altitude: 2900},
 			Waypoint{Fix: "BUZON", Altitude: 2900},
@@ -2064,15 +2006,13 @@ func GetJFKConfig() *AirportConfig {
 			Waypoint{Fix: "_JFK_13L", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(i13l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i13l)
 
 	rz13l := Approach{
 		ShortName: "R3L",
 		FullName:  "RNAV Zulu 13 Left",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "ASALT", Altitude: 3000, Speed: 210},
 			Waypoint{Fix: "CNRSE", Altitude: 2000},
 			Waypoint{Fix: "LEISA", Altitude: 1246},
@@ -2081,15 +2021,13 @@ func GetJFKConfig() *AirportConfig {
 			Waypoint{Fix: "_JFK_13L", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(rz13l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz13l)
 
 	rz13r := Approach{
 		ShortName: "R3R",
 		FullName:  "RNAV Zulu 13 Right",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "ASALT", Altitude: 3000, Speed: 210},
 			Waypoint{Fix: "NUCRI", Altitude: 2000},
 			Waypoint{Fix: "PEEBO", Altitude: 921},
@@ -2097,15 +2035,13 @@ func GetJFKConfig() *AirportConfig {
 			Waypoint{Fix: "_JFK_13R", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(rz13r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz13r)
 
 	i22l := Approach{
 		ShortName: "I2L",
 		FullName:  "ILS 22 Left",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{
+		Waypoints: []WaypointArray{
 			[]Waypoint{
 				Waypoint{Fix: "CIMBL", Altitude: 14000},
 				Waypoint{Fix: "HAIRR", Altitude: 14000},
@@ -2129,15 +2065,13 @@ func GetJFKConfig() *AirportConfig {
 				Waypoint{Fix: "_JFK_22L", Altitude: 50},
 			}},
 	}
-	if err := ac.AddApproach(i22l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i22l)
 
 	i22r := Approach{
 		ShortName: "I2R",
 		FullName:  "ILS 22 Right",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{
+		Waypoints: []WaypointArray{
 			[]Waypoint{
 				Waypoint{Fix: "CIMBL", Altitude: 14000},
 				Waypoint{Fix: "HAIRR", Altitude: 14000},
@@ -2161,15 +2095,13 @@ func GetJFKConfig() *AirportConfig {
 				Waypoint{Fix: "_JFK_22R", Altitude: 50},
 			}},
 	}
-	if err := ac.AddApproach(i22r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i22r)
 
 	rz22l := Approach{
 		ShortName: "R2L",
 		FullName:  "RNAV Zulu 22 Left",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "TUSTE", Altitude: 3000},
 			Waypoint{Fix: "ZAKUS", Altitude: 1900},
 			Waypoint{Fix: "JIRVA", Altitude: 1900},
@@ -2178,29 +2110,25 @@ func GetJFKConfig() *AirportConfig {
 			Waypoint{Fix: "_JFK_22L", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(rz22l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz22l)
 
 	rz22r := Approach{
 		ShortName: "R2R",
 		FullName:  "RNAV Zulu 22 Right",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{[]Waypoint{
+		Waypoints: []WaypointArray{[]Waypoint{
 			Waypoint{Fix: "RIVRA", Altitude: 3000},
 			Waypoint{Fix: "HENEB", Altitude: 1900},
 			Waypoint{Fix: "_JFK_22R", Altitude: 50},
 		}},
 	}
-	if err := ac.AddApproach(rz22r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz22r)
 
 	i31l := Approach{
 		ShortName: "I3L",
 		FullName:  "ILS 31 Left",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{
+		Waypoints: []WaypointArray{
 			[]Waypoint{
 				Waypoint{Fix: "CHANT", Altitude: 2000},
 				Waypoint{Fix: "ZACHS", Altitude: 2000},
@@ -2215,15 +2143,13 @@ func GetJFKConfig() *AirportConfig {
 			},
 		},
 	}
-	if err := ac.AddApproach(i31l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i31l)
 
 	i31r := Approach{
 		ShortName: "I3R",
 		FullName:  "ILS 31 Right",
 		Type:      ILSApproach,
-		Waypoints: [][]Waypoint{
+		Waypoints: []WaypointArray{
 			[]Waypoint{
 				Waypoint{Fix: "CATOD", Altitude: 3000},
 				Waypoint{Fix: "MALDE", Altitude: 3000},
@@ -2232,15 +2158,13 @@ func GetJFKConfig() *AirportConfig {
 			},
 		},
 	}
-	if err := ac.AddApproach(i31r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, i31r)
 
 	rz31l := Approach{
 		ShortName: "R1L",
 		FullName:  "RNAV Zulu 31 Left",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{
+		Waypoints: []WaypointArray{
 			[]Waypoint{
 				Waypoint{Fix: "SESKE"},
 				Waypoint{Fix: "ZACHS", Altitude: 2000, Speed: 210},
@@ -2255,15 +2179,13 @@ func GetJFKConfig() *AirportConfig {
 			},
 		},
 	}
-	if err := ac.AddApproach(rz31l); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz31l)
 
 	rz31r := Approach{
 		ShortName: "R1R",
 		FullName:  "RNAV Zulu 31 Right",
 		Type:      RNAVApproach,
-		Waypoints: [][]Waypoint{
+		Waypoints: []WaypointArray{
 			[]Waypoint{
 				Waypoint{Fix: "PZULU"},
 				Waypoint{Fix: "CATOD", Altitude: 3000, Speed: 210},
@@ -2278,267 +2200,1198 @@ func GetJFKConfig() *AirportConfig {
 			},
 		},
 	}
-	if err := ac.AddApproach(rz31r); err != nil {
-		lg.Errorf("%v", err)
-	}
+	ac.Approaches = append(ac.Approaches, rz31r)
 
-	camrn4 := &ArrivalConfig{
-		name: "CAMRN4",
-		rate: 30,
-		routes: []RouteTemplate{
-			RouteTemplate{
-				Waypoints:           "N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041",
-				Route:               "/. CAMRN4",
-				InitialAltitude:     15000,
-				ClearedAltitude:     11000,
-				InitialSpeed:        300,
-				SpeedRestriction:    250,
-				DepartureAirports:   []string{"KATL", "KFLL", "KIAD"}, // TODO
-				DestinationAirports: []string{"KJFK"},
-				InitialController:   "NY_F_CTR",
-				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-				Fleet:               "default",
-			},
+	camrn4 := Arrival{
+		Name:              "CAMRN4",
+		Rate:              30,
+		Waypoints:         mustParseWaypoints("N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041"),
+		Route:             "/. CAMRN4",
+		InitialController: "NY_F_CTR",
+		InitialAltitude:   15000,
+		ClearedAltitude:   11000,
+		InitialSpeed:      300,
+		SpeedRestriction:  250,
+		Airlines: []AirlineConfig{
+			AirlineConfig{ICAO: "WJA", Airport: "KDCA", Fleet: "jfk"},
+			AirlineConfig{ICAO: "WJA", Airport: "KORF", Fleet: "jfk"},
+			AirlineConfig{ICAO: "WJA", Airport: "KJAX", Fleet: "jfk"},
+			AirlineConfig{ICAO: "JBU", Airport: "KDFW", Fleet: "default"},
+			AirlineConfig{ICAO: "JBU", Airport: "KMCO", Fleet: "default"},
+			AirlineConfig{ICAO: "JBU", Airport: "KCLT", Fleet: "default"},
+			AirlineConfig{ICAO: "BWA", Airport: "MKJP", Fleet: "default"},
+			AirlineConfig{ICAO: "AAL", Airport: "KTUL", Fleet: "default"},
+			AirlineConfig{ICAO: "AAL", Airport: "KAUS", Fleet: "default"},
+			AirlineConfig{ICAO: "AAL", Airport: "KDEN", Fleet: "default"},
+			AirlineConfig{ICAO: "AMX", Airport: "MMMY", Fleet: "long"},
+			AirlineConfig{ICAO: "AMX", Airport: "MMMX", Fleet: "long"},
 		},
 	}
-	ac.arrivalConfigs = append(ac.arrivalConfigs, camrn4)
+	ac.Arrivals = append(ac.Arrivals, camrn4)
 
-	lendy8 := &ArrivalConfig{
-		name: "LENDY8",
-		rate: 30,
-		routes: []RouteTemplate{
-			RouteTemplate{
-				Waypoints:           "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135",
-				Route:               "/. LENDY8",
-				InitialAltitude:     20000,
-				ClearedAltitude:     19000,
-				InitialSpeed:        300,
-				SpeedRestriction:    250,
-				DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
-				DestinationAirports: []string{"KJFK"},
-				InitialController:   "NY_F_CTR",
-				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-				Fleet:               "default",
-			},
+	lendy8 := Arrival{
+		Name:              "LENDY8",
+		Rate:              30,
+		Waypoints:         mustParseWaypoints("N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"),
+		Route:             "/. LENDY8",
+		InitialController: "NY_F_CTR",
+		InitialAltitude:   20000,
+		ClearedAltitude:   19000,
+		InitialSpeed:      300,
+		SpeedRestriction:  250,
+		Airlines: []AirlineConfig{
+			AirlineConfig{ICAO: "ASA", Airport: "KSFO", Fleet: "default"},
+			AirlineConfig{ICAO: "ASA", Airport: "KPDX", Fleet: "default"},
+			AirlineConfig{ICAO: "DAL", Airport: "KMSP", Fleet: "default"},
+			AirlineConfig{ICAO: "DAL", Airport: "KDTW", Fleet: "default"},
+			AirlineConfig{ICAO: "AAL", Airport: "KORD", Fleet: "default"},
+			AirlineConfig{ICAO: "UPS", Airport: "KLAS", Fleet: "default"},
+			AirlineConfig{ICAO: "DAL", Airport: "KSEA", Fleet: "default"},
+			AirlineConfig{ICAO: "AAL", Airport: "KLAX", Fleet: "default"},
+			AirlineConfig{ICAO: "UAL", Airport: "KSFO", Fleet: "default"},
+			AirlineConfig{ICAO: "AAL", Airport: "KSFO", Fleet: "default"},
+			AirlineConfig{ICAO: "CPA", Airport: "VHHH", Fleet: "cargo"},
+			AirlineConfig{ICAO: "ANA", Airport: "RJAA", Fleet: "long"},
+			AirlineConfig{ICAO: "KAL", Airport: "RKSI", Fleet: "long"},
+			AirlineConfig{ICAO: "WJA", Airport: "KIND", Fleet: "jfk"},
+			AirlineConfig{ICAO: "WJA", Airport: "KCVG", Fleet: "jfk"},
+			AirlineConfig{ICAO: "ACA", Airport: "CYYC", Fleet: "default"},
+			AirlineConfig{ICAO: "ACA", Airport: "CYUL", Fleet: "short"},
 		},
 	}
-	ac.arrivalConfigs = append(ac.arrivalConfigs, lendy8)
+	ac.Arrivals = append(ac.Arrivals, lendy8)
 
-	debug := &ArrivalConfig{
-		name: "DEBUG",
-		rate: 30,
-		routes: []RouteTemplate{
-			RouteTemplate{
-				Waypoints:           "N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360",
-				Route:               "/. DEBUG",
-				InitialAltitude:     3000,
-				ClearedAltitude:     2000,
-				InitialSpeed:        250,
-				DepartureAirports:   []string{"KMSP", "KORD", "KDTW"}, // TODO
-				DestinationAirports: []string{"KJFK"},
-				InitialController:   "NY_F_CTR",
-				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-				Fleet:               "default",
-			},
+	debug := Arrival{
+		Name:              "DEBUG",
+		Rate:              30,
+		Waypoints:         mustParseWaypoints("N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360"),
+		Route:             "/. DEBUG",
+		InitialController: "NY_F_CTR",
+		InitialAltitude:   3000,
+		ClearedAltitude:   2000,
+		InitialSpeed:      250,
+		Airlines: []AirlineConfig{
+			AirlineConfig{ICAO: "UAL", Airport: "KMSP", Fleet: "default"},
 		},
 	}
-	ac.arrivalConfigs = append(ac.arrivalConfigs, debug)
+	ac.Arrivals = append(ac.Arrivals, debug)
 
-	parch3 := &ArrivalConfig{
-		name: "PARCH3",
-		rate: 30,
-		routes: []RouteTemplate{
-			RouteTemplate{
-				Waypoints:           "N041.02.38.230,W072.23.00.102 N040.57.31.959,W072.42.21.494 @ CCC ROBER #278",
-				Route:               "/. PARCH3",
-				InitialAltitude:     13000,
-				ClearedAltitude:     12000,
-				InitialSpeed:        275,
-				SpeedRestriction:    250,
-				DepartureAirports:   []string{"KBOS"}, // TODO
-				DestinationAirports: []string{"KJFK"},
-				InitialController:   "NY_F_CTR",
-				Airlines:            []string{"UAL", "AAL", "DAL", "BAW"}, // TODO
-				Fleet:               "default",
-			},
+	parch3 := Arrival{
+		Name:              "PARCH3",
+		Rate:              30,
+		Waypoints:         mustParseWaypoints("N041.02.38.230,W072.23.00.102 N040.57.31.959,W072.42.21.494 @ CCC ROBER #278"),
+		Route:             "/. PARCH3",
+		InitialController: "NY_F_CTR",
+		InitialAltitude:   13000,
+		ClearedAltitude:   12000,
+		InitialSpeed:      275,
+		SpeedRestriction:  250,
+		Airlines: []AirlineConfig{
+			AirlineConfig{ICAO: "AAL", Airport: "CYYZ", Fleet: "short"},
+			AirlineConfig{ICAO: "AFR", Airport: "LPFG", Fleet: "long"},
+			AirlineConfig{ICAO: "BAW", Airport: "EGLL", Fleet: "long"},
+			AirlineConfig{ICAO: "CLX", Airport: "EGCC", Fleet: "default"},
+			AirlineConfig{ICAO: "DAL", Airport: "KBOS", Fleet: "short"},
+			AirlineConfig{ICAO: "DLH", Airport: "EDDF", Fleet: "long"},
+			AirlineConfig{ICAO: "GEC", Airport: "EDDF", Fleet: "default"},
+			AirlineConfig{ICAO: "DLH", Airport: "EDDM", Fleet: "long"},
+			AirlineConfig{ICAO: "GDC", Airport: "EDDM", Fleet: "default"},
+			AirlineConfig{ICAO: "EIN", Airport: "EIDW", Fleet: "long"},
+			AirlineConfig{ICAO: "ELY", Airport: "LLBG", Fleet: "jfk"},
+			AirlineConfig{ICAO: "FIN", Airport: "EFHK", Fleet: "long"},
+			AirlineConfig{ICAO: "GEC", Airport: "EDDF", Fleet: "default"},
+			AirlineConfig{ICAO: "IBE", Airport: "LEBL", Fleet: "long "},
+			AirlineConfig{ICAO: "IBE", Airport: "LEMD", Fleet: "long"},
+			AirlineConfig{ICAO: "JBU", Airport: "KBOS", Fleet: "default"},
+			AirlineConfig{ICAO: "KLM", Airport: "EHAM", Fleet: "long"},
+			AirlineConfig{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
+			AirlineConfig{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
+			AirlineConfig{ICAO: "UAE", Airport: "OMDB", Fleet: "loww"},
+			AirlineConfig{ICAO: "UAL", Airport: "CYYZ", Fleet: "short"},
+			AirlineConfig{ICAO: "UAL", Airport: "KBOS", Fleet: "short"},
+			AirlineConfig{ICAO: "UPS", Airport: "KBOS", Fleet: "default"},
+			AirlineConfig{ICAO: "VIR", Airport: "EGCC", Fleet: "long"},
 		},
 	}
-	ac.arrivalConfigs = append(ac.arrivalConfigs, parch3)
+	ac.Arrivals = append(ac.Arrivals, parch3)
 
 	// TODO? PAWLING2 (turboprop <= 250KT)
 
+	ac.Departures = []Departure{
+		// Europe
+		// Charles De Gaulle
+		Departure{
+			Exit:        "HAPIE",
+			Route:       "YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E",
+			Destination: "LPFG",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AFR", Fleet: "long"}},
+		},
+		// Heathrow
+		Departure{
+			Exit:        "MERIT",
+			Route:       "HFD PUT WITCH ALLEX N379A ALLRY NATU SOVED LUTOV KELLY L10 WAL UY53 NUGRA",
+			Destination: "EGLL",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "BAW", Fleet: "long"},
+				AirlineConfig{ICAO: "VIR", Fleet: "default"},
+			},
+		},
+		// Manchester
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK KANNI N139A PORTI 4700N/05000W 5000N/04000W 5200N/03000W 5300N/02000W MALOT GISTI PELIG BOFUM Q37 MALUD MALUD1M",
+			Destination: "EGCC",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "BAW", Fleet: "long"}},
+		},
+		// Istanbul
+		Departure{
+			Exit:        "MERIT",
+			Route:       "HFD PUT EBONY ALLRY 5100N/05000W 5300N/04000W 5500N/03000W 5600N/02000W PIKIL SOVED NIBOG BELOX L603 LAMSO PETIK NOMKA OMELO GOLOP KOZLI ROMIS PITOK BADOR RONBU BUVAK RIXEN",
+			Destination: "LTFM",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "THY", Fleet: "long"}},
+		},
+		// Edinburgh
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK TUSKY N291A IBERG NATW NEBIN NATW OLGON MOLAK BRUCE L602 CLYDE STIRA",
+			Destination: "EGPH",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "VIR", Fleet: "default"},
+				AirlineConfig{ICAO: "FDX", Fleet: "long"},
+			},
+		},
+		// Warsaw
+		Departure{
+			Exit:        "GREKI",
+			Route:       "JUDDS MARTN TOPPS N499A RIKAL 5300N/05000W 5500N/04000W 5700N/03000W 5700N/02000W GOMUP GINGA TIR REKNA PETIL BAVTA BAKLI KEKOV GOSOT NASOK N195 SORIX",
+			Destination: "EPWA",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "LOT", Fleet: "long"}},
+		},
+		// Madrid
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK VITOL N189A NICSO 4800N/05000W 4900N/04000W 4900N/03000W 4700N/02000W PASAS STG DESAT UN733 ZMR",
+			Destination: "LEMD",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"},
+				AirlineConfig{ICAO: "IBE", Fleet: "long"},
+			},
+		},
+		// Amsterdam
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK KANNI N317A ELSIR NATY DOGAL NATY BEXET BOYNE DIBAL L603 LAMSO",
+			Destination: "EHAM",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "KLM", Fleet: "long"}},
+		},
+		// Frankfurt
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK BRADD N255A JOOPY NATX MALOT NATX GISTI UNBEG SHA SLANY UL9 KONAN UL607 SPI T180 TOBOP T180 NIVNU T180 UNOKO UNOK3A",
+			Destination: "EDDF",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "DLH", Fleet: "a359"},
+				AirlineConfig{ICAO: "GEC", Fleet: "default"}},
+		},
+		// Barcelona (lebl)
+		Departure{
+			Exit:        "HAPIE",
+			Route:       "YAHOO DOVEY 4200N/06000W 4200N/05000W 4300N/04000W 4400N/03000W 4400N/02000W MUDOS STG SUSOS UN725 YAKXU UN725 LOBAR",
+			Destination: "LEBL",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "IBE", Fleet: "long"}},
+		},
+		// Rome
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK BRADD N255A JOOPY NATX MALOT NATX GISTI SLANY UL9 BIG L15 MOTOX UL15 RANUX UL15 NEBAX LASAT DEVDI ODINA SRN EKPAL Q705 XIBIL XIBIL3A",
+			Destination: "LIRF",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"}},
+		},
+		// Helsinki
+		Departure{
+			Exit:        "GREKI",
+			Route:       "JUDDS MARTN DANOL N481A SAXAN 5300N/05000W 5600N/04000W 5900N/03000W 6100N/02000W 6200N/01000W IPTON UXADA Y349 AMROT Y362 LAKUT",
+			Destination: "EFHK",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "FIN", Fleet: "long"}},
+		},
+		// Dublin
+		Departure{
+			Exit:        "MERIT",
+			Route:       "HFD PUT BOS TUSKY N321A ELSIR NATV RESNO NATV NETKI OLAPO OLAPO3X",
+			Destination: "EIDW",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EIN", Fleet: "long"}},
+		},
+
+		// Central/South America (ish)
+		// Mexico city
+		Departure{
+			Exit:        "RBV",
+			Route:       "Q430 COPES Q75 GVE LYH COLZI AWYAT IPTAY CHOPZ MGM SJI TBD M575 KENGS M345 AXEXO UM345 PAZ UT154 ENAGA ENAGA2A",
+			Destination: "MMMX",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"},
+				AirlineConfig{ICAO: "AMX", Fleet: "long"}},
+		},
+		// Sao Paulo
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y492 SQUAD DARUX L459 KEEKA L329 ZPATA UL329 KORTO ETATA UP535 MOMSO UZ24 DOLVI UL452 GELVA UZ6 ISOPI UZ6 NIMKI UZ38 VUNOX VUNOX1A",
+			Destination: "SBGR",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"}},
+		},
+
+		// Caribbean
+		// San Juan
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR",
+			Destination: "TJSJ",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"}},
+		},
+		// Bermuda
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y487 KINGG KINER L461 BOVIC MOMOM1",
+			Destination: "TXKF",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "DAL", Fleet: "default"},
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		// Kingston
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM",
+			Destination: "MKJP",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "JBU", Fleet: "default"},
+				AirlineConfig{ICAO: "BWA", Fleet: "b738"}},
+		},
+		// St. Thomas
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS",
+			Destination: "TIST",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"}},
+		},
+		// Antigua
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y487 KINGG KINER L461 BOVIC PIREX L462 ANU",
+			Destination: "TAPA",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "DAL", Fleet: "default"}},
+		},
+
+		// Misc US routes
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 ORF J121 CHS ESENT LUNNI1",
+			Destination: "KJAX",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "ATN", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q818 WOZEE NOSIK Q812 ZOHAN IDIOM MUSCL3",
+			Destination: "KMSP",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "UPS", Fleet: "default"},
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "RBV",
+			Route:       "HYPER8",
+			Destination: "KIAD",
+			Altitude:    22000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			},
+		},
+		Departure{
+			Exit:        "RBV",
+			Route:       "Q430 COPES Q75 GVE LYH CHSLY5",
+			Destination: "KCLT",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "COATE",
+			Route:       "Q436 EMMMA WYNDE2",
+			Destination: "KORD",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "J95 CFB TRAAD JACCI FERRL2",
+			Destination: "KDTW",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2",
+			Destination: "KFLL",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q818 WOZEE RUBKI ASP TVC KP87I FSD KP81C BFF KD60S HVE GGAPP CHOWW2",
+			Destination: "KLAS",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2",
+			Destination: "KMIA",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 WARNN ZJAAY TAQLE1",
+			Destination: "KRDU",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1",
+			Destination: "KMCO",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "RBV",
+			Route:       "Q430 SAAME J6 HVQ Q68 BWG BLUZZ3",
+			Destination: "KMEM",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "FDX", Fleet: "b752"},
+				AirlineConfig{ICAO: "FDX", Fleet: "b763"},
+			},
+		},
+		Departure{
+			Exit:        "NEION",
+			Route:       "J223 CORDS J132 ULW BENEE",
+			Destination: "KBUF",
+			Altitude:    18000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CCV",
+			Destination: "KORF",
+			Altitude:    26000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			},
+		},
+		Departure{
+			Exit:        "RBV",
+			Route:       "Q430 SAAME J6 HVQ Q68 YOCKY GROAT PASLY4",
+			Destination: "KBNA",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "UPS", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2",
+			Destination: "KPBI",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		}, // west palm beach
+		Departure{
+			Exit:        "BDR",
+			Route:       "CARLD V188 GON PVD",
+			Destination: "KPVD",
+			Altitude:    9000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			},
+		},
+		Departure{
+			Exit:        "COATE",
+			Route:       "V116 LVZ V613 FJC",
+			Destination: "KABE",
+			Altitude:    12000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+			},
+		},
+		Departure{
+			Exit:        "GREKI",
+			Route:       "JUDDS CAM ENE",
+			Destination: "KBGR",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q818 WOZEE SSM YQT VBI YWG LIVBI DUKPO FAREN YDR VLN J500 YYN MEDAK ROPLA YXC GLASR1",
+			Destination: "KSEA",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "UPS", Fleet: "default"},
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+				AirlineConfig{ICAO: "DAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "RBV",
+			Route:       "Q430 BYRDD J48 MOL FLASK REAVS ODF THRSR GRGIA SJI SLIDD2",
+			Destination: "KMSY",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "DEEZZ",
+			Route:       "CANDR J60 PSB HAYNZ7",
+			Destination: "KPIT",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			},
+		},
+		Departure{
+			Exit:        "DEEZZ",
+			Route:       "CANDR J60 PSB UPPRR TRYBE4",
+			Destination: "KCLE",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "ATN", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "NEION",
+			Route:       "J223 CORDS CFB V29 SYR",
+			Destination: "KSYR",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q812 ARRKK Q812 SYR TULEG YYB SPALD YTL YGX IKLIX YHY 6100N/13000W JAGIT NCA13 TMSON PTERS3",
+			Destination: "PANC",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "CAL", Fleet: "long"},
+			},
+		},
+
+		// Canadia
+		// Toronto
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q818 WOZEE LINNG3",
+			Destination: "CYYZ",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "ACA", Fleet: "default"},
+			},
+		},
+		// Montreal
+		Departure{
+			Exit:        "GREKI",
+			Route:       "JUDDS CAM PBERG CARTR4",
+			Destination: "CYUL",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "ACA", Fleet: "default"},
+			},
+		},
+		// Calgary
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q818 WOZEE ASP RIMBE WIEDS 4930N/10000W GUDOG PIKLA BIRKO5",
+			Destination: "CYYC",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "ACA", Fleet: "default"},
+			},
+		},
+
+		// Middle East
+		// Doha (qatari air)
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK WHALE N193A NICSO NATY ELSOX MAPAG LESLU L180 MERLY M140 DVR UL9 KONAN UL607 KOK MATUG BOMBI DETEV INBED LAMSI STEIN INVED RASUB RIXEN UA17 BAG UL614 EZS UT36 ULTED UT301 BOTAS UT301 DEPSU UT301 DURSI UT301 KAVAM UT301 MIDSI R659 VEDED R659 VELAM Z225 BAYAN",
+			Destination: "OTBD",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "QTR", Fleet: "jfk"}},
+		},
+		// Tel Aviv
+		Departure{
+			Exit:        "HAPIE",
+			Route:       "YAHOO DOVEY 4200N/06000W 4400N/05000W 4700N/04000W 4900N/03000W 5000N/02000W SOMAX ATSUR TAKAS ALUTA KORER UM616 TUPAR DIDRU BEBIX VALKU LERGA TOZOT UT183 OTROT UM728 DOKAR SUNEV LAT SIPRO PAPIZ PINDO LINRO UL52 VAXOS UN134 VANZA PIKOG L609 ZUKKO AMMOS1C",
+			Destination: "LLBG",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "ELY", Fleet: "jfk"}},
+		},
+		// Dubai
+		Departure{
+			Exit:        "GREKI",
+			Route:       "JUDDS BAF KB87E MIILS N563A NEEKO 5500N/05000W 6000N/04000W 6300N/03000W 6400N/02000W 6300N/01000W GUNPA RASVI KOSEB PEROM BINKA ROVEK KELEL BADOR ARGES ARTAT UP975 UNVUS UP975 EZS UG8 OTKEP UM688 RATVO UM688 SIDAD P975 SESRU M677 RABAP M677 IVIVI M677 UKNEP M677 DEGSO M677 OBNET M677 LUDAM M677 VUTEB",
+			Destination: "OMDB",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "UAE", Fleet: "a388"}},
+		},
+
+		// Far East
+		// Hong Kong
+		Departure{
+			Exit:        "GREKI",
+			Route:       "JUDDS BAF KJOHN CEFOU YBC KETLA 6700N/05000W 7200N/04000W 7800N/02000W 8000N/00000E 8000N/02000E 8000N/03000E PIREL N611 DOSON R705 OKASA R705 BRT G490 SERNA Y520 POLHO G218 TMR B458 VERUX B458 DADGA W37 OMBEB R473 BEMAG R473 WYN W18 SANIP W18 NLG W23 ZUH R473 SIERA",
+			Destination: "VHHH",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "CPA", Fleet: "default"}},
+		},
+		// Seoul
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q812 MSLIN Q812 SYR RAKAM 4800N/08000W 5400N/09000W 5700N/10000W 5900N/11000W HOGAR GUDEN DEEJA LAIRE KODNE CHUUK R341 HAVAM R341 NATES R220 NUBDA R220 NODAN R217 ASTER Y514 SDE Y512 GTC L512 TENAS Y437 KAE Y697 KARBU",
+			Destination: "RKSI",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "KAL", Fleet: "jumbo"}},
+		},
+		// Tokyo Narita
+		Departure{
+			Exit:        "GAYEL",
+			Route:       "Q818 WOZEE Q917 DUTEL Q917 SSM YRL 5400N/10000W 5800N/11000W 6000N/12000W 6100N/13000W IGSOM OMSUN NCA20 ELLAM TED NODLE R220 NOSHO R220 NIKLL R220 NIPPI R220 NOGAL R220 NANAC Y810 OLDIV Y809 SUPOK",
+			Destination: "RJAA",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "ANA", Fleet: "a380"}},
+		},
+
+		// India
+		// New Delhi
+		Departure{
+			Exit:        "BETTE",
+			Route:       "ACK KANNI N195A NICSO NATY MALOT NATY GISTI EVRIN L607 NUMPO L607 KONAN UL607 MATUG BOMBI TENLO LAMSI STEIN TEGRI BULEN L742 RIXEN UA17 YAVRU UA4 ERZ UN161 YAVUZ UN161 INDUR N161 EDATA M11 RODAR A909 BABUM A477 BUPOR B198 OGNOB G555 USETU G500 BUTRA L181 POMIR G500 FIRUZ P500 PS T400 SULOM A466 IGINO IGIN5A",
+			Destination: "VIDP",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AIC", Fleet: "b788"}},
+		},
+	}
+
+	ac.Scratchpads = map[string]string{
+		"WAVEY":  "WAV",
+		"SHIPP":  "SHI",
+		"HAPIE":  "HAP",
+		"BETTE":  "BET",
+		"MERIT":  "MER",
+		"GREKI":  "GRE",
+		"BAYYS":  "BAY",
+		"BDR":    "BDR",
+		"DIXIE":  "DIX",
+		"WHITE":  "WHI",
+		"RBV":    "RBV",
+		"ARD":    "ARD",
+		"COATE":  "COA",
+		"NEION":  "NEI",
+		"HAAYS":  "HAY",
+		"GAYEL":  "GAY",
+		"DEEZZ":  "DEZ",
+		"DEEZZ5": "DEZ",
+	}
+
+	ac.RunwayConfigs = []RunwayConfig{
+		RunwayConfig{
+			Runway:   "31L",
+			Rate:     45,
+			Altitude: 13,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"SHIPP": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"HAPIE": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"BETTE": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+
+				"MERIT": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"GREKI": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"BAYYS": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"BDR":   ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+
+				"DIXIE": ExitRoute{InitialRoute: "SKORR5.RNGRR #223", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR METSS RNGRR #223"), ClearedAltitude: 5000},
+				"WHITE": ExitRoute{InitialRoute: "SKORR5.RNGRR #223", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR METSS RNGRR #223"), ClearedAltitude: 5000},
+				"RBV":   ExitRoute{InitialRoute: "SKORR5.RNGRR #223", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR METSS RNGRR #223"), ClearedAltitude: 5000},
+				"ARD":   ExitRoute{InitialRoute: "SKORR5.RNGRR #223", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR METSS RNGRR #223"), ClearedAltitude: 5000},
+
+				"COATE": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"NEION": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"HAAYS": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"GAYEL": ExitRoute{InitialRoute: "SKORR5.YNKEE #172", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "22R",
+			Rate:     45,
+			Altitude: 13,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"SHIPP": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"HAPIE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"BETTE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+
+				"MERIT": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"GREKI": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"BAYYS": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"BDR":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+
+				"DIXIE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"WHITE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"RBV":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"ARD":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+
+				"COATE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"NEION": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"HAAYS": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"GAYEL": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "13R",
+			Rate:     45,
+			Altitude: 13,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #170"), ClearedAltitude: 5000},
+				"SHIPP": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #170"), ClearedAltitude: 5000},
+				"HAPIE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #155"), ClearedAltitude: 5000},
+				"BETTE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #155"), ClearedAltitude: 5000},
+
+				"MERIT": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"GREKI": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"BAYYS": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"BDR":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+
+				"DIXIE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #185"), ClearedAltitude: 5000},
+				"WHITE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #185"), ClearedAltitude: 5000},
+				"RBV":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #185"), ClearedAltitude: 5000},
+				"ARD":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #185"), ClearedAltitude: 5000},
+
+				"COATE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"NEION": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"HAAYS": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"GAYEL": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #110"), ClearedAltitude: 5000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #109"), ClearedAltitude: 5000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "4L",
+			Rate:     45,
+			Altitude: 13,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"SHIPP": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"HAPIE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"BETTE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+
+				"MERIT": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"GREKI": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"BAYYS": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"BDR":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+
+				"DIXIE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"WHITE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"RBV":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"ARD":   ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+
+				"COATE": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"NEION": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"HAAYS": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"GAYEL": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
+			},
+		},
+	}
+
 	return ac
 }
 
-func GetFRGConfig() *AirportConfig {
-	ac := &AirportConfig{name: "KFRG"}
-
-	runways := map[string]string{
-		"1":  "_FRG_1 _FRG_19 _FRG_1a @ #013",
-		"19": "_FRG_19 _FRG_1 _FRG_19a @ #220",
-		"14": "_FRG_14 _FRG_32 _FRG_14a @ #220",
-		"32": "_FRG_32 _FRG_14 _FRG_32a @ #010",
+func LGAAirport() *AirportConfig {
+	lga := &AirportConfig{ICAO: "KLGA"}
+	lga.NamedLocations = map[string]Point2LL{
+		"_LGA_13":  mustParseLatLong("N040.46.56.029, W073.52.42.359"),
+		"_LGA_13a": mustParseLatLong("N040.48.06.479, W073.55.40.914"),
+		"_LGA_31":  mustParseLatLong("N040.46.19.788, W073.51.25.949"),
+		"_LGA_31a": mustParseLatLong("N040.45.34.950, W073.49.52.922"),
+		"_LGA_31b": mustParseLatLong("N040.48.50.809, W073.46.42.200"),
+		"_LGA_22":  mustParseLatLong("N040.47.06.864, W073.52.14.811"),
+		"_LGA_22a": mustParseLatLong("N040.51.18.890, W073.49.30.483"),
+		"_LGA_4":   mustParseLatLong("N040.46.09.447, W073.53.02.574"),
+		"_LGA_4a":  mustParseLatLong("N040.44.56.662, W073.51.53.497"),
+		"_LGA_4b":  mustParseLatLong("N040.47.59.557, W073.47.11.533"),
 	}
 
-	for rwy, way := range runways {
-		config := &DepartureConfig{
-			name:            rwy,
-			rate:            30,
-			challenge:       0.5,
-			categoryEnabled: make(map[string]*bool),
-		}
-		config.categoryEnabled["Water"] = new(bool)
-		config.categoryEnabled["East"] = new(bool)
-		config.categoryEnabled["Southwest"] = new(bool)
-		config.categoryEnabled["North"] = new(bool)
+	lga.Departures = []Departure{
+		// Caribbean
+		// San Juan
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR",
+			Destination: "TJSJ",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"}},
+		},
+		// Bermuda
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y487 KINGG KINER L461 BOVIC MOMOM1",
+			Destination: "TXKF",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "DAL", Fleet: "default"},
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		// Kingston
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM",
+			Destination: "MKJP",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "JBU", Fleet: "default"},
+				AirlineConfig{ICAO: "BWA", Fleet: "b738"}},
+		},
+		// St. Thomas
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS",
+			Destination: "TIST",
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"}},
+		},
+		// Antigua
+		Departure{
+			Exit:        "SHIPP",
+			Route:       "Y487 KINGG KINER L461 BOVIC PIREX L462 ANU",
+			Destination: "TAPA",
+			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "default"},
+				AirlineConfig{ICAO: "DAL", Fleet: "default"}},
+		},
 
-		config.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-			rp := RouteTemplate{
-				InitialAltitude:   70,
-				DepartureAirports: []string{"KFRG"},
-				ClearedAltitude:   5000,
-				InitialController: "JFK_APP",
-				Fleet:             "default",
-				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-			}
-
-			var routeTemplates []RouteTemplate
-
-			if *config.categoryEnabled["Water"] {
-				routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, way, "REP1")...)
-			}
-			if *config.categoryEnabled["East"] {
-				routeTemplates = append(routeTemplates, jfkEast.GetRouteTemplates(rp, way, "REP1")...)
-			}
-			if *config.categoryEnabled["Southwest"] {
-				routeTemplates = append(routeTemplates, jfkSouthwest.GetRouteTemplates(rp, way, "REP1")...)
-			}
-			if *config.categoryEnabled["North"] {
-				routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, way, "REP1")...)
-				routeTemplates = append(routeTemplates, jfkDEEZZ.GetRouteTemplates(rp, way, "REP1")...)
-			}
-
-			return &AircraftSpawner{
-				rate:           int(config.rate),
-				challenge:      config.challenge,
-				routeTemplates: routeTemplates,
-			}
-		}
-
-		ac.departureConfigs = append(ac.departureConfigs, config)
+		// Misc US routes
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 ORF J121 CHS ESENT LUNNI1",
+			Destination: "KJAX",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "ATN", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2",
+			Destination: "KFLL",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2",
+			Destination: "KMIA",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "AAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 WARNN ZJAAY TAQLE1",
+			Destination: "KRDU",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1",
+			Destination: "KMCO",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CCV",
+			Destination: "KORF",
+			Altitude:    26000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2",
+			Destination: "KPBI",
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "JBU", Fleet: "default"},
+			},
+		},
 	}
 
-	return ac
+	lga.RunwayConfigs = []RunwayConfig{
+		RunwayConfig{
+			Runway:   "31",
+			Rate:     30,
+			Altitude: 20,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 8000},
+				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 8000},
+				"HAPIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 8000},
+				"BETTE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 8000},
+
+				"DIXIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 6000},
+				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 6000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "22",
+			Rate:     30,
+			Altitude: 20,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 8000},
+				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 8000},
+				"HAPIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 8000},
+				"BETTE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 8000},
+
+				"DIXIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 6000},
+				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 6000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "13",
+			Rate:     30,
+			Altitude: 20,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 8000},
+				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 8000},
+				"HAPIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 8000},
+				"BETTE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 8000},
+
+				"DIXIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 6000},
+				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 6000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "4",
+			Rate:     30,
+			Altitude: 20,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 8000},
+				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 8000},
+				"HAPIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 8000},
+				"BETTE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 8000},
+
+				"DIXIE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 6000},
+				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 6000},
+			},
+		},
+	}
+
+	/* TODO
+	if *config.categoryEnabled["Southwest Props"] {
+		// WHITE Props
+		rp := proto
+		rp.ClearedAltitude = 7000
+		rp.Fleet = "short"
+		rp.Airlines = []string{"QXE", "BWA", "FDX"}
+		routeTemplates = append(routeTemplates, jfkWHITE.GetRouteTemplates(rp, way, "LGA7")...)
+	}
+	*/
+
+	return lga
 }
 
-func GetISPConfig() *AirportConfig {
-	ac := &AirportConfig{name: "KISP"}
-
-	runways := map[string]string{
-		"6":   "_ISP_6 _ISP_6a _ISP_6b @ #270",
-		"24":  "_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275",
-		"15R": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275",
-		"33L": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc @ #275",
+func ISPAirport() *AirportConfig {
+	isp := &AirportConfig{ICAO: "KISP"}
+	isp.NamedLocations = map[string]Point2LL{
+		"_ISP_6":    mustParseLatLong("N040.47.18.743, W073.06.44.022"),
+		"_ISP_6a":   mustParseLatLong("N040.50.43.281, W073.02.11.698"),
+		"_ISP_6b":   mustParseLatLong("N040.50.28.573, W073.09.10.827"),
+		"_ISP_24":   mustParseLatLong("N040.48.06.643, W073.05.39.202"),
+		"_ISP_24a":  mustParseLatLong("N040.45.56.414, W073.08.58.879"),
+		"_ISP_24b":  mustParseLatLong("N040.47.41.032, W073.06.08.371"),
+		"_ISP_24c":  mustParseLatLong("N040.48.48.350, W073.07.30.466"),
+		"_ISP_15R":  mustParseLatLong("N040.48.05.462, W073.06.24.356"),
+		"_ISP_15Ra": mustParseLatLong("N040.45.33.934, W073.02.36.555"),
+		"_ISP_15Rb": mustParseLatLong("N040.49.18.755, W073.03.43.379"),
+		"_ISP_15Rc": mustParseLatLong("N040.48.34.288, W073.09.11.211"),
+		"_ISP_33L":  mustParseLatLong("N040.47.32.819, W073.05.41.702"),
+		"_ISP_33La": mustParseLatLong("N040.49.52.085, W073.08.43.141"),
+		"_ISP_33Lb": mustParseLatLong("N040.49.21.515, W073.06.31.250"),
+		"_ISP_33Lc": mustParseLatLong("N040.48.20.019, W073.10.31.686"),
+	}
+	isp.Departures = []Departure{
+		Departure{
+			Exit:        "NEION",
+			Route:       "J223 CORDS J132 ULW BENEE",
+			Destination: "KBUF",
+			Altitude:    16000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+			},
+		},
+		Departure{
+			Exit:        "MERIT",
+			Route:       "MERIT ORW ORW7",
+			Destination: "KBOS",
+			Altitude:    21000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+			},
+		},
+		Departure{
+			Exit:        "NEION",
+			Route:       "NEION J223 CORDS CFB V29 SYR",
+			Destination: "KSYR",
+			Altitude:    21000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+			},
+		},
+		Departure{
+			Exit:        "GREKI",
+			Route:       "GREKI JUDDS CAM",
+			Destination: "KBTV",
+			Altitude:    21000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+			},
+		},
 	}
 
-	for rwy, way := range runways {
-		config := &DepartureConfig{
-			name:            rwy,
-			rate:            20,
-			challenge:       0.5,
-			categoryEnabled: make(map[string]*bool),
-		}
-		config.categoryEnabled["North"] = new(bool)
-
-		config.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-			rp := RouteTemplate{
-				InitialAltitude:   70,
-				DepartureAirports: []string{"KISP"},
-				ClearedAltitude:   8000,
-				InitialController: "ISP",
-				Fleet:             "default",
-				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-			}
-
-			var routeTemplates []RouteTemplate
-
-			if *config.categoryEnabled["North"] {
-				routeTemplates = append(routeTemplates, jfkNorth.GetRouteTemplates(rp, way, "LONGI7")...)
-			}
-
-			return &AircraftSpawner{
-				rate:           int(config.rate),
-				challenge:      config.challenge,
-				routeTemplates: routeTemplates,
-			}
-		}
-
-		ac.departureConfigs = append(ac.departureConfigs, config)
+	isp.RunwayConfigs = []RunwayConfig{
+		RunwayConfig{
+			Runway: "6",
+			Rate:   30,
+			ExitRoutes: map[string]ExitRoute{
+				"MERIT": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_6 _ISP_6a _ISP_6b @ #270"), ClearedAltitude: 8000},
+				"GREKI": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_6 _ISP_6a _ISP_6b @ #270"), ClearedAltitude: 8000},
+				"BAYYS": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_6 _ISP_6a _ISP_6b @ #270"), ClearedAltitude: 8000},
+				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_6 _ISP_6a _ISP_6b @ #270"), ClearedAltitude: 8000},
+			},
+		},
+		RunwayConfig{
+			Runway: "24",
+			Rate:   30,
+			ExitRoutes: map[string]ExitRoute{
+				"MERIT": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275"), ClearedAltitude: 8000},
+				"GREKI": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275"), ClearedAltitude: 8000},
+				"BAYYS": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275"), ClearedAltitude: 8000},
+				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275"), ClearedAltitude: 8000},
+			},
+		},
+		RunwayConfig{
+			Runway: "15R",
+			Rate:   30,
+			ExitRoutes: map[string]ExitRoute{
+				"MERIT": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275"), ClearedAltitude: 8000},
+				"GREKI": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275"), ClearedAltitude: 8000},
+				"BAYYS": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275"), ClearedAltitude: 8000},
+				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275"), ClearedAltitude: 8000},
+			},
+		},
+		RunwayConfig{
+			Runway: "33L",
+			Rate:   30,
+			ExitRoutes: map[string]ExitRoute{
+				"MERIT": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc @ #275"), ClearedAltitude: 8000},
+				"GREKI": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc @ #275"), ClearedAltitude: 8000},
+				"BAYYS": ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc @ #275"), ClearedAltitude: 8000},
+				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc @ #275"), ClearedAltitude: 8000},
+			},
+		},
 	}
 
-	return ac
+	return isp
 }
 
-func GetLGAConfig() *AirportConfig {
-	ac := &AirportConfig{name: "KLGA"}
-
-	runways := map[string]string{
-		"4":  "_LGA_4 _LGA_22 _LGA_22a @ JFK",
-		"22": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK",
-		"13": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK",
-		"31": "_LGA_31 _LGA_13 _LGA_13a @ JFK",
+func FRGAirport() *AirportConfig {
+	frg := &AirportConfig{ICAO: "KFRG"}
+	frg.NamedLocations = map[string]Point2LL{
+		"_FRG_1":   mustParseLatLong("N040.43.20.230, W073.24.51.229"),
+		"_FRG_1a":  mustParseLatLong("N040.46.52.637, W073.24.58.809"),
+		"_FRG_19":  mustParseLatLong("N040.44.10.396, W073.24.50.982"),
+		"_FRG_19a": mustParseLatLong("N040.41.03.313, W073.26.45.267"),
+		"_FRG_14":  mustParseLatLong("N040.44.02.898, W073.25.17.486"),
+		"_FRG_14a": mustParseLatLong("N040.38.37.868, W073.22.41.398"),
+		"_FRG_32":  mustParseLatLong("N040.43.20.436, W073.24.13.848"),
+		"_FRG_32a": mustParseLatLong("N040.45.28.921, W073.27.08.421"),
 	}
 
-	for rwy, way := range runways {
-		config := &DepartureConfig{
-			name:            rwy,
-			rate:            30,
-			challenge:       0.5,
-			categoryEnabled: make(map[string]*bool),
-		}
-		config.categoryEnabled["Water"] = new(bool)
-		config.categoryEnabled["Southwest"] = new(bool)
-		config.categoryEnabled["Southwest Props"] = new(bool)
-
-		config.makeSpawner = func(config *DepartureConfig) *AircraftSpawner {
-			proto := RouteTemplate{
-				InitialAltitude:   70,
-				DepartureAirports: []string{"KLGA"},
-				InitialController: "LGA_DEP",
-				Fleet:             "default",
-				Airlines:          []string{"AAL", "ASA", "DAL", "EDV", "FDX", "FFT", "JBU", "NKS", "QXE", "UAL", "UPS"},
-			}
-
-			var routeTemplates []RouteTemplate
-
-			if *config.categoryEnabled["Water"] {
-				rp := proto
-				rp.ClearedAltitude = 8000
-				routeTemplates = append(routeTemplates, jfkWater.GetRouteTemplates(rp, way, "LGA7")...)
-			}
-			if *config.categoryEnabled["Southwest"] {
-				rp := proto
-				rp.ClearedAltitude = 6000
-				routeTemplates = append(routeTemplates, jfkDIXIE.GetRouteTemplates(rp, way, "LGA7")...)
-			}
-			if *config.categoryEnabled["Southwest Props"] {
-				// WHITE Props
-				rp := proto
-				rp.ClearedAltitude = 7000
-				rp.Fleet = "short"
-				rp.Airlines = []string{"QXE", "BWA", "FDX"}
-				routeTemplates = append(routeTemplates, jfkWHITE.GetRouteTemplates(rp, way, "LGA7")...)
-			}
-
-			return &AircraftSpawner{
-				rate:           int(config.rate),
-				challenge:      config.challenge,
-				routeTemplates: routeTemplates,
-			}
-		}
-
-		ac.departureConfigs = append(ac.departureConfigs, config)
+	frg.Departures = []Departure{
+		Departure{
+			Exit:        "DIXIE",
+			Route:       "JFK V16 DIXIE V276 RBV V249 SBJ",
+			Destination: "KTEB",
+			Altitude:    12000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "WAVEY",
+			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2",
+			Destination: "KMIA",
+			Altitude:    39000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "MERIT",
+			Route:       "ROBUC3",
+			Destination: "KBOS",
+			Altitude:    21000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "BDR",
+			Route:       "V487 CANAN",
+			Destination: "KALB",
+			Altitude:    39000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "DEEZZ",
+			Route:       "CANDR J60 PSB HAYNZ7",
+			Destination: "KPIT",
+			Altitude:    39000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "DIXIE",
+			Route:       "JFK DIXIE V16 VCN VCN9",
+			Destination: "KILG",
+			Altitude:    39000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "COATE",
+			Route:       "Q436 HERBA JHW WWSHR CBUSS2",
+			Destination: "KCMH",
+			Altitude:    39000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
+		Departure{
+			Exit:        "BDR",
+			Route:       "BDR",
+			Destination: "KHVN",
+			Altitude:    14000,
+			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA", Fleet: "default"}},
+		},
 	}
 
-	return ac
+	frg.RunwayConfigs = []RunwayConfig{
+		RunwayConfig{
+			Runway:   "1",
+			Rate:     30,
+			Altitude: 81,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"HAPIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"BETTE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+
+				"MERIT": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"GREKI": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"BAYYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"BDR":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+
+				"DIXIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"WHITE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"RBV":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"ARD":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+
+				"COATE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"NEION": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"HAAYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"GAYEL": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "19",
+			Rate:     30,
+			Altitude: 81,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"HAPIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"BETTE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+
+				"MERIT": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"GREKI": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"BAYYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"BDR":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+
+				"DIXIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"WHITE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"RBV":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"ARD":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+
+				"COATE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"NEION": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"HAAYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"GAYEL": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "14",
+			Rate:     30,
+			Altitude: 81,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"HAPIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"BETTE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+
+				"MERIT": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"GREKI": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"BAYYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"BDR":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+
+				"DIXIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"WHITE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"RBV":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"ARD":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+
+				"COATE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"NEION": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"HAAYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"GAYEL": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
+			},
+		},
+		RunwayConfig{
+			Runway:   "32",
+			Rate:     30,
+			Altitude: 81,
+			ExitRoutes: map[string]ExitRoute{
+				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"HAPIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"BETTE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+
+				"MERIT": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"GREKI": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"BAYYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"BDR":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+
+				"DIXIE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"WHITE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"RBV":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"ARD":   ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+
+				"COATE": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"NEION": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"HAAYS": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"GAYEL": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
+			},
+		},
+	}
+
+	return frg
 }
