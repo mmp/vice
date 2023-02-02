@@ -5,11 +5,9 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -69,30 +67,63 @@ type AirportConfig struct {
 	RunwayConfigs []RunwayConfig `json:"runway_configs"`
 }
 
-func (ac *AirportConfig) PostDeserialize() error {
+func (ac *AirportConfig) PostDeserialize() []error {
+	var errors []error
+
 	for _, ap := range ac.Approaches {
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
 
 			if err := ac.InitializeWaypointLocations(ap.Waypoints[i]); err != nil {
-				return err
+				errors = append(errors, err)
+			}
+		}
+	}
+
+	checkAirlines := func(airlines []AirlineConfig) {
+		for i := range airlines {
+			al, ok := database.Airlines[airlines[i].ICAO]
+			if !ok {
+				errors = append(errors, fmt.Errorf("%s: airline not in database", airlines[i].ICAO))
+			}
+
+			if airlines[i].Fleet == "" {
+				airlines[i].Fleet = "default"
+			}
+
+			fleet, ok := al.Fleets[airlines[i].Fleet]
+			if !ok {
+				errors = append(errors,
+					fmt.Errorf("%s: fleet unknown for airline \"%s\"", airlines[i].Fleet, airlines[i].ICAO))
+			}
+
+			for _, aircraft := range fleet {
+				_, ok := database.AircraftPerformance[aircraft.ICAO]
+				if !ok {
+					errors = append(errors,
+						fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
+							aircraft.ICAO, airlines[i].ICAO, airlines[i].Fleet))
+				}
 			}
 		}
 	}
 
 	for _, ar := range ac.Arrivals {
 		if err := ac.InitializeWaypointLocations(ar.Waypoints); err != nil {
-			return err
+			errors = append(errors, err)
 		}
+		checkAirlines(ar.Airlines)
 	}
 
 	for i, dep := range ac.Departures {
 		wp := []Waypoint{Waypoint{Fix: dep.Exit}}
 		if err := ac.InitializeWaypointLocations(wp); err != nil {
-			return err
+			errors = append(errors, err)
 		}
 		ac.Departures[i].exitWaypoint = wp[0]
+
+		checkAirlines(dep.Airlines)
 	}
 
 	for i, rwy := range ac.RunwayConfigs {
@@ -100,7 +131,7 @@ func (ac *AirportConfig) PostDeserialize() error {
 
 		for _, er := range rwy.ExitRoutes {
 			if err := ac.InitializeWaypointLocations(er.Waypoints); err != nil {
-				return err
+				errors = append(errors, err)
 			}
 		}
 
@@ -110,7 +141,7 @@ func (ac *AirportConfig) PostDeserialize() error {
 		}
 	}
 
-	return nil
+	return errors
 }
 
 func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) error {
@@ -342,17 +373,23 @@ type SimServerConnectionConfiguration struct {
 func (ssc *SimServerConnectionConfiguration) Initialize() {
 	if len(scenarios) == 0 {
 		scenarios = append(scenarios, JFKApproachScenario())
-		e := json.NewEncoder(os.Stdout)
-		err := e.Encode(scenarios)
-		if err != nil {
-			panic(err)
-		}
+		/*
+			e := json.NewEncoder(os.Stdout)
+			err := e.Encode(scenarios)
+			if err != nil {
+				panic(err)
+			}
+		*/
 	}
 	for _, sc := range scenarios {
 		sort.Slice(sc.Controllers, func(i, j int) bool { return sc.Controllers[i].Callsign < sc.Controllers[j].Callsign })
 
 		for _, ap := range sc.Airports {
-			ap.PostDeserialize()
+			if errors := ap.PostDeserialize(); len(errors) > 0 {
+				for _, err := range errors {
+					lg.Errorf("%s: error in specification: %v", ap.ICAO, err)
+				}
+			}
 		}
 	}
 
@@ -2326,12 +2363,12 @@ func JFKAirport() *AirportConfig {
 			AirlineConfig{ICAO: "DLH", Airport: "EDDF", Fleet: "long"},
 			AirlineConfig{ICAO: "GEC", Airport: "EDDF", Fleet: "default"},
 			AirlineConfig{ICAO: "DLH", Airport: "EDDM", Fleet: "long"},
-			AirlineConfig{ICAO: "GDC", Airport: "EDDM", Fleet: "default"},
+			AirlineConfig{ICAO: "GEC", Airport: "EDDM", Fleet: "default"},
 			AirlineConfig{ICAO: "EIN", Airport: "EIDW", Fleet: "long"},
 			AirlineConfig{ICAO: "ELY", Airport: "LLBG", Fleet: "jfk"},
 			AirlineConfig{ICAO: "FIN", Airport: "EFHK", Fleet: "long"},
 			AirlineConfig{ICAO: "GEC", Airport: "EDDF", Fleet: "default"},
-			AirlineConfig{ICAO: "IBE", Airport: "LEBL", Fleet: "long "},
+			AirlineConfig{ICAO: "IBE", Airport: "LEBL", Fleet: "long"},
 			AirlineConfig{ICAO: "IBE", Airport: "LEMD", Fleet: "long"},
 			AirlineConfig{ICAO: "JBU", Airport: "KBOS", Fleet: "default"},
 			AirlineConfig{ICAO: "KLM", Airport: "EHAM", Fleet: "long"},
@@ -2613,7 +2650,7 @@ func JFKAirport() *AirportConfig {
 			Altitude:    18000,
 			Airlines: []AirlineConfig{
 				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -2698,7 +2735,7 @@ func JFKAirport() *AirportConfig {
 			Route:       "CANDR J60 PSB UPPRR TRYBE4",
 			Destination: "KCLE",
 			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU"},
 				AirlineConfig{ICAO: "ATN", Fleet: "default"},
 			},
 		},
@@ -3160,7 +3197,7 @@ func ISPAirport() *AirportConfig {
 			Altitude:    16000,
 			Airlines: []AirlineConfig{
 				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -3170,7 +3207,7 @@ func ISPAirport() *AirportConfig {
 			Altitude:    21000,
 			Airlines: []AirlineConfig{
 				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -3180,7 +3217,7 @@ func ISPAirport() *AirportConfig {
 			Altitude:    21000,
 			Airlines: []AirlineConfig{
 				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -3190,7 +3227,7 @@ func ISPAirport() *AirportConfig {
 			Altitude:    21000,
 			Airlines: []AirlineConfig{
 				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU", Fleet: "jfk"},
+				AirlineConfig{ICAO: "JBU"},
 			},
 		},
 	}
