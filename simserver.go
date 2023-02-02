@@ -1033,6 +1033,7 @@ type SimServer struct {
 
 	aircraft map[string]*SSAircraft
 	handoffs map[string]time.Time
+	metar    map[string]*METAR
 
 	currentTime       time.Time // this is our fake time--accounting for pauses & simRate..
 	lastUpdateTime    time.Time // this is w.r.t. true wallclock time
@@ -1060,8 +1061,10 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		airportConfigs: ssc.scenario.Airports,
 		controllers:    make(map[string]*Controller),
 
-		aircraft:          make(map[string]*SSAircraft),
-		handoffs:          make(map[string]time.Time),
+		aircraft: make(map[string]*SSAircraft),
+		handoffs: make(map[string]time.Time),
+		metar:    make(map[string]*METAR),
+
 		currentTime:       time.Now(),
 		lastUpdateTime:    time.Now(),
 		remainingLaunches: int(ssc.numAircraft),
@@ -1077,6 +1080,34 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	ss.wind.dir = int(ssc.wind.dir)
 	ss.wind.speed = int(ssc.wind.speed)
 	ss.wind.gust = int(ssc.wind.gust)
+
+	// Make some fake METARs; slightly different for all airports.
+	alt := 2980 + rand.Intn(40)
+	for _, ap := range ss.airportConfigs {
+		spd := ss.wind.speed - 3 + rand.Intn(6)
+		var wind string
+		if spd < 0 {
+			wind = "00000KT"
+		} else if spd < 4 {
+			wind = fmt.Sprintf("VRB%02dKT", spd)
+		} else {
+			dir := 10 * ((ss.wind.dir + 5) / 10)
+			dir += [3]int{-10, 0, 10}[rand.Intn(3)]
+			wind = fmt.Sprintf("%03d%02d", dir, spd)
+			gst := ss.wind.gust - 3 + rand.Intn(6)
+			if gst > ss.wind.speed {
+				wind += fmt.Sprintf("G%02d", gst)
+			}
+			wind += "KT"
+		}
+
+		// Just provide the stuff that the STARS display shows
+		ss.metar[ap.ICAO] = &METAR{
+			AirportICAO: ap.ICAO,
+			Wind:        wind,
+			Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
+		}
+	}
 
 	// Prime the pump before the user gets involved
 	ss.SpawnAircraft()
@@ -1250,8 +1281,7 @@ func (ss *SimServer) AddAirportForWeather(airport string) {
 }
 
 func (ss *SimServer) GetMETAR(location string) *METAR {
-	// UNIMPLEMENTED
-	return nil
+	return ss.metar[location]
 }
 
 func (ss *SimServer) GetAirportATIS(airport string) []ATIS {
