@@ -3103,6 +3103,28 @@ func LGAAirport() *AirportConfig {
 				AirlineConfig{ICAO: "JBU"},
 			},
 		},
+		Departure{
+			Exit:        "WHITE",
+			Route:       "J209 SBY V1 CCV",
+			Destination: "KORF",
+			Altitude:    7000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "QXE", Fleet: "short"},
+				AirlineConfig{ICAO: "FDX", Fleet: "short"},
+				AirlineConfig{ICAO: "WEN"},
+			},
+		},
+		Departure{
+			Exit:        "WHITE",
+			Route:       "J209 SBY ISO RAPZZ AMYLU3",
+			Destination: "KCHS",
+			Altitude:    7000,
+			Airlines: []AirlineConfig{
+				AirlineConfig{ICAO: "QXE", Fleet: "short"},
+				AirlineConfig{ICAO: "FDX", Fleet: "short"},
+				AirlineConfig{ICAO: "WEN"},
+			},
+		},
 	}
 
 	lga.RunwayConfigs = []RunwayConfig{
