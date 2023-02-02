@@ -1746,15 +1746,25 @@ func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
 
 	// random callsign
 	callsign := strings.ToUpper(airline.ICAO)
-	for _, ch := range al.Callsign.CallsignFormats[rand.Intn(len(al.Callsign.CallsignFormats))] {
-		switch ch {
-		case '#':
-			callsign += fmt.Sprintf("%d", rand.Intn(10))
-		case '@':
-			callsign += string(rune('A' + rand.Intn(26)))
+	format := "####"
+	if len(al.Callsign.CallsignFormats) > 0 {
+		format = Sample(al.Callsign.CallsignFormats)
+	}
+	for {
+		id := ""
+		for _, ch := range format {
+			switch ch {
+			case '#':
+				id += fmt.Sprintf("%d", rand.Intn(10))
+			case '@':
+				id += string(rune('A' + rand.Intn(26)))
+			}
+		}
+		if id != "0" {
+			callsign += id
+			break
 		}
 	}
-	// TODO: retry if we're trying to use 0 as the flight number...
 
 	squawk := Squawk(rand.Intn(0o7000))
 
