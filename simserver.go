@@ -2991,6 +2991,17 @@ func LGAAirport() *AirportConfig {
 		"_LGA_4b":  mustParseLatLong("N040.47.59.557, W073.47.11.533"),
 	}
 
+	lga.ExitCategories = map[string]string{
+		"WAVEY": "Water",
+		"SHIPP": "Water",
+		"HAPIE": "Water",
+		"BETTE": "Water",
+		"DIXIE": "Southwest",
+		"WHITE": "Southwest",
+		"RBV":   "Southwest",
+		"ARD":   "Southwest",
+	}
+
 	lga.Departures = []Departure{
 		// Caribbean
 		// San Juan
@@ -3186,6 +3197,15 @@ func ISPAirport() *AirportConfig {
 		"_ISP_33Lb": mustParseLatLong("N040.49.21.515, W073.06.31.250"),
 		"_ISP_33Lc": mustParseLatLong("N040.48.20.019, W073.10.31.686"),
 	}
+
+	isp.ExitCategories = map[string]string{
+		"COATE": "North",
+		"NEION": "North",
+		"HAAYS": "North",
+		"GAYEL": "North",
+		"DEEZZ": "North",
+	}
+
 	isp.Departures = []Departure{
 		Departure{
 			Exit:        "NEION",
@@ -3286,6 +3306,26 @@ func FRGAirport() *AirportConfig {
 		"_FRG_14a": mustParseLatLong("N040.38.37.868, W073.22.41.398"),
 		"_FRG_32":  mustParseLatLong("N040.43.20.436, W073.24.13.848"),
 		"_FRG_32a": mustParseLatLong("N040.45.28.921, W073.27.08.421"),
+	}
+
+	frg.ExitCategories = map[string]string{
+		"WAVEY": "Water",
+		"SHIPP": "Water",
+		"HAPIE": "Water",
+		"BETTE": "Water",
+		"MERIT": "East",
+		"GREKI": "East",
+		"BAYYS": "East",
+		"BDR":   "East",
+		"DIXIE": "Southwest",
+		"WHITE": "Southwest",
+		"RBV":   "Southwest",
+		"ARD":   "Southwest",
+		"COATE": "North",
+		"NEION": "North",
+		"HAAYS": "North",
+		"GAYEL": "North",
+		"DEEZZ": "North",
 	}
 
 	frg.Departures = []Departure{
