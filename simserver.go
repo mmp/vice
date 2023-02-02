@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -326,7 +327,8 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 var scenarios []*Scenario
 
 type SimServerConnectionConfiguration struct {
-	numAircraft int32
+	numAircraft      int32
+	controllerActive map[string]*bool
 
 	wind struct {
 		dir   int32
@@ -347,6 +349,8 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 		}
 	}
 	for _, sc := range scenarios {
+		sort.Slice(sc.Controllers, func(i, j int) bool { return sc.Controllers[i].Callsign < sc.Controllers[j].Callsign })
+
 		for _, ap := range sc.Airports {
 			ap.PostDeserialize()
 		}
@@ -358,6 +362,12 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.wind.gust = 15
 
 	ssc.scenario = scenarios[0]
+
+	ssc.controllerActive = make(map[string]*bool)
+	for _, ctrl := range ssc.scenario.Controllers {
+		ssc.controllerActive[ctrl.Callsign] = new(bool)
+		*ssc.controllerActive[ctrl.Callsign] = true
+	}
 }
 
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
@@ -368,6 +378,12 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	imgui.SliderIntV("Wind speed", &ssc.wind.speed, 0, 50, "%d", 0)
 	imgui.SliderIntV("Wind gust", &ssc.wind.gust, 0, 50, "%d", 0)
 	ssc.wind.gust = max(ssc.wind.gust, ssc.wind.speed)
+
+	if imgui.CollapsingHeader("Controllers") {
+		for _, ctrl := range ssc.scenario.Controllers {
+			imgui.Checkbox(ctrl.Callsign, ssc.controllerActive[ctrl.Callsign])
+		}
+	}
 
 	for i, apConfig := range ssc.scenario.Airports {
 		var headerFlags imgui.TreeNodeFlags
@@ -1015,7 +1031,9 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	}
 
 	for _, ctrl := range ssc.scenario.Controllers {
-		ss.controllers[ctrl.Callsign] = ctrl
+		if *ssc.controllerActive[ctrl.Callsign] {
+			ss.controllers[ctrl.Callsign] = ctrl
+		}
 	}
 
 	ss.wind.dir = int(ssc.wind.dir)
@@ -1877,22 +1895,23 @@ func JFKApproachScenario() *Scenario {
 
 	s.Callsign = "JFK_APP"
 
-	addController := func(cs string, loc string, freq float32) {
+	addController := func(cs string, freq float32) {
 		s.Controllers = append(s.Controllers, &Controller{
 			Callsign:  cs,
 			Frequency: NewFrequency(freq),
 		})
 	}
 
-	addController("BOS_E_CTR", "KBOS", 133.45)  // B17
-	addController("ISP_APP", "KISP", 120.05)    //  3H
-	addController("JFK_APP", "KJFK", 128.125)   //  2G
-	addController("JFK_DEP", "KJFK", 135.9)     //  2A
-	addController("JFK_TWR", "KJFK", 119.1)     //  2W
-	addController("LGA_DEP", "KLGA", 120.4)     //  1L
-	addController("NY_F_CTR", "KEWR", 128.3)    // N66
-	addController("NY_LE_DEP", "MERIT", 126.8)  //  5E
-	addController("NY_LS_DEP", "DIXIE", 124.75) //  5S
+	addController("BOS_E_CTR", 133.45) // B17
+	addController("ISP_APP", 120.05)   //  3H
+	addController("JFK_APP", 128.125)  //  2G
+	addController("JFK_DEP", 135.9)    //  2A
+	addController("JFK_TWR", 119.1)    //  2W
+	addController("LGA_DEP", 120.4)    //  1L
+	addController("NY_F_CTR", 128.3)   // N66
+	addController("NY_CTR", 125.325)   // N56
+	addController("NY_LE_DEP", 126.8)  //  5E
+	addController("NY_LS_DEP", 124.75) //  5S
 
 	jfk := JFKAirport()
 	s.Airports = append(s.Airports, jfk)
