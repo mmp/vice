@@ -880,6 +880,7 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 		len(ac.Waypoints) == 0 &&
 		headingDifference(float32(ap.Heading()), ac.Heading) < 2 &&
 		ac.Approach.Type == ILSApproach {
+		// Have we intercepted the localizer?
 		loc := ap.Line()
 		dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
 
@@ -1468,7 +1469,7 @@ func (ss *SimServer) ClearedApproach(callsign string, approach string) error {
 	response := ""
 	if ac.Approach == nil {
 		// allow it anyway...
-		response = "you never told us to expect an approach, but "
+		response = "you never told us to expect an approach, but ok, cleared " + ap.FullName
 		ac.Approach = ap
 	}
 	if ac.Approach.ShortName != approach {
@@ -1480,37 +1481,46 @@ func (ss *SimServer) ClearedApproach(callsign string, approach string) error {
 		return nil
 	}
 
-	if ac.Approach.Type == ILSApproach && len(ac.Waypoints) == 0 {
-		if ac.AssignedHeading == 0 {
-			pilotResponse(callsign, "we need either direct or a heading to intercept")
-			return nil
-		}
-		// Otherwise nothing more to do; keep flying the heading for now.
-		// After we intercept we'll get the rest of the waypoints added.
-	} else {
-		// For RNAV or ILS direct to a fix, the first (and only) entry in
-		// Waypoints should be one of the approach fixes. Add the remaining ones..
-		if len(ac.Waypoints) != 1 {
-			// TODO: ERROR CHECKING BETTER, HANDLE RNAV CLEARED W/O DIRECT TO A FIX...
-			lg.Errorf("WTF waypoints: %+v", ac.Waypoints)
-			return errors.New("WTF waypoints")
-		}
-		found := false
-		for _, route := range ap.Waypoints {
-			for _, wp := range route {
+	directApproachFix := false
+	var remainingApproachWaypoints []Waypoint
+	if ac.AssignedHeading == 0 && len(ac.Waypoints) > 0 {
+		// Is the aircraft cleared direct to a waypoint on the approach?
+		for _, approach := range ap.Waypoints {
+			for i, wp := range approach {
 				if wp.Fix == ac.Waypoints[0].Fix {
-					found = true
-				} else if found {
-					ac.Waypoints = append(ac.Waypoints, wp)
+					directApproachFix = true
+					if i+1 < len(approach) {
+						remainingApproachWaypoints = approach[i+1:]
+					}
+					break
 				}
 			}
-			if found {
-				break
+		}
+	}
+
+	if ac.Approach.Type == ILSApproach {
+		if ac.AssignedHeading == 0 {
+			if !directApproachFix {
+				pilotResponse(callsign, "we need either direct or a heading to intercept")
+				return nil
+			} else {
+				if remainingApproachWaypoints != nil {
+					ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
+				}
 			}
 		}
-		if !found {
-			lg.Errorf("waypoint %s not in approach's waypoints %+v", ac.Waypoints[0].Fix, ap.Waypoints)
-			return errors.New("WTF2 waypoints")
+		// If the aircraft is on a heading, there's nothing more to do for
+		// now; keep flying the heading and after we intercept we'll add
+		// the rest of the waypoints to the aircraft's waypoints array.
+	} else {
+		// RNAV
+		if !directApproachFix {
+			pilotResponse(callsign, "we need direct to a fix on the approach...")
+			return nil
+		}
+
+		if remainingApproachWaypoints != nil {
+			ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
 		}
 	}
 
