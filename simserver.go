@@ -2310,7 +2310,7 @@ func JFKAirport() *AirportConfig {
 	parch3 := Arrival{
 		Name:              "PARCH3",
 		Rate:              30,
-		Waypoints:         mustParseWaypoints("N041.02.38.230,W072.23.00.102 N040.57.31.959,W072.42.21.494 @ CCC ROBER #278"),
+		Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
 		Route:             "/. PARCH3",
 		InitialController: "NY_F_CTR",
 		InitialAltitude:   13000,
