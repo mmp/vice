@@ -1964,16 +1964,13 @@ func JFKApproachScenario() *Scenario {
 	s.Airports = append(s.Airports, jfk)
 	lga := LGAAirport()
 	lga.Scratchpads = jfk.Scratchpads
-	lga.ExitCategories = jfk.ExitCategories
-	s.Airports = append(s.Airports, LGAAirport())
+	s.Airports = append(s.Airports, lga)
 	isp := ISPAirport()
 	isp.Scratchpads = jfk.Scratchpads
-	isp.ExitCategories = jfk.ExitCategories
-	s.Airports = append(s.Airports, ISPAirport())
+	s.Airports = append(s.Airports, isp)
 	frg := FRGAirport()
 	frg.Scratchpads = jfk.Scratchpads
-	frg.ExitCategories = jfk.ExitCategories
-	s.Airports = append(s.Airports, FRGAirport())
+	s.Airports = append(s.Airports, frg)
 
 	return s
 }
