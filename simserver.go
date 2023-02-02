@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -865,7 +866,6 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 		ac.Approach.Type == ILSApproach {
 		loc := ap.Line()
 		dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
-		lg.Errorf("dist %f", dist)
 
 		if dist < .2 {
 			// we'll call that good enough. Now we need to figure out which
@@ -931,7 +931,9 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 }
 
 func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
-	lg.Errorf("waypoint update %+v, ac %+v", wp, ac)
+	if *devmode {
+		lg.Printf("Waypoint update. wp %s ac %s", spew.Sdump(wp), spew.Sdump(ac))
+	}
 
 	// For starters, convert a previous crossing restriction to a current
 	// assignment.  Clear out the previous crossing restriction.
@@ -1523,9 +1525,9 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 			s += ", on final"
 		}
 		if ac.Approach != nil {
-			s += fmt.Sprintf(", approach: %+v", ac.Approach)
+			s += fmt.Sprintf(", approach: %s", spew.Sdump(ac.Approach))
 		}
-		s += fmt.Sprintf(", route %+v", ac.Waypoints)
+		s += fmt.Sprintf(", route %s", spew.Sdump(ac.Waypoints))
 		lg.Errorf("%s", s)
 	}
 	return nil
@@ -1611,7 +1613,7 @@ func (ss *SimServer) SpawnAircraft() {
 		}
 		ssa.Waypoints = ssa.Waypoints[1:]
 
-		lg.Errorf("ADD %+v", ssa)
+		lg.Errorf("Added aircraft: %s", spew.Sdump(ssa))
 
 		ss.remainingLaunches--
 		eventStream.Post(&AddedAircraftEvent{ac: ssa.AC})
