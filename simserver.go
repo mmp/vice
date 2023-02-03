@@ -121,6 +121,7 @@ func (ac *AirportConfig) PostDeserialize() []error {
 	}
 
 	for i, rwy := range ac.RunwayConfigs {
+		ac.RunwayConfigs[i].challenge = 0.25
 		ac.RunwayConfigs[i].departureCategoryEnabled = make(map[string]*bool)
 
 		for _, er := range rwy.ExitRoutes {
@@ -1843,19 +1844,41 @@ func (ss *SimServer) SpawnArrival(arr Arrival) *SSAircraft {
 }
 
 func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *RunwayConfig) *SSAircraft {
-	idx := SampleFiltered(ap.Departures,
-		func(d Departure) bool {
-			category := ap.ExitCategories[d.Exit]
-			return *rwy.departureCategoryEnabled[category]
-		})
-	if idx == -1 {
-		return nil
+	var dep *Departure
+	if rand.Float32() < rwy.challenge {
+		// 50/50 split between the exact same departure and a departure to
+		// the same gate as the last departure.
+		if rand.Float32() < .5 {
+			dep = rwy.lastDeparture
+		} else if rwy.lastDeparture != nil {
+			idx := SampleFiltered(ap.Departures,
+				func(d Departure) bool {
+					return ap.ExitCategories[d.Exit] == ap.ExitCategories[rwy.lastDeparture.Exit]
+				})
+			if idx == -1 {
+				// This shouldn't ever happen...
+				lg.Errorf("%s/%s: unable to find a valid departure", ap.ICAO, rwy.Runway)
+				return nil
+			}
+			dep = &ap.Departures[idx]
+		}
 	}
 
-	// TODO: support rwy.challenge
+	if dep == nil {
+		// Sample uniformly
+		idx := SampleFiltered(ap.Departures,
+			func(d Departure) bool {
+				category := ap.ExitCategories[d.Exit]
+				return *rwy.departureCategoryEnabled[category]
+			})
+		if idx == -1 {
+			lg.Errorf("%s/%s: unable to find a valid departure", ap.ICAO, rwy.Runway)
+			return nil
+		}
+		dep = &ap.Departures[idx]
+	}
 
-	dep := ap.Departures[idx]
-	rwy.lastDeparture = &ap.Departures[idx]
+	rwy.lastDeparture = dep
 
 	ac := sampleAircraft(dep.Airlines)
 
