@@ -503,15 +503,22 @@ func RayRayMinimumDistance(p0, d0, p1, d1 [2]float32) float32 {
 	return t
 }
 
-// PointLineDistance returns the minimum distance from the point p to the infinite line defined by (p0, p1).
-func PointLineDistance(p, p0, p1 [2]float32) float32 {
+// SignedPointLineDistance returns the signed distance from the point p to
+// the infinite line defined by (p0, p1) where points to the right of the
+// line have negative distances.
+func SignedPointLineDistance(p, p0, p1 [2]float32) float32 {
 	// https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
 	dx, dy := p1[0]-p0[0], p1[1]-p0[1]
 	sq := dx*dx + dy*dy
 	if sq == 0 {
 		return float32(math.Inf(1))
 	}
-	return abs(dx*(p0[1]-p[1])-dy*(p0[0]-p[0])) / sqrt(sq)
+	return (dx*(p0[1]-p[1]) - dy*(p0[0]-p[0])) / sqrt(sq)
+}
+
+// PointLineDistance returns the minimum distance from the point p to the infinite line defined by (p0, p1).
+func PointLineDistance(p, p0, p1 [2]float32) float32 {
+	return abs(SignedPointLineDistance(p, p0, p1))
 }
 
 // Returns the vertex coordinates of an equilateral triangle centered at

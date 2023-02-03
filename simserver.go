@@ -921,6 +921,20 @@ func (ac *SSAircraft) UpdatePositionAndGS(ss *SimServer) {
 		newPos = add2f(newPos, scale2f(vWind, windKts/3600))
 	}
 
+	if ap := ac.Approach; ap != nil && ac.OnFinal && ac.Approach.Type == ILSApproach {
+		// nudge the aircraft to stay on the localizer; just offset it as
+		// needed--don't bother with the pretense of adjusting its heading,
+		// etc...
+		loc := ap.Line()
+		dist := SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1]))
+
+		v := normalize2f(sub2f(ll2nm(loc[1]), ll2nm(loc[0])))
+		vperp := [2]float32{v[1], -v[0]}
+		//lg.Printf("dist %f: %v - %v -> %v", dist, newPos, scale2f(vperp, dist), sub2f(newPos, scale2f(vperp, dist)))
+		newPos = sub2f(newPos, scale2f(vperp, dist))
+		//lg.Printf(" -> dist %f", SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1])))
+	}
+
 	// Finally update position and groundspeed.
 	ac.Position = nm2ll(newPos)
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
