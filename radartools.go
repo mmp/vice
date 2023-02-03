@@ -58,7 +58,6 @@ type ImageAndBounds struct {
 // latitude-longitude coordinates.
 func (w *WeatherRadar) Activate(center Point2LL) {
 	if w.active {
-		lg.Errorf("Called Activate on already-active WeatherRadar")
 		return
 	}
 	w.active = true
@@ -77,6 +76,9 @@ func (w *WeatherRadar) Activate(center Point2LL) {
 // deactivated so that we don't continue to consume bandwidth fetching
 // unneeded weather images.
 func (w *WeatherRadar) Deactivate() {
+	if !w.active {
+		return
+	}
 	close(w.reqChan)
 	w.active = false
 }

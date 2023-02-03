@@ -681,7 +681,10 @@ func (sp *STARSPane) Activate() {
 
 	sp.eventsId = eventStream.Subscribe()
 
-	sp.weatherRadar.Activate(sp.currentPreferenceSet.Center)
+	ps := sp.currentPreferenceSet
+	if Find(ps.WeatherIntensity[:], true) != -1 {
+		sp.weatherRadar.Activate(sp.currentPreferenceSet.Center)
+	}
 
 	// start tracking all of the active aircraft
 	sp.initializeAircraft()
@@ -1090,7 +1093,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			weatherIntensity = float32(i) / float32(len(ps.WeatherIntensity)-1)
 		}
 	}
-	sp.weatherRadar.Draw(weatherIntensity, transforms, cb)
+	if weatherIntensity != 0 {
+		sp.weatherRadar.Draw(weatherIntensity, transforms, cb)
+	}
 
 	color := ps.Brightness.RangeRings.RGB()
 	cb.LineWidth(1)
@@ -2722,6 +2727,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 							ps.WeatherIntensity[j] = false
 						}
 					}
+				}
+				if Find(ps.WeatherIntensity[:], true) != -1 {
+					sp.weatherRadar.Activate(sp.currentPreferenceSet.Center)
+				} else {
+					// Don't fetch weather maps if they're not going to be displayed.
+					sp.weatherRadar.Deactivate()
 				}
 			}
 		}
