@@ -2054,11 +2054,11 @@ func JFKApproachScenario() *Scenario {
 	addController("BOS_E_CTR", 133.45) // B17
 	addController("ISP_APP", 120.05)   //  3H
 	addController("JFK_APP", 128.125)  //  2G
-	addController("JFK_DEP", 135.9)    //  2A
 	addController("JFK_TWR", 119.1)    //  2W
 	addController("LGA_DEP", 120.4)    //  1L
+	addController("NY_B_CTR", 125.325) // N56
+	addController("NY_C_CTR", 132.175) // N34
 	addController("NY_F_CTR", 128.3)   // N66
-	addController("NY_CTR", 125.325)   // N56
 	addController("NY_LE_DEP", 126.8)  //  5E
 	addController("NY_LS_DEP", 124.75) //  5S
 
@@ -2374,7 +2374,7 @@ func JFKAirport() *AirportConfig {
 		Rate:              30,
 		Waypoints:         mustParseWaypoints("N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041"),
 		Route:             "/. CAMRN4",
-		InitialController: "NY_F_CTR",
+		InitialController: "NY_B_CTR",
 		InitialAltitude:   15000,
 		ClearedAltitude:   11000,
 		InitialSpeed:      300,
@@ -2401,7 +2401,7 @@ func JFKAirport() *AirportConfig {
 		Rate:              30,
 		Waypoints:         mustParseWaypoints("N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"),
 		Route:             "/. LENDY8",
-		InitialController: "NY_F_CTR",
+		InitialController: "NY_C_CTR",
 		InitialAltitude:   20000,
 		ClearedAltitude:   19000,
 		InitialSpeed:      300,
@@ -2450,7 +2450,7 @@ func JFKAirport() *AirportConfig {
 		Rate:              30,
 		Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
 		Route:             "/. PARCH3",
-		InitialController: "NY_F_CTR",
+		InitialController: "BOS_E_CTR",
 		InitialAltitude:   13000,
 		ClearedAltitude:   12000,
 		InitialSpeed:      275,
