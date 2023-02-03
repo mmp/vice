@@ -929,6 +929,7 @@ func (ac *SSAircraft) UpdatePositionAndGS(ss *SimServer) {
 func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 	if ap := ac.Approach; ap != nil &&
 		ac.ClearedApproach &&
+		!ac.OnFinal &&
 		len(ac.Waypoints) == 0 &&
 		headingDifference(float32(ap.Heading()), ac.Heading) < 2 &&
 		ac.Approach.Type == ILSApproach {
@@ -939,33 +940,39 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 		if dist < .2 {
 			// we'll call that good enough. Now we need to figure out which
 			// fixes in the approach are still ahead and then add them to
-			// the aircraft's waypoints..
-			pos := ll2nm(ac.Position)
-			hdg := ac.Heading - database.MagneticVariation
-			headingVector := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+			// the aircraft's waypoints; we find the aircraft's distance to
+			// the runway threshold and taking any fixes that are closer
+			// than that distance.
+			n := len(ap.Waypoints[0])
+			threshold := ll2nm(ap.Waypoints[0][n-1].Location)
+			thresholdDistance := distance2f(ll2nm(ac.Position), threshold)
+			lg.Errorf("intercept @ %.2f!", thresholdDistance)
 
 			ac.Waypoints = nil
-			found := false
-			// Note that we only use the first set of waypoints
-			// here--effectively assuming an intercept in the common
-			// segment if there are multiple.
 			for _, wp := range ap.Waypoints[0] {
-				if wp.Altitude != 0 && int(ac.Altitude) < wp.Altitude {
-					continue
-				}
-
-				v := sub2f(ll2nm(wp.Location), pos)
-				if !found && v[0]*headingVector[0]+v[1]*headingVector[1] < 0 {
-					lg.Errorf("%s: behind us...", wp.Fix)
-				} else {
-					lg.Errorf("%s: ahead of us...", wp.Fix)
+				if distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
+					lg.Errorf("%s: adding future waypoint...", wp.Fix)
 					ac.Waypoints = append(ac.Waypoints, wp)
+				} else {
+					// We consider the waypoints from far away to near (and
+					// so in the end we want a contiguous set of them
+					// starting from the runway threshold). Any time we
+					// find a waypoint that is farther away than the
+					// aircraft, we preemptively clear out the aircraft's
+					// waypoints; in this way if, for example, an IAF is
+					// somehow closer to the airport than the aircraft,
+					// then we won't include it in the aircraft's upcoming
+					// waypoints.
+					lg.Errorf("clearing those waypoints...")
+					ac.Waypoints = nil
 				}
 			}
 
 			ac.AssignedHeading = 0
 			ac.AssignedAltitude = 0
+			ac.OnFinal = true
 		}
+		return
 	}
 
 	if len(ac.Waypoints) == 0 {
