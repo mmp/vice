@@ -2408,7 +2408,9 @@ func JFKAirport() *AirportConfig {
 			AirlineConfig{ICAO: "UAL", Airport: "KMSP"},
 		},
 	}
-	ac.Arrivals = append(ac.Arrivals, debug)
+	if *devmode {
+		ac.Arrivals = append(ac.Arrivals, debug)
+	}
 
 	parch3 := Arrival{
 		Name:              "PARCH3",
