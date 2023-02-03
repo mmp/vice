@@ -75,9 +75,7 @@ func (ac *AirportConfig) PostDeserialize() []error {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
 
-			if err := ac.InitializeWaypointLocations(ap.Waypoints[i]); err != nil {
-				errors = append(errors, err)
-			}
+			errors = append(errors, ac.InitializeWaypointLocations(ap.Waypoints[i])...)
 		}
 	}
 
@@ -110,17 +108,13 @@ func (ac *AirportConfig) PostDeserialize() []error {
 	}
 
 	for _, ar := range ac.Arrivals {
-		if err := ac.InitializeWaypointLocations(ar.Waypoints); err != nil {
-			errors = append(errors, err)
-		}
+		errors = append(errors, ac.InitializeWaypointLocations(ar.Waypoints)...)
 		checkAirlines(ar.Airlines)
 	}
 
 	for i, dep := range ac.Departures {
 		wp := []Waypoint{Waypoint{Fix: dep.Exit}}
-		if err := ac.InitializeWaypointLocations(wp); err != nil {
-			errors = append(errors, err)
-		}
+		errors = append(errors, ac.InitializeWaypointLocations(wp)...)
 		ac.Departures[i].exitWaypoint = wp[0]
 
 		checkAirlines(dep.Airlines)
@@ -130,9 +124,7 @@ func (ac *AirportConfig) PostDeserialize() []error {
 		ac.RunwayConfigs[i].departureCategoryEnabled = make(map[string]*bool)
 
 		for _, er := range rwy.ExitRoutes {
-			if err := ac.InitializeWaypointLocations(er.Waypoints); err != nil {
-				errors = append(errors, err)
-			}
+			errors = append(errors, ac.InitializeWaypointLocations(er.Waypoints)...)
 		}
 
 		for _, cat := range ac.ExitCategories {
@@ -144,7 +136,10 @@ func (ac *AirportConfig) PostDeserialize() []error {
 	return errors
 }
 
-func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) error {
+func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) []error {
+	var prev Point2LL
+	var errors []error
+
 	for i, wp := range waypoints {
 		if pos, ok := database.Locate(wp.Fix); ok {
 			waypoints[i].Location = pos
@@ -153,10 +148,17 @@ func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) error
 		} else if pos, err := ParseLatLong(wp.Fix); err == nil {
 			waypoints[i].Location = pos
 		} else {
-			return fmt.Errorf("%s: unable to locate waypoint", wp.Fix)
+			errors = append(errors, fmt.Errorf("%s: unable to locate waypoint", wp.Fix))
 		}
+
+		d := nmdistance2ll(prev, waypoints[i].Location)
+		if i > 1 && d > 25 {
+			errors = append(errors, fmt.Errorf("%s: waypoint is suspiciously far from previous one: %f nm",
+				wp.Fix, d))
+		}
+		prev = waypoints[i].Location
 	}
-	return nil
+	return errors
 }
 
 type RunwayConfig struct {
