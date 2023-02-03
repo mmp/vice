@@ -970,6 +970,18 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 		// Execute any commands associated with the waypoint
 		ss.RunWaypointCommands(ac, wp.Commands)
 
+		// For starters, convert a previous crossing restriction to a current
+		// assignment.  Clear out the previous crossing restriction.
+		if ac.AssignedAltitude == 0 {
+			ac.AssignedAltitude = ac.CrossingAltitude
+		}
+		ac.CrossingAltitude = 0
+
+		if ac.AssignedSpeed == 0 {
+			ac.AssignedSpeed = ac.CrossingSpeed
+		}
+		ac.CrossingSpeed = 0
+
 		if ac.Waypoints[0].Heading != 0 {
 			// We have an outbound heading
 			ac.AssignedHeading = wp.Heading
@@ -992,20 +1004,12 @@ func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
 		lg.Printf("Waypoint update. wp %s ac %s", spew.Sdump(wp), spew.Sdump(ac))
 	}
 
-	// For starters, convert a previous crossing restriction to a current
-	// assignment.  Clear out the previous crossing restriction.
-	if ac.AssignedAltitude == 0 {
-		ac.AssignedAltitude = ac.CrossingAltitude
-	}
-	ac.CrossingAltitude = 0
-
-	if ac.AssignedSpeed == 0 {
-		ac.AssignedSpeed = ac.CrossingSpeed
-	}
-	ac.CrossingSpeed = 0
-
 	// Now handle any altitude/speed restriction at the next waypoint.
 	if wp.Altitude != 0 {
+		// TODO: we should probably distinguish between controller-assigned
+		// altitude and assigned due to a previous crossing restriction,
+		// since controller assigned should take precedence over
+		// everything, which it doesn't currently...
 		ac.CrossingAltitude = wp.Altitude
 		ac.AssignedAltitude = 0
 	}
