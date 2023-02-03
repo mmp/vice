@@ -1114,7 +1114,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 			dir += [3]int{-10, 0, 10}[rand.Intn(3)]
 			wind = fmt.Sprintf("%03d%02d", dir, spd)
 			gst := ss.wind.gust - 3 + rand.Intn(6)
-			if gst > ss.wind.speed {
+			if gst-ss.wind.speed > 5 {
 				wind += fmt.Sprintf("G%02d", gst)
 			}
 			wind += "KT"
