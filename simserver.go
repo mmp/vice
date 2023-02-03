@@ -70,7 +70,13 @@ type AirportConfig struct {
 func (ac *AirportConfig) PostDeserialize() []error {
 	var errors []error
 
+	approachNames := make(map[string]interface{})
 	for _, ap := range ac.Approaches {
+		if _, ok := approachNames[ap.ShortName]; ok {
+			errors = append(errors, fmt.Errorf("%s: multiple approaches with this short name", ap.ShortName))
+		}
+		approachNames[ap.ShortName] = nil
+
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
@@ -120,9 +126,15 @@ func (ac *AirportConfig) PostDeserialize() []error {
 		checkAirlines(dep.Airlines)
 	}
 
+	runwayNames := make(map[string]interface{})
 	for i, rwy := range ac.RunwayConfigs {
 		ac.RunwayConfigs[i].challenge = 0.25
 		ac.RunwayConfigs[i].departureCategoryEnabled = make(map[string]*bool)
+
+		if _, ok := runwayNames[rwy.Runway]; ok {
+			errors = append(errors, fmt.Errorf("%s: multiple runway definitions", rwy.Runway))
+		}
+		runwayNames[rwy.Runway] = nil
 
 		for _, er := range rwy.ExitRoutes {
 			errors = append(errors, ac.InitializeWaypointLocations(er.Waypoints)...)
@@ -2259,7 +2271,7 @@ func JFKAirport() *AirportConfig {
 	ac.Approaches = append(ac.Approaches, rz22r)
 
 	i31l := Approach{
-		ShortName: "I3L",
+		ShortName: "I1L",
 		FullName:  "ILS 31 Left",
 		Type:      ILSApproach,
 		Waypoints: []WaypointArray{
@@ -2280,7 +2292,7 @@ func JFKAirport() *AirportConfig {
 	ac.Approaches = append(ac.Approaches, i31l)
 
 	i31r := Approach{
-		ShortName: "I3R",
+		ShortName: "I1R",
 		FullName:  "ILS 31 Right",
 		Type:      ILSApproach,
 		Waypoints: []WaypointArray{
