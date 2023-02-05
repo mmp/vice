@@ -3548,6 +3548,223 @@ func FRGAirport() *AirportConfig {
 		"DEEZZ": "North",
 	}
 
+	r1 := Approach{
+		ShortName: "R1",
+		FullName:  "RNAV Runway 1",
+		Type:      RNAVApproach,
+		Waypoints: []WaypointArray{
+			[]Waypoint{
+				Waypoint{Fix: "WULUG", Altitude: 2000},
+				Waypoint{Fix: "BLAND", Altitude: 1500},
+				Waypoint{Fix: "DEUCE", Altitude: 1600},
+				Waypoint{Fix: "XAREW", Altitude: 1500},
+				Waypoint{Fix: "_FRG_1", Altitude: 50},
+			},
+			[]Waypoint{
+				Waypoint{Fix: "ZACHS", Altitude: 2000},
+				Waypoint{Fix: "BLAND", Altitude: 1500},
+				Waypoint{Fix: "DEUCE", Altitude: 1600},
+				Waypoint{Fix: "XAREW", Altitude: 1500},
+				Waypoint{Fix: "_FRG_1", Altitude: 50},
+			},
+		},
+	}
+	frg.Approaches = append(frg.Approaches, r1)
+
+	r14 := Approach{
+		ShortName: "R14",
+		FullName:  "RNAV Runway 14",
+		Type:      RNAVApproach,
+		Waypoints: []WaypointArray{
+			[]Waypoint{
+				Waypoint{Fix: "HOBAM", Altitude: 2000},
+				Waypoint{Fix: "LAAZE", Altitude: 2000},
+				Waypoint{Fix: "ALABE", Altitude: 1400},
+				Waypoint{Fix: "_FRG_14", Altitude: 50},
+			},
+			[]Waypoint{
+				Waypoint{Fix: "CAMRN", Altitude: 4000},
+				Waypoint{Fix: "HEREK", Altitude: 2000},
+				Waypoint{Fix: "SEHDO", Altitude: 2000},
+				Waypoint{Fix: "WUPMA", Altitude: 1400, Speed: 180},
+				Waypoint{Fix: "ALABE", Altitude: 1400},
+				Waypoint{Fix: "_FRG_14", Altitude: 50},
+			},
+		},
+	}
+	frg.Approaches = append(frg.Approaches, r14)
+
+	i14 := Approach{
+		ShortName: "I14",
+		FullName:  "ILS Runway 14",
+		Type:      RNAVApproach,
+		Waypoints: []WaypointArray{
+			[]Waypoint{
+				Waypoint{Fix: "N040.48.42.061,W073.32.03.431", Altitude: 2000},
+				Waypoint{Fix: "FRIKK", Altitude: 1400},
+				Waypoint{Fix: "_FRG_14", Altitude: 50},
+			},
+		},
+	}
+	frg.Approaches = append(frg.Approaches, i14)
+
+	r19 := Approach{
+		ShortName: "R19",
+		FullName:  "RNAV Runway 19",
+		Type:      RNAVApproach,
+		Waypoints: []WaypointArray{
+			[]Waypoint{
+				Waypoint{Fix: "BLINZ", Altitude: 2000},
+				Waypoint{Fix: "DEBYE", Altitude: 2000},
+				Waypoint{Fix: "MOIRE", Altitude: 1500},
+				Waypoint{Fix: "WULOP", Altitude: 800},
+				Waypoint{Fix: "_FRG_19", Altitude: 50},
+			},
+			[]Waypoint{
+				Waypoint{Fix: "ZOSAB", Altitude: 2000},
+				Waypoint{Fix: "DEBYE", Altitude: 2000},
+				Waypoint{Fix: "MOIRE", Altitude: 1500},
+				Waypoint{Fix: "WULOP", Altitude: 800},
+				Waypoint{Fix: "_FRG_19", Altitude: 50},
+			},
+		},
+	}
+	frg.Approaches = append(frg.Approaches, r19)
+
+	r32 := Approach{
+		ShortName: "R32",
+		FullName:  "RNAV Runway 32",
+		Type:      RNAVApproach,
+		Waypoints: []WaypointArray{
+			[]Waypoint{
+				Waypoint{Fix: "JUSIN", Altitude: 2000},
+				Waypoint{Fix: "TRCCY", Altitude: 2000},
+				Waypoint{Fix: "ALFED", Altitude: 1400},
+				Waypoint{Fix: "_FRG_32", Altitude: 50},
+			},
+			[]Waypoint{
+				Waypoint{Fix: "SHYNA", Altitude: 2000},
+				Waypoint{Fix: "TRCCY", Altitude: 2000},
+				Waypoint{Fix: "ALFED", Altitude: 1400},
+				Waypoint{Fix: "_FRG_32", Altitude: 50},
+			},
+		},
+	}
+	frg.Approaches = append(frg.Approaches, r32)
+
+	camrn4 := ArrivalGroup{
+		Name: "CAMRN4",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "CAMRN4",
+				Waypoints:         mustParseWaypoints("N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041"),
+				Route:             "/. CAMRN4",
+				InitialController: "NY_B_CTR",
+				InitialAltitude:   15000,
+				ClearedAltitude:   11000,
+				InitialSpeed:      300,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "EJA", Airport: "KDCA"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KDCA"},
+					AirlineConfig{ICAO: "EJA", Airport: "KJAX"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KJAX"},
+					AirlineConfig{ICAO: "EJA", Airport: "KAUS"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KAUS"},
+					AirlineConfig{ICAO: "EJA", Airport: "KACY"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KACY"},
+					AirlineConfig{ICAO: "EJA", Airport: "KPHL"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KPHL"},
+				},
+			},
+		},
+	}
+	frg.ArrivalGroups = append(frg.ArrivalGroups, camrn4)
+
+	lendy8 := ArrivalGroup{
+		Name: "LENDY8",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "LENDY8",
+				Waypoints:         mustParseWaypoints("N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"),
+				Route:             "/. LENDY8",
+				InitialController: "NY_C_CTR",
+				InitialAltitude:   20000,
+				ClearedAltitude:   19000,
+				InitialSpeed:      300,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "EJA", Airport: "KDTW"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KDTW"},
+					AirlineConfig{ICAO: "EJA", Airport: "KORD"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KORD"},
+					AirlineConfig{ICAO: "EJA", Airport: "KASE"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KASE"},
+					AirlineConfig{ICAO: "EJA", Airport: "KGRR"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KGRR"},
+				},
+			},
+		},
+	}
+	frg.ArrivalGroups = append(frg.ArrivalGroups, lendy8)
+
+	debug := ArrivalGroup{
+		Name: "DEBUG",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "DEBUG",
+				Waypoints:         mustParseWaypoints("N040.47.35.140,W073.18.16.710 N040.47.01.563,W073.20.25.222 @ #270"),
+				Route:             "/. DEBUG",
+				InitialController: "NY_F_CTR",
+				InitialAltitude:   2500,
+				ClearedAltitude:   2000,
+				InitialSpeed:      250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "EJA", Airport: "KMSP"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KMSP"},
+				},
+			},
+		},
+	}
+	if *devmode {
+		frg.ArrivalGroups = append(frg.ArrivalGroups, debug)
+	}
+
+	parch3 := ArrivalGroup{
+		Name: "PARCH3",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "PARCH3",
+				Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
+				Route:             "/. PARCH3",
+				InitialController: "BOS_E_CTR",
+				InitialAltitude:   13000,
+				ClearedAltitude:   12000,
+				InitialSpeed:      275,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "EJA", Airport: "KHYA"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KHYA"},
+					AirlineConfig{ICAO: "EJA", Airport: "KMVY"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KMVY"},
+					AirlineConfig{ICAO: "EJA", Airport: "KACK"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KACK"},
+					AirlineConfig{ICAO: "EJA", Airport: "KBGR"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KBGR"},
+					AirlineConfig{ICAO: "EJA", Airport: "KBTV"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KBTV"},
+					AirlineConfig{ICAO: "EJA", Airport: "KMHT"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KMHT"},
+				},
+			},
+		},
+	}
+	frg.ArrivalGroups = append(frg.ArrivalGroups, parch3)
+
 	frg.Departures = []Departure{
 		Departure{
 			Exit:        "DIXIE",
