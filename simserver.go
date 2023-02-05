@@ -2419,6 +2419,33 @@ func JFKAirport() *AirportConfig {
 	}
 	ac.ArrivalGroups = append(ac.ArrivalGroups, camrn4)
 
+	owenz := ArrivalGroup{
+		Name: "OWENZ",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "OWENZ",
+				Waypoints:         mustParseWaypoints("N039.56.16.634,W073.30.51.937 N039.57.39.196,W073.37.16.486 @ CAMRN"),
+				Route:             "/. OWENZ CAMRN",
+				InitialController: "NY_B_CTR",
+				InitialAltitude:   11000,
+				ClearedAltitude:   9000,
+				InitialSpeed:      300,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "AAL", Airport: "MDSD"},
+					AirlineConfig{ICAO: "AAL", Airport: "TXKF"},
+					AirlineConfig{ICAO: "JBU", Airport: "TXKF"},
+					AirlineConfig{ICAO: "JBU", Airport: "TJSJ"},
+					AirlineConfig{ICAO: "AAL", Airport: "TJSJ"},
+					AirlineConfig{ICAO: "AAL", Airport: "SBGR", Fleet: "long"},
+					AirlineConfig{ICAO: "TAM", Airport: "SBGR", Fleet: "long"},
+				},
+			},
+		},
+	}
+	ac.ArrivalGroups = append(ac.ArrivalGroups, owenz)
+
 	lendyign := ArrivalGroup{
 		Name: "LENDY8/IGN1",
 		Rate: 30,
@@ -2501,7 +2528,7 @@ func JFKAirport() *AirportConfig {
 	}
 
 	parch3 := ArrivalGroup{
-		Name: "PARCH3",
+		Name: "PARCH3/ROBER2",
 		Rate: 30,
 		Arrivals: []Arrival{
 			Arrival{
@@ -2538,6 +2565,23 @@ func JFKAirport() *AirportConfig {
 					AirlineConfig{ICAO: "UAL", Airport: "KBOS", Fleet: "short"},
 					AirlineConfig{ICAO: "UPS", Airport: "KBOS"},
 					AirlineConfig{ICAO: "VIR", Airport: "EGCC", Fleet: "long"},
+				},
+			},
+			Arrival{
+				Name:              "ROBER2",
+				Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #276"),
+				Route:             "/. ROBER2",
+				InitialController: "BOS_E_CTR",
+				InitialAltitude:   13000,
+				ClearedAltitude:   12000,
+				InitialSpeed:      275,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
+					AirlineConfig{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
+					AirlineConfig{ICAO: "FDX", Airport: "KMHT", Fleet: "short"},
+					AirlineConfig{ICAO: "EJA", Airport: "KMHT"},
+					AirlineConfig{ICAO: "LXJ", Airport: "KFMH"},
 				},
 			},
 		},
