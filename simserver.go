@@ -56,9 +56,9 @@ type AirportConfig struct {
 
 	NamedLocations map[string]Point2LL `json:"named_locations"`
 
-	Arrivals   []Arrival   `json:"arrivals"`
-	Approaches []Approach  `json:"approaches"`
-	Departures []Departure `json:"departures"`
+	ArrivalGroups []ArrivalGroup `json:"arrival_groups"`
+	Approaches    []Approach     `json:"approaches"`
+	Departures    []Departure    `json:"departures"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
@@ -113,9 +113,15 @@ func (ac *AirportConfig) PostDeserialize() []error {
 		}
 	}
 
-	for _, ar := range ac.Arrivals {
-		errors = append(errors, ac.InitializeWaypointLocations(ar.Waypoints)...)
-		checkAirlines(ar.Airlines)
+	for _, ag := range ac.ArrivalGroups {
+		if len(ag.Arrivals) == 0 {
+			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group", ag.Name))
+		}
+
+		for _, ar := range ag.Arrivals {
+			errors = append(errors, ac.InitializeWaypointLocations(ar.Waypoints)...)
+			checkAirlines(ar.Airlines)
+		}
 	}
 
 	for i, dep := range ac.Departures {
@@ -203,10 +209,17 @@ type Departure struct {
 	Airlines    []AirlineConfig `json:"airlines"`
 }
 
+type ArrivalGroup struct {
+	Name     string    `json:"name"`
+	Rate     int32     `json:"rate"`
+	Enabled  bool      `json:"-"`
+	Arrivals []Arrival `json:"arrivals"`
+
+	nextSpawn time.Time
+}
+
 type Arrival struct {
 	Name      string        `json:"name"`
-	Rate      int32         `json:"rate"`
-	Enabled   bool          `json:"-"`
 	Waypoints WaypointArray `json:"waypoints"`
 	Route     string        `json:"route"`
 
@@ -217,8 +230,6 @@ type Arrival struct {
 	SpeedRestriction  int    `json:"speed_restriction"`
 
 	Airlines []AirlineConfig `json:"airlines"`
-
-	nextSpawn time.Time
 }
 
 // for a single departure / arrival
@@ -522,23 +533,23 @@ func (ac *AirportConfig) DrawUI() {
 		}
 	}
 
-	if len(ac.Arrivals) > 0 {
+	if len(ac.ArrivalGroups) > 0 {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("arrivals", 3, flags, imgui.Vec2{600, 0}, 0.) {
+		if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{600, 0}, 0.) {
 			imgui.TableSetupColumn("Enabled")
 			imgui.TableSetupColumn("Arrival")
 			imgui.TableSetupColumn("AAR")
 			imgui.TableHeadersRow()
 
-			for i := range ac.Arrivals {
-				imgui.PushID(ac.Arrivals[i].Name)
+			for i, ag := range ac.ArrivalGroups {
+				imgui.PushID(ag.Name)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Checkbox("##enabled", &ac.Arrivals[i].Enabled)
+				imgui.Checkbox("##enabled", &ac.ArrivalGroups[i].Enabled)
 				imgui.TableNextColumn()
-				imgui.Text(ac.Arrivals[i].Name)
+				imgui.Text(ag.Name)
 				imgui.TableNextColumn()
-				imgui.InputIntV("##aar", &ac.Arrivals[i].Rate, 1, 120, 0)
+				imgui.InputIntV("##aar", &ac.ArrivalGroups[i].Rate, 1, 120, 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
@@ -560,7 +571,7 @@ func (ssc *SimServerConnectionConfiguration) Valid() bool {
 			}
 		}
 
-		for _, a := range ap.Arrivals {
+		for _, a := range ap.ArrivalGroups {
 			if a.Enabled {
 				return true
 			}
@@ -1754,14 +1765,19 @@ func (ss *SimServer) SpawnAircraft() {
 		eventStream.Post(&AddedAircraftEvent{ac: ssa.AC})
 	}
 
+	randomWait := func(rate int32) time.Duration {
+		avgSeconds := 3600 / float32(rate)
+		seconds := lerp(rand.Float32(), .7*avgSeconds, 1.3*avgSeconds)
+		return time.Duration(seconds * float32(time.Second))
+	}
+
 	for _, ap := range ss.airportConfigs {
-		for i, arr := range ap.Arrivals {
+		for i, arr := range ap.ArrivalGroups {
 			if arr.Enabled && ss.remainingLaunches > 0 && now.After(arr.nextSpawn) {
 				if ac := ss.SpawnArrival(arr); ac != nil {
 					ac.AC.FlightPlan.ArrivalAirport = ap.ICAO
 					addAircraft(ac)
-					seconds := 3600/int(arr.Rate) - 10 + rand.Intn(21)
-					ap.Arrivals[i].nextSpawn = now.Add(time.Duration(seconds) * time.Second)
+					ap.ArrivalGroups[i].nextSpawn = now.Add(randomWait(arr.Rate))
 				}
 			}
 		}
@@ -1771,8 +1787,7 @@ func (ss *SimServer) SpawnAircraft() {
 				if ac := ss.SpawnDeparture(ap, &ap.RunwayConfigs[i]); ac != nil {
 					ac.AC.FlightPlan.DepartureAirport = ap.ICAO
 					addAircraft(ac)
-					seconds := 3600/int(rwy.Rate) - 10 + rand.Intn(21)
-					ap.RunwayConfigs[i].nextSpawn = now.Add(time.Duration(seconds) * time.Second)
+					ap.RunwayConfigs[i].nextSpawn = now.Add(randomWait(rwy.Rate))
 				}
 			}
 		}
@@ -1862,7 +1877,9 @@ func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
 	}
 }
 
-func (ss *SimServer) SpawnArrival(arr Arrival) *SSAircraft {
+func (ss *SimServer) SpawnArrival(ag ArrivalGroup) *SSAircraft {
+	arr := Sample(ag.Arrivals)
+
 	ac := sampleAircraft(arr.Airlines)
 	if ac == nil {
 		return nil
@@ -2369,120 +2386,162 @@ func JFKAirport() *AirportConfig {
 	}
 	ac.Approaches = append(ac.Approaches, rz31r)
 
-	camrn4 := Arrival{
-		Name:              "CAMRN4",
-		Rate:              30,
-		Waypoints:         mustParseWaypoints("N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041"),
-		Route:             "/. CAMRN4",
-		InitialController: "NY_B_CTR",
-		InitialAltitude:   15000,
-		ClearedAltitude:   11000,
-		InitialSpeed:      300,
-		SpeedRestriction:  250,
-		Airlines: []AirlineConfig{
-			AirlineConfig{ICAO: "WJA", Airport: "KDCA", Fleet: "jfk"},
-			AirlineConfig{ICAO: "WJA", Airport: "KORF", Fleet: "jfk"},
-			AirlineConfig{ICAO: "WJA", Airport: "KJAX", Fleet: "jfk"},
-			AirlineConfig{ICAO: "JBU", Airport: "KDFW"},
-			AirlineConfig{ICAO: "JBU", Airport: "KMCO"},
-			AirlineConfig{ICAO: "JBU", Airport: "KCLT"},
-			AirlineConfig{ICAO: "BWA", Airport: "MKJP"},
-			AirlineConfig{ICAO: "AAL", Airport: "KTUL"},
-			AirlineConfig{ICAO: "AAL", Airport: "KAUS"},
-			AirlineConfig{ICAO: "AAL", Airport: "KDEN"},
-			AirlineConfig{ICAO: "AMX", Airport: "MMMY", Fleet: "long"},
-			AirlineConfig{ICAO: "AMX", Airport: "MMMX", Fleet: "long"},
+	camrn4 := ArrivalGroup{
+		Name: "CAMRN4",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "CAMRN4",
+				Waypoints:         mustParseWaypoints("N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #041"),
+				Route:             "/. CAMRN4",
+				InitialController: "NY_B_CTR",
+				InitialAltitude:   15000,
+				ClearedAltitude:   11000,
+				InitialSpeed:      300,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "WJA", Airport: "KDCA", Fleet: "jfk"},
+					AirlineConfig{ICAO: "WJA", Airport: "KORF", Fleet: "jfk"},
+					AirlineConfig{ICAO: "WJA", Airport: "KJAX", Fleet: "jfk"},
+					AirlineConfig{ICAO: "JBU", Airport: "KDFW"},
+					AirlineConfig{ICAO: "JBU", Airport: "KMCO"},
+					AirlineConfig{ICAO: "JBU", Airport: "KCLT"},
+					AirlineConfig{ICAO: "BWA", Airport: "MKJP"},
+					AirlineConfig{ICAO: "AAL", Airport: "KTUL"},
+					AirlineConfig{ICAO: "AAL", Airport: "KAUS"},
+					AirlineConfig{ICAO: "AAL", Airport: "KDEN"},
+					AirlineConfig{ICAO: "AMX", Airport: "MMMY", Fleet: "long"},
+					AirlineConfig{ICAO: "AMX", Airport: "MMMX", Fleet: "long"},
+				},
+			},
 		},
 	}
-	ac.Arrivals = append(ac.Arrivals, camrn4)
+	ac.ArrivalGroups = append(ac.ArrivalGroups, camrn4)
 
-	lendy8 := Arrival{
-		Name:              "LENDY8",
-		Rate:              30,
-		Waypoints:         mustParseWaypoints("N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"),
-		Route:             "/. LENDY8",
-		InitialController: "NY_C_CTR",
-		InitialAltitude:   20000,
-		ClearedAltitude:   19000,
-		InitialSpeed:      300,
-		SpeedRestriction:  250,
-		Airlines: []AirlineConfig{
-			AirlineConfig{ICAO: "ASA", Airport: "KSFO"},
-			AirlineConfig{ICAO: "ASA", Airport: "KPDX"},
-			AirlineConfig{ICAO: "DAL", Airport: "KMSP"},
-			AirlineConfig{ICAO: "DAL", Airport: "KDTW"},
-			AirlineConfig{ICAO: "AAL", Airport: "KORD"},
-			AirlineConfig{ICAO: "UPS", Airport: "KLAS"},
-			AirlineConfig{ICAO: "DAL", Airport: "KSEA"},
-			AirlineConfig{ICAO: "AAL", Airport: "KLAX"},
-			AirlineConfig{ICAO: "UAL", Airport: "KSFO"},
-			AirlineConfig{ICAO: "AAL", Airport: "KSFO"},
-			AirlineConfig{ICAO: "CPA", Airport: "VHHH", Fleet: "cargo"},
-			AirlineConfig{ICAO: "ANA", Airport: "RJAA", Fleet: "long"},
-			AirlineConfig{ICAO: "KAL", Airport: "RKSI", Fleet: "long"},
-			AirlineConfig{ICAO: "WJA", Airport: "KIND", Fleet: "jfk"},
-			AirlineConfig{ICAO: "WJA", Airport: "KCVG", Fleet: "jfk"},
-			AirlineConfig{ICAO: "ACA", Airport: "CYYC"},
-			AirlineConfig{ICAO: "ACA", Airport: "CYUL", Fleet: "short"},
+	lendyign := ArrivalGroup{
+		Name: "LENDY8/IGN1",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "LENDY8",
+				Waypoints:         mustParseWaypoints("N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"),
+				Route:             "/. LENDY8",
+				InitialController: "NY_C_CTR",
+				InitialAltitude:   20000,
+				ClearedAltitude:   19000,
+				InitialSpeed:      300,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "ASA", Airport: "KSFO"},
+					AirlineConfig{ICAO: "ASA", Airport: "KPDX"},
+					AirlineConfig{ICAO: "DAL", Airport: "KMSP"},
+					AirlineConfig{ICAO: "DAL", Airport: "KDTW"},
+					AirlineConfig{ICAO: "AAL", Airport: "KORD"},
+					AirlineConfig{ICAO: "UPS", Airport: "KLAS"},
+					AirlineConfig{ICAO: "DAL", Airport: "KSEA"},
+					AirlineConfig{ICAO: "AAL", Airport: "KLAX"},
+					AirlineConfig{ICAO: "UAL", Airport: "KSFO"},
+					AirlineConfig{ICAO: "AAL", Airport: "KSFO"},
+					AirlineConfig{ICAO: "CPA", Airport: "VHHH", Fleet: "cargo"},
+					AirlineConfig{ICAO: "ANA", Airport: "RJAA", Fleet: "long"},
+					AirlineConfig{ICAO: "KAL", Airport: "RKSI", Fleet: "long"},
+					AirlineConfig{ICAO: "WJA", Airport: "KIND", Fleet: "jfk"},
+					AirlineConfig{ICAO: "WJA", Airport: "KCVG", Fleet: "jfk"},
+				},
+			},
+			Arrival{
+				Name:              "IGN1",
+				Waypoints:         mustParseWaypoints("DOORE N040.58.27.742,W074.16.12.647 @ LENDY #135"),
+				Route:             "/. IGN1",
+				InitialController: "NY_C_CTR",
+				InitialAltitude:   19000,
+				ClearedAltitude:   19000,
+				InitialSpeed:      300,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "ASA", Airport: "KSFO"},
+					AirlineConfig{ICAO: "ASA", Airport: "KPDX"},
+					AirlineConfig{ICAO: "DAL", Airport: "KMSP"},
+					AirlineConfig{ICAO: "DAL", Airport: "KDTW"},
+					AirlineConfig{ICAO: "AAL", Airport: "KORD"},
+					AirlineConfig{ICAO: "UPS", Airport: "KLAS"},
+					AirlineConfig{ICAO: "DAL", Airport: "KSEA"},
+					AirlineConfig{ICAO: "AAL", Airport: "KLAX"},
+					AirlineConfig{ICAO: "UAL", Airport: "KSFO"},
+					AirlineConfig{ICAO: "AAL", Airport: "KSFO"},
+					AirlineConfig{ICAO: "ACA", Airport: "CYYC"},
+					AirlineConfig{ICAO: "ACA", Airport: "CYUL", Fleet: "short"},
+				},
+			},
 		},
 	}
-	ac.Arrivals = append(ac.Arrivals, lendy8)
+	ac.ArrivalGroups = append(ac.ArrivalGroups, lendyign)
 
-	debug := Arrival{
-		Name:              "DEBUG",
-		Rate:              30,
-		Waypoints:         mustParseWaypoints("N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360"),
-		Route:             "/. DEBUG",
-		InitialController: "NY_F_CTR",
-		InitialAltitude:   3000,
-		ClearedAltitude:   2000,
-		InitialSpeed:      250,
-		Airlines: []AirlineConfig{
-			AirlineConfig{ICAO: "UAL", Airport: "KMSP"},
+	debug := ArrivalGroup{
+		Name: "DEBUG",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "DEBUG",
+				Waypoints:         mustParseWaypoints("N040.20.22.874,W073.48.09.981 N040.21.34.834,W073.51.11.997 @ #360"),
+				Route:             "/. DEBUG",
+				InitialController: "NY_F_CTR",
+				InitialAltitude:   3000,
+				ClearedAltitude:   2000,
+				InitialSpeed:      250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "UAL", Airport: "KMSP"},
+				},
+			},
 		},
 	}
 	if *devmode {
-		ac.Arrivals = append(ac.Arrivals, debug)
+		ac.ArrivalGroups = append(ac.ArrivalGroups, debug)
 	}
 
-	parch3 := Arrival{
-		Name:              "PARCH3",
-		Rate:              30,
-		Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
-		Route:             "/. PARCH3",
-		InitialController: "BOS_E_CTR",
-		InitialAltitude:   13000,
-		ClearedAltitude:   12000,
-		InitialSpeed:      275,
-		SpeedRestriction:  250,
-		Airlines: []AirlineConfig{
-			AirlineConfig{ICAO: "AAL", Airport: "CYYZ", Fleet: "short"},
-			AirlineConfig{ICAO: "AFR", Airport: "LPFG", Fleet: "long"},
-			AirlineConfig{ICAO: "BAW", Airport: "EGLL", Fleet: "long"},
-			AirlineConfig{ICAO: "CLX", Airport: "EGCC"},
-			AirlineConfig{ICAO: "DAL", Airport: "KBOS", Fleet: "short"},
-			AirlineConfig{ICAO: "DLH", Airport: "EDDF", Fleet: "long"},
-			AirlineConfig{ICAO: "GEC", Airport: "EDDF"},
-			AirlineConfig{ICAO: "DLH", Airport: "EDDM", Fleet: "long"},
-			AirlineConfig{ICAO: "GEC", Airport: "EDDM"},
-			AirlineConfig{ICAO: "EIN", Airport: "EIDW", Fleet: "long"},
-			AirlineConfig{ICAO: "ELY", Airport: "LLBG", Fleet: "jfk"},
-			AirlineConfig{ICAO: "FIN", Airport: "EFHK", Fleet: "long"},
-			AirlineConfig{ICAO: "GEC", Airport: "EDDF"},
-			AirlineConfig{ICAO: "IBE", Airport: "LEBL", Fleet: "long"},
-			AirlineConfig{ICAO: "IBE", Airport: "LEMD", Fleet: "long"},
-			AirlineConfig{ICAO: "JBU", Airport: "KBOS"},
-			AirlineConfig{ICAO: "KLM", Airport: "EHAM", Fleet: "long"},
-			AirlineConfig{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
-			AirlineConfig{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
-			AirlineConfig{ICAO: "UAE", Airport: "OMDB", Fleet: "loww"},
-			AirlineConfig{ICAO: "UAL", Airport: "CYYZ", Fleet: "short"},
-			AirlineConfig{ICAO: "UAL", Airport: "KBOS", Fleet: "short"},
-			AirlineConfig{ICAO: "UPS", Airport: "KBOS"},
-			AirlineConfig{ICAO: "VIR", Airport: "EGCC", Fleet: "long"},
+	parch3 := ArrivalGroup{
+		Name: "PARCH3",
+		Rate: 30,
+		Arrivals: []Arrival{
+			Arrival{
+				Name:              "PARCH3",
+				Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
+				Route:             "/. PARCH3",
+				InitialController: "BOS_E_CTR",
+				InitialAltitude:   13000,
+				ClearedAltitude:   12000,
+				InitialSpeed:      275,
+				SpeedRestriction:  250,
+				Airlines: []AirlineConfig{
+					AirlineConfig{ICAO: "AAL", Airport: "CYYZ", Fleet: "short"},
+					AirlineConfig{ICAO: "AFR", Airport: "LPFG", Fleet: "long"},
+					AirlineConfig{ICAO: "BAW", Airport: "EGLL", Fleet: "long"},
+					AirlineConfig{ICAO: "CLX", Airport: "EGCC"},
+					AirlineConfig{ICAO: "DAL", Airport: "KBOS", Fleet: "short"},
+					AirlineConfig{ICAO: "DLH", Airport: "EDDF", Fleet: "long"},
+					AirlineConfig{ICAO: "GEC", Airport: "EDDF"},
+					AirlineConfig{ICAO: "DLH", Airport: "EDDM", Fleet: "long"},
+					AirlineConfig{ICAO: "GEC", Airport: "EDDM"},
+					AirlineConfig{ICAO: "EIN", Airport: "EIDW", Fleet: "long"},
+					AirlineConfig{ICAO: "ELY", Airport: "LLBG", Fleet: "jfk"},
+					AirlineConfig{ICAO: "FIN", Airport: "EFHK", Fleet: "long"},
+					AirlineConfig{ICAO: "GEC", Airport: "EDDF"},
+					AirlineConfig{ICAO: "IBE", Airport: "LEBL", Fleet: "long"},
+					AirlineConfig{ICAO: "IBE", Airport: "LEMD", Fleet: "long"},
+					AirlineConfig{ICAO: "JBU", Airport: "KBOS"},
+					AirlineConfig{ICAO: "KLM", Airport: "EHAM", Fleet: "long"},
+					AirlineConfig{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
+					AirlineConfig{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
+					AirlineConfig{ICAO: "UAE", Airport: "OMDB", Fleet: "loww"},
+					AirlineConfig{ICAO: "UAL", Airport: "CYYZ", Fleet: "short"},
+					AirlineConfig{ICAO: "UAL", Airport: "KBOS", Fleet: "short"},
+					AirlineConfig{ICAO: "UPS", Airport: "KBOS"},
+					AirlineConfig{ICAO: "VIR", Airport: "EGCC", Fleet: "long"},
+				},
+			},
 		},
 	}
-	ac.Arrivals = append(ac.Arrivals, parch3)
+	ac.ArrivalGroups = append(ac.ArrivalGroups, parch3)
 
 	// TODO? PAWLING2 (turboprop <= 250KT)
 
