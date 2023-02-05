@@ -2264,20 +2264,20 @@ func JFKAirport() *AirportConfig {
 	}
 	ac.Approaches = append(ac.Approaches, i22r)
 
-	rz22l := Approach{
+	r22l := Approach{
 		ShortName: "R2L",
-		FullName:  "RNAV Zulu 22 Left",
+		FullName:  "RNAV X-Ray 22 Left",
 		Type:      RNAVApproach,
 		Waypoints: []WaypointArray{[]Waypoint{
-			Waypoint{Fix: "TUSTE", Altitude: 3000},
-			Waypoint{Fix: "ZAKUS", Altitude: 1900},
-			Waypoint{Fix: "JIRVA", Altitude: 1900},
-			Waypoint{Fix: "SOGOE", Altitude: 1429},
-			Waypoint{Fix: "HESOR", Altitude: 1019},
+			Waypoint{Fix: "WIKOL", Altitude: 3000},
+			Waypoint{Fix: "GIGPE", Altitude: 2900},
+			Waypoint{Fix: "CAPIT", Altitude: 2900},
+			Waypoint{Fix: "ENEEE", Altitude: 1700},
+			Waypoint{Fix: "ZOSDO", Altitude: 800},
 			Waypoint{Fix: "_JFK_22L", Altitude: 50},
 		}},
 	}
-	ac.Approaches = append(ac.Approaches, rz22l)
+	ac.Approaches = append(ac.Approaches, r22l)
 
 	rz22r := Approach{
 		ShortName: "R2R",
