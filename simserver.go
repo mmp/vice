@@ -1161,9 +1161,24 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		}
 	}
 
+	// Randomize next spawn time for departures and arrivals; may be before
+	// or after the current time.
+	randomSpawn := func(rate int) time.Time {
+		delta := rand.Intn(rate) - 3*rate/4
+		return time.Now().Add(time.Duration(delta) * time.Second)
+	}
+	for _, ap := range ss.airportConfigs {
+		for i := range ap.ArrivalGroups {
+			ap.ArrivalGroups[i].nextSpawn = randomSpawn(int(ap.ArrivalGroups[i].Rate))
+		}
+		for i := range ap.RunwayConfigs {
+			ap.RunwayConfigs[i].nextSpawn = randomSpawn(int(ap.RunwayConfigs[i].Rate))
+		}
+	}
+
 	// Prime the pump before the user gets involved
 	ss.SpawnAircraft()
-	for i := 0; i < 60; i++ {
+	for i := 0; i < 30; i++ {
 		ss.updateSim()
 	}
 
