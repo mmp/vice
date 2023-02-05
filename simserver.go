@@ -2404,7 +2404,7 @@ func JFKAirport() *AirportConfig {
 
 	camrn4 := ArrivalGroup{
 		Name: "CAMRN4",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "CAMRN4",
@@ -2436,7 +2436,7 @@ func JFKAirport() *AirportConfig {
 
 	owenz := ArrivalGroup{
 		Name: "OWENZ",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "OWENZ",
@@ -2463,7 +2463,7 @@ func JFKAirport() *AirportConfig {
 
 	lendyign := ArrivalGroup{
 		Name: "LENDY8/IGN1",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "LENDY8",
@@ -2522,7 +2522,7 @@ func JFKAirport() *AirportConfig {
 
 	debug := ArrivalGroup{
 		Name: "DEBUG",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "DEBUG",
@@ -2544,7 +2544,7 @@ func JFKAirport() *AirportConfig {
 
 	parch3 := ArrivalGroup{
 		Name: "PARCH3/ROBER2",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "PARCH3",
@@ -3713,7 +3713,7 @@ func FRGAirport() *AirportConfig {
 
 	camrn4 := ArrivalGroup{
 		Name: "CAMRN4",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "CAMRN4",
@@ -3743,7 +3743,7 @@ func FRGAirport() *AirportConfig {
 
 	lendy8 := ArrivalGroup{
 		Name: "LENDY8",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "LENDY8",
@@ -3771,7 +3771,7 @@ func FRGAirport() *AirportConfig {
 
 	debug := ArrivalGroup{
 		Name: "DEBUG",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "DEBUG",
@@ -3794,7 +3794,7 @@ func FRGAirport() *AirportConfig {
 
 	parch3 := ArrivalGroup{
 		Name: "PARCH3",
-		Rate: 30,
+		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
 				Name:              "PARCH3",
