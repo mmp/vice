@@ -933,17 +933,18 @@ func (ac *SSAircraft) UpdatePositionAndGS(ss *SimServer) {
 	}
 
 	if ap := ac.Approach; ap != nil && ac.OnFinal && ac.Approach.Type == ILSApproach {
-		// nudge the aircraft to stay on the localizer; just offset it as
-		// needed--don't bother with the pretense of adjusting its heading,
-		// etc...
+		// Nudge the aircraft to stay on the localizer if it's close.
 		loc := ap.Line()
-		dist := SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1]))
-
-		v := normalize2f(sub2f(ll2nm(loc[1]), ll2nm(loc[0])))
-		vperp := [2]float32{v[1], -v[0]}
-		//lg.Printf("dist %f: %v - %v -> %v", dist, newPos, scale2f(vperp, dist), sub2f(newPos, scale2f(vperp, dist)))
-		newPos = sub2f(newPos, scale2f(vperp, dist))
-		//lg.Printf(" -> dist %f", SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1])))
+		// But if it's too far away, leave it where it is; this case can in
+		// particular happen if it's been given direct to a fix that's not
+		// on the localizer.
+		if dist := SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1])); abs(dist) < .3 {
+			v := normalize2f(sub2f(ll2nm(loc[1]), ll2nm(loc[0])))
+			vperp := [2]float32{v[1], -v[0]}
+			//lg.Printf("dist %f: %v - %v -> %v", dist, newPos, scale2f(vperp, dist), sub2f(newPos, scale2f(vperp, dist)))
+			newPos = sub2f(newPos, scale2f(vperp, dist))
+			//lg.Printf(" -> dist %f", SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1])))
+		}
 	}
 
 	// Finally update position and groundspeed.
@@ -971,7 +972,7 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 			n := len(ap.Waypoints[0])
 			threshold := ll2nm(ap.Waypoints[0][n-1].Location)
 			thresholdDistance := distance2f(ll2nm(ac.Position), threshold)
-			lg.Errorf("intercept @ %.2f!", thresholdDistance)
+			lg.Errorf("intercepted the localizer @ %.2fnm!", thresholdDistance)
 
 			ac.Waypoints = nil
 			for _, wp := range ap.Waypoints[0] {
