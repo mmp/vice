@@ -2243,7 +2243,7 @@ func JFKAirport() *AirportConfig {
 		FullName:  "RNAV Zulu 13 Left",
 		Type:      RNAVApproach,
 		Waypoints: []WaypointArray{[]Waypoint{
-			Waypoint{Fix: "ASALT", Altitude: 3000, Speed: 210},
+			Waypoint{Fix: "ASALT", Speed: 210}, // no alt since may be 2k or 3k
 			Waypoint{Fix: "CNRSE", Altitude: 2000},
 			Waypoint{Fix: "LEISA", Altitude: 1246},
 			Waypoint{Fix: "SILJY", Altitude: 835},
@@ -2258,7 +2258,7 @@ func JFKAirport() *AirportConfig {
 		FullName:  "RNAV Zulu 13 Right",
 		Type:      RNAVApproach,
 		Waypoints: []WaypointArray{[]Waypoint{
-			Waypoint{Fix: "ASALT", Altitude: 3000, Speed: 210},
+			Waypoint{Fix: "ASALT", Speed: 210},
 			Waypoint{Fix: "NUCRI", Altitude: 2000},
 			Waypoint{Fix: "PEEBO", Altitude: 921},
 			Waypoint{Fix: "MAYMA", Altitude: 520},
