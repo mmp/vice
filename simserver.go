@@ -64,7 +64,7 @@ type AirportConfig struct {
 
 	Scratchpads map[string]string `json:"scratchpads"`
 
-	RunwayConfigs []RunwayConfig `json:"runway_configs"`
+	DepartureRunways []DepartureRunway `json:"departure_runways"`
 }
 
 func (ac *AirportConfig) PostDeserialize() []error {
@@ -133,9 +133,9 @@ func (ac *AirportConfig) PostDeserialize() []error {
 	}
 
 	runwayNames := make(map[string]interface{})
-	for i, rwy := range ac.RunwayConfigs {
-		ac.RunwayConfigs[i].challenge = 0.25
-		ac.RunwayConfigs[i].departureCategoryEnabled = make(map[string]*bool)
+	for i, rwy := range ac.DepartureRunways {
+		ac.DepartureRunways[i].challenge = 0.25
+		ac.DepartureRunways[i].departureCategoryEnabled = make(map[string]*bool)
 
 		if _, ok := runwayNames[rwy.Runway]; ok {
 			errors = append(errors, fmt.Errorf("%s: multiple runway definitions", rwy.Runway))
@@ -148,7 +148,7 @@ func (ac *AirportConfig) PostDeserialize() []error {
 
 		for _, cat := range ac.ExitCategories {
 			// This is sort of wasteful, but...
-			ac.RunwayConfigs[i].departureCategoryEnabled[cat] = new(bool)
+			ac.DepartureRunways[i].departureCategoryEnabled[cat] = new(bool)
 		}
 	}
 
@@ -180,7 +180,7 @@ func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) []err
 	return errors
 }
 
-type RunwayConfig struct {
+type DepartureRunway struct {
 	Runway     string               `json:"runway"`
 	Altitude   int                  `json:"altitude"`
 	Enabled    bool                 `json:"-"`
@@ -468,19 +468,19 @@ func (ac *AirportConfig) DrawUI() {
 		anyRunwaysActive := false
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-		if imgui.BeginTableV("runways", 4, flags, imgui.Vec2{800, 0}, 0.) {
+		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{800, 0}, 0.) {
 			imgui.TableSetupColumn("Enabled")
 			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("ADR")
 			imgui.TableSetupColumn("Challenge level")
 			imgui.TableHeadersRow()
 
-			for i, conf := range ac.RunwayConfigs {
+			for i, conf := range ac.DepartureRunways {
 				imgui.PushID(conf.Runway)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				if imgui.Checkbox("##enabled", &ac.RunwayConfigs[i].Enabled) {
-					if ac.RunwayConfigs[i].Enabled {
+				if imgui.Checkbox("##enabled", &ac.DepartureRunways[i].Enabled) {
+					if ac.DepartureRunways[i].Enabled {
 						// enable all corresponding categories by default
 						for _, enabled := range conf.departureCategoryEnabled {
 							*enabled = true
@@ -492,13 +492,13 @@ func (ac *AirportConfig) DrawUI() {
 						}
 					}
 				}
-				anyRunwaysActive = anyRunwaysActive || ac.RunwayConfigs[i].Enabled
+				anyRunwaysActive = anyRunwaysActive || ac.DepartureRunways[i].Enabled
 				imgui.TableNextColumn()
 				imgui.Text(conf.Runway)
 				imgui.TableNextColumn()
-				imgui.InputIntV("##adr", &ac.RunwayConfigs[i].Rate, 1, 120, 0)
+				imgui.InputIntV("##adr", &ac.DepartureRunways[i].Rate, 1, 120, 0)
 				imgui.TableNextColumn()
-				imgui.SliderFloatV("##challenge", &ac.RunwayConfigs[i].challenge, 0, 1, "%.01f", 0)
+				imgui.SliderFloatV("##challenge", &ac.DepartureRunways[i].challenge, 0, 1, "%.01f", 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
@@ -511,7 +511,7 @@ func (ac *AirportConfig) DrawUI() {
 				imgui.TableSetupColumn("Enabled")
 				imgui.TableSetupColumn("Runway/Gate")
 				imgui.TableHeadersRow()
-				for _, conf := range ac.RunwayConfigs {
+				for _, conf := range ac.DepartureRunways {
 					if !conf.Enabled {
 						continue
 					}
@@ -560,7 +560,7 @@ func (ac *AirportConfig) DrawUI() {
 func (ssc *SimServerConnectionConfiguration) Valid() bool {
 	// Make sure that at least one scenario is selected
 	for _, ap := range ssc.scenario.Airports {
-		for _, rwy := range ap.RunwayConfigs {
+		for _, rwy := range ap.DepartureRunways {
 			if !rwy.Enabled {
 				continue
 			}
@@ -1193,8 +1193,8 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		for i := range ap.ArrivalGroups {
 			ap.ArrivalGroups[i].nextSpawn = randomSpawn(int(ap.ArrivalGroups[i].Rate))
 		}
-		for i := range ap.RunwayConfigs {
-			ap.RunwayConfigs[i].nextSpawn = randomSpawn(int(ap.RunwayConfigs[i].Rate))
+		for i := range ap.DepartureRunways {
+			ap.DepartureRunways[i].nextSpawn = randomSpawn(int(ap.DepartureRunways[i].Rate))
 		}
 	}
 
@@ -1831,12 +1831,12 @@ func (ss *SimServer) SpawnAircraft() {
 			}
 		}
 
-		for i, rwy := range ap.RunwayConfigs {
+		for i, rwy := range ap.DepartureRunways {
 			if rwy.Enabled && ss.remainingLaunches > 0 && now.After(rwy.nextSpawn) {
-				if ac := ss.SpawnDeparture(ap, &ap.RunwayConfigs[i]); ac != nil {
+				if ac := ss.SpawnDeparture(ap, &ap.DepartureRunways[i]); ac != nil {
 					ac.AC.FlightPlan.DepartureAirport = ap.ICAO
 					addAircraft(ac)
-					ap.RunwayConfigs[i].nextSpawn = now.Add(randomWait(rwy.Rate))
+					ap.DepartureRunways[i].nextSpawn = now.Add(randomWait(rwy.Rate))
 				}
 			}
 		}
@@ -1946,7 +1946,7 @@ func (ss *SimServer) SpawnArrival(ag ArrivalGroup) *SSAircraft {
 	return ac
 }
 
-func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *RunwayConfig) *SSAircraft {
+func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *SSAircraft {
 	var dep *Departure
 	if rand.Float32() < rwy.challenge {
 		// 50/50 split between the exact same departure and a departure to
@@ -2075,8 +2075,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 // KJFK
 
 /*
-func jfk31RRunwayConfig() *DepartureConfig {
-	c := jfkRunwayConfig()
+func jfk31RDepartureRunway() *DepartureConfig {
+	c := jfkDepartureRunway()
 	delete(c.categoryEnabled, "Southwest")
 
 	c.name = "31R"
@@ -3152,8 +3152,8 @@ func JFKAirport() *AirportConfig {
 		"DEEZZ5": "DEZ",
 	}
 
-	ac.RunwayConfigs = []RunwayConfig{
-		RunwayConfig{
+	ac.DepartureRunways = []DepartureRunway{
+		DepartureRunway{
 			Runway:   "31L",
 			Rate:     45,
 			Altitude: 13,
@@ -3180,7 +3180,7 @@ func JFKAirport() *AirportConfig {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "22R",
 			Rate:     45,
 			Altitude: 13,
@@ -3207,7 +3207,7 @@ func JFKAirport() *AirportConfig {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "13R",
 			Rate:     45,
 			Altitude: 13,
@@ -3234,7 +3234,7 @@ func JFKAirport() *AirportConfig {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #109"), ClearedAltitude: 5000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "4L",
 			Rate:     45,
 			Altitude: 13,
@@ -3417,8 +3417,8 @@ func LGAAirport() *AirportConfig {
 		},
 	}
 
-	lga.RunwayConfigs = []RunwayConfig{
-		RunwayConfig{
+	lga.DepartureRunways = []DepartureRunway{
+		DepartureRunway{
 			Runway:   "31",
 			Rate:     30,
 			Altitude: 20,
@@ -3432,7 +3432,7 @@ func LGAAirport() *AirportConfig {
 				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 6000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "22",
 			Rate:     30,
 			Altitude: 20,
@@ -3446,7 +3446,7 @@ func LGAAirport() *AirportConfig {
 				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 6000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "13",
 			Rate:     30,
 			Altitude: 20,
@@ -3460,7 +3460,7 @@ func LGAAirport() *AirportConfig {
 				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 6000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "4",
 			Rate:     30,
 			Altitude: 20,
@@ -3561,8 +3561,8 @@ func ISPAirport() *AirportConfig {
 		},
 	}
 
-	isp.RunwayConfigs = []RunwayConfig{
-		RunwayConfig{
+	isp.DepartureRunways = []DepartureRunway{
+		DepartureRunway{
 			Runway: "6",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -3572,7 +3572,7 @@ func ISPAirport() *AirportConfig {
 				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_6 _ISP_6a _ISP_6b @ #270"), ClearedAltitude: 8000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway: "24",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -3582,7 +3582,7 @@ func ISPAirport() *AirportConfig {
 				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275"), ClearedAltitude: 8000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway: "15R",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -3592,7 +3592,7 @@ func ISPAirport() *AirportConfig {
 				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275"), ClearedAltitude: 8000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway: "33L",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -3916,8 +3916,8 @@ func FRGAirport() *AirportConfig {
 		},
 	}
 
-	frg.RunwayConfigs = []RunwayConfig{
-		RunwayConfig{
+	frg.DepartureRunways = []DepartureRunway{
+		DepartureRunway{
 			Runway:   "1",
 			Rate:     30,
 			Altitude: 81,
@@ -3944,7 +3944,7 @@ func FRGAirport() *AirportConfig {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "19",
 			Rate:     30,
 			Altitude: 81,
@@ -3971,7 +3971,7 @@ func FRGAirport() *AirportConfig {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "14",
 			Rate:     30,
 			Altitude: 81,
@@ -3998,7 +3998,7 @@ func FRGAirport() *AirportConfig {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
 			},
 		},
-		RunwayConfig{
+		DepartureRunway{
 			Runway:   "32",
 			Rate:     30,
 			Altitude: 81,
