@@ -1017,10 +1017,6 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 		// Otherwise, find the heading to the following fix.
 		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, database.MagneticVariation)
 	}
-	if hdg == 0 {
-		// No more waypoints, so we'll just leave it on its heading.
-		return
-	}
 
 	dist := nmdistance2ll(ac.Position, wp.Location)
 	eta := dist / float32(ac.AC.Groundspeed()) * 3600 // in seconds
@@ -1029,14 +1025,14 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 	// ac.AC.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
 
 	// We'll wrap things up for the upcoming waypoint if we're within 2
-	// seconds of reaching it or if the time to turn to the outbound
-	// heading is 1/6 of the number of degrees the turn will be.  The first
-	// test ensures that we don't fly over the waypoint in the case where
-	// there is no turn (e.g. when we're established on the localizer) and
-	// the latter test assumes a 3 degree/second turn and then adds a 1/2
-	// factor to account for the arc of the turn.  (Ad hoc, but it seems to
-	// work well.)
-	if eta < 2 || eta < turn/3/2 {
+	// seconds of reaching it or if the aircraft has to turn to a new
+	// direction and the time to turn to the outbound heading is 1/6 of the
+	// number of degrees the turn will be.  The first test ensures that we
+	// don't fly over the waypoint in the case where there is no turn
+	// (e.g. when we're established on the localizer) and the latter test
+	// assumes a 3 degree/second turn and then adds a 1/2 factor to account
+	// for the arc of the turn.  (Ad hoc, but it seems to work well enough.)
+	if eta < 2 || (hdg != 0 && eta < turn/3/2) {
 		// Execute any commands associated with the waypoint
 		ss.RunWaypointCommands(ac, wp.Commands)
 
