@@ -592,7 +592,7 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SSAircr
+// SSAircraft
 
 type SSAircraft struct {
 	AC          *Aircraft
@@ -1007,11 +1007,36 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 
 	wp := ac.Waypoints[0]
 
-	// Are we nearly at the fix?  Move on to the next one a little bit
-	// early so that we don't overshoot.
-	// TODO: do the turn in a more principled manner so that we smoothly
-	// intercept the desired outbound direction.
-	if nmdistance2ll(ac.Position, wp.Location) < .75 {
+	// Are we nearly at the fix and is it time to turn for the outbound heading?
+	// First, figure out the outbound heading.
+	var hdg float32
+	if wp.Heading != 0 {
+		// Leaving the next fix on a specified heading.
+		hdg = float32(wp.Heading)
+	} else if len(ac.Waypoints) > 1 {
+		// Otherwise, find the heading to the following fix.
+		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, database.MagneticVariation)
+	}
+	if hdg == 0 {
+		// No more waypoints, so we'll just leave it on its heading.
+		return
+	}
+
+	dist := nmdistance2ll(ac.Position, wp.Location)
+	eta := dist / float32(ac.AC.Groundspeed()) * 3600 // in seconds
+	turn := abs(headingDifference(hdg, ac.Heading))
+	//lg.Errorf("%s: dist to %s %.2fnm, eta %.1fs, next hdg %.1f turn %.1f, go: %v",
+	// ac.AC.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
+
+	// We'll wrap things up for the upcoming waypoint if we're within 2
+	// seconds of reaching it or if the time to turn to the outbound
+	// heading is 1/6 of the number of degrees the turn will be.  The first
+	// test ensures that we don't fly over the waypoint in the case where
+	// there is no turn (e.g. when we're established on the localizer) and
+	// the latter test assumes a 3 degree/second turn and then adds a 1/2
+	// factor to account for the arc of the turn.  (Ad hoc, but it seems to
+	// work well.)
+	if eta < 2 || eta < turn/3/2 {
 		// Execute any commands associated with the waypoint
 		ss.RunWaypointCommands(ac, wp.Commands)
 
