@@ -2211,7 +2211,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				}
 
 			case 3:
-				if cmd == "*D+" {
+				if isControllerId(cmd) {
+					status.clear = true
+					status.err = server.Handoff(ac.Callsign, cmd)
+					return
+				} else if cmd == "*D+" {
 					ps.DisplayTPASize = !ps.DisplayTPASize
 					status.clear = true
 					return
@@ -2225,8 +2229,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						status.clear = true
 						return
 					}
-					// Don't worry about an error here since we still have
-					// e.g., *J and *P below...
 				}
 
 			case 4:
