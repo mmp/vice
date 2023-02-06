@@ -3894,14 +3894,11 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		// convert PTL length (minutes) to estimated distance a/c will travel
 		dist := float32(ac.Groundspeed()) / 60 * ps.PTLLength
 
-		// we want the vector length to be l=dist
-		// we have a heading vector (hx, hy) and scale factors (sx, sy) due to lat/long compression.
-		// we want a t to scale the heading by to have that length.
-		// solve (sx t hx)^2 + (hy t hy)^2 = l^2 ->
-		// t = sqrt(l^2 / ((sx hx)^2 + (sy hy)^2)
-		h := ac.HeadingVector()
-		t := sqrt(sqr(dist) / (sqr(h[1]*database.NmPerLatitude) + sqr(h[0]*database.NmPerLongitude)))
-		end := add2ll(ac.Position(), scale2ll(h, t))
+		// h is a vector in nm coordinates with length l=dist
+		hdg := ac.Heading() - database.MagneticVariation
+		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+		h = scale2f(h, dist)
+		end := add2ll(ac.Position(), nm2ll(h))
 
 		ld.AddLine(ac.Position(), end, color)
 	}
