@@ -1184,8 +1184,9 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 
 	// Randomize next spawn time for departures and arrivals; may be before
 	// or after the current time.
+	const initialSimSeconds = 45
 	randomSpawn := func(rate int) time.Time {
-		delta := rand.Intn(rate) - 3*rate/4
+		delta := rand.Intn(rate) - rate/2 - initialSimSeconds
 		return time.Now().Add(time.Duration(delta) * time.Second)
 	}
 	for _, ap := range ss.airportConfigs {
@@ -1198,10 +1199,16 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	}
 
 	// Prime the pump before the user gets involved
-	ss.SpawnAircraft()
-	for i := 0; i < 30; i++ {
-		ss.updateSim()
+	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
+	for i := 0; i < initialSimSeconds; i++ {
+		ss.currentTime = t
+		ss.lastUpdateTime = t
+		t = t.Add(1 * time.Second)
+
+		ss.updateState()
 	}
+	ss.currentTime = time.Now()
+	ss.lastUpdateTime = time.Now()
 
 	return ss
 }
@@ -1409,6 +1416,11 @@ func (ss *SimServer) GetUpdates() {
 	ss.currentTime = ss.currentTime.Add(elapsed)
 	ss.lastUpdateTime = time.Now()
 
+	ss.updateState()
+}
+
+// FIXME: this is poorly named...
+func (ss *SimServer) updateState() {
 	// Accept any handoffs whose time has time...
 	now := ss.CurrentTime()
 	for callsign, t := range ss.handoffs {
