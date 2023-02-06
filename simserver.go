@@ -1702,6 +1702,7 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
+		lg.Errorf("%s", spew.Sdump(ac))
 		s := fmt.Sprintf("%s: current alt %d, assigned alt %d crossing alt %d",
 			ac.AC.Callsign, ac.AC.Altitude(), ac.AssignedAltitude, ac.CrossingAltitude)
 		if ac.AssignedHeading != 0 {
@@ -1719,10 +1720,6 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 		if ac.OnFinal {
 			s += ", on final"
 		}
-		if ac.Approach != nil {
-			s += fmt.Sprintf(", approach: %s", spew.Sdump(ac.Approach))
-		}
-		s += fmt.Sprintf(", route %s", spew.Sdump(ac.Waypoints))
 		lg.Errorf("%s", s)
 	}
 	return nil
