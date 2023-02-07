@@ -647,508 +647,19 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 	return nil
 }
 
-///////////////////////////////////////////////////////////////////////////
-// SSAircraft
-
-type SSAircraft struct {
-	Aircraft
-
-	Performance AircraftPerformance
-	Strip       FlightStrip
-	Waypoints   []Waypoint
-
-	Position Point2LL
-	Heading  float32
-	Altitude float32
-	IAS, GS  float32 // speeds...
-
-	// The following are for controller-assigned altitudes, speeds, and
-	// headings.  Values of 0 indicate no assignment.
-	AssignedAltitude int
-	AssignedSpeed    int
-	AssignedHeading  int
-	TurnDirection    int
-
-	// These are for altitudes/speeds to meet at the next fix; unlike
-	// controller-assigned ones, where we try to get there as quickly as
-	// the aircraft is capable of, these we try to get to exactly at the
-	// fix.
-	CrossingAltitude int
-	CrossingSpeed    int
-
-	Approach        *Approach // if assigned
-	ClearedApproach bool
-	OnFinal         bool
-}
-
-func (ac *SSAircraft) TAS() float32 {
-	// Simple model for the increase in TAS as a function of altitude: 2%
-	// additional TAS on top of IAS for each 1000 feet.
-	return ac.IAS * (1 + .02*ac.Altitude/1000)
-}
-
-func (ac *SSAircraft) UpdateAirspeed() {
-	// Figure out what speed we're supposed to be going. The following is
-	// prioritized, so once targetSpeed has been set, nothing should
-	// override it.  cruising speed.
-	perf := ac.Performance
-	var targetSpeed int
-
-	// Slow down on final approach
-	if ac.OnFinal {
-		if airportPos, ok := database.Locate(ac.FlightPlan.ArrivalAirport); ok {
-			airportDist := nmdistance2ll(ac.Position, airportPos)
-			if airportDist < 1 {
-				targetSpeed = perf.Speed.Landing
-			} else if airportDist < 5 || (airportDist < 10 && ac.AssignedSpeed == 0) {
-				// Ignore speed restrictions if the aircraft is within 5
-				// miles; otherwise start slowing down if it hasn't't been
-				// given a speed restriction.
-
-				// Expected speed at 10 DME, without further direction.
-				approachSpeed := min(210, perf.Speed.Cruise)
-				landingSpeed := perf.Speed.Landing
-				targetSpeed = int(lerp((airportDist-1)/9, float32(landingSpeed), float32(approachSpeed)))
-			}
-
-			// However, don't accelerate if the aircraft is already under
-			// the target speed.
-			targetSpeed = min(targetSpeed, int(ac.IAS))
-			//lg.Errorf("airport dist %f -> target speed %d", airportDist, targetSpeed)
-		}
-	}
-
-	if targetSpeed == 0 && ac.AssignedSpeed != 0 {
-		// Use the controller-assigned speed, but only as far as the
-		// aircraft's capabilities.
-		targetSpeed = clamp(ac.AssignedSpeed, perf.Speed.Min, perf.Speed.Max)
-	}
-
-	if targetSpeed == 0 && ac.CrossingSpeed != 0 {
-		eta, ok := ac.nextFixETA()
-		if !ok {
-			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
-			return
-		}
-
-		cs := float32(ac.CrossingSpeed)
-		if ac.IAS < cs {
-			accel := (cs - ac.IAS) / float32(eta.Seconds()) * 1.25
-			accel = min(accel, ac.Performance.Rate.Accelerate/2)
-			ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
-		} else if ac.IAS > cs {
-			decel := (ac.IAS - cs) / float32(eta.Seconds()) * 0.75
-			decel = min(decel, ac.Performance.Rate.Decelerate/2)
-			ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
-			//lg.Errorf("dist %f eta %s ias %f crossing %f decel %f", dist, eta, ac.IAS, cs, decel)
-		}
-
-		return
-	}
-
-	if targetSpeed == 0 {
-		targetSpeed = perf.Speed.Cruise
-
-		// But obey 250kts under 10,000'
-		if ac.Altitude < 10000 {
-			targetSpeed = min(targetSpeed, 250)
-		}
-	}
-
-	// Finally, adjust IAS subject to the capabilities of the aircraft.
-	if ac.IAS+1 < float32(targetSpeed) {
-		accel := ac.Performance.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
-		ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
-	} else if ac.IAS-1 > float32(targetSpeed) {
-		decel := ac.Performance.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
-		ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
-	}
-}
-
-func (ac *SSAircraft) UpdateAltitude() {
-	// Climb or descend, but only if it's going fast enough to be
-	// airborne.  (Assume no stalls in flight.)
-	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
-	if !airborne {
-		return
-	}
-
-	if ac.AssignedAltitude == 0 && ac.CrossingAltitude == 0 {
-		// No altitude assignment, so... just stay where we are
-		return
-	}
-
-	// Baseline climb and descent capabilities in ft/minute
-	climb, descent := float32(ac.Performance.Rate.Climb), float32(ac.Performance.Rate.Descent)
-
-	// For high performing aircraft, reduce climb rate after 5,000'
-	if climb >= 2500 && ac.Altitude > 5000 {
-		climb -= 500
-	}
-
-	if ac.AssignedAltitude != 0 {
-		// Controller-assigned altitude takes precedence over a crossing
-		// altitude.
-
-		if ac.Altitude < float32(ac.AssignedAltitude) {
-			// Simple model: we just update altitude based on the rated climb
-			// rate; does not account for simultaneous acceleration, etc...
-			ac.Altitude = min(float32(ac.AssignedAltitude), ac.Altitude+climb/60)
-		} else if ac.Altitude > float32(ac.AssignedAltitude) {
-			// Similarly, descent modeling doesn't account for airspeed or
-			// acceleration/deceleration...
-			ac.Altitude = max(float32(ac.AssignedAltitude), ac.Altitude-descent/60)
-		}
-	} else if !ac.ClearedApproach || ac.OnFinal {
-		// We have a crossing altitude, but ignore it if the aircraft is
-		// below the next crossing altitude, has been cleared for the
-		// approach, but hasn't yet joined the final approach course.
-		// (i.e., don't climb then!)
-		eta, ok := ac.nextFixETA()
-		if !ok {
-			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
-			return
-		}
-
-		if ac.CrossingAltitude > int(ac.Altitude) {
-			// Need to climb.  Figure out rate of climb that would get us
-			// there when we reach the fix (ft/min).
-			rate := (float32(ac.CrossingAltitude) - ac.Altitude) / float32(eta.Minutes())
-
-			// But we can't climb faster than the aircraft is capable of.
-			ac.Altitude += min(rate, climb) / 60
-		} else {
-			// Need to descend; same logic as the climb case.
-			rate := (ac.Altitude - float32(ac.CrossingAltitude)) / float32(eta.Minutes())
-			ac.Altitude -= min(rate, descent) / 60
-			//lg.Errorf("dist %f eta %f alt %f crossing %d eta %f -> rate %f ft/min -> delta %f",
-			//dist, eta, ac.Altitude, ac.CrossingAltitude, eta, rate, min(rate, descent)/60)
-		}
-	}
-}
-
-// Returns the estimated time in which the aircraft will reach the next fix
-// in its waypoints, assuming it is flying direct to it at its current
-// speed.
-func (ac *SSAircraft) nextFixETA() (time.Duration, bool) {
-	if len(ac.Waypoints) == 0 {
-		return 0, false
-	}
-	return ac.Waypoints[0].ETA(ac.Position, ac.GS), true
-}
-
-func (ac *SSAircraft) UpdateHeading() {
-	// Figure out the heading; if the route is empty, just leave it
-	// on its current heading...
-	targetHeading := ac.Heading
-	turn := float32(0)
-
-	// Are we intercepting a localizer? Possibly turn to join it.
-	if ap := ac.Approach; ap != nil &&
-		ac.ClearedApproach &&
-		ap.Type == ILSApproach &&
-		ac.AssignedHeading != 0 &&
-		ac.AssignedHeading != ap.Heading() &&
-		headingDifference(float32(ap.Heading()), ac.Heading) < 40 /* allow quite some slop... */ {
-		// Estimate time to intercept.  Do this using nm coordinates
-		loc := ap.Line()
-		loc[0], loc[1] = ll2nm(loc[0]), ll2nm(loc[1])
-
-		pos := ll2nm(ac.Position)
-		hdg := ac.Heading - database.MagneticVariation
-		headingVector := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-		pos1 := add2f(pos, headingVector)
-
-		// Intersection of aircraft's path with the localizer
-		isect, ok := LineLineIntersect(loc[0], loc[1], pos, pos1)
-		if !ok {
-			lg.Errorf("no intersect!")
-			return // better luck next time...
-		}
-
-		// Is the intersection behind the aircraft? (This can happen if it
-		// has flown through the localizer.) Ignore it if so.
-		v := sub2f(isect, pos)
-		if v[0]*headingVector[0]+v[1]*headingVector[1] < 0 {
-			lg.Errorf("behind us...")
-		} else {
-			// Find eta to the intercept and the turn required to align with
-			// the localizer.
-			dist := distance2f(pos, isect)
-			eta := dist / ac.GS * 3600 // in seconds
-			turn := abs(headingDifference(hdg, float32(ap.Heading())-database.MagneticVariation))
-			//lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
-
-			// Assuming 3 degree/second turns, then we might start to turn to
-			// intercept when the eta until intercept is 1/3 the number of
-			// degrees to cover.  However... the aircraft approaches the
-			// localizer more slowly as it turns, so we'll add another 1/2
-			// fudge factor, which seems to account for that reasonably well.
-			if eta < turn/3/2 {
-				lg.Errorf("assigned approach heading! %d", ap.Heading())
-				ac.AssignedHeading = ap.Heading()
-				ac.TurnDirection = 0
-				// Just in case.. Thus we will be ready to pick up the
-				// approach waypoints once we capture.
-				ac.Waypoints = nil
-			}
-		}
-	}
-
-	// Otherwise, if the controller has assigned a heading, then no matter
-	// what, that's what we will turn to.
-	if ac.AssignedHeading != 0 {
-		targetHeading = float32(ac.AssignedHeading)
-		if ac.TurnDirection != 0 {
-			// If the controller specified a left or right turn, then
-			// compute the full turn angle. We'll do no more than 3 degrees
-			// of that.
-			if ac.TurnDirection < 0 { // left
-				angle := ac.Heading - targetHeading
-				if angle < 0 {
-					angle += 360
-				}
-				angle = min(angle, 3)
-				turn = -angle
-			} else if ac.TurnDirection > 0 { // right
-				angle := targetHeading - ac.Heading
-				if angle < 0 {
-					angle += 360
-				}
-				angle = min(angle, 3)
-				turn = angle
-			}
-		}
-	} else if len(ac.Waypoints) > 0 {
-		// Our desired heading is the heading to get to the next waypoint.
-		targetHeading = headingp2ll(ac.Position, ac.Waypoints[0].Location,
-			database.MagneticVariation)
-	} else {
-		// And otherwise we're flying off into the void...
-		return
-	}
-
-	// A turn direction wasn't specified, so figure out which way is
-	// closest.
-	if turn == 0 {
-		// First find the angle to rotate the target heading by so that
-		// it's aligned with 180 degrees. This lets us not worry about the
-		// complexities of the wrap around at 0/360..
-		rot := 180 - targetHeading
-		if rot < 0 {
-			rot += 360
-		}
-		cur := mod(ac.Heading+rot, 360) // w.r.t. 180 target
-		turn = clamp(180-cur, -3, 3)    // max 3 degrees / second
-	}
-
-	// Finally, do the turn.
-	if ac.Heading != targetHeading {
-		ac.Heading += turn
-		if ac.Heading < 0 {
-			ac.Heading += 360
-		} else if ac.Heading > 360 {
-			ac.Heading -= 360
-		}
-	}
-}
-
-func (ss *SimServer) RunWaypointCommands(ac *SSAircraft, cmds []WaypointCommand) {
+func (ss *SimServer) RunWaypointCommands(ac *Aircraft, cmds []WaypointCommand) {
 	for _, cmd := range cmds {
 		switch cmd {
 		case WaypointCommandHandoff:
 			// Handoff to the user's position?
 			ac.InboundHandoffController = ss.callsign
-			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: &ac.Aircraft})
+			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: ac})
 
 		case WaypointCommandDelete:
-			eventStream.Post(&RemovedAircraftEvent{ac: &ac.Aircraft})
+			eventStream.Post(&RemovedAircraftEvent{ac: ac})
 			delete(ss.aircraft, ac.Callsign)
 			return
 		}
-	}
-}
-
-func (ac *SSAircraft) UpdatePositionAndGS(ss *SimServer) {
-	// Update position given current heading
-	prev := ac.Position
-	hdg := ac.Heading - database.MagneticVariation
-	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-	// First use TAS to get a first whack at the new position.
-	newPos := add2f(ll2nm(ac.Position), scale2f(v, ac.TAS()/3600))
-
-	// Now add wind...
-	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
-	if airborne {
-		// TODO: have a better gust model?
-		windKts := float32(ss.wind.speed + rand.Intn(ss.wind.gust))
-
-		// wind.dir is where it's coming from, so +180 to get the vector
-		// that affects the aircraft's course.
-		d := float32(ss.wind.dir + 180)
-		vWind := [2]float32{sin(radians(d)), cos(radians(d))}
-		newPos = add2f(newPos, scale2f(vWind, windKts/3600))
-	}
-
-	if ap := ac.Approach; ap != nil && ac.OnFinal && ac.Approach.Type == ILSApproach {
-		// Nudge the aircraft to stay on the localizer if it's close.
-		loc := ap.Line()
-		// But if it's too far away, leave it where it is; this case can in
-		// particular happen if it's been given direct to a fix that's not
-		// on the localizer.
-		if dist := SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1])); abs(dist) < .3 {
-			v := normalize2f(sub2f(ll2nm(loc[1]), ll2nm(loc[0])))
-			vperp := [2]float32{v[1], -v[0]}
-			//lg.Printf("dist %f: %v - %v -> %v", dist, newPos, scale2f(vperp, dist), sub2f(newPos, scale2f(vperp, dist)))
-			newPos = sub2f(newPos, scale2f(vperp, dist))
-			//lg.Printf(" -> dist %f", SignedPointLineDistance(newPos, ll2nm(loc[0]), ll2nm(loc[1])))
-		}
-	}
-
-	// Finally update position and groundspeed.
-	ac.Position = nm2ll(newPos)
-	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
-}
-
-func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
-	if ap := ac.Approach; ap != nil &&
-		ac.ClearedApproach &&
-		!ac.OnFinal &&
-		len(ac.Waypoints) == 0 &&
-		headingDifference(float32(ap.Heading()), ac.Heading) < 2 &&
-		ac.Approach.Type == ILSApproach {
-		// Have we intercepted the localizer?
-		loc := ap.Line()
-		dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
-
-		if dist < .2 {
-			// we'll call that good enough. Now we need to figure out which
-			// fixes in the approach are still ahead and then add them to
-			// the aircraft's waypoints; we find the aircraft's distance to
-			// the runway threshold and taking any fixes that are closer
-			// than that distance.
-			n := len(ap.Waypoints[0])
-			threshold := ll2nm(ap.Waypoints[0][n-1].Location)
-			thresholdDistance := distance2f(ll2nm(ac.Position), threshold)
-			lg.Errorf("intercepted the localizer @ %.2fnm!", thresholdDistance)
-
-			ac.Waypoints = nil
-			for _, wp := range ap.Waypoints[0] {
-				if distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
-					lg.Errorf("%s: adding future waypoint...", wp.Fix)
-					ac.Waypoints = append(ac.Waypoints, wp)
-				} else {
-					// We consider the waypoints from far away to near (and
-					// so in the end we want a contiguous set of them
-					// starting from the runway threshold). Any time we
-					// find a waypoint that is farther away than the
-					// aircraft, we preemptively clear out the aircraft's
-					// waypoints; in this way if, for example, an IAF is
-					// somehow closer to the airport than the aircraft,
-					// then we won't include it in the aircraft's upcoming
-					// waypoints.
-					lg.Errorf("clearing those waypoints...")
-					ac.Waypoints = nil
-				}
-			}
-
-			ac.AssignedHeading = 0
-			ac.AssignedAltitude = 0
-			ac.OnFinal = true
-		}
-		return
-	}
-
-	if len(ac.Waypoints) == 0 {
-		return
-	}
-
-	wp := ac.Waypoints[0]
-
-	// Are we nearly at the fix and is it time to turn for the outbound heading?
-	// First, figure out the outbound heading.
-	var hdg float32
-	if wp.Heading != 0 {
-		// Leaving the next fix on a specified heading.
-		hdg = float32(wp.Heading)
-	} else if len(ac.Waypoints) > 1 {
-		// Otherwise, find the heading to the following fix.
-		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, database.MagneticVariation)
-	}
-
-	eta := wp.ETA(ac.Position, ac.GS)
-	turn := abs(headingDifference(hdg, ac.Heading))
-	//lg.Errorf("%s: dist to %s %.2fnm, eta %s, next hdg %.1f turn %.1f, go: %v",
-	// ac.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
-
-	// We'll wrap things up for the upcoming waypoint if we're within 2
-	// seconds of reaching it or if the aircraft has to turn to a new
-	// direction and the time to turn to the outbound heading is 1/6 of the
-	// number of degrees the turn will be.  The first test ensures that we
-	// don't fly over the waypoint in the case where there is no turn
-	// (e.g. when we're established on the localizer) and the latter test
-	// assumes a 3 degree/second turn and then adds a 1/2 factor to account
-	// for the arc of the turn.  (Ad hoc, but it seems to work well enough.)
-	if s := float32(eta.Seconds()); s < 2 || (hdg != 0 && s < turn/3/2) {
-		// Execute any commands associated with the waypoint
-		ss.RunWaypointCommands(ac, wp.Commands)
-
-		// For starters, convert a previous crossing restriction to a current
-		// assignment.  Clear out the previous crossing restriction.
-		if ac.AssignedAltitude == 0 {
-			ac.AssignedAltitude = ac.CrossingAltitude
-		}
-		ac.CrossingAltitude = 0
-
-		if ac.AssignedSpeed == 0 {
-			ac.AssignedSpeed = ac.CrossingSpeed
-		}
-		ac.CrossingSpeed = 0
-
-		if ac.Waypoints[0].Heading != 0 {
-			// We have an outbound heading
-			ac.AssignedHeading = wp.Heading
-			ac.TurnDirection = 0
-			// The aircraft won't head to the next waypoint until the
-			// assigned heading is cleared, though...
-			ac.Waypoints = ac.Waypoints[1:]
-		} else {
-			ac.Waypoints = ac.Waypoints[1:]
-
-			if len(ac.Waypoints) > 0 {
-				ac.WaypointUpdate(ac.Waypoints[0])
-			}
-		}
-	}
-}
-
-func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
-	if *devmode {
-		lg.Printf("Waypoint update. wp %s ac %s", spew.Sdump(wp), spew.Sdump(ac))
-	}
-
-	// Now handle any altitude/speed restriction at the next waypoint.
-	if wp.Altitude != 0 {
-		// TODO: we should probably distinguish between controller-assigned
-		// altitude and assigned due to a previous crossing restriction,
-		// since controller assigned should take precedence over
-		// everything, which it doesn't currently...
-		ac.CrossingAltitude = wp.Altitude
-		ac.AssignedAltitude = 0
-	}
-	if wp.Speed != 0 {
-		ac.CrossingSpeed = wp.Speed
-		ac.AssignedSpeed = 0
-	}
-
-	ac.AssignedHeading = 0
-	ac.TurnDirection = 0
-
-	if ac.ClearedApproach {
-		// The aircraft has made it to the approach fix they
-		// were cleared to.
-		//lg.Errorf("%s: on final...", ac.Callsign)
-		ac.OnFinal = true
 	}
 }
 
@@ -1161,7 +672,7 @@ type SimServer struct {
 	airportConfigs []*AirportConfig
 	controllers    map[string]*Controller
 
-	aircraft map[string]*SSAircraft
+	aircraft map[string]*Aircraft
 	handoffs map[string]time.Time
 	metar    map[string]*METAR
 
@@ -1192,7 +703,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		airportConfigs: ssc.scenario.Airports,
 		controllers:    make(map[string]*Controller),
 
-		aircraft: make(map[string]*SSAircraft),
+		aircraft: make(map[string]*Aircraft),
 		handoffs: make(map[string]time.Time),
 		metar:    make(map[string]*METAR),
 
@@ -1287,7 +798,7 @@ func (ss *SimServer) SetScratchpad(callsign string, scratchpad string) error {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.Scratchpad = scratchpad
-		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		return nil
 	}
 }
@@ -1311,8 +822,8 @@ func (ss *SimServer) InitiateTrack(callsign string) error {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.TrackingController = ss.callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
-		eventStream.Post(&InitiatedTrackEvent{ac: &ac.Aircraft})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
+		eventStream.Post(&InitiatedTrackEvent{ac: ac})
 		return nil
 	}
 }
@@ -1324,8 +835,8 @@ func (ss *SimServer) DropTrack(callsign string) error {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.TrackingController = ""
-		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
-		eventStream.Post(&DroppedTrackEvent{ac: &ac.Aircraft})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
+		eventStream.Post(&DroppedTrackEvent{ac: ac})
 		return nil
 	}
 }
@@ -1339,8 +850,8 @@ func (ss *SimServer) Handoff(callsign string, controller string) error {
 		return ErrNoController
 	} else {
 		ac.OutboundHandoffController = ctrl.Callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
-		eventStream.Post(&OfferedHandoffEvent{controller: ss.callsign, ac: &ac.Aircraft})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
+		eventStream.Post(&OfferedHandoffEvent{controller: ss.callsign, ac: ac})
 		acceptDelay := 2 + rand.Intn(10)
 		ss.handoffs[callsign] = ss.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 		return nil
@@ -1355,8 +866,8 @@ func (ss *SimServer) AcceptHandoff(callsign string) error {
 	} else {
 		ac.InboundHandoffController = ""
 		ac.TrackingController = ss.callsign
-		eventStream.Post(&AcceptedHandoffEvent{controller: ss.callsign, ac: &ac.Aircraft})
-		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft}) // FIXME...
+		eventStream.Post(&AcceptedHandoffEvent{controller: ss.callsign, ac: ac})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac}) // FIXME...
 		return nil
 	}
 }
@@ -1375,7 +886,7 @@ func (ss *SimServer) CancelHandoff(callsign string) error {
 		// TODO: we are inconsistent in other control backends about events
 		// when user does things like this; sometimes no event, sometimes
 		// modified a/c event...
-		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		return nil
 	}
 }
@@ -1398,13 +909,13 @@ func (ss *SimServer) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, ra
 
 func (ss *SimServer) Disconnect() {
 	for _, ac := range ss.aircraft {
-		eventStream.Post(&RemovedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
 }
 
 func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
 	if ac, ok := ss.aircraft[callsign]; ok {
-		return &ac.Aircraft
+		return ac
 	}
 	return nil
 }
@@ -1412,8 +923,8 @@ func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
 func (ss *SimServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	var filtered []*Aircraft
 	for _, ac := range ss.aircraft {
-		if filter(&ac.Aircraft) {
-			filtered = append(filtered, &ac.Aircraft)
+		if filter(ac) {
+			filtered = append(filtered, ac)
 		}
 	}
 	return filtered
@@ -1487,7 +998,7 @@ func (ss *SimServer) updateState() {
 			ac := ss.aircraft[callsign]
 			ac.TrackingController = ac.OutboundHandoffController
 			ac.OutboundHandoffController = ""
-			eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: &ac.Aircraft})
+			eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
 			delete(ss.handoffs, callsign)
 		}
@@ -1512,7 +1023,7 @@ func (ss *SimServer) updateState() {
 				Time:        now,
 			})
 
-			eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
+			eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		}
 	}
 
@@ -1650,7 +1161,7 @@ func (ss *SimServer) DirectFix(callsign string, fix string) error {
 	}
 }
 
-func (ss *SimServer) getApproach(callsign string, approach string) (*Approach, *SSAircraft, error) {
+func (ss *SimServer) getApproach(callsign string, approach string) (*Approach, *Aircraft, error) {
 	ac, ok := ss.aircraft[callsign]
 	if !ok {
 		return nil, nil, ErrNoAircraftForCallsign
@@ -1788,7 +1299,7 @@ func (ss *SimServer) DeleteAircraft(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		eventStream.Post(&RemovedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 		delete(ss.aircraft, callsign)
 		return nil
 	}
@@ -1806,7 +1317,6 @@ func (ss *SimServer) TogglePause() error {
 
 func (ss *SimServer) ActivateSettingsWindow() {
 	ss.showSettings = true
-
 }
 
 func (ss *SimServer) DrawSettingsWindow() {
@@ -1848,30 +1358,30 @@ func (ss *SimServer) DrawSettingsWindow() {
 func (ss *SimServer) SpawnAircraft() {
 	now := ss.CurrentTime()
 
-	addAircraft := func(ssa *SSAircraft) {
-		if _, ok := ss.aircraft[ssa.Callsign]; ok {
-			lg.Errorf("%s: already have an aircraft with that callsign!", ssa.Callsign)
+	addAircraft := func(ac *Aircraft) {
+		if _, ok := ss.aircraft[ac.Callsign]; ok {
+			lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
 			return
 		}
-		ss.aircraft[ssa.Callsign] = ssa
+		ss.aircraft[ac.Callsign] = ac
 
-		ss.RunWaypointCommands(ssa, ssa.Waypoints[0].Commands)
+		ss.RunWaypointCommands(ac, ac.Waypoints[0].Commands)
 
-		ssa.Position = ssa.Waypoints[0].Location
-		if ssa.Position.IsZero() {
-			lg.Errorf("%s: uninitialized initial waypoint position!", ssa.Callsign)
+		ac.Position = ac.Waypoints[0].Location
+		if ac.Position.IsZero() {
+			lg.Errorf("%s: uninitialized initial waypoint position!", ac.Callsign)
 			return
 		}
-		ssa.Heading = float32(ssa.Waypoints[0].Heading)
-		if ssa.Heading == 0 { // unassigned, so get the heading from the next fix
-			ssa.Heading = headingp2ll(ssa.Position, ssa.Waypoints[1].Location, database.MagneticVariation)
+		ac.Heading = float32(ac.Waypoints[0].Heading)
+		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, database.MagneticVariation)
 		}
-		ssa.Waypoints = ssa.Waypoints[1:]
+		ac.Waypoints = ac.Waypoints[1:]
 
-		lg.Errorf("Added aircraft: %s", spew.Sdump(ssa))
+		lg.Errorf("Added aircraft: %s", spew.Sdump(ac))
 
 		ss.remainingLaunches--
-		eventStream.Post(&AddedAircraftEvent{ac: &ssa.Aircraft})
+		eventStream.Post(&AddedAircraftEvent{ac: ac})
 	}
 
 	randomWait := func(rate int32) time.Duration {
@@ -1903,7 +1413,7 @@ func (ss *SimServer) SpawnAircraft() {
 	}
 }
 
-func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
+func sampleAircraft(airlines []AirlineConfig) *Aircraft {
 	airline := Sample(airlines)
 	al, ok := database.Airlines[airline.ICAO]
 	if !ok {
@@ -1970,23 +1480,22 @@ func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
 		acType = "J/" + acType
 	}
 
-	return &SSAircraft{
-		Aircraft: Aircraft{
-			Callsign:       callsign,
-			AssignedSquawk: squawk,
-			Squawk:         squawk,
-			Mode:           Charlie,
-			FlightPlan: &FlightPlan{
-				Rules:            IFR,
-				AircraftType:     acType,
-				DepartureAirport: airline.Airport,
-			},
+	return &Aircraft{
+		Callsign:       callsign,
+		AssignedSquawk: squawk,
+		Squawk:         squawk,
+		Mode:           Charlie,
+		FlightPlan: &FlightPlan{
+			Rules:            IFR,
+			AircraftType:     acType,
+			DepartureAirport: airline.Airport,
 		},
+
 		Performance: perf,
 	}
 }
 
-func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *SSAircraft {
+func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *Aircraft {
 	arr := Sample(ag.Arrivals)
 
 	ac := sampleAircraft(arr.Airlines)
@@ -2017,7 +1526,7 @@ func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *SSAircraf
 	return ac
 }
 
-func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *SSAircraft {
+func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < ss.challenge {
 		// 50/50 split between the exact same departure and a departure to

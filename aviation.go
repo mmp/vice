@@ -109,14 +109,6 @@ func (c *Controller) GetPosition() *Position {
 	return database.LookupPosition(c.Callsign, c.Frequency)
 }
 
-type RadarTrack struct {
-	Position    Point2LL
-	Altitude    int
-	Groundspeed int
-	Heading     float32
-	Time        time.Time
-}
-
 type FlightRules int
 
 const (
@@ -170,20 +162,12 @@ func ParseSquawk(s string) (Squawk, error) {
 	return Squawk(sq), nil
 }
 
-type Aircraft struct {
-	Callsign       string
-	Scratchpad     string
-	AssignedSquawk Squawk // from ATC
-	Squawk         Squawk // actually squawking
-	Mode           TransponderMode
-	TempAltitude   int
-	FlightPlan     *FlightPlan
-
-	Tracks [10]RadarTrack
-
-	TrackingController        string
-	InboundHandoffController  string
-	OutboundHandoffController string
+type RadarTrack struct {
+	Position    Point2LL
+	Altitude    int
+	Groundspeed int
+	Heading     float32
+	Time        time.Time
 }
 
 type AircraftPair struct {
@@ -248,172 +232,10 @@ type Position struct {
 	LowSquawk, HighSquawk Squawk
 }
 
-func (a *Aircraft) Altitude() int {
-	return a.Tracks[0].Altitude
-}
-
-// Reported in feet per minute
-func (a *Aircraft) AltitudeChange() int {
-	if a.Tracks[0].Position.IsZero() || a.Tracks[1].Position.IsZero() {
-		return 0
-	}
-
-	dt := a.Tracks[0].Time.Sub(a.Tracks[1].Time)
-	return int(float64(a.Tracks[0].Altitude-a.Tracks[1].Altitude) / dt.Minutes())
-}
-
-func (a *Aircraft) HaveTrack() bool {
-	return a.Position()[0] != 0 || a.Position()[1] != 0
-}
-
-func (a *Aircraft) Position() Point2LL {
-	return a.Tracks[0].Position
-}
-
-func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
-	// Return the first valid one; this makes things cleaner at the start when
-	// we don't have a full set of track history.
-	pos := func(idx int) Point2LL {
-		if idx >= len(a.Tracks) {
-			// Linearly extrapolate the last two. (We don't expect to be
-			// doing this often...)
-			steps := 1 + idx - len(a.Tracks)
-			last := len(a.Tracks) - 1
-			v := sub2ll(a.Tracks[last].Position, a.Tracks[last-1].Position)
-			return add2ll(a.Tracks[last].Position, scale2ll(v, float32(steps)))
-		}
-		for idx > 0 {
-			if !a.Tracks[idx].Position.IsZero() {
-				break
-			}
-			idx--
-		}
-		return a.Tracks[idx].Position
-	}
-
-	if t < 0 {
-		// interpolate past tracks
-
-		t /= -5
-		idx := int(t)
-		dt := t - float32(idx)
-
-		return lerp2ll(dt, pos(idx), pos(idx+1))
-	} else {
-		// extrapolate from last track. fit a parabola a t^2 + b t ^ c = x_i
-		// to the last three tracks, with associated times assumed to be
-		// 0, -5, and -10. We immediately have c=x_0 and are left with:
-		// 25 a - 5 b + x0 = x1
-		// 100 a - 10 b + x0 = x2
-		// Solving gives a = (x0 - 2 x1 + x2) / 50, b = (3 x0 - 4x1 + x2) / 10
-		fit := func(x0, x1, x2 float32) (a, b, c float32) {
-			a = (x0 - 2*x1 + x2) / 50
-			b = (3*x0 - 4*x1 + x2) / 10
-			c = x0
-			return
-		}
-		longa, longb, longc := fit(pos(0).Longitude(), pos(1).Longitude(), pos(2).Longitude())
-		lata, latb, latc := fit(pos(0).Latitude(), pos(1).Latitude(), pos(2).Latitude())
-
-		return Point2LL{longa*t*t + longb*t + longc, lata*t*t + latb*t + latc}
-	}
-}
-
-func (a *Aircraft) Groundspeed() int {
-	return a.Tracks[0].Groundspeed
-}
-
-// Note: returned value includes the magnetic correction
-func (a *Aircraft) Heading() float32 {
-	return a.Tracks[0].Heading + database.MagneticVariation
-}
-
-// Perhaps confusingly, the vector returned by HeadingVector() is not
-// aligned with the reported heading but is instead along the aircraft's
-// extrapolated path.  Thus, it includes the effect of wind.  The returned
-// vector is scaled so that it represents where it is expected to be one
-// minute in the future.
-func (a *Aircraft) HeadingVector() Point2LL {
-	var v [2]float32
-	if !a.HaveHeading() {
-		v = [2]float32{cos(radians(a.Heading())), sin(radians(a.Heading()))}
-	} else {
-		p0, p1 := a.Tracks[0].Position, a.Tracks[1].Position
-		v = sub2ll(p0, p1)
-	}
-
-	nm := nmlength2ll(v)
-	// v's length should be groundspeed / 60 nm.
-	return scale2ll(v, float32(a.Groundspeed())/(60*nm))
-}
-
-func (a *Aircraft) HaveHeading() bool {
-	return !a.Tracks[0].Position.IsZero() && !a.Tracks[1].Position.IsZero()
-}
-
-func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
-	if !a.HaveHeading() {
-		return Point2LL{}
-	}
-	t := float32(time.Since(a.Tracks[0].Time).Seconds()) - lag
-	return sub2ll(a.InterpolatedPosition(t+.5), a.InterpolatedPosition(t-0.5))
-}
-
-func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.Position(), p, database.MagneticVariation)
-}
-
-func (a *Aircraft) LostTrack(now time.Time) bool {
-	// Only return true if we have at least one valid track from the past
-	// but haven't heard from the aircraft recently.
-	return !a.Tracks[0].Position.IsZero() && now.Sub(a.Tracks[0].Time) > 30*time.Second
-}
-
-func (a *Aircraft) AddTrack(t RadarTrack) {
-	// Move everthing forward one to make space for the new one. We could
-	// be clever and use a circular buffer to skip the copies, though at
-	// the cost of more painful indexing elsewhere...
-	copy(a.Tracks[1:], a.Tracks[:len(a.Tracks)-1])
-	a.Tracks[0] = t
-}
-
-func (a *Aircraft) Telephony() string {
-	// FIXME: this doesn't handle trailing characters: DAL42E
-	cs := strings.TrimRight(a.Callsign, "0123456789")
-	if sign, ok := database.callsigns[cs]; ok {
-		return sign.Telephony
-	} else {
-		return ""
-	}
-}
-
-func (a *Aircraft) IsAssociated() bool {
-	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
-}
-
-func (a *Aircraft) OnGround() bool {
-	if a.Groundspeed() < 40 {
-		return true
-	}
-
-	if fp := a.FlightPlan; fp != nil {
-		for _, airport := range [2]string{fp.DepartureAirport, fp.ArrivalAirport} {
-			if ap, ok := database.FAA.airports[airport]; ok {
-				heightAGL := abs(a.Altitude() - ap.Elevation)
-				return heightAGL < 100
-			}
-		}
-	}
-	// Didn't know the airports. We could be more fancy and find the
-	// closest airport in the sector file and then use its elevation,
-	// though it's not clear that is worth the work.
-	return false
-}
-
 // Returns nm
 func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 {
-	a0, av := a.Position(), a.HeadingVector()
-	b0, bv := b.Position(), b.HeadingVector()
+	a0, av := a.TrackPosition(), a.HeadingVector()
+	b0, bv := b.TrackPosition(), b.HeadingVector()
 	// Heading vector comes back in minutes
 	afut := add2f(a0, scale2f(av, seconds/60))
 	bfut := add2f(b0, scale2f(bv, seconds/60))

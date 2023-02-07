@@ -346,31 +346,31 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 		return nil
 	}
 
-	if ac.Groundspeed() > 350 {
+	if ac.TrackGroundspeed() > 350 {
 		return nil
 	}
 
-	if headingDifference(ac.Heading(), src.Heading) > c.HeadingTolerance {
+	if headingDifference(ac.TrackHeading(), src.Heading) > c.HeadingTolerance {
 		return nil
 	}
 
 	// Is it on the glideslope?
 	// Laterally: compute the heading to the threshold and compare to the
 	// glideslope's lateral spread.
-	h := headingp2ll(ac.Position(), src.Threshold, database.MagneticVariation)
+	h := headingp2ll(ac.TrackPosition(), src.Threshold, database.MagneticVariation)
 	if abs(h-src.Heading) > c.GlideslopeLateralSpread {
 		return nil
 	}
 
 	// Vertically: figure out the range of altitudes at the distance out.
 	// First figure out the aircraft's height AGL.
-	agl := ac.Altitude() - airport.Elevation
+	agl := ac.TrackAltitude() - airport.Elevation
 
 	// Find the glideslope height at the aircraft's distance to the
 	// threshold.
 	// tan(glideslope angle) = height / threshold distance
 	const nmToFeet = 6076.12
-	thresholdDistance := nmToFeet * nmdistance2ll(ac.Position(), src.Threshold)
+	thresholdDistance := nmToFeet * nmdistance2ll(ac.TrackPosition(), src.Threshold)
 	height := thresholdDistance * tan(radians(c.GlideslopeAngle))
 	// Assume 100 feet at the threshold
 	height += 100
@@ -949,8 +949,8 @@ func DrawMinimumSeparationLine(ac0, ac1 *Aircraft, color RGB, backgroundColor RG
 	// Find the parametric distance along the respective rays of the
 	// aircrafts' courses where they at at a minimum distance; this is
 	// linearly extrapolating their positions.
-	p0, d0 := ac0.Position(), ac0.HeadingVector()
-	p1, d1 := ac1.Position(), ac1.HeadingVector()
+	p0, d0 := ac0.TrackPosition(), ac0.HeadingVector()
+	p1, d1 := ac1.TrackPosition(), ac1.HeadingVector()
 	tmin := RayRayMinimumDistance(p0, d0, p1, d1)
 
 	// If something blew up in RayRayMinimumDistance then just bail out here.
