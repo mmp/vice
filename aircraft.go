@@ -519,7 +519,7 @@ func (ac *Aircraft) UpdateHeading() {
 	}
 }
 
-func (ac *Aircraft) UpdatePositionAndGS(ss *SimServer) {
+func (ac *Aircraft) UpdatePositionAndGS(ss *Sim) {
 	// Update position given current heading
 	prev := ac.Position
 	hdg := ac.Heading - database.MagneticVariation
@@ -560,7 +560,7 @@ func (ac *Aircraft) UpdatePositionAndGS(ss *SimServer) {
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 }
 
-func (ac *Aircraft) UpdateWaypoints(ss *SimServer) {
+func (ac *Aircraft) UpdateWaypoints(ss *Sim) {
 	if ap := ac.Approach; ap != nil &&
 		ac.ClearedApproach &&
 		!ac.OnFinal &&
@@ -677,7 +677,7 @@ func (ac *Aircraft) RunWaypointCommands(cmds []WaypointCommand) {
 		switch cmd {
 		case WaypointCommandHandoff:
 			// Handoff to the user's position?
-			ac.InboundHandoffController = server.Callsign()
+			ac.InboundHandoffController = sim.Callsign()
 			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: ac})
 
 		case WaypointCommandDelete:

@@ -1,4 +1,4 @@
-// simserver.go
+// sim.go
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -21,20 +21,21 @@ var (
 	ErrUnknownApproach              = errors.New("Unknown approach")
 	ErrNotOnApproachCourse          = errors.New("Not on approach course")
 	ErrClearedForUnexpectedApproach = errors.New("Cleared for unexpected approach")
+	ErrNoConnection                 = errors.New("Not connected to a server")
+	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
+	ErrNoFlightPlan                 = errors.New("No flight plan has been filed for aircraft")
+	ErrScratchpadTooLong            = errors.New("Scratchpad too long: 3 character limit")
+	ErrAirportTooLong               = errors.New("Airport name too long: 5 character limit")
+	ErrOtherControllerHasTrack      = errors.New("Another controller is already tracking the aircraft")
+	ErrNotTrackedByMe               = errors.New("Aircraft is not tracked by current controller")
+	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
+	ErrNotHandingOffAircraft        = errors.New("Aircraft is not being handed off to another controller")
+	ErrNoFlightPlanFiled            = errors.New("No flight plan filed for aircraft")
+	ErrNoController                 = errors.New("No controller with that callsign")
+	ErrNoControllerOrAircraft       = errors.New("No controller or aircraft with that callsign")
+	ErrNotController                = errors.New("Not signed in to a controller position")
+	ErrUnknownAircraftType          = errors.New("Unknown aircraft type")
 )
-
-type Simulator interface {
-	AssignAltitude(callsign string, altitude int) error
-	AssignHeading(callsign string, heading int) error
-	AssignSpeed(callsign string, kts int) error
-	DirectFix(callsign string, fix string) error
-	ExpectApproach(callsign string, approach string) error
-	ClearedApproach(callsign string, approach string) error
-
-	PrintInfo(callsign string) error
-	DeleteAircraft(callsign string) error
-	TogglePause() error
-}
 
 func mustParseLatLong(l string) Point2LL {
 	ll, err := ParseLatLong(l)
@@ -60,7 +61,7 @@ type Scenario struct {
 
 var scenarios []*Scenario
 
-type SimServerConnectionConfiguration struct {
+type SimConnectionConfiguration struct {
 	numAircraft      int32
 	controllerActive map[string]*bool
 	challenge        float32
@@ -74,7 +75,7 @@ type SimServerConnectionConfiguration struct {
 	scenario *Scenario
 }
 
-func (ssc *SimServerConnectionConfiguration) Initialize() {
+func (ssc *SimConnectionConfiguration) Initialize() {
 	if len(scenarios) == 0 {
 		scenarios = append(scenarios, JFKApproachScenario())
 		/*
@@ -113,7 +114,7 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 	}
 }
 
-func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
+func (ssc *SimConnectionConfiguration) DrawUI() bool {
 	// imgui.InputText("Callsign", &ssc.callsign)
 	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
 
@@ -146,7 +147,7 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	return false
 }
 
-func (ssc *SimServerConnectionConfiguration) Valid() bool {
+func (ssc *SimConnectionConfiguration) Valid() bool {
 	// Make sure that at least one scenario is selected
 	for _, ap := range ssc.scenario.Airports {
 		for _, rwy := range ap.DepartureRunways {
@@ -170,20 +171,20 @@ func (ssc *SimServerConnectionConfiguration) Valid() bool {
 	return false
 }
 
-func (ssc *SimServerConnectionConfiguration) Connect() error {
+func (ssc *SimConnectionConfiguration) Connect() error {
 	// Send out events to remove any existing aircraft (necessary for when
 	// we restart...)
-	for _, ac := range server.GetAllAircraft() {
+	for _, ac := range sim.GetAllAircraft() {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
-	server = NewSimServer(*ssc)
+	sim = NewSim(*ssc)
 	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SimServer
+// Sim
 
-type SimServer struct {
+type Sim struct {
 	// These come from the scenario
 	callsign       string
 	airportConfigs []*AirportConfig
@@ -214,10 +215,10 @@ type SimServer struct {
 	showSettings bool
 }
 
-func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
+func NewSim(ssc SimConnectionConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
-	ss := &SimServer{
+	ss := &Sim{
 		callsign:       ssc.scenario.Callsign,
 		airportConfigs: ssc.scenario.Airports,
 		controllers:    make(map[string]*Controller),
@@ -303,15 +304,15 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 	return ss
 }
 
-func (ss *SimServer) SetSquawk(callsign string, squawk Squawk) error {
+func (ss *Sim) SetSquawk(callsign string, squawk Squawk) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) SetSquawkAutomatic(callsign string) error {
+func (ss *Sim) SetSquawkAutomatic(callsign string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) SetScratchpad(callsign string, scratchpad string) error {
+func (ss *Sim) SetScratchpad(callsign string, scratchpad string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else if ac.TrackingController != ss.callsign {
@@ -323,19 +324,19 @@ func (ss *SimServer) SetScratchpad(callsign string, scratchpad string) error {
 	}
 }
 
-func (ss *SimServer) SetTemporaryAltitude(callsign string, alt int) error {
+func (ss *Sim) SetTemporaryAltitude(callsign string, alt int) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) AmendFlightPlan(callsign string, fp FlightPlan) error {
+func (ss *Sim) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) PushFlightStrip(callsign string, controller string) error {
+func (ss *Sim) PushFlightStrip(callsign string, controller string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) InitiateTrack(callsign string) error {
+func (ss *Sim) InitiateTrack(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else if ac.TrackingController != "" {
@@ -348,7 +349,7 @@ func (ss *SimServer) InitiateTrack(callsign string) error {
 	}
 }
 
-func (ss *SimServer) DropTrack(callsign string) error {
+func (ss *Sim) DropTrack(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else if ac.TrackingController != ss.callsign {
@@ -361,7 +362,7 @@ func (ss *SimServer) DropTrack(callsign string) error {
 	}
 }
 
-func (ss *SimServer) Handoff(callsign string, controller string) error {
+func (ss *Sim) Handoff(callsign string, controller string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else if ac.TrackingController != ss.callsign {
@@ -378,7 +379,7 @@ func (ss *SimServer) Handoff(callsign string, controller string) error {
 	}
 }
 
-func (ss *SimServer) AcceptHandoff(callsign string) error {
+func (ss *Sim) AcceptHandoff(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else if ac.InboundHandoffController != ss.callsign {
@@ -392,11 +393,11 @@ func (ss *SimServer) AcceptHandoff(callsign string) error {
 	}
 }
 
-func (ss *SimServer) RejectHandoff(callsign string) error {
+func (ss *Sim) RejectHandoff(callsign string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) CancelHandoff(callsign string) error {
+func (ss *Sim) CancelHandoff(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else if ac.TrackingController != ss.callsign {
@@ -411,23 +412,23 @@ func (ss *SimServer) CancelHandoff(callsign string) error {
 	}
 }
 
-func (ss *SimServer) PointOut(callsign string, controller string) error {
+func (ss *Sim) PointOut(callsign string, controller string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) SendTextMessage(m TextMessage) error {
+func (ss *Sim) SendTextMessage(m TextMessage) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) RequestControllerATIS(controller string) error {
+func (ss *Sim) RequestControllerATIS(controller string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
+func (ss *Sim) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *SimServer) Disconnect() {
+func (ss *Sim) Disconnect() {
 	for _, ac := range ss.aircraft {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
@@ -435,14 +436,14 @@ func (ss *SimServer) Disconnect() {
 	ss.eventsId = InvalidEventSubscriberId
 }
 
-func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
+func (ss *Sim) GetAircraft(callsign string) *Aircraft {
 	if ac, ok := ss.aircraft[callsign]; ok {
 		return ac
 	}
 	return nil
 }
 
-func (ss *SimServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
+func (ss *Sim) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	var filtered []*Aircraft
 	for _, ac := range ss.aircraft {
 		if filter(ac) {
@@ -452,31 +453,31 @@ func (ss *SimServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraf
 	return filtered
 }
 
-func (ss *SimServer) GetAllAircraft() []*Aircraft {
+func (ss *Sim) GetAllAircraft() []*Aircraft {
 	return ss.GetFilteredAircraft(func(*Aircraft) bool { return true })
 }
 
-func (ss *SimServer) GetFlightStrip(callsign string) *FlightStrip {
+func (ss *Sim) GetFlightStrip(callsign string) *FlightStrip {
 	if ac, ok := ss.aircraft[callsign]; ok {
 		return &ac.Strip
 	}
 	return nil
 }
 
-func (ss *SimServer) AddAirportForWeather(airport string) {
+func (ss *Sim) AddAirportForWeather(airport string) {
 	// UNIMPLEMENTED
 }
 
-func (ss *SimServer) GetMETAR(location string) *METAR {
+func (ss *Sim) GetMETAR(location string) *METAR {
 	return ss.metar[location]
 }
 
-func (ss *SimServer) GetAirportATIS(airport string) []ATIS {
+func (ss *Sim) GetAirportATIS(airport string) []ATIS {
 	// UNIMPLEMENTED
 	return nil
 }
 
-func (ss *SimServer) GetController(callsign string) *Controller {
+func (ss *Sim) GetController(callsign string) *Controller {
 	if ctrl, ok := ss.controllers[callsign]; ok {
 		return ctrl
 	}
@@ -488,24 +489,26 @@ func (ss *SimServer) GetController(callsign string) *Controller {
 	return nil
 }
 
-func (ss *SimServer) GetAllControllers() []*Controller {
+func (ss *Sim) GetAllControllers() []*Controller {
 	_, ctrl := FlattenMap(ss.controllers)
 	return ctrl
 }
 
-func (ss *SimServer) SetPrimaryFrequency(f Frequency) {
+func (ss *Sim) SetPrimaryFrequency(f Frequency) {
 	// UNIMPLEMENTED
 }
 
-func (ss *SimServer) GetUpdates() {
+func (ss *Sim) GetUpdates() {
 	if ss.paused {
 		return
 	}
 
 	// Process events
-	for _, ev := range eventStream.Get(ss.eventsId) {
-		if rem, ok := ev.(*RemovedAircraftEvent); ok {
-			delete(ss.aircraft, rem.ac.Callsign)
+	if ss.eventsId != InvalidEventSubscriberId {
+		for _, ev := range eventStream.Get(ss.eventsId) {
+			if rem, ok := ev.(*RemovedAircraftEvent); ok {
+				delete(ss.aircraft, rem.ac.Callsign)
+			}
 		}
 	}
 
@@ -519,7 +522,7 @@ func (ss *SimServer) GetUpdates() {
 }
 
 // FIXME: this is poorly named...
-func (ss *SimServer) updateState() {
+func (ss *Sim) updateState() {
 	// Accept any handoffs whose time has time...
 	now := ss.CurrentTime()
 	for callsign, t := range ss.handoffs {
@@ -559,7 +562,7 @@ func (ss *SimServer) updateState() {
 	ss.SpawnAircraft()
 }
 
-func (ss *SimServer) updateSim() {
+func (ss *Sim) updateSim() {
 	for _, ac := range ss.aircraft {
 		ac.UpdateAirspeed()
 		ac.UpdateAltitude()
@@ -569,20 +572,20 @@ func (ss *SimServer) updateSim() {
 	}
 }
 
-func (ss *SimServer) Connected() bool {
+func (ss *Sim) Connected() bool {
 	return true
 }
 
-func (ss *SimServer) Callsign() string {
+func (ss *Sim) Callsign() string {
 	return ss.callsign
 }
 
-func (ss *SimServer) CurrentTime() time.Time {
+func (ss *Sim) CurrentTime() time.Time {
 	return ss.currentTime
 }
 
-func (ss *SimServer) GetWindowTitle() string {
-	return "SimServer: " + ss.callsign
+func (ss *Sim) GetWindowTitle() string {
+	return "Sim: " + ss.callsign
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
@@ -594,7 +597,7 @@ func pilotResponse(callsign string, fm string, args ...interface{}) {
 	eventStream.Post(&TextMessageEvent{message: &tm})
 }
 
-func (ss *SimServer) AssignAltitude(callsign string, altitude int) error {
+func (ss *Sim) AssignAltitude(callsign string, altitude int) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
@@ -611,7 +614,7 @@ func (ss *SimServer) AssignAltitude(callsign string, altitude int) error {
 	}
 }
 
-func (ss *SimServer) AssignHeading(callsign string, heading int, turn int) error {
+func (ss *Sim) AssignHeading(callsign string, heading int, turn int) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
@@ -636,7 +639,7 @@ func (ss *SimServer) AssignHeading(callsign string, heading int, turn int) error
 	}
 }
 
-func (ss *SimServer) AssignSpeed(callsign string, speed int) error {
+func (ss *Sim) AssignSpeed(callsign string, speed int) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
@@ -653,7 +656,7 @@ func (ss *SimServer) AssignSpeed(callsign string, speed int) error {
 	}
 }
 
-func (ss *SimServer) DirectFix(callsign string, fix string) error {
+func (ss *Sim) DirectFix(callsign string, fix string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
@@ -690,7 +693,7 @@ func (ss *SimServer) DirectFix(callsign string, fix string) error {
 	}
 }
 
-func (ss *SimServer) getApproach(callsign string, approach string) (*Approach, *Aircraft, error) {
+func (ss *Sim) getApproach(callsign string, approach string) (*Approach, *Aircraft, error) {
 	ac, ok := ss.aircraft[callsign]
 	if !ok {
 		return nil, nil, ErrNoAircraftForCallsign
@@ -714,7 +717,7 @@ func (ss *SimServer) getApproach(callsign string, approach string) (*Approach, *
 	return nil, nil, ErrArrivalAirportUnknown
 }
 
-func (ss *SimServer) ExpectApproach(callsign string, approach string) error {
+func (ss *Sim) ExpectApproach(callsign string, approach string) error {
 	ap, ac, err := ss.getApproach(callsign, approach)
 	if err != nil {
 		return err
@@ -726,7 +729,7 @@ func (ss *SimServer) ExpectApproach(callsign string, approach string) error {
 	return nil
 }
 
-func (ss *SimServer) ClearedApproach(callsign string, approach string) error {
+func (ss *Sim) ClearedApproach(callsign string, approach string) error {
 	ap, ac, err := ss.getApproach(callsign, approach)
 	if err != nil {
 		return err
@@ -797,7 +800,7 @@ func (ss *SimServer) ClearedApproach(callsign string, approach string) error {
 	return nil
 }
 
-func (ss *SimServer) PrintInfo(callsign string) error {
+func (ss *Sim) PrintInfo(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
@@ -824,7 +827,7 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 	return nil
 }
 
-func (ss *SimServer) DeleteAircraft(callsign string) error {
+func (ss *Sim) DeleteAircraft(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
@@ -834,21 +837,21 @@ func (ss *SimServer) DeleteAircraft(callsign string) error {
 	}
 }
 
-func (ss *SimServer) Paused() bool {
+func (ss *Sim) Paused() bool {
 	return ss.paused
 }
 
-func (ss *SimServer) TogglePause() error {
+func (ss *Sim) TogglePause() error {
 	ss.paused = !ss.paused
 	ss.lastUpdateTime = time.Now() // ignore time passage...
 	return nil
 }
 
-func (ss *SimServer) ActivateSettingsWindow() {
+func (ss *Sim) ActivateSettingsWindow() {
 	ss.showSettings = true
 }
 
-func (ss *SimServer) DrawSettingsWindow() {
+func (ss *Sim) DrawSettingsWindow() {
 	if !ss.showSettings {
 		return
 	}
@@ -884,7 +887,7 @@ func (ss *SimServer) DrawSettingsWindow() {
 ///////////////////////////////////////////////////////////////////////////
 // Spawning aircraft
 
-func (ss *SimServer) SpawnAircraft() {
+func (ss *Sim) SpawnAircraft() {
 	now := ss.CurrentTime()
 
 	addAircraft := func(ac *Aircraft) {
@@ -1024,7 +1027,7 @@ func sampleAircraft(airlines []AirlineConfig) *Aircraft {
 	}
 }
 
-func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *Aircraft {
+func (ss *Sim) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *Aircraft {
 	arr := Sample(ag.Arrivals)
 
 	ac := sampleAircraft(arr.Airlines)
@@ -1055,7 +1058,7 @@ func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *Aircraft 
 	return ac
 }
 
-func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *Aircraft {
+func (ss *Sim) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < ss.challenge {
 		// 50/50 split between the exact same departure and a departure to

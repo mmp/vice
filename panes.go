@@ -369,7 +369,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *InitiatedTrackEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == server.Callsign() {
+			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign() {
 				possiblyAdd(v.ac)
 			}
 
@@ -379,9 +379,9 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *AcceptedHandoffEvent:
-			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == server.Callsign() {
+			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == sim.Callsign() {
 				possiblyAdd(v.ac)
-			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != server.Callsign() {
+			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != sim.Callsign() {
 				remove(v.ac)
 			}
 
@@ -392,13 +392,13 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
-		ac := server.GetAircraft(callsign)
+		ac := sim.GetAircraft(callsign)
 		return ac != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			if ac := server.GetAircraft(callsign); ac == nil {
+			if ac := sim.GetAircraft(callsign); ac == nil {
 				return false
 			} else {
 				return fsp.isDeparture(ac)
@@ -491,8 +491,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	y := stripHeight - 1 - vpad
 	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
-		strip := server.GetFlightStrip(callsign)
-		ac := server.GetAircraft(callsign)
+		strip := sim.GetFlightStrip(callsign)
+		ac := sim.GetAircraft(callsign)
 		if ac == nil {
 			lg.Errorf("%s: no aircraft for callsign?!", strip.callsign)
 			continue
@@ -652,7 +652,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				} else {
 					// select the aircraft
 					callsign := fsp.strips[stripIndex]
-					fsp.selectedAircraft = server.GetAircraft(callsign)
+					fsp.selectedAircraft = sim.GetAircraft(callsign)
 				}
 			}
 		}
@@ -726,7 +726,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					fsp.selectedAnnotation = 3*ya + xa
 
 					callsign := fsp.strips[fsp.selectedStrip]
-					strip := server.GetFlightStrip(callsign)
+					strip := sim.GetFlightStrip(callsign)
 					fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
 				}
 			}

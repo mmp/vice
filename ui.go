@@ -154,27 +154,24 @@ func drawUI(cs *ColorScheme, platform Platform) {
 
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
-		// SimServer is all it can be at this point....
-		if ss, ok := server.(*SimServer); ok {
-			if imgui.BeginMenu("Simulation") {
-				if ss.Paused() {
-					if imgui.MenuItem("Resume") {
-						ss.TogglePause()
-					}
-				} else {
-					if imgui.MenuItem("Pause") {
-						ss.TogglePause()
-					}
+		if imgui.BeginMenu("Simulation") {
+			if sim.Paused() {
+				if imgui.MenuItem("Resume") {
+					sim.TogglePause()
 				}
-				if imgui.MenuItem("Restart...") {
-					uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+			} else {
+				if imgui.MenuItem("Pause") {
+					sim.TogglePause()
 				}
-				imgui.Separator()
-				if imgui.MenuItem("Settings...") {
-					ss.ActivateSettingsWindow()
-				}
-				imgui.EndMenu()
 			}
+			if imgui.MenuItem("Restart...") {
+				uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+			}
+			imgui.Separator()
+			if imgui.MenuItem("Settings...") {
+				sim.ActivateSettingsWindow()
+			}
+			imgui.EndMenu()
 		}
 
 		if imgui.BeginMenu("Help") {
@@ -204,9 +201,7 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	if ss, ok := server.(*SimServer); ok {
-		ss.DrawSettingsWindow()
-	}
+	sim.DrawSettingsWindow()
 
 	drawActiveDialogBoxes()
 	drawActiveSettingsWindows()
@@ -499,9 +494,7 @@ type ConnectModalClient struct {
 	connectionType ConnectionType
 	err            string
 
-	// Store all three so that if the user switches back and forth any set
-	// values are retained.
-	simServer SimServerConnectionConfiguration
+	sim SimConnectionConfiguration
 }
 
 type ConnectionType int
@@ -520,7 +513,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 func (c *ConnectModalClient) Opening() {
 	c.connectionType = ConnectionTypeSimServer
 	c.err = ""
-	c.simServer.Initialize()
+	c.sim.Initialize()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -531,7 +524,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		var err error
 		switch c.connectionType {
 		case ConnectionTypeSimServer:
-			err = c.simServer.Connect()
+			err = c.sim.Connect()
 
 		default:
 			lg.Errorf("Unhandled connection type")
@@ -549,7 +542,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 	switch c.connectionType {
 	case ConnectionTypeSimServer:
-		ok.disabled = !c.simServer.Valid()
+		ok.disabled = !c.sim.Valid()
 
 	default:
 		lg.Errorf("Unhandled connection type")
@@ -574,7 +567,7 @@ func (c *ConnectModalClient) Draw() int {
 	var enter bool
 	switch c.connectionType {
 	case ConnectionTypeSimServer:
-		enter = c.simServer.DrawUI()
+		enter = c.sim.DrawUI()
 	}
 
 	if c.err != "" {
@@ -600,8 +593,7 @@ func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
 	b = append(b, ModalDialogButton{text: "Cancel"})
 
 	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		server.Disconnect()
-		server = &DisconnectedATCServer{}
+		sim.Disconnect()
 		eventStream.Post(&ClosedServerConnectionEvent{})
 		return true
 	}}

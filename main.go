@@ -36,7 +36,7 @@ var (
 	renderer     Renderer
 	stats        Stats
 	database     *StaticDatabase
-	server       ATCServer
+	sim          *Sim
 	eventStream  *EventStream
 	lg           *Logger
 
@@ -101,8 +101,6 @@ func main() {
 
 	context = imguiInit()
 
-	server = &DisconnectedATCServer{}
-
 	var err error
 	if err = audioInit(); err != nil {
 		lg.Errorf("Unable to initialize audio: %v", err)
@@ -146,6 +144,8 @@ func main() {
 
 	uiInit(renderer)
 
+	sim = &Sim{}
+
 	globalConfig.Activate()
 
 	///////////////////////////////////////////////////////////////////////////
@@ -155,7 +155,7 @@ func main() {
 	wantExit := false
 	stats.startTime = time.Now()
 	for {
-		platform.SetWindowTitle("vice: " + server.GetWindowTitle())
+		platform.SetWindowTitle("vice: " + sim.GetWindowTitle())
 
 		// Inform imgui about input events from the user.
 		platform.ProcessEvents()
@@ -172,7 +172,7 @@ func main() {
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes.
-		server.GetUpdates()
+		sim.GetUpdates()
 		audioProcessEvents(eventStream)
 
 		platform.NewFrame()
@@ -199,13 +199,12 @@ func main() {
 			if !wantExit {
 				wantExit = true
 
-				if server.Connected() {
+				if sim.Connected() {
 					uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
 						title: "Disconnect?",
 						query: "Currently connected. Ok to disconnect?",
 						ok: func() {
-							server.Disconnect()
-							server = &DisconnectedATCServer{}
+							sim.Disconnect()
 						},
 						notok: func() {
 							platform.CancelShouldStop()

@@ -136,11 +136,11 @@ func audioProcessEvents(es *EventStream) {
 		case *PointOutEvent:
 			globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
 		case *AcceptedHandoffEvent:
-			if v.controller != server.Callsign() {
+			if v.controller != sim.Callsign() {
 				globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
 			}
 		case *OfferedHandoffEvent:
-			if v.controller != server.Callsign() {
+			if v.controller != sim.Callsign() {
 				globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
 			}
 		case *RejectedHandoffEvent, *CanceledHandoffEvent:

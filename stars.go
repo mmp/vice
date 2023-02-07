@@ -588,7 +588,7 @@ func flightPlanSTARS(ac *Aircraft) (string, error) {
 	// AAL1416 B738/L squawk controller id
 	// (start of route) (alt 100s)
 	result := ac.Callsign + " " + fp.AircraftType + " " + ac.AssignedSquawk.String() + " "
-	if ctrl := server.GetController(ac.TrackingController); ctrl != nil {
+	if ctrl := sim.GetController(ac.TrackingController); ctrl != nil {
 		if pos := ctrl.GetPosition(); pos != nil {
 			result += pos.SectorId
 		}
@@ -974,7 +974,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 		switch v := event.(type) {
 		case *AddedAircraftEvent:
 			sa := &STARSAircraftState{}
-			if v.ac.TrackingController == server.Callsign() {
+			if v.ac.TrackingController == sim.Callsign() {
 				sa.datablockType = FullDatablock
 			}
 			sp.aircraft[v.ac] = sa
@@ -982,7 +982,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			if fp := v.ac.FlightPlan; fp != nil {
 				if v.ac.TrackingController == "" {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
-						server.InitiateTrack(v.ac.Callsign) // ignore error...
+						sim.InitiateTrack(v.ac.Callsign) // ignore error...
 						sp.aircraft[v.ac].datablockType = FullDatablock
 					}
 				}
@@ -1047,7 +1047,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			// Note that we only want to do that if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of SimServer, that's fine...
-			if v.controller != server.Callsign() {
+			if v.controller != sim.Callsign() {
 				state := sp.aircraft[v.ac]
 				state.outboundHandoffAccepted = true
 				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
@@ -1334,7 +1334,7 @@ func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
 
 func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus) {
 	lookupAircraft := func(callsign string) *Aircraft {
-		if ac := server.GetAircraft(callsign); ac != nil {
+		if ac := sim.GetAircraft(callsign); ac != nil {
 			return ac
 		}
 
@@ -1460,7 +1460,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		if ac := lookupAircraft(cmd); ac == nil {
 			status.err = ErrSTARSIllegalTrack // error code?
 		} else {
-			status.err = server.InitiateTrack(lookupCallsign(cmd))
+			status.err = sim.InitiateTrack(lookupCallsign(cmd))
 			status.clear = true
 			state := sp.aircraft[ac]
 			state.datablockType = FullDatablock
@@ -1474,14 +1474,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 	case CommandModeTerminateControl:
 		if cmd == "ALL" {
 			for ac := range sp.aircraft {
-				if ac.TrackingController == server.Callsign() {
-					status.err = server.DropTrack(ac.Callsign)
+				if ac.TrackingController == sim.Callsign() {
+					status.err = sim.DropTrack(ac.Callsign)
 				}
 			}
 			status.clear = true
 			return
 		} else {
-			status.err = server.DropTrack(lookupCallsign(cmd))
+			status.err = sim.DropTrack(lookupCallsign(cmd))
 			status.clear = true
 			return
 		}
@@ -1502,7 +1502,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			}
 
 			if closest != nil {
-				status.err = server.AcceptHandoff(closest.Callsign)
+				status.err = sim.AcceptHandoff(closest.Callsign)
 				// Display flight plan
 				if status.err == nil {
 					status.output, _ = flightPlanSTARS(closest)
@@ -1511,11 +1511,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			status.clear = true
 			return
 		case 1:
-			status.err = server.CancelHandoff(lookupCallsign(f[0]))
+			status.err = sim.CancelHandoff(lookupCallsign(f[0]))
 			status.clear = true
 			return
 		case 2:
-			status.err = server.Handoff(lookupCallsign(f[1]), f[0])
+			status.err = sim.Handoff(lookupCallsign(f[1]), f[0])
 			status.clear = true
 			return
 		}
@@ -1577,7 +1577,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 		case "D":
 			// D(callsign)
-			if ac := server.GetAircraft(lookupCallsign(cmd)); ac != nil {
+			if ac := sim.GetAircraft(lookupCallsign(cmd)); ac != nil {
 				// Display flight plan
 				status.output, status.err = flightPlanSTARS(ac)
 			} else {
@@ -1677,7 +1677,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			case 1:
 				if dir, err := lldir(cmd[0]); err == nil {
 					// Tracked by me
-					me := server.Callsign()
+					me := sim.Callsign()
 					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == me })
 					status.clear = true
 				} else {
@@ -1693,7 +1693,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 					status.clear = true
 				} else if err == nil && cmd[1] == '*' {
 					// Tracked by other controllers
-					me := server.Callsign()
+					me := sim.Callsign()
 					setLLDir(dir, func(ac *Aircraft) bool {
 						return ac.TrackingController != "" &&
 							ac.TrackingController != me
@@ -1707,7 +1707,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			case 4:
 				// L(id)(space)(dir)
 				status.err = ErrSTARSCommandFormat // set preemptively; clear on success
-				for _, ctrl := range server.GetAllControllers() {
+				for _, ctrl := range sim.GetAllControllers() {
 					if pos := ctrl.GetPosition(); pos != nil && pos.SectorId == cmd[:2] {
 						dir, err := lldir(cmd[3])
 						if cmd[2] == ' ' && err == nil {
@@ -1724,7 +1724,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				if dir, err := lldir(cmd[0]); err == nil && cmd[1] == ' ' {
 					// We know len(cmd) >= 3 given the above cases...
 					callsign := lookupCallsign(cmd[2:])
-					if ac := server.GetAircraft(callsign); ac != nil {
+					if ac := sim.GetAircraft(callsign); ac != nil {
 						sp.aircraft[ac].leaderLineDirection = dir
 						status.clear = true
 						return
@@ -1908,10 +1908,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				// Y callsign -> clear scratchpad and reported altitude
 				// Clear pilot alt. and scratchpad
 				callsign := lookupCallsign(f[0])
-				if ac := server.GetAircraft(callsign); ac != nil {
+				if ac := sim.GetAircraft(callsign); ac != nil {
 					sp.aircraft[ac].pilotAltitude = 0
 				}
-				status.err = server.SetScratchpad(callsign, "")
+				status.err = sim.SetScratchpad(callsign, "")
 				status.clear = true
 				return
 			} else if len(f) == 2 {
@@ -1920,12 +1920,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 				callsign := lookupCallsign(f[0])
 				// Either pilot alt or scratchpad entry
-				if ac := server.GetAircraft(callsign); ac == nil {
+				if ac := sim.GetAircraft(callsign); ac == nil {
 					status.err = ErrSTARSIllegalTrack
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.aircraft[ac].pilotAltitude = alt * 100
 				} else {
-					status.err = server.SetScratchpad(callsign, f[1])
+					status.err = sim.SetScratchpad(callsign, f[1])
 				}
 				status.clear = true
 				return
@@ -1954,11 +1954,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		f := strings.Fields(cmd)
 		if len(f) == 1 {
 			callsign := lookupCallsign(f[0])
-			status.err = server.SetSquawkAutomatic(callsign)
+			status.err = sim.SetSquawkAutomatic(callsign)
 		} else if len(f) == 2 {
 			if squawk, err := ParseSquawk(f[1]); err == nil {
 				callsign := lookupCallsign(f[0])
-				status.err = server.SetSquawk(callsign, squawk)
+				status.err = sim.SetSquawk(callsign, squawk)
 			} else {
 				status.err = ErrSTARSIllegalParam
 			}
@@ -1971,7 +1971,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
 			callsign := lookupCallsign(cmd[2:])
-			if ac := server.GetAircraft(callsign); ac != nil {
+			if ac := sim.GetAircraft(callsign); ac != nil {
 				state := sp.aircraft[ac]
 				state.disableCAWarnings = !state.disableCAWarnings
 			} else {
@@ -2103,7 +2103,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 	isControllerId := func(id string) bool {
 		// FIXME: check--this is likely to be pretty slow, relatively
 		// speaking...
-		for _, ctrl := range server.GetAllControllers() {
+		for _, ctrl := range sim.GetAllControllers() {
 			if pos := ctrl.GetPosition(); pos != nil && pos.SectorId == id {
 				return true
 			}
@@ -2123,7 +2123,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				if ac.InboundHandoffController != "" {
 					// Accept inbound h/o
 					status.clear = true
-					status.err = server.AcceptHandoff(ac.Callsign)
+					status.err = sim.AcceptHandoff(ac.Callsign)
 					state.datablockType = FullDatablock
 					// Display flight plan
 					if status.err == nil {
@@ -2133,7 +2133,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				} else if ac.OutboundHandoffController != "" {
 					// cancel offered handoff offered
 					status.clear = true
-					status.err = server.CancelHandoff(ac.Callsign)
+					status.err = sim.CancelHandoff(ac.Callsign)
 					return
 				} else if _, ok := sp.pointedOutAircraft.Get(ac); ok {
 					// ack point out
@@ -2159,11 +2159,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			case 1:
 				if cmd == "." {
 					status.clear = true
-					status.err = server.SetScratchpad(ac.Callsign, "")
+					status.err = sim.SetScratchpad(ac.Callsign, "")
 					return
 				} else if cmd == "U" {
 					status.clear = true
-					status.err = server.RejectHandoff(ac.Callsign)
+					status.err = sim.RejectHandoff(ac.Callsign)
 					return
 				} else if cmd == "*" {
 					from := ac.TrackPosition()
@@ -2186,7 +2186,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			case 2:
 				if isControllerId(cmd) {
 					status.clear = true
-					status.err = server.Handoff(ac.Callsign, cmd)
+					status.err = sim.Handoff(ac.Callsign, cmd)
 					return
 				} else if cmd == "*J" {
 					// remove j-ring for aircraft
@@ -2213,7 +2213,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			case 3:
 				if isControllerId(cmd) {
 					status.clear = true
-					status.err = server.Handoff(ac.Callsign, cmd)
+					status.err = sim.Handoff(ac.Callsign, cmd)
 					return
 				} else if cmd == "*D+" {
 					ps.DisplayTPASize = !ps.DisplayTPASize
@@ -2221,7 +2221,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					return
 				} else if cmd[2] == '*' && isControllerId(cmd[:2]) {
 					status.clear = true
-					status.err = server.PointOut(ac.Callsign, cmd[:2])
+					status.err = sim.PointOut(ac.Callsign, cmd[:2])
 					return
 				} else {
 					if alt, err := strconv.Atoi(cmd); err == nil {
@@ -2235,7 +2235,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				if cmd[0] == '+' {
 					if alt, err := strconv.Atoi(cmd[1:]); err == nil {
 						status.clear = true
-						status.err = server.SetTemporaryAltitude(ac.Callsign, alt*100)
+						status.err = sim.SetTemporaryAltitude(ac.Callsign, alt*100)
 					} else {
 						status.err = ErrSTARSIllegalParam
 					}
@@ -2292,12 +2292,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			}
 
 			if len(cmd) > 0 {
-				sim, ok := server.(*SimServer)
-				if !ok {
-					status.err = errors.New("Can't issue control commands to a/c")
-					return
-				}
-
 				commands := strings.Fields(cmd)
 				for i, command := range commands {
 					switch command[0] {
@@ -2384,7 +2378,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 		case CommandModeInitiateControl:
 			// TODO: error if cmd != ""?
 			status.clear = true
-			status.err = server.InitiateTrack(ac.Callsign)
+			status.err = sim.InitiateTrack(ac.Callsign)
 			state.datablockType = FullDatablock
 			if status.err == nil {
 				// Display flight plan
@@ -2395,16 +2389,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 		case CommandModeTerminateControl:
 			// TODO: error if cmd != ""?
 			status.clear = true
-			status.err = server.DropTrack(ac.Callsign)
+			status.err = sim.DropTrack(ac.Callsign)
 			return
 
 		case CommandModeHandOff:
 			if cmd == "" {
 				status.clear = true
-				status.err = server.CancelHandoff(ac.Callsign)
+				status.err = sim.CancelHandoff(ac.Callsign)
 			} else {
 				status.clear = true
-				status.err = server.Handoff(ac.Callsign, cmd)
+				status.err = sim.Handoff(ac.Callsign, cmd)
 			}
 			return
 
@@ -2501,7 +2495,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
 					status.clear = true
-					status.err = server.SetScratchpad(ac.Callsign, "")
+					status.err = sim.SetScratchpad(ac.Callsign, "")
 					return
 				} else {
 					// Is it an altitude or a scratchpad update?
@@ -2510,7 +2504,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						status.clear = true
 					} else {
 						status.clear = true
-						status.err = server.SetScratchpad(ac.Callsign, cmd)
+						status.err = sim.SetScratchpad(ac.Callsign, cmd)
 					}
 					return
 				}
@@ -2519,11 +2513,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 		case CommandModeFlightData:
 			if cmd == "" {
 				status.clear = true
-				status.err = server.SetSquawkAutomatic(ac.Callsign)
+				status.err = sim.SetSquawkAutomatic(ac.Callsign)
 				return
 			} else {
 				if squawk, err := ParseSquawk(cmd); err == nil {
-					status.err = server.SetSquawk(ac.Callsign, squawk)
+					status.err = sim.SetSquawk(ac.Callsign, squawk)
 				} else {
 					status.err = ErrSTARSIllegalParam
 				}
@@ -2994,7 +2988,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	transforms ScopeTransformations, cb *CommandBuffer) {
 	for _, ap := range sp.Facility.Airports {
 		if ap.TowerListIndex != 0 {
-			server.AddAirportForWeather(ap.ICAOCode)
+			sim.AddAirportForWeather(ap.ICAOCode)
 		}
 	}
 
@@ -3112,13 +3106,13 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		if filter.All || filter.Time || filter.Altimeter {
 			text := ""
 			if filter.All || filter.Time {
-				text += server.CurrentTime().UTC().Format("1504/05 ")
+				text += sim.CurrentTime().UTC().Format("1504/05 ")
 			}
 			if filter.All || filter.Altimeter {
 				// Primary airport altimeter
 				for _, ap := range sp.Facility.Airports {
 					if ap.TowerListIndex == 1 {
-						if metar := server.GetMETAR(ap.ICAOCode); metar != nil {
+						if metar := sim.GetMETAR(ap.ICAOCode); metar != nil {
 							text += formatMETAR(ap.ICAOCode, metar)
 						}
 					}
@@ -3145,7 +3139,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 		if filter.All || filter.Status || filter.Radar {
 			if filter.All || filter.Status {
-				if server.Connected() {
+				if sim.Connected() {
 					pw = td.AddText("OK/OK/NA ", pw, style)
 				} else {
 					pw = td.AddText("NA/NA/NA ", pw, alertStyle)
@@ -3224,7 +3218,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		if filter.All || filter.AirportWeather {
 			var lines []string
 			for _, ap := range sp.Facility.Airports {
-				if metar := server.GetMETAR(ap.ICAOCode); ap.IncludeInSSA && metar != nil {
+				if metar := sim.GetMETAR(ap.ICAOCode); ap.IncludeInSSA && metar != nil {
 					lines = append(lines, formatMETAR(ap.ICAOCode, metar))
 				}
 			}
@@ -3397,12 +3391,12 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 		// User first
 		text := ""
-		userCtrl := server.GetController(server.Callsign())
+		userCtrl := sim.GetController(sim.Callsign())
 		if userCtrl != nil {
 			text += format(userCtrl, false) + "\n"
 		}
 
-		ctrl := server.GetAllControllers()
+		ctrl := sim.GetAllControllers()
 		sort.Slice(ctrl, func(i, j int) bool { return ctrl[i].Callsign < ctrl[j].Callsign })
 		for _, c := range ctrl {
 			if c != userCtrl {
@@ -3427,7 +3421,7 @@ func (sp *STARSPane) datablockType(ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
-	if ac.InboundHandoffController == server.Callsign() {
+	if ac.InboundHandoffController == sim.Callsign() {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -3450,7 +3444,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	ps := sp.currentPreferenceSet
 	font := sp.systemFont[ps.CharSize.PositionSymbols]
 
-	now := server.CurrentTime()
+	now := sim.CurrentTime()
 	for _, ac := range aircraft {
 		if ac.LostTrack(now) {
 			continue
@@ -3511,7 +3505,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		// Draw main track symbol letter
 		if ac.TrackingController != "" {
 			ch := "?"
-			if ctrl := server.GetController(ac.TrackingController); ctrl != nil {
+			if ctrl := sim.GetController(ac.TrackingController); ctrl != nil {
 				if pos := ctrl.GetPosition(); pos != nil {
 					ch = pos.Scope
 				}
@@ -3568,7 +3562,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 }
 
 func (sp *STARSPane) updateDatablockTextAndPosition(aircraft []*Aircraft) {
-	now := server.CurrentTime()
+	now := sim.CurrentTime()
 	font := sp.systemFont[sp.currentPreferenceSet.CharSize.Datablocks]
 
 	for _, ac := range aircraft {
@@ -3727,13 +3721,13 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 		// Second line of the non-error datablock
 		ho := "  "
 		if ac.InboundHandoffController != "" {
-			if ctrl := server.GetController(ac.InboundHandoffController); ctrl != nil {
+			if ctrl := sim.GetController(ac.InboundHandoffController); ctrl != nil {
 				if pos := ctrl.GetPosition(); pos != nil {
 					ho = pos.SectorId
 				}
 			}
 		} else if ac.OutboundHandoffController != "" {
-			if ctrl := server.GetController(ac.OutboundHandoffController); ctrl != nil {
+			if ctrl := sim.GetController(ac.OutboundHandoffController); ctrl != nil {
 				if pos := ctrl.GetPosition(); pos != nil {
 					ho = pos.SectorId
 				}
@@ -3742,7 +3736,7 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 
 		// Altitude and speed: mainblock[0]
 		alt := fmt.Sprintf("%03d", (ac.TrackAltitude()+50)/100)
-		if ac.LostTrack(server.CurrentTime()) {
+		if ac.LostTrack(sim.CurrentTime()) {
 			alt = "CST"
 		}
 		speed := fmt.Sprintf("%02d", (ac.TrackGroundspeed()+5)/10)
@@ -3797,10 +3791,10 @@ func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
 	if _, ok := sp.pointedOutAircraft.Get(ac); ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
-	} else if ac.TrackingController == server.Callsign() {
+	} else if ac.TrackingController == sim.Callsign() {
 		// white if we are tracking
 		return br.ScaleRGB(STARSTrackedAircraftColor)
-	} else if ac.InboundHandoffController == server.Callsign() {
+	} else if ac.InboundHandoffController == sim.Callsign() {
 		// flashing white if it's being handed off to us.
 		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
 			br /= 3
@@ -3827,7 +3821,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 
-	now := server.CurrentTime()
+	now := sim.CurrentTime()
 	realNow := time.Now() // for flashing rate...
 	ps := sp.currentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
@@ -3881,13 +3875,13 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 
 	color := ps.Brightness.Lines.RGB()
 
-	now := server.CurrentTime()
+	now := sim.CurrentTime()
 	for _, ac := range aircraft {
 		if ac.LostTrack(now) || !ac.HaveHeading() {
 			continue
 		}
 		state := sp.aircraft[ac]
-		if !(state.displayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == server.Callsign())) {
+		if !(state.displayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == sim.Callsign())) {
 			continue
 		}
 
@@ -3909,7 +3903,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 
 func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
 	cb *CommandBuffer) {
-	now := server.CurrentTime()
+	now := sim.CurrentTime()
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 	td := GetTextDrawBuilder()
@@ -4333,6 +4327,21 @@ func STARSDisabledButton(text string, flags int) {
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane utility methods
 
+// amendFlightPlan is a useful utility function for changing an entry in
+// the flightplan; the provided callback function should make the update
+// and the rest of the details are handled here.
+func amendFlightPlan(callsign string, amend func(fp *FlightPlan)) error {
+	if ac := sim.GetAircraft(callsign); ac == nil {
+		return ErrNoAircraftForCallsign
+	} else {
+		if ac.FlightPlan == nil {
+			ac.FlightPlan = &FlightPlan{}
+		}
+		amend(ac.FlightPlan)
+		return sim.AmendFlightPlan(callsign, *ac.FlightPlan)
+	}
+}
+
 func (sp *STARSPane) initializeSystemFonts() {
 	for i, sz := range []int{16, 18, 20, 22, 24, 28} {
 		id := FontIdentifier{Name: "VT323 Regular", Size: sz}
@@ -4350,7 +4359,7 @@ func (sp *STARSPane) initializeAircraft() {
 	sp.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
 	ps := sp.currentPreferenceSet
-	for _, ac := range server.GetAllAircraft() {
+	for _, ac := range sim.GetAllAircraft() {
 		sp.aircraft[ac] = &STARSAircraftState{}
 
 		if !ps.DisableCRDA {

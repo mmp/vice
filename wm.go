@@ -612,7 +612,7 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 					icao, flight := tm.sender[:idx], tm.sender[idx:]
 					if cs, ok := database.callsigns[icao]; ok {
 						textCallsign = cs.Telephony + " " + flight
-						if ac := server.GetAircraft(tm.sender); ac != nil {
+						if ac := sim.GetAircraft(tm.sender); ac != nil {
 							if fp := ac.FlightPlan; fp != nil {
 								if strings.HasPrefix(fp.AircraftType, "H/") {
 									textCallsign += " heavy"
