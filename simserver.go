@@ -45,6 +45,14 @@ func mustParseLatLong(l string) Point2LL {
 	return ll
 }
 
+/*
+type NewScenario struct [
+	Callsign string
+	Controllers []*Controller
+	Airports map[string]string // ICAO ->
+}
+*/
+
 type Scenario struct {
 	Callsign    string           `json:"callsign"`
 	Controllers []*Controller    `json:"controllers"`
@@ -64,11 +72,17 @@ type AirportConfig struct {
 
 	Scratchpads map[string]string `json:"scratchpads"`
 
-	DepartureRunways []DepartureRunway `json:"departure_runways"`
+	DepartureRunways   []DepartureRunway `json:"departure_runways"`
+	ArrivalRunwayNames []string          `json:"arrival_runways"`
+	ArrivalRunways     []ArrivalRunway   `json:"-"`
 }
 
 func (ac *AirportConfig) PostDeserialize() []error {
 	var errors []error
+
+	for _, rwy := range ac.ArrivalRunwayNames {
+		ac.ArrivalRunways = append(ac.ArrivalRunways, ArrivalRunway{Runway: rwy})
+	}
 
 	approachNames := make(map[string]interface{})
 	for _, ap := range ac.Approaches {
@@ -120,6 +134,10 @@ func (ac *AirportConfig) PostDeserialize() []error {
 
 		for _, ar := range ag.Arrivals {
 			errors = append(errors, ac.InitializeWaypointLocations(ar.Waypoints)...)
+			for _, wp := range ar.RunwayWaypoints {
+				errors = append(errors, ac.InitializeWaypointLocations(wp)...)
+			}
+
 			checkAirlines(ar.Airlines)
 		}
 	}
@@ -199,6 +217,11 @@ type ExitRoute struct {
 	Waypoints       WaypointArray `json:"waypoints"`
 }
 
+type ArrivalRunway struct {
+	Runway  string `json:"runway"`
+	Enabled bool   `json:"-"`
+}
+
 type Departure struct {
 	Exit         string `json:"exit"`
 	exitWaypoint Waypoint
@@ -219,9 +242,10 @@ type ArrivalGroup struct {
 }
 
 type Arrival struct {
-	Name      string        `json:"name"`
-	Waypoints WaypointArray `json:"waypoints"`
-	Route     string        `json:"route"`
+	Name            string                   `json:"name"`
+	Waypoints       WaypointArray            `json:"waypoints"`
+	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
+	Route           string                   `json:"route"`
 
 	InitialController string `json:"initial_controller"`
 	InitialAltitude   int    `json:"initial_altitude"`
@@ -465,12 +489,13 @@ func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 
 func (ac *AirportConfig) DrawUI() {
 	if len(ac.Departures) > 0 {
+		imgui.Text("Departures")
 		anyRunwaysActive := false
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
 		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{800, 0}, 0.) {
-			imgui.TableSetupColumn("Enabled")
 			imgui.TableSetupColumn("Runway")
+			imgui.TableSetupColumn("Enabled")
 			imgui.TableSetupColumn("ADR")
 			imgui.TableSetupColumn("Challenge level")
 			imgui.TableHeadersRow()
@@ -478,6 +503,8 @@ func (ac *AirportConfig) DrawUI() {
 			for i, conf := range ac.DepartureRunways {
 				imgui.PushID(conf.Runway)
 				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text(conf.Runway)
 				imgui.TableNextColumn()
 				if imgui.Checkbox("##enabled", &ac.DepartureRunways[i].Enabled) {
 					if ac.DepartureRunways[i].Enabled {
@@ -494,8 +521,6 @@ func (ac *AirportConfig) DrawUI() {
 				}
 				anyRunwaysActive = anyRunwaysActive || ac.DepartureRunways[i].Enabled
 				imgui.TableNextColumn()
-				imgui.Text(conf.Runway)
-				imgui.TableNextColumn()
 				imgui.InputIntV("##adr", &ac.DepartureRunways[i].Rate, 1, 120, 0)
 				imgui.TableNextColumn()
 				imgui.SliderFloatV("##challenge", &ac.DepartureRunways[i].challenge, 0, 1, "%.01f", 0)
@@ -505,11 +530,10 @@ func (ac *AirportConfig) DrawUI() {
 		}
 
 		if anyRunwaysActive {
-			imgui.Separator()
 			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{800, 0}, 0.) {
+			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{500, 0}, 0.) {
+				imgui.TableSetupColumn("Departure Runway/Gate")
 				imgui.TableSetupColumn("Enabled")
-				imgui.TableSetupColumn("Runway/Gate")
 				imgui.TableHeadersRow()
 				for _, conf := range ac.DepartureRunways {
 					if !conf.Enabled {
@@ -521,9 +545,9 @@ func (ac *AirportConfig) DrawUI() {
 						imgui.PushID(category)
 						imgui.TableNextRow()
 						imgui.TableNextColumn()
-						imgui.Checkbox("##check", conf.departureCategoryEnabled[category])
-						imgui.TableNextColumn()
 						imgui.Text(conf.Runway + "/" + category)
+						imgui.TableNextColumn()
+						imgui.Checkbox("##check", conf.departureCategoryEnabled[category])
 						imgui.PopID()
 					}
 					imgui.PopID()
@@ -533,26 +557,51 @@ func (ac *AirportConfig) DrawUI() {
 		}
 	}
 
-	if len(ac.ArrivalGroups) > 0 {
+	if len(ac.ArrivalRunways) > 0 {
+		imgui.Text("Arrivals")
+
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{600, 0}, 0.) {
+		anyRunwaysActive := false
+		if imgui.BeginTableV("arrivalrunways", 2, flags, imgui.Vec2{500, 0}, 0.) {
+			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("Enabled")
-			imgui.TableSetupColumn("Arrival")
-			imgui.TableSetupColumn("AAR")
 			imgui.TableHeadersRow()
 
-			for i, ag := range ac.ArrivalGroups {
-				imgui.PushID(ag.Name)
+			for i, rwy := range ac.ArrivalRunways {
+				imgui.PushID(rwy.Runway)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Checkbox("##enabled", &ac.ArrivalGroups[i].Enabled)
+				imgui.Text(rwy.Runway)
 				imgui.TableNextColumn()
-				imgui.Text(ag.Name)
-				imgui.TableNextColumn()
-				imgui.InputIntV("##aar", &ac.ArrivalGroups[i].Rate, 1, 120, 0)
+				imgui.Checkbox("##enabled", &ac.ArrivalRunways[i].Enabled)
+				if ac.ArrivalRunways[i].Enabled {
+					anyRunwaysActive = true
+				}
 				imgui.PopID()
 			}
 			imgui.EndTable()
+		}
+
+		if anyRunwaysActive && len(ac.ArrivalGroups) > 0 {
+			if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{500, 0}, 0.) {
+				imgui.TableSetupColumn("Arrival")
+				imgui.TableSetupColumn("Enabled")
+				imgui.TableSetupColumn("AAR")
+				imgui.TableHeadersRow()
+
+				for i, ag := range ac.ArrivalGroups {
+					imgui.PushID(ag.Name)
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Text(ag.Name)
+					imgui.TableNextColumn()
+					imgui.Checkbox("##enabled", &ac.ArrivalGroups[i].Enabled)
+					imgui.TableNextColumn()
+					imgui.InputIntV("##aar", &ac.ArrivalGroups[i].Rate, 1, 120, 0)
+					imgui.PopID()
+				}
+				imgui.EndTable()
+			}
 		}
 	}
 }
@@ -1090,7 +1139,7 @@ func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
 	if ac.ClearedApproach {
 		// The aircraft has made it to the approach fix they
 		// were cleared to.
-		lg.Errorf("%s: on final...", ac.AC.Callsign)
+		//lg.Errorf("%s: on final...", ac.AC.Callsign)
 		ac.OnFinal = true
 	}
 }
@@ -1799,6 +1848,10 @@ func (ss *SimServer) SpawnAircraft() {
 		ss.RunWaypointCommands(ssa, ssa.Waypoints[0].Commands)
 
 		ssa.Position = ssa.Waypoints[0].Location
+		if ssa.Position.IsZero() {
+			lg.Errorf("%s: uninitialized initial waypoint position!", ssa.AC.Callsign)
+			return
+		}
 		ssa.Heading = float32(ssa.Waypoints[0].Heading)
 		if ssa.Heading == 0 { // unassigned, so get the heading from the next fix
 			ssa.Heading = headingp2ll(ssa.Position, ssa.Waypoints[1].Location, database.MagneticVariation)
@@ -1820,7 +1873,7 @@ func (ss *SimServer) SpawnAircraft() {
 	for _, ap := range ss.airportConfigs {
 		for i, arr := range ap.ArrivalGroups {
 			if arr.Enabled && ss.remainingLaunches > 0 && now.After(arr.nextSpawn) {
-				if ac := ss.SpawnArrival(arr); ac != nil {
+				if ac := ss.SpawnArrival(ap, arr); ac != nil {
 					ac.AC.FlightPlan.ArrivalAirport = ap.ICAO
 					addAircraft(ac)
 					ap.ArrivalGroups[i].nextSpawn = now.Add(randomWait(arr.Rate))
@@ -1923,7 +1976,7 @@ func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
 	}
 }
 
-func (ss *SimServer) SpawnArrival(ag ArrivalGroup) *SSAircraft {
+func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *SSAircraft {
 	arr := Sample(ag.Arrivals)
 
 	ac := sampleAircraft(arr.Airlines)
@@ -1934,7 +1987,18 @@ func (ss *SimServer) SpawnArrival(ag ArrivalGroup) *SSAircraft {
 	ac.AC.TrackingController = arr.InitialController
 	ac.AC.FlightPlan.Altitude = 39000
 	ac.AC.FlightPlan.Route = arr.Route
+	// Start with the default waypoints for the arrival
 	ac.Waypoints = arr.Waypoints
+	// But if there is a custom route for any of the active runways, switch
+	// to that. Results are undefined if there are multiple matches.
+	for _, rwy := range ap.ArrivalRunways {
+		if rwy.Enabled {
+			if wp, ok := arr.RunwayWaypoints[rwy.Runway]; ok {
+				ac.Waypoints = wp
+				break
+			}
+		}
+	}
 	ac.Altitude = float32(arr.InitialAltitude)
 	ac.IAS = float32(arr.InitialSpeed)
 	ac.CrossingAltitude = arr.ClearedAltitude
@@ -2173,6 +2237,8 @@ func JFKAirport() *AirportConfig {
 		"GAYEL": "North",
 		"DEEZZ": "North",
 	}
+
+	ac.ArrivalRunwayNames = []string{"4L", "4R", "13L", "13R", "22L", "22R", "31L", "31R"}
 
 	i4l := Approach{
 		ShortName: "I4L",
@@ -2577,8 +2643,12 @@ func JFKAirport() *AirportConfig {
 		Rate: 20,
 		Arrivals: []Arrival{
 			Arrival{
-				Name:              "PARCH3",
-				Waypoints:         mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
+				Name:      "PARCH3",
+				Waypoints: mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"),
+				RunwayWaypoints: map[string]WaypointArray{
+					"22L": mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER CRAIL #302"),
+					"22R": mustParseWaypoints("N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER CRAIL #302"),
+				},
 				Route:             "/. PARCH3",
 				InitialController: "BOS_E_CTR",
 				InitialAltitude:   13000,
