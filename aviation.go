@@ -170,10 +170,6 @@ type RadarTrack struct {
 	Time        time.Time
 }
 
-type AircraftPair struct {
-	a, b *Aircraft
-}
-
 type TransponderMode int
 
 const (

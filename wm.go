@@ -14,7 +14,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
@@ -24,20 +23,6 @@ var (
 	// Assorted state related to the window tiling is collected in the wm
 	// struct.
 	wm struct {
-		// When two Panes are to be selected (e.g., to exchange them), this
-		// records the first one.
-		paneFirstPick Pane
-		// Callback function for when a pane is picked during config
-		// editing.
-		handlePanePick     func(Pane) bool
-		paneCreatePrompt   string
-		paneConfigHelpText string
-		// Backup copy of the Pane node hierarchy for use when the user
-		// clicks the discard button.
-		editorBackupRoot *DisplayNode
-		// Buttons that are displayed during config editing.
-		configButtons ModalButtonSet
-
 		// When a Pane's entry in the "Subwindows" menu is selected, these
 		// two maps are populated to indicate that the Pane's configuration
 		// window should be shown.
@@ -385,33 +370,6 @@ func wmInit() {
 
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
 // menu.
-func wmAddPaneMenuSettings() {
-	// Each Pane that implements the PaneUIDrawer interface gets an entry
-	// in the "Subwindows" menu in the main menu bar. First collect those.
-	var panes []Pane
-	globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-		if _, ok := pane.(PaneUIDrawer); ok {
-			panes = append(panes, pane)
-		}
-	})
-
-	// Sort them by name.
-	sort.Slice(panes, func(i, j int) bool { return panes[i].Name() < panes[j].Name() })
-
-	for i, pane := range panes {
-		// It's possible that multiple panes may have the same name;
-		// disambiguate their imgui tags via ## just in case.
-		if imgui.MenuItem(pane.Name() + "...##" + fmt.Sprintf("%d", i)) {
-			// copy the name so that it can be edited...
-			wm.showPaneName[pane] = pane.Name()
-			// Allocate a new bool that indicates whether the window for
-			// the pane is displayed.
-			t := true
-			wm.showPaneSettings[pane] = &t
-		}
-	}
-}
-
 // wmDrawUI draws any open Pane settings windows.
 func wmDrawUI(p Platform) {
 	globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
@@ -504,17 +462,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	mousePane := globalConfig.DisplayRoot.FindPaneForMouse(paneDisplayExtent, mousePos)
 
 	io := imgui.CurrentIO()
-
-	// If the config editor is waiting for a Pane to be picked and the user
-	// clicked in a Pane, report that news back.
-	if wm.handlePanePick != nil && imgui.IsMouseClicked(MouseButtonPrimary) && mousePane != nil {
-		// Ignore clicks on  split lines, however.
-		if _, split := mousePane.(*SplitLine); !split {
-			if wm.handlePanePick(mousePane) {
-				wm.handlePanePick = nil
-			}
-		}
-	}
 
 	// If the user has clicked or is dragging in a Pane, record it in
 	// mouseConsumerOverride so that we can continue to dispatch mouse
@@ -623,35 +570,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				// And reset the graphics state to the standard baseline,
 				// so no state changes leak and affect subsequent drawing.
 				commandBuffer.ResetState()
-
-				// If the config editor is active and the user has clicked
-				// a button that is expecting a Pane to be selected (e.g.,
-				// to delete it, etc.), then blend a semi-transparent
-				// quadrilateral over the pane that the mouse is inside to
-				// indicate that it is selected.
-				if pane == mousePane && wm.handlePanePick != nil {
-					ctx.SetWindowCoordinateMatrices(commandBuffer)
-					commandBuffer.Blend()
-
-					w, h := paneExtent.Width(), paneExtent.Height()
-					p := [4][2]float32{[2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h}}
-					pidx := commandBuffer.Float2Buffer(p[:])
-
-					indices := [4]int32{0, 1, 2, 3}
-					indidx := commandBuffer.IntBuffer(indices[:])
-
-					commandBuffer.SetRGBA(RGBA{0.5, 0.5, 0.5, 0.5})
-					commandBuffer.VertexArray(pidx, 2, 2*4)
-					commandBuffer.DrawQuads(indidx, 4)
-					commandBuffer.ResetState()
-				}
-
-				// Draw a border around the pane if it has keyboard focus.
-				//if haveFocus {
-				//ctx.SetWindowCoordinateMatrices(commandBuffer)
-				//w, h := paneExtent.Width(), paneExtent.Height()
-				//drawBorder(commandBuffer, w, h, ctx.cs.TextHighlight)
-				//}
 			})
 
 		// Clear mouseConsumerOverride if the user has stopped dragging;
@@ -665,21 +583,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 		// all at once.
 		stats.render = renderer.RenderCommandBuffer(commandBuffer)
 	}
-}
-
-// drawBorder emits drawing commands to the provided CommandBuffer to draw
-// a border rectangle with given dimensions, inset 1 pixel.
-func drawBorder(cb *CommandBuffer, w, h float32, color RGB) {
-	p := [4][2]float32{[2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h}}
-	pidx := cb.Float2Buffer(p[:])
-
-	indidx := cb.IntBuffer([]int32{0, 1, 1, 2, 2, 3, 3, 0})
-
-	cb.LineWidth(2)
-	cb.SetRGB(color)
-	cb.VertexArray(pidx, 2, 2*4)
-	cb.DrawLines(indidx, 8)
-	cb.ResetState()
 }
 
 // wmDrawStatus bar draws the status bar underneath the main menu bar
@@ -778,88 +681,4 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 func wmStatusBarHeight() float32 {
 	// Reserve lines as needed for error text.
 	return float32(10 + (1+len(ui.errorText))*ui.font.size)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// ModalButtonSet
-
-// ModalButtonSet handles some of the housekeeping for the buttons used
-// when editing configs, allowing buttons to be shown or not depending on
-// external state and handling pane selection through provided callbacks.
-type ModalButtonSet struct {
-	active    string
-	names     []string
-	callbacks []func() func(Pane) bool
-	show      []func() bool
-}
-
-// Add adds a button with the given text to the button set. The value
-// returned show callback determines whether the button is drawn, and the
-// selected callback is called if the button is pressed and a Pane is then
-// selected by the user.
-func (m *ModalButtonSet) Add(text string, selected func() func(Pane) bool, show func() bool) {
-	m.names = append(m.names, text)
-	m.callbacks = append(m.callbacks, selected)
-	m.show = append(m.show, show)
-}
-
-// Clear deselects the currently active button, if any.
-func (m *ModalButtonSet) Clear() {
-	m.active = ""
-}
-
-// Draw draws the buttons and handles user interaction.
-func (m *ModalButtonSet) Draw() {
-	for i, name := range m.names {
-		// Skip invisible buttons.
-		if !m.show[i]() {
-			continue
-		}
-
-		if m.active == name {
-			// If the button has already been pressed and we're waiting for
-			// a pane to be selected draw it in its 'hovered' state,
-			// regardless of whether the mouse is actually hovering over
-			// it.
-			imgui.PushID(m.active)
-
-			h := imgui.CurrentStyle().Color(imgui.StyleColorButtonHovered)
-			imgui.PushStyleColor(imgui.StyleColorButton, h) // active
-
-			imgui.Button(name)
-			if imgui.IsItemClicked() {
-				// If the button is clicked again, roll back and deselect
-				// it.
-				wm.handlePanePick = nil
-				m.active = ""
-			}
-			imgui.PopStyleColorV(1)
-			imgui.PopID()
-		} else if imgui.Button(name) {
-			// First click of the button. Make it active.
-			m.active = name
-
-			wm.paneFirstPick = nil
-
-			// Get the actual callback for pane selection (and allow the
-			// user to do some prep work, knowing they've been selected)
-			callback := m.callbacks[i]()
-
-			// Register the pane pick callback to dispatch pane selection
-			// to this button's callback.
-			wm.handlePanePick = func(pane Pane) bool {
-				// But now wrap the pick callback in our own function so
-				// that we can clear |active| after successful selection.
-				result := callback(pane)
-				if result {
-					m.active = ""
-				}
-				return result
-			}
-		}
-		// Keep all of the buttons on the same line.
-		if i < len(m.names)-1 {
-			imgui.SameLine()
-		}
-	}
 }
