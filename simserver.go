@@ -359,6 +359,12 @@ type Waypoint struct {
 	Commands []WaypointCommand `json:"commands,omitempty"`
 }
 
+func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
+	dist := nmdistance2ll(p, wp.Location)
+	eta := dist / gs
+	return time.Duration(eta * float32(time.Hour))
+}
+
 type WaypointArray []Waypoint
 
 func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
@@ -718,23 +724,22 @@ func (ac *SSAircraft) UpdateAirspeed() {
 	}
 
 	if targetSpeed == 0 && ac.CrossingSpeed != 0 {
-		dist, ok := ac.nextFixDistance()
+		eta, ok := ac.nextFixETA()
 		if !ok {
-			lg.Errorf("unable to get crossing fix distance... %+v", ac)
+			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
 			return
 		}
 
-		eta := dist / float32(ac.AC.Groundspeed()) * 3600 // in seconds
 		cs := float32(ac.CrossingSpeed)
 		if ac.IAS < cs {
-			accel := (cs - ac.IAS) / eta * 1.25
+			accel := (cs - ac.IAS) / float32(eta.Seconds()) * 1.25
 			accel = min(accel, ac.Performance.Rate.Accelerate/2)
 			ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
 		} else if ac.IAS > cs {
-			decel := (ac.IAS - cs) / eta * 0.75
+			decel := (ac.IAS - cs) / float32(eta.Seconds()) * 0.75
 			decel = min(decel, ac.Performance.Rate.Decelerate/2)
 			ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
-			//lg.Errorf("dist %f eta %f ias %f crossing %f decel %f", dist, eta, ac.IAS, cs, decel)
+			//lg.Errorf("dist %f eta %s ias %f crossing %f decel %f", dist, eta, ac.IAS, cs, decel)
 		}
 
 		return
@@ -798,25 +803,22 @@ func (ac *SSAircraft) UpdateAltitude() {
 		// below the next crossing altitude, has been cleared for the
 		// approach, but hasn't yet joined the final approach course.
 		// (i.e., don't climb then!)
-		//
-		// Estimated time to get there in minutes.
-		dist, ok := ac.nextFixDistance()
+		eta, ok := ac.nextFixETA()
 		if !ok {
-			lg.Errorf("unable to get crossing fix distance... %+v", ac)
+			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
 			return
 		}
 
-		eta := dist / float32(ac.AC.Groundspeed()) * 60 // in minutes
 		if ac.CrossingAltitude > int(ac.Altitude) {
 			// Need to climb.  Figure out rate of climb that would get us
 			// there when we reach the fix (ft/min).
-			rate := (float32(ac.CrossingAltitude) - ac.Altitude) / eta
+			rate := (float32(ac.CrossingAltitude) - ac.Altitude) / float32(eta.Minutes())
 
 			// But we can't climb faster than the aircraft is capable of.
 			ac.Altitude += min(rate, climb) / 60
 		} else {
 			// Need to descend; same logic as the climb case.
-			rate := (ac.Altitude - float32(ac.CrossingAltitude)) / eta
+			rate := (ac.Altitude - float32(ac.CrossingAltitude)) / float32(eta.Minutes())
 			ac.Altitude -= min(rate, descent) / 60
 			//lg.Errorf("dist %f eta %f alt %f crossing %d eta %f -> rate %f ft/min -> delta %f",
 			//dist, eta, ac.Altitude, ac.CrossingAltitude, eta, rate, min(rate, descent)/60)
@@ -824,14 +826,14 @@ func (ac *SSAircraft) UpdateAltitude() {
 	}
 }
 
-// Returns the distance from the aircraft to the next fix in its waypoints,
-// in nautical miles.
-func (ac *SSAircraft) nextFixDistance() (float32, bool) {
+// Returns the estimated time in which the aircraft will reach the next fix
+// in its waypoints, assuming it is flying direct to it at its current
+// speed.
+func (ac *SSAircraft) nextFixETA() (time.Duration, bool) {
 	if len(ac.Waypoints) == 0 {
 		return 0, false
 	}
-
-	return nmdistance2ll(ac.Position, ac.Waypoints[0].Location), true
+	return ac.Waypoints[0].ETA(ac.Position, ac.GS), true
 }
 
 func (ac *SSAircraft) UpdateHeading() {
@@ -1073,10 +1075,9 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, database.MagneticVariation)
 	}
 
-	dist := nmdistance2ll(ac.Position, wp.Location)
-	eta := dist / float32(ac.AC.Groundspeed()) * 3600 // in seconds
+	eta := wp.ETA(ac.Position, ac.GS)
 	turn := abs(headingDifference(hdg, ac.Heading))
-	//lg.Errorf("%s: dist to %s %.2fnm, eta %.1fs, next hdg %.1f turn %.1f, go: %v",
+	//lg.Errorf("%s: dist to %s %.2fnm, eta %s, next hdg %.1f turn %.1f, go: %v",
 	// ac.AC.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
 
 	// We'll wrap things up for the upcoming waypoint if we're within 2
@@ -1087,7 +1088,7 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 	// (e.g. when we're established on the localizer) and the latter test
 	// assumes a 3 degree/second turn and then adds a 1/2 factor to account
 	// for the arc of the turn.  (Ad hoc, but it seems to work well enough.)
-	if eta < 2 || (hdg != 0 && eta < turn/3/2) {
+	if s := float32(eta.Seconds()); s < 2 || (hdg != 0 && s < turn/3/2) {
 		// Execute any commands associated with the waypoint
 		ss.RunWaypointCommands(ac, wp.Commands)
 
