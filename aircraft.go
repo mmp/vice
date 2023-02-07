@@ -641,7 +641,7 @@ func (ac *Aircraft) UpdateWaypoints(ss *SimServer) {
 	// for the arc of the turn.  (Ad hoc, but it seems to work well enough.)
 	if s := float32(eta.Seconds()); s < 2 || (hdg != 0 && s < turn/3/2) {
 		// Execute any commands associated with the waypoint
-		ss.RunWaypointCommands(ac, wp.Commands)
+		ac.RunWaypointCommands(wp.Commands)
 
 		// For starters, convert a previous crossing restriction to a current
 		// assignment.  Clear out the previous crossing restriction.
@@ -668,6 +668,21 @@ func (ac *Aircraft) UpdateWaypoints(ss *SimServer) {
 			if len(ac.Waypoints) > 0 {
 				ac.WaypointUpdate(ac.Waypoints[0])
 			}
+		}
+	}
+}
+
+func (ac *Aircraft) RunWaypointCommands(cmds []WaypointCommand) {
+	for _, cmd := range cmds {
+		switch cmd {
+		case WaypointCommandHandoff:
+			// Handoff to the user's position?
+			ac.InboundHandoffController = server.Callsign()
+			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: ac})
+
+		case WaypointCommandDelete:
+			eventStream.Post(&RemovedAircraftEvent{ac: ac})
+			return
 		}
 	}
 }

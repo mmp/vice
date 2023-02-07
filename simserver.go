@@ -180,22 +180,6 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 	return nil
 }
 
-func (ss *SimServer) RunWaypointCommands(ac *Aircraft, cmds []WaypointCommand) {
-	for _, cmd := range cmds {
-		switch cmd {
-		case WaypointCommandHandoff:
-			// Handoff to the user's position?
-			ac.InboundHandoffController = ss.callsign
-			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: ac})
-
-		case WaypointCommandDelete:
-			eventStream.Post(&RemovedAircraftEvent{ac: ac})
-			delete(ss.aircraft, ac.Callsign)
-			return
-		}
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // SimServer
 
@@ -214,6 +198,8 @@ type SimServer struct {
 	simRate           float32
 	paused            bool
 	remainingLaunches int
+
+	eventsId EventSubscriberId
 
 	wind struct {
 		dir   int
@@ -243,6 +229,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		currentTime:       time.Now(),
 		lastUpdateTime:    time.Now(),
 		remainingLaunches: int(ssc.numAircraft),
+		eventsId:          eventStream.Subscribe(),
 		simRate:           1,
 		challenge:         ssc.challenge,
 	}
@@ -444,6 +431,8 @@ func (ss *SimServer) Disconnect() {
 	for _, ac := range ss.aircraft {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
+	eventStream.Unsubscribe(ss.eventsId)
+	ss.eventsId = InvalidEventSubscriberId
 }
 
 func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
@@ -511,6 +500,13 @@ func (ss *SimServer) SetPrimaryFrequency(f Frequency) {
 func (ss *SimServer) GetUpdates() {
 	if ss.paused {
 		return
+	}
+
+	// Process events
+	for _, ev := range eventStream.Get(ss.eventsId) {
+		if rem, ok := ev.(*RemovedAircraftEvent); ok {
+			delete(ss.aircraft, rem.ac.Callsign)
+		}
 	}
 
 	// Update the current time
@@ -898,7 +894,7 @@ func (ss *SimServer) SpawnAircraft() {
 		}
 		ss.aircraft[ac.Callsign] = ac
 
-		ss.RunWaypointCommands(ac, ac.Waypoints[0].Commands)
+		ac.RunWaypointCommands(ac.Waypoints[0].Commands)
 
 		ac.Position = ac.Waypoints[0].Location
 		if ac.Position.IsZero() {
