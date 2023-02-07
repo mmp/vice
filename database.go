@@ -75,7 +75,6 @@ type StaticDatabase struct {
 	SIDs, STARs                       []StaticDrawable
 	SIDsNoColor, STARsNoColor         []StaticDrawable
 	lowAirwayLabels, highAirwayLabels []Label
-	labelColorBufferIndex             ColorBufferIndex
 	labels                            []Label
 
 	// From the position file
@@ -149,62 +148,7 @@ type StaticDrawable struct {
 	cb       CommandBuffer
 	rgbSlice []float32
 	// Bounding box in latitude-longitude coordinates
-	bounds           Extent2D
-	colorBufferIndex ColorBufferIndex
-}
-
-// ColorBufferIndex provides an efficient encoding of named sections of an
-// RGB buffer used for rendering. More to the point, sector files include
-// various objects that defined by lines where each line has a string
-// associated with it that names it for color assignment during rendering
-// (e.g., "RWY", "TAXI", etc.). We don't want to store a string for each
-// line segment, we would like to maintain a pre-generated buffer of RGB
-// values for these segments for the GPU, and we would like to be able to
-// efficiently update these RGBs when the user assigns a new color for
-// "TAXI" or what have you.  Thence, ColorBufferIndex.
-type ColorBufferIndex struct {
-	// Each color name has an integer identifier associated with it.
-	m map[string]int
-	// And then each line segment has an integer associated with it that
-	// corresponds to its original color name.
-	ids []int
-}
-
-func NewColorBufferIndex() ColorBufferIndex { return ColorBufferIndex{m: make(map[string]int)} }
-
-// Add should be called whenever a color name is encountered when
-// processing lines in a sector file. It handles the housekeeping needed to
-// associate the name with the current line segment.
-func (c *ColorBufferIndex) Add(name string) {
-	if id, ok := c.m[name]; ok {
-		// Seen it already; associate the name with the current line
-		// segment.
-		c.ids = append(c.ids, id)
-	} else {
-		// First time: generate an identifier for the name, record it, and
-		// associate it with the line segment.
-		newId := len(c.m) + 1
-		c.m[name] = newId
-		c.ids = append(c.ids, newId)
-	}
-}
-
-// Visit should be called when a named color has been changed; the provided
-// callback function is then called with the segment index of each line
-// segment that was associated with the specified name.
-func (c *ColorBufferIndex) Visit(name string, callback func(int)) {
-	if matchId, ok := c.m[name]; !ok {
-		// This name isn't associated with any line segments.
-		return
-	} else {
-		// Loop over all of the segments and then call the callback for
-		// each one that is associated with |name|.
-		for i, id := range c.ids {
-			if id == matchId {
-				callback(i)
-			}
-		}
-	}
+	bounds Extent2D
 }
 
 var (
@@ -568,7 +512,6 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	db.highAirwayLabels = nil
 	db.lowAirwayCommandBuffer = CommandBuffer{}
 	db.highAirwayCommandBuffer = CommandBuffer{}
-	db.labelColorBufferIndex = ColorBufferIndex{}
 	db.labels = nil
 
 	// First initialize various databases from the sector file. Start with
@@ -695,10 +638,8 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	rld.GenerateCommands(&db.runwayCommandBuffer)
 
 	// Labels (e.g., taxiways and runways.)
-	db.labelColorBufferIndex = NewColorBufferIndex()
 	for _, label := range sectorFile.Labels {
 		l := Label{name: label.Name, p: Point2LLFromSct2(label.P)}
-		db.labelColorBufferIndex.Add(label.Color)
 		db.labels = append(db.labels, l)
 	}
 	db.lowAirwayCommandBuffer, db.lowAirwayLabels = getAirwayCommandBuffers(sectorFile.LowAirways)
@@ -713,18 +654,12 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 	staticColoredLines := func(name string, cs []sct2.ColoredSegment, defaultColorName string) StaticDrawable {
 		ld := GetColoredLinesDrawBuilder()
 		defer ReturnColoredLinesDrawBuilder(ld)
-		colorBufferIndex := NewColorBufferIndex()
 
 		for _, seg := range cs {
 			// Ignore (0,0) positions, which are sometimes left in sector
 			// files to delineate different sections. They are obviously
 			// unhelpful as far as the bounding boxes for culling...
 			if seg.P[0].Latitude != 0 || seg.P[0].Longitude != 0 {
-				if seg.Color != "" {
-					colorBufferIndex.Add(seg.Color)
-				} else {
-					colorBufferIndex.Add(defaultColorName)
-				}
 				ld.AddLine(Point2LLFromSct2(seg.P[0]), Point2LLFromSct2(seg.P[1]), RGB{})
 			}
 		}
@@ -732,11 +667,10 @@ func (db *StaticDatabase) LoadSectorFile(filename string) error {
 		start, len := ld.GenerateCommands(&cb)
 
 		return StaticDrawable{
-			name:             name,
-			cb:               cb,
-			rgbSlice:         cb.FloatSlice(start, len),
-			bounds:           ld.Bounds(),
-			colorBufferIndex: colorBufferIndex}
+			name:     name,
+			cb:       cb,
+			rgbSlice: cb.FloatSlice(start, len),
+			bounds:   ld.Bounds()}
 	}
 	// We'll also make a StaticDrawable for such things that doesn't
 	// include any color settings, for the use of scopes that prefer to set
@@ -1014,69 +948,6 @@ func (db *StaticDatabase) LookupAircraftType(ac string) (AircraftType, bool) {
 		return t, ok
 	}
 	return AircraftType{}, false
-}
-
-func (db *StaticDatabase) SetColorScheme(cs *ColorScheme) {
-	// Set the sector file colors by default; they may be overridden
-	// shortly, but no need to be more clever here.
-	for name, color := range db.sectorFileColors {
-		db.NamedColorChanged(name, color)
-	}
-	for name, color := range cs.DefinedColors {
-		db.NamedColorChanged(name, *color)
-	}
-	db.NamedColorChanged("Geo", cs.Geo)
-	db.NamedColorChanged("SID", cs.SID)
-	db.NamedColorChanged("STAR", cs.STAR)
-}
-
-// NamedColorChanged should be called when a color in the color scheme has
-// been updated; it takes care of updating all of the RGB buffers in the
-// assorted rendering command buffers to reflect the change.
-func (db *StaticDatabase) NamedColorChanged(name string, rgb RGB) {
-	update := func(c ColorBufferIndex, slice []float32, name string, rgb RGB) {
-		c.Visit(name, func(i int) {
-			idx := 6 * i
-			slice[idx] = rgb.R
-			slice[idx+1] = rgb.G
-			slice[idx+2] = rgb.B
-			slice[idx+3] = rgb.R
-			slice[idx+4] = rgb.G
-			slice[idx+5] = rgb.B
-		})
-	}
-
-	switch name {
-	case "Geo":
-		for _, geo := range db.geos {
-			update(geo.colorBufferIndex, geo.rgbSlice, "Geo", rgb)
-		}
-
-	case "SID":
-		for _, sid := range db.SIDs {
-			update(sid.colorBufferIndex, sid.rgbSlice, "SID", rgb)
-		}
-
-	case "STAR":
-		for _, star := range db.STARs {
-			update(star.colorBufferIndex, star.rgbSlice, "STAR", rgb)
-		}
-
-	default:
-		db.labelColorBufferIndex.Visit(name, func(i int) {
-			db.labels[i].color = rgb
-		})
-
-		for _, geo := range db.geos {
-			update(geo.colorBufferIndex, geo.rgbSlice, name, rgb)
-		}
-		for _, sid := range db.SIDs {
-			update(sid.colorBufferIndex, sid.rgbSlice, name, rgb)
-		}
-		for _, star := range db.STARs {
-			update(star.colorBufferIndex, star.rgbSlice, name, rgb)
-		}
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
