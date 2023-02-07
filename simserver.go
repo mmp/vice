@@ -152,7 +152,6 @@ func (ac *AirportConfig) PostDeserialize() []error {
 
 	runwayNames := make(map[string]interface{})
 	for i, rwy := range ac.DepartureRunways {
-		ac.DepartureRunways[i].challenge = 0.25
 		ac.DepartureRunways[i].departureCategoryEnabled = make(map[string]*bool)
 
 		if _, ok := runwayNames[rwy.Runway]; ok {
@@ -207,7 +206,6 @@ type DepartureRunway struct {
 
 	departureCategoryEnabled map[string]*bool
 	nextSpawn                time.Time
-	challenge                float32
 	lastDeparture            *Departure
 }
 
@@ -410,6 +408,7 @@ var scenarios []*Scenario
 type SimServerConnectionConfiguration struct {
 	numAircraft      int32
 	controllerActive map[string]*bool
+	challenge        float32
 
 	wind struct {
 		dir   int32
@@ -448,6 +447,8 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 	ssc.wind.speed = 10
 	ssc.wind.gust = 15
 
+	ssc.challenge = 0.25
+
 	ssc.scenario = scenarios[0]
 
 	ssc.controllerActive = make(map[string]*bool)
@@ -460,6 +461,9 @@ func (ssc *SimServerConnectionConfiguration) Initialize() {
 func (ssc *SimServerConnectionConfiguration) DrawUI() bool {
 	// imgui.InputText("Callsign", &ssc.callsign)
 	imgui.SliderIntV("Total aircraft", &ssc.numAircraft, 1, 100, "%d", 0)
+
+	imgui.TableNextColumn()
+	imgui.SliderFloatV("Departure sequencing challenge", &ssc.challenge, 0, 1, "%.01f", 0)
 
 	imgui.SliderIntV("Wind heading", &ssc.wind.dir, 0, 360, "%d", 0)
 	imgui.SliderIntV("Wind speed", &ssc.wind.speed, 0, 50, "%d", 0)
@@ -493,11 +497,10 @@ func (ac *AirportConfig) DrawUI() {
 		anyRunwaysActive := false
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{800, 0}, 0.) {
+		if imgui.BeginTableV("departureRunways", 3, flags, imgui.Vec2{400, 0}, 0.) {
 			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("Enabled")
 			imgui.TableSetupColumn("ADR")
-			imgui.TableSetupColumn("Challenge level")
 			imgui.TableHeadersRow()
 
 			for i, conf := range ac.DepartureRunways {
@@ -522,8 +525,6 @@ func (ac *AirportConfig) DrawUI() {
 				anyRunwaysActive = anyRunwaysActive || ac.DepartureRunways[i].Enabled
 				imgui.TableNextColumn()
 				imgui.InputIntV("##adr", &ac.DepartureRunways[i].Rate, 1, 120, 0)
-				imgui.TableNextColumn()
-				imgui.SliderFloatV("##challenge", &ac.DepartureRunways[i].challenge, 0, 1, "%.01f", 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
@@ -1168,6 +1169,7 @@ type SimServer struct {
 		speed int
 		gust  int
 	}
+	challenge float32
 
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
@@ -1191,6 +1193,7 @@ func NewSimServer(ssc SimServerConnectionConfiguration) *SimServer {
 		lastUpdateTime:    time.Now(),
 		remainingLaunches: int(ssc.numAircraft),
 		simRate:           1,
+		challenge:         ssc.challenge,
 	}
 
 	for _, ctrl := range ssc.scenario.Controllers {
@@ -2009,7 +2012,7 @@ func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *SSAircraf
 
 func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *SSAircraft {
 	var dep *Departure
-	if rand.Float32() < rwy.challenge {
+	if rand.Float32() < ss.challenge {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		if rand.Float32() < .5 {
