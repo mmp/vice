@@ -874,7 +874,7 @@ func (ac *SSAircraft) UpdateHeading() {
 			// Find eta to the intercept and the turn required to align with
 			// the localizer.
 			dist := distance2f(pos, isect)
-			eta := dist / float32(ac.AC.Groundspeed()) * 3600 // in seconds
+			eta := dist / ac.GS * 3600 // in seconds
 			turn := abs(headingDifference(hdg, float32(ap.Heading())-database.MagneticVariation))
 			//lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
 
@@ -1769,8 +1769,8 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 				s += fmt.Sprintf(" turn direction %d", ac.TurnDirection)
 			}
 		}
-		s += fmt.Sprintf(", IAS %f GS %d speed %d crossing speed %d",
-			ac.IAS, ac.AC.Groundspeed(), ac.AssignedSpeed, ac.CrossingSpeed)
+		s += fmt.Sprintf(", IAS %f GS %.1f speed %d crossing speed %d",
+			ac.IAS, ac.GS, ac.AssignedSpeed, ac.CrossingSpeed)
 
 		if ac.ClearedApproach {
 			s += ", cleared approach"
