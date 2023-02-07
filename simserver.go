@@ -793,8 +793,13 @@ func (ac *SSAircraft) UpdateAltitude() {
 			// acceleration/deceleration...
 			ac.Altitude = max(float32(ac.AssignedAltitude), ac.Altitude-descent/60)
 		}
-	} else {
-		// We have a crossing altitude.  Estimated time to get there in minutes.
+	} else if !ac.ClearedApproach || ac.OnFinal {
+		// We have a crossing altitude, but ignore it if the aircraft is
+		// below the next crossing altitude, has been cleared for the
+		// approach, but hasn't yet joined the final approach course.
+		// (i.e., don't climb then!)
+		//
+		// Estimated time to get there in minutes.
 		dist, ok := ac.nextFixDistance()
 		if !ok {
 			lg.Errorf("unable to get crossing fix distance... %+v", ac)
@@ -2312,7 +2317,7 @@ func JFKAirport() *AirportConfig {
 		FullName:  "RNAV Zulu 13 Left",
 		Type:      RNAVApproach,
 		Waypoints: []WaypointArray{[]Waypoint{
-			Waypoint{Fix: "ASALT", Speed: 210}, // no alt since may be 2k or 3k
+			Waypoint{Fix: "ASALT", Altitude: 3000, Speed: 210},
 			Waypoint{Fix: "CNRSE", Altitude: 2000},
 			Waypoint{Fix: "LEISA", Altitude: 1246},
 			Waypoint{Fix: "SILJY", Altitude: 835},
@@ -2327,7 +2332,7 @@ func JFKAirport() *AirportConfig {
 		FullName:  "RNAV Zulu 13 Right",
 		Type:      RNAVApproach,
 		Waypoints: []WaypointArray{[]Waypoint{
-			Waypoint{Fix: "ASALT", Speed: 210},
+			Waypoint{Fix: "ASALT", Altitude: 3000, Speed: 210},
 			Waypoint{Fix: "NUCRI", Altitude: 2000},
 			Waypoint{Fix: "PEEBO", Altitude: 921},
 			Waypoint{Fix: "MAYMA", Altitude: 520},
