@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -313,100 +312,6 @@ func (ap *Approach) Line() [2]Point2LL {
 func (ap *Approach) Heading() int {
 	p := ap.Line()
 	return int(headingp2ll(p[0], p[1], database.MagneticVariation) + 0.5)
-}
-
-type WaypointCommand int
-
-const (
-	WaypointCommandHandoff = iota
-	WaypointCommandDelete
-)
-
-func (wc WaypointCommand) MarshalJSON() ([]byte, error) {
-	switch wc {
-	case WaypointCommandHandoff:
-		return []byte("\"handoff\""), nil
-
-	case WaypointCommandDelete:
-		return []byte("\"delete\""), nil
-
-	default:
-		return nil, fmt.Errorf("unhandled WaypointCommand in MarshalJSON")
-	}
-}
-
-func (wc *WaypointCommand) UnmarshalJSON(b []byte) error {
-	switch string(b) {
-	case "\"handoff\"":
-		*wc = WaypointCommandHandoff
-		return nil
-
-	case "\"delete\"":
-		*wc = WaypointCommandDelete
-		return nil
-
-	default:
-		return fmt.Errorf("%s: unknown waypoint command", string(b))
-	}
-}
-
-type Waypoint struct {
-	Fix      string            `json:"fix"`
-	Location Point2LL          `json:"-"` // never serialized, derived from fix
-	Altitude int               `json:"altitude,omitempty"`
-	Speed    int               `json:"speed,omitempty"`
-	Heading  int               `json:"heading,omitempty"` // outbound heading after waypoint
-	Commands []WaypointCommand `json:"commands,omitempty"`
-}
-
-func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
-	dist := nmdistance2ll(p, wp.Location)
-	eta := dist / gs
-	return time.Duration(eta * float32(time.Hour))
-}
-
-type WaypointArray []Waypoint
-
-func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
-	var entries []string
-	for _, w := range wslice {
-		s := w.Fix
-		if w.Altitude != 0 {
-			s += fmt.Sprintf("@a%d", w.Altitude)
-		}
-		if w.Speed != 0 {
-			s += fmt.Sprintf("@s%d", w.Speed)
-		}
-		entries = append(entries, s)
-
-		if w.Heading != 0 {
-			entries = append(entries, fmt.Sprintf("#%d", w.Heading))
-		}
-
-		for _, c := range w.Commands {
-			switch c {
-			case WaypointCommandHandoff:
-				entries = append(entries, "@")
-
-			case WaypointCommandDelete:
-				entries = append(entries, "*")
-			}
-		}
-	}
-
-	return []byte("\"" + strings.Join(entries, " ") + "\""), nil
-}
-
-func (w *WaypointArray) UnmarshalJSON(b []byte) error {
-	if len(b) < 2 {
-		*w = nil
-		return nil
-	}
-	wp, err := parseWaypoints(string(b[1 : len(b)-1]))
-	if err == nil {
-		*w = wp
-	}
-	return err
 }
 
 var scenarios []*Scenario
@@ -1584,69 +1489,4 @@ func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *Ai
 	ac.AssignedAltitude = exitRoute.ClearedAltitude
 
 	return ac
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-func mustParseWaypoints(str string) []Waypoint {
-	if wp, err := parseWaypoints(str); err != nil {
-		panic(err)
-	} else {
-		return wp
-	}
-}
-func parseWaypoints(str string) ([]Waypoint, error) {
-	var waypoints []Waypoint
-	for _, field := range strings.Fields(str) {
-		if len(field) == 0 {
-			return nil, fmt.Errorf("Empty waypoint in string: \"%s\"", str)
-		}
-
-		if field == "@" {
-			if len(waypoints) == 0 {
-				return nil, fmt.Errorf("No previous waypoint before handoff specifier")
-			}
-			waypoints[len(waypoints)-1].Commands =
-				append(waypoints[len(waypoints)-1].Commands, WaypointCommandHandoff)
-		} else if field[0] == '#' {
-			if len(waypoints) == 0 {
-				return nil, fmt.Errorf("No previous waypoint before heading specifier")
-			}
-			if hdg, err := strconv.Atoi(field[1:]); err != nil {
-				return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", field[1:], err)
-			} else {
-				waypoints[len(waypoints)-1].Heading = hdg
-			}
-		} else {
-			wp := Waypoint{}
-			for i, f := range strings.Split(field, "@") {
-				if i == 0 {
-					wp.Fix = f
-				} else {
-					switch f[0] {
-					case 'a':
-						alt, err := strconv.Atoi(f[1:])
-						if err != nil {
-							return nil, err
-						}
-						wp.Altitude = alt
-
-					case 's':
-						kts, err := strconv.Atoi(f[1:])
-						if err != nil {
-							return nil, err
-						}
-						wp.Speed = kts
-
-					default:
-						return nil, fmt.Errorf("%s: unknown @ command '%c", field, f[0])
-					}
-				}
-			}
-
-			waypoints = append(waypoints, wp)
-		}
-	}
-
-	return waypoints, nil
 }
