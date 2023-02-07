@@ -83,44 +83,14 @@ var (
 	// compile time, which saves us any worries about having trouble
 	// finding them at runtime.
 
-	//---go:embed resources/Cousine-Regular.ttf.zst
-	//cousineRegularTTF string
-
 	//go:embed resources/Roboto-Regular.ttf.zst
 	robotoRegularTTF string
-
-	//---go:embed resources/Roboto_Mono/static/RobotoMono-Regular.ttf.zst
-	//robotoMonoRegularTTF string
 
 	//go:embed resources/VT323-Regular.ttf.zst
 	vt323RegularTTF string
 
-	//---go:embed resources/Source_Code_Pro/static/SourceCodePro-Regular.ttf.zst
-	//sourceCodeProRegularTTF string
-	//---go:embed resources/Noto_Sans_Mono/static/NotoSansMono_Condensed/NotoSansMono_Condensed-Regular.ttf.zst
-	//notoSansMonoCondensedRegularTTF string
-	//---go:embed resources/Noto_Sans_Mono/static/NotoSansMono_SemiCondensed/NotoSansMono_SemiCondensed-Regular.ttf.zst
-	//notoSansMonoSemiCondensedRegularTTF string
-	//---go:embed resources/Noto_Sans_Mono/static/NotoSansMono_ExtraCondensed/NotoSansMono_ExtraCondensed-Regular.ttf.zst
-	//notoSansMonoExtraCondensedRegularTTF string
-	//---go:embed resources/Noto_Sans_Mono/static/NotoSansMono/NotoSansMono-Regular.ttf.zst
-	//notoSansMonoRegularTTF string
-	//---go:embed resources/PT_Mono/PTMono-Regular.ttf.zst
-	//pTMonoRegularTTF string
-	//---go:embed resources/Space_Mono/SpaceMono-Regular.ttf.zst
-	//spaceMonoRegularTTF string
-
 	//go:embed resources/Inconsolata/static/Inconsolata_Condensed/Inconsolata_Condensed-Regular.ttf.zst
 	inconsolataCondensedRegularTTF string
-
-	//---go:embed resources/Inconsolata/static/Inconsolata_SemiCondensed/Inconsolata_SemiCondensed-Regular.ttf.zst
-	//inconsolataSemiCondensedRegularTTF string
-	//---go:embed resources/Inconsolata/static/Inconsolata_UltraCondensed/Inconsolata_UltraCondensed-Regular.ttf.zst
-	//inconsolataUltraCondensedRegularTTF string
-	//---go:embed resources/Inconsolata/static/Inconsolata/Inconsolata-Regular.ttf.zst
-	//inconsolataRegularTTF string
-	//---go:embed resources/Share_Tech_Mono/ShareTechMono-Regular.ttf.zst
-	//shareTechMonoRegularTTF string
 
 	//go:embed "resources/Font Awesome 5 Brands-Regular-400.otf.zst"
 	fa5BrandsRegularTTF string
@@ -293,23 +263,9 @@ func fontsInit(r Renderer) {
 		}
 	}
 
-	//	add(cousineRegularTTF, false, "Cousine Regular")
 	add(robotoRegularTTF, false, "Roboto Regular")
-	//	add(robotoMonoRegularTTF, true, "Roboto Mono Regular")
 	add(vt323RegularTTF, true, "VT323 Regular")
-	//	add(sourceCodeProRegularTTF, true, "Source Code Pro Regular")
-	//	add(notoSansMonoCondensedRegularTTF, true, "Noto Sans Mono Condensed Regular")
-	//	add(notoSansMonoSemiCondensedRegularTTF, true, "Noto Sans Mono Semi-Condensed Regular")
-	//	add(notoSansMonoExtraCondensedRegularTTF, true, "Noto Sans Mono Extra-Condensed Regular")
-	//	add(notoSansMonoRegularTTF, true, "Noto Sans Mono Regular")
-	//add(pTMonoRegularTTF, true, "PT Mono Regular")
-	//	add(spaceMonoRegularTTF, true, "SpaceMono Regular")
 	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
-	//	add(inconsolataSemiCondensedRegularTTF, true, "Inconsolata Semi-Condensed Regular")
-	//	add(inconsolataUltraCondensedRegularTTF, true, "Inconsolata Ultra-Condensed Regular")
-	//	add(inconsolataRegularTTF, true, "Inconsolata Regular")
-	//	add(shareTechMonoRegularTTF, true, "ShareTech Mono Regular")
-	//	add(ibmEGA8x14, true, "IBM EGA 8x14")
 
 	img := io.Fonts().TextureDataRGBA32()
 	lg.Printf("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
