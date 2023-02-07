@@ -651,7 +651,8 @@ func (ssc *SimServerConnectionConfiguration) Connect() error {
 // SSAircraft
 
 type SSAircraft struct {
-	AC          *Aircraft
+	Aircraft
+
 	Performance AircraftPerformance
 	Strip       FlightStrip
 	Waypoints   []Waypoint
@@ -695,7 +696,7 @@ func (ac *SSAircraft) UpdateAirspeed() {
 
 	// Slow down on final approach
 	if ac.OnFinal {
-		if airportPos, ok := database.Locate(ac.AC.FlightPlan.ArrivalAirport); ok {
+		if airportPos, ok := database.Locate(ac.FlightPlan.ArrivalAirport); ok {
 			airportDist := nmdistance2ll(ac.Position, airportPos)
 			if airportDist < 1 {
 				targetSpeed = perf.Speed.Landing
@@ -957,12 +958,12 @@ func (ss *SimServer) RunWaypointCommands(ac *SSAircraft, cmds []WaypointCommand)
 		switch cmd {
 		case WaypointCommandHandoff:
 			// Handoff to the user's position?
-			ac.AC.InboundHandoffController = ss.callsign
-			eventStream.Post(&OfferedHandoffEvent{controller: ac.AC.TrackingController, ac: ac.AC})
+			ac.InboundHandoffController = ss.callsign
+			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: &ac.Aircraft})
 
 		case WaypointCommandDelete:
-			eventStream.Post(&RemovedAircraftEvent{ac: ac.AC})
-			delete(ss.aircraft, ac.AC.Callsign)
+			eventStream.Post(&RemovedAircraftEvent{ac: &ac.Aircraft})
+			delete(ss.aircraft, ac.Callsign)
 			return
 		}
 	}
@@ -1078,7 +1079,7 @@ func (ac *SSAircraft) UpdateWaypoints(ss *SimServer) {
 	eta := wp.ETA(ac.Position, ac.GS)
 	turn := abs(headingDifference(hdg, ac.Heading))
 	//lg.Errorf("%s: dist to %s %.2fnm, eta %s, next hdg %.1f turn %.1f, go: %v",
-	// ac.AC.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
+	// ac.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
 
 	// We'll wrap things up for the upcoming waypoint if we're within 2
 	// seconds of reaching it or if the aircraft has to turn to a new
@@ -1146,7 +1147,7 @@ func (ac *SSAircraft) WaypointUpdate(wp Waypoint) {
 	if ac.ClearedApproach {
 		// The aircraft has made it to the approach fix they
 		// were cleared to.
-		//lg.Errorf("%s: on final...", ac.AC.Callsign)
+		//lg.Errorf("%s: on final...", ac.Callsign)
 		ac.OnFinal = true
 	}
 }
@@ -1282,11 +1283,11 @@ func (ss *SimServer) SetSquawkAutomatic(callsign string) error {
 func (ss *SimServer) SetScratchpad(callsign string, scratchpad string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.AC.TrackingController != ss.callsign {
+	} else if ac.TrackingController != ss.callsign {
 		return ErrOtherControllerHasTrack
 	} else {
-		ac.AC.Scratchpad = scratchpad
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
+		ac.Scratchpad = scratchpad
+		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
 		return nil
 	}
 }
@@ -1306,12 +1307,12 @@ func (ss *SimServer) PushFlightStrip(callsign string, controller string) error {
 func (ss *SimServer) InitiateTrack(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.AC.TrackingController != "" {
+	} else if ac.TrackingController != "" {
 		return ErrOtherControllerHasTrack
 	} else {
-		ac.AC.TrackingController = ss.callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
-		eventStream.Post(&InitiatedTrackEvent{ac: ac.AC})
+		ac.TrackingController = ss.callsign
+		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&InitiatedTrackEvent{ac: &ac.Aircraft})
 		return nil
 	}
 }
@@ -1319,12 +1320,12 @@ func (ss *SimServer) InitiateTrack(callsign string) error {
 func (ss *SimServer) DropTrack(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.AC.TrackingController != ss.callsign {
+	} else if ac.TrackingController != ss.callsign {
 		return ErrOtherControllerHasTrack
 	} else {
-		ac.AC.TrackingController = ""
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
-		eventStream.Post(&DroppedTrackEvent{ac: ac.AC})
+		ac.TrackingController = ""
+		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&DroppedTrackEvent{ac: &ac.Aircraft})
 		return nil
 	}
 }
@@ -1332,14 +1333,14 @@ func (ss *SimServer) DropTrack(callsign string) error {
 func (ss *SimServer) Handoff(callsign string, controller string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.AC.TrackingController != ss.callsign {
+	} else if ac.TrackingController != ss.callsign {
 		return ErrOtherControllerHasTrack
 	} else if ctrl := ss.GetController(controller); ctrl == nil {
 		return ErrNoController
 	} else {
-		ac.AC.OutboundHandoffController = ctrl.Callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
-		eventStream.Post(&OfferedHandoffEvent{controller: ss.callsign, ac: ac.AC})
+		ac.OutboundHandoffController = ctrl.Callsign
+		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
+		eventStream.Post(&OfferedHandoffEvent{controller: ss.callsign, ac: &ac.Aircraft})
 		acceptDelay := 2 + rand.Intn(10)
 		ss.handoffs[callsign] = ss.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 		return nil
@@ -1349,13 +1350,13 @@ func (ss *SimServer) Handoff(callsign string, controller string) error {
 func (ss *SimServer) AcceptHandoff(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.AC.InboundHandoffController != ss.callsign {
+	} else if ac.InboundHandoffController != ss.callsign {
 		return ErrNotBeingHandedOffToMe
 	} else {
-		ac.AC.InboundHandoffController = ""
-		ac.AC.TrackingController = ss.callsign
-		eventStream.Post(&AcceptedHandoffEvent{controller: ss.callsign, ac: ac.AC})
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC}) // FIXME...
+		ac.InboundHandoffController = ""
+		ac.TrackingController = ss.callsign
+		eventStream.Post(&AcceptedHandoffEvent{controller: ss.callsign, ac: &ac.Aircraft})
+		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft}) // FIXME...
 		return nil
 	}
 }
@@ -1367,14 +1368,14 @@ func (ss *SimServer) RejectHandoff(callsign string) error {
 func (ss *SimServer) CancelHandoff(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.AC.TrackingController != ss.callsign {
+	} else if ac.TrackingController != ss.callsign {
 		return ErrOtherControllerHasTrack
 	} else {
-		ac.AC.OutboundHandoffController = ""
+		ac.OutboundHandoffController = ""
 		// TODO: we are inconsistent in other control backends about events
 		// when user does things like this; sometimes no event, sometimes
 		// modified a/c event...
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
+		eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
 		return nil
 	}
 }
@@ -1397,13 +1398,13 @@ func (ss *SimServer) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, ra
 
 func (ss *SimServer) Disconnect() {
 	for _, ac := range ss.aircraft {
-		eventStream.Post(&RemovedAircraftEvent{ac: ac.AC})
+		eventStream.Post(&RemovedAircraftEvent{ac: &ac.Aircraft})
 	}
 }
 
 func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
 	if ac, ok := ss.aircraft[callsign]; ok {
-		return ac.AC
+		return &ac.Aircraft
 	}
 	return nil
 }
@@ -1411,8 +1412,8 @@ func (ss *SimServer) GetAircraft(callsign string) *Aircraft {
 func (ss *SimServer) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	var filtered []*Aircraft
 	for _, ac := range ss.aircraft {
-		if filter(ac.AC) {
-			filtered = append(filtered, ac.AC)
+		if filter(&ac.Aircraft) {
+			filtered = append(filtered, &ac.Aircraft)
 		}
 	}
 	return filtered
@@ -1483,10 +1484,10 @@ func (ss *SimServer) updateState() {
 	now := ss.CurrentTime()
 	for callsign, t := range ss.handoffs {
 		if now.After(t) {
-			ac := ss.aircraft[callsign].AC
+			ac := ss.aircraft[callsign]
 			ac.TrackingController = ac.OutboundHandoffController
 			ac.OutboundHandoffController = ""
-			eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
+			eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: &ac.Aircraft})
 			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
 			delete(ss.handoffs, callsign)
 		}
@@ -1503,7 +1504,7 @@ func (ss *SimServer) updateState() {
 		ss.lastTrackUpdate = now
 
 		for _, ac := range ss.aircraft {
-			ac.AC.AddTrack(RadarTrack{
+			ac.AddTrack(RadarTrack{
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
 				Groundspeed: int(ac.GS),
@@ -1511,7 +1512,7 @@ func (ss *SimServer) updateState() {
 				Time:        now,
 			})
 
-			eventStream.Post(&ModifiedAircraftEvent{ac: ac.AC})
+			eventStream.Post(&ModifiedAircraftEvent{ac: &ac.Aircraft})
 		}
 	}
 
@@ -1654,7 +1655,7 @@ func (ss *SimServer) getApproach(callsign string, approach string) (*Approach, *
 	if !ok {
 		return nil, nil, ErrNoAircraftForCallsign
 	}
-	fp := ac.AC.FlightPlan
+	fp := ac.FlightPlan
 	if fp == nil {
 		return nil, nil, ErrNoFlightPlan
 	}
@@ -1761,8 +1762,8 @@ func (ss *SimServer) PrintInfo(callsign string) error {
 		return ErrNoAircraftForCallsign
 	} else {
 		lg.Errorf("%s", spew.Sdump(ac))
-		s := fmt.Sprintf("%s: current alt %d, assigned alt %d crossing alt %d",
-			ac.AC.Callsign, ac.AC.Altitude(), ac.AssignedAltitude, ac.CrossingAltitude)
+		s := fmt.Sprintf("%s: current alt %f, assigned alt %d crossing alt %d",
+			ac.Callsign, ac.Altitude, ac.AssignedAltitude, ac.CrossingAltitude)
 		if ac.AssignedHeading != 0 {
 			s += fmt.Sprintf(" heading %d", ac.AssignedHeading)
 			if ac.TurnDirection != 0 {
@@ -1787,7 +1788,7 @@ func (ss *SimServer) DeleteAircraft(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		eventStream.Post(&RemovedAircraftEvent{ac: ac.AC})
+		eventStream.Post(&RemovedAircraftEvent{ac: &ac.Aircraft})
 		delete(ss.aircraft, callsign)
 		return nil
 	}
@@ -1848,17 +1849,17 @@ func (ss *SimServer) SpawnAircraft() {
 	now := ss.CurrentTime()
 
 	addAircraft := func(ssa *SSAircraft) {
-		if _, ok := ss.aircraft[ssa.AC.Callsign]; ok {
-			lg.Errorf("%s: already have an aircraft with that callsign!", ssa.AC.Callsign)
+		if _, ok := ss.aircraft[ssa.Callsign]; ok {
+			lg.Errorf("%s: already have an aircraft with that callsign!", ssa.Callsign)
 			return
 		}
-		ss.aircraft[ssa.AC.Callsign] = ssa
+		ss.aircraft[ssa.Callsign] = ssa
 
 		ss.RunWaypointCommands(ssa, ssa.Waypoints[0].Commands)
 
 		ssa.Position = ssa.Waypoints[0].Location
 		if ssa.Position.IsZero() {
-			lg.Errorf("%s: uninitialized initial waypoint position!", ssa.AC.Callsign)
+			lg.Errorf("%s: uninitialized initial waypoint position!", ssa.Callsign)
 			return
 		}
 		ssa.Heading = float32(ssa.Waypoints[0].Heading)
@@ -1870,7 +1871,7 @@ func (ss *SimServer) SpawnAircraft() {
 		lg.Errorf("Added aircraft: %s", spew.Sdump(ssa))
 
 		ss.remainingLaunches--
-		eventStream.Post(&AddedAircraftEvent{ac: ssa.AC})
+		eventStream.Post(&AddedAircraftEvent{ac: &ssa.Aircraft})
 	}
 
 	randomWait := func(rate int32) time.Duration {
@@ -1883,7 +1884,7 @@ func (ss *SimServer) SpawnAircraft() {
 		for i, arr := range ap.ArrivalGroups {
 			if arr.Enabled && ss.remainingLaunches > 0 && now.After(arr.nextSpawn) {
 				if ac := ss.SpawnArrival(ap, arr); ac != nil {
-					ac.AC.FlightPlan.ArrivalAirport = ap.ICAO
+					ac.FlightPlan.ArrivalAirport = ap.ICAO
 					addAircraft(ac)
 					ap.ArrivalGroups[i].nextSpawn = now.Add(randomWait(arr.Rate))
 				}
@@ -1893,7 +1894,7 @@ func (ss *SimServer) SpawnAircraft() {
 		for i, rwy := range ap.DepartureRunways {
 			if rwy.Enabled && ss.remainingLaunches > 0 && now.After(rwy.nextSpawn) {
 				if ac := ss.SpawnDeparture(ap, &ap.DepartureRunways[i]); ac != nil {
-					ac.AC.FlightPlan.DepartureAirport = ap.ICAO
+					ac.FlightPlan.DepartureAirport = ap.ICAO
 					addAircraft(ac)
 					ap.DepartureRunways[i].nextSpawn = now.Add(randomWait(rwy.Rate))
 				}
@@ -1970,7 +1971,7 @@ func sampleAircraft(airlines []AirlineConfig) *SSAircraft {
 	}
 
 	return &SSAircraft{
-		AC: &Aircraft{
+		Aircraft: Aircraft{
 			Callsign:       callsign,
 			AssignedSquawk: squawk,
 			Squawk:         squawk,
@@ -1993,9 +1994,9 @@ func (ss *SimServer) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *SSAircraf
 		return nil
 	}
 
-	ac.AC.TrackingController = arr.InitialController
-	ac.AC.FlightPlan.Altitude = 39000
-	ac.AC.FlightPlan.Route = arr.Route
+	ac.TrackingController = arr.InitialController
+	ac.FlightPlan.Altitude = 39000
+	ac.FlightPlan.Route = arr.Route
 	// Start with the default waypoints for the arrival
 	ac.Waypoints = arr.Waypoints
 	// But if there is a custom route for any of the active runways, switch
@@ -2059,15 +2060,15 @@ func (ss *SimServer) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *SS
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
 	ac.Waypoints = append(ac.Waypoints, dep.exitWaypoint)
 
-	ac.AC.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Exit + " " + dep.Route
-	ac.AC.FlightPlan.ArrivalAirport = dep.Destination
-	ac.AC.Scratchpad = ap.Scratchpads[dep.Exit]
+	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Exit + " " + dep.Route
+	ac.FlightPlan.ArrivalAirport = dep.Destination
+	ac.Scratchpad = ap.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
 		// If unspecified, pick something in the flight levels...
 		// TODO: get altitudes right considering East/West-bound...
-		ac.AC.FlightPlan.Altitude = 28000 + 1000*rand.Intn(13)
+		ac.FlightPlan.Altitude = 28000 + 1000*rand.Intn(13)
 	} else {
-		ac.AC.FlightPlan.Altitude = dep.Altitude
+		ac.FlightPlan.Altitude = dep.Altitude
 	}
 
 	ac.Altitude = float32(rwy.Altitude)
