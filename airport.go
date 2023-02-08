@@ -338,13 +338,17 @@ func (ac *AirportConfig) DrawUI() {
 		imgui.Text("Arrivals")
 
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		anyRunwaysActive := false
+		oldNumActive, newNumActive := 0, 0
 		if imgui.BeginTableV("arrivalrunways", 2, flags, imgui.Vec2{500, 0}, 0.) {
 			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("Enabled")
 			imgui.TableHeadersRow()
 
 			for i, rwy := range ac.ArrivalRunways {
+				if rwy.Enabled {
+					oldNumActive++
+				}
+
 				imgui.PushID(rwy.Runway)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
@@ -352,14 +356,24 @@ func (ac *AirportConfig) DrawUI() {
 				imgui.TableNextColumn()
 				imgui.Checkbox("##enabled", &ac.ArrivalRunways[i].Enabled)
 				if ac.ArrivalRunways[i].Enabled {
-					anyRunwaysActive = true
+					newNumActive++
 				}
 				imgui.PopID()
 			}
 			imgui.EndTable()
 		}
 
-		if anyRunwaysActive && len(ac.ArrivalGroups) > 0 {
+		if oldNumActive == 0 && newNumActive == 1 {
+			for i := range ac.ArrivalGroups {
+				ac.ArrivalGroups[i].Enabled = true
+			}
+		} else if oldNumActive == 1 && newNumActive == 0 {
+			for i := range ac.ArrivalGroups {
+				ac.ArrivalGroups[i].Enabled = false
+			}
+		}
+
+		if newNumActive > 0 && len(ac.ArrivalGroups) > 0 {
 			if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{500, 0}, 0.) {
 				imgui.TableSetupColumn("Arrival")
 				imgui.TableSetupColumn("Enabled")
