@@ -161,7 +161,6 @@ func main() {
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes.
 		sim.GetUpdates()
-		audioProcessEvents(eventStream)
 
 		platform.NewFrame()
 		imgui.NewFrame()

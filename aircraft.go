@@ -679,7 +679,7 @@ func (ac *Aircraft) RunWaypointCommands(cmds []WaypointCommand) {
 		case WaypointCommandHandoff:
 			// Handoff to the user's position?
 			ac.InboundHandoffController = sim.Callsign()
-			eventStream.Post(&OfferedHandoffEvent{controller: ac.TrackingController, ac: ac})
+			globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 
 		case WaypointCommandDelete:
 			eventStream.Post(&RemovedAircraftEvent{ac: ac})

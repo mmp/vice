@@ -53,7 +53,6 @@ var (
 )
 
 var (
-	audioEventId EventSubscriberId
 	soundEffects map[string]*SoundEffect
 	sdlMutex     sync.Mutex
 )
@@ -63,30 +62,19 @@ var (
 type AudioEvent int
 
 const (
-	/*	AudioEventFlightPlanFiled = iota
-		AudioEventNewArrival
-	*/
 	AudioEventConflictAlert = iota
-	/*AudioEventUpdatedATIS
-	 */
-	AudioEventPointOut
-	AudioEventHandoffRequest
-	AudioEventHandoffRejected
+	AudioEventInboundHandoff
 	AudioEventHandoffAccepted
-	/*	AudioEventTimerFinished
-		AudioEventReceivedMessage
-	*/
-	//AudioEventAlert
+	AudioEventCommandError
 	AudioEventCount
 )
 
 func (ae AudioEvent) String() string {
-	return [...]string{ // "Flight Plan Filed", "New Arrival",
+	return [...]string{
 		"Conflict Alert",
-		//"Updated ATIS",
-		"Point Out", "Handoff Request", "Handoff Rejected", "Handoff Accepted",
-		//"Timer Finished", "Message Received",
-		//"Alert"
+		"Inbound Handoff",
+		"Handoff Accepted",
+		"Command Error",
 	}[ae]
 }
 
@@ -107,7 +95,7 @@ func (a *AudioSettings) MuteFor(d time.Duration) {
 	a.muteUntil = time.Now().Add(d)
 }
 
-func (a *AudioSettings) HandleEvent(e AudioEvent) {
+func (a *AudioSettings) PlaySound(e AudioEvent) {
 	if !a.AudioEnabled || !time.Now().After(a.muteUntil) || soundEffects == nil {
 		return
 	}
@@ -126,25 +114,6 @@ func (a *AudioSettings) HandleEvent(e AudioEvent) {
 		if time.Since(a.lastPlay[e]) > 2*time.Second {
 			a.lastPlay[e] = time.Now()
 			se.Play()
-		}
-	}
-}
-
-func audioProcessEvents(es *EventStream) {
-	for _, event := range es.Get(audioEventId) {
-		switch v := event.(type) {
-		case *PointOutEvent:
-			globalConfig.AudioSettings.HandleEvent(AudioEventPointOut)
-		case *AcceptedHandoffEvent:
-			if v.controller != sim.Callsign() {
-				globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
-			}
-		case *OfferedHandoffEvent:
-			if v.controller != sim.Callsign() {
-				globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRequest)
-			}
-		case *RejectedHandoffEvent, *CanceledHandoffEvent:
-			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffRejected)
 		}
 	}
 }
@@ -254,8 +223,6 @@ func audioInit() error {
 	if err != nil {
 		return fmt.Errorf("failed to initialize SDL2 audio: %w", err)
 	}
-
-	audioEventId = eventStream.Subscribe()
 
 	soundEffects = make(map[string]*SoundEffect)
 	addEffect(bbrocer__digital_alarm_loopWAV, "Alarm - Digital", 2)

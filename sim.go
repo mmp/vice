@@ -372,7 +372,6 @@ func (ss *Sim) Handoff(callsign string, controller string) error {
 	} else {
 		ac.OutboundHandoffController = ctrl.Callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		eventStream.Post(&OfferedHandoffEvent{controller: ss.callsign, ac: ac})
 		acceptDelay := 2 + rand.Intn(10)
 		ss.handoffs[callsign] = ss.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 		return nil
@@ -527,7 +526,7 @@ func (ss *Sim) updateState() {
 			ac.TrackingController = ac.OutboundHandoffController
 			ac.OutboundHandoffController = ""
 			eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
-			globalConfig.AudioSettings.HandleEvent(AudioEventHandoffAccepted)
+			globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 			delete(ss.handoffs, callsign)
 		}
 	}
@@ -855,7 +854,7 @@ func (ss *Sim) DrawSettingsWindow() {
 		}
 	})
 	if imgui.CollapsingHeader("Audio") {
-		globalConfig.AudioSettings.DrawUI()
+		globalConfig.Audio.DrawUI()
 	}
 	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
 		fsp.DrawUI()

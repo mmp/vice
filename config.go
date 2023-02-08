@@ -25,7 +25,7 @@ type GlobalConfig struct {
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 
-	AudioSettings AudioSettings
+	Audio AudioSettings
 
 	DisplayRoot *DisplayNode
 
@@ -145,11 +145,10 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.InitialWindowPosition[0] = 100
 		globalConfig.InitialWindowPosition[1] = 100
 
-		globalConfig.AudioSettings.SoundEffects[AudioEventConflictAlert] = "Alert 2"
-		globalConfig.AudioSettings.SoundEffects[AudioEventPointOut] = "Hint"
-		globalConfig.AudioSettings.SoundEffects[AudioEventHandoffRequest] = "Beep Up"
-		globalConfig.AudioSettings.SoundEffects[AudioEventHandoffRejected] = "Beep Negative"
-		globalConfig.AudioSettings.SoundEffects[AudioEventHandoffAccepted] = "Blip"
+		globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
+		globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
+		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
+		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 	} else {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)

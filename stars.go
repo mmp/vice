@@ -2366,6 +2366,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 					if status.err != nil {
 						// Leave the unexecuted commands for editing, etc.
+						globalConfig.Audio.PlaySound(AudioEventCommandError)
 						sp.previewAreaInput = strings.Join(commands[i:], " ")
 						return
 					}
@@ -4073,7 +4074,7 @@ func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformatio
 		ld.AddCircle(pc, radius, 360 /* nsegs */)
 
 		if time.Since(sp.lastCASoundTime) > 2*time.Second {
-			globalConfig.AudioSettings.HandleEvent(AudioEventConflictAlert)
+			globalConfig.Audio.PlaySound(AudioEventConflictAlert)
 			sp.lastCASoundTime = time.Now()
 		}
 	}

@@ -273,11 +273,6 @@ func (e *AcceptedHandoffEvent) String() string {
 	return "AcceptedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
-type OfferedHandoffEvent struct {
-	controller string
-	ac         *Aircraft
-}
-
 type CanceledHandoffEvent struct {
 	controller string
 	ac         *Aircraft
@@ -285,10 +280,6 @@ type CanceledHandoffEvent struct {
 
 func (e *CanceledHandoffEvent) String() string {
 	return "CanceledHandoffEvent: " + e.controller + " " + e.ac.Callsign
-}
-
-func (e *OfferedHandoffEvent) String() string {
-	return "OfferedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
 type RejectedHandoffEvent struct {
