@@ -111,21 +111,9 @@ func main() {
 	dbChan := make(chan *StaticDatabase)
 	go InitializeStaticDatabase(dbChan)
 
-	if true {
-		// Multisampling on Retina displays seems to hit a performance
-		// wall if the window is too large; lacking a better approach
-		// we'll just disable it ubiquitously on OSX.
-		multisample := runtime.GOOS != "darwin"
-		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition, multisample)
-	} else {
-		// Using SDL for the window management is buggy, on mac at
-		// least--sometimes at startup time, the window doesn't take focus
-		// and requires manually focusing on another app and then returning
-		// to vice for it to start receiving events.
-		platform, err = NewSDLPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition)
-	}
+	multisample := runtime.GOOS != "darwin"
+	platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
+		globalConfig.InitialWindowPosition, multisample)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to create application window: %v", err))
 	}
