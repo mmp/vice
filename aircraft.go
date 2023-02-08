@@ -610,7 +610,7 @@ func (ac *Aircraft) updateWaypoints() {
 		return
 	}
 
-	if len(ac.Waypoints) == 0 {
+	if len(ac.Waypoints) == 0 || ac.AssignedHeading != 0 {
 		return
 	}
 
