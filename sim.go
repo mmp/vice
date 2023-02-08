@@ -416,10 +416,6 @@ func (ss *Sim) PointOut(callsign string, controller string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (ss *Sim) SendTextMessage(m TextMessage) error {
-	return nil // UNIMPLEMENTED
-}
-
 func (ss *Sim) RequestControllerATIS(controller string) error {
 	return nil // UNIMPLEMENTED
 }
@@ -589,12 +585,7 @@ func (ss *Sim) GetWindowTitle() string {
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
-	tm := TextMessage{
-		sender:      callsign,
-		messageType: TextBroadcast,
-		contents:    fmt.Sprintf(fm, args...),
-	}
-	eventStream.Post(&TextMessageEvent{message: &tm})
+	eventStream.Post(&RadioTransmissionEvent{callsign: callsign, message: fmt.Sprintf(fm, args...)})
 }
 
 func (ss *Sim) AssignAltitude(callsign string, altitude int) error {

@@ -300,12 +300,12 @@ func (e *RejectedHandoffEvent) String() string {
 	return "RejectedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
-type TextMessageEvent struct {
-	message *TextMessage
+type RadioTransmissionEvent struct {
+	callsign, message string
 }
 
-func (e *TextMessageEvent) String() string {
-	return "TextMessageEvent: " + e.message.String()
+func (e *RadioTransmissionEvent) String() string {
+	return "RadioTransmissionEvent: callsign: " + e.callsign + ", message: " + e.message
 }
 
 type NewServerConnectionEvent struct{}

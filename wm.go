@@ -598,36 +598,33 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 	textCallsign := ""
 	for _, event := range eventStream.Get(wm.eventsId) {
 		switch v := event.(type) {
-		case *TextMessageEvent:
-			tm := v.message
-			if tm.messageType == TextBroadcast {
-				// Split the callsign into the ICAO and the flight number
-				// Note: this is buggy if we process multiple senders in a
-				// single call here, but that shouldn't happen...
-				idx := strings.IndexAny(tm.sender, "0123456789")
-				if idx == -1 {
-					textCallsign = tm.sender
-				} else {
-					// Try to get the telephony.
-					icao, flight := tm.sender[:idx], tm.sender[idx:]
-					if cs, ok := database.callsigns[icao]; ok {
-						textCallsign = cs.Telephony + " " + flight
-						if ac := sim.GetAircraft(tm.sender); ac != nil {
-							if fp := ac.FlightPlan; fp != nil {
-								if strings.HasPrefix(fp.AircraftType, "H/") {
-									textCallsign += " heavy"
-								} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
-									textCallsign += " super"
-								}
+		case *RadioTransmissionEvent:
+			// Split the callsign into the ICAO and the flight number
+			// Note: this is buggy if we process multiple senders in a
+			// single call here, but that shouldn't happen...
+			idx := strings.IndexAny(v.callsign, "0123456789")
+			if idx == -1 {
+				textCallsign = v.callsign
+			} else {
+				// Try to get the telephony.
+				icao, flight := v.callsign[:idx], v.callsign[idx:]
+				if cs, ok := database.callsigns[icao]; ok {
+					textCallsign = cs.Telephony + " " + flight
+					if ac := sim.GetAircraft(v.callsign); ac != nil {
+						if fp := ac.FlightPlan; fp != nil {
+							if strings.HasPrefix(fp.AircraftType, "H/") {
+								textCallsign += " heavy"
+							} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+								textCallsign += " super"
 							}
 						}
-					} else {
-						textCallsign = tm.sender
 					}
+				} else {
+					textCallsign = v.callsign
 				}
-
-				texts = append(texts, tm.contents)
 			}
+
+			texts = append(texts, v.message)
 		}
 	}
 	if texts != nil {
