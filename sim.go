@@ -535,7 +535,9 @@ func (ss *Sim) updateState() {
 	// Update the simulation state once a second.
 	if now.Sub(ss.lastSimUpdate) >= time.Second {
 		ss.lastSimUpdate = now
-		ss.updateSim()
+		for _, ac := range ss.aircraft {
+			ac.Update()
+		}
 	}
 
 	// Add a new radar track every 5 seconds.
@@ -556,16 +558,6 @@ func (ss *Sim) updateState() {
 	}
 
 	ss.SpawnAircraft()
-}
-
-func (ss *Sim) updateSim() {
-	for _, ac := range ss.aircraft {
-		ac.UpdateAirspeed()
-		ac.UpdateAltitude()
-		ac.UpdateHeading()
-		ac.UpdatePositionAndGS(ss)
-		ac.UpdateWaypoints(ss)
-	}
 }
 
 func (ss *Sim) Connected() bool {

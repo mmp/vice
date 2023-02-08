@@ -263,7 +263,15 @@ func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 	}
 }
 
-func (ac *Aircraft) UpdateAirspeed() {
+func (ac *Aircraft) Update() {
+	ac.updateAirspeed()
+	ac.updateAltitude()
+	ac.updateHeading()
+	ac.updatePositionAndGS()
+	ac.updateWaypoints()
+}
+
+func (ac *Aircraft) updateAirspeed() {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.  cruising speed.
@@ -341,7 +349,7 @@ func (ac *Aircraft) UpdateAirspeed() {
 	}
 }
 
-func (ac *Aircraft) UpdateAltitude() {
+func (ac *Aircraft) updateAltitude() {
 	// Climb or descend, but only if it's going fast enough to be
 	// airborne.  (Assume no stalls in flight.)
 	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
@@ -403,7 +411,7 @@ func (ac *Aircraft) UpdateAltitude() {
 	}
 }
 
-func (ac *Aircraft) UpdateHeading() {
+func (ac *Aircraft) updateHeading() {
 	// Figure out the heading; if the route is empty, just leave it
 	// on its current heading...
 	targetHeading := ac.Heading
@@ -519,7 +527,7 @@ func (ac *Aircraft) UpdateHeading() {
 	}
 }
 
-func (ac *Aircraft) UpdatePositionAndGS(ss *Sim) {
+func (ac *Aircraft) updatePositionAndGS() {
 	// Update position given current heading
 	prev := ac.Position
 	hdg := ac.Heading - database.MagneticVariation
@@ -531,13 +539,16 @@ func (ac *Aircraft) UpdatePositionAndGS(ss *Sim) {
 	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
 	if airborne {
 		// TODO: have a better gust model?
-		windKts := float32(ss.wind.speed + rand.Intn(ss.wind.gust))
+		windKts := sim.wind.speed
+		if sim.wind.gust > 0 {
+			windKts += rand.Intn(sim.wind.gust)
+		}
 
 		// wind.dir is where it's coming from, so +180 to get the vector
 		// that affects the aircraft's course.
-		d := float32(ss.wind.dir + 180)
+		d := float32(sim.wind.dir + 180)
 		vWind := [2]float32{sin(radians(d)), cos(radians(d))}
-		newPos = add2f(newPos, scale2f(vWind, windKts/3600))
+		newPos = add2f(newPos, scale2f(vWind, float32(windKts)/3600))
 	}
 
 	if ap := ac.Approach; ap != nil && ac.OnFinal && ac.Approach.Type == ILSApproach {
@@ -560,7 +571,7 @@ func (ac *Aircraft) UpdatePositionAndGS(ss *Sim) {
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 }
 
-func (ac *Aircraft) UpdateWaypoints(ss *Sim) {
+func (ac *Aircraft) updateWaypoints() {
 	if ap := ac.Approach; ap != nil &&
 		ac.ClearedApproach &&
 		!ac.OnFinal &&
