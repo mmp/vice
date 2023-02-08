@@ -683,7 +683,6 @@ func (ac *Aircraft) RunWaypointCommands(cmds []WaypointCommand) {
 
 		case WaypointCommandDelete:
 			eventStream.Post(&RemovedAircraftEvent{ac: ac})
-			return
 		}
 	}
 }
