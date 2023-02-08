@@ -1360,8 +1360,6 @@ func (s *StaticDrawConfig) Draw(ctx *PaneContext, labelFont *Font, color *RGB,
 			if Overlaps(region.bounds, viewBounds) {
 				if region.name == "" {
 					cb.SetRGB(filterColor(ctx.cs.Region))
-				} else if rgb, ok := ctx.cs.DefinedColors[region.name]; ok {
-					cb.SetRGB(filterColor(*rgb))
 				} else if rgb, ok := database.sectorFileColors[region.name]; ok {
 					cb.SetRGB(filterColor(rgb))
 				} else {
