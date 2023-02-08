@@ -3638,6 +3638,22 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 		if other == ac || other.TrackAltitude() < int(sp.Facility.CA.Floor) {
 			continue
 		}
+
+		// No conflict alerts with aircraft established on different approaches
+		if ac.Approach != nil && other.Approach != nil && ac.Approach != other.Approach {
+			continue
+		}
+
+		// No conflict alerts with another aircraft on an approach if we're
+		// departing (assume <1000' and no assigned approach implies this)
+		if ac.Approach == nil && ac.Altitude < 1000 && other.Approach != nil {
+			continue
+		}
+		// Converse of the above
+		if ac.Approach != nil && other.Altitude < 1000 && other.Approach == nil {
+			continue
+		}
+
 		if nmdistance2ll(ac.TrackPosition(), other.TrackPosition()) <= sp.Facility.CA.LateralMinimum &&
 			abs(ac.TrackAltitude()-other.TrackAltitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
 			return true
