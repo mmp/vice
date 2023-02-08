@@ -2298,70 +2298,80 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					case 'D':
 						// Is it an altitude?
 						if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-							alt, err := strconv.Atoi(command[1:])
-							status.err = err
-							if err == nil {
-								status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
+							if alt, err := strconv.Atoi(command[1:]); err != nil {
+								status.err = ErrSTARSIllegalParam
+							} else if sim.AssignAltitude(ac.Callsign, 100*alt) != nil {
+								status.err = ErrSTARSIllegalTrack
 							}
 						} else if _, ok := database.Locate(string(command[1:])); ok {
-							status.err = sim.DirectFix(ac.Callsign, command[1:])
+							if sim.DirectFix(ac.Callsign, command[1:]) != nil {
+								status.err = ErrSTARSIllegalTrack
+							}
 						} else {
-							status.err = fmt.Errorf("%s: fix/vor unknown", command[1:])
+							status.err = ErrSTARSIllegalParam
 						}
 
 					case 'H':
-						hdg, err := strconv.Atoi(command[1:])
-						status.err = err
-						if err == nil {
-							status.err = sim.AssignHeading(ac.Callsign, hdg, 0)
+						if hdg, err := strconv.Atoi(command[1:]); err != nil {
+							status.err = ErrSTARSIllegalParam
+						} else if sim.AssignHeading(ac.Callsign, hdg, 0) != nil {
+							status.err = ErrSTARSIllegalTrack
 						}
 
 					case 'L':
-						hdg, err := strconv.Atoi(command[1:])
-						status.err = err
-						if err == nil {
-							status.err = sim.AssignHeading(ac.Callsign, hdg, -1)
+						if hdg, err := strconv.Atoi(command[1:]); err != nil {
+							status.err = ErrSTARSIllegalParam
+						} else if sim.AssignHeading(ac.Callsign, hdg, -1) != nil {
+							status.err = ErrSTARSIllegalTrack
 						}
 
 					case 'R':
-						hdg, err := strconv.Atoi(command[1:])
-						status.err = err
-						if err == nil {
-							status.err = sim.AssignHeading(ac.Callsign, hdg, 1)
+						if hdg, err := strconv.Atoi(command[1:]); err != nil {
+							status.err = ErrSTARSIllegalParam
+						} else if sim.AssignHeading(ac.Callsign, hdg, 1) != nil {
+							status.err = ErrSTARSIllegalTrack
 						}
 
 					case 'C', 'A':
 						if command[0] == 'C' && len(command) > 1 && (command[1] < '0' || command[1] > '9') {
 							// Cleared approach.
-							status.err = sim.ClearedApproach(ac.Callsign, command[1:])
+							if sim.ClearedApproach(ac.Callsign, command[1:]) != nil {
+								status.err = ErrSTARSIllegalParam
+							}
 						} else {
 							// Otherwise look for an altitude
-							alt, err := strconv.Atoi(command[1:])
-							status.err = err
-							if err == nil {
-								status.err = sim.AssignAltitude(ac.Callsign, 100*alt)
+							if alt, err := strconv.Atoi(command[1:]); err != nil {
+								status.err = ErrSTARSIllegalParam
+							} else if sim.AssignAltitude(ac.Callsign, 100*alt) != nil {
+								status.err = ErrSTARSIllegalTrack
 							}
 						}
 
 					case 'S':
-						kts, err := strconv.Atoi(command[1:])
-						status.err = err
-						if err == nil {
-							status.err = sim.AssignSpeed(ac.Callsign, kts)
+						if kts, err := strconv.Atoi(command[1:]); err != nil {
+							status.err = ErrSTARSIllegalParam
+						} else if sim.AssignSpeed(ac.Callsign, kts) != nil {
+							status.err = ErrSTARSIllegalTrack
 						}
 
 					case 'E':
 						// Expect approach.
-						status.err = sim.ExpectApproach(ac.Callsign, command[1:])
+						if sim.ExpectApproach(ac.Callsign, command[1:]) != nil {
+							status.err = ErrSTARSIllegalParam
+						}
 
 					case '?':
-						status.err = sim.PrintInfo(ac.Callsign)
+						if sim.PrintInfo(ac.Callsign) != nil {
+							status.err = ErrSTARSIllegalTrack
+						}
 
 					case 'X':
-						status.err = sim.DeleteAircraft(ac.Callsign)
+						if sim.DeleteAircraft(ac.Callsign) != nil {
+							status.err = ErrSTARSIllegalTrack
+						}
 
 					default:
-						status.err = errors.New("Unknown command: " + command)
+						status.err = ErrSTARSCommandFormat
 					}
 
 					if status.err != nil {
