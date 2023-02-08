@@ -159,14 +159,6 @@ func (e *EventStream) Dump() string {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type SelectedAircraftEvent struct {
-	ac *Aircraft
-}
-
-func (e *SelectedAircraftEvent) String() string {
-	return "SelectedAircraftEvent: " + e.ac.Callsign
-}
-
 type AddedAircraftEvent struct {
 	ac *Aircraft
 }
@@ -205,46 +197,6 @@ type DroppedTrackEvent struct {
 
 func (e *DroppedTrackEvent) String() string {
 	return "DroppedTrackEvent: " + e.ac.Callsign
-}
-
-type AddedControllerEvent struct {
-	Controller *Controller
-}
-
-func (e *AddedControllerEvent) String() string {
-	return "AddedControllerEvent: " + e.Controller.Callsign
-}
-
-type ModifiedControllerEvent struct {
-	Controller *Controller
-}
-
-func (e *ModifiedControllerEvent) String() string {
-	return "ModifiedControllerEvent: " + e.Controller.Callsign
-}
-
-type RemovedControllerEvent struct {
-	Controller *Controller
-}
-
-func (e *RemovedControllerEvent) String() string {
-	return "RemovedControllerEvent: " + e.Controller.Callsign
-}
-
-type ReceivedMETAREvent struct {
-	METAR METAR
-}
-
-func (e *ReceivedMETAREvent) String() string {
-	return "ReceivedMETAREvent: " + e.METAR.String()
-}
-
-type ReceivedATISEvent struct {
-	ATIS ATIS
-}
-
-func (e *ReceivedATISEvent) String() string {
-	return "ReceivedATISEvent: " + e.ATIS.Airport
 }
 
 type PushedFlightStripEvent struct {
@@ -297,16 +249,4 @@ type RadioTransmissionEvent struct {
 
 func (e *RadioTransmissionEvent) String() string {
 	return "RadioTransmissionEvent: callsign: " + e.callsign + ", message: " + e.message
-}
-
-type NewServerConnectionEvent struct{}
-
-func (e *NewServerConnectionEvent) String() string {
-	return "NewServerConnectionEvent"
-}
-
-type ClosedServerConnectionEvent struct{}
-
-func (e *ClosedServerConnectionEvent) String() string {
-	return "ClosedServerConnectionEvent"
 }

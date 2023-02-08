@@ -4130,12 +4130,6 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			sp.previewAreaOutput = status.output
 		}
 	}
-
-	if ctx.mouse.Clicked[MouseButtonTertiary] {
-		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
-			eventStream.Post(&SelectedAircraftEvent{ac: ac})
-		}
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
