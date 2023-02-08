@@ -693,7 +693,7 @@ func (ss *Sim) getApproach(callsign string, approach string) (*Approach, *Aircra
 					return &ap.Approaches[i], ac, nil
 				}
 			}
-			lg.Errorf("wanted approach %s; airport %s options -> %+v", approach, ap.ICAO, ap.Approaches)
+			lg.Errorf("wanted approach %s; airport %s options -> %s", approach, ap.ICAO, spew.Sdump(ap.Approaches))
 			return nil, nil, ErrUnknownApproach
 		}
 	}

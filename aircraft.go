@@ -588,7 +588,7 @@ func (ac *Aircraft) updateWaypoints() {
 				if distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
 					lg.Errorf("%s: adding future waypoint...", wp.Fix)
 					ac.Waypoints = append(ac.Waypoints, wp)
-				} else {
+				} else if ac.Waypoints != nil {
 					// We consider the waypoints from far away to near (and
 					// so in the end we want a contiguous set of them
 					// starting from the runway threshold). Any time we
