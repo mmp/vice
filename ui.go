@@ -33,7 +33,6 @@ var (
 		menuBarHeight float32
 
 		showAboutDialog bool
-		showSoundConfig bool
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
@@ -204,7 +203,6 @@ func drawUI(cs *ColorScheme, platform Platform) {
 	sim.DrawSettingsWindow()
 
 	drawActiveDialogBoxes()
-	drawActiveSettingsWindows()
 
 	wmDrawUI(platform)
 
@@ -231,14 +229,6 @@ func drawActiveDialogBoxes() {
 
 	if ui.showAboutDialog {
 		showAboutDialog()
-	}
-}
-
-func drawActiveSettingsWindows() {
-	if ui.showSoundConfig {
-		imgui.BeginV("Sound Configuration", &ui.showSoundConfig, imgui.WindowFlagsAlwaysAutoResize)
-		globalConfig.AudioSettings.DrawUI()
-		imgui.End()
 	}
 }
 
