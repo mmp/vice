@@ -867,6 +867,21 @@ func (ss *Sim) DrawSettingsWindow() {
 	imgui.End()
 }
 
+func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
+	// TODO: have a better gust model?
+	windKts := s.wind.speed
+	if sim.wind.gust > 0 {
+		windKts += rand.Intn(s.wind.gust)
+	}
+
+	// wind.dir is where it's coming from, so +180 to get the vector that
+	// affects the aircraft's course.
+	d := float32(s.wind.dir + 180)
+	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
+	vWind = scale2f(vWind, float32(windKts)/3600)
+	return nm2ll(vWind)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Spawning aircraft
 

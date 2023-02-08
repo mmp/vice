@@ -5,7 +5,6 @@
 package main
 
 import (
-	"math/rand"
 	"strings"
 	"time"
 
@@ -538,17 +537,8 @@ func (ac *Aircraft) updatePositionAndGS() {
 	// Now add wind...
 	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
 	if airborne {
-		// TODO: have a better gust model?
-		windKts := sim.wind.speed
-		if sim.wind.gust > 0 {
-			windKts += rand.Intn(sim.wind.gust)
-		}
-
-		// wind.dir is where it's coming from, so +180 to get the vector
-		// that affects the aircraft's course.
-		d := float32(sim.wind.dir + 180)
-		vWind := [2]float32{sin(radians(d)), cos(radians(d))}
-		newPos = add2f(newPos, scale2f(vWind, float32(windKts)/3600))
+		windVector := sim.GetWindVector(ac.Position, ac.Altitude)
+		newPos = add2f(newPos, ll2nm(windVector))
 	}
 
 	if ap := ac.Approach; ap != nil && ac.OnFinal && ac.Approach.Type == ILSApproach {
