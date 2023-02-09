@@ -204,9 +204,9 @@ type STARSRadarSite struct {
 }
 
 type STARSMap struct {
-	Name  string
-	Group int // 0 -> A, 1 -> B
-	Draw  *StaticDrawConfig
+	Label string
+	Group int    // 0 -> A, 1 -> B
+	Name  string // VideoMap.Name
 }
 
 func MakeDefaultFacility() STARSFacility {
@@ -279,13 +279,6 @@ func (rs *STARSRadarSite) CheckVisibility(p Point2LL, altitude int) (primary, se
 	primary = distance <= float32(rs.PrimaryRange)
 	secondary = !primary && distance <= float32(rs.SecondaryRange)
 	return
-}
-
-func MakeSTARSMap() STARSMap {
-	sm := STARSMap{Draw: NewStaticDrawConfig()}
-	sm.Draw.DrawRegions = false
-	sm.Draw.DrawLabels = false
-	return sm
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -650,10 +643,6 @@ func (sp *STARSPane) Activate() {
 	}
 	sp.currentPreferenceSet.Activate()
 
-	for i := range sp.Facility.Maps {
-		sp.Facility.Maps[i].Draw.Activate()
-	}
-
 	if sp.havePlayedSPCAlertSound == nil {
 		sp.havePlayedSPCAlertSound = make(map[*Aircraft]interface{})
 	}
@@ -691,10 +680,6 @@ func (sp *STARSPane) Activate() {
 }
 
 func (sp *STARSPane) Deactivate() {
-	for i := range sp.Facility.Maps {
-		sp.Facility.Maps[i].Draw.Deactivate()
-	}
-
 	// Drop all of them
 	sp.aircraft = nil
 	sp.ghostAircraft = nil
@@ -928,7 +913,7 @@ func (sp *STARSPane) DrawUI() {
 				}
 
 				if len(sp.Facility.Maps) < NumSTARSMaps && imgui.Selectable("New...##new") {
-					sp.Facility.Maps = append(sp.Facility.Maps, MakeSTARSMap())
+					sp.Facility.Maps = append(sp.Facility.Maps, STARSMap{})
 					sp.selectedMapIndex = len(sp.Facility.Maps) - 1
 					sp.currentPreferenceSet.MapVisible =
 						append(sp.currentPreferenceSet.MapVisible, false)
@@ -949,7 +934,7 @@ func (sp *STARSPane) DrawUI() {
 				imgui.RadioButtonInt("B", &m.Group, 1)
 				imgui.SameLine()
 				imgui.Text("Draw group")
-				m.Draw.DrawUI()
+				//m.Draw.DrawUI()
 				imgui.Separator()
 			}
 
@@ -1112,11 +1097,20 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			if sp.Facility.Maps[i].Group == 1 {
 				color = ps.Brightness.VideoGroupB.RGB()
 			}
-			cb.LineWidth(1)
-			font := sp.systemFont[ps.CharSize.Tools]
-			sp.Facility.Maps[i].Draw.Draw(ctx, font, &color, transforms, cb)
+			cb.SetRGB(color)
+
+			transforms.LoadLatLongViewingMatrices(cb)
+
+			vm := sim.GetVideoMap(sp.Facility.Maps[i].Name)
+			if vm == nil {
+				// should be transitory pending getting going
+				lg.Errorf("%s: couldn't get video map", sp.Facility.Maps[i].Name)
+			} else {
+				cb.Call(vm.cb)
+			}
 		}
 	}
+	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
 		cb.LineWidth(1)
@@ -2720,7 +2714,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			if i >= len(ps.MapVisible) {
 				STARSDisabledButton(fmt.Sprintf(" %d\n", i+1), STARSButtonHalfVertical)
 			} else {
-				name := fmt.Sprintf(" %d\n%s", i+1, sp.Facility.Maps[i].Name)
+				name := fmt.Sprintf(" %d\n%s", i+1, sp.Facility.Maps[i].Label)
 				STARSToggleButton(name, &ps.MapVisible[i], STARSButtonHalfVertical)
 			}
 		}
@@ -2826,7 +2820,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			if i >= len(sp.Facility.Maps) {
 				STARSDisabledButton(fmt.Sprintf(" %d", i+1), STARSButtonHalfVertical)
 			} else {
-				STARSToggleButton(sp.Facility.Maps[i].Name, &ps.MapVisible[i], STARSButtonHalfVertical)
+				STARSToggleButton(sp.Facility.Maps[i].Label, &ps.MapVisible[i], STARSButtonHalfVertical)
 			}
 		}
 		STARSToggleButton("GEO\nMAPS", &ps.VideoMapsList.Visible, STARSButtonHalfVertical)

@@ -18,16 +18,13 @@ import (
 )
 
 type GlobalConfig struct {
-	SectorFile   string
-	PositionFile string
-
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 
 	Audio AudioSettings
 
-	DisplayRoot *DisplayNode
+	DisplayRoot *DisplayNode `json:"DisplayRoot-v2"` // force ignore earlier ones
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
@@ -170,37 +167,33 @@ func (gc *GlobalConfig) Activate() {
 			STARSAirport{ICAOCode: "KJFK", Range: 50, IncludeInSSA: true, TowerListIndex: 1},
 			STARSAirport{ICAOCode: "KFRG", Range: 30, IncludeInSSA: true, TowerListIndex: 2})
 
-		addMap := func(name string, group int, sid string, star string) {
-			m := MakeSTARSMap()
-			m.Name = name
-			m.Group = group
-			if sid != "" {
-				m.Draw.SIDDrawSet[sid] = nil
+		addMap := func(label string, group int, name string) {
+			m := STARSMap{
+				Label: label,
+				Group: group,
+				Name:  name,
 			}
-			if star != "" {
-				m.Draw.STARDrawSet[star] = nil
-			}
-
 			stars.Facility.Maps = append(stars.Facility.Maps, m)
 			stars.currentPreferenceSet.MapVisible = append(stars.currentPreferenceSet.MapVisible, false)
 		}
-		addMap("JFK4", 0, "N90 JFK - 4s", "")
-		addMap("JFK13", 0, "N90 JFK - 13s", "")
-		addMap("JFK22", 0, "N90 JFK - 22s", "")
-		addMap("JFK31", 0, "N90 JFK - 31s", "")
-		addMap("NY B", 0, "", "New York Class B")
-		addMap("MVA", 0, "", "N90 - MVA")
 
-		addMap("JFK22 ILS", 0, "N90 JFK - ILS 22s", "")
-		addMap("JFK31 NTZ", 0, "N90 JFK - 31s NTZ", "")
+		addMap("JFK4", 0, "N90 JFK - 4s")
+		addMap("JFK13", 0, "N90 JFK - 13s")
+		addMap("JFK22", 0, "N90 JFK - 22s")
+		addMap("JFK31", 0, "N90 JFK - 31s")
+		addMap("NY B", 1, "New York Class B")
+		addMap("MVA", 1, "N90 - MVA")
 
-		addMap("LGA", 0, "N90 LGA - Video Map", "")
-		addMap("LIB D", 0, "N90 LIB - Departure", "")
-		addMap("LIB C", 0, "N90 LIB - Catskill", "")
-		addMap("EWR", 0, "N90 EWR - Video Map", "")
-		addMap("EWR SAT", 0, "N90 EWR - Satellite", "")
-		addMap("EWR CRDA", 0, "N90 EWR - CRDA", "")
-		addMap("ISP", 0, "N90 ISP - Video Map", "")
+		addMap("JFK22 ILS", 0, "N90 JFK - ILS 22s")
+		addMap("JFK31 NTZ", 0, "N90 JFK - 31s NTZ")
+
+		addMap("LGA", 0, "N90 LGA - Video Map")
+		addMap("LIB D", 0, "N90 LIB - Departure")
+		addMap("LIB C", 0, "N90 LIB - Catskill")
+		addMap("EWR", 0, "N90 EWR - Video Map")
+		addMap("EWR SAT", 0, "N90 EWR - Satellite")
+		addMap("EWR CRDA", 0, "N90 EWR - CRDA")
+		addMap("ISP", 0, "N90 ISP - Video Map")
 
 		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
 			STARSRadarSite{Char: "E",

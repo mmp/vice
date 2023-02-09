@@ -2,6 +2,26 @@
 
 package main
 
+import (
+	_ "embed"
+	"sort"
+
+	"github.com/mmp/sct2"
+)
+
+var (
+	//go:embed resources/ZNY_Combined_VRC.sct2.zst
+	sectorFile string
+)
+
+func mustParseLatLong(l string) Point2LL {
+	ll, err := ParseLatLong(l)
+	if err != nil {
+		panic(l + ": " + err.Error())
+	}
+	return ll
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // KJFK
 
@@ -71,7 +91,79 @@ func JFKApproachScenario() *Scenario {
 	frg.Scratchpads = jfk.Scratchpads
 	s.Airports = append(s.Airports, frg)
 
+	s.VideoMaps = loadVideoMaps()
+
 	return s
+}
+
+func loadVideoMaps() []*VideoMap {
+	// Initialize video maps from the embedded sector file (for now...)
+	contents := decompressZstd(sectorFile)
+	errorCallback := func(err string) {
+		lg.Errorf("error parsing sector file: %s", err)
+	}
+	sectorFile, err := sct2.Parse([]byte(contents), "zny.sct2", errorCallback)
+	if err != nil {
+		panic(err)
+	}
+
+	var vids []*VideoMap
+	include := false
+	for _, sid := range sectorFile.SIDs {
+		lg.Errorf("SID %s", sid.Name)
+		if sid.Name == "======== Outlines ========" {
+			include = false
+		}
+		if include && sid.Name[0] != '=' {
+			var segs []Point2LL
+			for _, seg := range sid.Segs {
+				p0 := Point2LL{float32(seg.Segment.P[0].Longitude), float32(seg.Segment.P[0].Latitude)}
+				p1 := Point2LL{float32(seg.Segment.P[1].Longitude), float32(seg.Segment.P[1].Latitude)}
+				if !p0.IsZero() && !p1.IsZero() {
+					segs = append(segs, p0, p1)
+				}
+			}
+			vids = append(vids, &VideoMap{
+				Name:     sid.Name,
+				Segments: segs,
+			})
+		}
+		if sid.Name == "====== TRACON Maps =======" {
+			include = true
+		}
+	}
+
+	for _, star := range sectorFile.STARs {
+		lg.Errorf("STAR %s", star.Name)
+		if star.Name == "========= Fixes ==========" || star.Name == "======== Text IDs ========" {
+			include = false
+		}
+		if include && star.Name[0] != '=' {
+			var segs []Point2LL
+			for _, seg := range star.Segs {
+				p0 := Point2LL{float32(seg.Segment.P[0].Longitude), float32(seg.Segment.P[0].Latitude)}
+				p1 := Point2LL{float32(seg.Segment.P[1].Longitude), float32(seg.Segment.P[1].Latitude)}
+				if !p0.IsZero() && !p1.IsZero() {
+					segs = append(segs, p0, p1)
+				}
+			}
+			vids = append(vids, &VideoMap{
+				Name:     star.Name,
+				Segments: segs,
+			})
+		}
+		if star.Name == "======== Airspace ========" || star.Name == "======= Geography ========" {
+			include = true
+		}
+	}
+
+	sort.Slice(vids, func(i, j int) bool { return vids[i].Name < vids[j].Name })
+	for i, vm := range vids {
+		vids[i].InitializeCommandBuffer()
+		lg.Errorf("Map: %s", vm.Name)
+	}
+
+	return vids
 }
 
 func JFKAirport() *AirportConfig {

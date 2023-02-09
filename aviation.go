@@ -575,3 +575,21 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 
 	return waypoints, nil
 }
+
+type VideoMap struct {
+	Name     string     `json:"name"`
+	Segments []Point2LL `json:"segments"`
+
+	cb CommandBuffer
+}
+
+func (v *VideoMap) InitializeCommandBuffer() {
+	ld := GetLinesDrawBuilder()
+	defer ReturnLinesDrawBuilder(ld)
+
+	for i := 0; i < len(v.Segments)/2; i++ {
+		ld.AddLine(v.Segments[2*i], v.Segments[2*i+1])
+	}
+
+	ld.GenerateCommands(&v.cb)
+}

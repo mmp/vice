@@ -152,8 +152,6 @@ type StaticDrawable struct {
 }
 
 var (
-	//go:embed resources/ZNY_Combined_VRC.sct2.zst
-	sectorFile string
 	//go:embed resources/ZNY.pof.zst
 	positionFile string
 )

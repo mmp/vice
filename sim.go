@@ -37,26 +37,11 @@ var (
 	ErrUnknownAircraftType          = errors.New("Unknown aircraft type")
 )
 
-func mustParseLatLong(l string) Point2LL {
-	ll, err := ParseLatLong(l)
-	if err != nil {
-		panic(l + ": " + err.Error())
-	}
-	return ll
-}
-
-/*
-type NewScenario struct [
-	Callsign string
-	Controllers []*Controller
-	Airports map[string]string // ICAO ->
-}
-*/
-
 type Scenario struct {
 	Callsign    string           `json:"callsign"`
 	Controllers []*Controller    `json:"controllers"`
 	Airports    []*AirportConfig `json:"airports"`
+	VideoMaps   []*VideoMap      `json:video_maps"`
 }
 
 var scenarios []*Scenario
@@ -189,6 +174,7 @@ type Sim struct {
 	callsign       string
 	airportConfigs []*AirportConfig
 	controllers    map[string]*Controller
+	videoMaps      []*VideoMap
 
 	aircraft map[string]*Aircraft
 	handoffs map[string]time.Time
@@ -222,6 +208,7 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		callsign:       ssc.scenario.Callsign,
 		airportConfigs: ssc.scenario.Airports,
 		controllers:    make(map[string]*Controller),
+		videoMaps:      ssc.scenario.VideoMaps,
 
 		aircraft: make(map[string]*Aircraft),
 		handoffs: make(map[string]time.Time),
@@ -302,6 +289,15 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 	ss.lastUpdateTime = time.Now()
 
 	return ss
+}
+
+func (s *Sim) GetVideoMap(name string) *VideoMap {
+	for _, vm := range s.videoMaps {
+		if vm.Name == name {
+			return vm
+		}
+	}
+	return nil
 }
 
 func (ss *Sim) SetSquawk(callsign string, squawk Squawk) error {
