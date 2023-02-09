@@ -173,8 +173,8 @@ func loadVideoMaps() []*VideoMap {
 	return vids
 }
 
-func JFKAirport() *AirportConfig {
-	ac := &AirportConfig{ICAO: "KJFK"}
+func JFKAirport() *Airport {
+	ac := &Airport{ICAO: "KJFK"}
 	ac.NamedLocations = map[string]Point2LL{
 		"_JFK_31L": mustParseLatLong("N040.37.41.000, W073.46.20.227"),
 		"_JFK_31R": mustParseLatLong("N040.38.35.986, W073.45.31.503"),
@@ -1302,8 +1302,8 @@ func JFKAirport() *AirportConfig {
 	return ac
 }
 
-func LGAAirport() *AirportConfig {
-	lga := &AirportConfig{ICAO: "KLGA"}
+func LGAAirport() *Airport {
+	lga := &Airport{ICAO: "KLGA"}
 	lga.NamedLocations = map[string]Point2LL{
 		"_LGA_13":  mustParseLatLong("N040.46.56.029, W073.52.42.359"),
 		"_LGA_13a": mustParseLatLong("N040.48.06.479, W073.55.40.914"),
@@ -1526,8 +1526,8 @@ func LGAAirport() *AirportConfig {
 	return lga
 }
 
-func ISPAirport() *AirportConfig {
-	isp := &AirportConfig{ICAO: "KISP"}
+func ISPAirport() *Airport {
+	isp := &Airport{ICAO: "KISP"}
 	isp.NamedLocations = map[string]Point2LL{
 		"_ISP_6":    mustParseLatLong("N040.47.18.743, W073.06.44.022"),
 		"_ISP_6a":   mustParseLatLong("N040.50.43.281, W073.02.11.698"),
@@ -1643,8 +1643,8 @@ func ISPAirport() *AirportConfig {
 	return isp
 }
 
-func FRGAirport() *AirportConfig {
-	frg := &AirportConfig{ICAO: "KFRG"}
+func FRGAirport() *Airport {
+	frg := &Airport{ICAO: "KFRG"}
 	frg.NamedLocations = map[string]Point2LL{
 		"_FRG_1":   mustParseLatLong("N040.43.20.230, W073.24.51.229"),
 		"_FRG_1a":  mustParseLatLong("N040.46.52.637, W073.24.58.809"),

@@ -11,7 +11,7 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-type AirportConfig struct {
+type Airport struct {
 	ICAO string `json:"ICAO"`
 
 	NamedLocations map[string]Point2LL `json:"named_locations"`
@@ -29,7 +29,7 @@ type AirportConfig struct {
 	ArrivalRunways     []ArrivalRunway   `json:"-"`
 }
 
-func (ac *AirportConfig) PostDeserialize() []error {
+func (ac *Airport) PostDeserialize() []error {
 	var errors []error
 
 	for _, rwy := range ac.ArrivalRunwayNames {
@@ -124,7 +124,7 @@ func (ac *AirportConfig) PostDeserialize() []error {
 	return errors
 }
 
-func (ac *AirportConfig) InitializeWaypointLocations(waypoints []Waypoint) []error {
+func (ac *Airport) InitializeWaypointLocations(waypoints []Waypoint) []error {
 	var prev Point2LL
 	var errors []error
 
@@ -267,7 +267,7 @@ func (ap *Approach) Heading() int {
 	return int(headingp2ll(p[0], p[1], database.MagneticVariation) + 0.5)
 }
 
-func (ac *AirportConfig) DrawUI() {
+func (ac *Airport) DrawUI() {
 	if len(ac.Departures) > 0 {
 		imgui.Text("Departures")
 		anyRunwaysActive := false

@@ -38,11 +38,11 @@ var (
 )
 
 type Scenario struct {
-	Name        string           `json:"name"`
-	Callsign    string           `json:"callsign"`
-	Controllers []*Controller    `json:"controllers"`
-	Airports    []*AirportConfig `json:"airports"`
-	VideoMaps   []*VideoMap      `json:video_maps"`
+	Name        string        `json:"name"`
+	Callsign    string        `json:"callsign"`
+	Controllers []*Controller `json:"controllers"`
+	Airports    []*Airport    `json:"airports"`
+	VideoMaps   []*VideoMap   `json:video_maps"`
 
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
@@ -174,7 +174,7 @@ func (ssc *SimConnectionConfiguration) Connect() error {
 type Sim struct {
 	// These come from the scenario
 	callsign       string
-	airportConfigs []*AirportConfig
+	airportConfigs []*Airport
 	controllers    map[string]*Controller
 	videoMaps      []*VideoMap
 
@@ -1022,7 +1022,7 @@ func sampleAircraft(airlines []AirlineConfig) *Aircraft {
 	}
 }
 
-func (ss *Sim) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *Aircraft {
+func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
 	arr := Sample(ag.Arrivals)
 
 	ac := sampleAircraft(arr.Airlines)
@@ -1053,7 +1053,7 @@ func (ss *Sim) SpawnArrival(ap *AirportConfig, ag ArrivalGroup) *Aircraft {
 	return ac
 }
 
-func (ss *Sim) SpawnDeparture(ap *AirportConfig, rwy *DepartureRunway) *Aircraft {
+func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < ss.challenge {
 		// 50/50 split between the exact same departure and a departure to
