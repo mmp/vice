@@ -209,14 +209,14 @@ type STARSMap struct {
 	Name  string // VideoMap.Name
 }
 
-func MakeDefaultFacility() STARSFacility {
+func MakeDefaultFacility(airport string, center Point2LL) STARSFacility {
 	var f STARSFacility
 
-	f.Center = database.defaultCenter
+	f.Center = center
 
 	f.Airports = append(f.Airports,
 		STARSAirport{
-			ICAOCode:     database.defaultAirport,
+			ICAOCode:     airport,
 			Range:        60,
 			IncludeInSSA: true})
 
@@ -626,9 +626,9 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 // STARSPane proper
 
 // Takes aircraft position in window coordinates
-func NewSTARSPane() *STARSPane {
+func NewSTARSPane(airport string, center Point2LL) *STARSPane {
 	return &STARSPane{
-		Facility:              MakeDefaultFacility(),
+		Facility:              MakeDefaultFacility(airport, center),
 		SelectedPreferenceSet: -1,
 	}
 }

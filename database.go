@@ -10,15 +10,11 @@ import (
 	_ "embed"
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
 	"io"
-	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/mmp/sct2"
 )
 
 // StaticDatabase is a catch-all for data about the world that doesn't
@@ -42,18 +38,6 @@ type StaticDatabase struct {
 	NmPerLatitude     float32
 	NmPerLongitude    float32
 	MagneticVariation float32
-
-	defaultAirport string
-	defaultCenter  Point2LL
-	sectorFileId   string
-
-	VORs     map[string]Point2LL
-	NDBs     map[string]Point2LL
-	fixes    map[string]Point2LL
-	airports map[string]Point2LL
-	runways  map[string][]Runway
-
-	sectorFileLoadError error
 
 	// From the position file
 	positions             map[string][]Position // map key is e.g. JFK_TWR
@@ -149,13 +133,6 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
 
-	// These errors will appear the first time vice is launched and the
-	// user hasn't yet set these up.  (And also if the chosen files are
-	// moved or deleted, etc...)
-	if db.LoadSectorFile("zny.sct2") != nil {
-		uiAddError("Unable to load sector file. Please specify a new one using Settings/Files...",
-			func() bool { return db.sectorFileLoadError == nil })
-	}
 	if db.LoadPositionFile("zny.pof") != nil {
 		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
 			func() bool { return db.positionFileLoadError == nil })
@@ -427,132 +404,6 @@ func parseAirlines() map[string]Airline {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// The Sector File
-
-func Point2LLFromSct2(ll sct2.LatLong) Point2LL {
-	return Point2LL{float32(ll.Longitude), float32(ll.Latitude)}
-}
-
-func Point2LLFromLL64(latitude, longitude float64) Point2LL {
-	return Point2LL{float32(longitude), float32(latitude)}
-}
-
-func (db *StaticDatabase) LoadSectorFile(filename string) error {
-	lg.Printf("%s: loading sector file", filename)
-	sectorFile, err := parseSectorFile(filename)
-	db.sectorFileLoadError = err
-	if err != nil {
-		return err
-	}
-
-	// Copy over some basic stuff from the sector file
-	db.defaultAirport = strings.TrimSpace(sectorFile.DefaultAirport) // TODO: sct2 should do this
-	db.defaultCenter = Point2LLFromSct2(sectorFile.Center)
-	db.NmPerLatitude = float32(sectorFile.NmPerLatitude)
-	db.NmPerLongitude = float32(sectorFile.NmPerLongitude)
-	db.MagneticVariation = float32(sectorFile.MagneticVariation)
-	db.sectorFileId = sectorFile.Id
-
-	// Clear out everything that is set from the sector file contents in
-	// case we're loading a new one.
-	db.VORs = make(map[string]Point2LL)
-	db.NDBs = make(map[string]Point2LL)
-	db.fixes = make(map[string]Point2LL)
-	db.airports = make(map[string]Point2LL)
-	db.runways = make(map[string][]Runway)
-
-	// First initialize various databases from the sector file. Start with
-	// named locations--VORs, airports, etc.
-	loc := func(ls []sct2.NamedLatLong) map[string]Point2LL {
-		m := make(map[string]Point2LL)
-		for _, loc := range ls {
-			if loc.Name != "" {
-				m[loc.Name] = Point2LLFromLL64(loc.Latitude, loc.Longitude)
-			}
-		}
-		return m
-	}
-	db.VORs = loc(sectorFile.VORs)
-	db.NDBs = loc(sectorFile.NDBs)
-	db.fixes = loc(sectorFile.Fixes)
-	db.airports = loc(sectorFile.Airports)
-
-	// Initialize the runways map, which is from airports to a slice of all
-	// of their runways.
-	db.runways = make(map[string][]Runway)
-	for _, r := range sectorFile.Runways {
-		if r.Airport == "" {
-			continue
-		}
-		// Two entries--one for each end of the runway.
-		for i := 0; i < 2; i++ {
-			db.runways[r.Airport] = append(db.runways[r.Airport],
-				Runway{
-					Number:    r.Number[i],
-					Heading:   float32(r.Heading[i]),
-					Threshold: Point2LLFromSct2(r.P[i]),
-					End:       Point2LLFromSct2(r.P[i^1])})
-		}
-	}
-
-	lg.Printf("%s: finished loading sector file", filename)
-
-	return nil
-}
-
-func parseSectorFile(sectorFilename string) (*sct2.SectorFile, error) {
-	contents := decompressZstd(sectorFile)
-
-	type SctResult struct {
-		sf  *sct2.SectorFile
-		err error
-	}
-	ch := make(chan SctResult)
-	panicStack := ""
-
-	// Parse the sector file in a goroutine so that we can catch any panics, put up
-	// a friendly error message, but continue running.
-	go func() {
-		var err error
-		var sf *sct2.SectorFile
-		defer func() {
-			if perr := recover(); perr != nil {
-				panicStack = string(debug.Stack())
-				lg.Errorf("Panic stack: %s", panicStack)
-				err = fmt.Errorf("sct2.Parse panicked: %v", perr)
-			}
-
-			// Use a channel for the result so that we wait for the
-			// goroutine to finish.
-			if err != nil {
-				ch <- SctResult{err: err}
-			} else {
-				ch <- SctResult{sf: sf}
-			}
-
-			close(ch)
-		}()
-
-		errorCallback := func(err string) {
-			lg.Errorf("%s: error parsing sector file: %s", sectorFilename, err)
-		}
-		sf, err = sct2.Parse([]byte(contents), sectorFilename, errorCallback)
-	}()
-
-	r := <-ch
-
-	if panicStack != "" {
-		// Have to do this here so that it's in the main thread...
-		ShowFatalErrorDialog("Unfortunately an unexpected error has occurred while parsing the sector file:\n" +
-			sectorFilename + "\n" +
-			"Apologies! Please do file a bug and include the vice.log file for this session\nso that " +
-			"this bug can be fixed.")
-	}
-
-	return r.sf, r.err
-}
-
-///////////////////////////////////////////////////////////////////////////
 // The Position File
 
 func (db *StaticDatabase) LoadPositionFile(filename string) error {
@@ -624,17 +475,7 @@ func parsePositionFile(filename string) (map[string][]Position, error) {
 // Locate returns the location of a (static) named thing, if we've heard of it.
 func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 	name = strings.ToUpper(name)
-	// We'll start with the sector file and then move on to the FAA
-	// database if we don't find it.
-	if pos, ok := db.VORs[name]; ok {
-		return pos, ok
-	} else if pos, ok := db.NDBs[name]; ok {
-		return pos, ok
-	} else if pos, ok := db.fixes[name]; ok {
-		return pos, ok
-	} else if pos, ok := db.airports[name]; ok {
-		return pos, ok
-	} else if n, ok := db.FAA.navaids[name]; ok {
+	if n, ok := db.FAA.navaids[name]; ok {
 		return n.Location, ok
 	} else if f, ok := db.FAA.fixes[name]; ok {
 		return f.Location, ok

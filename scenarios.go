@@ -57,7 +57,12 @@ func jfk31RDepartureRunway() *DepartureConfig {
 */
 
 func JFKApproachScenario() *Scenario {
-	s := &Scenario{}
+	s := &Scenario{
+		Name:              "KJFK TRACON",
+		NmPerLatitude:     60,
+		NmPerLongitude:    45,
+		MagneticVariation: 13.3,
+	}
 
 	s.Callsign = "JFK_APP"
 

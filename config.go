@@ -160,9 +160,8 @@ func LoadOrMakeDefaultConfig() {
 
 func (gc *GlobalConfig) Activate() {
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane()
 		// hardcoded facility engineering here...
-		stars.Facility.Center = Point2LL{-73.7765, 40.6401}
+		stars := NewSTARSPane("KJFK", Point2LL{-73.7765, 40.6401})
 		stars.Facility.Airports = append(stars.Facility.Airports,
 			STARSAirport{ICAOCode: "KJFK", Range: 50, IncludeInSSA: true, TowerListIndex: 1},
 			STARSAirport{ICAOCode: "KFRG", Range: 30, IncludeInSSA: true, TowerListIndex: 2})

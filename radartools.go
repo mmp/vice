@@ -15,10 +15,8 @@ import (
 	"math"
 	"net/http"
 	"net/url"
-	"sort"
 	"time"
 
-	"github.com/mmp/imgui-go/v4"
 	"github.com/nfnt/resize"
 )
 
@@ -288,27 +286,32 @@ func NewCRDAConfig() CRDAConfig {
 }
 
 func (c *CRDAConfig) getRunway(n string) *Runway {
-	for _, rwy := range database.runways[c.Airport] {
-		if rwy.Number == n {
-			return &rwy
+	panic("FIXME")
+	/*
+		for _, rwy := range database.runways[c.Airport] {
+			if rwy.Number == n {
+				return &rwy
+			}
 		}
-	}
+	*/
 	return nil
 }
 
 func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway) {
-	for i, rwy := range database.runways[c.Airport] {
-		if rwy.Number == c.PrimaryRunway {
-			ghostSource = &database.runways[c.Airport][i]
+	/*
+		for i, rwy := range database.runways[c.Airport] {
+			if rwy.Number == c.PrimaryRunway {
+				ghostSource = &database.runways[c.Airport][i]
+			}
+			if rwy.Number == c.SecondaryRunway {
+				ghostDestination = &database.runways[c.Airport][i]
+			}
 		}
-		if rwy.Number == c.SecondaryRunway {
-			ghostDestination = &database.runways[c.Airport][i]
-		}
-	}
 
-	if c.ShowGhostsOnPrimary {
-		ghostSource, ghostDestination = ghostDestination, ghostSource
-	}
+		if c.ShowGhostsOnPrimary {
+			ghostSource, ghostDestination = ghostDestination, ghostSource
+		}
+	*/
 
 	return
 }
@@ -466,90 +469,93 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 }
 
 func (c *CRDAConfig) DrawUI() bool {
-	updateGhosts := false
+	panic("FIXME")
+	/*
+		updateGhosts := false
 
-	flags := imgui.InputTextFlagsCharsUppercase | imgui.InputTextFlagsCharsNoBlank
-	imgui.InputTextV("Airport", &c.Airport, flags, nil)
-	if runways, ok := database.runways[c.Airport]; !ok {
-		if c.Airport != "" {
-			color := globalConfig.GetColorScheme().TextError
-			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
-			imgui.Text("Airport unknown!")
-			imgui.PopStyleColor()
-		}
-	} else {
-		sort.Slice(runways, func(i, j int) bool { return runways[i].Number < runways[j].Number })
+		flags := imgui.InputTextFlagsCharsUppercase | imgui.InputTextFlagsCharsNoBlank
+		imgui.InputTextV("Airport", &c.Airport, flags, nil)
+		if runways, ok := database.runways[c.Airport]; !ok {
+			if c.Airport != "" {
+				color := globalConfig.GetColorScheme().TextError
+				imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
+				imgui.Text("Airport unknown!")
+				imgui.PopStyleColor()
+			}
+		} else {
+			sort.Slice(runways, func(i, j int) bool { return runways[i].Number < runways[j].Number })
 
-		primary, secondary := c.getRunway(c.PrimaryRunway), c.getRunway(c.SecondaryRunway)
-		if imgui.BeginComboV("Primary runway", c.PrimaryRunway, imgui.ComboFlagsHeightLarge) {
-			if imgui.SelectableV("(None)", c.PrimaryRunway == "", 0, imgui.Vec2{}) {
-				updateGhosts = true
-				c.PrimaryRunway = ""
-			}
-			for _, rwy := range runways {
-				if secondary != nil {
-					// Don't include the selected secondary runway
-					if rwy.Number == secondary.Number {
-						continue
-					}
-					// Only list intersecting runways
-					if _, ok := runwayIntersection(&rwy, secondary); !ok {
-						continue
-					}
-				}
-				if imgui.SelectableV(rwy.Number, rwy.Number == c.PrimaryRunway, 0, imgui.Vec2{}) {
+			primary, secondary := c.getRunway(c.PrimaryRunway), c.getRunway(c.SecondaryRunway)
+			if imgui.BeginComboV("Primary runway", c.PrimaryRunway, imgui.ComboFlagsHeightLarge) {
+				if imgui.SelectableV("(None)", c.PrimaryRunway == "", 0, imgui.Vec2{}) {
 					updateGhosts = true
-					c.PrimaryRunway = rwy.Number
+					c.PrimaryRunway = ""
 				}
-			}
-			imgui.EndCombo()
-		}
-		if imgui.BeginComboV("Secondary runway", c.SecondaryRunway, imgui.ComboFlagsHeightLarge) {
-			// Note: this is the exact same logic for primary runways
-			// above, just with the roles switched...
-			if imgui.SelectableV("(None)", c.SecondaryRunway == "", 0, imgui.Vec2{}) {
-				updateGhosts = true
-				c.SecondaryRunway = ""
-			}
-			for _, rwy := range runways {
-				if primary != nil {
-					// Don't include the selected primary runway
-					if rwy.Number == primary.Number {
-						continue
+				for _, rwy := range runways {
+					if secondary != nil {
+						// Don't include the selected secondary runway
+						if rwy.Number == secondary.Number {
+							continue
+						}
+						// Only list intersecting runways
+						if _, ok := runwayIntersection(&rwy, secondary); !ok {
+							continue
+						}
 					}
-					// Only list intersecting runways
-					if _, ok := runwayIntersection(&rwy, primary); !ok {
-						continue
+					if imgui.SelectableV(rwy.Number, rwy.Number == c.PrimaryRunway, 0, imgui.Vec2{}) {
+						updateGhosts = true
+						c.PrimaryRunway = rwy.Number
 					}
 				}
-				if imgui.SelectableV(rwy.Number, rwy.Number == c.SecondaryRunway, 0, imgui.Vec2{}) {
+				imgui.EndCombo()
+			}
+			if imgui.BeginComboV("Secondary runway", c.SecondaryRunway, imgui.ComboFlagsHeightLarge) {
+				// Note: this is the exact same logic for primary runways
+				// above, just with the roles switched...
+				if imgui.SelectableV("(None)", c.SecondaryRunway == "", 0, imgui.Vec2{}) {
 					updateGhosts = true
-					c.SecondaryRunway = rwy.Number
+					c.SecondaryRunway = ""
 				}
+				for _, rwy := range runways {
+					if primary != nil {
+						// Don't include the selected primary runway
+						if rwy.Number == primary.Number {
+							continue
+						}
+						// Only list intersecting runways
+						if _, ok := runwayIntersection(&rwy, primary); !ok {
+							continue
+						}
+					}
+					if imgui.SelectableV(rwy.Number, rwy.Number == c.SecondaryRunway, 0, imgui.Vec2{}) {
+						updateGhosts = true
+						c.SecondaryRunway = rwy.Number
+					}
+				}
+				imgui.EndCombo()
 			}
-			imgui.EndCombo()
-		}
-		if imgui.Checkbox("Ghosts on primary", &c.ShowGhostsOnPrimary) {
-			updateGhosts = true
-		}
-		imgui.Text("Mode")
-		imgui.SameLine()
-		updateGhosts = imgui.RadioButtonInt("Stagger", &c.Mode, 0) || updateGhosts
-		imgui.SameLine()
-		updateGhosts = imgui.RadioButtonInt("Tie", &c.Mode, 1) || updateGhosts
-		if c.Mode == CRDAModeTie {
+			if imgui.Checkbox("Ghosts on primary", &c.ShowGhostsOnPrimary) {
+				updateGhosts = true
+			}
+			imgui.Text("Mode")
 			imgui.SameLine()
-			updateGhosts = imgui.SliderFloatV("Tie stagger distance", &c.TieStaggerDistance, 0.1, 10, "%.1f", 0) ||
-				updateGhosts
+			updateGhosts = imgui.RadioButtonInt("Stagger", &c.Mode, 0) || updateGhosts
+			imgui.SameLine()
+			updateGhosts = imgui.RadioButtonInt("Tie", &c.Mode, 1) || updateGhosts
+			if c.Mode == CRDAModeTie {
+				imgui.SameLine()
+				updateGhosts = imgui.SliderFloatV("Tie stagger distance", &c.TieStaggerDistance, 0.1, 10, "%.1f", 0) ||
+					updateGhosts
+			}
+			updateGhosts = imgui.SliderFloatV("Heading tolerance (deg)", &c.HeadingTolerance, 5, 180, "%.0f", 0) || updateGhosts
+			updateGhosts = imgui.SliderFloatV("Glideslope angle (deg)", &c.GlideslopeAngle, 2, 5, "%.1f", 0) || updateGhosts
+			updateGhosts = imgui.SliderFloatV("Glideslope lateral spread (deg)", &c.GlideslopeLateralSpread, 1, 20, "%.0f", 0) || updateGhosts
+			updateGhosts = imgui.SliderFloatV("Glideslope vertical spread (deg)", &c.GlideslopeVerticalSpread, 1, 10, "%.1f", 0) || updateGhosts
+			updateGhosts = imgui.Checkbox("Show CRDA regions", &c.ShowCRDARegions) || updateGhosts
 		}
-		updateGhosts = imgui.SliderFloatV("Heading tolerance (deg)", &c.HeadingTolerance, 5, 180, "%.0f", 0) || updateGhosts
-		updateGhosts = imgui.SliderFloatV("Glideslope angle (deg)", &c.GlideslopeAngle, 2, 5, "%.1f", 0) || updateGhosts
-		updateGhosts = imgui.SliderFloatV("Glideslope lateral spread (deg)", &c.GlideslopeLateralSpread, 1, 20, "%.0f", 0) || updateGhosts
-		updateGhosts = imgui.SliderFloatV("Glideslope vertical spread (deg)", &c.GlideslopeVerticalSpread, 1, 10, "%.1f", 0) || updateGhosts
-		updateGhosts = imgui.Checkbox("Show CRDA regions", &c.ShowCRDARegions) || updateGhosts
-	}
 
-	return updateGhosts
+		return updateGhosts
+	*/
 }
 
 ///////////////////////////////////////////////////////////////////////////

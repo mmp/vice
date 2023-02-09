@@ -38,10 +38,15 @@ var (
 )
 
 type Scenario struct {
+	Name        string           `json:"name"`
 	Callsign    string           `json:"callsign"`
 	Controllers []*Controller    `json:"controllers"`
 	Airports    []*AirportConfig `json:"airports"`
 	VideoMaps   []*VideoMap      `json:video_maps"`
+
+	NmPerLatitude     float32 `json:"nm_per_latitude"`
+	NmPerLongitude    float32 `json:"nm_per_longitude"`
+	MagneticVariation float32 `json:"magnetic_variation"`
 }
 
 var scenarios []*Scenario
@@ -63,13 +68,6 @@ type SimConnectionConfiguration struct {
 func (ssc *SimConnectionConfiguration) Initialize() {
 	if len(scenarios) == 0 {
 		scenarios = append(scenarios, JFKApproachScenario())
-		/*
-			e := json.NewEncoder(os.Stdout)
-			err := e.Encode(scenarios)
-			if err != nil {
-				panic(err)
-			}
-		*/
 	}
 	for _, sc := range scenarios {
 		sort.Slice(sc.Controllers, func(i, j int) bool { return sc.Controllers[i].Callsign < sc.Controllers[j].Callsign })
@@ -90,7 +88,11 @@ func (ssc *SimConnectionConfiguration) Initialize() {
 
 	ssc.challenge = 0.25
 
+	// TODO :choose scenario...
 	ssc.scenario = scenarios[0]
+	database.NmPerLatitude = ssc.scenario.NmPerLatitude
+	database.NmPerLongitude = ssc.scenario.NmPerLongitude
+	database.MagneticVariation = ssc.scenario.MagneticVariation
 
 	ssc.controllerActive = make(map[string]*bool)
 	for _, ctrl := range ssc.scenario.Controllers {
