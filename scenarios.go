@@ -117,7 +117,7 @@ func loadVideoMaps() []*VideoMap {
 	var vids []*VideoMap
 	include := false
 	for _, sid := range sectorFile.SIDs {
-		lg.Errorf("SID %s", sid.Name)
+		//lg.Errorf("SID %s", sid.Name)
 		if sid.Name == "======== Outlines ========" {
 			include = false
 		}
@@ -141,7 +141,7 @@ func loadVideoMaps() []*VideoMap {
 	}
 
 	for _, star := range sectorFile.STARs {
-		lg.Errorf("STAR %s", star.Name)
+		//lg.Errorf("STAR %s", star.Name)
 		if star.Name == "========= Fixes ==========" || star.Name == "======== Text IDs ========" {
 			include = false
 		}
@@ -167,7 +167,7 @@ func loadVideoMaps() []*VideoMap {
 	sort.Slice(vids, func(i, j int) bool { return vids[i].Name < vids[j].Name })
 	for i, vm := range vids {
 		vids[i].InitializeCommandBuffer()
-		lg.Errorf("Map: %s", vm.Name)
+		lg.Printf("Got video map: %s", vm.Name)
 	}
 
 	return vids

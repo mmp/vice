@@ -1102,7 +1102,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			vm := sim.GetVideoMap(sp.Facility.Maps[i].Name)
 			if vm == nil {
 				// should be transitory pending getting going
-				lg.Errorf("%s: couldn't get video map", sp.Facility.Maps[i].Name)
+				//lg.Errorf("%s: couldn't get video map", sp.Facility.Maps[i].Name)
 			} else {
 				cb.Call(vm.cb)
 			}
