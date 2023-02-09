@@ -475,7 +475,7 @@ func (ss *Sim) GetController(callsign string) *Controller {
 		return ctrl
 	}
 	for _, ctrl := range ss.controllers {
-		if pos := ctrl.GetPosition(); pos != nil && pos.SectorId == callsign {
+		if ctrl.SectorId == callsign {
 			return ctrl
 		}
 	}

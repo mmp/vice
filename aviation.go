@@ -103,10 +103,8 @@ func (f Frequency) String() string {
 type Controller struct {
 	Callsign  string    `json:"callsign"`
 	Frequency Frequency `json:"frequency"`
-}
-
-func (c *Controller) GetPosition() *Position {
-	return database.LookupPosition(c.Callsign, c.Frequency)
+	SectorId  string    `json:"sector_id"`  // e.g. N56, 2J, ...
+	Scope     string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
 }
 
 type FlightRules int
@@ -216,26 +214,6 @@ type Callsign struct {
 	Country     string
 	Telephony   string
 	ThreeLetter string
-}
-
-type Position struct {
-	Name                  string // e.g., Kennedy Local 1
-	Callsign              string // e.g., Kennedy Tower
-	Frequency             Frequency
-	SectorId              string // For handoffs, etc--e.g., 2W
-	Scope                 string // For tracked a/c on the scope--e.g., T
-	Id                    string // e.g. JFK_TWR
-	LowSquawk, HighSquawk Squawk
-}
-
-// Returns nm
-func EstimatedFutureDistance(a *Aircraft, b *Aircraft, seconds float32) float32 {
-	a0, av := a.TrackPosition(), a.HeadingVector()
-	b0, bv := b.TrackPosition(), b.HeadingVector()
-	// Heading vector comes back in minutes
-	afut := add2f(a0, scale2f(av, seconds/60))
-	bfut := add2f(b0, scale2f(bv, seconds/60))
-	return nmdistance2ll(afut, bfut)
 }
 
 func ParseAltitude(s string) (int, error) {

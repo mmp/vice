@@ -38,10 +38,6 @@ type StaticDatabase struct {
 	NmPerLatitude     float32
 	NmPerLongitude    float32
 	MagneticVariation float32
-
-	// From the position file
-	positions             map[string][]Position // map key is e.g. JFK_TWR
-	positionFileLoadError error
 }
 
 type AircraftPerformance struct {
@@ -103,11 +99,6 @@ type Label struct {
 	color RGB
 }
 
-var (
-	//go:embed resources/ZNY.pof.zst
-	positionFile string
-)
-
 func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 	start := time.Now()
 
@@ -132,11 +123,6 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
-
-	if db.LoadPositionFile("zny.pof") != nil {
-		uiAddError("Unable to load position file. Please specify a new one using Settings/Files...",
-			func() bool { return db.positionFileLoadError == nil })
-	}
 
 	dbChan <- db
 }
@@ -404,72 +390,6 @@ func parseAirlines() map[string]Airline {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// The Position File
-
-func (db *StaticDatabase) LoadPositionFile(filename string) error {
-	lg.Printf("%s: loading position file", filename)
-
-	db.positions, db.positionFileLoadError = parsePositionFile(filename)
-
-	lg.Printf("%s: finished loading position file", filename)
-
-	return db.positionFileLoadError
-}
-
-func parsePositionFile(filename string) (map[string][]Position, error) {
-	m := make(map[string][]Position)
-	contents := decompressZstd(positionFile)
-
-	scan := bufio.NewScanner(bytes.NewReader([]byte(contents)))
-	for scan.Scan() {
-		line := scan.Text()
-		if line == "" || line[0] == ';' {
-			continue
-		}
-
-		fields := strings.Split(line, ":")
-		if len(fields) != 11 {
-			lg.Printf("%s: expected 11 fields, got %d: [%+v]", filename, len(fields), fields)
-			continue
-		}
-
-		var frequency float64
-		frequency, err := strconv.ParseFloat(fields[2], 32)
-		if err != nil {
-			lg.Printf("%s: error parsing frequency: [%+v]", err, fields)
-			continue
-		}
-		// Note: parse as octal!
-		var lowSquawk, highSquawk int64
-		lowSquawk, err = strconv.ParseInt(fields[9], 8, 32)
-		if err != nil {
-			// This happens for e.g. entries for neighboring ARTCCs
-			lowSquawk = -1
-		}
-		highSquawk, err = strconv.ParseInt(fields[10], 8, 32)
-		if err != nil {
-			// This happens for e.g. entries for neighboring ARTCCs
-			highSquawk = -1
-		}
-
-		id := fields[5] + "_" + fields[6]
-		p := Position{
-			Name:      fields[0],
-			Callsign:  fields[1],
-			Frequency: NewFrequency(float32(frequency)),
-			SectorId:  fields[3],
-			Scope:     fields[4],
-			Id:        id,
-			// ignore fields 7/8
-			LowSquawk:  Squawk(lowSquawk),
-			HighSquawk: Squawk(highSquawk)}
-
-		m[id] = append(m[id], p)
-	}
-	return m, nil
-}
-
-///////////////////////////////////////////////////////////////////////////
 // Utility methods
 
 // Locate returns the location of a (static) named thing, if we've heard of it.
@@ -484,21 +404,6 @@ func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 	} else {
 		return Point2LL{}, false
 	}
-}
-
-func (db *StaticDatabase) LookupPosition(callsign string, frequency Frequency) *Position {
-	// compute the basic callsign: e.g. NY_1_CTR -> NY_CTR, PHL_ND_APP -> PHL_APP
-	cf := strings.Split(callsign, "_")
-	if len(cf) > 2 {
-		callsign = cf[0] + "_" + cf[len(cf)-1]
-	}
-
-	for i, pos := range db.positions[callsign] {
-		if pos.Frequency == frequency {
-			return &db.positions[callsign][i]
-		}
-	}
-	return nil
 }
 
 func (db *StaticDatabase) LookupAircraftType(ac string) (AircraftType, bool) {

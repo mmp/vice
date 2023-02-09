@@ -582,9 +582,7 @@ func flightPlanSTARS(ac *Aircraft) (string, error) {
 	// (start of route) (alt 100s)
 	result := ac.Callsign + " " + fp.AircraftType + " " + ac.AssignedSquawk.String() + " "
 	if ctrl := sim.GetController(ac.TrackingController); ctrl != nil {
-		if pos := ctrl.GetPosition(); pos != nil {
-			result += pos.SectorId
-		}
+		result += ctrl.SectorId
 	}
 	result += "\n"
 
@@ -1702,7 +1700,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				// L(id)(space)(dir)
 				status.err = ErrSTARSCommandFormat // set preemptively; clear on success
 				for _, ctrl := range sim.GetAllControllers() {
-					if pos := ctrl.GetPosition(); pos != nil && pos.SectorId == cmd[:2] {
+					if ctrl.SectorId == cmd[:2] {
 						dir, err := lldir(cmd[3])
 						if cmd[2] == ' ' && err == nil {
 							setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == ctrl.Callsign })
@@ -2098,7 +2096,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 		// FIXME: check--this is likely to be pretty slow, relatively
 		// speaking...
 		for _, ctrl := range sim.GetAllControllers() {
-			if pos := ctrl.GetPosition(); pos != nil && pos.SectorId == id {
+			if ctrl.SectorId == id {
 				return true
 			}
 		}
@@ -3385,13 +3383,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 	if ps.SignOnList.Visible {
 		format := func(ctrl *Controller, requirePosition bool) string {
-			id := ""
-			if pos := ctrl.GetPosition(); pos != nil {
-				id = pos.SectorId
-			} else if requirePosition {
-				return ""
-			}
-			return fmt.Sprintf("%3s", id) + " " + ctrl.Frequency.String() + " " + ctrl.Callsign
+			return fmt.Sprintf("%3s", ctrl.SectorId) + " " + ctrl.Frequency.String() + " " + ctrl.Callsign
 		}
 
 		// User first
@@ -3511,9 +3503,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		if ac.TrackingController != "" {
 			ch := "?"
 			if ctrl := sim.GetController(ac.TrackingController); ctrl != nil {
-				if pos := ctrl.GetPosition(); pos != nil {
-					ch = pos.Scope
-				}
+				ch = ctrl.Scope
 			}
 			td.AddTextCentered(ch, pw, TextStyle{Font: font, Color: brightness.RGB(), DropShadow: true})
 		} else {
@@ -3743,15 +3733,11 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 		ho := "  "
 		if ac.InboundHandoffController != "" {
 			if ctrl := sim.GetController(ac.InboundHandoffController); ctrl != nil {
-				if pos := ctrl.GetPosition(); pos != nil {
-					ho = pos.SectorId
-				}
+				ho = ctrl.SectorId
 			}
 		} else if ac.OutboundHandoffController != "" {
 			if ctrl := sim.GetController(ac.OutboundHandoffController); ctrl != nil {
-				if pos := ctrl.GetPosition(); pos != nil {
-					ho = pos.SectorId
-				}
+				ho = ctrl.SectorId
 			}
 		}
 

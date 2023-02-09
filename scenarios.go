@@ -66,23 +66,25 @@ func JFKApproachScenario() *Scenario {
 
 	s.Callsign = "JFK_APP"
 
-	addController := func(cs string, freq float32) {
+	addController := func(cs string, freq float32, sector string, scope string) {
 		s.Controllers = append(s.Controllers, &Controller{
 			Callsign:  cs,
 			Frequency: NewFrequency(freq),
+			SectorId:  sector,
+			Scope:     scope,
 		})
 	}
 
-	addController("BOS_E_CTR", 133.45) // B17
-	addController("ISP_APP", 120.05)   //  3H
-	addController("JFK_APP", 128.125)  //  2G
-	addController("JFK_TWR", 119.1)    //  2W
-	addController("LGA_DEP", 120.4)    //  1L
-	addController("NY_B_CTR", 125.325) // N56
-	addController("NY_C_CTR", 132.175) // N34
-	addController("NY_F_CTR", 128.3)   // N66
-	addController("NY_LE_DEP", 126.8)  //  5E
-	addController("NY_LS_DEP", 124.75) //  5S
+	addController("BOS_E_CTR", 133.45, "B17", "C")
+	addController("ISP_APP", 120.05, "3H", "H")
+	addController("JFK_APP", 128.125, "2G", "G")
+	addController("JFK_TWR", 119.1, "2W", "T")
+	addController("LGA_DEP", 120.4, "1L", "L")
+	addController("NY_B_CTR", 125.325, "N56", "C")
+	addController("NY_C_CTR", 132.175, "N34", "C")
+	addController("NY_F_CTR", 128.3, "N66", "C")
+	addController("NY_LE_DEP", 126.8, "5E", "E")
+	addController("NY_LS_DEP", 124.75, "5S", "S")
 
 	jfk := JFKAirport()
 	s.Airports = append(s.Airports, jfk)
