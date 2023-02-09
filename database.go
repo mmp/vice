@@ -5,13 +5,11 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	_ "embed"
 	"encoding/csv"
 	"encoding/json"
 	"io"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -23,10 +21,8 @@ import (
 type StaticDatabase struct {
 	// From the FAA (et al.) databases
 	FAA struct {
-		navaids  map[string]Navaid
-		airports map[string]Airport
-		fixes    map[string]Fix
-		prd      map[AirportPair][]PRDEntry
+		navaids map[string]Navaid
+		fixes   map[string]Fix
 	}
 	callsigns           map[string]Callsign
 	AircraftTypes       map[string]AircraftType
@@ -79,19 +75,6 @@ type FleetAircraft struct {
 	Count int
 }
 
-type PRDEntry struct {
-	Depart, Arrive          string
-	Route                   string
-	Hours                   [3]string
-	Type                    string
-	Area                    string
-	Altitude                string
-	Aircraft                string
-	Direction               string
-	Seq                     string
-	DepCenter, ArriveCenter string
-}
-
 // Label represents a labeled point on a map.
 type Label struct {
 	name  string
@@ -107,11 +90,7 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 	wg.Add(1)
 	go func() { db.FAA.navaids = parseNavaids(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.FAA.airports = parseAirports(); wg.Done() }()
-	wg.Add(1)
 	go func() { db.FAA.fixes = parseFixes(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.FAA.prd = parsePRD(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.callsigns = parseCallsigns(); wg.Done() }()
 	wg.Add(1)
@@ -134,16 +113,12 @@ var (
 	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2022-07-14/
 	//go:embed resources/NAV_BASE.csv.zst
 	navBaseRaw string
-	//go:embed resources/APT_BASE.csv.zst
-	airportsRaw string
 	//go:embed resources/FIX_BASE.csv.zst
 	fixesRaw string
 	//go:embed resources/callsigns.csv.zst
 	callsignsRaw string
 	//go:embed resources/virtual-callsigns.csv.zst
 	virtualCallsignsRaw string
-	//go:embed resources/prefroutes_db.csv.zst
-	prdRaw string
 
 	// Via Arash Partow, MIT licensed
 	// https://www.partow.net/miscellaneous/airportdatabase/
@@ -212,54 +187,6 @@ func parseNavaids() map[string]Navaid {
 	return navaids
 }
 
-func parseAirports() map[string]Airport {
-	airports := make(map[string]Airport)
-
-	// FAA database
-	mungeCSV("airports", decompressZstd(airportsRaw), func(s []string) {
-		if elevation, err := strconv.ParseFloat(s[24], 64); err != nil {
-			lg.Errorf("%s: error parsing elevation: %s", s[24], err)
-		} else {
-			loc := point2LLFromComponents(s[15:19], s[19:23])
-			ap := Airport{Id: s[98], Name: s[12], Location: loc, Elevation: int(elevation)}
-			if ap.Id == "" {
-				ap.Id = s[4] // No ICAO code so grab the FAA airport id
-			}
-			if ap.Id != "" {
-				airports[ap.Id] = ap
-			}
-		}
-	})
-
-	// Global database; this isn't in CSV, so we need to parse it manually.
-	r := bytes.NewReader([]byte(decompressZstd(globalAirportsRaw)))
-	scan := bufio.NewScanner(r)
-	for scan.Scan() {
-		line := scan.Text()
-		f := strings.Split(line, ":")
-		if len(f) != 16 {
-			lg.Errorf("Expected 16 fields, got %d: %s", len(f), line)
-		}
-
-		if elevation, err := strconv.ParseFloat(f[13], 64); err != nil {
-			lg.Errorf("%s: error parsing elevation: %s", f[13], err)
-		} else {
-			elevation *= 3.28084 // meters to feet
-
-			ap := Airport{
-				Id:        f[0],
-				Name:      f[2],
-				Location:  point2LLFromStrings(f[14], f[15]),
-				Elevation: int(elevation)}
-			if ap.Id != "" {
-				airports[ap.Id] = ap
-			}
-		}
-	}
-
-	return airports
-}
-
 func parseFixes() map[string]Fix {
 	fixes := make(map[string]Fix)
 
@@ -273,32 +200,6 @@ func parseFixes() map[string]Fix {
 	})
 
 	return fixes
-}
-
-func parsePRD() map[AirportPair][]PRDEntry {
-	prd := make(map[AirportPair][]PRDEntry)
-
-	mungeCSV("prd", decompressZstd(prdRaw), func(s []string) {
-		entry := PRDEntry{
-			Depart:       s[0],
-			Route:        s[1],
-			Arrive:       s[2],
-			Hours:        [3]string{s[3], s[4], s[5]},
-			Type:         s[6],
-			Area:         s[7],
-			Altitude:     s[8],
-			Aircraft:     s[9],
-			Direction:    s[10],
-			Seq:          s[11],
-			DepCenter:    s[12],
-			ArriveCenter: s[13]}
-		if entry.Depart != "" && entry.Arrive != "" {
-			prd[AirportPair{entry.Depart, entry.Arrive}] =
-				append(prd[AirportPair{entry.Depart, entry.Arrive}], entry)
-		}
-	})
-
-	return prd
 }
 
 func parseCallsigns() map[string]Callsign {
@@ -399,8 +300,6 @@ func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 		return n.Location, ok
 	} else if f, ok := db.FAA.fixes[name]; ok {
 		return f.Location, ok
-	} else if ap, ok := db.FAA.airports[name]; ok {
-		return ap.Location, ok
 	} else {
 		return Point2LL{}, false
 	}

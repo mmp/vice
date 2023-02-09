@@ -332,92 +332,95 @@ func runwayIntersection(a *Runway, b *Runway) (Point2LL, bool) {
 }
 
 func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
-	src, dst := c.getRunways()
-	if src == nil || dst == nil {
-		return nil
-	}
-
-	pIntersect, ok := runwayIntersection(src, dst)
-	if !ok {
-		lg.Printf("No intersection between runways??!?")
-		return nil
-	}
-
-	airport, ok := database.FAA.airports[c.Airport]
-	if !ok {
-		lg.Printf("%s: airport unknown?!", c.Airport)
-		return nil
-	}
-
-	if ac.TrackGroundspeed() > 350 {
-		return nil
-	}
-
-	if headingDifference(ac.TrackHeading(), src.Heading) > c.HeadingTolerance {
-		return nil
-	}
-
-	// Is it on the glideslope?
-	// Laterally: compute the heading to the threshold and compare to the
-	// glideslope's lateral spread.
-	h := headingp2ll(ac.TrackPosition(), src.Threshold, database.MagneticVariation)
-	if abs(h-src.Heading) > c.GlideslopeLateralSpread {
-		return nil
-	}
-
-	// Vertically: figure out the range of altitudes at the distance out.
-	// First figure out the aircraft's height AGL.
-	agl := ac.TrackAltitude() - airport.Elevation
-
-	// Find the glideslope height at the aircraft's distance to the
-	// threshold.
-	// tan(glideslope angle) = height / threshold distance
-	const nmToFeet = 6076.12
-	thresholdDistance := nmToFeet * nmdistance2ll(ac.TrackPosition(), src.Threshold)
-	height := thresholdDistance * tan(radians(c.GlideslopeAngle))
-	// Assume 100 feet at the threshold
-	height += 100
-
-	// Similarly, find the allowed altitude difference
-	delta := thresholdDistance * tan(radians(c.GlideslopeVerticalSpread))
-
-	if abs(float32(agl)-height) > delta {
-		return nil
-	}
-
-	// This aircraft gets a ghost.
-
-	// This is a little wasteful, but we're going to copy the entire
-	// Aircraft structure just to be sure we carry along everything we
-	// might want to have available when drawing the track and
-	// datablock for the ghost.
-	ghost := *ac
-
-	// Now we just need to update the track positions to be those for
-	// the ghost. We'll again do this in nm space before going to
-	// lat-long in the end.
-	pi := ll2nm(pIntersect)
-	for i, t := range ghost.Tracks {
-		// Vector from the intersection point to the track location
-		v := sub2f(ll2nm(t.Position), pi)
-
-		// For tie mode, offset further by the specified distance.
-		if c.Mode == CRDAModeTie {
-			length := length2f(v)
-			v = scale2f(v, (length+c.TieStaggerDistance)/length)
+	/*
+		src, dst := c.getRunways()
+		if src == nil || dst == nil {
+			return nil
 		}
 
-		// Rotate it angle degrees clockwise
-		angle := dst.Heading - src.Heading
-		s, c := sin(radians(angle)), cos(radians(angle))
-		vr := [2]float32{c*v[0] + s*v[1], -s*v[0] + c*v[1]}
-		// Point along the other runway
-		pr := add2f(pi, vr)
+		pIntersect, ok := runwayIntersection(src, dst)
+		if !ok {
+			lg.Printf("No intersection between runways??!?")
+			return nil
+		}
 
-		// TODO: offset it as appropriate
-		ghost.Tracks[i].Position = nm2ll(pr)
-	}
-	return &ghost
+			airport, ok := database.FAA.airports[c.Airport]
+			if !ok {
+				lg.Printf("%s: airport unknown?!", c.Airport)
+				return nil
+			}
+
+			if ac.TrackGroundspeed() > 350 {
+				return nil
+			}
+
+			if headingDifference(ac.TrackHeading(), src.Heading) > c.HeadingTolerance {
+				return nil
+			}
+
+			// Is it on the glideslope?
+			// Laterally: compute the heading to the threshold and compare to the
+			// glideslope's lateral spread.
+			h := headingp2ll(ac.TrackPosition(), src.Threshold, database.MagneticVariation)
+			if abs(h-src.Heading) > c.GlideslopeLateralSpread {
+				return nil
+			}
+
+			// Vertically: figure out the range of altitudes at the distance out.
+			// First figure out the aircraft's height AGL.
+			agl := ac.TrackAltitude() - airport.Elevation
+
+			// Find the glideslope height at the aircraft's distance to the
+			// threshold.
+			// tan(glideslope angle) = height / threshold distance
+			const nmToFeet = 6076.12
+			thresholdDistance := nmToFeet * nmdistance2ll(ac.TrackPosition(), src.Threshold)
+			height := thresholdDistance * tan(radians(c.GlideslopeAngle))
+			// Assume 100 feet at the threshold
+			height += 100
+
+			// Similarly, find the allowed altitude difference
+			delta := thresholdDistance * tan(radians(c.GlideslopeVerticalSpread))
+
+			if abs(float32(agl)-height) > delta {
+				return nil
+			}
+
+			// This aircraft gets a ghost.
+
+			// This is a little wasteful, but we're going to copy the entire
+			// Aircraft structure just to be sure we carry along everything we
+			// might want to have available when drawing the track and
+			// datablock for the ghost.
+			ghost := *ac
+
+			// Now we just need to update the track positions to be those for
+			// the ghost. We'll again do this in nm space before going to
+			// lat-long in the end.
+			pi := ll2nm(pIntersect)
+			for i, t := range ghost.Tracks {
+				// Vector from the intersection point to the track location
+				v := sub2f(ll2nm(t.Position), pi)
+
+				// For tie mode, offset further by the specified distance.
+				if c.Mode == CRDAModeTie {
+					length := length2f(v)
+					v = scale2f(v, (length+c.TieStaggerDistance)/length)
+				}
+
+				// Rotate it angle degrees clockwise
+				angle := dst.Heading - src.Heading
+				s, c := sin(radians(angle)), cos(radians(angle))
+				vr := [2]float32{c*v[0] + s*v[1], -s*v[0] + c*v[1]}
+				// Point along the other runway
+				pr := add2f(pi, vr)
+
+				// TODO: offset it as appropriate
+				ghost.Tracks[i].Position = nm2ll(pr)
+			}
+			return &ghost
+	*/
+	return nil
 }
 
 func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {

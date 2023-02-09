@@ -213,25 +213,6 @@ func (a *Aircraft) IsAssociated() bool {
 	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
 }
 
-func (a *Aircraft) OnGround() bool {
-	if a.GS < 40 {
-		return true
-	}
-
-	if fp := a.FlightPlan; fp != nil {
-		for _, airport := range [2]string{fp.DepartureAirport, fp.ArrivalAirport} {
-			if ap, ok := database.FAA.airports[airport]; ok {
-				heightAGL := abs(a.TrackAltitude() - ap.Elevation)
-				return heightAGL < 100
-			}
-		}
-	}
-	// Didn't know the airports. We could be more fancy and find the
-	// closest airport in the sector file and then use its elevation,
-	// though it's not clear that is worth the work.
-	return false
-}
-
 func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 	if *devmode {
 		lg.Printf("Waypoint update. wp %s ac %s", spew.Sdump(wp), spew.Sdump(ac))

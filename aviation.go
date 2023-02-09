@@ -198,17 +198,6 @@ type Fix struct {
 	Location Point2LL
 }
 
-type AirportPair struct {
-	depart, arrive string
-}
-
-type Airport struct {
-	Id        string
-	Name      string
-	Elevation int
-	Location  Point2LL
-}
-
 type Callsign struct {
 	Company     string
 	Country     string

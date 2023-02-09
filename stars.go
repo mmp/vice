@@ -3357,7 +3357,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				text := stripK(ap.ICAOCode) + " TOWER\n"
 				m := make(map[float32]string)
 				for _, ac := range aircraft {
-					if !ac.OnGround() && ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap.ICAOCode {
+					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap.ICAOCode {
 						dist := nmdistance2ll(p, ac.TrackPosition())
 						actype := ac.FlightPlan.TypeWithoutSuffix()
 						actype = strings.TrimPrefix(actype, "H/")
