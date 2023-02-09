@@ -480,19 +480,19 @@ func JFKAirport() *Airport {
 				ClearedAltitude:   11000,
 				InitialSpeed:      300,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "WJA", Airport: "KDCA", Fleet: "jfk"},
-					AirlineConfig{ICAO: "WJA", Airport: "KORF", Fleet: "jfk"},
-					AirlineConfig{ICAO: "WJA", Airport: "KJAX", Fleet: "jfk"},
-					AirlineConfig{ICAO: "JBU", Airport: "KDFW"},
-					AirlineConfig{ICAO: "JBU", Airport: "KMCO"},
-					AirlineConfig{ICAO: "JBU", Airport: "KCLT"},
-					AirlineConfig{ICAO: "BWA", Airport: "MKJP"},
-					AirlineConfig{ICAO: "AAL", Airport: "KTUL"},
-					AirlineConfig{ICAO: "AAL", Airport: "KAUS"},
-					AirlineConfig{ICAO: "AAL", Airport: "KDEN"},
-					AirlineConfig{ICAO: "AMX", Airport: "MMMY", Fleet: "long"},
-					AirlineConfig{ICAO: "AMX", Airport: "MMMX", Fleet: "long"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "WJA", Airport: "KDCA", Fleet: "jfk"},
+					ArrivalAirline{ICAO: "WJA", Airport: "KORF", Fleet: "jfk"},
+					ArrivalAirline{ICAO: "WJA", Airport: "KJAX", Fleet: "jfk"},
+					ArrivalAirline{ICAO: "JBU", Airport: "KDFW"},
+					ArrivalAirline{ICAO: "JBU", Airport: "KMCO"},
+					ArrivalAirline{ICAO: "JBU", Airport: "KCLT"},
+					ArrivalAirline{ICAO: "BWA", Airport: "MKJP"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KTUL"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KAUS"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KDEN"},
+					ArrivalAirline{ICAO: "AMX", Airport: "MMMY", Fleet: "long"},
+					ArrivalAirline{ICAO: "AMX", Airport: "MMMX", Fleet: "long"},
 				},
 			},
 		},
@@ -512,14 +512,14 @@ func JFKAirport() *Airport {
 				ClearedAltitude:   9000,
 				InitialSpeed:      300,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "AAL", Airport: "MDSD"},
-					AirlineConfig{ICAO: "AAL", Airport: "TXKF"},
-					AirlineConfig{ICAO: "JBU", Airport: "TXKF"},
-					AirlineConfig{ICAO: "JBU", Airport: "TJSJ"},
-					AirlineConfig{ICAO: "AAL", Airport: "TJSJ"},
-					AirlineConfig{ICAO: "AAL", Airport: "SBGR", Fleet: "long"},
-					AirlineConfig{ICAO: "TAM", Airport: "SBGR", Fleet: "long"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "AAL", Airport: "MDSD"},
+					ArrivalAirline{ICAO: "AAL", Airport: "TXKF"},
+					ArrivalAirline{ICAO: "JBU", Airport: "TXKF"},
+					ArrivalAirline{ICAO: "JBU", Airport: "TJSJ"},
+					ArrivalAirline{ICAO: "AAL", Airport: "TJSJ"},
+					ArrivalAirline{ICAO: "AAL", Airport: "SBGR", Fleet: "long"},
+					ArrivalAirline{ICAO: "TAM", Airport: "SBGR", Fleet: "long"},
 				},
 			},
 		},
@@ -539,22 +539,22 @@ func JFKAirport() *Airport {
 				ClearedAltitude:   19000,
 				InitialSpeed:      300,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "ASA", Airport: "KSFO"},
-					AirlineConfig{ICAO: "ASA", Airport: "KPDX"},
-					AirlineConfig{ICAO: "DAL", Airport: "KMSP"},
-					AirlineConfig{ICAO: "DAL", Airport: "KDTW"},
-					AirlineConfig{ICAO: "AAL", Airport: "KORD"},
-					AirlineConfig{ICAO: "UPS", Airport: "KLAS"},
-					AirlineConfig{ICAO: "DAL", Airport: "KSEA"},
-					AirlineConfig{ICAO: "AAL", Airport: "KLAX"},
-					AirlineConfig{ICAO: "UAL", Airport: "KSFO"},
-					AirlineConfig{ICAO: "AAL", Airport: "KSFO"},
-					AirlineConfig{ICAO: "CPA", Airport: "VHHH", Fleet: "cargo"},
-					AirlineConfig{ICAO: "ANA", Airport: "RJAA", Fleet: "long"},
-					AirlineConfig{ICAO: "KAL", Airport: "RKSI", Fleet: "long"},
-					AirlineConfig{ICAO: "WJA", Airport: "KIND", Fleet: "jfk"},
-					AirlineConfig{ICAO: "WJA", Airport: "KCVG", Fleet: "jfk"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "ASA", Airport: "KSFO"},
+					ArrivalAirline{ICAO: "ASA", Airport: "KPDX"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KMSP"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KDTW"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KORD"},
+					ArrivalAirline{ICAO: "UPS", Airport: "KLAS"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KSEA"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KLAX"},
+					ArrivalAirline{ICAO: "UAL", Airport: "KSFO"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KSFO"},
+					ArrivalAirline{ICAO: "CPA", Airport: "VHHH", Fleet: "cargo"},
+					ArrivalAirline{ICAO: "ANA", Airport: "RJAA", Fleet: "long"},
+					ArrivalAirline{ICAO: "KAL", Airport: "RKSI", Fleet: "long"},
+					ArrivalAirline{ICAO: "WJA", Airport: "KIND", Fleet: "jfk"},
+					ArrivalAirline{ICAO: "WJA", Airport: "KCVG", Fleet: "jfk"},
 				},
 			},
 			Arrival{
@@ -566,19 +566,19 @@ func JFKAirport() *Airport {
 				ClearedAltitude:   19000,
 				InitialSpeed:      300,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "ASA", Airport: "KSFO"},
-					AirlineConfig{ICAO: "ASA", Airport: "KPDX"},
-					AirlineConfig{ICAO: "DAL", Airport: "KMSP"},
-					AirlineConfig{ICAO: "DAL", Airport: "KDTW"},
-					AirlineConfig{ICAO: "AAL", Airport: "KORD"},
-					AirlineConfig{ICAO: "UPS", Airport: "KLAS"},
-					AirlineConfig{ICAO: "DAL", Airport: "KSEA"},
-					AirlineConfig{ICAO: "AAL", Airport: "KLAX"},
-					AirlineConfig{ICAO: "UAL", Airport: "KSFO"},
-					AirlineConfig{ICAO: "AAL", Airport: "KSFO"},
-					AirlineConfig{ICAO: "ACA", Airport: "CYYC"},
-					AirlineConfig{ICAO: "ACA", Airport: "CYUL", Fleet: "short"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "ASA", Airport: "KSFO"},
+					ArrivalAirline{ICAO: "ASA", Airport: "KPDX"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KMSP"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KDTW"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KORD"},
+					ArrivalAirline{ICAO: "UPS", Airport: "KLAS"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KSEA"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KLAX"},
+					ArrivalAirline{ICAO: "UAL", Airport: "KSFO"},
+					ArrivalAirline{ICAO: "AAL", Airport: "KSFO"},
+					ArrivalAirline{ICAO: "ACA", Airport: "CYYC"},
+					ArrivalAirline{ICAO: "ACA", Airport: "CYUL", Fleet: "short"},
 				},
 			},
 		},
@@ -597,8 +597,8 @@ func JFKAirport() *Airport {
 				InitialAltitude:   3000,
 				ClearedAltitude:   2000,
 				InitialSpeed:      250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "UAL", Airport: "KMSP"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "UAL", Airport: "KMSP"},
 				},
 			},
 		},
@@ -624,31 +624,31 @@ func JFKAirport() *Airport {
 				ClearedAltitude:   12000,
 				InitialSpeed:      275,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "AAL", Airport: "CYYZ", Fleet: "short"},
-					AirlineConfig{ICAO: "AFR", Airport: "LPFG", Fleet: "long"},
-					AirlineConfig{ICAO: "BAW", Airport: "EGLL", Fleet: "long"},
-					AirlineConfig{ICAO: "CLX", Airport: "EGCC"},
-					AirlineConfig{ICAO: "DAL", Airport: "KBOS", Fleet: "short"},
-					AirlineConfig{ICAO: "DLH", Airport: "EDDF", Fleet: "long"},
-					AirlineConfig{ICAO: "GEC", Airport: "EDDF"},
-					AirlineConfig{ICAO: "DLH", Airport: "EDDM", Fleet: "long"},
-					AirlineConfig{ICAO: "GEC", Airport: "EDDM"},
-					AirlineConfig{ICAO: "EIN", Airport: "EIDW", Fleet: "long"},
-					AirlineConfig{ICAO: "ELY", Airport: "LLBG", Fleet: "jfk"},
-					AirlineConfig{ICAO: "FIN", Airport: "EFHK", Fleet: "long"},
-					AirlineConfig{ICAO: "GEC", Airport: "EDDF"},
-					AirlineConfig{ICAO: "IBE", Airport: "LEBL", Fleet: "long"},
-					AirlineConfig{ICAO: "IBE", Airport: "LEMD", Fleet: "long"},
-					AirlineConfig{ICAO: "JBU", Airport: "KBOS"},
-					AirlineConfig{ICAO: "KLM", Airport: "EHAM", Fleet: "long"},
-					AirlineConfig{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
-					AirlineConfig{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
-					AirlineConfig{ICAO: "UAE", Airport: "OMDB", Fleet: "loww"},
-					AirlineConfig{ICAO: "UAL", Airport: "CYYZ", Fleet: "short"},
-					AirlineConfig{ICAO: "UAL", Airport: "KBOS", Fleet: "short"},
-					AirlineConfig{ICAO: "UPS", Airport: "KBOS"},
-					AirlineConfig{ICAO: "VIR", Airport: "EGCC", Fleet: "long"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "AAL", Airport: "CYYZ", Fleet: "short"},
+					ArrivalAirline{ICAO: "AFR", Airport: "LPFG", Fleet: "long"},
+					ArrivalAirline{ICAO: "BAW", Airport: "EGLL", Fleet: "long"},
+					ArrivalAirline{ICAO: "CLX", Airport: "EGCC"},
+					ArrivalAirline{ICAO: "DAL", Airport: "KBOS", Fleet: "short"},
+					ArrivalAirline{ICAO: "DLH", Airport: "EDDF", Fleet: "long"},
+					ArrivalAirline{ICAO: "GEC", Airport: "EDDF"},
+					ArrivalAirline{ICAO: "DLH", Airport: "EDDM", Fleet: "long"},
+					ArrivalAirline{ICAO: "GEC", Airport: "EDDM"},
+					ArrivalAirline{ICAO: "EIN", Airport: "EIDW", Fleet: "long"},
+					ArrivalAirline{ICAO: "ELY", Airport: "LLBG", Fleet: "jfk"},
+					ArrivalAirline{ICAO: "FIN", Airport: "EFHK", Fleet: "long"},
+					ArrivalAirline{ICAO: "GEC", Airport: "EDDF"},
+					ArrivalAirline{ICAO: "IBE", Airport: "LEBL", Fleet: "long"},
+					ArrivalAirline{ICAO: "IBE", Airport: "LEMD", Fleet: "long"},
+					ArrivalAirline{ICAO: "JBU", Airport: "KBOS"},
+					ArrivalAirline{ICAO: "KLM", Airport: "EHAM", Fleet: "long"},
+					ArrivalAirline{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
+					ArrivalAirline{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
+					ArrivalAirline{ICAO: "UAE", Airport: "OMDB", Fleet: "loww"},
+					ArrivalAirline{ICAO: "UAL", Airport: "CYYZ", Fleet: "short"},
+					ArrivalAirline{ICAO: "UAL", Airport: "KBOS", Fleet: "short"},
+					ArrivalAirline{ICAO: "UPS", Airport: "KBOS"},
+					ArrivalAirline{ICAO: "VIR", Airport: "EGCC", Fleet: "long"},
 				},
 			},
 			Arrival{
@@ -660,12 +660,12 @@ func JFKAirport() *Airport {
 				ClearedAltitude:   12000,
 				InitialSpeed:      275,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
-					AirlineConfig{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
-					AirlineConfig{ICAO: "FDX", Airport: "KMHT", Fleet: "short"},
-					AirlineConfig{ICAO: "EJA", Airport: "KMHT"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KFMH"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "QXE", Airport: "KBGR", Fleet: "short"},
+					ArrivalAirline{ICAO: "QXE", Airport: "KPVD", Fleet: "short"},
+					ArrivalAirline{ICAO: "FDX", Airport: "KMHT", Fleet: "short"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KMHT"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KFMH"},
 				},
 			},
 		},
@@ -681,15 +681,15 @@ func JFKAirport() *Airport {
 			Exit:        "HAPIE",
 			Route:       "YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E",
 			Destination: "LPFG",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AFR", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AFR", Fleet: "long"}},
 		},
 		// Heathrow
 		Departure{
 			Exit:        "MERIT",
 			Route:       "HFD PUT WITCH ALLEX N379A ALLRY NATU SOVED LUTOV KELLY L10 WAL UY53 NUGRA",
 			Destination: "EGLL",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "BAW", Fleet: "long"},
-				AirlineConfig{ICAO: "VIR"},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "BAW", Fleet: "long"},
+				DepartureAirline{ICAO: "VIR"},
 			},
 		},
 		// Manchester
@@ -697,22 +697,22 @@ func JFKAirport() *Airport {
 			Exit:        "BETTE",
 			Route:       "ACK KANNI N139A PORTI 4700N/05000W 5000N/04000W 5200N/03000W 5300N/02000W MALOT GISTI PELIG BOFUM Q37 MALUD MALUD1M",
 			Destination: "EGCC",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "BAW", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "BAW", Fleet: "long"}},
 		},
 		// Istanbul
 		Departure{
 			Exit:        "MERIT",
 			Route:       "HFD PUT EBONY ALLRY 5100N/05000W 5300N/04000W 5500N/03000W 5600N/02000W PIKIL SOVED NIBOG BELOX L603 LAMSO PETIK NOMKA OMELO GOLOP KOZLI ROMIS PITOK BADOR RONBU BUVAK RIXEN",
 			Destination: "LTFM",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "THY", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "THY", Fleet: "long"}},
 		},
 		// Edinburgh
 		Departure{
 			Exit:        "BETTE",
 			Route:       "ACK TUSKY N291A IBERG NATW NEBIN NATW OLGON MOLAK BRUCE L602 CLYDE STIRA",
 			Destination: "EGPH",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "VIR"},
-				AirlineConfig{ICAO: "FDX", Fleet: "long"},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "VIR"},
+				DepartureAirline{ICAO: "FDX", Fleet: "long"},
 			},
 		},
 		// Warsaw
@@ -720,15 +720,15 @@ func JFKAirport() *Airport {
 			Exit:        "GREKI",
 			Route:       "JUDDS MARTN TOPPS N499A RIKAL 5300N/05000W 5500N/04000W 5700N/03000W 5700N/02000W GOMUP GINGA TIR REKNA PETIL BAVTA BAKLI KEKOV GOSOT NASOK N195 SORIX",
 			Destination: "EPWA",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "LOT", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "LOT", Fleet: "long"}},
 		},
 		// Madrid
 		Departure{
 			Exit:        "BETTE",
 			Route:       "ACK VITOL N189A NICSO 4800N/05000W 4900N/04000W 4900N/03000W 4700N/02000W PASAS STG DESAT UN733 ZMR",
 			Destination: "LEMD",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"},
-				AirlineConfig{ICAO: "IBE", Fleet: "long"},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "AAL", Fleet: "long"},
+				DepartureAirline{ICAO: "IBE", Fleet: "long"},
 			},
 		},
 		// Amsterdam
@@ -736,43 +736,43 @@ func JFKAirport() *Airport {
 			Exit:        "BETTE",
 			Route:       "ACK KANNI N317A ELSIR NATY DOGAL NATY BEXET BOYNE DIBAL L603 LAMSO",
 			Destination: "EHAM",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "KLM", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "KLM", Fleet: "long"}},
 		},
 		// Frankfurt
 		Departure{
 			Exit:        "BETTE",
 			Route:       "ACK BRADD N255A JOOPY NATX MALOT NATX GISTI UNBEG SHA SLANY UL9 KONAN UL607 SPI T180 TOBOP T180 NIVNU T180 UNOKO UNOK3A",
 			Destination: "EDDF",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "DLH", Fleet: "a359"},
-				AirlineConfig{ICAO: "GEC"}},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "DLH", Fleet: "a359"},
+				DepartureAirline{ICAO: "GEC"}},
 		},
 		// Barcelona (lebl)
 		Departure{
 			Exit:        "HAPIE",
 			Route:       "YAHOO DOVEY 4200N/06000W 4200N/05000W 4300N/04000W 4400N/03000W 4400N/02000W MUDOS STG SUSOS UN725 YAKXU UN725 LOBAR",
 			Destination: "LEBL",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "IBE", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "IBE", Fleet: "long"}},
 		},
 		// Rome
 		Departure{
 			Exit:        "BETTE",
 			Route:       "ACK BRADD N255A JOOPY NATX MALOT NATX GISTI SLANY UL9 BIG L15 MOTOX UL15 RANUX UL15 NEBAX LASAT DEVDI ODINA SRN EKPAL Q705 XIBIL XIBIL3A",
 			Destination: "LIRF",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL", Fleet: "long"}},
 		},
 		// Helsinki
 		Departure{
 			Exit:        "GREKI",
 			Route:       "JUDDS MARTN DANOL N481A SAXAN 5300N/05000W 5600N/04000W 5900N/03000W 6100N/02000W 6200N/01000W IPTON UXADA Y349 AMROT Y362 LAKUT",
 			Destination: "EFHK",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "FIN", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "FIN", Fleet: "long"}},
 		},
 		// Dublin
 		Departure{
 			Exit:        "MERIT",
 			Route:       "HFD PUT BOS TUSKY N321A ELSIR NATV RESNO NATV NETKI OLAPO OLAPO3X",
 			Destination: "EIDW",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EIN", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EIN", Fleet: "long"}},
 		},
 
 		// Central/South America (ish)
@@ -781,15 +781,15 @@ func JFKAirport() *Airport {
 			Exit:        "RBV",
 			Route:       "Q430 COPES Q75 GVE LYH COLZI AWYAT IPTAY CHOPZ MGM SJI TBD M575 KENGS M345 AXEXO UM345 PAZ UT154 ENAGA ENAGA2A",
 			Destination: "MMMX",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"},
-				AirlineConfig{ICAO: "AMX", Fleet: "long"}},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "AAL", Fleet: "long"},
+				DepartureAirline{ICAO: "AMX", Fleet: "long"}},
 		},
 		// Sao Paulo
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y492 SQUAD DARUX L459 KEEKA L329 ZPATA UL329 KORTO ETATA UP535 MOMSO UZ24 DOLVI UL452 GELVA UZ6 ISOPI UZ6 NIMKI UZ38 VUNOX VUNOX1A",
 			Destination: "SBGR",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL", Fleet: "long"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL", Fleet: "long"}},
 		},
 
 		// Caribbean
@@ -798,16 +798,16 @@ func JFKAirport() *Airport {
 			Exit:        "SHIPP",
 			Route:       "Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR",
 			Destination: "TJSJ",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL"}},
 		},
 		// Bermuda
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y487 KINGG KINER L461 BOVIC MOMOM1",
 			Destination: "TXKF",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "DAL"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "DAL"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		// Kingston
@@ -815,23 +815,23 @@ func JFKAirport() *Airport {
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM",
 			Destination: "MKJP",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "JBU"},
-				AirlineConfig{ICAO: "BWA", Fleet: "b738"}},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "JBU"},
+				DepartureAirline{ICAO: "BWA", Fleet: "b738"}},
 		},
 		// St. Thomas
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS",
 			Destination: "TIST",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL"}},
 		},
 		// Antigua
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y487 KINGG KINER L461 BOVIC PIREX L462 ANU",
 			Destination: "TAPA",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "DAL"}},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "DAL"}},
 		},
 
 		// Misc US routes
@@ -839,17 +839,17 @@ func JFKAirport() *Airport {
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 ORF J121 CHS ESENT LUNNI1",
 			Destination: "KJAX",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "ATN"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "ATN"},
 			},
 		},
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "Q818 WOZEE NOSIK Q812 ZOHAN IDIOM MUSCL3",
 			Destination: "KMSP",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "UPS"},
-				AirlineConfig{ICAO: "AAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "UPS"},
+				DepartureAirline{ICAO: "AAL"},
 			},
 		},
 		Departure{
@@ -857,97 +857,97 @@ func JFKAirport() *Airport {
 			Route:       "HYPER8",
 			Destination: "KIAD",
 			Altitude:    22000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL", Fleet: "short"},
 			},
 		},
 		Departure{
 			Exit:        "RBV",
 			Route:       "Q430 COPES Q75 GVE LYH CHSLY5",
 			Destination: "KCLT",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL"}},
 		},
 		Departure{
 			Exit:        "DIXIE",
 			Route:       "V276 RBV V249 SBJ",
 			Destination: "KTEB",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}},
 		},
 		Departure{
 			Exit:        "DIXIE",
 			Route:       "V16 VCN V184 OOD",
 			Destination: "KPHL",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}},
 		},
 		Departure{
 			Exit:        "WHITE",
 			Route:       "V276 RBV V249 SBJ",
 			Destination: "KTEB",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}},
 		},
 		Departure{
 			Exit:        "COATE",
 			Route:       "Q436 EMMMA WYNDE2",
 			Destination: "KORD",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "AAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "AAL"},
 			},
 		},
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "J95 CFB TRAAD JACCI FERRL2",
 			Destination: "KDTW",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2",
 			Destination: "KFLL",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "Q818 WOZEE RUBKI ASP TVC KP87I FSD KP81C BFF KD60S HVE GGAPP CHOWW2",
 			Destination: "KLAS",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2",
 			Destination: "KMIA",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "AAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "AAL"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 WARNN ZJAAY TAQLE1",
 			Destination: "KRDU",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1",
 			Destination: "KMCO",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
 			Exit:        "RBV",
 			Route:       "Q430 SAAME J6 HVQ Q68 BWG BLUZZ3",
 			Destination: "KMEM",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "FDX", Fleet: "b752"},
-				AirlineConfig{ICAO: "FDX", Fleet: "b763"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "FDX", Fleet: "b752"},
+				DepartureAirline{ICAO: "FDX", Fleet: "b763"},
 			},
 		},
 		Departure{
@@ -955,9 +955,9 @@ func JFKAirport() *Airport {
 			Route:       "J223 CORDS J132 ULW BENEE",
 			Destination: "KBUF",
 			Altitude:    18000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -965,24 +965,24 @@ func JFKAirport() *Airport {
 			Route:       "EMJAY J174 SWL CCV",
 			Destination: "KORF",
 			Altitude:    26000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL", Fleet: "short"},
 			},
 		},
 		Departure{
 			Exit:        "RBV",
 			Route:       "Q430 SAAME J6 HVQ Q68 YOCKY GROAT PASLY4",
 			Destination: "KBNA",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "UPS"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "UPS"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2",
 			Destination: "KPBI",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		}, // west palm beach
 		Departure{
@@ -990,8 +990,8 @@ func JFKAirport() *Airport {
 			Route:       "CARLD V188 GON PVD",
 			Destination: "KPVD",
 			Altitude:    9000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL", Fleet: "short"},
 			},
 		},
 		Departure{
@@ -999,83 +999,83 @@ func JFKAirport() *Airport {
 			Route:       "V116 LVZ V613 FJC",
 			Destination: "KABE",
 			Altitude:    12000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
 			},
 		},
 		Departure{
 			Exit:        "GREKI",
 			Route:       "JUDDS CAM ENE",
 			Destination: "KBGR",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "Q818 WOZEE SSM YQT VBI YWG LIVBI DUKPO FAREN YDR VLN J500 YYN MEDAK ROPLA YXC GLASR1",
 			Destination: "KSEA",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "UPS"},
-				AirlineConfig{ICAO: "JBU"},
-				AirlineConfig{ICAO: "DAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "UPS"},
+				DepartureAirline{ICAO: "JBU"},
+				DepartureAirline{ICAO: "DAL"},
 			},
 		},
 		Departure{
 			Exit:        "RBV",
 			Route:       "Q430 BYRDD J48 MOL FLASK REAVS ODF THRSR GRGIA SJI SLIDD2",
 			Destination: "KMSY",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL"},
 			},
 		},
 		Departure{
 			Exit:        "DEEZZ",
 			Route:       "CANDR J60 PSB HAYNZ7",
 			Destination: "KPIT",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL", Fleet: "short"},
 			},
 		},
 		Departure{
 			Exit:        "DEEZZ",
 			Route:       "CANDR J60 PSB UPPRR TRYBE4",
 			Destination: "KCLE",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
-				AirlineConfig{ICAO: "ATN"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
+				DepartureAirline{ICAO: "ATN"},
 			},
 		},
 		Departure{
 			Exit:        "NEION",
 			Route:       "J223 CORDS CFB V29 SYR",
 			Destination: "KSYR",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA"},
 			},
 		},
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "Q812 ARRKK Q812 SYR TULEG YYB SPALD YTL YGX IKLIX YHY 6100N/13000W JAGIT NCA13 TMSON PTERS3",
 			Destination: "PANC",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "CAL", Fleet: "long"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "CAL", Fleet: "long"},
 			},
 		},
 		Departure{
 			Exit:        "HAAYS",
 			Route:       "J223 CORDS ULW GIBBE",
 			Destination: "KROC",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA"},
 			},
 		},
 		Departure{
 			Exit:        "BAYYS",
 			Route:       "SEALL V188 GON V374 MINNK",
 			Destination: "KPVD",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "EJA"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "EJA"},
 			},
 		},
 
@@ -1085,9 +1085,9 @@ func JFKAirport() *Airport {
 			Exit:        "GAYEL",
 			Route:       "Q818 WOZEE LINNG3",
 			Destination: "CYYZ",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "ACA"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "ACA"},
 			},
 		},
 		// Montreal
@@ -1095,9 +1095,9 @@ func JFKAirport() *Airport {
 			Exit:        "GREKI",
 			Route:       "JUDDS CAM PBERG CARTR4",
 			Destination: "CYUL",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "ACA"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "ACA"},
 			},
 		},
 		// Calgary
@@ -1105,9 +1105,9 @@ func JFKAirport() *Airport {
 			Exit:        "GAYEL",
 			Route:       "Q818 WOZEE ASP RIMBE WIEDS 4930N/10000W GUDOG PIKLA BIRKO5",
 			Destination: "CYYC",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "ACA"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "ACA"},
 			},
 		},
 
@@ -1117,21 +1117,21 @@ func JFKAirport() *Airport {
 			Exit:        "BETTE",
 			Route:       "ACK WHALE N193A NICSO NATY ELSOX MAPAG LESLU L180 MERLY M140 DVR UL9 KONAN UL607 KOK MATUG BOMBI DETEV INBED LAMSI STEIN INVED RASUB RIXEN UA17 BAG UL614 EZS UT36 ULTED UT301 BOTAS UT301 DEPSU UT301 DURSI UT301 KAVAM UT301 MIDSI R659 VEDED R659 VELAM Z225 BAYAN",
 			Destination: "OTBD",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "QTR", Fleet: "jfk"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "QTR", Fleet: "jfk"}},
 		},
 		// Tel Aviv
 		Departure{
 			Exit:        "HAPIE",
 			Route:       "YAHOO DOVEY 4200N/06000W 4400N/05000W 4700N/04000W 4900N/03000W 5000N/02000W SOMAX ATSUR TAKAS ALUTA KORER UM616 TUPAR DIDRU BEBIX VALKU LERGA TOZOT UT183 OTROT UM728 DOKAR SUNEV LAT SIPRO PAPIZ PINDO LINRO UL52 VAXOS UN134 VANZA PIKOG L609 ZUKKO AMMOS1C",
 			Destination: "LLBG",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "ELY", Fleet: "jfk"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "ELY", Fleet: "jfk"}},
 		},
 		// Dubai
 		Departure{
 			Exit:        "GREKI",
 			Route:       "JUDDS BAF KB87E MIILS N563A NEEKO 5500N/05000W 6000N/04000W 6300N/03000W 6400N/02000W 6300N/01000W GUNPA RASVI KOSEB PEROM BINKA ROVEK KELEL BADOR ARGES ARTAT UP975 UNVUS UP975 EZS UG8 OTKEP UM688 RATVO UM688 SIDAD P975 SESRU M677 RABAP M677 IVIVI M677 UKNEP M677 DEGSO M677 OBNET M677 LUDAM M677 VUTEB",
 			Destination: "OMDB",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "UAE", Fleet: "a388"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "UAE", Fleet: "a388"}},
 		},
 
 		// Far East
@@ -1140,21 +1140,21 @@ func JFKAirport() *Airport {
 			Exit:        "GREKI",
 			Route:       "JUDDS BAF KJOHN CEFOU YBC KETLA 6700N/05000W 7200N/04000W 7800N/02000W 8000N/00000E 8000N/02000E 8000N/03000E PIREL N611 DOSON R705 OKASA R705 BRT G490 SERNA Y520 POLHO G218 TMR B458 VERUX B458 DADGA W37 OMBEB R473 BEMAG R473 WYN W18 SANIP W18 NLG W23 ZUH R473 SIERA",
 			Destination: "VHHH",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "CPA"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "CPA"}},
 		},
 		// Seoul
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "Q812 MSLIN Q812 SYR RAKAM 4800N/08000W 5400N/09000W 5700N/10000W 5900N/11000W HOGAR GUDEN DEEJA LAIRE KODNE CHUUK R341 HAVAM R341 NATES R220 NUBDA R220 NODAN R217 ASTER Y514 SDE Y512 GTC L512 TENAS Y437 KAE Y697 KARBU",
 			Destination: "RKSI",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "KAL", Fleet: "jumbo"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "KAL", Fleet: "jumbo"}},
 		},
 		// Tokyo Narita
 		Departure{
 			Exit:        "GAYEL",
 			Route:       "Q818 WOZEE Q917 DUTEL Q917 SSM YRL 5400N/10000W 5800N/11000W 6000N/12000W 6100N/13000W IGSOM OMSUN NCA20 ELLAM TED NODLE R220 NOSHO R220 NIKLL R220 NIPPI R220 NOGAL R220 NANAC Y810 OLDIV Y809 SUPOK",
 			Destination: "RJAA",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "ANA", Fleet: "a380"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "ANA", Fleet: "a380"}},
 		},
 
 		// India
@@ -1163,7 +1163,7 @@ func JFKAirport() *Airport {
 			Exit:        "BETTE",
 			Route:       "ACK KANNI N195A NICSO NATY MALOT NATY GISTI EVRIN L607 NUMPO L607 KONAN UL607 MATUG BOMBI TENLO LAMSI STEIN TEGRI BULEN L742 RIXEN UA17 YAVRU UA4 ERZ UN161 YAVUZ UN161 INDUR N161 EDATA M11 RODAR A909 BABUM A477 BUPOR B198 OGNOB G555 USETU G500 BUTRA L181 POMIR G500 FIRUZ P500 PS T400 SULOM A466 IGINO IGIN5A",
 			Destination: "VIDP",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AIC", Fleet: "b788"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AIC", Fleet: "b788"}},
 		},
 	}
 
@@ -1335,16 +1335,16 @@ func LGAAirport() *Airport {
 			Exit:        "SHIPP",
 			Route:       "Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR",
 			Destination: "TJSJ",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL"}},
 		},
 		// Bermuda
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y487 KINGG KINER L461 BOVIC MOMOM1",
 			Destination: "TXKF",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "DAL"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "DAL"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		// Kingston
@@ -1352,23 +1352,23 @@ func LGAAirport() *Airport {
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM",
 			Destination: "MKJP",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "JBU"},
-				AirlineConfig{ICAO: "BWA", Fleet: "b738"}},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "JBU"},
+				DepartureAirline{ICAO: "BWA", Fleet: "b738"}},
 		},
 		// St. Thomas
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS",
 			Destination: "TIST",
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "AAL"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "AAL"}},
 		},
 		// Antigua
 		Departure{
 			Exit:        "SHIPP",
 			Route:       "Y487 KINGG KINER L461 BOVIC PIREX L462 ANU",
 			Destination: "TAPA",
-			Airlines: []AirlineConfig{AirlineConfig{ICAO: "AAL"},
-				AirlineConfig{ICAO: "DAL"}},
+			Airlines: []DepartureAirline{DepartureAirline{ICAO: "AAL"},
+				DepartureAirline{ICAO: "DAL"}},
 		},
 
 		// Misc US routes
@@ -1376,40 +1376,40 @@ func LGAAirport() *Airport {
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 ORF J121 CHS ESENT LUNNI1",
 			Destination: "KJAX",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "ATN"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "ATN"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2",
 			Destination: "KFLL",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2",
 			Destination: "KMIA",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "AAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "AAL"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 WARNN ZJAAY TAQLE1",
 			Destination: "KRDU",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1",
 			Destination: "KMCO",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -1417,16 +1417,16 @@ func LGAAirport() *Airport {
 			Route:       "EMJAY J174 SWL CCV",
 			Destination: "KORF",
 			Altitude:    26000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "DAL", Fleet: "short"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "DAL", Fleet: "short"},
 			},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2",
 			Destination: "KPBI",
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -1434,10 +1434,10 @@ func LGAAirport() *Airport {
 			Route:       "J209 SBY V1 CCV",
 			Destination: "KORF",
 			Altitude:    7000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "QXE", Fleet: "short"},
-				AirlineConfig{ICAO: "FDX", Fleet: "short"},
-				AirlineConfig{ICAO: "WEN"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "QXE", Fleet: "short"},
+				DepartureAirline{ICAO: "FDX", Fleet: "short"},
+				DepartureAirline{ICAO: "WEN"},
 			},
 		},
 		Departure{
@@ -1445,10 +1445,10 @@ func LGAAirport() *Airport {
 			Route:       "J209 SBY ISO RAPZZ AMYLU3",
 			Destination: "KCHS",
 			Altitude:    7000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "QXE", Fleet: "short"},
-				AirlineConfig{ICAO: "FDX", Fleet: "short"},
-				AirlineConfig{ICAO: "WEN"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "QXE", Fleet: "short"},
+				DepartureAirline{ICAO: "FDX", Fleet: "short"},
+				DepartureAirline{ICAO: "WEN"},
 			},
 		},
 	}
@@ -1560,9 +1560,9 @@ func ISPAirport() *Airport {
 			Route:       "J223 CORDS J132 ULW BENEE",
 			Destination: "KBUF",
 			Altitude:    16000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -1570,9 +1570,9 @@ func ISPAirport() *Airport {
 			Route:       "MERIT ORW ORW7",
 			Destination: "KBOS",
 			Altitude:    21000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -1580,9 +1580,9 @@ func ISPAirport() *Airport {
 			Route:       "NEION J223 CORDS CFB V29 SYR",
 			Destination: "KSYR",
 			Altitude:    21000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 		Departure{
@@ -1590,9 +1590,9 @@ func ISPAirport() *Airport {
 			Route:       "GREKI JUDDS CAM",
 			Destination: "KBTV",
 			Altitude:    21000,
-			Airlines: []AirlineConfig{
-				AirlineConfig{ICAO: "WJA", Fleet: "jfk"},
-				AirlineConfig{ICAO: "JBU"},
+			Airlines: []DepartureAirline{
+				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
+				DepartureAirline{ICAO: "JBU"},
 			},
 		},
 	}
@@ -1793,17 +1793,17 @@ func FRGAirport() *Airport {
 				ClearedAltitude:   11000,
 				InitialSpeed:      300,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "EJA", Airport: "KDCA"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KDCA"},
-					AirlineConfig{ICAO: "EJA", Airport: "KJAX"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KJAX"},
-					AirlineConfig{ICAO: "EJA", Airport: "KAUS"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KAUS"},
-					AirlineConfig{ICAO: "EJA", Airport: "KACY"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KACY"},
-					AirlineConfig{ICAO: "EJA", Airport: "KPHL"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KPHL"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "EJA", Airport: "KDCA"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KDCA"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KJAX"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KJAX"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KAUS"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KAUS"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KACY"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KACY"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KPHL"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KPHL"},
 				},
 			},
 		},
@@ -1823,15 +1823,15 @@ func FRGAirport() *Airport {
 				ClearedAltitude:   19000,
 				InitialSpeed:      300,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "EJA", Airport: "KDTW"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KDTW"},
-					AirlineConfig{ICAO: "EJA", Airport: "KORD"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KORD"},
-					AirlineConfig{ICAO: "EJA", Airport: "KASE"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KASE"},
-					AirlineConfig{ICAO: "EJA", Airport: "KGRR"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KGRR"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "EJA", Airport: "KDTW"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KDTW"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KORD"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KORD"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KASE"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KASE"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KGRR"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KGRR"},
 				},
 			},
 		},
@@ -1850,9 +1850,9 @@ func FRGAirport() *Airport {
 				InitialAltitude:   2500,
 				ClearedAltitude:   2000,
 				InitialSpeed:      250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "EJA", Airport: "KMSP"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KMSP"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "EJA", Airport: "KMSP"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KMSP"},
 				},
 			},
 		},
@@ -1874,19 +1874,19 @@ func FRGAirport() *Airport {
 				ClearedAltitude:   12000,
 				InitialSpeed:      275,
 				SpeedRestriction:  250,
-				Airlines: []AirlineConfig{
-					AirlineConfig{ICAO: "EJA", Airport: "KHYA"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KHYA"},
-					AirlineConfig{ICAO: "EJA", Airport: "KMVY"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KMVY"},
-					AirlineConfig{ICAO: "EJA", Airport: "KACK"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KACK"},
-					AirlineConfig{ICAO: "EJA", Airport: "KBGR"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KBGR"},
-					AirlineConfig{ICAO: "EJA", Airport: "KBTV"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KBTV"},
-					AirlineConfig{ICAO: "EJA", Airport: "KMHT"},
-					AirlineConfig{ICAO: "LXJ", Airport: "KMHT"},
+				Airlines: []ArrivalAirline{
+					ArrivalAirline{ICAO: "EJA", Airport: "KHYA"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KHYA"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KMVY"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KMVY"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KACK"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KACK"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KBGR"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KBGR"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KBTV"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KBTV"},
+					ArrivalAirline{ICAO: "EJA", Airport: "KMHT"},
+					ArrivalAirline{ICAO: "LXJ", Airport: "KMHT"},
 				},
 			},
 		},
@@ -1899,56 +1899,56 @@ func FRGAirport() *Airport {
 			Route:       "JFK V16 DIXIE V276 RBV V249 SBJ",
 			Destination: "KTEB",
 			Altitude:    12000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "WAVEY",
 			Route:       "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2",
 			Destination: "KMIA",
 			Altitude:    39000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "MERIT",
 			Route:       "ROBUC3",
 			Destination: "KBOS",
 			Altitude:    21000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "BDR",
 			Route:       "V487 CANAN",
 			Destination: "KALB",
 			Altitude:    39000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "DEEZZ",
 			Route:       "CANDR J60 PSB HAYNZ7",
 			Destination: "KPIT",
 			Altitude:    39000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "DIXIE",
 			Route:       "JFK DIXIE V16 VCN VCN9",
 			Destination: "KILG",
 			Altitude:    39000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "COATE",
 			Route:       "Q436 HERBA JHW WWSHR CBUSS2",
 			Destination: "KCMH",
 			Altitude:    39000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 		Departure{
 			Exit:        "BDR",
 			Route:       "BDR",
 			Destination: "KHVN",
 			Altitude:    14000,
-			Airlines:    []AirlineConfig{AirlineConfig{ICAO: "EJA"}, AirlineConfig{ICAO: "LXJ"}},
+			Airlines:    []DepartureAirline{DepartureAirline{ICAO: "EJA"}, DepartureAirline{ICAO: "LXJ"}},
 		},
 	}
 

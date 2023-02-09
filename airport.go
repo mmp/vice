@@ -51,30 +51,28 @@ func (ac *Airport) PostDeserialize() []error {
 		}
 	}
 
-	checkAirlines := func(airlines []AirlineConfig) {
-		for i := range airlines {
-			al, ok := database.Airlines[airlines[i].ICAO]
-			if !ok {
-				errors = append(errors, fmt.Errorf("%s: airline not in database", airlines[i].ICAO))
-			}
+	checkAirline := func(icao, fleet string) {
+		al, ok := database.Airlines[icao]
+		if !ok {
+			errors = append(errors, fmt.Errorf("%s: airline not in database", icao))
+		}
 
-			if airlines[i].Fleet == "" {
-				airlines[i].Fleet = "default"
-			}
+		if fleet == "" {
+			fleet = "default"
+		}
 
-			fleet, ok := al.Fleets[airlines[i].Fleet]
+		fl, ok := al.Fleets[fleet]
+		if !ok {
+			errors = append(errors,
+				fmt.Errorf("%s: fleet unknown for airline \"%s\"", fleet, icao))
+		}
+
+		for _, aircraft := range fl {
+			_, ok := database.AircraftPerformance[aircraft.ICAO]
 			if !ok {
 				errors = append(errors,
-					fmt.Errorf("%s: fleet unknown for airline \"%s\"", airlines[i].Fleet, airlines[i].ICAO))
-			}
-
-			for _, aircraft := range fleet {
-				_, ok := database.AircraftPerformance[aircraft.ICAO]
-				if !ok {
-					errors = append(errors,
-						fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
-							aircraft.ICAO, airlines[i].ICAO, airlines[i].Fleet))
-				}
+					fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
+						aircraft.ICAO, icao, fleet))
 			}
 		}
 	}
@@ -90,7 +88,9 @@ func (ac *Airport) PostDeserialize() []error {
 				errors = append(errors, ac.InitializeWaypointLocations(wp)...)
 			}
 
-			checkAirlines(ar.Airlines)
+			for _, al := range ar.Airlines {
+				checkAirline(al.ICAO, al.Fleet)
+			}
 		}
 	}
 
@@ -99,7 +99,9 @@ func (ac *Airport) PostDeserialize() []error {
 		errors = append(errors, ac.InitializeWaypointLocations(wp)...)
 		ac.Departures[i].exitWaypoint = wp[0]
 
-		checkAirlines(dep.Airlines)
+		for _, al := range dep.Airlines {
+			checkAirline(al.ICAO, al.Fleet)
+		}
 	}
 
 	runwayNames := make(map[string]interface{})
@@ -176,10 +178,15 @@ type Departure struct {
 	Exit         string `json:"exit"`
 	exitWaypoint Waypoint
 
-	Destination string          `json:"destination"`
-	Altitude    int             `json:"altitude,omitempty"`
-	Route       string          `json:"route"`
-	Airlines    []AirlineConfig `json:"airlines"`
+	Destination string             `json:"destination"`
+	Altitude    int                `json:"altitude,omitempty"`
+	Route       string             `json:"route"`
+	Airlines    []DepartureAirline `json:"airlines"`
+}
+
+type DepartureAirline struct {
+	ICAO  string `json:"icao"`
+	Fleet string `json:"fleet"`
 }
 
 type ArrivalGroup struct {
@@ -203,14 +210,13 @@ type Arrival struct {
 	InitialSpeed      int    `json:"initial_speed"`
 	SpeedRestriction  int    `json:"speed_restriction"`
 
-	Airlines []AirlineConfig `json:"airlines"`
+	Airlines []ArrivalAirline `json:"airlines"`
 }
 
-// for a single departure / arrival
-type AirlineConfig struct {
+type ArrivalAirline struct {
 	ICAO    string `json:"icao"`
-	Airport string `json:"airport,omitempty"`
-	Fleet   string `json:"fleet"`
+	Airport string `json:"airport"`
+	Fleet   string `json:"fleet,omitempty"`
 }
 
 type ApproachType int

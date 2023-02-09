@@ -940,26 +940,29 @@ func (ss *Sim) SpawnAircraft() {
 	}
 }
 
-func sampleAircraft(airlines []AirlineConfig) *Aircraft {
-	airline := Sample(airlines)
-	al, ok := database.Airlines[airline.ICAO]
+func sampleAircraft(icao, fleet string) *Aircraft {
+	al, ok := database.Airlines[icao]
 	if !ok {
 		// TODO: this should be caught at load validation time...
-		lg.Errorf("Chose airline %+v, not found in database", airline)
+		lg.Errorf("Chose airline %s, not found in database", icao)
 		return nil
 	}
 
-	fleet, ok := al.Fleets[airline.Fleet]
+	if fleet == "" {
+		fleet = "default"
+	}
+
+	fl, ok := al.Fleets[fleet]
 	if !ok {
 		// TODO: this also should be caught at validation time...
-		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", airline.ICAO, airline.Fleet)
+		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", icao, fleet)
 		return nil
 	}
 
 	// Sample according to fleet count
 	var aircraft string
 	acCount := 0
-	for _, ac := range fleet {
+	for _, ac := range fl {
 		// Reservoir sampling...
 		acCount += ac.Count
 		if rand.Float32() < float32(ac.Count)/float32(acCount) {
@@ -971,12 +974,12 @@ func sampleAircraft(airlines []AirlineConfig) *Aircraft {
 	if !ok {
 		// TODO: validation stage...
 		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
-			aircraft, fleet, airline.ICAO)
+			aircraft, fleet, icao)
 		return nil
 	}
 
 	// random callsign
-	callsign := strings.ToUpper(airline.ICAO)
+	callsign := strings.ToUpper(icao)
 	format := "####"
 	if len(al.Callsign.CallsignFormats) > 0 {
 		format = Sample(al.Callsign.CallsignFormats)
@@ -1013,9 +1016,8 @@ func sampleAircraft(airlines []AirlineConfig) *Aircraft {
 		Squawk:         squawk,
 		Mode:           Charlie,
 		FlightPlan: &FlightPlan{
-			Rules:            IFR,
-			AircraftType:     acType,
-			DepartureAirport: airline.Airport,
+			Rules:        IFR,
+			AircraftType: acType,
 		},
 
 		Performance: perf,
@@ -1025,11 +1027,13 @@ func sampleAircraft(airlines []AirlineConfig) *Aircraft {
 func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
 	arr := Sample(ag.Arrivals)
 
-	ac := sampleAircraft(arr.Airlines)
+	airline := Sample(arr.Airlines)
+	ac := sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil
 	}
 
+	ac.FlightPlan.DepartureAirport = airline.Airport
 	ac.TrackingController = arr.InitialController
 	ac.FlightPlan.Altitude = 39000
 	ac.FlightPlan.Route = arr.Route
@@ -1090,7 +1094,8 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 
 	rwy.lastDeparture = dep
 
-	ac := sampleAircraft(dep.Airlines)
+	airline := Sample(dep.Airlines)
+	ac := sampleAircraft(airline.ICAO, airline.Fleet)
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
