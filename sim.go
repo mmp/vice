@@ -531,6 +531,7 @@ func (ss *Sim) updateState() {
 
 	// Update the simulation state once a second.
 	if now.Sub(ss.lastSimUpdate) >= time.Second {
+		activeBoundaries = nil
 		ss.lastSimUpdate = now
 		for _, ac := range ss.aircraft {
 			ac.Update()

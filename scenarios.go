@@ -4,8 +4,11 @@ package main
 
 import (
 	_ "embed"
+	"encoding/xml"
 	"sort"
+	"strings"
 
+	//	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/sct2"
 )
 
@@ -20,6 +23,79 @@ func mustParseLatLong(l string) Point2LL {
 		panic(l + ": " + err.Error())
 	}
 	return ll
+}
+
+type Airspace struct {
+	Boundaries map[string][]Point2LL
+	Volumes    map[string][]AirspaceVolume
+}
+
+type AirspaceVolume struct {
+	LowerLimit, UpperLimit int
+	Boundaries             []string
+}
+
+//go:embed resources/ZNY_sanscomment_VOLUMES.xml
+var znyVolumesXML string
+
+type XMLBoundary struct {
+	Name     string `xml:"Name,attr"`
+	Segments string `xml:",chardata"`
+}
+
+type XMLVolume struct {
+	Name       string `xml:"Name,attr"`
+	LowerLimit int    `xml:"LowerLimit,attr"`
+	UpperLimit int    `xml:"UpperLimit,attr"`
+	Boundaries string `xml:"Boundaries"`
+}
+
+type XMLAirspace struct {
+	XMLName    xml.Name      `xml:"Volumes"`
+	Boundaries []XMLBoundary `xml:"Boundary"`
+	Volumes    []XMLVolume   `xml:"Volume"`
+}
+
+func parseXML() *Airspace {
+	var xair XMLAirspace
+	if err := xml.Unmarshal([]byte(znyVolumesXML), &xair); err != nil {
+		panic(err)
+	}
+
+	//lg.Errorf("%s", spew.Sdump(vol))
+
+	airspace := &Airspace{
+		Boundaries: make(map[string][]Point2LL),
+		Volumes:    make(map[string][]AirspaceVolume),
+	}
+
+	for _, b := range xair.Boundaries {
+		var pts []Point2LL
+		for _, ll := range strings.Split(b.Segments, "/") {
+			p, err := ParseLatLong(strings.TrimSpace(ll))
+			if err != nil {
+				lg.Errorf("%s: %v", ll, err)
+			} else {
+				pts = append(pts, p)
+			}
+		}
+		if _, ok := airspace.Boundaries[b.Name]; ok {
+			lg.Errorf("%s: boundary redefined", b.Name)
+		}
+		airspace.Boundaries[b.Name] = pts
+	}
+
+	for _, v := range xair.Volumes {
+		vol := AirspaceVolume{
+			LowerLimit: v.LowerLimit,
+			UpperLimit: v.UpperLimit,
+			Boundaries: strings.Split(v.Boundaries, ",")}
+		airspace.Volumes[v.Name] = append(airspace.Volumes[v.Name], vol)
+	}
+
+	//lg.Errorf("%s", spew.Sdump(airspace))
+
+	return airspace
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -56,7 +132,11 @@ func jfk31RDepartureRunway() *DepartureConfig {
 }
 */
 
+var airspace *Airspace
+
 func JFKApproachScenario() *Scenario {
+	airspace = parseXML()
+
 	s := &Scenario{
 		Name:              "KJFK TRACON",
 		NmPerLatitude:     60,
