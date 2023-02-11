@@ -29,7 +29,6 @@ var (
 		font      *Font
 		aboutFont *Font
 
-		errorText     map[string]func() bool
 		menuBarHeight float32
 
 		showAboutDialog bool
@@ -67,10 +66,6 @@ func uiInit(renderer Renderer) {
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 16})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
 
-	if ui.errorText == nil {
-		ui.errorText = make(map[string]func() bool)
-	}
-
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
 	} else {
@@ -89,17 +84,6 @@ func uiInit(renderer Renderer) {
 	go checkForNewRelease(ui.newReleaseDialogChan)
 
 	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
-}
-
-// uiAddError lets the caller specify an error message to be displayed
-// until the provided callback function returns true.  If called multiple
-// times with the same error text, the error will only be displayed once.
-// (These error messages are currently shown under the main menu bar.)
-func uiAddError(text string, cleared func() bool) {
-	if ui.errorText == nil {
-		ui.errorText = make(map[string]func() bool)
-	}
-	ui.errorText[text] = cleared
 }
 
 func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
@@ -130,10 +114,6 @@ func uiEndDisable(b bool) {
 
 func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
-}
-
-func (c RGBA) imgui() imgui.Vec4 {
-	return imgui.Vec4{c.R, c.G, c.B, c.A}
 }
 
 func drawUI(cs *ColorScheme, platform Platform) {
@@ -1261,68 +1241,4 @@ func (r *RGB) DrawUI(title string) bool {
 	flags := imgui.ColorEditFlagsNoAlpha | imgui.ColorEditFlagsNoInputs |
 		imgui.ColorEditFlagsRGB | imgui.ColorEditFlagsInputRGB
 	return imgui.ColorEdit3V(title, ptr, flags)
-}
-
-func uiUpdateColorScheme(cs *ColorScheme) {
-	// As far as I can tell, all imgui elements with "unused" below are not
-	// used by vice; if they are, now or in the future, it should be
-	// evident from the bright red color. (At which point it will be
-	// necessary to figure out which existing UI colors should be used for
-	// them or if new ones are needed.)
-	unused := RGB{1, 0, 0}.imgui()
-
-	style := imgui.CurrentStyle()
-	style.SetColor(imgui.StyleColorText, cs.Text.imgui())
-	style.SetColor(imgui.StyleColorTextDisabled, cs.TextDisabled.imgui())
-	style.SetColor(imgui.StyleColorWindowBg, cs.Background.imgui())
-	style.SetColor(imgui.StyleColorChildBg, cs.UIControlBackground.imgui())
-	style.SetColor(imgui.StyleColorPopupBg, cs.Background.imgui())
-	style.SetColor(imgui.StyleColorBorder, cs.AltBackground.imgui())
-	style.SetColor(imgui.StyleColorBorderShadow, unused)
-	style.SetColor(imgui.StyleColorFrameBg, cs.UIInputBackground.imgui())
-	style.SetColor(imgui.StyleColorFrameBgHovered, cs.UIControlHovered.imgui())
-	style.SetColor(imgui.StyleColorFrameBgActive, cs.UITitleBackground.imgui())
-	style.SetColor(imgui.StyleColorTitleBg, cs.UITitleBackground.imgui())
-	style.SetColor(imgui.StyleColorTitleBgActive, cs.UITitleBackground.imgui())
-	style.SetColor(imgui.StyleColorTitleBgCollapsed, cs.UITitleBackground.imgui())
-	style.SetColor(imgui.StyleColorMenuBarBg, cs.Background.imgui())
-	style.SetColor(imgui.StyleColorScrollbarBg, cs.AltBackground.imgui())
-	style.SetColor(imgui.StyleColorScrollbarGrab, cs.UIControl.imgui())
-	style.SetColor(imgui.StyleColorScrollbarGrabHovered, cs.UIControlHovered.imgui())
-	style.SetColor(imgui.StyleColorScrollbarGrabActive, cs.UIControlActive.imgui())
-	style.SetColor(imgui.StyleColorCheckMark, cs.Text.imgui())
-	style.SetColor(imgui.StyleColorSliderGrab, cs.UIControlActive.imgui())
-	style.SetColor(imgui.StyleColorSliderGrabActive, cs.UIControlActive.imgui())
-	style.SetColor(imgui.StyleColorButton, cs.UIControl.imgui())
-	style.SetColor(imgui.StyleColorButtonHovered, cs.UIControlHovered.imgui())
-	style.SetColor(imgui.StyleColorButtonActive, cs.UIControlActive.imgui())
-	style.SetColor(imgui.StyleColorHeader, cs.UITitleBackground.imgui())
-	style.SetColor(imgui.StyleColorHeaderHovered, cs.UIControlHovered.imgui())
-	style.SetColor(imgui.StyleColorHeaderActive, cs.UIControlActive.imgui())
-	style.SetColor(imgui.StyleColorSeparator, cs.UIControlSeparator.imgui())
-	style.SetColor(imgui.StyleColorSeparatorHovered, unused)
-	style.SetColor(imgui.StyleColorSeparatorActive, unused)
-	style.SetColor(imgui.StyleColorResizeGrip, unused)
-	style.SetColor(imgui.StyleColorResizeGripHovered, unused)
-	style.SetColor(imgui.StyleColorResizeGripActive, unused)
-	style.SetColor(imgui.StyleColorTab, unused)
-	style.SetColor(imgui.StyleColorTabHovered, unused)
-	style.SetColor(imgui.StyleColorTabActive, unused)
-	style.SetColor(imgui.StyleColorTabUnfocused, unused)
-	style.SetColor(imgui.StyleColorTabUnfocusedActive, unused)
-	style.SetColor(imgui.StyleColorPlotLines, unused)
-	style.SetColor(imgui.StyleColorPlotLinesHovered, unused)
-	style.SetColor(imgui.StyleColorPlotHistogram, unused)
-	style.SetColor(imgui.StyleColorPlotHistogramHovered, unused)
-	style.SetColor(imgui.StyleColorTableHeaderBg, cs.UITitleBackground.imgui())
-	style.SetColor(imgui.StyleColorTableBorderStrong, cs.UIControlSeparator.imgui())
-	style.SetColor(imgui.StyleColorTableBorderLight, cs.UIControlSeparator.imgui())
-	style.SetColor(imgui.StyleColorTableRowBg, cs.AltBackground.imgui())
-	style.SetColor(imgui.StyleColorTableRowBgAlt, cs.Background.imgui())
-	style.SetColor(imgui.StyleColorTextSelectedBg, cs.UIControlHovered.imgui())
-	style.SetColor(imgui.StyleColorDragDropTarget, unused)
-	style.SetColor(imgui.StyleColorNavHighlight, unused)
-	style.SetColor(imgui.StyleColorNavWindowingHighlight, unused)
-	style.SetColor(imgui.StyleColorNavWindowingDarkening, RGBA{0.5, 0.5, 0.5, 0.5}.imgui())
-	style.SetColor(imgui.StyleColorModalWindowDarkening, RGBA{0.3, 0.3, 0.3, 0.3}.imgui())
 }

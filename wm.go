@@ -587,13 +587,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 
 // wmDrawStatus bar draws the status bar underneath the main menu bar
 func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer) {
-	// First see if any of the errors have cleared
-	for k, cleared := range ui.errorText {
-		if cleared() {
-			delete(ui.errorText, k)
-		}
-	}
-
 	var texts []string
 	textCallsign := ""
 	for _, event := range eventStream.Get(wm.eventsId) {
@@ -631,7 +624,7 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 		wm.lastAircraftResponse = strings.Join(texts, ", ") + ", " + textCallsign
 	}
 
-	if wm.lastAircraftResponse == "" && len(ui.errorText) == 0 {
+	if wm.lastAircraftResponse == "" {
 		return
 	}
 
@@ -659,14 +652,9 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
-	textp := [2]float32{15, 5 + float32((1+len(ui.errorText))*ui.font.size)}
+	textp := [2]float32{15, float32(5 + ui.font.size)}
 	style := TextStyle{Font: ui.font, Color: ctx.cs.Text}
-	textp = td.AddText(wm.lastAircraftResponse+"\n", textp, style)
-
-	errorStyle := TextStyle{Font: ui.font, Color: ctx.cs.TextError}
-	for _, k := range SortedMapKeys(ui.errorText) {
-		textp = td.AddText(k+"\n", textp, errorStyle)
-	}
+	td.AddText(wm.lastAircraftResponse, textp, style)
 
 	// Finally, add the text drawing commands to the graphics command buffer.
 	cb.ResetState()
@@ -676,6 +664,5 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 }
 
 func wmStatusBarHeight() float32 {
-	// Reserve lines as needed for error text.
-	return float32(10 + (1+len(ui.errorText))*ui.font.size)
+	return float32(10 + ui.font.size)
 }
