@@ -75,13 +75,6 @@ type FleetAircraft struct {
 	Count int
 }
 
-// Label represents a labeled point on a map.
-type Label struct {
-	name  string
-	p     Point2LL
-	color RGB
-}
-
 func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 	start := time.Now()
 
@@ -119,11 +112,6 @@ var (
 	callsignsRaw string
 	//go:embed resources/virtual-callsigns.csv.zst
 	virtualCallsignsRaw string
-
-	// Via Arash Partow, MIT licensed
-	// https://www.partow.net/miscellaneous/airportdatabase/
-	//go:embed resources/GlobalAirportDatabase.txt.zst
-	globalAirportsRaw string
 
 	//go:embed resources/aircraft.json
 	aircraftTypesRaw string
@@ -167,10 +155,6 @@ func point2LLFromComponents(lat []string, long []string) Point2LL {
 	}
 
 	return Point2LL{float32(longitude), float32(latitude)}
-}
-
-func point2LLFromStrings(lat, long string) Point2LL {
-	return Point2LL{float32(atof(long)), float32(atof(lat))}
 }
 
 func parseNavaids() map[string]Navaid {
