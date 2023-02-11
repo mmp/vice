@@ -12,22 +12,25 @@ importantly:
 
 Many thanks also to:
 
-* Sequal32 for the vatsimfsdparser package (github.com//vatsimfsdparser);
-  although it is not used directly in vice, it has been invaluable in
-  understanding some of the details of VATSIM's use of the FSD protocol.
 * inkyblackness for the Go bindings for imgui (github.com/inkyblackness/imgui-go)
 * The go-gl team for Go bindings for OpenGL (github.com/go-gl/gl),
   glfw (github.com/go-gl/glfw), and for the mathgl matrix library
   (github.com/go-gl/mathgl).
 * veandco for the Go bindings for SDL2 (github.com/veandco/go-sdl2)
-* mapbox for the header-only implementation of the earcut polygon
-  triangulation algorithm (github.com/mapbox/earcut.hpp)
 * Klaus Post for the optimized zstd decompressor in go
   (github.com/klauspost/compress)
 * Juliette Foucaut for the IconFontCppHeaders library
   (github.com/juliettef/IconFontCppHeaders)
 * The FreeType Developers; portions of this software are copyright
   2022 the FreeType project (www.freetype.org).
+
+*** Data Sets ***
+
+Aircraft performance data and information about the composition of airlines' fleets
+is via OpenScope (https://github.com/openscope/openscope), MIT licensed.
+
+Thanks also to the FAA for making CSV files of navaids and their locations easily
+available.
 
 *** Icons ***
 
@@ -41,16 +44,8 @@ Courtesy of DALL-E 2:
 All of the fonts other than Roboto that are used in vice are licensed under
 the Open Font License 1.1; Roboto is licensed under the Apache 2.0 license.
 
-* Cousine:  Steve Matteson / Google
 * Font Awesome: Fonticons, Inc.
 * Inconsolata: The Inconsolata Authors
-* Noto Sans Mono: Google
-* PT Mono: ParaType, Ltd.
-* Roboto: Christian Robertson / Google
-* Share Tech Mono: Carrois Type Design, Ralph du Carrois
-* Source Code Pro: Adobe Systems Incorporated
-* Space Mono: Colophon
-* VT323: The VT323 Project Authors
 
 *** Audio ***
 
@@ -58,8 +53,3 @@ All sound effect audio is CC0 licensed from freesound.org.  Many thanks to
 the following freesound users, whose sounds are used in vice: pan14,
 gabrielaraujo, dland, nsstudios, soundward, bbrocer, michaelatoz,
 bettlemuse, ranner, thisusernameis.
-
-*** Color Palettes ***
-
-The builtin "Nord" color palette is a slightly modified version of the Nord
-palette (https://www.nordtheme.com).
