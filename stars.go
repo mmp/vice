@@ -204,9 +204,10 @@ func MakeDefaultFacility(tracon *TRACON) STARSFacility {
 
 	f.Airports = append(f.Airports,
 		STARSAirport{
-			ICAOCode:     tracon.PrimaryAirport,
-			Range:        60,
-			IncludeInSSA: true})
+			ICAOCode:       tracon.PrimaryAirport,
+			Range:          60,
+			TowerListIndex: 1,
+			IncludeInSSA:   true})
 	for _, ap := range tracon.Airports {
 		if ap.ICAO != tracon.PrimaryAirport {
 			f.Airports = append(f.Airports,
