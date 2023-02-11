@@ -84,7 +84,6 @@ type STARSPane struct {
 	previewAreaOutput string
 	previewAreaInput  string
 
-	selectedMapIndex        int
 	havePlayedSPCAlertSound map[*Aircraft]interface{}
 
 	lastCASoundTime time.Time
@@ -894,42 +893,67 @@ func (sp *STARSPane) DrawUI() {
 		}
 
 		if imgui.TreeNode("Maps") {
-			selected := ""
-			if sp.selectedMapIndex < len(sp.Facility.Maps) {
-				selected = sp.Facility.Maps[sp.selectedMapIndex].Name
-			}
+			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+			if imgui.BeginTableV("maps", 4, flags, imgui.Vec2{600, 0}, 0.) {
+				imgui.TableSetupColumn("#")
+				imgui.TableSetupColumn("Id")
+				imgui.TableSetupColumn("Map")
+				imgui.TableSetupColumn("Group")
+				imgui.TableHeadersRow()
 
-			if imgui.BeginCombo("##MapName", selected) {
-				for i, m := range sp.Facility.Maps {
-					if imgui.SelectableV(m.Name, i == sp.selectedMapIndex, 0, imgui.Vec2{}) {
-						sp.selectedMapIndex = i
+				for i := 0; i < NumSTARSMaps; i++ {
+					imgui.PushID(fmt.Sprintf("%d", i))
+					var m *STARSMap
+					if i < len(sp.Facility.Maps) {
+						m = &sp.Facility.Maps[i]
 					}
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Text(fmt.Sprintf("%d", i+1))
+					imgui.TableNextColumn()
+					if m != nil {
+						imgui.InputTextV("##mapname", &m.Label, imgui.InputTextFlagsCharsUppercase, nil)
+					}
+
+					imgui.TableNextColumn()
+					prompt := "New..."
+					if m != nil {
+						prompt = m.Name
+					}
+					if imgui.BeginCombo("##MapName", prompt) {
+						for _, videomap := range SortedMapKeys(tracon.VideoMaps) {
+							if imgui.SelectableV(videomap, m != nil && videomap == m.Name, 0, imgui.Vec2{}) {
+								if m != nil {
+									m.Name = videomap
+								} else {
+									for j := len(sp.Facility.Maps); j <= i; j++ {
+										sp.Facility.Maps = append(sp.Facility.Maps, STARSMap{})
+										sp.currentPreferenceSet.MapVisible =
+											append(sp.currentPreferenceSet.MapVisible, false)
+										for k := range sp.PreferenceSets {
+											sp.PreferenceSets[k].MapVisible =
+												append(sp.PreferenceSets[k].MapVisible, false)
+										}
+									}
+									sp.Facility.Maps[i].Name = videomap
+								}
+							}
+						}
+						imgui.EndCombo()
+					}
+
+					imgui.TableNextColumn()
+					if m != nil {
+						imgui.RadioButtonInt("A", &m.Group, 0)
+						imgui.SameLine()
+						imgui.RadioButtonInt("B", &m.Group, 1)
+						imgui.SameLine()
+					}
+
+					imgui.PopID()
 				}
 
-				if len(sp.Facility.Maps) < NumSTARSMaps && imgui.Selectable("New...##new") {
-					sp.Facility.Maps = append(sp.Facility.Maps, STARSMap{})
-					sp.selectedMapIndex = len(sp.Facility.Maps) - 1
-					sp.currentPreferenceSet.MapVisible =
-						append(sp.currentPreferenceSet.MapVisible, false)
-					for i := range sp.PreferenceSets {
-						sp.PreferenceSets[i].MapVisible =
-							append(sp.PreferenceSets[i].MapVisible, false)
-					}
-				}
-
-				imgui.EndCombo()
-			}
-
-			if sp.selectedMapIndex < len(sp.Facility.Maps) {
-				m := &sp.Facility.Maps[sp.selectedMapIndex]
-				imgui.InputTextV("Name##map", &m.Name, imgui.InputTextFlagsCharsUppercase, nil)
-				imgui.RadioButtonInt("A", &m.Group, 0)
-				imgui.SameLine()
-				imgui.RadioButtonInt("B", &m.Group, 1)
-				imgui.SameLine()
-				imgui.Text("Draw group")
-				//m.Draw.DrawUI()
-				imgui.Separator()
+				imgui.EndTable()
 			}
 
 			imgui.TreePop()
