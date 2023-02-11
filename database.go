@@ -105,8 +105,6 @@ var (
 	fixesRaw string
 	//go:embed resources/callsigns.csv.zst
 	callsignsRaw string
-	//go:embed resources/virtual-callsigns.csv.zst
-	virtualCallsignsRaw string
 
 	//go:embed resources/aircraft.json
 	aircraftTypesRaw string
@@ -198,8 +196,6 @@ func parseCallsigns() map[string]Callsign {
 	}
 
 	mungeCSV("callsigns", decompressZstd(callsignsRaw), addCallsign)
-	// Do virtual second since we let them take precedence
-	mungeCSV("virtual callsigns", decompressZstd(virtualCallsignsRaw), addCallsign)
 
 	return callsigns
 }
