@@ -1712,13 +1712,13 @@ func ISPAirport() *Airport {
 
 	isp.Departures = []Departure{
 		Departure{
-			Exit:        "NEION",
-			Route:       "J223 CORDS J132 ULW BENEE",
-			Destination: "KBUF",
+			Exit:        "BDR",
+			Route:       "JUDDS WHATE",
+			Destination: "KLEB",
 			Altitude:    16000,
 			Airlines: []DepartureAirline{
-				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
-				DepartureAirline{ICAO: "JBU"},
+				DepartureAirline{ICAO: "LXJ"},
+				DepartureAirline{ICAO: "EJA"},
 			},
 		},
 		Departure{
@@ -1732,9 +1732,9 @@ func ISPAirport() *Airport {
 			},
 		},
 		Departure{
-			Exit:        "NEION",
-			Route:       "NEION J223 CORDS CFB V29 SYR",
-			Destination: "KSYR",
+			Exit:        "BAYYS",
+			Route:       "STUBY TRESA",
+			Destination: "KPOU",
 			Altitude:    21000,
 			Airlines: []DepartureAirline{
 				DepartureAirline{ICAO: "WJA", Fleet: "jfk"},
@@ -1743,7 +1743,7 @@ func ISPAirport() *Airport {
 		},
 		Departure{
 			Exit:        "GREKI",
-			Route:       "GREKI JUDDS CAM",
+			Route:       "JUDDS CAM",
 			Destination: "KBTV",
 			Altitude:    21000,
 			Airlines: []DepartureAirline{
