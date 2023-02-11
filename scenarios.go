@@ -152,7 +152,7 @@ func LoadZNY() *TRACON {
 	sa4 := &Scenario{
 		Name:                   "KJFK Depart 4L Land 4L/R",
 		Callsign:               "JFK_APP",
-		DepartureRunwayStrings: []string{"KJFK/4L"},
+		DepartureRunwayStrings: []string{"KJFK/4L", "KLGA/4", "KISP/6", "KFRG/1"},
 		ArrivalRunwayStrings:   []string{"KJFK/4R", "KJFK/4L"},
 		Wind:                   Wind{Direction: 30, Speed: 19, Gust: 25},
 		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
@@ -162,7 +162,7 @@ func LoadZNY() *TRACON {
 	sd4 := &Scenario{
 		Name:                   "KJFK Depart 4L",
 		Callsign:               "JFK_DEP",
-		DepartureRunwayStrings: []string{"KJFK/4L"},
+		DepartureRunwayStrings: []string{"KJFK/4L", "KLGA/4", "KISP/6", "KFRG/1"},
 		Wind:                   Wind{Direction: 30, Speed: 8, Gust: 0},
 		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
 	}
@@ -171,7 +171,7 @@ func LoadZNY() *TRACON {
 	sa13 := &Scenario{
 		Name:                   "KJFK Depart 13R Land 13L/22L",
 		Callsign:               "JFK_APP",
-		DepartureRunwayStrings: []string{"KJFK/13R"},
+		DepartureRunwayStrings: []string{"KJFK/13R", "KLGA/13", "KISP/15R", "KFRG/14"},
 		ArrivalRunwayStrings:   []string{"KJFK/13L", "KJFK/22L"},
 		Wind:                   Wind{Direction: 140, Speed: 12, Gust: 17},
 		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
@@ -181,16 +181,16 @@ func LoadZNY() *TRACON {
 	sd13 := &Scenario{
 		Name:                   "KJFK Depart 13R",
 		Callsign:               "JFK_DEP",
-		DepartureRunwayStrings: []string{"KJFK/13R"},
+		DepartureRunwayStrings: []string{"KJFK/13R", "KLGA/13", "KISP/15R", "KFRG/14"},
 		Wind:                   Wind{Direction: 140, Speed: 24, Gust: 0},
 		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
 	}
 	t.Scenarios[sd13.Name] = sd13
 
 	sa22 := &Scenario{
-		Name:                   "KJFK Dep 22R Land 22 L/R",
+		Name:                   "KJFK Depart 22R Land 22 L/R",
 		Callsign:               "JFK_APP",
-		DepartureRunwayStrings: []string{"KJFK/22R"},
+		DepartureRunwayStrings: []string{"KJFK/22R", "KLGA/22", "KISP/24", "KFRG/19"},
 		ArrivalRunwayStrings:   []string{"KJFK/22L", "KJFK/22R"},
 		Wind:                   Wind{Direction: 190, Speed: 12, Gust: 17},
 		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
@@ -200,7 +200,7 @@ func LoadZNY() *TRACON {
 	sd22 := &Scenario{
 		Name:                   "KJFK Depart 22R",
 		Callsign:               "JFK_DEP",
-		DepartureRunwayStrings: []string{"KJFK/22R"},
+		DepartureRunwayStrings: []string{"KJFK/22R", "KLGA/22", "KISP/24", "KFRG/19"},
 		Wind:                   Wind{Direction: 190, Speed: 24, Gust: 0},
 		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
 	}
@@ -209,7 +209,7 @@ func LoadZNY() *TRACON {
 	sa13x := &Scenario{
 		Name:                   "KJFK Depart 13R Land 13L",
 		Callsign:               "JFK_APP",
-		DepartureRunwayStrings: []string{"KJFK/13R"},
+		DepartureRunwayStrings: []string{"KJFK/13R", "KLGA/13", "KISP/15R", "KFRG/14"},
 		ArrivalRunwayStrings:   []string{"KJFK/13R"},
 		Wind:                   Wind{Direction: 140, Speed: 12, Gust: 17},
 		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
@@ -219,7 +219,7 @@ func LoadZNY() *TRACON {
 	sa31 := &Scenario{
 		Name:                   "KJFK Depart 31L Land 31L/31R",
 		Callsign:               "JFK_APP",
-		DepartureRunwayStrings: []string{"KJFK/31L"},
+		DepartureRunwayStrings: []string{"KJFK/31L", "KLGA/31", "KISP/33L", "KFRG/32"},
 		ArrivalRunwayStrings:   []string{"KJFK/31R", "KJFK/31L"},
 		Wind:                   Wind{Direction: 330, Speed: 12, Gust: 17},
 		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
@@ -229,7 +229,7 @@ func LoadZNY() *TRACON {
 	sd31 := &Scenario{
 		Name:                   "KJFK Depart 31L",
 		Callsign:               "JFK_DEP",
-		DepartureRunwayStrings: []string{"KJFK/31L"},
+		DepartureRunwayStrings: []string{"KJFK/31L", "KLGA/31", "KISP/33L", "KFRG/32"},
 		Wind:                   Wind{Direction: 330, Speed: 12, Gust: 17},
 		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
 	}
