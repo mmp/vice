@@ -4,6 +4,8 @@ package main
 
 import (
 	_ "embed"
+	"encoding/json"
+	"os"
 
 	"github.com/mmp/sct2"
 )
@@ -234,6 +236,25 @@ func LoadZNY() *TRACON {
 		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
 	}
 	t.Scenarios[sd31.Name] = sd31
+
+	enc, err := json.Marshal(t)
+	if err != nil {
+		panic(err)
+	}
+	err = os.WriteFile("zny.json", enc, 0o644)
+	if err != nil {
+		panic(err)
+	}
+
+	vid := make(map[string][]Point2LL)
+	for name, m := range t.VideoMaps {
+		vid[name] = m.Segments
+	}
+	enc, err = json.Marshal(vid)
+	err = os.WriteFile("zny-maps.json", enc, 0o644)
+	if err != nil {
+		panic(err)
+	}
 
 	return t
 }
