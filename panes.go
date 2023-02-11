@@ -36,7 +36,6 @@ type PaneContext struct {
 
 	thumbnail bool
 	platform  Platform
-	cs        *ColorScheme
 	mouse     *MouseState
 	keyboard  *KeyboardState
 	haveFocus bool
@@ -734,12 +733,12 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	*/
 	fsp.scrollbar.Draw(ctx, cb)
 
-	cb.SetRGB(ctx.cs.UIControl)
+	cb.SetRGB(UIControlColor)
 	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
-	cb.SetRGB(ctx.cs.TextHighlight)
+	cb.SetRGB(UITextHighlightColor)
 	cb.LineWidth(3)
 	selectionLd.GenerateCommands(cb)
 }

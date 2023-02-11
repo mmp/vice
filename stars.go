@@ -702,8 +702,7 @@ func (sp *STARSPane) DrawUI() {
 
 	if imgui.TreeNode("Facility Engineering") {
 		errorExclamationTriangle := func() {
-			color := globalConfig.GetColorScheme().TextError
-			imgui.PushStyleColor(imgui.StyleColorText, color.imgui())
+			imgui.PushStyleColor(imgui.StyleColorText, STARSTextAlertColor.imgui())
 			imgui.Text(FontAwesomeIconExclamationTriangle)
 			imgui.PopStyleColor()
 		}
@@ -4428,6 +4427,18 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 	multi := ps.multiRadarMode()
 
 	for ac := range sp.aircraft {
+		// Is it on the ground?
+		if ap, ok := tracon.Airports[ac.FlightPlan.DepartureAirport]; ok {
+			if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
+				continue
+			}
+		}
+		if ap, ok := tracon.Airports[ac.FlightPlan.ArrivalAirport]; ok {
+			if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
+				continue
+			}
+		}
+
 		for i, sel := range ps.RadarSiteSelected {
 			if !sel && !multi {
 				continue

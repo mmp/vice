@@ -18,7 +18,6 @@ import (
 	"strings"
 	"time"
 	"unicode"
-	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
@@ -46,6 +45,12 @@ var (
 	//go:embed icons/sad-tower-alpha-128x128.png
 	sadTowerPNG string
 )
+
+var UIControlColor RGB = RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237}
+var UICautionColor RGB = RGBFromHex(0xB7B513)
+var UITextColor RGB = RGB{R: 0.85, G: 0.85, B: 0.85}
+var UITextHighlightColor RGB = RGBFromHex(0xB2B338)
+var UIErrorColor RGB = RGBFromHex(0xE94242)
 
 func imguiInit() *imgui.Context {
 	context := imgui.CreateContext(nil)
@@ -116,7 +121,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(cs *ColorScheme, platform Platform) {
+func drawUI(platform Platform) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -1096,7 +1101,7 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
 		[2]float32{pw - float32(edgeSpace), wy0},
 		[2]float32{pw - float32(edgeSpace), wy1},
-		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, ctx.cs.UIControl)
+		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
 	quad.GenerateCommands(cb)
 }
 
@@ -1183,62 +1188,4 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 	}
 
 	return
-}
-
-///////////////////////////////////////////////////////////////////////////
-// ColorScheme
-
-type ColorScheme struct {
-	Text          RGB
-	TextHighlight RGB
-	TextError     RGB
-	TextDisabled  RGB
-
-	// UI
-	Background          RGB
-	AltBackground       RGB
-	UITitleBackground   RGB
-	UIControl           RGB
-	UIControlBackground RGB
-	UIControlSeparator  RGB
-	UIControlHovered    RGB
-	UIInputBackground   RGB
-	UIControlActive     RGB
-
-	Safe    RGB
-	Caution RGB
-	Error   RGB
-
-	// Datablock colors
-	SelectedDatablock   RGB
-	UntrackedDatablock  RGB
-	TrackedDatablock    RGB
-	HandingOffDatablock RGB
-	GhostDatablock      RGB
-	Track               RGB
-
-	ArrivalStrip   RGB
-	DepartureStrip RGB
-
-	Airport    RGB
-	VOR        RGB
-	NDB        RGB
-	Fix        RGB
-	Runway     RGB
-	Region     RGB
-	SID        RGB
-	STAR       RGB
-	Geo        RGB
-	ARTCC      RGB
-	LowAirway  RGB
-	HighAirway RGB
-	Compass    RGB
-	RangeRing  RGB
-}
-
-func (r *RGB) DrawUI(title string) bool {
-	ptr := (*[3]float32)(unsafe.Pointer(r))
-	flags := imgui.ColorEditFlagsNoAlpha | imgui.ColorEditFlagsNoInputs |
-		imgui.ColorEditFlagsRGB | imgui.ColorEditFlagsInputRGB
-	return imgui.ColorEdit3V(title, ptr, flags)
 }

@@ -87,49 +87,6 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool
 	return true
 }
 
-func (c *GlobalConfig) GetColorScheme() *ColorScheme {
-	return &ColorScheme{
-		Text:                RGB{R: 0.85, G: 0.85, B: 0.85},
-		TextHighlight:       RGBFromHex(0xB2B338),
-		TextError:           RGBFromHex(0xE94242),
-		TextDisabled:        RGB{R: 0, G: 0.25, B: 0.01483053},
-		Background:          RGB{R: 0, G: 0, B: 0},
-		AltBackground:       RGB{R: 0.09322035, G: 0.09322035, B: 0.09322035},
-		UITitleBackground:   RGBFromHex(0x242435),
-		UIControl:           RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237},
-		UIControlBackground: RGB{R: 0.063559294, G: 0.063559294, B: 0.063559294},
-		UIControlSeparator:  RGB{R: 0, G: 0, B: 0},
-		UIControlHovered:    RGB{R: 0.44915253, G: 0.44915253, B: 0.44915253},
-		UIInputBackground:   RGB{R: 0.2881356, G: 0.2881356, B: 0.2881356},
-		UIControlActive:     RGB{R: 0.5677966, G: 0.56539065, B: 0.56539065},
-		Safe:                RGB{R: 0.13225771, G: 0.5635748, B: 0.8519856},
-		Caution:             RGBFromHex(0xB7B513),
-		Error:               RGBFromHex(0xE94242),
-		SelectedDatablock:   RGB{R: 0.9133574, G: 0.9111314, B: 0.2967587},
-		UntrackedDatablock:  RGBFromHex(0x8f92bc),
-		TrackedDatablock:    RGB{R: 0.44499192, G: 0.9491525, B: 0.2573972},
-		HandingOffDatablock: RGB{R: 0.7689531, G: 0.12214418, B: 0.26224726},
-		GhostDatablock:      RGB{R: 0.5090253, G: 0.5090253, B: 0.5090253},
-		Track:               RGB{R: 0, G: 1, B: 0.084745646},
-		ArrivalStrip:        RGBFromHex(0x080724),
-		DepartureStrip:      RGBFromHex(0x150707),
-		Airport:             RGB{R: 0.46153843, G: 0.46153843, B: 0.46153843},
-		VOR:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
-		NDB:                 RGB{R: 0.44481605, G: 0.44481605, B: 0.44481605},
-		Fix:                 RGB{R: 0.45819396, G: 0.45819396, B: 0.45819396},
-		Runway:              RGB{R: 0.1864407, G: 0.3381213, B: 1},
-		Region:              RGB{R: 0.63983047, G: 0.63983047, B: 0.63983047},
-		SID:                 RGB{R: 0.29765886, G: 0.29765886, B: 0.29765886},
-		STAR:                RGB{R: 0.26835144, G: 0.29237288, B: 0.18335249},
-		Geo:                 RGB{R: 0.7923729, G: 0.7923729, B: 0.7923729},
-		ARTCC:               RGB{R: 0.7, G: 0.7, B: 0.7},
-		LowAirway:           RGB{R: 0.5, G: 0.5, B: 0.5},
-		HighAirway:          RGB{R: 0.5, G: 0.5, B: 0.5},
-		Compass:             RGB{R: 0.5270758, G: 0.5270758, B: 0.5270758},
-		RangeRing:           RGBFromHex(0x282b1b),
-	}
-}
-
 func LoadOrMakeDefaultConfig() {
 	fn := configFilePath()
 	lg.Printf("Loading config from: %s", fn)

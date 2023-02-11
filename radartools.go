@@ -466,8 +466,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 	vall, vbll := nm2ll(va), nm2ll(vb)
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
-	ld.AddLine(src.Threshold, add2ll(src.Threshold, vall), ctx.cs.Caution)
-	ld.AddLine(src.Threshold, add2ll(src.Threshold, vbll), ctx.cs.Caution)
+	ld.AddLine(src.Threshold, add2ll(src.Threshold, vall), UICautionColor)
+	ld.AddLine(src.Threshold, add2ll(src.Threshold, vbll), UICautionColor)
 	ld.GenerateCommands(cb)
 }
 
@@ -806,11 +806,11 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *Comm
 		return
 	}
 
-	color := ctx.cs.Error
+	color := UIErrorColor
 	fade := 1.5
 	if sec := remaining.Seconds(); sec < fade {
 		x := float32(sec / fade)
-		color = lerpRGB(x, ctx.cs.Background, color)
+		color = lerpRGB(x, RGB{}, color)
 	}
 
 	p := transforms.WindowFromLatLongP(globalConfig.highlightedLocation)

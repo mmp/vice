@@ -95,7 +95,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// The drawing code sets the scissor and viewport to cover just the
 	// pixel area of each pane so an easy way to draw a split line is to
 	// just issue a clear.
-	cb.ClearRGB(ctx.cs.UIControl)
+	cb.ClearRGB(UIControlColor)
 }
 
 func splitLineWidth() int {
@@ -509,7 +509,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	if fbSize[0] > 0 && fbSize[1] > 0 {
 		// Now traverse all of the Panes...
 		// First clear the entire window to the background color.
-		commandBuffer.ClearRGB(globalConfig.GetColorScheme().Background)
+		commandBuffer.ClearRGB(RGB{})
 
 		// Draw the status bar underneath the menu bar
 		wmDrawStatusBar(fbSize, displaySize, commandBuffer)
@@ -533,8 +533,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 					platform:         platform,
 					events:           eventStream,
 					keyboard:         keyboard,
-					haveFocus:        haveFocus,
-					cs:               globalConfig.GetColorScheme()}
+					haveFocus:        haveFocus}
 
 				// Similarly make the mouse events available only to the
 				// one Pane that should see them.
@@ -642,18 +641,10 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, displaySize[0], 0, statusBarHeight))
 	cb.LoadModelViewMatrix(Identity3x3())
 
-	ctx := PaneContext{
-		paneExtent:       statusBarDisplayExtent,
-		parentPaneExtent: Extent2D{p1: displaySize},
-		platform:         platform,
-		events:           eventStream,
-		cs:               globalConfig.GetColorScheme(),
-	}
-
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 	textp := [2]float32{15, float32(5 + ui.font.size)}
-	style := TextStyle{Font: ui.font, Color: ctx.cs.Text}
+	style := TextStyle{Font: ui.font, Color: UITextColor}
 	td.AddText(wm.lastAircraftResponse, textp, style)
 
 	// Finally, add the text drawing commands to the graphics command buffer.

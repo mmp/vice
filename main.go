@@ -172,7 +172,7 @@ func main() {
 		timeMarker(&stats.drawPanes)
 
 		// Draw the user interface
-		drawUI(globalConfig.GetColorScheme(), platform)
+		drawUI(platform)
 		timeMarker(&stats.drawImgui)
 
 		// Wait for vsync
