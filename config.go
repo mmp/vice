@@ -18,13 +18,14 @@ import (
 )
 
 type GlobalConfig struct {
+	Version               int
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 
 	Audio AudioSettings
 
-	DisplayRoot *DisplayNode `json:"DisplayRoot-v2"` // force ignore earlier ones
+	DisplayRoot *DisplayNode
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
@@ -109,6 +110,12 @@ func LoadOrMakeDefaultConfig() {
 
 		if err := d.Decode(globalConfig); err != nil {
 			ShowErrorDialog("Configuration file is corrupt: %v", err)
+		}
+
+		if globalConfig.Version < 1 {
+			// Force upgrade via upcoming Activate() call...
+			globalConfig.DisplayRoot = nil
+			globalConfig.Version = 1
 		}
 	}
 
