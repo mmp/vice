@@ -626,6 +626,9 @@ var (
 	reWaypointDotted = regexp.MustCompile(`^([NS][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+), *([EW][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
 	// pair of floats (no exponents)
 	reWaypointFloat = regexp.MustCompile(`^(\-?[0-9]+\.[0-9]+), *(\-?[0-9]+\.[0-9]+)`)
+	// https://en.wikipedia.org/wiki/ISO_6709#String_expression_(Annex_H)
+	// e.g. +403527.580-0734452.955
+	reISO6709H = regexp.MustCompile(`^([-+][0-9][0-9])([0-9][0-9])([0-9][0-9])\.([0-9][0-9][0-9])([-+][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])\.([0-9][0-9][0-9])`)
 )
 
 func ParseLatLong(llstr string) (Point2LL, error) {
@@ -676,6 +679,38 @@ func ParseLatLong(llstr string) (Point2LL, error) {
 			// latitude is specified first but is the second component in
 			// Point2LL...
 			p[i^1] = float32(ll)
+		}
+	} else if strs := reISO6709H.FindStringSubmatch(llstr); len(strs) == 9 {
+		parse := func(deg, min, sec, frac string) (float32, error) {
+			d, err := strconv.Atoi(deg)
+			if err != nil {
+				return 0, err
+			}
+			m, err := strconv.Atoi(min)
+			if err != nil {
+				return 0, err
+			}
+			s, err := strconv.Atoi(sec)
+			if err != nil {
+				return 0, err
+			}
+			f, err := strconv.Atoi(frac)
+			if err != nil {
+				return 0, err
+			}
+			sgn := sign(float32(d))
+			d = abs(d)
+			return sgn * (float32(d) + float32(m)/60 + float32(s)/3600 + float32(f)/3600000), nil
+		}
+
+		var err error
+		p[1], err = parse(strs[1], strs[2], strs[3], strs[4])
+		if err != nil {
+			return Point2LL{}, err
+		}
+		p[0], err = parse(strs[5], strs[6], strs[7], strs[8])
+		if err != nil {
+			return Point2LL{}, err
 		}
 	} else {
 		return Point2LL{}, fmt.Errorf("Invalid latlong string")
