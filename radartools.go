@@ -361,7 +361,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 			// Is it on the glideslope?
 			// Laterally: compute the heading to the threshold and compare to the
 			// glideslope's lateral spread.
-			h := headingp2ll(ac.TrackPosition(), src.Threshold, database.MagneticVariation)
+			h := headingp2ll(ac.TrackPosition(), src.Threshold, tracon.MagneticVariation)
 			if abs(h-src.Heading) > c.GlideslopeLateralSpread {
 				return nil
 			}
@@ -450,8 +450,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 
 	// we have the runway heading, but we want to go the opposite direction
 	// and then +/- HeadingTolerance.
-	rota := src.Heading + 180 - c.GlideslopeLateralSpread - database.MagneticVariation
-	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - database.MagneticVariation
+	rota := src.Heading + 180 - c.GlideslopeLateralSpread - tracon.MagneticVariation
+	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - tracon.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
 	sina, cosa := sin(radians(rota)), cos(radians(rota))
@@ -689,9 +689,9 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
 		// Account for magnetic variation and any user-specified rotation
-		Rotate(-radians(rotationAngle+database.MagneticVariation)).
+		Rotate(-radians(rotationAngle+tracon.MagneticVariation)).
 		// Scale based on range and nm per latitude / longitude
-		Scale(database.NmPerLongitude/rangenm, database.NmPerLatitude/rangenm).
+		Scale(tracon.NmPerLongitude/rangenm, tracon.NmPerLatitude/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 
@@ -803,7 +803,7 @@ func (ml *MeasuringLine) Draw(ctx *PaneContext, font *Font, transforms ScopeTran
 	dist := nmdistance2ll(p0, p1)
 
 	// heading and reciprocal
-	hdg := int(headingp2ll(p0, p1, database.MagneticVariation) + 0.5)
+	hdg := int(headingp2ll(p0, p1, tracon.MagneticVariation) + 0.5)
 	if hdg == 0 {
 		hdg = 360
 	}

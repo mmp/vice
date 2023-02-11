@@ -7,12 +7,12 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/mmp/imgui-go/v4"
 )
 
 type Airport struct {
-	ICAO string `json:"ICAO"`
+	ICAO      string   `json:"icao"`
+	Elevation int      `json:"elevation"`
+	Location  Point2LL `json:"location"`
 
 	NamedLocations map[string]Point2LL `json:"named_locations"`
 
@@ -22,18 +22,16 @@ type Airport struct {
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
-	Scratchpads map[string]string `json:"scratchpads"`
-
-	DepartureRunways   []DepartureRunway `json:"departure_runways"`
-	ArrivalRunwayNames []string          `json:"arrival_runways"`
-	ArrivalRunways     []ArrivalRunway   `json:"-"`
+	DepartureRunways   []*DepartureRunway `json:"departure_runways"`
+	ArrivalRunwayNames []string           `json:"arrival_runways"`
+	ArrivalRunways     []*ArrivalRunway   `json:"-"`
 }
 
 func (ac *Airport) PostDeserialize() []error {
 	var errors []error
 
 	for _, rwy := range ac.ArrivalRunwayNames {
-		ac.ArrivalRunways = append(ac.ArrivalRunways, ArrivalRunway{Runway: rwy})
+		ac.ArrivalRunways = append(ac.ArrivalRunways, &ArrivalRunway{Runway: rwy})
 	}
 
 	approachNames := make(map[string]interface{})
@@ -105,9 +103,7 @@ func (ac *Airport) PostDeserialize() []error {
 	}
 
 	runwayNames := make(map[string]interface{})
-	for i, rwy := range ac.DepartureRunways {
-		ac.DepartureRunways[i].departureCategoryEnabled = make(map[string]*bool)
-
+	for _, rwy := range ac.DepartureRunways {
 		if _, ok := runwayNames[rwy.Runway]; ok {
 			errors = append(errors, fmt.Errorf("%s: multiple runway definitions", rwy.Runway))
 		}
@@ -115,11 +111,6 @@ func (ac *Airport) PostDeserialize() []error {
 
 		for _, er := range rwy.ExitRoutes {
 			errors = append(errors, ac.InitializeWaypointLocations(er.Waypoints)...)
-		}
-
-		for _, cat := range ac.ExitCategories {
-			// This is sort of wasteful, but...
-			ac.DepartureRunways[i].departureCategoryEnabled[cat] = new(bool)
 		}
 	}
 
@@ -158,9 +149,8 @@ type DepartureRunway struct {
 	Rate       int32                `json:"rate"`
 	ExitRoutes map[string]ExitRoute `json:"exit_routes"`
 
-	departureCategoryEnabled map[string]*bool
-	nextSpawn                time.Time
-	lastDeparture            *Departure
+	nextSpawn     time.Time
+	lastDeparture *Departure
 }
 
 type ExitRoute struct {
@@ -270,135 +260,5 @@ func (ap *Approach) Line() [2]Point2LL {
 
 func (ap *Approach) Heading() int {
 	p := ap.Line()
-	return int(headingp2ll(p[0], p[1], database.MagneticVariation) + 0.5)
-}
-
-func (ac *Airport) DrawUI() {
-	if len(ac.Departures) > 0 {
-		imgui.Text("Departures")
-		anyRunwaysActive := false
-		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-
-		if imgui.BeginTableV("departureRunways", 3, flags, imgui.Vec2{400, 0}, 0.) {
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Enabled")
-			imgui.TableSetupColumn("ADR")
-			imgui.TableHeadersRow()
-
-			for i, conf := range ac.DepartureRunways {
-				imgui.PushID(conf.Runway)
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text(conf.Runway)
-				imgui.TableNextColumn()
-				if imgui.Checkbox("##enabled", &ac.DepartureRunways[i].Enabled) {
-					if ac.DepartureRunways[i].Enabled {
-						// enable all corresponding categories by default
-						for _, enabled := range conf.departureCategoryEnabled {
-							*enabled = true
-						}
-					} else {
-						// disable all corresponding configs
-						for _, enabled := range conf.departureCategoryEnabled {
-							*enabled = false
-						}
-					}
-				}
-				anyRunwaysActive = anyRunwaysActive || ac.DepartureRunways[i].Enabled
-				imgui.TableNextColumn()
-				imgui.InputIntV("##adr", &ac.DepartureRunways[i].Rate, 1, 120, 0)
-				imgui.PopID()
-			}
-			imgui.EndTable()
-		}
-
-		if anyRunwaysActive {
-			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-			if imgui.BeginTableV("configs", 2, flags, imgui.Vec2{500, 0}, 0.) {
-				imgui.TableSetupColumn("Departure Runway/Gate")
-				imgui.TableSetupColumn("Enabled")
-				imgui.TableHeadersRow()
-				for _, conf := range ac.DepartureRunways {
-					if !conf.Enabled {
-						continue
-					}
-
-					imgui.PushID(conf.Runway)
-					for _, category := range SortedMapKeys(conf.departureCategoryEnabled) {
-						imgui.PushID(category)
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						imgui.Text(conf.Runway + "/" + category)
-						imgui.TableNextColumn()
-						imgui.Checkbox("##check", conf.departureCategoryEnabled[category])
-						imgui.PopID()
-					}
-					imgui.PopID()
-				}
-				imgui.EndTable()
-			}
-		}
-	}
-
-	if len(ac.ArrivalRunways) > 0 {
-		imgui.Text("Arrivals")
-
-		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		oldNumActive, newNumActive := 0, 0
-		if imgui.BeginTableV("arrivalrunways", 2, flags, imgui.Vec2{500, 0}, 0.) {
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Enabled")
-			imgui.TableHeadersRow()
-
-			for i, rwy := range ac.ArrivalRunways {
-				if rwy.Enabled {
-					oldNumActive++
-				}
-
-				imgui.PushID(rwy.Runway)
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text(rwy.Runway)
-				imgui.TableNextColumn()
-				imgui.Checkbox("##enabled", &ac.ArrivalRunways[i].Enabled)
-				if ac.ArrivalRunways[i].Enabled {
-					newNumActive++
-				}
-				imgui.PopID()
-			}
-			imgui.EndTable()
-		}
-
-		if oldNumActive == 0 && newNumActive == 1 {
-			for i := range ac.ArrivalGroups {
-				ac.ArrivalGroups[i].Enabled = true
-			}
-		} else if oldNumActive == 1 && newNumActive == 0 {
-			for i := range ac.ArrivalGroups {
-				ac.ArrivalGroups[i].Enabled = false
-			}
-		}
-
-		if newNumActive > 0 && len(ac.ArrivalGroups) > 0 {
-			if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{500, 0}, 0.) {
-				imgui.TableSetupColumn("Arrival")
-				imgui.TableSetupColumn("Enabled")
-				imgui.TableSetupColumn("AAR")
-				imgui.TableHeadersRow()
-
-				for i, ag := range ac.ArrivalGroups {
-					imgui.PushID(ag.Name)
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(ag.Name)
-					imgui.TableNextColumn()
-					imgui.Checkbox("##enabled", &ac.ArrivalGroups[i].Enabled)
-					imgui.TableNextColumn()
-					imgui.InputIntV("##aar", &ac.ArrivalGroups[i].Rate, 1, 120, 0)
-					imgui.PopID()
-				}
-				imgui.EndTable()
-			}
-		}
-	}
+	return int(headingp2ll(p[0], p[1], tracon.MagneticVariation) + 0.5)
 }

@@ -160,93 +160,10 @@ func LoadOrMakeDefaultConfig() {
 
 func (gc *GlobalConfig) Activate() {
 	if gc.DisplayRoot == nil {
-		// hardcoded facility engineering here...
-		stars := NewSTARSPane("KJFK", Point2LL{-73.7765, 40.6401})
-		stars.Facility.Airports = append(stars.Facility.Airports,
-			STARSAirport{ICAOCode: "KJFK", Range: 50, IncludeInSSA: true, TowerListIndex: 1},
-			STARSAirport{ICAOCode: "KFRG", Range: 30, IncludeInSSA: true, TowerListIndex: 2})
-
-		addMap := func(label string, group int, name string) {
-			m := STARSMap{
-				Label: label,
-				Group: group,
-				Name:  name,
-			}
-			stars.Facility.Maps = append(stars.Facility.Maps, m)
-			stars.currentPreferenceSet.MapVisible = append(stars.currentPreferenceSet.MapVisible, false)
-		}
-
-		addMap("JFK4", 0, "N90 JFK - 4s")
-		addMap("JFK13", 0, "N90 JFK - 13s")
-		addMap("JFK22", 0, "N90 JFK - 22s")
-		addMap("JFK31", 0, "N90 JFK - 31s")
-		addMap("NY B", 1, "New York Class B")
-		addMap("MVA", 1, "N90 - MVA")
-
-		addMap("JFK22 ILS", 0, "N90 JFK - ILS 22s")
-		addMap("JFK31 NTZ", 0, "N90 JFK - 31s NTZ")
-
-		addMap("LGA", 0, "N90 LGA - Video Map")
-		addMap("LIB D", 0, "N90 LIB - Departure")
-		addMap("LIB C", 0, "N90 LIB - Catskill")
-		addMap("EWR", 0, "N90 EWR - Video Map")
-		addMap("EWR SAT", 0, "N90 EWR - Satellite")
-		addMap("EWR CRDA", 0, "N90 EWR - CRDA")
-		addMap("ISP", 0, "N90 ISP - Video Map")
-
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
-			STARSRadarSite{Char: "E",
-				Id:             "EWR",
-				Position:       "KEWR",
-				Elevation:      136,
-				SlopeAngle:     0.175,
-				PrimaryRange:   60,
-				SecondaryRange: 120,
-				SilenceAngle:   30,
-			})
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
-			STARSRadarSite{Char: "J",
-				Id:             "JFK",
-				Position:       "KJFK",
-				Elevation:      143,
-				SlopeAngle:     0.175,
-				PrimaryRange:   60,
-				SecondaryRange: 120,
-				SilenceAngle:   30,
-			})
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
-			STARSRadarSite{Char: "I",
-				Id:             "ISP",
-				Position:       "KISP",
-				Elevation:      185,
-				SlopeAngle:     0.175,
-				PrimaryRange:   60,
-				SecondaryRange: 120,
-				SilenceAngle:   30,
-			})
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
-			STARSRadarSite{Char: "H",
-				Id:             "HPN",
-				Position:       "KHPN",
-				Elevation:      708,
-				SlopeAngle:     0.175,
-				PrimaryRange:   60,
-				SecondaryRange: 120,
-				SilenceAngle:   30,
-			})
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites,
-			STARSRadarSite{Char: "S",
-				Id:             "SWF",
-				Position:       "KSWF",
-				Elevation:      972,
-				SlopeAngle:     0.175,
-				PrimaryRange:   60,
-				SecondaryRange: 120,
-				SilenceAngle:   30,
-			})
+		stars := NewSTARSPane(tracon)
 
 		fsp := NewFlightStripPane()
-		fsp.Airports["KJFK"] = nil
+		fsp.Airports[tracon.PrimaryAirport] = nil
 		fsp.AutoAddDepartures = true
 		fsp.AutoAddTracked = true
 		fsp.AutoAddAcceptedHandoffs = true

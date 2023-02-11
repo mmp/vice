@@ -41,7 +41,7 @@ var (
 )
 
 const NumSTARSPreferenceSets = 32
-const NumSTARSRadarSites = 16
+const NumRadarSites = 16
 const NumSTARSMaps = 28
 
 type STARSPane struct {
@@ -168,9 +168,9 @@ type STARSAircraftState struct {
 // STARSFacility and related
 
 type STARSFacility struct {
-	Center     Point2LL // from sector file... / config
+	Center     Point2LL
 	Airports   []STARSAirport
-	RadarSites []STARSRadarSite
+	RadarSites []RadarSite
 	Maps       []STARSMap
 	CA         struct {
 		LateralMinimum  float32
@@ -191,34 +191,30 @@ type STARSAirport struct {
 	TowerListIndex int   // 0 -> none. i.e., indexing is off by 1 vs go arrays, but matches STARS lists
 }
 
-type STARSRadarSite struct {
-	Char     string
-	Id       string
-	Position string
-
-	Elevation      int32
-	PrimaryRange   int32
-	SecondaryRange int32
-	SlopeAngle     float32
-	SilenceAngle   float32
-}
-
 type STARSMap struct {
 	Label string
 	Group int    // 0 -> A, 1 -> B
 	Name  string // VideoMap.Name
 }
 
-func MakeDefaultFacility(airport string, center Point2LL) STARSFacility {
+func MakeDefaultFacility(tracon *TRACON) STARSFacility {
 	var f STARSFacility
 
-	f.Center = center
+	f.Center = tracon.Center
 
 	f.Airports = append(f.Airports,
 		STARSAirport{
-			ICAOCode:     airport,
+			ICAOCode:     tracon.PrimaryAirport,
 			Range:        60,
 			IncludeInSSA: true})
+	for _, ap := range tracon.Airports {
+		if ap.ICAO != tracon.PrimaryAirport {
+			f.Airports = append(f.Airports,
+				STARSAirport{ICAOCode: ap.ICAO, Range: 30, IncludeInSSA: true})
+		}
+	}
+	f.RadarSites = DuplicateSlice(tracon.RadarSites)
+	f.Maps = DuplicateSlice(tracon.STARSMaps)
 
 	f.CA.LateralMinimum = 3
 	f.CA.VerticalMinimum = 1000
@@ -228,24 +224,25 @@ func MakeDefaultFacility(airport string, center Point2LL) STARSFacility {
 	return f
 }
 
-func (rs *STARSRadarSite) Valid() bool {
-	_, ok := database.Locate(rs.Position)
+func (rs *RadarSite) Valid() bool {
+	_, ok := tracon.Airports[rs.Position] // FIXME: should allow non-airport-located radars...
 	return rs.Char != "" && rs.Id != "" && rs.Position != "" && ok
 }
 
-func (rs *STARSRadarSite) CheckVisibility(p Point2LL, altitude int) (primary, secondary bool, distance float32) {
+func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, secondary bool, distance float32) {
 	// Check altitude first; this is a quick first cull that
 	// e.g. takes care of everyone on the ground.
 	if altitude < int(rs.Elevation) {
 		return
 	}
 
-	pRadar, ok := database.Locate(rs.Position)
+	ap, ok := tracon.Airports[rs.Position] // FIXME...
 	if !ok {
 		// Really, this method shouldn't be called if the site is invalid,
 		// but if it is, there's not much else we can do.
 		return
 	}
+	pRadar := ap.Location
 
 	// Time to check the angles; we'll do all of this in nm coordinates,
 	// since that's how we check the range anyway.
@@ -624,9 +621,9 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 // STARSPane proper
 
 // Takes aircraft position in window coordinates
-func NewSTARSPane(airport string, center Point2LL) *STARSPane {
+func NewSTARSPane(tracon *TRACON) *STARSPane {
 	return &STARSPane{
-		Facility:              MakeDefaultFacility(airport, center),
+		Facility:              MakeDefaultFacility(tracon),
 		SelectedPreferenceSet: -1,
 	}
 }
@@ -740,7 +737,7 @@ func (sp *STARSPane) DrawUI() {
 								invalid = true
 							}
 						}
-						if _, ok := database.Locate(ap.ICAOCode); !ok {
+						if _, ok := tracon.Airports[ap.ICAOCode]; !ok {
 							invalid = true
 						}
 
@@ -846,7 +843,7 @@ func (sp *STARSPane) DrawUI() {
 
 					imgui.TableNextColumn()
 					imgui.InputTextV("##position", &site.Position, flags, nil)
-					if _, ok := database.Locate(site.Position); site.Position != "" && !ok {
+					if _, ok := tracon.Airports[site.Position]; site.Position != "" && !ok {
 						imgui.SameLine()
 						errorExclamationTriangle()
 					}
@@ -884,8 +881,8 @@ func (sp *STARSPane) DrawUI() {
 							DeleteSliceElement(sp.PreferenceSets[i].RadarSiteSelected, deleteIndex)
 					}
 				}
-				if len(sp.Facility.RadarSites) < NumSTARSRadarSites && imgui.Button("Add radar site") {
-					sp.Facility.RadarSites = append(sp.Facility.RadarSites, STARSRadarSite{})
+				if len(sp.Facility.RadarSites) < NumRadarSites && imgui.Button("Add radar site") {
+					sp.Facility.RadarSites = append(sp.Facility.RadarSites, RadarSite{})
 					sp.currentPreferenceSet.RadarSiteSelected =
 						append(sp.currentPreferenceSet.RadarSiteSelected, false)
 					for i := range sp.PreferenceSets {
@@ -1099,10 +1096,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 			transforms.LoadLatLongViewingMatrices(cb)
 
-			vm := sim.GetVideoMap(sp.Facility.Maps[i].Name)
-			if vm == nil {
-				// should be transitory pending getting going
-				//lg.Errorf("%s: couldn't get video map", sp.Facility.Maps[i].Name)
+			if vm, ok := tracon.VideoMaps[sp.Facility.Maps[i].Name]; !ok {
+				lg.Errorf("%s: couldn't get video map", sp.Facility.Maps[i].Name)
 			} else {
 				cb.Call(vm.cb)
 			}
@@ -2061,7 +2056,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			return
 		} else {
 			// Index, character id, or name
-			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < NumSTARSRadarSites {
+			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < NumRadarSites {
 				for j := range ps.RadarSiteSelected {
 					ps.RadarSiteSelected[i] = (i == j)
 				}
@@ -2161,7 +2156,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					from := ac.TrackPosition()
 					sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 						p := transforms.LatLongFromWindowP(pw)
-						hdg := headingp2ll(from, p, database.MagneticVariation)
+						hdg := headingp2ll(from, p, tracon.MagneticVariation)
 						dist := nmdistance2ll(from, p)
 
 						status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
@@ -3349,7 +3344,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 		for _, ap := range sp.Facility.Airports {
 			if ap.TowerListIndex == i+1 {
-				p, ok := database.Locate(ap.ICAOCode)
+				airport, ok := tracon.Airports[ap.ICAOCode]
 				if !ok {
 					// what now? should validate in the UI anyway...
 				}
@@ -3358,7 +3353,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				m := make(map[float32]string)
 				for _, ac := range aircraft {
 					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap.ICAOCode {
-						dist := nmdistance2ll(p, ac.TrackPosition())
+						dist := nmdistance2ll(airport.Location, ac.TrackPosition())
 						actype := ac.FlightPlan.TypeWithoutSuffix()
 						actype = strings.TrimPrefix(actype, "H/")
 						actype = strings.TrimPrefix(actype, "S/")
@@ -3896,7 +3891,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(ac.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := ac.TrackHeading() - database.MagneticVariation
+		hdg := ac.TrackHeading() - tracon.MagneticVariation
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
 		end := add2ll(ac.TrackPosition(), nm2ll(h))
@@ -4019,7 +4014,7 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 		}
 
 		// Format the range-bearing line text for the two positions.
-		hdg := headingp2ll(p0, p1, database.MagneticVariation)
+		hdg := headingp2ll(p0, p1, tracon.MagneticVariation)
 		dist := nmdistance2ll(p0, p1)
 		text := fmt.Sprintf("%d/%.2f-%d", int(hdg+.5), dist, i+1)
 
@@ -4423,6 +4418,7 @@ func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary 
 
 func (sp *STARSPane) visibleAircraft() []*Aircraft {
 	if sp.noRadarDefined() {
+		lg.Errorf("NO RADAR")
 		ac, _ := FlattenMap(sp.aircraft)
 		return ac
 	}

@@ -39,6 +39,7 @@ var (
 	sim          *Sim
 	eventStream  *EventStream
 	lg           *Logger
+	tracon       *TRACON
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -108,8 +109,11 @@ func main() {
 
 	LoadOrMakeDefaultConfig()
 
-	dbChan := make(chan *StaticDatabase)
-	go InitializeStaticDatabase(dbChan)
+	database = InitializeStaticDatabase()
+
+	// After the database is loaded
+	tracon = LoadZNY()
+	tracon.PostDeserialize()
 
 	multisample := runtime.GOOS != "darwin"
 	platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
@@ -125,8 +129,6 @@ func main() {
 	}
 
 	fontsInit(renderer)
-
-	database = <-dbChan
 
 	wmInit()
 

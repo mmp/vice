@@ -29,11 +29,6 @@ type StaticDatabase struct {
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
-
-	// From the sector file
-	NmPerLatitude     float32
-	NmPerLongitude    float32
-	MagneticVariation float32
 }
 
 type AircraftPerformance struct {
@@ -75,7 +70,7 @@ type FleetAircraft struct {
 	Count int
 }
 
-func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
+func InitializeStaticDatabase() *StaticDatabase {
 	start := time.Now()
 
 	db := &StaticDatabase{}
@@ -96,7 +91,7 @@ func InitializeStaticDatabase(dbChan chan *StaticDatabase) {
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
 
-	dbChan <- db
+	return db
 }
 
 ///////////////////////////////////////////////////////////////////////////

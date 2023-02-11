@@ -4,7 +4,6 @@ package main
 
 import (
 	_ "embed"
-	"sort"
 
 	"github.com/mmp/sct2"
 )
@@ -23,7 +22,221 @@ func mustParseLatLong(l string) Point2LL {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// KJFK
+// ZNY
+
+/*
+	stars.Facility.Airports = append(stars.Facility.Airports,
+		STARSAirport{ICAOCode: "KJFK", Range: 50, IncludeInSSA: true, TowerListIndex: 1},
+		STARSAirport{ICAOCode: "KFRG", Range: 30, IncludeInSSA: true, TowerListIndex: 2})
+*/
+
+func LoadZNY() *TRACON {
+	t := &TRACON{
+		Name:              "ZNY",
+		NmPerLatitude:     60,
+		NmPerLongitude:    45,
+		MagneticVariation: 13.3,
+		PrimaryAirport:    "KJFK",
+
+		Airports: map[string]*Airport{
+			"KJFK": JFKAirport(),
+			"KLGA": LGAAirport(),
+			"KISP": ISPAirport(),
+			"KFRG": FRGAirport(),
+		},
+		VideoMaps: loadVideoMaps(),
+		Scenarios: make(map[string]*Scenario),
+		ControlPositions: map[string]*Controller{
+			"BOS_E_CTR": &Controller{Callsign: "BOS_E_CTR", Frequency: NewFrequency(133.45), SectorId: "B17", Scope: "C"},
+			"ISP_APP":   &Controller{Callsign: "ISP_APP", Frequency: NewFrequency(120.05), SectorId: "3H", Scope: "H"},
+			"JFK_DEP":   &Controller{Callsign: "JFK_DEP", Frequency: NewFrequency(135.9), SectorId: "2J", Scope: "J"},
+			"JFK_APP":   &Controller{Callsign: "JFK_APP", Frequency: NewFrequency(128.125), SectorId: "2G", Scope: "G"},
+			"JFK_TWR":   &Controller{Callsign: "JFK_TWR", Frequency: NewFrequency(119.1), SectorId: "2W", Scope: "T"},
+			"LGA_DEP":   &Controller{Callsign: "LGA_DEP", Frequency: NewFrequency(120.4), SectorId: "1L", Scope: "L"},
+			"NY_B_CTR":  &Controller{Callsign: "NY_B_CTR", Frequency: NewFrequency(125.325), SectorId: "N56", Scope: "C"},
+			"NY_C_CTR":  &Controller{Callsign: "NY_C_CTR", Frequency: NewFrequency(132.175), SectorId: "N34", Scope: "C"},
+			"NY_F_CTR":  &Controller{Callsign: "NY_F_CTR", Frequency: NewFrequency(128.3), SectorId: "N66", Scope: "C"},
+			"NY_LE_DEP": &Controller{Callsign: "NY_LE_DEP", Frequency: NewFrequency(126.8), SectorId: "5E", Scope: "E"},
+			"NY_LS_DEP": &Controller{Callsign: "NY_LS_DEP", Frequency: NewFrequency(124.75), SectorId: "5S", Scope: "S"},
+		},
+
+		Scratchpads: map[string]string{
+			"WAVEY":  "WAV",
+			"SHIPP":  "SHI",
+			"HAPIE":  "HAP",
+			"BETTE":  "BET",
+			"MERIT":  "MER",
+			"GREKI":  "GRE",
+			"BAYYS":  "BAY",
+			"BDR":    "BDR",
+			"DIXIE":  "DIX",
+			"WHITE":  "WHI",
+			"RBV":    "RBV",
+			"ARD":    "ARD",
+			"COATE":  "COA",
+			"NEION":  "NEI",
+			"HAAYS":  "HAY",
+			"GAYEL":  "GAY",
+			"DEEZZ":  "DEZ",
+			"DEEZZ5": "DEZ",
+		},
+
+		Center: Point2LL{-73.7765, 40.6401},
+		RadarSites: []RadarSite{
+			RadarSite{Char: "E",
+				Id:             "EWR",
+				Position:       "KEWR",
+				Elevation:      136,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			},
+			RadarSite{Char: "J",
+				Id:             "JFK",
+				Position:       "KJFK",
+				Elevation:      143,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			},
+			RadarSite{Char: "I",
+				Id:             "ISP",
+				Position:       "KISP",
+				Elevation:      185,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			},
+			RadarSite{Char: "H",
+				Id:             "HPN",
+				Position:       "KHPN",
+				Elevation:      708,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			},
+			RadarSite{Char: "S",
+				Id:             "SWF",
+				Position:       "KSWF",
+				Elevation:      972,
+				SlopeAngle:     0.175,
+				PrimaryRange:   60,
+				SecondaryRange: 120,
+				SilenceAngle:   30,
+			},
+		},
+
+		STARSMaps: []STARSMap{
+			STARSMap{Label: "JFK4", Group: 0, Name: "N90 JFK - 4s"},
+			STARSMap{Label: "JFK13", Group: 0, Name: "N90 JFK - 13s"},
+			STARSMap{Label: "JFK22", Group: 0, Name: "N90 JFK - 22s"},
+			STARSMap{Label: "JFK31", Group: 0, Name: "N90 JFK - 31s"},
+			STARSMap{Label: "NY B", Group: 1, Name: "New York Class B"},
+			STARSMap{Label: "MVA", Group: 1, Name: "N90 - MVA"},
+			STARSMap{Label: "JFK22 ILS", Group: 0, Name: "N90 JFK - ILS 22s"},
+			STARSMap{Label: "JFK31 NTZ", Group: 0, Name: "N90 JFK - 31s NTZ"},
+			STARSMap{Label: "LGA", Group: 0, Name: "N90 LGA - Video Map"},
+			STARSMap{Label: "LIB D", Group: 0, Name: "N90 LIB - Departure"},
+			STARSMap{Label: "LIB C", Group: 0, Name: "N90 LIB - Catskill"},
+			STARSMap{Label: "EWR", Group: 0, Name: "N90 EWR - Video Map"},
+			STARSMap{Label: "EWR SAT", Group: 0, Name: "N90 EWR - Satellite"},
+			STARSMap{Label: "EWR CRDA", Group: 0, Name: "N90 EWR - CRDA"},
+			STARSMap{Label: "ISP", Group: 0, Name: "N90 ISP - Video Map"},
+		},
+	}
+
+	sa4 := &Scenario{
+		Name:                   "KJFK Depart 4L Land 4L/R",
+		Callsign:               "JFK_APP",
+		DepartureRunwayStrings: []string{"KJFK/4L"},
+		ArrivalRunwayStrings:   []string{"KJFK/4R", "KJFK/4L"},
+		Wind:                   Wind{Direction: 30, Speed: 19, Gust: 25},
+		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sa4.Name] = sa4
+
+	sd4 := &Scenario{
+		Name:                   "KJFK Depart 4L",
+		Callsign:               "JFK_DEP",
+		DepartureRunwayStrings: []string{"KJFK/4L"},
+		Wind:                   Wind{Direction: 30, Speed: 8, Gust: 0},
+		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sd4.Name] = sd4
+
+	sa13 := &Scenario{
+		Name:                   "KJFK Depart 13R Land 13L/22L",
+		Callsign:               "JFK_APP",
+		DepartureRunwayStrings: []string{"KJFK/13R"},
+		ArrivalRunwayStrings:   []string{"KJFK/13L", "KJFK/22L"},
+		Wind:                   Wind{Direction: 140, Speed: 12, Gust: 17},
+		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sa13.Name] = sa13
+
+	sd13 := &Scenario{
+		Name:                   "KJFK Depart 13R",
+		Callsign:               "JFK_DEP",
+		DepartureRunwayStrings: []string{"KJFK/13R"},
+		Wind:                   Wind{Direction: 140, Speed: 24, Gust: 0},
+		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sd13.Name] = sd13
+
+	sa22 := &Scenario{
+		Name:                   "KJFK Dep 22R Land 22 L/R",
+		Callsign:               "JFK_APP",
+		DepartureRunwayStrings: []string{"KJFK/22R"},
+		ArrivalRunwayStrings:   []string{"KJFK/22L", "KJFK/22R"},
+		Wind:                   Wind{Direction: 190, Speed: 12, Gust: 17},
+		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sa22.Name] = sa22
+
+	sd22 := &Scenario{
+		Name:                   "KJFK Depart 22R",
+		Callsign:               "JFK_DEP",
+		DepartureRunwayStrings: []string{"KJFK/22R"},
+		Wind:                   Wind{Direction: 190, Speed: 24, Gust: 0},
+		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sd22.Name] = sd22
+
+	sa13x := &Scenario{
+		Name:                   "KJFK Depart 13R Land 13L",
+		Callsign:               "JFK_APP",
+		DepartureRunwayStrings: []string{"KJFK/13R"},
+		ArrivalRunwayStrings:   []string{"KJFK/13R"},
+		Wind:                   Wind{Direction: 140, Speed: 12, Gust: 17},
+		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sa13x.Name] = sa13x
+
+	sa31 := &Scenario{
+		Name:                   "KJFK Depart 31L Land 31L/31R",
+		Callsign:               "JFK_APP",
+		DepartureRunwayStrings: []string{"KJFK/31L"},
+		ArrivalRunwayStrings:   []string{"KJFK/31R", "KJFK/31L"},
+		Wind:                   Wind{Direction: 330, Speed: 12, Gust: 17},
+		Controllers:            []string{"JFK_APP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_B_CTR", "NY_C_CTR", "NY_F_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sa31.Name] = sa31
+
+	sd31 := &Scenario{
+		Name:                   "KJFK Depart 31L",
+		Callsign:               "JFK_DEP",
+		DepartureRunwayStrings: []string{"KJFK/31L"},
+		Wind:                   Wind{Direction: 330, Speed: 12, Gust: 17},
+		Controllers:            []string{"JFK_DEP", "BOS_E_CTR", "ISP_APP", "JFK_TWR", "LGA_DEP", "NY_C_CTR", "NY_LE_DEP", "NY_LS_DEP"},
+	}
+	t.Scenarios[sd31.Name] = sd31
+
+	return t
+}
 
 /*
 func jfk31RDepartureRunway() *DepartureConfig {
@@ -56,54 +269,9 @@ func jfk31RDepartureRunway() *DepartureConfig {
 }
 */
 
-func JFKApproachScenario() *Scenario {
-	s := &Scenario{
-		Name:              "KJFK TRACON",
-		NmPerLatitude:     60,
-		NmPerLongitude:    45,
-		MagneticVariation: 13.3,
-	}
+func loadVideoMaps() map[string]*VideoMap {
+	maps := make(map[string]*VideoMap)
 
-	s.Callsign = "JFK_APP"
-
-	addController := func(cs string, freq float32, sector string, scope string) {
-		s.Controllers = append(s.Controllers, &Controller{
-			Callsign:  cs,
-			Frequency: NewFrequency(freq),
-			SectorId:  sector,
-			Scope:     scope,
-		})
-	}
-
-	addController("BOS_E_CTR", 133.45, "B17", "C")
-	addController("ISP_APP", 120.05, "3H", "H")
-	addController("JFK_APP", 128.125, "2G", "G")
-	addController("JFK_TWR", 119.1, "2W", "T")
-	addController("LGA_DEP", 120.4, "1L", "L")
-	addController("NY_B_CTR", 125.325, "N56", "C")
-	addController("NY_C_CTR", 132.175, "N34", "C")
-	addController("NY_F_CTR", 128.3, "N66", "C")
-	addController("NY_LE_DEP", 126.8, "5E", "E")
-	addController("NY_LS_DEP", 124.75, "5S", "S")
-
-	jfk := JFKAirport()
-	s.Airports = append(s.Airports, jfk)
-	lga := LGAAirport()
-	lga.Scratchpads = jfk.Scratchpads
-	s.Airports = append(s.Airports, lga)
-	isp := ISPAirport()
-	isp.Scratchpads = jfk.Scratchpads
-	s.Airports = append(s.Airports, isp)
-	frg := FRGAirport()
-	frg.Scratchpads = jfk.Scratchpads
-	s.Airports = append(s.Airports, frg)
-
-	s.VideoMaps = loadVideoMaps()
-
-	return s
-}
-
-func loadVideoMaps() []*VideoMap {
 	// Initialize video maps from the embedded sector file (for now...)
 	contents := decompressZstd(sectorFile)
 	errorCallback := func(err string) {
@@ -114,7 +282,6 @@ func loadVideoMaps() []*VideoMap {
 		panic(err)
 	}
 
-	var vids []*VideoMap
 	include := false
 	for _, sid := range sectorFile.SIDs {
 		//lg.Errorf("SID %s", sid.Name)
@@ -130,10 +297,10 @@ func loadVideoMaps() []*VideoMap {
 					segs = append(segs, p0, p1)
 				}
 			}
-			vids = append(vids, &VideoMap{
+			maps[sid.Name] = &VideoMap{
 				Name:     sid.Name,
 				Segments: segs,
-			})
+			}
 		}
 		if sid.Name == "====== TRACON Maps =======" {
 			include = true
@@ -154,27 +321,29 @@ func loadVideoMaps() []*VideoMap {
 					segs = append(segs, p0, p1)
 				}
 			}
-			vids = append(vids, &VideoMap{
+			maps[star.Name] = &VideoMap{
 				Name:     star.Name,
 				Segments: segs,
-			})
+			}
 		}
 		if star.Name == "======== Airspace ========" || star.Name == "======= Geography ========" {
 			include = true
 		}
 	}
 
-	sort.Slice(vids, func(i, j int) bool { return vids[i].Name < vids[j].Name })
-	for i, vm := range vids {
-		vids[i].InitializeCommandBuffer()
-		lg.Printf("Got video map: %s", vm.Name)
+	for _, vm := range maps {
+		vm.InitializeCommandBuffer()
 	}
 
-	return vids
+	return maps
 }
 
 func JFKAirport() *Airport {
-	ac := &Airport{ICAO: "KJFK"}
+	ac := &Airport{
+		ICAO:      "KJFK",
+		Elevation: 13,
+		Location:  Point2LL{-73.780968, 40.641766},
+	}
 	ac.NamedLocations = map[string]Point2LL{
 		"_JFK_31L": mustParseLatLong("N040.37.41.000, W073.46.20.227"),
 		"_JFK_31R": mustParseLatLong("N040.38.35.986, W073.45.31.503"),
@@ -1167,29 +1336,8 @@ func JFKAirport() *Airport {
 		},
 	}
 
-	ac.Scratchpads = map[string]string{
-		"WAVEY":  "WAV",
-		"SHIPP":  "SHI",
-		"HAPIE":  "HAP",
-		"BETTE":  "BET",
-		"MERIT":  "MER",
-		"GREKI":  "GRE",
-		"BAYYS":  "BAY",
-		"BDR":    "BDR",
-		"DIXIE":  "DIX",
-		"WHITE":  "WHI",
-		"RBV":    "RBV",
-		"ARD":    "ARD",
-		"COATE":  "COA",
-		"NEION":  "NEI",
-		"HAAYS":  "HAY",
-		"GAYEL":  "GAY",
-		"DEEZZ":  "DEZ",
-		"DEEZZ5": "DEZ",
-	}
-
-	ac.DepartureRunways = []DepartureRunway{
-		DepartureRunway{
+	ac.DepartureRunways = []*DepartureRunway{
+		&DepartureRunway{
 			Runway:   "31L",
 			Rate:     45,
 			Altitude: 13,
@@ -1216,7 +1364,7 @@ func JFKAirport() *Airport {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "22R",
 			Rate:     45,
 			Altitude: 13,
@@ -1243,7 +1391,7 @@ func JFKAirport() *Airport {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "13R",
 			Rate:     45,
 			Altitude: 13,
@@ -1270,7 +1418,7 @@ func JFKAirport() *Airport {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #109"), ClearedAltitude: 5000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "4L",
 			Rate:     45,
 			Altitude: 13,
@@ -1303,7 +1451,11 @@ func JFKAirport() *Airport {
 }
 
 func LGAAirport() *Airport {
-	lga := &Airport{ICAO: "KLGA"}
+	lga := &Airport{
+		ICAO:      "KLGA",
+		Elevation: 7,
+		Location:  Point2LL{-73.8739659, 40.7769271},
+	}
 	lga.NamedLocations = map[string]Point2LL{
 		"_LGA_13":  mustParseLatLong("N040.46.56.029, W073.52.42.359"),
 		"_LGA_13a": mustParseLatLong("N040.48.06.479, W073.55.40.914"),
@@ -1453,8 +1605,8 @@ func LGAAirport() *Airport {
 		},
 	}
 
-	lga.DepartureRunways = []DepartureRunway{
-		DepartureRunway{
+	lga.DepartureRunways = []*DepartureRunway{
+		&DepartureRunway{
 			Runway:   "31",
 			Rate:     30,
 			Altitude: 20,
@@ -1468,7 +1620,7 @@ func LGAAirport() *Airport {
 				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 6000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "22",
 			Rate:     30,
 			Altitude: 20,
@@ -1482,7 +1634,7 @@ func LGAAirport() *Airport {
 				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 6000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "13",
 			Rate:     30,
 			Altitude: 20,
@@ -1496,7 +1648,7 @@ func LGAAirport() *Airport {
 				"WHITE": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 6000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "4",
 			Rate:     30,
 			Altitude: 20,
@@ -1527,7 +1679,11 @@ func LGAAirport() *Airport {
 }
 
 func ISPAirport() *Airport {
-	isp := &Airport{ICAO: "KISP"}
+	isp := &Airport{
+		ICAO:      "KISP",
+		Elevation: 87,
+		Location:  Point2LL{-73.1003215, 40.7972401},
+	}
 	isp.NamedLocations = map[string]Point2LL{
 		"_ISP_6":    mustParseLatLong("N040.47.18.743, W073.06.44.022"),
 		"_ISP_6a":   mustParseLatLong("N040.50.43.281, W073.02.11.698"),
@@ -1597,8 +1753,8 @@ func ISPAirport() *Airport {
 		},
 	}
 
-	isp.DepartureRunways = []DepartureRunway{
-		DepartureRunway{
+	isp.DepartureRunways = []*DepartureRunway{
+		&DepartureRunway{
 			Runway: "6",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -1608,7 +1764,7 @@ func ISPAirport() *Airport {
 				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_6 _ISP_6a _ISP_6b @ #270"), ClearedAltitude: 8000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway: "24",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -1618,7 +1774,7 @@ func ISPAirport() *Airport {
 				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_24 _ISP_24a _ISP_24b _ISP_24c @ #275"), ClearedAltitude: 8000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway: "15R",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -1628,7 +1784,7 @@ func ISPAirport() *Airport {
 				"BDR":   ExitRoute{InitialRoute: "LONGI7", Waypoints: mustParseWaypoints("_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc @ #275"), ClearedAltitude: 8000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway: "33L",
 			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
@@ -1644,7 +1800,11 @@ func ISPAirport() *Airport {
 }
 
 func FRGAirport() *Airport {
-	frg := &Airport{ICAO: "KFRG"}
+	frg := &Airport{
+		ICAO:      "KFRG",
+		Elevation: 64,
+		Location:  Point2LL{-73.418783, 40.724664},
+	}
 	frg.NamedLocations = map[string]Point2LL{
 		"_FRG_1":   mustParseLatLong("N040.43.20.230, W073.24.51.229"),
 		"_FRG_1a":  mustParseLatLong("N040.46.52.637, W073.24.58.809"),
@@ -1952,8 +2112,8 @@ func FRGAirport() *Airport {
 		},
 	}
 
-	frg.DepartureRunways = []DepartureRunway{
-		DepartureRunway{
+	frg.DepartureRunways = []*DepartureRunway{
+		&DepartureRunway{
 			Runway:   "1",
 			Rate:     30,
 			Altitude: 81,
@@ -1980,7 +2140,7 @@ func FRGAirport() *Airport {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "19",
 			Rate:     30,
 			Altitude: 81,
@@ -2007,7 +2167,7 @@ func FRGAirport() *Airport {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "14",
 			Rate:     30,
 			Altitude: 81,
@@ -2034,7 +2194,7 @@ func FRGAirport() *Airport {
 				"DEEZZ": ExitRoute{InitialRoute: "DEEZZ5", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
 			},
 		},
-		DepartureRunway{
+		&DepartureRunway{
 			Runway:   "32",
 			Rate:     30,
 			Altitude: 81,

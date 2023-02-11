@@ -560,3 +560,15 @@ func (v *VideoMap) InitializeCommandBuffer() {
 
 	ld.GenerateCommands(&v.cb)
 }
+
+type RadarSite struct {
+	Char     string
+	Id       string
+	Position string
+
+	Elevation      int32
+	PrimaryRange   int32
+	SecondaryRange int32
+	SlopeAngle     float32
+	SilenceAngle   float32
+}

@@ -147,7 +147,7 @@ func (a *Aircraft) TrackGroundspeed() int {
 
 // Note: returned value includes the magnetic correction
 func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + database.MagneticVariation
+	return a.Tracks[0].Heading + tracon.MagneticVariation
 }
 
 // Perhaps confusingly, the vector returned by HeadingVector() is not
@@ -182,7 +182,7 @@ func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, database.MagneticVariation)
+	return headingp2ll(a.TrackPosition(), p, tracon.MagneticVariation)
 }
 
 func (a *Aircraft) LostTrack(now time.Time) bool {
@@ -409,7 +409,7 @@ func (ac *Aircraft) updateHeading() {
 		loc[0], loc[1] = ll2nm(loc[0]), ll2nm(loc[1])
 
 		pos := ll2nm(ac.Position)
-		hdg := ac.Heading - database.MagneticVariation
+		hdg := ac.Heading - tracon.MagneticVariation
 		headingVector := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		pos1 := add2f(pos, headingVector)
 
@@ -430,7 +430,7 @@ func (ac *Aircraft) updateHeading() {
 			// the localizer.
 			dist := distance2f(pos, isect)
 			eta := dist / ac.GS * 3600 // in seconds
-			turn := abs(headingDifference(hdg, float32(ap.Heading())-database.MagneticVariation))
+			turn := abs(headingDifference(hdg, float32(ap.Heading())-tracon.MagneticVariation))
 			//lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
 
 			// Assuming 3 degree/second turns, then we might start to turn to
@@ -476,7 +476,7 @@ func (ac *Aircraft) updateHeading() {
 	} else if len(ac.Waypoints) > 0 {
 		// Our desired heading is the heading to get to the next waypoint.
 		targetHeading = headingp2ll(ac.Position, ac.Waypoints[0].Location,
-			database.MagneticVariation)
+			tracon.MagneticVariation)
 	} else {
 		// And otherwise we're flying off into the void...
 		return
@@ -510,7 +510,7 @@ func (ac *Aircraft) updateHeading() {
 func (ac *Aircraft) updatePositionAndGS() {
 	// Update position given current heading
 	prev := ac.Position
-	hdg := ac.Heading - database.MagneticVariation
+	hdg := ac.Heading - tracon.MagneticVariation
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 	// First use TAS to get a first whack at the new position.
 	newPos := add2f(ll2nm(ac.Position), scale2f(v, ac.TAS()/3600))
@@ -605,7 +605,7 @@ func (ac *Aircraft) updateWaypoints() {
 		hdg = float32(wp.Heading)
 	} else if len(ac.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
-		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, database.MagneticVariation)
+		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, tracon.MagneticVariation)
 	}
 
 	eta := wp.ETA(ac.Position, ac.GS)

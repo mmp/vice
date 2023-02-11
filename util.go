@@ -297,7 +297,7 @@ func headingv2ll(v Point2LL, magCorrection float32) float32 {
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
-	angle := degrees(atan2(v[0]*database.NmPerLongitude, v[1]*database.NmPerLatitude))
+	angle := degrees(atan2(v[0]*tracon.NmPerLongitude, v[1]*tracon.NmPerLatitude))
 	angle += magCorrection
 	for angle < 0 {
 		angle += 360
@@ -750,30 +750,30 @@ func length2ll(v Point2LL) float32 {
 // nmdistance2ll returns the distance in nautical miles between two
 // provided lat-long coordinates.
 func nmdistance2ll(a Point2LL, b Point2LL) float32 {
-	dlat := (a[1] - b[1]) * database.NmPerLatitude
-	dlong := (a[0] - b[0]) * database.NmPerLongitude
+	dlat := (a[1] - b[1]) * tracon.NmPerLatitude
+	dlong := (a[0] - b[0]) * tracon.NmPerLongitude
 	return sqrt(sqr(dlat) + sqr(dlong))
 }
 
 // nmlength2ll returns the length of a vector expressed in lat-long
 // coordinates.
 func nmlength2ll(a Point2LL) float32 {
-	x := a[0] * database.NmPerLongitude
-	y := a[1] * database.NmPerLatitude
+	x := a[0] * tracon.NmPerLongitude
+	y := a[1] * tracon.NmPerLatitude
 	return sqrt(sqr(x) + sqr(y))
 }
 
 // nm2ll converts a point expressed in nautical mile coordinates to
 // lat-long.
 func nm2ll(p [2]float32) Point2LL {
-	return Point2LL{p[0] / database.NmPerLongitude, p[1] / database.NmPerLatitude}
+	return Point2LL{p[0] / tracon.NmPerLongitude, p[1] / tracon.NmPerLatitude}
 }
 
 // ll2nm converts a point expressed in latitude-longitude coordinates to
 // nautical mile coordinates; this is useful for example for reasoning
 // about distances, since both axes then have the same measure.
 func ll2nm(p Point2LL) [2]float32 {
-	return [2]float32{p[0] * database.NmPerLongitude, p[1] * database.NmPerLatitude}
+	return [2]float32{p[0] * tracon.NmPerLongitude, p[1] * tracon.NmPerLatitude}
 }
 
 func normalize2ll(a Point2LL) Point2LL {
