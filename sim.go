@@ -325,6 +325,7 @@ func (ssc *SimConnectionConfiguration) Connect() error {
 	for _, ac := range sim.GetAllAircraft() {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
+	sim.Disconnect()
 	sim = NewSim(*ssc)
 	sim.Prespawn()
 	return nil
