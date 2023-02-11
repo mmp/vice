@@ -2290,8 +2290,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 								status.err = ErrSTARSIllegalTrack
 							}
 						} else if _, ok := database.Locate(string(command[1:])); ok {
-							if sim.DirectFix(ac.Callsign, command[1:]) != nil {
-								status.err = ErrSTARSIllegalTrack
+							if err := sim.DirectFix(ac.Callsign, command[1:]); err != nil {
+								if err == ErrNoAircraftForCallsign {
+									status.err = ErrSTARSIllegalTrack
+								} else {
+									status.err = ErrSTARSIllegalParam
+								}
 							}
 						} else {
 							status.err = ErrSTARSIllegalParam
