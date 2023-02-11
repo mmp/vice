@@ -734,6 +734,7 @@ func (ss *Sim) GetWindowTitle() string {
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
+	lg.Printf("%s: %s", callsign, fmt.Sprintf(fm, args...))
 	eventStream.Post(&RadioTransmissionEvent{callsign: callsign, message: fmt.Sprintf(fm, args...)})
 }
 
