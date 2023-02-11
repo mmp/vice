@@ -1338,9 +1338,8 @@ func JFKAirport() *Airport {
 
 	ac.DepartureRunways = []*DepartureRunway{
 		&DepartureRunway{
-			Runway:   "31L",
-			Rate:     45,
-			Altitude: 13,
+			Runway: "31L",
+			Rate:   45,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "SKORR5.YNKEE", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
 				"SHIPP": ExitRoute{InitialRoute: "SKORR5.YNKEE", Waypoints: mustParseWaypoints("_JFK_31L _JFK_13R SKORR CESID YNKEE #172"), ClearedAltitude: 5000},
@@ -1365,9 +1364,8 @@ func JFKAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "22R",
-			Rate:     45,
-			Altitude: 13,
+			Runway: "22R",
+			Rate:   45,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
 				"SHIPP": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_22R _JFK_4L #222"), ClearedAltitude: 5000},
@@ -1392,9 +1390,8 @@ func JFKAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "13R",
-			Rate:     45,
-			Altitude: 13,
+			Runway: "13R",
+			Rate:   45,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #170"), ClearedAltitude: 5000},
 				"SHIPP": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_13R _JFK_31L #170"), ClearedAltitude: 5000},
@@ -1419,9 +1416,8 @@ func JFKAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "4L",
-			Rate:     45,
-			Altitude: 13,
+			Runway: "4L",
+			Rate:   45,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
 				"SHIPP": ExitRoute{InitialRoute: "JFK5", Waypoints: mustParseWaypoints("_JFK_4L _JFK_4La #100"), ClearedAltitude: 5000},
@@ -1607,9 +1603,8 @@ func LGAAirport() *Airport {
 
 	lga.DepartureRunways = []*DepartureRunway{
 		&DepartureRunway{
-			Runway:   "31",
-			Rate:     30,
-			Altitude: 20,
+			Runway: "31",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 8000},
 				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_31 _LGA_13 _LGA_13a @ JFK"), ClearedAltitude: 8000},
@@ -1621,9 +1616,8 @@ func LGAAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "22",
-			Rate:     30,
-			Altitude: 20,
+			Runway: "22",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 8000},
 				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"), ClearedAltitude: 8000},
@@ -1635,9 +1629,8 @@ func LGAAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "13",
-			Rate:     30,
-			Altitude: 20,
+			Runway: "13",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 8000},
 				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"), ClearedAltitude: 8000},
@@ -1649,9 +1642,8 @@ func LGAAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "4",
-			Rate:     30,
-			Altitude: 20,
+			Runway: "4",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 8000},
 				"SHIPP": ExitRoute{InitialRoute: "LGA7", Waypoints: mustParseWaypoints("_LGA_4 _LGA_22 _LGA_22a @ JFK"), ClearedAltitude: 8000},
@@ -2114,9 +2106,8 @@ func FRGAirport() *Airport {
 
 	frg.DepartureRunways = []*DepartureRunway{
 		&DepartureRunway{
-			Runway:   "1",
-			Rate:     30,
-			Altitude: 81,
+			Runway: "1",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
 				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_1 _FRG_19 _FRG_1a @ #013"), ClearedAltitude: 3000},
@@ -2141,9 +2132,8 @@ func FRGAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "19",
-			Rate:     30,
-			Altitude: 81,
+			Runway: "19",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
 				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_19 _FRG_1 _FRG_19a @ #220"), ClearedAltitude: 3000},
@@ -2168,9 +2158,8 @@ func FRGAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "14",
-			Rate:     30,
-			Altitude: 81,
+			Runway: "14",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
 				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_14 _FRG_32 _FRG_14a @ #220"), ClearedAltitude: 3000},
@@ -2195,9 +2184,8 @@ func FRGAirport() *Airport {
 			},
 		},
 		&DepartureRunway{
-			Runway:   "32",
-			Rate:     30,
-			Altitude: 81,
+			Runway: "32",
+			Rate:   30,
 			ExitRoutes: map[string]ExitRoute{
 				"WAVEY": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},
 				"SHIPP": ExitRoute{InitialRoute: "REP1", Waypoints: mustParseWaypoints("_FRG_32 _FRG_14 _FRG_32a @ #010"), ClearedAltitude: 3000},

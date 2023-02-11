@@ -144,7 +144,6 @@ func (ac *Airport) InitializeWaypointLocations(waypoints []Waypoint) []error {
 
 type DepartureRunway struct {
 	Runway     string               `json:"runway"`
-	Altitude   int                  `json:"altitude"`
 	Enabled    bool                 `json:"-"`
 	Rate       int32                `json:"rate"`
 	ExitRoutes map[string]ExitRoute `json:"exit_routes"`
