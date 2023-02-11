@@ -999,7 +999,11 @@ func (ss *Sim) DrawSettingsWindow() {
 
 	imgui.BeginV("Simulation Settings", &ss.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
-	imgui.SliderFloatV("Simulation speed", &ss.simRate, 1, 10, "%.1f", 0)
+	if *devmode {
+		imgui.SliderFloatV("Simulation speed", &ss.simRate, 1, 100, "%.1f", 0)
+	} else {
+		imgui.SliderFloatV("Simulation speed", &ss.simRate, 1, 10, "%.1f", 0)
+	}
 	imgui.Separator()
 
 	var fsp *FlightStripPane
