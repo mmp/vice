@@ -14,8 +14,6 @@ type Airport struct {
 	Elevation int      `json:"elevation"`
 	Location  Point2LL `json:"location"`
 
-	NamedLocations map[string]Point2LL `json:"named_locations,imotempty"`
-
 	ArrivalGroups []ArrivalGroup `json:"arrival_groups,omitempty"`
 	Approaches    []Approach     `json:"approaches,omitempty"`
 	Departures    []Departure    `json:"departures,omitempty"`
@@ -124,7 +122,7 @@ func (ac *Airport) InitializeWaypointLocations(waypoints []Waypoint) []error {
 	for i, wp := range waypoints {
 		if pos, ok := database.Locate(wp.Fix); ok {
 			waypoints[i].Location = pos
-		} else if pos, ok := ac.NamedLocations[wp.Fix]; ok {
+		} else if pos, ok := tracon.Locate(wp.Fix); ok {
 			waypoints[i].Location = pos
 		} else if pos, err := ParseLatLong(wp.Fix); err == nil {
 			waypoints[i].Location = pos

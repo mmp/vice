@@ -35,6 +35,7 @@ var (
 type TRACON struct {
 	Name             string                 `json:"name"`
 	Airports         map[string]*Airport    `json:"airports"`
+	Fixes            map[string]Point2LL    `json:"fixes"`
 	VideoMaps        map[string]*VideoMap   `json:"-"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
@@ -48,6 +49,16 @@ type TRACON struct {
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
 	MagneticVariation float32 `json:"magnetic_variation"`
+}
+
+func (t *TRACON) Locate(s string) (Point2LL, bool) {
+	if ap, ok := t.Airports[s]; ok {
+		return ap.Location, true
+	} else if p, ok := t.Fixes[s]; ok {
+		return p, true
+	} else {
+		return Point2LL{}, false
+	}
 }
 
 type Scenario struct {

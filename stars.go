@@ -225,7 +225,7 @@ func MakeDefaultFacility(tracon *TRACON) STARSFacility {
 }
 
 func (rs *RadarSite) Valid() bool {
-	_, ok := tracon.Airports[rs.Position] // FIXME: should allow non-airport-located radars...
+	_, ok := tracon.Locate(rs.Position)
 	return rs.Char != "" && rs.Id != "" && rs.Position != "" && ok
 }
 
@@ -236,13 +236,12 @@ func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, seconda
 		return
 	}
 
-	ap, ok := tracon.Airports[rs.Position] // FIXME...
+	pRadar, ok := tracon.Locate(rs.Position)
 	if !ok {
 		// Really, this method shouldn't be called if the site is invalid,
 		// but if it is, there's not much else we can do.
 		return
 	}
-	pRadar := ap.Location
 
 	// Time to check the angles; we'll do all of this in nm coordinates,
 	// since that's how we check the range anyway.
@@ -736,7 +735,7 @@ func (sp *STARSPane) DrawUI() {
 								invalid = true
 							}
 						}
-						if _, ok := tracon.Airports[ap.ICAOCode]; !ok {
+						if _, ok := tracon.Locate(ap.ICAOCode); !ok {
 							invalid = true
 						}
 
@@ -842,7 +841,7 @@ func (sp *STARSPane) DrawUI() {
 
 					imgui.TableNextColumn()
 					imgui.InputTextV("##position", &site.Position, flags, nil)
-					if _, ok := tracon.Airports[site.Position]; site.Position != "" && !ok {
+					if _, ok := tracon.Locate(site.Position); site.Position != "" && !ok {
 						imgui.SameLine()
 						errorExclamationTriangle()
 					}
@@ -1430,7 +1429,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				status.clear = true
 				return
 			} else if f[0] == ".FIND" {
-				if pos, ok := database.Locate(f[1]); ok {
+				pos, ok := database.Locate(f[1])
+				if !ok {
+					pos, ok = tracon.Locate(f[1])
+				}
+				if ok {
 					globalConfig.highlightedLocation = pos
 					globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 					status.clear = true
@@ -2918,7 +2921,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		for i, site := range sp.Facility.RadarSites {
 			if site.Char == "" || site.Id == "" || site.Position == "" {
 				STARSDisabledButton("", STARSButtonFull)
-			} else if _, ok := database.Locate(site.Position); !ok {
+			} else if _, ok := tracon.Locate(site.Position); !ok {
 				STARSDisabledButton("", STARSButtonFull)
 			} else {
 				label := " " + site.Char + " " + "\n" + site.Id
