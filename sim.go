@@ -730,7 +730,7 @@ func (ss *Sim) GetWindowTitle() string {
 	if ss.scenario == nil {
 		return "(disconnected)"
 	}
-	return "Sim: " + ss.scenario.Callsign
+	return ss.scenario.Callsign + ": " + ss.scenario.Name
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
