@@ -544,8 +544,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 }
 
 type VideoMap struct {
-	Name     string     `json:"name"`
-	Segments []Point2LL `json:"segments"`
+	Name     string
+	Segments []Point2LL
 
 	cb CommandBuffer
 }
@@ -562,13 +562,13 @@ func (v *VideoMap) InitializeCommandBuffer() {
 }
 
 type RadarSite struct {
-	Char     string
-	Id       string
-	Position string
+	Char     string `json:"char"`
+	Id       string `json:"id"`
+	Position string `json:"position"`
 
-	Elevation      int32
-	PrimaryRange   int32
-	SecondaryRange int32
-	SlopeAngle     float32
-	SilenceAngle   float32
+	Elevation      int32   `json:"elevation"`
+	PrimaryRange   int32   `json:"primary_range"`
+	SecondaryRange int32   `json:"secondary_range"`
+	SlopeAngle     float32 `json:"slope_angle"`
+	SilenceAngle   float32 `json:"silence_angle"`
 }

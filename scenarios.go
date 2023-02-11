@@ -293,7 +293,7 @@ func loadVideoMaps() map[string]*VideoMap {
 			for _, seg := range sid.Segs {
 				p0 := Point2LL{float32(seg.Segment.P[0].Longitude), float32(seg.Segment.P[0].Latitude)}
 				p1 := Point2LL{float32(seg.Segment.P[1].Longitude), float32(seg.Segment.P[1].Latitude)}
-				if !p0.IsZero() && !p1.IsZero() {
+				if !p0.IsZero() && !p1.IsZero() && (p0[0] != p1[0] || p0[1] != p1[1]) {
 					segs = append(segs, p0, p1)
 				}
 			}
@@ -317,7 +317,7 @@ func loadVideoMaps() map[string]*VideoMap {
 			for _, seg := range star.Segs {
 				p0 := Point2LL{float32(seg.Segment.P[0].Longitude), float32(seg.Segment.P[0].Latitude)}
 				p1 := Point2LL{float32(seg.Segment.P[1].Longitude), float32(seg.Segment.P[1].Latitude)}
-				if !p0.IsZero() && !p1.IsZero() {
+				if !p0.IsZero() && !p1.IsZero() && (p0[0] != p1[0] || p0[1] != p1[1]) {
 					segs = append(segs, p0, p1)
 				}
 			}

@@ -35,7 +35,7 @@ var (
 type TRACON struct {
 	Name             string                 `json:"name"`
 	Airports         map[string]*Airport    `json:"airports"`
-	VideoMaps        map[string]*VideoMap   `json:"video_maps"`
+	VideoMaps        map[string]*VideoMap   `json:"-"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
 	Scratchpads      map[string]string      `json:"scratchpads"`
@@ -56,8 +56,8 @@ type Scenario struct {
 	Wind        Wind     `json:"wind"`
 	Controllers []string `json:"controllers"`
 
-	DepartureRunwayStrings []string                    `json:"departure_runways"` // e.g. "KJFK/31L"
-	ArrivalRunwayStrings   []string                    `json:"arrival_runways"`   // e.g. "KJFK/31L"
+	DepartureRunwayStrings []string                    `json:"departure_runways,omitempty"` // e.g. "KJFK/31L"
+	ArrivalRunwayStrings   []string                    `json:"arrival_runways,omitempty"`   // e.g. "KJFK/31L"
 	DepartureRunways       map[string]*DepartureRunway `json:"-"`
 	ArrivalRunways         map[string]*ArrivalRunway   `json:"-"`
 }

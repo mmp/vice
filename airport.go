@@ -14,11 +14,11 @@ type Airport struct {
 	Elevation int      `json:"elevation"`
 	Location  Point2LL `json:"location"`
 
-	NamedLocations map[string]Point2LL `json:"named_locations"`
+	NamedLocations map[string]Point2LL `json:"named_locations,imotempty"`
 
-	ArrivalGroups []ArrivalGroup `json:"arrival_groups"`
-	Approaches    []Approach     `json:"approaches"`
-	Departures    []Departure    `json:"departures"`
+	ArrivalGroups []ArrivalGroup `json:"arrival_groups,omitempty"`
+	Approaches    []Approach     `json:"approaches,omitempty"`
+	Departures    []Departure    `json:"departures,omitempty"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
@@ -175,7 +175,7 @@ type Departure struct {
 
 type DepartureAirline struct {
 	ICAO  string `json:"icao"`
-	Fleet string `json:"fleet"`
+	Fleet string `json:"fleet,omitempty"`
 }
 
 type ArrivalGroup struct {
