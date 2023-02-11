@@ -5,6 +5,8 @@
 package main
 
 import (
+	_ "embed"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -1290,4 +1292,34 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 	ac.AssignedAltitude = exitRoute.ClearedAltitude
 
 	return ac
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+var (
+	//go:embed configs/zny.json
+	znyJSON string
+	//go:embed configs/zny-maps.json
+	znyMapsJSON string
+)
+
+func LoadZNY() *TRACON {
+	var t TRACON
+	if err := json.Unmarshal([]byte(znyJSON), &t); err != nil {
+		panic(err)
+	}
+
+	var maps map[string][]Point2LL
+	if err := json.Unmarshal([]byte(znyMapsJSON), &maps); err != nil {
+		panic(err)
+	}
+
+	t.VideoMaps = make(map[string]*VideoMap)
+	for name, segs := range maps {
+		vm := &VideoMap{Name: name, Segments: segs}
+		vm.InitializeCommandBuffer()
+		t.VideoMaps[name] = vm
+	}
+
+	return &t
 }
