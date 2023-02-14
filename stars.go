@@ -3099,6 +3099,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 	formatMETAR := func(ap string, metar *METAR) string {
 		alt := strings.TrimPrefix(metar.Altimeter, "A")
+		if len(alt) == 4 {
+			alt = alt[:2] + "." + alt[2:]
+		}
 		wind := strings.TrimSuffix(metar.Wind, "KT")
 		return stripK(ap) + " " + alt + " " + wind
 	}
@@ -3252,7 +3255,6 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				}
 			}
 			if len(lines) > 0 {
-				sort.Strings(lines)
 				pw = td.AddText(strings.Join(lines, "\n"), pw, style)
 				newline()
 			}
