@@ -169,6 +169,10 @@ func (t *TRACON) PostDeserialize() {
 		}
 	}
 
+	if !*devmode {
+		t.Scenarios = FilterMap(t.Scenarios, func(name string, s *Scenario) bool { return name != "DEBUG" })
+	}
+
 	// Do after airports!
 	for _, s := range t.Scenarios {
 		if errors := s.PostDeserialize(t); len(errors) > 0 {
