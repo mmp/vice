@@ -1092,7 +1092,9 @@ func (ss *Sim) SpawnAircraft() {
 		}
 		ac.Waypoints = ac.Waypoints[1:]
 
-		lg.Errorf("Added aircraft: %s", spew.Sdump(ac))
+		if *devmode {
+			lg.Printf("Added aircraft: %s", spew.Sdump(ac))
+		}
 
 		ss.remainingLaunches--
 		eventStream.Post(&AddedAircraftEvent{ac: ac})
