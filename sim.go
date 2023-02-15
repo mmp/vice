@@ -582,8 +582,10 @@ func (ss *Sim) Disconnect() {
 	for _, ac := range ss.aircraft {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
-	eventStream.Unsubscribe(ss.eventsId)
-	ss.eventsId = InvalidEventSubscriberId
+	if ss.eventsId != InvalidEventSubscriberId {
+		eventStream.Unsubscribe(ss.eventsId)
+		ss.eventsId = InvalidEventSubscriberId
+	}
 }
 
 func (ss *Sim) GetAircraft(callsign string) *Aircraft {
