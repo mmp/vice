@@ -145,6 +145,12 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 		}
 	}
 
+	for _, ctrl := range s.Controllers {
+		if _, ok := t.ControlPositions[ctrl]; !ok {
+			errors = append(errors, fmt.Errorf("%s: controller unknown in scenario %s", ctrl, s.Name))
+		}
+	}
+
 	return errors
 }
 
@@ -156,7 +162,7 @@ type Wind struct {
 
 func (t *TRACON) PostDeserialize() {
 	for _, ap := range t.Airports {
-		if errors := ap.PostDeserialize(); len(errors) > 0 {
+		if errors := ap.PostDeserialize(t.ControlPositions); len(errors) > 0 {
 			for _, err := range errors {
 				lg.Errorf("%s: error in specification: %v", ap.ICAO, err)
 			}

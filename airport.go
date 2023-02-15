@@ -25,7 +25,7 @@ type Airport struct {
 	ArrivalRunways     []*ArrivalRunway   `json:"-"`
 }
 
-func (ac *Airport) PostDeserialize() []error {
+func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 	var errors []error
 
 	for _, rwy := range ac.ArrivalRunwayNames {
@@ -86,6 +86,11 @@ func (ac *Airport) PostDeserialize() []error {
 
 			for _, al := range ar.Airlines {
 				checkAirline(al.ICAO, al.Fleet)
+			}
+
+			if _, ok := controllers[ar.InitialController]; !ok {
+				errors = append(errors, fmt.Errorf("%s: controller not found for %s arrival in %s group",
+					ar.InitialController, ar.Name, ag.Name))
 			}
 		}
 	}
