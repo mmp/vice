@@ -95,7 +95,7 @@
               ],
               "cleared_altitude": 11000,
               "initial_altitude": 15000,
-              "initial_controller": "NY_B_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 300,
               "name": "CAMRN4",
               "route": "/. CAMRN4",
@@ -146,7 +146,7 @@
               ],
               "cleared_altitude": 19000,
               "initial_altitude": 20000,
-              "initial_controller": "NY_C_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 300,
               "name": "LENDY8",
               "route": "/. LENDY8",
@@ -173,7 +173,7 @@
               ],
               "cleared_altitude": 2000,
               "initial_altitude": 2500,
-              "initial_controller": "NY_F_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 250,
               "name": "DEBUG",
               "route": "/. DEBUG",
@@ -1126,7 +1126,7 @@
               ],
               "cleared_altitude": 11000,
               "initial_altitude": 15000,
-              "initial_controller": "NY_B_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 300,
               "name": "CAMRN4",
               "route": "/. CAMRN4",
@@ -1175,7 +1175,7 @@
               ],
               "cleared_altitude": 9000,
               "initial_altitude": 11000,
-              "initial_controller": "NY_B_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 300,
               "name": "OWENZ",
               "route": "/. OWENZ CAMRN",
@@ -1259,7 +1259,7 @@
               ],
               "cleared_altitude": 19000,
               "initial_altitude": 20000,
-              "initial_controller": "NY_C_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 300,
               "name": "LENDY8",
               "route": "/. LENDY8",
@@ -1321,7 +1321,7 @@
               ],
               "cleared_altitude": 19000,
               "initial_altitude": 19000,
-              "initial_controller": "NY_C_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 300,
               "name": "IGN1",
               "route": "/. IGN1",
@@ -1344,7 +1344,7 @@
               ],
               "cleared_altitude": 2000,
               "initial_altitude": 3000,
-              "initial_controller": "NY_F_CTR",
+              "initial_controller": "NY_CTR",
               "initial_speed": 250,
               "name": "DEBUG",
               "route": "/. DEBUG",
@@ -2998,6 +2998,12 @@
       "scope_char": "L",
       "sector_id": "1L"
     },
+    "NY_CTR": {
+      "callsign": "NY_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
     "NY_B_CTR": {
       "callsign": "NY_B_CTR",
       "frequency": 125325,
@@ -3018,6 +3024,12 @@
     },
     "NY_LE_DEP": {
       "callsign": "NY_LE_DEP",
+      "frequency": 126800,
+      "scope_char": "E",
+      "sector_id": "5E"
+    },
+    "NY_L_DEP": {
+      "callsign": "NY_L_DEP",
       "frequency": 126800,
       "scope_char": "E",
       "sector_id": "5E"
@@ -3170,11 +3182,8 @@
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
-        "NY_F_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
+        "NY_CTR",
+        "NY_L_DEP"
       ],
       "departure_runways": [
         "KJFK/13R",
@@ -3201,11 +3210,8 @@
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
-        "NY_F_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
+        "NY_CTR",
+        "NY_L_DEP"
       ],
       "departure_runways": [
         "KJFK/13R",
@@ -3257,11 +3263,8 @@
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
-        "NY_F_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
+        "NY_CTR",
+        "NY_L_DEP"
       ],
       "departure_runways": [
         "KJFK/22R",
@@ -3313,11 +3316,8 @@
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
-        "NY_F_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
+        "NY_CTR",
+        "NY_L_DEP"
       ],
       "departure_runways": [
         "KJFK/31L",
@@ -3369,11 +3369,8 @@
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
-        "NY_F_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
+        "NY_CTR",
+        "NY_L_DEP"
       ],
       "departure_runways": [
         "KJFK/4L",
