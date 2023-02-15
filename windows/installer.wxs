@@ -38,9 +38,29 @@
             <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
           </Component>
         </Directory>
+
 	<Directory Id="ProgramMenuFolder">
 	  <Directory Id="ApplicationProgramsFolder" Name="Vice"/>
 	</Directory>
+
+	<Directory Id="DesktopFolder" Name="Desktop">
+          <Component Id="ApplicationShortcutDesktop" Guid="*">
+            <Shortcut Id="ApplicationDesktopShortcut"
+                      Name="Vice ATC"
+                      Description="Vice ATC Simulator"
+                      Target="[#Vice.exe]"
+                      WorkingDirectory="INSTALLFOLDER"/>
+            <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+            <RegistryValue
+                Root="HKCU"
+                Key="Software\Matt Pharr\Vice"
+                Name="installed"
+                Type="integer"
+                Value="1"
+                KeyPath="yes"/>
+          </Component>
+	</Directory>
+
       </Directory>
     </Directory>
 
@@ -86,6 +106,7 @@
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
   </Product>
 </Wix>
