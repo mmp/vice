@@ -3479,6 +3479,26 @@
     },
     {
       "Group": 0,
+      "Label": "PHL WEST",
+      "Name": "PHL - Video Map West"
+    },
+    {
+      "Group": 0,
+      "Label": "PHL EAST",
+      "Name": "PHL - Video Map East"
+    },
+    {
+      "Group": 1,
+      "Label": "PHL MVA",
+      "Name": "PHL - MVA"
+    },
+    {
+      "Group": 1,
+      "Label": "PHL B",
+      "Name": "Philadelphia Class B"
+    },
+    {
+      "Group": 0,
       "Label": "ISP",
       "Name": "N90 ISP - Video Map"
     }
