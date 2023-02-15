@@ -260,7 +260,7 @@ func (ac *Aircraft) updateAirspeed() {
 
 	// Slow down on final approach
 	if ac.OnFinal {
-		if airportPos, ok := database.Locate(ac.FlightPlan.ArrivalAirport); ok {
+		if airportPos, ok := tracon.Locate(ac.FlightPlan.ArrivalAirport); ok {
 			airportDist := nmdistance2ll(ac.Position, airportPos)
 			if airportDist < 1 {
 				targetSpeed = perf.Speed.Landing
@@ -279,6 +279,9 @@ func (ac *Aircraft) updateAirspeed() {
 			// the target speed.
 			targetSpeed = min(targetSpeed, int(ac.IAS))
 			//lg.Errorf("airport dist %f -> target speed %d", airportDist, targetSpeed)
+		} else {
+			lg.Errorf("%s: arrival airport %s not known to tracon?!", ac.Callsign,
+				ac.FlightPlan.ArrivalAirport)
 		}
 	}
 
