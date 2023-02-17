@@ -40,6 +40,7 @@ type TRACON struct {
 	Fixes            map[string]Point2LL    `json:"fixes"`
 	VideoMaps        map[string]*VideoMap   `json:"-"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
+	DefaultScenario  string                 `json:"default_scenario"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
 	Scratchpads      map[string]string      `json:"scratchpads"`
 
@@ -173,6 +174,10 @@ func (t *TRACON) PostDeserialize() {
 		t.Scenarios = FilterMap(t.Scenarios, func(name string, s *Scenario) bool { return name != "DEBUG" })
 	}
 
+	if _, ok := t.Scenarios[t.DefaultScenario]; !ok {
+		lg.Errorf("%s: default scenario not found", t.DefaultScenario)
+	}
+
 	// Do after airports!
 	for _, s := range t.Scenarios {
 		if errors := s.PostDeserialize(t); len(errors) > 0 {
@@ -222,7 +227,11 @@ func (ssc *SimConnectionConfiguration) Initialize() {
 	// TODO: choose scenario...
 	// TODO: when we have multiple scenarios,
 	initial := SortedMapKeys(tracon.Scenarios)[0]
-	ssc.scenario = tracon.Scenarios[initial]
+	ssc.scenario = tracon.Scenarios[tracon.DefaultScenario]
+	if ssc.scenario == nil {
+		initial := SortedMapKeys(tracon.Scenarios)[0]
+		ssc.scenario = tracon.Scenarios[initial]
+	}
 	tracon.ActivateScenario(initial)
 }
 
