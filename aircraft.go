@@ -352,6 +352,12 @@ func (ac *Aircraft) updateAltitude() {
 	if climb >= 2500 && ac.Altitude > 5000 {
 		climb -= 500
 	}
+	if ac.Altitude < 10000 {
+		// Have a slower baseline rate of descent on approach
+		descent = min(descent, 1500)
+		// And reduce it based on airspeed as well
+		descent *= min(ac.IAS/250, 1)
+	}
 
 	if ac.AssignedAltitude != 0 {
 		// Controller-assigned altitude takes precedence over a crossing
