@@ -4039,11 +4039,17 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 		// position or by a fixed position. We'll start with the fixed
 		// position and then override it if there's a valid *Aircraft.
 		p0, p1 := rbl.p[0].loc, rbl.p[1].loc
-		if rbl.p[0].ac != nil {
-			p0 = rbl.p[0].ac.TrackPosition()
+		if ac := rbl.p[0].ac; ac != nil {
+			if ac.LostTrack(sim.CurrentTime()) || !sp.datablockVisible(ac) {
+				continue
+			}
+			p0 = ac.TrackPosition()
 		}
-		if rbl.p[1].ac != nil {
-			p1 = rbl.p[1].ac.TrackPosition()
+		if ac := rbl.p[1].ac; ac != nil {
+			if ac.LostTrack(sim.CurrentTime()) || !sp.datablockVisible(ac) {
+				continue
+			}
+			p1 = ac.TrackPosition()
 		}
 
 		// Format the range-bearing line text for the two positions.
