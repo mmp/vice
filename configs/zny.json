@@ -105,7 +105,7 @@
             }
           ],
           "name": "CAMRN4",
-          "rate": 20
+          "rate": 10
         },
         {
           "arrivals": [
@@ -156,7 +156,7 @@
             }
           ],
           "name": "LENDY8",
-          "rate": 20
+          "rate": 10
         },
         {
           "arrivals": [
@@ -250,7 +250,7 @@
             }
           ],
           "name": "PARCH3",
-          "rate": 20
+          "rate": 10
         }
       ],
       "arrival_runways": null,
@@ -343,7 +343,7 @@
               "waypoints": "_FRG_1 _FRG_19 _FRG_1a #13 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "1"
         },
         {
@@ -434,7 +434,7 @@
               "waypoints": "_FRG_19 _FRG_1 _FRG_19a #220 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "19"
         },
         {
@@ -525,7 +525,7 @@
               "waypoints": "_FRG_14 _FRG_32 _FRG_14a #220 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "14"
         },
         {
@@ -616,7 +616,7 @@
               "waypoints": "_FRG_32 _FRG_14 _FRG_32a #10 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "32"
         }
       ],
@@ -783,7 +783,7 @@
               "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "6"
         },
         {
@@ -809,7 +809,7 @@
               "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "24"
         },
         {
@@ -835,7 +835,7 @@
               "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "15R"
         },
         {
@@ -861,7 +861,7 @@
               "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "33L"
         }
       ],
@@ -1136,7 +1136,7 @@
             }
           ],
           "name": "CAMRN4",
-          "rate": 15
+          "rate": 10
         },
         {
           "arrivals": [
@@ -1185,7 +1185,7 @@
             }
           ],
           "name": "OWENZ",
-          "rate": 15
+          "rate": 10
         },
         {
           "arrivals": [
@@ -1331,7 +1331,7 @@
             }
           ],
           "name": "LENDY8/IGN1",
-          "rate": 15
+          "rate": 10
         },
         {
           "arrivals": [
@@ -1354,7 +1354,7 @@
             }
           ],
           "name": "DEBUG",
-          "rate": 20
+          "rate": 40
         },
         {
           "arrivals": [
@@ -1526,7 +1526,7 @@
             }
           ],
           "name": "PARCH3/ROBER2",
-          "rate": 15
+          "rate": 10
         }
       ],
       "arrival_runways": [
@@ -1628,7 +1628,7 @@
               "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR #223"
             }
           },
-          "rate": 45,
+          "rate": 30,
           "runway": "31L"
         },
         {
@@ -1719,7 +1719,7 @@
               "waypoints": "_JFK_22R _JFK_4L #222"
             }
           },
-          "rate": 45,
+          "rate": 30,
           "runway": "22R"
         },
         {
@@ -1810,7 +1810,7 @@
               "waypoints": "_JFK_13R _JFK_31L #185"
             }
           },
-          "rate": 45,
+          "rate": 30,
           "runway": "13R"
         },
         {
@@ -1901,7 +1901,7 @@
               "waypoints": "_JFK_4L _JFK_4La #100"
             }
           },
-          "rate": 45,
+          "rate": 30,
           "runway": "4L"
         }
       ],
@@ -2658,7 +2658,7 @@
               "waypoints": "_LGA_31 _LGA_13 _LGA_13a @ JFK"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "31"
         },
         {
@@ -2694,7 +2694,7 @@
               "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "22"
         },
         {
@@ -2730,7 +2730,7 @@
               "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "13"
         },
         {
@@ -2766,7 +2766,7 @@
               "waypoints": "_LGA_4 _LGA_22 _LGA_22a @ JFK"
             }
           },
-          "rate": 30,
+          "rate": 0,
           "runway": "4"
         }
       ],
