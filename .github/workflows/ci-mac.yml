@@ -34,7 +34,7 @@ jobs:
       run: go version
 
     - name: Install Mac dependencies
-      run: brew install sdl2
+      run: brew install sdl2 pgk-config
     
     - name: Build universal binary
       run: |
