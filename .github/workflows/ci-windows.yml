@@ -52,8 +52,12 @@ jobs:
     - name: Build
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags static -o ./vice.exe .
+        go build -tags static -ldflags -H=windowsgui -o ./vice.exe .
         ls
+      env:
+        CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
 
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
