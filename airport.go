@@ -73,6 +73,15 @@ func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 		}
 	}
 
+	// Filter out the DEBUG arrivals if devmode isn't enabled
+	if !*devmode {
+		for i := range ac.ArrivalGroups {
+			ac.ArrivalGroups[i].Arrivals =
+				FilterSlice(ac.ArrivalGroups[i].Arrivals, func(ar Arrival) bool { return ar.Name != "DEBUG" })
+		}
+		ac.ArrivalGroups = FilterSlice(ac.ArrivalGroups, func(ag ArrivalGroup) bool { return len(ag.Arrivals) > 0 })
+	}
+
 	for _, ag := range ac.ArrivalGroups {
 		if len(ag.Arrivals) == 0 {
 			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group", ag.Name))

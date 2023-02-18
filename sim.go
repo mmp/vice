@@ -170,10 +170,6 @@ func (t *TRACON) PostDeserialize() {
 		}
 	}
 
-	if !*devmode {
-		t.Scenarios = FilterMap(t.Scenarios, func(name string, s *Scenario) bool { return name != "DEBUG" })
-	}
-
 	if _, ok := t.Scenarios[t.DefaultScenario]; !ok {
 		lg.Errorf("%s: default scenario not found", t.DefaultScenario)
 	}
