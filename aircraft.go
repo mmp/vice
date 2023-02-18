@@ -214,10 +214,6 @@ func (a *Aircraft) IsAssociated() bool {
 }
 
 func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
-	if *devmode {
-		lg.Printf("Waypoint update. wp %s ac %s", spew.Sdump(wp), spew.Sdump(ac))
-	}
-
 	// Now handle any altitude/speed restriction at the next waypoint.
 	if wp.Altitude != 0 {
 		// TODO: we should probably distinguish between controller-assigned
@@ -266,7 +262,7 @@ func (ac *Aircraft) updateAirspeed() {
 				targetSpeed = perf.Speed.Landing
 			} else if airportDist < 5 || (airportDist < 10 && ac.AssignedSpeed == 0) {
 				// Ignore speed restrictions if the aircraft is within 5
-				// miles; otherwise start slowing down if it hasn't't been
+				// miles; otherwise start slowing down if it hasn't been
 				// given a speed restriction.
 
 				// Expected speed at 10 DME, without further direction.
