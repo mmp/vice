@@ -2,7 +2,7 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
     <Product Name='Vice'
     	     Manufacturer='Matt Pharr'
-	     Id='0F1DA295-A235-40B2-BBB7-2E93C3D6E6C9'
+	     Id='*'
 	     UpgradeCode='A10E3C66-BA55-406A-B4E2-586D7108D622'
 	     Language='1033'
 	     Codepage='1252'
