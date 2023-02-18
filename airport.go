@@ -7,6 +7,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Airport struct {
@@ -64,11 +66,21 @@ func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 		}
 
 		for _, aircraft := range fl {
-			_, ok := database.AircraftPerformance[aircraft.ICAO]
-			if !ok {
+			if perf, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
 				errors = append(errors,
 					fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
 						aircraft.ICAO, icao, fleet))
+			} else {
+				if perf.Speed.Min < 50 || perf.Speed.Landing < 50 || perf.Speed.Cruise < 50 ||
+					perf.Speed.Max < 50 || perf.Speed.Min > perf.Speed.Max {
+					fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
+						spew.Sdump(perf.Speed))
+				}
+				if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
+					perf.Rate.Decelerate == 0 {
+					fmt.Errorf("%s: aircraft's rate specification is questionable: %s", aircraft.ICAO,
+						spew.Sdump(perf.Rate))
+				}
 			}
 		}
 	}
