@@ -52,7 +52,7 @@ jobs:
     - name: Build
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -static -o ./vice.exe .
+        go build -tags static -o ./vice.exe .
         ls
 
     - name: Add WIX to path
