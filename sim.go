@@ -644,17 +644,15 @@ func (s *Sim) GetController(callsign string) *Controller {
 	}
 
 	ctrl, ok := tracon.ControlPositions[callsign]
-	if !ok {
-		for _, c := range tracon.ControlPositions {
-			if c.SectorId == callsign {
-				ctrl = c
-			}
-		}
+	if ok {
+		return ctrl
 	}
 
-	// Make sure the controller is active in the scenario, however...
-	if ctrl != nil && Find(s.scenario.Controllers, ctrl.Callsign) == -1 {
-		return nil
+	for _, c := range tracon.ControlPositions {
+		// Make sure that the controller is active in the scenario...
+		if c.SectorId == callsign && Find(s.scenario.Controllers, c.Callsign) != -1 {
+			return c
+		}
 	}
 
 	return ctrl
