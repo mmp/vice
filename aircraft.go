@@ -223,7 +223,10 @@ func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 		ac.CrossingAltitude = wp.Altitude
 		ac.AssignedAltitude = 0
 	}
-	if wp.Speed != 0 {
+
+	// Don't assign the crossing speed if the aircraft has an assigned
+	// speed less than it.
+	if wp.Speed != 0 && (ac.AssignedSpeed == 0 || ac.AssignedSpeed < wp.Speed) {
 		ac.CrossingSpeed = wp.Speed
 		ac.AssignedSpeed = 0
 	}
@@ -295,14 +298,14 @@ func (ac *Aircraft) updateAirspeed() {
 		}
 
 		cs := float32(ac.CrossingSpeed)
-		if ac.IAS < cs {
+		if ac.IAS+1 < cs {
 			accel := (cs - ac.IAS) / float32(eta.Seconds()) * 1.25
 			accel = min(accel, ac.Performance.Rate.Accelerate/2)
-			ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
-		} else if ac.IAS > cs {
+			ac.IAS = min(cs, ac.IAS+accel)
+		} else if ac.IAS-1 > cs {
 			decel := (ac.IAS - cs) / float32(eta.Seconds()) * 0.75
 			decel = min(decel, ac.Performance.Rate.Decelerate/2)
-			ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
+			ac.IAS = max(cs, ac.IAS-decel)
 			//lg.Errorf("dist %f eta %s ias %f crossing %f decel %f", dist, eta, ac.IAS, cs, decel)
 		}
 
