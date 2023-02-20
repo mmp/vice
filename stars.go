@@ -1059,6 +1059,8 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 	}
 }
 
+var activeBoundaries [][]Point2LL
+
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.processEvents(ctx.events)
 
@@ -1126,6 +1128,18 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			}
 		}
 	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	ld := GetLinesDrawBuilder()
+	defer ReturnLinesDrawBuilder(ld)
+	cb.SetRGB(RGB{.2, .8, .2})
+	for _, b := range activeBoundaries {
+		for i := 0; i < len(b)-1; i++ {
+			ld.AddLine(b[i], b[i+1])
+		}
+	}
+	//ld.GenerateCommands(cb)
+
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
