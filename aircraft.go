@@ -550,50 +550,9 @@ func (ac *Aircraft) updatePositionAndGS() {
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 
 	// Airspace yolo
-	foundAirspace := false
-	airspace := tracon.Airspace
-	for sector, volumes := range airspace.Volumes {
-		for _, v := range volumes {
-			if ac.Altitude < float32(v.LowerLimit) || ac.Altitude > float32(v.UpperLimit) {
-				continue
-			}
-
-			// TODO: bbox cull check
-			inside := false
-			for _, boundary := range v.Boundaries {
-				pts, ok := airspace.Boundaries[boundary]
-				if !ok {
-					// Catch this sooner
-					lg.Errorf("%s: boundary unknown", boundary)
-					continue
-				}
-
-				p := ac.Position
-				for i := 0; i < len(pts)-1; i++ {
-					p0, p1 := pts[i], pts[i+1]
-					if (p0[1] <= p[1] && p[1] < p1[1]) || (p1[1] <= p[1] && p[1] < p0[1]) {
-						x := p0[0] + (p[1]-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1])
-						if x > p[0] {
-							inside = !inside
-						}
-					}
-				}
-			}
-			if inside {
-				for _, boundary := range v.Boundaries {
-					pts, ok := airspace.Boundaries[boundary]
-					if ok {
-						activeBoundaries = append(activeBoundaries, pts)
-					}
-				}
-
-				lg.Errorf("%s: inside %s", ac.Callsign, sector)
-				// return // ???
-				foundAirspace = true
-			}
-		}
-	}
-	if !foundAirspace {
+	if sector, ok := tracon.LookupAirspace(ac.Position, ac.Altitude); ok {
+		lg.Errorf("%s: inside %s", ac.Callsign, sector)
+	} else {
 		lg.Errorf("%s: sector unknown", ac.Callsign)
 	}
 }

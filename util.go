@@ -532,6 +532,20 @@ func EquilateralTriangleVertices(height float32) [3][2]float32 {
 	}
 }
 
+func PointInPolygon(p Point2LL, pts []Point2LL) bool {
+	inside := false
+	for i := 0; i < len(pts)-1; i++ {
+		p0, p1 := pts[i], pts[i+1]
+		if (p0[1] <= p[1] && p[1] < p1[1]) || (p1[1] <= p[1] && p[1] < p0[1]) {
+			x := p0[0] + (p[1]-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1])
+			if x > p[0] {
+				inside = !inside
+			}
+		}
+	}
+	return inside
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // RGB
 
