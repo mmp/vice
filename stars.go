@@ -2365,7 +2365,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'C', 'A':
-						if command[0] == 'C' && len(command) > 1 && (command[1] < '0' || command[1] > '9') {
+						var isAllNumbers func(s string) bool
+						isAllNumbers = func(s string) bool {
+							if s == "" {
+								return true
+							} else if s[0] < '0' || s[0] > '9' {
+								return false
+							}
+							return isAllNumbers(s[1:])
+						}
+						if command[0] == 'C' && len(command) > 1 && !isAllNumbers(command[1:]) {
 							// Cleared approach.
 							if sim.ClearedApproach(ac.Callsign, command[1:]) != nil {
 								status.err = ErrSTARSIllegalParam
