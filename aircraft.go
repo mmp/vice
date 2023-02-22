@@ -215,20 +215,18 @@ func (a *Aircraft) IsAssociated() bool {
 
 func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 	// Now handle any altitude/speed restriction at the next waypoint.
-	if wp.Altitude != 0 {
+	if wp.Altitude != 0 && ac.AssignedAltitude == 0 {
 		// TODO: we should probably distinguish between controller-assigned
 		// altitude and assigned due to a previous crossing restriction,
 		// since controller assigned should take precedence over
 		// everything, which it doesn't currently...
 		ac.CrossingAltitude = wp.Altitude
-		ac.AssignedAltitude = 0
 	}
 
 	// Don't assign the crossing speed if the aircraft has an assigned
 	// speed less than it.
-	if wp.Speed != 0 && (ac.AssignedSpeed == 0 || ac.AssignedSpeed < wp.Speed) {
+	if wp.Speed != 0 && ac.AssignedSpeed == 0 {
 		ac.CrossingSpeed = wp.Speed
-		ac.AssignedSpeed = 0
 	}
 
 	ac.AssignedHeading = 0
@@ -291,25 +289,23 @@ func (ac *Aircraft) updateAirspeed() {
 	}
 
 	if targetSpeed == 0 && ac.CrossingSpeed != 0 {
-		eta, ok := ac.NextFixETA()
-		if !ok {
-			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
+		if eta, ok := ac.NextFixETA(); ok {
+			cs := float32(ac.CrossingSpeed)
+			if ac.IAS+1 < cs {
+				accel := (cs - ac.IAS) / float32(eta.Seconds()) * 1.25
+				accel = min(accel, ac.Performance.Rate.Accelerate/2)
+				ac.IAS = min(cs, ac.IAS+accel)
+			} else if ac.IAS-1 > cs {
+				decel := (ac.IAS - cs) / float32(eta.Seconds()) * 0.75
+				decel = min(decel, ac.Performance.Rate.Decelerate/2)
+				ac.IAS = max(cs, ac.IAS-decel)
+				//lg.Errorf("dist %f eta %s ias %f crossing %f decel %f", dist, eta, ac.IAS, cs, decel)
+			}
 			return
+		} else {
+			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
+			targetSpeed = ac.CrossingSpeed
 		}
-
-		cs := float32(ac.CrossingSpeed)
-		if ac.IAS+1 < cs {
-			accel := (cs - ac.IAS) / float32(eta.Seconds()) * 1.25
-			accel = min(accel, ac.Performance.Rate.Accelerate/2)
-			ac.IAS = min(cs, ac.IAS+accel)
-		} else if ac.IAS-1 > cs {
-			decel := (ac.IAS - cs) / float32(eta.Seconds()) * 0.75
-			decel = min(decel, ac.Performance.Rate.Decelerate/2)
-			ac.IAS = max(cs, ac.IAS-decel)
-			//lg.Errorf("dist %f eta %s ias %f crossing %f decel %f", dist, eta, ac.IAS, cs, decel)
-		}
-
-		return
 	}
 
 	if targetSpeed == 0 {
@@ -639,18 +635,6 @@ func (ac *Aircraft) updateWaypoints() {
 	if s := float32(eta.Seconds()); s < 2 || (hdg != 0 && s < turn/3/2) {
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp.Commands)
-
-		// For starters, convert a previous crossing restriction to a current
-		// assignment.  Clear out the previous crossing restriction.
-		if ac.AssignedAltitude == 0 {
-			ac.AssignedAltitude = ac.CrossingAltitude
-		}
-		ac.CrossingAltitude = 0
-
-		if ac.AssignedSpeed == 0 {
-			ac.AssignedSpeed = ac.CrossingSpeed
-		}
-		ac.CrossingSpeed = 0
 
 		if ac.Waypoints[0].Heading != 0 {
 			// We have an outbound heading

@@ -884,7 +884,8 @@ func (ss *Sim) ClearedApproach(callsign string, approach string) error {
 	// cleared approach cancels speed restrictions, but let's assume that
 	// aircraft will just maintain their present speed and not immediately
 	// accelerate up to 250...
-	ac.AssignedSpeed = int(ac.IAS)
+	ac.AssignedSpeed = 0
+	ac.CrossingSpeed = int(ac.IAS)
 	ac.ClearedApproach = true
 
 	pilotResponse(callsign, response+"cleared "+ap.FullName+" approach")
