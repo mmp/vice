@@ -66,6 +66,29 @@ func (t *TRACON) PostDeserialize() {
 		}
 	}
 
+	if globalConfig.Version < 2 {
+		// Add the PHL airport and radar sites...
+		// All of the following is quite brittle / hard-coded and
+		// doesn't really have any error handling (but we control the
+		// input, so it all "should" be fine...)
+		stars := globalConfig.DisplayRoot.Children[0].Pane.(*STARSPane)
+		stars.Facility.Airports = append(stars.Facility.Airports,
+			STARSAirport{ICAOCode: "KPHL", Range: 60, IncludeInSSA: true})
+
+		phl := FindIf(tracon.RadarSites, func(r RadarSite) bool { return r.Id == "PHL" })
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites, tracon.RadarSites[phl])
+		nxx := FindIf(tracon.RadarSites, func(r RadarSite) bool { return r.Id == "NXX" })
+		stars.Facility.RadarSites = append(stars.Facility.RadarSites, tracon.RadarSites[nxx])
+
+		for i := 0; i < 2; i++ {
+			stars.currentPreferenceSet.RadarSiteSelected = append(stars.currentPreferenceSet.RadarSiteSelected, false)
+			for j := range stars.PreferenceSets {
+				stars.PreferenceSets[j].RadarSiteSelected = append(stars.PreferenceSets[j].RadarSiteSelected, false)
+			}
+		}
+
+		globalConfig.Version = 2
+	}
 }
 
 type Airspace struct {
