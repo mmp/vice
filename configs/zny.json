@@ -2958,6 +2958,627 @@
       },
       "icao": "KLGA",
       "location": "N040.46.36.940,W073.52.26.264"
+    },
+      "KPHL": {
+          "approaches": [
+              {
+                  "full_name": "ILS 9L",
+                  "short_name": "I9L",
+                  "type": "ILS",
+                  "waypoints": [ "QWEST@a4000 OBEKE@a3000 ANNET@a2100 LANDI@a760 N039.52.07.340,W075.15.19.692@a50 " ]
+              },
+              {
+                  "full_name": "ILS 9R",
+                  "short_name": "9RZ",
+                  "type": "ILS",
+                  "waypoints": [ "BWINE@a4000 ASOCI@a3000 KELEE@a1800 BALDN@a740 N039.51.39.133,W075.16.29.620@a50" ]
+              },
+              {
+                  "full_name": "ILS 17",
+                  "short_name": "17Z",
+                  "type": "ILS",
+                  "waypoints": [ "COWAD@a3000 HYILL@a2000 HOOCH@a760 N039.53.14.508,W075.14.09.655@a50 " ]
+              },
+              {
+                  "full_name": "ILS 26",
+                  "short_name": "I26",
+                  "type": "ILS",
+                  "waypoints": [ "HOLEY FOSOM@a2000 ESKOE@a2000 N039.52.54.183,W075.12.47.257@a50 " ]
+              },
+              {
+                  "full_name": "ILS 27L",
+                  "short_name": "27L",
+                  "type": "ILS",
+                  "waypoints": [ "FESTI@a3000 TORNE@a3000 GLOUS@a2060 XIVOY@a400 N039.52.08.453,W075.14.02.761@a50 " ]
+              },
+              {
+                  "full_name": "ILS 27R",
+                  "short_name": "27R",
+                  "type": "ILS",
+                  "waypoints": [ "MENGE@a3000 MRTIN@a3000 JALTO@a2100 HADNI@a740 N039.52.30.700,W075.13.23.842@a50 " ]
+              },
+              {
+                  "full_name": "RNAV 35",
+                  "short_name": "G35",
+                  "type": "RNAV",
+                  "waypoints": [ "WIKAV@a3000 JEPUG@a3000 HARLU@a2000 CEMEK@a900 N039.52.16.047,W075.13.40.458@a50 " ]
+              }
+
+          ],
+          "arrival_groups": [
+              {
+                  "arrivals": [
+                      {
+                          "airlines": [
+                              {
+                                  "airport": "KDEN",
+                                  "icao": "AAL"
+                              },
+                              {
+                                  "airport": "CYYZ",
+                                  "icao": "PDT"
+                              },
+                              {
+                                  "airport": "KIND",
+                                  "icao": "JIA"
+                              },
+                              {
+                                  "airport": "KDAY",
+                                  "icao": "JIA"
+                              },
+                              {
+                                  "airport": "CYYZ",
+                                  "icao": "JZA"
+                              },
+                              {
+                                  "airport": "KCVG",
+                                  "icao": "PDT"
+                              },
+                              {
+                                  "airport": "KLAX",
+                                  "icao": "AAL"
+                              },
+                              {
+                                  "airport": "KORD",
+                                  "icao": "AAL"
+                              }
+                          ],
+                          "cleared_altitude": 9000,
+                          "initial_altitude": 8000,
+                          "initial_controller": "NY_CTR",
+                          "initial_speed": 250,
+                          "name": "BOJID2",
+                          "route": "/. BOJID2",
+                          "runway_waypoints": {
+                              "9L": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591 @ TRAGG BUNTS SCOOL@s220 KYILL EXPRS@s190 WHEYY #265",
+                              "9R": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591 @ TRAGG BUNTS SCOOL@s220 KYILL EXPRS@s190 WHEYY #265",
+                              "27L": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591 @ TRAGG BUNTS SCOOL@s220 BOJID HIFAL EYRIE@s190 FERUS #085",
+                              "27R": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591 @ TRAGG BUNTS SCOOL@s220 BOJID HIFAL EYRIE@s190 FERUS #085",
+                              "17": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591 @ TRAGG BUNTS SCOOL@s220 #104"
+                          }
+                      }
+                  ],
+                  "name": "BOJID2",
+                  "rate": 12
+              },
+              {
+                  "arrivals": [
+                      {
+                          "airlines": [
+                              {
+                                  "airport": "CYUL",
+                                  "icao": "PDT"
+                              },
+                              {
+                                  "airport": "KPIT",
+                                  "icao": "LXJ"
+                              },
+                              {
+                                  "airport": "KALB",
+                                  "icao": "EJA"
+                              },
+                              {
+                                  "airport": "KBUF",
+                                  "icao": "LXJ"
+                              }
+                          ],
+                          "cleared_altitude": 10000,
+                          "initial_altitude": 10000,
+                          "initial_controller": "NY_CTR",
+                          "initial_speed": 250,
+                          "name": "SPUDS4",
+                          "route": "/. SPUDS4",
+                          "runway_waypoints": {
+                              "9L": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS@s250 ANMAR SCOOL@s220@a6000 KYILL EXPRS@s190 WHEYY #265",
+                              "9R": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS@s250 ANMAR SCOOL@s220@a6000 KYILL EXPRS@s190 WHEYY #265",
+                              "27L": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS@s250 ANMAR BOJID HIFAL EYRIE@s190 FERUS #085",
+                              "27R": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS@s250 ANMAR BOJID HIFAL EYRIE@s190 FERUS #085",
+                              "17": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS@s250 ANMAR #200"
+                          }
+                      }
+                  ],
+                  "name": "SPUDS4",
+                  "rate": 9
+              },
+              {
+                  "arrivals": [
+                      {
+                          "airlines": [
+                              {
+                                  "airport": "KJAX",
+                                  "icao": "AAL"
+                              },
+                              {
+                                  "airport": "KBOS",
+                                  "icao": "JBU"
+                              },
+                              {
+                                  "airport": "KBOS",
+                                  "icao": "RPA"
+                              },
+                              {
+                                  "airport": "KPBI",
+                                  "icao": "FFT"
+                              },
+                              {
+                                  "airport": "KFLL",
+                                  "icao": "NKS"
+                              },
+                              {
+                                  "airport": "KCHS",
+                                  "icao": "PDT"
+                              },
+                              {
+                                  "airport": "KMCO",
+                                  "icao": "NKS"
+                              },
+                              {
+                                  "airport": "KBCT",
+                                  "icao": "LXJ"
+                              },
+                              {
+                                  "airport": "KPBI",
+                                  "icao": "AAL"
+                              }
+                          ],
+                          "cleared_altitude": 9000,
+                          "initial_altitude": 9000,
+                          "initial_controller": "DC_CTR",
+                          "initial_speed": 250,
+                          "name": "JIIMS3",
+                          "route": "/. JIIMS3",
+                          "runway_waypoints": {
+                              "9L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 TLUKS CHEAZ@s190 STAYK #266",
+                              "9R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 TLUKS CHEAZ@s190 STAYK #266",
+                              "27L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 BEELZ WOJIK@s190 PSOUT #87",
+                              "27R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 BEELZ WOJIK@s190 PSOUT #87",
+                              "35": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 SNEDE"
+                          }
+                      }
+                  ],
+                  "name": "JIIMS3",
+                  "rate": 12
+              },
+              {
+                  "arrivals": [
+                      {
+                          "airlines": [
+                              {
+                                  "airport": "KLAS",
+                                  "icao": "AAL"
+                              },
+                              {
+                                  "airport": "MMUN",
+                                  "icao": "AAL"
+                              },
+                              {
+                                  "airport": "KTPA",
+                                  "icao": "AAL"
+                              },
+                              {
+                                  "airport": "KATL",
+                                  "icao": "FFT"
+                              },
+                              {
+                                  "airport": "KMEM",
+                                  "icao": "JIA"
+                              }
+                          ],
+                          "cleared_altitude": 10000,
+                          "initial_altitude": 10000,
+                          "initial_controller": "DC_CTR",
+                          "initial_speed": 250,
+                          "name": "PAATS3",
+                          "route": "/. PAATS3",
+                          "runway_waypoints": {
+                              "9L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TLUKS CHEAZ@s190 STAYK #266",
+                              "9R": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TLUKS CHEAZ@s190 STAYK #266",
+                              "27L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL BEELZ WOJIK@s190 PSOUT #87",
+                              "27R": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL BEELZ WOJIK@s190 PSOUT #87",
+                              "35": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TEBEE #57"
+                          }
+                      }
+                  ],
+                  "name": "PAATS3",
+                  "rate": 12
+              },
+              {
+                  "arrivals": [
+                      {
+                          "airlines": [
+                              {
+                                  "airport": "KDEN",
+                                  "icao": "AAL"
+                              }
+                          ],
+                          "cleared_altitude": 3000,
+                          "initial_altitude": 3000,
+                          "initial_controller": "NY_CTR",
+                          "initial_speed": 190,
+                          "name": "DEBUG",
+                          "route": "/. DEBUG",
+                          "waypoints": "N039.58.08.227,W075.07.48.045 N039.59.01.676,W075.06.01.834@s190 @ #090"
+                      }
+                  ],
+                  "name": "DEBUG",
+                  "rate": 30
+              }
+
+          ],
+          "arrival_runways": [
+              "9L",
+              "9R",
+              "27L",
+              "27R",
+              "17",
+              "35",
+              "26"
+          ],
+          "departure_runways": [
+              {
+                  "exit_routes": {
+                      "OOD": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+                      },
+                      "DITCH": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+                      },
+                      "RUUTH": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+                      },
+                      "DQO": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
+                      },
+                      "STOEN": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
+                      },
+                      "MXE": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+                      },
+                      "PTW": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+                      },
+                      "FJC": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+                      },
+                      "MAZIE": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+                      },
+                      "ARD": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+                      }
+                  },
+                  "rate": 40,
+                  "runway": "27L"
+              },
+              {
+                  "exit_routes": {
+                      "OOD": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
+                      },
+                      "DITCH": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #110"
+                      },
+                      "RUUTH": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+                      },
+                      "DQO": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
+                      },
+                      "STOEN": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+                      },
+                      "MXE": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+                      },
+                      "PTW": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+                      },
+                      "FJC": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+                      },
+                      "MAZIE": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+                      },
+                      "ARD": {
+                          "cleared_altitude": 5000,
+                          "route": "PHL2",
+                          "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+                      }
+                  },
+                  "rate": 40,
+                  "runway": "9L"
+              }
+          ],
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            }
+          ],
+          "destination": "KTPA",
+          "exit": "STOEN",
+          "route": "Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+                "icao": "AAL",
+                "fleet": "long"
+            }
+          ],
+          "destination": "LEMD",
+          "exit": "DITCH",
+          "route": "V312 JIMEE WAVEY SHLEP YAHOO CARAC JEBBY 4400N/05000W 4500N/04000W 4600N/03000W 4500N/02000W RETEN EPOPO ADORO ZMR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KPBI",
+          "exit": "OOD",
+          "route": "TEBEE HAYDO SBY KEMPR YLEEE ZILLS Y289 DULEE CLMNT2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KBED",
+          "exit": "DITCH",
+          "route": "Q437 HNNAH Q450 DPK MAD HFD DREEM2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KRDU",
+          "exit": "OOD",
+          "route": "TEBEE HAYDO TRPOD TAQLE1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KFLL",
+          "exit": "OOD",
+          "route": "TEBEE HAYDO SBY KEMPR CHIEZ Y291 MAJIK CUUDA2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMDW",
+          "exit": "PTW",
+          "route": "SARAA RAV PSB J60 ASHEN BAGEL PANGG3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "PTW",
+          "route": "SARAA RAV PSB J60 IOW LNK HLC J64 PUB ALS J102 GUP EAGUL6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VTE"
+            }
+          ],
+          "destination": "KPBG",
+          "exit": "DITCH",
+          "route": "Q437 LLUND CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "OOD",
+          "route": "TEBEE HAYDO SBY J79 KATZN ISO J121 CHS IGARY Q85 LPERD SNFLD2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "STOEN",
+          "route": "REEFI EMI J48 MOL FLASK OZZZI1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KTYS",
+          "exit": "STOEN",
+          "route": "REEFI EMI J48 CSN FANPO Q40 ALEAN VXV"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KMSP",
+          "exit": "PTW",
+          "route": "SARAA RAV PSB J60 DJB J34 ADALE KAMMA KKILR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "MXE",
+          "route": "PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "STOEN",
+          "route": "Q75 TOOBN Q75 GVE LYH CHSLY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KBNA",
+          "exit": "MXE",
+          "route": "PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            }
+          ],
+          "destination": "TJSJ",
+          "exit": "OOD",
+          "route": "TEBEE HAYDO SIE B24 AZEZU RESQU SKPPR L455 MCOOP L455 LENNT M423 PLING RTE7 SAALR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            }
+          ],
+          "destination": "KRIC",
+          "exit": "OOD",
+          "route": "TEBEE HAYDO SBY V1 JAMIE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KABE",
+            "exit": "FJC",
+            "altitude": 4000,
+          "route": "ABE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "RUUTH",
+            "route": "V123 RBV",
+          "altitude": 7000
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "DITCH",
+            "route": "V312 WINKK V44 CAMRN",
+          "altitude": 11000
+        }
+      ],
+      "elevation": 36,
+      "exit_categories": {
+        "MXE": "North",
+        "STOEN": "North",
+        "PTW": "North",
+        "FJC": "North",
+        "MAZIE": "North",
+        "ARD": "North",
+        "RUUTH": "South",
+        "DITCH": "South",
+        "OOD": "South",
+        "DQO": "South"
+      },
+      "icao": "KPHL",
+      "location": "N039.52.05.747,W075.14.52.117"
     }
   },
   "center": "N040.38.24.354,W073.46.35.388",
@@ -2967,6 +3588,12 @@
       "frequency": 133450,
       "scope_char": "C",
       "sector_id": "B17"
+    },
+    "DC_CTR": {
+      "callsign": "DC_CTR",
+      "frequency": 133725,
+      "scope_char": "C",
+      "sector_id": "W32"
     },
     "ISP_APP": {
       "callsign": "ISP_APP",
@@ -3039,6 +3666,24 @@
       "frequency": 124750,
       "scope_char": "S",
       "sector_id": "5S"
+    },
+    "PHL_TWR": {
+      "callsign": "PHL_TWR",
+      "frequency": 118500,
+      "scope_char": "T",
+      "sector_id": "6A"
+    },
+    "PHL_NA_APP": {
+      "callsign": "PHL_NA_APP",
+      "frequency": 128400,
+      "scope_char": "N",
+      "sector_id": "6N"
+    },
+    "PHL_ND_DEP": {
+      "callsign": "PHL_ND_DEP",
+      "frequency": 124350,
+      "scope_char": "E",
+      "sector_id": "5E"
     }
   },
   "default_scenario": "KJFK Depart 13R Land 13L/22L",
@@ -3143,6 +3788,26 @@
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    {
+      "char": "P",
+      "elevation": 90,
+      "id": "PHL",
+      "position": "KPHL",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    },
+    {
+      "char": "N",
+      "elevation": 408,
+      "id": "NXX",
+      "position": "KNXX",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
       "slope_angle": 0.175
     }
   ],
@@ -3385,6 +4050,58 @@
         "gust": 25,
         "speed": 19
       }
+    },
+    "KPHL Depart 27L Land 27R": {
+      "arrival_runways": [
+        "KPHL/27R"
+      ],
+      "approach_airspace": [
+         "PHL_DU_APP27", "PHL_F1_APP27", "PHL_F2_APP27", "PHL_PT_APP27", "PHL_N_APP27", "PHL_S_APP27", "PHL_WD_APP27", "PHL_YD_APP27"            
+      ],
+      "departure_airspace": [
+          "PHL_N_DEP27", "PHL_S_DEP27", "PHL_N_HIGH27", "PHL_S_HIGH27"
+      ],
+      "callsign": "PHL_NA_APP",
+      "controllers": [
+        "PHL_TWR",
+        "DC_CTR",
+        "NY_CTR"
+      ],
+      "departure_runways": [
+        "KPHL/27L"
+      ],
+      "name": "KPHL Depart 27L Land 27R",
+      "wind": {
+        "direction": 290,
+        "gust": 17,
+        "speed": 12
+      }
+    },
+    "KPHL Depart 9L Land 9R": {
+      "arrival_runways": [
+        "KPHL/9R"
+      ],
+      "approach_airspace": [
+          "PHL_DU_APP9", "PHL_F1_APP9", "PHL_F2_APP9", "PHL_N_APP9", "PHL_PT_APP9", "PHL_S_APP9", "PHL_WD_APP9", "PHL_YD_APP9"
+      ],
+      "departure_airspace": [
+          "PHL_N_DEP9", "PHL_N_HIGH9", "PHL_S_DEP9", "PHL_S_HIGH9"
+      ],
+      "callsign": "PHL_NA_APP",
+      "controllers": [
+        "PHL_TWR",
+        "DC_CTR",
+        "NY_CTR"
+      ],
+      "departure_runways": [
+        "KPHL/9L"
+      ],
+      "name": "KPHL Depart 9L Land 9R",
+      "wind": {
+        "direction": 70,
+        "gust": 24,
+        "speed": 17
+      }
     }
   },
   "scratchpads": {
@@ -3395,15 +4112,23 @@
     "COATE": "COA",
     "DEEZZ": "DEZ",
     "DEEZZ5": "DEZ",
+    "DITCH": "DIT",
     "DIXIE": "DIX",
+    "DQO": "DQO",
+    "FJC": "FJC",
     "GAYEL": "GAY",
     "GREKI": "GRE",
     "HAAYS": "HAY",
     "HAPIE": "HAP",
     "MERIT": "MER",
+    "MXE": "MXE",
     "NEION": "NEI",
+    "OOD": "OOD",
+    "PTW": "PTW",
     "RBV": "RBV",
+    "RUUTH": "RUU",
     "SHIPP": "SHI",
+    "STOEN": "STO",
     "WAVEY": "WAV",
     "WHITE": "WHI"
   },
