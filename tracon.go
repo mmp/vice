@@ -5,6 +5,7 @@ package main
 import (
 	_ "embed"
 	"encoding/xml"
+	"sort"
 	"strings"
 )
 
@@ -12,15 +13,15 @@ import (
 // though do we allow Rate to be changed and stay persistent? (probs...)
 
 type TRACON struct {
-	Name             string                 `json:"name"`
-	Airports         map[string]*Airport    `json:"airports"`
-	Fixes            map[string]Point2LL    `json:"fixes"`
-	VideoMaps        map[string]*VideoMap   `json:"-"`
-	Scenarios        map[string]*Scenario   `json:"scenarios"`
-	DefaultScenario  string                 `json:"default_scenario"`
-	ControlPositions map[string]*Controller `json:"control_positions"`
-	Scratchpads      map[string]string      `json:"scratchpads"`
-	Airspace         *Airspace              `json:"-"` // for now, parsed from the XML...
+	Name             string                      `json:"name"`
+	Airports         map[string]*Airport         `json:"airports"`
+	Fixes            map[string]Point2LL         `json:"fixes"`
+	VideoMaps        map[string]*VideoMap        `json:"-"`
+	Scenarios        map[string]*Scenario        `json:"scenarios"`
+	DefaultScenario  string                      `json:"default_scenario"`
+	ControlPositions map[string]*Controller      `json:"control_positions"`
+	Scratchpads      map[string]string           `json:"scratchpads"`
+	AirspaceVolumes  map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
 
 	Center         Point2LL    `json:"center"`
 	PrimaryAirport string      `json:"primary_airport"`
@@ -30,6 +31,11 @@ type TRACON struct {
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
 	MagneticVariation float32 `json:"magnetic_variation"`
+}
+
+type AirspaceVolume struct {
+	LowerLimit, UpperLimit int
+	Boundaries             [][]Point2LL
 }
 
 func (t *TRACON) Locate(s string) (Point2LL, bool) {
@@ -43,7 +49,7 @@ func (t *TRACON) Locate(s string) (Point2LL, bool) {
 }
 
 func (t *TRACON) PostDeserialize() {
-	t.Airspace = parseAirspace()
+	t.AirspaceVolumes = parseAirspace()
 
 	for _, ap := range t.Airports {
 		if errors := ap.PostDeserialize(t.ControlPositions); len(errors) > 0 {
@@ -91,16 +97,6 @@ func (t *TRACON) PostDeserialize() {
 	}
 }
 
-type Airspace struct {
-	Boundaries map[string][]Point2LL
-	Volumes    map[string][]AirspaceVolume
-}
-
-type AirspaceVolume struct {
-	LowerLimit, UpperLimit int
-	Boundaries             []string
-}
-
 //go:embed resources/ZNY_sanscomment_VOLUMES.xml
 var znyVolumesXML string
 
@@ -122,7 +118,7 @@ type XMLAirspace struct {
 	Volumes    []XMLVolume   `xml:"Volume"`
 }
 
-func parseAirspace() *Airspace {
+func parseAirspace() map[string][]AirspaceVolume {
 	var xair XMLAirspace
 	if err := xml.Unmarshal([]byte(znyVolumesXML), &xair); err != nil {
 		panic(err)
@@ -130,10 +126,8 @@ func parseAirspace() *Airspace {
 
 	//lg.Errorf("%s", spew.Sdump(vol))
 
-	airspace := &Airspace{
-		Boundaries: make(map[string][]Point2LL),
-		Volumes:    make(map[string][]AirspaceVolume),
-	}
+	boundaries := make(map[string][]Point2LL)
+	volumes := make(map[string][]AirspaceVolume)
 
 	for _, b := range xair.Boundaries {
 		var pts []Point2LL
@@ -145,23 +139,31 @@ func parseAirspace() *Airspace {
 				pts = append(pts, p)
 			}
 		}
-		if _, ok := airspace.Boundaries[b.Name]; ok {
+		if _, ok := boundaries[b.Name]; ok {
 			lg.Errorf("%s: boundary redefined", b.Name)
 		}
-		airspace.Boundaries[b.Name] = pts
+		boundaries[b.Name] = pts
 	}
 
 	for _, v := range xair.Volumes {
 		vol := AirspaceVolume{
 			LowerLimit: v.LowerLimit,
 			UpperLimit: v.UpperLimit,
-			Boundaries: strings.Split(v.Boundaries, ",")}
-		airspace.Volumes[v.Name] = append(airspace.Volumes[v.Name], vol)
+		}
+
+		for _, name := range strings.Split(v.Boundaries, ",") {
+			if b, ok := boundaries[name]; !ok {
+				lg.Errorf("%s: boundary in volume %s has not been defined. Volume may be invalid",
+					name, v.Name)
+			} else {
+				vol.Boundaries = append(vol.Boundaries, b)
+			}
+		}
+
+		volumes[v.Name] = append(volumes[v.Name], vol)
 	}
 
-	//lg.Errorf("%s", spew.Sdump(airspace))
-
-	return airspace
+	return volumes
 }
 
 func (t *TRACON) ActivateScenario(s string) {
@@ -189,42 +191,45 @@ func (t *TRACON) ActivateScenario(s string) {
 	}
 }
 
-func (t *TRACON) LookupAirspace(p [2]float32, alt float32) (string, bool) {
-	for sector, volumes := range t.Airspace.Volumes {
-		for _, v := range volumes {
-			if alt < float32(v.LowerLimit) || alt > float32(v.UpperLimit) {
-				continue
-			}
-
-			// The full boundary of the airspace may be given by multiple
-			// Boundaries arrays, so we need to track the inside/outside
-			// Boolean across all of them...
-			inside := false
-			for _, boundary := range v.Boundaries {
-				pts, ok := t.Airspace.Boundaries[boundary]
-				if !ok {
-					// FIXME: catch this sooner
-					lg.Errorf("%s: boundary unknown", boundary)
-					continue
-				}
-
-				if PointInPolygon(p, pts) {
-					inside = !inside
-				}
-			}
-
-			if inside {
-				// Debugging / visualization
-				for _, boundary := range v.Boundaries {
-					pts, ok := t.Airspace.Boundaries[boundary]
-					if ok {
-						activeBoundaries = append(activeBoundaries, pts)
-					}
-				}
-
-				return sector, true
+func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]int) {
+	var altRanges [][2]int
+	for _, v := range volumes {
+		inside := false
+		for _, pts := range v.Boundaries {
+			if PointInPolygon(p, pts) {
+				inside = !inside
 			}
 		}
+		if inside {
+			altRanges = append(altRanges, [2]int{v.LowerLimit, v.UpperLimit})
+		}
 	}
-	return "", false
+
+	// Sort altitude ranges and then merge ones that have 1000 foot separation
+	sort.Slice(altRanges, func(i, j int) bool { return altRanges[i][0] < altRanges[j][0] })
+	var mergedAlts [][2]int
+	i := 0
+	inside := false
+	for i < len(altRanges) {
+		low := altRanges[i][0]
+		high := altRanges[i][1]
+
+		for i+1 < len(altRanges) {
+			if altRanges[i+1][0]-high <= 1000 {
+				// merge
+				high = altRanges[i+1][1]
+				i++
+			} else {
+				break
+			}
+		}
+
+		// 10 feet of slop for rounding error
+		inside = inside || (int(alt)+10 >= low && int(alt)-10 <= high)
+
+		mergedAlts = append(mergedAlts, [2]int{low, high})
+		i++
+	}
+
+	return inside, mergedAlts
 }

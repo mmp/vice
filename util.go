@@ -417,6 +417,14 @@ func Overlaps(a Extent2D, b Extent2D) bool {
 	return x && y
 }
 
+func Union(e Extent2D, p [2]float32) Extent2D {
+	e.p0[0] = min(e.p0[0], p[0])
+	e.p0[1] = min(e.p0[1], p[1])
+	e.p1[0] = max(e.p1[0], p[0])
+	e.p1[1] = max(e.p1[1], p[1])
+	return e
+}
+
 // ClosestPointInBox returns the closest point to p that is inside the
 // Extent2D.  (If p is already inside it, then it is returned.)
 func (e Extent2D) ClosestPointInBox(p [2]float32) [2]float32 {

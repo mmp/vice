@@ -37,6 +37,11 @@ type Scenario struct {
 	Wind        Wind     `json:"wind"`
 	Controllers []string `json:"controllers"`
 
+	ApproachAirspace       []AirspaceVolume `json:"-"`
+	DepartureAirspace      []AirspaceVolume `json:"-"`
+	ApproachAirspaceNames  []string         `json:"approach_airspace"`
+	DepartureAirspaceNames []string         `json:"departure_airspace"`
+
 	DepartureRunwayStrings []string                    `json:"departure_runways,omitempty"` // e.g. "KJFK/31L"
 	ArrivalRunwayStrings   []string                    `json:"arrival_runways,omitempty"`   // e.g. "KJFK/31L"
 	DepartureRunways       map[string]*DepartureRunway `json:"-"`
@@ -74,6 +79,21 @@ func (s *Scenario) ArrivalAirports() []string {
 
 func (s *Scenario) PostDeserialize(t *TRACON) []error {
 	var errors []error
+
+	for _, as := range s.ApproachAirspaceNames {
+		if vol, ok := t.AirspaceVolumes[as]; !ok {
+			errors = append(errors, fmt.Errorf("%s: unknown approach airspace in scenario %s", as, s.Name))
+		} else {
+			s.ApproachAirspace = append(s.ApproachAirspace, vol...)
+		}
+	}
+	for _, as := range s.DepartureAirspaceNames {
+		if vol, ok := t.AirspaceVolumes[as]; !ok {
+			errors = append(errors, fmt.Errorf("%s: unknown departure airspace in scenario %s", as, s.Name))
+		} else {
+			s.DepartureAirspace = append(s.DepartureAirspace, vol...)
+		}
+	}
 
 	s.DepartureRunways = make(map[string]*DepartureRunway)
 	s.ArrivalRunways = make(map[string]*ArrivalRunway)
@@ -630,7 +650,6 @@ func (ss *Sim) updateState() {
 
 	// Update the simulation state once a second.
 	if now.Sub(ss.lastSimUpdate) >= time.Second {
-		activeBoundaries = nil
 		ss.lastSimUpdate = now
 		for _, ac := range ss.aircraft {
 			ac.Update()

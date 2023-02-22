@@ -49,9 +49,10 @@ type Aircraft struct {
 	CrossingAltitude int
 	CrossingSpeed    int
 
-	Approach        *Approach // if assigned
-	ClearedApproach bool
-	OnFinal         bool
+	Approach            *Approach // if assigned
+	ClearedApproach     bool
+	OnFinal             bool
+	HaveEnteredAirspace bool
 }
 
 func (a *Aircraft) TrackAltitude() int {
@@ -545,13 +546,6 @@ func (ac *Aircraft) updatePositionAndGS() {
 	// Finally update position and groundspeed.
 	ac.Position = nm2ll(newPos)
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
-
-	// Airspace yolo
-	if sector, ok := tracon.LookupAirspace(ac.Position, ac.Altitude); ok {
-		lg.Errorf("%s: inside %s", ac.Callsign, sector)
-	} else {
-		lg.Errorf("%s: sector unknown", ac.Callsign)
-	}
 }
 
 func (ac *Aircraft) updateWaypoints() {

@@ -20,6 +20,7 @@ import (
 	"unicode"
 	"unsafe"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -87,6 +88,9 @@ type STARSPane struct {
 	havePlayedSPCAlertSound map[*Aircraft]interface{}
 
 	lastCASoundTime time.Time
+
+	drawApproachAirspace  bool
+	drawDepartureAirspace bool
 }
 
 type STARSRangeBearingLine struct {
@@ -1059,8 +1063,6 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 	}
 }
 
-var activeBoundaries [][]Point2LL
-
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.processEvents(ctx.events)
 
@@ -1129,17 +1131,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 
-	transforms.LoadLatLongViewingMatrices(cb)
-	ld := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(ld)
-	cb.SetRGB(RGB{.2, .8, .2})
-	for _, b := range activeBoundaries {
-		for i := 0; i < len(b)-1; i++ {
-			ld.AddLine(b[i], b[i+1])
-		}
-	}
-	//ld.GenerateCommands(cb)
-
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
@@ -1170,6 +1161,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawRBLs(ctx, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
 	sp.drawCARings(ctx, transforms, cb)
+	sp.drawAirspace(ctx, transforms, cb)
 
 	DrawHighlighted(ctx, transforms, cb)
 
@@ -1418,6 +1410,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			for _, state := range sp.aircraft {
 				state.coneLength = 0
 			}
+			status.clear = true
+			return
+
+		case "DA":
+			sp.drawApproachAirspace = !sp.drawApproachAirspace
+			status.clear = true
+			return
+
+		case "DD":
+			sp.drawDepartureAirspace = !sp.drawDepartureAirspace
 			status.clear = true
 			return
 		}
@@ -3675,6 +3677,38 @@ func (sp *STARSPane) updateDatablockTextAndPosition(aircraft []*Aircraft) {
 
 }
 
+func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool) {
+	// Only report on ones that are tracked by us
+	if ac.TrackingController != sim.Callsign() {
+		return
+	}
+
+	if Find(sim.scenario.DepartureAirports(), ac.FlightPlan.DepartureAirport) != -1 {
+		if len(sim.scenario.DepartureAirspace) > 0 {
+			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.scenario.DepartureAirspace)
+			if !ac.HaveEnteredAirspace {
+				ac.HaveEnteredAirspace = inDepartureAirspace
+			} else {
+				alts = depAlts
+				outside = !inDepartureAirspace
+			}
+		}
+	} else if Find(sim.scenario.ArrivalAirports(), ac.FlightPlan.ArrivalAirport) != -1 {
+		if len(sim.scenario.ApproachAirspace) > 0 {
+			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.scenario.ApproachAirspace)
+			if !ac.HaveEnteredAirspace {
+				ac.HaveEnteredAirspace = inApproachAirspace
+			} else {
+				alts = depAlts
+				outside = !inApproachAirspace
+			}
+		}
+	} else {
+		lg.Errorf("%s: neither a departure nor an arrival??!? %s", ac.Callsign, spew.Sdump(ac.FlightPlan))
+	}
+	return
+}
+
 func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 	if ac.TrackAltitude() < int(sp.Facility.CA.Floor) {
 		return false
@@ -3725,6 +3759,13 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 	}
 	if sp.IsCAActive(ac) {
 		errs = append(errs, "CA")
+	}
+	if alts, outside := sp.OutsideAirspace(ac); outside {
+		altStrs := ""
+		for _, a := range alts {
+			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
+		}
+		errs = append(errs, "AS"+altStrs)
 	}
 	// TODO: LA
 	errblock = strings.Join(errs, "/") // want e.g., EM/LA if multiple things going on
@@ -4129,6 +4170,54 @@ func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformatio
 	cb.LineWidth(1)
 	ps := sp.currentPreferenceSet
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
+}
+
+func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+
+	ps := sp.currentPreferenceSet
+	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
+
+	drawSectors := func(volumes []AirspaceVolume) {
+		for _, v := range volumes {
+			e := EmptyExtent2D()
+
+			for _, pts := range v.Boundaries {
+				for i := range pts {
+					e = Union(e, pts[i])
+					if i < len(pts)-1 {
+						ld.AddLine(pts[i], pts[i+1], rgb)
+					}
+				}
+			}
+
+			center := e.Center()
+			ps := sp.currentPreferenceSet
+			style := TextStyle{
+				Font:           sp.systemFont[ps.CharSize.Tools],
+				Color:          rgb,
+				DrawBackground: true, // default BackgroundColor is fine
+			}
+			alts := fmt.Sprintf("%d-%d", v.LowerLimit/100, v.UpperLimit/100)
+			td.AddTextCentered(alts, transforms.WindowFromLatLongP(center), style)
+		}
+	}
+
+	if sp.drawApproachAirspace {
+		drawSectors(sim.scenario.ApproachAirspace)
+	}
+
+	if sp.drawDepartureAirspace {
+		drawSectors(sim.scenario.DepartureAirspace)
+	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations) {
