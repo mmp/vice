@@ -830,7 +830,7 @@ func (ss *Sim) ClearedApproach(callsign string, approach string) error {
 		ac.Approach = ap
 	}
 	if ac.Approach.ShortName != approach {
-		pilotResponse(callsign, "but you cleared us for the "+ap.FullName+" approach...")
+		pilotResponse(callsign, "but you cleared us for the "+ac.Approach.FullName+" approach...")
 		return ErrClearedForUnexpectedApproach
 	}
 	if ac.ClearedApproach {
