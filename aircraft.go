@@ -620,19 +620,14 @@ func (ac *Aircraft) updateWaypoints() {
 	}
 
 	eta := wp.ETA(ac.Position, ac.GS)
-	turn := abs(headingDifference(hdg, ac.Heading))
-	//lg.Errorf("%s: dist to %s %.2fnm, eta %s, next hdg %.1f turn %.1f, go: %v",
-	// ac.Callsign, wp.Fix, dist, eta, hdg, turn, eta < turn/3/2)
+	turnAngle := abs(headingDifference(hdg, ac.Heading))
 
-	// We'll wrap things up for the upcoming waypoint if we're within 2
-	// seconds of reaching it or if the aircraft has to turn to a new
-	// direction and the time to turn to the outbound heading is 1/6 of the
-	// number of degrees the turn will be.  The first test ensures that we
-	// don't fly over the waypoint in the case where there is no turn
-	// (e.g. when we're established on the localizer) and the latter test
-	// assumes a 3 degree/second turn and then adds a 1/2 factor to account
-	// for the arc of the turn.  (Ad hoc, but it seems to work well enough.)
-	if s := float32(eta.Seconds()); s < 2 || (hdg != 0 && s < turn/3/2) {
+	// Assuming 3 degree/second turns, we might start to turn to the
+	// heading leaving the waypoint when turnAngle/3==eta, though we'd turn
+	// too early then since turning starts to put us in the new direction
+	// away from the fix.  An ad-hoc angle/5 generally seems to work well
+	// instead.
+	if float32(eta.Seconds()) < turnAngle/5 {
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp.Commands)
 
