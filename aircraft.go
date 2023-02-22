@@ -621,8 +621,9 @@ func (ac *Aircraft) updateWaypoints() {
 	// heading leaving the waypoint when turnAngle/3==eta, though we'd turn
 	// too early then since turning starts to put us in the new direction
 	// away from the fix.  An ad-hoc angle/5 generally seems to work well
-	// instead.
-	if float32(eta.Seconds()) < turnAngle/5 {
+	// instead. Also checking against 2 seconds ensures that we don't miss
+	// fixes where there's little to no turn...
+	if s := float32(eta.Seconds()); s < max(2, turnAngle/5) {
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp.Commands)
 
