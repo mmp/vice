@@ -309,11 +309,12 @@ func (ac *Aircraft) updateAirspeed() {
 	}
 
 	if targetSpeed == 0 {
-		targetSpeed = perf.Speed.Cruise
-
 		// But obey 250kts under 10,000'
 		if ac.Altitude < 10000 {
-			targetSpeed = min(targetSpeed, 250)
+			targetSpeed = min(ac.Performance.Speed.Cruise, 250)
+		} else {
+			// Assume climbing or descending
+			targetSpeed = ac.Performance.Speed.Cruise * 7 / 10
 		}
 	}
 
