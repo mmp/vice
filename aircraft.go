@@ -593,6 +593,9 @@ func (ac *Aircraft) updateWaypoints() {
 			ac.AssignedHeading = 0
 			ac.AssignedAltitude = 0
 			ac.OnFinal = true
+			if len(ac.Waypoints) > 0 {
+				ac.WaypointUpdate(ac.Waypoints[0])
+			}
 		}
 		return
 	}
