@@ -42,10 +42,10 @@ type Scenario struct {
 	ApproachAirspaceNames  []string         `json:"approach_airspace"`
 	DepartureAirspaceNames []string         `json:"departure_airspace"`
 
-	DepartureRunwayStrings []string                    `json:"departure_runways,omitempty"` // e.g. "KJFK/31L"
-	ArrivalRunwayStrings   []string                    `json:"arrival_runways,omitempty"`   // e.g. "KJFK/31L"
-	DepartureRunways       map[string]*DepartureRunway `json:"-"`
-	ArrivalRunways         map[string]*ArrivalRunway   `json:"-"`
+	DepartureRunwayRates map[string]int              `json:"departure_runways,omitempty"` // e.g. "KJFK/31L"
+	ArrivalRunwayStrings []string                    `json:"arrival_runways,omitempty"`   // e.g. "KJFK/31L"
+	DepartureRunways     map[string]*DepartureRunway `json:"-"`
+	ArrivalRunways       map[string]*ArrivalRunway   `json:"-"`
 }
 
 func (s *Scenario) AllAirports() []string {
@@ -55,7 +55,7 @@ func (s *Scenario) AllAirports() []string {
 func (s *Scenario) DepartureAirports() []string {
 	var ap []string
 
-	for _, dep := range s.DepartureRunwayStrings {
+	for dep := range s.DepartureRunwayRates {
 		airport, _, _ := strings.Cut(dep, "/")
 		if Find(ap, airport) == -1 {
 			ap = append(ap, airport)
@@ -98,7 +98,7 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 	s.DepartureRunways = make(map[string]*DepartureRunway)
 	s.ArrivalRunways = make(map[string]*ArrivalRunway)
 
-	for _, dep := range s.DepartureRunwayStrings {
+	for dep, rate := range s.DepartureRunwayRates {
 		if airport, rwy, found := strings.Cut(dep, "/"); !found {
 			errors = append(errors, fmt.Errorf("%s: malformed departure runway specifier", dep))
 		} else if ap, ok := t.Airports[airport]; !ok {
@@ -109,6 +109,7 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s", rwy, airport))
 			} else {
 				s.DepartureRunways[dep] = ap.DepartureRunways[idx]
+				s.DepartureRunways[dep].Rate = int32(rate)
 			}
 		}
 	}
@@ -192,17 +193,21 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.TableNextColumn()
 		imgui.Text(scenario.Callsign)
 
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Departing:")
-		imgui.TableNextColumn()
-		imgui.Text(strings.Join(scenario.DepartureRunwayStrings, ", "))
+		if len(scenario.DepartureRunwayRates) > 0 {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Departing:")
+			imgui.TableNextColumn()
+			imgui.Text(strings.Join(SortedMapKeys(scenario.DepartureRunwayRates), ", "))
+		}
 
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Landing:")
-		imgui.TableNextColumn()
-		imgui.Text(strings.Join(scenario.ArrivalRunwayStrings, ", "))
+		if len(scenario.ArrivalRunwayStrings) > 0 {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Landing:")
+			imgui.TableNextColumn()
+			imgui.Text(strings.Join(scenario.ArrivalRunwayStrings, ", "))
+		}
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()

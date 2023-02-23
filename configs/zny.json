@@ -340,7 +340,6 @@
               "waypoints": "_FRG_1 _FRG_19 _FRG_1a #13 @"
             }
           },
-          "rate": 0,
           "runway": "1"
         },
         {
@@ -431,7 +430,6 @@
               "waypoints": "_FRG_19 _FRG_1 _FRG_19a #220 @"
             }
           },
-          "rate": 0,
           "runway": "19"
         },
         {
@@ -522,7 +520,6 @@
               "waypoints": "_FRG_14 _FRG_32 _FRG_14a #220 @"
             }
           },
-          "rate": 0,
           "runway": "14"
         },
         {
@@ -613,7 +610,6 @@
               "waypoints": "_FRG_32 _FRG_14 _FRG_32a #10 @"
             }
           },
-          "rate": 0,
           "runway": "32"
         }
       ],
@@ -780,7 +776,6 @@
               "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
             }
           },
-          "rate": 0,
           "runway": "6"
         },
         {
@@ -806,7 +801,6 @@
               "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
             }
           },
-          "rate": 0,
           "runway": "24"
         },
         {
@@ -832,7 +826,6 @@
               "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
             }
           },
-          "rate": 0,
           "runway": "15R"
         },
         {
@@ -858,7 +851,6 @@
               "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
             }
           },
-          "rate": 0,
           "runway": "33L"
         }
       ],
@@ -1620,7 +1612,6 @@
               "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR #223"
             }
           },
-          "rate": 30,
           "runway": "31L"
         },
         {
@@ -1711,7 +1702,6 @@
               "waypoints": "_JFK_22R _JFK_4L #222"
             }
           },
-          "rate": 30,
           "runway": "22R"
         },
         {
@@ -1802,7 +1792,6 @@
               "waypoints": "_JFK_13R _JFK_31L #185"
             }
           },
-          "rate": 30,
           "runway": "13R"
         },
         {
@@ -1893,7 +1882,6 @@
               "waypoints": "_JFK_4L _JFK_4La #100"
             }
           },
-          "rate": 30,
           "runway": "4L"
         }
       ],
@@ -2650,7 +2638,6 @@
               "waypoints": "_LGA_31 _LGA_13 _LGA_13a @ JFK"
             }
           },
-          "rate": 0,
           "runway": "31"
         },
         {
@@ -2686,7 +2673,6 @@
               "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"
             }
           },
-          "rate": 0,
           "runway": "22"
         },
         {
@@ -2722,7 +2708,6 @@
               "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"
             }
           },
-          "rate": 0,
           "runway": "13"
         },
         {
@@ -2758,7 +2743,6 @@
               "waypoints": "_LGA_4 _LGA_22 _LGA_22a @ JFK"
             }
           },
-          "rate": 0,
           "runway": "4"
         }
       ],
@@ -3290,7 +3274,6 @@
               "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
             }
           },
-          "rate": 40,
           "runway": "27L"
         },
         {
@@ -3346,7 +3329,6 @@
               "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
             }
           },
-          "rate": 40,
           "runway": "9L"
         }
       ],
@@ -3826,12 +3808,12 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": [
-        "KJFK/13R",
-        "KLGA/13",
-        "KISP/15R",
-        "KFRG/14"
-      ],
+      "departure_runways": {
+        "KJFK/13R": 40,
+        "KLGA/13": 10,
+        "KISP/15R": 0,
+        "KFRG/14": 0
+      },
       "name": "KJFK Depart 13R",
       "wind": {
         "direction": 140,
@@ -3853,12 +3835,12 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": [
-        "KJFK/13R",
-        "KLGA/13",
-        "KISP/15R",
-        "KFRG/14"
-      ],
+      "departure_runways": {
+        "KJFK/13R": 40,
+        "KLGA/13": 10,
+        "KISP/15R": 0,
+        "KFRG/14": 0
+      },
       "name": "KJFK Depart 13R Land 13L",
       "wind": {
         "direction": 140,
@@ -3881,12 +3863,12 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": [
-        "KJFK/13R",
-        "KLGA/13",
-        "KISP/15R",
-        "KFRG/14"
-      ],
+      "departure_runways": {
+        "KJFK/13R": 40,
+        "KLGA/13": 10,
+        "KISP/15R": 0,
+        "KFRG/14": 0
+      },
       "name": "KJFK Depart 13R Land 13L/22L",
       "wind": {
         "direction": 140,
@@ -3906,12 +3888,12 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": [
-        "KJFK/22R",
-        "KLGA/22",
-        "KISP/24",
-        "KFRG/19"
-      ],
+      "departure_runways": {
+        "KJFK/22R": 40,
+        "KLGA/22": 10,
+        "KISP/24": 0,
+        "KFRG/19": 0
+      },
       "name": "KJFK Depart 22R",
       "wind": {
         "direction": 190,
@@ -3934,12 +3916,12 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": [
-        "KJFK/22R",
-        "KLGA/22",
-        "KISP/24",
-        "KFRG/19"
-      ],
+      "departure_runways": {
+        "KJFK/22R": 40,
+        "KLGA/22": 10,
+        "KISP/24": 0,
+        "KFRG/19": 0
+      },
       "name": "KJFK Depart 22R Land 22 L/R",
       "wind": {
         "direction": 190,
@@ -3959,12 +3941,12 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": [
-        "KJFK/31L",
-        "KLGA/31",
-        "KISP/33L",
-        "KFRG/32"
-      ],
+      "departure_runways": {
+        "KJFK/31L": 40,
+        "KLGA/31": 10,
+        "KISP/33L": 0,
+        "KFRG/32": 0
+      },
       "name": "KJFK Depart 31L",
       "wind": {
         "direction": 330,
@@ -3987,12 +3969,12 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": [
-        "KJFK/31L",
-        "KLGA/31",
-        "KISP/33L",
-        "KFRG/32"
-      ],
+      "departure_runways": {
+        "KJFK/31L": 40,
+        "KLGA/31": 10,
+        "KISP/33L": 0,
+        "KFRG/32": 0
+      },
       "name": "KJFK Depart 31L Land 31L/31R",
       "wind": {
         "direction": 330,
@@ -4012,12 +3994,12 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": [
-        "KJFK/4L",
-        "KLGA/4",
-        "KISP/6",
-        "KFRG/1"
-      ],
+      "departure_runways": {
+        "KJFK/4L": 40,
+        "KLGA/4": 10,
+        "KISP/6": 0,
+        "KFRG/1": 0
+      },
       "name": "KJFK Depart 4L",
       "wind": {
         "direction": 30,
@@ -4040,12 +4022,12 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": [
-        "KJFK/4L",
-        "KLGA/4",
-        "KISP/6",
-        "KFRG/1"
-      ],
+      "departure_runways": {
+        "KJFK/4L": 40,
+        "KLGA/4": 10,
+        "KISP/6": 0,
+        "KFRG/1": 0
+      },
       "name": "KJFK Depart 4L Land 4L/R",
       "wind": {
         "direction": 30,
@@ -4079,9 +4061,9 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "departure_runways": [
-        "KPHL/27L"
-      ],
+      "departure_runways": {
+        "KPHL/27L": 45
+      },
       "name": "KPHL Depart 27L Land 27R",
       "wind": {
         "direction": 290,
@@ -4115,9 +4097,9 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "departure_runways": [
-        "KPHL/9L"
-      ],
+      "departure_runways": {
+        "KPHL/9L": 45
+      },
       "name": "KPHL Depart 9L Land 9R",
       "wind": {
         "direction": 70,
