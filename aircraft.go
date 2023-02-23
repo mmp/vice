@@ -304,7 +304,7 @@ func (ac *Aircraft) updateAirspeed() {
 			}
 			return
 		} else {
-			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
+			//lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
 			targetSpeed = ac.CrossingSpeed
 		}
 	}
