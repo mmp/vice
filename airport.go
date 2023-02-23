@@ -217,6 +217,8 @@ type Arrival struct {
 	ClearedAltitude   int    `json:"cleared_altitude"`
 	InitialSpeed      int    `json:"initial_speed"`
 	SpeedRestriction  int    `json:"speed_restriction"`
+	ExpectApproach    string `json:"expect_approach"`
+	Scratchpad        string `json:"scratchpad"`
 
 	Airlines []ArrivalAirline `json:"airlines"`
 }

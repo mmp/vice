@@ -1173,6 +1173,7 @@ func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
 	}
 
 	ac.FlightPlan.DepartureAirport = airline.Airport
+	ac.FlightPlan.ArrivalAirport = ap.ICAO
 	ac.TrackingController = arr.InitialController
 	ac.FlightPlan.Altitude = 39000
 	ac.FlightPlan.Route = arr.Route
@@ -1192,6 +1193,17 @@ func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
 	ac.IAS = float32(arr.InitialSpeed)
 	ac.CrossingAltitude = arr.ClearedAltitude
 	ac.CrossingSpeed = arr.SpeedRestriction
+	ac.Scratchpad = arr.Scratchpad
+	if arr.ExpectApproach != "" {
+		for i, appr := range tracon.Airports[ac.FlightPlan.ArrivalAirport].Approaches {
+			if appr.ShortName == arr.ExpectApproach {
+				ac.Approach = &ap.Approaches[i]
+			}
+		}
+		if ac.Approach == nil {
+			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
+		}
+	}
 
 	return ac
 }
