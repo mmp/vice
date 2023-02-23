@@ -717,6 +717,7 @@ func (ss *Sim) AssignAltitude(callsign string, altitude int) error {
 		}
 
 		ac.AssignedAltitude = altitude
+		ac.CrossingAltitude = 0
 		return nil
 	}
 }
@@ -759,6 +760,7 @@ func (ss *Sim) AssignSpeed(callsign string, speed int) error {
 		}
 
 		ac.AssignedSpeed = speed
+		ac.CrossingSpeed = 0
 		return nil
 	}
 }
