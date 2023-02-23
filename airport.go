@@ -87,11 +87,7 @@ func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 
 	// Filter out the DEBUG arrivals if devmode isn't enabled
 	if !*devmode {
-		for i := range ac.ArrivalGroups {
-			ac.ArrivalGroups[i].Arrivals =
-				FilterSlice(ac.ArrivalGroups[i].Arrivals, func(ar Arrival) bool { return ar.Name != "DEBUG" })
-		}
-		ac.ArrivalGroups = FilterSlice(ac.ArrivalGroups, func(ag ArrivalGroup) bool { return len(ag.Arrivals) > 0 })
+		ac.ArrivalGroups = FilterSlice(ac.ArrivalGroups, func(ag ArrivalGroup) bool { return ag.Name != "Debug" })
 	}
 
 	for _, ag := range ac.ArrivalGroups {
@@ -110,8 +106,8 @@ func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 			}
 
 			if _, ok := controllers[ar.InitialController]; !ok {
-				errors = append(errors, fmt.Errorf("%s: controller not found for %s arrival in %s group",
-					ar.InitialController, ar.Name, ag.Name))
+				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group",
+					ar.InitialController, ag.Name))
 			}
 		}
 	}
@@ -212,7 +208,6 @@ type ArrivalGroup struct {
 }
 
 type Arrival struct {
-	Name            string                   `json:"name"`
 	Waypoints       WaypointArray            `json:"waypoints"`
 	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
 	Route           string                   `json:"route"`
