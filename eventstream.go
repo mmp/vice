@@ -128,12 +128,12 @@ func (e *EventStream) compact() {
 		}
 	}
 
+	if len(e.stream) > 1000 && lg != nil {
+		lg.Errorf("EventStream length %d", len(e.stream))
+	}
+
 	if minOffset > cap(e.stream)/2 {
 		n := len(e.stream) - minOffset
-
-		if lg != nil {
-			lg.Printf("Compacting event stream from %d to %d elements", len(e.stream), n)
-		}
 
 		copy(e.stream, e.stream[minOffset:])
 		e.stream = e.stream[:n]

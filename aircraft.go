@@ -5,10 +5,9 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"time"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type Aircraft struct {
@@ -239,6 +238,9 @@ func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 		//lg.Errorf("%s: on final...", ac.Callsign)
 		ac.OnFinal = true
 	}
+
+	lg.Printf("%s: waypoint update for %s: cross alt %d cross speed %d", ac.Callsign,
+		wp.Fix, wp.Altitude, wp.Speed)
 }
 
 func (ac *Aircraft) Update() {
@@ -329,6 +331,8 @@ func (ac *Aircraft) updateAirspeed() {
 	}
 }
 
+var etaWarnings map[string]interface{} = make(map[string]interface{})
+
 func (ac *Aircraft) updateAltitude() {
 	// Climb or descend, but only if it's going fast enough to be
 	// airborne.  (Assume no stalls in flight.)
@@ -369,14 +373,18 @@ func (ac *Aircraft) updateAltitude() {
 			// acceleration/deceleration...
 			ac.Altitude = max(float32(ac.AssignedAltitude), ac.Altitude-descent/60)
 		}
-	} else if !ac.ClearedApproach || ac.OnFinal {
-		// We have a crossing altitude, but ignore it if the aircraft is
+	} else if ac.CrossingAltitude != 0 && (!ac.ClearedApproach || ac.OnFinal) {
+		// We have a crossing altitude, but we ignore it if the aircraft is
 		// below the next crossing altitude, has been cleared for the
 		// approach, but hasn't yet joined the final approach course.
-		// (i.e., don't climb then!)
+		// (i.e., don't climb in that case!)
 		eta, ok := ac.NextFixETA()
 		if !ok {
-			lg.Errorf("unable to get crossing fix eta... %s", spew.Sdump(ac))
+			w := fmt.Sprintf("%s: unable to get fix eta for crossing alt %d", ac.Callsign, ac.CrossingAltitude)
+			if _, ok := etaWarnings[w]; !ok {
+				etaWarnings[w] = nil
+				lg.Printf("%s", w)
+			}
 			return
 		}
 
@@ -430,7 +438,7 @@ func (ac *Aircraft) updateHeading() {
 		// has flown through the localizer.) Ignore it if so.
 		v := sub2f(isect, pos)
 		if v[0]*headingVector[0]+v[1]*headingVector[1] < 0 {
-			lg.Errorf("behind us...")
+			lg.Errorf("%s: localizer intersection is behind us...", ac.Callsign)
 		} else {
 			// Find eta to the intercept and the turn required to align with
 			// the localizer.
@@ -445,7 +453,7 @@ func (ac *Aircraft) updateHeading() {
 			// localizer more slowly as it turns, so we'll add another 1/2
 			// fudge factor, which seems to account for that reasonably well.
 			if eta < turn/3/2 {
-				lg.Errorf("assigned approach heading! %d", ap.Heading())
+				lg.Printf("%s: assigned approach heading! %d", ac.Callsign, ap.Heading())
 				ac.AssignedHeading = ap.Heading()
 				ac.TurnDirection = 0
 				// Just in case.. Thus we will be ready to pick up the
@@ -568,12 +576,12 @@ func (ac *Aircraft) updateWaypoints() {
 			n := len(ap.Waypoints[0])
 			threshold := ll2nm(ap.Waypoints[0][n-1].Location)
 			thresholdDistance := distance2f(ll2nm(ac.Position), threshold)
-			lg.Errorf("intercepted the localizer @ %.2fnm!", thresholdDistance)
+			lg.Printf("%s: intercepted the localizer @ %.2fnm!", ac.Callsign, thresholdDistance)
 
 			ac.Waypoints = nil
 			for _, wp := range ap.Waypoints[0] {
 				if distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
-					lg.Errorf("%s: adding future waypoint...", wp.Fix)
+					lg.Printf("%s: %s: adding future waypoint...", ac.Callsign, wp.Fix)
 					ac.Waypoints = append(ac.Waypoints, wp)
 				} else if ac.Waypoints != nil {
 					// We consider the waypoints from far away to near (and
@@ -585,7 +593,7 @@ func (ac *Aircraft) updateWaypoints() {
 					// somehow closer to the airport than the aircraft,
 					// then we won't include it in the aircraft's upcoming
 					// waypoints.
-					lg.Errorf("clearing those waypoints...")
+					lg.Printf("%s: clearing those waypoints...", ac.Callsign)
 					ac.Waypoints = nil
 				}
 			}
