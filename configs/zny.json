@@ -3486,6 +3486,100 @@
         }
       ],
       "name": "PAATS3"
+    },
+    {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KDEN",
+                "icao": "AAL"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KIND",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KDAY",
+                "icao": "JIA"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "JZA"
+              },
+              {
+                "airport": "KCVG",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KLAX",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "AAL"
+              }
+            ]
+          },
+          "cleared_altitude": 4000,
+          "expect_approach": "27R",
+          "initial_altitude": 6000,
+          "initial_controller": "PHL_NA_APP",
+          "initial_speed": 220,
+          "route": "/. BOJID2",
+          "runway_waypoints": {
+            "27R": "BOJID N040.01.51.140,W075.11.43.262 @ HIFAL EYRIE@s190 FERUS #085"
+          },
+          "scratchpad": "27R"
+        }
+      ],
+      "name": "FINAL27_NORTH"
+    },
+    {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KLAS",
+                "icao": "AAL"
+              },
+              {
+                "airport": "MMUN",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KTPA",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KATL",
+                "icao": "FFT"
+              },
+              {
+                "airport": "KMEM",
+                "icao": "JIA"
+              }
+            ]
+          },
+          "cleared_altitude": 4000,
+          "expect_approach": "27R",
+          "initial_altitude": 6000,
+          "initial_controller": "PHL_SA_APP",
+          "initial_speed": 220,
+          "route": "/. PAATS3",
+          "runway_waypoints": {
+            "27R": "BEELZ N039.42.44.799,W075.05.41.949 @ WOJIK@s190 PSOUT #87"
+          },
+          "scratchpad": "27R"
+        }
+      ],
+      "name": "FINAL27_SOUTH"
     }
   ],
   "center": "N040.38.24.354,W073.46.35.388",
@@ -3580,11 +3674,23 @@
       "scope_char": "T",
       "sector_id": "6A"
     },
+    "PHL_F1_APP": {
+      "callsign": "PHL_F1_APP",
+      "frequency": 124500,
+      "scope_char": "F",
+      "sector_id": "6F"
+    },
     "PHL_NA_APP": {
       "callsign": "PHL_NA_APP",
       "frequency": 128400,
       "scope_char": "N",
       "sector_id": "6N"
+    },
+    "PHL_SA_APP": {
+      "callsign": "PHL_SA_APP",
+      "frequency": 133870,
+      "scope_char": "S",
+      "sector_id": "6S"
     },
     "PHL_ND_DEP": {
       "callsign": "PHL_ND_DEP",
@@ -4071,6 +4177,33 @@
         "direction": 70,
         "gust": 24,
         "speed": 17
+      }
+    },
+    "KPHL 27R Final": {
+      "arrival_airport": "KPHL",
+      "arrival_runways": [
+        "KPHL/27R"
+      ],
+      "arrivals": {
+        "FINAL27_SOUTH": 22,
+        "FINAL27_NORTH": 22
+      },
+      "approach_airspace": [
+        "PHL_F1_APP27",
+        "PHL_F2_APP27"
+      ],
+      "callsign": "PHL_F1_APP",
+      "controllers": [
+        "PHL_TWR",
+        "PHL_NA_APP",
+        "PHL_SA_APP",
+        "DC_CTR",
+        "NY_CTR"
+      ],
+      "name": "KPHL 27R Final",
+      "wind": {
+        "direction": 290,
+        "speed": 8
       }
     }
   },
