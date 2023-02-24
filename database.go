@@ -9,10 +9,13 @@ import (
 	_ "embed"
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 // StaticDatabase is a catch-all for data about the world that doesn't
@@ -292,4 +295,43 @@ func (db *StaticDatabase) LookupAircraftType(ac string) (AircraftType, bool) {
 		return t, ok
 	}
 	return AircraftType{}, false
+}
+
+func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
+	var errors []error
+
+	al, ok := database.Airlines[icao]
+	if !ok {
+		errors = append(errors, fmt.Errorf("%s: airline not in database", icao))
+	}
+
+	if fleet == "" {
+		fleet = "default"
+	}
+
+	fl, ok := al.Fleets[fleet]
+	if !ok {
+		errors = append(errors,
+			fmt.Errorf("%s: fleet unknown for airline \"%s\"", fleet, icao))
+	}
+
+	for _, aircraft := range fl {
+		if perf, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
+			errors = append(errors,
+				fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
+					aircraft.ICAO, icao, fleet))
+		} else {
+			if perf.Speed.Min < 50 || perf.Speed.Landing < 50 || perf.Speed.Cruise < 50 ||
+				perf.Speed.Max < 50 || perf.Speed.Min > perf.Speed.Max {
+				fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
+					spew.Sdump(perf.Speed))
+			}
+			if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
+				perf.Rate.Decelerate == 0 {
+				fmt.Errorf("%s: aircraft's rate specification is questionable: %s", aircraft.ICAO,
+					spew.Sdump(perf.Rate))
+			}
+		}
+	}
+	return errors
 }

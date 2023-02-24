@@ -5,12 +5,11 @@ package main
 import (
 	_ "embed"
 	"encoding/xml"
+	"fmt"
 	"sort"
 	"strings"
+	"time"
 )
-
-// TRACON and Scenario are all (mostly) read only
-// though do we allow Rate to be changed and stay persistent? (probs...)
 
 type TRACON struct {
 	Name             string                      `json:"name"`
@@ -22,6 +21,7 @@ type TRACON struct {
 	ControlPositions map[string]*Controller      `json:"control_positions"`
 	Scratchpads      map[string]string           `json:"scratchpads"`
 	AirspaceVolumes  map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
+	ArrivalGroups    []ArrivalGroup              `json:"arrival_groups"`
 
 	Center         Point2LL    `json:"center"`
 	PrimaryAirport string      `json:"primary_airport"`
@@ -31,6 +31,36 @@ type TRACON struct {
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
 	MagneticVariation float32 `json:"magnetic_variation"`
+}
+
+type ArrivalGroup struct {
+	Name     string    `json:"name"`
+	Arrivals []Arrival `json:"arrivals"`
+
+	rate      int32
+	nextSpawn time.Time
+}
+
+type Arrival struct {
+	Waypoints       WaypointArray            `json:"waypoints"`
+	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
+	Route           string                   `json:"route"`
+
+	InitialController string `json:"initial_controller"`
+	InitialAltitude   int    `json:"initial_altitude"`
+	ClearedAltitude   int    `json:"cleared_altitude"`
+	InitialSpeed      int    `json:"initial_speed"`
+	SpeedRestriction  int    `json:"speed_restriction"`
+	ExpectApproach    string `json:"expect_approach"`
+	Scratchpad        string `json:"scratchpad"`
+
+	Airlines map[string][]ArrivalAirline `json:"airlines"`
+}
+
+type ArrivalAirline struct {
+	ICAO    string `json:"icao"`
+	Airport string `json:"airport"`
+	Fleet   string `json:"fleet,omitempty"`
 }
 
 type AirspaceVolume struct {
@@ -52,10 +82,8 @@ func (t *TRACON) PostDeserialize() {
 	t.AirspaceVolumes = parseAirspace()
 
 	for _, ap := range t.Airports {
-		if errors := ap.PostDeserialize(t.ControlPositions); len(errors) > 0 {
-			for _, err := range errors {
-				lg.Errorf("%s: error in specification: %v", ap.ICAO, err)
-			}
+		for _, err := range ap.PostDeserialize(t) {
+			lg.Errorf("%s: error in specification: %v", ap.ICAO, err)
 		}
 	}
 
@@ -63,12 +91,39 @@ func (t *TRACON) PostDeserialize() {
 		lg.Errorf("%s: default scenario not found", t.DefaultScenario)
 	}
 
+	for _, ag := range t.ArrivalGroups {
+		if len(ag.Arrivals) == 0 {
+			lg.Errorf("%s: no arrivals in arrival group", ag.Name)
+		}
+
+		for _, ar := range ag.Arrivals {
+			for _, err := range t.InitializeWaypointLocations(ar.Waypoints) {
+				lg.Errorf("%s: %v", ag.Name, err)
+			}
+			for _, wp := range ar.RunwayWaypoints {
+				for _, err := range t.InitializeWaypointLocations(wp) {
+					lg.Errorf("%s: %v", ag.Name, err)
+				}
+			}
+
+			for _, apAirlines := range ar.Airlines {
+				for _, al := range apAirlines {
+					for _, err := range database.CheckAirline(al.ICAO, al.Fleet) {
+						lg.Errorf("%v", err)
+					}
+				}
+			}
+
+			if _, ok := t.ControlPositions[ar.InitialController]; !ok {
+				lg.Errorf("%s: controller not found for arrival in %s group", ar.InitialController, ag.Name)
+			}
+		}
+	}
+
 	// Do after airports!
 	for _, s := range t.Scenarios {
-		if errors := s.PostDeserialize(t); len(errors) > 0 {
-			for _, err := range errors {
-				lg.Errorf("%s: error in specification: %v", s.Name, err)
-			}
+		for _, err := range s.PostDeserialize(t) {
+			lg.Errorf("%s: error in specification: %v", s.Name, err)
 		}
 	}
 
@@ -95,6 +150,31 @@ func (t *TRACON) PostDeserialize() {
 
 		globalConfig.Version = 2
 	}
+}
+
+func (t *TRACON) InitializeWaypointLocations(waypoints []Waypoint) []error {
+	var prev Point2LL
+	var errors []error
+
+	for i, wp := range waypoints {
+		if pos, ok := database.Locate(wp.Fix); ok {
+			waypoints[i].Location = pos
+		} else if pos, ok := t.Locate(wp.Fix); ok {
+			waypoints[i].Location = pos
+		} else if pos, err := ParseLatLong(wp.Fix); err == nil {
+			waypoints[i].Location = pos
+		} else {
+			errors = append(errors, fmt.Errorf("%s: unable to locate waypoint", wp.Fix))
+		}
+
+		d := nmdistance2ll(prev, waypoints[i].Location)
+		if i > 1 && d > 25 {
+			errors = append(errors, fmt.Errorf("%s: waypoint is suspiciously far from previous one: %f nm",
+				wp.Fix, d))
+		}
+		prev = waypoints[i].Location
+	}
+	return errors
 }
 
 //go:embed resources/ZNY_sanscomment_VOLUMES.xml
@@ -164,31 +244,6 @@ func parseAirspace() map[string][]AirspaceVolume {
 	}
 
 	return volumes
-}
-
-func (t *TRACON) ActivateScenario(s string) {
-	scenario, ok := t.Scenarios[s]
-	if !ok {
-		panic(s + " not found")
-	}
-
-	// Disable all runways
-	for _, ap := range t.Airports {
-		for _, rwy := range ap.DepartureRunways {
-			rwy.Enabled = false
-		}
-		for _, rwy := range ap.ArrivalRunways {
-			rwy.Enabled = false
-		}
-	}
-
-	// Enable the ones from the scenario
-	for _, dep := range scenario.DepartureRunways {
-		dep.Enabled = true
-	}
-	for _, arr := range scenario.ArrivalRunways {
-		arr.Enabled = true
-	}
 }
 
 func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]int) {

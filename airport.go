@@ -7,8 +7,6 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type Airport struct {
@@ -16,9 +14,8 @@ type Airport struct {
 	Elevation int      `json:"elevation"`
 	Location  Point2LL `json:"location"`
 
-	ArrivalGroups []ArrivalGroup `json:"arrival_groups,omitempty"`
-	Approaches    []Approach     `json:"approaches,omitempty"`
-	Departures    []Departure    `json:"departures,omitempty"`
+	Approaches []Approach  `json:"approaches,omitempty"`
+	Departures []Departure `json:"departures,omitempty"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
@@ -27,7 +24,7 @@ type Airport struct {
 	ArrivalRunways     []*ArrivalRunway   `json:"-"`
 }
 
-func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
+func (ac *Airport) PostDeserialize(t *TRACON) []error {
 	var errors []error
 
 	for _, rwy := range ac.ArrivalRunwayNames {
@@ -45,80 +42,17 @@ func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
 
-			errors = append(errors, ac.InitializeWaypointLocations(ap.Waypoints[i])...)
-		}
-	}
-
-	checkAirline := func(icao, fleet string) {
-		al, ok := database.Airlines[icao]
-		if !ok {
-			errors = append(errors, fmt.Errorf("%s: airline not in database", icao))
-		}
-
-		if fleet == "" {
-			fleet = "default"
-		}
-
-		fl, ok := al.Fleets[fleet]
-		if !ok {
-			errors = append(errors,
-				fmt.Errorf("%s: fleet unknown for airline \"%s\"", fleet, icao))
-		}
-
-		for _, aircraft := range fl {
-			if perf, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
-				errors = append(errors,
-					fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
-						aircraft.ICAO, icao, fleet))
-			} else {
-				if perf.Speed.Min < 50 || perf.Speed.Landing < 50 || perf.Speed.Cruise < 50 ||
-					perf.Speed.Max < 50 || perf.Speed.Min > perf.Speed.Max {
-					fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
-						spew.Sdump(perf.Speed))
-				}
-				if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
-					perf.Rate.Decelerate == 0 {
-					fmt.Errorf("%s: aircraft's rate specification is questionable: %s", aircraft.ICAO,
-						spew.Sdump(perf.Rate))
-				}
-			}
-		}
-	}
-
-	// Filter out the DEBUG arrivals if devmode isn't enabled
-	if !*devmode {
-		ac.ArrivalGroups = FilterSlice(ac.ArrivalGroups, func(ag ArrivalGroup) bool { return ag.Name != "Debug" })
-	}
-
-	for _, ag := range ac.ArrivalGroups {
-		if len(ag.Arrivals) == 0 {
-			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group", ag.Name))
-		}
-
-		for _, ar := range ag.Arrivals {
-			errors = append(errors, ac.InitializeWaypointLocations(ar.Waypoints)...)
-			for _, wp := range ar.RunwayWaypoints {
-				errors = append(errors, ac.InitializeWaypointLocations(wp)...)
-			}
-
-			for _, al := range ar.Airlines {
-				checkAirline(al.ICAO, al.Fleet)
-			}
-
-			if _, ok := controllers[ar.InitialController]; !ok {
-				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group",
-					ar.InitialController, ag.Name))
-			}
+			errors = append(errors, t.InitializeWaypointLocations(ap.Waypoints[i])...)
 		}
 	}
 
 	for i, dep := range ac.Departures {
 		wp := []Waypoint{Waypoint{Fix: dep.Exit}}
-		errors = append(errors, ac.InitializeWaypointLocations(wp)...)
+		errors = append(errors, t.InitializeWaypointLocations(wp)...)
 		ac.Departures[i].exitWaypoint = wp[0]
 
 		for _, al := range dep.Airlines {
-			checkAirline(al.ICAO, al.Fleet)
+			errors = append(errors, database.CheckAirline(al.ICAO, al.Fleet)...)
 		}
 	}
 
@@ -130,44 +64,18 @@ func (ac *Airport) PostDeserialize(controllers map[string]*Controller) []error {
 		runwayNames[rwy.Runway] = nil
 
 		for _, er := range rwy.ExitRoutes {
-			errors = append(errors, ac.InitializeWaypointLocations(er.Waypoints)...)
+			errors = append(errors, t.InitializeWaypointLocations(er.Waypoints)...)
 		}
 	}
 
-	return errors
-}
-
-func (ac *Airport) InitializeWaypointLocations(waypoints []Waypoint) []error {
-	var prev Point2LL
-	var errors []error
-
-	for i, wp := range waypoints {
-		if pos, ok := database.Locate(wp.Fix); ok {
-			waypoints[i].Location = pos
-		} else if pos, ok := tracon.Locate(wp.Fix); ok {
-			waypoints[i].Location = pos
-		} else if pos, err := ParseLatLong(wp.Fix); err == nil {
-			waypoints[i].Location = pos
-		} else {
-			errors = append(errors, fmt.Errorf("%s: unable to locate waypoint", wp.Fix))
-		}
-
-		d := nmdistance2ll(prev, waypoints[i].Location)
-		if i > 1 && d > 25 {
-			errors = append(errors, fmt.Errorf("%s: waypoint is suspiciously far from previous one: %f nm",
-				wp.Fix, d))
-		}
-		prev = waypoints[i].Location
-	}
 	return errors
 }
 
 type DepartureRunway struct {
 	Runway     string               `json:"runway"`
-	Enabled    bool                 `json:"-"`
-	Rate       int32                `json:"rate"`
 	ExitRoutes map[string]ExitRoute `json:"exit_routes"`
 
+	rate          int32
 	nextSpawn     time.Time
 	lastDeparture *Departure
 }
@@ -196,37 +104,6 @@ type Departure struct {
 type DepartureAirline struct {
 	ICAO  string `json:"icao"`
 	Fleet string `json:"fleet,omitempty"`
-}
-
-type ArrivalGroup struct {
-	Name     string    `json:"name"`
-	Rate     int32     `json:"rate"`
-	Enabled  bool      `json:"-"`
-	Arrivals []Arrival `json:"arrivals"`
-
-	nextSpawn time.Time
-}
-
-type Arrival struct {
-	Waypoints       WaypointArray            `json:"waypoints"`
-	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
-	Route           string                   `json:"route"`
-
-	InitialController string `json:"initial_controller"`
-	InitialAltitude   int    `json:"initial_altitude"`
-	ClearedAltitude   int    `json:"cleared_altitude"`
-	InitialSpeed      int    `json:"initial_speed"`
-	SpeedRestriction  int    `json:"speed_restriction"`
-	ExpectApproach    string `json:"expect_approach"`
-	Scratchpad        string `json:"scratchpad"`
-
-	Airlines []ArrivalAirline `json:"airlines"`
-}
-
-type ArrivalAirline struct {
-	ICAO    string `json:"icao"`
-	Airport string `json:"airport"`
-	Fleet   string `json:"fleet,omitempty"`
 }
 
 type ApproachType int
