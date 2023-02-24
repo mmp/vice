@@ -3531,7 +3531,7 @@
           "initial_altitude": 6000,
           "initial_controller": "PHL_NA_APP",
           "initial_speed": 220,
-          "route": "/. BOJID2",
+          "route": "/. BOJID3",
           "runway_waypoints": {
             "27R": "BOJID N040.01.51.140,W075.11.43.262 @ HIFAL EYRIE@s190 FERUS #085"
           },
@@ -3950,6 +3950,12 @@
         "KJFK/22L",
         "KJFK/22R"
       ],
+      "arrivals": {
+        "LENDY8/IGN1": 12,
+        "CAMRN4": 12,
+        "OWENZ": 10,
+        "PARCH3/ROBER2": 12
+      },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
@@ -4099,8 +4105,8 @@
         "KPHL/27R"
       ],
       "arrivals": {
-        "BOJID2": 12,
-        "SPUDS4": 10,
+        "BOJID3": 12,
+        "SPUDS5": 10,
         "JIIMS3": 12,
         "PAATS3": 12
       },
@@ -4142,8 +4148,8 @@
         "KPHL/9R"
       ],
       "arrivals": {
-        "BOJID2": 12,
-        "SPUDS4": 10,
+        "BOJID3": 12,
+        "SPUDS5": 10,
         "JIIMS3": 12,
         "PAATS3": 12
       },
