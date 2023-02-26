@@ -600,7 +600,7 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 			} else {
 				// Try to get the telephony.
 				icao, flight := v.callsign[:idx], v.callsign[idx:]
-				if cs, ok := database.callsigns[icao]; ok {
+				if cs, ok := database.Callsigns[icao]; ok {
 					textCallsign = cs.Telephony + " " + flight
 					if ac := sim.GetAircraft(v.callsign); ac != nil {
 						if fp := ac.FlightPlan; fp != nil {
