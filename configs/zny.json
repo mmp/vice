@@ -557,22 +557,22 @@
       "departure_runways": [
         {
           "exit_routes": {
-            "BAYYS": {
+            "GAYEL": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
             },
-            "BDR": {
+            "HAAYS": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
             },
-            "GREKI": {
+            "NEION": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
             },
-            "MERIT": {
+            "COATE": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
@@ -582,22 +582,22 @@
         },
         {
           "exit_routes": {
-            "BAYYS": {
+            "GAYEL": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
             },
-            "BDR": {
+            "HAAYS": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
             },
-            "GREKI": {
+            "NEION": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
             },
-            "MERIT": {
+            "COATE": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
@@ -607,22 +607,22 @@
         },
         {
           "exit_routes": {
-            "BAYYS": {
+            "GAYEL": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
             },
-            "BDR": {
+            "HAAYS": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
             },
-            "GREKI": {
+            "NEION": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
             },
-            "MERIT": {
+            "COATE": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
@@ -632,22 +632,22 @@
         },
         {
           "exit_routes": {
-            "BAYYS": {
+            "GAYEL": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
             },
-            "BDR": {
+            "HAAYS": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
             },
-            "GREKI": {
+            "NEION": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
             },
-            "MERIT": {
+            "COATE": {
               "cleared_altitude": 8000,
               "route": "LONGI7",
               "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
@@ -667,9 +667,23 @@
             }
           ],
           "altitude": 16000,
-          "destination": "KLEB",
-          "exit": "BDR",
-          "route": "JUDDS WHATE"
+          "destination": "KBUF",
+          "exit": "GAYEL",
+          "route": "GAYEL J95 CFB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "WJA"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KSYR",
+          "exit": "NEION",
+          "route": "NEION J223 CORDS CFB V29 SYR"
         },
         {
           "airlines": [
@@ -682,9 +696,9 @@
             }
           ],
           "altitude": 21000,
-          "destination": "KBOS",
-          "exit": "MERIT",
-          "route": "MERIT ORW ORW7"
+          "destination": "KROC",
+          "exit": "HAAYS",
+          "route": "HAAYS HUO V252 GIBBE"
         },
         {
           "airlines": [
@@ -697,24 +711,9 @@
             }
           ],
           "altitude": 21000,
-          "destination": "KPOU",
-          "exit": "BAYYS",
-          "route": "STUBY TRESA"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "jfk",
-              "icao": "WJA"
-            },
-            {
-              "icao": "JBU"
-            }
-          ],
-          "altitude": 21000,
-          "destination": "KBTV",
-          "exit": "GREKI",
-          "route": "JUDDS CAM"
+          "destination": "CYYZ",
+          "exit": "COATE",
+          "route": "COATE LAAYK ULW WOZEE LINNG3"
         }
       ],
       "elevation": 87,
