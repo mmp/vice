@@ -39,8 +39,18 @@ type ArrivalGroup struct {
 	Name     string    `json:"name"`
 	Arrivals []Arrival `json:"arrivals"`
 
-	rate      int32
+	rates     map[string]*int32 // map from airport to arrival rate
 	nextSpawn time.Time
+}
+
+func (ag *ArrivalGroup) Airports() []string {
+	m := make(map[string]interface{})
+	for _, ar := range ag.Arrivals {
+		for al := range ar.Airlines {
+			m[al] = nil
+		}
+	}
+	return SortedMapKeys(m)
 }
 
 type Arrival struct {

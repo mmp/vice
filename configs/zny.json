@@ -47,7 +47,12 @@
           ]
         }
       ],
-      "arrival_runways": null,
+      "arrival_runways": [
+        "1",
+        "14",
+        "19",
+        "32"
+      ],
       "departure_runways": [
         {
           "exit_routes": {
@@ -3596,6 +3601,12 @@
       "scope_char": "C",
       "sector_id": "W32"
     },
+    "FRG_TWR": {
+      "callsign": "FRG_TWR",
+      "frequency": 118800,
+      "scope_char": "M",
+      "sector_id": "2M"
+    },
     "ISP_APP": {
       "callsign": "ISP_APP",
       "frequency": 120050,
@@ -3851,20 +3862,21 @@
       }
     },
     "KJFK Depart 13R Land 13L": {
-      "arrival_airport": "KJFK",
       "arrival_runways": [
+        "KFRG/14",
         "KJFK/13R"
       ],
       "arrivals": {
-        "LENDY8/IGN1": 12,
-        "CAMRN4": 12,
-        "OWENZ": 10,
-        "PARCH3/ROBER2": 12
+        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
+        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
+        "OWENZ": { "KJFK": 10 },
+        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
@@ -3885,21 +3897,22 @@
       }
     },
     "KJFK Depart 13R Land 13L/22L": {
-      "arrival_airport": "KJFK",
       "arrival_runways": [
+        "KFRG/14",
         "KJFK/13L",
         "KJFK/22L"
       ],
       "arrivals": {
-        "LENDY8/IGN1": 12,
-        "CAMRN4": 12,
-        "OWENZ": 10,
-        "PARCH3/ROBER2": 12
+        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
+        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
+        "OWENZ": { "KJFK": 10 },
+        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
@@ -3945,21 +3958,22 @@
       }
     },
     "KJFK Depart 22R Land 22 L/R": {
-      "arrival_airport": "KJFK",
       "arrival_runways": [
+        "KFRG/19",
         "KJFK/22L",
         "KJFK/22R"
       ],
       "arrivals": {
-        "LENDY8/IGN1": 12,
-        "CAMRN4": 12,
-        "OWENZ": 10,
-        "PARCH3/ROBER2": 12
+        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
+        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
+        "OWENZ": { "KJFK": 10 },
+        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
@@ -4005,21 +4019,22 @@
       }
     },
     "KJFK Depart 31L Land 31L/31R": {
-      "arrival_airport": "KJFK",
       "arrival_runways": [
+        "KFRG/32",
         "KJFK/31R",
         "KJFK/31L"
       ],
       "arrivals": {
-        "LENDY8/IGN1": 12,
-        "CAMRN4": 12,
-        "OWENZ": 10,
-        "PARCH3/ROBER2": 12
+        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
+        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
+        "OWENZ": { "KJFK": 10 },
+        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
@@ -4065,21 +4080,22 @@
       }
     },
     "KJFK Depart 4L Land 4L/R": {
-      "arrival_airport": "KJFK",
       "arrival_runways": [
+        "KFRG/1",
         "KJFK/4R",
         "KJFK/4L"
       ],
       "arrivals": {
-        "LENDY8/IGN1": 12,
-        "CAMRN4": 12,
-        "OWENZ": 10,
-        "PARCH3/ROBER2": 12
+        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
+        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
+        "OWENZ": { "KJFK": 10 },
+        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
@@ -4100,15 +4116,14 @@
       }
     },
     "KPHL Depart 27L Land 27R": {
-      "arrival_airport": "KPHL",
       "arrival_runways": [
         "KPHL/27R"
       ],
       "arrivals": {
-        "BOJID3": 12,
-        "SPUDS5": 10,
-        "JIIMS3": 12,
-        "PAATS3": 12
+        "BOJID3": { "KPHL": 12 },
+        "SPUDS5": { "KPHL": 10 },
+        "JIIMS3": { "KPHL": 12 },
+        "PAATS3": { "KPHL": 12 }
       },
       "approach_airspace": [
         "PHL_DU_APP27",
@@ -4143,15 +4158,14 @@
       }
     },
     "KPHL Depart 9L Land 9R": {
-      "arrival_airport": "KPHL",
       "arrival_runways": [
         "KPHL/9R"
       ],
       "arrivals": {
-        "BOJID3": 12,
-        "SPUDS5": 10,
-        "JIIMS3": 12,
-        "PAATS3": 12
+        "BOJID3": { "KPHL": 12 },
+        "SPUDS5": { "KPHL": 10 },
+        "JIIMS3": { "KPHL": 12 },
+        "PAATS3": { "KPHL": 12 }
       },
       "approach_airspace": [
         "PHL_DU_APP9",
@@ -4186,13 +4200,12 @@
       }
     },
     "KPHL 27R Final": {
-      "arrival_airport": "KPHL",
       "arrival_runways": [
         "KPHL/27R"
       ],
       "arrivals": {
-        "FINAL27_SOUTH": 22,
-        "FINAL27_NORTH": 22
+        "FINAL27_SOUTH": { "KPHL": 22 },
+        "FINAL27_NORTH": { "KPHL": 22 }
       },
       "approach_airspace": [
         "PHL_F1_APP27",
