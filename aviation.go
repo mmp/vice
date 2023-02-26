@@ -256,140 +256,6 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 	}
 }
 
-type AircraftType struct {
-	Name         string
-	Manufacturer string
-
-	RECAT string
-	Type  string // [ALH]#[JTP] -> { L->land, H->heli, A -> water}, # engines, { Jet, Turboprop, Prop}
-	WTC   string // Wake turbulence category: L -> light, M -> medium, H -> heavy, J -> super
-	APC   string // Approach category: Vat: A 0-90, B 91-120 C 121-140 D 141-165 E >165
-
-	Initial struct {
-		IAS, ROC int
-	}
-	ClimbFL150 struct {
-		IAS, ROC int
-	}
-	ClimbFL240 struct {
-		IAS, ROC int
-	}
-	Cruise struct {
-		Ceiling int // FL
-		TAS     int
-		ROC     int
-		Mach    float32
-	}
-	Approach struct {
-		IAS, MCS int
-	}
-}
-
-func (ac *AircraftType) NumEngines() int {
-	if len(ac.Type) != 3 {
-		return 0
-	}
-	return int([]byte(ac.Type)[1] - '0')
-}
-
-func (ac *AircraftType) EngineType() string {
-	if len(ac.Type) != 3 {
-		return "unknown"
-	}
-	switch ac.Type[2] {
-	case 'P':
-		return "piston"
-	case 'T':
-		return "turboprop"
-	case 'J':
-		return "jet"
-	default:
-		return "unknown"
-	}
-}
-
-func (ac *AircraftType) ApproachCategory() string {
-	switch ac.APC {
-	case "A":
-		return "A: Vat <90, initial 90-150 kts final 70-110 kts"
-	case "B":
-		return "B: Vat 91-120, initial 120-180 kts final 85-130 kts"
-	case "C":
-		return "C: Vat 121-140, initial 160-240 kts final 115-160 kts"
-	case "D":
-		return "D: Vat 141-165, initial 185-250 kts final 180-185 kts"
-	case "E":
-		return "E: Vat 166-210, initial 185-250 kts final 155-230 kts"
-	default:
-		return "unknown"
-	}
-}
-
-func (ac *AircraftType) RECATCategory() string {
-	code := "unknown"
-	switch ac.RECAT {
-	case "F":
-		code = "Light"
-	case "E":
-		code = "Lower Medium"
-	case "D":
-		code = "Upper Medium"
-	case "C":
-		code = "Lower Heavy"
-	case "B":
-		code = "Upper Heavy"
-	case "A":
-		code = "Super Heavy"
-	}
-
-	return ac.RECAT + ": " + code
-}
-
-func RECATDistance(leader, follower string) (int, error) {
-	dist := [6][6]int{
-		[6]int{3, 4, 5, 5, 6, 8},
-		[6]int{0, 3, 4, 4, 5, 7},
-		[6]int{0, 0, 3, 3, 4, 6},
-		[6]int{0, 0, 0, 0, 0, 5},
-		[6]int{0, 0, 0, 0, 0, 4},
-		[6]int{0, 0, 0, 0, 0, 3},
-	}
-
-	if len(leader) != 1 {
-		return 0, fmt.Errorf("invalid RECAT leader")
-	}
-	if len(follower) != 1 {
-		return 0, fmt.Errorf("invalid RECAT follower")
-	}
-
-	l := int([]byte(leader)[0] - 'A')
-	if l < 0 || l >= len(dist) {
-		return 0, fmt.Errorf("%s: invalid RECAT leader", leader)
-	}
-
-	f := int([]byte(follower)[0] - 'A')
-	if f < 0 || f >= len(dist) {
-		return 0, fmt.Errorf("%s: invalid follower", follower)
-	}
-
-	return dist[l][f], nil
-}
-
-func RECATAircraftDistance(leader, follower *Aircraft) (int, error) {
-	if leader.FlightPlan == nil || follower.FlightPlan == nil {
-		return 0, ErrNoFlightPlan
-	}
-	if lac, ok := database.LookupAircraftType(leader.FlightPlan.BaseType()); !ok {
-		return 0, ErrUnknownAircraftType
-	} else {
-		if fac, ok := database.LookupAircraftType(follower.FlightPlan.BaseType()); !ok {
-			return 0, ErrUnknownAircraftType
-		} else {
-			return RECATDistance(lac.RECAT, fac.RECAT)
-		}
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
@@ -587,7 +453,6 @@ type StaticDatabase struct {
 	Navaids             map[string]Navaid
 	Fixes               map[string]Fix
 	Callsigns           map[string]Callsign
-	AircraftTypes       map[string]AircraftType
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
@@ -644,8 +509,6 @@ func InitializeStaticDatabase() *StaticDatabase {
 	wg.Add(1)
 	go func() { db.Callsigns = parseCallsigns(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.AircraftTypes, db.AircraftTypeAliases = parseAircraftTypes(); wg.Done() }()
-	wg.Add(1)
 	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines = parseAirlines(); wg.Done() }()
@@ -667,9 +530,6 @@ var (
 	fixesRaw string
 	//go:embed resources/callsigns.csv.zst
 	callsignsRaw string
-
-	//go:embed resources/aircraft.json
-	aircraftTypesRaw string
 )
 
 // Utility function for parsing CSV files as strings; it breaks each line
@@ -762,21 +622,6 @@ func parseCallsigns() map[string]Callsign {
 	return callsigns
 }
 
-func parseAircraftTypes() (map[string]AircraftType, map[string]string) {
-	var ac struct {
-		AircraftTypes       map[string]AircraftType `json:"Aircraft"`
-		AircraftTypeAliases map[string]string       `json:"Aliases"`
-	}
-	ac.AircraftTypes = make(map[string]AircraftType)
-	ac.AircraftTypeAliases = make(map[string]string)
-
-	if err := json.Unmarshal([]byte(aircraftTypesRaw), &ac); err != nil {
-		lg.Errorf("%v", err)
-	}
-
-	return ac.AircraftTypes, ac.AircraftTypeAliases
-}
-
 //go:embed resources/openscope-aircraft.json
 var openscopeAircraft string
 
@@ -840,20 +685,6 @@ func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
 	} else {
 		return Point2LL{}, false
 	}
-}
-
-func (db *StaticDatabase) LookupAircraftType(ac string) (AircraftType, bool) {
-	if t, ok := db.AircraftTypes[ac]; ok {
-		return t, true
-	}
-	if ac, ok := db.AircraftTypeAliases[ac]; ok {
-		t, ok := db.AircraftTypes[ac]
-		if !ok {
-			lg.Errorf("%s: alias not found in aircraft types database", ac)
-		}
-		return t, ok
-	}
-	return AircraftType{}, false
 }
 
 func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
