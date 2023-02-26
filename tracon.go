@@ -71,9 +71,16 @@ type AirspaceVolume struct {
 }
 
 func (t *TRACON) Locate(s string) (Point2LL, bool) {
+	// TRACON's definitions take precedence...
 	if ap, ok := t.Airports[s]; ok {
 		return ap.Location, true
 	} else if p, ok := t.Fixes[s]; ok {
+		return p, true
+	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
+		return n.Location, ok
+	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
+		return f.Location, ok
+	} else if p, err := ParseLatLong(s); err == nil {
 		return p, true
 	} else {
 		return Point2LL{}, false
@@ -159,14 +166,11 @@ func (t *TRACON) InitializeWaypointLocations(waypoints []Waypoint) []error {
 	var errors []error
 
 	for i, wp := range waypoints {
-		if pos, ok := database.Locate(wp.Fix); ok {
-			waypoints[i].Location = pos
-		} else if pos, ok := t.Locate(wp.Fix); ok {
-			waypoints[i].Location = pos
-		} else if pos, err := ParseLatLong(wp.Fix); err == nil {
+		if pos, ok := t.Locate(wp.Fix); ok {
 			waypoints[i].Location = pos
 		} else {
 			errors = append(errors, fmt.Errorf("%s: unable to locate waypoint", wp.Fix))
+			continue
 		}
 
 		d := nmdistance2ll(prev, waypoints[i].Location)

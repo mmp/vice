@@ -1470,11 +1470,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				status.clear = true
 				return
 			} else if f[0] == ".FIND" {
-				pos, ok := database.Locate(f[1])
-				if !ok {
-					pos, ok = tracon.Locate(f[1])
-				}
-				if ok {
+				if pos, ok := tracon.Locate(f[1]); ok {
 					globalConfig.highlightedLocation = pos
 					globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 					status.clear = true
@@ -2333,7 +2329,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 							} else if sim.AssignAltitude(ac.Callsign, 100*alt) != nil {
 								status.err = ErrSTARSIllegalTrack
 							}
-						} else if _, ok := database.Locate(string(command[1:])); ok {
+						} else if _, ok := tracon.Locate(string(command[1:])); ok {
 							if err := sim.DirectFix(ac.Callsign, command[1:]); err != nil {
 								if err == ErrNoAircraftForCallsign {
 									status.err = ErrSTARSIllegalTrack

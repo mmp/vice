@@ -675,18 +675,6 @@ func parseAirlines() map[string]Airline {
 ///////////////////////////////////////////////////////////////////////////
 // Utility methods
 
-// Locate returns the location of a (static) named thing, if we've heard of it.
-func (db *StaticDatabase) Locate(name string) (Point2LL, bool) {
-	name = strings.ToUpper(name)
-	if n, ok := db.Navaids[name]; ok {
-		return n.Location, ok
-	} else if f, ok := db.Fixes[name]; ok {
-		return f.Location, ok
-	} else {
-		return Point2LL{}, false
-	}
-}
-
 func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
 	var errors []error
 
