@@ -3075,6 +3075,116 @@
           "airlines": {
             "KJFK": [
               {
+                "airport": "KLGA",
+                "icao": "DPJ"
+              },
+              {
+                "airport": "KEWR",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KALB",
+                "icao": "JIA"
+              }
+            ],
+            "KFRG": [
+              {
+                "airport": "KHVN",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KHVN",
+                "icao": "DPJ"
+              },
+              {
+                "airport": "KTEB",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KALB",
+                "icao": "EJA"
+              }
+            ]
+          },
+          "cleared_altitude": 4000,
+          "initial_altitude": 4000,
+          "initial_controller": "ISP_APP",
+          "initial_speed": 250,
+          "route": "/. DPK",
+          "runway_waypoints": null,
+          "waypoints": "BELTT N040.59.14.338,W073.03.42.198 @ DPK"
+        },
+        {
+          "airlines": {
+            "KJFK": [
+              {
+                "airport": "KABE",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KACY",
+                "icao": "LXJ"
+              }
+            ],
+            "KFRG": [
+              {
+                "airport": "KABE",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KACY",
+                "icao": "DPJ"
+              },
+              {
+                "airport": "KABE",
+                "icao": "EJA"
+              }
+            ]
+          },
+          "cleared_altitude": 5000,
+          "initial_altitude": 5000,
+          "initial_controller": "NY_CTR",
+          "initial_speed": 250,
+          "route": "/. ZIGGI",
+          "runway_waypoints": null,
+          "waypoints": "N039.57.50.347,W074.02.42.954 ZIGGI @ JFK"
+        },
+        {
+          "airlines": {
+            "KJFK": [
+              {
+                "airport": "KTTN",
+                "icao": "EJA"
+              }
+            ],
+            "KFRG": [
+              {
+                "airport": "KTTN",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KTTN",
+                "icao": "DPJ"
+              }
+            ]
+          },
+          "cleared_altitude": 4000,
+          "initial_altitude": 4000,
+          "initial_controller": "EWR_APP",
+          "initial_speed": 250,
+          "route": "/. COL",
+          "runway_waypoints": null,
+          "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636 @ COL JFK"
+        }
+      ],
+      "name": "Intra-TRACON"
+    },
+    {
+      "arrivals": [
+        {
+          "airlines": {
+            "KJFK": [
+              {
                 "airport": "CYYZ",
                 "fleet": "short",
                 "icao": "AAL"
@@ -3600,6 +3710,12 @@
       "scope_char": "C",
       "sector_id": "W32"
     },
+    "EWR_APP": {
+      "callsign": "EWR_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
     "FRG_TWR": {
       "callsign": "FRG_TWR",
       "frequency": 118800,
@@ -3880,12 +3996,17 @@
         "PARCH3/ROBER2": {
           "KJFK": 12,
           "KFRG": 0
+        },
+        "Intra-TRACON": {
+          "KJFK": 0,
+          "KFRG": 0
         }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "EWR_APP",
         "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
@@ -3927,12 +4048,17 @@
         "PARCH3/ROBER2": {
           "KJFK": 12,
           "KFRG": 0
+        },
+        "Intra-TRACON": {
+          "KJFK": 0,
+          "KFRG": 0
         }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "EWR_APP",
         "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
@@ -3999,12 +4125,17 @@
         "PARCH3/ROBER2": {
           "KJFK": 12,
           "KFRG": 0
+        },
+        "Intra-TRACON": {
+          "KJFK": 0,
+          "KFRG": 0
         }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "EWR_APP",
         "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
@@ -4071,12 +4202,17 @@
         "PARCH3/ROBER2": {
           "KJFK": 12,
           "KFRG": 0
+        },
+        "Intra-TRACON": {
+          "KJFK": 0,
+          "KFRG": 0
         }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "EWR_APP",
         "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",
@@ -4143,12 +4279,17 @@
         "PARCH3/ROBER2": {
           "KJFK": 12,
           "KFRG": 0
+        },
+        "Intra-TRACON": {
+          "KJFK": 0,
+          "KFRG": 0
         }
       },
       "callsign": "JFK_APP",
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
+        "EWR_APP",
         "FRG_TWR",
         "ISP_APP",
         "JFK_TWR",

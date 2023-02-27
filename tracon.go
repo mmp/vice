@@ -184,7 +184,7 @@ func (t *TRACON) InitializeWaypointLocations(waypoints []Waypoint) []error {
 		}
 
 		d := nmdistance2ll(prev, waypoints[i].Location)
-		if i > 1 && d > 25 {
+		if i > 1 && d > 50 {
 			errors = append(errors, fmt.Errorf("%s: waypoint is suspiciously far from previous one: %f nm",
 				wp.Fix, d))
 		}
