@@ -16723,6 +16723,74 @@
     }
   },
   {
+    "icao": "dpj",
+    "name": "Delta Private Jets",
+    "callsign": {
+      "name": "Jet Card",
+      "length": 3
+    },
+    "fleets": {
+      "default": [
+        [
+          "C550",
+          3
+        ],
+        [
+          "C560",
+          127
+        ],
+        [
+          "C680",
+          116
+        ],
+        [
+          "C750",
+          50
+        ],
+        [
+          "CL35",
+          63
+        ],
+        [
+          "CL60",
+          20
+        ],
+        [
+          "E55P",
+          73
+        ],
+        [
+          "F2TH",
+          31
+        ],
+        [
+          "GALX",
+          22
+        ],
+        [
+          "GL5T",
+          11
+        ],
+        [
+          "GLEX",
+          13
+        ],
+        [
+          "GLF4",
+          31
+        ],
+        [
+          "GLF5",
+          6
+        ],
+        [
+          "H25B",
+          38
+        ]
+      ]
+    }
+  },
+  {
     "icao": "dq",
     "name": "General Aviation Fiji Islands",
     "callsign": {

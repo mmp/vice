@@ -422,7 +422,7 @@
               "icao": "EJA"
             },
             {
-              "icao": "LXJ"
+              "icao": "DPJ"
             }
           ],
           "altitude": 12000,
@@ -503,7 +503,7 @@
         {
           "airlines": [
             {
-              "icao": "EJA"
+              "icao": "DPJ"
             },
             {
               "icao": "LXJ"
@@ -2482,7 +2482,7 @@
         {
           "airlines": [
             {
-              "icao": "LXJ"
+              "icao": "DPJ"
             }
           ],
           "destination": "KPBI",
@@ -2653,7 +2653,7 @@
         {
           "airlines": [
             {
-              "icao": "EJA"
+              "icao": "DPJ"
             }
           ],
           "destination": "KEWR",
@@ -2769,7 +2769,7 @@
               },
               {
                 "airport": "KAUS",
-                "icao": "EJA"
+                "icao": "DPJ"
               },
               {
                 "airport": "KAUS",
@@ -2789,7 +2789,7 @@
               },
               {
                 "airport": "KPHL",
-                "icao": "LXJ"
+                "icao": "DPJ"
               }
             ]
           },
@@ -2936,7 +2936,7 @@
               },
               {
                 "airport": "KORD",
-                "icao": "EJA"
+                "icao": "DPJ"
               },
               {
                 "airport": "KORD",
@@ -2948,7 +2948,7 @@
               },
               {
                 "airport": "KASE",
-                "icao": "LXJ"
+                "icao": "DPJ"
               },
               {
                 "airport": "KGRR",
@@ -3037,7 +3037,7 @@
               },
               {
                 "airport": "KORD",
-                "icao": "LXJ"
+                "icao": "DPJ"
               },
               {
                 "airport": "KASE",
@@ -3049,7 +3049,7 @@
               },
               {
                 "airport": "KGRR",
-                "icao": "EJA"
+                "icao": "DPJ"
               },
               {
                 "airport": "KGRR",
