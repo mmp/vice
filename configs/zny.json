@@ -3866,10 +3866,21 @@
         "KJFK/13R"
       ],
       "arrivals": {
-        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
-        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
-        "OWENZ": { "KJFK": 10 },
-        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
+        "LENDY8/IGN1": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "CAMRN4": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "OWENZ": {
+          "KJFK": 10
+        },
+        "PARCH3/ROBER2": {
+          "KJFK": 12,
+          "KFRG": 0
+        }
       },
       "callsign": "JFK_APP",
       "controllers": [
@@ -3902,10 +3913,21 @@
         "KJFK/22L"
       ],
       "arrivals": {
-        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
-        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
-        "OWENZ": { "KJFK": 10 },
-        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
+        "LENDY8/IGN1": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "CAMRN4": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "OWENZ": {
+          "KJFK": 10
+        },
+        "PARCH3/ROBER2": {
+          "KJFK": 12,
+          "KFRG": 0
+        }
       },
       "callsign": "JFK_APP",
       "controllers": [
@@ -3963,10 +3985,21 @@
         "KJFK/22R"
       ],
       "arrivals": {
-        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
-        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
-        "OWENZ": { "KJFK": 10 },
-        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
+        "LENDY8/IGN1": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "CAMRN4": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "OWENZ": {
+          "KJFK": 10
+        },
+        "PARCH3/ROBER2": {
+          "KJFK": 12,
+          "KFRG": 0
+        }
       },
       "callsign": "JFK_APP",
       "controllers": [
@@ -4024,10 +4057,21 @@
         "KJFK/31L"
       ],
       "arrivals": {
-        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
-        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
-        "OWENZ": { "KJFK": 10 },
-        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
+        "LENDY8/IGN1": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "CAMRN4": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "OWENZ": {
+          "KJFK": 10
+        },
+        "PARCH3/ROBER2": {
+          "KJFK": 12,
+          "KFRG": 0
+        }
       },
       "callsign": "JFK_APP",
       "controllers": [
@@ -4085,10 +4129,21 @@
         "KJFK/4L"
       ],
       "arrivals": {
-        "LENDY8/IGN1": { "KJFK": 12, "KFRG": 0 },
-        "CAMRN4": { "KJFK": 12, "KFRG": 0 },
-        "OWENZ": { "KJFK": 10 },
-        "PARCH3/ROBER2": { "KJFK": 12, "KFRG": 0 }
+        "LENDY8/IGN1": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "CAMRN4": {
+          "KJFK": 12,
+          "KFRG": 0
+        },
+        "OWENZ": {
+          "KJFK": 10
+        },
+        "PARCH3/ROBER2": {
+          "KJFK": 12,
+          "KFRG": 0
+        }
       },
       "callsign": "JFK_APP",
       "controllers": [
@@ -4119,10 +4174,18 @@
         "KPHL/27R"
       ],
       "arrivals": {
-        "BOJID3": { "KPHL": 12 },
-        "SPUDS5": { "KPHL": 10 },
-        "JIIMS3": { "KPHL": 12 },
-        "PAATS3": { "KPHL": 12 }
+        "BOJID3": {
+          "KPHL": 12
+        },
+        "SPUDS5": {
+          "KPHL": 10
+        },
+        "JIIMS3": {
+          "KPHL": 12
+        },
+        "PAATS3": {
+          "KPHL": 12
+        }
       },
       "approach_airspace": [
         "PHL_DU_APP27",
@@ -4161,10 +4224,18 @@
         "KPHL/9R"
       ],
       "arrivals": {
-        "BOJID3": { "KPHL": 12 },
-        "SPUDS5": { "KPHL": 10 },
-        "JIIMS3": { "KPHL": 12 },
-        "PAATS3": { "KPHL": 12 }
+        "BOJID3": {
+          "KPHL": 12
+        },
+        "SPUDS5": {
+          "KPHL": 10
+        },
+        "JIIMS3": {
+          "KPHL": 12
+        },
+        "PAATS3": {
+          "KPHL": 12
+        }
       },
       "approach_airspace": [
         "PHL_DU_APP9",
@@ -4203,8 +4274,12 @@
         "KPHL/27R"
       ],
       "arrivals": {
-        "FINAL27_SOUTH": { "KPHL": 22 },
-        "FINAL27_NORTH": { "KPHL": 22 }
+        "FINAL27_SOUTH": {
+          "KPHL": 22
+        },
+        "FINAL27_NORTH": {
+          "KPHL": 22
+        }
       },
       "approach_airspace": [
         "PHL_F1_APP27",
