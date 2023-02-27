@@ -133,7 +133,8 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 		}
 	}
 
-	for name, airportRates := range s.ArrivalGroupRates {
+	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {
+		airportRates := s.ArrivalGroupRates[name]
 		idx := FindIf(t.ArrivalGroups, func(ag ArrivalGroup) bool { return ag.Name == name })
 		if idx == -1 {
 			errors = append(errors, fmt.Errorf("%s: arrival not found in TRACON", name))
