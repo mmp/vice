@@ -341,7 +341,7 @@ func TestSampleFiltered(t *testing.T) {
 	}
 
 	var counts [5]int
-	for i := 0; i < 3000; i++ {
+	for i := 0; i < 9000; i++ {
 		idx := SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v&1 == 0 })
 		counts[idx]++
 	}
@@ -349,10 +349,10 @@ func TestSampleFiltered(t *testing.T) {
 		t.Errorf("Incorrectly sampled odd items. Counts: %+v", counts)
 	}
 
-	slop := 30
-	if counts[0] < 1000-slop || counts[0] > 1000+slop ||
-		counts[2] < 1000-slop || counts[2] > 1000+slop ||
-		counts[4] < 1000-slop || counts[4] > 1000+slop {
-		t.Errorf("Didn't find roughly 1000 samples for the even items. Counts: %+v", counts)
+	slop := 100
+	if counts[0] < 3000-slop || counts[0] > 3000+slop ||
+		counts[2] < 3000-slop || counts[2] > 3000+slop ||
+		counts[4] < 3000-slop || counts[4] > 3000+slop {
+		t.Errorf("Didn't find roughly 3000 samples for the even items. Counts: %+v", counts)
 	}
 }

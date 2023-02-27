@@ -1,3 +1,5 @@
+github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed h1:hQC4FSwvsLH6rOLJTndsHnANARF9RwW4PbrDTjks/0A=
+github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed/go.mod h1:NQ4UMHqyfXyYVmZopcfwPRWJa0rw2aH16eDIltReVUo=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

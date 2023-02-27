@@ -13,7 +13,6 @@ import (
 	"image/draw"
 	"io"
 	"math"
-	"math/rand"
 	"net/http"
 	"regexp"
 	"sort"
@@ -22,6 +21,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/MichaelTJones/pcg"
 	"github.com/klauspost/compress/zstd"
 )
 
@@ -1322,4 +1322,34 @@ func (m Matrix3) TransformVector(p [2]float32) [2]float32 {
 		m[0][0]*p[0] + m[0][1]*p[1],
 		m[1][0]*p[0] + m[1][1]*p[1],
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Random numbers.
+
+type Rand struct {
+	r *pcg.PCG32
+}
+
+// Drop-in replacement for the subset of math/rand that we use...
+var rand Rand
+
+func init() {
+	rand.r = pcg.NewPCG32()
+}
+
+func (r *Rand) Seed(s int64) {
+	r.r.Seed(uint64(s), 0xda3e39cb94b95bdb)
+}
+
+func (r *Rand) Intn(n int) int {
+	return int(r.r.Bounded(uint32(n)))
+}
+
+func (r *Rand) Int31n(n int32) int32 {
+	return int32(r.r.Bounded(uint32(n)))
+}
+
+func (r *Rand) Float32() float32 {
+	return float32(r.r.Random()) / (1<<32 - 1)
 }
