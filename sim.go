@@ -1083,7 +1083,7 @@ func (ss *Sim) SpawnAircraft() {
 			return 365 * 24 * time.Hour
 		}
 		avgSeconds := 3600 / float32(rate)
-		seconds := lerp(rand.Float32(), .7*avgSeconds, 1.3*avgSeconds)
+		seconds := lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
 		return time.Duration(seconds * float32(time.Second))
 	}
 
