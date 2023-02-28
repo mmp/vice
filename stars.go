@@ -27,7 +27,7 @@ import (
 var (
 	STARSBackgroundColor         = RGB{0, 0, 0}
 	STARSListColor               = RGB{.1, .9, .1}
-	STARSTextAlertColor          = RGB{.7, .1, .1}
+	STARSTextAlertColor          = RGB{1, .1, .1}
 	STARSTrackBlockColor         = RGB{0.1, 0.4, 1}
 	STARSTrackHistoryColor       = RGB{.2, 0, 1}
 	STARSJRingConeColor          = RGB{.5, .5, 1}
