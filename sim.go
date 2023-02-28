@@ -987,10 +987,9 @@ func (ss *Sim) Paused() bool {
 	return ss.paused
 }
 
-func (ss *Sim) TogglePause() error {
+func (ss *Sim) TogglePause() {
 	ss.paused = !ss.paused
 	ss.lastUpdateTime = time.Now() // ignore time passage...
-	return nil
 }
 
 func (ss *Sim) ActivateSettingsWindow() {

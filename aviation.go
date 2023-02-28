@@ -353,14 +353,6 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 	return err
 }
 
-func mustParseWaypoints(str string) []Waypoint {
-	if wp, err := parseWaypoints(str); err != nil {
-		panic(err)
-	} else {
-		return wp
-	}
-}
-
 func parseWaypoints(str string) ([]Waypoint, error) {
 	var waypoints []Waypoint
 	for _, field := range strings.Fields(str) {
@@ -701,13 +693,15 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
 		} else {
 			if perf.Speed.Min < 50 || perf.Speed.Landing < 50 || perf.Speed.Cruise < 50 ||
 				perf.Speed.Max < 50 || perf.Speed.Min > perf.Speed.Max {
-				fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
-					spew.Sdump(perf.Speed))
+				errors = append(errors,
+					fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
+						spew.Sdump(perf.Speed)))
 			}
 			if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
 				perf.Rate.Decelerate == 0 {
-				fmt.Errorf("%s: aircraft's rate specification is questionable: %s", aircraft.ICAO,
-					spew.Sdump(perf.Rate))
+				errors = append(errors,
+					fmt.Errorf("%s: aircraft's rate specification is questionable: %s", aircraft.ICAO,
+						spew.Sdump(perf.Rate)))
 			}
 		}
 	}

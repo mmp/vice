@@ -34,7 +34,6 @@ type PaneContext struct {
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D
 
-	thumbnail bool
 	platform  Platform
 	mouse     *MouseState
 	keyboard  *KeyboardState
