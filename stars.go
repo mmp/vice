@@ -150,7 +150,7 @@ type STARSAircraftState struct {
 	coneLength     float32
 	displayTPASize bool // flip this so that zero-init works here? (What is the default?)
 
-	leaderLineDirection int // 0 -> unset. Otherwise 1 +
+	leaderLineDirection *CardinalOrdinalDirection // nil -> unset
 
 	displayPilotAltitude bool
 	pilotAltitude        int
@@ -1680,15 +1680,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 		case "L":
 			// leader lines
-			lldir := func(cmd byte) (int, error) {
-				if cmd >= '1' && cmd <= '9' {
-					return int(cmd - '0'), nil
-				} else {
-					return 0, ErrSTARSIllegalParam
-				}
-			}
-
-			setLLDir := func(dir int, pred func(*Aircraft) bool) {
+			setLLDir := func(dir *CardinalOrdinalDirection, pred func(*Aircraft) bool) {
 				for ac, state := range sp.aircraft {
 					if pred(ac) {
 						state.leaderLineDirection = dir
@@ -1701,7 +1693,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				return
 
 			case 1:
-				if dir, err := lldir(cmd[0]); err == nil {
+				if dir, ok := numpadToDirection(cmd[0]); ok {
 					// Tracked by me
 					me := sim.Callsign()
 					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == me })
@@ -1712,12 +1704,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				return
 
 			case 2:
-				dir, err := lldir(cmd[0])
-				if err == nil && cmd[1] == 'U' {
+				if dir, ok := numpadToDirection(cmd[0]); ok && cmd[1] == 'U' {
 					// FIXME: should be unassociated tracks
 					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == "" })
 					status.clear = true
-				} else if err == nil && cmd[1] == '*' {
+				} else if ok && cmd[1] == '*' {
 					// Tracked by other controllers
 					me := sim.Callsign()
 					setLLDir(dir, func(ac *Aircraft) bool {
@@ -1735,8 +1726,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				status.err = ErrSTARSCommandFormat // set preemptively; clear on success
 				for _, ctrl := range sim.GetAllControllers() {
 					if ctrl.SectorId == cmd[:2] {
-						dir, err := lldir(cmd[3])
-						if cmd[2] == ' ' && err == nil {
+						if dir, ok := numpadToDirection(cmd[3]); ok && cmd[2] == ' ' {
 							setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == ctrl.Callsign })
 							status.clear = true
 							status.err = nil
@@ -1747,7 +1737,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 			default:
 				// L(dir)(space)(callsign)
-				if dir, err := lldir(cmd[0]); err == nil && cmd[1] == ' ' {
+				if dir, ok := numpadToDirection(cmd[0]); ok && cmd[1] == ' ' {
 					// We know len(cmd) >= 3 given the above cases...
 					callsign := lookupCallsign(cmd[2:])
 					if ac := sim.GetAircraft(callsign); ac != nil {
@@ -2203,8 +2193,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						return
 					}
 					return
-				} else if dir, err := strconv.Atoi(cmd); err == nil && dir != 0 {
-					state.leaderLineDirection = dir // 0 denotes unset...
+				} else if dir, ok := numpadToDirection(cmd[0]); ok {
+					state.leaderLineDirection = dir
 					status.clear = true
 					return
 				}
@@ -2477,7 +2467,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				return
 
 			case "L":
-				if dir, err := strconv.Atoi(cmd); err == nil && dir != 0 && len(cmd) == 1 {
+				if dir, ok := numpadToDirection(cmd[0]); ok && len(cmd) == 1 {
 					state.leaderLineDirection = dir
 					status.clear = true
 				} else {
@@ -2678,6 +2668,39 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 		status.err = ErrSTARSCommandFormat
 	}
 	return
+}
+
+func numpadToDirection(key byte) (*CardinalOrdinalDirection, bool) {
+	var dir CardinalOrdinalDirection
+	switch key {
+	case '1':
+		dir = CardinalOrdinalDirection(SouthWest)
+		return &dir, true
+	case '2':
+		dir = CardinalOrdinalDirection(South)
+		return &dir, true
+	case '3':
+		dir = CardinalOrdinalDirection(SouthEast)
+		return &dir, true
+	case '4':
+		dir = CardinalOrdinalDirection(West)
+		return &dir, true
+	case '5':
+		return nil, true
+	case '6':
+		dir = CardinalOrdinalDirection(East)
+		return &dir, true
+	case '7':
+		dir = CardinalOrdinalDirection(NorthWest)
+		return &dir, true
+	case '8':
+		dir = CardinalOrdinalDirection(North)
+		return &dir, true
+	case '9':
+		dir = CardinalOrdinalDirection(NorthEast)
+		return &dir, true
+	}
+	return nil, false
 }
 
 func rblSecondClickHandler(sp *STARSPane,
@@ -4615,12 +4638,11 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft) bool {
 }
 
 func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft) CardinalOrdinalDirection {
-	if lld := sp.aircraft[ac].leaderLineDirection; lld != 0 {
-		// these are offset +1 so that we can use default-initialized 0
-		// for unset.
-		return CardinalOrdinalDirection((lld - 1) % 8)
+	if lld := sp.aircraft[ac].leaderLineDirection; lld != nil {
+		return *lld
+	} else {
+		return sp.currentPreferenceSet.LeaderLineDirection
 	}
-	return sp.currentPreferenceSet.LeaderLineDirection
 }
 
 func (sp *STARSPane) getLeaderLineVector(ac *Aircraft) [2]float32 {
