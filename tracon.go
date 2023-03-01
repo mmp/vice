@@ -146,7 +146,7 @@ func (t *TRACON) PostDeserialize() {
 		}
 	}
 
-	if globalConfig.Version < 2 {
+	if globalConfig.Version < 2 && globalConfig.DisplayRoot != nil {
 		// Add the PHL airport and radar sites...
 		// All of the following is quite brittle / hard-coded and
 		// doesn't really have any error handling (but we control the

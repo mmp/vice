@@ -104,6 +104,8 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
+
+		globalConfig.Version = 2
 	} else {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)
