@@ -2339,47 +2339,37 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'L':
-						switch len(command[1:]) {
-						case 2:
+						if l := len(command); l > 1 && command[l-1] == 'D' {
 							// turn left x degrees
-							if deg, err := strconv.Atoi(command[1:]); err != nil {
+							if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.TurnLeft(ac.Callsign, deg) != nil {
 								status.err = ErrSTARSIllegalTrack
 							}
-
-						case 3:
+						} else {
 							// fly heading...
 							if hdg, err := strconv.Atoi(command[1:]); err != nil {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.AssignHeading(ac.Callsign, hdg, -1) != nil {
 								status.err = ErrSTARSIllegalTrack
 							}
-
-						default:
-							status.err = ErrSTARSCommandFormat
 						}
 
 					case 'R':
-						switch len(command[1:]) {
-						case 2:
+						if l := len(command); l > 1 && command[l-1] == 'D' {
 							// turn right x degrees
-							if deg, err := strconv.Atoi(command[1:]); err != nil {
+							if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.TurnRight(ac.Callsign, deg) != nil {
 								status.err = ErrSTARSIllegalTrack
 							}
-
-						case 3:
+						} else {
 							// fly heading...
 							if hdg, err := strconv.Atoi(command[1:]); err != nil {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.AssignHeading(ac.Callsign, hdg, 1) != nil {
 								status.err = ErrSTARSIllegalTrack
 							}
-
-						default:
-							status.err = ErrSTARSCommandFormat
 						}
 
 					case 'C', 'A':
