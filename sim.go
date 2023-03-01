@@ -780,6 +780,46 @@ func (ss *Sim) AssignHeading(callsign string, heading int, turn int) error {
 	}
 }
 
+func (ss *Sim) TurnLeft(callsign string, deg int) error {
+	if ac, ok := ss.aircraft[callsign]; !ok {
+		return ErrNoAircraftForCallsign
+	} else {
+		pilotResponse(callsign, "turn left %d degrees", deg)
+
+		if ac.AssignedHeading == 0 {
+			ac.AssignedHeading = int(ac.Heading) - deg
+		} else {
+			ac.AssignedHeading -= deg
+		}
+
+		if ac.AssignedHeading <= 0 {
+			ac.AssignedHeading += 360
+		}
+		ac.TurnDirection = 0
+		return nil
+	}
+}
+
+func (ss *Sim) TurnRight(callsign string, deg int) error {
+	if ac, ok := ss.aircraft[callsign]; !ok {
+		return ErrNoAircraftForCallsign
+	} else {
+		pilotResponse(callsign, "turn right %d degrees", deg)
+
+		if ac.AssignedHeading == 0 {
+			ac.AssignedHeading = int(ac.Heading) + deg
+		} else {
+			ac.AssignedHeading += deg
+		}
+
+		if ac.AssignedHeading > 360 {
+			ac.AssignedHeading -= 360
+		}
+		ac.TurnDirection = 0
+		return nil
+	}
+}
+
 func (ss *Sim) AssignSpeed(callsign string, speed int) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
