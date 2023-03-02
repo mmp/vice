@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -92,55 +91,6 @@ func (a *Aircraft) TrackPosition() Point2LL {
 	return a.Tracks[0].Position
 }
 
-func (a *Aircraft) InterpolatedPosition(t float32) Point2LL {
-	// Return the first valid one; this makes things cleaner at the start when
-	// we don't have a full set of track history.
-	pos := func(idx int) Point2LL {
-		if idx >= len(a.Tracks) {
-			// Linearly extrapolate the last two. (We don't expect to be
-			// doing this often...)
-			steps := 1 + idx - len(a.Tracks)
-			last := len(a.Tracks) - 1
-			v := sub2ll(a.Tracks[last].Position, a.Tracks[last-1].Position)
-			return add2ll(a.Tracks[last].Position, scale2ll(v, float32(steps)))
-		}
-		for idx > 0 {
-			if !a.Tracks[idx].Position.IsZero() {
-				break
-			}
-			idx--
-		}
-		return a.Tracks[idx].Position
-	}
-
-	if t < 0 {
-		// interpolate past tracks
-
-		t /= -5
-		idx := int(t)
-		dt := t - float32(idx)
-
-		return lerp2ll(dt, pos(idx), pos(idx+1))
-	} else {
-		// extrapolate from last track. fit a parabola a t^2 + b t ^ c = x_i
-		// to the last three tracks, with associated times assumed to be
-		// 0, -5, and -10. We immediately have c=x_0 and are left with:
-		// 25 a - 5 b + x0 = x1
-		// 100 a - 10 b + x0 = x2
-		// Solving gives a = (x0 - 2 x1 + x2) / 50, b = (3 x0 - 4x1 + x2) / 10
-		fit := func(x0, x1, x2 float32) (a, b, c float32) {
-			a = (x0 - 2*x1 + x2) / 50
-			b = (3*x0 - 4*x1 + x2) / 10
-			c = x0
-			return
-		}
-		longa, longb, longc := fit(pos(0).Longitude(), pos(1).Longitude(), pos(2).Longitude())
-		lata, latb, latc := fit(pos(0).Latitude(), pos(1).Latitude(), pos(2).Latitude())
-
-		return Point2LL{longa*t*t + longb*t + longc, lata*t*t + latb*t + latc}
-	}
-}
-
 func (a *Aircraft) TrackGroundspeed() int {
 	return a.Tracks[0].Groundspeed
 }
@@ -173,14 +123,6 @@ func (a *Aircraft) HaveHeading() bool {
 	return !a.Tracks[0].Position.IsZero() && !a.Tracks[1].Position.IsZero()
 }
 
-func (a *Aircraft) ExtrapolatedHeadingVector(lag float32) Point2LL {
-	if !a.HaveHeading() {
-		return Point2LL{}
-	}
-	t := float32(time.Since(a.Tracks[0].Time).Seconds()) - lag
-	return sub2ll(a.InterpolatedPosition(t+.5), a.InterpolatedPosition(t-0.5))
-}
-
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
 	return headingp2ll(a.TrackPosition(), p, tracon.MagneticVariation)
 }
@@ -197,16 +139,6 @@ func (a *Aircraft) AddTrack(t RadarTrack) {
 	// the cost of more painful indexing elsewhere...
 	copy(a.Tracks[1:], a.Tracks[:len(a.Tracks)-1])
 	a.Tracks[0] = t
-}
-
-func (a *Aircraft) Telephony() string {
-	// FIXME: this doesn't handle trailing characters: DAL42E
-	cs := strings.TrimRight(a.Callsign, "0123456789")
-	if sign, ok := database.Callsigns[cs]; ok {
-		return sign.Telephony
-	} else {
-		return ""
-	}
 }
 
 func (a *Aircraft) IsAssociated() bool {
