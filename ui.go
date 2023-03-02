@@ -694,7 +694,7 @@ func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
 		ModalDialogButton{
 			text: "Quit and update",
 			action: func() bool {
-				browser.OpenURL("https://vice.pharr.org/documentation#section-installation")
+				browser.OpenURL("https://pharr.org/vice/index.html#section-installation")
 				os.Exit(0)
 				return true
 			},
