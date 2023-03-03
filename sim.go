@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -1363,10 +1364,20 @@ var (
 	znyMapsJSON string
 )
 
-func LoadZNY() *TRACON {
+func LoadZNY(traconFilename string) *TRACON {
 	var t TRACON
-	if err := json.Unmarshal([]byte(znyJSON), &t); err != nil {
-		panic(err)
+	if traconFilename != "" {
+		f, err := os.ReadFile(traconFilename)
+		if err != nil {
+			panic(err)
+		}
+		if err := json.Unmarshal(f, &t); err != nil {
+			panic(err)
+		}
+	} else {
+		if err := json.Unmarshal([]byte(znyJSON), &t); err != nil {
+			panic(err)
+		}
 	}
 
 	var maps map[string][]Point2LL

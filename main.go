@@ -45,9 +45,10 @@ var (
 	buildVersion string
 
 	// Command-line options are only used for developer features.
-	cpuprofile = flag.String("cpuprofile", "", "write CPU profile to file")
-	memprofile = flag.String("memprofile", "", "write memory profile to this file")
-	devmode    = flag.Bool("devmode", false, "developer mode")
+	cpuprofile     = flag.String("cpuprofile", "", "write CPU profile to file")
+	memprofile     = flag.String("memprofile", "", "write memory profile to this file")
+	devmode        = flag.Bool("devmode", false, "developer mode")
+	traconFilename = flag.String("tracon", "", "filename of JSON file with TRACON definition")
 )
 
 func init() {
@@ -112,7 +113,7 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
-	tracon = LoadZNY()
+	tracon = LoadZNY(*traconFilename)
 	tracon.PostDeserialize()
 
 	multisample := runtime.GOOS != "darwin"
