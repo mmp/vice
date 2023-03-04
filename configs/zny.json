@@ -3825,6 +3825,7 @@
       "sector_id": "5E"
     }
   },
+  "default_controller": "JFK_APP",
   "default_scenario": "KJFK Depart 13R Land 13L/22L",
   "fixes": {
     "_FRG_1": "N040.43.20.230,W073.24.51.229",

@@ -15,16 +15,17 @@ import (
 )
 
 type TRACON struct {
-	Name             string                      `json:"name"`
-	Airports         map[string]*Airport         `json:"airports"`
-	Fixes            map[string]Point2LL         `json:"fixes"`
-	VideoMaps        map[string]*VideoMap        `json:"-"`
-	Scenarios        map[string]*Scenario        `json:"scenarios"`
-	DefaultScenario  string                      `json:"default_scenario"`
-	ControlPositions map[string]*Controller      `json:"control_positions"`
-	Scratchpads      map[string]string           `json:"scratchpads"`
-	AirspaceVolumes  map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
-	ArrivalGroups    []ArrivalGroup              `json:"arrival_groups"`
+	Name              string                      `json:"name"`
+	Airports          map[string]*Airport         `json:"airports"`
+	Fixes             map[string]Point2LL         `json:"fixes"`
+	VideoMaps         map[string]*VideoMap        `json:"-"`
+	Scenarios         map[string]*Scenario        `json:"scenarios"`
+	DefaultController string                      `json:"default_controller"`
+	DefaultScenario   string                      `json:"default_scenario"`
+	ControlPositions  map[string]*Controller      `json:"control_positions"`
+	Scratchpads       map[string]string           `json:"scratchpads"`
+	AirspaceVolumes   map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
+	ArrivalGroups     []ArrivalGroup              `json:"arrival_groups"`
 
 	Center         Point2LL    `json:"center"`
 	PrimaryAirport string      `json:"primary_airport"`
@@ -110,6 +111,23 @@ func (t *TRACON) PostDeserialize() {
 
 	if _, ok := t.Scenarios[t.DefaultScenario]; !ok {
 		errors = append(errors, fmt.Errorf("%s: default scenario not found.", t.DefaultScenario))
+	}
+
+	if _, ok := t.ControlPositions[t.DefaultController]; !ok {
+		errors = append(errors, fmt.Errorf("%s: default controller not found.", t.DefaultController))
+	} else {
+		// make sure the controller has at least one scenario..
+		found := false
+		for _, sc := range t.Scenarios {
+			if sc.Callsign == t.DefaultController {
+				found = true
+				break
+			}
+		}
+		if !found {
+			errors = append(errors, fmt.Errorf("%s: default controller not used in any scenarios",
+				t.DefaultController))
+		}
 	}
 
 	for _, ag := range t.ArrivalGroups {

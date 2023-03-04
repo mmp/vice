@@ -184,22 +184,49 @@ type Wind struct {
 }
 
 type SimConnectionConfiguration struct {
-	numAircraft int32
-	challenge   float32
-	scenario    *Scenario
+	numAircraft      int32
+	challenge        float32
+	scenario         *Scenario
+	controller       *Controller
+	validControllers map[string]*Controller
 }
 
 func (ssc *SimConnectionConfiguration) Initialize() {
 	ssc.numAircraft = 30
 	ssc.challenge = 0.25
 	ssc.scenario = tracon.Scenarios[tracon.DefaultScenario]
+	ssc.validControllers = make(map[string]*Controller)
+	for _, sc := range tracon.Scenarios {
+		ssc.validControllers[sc.Callsign] = tracon.ControlPositions[sc.Callsign]
+	}
+	ssc.controller = tracon.ControlPositions[tracon.DefaultController]
 }
 
 func (ssc *SimConnectionConfiguration) DrawUI() bool {
+	if imgui.BeginComboV("Control Position", ssc.controller.Callsign, imgui.ComboFlagsHeightLarge) {
+		for _, controllerName := range SortedMapKeys(ssc.validControllers) {
+			if imgui.SelectableV(controllerName, controllerName == ssc.controller.Callsign, 0, imgui.Vec2{}) {
+				ssc.controller = ssc.validControllers[controllerName]
+				// Set the current scenario to the first one alphabetically
+				// with the selected controller.
+				for _, scenarioName := range SortedMapKeys(tracon.Scenarios) {
+					if tracon.Scenarios[scenarioName].Callsign == controllerName {
+						ssc.scenario = tracon.Scenarios[scenarioName]
+						break
+					}
+				}
+			}
+		}
+		imgui.EndCombo()
+	}
+
 	scenario := ssc.scenario
 
 	if imgui.BeginComboV("Scenario", scenario.Name, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(tracon.Scenarios) {
+			if tracon.Scenarios[name].Callsign != ssc.controller.Callsign {
+				continue
+			}
 			if imgui.SelectableV(name, name == scenario.Name, 0, imgui.Vec2{}) {
 				ssc.scenario = tracon.Scenarios[name]
 			}
@@ -207,15 +234,11 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.EndCombo()
 	}
 
+	imgui.InputIntV("Total Aircraft", &ssc.numAircraft, 1, 100, 0)
+
 	if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{500, 0}, 0.) {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Position:")
-		imgui.TableNextColumn()
-		imgui.Text(scenario.Callsign)
 
 		if len(scenario.DepartureRunwayRates) > 0 {
 			imgui.TableNextRow()
@@ -244,9 +267,6 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		}
 		imgui.EndTable()
 	}
-	imgui.Separator()
-
-	imgui.InputIntV("Total Aircraft", &ssc.numAircraft, 1, 100, 0)
 
 	if len(scenario.DepartureRunways) > 0 {
 		imgui.Separator()
