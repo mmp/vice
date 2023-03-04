@@ -639,12 +639,12 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 	}
 
 	var newestRelease *Release
-	for _, rel := range releases {
-		if strings.HasSuffix(rel.TagName, "-beta") {
+	for i := range releases {
+		if strings.HasSuffix(releases[i].TagName, "-beta") {
 			continue
 		}
-		if newestRelease == nil || rel.Created.After(newestRelease.Created) {
-			newestRelease = &rel
+		if newestRelease == nil || releases[i].Created.After(newestRelease.Created) {
+			newestRelease = &releases[i]
 		}
 	}
 	if newestRelease == nil {
