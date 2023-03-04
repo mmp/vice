@@ -550,26 +550,16 @@ func mungeCSV(filename string, raw string, callback func([]string)) {
 	}
 }
 
-// lat and long should be 4-long slices, e.g.: [42 7 12.68 N]
-func point2LLFromComponents(lat []string, long []string) Point2LL {
-	latitude := atof(lat[0]) + atof(lat[1])/60. + atof(lat[2])/3600.
-	if lat[3] == "S" {
-		latitude = -latitude
-	}
-	longitude := atof(long[0]) + atof(long[1])/60. + atof(long[2])/3600.
-	if long[3] == "W" {
-		longitude = -longitude
-	}
-
-	return Point2LL{float32(longitude), float32(latitude)}
-}
-
 func parseNavaids() map[string]Navaid {
 	navaids := make(map[string]Navaid)
 
 	mungeCSV("navaids", decompressZstd(navBaseRaw), func(s []string) {
-		n := Navaid{Id: s[1], Type: s[2], Name: s[7],
-			Location: point2LLFromComponents(s[22:26], s[26:30])}
+		n := Navaid{
+			Id:       s[1],
+			Type:     s[2],
+			Name:     s[7],
+			Location: Point2LL{float32(atof(s[31])), float32(atof(s[26]))},
+		}
 		if n.Id != "" {
 			navaids[n.Id] = n
 		}
@@ -584,7 +574,8 @@ func parseFixes() map[string]Fix {
 	mungeCSV("fixes", decompressZstd(fixesRaw), func(s []string) {
 		f := Fix{
 			Id:       s[1],
-			Location: point2LLFromComponents(s[5:9], s[9:13])}
+			Location: Point2LL{float32(atof(s[14])), float32(atof(s[9]))},
+		}
 		if f.Id != "" {
 			fixes[f.Id] = f
 		}
