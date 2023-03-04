@@ -1366,18 +1366,47 @@ var (
 
 func LoadZNY(traconFilename string) *TRACON {
 	var t TRACON
+	var err error
+
+	traconJSON := []byte(znyJSON)
 	if traconFilename != "" {
-		f, err := os.ReadFile(traconFilename)
-		if err != nil {
-			panic(err)
+		var f []byte
+		if f, err = os.ReadFile(traconFilename); err != nil {
+			lg.Errorf("%s: %v", traconFilename, err)
+			os.Exit(1)
+		} else {
+			traconJSON = f
 		}
-		if err := json.Unmarshal(f, &t); err != nil {
-			panic(err)
+	}
+
+	if err := json.Unmarshal(traconJSON, &t); err != nil {
+		decodeOffset := func(offset int64) (line, char int) {
+			line, char = 1, 1
+			for i := 0; i < int(offset) && i < len(traconJSON); i++ {
+				if traconJSON[i] == '\n' {
+					line++
+					char = 1
+				} else {
+					char++
+				}
+			}
+			return
 		}
-	} else {
-		if err := json.Unmarshal([]byte(znyJSON), &t); err != nil {
-			panic(err)
+
+		switch jerr := err.(type) {
+		case *json.SyntaxError:
+			line, char := decodeOffset(jerr.Offset)
+			lg.Errorf("Error at line %d, character %d of TRACON JSON: %v", line, char, jerr)
+
+		case *json.UnmarshalTypeError:
+			line, char := decodeOffset(jerr.Offset)
+			lg.Errorf("Error at line %d, character %d of TRACON JSON: %s value for %s.%s invalid for type %s",
+				line, char, jerr.Value, jerr.Struct, jerr.Field, jerr.Type.String())
+
+		default:
+			lg.Errorf("%s: %v", traconFilename, err)
 		}
+		os.Exit(1)
 	}
 
 	var maps map[string][]Point2LL
