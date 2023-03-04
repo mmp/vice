@@ -8,6 +8,7 @@ import (
 	_ "embed"
 	"encoding/xml"
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 	"time"
@@ -100,50 +101,56 @@ func (t *TRACON) Locate(s string) (Point2LL, bool) {
 func (t *TRACON) PostDeserialize() {
 	t.AirspaceVolumes = parseAirspace()
 
+	var errors []error
 	for _, ap := range t.Airports {
 		for _, err := range ap.PostDeserialize(t) {
-			lg.Errorf("%s: error in specification: %v", ap.ICAO, err)
+			errors = append(errors, fmt.Errorf("%s: error in specification: %v", ap.ICAO, err))
 		}
 	}
 
 	if _, ok := t.Scenarios[t.DefaultScenario]; !ok {
-		lg.Errorf("%s: default scenario not found", t.DefaultScenario)
+		errors = append(errors, fmt.Errorf("%s: default scenario not found.", t.DefaultScenario))
 	}
 
 	for _, ag := range t.ArrivalGroups {
 		if len(ag.Arrivals) == 0 {
-			lg.Errorf("%s: no arrivals in arrival group", ag.Name)
+			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group", ag.Name))
 		}
 
 		for _, ar := range ag.Arrivals {
 			for _, err := range t.InitializeWaypointLocations(ar.Waypoints) {
-				lg.Errorf("%s: %v", ag.Name, err)
+				errors = append(errors, fmt.Errorf("%s: %v", ag.Name, err))
 			}
 			for _, wp := range ar.RunwayWaypoints {
 				for _, err := range t.InitializeWaypointLocations(wp) {
-					lg.Errorf("%s: %v", ag.Name, err)
+					errors = append(errors, fmt.Errorf("%s: %v", ag.Name, err))
 				}
 			}
 
 			for _, apAirlines := range ar.Airlines {
 				for _, al := range apAirlines {
 					for _, err := range database.CheckAirline(al.ICAO, al.Fleet) {
-						lg.Errorf("%v", err)
+						errors = append(errors, fmt.Errorf("%v", err))
 					}
 				}
 			}
 
 			if _, ok := t.ControlPositions[ar.InitialController]; !ok {
-				lg.Errorf("%s: controller not found for arrival in %s group", ar.InitialController, ag.Name)
+				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group", ar.InitialController, ag.Name))
 			}
 		}
 	}
 
 	// Do after airports!
 	for _, s := range t.Scenarios {
-		for _, err := range s.PostDeserialize(t) {
-			lg.Errorf("%s: error in specification: %v", s.Name, err)
+		errors = append(errors, s.PostDeserialize(t)...)
+	}
+
+	if len(errors) > 0 {
+		for _, err := range errors {
+			lg.Errorf("%v", err)
 		}
+		os.Exit(1)
 	}
 
 	if globalConfig.Version < 2 && globalConfig.DisplayRoot != nil {
@@ -185,8 +192,8 @@ func (t *TRACON) InitializeWaypointLocations(waypoints []Waypoint) []error {
 
 		d := nmdistance2ll(prev, waypoints[i].Location)
 		if i > 1 && d > 50 {
-			errors = append(errors, fmt.Errorf("%s: waypoint is suspiciously far from previous one: %f nm",
-				wp.Fix, d))
+			errors = append(errors, fmt.Errorf("%s: waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
+				wp.Fix, waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d))
 		}
 		prev = waypoints[i].Location
 	}

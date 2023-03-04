@@ -104,13 +104,13 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 
 	for dep, rate := range s.DepartureRunwayRates {
 		if airport, rwy, found := strings.Cut(dep, "/"); !found {
-			errors = append(errors, fmt.Errorf("%s: malformed departure runway specifier", dep))
+			errors = append(errors, fmt.Errorf("%s: malformed departure runway specifier in scenario %s", dep, s.Name))
 		} else if ap, ok := t.Airports[airport]; !ok {
-			errors = append(errors, fmt.Errorf("%s: airport not found", airport))
+			errors = append(errors, fmt.Errorf("%s: airport not found in scenario %s", airport, s.Name))
 		} else {
 			idx := FindIf(ap.DepartureRunways, func(r *DepartureRunway) bool { return r.Runway == rwy })
 			if idx == -1 {
-				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s", rwy, airport))
+				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s in scenario %s", rwy, airport, s.Name))
 			} else {
 				s.DepartureRunways[dep] = ap.DepartureRunways[idx]
 				s.DepartureRunways[dep].rate = int32(rate)
@@ -120,13 +120,14 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 
 	for _, arr := range s.ArrivalRunwayStrings {
 		if airport, rwy, found := strings.Cut(arr, "/"); !found {
-			errors = append(errors, fmt.Errorf("%s: malformed arrival runway specifier", arr))
+			errors = append(errors, fmt.Errorf("%s: malformed arrival runway specifier in scenario %s", arr, s.Name))
 		} else if ap, ok := t.Airports[airport]; !ok {
-			errors = append(errors, fmt.Errorf("%s: airport not found", airport))
+			errors = append(errors, fmt.Errorf("%s: airport not found in scenario %s", airport, s.Name))
 		} else {
 			idx := FindIf(ap.ArrivalRunways, func(r *ArrivalRunway) bool { return r.Runway == rwy })
 			if idx == -1 {
-				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s (avail%+v)", rwy, airport, ap.ArrivalRunwayNames))
+				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s in scenario %s (avail%+v)",
+					rwy, airport, s.Name, ap.ArrivalRunwayNames))
 			} else {
 				s.ArrivalRunways[arr] = ap.ArrivalRunways[idx]
 			}
@@ -137,7 +138,7 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 		airportRates := s.ArrivalGroupRates[name]
 		idx := FindIf(t.ArrivalGroups, func(ag ArrivalGroup) bool { return ag.Name == name })
 		if idx == -1 {
-			errors = append(errors, fmt.Errorf("%s: arrival not found in TRACON", name))
+			errors = append(errors, fmt.Errorf("%s: arrival not found in TRACON in scenario %s", name, s.Name))
 		} else {
 			ag := t.ArrivalGroups[idx]
 			ag.rates = make(map[string]*int32)
