@@ -18,6 +18,7 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/apenwarr/fixconsole"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -77,6 +78,12 @@ func main() {
 		platform.Dispose()
 		context.Destroy()
 	}()
+
+	if err := fixconsole.FixConsoleIfNeeded(); err != nil {
+		// Not sure this will actually appear, but what else are we going
+		// to do...
+		fmt.Printf("FixConsole: %v", err)
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Global initialization and set up. Note that there are some subtle

@@ -15,6 +15,8 @@ require (
 
 require (
 	github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed // indirect
+	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29 // indirect
+	github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect

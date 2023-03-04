@@ -1,5 +1,9 @@
 github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed h1:hQC4FSwvsLH6rOLJTndsHnANARF9RwW4PbrDTjks/0A=
 github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed/go.mod h1:NQ4UMHqyfXyYVmZopcfwPRWJa0rw2aH16eDIltReVUo=
+github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29 h1:muXWUcay7DDy1/hEQWrYlBy+g0EuwT70sBHg65SeUc4=
+github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29/go.mod h1:JYWahgHer+Z2xbsgHPtaDYVWzeHDminu+YIBWkxpCAY=
+github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab h1:CMGzRRCjnD50RjUFSArBLuCxiDvdp7b8YPAcikBEQ+k=
+github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab/go.mod h1:nfFtvHn2Hgs9G1u0/J6LHQv//EksNC+7G8vXmd1VTJ8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -32,6 +36,7 @@ golang.org/x/exp v0.0.0-20221208152030-732eee02a75a h1:4iLhBPcpqFmylhnkbY3W0ONLU
 golang.org/x/exp v0.0.0-20221208152030-732eee02a75a/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
 golang.org/x/image v0.0.0-20190321063152-3fc05d484e9f h1:FO4MZ3N56GnxbqxGKqh+YTzUWQ2sDwtFQEZgLOxh9Jc=
 golang.org/x/image v0.0.0-20190321063152-3fc05d484e9f/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
+golang.org/x/sys v0.0.0-20190405154228-4b34438f7a67/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210616045830-e2b7044e8c71/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f h1:v4INt8xihDGvnrfjMDVXGxw9wrfxYyCjk0KbXjhR55s=
 golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
