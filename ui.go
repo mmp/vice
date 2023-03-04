@@ -638,11 +638,18 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 		return
 	}
 
-	newestRelease := releases[0]
-	for i := range releases {
-		if releases[i].Created.After(newestRelease.Created) {
-			newestRelease = releases[i]
+	var newestRelease *Release
+	for _, rel := range releases {
+		if strings.HasSuffix(rel.TagName, "-beta") {
+			continue
 		}
+		if newestRelease == nil || rel.Created.After(newestRelease.Created) {
+			newestRelease = &rel
+		}
+	}
+	if newestRelease == nil {
+		lg.Errorf("No vice releases found?")
+		return
 	}
 
 	lg.Printf("newest release found: %v", newestRelease)
