@@ -6,7 +6,7 @@
 	     UpgradeCode='A10E3C66-BA55-406A-B4E2-586D7108D622'
 	     Language='1033'
 	     Codepage='1252'
-	     Version='0.4.2'
+	     Version='0.4.3'
 	     >
     <Package Id='*'
     	     Keywords='Installer'
