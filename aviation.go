@@ -682,8 +682,8 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
 				fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
 					aircraft.ICAO, icao, fleet))
 		} else {
-			if perf.Speed.Min < 50 || perf.Speed.Landing < 50 || perf.Speed.Cruise < 50 ||
-				perf.Speed.Max < 50 || perf.Speed.Min > perf.Speed.Max {
+			if perf.Speed.Min < 35 || perf.Speed.Landing < 35 || perf.Speed.Cruise < 35 ||
+				perf.Speed.Max < 35 || perf.Speed.Min > perf.Speed.Max {
 				errors = append(errors,
 					fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
 						spew.Sdump(perf.Speed)))
