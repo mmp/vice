@@ -1381,7 +1381,7 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 var (
 	//go:embed configs/zny.json
 	znyJSON string
-	//go:embed configs/zny-maps.json
+	//go:embed configs/zny-maps.json.zst
 	znyMapsJSON string
 )
 
@@ -1431,7 +1431,7 @@ func LoadZNY(traconFilename string) *TRACON {
 	}
 
 	var maps map[string][]Point2LL
-	if err := json.Unmarshal([]byte(znyMapsJSON), &maps); err != nil {
+	if err := json.Unmarshal([]byte(decompressZstd(znyMapsJSON)), &maps); err != nil {
 		panic(err)
 	}
 
