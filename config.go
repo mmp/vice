@@ -22,6 +22,7 @@ type GlobalConfig struct {
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
+	WhatsNewIndex         int
 
 	Audio AudioSettings
 
@@ -106,6 +107,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
 		globalConfig.Version = 2
+		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)

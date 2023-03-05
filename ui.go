@@ -44,6 +44,11 @@ var (
 	iconPNG string
 	//go:embed icons/sad-tower-alpha-128x128.png
 	sadTowerPNG string
+
+	whatsNew []string = []string{
+		//"Added EWR scenarios, including both departure and approach.",
+		//		"Improved routing of departures beyond their exit fix.",
+	}
 )
 
 var UIControlColor RGB = RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237}
@@ -87,6 +92,10 @@ func uiInit(renderer Renderer) {
 	// take some time (or may even time out, etc.)
 	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
 	go checkForNewRelease(ui.newReleaseDialogChan)
+
+	if globalConfig.WhatsNewIndex < len(whatsNew) {
+		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}), false)
+	}
 
 	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 }
@@ -712,6 +721,33 @@ func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
 func (nr *NewReleaseModalClient) Draw() int {
 	imgui.Text(fmt.Sprintf("vice version %s is the latest version", nr.version))
 	imgui.Text("Would you like to quit and open the vice downloads page?")
+	return -1
+}
+
+type WhatsNewModalClient struct{}
+
+func (nr *WhatsNewModalClient) Title() string {
+	return "What's new in this version of vice"
+}
+
+func (nr *WhatsNewModalClient) Opening() {}
+
+func (nr *WhatsNewModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Ok",
+			action: func() bool {
+				globalConfig.WhatsNewIndex = len(whatsNew)
+				return true
+			},
+		},
+	}
+}
+
+func (nr *WhatsNewModalClient) Draw() int {
+	for i := globalConfig.WhatsNewIndex; i < len(whatsNew); i++ {
+		imgui.Text(FontAwesomeIconSquare + " " + whatsNew[i])
+	}
 	return -1
 }
 
