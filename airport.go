@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -47,9 +48,26 @@ func (ac *Airport) PostDeserialize(t *TRACON) []error {
 	}
 
 	for i, dep := range ac.Departures {
-		wp := []Waypoint{Waypoint{Fix: dep.Exit}}
-		errors = append(errors, t.InitializeWaypointLocations(wp)...)
-		ac.Departures[i].exitWaypoint = wp[0]
+		if _, ok := t.Scratchpads[dep.Exit]; !ok {
+			errors = append(errors, fmt.Errorf("%s: exit in departure to %s not in scratchpads", dep.Exit, dep.Destination))
+		}
+
+		sawExit := false
+		for _, fix := range strings.Fields(dep.Route) {
+			sawExit = sawExit || fix == dep.Exit
+			// Best effort only to find waypoint locations; we will fail
+			// for airways, international ones not in the FAA database,
+			// latlongs in the flight plan, etc.  Don't issue an error
+			// unless the exit wasn't present in the route in the first
+			// place.
+			wp := []Waypoint{Waypoint{Fix: fix}}
+			if errs := t.InitializeWaypointLocations(wp); len(errs) == 0 {
+				ac.Departures[i].routeWaypoints = append(ac.Departures[i].routeWaypoints, wp[0])
+			}
+		}
+		if !sawExit {
+			errors = append(errors, fmt.Errorf("%s: exit not found in departure route to %s", dep.Exit, dep.Destination))
+		}
 
 		for _, al := range dep.Airlines {
 			errors = append(errors, database.CheckAirline(al.ICAO, al.Fleet)...)
@@ -92,13 +110,13 @@ type ArrivalRunway struct {
 }
 
 type Departure struct {
-	Exit         string `json:"exit"`
-	exitWaypoint Waypoint
+	Exit string `json:"exit"`
 
-	Destination string             `json:"destination"`
-	Altitude    int                `json:"altitude,omitempty"`
-	Route       string             `json:"route"`
-	Airlines    []DepartureAirline `json:"airlines"`
+	Destination    string `json:"destination"`
+	Altitude       int    `json:"altitude,omitempty"`
+	Route          string `json:"route"`
+	routeWaypoints []Waypoint
+	Airlines       []DepartureAirline `json:"airlines"`
 }
 
 type DepartureAirline struct {

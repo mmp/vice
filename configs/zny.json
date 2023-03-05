@@ -442,7 +442,7 @@
           "altitude": 39000,
           "destination": "KMIA",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2"
         },
         {
           "airlines": [
@@ -456,7 +456,7 @@
           "altitude": 21000,
           "destination": "KBOS",
           "exit": "MERIT",
-          "route": "ROBUC3"
+          "route": "MERIT ROBUC3"
         },
         {
           "airlines": [
@@ -470,7 +470,7 @@
           "altitude": 39000,
           "destination": "KALB",
           "exit": "BDR",
-          "route": "V487 CANAN"
+          "route": "BDR V487 CANAN"
         },
         {
           "airlines": [
@@ -484,7 +484,7 @@
           "altitude": 39000,
           "destination": "KPIT",
           "exit": "DEEZZ",
-          "route": "CANDR J60 PSB HAYNZ7"
+          "route": "DEEZZ CANDR J60 PSB HAYNZ7"
         },
         {
           "airlines": [
@@ -512,7 +512,7 @@
           "altitude": 39000,
           "destination": "KCMH",
           "exit": "COATE",
-          "route": "Q436 HERBA JHW WWSHR CBUSS2"
+          "route": "COATE Q436 HERBA JHW WWSHR CBUSS2"
         },
         {
           "airlines": [
@@ -1237,7 +1237,7 @@
           ],
           "destination": "LPFG",
           "exit": "HAPIE",
-          "route": "YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E"
+          "route": "HAPIE YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E"
         },
         {
           "airlines": [
@@ -1251,7 +1251,7 @@
           ],
           "destination": "EGLL",
           "exit": "MERIT",
-          "route": "HFD PUT WITCH ALLEX N379A ALLRY NATU SOVED LUTOV KELLY L10 WAL UY53 NUGRA"
+          "route": "MERIT HFD PUT WITCH ALLEX N379A ALLRY NATU SOVED LUTOV KELLY L10 WAL UY53 NUGRA"
         },
         {
           "airlines": [
@@ -1262,7 +1262,7 @@
           ],
           "destination": "EGCC",
           "exit": "BETTE",
-          "route": "ACK KANNI N139A PORTI 4700N/05000W 5000N/04000W 5200N/03000W 5300N/02000W MALOT GISTI PELIG BOFUM Q37 MALUD MALUD1M"
+          "route": "BETTE ACK KANNI N139A PORTI 4700N/05000W 5000N/04000W 5200N/03000W 5300N/02000W MALOT GISTI PELIG BOFUM Q37 MALUD MALUD1M"
         },
         {
           "airlines": [
@@ -1273,7 +1273,7 @@
           ],
           "destination": "LTFM",
           "exit": "MERIT",
-          "route": "HFD PUT EBONY ALLRY 5100N/05000W 5300N/04000W 5500N/03000W 5600N/02000W PIKIL SOVED NIBOG BELOX L603 LAMSO PETIK NOMKA OMELO GOLOP KOZLI ROMIS PITOK BADOR RONBU BUVAK RIXEN"
+          "route": "MERIT HFD PUT EBONY ALLRY 5100N/05000W 5300N/04000W 5500N/03000W 5600N/02000W PIKIL SOVED NIBOG BELOX L603 LAMSO PETIK NOMKA OMELO GOLOP KOZLI ROMIS PITOK BADOR RONBU BUVAK RIXEN"
         },
         {
           "airlines": [
@@ -1287,7 +1287,7 @@
           ],
           "destination": "EGPH",
           "exit": "BETTE",
-          "route": "ACK TUSKY N291A IBERG NATW NEBIN NATW OLGON MOLAK BRUCE L602 CLYDE STIRA"
+          "route": "BETTE ACK TUSKY N291A IBERG NATW NEBIN NATW OLGON MOLAK BRUCE L602 CLYDE STIRA"
         },
         {
           "airlines": [
@@ -1298,7 +1298,7 @@
           ],
           "destination": "EPWA",
           "exit": "GREKI",
-          "route": "JUDDS MARTN TOPPS N499A RIKAL 5300N/05000W 5500N/04000W 5700N/03000W 5700N/02000W GOMUP GINGA TIR REKNA PETIL BAVTA BAKLI KEKOV GOSOT NASOK N195 SORIX"
+          "route": "GREKI JUDDS MARTN TOPPS N499A RIKAL 5300N/05000W 5500N/04000W 5700N/03000W 5700N/02000W GOMUP GINGA TIR REKNA PETIL BAVTA BAKLI KEKOV GOSOT NASOK N195 SORIX"
         },
         {
           "airlines": [
@@ -1313,7 +1313,7 @@
           ],
           "destination": "LEMD",
           "exit": "BETTE",
-          "route": "ACK VITOL N189A NICSO 4800N/05000W 4900N/04000W 4900N/03000W 4700N/02000W PASAS STG DESAT UN733 ZMR"
+          "route": "BETTE ACK VITOL N189A NICSO 4800N/05000W 4900N/04000W 4900N/03000W 4700N/02000W PASAS STG DESAT UN733 ZMR"
         },
         {
           "airlines": [
@@ -1324,7 +1324,7 @@
           ],
           "destination": "EHAM",
           "exit": "BETTE",
-          "route": "ACK KANNI N317A ELSIR NATY DOGAL NATY BEXET BOYNE DIBAL L603 LAMSO"
+          "route": "BETTE ACK KANNI N317A ELSIR NATY DOGAL NATY BEXET BOYNE DIBAL L603 LAMSO"
         },
         {
           "airlines": [
@@ -1338,7 +1338,7 @@
           ],
           "destination": "EDDF",
           "exit": "BETTE",
-          "route": "ACK BRADD N255A JOOPY NATX MALOT NATX GISTI UNBEG SHA SLANY UL9 KONAN UL607 SPI T180 TOBOP T180 NIVNU T180 UNOKO UNOK3A"
+          "route": "BETTE ACK BRADD N255A JOOPY NATX MALOT NATX GISTI UNBEG SHA SLANY UL9 KONAN UL607 SPI T180 TOBOP T180 NIVNU T180 UNOKO UNOK3A"
         },
         {
           "airlines": [
@@ -1349,7 +1349,7 @@
           ],
           "destination": "LEBL",
           "exit": "HAPIE",
-          "route": "YAHOO DOVEY 4200N/06000W 4200N/05000W 4300N/04000W 4400N/03000W 4400N/02000W MUDOS STG SUSOS UN725 YAKXU UN725 LOBAR"
+          "route": "HAPIE YAHOO DOVEY 4200N/06000W 4200N/05000W 4300N/04000W 4400N/03000W 4400N/02000W MUDOS STG SUSOS UN725 YAKXU UN725 LOBAR"
         },
         {
           "airlines": [
@@ -1360,7 +1360,7 @@
           ],
           "destination": "LIRF",
           "exit": "BETTE",
-          "route": "ACK BRADD N255A JOOPY NATX MALOT NATX GISTI SLANY UL9 BIG L15 MOTOX UL15 RANUX UL15 NEBAX LASAT DEVDI ODINA SRN EKPAL Q705 XIBIL XIBIL3A"
+          "route": "BETTE ACK BRADD N255A JOOPY NATX MALOT NATX GISTI SLANY UL9 BIG L15 MOTOX UL15 RANUX UL15 NEBAX LASAT DEVDI ODINA SRN EKPAL Q705 XIBIL XIBIL3A"
         },
         {
           "airlines": [
@@ -1371,7 +1371,7 @@
           ],
           "destination": "EFHK",
           "exit": "GREKI",
-          "route": "JUDDS MARTN DANOL N481A SAXAN 5300N/05000W 5600N/04000W 5900N/03000W 6100N/02000W 6200N/01000W IPTON UXADA Y349 AMROT Y362 LAKUT"
+          "route": "GREKI JUDDS MARTN DANOL N481A SAXAN 5300N/05000W 5600N/04000W 5900N/03000W 6100N/02000W 6200N/01000W IPTON UXADA Y349 AMROT Y362 LAKUT"
         },
         {
           "airlines": [
@@ -1382,7 +1382,7 @@
           ],
           "destination": "EIDW",
           "exit": "MERIT",
-          "route": "HFD PUT BOS TUSKY N321A ELSIR NATV RESNO NATV NETKI OLAPO OLAPO3X"
+          "route": "MERIT HFD PUT BOS TUSKY N321A ELSIR NATV RESNO NATV NETKI OLAPO OLAPO3X"
         },
         {
           "airlines": [
@@ -1397,7 +1397,7 @@
           ],
           "destination": "MMMX",
           "exit": "RBV",
-          "route": "Q430 COPES Q75 GVE LYH COLZI AWYAT IPTAY CHOPZ MGM SJI TBD M575 KENGS M345 AXEXO UM345 PAZ UT154 ENAGA ENAGA2A"
+          "route": "RBV Q430 COPES Q75 GVE LYH COLZI AWYAT IPTAY CHOPZ MGM SJI TBD M575 KENGS M345 AXEXO UM345 PAZ UT154 ENAGA ENAGA2A"
         },
         {
           "airlines": [
@@ -1408,7 +1408,7 @@
           ],
           "destination": "SBGR",
           "exit": "SHIPP",
-          "route": "Y492 SQUAD DARUX L459 KEEKA L329 ZPATA UL329 KORTO ETATA UP535 MOMSO UZ24 DOLVI UL452 GELVA UZ6 ISOPI UZ6 NIMKI UZ38 VUNOX VUNOX1A"
+          "route": "SHIPP Y492 SQUAD DARUX L459 KEEKA L329 ZPATA UL329 KORTO ETATA UP535 MOMSO UZ24 DOLVI UL452 GELVA UZ6 ISOPI UZ6 NIMKI UZ38 VUNOX VUNOX1A"
         },
         {
           "airlines": [
@@ -1418,7 +1418,7 @@
           ],
           "destination": "TJSJ",
           "exit": "SHIPP",
-          "route": "Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR"
+          "route": "SHIPP Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR"
         },
         {
           "airlines": [
@@ -1434,7 +1434,7 @@
           ],
           "destination": "TXKF",
           "exit": "SHIPP",
-          "route": "Y487 KINGG KINER L461 BOVIC MOMOM1"
+          "route": "SHIPP Y487 KINGG KINER L461 BOVIC MOMOM1"
         },
         {
           "airlines": [
@@ -1448,7 +1448,7 @@
           ],
           "destination": "MKJP",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM"
         },
         {
           "airlines": [
@@ -1458,7 +1458,7 @@
           ],
           "destination": "TIST",
           "exit": "SHIPP",
-          "route": "Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS"
+          "route": "SHIPP Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS"
         },
         {
           "airlines": [
@@ -1471,7 +1471,7 @@
           ],
           "destination": "TAPA",
           "exit": "SHIPP",
-          "route": "Y487 KINGG KINER L461 BOVIC PIREX L462 ANU"
+          "route": "SHIPP Y487 KINGG KINER L461 BOVIC PIREX L462 ANU"
         },
         {
           "airlines": [
@@ -1481,7 +1481,7 @@
           ],
           "destination": "KJAX",
           "exit": "WAVEY",
-          "route": "EMJAY J174 ORF J121 CHS ESENT LUNNI1"
+          "route": "WAVEY EMJAY J174 ORF J121 CHS ESENT LUNNI1"
         },
         {
           "airlines": [
@@ -1494,7 +1494,7 @@
           ],
           "destination": "KMSP",
           "exit": "GAYEL",
-          "route": "Q818 WOZEE NOSIK Q812 ZOHAN IDIOM MUSCL3"
+          "route": "GAYEL Q818 WOZEE NOSIK Q812 ZOHAN IDIOM MUSCL3"
         },
         {
           "airlines": [
@@ -1506,7 +1506,7 @@
           "altitude": 22000,
           "destination": "KIAD",
           "exit": "RBV",
-          "route": "HYPER8"
+          "route": "RBV HYPER8"
         },
         {
           "airlines": [
@@ -1516,7 +1516,7 @@
           ],
           "destination": "KCLT",
           "exit": "RBV",
-          "route": "Q430 COPES Q75 GVE LYH CHSLY5"
+          "route": "RBV Q430 COPES Q75 GVE LYH CHSLY5"
         },
         {
           "airlines": [
@@ -1526,7 +1526,7 @@
           ],
           "destination": "KTEB",
           "exit": "DIXIE",
-          "route": "V276 RBV V249 SBJ"
+          "route": "DIXIE V276 RBV V249 SBJ"
         },
         {
           "airlines": [
@@ -1536,7 +1536,7 @@
           ],
           "destination": "KPHL",
           "exit": "DIXIE",
-          "route": "V16 VCN V184 OOD"
+          "route": "DIXIE V16 VCN V184 OOD"
         },
         {
           "airlines": [
@@ -1546,7 +1546,7 @@
           ],
           "destination": "KTEB",
           "exit": "WHITE",
-          "route": "V276 RBV V249 SBJ"
+          "route": "WHITE V276 RBV V249 SBJ"
         },
         {
           "airlines": [
@@ -1556,7 +1556,7 @@
           ],
           "destination": "KORD",
           "exit": "COATE",
-          "route": "Q436 EMMMA WYNDE2"
+          "route": "COATE Q436 EMMMA WYNDE2"
         },
         {
           "airlines": [
@@ -1566,7 +1566,7 @@
           ],
           "destination": "KDTW",
           "exit": "GAYEL",
-          "route": "J95 CFB TRAAD JACCI FERRL2"
+          "route": "GAYEL J95 CFB TRAAD JACCI FERRL2"
         },
         {
           "airlines": [
@@ -1576,7 +1576,7 @@
           ],
           "destination": "KFLL",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2"
         },
         {
           "airlines": [
@@ -1586,7 +1586,7 @@
           ],
           "destination": "KLAS",
           "exit": "GAYEL",
-          "route": "Q818 WOZEE RUBKI ASP TVC KP87I FSD KP81C BFF KD60S HVE GGAPP CHOWW2"
+          "route": "GAYEL Q818 WOZEE RUBKI ASP TVC KP87I FSD KP81C BFF KD60S HVE GGAPP CHOWW2"
         },
         {
           "airlines": [
@@ -1596,7 +1596,7 @@
           ],
           "destination": "KMIA",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2"
         },
         {
           "airlines": [
@@ -1606,7 +1606,7 @@
           ],
           "destination": "KRDU",
           "exit": "WAVEY",
-          "route": "EMJAY J174 WARNN ZJAAY TAQLE1"
+          "route": "WAVEY EMJAY J174 WARNN ZJAAY TAQLE1"
         },
         {
           "airlines": [
@@ -1616,7 +1616,7 @@
           ],
           "destination": "KMCO",
           "exit": "WAVEY",
-          "route": "EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1"
+          "route": "WAVEY EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1"
         },
         {
           "airlines": [
@@ -1631,7 +1631,7 @@
           ],
           "destination": "KMEM",
           "exit": "RBV",
-          "route": "Q430 SAAME J6 HVQ Q68 BWG BLUZZ3"
+          "route": "RBV Q430 SAAME J6 HVQ Q68 BWG BLUZZ3"
         },
         {
           "airlines": [
@@ -1646,7 +1646,7 @@
           "altitude": 18000,
           "destination": "KBUF",
           "exit": "NEION",
-          "route": "J223 CORDS J132 ULW BENEE"
+          "route": "NEION J223 CORDS J132 ULW BENEE"
         },
         {
           "airlines": [
@@ -1658,7 +1658,7 @@
           "altitude": 26000,
           "destination": "KORF",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CCV"
+          "route": "WAVEY EMJAY J174 SWL CCV"
         },
         {
           "airlines": [
@@ -1668,7 +1668,7 @@
           ],
           "destination": "KBNA",
           "exit": "RBV",
-          "route": "Q430 SAAME J6 HVQ Q68 YOCKY GROAT PASLY4"
+          "route": "RBV Q430 SAAME J6 HVQ Q68 YOCKY GROAT PASLY4"
         },
         {
           "airlines": [
@@ -1678,7 +1678,7 @@
           ],
           "destination": "KPBI",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2"
         },
         {
           "airlines": [
@@ -1690,7 +1690,7 @@
           "altitude": 9000,
           "destination": "KPVD",
           "exit": "BDR",
-          "route": "CARLD V188 GON PVD"
+          "route": "BDR CARLD V188 GON PVD"
         },
         {
           "airlines": [
@@ -1702,7 +1702,7 @@
           "altitude": 12000,
           "destination": "KABE",
           "exit": "COATE",
-          "route": "V116 LVZ V613 FJC"
+          "route": "COATE V116 LVZ V613 FJC"
         },
         {
           "airlines": [
@@ -1712,7 +1712,7 @@
           ],
           "destination": "KBGR",
           "exit": "GREKI",
-          "route": "JUDDS CAM ENE"
+          "route": "GREKI JUDDS CAM ENE"
         },
         {
           "airlines": [
@@ -1728,7 +1728,7 @@
           ],
           "destination": "KSEA",
           "exit": "GAYEL",
-          "route": "Q818 WOZEE SSM YQT VBI YWG LIVBI DUKPO FAREN YDR VLN J500 YYN MEDAK ROPLA YXC GLASR1"
+          "route": "GAYEL Q818 WOZEE SSM YQT VBI YWG LIVBI DUKPO FAREN YDR VLN J500 YYN MEDAK ROPLA YXC GLASR1"
         },
         {
           "airlines": [
@@ -1738,7 +1738,7 @@
           ],
           "destination": "KMSY",
           "exit": "RBV",
-          "route": "Q430 BYRDD J48 MOL FLASK REAVS ODF THRSR GRGIA SJI SLIDD2"
+          "route": "RBV Q430 BYRDD J48 MOL FLASK REAVS ODF THRSR GRGIA SJI SLIDD2"
         },
         {
           "airlines": [
@@ -1749,7 +1749,7 @@
           ],
           "destination": "KPIT",
           "exit": "DEEZZ",
-          "route": "CANDR J60 PSB HAYNZ7"
+          "route": "DEEZZ CANDR J60 PSB HAYNZ7"
         },
         {
           "airlines": [
@@ -1762,7 +1762,7 @@
           ],
           "destination": "KCLE",
           "exit": "DEEZZ",
-          "route": "CANDR J60 PSB UPPRR TRYBE4"
+          "route": "DEEZZ CANDR J60 PSB UPPRR TRYBE4"
         },
         {
           "airlines": [
@@ -1772,7 +1772,7 @@
           ],
           "destination": "KSYR",
           "exit": "NEION",
-          "route": "J223 CORDS CFB V29 SYR"
+          "route": "NEION J223 CORDS CFB V29 SYR"
         },
         {
           "airlines": [
@@ -1783,7 +1783,7 @@
           ],
           "destination": "PANC",
           "exit": "GAYEL",
-          "route": "Q812 ARRKK Q812 SYR TULEG YYB SPALD YTL YGX IKLIX YHY 6100N/13000W JAGIT NCA13 TMSON PTERS3"
+          "route": "GAYEL Q812 ARRKK Q812 SYR TULEG YYB SPALD YTL YGX IKLIX YHY 6100N/13000W JAGIT NCA13 TMSON PTERS3"
         },
         {
           "airlines": [
@@ -1793,7 +1793,7 @@
           ],
           "destination": "KROC",
           "exit": "HAAYS",
-          "route": "J223 CORDS ULW GIBBE"
+          "route": "HAAYS J223 CORDS ULW GIBBE"
         },
         {
           "airlines": [
@@ -1803,7 +1803,7 @@
           ],
           "destination": "KPVD",
           "exit": "BAYYS",
-          "route": "SEALL V188 GON V374 MINNK"
+          "route": "BAYYS SEALL V188 GON V374 MINNK"
         },
         {
           "airlines": [
@@ -1816,7 +1816,7 @@
           ],
           "destination": "CYYZ",
           "exit": "GAYEL",
-          "route": "Q818 WOZEE LINNG3"
+          "route": "GAYEL Q818 WOZEE LINNG3"
         },
         {
           "airlines": [
@@ -1829,7 +1829,7 @@
           ],
           "destination": "CYUL",
           "exit": "GREKI",
-          "route": "JUDDS CAM PBERG CARTR4"
+          "route": "GREKI JUDDS CAM PBERG CARTR4"
         },
         {
           "airlines": [
@@ -1842,7 +1842,7 @@
           ],
           "destination": "CYYC",
           "exit": "GAYEL",
-          "route": "Q818 WOZEE ASP RIMBE WIEDS 4930N/10000W GUDOG PIKLA BIRKO5"
+          "route": "GAYEL Q818 WOZEE ASP RIMBE WIEDS 4930N/10000W GUDOG PIKLA BIRKO5"
         },
         {
           "airlines": [
@@ -1853,7 +1853,7 @@
           ],
           "destination": "OTBD",
           "exit": "BETTE",
-          "route": "ACK WHALE N193A NICSO NATY ELSOX MAPAG LESLU L180 MERLY M140 DVR UL9 KONAN UL607 KOK MATUG BOMBI DETEV INBED LAMSI STEIN INVED RASUB RIXEN UA17 BAG UL614 EZS UT36 ULTED UT301 BOTAS UT301 DEPSU UT301 DURSI UT301 KAVAM UT301 MIDSI R659 VEDED R659 VELAM Z225 BAYAN"
+          "route": "BETTE ACK WHALE N193A NICSO NATY ELSOX MAPAG LESLU L180 MERLY M140 DVR UL9 KONAN UL607 KOK MATUG BOMBI DETEV INBED LAMSI STEIN INVED RASUB RIXEN UA17 BAG UL614 EZS UT36 ULTED UT301 BOTAS UT301 DEPSU UT301 DURSI UT301 KAVAM UT301 MIDSI R659 VEDED R659 VELAM Z225 BAYAN"
         },
         {
           "airlines": [
@@ -1864,7 +1864,7 @@
           ],
           "destination": "LLBG",
           "exit": "HAPIE",
-          "route": "YAHOO DOVEY 4200N/06000W 4400N/05000W 4700N/04000W 4900N/03000W 5000N/02000W SOMAX ATSUR TAKAS ALUTA KORER UM616 TUPAR DIDRU BEBIX VALKU LERGA TOZOT UT183 OTROT UM728 DOKAR SUNEV LAT SIPRO PAPIZ PINDO LINRO UL52 VAXOS UN134 VANZA PIKOG L609 ZUKKO AMMOS1C"
+          "route": "HAPIE YAHOO DOVEY 4200N/06000W 4400N/05000W 4700N/04000W 4900N/03000W 5000N/02000W SOMAX ATSUR TAKAS ALUTA KORER UM616 TUPAR DIDRU BEBIX VALKU LERGA TOZOT UT183 OTROT UM728 DOKAR SUNEV LAT SIPRO PAPIZ PINDO LINRO UL52 VAXOS UN134 VANZA PIKOG L609 ZUKKO AMMOS1C"
         },
         {
           "airlines": [
@@ -1875,7 +1875,7 @@
           ],
           "destination": "OMDB",
           "exit": "GREKI",
-          "route": "JUDDS BAF KB87E MIILS N563A NEEKO 5500N/05000W 6000N/04000W 6300N/03000W 6400N/02000W 6300N/01000W GUNPA RASVI KOSEB PEROM BINKA ROVEK KELEL BADOR ARGES ARTAT UP975 UNVUS UP975 EZS UG8 OTKEP UM688 RATVO UM688 SIDAD P975 SESRU M677 RABAP M677 IVIVI M677 UKNEP M677 DEGSO M677 OBNET M677 LUDAM M677 VUTEB"
+          "route": "GREKI JUDDS BAF KB87E MIILS N563A NEEKO 5500N/05000W 6000N/04000W 6300N/03000W 6400N/02000W 6300N/01000W GUNPA RASVI KOSEB PEROM BINKA ROVEK KELEL BADOR ARGES ARTAT UP975 UNVUS UP975 EZS UG8 OTKEP UM688 RATVO UM688 SIDAD P975 SESRU M677 RABAP M677 IVIVI M677 UKNEP M677 DEGSO M677 OBNET M677 LUDAM M677 VUTEB"
         },
         {
           "airlines": [
@@ -1885,7 +1885,7 @@
           ],
           "destination": "VHHH",
           "exit": "GREKI",
-          "route": "JUDDS BAF KJOHN CEFOU YBC KETLA 6700N/05000W 7200N/04000W 7800N/02000W 8000N/00000E 8000N/02000E 8000N/03000E PIREL N611 DOSON R705 OKASA R705 BRT G490 SERNA Y520 POLHO G218 TMR B458 VERUX B458 DADGA W37 OMBEB R473 BEMAG R473 WYN W18 SANIP W18 NLG W23 ZUH R473 SIERA"
+          "route": "GREKI JUDDS BAF KJOHN CEFOU YBC KETLA 6700N/05000W 7200N/04000W 7800N/02000W 8000N/00000E 8000N/02000E 8000N/03000E PIREL N611 DOSON R705 OKASA R705 BRT G490 SERNA Y520 POLHO G218 TMR B458 VERUX B458 DADGA W37 OMBEB R473 BEMAG R473 WYN W18 SANIP W18 NLG W23 ZUH R473 SIERA"
         },
         {
           "airlines": [
@@ -1896,7 +1896,7 @@
           ],
           "destination": "RKSI",
           "exit": "GAYEL",
-          "route": "Q812 MSLIN Q812 SYR RAKAM 4800N/08000W 5400N/09000W 5700N/10000W 5900N/11000W HOGAR GUDEN DEEJA LAIRE KODNE CHUUK R341 HAVAM R341 NATES R220 NUBDA R220 NODAN R217 ASTER Y514 SDE Y512 GTC L512 TENAS Y437 KAE Y697 KARBU"
+          "route": "GAYEL Q812 MSLIN Q812 SYR RAKAM 4800N/08000W 5400N/09000W 5700N/10000W 5900N/11000W HOGAR GUDEN DEEJA LAIRE KODNE CHUUK R341 HAVAM R341 NATES R220 NUBDA R220 NODAN R217 ASTER Y514 SDE Y512 GTC L512 TENAS Y437 KAE Y697 KARBU"
         },
         {
           "airlines": [
@@ -1907,7 +1907,7 @@
           ],
           "destination": "RJAA",
           "exit": "GAYEL",
-          "route": "Q818 WOZEE Q917 DUTEL Q917 SSM YRL 5400N/10000W 5800N/11000W 6000N/12000W 6100N/13000W IGSOM OMSUN NCA20 ELLAM TED NODLE R220 NOSHO R220 NIKLL R220 NIPPI R220 NOGAL R220 NANAC Y810 OLDIV Y809 SUPOK"
+          "route": "GAYEL Q818 WOZEE Q917 DUTEL Q917 SSM YRL 5400N/10000W 5800N/11000W 6000N/12000W 6100N/13000W IGSOM OMSUN NCA20 ELLAM TED NODLE R220 NOSHO R220 NIKLL R220 NIPPI R220 NOGAL R220 NANAC Y810 OLDIV Y809 SUPOK"
         },
         {
           "airlines": [
@@ -1918,7 +1918,7 @@
           ],
           "destination": "VIDP",
           "exit": "BETTE",
-          "route": "ACK KANNI N195A NICSO NATY MALOT NATY GISTI EVRIN L607 NUMPO L607 KONAN UL607 MATUG BOMBI TENLO LAMSI STEIN TEGRI BULEN L742 RIXEN UA17 YAVRU UA4 ERZ UN161 YAVUZ UN161 INDUR N161 EDATA M11 RODAR A909 BABUM A477 BUPOR B198 OGNOB G555 USETU G500 BUTRA L181 POMIR G500 FIRUZ P500 PS T400 SULOM A466 IGINO IGIN5A"
+          "route": "BETTE ACK KANNI N195A NICSO NATY MALOT NATY GISTI EVRIN L607 NUMPO L607 KONAN UL607 MATUG BOMBI TENLO LAMSI STEIN TEGRI BULEN L742 RIXEN UA17 YAVRU UA4 ERZ UN161 YAVUZ UN161 INDUR N161 EDATA M11 RODAR A909 BABUM A477 BUPOR B198 OGNOB G555 USETU G500 BUTRA L181 POMIR G500 FIRUZ P500 PS T400 SULOM A466 IGINO IGIN5A"
         }
       ],
       "elevation": 13,
@@ -2097,7 +2097,7 @@
           ],
           "destination": "TJSJ",
           "exit": "SHIPP",
-          "route": "Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR"
+          "route": "SHIPP Y489 RESQU SKPPR L455 KINCH L455 LENNT M423 PLING RTE7 SAALR"
         },
         {
           "airlines": [
@@ -2113,7 +2113,7 @@
           ],
           "destination": "TXKF",
           "exit": "SHIPP",
-          "route": "Y487 KINGG KINER L461 BOVIC MOMOM1"
+          "route": "SHIPP Y487 KINGG KINER L461 BOVIC MOMOM1"
         },
         {
           "airlines": [
@@ -2127,7 +2127,7 @@
           ],
           "destination": "MKJP",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM"
         },
         {
           "airlines": [
@@ -2137,7 +2137,7 @@
           ],
           "destination": "TIST",
           "exit": "SHIPP",
-          "route": "Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS"
+          "route": "SHIPP Y492 SQUAD DARUX L456 HANCY L456 THANK JETSS"
         },
         {
           "airlines": [
@@ -2150,7 +2150,7 @@
           ],
           "destination": "TAPA",
           "exit": "SHIPP",
-          "route": "Y487 KINGG KINER L461 BOVIC PIREX L462 ANU"
+          "route": "SHIPP Y487 KINGG KINER L461 BOVIC PIREX L462 ANU"
         },
         {
           "airlines": [
@@ -2160,7 +2160,7 @@
           ],
           "destination": "KJAX",
           "exit": "WAVEY",
-          "route": "EMJAY J174 ORF J121 CHS ESENT LUNNI1"
+          "route": "WAVEY EMJAY J174 ORF J121 CHS ESENT LUNNI1"
         },
         {
           "airlines": [
@@ -2170,7 +2170,7 @@
           ],
           "destination": "KFLL",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO CHIEZ Y291 MAJIK CUUDA2"
         },
         {
           "airlines": [
@@ -2180,7 +2180,7 @@
           ],
           "destination": "KMIA",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO SKARP Y313 HOAGG BNFSH2"
         },
         {
           "airlines": [
@@ -2190,7 +2190,7 @@
           ],
           "destination": "KRDU",
           "exit": "WAVEY",
-          "route": "EMJAY J174 WARNN ZJAAY TAQLE1"
+          "route": "WAVEY EMJAY J174 WARNN ZJAAY TAQLE1"
         },
         {
           "airlines": [
@@ -2200,7 +2200,7 @@
           ],
           "destination": "KMCO",
           "exit": "WAVEY",
-          "route": "EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1"
+          "route": "WAVEY EMJAY J174 ORF J121 CHS IGARY Q85 LPERD GTOUT1"
         },
         {
           "airlines": [
@@ -2212,7 +2212,7 @@
           "altitude": 26000,
           "destination": "KORF",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CCV"
+          "route": "WAVEY EMJAY J174 SWL CCV"
         },
         {
           "airlines": [
@@ -2222,7 +2222,7 @@
           ],
           "destination": "KPBI",
           "exit": "WAVEY",
-          "route": "EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2"
         },
         {
           "airlines": [
@@ -2241,7 +2241,7 @@
           "altitude": 7000,
           "destination": "KORF",
           "exit": "WHITE",
-          "route": "J209 SBY V1 CCV"
+          "route": "WHITE J209 SBY V1 CCV"
         },
         {
           "airlines": [
@@ -2260,7 +2260,7 @@
           "altitude": 7000,
           "destination": "KCHS",
           "exit": "WHITE",
-          "route": "J209 SBY ISO RAPZZ AMYLU3"
+          "route": "WHITE J209 SBY ISO RAPZZ AMYLU3"
         }
       ],
       "elevation": 7,
@@ -2466,7 +2466,7 @@
           ],
           "destination": "KTPA",
           "exit": "STOEN",
-          "route": "Q75 TEUFL BAAMF DADES1"
+          "route": "STOEN Q75 TEUFL BAAMF DADES1"
         },
         {
           "airlines": [
@@ -2477,7 +2477,7 @@
           ],
           "destination": "LEMD",
           "exit": "DITCH",
-          "route": "V312 JIMEE WAVEY SHLEP YAHOO CARAC JEBBY 4400N/05000W 4500N/04000W 4600N/03000W 4500N/02000W RETEN EPOPO ADORO ZMR"
+          "route": "DITCH V312 JIMEE WAVEY SHLEP YAHOO CARAC JEBBY 4400N/05000W 4500N/04000W 4600N/03000W 4500N/02000W RETEN EPOPO ADORO ZMR"
         },
         {
           "airlines": [
@@ -2487,7 +2487,7 @@
           ],
           "destination": "KPBI",
           "exit": "OOD",
-          "route": "TEBEE HAYDO SBY KEMPR YLEEE ZILLS Y289 DULEE CLMNT2"
+          "route": "OOD TEBEE HAYDO SBY KEMPR YLEEE ZILLS Y289 DULEE CLMNT2"
         },
         {
           "airlines": [
@@ -2497,7 +2497,7 @@
           ],
           "destination": "KBED",
           "exit": "DITCH",
-          "route": "Q437 HNNAH Q450 DPK MAD HFD DREEM2"
+          "route": "DITCH Q437 HNNAH Q450 DPK MAD HFD DREEM2"
         },
         {
           "airlines": [
@@ -2507,7 +2507,7 @@
           ],
           "destination": "KRDU",
           "exit": "OOD",
-          "route": "TEBEE HAYDO TRPOD TAQLE1"
+          "route": "OOD TEBEE HAYDO TRPOD TAQLE1"
         },
         {
           "airlines": [
@@ -2517,7 +2517,7 @@
           ],
           "destination": "KFLL",
           "exit": "OOD",
-          "route": "TEBEE HAYDO SBY KEMPR CHIEZ Y291 MAJIK CUUDA2"
+          "route": "OOD TEBEE HAYDO SBY KEMPR CHIEZ Y291 MAJIK CUUDA2"
         },
         {
           "airlines": [
@@ -2527,7 +2527,7 @@
           ],
           "destination": "KMDW",
           "exit": "PTW",
-          "route": "SARAA RAV PSB J60 ASHEN BAGEL PANGG3"
+          "route": "PTW SARAA RAV PSB J60 ASHEN BAGEL PANGG3"
         },
         {
           "airlines": [
@@ -2537,7 +2537,7 @@
           ],
           "destination": "KPHX",
           "exit": "PTW",
-          "route": "SARAA RAV PSB J60 IOW LNK HLC J64 PUB ALS J102 GUP EAGUL6"
+          "route": "PTW SARAA RAV PSB J60 IOW LNK HLC J64 PUB ALS J102 GUP EAGUL6"
         },
         {
           "airlines": [
@@ -2547,7 +2547,7 @@
           ],
           "destination": "KPBG",
           "exit": "DITCH",
-          "route": "Q437 LLUND CAM"
+          "route": "DITCH Q437 LLUND CAM"
         },
         {
           "airlines": [
@@ -2557,7 +2557,7 @@
           ],
           "destination": "KMCO",
           "exit": "OOD",
-          "route": "TEBEE HAYDO SBY J79 KATZN ISO J121 CHS IGARY Q85 LPERD SNFLD2"
+          "route": "OOD TEBEE HAYDO SBY J79 KATZN ISO J121 CHS IGARY Q85 LPERD SNFLD2"
         },
         {
           "airlines": [
@@ -2567,7 +2567,7 @@
           ],
           "destination": "KATL",
           "exit": "STOEN",
-          "route": "REEFI EMI J48 MOL FLASK OZZZI1"
+          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1"
         },
         {
           "airlines": [
@@ -2577,7 +2577,7 @@
           ],
           "destination": "KTYS",
           "exit": "STOEN",
-          "route": "REEFI EMI J48 CSN FANPO Q40 ALEAN VXV"
+          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 ALEAN VXV"
         },
         {
           "airlines": [
@@ -2587,7 +2587,7 @@
           ],
           "destination": "KMSP",
           "exit": "PTW",
-          "route": "SARAA RAV PSB J60 DJB J34 ADALE KAMMA KKILR3"
+          "route": "PTW SARAA RAV PSB J60 DJB J34 ADALE KAMMA KKILR3"
         },
         {
           "airlines": [
@@ -2597,7 +2597,7 @@
           ],
           "destination": "KDTW",
           "exit": "MXE",
-          "route": "PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2"
+          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2"
         },
         {
           "airlines": [
@@ -2607,7 +2607,7 @@
           ],
           "destination": "KCLT",
           "exit": "STOEN",
-          "route": "Q75 TOOBN Q75 GVE LYH CHSLY5"
+          "route": "STOEN Q75 TOOBN Q75 GVE LYH CHSLY5"
         },
         {
           "airlines": [
@@ -2617,7 +2617,7 @@
           ],
           "destination": "KBNA",
           "exit": "MXE",
-          "route": "PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4"
+          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4"
         },
         {
           "airlines": [
@@ -2627,7 +2627,7 @@
           ],
           "destination": "TJSJ",
           "exit": "OOD",
-          "route": "TEBEE HAYDO SIE B24 AZEZU RESQU SKPPR L455 MCOOP L455 LENNT M423 PLING RTE7 SAALR"
+          "route": "OOD TEBEE HAYDO SIE B24 AZEZU RESQU SKPPR L455 MCOOP L455 LENNT M423 PLING RTE7 SAALR"
         },
         {
           "airlines": [
@@ -2637,7 +2637,7 @@
           ],
           "destination": "KRIC",
           "exit": "OOD",
-          "route": "TEBEE HAYDO SBY V1 JAMIE"
+          "route": "OOD TEBEE HAYDO SBY V1 JAMIE"
         },
         {
           "airlines": [
@@ -2648,7 +2648,7 @@
           "destination": "KABE",
           "exit": "FJC",
           "altitude": 4000,
-          "route": "ABE"
+          "route": "FJC ABE"
         },
         {
           "airlines": [
@@ -2658,7 +2658,7 @@
           ],
           "destination": "KEWR",
           "exit": "RUUTH",
-          "route": "V123 RBV",
+          "route": "RUUTH V123 RBV",
           "altitude": 7000
         },
         {
@@ -2669,7 +2669,7 @@
           ],
           "destination": "KJFK",
           "exit": "DITCH",
-          "route": "V312 WINKK V44 CAMRN",
+          "route": "DITCH V312 WINKK V44 CAMRN",
           "altitude": 11000
         }
       ],

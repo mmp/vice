@@ -1357,9 +1357,9 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
-	ac.Waypoints = append(ac.Waypoints, dep.exitWaypoint)
+	ac.Waypoints = append(ac.Waypoints, dep.routeWaypoints...)
 
-	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Exit + " " + dep.Route
+	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
 	ac.FlightPlan.ArrivalAirport = dep.Destination
 	ac.Scratchpad = tracon.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
