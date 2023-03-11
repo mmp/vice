@@ -751,7 +751,8 @@ func (ss *Sim) GetWindowTitle() string {
 	if ss.scenario == nil {
 		return "(disconnected)"
 	}
-	return ss.scenario.Callsign + ": " + ss.scenario.Name
+	remaining := fmt.Sprintf("[%d aircraft remaining]", ss.remainingLaunches)
+	return ss.scenario.Callsign + ": " + ss.scenario.Name + " " + remaining
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
