@@ -3968,7 +3968,26 @@
         {
           "airport": "KJFK",
           "runway": "13R",
-          "rate": 40
+          "category": "North",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "13R",
+          "category": "East",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "13R",
+          "category": "Southwest",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "13R",
+          "category": "Water",
+          "rate": 10
         },
         {
           "airport": "KLGA",
@@ -4180,7 +4199,26 @@
         {
           "airport": "KJFK",
           "runway": "22R",
-          "rate": 40
+          "category": "North",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R",
+          "category": "East",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R",
+          "category": "Southwest",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R",
+          "category": "Water",
+          "rate": 10
         },
         {
           "airport": "KLGA",
@@ -4312,7 +4350,26 @@
         {
           "airport": "KJFK",
           "runway": "31L",
-          "rate": 40
+          "category": "North",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L",
+          "category": "East",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L",
+          "category": "Southwest",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L",
+          "category": "Water",
+          "rate": 10
         },
         {
           "airport": "KLGA",
@@ -4444,7 +4501,26 @@
         {
           "airport": "KJFK",
           "runway": "4L",
-          "rate": 40
+          "category": "North",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4L",
+          "category": "East",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4L",
+          "category": "Southwest",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4L",
+          "category": "Water",
+          "rate": 10
         },
         {
           "airport": "KLGA",
