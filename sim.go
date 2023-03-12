@@ -292,11 +292,11 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			imgui.Text("Departing:")
 			imgui.TableNextColumn()
 
-			var d []string
-			for _, rwy := range scenario.DepartureRunways {
-				d = append(d, rwy.Airport+"/"+rwy.Runway)
-			}
-			sort.Strings(d)
+			d := SortedMapKeys(scenario.nextDepartureSpawn)
+			// Only list ones that are actually active.
+			d = FilterSlice(d, func(rwy string) bool {
+				return scenario.runwayDepartureRate(rwy) > 0
+			})
 			imgui.Text(strings.Join(d, ", "))
 		}
 
