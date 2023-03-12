@@ -1073,6 +1073,28 @@ func SampleFiltered[T any](slice []T, pred func(T) bool) int {
 	return idx
 }
 
+// SampleWeighted randomly samples an element from the given slice with the
+// probability of choosing each element proportional to the value returned
+// by the provided callback.
+func SampleWeighted[T any](slice []T, weight func(T) int) int {
+	// Weighted reservoir sampling...
+	idx := -1
+	sumWt := 0
+	for i, v := range slice {
+		w := weight(v)
+		if w == 0 {
+			continue
+		}
+
+		sumWt += w
+		p := float32(w) / float32(sumWt)
+		if rand.Float32() < p {
+			idx = i
+		}
+	}
+	return idx
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // TransientMap
 

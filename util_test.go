@@ -356,3 +356,28 @@ func TestSampleFiltered(t *testing.T) {
 		t.Errorf("Didn't find roughly 3000 samples for the even items. Counts: %+v", counts)
 	}
 }
+
+func TestSampleWeighted(t *testing.T) {
+	a := []int{1, 2, 3, 4, 5, 0, 10, 13}
+	counts := make([]int, len(a))
+
+	n := 100000
+	for i := 0; i < n; i++ {
+		idx := SampleWeighted(a, func(v int) int { return v })
+		counts[idx]++
+	}
+
+	sum := 0
+	for _, v := range a {
+		sum += v
+	}
+
+	for i, c := range counts {
+		expected := a[i] * n / sum
+		if a[0] == 0 && c != 0 {
+			t.Errorf("Expected 0 samples for a[%d]. Got %d", i, c)
+		} else if c < expected-300 || c > expected+300 {
+			t.Errorf("Expected roughly %d samples for a[%d]=%d. Got %d", expected, i, a[i], c)
+		}
+	}
+}
