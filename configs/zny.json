@@ -3964,12 +3964,35 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": {
-        "KJFK/13R": 40,
-        "KLGA/13": 10,
-        "KISP/15R": 0,
-        "KFRG/14": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "13R",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "13",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "13",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "15R",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "14",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 13R",
       "wind": {
         "direction": 140,
@@ -3979,8 +4002,14 @@
     },
     "KJFK Depart 13R Land 13L": {
       "arrival_runways": [
-        "KFRG/14",
-        "KJFK/13R"
+        {
+          "airport": "KFRG",
+          "runway": "14"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "13R"
+        }
       ],
       "arrivals": {
         "LENDY8/IGN1": {
@@ -4015,12 +4044,35 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": {
-        "KJFK/13R": 40,
-        "KLGA/13": 10,
-        "KISP/15R": 0,
-        "KFRG/14": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "13R",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "13",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "13",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "15R",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "14",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 13R Land 13L",
       "wind": {
         "direction": 140,
@@ -4030,9 +4082,18 @@
     },
     "KJFK Depart 13R Land 13L/22L": {
       "arrival_runways": [
-        "KFRG/14",
-        "KJFK/13L",
-        "KJFK/22L"
+        {
+          "airport": "KFRG",
+          "runway": "14"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "13L"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22L"
+        }
       ],
       "arrivals": {
         "LENDY8/IGN1": {
@@ -4067,12 +4128,35 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": {
-        "KJFK/13R": 40,
-        "KLGA/13": 10,
-        "KISP/15R": 0,
-        "KFRG/14": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "13R",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "13",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KLGA",
+          "runway": "13",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KISP",
+          "runway": "15R",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "14",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 13R Land 13L/22L",
       "wind": {
         "direction": 140,
@@ -4092,12 +4176,35 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": {
-        "KJFK/22R": 40,
-        "KLGA/22": 10,
-        "KISP/24": 0,
-        "KFRG/19": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "22R",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "22",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "22",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "24",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "19",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 22R",
       "wind": {
         "direction": 190,
@@ -4107,9 +4214,18 @@
     },
     "KJFK Depart 22R Land 22 L/R": {
       "arrival_runways": [
-        "KFRG/19",
-        "KJFK/22L",
-        "KJFK/22R"
+        {
+          "airport": "KFRG",
+          "runway": "19"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22L"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R"
+        }
       ],
       "arrivals": {
         "LENDY8/IGN1": {
@@ -4144,12 +4260,35 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": {
-        "KJFK/22R": 40,
-        "KLGA/22": 10,
-        "KISP/24": 0,
-        "KFRG/19": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "22R",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "22",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "22",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "24",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "19",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 22R Land 22 L/R",
       "wind": {
         "direction": 190,
@@ -4169,12 +4308,35 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": {
-        "KJFK/31L": 40,
-        "KLGA/31": 10,
-        "KISP/33L": 0,
-        "KFRG/32": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "31L",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "31",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "31",
+          "category": "Southwest",
+          "rate": 10
+        },
+        {
+          "airport": "KISP",
+          "runway": "33L",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "32",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 31L",
       "wind": {
         "direction": 330,
@@ -4184,9 +4346,18 @@
     },
     "KJFK Depart 31L Land 31L/31R": {
       "arrival_runways": [
-        "KFRG/32",
-        "KJFK/31R",
-        "KJFK/31L"
+        {
+          "airport": "KFRG",
+          "runway": "32"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31R"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L"
+        }
       ],
       "arrivals": {
         "LENDY8/IGN1": {
@@ -4221,12 +4392,35 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": {
-        "KJFK/31L": 40,
-        "KLGA/31": 10,
-        "KISP/33L": 0,
-        "KFRG/32": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "31L",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "31",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "31",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "33L",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "32",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 31L Land 31L/31R",
       "wind": {
         "direction": 330,
@@ -4246,12 +4440,35 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "departure_runways": {
-        "KJFK/4L": 40,
-        "KLGA/4": 10,
-        "KISP/6": 0,
-        "KFRG/1": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "4L",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "4",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "4",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "6",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "1",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 4L",
       "wind": {
         "direction": 30,
@@ -4261,9 +4478,18 @@
     },
     "KJFK Depart 4L Land 4L/R": {
       "arrival_runways": [
-        "KFRG/1",
-        "KJFK/4R",
-        "KJFK/4L"
+        {
+          "airport": "KFRG",
+          "runway": "1"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4R"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4L"
+        }
       ],
       "arrivals": {
         "LENDY8/IGN1": {
@@ -4298,12 +4524,35 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "departure_runways": {
-        "KJFK/4L": 40,
-        "KLGA/4": 10,
-        "KISP/6": 0,
-        "KFRG/1": 0
-      },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "4L",
+          "rate": 40
+        },
+        {
+          "airport": "KLGA",
+          "runway": "4",
+          "category": "Water",
+          "rate": 10
+        },
+        {
+          "airport": "KLGA",
+          "runway": "4",
+          "category": "Southwest",
+          "rate": 0
+        },
+        {
+          "airport": "KISP",
+          "runway": "6",
+          "rate": 0
+        },
+        {
+          "airport": "KFRG",
+          "runway": "1",
+          "rate": 0
+        }
+      ],
       "name": "KJFK Depart 4L Land 4L/R",
       "wind": {
         "direction": 30,
@@ -4313,7 +4562,10 @@
     },
     "KPHL Depart 27L Land 27R": {
       "arrival_runways": [
-        "KPHL/27R"
+        {
+          "airport": "KPHL",
+          "runway": "27R"
+        }
       ],
       "arrivals": {
         "BOJID3": {
@@ -4351,9 +4603,13 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "departure_runways": {
-        "KPHL/27L": 45
-      },
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "27L",
+          "rate": 45
+        }
+      ],
       "name": "KPHL Depart 27L Land 27R",
       "wind": {
         "direction": 290,
@@ -4363,7 +4619,10 @@
     },
     "KPHL Depart 9L Land 9R": {
       "arrival_runways": [
-        "KPHL/9R"
+        {
+          "airport": "KPHL",
+          "runway": "9R"
+        }
       ],
       "arrivals": {
         "BOJID3": {
@@ -4401,9 +4660,13 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "departure_runways": {
-        "KPHL/9L": 45
-      },
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "9L",
+          "rate": 45
+        }
+      ],
       "name": "KPHL Depart 9L Land 9R",
       "wind": {
         "direction": 70,
@@ -4413,7 +4676,10 @@
     },
     "KPHL 27R Final": {
       "arrival_runways": [
-        "KPHL/27R"
+        {
+          "airport": "KPHL",
+          "runway": "27R"
+        }
       ],
       "arrivals": {
         "FINAL27_SOUTH": {

@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -46,10 +47,24 @@ type Scenario struct {
 	ApproachAirspaceNames  []string         `json:"approach_airspace"`
 	DepartureAirspaceNames []string         `json:"departure_airspace"`
 
-	DepartureRunwayRates map[string]int              `json:"departure_runways,omitempty"` // e.g. "KJFK/31L"
-	ArrivalRunwayStrings []string                    `json:"arrival_runways,omitempty"`   // e.g. "KJFK/31L"
-	DepartureRunways     map[string]*DepartureRunway `json:"-"`
-	ArrivalRunways       map[string]*ArrivalRunway   `json:"-"`
+	DepartureRunways []ScenarioDepartureRunway `json:"departure_runways,omitempty"`
+	ArrivalRunways   []ScenarioArrivalRunway   `json:"arrival_runways,omitempty"`
+}
+
+type ScenarioDepartureRunway struct {
+	Airport  string `json:"airport"`
+	Runway   string `json:"runway"`
+	Category string `json:"category,omitempty"`
+	Rate     int32  `json:"rate"`
+
+	nextSpawn     time.Time
+	lastDeparture *Departure
+	exitRoutes    map[string]ExitRoute // copied from DepartureRunway
+}
+
+type ScenarioArrivalRunway struct {
+	Airport string `json:"airport"`
+	Runway  string `json:"runway"`
 }
 
 func (s *Scenario) AllAirports() []string {
@@ -57,28 +72,19 @@ func (s *Scenario) AllAirports() []string {
 }
 
 func (s *Scenario) DepartureAirports() []string {
-	var ap []string
-
-	for dep := range s.DepartureRunwayRates {
-		airport, _, _ := strings.Cut(dep, "/")
-		if Find(ap, airport) == -1 {
-			ap = append(ap, airport)
-		}
+	m := make(map[string]interface{})
+	for _, rwy := range s.DepartureRunways {
+		m[rwy.Airport] = nil
 	}
-
-	return ap
+	return SortedMapKeys(m)
 }
 
 func (s *Scenario) ArrivalAirports() []string {
-	var ap []string
-	for _, arr := range s.ArrivalRunwayStrings {
-		airport, _, _ := strings.Cut(arr, "/")
-		if Find(ap, airport) == -1 {
-			ap = append(ap, airport)
-		}
+	m := make(map[string]interface{})
+	for _, rwy := range s.ArrivalRunways {
+		m[rwy.Airport] = nil
 	}
-
-	return ap
+	return SortedMapKeys(m)
 }
 
 func (s *Scenario) PostDeserialize(t *TRACON) []error {
@@ -99,38 +105,58 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 		}
 	}
 
-	s.DepartureRunways = make(map[string]*DepartureRunway)
-	s.ArrivalRunways = make(map[string]*ArrivalRunway)
-
-	for dep, rate := range s.DepartureRunwayRates {
-		if airport, rwy, found := strings.Cut(dep, "/"); !found {
-			errors = append(errors, fmt.Errorf("%s: malformed departure runway specifier in scenario %s", dep, s.Name))
-		} else if ap, ok := t.Airports[airport]; !ok {
-			errors = append(errors, fmt.Errorf("%s: airport not found in scenario %s", airport, s.Name))
+	sort.Slice(s.DepartureRunways, func(i, j int) bool {
+		if s.DepartureRunways[i].Airport != s.DepartureRunways[j].Airport {
+			return s.DepartureRunways[i].Airport < s.DepartureRunways[j].Airport
+		} else if s.DepartureRunways[i].Runway != s.DepartureRunways[j].Runway {
+			return s.DepartureRunways[i].Runway < s.DepartureRunways[j].Runway
 		} else {
-			idx := FindIf(ap.DepartureRunways, func(r *DepartureRunway) bool { return r.Runway == rwy })
+			return s.DepartureRunways[i].Category < s.DepartureRunways[j].Category
+		}
+	})
+
+	for i, rwy := range s.DepartureRunways {
+		if ap, ok := t.Airports[rwy.Airport]; !ok {
+			errors = append(errors, fmt.Errorf("%s: airport not found for departure runway in scenario %s", rwy.Airport, s.Name))
+		} else {
+			idx := FindIf(ap.DepartureRunways, func(r *DepartureRunway) bool { return r.Runway == rwy.Runway })
 			if idx == -1 {
-				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s in scenario %s", rwy, airport, s.Name))
+				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s for departure runway in scenario %s",
+					rwy.Runway, rwy.Airport, s.Name))
 			} else {
-				s.DepartureRunways[dep] = ap.DepartureRunways[idx]
-				s.DepartureRunways[dep].rate = int32(rate)
+				s.DepartureRunways[i].exitRoutes = ap.DepartureRunways[idx].ExitRoutes
+			}
+
+			if rwy.Category != "" {
+				found := false
+				for _, dep := range ap.Departures {
+					if ap.ExitCategories[dep.Exit] == rwy.Category {
+						found = true
+						break
+					}
+				}
+				if !found {
+					errors = append(errors,
+						fmt.Errorf("%s: no departures from %s have exit category specified for departure runway %s in scenario %s",
+							rwy.Category, rwy.Airport, rwy.Runway, s.Name))
+				}
 			}
 		}
 	}
 
-	for _, arr := range s.ArrivalRunwayStrings {
-		if airport, rwy, found := strings.Cut(arr, "/"); !found {
-			errors = append(errors, fmt.Errorf("%s: malformed arrival runway specifier in scenario %s", arr, s.Name))
-		} else if ap, ok := t.Airports[airport]; !ok {
-			errors = append(errors, fmt.Errorf("%s: airport not found in scenario %s", airport, s.Name))
-		} else {
-			idx := FindIf(ap.ArrivalRunways, func(r *ArrivalRunway) bool { return r.Runway == rwy })
-			if idx == -1 {
-				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s in scenario %s (avail%+v)",
-					rwy, airport, s.Name, ap.ArrivalRunwayNames))
-			} else {
-				s.ArrivalRunways[arr] = ap.ArrivalRunways[idx]
-			}
+	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
+		if s.ArrivalRunways[i].Airport == s.ArrivalRunways[j].Airport {
+			return s.ArrivalRunways[i].Runway < s.ArrivalRunways[j].Runway
+		}
+		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
+	})
+
+	for _, rwy := range s.ArrivalRunways {
+		if ap, ok := t.Airports[rwy.Airport]; !ok {
+			errors = append(errors, fmt.Errorf("%s: airport not found for arrival runway in scenario %s", rwy.Airport, s.Name))
+		} else if FindIf(ap.ArrivalRunways, func(r *ArrivalRunway) bool { return r.Runway == rwy.Runway }) == -1 {
+			errors = append(errors, fmt.Errorf("%s: runway not found for arrival runway at airport %s in scenario %s",
+				rwy.Runway, rwy.Airport, s.Name))
 		}
 	}
 
@@ -240,20 +266,32 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 
-		if len(scenario.DepartureRunwayRates) > 0 {
+		if len(scenario.DepartureRunways) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Departing:")
 			imgui.TableNextColumn()
-			imgui.Text(strings.Join(SortedMapKeys(scenario.DepartureRunwayRates), ", "))
+
+			var d []string
+			for _, rwy := range scenario.DepartureRunways {
+				d = append(d, rwy.Airport+"/"+rwy.Runway)
+			}
+			sort.Strings(d)
+			imgui.Text(strings.Join(d, ", "))
 		}
 
-		if len(scenario.ArrivalRunwayStrings) > 0 {
+		if len(scenario.ArrivalRunways) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Landing:")
 			imgui.TableNextColumn()
-			imgui.Text(strings.Join(scenario.ArrivalRunwayStrings, ", "))
+
+			var a []string
+			for _, rwy := range scenario.ArrivalRunways {
+				a = append(a, rwy.Airport+"/"+rwy.Runway)
+			}
+			sort.Strings(a)
+			imgui.Text(strings.Join(a, ", "))
 		}
 
 		imgui.TableNextRow()
@@ -274,20 +312,28 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.SliderFloatV("Sequencing challenge", &ssc.challenge, 0, 1, "%.02f", 0)
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-		if imgui.BeginTableV("departureRunways", 2, flags, imgui.Vec2{400, 0}, 0.) {
+		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
+			imgui.TableSetupColumn("Airport")
 			imgui.TableSetupColumn("Runway")
+			imgui.TableSetupColumn("Category")
 			imgui.TableSetupColumn("ADR")
 			imgui.TableHeadersRow()
 
-			for _, rwy := range SortedMapKeys(scenario.DepartureRunways) {
-				dep := scenario.DepartureRunways[rwy]
-
-				imgui.PushID(rwy)
+			for i, rwy := range scenario.DepartureRunways {
+				imgui.PushID(rwy.Airport + rwy.Runway + rwy.Category)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(rwy)
+				imgui.Text(rwy.Airport)
 				imgui.TableNextColumn()
-				imgui.InputIntV("##adr", &dep.rate, 0, 120, 0)
+				imgui.Text(rwy.Runway)
+				imgui.TableNextColumn()
+				if rwy.Category == "" {
+					imgui.Text("(All)")
+				} else {
+					imgui.Text(rwy.Category)
+				}
+				imgui.TableNextColumn()
+				imgui.InputIntV("##adr", &scenario.DepartureRunways[i].Rate, 0, 120, 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
@@ -440,8 +486,8 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		}
 		ss.scenario.ArrivalGroups[i].nextSpawn = randomSpawn(rateSum)
 	}
-	for _, rwy := range ss.scenario.DepartureRunways {
-		rwy.nextSpawn = randomSpawn(int(rwy.rate))
+	for i, rwy := range ss.scenario.DepartureRunways {
+		ss.scenario.DepartureRunways[i].nextSpawn = randomSpawn(int(rwy.Rate))
 	}
 
 	return ss
@@ -1172,14 +1218,13 @@ func (ss *Sim) SpawnAircraft() {
 		}
 	}
 
-	for name, rwy := range ss.scenario.DepartureRunways {
+	for i, rwy := range ss.scenario.DepartureRunways {
 		if ss.remainingLaunches > 0 && now.After(rwy.nextSpawn) {
-			icao, _, _ := strings.Cut(name, "/")
-			ap := tracon.Airports[icao]
-			if ac := ss.SpawnDeparture(ap, rwy); ac != nil {
+			ap := tracon.Airports[rwy.Airport]
+			if ac := ss.SpawnDeparture(ap, &ss.scenario.DepartureRunways[i]); ac != nil {
 				ac.FlightPlan.DepartureAirport = ap.ICAO
 				addAircraft(ac)
-				rwy.nextSpawn = now.Add(randomWait(rwy.rate))
+				ss.scenario.DepartureRunways[i].nextSpawn = now.Add(randomWait(rwy.Rate))
 			}
 		}
 	}
@@ -1297,12 +1342,10 @@ func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
 	ac.Waypoints = arr.Waypoints
 	// But if there is a custom route for any of the active runways, switch
 	// to that. Results are undefined if there are multiple matches.
-	for aprwy := range ss.scenario.ArrivalRunways {
-		if _, rwy, ok := strings.Cut(aprwy, "/"); ok {
-			if wp, ok := arr.RunwayWaypoints[rwy]; ok {
-				ac.Waypoints = wp
-				break
-			}
+	for _, aprwy := range ss.scenario.ArrivalRunways {
+		if wp, ok := arr.RunwayWaypoints[aprwy.Runway]; ok {
+			ac.Waypoints = wp
+			break
 		}
 	}
 	ac.Altitude = float32(arr.InitialAltitude)
@@ -1324,7 +1367,7 @@ func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
 	return ac
 }
 
-func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
+func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioDepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < ss.challenge {
 		// 50/50 split between the exact same departure and a departure to
@@ -1346,8 +1389,16 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 	}
 
 	if dep == nil {
-		// Sample uniformly
-		idx := rand.Intn(len(ap.Departures))
+		// Sample uniformly, minding the category, if specified
+		idx := SampleFiltered(ap.Departures,
+			func(d Departure) bool {
+				return rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit]
+			})
+		if idx == -1 {
+			// This shouldn't ever happen...
+			lg.Errorf("%s/%s: unable to find a valid departure", ap.ICAO, rwy.Runway)
+			return nil
+		}
 		dep = &ap.Departures[idx]
 	}
 
@@ -1356,7 +1407,7 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *DepartureRunway) *Aircraft {
 	airline := Sample(dep.Airlines)
 	ac := sampleAircraft(airline.ICAO, airline.Fleet)
 
-	exitRoute := rwy.ExitRoutes[dep.Exit]
+	exitRoute := rwy.exitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
 	ac.Waypoints = append(ac.Waypoints, dep.routeWaypoints...)
 

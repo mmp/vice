@@ -7,7 +7,6 @@ package main
 import (
 	"fmt"
 	"strings"
-	"time"
 )
 
 type Airport struct {
@@ -92,10 +91,6 @@ func (ac *Airport) PostDeserialize(t *TRACON) []error {
 type DepartureRunway struct {
 	Runway     string               `json:"runway"`
 	ExitRoutes map[string]ExitRoute `json:"exit_routes"`
-
-	rate          int32
-	nextSpawn     time.Time
-	lastDeparture *Departure
 }
 
 type ExitRoute struct {
