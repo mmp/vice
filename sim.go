@@ -49,6 +49,15 @@ type Scenario struct {
 
 	DepartureRunways []ScenarioDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioArrivalRunway   `json:"arrival_runways,omitempty"`
+
+	// The same runway may be present multiple times in DepartureRunways,
+	// with different Category values. However, we want to make sure that
+	// we don't spawn two aircraft on the same runway at the same time (or
+	// close to it).  Therefore, here we track a per-runway "when's the
+	// next time that we will spawn *something* from the runway" time.
+	// When the time is up, we'll figure out which specific matching entry
+	// in DepartureRunways to use...
+	nextDepartureSpawn map[string]time.Time
 }
 
 type ScenarioDepartureRunway struct {
@@ -57,7 +66,6 @@ type ScenarioDepartureRunway struct {
 	Category string `json:"category,omitempty"`
 	Rate     int32  `json:"rate"`
 
-	nextSpawn     time.Time
 	lastDeparture *Departure
 	exitRoutes    map[string]ExitRoute // copied from DepartureRunway
 }
@@ -85,6 +93,16 @@ func (s *Scenario) ArrivalAirports() []string {
 		m[rwy.Airport] = nil
 	}
 	return SortedMapKeys(m)
+}
+
+func (s *Scenario) runwayDepartureRate(ar string) int {
+	r := 0
+	for _, rwy := range s.DepartureRunways {
+		if ar == rwy.Airport+"/"+rwy.Runway {
+			r += int(rwy.Rate)
+		}
+	}
+	return r
 }
 
 func (s *Scenario) PostDeserialize(t *TRACON) []error {
@@ -115,6 +133,7 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 		}
 	})
 
+	s.nextDepartureSpawn = make(map[string]time.Time)
 	for i, rwy := range s.DepartureRunways {
 		if ap, ok := t.Airports[rwy.Airport]; !ok {
 			errors = append(errors, fmt.Errorf("%s: airport not found for departure runway in scenario %s", rwy.Airport, s.Name))
@@ -126,6 +145,7 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 			} else {
 				s.DepartureRunways[i].exitRoutes = ap.DepartureRunways[idx].ExitRoutes
 			}
+			s.nextDepartureSpawn[rwy.Airport+"/"+rwy.Runway] = time.Time{}
 
 			if rwy.Category != "" {
 				found := false
@@ -486,8 +506,8 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		}
 		ss.scenario.ArrivalGroups[i].nextSpawn = randomSpawn(rateSum)
 	}
-	for i, rwy := range ss.scenario.DepartureRunways {
-		ss.scenario.DepartureRunways[i].nextSpawn = randomSpawn(int(rwy.Rate))
+	for rwy := range ss.scenario.nextDepartureSpawn {
+		ss.scenario.nextDepartureSpawn[rwy] = randomSpawn(ss.scenario.runwayDepartureRate(rwy))
 	}
 
 	return ss
@@ -1187,7 +1207,7 @@ func (ss *Sim) SpawnAircraft() {
 		eventStream.Post(&AddedAircraftEvent{ac: ac})
 	}
 
-	randomWait := func(rate int32) time.Duration {
+	randomWait := func(rate int) time.Duration {
 		if rate == 0 {
 			return 365 * 24 * time.Hour
 		}
@@ -1213,18 +1233,34 @@ func (ss *Sim) SpawnAircraft() {
 			if ac := ss.SpawnArrival(arrivalAirport, arr); ac != nil {
 				ac.FlightPlan.ArrivalAirport = arrivalAirport.ICAO
 				addAircraft(ac)
-				ss.scenario.ArrivalGroups[i].nextSpawn = now.Add(randomWait(int32(rateSum)))
+				ss.scenario.ArrivalGroups[i].nextSpawn = now.Add(randomWait(rateSum))
 			}
 		}
 	}
 
-	for i, rwy := range ss.scenario.DepartureRunways {
-		if ss.remainingLaunches > 0 && now.After(rwy.nextSpawn) {
-			ap := tracon.Airports[rwy.Airport]
-			if ac := ss.SpawnDeparture(ap, &ss.scenario.DepartureRunways[i]); ac != nil {
+	for rwy, nextSpawn := range ss.scenario.nextDepartureSpawn {
+		if ss.remainingLaunches > 0 && now.After(nextSpawn) {
+			// So we're going to launch from this runway but there may be
+			// multiple configs with different rates on this runway. So now
+			// we'll choose one with probability proportional to its
+			// rate...
+			idx := SampleWeighted(ss.scenario.DepartureRunways,
+				func(r ScenarioDepartureRunway) int {
+					if r.Airport+"/"+r.Runway != rwy {
+						return 0
+					}
+					return int(r.Rate)
+				})
+			if idx == -1 {
+				lg.Errorf("%s: couldn't find a matching runway for spawning departure?", rwy)
+				continue
+			}
+
+			ap := tracon.Airports[ss.scenario.DepartureRunways[idx].Airport]
+			if ac := ss.SpawnDeparture(ap, &ss.scenario.DepartureRunways[idx]); ac != nil {
 				ac.FlightPlan.DepartureAirport = ap.ICAO
 				addAircraft(ac)
-				ss.scenario.DepartureRunways[i].nextSpawn = now.Add(randomWait(rwy.Rate))
+				ss.scenario.nextDepartureSpawn[rwy] = now.Add(randomWait(ss.scenario.runwayDepartureRate(rwy)))
 			}
 		}
 	}
