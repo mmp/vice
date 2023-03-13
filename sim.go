@@ -38,9 +38,11 @@ type Scenario struct {
 	Wind        Wind     `json:"wind"`
 	Controllers []string `json:"controllers"`
 
-	ArrivalGroups []ArrivalGroup `json:"-"`
 	// Map from arrival group name to map from airport name to rate...
-	ArrivalGroupRates map[string]map[string]int `json:"arrivals"`
+	ArrivalGroupRates map[string]map[string]*int32 `json:"arrivals"`
+
+	// Key is arrival group name
+	nextArrivalSpawn map[string]time.Time
 
 	ApproachAirspace       []AirspaceVolume `json:"-"`
 	DepartureAirspace      []AirspaceVolume `json:"-"`
@@ -180,21 +182,21 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 		}
 	}
 
+	s.nextArrivalSpawn = make(map[string]time.Time)
+
 	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {
-		airportRates := s.ArrivalGroupRates[name]
-		idx := FindIf(t.ArrivalGroups, func(ag ArrivalGroup) bool { return ag.Name == name })
-		if idx == -1 {
-			errors = append(errors, fmt.Errorf("%s: arrival not found in TRACON in scenario %s", name, s.Name))
+		// Make sure the arrival group has been defined
+		if arrivals, ok := t.ArrivalGroups[name]; !ok {
+			errors = append(errors, fmt.Errorf("%s: arrival group not found in TRACON in scenario %s", name, s.Name))
 		} else {
-			ag := t.ArrivalGroups[idx]
-			ag.rates = make(map[string]*int32)
-			for airport, rate := range airportRates {
+			// Check the airports in it
+			for airport := range s.ArrivalGroupRates[name] {
 				if _, ok := t.Airports[airport]; !ok {
 					errors = append(errors, fmt.Errorf("%s: unknown arrival airport in %s arrival group in scenario %s",
 						airport, name, s.Name))
 				} else {
 					found := false
-					for _, ar := range ag.Arrivals {
+					for _, ar := range arrivals {
 						if _, ok := ar.Airlines[airport]; ok {
 							found = true
 							break
@@ -203,14 +205,9 @@ func (s *Scenario) PostDeserialize(t *TRACON) []error {
 					if !found {
 						errors = append(errors, fmt.Errorf("%s: airport not included in any arrivals in %s arrival group in scenario %s",
 							airport, name, s.Name))
-					} else {
-						ag.rates[airport] = new(int32)
-						*ag.rates[airport] = int32(rate)
 					}
 				}
 			}
-
-			s.ArrivalGroups = append(s.ArrivalGroups, ag)
 		}
 	}
 
@@ -360,11 +357,11 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		}
 	}
 
-	if len(scenario.ArrivalGroups) > 0 {
+	if len(scenario.ArrivalGroupRates) > 0 {
 		// Figure out how many unique airports we've got for AAR columns in the table...
 		allAirports := make(map[string]interface{})
-		for _, ag := range scenario.ArrivalGroups {
-			for _, ap := range ag.Airports() {
+		for _, agr := range scenario.ArrivalGroupRates {
+			for ap := range agr {
 				allAirports[ap] = nil
 			}
 		}
@@ -380,16 +377,15 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			}
 			imgui.TableHeadersRow()
 
-			for _, arr := range scenario.ArrivalGroups {
-				imgui.PushID(arr.Name)
+			for _, group := range SortedMapKeys(scenario.ArrivalGroupRates) {
+				imgui.PushID(group)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(arr.Name)
-				for _, ap := range SortedMapKeys(allAirports) {
+				imgui.Text(group)
+				airportRates := scenario.ArrivalGroupRates[group]
+				for _, ap := range SortedMapKeys(airportRates) {
 					imgui.TableNextColumn()
-					if rate, ok := arr.rates[ap]; ok {
-						imgui.InputIntV("##aar-"+ap, rate, 0, 120, 0)
-					}
+					imgui.InputIntV("##aar-"+ap, airportRates[ap], 0, 120, 0)
 				}
 				imgui.PopID()
 			}
@@ -499,12 +495,12 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		return time.Now().Add(time.Duration(delta) * time.Second)
 	}
 
-	for i := range ss.scenario.ArrivalGroups {
+	for group, rates := range ss.scenario.ArrivalGroupRates {
 		rateSum := 0
-		for _, rate := range ss.scenario.ArrivalGroups[i].rates {
+		for _, rate := range rates {
 			rateSum += int(*rate)
 		}
-		ss.scenario.ArrivalGroups[i].nextSpawn = randomSpawn(rateSum)
+		ss.scenario.nextArrivalSpawn[group] = randomSpawn(rateSum)
 	}
 	for rwy := range ss.scenario.nextDepartureSpawn {
 		ss.scenario.nextDepartureSpawn[rwy] = randomSpawn(ss.scenario.runwayDepartureRate(rwy))
@@ -1216,13 +1212,13 @@ func (ss *Sim) SpawnAircraft() {
 		return time.Duration(seconds * float32(time.Second))
 	}
 
-	for i, arr := range ss.scenario.ArrivalGroups {
-		if ss.remainingLaunches > 0 && now.After(arr.nextSpawn) {
+	for group, rates := range ss.scenario.ArrivalGroupRates {
+		if ss.remainingLaunches > 0 && now.After(ss.scenario.nextArrivalSpawn[group]) {
 			// Choose arrival airport randomly in proportion to the airport
 			// arrival rates in the arrival group.
 			rateSum := 0
 			var arrivalAirport *Airport
-			for airport, rate := range arr.rates {
+			for airport, rate := range rates {
 				rateSum += int(*rate)
 				// Weighted reservoir sampling...
 				if rand.Float32() < float32(int(*rate))/float32(rateSum) {
@@ -1230,10 +1226,10 @@ func (ss *Sim) SpawnAircraft() {
 				}
 			}
 
-			if ac := ss.SpawnArrival(arrivalAirport, arr); ac != nil {
+			if ac := ss.SpawnArrival(arrivalAirport, group); ac != nil {
 				ac.FlightPlan.ArrivalAirport = arrivalAirport.ICAO
 				addAircraft(ac)
-				ss.scenario.ArrivalGroups[i].nextSpawn = now.Add(randomWait(rateSum))
+				ss.scenario.nextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
 	}
@@ -1350,18 +1346,19 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 	}
 }
 
-func (ss *Sim) SpawnArrival(ap *Airport, ag ArrivalGroup) *Aircraft {
+func (ss *Sim) SpawnArrival(ap *Airport, arrivalGroup string) *Aircraft {
+	arrivals := tracon.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
-	idx := SampleFiltered(ag.Arrivals, func(ar Arrival) bool {
+	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
 		_, ok := ar.Airlines[ap.ICAO]
 		return ok
 	})
 	if idx == -1 {
-		lg.Errorf("unable to find route in ArrivalGroup %s for airport %s?!",
-			ag.Name, ap.ICAO)
+		lg.Errorf("unable to find route in arrival group %s for airport %s?!",
+			arrivalGroup, ap.ICAO)
 		return nil
 	}
-	arr := ag.Arrivals[idx]
+	arr := arrivals[idx]
 
 	airline := Sample(arr.Airlines[ap.ICAO])
 	ac := sampleAircraft(airline.ICAO, airline.Fleet)
@@ -1467,7 +1464,7 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioDepartureRunway) *Aircra
 ///////////////////////////////////////////////////////////////////////////
 
 var (
-	//go:embed configs/zny.json
+	//go:embed configs/jfk.json
 	znyJSON string
 	//go:embed configs/zny-maps.json.zst
 	znyMapsJSON string

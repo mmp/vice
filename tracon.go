@@ -11,7 +11,6 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"time"
 )
 
 type TRACON struct {
@@ -25,7 +24,7 @@ type TRACON struct {
 	ControlPositions  map[string]*Controller      `json:"control_positions"`
 	Scratchpads       map[string]string           `json:"scratchpads"`
 	AirspaceVolumes   map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
-	ArrivalGroups     []ArrivalGroup              `json:"arrival_groups"`
+	ArrivalGroups     map[string][]Arrival        `json:"arrival_groups"`
 
 	Center         Point2LL              `json:"center"`
 	PrimaryAirport string                `json:"primary_airport"`
@@ -35,24 +34,6 @@ type TRACON struct {
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
 	MagneticVariation float32 `json:"magnetic_variation"`
-}
-
-type ArrivalGroup struct {
-	Name     string    `json:"name"`
-	Arrivals []Arrival `json:"arrivals"`
-
-	rates     map[string]*int32 // map from airport to arrival rate
-	nextSpawn time.Time
-}
-
-func (ag *ArrivalGroup) Airports() []string {
-	m := make(map[string]interface{})
-	for _, ar := range ag.Arrivals {
-		for al := range ar.Airlines {
-			m[al] = nil
-		}
-	}
-	return SortedMapKeys(m)
 }
 
 type Arrival struct {
@@ -130,12 +111,12 @@ func (t *TRACON) PostDeserialize() {
 		}
 	}
 
-	for _, ag := range t.ArrivalGroups {
-		if len(ag.Arrivals) == 0 {
-			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group", ag.Name))
+	for name, arrivals := range t.ArrivalGroups {
+		if len(arrivals) == 0 {
+			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group in %s", name, t.Name))
 		}
 
-		for _, ar := range ag.Arrivals {
+		for _, ar := range arrivals {
 			for _, err := range t.InitializeWaypointLocations(ar.Waypoints) {
 				errors = append(errors, fmt.Errorf("%s: %v", ag.Name, err))
 			}
