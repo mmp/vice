@@ -10,9 +10,11 @@ import (
 )
 
 type Airport struct {
-	ICAO      string   `json:"icao"`
-	Elevation int      `json:"elevation"`
-	Location  Point2LL `json:"location"`
+	ICAO           string   `json:"icao"`
+	Elevation      int      `json:"elevation"`
+	Location       Point2LL `json:"location"`
+	PrimaryAirport bool     `json:"primary"`
+	TowerListIndex int      `json:"tower_list"`
 
 	Approaches []Approach  `json:"approaches,omitempty"`
 	Departures []Departure `json:"departures,omitempty"`

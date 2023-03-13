@@ -84,18 +84,21 @@ func (t *TRACON) PostDeserialize() {
 	t.AirspaceVolumes = parseAirspace()
 
 	var errors []error
-	for _, ap := range t.Airports {
+	for name, ap := range t.Airports {
+		if name != ap.ICAO {
+			errors = append(errors, fmt.Errorf("%s: airport Name doesn't match (%s)", name, ap.ICAO))
+		}
 		for _, err := range ap.PostDeserialize(t) {
 			errors = append(errors, fmt.Errorf("%s: error in specification: %v", ap.ICAO, err))
 		}
 	}
 
 	if _, ok := t.Scenarios[t.DefaultScenario]; !ok {
-		errors = append(errors, fmt.Errorf("%s: default scenario not found.", t.DefaultScenario))
+		errors = append(errors, fmt.Errorf("%s: default scenario not found in %s", t.DefaultScenario, t.Name))
 	}
 
 	if _, ok := t.ControlPositions[t.DefaultController]; !ok {
-		errors = append(errors, fmt.Errorf("%s: default controller not found.", t.DefaultController))
+		errors = append(errors, fmt.Errorf("%s: default controller not found in %s", t.DefaultController, t.Name))
 	} else {
 		// make sure the controller has at least one scenario..
 		found := false
@@ -106,8 +109,19 @@ func (t *TRACON) PostDeserialize() {
 			}
 		}
 		if !found {
-			errors = append(errors, fmt.Errorf("%s: default controller not used in any scenarios",
-				t.DefaultController))
+			errors = append(errors, fmt.Errorf("%s: default controller not used in any scenarios in %s",
+				t.DefaultController, t.Name))
+		}
+	}
+
+	if len(t.RadarSites) == 0 {
+		errors = append(errors, fmt.Errorf("No radar sites specified in tracon %s", t.Name))
+	}
+	for name, rs := range t.RadarSites {
+		if _, ok := tracon.Locate(rs.Position); rs.Position == "" || !ok {
+			errors = append(errors, fmt.Errorf("%s: radar site position not found in tracon %s", name, t.Name))
+		} else if rs.Char == "" {
+			errors = append(errors, fmt.Errorf("%s: radar site missing character id in tracon %s", name, t.Name))
 		}
 	}
 
@@ -118,24 +132,25 @@ func (t *TRACON) PostDeserialize() {
 
 		for _, ar := range arrivals {
 			for _, err := range t.InitializeWaypointLocations(ar.Waypoints) {
-				errors = append(errors, fmt.Errorf("%s: %v", ag.Name, err))
+				errors = append(errors, fmt.Errorf("%s: %v in %s", name, err, t.Name))
 			}
 			for _, wp := range ar.RunwayWaypoints {
 				for _, err := range t.InitializeWaypointLocations(wp) {
-					errors = append(errors, fmt.Errorf("%s: %v", ag.Name, err))
+					errors = append(errors, fmt.Errorf("%s: %v in %s", name, err, t.Name))
 				}
 			}
 
 			for _, apAirlines := range ar.Airlines {
 				for _, al := range apAirlines {
 					for _, err := range database.CheckAirline(al.ICAO, al.Fleet) {
-						errors = append(errors, fmt.Errorf("%v", err))
+						errors = append(errors, fmt.Errorf("%v in %s", err, t.Name))
 					}
 				}
 			}
 
 			if _, ok := t.ControlPositions[ar.InitialController]; !ok {
-				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group", ar.InitialController, ag.Name))
+				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group in %s",
+					ar.InitialController, name, t.Name))
 			}
 		}
 	}
@@ -150,18 +165,6 @@ func (t *TRACON) PostDeserialize() {
 			lg.Errorf("%v", err)
 		}
 		os.Exit(1)
-	}
-
-	if globalConfig.Version < 2 && globalConfig.DisplayRoot != nil {
-		// Add the PHL airport and radar sites...
-		// All of the following is quite brittle / hard-coded and
-		// doesn't really have any error handling (but we control the
-		// input, so it all "should" be fine...)
-		stars := globalConfig.DisplayRoot.Children[0].Pane.(*STARSPane)
-		stars.Facility.Airports = append(stars.Facility.Airports,
-			STARSAirport{ICAOCode: "KPHL", Range: 60, IncludeInSSA: true})
-
-		globalConfig.Version = 2
 	}
 }
 

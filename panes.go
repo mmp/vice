@@ -267,7 +267,6 @@ type FlightStripPane struct {
 	AddPushed                 bool
 	CollectDeparturesArrivals bool
 
-	Airports      map[string]interface{}
 	strips        []string // callsigns
 	addedAircraft map[string]interface{}
 
@@ -286,7 +285,6 @@ type FlightStripPane struct {
 func NewFlightStripPane() *FlightStripPane {
 	return &FlightStripPane{
 		AddPushed:          true,
-		Airports:           make(map[string]interface{}),
 		FontIdentifier:     FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 14},
 		selectedStrip:      -1,
 		selectedAnnotation: -1,
@@ -316,7 +314,7 @@ func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
 	if ac.FlightPlan == nil {
 		return false
 	}
-	_, ok := fsp.Airports[ac.FlightPlan.DepartureAirport]
+	_, ok := tracon.Airports[ac.FlightPlan.DepartureAirport]
 	return ok
 }
 
@@ -324,7 +322,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 	if ac.FlightPlan == nil {
 		return false
 	}
-	_, ok := fsp.Airports[ac.FlightPlan.ArrivalAirport]
+	_, ok := tracon.Airports[ac.FlightPlan.ArrivalAirport]
 	return ok
 }
 
@@ -414,7 +412,6 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI() {
-	fsp.Airports, _ = drawAirportSelector(fsp.Airports, "Airports")
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)

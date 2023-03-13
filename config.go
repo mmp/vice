@@ -128,10 +128,9 @@ func LoadOrMakeDefaultConfig() {
 
 func (gc *GlobalConfig) Activate() {
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane(tracon)
+		stars := NewSTARSPane()
 
 		fsp := NewFlightStripPane()
-		fsp.Airports[tracon.PrimaryAirport] = nil
 		fsp.AutoAddDepartures = true
 		fsp.AutoAddTracked = true
 		fsp.AutoAddAcceptedHandoffs = true

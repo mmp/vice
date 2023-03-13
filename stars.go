@@ -170,10 +170,7 @@ type STARSAircraftState struct {
 // STARSFacility and related
 
 type STARSFacility struct {
-	Center   Point2LL
-	Airports []STARSAirport
-	Maps     []STARSMap
-	CA       struct {
+	CA struct {
 		LateralMinimum  float32
 		VerticalMinimum int32
 		Floor           int32
@@ -185,37 +182,14 @@ type STARSFacility struct {
 	// TODO: automatic scratchpad stuff
 }
 
-type STARSAirport struct {
-	ICAOCode       string
-	Range          int32 // nm distance when arrival is added to tower list
-	IncludeInSSA   bool  // whether airport's weather is included in the SSA
-	TowerListIndex int   // 0 -> none. i.e., indexing is off by 1 vs go arrays, but matches STARS lists
-}
-
 type STARSMap struct {
-	Label string
-	Group int    // 0 -> A, 1 -> B
-	Name  string // VideoMap.Name
+	Label string `json:"label"`
+	Group int    `json:"group"` // 0 -> A, 1 -> B
+	Name  string `json:"name"`  // VideoMap.Name
 }
 
-func MakeDefaultFacility(tracon *TRACON) STARSFacility {
+func MakeDefaultFacility() STARSFacility {
 	var f STARSFacility
-
-	f.Center = tracon.Center
-
-	f.Airports = append(f.Airports,
-		STARSAirport{
-			ICAOCode:       tracon.PrimaryAirport,
-			Range:          60,
-			TowerListIndex: 1,
-			IncludeInSSA:   true})
-	for _, ap := range tracon.Airports {
-		if ap.ICAO != tracon.PrimaryAirport {
-			f.Airports = append(f.Airports,
-				STARSAirport{ICAOCode: ap.ICAO, Range: 30, IncludeInSSA: true})
-		}
-	}
-	f.Maps = DuplicateSlice(tracon.STARSMaps)
 
 	f.CA.LateralMinimum = 3
 	f.CA.VerticalMinimum = 1000
@@ -225,10 +199,6 @@ func MakeDefaultFacility(tracon *TRACON) STARSFacility {
 	return f
 }
 
-func (rs *RadarSite) Valid() bool {
-	_, ok := tracon.Locate(rs.Position)
-	return rs.Char != "" && rs.Position != "" && ok
-}
 ///////////////////////////////////////////////////////////////////////////
 // STARSPreferenceSet
 
@@ -256,10 +226,9 @@ type STARSPreferenceSet struct {
 
 	WeatherIntensity [6]bool
 
-	// No more than one can be true at a time. If all disabled, then MULTI.
-	// The custom JSON name is so we don't get errors parsing old configs, which
-	// stored these as arrays...
-	RadarSiteSelected map[string]*bool `json:"RadarSiteSelectedMap"`
+	// If empty, then then MULTI mode.  The custom JSON name is so we don't
+	// get errors parsing old configs, which stored this as an array...
+	RadarSiteSelected string `json:"RadarSiteSelectedName"`
 
 	LeaderLineDirection CardinalOrdinalDirection
 	LeaderLineLength    int // 0-7
@@ -291,7 +260,7 @@ type STARSPreferenceSet struct {
 
 	DisplayTPASize bool
 
-	MapVisible []bool
+	VideoMapVisible map[string]interface{}
 
 	PTLLength      float32
 	PTLOwn, PTLAll bool
@@ -401,7 +370,7 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.DisplayDCB = true
 
-	ps.Center = facility.Center
+	ps.Center = tracon.Center
 	ps.Range = 40
 
 	ps.currentCenter = ps.Center
@@ -411,9 +380,9 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.RadarTrackHistory = 5
 
-	ps.MapVisible = make([]bool, len(facility.Maps))
-	if len(facility.Maps) > 0 {
-		ps.MapVisible[0] = true
+	ps.VideoMapVisible = make(map[string]interface{})
+	if len(tracon.STARSMaps) > 0 {
+		ps.VideoMapVisible[tracon.STARSMaps[0].Name] = nil
 	}
 	ps.LeaderLineDirection = North
 	ps.LeaderLineLength = 1
@@ -492,14 +461,17 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = DuplicateSlice(ps.SelectedBeaconCodes)
-	dupe.MapVisible = DuplicateSlice(ps.MapVisible)
+	dupe.VideoMapVisible = DuplicateMap(ps.VideoMapVisible)
 	return dupe
 }
 
 func (ps *STARSPreferenceSet) Activate() {
 	ps.currentCenter = ps.Center
-	if ps.RadarSiteSelected == nil {
-		ps.RadarSiteSelected = make(map[string]*bool)
+	if ps.VideoMapVisible == nil {
+		ps.VideoMapVisible = make(map[string]interface{})
+		if len(tracon.STARSMaps) > 0 {
+			ps.VideoMapVisible[tracon.STARSMaps[0].Name] = nil
+		}
 	}
 }
 
@@ -566,9 +538,9 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 // STARSPane proper
 
 // Takes aircraft position in window coordinates
-func NewSTARSPane(tracon *TRACON) *STARSPane {
+func NewSTARSPane() *STARSPane {
 	return &STARSPane{
-		Facility:              MakeDefaultFacility(tracon),
+		Facility:              MakeDefaultFacility(),
 		SelectedPreferenceSet: -1,
 	}
 }
@@ -643,161 +615,6 @@ func (sp *STARSPane) DrawUI() {
 		imgui.SliderFloatV("Lateral minimum (nm)", &sp.Facility.CA.LateralMinimum, 0, 10, "%.1f", 0)
 		imgui.InputIntV("Vertical minimum (feet)", &sp.Facility.CA.VerticalMinimum, 100, 100, 0)
 		imgui.InputIntV("Altitude floor (feet)", &sp.Facility.CA.Floor, 100, 100, 0)
-	}
-
-	if imgui.TreeNode("Facility Engineering") {
-		errorExclamationTriangle := func() {
-			imgui.PushStyleColor(imgui.StyleColorText, STARSTextAlertColor.imgui())
-			imgui.Text(FontAwesomeIconExclamationTriangle)
-			imgui.PopStyleColor()
-		}
-
-		if imgui.TreeNode("Airports") {
-			tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchSame
-			if imgui.BeginTableV("airports", 8, tableFlags, imgui.Vec2{800, 0}, 0) {
-				imgui.TableSetupColumn("ICAO code")
-				imgui.TableSetupColumn("Range")
-				imgui.TableSetupColumn("In SSA")
-				imgui.TableSetupColumn("List 1\n")
-				imgui.TableSetupColumn("List 2\n")
-				imgui.TableSetupColumn("List 3\n")
-				imgui.TableSetupColumn("No list\n")
-				imgui.TableSetupColumn("##trash")
-
-				imgui.TableHeadersRow()
-
-				deleteIndex := -1
-				for i := range sp.Facility.Airports {
-					ap := &sp.Facility.Airports[i]
-					imgui.PushID(fmt.Sprintf("%d", i))
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
-					imgui.InputTextV("##ICAO", &ap.ICAOCode, flags, nil)
-					if ap.ICAOCode != "" {
-						invalid := false
-						for j := 0; j < i; j++ {
-							if sp.Facility.Airports[j].ICAOCode == ap.ICAOCode {
-								invalid = true
-							}
-						}
-						if _, ok := tracon.Locate(ap.ICAOCode); !ok {
-							invalid = true
-						}
-
-						if invalid {
-							imgui.SameLine()
-							errorExclamationTriangle()
-						}
-					}
-
-					imgui.TableNextColumn()
-					imgui.InputIntV("##pr", &ap.Range, 0, 0, 0)
-
-					imgui.TableNextColumn()
-					imgui.Checkbox("##check", &ap.IncludeInSSA)
-
-					for list := 1; list <= 3; list++ {
-						imgui.TableNextColumn()
-						if imgui.RadioButtonInt(fmt.Sprintf("##list%d", list), &ap.TowerListIndex, list) {
-							for j := range sp.Facility.Airports {
-								if j != i && sp.Facility.Airports[j].TowerListIndex == list {
-									sp.Facility.Airports[j].TowerListIndex = 0
-								}
-							}
-						}
-					}
-
-					imgui.TableNextColumn()
-					imgui.RadioButtonInt("##list0", &ap.TowerListIndex, 0)
-
-					imgui.TableNextColumn()
-					if imgui.Button(FontAwesomeIconTrash) {
-						deleteIndex = i
-					}
-
-					imgui.PopID()
-				}
-
-				imgui.EndTable()
-
-				if deleteIndex != -1 {
-					sp.Facility.Airports = DeleteSliceElement(sp.Facility.Airports, deleteIndex)
-				}
-				if imgui.Button("Add airport") {
-					sp.Facility.Airports = append(sp.Facility.Airports, STARSAirport{})
-				}
-			}
-			imgui.TreePop()
-		}
-
-		if imgui.TreeNode("Maps") {
-			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-			if imgui.BeginTableV("maps", 4, flags, imgui.Vec2{600, 0}, 0.) {
-				imgui.TableSetupColumn("#")
-				imgui.TableSetupColumn("Id")
-				imgui.TableSetupColumn("Map")
-				imgui.TableSetupColumn("Group")
-				imgui.TableHeadersRow()
-
-				for i := 0; i < NumSTARSMaps; i++ {
-					imgui.PushID(fmt.Sprintf("%d", i))
-					var m *STARSMap
-					if i < len(sp.Facility.Maps) {
-						m = &sp.Facility.Maps[i]
-					}
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(fmt.Sprintf("%d", i+1))
-					imgui.TableNextColumn()
-					if m != nil {
-						imgui.InputTextV("##mapname", &m.Label, imgui.InputTextFlagsCharsUppercase, nil)
-					}
-
-					imgui.TableNextColumn()
-					prompt := "New..."
-					if m != nil {
-						prompt = m.Name
-					}
-					if imgui.BeginCombo("##MapName", prompt) {
-						for _, videomap := range SortedMapKeys(tracon.VideoMaps) {
-							if imgui.SelectableV(videomap, m != nil && videomap == m.Name, 0, imgui.Vec2{}) {
-								if m != nil {
-									m.Name = videomap
-								} else {
-									for j := len(sp.Facility.Maps); j <= i; j++ {
-										sp.Facility.Maps = append(sp.Facility.Maps, STARSMap{})
-										sp.currentPreferenceSet.MapVisible =
-											append(sp.currentPreferenceSet.MapVisible, false)
-										for k := range sp.PreferenceSets {
-											sp.PreferenceSets[k].MapVisible =
-												append(sp.PreferenceSets[k].MapVisible, false)
-										}
-									}
-									sp.Facility.Maps[i].Name = videomap
-								}
-							}
-						}
-						imgui.EndCombo()
-					}
-
-					imgui.TableNextColumn()
-					if m != nil {
-						imgui.RadioButtonInt("A", &m.Group, 0)
-						imgui.SameLine()
-						imgui.RadioButtonInt("B", &m.Group, 1)
-						imgui.SameLine()
-					}
-
-					imgui.PopID()
-				}
-
-				imgui.EndTable()
-			}
-
-			imgui.TreePop()
-		}
-		imgui.TreePop()
 	}
 
 	/*
@@ -948,21 +765,23 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Maps
 	cb.PointSize(5)
 	cb.LineWidth(1)
-	for i, vis := range ps.MapVisible {
-		if vis {
-			color := ps.Brightness.VideoGroupA.RGB()
-			if sp.Facility.Maps[i].Group == 1 {
-				color = ps.Brightness.VideoGroupB.RGB()
-			}
-			cb.SetRGB(color)
+	for _, vmap := range tracon.STARSMaps {
+		if _, ok := ps.VideoMapVisible[vmap.Name]; !ok {
+			continue
+		}
 
-			transforms.LoadLatLongViewingMatrices(cb)
+		color := ps.Brightness.VideoGroupA.RGB()
+		if vmap.Group == 1 {
+			color = ps.Brightness.VideoGroupB.RGB()
+		}
+		cb.SetRGB(color)
 
-			if vm, ok := tracon.VideoMaps[sp.Facility.Maps[i].Name]; !ok {
-				lg.Errorf("%s: couldn't get video map", sp.Facility.Maps[i].Name)
-			} else {
-				cb.Call(vm.cb)
-			}
+		transforms.LoadLatLongViewingMatrices(cb)
+
+		if vm, ok := tracon.VideoMaps[vmap.Name]; !ok {
+			lg.Errorf("%s: couldn't get video map", vmap.Name)
+		} else {
+			cb.Call(vm.cb)
 		}
 	}
 
@@ -1076,7 +895,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		case KeyF1:
 			if ctx.keyboard.IsPressed(KeyControl) {
 				// Recenter
-				ps.Center = sp.Facility.Center
+				ps.Center = tracon.Center
 				ps.currentCenter = ps.Center
 			}
 
@@ -1282,19 +1101,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 					if airport == "NONE" {
 						sp.AutoTrackDepartures = make(map[string]interface{})
 					} else if airport == "ALL" {
-						for _, ap := range sp.Facility.Airports {
-							sp.AutoTrackDepartures[ap.ICAOCode] = nil
+						sp.AutoTrackDepartures = make(map[string]interface{})
+						for _, ap := range tracon.Airports {
+							sp.AutoTrackDepartures[ap.ICAO] = nil
 						}
 					} else {
 						// See if it's in the facility
-						found := false
-						for _, ap := range sp.Facility.Airports {
-							if ap.ICAOCode == airport {
-								found = true
-								break
-							}
-						}
-						if found {
+						if _, ok := tracon.Airports[airport]; ok {
 							sp.AutoTrackDepartures[airport] = nil
 						} else {
 							status.err = ErrSTARSIllegalParam
@@ -1862,8 +1675,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 	case CommandModeMapsMenu:
 		if len(cmd) > 0 {
-			if m, err := strconv.Atoi(cmd); err == nil && m >= 0 && m < len(ps.MapVisible) {
-				ps.MapVisible[m] = !ps.MapVisible[m]
+			if m, err := strconv.Atoi(cmd); err == nil && m >= 0 && m < len(tracon.STARSMaps) {
+				name := tracon.STARSMaps[m].Name
+				if _, ok := ps.VideoMapVisible[name]; ok {
+					delete(ps.VideoMapVisible, name)
+				} else {
+					ps.VideoMapVisible[name] = nil
+				}
 				return
 			} else {
 				status.err = ErrSTARSCommandFormat
@@ -1913,29 +1731,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 	case CommandModeSiteMenu:
 		if cmd == "~" {
-			for _, b := range ps.RadarSiteSelected {
-				*b = false
-			}
+			ps.RadarSiteSelected = ""
 			status.clear = true
 			return
 		} else {
 			// Index, character id, or name
 			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < len(tracon.RadarSites) {
-				for _, b := range ps.RadarSiteSelected {
-					*b = false
-				}
-
-				id := SortedMapKeys(tracon.RadarSites)[i]
-				*ps.RadarSiteSelected[id] = true
+				ps.RadarSiteSelected = SortedMapKeys(tracon.RadarSites)[i]
 				status.clear = true
 				return
 			}
 			for id, rs := range tracon.RadarSites {
 				if cmd == rs.Char || cmd == id {
-					for _, b := range ps.RadarSiteSelected {
-						*b = false
-					}
-					*ps.RadarSiteSelected[id] = true
+					ps.RadarSiteSelected = id
 					status.clear = true
 				}
 				return
@@ -2638,11 +2446,19 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			sp.activeDCBMenu = DCBMenuMaps
 		}
 		for i := 0; i < 6; i++ {
-			if i >= len(ps.MapVisible) {
+			if i >= len(tracon.STARSMaps) {
 				STARSDisabledButton(fmt.Sprintf(" %d\n", i+1), STARSButtonHalfVertical)
 			} else {
-				name := fmt.Sprintf(" %d\n%s", i+1, sp.Facility.Maps[i].Label)
-				STARSToggleButton(name, &ps.MapVisible[i], STARSButtonHalfVertical)
+				text := fmt.Sprintf(" %d\n%s", i+1, tracon.STARSMaps[i].Label)
+				name := tracon.STARSMaps[i].Name
+				_, visible := ps.VideoMapVisible[name]
+				if STARSToggleButton(text, &visible, STARSButtonHalfVertical) {
+					if visible {
+						ps.VideoMapVisible[name] = nil
+					} else {
+						delete(ps.VideoMapVisible, name)
+					}
+				}
 			}
 		}
 		for i := range ps.WeatherIntensity {
@@ -2739,15 +2555,21 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			sp.activeDCBMenu = DCBMenuMain
 		}
 		if STARSSelectButton("CLR ALL", STARSButtonHalfVertical) {
-			for i := range ps.MapVisible {
-				ps.MapVisible[i] = false
-			}
+			ps.VideoMapVisible = make(map[string]interface{})
 		}
 		for i := 0; i < NumSTARSMaps; i++ {
-			if i >= len(sp.Facility.Maps) {
+			if i >= len(tracon.STARSMaps) {
 				STARSDisabledButton(fmt.Sprintf(" %d", i+1), STARSButtonHalfVertical)
 			} else {
-				STARSToggleButton(sp.Facility.Maps[i].Label, &ps.MapVisible[i], STARSButtonHalfVertical)
+				name := tracon.STARSMaps[i].Name
+				_, visible := ps.VideoMapVisible[name]
+				if STARSToggleButton(tracon.STARSMaps[i].Label, &visible, STARSButtonHalfVertical) {
+					if visible {
+						ps.VideoMapVisible[name] = nil
+					} else {
+						delete(ps.VideoMapVisible, name)
+					}
+				}
 			}
 		}
 		STARSToggleButton("GEO\nMAPS", &ps.VideoMapsList.Visible, STARSButtonHalfVertical)
@@ -2847,24 +2669,20 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 	case DCBMenuSite:
 		for _, id := range SortedMapKeys(tracon.RadarSites) {
-			if _, ok := ps.RadarSiteSelected[id]; !ok {
-				ps.RadarSiteSelected[id] = new(bool)
-			}
 			site := tracon.RadarSites[id]
 			label := " " + site.Char + " " + "\n" + id
-			if STARSToggleButton(label, ps.RadarSiteSelected[id], STARSButtonFull) && *ps.RadarSiteSelected[id] {
-				for selid, b := range ps.RadarSiteSelected {
-					if selid != id {
-						*b = false
-					}
+			selected := ps.RadarSiteSelected == id
+			if STARSToggleButton(label, &selected, STARSButtonFull) {
+				if selected {
+					ps.RadarSiteSelected = id
+				} else {
+					ps.RadarSiteSelected = ""
 				}
 			}
 		}
 		multi := sp.multiRadarMode()
 		if STARSToggleButton("MULTI", &multi, STARSButtonFull) && multi {
-			for _, b := range ps.RadarSiteSelected {
-				*b = false
-			}
+			ps.RadarSiteSelected = ""
 		}
 		if STARSSelectButton("DONE", STARSButtonFull) {
 			sp.activeDCBMenu = DCBMenuMain
@@ -2915,10 +2733,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	transforms ScopeTransformations, cb *CommandBuffer) {
-	for _, ap := range sp.Facility.Airports {
-		if ap.TowerListIndex != 0 {
-			sim.AddAirportForWeather(ap.ICAOCode)
-		}
+	for _, ap := range tracon.Airports {
+		sim.AddAirportForWeather(ap.ICAO)
 	}
 
 	ps := sp.currentPreferenceSet
@@ -3041,11 +2857,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				text += sim.CurrentTime().UTC().Format("1504/05 ")
 			}
 			if filter.All || filter.Altimeter {
-				// Primary airport altimeter
-				for _, ap := range sp.Facility.Airports {
-					if ap.TowerListIndex == 1 {
-						if metar := sim.GetMETAR(ap.ICAOCode); metar != nil {
-							text += formatMETAR(ap.ICAOCode, metar)
+				for _, ap := range tracon.Airports {
+					if ap.PrimaryAirport {
+						if metar := sim.GetMETAR(ap.ICAO); metar != nil {
+							text += formatMETAR(ap.ICAO, metar)
 						}
 					}
 				}
@@ -3149,9 +2964,26 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 		if filter.All || filter.AirportWeather {
 			var lines []string
-			for _, ap := range sp.Facility.Airports {
-				if metar := sim.GetMETAR(ap.ICAOCode); ap.IncludeInSSA && metar != nil {
-					lines = append(lines, formatMETAR(ap.ICAOCode, metar))
+			airports, _ := FlattenMap(tracon.Airports)
+			// Sort via 1. primary? 2. tower list index, 3. alphabetic
+			sort.Slice(airports, func(i, j int) bool {
+				a, b := tracon.Airports[airports[i]], tracon.Airports[airports[j]]
+				if a.PrimaryAirport && !b.PrimaryAirport {
+					return true
+				} else if b.PrimaryAirport && !a.PrimaryAirport {
+					return false
+				}
+				if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
+					return true
+				} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
+					return false
+				}
+				return a.ICAO < b.ICAO
+			})
+
+			for _, icao := range airports {
+				if metar := sim.GetMETAR(icao); metar != nil {
+					lines = append(lines, formatMETAR(icao, metar))
 				}
 			}
 			if len(lines) > 0 {
@@ -3220,8 +3052,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		// Untracked departures departing from one of our airports
 		for _, ac := range aircraft {
 			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
-				for _, ap := range sp.Facility.Airports {
-					if fp.DepartureAirport == ap.ICAOCode {
+				for ap := range tracon.Airports {
+					if fp.DepartureAirport == ap {
 						dep[sp.getAircraftIndex(ac)] = ac
 						break
 					}
@@ -3275,17 +3107,17 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		for _, ap := range sp.Facility.Airports {
+		for _, ap := range tracon.Airports {
 			if ap.TowerListIndex == i+1 {
-				airport, ok := tracon.Airports[ap.ICAOCode]
+				airport, ok := tracon.Airports[ap.ICAO]
 				if !ok {
 					// what now? should validate in the UI anyway...
 				}
 
-				text := stripK(ap.ICAOCode) + " TOWER\n"
+				text := stripK(ap.ICAO) + " TOWER\n"
 				m := make(map[float32]string)
 				for _, ac := range aircraft {
-					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap.ICAOCode {
+					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap.ICAO {
 						dist := nmdistance2ll(airport.Location, ac.TrackPosition())
 						actype := ac.FlightPlan.TypeWithoutSuffix()
 						actype = strings.TrimPrefix(actype, "H/")
@@ -4405,38 +4237,18 @@ func (sp *STARSPane) resetInputState() {
 	sp.scopeClickHandler = nil
 }
 
-func (sp *STARSPane) noRadarDefined() bool {
-	for _, site := range tracon.RadarSites {
-		if !site.Valid() {
-			return false
-		}
-	}
-	return true
-}
-
 func (sp *STARSPane) multiRadarMode() bool {
 	ps := sp.currentPreferenceSet
-	for _, b := range ps.RadarSiteSelected {
-		if *b {
-			return false
-		}
-	}
-	return true
+	_, ok := tracon.RadarSites[ps.RadarSiteSelected]
+	return ps.RadarSiteSelected == "" || !ok
 }
 
 func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary bool, distance float32) {
-	if sp.noRadarDefined() {
-		return true, false, 0 // yolo
-	}
-
 	ps := sp.currentPreferenceSet
 	distance = 1e30
 	multi := sp.multiRadarMode()
 	for id, site := range tracon.RadarSites {
-		if !multi && !*ps.RadarSiteSelected[id] {
-			continue
-		}
-		if !site.Valid() {
+		if !multi && ps.RadarSiteSelected != id {
 			continue
 		}
 
@@ -4451,12 +4263,6 @@ func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary 
 }
 
 func (sp *STARSPane) visibleAircraft() []*Aircraft {
-	if sp.noRadarDefined() {
-		lg.Errorf("NO RADAR")
-		ac, _ := FlattenMap(sp.aircraft)
-		return ac
-	}
-
 	var aircraft []*Aircraft
 	ps := sp.currentPreferenceSet
 	multi := sp.multiRadarMode()
@@ -4475,14 +4281,12 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 		}
 
 		for id, site := range tracon.RadarSites {
-			if !multi && !*ps.RadarSiteSelected[id] {
+			if !multi && ps.RadarSiteSelected != id {
 				continue
 			}
-			if site.Valid() {
-				if p, s, _ := site.CheckVisibility(ac.TrackPosition(), ac.TrackAltitude()); p || s {
-					aircraft = append(aircraft, ac)
-					break
-				}
+			if p, s, _ := site.CheckVisibility(ac.TrackPosition(), ac.TrackAltitude()); p || s {
+				aircraft = append(aircraft, ac)
+				break
 			}
 		}
 	}
@@ -4520,10 +4324,9 @@ func (sp *STARSPane) isOverflight(ac *Aircraft) bool {
 	if ac.FlightPlan == nil {
 		return false
 	}
-	return FindIf(sp.Facility.Airports,
-		func(ap STARSAirport) bool { return ap.ICAOCode == ac.FlightPlan.DepartureAirport }) == -1 &&
-		FindIf(sp.Facility.Airports,
-			func(ap STARSAirport) bool { return ap.ICAOCode == ac.FlightPlan.ArrivalAirport }) == -1
+	_, dep := tracon.Airports[ac.FlightPlan.DepartureAirport]
+	_, arr := tracon.Airports[ac.FlightPlan.ArrivalAirport]
+	return dep || arr
 }
 
 func (sp *STARSPane) tryGetClickedAircraft(mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
@@ -4544,10 +4347,8 @@ func (sp *STARSPane) tryGetClickedAircraft(mousePosition [2]float32, transforms 
 
 func (sp *STARSPane) radarSiteId() string {
 	ps := sp.currentPreferenceSet
-	for id, b := range ps.RadarSiteSelected {
-		if *b {
-			return id
-		}
+	if _, ok := tracon.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
+		return ps.RadarSiteSelected
 	}
 	return "MULTI"
 }
