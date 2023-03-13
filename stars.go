@@ -229,55 +229,6 @@ func (rs *RadarSite) Valid() bool {
 	_, ok := tracon.Locate(rs.Position)
 	return rs.Char != "" && rs.Position != "" && ok
 }
-
-func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, secondary bool, distance float32) {
-	// Check altitude first; this is a quick first cull that
-	// e.g. takes care of everyone on the ground.
-	if altitude < int(rs.Elevation) {
-		return
-	}
-
-	pRadar, ok := tracon.Locate(rs.Position)
-	if !ok {
-		// Really, this method shouldn't be called if the site is invalid,
-		// but if it is, there's not much else we can do.
-		return
-	}
-
-	// Time to check the angles; we'll do all of this in nm coordinates,
-	// since that's how we check the range anyway.
-	p = ll2nm(p)
-	palt := float32(altitude) * FeetToNauticalMiles
-	pRadar = ll2nm(pRadar)
-	ralt := float32(rs.Elevation) * FeetToNauticalMiles
-
-	dxy := sub2f(p, pRadar)
-	dalt := palt - ralt
-	distance = sqrt(sqr(dxy[0]) + sqr(dxy[1]) + sqr(dalt))
-
-	// If we normalize the vector from the radar site to the aircraft, then
-	// the z (altitude) component gives the cosine of the angle with the
-	// "up" direction; in turn, we can check that against the two angles.
-	cosAngle := dalt / distance
-	// if angle < silence angle, we can't see it, but the test flips since
-	// we're testing cosines.
-	// FIXME: it's annoying to be repeatedly computing these cosines here...
-	if cosAngle > cos(radians(rs.SilenceAngle)) {
-		// inside the cone of silence
-		return
-	}
-	// similarly, if angle > 90-slope angle, we can't see it, but again the
-	// test flips.
-	if cosAngle < cos(radians(90-rs.SlopeAngle)) {
-		// below the slope angle
-		return
-	}
-
-	primary = distance <= float32(rs.PrimaryRange)
-	secondary = !primary && distance <= float32(rs.SecondaryRange)
-	return
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // STARSPreferenceSet
 
