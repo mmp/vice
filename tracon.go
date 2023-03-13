@@ -27,10 +27,10 @@ type TRACON struct {
 	AirspaceVolumes   map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
 	ArrivalGroups     []ArrivalGroup              `json:"arrival_groups"`
 
-	Center         Point2LL    `json:"center"`
-	PrimaryAirport string      `json:"primary_airport"`
-	RadarSites     []RadarSite `json:"radar_sites"`
-	STARSMaps      []STARSMap  `json:"stars_maps"`
+	Center         Point2LL              `json:"center"`
+	PrimaryAirport string                `json:"primary_airport"`
+	RadarSites     map[string]*RadarSite `json:"radar_sites"`
+	STARSMaps      []STARSMap            `json:"stars_maps"`
 
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
@@ -179,18 +179,6 @@ func (t *TRACON) PostDeserialize() {
 		stars := globalConfig.DisplayRoot.Children[0].Pane.(*STARSPane)
 		stars.Facility.Airports = append(stars.Facility.Airports,
 			STARSAirport{ICAOCode: "KPHL", Range: 60, IncludeInSSA: true})
-
-		phl := FindIf(tracon.RadarSites, func(r RadarSite) bool { return r.Id == "PHL" })
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites, tracon.RadarSites[phl])
-		nxx := FindIf(tracon.RadarSites, func(r RadarSite) bool { return r.Id == "NXX" })
-		stars.Facility.RadarSites = append(stars.Facility.RadarSites, tracon.RadarSites[nxx])
-
-		for i := 0; i < 2; i++ {
-			stars.currentPreferenceSet.RadarSiteSelected = append(stars.currentPreferenceSet.RadarSiteSelected, false)
-			for j := range stars.PreferenceSets {
-				stars.PreferenceSets[j].RadarSiteSelected = append(stars.PreferenceSets[j].RadarSiteSelected, false)
-			}
-		}
 
 		globalConfig.Version = 2
 	}

@@ -429,7 +429,6 @@ func (v *VideoMap) InitializeCommandBuffer() {
 
 type RadarSite struct {
 	Char     string `json:"char"`
-	Id       string `json:"id"`
 	Position string `json:"position"`
 
 	Elevation      int32   `json:"elevation"`

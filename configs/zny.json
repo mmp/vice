@@ -3879,78 +3879,71 @@
   "nm_per_latitude": 60,
   "nm_per_longitude": 45,
   "primary_airport": "KJFK",
-  "radar_sites": [
-    {
+  "radar_sites": {
+      "EWR":    {
       "char": "E",
       "elevation": 136,
-      "id": "EWR",
       "position": "KEWR",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
       "slope_angle": 0.175
     },
-    {
+    "JFK":    {
       "char": "J",
       "elevation": 143,
-      "id": "JFK",
       "position": "KJFK",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
       "slope_angle": 0.175
     },
-    {
+    "ISP":    {
       "char": "I",
       "elevation": 185,
-      "id": "ISP",
       "position": "KISP",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
       "slope_angle": 0.175
     },
-    {
+    "HPN":    {
       "char": "H",
       "elevation": 708,
-      "id": "HPN",
       "position": "KHPN",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
       "slope_angle": 0.175
     },
-    {
+    "SWF":    {
       "char": "S",
       "elevation": 972,
-      "id": "SWF",
       "position": "KSWF",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
       "slope_angle": 0.175
     },
-    {
+    "PHL":    {
       "char": "P",
       "elevation": 90,
-      "id": "PHL",
       "position": "KPHL",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 50.4,
       "slope_angle": 0.175
     },
-    {
+    "NXX":    {
       "char": "N",
       "elevation": 408,
-      "id": "NXX",
       "position": "KNXX",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 50.4,
       "slope_angle": 0.175
     }
-  ],
+  },
   "scenarios": {
     "KJFK Depart 13R": {
       "callsign": "JFK_DEP",

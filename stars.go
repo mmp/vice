@@ -42,7 +42,6 @@ var (
 )
 
 const NumSTARSPreferenceSets = 32
-const NumRadarSites = 16
 const NumSTARSMaps = 28
 
 type STARSPane struct {
@@ -171,11 +170,10 @@ type STARSAircraftState struct {
 // STARSFacility and related
 
 type STARSFacility struct {
-	Center     Point2LL
-	Airports   []STARSAirport
-	RadarSites []RadarSite
-	Maps       []STARSMap
-	CA         struct {
+	Center   Point2LL
+	Airports []STARSAirport
+	Maps     []STARSMap
+	CA       struct {
 		LateralMinimum  float32
 		VerticalMinimum int32
 		Floor           int32
@@ -217,7 +215,6 @@ func MakeDefaultFacility(tracon *TRACON) STARSFacility {
 				STARSAirport{ICAOCode: ap.ICAO, Range: 30, IncludeInSSA: true})
 		}
 	}
-	f.RadarSites = DuplicateSlice(tracon.RadarSites)
 	f.Maps = DuplicateSlice(tracon.STARSMaps)
 
 	f.CA.LateralMinimum = 3
@@ -230,7 +227,7 @@ func MakeDefaultFacility(tracon *TRACON) STARSFacility {
 
 func (rs *RadarSite) Valid() bool {
 	_, ok := tracon.Locate(rs.Position)
-	return rs.Char != "" && rs.Id != "" && rs.Position != "" && ok
+	return rs.Char != "" && rs.Position != "" && ok
 }
 
 func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, secondary bool, distance float32) {
@@ -308,8 +305,10 @@ type STARSPreferenceSet struct {
 
 	WeatherIntensity [6]bool
 
-	// No more than one can be true at a time. If all are false, then MULTI
-	RadarSiteSelected []bool
+	// No more than one can be true at a time. If all disabled, then MULTI.
+	// The custom JSON name is so we don't get errors parsing old configs, which
+	// stored these as arrays...
+	RadarSiteSelected map[string]*bool `json:"RadarSiteSelectedMap"`
 
 	LeaderLineDirection CardinalOrdinalDirection
 	LeaderLineLength    int // 0-7
@@ -461,7 +460,6 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.RadarTrackHistory = 5
 
-	ps.RadarSiteSelected = make([]bool, len(facility.RadarSites))
 	ps.MapVisible = make([]bool, len(facility.Maps))
 	if len(facility.Maps) > 0 {
 		ps.MapVisible[0] = true
@@ -542,7 +540,6 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	dupe := *ps
-	dupe.RadarSiteSelected = DuplicateSlice(ps.RadarSiteSelected)
 	dupe.SelectedBeaconCodes = DuplicateSlice(ps.SelectedBeaconCodes)
 	dupe.MapVisible = DuplicateSlice(ps.MapVisible)
 	return dupe
@@ -550,15 +547,9 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 
 func (ps *STARSPreferenceSet) Activate() {
 	ps.currentCenter = ps.Center
-}
-
-func (ps *STARSPreferenceSet) multiRadarMode() bool {
-	for _, v := range ps.RadarSiteSelected {
-		if v {
-			return false
-		}
+	if ps.RadarSiteSelected == nil {
+		ps.RadarSiteSelected = make(map[string]*bool)
 	}
-	return true
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -784,113 +775,6 @@ func (sp *STARSPane) DrawUI() {
 				}
 				if imgui.Button("Add airport") {
 					sp.Facility.Airports = append(sp.Facility.Airports, STARSAirport{})
-				}
-			}
-			imgui.TreePop()
-		}
-
-		if imgui.TreeNode("Radar sites") {
-			tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchSame
-			deleteIndex := -1
-			if imgui.BeginTableV("sites", 9, tableFlags, imgui.Vec2{900, 0}, 0) {
-				imgui.TableSetupColumn("Char")
-				imgui.TableSetupColumn("Id")
-				imgui.TableSetupColumn("Position")
-				imgui.TableSetupColumn("Elevation")
-				imgui.TableSetupColumn("Primary range")
-				imgui.TableSetupColumn("Secondary range")
-				imgui.TableSetupColumn("Slope angle")
-				imgui.TableSetupColumn("Silence angle")
-				imgui.TableSetupColumn("##trash")
-
-				imgui.TableHeadersRow()
-
-				for i := range sp.Facility.RadarSites {
-					site := &sp.Facility.RadarSites[i]
-					imgui.PushID(fmt.Sprintf("%d", i))
-					flags := imgui.InputTextFlagsCharsNoBlank | imgui.InputTextFlagsCharsUppercase
-
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.InputTextV("##Char", &site.Char, flags, nil)
-					if len(site.Char) > 1 {
-						site.Char = site.Char[:1]
-					}
-					// Indicate an error if a Char is repeated
-					if site.Char != "" {
-						for j, other := range sp.Facility.RadarSites {
-							if j != i && other.Char == site.Char {
-								imgui.SameLine()
-								errorExclamationTriangle()
-								break
-							}
-						}
-					}
-
-					imgui.TableNextColumn()
-					imgui.InputTextV("##Id", &site.Id, flags, nil)
-					if len(site.Id) > 3 {
-						site.Id = site.Id[:3]
-					}
-					// Indicate an error if an Id is repeated
-					if site.Id != "" {
-						for j, other := range sp.Facility.RadarSites {
-							if j != i && other.Id == site.Id {
-								imgui.SameLine()
-								errorExclamationTriangle()
-								break
-							}
-						}
-					}
-
-					imgui.TableNextColumn()
-					imgui.InputTextV("##position", &site.Position, flags, nil)
-					if _, ok := tracon.Locate(site.Position); site.Position != "" && !ok {
-						imgui.SameLine()
-						errorExclamationTriangle()
-					}
-
-					imgui.TableNextColumn()
-					imgui.InputIntV("##elev", &site.Elevation, 0, 0, 0)
-
-					imgui.TableNextColumn()
-					imgui.InputIntV("##pr", &site.PrimaryRange, 0, 0, 0)
-
-					imgui.TableNextColumn()
-					imgui.InputIntV("##sr", &site.SecondaryRange, 0, 0, 0)
-
-					imgui.TableNextColumn()
-					imgui.SliderFloat("##slope", &site.SlopeAngle, 0, 90)
-
-					imgui.TableNextColumn()
-					imgui.SliderFloat("##silence", &site.SilenceAngle, 0, 90)
-
-					imgui.TableNextColumn()
-					if imgui.Button(FontAwesomeIconTrash) {
-						deleteIndex = i
-					}
-
-					imgui.PopID()
-				}
-				imgui.EndTable()
-
-				if deleteIndex != -1 {
-					sp.Facility.RadarSites = DeleteSliceElement(sp.Facility.RadarSites, deleteIndex)
-					sp.currentPreferenceSet.RadarSiteSelected =
-						DeleteSliceElement(sp.currentPreferenceSet.RadarSiteSelected, deleteIndex)
-					for i := range sp.PreferenceSets {
-						sp.PreferenceSets[i].RadarSiteSelected =
-							DeleteSliceElement(sp.PreferenceSets[i].RadarSiteSelected, deleteIndex)
-					}
-				}
-				if len(sp.Facility.RadarSites) < NumRadarSites && imgui.Button("Add radar site") {
-					sp.Facility.RadarSites = append(sp.Facility.RadarSites, RadarSite{})
-					sp.currentPreferenceSet.RadarSiteSelected =
-						append(sp.currentPreferenceSet.RadarSiteSelected, false)
-					for i := range sp.PreferenceSets {
-						sp.PreferenceSets[i].RadarSiteSelected =
-							append(sp.PreferenceSets[i].RadarSiteSelected, false)
-					}
 				}
 			}
 			imgui.TreePop()
@@ -2078,28 +1962,32 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 	case CommandModeSiteMenu:
 		if cmd == "~" {
-			for i := range ps.RadarSiteSelected {
-				ps.RadarSiteSelected[i] = false
+			for _, b := range ps.RadarSiteSelected {
+				*b = false
 			}
 			status.clear = true
 			return
 		} else {
 			// Index, character id, or name
-			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < NumRadarSites {
-				for j := range ps.RadarSiteSelected {
-					ps.RadarSiteSelected[i] = (i == j)
+			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < len(tracon.RadarSites) {
+				for _, b := range ps.RadarSiteSelected {
+					*b = false
 				}
+
+				id := SortedMapKeys(tracon.RadarSites)[i]
+				*ps.RadarSiteSelected[id] = true
 				status.clear = true
 				return
 			}
-			for i, rs := range sp.Facility.RadarSites {
-				if cmd == rs.Char || cmd == rs.Id {
-					for j := range ps.RadarSiteSelected {
-						ps.RadarSiteSelected[i] = (i == j)
+			for id, rs := range tracon.RadarSites {
+				if cmd == rs.Char || cmd == id {
+					for _, b := range ps.RadarSiteSelected {
+						*b = false
 					}
+					*ps.RadarSiteSelected[id] = true
 					status.clear = true
-					return
 				}
+				return
 			}
 			status.clear = true
 			status.err = ErrSTARSIllegalParam
@@ -3007,27 +2895,24 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		}
 
 	case DCBMenuSite:
-		for i, site := range sp.Facility.RadarSites {
-			if site.Char == "" || site.Id == "" || site.Position == "" {
-				STARSDisabledButton("", STARSButtonFull)
-			} else if _, ok := tracon.Locate(site.Position); !ok {
-				STARSDisabledButton("", STARSButtonFull)
-			} else {
-				label := " " + site.Char + " " + "\n" + site.Id
-				if STARSToggleButton(label, &ps.RadarSiteSelected[i], STARSButtonFull) && ps.RadarSiteSelected[i] {
-					// Deselect all the other options
-					for j := range ps.RadarSiteSelected {
-						if i != j {
-							ps.RadarSiteSelected[j] = false
-						}
+		for _, id := range SortedMapKeys(tracon.RadarSites) {
+			if _, ok := ps.RadarSiteSelected[id]; !ok {
+				ps.RadarSiteSelected[id] = new(bool)
+			}
+			site := tracon.RadarSites[id]
+			label := " " + site.Char + " " + "\n" + id
+			if STARSToggleButton(label, ps.RadarSiteSelected[id], STARSButtonFull) && *ps.RadarSiteSelected[id] {
+				for selid, b := range ps.RadarSiteSelected {
+					if selid != id {
+						*b = false
 					}
 				}
 			}
 		}
-		multi := ps.multiRadarMode()
+		multi := sp.multiRadarMode()
 		if STARSToggleButton("MULTI", &multi, STARSButtonFull) && multi {
-			for i := range ps.RadarSiteSelected {
-				ps.RadarSiteSelected[i] = false
+			for _, b := range ps.RadarSiteSelected {
+				*b = false
 			}
 		}
 		if STARSSelectButton("DONE", STARSButtonFull) {
@@ -3574,7 +3459,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			ld.AddPolyline([2]float32{}, color, box[:])
 		}
 
-		if !ps.multiRadarMode() {
+		if !sp.multiRadarMode() {
 			// green line
 			// TODO: size based on distance to radar
 			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
@@ -4570,8 +4455,18 @@ func (sp *STARSPane) resetInputState() {
 }
 
 func (sp *STARSPane) noRadarDefined() bool {
-	for _, site := range sp.Facility.RadarSites {
-		if site.Valid() {
+	for _, site := range tracon.RadarSites {
+		if !site.Valid() {
+			return false
+		}
+	}
+	return true
+}
+
+func (sp *STARSPane) multiRadarMode() bool {
+	ps := sp.currentPreferenceSet
+	for _, b := range ps.RadarSiteSelected {
+		if *b {
 			return false
 		}
 	}
@@ -4584,14 +4479,12 @@ func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary 
 	}
 
 	ps := sp.currentPreferenceSet
-	multi := ps.multiRadarMode()
 	distance = 1e30
-	for i, sel := range ps.RadarSiteSelected {
-		if !sel && !multi {
+	multi := sp.multiRadarMode()
+	for id, site := range tracon.RadarSites {
+		if !multi && !*ps.RadarSiteSelected[id] {
 			continue
 		}
-
-		site := sp.Facility.RadarSites[i]
 		if !site.Valid() {
 			continue
 		}
@@ -4615,7 +4508,7 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 
 	var aircraft []*Aircraft
 	ps := sp.currentPreferenceSet
-	multi := ps.multiRadarMode()
+	multi := sp.multiRadarMode()
 
 	for ac := range sp.aircraft {
 		// Is it on the ground?
@@ -4630,11 +4523,10 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 			}
 		}
 
-		for i, sel := range ps.RadarSiteSelected {
-			if !sel && !multi {
+		for id, site := range tracon.RadarSites {
+			if !multi && !*ps.RadarSiteSelected[id] {
 				continue
 			}
-			site := sp.Facility.RadarSites[i]
 			if site.Valid() {
 				if p, s, _ := site.CheckVisibility(ac.TrackPosition(), ac.TrackAltitude()); p || s {
 					aircraft = append(aircraft, ac)
@@ -4700,9 +4592,10 @@ func (sp *STARSPane) tryGetClickedAircraft(mousePosition [2]float32, transforms 
 }
 
 func (sp *STARSPane) radarSiteId() string {
-	for i, sel := range sp.currentPreferenceSet.RadarSiteSelected {
-		if sel {
-			return sp.Facility.RadarSites[i].Id
+	ps := sp.currentPreferenceSet
+	for id, b := range ps.RadarSiteSelected {
+		if *b {
+			return id
 		}
 	}
 	return "MULTI"
