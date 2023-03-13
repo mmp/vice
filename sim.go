@@ -392,7 +392,8 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 		if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
 			imgui.TableSetupColumn("Arrival")
-			for _, ap := range SortedMapKeys(allAirports) {
+			sortedAirports := SortedMapKeys(allAirports)
+			for _, ap := range sortedAirports {
 				imgui.TableSetupColumn(ap + " AAR")
 			}
 			imgui.TableHeadersRow()
@@ -402,10 +403,14 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(group)
-				airportRates := scenarioConfig.ArrivalGroupRates[group]
-				for _, ap := range SortedMapKeys(airportRates) {
-					imgui.TableNextColumn()
-					imgui.InputIntV("##aar-"+ap, airportRates[ap], 0, 120, 0)
+				for ap, rate := range scenarioConfig.ArrivalGroupRates[group] {
+					idx := Find(sortedAirports, ap)
+					if idx == -1 {
+						lg.Errorf("%s: airport not found in sorted all airports? %+v", ap, sortedAirports)
+					} else {
+						imgui.TableSetColumnIndex(1 + idx)
+						imgui.InputIntV("##aar-"+ap, rate, 0, 120, 0)
+					}
 				}
 				imgui.PopID()
 			}
