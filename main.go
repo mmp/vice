@@ -40,7 +40,8 @@ var (
 	sim          *Sim
 	eventStream  *EventStream
 	lg           *Logger
-	tracon       *TRACON
+	scenarios    map[string]*Scenario
+	scenario     *Scenario
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -120,8 +121,14 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
-	tracon = LoadZNY(*traconFilename)
-	tracon.PostDeserialize()
+	scenarios = LoadEmbedded()
+	// Use the last scenario, if available.
+	if s, ok := scenarios[globalConfig.LastScenario]; ok {
+		scenario = s
+	} else if len(scenarios) > 0 {
+		// Otherwise take the first one alphabetically.
+		scenario = scenarios[SortedMapKeys(scenarios)[0]]
+	}
 
 	multisample := runtime.GOOS != "darwin"
 	platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,

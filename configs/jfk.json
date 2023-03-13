@@ -3175,7 +3175,7 @@
       "slope_angle": 0.175
     }
   },
-  "scenarios": {
+  "configs": {
     "KJFK Depart 13R": {
       "callsign": "JFK_DEP",
       "controllers": [

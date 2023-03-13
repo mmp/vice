@@ -445,7 +445,7 @@ func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, seconda
 		return
 	}
 
-	pRadar, ok := tracon.Locate(rs.Position)
+	pRadar, ok := scenario.Locate(rs.Position)
 	if !ok {
 		// Really, this method shouldn't be called if the site is invalid,
 		// but if it is, there's not much else we can do.

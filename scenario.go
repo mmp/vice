@@ -1,4 +1,4 @@
-// tracon.go
+// scenario.go
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -13,12 +13,12 @@ import (
 	"strings"
 )
 
-type TRACON struct {
+type Scenario struct {
 	Name              string                      `json:"name"`
 	Airports          map[string]*Airport         `json:"airports"`
 	Fixes             map[string]Point2LL         `json:"fixes"`
 	VideoMaps         map[string]*VideoMap        `json:"-"`
-	Scenarios         map[string]*Scenario        `json:"scenarios"`
+	ScenarioConfigs   map[string]*ScenarioConfig  `json:"configs"`
 	DefaultController string                      `json:"default_controller"`
 	DefaultScenario   string                      `json:"default_scenario"`
 	ControlPositions  map[string]*Controller      `json:"control_positions"`
@@ -63,8 +63,8 @@ type AirspaceVolume struct {
 	Boundaries             [][]Point2LL
 }
 
-func (t *TRACON) Locate(s string) (Point2LL, bool) {
-	// TRACON's definitions take precedence...
+func (t *Scenario) Locate(s string) (Point2LL, bool) {
+	// Scenario's definitions take precedence...
 	if ap, ok := t.Airports[s]; ok {
 		return ap.Location, true
 	} else if p, ok := t.Fixes[s]; ok {
@@ -80,7 +80,7 @@ func (t *TRACON) Locate(s string) (Point2LL, bool) {
 	}
 }
 
-func (t *TRACON) PostDeserialize() {
+func (t *Scenario) PostDeserialize() {
 	t.AirspaceVolumes = parseAirspace()
 
 	var errors []error
@@ -93,7 +93,7 @@ func (t *TRACON) PostDeserialize() {
 		}
 	}
 
-	if _, ok := t.Scenarios[t.DefaultScenario]; !ok {
+	if _, ok := t.ScenarioConfigs[t.DefaultScenario]; !ok {
 		errors = append(errors, fmt.Errorf("%s: default scenario not found in %s", t.DefaultScenario, t.Name))
 	}
 
@@ -102,7 +102,7 @@ func (t *TRACON) PostDeserialize() {
 	} else {
 		// make sure the controller has at least one scenario..
 		found := false
-		for _, sc := range t.Scenarios {
+		for _, sc := range t.ScenarioConfigs {
 			if sc.Callsign == t.DefaultController {
 				found = true
 				break
@@ -118,10 +118,10 @@ func (t *TRACON) PostDeserialize() {
 		errors = append(errors, fmt.Errorf("No radar sites specified in tracon %s", t.Name))
 	}
 	for name, rs := range t.RadarSites {
-		if _, ok := tracon.Locate(rs.Position); rs.Position == "" || !ok {
-			errors = append(errors, fmt.Errorf("%s: radar site position not found in tracon %s", name, t.Name))
+		if _, ok := t.Locate(rs.Position); rs.Position == "" || !ok {
+			errors = append(errors, fmt.Errorf("%s: radar site position not found in %s", name, t.Name))
 		} else if rs.Char == "" {
-			errors = append(errors, fmt.Errorf("%s: radar site missing character id in tracon %s", name, t.Name))
+			errors = append(errors, fmt.Errorf("%s: radar site missing character id in %s", name, t.Name))
 		}
 	}
 
@@ -156,7 +156,7 @@ func (t *TRACON) PostDeserialize() {
 	}
 
 	// Do after airports!
-	for _, s := range t.Scenarios {
+	for _, s := range t.ScenarioConfigs {
 		errors = append(errors, s.PostDeserialize(t)...)
 	}
 
@@ -168,7 +168,7 @@ func (t *TRACON) PostDeserialize() {
 	}
 }
 
-func (t *TRACON) InitializeWaypointLocations(waypoints []Waypoint) []error {
+func (t *Scenario) InitializeWaypointLocations(waypoints []Waypoint) []error {
 	var prev Point2LL
 	var errors []error
 

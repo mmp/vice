@@ -26,7 +26,7 @@ type Airport struct {
 	ArrivalRunways     []*ArrivalRunway   `json:"-"`
 }
 
-func (ac *Airport) PostDeserialize(t *TRACON) []error {
+func (ac *Airport) PostDeserialize(t *Scenario) []error {
 	var errors []error
 
 	for _, rwy := range ac.ArrivalRunwayNames {
@@ -172,5 +172,5 @@ func (ap *Approach) Line() [2]Point2LL {
 
 func (ap *Approach) Heading() int {
 	p := ap.Line()
-	return int(headingp2ll(p[0], p[1], tracon.MagneticVariation) + 0.5)
+	return int(headingp2ll(p[0], p[1], scenario.MagneticVariation) + 0.5)
 }
