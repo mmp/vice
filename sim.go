@@ -247,6 +247,12 @@ func (ssc *SimConnectionConfiguration) ResetScenario() {
 		ssc.validControllers[sc.Callsign] = scenario.ControlPositions[sc.Callsign]
 	}
 	ssc.controller = scenario.ControlPositions[scenario.DefaultController]
+
+	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+		if stars, ok := p.(*STARSPane); ok {
+			stars.ResetScenario()
+		}
+	})
 }
 
 func (ssc *SimConnectionConfiguration) DrawUI() bool {
@@ -255,11 +261,6 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			if imgui.SelectableV(name, name == scenario.Name, 0, imgui.Vec2{}) {
 				scenario = scenarios[name]
 				globalConfig.LastScenario = name
-				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-					if stars, ok := p.(*STARSPane); ok {
-						stars.ResetScenario()
-					}
-				})
 				ssc.ResetScenario()
 			}
 		}

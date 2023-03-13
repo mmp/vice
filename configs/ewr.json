@@ -1,44 +1,54 @@
 {
   "airports": {
     "KEWR": {
-      "tower_list": 1,
-      "primary": true,
       "approaches": [
         {
           "full_name": "ILS 22 Left",
           "short_name": "I2L",
           "type": "ILS",
-          "waypoints": ["PATRN IZEKO@a3000 GIMEE@a2500 BUZZD@a1500 _EWR_22L@a50"]
+          "waypoints": [
+            "PATRN IZEKO@a3000 GIMEE@a2500 BUZZD@a1500 _EWR_22L@a50"
+          ]
         },
         {
           "full_name": "ILS 22 Right",
           "short_name": "I2R",
           "type": "ILS",
-          "waypoints": ["PATRN AGNSS@a3000 VERDE@a2500 TALTE@a1500 _EWR_22R@a50"]
+          "waypoints": [
+            "PATRN AGNSS@a3000 VERDE@a2500 TALTE@a1500 _EWR_22R@a50"
+          ]
         },
         {
           "full_name": "ILS 4 Left",
           "short_name": "I4L",
           "type": "ILS",
-          "waypoints": ["KILMA EMBAY@a2800 HOWYA@a2000 _EWR_4L@a50"]
+          "waypoints": [
+            "KILMA EMBAY@a2800 HOWYA@a2000 _EWR_4L@a50"
+          ]
         },
         {
           "full_name": "ILS 4 Right",
           "short_name": "I4R",
           "type": "ILS",
-          "waypoints": ["KILMA GRITY@a2800 DOOIN@a1700 _EWR_4R@a50"]
+          "waypoints": [
+            "KILMA GRITY@a2800 DOOIN@a1700 _EWR_4R@a50"
+          ]
         },
         {
           "full_name": "RNAV X 29",
           "short_name": "R29",
           "type": "RNAV",
-          "waypoints": ["FLIKR CASHH ZIAAA PIJAY UJODY@a2000 STATU@a1400 ISERE _EWR_29@a50"]
+          "waypoints": [
+            "FLIKR CASHH ZIAAA PIJAY UJODY@a2000 STATU@a1400 ISERE _EWR_29@a50"
+          ]
         },
         {
           "full_name": "RNAV Y 29",
           "short_name": "RY9",
           "type": "RNAV",
-          "waypoints": ["TETER@a3000 GIMEE@a2500 JIMLO@a2500 COPKO _EWR_29@a50"]
+          "waypoints": [
+            "TETER@a3000 GIMEE@a2500 JIMLO@a2500 COPKO _EWR_29@a50"
+          ]
         },
         {
           "full_name": "RNAV Z 29",
@@ -52,18 +62,22 @@
           "full_name": "ILS 11",
           "short_name": "I11",
           "type": "ILS",
-          "waypoints": ["JARIT@a1600 JEENO@a1600 _EWR_11"]
+          "waypoints": [
+            "JARIT@a1600 JEENO@a1600 _EWR_11"
+          ]
         }
       ],
-      "arrival_runways": ["22L", "22R", "4L", "4R", "11", "29"],
+      "arrival_runways": [
+        "22L",
+        "22R",
+        "4L",
+        "4R",
+        "11",
+        "29"
+      ],
       "departure_runways": [
         {
           "exit_routes": {
-            "None": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
             "BAYYS": {
               "cleared_altitude": 2500,
               "route": "EWR4",
@@ -130,6 +144,11 @@
               "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
             },
             "NEWEL": {
+              "cleared_altitude": 2500,
+              "route": "EWR4",
+              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+            },
+            "None": {
               "cleared_altitude": 2500,
               "route": "EWR4",
               "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
@@ -174,11 +193,6 @@
         },
         {
           "exit_routes": {
-            "None": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
             "BAYYS": {
               "cleared_altitude": 3000,
               "route": "EWR4",
@@ -245,6 +259,11 @@
               "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
             },
             "NEWEL": {
+              "cleared_altitude": 3000,
+              "route": "EWR4",
+              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+            },
+            "None": {
               "cleared_altitude": 3000,
               "route": "EWR4",
               "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
@@ -323,12 +342,12 @@
         {
           "airlines": [
             {
-              "icao": "AAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "AAL"
             },
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 36000,
@@ -350,8 +369,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 38000,
@@ -373,8 +392,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 38000,
@@ -385,8 +404,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 28000,
@@ -397,12 +416,12 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             },
             {
-              "icao": "DAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "DAL"
             },
             {
               "icao": "NKS"
@@ -416,8 +435,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 34000,
@@ -428,8 +447,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 36000,
@@ -440,8 +459,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 32000,
@@ -463,8 +482,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 34000,
@@ -497,8 +516,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 32000,
@@ -509,12 +528,12 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             },
             {
-              "icao": "FDX",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "FDX"
             }
           ],
           "altitude": 36000,
@@ -525,8 +544,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 38000,
@@ -570,8 +589,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 34000,
@@ -610,8 +629,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 32000,
@@ -622,8 +641,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 32000,
@@ -689,12 +708,12 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             },
             {
-              "icao": "FDX",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "FDX"
             },
             {
               "icao": "ASA"
@@ -708,8 +727,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             }
           ],
           "altitude": 32000,
@@ -742,8 +761,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             },
             {
               "icao": "RPA"
@@ -782,8 +801,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             },
             {
               "icao": "ASA"
@@ -797,8 +816,8 @@
         {
           "airlines": [
             {
-              "icao": "FDX",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "FDX"
             },
             {
               "icao": "ASA"
@@ -823,8 +842,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             }
           ],
           "altitude": 32000,
@@ -882,8 +901,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             },
             {
               "icao": "RPA"
@@ -897,8 +916,8 @@
         {
           "airlines": [
             {
-              "icao": "AFR",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "AFR"
             }
           ],
           "altitude": 35000,
@@ -909,8 +928,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             }
           ],
           "altitude": 35000,
@@ -921,8 +940,8 @@
         {
           "airlines": [
             {
-              "icao": "DLH",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "DLH"
             }
           ],
           "altitude": 37000,
@@ -933,8 +952,8 @@
         {
           "airlines": [
             {
-              "icao": "AUA",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "AUA"
             }
           ],
           "altitude": 35000,
@@ -945,8 +964,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "long"
+              "fleet": "long",
+              "icao": "UAL"
             }
           ],
           "altitude": 33000,
@@ -979,8 +998,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 22000,
@@ -991,8 +1010,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 34000,
@@ -1003,8 +1022,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 34000,
@@ -1015,8 +1034,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             },
             {
               "icao": "JBU"
@@ -1033,8 +1052,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 40000,
@@ -1045,8 +1064,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL",
-              "fleet": "short"
+              "fleet": "short",
+              "icao": "UAL"
             }
           ],
           "altitude": 28000,
@@ -1146,7 +1165,9 @@
         "ZIMMZ": "West"
       },
       "icao": "KEWR",
-      "location": "N040.41.28.005,W074.10.16.223"
+      "location": "N040.41.28.005,W074.10.16.223",
+      "primary": true,
+      "tower_list": 1
     },
     "KTEB": {
       "approaches": [
@@ -1154,25 +1175,33 @@
           "full_name": "ILS 19",
           "short_name": "I19",
           "type": "ILS",
-          "waypoints": ["STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"]
+          "waypoints": [
+            "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
+          ]
         },
         {
           "full_name": "ILS 6",
           "short_name": "I06",
           "type": "ILS",
-          "waypoints": ["SBJ VINGS@a2000 DANDY@a1500 _TEB_6@a50"]
+          "waypoints": [
+            "SBJ VINGS@a2000 DANDY@a1500 _TEB_6@a50"
+          ]
         },
         {
           "full_name": "RNAV X 19",
           "short_name": "RX9",
           "type": "RNAV",
-          "waypoints": ["CUROK WHOLN MOOGZ@a1700 DUUNE@a1500 COFFS _TEB_19@a50"]
+          "waypoints": [
+            "CUROK WHOLN MOOGZ@a1700 DUUNE@a1500 COFFS _TEB_19@a50"
+          ]
         },
         {
           "full_name": "RNAV Y 19",
           "short_name": "RY9",
           "type": "RNAV",
-          "waypoints": ["STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"]
+          "waypoints": [
+            "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
+          ]
         },
         {
           "full_name": "RNAV Z 19",
@@ -1188,7 +1217,9 @@
           "full_name": "RNAV 24",
           "short_name": "R24",
           "type": "RNAV",
-          "waypoints": ["STRAD SKUBY NIPIE WHEZY SHREW@a2000 ANGLE@a1700 BAITH _TEB_24@a50"]
+          "waypoints": [
+            "STRAD SKUBY NIPIE WHEZY SHREW@a2000 ANGLE@a1700 BAITH _TEB_24@a50"
+          ]
         },
         {
           "full_name": "RNAV X 6",
@@ -1221,15 +1252,15 @@
           ]
         }
       ],
-      "arrival_runways": ["19", "24", "1", "6"],
+      "arrival_runways": [
+        "19",
+        "24",
+        "1",
+        "6"
+      ],
       "departure_runways": [
         {
           "exit_routes": {
-            "None": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
             "BAYYS": {
               "cleared_altitude": 2000,
               "route": "RUUDY6",
@@ -1296,6 +1327,11 @@
               "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
             },
             "NEWEL": {
+              "cleared_altitude": 2000,
+              "route": "RUUDY6",
+              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+            },
+            "None": {
               "cleared_altitude": 2000,
               "route": "RUUDY6",
               "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
@@ -1340,11 +1376,6 @@
         },
         {
           "exit_routes": {
-            "None": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
             "BAYYS": {
               "cleared_altitude": 2000,
               "route": "TEB4",
@@ -1411,6 +1442,11 @@
               "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
             },
             "NEWEL": {
+              "cleared_altitude": 2000,
+              "route": "TEB4",
+              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+            },
+            "None": {
               "cleared_altitude": 2000,
               "route": "TEB4",
               "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
@@ -2078,921 +2114,694 @@
     }
   },
   "arrival_groups": {
-    "PHLBO3" : [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "KFLL",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "NKS"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KATL",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "UAL"
-              }
-            ]
-          },
-          "cleared_altitude": 8000,
-          "initial_altitude": 20000,
-          "initial_controller": "DC_CTR",
-          "initial_speed": 300,
-          "route": "/ PHLBO3",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "DQO@a20000 STEFE@a13000 @ SOMTO@a11000 DYLIN@a8000 MERSR METRO MARRT PHLBO #025"
-        }
-      ],
-    "FQM3" : [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "KFLL",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "NKS"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KATL",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "UAL"
-              }
-            ]
-          },
-          "cleared_altitude": 7000,
-          "initial_altitude": 18000,
-          "initial_controller": "NY_CTR",
-          "initial_speed": 300,
-          "route": "/ FQM3",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "HAYED@a18000 RACKI@a13000 @ PENNS SWEET@a7000 BWZ #122"
-        }
-      ],
-      "FLOSI4": [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "KFLL",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "NKS"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KATL",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "UAL"
-              }
-            ]
-          },
-          "cleared_altitude": 7000,
-          "initial_altitude": 18000,
-          "initial_controller": "BOS_CTR",
-          "initial_speed": 300,
-          "route": "/ FLOSI4",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "ACOVE TALCO WEETS @ HELON FLOSI CRANK@a7000 SHAFF SAX PHLBO HOKIR #180"
-        }
-      ],
-      "MAZIE3": [
-        {
-          "airlines": {
-            "KTEB": [
-              {
-                "airport": "KFLL",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KATL",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "EJA"
-              }
-            ]
-          },
-          "cleared_altitude": 7000,
-          "initial_altitude": 12000,
-          "initial_controller": "PHL_NA_APP",
-          "initial_speed": 300,
-          "route": "/ MAZIE3",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "JAIKE ILENE@a12000 @ WACKI@a11000 MAZIE REGLE@a7000 GNNZO SBJ #059"
-        }
-      ],
-    "LVZ4": [
-        {
-          "airlines": {
-            "KTEB": [
-              {
-                "airport": "KFLL",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KATL",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "EJA"
-              }
-            ]
-          },
-          "cleared_altitude": 6000,
-          "initial_altitude": 18000,
-          "initial_controller": "NY_CTR",
-          "initial_speed": 300,
-          "route": "/ LVZ4",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "LVZ@a18000 @ HARTY MUGZY@a6000 STW #125"
-        }
-      ],
     "COATE": [
-        {
-          "airlines": {
-            "KTEB": [
-              {
-                "airport": "KFLL",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KATL",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "EJA"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "EJA"
-              }
-            ]
-          },
-          "cleared_altitude": 6000,
-          "initial_altitude": 12000,
-          "initial_controller": "BOS_CTR",
-          "initial_speed": 300,
-          "route": "/ ALB V489 COATE",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "FILPS WEARD @ CAMMO HUO LEMOR@a6000 COATE KEWR"
-        }
-      ],
-    "PHL": [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "KPHL",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KPHL",
-                "icao": "GJS"
-              }
-            ]
-          },
-          "cleared_altitude": 7000,
-          "initial_altitude": 7000,
-          "initial_controller": "PHL_NA_APP",
-          "initial_speed": 300,
-          "route": "/ RUUTH V123 RBV",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "RUUTH @ RBV KEWR"
-        }
-      ],
-   "WRI": [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "TNCM",
-                "icao": "UAL"
-              }
-            ]
-          },
-          "cleared_altitude": 6000,
-          "initial_altitude": 6000,
-          "initial_controller": "WRI_APP",
-          "initial_speed": 300,
-          "route": "/ CYN GXU RBV V249 METRO",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "CYN @ GXU RBV METRO KEWR"
-        }
-      ],
-    "South": [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "KFLL",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "NKS"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KATL",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "UAL"
-              }
-            ]
-          },
-          "cleared_altitude": 6000,
-          "initial_altitude": 6000,
-          "initial_controller": "EWR_P_APP",
-          "initial_speed": 250,
-          "route": "/ PHLBO3",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "DYLIN @ METRO MARRT PHLBO #065"
-        }
-      ],
+      {
+        "airlines": {
+          "KTEB": [
+            {
+              "airport": "KFLL",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KATL",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "initial_altitude": 12000,
+        "initial_controller": "BOS_CTR",
+        "initial_speed": 300,
+        "route": "/ ALB V489 COATE",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "FILPS WEARD @ CAMMO HUO LEMOR@a6000 COATE KEWR"
+      }
+    ],
+    "FLOSI4": [
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "KFLL",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "NKS"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cleared_altitude": 7000,
+        "initial_altitude": 18000,
+        "initial_controller": "BOS_CTR",
+        "initial_speed": 300,
+        "route": "/ FLOSI4",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "ACOVE TALCO WEETS @ HELON FLOSI CRANK@a7000 SHAFF SAX PHLBO HOKIR #180"
+      }
+    ],
+    "FQM3": [
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "KFLL",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "NKS"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cleared_altitude": 7000,
+        "initial_altitude": 18000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 300,
+        "route": "/ FQM3",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "HAYED@a18000 RACKI@a13000 @ PENNS SWEET@a7000 BWZ #122"
+      }
+    ],
+    "LVZ4": [
+      {
+        "airlines": {
+          "KTEB": [
+            {
+              "airport": "KFLL",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KATL",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "initial_altitude": 18000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 300,
+        "route": "/ LVZ4",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "LVZ@a18000 @ HARTY MUGZY@a6000 STW #125"
+      }
+    ],
+    "MAZIE3": [
+      {
+        "airlines": {
+          "KTEB": [
+            {
+              "airport": "KFLL",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KATL",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "cleared_altitude": 7000,
+        "initial_altitude": 12000,
+        "initial_controller": "PHL_NA_APP",
+        "initial_speed": 300,
+        "route": "/ MAZIE3",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "JAIKE ILENE@a12000 @ WACKI@a11000 MAZIE REGLE@a7000 GNNZO SBJ #059"
+      }
+    ],
     "North": [
-        {
-          "airlines": {
-            "KEWR": [
-              {
-                "airport": "KFLL",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMSY",
-                "icao": "NKS"
-              },
-              {
-                "airport": "MDPC",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KGSO",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KATL",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KSRQ",
-                "icao": "RPA"
-              },
-              {
-                "airport": "KCLT",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KSNA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KPBI",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KSAV",
-                "icao": "GJS"
-              },
-              {
-                "airport": "KRSW",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KRDU",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KMIA",
-                "icao": "UAL"
-              },
-              {
-                "airport": "MYNN",
-                "icao": "UAL"
-              }
-            ]
-          },
-          "cleared_altitude": 6000,
-          "initial_altitude": 6000,
-          "initial_controller": "EWR_A_APP",
-          "initial_speed": 250,
-          "route": "/ FLOSI4",
-          "runway_waypoints": null,
-          "speed_restriction": null,
-          "waypoints": "SHAFF @ SAX PHLBO HOKIR #180"
-        }
-      ]
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "KFLL",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "NKS"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "initial_altitude": 6000,
+        "initial_controller": "EWR_A_APP",
+        "initial_speed": 250,
+        "route": "/ FLOSI4",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "SHAFF @ SAX PHLBO HOKIR #180"
+      }
+    ],
+    "PHL": [
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "KPHL",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KPHL",
+              "icao": "GJS"
+            }
+          ]
+        },
+        "cleared_altitude": 7000,
+        "initial_altitude": 7000,
+        "initial_controller": "PHL_NA_APP",
+        "initial_speed": 300,
+        "route": "/ RUUTH V123 RBV",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "RUUTH @ RBV KEWR"
+      }
+    ],
+    "PHLBO3": [
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "KFLL",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "NKS"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cleared_altitude": 8000,
+        "initial_altitude": 20000,
+        "initial_controller": "DC_CTR",
+        "initial_speed": 300,
+        "route": "/ PHLBO3",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "DQO@a20000 STEFE@a13000 @ SOMTO@a11000 DYLIN@a8000 MERSR METRO MARRT PHLBO #025"
+      }
+    ],
+    "South": [
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "KFLL",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSY",
+              "icao": "NKS"
+            },
+            {
+              "airport": "MDPC",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KGSO",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSRQ",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KSNA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KSAV",
+              "icao": "GJS"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KRDU",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "MYNN",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "initial_altitude": 6000,
+        "initial_controller": "EWR_P_APP",
+        "initial_speed": 250,
+        "route": "/ PHLBO3",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "DYLIN @ METRO MARRT PHLBO #065"
+      }
+    ],
+    "WRI": [
+      {
+        "airlines": {
+          "KEWR": [
+            {
+              "airport": "TNCM",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "initial_altitude": 6000,
+        "initial_controller": "WRI_APP",
+        "initial_speed": 300,
+        "route": "/ CYN GXU RBV V249 METRO",
+        "runway_waypoints": null,
+        "speed_restriction": null,
+        "waypoints": "CYN @ GXU RBV METRO KEWR"
+      }
+    ]
   },
   "center": "N040.45.26.477,W074.24.28.789",
-  "control_positions": {
-    "NY_CTR": {
-      "callsign": "NY_CTR",
-      "frequency": 125325,
-      "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "DC_CTR": {
-      "callsign": "DC_CTR",
-      "frequency": 133725,
-      "scope_char": "C",
-      "sector_id": "W32"
-    },
-    "BOS_CTR": {
-      "callsign": "BOS_CTR",
-      "frequency": 134700,
-      "scope_char": "C",
-      "sector_id": "B37"
-    },
-    "EWR_APP": {
-      "callsign": "EWR_APP",
-      "frequency": 128550,
-      "scope_char": "P",
-      "sector_id": "4P"
-    },
-    "EWR_P_APP": {
-      "callsign": "EWR_P_APP",
-      "frequency": 128550,
-      "scope_char": "P",
-      "sector_id": "4P"
-    },
-    "EWR_A_APP": {
-      "callsign": "EWR_A_APP",
-      "frequency": 120150,
-      "scope_char": "A",
-      "sector_id": "4A"
-    },
-    "EWR_U_APP": {
-      "callsign": "EWR_U_APP",
-      "frequency": 127600,
-      "scope_char": "U",
-      "sector_id": "4U"
-    },
-    "EWR_S_APP": {
-      "callsign": "EWR_S_APP",
-      "frequency": 123770,
-      "scope_char": "S",
-      "sector_id": "4S"
-    },
-    "EWR_H_APP": {
-      "callsign": "EWR_H_APP",
-      "frequency": 132800,
-      "scope_char": "H",
-      "sector_id": "4H"
-    },
-    "EWR_Q_APP": {
-      "callsign": "EWR_Q_APP",
-      "frequency": 125500,
-      "scope_char": "Q",
-      "sector_id": "4Q"
-    },
-    "EWR_DEP": {
-      "callsign": "EWR_DEP",
-      "frequency": 119200,
-      "scope_char": "N",
-      "sector_id": "4N"
-    },
-    "LGA_APP": {
-      "callsign": "LGA_APP",
-      "frequency": 120800,
-      "scope_char": "V",
-      "sector_id": "1V"
-    },
-    "LGA_DEP": {
-      "callsign": "LGA_L_DEP",
-      "frequency": 120400,
-      "scope_char": "L",
-      "sector_id": "1L"
-    },
-    "NY_LE_DEP": {
-      "callsign": "NY_LE_DEP",
-      "frequency": 126800,
-      "scope_char": "E",
-      "sector_id": "5E"
-    },
-    "NY_LW_DEP": {
-      "callsign": "NY_LW_DEP",
-      "frequency": 120850,
-      "scope_char": "W",
-      "sector_id": "5W"
-    },
-    "NY_LN_DEP": {
-      "callsign": "NY_LN_DEP",
-      "frequency": 118170,
-      "scope_char": "T",
-      "sector_id": "5T"
-    },
-    "NY_LS_DEP": {
-      "callsign": "NY_LS_DEP",
-      "frequency": 124750,
-      "scope_char": "S",
-      "sector_id": "5S"
-    },
-    "EWR_TWR": {
-      "callsign": "EWR_TWR",
-      "frequency": 118300,
-      "scope_char": "T",
-      "sector_id": "4Z"
-    },
-    "TEB_TWR": {
-      "callsign": "TEB_TWR",
-      "frequency": 119500,
-      "scope_char": "T",
-      "sector_id": "4J"
-    },
-    "MMU_TWR": {
-      "callsign": "MMU_TWR",
-      "frequency": 118100,
-      "scope_char": "T",
-      "sector_id": "4K"
-    },
-    "CDW_TWR": {
-      "callsign": "CDW_TWR",
-      "frequency": 119800,
-      "scope_char": "T",
-      "sector_id": "4T"
-    },
-    "ABE_APP": {
-      "callsign": "ABE_APP",
-      "frequency": 119650,
-      "scope_char": "F",
-      "sector_id": "AF"
-    },
-    "PHL_NA_APP": {
-      "callsign": "PHL_NA_APP",
-      "frequency": 128400,
-      "scope_char": "N",
-      "sector_id": "6N"
-    },
-    "WRI_APP": {
-      "callsign": "WRI_APP",
-      "frequency": 1264700,
-      "scope_char": "Y",
-      "sector_id": "MY"
-    }
-  },
-  "default_controller": "EWR_APP",
-  "default_scenario": "KEWR Depart 22R Land 22L",
-  "fixes": {
-    "_EWR_22R": "N040.42.04.246,W074.09.47.603",
-    "_EWR_22L": "N040.42.05.592,W074.09.32.827",
-    "_EWR_4L": "N040.40.45.790,W074.10.36.795",
-    "_EWR_4R": "N040.40.39.678,W074.10.27.566",
-    "_EWR_29": "N040.42.04.259,W074.09.22.527",
-    "_EWR_11": "N040.42.10.096,W074.10.50.473",
-    "_TEB_19": "N040.51.28.119,W074.03.32.091",
-    "_TEB_1": "N040.50.19.152,W074.03.37.501",
-    "_TEB_24": "N040.51.27.762,W074.03.14.842",
-    "_TEB_6": "N040.50.48.376,W074.04.13.509",
-    "_MMU_31": "N040.47.47.486,W074.24.40.957",
-    "_MMU_13": "N040.48.03.306,W074.25.28.390",
-    "_MMU_23": "N040.48.23.233,W074.24.23.159",
-    "_MMU_5": "N040.47.35.044,W074.25.09.274",
-    "_CDW_28": "N040.52.42.030,W074.16.24.677",
-    "_CDW_10": "N040.52.37.814,W074.17.12.769",
-    "_CDW_22": "N040.52.43.252,W074.16.41.623",
-    "_CDW_4": "N040.52.03.893,W074.17.10.709",
-    "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",
-    "_EWR4_4La": "N040.45.33.714,W074.05.08.743",
-    "_TEB4_1a": "N040.53.33.995,W074.02.07.249",
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KSWF": "N041.30.14.734, W074.06.17.409"
-  },
-  "magnetic_variation": 13.3,
-  "name": "KEWR",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
-  "primary_airport": "KEWR",
-    "radar_sites": {
-        "EWR":    {
-      "char": "E",
-      "elevation": 136,
-      "position": "KEWR",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-        "JFK":    {
-      "char": "J",
-      "elevation": 143,
-      "position": "JFK",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-        "ISP":    {
-      "char": "I",
-      "elevation": 185,
-      "position": "ISP",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-        "HPN":    {
-      "char": "H",
-      "elevation": 708,
-      "position": "KHPN",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-        "SWF":    {
-      "char": "S",
-      "elevation": 972,
-      "position": "KSWF",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-    },
   "configs": {
     "KEWR Depart 22R": {
-      "name": "KEWR Depart 22R",
       "callsign": "EWR_DEP",
       "controllers": [
         "EWR_DEP",
@@ -3014,93 +2823,23 @@
       "departure_runways": [
         {
           "airport": "KEWR",
-          "runway": "22R",
-          "rate": 20
+          "rate": 20,
+          "runway": "22R"
         },
         {
           "airport": "KTEB",
-          "runway": "24",
-          "rate": 10
+          "rate": 10,
+          "runway": "24"
         }
       ],
+      "name": "KEWR Depart 22R",
       "wind": {
         "direction": 220,
         "gust": 13,
         "speed": 7
       }
     },
-    "KEWR Depart 4L": {
-      "name": "KEWR Depart 4L",
-      "callsign": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "runway": "4L",
-          "rate": 20
-        },
-        {
-          "airport": "KTEB",
-          "runway": "1",
-          "rate": 10
-        }
-      ],
-      "wind": {
-        "direction": 30,
-        "gust": 9,
-        "speed": 4
-      }
-    },
     "KEWR Depart 22R Land 22L": {
-      "name": "KEWR Depart 22R Land 22L",
-      "callsign": "EWR_APP",
-      "controllers": [
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_NA_APP",
-        "WRI_APP"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "runway": "22R",
-          "rate": 20
-        },
-        {
-          "airport": "KTEB",
-          "runway": "24",
-          "rate": 5
-        }
-      ],
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -3112,39 +2851,31 @@
         }
       ],
       "arrivals": {
-        "PHLBO3": {
-          "KEWR": 10
-        },
-        "FQM3": {
-          "KEWR": 10
+        "COATE": {
+          "KTEB": 2
         },
         "FLOSI4": {
           "KEWR": 5
         },
-        "PHL": {
-          "KEWR": 2
-        },
-        "WRI": {
-          "KEWR": 2
-        },
-        "MAZIE3": {
-          "KTEB": 2
+        "FQM3": {
+          "KEWR": 10
         },
         "LVZ4": {
           "KTEB": 2
         },
-        "COATE": {
+        "MAZIE3": {
           "KTEB": 2
+        },
+        "PHL": {
+          "KEWR": 2
+        },
+        "PHLBO3": {
+          "KEWR": 10
+        },
+        "WRI": {
+          "KEWR": 2
         }
       },
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
-    "KEWR Depart 4L Land 4R": {
-      "name": "KEWR Depart 4L Land 4R",
       "callsign": "EWR_APP",
       "controllers": [
         "EWR_APP",
@@ -3168,15 +2899,61 @@
       "departure_runways": [
         {
           "airport": "KEWR",
-          "runway": "4L",
-          "rate": 20
+          "rate": 20,
+          "runway": "22R"
         },
         {
           "airport": "KTEB",
-          "runway": "1",
-          "rate": 5
+          "rate": 5,
+          "runway": "24"
         }
       ],
+      "name": "KEWR Depart 22R Land 22L",
+      "wind": {
+        "direction": 220,
+        "gust": 13,
+        "speed": 7
+      }
+    },
+    "KEWR Depart 4L": {
+      "callsign": "EWR_DEP",
+      "controllers": [
+        "EWR_DEP",
+        "EWR_APP",
+        "LGA_DEP",
+        "LGA_APP",
+        "NY_CTR",
+        "DC_CTR",
+        "BOS_CTR",
+        "EWR_TWR",
+        "TEB_TWR",
+        "MMU_TWR",
+        "CDW_TWR",
+        "NY_LE_DEP",
+        "NY_LW_DEP",
+        "NY_LN_DEP",
+        "NY_LS_DEP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KEWR",
+          "rate": 20,
+          "runway": "4L"
+        },
+        {
+          "airport": "KTEB",
+          "rate": 10,
+          "runway": "1"
+        }
+      ],
+      "name": "KEWR Depart 4L",
+      "wind": {
+        "direction": 30,
+        "gust": 9,
+        "speed": 4
+      }
+    },
+    "KEWR Depart 4L Land 4R": {
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -3188,40 +2965,92 @@
         }
       ],
       "arrivals": {
-        "PHLBO3": {
-          "KEWR": 10
-        },
-        "FQM3": {
-          "KEWR": 10
+        "COATE": {
+          "KTEB": 2
         },
         "FLOSI4": {
           "KEWR": 5
         },
-        "PHL": {
-          "KEWR": 2
-        },
-        "WRI": {
-          "KEWR": 2
-        },
-        "MAZIE3": {
-          "KTEB": 2
+        "FQM3": {
+          "KEWR": 10
         },
         "LVZ4": {
           "KTEB": 2
         },
-        "COATE": {
+        "MAZIE3": {
           "KTEB": 2
+        },
+        "PHL": {
+          "KEWR": 2
+        },
+        "PHLBO3": {
+          "KEWR": 10
+        },
+        "WRI": {
+          "KEWR": 2
         }
       },
+      "callsign": "EWR_APP",
+      "controllers": [
+        "EWR_APP",
+        "LGA_DEP",
+        "LGA_APP",
+        "NY_CTR",
+        "DC_CTR",
+        "BOS_CTR",
+        "EWR_TWR",
+        "TEB_TWR",
+        "MMU_TWR",
+        "CDW_TWR",
+        "NY_LE_DEP",
+        "NY_LW_DEP",
+        "NY_LN_DEP",
+        "NY_LS_DEP",
+        "ABE_APP",
+        "PHL_NA_APP",
+        "WRI_APP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KEWR",
+          "rate": 20,
+          "runway": "4L"
+        },
+        {
+          "airport": "KTEB",
+          "rate": 5,
+          "runway": "1"
+        }
+      ],
+      "name": "KEWR Depart 4L Land 4R",
       "wind": {
         "direction": 220,
         "gust": 13,
         "speed": 7
       }
     },
-    "KEWR Land 22L - NOA + FINAL": {
-      "name": "KEWR Land 22L - NOA + FINAL",
-      "callsign": "EWR_A_APP",
+    "KEWR Land 22L - ARD": {
+      "arrival_runways": [
+        {
+          "airport": "KEWR",
+          "runway": "22L"
+        }
+      ],
+      "arrivals": {
+        "FQM3": {
+          "KEWR": 15
+        },
+        "PHL": {
+          "KEWR": 3
+        },
+        "PHLBO3": {
+          "KEWR": 15
+        },
+        "WRI": {
+          "KEWR": 3
+        }
+      },
+      "callsign": "EWR_P_APP",
       "controllers": [
         "EWR_A_APP",
         "EWR_P_APP",
@@ -3235,6 +3064,14 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
+      "name": "KEWR Land 22L - ARD",
+      "wind": {
+        "direction": 220,
+        "gust": 13,
+        "speed": 7
+      }
+    },
+    "KEWR Land 22L - NOA + FINAL": {
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -3249,92 +3086,6 @@
           "KEWR": 15
         }
       },
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
-    "KEWR Land 4R - ARD + FINAL": {
-      "name": "KEWR Land 4R - ARD + FINAL",
-      "callsign": "EWR_P_APP",
-      "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KEWR",
-          "runway": "4R"
-        }
-      ],
-      "arrivals": {
-        "PHLBO3": {
-          "KEWR": 15
-        },
-        "North": {
-          "KEWR": 10
-        }
-      },
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
-    "KEWR Land 22L - ARD": {
-      "name": "KEWR Land 22L - ARD",
-      "callsign": "EWR_P_APP",
-      "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KEWR",
-          "runway": "22L"
-        }
-      ],
-      "arrivals": {
-        "PHLBO3": {
-          "KEWR": 15
-        },
-        "FQM3": {
-          "KEWR": 15
-        },
-        "PHL": {
-          "KEWR": 3
-        },
-        "WRI": {
-          "KEWR": 3
-        }
-      },
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
-    "KEWR Land 4R - NOA": {
-      "name": "KEWR Land 4R - NOA",
       "callsign": "EWR_A_APP",
       "controllers": [
         "EWR_A_APP",
@@ -3349,6 +3100,14 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
+      "name": "KEWR Land 22L - NOA + FINAL",
+      "wind": {
+        "direction": 220,
+        "gust": 13,
+        "speed": 7
+      }
+    },
+    "KEWR Land 4R - ARD + FINAL": {
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -3356,18 +3115,295 @@
         }
       ],
       "arrivals": {
-        "FQM3": {
-          "KEWR": 15
-        },
-        "FLOSI4": {
+        "North": {
           "KEWR": 10
+        },
+        "PHLBO3": {
+          "KEWR": 15
         }
       },
+      "callsign": "EWR_P_APP",
+      "controllers": [
+        "EWR_A_APP",
+        "EWR_P_APP",
+        "EWR_U_APP",
+        "EWR_DEP",
+        "NY_CTR",
+        "DC_CTR",
+        "BOS_CTR",
+        "EWR_TWR",
+        "TEB_TWR",
+        "MMU_TWR",
+        "CDW_TWR"
+      ],
+      "name": "KEWR Land 4R - ARD + FINAL",
+      "wind": {
+        "direction": 220,
+        "gust": 13,
+        "speed": 7
+      }
+    },
+    "KEWR Land 4R - NOA": {
+      "arrival_runways": [
+        {
+          "airport": "KEWR",
+          "runway": "4R"
+        }
+      ],
+      "arrivals": {
+        "FLOSI4": {
+          "KEWR": 10
+        },
+        "FQM3": {
+          "KEWR": 15
+        }
+      },
+      "callsign": "EWR_A_APP",
+      "controllers": [
+        "EWR_A_APP",
+        "EWR_P_APP",
+        "EWR_U_APP",
+        "EWR_DEP",
+        "NY_CTR",
+        "DC_CTR",
+        "BOS_CTR",
+        "EWR_TWR",
+        "TEB_TWR",
+        "MMU_TWR",
+        "CDW_TWR"
+      ],
+      "name": "KEWR Land 4R - NOA",
       "wind": {
         "direction": 30,
         "gust": 0,
         "speed": 7
       }
+    }
+  },
+  "control_positions": {
+    "ABE_APP": {
+      "callsign": "ABE_APP",
+      "frequency": 119650,
+      "scope_char": "F",
+      "sector_id": "AF"
+    },
+    "BOS_CTR": {
+      "callsign": "BOS_CTR",
+      "frequency": 134700,
+      "scope_char": "C",
+      "sector_id": "B37"
+    },
+    "CDW_TWR": {
+      "callsign": "CDW_TWR",
+      "frequency": 119800,
+      "scope_char": "T",
+      "sector_id": "4T"
+    },
+    "DC_CTR": {
+      "callsign": "DC_CTR",
+      "frequency": 133725,
+      "scope_char": "C",
+      "sector_id": "W32"
+    },
+    "EWR_APP": {
+      "callsign": "EWR_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
+    "EWR_A_APP": {
+      "callsign": "EWR_A_APP",
+      "frequency": 120150,
+      "scope_char": "A",
+      "sector_id": "4A"
+    },
+    "EWR_DEP": {
+      "callsign": "EWR_DEP",
+      "frequency": 119200,
+      "scope_char": "N",
+      "sector_id": "4N"
+    },
+    "EWR_H_APP": {
+      "callsign": "EWR_H_APP",
+      "frequency": 132800,
+      "scope_char": "H",
+      "sector_id": "4H"
+    },
+    "EWR_P_APP": {
+      "callsign": "EWR_P_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
+    "EWR_Q_APP": {
+      "callsign": "EWR_Q_APP",
+      "frequency": 125500,
+      "scope_char": "Q",
+      "sector_id": "4Q"
+    },
+    "EWR_S_APP": {
+      "callsign": "EWR_S_APP",
+      "frequency": 123770,
+      "scope_char": "S",
+      "sector_id": "4S"
+    },
+    "EWR_TWR": {
+      "callsign": "EWR_TWR",
+      "frequency": 118300,
+      "scope_char": "T",
+      "sector_id": "4Z"
+    },
+    "EWR_U_APP": {
+      "callsign": "EWR_U_APP",
+      "frequency": 127600,
+      "scope_char": "U",
+      "sector_id": "4U"
+    },
+    "LGA_APP": {
+      "callsign": "LGA_APP",
+      "frequency": 120800,
+      "scope_char": "V",
+      "sector_id": "1V"
+    },
+    "LGA_DEP": {
+      "callsign": "LGA_L_DEP",
+      "frequency": 120400,
+      "scope_char": "L",
+      "sector_id": "1L"
+    },
+    "MMU_TWR": {
+      "callsign": "MMU_TWR",
+      "frequency": 118100,
+      "scope_char": "T",
+      "sector_id": "4K"
+    },
+    "NY_CTR": {
+      "callsign": "NY_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
+    "NY_LE_DEP": {
+      "callsign": "NY_LE_DEP",
+      "frequency": 126800,
+      "scope_char": "E",
+      "sector_id": "5E"
+    },
+    "NY_LN_DEP": {
+      "callsign": "NY_LN_DEP",
+      "frequency": 118170,
+      "scope_char": "T",
+      "sector_id": "5T"
+    },
+    "NY_LS_DEP": {
+      "callsign": "NY_LS_DEP",
+      "frequency": 124750,
+      "scope_char": "S",
+      "sector_id": "5S"
+    },
+    "NY_LW_DEP": {
+      "callsign": "NY_LW_DEP",
+      "frequency": 120850,
+      "scope_char": "W",
+      "sector_id": "5W"
+    },
+    "PHL_NA_APP": {
+      "callsign": "PHL_NA_APP",
+      "frequency": 128400,
+      "scope_char": "N",
+      "sector_id": "6N"
+    },
+    "TEB_TWR": {
+      "callsign": "TEB_TWR",
+      "frequency": 119500,
+      "scope_char": "T",
+      "sector_id": "4J"
+    },
+    "WRI_APP": {
+      "callsign": "WRI_APP",
+      "frequency": 1264700,
+      "scope_char": "Y",
+      "sector_id": "MY"
+    }
+  },
+  "default_controller": "EWR_APP",
+  "default_scenario": "KEWR Depart 22R Land 22L",
+  "fixes": {
+    "KEWR": "N040.41.34.749, W074.10.06.499",
+    "KHPN": "N041.04.01.027, W073.42.27.262",
+    "KSWF": "N041.30.14.734, W074.06.17.409",
+    "_CDW_10": "N040.52.37.814,W074.17.12.769",
+    "_CDW_22": "N040.52.43.252,W074.16.41.623",
+    "_CDW_28": "N040.52.42.030,W074.16.24.677",
+    "_CDW_4": "N040.52.03.893,W074.17.10.709",
+    "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",
+    "_EWR4_4La": "N040.45.33.714,W074.05.08.743",
+    "_EWR_11": "N040.42.10.096,W074.10.50.473",
+    "_EWR_22L": "N040.42.05.592,W074.09.32.827",
+    "_EWR_22R": "N040.42.04.246,W074.09.47.603",
+    "_EWR_29": "N040.42.04.259,W074.09.22.527",
+    "_EWR_4L": "N040.40.45.790,W074.10.36.795",
+    "_EWR_4R": "N040.40.39.678,W074.10.27.566",
+    "_MMU_13": "N040.48.03.306,W074.25.28.390",
+    "_MMU_23": "N040.48.23.233,W074.24.23.159",
+    "_MMU_31": "N040.47.47.486,W074.24.40.957",
+    "_MMU_5": "N040.47.35.044,W074.25.09.274",
+    "_TEB4_1a": "N040.53.33.995,W074.02.07.249",
+    "_TEB_1": "N040.50.19.152,W074.03.37.501",
+    "_TEB_19": "N040.51.28.119,W074.03.32.091",
+    "_TEB_24": "N040.51.27.762,W074.03.14.842",
+    "_TEB_6": "N040.50.48.376,W074.04.13.509"
+  },
+  "magnetic_variation": 13.3,
+  "name": "KEWR",
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 45,
+  "primary_airport": "KEWR",
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "elevation": 136,
+      "position": "KEWR",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "elevation": 708,
+      "position": "KHPN",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "elevation": 185,
+      "position": "ISP",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "elevation": 143,
+      "position": "JFK",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "elevation": 972,
+      "position": "KSWF",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
     }
   },
   "scratchpads": {
@@ -3385,14 +3421,14 @@
     "MERIT": "MER",
     "NEION": "NEI",
     "NEWEL": "NWL",
+    "None": null,
     "PARKE": "PAR",
     "SAX": "SAX",
     "SBJ": "SBJ",
     "SHIPP": "SHI",
     "WAVEY": "WAV",
     "WHITE": "WHI",
-    "ZIMMZ": "ZIM",
-    "None": null
+    "ZIMMZ": "ZIM"
   },
   "stars_maps": [
     {
