@@ -1499,7 +1499,7 @@ func LoadEmbedded() map[string]*Scenario {
 	scenarios := make(map[string]*Scenario)
 
 	err := fs.WalkDir(embeddedJSON, "configs", func(path string, d fs.DirEntry, err error) error {
-		lg.Printf("HAI %s", path)
+		lg.Printf("Loading embedded file %s", path)
 		if d.IsDir() {
 			return nil
 		}
@@ -1528,7 +1528,6 @@ func LoadEmbedded() map[string]*Scenario {
 				if _, ok := videoMaps[name]; ok {
 					return fmt.Errorf("%s: video map repeatedly defined. Second definition in %s", name, path)
 				}
-				lg.Errorf("%s: MAP", name)
 				vm := &VideoMap{Name: name, Segments: segs}
 				vm.InitializeCommandBuffer()
 				videoMaps[name] = vm
