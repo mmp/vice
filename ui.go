@@ -46,8 +46,9 @@ var (
 	sadTowerPNG string
 
 	whatsNew []string = []string{
-		//"Added EWR scenarios, including both departure and approach.",
-		//		"Improved routing of departures beyond their exit fix.",
+		"Added EWR scenarios, including both departure and approach.",
+		"Added Liberty departure scenarios.",
+		"Improved routing of departures beyond their exit fix.",
 	}
 )
 
