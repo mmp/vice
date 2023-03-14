@@ -121,7 +121,7 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
-	scenarios = LoadEmbedded()
+	scenarios = LoadScenarios()
 	// Use the last scenario, if available.
 	if s, ok := scenarios[globalConfig.LastScenario]; ok {
 		scenario = s
