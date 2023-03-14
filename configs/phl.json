@@ -991,5 +991,6 @@
       "label": "PHL B",
       "name": "Philadelphia Class B"
     }
-  ]
+  ],
+  "video_map_file": "configs/zny-maps.json.zst"
 }

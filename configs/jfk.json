@@ -3926,5 +3926,6 @@
       "label": "JFK31 NTZ",
       "name": "N90 JFK - 31s NTZ"
     }
-  ]
+  ],
+  "video_map_file": "configs/zny-maps.json.zst"
 }

@@ -16,8 +16,8 @@ import (
 type Scenario struct {
 	Name              string                      `json:"name"`
 	Airports          map[string]*Airport         `json:"airports"`
+	VideoMapFile      string                      `json:"video_map_file"`
 	Fixes             map[string]Point2LL         `json:"fixes"`
-	VideoMaps         map[string]*VideoMap        `json:"-"`
 	ScenarioConfigs   map[string]*ScenarioConfig  `json:"configs"`
 	DefaultController string                      `json:"default_controller"`
 	DefaultScenario   string                      `json:"default_scenario"`

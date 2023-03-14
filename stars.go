@@ -185,7 +185,8 @@ type STARSFacility struct {
 type STARSMap struct {
 	Label string `json:"label"`
 	Group int    `json:"group"` // 0 -> A, 1 -> B
-	Name  string `json:"name"`  // VideoMap.Name
+	Name  string `json:"name"`
+	cb    CommandBuffer
 }
 
 func MakeDefaultFacility() STARSFacility {
@@ -788,14 +789,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			color = ps.Brightness.VideoGroupB.RGB()
 		}
 		cb.SetRGB(color)
-
 		transforms.LoadLatLongViewingMatrices(cb)
-
-		if vm, ok := scenario.VideoMaps[vmap.Name]; !ok {
-			lg.Errorf("%s: couldn't get video map", vmap.Name)
-		} else {
-			cb.Call(vm.cb)
-		}
+		cb.Call(vmap.cb)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)

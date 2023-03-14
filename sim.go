@@ -1495,7 +1495,7 @@ var (
 )
 
 func LoadEmbedded() map[string]*Scenario {
-	videoMaps := make(map[string]*VideoMap)
+	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 	scenarios := make(map[string]*Scenario)
 
 	err := fs.WalkDir(embeddedJSON, "configs", func(path string, d fs.DirEntry, err error) error {
@@ -1508,30 +1508,41 @@ func LoadEmbedded() map[string]*Scenario {
 			return err
 		}
 
-		path = strings.ToLower(path)
-		if strings.HasSuffix(path, ".zst") {
+		p := strings.ToLower(path)
+		if strings.HasSuffix(p, ".zst") {
 			contents = []byte(decompressZstd(string(contents)))
-			path = path[:len(path)-4]
+			p = p[:len(p)-4]
 		}
 
-		if !strings.HasSuffix(path, ".json") {
+		if !strings.HasSuffix(p, ".json") {
 			return fmt.Errorf("%s: skipping file without .json extension", path)
 		}
 
-		if strings.HasSuffix(path, "-maps.json") {
+		if strings.HasSuffix(p, "-maps.json") {
 			var maps map[string][]Point2LL
 			if err := UnmarshalJSON(contents, &maps); err != nil {
 				return err
 			}
 
+			vm := make(map[string]CommandBuffer)
 			for name, segs := range maps {
-				if _, ok := videoMaps[name]; ok {
-					return fmt.Errorf("%s: video map repeatedly defined. Second definition in %s", name, path)
+				if _, ok := vm[name]; ok {
+					return fmt.Errorf("%s: video map repeatedly defined in file %s", name, path)
 				}
-				vm := &VideoMap{Name: name, Segments: segs}
-				vm.InitializeCommandBuffer()
-				videoMaps[name] = vm
+
+				ld := GetLinesDrawBuilder()
+				for i := 0; i < len(segs)/2; i++ {
+					ld.AddLine(segs[2*i], segs[2*i+1])
+				}
+				var cb CommandBuffer
+				ld.GenerateCommands(&cb)
+
+				vm[name] = cb
+
+				ReturnLinesDrawBuilder(ld)
 			}
+
+			videoMapCommandBuffers[path] = vm
 			return nil
 		} else {
 			var s Scenario
@@ -1556,7 +1567,22 @@ func LoadEmbedded() map[string]*Scenario {
 	}
 
 	for _, s := range scenarios {
-		s.VideoMaps = videoMaps // FIXME
+		if s.VideoMapFile == "" {
+			lg.Errorf("%s: scenario does not have \"video_map_file\" specified", s.Name)
+			os.Exit(1)
+		}
+		if bufferMap, ok := videoMapCommandBuffers[s.VideoMapFile]; !ok {
+			lg.Errorf("%s: \"video_map_file\" not found for scenario %s", s.VideoMapFile, s.Name)
+		} else {
+			for i, sm := range s.STARSMaps {
+				if cb, ok := bufferMap[sm.Name]; !ok {
+					lg.Errorf("%s: video map not found for scenario %s", sm.Name, s.Name)
+					os.Exit(1)
+				} else {
+					s.STARSMaps[i].cb = cb
+				}
+			}
+		}
 
 		// Horribly hacky but PostDeserialize ends up calling functions
 		// that access the scenario global (e.g. nmdistance2ll)...
