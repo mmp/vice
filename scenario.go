@@ -508,104 +508,136 @@ func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]i
 // LoadScenarios
 
 var (
-	//go:embed configs/*.json configs/*.json.zst
-	embeddedJSON embed.FS
+	//go:embed scenarios/*.json
+	embeddedScenarios embed.FS
+
+	//go:embed videomaps/*.json.zst
+	embeddedVideoMaps embed.FS
 )
 
-func LoadScenarios() map[string]*Scenario {
-	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
-	scenarios := make(map[string]*Scenario)
-
-	loadFile := func(filesystem fs.FS, path string, allowRedefine bool) error {
-		contents, err := fs.ReadFile(filesystem, path)
-		if err != nil {
-			return err
-		}
-
-		p := strings.ToLower(path)
-		if strings.HasSuffix(p, ".zst") {
-			contents = []byte(decompressZstd(string(contents)))
-			p = p[:len(p)-4]
-		}
-
-		if !strings.HasSuffix(p, ".json") {
-			return fmt.Errorf("%s: skipping file without .json extension", path)
-		}
-
-		if strings.HasSuffix(p, "-maps.json") {
-			var maps map[string][]Point2LL
-			if err := UnmarshalJSON(contents, &maps); err != nil {
-				return err
-			}
-
-			vm := make(map[string]CommandBuffer)
-			for name, segs := range maps {
-				if _, ok := vm[name]; ok {
-					return fmt.Errorf("%s: video map repeatedly defined in file %s", name, path)
-				}
-
-				ld := GetLinesDrawBuilder()
-				for i := 0; i < len(segs)/2; i++ {
-					ld.AddLine(segs[2*i], segs[2*i+1])
-				}
-				var cb CommandBuffer
-				ld.GenerateCommands(&cb)
-
-				vm[name] = cb
-
-				ReturnLinesDrawBuilder(ld)
-			}
-
-			videoMapCommandBuffers[path] = vm
-			return nil
-		} else {
-			var s Scenario
-			if err := UnmarshalJSON(contents, &s); err != nil {
-				return err
-			}
-			if s.Name == "" {
-				return fmt.Errorf("%s: scenario definition is missing a \"name\" member", path)
-			}
-			if _, ok := scenarios[s.Name]; ok && !allowRedefine {
-				return fmt.Errorf("%s: scenario repeatedly defined", s.Name)
-			}
-
-			scenarios[s.Name] = &s
-			return nil
-		}
+func loadVideoMaps(filesystem fs.FS, path string) (map[string]CommandBuffer, error) {
+	contents, err := fs.ReadFile(filesystem, path)
+	if err != nil {
+		return nil, err
 	}
 
-	// First load the embedded files.
-	err := fs.WalkDir(embeddedJSON, "configs", func(path string, d fs.DirEntry, err error) error {
+	if strings.HasSuffix(strings.ToLower(path), ".zst") {
+		contents = []byte(decompressZstd(string(contents)))
+	}
+
+	var maps map[string][]Point2LL
+	if err := UnmarshalJSON(contents, &maps); err != nil {
+		return nil, err
+	}
+
+	vm := make(map[string]CommandBuffer)
+	for name, segs := range maps {
+		if _, ok := vm[name]; ok {
+			return nil, fmt.Errorf("%s: video map repeatedly defined in file %s", name, path)
+		}
+
+		ld := GetLinesDrawBuilder()
+		for i := 0; i < len(segs)/2; i++ {
+			ld.AddLine(segs[2*i], segs[2*i+1])
+		}
+		var cb CommandBuffer
+		ld.GenerateCommands(&cb)
+
+		vm[name] = cb
+
+		ReturnLinesDrawBuilder(ld)
+	}
+
+	return vm, nil
+}
+
+func loadScenario(filesystem fs.FS, path string) (*Scenario, error) {
+	contents, err := fs.ReadFile(filesystem, path)
+	if err != nil {
+		return nil, err
+	}
+
+	var s Scenario
+	if err := UnmarshalJSON(contents, &s); err != nil {
+		return nil, err
+	}
+	if s.Name == "" {
+		return nil, fmt.Errorf("%s: scenario definition is missing a \"name\" member", path)
+	}
+	return &s, err
+}
+
+// LoadScenarios loads all of the available scenarios, both from the
+// scenarios/ directory in the source code distribution as well as,
+// optionally, a scenario file provided on the command line.  It doesn't
+// try to do any sort of meaningful error handling; we'd rather force any
+// errors due to invalid scenario definitions to be fixed rather than
+// trying to recover, so error messages are printed and the program exits
+// if there are any issues..
+func LoadScenarios() map[string]*Scenario {
+	// First load the embedded video maps.
+	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
+	err := fs.WalkDir(embeddedVideoMaps, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
 		}
 
-		lg.Printf("Loading embedded file %s", path)
-		return loadFile(embeddedJSON, path, false)
+		lg.Printf("%s: loading embedded video map", path)
+		vm, err := loadVideoMaps(embeddedVideoMaps, path)
+		if err == nil {
+			videoMapCommandBuffers[path] = vm
+		}
+		return err
 	})
 	if err != nil {
 		lg.Errorf("%v", err)
 		os.Exit(1)
 	}
 
-	// Load scenario specified on command line, if any.  This one is
-	// allowed to redefine existing scenarios.
+	// Now load the scenarios.
+	scenarios := make(map[string]*Scenario)
+	err = fs.WalkDir(embeddedScenarios, "scenarios", func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			return nil
+		}
+
+		lg.Printf("%s: loading embedded scenario", path)
+		s, err := loadScenario(embeddedScenarios, path)
+		if err != nil {
+			return err
+		}
+		if _, ok := scenarios[s.Name]; ok {
+			return fmt.Errorf("%s: scenario repeatedly defined", s.Name)
+		}
+		scenarios[s.Name] = s
+		return nil
+	})
+	if err != nil {
+		lg.Errorf("%v", err)
+		os.Exit(1)
+	}
+
+	// Load the scenario specified on command line, if any.
 	if *scenarioFilename != "" {
-		err := loadFile(os.DirFS("."), *scenarioFilename, true)
+		s, err := loadScenario(os.DirFS("."), *scenarioFilename)
 		if err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
 		}
+		// This one is allowed to redefine an existing scenario.
+		scenarios[s.Name] = s
 	}
 
+	// Final tidying before we return the loaded scenarios.
 	for _, s := range scenarios {
+		// Initialize the CommandBuffers in the scenario's STARSMaps.
 		if s.VideoMapFile == "" {
 			lg.Errorf("%s: scenario does not have \"video_map_file\" specified", s.Name)
 			os.Exit(1)
 		}
 		if bufferMap, ok := videoMapCommandBuffers[s.VideoMapFile]; !ok {
 			lg.Errorf("%s: \"video_map_file\" not found for scenario %s", s.VideoMapFile, s.Name)
+			os.Exit(1)
 		} else {
 			for i, sm := range s.STARSMaps {
 				if cb, ok := bufferMap[sm.Name]; !ok {
@@ -617,8 +649,9 @@ func LoadScenarios() map[string]*Scenario {
 			}
 		}
 
-		// Horribly hacky but PostDeserialize ends up calling functions
-		// that access the scenario global (e.g. nmdistance2ll)...
+		// This is horribly hacky but PostDeserialize ends up calling
+		// functions that access the scenario global
+		// (e.g. nmdistance2ll)...
 		scenario = s
 		s.PostDeserialize()
 		scenario = nil

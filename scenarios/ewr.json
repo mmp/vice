@@ -3502,5 +3502,5 @@
       "name": "N90 LIB - Catskill"
     }
   ],
-  "video_map_file": "configs/zny-maps.json.zst"
+  "video_map_file": "videomaps/zny-maps.json.zst"
 }

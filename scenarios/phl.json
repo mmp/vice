@@ -992,5 +992,5 @@
       "name": "Philadelphia Class B"
     }
   ],
-  "video_map_file": "configs/zny-maps.json.zst"
+  "video_map_file": "videomaps/zny-maps.json.zst"
 }

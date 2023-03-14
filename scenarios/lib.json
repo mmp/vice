@@ -3796,5 +3796,5 @@
       "name": "N90 LGA - Video Map"
     }
   ],
-  "video_map_file": "configs/zny-maps.json.zst"
+  "video_map_file": "videomaps/zny-maps.json.zst"
 }
