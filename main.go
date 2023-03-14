@@ -47,10 +47,10 @@ var (
 	buildVersion string
 
 	// Command-line options are only used for developer features.
-	cpuprofile     = flag.String("cpuprofile", "", "write CPU profile to file")
-	memprofile     = flag.String("memprofile", "", "write memory profile to this file")
-	devmode        = flag.Bool("devmode", false, "developer mode")
-	traconFilename = flag.String("tracon", "", "filename of JSON file with TRACON definition")
+	cpuprofile       = flag.String("cpuprofile", "", "write CPU profile to file")
+	memprofile       = flag.String("memprofile", "", "write memory profile to this file")
+	devmode          = flag.Bool("devmode", false, "developer mode")
+	scenarioFilename = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 )
 
 func init() {

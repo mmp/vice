@@ -516,12 +516,8 @@ func LoadScenarios() map[string]*Scenario {
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 	scenarios := make(map[string]*Scenario)
 
-	err := fs.WalkDir(embeddedJSON, "configs", func(path string, d fs.DirEntry, err error) error {
-		lg.Printf("Loading embedded file %s", path)
-		if d.IsDir() {
-			return nil
-		}
-		contents, err := fs.ReadFile(embeddedJSON, path)
+	loadFile := func(filesystem fs.FS, path string, allowRedefine bool) error {
+		contents, err := fs.ReadFile(filesystem, path)
 		if err != nil {
 			return err
 		}
@@ -570,18 +566,37 @@ func LoadScenarios() map[string]*Scenario {
 			if s.Name == "" {
 				return fmt.Errorf("%s: scenario definition is missing a \"name\" member", path)
 			}
-			if _, ok := scenarios[s.Name]; ok {
+			if _, ok := scenarios[s.Name]; ok && !allowRedefine {
 				return fmt.Errorf("%s: scenario repeatedly defined", s.Name)
 			}
 
 			scenarios[s.Name] = &s
 			return nil
 		}
-	})
+	}
 
+	// First load the embedded files.
+	err := fs.WalkDir(embeddedJSON, "configs", func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			return nil
+		}
+
+		lg.Printf("Loading embedded file %s", path)
+		return loadFile(embeddedJSON, path, false)
+	})
 	if err != nil {
 		lg.Errorf("%v", err)
 		os.Exit(1)
+	}
+
+	// Load scenario specified on command line, if any.  This one is
+	// allowed to redefine existing scenarios.
+	if *scenarioFilename != "" {
+		err := loadFile(os.DirFS("."), *scenarioFilename, true)
+		if err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
 	}
 
 	for _, s := range scenarios {
