@@ -13,3 +13,6 @@ resources/version.txt
 vatsim-internal.cpp
 vatsim-internal.go
 vatsim-internal.h
+Vice.App/
+icon.iconset/
+icon.icns
