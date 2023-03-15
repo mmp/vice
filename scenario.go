@@ -538,6 +538,16 @@ func LoadScenarios() map[string]*Scenario {
 		os.Exit(1)
 	}
 
+	// Load the video map specified on the command line, if any.
+	if *videoMapFilename != "" {
+		vm, err := loadVideoMaps(os.DirFS("."), *videoMapFilename)
+		if err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
+		videoMapCommandBuffers[*videoMapFilename] = vm
+	}
+
 	// Now load the scenarios.
 	scenarios := make(map[string]*Scenario)
 	err = fs.WalkDir(embeddedScenarios, "scenarios", func(path string, d fs.DirEntry, err error) error {

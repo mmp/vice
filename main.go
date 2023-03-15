@@ -51,6 +51,7 @@ var (
 	memprofile       = flag.String("memprofile", "", "write memory profile to this file")
 	devmode          = flag.Bool("devmode", false, "developer mode")
 	scenarioFilename = flag.String("scenario", "", "filename of JSON file with a scenario definition")
+	videoMapFilename = flag.String("videomap", "", "filename of JSON file with video map definitions")
 )
 
 func init() {
