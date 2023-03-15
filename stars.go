@@ -603,7 +603,7 @@ func (sp *STARSPane) Deactivate() {
 	sp.weatherRadar.Deactivate()
 }
 
-func (sp *STARSPane) ResetScenario() {
+func (sp *STARSPane) ResetScenarioGroup() {
 	ps := &sp.currentPreferenceSet
 
 	ps.Center = scenario.Center

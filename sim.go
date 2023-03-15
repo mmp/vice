@@ -32,7 +32,7 @@ var (
 type SimConnectionConfiguration struct {
 	numAircraft      int32
 	challenge        float32
-	scenarioConfig   *ScenarioConfig
+	scenarioConfig   *Scenario
 	controller       *Controller
 	validControllers map[string]*Controller
 }
@@ -40,31 +40,31 @@ type SimConnectionConfiguration struct {
 func (ssc *SimConnectionConfiguration) Initialize() {
 	ssc.numAircraft = 30
 	ssc.challenge = 0.25
-	ssc.ResetScenario()
+	ssc.ResetScenarioGroup()
 }
 
-func (ssc *SimConnectionConfiguration) ResetScenario() {
-	ssc.scenarioConfig = scenario.ScenarioConfigs[scenario.DefaultScenario]
+func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
+	ssc.scenarioConfig = scenario.Scenarios[scenario.DefaultScenarioGroup]
 	ssc.validControllers = make(map[string]*Controller)
-	for _, sc := range scenario.ScenarioConfigs {
+	for _, sc := range scenario.Scenarios {
 		ssc.validControllers[sc.Callsign] = scenario.ControlPositions[sc.Callsign]
 	}
 	ssc.controller = scenario.ControlPositions[scenario.DefaultController]
 
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 		if stars, ok := p.(*STARSPane); ok {
-			stars.ResetScenario()
+			stars.ResetScenarioGroup()
 		}
 	})
 }
 
 func (ssc *SimConnectionConfiguration) DrawUI() bool {
-	if imgui.BeginComboV("Scenario", scenario.Name, imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("Scenario Group", scenario.Name, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(scenarios) {
 			if imgui.SelectableV(name, name == scenario.Name, 0, imgui.Vec2{}) {
 				scenario = scenarios[name]
-				globalConfig.LastScenario = name
-				ssc.ResetScenario()
+				globalConfig.LastScenarioGroup = name
+				ssc.ResetScenarioGroup()
 			}
 		}
 		imgui.EndCombo()
@@ -76,9 +76,9 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				ssc.controller = ssc.validControllers[controllerName]
 				// Set the current scenario to the first one alphabetically
 				// with the selected controller.
-				for _, scenarioName := range SortedMapKeys(scenario.ScenarioConfigs) {
-					if scenario.ScenarioConfigs[scenarioName].Callsign == controllerName {
-						ssc.scenarioConfig = scenario.ScenarioConfigs[scenarioName]
+				for _, scenarioName := range SortedMapKeys(scenario.Scenarios) {
+					if scenario.Scenarios[scenarioName].Callsign == controllerName {
+						ssc.scenarioConfig = scenario.Scenarios[scenarioName]
 						break
 					}
 				}
@@ -90,12 +90,12 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 	scenarioConfig := ssc.scenarioConfig
 
 	if imgui.BeginComboV("Config", scenarioConfig.Name, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(scenario.ScenarioConfigs) {
-			if scenario.ScenarioConfigs[name].Callsign != ssc.controller.Callsign {
+		for _, name := range SortedMapKeys(scenario.Scenarios) {
+			if scenario.Scenarios[name].Callsign != ssc.controller.Callsign {
 				continue
 			}
 			if imgui.SelectableV(name, name == scenarioConfig.Name, 0, imgui.Vec2{}) {
-				ssc.scenarioConfig = scenario.ScenarioConfigs[name]
+				ssc.scenarioConfig = scenario.Scenarios[name]
 			}
 		}
 		imgui.EndCombo()
@@ -245,7 +245,7 @@ func (ssc *SimConnectionConfiguration) Connect() error {
 // Sim
 
 type Sim struct {
-	scenarioConfig *ScenarioConfig
+	scenarioConfig *Scenario
 
 	aircraft map[string]*Aircraft
 	handoffs map[string]time.Time
@@ -1070,7 +1070,7 @@ func (ss *Sim) SpawnAircraft() {
 			// we'll choose one with probability proportional to its
 			// rate...
 			idx := SampleWeighted(ss.scenarioConfig.DepartureRunways,
-				func(r ScenarioDepartureRunway) int {
+				func(r ScenarioGroupDepartureRunway) int {
 					if r.Airport+"/"+r.Runway != rwy {
 						return 0
 					}
@@ -1229,7 +1229,7 @@ func (ss *Sim) SpawnArrival(ap *Airport, arrivalGroup string) *Aircraft {
 	return ac
 }
 
-func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioDepartureRunway) *Aircraft {
+func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < ss.challenge {
 		// 50/50 split between the exact same departure and a departure to

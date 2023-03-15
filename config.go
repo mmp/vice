@@ -23,7 +23,7 @@ type GlobalConfig struct {
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 	WhatsNewIndex         int
-	LastScenario          string
+	LastScenarioGroup     string
 
 	Audio AudioSettings
 

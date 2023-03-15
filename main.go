@@ -40,8 +40,8 @@ var (
 	sim          *Sim
 	eventStream  *EventStream
 	lg           *Logger
-	scenarios    map[string]*Scenario
-	scenario     *Scenario
+	scenarios    map[string]*ScenarioGroup
+	scenario     *ScenarioGroup
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -122,9 +122,9 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
-	scenarios = LoadScenarios()
+	scenarios = LoadScenarioGroups()
 	// Use the last scenario, if available.
-	if s, ok := scenarios[globalConfig.LastScenario]; ok {
+	if s, ok := scenarios[globalConfig.LastScenarioGroup]; ok {
 		scenario = s
 	} else if len(scenarios) > 0 {
 		// Otherwise take the first one alphabetically.

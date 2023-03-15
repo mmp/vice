@@ -2800,7 +2800,233 @@
     ]
   },
   "center": "N040.45.26.477,W074.24.28.789",
-  "configs": {
+  "control_positions": {
+    "ABE_APP": {
+      "callsign": "ABE_APP",
+      "frequency": 119650,
+      "scope_char": "F",
+      "sector_id": "AF"
+    },
+    "BOS_CTR": {
+      "callsign": "BOS_CTR",
+      "frequency": 134700,
+      "scope_char": "C",
+      "sector_id": "B37"
+    },
+    "CDW_TWR": {
+      "callsign": "CDW_TWR",
+      "frequency": 119800,
+      "scope_char": "T",
+      "sector_id": "4T"
+    },
+    "DC_CTR": {
+      "callsign": "DC_CTR",
+      "frequency": 133725,
+      "scope_char": "C",
+      "sector_id": "W32"
+    },
+    "EWR_APP": {
+      "callsign": "EWR_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
+    "EWR_A_APP": {
+      "callsign": "EWR_A_APP",
+      "frequency": 120150,
+      "scope_char": "A",
+      "sector_id": "4A"
+    },
+    "EWR_DEP": {
+      "callsign": "EWR_DEP",
+      "frequency": 119200,
+      "scope_char": "N",
+      "sector_id": "4N"
+    },
+    "EWR_H_APP": {
+      "callsign": "EWR_H_APP",
+      "frequency": 132800,
+      "scope_char": "H",
+      "sector_id": "4H"
+    },
+    "EWR_P_APP": {
+      "callsign": "EWR_P_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
+    "EWR_Q_APP": {
+      "callsign": "EWR_Q_APP",
+      "frequency": 125500,
+      "scope_char": "Q",
+      "sector_id": "4Q"
+    },
+    "EWR_S_APP": {
+      "callsign": "EWR_S_APP",
+      "frequency": 123770,
+      "scope_char": "S",
+      "sector_id": "4S"
+    },
+    "EWR_TWR": {
+      "callsign": "EWR_TWR",
+      "frequency": 118300,
+      "scope_char": "T",
+      "sector_id": "4Z"
+    },
+    "EWR_U_APP": {
+      "callsign": "EWR_U_APP",
+      "frequency": 127600,
+      "scope_char": "U",
+      "sector_id": "4U"
+    },
+    "LGA_APP": {
+      "callsign": "LGA_APP",
+      "frequency": 120800,
+      "scope_char": "V",
+      "sector_id": "1V"
+    },
+    "LGA_DEP": {
+      "callsign": "LGA_L_DEP",
+      "frequency": 120400,
+      "scope_char": "L",
+      "sector_id": "1L"
+    },
+    "MMU_TWR": {
+      "callsign": "MMU_TWR",
+      "frequency": 118100,
+      "scope_char": "T",
+      "sector_id": "4K"
+    },
+    "NY_CTR": {
+      "callsign": "NY_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
+    "NY_LE_DEP": {
+      "callsign": "NY_LE_DEP",
+      "frequency": 126800,
+      "scope_char": "E",
+      "sector_id": "5E"
+    },
+    "NY_LN_DEP": {
+      "callsign": "NY_LN_DEP",
+      "frequency": 118170,
+      "scope_char": "T",
+      "sector_id": "5T"
+    },
+    "NY_LS_DEP": {
+      "callsign": "NY_LS_DEP",
+      "frequency": 124750,
+      "scope_char": "S",
+      "sector_id": "5S"
+    },
+    "NY_LW_DEP": {
+      "callsign": "NY_LW_DEP",
+      "frequency": 120850,
+      "scope_char": "W",
+      "sector_id": "5W"
+    },
+    "PHL_NA_APP": {
+      "callsign": "PHL_NA_APP",
+      "frequency": 128400,
+      "scope_char": "N",
+      "sector_id": "6N"
+    },
+    "TEB_TWR": {
+      "callsign": "TEB_TWR",
+      "frequency": 119500,
+      "scope_char": "T",
+      "sector_id": "4J"
+    },
+    "WRI_APP": {
+      "callsign": "WRI_APP",
+      "frequency": 1264700,
+      "scope_char": "Y",
+      "sector_id": "MY"
+    }
+  },
+  "default_controller": "EWR_APP",
+  "default_scenario": "KEWR Depart 22R Land 22L",
+  "fixes": {
+    "KEWR": "N040.41.34.749, W074.10.06.499",
+    "KHPN": "N041.04.01.027, W073.42.27.262",
+    "KSWF": "N041.30.14.734, W074.06.17.409",
+    "_CDW_10": "N040.52.37.814,W074.17.12.769",
+    "_CDW_22": "N040.52.43.252,W074.16.41.623",
+    "_CDW_28": "N040.52.42.030,W074.16.24.677",
+    "_CDW_4": "N040.52.03.893,W074.17.10.709",
+    "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",
+    "_EWR4_4La": "N040.45.33.714,W074.05.08.743",
+    "_EWR_11": "N040.42.10.096,W074.10.50.473",
+    "_EWR_22L": "N040.42.05.592,W074.09.32.827",
+    "_EWR_22R": "N040.42.04.246,W074.09.47.603",
+    "_EWR_29": "N040.42.04.259,W074.09.22.527",
+    "_EWR_4L": "N040.40.45.790,W074.10.36.795",
+    "_EWR_4R": "N040.40.39.678,W074.10.27.566",
+    "_MMU_13": "N040.48.03.306,W074.25.28.390",
+    "_MMU_23": "N040.48.23.233,W074.24.23.159",
+    "_MMU_31": "N040.47.47.486,W074.24.40.957",
+    "_MMU_5": "N040.47.35.044,W074.25.09.274",
+    "_TEB4_1a": "N040.53.33.995,W074.02.07.249",
+    "_TEB_1": "N040.50.19.152,W074.03.37.501",
+    "_TEB_19": "N040.51.28.119,W074.03.32.091",
+    "_TEB_24": "N040.51.27.762,W074.03.14.842",
+    "_TEB_6": "N040.50.48.376,W074.04.13.509"
+  },
+  "magnetic_variation": 13.3,
+  "name": "KEWR",
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 45,
+  "primary_airport": "KEWR",
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "elevation": 136,
+      "position": "KEWR",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "elevation": 708,
+      "position": "KHPN",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "elevation": 185,
+      "position": "ISP",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "elevation": 143,
+      "position": "JFK",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "elevation": 972,
+      "position": "KSWF",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+  "scenarios": {
     "KEWR Depart 22R": {
       "callsign": "EWR_DEP",
       "controllers": [
@@ -3178,232 +3404,6 @@
         "gust": 0,
         "speed": 7
       }
-    }
-  },
-  "control_positions": {
-    "ABE_APP": {
-      "callsign": "ABE_APP",
-      "frequency": 119650,
-      "scope_char": "F",
-      "sector_id": "AF"
-    },
-    "BOS_CTR": {
-      "callsign": "BOS_CTR",
-      "frequency": 134700,
-      "scope_char": "C",
-      "sector_id": "B37"
-    },
-    "CDW_TWR": {
-      "callsign": "CDW_TWR",
-      "frequency": 119800,
-      "scope_char": "T",
-      "sector_id": "4T"
-    },
-    "DC_CTR": {
-      "callsign": "DC_CTR",
-      "frequency": 133725,
-      "scope_char": "C",
-      "sector_id": "W32"
-    },
-    "EWR_APP": {
-      "callsign": "EWR_APP",
-      "frequency": 128550,
-      "scope_char": "P",
-      "sector_id": "4P"
-    },
-    "EWR_A_APP": {
-      "callsign": "EWR_A_APP",
-      "frequency": 120150,
-      "scope_char": "A",
-      "sector_id": "4A"
-    },
-    "EWR_DEP": {
-      "callsign": "EWR_DEP",
-      "frequency": 119200,
-      "scope_char": "N",
-      "sector_id": "4N"
-    },
-    "EWR_H_APP": {
-      "callsign": "EWR_H_APP",
-      "frequency": 132800,
-      "scope_char": "H",
-      "sector_id": "4H"
-    },
-    "EWR_P_APP": {
-      "callsign": "EWR_P_APP",
-      "frequency": 128550,
-      "scope_char": "P",
-      "sector_id": "4P"
-    },
-    "EWR_Q_APP": {
-      "callsign": "EWR_Q_APP",
-      "frequency": 125500,
-      "scope_char": "Q",
-      "sector_id": "4Q"
-    },
-    "EWR_S_APP": {
-      "callsign": "EWR_S_APP",
-      "frequency": 123770,
-      "scope_char": "S",
-      "sector_id": "4S"
-    },
-    "EWR_TWR": {
-      "callsign": "EWR_TWR",
-      "frequency": 118300,
-      "scope_char": "T",
-      "sector_id": "4Z"
-    },
-    "EWR_U_APP": {
-      "callsign": "EWR_U_APP",
-      "frequency": 127600,
-      "scope_char": "U",
-      "sector_id": "4U"
-    },
-    "LGA_APP": {
-      "callsign": "LGA_APP",
-      "frequency": 120800,
-      "scope_char": "V",
-      "sector_id": "1V"
-    },
-    "LGA_DEP": {
-      "callsign": "LGA_L_DEP",
-      "frequency": 120400,
-      "scope_char": "L",
-      "sector_id": "1L"
-    },
-    "MMU_TWR": {
-      "callsign": "MMU_TWR",
-      "frequency": 118100,
-      "scope_char": "T",
-      "sector_id": "4K"
-    },
-    "NY_CTR": {
-      "callsign": "NY_CTR",
-      "frequency": 125325,
-      "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_LE_DEP": {
-      "callsign": "NY_LE_DEP",
-      "frequency": 126800,
-      "scope_char": "E",
-      "sector_id": "5E"
-    },
-    "NY_LN_DEP": {
-      "callsign": "NY_LN_DEP",
-      "frequency": 118170,
-      "scope_char": "T",
-      "sector_id": "5T"
-    },
-    "NY_LS_DEP": {
-      "callsign": "NY_LS_DEP",
-      "frequency": 124750,
-      "scope_char": "S",
-      "sector_id": "5S"
-    },
-    "NY_LW_DEP": {
-      "callsign": "NY_LW_DEP",
-      "frequency": 120850,
-      "scope_char": "W",
-      "sector_id": "5W"
-    },
-    "PHL_NA_APP": {
-      "callsign": "PHL_NA_APP",
-      "frequency": 128400,
-      "scope_char": "N",
-      "sector_id": "6N"
-    },
-    "TEB_TWR": {
-      "callsign": "TEB_TWR",
-      "frequency": 119500,
-      "scope_char": "T",
-      "sector_id": "4J"
-    },
-    "WRI_APP": {
-      "callsign": "WRI_APP",
-      "frequency": 1264700,
-      "scope_char": "Y",
-      "sector_id": "MY"
-    }
-  },
-  "default_controller": "EWR_APP",
-  "default_scenario": "KEWR Depart 22R Land 22L",
-  "fixes": {
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KSWF": "N041.30.14.734, W074.06.17.409",
-    "_CDW_10": "N040.52.37.814,W074.17.12.769",
-    "_CDW_22": "N040.52.43.252,W074.16.41.623",
-    "_CDW_28": "N040.52.42.030,W074.16.24.677",
-    "_CDW_4": "N040.52.03.893,W074.17.10.709",
-    "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",
-    "_EWR4_4La": "N040.45.33.714,W074.05.08.743",
-    "_EWR_11": "N040.42.10.096,W074.10.50.473",
-    "_EWR_22L": "N040.42.05.592,W074.09.32.827",
-    "_EWR_22R": "N040.42.04.246,W074.09.47.603",
-    "_EWR_29": "N040.42.04.259,W074.09.22.527",
-    "_EWR_4L": "N040.40.45.790,W074.10.36.795",
-    "_EWR_4R": "N040.40.39.678,W074.10.27.566",
-    "_MMU_13": "N040.48.03.306,W074.25.28.390",
-    "_MMU_23": "N040.48.23.233,W074.24.23.159",
-    "_MMU_31": "N040.47.47.486,W074.24.40.957",
-    "_MMU_5": "N040.47.35.044,W074.25.09.274",
-    "_TEB4_1a": "N040.53.33.995,W074.02.07.249",
-    "_TEB_1": "N040.50.19.152,W074.03.37.501",
-    "_TEB_19": "N040.51.28.119,W074.03.32.091",
-    "_TEB_24": "N040.51.27.762,W074.03.14.842",
-    "_TEB_6": "N040.50.48.376,W074.04.13.509"
-  },
-  "magnetic_variation": 13.3,
-  "name": "KEWR",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
-  "primary_airport": "KEWR",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "elevation": 136,
-      "position": "KEWR",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "elevation": 708,
-      "position": "KHPN",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "elevation": 185,
-      "position": "ISP",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "elevation": 143,
-      "position": "JFK",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "elevation": 972,
-      "position": "KSWF",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
     }
   },
   "scratchpads": {

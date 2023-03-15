@@ -2982,7 +2982,200 @@
     ]
   },
   "center": "N040.38.24.354,W073.46.35.388",
-  "configs": {
+  "control_positions": {
+    "BOS_E_CTR": {
+      "callsign": "BOS_E_CTR",
+      "frequency": 133450,
+      "scope_char": "C",
+      "sector_id": "B17"
+    },
+    "EWR_APP": {
+      "callsign": "EWR_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
+    "FRG_TWR": {
+      "callsign": "FRG_TWR",
+      "frequency": 118800,
+      "scope_char": "M",
+      "sector_id": "2M"
+    },
+    "ISP_APP": {
+      "callsign": "ISP_APP",
+      "frequency": 120050,
+      "scope_char": "H",
+      "sector_id": "3H"
+    },
+    "JFK_APP": {
+      "callsign": "JFK_APP",
+      "frequency": 128125,
+      "scope_char": "G",
+      "sector_id": "2G"
+    },
+    "JFK_DEP": {
+      "callsign": "JFK_DEP",
+      "frequency": 135900,
+      "scope_char": "J",
+      "sector_id": "2J"
+    },
+    "JFK_TWR": {
+      "callsign": "JFK_TWR",
+      "frequency": 119100,
+      "scope_char": "T",
+      "sector_id": "2W"
+    },
+    "LGA_DEP": {
+      "callsign": "LGA_DEP",
+      "frequency": 120400,
+      "scope_char": "L",
+      "sector_id": "1L"
+    },
+    "NY_B_CTR": {
+      "callsign": "NY_B_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
+    "NY_CTR": {
+      "callsign": "NY_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
+    "NY_C_CTR": {
+      "callsign": "NY_C_CTR",
+      "frequency": 132175,
+      "scope_char": "C",
+      "sector_id": "N34"
+    },
+    "NY_F_CTR": {
+      "callsign": "NY_F_CTR",
+      "frequency": 128300,
+      "scope_char": "C",
+      "sector_id": "N66"
+    },
+    "NY_LE_DEP": {
+      "callsign": "NY_LE_DEP",
+      "frequency": 126800,
+      "scope_char": "E",
+      "sector_id": "5E"
+    },
+    "NY_LS_DEP": {
+      "callsign": "NY_LS_DEP",
+      "frequency": 124750,
+      "scope_char": "S",
+      "sector_id": "5S"
+    },
+    "NY_L_DEP": {
+      "callsign": "NY_L_DEP",
+      "frequency": 126800,
+      "scope_char": "E",
+      "sector_id": "5E"
+    }
+  },
+  "default_controller": "JFK_APP",
+  "default_scenario": "KJFK Depart 13R Land 13L/22L",
+  "fixes": {
+    "KEWR": "N040.41.34.749, W074.10.06.499",
+    "KHPN": "N041.04.01.027, W073.42.27.262",
+    "KSWF": "N041.30.14.734, W074.06.17.409",
+    "_FRG_1": "N040.43.20.230,W073.24.51.229",
+    "_FRG_14": "N040.44.02.898,W073.25.17.486",
+    "_FRG_14a": "N040.38.37.868,W073.22.41.398",
+    "_FRG_19": "N040.44.10.396,W073.24.50.982",
+    "_FRG_19a": "N040.41.03.313,W073.26.45.267",
+    "_FRG_1a": "N040.46.52.637,W073.24.58.809",
+    "_FRG_32": "N040.43.20.436,W073.24.13.848",
+    "_FRG_32a": "N040.45.28.921,W073.27.08.421",
+    "_ISP_15R": "N040.48.05.462,W073.06.24.356",
+    "_ISP_15Ra": "N040.45.33.934,W073.02.36.555",
+    "_ISP_15Rb": "N040.49.18.755,W073.03.43.379",
+    "_ISP_15Rc": "N040.48.34.288,W073.09.11.211",
+    "_ISP_24": "N040.48.06.643,W073.05.39.202",
+    "_ISP_24a": "N040.45.56.414,W073.08.58.879",
+    "_ISP_24b": "N040.47.41.032,W073.06.08.371",
+    "_ISP_24c": "N040.48.48.350,W073.07.30.466",
+    "_ISP_33L": "N040.47.32.819,W073.05.41.702",
+    "_ISP_33La": "N040.49.52.085,W073.08.43.141",
+    "_ISP_33Lb": "N040.49.21.515,W073.06.31.250",
+    "_ISP_33Lc": "N040.48.20.019,W073.10.31.686",
+    "_ISP_6": "N040.47.18.743,W073.06.44.022",
+    "_ISP_6a": "N040.50.43.281,W073.02.11.698",
+    "_ISP_6b": "N040.50.28.573,W073.09.10.827",
+    "_JFK_13L": "N040.39.26.976,W073.47.24.277",
+    "_JFK_13R": "N040.38.53.537,W073.49.00.188",
+    "_JFK_22L": "N040.38.41.232,W073.45.18.511",
+    "_JFK_22R": "N040.39.00.362,W073.45.49.053",
+    "_JFK_31L": "N040.37.41.000,W073.46.20.227",
+    "_JFK_31R": "N040.38.35.986,W073.45.31.503",
+    "_JFK_4L": "N040.37.19.370,W073.47.08.045",
+    "_JFK_4La": "N040.39.21.332,W073.45.32.849",
+    "_JFK_4R": "N040.37.31.661,W073.46.12.894",
+    "_LGA_13": "N040.46.56.029,W073.52.42.359",
+    "_LGA_13a": "N040.48.06.479,W073.55.40.914",
+    "_LGA_22": "N040.47.06.864,W073.52.14.811",
+    "_LGA_22a": "N040.51.18.890,W073.49.30.483",
+    "_LGA_31": "N040.46.19.788,W073.51.25.949",
+    "_LGA_31a": "N040.45.34.950,W073.49.52.922",
+    "_LGA_31b": "N040.48.50.809,W073.46.42.200",
+    "_LGA_4": "N040.46.09.447,W073.53.02.574",
+    "_LGA_4a": "N040.44.56.662,W073.51.53.497",
+    "_LGA_4b": "N040.47.59.557,W073.47.11.533"
+  },
+  "magnetic_variation": 13.3,
+  "name": "KJFK",
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 45,
+  "primary_airport": "KJFK",
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "elevation": 136,
+      "position": "KEWR",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "elevation": 708,
+      "position": "KHPN",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "elevation": 185,
+      "position": "KISP",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "elevation": 143,
+      "position": "KJFK",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "elevation": 972,
+      "position": "KSWF",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+  "scenarios": {
     "KJFK Depart 13R": {
       "callsign": "JFK_DEP",
       "controllers": [
@@ -3666,199 +3859,6 @@
         "gust": 25,
         "speed": 19
       }
-    }
-  },
-  "control_positions": {
-    "BOS_E_CTR": {
-      "callsign": "BOS_E_CTR",
-      "frequency": 133450,
-      "scope_char": "C",
-      "sector_id": "B17"
-    },
-    "EWR_APP": {
-      "callsign": "EWR_APP",
-      "frequency": 128550,
-      "scope_char": "P",
-      "sector_id": "4P"
-    },
-    "FRG_TWR": {
-      "callsign": "FRG_TWR",
-      "frequency": 118800,
-      "scope_char": "M",
-      "sector_id": "2M"
-    },
-    "ISP_APP": {
-      "callsign": "ISP_APP",
-      "frequency": 120050,
-      "scope_char": "H",
-      "sector_id": "3H"
-    },
-    "JFK_APP": {
-      "callsign": "JFK_APP",
-      "frequency": 128125,
-      "scope_char": "G",
-      "sector_id": "2G"
-    },
-    "JFK_DEP": {
-      "callsign": "JFK_DEP",
-      "frequency": 135900,
-      "scope_char": "J",
-      "sector_id": "2J"
-    },
-    "JFK_TWR": {
-      "callsign": "JFK_TWR",
-      "frequency": 119100,
-      "scope_char": "T",
-      "sector_id": "2W"
-    },
-    "LGA_DEP": {
-      "callsign": "LGA_DEP",
-      "frequency": 120400,
-      "scope_char": "L",
-      "sector_id": "1L"
-    },
-    "NY_B_CTR": {
-      "callsign": "NY_B_CTR",
-      "frequency": 125325,
-      "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_CTR": {
-      "callsign": "NY_CTR",
-      "frequency": 125325,
-      "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_C_CTR": {
-      "callsign": "NY_C_CTR",
-      "frequency": 132175,
-      "scope_char": "C",
-      "sector_id": "N34"
-    },
-    "NY_F_CTR": {
-      "callsign": "NY_F_CTR",
-      "frequency": 128300,
-      "scope_char": "C",
-      "sector_id": "N66"
-    },
-    "NY_LE_DEP": {
-      "callsign": "NY_LE_DEP",
-      "frequency": 126800,
-      "scope_char": "E",
-      "sector_id": "5E"
-    },
-    "NY_LS_DEP": {
-      "callsign": "NY_LS_DEP",
-      "frequency": 124750,
-      "scope_char": "S",
-      "sector_id": "5S"
-    },
-    "NY_L_DEP": {
-      "callsign": "NY_L_DEP",
-      "frequency": 126800,
-      "scope_char": "E",
-      "sector_id": "5E"
-    }
-  },
-  "default_controller": "JFK_APP",
-  "default_scenario": "KJFK Depart 13R Land 13L/22L",
-  "fixes": {
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KSWF": "N041.30.14.734, W074.06.17.409",
-    "_FRG_1": "N040.43.20.230,W073.24.51.229",
-    "_FRG_14": "N040.44.02.898,W073.25.17.486",
-    "_FRG_14a": "N040.38.37.868,W073.22.41.398",
-    "_FRG_19": "N040.44.10.396,W073.24.50.982",
-    "_FRG_19a": "N040.41.03.313,W073.26.45.267",
-    "_FRG_1a": "N040.46.52.637,W073.24.58.809",
-    "_FRG_32": "N040.43.20.436,W073.24.13.848",
-    "_FRG_32a": "N040.45.28.921,W073.27.08.421",
-    "_ISP_15R": "N040.48.05.462,W073.06.24.356",
-    "_ISP_15Ra": "N040.45.33.934,W073.02.36.555",
-    "_ISP_15Rb": "N040.49.18.755,W073.03.43.379",
-    "_ISP_15Rc": "N040.48.34.288,W073.09.11.211",
-    "_ISP_24": "N040.48.06.643,W073.05.39.202",
-    "_ISP_24a": "N040.45.56.414,W073.08.58.879",
-    "_ISP_24b": "N040.47.41.032,W073.06.08.371",
-    "_ISP_24c": "N040.48.48.350,W073.07.30.466",
-    "_ISP_33L": "N040.47.32.819,W073.05.41.702",
-    "_ISP_33La": "N040.49.52.085,W073.08.43.141",
-    "_ISP_33Lb": "N040.49.21.515,W073.06.31.250",
-    "_ISP_33Lc": "N040.48.20.019,W073.10.31.686",
-    "_ISP_6": "N040.47.18.743,W073.06.44.022",
-    "_ISP_6a": "N040.50.43.281,W073.02.11.698",
-    "_ISP_6b": "N040.50.28.573,W073.09.10.827",
-    "_JFK_13L": "N040.39.26.976,W073.47.24.277",
-    "_JFK_13R": "N040.38.53.537,W073.49.00.188",
-    "_JFK_22L": "N040.38.41.232,W073.45.18.511",
-    "_JFK_22R": "N040.39.00.362,W073.45.49.053",
-    "_JFK_31L": "N040.37.41.000,W073.46.20.227",
-    "_JFK_31R": "N040.38.35.986,W073.45.31.503",
-    "_JFK_4L": "N040.37.19.370,W073.47.08.045",
-    "_JFK_4La": "N040.39.21.332,W073.45.32.849",
-    "_JFK_4R": "N040.37.31.661,W073.46.12.894",
-    "_LGA_13": "N040.46.56.029,W073.52.42.359",
-    "_LGA_13a": "N040.48.06.479,W073.55.40.914",
-    "_LGA_22": "N040.47.06.864,W073.52.14.811",
-    "_LGA_22a": "N040.51.18.890,W073.49.30.483",
-    "_LGA_31": "N040.46.19.788,W073.51.25.949",
-    "_LGA_31a": "N040.45.34.950,W073.49.52.922",
-    "_LGA_31b": "N040.48.50.809,W073.46.42.200",
-    "_LGA_4": "N040.46.09.447,W073.53.02.574",
-    "_LGA_4a": "N040.44.56.662,W073.51.53.497",
-    "_LGA_4b": "N040.47.59.557,W073.47.11.533"
-  },
-  "magnetic_variation": 13.3,
-  "name": "KJFK",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
-  "primary_airport": "KJFK",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "elevation": 136,
-      "position": "KEWR",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "elevation": 708,
-      "position": "KHPN",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "elevation": 185,
-      "position": "KISP",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "elevation": 143,
-      "position": "KJFK",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "elevation": 972,
-      "position": "KSWF",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
     }
   },
   "scratchpads": {

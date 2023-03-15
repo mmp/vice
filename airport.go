@@ -26,7 +26,7 @@ type Airport struct {
 	ArrivalRunways     []*ArrivalRunway   `json:"-"`
 }
 
-func (ac *Airport) PostDeserialize(t *Scenario) []error {
+func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 	var errors []error
 
 	for _, rwy := range ac.ArrivalRunwayNames {

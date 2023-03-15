@@ -4994,7 +4994,114 @@
     ]
   },
   "center": "N039.52.05.747, W075.14.52.117",
-  "configs": {
+  "control_positions": {
+    "DC_CTR": {
+      "callsign": "DC_CTR",
+      "frequency": 133725,
+      "scope_char": "C",
+      "sector_id": "W32"
+    },
+    "EWR_APP": {
+      "callsign": "EWR_APP",
+      "frequency": 128550,
+      "scope_char": "P",
+      "sector_id": "4P"
+    },
+    "LGA_DEP": {
+      "callsign": "LGA_DEP",
+      "frequency": 120400,
+      "scope_char": "L",
+      "sector_id": "1L"
+    },
+    "NY_B_CTR": {
+      "callsign": "NY_B_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
+    "NY_CTR": {
+      "callsign": "NY_CTR",
+      "frequency": 125325,
+      "scope_char": "C",
+      "sector_id": "N56"
+    },
+    "NY_C_CTR": {
+      "callsign": "NY_C_CTR",
+      "frequency": 132175,
+      "scope_char": "C",
+      "sector_id": "N34"
+    },
+    "NY_F_CTR": {
+      "callsign": "NY_F_CTR",
+      "frequency": 128300,
+      "scope_char": "C",
+      "sector_id": "N66"
+    },
+    "PHL_F1_APP": {
+      "callsign": "PHL_F1_APP",
+      "frequency": 124500,
+      "scope_char": "F",
+      "sector_id": "6F"
+    },
+    "PHL_NA_APP": {
+      "callsign": "PHL_NA_APP",
+      "frequency": 128400,
+      "scope_char": "N",
+      "sector_id": "6N"
+    },
+    "PHL_ND_DEP": {
+      "callsign": "PHL_ND_DEP",
+      "frequency": 124350,
+      "scope_char": "E",
+      "sector_id": "5E"
+    },
+    "PHL_SA_APP": {
+      "callsign": "PHL_SA_APP",
+      "frequency": 133870,
+      "scope_char": "S",
+      "sector_id": "6S"
+    },
+    "PHL_TWR": {
+      "callsign": "PHL_TWR",
+      "frequency": 118500,
+      "scope_char": "T",
+      "sector_id": "6A"
+    }
+  },
+  "default_controller": "PHL_NA_APP",
+  "default_scenario": "KPHL Depart 27L Land 27R",
+  "fixes": {
+    "KEWR": "N040.41.34.749, W074.10.06.499",
+    "KHPN": "N041.04.01.027, W073.42.27.262",
+    "KPHL": "N039.52.05.747, W075.14.52.117",
+    "KSWF": "N041.30.14.734, W074.06.17.409"
+  },
+  "magnetic_variation": 13.3,
+  "name": "KPHL",
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 45,
+  "primary_airport": "KPHL",
+  "radar_sites": {
+    "NXX": {
+      "char": "N",
+      "elevation": 408,
+      "position": "40.19980, -75.14820",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    },
+    "PHL": {
+      "char": "P",
+      "elevation": 90,
+      "position": "N039.52.05.747, W075.14.52.117",
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    }
+  },
+  "scenarios": {
     "KPHL 27R Final": {
       "approach_airspace": [
         "PHL_F1_APP27",
@@ -5141,113 +5248,6 @@
         "gust": 24,
         "speed": 17
       }
-    }
-  },
-  "control_positions": {
-    "DC_CTR": {
-      "callsign": "DC_CTR",
-      "frequency": 133725,
-      "scope_char": "C",
-      "sector_id": "W32"
-    },
-    "EWR_APP": {
-      "callsign": "EWR_APP",
-      "frequency": 128550,
-      "scope_char": "P",
-      "sector_id": "4P"
-    },
-    "LGA_DEP": {
-      "callsign": "LGA_DEP",
-      "frequency": 120400,
-      "scope_char": "L",
-      "sector_id": "1L"
-    },
-    "NY_B_CTR": {
-      "callsign": "NY_B_CTR",
-      "frequency": 125325,
-      "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_CTR": {
-      "callsign": "NY_CTR",
-      "frequency": 125325,
-      "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_C_CTR": {
-      "callsign": "NY_C_CTR",
-      "frequency": 132175,
-      "scope_char": "C",
-      "sector_id": "N34"
-    },
-    "NY_F_CTR": {
-      "callsign": "NY_F_CTR",
-      "frequency": 128300,
-      "scope_char": "C",
-      "sector_id": "N66"
-    },
-    "PHL_F1_APP": {
-      "callsign": "PHL_F1_APP",
-      "frequency": 124500,
-      "scope_char": "F",
-      "sector_id": "6F"
-    },
-    "PHL_NA_APP": {
-      "callsign": "PHL_NA_APP",
-      "frequency": 128400,
-      "scope_char": "N",
-      "sector_id": "6N"
-    },
-    "PHL_ND_DEP": {
-      "callsign": "PHL_ND_DEP",
-      "frequency": 124350,
-      "scope_char": "E",
-      "sector_id": "5E"
-    },
-    "PHL_SA_APP": {
-      "callsign": "PHL_SA_APP",
-      "frequency": 133870,
-      "scope_char": "S",
-      "sector_id": "6S"
-    },
-    "PHL_TWR": {
-      "callsign": "PHL_TWR",
-      "frequency": 118500,
-      "scope_char": "T",
-      "sector_id": "6A"
-    }
-  },
-  "default_controller": "PHL_NA_APP",
-  "default_scenario": "KPHL Depart 27L Land 27R",
-  "fixes": {
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KPHL": "N039.52.05.747, W075.14.52.117",
-    "KSWF": "N041.30.14.734, W074.06.17.409"
-  },
-  "magnetic_variation": 13.3,
-  "name": "KPHL",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
-  "primary_airport": "KPHL",
-  "radar_sites": {
-    "NXX": {
-      "char": "N",
-      "elevation": 408,
-      "position": "40.19980, -75.14820",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    },
-    "PHL": {
-      "char": "P",
-      "elevation": 90,
-      "position": "N039.52.05.747, W075.14.52.117",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
     }
   },
   "scratchpads": {

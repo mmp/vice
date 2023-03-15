@@ -14,19 +14,19 @@ import (
 	"time"
 )
 
-type Scenario struct {
-	Name               string                      `json:"name"`
-	Airports           map[string]*Airport         `json:"airports"`
-	VideoMapFile       string                      `json:"video_map_file"`
-	Fixes              map[string]Point2LL         `json:"fixes"`
-	ScenarioConfigs    map[string]*ScenarioConfig  `json:"configs"`
-	DefaultController  string                      `json:"default_controller"`
-	DefaultScenario    string                      `json:"default_scenario"`
-	ControlPositions   map[string]*Controller      `json:"control_positions"`
-	Scratchpads        map[string]string           `json:"scratchpads"`
-	AirspaceBoundaries map[string][]Point2LL       `json:"airspace_boundaries"`
-	AirspaceVolumes    map[string][]AirspaceVolume `json:"airspace_volumes"`
-	ArrivalGroups      map[string][]Arrival        `json:"arrival_groups"`
+type ScenarioGroup struct {
+	Name                 string                      `json:"name"`
+	Airports             map[string]*Airport         `json:"airports"`
+	VideoMapFile         string                      `json:"video_map_file"`
+	Fixes                map[string]Point2LL         `json:"fixes"`
+	Scenarios            map[string]*Scenario        `json:"scenarios"`
+	DefaultController    string                      `json:"default_controller"`
+	DefaultScenarioGroup string                      `json:"default_scenario"`
+	ControlPositions     map[string]*Controller      `json:"control_positions"`
+	Scratchpads          map[string]string           `json:"scratchpads"`
+	AirspaceBoundaries   map[string][]Point2LL       `json:"airspace_boundaries"`
+	AirspaceVolumes      map[string][]AirspaceVolume `json:"airspace_volumes"`
+	ArrivalGroups        map[string][]Arrival        `json:"arrival_groups"`
 
 	Center         Point2LL              `json:"center"`
 	PrimaryAirport string                `json:"primary_airport"`
@@ -67,7 +67,7 @@ type AirspaceVolume struct {
 	BoundaryNames []string     `json:"boundaries"`
 }
 
-type ScenarioConfig struct {
+type Scenario struct {
 	Name        string   `json:"name"`
 	Callsign    string   `json:"callsign"`
 	Wind        Wind     `json:"wind"`
@@ -84,8 +84,8 @@ type ScenarioConfig struct {
 	ApproachAirspaceNames  []string         `json:"approach_airspace"`
 	DepartureAirspaceNames []string         `json:"departure_airspace"`
 
-	DepartureRunways []ScenarioDepartureRunway `json:"departure_runways,omitempty"`
-	ArrivalRunways   []ScenarioArrivalRunway   `json:"arrival_runways,omitempty"`
+	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
+	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
 	// The same runway may be present multiple times in DepartureRunways,
 	// with different Category values. However, we want to make sure that
@@ -97,7 +97,7 @@ type ScenarioConfig struct {
 	nextDepartureSpawn map[string]time.Time
 }
 
-type ScenarioDepartureRunway struct {
+type ScenarioGroupDepartureRunway struct {
 	Airport  string `json:"airport"`
 	Runway   string `json:"runway"`
 	Category string `json:"category,omitempty"`
@@ -107,7 +107,7 @@ type ScenarioDepartureRunway struct {
 	exitRoutes    map[string]ExitRoute // copied from DepartureRunway
 }
 
-type ScenarioArrivalRunway struct {
+type ScenarioGroupArrivalRunway struct {
 	Airport string `json:"airport"`
 	Runway  string `json:"runway"`
 }
@@ -118,11 +118,11 @@ type Wind struct {
 	Gust      int32 `json:"gust"`
 }
 
-func (s *ScenarioConfig) AllAirports() []string {
+func (s *Scenario) AllAirports() []string {
 	return append(s.DepartureAirports(), s.ArrivalAirports()...)
 }
 
-func (s *ScenarioConfig) DepartureAirports() []string {
+func (s *Scenario) DepartureAirports() []string {
 	m := make(map[string]interface{})
 	for _, rwy := range s.DepartureRunways {
 		m[rwy.Airport] = nil
@@ -130,7 +130,7 @@ func (s *ScenarioConfig) DepartureAirports() []string {
 	return SortedMapKeys(m)
 }
 
-func (s *ScenarioConfig) ArrivalAirports() []string {
+func (s *Scenario) ArrivalAirports() []string {
 	m := make(map[string]interface{})
 	for _, rwy := range s.ArrivalRunways {
 		m[rwy.Airport] = nil
@@ -138,7 +138,7 @@ func (s *ScenarioConfig) ArrivalAirports() []string {
 	return SortedMapKeys(m)
 }
 
-func (s *ScenarioConfig) runwayDepartureRate(ar string) int {
+func (s *Scenario) runwayDepartureRate(ar string) int {
 	r := 0
 	for _, rwy := range s.DepartureRunways {
 		if ar == rwy.Airport+"/"+rwy.Runway {
@@ -148,7 +148,7 @@ func (s *ScenarioConfig) runwayDepartureRate(ar string) int {
 	return r
 }
 
-func (s *ScenarioConfig) PostDeserialize(t *Scenario) []error {
+func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	var errors []error
 
 	for _, as := range s.ApproachAirspaceNames {
@@ -262,10 +262,10 @@ func (s *ScenarioConfig) PostDeserialize(t *Scenario) []error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Scenario
+// ScenarioGroup
 
-func (t *Scenario) Locate(s string) (Point2LL, bool) {
-	// Scenario's definitions take precedence...
+func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
+	// ScenarioGroup's definitions take precedence...
 	if ap, ok := t.Airports[s]; ok {
 		return ap.Location, true
 	} else if p, ok := t.Fixes[s]; ok {
@@ -281,7 +281,7 @@ func (t *Scenario) Locate(s string) (Point2LL, bool) {
 	}
 }
 
-func (t *Scenario) PostDeserialize() {
+func (t *ScenarioGroup) PostDeserialize() {
 	var errors []error
 
 	for name, volumes := range t.AirspaceVolumes {
@@ -305,8 +305,8 @@ func (t *Scenario) PostDeserialize() {
 		}
 	}
 
-	if _, ok := t.ScenarioConfigs[t.DefaultScenario]; !ok {
-		errors = append(errors, fmt.Errorf("%s: default scenario not found in %s", t.DefaultScenario, t.Name))
+	if _, ok := t.Scenarios[t.DefaultScenarioGroup]; !ok {
+		errors = append(errors, fmt.Errorf("%s: default scenario not found in %s", t.DefaultScenarioGroup, t.Name))
 	}
 
 	if _, ok := t.ControlPositions[t.DefaultController]; !ok {
@@ -314,7 +314,7 @@ func (t *Scenario) PostDeserialize() {
 	} else {
 		// make sure the controller has at least one scenario..
 		found := false
-		for _, sc := range t.ScenarioConfigs {
+		for _, sc := range t.Scenarios {
 			if sc.Callsign == t.DefaultController {
 				found = true
 				break
@@ -368,7 +368,7 @@ func (t *Scenario) PostDeserialize() {
 	}
 
 	// Do after airports!
-	for _, s := range t.ScenarioConfigs {
+	for _, s := range t.Scenarios {
 		errors = append(errors, s.PostDeserialize(t)...)
 	}
 
@@ -380,7 +380,7 @@ func (t *Scenario) PostDeserialize() {
 	}
 }
 
-func (t *Scenario) InitializeWaypointLocations(waypoints []Waypoint) []error {
+func (t *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint) []error {
 	var prev Point2LL
 	var errors []error
 
@@ -449,11 +449,11 @@ func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]i
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// LoadScenarios
+// LoadScenarioGroups
 
 var (
 	//go:embed scenarios/*.json
-	embeddedScenarios embed.FS
+	embeddedScenarioGroups embed.FS
 
 	//go:embed videomaps/*.json.zst
 	embeddedVideoMaps embed.FS
@@ -495,13 +495,13 @@ func loadVideoMaps(filesystem fs.FS, path string) (map[string]CommandBuffer, err
 	return vm, nil
 }
 
-func loadScenario(filesystem fs.FS, path string) (*Scenario, error) {
+func loadScenarioGroup(filesystem fs.FS, path string) (*ScenarioGroup, error) {
 	contents, err := fs.ReadFile(filesystem, path)
 	if err != nil {
 		return nil, err
 	}
 
-	var s Scenario
+	var s ScenarioGroup
 	if err := UnmarshalJSON(contents, &s); err != nil {
 		return nil, err
 	}
@@ -511,14 +511,14 @@ func loadScenario(filesystem fs.FS, path string) (*Scenario, error) {
 	return &s, err
 }
 
-// LoadScenarios loads all of the available scenarios, both from the
+// LoadScenarioGroups loads all of the available scenarios, both from the
 // scenarios/ directory in the source code distribution as well as,
 // optionally, a scenario file provided on the command line.  It doesn't
 // try to do any sort of meaningful error handling; we'd rather force any
 // errors due to invalid scenario definitions to be fixed rather than
 // trying to recover, so error messages are printed and the program exits
 // if there are any issues..
-func LoadScenarios() map[string]*Scenario {
+func LoadScenarioGroups() map[string]*ScenarioGroup {
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 	err := fs.WalkDir(embeddedVideoMaps, "videomaps", func(path string, d fs.DirEntry, err error) error {
@@ -549,14 +549,14 @@ func LoadScenarios() map[string]*Scenario {
 	}
 
 	// Now load the scenarios.
-	scenarios := make(map[string]*Scenario)
-	err = fs.WalkDir(embeddedScenarios, "scenarios", func(path string, d fs.DirEntry, err error) error {
+	scenarios := make(map[string]*ScenarioGroup)
+	err = fs.WalkDir(embeddedScenarioGroups, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
 		}
 
 		lg.Printf("%s: loading embedded scenario", path)
-		s, err := loadScenario(embeddedScenarios, path)
+		s, err := loadScenarioGroup(embeddedScenarioGroups, path)
 		if err != nil {
 			return err
 		}
@@ -573,7 +573,7 @@ func LoadScenarios() map[string]*Scenario {
 
 	// Load the scenario specified on command line, if any.
 	if *scenarioFilename != "" {
-		s, err := loadScenario(os.DirFS("."), *scenarioFilename)
+		s, err := loadScenarioGroup(os.DirFS("."), *scenarioFilename)
 		if err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
