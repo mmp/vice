@@ -6,6 +6,7 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io/fs"
@@ -424,6 +425,10 @@ func parseAirspace() map[string][]AirspaceVolume {
 	boundaries := make(map[string][]Point2LL)
 	volumes := make(map[string][]AirspaceVolume)
 
+	var as AS
+	as.Volumes = make(map[string][]ASV)
+	as.Boundaries = boundaries
+
 	for _, b := range xair.Boundaries {
 		var pts []Point2LL
 		for _, ll := range strings.Split(b.Segments, "/") {
@@ -441,6 +446,8 @@ func parseAirspace() map[string][]AirspaceVolume {
 	}
 
 	for _, v := range xair.Volumes {
+		jv := ASV{Lower: v.LowerLimit, Upper: v.UpperLimit}
+
 		vol := AirspaceVolume{
 			LowerLimit: v.LowerLimit,
 			UpperLimit: v.UpperLimit,
@@ -452,13 +459,33 @@ func parseAirspace() map[string][]AirspaceVolume {
 					name, v.Name)
 			} else {
 				vol.Boundaries = append(vol.Boundaries, b)
+				jv.Boundaries = append(jv.Boundaries, name)
 			}
 		}
 
 		volumes[v.Name] = append(volumes[v.Name], vol)
+		as.Volumes[v.Name] = append(as.Volumes[v.Name], jv)
+	}
+
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "    ")
+	err := enc.Encode(as)
+	if err != nil {
+		panic(err)
 	}
 
 	return volumes
+}
+
+type ASV struct {
+	Lower      int      `json:"lower"`
+	Upper      int      `json:"upper"`
+	Boundaries []string `json:"boundaries"`
+}
+
+type AS struct {
+	Volumes    map[string][]ASV
+	Boundaries map[string][]Point2LL
 }
 
 func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]int) {
