@@ -6,8 +6,6 @@ package main
 
 import (
 	"embed"
-	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"io/fs"
 	"os"
@@ -17,17 +15,18 @@ import (
 )
 
 type Scenario struct {
-	Name              string                      `json:"name"`
-	Airports          map[string]*Airport         `json:"airports"`
-	VideoMapFile      string                      `json:"video_map_file"`
-	Fixes             map[string]Point2LL         `json:"fixes"`
-	ScenarioConfigs   map[string]*ScenarioConfig  `json:"configs"`
-	DefaultController string                      `json:"default_controller"`
-	DefaultScenario   string                      `json:"default_scenario"`
-	ControlPositions  map[string]*Controller      `json:"control_positions"`
-	Scratchpads       map[string]string           `json:"scratchpads"`
-	AirspaceVolumes   map[string][]AirspaceVolume `json:"-"` // for now, parsed from the XML...
-	ArrivalGroups     map[string][]Arrival        `json:"arrival_groups"`
+	Name               string                      `json:"name"`
+	Airports           map[string]*Airport         `json:"airports"`
+	VideoMapFile       string                      `json:"video_map_file"`
+	Fixes              map[string]Point2LL         `json:"fixes"`
+	ScenarioConfigs    map[string]*ScenarioConfig  `json:"configs"`
+	DefaultController  string                      `json:"default_controller"`
+	DefaultScenario    string                      `json:"default_scenario"`
+	ControlPositions   map[string]*Controller      `json:"control_positions"`
+	Scratchpads        map[string]string           `json:"scratchpads"`
+	AirspaceBoundaries map[string][]Point2LL       `json:"airspace_boundaries"`
+	AirspaceVolumes    map[string][]AirspaceVolume `json:"airspace_volumes"`
+	ArrivalGroups      map[string][]Arrival        `json:"arrival_groups"`
 
 	Center         Point2LL              `json:"center"`
 	PrimaryAirport string                `json:"primary_airport"`
@@ -62,8 +61,10 @@ type ArrivalAirline struct {
 }
 
 type AirspaceVolume struct {
-	LowerLimit, UpperLimit int
-	Boundaries             [][]Point2LL
+	LowerLimit    int          `json:"lower"`
+	UpperLimit    int          `json:"upper"`
+	Boundaries    [][]Point2LL `json:"-"`
+	BoundaryNames []string     `json:"boundaries"`
 }
 
 type ScenarioConfig struct {
@@ -281,9 +282,20 @@ func (t *Scenario) Locate(s string) (Point2LL, bool) {
 }
 
 func (t *Scenario) PostDeserialize() {
-	t.AirspaceVolumes = parseAirspace()
-
 	var errors []error
+
+	for name, volumes := range t.AirspaceVolumes {
+		for i, vol := range volumes {
+			for _, b := range vol.BoundaryNames {
+				if pts, ok := t.AirspaceBoundaries[b]; !ok {
+					errors = append(errors, fmt.Errorf("%s: airspace boundary not found for airspace volume %s", b, name))
+				} else {
+					t.AirspaceVolumes[name][i].Boundaries = append(t.AirspaceVolumes[name][i].Boundaries, pts)
+				}
+			}
+		}
+	}
+
 	for name, ap := range t.Airports {
 		if name != ap.ICAO {
 			errors = append(errors, fmt.Errorf("%s: airport Name doesn't match (%s)", name, ap.ICAO))
@@ -392,101 +404,6 @@ func (t *Scenario) InitializeWaypointLocations(waypoints []Waypoint) []error {
 
 ///////////////////////////////////////////////////////////////////////////
 // Airspace
-
-//go:embed resources/ZNY_sanscomment_VOLUMES.xml
-var znyVolumesXML string
-
-type XMLBoundary struct {
-	Name     string `xml:"Name,attr"`
-	Segments string `xml:",chardata"`
-}
-
-type XMLVolume struct {
-	Name       string `xml:"Name,attr"`
-	LowerLimit int    `xml:"LowerLimit,attr"`
-	UpperLimit int    `xml:"UpperLimit,attr"`
-	Boundaries string `xml:"Boundaries"`
-}
-
-type XMLAirspace struct {
-	XMLName    xml.Name      `xml:"Volumes"`
-	Boundaries []XMLBoundary `xml:"Boundary"`
-	Volumes    []XMLVolume   `xml:"Volume"`
-}
-
-func parseAirspace() map[string][]AirspaceVolume {
-	var xair XMLAirspace
-	if err := xml.Unmarshal([]byte(znyVolumesXML), &xair); err != nil {
-		panic(err)
-	}
-
-	//lg.Errorf("%s", spew.Sdump(vol))
-
-	boundaries := make(map[string][]Point2LL)
-	volumes := make(map[string][]AirspaceVolume)
-
-	var as AS
-	as.Volumes = make(map[string][]ASV)
-	as.Boundaries = boundaries
-
-	for _, b := range xair.Boundaries {
-		var pts []Point2LL
-		for _, ll := range strings.Split(b.Segments, "/") {
-			p, err := ParseLatLong(strings.TrimSpace(ll))
-			if err != nil {
-				lg.Errorf("%s: %v", ll, err)
-			} else {
-				pts = append(pts, p)
-			}
-		}
-		if _, ok := boundaries[b.Name]; ok {
-			lg.Errorf("%s: boundary redefined", b.Name)
-		}
-		boundaries[b.Name] = pts
-	}
-
-	for _, v := range xair.Volumes {
-		jv := ASV{Lower: v.LowerLimit, Upper: v.UpperLimit}
-
-		vol := AirspaceVolume{
-			LowerLimit: v.LowerLimit,
-			UpperLimit: v.UpperLimit,
-		}
-
-		for _, name := range strings.Split(v.Boundaries, ",") {
-			if b, ok := boundaries[name]; !ok {
-				lg.Errorf("%s: boundary in volume %s has not been defined. Volume may be invalid",
-					name, v.Name)
-			} else {
-				vol.Boundaries = append(vol.Boundaries, b)
-				jv.Boundaries = append(jv.Boundaries, name)
-			}
-		}
-
-		volumes[v.Name] = append(volumes[v.Name], vol)
-		as.Volumes[v.Name] = append(as.Volumes[v.Name], jv)
-	}
-
-	enc := json.NewEncoder(os.Stdout)
-	enc.SetIndent("", "    ")
-	err := enc.Encode(as)
-	if err != nil {
-		panic(err)
-	}
-
-	return volumes
-}
-
-type ASV struct {
-	Lower      int      `json:"lower"`
-	Upper      int      `json:"upper"`
-	Boundaries []string `json:"boundaries"`
-}
-
-type AS struct {
-	Volumes    map[string][]ASV
-	Boundaries map[string][]Point2LL
-}
 
 func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]int) {
 	var altRanges [][2]int
