@@ -181,12 +181,11 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 		if ap, ok := t.Airports[rwy.Airport]; !ok {
 			errors = append(errors, fmt.Errorf("%s: airport not found for departure runway in scenario %s", rwy.Airport, s.Name))
 		} else {
-			idx := FindIf(ap.DepartureRunways, func(r *DepartureRunway) bool { return r.Runway == rwy.Runway })
-			if idx == -1 {
+			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s for departure runway in scenario %s",
 					rwy.Runway, rwy.Airport, s.Name))
 			} else {
-				s.DepartureRunways[i].exitRoutes = ap.DepartureRunways[idx].ExitRoutes
+				s.DepartureRunways[i].exitRoutes = routes
 			}
 			s.nextDepartureSpawn[rwy.Airport+"/"+rwy.Runway] = time.Time{}
 

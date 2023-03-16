@@ -21,9 +21,10 @@ type Airport struct {
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
-	DepartureRunways   []*DepartureRunway `json:"departure_runways"`
-	ArrivalRunwayNames []string           `json:"arrival_runways"`
-	ArrivalRunways     []*ArrivalRunway   `json:"-"`
+	// runway -> (exit -> route)
+	DepartureRoutes    map[string]map[string]ExitRoute `json:"departure_routes"`
+	ArrivalRunwayNames []string                        `json:"arrival_runways"`
+	ArrivalRunways     []*ArrivalRunway                `json:"-"`
 }
 
 func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
@@ -76,23 +77,18 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 	}
 
 	runwayNames := make(map[string]interface{})
-	for _, rwy := range ac.DepartureRunways {
-		if _, ok := runwayNames[rwy.Runway]; ok {
-			errors = append(errors, fmt.Errorf("%s: multiple runway definitions", rwy.Runway))
+	for rwy, routes := range ac.DepartureRoutes {
+		if _, ok := runwayNames[rwy]; ok {
+			errors = append(errors, fmt.Errorf("%s: multiple runway route definitions", rwy))
 		}
-		runwayNames[rwy.Runway] = nil
+		runwayNames[rwy] = nil
 
-		for _, er := range rwy.ExitRoutes {
-			errors = append(errors, t.InitializeWaypointLocations(er.Waypoints)...)
+		for _, route := range routes {
+			errors = append(errors, t.InitializeWaypointLocations(route.Waypoints)...)
 		}
 	}
 
 	return errors
-}
-
-type DepartureRunway struct {
-	Runway     string               `json:"runway"`
-	ExitRoutes map[string]ExitRoute `json:"exit_routes"`
 }
 
 type ExitRoute struct {

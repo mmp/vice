@@ -68,118 +68,112 @@
         "35",
         "26"
       ],
-      "departure_runways": [
-        {
-          "exit_routes": {
-            "ARD": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-            },
-            "DITCH": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
-            },
-            "DQO": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
-            },
-            "FJC": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-            },
-            "MAZIE": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-            },
-            "MXE": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-            },
-            "OOD": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
-            },
-            "PTW": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-            },
-            "RUUTH": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
-            },
-            "STOEN": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
-            }
+      "departure_routes": {
+        "27L": {
+          "ARD": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
           },
-          "runway": "27L"
+          "DITCH": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+          },
+          "DQO": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
+          },
+          "FJC": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+          },
+          "MAZIE": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+          },
+          "MXE": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+          },
+          "OOD": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+          },
+          "PTW": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+          },
+          "RUUTH": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+          },
+          "STOEN": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
+          }
         },
-        {
-          "exit_routes": {
-            "ARD": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-            },
-            "DITCH": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #110"
-            },
-            "DQO": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
-            },
-            "FJC": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
-            },
-            "MAZIE": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-            },
-            "MXE": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
-            },
-            "OOD": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
-            },
-            "PTW": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-            },
-            "RUUTH": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-            },
-            "STOEN": {
-              "cleared_altitude": 5000,
-              "route": "PHL2",
-              "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
-            }
+        "9L": {
+          "ARD": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
           },
-          "runway": "9L"
+          "DITCH": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #110"
+          },
+          "DQO": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
+          },
+          "FJC": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+          },
+          "MAZIE": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+          },
+          "MXE": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+          },
+          "OOD": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
+          },
+          "PTW": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+          },
+          "RUUTH": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+          },
+          "STOEN": {
+            "cleared_altitude": 5000,
+            "route": "PHL2",
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+          }
         }
-      ],
+      },
       "departures": [
         {
           "airlines": [

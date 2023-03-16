@@ -75,238 +75,232 @@
         "11",
         "29"
       ],
-      "departure_runways": [
-        {
-          "exit_routes": {
-            "BAYYS": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "BDR": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "BIGGY": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "BREZY": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "COATE": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "DIXIE": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "ELIOT": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "GAYEL": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "GREKI": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "HAAYS": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "LANNA": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "MERIT": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "NEION": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "NEWEL": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "None": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "PARKE": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "SAX": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "SBJ": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "SHIPP": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "WAVEY": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "WHITE": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            },
-            "ZIMMZ": {
-              "cleared_altitude": 2500,
-              "route": "EWR4",
-              "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
-            }
+      "departure_routes": {
+        "22R": {
+          "BAYYS": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
           },
-          "runway": "22R"
+          "BDR": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "BIGGY": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "BREZY": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "COATE": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "DIXIE": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "ELIOT": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "GAYEL": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "GREKI": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "HAAYS": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "LANNA": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "MERIT": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "NEION": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "NEWEL": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "None": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "PARKE": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "SAX": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "SBJ": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "SHIPP": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "WAVEY": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "WHITE": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          },
+          "ZIMMZ": {
+            "cleared_altitude": 2500,
+            "route": "EWR4",
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+          }
         },
-        {
-          "exit_routes": {
-            "BAYYS": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "BDR": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "BIGGY": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "BREZY": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "COATE": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "DIXIE": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "ELIOT": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "GAYEL": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "GREKI": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "HAAYS": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "LANNA": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "MERIT": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "NEION": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "NEWEL": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "None": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "PARKE": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "SAX": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "SBJ": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "SHIPP": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "WAVEY": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "WHITE": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            },
-            "ZIMMZ": {
-              "cleared_altitude": 3000,
-              "route": "EWR4",
-              "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
-            }
+        "4L": {
+          "BAYYS": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
           },
-          "runway": "4L"
+          "BDR": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "BIGGY": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "BREZY": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "COATE": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "DIXIE": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "ELIOT": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "GAYEL": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "GREKI": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "HAAYS": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "LANNA": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "MERIT": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "NEION": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "NEWEL": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "None": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "PARKE": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "SAX": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "SBJ": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "SHIPP": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "WAVEY": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "WHITE": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          },
+          "ZIMMZ": {
+            "cleared_altitude": 3000,
+            "route": "EWR4",
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+          }
         }
-      ],
+      },
       "departures": [
         {
           "airlines": [
@@ -1258,238 +1252,232 @@
         "1",
         "6"
       ],
-      "departure_runways": [
-        {
-          "exit_routes": {
-            "BAYYS": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "BDR": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "BIGGY": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "BREZY": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "COATE": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "DIXIE": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "ELIOT": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "GAYEL": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "GREKI": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "HAAYS": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "LANNA": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "MERIT": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "NEION": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "NEWEL": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "None": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "PARKE": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "SAX": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "SBJ": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "SHIPP": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "WAVEY": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "WHITE": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            },
-            "ZIMMZ": {
-              "cleared_altitude": 2000,
-              "route": "RUUDY6",
-              "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
-            }
+      "departure_routes": {
+        "1": {
+          "BAYYS": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
           },
-          "runway": "24"
+          "BDR": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "BIGGY": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "BREZY": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "COATE": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "DIXIE": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "ELIOT": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "GAYEL": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "GREKI": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "HAAYS": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "LANNA": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "MERIT": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "NEION": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "NEWEL": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "None": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "PARKE": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "SAX": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "SBJ": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "SHIPP": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "WAVEY": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "WHITE": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          },
+          "ZIMMZ": {
+            "cleared_altitude": 2000,
+            "route": "TEB4",
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+          }
         },
-        {
-          "exit_routes": {
-            "BAYYS": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "BDR": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "BIGGY": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "BREZY": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "COATE": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "DIXIE": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "ELIOT": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "GAYEL": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "GREKI": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "HAAYS": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "LANNA": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "MERIT": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "NEION": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "NEWEL": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "None": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "PARKE": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "SAX": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "SBJ": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "SHIPP": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "WAVEY": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "WHITE": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            },
-            "ZIMMZ": {
-              "cleared_altitude": 2000,
-              "route": "TEB4",
-              "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
-            }
+        "24": {
+          "BAYYS": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
           },
-          "runway": "1"
+          "BDR": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "BIGGY": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "BREZY": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "COATE": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "DIXIE": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "ELIOT": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "GAYEL": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "GREKI": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "HAAYS": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "LANNA": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "MERIT": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "NEION": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "NEWEL": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "None": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "PARKE": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "SAX": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "SBJ": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "SHIPP": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "WAVEY": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "WHITE": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          },
+          "ZIMMZ": {
+            "cleared_altitude": 2000,
+            "route": "RUUDY6",
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+          }
         }
-      ],
+      },
       "departures": [
         {
           "airlines": [
