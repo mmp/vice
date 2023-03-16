@@ -16,8 +16,8 @@ type Airport struct {
 	PrimaryAirport bool     `json:"primary"`
 	TowerListIndex int      `json:"tower_list"`
 
-	Approaches []Approach  `json:"approaches,omitempty"`
-	Departures []Departure `json:"departures,omitempty"`
+	Approaches map[string]Approach `json:"approaches,omitempty"`
+	Departures []Departure         `json:"departures,omitempty"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
@@ -34,13 +34,7 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 		ac.ArrivalRunways = append(ac.ArrivalRunways, &ArrivalRunway{Runway: rwy})
 	}
 
-	approachNames := make(map[string]interface{})
 	for _, ap := range ac.Approaches {
-		if _, ok := approachNames[ap.ShortName]; ok {
-			errors = append(errors, fmt.Errorf("%s: multiple approaches with this short name", ap.ShortName))
-		}
-		approachNames[ap.ShortName] = nil
-
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
@@ -151,7 +145,6 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
-	ShortName string          `json:"short_name"`
 	FullName  string          `json:"full_name"`
 	Type      ApproachType    `json:"type"`
 	Waypoints []WaypointArray `json:"waypoints"`

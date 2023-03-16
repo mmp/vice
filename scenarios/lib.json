@@ -1,7 +1,6 @@
 {
   "airports": {
     "KEWR": {
-      "approaches": [],
       "arrival_runways": [
         "22L",
         "22R",
@@ -916,7 +915,6 @@
       "tower_list": 2
     },
     "KJFK": {
-      "approaches": [],
       "arrival_runways": [
         "4L",
         "4R",
@@ -1682,7 +1680,6 @@
       "tower_list": 1
     },
     "KLGA": {
-      "approaches": [],
       "arrival_runways": [
         "4",
         "22",

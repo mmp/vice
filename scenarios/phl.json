@@ -1,64 +1,57 @@
 {
   "airports": {
     "KPHL": {
-      "approaches": [
-        {
-          "full_name": "ILS 9L",
-          "short_name": "I9L",
-          "type": "ILS",
-          "waypoints": [
-            "QWEST@a4000 OBEKE@a3000 ANNET@a2100 LANDI@a760 N039.52.07.340,W075.15.19.692@a50 "
-          ]
-        },
-        {
-          "full_name": "ILS 9R",
-          "short_name": "9RZ",
-          "type": "ILS",
-          "waypoints": [
-            "BWINE@a4000 ASOCI@a3000 KELEE@a1800 BALDN@a740 N039.51.39.133,W075.16.29.620@a50"
-          ]
-        },
-        {
+      "approaches": {
+        "17Z": {
           "full_name": "ILS 17",
-          "short_name": "17Z",
           "type": "ILS",
           "waypoints": [
             "COWAD@a3000 HYILL@a2000 HOOCH@a760 N039.53.14.508,W075.14.09.655@a50"
           ]
         },
-        {
-          "full_name": "ILS 26",
-          "short_name": "I26",
-          "type": "ILS",
-          "waypoints": [
-            "HOLEY FOSOM@a2000 ESKOE@a2000 N039.52.54.183,W075.12.47.257@a50"
-          ]
-        },
-        {
+        "27L": {
           "full_name": "ILS 27L",
-          "short_name": "27L",
           "type": "ILS",
           "waypoints": [
             "FESTI@a3000 TORNE@a3000 GLOUS@a2060 XIVOY@a400 N039.52.08.453,W075.14.02.761@a50"
           ]
         },
-        {
+        "27R": {
           "full_name": "ILS 27R",
-          "short_name": "27R",
           "type": "ILS",
           "waypoints": [
             "MENGE@a3000 MRTIN@a3000 JALTO@a2100 HADNI@a740 N039.52.28.008,W075.13.25.682@a50"
           ]
         },
-        {
+        "9RZ": {
+          "full_name": "ILS 9R",
+          "type": "ILS",
+          "waypoints": [
+            "BWINE@a4000 ASOCI@a3000 KELEE@a1800 BALDN@a740 N039.51.39.133,W075.16.29.620@a50"
+          ]
+        },
+        "G35": {
           "full_name": "RNAV 35",
-          "short_name": "G35",
           "type": "RNAV",
           "waypoints": [
             "WIKAV@a3000 JEPUG@a3000 HARLU@a2000 CEMEK@a900 N039.52.16.047,W075.13.40.458@a50"
           ]
+        },
+        "I26": {
+          "full_name": "ILS 26",
+          "type": "ILS",
+          "waypoints": [
+            "HOLEY FOSOM@a2000 ESKOE@a2000 N039.52.54.183,W075.12.47.257@a50"
+          ]
+        },
+        "I9L": {
+          "full_name": "ILS 9L",
+          "type": "ILS",
+          "waypoints": [
+            "QWEST@a4000 OBEKE@a3000 ANNET@a2100 LANDI@a760 N039.52.07.340,W075.15.19.692@a50 "
+          ]
         }
-      ],
+      },
       "arrival_runways": [
         "9L",
         "9R",

@@ -805,9 +805,9 @@ func (ss *Sim) getApproach(callsign string, approach string) (*Approach, *Aircra
 		return nil, nil, ErrArrivalAirportUnknown
 	}
 
-	for i, appr := range ap.Approaches {
-		if appr.ShortName == approach {
-			return &ap.Approaches[i], ac, nil
+	for name, appr := range ap.Approaches {
+		if name == approach {
+			return &appr, ac, nil
 		}
 	}
 	return nil, nil, ErrUnknownApproach
@@ -837,7 +837,7 @@ func (ss *Sim) ClearedApproach(callsign string, approach string) error {
 		response = "you never told us to expect an approach, but ok, cleared " + ap.FullName
 		ac.Approach = ap
 	}
-	if ac.Approach.ShortName != approach {
+	if ac.Approach.FullName != ap.FullName {
 		pilotResponse(callsign, "but you cleared us for the "+ac.Approach.FullName+" approach...")
 		return ErrClearedForUnexpectedApproach
 	}
@@ -1216,12 +1216,9 @@ func (ss *Sim) SpawnArrival(ap *Airport, arrivalGroup string) *Aircraft {
 	ac.CrossingSpeed = arr.SpeedRestriction
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
-		for i, appr := range scenario.Airports[ac.FlightPlan.ArrivalAirport].Approaches {
-			if appr.ShortName == arr.ExpectApproach {
-				ac.Approach = &ap.Approaches[i]
-			}
-		}
-		if ac.Approach == nil {
+		if appr, ok := scenario.Airports[ac.FlightPlan.ArrivalAirport].Approaches[arr.ExpectApproach]; ok {
+			ac.Approach = &appr
+		} else {
 			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
 		}
 	}

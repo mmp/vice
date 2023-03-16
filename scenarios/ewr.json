@@ -1,72 +1,64 @@
 {
   "airports": {
     "KEWR": {
-      "approaches": [
-        {
+      "approaches": {
+        "I11": {
+          "full_name": "ILS 11",
+          "type": "ILS",
+          "waypoints": [
+            "JARIT@a1600 JEENO@a1600 _EWR_11"
+          ]
+        },
+        "I2L": {
           "full_name": "ILS 22 Left",
-          "short_name": "I2L",
           "type": "ILS",
           "waypoints": [
             "PATRN IZEKO@a3000 GIMEE@a2500 BUZZD@a1500 _EWR_22L@a50"
           ]
         },
-        {
+        "I2R": {
           "full_name": "ILS 22 Right",
-          "short_name": "I2R",
           "type": "ILS",
           "waypoints": [
             "PATRN AGNSS@a3000 VERDE@a2500 TALTE@a1500 _EWR_22R@a50"
           ]
         },
-        {
+        "I4L": {
           "full_name": "ILS 4 Left",
-          "short_name": "I4L",
           "type": "ILS",
           "waypoints": [
             "KILMA EMBAY@a2800 HOWYA@a2000 _EWR_4L@a50"
           ]
         },
-        {
+        "I4R": {
           "full_name": "ILS 4 Right",
-          "short_name": "I4R",
           "type": "ILS",
           "waypoints": [
             "KILMA GRITY@a2800 DOOIN@a1700 _EWR_4R@a50"
           ]
         },
-        {
+        "R29": {
           "full_name": "RNAV X 29",
-          "short_name": "R29",
           "type": "RNAV",
           "waypoints": [
             "FLIKR CASHH ZIAAA PIJAY UJODY@a2000 STATU@a1400 ISERE _EWR_29@a50"
           ]
         },
-        {
+        "RY9": {
           "full_name": "RNAV Y 29",
-          "short_name": "RY9",
           "type": "RNAV",
           "waypoints": [
             "TETER@a3000 GIMEE@a2500 JIMLO@a2500 COPKO _EWR_29@a50"
           ]
         },
-        {
+        "RZ9": {
           "full_name": "RNAV Z 29",
-          "short_name": "RZ9",
           "type": "RNAV",
           "waypoints": [
             "KILMA GRITY@a3000 COWWE@a3000 NNICK@a3000 CORTO@a2327 GOLSN@a2000 HALPA@a823 _EWR_29@a50"
           ]
-        },
-        {
-          "full_name": "ILS 11",
-          "short_name": "I11",
-          "type": "ILS",
-          "waypoints": [
-            "JARIT@a1600 JEENO@a1600 _EWR_11"
-          ]
         }
-      ],
+      },
       "arrival_runways": [
         "22L",
         "22R",
@@ -1164,60 +1156,30 @@
       "tower_list": 1
     },
     "KTEB": {
-      "approaches": [
-        {
-          "full_name": "ILS 19",
-          "short_name": "I19",
-          "type": "ILS",
-          "waypoints": [
-            "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
-          ]
-        },
-        {
+      "approaches": {
+        "I06": {
           "full_name": "ILS 6",
-          "short_name": "I06",
           "type": "ILS",
           "waypoints": [
             "SBJ VINGS@a2000 DANDY@a1500 _TEB_6@a50"
           ]
         },
-        {
-          "full_name": "RNAV X 19",
-          "short_name": "RX9",
-          "type": "RNAV",
-          "waypoints": [
-            "CUROK WHOLN MOOGZ@a1700 DUUNE@a1500 COFFS _TEB_19@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV Y 19",
-          "short_name": "RY9",
-          "type": "RNAV",
+        "I19": {
+          "full_name": "ILS 19",
+          "type": "ILS",
           "waypoints": [
             "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
           ]
         },
-        {
-          "full_name": "RNAV Z 19",
-          "short_name": "RZ9",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50",
-            "STW LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50",
-            "SBJ SHOTT LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50"
-          ]
-        },
-        {
+        "R24": {
           "full_name": "RNAV 24",
-          "short_name": "R24",
           "type": "RNAV",
           "waypoints": [
             "STRAD SKUBY NIPIE WHEZY SHREW@a2000 ANGLE@a1700 BAITH _TEB_24@a50"
           ]
         },
-        {
+        "RX6": {
           "full_name": "RNAV X 6",
-          "short_name": "RX6",
           "type": "RNAV",
           "waypoints": [
             "COATE ELIZE ALIDA FRNKI@a2000 PESME@a1700 TBERN@a1300 JEBUV _TEB_6@a50",
@@ -1225,9 +1187,15 @@
             "SBJ JERSE FRNKI@a2000 PESME@a1700 TBERN@a1300 JEBUV _TEB_6@a50"
           ]
         },
-        {
+        "RX9": {
+          "full_name": "RNAV X 19",
+          "type": "RNAV",
+          "waypoints": [
+            "CUROK WHOLN MOOGZ@a1700 DUUNE@a1500 COFFS _TEB_19@a50"
+          ]
+        },
+        "RY6": {
           "full_name": "RNAV Y 6",
-          "short_name": "RY6",
           "type": "RNAV",
           "waypoints": [
             "COATE ELIZE ALIDA DWURF JUGGY@a2000 DANDY@a1500 STICC@a1300 _TEB_6@a50",
@@ -1235,17 +1203,32 @@
             "SBJ ALIDA DWURF JUGGY@a2000 DANDY@a1500 STICC@a1300 _TEB_6@a50"
           ]
         },
-        {
+        "RY9": {
+          "full_name": "RNAV Y 19",
+          "type": "RNAV",
+          "waypoints": [
+            "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
+          ]
+        },
+        "RZ6": {
           "full_name": "RNAV Z 6",
-          "short_name": "RZ6",
           "type": "RNAV",
           "waypoints": [
             "COATE ELIZE GUZTI@a3000 CATXO@a2000 HOLUR@a1700 EVEGE@a1500 AWKEB@a1300 OFFEC _TEB_6@a50",
             "STW ELIZE GUZTI@a3000 CATXO@a2000 HOLUR@a1700 EVEGE@a1500 AWKEB@a1300 OFFEC _TEB_6@a50",
             "SBJ GUZTI@a3000 CATXO@a2000 HOLUR@a1700 EVEGE@a1500 AWKEB@a1300 OFFEC _TEB_6@a50"
           ]
+        },
+        "RZ9": {
+          "full_name": "RNAV Z 19",
+          "type": "RNAV",
+          "waypoints": [
+            "COATE LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50",
+            "STW LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50",
+            "SBJ SHOTT LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50"
+          ]
         }
-      ],
+      },
       "arrival_runways": [
         "19",
         "24",

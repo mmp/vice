@@ -1,52 +1,47 @@
 {
   "airports": {
     "KFRG": {
-      "approaches": [
-        {
+      "approaches": {
+        "I14": {
+          "full_name": "ILS Runway 14",
+          "type": "RNAV",
+          "waypoints": [
+            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1400 _FRG_14@a50"
+          ]
+        },
+        "R1": {
           "full_name": "RNAV Runway 1",
-          "short_name": "R1",
           "type": "RNAV",
           "waypoints": [
             "WULUG@a2000 BLAND@a1500 DEUCE@a1600 XAREW@a1500 _FRG_1@a50",
             "ZACHS@a2000 BLAND@a1500 DEUCE@a1600 XAREW@a1500 _FRG_1@a50"
           ]
         },
-        {
+        "R14": {
           "full_name": "RNAV Runway 14",
-          "short_name": "R14",
           "type": "RNAV",
           "waypoints": [
             "HOBAM@a2000 LAAZE@a2000 ALABE@a1400 _FRG_14@a50",
             "CAMRN@a4000 HEREK@a2000 SEHDO@a2000 WUPMA@a1400@s180 ALABE@a1400 _FRG_14@a50"
           ]
         },
-        {
-          "full_name": "ILS Runway 14",
-          "short_name": "I14",
-          "type": "RNAV",
-          "waypoints": [
-            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1400 _FRG_14@a50"
-          ]
-        },
-        {
+        "R19": {
           "full_name": "RNAV Runway 19",
-          "short_name": "R19",
           "type": "RNAV",
           "waypoints": [
             "BLINZ@a2000 DEBYE@a2000 MOIRE@a1500 WULOP@a800 _FRG_19@a50",
             "ZOSAB@a2000 DEBYE@a2000 MOIRE@a1500 WULOP@a800 _FRG_19@a50"
           ]
         },
-        {
+        "R32": {
           "full_name": "RNAV Runway 32",
-          "short_name": "R32",
           "type": "RNAV",
           "waypoints": [
             "JUSIN@a2000 TRCCY@a2000 ALFED@a1400 _FRG_32@a50",
             "SHYNA@a2000 TRCCY@a2000 ALFED@a1400 _FRG_32@a50"
           ]
         }
-      ],
+      },
       "arrival_runways": [
         "1",
         "14",
@@ -705,133 +700,118 @@
       "location": "N040.47.50.068,W073.06.01.148"
     },
     "KJFK": {
-      "approaches": [
-        {
-          "full_name": "ILS 4 Left",
-          "short_name": "I4L",
-          "type": "ILS",
-          "waypoints": [
-            "AROKE@a2000 KRSTL@a1500 _JFK_4L@a50"
-          ]
-        },
-        {
-          "full_name": "ILS 4 Right",
-          "short_name": "I4R",
-          "type": "ILS",
-          "waypoints": [
-            "ZETAL@a2000 EBBEE@a1500 _JFK_4R@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV Zulu 4 Left",
-          "short_name": "R4L",
-          "type": "RNAV",
-          "waypoints": [
-            "REPRE@a2000 KRSTL@a1500 _JFK_4L@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV Zulu 4 Right",
-          "short_name": "R4R",
-          "type": "RNAV",
-          "waypoints": [
-            "VERRU@a2000 EBBEE@a1500 _JFK_4R@a50"
-          ]
-        },
-        {
-          "full_name": "ILS 13 Left",
-          "short_name": "I3L",
-          "type": "ILS",
-          "waypoints": [
-            "COVIR@a3000 KMCHI@a2900 BUZON@a2900 TELEX@a2100 CAXUN@a1500 UXHUB@a680 _JFK_13L@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV Zulu 13 Left",
-          "short_name": "R3L",
-          "type": "RNAV",
-          "waypoints": [
-            "ASALT@a3000@s210 CNRSE@a2000 LEISA@a1246 SILJY@a835 ROBJE@a456 _JFK_13L@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV Zulu 13 Right",
-          "short_name": "R3R",
-          "type": "RNAV",
-          "waypoints": [
-            "ASALT@a3000@s210 NUCRI@a2000 PEEBO@a921 MAYMA@a520 _JFK_13R@a50"
-          ]
-        },
-        {
-          "full_name": "ILS 22 Left",
-          "short_name": "I2L",
-          "type": "ILS",
-          "waypoints": [
-            "CIMBL@a14000 HAIRR@a14000 CEEGL@a10000 TAPPR@a8000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 ROSLY@a3000 ZALPO@a1800 _JFK_22L@a50",
-            "NRTON@a10000 SAJUL@a10000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 ROSLY@a3000 ZALPO@a1800 _JFK_22L@a50"
-          ]
-        },
-        {
-          "full_name": "ILS 22 Right",
-          "short_name": "I2R",
-          "type": "ILS",
-          "waypoints": [
-            "CIMBL@a14000 HAIRR@a14000 CEEGL@a10000 TAPPR@a8000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 CORVT@a3000 MATTR@a1800 _JFK_22R@a50",
-            "NRTON@a10000 SAJUL@a10000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 CORVT@a3000 MATTR@a1900 _JFK_22R@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV X-Ray 22 Left",
-          "short_name": "R2L",
-          "type": "RNAV",
-          "waypoints": [
-            "WIKOL@a3000 GIGPE@a2900 CAPIT@a2900 ENEEE@a1700 ZOSDO@a800 _JFK_22L@a50"
-          ]
-        },
-        {
-          "full_name": "RNAV Zulu 22 Right",
-          "short_name": "R2R",
-          "type": "RNAV",
-          "waypoints": [
-            "RIVRA@a3000 HENEB@a1900 _JFK_22R@a50"
-          ]
-        },
-        {
+      "approaches": {
+        "I1L": {
           "full_name": "ILS 31 Left",
-          "short_name": "I1L",
           "type": "ILS",
           "waypoints": [
             "CHANT@a2000 ZACHS@a2000 MEALS@a1500 _JFK_31L@a50",
             "DPK@a2000 ZACHS@a2000 MEALS@a1500 _JFK_31L@a50"
           ]
         },
-        {
+        "I1R": {
           "full_name": "ILS 31 Right",
-          "short_name": "I1R",
           "type": "ILS",
           "waypoints": [
             "CATOD@a3000 MALDE@a3000 ZULAB@a1900 _JFK_31R@a50"
           ]
         },
-        {
+        "I2L": {
+          "full_name": "ILS 22 Left",
+          "type": "ILS",
+          "waypoints": [
+            "CIMBL@a14000 HAIRR@a14000 CEEGL@a10000 TAPPR@a8000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 ROSLY@a3000 ZALPO@a1800 _JFK_22L@a50",
+            "NRTON@a10000 SAJUL@a10000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 ROSLY@a3000 ZALPO@a1800 _JFK_22L@a50"
+          ]
+        },
+        "I2R": {
+          "full_name": "ILS 22 Right",
+          "type": "ILS",
+          "waypoints": [
+            "CIMBL@a14000 HAIRR@a14000 CEEGL@a10000 TAPPR@a8000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 CORVT@a3000 MATTR@a1800 _JFK_22R@a50",
+            "NRTON@a10000 SAJUL@a10000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 CORVT@a3000 MATTR@a1900 _JFK_22R@a50"
+          ]
+        },
+        "I3L": {
+          "full_name": "ILS 13 Left",
+          "type": "ILS",
+          "waypoints": [
+            "COVIR@a3000 KMCHI@a2900 BUZON@a2900 TELEX@a2100 CAXUN@a1500 UXHUB@a680 _JFK_13L@a50"
+          ]
+        },
+        "I4L": {
+          "full_name": "ILS 4 Left",
+          "type": "ILS",
+          "waypoints": [
+            "AROKE@a2000 KRSTL@a1500 _JFK_4L@a50"
+          ]
+        },
+        "I4R": {
+          "full_name": "ILS 4 Right",
+          "type": "ILS",
+          "waypoints": [
+            "ZETAL@a2000 EBBEE@a1500 _JFK_4R@a50"
+          ]
+        },
+        "R1L": {
           "full_name": "RNAV Zulu 31 Left",
-          "short_name": "R1L",
           "type": "RNAV",
           "waypoints": [
             "SESKE ZACHS@a2000@s210 CUVKU@a1800 _JFK_31L@a50",
             "RISSY ZACHS@a2000@s210 CUVKU@a1800 _JFK_31L@a50"
           ]
         },
-        {
+        "R1R": {
           "full_name": "RNAV Zulu 31 Right",
-          "short_name": "R1R",
           "type": "RNAV",
           "waypoints": [
             "PZULU CATOD@a3000@s210 IGIDE@a1900 _JFK_31R@a50",
             "VIDIO CATOD@a3000@s210 IGIDE@a1900 _JFK_31R@a50"
           ]
+        },
+        "R2L": {
+          "full_name": "RNAV X-Ray 22 Left",
+          "type": "RNAV",
+          "waypoints": [
+            "WIKOL@a3000 GIGPE@a2900 CAPIT@a2900 ENEEE@a1700 ZOSDO@a800 _JFK_22L@a50"
+          ]
+        },
+        "R2R": {
+          "full_name": "RNAV Zulu 22 Right",
+          "type": "RNAV",
+          "waypoints": [
+            "RIVRA@a3000 HENEB@a1900 _JFK_22R@a50"
+          ]
+        },
+        "R3L": {
+          "full_name": "RNAV Zulu 13 Left",
+          "type": "RNAV",
+          "waypoints": [
+            "ASALT@a3000@s210 CNRSE@a2000 LEISA@a1246 SILJY@a835 ROBJE@a456 _JFK_13L@a50"
+          ]
+        },
+        "R3R": {
+          "full_name": "RNAV Zulu 13 Right",
+          "type": "RNAV",
+          "waypoints": [
+            "ASALT@a3000@s210 NUCRI@a2000 PEEBO@a921 MAYMA@a520 _JFK_13R@a50"
+          ]
+        },
+        "R4L": {
+          "full_name": "RNAV Zulu 4 Left",
+          "type": "RNAV",
+          "waypoints": [
+            "REPRE@a2000 KRSTL@a1500 _JFK_4L@a50"
+          ]
+        },
+        "R4R": {
+          "full_name": "RNAV Zulu 4 Right",
+          "type": "RNAV",
+          "waypoints": [
+            "VERRU@a2000 EBBEE@a1500 _JFK_4R@a50"
+          ]
         }
-      ],
+      },
       "arrival_runways": [
         "4L",
         "4R",
