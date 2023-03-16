@@ -52,15 +52,6 @@
           ]
         }
       },
-      "arrival_runways": [
-        "9L",
-        "9R",
-        "27L",
-        "27R",
-        "17",
-        "35",
-        "26"
-      ],
       "departure_routes": {
         "27L": {
           "ARD,FJC,MAZIE,MXE,PTW": {

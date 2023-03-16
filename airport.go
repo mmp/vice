@@ -20,17 +20,11 @@ type Airport struct {
 	ExitCategories map[string]string `json:"exit_categories"`
 
 	// runway -> (exit -> route)
-	DepartureRoutes    map[string]map[string]ExitRoute `json:"departure_routes"`
-	ArrivalRunwayNames []string                        `json:"arrival_runways"`
-	ArrivalRunways     []*ArrivalRunway                `json:"-"`
+	DepartureRoutes map[string]map[string]ExitRoute `json:"departure_routes"`
 }
 
 func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 	var errors []error
-
-	for _, rwy := range ac.ArrivalRunwayNames {
-		ac.ArrivalRunways = append(ac.ArrivalRunways, &ArrivalRunway{Runway: rwy})
-	}
 
 	for _, ap := range ac.Approaches {
 		for i := range ap.Waypoints {
@@ -106,11 +100,6 @@ type ExitRoute struct {
 	InitialRoute    string        `json:"route"`
 	ClearedAltitude int           `json:"cleared_altitude"`
 	Waypoints       WaypointArray `json:"waypoints"`
-}
-
-type ArrivalRunway struct {
-	Runway  string `json:"runway"`
-	Enabled bool   `json:"-"`
 }
 
 type Departure struct {

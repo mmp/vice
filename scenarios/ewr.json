@@ -59,14 +59,6 @@
           ]
         }
       },
-      "arrival_runways": [
-        "22L",
-        "22R",
-        "4L",
-        "4R",
-        "11",
-        "29"
-      ],
       "departure_routes": {
         "22R": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
@@ -1018,12 +1010,6 @@
           ]
         }
       },
-      "arrival_runways": [
-        "19",
-        "24",
-        "1",
-        "6"
-      ],
       "departure_routes": {
         "1": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {

@@ -42,12 +42,6 @@
           ]
         }
       },
-      "arrival_runways": [
-        "1",
-        "14",
-        "19",
-        "32"
-      ],
       "departure_routes": {
         "1": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
@@ -216,7 +210,6 @@
       "tower_list": 2
     },
     "KISP": {
-      "arrival_runways": null,
       "departure_routes": {
         "15R": {
           "COATE,GAYEL,HAAYS,NEION": {
@@ -430,16 +423,6 @@
           ]
         }
       },
-      "arrival_runways": [
-        "4L",
-        "4R",
-        "13L",
-        "13R",
-        "22L",
-        "22R",
-        "31L",
-        "31R"
-      ],
       "departure_routes": {
         "13R": {
           "ARD,DIXIE,RBV,WHITE": {
@@ -1230,7 +1213,6 @@
       "tower_list": 1
     },
     "KLGA": {
-      "arrival_runways": null,
       "departure_routes": {
         "13": {
           "BETTE,HAPIE,SHIPP,WAVEY": {

@@ -213,15 +213,6 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
 	})
 
-	for _, rwy := range s.ArrivalRunways {
-		if ap, ok := t.Airports[rwy.Airport]; !ok {
-			errors = append(errors, fmt.Errorf("%s: airport not found for arrival runway in scenario %s", rwy.Airport, s.Name))
-		} else if FindIf(ap.ArrivalRunways, func(r *ArrivalRunway) bool { return r.Runway == rwy.Runway }) == -1 {
-			errors = append(errors, fmt.Errorf("%s: runway not found for arrival runway at airport %s in scenario %s",
-				rwy.Runway, rwy.Airport, s.Name))
-		}
-	}
-
 	s.nextArrivalSpawn = make(map[string]time.Time)
 
 	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {

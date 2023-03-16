@@ -1,14 +1,6 @@
 {
   "airports": {
     "KEWR": {
-      "arrival_runways": [
-        "22L",
-        "22R",
-        "4L",
-        "4R",
-        "11",
-        "29"
-      ],
       "departure_routes": {
         "22R": {
           "BIGGY,PARKE": {
@@ -834,16 +826,6 @@
       "tower_list": 2
     },
     "KJFK": {
-      "arrival_runways": [
-        "4L",
-        "4R",
-        "13L",
-        "13R",
-        "22L",
-        "22R",
-        "31L",
-        "31R"
-      ],
       "departure_routes": {
         "13R": {
           "ARD": {
@@ -1420,12 +1402,6 @@
       "tower_list": 1
     },
     "KLGA": {
-      "arrival_runways": [
-        "4",
-        "22",
-        "13",
-        "31"
-      ],
       "departure_routes": {
         "13 - Coney": {
           "BAYYS,GREKI,MERIT": {
