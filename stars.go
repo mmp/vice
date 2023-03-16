@@ -1110,8 +1110,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 						sp.AutoTrackDepartures = make(map[string]interface{})
 					} else if airport == "ALL" {
 						sp.AutoTrackDepartures = make(map[string]interface{})
-						for _, ap := range scenario.Airports {
-							sp.AutoTrackDepartures[ap.ICAO] = nil
+						for name := range scenario.Airports {
+							sp.AutoTrackDepartures[name] = nil
 						}
 					} else {
 						// See if it's in the facility
@@ -2741,8 +2741,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	transforms ScopeTransformations, cb *CommandBuffer) {
-	for _, ap := range scenario.Airports {
-		sim.AddAirportForWeather(ap.ICAO)
+	for name := range scenario.Airports {
+		sim.AddAirportForWeather(name)
 	}
 
 	ps := sp.currentPreferenceSet
@@ -2865,10 +2865,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				text += sim.CurrentTime().UTC().Format("1504/05 ")
 			}
 			if filter.All || filter.Altimeter {
-				for _, ap := range scenario.Airports {
+				for name, ap := range scenario.Airports {
 					if ap.PrimaryAirport {
-						if metar := sim.GetMETAR(ap.ICAO); metar != nil {
-							text += formatMETAR(ap.ICAO, metar)
+						if metar := sim.GetMETAR(name); metar != nil {
+							text += formatMETAR(name, metar)
 						}
 					}
 				}
@@ -2986,7 +2986,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
 					return false
 				}
-				return a.ICAO < b.ICAO
+				return airports[i] < airports[j]
 			})
 
 			for _, icao := range airports {
@@ -3115,18 +3115,13 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		for _, ap := range scenario.Airports {
+		for name, ap := range scenario.Airports {
 			if ap.TowerListIndex == i+1 {
-				airport, ok := scenario.Airports[ap.ICAO]
-				if !ok {
-					// what now? should validate in the UI anyway...
-				}
-
-				text := stripK(ap.ICAO) + " TOWER\n"
+				text := stripK(name) + " TOWER\n"
 				m := make(map[float32]string)
 				for _, ac := range aircraft {
-					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap.ICAO {
-						dist := nmdistance2ll(airport.Location, ac.TrackPosition())
+					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == name {
+						dist := nmdistance2ll(ap.Location, ac.TrackPosition())
 						actype := ac.FlightPlan.TypeWithoutSuffix()
 						actype = strings.TrimPrefix(actype, "H/")
 						actype = strings.TrimPrefix(actype, "S/")

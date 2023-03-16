@@ -940,7 +940,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "icao": "KEWR",
       "location": "N040.41.28.005,W074.10.16.223",
       "primary": true,
       "tower_list": 1
@@ -1660,7 +1659,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "icao": "KTEB",
       "location": "N040.50.59.912,W074.03.39.424"
     }
   },

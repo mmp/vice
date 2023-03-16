@@ -830,7 +830,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "icao": "KEWR",
       "location": "N040.41.28.005,W074.10.16.223",
       "tower_list": 2
     },
@@ -1416,7 +1415,6 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "icao": "KJFK",
       "location": "N040.38.30.356,W073.46.51.483",
       "primary": true,
       "tower_list": 1
@@ -2417,7 +2415,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "icao": "KLGA",
       "location": "N040.46.37.462,W073.52.19.947",
       "tower_list": 3
     }

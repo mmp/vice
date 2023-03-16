@@ -1046,17 +1046,17 @@ func (ss *Sim) SpawnAircraft() {
 			// Choose arrival airport randomly in proportion to the airport
 			// arrival rates in the arrival group.
 			rateSum := 0
-			var arrivalAirport *Airport
+			var arrivalAirport string
 			for airport, rate := range rates {
 				rateSum += int(*rate)
 				// Weighted reservoir sampling...
 				if rand.Float32() < float32(int(*rate))/float32(rateSum) {
-					arrivalAirport = scenario.Airports[airport]
+					arrivalAirport = airport
 				}
 			}
 
 			if ac := ss.SpawnArrival(arrivalAirport, group); ac != nil {
-				ac.FlightPlan.ArrivalAirport = arrivalAirport.ICAO
+				ac.FlightPlan.ArrivalAirport = arrivalAirport
 				addAircraft(ac)
 				ss.scenarioConfig.nextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
@@ -1081,9 +1081,10 @@ func (ss *Sim) SpawnAircraft() {
 				continue
 			}
 
-			ap := scenario.Airports[ss.scenarioConfig.DepartureRunways[idx].Airport]
+			airportName := ss.scenarioConfig.DepartureRunways[idx].Airport
+			ap := scenario.Airports[airportName]
 			if ac := ss.SpawnDeparture(ap, &ss.scenarioConfig.DepartureRunways[idx]); ac != nil {
-				ac.FlightPlan.DepartureAirport = ap.ICAO
+				ac.FlightPlan.DepartureAirport = airportName
 				addAircraft(ac)
 				ss.scenarioConfig.nextDepartureSpawn[rwy] = now.Add(randomWait(ss.scenarioConfig.runwayDepartureRate(rwy)))
 			}
@@ -1175,28 +1176,28 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 	}
 }
 
-func (ss *Sim) SpawnArrival(ap *Airport, arrivalGroup string) *Aircraft {
+func (ss *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	arrivals := scenario.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
-		_, ok := ar.Airlines[ap.ICAO]
+		_, ok := ar.Airlines[airportName]
 		return ok
 	})
 	if idx == -1 {
 		lg.Errorf("unable to find route in arrival group %s for airport %s?!",
-			arrivalGroup, ap.ICAO)
+			arrivalGroup, airportName)
 		return nil
 	}
 	arr := arrivals[idx]
 
-	airline := Sample(arr.Airlines[ap.ICAO])
+	airline := Sample(arr.Airlines[airportName])
 	ac := sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil
 	}
 
 	ac.FlightPlan.DepartureAirport = airline.Airport
-	ac.FlightPlan.ArrivalAirport = ap.ICAO
+	ac.FlightPlan.ArrivalAirport = airportName
 	ac.TrackingController = arr.InitialController
 	ac.FlightPlan.Altitude = 39000
 	ac.FlightPlan.Route = arr.Route
@@ -1240,7 +1241,7 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *A
 				})
 			if idx == -1 {
 				// This shouldn't ever happen...
-				lg.Errorf("%s/%s: unable to find a valid departure", ap.ICAO, rwy.Runway)
+				lg.Errorf("%s: unable to find a valid departure: %s", rwy.Runway, spew.Sdump(ap))
 				return nil
 			}
 			dep = &ap.Departures[idx]
@@ -1255,7 +1256,7 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *A
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
-			lg.Errorf("%s/%s: unable to find a valid departure", ap.ICAO, rwy.Runway)
+			lg.Errorf("%s: unable to find a valid departure: %s", rwy.Runway, spew.Sdump(ap))
 			return nil
 		}
 		dep = &ap.Departures[idx]

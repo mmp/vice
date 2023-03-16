@@ -212,7 +212,6 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "icao": "KFRG",
       "location": "N040.43.28.786,W073.25.07.626",
       "tower_list": 2
     },
@@ -316,7 +315,6 @@
         "HAAYS": "North",
         "NEION": "North"
       },
-      "icao": "KISP",
       "location": "N040.47.50.068,W073.06.01.148"
     },
     "KJFK": {
@@ -1469,7 +1467,6 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "icao": "KLGA",
       "location": "N040.46.36.940,W073.52.26.264"
     }
   },

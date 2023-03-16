@@ -296,11 +296,8 @@ func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 	}
 
 	for name, ap := range t.Airports {
-		if name != ap.ICAO {
-			errors = append(errors, fmt.Errorf("%s: airport Name doesn't match (%s)", name, ap.ICAO))
-		}
 		for _, err := range ap.PostDeserialize(t) {
-			errors = append(errors, fmt.Errorf("%s: %v", ap.ICAO, err))
+			errors = append(errors, fmt.Errorf("%s: %v", name, err))
 		}
 	}
 
