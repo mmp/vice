@@ -280,7 +280,7 @@ func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 	}
 }
 
-func (t *ScenarioGroup) PostDeserialize() {
+func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 	var errors []error
 
 	for name, volumes := range t.AirspaceVolumes {
@@ -300,16 +300,16 @@ func (t *ScenarioGroup) PostDeserialize() {
 			errors = append(errors, fmt.Errorf("%s: airport Name doesn't match (%s)", name, ap.ICAO))
 		}
 		for _, err := range ap.PostDeserialize(t) {
-			errors = append(errors, fmt.Errorf("%s: error in specification: %v", ap.ICAO, err))
+			errors = append(errors, fmt.Errorf("%s: %v", ap.ICAO, err))
 		}
 	}
 
 	if _, ok := t.Scenarios[t.DefaultScenarioGroup]; !ok {
-		errors = append(errors, fmt.Errorf("%s: default scenario not found in %s", t.DefaultScenarioGroup, t.Name))
+		errors = append(errors, fmt.Errorf("%s: default scenario not found", t.DefaultScenarioGroup))
 	}
 
 	if _, ok := t.ControlPositions[t.DefaultController]; !ok {
-		errors = append(errors, fmt.Errorf("%s: default controller not found in %s", t.DefaultController, t.Name))
+		errors = append(errors, fmt.Errorf("%s: default controller not found", t.DefaultController))
 	} else {
 		// make sure the controller has at least one scenario..
 		found := false
@@ -320,48 +320,48 @@ func (t *ScenarioGroup) PostDeserialize() {
 			}
 		}
 		if !found {
-			errors = append(errors, fmt.Errorf("%s: default controller not used in any scenarios in %s",
-				t.DefaultController, t.Name))
+			errors = append(errors, fmt.Errorf("%s: default controller not used in any scenarios",
+				t.DefaultController))
 		}
 	}
 
 	if len(t.RadarSites) == 0 {
-		errors = append(errors, fmt.Errorf("No radar sites specified in tracon %s", t.Name))
+		errors = append(errors, fmt.Errorf("No radar sites specified"))
 	}
 	for name, rs := range t.RadarSites {
 		if _, ok := t.Locate(rs.Position); rs.Position == "" || !ok {
-			errors = append(errors, fmt.Errorf("%s: radar site position not found in %s", name, t.Name))
+			errors = append(errors, fmt.Errorf("%s: radar site position not found", name))
 		} else if rs.Char == "" {
-			errors = append(errors, fmt.Errorf("%s: radar site missing character id in %s", name, t.Name))
+			errors = append(errors, fmt.Errorf("%s: radar site missing character id", name))
 		}
 	}
 
 	for name, arrivals := range t.ArrivalGroups {
 		if len(arrivals) == 0 {
-			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group in %s", name, t.Name))
+			errors = append(errors, fmt.Errorf("%s: no arrivals in arrival group", name))
 		}
 
 		for _, ar := range arrivals {
 			for _, err := range t.InitializeWaypointLocations(ar.Waypoints) {
-				errors = append(errors, fmt.Errorf("%s: %v in %s", name, err, t.Name))
+				errors = append(errors, fmt.Errorf("%s: %v", name, err))
 			}
 			for _, wp := range ar.RunwayWaypoints {
 				for _, err := range t.InitializeWaypointLocations(wp) {
-					errors = append(errors, fmt.Errorf("%s: %v in %s", name, err, t.Name))
+					errors = append(errors, fmt.Errorf("%s: %v", name, err))
 				}
 			}
 
 			for _, apAirlines := range ar.Airlines {
 				for _, al := range apAirlines {
 					for _, err := range database.CheckAirline(al.ICAO, al.Fleet) {
-						errors = append(errors, fmt.Errorf("%v in %s", err, t.Name))
+						errors = append(errors, err)
 					}
 				}
 			}
 
 			if _, ok := t.ControlPositions[ar.InitialController]; !ok {
-				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group in %s",
-					ar.InitialController, name, t.Name))
+				errors = append(errors, fmt.Errorf("%s: controller not found for arrival in %s group",
+					ar.InitialController, name))
 			}
 		}
 	}
@@ -373,7 +373,7 @@ func (t *ScenarioGroup) PostDeserialize() {
 
 	if len(errors) > 0 {
 		for _, err := range errors {
-			lg.Errorf("%v", err)
+			lg.Errorf("%s: %v", scenarioName, err)
 		}
 		os.Exit(1)
 	}
@@ -582,7 +582,7 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 	}
 
 	// Final tidying before we return the loaded scenarios.
-	for _, s := range scenarios {
+	for scenarioName, s := range scenarios {
 		// Initialize the CommandBuffers in the scenario's STARSMaps.
 		if s.VideoMapFile == "" {
 			lg.Errorf("%s: scenario does not have \"video_map_file\" specified", s.Name)
@@ -606,7 +606,7 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 		// functions that access the scenario global
 		// (e.g. nmdistance2ll)...
 		scenario = s
-		s.PostDeserialize()
+		s.PostDeserialize(scenarioName)
 		scenario = nil
 	}
 

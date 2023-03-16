@@ -43,9 +43,40 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 		}
 	}
 
+	// Departure routes are specified in the JSON as comma-separated lists
+	// of exits. We'll split those out into individual entries in the
+	// Airport's DepartureRoutes, one per exit, for convenience of future code.
+	splitDepartureRoutes := make(map[string]map[string]ExitRoute)
+	for rwy, rwyRoutes := range ac.DepartureRoutes {
+		seenExits := make(map[string]interface{})
+		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
+
+		for exitList, exitRoute := range rwyRoutes {
+			errors = append(errors, t.InitializeWaypointLocations(exitRoute.Waypoints)...)
+
+			for _, exit := range strings.Split(exitList, ",") {
+				if _, ok := seenExits[exit]; ok {
+					errors = append(errors, fmt.Errorf("%s: exit repeatedly specified in routes for runway %s", exit, rwy))
+				}
+				seenExits[exit] = nil
+
+				splitDepartureRoutes[rwy][exit] = exitRoute
+			}
+		}
+	}
+	ac.DepartureRoutes = splitDepartureRoutes
+
 	for i, dep := range ac.Departures {
 		if _, ok := t.Scratchpads[dep.Exit]; !ok {
 			errors = append(errors, fmt.Errorf("%s: exit in departure to %s not in scratchpads", dep.Exit, dep.Destination))
+		}
+
+		// Make sure that all runways have a route to the exit
+		for rwy, rwyRoutes := range ac.DepartureRoutes {
+			if _, ok := rwyRoutes[dep.Exit]; !ok {
+				errors = append(errors, fmt.Errorf("%s: exit not found in departure routes for runway %s",
+					dep.Exit, rwy))
+			}
 		}
 
 		sawExit := false
@@ -67,18 +98,6 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 
 		for _, al := range dep.Airlines {
 			errors = append(errors, database.CheckAirline(al.ICAO, al.Fleet)...)
-		}
-	}
-
-	runwayNames := make(map[string]interface{})
-	for rwy, routes := range ac.DepartureRoutes {
-		if _, ok := runwayNames[rwy]; ok {
-			errors = append(errors, fmt.Errorf("%s: multiple runway route definitions", rwy))
-		}
-		runwayNames[rwy] = nil
-
-		for _, route := range routes {
-			errors = append(errors, t.InitializeWaypointLocations(route.Waypoints)...)
 		}
 	}
 

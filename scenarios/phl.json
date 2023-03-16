@@ -63,59 +63,24 @@
       ],
       "departure_routes": {
         "27L": {
-          "ARD": {
+          "ARD,FJC,MAZIE,MXE,PTW": {
             "cleared_altitude": 5000,
             "route": "PHL2",
             "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
           },
-          "DITCH": {
+          "DITCH,OOD,RUUTH": {
             "cleared_altitude": 5000,
             "route": "PHL2",
             "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
           },
-          "DQO": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
-          },
-          "FJC": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-          },
-          "MAZIE": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-          },
-          "MXE": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-          },
-          "OOD": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
-          },
-          "PTW": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
-          },
-          "RUUTH": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
-          },
-          "STOEN": {
+          "DQO,STOEN": {
             "cleared_altitude": 5000,
             "route": "PHL2",
             "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
           }
         },
         "9L": {
-          "ARD": {
+          "ARD,MAZIE,PTW,RUUTH": {
             "cleared_altitude": 5000,
             "route": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
@@ -125,42 +90,12 @@
             "route": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #110"
           },
-          "DQO": {
+          "DQO,OOD": {
             "cleared_altitude": 5000,
             "route": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
           },
-          "FJC": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
-          },
-          "MAZIE": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-          },
-          "MXE": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
-          },
-          "OOD": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
-          },
-          "PTW": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-          },
-          "RUUTH": {
-            "cleared_altitude": 5000,
-            "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
-          },
-          "STOEN": {
+          "FJC,MXE,STOEN": {
             "cleared_altitude": 5000,
             "route": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
