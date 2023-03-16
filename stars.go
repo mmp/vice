@@ -2865,12 +2865,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				text += sim.CurrentTime().UTC().Format("1504/05 ")
 			}
 			if filter.All || filter.Altimeter {
-				for name, ap := range scenario.Airports {
-					if ap.PrimaryAirport {
-						if metar := sim.GetMETAR(name); metar != nil {
-							text += formatMETAR(name, metar)
-						}
-					}
+				if metar := sim.GetMETAR(scenario.PrimaryAirport); metar != nil {
+					text += formatMETAR(scenario.PrimaryAirport, metar)
 				}
 			}
 			td.AddText(text, pw, style)
@@ -2976,12 +2972,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
 				a, b := scenario.Airports[airports[i]], scenario.Airports[airports[j]]
-				if a.PrimaryAirport && !b.PrimaryAirport {
+				if airports[i] == scenario.PrimaryAirport {
 					return true
-				} else if b.PrimaryAirport && !a.PrimaryAirport {
+				} else if airports[j] == scenario.PrimaryAirport {
 					return false
-				}
-				if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
+				} else if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
 					return true
 				} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
 					return false

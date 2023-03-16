@@ -12,7 +12,6 @@ import (
 type Airport struct {
 	Elevation      int      `json:"elevation"`
 	Location       Point2LL `json:"location"`
-	PrimaryAirport bool     `json:"primary"`
 	TowerListIndex int      `json:"tower_list"`
 
 	Approaches map[string]Approach `json:"approaches,omitempty"`
