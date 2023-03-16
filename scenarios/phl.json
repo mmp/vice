@@ -4993,7 +4993,7 @@
       }
     ]
   },
-  "center": "N039.52.05.747, W075.14.52.117",
+  "center": "PHL",
   "control_positions": {
     "DC_CTR": {
       "callsign": "DC_CTR",
@@ -5094,7 +5094,7 @@
     "PHL": {
       "char": "P",
       "elevation": 90,
-      "position": "N039.52.05.747, W075.14.52.117",
+      "position": "PHL",
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 50.4,

@@ -823,11 +823,20 @@ func (p *Point2LL) UnmarshalJSON(b []byte) error {
 	} else {
 		n := len(b)
 		// Remove the quotes before parsing
-		pt, err := ParseLatLong(string(b[1 : n-1]))
+		s := strings.ToUpper(string(b[1 : n-1]))
+		pt, err := ParseLatLong(s)
 		if err == nil {
 			*p = pt
+			return nil
+		} else if n, ok := database.Navaids[s]; ok {
+			*p = n.Location
+			return nil
+		} else if f, ok := database.Fixes[s]; ok {
+			*p = f.Location
+			return nil
+		} else {
+			return err
 		}
-		return err
 	}
 }
 
