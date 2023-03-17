@@ -1515,10 +1515,6 @@
               "icao": "WJA"
             },
             {
-              "airport": "KDFW",
-              "icao": "JBU"
-            },
-            {
               "airport": "KMCO",
               "icao": "JBU"
             },
@@ -1531,15 +1527,7 @@
               "icao": "BWA"
             },
             {
-              "airport": "KTUL",
-              "icao": "AAL"
-            },
-            {
               "airport": "KAUS",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KDEN",
               "icao": "AAL"
             },
             {
@@ -1561,7 +1549,7 @@
         "route": "/. CAMRN4",
         "runway_waypoints": null,
         "speed_restriction": 250,
-        "waypoints": "N039.46.43.120,W074.03.15.529 KARRS @ CAMRN #41"
+        "waypoints": "N039.58.13.171,W073.53.24.849 CAMRN #40 @"
       }
     ],
     "Intra-TRACON": [
@@ -1641,7 +1629,7 @@
         "initial_speed": 250,
         "route": "/. ZIGGI",
         "runway_waypoints": null,
-        "waypoints": "N039.57.50.347,W074.02.42.954 ZIGGI @ JFK"
+        "waypoints": "N039.59.17.221,W074.02.27.134 ZIGGI #40 @ JFK"
       },
       {
         "airlines": {
@@ -1709,6 +1697,18 @@
             }
           ],
           "KJFK": [
+            {
+              "airport": "KDFW",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KTUL",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "AAL"
+            },
             {
               "airport": "KSFO",
               "icao": "ASA"
