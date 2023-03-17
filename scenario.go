@@ -15,18 +15,17 @@ import (
 )
 
 type ScenarioGroup struct {
-	Name                 string                      `json:"name"`
-	Airports             map[string]*Airport         `json:"airports"`
-	VideoMapFile         string                      `json:"video_map_file"`
-	Fixes                map[string]Point2LL         `json:"fixes"`
-	Scenarios            map[string]*Scenario        `json:"scenarios"`
-	DefaultController    string                      `json:"default_controller"`
-	DefaultScenarioGroup string                      `json:"default_scenario"`
-	ControlPositions     map[string]*Controller      `json:"control_positions"`
-	Scratchpads          map[string]string           `json:"scratchpads"`
-	AirspaceBoundaries   map[string][]Point2LL       `json:"airspace_boundaries"`
-	AirspaceVolumes      map[string][]AirspaceVolume `json:"airspace_volumes"`
-	ArrivalGroups        map[string][]Arrival        `json:"arrival_groups"`
+	Name                 string                 `json:"name"`
+	Airports             map[string]*Airport    `json:"airports"`
+	VideoMapFile         string                 `json:"video_map_file"`
+	Fixes                map[string]Point2LL    `json:"fixes"`
+	Scenarios            map[string]*Scenario   `json:"scenarios"`
+	DefaultController    string                 `json:"default_controller"`
+	DefaultScenarioGroup string                 `json:"default_scenario"`
+	ControlPositions     map[string]*Controller `json:"control_positions"`
+	Scratchpads          map[string]string      `json:"scratchpads"`
+	Airspace             Airspace               `json:"airspace"`
+	ArrivalGroups        map[string][]Arrival   `json:"arrival_groups"`
 
 	Center         Point2LL              `json:"center"`
 	PrimaryAirport string                `json:"primary_airport"`
@@ -58,6 +57,11 @@ type ArrivalAirline struct {
 	ICAO    string `json:"icao"`
 	Airport string `json:"airport"`
 	Fleet   string `json:"fleet,omitempty"`
+}
+
+type Airspace struct {
+	Boundaries map[string][]Point2LL       `json:"boundaries"`
+	Volumes    map[string][]AirspaceVolume `json:"volumes"`
 }
 
 type AirspaceVolume struct {
@@ -152,14 +156,14 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	var errors []error
 
 	for _, as := range s.ApproachAirspaceNames {
-		if vol, ok := t.AirspaceVolumes[as]; !ok {
+		if vol, ok := t.Airspace.Volumes[as]; !ok {
 			errors = append(errors, fmt.Errorf("%s: unknown approach airspace in scenario %s", as, s.Name))
 		} else {
 			s.ApproachAirspace = append(s.ApproachAirspace, vol...)
 		}
 	}
 	for _, as := range s.DepartureAirspaceNames {
-		if vol, ok := t.AirspaceVolumes[as]; !ok {
+		if vol, ok := t.Airspace.Volumes[as]; !ok {
 			errors = append(errors, fmt.Errorf("%s: unknown departure airspace in scenario %s", as, s.Name))
 		} else {
 			s.DepartureAirspace = append(s.DepartureAirspace, vol...)
@@ -274,13 +278,13 @@ func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 	var errors []error
 
-	for name, volumes := range t.AirspaceVolumes {
+	for name, volumes := range t.Airspace.Volumes {
 		for i, vol := range volumes {
 			for _, b := range vol.BoundaryNames {
-				if pts, ok := t.AirspaceBoundaries[b]; !ok {
+				if pts, ok := t.Airspace.Boundaries[b]; !ok {
 					errors = append(errors, fmt.Errorf("%s: airspace boundary not found for airspace volume %s", b, name))
 				} else {
-					t.AirspaceVolumes[name][i].Boundaries = append(t.AirspaceVolumes[name][i].Boundaries, pts)
+					t.Airspace.Volumes[name][i].Boundaries = append(t.Airspace.Volumes[name][i].Boundaries, pts)
 				}
 			}
 		}
