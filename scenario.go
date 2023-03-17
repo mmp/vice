@@ -152,7 +152,7 @@ func (s *Scenario) runwayDepartureRate(ar string) int {
 }
 
 func (s *Scenario) Name() string {
-	for _, sgroup := range scenarios {
+	for _, sgroup := range scenarioGroups {
 		for name, scenario := range sgroup.Scenarios {
 			if s == scenario {
 				return name
@@ -552,7 +552,7 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 	}
 
 	// Now load the scenarios.
-	scenarios := make(map[string]*ScenarioGroup)
+	scenarioGroups := make(map[string]*ScenarioGroup)
 	err = fs.WalkDir(embeddedScenarioGroups, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
@@ -563,10 +563,10 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 		if err != nil {
 			return err
 		}
-		if _, ok := scenarios[s.Name]; ok {
+		if _, ok := scenarioGroups[s.Name]; ok {
 			return fmt.Errorf("%s: scenario repeatedly defined", s.Name)
 		}
-		scenarios[s.Name] = s
+		scenarioGroups[s.Name] = s
 		return nil
 	})
 	if err != nil {
@@ -582,26 +582,26 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 			os.Exit(1)
 		}
 		// This one is allowed to redefine an existing scenario.
-		scenarios[s.Name] = s
+		scenarioGroups[s.Name] = s
 	}
 
 	// Final tidying before we return the loaded scenarios.
-	for scenarioName, s := range scenarios {
+	for groupName, sgroup := range scenarioGroups {
 		// Initialize the CommandBuffers in the scenario's STARSMaps.
-		if s.VideoMapFile == "" {
-			lg.Errorf("%s: scenario does not have \"video_map_file\" specified", s.Name)
+		if sgroup.VideoMapFile == "" {
+			lg.Errorf("%s: scenario does not have \"video_map_file\" specified", sgroup.Name)
 			os.Exit(1)
 		}
-		if bufferMap, ok := videoMapCommandBuffers[s.VideoMapFile]; !ok {
-			lg.Errorf("%s: \"video_map_file\" not found for scenario %s", s.VideoMapFile, s.Name)
+		if bufferMap, ok := videoMapCommandBuffers[sgroup.VideoMapFile]; !ok {
+			lg.Errorf("%s: \"video_map_file\" not found for scenario %s", sgroup.VideoMapFile, sgroup.Name)
 			os.Exit(1)
 		} else {
-			for i, sm := range s.STARSMaps {
+			for i, sm := range sgroup.STARSMaps {
 				if cb, ok := bufferMap[sm.Name]; !ok {
-					lg.Errorf("%s: video map not found for scenario %s", sm.Name, s.Name)
+					lg.Errorf("%s: video map not found for scenario %s", sm.Name, sgroup.Name)
 					os.Exit(1)
 				} else {
-					s.STARSMaps[i].cb = cb
+					sgroup.STARSMaps[i].cb = cb
 				}
 			}
 		}
@@ -609,10 +609,10 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 		// This is horribly hacky but PostDeserialize ends up calling
 		// functions that access the scenario global
 		// (e.g. nmdistance2ll)...
-		scenario = s
-		s.PostDeserialize(scenarioName)
-		scenario = nil
+		scenarioGroup = sgroup
+		sgroup.PostDeserialize(groupName)
+		scenarioGroup = nil
 	}
 
-	return scenarios
+	return scenarioGroups
 }

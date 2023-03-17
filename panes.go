@@ -314,7 +314,7 @@ func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
 	if ac.FlightPlan == nil {
 		return false
 	}
-	_, ok := scenario.Airports[ac.FlightPlan.DepartureAirport]
+	_, ok := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]
 	return ok
 }
 
@@ -322,7 +322,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 	if ac.FlightPlan == nil {
 		return false
 	}
-	_, ok := scenario.Airports[ac.FlightPlan.ArrivalAirport]
+	_, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]
 	return ok
 }
 

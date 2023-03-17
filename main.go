@@ -30,16 +30,16 @@ var (
 	// Note that in some cases they are passed down from main (e.g.,
 	// platform); this is plumbing in preparation for possibly reducing the
 	// number of these in the future.
-	globalConfig *GlobalConfig
-	platform     Platform
-	renderer     Renderer
-	stats        Stats
-	database     *StaticDatabase
-	sim          *Sim
-	eventStream  *EventStream
-	lg           *Logger
-	scenarios    map[string]*ScenarioGroup
-	scenario     *ScenarioGroup
+	globalConfig   *GlobalConfig
+	platform       Platform
+	renderer       Renderer
+	stats          Stats
+	database       *StaticDatabase
+	sim            *Sim
+	eventStream    *EventStream
+	lg             *Logger
+	scenarioGroups map[string]*ScenarioGroup
+	scenarioGroup  *ScenarioGroup
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -120,13 +120,13 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
-	scenarios = LoadScenarioGroups()
+	scenarioGroups = LoadScenarioGroups()
 	// Use the last scenario, if available.
-	if s, ok := scenarios[globalConfig.LastScenarioGroup]; ok {
-		scenario = s
-	} else if len(scenarios) > 0 {
+	if s, ok := scenarioGroups[globalConfig.LastScenarioGroup]; ok {
+		scenarioGroup = s
+	} else if len(scenarioGroups) > 0 {
 		// Otherwise take the first one alphabetically.
-		scenario = scenarios[SortedMapKeys(scenarios)[0]]
+		scenarioGroup = scenarioGroups[SortedMapKeys(scenarioGroups)[0]]
 	}
 
 	multisample := runtime.GOOS != "darwin"

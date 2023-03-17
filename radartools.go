@@ -361,7 +361,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 			// Is it on the glideslope?
 			// Laterally: compute the heading to the threshold and compare to the
 			// glideslope's lateral spread.
-			h := headingp2ll(ac.TrackPosition(), src.Threshold, scenario.MagneticVariation)
+			h := headingp2ll(ac.TrackPosition(), src.Threshold, scenarioGroup.MagneticVariation)
 			if abs(h-src.Heading) > c.GlideslopeLateralSpread {
 				return nil
 			}
@@ -450,8 +450,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 
 	// we have the runway heading, but we want to go the opposite direction
 	// and then +/- HeadingTolerance.
-	rota := src.Heading + 180 - c.GlideslopeLateralSpread - scenario.MagneticVariation
-	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - scenario.MagneticVariation
+	rota := src.Heading + 180 - c.GlideslopeLateralSpread - scenarioGroup.MagneticVariation
+	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - scenarioGroup.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
 	sina, cosa := sin(radians(rota)), cos(radians(rota))
@@ -689,9 +689,9 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
 		// Account for magnetic variation and any user-specified rotation
-		Rotate(-radians(rotationAngle+scenario.MagneticVariation)).
+		Rotate(-radians(rotationAngle+scenarioGroup.MagneticVariation)).
 		// Scale based on range and nm per latitude / longitude
-		Scale(scenario.NmPerLongitude/rangenm, scenario.NmPerLatitude/rangenm).
+		Scale(scenarioGroup.NmPerLongitude/rangenm, scenarioGroup.NmPerLatitude/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 

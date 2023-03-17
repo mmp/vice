@@ -167,5 +167,5 @@ func (ap *Approach) Line() [2]Point2LL {
 
 func (ap *Approach) Heading() int {
 	p := ap.Line()
-	return int(headingp2ll(p[0], p[1], scenario.MagneticVariation) + 0.5)
+	return int(headingp2ll(p[0], p[1], scenarioGroup.MagneticVariation) + 0.5)
 }

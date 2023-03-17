@@ -32,7 +32,7 @@ var (
 type SimConnectionConfiguration struct {
 	numAircraft      int32
 	challenge        float32
-	scenarioConfig   *Scenario
+	scenario         *Scenario
 	controller       *Controller
 	validControllers map[string]*Controller
 }
@@ -44,12 +44,12 @@ func (ssc *SimConnectionConfiguration) Initialize() {
 }
 
 func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
-	ssc.scenarioConfig = scenario.Scenarios[scenario.DefaultScenarioGroup]
+	ssc.scenario = scenarioGroup.Scenarios[scenarioGroup.DefaultScenarioGroup]
 	ssc.validControllers = make(map[string]*Controller)
-	for _, sc := range scenario.Scenarios {
-		ssc.validControllers[sc.Callsign] = scenario.ControlPositions[sc.Callsign]
+	for _, sc := range scenarioGroup.Scenarios {
+		ssc.validControllers[sc.Callsign] = scenarioGroup.ControlPositions[sc.Callsign]
 	}
-	ssc.controller = scenario.ControlPositions[scenario.DefaultController]
+	ssc.controller = scenarioGroup.ControlPositions[scenarioGroup.DefaultController]
 
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 		if stars, ok := p.(*STARSPane); ok {
@@ -59,10 +59,10 @@ func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
 }
 
 func (ssc *SimConnectionConfiguration) DrawUI() bool {
-	if imgui.BeginComboV("Scenario Group", scenario.Name, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(scenarios) {
-			if imgui.SelectableV(name, name == scenario.Name, 0, imgui.Vec2{}) {
-				scenario = scenarios[name]
+	if imgui.BeginComboV("Scenario Group", scenarioGroup.Name, imgui.ComboFlagsHeightLarge) {
+		for _, name := range SortedMapKeys(scenarioGroups) {
+			if imgui.SelectableV(name, name == scenarioGroup.Name, 0, imgui.Vec2{}) {
+				scenarioGroup = scenarioGroups[name]
 				globalConfig.LastScenarioGroup = name
 				ssc.ResetScenarioGroup()
 			}
@@ -76,9 +76,9 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				ssc.controller = ssc.validControllers[controllerName]
 				// Set the current scenario to the first one alphabetically
 				// with the selected controller.
-				for _, scenarioName := range SortedMapKeys(scenario.Scenarios) {
-					if scenario.Scenarios[scenarioName].Callsign == controllerName {
-						ssc.scenarioConfig = scenario.Scenarios[scenarioName]
+				for _, scenarioName := range SortedMapKeys(scenarioGroup.Scenarios) {
+					if scenarioGroup.Scenarios[scenarioName].Callsign == controllerName {
+						ssc.scenario = scenarioGroup.Scenarios[scenarioName]
 						break
 					}
 				}
@@ -87,15 +87,15 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.EndCombo()
 	}
 
-	scenarioConfig := ssc.scenarioConfig
+	scenario := ssc.scenario
 
-	if imgui.BeginComboV("Config", scenarioConfig.Name(), imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(scenario.Scenarios) {
-			if scenario.Scenarios[name].Callsign != ssc.controller.Callsign {
+	if imgui.BeginComboV("Config", scenario.Name(), imgui.ComboFlagsHeightLarge) {
+		for _, name := range SortedMapKeys(scenarioGroup.Scenarios) {
+			if scenarioGroup.Scenarios[name].Callsign != ssc.controller.Callsign {
 				continue
 			}
-			if imgui.SelectableV(name, name == scenarioConfig.Name(), 0, imgui.Vec2{}) {
-				ssc.scenarioConfig = scenario.Scenarios[name]
+			if imgui.SelectableV(name, name == scenario.Name(), 0, imgui.Vec2{}) {
+				ssc.scenario = scenarioGroup.Scenarios[name]
 			}
 		}
 		imgui.EndCombo()
@@ -107,28 +107,28 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 
-		if len(scenarioConfig.DepartureRunways) > 0 {
+		if len(scenario.DepartureRunways) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Departing:")
 			imgui.TableNextColumn()
 
-			d := SortedMapKeys(scenarioConfig.nextDepartureSpawn)
+			d := SortedMapKeys(scenario.nextDepartureSpawn)
 			// Only list ones that are actually active.
 			d = FilterSlice(d, func(rwy string) bool {
-				return scenarioConfig.runwayDepartureRate(rwy) > 0
+				return scenario.runwayDepartureRate(rwy) > 0
 			})
 			imgui.Text(strings.Join(d, ", "))
 		}
 
-		if len(scenarioConfig.ArrivalRunways) > 0 {
+		if len(scenario.ArrivalRunways) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Landing:")
 			imgui.TableNextColumn()
 
 			var a []string
-			for _, rwy := range scenarioConfig.ArrivalRunways {
+			for _, rwy := range scenario.ArrivalRunways {
 				a = append(a, rwy.Airport+"/"+rwy.Runway)
 			}
 			sort.Strings(a)
@@ -139,15 +139,15 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.TableNextColumn()
 		imgui.Text("Wind:")
 		imgui.TableNextColumn()
-		if scenarioConfig.Wind.Gust > scenarioConfig.Wind.Speed {
-			imgui.Text(fmt.Sprintf("%d at %d gust %d", scenarioConfig.Wind.Direction, scenarioConfig.Wind.Speed, scenarioConfig.Wind.Gust))
+		if scenario.Wind.Gust > scenario.Wind.Speed {
+			imgui.Text(fmt.Sprintf("%d at %d gust %d", scenario.Wind.Direction, scenario.Wind.Speed, scenario.Wind.Gust))
 		} else {
-			imgui.Text(fmt.Sprintf("%d at %d", scenarioConfig.Wind.Direction, scenarioConfig.Wind.Speed))
+			imgui.Text(fmt.Sprintf("%d at %d", scenario.Wind.Direction, scenario.Wind.Speed))
 		}
 		imgui.EndTable()
 	}
 
-	if len(scenarioConfig.DepartureRunways) > 0 {
+	if len(scenario.DepartureRunways) > 0 {
 		imgui.Separator()
 		imgui.Text("Departures")
 		imgui.SliderFloatV("Sequencing challenge", &ssc.challenge, 0, 1, "%.02f", 0)
@@ -160,7 +160,7 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			imgui.TableSetupColumn("ADR")
 			imgui.TableHeadersRow()
 
-			for i, rwy := range scenarioConfig.DepartureRunways {
+			for i, rwy := range scenario.DepartureRunways {
 				imgui.PushID(rwy.Airport + rwy.Runway + rwy.Category)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
@@ -174,17 +174,17 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 					imgui.Text(rwy.Category)
 				}
 				imgui.TableNextColumn()
-				imgui.InputIntV("##adr", &scenarioConfig.DepartureRunways[i].Rate, 0, 120, 0)
+				imgui.InputIntV("##adr", &scenario.DepartureRunways[i].Rate, 0, 120, 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
 		}
 	}
 
-	if len(scenarioConfig.ArrivalGroupRates) > 0 {
+	if len(scenario.ArrivalGroupRates) > 0 {
 		// Figure out how many unique airports we've got for AAR columns in the table...
 		allAirports := make(map[string]interface{})
-		for _, agr := range scenarioConfig.ArrivalGroupRates {
+		for _, agr := range scenario.ArrivalGroupRates {
 			for ap := range agr {
 				allAirports[ap] = nil
 			}
@@ -202,12 +202,12 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			}
 			imgui.TableHeadersRow()
 
-			for _, group := range SortedMapKeys(scenarioConfig.ArrivalGroupRates) {
+			for _, group := range SortedMapKeys(scenario.ArrivalGroupRates) {
 				imgui.PushID(group)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(group)
-				for ap, rate := range scenarioConfig.ArrivalGroupRates[group] {
+				for ap, rate := range scenario.ArrivalGroupRates[group] {
 					idx := Find(sortedAirports, ap)
 					if idx == -1 {
 						lg.Errorf("%s: airport not found in sorted all airports? %+v", ap, sortedAirports)
@@ -245,7 +245,7 @@ func (ssc *SimConnectionConfiguration) Connect() error {
 // Sim
 
 type Sim struct {
-	scenarioConfig *Scenario
+	scenario *Scenario
 
 	aircraft map[string]*Aircraft
 	handoffs map[string]time.Time
@@ -271,7 +271,7 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	ss := &Sim{
-		scenarioConfig: ssc.scenarioConfig,
+		scenario: ssc.scenario,
 
 		aircraft: make(map[string]*Aircraft),
 		handoffs: make(map[string]time.Time),
@@ -287,19 +287,19 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
-	for _, ap := range ss.scenarioConfig.AllAirports() {
-		spd := ss.scenarioConfig.Wind.Speed - 3 + rand.Int31n(6)
+	for _, ap := range ss.scenario.AllAirports() {
+		spd := ss.scenario.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
 			wind = "00000KT"
 		} else if spd < 4 {
 			wind = fmt.Sprintf("VRB%02dKT", spd)
 		} else {
-			dir := 10 * ((ss.scenarioConfig.Wind.Direction + 5) / 10)
+			dir := 10 * ((ss.scenario.Wind.Direction + 5) / 10)
 			dir += [3]int32{-10, 0, 10}[rand.Intn(3)]
 			wind = fmt.Sprintf("%03d%02d", dir, spd)
-			gst := ss.scenarioConfig.Wind.Gust - 3 + rand.Int31n(6)
-			if gst-ss.scenarioConfig.Wind.Speed > 5 {
+			gst := ss.scenario.Wind.Gust - 3 + rand.Int31n(6)
+			if gst-ss.scenario.Wind.Speed > 5 {
 				wind += fmt.Sprintf("G%02d", gst)
 			}
 			wind += "KT"
@@ -324,15 +324,15 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		return time.Now().Add(time.Duration(delta) * time.Second)
 	}
 
-	for group, rates := range ss.scenarioConfig.ArrivalGroupRates {
+	for group, rates := range ss.scenario.ArrivalGroupRates {
 		rateSum := 0
 		for _, rate := range rates {
 			rateSum += int(*rate)
 		}
-		ss.scenarioConfig.nextArrivalSpawn[group] = randomSpawn(rateSum)
+		ss.scenario.nextArrivalSpawn[group] = randomSpawn(rateSum)
 	}
-	for rwy := range ss.scenarioConfig.nextDepartureSpawn {
-		ss.scenarioConfig.nextDepartureSpawn[rwy] = randomSpawn(ss.scenarioConfig.runwayDepartureRate(rwy))
+	for rwy := range ss.scenario.nextDepartureSpawn {
+		ss.scenario.nextDepartureSpawn[rwy] = randomSpawn(ss.scenario.runwayDepartureRate(rwy))
 	}
 
 	return ss
@@ -363,7 +363,7 @@ func (ss *Sim) SetSquawkAutomatic(callsign string) error {
 func (ss *Sim) SetScratchpad(callsign string, scratchpad string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != ss.scenarioConfig.Callsign {
+	} else if ac.TrackingController != ss.scenario.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.Scratchpad = scratchpad
@@ -390,7 +390,7 @@ func (ss *Sim) InitiateTrack(callsign string) error {
 	} else if ac.TrackingController != "" {
 		return ErrOtherControllerHasTrack
 	} else {
-		ac.TrackingController = ss.scenarioConfig.Callsign
+		ac.TrackingController = ss.scenario.Callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		eventStream.Post(&InitiatedTrackEvent{ac: ac})
 		return nil
@@ -400,7 +400,7 @@ func (ss *Sim) InitiateTrack(callsign string) error {
 func (ss *Sim) DropTrack(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != ss.scenarioConfig.Callsign {
+	} else if ac.TrackingController != ss.scenario.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.TrackingController = ""
@@ -413,7 +413,7 @@ func (ss *Sim) DropTrack(callsign string) error {
 func (ss *Sim) Handoff(callsign string, controller string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != ss.scenarioConfig.Callsign {
+	} else if ac.TrackingController != ss.scenario.Callsign {
 		return ErrOtherControllerHasTrack
 	} else if ctrl := ss.GetController(controller); ctrl == nil {
 		return ErrNoController
@@ -429,12 +429,12 @@ func (ss *Sim) Handoff(callsign string, controller string) error {
 func (ss *Sim) AcceptHandoff(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.InboundHandoffController != ss.scenarioConfig.Callsign {
+	} else if ac.InboundHandoffController != ss.scenario.Callsign {
 		return ErrNotBeingHandedOffToMe
 	} else {
 		ac.InboundHandoffController = ""
-		ac.TrackingController = ss.scenarioConfig.Callsign
-		eventStream.Post(&AcceptedHandoffEvent{controller: ss.scenarioConfig.Callsign, ac: ac})
+		ac.TrackingController = ss.scenario.Callsign
+		eventStream.Post(&AcceptedHandoffEvent{controller: ss.scenario.Callsign, ac: ac})
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac}) // FIXME...
 		return nil
 	}
@@ -447,7 +447,7 @@ func (ss *Sim) RejectHandoff(callsign string) error {
 func (ss *Sim) CancelHandoff(callsign string) error {
 	if ac, ok := ss.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != ss.scenarioConfig.Callsign {
+	} else if ac.TrackingController != ss.scenario.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.OutboundHandoffController = ""
@@ -523,18 +523,18 @@ func (ss *Sim) GetAirportATIS(airport string) []ATIS {
 }
 
 func (s *Sim) GetController(callsign string) *Controller {
-	if s.scenarioConfig == nil {
+	if s.scenario == nil {
 		return nil
 	}
 
-	ctrl, ok := scenario.ControlPositions[callsign]
+	ctrl, ok := scenarioGroup.ControlPositions[callsign]
 	if ok {
 		return ctrl
 	}
 
-	for _, c := range scenario.ControlPositions {
-		// Make sure that the controller is active in the scenario...
-		if c.SectorId == callsign && Find(s.scenarioConfig.Controllers, c.Callsign) != -1 {
+	for _, c := range scenarioGroup.ControlPositions {
+		// Make sure that the controller is active in the scenarioGroup...
+		if c.SectorId == callsign && Find(s.scenario.Controllers, c.Callsign) != -1 {
 			return c
 		}
 	}
@@ -543,13 +543,13 @@ func (s *Sim) GetController(callsign string) *Controller {
 }
 
 func (s *Sim) GetAllControllers() []*Controller {
-	if s.scenarioConfig == nil {
+	if s.scenario == nil {
 		return nil
 	}
 
-	_, ctrl := FlattenMap(scenario.ControlPositions)
+	_, ctrl := FlattenMap(scenarioGroup.ControlPositions)
 	return FilterSlice(ctrl,
-		func(ctrl *Controller) bool { return Find(s.scenarioConfig.Controllers, ctrl.Callsign) != -1 })
+		func(ctrl *Controller) bool { return Find(s.scenario.Controllers, ctrl.Callsign) != -1 })
 }
 
 func (ss *Sim) SetPrimaryFrequency(f Frequency) {
@@ -557,7 +557,7 @@ func (ss *Sim) SetPrimaryFrequency(f Frequency) {
 }
 
 func (ss *Sim) GetUpdates() {
-	if ss.paused || ss.scenarioConfig == nil {
+	if ss.paused || ss.scenario == nil {
 		return
 	}
 
@@ -611,7 +611,7 @@ func (ss *Sim) updateState() {
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
 				Groundspeed: int(ac.GS),
-				Heading:     ac.Heading - scenario.MagneticVariation,
+				Heading:     ac.Heading - scenarioGroup.MagneticVariation,
 				Time:        now,
 			})
 
@@ -627,8 +627,8 @@ func (ss *Sim) Connected() bool {
 }
 
 func (ss *Sim) Callsign() string {
-	if ss.scenarioConfig != nil {
-		return ss.scenarioConfig.Callsign
+	if ss.scenario != nil {
+		return ss.scenario.Callsign
 	} else {
 		return "(disconnected)"
 	}
@@ -639,11 +639,11 @@ func (ss *Sim) CurrentTime() time.Time {
 }
 
 func (ss *Sim) GetWindowTitle() string {
-	if ss.scenarioConfig == nil {
+	if ss.scenario == nil {
 		return "(disconnected)"
 	}
 	remaining := fmt.Sprintf("[%d aircraft remaining]", ss.remainingLaunches)
-	return ss.scenarioConfig.Callsign + ": " + ss.scenarioConfig.Name() + " " + remaining
+	return ss.scenario.Callsign + ": " + ss.scenario.Name() + " " + remaining
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {
@@ -799,7 +799,7 @@ func (ss *Sim) getApproach(callsign string, approach string) (*Approach, *Aircra
 		return nil, nil, ErrNoFlightPlan
 	}
 
-	ap, ok := scenario.Airports[fp.ArrivalAirport]
+	ap, ok := scenarioGroup.Airports[fp.ArrivalAirport]
 	if !ok {
 		lg.Errorf("Can't find TRACON airport %s for %s approach for %s", fp.ArrivalAirport, approach, callsign)
 		return nil, nil, ErrArrivalAirportUnknown
@@ -989,14 +989,14 @@ func (ss *Sim) DrawSettingsWindow() {
 
 func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
 	// TODO: have a better gust model?
-	windKts := s.scenarioConfig.Wind.Speed
-	if s.scenarioConfig.Wind.Gust > 0 {
-		windKts += rand.Int31n(s.scenarioConfig.Wind.Gust)
+	windKts := s.scenario.Wind.Speed
+	if s.scenario.Wind.Gust > 0 {
+		windKts += rand.Int31n(s.scenario.Wind.Gust)
 	}
 
 	// wind.dir is where it's coming from, so +180 to get the vector that
 	// affects the aircraft's course.
-	d := float32(s.scenarioConfig.Wind.Direction + 180)
+	d := float32(s.scenario.Wind.Direction + 180)
 	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
 	vWind = scale2f(vWind, float32(windKts)/3600)
 	return nm2ll(vWind)
@@ -1024,7 +1024,7 @@ func (ss *Sim) SpawnAircraft() {
 		}
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, scenario.MagneticVariation)
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, scenarioGroup.MagneticVariation)
 		}
 		ac.Waypoints = ac.Waypoints[1:]
 
@@ -1041,8 +1041,8 @@ func (ss *Sim) SpawnAircraft() {
 		return time.Duration(seconds * float32(time.Second))
 	}
 
-	for group, rates := range ss.scenarioConfig.ArrivalGroupRates {
-		if ss.remainingLaunches > 0 && now.After(ss.scenarioConfig.nextArrivalSpawn[group]) {
+	for group, rates := range ss.scenario.ArrivalGroupRates {
+		if ss.remainingLaunches > 0 && now.After(ss.scenario.nextArrivalSpawn[group]) {
 			// Choose arrival airport randomly in proportion to the airport
 			// arrival rates in the arrival group.
 			rateSum := 0
@@ -1058,18 +1058,18 @@ func (ss *Sim) SpawnAircraft() {
 			if ac := ss.SpawnArrival(arrivalAirport, group); ac != nil {
 				ac.FlightPlan.ArrivalAirport = arrivalAirport
 				addAircraft(ac)
-				ss.scenarioConfig.nextArrivalSpawn[group] = now.Add(randomWait(rateSum))
+				ss.scenario.nextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
 	}
 
-	for rwy, nextSpawn := range ss.scenarioConfig.nextDepartureSpawn {
+	for rwy, nextSpawn := range ss.scenario.nextDepartureSpawn {
 		if ss.remainingLaunches > 0 && now.After(nextSpawn) {
 			// So we're going to launch from this runway but there may be
 			// multiple configs with different rates on this runway. So now
 			// we'll choose one with probability proportional to its
 			// rate...
-			idx := SampleWeighted(ss.scenarioConfig.DepartureRunways,
+			idx := SampleWeighted(ss.scenario.DepartureRunways,
 				func(r ScenarioGroupDepartureRunway) int {
 					if r.Airport+"/"+r.Runway != rwy {
 						return 0
@@ -1081,12 +1081,12 @@ func (ss *Sim) SpawnAircraft() {
 				continue
 			}
 
-			airportName := ss.scenarioConfig.DepartureRunways[idx].Airport
-			ap := scenario.Airports[airportName]
-			if ac := ss.SpawnDeparture(ap, &ss.scenarioConfig.DepartureRunways[idx]); ac != nil {
+			airportName := ss.scenario.DepartureRunways[idx].Airport
+			ap := scenarioGroup.Airports[airportName]
+			if ac := ss.SpawnDeparture(ap, &ss.scenario.DepartureRunways[idx]); ac != nil {
 				ac.FlightPlan.DepartureAirport = airportName
 				addAircraft(ac)
-				ss.scenarioConfig.nextDepartureSpawn[rwy] = now.Add(randomWait(ss.scenarioConfig.runwayDepartureRate(rwy)))
+				ss.scenario.nextDepartureSpawn[rwy] = now.Add(randomWait(ss.scenario.runwayDepartureRate(rwy)))
 			}
 		}
 	}
@@ -1177,7 +1177,7 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 }
 
 func (ss *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
-	arrivals := scenario.ArrivalGroups[arrivalGroup]
+	arrivals := scenarioGroup.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
 		_, ok := ar.Airlines[airportName]
@@ -1205,7 +1205,7 @@ func (ss *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	ac.Waypoints = arr.Waypoints
 	// But if there is a custom route for any of the active runways, switch
 	// to that. Results are undefined if there are multiple matches.
-	for _, aprwy := range ss.scenarioConfig.ArrivalRunways {
+	for _, aprwy := range ss.scenario.ArrivalRunways {
 		if wp, ok := arr.RunwayWaypoints[aprwy.Runway]; ok {
 			ac.Waypoints = wp
 			break
@@ -1217,7 +1217,7 @@ func (ss *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	ac.CrossingSpeed = arr.SpeedRestriction
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
-		if appr, ok := scenario.Airports[ac.FlightPlan.ArrivalAirport].Approaches[arr.ExpectApproach]; ok {
+		if appr, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport].Approaches[arr.ExpectApproach]; ok {
 			ac.Approach = &appr
 		} else {
 			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
@@ -1273,7 +1273,7 @@ func (ss *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *A
 
 	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
 	ac.FlightPlan.ArrivalAirport = dep.Destination
-	ac.Scratchpad = scenario.Scratchpads[dep.Exit]
+	ac.Scratchpad = scenarioGroup.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
 		// If unspecified, pick something in the flight levels...
 		// TODO: get altitudes right considering East/West-bound...
