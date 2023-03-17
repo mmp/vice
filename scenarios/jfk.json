@@ -2103,7 +2103,6 @@
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
-        "name": "PARCH3",
         "route": "/. PARCH3",
         "runway_waypoints": {
           "22L": "N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER CRAIL #302",
@@ -2144,7 +2143,6 @@
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
-        "name": "ROBER2",
         "route": "/. ROBER2",
         "runway_waypoints": null,
         "speed_restriction": 250,

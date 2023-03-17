@@ -4819,7 +4819,6 @@
         "initial_altitude": 9000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
-        "name": "JIIMS3",
         "route": "/. JIIMS3",
         "runway_waypoints": {
           "27L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 BEELZ WOJIK@s190 PSOUT #87",
@@ -4860,7 +4859,6 @@
         "initial_altitude": 10000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
-        "name": "PAATS3",
         "route": "/. PAATS3",
         "runway_waypoints": {
           "27L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL BEELZ WOJIK@s190 PSOUT #87",
