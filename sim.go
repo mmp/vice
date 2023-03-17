@@ -89,12 +89,12 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 
 	scenarioConfig := ssc.scenarioConfig
 
-	if imgui.BeginComboV("Config", scenarioConfig.Name, imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("Config", scenarioConfig.Name(), imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(scenario.Scenarios) {
 			if scenario.Scenarios[name].Callsign != ssc.controller.Callsign {
 				continue
 			}
-			if imgui.SelectableV(name, name == scenarioConfig.Name, 0, imgui.Vec2{}) {
+			if imgui.SelectableV(name, name == scenarioConfig.Name(), 0, imgui.Vec2{}) {
 				ssc.scenarioConfig = scenario.Scenarios[name]
 			}
 		}
@@ -643,7 +643,7 @@ func (ss *Sim) GetWindowTitle() string {
 		return "(disconnected)"
 	}
 	remaining := fmt.Sprintf("[%d aircraft remaining]", ss.remainingLaunches)
-	return ss.scenarioConfig.Callsign + ": " + ss.scenarioConfig.Name + " " + remaining
+	return ss.scenarioConfig.Callsign + ": " + ss.scenarioConfig.Name() + " " + remaining
 }
 
 func pilotResponse(callsign string, fm string, args ...interface{}) {

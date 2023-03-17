@@ -2407,7 +2407,6 @@
           "runway": "14"
         }
       ],
-      "name": "KJFK Depart 13R",
       "wind": {
         "direction": 140,
         "gust": 0,
@@ -2487,7 +2486,6 @@
           "runway": "14"
         }
       ],
-      "name": "KJFK Depart 13R Land 13L",
       "wind": {
         "direction": 140,
         "gust": 17,
@@ -2571,7 +2569,6 @@
           "runway": "14"
         }
       ],
-      "name": "KJFK Depart 13R Land 13L/22L",
       "wind": {
         "direction": 140,
         "gust": 17,
@@ -2638,7 +2635,6 @@
           "runway": "19"
         }
       ],
-      "name": "KJFK Depart 22R",
       "wind": {
         "direction": 190,
         "gust": 0,
@@ -2722,7 +2718,6 @@
           "runway": "19"
         }
       ],
-      "name": "KJFK Depart 22R Land 22 L/R",
       "wind": {
         "direction": 190,
         "gust": 17,
@@ -2789,7 +2784,6 @@
           "runway": "32"
         }
       ],
-      "name": "KJFK Depart 31L",
       "wind": {
         "direction": 330,
         "gust": 17,
@@ -2873,7 +2867,6 @@
           "runway": "32"
         }
       ],
-      "name": "KJFK Depart 31L Land 31L/31R",
       "wind": {
         "direction": 330,
         "gust": 17,
@@ -2940,7 +2933,6 @@
           "runway": "1"
         }
       ],
-      "name": "KJFK Depart 4L",
       "wind": {
         "direction": 30,
         "gust": 0,
@@ -3024,7 +3016,6 @@
           "runway": "1"
         }
       ],
-      "name": "KJFK Depart 4L Land 4L/R",
       "wind": {
         "direction": 30,
         "gust": 25,

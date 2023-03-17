@@ -5043,7 +5043,6 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "name": "KPHL 27R Final",
       "wind": {
         "direction": 290,
         "speed": 8
@@ -5099,7 +5098,6 @@
           "runway": "27L"
         }
       ],
-      "name": "KPHL Depart 27L Land 27R",
       "wind": {
         "direction": 290,
         "gust": 17,
@@ -5156,7 +5154,6 @@
           "runway": "9L"
         }
       ],
-      "name": "KPHL Depart 9L Land 9R",
       "wind": {
         "direction": 70,
         "gust": 24,

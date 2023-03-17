@@ -2593,7 +2593,6 @@
           "runway": "24"
         }
       ],
-      "name": "KEWR Depart 22R",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2669,7 +2668,6 @@
           "runway": "24"
         }
       ],
-      "name": "KEWR Depart 22R Land 22L",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2707,7 +2705,6 @@
           "runway": "1"
         }
       ],
-      "name": "KEWR Depart 4L",
       "wind": {
         "direction": 30,
         "gust": 9,
@@ -2783,7 +2780,6 @@
           "runway": "1"
         }
       ],
-      "name": "KEWR Depart 4L Land 4R",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2825,7 +2821,6 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "name": "KEWR Land 22L - ARD",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2861,7 +2856,6 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "name": "KEWR Land 22L - NOA + FINAL",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2897,7 +2891,6 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "name": "KEWR Land 4R - ARD + FINAL",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2933,7 +2926,6 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "name": "KEWR Land 4R - NOA",
       "wind": {
         "direction": 30,
         "gust": 0,

@@ -22,8 +22,6 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-const ViceVersionString = "vice v0.1"
-
 var (
 	// There are a handful of widely-used global variables in vice, all
 	// defined here.  While in principle it would be nice to have fewer (or

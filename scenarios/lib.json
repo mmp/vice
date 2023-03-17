@@ -2632,8 +2632,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty Combined - JFK Owns Coney"
+      ]
     },
     "Liberty Combined - LGA Owns Coney": {
       "callsign": "NY_L_DEP",
@@ -2692,8 +2691,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty Combined - LGA Owns Coney"
+      ]
     },
     "Liberty East": {
       "callsign": "NY_LE_DEP",
@@ -2782,8 +2780,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty East"
+      ]
     },
     "Liberty North": {
       "callsign": "NY_LN_DEP",
@@ -2836,8 +2833,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty North"
+      ]
     },
     "Liberty South JFK Owns Coney": {
       "callsign": "NY_LS_DEP",
@@ -2914,8 +2910,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty South - JFK Owns Coney"
+      ]
     },
     "Liberty South LGA Owns Coney": {
       "callsign": "NY_LS_DEP",
@@ -2986,8 +2981,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty South - LGA Owns Coney"
+      ]
     },
     "Liberty West": {
       "callsign": "NY_LW_DEP",
@@ -3040,8 +3034,7 @@
           "rate": 0,
           "runway": "31"
         }
-      ],
-      "name": "Liberty West"
+      ]
     }
   },
   "scratchpads": {

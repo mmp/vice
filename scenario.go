@@ -72,7 +72,6 @@ type AirspaceVolume struct {
 }
 
 type Scenario struct {
-	Name        string   `json:"name"`
 	Callsign    string   `json:"callsign"`
 	Wind        Wind     `json:"wind"`
 	Controllers []string `json:"controllers"`
@@ -152,19 +151,30 @@ func (s *Scenario) runwayDepartureRate(ar string) int {
 	return r
 }
 
+func (s *Scenario) Name() string {
+	for _, sgroup := range scenarios {
+		for name, scenario := range sgroup.Scenarios {
+			if s == scenario {
+				return name
+			}
+		}
+	}
+	return "(unknown)"
+}
+
 func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	var errors []error
 
 	for _, as := range s.ApproachAirspaceNames {
 		if vol, ok := t.Airspace.Volumes[as]; !ok {
-			errors = append(errors, fmt.Errorf("%s: unknown approach airspace in scenario %s", as, s.Name))
+			errors = append(errors, fmt.Errorf("%s: unknown approach airspace", as))
 		} else {
 			s.ApproachAirspace = append(s.ApproachAirspace, vol...)
 		}
 	}
 	for _, as := range s.DepartureAirspaceNames {
 		if vol, ok := t.Airspace.Volumes[as]; !ok {
-			errors = append(errors, fmt.Errorf("%s: unknown departure airspace in scenario %s", as, s.Name))
+			errors = append(errors, fmt.Errorf("%s: unknown departure airspace", as))
 		} else {
 			s.DepartureAirspace = append(s.DepartureAirspace, vol...)
 		}
@@ -183,11 +193,11 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	s.nextDepartureSpawn = make(map[string]time.Time)
 	for i, rwy := range s.DepartureRunways {
 		if ap, ok := t.Airports[rwy.Airport]; !ok {
-			errors = append(errors, fmt.Errorf("%s: airport not found for departure runway in scenario %s", rwy.Airport, s.Name))
+			errors = append(errors, fmt.Errorf("%s: airport not found for departure runway", rwy.Airport))
 		} else {
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
-				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s for departure runway in scenario %s",
-					rwy.Runway, rwy.Airport, s.Name))
+				errors = append(errors, fmt.Errorf("%s: runway not found at airport %s for departure runway",
+					rwy.Runway, rwy.Airport))
 			} else {
 				s.DepartureRunways[i].exitRoutes = routes
 			}
@@ -203,8 +213,8 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 				}
 				if !found {
 					errors = append(errors,
-						fmt.Errorf("%s: no departures from %s have exit category specified for departure runway %s in scenario %s",
-							rwy.Category, rwy.Airport, rwy.Runway, s.Name))
+						fmt.Errorf("%s: no departures from %s have exit category specified for departure runway %s",
+							rwy.Category, rwy.Airport, rwy.Runway))
 				}
 			}
 		}
@@ -222,13 +232,13 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {
 		// Make sure the arrival group has been defined
 		if arrivals, ok := t.ArrivalGroups[name]; !ok {
-			errors = append(errors, fmt.Errorf("%s: arrival group not found in TRACON in scenario %s", name, s.Name))
+			errors = append(errors, fmt.Errorf("%s: arrival group not found in TRACON", name))
 		} else {
 			// Check the airports in it
 			for airport := range s.ArrivalGroupRates[name] {
 				if _, ok := t.Airports[airport]; !ok {
-					errors = append(errors, fmt.Errorf("%s: unknown arrival airport in %s arrival group in scenario %s",
-						airport, name, s.Name))
+					errors = append(errors, fmt.Errorf("%s: unknown arrival airport in %s arrival group",
+						airport, name))
 				} else {
 					found := false
 					for _, ar := range arrivals {
@@ -238,8 +248,8 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 						}
 					}
 					if !found {
-						errors = append(errors, fmt.Errorf("%s: airport not included in any arrivals in %s arrival group in scenario %s",
-							airport, name, s.Name))
+						errors = append(errors, fmt.Errorf("%s: airport not included in any arrivals in %s arrival group",
+							airport, name))
 					}
 				}
 			}
@@ -248,7 +258,7 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 
 	for _, ctrl := range s.Controllers {
 		if _, ok := t.ControlPositions[ctrl]; !ok {
-			errors = append(errors, fmt.Errorf("%s: controller unknown in scenario %s", ctrl, s.Name))
+			errors = append(errors, fmt.Errorf("%s: controller unknown", ctrl))
 		}
 	}
 
@@ -359,8 +369,10 @@ func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 	}
 
 	// Do after airports!
-	for _, s := range t.Scenarios {
-		errors = append(errors, s.PostDeserialize(t)...)
+	for name, s := range t.Scenarios {
+		for _, err := range s.PostDeserialize(t) {
+			errors = append(errors, fmt.Errorf("scenario %s: %v", name, err))
+		}
 	}
 
 	if len(errors) > 0 {
