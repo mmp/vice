@@ -49,6 +49,10 @@ var (
 		"Added EWR scenarios, including both departure and approach.",
 		"Added Liberty departure scenarios.",
 		"Improved routing of departures beyond their exit fix.",
+		"Fixed a bug where aircraft on RNAV arrivals wouldn't descend.",
+		"Each scenario has a default video map, selected automatically.",
+		"If an aircraft given approach clearance is later vectored, approach clearance is now canceled.",
+		"Improved spawn positions and hand-off locations for JFK arrivals.",
 	}
 )
 
