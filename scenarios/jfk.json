@@ -1543,13 +1543,13 @@
           ]
         },
         "cleared_altitude": 11000,
-        "initial_altitude": 15000,
+        "initial_altitude": 12000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. CAMRN4",
         "runway_waypoints": null,
         "speed_restriction": 250,
-        "waypoints": "N039.58.13.171,W073.53.24.849 CAMRN #40 @"
+        "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935 @ CAMRN #40"
       }
     ],
     "Intra-TRACON": [
@@ -1926,7 +1926,7 @@
         "route": "/. OWENZ CAMRN",
         "runway_waypoints": null,
         "speed_restriction": 250,
-        "waypoints": "N039.56.16.634,W073.30.51.937 N039.57.39.196,W073.37.16.486 @ CAMRN"
+        "waypoints": "N039.54.57.463,W073.27.31.931 N039.55.59.825,W073.30.27.355 @ CAMRN #40"
       }
     ],
     "PARCH3/ROBER2": [
@@ -2105,11 +2105,11 @@
         "initial_speed": 275,
         "route": "/. PARCH3",
         "runway_waypoints": {
-          "22L": "N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER CRAIL #302",
-          "22R": "N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER CRAIL #302"
+          "22L": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER CRAIL #302",
+          "22R": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER CRAIL #302"
         },
         "speed_restriction": 250,
-        "waypoints": "N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #278"
+        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER #278"
       },
       {
         "airlines": {
@@ -2146,7 +2146,7 @@
         "route": "/. ROBER2",
         "runway_waypoints": null,
         "speed_restriction": 250,
-        "waypoints": "N040.58.19.145,W072.40.15.921 N040.56.23.940,W072.45.54.299 @ CCC ROBER #276"
+        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER #276"
       }
     ]
   },
