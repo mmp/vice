@@ -2581,6 +2581,7 @@
         "NY_LN_DEP",
         "NY_LS_DEP"
       ],
+      "default_map": "N90 EWR - Video Map",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2656,6 +2657,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
+      "default_map": "N90 EWR - Video Map",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2693,6 +2695,7 @@
         "NY_LN_DEP",
         "NY_LS_DEP"
       ],
+      "default_map": "N90 EWR - Video Map",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2768,6 +2771,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
+      "default_map": "N90 EWR - Video Map",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2821,6 +2825,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
+      "default_map": "N90 EWR - Video Map",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2856,6 +2861,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
+      "default_map": "N90 EWR - Video Map",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2891,6 +2897,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
+      "default_map": "N90 EWR - Video Map",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2926,6 +2933,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
+      "default_map": "N90 EWR - Video Map",
       "wind": {
         "direction": 30,
         "gust": 0,

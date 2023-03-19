@@ -616,6 +616,13 @@ func (sp *STARSPane) ResetScenarioGroup() {
 	}
 }
 
+func (sp *STARSPane) ResetScenario(s *Scenario) {
+	// Make the scenario's default video map be visible
+	ps := &sp.currentPreferenceSet
+	ps.VideoMapVisible = make(map[string]interface{})
+	ps.VideoMapVisible[s.DefaultMap] = nil
+}
+
 func (sp *STARSPane) DrawUI() {
 	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
 

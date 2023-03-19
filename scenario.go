@@ -90,6 +90,8 @@ type Scenario struct {
 	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
+	DefaultMap string `json:"default_map"`
+
 	// The same runway may be present multiple times in DepartureRunways,
 	// with different Category values. However, we want to make sure that
 	// we don't spawn two aircraft on the same runway at the same time (or
@@ -259,6 +261,15 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	for _, ctrl := range s.Controllers {
 		if _, ok := t.ControlPositions[ctrl]; !ok {
 			errors = append(errors, fmt.Errorf("%s: controller unknown", ctrl))
+		}
+	}
+
+	if s.DefaultMap == "" {
+		errors = append(errors, fmt.Errorf("must specify a default video map using \"default_map\""))
+	} else {
+		idx := FindIf(t.STARSMaps, func(m STARSMap) bool { return m.Name == s.DefaultMap })
+		if idx == -1 {
+			errors = append(errors, fmt.Errorf("%s: video map not found in scenario group's \"stars_maps\"", s.DefaultMap))
 		}
 	}
 

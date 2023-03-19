@@ -5041,6 +5041,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
+      "default_map": "PHL - Video Map West",
       "wind": {
         "direction": 290,
         "speed": 8
@@ -5083,6 +5084,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
+      "default_map": "PHL - Video Map West",
       "departure_airspace": [
         "PHL_N_DEP27",
         "PHL_S_DEP27",
@@ -5139,6 +5141,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
+      "default_map": "PHL - Video Map East",
       "departure_airspace": [
         "PHL_N_DEP9",
         "PHL_N_HIGH9",

@@ -2357,6 +2357,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
+      "default_map": "N90 JFK - 13s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2455,6 +2456,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
+      "default_map": "N90 JFK - 13s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2538,6 +2540,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
+      "default_map": "N90 JFK - 22s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2585,6 +2588,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
+      "default_map": "N90 JFK - 22s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2687,6 +2691,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
+      "default_map": "N90 JFK - 22s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2734,6 +2739,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
+      "default_map": "N90 JFK - 31s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2836,6 +2842,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
+      "default_map": "N90 JFK - 31s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2883,6 +2890,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
+      "default_map": "N90 JFK - 4s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2985,6 +2993,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
+      "default_map": "N90 JFK - 4s",
       "departure_runways": [
         {
           "airport": "KJFK",

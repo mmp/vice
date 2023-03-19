@@ -58,6 +58,21 @@ func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
 	})
 }
 
+func (ssc *SimConnectionConfiguration) SetScenario(name string) {
+	var ok bool
+	ssc.scenario, ok = scenarioGroup.Scenarios[name]
+	if !ok {
+		lg.Errorf("%s: called SetScenario with an unknown scenario name???", name)
+		return
+	}
+
+	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+		if stars, ok := p.(*STARSPane); ok {
+			stars.ResetScenario(ssc.scenario)
+		}
+	})
+}
+
 func (ssc *SimConnectionConfiguration) DrawUI() bool {
 	if imgui.BeginComboV("Scenario Group", scenarioGroup.Name, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(scenarioGroups) {
@@ -78,7 +93,7 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				// with the selected controller.
 				for _, scenarioName := range SortedMapKeys(scenarioGroup.Scenarios) {
 					if scenarioGroup.Scenarios[scenarioName].Callsign == controllerName {
-						ssc.scenario = scenarioGroup.Scenarios[scenarioName]
+						ssc.SetScenario(scenarioName)
 						break
 					}
 				}
@@ -95,7 +110,7 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				continue
 			}
 			if imgui.SelectableV(name, name == scenario.Name(), 0, imgui.Vec2{}) {
-				ssc.scenario = scenarioGroup.Scenarios[name]
+				ssc.SetScenario(name)
 			}
 		}
 		imgui.EndCombo()
