@@ -3812,10 +3812,16 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 			if ac.LostTrack(sim.CurrentTime()) || !sp.datablockVisible(ac) {
 				continue
 			}
+			if _, ok := sp.aircraft[ac]; !ok {
+				continue
+			}
 			p0 = ac.TrackPosition()
 		}
 		if ac := rbl.p[1].ac; ac != nil {
 			if ac.LostTrack(sim.CurrentTime()) || !sp.datablockVisible(ac) {
+				continue
+			}
+			if _, ok := sp.aircraft[ac]; !ok {
 				continue
 			}
 			p1 = ac.TrackPosition()
