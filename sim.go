@@ -690,6 +690,7 @@ func (ss *Sim) AssignHeading(callsign string, heading int, turn int) error {
 
 		ac.AssignedHeading = heading
 		ac.TurnDirection = turn
+		ac.ClearedApproach = false // if cleared, giving a heading cancels clearance
 		return nil
 	}
 }
@@ -710,6 +711,7 @@ func (ss *Sim) TurnLeft(callsign string, deg int) error {
 			ac.AssignedHeading += 360
 		}
 		ac.TurnDirection = 0
+		ac.ClearedApproach = false // if cleared, giving a heading cancels clearance
 		return nil
 	}
 }
@@ -730,6 +732,7 @@ func (ss *Sim) TurnRight(callsign string, deg int) error {
 			ac.AssignedHeading -= 360
 		}
 		ac.TurnDirection = 0
+		ac.ClearedApproach = false // if cleared, giving a heading cancels clearance
 		return nil
 	}
 }
