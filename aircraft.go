@@ -147,12 +147,17 @@ func (a *Aircraft) IsAssociated() bool {
 
 func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 	// Now handle any altitude/speed restriction at the next waypoint.
-	if wp.Altitude != 0 && ac.AssignedAltitude == 0 {
-		// TODO: we should probably distinguish between controller-assigned
-		// altitude and assigned due to a previous crossing restriction,
-		// since controller assigned should take precedence over
-		// everything, which it doesn't currently...
-		ac.CrossingAltitude = wp.Altitude
+	if wp.Altitude != 0 {
+		if ac.AssignedAltitude == 0 {
+			// TODO: we should probably distinguish between controller-assigned
+			// altitude and assigned due to a previous crossing restriction,
+			// since controller assigned should take precedence over
+			// everything, which it doesn't currently...
+			ac.CrossingAltitude = wp.Altitude
+		} else if ac.ClearedApproach && ac.AssignedAltitude >= wp.Altitude {
+			ac.AssignedAltitude = 0
+			ac.CrossingAltitude = wp.Altitude
+		}
 	}
 
 	// Don't assign the crossing speed if the aircraft has an assigned
