@@ -29,6 +29,9 @@ type GlobalConfig struct {
 
 	DisplayRoot *DisplayNode
 
+	DevScenarioFile string
+	DevVideoMapFile string
+
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
 }

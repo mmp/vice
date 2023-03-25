@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
 	"sort"
 	"strings"
 	"time"
@@ -525,6 +526,12 @@ func loadScenarioGroup(filesystem fs.FS, path string) (*ScenarioGroup, error) {
 	return &s, err
 }
 
+type RootFS struct{}
+
+func (r RootFS) Open(filename string) (fs.File, error) {
+	return os.Open(filename)
+}
+
 // LoadScenarioGroups loads all of the available scenarios, both from the
 // scenarios/ directory in the source code distribution as well as,
 // optionally, a scenario file provided on the command line.  It doesn't
@@ -553,13 +560,22 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 	}
 
 	// Load the video map specified on the command line, if any.
-	if *videoMapFilename != "" {
-		vm, err := loadVideoMaps(os.DirFS("."), *videoMapFilename)
-		if err != nil {
-			lg.Errorf("%v", err)
-			os.Exit(1)
+	for _, filename := range []string{*videoMapFilename, globalConfig.DevVideoMapFile} {
+		if filename != "" {
+			fs := func() fs.FS {
+				if path.IsAbs(filename) {
+					return RootFS{}
+				} else {
+					return os.DirFS(".")
+				}
+			}()
+			vm, err := loadVideoMaps(fs, filename)
+			if err != nil {
+				lg.Errorf("%v", err)
+				os.Exit(1)
+			}
+			videoMapCommandBuffers[filename] = vm
 		}
-		videoMapCommandBuffers[*videoMapFilename] = vm
 	}
 
 	// Now load the scenarios.
@@ -586,14 +602,31 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 	}
 
 	// Load the scenario specified on command line, if any.
-	if *scenarioFilename != "" {
-		s, err := loadScenarioGroup(os.DirFS("."), *scenarioFilename)
-		if err != nil {
-			lg.Errorf("%v", err)
-			os.Exit(1)
+	for _, filename := range []string{*scenarioFilename, globalConfig.DevScenarioFile} {
+		if filename != "" {
+			fs := func() fs.FS {
+				if path.IsAbs(filename) {
+					return RootFS{}
+				} else {
+					return os.DirFS(".")
+				}
+			}()
+			s, err := loadScenarioGroup(fs, filename)
+			if err != nil {
+				lg.Errorf("%v", err)
+				os.Exit(1)
+			}
+
+			if s.VideoMapFile == "" {
+				s.VideoMapFile = globalConfig.DevVideoMapFile
+				if s.VideoMapFile == "" {
+					s.VideoMapFile = *videoMapFilename
+				}
+			}
+
+			// These are allowed to redefine an existing scenario.
+			scenarioGroups[s.Name] = s
 		}
-		// This one is allowed to redefine an existing scenario.
-		scenarioGroups[s.Name] = s
 	}
 
 	// Final tidying before we return the loaded scenarios.
@@ -604,7 +637,7 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 			os.Exit(1)
 		}
 		if bufferMap, ok := videoMapCommandBuffers[sgroup.VideoMapFile]; !ok {
-			lg.Errorf("%s: \"video_map_file\" not found for scenario %s", sgroup.VideoMapFile, sgroup.Name)
+			lg.Errorf("%s: video map file not found for scenario %s", sgroup.VideoMapFile, sgroup.Name)
 			os.Exit(1)
 		} else {
 			for i, sm := range sgroup.STARSMaps {
