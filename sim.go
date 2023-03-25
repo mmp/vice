@@ -27,6 +27,7 @@ var (
 	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
 	ErrNoController                 = errors.New("No controller with that callsign")
 	ErrUnknownAircraftType          = errors.New("Unknown aircraft type")
+	ErrUnableCommand                = errors.New("Unable")
 )
 
 type SimConnectionConfiguration struct {
@@ -759,6 +760,14 @@ func (ss *Sim) AssignSpeed(callsign string, speed int) error {
 	} else {
 		if speed == 0 {
 			pilotResponse(callsign, "cancel speed restrictions")
+		} else if speed < ac.Performance.Speed.Landing {
+			pilotResponse(callsign, "unable--our minimum speed is %d knots", ac.Performance.Speed.Landing)
+			return ErrUnableCommand
+		} else if speed > ac.Performance.Speed.Max {
+			pilotResponse(callsign, "unable--our maximum speed is %d knots", ac.Performance.Speed.Max)
+			return ErrUnableCommand
+		} else if ac.ClearedApproach {
+			pilotResponse(callsign, "%d knots until 5 mile final", speed)
 		} else if speed == ac.AssignedSpeed {
 			pilotResponse(callsign, "we'll maintain %d knots", speed)
 		} else {

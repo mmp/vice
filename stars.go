@@ -1976,7 +1976,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					case 'D':
 						// Is it an altitude?
 						if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-							if alt, err := strconv.Atoi(command[1:]); err != nil {
+							if alt, err := strconv.Atoi(command[1:]); err != nil || alt > 390 {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.AssignAltitude(ac.Callsign, 100*alt) != nil {
 								status.err = ErrSTARSIllegalTrack
@@ -1996,6 +1996,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					case 'H':
 						if hdg, err := strconv.Atoi(command[1:]); err != nil {
 							status.err = ErrSTARSIllegalParam
+						} else if hdg > 360 {
+							status.err = ErrSTARSIllegalParam
 						} else if sim.AssignHeading(ac.Callsign, hdg, 0) != nil {
 							status.err = ErrSTARSIllegalTrack
 						}
@@ -2011,6 +2013,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						} else {
 							// fly heading...
 							if hdg, err := strconv.Atoi(command[1:]); err != nil {
+								status.err = ErrSTARSIllegalParam
+							} else if hdg > 360 {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.AssignHeading(ac.Callsign, hdg, -1) != nil {
 								status.err = ErrSTARSIllegalTrack
@@ -2028,6 +2032,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						} else {
 							// fly heading...
 							if hdg, err := strconv.Atoi(command[1:]); err != nil {
+								status.err = ErrSTARSIllegalParam
+							} else if hdg > 360 {
 								status.err = ErrSTARSIllegalParam
 							} else if sim.AssignHeading(ac.Callsign, hdg, 1) != nil {
 								status.err = ErrSTARSIllegalTrack
