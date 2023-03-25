@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -563,7 +563,7 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 	for _, filename := range []string{*videoMapFilename, globalConfig.DevVideoMapFile} {
 		if filename != "" {
 			fs := func() fs.FS {
-				if path.IsAbs(filename) {
+				if filepath.IsAbs(filename) {
 					return RootFS{}
 				} else {
 					return os.DirFS(".")
@@ -605,7 +605,7 @@ func LoadScenarioGroups() map[string]*ScenarioGroup {
 	for _, filename := range []string{*scenarioFilename, globalConfig.DevScenarioFile} {
 		if filename != "" {
 			fs := func() fs.FS {
-				if path.IsAbs(filename) {
+				if filepath.IsAbs(filename) {
 					return RootFS{}
 				} else {
 					return os.DirFS(".")
