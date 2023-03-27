@@ -26,12 +26,13 @@ type Airport struct {
 func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 	var errors []error
 
-	for _, ap := range ac.Approaches {
+	for name, ap := range ac.Approaches {
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
 
-			errors = append(errors, t.InitializeWaypointLocations(ap.Waypoints[i])...)
+			errStr := fmt.Sprintf("approach %s in scenario group %s", name, t.Name)
+			errors = append(errors, t.InitializeWaypointLocations(ap.Waypoints[i], errStr)...)
 		}
 	}
 
@@ -44,11 +45,13 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
 
 		for exitList, exitRoute := range rwyRoutes {
-			errors = append(errors, t.InitializeWaypointLocations(exitRoute.Waypoints)...)
+			errStr := fmt.Sprintf("departure runway %s, exit %s in scenario group %s", rwy, exitList, t.Name)
+			errors = append(errors, t.InitializeWaypointLocations(exitRoute.Waypoints, errStr)...)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
-					errors = append(errors, fmt.Errorf("%s: exit repeatedly specified in routes for runway %s", exit, rwy))
+					errors = append(errors, fmt.Errorf("%s: exit repeatedly specified in routes for runway %s in scenario group %s",
+						exit, rwy, t.Name))
 				}
 				seenExits[exit] = nil
 
@@ -80,7 +83,8 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 			// unless the exit wasn't present in the route in the first
 			// place.
 			wp := []Waypoint{Waypoint{Fix: fix}}
-			if errs := t.InitializeWaypointLocations(wp); len(errs) == 0 {
+			errStr := fmt.Sprintf("departure exit %s, fix %s in route in scenario group %s", dep.Exit, fix, t.Name)
+			if errs := t.InitializeWaypointLocations(wp, errStr); len(errs) == 0 {
 				ac.Departures[i].routeWaypoints = append(ac.Departures[i].routeWaypoints, wp[0])
 			}
 		}

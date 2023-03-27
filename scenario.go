@@ -19,7 +19,8 @@ type ScenarioGroup struct {
 	Name                 string                 `json:"name"`
 	Airports             map[string]*Airport    `json:"airports"`
 	VideoMapFile         string                 `json:"video_map_file"`
-	Fixes                map[string]Point2LL    `json:"fixes"`
+	Fixes                map[string]Point2LL    `json:"-"`
+	FixesStrings         map[string]string      `json:"fixes"`
 	Scenarios            map[string]*Scenario   `json:"scenarios"`
 	DefaultController    string                 `json:"default_controller"`
 	DefaultScenarioGroup string                 `json:"default_scenario"`
@@ -28,7 +29,8 @@ type ScenarioGroup struct {
 	Airspace             Airspace               `json:"airspace"`
 	ArrivalGroups        map[string][]Arrival   `json:"arrival_groups"`
 
-	Center         Point2LL              `json:"center"`
+	Center         Point2LL              `json:"-"`
+	CenterString   string                `json:"center"`
 	PrimaryAirport string                `json:"primary_airport"`
 	RadarSites     map[string]*RadarSite `json:"radar_sites"`
 	STARSMaps      []STARSMap            `json:"stars_maps"`
@@ -235,7 +237,7 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup) []error {
 	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {
 		// Make sure the arrival group has been defined
 		if arrivals, ok := t.ArrivalGroups[name]; !ok {
-			errors = append(errors, fmt.Errorf("%s: arrival group not found in TRACON", name))
+			errors = append(errors, fmt.Errorf("%s: arrival group not found", name))
 		} else {
 			// Check the airports in it
 			for airport := range s.ArrivalGroupRates[name] {
@@ -302,6 +304,16 @@ func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 	var errors []error
 
+	// Do these first!
+	t.Fixes = make(map[string]Point2LL)
+	for fix, latlong := range t.FixesStrings {
+		if pos, ok := t.Locate(latlong); !ok {
+			errors = append(errors, fmt.Errorf("%s: unknown or invalid location for specified fix position: %s", fix, latlong))
+		} else {
+			t.Fixes[fix] = pos
+		}
+	}
+
 	for name, volumes := range t.Airspace.Volumes {
 		for i, vol := range volumes {
 			for _, b := range vol.BoundaryNames {
@@ -341,6 +353,14 @@ func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 		}
 	}
 
+	if t.CenterString == "" {
+		errors = append(errors, fmt.Errorf("No \"center\" specified"))
+	} else if pos, ok := t.Locate(t.CenterString); !ok {
+		errors = append(errors, fmt.Errorf("%s: unknown or invalid location specified for \"center\"", t.CenterString))
+	} else {
+		t.Center = pos
+	}
+
 	if len(t.RadarSites) == 0 {
 		errors = append(errors, fmt.Errorf("No radar sites specified"))
 	}
@@ -358,11 +378,13 @@ func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 		}
 
 		for _, ar := range arrivals {
-			for _, err := range t.InitializeWaypointLocations(ar.Waypoints) {
+			errStr := fmt.Sprintf("arrival %s in scenario group %s", name, t.Name)
+			for _, err := range t.InitializeWaypointLocations(ar.Waypoints, errStr) {
 				errors = append(errors, fmt.Errorf("%s: %v", name, err))
 			}
-			for _, wp := range ar.RunwayWaypoints {
-				for _, err := range t.InitializeWaypointLocations(wp) {
+			for rwy, wp := range ar.RunwayWaypoints {
+				errStr := fmt.Sprintf("arrival %s, runway %s in scenario group %s", name, rwy, t.Name)
+				for _, err := range t.InitializeWaypointLocations(wp, errStr) {
 					errors = append(errors, fmt.Errorf("%s: %v", name, err))
 				}
 			}
@@ -397,7 +419,7 @@ func (t *ScenarioGroup) PostDeserialize(scenarioName string) {
 	}
 }
 
-func (t *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint) []error {
+func (t *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, errStr string) []error {
 	var prev Point2LL
 	var errors []error
 
@@ -405,14 +427,14 @@ func (t *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint) []erro
 		if pos, ok := t.Locate(wp.Fix); ok {
 			waypoints[i].Location = pos
 		} else {
-			errors = append(errors, fmt.Errorf("%s: unable to locate waypoint", wp.Fix))
+			errors = append(errors, fmt.Errorf("%s: unable to locate waypoint for %s", wp.Fix, errStr))
 			continue
 		}
 
 		d := nmdistance2ll(prev, waypoints[i].Location)
 		if i > 1 && d > 50 {
-			errors = append(errors, fmt.Errorf("%s: waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
-				wp.Fix, waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d))
+			errors = append(errors, fmt.Errorf("%s: waypoint at %s is suspiciously far from previous one (%s at %s): %f nm (%s)",
+				wp.Fix, waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d, errStr))
 		}
 		prev = waypoints[i].Location
 	}
