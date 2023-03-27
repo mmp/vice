@@ -19,6 +19,13 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
+type FAAAirport struct {
+	Id        string
+	Name      string
+	Elevation int
+	Location  Point2LL
+}
+
 type METAR struct {
 	AirportICAO string
 	Time        string
@@ -472,6 +479,7 @@ func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, seconda
 // change after it's loaded.
 type StaticDatabase struct {
 	Navaids             map[string]Navaid
+	Airports            map[string]FAAAirport
 	Fixes               map[string]Fix
 	Callsigns           map[string]Callsign
 	AircraftTypeAliases map[string]string
@@ -526,6 +534,8 @@ func InitializeStaticDatabase() *StaticDatabase {
 	wg.Add(1)
 	go func() { db.Navaids = parseNavaids(); wg.Done() }()
 	wg.Add(1)
+	go func() { db.Airports = parseAirports(); wg.Done() }()
+	wg.Add(1)
 	go func() { db.Fixes = parseFixes(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Callsigns = parseCallsigns(); wg.Done() }()
@@ -547,6 +557,8 @@ var (
 	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2022-07-14/
 	//go:embed resources/NAV_BASE.csv.zst
 	navBaseRaw string
+	//go:embed resources/APT_BASE.csv.zst
+	airportsRaw string
 	//go:embed resources/FIX_BASE.csv.zst
 	fixesRaw string
 	//go:embed resources/callsigns.csv.zst
@@ -595,6 +607,41 @@ func parseNavaids() map[string]Navaid {
 	})
 
 	return navaids
+}
+
+func point2LLFromComponents(lat []string, long []string) Point2LL {
+	latitude := atof(lat[0]) + atof(lat[1])/60. + atof(lat[2])/3600.
+	if lat[3] == "S" {
+		latitude = -latitude
+	}
+	longitude := atof(long[0]) + atof(long[1])/60. + atof(long[2])/3600.
+	if long[3] == "W" {
+		longitude = -longitude
+	}
+
+	return Point2LL{float32(longitude), float32(latitude)}
+}
+
+func parseAirports() map[string]FAAAirport {
+	airports := make(map[string]FAAAirport)
+
+	// FAA database
+	mungeCSV("airports", decompressZstd(airportsRaw), func(s []string) {
+		if elevation, err := strconv.ParseFloat(s[24], 64); err != nil {
+			lg.Errorf("%s: error parsing elevation: %s", s[24], err)
+		} else {
+			loc := point2LLFromComponents(s[15:19], s[19:23])
+			ap := FAAAirport{Id: s[98], Name: s[12], Location: loc, Elevation: int(elevation)}
+			if ap.Id == "" {
+				ap.Id = s[4] // No ICAO code so grab the FAA airport id
+			}
+			if ap.Id != "" {
+				airports[ap.Id] = ap
+			}
+		}
+	})
+
+	return airports
 }
 
 func parseFixes() map[string]Fix {

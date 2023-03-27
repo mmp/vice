@@ -2334,7 +2334,7 @@
       }
     ]
   },
-  "center": "N040.45.26.477,W074.24.28.789",
+  "center": "KEWR",
   "control_positions": {
     "ABE_APP": {
       "callsign": "ABE_APP",
@@ -2484,9 +2484,6 @@
   "default_controller": "EWR_APP",
   "default_scenario": "KEWR Depart 22R Land 22L",
   "fixes": {
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KSWF": "N041.30.14.734, W074.06.17.409",
     "_CDW_10": "N040.52.37.814,W074.17.12.769",
     "_CDW_22": "N040.52.43.252,W074.16.41.623",
     "_CDW_28": "N040.52.42.030,W074.16.24.677",

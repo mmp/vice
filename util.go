@@ -831,6 +831,9 @@ func (p *Point2LL) UnmarshalJSON(b []byte) error {
 		} else if n, ok := database.Navaids[s]; ok {
 			*p = n.Location
 			return nil
+		} else if n, ok := database.Airports[s]; ok {
+			*p = n.Location
+			return nil
 		} else if f, ok := database.Fixes[s]; ok {
 			*p = f.Location
 			return nil

@@ -288,6 +288,8 @@ func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 		return p, true
 	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
+	} else if ap, ok := database.Airports[strings.ToUpper(s)]; ok {
+		return ap.Location, ok
 	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
 		return f.Location, ok
 	} else if p, err := ParseLatLong(s); err == nil {

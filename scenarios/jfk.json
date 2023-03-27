@@ -2150,7 +2150,7 @@
       }
     ]
   },
-  "center": "JFK",
+  "center": "KJFK",
   "control_positions": {
     "BOS_E_CTR": {
       "callsign": "BOS_E_CTR",
@@ -2246,9 +2246,6 @@
   "default_controller": "JFK_APP",
   "default_scenario": "KJFK Depart 13R Land 13L/22L",
   "fixes": {
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KSWF": "N041.30.14.734, W074.06.17.409",
     "_FRG_1": "N040.43.20.230,W073.24.51.229",
     "_FRG_14": "N040.44.02.898,W073.25.17.486",
     "_FRG_14a": "N040.38.37.868,W073.22.41.398",

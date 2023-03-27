@@ -4905,7 +4905,7 @@
       }
     ]
   },
-  "center": "PHL",
+  "center": "KPHL",
   "control_positions": {
     "DC_CTR": {
       "callsign": "DC_CTR",
@@ -4982,12 +4982,7 @@
   },
   "default_controller": "PHL_NA_APP",
   "default_scenario": "KPHL Depart 27L Land 27R",
-  "fixes": {
-    "KEWR": "N040.41.34.749, W074.10.06.499",
-    "KHPN": "N041.04.01.027, W073.42.27.262",
-    "KPHL": "N039.52.05.747, W075.14.52.117",
-    "KSWF": "N041.30.14.734, W074.06.17.409"
-  },
+  "fixes": { },
   "magnetic_variation": 13.3,
   "name": "KPHL",
   "nm_per_latitude": 60,
