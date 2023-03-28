@@ -387,6 +387,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			for i, f := range strings.Split(field, "@") {
 				if i == 0 {
 					wp.Fix = f
+				} else if len(f) == 0 {
+					return nil, fmt.Errorf("no command found after @ in \"%s\"", field)
 				} else {
 					switch f[0] {
 					case 'a':
