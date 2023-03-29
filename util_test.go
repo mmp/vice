@@ -381,3 +381,61 @@ func TestSampleWeighted(t *testing.T) {
 		}
 	}
 }
+
+func TestPointInPolygon(t *testing.T) {
+	type testCase struct {
+		name     string
+		point    Point2LL
+		polygon  []Point2LL
+		expected bool
+	}
+
+	testCases := []testCase{
+		{
+			name:     "PointInsideSimpleSquare",
+			point:    Point2LL{1, 1},
+			polygon:  []Point2LL{{0, 0}, {0, 2}, {2, 2}, {2, 0}, {0, 0}},
+			expected: true,
+		},
+		{
+			name:     "PointOutsideSimpleSquare",
+			point:    Point2LL{3, 3},
+			polygon:  []Point2LL{{0, 0}, {0, 2}, {2, 2}, {2, 0}, {0, 0}},
+			expected: false,
+		},
+		{
+			name:     "PointByVertex",
+			point:    Point2LL{-0.001, 0},
+			polygon:  []Point2LL{{0, 0}, {0, 2}, {2, 2}, {2, 0}, {0, 0}},
+			expected: false,
+		},
+		{
+			name:     "PointOnEdge",
+			point:    Point2LL{1, -.001},
+			polygon:  []Point2LL{{0, 0}, {0, 2}, {2, 2}, {2, 0}, {0, 0}},
+			expected: false,
+		},
+		{
+			name:     "PointInsideComplexPolygon",
+			point:    Point2LL{3, 3},
+			polygon:  []Point2LL{{0, 0}, {0, 6}, {6, 6}, {6, 0}, {3, 3}, {0, 0}},
+			expected: true,
+		},
+		{
+			name:     "PointOutsideComplexPolygon",
+			point:    Point2LL{7, 7},
+			polygon:  []Point2LL{{0, 0}, {0, 6}, {6, 6}, {6, 0}, {3, 3}, {0, 0}},
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := PointInPolygon(tc.point, tc.polygon)
+			if result != tc.expected {
+				t.Errorf("Expected %v, got %v for point %v and polygon %v",
+					tc.expected, result, tc.point, tc.polygon)
+			}
+		})
+	}
+}
