@@ -23,13 +23,13 @@ type Airport struct {
 	DepartureRoutes map[string]map[string]ExitRoute `json:"departure_routes"`
 }
 
-func (ac *Airport) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
-	for name, ap := range ac.Approaches {
+func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+	for name, ap := range ap.Approaches {
 		e.Push("Approach " + name)
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
-			t.InitializeWaypointLocations(ap.Waypoints[i], e)
+			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
 		}
 		e.Pop()
 	}
@@ -38,14 +38,14 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 	// of exits. We'll split those out into individual entries in the
 	// Airport's DepartureRoutes, one per exit, for convenience of future code.
 	splitDepartureRoutes := make(map[string]map[string]ExitRoute)
-	for rwy, rwyRoutes := range ac.DepartureRoutes {
+	for rwy, rwyRoutes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + rwy)
 		seenExits := make(map[string]interface{})
 		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
 
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
-			t.InitializeWaypointLocations(route.Waypoints, e)
+			sg.InitializeWaypointLocations(route.Waypoints, e)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
@@ -59,18 +59,18 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 		}
 		e.Pop()
 	}
-	ac.DepartureRoutes = splitDepartureRoutes
+	ap.DepartureRoutes = splitDepartureRoutes
 
-	for i, dep := range ac.Departures {
+	for i, dep := range ap.Departures {
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
 
-		if _, ok := t.Scratchpads[dep.Exit]; !ok {
+		if _, ok := sg.Scratchpads[dep.Exit]; !ok {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
 		// Make sure that all runways have a route to the exit
-		for rwy, routes := range ac.DepartureRoutes {
+		for rwy, routes := range ap.DepartureRoutes {
 			e.Push("Runway " + rwy)
 			if _, ok := routes[dep.Exit]; !ok {
 				e.ErrorString("exit \"%s\" not found in runway's \"departure_routes\"", dep.Exit)
@@ -86,12 +86,12 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 			// for airways, international ones not in the FAA database,
 			// latlongs in the flight plan, etc.
 			if fix == dep.Exit {
-				t.InitializeWaypointLocations(wp, e)
+				sg.InitializeWaypointLocations(wp, e)
 			} else {
 				// nil here so errors aren't logged if it's not the actual exit.
-				t.InitializeWaypointLocations(wp, nil)
+				sg.InitializeWaypointLocations(wp, nil)
 			}
-			ac.Departures[i].routeWaypoints = append(ac.Departures[i].routeWaypoints, wp[0])
+			ap.Departures[i].routeWaypoints = append(ap.Departures[i].routeWaypoints, wp[0])
 		}
 		if !sawExit {
 			e.ErrorString("exit not found in departure route")
