@@ -23,17 +23,15 @@ type Airport struct {
 	DepartureRoutes map[string]map[string]ExitRoute `json:"departure_routes"`
 }
 
-func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
-	var errors []error
-
+func (ac *Airport) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 	for name, ap := range ac.Approaches {
+		e.Push("Approach " + name)
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
-
-			errStr := fmt.Sprintf("approach %s in scenario group %s", name, t.Name)
-			errors = append(errors, t.InitializeWaypointLocations(ap.Waypoints[i], errStr)...)
+			t.InitializeWaypointLocations(ap.Waypoints[i], e)
 		}
+		e.Pop()
 	}
 
 	// Departure routes are specified in the JSON as comma-separated lists
@@ -41,63 +39,71 @@ func (ac *Airport) PostDeserialize(t *ScenarioGroup) []error {
 	// Airport's DepartureRoutes, one per exit, for convenience of future code.
 	splitDepartureRoutes := make(map[string]map[string]ExitRoute)
 	for rwy, rwyRoutes := range ac.DepartureRoutes {
+		e.Push("Departure runway " + rwy)
 		seenExits := make(map[string]interface{})
 		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
 
-		for exitList, exitRoute := range rwyRoutes {
-			errStr := fmt.Sprintf("departure runway %s, exit %s in scenario group %s", rwy, exitList, t.Name)
-			errors = append(errors, t.InitializeWaypointLocations(exitRoute.Waypoints, errStr)...)
+		for exitList, route := range rwyRoutes {
+			e.Push("Exit " + exitList)
+			t.InitializeWaypointLocations(route.Waypoints, e)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
-					errors = append(errors, fmt.Errorf("%s: exit repeatedly specified in routes for runway %s in scenario group %s",
-						exit, rwy, t.Name))
+					e.ErrorString("exit repeatedly specified in routes")
 				}
 				seenExits[exit] = nil
 
-				splitDepartureRoutes[rwy][exit] = exitRoute
+				splitDepartureRoutes[rwy][exit] = route
 			}
+			e.Pop()
 		}
+		e.Pop()
 	}
 	ac.DepartureRoutes = splitDepartureRoutes
 
 	for i, dep := range ac.Departures {
+		e.Push("Departure exit " + dep.Exit)
+		e.Push("Destination " + dep.Destination)
+
 		if _, ok := t.Scratchpads[dep.Exit]; !ok {
-			errors = append(errors, fmt.Errorf("%s: exit in departure to %s not in scratchpads", dep.Exit, dep.Destination))
+			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
 		// Make sure that all runways have a route to the exit
-		for rwy, rwyRoutes := range ac.DepartureRoutes {
-			if _, ok := rwyRoutes[dep.Exit]; !ok {
-				errors = append(errors, fmt.Errorf("%s: exit not found in departure routes for runway %s",
-					dep.Exit, rwy))
+		for rwy, routes := range ac.DepartureRoutes {
+			e.Push("Runway " + rwy)
+			if _, ok := routes[dep.Exit]; !ok {
+				e.ErrorString("exit \"%s\" not found in runway's \"departure_routes\"", dep.Exit)
 			}
+			e.Pop()
 		}
 
 		sawExit := false
 		for _, fix := range strings.Fields(dep.Route) {
 			sawExit = sawExit || fix == dep.Exit
-			// Best effort only to find waypoint locations; we will fail
-			// for airways, international ones not in the FAA database,
-			// latlongs in the flight plan, etc.  Don't issue an error
-			// unless the exit wasn't present in the route in the first
-			// place.
 			wp := []Waypoint{Waypoint{Fix: fix}}
-			errStr := fmt.Sprintf("departure exit %s, fix %s in route in scenario group %s", dep.Exit, fix, t.Name)
-			if errs := t.InitializeWaypointLocations(wp, errStr); len(errs) == 0 {
-				ac.Departures[i].routeWaypoints = append(ac.Departures[i].routeWaypoints, wp[0])
+			// Best effort only to find waypoint locations; this will fail
+			// for airways, international ones not in the FAA database,
+			// latlongs in the flight plan, etc.
+			if fix == dep.Exit {
+				t.InitializeWaypointLocations(wp, e)
+			} else {
+				// nil here so errors aren't logged if it's not the actual exit.
+				t.InitializeWaypointLocations(wp, nil)
 			}
+			ac.Departures[i].routeWaypoints = append(ac.Departures[i].routeWaypoints, wp[0])
 		}
 		if !sawExit {
-			errors = append(errors, fmt.Errorf("%s: exit not found in departure route to %s", dep.Exit, dep.Destination))
+			e.ErrorString("exit not found in departure route")
 		}
 
 		for _, al := range dep.Airlines {
-			errors = append(errors, database.CheckAirline(al.ICAO, al.Fleet)...)
+			database.CheckAirline(al.ICAO, al.Fleet, e)
 		}
-	}
 
-	return errors
+		e.Pop()
+		e.Pop()
+	}
 }
 
 type ExitRoute struct {

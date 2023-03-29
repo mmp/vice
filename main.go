@@ -120,7 +120,13 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
-	scenarioGroups = LoadScenarioGroups()
+	var e ErrorLogger
+	scenarioGroups = LoadScenarioGroups(&e)
+	if e.HaveErrors() {
+		e.PrintErrors()
+		os.Exit(1)
+	}
+
 	// Use the last scenario, if available.
 	if s, ok := scenarioGroups[globalConfig.LastScenarioGroup]; ok {
 		scenarioGroup = s

@@ -736,12 +736,14 @@ func parseAirlines() map[string]Airline {
 ///////////////////////////////////////////////////////////////////////////
 // Utility methods
 
-func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
-	var errors []error
+func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
+	e.Push("Airline " + icao + ", fleet " + fleet)
+	defer e.Pop()
 
 	al, ok := database.Airlines[icao]
 	if !ok {
-		errors = append(errors, fmt.Errorf("%s: airline not in database", icao))
+		e.ErrorString("airline not known")
+		return
 	}
 
 	if fleet == "" {
@@ -750,29 +752,24 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string) []error {
 
 	fl, ok := al.Fleets[fleet]
 	if !ok {
-		errors = append(errors,
-			fmt.Errorf("%s: fleet unknown for airline \"%s\"", fleet, icao))
+		e.ErrorString("fleet unknown")
+		return
 	}
 
 	for _, aircraft := range fl {
+		e.Push("Aircraft " + aircraft.ICAO)
 		if perf, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
-			errors = append(errors,
-				fmt.Errorf("%s: aircraft in airline \"%s\"'s fleet \"%s\" not in perf database",
-					aircraft.ICAO, icao, fleet))
+			e.ErrorString("aircraft not present in performance database")
 		} else {
 			if perf.Speed.Min < 35 || perf.Speed.Landing < 35 || perf.Speed.Cruise < 35 ||
 				perf.Speed.Max < 35 || perf.Speed.Min > perf.Speed.Max {
-				errors = append(errors,
-					fmt.Errorf("%s: aircraft's speed specification is questionable: %s", aircraft.ICAO,
-						spew.Sdump(perf.Speed)))
+				e.ErrorString("aircraft's speed specification is questionable: %s", spew.Sdump(perf.Speed))
 			}
 			if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
 				perf.Rate.Decelerate == 0 {
-				errors = append(errors,
-					fmt.Errorf("%s: aircraft's rate specification is questionable: %s", aircraft.ICAO,
-						spew.Sdump(perf.Rate)))
+				e.ErrorString("aircraft's rate specification is questionable: %s", spew.Sdump(perf.Rate))
 			}
 		}
+		e.Pop()
 	}
-	return errors
 }

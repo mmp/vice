@@ -14,6 +14,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -1424,5 +1425,45 @@ func UnmarshalJSON[T any](b []byte, out *T) error {
 
 	default:
 		return err
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// ErrorLogger is a small utility class used to log errors when validating
+// the parsed JSON scenarios. It tracks context about what is currently
+// being validated and accumulates multiple errors, making it possible to
+// log errors while still continuing validation.
+type ErrorLogger struct {
+	// Tracked via Push()/Pop() calls to remember what we're looking at if
+	// an error is found.
+	hierarchy []string
+	// Actual error messages to report.
+	errors []string
+}
+
+func (e *ErrorLogger) Push(s string) {
+	e.hierarchy = append(e.hierarchy, s)
+}
+
+func (e *ErrorLogger) Pop() {
+	e.hierarchy = e.hierarchy[:len(e.hierarchy)-1]
+}
+
+func (e *ErrorLogger) ErrorString(s string, args ...interface{}) {
+	e.errors = append(e.errors, strings.Join(e.hierarchy, " / ")+": "+fmt.Sprintf(s, args...))
+}
+
+func (e *ErrorLogger) Error(err error) {
+	e.errors = append(e.errors, strings.Join(e.hierarchy, " / ")+": "+err.Error())
+}
+
+func (e *ErrorLogger) HaveErrors() bool {
+	return len(e.errors) > 0
+}
+
+func (e *ErrorLogger) PrintErrors() {
+	for _, err := range e.errors {
+		fmt.Fprintln(os.Stderr, err)
 	}
 }
