@@ -680,7 +680,11 @@ func (sim *Sim) AssignAltitude(callsign string, altitude int) error {
 			pilotResponse(callsign, "descend and maintain %d", altitude)
 		}
 
-		ac.AssignedAltitude = altitude
+		if ac.AssignedSpeed != 0 {
+			ac.AssignedAltitudeAfterSpeed = altitude
+		} else {
+			ac.AssignedAltitude = altitude
+		}
 		ac.CrossingAltitude = 0
 		return nil
 	}
@@ -774,7 +778,11 @@ func (sim *Sim) AssignSpeed(callsign string, speed int) error {
 			pilotResponse(callsign, "maintain %d knots", speed)
 		}
 
-		ac.AssignedSpeed = speed
+		if ac.AssignedAltitude != 0 {
+			ac.AssignedSpeedAfterAltitude = speed
+		} else {
+			ac.AssignedSpeed = speed
+		}
 		ac.CrossingSpeed = 0
 		return nil
 	}

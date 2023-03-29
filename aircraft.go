@@ -40,6 +40,14 @@ type Aircraft struct {
 	AssignedHeading  int
 	TurnDirection    int
 
+	// If the controller directs "descend and maintain <ALT>, then reduce
+	// speed to <SPD>", then the altitude is stored in AssignedAltitude and
+	// the speed is stored in AssignedSpeedAfterAltitude.  Then after the
+	// altitude is reached, the speed restriction in AssignedSpeed is set
+	// (and the flight model will start paying attention to it.)
+	AssignedSpeedAfterAltitude int
+	AssignedAltitudeAfterSpeed int
+
 	// These are for altitudes/speeds to meet at the next fix; unlike
 	// controller-assigned ones, where we try to get there as quickly as
 	// the aircraft is capable of, these we try to get to exactly at the
@@ -161,8 +169,8 @@ func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 	}
 
 	// Don't assign the crossing speed if the aircraft has an assigned
-	// speed less than it.
-	if wp.Speed != 0 && ac.AssignedSpeed == 0 {
+	// speed now or in the future.
+	if wp.Speed != 0 && ac.AssignedSpeed == 0 && ac.AssignedSpeedAfterAltitude == 0 {
 		ac.CrossingSpeed = wp.Speed
 	}
 
@@ -265,6 +273,12 @@ func (ac *Aircraft) updateAirspeed() {
 	} else if ac.IAS-1 > float32(targetSpeed) {
 		decel := ac.Performance.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
+	} else {
+		// at the requested speed
+		if ac.AssignedAltitudeAfterSpeed != 0 {
+			ac.AssignedAltitude = ac.AssignedAltitudeAfterSpeed
+			ac.AssignedAltitudeAfterSpeed = 0
+		}
 	}
 }
 
@@ -309,6 +323,17 @@ func (ac *Aircraft) updateAltitude() {
 			// Similarly, descent modeling doesn't account for airspeed or
 			// acceleration/deceleration...
 			ac.Altitude = max(float32(ac.AssignedAltitude), ac.Altitude-descent/60)
+		}
+
+		// If we've reached the assigned altitude and have a speed ready
+		// for after that, then make that our current assigned speed.
+		if abs(ac.Altitude-float32(ac.AssignedAltitude)) < .1 {
+			ac.Altitude = float32(ac.AssignedAltitude)
+			ac.AssignedAltitude = 0
+			if ac.AssignedSpeedAfterAltitude != 0 {
+				ac.AssignedSpeed = ac.AssignedSpeedAfterAltitude
+				ac.AssignedSpeedAfterAltitude = 0
+			}
 		}
 	} else if ac.CrossingAltitude != 0 && (!ac.ClearedApproach || ac.OnFinal) {
 		// We have a crossing altitude, but we ignore it if the aircraft is
@@ -537,6 +562,7 @@ func (ac *Aircraft) updateWaypoints() {
 
 			ac.AssignedHeading = 0
 			ac.AssignedAltitude = 0
+			ac.AssignedAltitudeAfterSpeed = 0
 			ac.OnFinal = true
 			if len(ac.Waypoints) > 0 {
 				ac.WaypointUpdate(ac.Waypoints[0])
