@@ -166,16 +166,16 @@ func (s *Scenario) Name() string {
 	return "(unknown)"
 }
 
-func (s *Scenario) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
+func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	for _, as := range s.ApproachAirspaceNames {
-		if vol, ok := t.Airspace.Volumes[as]; !ok {
+		if vol, ok := sg.Airspace.Volumes[as]; !ok {
 			e.ErrorString("unknown approach airspace \"%s\"", as)
 		} else {
 			s.ApproachAirspace = append(s.ApproachAirspace, vol...)
 		}
 	}
 	for _, as := range s.DepartureAirspaceNames {
-		if vol, ok := t.Airspace.Volumes[as]; !ok {
+		if vol, ok := sg.Airspace.Volumes[as]; !ok {
 			e.ErrorString("unknown departure airspace \"%s\"", as)
 		} else {
 			s.DepartureAirspace = append(s.DepartureAirspace, vol...)
@@ -195,7 +195,7 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 	s.nextDepartureSpawn = make(map[string]time.Time)
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
-		if ap, ok := t.Airports[rwy.Airport]; !ok {
+		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString("airport \"%s\" not found", rwy.Airport)
 		} else {
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
@@ -233,13 +233,13 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {
 		e.Push("Arrival group " + name)
 		// Make sure the arrival group has been defined
-		if arrivals, ok := t.ArrivalGroups[name]; !ok {
+		if arrivals, ok := sg.ArrivalGroups[name]; !ok {
 			e.ErrorString("arrival group not found")
 		} else {
 			// Check the airports in it
 			for airport := range s.ArrivalGroupRates[name] {
 				e.Push("Airport " + airport)
-				if _, ok := t.Airports[airport]; !ok {
+				if _, ok := sg.Airports[airport]; !ok {
 					e.ErrorString("unknown arrival airport")
 				} else {
 					found := false
@@ -260,7 +260,7 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 	}
 
 	for _, ctrl := range s.Controllers {
-		if _, ok := t.ControlPositions[ctrl]; !ok {
+		if _, ok := sg.ControlPositions[ctrl]; !ok {
 			e.ErrorString("controller \"%s\" unknown", ctrl)
 		}
 	}
@@ -268,7 +268,7 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 	if s.DefaultMap == "" {
 		e.ErrorString("must specify a default video map using \"default_map\"")
 	} else {
-		idx := FindIf(t.STARSMaps, func(m STARSMap) bool { return m.Name == s.DefaultMap })
+		idx := FindIf(sg.STARSMaps, func(m STARSMap) bool { return m.Name == s.DefaultMap })
 		if idx == -1 {
 			e.ErrorString("video map \"%s\" not found in \"stars_maps\"", s.DefaultMap)
 		}
@@ -278,11 +278,11 @@ func (s *Scenario) PostDeserialize(t *ScenarioGroup, e *ErrorLogger) {
 ///////////////////////////////////////////////////////////////////////////
 // ScenarioGroup
 
-func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
+func (sg *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 	// ScenarioGroup's definitions take precedence...
-	if ap, ok := t.Airports[s]; ok {
+	if ap, ok := sg.Airports[s]; ok {
 		return ap.Location, true
-	} else if p, ok := t.Fixes[s]; ok {
+	} else if p, ok := sg.Fixes[s]; ok {
 		return p, true
 	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
@@ -297,84 +297,84 @@ func (t *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 	}
 }
 
-func (t *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
+func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 	// Do these first!
-	t.Fixes = make(map[string]Point2LL)
-	for fix, latlong := range t.FixesStrings {
-		if pos, ok := t.Locate(latlong); !ok {
+	sg.Fixes = make(map[string]Point2LL)
+	for fix, latlong := range sg.FixesStrings {
+		if pos, ok := sg.Locate(latlong); !ok {
 			e.ErrorString("unknown location \"%s\" specified for fix \"%s\"", latlong, fix)
 		} else {
-			t.Fixes[fix] = pos
+			sg.Fixes[fix] = pos
 		}
 	}
 
-	for name, volumes := range t.Airspace.Volumes {
+	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
 			e.Push("Airspace volume " + name)
 			for _, b := range vol.BoundaryNames {
-				if pts, ok := t.Airspace.Boundaries[b]; !ok {
+				if pts, ok := sg.Airspace.Boundaries[b]; !ok {
 					e.ErrorString("airspace boundary \"%s\" not found", b)
 				} else {
-					t.Airspace.Volumes[name][i].Boundaries = append(t.Airspace.Volumes[name][i].Boundaries, pts)
+					sg.Airspace.Volumes[name][i].Boundaries = append(sg.Airspace.Volumes[name][i].Boundaries, pts)
 				}
 			}
 			e.Pop()
 		}
 	}
 
-	for name, ap := range t.Airports {
+	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
-		ap.PostDeserialize(t, e)
+		ap.PostDeserialize(sg, e)
 		e.Pop()
 	}
 
-	if t.PrimaryAirport == "" {
+	if sg.PrimaryAirport == "" {
 		e.ErrorString("\"primary_airport\" not specified")
-	} else if _, ok := t.Locate(t.PrimaryAirport); !ok {
-		e.ErrorString("\"primary_airport\" \"%s\" unknown", t.PrimaryAirport)
+	} else if _, ok := sg.Locate(sg.PrimaryAirport); !ok {
+		e.ErrorString("\"primary_airport\" \"%s\" unknown", sg.PrimaryAirport)
 	}
 
-	if t.NmPerLatitude == 0 {
+	if sg.NmPerLatitude == 0 {
 		e.ErrorString("\"nm_per_latitude\" not specified")
 	}
-	if t.NmPerLongitude == 0 {
+	if sg.NmPerLongitude == 0 {
 		e.ErrorString("\"nm_per_latitude\" not specified")
 	}
 
-	if _, ok := t.Scenarios[t.DefaultScenarioGroup]; !ok {
-		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", t.DefaultScenarioGroup)
+	if _, ok := sg.Scenarios[sg.DefaultScenarioGroup]; !ok {
+		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenarioGroup)
 	}
 
-	if _, ok := t.ControlPositions[t.DefaultController]; !ok {
-		e.ErrorString("default controller \"%s\" not found in \"control_positions\"", t.DefaultController)
+	if _, ok := sg.ControlPositions[sg.DefaultController]; !ok {
+		e.ErrorString("default controller \"%s\" not found in \"control_positions\"", sg.DefaultController)
 	} else {
 		// make sure the controller has at least one scenario..
 		found := false
-		for _, sc := range t.Scenarios {
-			if sc.Callsign == t.DefaultController {
+		for _, sc := range sg.Scenarios {
+			if sc.Callsign == sg.DefaultController {
 				found = true
 				break
 			}
 		}
 		if !found {
-			e.ErrorString("default controller \"%s\" not used in any scenarios", t.DefaultController)
+			e.ErrorString("default controller \"%s\" not used in any scenarios", sg.DefaultController)
 		}
 	}
 
-	if t.CenterString == "" {
+	if sg.CenterString == "" {
 		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := t.Locate(t.CenterString); !ok {
-		e.ErrorString("unknown location \"%s\" specified for \"center\"", t.CenterString)
+	} else if pos, ok := sg.Locate(sg.CenterString); !ok {
+		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
 	} else {
-		t.Center = pos
+		sg.Center = pos
 	}
 
-	if len(t.RadarSites) == 0 {
+	if len(sg.RadarSites) == 0 {
 		e.ErrorString("no \"radar_sites\" specified")
 	}
-	for name, rs := range t.RadarSites {
+	for name, rs := range sg.RadarSites {
 		e.Push("Radar site " + name)
-		if _, ok := t.Locate(rs.Position); rs.Position == "" || !ok {
+		if _, ok := sg.Locate(rs.Position); rs.Position == "" || !ok {
 			e.ErrorString("radar site position \"%s\" not found", rs.Position)
 		}
 		if rs.Char == "" {
@@ -383,7 +383,7 @@ func (t *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		e.Pop()
 	}
 
-	for name, arrivals := range t.ArrivalGroups {
+	for name, arrivals := range sg.ArrivalGroups {
 		e.Push("Arrival group " + name)
 		if len(arrivals) == 0 {
 			e.ErrorString("no arrivals in arrival group")
@@ -396,11 +396,11 @@ func (t *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 
 			e.Push("Route " + ar.Route)
 
-			t.InitializeWaypointLocations(ar.Waypoints, e)
+			sg.InitializeWaypointLocations(ar.Waypoints, e)
 
 			for rwy, wp := range ar.RunwayWaypoints {
 				e.Push("Runway " + rwy)
-				t.InitializeWaypointLocations(wp, e)
+				sg.InitializeWaypointLocations(wp, e)
 				e.Pop()
 			}
 
@@ -412,7 +412,7 @@ func (t *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 				e.Pop()
 			}
 
-			if _, ok := t.ControlPositions[ar.InitialController]; !ok {
+			if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
 				e.ErrorString("controller \"%s\" not found", ar.InitialController)
 			}
 			e.Pop()
@@ -421,21 +421,21 @@ func (t *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 	}
 
 	// Do after airports!
-	for name, s := range t.Scenarios {
+	for name, s := range sg.Scenarios {
 		e.Push("Scenario " + name)
-		s.PostDeserialize(t, e)
+		s.PostDeserialize(sg, e)
 		e.Pop()
 	}
 }
 
-func (t *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *ErrorLogger) {
+func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *ErrorLogger) {
 	var prev Point2LL
 
 	for i, wp := range waypoints {
 		if e != nil {
 			e.Push("Fix " + wp.Fix)
 		}
-		if pos, ok := t.Locate(wp.Fix); !ok {
+		if pos, ok := sg.Locate(wp.Fix); !ok {
 			if e != nil {
 				e.ErrorString("unable to locate waypoint")
 			}
