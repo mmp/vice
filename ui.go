@@ -188,12 +188,12 @@ func drawUI(platform Platform) {
 			imgui.EndMenu()
 		}
 
-		t := FontAwesomeIconBug + " Report Bug"
+		t := FontAwesomeIconDiscord
 		width, _ := ui.font.BoundText(t, 0)
 		imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(width+10), 0})
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 		if imgui.Button(t) {
-			browser.OpenURL("https://pharr.org/vice/index.html#bugs")
+			browser.OpenURL("https://discord.gg/y993vgQxhY")
 		}
 		imgui.PopStyleColor()
 

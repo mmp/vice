@@ -36,6 +36,7 @@ var (
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
+	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
 	FontAwesomeIconExclamationTriangle = faUsedIcons["ExclamationTriangle"]
 	FontAwesomeIconFile                = faUsedIcons["File"]
 	FontAwesomeIconFolder              = faUsedIcons["Folder"]
@@ -76,7 +77,8 @@ var (
 		"Trash":               FontAwesomeString("Trash"),
 	}
 	faBrandsUsedIcons map[string]string = map[string]string{
-		"Github": FontAwesomeBrandsString("Github"),
+		"Discord": FontAwesomeBrandsString("Discord"),
+		"Github":  FontAwesomeBrandsString("Github"),
 	}
 
 	// Font data; they're all embedded in the executable as strings at
