@@ -4234,5 +4234,6 @@
       "label": "RNAV X21/XMR",
       "name": "RNAV X21/XMR"
     }
-  ]
+  ],
+  "video_map_file": "videomaps/zjx-maps.json.zst"
 }
