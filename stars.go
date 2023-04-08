@@ -54,7 +54,6 @@ type STARSPane struct {
 	weatherRadar WeatherRadar
 
 	systemFont [6]*Font
-	buttonFont *Font
 
 	eventsId EventSubscriberId
 
@@ -567,12 +566,6 @@ func (sp *STARSPane) Activate() {
 	}
 
 	sp.initializeSystemFonts()
-
-	sp.buttonFont = GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 12})
-	if sp.buttonFont == nil {
-		lg.Errorf("nil buttonFont??")
-		sp.buttonFont = GetDefaultFont()
-	}
 
 	sp.aircraftToIndex = make(map[*Aircraft]int)
 	sp.indexToAircraft = make(map[int]*Aircraft)
@@ -4031,7 +4024,13 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext) {
 	//	imgui.WindowDrawList().AddRectFilledV(imgui.Vec2{}, imgui.Vec2{X: ctx.paneExtent.Width() - 2, Y: STARSButtonHeight},
 	//		0xff0000ff, 1, 0)
 
-	imgui.PushFont(sp.buttonFont.ifont)
+	buttonFont := GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: globalConfig.DCBFontSize})
+	if buttonFont == nil {
+		lg.Errorf("nil buttonFont??")
+		buttonFont = GetDefaultFont()
+	}
+
+	imgui.PushFont(buttonFont.ifont)
 
 	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, imgui.Vec2{1, 0})
 	imgui.PushStyleVarVec2(imgui.StyleVarFramePadding, imgui.Vec2{1, 1})

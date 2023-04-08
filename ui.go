@@ -80,7 +80,7 @@ func imguiInit() *imgui.Context {
 }
 
 func uiInit(renderer Renderer) {
-	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 16})
+	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {

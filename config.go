@@ -24,6 +24,8 @@ type GlobalConfig struct {
 	ImGuiSettings         string
 	WhatsNewIndex         int
 	LastScenarioGroup     string
+	UIFontSize            int
+	DCBFontSize           int
 
 	Audio AudioSettings
 
@@ -125,6 +127,13 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.DisplayRoot = nil
 			globalConfig.Version = 1
 		}
+	}
+
+	if globalConfig.UIFontSize == 0 {
+		globalConfig.UIFontSize = 16
+	}
+	if globalConfig.DCBFontSize == 0 {
+		globalConfig.DCBFontSize = 12
 	}
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)

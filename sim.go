@@ -998,7 +998,36 @@ func (sim *Sim) DrawSettingsWindow() {
 	} else {
 		imgui.SliderFloatV("Simulation speed", &sim.simRate, 1, 10, "%.1f", 0)
 	}
-	imgui.Separator()
+
+	if imgui.BeginComboV("UI Font Size", fmt.Sprintf("%d", globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
+		sizes := make(map[int]interface{})
+		for fontid := range fonts {
+			if fontid.Name == "Roboto Regular" {
+				sizes[fontid.Size] = nil
+			}
+		}
+		for _, size := range SortedMapKeys(sizes) {
+			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
+				globalConfig.UIFontSize = size
+				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+			}
+		}
+		imgui.EndCombo()
+	}
+	if imgui.BeginComboV("STARS DCB Font Size", fmt.Sprintf("%d", globalConfig.DCBFontSize), imgui.ComboFlagsHeightLarge) {
+		sizes := make(map[int]interface{})
+		for fontid := range fonts {
+			if fontid.Name == "Inconsolata Condensed Regular" {
+				sizes[fontid.Size] = nil
+			}
+		}
+		for _, size := range SortedMapKeys(sizes) {
+			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.DCBFontSize, 0, imgui.Vec2{}) {
+				globalConfig.DCBFontSize = size
+			}
+		}
+		imgui.EndCombo()
+	}
 
 	var fsp *FlightStripPane
 	var stars *STARSPane
@@ -1010,14 +1039,16 @@ func (sim *Sim) DrawSettingsWindow() {
 			stars = pane
 		}
 	})
+
+	stars.DrawUI()
+
+	imgui.Separator()
+
 	if imgui.CollapsingHeader("Audio") {
 		globalConfig.Audio.DrawUI()
 	}
 	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
 		fsp.DrawUI()
-	}
-	if stars != nil && imgui.CollapsingHeader("STARS Radar Scope") {
-		stars.DrawUI()
 	}
 	if imgui.CollapsingHeader("Developer") {
 		if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
