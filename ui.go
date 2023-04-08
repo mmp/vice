@@ -55,6 +55,8 @@ var (
 		"Each scenario has a default video map, selected automatically.",
 		"If an aircraft given approach clearance is later vectored, approach clearance is now canceled.",
 		"Improved spawn positions and hand-off locations for JFK arrivals.",
+		"Added F11 TRACON scenarios (KMCO, KSFB, KISM, KORL...)",
+		"Font sizes for UI elements can now be set in the settings window",
 	}
 )
 
