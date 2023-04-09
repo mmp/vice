@@ -602,11 +602,12 @@ func (sim *Sim) updateState() {
 	now := sim.CurrentTime()
 	for callsign, t := range sim.handoffs {
 		if now.After(t) {
-			ac := sim.aircraft[callsign]
-			ac.TrackingController = ac.OutboundHandoffController
-			ac.OutboundHandoffController = ""
-			eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
-			globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
+			if ac, ok := sim.aircraft[callsign]; ok {
+				ac.TrackingController = ac.OutboundHandoffController
+				ac.OutboundHandoffController = ""
+				eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
+				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
+			}
 			delete(sim.handoffs, callsign)
 		}
 	}
