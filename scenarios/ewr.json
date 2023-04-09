@@ -2476,7 +2476,7 @@
     },
     "WRI_APP": {
       "callsign": "WRI_APP",
-      "frequency": 1264700,
+      "frequency": 126470,
       "scope_char": "Y",
       "sector_id": "MY"
     }

@@ -345,6 +345,20 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenarioGroup)
 	}
 
+	for callsign, ctrl := range sg.ControlPositions {
+		e.Push("Controller " + callsign)
+		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
+			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
+		}
+		if ctrl.SectorId == "" {
+			e.ErrorString("no \"sector_id\" specified")
+		}
+		if ctrl.Scope == "" {
+			e.ErrorString("no \"scope_char\" specified")
+		}
+		e.Pop()
+	}
+
 	if _, ok := sg.ControlPositions[sg.DefaultController]; !ok {
 		e.ErrorString("default controller \"%s\" not found in \"control_positions\"", sg.DefaultController)
 	} else {
