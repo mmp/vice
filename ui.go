@@ -57,6 +57,7 @@ var (
 		"Improved spawn positions and hand-off locations for JFK arrivals.",
 		"Added F11 TRACON scenarios (KMCO, KSFB, KISM, KORL...)",
 		"Font sizes for UI elements can now be set in the settings window",
+		"Fixed a crash related to handing off aircraft",
 	}
 )
 
