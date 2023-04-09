@@ -2153,91 +2153,76 @@
   "center": "KJFK",
   "control_positions": {
     "BOS_E_CTR": {
-      "callsign": "BOS_E_CTR",
       "frequency": 133450,
       "scope_char": "C",
       "sector_id": "B17"
     },
     "EWR_APP": {
-      "callsign": "EWR_APP",
       "frequency": 128550,
       "scope_char": "P",
       "sector_id": "4P"
     },
     "FRG_TWR": {
-      "callsign": "FRG_TWR",
       "frequency": 118800,
       "scope_char": "M",
       "sector_id": "2M"
     },
     "ISP_APP": {
-      "callsign": "ISP_APP",
       "frequency": 120050,
       "scope_char": "H",
       "sector_id": "3H"
     },
     "JFK_APP": {
-      "callsign": "JFK_APP",
       "frequency": 128125,
       "scope_char": "G",
       "sector_id": "2G"
     },
     "JFK_DEP": {
-      "callsign": "JFK_DEP",
       "frequency": 135900,
       "scope_char": "J",
       "sector_id": "2J"
     },
     "JFK_TWR": {
-      "callsign": "JFK_TWR",
       "frequency": 119100,
       "scope_char": "T",
       "sector_id": "2W"
     },
     "LGA_DEP": {
-      "callsign": "LGA_DEP",
       "frequency": 120400,
       "scope_char": "L",
       "sector_id": "1L"
     },
     "NY_B_CTR": {
-      "callsign": "NY_B_CTR",
       "frequency": 125325,
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_CTR": {
-      "callsign": "NY_CTR",
       "frequency": 125325,
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_C_CTR": {
-      "callsign": "NY_C_CTR",
       "frequency": 132175,
       "scope_char": "C",
       "sector_id": "N34"
     },
     "NY_F_CTR": {
-      "callsign": "NY_F_CTR",
       "frequency": 128300,
       "scope_char": "C",
       "sector_id": "N66"
     },
     "NY_LE_DEP": {
-      "callsign": "NY_LE_DEP",
       "frequency": 126800,
       "scope_char": "E",
       "sector_id": "5E"
     },
     "NY_LS_DEP": {
-      "callsign": "NY_LS_DEP",
       "frequency": 124750,
       "scope_char": "S",
       "sector_id": "5S"
     },
     "NY_L_DEP": {
-      "callsign": "NY_L_DEP",
       "frequency": 126800,
       "scope_char": "E",
       "sector_id": "5E"

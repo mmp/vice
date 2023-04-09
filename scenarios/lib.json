@@ -2399,67 +2399,56 @@
   "center": "N040.45.26.477,W074.24.28.789",
   "control_positions": {
     "BOS_SW_CTR": {
-      "callsign": "BOS_SW_CTR",
       "frequency": 134000,
       "scope_char": "C",
       "sector_id": "B19"
     },
     "EWR_DEP": {
-      "callsign": "EWR_DEP",
       "frequency": 119200,
       "scope_char": "N",
       "sector_id": "4N"
     },
     "JFK_DEP": {
-      "callsign": "JFK_DEP",
       "frequency": 135900,
       "scope_char": "J",
       "sector_id": "2J"
     },
     "LGA_DEP": {
-      "callsign": "LGA_L_DEP",
       "frequency": 120400,
       "scope_char": "L",
       "sector_id": "1L"
     },
     "NY_B_CTR": {
-      "callsign": "NY_B_CTR",
       "frequency": 125325,
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_C_CTR": {
-      "callsign": "NY_C_CTR",
       "frequency": 132175,
       "scope_char": "C",
       "sector_id": "N34"
     },
     "NY_LE_DEP": {
-      "callsign": "NY_LE_DEP",
       "frequency": 126800,
       "scope_char": "E",
       "sector_id": "5E"
     },
     "NY_LN_DEP": {
-      "callsign": "NY_LN_DEP",
       "frequency": 118170,
       "scope_char": "T",
       "sector_id": "5T"
     },
     "NY_LS_DEP": {
-      "callsign": "NY_LS_DEP",
       "frequency": 124750,
       "scope_char": "S",
       "sector_id": "5S"
     },
     "NY_LW_DEP": {
-      "callsign": "NY_LW_DEP",
       "frequency": 120850,
       "scope_char": "W",
       "sector_id": "5W"
     },
     "NY_L_DEP": {
-      "callsign": "NY_L_DEP",
       "frequency": 126800,
       "scope_char": "E",
       "sector_id": "5E"

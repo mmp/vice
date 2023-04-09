@@ -347,6 +347,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 
 	for callsign, ctrl := range sg.ControlPositions {
 		e.Push("Controller " + callsign)
+
+		ctrl.Callsign = callsign
+
 		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
 			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
 		}

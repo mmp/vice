@@ -4908,73 +4908,61 @@
   "center": "KPHL",
   "control_positions": {
     "DC_CTR": {
-      "callsign": "DC_CTR",
       "frequency": 133725,
       "scope_char": "C",
       "sector_id": "W32"
     },
     "EWR_APP": {
-      "callsign": "EWR_APP",
       "frequency": 128550,
       "scope_char": "P",
       "sector_id": "4P"
     },
     "LGA_DEP": {
-      "callsign": "LGA_DEP",
       "frequency": 120400,
       "scope_char": "L",
       "sector_id": "1L"
     },
     "NY_B_CTR": {
-      "callsign": "NY_B_CTR",
       "frequency": 125325,
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_CTR": {
-      "callsign": "NY_CTR",
       "frequency": 125325,
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_C_CTR": {
-      "callsign": "NY_C_CTR",
       "frequency": 132175,
       "scope_char": "C",
       "sector_id": "N34"
     },
     "NY_F_CTR": {
-      "callsign": "NY_F_CTR",
       "frequency": 128300,
       "scope_char": "C",
       "sector_id": "N66"
     },
     "PHL_F1_APP": {
-      "callsign": "PHL_F1_APP",
       "frequency": 124500,
       "scope_char": "F",
       "sector_id": "6F"
     },
     "PHL_NA_APP": {
-      "callsign": "PHL_NA_APP",
       "frequency": 128400,
       "scope_char": "N",
       "sector_id": "6N"
     },
     "PHL_ND_DEP": {
-      "callsign": "PHL_ND_DEP",
       "frequency": 124350,
       "scope_char": "E",
       "sector_id": "5E"
     },
     "PHL_SA_APP": {
-      "callsign": "PHL_SA_APP",
       "frequency": 133870,
       "scope_char": "S",
       "sector_id": "6S"
     },
     "PHL_TWR": {
-      "callsign": "PHL_TWR",
       "frequency": 118500,
       "scope_char": "T",
       "sector_id": "6A"

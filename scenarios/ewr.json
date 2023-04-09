@@ -2337,145 +2337,121 @@
   "center": "KEWR",
   "control_positions": {
     "ABE_APP": {
-      "callsign": "ABE_APP",
       "frequency": 119650,
       "scope_char": "F",
       "sector_id": "AF"
     },
     "BOS_CTR": {
-      "callsign": "BOS_CTR",
       "frequency": 134700,
       "scope_char": "C",
       "sector_id": "B37"
     },
     "CDW_TWR": {
-      "callsign": "CDW_TWR",
       "frequency": 119800,
       "scope_char": "T",
       "sector_id": "4T"
     },
     "DC_CTR": {
-      "callsign": "DC_CTR",
       "frequency": 133725,
       "scope_char": "C",
       "sector_id": "W32"
     },
     "EWR_APP": {
-      "callsign": "EWR_APP",
       "frequency": 128550,
       "scope_char": "P",
       "sector_id": "4P"
     },
     "EWR_A_APP": {
-      "callsign": "EWR_A_APP",
       "frequency": 120150,
       "scope_char": "A",
       "sector_id": "4A"
     },
     "EWR_DEP": {
-      "callsign": "EWR_DEP",
       "frequency": 119200,
       "scope_char": "N",
       "sector_id": "4N"
     },
     "EWR_H_APP": {
-      "callsign": "EWR_H_APP",
       "frequency": 132800,
       "scope_char": "H",
       "sector_id": "4H"
     },
     "EWR_P_APP": {
-      "callsign": "EWR_P_APP",
       "frequency": 128550,
       "scope_char": "P",
       "sector_id": "4P"
     },
     "EWR_Q_APP": {
-      "callsign": "EWR_Q_APP",
       "frequency": 125500,
       "scope_char": "Q",
       "sector_id": "4Q"
     },
     "EWR_S_APP": {
-      "callsign": "EWR_S_APP",
       "frequency": 123770,
       "scope_char": "S",
       "sector_id": "4S"
     },
     "EWR_TWR": {
-      "callsign": "EWR_TWR",
       "frequency": 118300,
       "scope_char": "T",
       "sector_id": "4Z"
     },
     "EWR_U_APP": {
-      "callsign": "EWR_U_APP",
       "frequency": 127600,
       "scope_char": "U",
       "sector_id": "4U"
     },
     "LGA_APP": {
-      "callsign": "LGA_APP",
       "frequency": 120800,
       "scope_char": "V",
       "sector_id": "1V"
     },
     "LGA_DEP": {
-      "callsign": "LGA_L_DEP",
       "frequency": 120400,
       "scope_char": "L",
       "sector_id": "1L"
     },
     "MMU_TWR": {
-      "callsign": "MMU_TWR",
       "frequency": 118100,
       "scope_char": "T",
       "sector_id": "4K"
     },
     "NY_CTR": {
-      "callsign": "NY_CTR",
       "frequency": 125325,
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_LE_DEP": {
-      "callsign": "NY_LE_DEP",
       "frequency": 126800,
       "scope_char": "E",
       "sector_id": "5E"
     },
     "NY_LN_DEP": {
-      "callsign": "NY_LN_DEP",
       "frequency": 118170,
       "scope_char": "T",
       "sector_id": "5T"
     },
     "NY_LS_DEP": {
-      "callsign": "NY_LS_DEP",
       "frequency": 124750,
       "scope_char": "S",
       "sector_id": "5S"
     },
     "NY_LW_DEP": {
-      "callsign": "NY_LW_DEP",
       "frequency": 120850,
       "scope_char": "W",
       "sector_id": "5W"
     },
     "PHL_NA_APP": {
-      "callsign": "PHL_NA_APP",
       "frequency": 128400,
       "scope_char": "N",
       "sector_id": "6N"
     },
     "TEB_TWR": {
-      "callsign": "TEB_TWR",
       "frequency": 119500,
       "scope_char": "T",
       "sector_id": "4J"
     },
     "WRI_APP": {
-      "callsign": "WRI_APP",
       "frequency": 126470,
       "scope_char": "Y",
       "sector_id": "MY"

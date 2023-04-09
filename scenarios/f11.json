@@ -3376,97 +3376,81 @@
   "center": "N028.25.45.781,W081.18.32.260",
   "control_positions": {
     "MIA_46_CTR": {
-      "callsign": "MIA_46_CTR",
       "frequency": 135175,
       "scope_char": "C",
       "sector_id": "R46"
     },
     "JAX_30_CTR": {
-      "callsign": "JAX_30_CTR",
       "frequency": 135925,
       "scope_char": "C",
       "sector_id": "30"
     },
     "JAX_N_APP": {
-      "callsign": "JAX_N_APP",
       "frequency": 127000,
       "scope_char": "N",
       "sector_id": "1N"
     },
     "DAB_H_APP": {
-      "callsign": "DAB_H_APP",
       "frequency": 125725,
       "scope_char": "H",
       "sector_id": "5H"
     },
     "TPA_E_APP": {
-      "callsign": "TPA_E_APP",
       "frequency": 118150,
       "scope_char": "A",
       "sector_id": "TE"
     },
     "MCO_E_APP": {
-      "callsign": "MCO_E_APP",
       "frequency": 124800,
       "scope_char": "E",
       "sector_id": "4E"
     },
     "MCO_B_APP": {
-      "callsign": "MCO_B_APP",
       "frequency": 128375,
       "scope_char": "B",
       "sector_id": "4B"
     },
     "MCO_W_DEP": {
-      "callsign": "MCO_W_DEP",
       "frequency": 120150,
       "scope_char": "W",
       "sector_id": "4W"
     },
     "MCO_E_TWR": {
-      "callsign": "MCO_E_TWR",
       "frequency": 118450,
       "scope_char": "T",
       "sector_id": "4ET"
     },
     "MCO_D_APP": {
-      "callsign": "MCO_D_APP",
       "frequency": 119400,
       "scope_char": "D",
       "sector_id": "4D"
     },
     "MCO_W_TWR": {
-      "callsign": "MCO_W_TWR",
       "frequency": 126400,
       "scope_char": "T",
       "sector_id": "4WT"
     },
     "SFB_N_TWR": {
-      "callsign": "SFB_N_TWR",
       "frequency": 120300,
       "scope_char": "T",
       "sector_id": "4NT"
     },
     "SFB_S_TWR": {
-      "callsign": "SFB_S_TWR",
       "frequency": 135250,
       "scope_char": "T",
       "sector_id": "4ST"
     },
     "MLB_TWR": {
-      "callsign": "MLB_TWR",
       "frequency": 118200,
       "scope_char": "T",
       "sector_id": "4MT"
     },
     "ISM_TWR": {
-      "callsign": "ISM_TWR",
       "frequency": 124450,
       "scope_char": "T",
       "sector_id": "4IT"
     },
     "ORL_TWR": {
-      "callsign": "ORL_TWR",
       "frequency": 118700,
       "scope_char": "T",
       "sector_id": "4OT"

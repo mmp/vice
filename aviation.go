@@ -116,7 +116,7 @@ func (f Frequency) String() string {
 }
 
 type Controller struct {
-	Callsign  string    `json:"callsign"`
+	Callsign  string    `json:"-"`
 	Frequency Frequency `json:"frequency"`
 	SectorId  string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope     string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
