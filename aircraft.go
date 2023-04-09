@@ -586,6 +586,10 @@ func (ac *Aircraft) updateWaypoints() {
 	} else if len(ac.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
 		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, scenarioGroup.MagneticVariation)
+	} else {
+		// No more waypoints (likely about to land), so just
+		// plan to stay on the current heading.
+		hdg = ac.Heading
 	}
 
 	eta := wp.ETA(ac.Position, ac.GS)
