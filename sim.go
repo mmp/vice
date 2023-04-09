@@ -31,16 +31,18 @@ var (
 )
 
 type SimConnectionConfiguration struct {
-	numAircraft      int32
-	challenge        float32
-	scenario         *Scenario
-	controller       *Controller
-	validControllers map[string]*Controller
+	numAircraft        int32
+	departureChallenge float32
+	goAroundRate       float32
+	scenario           *Scenario
+	controller         *Controller
+	validControllers   map[string]*Controller
 }
 
 func (ssc *SimConnectionConfiguration) Initialize() {
 	ssc.numAircraft = 30
-	ssc.challenge = 0.25
+	ssc.departureChallenge = 0.25
+	ssc.goAroundRate = 0.10
 	ssc.ResetScenarioGroup()
 }
 
@@ -167,7 +169,7 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 	if len(scenario.DepartureRunways) > 0 {
 		imgui.Separator()
 		imgui.Text("Departures")
-		imgui.SliderFloatV("Sequencing challenge", &ssc.challenge, 0, 1, "%.02f", 0)
+		imgui.SliderFloatV("Sequencing challenge", &ssc.departureChallenge, 0, 1, "%.02f", 0)
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
 		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
@@ -210,6 +212,8 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 
 		imgui.Separator()
 		imgui.Text("Arrivals")
+		imgui.SliderFloatV("Go around probability", &ssc.goAroundRate, 0, 1, "%.02f", 0)
+
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 		if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
 			imgui.TableSetupColumn("Arrival")
@@ -276,7 +280,9 @@ type Sim struct {
 
 	eventsId EventSubscriberId
 
-	challenge float32
+	departureChallenge float32
+	goAroundRate       float32
+	willGoAround       map[*Aircraft]interface{}
 
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
@@ -294,12 +300,14 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		handoffs: make(map[string]time.Time),
 		metar:    make(map[string]*METAR),
 
-		currentTime:       time.Now(),
-		lastUpdateTime:    time.Now(),
-		remainingLaunches: int(ssc.numAircraft),
-		eventsId:          eventStream.Subscribe(),
-		simRate:           1,
-		challenge:         ssc.challenge,
+		currentTime:        time.Now(),
+		lastUpdateTime:     time.Now(),
+		remainingLaunches:  int(ssc.numAircraft),
+		eventsId:           eventStream.Subscribe(),
+		simRate:            1,
+		departureChallenge: ssc.departureChallenge,
+		goAroundRate:       ssc.goAroundRate,
+		willGoAround:       make(map[*Aircraft]interface{}),
 	}
 
 	// Make some fake METARs; slightly different for all airports.
@@ -617,6 +625,21 @@ func (sim *Sim) updateState() {
 		sim.lastSimUpdate = now
 		for _, ac := range sim.aircraft {
 			ac.Update()
+
+			if _, ok := sim.willGoAround[ac]; !ok {
+				continue
+			}
+
+			if !ac.OnFinal || len(ac.Waypoints) != 1 {
+				continue
+			}
+
+			dist := nmdistance2ll(ac.Position, ac.Waypoints[0].Location)
+			if dist < 0.25 {
+				delete(sim.willGoAround, ac)
+				ac.GoAround()
+				pilotResponse(ac.Callsign, "Going around")
+			}
 		}
 	}
 
@@ -1339,12 +1362,16 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 		}
 	}
 
+	if rand.Float32() < sim.goAroundRate {
+		sim.willGoAround[ac] = nil
+	}
+
 	return ac
 }
 
 func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
 	var dep *Departure
-	if rand.Float32() < sim.challenge {
+	if rand.Float32() < sim.departureChallenge {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		if rand.Float32() < .5 {

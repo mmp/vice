@@ -196,6 +196,23 @@ func (ac *Aircraft) Update() {
 	ac.updateWaypoints()
 }
 
+func (ac *Aircraft) GoAround() {
+	ac.AssignedHeading = int(ac.Heading)
+	ac.AssignedSpeed = 0
+
+	if ap, ok := database.Airports[ac.FlightPlan.ArrivalAirport]; ok {
+		ac.AssignedAltitude = 1000 * ((ap.Elevation + 2500) / 1000)
+	} else {
+		ac.AssignedAltitude = 1000 * ((int(ac.Altitude) + 2500) / 1000)
+	}
+
+	ac.Approach = nil
+	ac.ClearedApproach = false
+	ac.OnFinal = false
+
+	ac.Waypoints = nil // so it isn't deleted from the sim
+}
+
 func (ac *Aircraft) updateAirspeed() {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
