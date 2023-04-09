@@ -645,8 +645,6 @@ func (p Point2LL) DMSString() string {
 }
 
 var (
-	// e.g. N040.37.48.704
-	reWaypointDotted = regexp.MustCompile(`^([NS][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+), *([EW][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
 	// pair of floats (no exponents)
 	reWaypointFloat = regexp.MustCompile(`^(\-?[0-9]+\.[0-9]+), *(\-?[0-9]+\.[0-9]+)`)
 	// https://en.wikipedia.org/wiki/ISO_6709#String_expression_(Annex_H)
@@ -654,9 +652,128 @@ var (
 	reISO6709H = regexp.MustCompile(`^([-+][0-9][0-9])([0-9][0-9])([0-9][0-9])\.([0-9][0-9][0-9])([-+][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])\.([0-9][0-9][0-9])`)
 )
 
-func ParseLatLong(llstr string) (Point2LL, error) {
-	if strs := reWaypointFloat.FindStringSubmatch(llstr); len(strs) == 3 {
-		var p Point2LL
+// Parse waypoints of the form "N40.37.58.400, W073.46.17.000".  Previously
+// we would match the following regexp and then peel apart the pieces but
+// profiling showed that the majority of the time spent parsing the current
+// video maps was spent in this function. Thus, a specialized
+// implementation that is about 12x faster and reduces overall time spent
+// parsing video maps at startup (including zstd decompression and JSON
+// parsing) from ~2.5s to about 0.75s.
+//
+// For posterity, said regexp:
+// reWaypointDotted = regexp.MustCompile(`^([NS][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+), *([EW][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
+func tryParseWaypointDotted(b []byte) (Point2LL, bool) {
+	if len(b) == 0 || (b[0] != 'N' && b[0] != 'S') {
+		return Point2LL{}, false
+	}
+	negateLatitude := b[0] == 'S'
+
+	// Skip over the N/S and parse the four dotted numbers following it
+	b = b[1:]
+	latitude, n, ok := tryParseWaypointNumbers(b)
+	if !ok {
+		return Point2LL{}, false
+	}
+	if negateLatitude {
+		latitude = -latitude
+	}
+	// Skip what's been processed
+	b = b[n:]
+
+	// Skip comma
+	if len(b) == 0 || b[0] != ',' {
+		return Point2LL{}, false
+	}
+	b = b[1:]
+
+	// Skip optional space
+	if len(b) > 0 && b[0] == ' ' {
+		b = b[1:]
+	}
+
+	// Onward to E/W
+	if len(b) == 0 || (b[0] != 'E' && b[0] != 'W') {
+		return Point2LL{}, false
+	}
+	negateLongitude := b[0] == 'W'
+
+	// Skip over E/W and parse its four dotted numbers.
+	b = b[1:]
+	longitude, _, ok := tryParseWaypointNumbers(b)
+	if !ok {
+		return Point2LL{}, false
+	}
+	if negateLongitude {
+		longitude = -longitude
+	}
+
+	return Point2LL{longitude, latitude}, true
+}
+
+// Efficient function parse a latlong of the form aaa.bbb.ccc.ddd and
+// return the corresponding float32. Returns the latlong, the number of
+// bytes of b consumed, and a bool indicating success or failure.
+func tryParseWaypointNumbers(b []byte) (float32, int, bool) {
+	n := 0
+	var ll float64
+
+	// Scan to the end of the current number group; return
+	// the number of bytes it uses.
+	scan := func(b []byte) int {
+		for i, v := range b {
+			if v == '.' || v == ',' {
+				return i
+			}
+		}
+		return len(b)
+	}
+
+	for i := 0; i < 4; i++ {
+		end := scan(b)
+		if end == 0 {
+			return 0, 0, false
+		}
+
+		value := 0
+		for _, ch := range b[:end] {
+			if ch < '0' || ch > '9' {
+				return 0, 0, false
+			}
+			value *= 10
+			value += int(ch - '0')
+		}
+		if i == 3 {
+			// Treat the last set of digits as a decimal, so that
+			// Nxx.yy.zz.1 is handled like Nxx.yy.zz.100.
+			for j := end; j < 3; j++ {
+				value *= 10
+			}
+		}
+
+		scales := [4]float64{1, 60, 3600, 3600000}
+		ll += float64(value) / scales[i]
+		n += end
+		b = b[end:]
+
+		if i < 3 {
+			if len(b) == 0 {
+				return 0, 0, false
+			}
+			b = b[1:]
+			n++
+		}
+	}
+
+	return float32(ll), n, true
+}
+
+func ParseLatLong(llstr []byte) (Point2LL, error) {
+	// First try to match e.g. "N040.44.21.753,W075.41.55.347". Try this
+	// first and by hand rather than with a regexp, since the video map
+	// files are full of these.
+	if p, ok := tryParseWaypointDotted(llstr); ok {
+		return p, nil
+	} else if strs := reWaypointFloat.FindStringSubmatch(string(llstr)); len(strs) == 3 {
 		if l, err := strconv.ParseFloat(strs[1], 32); err != nil {
 			return Point2LL{}, err
 		} else {
@@ -668,42 +785,7 @@ func ParseLatLong(llstr string) (Point2LL, error) {
 			p[0] = float32(l)
 		}
 		return p, nil
-	}
-
-	var p Point2LL
-	if strs := reWaypointDotted.FindStringSubmatch(llstr); len(strs) == 3 {
-		for i, lstr := range strs[1:] {
-			comps := strings.Split(lstr[1:], ".")
-			if len(comps) != 4 {
-				return Point2LL{}, fmt.Errorf("Didn't find 4 components")
-			}
-
-			var ll float64
-			scales := [4]float64{1, 60, 3600, 3600000}
-			for j, comp := range comps {
-				value, err := strconv.Atoi(comp)
-				if err != nil {
-					return Point2LL{}, err
-				}
-				if j == 3 {
-					// Treat the last set of digits as a decimal, so that
-					// Nxx.yy.zz.1 is handled like Nxx.yy.zz.100.
-					for k := len(comp); k < 3; k++ {
-						value *= 10
-					}
-				}
-				ll += float64(value) / scales[j]
-			}
-
-			if lstr[0] == 'S' || lstr[0] == 'W' {
-				ll = -ll
-			}
-
-			// latitude is specified first but is the second component in
-			// Point2LL...
-			p[i^1] = float32(ll)
-		}
-	} else if strs := reISO6709H.FindStringSubmatch(llstr); len(strs) == 9 {
+	} else if strs := reISO6709H.FindStringSubmatch(string(llstr)); len(strs) == 9 {
 		parse := func(deg, min, sec, frac string) (float32, error) {
 			d, err := strconv.Atoi(deg)
 			if err != nil {
@@ -735,11 +817,10 @@ func ParseLatLong(llstr string) (Point2LL, error) {
 		if err != nil {
 			return Point2LL{}, err
 		}
+		return p, nil
 	} else {
 		return Point2LL{}, fmt.Errorf("%s: invalid latlong string", llstr)
 	}
-
-	return p, nil
 }
 
 func (p Point2LL) IsZero() bool {
@@ -824,12 +905,15 @@ func (p *Point2LL) UnmarshalJSON(b []byte) error {
 	} else {
 		n := len(b)
 		// Remove the quotes before parsing
-		s := strings.ToUpper(string(b[1 : n-1]))
-		pt, err := ParseLatLong(s)
+		b = b[1 : n-1]
+		pt, err := ParseLatLong(b)
 		if err == nil {
 			*p = pt
 			return nil
-		} else if n, ok := database.Navaids[s]; ok {
+		}
+
+		s := string(b)
+		if n, ok := database.Navaids[s]; ok {
 			*p = n.Location
 			return nil
 		} else if n, ok := database.Airports[s]; ok {

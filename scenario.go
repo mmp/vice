@@ -290,7 +290,7 @@ func (sg *ScenarioGroup) Locate(s string) (Point2LL, bool) {
 		return ap.Location, ok
 	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
 		return f.Location, ok
-	} else if p, err := ParseLatLong(s); err == nil {
+	} else if p, err := ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else {
 		return Point2LL{}, false

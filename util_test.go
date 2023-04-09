@@ -305,7 +305,7 @@ func TestParseLatLong(t *testing.T) {
 		LL{str: "+403758.400-0734617.000", pos: Point2LL{-73.7713928, 40.632885}}}       // JFK VOR
 
 	for _, ll := range latlongs {
-		p, err := ParseLatLong(ll.str)
+		p, err := ParseLatLong([]byte(ll.str))
 		if err != nil {
 			t.Errorf("%s: unexpected error: %v", ll.str, err)
 		}
@@ -323,7 +323,7 @@ func TestParseLatLong(t *testing.T) {
 		"N40.37.58.400, -73.22",
 		"N40.37.58.400, W073.46.17",
 	} {
-		if _, err := ParseLatLong(invalid); err == nil {
+		if _, err := ParseLatLong([]byte(invalid)); err == nil {
 			t.Errorf("%s: no error was returned for invalid latlong string!", invalid)
 		}
 	}
