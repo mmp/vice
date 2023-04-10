@@ -1444,16 +1444,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				}
 			}
 
-			switch cmd[0] {
-			case '1':
-				updateTowerList(0)
-				return
-			case '2':
-				updateTowerList(1)
-				return
-			case '3':
-				updateTowerList(2)
-				return
+			if len(cmd) == 1 {
+				switch cmd[0] {
+				case '1':
+					updateTowerList(0)
+					return
+				case '2':
+					updateTowerList(1)
+					return
+				case '3':
+					updateTowerList(2)
+					return
+				}
 			}
 
 		case "S":
@@ -1742,7 +1744,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			ps.RadarSiteSelected = ""
 			status.clear = true
 			return
-		} else {
+		} else if len(cmd) > 0 {
 			// Index, character id, or name
 			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < len(scenarioGroup.RadarSites) {
 				ps.RadarSiteSelected = SortedMapKeys(scenarioGroup.RadarSites)[i]
@@ -1996,7 +1998,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'L':
-						if l := len(command); l > 1 && command[l-1] == 'D' {
+						if l := len(command); l > 2 && command[l-1] == 'D' {
 							// turn left x degrees
 							if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 								status.err = ErrSTARSIllegalParam
@@ -2015,7 +2017,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'R':
-						if l := len(command); l > 1 && command[l-1] == 'D' {
+						if l := len(command); l > 2 && command[l-1] == 'D' {
 							// turn right x degrees
 							if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 								status.err = ErrSTARSIllegalParam
@@ -2043,7 +2045,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 							}
 							return isAllNumbers(s[1:])
 						}
-						if command[0] == 'C' && len(command) > 1 && !isAllNumbers(command[1:]) {
+						if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
 							// Cleared approach.
 							if sim.ClearedApproach(ac.Callsign, command[1:]) != nil {
 								status.err = ErrSTARSIllegalParam
@@ -2058,16 +2060,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 
 					case 'S':
-						if kts, err := strconv.Atoi(command[1:]); err != nil {
-							status.err = ErrSTARSIllegalParam
-						} else if sim.AssignSpeed(ac.Callsign, kts) != nil {
-							status.err = ErrSTARSIllegalTrack
+						if len(command) > 1 {
+							if kts, err := strconv.Atoi(command[1:]); err != nil {
+								status.err = ErrSTARSIllegalParam
+							} else if sim.AssignSpeed(ac.Callsign, kts) != nil {
+								status.err = ErrSTARSIllegalTrack
+							}
 						}
 
 					case 'E':
 						// Expect approach.
-						if sim.ExpectApproach(ac.Callsign, command[1:]) != nil {
-							status.err = ErrSTARSIllegalParam
+						if len(command) > 1 {
+							if sim.ExpectApproach(ac.Callsign, command[1:]) != nil {
+								status.err = ErrSTARSIllegalParam
+							}
 						}
 
 					case '?':
@@ -2148,12 +2154,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				return
 
 			case "L":
-				if dir, ok := numpadToDirection(cmd[0]); ok && len(cmd) == 1 {
-					state.leaderLineDirection = dir
-					status.clear = true
-				} else {
-					status.err = ErrSTARSCommandFormat
+				if len(cmd) == 1 {
+					if dir, ok := numpadToDirection(cmd[0]); ok {
+						state.leaderLineDirection = dir
+						status.clear = true
+						return
+					}
 				}
+				status.err = ErrSTARSCommandFormat
 				return
 
 			case "M":
