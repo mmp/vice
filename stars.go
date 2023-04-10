@@ -112,7 +112,7 @@ const (
 	CommandModeCollisionAlert
 	CommandModeMin
 	CommandModeSavePrefAs
-	CommandModeMapsMenu
+	CommandModeMaps
 	CommandModeLDR
 	CommandModeRangeRings
 	CommandModeRange
@@ -911,6 +911,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner()
 				sp.activeDCBMenu = DCBMenuMaps
+			} else {
+				sp.resetInputState()
+				sp.commandMode = CommandModeMaps
 			}
 
 		case KeyF3:
@@ -1683,9 +1686,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		globalConfig.Save()
 		return
 
-	case CommandModeMapsMenu:
+	case CommandModeMaps:
 		if len(cmd) > 0 {
-			if m, err := strconv.Atoi(cmd); err == nil && m >= 0 && m < len(scenarioGroup.STARSMaps) {
+			if m, err := strconv.Atoi(cmd); err == nil && m > 0 && m < len(scenarioGroup.STARSMaps) {
+				m--
 				name := scenarioGroup.STARSMaps[m].Name
 				if _, ok := ps.VideoMapVisible[name]; ok {
 					delete(ps.VideoMapVisible, name)
@@ -2811,7 +2815,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		pt += "CA\n"
 	case CommandModeMin:
 		pt += "MIN\n"
-	case CommandModeMapsMenu:
+	case CommandModeMaps:
 		pt += "MAP\n"
 	case CommandModeSavePrefAs:
 		pt += "SAVE AS\n"
