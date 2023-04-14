@@ -58,6 +58,8 @@ var (
 		"Added F11 TRACON scenarios (KMCO, KSFB, KISM, KORL...)",
 		"Font sizes for UI elements can now be set in the settings window",
 		"Fixed a crash related to handing off aircraft",
+		"Added go arounds",
+		"Added ABE TRACON scenarios",
 	}
 )
 
