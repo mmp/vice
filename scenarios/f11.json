@@ -2928,10 +2928,10 @@
         "initial_speed": 280,
         "route": "/. RIDES2",
         "runway_waypoints": {
-          "17L": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a8000 PARRX@a7000 PTMAN@a5000@s210 #005",
-          "17R": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a8000 PARRX@a7000 PTMAN@a5000@s210 #005",
-          "18L": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a8000 PARRX@a7000 PTMAN@a5000@s210 #005",
-          "18R": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a8000 PARRX@a7000 PTMAN@a5000@s210 #005",
+          "17L": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a10000 PARRX@a9000@s220 HAANZ@a8000@s220  PTMAN@a5000@s210 #005",
+          "17R": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a10000 PARRX@a9000@s220 HAANZ@a8000@s220  PTMAN@a5000@s210 #005",
+          "18L": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a10000 PARRX@a9000@s220 HAANZ@a8000@s220  PTMAN@a5000@s210 #005",
+          "18R": "MOOTS@a15000 @ RIDES@a11000 WISRD THEAM@a10000 PARRX@a9000@s220 HAANZ@a8000@s220  PTMAN@a5000@s210 #005",
           "36L": "MOOTS@a15000 @ RIDES@a8000 WISRD HAHNA@a6000@s210 #339",
           "36R": "MOOTS@a15000 @ RIDES@a8000 WISRD HAHNA@a6000@s210 #339",
           "35L": "MOOTS@a15000 @ RIDES@a8000 WISRD HAHNA@a6000@s210 #339",
@@ -2941,7 +2941,7 @@
         "waypoints": "MOOTS@a15000 @ RIDES@a8000"
       }
     ],
-    "SNFLD2": [
+    "SNFLD3": [
       {
         "airlines": {
           "KMCO": [
@@ -3366,7 +3366,7 @@
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
-        "route": "/. SNFLD2",
+        "route": "/. SNFLD3",
         "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "NICCK@a12000 @ SNFLD GTOUT@a12000@s280 TUGLE HIGGZ@a10000@s250 VOSSS@a8000@s230 SUNDE@a6000 CUBAL@a5000@s210"
@@ -3722,7 +3722,7 @@
         "RIDES2": {
           "KMCO": 10
         },
-        "SNFLD2": {
+        "SNFLD3": {
           "KMCO": 15
         }
       },
