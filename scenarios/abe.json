@@ -71,6 +71,7 @@
               "icao": "AAY"
             }
           ],
+          "altitude": 38000,
           "destination": "KPIE",
           "exit": "ETX",
           "route": "ETX LRP EMI GVE Q75 TEUFL BAAMF DADES1"
@@ -81,6 +82,7 @@
               "icao": "ATN"
             }
           ],
+          "altitude": 34000,
           "destination": "KILN",
           "exit": "ETX",
           "route": "ETX V30 PSB APE LIMPS"
@@ -88,9 +90,21 @@
         {
           "airlines": [
             {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KMCO",
+          "exit": "ETX",
+          "route": "ETX LRP EMI CHS JAWSS OMN BITHO7"
+        },
+        {
+          "airlines": [
+            {
               "icao": "SKW"
             }
           ],
+          "altitude": 38000,
           "destination": "KORD",
           "exit": "ETX",
           "route": "ETX RAV Q62 WATSN WATSN4"
@@ -101,9 +115,21 @@
               "icao": "JIA"
             }
           ],
+          "altitude": 38000,
           "destination": "KCLT",
           "exit": "ETX",
           "route": "ETX LRP EMI J48 MOL LYH CHSLY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 39000,
+          "destination": "KBOS",
+          "exit": "FJC",
+          "route": "FJC T221 LAAYK HNK PONCT JFUND2"
         },
         {
           "airlines": [
@@ -112,6 +138,7 @@
               "icao": "N"
             }
           ],
+          "altitude": 5000,
           "destination": "KJFK",
           "exit": "FJC",
           "route": "FJC V6 SBJ V232 COL"
@@ -124,6 +151,7 @@
             }
           ],
           "destination": "KPHL",
+          "altitude": 5000,
           "exit": "PTW",
           "route": "BUSKY PTW PHL"
         },
@@ -134,6 +162,7 @@
               "icao": "N"
             }
           ],
+          "altitude": 5000,
           "destination": "KPNE",
           "exit": "FJC",
           "route": "FJC ARD PNE"
@@ -145,6 +174,7 @@
               "icao": "N"
             }
           ],
+          "altitude": 5000,
           "destination": "KTEB",
           "exit": "FJC",
           "route": "FJC STW TEB"
@@ -156,6 +186,7 @@
             }
           ],
           "destination": "KDCA",
+          "altitude": 14000,
           "exit": "PTW",
           "route": "PTW MXE BAL DCA"
         },
@@ -165,6 +196,7 @@
               "icao": "JIA"
             }
           ],
+          "altitude": 14000,
           "destination": "KBWI",
           "exit": "PTW",
           "route": "PTW MXE BAL DCA"
@@ -175,9 +207,32 @@
               "icao": "SKW"
             }
           ],
+          "altitude": 7000,
           "destination": "KCDW",
           "exit": "SAX",
           "route": "SAX CDW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 6000,
+          "destination": "KMDT",
+          "exit": "ETX",
+          "route": "ETX V162 HWANG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KAVP",
+          "exit": "FJC",
+          "route": "FJC T221 RITTY"
         }
       ],
       "elevation": 380,
