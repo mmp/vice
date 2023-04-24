@@ -4728,9 +4728,10 @@
         "initial_altitude": 6000,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 220,
+        "speed_restriction": 220,
         "route": "/. BOJID3",
         "runway_waypoints": {
-          "27R": "BOJID N040.01.51.140,W075.11.43.262 @ HIFAL EYRIE@s190 FERUS #085"
+          "27R": "BOJID N040.01.51.140,W075.11.43.262 @ HIFAL EYRIE FERUS #085"
         },
         "scratchpad": "27R"
       }
@@ -4766,14 +4767,15 @@
         "initial_altitude": 6000,
         "initial_controller": "PHL_SA_APP",
         "initial_speed": 220,
-        "route": "/. PAATS3",
+        "speed_restriction": 220,
+        "route": "/. PAATS4",
         "runway_waypoints": {
-          "27R": "BEELZ N039.42.44.799,W075.05.41.949 @ WOJIK@s190 PSOUT #87"
+          "27R": "N039.39.39.130,W075.08.38.554 CHPMN @ PSOUT MKORD #087"
         },
         "scratchpad": "27R"
       }
     ],
-    "JIIMS3": [
+    "JIIMS4": [
       {
         "airlines": {
           "KPHL": [
@@ -4819,17 +4821,18 @@
         "initial_altitude": 9000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
-        "route": "/. JIIMS3",
+        "route": "/. JIIMS4",
         "runway_waypoints": {
-          "27L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 BEELZ WOJIK@s190 PSOUT #87",
-          "27R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 BEELZ WOJIK@s190 PSOUT #87",
-          "35": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 SNEDE",
-          "9L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 TLUKS CHEAZ@s190 STAYK #266",
-          "9R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 TLUKS CHEAZ@s190 STAYK #266"
+          "27L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
+          "27R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
+          "17": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 SNEDE #312",
+          "35": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 SNEDE #312",
+          "9L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 WUDRR WEVVE ERNYY #268",
+          "9R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 WUDRR WEVVE ERNYY #268"
         }
       }
     ],
-    "PAATS3": [
+    "PAATS4": [
       {
         "airlines": {
           "KPHL": [
@@ -4859,13 +4862,13 @@
         "initial_altitude": 10000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
-        "route": "/. PAATS3",
+        "route": "/. PAATS4",
         "runway_waypoints": {
-          "27L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL BEELZ WOJIK@s190 PSOUT #87",
-          "27R": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL BEELZ WOJIK@s190 PSOUT #87",
+          "27L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL CHPMN PSOUT MKORD #87",
+          "27R": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS RROLL CHPMN PSOUT MKORD #87",
           "35": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TEBEE #57",
-          "9L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TLUKS CHEAZ@s190 STAYK #266",
-          "9R": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TLUKS CHEAZ@s190 STAYK #266"
+          "9L": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TRNBL WEVVE ERNYY #268",
+          "9R": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS TRNBL WEVVE ERNYY #268"
         }
       }
     ],
@@ -5051,10 +5054,10 @@
         "BOJID3": {
           "KPHL": 12
         },
-        "JIIMS3": {
+        "JIIMS4": {
           "KPHL": 12
         },
-        "PAATS3": {
+        "PAATS4": {
           "KPHL": 12
         },
         "SPUDS5": {
@@ -5108,10 +5111,10 @@
         "BOJID3": {
           "KPHL": 12
         },
-        "JIIMS3": {
+        "JIIMS4": {
           "KPHL": 12
         },
-        "PAATS3": {
+        "PAATS4": {
           "KPHL": 12
         },
         "SPUDS5": {
