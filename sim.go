@@ -744,7 +744,7 @@ func (sim *Sim) TurnLeft(callsign string, deg int) error {
 	if ac, ok := sim.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		pilotResponse(callsign, "turn left %d degrees", deg)
+		pilotResponse(callsign, "turn %d degrees left", deg)
 
 		if ac.AssignedHeading == 0 {
 			ac.AssignedHeading = int(ac.Heading) - deg
@@ -765,7 +765,7 @@ func (sim *Sim) TurnRight(callsign string, deg int) error {
 	if ac, ok := sim.aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		pilotResponse(callsign, "turn right %d degrees", deg)
+		pilotResponse(callsign, "turn %d degrees right", deg)
 
 		if ac.AssignedHeading == 0 {
 			ac.AssignedHeading = int(ac.Heading) + deg
