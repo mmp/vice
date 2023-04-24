@@ -60,6 +60,8 @@ var (
 		"Fixed a crash related to handing off aircraft",
 		"Added go arounds",
 		"Added ABE TRACON scenarios",
+		"Added scenarios for KJAX",
+		"Updated PHL scenarios for recent arrival changes",
 	}
 )
 
