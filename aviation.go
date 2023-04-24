@@ -570,25 +570,43 @@ var (
 // Utility function for parsing CSV files as strings; it breaks each line
 // of the file into fields and calls the provided callback function for
 // each one.
-func mungeCSV(filename string, raw string, callback func([]string)) {
+func mungeCSV(filename string, raw string, fields []string, callback func([]string)) {
 	r := bytes.NewReader([]byte(raw))
 	cr := csv.NewReader(r)
 	cr.ReuseRecord = true
 
-	// Skip the first line with the legend
-	if _, err := cr.Read(); err != nil {
+	// Find the index of each field the caller requested
+	var fieldIndices []int
+	if header, err := cr.Read(); err != nil {
 		lg.Errorf("%s: error parsing CSV file: %s", filename, err)
-		return
+	} else {
+		for fi, f := range fields {
+			for hi, h := range header {
+				if f == strings.TrimSpace(h) {
+					fieldIndices = append(fieldIndices, hi)
+					break
+				}
+			}
+			if len(fieldIndices) != fi+1 {
+				lg.Errorf("%s: did not field header for requested field \"%s\"", filename, f)
+				lg.Errorf("options: %+v", header)
+			}
+		}
 	}
 
 	for {
+		var strs []string
 		if record, err := cr.Read(); err == io.EOF {
 			return
 		} else if err != nil {
 			lg.Errorf("%s: error parsing CSV file: %s", filename, err)
 			return
 		} else {
-			callback(record)
+			for _, i := range fieldIndices {
+				strs = append(strs, record[i])
+			}
+			callback(strs)
+			strs = strs[:0]
 		}
 	}
 }
@@ -596,17 +614,19 @@ func mungeCSV(filename string, raw string, callback func([]string)) {
 func parseNavaids() map[string]Navaid {
 	navaids := make(map[string]Navaid)
 
-	mungeCSV("navaids", decompressZstd(navBaseRaw), func(s []string) {
-		n := Navaid{
-			Id:       s[1],
-			Type:     s[2],
-			Name:     s[7],
-			Location: Point2LL{float32(atof(s[31])), float32(atof(s[26]))},
-		}
-		if n.Id != "" {
-			navaids[n.Id] = n
-		}
-	})
+	mungeCSV("navaids", decompressZstd(navBaseRaw),
+		[]string{"NAV_ID", "NAV_TYPE", "NAME", "LONG_DECIMAL", "LAT_DECIMAL"},
+		func(s []string) {
+			n := Navaid{
+				Id:       s[0],
+				Type:     s[1],
+				Name:     s[2],
+				Location: Point2LL{float32(atof(s[3])), float32(atof(s[4]))},
+			}
+			if n.Id != "" {
+				navaids[n.Id] = n
+			}
+		})
 
 	return navaids
 }
@@ -628,20 +648,23 @@ func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 
 	// FAA database
-	mungeCSV("airports", decompressZstd(airportsRaw), func(s []string) {
-		if elevation, err := strconv.ParseFloat(s[24], 64); err != nil {
-			lg.Errorf("%s: error parsing elevation: %s", s[24], err)
-		} else {
-			loc := point2LLFromComponents(s[15:19], s[19:23])
-			ap := FAAAirport{Id: s[98], Name: s[12], Location: loc, Elevation: int(elevation)}
-			if ap.Id == "" {
-				ap.Id = s[4] // No ICAO code so grab the FAA airport id
+	mungeCSV("airports", decompressZstd(airportsRaw),
+		[]string{"ICAO_ID", "ARPT_ID", "ARPT_NAME", "ELEV", "LAT_DEG", "LAT_MIN", "LAT_SEC", "LAT_HEMIS",
+			"LONG_DEG", "LONG_MIN", "LONG_SEC", "LONG_HEMIS"},
+		func(s []string) {
+			if elevation, err := strconv.ParseFloat(s[3], 64); err != nil {
+				lg.Errorf("%s: error parsing elevation: %s", s[3], err)
+			} else {
+				loc := point2LLFromComponents(s[4:8], s[8:12])
+				ap := FAAAirport{Id: s[0], Name: s[2], Location: loc, Elevation: int(elevation)}
+				if ap.Id == "" {
+					ap.Id = s[1] // No ICAO code so grab the FAA airport id
+				}
+				if ap.Id != "" {
+					airports[ap.Id] = ap
+				}
 			}
-			if ap.Id != "" {
-				airports[ap.Id] = ap
-			}
-		}
-	})
+		})
 
 	return airports
 }
@@ -649,15 +672,17 @@ func parseAirports() map[string]FAAAirport {
 func parseFixes() map[string]Fix {
 	fixes := make(map[string]Fix)
 
-	mungeCSV("fixes", decompressZstd(fixesRaw), func(s []string) {
-		f := Fix{
-			Id:       s[1],
-			Location: Point2LL{float32(atof(s[14])), float32(atof(s[9]))},
-		}
-		if f.Id != "" {
-			fixes[f.Id] = f
-		}
-	})
+	mungeCSV("fixes", decompressZstd(fixesRaw),
+		[]string{"FIX_ID", "LONG_DECIMAL", "LAT_DECIMAL"},
+		func(s []string) {
+			f := Fix{
+				Id:       s[0],
+				Location: Point2LL{float32(atof(s[1])), float32(atof(s[2]))},
+			}
+			if f.Id != "" {
+				fixes[f.Id] = f
+			}
+		})
 
 	return fixes
 }
@@ -678,7 +703,9 @@ func parseCallsigns() map[string]Callsign {
 		}
 	}
 
-	mungeCSV("callsigns", decompressZstd(callsignsRaw), addCallsign)
+	mungeCSV("callsigns", decompressZstd(callsignsRaw),
+		[]string{"COMPANY", "COUNTRY", "TELEPHONY", "3 LETTER"},
+		addCallsign)
 
 	return callsigns
 }
