@@ -62,6 +62,7 @@ var (
 		"Added ABE TRACON scenarios",
 		"Added scenarios for KJAX",
 		"Updated PHL scenarios for recent arrival changes",
+		"Fixed bug with localizer intercept that made aircraft hang in the air",
 	}
 )
 
