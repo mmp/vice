@@ -563,7 +563,11 @@ func (ac *Aircraft) updateWaypoints() {
 
 			ac.Waypoints = nil
 			for _, wp := range ap.Waypoints[0] {
-				if distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
+				wpHeading := headingp2ll(ac.Position, wp.Location, scenarioGroup.MagneticVariation)
+				inFront := headingDifference(ac.Heading, wpHeading) < 70
+				lg.Printf("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
+					ac.Callsign, wp.Fix, ac.Heading, wpHeading, inFront, thresholdDistance)
+				if inFront && distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
 					lg.Printf("%s: %s: adding future waypoint...", ac.Callsign, wp.Fix)
 					ac.Waypoints = append(ac.Waypoints, wp)
 				} else if ac.Waypoints != nil {
