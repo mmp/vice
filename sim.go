@@ -957,6 +957,9 @@ func (sim *Sim) ClearedApproach(callsign string, approach string) error {
 	ac.ClearedApproach = true
 
 	pilotResponse(callsign, response+"cleared "+ap.FullName+" approach")
+
+	lg.Printf("%s", spew.Sdump(ac))
+
 	return nil
 }
 

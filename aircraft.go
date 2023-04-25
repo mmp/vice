@@ -7,6 +7,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Aircraft struct {
@@ -186,6 +188,8 @@ func (ac *Aircraft) WaypointUpdate(wp Waypoint) {
 
 	lg.Printf("%s: waypoint update for %s: cross alt %d cross speed %d", ac.Callsign,
 		wp.Fix, wp.Altitude, wp.Speed)
+
+	lg.Printf("%s", spew.Sdump(ac))
 }
 
 func (ac *Aircraft) Update() {
@@ -636,6 +640,8 @@ func (ac *Aircraft) updateWaypoints() {
 				ac.WaypointUpdate(ac.Waypoints[0])
 			}
 		}
+
+		lg.Printf("%s", spew.Sdump(ac))
 	}
 }
 
