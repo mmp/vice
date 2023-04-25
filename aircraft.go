@@ -553,35 +553,24 @@ func (ac *Aircraft) updateWaypoints() {
 		if dist < .2 {
 			// we'll call that good enough. Now we need to figure out which
 			// fixes in the approach are still ahead and then add them to
-			// the aircraft's waypoints; we find the aircraft's distance to
-			// the runway threshold and taking any fixes that are closer
-			// than that distance.
+			// the aircraft's waypoints.
 			n := len(ap.Waypoints[0])
 			threshold := ll2nm(ap.Waypoints[0][n-1].Location)
 			thresholdDistance := distance2f(ll2nm(ac.Position), threshold)
 			lg.Printf("%s: intercepted the localizer @ %.2fnm!", ac.Callsign, thresholdDistance)
 
 			ac.Waypoints = nil
-			for _, wp := range ap.Waypoints[0] {
+			for i, wp := range ap.Waypoints[0] {
+				// Find the first waypoint that is both in front of the
+				// aircraft and closer to the threshold than the aircraft.
 				wpHeading := headingp2ll(ac.Position, wp.Location, scenarioGroup.MagneticVariation)
 				inFront := headingDifference(ac.Heading, wpHeading) < 70
 				lg.Printf("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
 					ac.Callsign, wp.Fix, ac.Heading, wpHeading, inFront, thresholdDistance)
 				if inFront && distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
-					lg.Printf("%s: %s: adding future waypoint...", ac.Callsign, wp.Fix)
-					ac.Waypoints = append(ac.Waypoints, wp)
-				} else if ac.Waypoints != nil {
-					// We consider the waypoints from far away to near (and
-					// so in the end we want a contiguous set of them
-					// starting from the runway threshold). Any time we
-					// find a waypoint that is farther away than the
-					// aircraft, we preemptively clear out the aircraft's
-					// waypoints; in this way if, for example, an IAF is
-					// somehow closer to the airport than the aircraft,
-					// then we won't include it in the aircraft's upcoming
-					// waypoints.
-					lg.Printf("%s: clearing those waypoints...", ac.Callsign)
-					ac.Waypoints = nil
+					ac.Waypoints = ap.Waypoints[0][i:]
+					lg.Printf("%s: added future waypoints %s...", ac.Callsign, spew.Sdump(ac.Waypoints))
+					break
 				}
 			}
 
