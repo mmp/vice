@@ -143,6 +143,8 @@ type STARSAircraftState struct {
 	datablockText       [2][]string
 	datablockDrawOffset [2]float32
 
+	isSelected bool // middle click
+
 	// Only drawn if non-zero
 	jRingRadius    float32
 	coneLength     float32
@@ -3614,8 +3616,12 @@ func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
 	} else if ac.TrackingController == sim.Callsign() {
-		// white if we are tracking
-		return br.ScaleRGB(STARSTrackedAircraftColor)
+		// white if we are tracking, unless it's selected
+		if state.isSelected {
+			return br.ScaleRGB(STARSSelectedAircraftColor)
+		} else {
+			return br.ScaleRGB(STARSTrackedAircraftColor)
+		}
 	} else if ac.InboundHandoffController == sim.Callsign() {
 		// flashing white if it's being handed off to us.
 		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
@@ -3983,6 +3989,14 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 				sp.resetInputState()
 			}
 			sp.previewAreaOutput = status.output
+		}
+	}
+
+	if ctx.mouse.Clicked[MouseButtonTertiary] {
+		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
+			if state := sp.aircraft[ac]; state != nil {
+				state.isSelected = !state.isSelected
+			}
 		}
 	}
 }
