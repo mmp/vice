@@ -561,12 +561,23 @@ func (ac *Aircraft) updateWaypoints() {
 
 			ac.Waypoints = nil
 			for i, wp := range ap.Waypoints[0] {
-				// Find the first waypoint that is both in front of the
-				// aircraft and closer to the threshold than the aircraft.
-				wpHeading := headingp2ll(ac.Position, wp.Location, scenarioGroup.MagneticVariation)
-				inFront := headingDifference(ac.Heading, wpHeading) < 70
+				// Find the first waypoint that is:
+				// 1. In front of the aircraft.
+				// 2. Closer to the threshold than the aircraft.
+				// 3. On the localizer
+				if i+1 < len(ap.Waypoints[0]) {
+					wpToThresholdHeading := headingp2ll(wp.Location, ap.Waypoints[0][n-1].Location, scenarioGroup.MagneticVariation)
+					lg.Errorf("%s: wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
+					if headingDifference(wpToThresholdHeading, float32(ap.Heading())) > 3 {
+						lg.Errorf("%s: fix is in front but not on the localizer", wp.Fix)
+						continue
+					}
+				}
+
+				acToWpHeading := headingp2ll(ac.Position, wp.Location, scenarioGroup.MagneticVariation)
+				inFront := headingDifference(ac.Heading, acToWpHeading) < 70
 				lg.Printf("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
-					ac.Callsign, wp.Fix, ac.Heading, wpHeading, inFront, thresholdDistance)
+					ac.Callsign, wp.Fix, ac.Heading, acToWpHeading, inFront, thresholdDistance)
 				if inFront && distance2f(ll2nm(wp.Location), threshold) < thresholdDistance {
 					ac.Waypoints = ap.Waypoints[0][i:]
 					lg.Printf("%s: added future waypoints %s...", ac.Callsign, spew.Sdump(ac.Waypoints))
