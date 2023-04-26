@@ -1427,6 +1427,7 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 		ac.FlightPlan.Altitude = dep.Altitude
 	}
 
+	ac.TrackingController = ap.DepartureController
 	ac.Altitude = float32(ap.Elevation)
 	ac.AssignedAltitude = exitRoute.ClearedAltitude
 

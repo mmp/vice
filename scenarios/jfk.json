@@ -300,6 +300,7 @@
           "route": "COATE LAAYK ULW WOZEE LINNG3"
         }
       ],
+      "departure_controller": "ISP_APP",
       "elevation": 87,
       "exit_categories": {
         "COATE": "North",
@@ -1438,6 +1439,7 @@
           "route": "WHITE J209 SBY ISO RAPZZ AMYLU3"
         }
       ],
+      "departure_controller": "LGA_DEP",
       "elevation": 7,
       "exit_categories": {
         "ARD": "Southwest",

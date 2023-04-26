@@ -17,6 +17,8 @@ type Airport struct {
 	Approaches map[string]Approach `json:"approaches,omitempty"`
 	Departures []Departure         `json:"departures,omitempty"`
 
+	DepartureController string `json:"departure_controller"`
+
 	ExitCategories map[string]string `json:"exit_categories"`
 
 	// runway -> (exit -> route)
