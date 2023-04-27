@@ -42,6 +42,7 @@ type ScenarioGroup struct {
 type Arrival struct {
 	Waypoints       WaypointArray            `json:"waypoints"`
 	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
+	CruiseAltitude  int                      `json:"cruise_altitude"`
 	Route           string                   `json:"route"`
 
 	InitialController string `json:"initial_controller"`

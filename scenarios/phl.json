@@ -4672,6 +4672,7 @@
           ]
         },
         "cleared_altitude": 9000,
+        "cruise_altitude": 39000,
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -4724,6 +4725,7 @@
           ]
         },
         "cleared_altitude": 4000,
+        "cruise_altitude": 39000,
         "expect_approach": "27R",
         "initial_altitude": 6000,
         "initial_controller": "PHL_NA_APP",
@@ -4763,6 +4765,7 @@
           ]
         },
         "cleared_altitude": 4000,
+        "cruise_altitude": 37000,
         "expect_approach": "27R",
         "initial_altitude": 6000,
         "initial_controller": "PHL_SA_APP",
@@ -4782,14 +4785,6 @@
             {
               "airport": "KJAX",
               "icao": "AAL"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "RPA"
             },
             {
               "airport": "KPBI",
@@ -4818,6 +4813,35 @@
           ]
         },
         "cleared_altitude": 9000,
+        "cruise_altitude": 39000,
+        "initial_altitude": 9000,
+        "initial_controller": "DC_CTR",
+        "initial_speed": 250,
+        "route": "/. JIIMS4",
+        "runway_waypoints": {
+          "27L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
+          "27R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
+          "17": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 SNEDE #312",
+          "35": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 SNEDE #312",
+          "9L": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 WUDRR WEVVE ERNYY #268",
+          "9R": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000 WUDRR WEVVE ERNYY #268"
+        }
+      },
+      {
+        "airlines": {
+          "KPHL": [
+            {
+              "airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "RPA"
+            }
+          ]
+        },
+        "cleared_altitude": 9000,
+        "cruise_altitude": 22000,
         "initial_altitude": 9000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
@@ -4859,6 +4883,7 @@
           ]
         },
         "cleared_altitude": 10000,
+        "cruise_altitude": 37000,
         "initial_altitude": 10000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
@@ -4877,10 +4902,6 @@
         "airlines": {
           "KPHL": [
             {
-              "airport": "CYUL",
-              "icao": "PDT"
-            },
-            {
               "airport": "KPIT",
               "icao": "LXJ"
             },
@@ -4895,6 +4916,29 @@
           ]
         },
         "cleared_altitude": 10000,
+        "cruise_altitude": 16000,
+        "initial_altitude": 10000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 250,
+        "route": "/. SPUDS5",
+        "runway_waypoints": {
+          "27L": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR BOJID HIFAL EYRIE FERUS #085",
+          "27R": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR BOJID HIFAL EYRIE FERUS #085",
+          "9L": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR SCOOL KYILL EXPRS WHEYY #265",
+          "9R": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR SCOOL KYILL EXPRS WHEYY #265"
+        }
+      },
+      {
+        "airlines": {
+          "KPHL": [
+            {
+              "airport": "CYUL",
+              "icao": "PDT"
+            }
+          ]
+        },
+        "cleared_altitude": 10000,
+        "cruise_altitude": 32000,
         "initial_altitude": 10000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -4906,6 +4950,7 @@
           "9R": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR SCOOL KYILL EXPRS WHEYY #265"
         }
       }
+
     ]
   },
   "center": "KPHL",

@@ -1720,6 +1720,7 @@
           ]
         },
         "cleared_altitude": 6000,
+        "cruise_altitude": 39000,
         "initial_altitude": 12000,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
@@ -1800,6 +1801,7 @@
           ]
         },
         "cleared_altitude": 7000,
+        "cruise_altitude": 39000,
         "initial_altitude": 18000,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
@@ -1880,6 +1882,7 @@
           ]
         },
         "cleared_altitude": 7000,
+        "cruise_altitude": 39000,
         "initial_altitude": 18000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -1960,6 +1963,7 @@
           ]
         },
         "cleared_altitude": 6000,
+        "cruise_altitude": 39000,
         "initial_altitude": 18000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2040,6 +2044,7 @@
           ]
         },
         "cleared_altitude": 7000,
+        "cruise_altitude": 39000,
         "initial_altitude": 12000,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
@@ -2120,6 +2125,7 @@
           ]
         },
         "cleared_altitude": 6000,
+        "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "EWR_A_APP",
         "initial_speed": 250,
@@ -2144,6 +2150,7 @@
           ]
         },
         "cleared_altitude": 7000,
+        "cruise_altitude": 7000,
         "initial_altitude": 7000,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
@@ -2224,6 +2231,7 @@
           ]
         },
         "cleared_altitude": 8000,
+        "cruise_altitude": 39000,
         "initial_altitude": 20000,
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
@@ -2304,6 +2312,7 @@
           ]
         },
         "cleared_altitude": 6000,
+        "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "EWR_P_APP",
         "initial_speed": 250,
@@ -2324,6 +2333,7 @@
           ]
         },
         "cleared_altitude": 6000,
+        "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "WRI_APP",
         "initial_speed": 300,

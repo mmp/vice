@@ -1626,6 +1626,7 @@
           ]
         },
         "cleared_altitude": 5000,
+        "cruise_altitude": 5000,
         "initial_altitude": 5000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -1653,6 +1654,7 @@
           ]
         },
         "cleared_altitude": 4000,
+        "cruise_altitude": 9000,
         "initial_altitude": 4000,
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
@@ -1779,6 +1781,7 @@
           ]
         },
         "cleared_altitude": 19000,
+        "cruise_altitude": 37000,
         "initial_altitude": 20000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -1876,6 +1879,7 @@
           ]
         },
         "cleared_altitude": 19000,
+        "cruise_altitude": 39000,
         "initial_altitude": 19000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2142,6 +2146,7 @@
           ]
         },
         "cleared_altitude": 12000,
+        "cruise_altitude": 36000,
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,

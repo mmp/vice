@@ -1340,7 +1340,29 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 	ac.FlightPlan.DepartureAirport = airline.Airport
 	ac.FlightPlan.ArrivalAirport = airportName
 	ac.TrackingController = arr.InitialController
-	ac.FlightPlan.Altitude = 39000
+	ac.FlightPlan.Altitude = arr.CruiseAltitude
+	if ac.FlightPlan.Altitude == 0 { // unspecified
+		// try to figure out direction of flight
+		pDep, depOk := scenarioGroup.Locate(ac.FlightPlan.DepartureAirport)
+		pArr, arrOk := scenarioGroup.Locate(ac.FlightPlan.ArrivalAirport)
+		if depOk && arrOk {
+			if nmdistance2ll(pDep, pArr) < 100 {
+				ac.FlightPlan.Altitude = 7000
+			} else if nmdistance2ll(pDep, pArr) < 200 {
+				ac.FlightPlan.Altitude = 11000
+			} else if nmdistance2ll(pDep, pArr) < 300 {
+				ac.FlightPlan.Altitude = 21000
+			} else {
+				ac.FlightPlan.Altitude = 37000
+			}
+
+			if headingp2ll(pDep, pArr, scenarioGroup.MagneticVariation) > 180 {
+				ac.FlightPlan.Altitude += 1000
+			}
+		} else {
+			ac.FlightPlan.Altitude = 39000
+		}
+	}
 	ac.FlightPlan.Route = arr.Route
 	// Start with the default waypoints for the arrival
 	ac.Waypoints = arr.Waypoints
