@@ -4,7 +4,7 @@
       "approaches": {
         "I14": {
           "full_name": "ILS Runway 14",
-          "type": "RNAV",
+          "type": "ILS",
           "waypoints": [
             "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1400 _FRG_14@a50"
           ]
@@ -47,28 +47,28 @@
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_1 _FRG_19 _FRG_1a #13 @"
+            "waypoints": "_FRG_1 _FRG_19 _FRG_1a #13"
           }
         },
         "14": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_14 _FRG_32 _FRG_14a #220 @"
+            "waypoints": "_FRG_14 _FRG_32 _FRG_14a #220"
           }
         },
         "19": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_19 _FRG_1 _FRG_19a #220 @"
+            "waypoints": "_FRG_19 _FRG_1 _FRG_19a #220"
           }
         },
         "32": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_32 _FRG_14 _FRG_32a #10 @"
+            "waypoints": "_FRG_32 _FRG_14 _FRG_32a #10"
           }
         }
       },
@@ -206,7 +206,7 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "location": "N040.43.28.786,W073.25.07.626",
+      "location": "KFRG",
       "tower_list": 2
     },
     "KISP": {
