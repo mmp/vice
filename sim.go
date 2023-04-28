@@ -228,12 +228,9 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(group)
-				for ap, rate := range scenario.ArrivalGroupRates[group] {
-					idx := Find(sortedAirports, ap)
-					if idx == -1 {
-						lg.Errorf("%s: airport not found in sorted all airports? %+v", ap, sortedAirports)
-					} else {
-						imgui.TableSetColumnIndex(1 + idx)
+				for _, ap := range sortedAirports {
+					imgui.TableNextColumn()
+					if rate, ok := scenario.ArrivalGroupRates[group][ap]; ok {
 						imgui.InputIntV("##aar-"+ap, rate, 0, 120, 0)
 					}
 				}
