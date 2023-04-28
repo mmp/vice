@@ -669,10 +669,6 @@
                             {
                                 "airport": "KJAX",
                                 "runway": "8"
-                            },
-                            {
-                                "airport": "KJAX",
-                                "runway": "14"
                             }
                         ],
                         "arrivals": {
@@ -721,10 +717,6 @@
                             {
                                 "airport": "KJAX",
                                 "runway": "26"
-                            },
-                            {
-                                "airport": "KJAX",
-                                "runway": "32"
                             }
                         ],
                         "arrivals": {
