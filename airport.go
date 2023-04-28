@@ -36,6 +36,10 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Pop()
 	}
 
+	if _, ok := sg.ControlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
+		e.ErrorString("departure_controller \"%s\" unknown", ap.DepartureController)
+	}
+
 	// Departure routes are specified in the JSON as comma-separated lists
 	// of exits. We'll split those out into individual entries in the
 	// Airport's DepartureRoutes, one per exit, for convenience of future code.
