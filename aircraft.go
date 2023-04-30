@@ -388,11 +388,21 @@ func (ac *Aircraft) updateAltitude() {
 	}
 }
 
+var lastPrint time.Time
+
 func (ac *Aircraft) updateHeading() {
 	// Figure out the heading; if the route is empty, just leave it
 	// on its current heading...
 	targetHeading := ac.Heading
 	turn := float32(0)
+
+	print := ac.Approach != nil && ac.ClearedApproach && time.Since(lastPrint) > 250*time.Millisecond
+	print = false
+	if print {
+		lastPrint = time.Now()
+		lg.Errorf("Assigned %d app heading %d difference %f", ac.AssignedHeading, ac.Approach.Heading(),
+			headingDifference(float32(ac.Approach.Heading()), ac.Heading))
+	}
 
 	// Are we intercepting a localizer? Possibly turn to join it.
 	if ap := ac.Approach; ap != nil &&
@@ -428,7 +438,9 @@ func (ac *Aircraft) updateHeading() {
 			dist := distance2f(pos, isect)
 			eta := dist / ac.GS * 3600 // in seconds
 			turn := abs(headingDifference(hdg, float32(ap.Heading())-scenarioGroup.MagneticVariation))
-			//lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
+			if print {
+				lg.Errorf("dist %f, eta %f, turn %f", dist, eta, turn)
+			}
 
 			// Assuming 3 degree/second turns, then we might start to turn to
 			// intercept when the eta until intercept is 1/3 the number of
