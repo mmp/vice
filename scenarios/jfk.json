@@ -209,34 +209,245 @@
       "location": "KFRG",
       "tower_list": 2
     },
+    "KHVN": {
+      "approaches": {
+        "I2": {
+          "full_name": "ILS Runway 2",
+          "type": "ILS",
+          "waypoints": [
+            "CCC PEPER SALLT@a1500 _HVN_20@a50"
+          ]
+        },
+        "R2": {
+          "full_name": "RNAV Runway 2",
+          "type": "RNAV",
+          "waypoints": [
+            "KEYED PEPER@a1800 SALLT@a1500 _HVN_20@a50",
+            "NESSI PEPER@a1800 SALLT@a1500 _HVN_20@a50"
+          ]
+        },
+        "R20": {
+          "full_name": "RNAV Runway 20",
+          "type": "RNAV",
+          "waypoints": [
+            "SOARS SORRY GUUMP@a2600 ELLVS@a1700 YERNU@a920 _HVN_2@a50",
+            "HFD GUUMP@a2600 ELLVS@a1700 YERNU@a920 _HVN_2@a50"
+          ]
+        }
+      },
+      "departure_routes": {
+        "2": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "route": "BHAVN1",
+            "waypoints": "_HVN_20 _HVN_2 #20"
+          }
+        },
+        "20": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "route": "BHAVN1",
+            "waypoints": "_HVN_2 _HVN_20 #200"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KERI",
+          "exit": "COATE",
+          "route": "COATE Q436 RAAKK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBOS",
+          "exit": "BDR",
+          "route": "BDR MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KPVD",
+          "exit": "MAD",
+          "route": "MAD CARLD V188 GON V374 MINNK PVD"	
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTEB",
+          "exit": "CMK",
+          "route": "CMK V623 SAX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "BGR",
+          "exit": "HTO",
+          "route": "HTO V308 GON T320 GDM T314 ENE T295 BGR BGR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KTPA",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KRSW",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY Q97 SAWED Q64 GUILD Q409 PUPYY CYNTA SHFTY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KBNA",
+          "exit": "SOARS",
+          "route": "SOARS RONGE PWL BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTTN",
+          "exit": "BEADS",
+          "route": "BEADS V139 BRIGS JIIMS3"
+        }
+      ],
+      "elevation": 12,
+      "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
+        "COATE": "North",
+        "DEEZZ": "North",
+        "DPK": "South",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South",
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
+      },
+      "location": "KHVN"
+    },
     "KISP": {
+      "approaches": {
+        "R5R": {
+          "full_name": "RNAV Runway 15R",
+          "type": "RNAV",
+          "waypoints": [
+              "CCC FORMU@a2000 ZIVUX@a1600 WENGA N040.48.07.275,W073.06.25.784@a50"
+          ]
+        },
+        "I24": {
+          "full_name": "ILS Runway 24",
+          "type": "ILS",
+          "waypoints": [
+              "CCC CORAM@a2000 RIZER@a1400 N040.48.07.728,W073.05.41.070@a50"
+          ]
+        },
+        "R24": {
+          "full_name": "RNAV Runway 24",
+          "type": "RNAV",
+          "waypoints": [
+              "CCC CORAM@a2000 UKEGE@a1400 N040.48.07.728,W073.05.41.070@a50"
+          ]
+        },
+        "R3L": {
+          "full_name": "RNAV Runway 33L",
+          "type": "RNAV",
+          "waypoints": [
+              "CCC BJACK@a2000 JATEV@a1500 N040.47.32.215,W073.05.39.669@a50"
+          ]
+        },
+        "I6": {
+          "full_name": "ILS Runway 6",
+          "type": "ILS",
+          "waypoints": [
+              "CCC YOSUR@a1600 WILAK@a500 N040.47.19.677,W073.06.44.434@a50"
+          ]
+        },
+        "R6": {
+          "full_name": "RNAV Runway 6",
+          "type": "RNAV",
+          "waypoints": [
+              "CCC DEERY@a2000 YOSUR@a1600 N040.47.19.677,W073.06.44.434@a50"
+          ]
+        }
+      },
       "departure_routes": {
         "15R": {
-          "COATE,GAYEL,HAAYS,NEION": {
-            "cleared_altitude": 8000,
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_15R _ISP_15Ra _ISP_15Rb _ISP_15Rc #275 @"
+            "waypoints": "_ISP_15R _ISP_15Ra #150"
           }
         },
         "24": {
-          "COATE,GAYEL,HAAYS,NEION": {
-            "cleared_altitude": 8000,
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_24 _ISP_24a _ISP_24b _ISP_24c #275 @"
+            "waypoints": "_ISP_24 _ISP_24a #240"
           }
         },
         "33L": {
-          "COATE,GAYEL,HAAYS,NEION": {
-            "cleared_altitude": 8000,
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_33L _ISP_33La _ISP_33Lb _ISP_33Lc #275 @"
+            "waypoints": "_ISP_33L _ISP_33La #330"
           }
         },
         "6": {
-          "COATE,GAYEL,HAAYS,NEION": {
-            "cleared_altitude": 8000,
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_6 _ISP_6a _ISP_6b #270 @"
+            "waypoints": "_ISP_6 _ISP_6a #60"
           }
         }
       },
@@ -258,6 +469,105 @@
         {
           "airlines": [
             {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KMCO",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 SLOJO Q83 ROYCO Q85 LPERD SNFLD3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KFLL",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY KALDA Q133 CHIEZ Y291 MAJIK CUUDA2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KMMK",
+          "exit": "MAD",
+          "route": "MAD V1 HFD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KPOU",
+          "exit": "BDR",
+          "route": "BDR V91 STUBY TRESA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KBOS",
+          "exit": "MERIT",
+          "route": "MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KPVD",
+          "exit": "HTO",
+          "route": "HTO WACKY PVD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KALB",
+          "exit": "SOARS",
+          "route": "SOARS V387 CANAN ALB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 6000,
+          "destination": "KPNE",
+          "exit": "CCC",
+          "route": "CCC V16 DIXIE V276 ARD PNE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 4000,
+          "destination": "KHVN",
+          "exit": "BDR",
+          "route": "BDR HVN"
+        },
+        {
+          "airlines": [
+            {
               "icao": "WJA"
             },
             {
@@ -268,6 +578,28 @@
           "destination": "KSYR",
           "exit": "NEION",
           "route": "NEION J223 CORDS CFB V29 SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": 28000,
+          "destination": "KBWI",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY J174 ZIZZI ATR LAFLN MIIDY2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "altitude": 30000,
+          "destination": "KORF",
+          "exit": "CCC",
+          "route": "CCC V16 DIXIE V1 ORF"
         },
         {
           "airlines": [
@@ -300,16 +632,30 @@
           "route": "COATE LAAYK ULW WOZEE LINNG3"
         }
       ],
-      "departure_controller": "ISP_APP",
       "elevation": 87,
       "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
         "COATE": "North",
         "DEEZZ": "North",
+        "DPK": "South",
         "GAYEL": "North",
+        "GREKI": "East",
         "HAAYS": "North",
-        "NEION": "North"
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South",
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
       },
-      "location": "N040.47.50.068,W073.06.01.148"
+      "location": "N040.47.50.068,W073.06.01.148",
+      "tower_list": 3
     },
     "KJFK": {
       "approaches": {
@@ -1545,6 +1891,7 @@
           ]
         },
         "cleared_altitude": 11000,
+        "cruise_altitude": 39000,
         "initial_altitude": 12000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -1557,19 +1904,205 @@
     "Intra-TRACON": [
       {
         "airlines": {
-          "KFRG": [
+          "KISP": [
             {
-              "airport": "KHVN",
-              "icao": "LXJ"
-            },
-            {
-              "airport": "KHVN",
+              "airport": "KACK",
               "icao": "DPJ"
             },
             {
-              "airport": "KTEB",
+              "airport": "KHYA",
               "icao": "LXJ"
             },
+            {
+              "airport": "KBOS",
+              "icao": "NKS"
+            }
+          ]
+        },
+        "cleared_altitude": 10000,
+        "cruise_altitude": 14000,
+        "initial_altitude": 10000,
+        "initial_controller": "BOS_E_CTR",
+        "initial_speed": 250,
+        "route": "/. HTO V46 CCC ISP",
+        "runway_waypoints": null,
+        "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808 @ HTO CCC ISP"
+      },
+      {
+        "airlines": {
+          "KHVN": [
+            {
+              "airport": "KBOS",
+              "icao": "DPJ"
+            },
+            {
+              "airport": "KAUG",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMHT",
+              "icao": "LXJ"
+            }
+          ]
+        },
+        "cleared_altitude": 10000,
+        "cruise_altitude": 14000,
+        "initial_altitude": 10000,
+        "initial_controller": "BOS_E_CTR",
+        "initial_speed": 250,
+        "route": "/. HVN",
+        "runway_waypoints": null,
+        "waypoints": "HFD N041.33.29.632,W072.36.20.511 @ HVN"
+      },
+      {
+        "airlines": {
+          "KISP": [
+            {
+              "airport": "KBDL",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "cleared_altitude": 8000,
+        "cruise_altitude": 8000,
+        "initial_altitude": 8000,
+        "initial_controller": "BOS_E_CTR",
+        "initial_speed": 250,
+        "route": "/. CCC ISP",
+        "runway_waypoints": null,
+        "waypoints": "N041.28.15.080,W072.08.52.040 SALEM @ CCC ISP"
+      },
+      {
+        "airlines": {
+          "KISP": [
+            {
+              "airport": "KHFD",
+              "icao": "DPJ"
+            },
+            {
+              "airport": "KPSM",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KMHT",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KBGR",
+              "icao": "LXJ"
+            }
+          ]
+        },
+        "cleared_altitude": 10000,
+        "cruise_altitude": 10000,
+        "initial_altitude": 10000,
+        "initial_controller": "BOS_E_CTR",
+        "initial_speed": 250,
+        "route": "/. MAD V1 BELTT ISP",
+        "runway_waypoints": null,
+        "waypoints": "HFD N041.33.29.632,W072.36.20.511 @ MAD BELTT ISP"
+      },
+      {
+        "airlines": {
+          "KISP": [
+            {
+              "airport": "KACY",
+              "icao": "DPJ"
+            },
+            {
+              "airport": "KWRI",
+              "icao": "DPJ"
+            },
+            {
+              "airport": "KBWI",
+              "icao": "LXJ"
+            }
+          ]
+        },
+        "cleared_altitude": 5000,
+        "cruise_altitude": 5000,
+        "initial_altitude": 5000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 250,
+        "route": "/. JFK CCC ISP",
+        "runway_waypoints": null,
+        "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI @ JFK CCC ISP"
+      },
+      {
+        "airlines": {
+          "KHVN": [
+            {
+              "airport": "KBWI",
+              "icao": "DPJ"
+            }
+          ]
+        },
+        "cleared_altitude": 7000,
+        "cruise_altitude": 27000,
+        "initial_altitude": 7000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 250,
+        "route": "/. SARDI V139 RICED KEYED HVN",
+        "runway_waypoints": null,
+        "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131 @ SARDI RICED KEYED HVN"
+      },
+      {
+        "airlines": {
+          "KHVN": [
+            {
+              "airport": "KGON",
+              "icao": "LXJ"
+            }
+          ]
+        },
+        "cleared_altitude": 10000,
+        "cruise_altitude": 10000,
+        "initial_altitude": 10000,
+        "initial_controller": "BOS_E_CTR",
+        "initial_speed": 250,
+        "route": "/. CREAM HVN",
+        "runway_waypoints": null,
+        "waypoints": "GON N041.17.25.349,W072.10.01.803 @ CREAM HVN"
+      },
+      {
+        "airlines": {
+          "KHVN": [
+            {
+              "airport": "KHPN",
+              "icao": "LXJ"
+            }
+          ]
+        },
+        "cleared_altitude": 5000,
+        "cruise_altitude": 5000,
+        "initial_altitude": 5000,
+        "initial_controller": "LGA_DEP",
+        "initial_speed": 250,
+        "route": "/. DENNA HVN",
+        "runway_waypoints": null,
+        "waypoints": "N041.17.24.607,W073.43.06.291 CMK @ DENNA HVN"
+      },
+      {
+        "airlines": {
+          "KHVN": [
+            {
+              "airport": "KLGA",
+              "icao": "LXJ"
+            }
+          ]
+        },
+        "cleared_altitude": 5000,
+        "cruise_altitude": 5000,
+        "initial_altitude": 5000,
+        "initial_controller": "LGA_DEP",
+        "initial_speed": 250,
+        "route": "/. BDR HVN",
+        "runway_waypoints": null,
+        "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747 @ BDR HVN"
+      },
+      {
+        "airlines": {
+          "KFRG": [
             {
               "airport": "KALB",
               "icao": "EJA"
@@ -1577,26 +2110,19 @@
           ],
           "KJFK": [
             {
-              "airport": "KLGA",
-              "icao": "DPJ"
-            },
-            {
-              "airport": "KEWR",
-              "icao": "EJA"
-            },
-            {
               "airport": "KALB",
               "icao": "JIA"
             }
           ]
         },
-        "cleared_altitude": 4000,
-        "initial_altitude": 4000,
-        "initial_controller": "ISP_APP",
+        "cleared_altitude": 10000,
+        "cruise_altitude": 16000,
+        "initial_altitude": 9000,
+        "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. DPK",
         "runway_waypoints": null,
-        "waypoints": "BELTT N040.59.14.338,W073.03.42.198 @ DPK"
+        "waypoints": "N041.46.50.426,W073.20.24.261 N041.39.56.516,W073.19.39.025 @ DPK"
       },
       {
         "airlines": {
@@ -1889,6 +2415,99 @@
         "waypoints": "DOORE N040.58.27.742,W074.16.12.647 @ LENDY #135"
       }
     ],
+    "DENNA3/LOVES2": [
+      {
+        "airlines": {
+          "KHVN": [
+            {
+              "airport": "KBUF",
+              "icao": "N"
+            },
+            {
+              "airport": "KBNA",
+              "icao": "VXP"
+            },
+            {
+              "airport": "KBGR",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "cruise_altitude": 15000,
+        "initial_altitude": 8000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 250,
+        "route": "/. DENNA3",
+        "runway_waypoints": null,
+        "speed_restriction": 250,
+        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006 @ LOVES DENNA"
+      },
+      {
+        "airlines": {
+          "KISP": [
+            {
+              "airport": "KBUF",
+              "icao": "N"
+            },
+            {
+              "airport": "KACY",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KPHL",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KPNE",
+              "icao": "DPJ"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "cruise_altitude": 29000,
+        "initial_altitude": 8000,
+        "initial_controller": "NY_CTR",
+        "initial_speed": 250,
+        "route": "/. LOVES2",
+        "runway_waypoints": null,
+        "speed_restriction": 250,
+        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006 @ LOVES BDR CCC"
+      }
+    ],
+    "NELIE3": [
+      {
+        "airlines": {
+          "KISP": [
+            {
+              "airport": "KTPA",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KBWI",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KTEB",
+              "icao": "DPJ"
+            }
+          ]
+        },
+        "cleared_altitude": 5000,
+        "cruise_altitude": 22000,
+        "initial_altitude": 6000,
+        "initial_controller": "BOS_E_CTR",
+        "initial_speed": 250,
+        "route": "/. LOVES2",
+        "runway_waypoints": null,
+        "speed_restriction": 250,
+        "waypoints": "N041.28.15.767,W072.03.53.020 WANDI @ CCC"
+      }
+    ],
     "OWENZ": [
       {
         "airlines": {
@@ -1926,6 +2545,7 @@
           ]
         },
         "cleared_altitude": 9000,
+        "cruise_altitude": 41000,
         "initial_altitude": 11000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2070,16 +2690,6 @@
               "icao": "KLM"
             },
             {
-              "airport": "KBGR",
-              "fleet": "short",
-              "icao": "QXE"
-            },
-            {
-              "airport": "KPVD",
-              "fleet": "short",
-              "icao": "QXE"
-            },
-            {
               "airport": "OMDB",
               "fleet": "loww",
               "icao": "UAE"
@@ -2106,6 +2716,7 @@
           ]
         },
         "cleared_altitude": 12000,
+        "cruise_altitude": 36000,
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
@@ -2121,27 +2732,17 @@
         "airlines": {
           "KJFK": [
             {
-              "airport": "KBGR",
-              "fleet": "short",
-              "icao": "QXE"
+              "airport": "EGCC",
+              "fleet": "long",
+              "icao": "VIR"
             },
             {
-              "airport": "KPVD",
-              "fleet": "short",
-              "icao": "QXE"
+              "airport": "EGLL",
+              "icao": "BAW"
             },
             {
-              "airport": "KMHT",
-              "fleet": "short",
-              "icao": "FDX"
-            },
-            {
-              "airport": "KMHT",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KFMH",
-              "icao": "LXJ"
+              "airport": "EDDF",
+              "icao": "DLH"
             }
           ]
         },
@@ -2174,10 +2775,15 @@
       "scope_char": "M",
       "sector_id": "2M"
     },
-    "ISP_APP": {
-      "frequency": 120050,
-      "scope_char": "H",
-      "sector_id": "3H"
+    "HVN_TWR": {
+      "frequency": 124800,
+      "scope_char": "T",
+      "sector_id": "3P"
+    },
+    "ISP_TWR": {
+      "frequency": 119300,
+      "scope_char": "T",
+      "sector_id": "3C"
     },
     "JFK_APP": {
       "frequency": 128125,
@@ -2193,6 +2799,11 @@
       "frequency": 119100,
       "scope_char": "T",
       "sector_id": "2W"
+    },
+    "LGA_APP": {
+      "frequency": 120800,
+      "scope_char": "V",
+      "sector_id": "1V"
     },
     "LGA_DEP": {
       "frequency": 120400,
@@ -2246,6 +2857,8 @@
     "_FRG_1a": "N040.46.52.637,W073.24.58.809",
     "_FRG_32": "N040.43.20.436,W073.24.13.848",
     "_FRG_32a": "N040.45.28.921,W073.27.08.421",
+    "_HVN_20": "N041.15.22.055,W072.53.17.406",
+    "_HVN_2": "N041.16.16.341,W072.53.13.615",
     "_ISP_15R": "N040.48.05.462,W073.06.24.356",
     "_ISP_15Ra": "N040.45.33.934,W073.02.36.555",
     "_ISP_15Rb": "N040.49.18.755,W073.03.43.379",
@@ -2339,9 +2952,9 @@
       "controllers": [
         "JFK_DEP",
         "BOS_E_CTR",
-        "ISP_APP",
         "JFK_TWR",
         "LGA_DEP",
+        "LGA_APP",
         "NY_C_CTR",
         "NY_LE_DEP",
         "NY_LS_DEP"
@@ -2383,6 +2996,11 @@
           "category": "Southwest",
           "rate": 0,
           "runway": "13"
+        },
+        {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
         },
         {
           "airport": "KISP",
@@ -2408,6 +3026,14 @@
           "runway": "14"
         },
         {
+          "airport": "KISP",
+          "runway": "15R"
+        },
+        {
+          "airport": "KHVN",
+          "runway": "2"
+        },
+        {
           "airport": "KJFK",
           "runway": "13R"
         }
@@ -2419,11 +3045,20 @@
         },
         "Intra-TRACON": {
           "KFRG": 0,
+          "KHVN": 0,
+          "KISP": 0,
           "KJFK": 0
         },
         "LENDY8/IGN1": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "DENNA3/LOVES2": {
+          "KHVN": 0,
+          "KISP": 0
+        },
+        "NELIE3": {
+          "KISP": 0
         },
         "OWENZ": {
           "KJFK": 10
@@ -2439,8 +3074,10 @@
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
-        "ISP_APP",
+        "HVN_TWR",
+        "ISP_TWR",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_CTR",
         "NY_L_DEP"
@@ -2463,6 +3100,11 @@
           "category": "Southwest",
           "rate": 0,
           "runway": "13"
+        },
+        {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
         },
         {
           "airport": "KISP",
@@ -2488,6 +3130,14 @@
           "runway": "14"
         },
         {
+          "airport": "KISP",
+          "runway": "15R"
+        },
+        {
+          "airport": "KHVN",
+          "runway": "2"
+        },
+        {
           "airport": "KJFK",
           "runway": "13L"
         },
@@ -2503,11 +3153,20 @@
         },
         "Intra-TRACON": {
           "KFRG": 0,
+          "KHVN": 0,
+          "KISP": 0,
           "KJFK": 0
         },
         "LENDY8/IGN1": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "DENNA3/LOVES2": {
+          "KHVN": 0,
+          "KISP": 0
+        },
+        "NELIE3": {
+          "KISP": 0
         },
         "OWENZ": {
           "KJFK": 10
@@ -2523,8 +3182,10 @@
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
-        "ISP_APP",
+        "HVN_TWR",
+        "ISP_TWR",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_CTR",
         "NY_L_DEP"
@@ -2549,6 +3210,11 @@
           "runway": "13"
         },
         {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
+        },
+        {
           "airport": "KISP",
           "rate": 0,
           "runway": "15R"
@@ -2570,8 +3236,8 @@
       "controllers": [
         "JFK_DEP",
         "BOS_E_CTR",
-        "ISP_APP",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_C_CTR",
         "NY_LE_DEP",
@@ -2614,6 +3280,11 @@
           "category": "Southwest",
           "rate": 0,
           "runway": "22"
+        },
+        {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
         },
         {
           "airport": "KISP",
@@ -2639,6 +3310,14 @@
           "runway": "19"
         },
         {
+          "airport": "KISP",
+          "runway": "24"
+        },
+        {
+          "airport": "KHVN",
+          "runway": "20"
+        },
+        {
           "airport": "KJFK",
           "runway": "22L"
         },
@@ -2654,11 +3333,20 @@
         },
         "Intra-TRACON": {
           "KFRG": 0,
+          "KHVN": 0,
+          "KISP": 0,
           "KJFK": 0
         },
         "LENDY8/IGN1": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "DENNA3/LOVES2": {
+          "KHVN": 0,
+          "KISP": 0
+        },
+        "NELIE3": {
+          "KISP": 0
         },
         "OWENZ": {
           "KJFK": 10
@@ -2674,8 +3362,10 @@
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
-        "ISP_APP",
+        "HVN_TWR",
+        "ISP_TWR",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_CTR",
         "NY_L_DEP"
@@ -2700,6 +3390,11 @@
           "runway": "22"
         },
         {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
+        },
+        {
           "airport": "KISP",
           "rate": 0,
           "runway": "24"
@@ -2721,8 +3416,8 @@
       "controllers": [
         "JFK_DEP",
         "BOS_E_CTR",
-        "ISP_APP",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_C_CTR",
         "NY_LE_DEP",
@@ -2765,6 +3460,11 @@
           "category": "Southwest",
           "rate": 10,
           "runway": "31"
+        },
+        {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
         },
         {
           "airport": "KISP",
@@ -2790,6 +3490,14 @@
           "runway": "32"
         },
         {
+          "airport": "KISP",
+          "runway": "33L"
+        },
+        {
+          "airport": "KHVN",
+          "runway": "20"
+        },
+        {
           "airport": "KJFK",
           "runway": "31R"
         },
@@ -2805,11 +3513,20 @@
         },
         "Intra-TRACON": {
           "KFRG": 0,
+          "KHVN": 0,
+          "KISP": 0,
           "KJFK": 0
         },
         "LENDY8/IGN1": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "DENNA3/LOVES2": {
+          "KHVN": 0,
+          "KISP": 0
+        },
+        "NELIE3": {
+          "KISP": 0
         },
         "OWENZ": {
           "KJFK": 10
@@ -2825,8 +3542,10 @@
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
-        "ISP_APP",
+        "HVN_TWR",
+        "ISP_TWR",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_CTR",
         "NY_L_DEP"
@@ -2851,6 +3570,11 @@
           "runway": "31"
         },
         {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "20"
+        },
+        {
           "airport": "KISP",
           "rate": 0,
           "runway": "33L"
@@ -2872,8 +3596,8 @@
       "controllers": [
         "JFK_DEP",
         "BOS_E_CTR",
-        "ISP_APP",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_C_CTR",
         "NY_LE_DEP",
@@ -2918,6 +3642,11 @@
           "runway": "4"
         },
         {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "2"
+        },
+        {
           "airport": "KISP",
           "rate": 0,
           "runway": "6"
@@ -2941,6 +3670,14 @@
           "runway": "1"
         },
         {
+          "airport": "KISP",
+          "runway": "6"
+        },
+        {
+          "airport": "KHVN",
+          "runway": "2"
+        },
+        {
           "airport": "KJFK",
           "runway": "4R"
         },
@@ -2956,11 +3693,20 @@
         },
         "Intra-TRACON": {
           "KFRG": 0,
+          "KHVN": 0,
+          "KISP": 0,
           "KJFK": 0
         },
         "LENDY8/IGN1": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "DENNA3/LOVES2": {
+          "KHVN": 0,
+          "KISP": 0
+        },
+        "NELIE3": {
+          "KISP": 0
         },
         "OWENZ": {
           "KJFK": 10
@@ -2976,8 +3722,10 @@
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
-        "ISP_APP",
+        "HVN_TWR",
+        "ISP_TWR",
         "JFK_TWR",
+        "LGA_APP",
         "LGA_DEP",
         "NY_CTR",
         "NY_L_DEP"
@@ -3007,6 +3755,11 @@
           "runway": "6"
         },
         {
+          "airport": "KHVN",
+          "rate": 0,
+          "runway": "2"
+        },
+        {
           "airport": "KFRG",
           "rate": 0,
           "runway": "1"
@@ -3023,25 +3776,43 @@
     "ARD": "ARD",
     "BAYYS": "BAY",
     "BDR": "BDR",
+    "BEADS": "BEA",
     "BETTE": "BET",
+    "BIGGY": "BIG",
+    "BWZ": "BWZ",
+    "CCC": "CCC",
+    "CMK": "CMK",
     "COATE": "COA",
     "DEEZZ": "DEZ",
     "DEEZZ5": "DEZ",
     "DIXIE": "DIX",
+    "DPK": "DPK",
     "DQO": "DQO",
+    "ELIOT": "ELI",
     "FJC": "FJC",
     "GAYEL": "GAY",
     "GREKI": "GRE",
     "HAAYS": "HAY",
     "HAPIE": "HAP",
+    "HTO": "HTO",
+    "HUO": "HUO",
+    "JFK": "JFK",
+    "LANNA": "LAN",
+    "MAD": "MAD",
     "MERIT": "MER",
     "NEION": "NEI",
+    "NEWEL": "NWL",
+    "PARKE": "PAR",
     "RBV": "RBV",
     "RUUTH": "RUU",
+    "SAX": "SAX",
+    "SBJ": "SBJ",
     "SHIPP": "SHI",
+    "SOARS": "SOA",
     "STOEN": "STO",
     "WAVEY": "WAV",
-    "WHITE": "WHI"
+    "WHITE": "WHI",
+    "ZIMMZ": "ZIM"
   },
   "stars_maps": [
     {
@@ -3063,6 +3834,11 @@
       "group": 0,
       "label": "JFK31",
       "name": "N90 JFK - 31s"
+    },
+    {
+      "group": 0,
+      "label": "ISP",
+      "name": "N90 ISP - Video Map"
     },
     {
       "group": 1,
