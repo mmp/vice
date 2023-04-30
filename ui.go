@@ -63,6 +63,8 @@ var (
 		"Added scenarios for KJAX",
 		"Updated PHL scenarios for recent arrival changes",
 		"Fixed bug with localizer intercept that made aircraft hang in the air",
+		"Fixed a few bugs in the KJAX scenario",
+		"Added ISP and HVN departures and arrivals to the JFK_APP scenario",
 	}
 )
 
