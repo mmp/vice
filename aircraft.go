@@ -278,12 +278,20 @@ func (ac *Aircraft) updateAirspeed() {
 	}
 
 	if targetSpeed == 0 {
-		// But obey 250kts under 10,000'
+		// Otherwise, obey 250kts under 10,000'
 		if ac.Altitude < 10000 {
 			targetSpeed = min(ac.Performance.Speed.Cruise, 250)
 		} else {
 			// Assume climbing or descending
 			targetSpeed = ac.Performance.Speed.Cruise * 7 / 10
+		}
+
+		// Arrivals shouldn't accelerate unless a controller gave them that
+		// speed or there's a crossing restriction.
+		if ac.Approach != nil && float32(targetSpeed) > ac.IAS {
+			// If there's no crossing speed or controller-assigned speed and it's
+			// an arrival, then
+			return
 		}
 	}
 
