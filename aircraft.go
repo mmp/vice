@@ -400,7 +400,7 @@ func (ac *Aircraft) updateHeading() {
 		ap.Type == ILSApproach &&
 		ac.AssignedHeading != 0 &&
 		ac.AssignedHeading != ap.Heading() &&
-		headingDifference(float32(ap.Heading()), ac.Heading) < 40 /* allow quite some slop... */ {
+		headingDifference(float32(ap.Heading()), ac.Heading) < 45 /* allow quite some slop... */ {
 		// Estimate time to intercept.  Do this using nm coordinates
 		loc := ap.Line()
 		loc[0], loc[1] = ll2nm(loc[0]), ll2nm(loc[1])
