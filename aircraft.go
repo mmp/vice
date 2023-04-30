@@ -327,7 +327,7 @@ func (ac *Aircraft) updateAltitude() {
 	}
 	if ac.Altitude < 10000 {
 		// Have a slower baseline rate of descent on approach
-		descent = min(descent, 1500)
+		descent = min(descent, 2000)
 		// And reduce it based on airspeed as well
 		descent *= min(ac.IAS/250, 1)
 	}
