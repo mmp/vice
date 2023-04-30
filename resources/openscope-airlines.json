@@ -29316,6 +29316,24 @@
     }
   },
   {
+    "icao": "mxy",
+    "name": "Breeze Airways",
+    "callsign": {
+      "name": "Breeze",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "E190",
+          17
+        ]
+      ]
+    }
+  },
+  {
     "icao": "myx",
     "name": "SmartLynx Estonia",
     "callsign": {
@@ -43687,6 +43705,30 @@
         [
           "A320",
           20
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "vxp",
+    "name": "Alevo",
+    "callsign": {
+      "name": "Alevo",
+      "callsignFormats": [
+        "####",
+        "###",
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B38M",
+          8
+        ],
+        [
+          "B737",
+          7
         ]
       ]
     }
