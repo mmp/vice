@@ -1230,6 +1230,45 @@ func (sim *Sim) SpawnAircraft() {
 	}
 }
 
+var badCallsigns map[string]interface{} = map[string]interface{}{
+	// 9/11
+	"AAL11":  nil,
+	"UAL175": nil,
+	"AAL77":  nil,
+	"UAL93":  nil,
+
+	// Pilot suicide
+	"MAS17":   nil,
+	"MAS370":  nil,
+	"GWI18G":  nil,
+	"GWI9525": nil,
+	"MSR990":  nil,
+
+	// Hijackings
+	"FDX705":  nil,
+	"AFR8969": nil,
+
+	// Selected major crashes (leaning toward callsigns vice uses or is
+	// likely to use in the future, via
+	// https://en.wikipedia.org/wiki/List_of_deadliest_aircraft_accidents_and_incidents
+	"PAA1736": nil,
+	"KLM4805": nil,
+	"JAL123":  nil,
+	"AIC182":  nil,
+	"AAL191":  nil,
+	"PAA103":  nil,
+	"KAL007":  nil,
+	"AAL587":  nil,
+	"CAL140":  nil,
+	"TWA800":  nil,
+	"SWR111":  nil,
+	"KAL801":  nil,
+	"AFR447":  nil,
+	"CAL611":  nil,
+	"LOT5055": nil,
+	"ICE001":  nil,
+}
+
 func sampleAircraft(icao, fleet string) *Aircraft {
 	al, ok := database.Airlines[icao]
 	if !ok {
@@ -1270,22 +1309,28 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 
 	// random callsign
 	callsign := strings.ToUpper(icao)
-	format := "####"
-	if len(al.Callsign.CallsignFormats) > 0 {
-		format = Sample(al.Callsign.CallsignFormats)
-	}
 	for {
-		id := ""
-		for _, ch := range format {
-			switch ch {
-			case '#':
-				id += fmt.Sprintf("%d", rand.Intn(10))
-			case '@':
-				id += string(rune('A' + rand.Intn(26)))
+		format := "####"
+		if len(al.Callsign.CallsignFormats) > 0 {
+			format = Sample(al.Callsign.CallsignFormats)
+		}
+		for {
+			id := ""
+			for _, ch := range format {
+				switch ch {
+				case '#':
+					id += fmt.Sprintf("%d", rand.Intn(10))
+				case '@':
+					id += string(rune('A' + rand.Intn(26)))
+				}
+			}
+			if id != "0" {
+				callsign += id
+				break
 			}
 		}
-		if id != "0" {
-			callsign += id
+		// Only break and accept the callsign if it's not a bad one..
+		if _, found := badCallsigns[callsign]; !found {
 			break
 		}
 	}
