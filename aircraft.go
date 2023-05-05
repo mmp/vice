@@ -200,7 +200,7 @@ func (ac *Aircraft) Update() {
 	ac.updateWaypoints()
 }
 
-func (ac *Aircraft) GoAround() {
+func (ac *Aircraft) GoAround(sim *Sim) {
 	ac.AssignedHeading = int(ac.Heading)
 	ac.AssignedSpeed = 0
 
@@ -215,6 +215,12 @@ func (ac *Aircraft) GoAround() {
 	ac.OnFinal = false
 
 	ac.Waypoints = nil // so it isn't deleted from the sim
+
+	// If it was handed off to tower, hand it back to us
+	if ac.TrackingController != "" && ac.TrackingController != sim.Callsign() {
+		ac.InboundHandoffController = sim.Callsign()
+		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+	}
 }
 
 func (ac *Aircraft) updateAirspeed() {

@@ -634,7 +634,7 @@ func (sim *Sim) updateState() {
 			dist := nmdistance2ll(ac.Position, ac.Waypoints[0].Location)
 			if dist < 0.25 {
 				delete(sim.willGoAround, ac)
-				ac.GoAround()
+				ac.GoAround(sim)
 				pilotResponse(ac.Callsign, "Going around")
 			}
 		}
