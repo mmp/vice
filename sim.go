@@ -612,6 +612,9 @@ func (sim *Sim) updateState() {
 				ac.OutboundHandoffController = ""
 				eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
 				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
+
+				// Climb to cruise altitude...
+				ac.AssignedAltitude = ac.FlightPlan.Altitude
 			}
 			delete(sim.handoffs, callsign)
 		}
