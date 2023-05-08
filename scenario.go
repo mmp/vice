@@ -280,6 +280,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 // ScenarioGroup
 
 func (sg *ScenarioGroup) Locate(s string) (Point2LL, bool) {
+	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if ap, ok := sg.Airports[s]; ok {
 		return ap.Location, true
@@ -302,8 +303,11 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 	// Do these first!
 	sg.Fixes = make(map[string]Point2LL)
 	for fix, latlong := range sg.FixesStrings {
+		fix := strings.ToUpper(fix)
 		if pos, ok := sg.Locate(latlong); !ok {
 			e.ErrorString("unknown location \"%s\" specified for fix \"%s\"", latlong, fix)
+		} else if _, ok := sg.Fixes[fix]; ok {
+			e.ErrorString("fix \"%s\" has multiple definitions", fix)
 		} else {
 			sg.Fixes[fix] = pos
 		}
