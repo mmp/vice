@@ -31,7 +31,6 @@ var (
 )
 
 type SimConnectionConfiguration struct {
-	numAircraft        int32
 	departureChallenge float32
 	goAroundRate       float32
 	scenario           *Scenario
@@ -45,7 +44,6 @@ type SimConnectionConfiguration struct {
 }
 
 func (ssc *SimConnectionConfiguration) Initialize() {
-	ssc.numAircraft = 30
 	ssc.departureChallenge = 0.25
 	ssc.goAroundRate = 0.10
 	ssc.ResetScenarioGroup()
@@ -139,8 +137,6 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		}
 		imgui.EndCombo()
 	}
-
-	imgui.InputIntV("Total Aircraft", &ssc.numAircraft, 1, 100, 0)
 
 	if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{500, 0}, 0.) {
 		imgui.TableNextRow()
@@ -324,11 +320,10 @@ type Sim struct {
 
 	SerializeTime time.Time // for updating times on deserialize
 
-	currentTime       time.Time // this is our fake time--accounting for pauses & simRate..
-	lastUpdateTime    time.Time // this is w.r.t. true wallclock time
-	SimRate           float32
-	Paused            bool
-	remainingLaunches int
+	currentTime    time.Time // this is our fake time--accounting for pauses & simRate..
+	lastUpdateTime time.Time // this is w.r.t. true wallclock time
+	SimRate        float32
+	Paused         bool
 
 	eventsId EventSubscriberId
 
@@ -375,7 +370,6 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 
 		currentTime:        time.Now(),
 		lastUpdateTime:     time.Now(),
-		remainingLaunches:  int(ssc.numAircraft),
 		eventsId:           eventStream.Subscribe(),
 		SimRate:            1,
 		DepartureChallenge: ssc.departureChallenge,
@@ -1279,7 +1273,6 @@ func (sim *Sim) SpawnAircraft() {
 		}
 		ac.Waypoints = ac.Waypoints[1:]
 
-		sim.remainingLaunches--
 		eventStream.Post(&AddedAircraftEvent{ac: ac})
 	}
 
