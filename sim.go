@@ -196,6 +196,17 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 	if len(scenario.DepartureRunways) > 0 {
 		imgui.Separator()
 		imgui.Text("Departures")
+
+		sumRates := 0
+		for _, runwayRates := range ssc.departureRates {
+			for _, categoryRates := range runwayRates {
+				for _, rate := range categoryRates {
+					sumRates += int(*rate)
+				}
+			}
+		}
+		imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
+
 		imgui.SliderFloatV("Sequencing challenge", &ssc.departureChallenge, 0, 1, "%.02f", 0)
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
@@ -242,15 +253,18 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		// Figure out how many unique airports we've got for AAR columns in the table
 		// and also sum up the overall arrival rate
 		allAirports := make(map[string]interface{})
+		sumRates := 0
 		for _, agr := range ssc.arrivalGroupRates {
-			for ap := range agr {
+			for ap, rate := range agr {
 				allAirports[ap] = nil
+				sumRates += int(*rate)
 			}
 		}
 		nAirports := len(allAirports)
 
 		imgui.Separator()
 		imgui.Text("Arrivals")
+		imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
 		imgui.SliderFloatV("Go around probability", &ssc.goAroundRate, 0, 1, "%.02f", 0)
 
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
