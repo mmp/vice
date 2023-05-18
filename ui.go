@@ -166,7 +166,7 @@ func drawUI(platform Platform) {
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
 		if imgui.BeginMenu("Simulation") {
-			if sim.Paused() {
+			if sim.IsPaused() {
 				if imgui.MenuItem("Resume") {
 					sim.TogglePause()
 				}
