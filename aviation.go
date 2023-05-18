@@ -382,6 +382,12 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			} else {
 				waypoints[len(waypoints)-1].Heading = hdg
 			}
+		} else if field == "*" {
+			if len(waypoints) == 0 {
+				return nil, fmt.Errorf("No previous waypoint before delete aircraft specifier")
+			}
+			waypoints[len(waypoints)-1].Commands =
+				append(waypoints[len(waypoints)-1].Commands, WaypointCommandDelete)
 		} else {
 			wp := Waypoint{}
 			for i, f := range strings.Split(field, "@") {
