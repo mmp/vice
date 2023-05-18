@@ -258,9 +258,7 @@ func (ac *Aircraft) updateAirspeed() {
 	}
 
 	if targetSpeed == 0 && ac.AssignedSpeed != 0 {
-		// Use the controller-assigned speed, but only as far as the
-		// aircraft's capabilities.
-		targetSpeed = clamp(ac.AssignedSpeed, perf.Speed.Min, perf.Speed.Max)
+		targetSpeed = ac.AssignedSpeed
 	}
 
 	if targetSpeed == 0 && ac.CrossingSpeed != 0 {
@@ -301,6 +299,9 @@ func (ac *Aircraft) updateAirspeed() {
 		}
 	}
 
+	// All that said and done, stay within the aircraft's capabilities
+	targetSpeed = clamp(targetSpeed, perf.Speed.Min, perf.Speed.Max)
+
 	// Finally, adjust IAS subject to the capabilities of the aircraft.
 	if ac.IAS+1 < float32(targetSpeed) {
 		accel := ac.Performance.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
@@ -308,12 +309,10 @@ func (ac *Aircraft) updateAirspeed() {
 	} else if ac.IAS-1 > float32(targetSpeed) {
 		decel := ac.Performance.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
-	} else {
+	} else if ac.AssignedAltitudeAfterSpeed != 0 {
 		// at the requested speed
-		if ac.AssignedAltitudeAfterSpeed != 0 {
-			ac.AssignedAltitude = ac.AssignedAltitudeAfterSpeed
-			ac.AssignedAltitudeAfterSpeed = 0
-		}
+		ac.AssignedAltitude = ac.AssignedAltitudeAfterSpeed
+		ac.AssignedAltitudeAfterSpeed = 0
 	}
 }
 
