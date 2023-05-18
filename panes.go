@@ -355,12 +355,18 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *AddedAircraftEvent:
-			if (fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac)) {
+			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign() {
+				possiblyAdd(v.ac)
+			} else if v.ac.TrackingController == "" &&
+				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
 				possiblyAdd(v.ac)
 			}
 
 		case *ModifiedAircraftEvent:
-			if (fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac)) {
+			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign() {
+				possiblyAdd(v.ac)
+			} else if v.ac.TrackingController == "" &&
+				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
 				possiblyAdd(v.ac)
 			}
 
