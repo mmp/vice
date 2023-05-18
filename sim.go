@@ -37,6 +37,11 @@ type SimConnectionConfiguration struct {
 	scenario           *Scenario
 	controller         *Controller
 	validControllers   map[string]*Controller
+
+	// airport -> runway -> category -> rate
+	departureRates map[string]map[string]map[string]*int32
+	// arrival group -> airport -> rate
+	arrivalGroupRates map[string]map[string]*int32
 }
 
 func (ssc *SimConnectionConfiguration) Initialize() {
@@ -47,12 +52,13 @@ func (ssc *SimConnectionConfiguration) Initialize() {
 }
 
 func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
-	ssc.scenario = scenarioGroup.Scenarios[scenarioGroup.DefaultScenarioGroup]
 	ssc.validControllers = make(map[string]*Controller)
 	for _, sc := range scenarioGroup.Scenarios {
 		ssc.validControllers[sc.Callsign] = scenarioGroup.ControlPositions[sc.Callsign]
 	}
 	ssc.controller = scenarioGroup.ControlPositions[scenarioGroup.DefaultController]
+
+	ssc.SetScenario(scenarioGroup.DefaultScenarioGroup)
 
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 		if stars, ok := p.(*STARSPane); ok {
@@ -68,6 +74,20 @@ func (ssc *SimConnectionConfiguration) SetScenario(name string) {
 	if !ok {
 		lg.Errorf("%s: called SetScenario with an unknown scenario name???", name)
 		return
+	}
+
+	ssc.arrivalGroupRates = DuplicateMap(ssc.scenario.ArrivalGroupDefaultRates)
+
+	ssc.departureRates = make(map[string]map[string]map[string]*int32)
+	for _, rwy := range ssc.scenario.DepartureRunways {
+		if _, ok := ssc.departureRates[rwy.Airport]; !ok {
+			ssc.departureRates[rwy.Airport] = make(map[string]map[string]*int32)
+		}
+		if _, ok := ssc.departureRates[rwy.Airport][rwy.Runway]; !ok {
+			ssc.departureRates[rwy.Airport][rwy.Runway] = make(map[string]*int32)
+		}
+		ssc.departureRates[rwy.Airport][rwy.Runway][rwy.Category] = new(int32)
+		*ssc.departureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
 	}
 
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
@@ -126,18 +146,25 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 
-		if len(scenario.DepartureRunways) > 0 {
+		if len(ssc.departureRates) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Departing:")
 			imgui.TableNextColumn()
 
-			d := SortedMapKeys(scenario.nextDepartureSpawn)
-			// Only list ones that are actually active.
-			d = FilterSlice(d, func(rwy string) bool {
-				return scenario.runwayDepartureRate(rwy) > 0
-			})
-			imgui.Text(strings.Join(d, ", "))
+			var runways []string
+			for airport, runwayRates := range ssc.departureRates {
+				for runway, categoryRates := range runwayRates {
+					for _, rate := range categoryRates {
+						if *rate > 0 {
+							runways = append(runways, airport+"/"+runway)
+							break
+						}
+					}
+				}
+			}
+			sort.Strings(runways)
+			imgui.Text(strings.Join(runways, ", "))
 		}
 
 		if len(scenario.ArrivalRunways) > 0 {
@@ -179,31 +206,43 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			imgui.TableSetupColumn("ADR")
 			imgui.TableHeadersRow()
 
-			for i, rwy := range scenario.DepartureRunways {
-				imgui.PushID(rwy.Airport + rwy.Runway + rwy.Category)
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text(rwy.Airport)
-				imgui.TableNextColumn()
-				imgui.Text(rwy.Runway)
-				imgui.TableNextColumn()
-				if rwy.Category == "" {
-					imgui.Text("(All)")
-				} else {
-					imgui.Text(rwy.Category)
+			for _, airport := range SortedMapKeys(ssc.departureRates) {
+				imgui.PushID(airport)
+				for _, runway := range SortedMapKeys(ssc.departureRates[airport]) {
+					imgui.PushID(runway)
+					for _, category := range SortedMapKeys(ssc.departureRates[airport][runway]) {
+						rate := ssc.departureRates[airport][runway][category]
+						imgui.PushID(category)
+
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(airport)
+						imgui.TableNextColumn()
+						imgui.Text(runway)
+						imgui.TableNextColumn()
+						if category == "" {
+							imgui.Text("(All)")
+						} else {
+							imgui.Text(category)
+						}
+						imgui.TableNextColumn()
+						imgui.InputIntV("##adr", rate, 0, 120, 0)
+
+						imgui.PopID()
+					}
+					imgui.PopID()
 				}
-				imgui.TableNextColumn()
-				imgui.InputIntV("##adr", &scenario.DepartureRunways[i].Rate, 0, 120, 0)
 				imgui.PopID()
 			}
 			imgui.EndTable()
 		}
 	}
 
-	if len(scenario.ArrivalGroupRates) > 0 {
-		// Figure out how many unique airports we've got for AAR columns in the table...
+	if len(ssc.arrivalGroupRates) > 0 {
+		// Figure out how many unique airports we've got for AAR columns in the table
+		// and also sum up the overall arrival rate
 		allAirports := make(map[string]interface{})
-		for _, agr := range scenario.ArrivalGroupRates {
+		for _, agr := range ssc.arrivalGroupRates {
 			for ap := range agr {
 				allAirports[ap] = nil
 			}
@@ -223,14 +262,14 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 			}
 			imgui.TableHeadersRow()
 
-			for _, group := range SortedMapKeys(scenario.ArrivalGroupRates) {
+			for _, group := range SortedMapKeys(ssc.arrivalGroupRates) {
 				imgui.PushID(group)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(group)
 				for _, ap := range sortedAirports {
 					imgui.TableNextColumn()
-					if rate, ok := scenario.ArrivalGroupRates[group][ap]; ok {
+					if rate, ok := ssc.arrivalGroupRates[group][ap]; ok {
 						imgui.InputIntV("##aar-"+ap, rate, 0, 120, 0)
 					}
 				}
@@ -285,6 +324,24 @@ type Sim struct {
 	lastSimUpdate   time.Time
 
 	showSettings bool
+
+	// airport -> runway -> category -> rate
+	DepartureRates map[string]map[string]map[string]*int32
+	// arrival group -> airport -> rate
+	ArrivalGroupRates map[string]map[string]*int32
+
+	// The same runway may be present multiple times in DepartureRates,
+	// with different categories. However, we want to make sure that we
+	// don't spawn two aircraft on the same runway at the same time (or
+	// close to it).  Therefore, here we track a per-runway "when's the
+	// next time that we will spawn *something* from the runway" time.
+	// When the time is up, we'll figure out which specific category to
+	// use...
+	// airport -> runway -> time
+	NextDepartureSpawn map[string]map[string]time.Time
+
+	// Key is arrival group name
+	NextArrivalSpawn map[string]time.Time
 }
 
 func NewSim(ssc SimConnectionConfiguration) *Sim {
@@ -293,9 +350,11 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 	sim := &Sim{
 		scenario: ssc.scenario,
 
-		aircraft: make(map[string]*Aircraft),
-		handoffs: make(map[string]time.Time),
-		metar:    make(map[string]*METAR),
+		aircraft:          make(map[string]*Aircraft),
+		handoffs:          make(map[string]time.Time),
+		metar:             make(map[string]*METAR),
+		DepartureRates:    DuplicateMap(ssc.departureRates),
+		ArrivalGroupRates: DuplicateMap(ssc.arrivalGroupRates),
 
 		currentTime:        time.Now(),
 		lastUpdateTime:     time.Now(),
@@ -335,6 +394,12 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		}
 	}
 
+	sim.SetInitialSpawnTimes()
+
+	return sim
+}
+
+func (sim *Sim) SetInitialSpawnTimes() {
 	// Randomize next spawn time for departures and arrivals; may be before
 	// or after the current time.
 	randomSpawn := func(rate int) time.Time {
@@ -346,18 +411,33 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		return time.Now().Add(time.Duration(delta) * time.Second)
 	}
 
-	for group, rates := range sim.scenario.ArrivalGroupRates {
+	sim.NextArrivalSpawn = make(map[string]time.Time)
+	for group, rates := range sim.ArrivalGroupRates {
 		rateSum := 0
 		for _, rate := range rates {
 			rateSum += int(*rate)
 		}
-		sim.scenario.nextArrivalSpawn[group] = randomSpawn(rateSum)
-	}
-	for rwy := range sim.scenario.nextDepartureSpawn {
-		sim.scenario.nextDepartureSpawn[rwy] = randomSpawn(sim.scenario.runwayDepartureRate(rwy))
+		sim.NextArrivalSpawn[group] = randomSpawn(rateSum)
 	}
 
-	return sim
+	sim.NextDepartureSpawn = make(map[string]map[string]time.Time)
+	for airport, runwayRates := range sim.DepartureRates {
+		spawn := make(map[string]time.Time)
+
+		for runway, categoryRates := range runwayRates {
+			rateSum := 0
+			for _, rate := range categoryRates {
+				rateSum += int(*rate)
+			}
+			if rateSum > 0 {
+				spawn[runway] = randomSpawn(rateSum)
+			}
+		}
+
+		if len(spawn) > 0 {
+			sim.NextDepartureSpawn[airport] = spawn
+		}
+	}
 }
 
 func (sim *Sim) Prespawn() {
@@ -1146,6 +1226,20 @@ func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
 ///////////////////////////////////////////////////////////////////////////
 // Spawning aircraft
 
+func sampleRateMap(rates map[string]*int32) (string, int) {
+	// Choose randomly in proportion to the rates in the map
+	rateSum := 0
+	var result string
+	for item, rate := range rates {
+		rateSum += int(*rate)
+		// Weighted reservoir sampling...
+		if rand.Float32() < float32(int(*rate))/float32(rateSum) {
+			result = item
+		}
+	}
+	return result, rateSum
+}
+
 func (sim *Sim) SpawnAircraft() {
 	now := sim.CurrentTime()
 
@@ -1182,52 +1276,45 @@ func (sim *Sim) SpawnAircraft() {
 		return time.Duration(seconds * float32(time.Second))
 	}
 
-	for group, rates := range sim.scenario.ArrivalGroupRates {
-		if sim.remainingLaunches > 0 && now.After(sim.scenario.nextArrivalSpawn[group]) {
-			// Choose arrival airport randomly in proportion to the airport
-			// arrival rates in the arrival group.
-			rateSum := 0
-			var arrivalAirport string
-			for airport, rate := range rates {
-				rateSum += int(*rate)
-				// Weighted reservoir sampling...
-				if rand.Float32() < float32(int(*rate))/float32(rateSum) {
-					arrivalAirport = airport
-				}
-			}
+	for group, airportRates := range sim.ArrivalGroupRates {
+		if now.After(sim.NextArrivalSpawn[group]) {
+			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
 			if ac := sim.SpawnArrival(arrivalAirport, group); ac != nil {
 				ac.FlightPlan.ArrivalAirport = arrivalAirport
 				addAircraft(ac)
-				sim.scenario.nextArrivalSpawn[group] = now.Add(randomWait(rateSum))
+				sim.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
 	}
 
-	for rwy, nextSpawn := range sim.scenario.nextDepartureSpawn {
-		if sim.remainingLaunches > 0 && now.After(nextSpawn) {
-			// So we're going to launch from this runway but there may be
-			// multiple configs with different rates on this runway. So now
-			// we'll choose one with probability proportional to its
-			// rate...
-			idx := SampleWeighted(sim.scenario.DepartureRunways,
-				func(r ScenarioGroupDepartureRunway) int {
-					if r.Airport+"/"+r.Runway != rwy {
-						return 0
-					}
-					return int(r.Rate)
-				})
-			if idx == -1 {
-				lg.Errorf("%s: couldn't find a matching runway for spawning departure?", rwy)
+	for airport, runwayTimes := range sim.NextDepartureSpawn {
+		for runway, spawnTime := range runwayTimes {
+			if !now.After(spawnTime) {
 				continue
 			}
 
-			airportName := sim.scenario.DepartureRunways[idx].Airport
-			ap := scenarioGroup.Airports[airportName]
+			// Figure out which category to launch
+			category, rateSum := sampleRateMap(sim.DepartureRates[airport][runway])
+			if rateSum == 0 {
+				lg.Errorf("%s/%s: couldn't find a matching runway for spawning departure?", airport, runway)
+				continue
+			}
+
+			ap := scenarioGroup.Airports[airport]
+			idx := FindIf(sim.scenario.DepartureRunways,
+				func(r ScenarioGroupDepartureRunway) bool {
+					return r.Airport == airport && r.Runway == runway && r.Category == category
+				})
+			if idx == -1 {
+				lg.Errorf("%s/%s/%s: couldn't find airport/runway/category for spawning departure. rates %s dep runways %s", airport, runway, category, spew.Sdump(sim.DepartureRates[airport][runway]), spew.Sdump(sim.scenario.DepartureRunways))
+				continue
+			}
+
 			if ac := sim.SpawnDeparture(ap, &sim.scenario.DepartureRunways[idx]); ac != nil {
-				ac.FlightPlan.DepartureAirport = airportName
+				ac.FlightPlan.DepartureAirport = airport
 				addAircraft(ac)
-				sim.scenario.nextDepartureSpawn[rwy] = now.Add(randomWait(sim.scenario.runwayDepartureRate(rwy)))
+				sim.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 			}
 		}
 	}

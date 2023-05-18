@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"time"
 )
 
 type ScenarioGroup struct {
@@ -79,11 +78,8 @@ type Scenario struct {
 	Wind        Wind     `json:"wind"`
 	Controllers []string `json:"controllers"`
 
-	// Map from arrival group name to map from airport name to rate...
-	ArrivalGroupRates map[string]map[string]*int32 `json:"arrivals"`
-
-	// Key is arrival group name
-	nextArrivalSpawn map[string]time.Time
+	// Map from arrival group name to map from airport name to default rate...
+	ArrivalGroupDefaultRates map[string]map[string]*int32 `json:"arrivals"`
 
 	ApproachAirspace       []AirspaceVolume `json:"-"`
 	DepartureAirspace      []AirspaceVolume `json:"-"`
@@ -94,22 +90,13 @@ type Scenario struct {
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
 	DefaultMap string `json:"default_map"`
-
-	// The same runway may be present multiple times in DepartureRunways,
-	// with different Category values. However, we want to make sure that
-	// we don't spawn two aircraft on the same runway at the same time (or
-	// close to it).  Therefore, here we track a per-runway "when's the
-	// next time that we will spawn *something* from the runway" time.
-	// When the time is up, we'll figure out which specific matching entry
-	// in DepartureRunways to use...
-	nextDepartureSpawn map[string]time.Time
 }
 
 type ScenarioGroupDepartureRunway struct {
-	Airport  string `json:"airport"`
-	Runway   string `json:"runway"`
-	Category string `json:"category,omitempty"`
-	Rate     int32  `json:"rate"`
+	Airport     string `json:"airport"`
+	Runway      string `json:"runway"`
+	Category    string `json:"category,omitempty"`
+	DefaultRate int32  `json:"rate"`
 
 	lastDeparture *Departure
 	exitRoutes    map[string]ExitRoute // copied from DepartureRunway
@@ -144,16 +131,6 @@ func (s *Scenario) ArrivalAirports() []string {
 		m[rwy.Airport] = nil
 	}
 	return SortedMapKeys(m)
-}
-
-func (s *Scenario) runwayDepartureRate(ar string) int {
-	r := 0
-	for _, rwy := range s.DepartureRunways {
-		if ar == rwy.Airport+"/"+rwy.Runway {
-			r += int(rwy.Rate)
-		}
-	}
-	return r
 }
 
 func (s *Scenario) Name() string {
@@ -193,7 +170,6 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	})
 
-	s.nextDepartureSpawn = make(map[string]time.Time)
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
@@ -204,7 +180,6 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			} else {
 				s.DepartureRunways[i].exitRoutes = routes
 			}
-			s.nextDepartureSpawn[rwy.Airport+"/"+rwy.Runway] = time.Time{}
 
 			if rwy.Category != "" {
 				found := false
@@ -229,16 +204,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
 	})
 
-	s.nextArrivalSpawn = make(map[string]time.Time)
-
-	for _, name := range SortedMapKeys(s.ArrivalGroupRates) {
+	for _, name := range SortedMapKeys(s.ArrivalGroupDefaultRates) {
 		e.Push("Arrival group " + name)
 		// Make sure the arrival group has been defined
 		if arrivals, ok := sg.ArrivalGroups[name]; !ok {
 			e.ErrorString("arrival group not found")
 		} else {
 			// Check the airports in it
-			for airport := range s.ArrivalGroupRates[name] {
+			for airport := range s.ArrivalGroupDefaultRates[name] {
 				e.Push("Airport " + airport)
 				if _, ok := sg.Airports[airport]; !ok {
 					e.ErrorString("unknown arrival airport")
