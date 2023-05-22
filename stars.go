@@ -1826,7 +1826,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				} else { //if ac.IsAssociated() {
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock
-					} else {
+						// do not collapse datablock if user is tracking the aircraft
+					} else if ac.TrackingController != sim.Callsign() {
 						state.datablockType = PartialDatablock
 					}
 				}
