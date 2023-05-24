@@ -35,6 +35,8 @@ type Aircraft struct {
 	Altitude float32
 	IAS, GS  float32 // speeds...
 
+	IsDeparture bool
+
 	// The following are for controller-assigned altitudes, speeds, and
 	// headings.  Values of 0 indicate no assignment.
 	AssignedAltitude int

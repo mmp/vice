@@ -765,7 +765,9 @@ func (sim *Sim) updateState() {
 				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 
 				// Climb to cruise altitude...
-				ac.AssignedAltitude = ac.FlightPlan.Altitude
+				if ac.IsDeparture {
+					ac.AssignedAltitude = ac.FlightPlan.Altitude
+				}
 			}
 			delete(sim.Handoffs, callsign)
 		}
@@ -1654,6 +1656,7 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 	ac.TrackingController = ap.DepartureController
 	ac.Altitude = float32(ap.Elevation)
 	ac.AssignedAltitude = exitRoute.ClearedAltitude
+	ac.IsDeparture = true
 
 	return ac
 }
