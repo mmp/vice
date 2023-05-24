@@ -115,7 +115,9 @@ func uiInit(renderer Renderer) {
 		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}), false)
 	}
 
-	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+	if globalConfig.Sim == nil {
+		uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+	}
 }
 
 func uiShowModalDialog(d *ModalDialogBox, atFront bool) {

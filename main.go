@@ -117,6 +117,12 @@ func main() {
 
 	LoadOrMakeDefaultConfig()
 
+	if globalConfig.Sim != nil {
+		sim = globalConfig.Sim
+	} else {
+		sim = &Sim{}
+	}
+
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
@@ -153,8 +159,6 @@ func main() {
 	wmInit()
 
 	uiInit(renderer)
-
-	sim = &Sim{}
 
 	globalConfig.Activate()
 

@@ -34,6 +34,11 @@ type GlobalConfig struct {
 	DevScenarioFile string
 	DevVideoMapFile string
 
+	// These are only for serialize / deserialize
+	Sim               *Sim
+	ScenarioGroupName string
+	ScenarioName      string
+
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
 }
@@ -72,6 +77,27 @@ func (c *GlobalConfig) Save() error {
 }
 
 func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
+	gc.Sim = sim // so that it's serialized out...
+	gc.Sim.SerializeTime = time.Now()
+
+	gc.ScenarioGroupName = scenarioGroup.Name
+	gc.ScenarioName = ""
+	for name, scenario := range scenarioGroup.Scenarios {
+		if scenario == gc.Sim.Scenario {
+			gc.ScenarioName = name
+			break
+		}
+	}
+	if gc.ScenarioName == "" {
+		lg.Errorf("Couldn't find Sim's Scenario to get its name?!")
+	}
+	gc.Sim.Scenario = nil
+
+	// Grab assorted things that may have changed during this session.
+	gc.ImGuiSettings = imgui.SaveIniSettingsToMemory()
+	gc.InitialWindowSize = platform.WindowSize()
+	gc.InitialWindowPosition = platform.WindowPosition()
+
 	fn := configFilePath()
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
@@ -163,4 +189,25 @@ func (gc *GlobalConfig) Activate() {
 	}
 
 	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
+
+	if gc.Sim != nil {
+		if sg, ok := scenarioGroups[gc.ScenarioGroupName]; !ok {
+			lg.Errorf("%s: couldn't find serialized scenario group", gc.ScenarioGroupName)
+		} else {
+			scenarioGroup = sg
+		}
+
+		if sc, ok := scenarioGroup.Scenarios[gc.ScenarioName]; !ok {
+			lg.Errorf("%s: couldn't find serialized scenario", gc.ScenarioName)
+		} else {
+			gc.Sim.Scenario = sc
+		}
+
+		sim.Paused = false // override
+
+		if err := gc.Sim.Activate(); err != nil {
+			gc.Sim = nil
+			sim = &Sim{}
+		}
+	}
 }

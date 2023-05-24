@@ -451,6 +451,59 @@ func (sim *Sim) SetInitialSpawnTimes() {
 	}
 }
 
+func (sim *Sim) Activate() error {
+	var e ErrorLogger
+	now := time.Now()
+	sim.currentTime = now
+	sim.lastUpdateTime = now
+	sim.eventsId = eventStream.Subscribe()
+
+	// A number of time.Time values are included in the serialized Sim.
+	// updateTime is a helper function that rewrites them to be in terms of
+	// the current time, using the serializion time as a baseline.
+	updateTime := func(t time.Time) time.Time {
+		return now.Add(t.Sub(sim.SerializeTime))
+	}
+
+	for _, ac := range sim.Aircraft {
+		e.Push(ac.Callsign)
+		// Rewrite the radar track times to be w.r.t now
+		for i := range ac.Tracks {
+			ac.Tracks[i].Time = updateTime(ac.Tracks[i].Time)
+		}
+
+		if ac.Approach != nil {
+			for i := range ac.Approach.Waypoints {
+				scenarioGroup.InitializeWaypointLocations(ac.Approach.Waypoints[i], &e)
+			}
+			lg.Errorf("%s", spew.Sdump(ac.Approach))
+		}
+
+		e.Pop()
+		eventStream.Post(&AddedAircraftEvent{ac: ac})
+	}
+
+	for ho, t := range sim.Handoffs {
+		sim.Handoffs[ho] = updateTime(t)
+	}
+
+	for group, t := range sim.NextArrivalSpawn {
+		sim.NextArrivalSpawn[group] = updateTime(t)
+	}
+
+	for airport, runwayTimes := range sim.NextDepartureSpawn {
+		for runway, t := range runwayTimes {
+			sim.NextDepartureSpawn[airport][runway] = updateTime(t)
+		}
+	}
+
+	if e.HaveErrors() {
+		e.PrintErrors()
+		return errors.New("Errors during state restoration")
+	}
+	return nil
+}
+
 func (sim *Sim) Prespawn() {
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
