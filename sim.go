@@ -539,7 +539,14 @@ func (sim *Sim) SetScratchpad(callsign string, scratchpad string) error {
 }
 
 func (sim *Sim) SetTemporaryAltitude(callsign string, alt int) error {
-	return nil // UNIMPLEMENTED
+	if ac, ok := sim.Aircraft[callsign]; !ok {
+		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Scenario.Callsign {
+		return ErrOtherControllerHasTrack
+	} else {
+		ac.TempAltitude = alt
+		return nil
+	}
 }
 
 func (sim *Sim) AmendFlightPlan(callsign string, fp FlightPlan) error {
