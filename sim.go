@@ -1317,9 +1317,10 @@ func (sim *Sim) SpawnAircraft() {
 
 		ac.Position = ac.Waypoints[0].Location
 		if ac.Position.IsZero() {
-			lg.Errorf("%s: uninitialized initial waypoint position!", ac.Callsign)
+			lg.Errorf("%s: uninitialized initial waypoint position! %+v", ac.Callsign, ac.Waypoints[0])
 			return
 		}
+
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
 			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, scenarioGroup.MagneticVariation)
