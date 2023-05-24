@@ -670,6 +670,7 @@
       ]
     },
     "center": "KLGA",
+    "range": 60,
     "control_positions": {
       "BOS_E_CTR": {
         "frequency": 133450,

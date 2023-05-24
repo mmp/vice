@@ -372,7 +372,7 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 	ps.DisplayDCB = true
 
 	ps.Center = scenarioGroup.Center
-	ps.Range = 40
+	ps.Range = scenarioGroup.Range
 
 	ps.CurrentCenter = ps.Center
 
@@ -595,6 +595,7 @@ func (sp *STARSPane) ResetScenarioGroup() {
 	ps := &sp.CurrentPreferenceSet
 
 	ps.Center = scenarioGroup.Center
+	ps.Range = scenarioGroup.Range
 	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
 

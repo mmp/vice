@@ -2397,6 +2397,7 @@
   },
   "arrival_groups": {},
   "center": "N040.45.26.477,W074.24.28.789",
+  "range": 60,
   "control_positions": {
     "BOS_SW_CTR": {
       "frequency": 134000,

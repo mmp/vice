@@ -2345,6 +2345,7 @@
     ]
   },
   "center": "KEWR",
+  "range": 60,
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,

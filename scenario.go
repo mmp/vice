@@ -29,6 +29,7 @@ type ScenarioGroup struct {
 
 	Center         Point2LL              `json:"-"`
 	CenterString   string                `json:"center"`
+	Range          float32               `json:"range"`
 	PrimaryAirport string                `json:"primary_airport"`
 	RadarSites     map[string]*RadarSite `json:"radar_sites"`
 	STARSMaps      []STARSMap            `json:"stars_maps"`
@@ -362,6 +363,10 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
 	} else {
 		sg.Center = pos
+	}
+
+	if sg.Range == 0 {
+		sg.Range = 50
 	}
 
 	if len(sg.RadarSites) == 0 {
