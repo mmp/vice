@@ -173,22 +173,37 @@ func drawUI(platform Platform) {
 			if imgui.Button(FontAwesomeIconPlayCircle) {
 				sim.TogglePause()
 			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Resume simulation")
+			}
 		} else {
 			if imgui.Button(FontAwesomeIconPauseCircle) {
 				sim.TogglePause()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Pause simulation")
 			}
 		}
 
 		if imgui.Button(FontAwesomeIconRedo) {
 			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Start new simulation")
+		}
 
 		if imgui.Button(FontAwesomeIconCog) {
 			sim.ToggleActivateSettingsWindow()
 		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Open settings window")
+		}
 
 		if imgui.Button(FontAwesomeIconQuestionCircle) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Display vice documentation")
 		}
 
 		width, _ := ui.font.BoundText(FontAwesomeIconInfoCircle, 0)
@@ -196,8 +211,14 @@ func drawUI(platform Platform) {
 		if imgui.Button(FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Display information about vice")
+		}
 		if imgui.Button(FontAwesomeIconDiscord) {
 			browser.OpenURL("https://discord.gg/y993vgQxhY")
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Join the vice discord")
 		}
 
 		imgui.PopStyleColor()
