@@ -584,31 +584,6 @@ func (c *ConnectModalClient) Draw() int {
 	}
 }
 
-type DisconnectModalClient struct{}
-
-func (d *DisconnectModalClient) Title() string { return "Confirm Disconnection" }
-
-func (d *DisconnectModalClient) Opening() {
-}
-
-func (c *DisconnectModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel"})
-
-	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		sim.Disconnect()
-		return true
-	}}
-	b = append(b, ok)
-
-	return b
-}
-
-func (d *DisconnectModalClient) Draw() int {
-	imgui.Text("Are you sure you want to disconnect?")
-	return -1
-}
-
 type YesOrNoModalClient struct {
 	title, query string
 	ok, notok    func()

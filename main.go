@@ -166,7 +166,6 @@ func main() {
 	// Main event / rendering loop
 	lg.Printf("Starting main loop")
 	frameIndex := 0
-	wantExit := false
 	stats.startTime = time.Now()
 	for {
 		platform.SetWindowTitle("vice: " + sim.GetWindowTitle())
@@ -208,35 +207,10 @@ func main() {
 		}
 		frameIndex++
 
-		if platform.ShouldStop() {
-			if !wantExit {
-				wantExit = true
-
-				if sim.Connected() {
-					uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
-						title: "Disconnect?",
-						query: "Currently connected. Ok to disconnect?",
-						ok: func() {
-							sim.Disconnect()
-						},
-						notok: func() {
-							platform.CancelShouldStop()
-							wantExit = false
-						},
-					}), false)
-				}
-
-				// Grab assorted things that may have changed during this session.
-				globalConfig.ImGuiSettings = imgui.SaveIniSettingsToMemory()
-				globalConfig.InitialWindowSize = platform.WindowSize()
-				globalConfig.InitialWindowPosition = platform.WindowPosition()
-
-				// Do this while we're still running the event loop.
-				globalConfig.SaveIfChanged(renderer, platform)
-			} else if len(ui.activeModalDialogs) == 0 {
-				// good to go
-				break
-			}
+		if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
+			// Do this while we're still running the event loop.
+			globalConfig.SaveIfChanged(renderer, platform)
+			break
 		}
 	}
 
