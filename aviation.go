@@ -303,7 +303,7 @@ func (wc *WaypointCommand) UnmarshalJSON(b []byte) error {
 
 type Waypoint struct {
 	Fix      string            `json:"fix"`
-	Location Point2LL          `json:"-"` // never serialized, derived from fix
+	Location Point2LL          // not provided in scenario JSON; derived from fix
 	Altitude int               `json:"altitude,omitempty"`
 	Speed    int               `json:"speed,omitempty"`
 	Heading  int               `json:"heading,omitempty"` // outbound heading after waypoint
