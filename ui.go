@@ -167,47 +167,39 @@ func drawUI(platform Platform) {
 
 	imgui.PushFont(ui.font.ifont)
 	if imgui.BeginMainMenuBar() {
-		if imgui.BeginMenu("Simulation") {
-			if sim.IsPaused() {
-				if imgui.MenuItem("Resume") {
-					sim.TogglePause()
-				}
-			} else {
-				if imgui.MenuItem("Pause") {
-					sim.TogglePause()
-				}
-			}
-			if imgui.MenuItem("Restart...") {
-				uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
-			}
-			imgui.Separator()
-			if imgui.MenuItem("Settings...") {
-				sim.ActivateSettingsWindow()
-			}
-			imgui.EndMenu()
-		}
-
-		if imgui.BeginMenu("Help") {
-			if imgui.MenuItem("Documentation...") {
-				browser.OpenURL("https://pharr.org/vice/index.html")
-			}
-			if imgui.MenuItem("Report a bug...") {
-				browser.OpenURL("https://pharr.org/vice/index.html#bugs")
-			}
-			imgui.Separator()
-			if imgui.MenuItem("About vice...") {
-				ui.showAboutDialog = true
-			}
-			imgui.EndMenu()
-		}
-
-		t := FontAwesomeIconDiscord
-		width, _ := ui.font.BoundText(t, 0)
-		imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(width+10), 0})
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
-		if imgui.Button(t) {
+
+		if sim.IsPaused() {
+			if imgui.Button(FontAwesomeIconPlayCircle) {
+				sim.TogglePause()
+			}
+		} else {
+			if imgui.Button(FontAwesomeIconPauseCircle) {
+				sim.TogglePause()
+			}
+		}
+
+		if imgui.Button(FontAwesomeIconRedo) {
+			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+		}
+
+		if imgui.Button(FontAwesomeIconCog) {
+			sim.ToggleActivateSettingsWindow()
+		}
+
+		if imgui.Button(FontAwesomeIconQuestionCircle) {
+			browser.OpenURL("https://pharr.org/vice/index.html")
+		}
+
+		width, _ := ui.font.BoundText(FontAwesomeIconInfoCircle, 0)
+		imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(4*width+10), 0})
+		if imgui.Button(FontAwesomeIconInfoCircle) {
+			ui.showAboutDialog = !ui.showAboutDialog
+		}
+		if imgui.Button(FontAwesomeIconDiscord) {
 			browser.OpenURL("https://discord.gg/y993vgQxhY")
 		}
+
 		imgui.PopStyleColor()
 
 		imgui.EndMainMenuBar()
@@ -766,6 +758,9 @@ func showAboutDialog() {
 	imgui.PushFont(ui.aboutFont.ifont)
 	center("vice")
 	center(FontAwesomeIconCopyright + "2023 Matt Pharr")
+	center("Thanks to Adam Bolek, Mike K,")
+	center("and Arya T for contributing")
+	center("additional scenarios!")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")

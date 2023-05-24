@@ -1152,8 +1152,8 @@ func (sim *Sim) TogglePause() {
 	sim.lastUpdateTime = time.Now() // ignore time passage...
 }
 
-func (sim *Sim) ActivateSettingsWindow() {
-	sim.showSettings = true
+func (sim *Sim) ToggleActivateSettingsWindow() {
+	sim.showSettings = !sim.showSettings
 }
 
 func (sim *Sim) DrawSettingsWindow() {

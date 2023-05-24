@@ -35,16 +35,22 @@ var (
 	FontAwesomeIconCaretDown           = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
+	FontAwesomeIconCog                 = faUsedIcons["Cog"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
 	FontAwesomeIconExclamationTriangle = faUsedIcons["ExclamationTriangle"]
 	FontAwesomeIconFile                = faUsedIcons["File"]
 	FontAwesomeIconFolder              = faUsedIcons["Folder"]
 	FontAwesomeIconGithub              = faBrandsUsedIcons["Github"]
-	FontAwesomeIconHome                = faUsedIcons["Home"]
 	FontAwesomeIconHandPointLeft       = faUsedIcons["HandPointLeft"]
+	FontAwesomeIconHome                = faUsedIcons["Home"]
+	FontAwesomeIconInfoCircle          = faUsedIcons["InfoCircle"]
 	FontAwesomeIconLevelUpAlt          = faUsedIcons["LevelUpAlt"]
 	FontAwesomeIconLock                = faUsedIcons["Lock"]
+	FontAwesomeIconPauseCircle         = faUsedIcons["PauseCircle"]
+	FontAwesomeIconPlayCircle          = faUsedIcons["PlayCircle"]
+	FontAwesomeIconQuestionCircle      = faUsedIcons["QuestionCircle"]
+	FontAwesomeIconRedo                = faUsedIcons["Redo"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
 )
@@ -65,14 +71,20 @@ var (
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
+		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
 		"ExclamationTriangle": FontAwesomeString("ExclamationTriangle"),
 		"File":                FontAwesomeString("File"),
 		"Folder":              FontAwesomeString("Folder"),
-		"Home":                FontAwesomeString("Home"),
 		"HandPointLeft":       FontAwesomeString("HandPointLeft"),
+		"Home":                FontAwesomeString("Home"),
+		"InfoCircle":          FontAwesomeString("InfoCircle"),
 		"LevelUpAlt":          FontAwesomeString("LevelUpAlt"),
 		"Lock":                FontAwesomeString("Lock"),
+		"PauseCircle":         FontAwesomeString("PauseCircle"),
+		"PlayCircle":          FontAwesomeString("PlayCircle"),
+		"QuestionCircle":      FontAwesomeString("QuestionCircle"),
+		"Redo":                FontAwesomeString("Redo"),
 		"Square":              FontAwesomeString("Square"),
 		"Trash":               FontAwesomeString("Trash"),
 	}
