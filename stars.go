@@ -45,7 +45,7 @@ const NumSTARSPreferenceSets = 32
 const NumSTARSMaps = 28
 
 type STARSPane struct {
-	currentPreferenceSet  STARSPreferenceSet
+	CurrentPreferenceSet  STARSPreferenceSet
 	SelectedPreferenceSet int
 	PreferenceSets        []STARSPreferenceSet
 
@@ -212,17 +212,16 @@ type STARSPreferenceSet struct {
 	Center Point2LL
 	Range  float32
 
-	currentCenter Point2LL
-	offCenter     bool
+	CurrentCenter Point2LL
+	OffCenter     bool
 
 	RangeRingsCenter Point2LL
 	RangeRingRadius  int
 
 	// TODO? cursor speed
 
-	// Note: not saved across sessions
-	currentATIS string
-	giText      [9]string
+	CurrentATIS string
+	GIText      [9]string
 
 	RadarTrackHistory int
 
@@ -375,7 +374,7 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 	ps.Center = scenarioGroup.Center
 	ps.Range = 40
 
-	ps.currentCenter = ps.Center
+	ps.CurrentCenter = ps.Center
 
 	ps.RangeRingsCenter = ps.Center
 	ps.RangeRingRadius = 5
@@ -468,7 +467,6 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 }
 
 func (ps *STARSPreferenceSet) Activate() {
-	ps.currentCenter = ps.Center
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
 		if len(scenarioGroup.STARSMaps) > 0 {
@@ -550,12 +548,7 @@ func NewSTARSPane() *STARSPane {
 func (sp *STARSPane) Name() string { return "STARS" }
 
 func (sp *STARSPane) Activate() {
-	if sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets) {
-		sp.currentPreferenceSet = sp.PreferenceSets[sp.SelectedPreferenceSet]
-	} else {
-		sp.currentPreferenceSet = MakePreferenceSet("", sp.Facility)
-	}
-	sp.currentPreferenceSet.Activate()
+	sp.CurrentPreferenceSet.Activate()
 
 	if sp.havePlayedSPCAlertSound == nil {
 		sp.havePlayedSPCAlertSound = make(map[*Aircraft]interface{})
@@ -578,9 +571,9 @@ func (sp *STARSPane) Activate() {
 
 	sp.eventsId = eventStream.Subscribe()
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	if Find(ps.WeatherIntensity[:], true) != -1 {
-		sp.weatherRadar.Activate(sp.currentPreferenceSet.Center)
+		sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
 	}
 
 	// start tracking all of the active aircraft
@@ -599,10 +592,10 @@ func (sp *STARSPane) Deactivate() {
 }
 
 func (sp *STARSPane) ResetScenarioGroup() {
-	ps := &sp.currentPreferenceSet
+	ps := &sp.CurrentPreferenceSet
 
 	ps.Center = scenarioGroup.Center
-	ps.currentCenter = ps.Center
+	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
 
 	ps.VideoMapVisible = make(map[string]interface{})
@@ -613,7 +606,7 @@ func (sp *STARSPane) ResetScenarioGroup() {
 
 func (sp *STARSPane) ResetScenario(s *Scenario) {
 	// Make the scenario's default video map be visible
-	ps := &sp.currentPreferenceSet
+	ps := &sp.CurrentPreferenceSet
 	ps.VideoMapVisible = make(map[string]interface{})
 	ps.VideoMapVisible[s.DefaultMap] = nil
 }
@@ -643,7 +636,7 @@ func (sp *STARSPane) DrawUI() {
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
 func (sp *STARSPane) processEvents(es *EventStream) {
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 
 	for _, event := range es.Get(sp.eventsId) {
 		switch v := event.(type) {
@@ -741,9 +734,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	sp.processKeyboardInput(ctx)
 
-	transforms := GetScopeTransformations(ctx, sp.currentPreferenceSet.currentCenter,
-		float32(sp.currentPreferenceSet.Range), 0)
-	ps := sp.currentPreferenceSet
+	transforms := GetScopeTransformations(ctx, sp.CurrentPreferenceSet.CurrentCenter,
+		float32(sp.CurrentPreferenceSet.Range), 0)
+	ps := sp.CurrentPreferenceSet
 
 	drawBounds := Extent2D{
 		p0: [2]float32{0, 0},
@@ -801,7 +794,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		cb.LineWidth(1)
 		cbright := ps.Brightness.Compass.RGB()
 		font := sp.systemFont[ps.CharSize.Tools]
-		DrawCompass(ps.currentCenter, ctx, 0, font, cbright, drawBounds, transforms, cb)
+		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, drawBounds, transforms, cb)
 	}
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
@@ -847,7 +840,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 	}
 	sp.previewAreaInput += input
 
-	ps := &sp.currentPreferenceSet
+	ps := &sp.CurrentPreferenceSet
 
 	//lg.Printf("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
 	if ctx.keyboard.IsPressed(KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
@@ -856,13 +849,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		if int(idx) < len(ps.Bookmarks) {
 			if ctx.keyboard.IsPressed(KeyAlt) {
 				// Record bookmark
-				ps.Bookmarks[idx].Center = ps.currentCenter
+				ps.Bookmarks[idx].Center = ps.CurrentCenter
 				ps.Bookmarks[idx].Range = ps.Range
 				ps.Bookmarks[idx].TopDownMode = ps.TopDownMode
 			} else {
 				// Recall bookmark
 				ps.Center = ps.Bookmarks[idx].Center
-				ps.currentCenter = ps.Bookmarks[idx].Center
+				ps.CurrentCenter = ps.Bookmarks[idx].Center
 				ps.Range = ps.Bookmarks[idx].Range
 				ps.TopDownMode = ps.Bookmarks[idx].TopDownMode
 			}
@@ -906,7 +899,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			if ctx.keyboard.IsPressed(KeyControl) {
 				// Recenter
 				ps.Center = scenarioGroup.Center
-				ps.currentCenter = ps.Center
+				ps.CurrentCenter = ps.Center
 			}
 
 		case KeyF2:
@@ -1044,7 +1037,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		return callsign
 	}
 
-	ps := &sp.currentPreferenceSet
+	ps := &sp.CurrentPreferenceSet
 
 	switch sp.commandMode {
 	case CommandModeNone:
@@ -1467,26 +1460,26 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			switch len(cmd) {
 			case 0:
 				// S -> clear atis, first line of text
-				ps.currentATIS = ""
-				ps.giText[0] = ""
+				ps.CurrentATIS = ""
+				ps.GIText[0] = ""
 				status.clear = true
 				return
 
 			case 1:
 				if cmd[0] == '*' {
 					// S* -> clear atis
-					ps.currentATIS = ""
+					ps.CurrentATIS = ""
 					status.clear = true
 					return
 				} else if cmd[0] >= '1' && cmd[0] <= '9' {
 					// S[1-9] -> clear corresponding line of text
 					idx := cmd[0] - '1'
-					ps.giText[idx] = ""
+					ps.GIText[idx] = ""
 					status.clear = true
 					return
 				} else if cmd[0] >= 'A' && cmd[0] <= 'Z' {
 					// S(atis) -> set atis code
-					ps.currentATIS = string(cmd[0])
+					ps.CurrentATIS = string(cmd[0])
 					status.clear = true
 					return
 				} else {
@@ -1497,26 +1490,26 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			default:
 				if len(cmd) == 2 && cmd[0] >= 'A' && cmd[0] <= 'Z' && cmd[1] == '*' {
 					// S(atis)* -> set atis, delete first line of text
-					ps.currentATIS = string(cmd[0])
-					ps.giText[0] = ""
+					ps.CurrentATIS = string(cmd[0])
+					ps.GIText[0] = ""
 					status.clear = true
 					return
 				} else if cmd[0] == '*' {
 					// S*(text) -> clear atis, set first line of gi text
-					ps.currentATIS = ""
-					ps.giText[0] = cmd[1:]
+					ps.CurrentATIS = ""
+					ps.GIText[0] = cmd[1:]
 					status.clear = true
 					return
 				} else if cmd[0] >= '1' && cmd[0] <= '9' && cmd[1] == ' ' {
 					// S[1-9](spc)(text) -> set corresponding line of GI text
 					idx := cmd[0] - '1'
-					ps.giText[idx] = cmd[2:]
+					ps.GIText[idx] = cmd[2:]
 					status.clear = true
 					return
 				} else if cmd[0] >= 'A' && cmd[0] <= 'Z' {
 					// S(atis)(text) -> set atis and first line of GI text
-					ps.currentATIS = string(cmd[0])
-					ps.giText[0] = cmd[1:]
+					ps.CurrentATIS = string(cmd[0])
+					ps.GIText[0] = cmd[1:]
 					status.clear = true
 					return
 				} else {
@@ -1680,7 +1673,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		return
 
 	case CommandModeSavePrefAs:
-		psave := sp.currentPreferenceSet.Duplicate()
+		psave := sp.CurrentPreferenceSet.Duplicate()
 		psave.Name = cmd
 		sp.PreferenceSets = append(sp.PreferenceSets, psave)
 		sp.SelectedPreferenceSet = len(sp.PreferenceSets) - 1
@@ -1790,7 +1783,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 		return false
 	}
 
-	ps := &sp.currentPreferenceSet
+	ps := &sp.CurrentPreferenceSet
 
 	if ac != nil {
 		state := sp.aircraft[ac]
@@ -2413,7 +2406,7 @@ func rblSecondClickHandler(sp *STARSPane,
 func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) {
 	sp.StartDrawDCB(ctx)
 
-	ps := &sp.currentPreferenceSet
+	ps := &sp.CurrentPreferenceSet
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
@@ -2430,15 +2423,15 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		if STARSSelectButton("PLACE\nCNTR", STARSButtonHalfVertical) {
 			sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
-				ps.currentCenter = ps.Center
+				ps.CurrentCenter = ps.Center
 				sp.weatherRadar.UpdateCenter(ps.Center)
 				status.clear = true
 				return
 			}
 		}
-		ps.offCenter = ps.currentCenter != ps.Center
-		if STARSToggleButton("OFF\nCNTR", &ps.offCenter, STARSButtonHalfVertical) {
-			ps.currentCenter = ps.Center
+		ps.OffCenter = ps.CurrentCenter != ps.Center
+		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical) {
+			ps.CurrentCenter = ps.Center
 		}
 		STARSCallbackSpinner("RR\n", &ps.RangeRingRadius,
 			func(v int) string { return fmt.Sprintf("%d", v) },
@@ -2502,7 +2495,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 					}
 				}
 				if Find(ps.WeatherIntensity[:], true) != -1 {
-					sp.weatherRadar.Activate(sp.currentPreferenceSet.Center)
+					sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
 				} else {
 					// Don't fetch weather maps if they're not going to be displayed.
 					sp.weatherRadar.Deactivate()
@@ -2654,7 +2647,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			if STARSSelectButton(text, flags) {
 				// Make this one current
 				sp.SelectedPreferenceSet = i
-				sp.currentPreferenceSet = sp.PreferenceSets[i]
+				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumSTARSPreferenceSets; i++ {
@@ -2662,7 +2655,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		}
 
 		if STARSSelectButton("DEFAULT", STARSButtonHalfVertical) {
-			sp.currentPreferenceSet = MakePreferenceSet("", sp.Facility)
+			sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility)
 		}
 		STARSDisabledButton("FSSTARS", STARSButtonHalfVertical)
 		if STARSSelectButton("RESTORE", STARSButtonHalfVertical) {
@@ -2672,7 +2665,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		validSelection := sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets)
 		if validSelection {
 			if STARSSelectButton("SAVE", STARSButtonHalfVertical) {
-				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.currentPreferenceSet
+				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.CurrentPreferenceSet
 				globalConfig.Save()
 			}
 		} else {
@@ -2766,7 +2759,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		sim.AddAirportForWeather(name)
 	}
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 
 	transforms.LoadWindowViewingMatrices(cb)
 
@@ -2895,15 +2888,15 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		// ATIS and GI text always, apparently
-		if ps.currentATIS != "" {
-			pw = td.AddText(ps.currentATIS+" "+ps.giText[0], pw, style)
+		if ps.CurrentATIS != "" {
+			pw = td.AddText(ps.CurrentATIS+" "+ps.GIText[0], pw, style)
 			newline()
-		} else if ps.giText[0] != "" {
-			pw = td.AddText(ps.giText[0], pw, style)
+		} else if ps.GIText[0] != "" {
+			pw = td.AddText(ps.GIText[0], pw, style)
 			newline()
 		}
-		for i := 1; i < len(ps.giText); i++ {
-			if txt := ps.giText[i]; txt != "" {
+		for i := 1; i < len(ps.GIText); i++ {
+			if txt := ps.GIText[i]; txt != "" {
 				pw = td.AddText(txt, pw, style)
 				newline()
 			}
@@ -3217,7 +3210,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.PositionSymbols]
 
 	now := sim.CurrentTime()
@@ -3337,7 +3330,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 func (sp *STARSPane) updateDatablockTextAndPosition(aircraft []*Aircraft) {
 	now := sim.CurrentTime()
-	font := sp.systemFont[sp.currentPreferenceSet.CharSize.Datablocks]
+	font := sp.systemFont[sp.CurrentPreferenceSet.CharSize.Datablocks]
 
 	for _, ac := range aircraft {
 		if ac.LostTrack(now) || !sp.datablockVisible(ac) {
@@ -3609,7 +3602,7 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 
 func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
 	// TODO: when do we use Brightness.LimitedDatablocks?
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	br := ps.Brightness.FullDatablocks
 	state := sp.aircraft[ac]
 
@@ -3652,7 +3645,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 	now := sim.CurrentTime()
 	realNow := time.Now() // for flashing rate...
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 
 	for _, ac := range aircraft {
@@ -3697,7 +3690,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 }
 
 func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
@@ -3738,7 +3731,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Tools]
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 	textStyle := TextStyle{Font: font, DrawBackground: true, Color: color}
@@ -3820,7 +3813,7 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.Lines.RGB() // check
 	style := TextStyle{
 		Font:           sp.systemFont[ps.CharSize.Tools],
@@ -3877,7 +3870,7 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 		return
 	}
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.Lines.RGB()
 
 	DrawMinimumSeparationLine(ac0, ac1, color, RGB{}, sp.systemFont[ps.CharSize.Tools],
@@ -3904,7 +3897,7 @@ func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformatio
 	}
 
 	cb.LineWidth(1)
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 }
 
@@ -3914,7 +3907,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
 
 	drawSectors := func(volumes []AirspaceVolume) {
@@ -3931,7 +3924,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 			}
 
 			center := e.Center()
-			ps := sp.currentPreferenceSet
+			ps := sp.CurrentPreferenceSet
 			style := TextStyle{
 				Font:           sp.systemFont[ps.CharSize.Tools],
 				Color:          rgb,
@@ -3963,7 +3956,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 
 	if activeSpinner == nil {
 		UpdateScopePosition(ctx.mouse, MouseButtonSecondary, transforms,
-			&sp.currentPreferenceSet.currentCenter, &sp.currentPreferenceSet.Range)
+			&sp.CurrentPreferenceSet.CurrentCenter, &sp.CurrentPreferenceSet.Range)
 	}
 
 	if ctx.mouse.Clicked[MouseButtonPrimary] {
@@ -4255,7 +4248,7 @@ func (sp *STARSPane) initializeAircraft() {
 	sp.aircraft = make(map[*Aircraft]*STARSAircraftState)
 	sp.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	for _, ac := range sim.GetAllAircraft() {
 		sp.aircraft[ac] = &STARSAircraftState{}
 
@@ -4281,13 +4274,13 @@ func (sp *STARSPane) resetInputState() {
 }
 
 func (sp *STARSPane) multiRadarMode() bool {
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	_, ok := scenarioGroup.RadarSites[ps.RadarSiteSelected]
 	return ps.RadarSiteSelected == "" || !ok
 }
 
 func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary bool, distance float32) {
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	distance = 1e30
 	multi := sp.multiRadarMode()
 	for id, site := range scenarioGroup.RadarSites {
@@ -4307,7 +4300,7 @@ func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary 
 
 func (sp *STARSPane) visibleAircraft() []*Aircraft {
 	var aircraft []*Aircraft
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	multi := sp.multiRadarMode()
 
 	for ac := range sp.aircraft {
@@ -4338,7 +4331,7 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 }
 
 func (sp *STARSPane) datablockVisible(ac *Aircraft) bool {
-	af := sp.currentPreferenceSet.AltitudeFilters
+	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := ac.TrackAltitude()
 	if !ac.IsAssociated() {
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
@@ -4351,7 +4344,7 @@ func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft) CardinalOrdinalDirecti
 	if lld := sp.aircraft[ac].leaderLineDirection; lld != nil {
 		return *lld
 	} else {
-		return sp.currentPreferenceSet.LeaderLineDirection
+		return sp.CurrentPreferenceSet.LeaderLineDirection
 	}
 }
 
@@ -4359,7 +4352,7 @@ func (sp *STARSPane) getLeaderLineVector(ac *Aircraft) [2]float32 {
 	dir := sp.getLeaderLineDirection(ac)
 	angle := dir.Heading()
 	v := [2]float32{sin(radians(angle)), cos(radians(angle))}
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	return scale2f(v, float32(10+10*ps.LeaderLineLength))
 }
 
@@ -4389,7 +4382,7 @@ func (sp *STARSPane) tryGetClickedAircraft(mousePosition [2]float32, transforms 
 }
 
 func (sp *STARSPane) radarSiteId() string {
-	ps := sp.currentPreferenceSet
+	ps := sp.CurrentPreferenceSet
 	if _, ok := scenarioGroup.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
 		return ps.RadarSiteSelected
 	}
