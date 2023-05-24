@@ -1325,7 +1325,7 @@ func (sim *Sim) SpawnAircraft() {
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
 			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, scenarioGroup.MagneticVariation)
 		}
-		ac.Waypoints = ac.Waypoints[1:]
+		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 		eventStream.Post(&AddedAircraftEvent{ac: ac})
 	}
