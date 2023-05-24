@@ -980,7 +980,7 @@ func (fs *FileSelectDialogBox) Draw() {
 			fs.filename = ""
 		}
 
-		disableOk := fs.filename == "" && !fs.selectDirectory
+		disableOk := !fileSelected && !fs.selectDirectory
 		uiStartDisable(disableOk)
 		imgui.SameLine()
 		if imgui.Button("Ok") || fileSelected {
