@@ -56,7 +56,6 @@ func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
 	}
 	ssc.controller = scenarioGroup.ControlPositions[scenarioGroup.DefaultController]
 
-	ssc.SetScenario(scenarioGroup.DefaultScenarioGroup)
 
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 		if stars, ok := p.(*STARSPane); ok {
@@ -64,6 +63,7 @@ func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
 			stars.ResetScenario(ssc.scenario)
 		}
 	})
+	ssc.SetScenario(sg.DefaultScenario)
 }
 
 func (ssc *SimConnectionConfiguration) SetScenario(name string) {

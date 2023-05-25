@@ -14,18 +14,18 @@ import (
 )
 
 type ScenarioGroup struct {
-	Name                 string                 `json:"name"`
-	Airports             map[string]*Airport    `json:"airports"`
-	VideoMapFile         string                 `json:"video_map_file"`
-	Fixes                map[string]Point2LL    `json:"-"`
-	FixesStrings         map[string]string      `json:"fixes"`
-	Scenarios            map[string]*Scenario   `json:"scenarios"`
-	DefaultController    string                 `json:"default_controller"`
-	DefaultScenarioGroup string                 `json:"default_scenario"`
-	ControlPositions     map[string]*Controller `json:"control_positions"`
-	Scratchpads          map[string]string      `json:"scratchpads"`
-	Airspace             Airspace               `json:"airspace"`
-	ArrivalGroups        map[string][]Arrival   `json:"arrival_groups"`
+	Name              string                 `json:"name"`
+	Airports          map[string]*Airport    `json:"airports"`
+	VideoMapFile      string                 `json:"video_map_file"`
+	Fixes             map[string]Point2LL    `json:"-"`
+	FixesStrings      map[string]string      `json:"fixes"`
+	Scenarios         map[string]*Scenario   `json:"scenarios"`
+	DefaultController string                 `json:"default_controller"`
+	DefaultScenario   string                 `json:"default_scenario"`
+	ControlPositions  map[string]*Controller `json:"control_positions"`
+	Scratchpads       map[string]string      `json:"scratchpads"`
+	Airspace          Airspace               `json:"airspace"`
+	ArrivalGroups     map[string][]Arrival   `json:"arrival_groups"`
 
 	Center         Point2LL              `json:"-"`
 	CenterString   string                `json:"center"`
@@ -320,8 +320,8 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		e.ErrorString("\"nm_per_latitude\" not specified")
 	}
 
-	if _, ok := sg.Scenarios[sg.DefaultScenarioGroup]; !ok {
-		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenarioGroup)
+	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
+		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenario)
 	}
 
 	for callsign, ctrl := range sg.ControlPositions {
