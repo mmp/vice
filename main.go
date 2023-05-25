@@ -64,20 +64,22 @@ func main() {
 	// Catch any panics so that we can put up a dialog box and hopefully
 	// get a bug report.
 	var context *imgui.Context
-	defer func() {
-		if err := recover(); err != nil {
-			lg.Errorf("Panic stack: %s", string(debug.Stack()))
-			ShowFatalErrorDialog("Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
-				"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
-				"this bug can be fixed.\n\nError: %v", err)
-		}
-		lg.SaveLogs()
+	if !*devmode {
+		defer func() {
+			if err := recover(); err != nil {
+				lg.Errorf("Panic stack: %s", string(debug.Stack()))
+				ShowFatalErrorDialog("Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
+					"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
+					"this bug can be fixed.\n\nError: %v", err)
+			}
+			lg.SaveLogs()
 
-		// Clean up in backwards order from how things were created.
-		renderer.Dispose()
-		platform.Dispose()
-		context.Destroy()
-	}()
+			// Clean up in backwards order from how things were created.
+			renderer.Dispose()
+			platform.Dispose()
+			context.Destroy()
+		}()
+	}
 
 	if err := fixconsole.FixConsoleIfNeeded(); err != nil {
 		// Not sure this will actually appear, but what else are we going
