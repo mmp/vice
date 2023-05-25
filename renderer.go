@@ -242,7 +242,7 @@ func (cb *CommandBuffer) SetRGBA(rgba RGBA) {
 	cb.appendFloats(rgba.R, rgba.G, rgba.B, rgba.A)
 }
 
-// SetRGBA adds a command to the command buffer to set the current RGB
+// SetRGB adds a command to the command buffer to set the current RGB
 // color (alpha is set to 1). Subsequent draw commands will inherit this
 // color unless they specify e.g., per-vertex colors themselves.
 func (cb *CommandBuffer) SetRGB(rgb RGB) {
