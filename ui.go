@@ -508,27 +508,14 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	connectionType ConnectionType
-	err            string
+	err string
 
 	sim SimConnectionConfiguration
-}
-
-type ConnectionType int
-
-const (
-	ConnectionTypeSimServer = iota
-	ConnectionTypeCount
-)
-
-func (c ConnectionType) String() string {
-	return [...]string{"Sim Server"}[c]
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.connectionType = ConnectionTypeSimServer
 	c.err = ""
 	c.sim.Initialize()
 }
@@ -538,16 +525,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	b = append(b, ModalDialogButton{text: "Cancel"})
 
 	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		var err error
-		switch c.connectionType {
-		case ConnectionTypeSimServer:
-			err = c.sim.Connect()
-
-		default:
-			lg.Errorf("Unhandled connection type")
-			return true
-		}
-
+		err := c.sim.Connect()
 		if err == nil {
 			c.err = ""
 		} else {
@@ -556,35 +534,13 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		return err == nil
 	}}
 
-	switch c.connectionType {
-	case ConnectionTypeSimServer:
-		ok.disabled = !c.sim.Valid()
+	ok.disabled = !c.sim.Valid()
 
-	default:
-		lg.Errorf("Unhandled connection type")
-	}
-	b = append(b, ok)
-
-	return b
+	return append(b, ok)
 }
 
 func (c *ConnectModalClient) Draw() int {
-	/*
-		if imgui.BeginComboV("Type", c.connectionType.String(), imgui.ComboFlagsHeightLarge) {
-			for i := 0; i < ConnectionTypeCount; i++ {
-				ct := ConnectionType(i)
-				if imgui.SelectableV(ct.String(), ct == c.connectionType, 0, imgui.Vec2{}) {
-					c.connectionType = ct
-				}
-			}
-			imgui.EndCombo()
-		}
-	*/
-	var enter bool
-	switch c.connectionType {
-	case ConnectionTypeSimServer:
-		enter = c.sim.DrawUI()
-	}
+	enter := c.sim.DrawUI()
 
 	if c.err != "" {
 		imgui.Text(c.err)
