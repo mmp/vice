@@ -826,7 +826,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawTracks(aircraft, ctx, transforms, cb)
 	sp.updateDatablockTextAndPosition(aircraft)
 	sp.drawDatablocks(aircraft, ctx, transforms, cb)
-	sp.consumeMouseEvents(ctx, transforms)
+	sp.consumeMouseEvents(ctx, transforms, cb)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -3950,7 +3950,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations) {
+func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	if ctx.mouse == nil {
 		return
 	}
@@ -3985,13 +3985,85 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			}
 			sp.previewAreaOutput = status.output
 		}
-	}
-
-	if ctx.mouse.Clicked[MouseButtonTertiary] {
+	} else if ctx.mouse.Clicked[MouseButtonTertiary] {
 		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
 			if state := sp.aircraft[ac]; state != nil {
 				state.isSelected = !state.isSelected
 			}
+		}
+	} else if sim.Paused {
+		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
+			info := ""
+			if ac.IsDeparture {
+				info += "Departure\n"
+			} else {
+				info += "Arrival\n"
+			}
+			if ac.AssignedAltitude != 0 {
+				info += fmt.Sprintf("Assigned altitude %d", ac.AssignedAltitude)
+				if ac.AssignedSpeedAfterAltitude != 0 {
+					info += fmt.Sprintf(", then speed %d", ac.AssignedSpeedAfterAltitude)
+				}
+				info += "\n"
+			}
+			if ac.AssignedSpeed != 0 {
+				info += fmt.Sprintf("Assigned speed %d", ac.AssignedSpeed)
+				if ac.AssignedAltitudeAfterSpeed != 0 {
+					info += fmt.Sprintf(", then altitude %d", ac.AssignedAltitudeAfterSpeed)
+				}
+				info += "\n"
+			}
+			if ac.AssignedHeading != 0 {
+				info += fmt.Sprintf("Assigned heading: %d\n", ac.AssignedHeading)
+			} else if len(ac.Waypoints) > 0 {
+				info += fmt.Sprintf("Proceeding to %s\n", ac.Waypoints[0].Fix)
+			}
+			if ac.Approach != nil {
+				info += "Assigned " + ac.Approach.FullName
+				if ac.ClearedApproach {
+					info += ", cleared approach"
+				}
+				if ac.OnFinal {
+					info += ", on final"
+				}
+				info += "\n"
+			}
+			info = strings.TrimSpace(info)
+
+			td := GetTextDrawBuilder()
+			defer ReturnTextDrawBuilder(td)
+
+			ps := sp.CurrentPreferenceSet
+			font := sp.systemFont[ps.CharSize.Datablocks]
+			style := TextStyle{
+				Font:        font,
+				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
+				LineSpacing: -2}
+
+			// Aircraft track position in window coordinates
+			pac := transforms.WindowFromLatLongP(ac.TrackPosition())
+
+			// Upper-left corner of where we start drawing the text
+			pad := float32(5)
+			ptext := add2f([2]float32{2 * pad, 0}, pac)
+			td.AddText(info, ptext, style)
+
+			// Draw an alpha-blended quad behind the text to make it more legible.
+			trid := GetTrianglesDrawBuilder()
+			defer ReturnTrianglesDrawBuilder(trid)
+			bx, by := font.BoundText(info, style.LineSpacing)
+			trid.AddQuad(add2f(ptext, [2]float32{-pad, 0}),
+				add2f(ptext, [2]float32{float32(bx) + pad, 0}),
+				add2f(ptext, [2]float32{float32(bx) + pad, -float32(by) - pad}),
+				add2f(ptext, [2]float32{-pad, -float32(by) - pad}))
+
+			// Get it all into the command buffer
+			transforms.LoadWindowViewingMatrices(cb)
+			cb.SetRGBA(RGBA{R: 0.25, G: 0.25, B: 0.25, A: 0.75})
+			cb.Blend()
+			trid.GenerateCommands(cb)
+			cb.DisableBlend()
+			td.GenerateCommands(cb)
 		}
 	}
 }
