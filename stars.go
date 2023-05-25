@@ -610,6 +610,12 @@ func (sp *STARSPane) ResetScenario(s *Scenario) {
 	ps := &sp.CurrentPreferenceSet
 	ps.VideoMapVisible = make(map[string]interface{})
 	ps.VideoMapVisible[s.DefaultMap] = nil
+
+	ps.CurrentATIS = ""
+	for i := range ps.GIText {
+		ps.GIText[i] = ""
+	}
+	ps.RadarSiteSelected = ""
 }
 
 func (sp *STARSPane) DrawUI() {
