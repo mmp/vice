@@ -78,7 +78,7 @@ func (c *GlobalConfig) Save() error {
 
 func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
 	gc.Sim = sim // so that it's serialized out...
-	gc.Sim.SerializeTime = time.Now()
+	gc.Sim.SerializeTime = sim.CurrentTime()
 
 	gc.ScenarioGroupName = scenarioGroup.Name
 	gc.ScenarioName = ""
