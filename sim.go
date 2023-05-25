@@ -34,6 +34,7 @@ type SimConnectionConfiguration struct {
 	departureChallenge float32
 	goAroundRate       float32
 	scenario           *Scenario
+	scenarioGroup      *ScenarioGroup
 	controller         *Controller
 	validControllers   map[string]*Controller
 
@@ -46,29 +47,24 @@ type SimConnectionConfiguration struct {
 func (ssc *SimConnectionConfiguration) Initialize() {
 	ssc.departureChallenge = 0.25
 	ssc.goAroundRate = 0.10
-	ssc.ResetScenarioGroup()
+	ssc.SetScenarioGroup(scenarioGroup)
 }
 
-func (ssc *SimConnectionConfiguration) ResetScenarioGroup() {
+func (ssc *SimConnectionConfiguration) SetScenarioGroup(sg *ScenarioGroup) {
+	ssc.scenarioGroup = sg
+
 	ssc.validControllers = make(map[string]*Controller)
-	for _, sc := range scenarioGroup.Scenarios {
-		ssc.validControllers[sc.Callsign] = scenarioGroup.ControlPositions[sc.Callsign]
+	for _, sc := range sg.Scenarios {
+		ssc.validControllers[sc.Callsign] = sg.ControlPositions[sc.Callsign]
 	}
-	ssc.controller = scenarioGroup.ControlPositions[scenarioGroup.DefaultController]
+	ssc.controller = sg.ControlPositions[sg.DefaultController]
 
-
-	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-		if stars, ok := p.(*STARSPane); ok {
-			stars.ResetScenarioGroup()
-			stars.ResetScenario(ssc.scenario)
-		}
-	})
 	ssc.SetScenario(sg.DefaultScenario)
 }
 
 func (ssc *SimConnectionConfiguration) SetScenario(name string) {
 	var ok bool
-	ssc.scenario, ok = scenarioGroup.Scenarios[name]
+	ssc.scenario, ok = ssc.scenarioGroup.Scenarios[name]
 	if !ok {
 		lg.Errorf("%s: called SetScenario with an unknown scenario name???", name)
 		return
@@ -87,21 +83,13 @@ func (ssc *SimConnectionConfiguration) SetScenario(name string) {
 		ssc.departureRates[rwy.Airport][rwy.Runway][rwy.Category] = new(int32)
 		*ssc.departureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
 	}
-
-	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-		if stars, ok := p.(*STARSPane); ok {
-			stars.ResetScenario(ssc.scenario)
-		}
-	})
 }
 
 func (ssc *SimConnectionConfiguration) DrawUI() bool {
-	if imgui.BeginComboV("Scenario Group", scenarioGroup.Name, imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("Scenario Group", ssc.scenarioGroup.Name, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(scenarioGroups) {
-			if imgui.SelectableV(name, name == scenarioGroup.Name, 0, imgui.Vec2{}) {
-				scenarioGroup = scenarioGroups[name]
-				globalConfig.LastScenarioGroup = name
-				ssc.ResetScenarioGroup()
+			if imgui.SelectableV(name, name == ssc.scenarioGroup.Name, 0, imgui.Vec2{}) {
+				ssc.SetScenarioGroup(scenarioGroups[name])
 			}
 		}
 		imgui.EndCombo()
@@ -113,8 +101,8 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 				ssc.controller = ssc.validControllers[controllerName]
 				// Set the current scenario to the first one alphabetically
 				// with the selected controller.
-				for _, scenarioName := range SortedMapKeys(scenarioGroup.Scenarios) {
-					if scenarioGroup.Scenarios[scenarioName].Callsign == controllerName {
+				for _, scenarioName := range SortedMapKeys(ssc.scenarioGroup.Scenarios) {
+					if ssc.scenarioGroup.Scenarios[scenarioName].Callsign == controllerName {
 						ssc.SetScenario(scenarioName)
 						break
 					}
@@ -127,8 +115,8 @@ func (ssc *SimConnectionConfiguration) DrawUI() bool {
 	scenario := ssc.scenario
 
 	if imgui.BeginComboV("Config", scenario.Name(), imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(scenarioGroup.Scenarios) {
-			if scenarioGroup.Scenarios[name].Callsign != ssc.controller.Callsign {
+		for _, name := range SortedMapKeys(ssc.scenarioGroup.Scenarios) {
+			if ssc.scenarioGroup.Scenarios[name].Callsign != ssc.controller.Callsign {
 				continue
 			}
 			if imgui.SelectableV(name, name == scenario.Name(), 0, imgui.Vec2{}) {
@@ -304,7 +292,18 @@ func (ssc *SimConnectionConfiguration) Connect() error {
 	}
 	sim.Disconnect()
 	sim = NewSim(*ssc)
+	scenarioGroup = ssc.scenarioGroup
 	sim.Prespawn()
+
+	globalConfig.LastScenarioGroup = ssc.scenarioGroup.Name
+
+	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+		if stars, ok := p.(*STARSPane); ok {
+			stars.ResetScenarioGroup()
+			stars.ResetScenario(ssc.scenario)
+		}
+	})
+
 	return nil
 }
 
