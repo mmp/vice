@@ -114,26 +114,6 @@ type Wind struct {
 	Gust      int32 `json:"gust"`
 }
 
-func (s *Scenario) AllAirports() []string {
-	return append(s.DepartureAirports(), s.ArrivalAirports()...)
-}
-
-func (s *Scenario) DepartureAirports() []string {
-	m := make(map[string]interface{})
-	for _, rwy := range s.DepartureRunways {
-		m[rwy.Airport] = nil
-	}
-	return SortedMapKeys(m)
-}
-
-func (s *Scenario) ArrivalAirports() []string {
-	m := make(map[string]interface{})
-	for _, rwy := range s.ArrivalRunways {
-		m[rwy.Airport] = nil
-	}
-	return SortedMapKeys(m)
-}
-
 func (s *Scenario) Name() string {
 	for _, sgroup := range scenarioGroups {
 		for name, scenario := range sgroup.Scenarios {

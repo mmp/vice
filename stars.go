@@ -3409,7 +3409,7 @@ func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool)
 		return
 	}
 
-	if Find(sim.Scenario.DepartureAirports(), ac.FlightPlan.DepartureAirport) != -1 {
+	if _, ok := sim.DepartureAirports()[ac.FlightPlan.DepartureAirport]; ok {
 		if len(sim.Scenario.DepartureAirspace) > 0 {
 			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.Scenario.DepartureAirspace)
 			if !ac.HaveEnteredAirspace {
@@ -3419,7 +3419,7 @@ func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool)
 				outside = !inDepartureAirspace
 			}
 		}
-	} else if Find(sim.Scenario.ArrivalAirports(), ac.FlightPlan.ArrivalAirport) != -1 {
+	} else if _, ok := sim.ArrivalAirports()[ac.FlightPlan.ArrivalAirport]; ok {
 		if len(sim.Scenario.ApproachAirspace) > 0 {
 			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.Scenario.ApproachAirspace)
 			if !ac.HaveEnteredAirspace {

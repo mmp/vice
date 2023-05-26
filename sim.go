@@ -378,7 +378,7 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
-	for _, ap := range sim.Scenario.AllAirports() {
+	fakeMETAR := func(icao string) {
 		spd := sim.Scenario.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
@@ -397,16 +397,49 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		}
 
 		// Just provide the stuff that the STARS display shows
-		sim.METAR[ap] = &METAR{
-			AirportICAO: ap,
+		sim.METAR[icao] = &METAR{
+			AirportICAO: icao,
 			Wind:        wind,
 			Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
 		}
 	}
 
+	for ap := range sim.DepartureAirports() {
+		fakeMETAR(ap)
+	}
+	for ap := range sim.ArrivalAirports() {
+		fakeMETAR(ap)
+	}
+
 	sim.SetInitialSpawnTimes()
 
 	return sim
+}
+
+func (sim *Sim) DepartureAirports() map[string]interface{} {
+	airports := make(map[string]interface{})
+	for ap, runwayRates := range sim.DepartureRates {
+		for _, categoryRates := range runwayRates {
+			for _, rate := range categoryRates {
+				if *rate > 0 {
+					airports[ap] = nil
+				}
+			}
+		}
+	}
+	return airports
+}
+
+func (sim *Sim) ArrivalAirports() map[string]interface{} {
+	airports := make(map[string]interface{})
+	for _, airportRates := range sim.ArrivalGroupRates {
+		for ap, rate := range airportRates {
+			if *rate > 0 {
+				airports[ap] = nil
+			}
+		}
+	}
+	return airports
 }
 
 func (sim *Sim) SetInitialSpawnTimes() {
