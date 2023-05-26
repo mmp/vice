@@ -530,7 +530,6 @@
           "initial_controller": "NY_CTR",
           "initial_speed": 300,
           "route": "/. KORRY4",
-          "runway_waypoints": null,
           "speed_restriction": 250,
           "waypoints": "BESSI EDJER @ DAVYS HOLEY BRAND KORRY RBV TYKES MINKS RENUE APPLE PROUD LGA #45"
         }
@@ -623,7 +622,6 @@
           "initial_controller": "NY_CTR",
           "initial_speed": 300,
           "route": "/. MIP4",
-          "runway_waypoints": null,
           "speed_restriction": 250,
           "waypoints": "BILEY VIBES LIZZI @ BEUTY HARLM DREMS APPLE PROUD LGA #45"
         }
@@ -667,7 +665,6 @@
           "initial_controller": "BOS_E_CTR",
           "initial_speed": 300,
           "route": "/. HAARP3",
-          "runway_waypoints": null,
           "speed_restriction": 250,
           "waypoints": "PWL IGN @ VALRE BASYE HAARP CRALY LGA #224"
         }

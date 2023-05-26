@@ -1925,7 +1925,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. CAMRN4",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935 @ CAMRN #40"
       }
@@ -1954,7 +1953,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HTO V46 CCC ISP",
-        "runway_waypoints": null,
         "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808 @ HTO CCC ISP"
       },
       {
@@ -1980,7 +1978,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HVN",
-        "runway_waypoints": null,
         "waypoints": "HFD N041.33.29.632,W072.36.20.511 @ HVN"
       },
       {
@@ -1998,7 +1995,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CCC ISP",
-        "runway_waypoints": null,
         "waypoints": "N041.28.15.080,W072.08.52.040 SALEM @ CCC ISP"
       },
       {
@@ -2028,7 +2024,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. MAD V1 BELTT ISP",
-        "runway_waypoints": null,
         "waypoints": "HFD N041.33.29.632,W072.36.20.511 @ MAD BELTT ISP"
       },
       {
@@ -2054,7 +2049,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. JFK CCC ISP",
-        "runway_waypoints": null,
         "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI @ JFK CCC ISP"
       },
       {
@@ -2072,7 +2066,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. SARDI V139 RICED KEYED HVN",
-        "runway_waypoints": null,
         "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131 @ SARDI RICED KEYED HVN"
       },
       {
@@ -2090,7 +2083,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CREAM HVN",
-        "runway_waypoints": null,
         "waypoints": "GON N041.17.25.349,W072.10.01.803 @ CREAM HVN"
       },
       {
@@ -2108,7 +2100,6 @@
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. DENNA HVN",
-        "runway_waypoints": null,
         "waypoints": "N041.17.24.607,W073.43.06.291 CMK @ DENNA HVN"
       },
       {
@@ -2126,7 +2117,6 @@
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. BDR HVN",
-        "runway_waypoints": null,
         "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747 @ BDR HVN"
       },
       {
@@ -2150,7 +2140,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. DPK",
-        "runway_waypoints": null,
         "waypoints": "N041.46.50.426,W073.20.24.261 N041.39.56.516,W073.19.39.025 @ DPK"
       },
       {
@@ -2186,7 +2175,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. ZIGGI",
-        "runway_waypoints": null,
         "waypoints": "N039.59.17.221,W074.02.27.134 ZIGGI #40 @ JFK"
       },
       {
@@ -2214,7 +2202,6 @@
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. COL",
-        "runway_waypoints": null,
         "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636 @ COL JFK"
       }
     ],
@@ -2341,7 +2328,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. LENDY8",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"
       },
@@ -2439,7 +2425,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. IGN1",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "DOORE N040.58.27.742,W074.16.12.647 @ LENDY #135"
       }
@@ -2468,7 +2453,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. DENNA3",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006 @ LOVES DENNA"
       },
@@ -2499,7 +2483,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. LOVES2",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006 @ LOVES BDR CCC"
       }
@@ -2532,7 +2515,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. LOVES2",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N041.28.15.767,W072.03.53.020 WANDI @ CCC"
       }
@@ -2579,7 +2561,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. OWENZ CAMRN",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N039.54.57.463,W073.27.31.931 N039.55.59.825,W073.30.27.355 @ CAMRN #40"
       }
@@ -2781,7 +2762,6 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
         "route": "/. ROBER2",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER #276"
       }

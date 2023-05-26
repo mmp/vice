@@ -1742,7 +1742,6 @@
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
         "route": "/ ALB V489 COATE",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "FILPS WEARD @ CAMMO HUO LEMOR@a6000 COATE KEWR"
       }
@@ -1823,7 +1822,6 @@
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
         "route": "/ FLOSI4",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "ACOVE TALCO WEETS @ HELON FLOSI CRANK@a7000 SHAFF SAX PHLBO HOKIR #180"
       }
@@ -1904,7 +1902,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/ FQM3",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "HAYED@a18000 RACKI@a13000 @ PENNS SWEET@a7000 BWZ #122"
       }
@@ -1985,7 +1982,6 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/ LVZ4",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "LVZ@a18000 @ HARTY MUGZY@a6000 STW #125"
       }
@@ -2066,7 +2062,6 @@
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
         "route": "/ MAZIE3",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "JAIKE ILENE@a12000 @ WACKI@a11000 MAZIE REGLE@a7000 GNNZO SBJ #059"
       }
@@ -2147,7 +2142,6 @@
         "initial_controller": "EWR_A_APP",
         "initial_speed": 250,
         "route": "/ FLOSI4",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "SHAFF @ SAX PHLBO HOKIR #180"
       }
@@ -2172,7 +2166,6 @@
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
         "route": "/ RUUTH V123 RBV",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "RUUTH @ RBV KEWR"
       }
@@ -2253,7 +2246,6 @@
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
         "route": "/ PHLBO3",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "DQO@a20000 STEFE@a13000 @ SOMTO@a11000 DYLIN@a8000 MERSR METRO MARRT PHLBO #025"
       }
@@ -2334,7 +2326,6 @@
         "initial_controller": "EWR_P_APP",
         "initial_speed": 250,
         "route": "/ PHLBO3",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "DYLIN @ METRO MARRT PHLBO #065"
       }
@@ -2355,7 +2346,6 @@
         "initial_controller": "WRI_APP",
         "initial_speed": 300,
         "route": "/ CYN GXU RBV V249 METRO",
-        "runway_waypoints": null,
         "speed_restriction": null,
         "waypoints": "CYN @ GXU RBV METRO KEWR"
       }

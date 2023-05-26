@@ -1775,7 +1775,6 @@
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 250,
         "route": "/. GOOFY7",
-        "runway_waypoint": null,
         "speed_restriction": 250,
         "waypoints": " TRV @ BAIRN ODDEL SABOT"
       }
@@ -2553,7 +2552,6 @@
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. GTOUT1",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "NICCK@a12000 @ BGBBY@a10000@s250 GTOUT@a9000 TUGLE BANYA@a7000@s210 #250"
       }
@@ -2672,7 +2670,6 @@
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 250,
         "route": "/. JOKRS3",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "FAZES @ MOANS JOKRS ZALEK #043"
       }
@@ -3396,7 +3393,6 @@
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. SNFLD3",
-        "runway_waypoints": null,
         "speed_restriction": 250,
         "waypoints": "NICCK@a12000 @ SNFLD GTOUT@a12000@s280 TUGLE HIGGZ@a10000@s250 VOSSS@a8000@s230 SUNDE@a6000 CUBAL@a5000@s210"
       }
