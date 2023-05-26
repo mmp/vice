@@ -4,6 +4,7 @@
             "approaches": {
                 "I8": {
                     "full_name": "ILS 8",
+                    "runway": "8",
                     "type": "ILS",
                     "waypoints": [
                         "BIGGS@a4000 YICTU@a2000 HOPEV@a2000 DINNS@a1900 _JAX_8@a30"
@@ -11,6 +12,7 @@
                 },
                 "RZ8": {
                     "full_name": "RNAV Z 8",
+                    "runway": "8",
                     "type": "RNAV",
                     "waypoints": [
                         "UDAQI@a2000 IVTEF@a1900 _JAX_8@a30",
@@ -20,6 +22,7 @@
                 },
                 "I14": {
                     "full_name": "ILS 14",
+                    "runway": "14",
                     "type": "ILS",
                     "waypoints": [
                         "BIGGS@a6000 ZIDSO@a4000 HAMOC@a1900 SONIA@a1700 KUYER@a480 _JAX_14@a27"
@@ -27,6 +30,7 @@
                 },
                 "R14": {
                     "full_name": "RNAV 14",
+                    "runway": "14",
                     "type": "RNAV",
                     "waypoints": [
                         "OSBAJ@a2000 WOLQU@a1700 _JAX_14@a27",
@@ -36,6 +40,7 @@
                 },
                 "I26": {
                     "full_name": "ILS 26",
+                    "runway": "26",
                     "type": "ILS",
                     "waypoints": [
                         "TIKRY@a2000 DALTN@a1600 ZETRI@a480 _JAX_26@a27"
@@ -43,6 +48,7 @@
                 },
                 "R26": {
                     "full_name": "RNAV 26",
+                    "runway": "26",
                     "type": "RNAV",
                     "waypoints": [
                         "YEJWO@a2000 WOQTA@a1600 ZALDU@a740 _JAX_26@a27",
@@ -52,6 +58,7 @@
                 },
                 "R32": {
                     "full_name": "RNAV 32",
+                    "runway": "32",
                     "type": "RNAV",
                     "waypoints": [
                         "BUNDE@a2100 POTME@a2100 FIVOX@a1700 YUSKU@a740 _JAX_32@a27",

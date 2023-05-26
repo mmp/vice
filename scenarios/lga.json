@@ -4,6 +4,7 @@
         "approaches": {
           "I4": {
             "full_name": "ILS 4",
+            "runway": "4",
             "type": "ILS",
             "waypoints": [
               "GREGG@a4000 ZARID@a4000 VADDR@a4000 JACIE@a4000 NECOl@a4000 VARAZ@a4000 BENNG@a3000 RAHEL@a1800 DNNIS@a1700 WARIN@a640 _LGA_4@a50",
@@ -13,6 +14,7 @@
           },
           "I22": {
             "full_name": "ILS 22",
+            "runway": "22",
             "type": "ILS",
             "waypoints": [
               "YOMAN@a3000 GREKO@a1900 _LGA_22@a50"
@@ -20,6 +22,7 @@
           },
           "I13": {
             "full_name": "ILS 13",
+            "runway": "13",
             "type": "ILS",
             "waypoints": [
               "PAYMI@a2800 STEED@a1900 COROR@a800 _LGA_13@a50"
@@ -27,6 +30,7 @@
           },
           "R31": {
             "full_name": "RNAV X-Ray 31",
+            "runway": "31",
             "type": "RNAV",
             "waypoints": [
               "GREGG@a4000 ZARID@a4000 VADDR@a4000 JACIE@a4000 NECOl@a4000 PACHU@a3000 SHAYY@a2500 GACAR@a2200 DRRYL@a1142 KEYTH@a782 DCTRK@a422 _LGA_31@a50",

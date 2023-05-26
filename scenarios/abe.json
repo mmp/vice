@@ -4,6 +4,7 @@
       "approaches": {
         "I13": {
           "full_name": "ILS 13",
+          "runway": "13",
           "type": "ILS",
           "waypoints": [
             "HASIS@a3000 CAVRU@a2700 MOOVY@a2400 IZKIP@a1260 _ABE31@a380"
@@ -11,6 +12,7 @@
         },
         "I24": {
           "full_name": "ILS 24",
+          "runway": "24",
           "type": "ILS",
           "waypoints": [
             "MUDRE@a3000 MUSYK@a2400 NENTE@a1380 _ABE6@a380"
@@ -18,6 +20,7 @@
         },
         "I6": {
           "full_name": "ILS 6",
+          "runway": "6",
           "type": "ILS",
           "waypoints": [
             "JISTO@a3000 SHAGY@a2400 _ABE24@a380"
@@ -25,6 +28,7 @@
         },
         "R13": {
           "full_name": "RNAV 13",
+          "runway": "13",
           "type": "RNAV",
           "waypoints": [
             "BEERS TIKLE LOCID@a3000 MOOVY@a2400 IZKIP@a1260 _ABE31@a380",
@@ -33,6 +37,7 @@
         },
         "R31": {
           "full_name": "RNAV 31",
+          "runway": "31",
           "type": "RNAV",
           "waypoints": [
             "BEERS FINRA BURAY@a3000 BEHEM@a2400 ASOMY@a1540 _ABE13@a380",
@@ -41,6 +46,7 @@
         },
         "R6": {
           "full_name": "RNAV 6",
+          "runway": "6",
           "type": "RNAV",
           "waypoints": [
             "SAYOV JISTO@a3000 SHAGY@a2400 GEBLE@a1400 _ABE24@a380",

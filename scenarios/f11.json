@@ -4,6 +4,7 @@
       "approaches": {
         "I7L": {
           "full_name": "ILS Runway 17L",
+          "runway": "17L",
           "type": "ILS",
           "waypoints": [
             "BOSCH@a6000 KAKEY@a5000 HERVI@a4000 FONIK@a3000 SEEDO@a2500 COCAS@a1500 JAXES@a540 _MCO_17L@a90",
@@ -12,6 +13,7 @@
         },
         "R7L": {
           "full_name": "RNAV Runway 17L",
+          "runway": "17L",
           "type": "RNAV",
           "waypoints": [
             "BOSCH@a6000 KAKEY@a5000 HERVI@a4000 FONIK@a3000 SEEDO@a2500 COCAS@a1500 JAXES@a540 _MCO_17L@a90",
@@ -20,6 +22,7 @@
         },
         "I7R": {
           "full_name": "ILS Runway 17R",
+          "runway": "17R",
           "type": "ILS",
           "waypoints": [
             "RATOY@a6000 SACRO@a6000 TACOT@a5000 DALTY@a4000 ELLAN@a3000 GLOSI@a2500 MINCO@a1600 _MCO_17R@a90"
@@ -27,6 +30,7 @@
         },
         "R7R": {
           "full_name": "RNAV Runway 17R",
+          "runway": "17R",
           "type": "RNAV",
           "waypoints": [
             "RATOY@a6000 SACRO@a6000 TACOT@a5000 DALTY@a4000 ELLAN@a3000 GLOSI@a2500 MINCO@a1600 _MCO_17R@a90"
@@ -34,6 +38,7 @@
         },
         "R8L": {
           "full_name": "RNAV Runway 18L",
+          "runway": "18L",
           "type": "RNAV",
           "waypoints": [
             "ZANTI@a4000 HABRA@a4000 GIPNE@a3000 COBOP@a2200 NAPPA@a560 _MCO_18L@a96"
@@ -41,6 +46,7 @@
         },
         "I8R": {
           "full_name": "ILS Runway 18R",
+          "runway": "18R",
           "type": "ILS",
           "waypoints": [
             "HOLOP@a5000 NAVAL@a4000 ONNER@a3000 HAMMY@a3000 TUFFE@a2200 _MCO_18R@a94",
@@ -49,6 +55,7 @@
         },
         "R8R": {
           "full_name": "RNAV Runway 18R",
+          "runway": "18R",
           "type": "RNAV",
           "waypoints": [
             "HOLOP@a5000 NAVAL@a4000 ONNER@a3000 HAMMY@a3000 TUFFE@a2200 _MCO_18R@a94",
@@ -57,6 +64,7 @@
         },
         "I5L": {
           "full_name": "ILS Runway 35L",
+          "runway": "35L",
           "type": "ILS",
           "waypoints": [
             "NOGGI@a5000 FOBUK@a4000 FITEM@a3000 SPURR@a1600 _MCO_35L@a88"
@@ -64,6 +72,7 @@
         },
         "R5L": {
           "full_name": "RNAV Runway 35L",
+          "runway": "35L",
           "type": "RNAV",
           "waypoints": [
             "NOGGI@a5000 FOBUK@a4000 FITEM@a3000 SPURR@a1600 _MCO_35L@a88"
@@ -71,6 +80,7 @@
         },
         "I5R": {
           "full_name": "ILS Runway 35R",
+          "runway": "35R",
           "type": "ILS",
           "waypoints": [
             "CRUSE@a5000 SERAY@a4000 FESHA@a3000 HEWES@a1600 WOLDI@a540 _MCO_35R@a90",
@@ -79,6 +89,7 @@
         },
         "R5R": {
           "full_name": "RNAV Runway 35R",
+          "runway": "35R",
           "type": "ILS",
           "waypoints": [
             "CRUSE@a5000 SERAY@a4000 FESHA@a3000 HEWES@a1600 WOLDI@a540 _MCO_35R@a90",
@@ -87,6 +98,7 @@
         },
         "I6R": {
           "full_name": "ILS Runway 36R",
+          "runway": "36R",
           "type": "ILS",
           "waypoints": [
             "TRAMP@a5000 FLOZY@a4000 SILKY@a3000 JAKOR@a1600 UVEKE@a540 _MCO_36R@a92"
@@ -94,6 +106,7 @@
         },
         "R6R": {
           "full_name": "RNAV Runway 36R",
+          "runway": "36R",
           "type": "RNAV",
           "waypoints": [
             "FLOZY@a4000 SILKY@a3000 JAKOR@a1600 UVEKE@a540 _MCO_36R@a92",
@@ -103,6 +116,7 @@
         },
         "R6L": {
           "full_name": "RNAV Runway 36L",
+          "runway": "36L",
           "type": "RNAV",
           "waypoints": [
             "EXBAN@a4000 AMEBE@a3000 BERDY@a1600 RUTNE@a780 _MCO_36L@a93",
@@ -837,6 +851,7 @@
       "approaches": {
         "I7": {
           "full_name": "ILS Runway 07",
+          "runway": "7",
           "type": "ILS",
           "waypoints": [
             "ESRAQ@a2000 DNMOR@a2000 SWLTR@a1020 _ORL_7@a109"
@@ -844,6 +859,7 @@
         },
         "R7": {
           "full_name": "RNAV Runway 07",
+          "runway": "7",
           "type": "RNAV",
           "waypoints": [
             "ESRAQ@a2000 DNMOR@a2000 SWLTR@a1020 _ORL_7@a109"
@@ -851,6 +867,7 @@
         },
         "I25": {
           "full_name": "ILS Runway 25",
+          "runway": "25",
           "type": "ILS",
           "waypoints": [
             "LOUKE@a2800 ENLOW@a2000 MARYB@a1500 LMOND@a1100 _ORL_25@a113"
@@ -858,6 +875,7 @@
         },
         "R25": {
           "full_name": "RNAV Runway 25",
+          "runway": "25",
           "type": "RNAV",
           "waypoints": [
             "LOUKE@a2800 ENLOW@a2000 MARYB@a1500 LMOND@a1100 _ORL_25@a113"
@@ -917,6 +935,7 @@
       "approaches": {
         "I9L": {
           "full_name": "ILS Runway 9L",
+          "runway": "9L",
           "type": "ILS",
           "waypoints": [
             "UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
@@ -926,6 +945,7 @@
         },
         "R9L": {
           "full_name": "RNAV Runway 9L",
+          "runway": "9L",
           "type": "RNAV",
           "waypoints": [
             "UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
@@ -935,6 +955,7 @@
         },
         "I9R": {
           "full_name": "ILS Runway 9R",
+          "runway": "9R",
           "type": "ILS",
           "waypoints": [
             "UDUZI@a2000 JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
@@ -944,6 +965,7 @@
         },
         "R9R": {
           "full_name": "RNAV Runway 9R",
+          "runway": "9R",
           "type": "RNAV",
           "waypoints": [
             "UDUZI@a2000 JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
@@ -953,6 +975,7 @@
         },
         "I7G": {
           "full_name": "ILS Runway 27R",
+          "runway": "27R",
           "type": "ILS",
           "waypoints": [
             "UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
@@ -962,6 +985,7 @@
         },
         "R7G": {
           "full_name": "RNAV Runway 27R",
+          "runway": "27R",
           "type": "RNAV",
           "waypoints": [
             "UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
@@ -971,6 +995,7 @@
         },
         "R7H": {
           "full_name": "RNAV Runway 27L",
+          "runway": "27L",
           "type": "RNAV",
           "waypoints": [
             "GACNO@a2000 WEPAT@a1600 ONBEW@a1600 LOBPI@a700 _SFB_27L@a28",
@@ -1094,6 +1119,7 @@
       "approaches": {
         "R6": {
           "full_name": "RNAV Runway 6",
+          "runway": "6",
           "type": "RNAV",
           "waypoints": [
             "JENSN@a2000 ZOVLU@a2000 FOJSO@a2000 TOTNY@a1700 EHECU@a760 _ISM_6@a82",
@@ -1103,6 +1129,7 @@
         },
         "I15": {
           "full_name": "ILS Runway 15",
+          "runway": "15",
           "type": "ILS",
           "waypoints": [
             "WERPO@a2000 WADSI@a2000 _ISM_15@a82"
@@ -1110,6 +1137,7 @@
         },
         "R15": {
           "full_name": "RNAV Runway 15",
+          "runway": "15",
           "type": "RNAV",
           "waypoints": [
             "WERPO@a2000 WADSI@a2000 _ISM_15@a82",
@@ -1119,6 +1147,7 @@
         },
         "R33": {
           "full_name": "RNAV Runway 33",
+          "runway": "33",
           "type": "RNAV",
           "waypoints": [
             "AXMEB@a2000 LOJUF@a1700 _ISM_33@a82",

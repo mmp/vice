@@ -33,6 +33,9 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
 			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
 		}
+		if ap.Runway == "" {
+			e.ErrorString("Must specify \"runway\"")
+		}
 		e.Pop()
 	}
 
@@ -169,6 +172,7 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 type Approach struct {
 	FullName  string          `json:"full_name"`
 	Type      ApproachType    `json:"type"`
+	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
 }
 
