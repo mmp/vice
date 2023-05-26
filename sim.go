@@ -828,11 +828,20 @@ func (sim *Sim) updateState() {
 		}
 	}
 
-	// Add a new radar track every 5 seconds.
+	// Add a new radar track every 5 seconds.  While we're at it, cull
+	// departures that are far from the airport.
 	if now.Sub(sim.lastTrackUpdate) >= 5*time.Second {
 		sim.lastTrackUpdate = now
 
-		for _, ac := range sim.Aircraft {
+		for callsign, ac := range sim.Aircraft {
+			if ap, ok := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]; ok && ac.IsDeparture {
+				if nmdistance2ll(ac.Position, ap.Location) > 200 {
+					eventStream.Post(&RemovedAircraftEvent{ac: ac})
+					delete(sim.Aircraft, callsign)
+					continue
+				}
+			}
+
 			ac.AddTrack(RadarTrack{
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
