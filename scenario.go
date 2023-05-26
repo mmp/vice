@@ -396,12 +396,22 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 
 			e.Push("Route " + ar.Route)
 
-			sg.InitializeWaypointLocations(ar.Waypoints, e)
+			if len(ar.Waypoints) == 0 {
+				e.ErrorString("must provide \"waypoints\" for approach " +
+					"(even if \"runway_waypoints\" are provided)")
+			} else {
+				sg.InitializeWaypointLocations(ar.Waypoints, e)
 
-			for rwy, wp := range ar.RunwayWaypoints {
-				e.Push("Runway " + rwy)
-				sg.InitializeWaypointLocations(wp, e)
-				e.Pop()
+				for rwy, wp := range ar.RunwayWaypoints {
+					e.Push("Runway " + rwy)
+					sg.InitializeWaypointLocations(wp, e)
+
+					if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
+						e.ErrorString("initial \"runway_waypoints\" fix must match " +
+							"last \"waypoints\" fix")
+					}
+					e.Pop()
+				}
 			}
 
 			for arrivalAirport, airlines := range ar.Airlines {

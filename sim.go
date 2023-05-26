@@ -1031,6 +1031,29 @@ func (sim *Sim) ExpectApproach(callsign string, approach string) error {
 	}
 
 	ac.Approach = ap
+
+	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
+		// Splice the runway-specific waypoints in with the aircraft's
+		// current waypoints...
+		idx := FindIf(ac.Waypoints, func(w Waypoint) bool {
+			return w.Fix == wp[0].Fix
+		})
+		if idx == -1 {
+			lg.Errorf("%s: Aircraft waypoints %s don't match up with arrival runway waypoints %s",
+				ac.Callsign, spew.Sdump(ac.Waypoints), spew.Sdump(wp))
+			// Assume that it has (hopefully recently) passed the last fix
+			// and that patching in the rest will work out..
+			ac.Waypoints = DuplicateSlice(wp[1:])
+		} else {
+			if idx == 0 {
+				ac.Waypoints = nil
+			} else {
+				ac.Waypoints = ac.Waypoints[:idx-1]
+			}
+			ac.Waypoints = append(ac.Waypoints, wp...)
+		}
+	}
+
 	pilotResponse(callsign, "we'll expect the "+ap.FullName+" approach")
 
 	return nil
@@ -1567,16 +1590,13 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 		}
 	}
 	ac.FlightPlan.Route = arr.Route
-	// Start with the default waypoints for the arrival
+
+	// Start with the default waypoints for the arrival; these may be
+	// updated when an 'expect' approach is given...
 	ac.Waypoints = arr.Waypoints
-	// But if there is a custom route for any of the active runways, switch
-	// to that. Results are undefined if there are multiple matches.
-	for _, aprwy := range sim.Scenario.ArrivalRunways {
-		if wp, ok := arr.RunwayWaypoints[aprwy.Runway]; ok {
-			ac.Waypoints = wp
-			break
-		}
-	}
+	// Hold onto these with the Aircraft so we have them later.
+	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
+
 	ac.Altitude = float32(arr.InitialAltitude)
 	ac.IAS = float32(arr.InitialSpeed)
 	ac.CrossingAltitude = arr.ClearedAltitude

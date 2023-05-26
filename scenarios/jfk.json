@@ -2732,8 +2732,8 @@
         "initial_speed": 275,
         "route": "/. PARCH3",
         "runway_waypoints": {
-          "22L": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER CRAIL #302",
-          "22R": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER CRAIL #302"
+          "22L": "ROBER CRAIL #302",
+          "22R": "ROBER CRAIL #302"
         },
         "speed_restriction": 250,
         "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER #278"

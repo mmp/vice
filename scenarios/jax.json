@@ -453,11 +453,12 @@
                             "initial_speed": 250,
                             "route": "/. LUNNI1",
                             "runway_waypoints": {
-                                "8": "GOTBE @ LUNNI@a10000@s250 SAVAE@a6000 PENSE@a4000@s210 RUMEE #257",
-                                "14": "GOTBE @ LUNNI@a10000@s250 WADIG@a5000@s230 DEDDA@a3000@s210",
-                                "26": "GOTBE @ LUNNI@a8000@s250 LAYON@a3000@s210",
-                                "32": "GOTBE @ LUNNI@a8000@s250 SSAWW@a7000@s230 ZAXIT@a4000@s210 PALSY PEPIE #137"
-                            }
+                                "8": "LUNNI@a10000@s250 SAVAE@a6000 PENSE@a4000@s210 RUMEE #257",
+                                "14": "LUNNI@a10000@s250 WADIG@a5000@s230 DEDDA@a3000@s210",
+                                "26": "LUNNI@a8000@s250 LAYON@a3000@s210",
+                                "32": "LUNNI@a8000@s250 SSAWW@a7000@s230 ZAXIT@a4000@s210 PALSY PEPIE #137"
+                            },
+                            "waypoints": "GOTBE @ LUNNI@a10000@s250"
                         }
                     ],
                     "MARQO2": [
@@ -512,11 +513,12 @@
                             "initial_speed": 250,
                             "route": "/. MARQO2",
                             "runway_waypoints": {
-                                "8": "MARQO @ COROE@a9000@s250 NATII@a5000@s230 GUTTY@a3000@s210 #103",
-                                "14": "MARQO @ COROE@a9000@s250 TASCH@a5000 GWIIZ@a5000 DIPDE@a3000@s210 ",
-                                "26": "MARQO @ COROE@a9000@s250 GWIIZ@a5000 EGAGE@a4000@s210 NOMTE OLEKE #077",
-                                "32": "MARQO @ COROE@a9000@s250 GWIIZ@a5000 HITTS ACENE@a4000@s210 CALIM PEPIE #137"
-                            }
+                                "8": "COROE@a9000@s250 NATII@a5000@s230 GUTTY@a3000@s210 #103",
+                                "14": "COROE@a9000@s250 TASCH@a5000 GWIIZ@a5000 DIPDE@a3000@s210 ",
+                                "26": "COROE@a9000@s250 GWIIZ@a5000 EGAGE@a4000@s210 NOMTE OLEKE #077",
+                                "32": "COROE@a9000@s250 GWIIZ@a5000 HITTS ACENE@a4000@s210 CALIM PEPIE #137"
+                            },
+                            "waypoints": "MARQO @ COROE@a9000@s250"
                         }
                     ],
                     "OHDEA1": [
@@ -571,11 +573,12 @@
                             "initial_speed": 250,
                             "route": "/. OHDEA1",
                             "runway_waypoints": {
-                                "8": "FORMB@a11000 @ OHDEA KIPLE@a10000@s250 KITZO@a5000@s230 CEDOT@a3000@s210 #150",
-                                "14": "FORMB@a11000 @ OHDEA KIPLE MAHKA@a5000@s230 ORTAR@a3000@s210 #145",
-                                "26": "FORMB@a11000 @ OHDEA KIPLE MATLL@a6000@s230 NANAA@a4000@s210 NOMTE OLEKE #077",
-                                "32": "FORMB@a11000 @ OHDEA KIPLE NAMPE@a6000@s230 ACENE@a4000@s230 CALIM PEPIE #137"
-                            }
+                                "8": "KIPLE@a10000@s250 KITZO@a5000@s230 CEDOT@a3000@s210 #150",
+                                "14": "KIPLE MAHKA@a5000@s230 ORTAR@a3000@s210 #145",
+                                "26": "KIPLE MATLL@a6000@s230 NANAA@a4000@s210 NOMTE OLEKE #077",
+                                "32": "KIPLE NAMPE@a6000@s230 ACENE@a4000@s230 CALIM PEPIE #137"
+                            },
+                            "waypoints": "FORMB@a11000 @ OHDEA KIPLE@a10000@s250"
                         }
                     ],
                     "QUBEN1": [
@@ -602,11 +605,12 @@
                             "initial_speed": 250,
                             "route": "/. QUBEN1",
                             "runway_waypoints": {
-                                "8": "SHINR@a16000 @ POGIE@a13000 QUBEN@a10000@s250 BETLE@a5000@s230 PLANK WADOR@a3000@s210 #346",
-                                "14": "SHINR@a16000 @ POGIE@a13000 QUBEN@a10000@s250 BETLE@a5000@s230 PLANK EYLND@a4000@s210 KRISO@a3000 DUNTE JAKRU #317",
-                                "26": "SHINR@a16000 @ POGIE@a13000 QUBEN@a10000@s250 BETLE@a5000@s230 GUTNE@a4000@s210 CLART #084",
-                                "32": "SHINR@a16000 @ POGIE@a13000 QUBEN@a10000@s250 BETLE@a5000@s230 GURDE@a3000@s210 #023"
-                            }
+                                "8": "BETLE@a5000@s230 PLANK WADOR@a3000@s210 #346",
+                                "14": "BETLE@a5000@s230 PLANK EYLND@a4000@s210 KRISO@a3000 DUNTE JAKRU #317",
+                                "26": "BETLE@a5000@s230 GUTNE@a4000@s210 CLART #084",
+                                "32": "BETLE@a5000@s230 GURDE@a3000@s210 #023"
+                            },
+                            "waypoints": "SHINR@a16000 @ POGIE@a13000 QUBEN@a10000@s250 BETLE@a5000@s230"
                         }
                     ]
                 },

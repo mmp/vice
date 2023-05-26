@@ -328,9 +328,10 @@
         "initial_speed": 250,
         "route": "/. KRAZE FJC",
         "runway_waypoints": {
-          "24": "N040.13.18.884,W076.09.35.958 BOYER @ FLOAT FJC",
-          "6": "N040.13.18.884,W076.09.35.958 BOYER @ FLOAT ETX"
-        }
+          "24": "FLOAT FJC",
+          "6": "FLOAT ETX"
+        },
+        "waypoints": "N040.13.18.884,W076.09.35.958 BOYER @ FLOAT"
       },
       {
         "airlines": {
@@ -404,9 +405,10 @@
         "initial_speed": 250,
         "route": "/. KRAZE",
         "runway_waypoints": {
-          "24": "MARRC N040.53.30.177,W076.08.25.233 @ KRAZE FJC",
-          "6": "MARRC N040.53.30.177,W076.08.25.233 @ KRAZE ETX"
-        }
+          "24": "KRAZE FJC",
+          "6": "KRAZE ETX"
+        },
+        "waypoints": "MARRC N040.53.30.177,W076.08.25.233 @ KRAZE"
       },
       {
         "airlines": {
@@ -432,9 +434,10 @@
         "initial_speed": 250,
         "route": "/. SLATT",
         "runway_waypoints": {
-          "24": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760 @ SNOWY SLATT FJC",
-          "6": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760 @ SNOWY SLATT ETX"
-        }
+          "24": "SLATT FJC",
+          "6": "SLATT ETX"
+        },
+        "waypoints": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760 @ SNOWY SLATT"
       },
       {
         "airlines": {
@@ -461,9 +464,10 @@
         "initial_speed": 250,
         "route": "/. SLATT",
         "runway_waypoints": {
-          "24": "N041.09.29.229,W075.41.57.572 WHITT @ SLATT FJC",
-          "6": "N041.09.29.229,W075.41.57.572 WHITT @ SLATT ETX"
-        }
+          "24": "SLATT FJC",
+          "6": "SLATT ETX"
+        },
+        "waypoints": "N041.09.29.229,W075.41.57.572 WHITT @ SLATT"
       }
     ],
     "ZNY Southwest": [
@@ -487,9 +491,10 @@
         "initial_speed": 250,
         "route": "/. DUMMR",
         "runway_waypoints": {
-          "24": "N040.20.24.385,W076.33.17.726 HWANG @ DUMMR FJC",
-          "6": "N040.20.24.385,W076.33.17.726 HWANG @ DUMMR ETX"
-        }
+          "24": "DUMMR FJC",
+          "6": "DUMMR ETX"
+        },
+        "waypoints": "N040.20.24.385,W076.33.17.726 HWANG @ DUMMR"
       },
       {
         "airlines": {
@@ -516,9 +521,10 @@
         "initial_speed": 250,
         "route": "/. DUMMR",
         "runway_waypoints": {
-          "24": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120 @ DUMMR FJC",
-          "6": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120 @ DUMMR ETX"
-        }
+          "24": "DUMMR FJC",
+          "6": "DUMMR ETX"
+        },
+        "waypoints": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120 @ DUMMR"
       }
     ]
   },

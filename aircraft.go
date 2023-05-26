@@ -59,6 +59,9 @@ type Aircraft struct {
 	CrossingAltitude int
 	CrossingSpeed    int
 
+	// Set for arrivals, if there are runway-specific waypoints.
+	ArrivalRunwayWaypoints map[string]WaypointArray
+
 	Approach            *Approach // if assigned
 	ClearedApproach     bool
 	OnFinal             bool
