@@ -154,7 +154,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
-			e.ErrorString("airport \"%s\" not found", rwy.Airport)
+			e.ErrorString("airport not found")
 		} else {
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
@@ -184,6 +184,26 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
 	})
+
+	for _, rwy := range s.ArrivalRunways {
+		e.Push("Arrival runway " + rwy.Airport + " " + rwy.Runway)
+		if ap, ok := sg.Airports[rwy.Airport]; !ok {
+			e.ErrorString("airport not found")
+		} else {
+			found := false
+			for _, appr := range ap.Approaches {
+				if appr.Runway == rwy.Runway {
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				e.ErrorString("no approach found that reaches this runway")
+			}
+		}
+		e.Pop()
+	}
 
 	for _, name := range SortedMapKeys(s.ArrivalGroupDefaultRates) {
 		e.Push("Arrival group " + name)

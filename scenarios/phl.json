@@ -5025,7 +5025,7 @@
     }
   },
   "default_controller": "PHL_NA_APP",
-  "default_scenario": "KPHL Depart 27L Land 27R",
+  "default_scenario": "KPHL Depart 27L Land 27R/35",
   "fixes": { },
   "magnetic_variation": 13.3,
   "name": "KPHL",
@@ -5086,7 +5086,7 @@
         "speed": 8
       }
     },
-    "KPHL Depart 27L Land 27R": {
+    "KPHL Depart 27L Land 27R/35": {
       "approach_airspace": [
         "PHL_DU_APP27",
         "PHL_F1_APP27",
@@ -5101,6 +5101,10 @@
         {
           "airport": "KPHL",
           "runway": "27R"
+        },
+        {
+          "airport": "KPHL",
+          "runway": "35"
         }
       ],
       "arrivals": {
@@ -5143,7 +5147,7 @@
         "speed": 12
       }
     },
-    "KPHL Depart 9L Land 9R": {
+    "KPHL Depart 9L Land 9R/17": {
       "approach_airspace": [
         "PHL_DU_APP9",
         "PHL_F1_APP9",
@@ -5158,6 +5162,10 @@
         {
           "airport": "KPHL",
           "runway": "9R"
+        },
+        {
+          "airport": "KPHL",
+          "runway": "17"
         }
       ],
       "arrivals": {
