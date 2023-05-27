@@ -511,6 +511,12 @@ func (sim *Sim) Activate() error {
 			lg.Errorf("%s", spew.Sdump(ac.Approach))
 		}
 
+		for rwy, wp := range ac.ArrivalRunwayWaypoints {
+			e.Push("Arrival runway " + rwy)
+			scenarioGroup.InitializeWaypointLocations(wp, &e)
+			e.Pop()
+		}
+
 		e.Pop()
 		eventStream.Post(&AddedAircraftEvent{ac: ac})
 	}
