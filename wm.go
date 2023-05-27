@@ -504,82 +504,82 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	commandBuffer := GetCommandBuffer()
 	defer ReturnCommandBuffer(commandBuffer)
 
+	// Now traverse all of the Panes...
+	// First clear the entire window to the background color.
+	commandBuffer.ClearRGB(RGB{})
+
+	// Draw the status bar underneath the menu bar
+	wmDrawStatusBar(fbSize, displaySize, commandBuffer)
+
+	// By default we'll visit the tree starting at
+	// DisplayRoot. However, if a Pane has been maximized to cover the
+	// whole screen, we will instead start with it.
+	root := globalConfig.DisplayRoot
+
+	// Actually visit the panes.
+	var keyboard *KeyboardState
+	if !imgui.CurrentIO().WantCaptureKeyboard() {
+		keyboard = NewKeyboardState()
+	}
+	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
+		func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
+			haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
+			ctx := PaneContext{
+				paneExtent:       paneExtent,
+				parentPaneExtent: parentExtent,
+				platform:         platform,
+				events:           eventStream,
+				keyboard:         keyboard,
+				haveFocus:        haveFocus}
+
+			// Similarly make the mouse events available only to the
+			// one Pane that should see them.
+			ownsMouse := wm.mouseConsumerOverride == pane ||
+				(wm.mouseConsumerOverride == nil &&
+					!io.WantCaptureMouse() &&
+					paneExtent.Inside(mousePos))
+			if ownsMouse {
+				// Full display size, including the menu and status bar.
+				displayTrueFull := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1]}}
+				ctx.InitializeMouse(displayTrueFull)
+			}
+
+			// Specify the scissor rectangle and viewport that
+			// correspond to the pixels that the Pane covers. In this
+			// way, not only can the Pane be implemented in terms of
+			// Pane coordinates, independent of where it is actually
+			// placed in the overall window, but this also ensures that
+			// the Pane can't inadvertently draw over other Panes.
+			//
+			// One messy detail here is that these windows are
+			// specified in framebuffer coordinates, not display
+			// coordinates, so they must be scaled by the DPI scale for
+			// e.g., retina displays.
+			x0, y0 := int(highDPIScale*paneExtent.p0[0]), int(highDPIScale*paneExtent.p0[1])
+			w, h := int(highDPIScale*paneExtent.Width()), int(highDPIScale*paneExtent.Height())
+			commandBuffer.Scissor(x0, y0, w, h)
+			commandBuffer.Viewport(x0, y0, w, h)
+
+			// Let the Pane do its thing
+			pane.Draw(&ctx, commandBuffer)
+
+			// And reset the graphics state to the standard baseline,
+			// so no state changes leak and affect subsequent drawing.
+			commandBuffer.ResetState()
+		})
+
+	// Clear mouseConsumerOverride if the user has stopped dragging;
+	// only do this after visiting the Panes so that the override Pane
+	// still sees the mouse button release event.
+	if !isDragging && !isClicked {
+		wm.mouseConsumerOverride = nil
+	}
+
 	// fbSize will be (0,0) if the window is minimized, in which case we
-	// can skip all this...
+	// can skip rendering. It's still important to do all of the pane
+	// traversal, etc., though, so that events are still consumed and
+	// memory use doesn't grow.
 	if fbSize[0] > 0 && fbSize[1] > 0 {
-		// Now traverse all of the Panes...
-		// First clear the entire window to the background color.
-		commandBuffer.ClearRGB(RGB{})
-
-		// Draw the status bar underneath the menu bar
-		wmDrawStatusBar(fbSize, displaySize, commandBuffer)
-
-		// By default we'll visit the tree starting at
-		// DisplayRoot. However, if a Pane has been maximized to cover the
-		// whole screen, we will instead start with it.
-		root := globalConfig.DisplayRoot
-
-		// Actually visit the panes.
-		var keyboard *KeyboardState
-		if !imgui.CurrentIO().WantCaptureKeyboard() {
-			keyboard = NewKeyboardState()
-		}
-		root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
-			func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
-				haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
-				ctx := PaneContext{
-					paneExtent:       paneExtent,
-					parentPaneExtent: parentExtent,
-					platform:         platform,
-					events:           eventStream,
-					keyboard:         keyboard,
-					haveFocus:        haveFocus}
-
-				// Similarly make the mouse events available only to the
-				// one Pane that should see them.
-				ownsMouse := wm.mouseConsumerOverride == pane ||
-					(wm.mouseConsumerOverride == nil &&
-						!io.WantCaptureMouse() &&
-						paneExtent.Inside(mousePos))
-				if ownsMouse {
-					// Full display size, including the menu and status bar.
-					displayTrueFull := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1]}}
-					ctx.InitializeMouse(displayTrueFull)
-				}
-
-				// Specify the scissor rectangle and viewport that
-				// correspond to the pixels that the Pane covers. In this
-				// way, not only can the Pane be implemented in terms of
-				// Pane coordinates, independent of where it is actually
-				// placed in the overall window, but this also ensures that
-				// the Pane can't inadvertently draw over other Panes.
-				//
-				// One messy detail here is that these windows are
-				// specified in framebuffer coordinates, not display
-				// coordinates, so they must be scaled by the DPI scale for
-				// e.g., retina displays.
-				x0, y0 := int(highDPIScale*paneExtent.p0[0]), int(highDPIScale*paneExtent.p0[1])
-				w, h := int(highDPIScale*paneExtent.Width()), int(highDPIScale*paneExtent.Height())
-				commandBuffer.Scissor(x0, y0, w, h)
-				commandBuffer.Viewport(x0, y0, w, h)
-
-				// Let the Pane do its thing
-				pane.Draw(&ctx, commandBuffer)
-
-				// And reset the graphics state to the standard baseline,
-				// so no state changes leak and affect subsequent drawing.
-				commandBuffer.ResetState()
-			})
-
-		// Clear mouseConsumerOverride if the user has stopped dragging;
-		// only do this after visiting the Panes so that the override Pane
-		// still sees the mouse button release event.
-		if !isDragging && !isClicked {
-			wm.mouseConsumerOverride = nil
-		}
-
-		// Finally, render the entire command buffer for all of the Panes
-		// all at once.
 		stats.render = renderer.RenderCommandBuffer(commandBuffer)
 	}
 }
