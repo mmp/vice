@@ -539,10 +539,12 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 
 // Takes aircraft position in window coordinates
 func NewSTARSPane() *STARSPane {
-	return &STARSPane{
+	sp := &STARSPane{
 		Facility:              MakeDefaultFacility(),
 		SelectedPreferenceSet: -1,
 	}
+	sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility)
+	return sp
 }
 
 func (sp *STARSPane) Name() string { return "STARS" }
