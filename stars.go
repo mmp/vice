@@ -550,6 +550,11 @@ func NewSTARSPane() *STARSPane {
 func (sp *STARSPane) Name() string { return "STARS" }
 
 func (sp *STARSPane) Activate() {
+	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
+		// First launch after switching over to serializing the CurrentPreferenceSet...
+		sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility)
+	}
+
 	sp.CurrentPreferenceSet.Activate()
 
 	if sp.havePlayedSPCAlertSound == nil {
