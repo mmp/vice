@@ -68,6 +68,7 @@ var (
 		"Added LGA departure and arrival scenarios",
 		"Vice now remembers the active aircraft when you quit and restores the simulation when you launch it again",
 		"When vice is paused, hovering the mouse on a radar track shows the directions it has been given",
+		"Fixed a bug where the STARS window wouldn't display anything",
 	}
 )
 
