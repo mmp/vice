@@ -328,7 +328,6 @@ type Sim struct {
 
 	DepartureChallenge float32
 	GoAroundRate       float32
-	WillGoAround       map[string]interface{}
 
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
@@ -373,7 +372,6 @@ func NewSim(ssc SimConnectionConfiguration) *Sim {
 		SimRate:            1,
 		DepartureChallenge: ssc.departureChallenge,
 		GoAroundRate:       ssc.goAroundRate,
-		WillGoAround:       make(map[string]interface{}),
 	}
 
 	// Make some fake METARs; slightly different for all airports.
@@ -591,10 +589,6 @@ func (sim *Sim) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (sim *Sim) PushFlightStrip(callsign string, controller string) error {
-	return nil // UNIMPLEMENTED
-}
-
 func (sim *Sim) InitiateTrack(callsign string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
@@ -671,14 +665,6 @@ func (sim *Sim) CancelHandoff(callsign string) error {
 }
 
 func (sim *Sim) PointOut(callsign string, controller string) error {
-	return nil // UNIMPLEMENTED
-}
-
-func (sim *Sim) RequestControllerATIS(controller string) error {
-	return nil // UNIMPLEMENTED
-}
-
-func (sim *Sim) SetRadarCenters(primary Point2LL, secondary [3]Point2LL, rangeNm int) error {
 	return nil // UNIMPLEMENTED
 }
 
@@ -763,10 +749,6 @@ func (sim *Sim) GetAllControllers() []*Controller {
 		func(ctrl *Controller) bool { return Find(sim.Scenario.Controllers, ctrl.Callsign) != -1 })
 }
 
-func (sim *Sim) SetPrimaryFrequency(f Frequency) {
-	// UNIMPLEMENTED
-}
-
 func (sim *Sim) GetUpdates() {
 	if sim.Paused || sim.Scenario == nil {
 		return
@@ -804,7 +786,9 @@ func (sim *Sim) updateState() {
 
 				// Climb to cruise altitude...
 				if ac.IsDeparture {
-					ac.AssignedAltitude = ac.FlightPlan.Altitude
+					ac.VNav = &MaintainAltitude{
+						Altitude: float32(ac.FlightPlan.Altitude),
+					}
 				}
 			}
 			delete(sim.Handoffs, callsign)
@@ -816,21 +800,6 @@ func (sim *Sim) updateState() {
 		sim.lastSimUpdate = now
 		for _, ac := range sim.Aircraft {
 			ac.Update()
-
-			if _, ok := sim.WillGoAround[ac.Callsign]; !ok {
-				continue
-			}
-
-			if !ac.OnFinal || len(ac.Waypoints) != 1 {
-				continue
-			}
-
-			dist := nmdistance2ll(ac.Position, ac.Waypoints[0].Location)
-			if dist < 0.25 {
-				delete(sim.WillGoAround, ac.Callsign)
-				ac.GoAround(sim)
-				pilotResponse(ac.Callsign, "Going around")
-			}
 		}
 	}
 
@@ -895,21 +864,11 @@ func (sim *Sim) AssignAltitude(callsign string, altitude int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		if float32(altitude) > ac.Altitude {
-			pilotResponse(callsign, "climb and maintain %d", altitude)
-		} else if float32(altitude) == ac.Altitude {
-			pilotResponse(callsign, "maintain %d", altitude)
-		} else {
-			pilotResponse(callsign, "descend and maintain %d", altitude)
+		resp, err := ac.AssignAltitude(altitude)
+		if resp != "" {
+			pilotResponse(callsign, "%s", resp)
 		}
-
-		if ac.AssignedSpeed != 0 {
-			ac.AssignedAltitudeAfterSpeed = altitude
-		} else {
-			ac.AssignedAltitude = altitude
-		}
-		ac.CrossingAltitude = 0
-		return nil
+		return err
 	}
 }
 
@@ -917,25 +876,11 @@ func (sim *Sim) AssignHeading(callsign string, heading int, turn int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		if turn > 0 {
-			pilotResponse(callsign, "turn right heading %d", heading)
-		} else if turn == 0 {
-			pilotResponse(callsign, "fly heading %d", heading)
-		} else {
-			pilotResponse(callsign, "turn left heading %d", heading)
+		resp, err := ac.AssignHeading(heading, turn)
+		if resp != "" {
+			pilotResponse(callsign, "%s", resp)
 		}
-
-		// A 0 heading shouldn't be specified, but at least cause the
-		// aircraft to do what is intended, since 0 represents an
-		// unassigned heading.
-		if heading == 0 {
-			heading = 360
-		}
-
-		ac.AssignedHeading = heading
-		ac.TurnDirection = turn
-		ac.ClearedApproach = false // if cleared, giving a heading cancels clearance
-		return nil
+		return err
 	}
 }
 
@@ -943,20 +888,11 @@ func (sim *Sim) TurnLeft(callsign string, deg int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		pilotResponse(callsign, "turn %d degrees left", deg)
-
-		if ac.AssignedHeading == 0 {
-			ac.AssignedHeading = int(ac.Heading) - deg
-		} else {
-			ac.AssignedHeading -= deg
+		resp, err := ac.TurnLeft(deg)
+		if resp != "" {
+			pilotResponse(callsign, "%s", resp)
 		}
-
-		if ac.AssignedHeading <= 0 {
-			ac.AssignedHeading += 360
-		}
-		ac.TurnDirection = 0
-		ac.ClearedApproach = false // if cleared, giving a heading cancels clearance
-		return nil
+		return err
 	}
 }
 
@@ -964,20 +900,11 @@ func (sim *Sim) TurnRight(callsign string, deg int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		pilotResponse(callsign, "turn %d degrees right", deg)
-
-		if ac.AssignedHeading == 0 {
-			ac.AssignedHeading = int(ac.Heading) + deg
-		} else {
-			ac.AssignedHeading += deg
+		resp, err := ac.TurnRight(deg)
+		if resp != "" {
+			pilotResponse(callsign, "%s", resp)
 		}
-
-		if ac.AssignedHeading > 360 {
-			ac.AssignedHeading -= 360
-		}
-		ac.TurnDirection = 0
-		ac.ClearedApproach = false // if cleared, giving a heading cancels clearance
-		return nil
+		return err
 	}
 }
 
@@ -985,29 +912,11 @@ func (sim *Sim) AssignSpeed(callsign string, speed int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		if speed == 0 {
-			pilotResponse(callsign, "cancel speed restrictions")
-		} else if speed < ac.Performance.Speed.Landing {
-			pilotResponse(callsign, "unable--our minimum speed is %d knots", ac.Performance.Speed.Landing)
-			return ErrUnableCommand
-		} else if speed > ac.Performance.Speed.Max {
-			pilotResponse(callsign, "unable--our maximum speed is %d knots", ac.Performance.Speed.Max)
-			return ErrUnableCommand
-		} else if ac.ClearedApproach {
-			pilotResponse(callsign, "%d knots until 5 mile final", speed)
-		} else if speed == ac.AssignedSpeed {
-			pilotResponse(callsign, "we'll maintain %d knots", speed)
-		} else {
-			pilotResponse(callsign, "maintain %d knots", speed)
+		resp, err := ac.AssignSpeed(speed)
+		if resp != "" {
+			pilotResponse(callsign, "%s", resp)
 		}
-
-		if ac.AssignedAltitude != 0 {
-			ac.AssignedSpeedAfterAltitude = speed
-		} else {
-			ac.AssignedSpeed = speed
-		}
-		ac.CrossingSpeed = 0
-		return nil
+		return err
 	}
 }
 
@@ -1015,36 +924,11 @@ func (sim *Sim) DirectFix(callsign string, fix string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		fix = strings.ToUpper(fix)
-
-		// Look for the fix in the waypoints in the flight plan.
-		for i, wp := range ac.Waypoints {
-			if fix == wp.Fix {
-				ac.Waypoints = ac.Waypoints[i:]
-				if len(ac.Waypoints) > 0 {
-					ac.WaypointUpdate(wp)
-				}
-				pilotResponse(callsign, "direct %s", fix)
-				return nil
-			}
+		resp, err := ac.DirectFix(fix)
+		if resp != "" {
+			pilotResponse(callsign, "%s", resp)
 		}
-
-		if ac.Approach != nil {
-			for _, route := range ac.Approach.Waypoints {
-				for _, wp := range route {
-					if wp.Fix == fix {
-						ac.Waypoints = []Waypoint{wp}
-						if len(ac.Waypoints) > 0 {
-							ac.WaypointUpdate(wp)
-						}
-						pilotResponse(callsign, "direct %s", fix)
-						return nil
-					}
-				}
-			}
-		}
-
-		return fmt.Errorf("%s: fix not found in route", fix)
+		return err
 	}
 }
 
@@ -1078,33 +962,11 @@ func (sim *Sim) ExpectApproach(callsign string, approach string) error {
 		return err
 	}
 
-	ac.Approach = ap
-
-	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
-		// Splice the runway-specific waypoints in with the aircraft's
-		// current waypoints...
-		idx := FindIf(ac.Waypoints, func(w Waypoint) bool {
-			return w.Fix == wp[0].Fix
-		})
-		if idx == -1 {
-			lg.Errorf("%s: Aircraft waypoints %s don't match up with arrival runway waypoints %s",
-				ac.Callsign, spew.Sdump(ac.Waypoints), spew.Sdump(wp))
-			// Assume that it has (hopefully recently) passed the last fix
-			// and that patching in the rest will work out..
-			ac.Waypoints = DuplicateSlice(wp[1:])
-		} else {
-			if idx == 0 {
-				ac.Waypoints = nil
-			} else {
-				ac.Waypoints = ac.Waypoints[:idx-1]
-			}
-			ac.Waypoints = append(ac.Waypoints, wp...)
-		}
+	resp, err := ac.ExpectApproach(ap)
+	if resp != "" {
+		pilotResponse(callsign, "%s", resp)
 	}
-
-	pilotResponse(callsign, "we'll expect the "+ap.FullName+" approach")
-
-	return nil
+	return err
 }
 
 func (sim *Sim) ClearedApproach(callsign string, approach string) error {
@@ -1113,76 +975,11 @@ func (sim *Sim) ClearedApproach(callsign string, approach string) error {
 		return err
 	}
 
-	response := ""
-	if ac.Approach == nil {
-		// allow it anyway...
-		response = "you never told us to expect an approach, but ok, cleared " + ap.FullName
-		ac.Approach = ap
+	resp, err := ac.ClearedApproach(ap)
+	if resp != "" {
+		pilotResponse(callsign, "%s", resp)
 	}
-	if ac.Approach.FullName != ap.FullName {
-		pilotResponse(callsign, "but you cleared us for the "+ac.Approach.FullName+" approach...")
-		return ErrClearedForUnexpectedApproach
-	}
-	if ac.ClearedApproach {
-		pilotResponse(callsign, "you already cleared us for the "+ap.FullName+" approach...")
-		return nil
-	}
-
-	directApproachFix := false
-	var remainingApproachWaypoints []Waypoint
-	if ac.AssignedHeading == 0 && len(ac.Waypoints) > 0 {
-		// Is the aircraft cleared direct to a waypoint on the approach?
-		for _, approach := range ap.Waypoints {
-			for i, wp := range approach {
-				if wp.Fix == ac.Waypoints[0].Fix {
-					directApproachFix = true
-					if i+1 < len(approach) {
-						remainingApproachWaypoints = approach[i+1:]
-					}
-					break
-				}
-			}
-		}
-	}
-
-	if ac.Approach.Type == ILSApproach {
-		if ac.AssignedHeading == 0 {
-			if !directApproachFix {
-				pilotResponse(callsign, "we need either direct or a heading to intercept")
-				return nil
-			} else {
-				if remainingApproachWaypoints != nil {
-					ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
-				}
-			}
-		}
-		// If the aircraft is on a heading, there's nothing more to do for
-		// now; keep flying the heading and after we intercept we'll add
-		// the rest of the waypoints to the aircraft's waypoints array.
-	} else {
-		// RNAV
-		if !directApproachFix {
-			pilotResponse(callsign, "we need direct to a fix on the approach...")
-			return nil
-		}
-
-		if remainingApproachWaypoints != nil {
-			ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
-		}
-	}
-
-	// cleared approach cancels speed restrictions, but let's assume that
-	// aircraft will just maintain their present speed and not immediately
-	// accelerate up to 250...
-	ac.AssignedSpeed = 0
-	ac.CrossingSpeed = int(ac.IAS)
-	ac.ClearedApproach = true
-
-	pilotResponse(callsign, response+"cleared "+ap.FullName+" approach")
-
-	lg.Printf("%s", spew.Sdump(ac))
-
-	return nil
+	return err
 }
 
 func (sim *Sim) PrintInfo(callsign string) error {
@@ -1190,22 +987,11 @@ func (sim *Sim) PrintInfo(callsign string) error {
 		return ErrNoAircraftForCallsign
 	} else {
 		lg.Errorf("%s", spew.Sdump(ac))
-		s := fmt.Sprintf("%s: current alt %f, assigned alt %d crossing alt %d",
-			ac.Callsign, ac.Altitude, ac.AssignedAltitude, ac.CrossingAltitude)
-		if ac.AssignedHeading != 0 {
-			s += fmt.Sprintf(" heading %d", ac.AssignedHeading)
-			if ac.TurnDirection != 0 {
-				s += fmt.Sprintf(" turn direction %d", ac.TurnDirection)
-			}
-		}
-		s += fmt.Sprintf(", IAS %f GS %.1f speed %d crossing speed %d",
-			ac.IAS, ac.GS, ac.AssignedSpeed, ac.CrossingSpeed)
 
-		if ac.ClearedApproach {
+		s := fmt.Sprintf("%s: current alt %f, heading %f, IAS %.1f, GS %.1f",
+			ac.Callsign, ac.Altitude, ac.Heading, ac.IAS, ac.GS)
+		if ac.ApproachCleared {
 			s += ", cleared approach"
-		}
-		if ac.OnFinal {
-			s += ", on final"
 		}
 		lg.Errorf("%s", s)
 	}
@@ -1628,19 +1414,31 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 
 	ac.Altitude = float32(arr.InitialAltitude)
 	ac.IAS = float32(arr.InitialSpeed)
-	ac.CrossingAltitude = arr.ClearedAltitude
-	ac.CrossingSpeed = arr.SpeedRestriction
+
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
 		if appr, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport].Approaches[arr.ExpectApproach]; ok {
 			ac.Approach = &appr
 		} else {
 			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
+			return nil
 		}
 	}
 
 	if rand.Float32() < sim.GoAroundRate {
-		sim.WillGoAround[ac.Callsign] = nil
+		ac.AddFutureNavCommand(&GoAround{AirportDistance: 0.1 + .6*rand.Float32()})
+	}
+
+	ac.LNav = &FlyRoute{}
+	if arr.SpeedRestriction != 0 {
+		ac.SNav = &MaintainSpeed{IAS: float32(arr.SpeedRestriction)}
+	} else {
+		ac.SNav = &FlyRoute{}
+	}
+	if arr.ClearedAltitude != 0 {
+		ac.VNav = &MaintainAltitude{Altitude: float32(arr.ClearedAltitude)}
+	} else {
+		ac.VNav = &FlyRoute{}
 	}
 
 	return ac
@@ -1701,8 +1499,15 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 
 	ac.TrackingController = ap.DepartureController
 	ac.Altitude = float32(ap.Elevation)
-	ac.AssignedAltitude = min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)
 	ac.IsDeparture = true
+
+	ac.LNav = &FlyRoute{}
+	ac.SNav = &FlyRoute{}
+	ac.VNav = &MaintainAltitude{Altitude: float32(ap.Elevation)}
+
+	ac.AddFutureNavCommand(&ClimbOnceAirborne{
+		Altitude: float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)),
+	})
 
 	return ac
 }

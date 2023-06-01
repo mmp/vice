@@ -4006,42 +4006,32 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 		}
 	} else if sim.Paused {
 		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
-			info := ""
+			var info []string
 			if ac.IsDeparture {
-				info += "Departure\n"
+				info = append(info, "Departure")
 			} else {
-				info += "Arrival\n"
+				info = append(info, "Arrival")
 			}
-			if ac.AssignedAltitude != 0 {
-				info += fmt.Sprintf("Assigned altitude %d", ac.AssignedAltitude)
-				if ac.AssignedSpeedAfterAltitude != 0 {
-					info += fmt.Sprintf(", then speed %d", ac.AssignedSpeedAfterAltitude)
-				}
-				info += "\n"
+			info = append(info, ac.LNav.Summary(ac))
+			info = append(info, ac.SNav.Summary(ac))
+			info = append(info, ac.VNav.Summary(ac))
+
+			var condInfo []string
+			for cmd := range ac.FutureNavCommands {
+				condInfo = append(condInfo, cmd.Summary(ac))
 			}
-			if ac.AssignedSpeed != 0 {
-				info += fmt.Sprintf("Assigned speed %d", ac.AssignedSpeed)
-				if ac.AssignedAltitudeAfterSpeed != 0 {
-					info += fmt.Sprintf(", then altitude %d", ac.AssignedAltitudeAfterSpeed)
-				}
-				info += "\n"
-			}
-			if ac.AssignedHeading != 0 {
-				info += fmt.Sprintf("Assigned heading: %d\n", ac.AssignedHeading)
-			} else if len(ac.Waypoints) > 0 {
-				info += fmt.Sprintf("Proceeding to %s\n", ac.Waypoints[0].Fix)
-			}
+			sort.Strings(condInfo)
+			info = append(info, condInfo...)
 			if ac.Approach != nil {
-				info += "Assigned " + ac.Approach.FullName
-				if ac.ClearedApproach {
-					info += ", cleared approach"
+				if ac.ApproachCleared {
+					info = append(info, "Cleared "+ac.Approach.FullName+" approach")
+				} else {
+					info = append(info, "Expecting "+ac.Approach.FullName+" approach")
 				}
-				if ac.OnFinal {
-					info += ", on final"
-				}
-				info += "\n"
 			}
-			info = strings.TrimSpace(info)
+
+			info = FilterSlice(info, func(s string) bool { return s != "" })
+			infoLines := strings.Join(info, "\n")
 
 			td := GetTextDrawBuilder()
 			defer ReturnTextDrawBuilder(td)
@@ -4059,12 +4049,12 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			// Upper-left corner of where we start drawing the text
 			pad := float32(5)
 			ptext := add2f([2]float32{2 * pad, 0}, pac)
-			td.AddText(info, ptext, style)
+			td.AddText(infoLines, ptext, style)
 
 			// Draw an alpha-blended quad behind the text to make it more legible.
 			trid := GetTrianglesDrawBuilder()
 			defer ReturnTrianglesDrawBuilder(trid)
-			bx, by := font.BoundText(info, style.LineSpacing)
+			bx, by := font.BoundText(infoLines, style.LineSpacing)
 			trid.AddQuad(add2f(ptext, [2]float32{-pad, 0}),
 				add2f(ptext, [2]float32{float32(bx) + pad, 0}),
 				add2f(ptext, [2]float32{float32(bx) + pad, -float32(by) - pad}),

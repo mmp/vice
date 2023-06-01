@@ -138,7 +138,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
-		globalConfig.Version = 2
+		globalConfig.Version = 3
 		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
@@ -152,6 +152,15 @@ func LoadOrMakeDefaultConfig() {
 			// Force upgrade via upcoming Activate() call...
 			globalConfig.DisplayRoot = nil
 			globalConfig.Version = 1
+		}
+		if globalConfig.Version < 3 {
+			// Just knock out any in-progress sim since the Aircraft
+			// representation has changed and it's not worth trying to
+			// remap it to the new one.
+			globalConfig.Sim = nil
+			globalConfig.ScenarioGroupName = ""
+			globalConfig.ScenarioName = ""
+			globalConfig.Version = 3
 		}
 	}
 
