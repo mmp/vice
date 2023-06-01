@@ -1616,26 +1616,7 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 	ac.TrackingController = arr.InitialController
 	ac.FlightPlan.Altitude = arr.CruiseAltitude
 	if ac.FlightPlan.Altitude == 0 { // unspecified
-		// try to figure out direction of flight
-		pDep, depOk := scenarioGroup.Locate(ac.FlightPlan.DepartureAirport)
-		pArr, arrOk := scenarioGroup.Locate(ac.FlightPlan.ArrivalAirport)
-		if depOk && arrOk {
-			if nmdistance2ll(pDep, pArr) < 100 {
-				ac.FlightPlan.Altitude = 7000
-			} else if nmdistance2ll(pDep, pArr) < 200 {
-				ac.FlightPlan.Altitude = 11000
-			} else if nmdistance2ll(pDep, pArr) < 300 {
-				ac.FlightPlan.Altitude = 21000
-			} else {
-				ac.FlightPlan.Altitude = 37000
-			}
-
-			if headingp2ll(pDep, pArr, scenarioGroup.MagneticVariation) > 180 {
-				ac.FlightPlan.Altitude += 1000
-			}
-		} else {
-			ac.FlightPlan.Altitude = 39000
-		}
+		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
 	}
 	ac.FlightPlan.Route = arr.Route
 
@@ -1713,9 +1694,7 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 	ac.FlightPlan.ArrivalAirport = dep.Destination
 	ac.Scratchpad = scenarioGroup.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
-		// If unspecified, pick something in the flight levels...
-		// TODO: get altitudes right considering East/West-bound...
-		ac.FlightPlan.Altitude = 28000 + 1000*rand.Intn(13)
+		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
 	} else {
 		ac.FlightPlan.Altitude = dep.Altitude
 	}

@@ -263,6 +263,30 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 	}
 }
 
+func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
+	// try to figure out direction of flight
+	pDep, depOk := scenarioGroup.Locate(fp.DepartureAirport)
+	pArr, arrOk := scenarioGroup.Locate(fp.ArrivalAirport)
+	if depOk && arrOk {
+		if nmdistance2ll(pDep, pArr) < 100 {
+			altitude = 7000
+		} else if nmdistance2ll(pDep, pArr) < 200 {
+			altitude = 11000
+		} else if nmdistance2ll(pDep, pArr) < 300 {
+			altitude = 21000
+		} else {
+			altitude = 37000
+		}
+
+		if headingp2ll(pDep, pArr, scenarioGroup.MagneticVariation) > 180 {
+			altitude += 1000
+		}
+	} else {
+		altitude = 39000
+	}
+	return
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
