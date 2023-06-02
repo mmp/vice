@@ -7,6 +7,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
@@ -25,9 +26,14 @@ type NAVState struct {
 func (n *NAVState) Summary(ac *Aircraft) string {
 	var info []string
 	info = append(info, n.L.LSummary(ac), n.S.SSummary(ac), n.V.VSummary(ac))
+
+	var futinfo []string
 	for cmd := range n.FutureCommands {
-		info = append(info, cmd.Summary(ac))
+		futinfo = append(futinfo, cmd.Summary(ac))
 	}
+	sort.Strings(futinfo)
+	info = append(info, futinfo...)
+
 	info = FilterSlice(info, func(s string) bool { return s != "" })
 	return strings.Join(info, "\n")
 }
