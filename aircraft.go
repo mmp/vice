@@ -39,11 +39,7 @@ type Aircraft struct {
 
 	IsDeparture bool
 
-	LNav LNAVCommand
-	SNav SNAVCommand
-	VNav VNAVCommand
-
-	FutureNavCommands map[FutureNavCommand]interface{}
+	Nav NAVState
 
 	// Set for arrivals, if there are runway-specific waypoints.
 	ArrivalRunwayWaypoints map[string]WaypointArray
@@ -146,22 +142,22 @@ func (a *Aircraft) IsAssociated() bool {
 }
 
 func (ac *Aircraft) AddFutureNavCommand(cmd FutureNavCommand) {
-	if ac.FutureNavCommands == nil {
-		ac.FutureNavCommands = make(map[FutureNavCommand]interface{})
+	if ac.Nav.FutureCommands == nil {
+		ac.Nav.FutureCommands = make(map[FutureNavCommand]interface{})
 	}
-	for other := range ac.FutureNavCommands {
+	for other := range ac.Nav.FutureCommands {
 		if reflect.TypeOf(cmd) == reflect.TypeOf(other) {
-			delete(ac.FutureNavCommands, other)
+			delete(ac.Nav.FutureCommands, other)
 		}
 	}
-	ac.FutureNavCommands[cmd] = nil
+	ac.Nav.FutureCommands[cmd] = nil
 }
 
 func (ac *Aircraft) HaveAssignedSpeed() bool {
-	if _, ok := ac.SNav.(*MaintainSpeed); ok {
+	if _, ok := ac.Nav.S.(*MaintainSpeed); ok {
 		return true
 	}
-	for cmd := range ac.FutureNavCommands {
+	for cmd := range ac.Nav.FutureCommands {
 		if reflect.TypeOf(cmd) == reflect.TypeOf(&SpeedAfterAltitude{}) {
 			return true
 		}
@@ -177,25 +173,25 @@ func (ac *Aircraft) Update() {
 	ac.updatePositionAndGS()
 	ac.updateWaypoints()
 
-	for cmd := range ac.FutureNavCommands {
+	for cmd := range ac.Nav.FutureCommands {
 		if cmd.Evaluate(ac) {
-			delete(ac.FutureNavCommands, cmd)
+			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
 }
 
 func (ac *Aircraft) GoAround(sim *Sim) {
-	ac.LNav = &FlyHeading{Heading: ac.Heading}
+	ac.Nav.L = &FlyHeading{Heading: ac.Heading}
 
 	spd := ac.Performance.Speed
 	landingSpeed := float32(spd.Landing)
 	targetSpeed := min(1.6*landingSpeed, 0.8*float32(spd.Cruise))
-	ac.SNav = &MaintainSpeed{IAS: targetSpeed}
+	ac.Nav.S = &MaintainSpeed{IAS: targetSpeed}
 
 	if ap, ok := database.Airports[ac.FlightPlan.ArrivalAirport]; ok {
-		ac.VNav = &MaintainAltitude{Altitude: float32(1000 * ((ap.Elevation + 2500) / 1000))}
+		ac.Nav.V = &MaintainAltitude{Altitude: float32(1000 * ((ap.Elevation + 2500) / 1000))}
 	} else {
-		ac.VNav = &MaintainAltitude{Altitude: float32(1000 * ((int(ac.Altitude) + 2500) / 1000))}
+		ac.Nav.V = &MaintainAltitude{Altitude: float32(1000 * ((int(ac.Altitude) + 2500) / 1000))}
 	}
 
 	ac.Approach = nil
@@ -209,7 +205,7 @@ func (ac *Aircraft) GoAround(sim *Sim) {
 	}
 
 	// Nuke all of them...
-	ac.FutureNavCommands = make(map[FutureNavCommand]interface{})
+	ac.Nav.FutureCommands = make(map[FutureNavCommand]interface{})
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
@@ -222,7 +218,7 @@ func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
 		response = fmt.Sprintf("descend and maintain %d", altitude)
 	}
 
-	if spd, ok := ac.SNav.(*MaintainSpeed); ok && spd.IAS != ac.IAS {
+	if spd, ok := ac.Nav.S.(*MaintainSpeed); ok && spd.IAS != ac.IAS {
 		ac.AddFutureNavCommand(&AltitudeAfterSpeed{
 			FromAbove: ac.IAS > spd.IAS,
 			IAS:       spd.IAS,
@@ -230,7 +226,7 @@ func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
 		})
 		response = fmt.Sprintf("at %.0f knots, ", spd.IAS) + response
 	} else {
-		ac.VNav = &MaintainAltitude{Altitude: float32(altitude)}
+		ac.Nav.V = &MaintainAltitude{Altitude: float32(altitude)}
 	}
 
 	return response, nil
@@ -239,7 +235,7 @@ func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
 func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 	if speed == 0 {
 		response = "cancel speed restrictions"
-		ac.SNav = &FlyRoute{}
+		ac.Nav.S = &FlyRoute{}
 		return
 	} else if speed < ac.Performance.Speed.Landing {
 		response = fmt.Sprintf("unable--our minimum speed is %d knots", ac.Performance.Speed.Landing)
@@ -251,7 +247,7 @@ func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 		return
 	}
 
-	if alt, _ := ac.VNav.GetAltitude(ac); alt != ac.Altitude {
+	if alt, _ := ac.Nav.V.GetAltitude(ac); alt != ac.Altitude {
 		response = fmt.Sprintf("at %.0f feet, maintain %d knots",
 			alt, speed)
 		ac.AddFutureNavCommand(&SpeedAfterAltitude{
@@ -261,7 +257,7 @@ func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 		})
 	} else {
 		response = fmt.Sprintf("maintain %d knots", speed)
-		ac.SNav = &MaintainSpeed{IAS: float32(speed)}
+		ac.Nav.S = &MaintainSpeed{IAS: float32(speed)}
 
 		if ac.ApproachCleared {
 			response += " until 5 mile final"
@@ -280,19 +276,19 @@ func (ac *Aircraft) AssignHeading(heading int, turn int) (response string, err e
 
 	// Only cancel approach clearance if the aircraft wasn't on a
 	// heading and now we're giving them one.
-	if _, ok := ac.LNav.(*FlyHeading); !ok {
+	if _, ok := ac.Nav.L.(*FlyHeading); !ok {
 		ac.CancelApproachClearance()
 	}
 
 	if turn > 0 {
 		response = fmt.Sprintf("turn right heading %d", heading)
-		ac.LNav = &FlyHeading{Heading: float32(heading), Turn: TurnRight}
+		ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: TurnRight}
 	} else if turn == 0 {
 		response = fmt.Sprintf("fly heading %d", heading)
-		ac.LNav = &FlyHeading{Heading: float32(heading)}
+		ac.Nav.L = &FlyHeading{Heading: float32(heading)}
 	} else {
 		response = fmt.Sprintf("turn left heading %d", heading)
-		ac.LNav = &FlyHeading{Heading: float32(heading), Turn: TurnLeft}
+		ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: TurnLeft}
 	}
 
 	return
@@ -300,7 +296,7 @@ func (ac *Aircraft) AssignHeading(heading int, turn int) (response string, err e
 
 func (ac *Aircraft) TurnLeft(deg int) (string, error) {
 	heading := ac.Heading
-	if fh, ok := ac.LNav.(*FlyHeading); ok {
+	if fh, ok := ac.Nav.L.(*FlyHeading); ok {
 		heading = fh.Heading
 	} else {
 		// Only cancel approach clearance if the aircraft wasn't on a
@@ -312,14 +308,14 @@ func (ac *Aircraft) TurnLeft(deg int) (string, error) {
 	if heading <= 0 {
 		heading += 360
 	}
-	ac.LNav = &FlyHeading{Heading: heading}
+	ac.Nav.L = &FlyHeading{Heading: heading}
 
 	return fmt.Sprintf("turn %d degrees left", deg), nil
 }
 
 func (ac *Aircraft) TurnRight(deg int) (string, error) {
 	heading := ac.Heading
-	if fh, ok := ac.LNav.(*FlyHeading); ok {
+	if fh, ok := ac.Nav.L.(*FlyHeading); ok {
 		heading = fh.Heading
 	} else {
 		// Only cancel approach clearance if the aircraft wasn't on a
@@ -331,7 +327,7 @@ func (ac *Aircraft) TurnRight(deg int) (string, error) {
 	if heading > 360 {
 		heading -= 360
 	}
-	ac.LNav = &FlyHeading{Heading: heading}
+	ac.Nav.L = &FlyHeading{Heading: heading}
 
 	return fmt.Sprintf("turn %d degrees right", deg), nil
 }
@@ -362,13 +358,13 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	}
 
 	if found {
-		ac.LNav = &FlyRoute{}
-		for cmd := range ac.FutureNavCommands {
+		ac.Nav.L = &FlyRoute{}
+		for cmd := range ac.Nav.FutureCommands {
 			switch reflect.TypeOf(cmd) {
 			case reflect.TypeOf(&HoldLocalizerAfterIntercept{}):
-				delete(ac.FutureNavCommands, cmd)
+				delete(ac.Nav.FutureCommands, cmd)
 			case reflect.TypeOf(&TurnToInterceptLocalizer{}):
-				delete(ac.FutureNavCommands, cmd)
+				delete(ac.Nav.FutureCommands, cmd)
 			}
 		}
 		return "direct " + fix, nil
@@ -423,7 +419,7 @@ func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
 
 	directApproachFix := false
 	var remainingApproachWaypoints []Waypoint
-	if _, ok := ac.LNav.(*FlyRoute); ok && len(ac.Waypoints) > 0 {
+	if _, ok := ac.Nav.L.(*FlyRoute); ok && len(ac.Waypoints) > 0 {
 		// Is the aircraft cleared direct to a waypoint on the approach?
 		for _, approach := range ap.Waypoints {
 			for i, wp := range approach {
@@ -443,8 +439,8 @@ func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
 			if remainingApproachWaypoints != nil {
 				ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
 			}
-		} else if _, ok := ac.LNav.(*FlyHeading); ok {
-			ac.AddFutureNavCommand(&TurnToInterceptLocalizer{Approach: ac.Approach})
+		} else if _, ok := ac.Nav.L.(*FlyHeading); ok {
+			ac.AddFutureNavCommand(&TurnToInterceptLocalizer{})
 		} else {
 			response = "we need either direct or a heading to intercept"
 			return
@@ -480,14 +476,14 @@ func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
 func (ac *Aircraft) CancelApproachClearance() {
 	ac.ApproachCleared = false
 
-	for cmd := range ac.FutureNavCommands {
+	for cmd := range ac.Nav.FutureCommands {
 		switch reflect.TypeOf(cmd) {
 		case reflect.TypeOf(&HoldLocalizerAfterIntercept{}):
-			delete(ac.FutureNavCommands, cmd)
+			delete(ac.Nav.FutureCommands, cmd)
 		case reflect.TypeOf(&TurnToInterceptLocalizer{}):
-			delete(ac.FutureNavCommands, cmd)
+			delete(ac.Nav.FutureCommands, cmd)
 		case reflect.TypeOf(&ApproachSpeedAt5DME{}):
-			delete(ac.FutureNavCommands, cmd)
+			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
 }
@@ -498,7 +494,7 @@ func (ac *Aircraft) updateAirspeed() {
 	// override it.  cruising speed.
 	perf := ac.Performance
 
-	targetSpeed, targetRate := ac.SNav.GetSpeed(ac)
+	targetSpeed, targetRate := ac.Nav.S.GetSpeed(ac)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = clamp(targetSpeed, float32(perf.Speed.Min), float32(perf.Speed.Max))
@@ -515,7 +511,7 @@ func (ac *Aircraft) updateAirspeed() {
 }
 
 func (ac *Aircraft) updateAltitude() {
-	targetAltitude, targetRate := ac.VNav.GetAltitude(ac)
+	targetAltitude, targetRate := ac.Nav.V.GetAltitude(ac)
 
 	if abs(targetAltitude-ac.Altitude) < 3 {
 		ac.Altitude = targetAltitude
@@ -550,7 +546,7 @@ func (ac *Aircraft) updateAltitude() {
 }
 
 func (ac *Aircraft) updateHeading() {
-	targetHeading, turnDirection := ac.LNav.GetHeading(ac)
+	targetHeading, turnDirection := ac.Nav.L.GetHeading(ac)
 
 	if abs(ac.Heading-targetHeading) < 1 {
 		ac.Heading = targetHeading
@@ -655,17 +651,17 @@ func (ac *Aircraft) updateWaypoints() {
 		if ac.ApproachCleared {
 			// The aircraft has made it to the approach fix they
 			// were cleared to.
-			ac.VNav = &FlyRoute{}
+			ac.Nav.V = &FlyRoute{}
 
 			// If no speed was assigned, go ahead and start slowing down.
 			if !ac.HaveAssignedSpeed() {
-				ac.SNav = &FinalApproachSpeed{}
+				ac.Nav.S = &FinalApproachSpeed{}
 			}
 		}
 
 		if ac.Waypoints[0].Heading != 0 {
 			// We have an outbound heading
-			ac.LNav = &FlyHeading{Heading: float32(wp.Heading)}
+			ac.Nav.L = &FlyHeading{Heading: float32(wp.Heading)}
 		}
 
 		ac.Waypoints = ac.Waypoints[1:]

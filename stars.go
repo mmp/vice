@@ -4012,16 +4012,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			} else {
 				info = append(info, "Arrival")
 			}
-			info = append(info, ac.LNav.Summary(ac))
-			info = append(info, ac.SNav.Summary(ac))
-			info = append(info, ac.VNav.Summary(ac))
+			info = append(info, ac.Nav.Summary(ac))
 
-			var condInfo []string
-			for cmd := range ac.FutureNavCommands {
-				condInfo = append(condInfo, cmd.Summary(ac))
-			}
-			sort.Strings(condInfo)
-			info = append(info, condInfo...)
 			if ac.Approach != nil {
 				if ac.ApproachCleared {
 					info = append(info, "Cleared "+ac.Approach.FullName+" approach")

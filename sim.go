@@ -786,7 +786,7 @@ func (sim *Sim) updateState() {
 
 				// Climb to cruise altitude...
 				if ac.IsDeparture {
-					ac.VNav = &MaintainAltitude{
+					ac.Nav.V = &MaintainAltitude{
 						Altitude: float32(ac.FlightPlan.Altitude),
 					}
 				}
@@ -1429,16 +1429,16 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 		ac.AddFutureNavCommand(&GoAround{AirportDistance: 0.1 + .6*rand.Float32()})
 	}
 
-	ac.LNav = &FlyRoute{}
+	ac.Nav.L = &FlyRoute{}
 	if arr.SpeedRestriction != 0 {
-		ac.SNav = &MaintainSpeed{IAS: float32(arr.SpeedRestriction)}
+		ac.Nav.S = &MaintainSpeed{IAS: float32(arr.SpeedRestriction)}
 	} else {
-		ac.SNav = &FlyRoute{}
+		ac.Nav.S = &FlyRoute{}
 	}
 	if arr.ClearedAltitude != 0 {
-		ac.VNav = &MaintainAltitude{Altitude: float32(arr.ClearedAltitude)}
+		ac.Nav.V = &MaintainAltitude{Altitude: float32(arr.ClearedAltitude)}
 	} else {
-		ac.VNav = &FlyRoute{}
+		ac.Nav.V = &FlyRoute{}
 	}
 
 	return ac
@@ -1501,9 +1501,9 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 	ac.Altitude = float32(ap.Elevation)
 	ac.IsDeparture = true
 
-	ac.LNav = &FlyRoute{}
-	ac.SNav = &FlyRoute{}
-	ac.VNav = &MaintainAltitude{Altitude: float32(ap.Elevation)}
+	ac.Nav.L = &FlyRoute{}
+	ac.Nav.S = &FlyRoute{}
+	ac.Nav.V = &MaintainAltitude{Altitude: float32(ap.Elevation)}
 
 	ac.AddFutureNavCommand(&ClimbOnceAirborne{
 		Altitude: float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)),

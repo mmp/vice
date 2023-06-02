@@ -5,12 +5,186 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 )
 
 const MaximumRate = 100000
+
+type NAVState struct {
+	L LNavCommand
+	S SNavCommand
+	V VNavCommand
+
+	FutureCommands map[FutureNavCommand]interface{}
+}
+
+func (n *NAVState) Summary(ac *Aircraft) string {
+	var info []string
+	info = append(info, n.L.LSummary(ac), n.S.SSummary(ac), n.V.VSummary(ac))
+	for cmd := range n.FutureCommands {
+		info = append(info, cmd.Summary(ac))
+	}
+	info = FilterSlice(info, func(s string) bool { return s != "" })
+	return strings.Join(info, "\n")
+}
+
+type NAVStateMarshal struct {
+	LNavType       string
+	LNavStruct     string
+	SNavType       string
+	SNavStruct     string
+	VNavType       string
+	VNavStruct     string
+	FutureCommands [][2]string
+}
+
+func (n *NAVState) MarshalJSON() ([]byte, error) {
+	var m NAVStateMarshal
+
+	// LNav
+	m.LNavType = fmt.Sprintf("%T", n.L)
+
+	switch lnav := n.L.(type) {
+	case *FlyHeading, *FlyRoute, *HoldLocalizer:
+		b, err := json.Marshal(lnav)
+		if err != nil {
+			return nil, err
+		}
+		m.LNavStruct = string(b)
+	default:
+		panic("unhandled lnav command type")
+	}
+
+	// SNav
+	m.SNavType = fmt.Sprintf("%T", n.S)
+
+	switch snav := n.S.(type) {
+	case *MaintainSpeed, *FlyRoute, *FinalApproachSpeed:
+		b, err := json.Marshal(snav)
+		if err != nil {
+			return nil, err
+		}
+		m.SNavStruct = string(b)
+	default:
+		panic("unhandled snav command type")
+	}
+
+	// VNav
+	m.VNavType = fmt.Sprintf("%T", n.V)
+
+	switch vnav := n.V.(type) {
+	case *MaintainAltitude, *FlyRoute:
+		b, err := json.Marshal(vnav)
+		if err != nil {
+			return nil, err
+		}
+		m.VNavStruct = string(b)
+	default:
+		panic("unhandled vnav command type")
+	}
+
+	// FutureCommands
+	for cmd := range n.FutureCommands {
+		switch c := cmd.(type) {
+		case *SpeedAfterAltitude, *AltitudeAfterSpeed, *ApproachSpeedAt5DME, *ClimbOnceAirborne,
+			*TurnToInterceptLocalizer, *HoldLocalizerAfterIntercept, *GoAround:
+			s, err := json.Marshal(c)
+			if err != nil {
+				return nil, err
+			}
+			m.FutureCommands = append(m.FutureCommands, [2]string{fmt.Sprintf("%T", c), string(s)})
+		}
+	}
+
+	return json.Marshal(m)
+}
+
+func unmarshalStruct[T any](s string) (*T, error) {
+	var t T
+	err := json.Unmarshal([]byte(s), &t)
+	return &t, err
+}
+
+func (n *NAVState) UnmarshalJSON(s []byte) error {
+	var m NAVStateMarshal
+	err := json.Unmarshal(s, &m)
+	if err != nil {
+		return err
+	}
+
+	switch m.LNavType {
+	case "*main.FlyRoute":
+		n.L, err = unmarshalStruct[FlyRoute](m.LNavStruct)
+	case "*main.FlyHeading":
+		n.L, err = unmarshalStruct[FlyHeading](m.LNavStruct)
+	case "*main.HoldLocalizer":
+		n.L, err = unmarshalStruct[HoldLocalizer](m.LNavStruct)
+	default:
+		panic("unhandled lnav command")
+	}
+	if err != nil {
+		return err
+	}
+
+	switch m.SNavType {
+	case "*main.MaintainSpeed":
+		n.S, err = unmarshalStruct[MaintainSpeed](m.SNavStruct)
+	case "*main.FlyRoute":
+		n.S, err = unmarshalStruct[FlyRoute](m.SNavStruct)
+	case "*main.FinalApproachSpeed":
+		n.S, err = unmarshalStruct[FinalApproachSpeed](m.SNavStruct)
+	default:
+		panic("unhandled snav command")
+	}
+	if err != nil {
+		return err
+	}
+
+	switch m.VNavType {
+	case "*main.MaintainAltitude":
+		n.V, err = unmarshalStruct[MaintainAltitude](m.VNavStruct)
+	case "*main.FlyRoute":
+		n.V, err = unmarshalStruct[FlyRoute](m.VNavStruct)
+	default:
+		panic("unhandled vnav command")
+	}
+	if err != nil {
+		return err
+	}
+
+	n.FutureCommands = make(map[FutureNavCommand]interface{})
+
+	for _, cmd := range m.FutureCommands {
+		var fnc FutureNavCommand
+		switch cmd[0] {
+		case "*main.SpeedAfterAltitude":
+			fnc, err = unmarshalStruct[SpeedAfterAltitude](cmd[1])
+		case "*main.AltitudeAfterSpeed":
+			fnc, err = unmarshalStruct[AltitudeAfterSpeed](cmd[1])
+		case "*main.ApproachSpeedAt5DME":
+			fnc, err = unmarshalStruct[ApproachSpeedAt5DME](cmd[1])
+		case "*main.ClimbOnceAirborne":
+			fnc, err = unmarshalStruct[ClimbOnceAirborne](cmd[1])
+		case "*main.TurnToInterceptLocalizer":
+			fnc, err = unmarshalStruct[TurnToInterceptLocalizer](cmd[1])
+		case "*main.HoldLocalizerAfterIntercept":
+			fnc, err = unmarshalStruct[HoldLocalizerAfterIntercept](cmd[1])
+		case "*main.GoAround":
+			fnc, err = unmarshalStruct[GoAround](cmd[1])
+		default:
+			panic("unhandled future command")
+		}
+		if err != nil {
+			return err
+		}
+		n.FutureCommands[fnc] = nil
+	}
+	return nil
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // FutureNavCommand
@@ -32,7 +206,7 @@ func (saa *SpeedAfterAltitude) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	ac.SNav = &MaintainSpeed{IAS: saa.IAS}
+	ac.Nav.S = &MaintainSpeed{IAS: saa.IAS}
 	return true
 }
 
@@ -52,7 +226,7 @@ func (aas *AltitudeAfterSpeed) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	ac.VNav = &MaintainAltitude{Altitude: aas.Altitude}
+	ac.Nav.V = &MaintainAltitude{Altitude: aas.Altitude}
 	return true
 }
 
@@ -74,7 +248,7 @@ func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	ac.SNav = &FinalApproachSpeed{}
+	ac.Nav.S = &FinalApproachSpeed{}
 	return true
 }
 
@@ -93,7 +267,7 @@ func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	ac.VNav = &MaintainAltitude{Altitude: ca.Altitude}
+	ac.Nav.V = &MaintainAltitude{Altitude: ca.Altitude}
 	return true
 }
 
@@ -101,18 +275,16 @@ func (ca *ClimbOnceAirborne) Summary(ac *Aircraft) string {
 	return fmt.Sprintf("Climb and maintain %.0f once airborne", ca.Altitude)
 }
 
-type TurnToInterceptLocalizer struct {
-	Approach *Approach
-}
+type TurnToInterceptLocalizer struct{}
 
 func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
-	if il.Approach.Type != ILSApproach {
+	ap := ac.Approach
+	if ap.Type != ILSApproach {
 		panic("not an ils approach")
 	}
 
 	// allow a lot of slop, but just fly through the localizer if it's too
 	// sharp an intercept
-	ap := il.Approach
 	if headingDifference(float32(ap.Heading()), ac.Heading) > 45 {
 		return false
 	}
@@ -155,12 +327,12 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
 	if eta < turn/3/2 {
 		lg.Printf("%s: assigned approach heading! %d", ac.Callsign, ap.Heading())
 
-		ac.LNav = &FlyHeading{Heading: float32(ap.Heading())}
+		ac.Nav.L = &FlyHeading{Heading: float32(ap.Heading())}
 		// Just in case.. Thus we will be ready to pick up the
 		// approach waypoints once we capture.
 		ac.Waypoints = nil
 
-		ac.AddFutureNavCommand(&HoldLocalizerAfterIntercept{Approach: il.Approach})
+		ac.AddFutureNavCommand(&HoldLocalizerAfterIntercept{})
 		return true
 	}
 
@@ -168,15 +340,14 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
 }
 
 func (il *TurnToInterceptLocalizer) Summary(ac *Aircraft) string {
-	return "TODO"
+	return "Turn to intercept the localizer"
 }
 
-type HoldLocalizerAfterIntercept struct {
-	Approach *Approach
-}
+type HoldLocalizerAfterIntercept struct{}
 
 func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft) bool {
-	loc := hl.Approach.Line()
+	ap := ac.Approach
+	loc := ap.Line()
 	dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
 	if dist > .2 {
 		return false
@@ -185,7 +356,6 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft) bool {
 	// we'll call that good enough. Now we need to figure out which
 	// fixes in the approach are still ahead and then add them to
 	// the aircraft's waypoints.
-	ap := hl.Approach
 	n := len(ap.Waypoints[0])
 	threshold := ll2nm(ap.Waypoints[0][n-1].Location)
 	thresholdDistance := distance2f(ll2nm(ac.Position), threshold)
@@ -217,17 +387,17 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft) bool {
 		}
 	}
 
-	ac.LNav = &HoldLocalizer{Approach: hl.Approach}
-	ac.VNav = &FlyRoute{}
+	ac.Nav.L = &HoldLocalizer{}
+	ac.Nav.V = &FlyRoute{}
 	if !ac.HaveAssignedSpeed() {
-		ac.SNav = &FinalApproachSpeed{} // otherwise keep assigned speed until 5 DME
+		ac.Nav.S = &FinalApproachSpeed{} // otherwise keep assigned speed until 5 DME
 	}
 
 	return true
 }
 
 func (hl *HoldLocalizerAfterIntercept) Summary(ac *Aircraft) string {
-	return "TODO"
+	return "Remain on the localizer"
 }
 
 type GoAround struct {
@@ -246,11 +416,11 @@ func (g *GoAround) Evaluate(ac *Aircraft) bool {
 }
 
 func (g *GoAround) Summary(ac *Aircraft) string {
-	return "GO AROUND"
+	return "" // We don't let the user see this will happen
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// LNAVCommand and implementations
+// LNavCommand and implementations
 
 type TurnMethod int
 
@@ -260,9 +430,9 @@ const (
 	TurnRight
 )
 
-type LNAVCommand interface {
+type LNavCommand interface {
 	GetHeading(ac *Aircraft) (float32, TurnMethod)
-	Summary(ac *Aircraft) string
+	LSummary(ac *Aircraft) string
 }
 
 type FlyHeading struct {
@@ -274,7 +444,7 @@ func (fh *FlyHeading) GetHeading(ac *Aircraft) (float32, TurnMethod) {
 	return fh.Heading, fh.Turn
 }
 
-func (fh *FlyHeading) Summary(ac *Aircraft) string {
+func (fh *FlyHeading) LSummary(ac *Aircraft) string {
 	switch fh.Turn {
 	case TurnClosest:
 		return fmt.Sprintf("Fly heading %.0f", fh.Heading)
@@ -299,9 +469,9 @@ func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod) {
 	}
 }
 
-func (fr *FlyRoute) Summary(ac *Aircraft) string {
+func (fr *FlyRoute) LSummary(ac *Aircraft) string {
 	if len(ac.Waypoints) == 0 {
-		return "Fly present heading, speed, and altitude"
+		return "Fly present heading"
 	} else {
 		wp := ac.Waypoints[0]
 		s := "Fly assigned route, next fix is " + wp.Fix
@@ -318,18 +488,17 @@ func (fr *FlyRoute) Summary(ac *Aircraft) string {
 	}
 }
 
-type HoldLocalizer struct {
-	Approach *Approach
-}
+type HoldLocalizer struct{}
 
 func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod) {
-	loc := hl.Approach.Line()
+	ap := ac.Approach
+	loc := ap.Line()
 	dist := SignedPointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
 
 	if abs(dist) < .025 {
 		//lg.Errorf("%s: dist %f close enough", ac.Callsign, dist)
 		// close enough
-		return float32(hl.Approach.Heading()), TurnClosest
+		return float32(ap.Heading()), TurnClosest
 	} else if abs(dist) > .3 {
 		//lg.Errorf("%s: dist %f too far", ac.Callsign, dist)
 		// If it's too far away, leave it where it is; this case can in
@@ -339,23 +508,23 @@ func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod) {
 		return ac.Heading, TurnClosest
 	} else if dist < 0 {
 		//lg.Errorf("%s: dist %f turn right", ac.Callsign, dist)
-		return float32(hl.Approach.Heading()) + 3, TurnClosest
+		return float32(ap.Heading()) + 3, TurnClosest
 	} else {
 		//lg.Errorf("%s: dist %f turn left", ac.Callsign, dist)
-		return float32(hl.Approach.Heading()) - 3, TurnClosest
+		return float32(ap.Heading()) - 3, TurnClosest
 	}
 }
 
-func (hl *HoldLocalizer) Summary(ac *Aircraft) string {
+func (hl *HoldLocalizer) LSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Fly along the localizer")
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SNAVCommand and implementations
+// SNavCommand and implementations
 
-type SNAVCommand interface {
+type SNavCommand interface {
 	GetSpeed(ac *Aircraft) (float32, float32) // IAS, rate (kts / minute)
-	Summary(ac *Aircraft) string
+	SSummary(ac *Aircraft) string
 }
 
 type MaintainSpeed struct {
@@ -366,7 +535,7 @@ func (ms *MaintainSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 	return ms.IAS, MaximumRate
 }
 
-func (ms *MaintainSpeed) Summary(ac *Aircraft) string {
+func (ms *MaintainSpeed) SSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Maintain %.0f kts", ms.IAS)
 }
 
@@ -401,6 +570,10 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 	}
 }
 
+func (fr *FlyRoute) SSummary(ac *Aircraft) string {
+	return ""
+}
+
 type FinalApproachSpeed struct{}
 
 func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
@@ -427,16 +600,16 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 	}
 }
 
-func (fa *FinalApproachSpeed) Summary(ac *Aircraft) string {
+func (fa *FinalApproachSpeed) SSummary(ac *Aircraft) string {
 	return "Reduce to final approach speed"
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// VNAVCommand and implementations
+// VNavCommand and implementations
 
-type VNAVCommand interface {
+type VNavCommand interface {
 	GetAltitude(ac *Aircraft) (float32, float32) // altitude, rate (feet/minute)
-	Summary(ac *Aircraft) string
+	VSummary(ac *Aircraft) string
 }
 
 type MaintainAltitude struct {
@@ -447,7 +620,7 @@ func (ma *MaintainAltitude) GetAltitude(ac *Aircraft) (float32, float32) {
 	return ma.Altitude, MaximumRate
 }
 
-func (ma *MaintainAltitude) Summary(ac *Aircraft) string {
+func (ma *MaintainAltitude) VSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Maintain %.0f feet", ma.Altitude)
 }
 
@@ -470,4 +643,8 @@ func (fr *FlyRoute) GetAltitude(ac *Aircraft) (float32, float32) {
 	} else {
 		return float32(ac.Altitude), MaximumRate
 	}
+}
+
+func (fr *FlyRoute) VSummary(ac *Aircraft) string {
+	return ""
 }
