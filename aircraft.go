@@ -546,7 +546,7 @@ func (ac *Aircraft) updateAltitude() {
 }
 
 func (ac *Aircraft) updateHeading() {
-	targetHeading, turnDirection := ac.Nav.L.GetHeading(ac)
+	targetHeading, turnDirection, turnRate := ac.Nav.L.GetHeading(ac)
 
 	if abs(ac.Heading-targetHeading) < 1 {
 		ac.Heading = targetHeading
@@ -560,7 +560,7 @@ func (ac *Aircraft) updateHeading() {
 		if angle < 0 {
 			angle += 360
 		}
-		angle = min(angle, 3)
+		angle = min(angle, turnRate)
 		turn = -angle
 
 	case TurnRight:
@@ -568,7 +568,7 @@ func (ac *Aircraft) updateHeading() {
 		if angle < 0 {
 			angle += 360
 		}
-		angle = min(angle, 3)
+		angle = min(angle, turnRate)
 		turn = angle
 
 	case TurnClosest:
@@ -581,7 +581,7 @@ func (ac *Aircraft) updateHeading() {
 			rot += 360
 		}
 		cur := mod(ac.Heading+rot, 360) // w.r.t. 180 target
-		turn = clamp(180-cur, -3, 3)    // max 3 degrees / second
+		turn = clamp(180-cur, -turnRate, turnRate)
 	}
 
 	// Finally, do the turn.

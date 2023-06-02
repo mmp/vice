@@ -436,18 +436,26 @@ const (
 	TurnRight
 )
 
+const StandardTurnRate = 3
+
 type LNavCommand interface {
-	GetHeading(ac *Aircraft) (float32, TurnMethod)
+	GetHeading(ac *Aircraft) (float32, TurnMethod, float32) // heading, turn type, rate
 	LSummary(ac *Aircraft) string
 }
 
 type FlyHeading struct {
 	Heading float32
 	Turn    TurnMethod
+	Rate    float32
 }
 
-func (fh *FlyHeading) GetHeading(ac *Aircraft) (float32, TurnMethod) {
-	return fh.Heading, fh.Turn
+func (fh *FlyHeading) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+	if fh.Rate == 0 {
+		// 3 degree/s turn by default
+		return fh.Heading, fh.Turn, StandardTurnRate
+	} else {
+		return fh.Heading, fh.Turn, fh.Rate
+	}
 }
 
 func (fh *FlyHeading) LSummary(ac *Aircraft) string {
@@ -465,13 +473,13 @@ func (fh *FlyHeading) LSummary(ac *Aircraft) string {
 
 type FlyRoute struct{}
 
-func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod) {
+func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	if len(ac.Waypoints) == 0 {
-		return ac.Heading, TurnClosest
+		return ac.Heading, TurnClosest, StandardTurnRate
 	} else {
 		hdg := headingp2ll(ac.Position, ac.Waypoints[0].Location,
 			scenarioGroup.MagneticVariation)
-		return hdg, TurnClosest
+		return hdg, TurnClosest, StandardTurnRate
 	}
 }
 
@@ -496,7 +504,7 @@ func (fr *FlyRoute) LSummary(ac *Aircraft) string {
 
 type HoldLocalizer struct{}
 
-func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod) {
+func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	ap := ac.Approach
 	loc := ap.Line()
 	dist := SignedPointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
@@ -504,20 +512,20 @@ func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod) {
 	if abs(dist) < .025 {
 		//lg.Errorf("%s: dist %f close enough", ac.Callsign, dist)
 		// close enough
-		return float32(ap.Heading()), TurnClosest
+		return float32(ap.Heading()), TurnClosest, StandardTurnRate
 	} else if abs(dist) > .3 {
 		//lg.Errorf("%s: dist %f too far", ac.Callsign, dist)
 		// If it's too far away, leave it where it is; this case can in
 		// particular happen if it's been given direct to a fix that's not on
 		// the localizer. (FIXME: yuck; then shouldn't be trying to hold the
 		// localizer yet...)
-		return ac.Heading, TurnClosest
+		return ac.Heading, TurnClosest, StandardTurnRate
 	} else if dist < 0 {
 		//lg.Errorf("%s: dist %f turn right", ac.Callsign, dist)
-		return float32(ap.Heading()) + 3, TurnClosest
+		return float32(ap.Heading()) + 3, TurnClosest, StandardTurnRate
 	} else {
 		//lg.Errorf("%s: dist %f turn left", ac.Callsign, dist)
-		return float32(ap.Heading()) - 3, TurnClosest
+		return float32(ap.Heading()) - 3, TurnClosest, StandardTurnRate
 	}
 }
 
