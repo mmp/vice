@@ -1413,7 +1413,7 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
 
 	ac.Altitude = float32(arr.InitialAltitude)
-	ac.IAS = float32(arr.InitialSpeed)
+	ac.IAS = float32(min(arr.InitialSpeed, ac.Performance.Speed.Cruise))
 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
@@ -1431,7 +1431,7 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 
 	ac.Nav.L = &FlyRoute{}
 	if arr.SpeedRestriction != 0 {
-		ac.Nav.S = &MaintainSpeed{IAS: float32(arr.SpeedRestriction)}
+		ac.Nav.S = &MaintainSpeed{IAS: float32(min(arr.SpeedRestriction, ac.Performance.Speed.Cruise))}
 	} else {
 		ac.Nav.S = &FlyRoute{}
 	}
