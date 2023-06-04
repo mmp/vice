@@ -171,7 +171,9 @@ func (ac *Aircraft) Update() {
 	ac.updateAltitude()
 	ac.updateHeading()
 	ac.updatePositionAndGS()
-	ac.updateWaypoints()
+	if ac.Nav.L.PassesWaypoints() {
+		ac.updateWaypoints()
+	}
 
 	for cmd := range ac.Nav.FutureCommands {
 		if cmd.Evaluate(ac) {

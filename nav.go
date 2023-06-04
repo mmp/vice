@@ -440,6 +440,7 @@ const StandardTurnRate = 3
 
 type LNavCommand interface {
 	GetHeading(ac *Aircraft) (float32, TurnMethod, float32) // heading, turn type, rate
+	PassesWaypoints() bool
 	LSummary(ac *Aircraft) string
 }
 
@@ -456,6 +457,10 @@ func (fh *FlyHeading) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	} else {
 		return fh.Heading, fh.Turn, fh.Rate
 	}
+}
+
+func (fh *FlyHeading) PassesWaypoints() bool {
+	return false
 }
 
 func (fh *FlyHeading) LSummary(ac *Aircraft) string {
@@ -481,6 +486,10 @@ func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 			scenarioGroup.MagneticVariation)
 		return hdg, TurnClosest, StandardTurnRate
 	}
+}
+
+func (fr *FlyRoute) PassesWaypoints() bool {
+	return true
 }
 
 func (fr *FlyRoute) LSummary(ac *Aircraft) string {
@@ -527,6 +536,10 @@ func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod, float32)
 		//lg.Errorf("%s: dist %f turn left", ac.Callsign, dist)
 		return float32(ap.Heading()) - 3, TurnClosest, StandardTurnRate
 	}
+}
+
+func (hl *HoldLocalizer) PassesWaypoints() bool {
+	return true
 }
 
 func (hl *HoldLocalizer) LSummary(ac *Aircraft) string {
