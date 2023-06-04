@@ -7,6 +7,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"sort"
 	"strings"
 	"time"
@@ -1137,18 +1138,19 @@ func (sim *Sim) DrawSettingsWindow() {
 }
 
 func (sim *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
-	// TODO: have a better gust model?
-	windKts := sim.Scenario.Wind.Speed
-	if sim.Scenario.Wind.Gust > 0 {
-		windKts += rand.Int31n(sim.Scenario.Wind.Gust)
-	}
+	// Sinusoidal wind speed variation from the base speed up to base +
+	// gust and then back...
+	base := time.UnixMicro(0)
+	s := sim.currentTime.Sub(base).Seconds()
+	windSpeed := float32(sim.Scenario.Wind.Speed) +
+		float32(sim.Scenario.Wind.Gust)*float32(1+math.Cos(s/4))/2
 
-	// wind.dir is where it's coming from, so +180 to get the vector that
-	// affects the aircraft's course.
+	// Wind.Direction is where it's coming from, so +180 to get the vector
+	// that affects the aircraft's course.
 	d := float32(sim.Scenario.Wind.Direction + 180)
 	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
-	vWind = scale2f(vWind, float32(windKts)/3600)
-	return nm2ll(vWind)
+	vWind = scale2f(vWind, windSpeed/3600)
+	return vWind
 }
 
 ///////////////////////////////////////////////////////////////////////////

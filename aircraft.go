@@ -600,17 +600,18 @@ func (ac *Aircraft) updatePositionAndGS() {
 	prev := ac.Position
 	hdg := ac.Heading - scenarioGroup.MagneticVariation
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-	// First use TAS to get a first whack at the new position.
-	newPos := add2f(ll2nm(ac.Position), scale2f(v, ac.TAS()/3600))
 
-	// Now add wind...
+	// Compute ground speed: TAS, modified for wind.
+	GS := ac.TAS() / 3600
 	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
 	if airborne {
 		windVector := sim.GetWindVector(ac.Position, ac.Altitude)
-		newPos = add2f(newPos, ll2nm(windVector))
+		delta := windVector[0]*v[0] + windVector[1]*v[1]
+		GS += delta
 	}
 
 	// Finally update position and groundspeed.
+	newPos := add2f(ll2nm(ac.Position), scale2f(v, GS))
 	ac.Position = nm2ll(newPos)
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 }
