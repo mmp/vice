@@ -646,7 +646,7 @@ func (ac *Aircraft) updateWaypoints() {
 	// fixes where there's little to no turn...
 	if s := float32(eta.Seconds()); s < max(2, turnAngle/5) {
 		// Execute any commands associated with the waypoint
-		ac.RunWaypointCommands(wp.Commands)
+		ac.RunWaypointCommands(wp)
 
 		if ac.ApproachCleared {
 			// The aircraft has made it to the approach fix they
@@ -670,17 +670,12 @@ func (ac *Aircraft) updateWaypoints() {
 	}
 }
 
-func (ac *Aircraft) RunWaypointCommands(cmds []WaypointCommand) {
-	for _, cmd := range cmds {
-		switch cmd {
-		case WaypointCommandHandoff:
-			// Handoff to the user's position?
-			ac.InboundHandoffController = sim.Callsign()
-			globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
-
-		case WaypointCommandDelete:
-			eventStream.Post(&RemovedAircraftEvent{ac: ac})
-
-		}
+func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
+	if wp.Handoff {
+		ac.InboundHandoffController = sim.Callsign()
+		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+	}
+	if wp.Delete {
+		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
 }

@@ -290,48 +290,14 @@ func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 ///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
-type WaypointCommand int
-
-const (
-	WaypointCommandHandoff = iota
-	WaypointCommandDelete
-)
-
-func (wc WaypointCommand) MarshalJSON() ([]byte, error) {
-	switch wc {
-	case WaypointCommandHandoff:
-		return []byte("\"handoff\""), nil
-
-	case WaypointCommandDelete:
-		return []byte("\"delete\""), nil
-
-	default:
-		return nil, fmt.Errorf("unhandled WaypointCommand in MarshalJSON")
-	}
-}
-
-func (wc *WaypointCommand) UnmarshalJSON(b []byte) error {
-	switch string(b) {
-	case "\"handoff\"":
-		*wc = WaypointCommandHandoff
-		return nil
-
-	case "\"delete\"":
-		*wc = WaypointCommandDelete
-		return nil
-
-	default:
-		return fmt.Errorf("%s: unknown waypoint command", string(b))
-	}
-}
-
 type Waypoint struct {
-	Fix      string            `json:"fix"`
-	Location Point2LL          // not provided in scenario JSON; derived from fix
-	Altitude int               `json:"altitude,omitempty"`
-	Speed    int               `json:"speed,omitempty"`
-	Heading  int               `json:"heading,omitempty"` // outbound heading after waypoint
-	Commands []WaypointCommand `json:"commands,omitempty"`
+	Fix      string   `json:"fix"`
+	Location Point2LL // not provided in scenario JSON; derived from fix
+	Altitude int      `json:"altitude,omitempty"`
+	Speed    int      `json:"speed,omitempty"`
+	Heading  int      `json:"heading,omitempty"` // outbound heading after waypoint
+	Handoff  bool     `json:"handoff,omitempty"`
+	Delete   bool     `json:"delete,omitempty"`
 }
 
 func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
@@ -357,15 +323,11 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 		if w.Heading != 0 {
 			entries = append(entries, fmt.Sprintf("#%d", w.Heading))
 		}
-
-		for _, c := range w.Commands {
-			switch c {
-			case WaypointCommandHandoff:
-				entries = append(entries, "@")
-
-			case WaypointCommandDelete:
-				entries = append(entries, "*")
-			}
+		if w.Handoff {
+			entries = append(entries, "@")
+		}
+		if w.Delete {
+			entries = append(entries, "*")
 		}
 	}
 
@@ -395,8 +357,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			if len(waypoints) == 0 {
 				return nil, fmt.Errorf("No previous waypoint before handoff specifier")
 			}
-			waypoints[len(waypoints)-1].Commands =
-				append(waypoints[len(waypoints)-1].Commands, WaypointCommandHandoff)
+			waypoints[len(waypoints)-1].Handoff = true
 		} else if field[0] == '#' {
 			if len(waypoints) == 0 {
 				return nil, fmt.Errorf("No previous waypoint before heading specifier")
@@ -410,8 +371,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			if len(waypoints) == 0 {
 				return nil, fmt.Errorf("No previous waypoint before delete aircraft specifier")
 			}
-			waypoints[len(waypoints)-1].Commands =
-				append(waypoints[len(waypoints)-1].Commands, WaypointCommandDelete)
+			waypoints[len(waypoints)-1].Delete = true
 		} else {
 			wp := Waypoint{}
 			for i, f := range strings.Split(field, "@") {

@@ -30,7 +30,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Push("Approach " + name)
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
-			ap.Waypoints[i][n-1].Commands = append(ap.Waypoints[i][n-1].Commands, WaypointCommandDelete)
+			ap.Waypoints[i][n-1].Delete = true
 			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
 		}
 		if ap.Runway == "" {

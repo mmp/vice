@@ -1178,7 +1178,7 @@ func (sim *Sim) SpawnAircraft() {
 		}
 		sim.Aircraft[ac.Callsign] = ac
 
-		ac.RunWaypointCommands(ac.Waypoints[0].Commands)
+		ac.RunWaypointCommands(ac.Waypoints[0])
 
 		ac.Position = ac.Waypoints[0].Location
 		if ac.Position.IsZero() {
