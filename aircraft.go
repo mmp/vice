@@ -38,6 +38,7 @@ type Aircraft struct {
 	IAS, GS  float32 // speeds...
 
 	IsDeparture bool
+	NoPT        bool
 
 	Nav NAVState
 
@@ -199,6 +200,7 @@ func (ac *Aircraft) GoAround(sim *Sim) {
 	ac.Approach = nil
 	ac.ApproachCleared = false
 	ac.Waypoints = nil
+	ac.NoPT = false
 
 	// If it was handed off to tower, hand it back to us
 	if ac.TrackingController != "" && ac.TrackingController != sim.Callsign() {
@@ -293,6 +295,8 @@ func (ac *Aircraft) AssignHeading(heading int, turn int) (response string, err e
 		ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: TurnLeft}
 	}
 
+	ac.NoPT = false
+
 	return
 }
 
@@ -311,6 +315,7 @@ func (ac *Aircraft) TurnLeft(deg int) (string, error) {
 		heading += 360
 	}
 	ac.Nav.L = &FlyHeading{Heading: heading}
+	ac.NoPT = false
 
 	return fmt.Sprintf("turn %d degrees left", deg), nil
 }
@@ -330,6 +335,7 @@ func (ac *Aircraft) TurnRight(deg int) (string, error) {
 		heading -= 360
 	}
 	ac.Nav.L = &FlyHeading{Heading: heading}
+	ac.NoPT = false
 
 	return fmt.Sprintf("turn %d degrees right", deg), nil
 }
@@ -360,7 +366,14 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	}
 
 	if found {
-		ac.Nav.L = &FlyRoute{}
+		if ac.ApproachCleared && ac.Waypoints[0].HILPT != nil && !ac.NoPT {
+			// Fly the HILPT
+			ac.Nav.L = MakeFlyHILPT(ac, ac.Waypoints)
+		} else {
+			ac.Nav.L = &FlyRoute{}
+		}
+		ac.NoPT = false
+
 		for cmd := range ac.Nav.FutureCommands {
 			switch reflect.TypeOf(cmd) {
 			case reflect.TypeOf(&HoldLocalizerAfterIntercept{}):
@@ -404,6 +417,14 @@ func (ac *Aircraft) ExpectApproach(ap *Approach) (string, error) {
 }
 
 func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
+	return ac.clearedApproach(ap, false)
+}
+
+func (ac *Aircraft) ClearedStraightInApproach(ap *Approach) (response string, err error) {
+	return ac.clearedApproach(ap, true)
+}
+
+func (ac *Aircraft) clearedApproach(ap *Approach, straightIn bool) (response string, err error) {
 	if ac.Approach == nil {
 		// allow it anyway...
 		response = "you never told us to expect an approach, but ok, cleared " + ap.FullName
@@ -414,7 +435,7 @@ func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
 		err = ErrClearedForUnexpectedApproach
 		return
 	}
-	if ac.ApproachCleared {
+	if ac.ApproachCleared && ac.NoPT == straightIn {
 		response = "you already cleared us for the " + ap.FullName + " approach..."
 		return
 	}
@@ -466,12 +487,27 @@ func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
 		// will respectively switch to FinalApproachSpeed and FlyRoute.
 	}
 
+	ac.NoPT = straightIn
+	if _, ok := ac.Nav.L.(*FlyHeading); ok {
+		// No procedure turn if it intercepts via a heading
+		ac.NoPT = true
+	}
+
+	if len(ac.Waypoints) > 0 && ac.Waypoints[0].HILPT != nil && !ac.NoPT {
+		// Fly the HILPT at the next waypoint
+		ac.Nav.L = MakeFlyHILPT(ac, ac.Waypoints)
+	}
+
 	// Cleared approach also cancels speed restrictions, but let's not do
 	// that.
 	ac.ApproachCleared = true
 	ac.AddFutureNavCommand(&ApproachSpeedAt5DME{})
 
-	response += "cleared " + ap.FullName + " approach"
+	if straightIn {
+		response += "cleared straight in " + ap.FullName + " approach"
+	} else {
+		response += "cleared " + ap.FullName + " approach"
+	}
 	return
 }
 
@@ -665,6 +701,9 @@ func (ac *Aircraft) updateWaypoints() {
 		if ac.Waypoints[0].Heading != 0 {
 			// We have an outbound heading
 			ac.Nav.L = &FlyHeading{Heading: float32(wp.Heading)}
+		} else if ac.ApproachCleared && len(ac.Waypoints) > 1 && ac.Waypoints[1].HILPT != nil && !ac.NoPT {
+			// Get ready to fly the HILPT
+			ac.Nav.L = MakeFlyHILPT(ac, ac.Waypoints[1:])
 		}
 
 		ac.Waypoints = ac.Waypoints[1:]
@@ -681,4 +720,30 @@ func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
 	if wp.Delete {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
+	if wp.NoPT {
+		ac.NoPT = true
+	}
+}
+
+func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMethod) bool {
+	dist := nmdistance2ll(ac.Position, p)
+	eta := dist / ac.GS * 3600 // in seconds
+
+	var turnAngle float32
+	switch turn {
+	case TurnLeft:
+		turnAngle = ac.Heading - hdg
+
+	case TurnRight:
+		turnAngle = hdg - ac.Heading
+
+	case TurnClosest:
+		turnAngle = abs(headingDifference(ac.Heading, hdg))
+	}
+
+	if turnAngle < 0 {
+		turnAngle += 360
+	}
+
+	return eta < min(2, turnAngle/3/2)
 }

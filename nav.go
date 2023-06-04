@@ -55,7 +55,7 @@ func (n *NAVState) MarshalJSON() ([]byte, error) {
 	m.LNavType = fmt.Sprintf("%T", n.L)
 
 	switch lnav := n.L.(type) {
-	case *FlyHeading, *FlyRoute, *HoldLocalizer:
+	case *FlyHeading, *FlyRoute, *HoldLocalizer, *FlyHILPT:
 		b, err := json.Marshal(lnav)
 		if err != nil {
 			return nil, err
@@ -129,6 +129,8 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 		n.L, err = unmarshalStruct[FlyHeading](m.LNavStruct)
 	case "*main.HoldLocalizer":
 		n.L, err = unmarshalStruct[HoldLocalizer](m.LNavStruct)
+	case "*main.FlyHILPT":
+		n.L, err = unmarshalStruct[FlyHILPT](m.LNavStruct)
 	default:
 		panic("unhandled lnav command")
 	}
@@ -331,7 +333,7 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
 	// localizer more slowly as it turns, so we'll add another 1/2
 	// fudge factor, which seems to account for that reasonably well.
 	if eta < turn/3/2 {
-		lg.Printf("%s: assigned approach heading! %d", ac.Callsign, ap.Heading())
+		lg.Printf("%s: assigned approach heading! %.1f", ac.Callsign, ap.Heading())
 
 		ac.Nav.L = &FlyHeading{Heading: float32(ap.Heading())}
 		// Just in case.. Thus we will be ready to pick up the
@@ -436,6 +438,10 @@ const (
 	TurnRight
 )
 
+func (t TurnMethod) String() string {
+	return []string{"closest", "left", "right"}[t]
+}
+
 const StandardTurnRate = 3
 
 type LNavCommand interface {
@@ -511,7 +517,9 @@ func (fr *FlyRoute) LSummary(ac *Aircraft) string {
 	}
 }
 
-type HoldLocalizer struct{}
+type HoldLocalizer struct {
+	LastDistance float32
+}
 
 func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	ap := ac.Approach
@@ -544,6 +552,182 @@ func (hl *HoldLocalizer) PassesWaypoints() bool {
 
 func (hl *HoldLocalizer) LSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Fly along the localizer")
+}
+
+const (
+	HILPTApproaching = iota
+	HILPTTurningOutbound
+	HILPTFlyingOutbound
+	HILPTTurningInbound
+)
+
+type FlyHILPT struct {
+	HILPT              *HILPT
+	Fix                string
+	FixLocation        Point2LL
+	Entry              HILPTEntry
+	InboundHeading     float32
+	OutboundHeading    float32
+	OutboundTurnRate   float32
+	OutboundTurnMethod TurnMethod
+	OutboundLegStart   Point2LL
+	OutboundLegLength  float32
+	State              int
+}
+
+func (fh *FlyHILPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+	switch fh.State {
+	case HILPTApproaching:
+		outboundHeading := fh.InboundHeading + 180
+		if outboundHeading > 360 {
+			outboundHeading -= 360
+		}
+		outboundTurnRate := float32(StandardTurnRate)
+		outboundTurnDirection := TurnMethod(Select(fh.HILPT.RightTurns, TurnRight, TurnLeft))
+		outboundTurnMethod := TurnMethod(TurnClosest)
+		dist := nmdistance2ll(ac.Position, fh.FixLocation)
+		eta := dist / ac.GS * 3600 // in seconds
+
+		// Is it time to start the turn? If so, outboundHeading and/or
+		// outboundTurnRate may be modified from the defaults above...
+		startTurn := false
+
+		switch fh.Entry {
+		case DirectEntryShortTurn:
+			startTurn = eta < 2
+			// Since we have less than 180 degrees in our turn, turn more
+			// slowly so that we more or less end up the right offset
+			// distance from the inbound path.
+			outboundTurnRate = 3 * headingDifference(outboundHeading, ac.Heading) / 180
+
+		case DirectEntryLongTurn:
+			// Turn start is based on lining up for the inbound heading,
+			// even though the actual turn will be that plus 180.
+			startTurn = ac.ShouldTurnForOutbound(fh.FixLocation, fh.InboundHeading, outboundTurnDirection)
+			// Override; closest is not what we want here
+			outboundTurnMethod = TurnMethod(Select(fh.HILPT.RightTurns, TurnRight, TurnLeft))
+
+		case ParallelEntry:
+			startTurn = ac.ShouldTurnForOutbound(fh.FixLocation, outboundHeading, outboundTurnDirection)
+
+		case TeardropEntry:
+			startTurn = eta < 2
+			if fh.HILPT.RightTurns {
+				hdg := outboundHeading - 30
+				if hdg < 0 {
+					hdg += 360
+				}
+				outboundHeading = hdg
+			} else {
+				hdg := outboundHeading + 30
+				if hdg > 360 {
+					hdg -= 360
+				}
+				outboundHeading = hdg
+			}
+		}
+
+		if startTurn {
+			fh.State = HILPTTurningOutbound
+			fh.OutboundHeading = outboundHeading
+			fh.OutboundTurnRate = outboundTurnRate
+			fh.OutboundTurnMethod = outboundTurnMethod
+			lg.Errorf("%s: starting outbound turn-heading %.1f rate %.2f method %s",
+				ac.Callsign, outboundHeading, outboundTurnRate,
+				outboundTurnMethod.String())
+		}
+
+		// Even if we're turning, this last time we'll keep the heading to
+		// the fix.
+		fixHeading := headingp2ll(ac.Position, fh.FixLocation, scenarioGroup.MagneticVariation)
+		return fixHeading, TurnClosest, StandardTurnRate
+
+	case HILPTTurningOutbound:
+		if abs(ac.Heading-fh.OutboundHeading) < 1 {
+			// Finished the turn; now we'll fly the leg.
+			lg.Errorf("%s: finished the turn, flying outbound leg", ac.Callsign)
+			fh.State = HILPTFlyingOutbound
+
+			fh.OutboundLegLength = float32(fh.HILPT.NmLimit) / 2
+			if fh.OutboundLegLength == 0 {
+				fh.OutboundLegLength = float32(fh.HILPT.MinuteLimit) * ac.GS / 60
+			}
+			if fh.Entry == TeardropEntry {
+				fh.OutboundLegLength /= cos(radians(30))
+			}
+
+			switch fh.Entry {
+			case DirectEntryShortTurn, DirectEntryLongTurn:
+				fh.OutboundLegStart = ac.Position
+
+			case ParallelEntry, TeardropEntry:
+				fh.OutboundLegStart = fh.FixLocation
+			}
+		}
+
+		return fh.OutboundHeading, fh.OutboundTurnMethod, fh.OutboundTurnRate
+
+	case HILPTFlyingOutbound:
+		d := nmdistance2ll(ac.Position, fh.OutboundLegStart)
+		if d > fh.OutboundLegLength {
+			lg.Errorf("%s: Turning inbound!", ac.Callsign)
+			fh.State = HILPTTurningInbound
+		}
+		return fh.OutboundHeading, TurnClosest, fh.OutboundTurnRate
+
+	case HILPTTurningInbound:
+		if abs(ac.Heading-fh.InboundHeading) < 1 {
+			// go direct to the fix
+			lg.Errorf("%s: direct fix--done with the HILPT!", ac.Callsign)
+			ac.Nav.L = &FlyRoute{}
+		}
+
+		turn := Select(fh.HILPT.RightTurns, TurnRight, TurnLeft)
+		if fh.Entry == ParallelEntry {
+			// This turn is in the opposite direction than usual
+			turn = Select(!fh.HILPT.RightTurns, TurnRight, TurnLeft)
+		}
+		return fh.InboundHeading, TurnMethod(turn), StandardTurnRate
+
+	default:
+		panic("unhandled state")
+	}
+}
+
+func (fh *FlyHILPT) PassesWaypoints() bool {
+	return false
+}
+
+func (fh *FlyHILPT) LSummary(ac *Aircraft) string {
+	return fmt.Sprintf("Fly the HILPT at %s, %s entry", fh.Fix, fh.Entry.String())
+}
+
+func MakeFlyHILPT(ac *Aircraft, wp []Waypoint) *FlyHILPT {
+	if len(wp) < 2 {
+		lg.Errorf("ac %s", spew.Sdump(ac))
+		lg.Errorf("wp %s", spew.Sdump(wp))
+		panic("insufficient waypopints")
+	}
+	if ac.NoPT {
+		lg.Errorf("%s: MakeFlyHILPT called even though ac.NoPT set", ac.Callsign)
+	}
+
+	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
+		scenarioGroup.MagneticVariation)
+	aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location,
+		scenarioGroup.MagneticVariation)
+	entry := wp[0].HILPT.SelectEntry(inboundHeading, aircraftFixHeading)
+
+	lg.Printf("%s: entry %s", ac.Callsign, entry)
+
+	return &FlyHILPT{
+		HILPT:          wp[0].HILPT,
+		Fix:            wp[0].Fix,
+		FixLocation:    wp[0].Location,
+		Entry:          entry,
+		InboundHeading: inboundHeading,
+		State:          HILPTApproaching,
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

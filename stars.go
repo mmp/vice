@@ -2059,7 +2059,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 							}
 							return isAllNumbers(s[1:])
 						}
-						if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
+						if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+							// Cleared straight in approach.
+							if sim.ClearedStraightInApproach(ac.Callsign, command[3:]) != nil {
+								status.err = ErrSTARSIllegalParam
+							}
+						} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
 							// Cleared approach.
 							if sim.ClearedApproach(ac.Callsign, command[1:]) != nil {
 								status.err = ErrSTARSIllegalParam
@@ -4019,6 +4024,9 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 					info = append(info, "Cleared "+ac.Approach.FullName+" approach")
 				} else {
 					info = append(info, "Expecting "+ac.Approach.FullName+" approach")
+				}
+				if ac.NoPT {
+					info = append(info, "Straight in approach")
 				}
 			}
 

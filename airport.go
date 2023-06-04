@@ -32,6 +32,20 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Delete = true
 			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
+
+			if ap.Waypoints[i][n-1].HILPT != nil {
+				e.ErrorString("HILPT cannot be specified at the final waypoint")
+			}
+			for j, wp := range ap.Waypoints[i] {
+				e.Push("Fix " + wp.Fix)
+				if wp.NoPT {
+					if FindIf(ap.Waypoints[i][j+1:],
+						func(wp Waypoint) bool { return wp.HILPT != nil }) == -1 {
+						e.ErrorString("No HILPT found after fix with \"nopt\"")
+					}
+				}
+				e.Pop()
+			}
 		}
 		if ap.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
@@ -185,7 +199,7 @@ func (ap *Approach) Line() [2]Point2LL {
 	return [2]Point2LL{wp[n-2].Location, wp[n-1].Location}
 }
 
-func (ap *Approach) Heading() int {
+func (ap *Approach) Heading() float32 {
 	p := ap.Line()
-	return int(headingp2ll(p[0], p[1], scenarioGroup.MagneticVariation) + 0.5)
+	return headingp2ll(p[0], p[1], scenarioGroup.MagneticVariation)
 }

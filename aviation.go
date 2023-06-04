@@ -288,6 +288,83 @@ func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// HILPT
+
+type HILPT struct {
+	RightTurns  bool
+	MinuteLimit int `json:",omitempty"`
+	NmLimit     int `json:",omitempty"`
+}
+
+type HILPTEntry int
+
+const (
+	DirectEntryShortTurn = iota
+	DirectEntryLongTurn
+	ParallelEntry
+	TeardropEntry
+)
+
+func (e HILPTEntry) String() string {
+	return []string{"direct short", "direct long", "parallel", "teardrop"}[int(e)]
+}
+
+func (e HILPTEntry) MarshalJSON() ([]byte, error) {
+	s := "\"" + e.String() + "\""
+	return []byte(s), nil
+}
+
+func (e *HILPTEntry) UnmarshalJSON(b []byte) error {
+	if len(b) < 2 {
+		return fmt.Errorf("invalid HILPT")
+	}
+
+	switch string(b[1 : len(b)-1]) {
+	case "direct short":
+		*e = DirectEntryShortTurn
+	case "direct long":
+		*e = DirectEntryLongTurn
+	case "parallel":
+		*e = ParallelEntry
+	case "teardrop":
+		*e = TeardropEntry
+	default:
+		return fmt.Errorf("%s: malformed HILPT JSON", string(b))
+	}
+	return nil
+}
+
+func (hilpt *HILPT) SelectEntry(inboundHeading float32, aircraftFixHeading float32) HILPTEntry {
+	// Rotate so we can treat inboundHeading as 0.
+	hdg := aircraftFixHeading - inboundHeading
+	if hdg < 0 {
+		hdg += 360
+	}
+
+	if hilpt.RightTurns {
+		if hdg > 290 {
+			return DirectEntryLongTurn
+		} else if hdg < 110 {
+			return DirectEntryShortTurn
+		} else if hdg > 180 {
+			return ParallelEntry
+		} else {
+			return TeardropEntry
+		}
+	} else {
+		if hdg > 250 {
+			return DirectEntryShortTurn
+		} else if hdg < 70 {
+			return DirectEntryLongTurn
+		} else if hdg < 180 {
+			return ParallelEntry
+		} else {
+			return TeardropEntry
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
 type Waypoint struct {
@@ -296,6 +373,8 @@ type Waypoint struct {
 	Altitude int      `json:"altitude,omitempty"`
 	Speed    int      `json:"speed,omitempty"`
 	Heading  int      `json:"heading,omitempty"` // outbound heading after waypoint
+	HILPT    *HILPT   `json:"hilpt,omitempty"`
+	NoPT     bool     `json:"nopt,omitempty"`
 	Handoff  bool     `json:"handoff,omitempty"`
 	Delete   bool     `json:"delete,omitempty"`
 }
@@ -317,6 +396,21 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 		}
 		if w.Speed != 0 {
 			s += fmt.Sprintf("@s%d", w.Speed)
+		}
+		if w.HILPT != nil {
+			if !w.HILPT.RightTurns {
+				s += "@lhilpt"
+			} else {
+				s += "@hilpt"
+			}
+			if w.HILPT.MinuteLimit != 0 {
+				s += fmt.Sprintf("%dmin", w.HILPT.MinuteLimit)
+			} else {
+				s += fmt.Sprintf("%dnm", w.HILPT.NmLimit)
+			}
+		}
+		if w.NoPT {
+			s += "@nopt"
 		}
 		entries = append(entries, s)
 
@@ -380,23 +474,47 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 				} else if len(f) == 0 {
 					return nil, fmt.Errorf("no command found after @ in \"%s\"", field)
 				} else {
-					switch f[0] {
-					case 'a':
+					if f[0] == 'a' {
 						alt, err := strconv.Atoi(f[1:])
 						if err != nil {
 							return nil, err
 						}
 						wp.Altitude = alt
-
-					case 's':
+					} else if f[0] == 's' {
 						kts, err := strconv.Atoi(f[1:])
 						if err != nil {
 							return nil, err
 						}
 						wp.Speed = kts
+					} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
+						hilpt := &HILPT{RightTurns: f[0] == 'h'}
+						extent := f[5:]
+						if !hilpt.RightTurns {
+							extent = extent[1:]
+						}
 
-					default:
-						return nil, fmt.Errorf("%s: unknown @ command '%c", field, f[0])
+						if len(extent) < 3 {
+							return nil, fmt.Errorf("%s: invalid extent specification for HILPT '%s'", field, f)
+						}
+
+						var err error
+						if extent[len(extent)-2:] == "nm" {
+							if hilpt.NmLimit, err = strconv.Atoi(extent[:len(extent)-2]); err != nil {
+								return nil, fmt.Errorf("%s: unable to parse length in nm for HILPT: %v", field, err)
+							}
+						} else if extent[len(extent)-3:] == "min" {
+							if hilpt.MinuteLimit, err = strconv.Atoi(extent[:len(extent)-3]); err != nil {
+								return nil, fmt.Errorf("%s: unable to parse minutes HILPT: %v", field, err)
+							}
+						} else {
+							return nil, fmt.Errorf("%s: invalid extent units for HILPT '%s'", field, f)
+						}
+
+						wp.HILPT = hilpt
+					} else if f == "nopt" {
+						wp.NoPT = true
+					} else {
+						return nil, fmt.Errorf("%s: unknown @ command '%s'", field, f)
 					}
 				}
 			}

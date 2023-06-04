@@ -991,6 +991,14 @@ func rotator2f(angle float32) func([2]float32) [2]float32 {
 ///////////////////////////////////////////////////////////////////////////
 // generics
 
+func Select[T any](sel bool, a, b T) T {
+	if sel {
+		return a
+	} else {
+		return b
+	}
+}
+
 // FlattenMap takes a map and returns separate slices corresponding to the
 // keys and values stored in the map.  (The slices are ordered so that the
 // i'th key corresponds to the i'th value, needless to say.)

@@ -983,6 +983,19 @@ func (sim *Sim) ClearedApproach(callsign string, approach string) error {
 	return err
 }
 
+func (sim *Sim) ClearedStraightInApproach(callsign string, approach string) error {
+	ap, ac, err := sim.getApproach(callsign, approach)
+	if err != nil {
+		return err
+	}
+
+	resp, err := ac.ClearedStraightInApproach(ap)
+	if resp != "" {
+		pilotResponse(callsign, "%s", resp)
+	}
+	return err
+}
+
 func (sim *Sim) PrintInfo(callsign string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
