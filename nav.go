@@ -55,7 +55,7 @@ func (n *NAVState) MarshalJSON() ([]byte, error) {
 	m.LNavType = fmt.Sprintf("%T", n.L)
 
 	switch lnav := n.L.(type) {
-	case *FlyHeading, *FlyRoute, *HoldLocalizer, *FlyHILPT:
+	case *FlyHeading, *FlyRoute, *FlyHILPT:
 		b, err := json.Marshal(lnav)
 		if err != nil {
 			return nil, err
@@ -127,8 +127,6 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 		n.L, err = unmarshalStruct[FlyRoute](m.LNavStruct)
 	case "*main.FlyHeading":
 		n.L, err = unmarshalStruct[FlyHeading](m.LNavStruct)
-	case "*main.HoldLocalizer":
-		n.L, err = unmarshalStruct[HoldLocalizer](m.LNavStruct)
 	case "*main.FlyHILPT":
 		n.L, err = unmarshalStruct[FlyHILPT](m.LNavStruct)
 	default:
@@ -395,7 +393,7 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft) bool {
 		}
 	}
 
-	ac.Nav.L = &HoldLocalizer{}
+	ac.Nav.L = &FlyRoute{}
 	ac.Nav.V = &FlyRoute{}
 	if !ac.HaveAssignedSpeed() {
 		ac.Nav.S = &FinalApproachSpeed{} // otherwise keep assigned speed until 5 DME
@@ -515,43 +513,6 @@ func (fr *FlyRoute) LSummary(ac *Aircraft) string {
 		}
 		return s
 	}
-}
-
-type HoldLocalizer struct {
-	LastDistance float32
-}
-
-func (hl *HoldLocalizer) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
-	ap := ac.Approach
-	loc := ap.Line()
-	dist := SignedPointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
-
-	if abs(dist) < .025 {
-		//lg.Errorf("%s: dist %f close enough", ac.Callsign, dist)
-		// close enough
-		return float32(ap.Heading()), TurnClosest, StandardTurnRate
-	} else if abs(dist) > .3 {
-		//lg.Errorf("%s: dist %f too far", ac.Callsign, dist)
-		// If it's too far away, leave it where it is; this case can in
-		// particular happen if it's been given direct to a fix that's not on
-		// the localizer. (FIXME: yuck; then shouldn't be trying to hold the
-		// localizer yet...)
-		return ac.Heading, TurnClosest, StandardTurnRate
-	} else if dist < 0 {
-		//lg.Errorf("%s: dist %f turn right", ac.Callsign, dist)
-		return float32(ap.Heading()) + 3, TurnClosest, StandardTurnRate
-	} else {
-		//lg.Errorf("%s: dist %f turn left", ac.Callsign, dist)
-		return float32(ap.Heading()) - 3, TurnClosest, StandardTurnRate
-	}
-}
-
-func (hl *HoldLocalizer) PassesWaypoints() bool {
-	return true
-}
-
-func (hl *HoldLocalizer) LSummary(ac *Aircraft) string {
-	return fmt.Sprintf("Fly along the localizer")
 }
 
 const (
