@@ -7,7 +7,7 @@
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1400 _FRG_14@a50"
+            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1600@hilpt1min _FRG_14@a50"
           ]
         },
         "R1": {
@@ -221,7 +221,7 @@
           "runway": "2",
           "type": "ILS",
           "waypoints": [
-            "CCC PEPER SALLT@a1500 _HVN_20@a50"
+            "CCC@nopt PEPER SALLT@a1500@hilpt1min _HVN_20@a50"
           ]
         },
         "R2": {
@@ -229,8 +229,8 @@
           "runway": "2",
           "type": "RNAV",
           "waypoints": [
-            "KEYED PEPER@a1800 SALLT@a1500 _HVN_20@a50",
-            "NESSI PEPER@a1800 SALLT@a1500 _HVN_20@a50"
+            "KEYED@nopt PEPER@a1800@hilpt4nm SALLT@a1500 _HVN_20@a50",
+            "NESSI PEPER@a1800@hilpt4nm SALLT@a1500 _HVN_20@a50"
           ]
         },
         "R20": {
@@ -391,7 +391,7 @@
           "runway": "15R",
           "type": "RNAV",
           "waypoints": [
-              "CCC FORMU@a2000 ZIVUX@a1600 WENGA N040.48.07.275,W073.06.25.784@a50"
+              "CCC FORMU@a2000@hilpt4nm ZIVUX@a1600 WENGA N040.48.07.275,W073.06.25.784@a50"
           ]
         },
         "I24": {
@@ -415,7 +415,7 @@
           "runway": "33L",
           "type": "RNAV",
           "waypoints": [
-              "CCC BJACK@a2000 JATEV@a1500 N040.47.32.215,W073.05.39.669@a50"
+              "CCC BJACK@a2000@hilpt4nm JATEV@a1500 N040.47.32.215,W073.05.39.669@a50"
           ]
         },
         "I6": {
@@ -423,7 +423,7 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-              "CCC YOSUR@a1600 WILAK@a500 N040.47.19.677,W073.06.44.434@a50"
+              "CCC YOSUR@a1600@hilpt1min WILAK@a500 N040.47.19.677,W073.06.44.434@a50"
           ]
         },
         "R6": {
@@ -431,7 +431,7 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-              "CCC DEERY@a2000 YOSUR@a1600 N040.47.19.677,W073.06.44.434@a50"
+              "CCC DEERY@a2000@hilpt4nm YOSUR@a1600 N040.47.19.677,W073.06.44.434@a50"
           ]
         }
       },
