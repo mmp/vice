@@ -2061,13 +2061,21 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 						}
 						if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 							// Cleared straight in approach.
-							if sim.ClearedStraightInApproach(ac.Callsign, command[3:]) != nil {
-								status.err = ErrSTARSIllegalParam
+							if err := sim.ClearedStraightInApproach(ac.Callsign, command[3:]); err != nil {
+								if err == ErrOtherControllerHasTrack {
+									status.err = ErrSTARSIllegalTrack
+								} else {
+									status.err = ErrSTARSIllegalParam
+								}
 							}
 						} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
 							// Cleared approach.
-							if sim.ClearedApproach(ac.Callsign, command[1:]) != nil {
-								status.err = ErrSTARSIllegalParam
+							if err := sim.ClearedApproach(ac.Callsign, command[1:]); err != nil {
+								if err == ErrOtherControllerHasTrack {
+									status.err = ErrSTARSIllegalTrack
+								} else {
+									status.err = ErrSTARSIllegalParam
+								}
 							}
 						} else {
 							// Otherwise look for an altitude
@@ -2090,8 +2098,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					case 'E':
 						// Expect approach.
 						if len(command) > 1 {
-							if sim.ExpectApproach(ac.Callsign, command[1:]) != nil {
-								status.err = ErrSTARSIllegalParam
+							if err := sim.ExpectApproach(ac.Callsign, command[1:]); err != nil {
+								if err == ErrOtherControllerHasTrack {
+									status.err = ErrSTARSIllegalTrack
+								} else {
+									status.err = ErrSTARSIllegalParam
+								}
 							}
 						}
 

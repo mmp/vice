@@ -864,6 +864,8 @@ func pilotResponse(callsign string, fm string, args ...interface{}) {
 func (sim *Sim) AssignAltitude(callsign string, altitude int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignAltitude(altitude)
 		if resp != "" {
@@ -876,6 +878,8 @@ func (sim *Sim) AssignAltitude(callsign string, altitude int) error {
 func (sim *Sim) AssignHeading(callsign string, heading int, turn int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignHeading(heading, turn)
 		if resp != "" {
@@ -888,6 +892,8 @@ func (sim *Sim) AssignHeading(callsign string, heading int, turn int) error {
 func (sim *Sim) TurnLeft(callsign string, deg int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.TurnLeft(deg)
 		if resp != "" {
@@ -900,6 +906,8 @@ func (sim *Sim) TurnLeft(callsign string, deg int) error {
 func (sim *Sim) TurnRight(callsign string, deg int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.TurnRight(deg)
 		if resp != "" {
@@ -912,6 +920,8 @@ func (sim *Sim) TurnRight(callsign string, deg int) error {
 func (sim *Sim) AssignSpeed(callsign string, speed int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignSpeed(speed)
 		if resp != "" {
@@ -924,6 +934,8 @@ func (sim *Sim) AssignSpeed(callsign string, speed int) error {
 func (sim *Sim) DirectFix(callsign string, fix string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
+	} else if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.DirectFix(fix)
 		if resp != "" {
@@ -963,6 +975,10 @@ func (sim *Sim) ExpectApproach(callsign string, approach string) error {
 		return err
 	}
 
+	if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
+	}
+
 	resp, err := ac.ExpectApproach(ap)
 	if resp != "" {
 		pilotResponse(callsign, "%s", resp)
@@ -987,6 +1003,10 @@ func (sim *Sim) ClearedStraightInApproach(callsign string, approach string) erro
 	ap, ac, err := sim.getApproach(callsign, approach)
 	if err != nil {
 		return err
+	}
+
+	if ac.TrackingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
 	}
 
 	resp, err := ac.ClearedStraightInApproach(ap)
