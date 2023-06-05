@@ -2170,7 +2170,7 @@
         "waypoints": "RUUTH @ RBV KEWR"
       }
     ],
-    "PHLBO3": [
+    "PHLBO4": [
       {
         "airlines": {
           "KEWR": [
@@ -2245,7 +2245,7 @@
         "initial_altitude": 20000,
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
-        "route": "/ PHLBO3",
+        "route": "/ PHLBO4",
         "speed_restriction": null,
         "waypoints": "DQO@a20000 STEFE@a13000 @ SOMTO@a11000 DYLIN@a8000 MERSR METRO MARRT PHLBO #025"
       }
@@ -2325,9 +2325,9 @@
         "initial_altitude": 6000,
         "initial_controller": "EWR_P_APP",
         "initial_speed": 250,
-        "route": "/ PHLBO3",
+        "route": "/ PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DYLIN @ METRO MARRT PHLBO #065"
+        "waypoints": "DYLIN @ MERSR METRO MARRT PHLBO #025"
       }
     ],
     "WRI": [
@@ -2621,7 +2621,7 @@
         "PHL": {
           "KEWR": 2
         },
-        "PHLBO3": {
+        "PHLBO4": {
           "KEWR": 10
         },
         "WRI": {
@@ -2735,7 +2735,7 @@
         "PHL": {
           "KEWR": 2
         },
-        "PHLBO3": {
+        "PHLBO4": {
           "KEWR": 10
         },
         "WRI": {
@@ -2795,7 +2795,7 @@
         "PHL": {
           "KEWR": 3
         },
-        "PHLBO3": {
+        "PHLBO4": {
           "KEWR": 15
         },
         "WRI": {
@@ -2870,7 +2870,7 @@
         "North": {
           "KEWR": 10
         },
-        "PHLBO3": {
+        "PHLBO4": {
           "KEWR": 15
         }
       },
