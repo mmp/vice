@@ -411,11 +411,7 @@ func (ac *Aircraft) ExpectApproach(ap *Approach) (string, error) {
 			// and that patching in the rest will work out..
 			ac.Waypoints = DuplicateSlice(wp[1:])
 		} else {
-			if idx == 0 {
-				ac.Waypoints = nil
-			} else {
-				ac.Waypoints = ac.Waypoints[:idx-1]
-			}
+			ac.Waypoints = ac.Waypoints[:idx]
 			ac.Waypoints = append(ac.Waypoints, wp...)
 		}
 	}
