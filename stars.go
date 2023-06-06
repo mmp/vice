@@ -656,7 +656,8 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 		switch v := event.(type) {
 		case *AddedAircraftEvent:
 			sa := &STARSAircraftState{}
-			if v.ac.TrackingController == sim.Callsign() {
+			cs := sim.Callsign()
+			if v.ac.TrackingController == cs || v.ac.ControllingController == cs {
 				sa.datablockType = FullDatablock
 			}
 			sp.aircraft[v.ac] = sa
@@ -726,9 +727,9 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			sp.pointedOutAircraft.Add(v.ac, v.controller, 10*time.Second)
 
 		case *AcceptedHandoffEvent:
-			// Note that we only want to do that if we were the handing-off
+			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
-			// currently. For the purposes of SimServer, that's fine...
+			// currently. For the purposes of vice/Sim, that's fine...
 			if v.controller != sim.Callsign() {
 				state := sp.aircraft[v.ac]
 				state.outboundHandoffAccepted = true
@@ -1830,6 +1831,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					// ack accepted handoff by other controller
 					state.outboundHandoffAccepted = false
 					state.outboundHandoffFlashEnd = time.Now()
+					eventStream.Post(&AckedHandoffEvent{ac: ac})
 				} else { //if ac.IsAssociated() {
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock

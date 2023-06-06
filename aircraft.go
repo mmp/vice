@@ -24,7 +24,14 @@ type Aircraft struct {
 
 	Tracks [10]RadarTrack
 
-	TrackingController        string
+	// Who has the radar track
+	TrackingController string
+	// Who has control of the aircraft; may not be the same as
+	// TrackingController, e.g. after an aircraft has been flashed but
+	// before they have been instructed to contact the new tracking
+	// controller.
+	ControllingController string
+
 	InboundHandoffController  string
 	OutboundHandoffController string
 

@@ -243,6 +243,14 @@ func (e *RejectedHandoffEvent) String() string {
 	return "RejectedHandoffEvent: " + e.controller + " " + e.ac.Callsign
 }
 
+type AckedHandoffEvent struct {
+	ac *Aircraft
+}
+
+func (e *AckedHandoffEvent) String() string {
+	return "AckedHandoffEvent: " + e.ac.Callsign
+}
+
 type RadioTransmissionEvent struct {
 	callsign, message string
 }
