@@ -511,16 +511,15 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	err string
-
-	sim SimConnectionConfiguration
+	err    string
+	config NewSimConfiguration
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.err = ""
-	c.sim.Initialize()
+	c.config.Initialize()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -528,7 +527,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	b = append(b, ModalDialogButton{text: "Cancel"})
 
 	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		err := c.sim.Connect()
+		err := c.config.Start()
 		if err == nil {
 			c.err = ""
 		} else {
@@ -537,13 +536,11 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		return err == nil
 	}}
 
-	ok.disabled = !c.sim.Valid()
-
 	return append(b, ok)
 }
 
 func (c *ConnectModalClient) Draw() int {
-	enter := c.sim.DrawUI()
+	enter := c.config.DrawUI()
 
 	if c.err != "" {
 		imgui.Text(c.err)
