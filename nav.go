@@ -537,8 +537,7 @@ func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float
 			outboundHeading -= 360
 		}
 		outboundTurnRate := float32(StandardTurnRate)
-		outboundTurnDirection := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
-		outboundTurnMethod := TurnMethod(TurnClosest)
+		outboundTurnMethod := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
 		dist := nmdistance2ll(ac.Position, fp.FixLocation)
 		eta := dist / ac.GS * 3600 // in seconds
 
@@ -557,12 +556,12 @@ func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float
 		case DirectEntryLongTurn:
 			// Turn start is based on lining up for the inbound heading,
 			// even though the actual turn will be that plus 180.
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading, outboundTurnDirection)
-			// Override; closest is not what we want here
-			outboundTurnMethod = TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
+			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading, outboundTurnMethod)
 
 		case ParallelEntry:
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, outboundTurnDirection)
+			// Swapped turn direction
+			outboundTurnMethod = TurnMethod(Select(pt.RightTurns, TurnLeft, TurnRight))
+			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, outboundTurnMethod)
 
 		case TeardropEntry:
 			startTurn = eta < 2
