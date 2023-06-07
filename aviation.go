@@ -471,7 +471,8 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 
 func parsePTExtent(pt *ProcedureTurn, extent string) error {
 	if len(extent) == 0 {
-		return fmt.Errorf("missing extent specification for procedure turn (min or nm)")
+		// Unspecified; we will use the default of 1min for ILS, 4nm for RNAV
+		return nil
 	}
 	if len(extent) < 3 {
 		return fmt.Errorf("%s: invalid extent specification for procedure turn", extent)

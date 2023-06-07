@@ -157,6 +157,10 @@ const (
 	RNAVApproach
 )
 
+func (at ApproachType) String() string {
+	return []string{"ILS", "RNAV"}[at]
+}
+
 func (at ApproachType) MarshalJSON() ([]byte, error) {
 	switch at {
 	case ILSApproach:

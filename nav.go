@@ -522,7 +522,6 @@ type FlyProcedureTurn struct {
 	OutboundHeading    float32
 	OutboundTurnRate   float32
 	OutboundTurnMethod TurnMethod
-	OutboundLegStart   Point2LL
 	OutboundLegLength  float32
 	State              int
 }
@@ -532,62 +531,33 @@ func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float
 
 	switch fp.State {
 	case PTStateApproaching:
-		outboundHeading := fp.InboundHeading + 180
-		if outboundHeading > 360 {
-			outboundHeading -= 360
-		}
-		outboundTurnRate := float32(StandardTurnRate)
-		outboundTurnMethod := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
 		dist := nmdistance2ll(ac.Position, fp.FixLocation)
 		eta := dist / ac.GS * 3600 // in seconds
-
-		// Is it time to start the turn? If so, outboundHeading and/or
-		// outboundTurnRate may be modified from the defaults above...
 		startTurn := false
 
 		switch fp.Entry {
 		case DirectEntryShortTurn:
 			startTurn = eta < 2
-			// Since we have less than 180 degrees in our turn, turn more
-			// slowly so that we more or less end up the right offset
-			// distance from the inbound path.
-			outboundTurnRate = 3 * headingDifference(outboundHeading, ac.Heading) / 180
 
 		case DirectEntryLongTurn:
 			// Turn start is based on lining up for the inbound heading,
 			// even though the actual turn will be that plus 180.
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading, outboundTurnMethod)
+			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading, fp.OutboundTurnMethod)
 
 		case ParallelEntry:
 			// Swapped turn direction
-			outboundTurnMethod = TurnMethod(Select(pt.RightTurns, TurnLeft, TurnRight))
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, outboundTurnMethod)
+			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading, fp.OutboundTurnMethod)
 
 		case TeardropEntry:
 			startTurn = eta < 2
-			if pt.RightTurns {
-				hdg := outboundHeading - 30
-				if hdg < 0 {
-					hdg += 360
-				}
-				outboundHeading = hdg
-			} else {
-				hdg := outboundHeading + 30
-				if hdg > 360 {
-					hdg -= 360
-				}
-				outboundHeading = hdg
-			}
 		}
 
 		if startTurn {
 			fp.State = PTStateTurningOutbound
-			fp.OutboundHeading = outboundHeading
-			fp.OutboundTurnRate = outboundTurnRate
-			fp.OutboundTurnMethod = outboundTurnMethod
 			lg.Errorf("%s: starting outbound turn-heading %.1f rate %.2f method %s",
-				ac.Callsign, outboundHeading, outboundTurnRate,
-				outboundTurnMethod.String())
+				ac.Callsign, fp.OutboundHeading, fp.OutboundTurnRate,
+				fp.OutboundTurnMethod.String())
+			//lg.Errorf("%s: full fp %s", ac.Callsign, spew.Sdump(fp))
 		}
 
 		// Even if we're turning, this last time we'll keep the heading to
@@ -598,30 +568,15 @@ func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float
 	case PTStateTurningOutbound:
 		if abs(ac.Heading-fp.OutboundHeading) < 1 {
 			// Finished the turn; now we'll fly the leg.
-			lg.Errorf("%s: finished the turn, flying outbound leg", ac.Callsign)
+			lg.Errorf("%s: finished the turn; ac heading %.1f outbound %.1f; flying outbound leg",
+				ac.Callsign, ac.Heading, fp.OutboundHeading)
 			fp.State = PTStateFlyingOutbound
-
-			fp.OutboundLegLength = float32(pt.NmLimit) / 2
-			if fp.OutboundLegLength == 0 {
-				fp.OutboundLegLength = float32(pt.MinuteLimit) * ac.GS / 60
-			}
-			if fp.Entry == TeardropEntry {
-				fp.OutboundLegLength /= cos(radians(30))
-			}
-
-			switch fp.Entry {
-			case DirectEntryShortTurn, DirectEntryLongTurn:
-				fp.OutboundLegStart = ac.Position
-
-			case ParallelEntry, TeardropEntry:
-				fp.OutboundLegStart = fp.FixLocation
-			}
 		}
 
 		return fp.OutboundHeading, fp.OutboundTurnMethod, fp.OutboundTurnRate
 
 	case PTStateFlyingOutbound:
-		d := nmdistance2ll(ac.Position, fp.OutboundLegStart)
+		d := nmdistance2ll(ac.Position, fp.FixLocation)
 		if d > fp.OutboundLegLength {
 			lg.Errorf("%s: Turning inbound!", ac.Callsign)
 			fp.State = PTStateTurningInbound
@@ -684,11 +639,6 @@ func (fp *FlyProcedureTurn) LSummary(ac *Aircraft) string {
 }
 
 func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
-	if len(wp) < 2 {
-		lg.Errorf("ac %s", spew.Sdump(ac))
-		lg.Errorf("wp %s", spew.Sdump(wp))
-		panic("insufficient waypopints")
-	}
 	if ac.NoPT {
 		lg.Errorf("%s: MakeFlyProcedureTurn called even though ac.NoPT set", ac.Callsign)
 	}
@@ -698,7 +648,7 @@ func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
 
 	pt := wp[0].ProcedureTurn
 
-	fly := &FlyProcedureTurn{
+	fp := &FlyProcedureTurn{
 		ProcedureTurn:  wp[0].ProcedureTurn,
 		Fix:            wp[0].Fix,
 		FixLocation:    wp[0].Location,
@@ -709,11 +659,81 @@ func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
 	if pt.Type == PTRacetrack {
 		aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location,
 			scenarioGroup.MagneticVariation)
-		fly.Entry = pt.SelectRacetrackEntry(inboundHeading, aircraftFixHeading)
-		lg.Printf("%s: entry %s", ac.Callsign, fly.Entry)
+		fp.Entry = pt.SelectRacetrackEntry(inboundHeading, aircraftFixHeading)
+		lg.Printf("%s: entry %s", ac.Callsign, fp.Entry)
+	} else {
+		panic("TODO")
 	}
 
-	return fly
+	// Set the outbound heading. For everything but teardrop, it's the
+	// opposite of the inbound heading.
+	fp.OutboundHeading = fp.InboundHeading + 180
+	if fp.OutboundHeading > 360 {
+		fp.OutboundHeading -= 360
+	}
+	if fp.Entry == TeardropEntry {
+		// For teardrop, it's offset by 30 degrees, toward the outbound
+		// track.
+		if pt.RightTurns {
+			fp.OutboundHeading -= 30
+			if fp.OutboundHeading < 0 {
+				fp.OutboundHeading += 360
+			}
+		} else {
+			fp.OutboundHeading += 30
+			if fp.OutboundHeading > 360 {
+				fp.OutboundHeading -= 360
+			}
+		}
+	}
+
+	// Set the outbound turn rate
+	fp.OutboundTurnRate = float32(StandardTurnRate)
+	if fp.Entry == DirectEntryShortTurn {
+		// Since we have less than 180 degrees in our turn, turn more
+		// slowly so that we more or less end up the right offset distance
+		// from the inbound path.
+		fp.OutboundTurnRate = 3 * headingDifference(fp.OutboundHeading, ac.Heading) / 180
+	}
+
+	// Set the outbound turn method.
+	fp.OutboundTurnMethod = TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
+	if fp.Entry == ParallelEntry {
+		// Swapped turn direction
+		fp.OutboundTurnMethod = TurnMethod(Select(pt.RightTurns, TurnLeft, TurnRight))
+	}
+
+	// Figure out the outbound leg length.
+	// Specified by the user?
+	fp.OutboundLegLength = float32(pt.NmLimit) / 2
+	if fp.OutboundLegLength == 0 {
+		fp.OutboundLegLength = float32(pt.MinuteLimit) * ac.GS / 60
+	}
+	if fp.OutboundLegLength == 0 {
+		// Select a default based on the approach type.
+		switch ac.Approach.Type {
+		case ILSApproach:
+			// 1 minute by default on ILS
+			fp.OutboundLegLength = ac.GS / 60
+
+		case RNAVApproach:
+			// 4nm by default for RNAV, though that's the distance from the
+			// fix, so turn earlier...
+			fp.OutboundLegLength = lerp(rand.Float32(), 1, 2.5)
+
+		default:
+			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach.Type)
+			fp.OutboundLegLength = ac.GS / 60
+
+		}
+	}
+	// Lengthen it a bit for teardrop since we're flying along the
+	// diagonal.
+	if fp.Entry == TeardropEntry {
+		fp.OutboundLegLength /= cos(radians(30))
+	}
+
+	return fp
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -756,8 +776,8 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 			rate *= 1.25
 		}
 
-		lg.Errorf("%s: eta %f seconds IAS %f crossing speed %f -> rate (sec) %f",
-			ac.Callsign, eta.Seconds(), ac.IAS, cs, rate)
+		//lg.Errorf("%s: eta %f seconds IAS %f crossing speed %f -> rate (sec) %f",
+		//ac.Callsign, eta.Seconds(), ac.IAS, cs, rate)
 		return cs, rate * 60 // per minute
 	} else if ac.Altitude < 10000 { // Assume it's a departure(?)
 		return min(ac.Performance.Speed.Cruise, float32(250)), MaximumRate
