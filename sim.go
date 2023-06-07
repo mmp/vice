@@ -1442,7 +1442,7 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 	ac.FlightPlan.ArrivalAirport = airportName
 	ac.TrackingController = arr.InitialController
 	ac.ControllingController = arr.InitialController
-	ac.FlightPlan.Altitude = arr.CruiseAltitude
+	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
 	if ac.FlightPlan.Altitude == 0 { // unspecified
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
 	}
@@ -1454,8 +1454,8 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 	// Hold onto these with the Aircraft so we have them later.
 	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
 
-	ac.Altitude = float32(arr.InitialAltitude)
-	ac.IAS = float32(min(arr.InitialSpeed, ac.Performance.Speed.Cruise))
+	ac.Altitude = arr.InitialAltitude
+	ac.IAS = min(arr.InitialSpeed, ac.Performance.Speed.Cruise)
 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
@@ -1473,12 +1473,12 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 
 	ac.Nav.L = &FlyRoute{}
 	if arr.SpeedRestriction != 0 {
-		ac.Nav.S = &MaintainSpeed{IAS: float32(min(arr.SpeedRestriction, ac.Performance.Speed.Cruise))}
+		ac.Nav.S = &MaintainSpeed{IAS: min(arr.SpeedRestriction, ac.Performance.Speed.Cruise)}
 	} else {
 		ac.Nav.S = &FlyRoute{}
 	}
 	if arr.ClearedAltitude != 0 {
-		ac.Nav.V = &MaintainAltitude{Altitude: float32(arr.ClearedAltitude)}
+		ac.Nav.V = &MaintainAltitude{Altitude: arr.ClearedAltitude}
 	} else {
 		ac.Nav.V = &FlyRoute{}
 	}

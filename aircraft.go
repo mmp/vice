@@ -194,8 +194,7 @@ func (ac *Aircraft) GoAround(sim *Sim) {
 	ac.Nav.L = &FlyHeading{Heading: ac.Heading}
 
 	spd := ac.Performance.Speed
-	landingSpeed := float32(spd.Landing)
-	targetSpeed := min(1.6*landingSpeed, 0.8*float32(spd.Cruise))
+	targetSpeed := min(1.6*spd.Landing, 0.8*spd.Cruise)
 	ac.Nav.S = &MaintainSpeed{IAS: targetSpeed}
 
 	if ap, ok := database.Airports[ac.FlightPlan.ArrivalAirport]; ok {
@@ -248,12 +247,12 @@ func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 		response = "cancel speed restrictions"
 		ac.Nav.S = &FlyRoute{}
 		return
-	} else if speed < ac.Performance.Speed.Landing {
-		response = fmt.Sprintf("unable--our minimum speed is %d knots", ac.Performance.Speed.Landing)
+	} else if float32(speed) < ac.Performance.Speed.Landing {
+		response = fmt.Sprintf("unable--our minimum speed is %.0f knots", ac.Performance.Speed.Landing)
 		err = ErrUnableCommand
 		return
-	} else if speed > ac.Performance.Speed.Max {
-		response = fmt.Sprintf("unable--our maximum speed is %d knots", ac.Performance.Speed.Max)
+	} else if float32(speed) > ac.Performance.Speed.Max {
+		response = fmt.Sprintf("unable--our maximum speed is %.0f knots", ac.Performance.Speed.Max)
 		err = ErrUnableCommand
 		return
 	}
@@ -538,16 +537,16 @@ func (ac *Aircraft) updateAirspeed() {
 	targetSpeed, targetRate := ac.Nav.S.GetSpeed(ac)
 
 	// Stay within the aircraft's capabilities
-	targetSpeed = clamp(targetSpeed, float32(perf.Speed.Min), float32(perf.Speed.Max))
+	targetSpeed = clamp(targetSpeed, perf.Speed.Min, perf.Speed.Max)
 
-	if ac.IAS < float32(targetSpeed) {
+	if ac.IAS < targetSpeed {
 		accel := ac.Performance.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 		accel = min(accel, targetRate/60)
-		ac.IAS = min(float32(targetSpeed), ac.IAS+accel)
-	} else if ac.IAS > float32(targetSpeed) {
+		ac.IAS = min(targetSpeed, ac.IAS+accel)
+	} else if ac.IAS > targetSpeed {
 		decel := ac.Performance.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
-		ac.IAS = max(float32(targetSpeed), ac.IAS-decel)
+		ac.IAS = max(targetSpeed, ac.IAS-decel)
 	}
 }
 
@@ -560,7 +559,7 @@ func (ac *Aircraft) updateAltitude() {
 	}
 
 	// Baseline climb and descent capabilities in ft/minute
-	climb, descent := float32(ac.Performance.Rate.Climb), float32(ac.Performance.Rate.Descent)
+	climb, descent := ac.Performance.Rate.Climb, ac.Performance.Rate.Descent
 
 	// For high performing aircraft, reduce climb rate after 5,000'
 	if climb >= 2500 && ac.Altitude > 5000 {
@@ -642,7 +641,7 @@ func (ac *Aircraft) updatePositionAndGS() {
 
 	// Compute ground speed: TAS, modified for wind.
 	GS := ac.TAS() / 3600
-	airborne := ac.IAS >= 1.1*float32(ac.Performance.Speed.Min)
+	airborne := ac.IAS >= 1.1*ac.Performance.Speed.Min
 	if airborne {
 		windVector := sim.GetWindVector(ac.Position, ac.Altitude)
 		delta := windVector[0]*v[0] + windVector[1]*v[1]

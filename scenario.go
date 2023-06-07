@@ -42,16 +42,16 @@ type ScenarioGroup struct {
 type Arrival struct {
 	Waypoints       WaypointArray            `json:"waypoints"`
 	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
-	CruiseAltitude  int                      `json:"cruise_altitude"`
+	CruiseAltitude  float32                  `json:"cruise_altitude"`
 	Route           string                   `json:"route"`
 
-	InitialController string `json:"initial_controller"`
-	InitialAltitude   int    `json:"initial_altitude"`
-	ClearedAltitude   int    `json:"cleared_altitude"`
-	InitialSpeed      int    `json:"initial_speed"`
-	SpeedRestriction  int    `json:"speed_restriction"`
-	ExpectApproach    string `json:"expect_approach"`
-	Scratchpad        string `json:"scratchpad"`
+	InitialController string  `json:"initial_controller"`
+	InitialAltitude   float32 `json:"initial_altitude"`
+	ClearedAltitude   float32 `json:"cleared_altitude"`
+	InitialSpeed      float32 `json:"initial_speed"`
+	SpeedRestriction  float32 `json:"speed_restriction"`
+	ExpectApproach    string  `json:"expect_approach"`
+	Scratchpad        string  `json:"scratchpad"`
 
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
 }

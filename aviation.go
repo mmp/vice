@@ -601,11 +601,11 @@ type AircraftPerformance struct {
 	Name string `json:"name"`
 	ICAO string `json:"icao"`
 	// engines, weight class, category
-	WeightClass string `json:"weightClass"`
-	Ceiling     int    `json:"ceiling"`
+	WeightClass string  `json:"weightClass"`
+	Ceiling     float32 `json:"ceiling"`
 	Rate        struct {
-		Climb      int     `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500
-		Descent    int     `json:"descent"`
+		Climb      float32 `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500
+		Descent    float32 `json:"descent"`
 		Accelerate float32 `json:"accelerate"` // kts / 2 seconds
 		Decelerate float32 `json:"decelerate"`
 	} `json:"rate"`
@@ -614,10 +614,10 @@ type AircraftPerformance struct {
 		Landing float32 `json:"landing"` // nm
 	} `json:"runway"`
 	Speed struct {
-		Min     int `json:"min"`
-		Landing int `json:"landing"`
-		Cruise  int `json:"cruise"`
-		Max     int `json:"max"`
+		Min     float32 `json:"min"`
+		Landing float32 `json:"landing"`
+		Cruise  float32 `json:"cruise"`
+		Max     float32 `json:"max"`
 	} `json:"speed"`
 }
 
@@ -702,8 +702,8 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 		}
 	}
 
+	var strs []string
 	for {
-		var strs []string
 		if record, err := cr.Read(); err == io.EOF {
 			return
 		} else if err != nil {

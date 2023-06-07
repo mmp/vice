@@ -269,7 +269,7 @@ type ClimbOnceAirborne struct {
 func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft) bool {
 	// Only considers speed; assumes that this is part of the takeoff
 	// commands...
-	if ac.IAS < 1.1*float32(ac.Performance.Speed.Min) {
+	if ac.IAS < 1.1*ac.Performance.Speed.Min {
 		return false
 	}
 
@@ -735,10 +735,10 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 			ac.Callsign, eta.Seconds(), ac.IAS, cs, rate)
 		return cs, rate * 60 // per minute
 	} else if ac.Altitude < 10000 { // Assume it's a departure(?)
-		return float32(min(ac.Performance.Speed.Cruise, 250)), MaximumRate
+		return min(ac.Performance.Speed.Cruise, float32(250)), MaximumRate
 	} else {
 		// Assume climbing or descending
-		return float32(ac.Performance.Speed.Cruise) * 7 / 10, MaximumRate
+		return ac.Performance.Speed.Cruise * 7 / 10, MaximumRate
 	}
 }
 
@@ -757,17 +757,16 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 
 	// Expected speed at 10 DME, without further direction.
 	spd := ac.Performance.Speed
-	landingSpeed := float32(spd.Landing)
-	approachSpeed := min(1.6*landingSpeed, float32(spd.Cruise))
+	approachSpeed := min(1.6*spd.Landing, float32(spd.Cruise))
 
 	airportDist := nmdistance2ll(ac.Position, airportPos)
 	if airportDist < 1 {
-		return landingSpeed, MaximumRate
+		return spd.Landing, MaximumRate
 	} else if airportDist > 10 {
 		// Don't accelerate if the aircraft is already under the target speed.
 		return min(approachSpeed, ac.IAS), MaximumRate
 	} else {
-		return min(lerp((airportDist-1)/9, landingSpeed, approachSpeed), ac.IAS),
+		return min(lerp((airportDist-1)/9, spd.Landing, approachSpeed), ac.IAS),
 			MaximumRate
 	}
 }
