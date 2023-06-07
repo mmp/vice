@@ -372,12 +372,7 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	}
 
 	if found {
-		if ac.ApproachCleared && ac.Waypoints[0].ProcedureTurn != nil && !ac.NoPT {
-			// Fly the procedure turn
-			fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
-			ac.Nav.L = fp
-			ac.Nav.V = fp
-		} else {
+		if !ac.flyProcedureTurnIfNecessary() {
 			ac.Nav.L = &FlyRoute{}
 		}
 		ac.NoPT = false
@@ -394,6 +389,17 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	} else {
 		return "", fmt.Errorf("%s: fix not found in route", fix)
 	}
+}
+
+func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
+	if ac.ApproachCleared && len(ac.Waypoints) > 0 &&
+		ac.Waypoints[0].ProcedureTurn != nil && !ac.NoPT {
+		fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
+		ac.Nav.L = fp
+		ac.Nav.V = fp
+		return true
+	}
+	return false
 }
 
 func (ac *Aircraft) ExpectApproach(ap *Approach) (string, error) {
@@ -497,17 +503,12 @@ func (ac *Aircraft) clearedApproach(ap *Approach, straightIn bool) (response str
 		ac.NoPT = true
 	}
 
-	if len(ac.Waypoints) > 0 && ac.Waypoints[0].ProcedureTurn != nil && !ac.NoPT {
-		// Fly the procedure turn at the next waypoint
-		fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
-		ac.Nav.L = fp
-		ac.Nav.V = fp
-	}
-
 	// Cleared approach also cancels speed restrictions, but let's not do
 	// that.
 	ac.ApproachCleared = true
 	ac.AddFutureNavCommand(&ApproachSpeedAt5DME{})
+
+	ac.flyProcedureTurnIfNecessary()
 
 	if straightIn {
 		response += "cleared straight in " + ap.FullName + " approach"
@@ -698,14 +699,11 @@ func (ac *Aircraft) updateWaypoints() {
 		if ac.Waypoints[0].Heading != 0 {
 			// We have an outbound heading
 			ac.Nav.L = &FlyHeading{Heading: float32(wp.Heading)}
-		} else if ac.ApproachCleared && len(ac.Waypoints) > 1 && ac.Waypoints[1].ProcedureTurn != nil && !ac.NoPT {
-			// Get ready to fly the procedure turn
-			fp := MakeFlyProcedureTurn(ac, ac.Waypoints[1:])
-			ac.Nav.L = fp
-			ac.Nav.V = fp
+			ac.Waypoints = ac.Waypoints[1:]
+		} else {
+			ac.Waypoints = ac.Waypoints[1:]
+			ac.flyProcedureTurnIfNecessary()
 		}
-
-		ac.Waypoints = ac.Waypoints[1:]
 
 		//lg.Printf("%s", spew.Sdump(ac))
 	}
