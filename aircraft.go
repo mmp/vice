@@ -676,16 +676,7 @@ func (ac *Aircraft) updateWaypoints() {
 		hdg = ac.Heading
 	}
 
-	eta := wp.ETA(ac.Position, ac.GS)
-	turnAngle := abs(headingDifference(hdg, ac.Heading))
-
-	// Assuming 3 degree/second turns, we might start to turn to the
-	// heading leaving the waypoint when turnAngle/3==eta, though we'd turn
-	// too early then since turning starts to put us in the new direction
-	// away from the fix.  An ad-hoc angle/5 generally seems to work well
-	// instead. Also checking against 2 seconds ensures that we don't miss
-	// fixes where there's little to no turn...
-	if s := float32(eta.Seconds()); s < max(2, turnAngle/5) {
+	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest) {
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp)
 
@@ -710,7 +701,7 @@ func (ac *Aircraft) updateWaypoints() {
 
 		ac.Waypoints = ac.Waypoints[1:]
 
-		lg.Printf("%s", spew.Sdump(ac))
+		//lg.Printf("%s", spew.Sdump(ac))
 	}
 }
 
@@ -731,6 +722,8 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	dist := nmdistance2ll(ac.Position, p)
 	eta := dist / ac.GS * 3600 // in seconds
 
+	// TODO: it's not clear that the logic here works sense for turns of
+	// >180 degrees...
 	var turnAngle float32
 	switch turn {
 	case TurnLeft:
@@ -747,5 +740,13 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 		turnAngle += 360
 	}
 
+	// lg.Printf("dist %.2f eta %.1f angle %.1f", dist, eta, turnAngle)
+
+	// Assuming 3 degree/second turns, we might start to turn to the
+	// heading leaving the waypoint when turnAngle/3==eta, though we'd turn
+	// too early then since turning starts to put us in the new direction
+	// away from the fix.  An ad-hoc angle/5 generally seems to work well
+	// instead. Also checking against 2 seconds ensures that we don't miss
+	// fixes where there's little to no turn...
 	return eta < min(2, turnAngle/3/2)
 }

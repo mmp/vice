@@ -319,18 +319,7 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	// Find eta to the intercept and the turn required to align with
-	// the localizer.
-	dist := distance2f(pos, isect)
-	eta := dist / ac.GS * 3600 // in seconds
-	turn := abs(headingDifference(hdg, float32(ap.Heading())-scenarioGroup.MagneticVariation))
-
-	// Assuming 3 degree/second turns, then we might start to turn to
-	// intercept when the eta until intercept is 1/3 the number of
-	// degrees to cover.  However... the aircraft approaches the
-	// localizer more slowly as it turns, so we'll add another 1/2
-	// fudge factor, which seems to account for that reasonably well.
-	if eta < turn/3/2 {
+	if ac.ShouldTurnForOutbound(nm2ll(isect), ap.Heading(), TurnClosest) {
 		lg.Printf("%s: assigned approach heading! %.1f", ac.Callsign, ap.Heading())
 
 		ac.Nav.L = &FlyHeading{Heading: float32(ap.Heading())}
