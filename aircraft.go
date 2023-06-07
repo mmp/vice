@@ -748,5 +748,5 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	// away from the fix.  An ad-hoc angle/5 generally seems to work well
 	// instead. Also checking against 2 seconds ensures that we don't miss
 	// fixes where there's little to no turn...
-	return eta < min(2, turnAngle/3/2)
+	return eta < max(2, turnAngle/3/2)
 }
