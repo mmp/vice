@@ -290,13 +290,28 @@ func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 ///////////////////////////////////////////////////////////////////////////
 // HILPT
 
-type HILPT struct {
-	RightTurns  bool
-	MinuteLimit int `json:",omitempty"`
-	NmLimit     int `json:",omitempty"`
+type PTType int
+
+const (
+	PTUndefined = iota
+	PTRacetrack
+	PTStandard45
+)
+
+func (pt PTType) String() string {
+	return []string{"undefined", "racetrack", "standard 45"}[pt]
 }
 
-type HILPTEntry int
+type ProcedureTurn struct {
+	Type         PTType
+	RightTurns   bool
+	ExitAltitude int  `json:",omitempty"`
+	MinuteLimit  int  `json:",omitempty"`
+	NmLimit      int  `json:",omitempty"`
+	Entry180NoPT bool `json:",omitempty"`
+}
+
+type RacetrackPTEntry int
 
 const (
 	DirectEntryShortTurn = iota
@@ -305,16 +320,16 @@ const (
 	TeardropEntry
 )
 
-func (e HILPTEntry) String() string {
+func (e RacetrackPTEntry) String() string {
 	return []string{"direct short", "direct long", "parallel", "teardrop"}[int(e)]
 }
 
-func (e HILPTEntry) MarshalJSON() ([]byte, error) {
+func (e RacetrackPTEntry) MarshalJSON() ([]byte, error) {
 	s := "\"" + e.String() + "\""
 	return []byte(s), nil
 }
 
-func (e *HILPTEntry) UnmarshalJSON(b []byte) error {
+func (e *RacetrackPTEntry) UnmarshalJSON(b []byte) error {
 	if len(b) < 2 {
 		return fmt.Errorf("invalid HILPT")
 	}
@@ -334,14 +349,14 @@ func (e *HILPTEntry) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (hilpt *HILPT) SelectEntry(inboundHeading float32, aircraftFixHeading float32) HILPTEntry {
+func (pt *ProcedureTurn) SelectRacetrackEntry(inboundHeading float32, aircraftFixHeading float32) RacetrackPTEntry {
 	// Rotate so we can treat inboundHeading as 0.
 	hdg := aircraftFixHeading - inboundHeading
 	if hdg < 0 {
 		hdg += 360
 	}
 
-	if hilpt.RightTurns {
+	if pt.RightTurns {
 		if hdg > 290 {
 			return DirectEntryLongTurn
 		} else if hdg < 110 {
@@ -368,15 +383,15 @@ func (hilpt *HILPT) SelectEntry(inboundHeading float32, aircraftFixHeading float
 // Waypoint
 
 type Waypoint struct {
-	Fix      string   `json:"fix"`
-	Location Point2LL // not provided in scenario JSON; derived from fix
-	Altitude int      `json:"altitude,omitempty"`
-	Speed    int      `json:"speed,omitempty"`
-	Heading  int      `json:"heading,omitempty"` // outbound heading after waypoint
-	HILPT    *HILPT   `json:"hilpt,omitempty"`
-	NoPT     bool     `json:"nopt,omitempty"`
-	Handoff  bool     `json:"handoff,omitempty"`
-	Delete   bool     `json:"delete,omitempty"`
+	Fix           string         `json:"fix"`
+	Location      Point2LL       // not provided in scenario JSON; derived from fix
+	Altitude      int            `json:"altitude,omitempty"`
+	Speed         int            `json:"speed,omitempty"`
+	Heading       int            `json:"heading,omitempty"` // outbound heading after waypoint
+	ProcedureTurn *ProcedureTurn `json:"pt,omitempty"`
+	NoPT          bool           `json:"nopt,omitempty"`
+	Handoff       bool           `json:"handoff,omitempty"`
+	Delete        bool           `json:"delete,omitempty"`
 }
 
 func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
@@ -397,16 +412,30 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 		if w.Speed != 0 {
 			s += fmt.Sprintf("@s%d", w.Speed)
 		}
-		if w.HILPT != nil {
-			if !w.HILPT.RightTurns {
-				s += "@lhilpt"
+		if pt := w.ProcedureTurn; pt != nil {
+			if pt.Type == PTStandard45 {
+				if !pt.RightTurns {
+					s += "@lpt45"
+				} else {
+					s += "@pt45"
+				}
 			} else {
-				s += "@hilpt"
+				if !pt.RightTurns {
+					s += "@lhilpt"
+				} else {
+					s += "@hilpt"
+				}
 			}
-			if w.HILPT.MinuteLimit != 0 {
-				s += fmt.Sprintf("%dmin", w.HILPT.MinuteLimit)
+			if pt.MinuteLimit != 0 {
+				s += fmt.Sprintf("%dmin", pt.MinuteLimit)
 			} else {
-				s += fmt.Sprintf("%dnm", w.HILPT.NmLimit)
+				s += fmt.Sprintf("%dnm", pt.NmLimit)
+			}
+			if pt.Entry180NoPT {
+				s += "@nopt180"
+			}
+			if pt.ExitAltitude != 0 {
+				s += fmt.Sprintf("@pta%d", pt.ExitAltitude)
 			}
 		}
 		if w.NoPT {
@@ -438,6 +467,30 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 		*w = wp
 	}
 	return err
+}
+
+func parsePTExtent(pt *ProcedureTurn, extent string) error {
+	if len(extent) == 0 {
+		return fmt.Errorf("missing extent specification for procedure turn (min or nm)")
+	}
+	if len(extent) < 3 {
+		return fmt.Errorf("%s: invalid extent specification for procedure turn", extent)
+	}
+
+	var err error
+	if extent[len(extent)-2:] == "nm" {
+		if pt.NmLimit, err = strconv.Atoi(extent[:len(extent)-2]); err != nil {
+			return fmt.Errorf("%s: unable to parse length in nm for procedure turn: %v", extent, err)
+		}
+	} else if extent[len(extent)-3:] == "min" {
+		if pt.MinuteLimit, err = strconv.Atoi(extent[:len(extent)-3]); err != nil {
+			return fmt.Errorf("%s: unable to parse minutes procedure turn: %v", extent, err)
+		}
+	} else {
+		return fmt.Errorf("%s: invalid extent units for procedure turn", extent)
+	}
+
+	return nil
 }
 
 func parseWaypoints(str string) ([]Waypoint, error) {
@@ -486,37 +539,58 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 							return nil, err
 						}
 						wp.Speed = kts
-					} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
-						hilpt := &HILPT{RightTurns: f[0] == 'h'}
+					} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
+						if wp.ProcedureTurn == nil {
+							wp.ProcedureTurn = &ProcedureTurn{}
+						}
+						wp.ProcedureTurn.Type = PTStandard45
+						wp.ProcedureTurn.RightTurns = f[0] == 'p'
+
 						extent := f[5:]
-						if !hilpt.RightTurns {
+						if !wp.ProcedureTurn.RightTurns {
 							extent = extent[1:]
 						}
+						if err := parsePTExtent(wp.ProcedureTurn, extent); err != nil {
+							return nil, err
+						}
+					} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
+						if wp.ProcedureTurn == nil {
+							wp.ProcedureTurn = &ProcedureTurn{}
+						}
+						wp.ProcedureTurn.Type = PTRacetrack
+						wp.ProcedureTurn.RightTurns = f[0] == 'h'
 
-						if len(extent) < 3 {
-							return nil, fmt.Errorf("%s: invalid extent specification for HILPT '%s'", field, f)
+						extent := f[5:]
+						if !wp.ProcedureTurn.RightTurns {
+							extent = extent[1:]
+						}
+						if err := parsePTExtent(wp.ProcedureTurn, extent); err != nil {
+							return nil, err
+						}
+					} else if len(f) >= 4 && f[:3] == "pta" {
+						if wp.ProcedureTurn == nil {
+							wp.ProcedureTurn = &ProcedureTurn{}
 						}
 
 						var err error
-						if extent[len(extent)-2:] == "nm" {
-							if hilpt.NmLimit, err = strconv.Atoi(extent[:len(extent)-2]); err != nil {
-								return nil, fmt.Errorf("%s: unable to parse length in nm for HILPT: %v", field, err)
-							}
-						} else if extent[len(extent)-3:] == "min" {
-							if hilpt.MinuteLimit, err = strconv.Atoi(extent[:len(extent)-3]); err != nil {
-								return nil, fmt.Errorf("%s: unable to parse minutes HILPT: %v", field, err)
-							}
-						} else {
-							return nil, fmt.Errorf("%s: invalid extent units for HILPT '%s'", field, f)
+						if wp.ProcedureTurn.ExitAltitude, err = strconv.Atoi(f[3:]); err != nil {
+							return nil, fmt.Errorf("%s error parsing procedure turn exit altitude: %v", f[3:], err)
 						}
-
-						wp.HILPT = hilpt
 					} else if f == "nopt" {
 						wp.NoPT = true
+					} else if f == "nopt180" {
+						if wp.ProcedureTurn == nil {
+							wp.ProcedureTurn = &ProcedureTurn{}
+						}
+						wp.ProcedureTurn.Entry180NoPT = true
 					} else {
 						return nil, fmt.Errorf("%s: unknown @ command '%s'", field, f)
 					}
 				}
+			}
+
+			if wp.ProcedureTurn != nil && wp.ProcedureTurn.Type == PTUndefined {
+				return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
 			}
 
 			waypoints = append(waypoints, wp)

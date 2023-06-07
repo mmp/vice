@@ -33,15 +33,15 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			ap.Waypoints[i][n-1].Delete = true
 			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
 
-			if ap.Waypoints[i][n-1].HILPT != nil {
-				e.ErrorString("HILPT cannot be specified at the final waypoint")
+			if ap.Waypoints[i][n-1].ProcedureTurn != nil {
+				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
 			}
 			for j, wp := range ap.Waypoints[i] {
 				e.Push("Fix " + wp.Fix)
 				if wp.NoPT {
 					if FindIf(ap.Waypoints[i][j+1:],
-						func(wp Waypoint) bool { return wp.HILPT != nil }) == -1 {
-						e.ErrorString("No HILPT found after fix with \"nopt\"")
+						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) == -1 {
+						e.ErrorString("No procedure turn found after fix with \"nopt\"")
 					}
 				}
 				e.Pop()

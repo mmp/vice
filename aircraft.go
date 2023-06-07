@@ -372,9 +372,11 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	}
 
 	if found {
-		if ac.ApproachCleared && ac.Waypoints[0].HILPT != nil && !ac.NoPT {
-			// Fly the HILPT
-			ac.Nav.L = MakeFlyHILPT(ac, ac.Waypoints)
+		if ac.ApproachCleared && ac.Waypoints[0].ProcedureTurn != nil && !ac.NoPT {
+			// Fly the procedure turn
+			fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
+			ac.Nav.L = fp
+			ac.Nav.V = fp
 		} else {
 			ac.Nav.L = &FlyRoute{}
 		}
@@ -495,9 +497,11 @@ func (ac *Aircraft) clearedApproach(ap *Approach, straightIn bool) (response str
 		ac.NoPT = true
 	}
 
-	if len(ac.Waypoints) > 0 && ac.Waypoints[0].HILPT != nil && !ac.NoPT {
-		// Fly the HILPT at the next waypoint
-		ac.Nav.L = MakeFlyHILPT(ac, ac.Waypoints)
+	if len(ac.Waypoints) > 0 && ac.Waypoints[0].ProcedureTurn != nil && !ac.NoPT {
+		// Fly the procedure turn at the next waypoint
+		fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
+		ac.Nav.L = fp
+		ac.Nav.V = fp
 	}
 
 	// Cleared approach also cancels speed restrictions, but let's not do
@@ -694,9 +698,11 @@ func (ac *Aircraft) updateWaypoints() {
 		if ac.Waypoints[0].Heading != 0 {
 			// We have an outbound heading
 			ac.Nav.L = &FlyHeading{Heading: float32(wp.Heading)}
-		} else if ac.ApproachCleared && len(ac.Waypoints) > 1 && ac.Waypoints[1].HILPT != nil && !ac.NoPT {
-			// Get ready to fly the HILPT
-			ac.Nav.L = MakeFlyHILPT(ac, ac.Waypoints[1:])
+		} else if ac.ApproachCleared && len(ac.Waypoints) > 1 && ac.Waypoints[1].ProcedureTurn != nil && !ac.NoPT {
+			// Get ready to fly the procedure turn
+			fp := MakeFlyProcedureTurn(ac, ac.Waypoints[1:])
+			ac.Nav.L = fp
+			ac.Nav.V = fp
 		}
 
 		ac.Waypoints = ac.Waypoints[1:]

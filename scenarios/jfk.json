@@ -7,7 +7,7 @@
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1600@hilpt1min _FRG_14@a50"
+            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1600@hilpt1min@pta1400 _FRG_14@a50"
           ]
         },
         "R1": {
