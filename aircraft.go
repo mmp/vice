@@ -392,14 +392,29 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 }
 
 func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
-	if ac.ApproachCleared && len(ac.Waypoints) > 0 &&
-		ac.Waypoints[0].ProcedureTurn != nil && !ac.NoPT {
-		fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
-		ac.Nav.L = fp
-		ac.Nav.V = fp
-		return true
+	wp := ac.Waypoints
+	if !ac.ApproachCleared || len(wp) == 0 || wp[0].ProcedureTurn == nil || ac.NoPT {
+		return false
 	}
-	return false
+
+	if wp[0].ProcedureTurn.Entry180NoPT {
+		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
+			scenarioGroup.MagneticVariation)
+		acFixHeading := headingp2ll(ac.Position, wp[0].Location,
+			scenarioGroup.MagneticVariation)
+		lg.Errorf("%s: ac %.1f inbound %.1f diff %.1f", ac.Callsign,
+			acFixHeading, inboundHeading,
+			headingDifference(acFixHeading, inboundHeading))
+
+		if headingDifference(acFixHeading, inboundHeading) < 90 {
+			return false
+		}
+	}
+
+	fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
+	ac.Nav.L = fp
+	ac.Nav.V = fp
+	return true
 }
 
 func (ac *Aircraft) ExpectApproach(ap *Approach) (string, error) {
