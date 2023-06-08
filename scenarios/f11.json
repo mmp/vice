@@ -75,7 +75,7 @@
           "runway": "35L",
           "type": "RNAV",
           "waypoints": [
-            "NOGGI@a5000 FOBUK@a4000 FITEM@a3000 SPURR@a1600 _MCO_35L@a88"
+            "ODDEL@a4000@nopt FOBUK@a4000@hilpt FITEM@a3000 SPURR@a1600 _MCO_35L@a88"
           ]
         },
         "I5R": {
@@ -109,9 +109,7 @@
           "runway": "36R",
           "type": "RNAV",
           "waypoints": [
-            "FLOZY@a4000 SILKY@a3000 JAKOR@a1600 UVEKE@a540 _MCO_36R@a92",
-            "MINEE@a4000 BOYAB@a4000 FLOZY@a4000 SILKY@a3000 JAKOR@a1600 UVEKE@a540 _MCO_36R@a92",
-            "BOYAB@a4000 FLOZY@a4000 SILKY@a3000 JAKOR@a1600 UVEKE@a540 _MCO_36R@a92"
+            "MINEE@a4000 BOYAB@a4000@nopt FLOZY@a4000@hilpt SILKY@a3000 JAKOR@a1600 UVEKE@a540 _MCO_36R@a92"
           ]
         },
         "R6L": {
@@ -119,8 +117,7 @@
           "runway": "36L",
           "type": "RNAV",
           "waypoints": [
-            "EXBAN@a4000 AMEBE@a3000 BERDY@a1600 RUTNE@a780 _MCO_36L@a93",
-            "LORRA@a7000 EXBAN@a4000 AMEBE@a3000 BERDY@a1600 RUTNE@a780 _MCO_36L@a93"
+            "LORRA@a7000@nopt EXBAN@a4000@hilpt AMEBE@a3000 BERDY@a1600 RUTNE@a780 _MCO_36L@a93"
           ]
         }
       },
@@ -854,7 +851,7 @@
           "runway": "7",
           "type": "ILS",
           "waypoints": [
-            "ESRAQ@a2000 DNMOR@a2000 SWLTR@a1020 _ORL_7@a109"
+            "ESRAQ@a2000@hilpt DNMOR@a2000 SWLTR@a1020 _ORL_7@a109"
           ]
         },
         "R7": {
@@ -862,7 +859,7 @@
           "runway": "7",
           "type": "RNAV",
           "waypoints": [
-            "ESRAQ@a2000 DNMOR@a2000 SWLTR@a1020 _ORL_7@a109"
+            "ESRAQ@a2000@hilpt DNMOR@a2000 SWLTR@a1020 _ORL_7@a109"
           ]
         },
         "I25": {
@@ -870,7 +867,7 @@
           "runway": "25",
           "type": "ILS",
           "waypoints": [
-            "LOUKE@a2800 ENLOW@a2000 MARYB@a1500 LMOND@a1100 _ORL_25@a113"
+            "LOUKE@a2800@lhilpt ENLOW@a2000 MARYB@a1500 LMOND@a1100 _ORL_25@a113"
           ]
         },
         "R25": {
@@ -878,7 +875,7 @@
           "runway": "25",
           "type": "RNAV",
           "waypoints": [
-            "LOUKE@a2800 ENLOW@a2000 MARYB@a1500 LMOND@a1100 _ORL_25@a113"
+            "LOUKE@a2800@lhilpt ENLOW@a2000 MARYB@a1500 LMOND@a1100 _ORL_25@a113"
           ]
         }
       },
@@ -938,9 +935,9 @@
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
-            "UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
-            "UDUZI@a2000 UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
-            "IPNEC@a2000 UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55"
+            "UGMAH@a2000@lhilpt OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
+            "UDUZI@a2000@nopt UGMAH@a2000@lhilpt OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
+            "IPNEC@a2000@nopt UGMAH@a2000@lhilpt OLNAF@a1600 CUNPA@a540 _SFB_9L@a55"
           ]
         },
         "R9L": {
@@ -948,9 +945,9 @@
           "runway": "9L",
           "type": "RNAV",
           "waypoints": [
-            "UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
-            "UDUZI@a2000 UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
-            "IPNEC@a2000 UGMAH@a2000 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55"
+            "UGMAH@a2000@lhilpt@nopt180 OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
+            "UDUZI@a2000@nopt UGMAH@a2000@lhilpt OLNAF@a1600 CUNPA@a540 _SFB_9L@a55",
+            "IPNEC@a2000@nopt UGMAH@a2000@lhilpt OLNAF@a1600 CUNPA@a540 _SFB_9L@a55"
           ]
         },
         "I9R": {
@@ -958,9 +955,9 @@
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
-            "UDUZI@a2000 JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
-            "JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
-            "IPNEC@a2000 JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39"
+            "UDUZI@a2000@nopt JORVU@a2000@hilpt COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
+            "JORVU@a2000@hilpt COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
+            "IPNEC@a2000@nopt JORVU@a2000@hilpt COYVA@a1600 JOSKA@a540 _SFB_9R@a39"
           ]
         },
         "R9R": {
@@ -968,9 +965,9 @@
           "runway": "9R",
           "type": "RNAV",
           "waypoints": [
-            "UDUZI@a2000 JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
-            "JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
-            "IPNEC@a2000 JORVU@a2000 COYVA@a1600 JOSKA@a540 _SFB_9R@a39"
+            "UDUZI@a2000@nopt JORVU@a2000@hilpt COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
+            "JORVU@a2000@hilpt@nopt180 COYVA@a1600 JOSKA@a540 _SFB_9R@a39",
+            "IPNEC@a2000@nopt JORVU@a2000@hilpt COYVA@a1600 JOSKA@a540 _SFB_9R@a39"
           ]
         },
         "I7G": {
@@ -978,9 +975,9 @@
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
-            "UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
-            "SMYRA@a2000 VOFOS@a2000 UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
-            "GACNO@a2000 UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45"
+            "UXFIM@a1600@hilpt UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
+            "SMYRA@a2000 VOFOS@a2000@nopt UXFIM@a1600@hilpt UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
+            "GACNO@a2000@nopt UXFIM@a1600@hilpt UTIMY@a1600 PESIY@a480 _SFB_27R@a45"
           ]
         },
         "R7G": {
@@ -988,9 +985,9 @@
           "runway": "27R",
           "type": "RNAV",
           "waypoints": [
-            "UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
-            "SMYRA@a2000 VOFOS@a2000 UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
-            "GACNO@a2000 UXFIM@a1600 UTIMY@a1600 PESIY@a480 _SFB_27R@a45"
+            "UXFIM@a1600@hilpt UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
+            "SMYRA@a2000 VOFOS@a2000@nopt UXFIM@a1600@hilpt UTIMY@a1600 PESIY@a480 _SFB_27R@a45",
+            "GACNO@a2000@nopt UXFIM@a1600@hilpt UTIMY@a1600 PESIY@a480 _SFB_27R@a45"
           ]
         },
         "R7H": {
@@ -998,9 +995,9 @@
           "runway": "27L",
           "type": "RNAV",
           "waypoints": [
-            "GACNO@a2000 WEPAT@a1600 ONBEW@a1600 LOBPI@a700 _SFB_27L@a28",
-            "WEPAT@a1600 ONBEW@a1600 LOBPI@a700 _SFB_27L@a28",
-            "SMYRA@a2000 VOFOS@a2000 WEPAT@a1600 ONBEW@a1600 LOBPI@a700 _SFB_27L@a28"
+            "GACNO@a2000@nopt WEPAT@a1600@lhilpt ONBEW@a1600 LOBPI@a700 _SFB_27L@a28",
+            "WEPAT@a1600@lhilpt ONBEW@a1600 LOBPI@a700 _SFB_27L@a28",
+            "SMYRA@a2000 VOFOS@a2000@nopt WEPAT@a1600@lhilpt ONBEW@a1600 LOBPI@a700 _SFB_27L@a28"
           ]
         }
       },
