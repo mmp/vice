@@ -1953,6 +1953,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HTO V46 CCC ISP",
+        "speed_restriction": 250,
         "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC ISP"
       },
       {
@@ -1978,6 +1979,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HVN",
+        "speed_restriction": 250,
         "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho HVN"
       },
       {
@@ -2024,6 +2026,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. MAD V1 BELTT ISP",
+        "speed_restriction": 250,
         "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT ISP"
       },
       {
@@ -2083,6 +2086,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CREAM HVN",
+        "speed_restriction": 250,
         "waypoints": "GON N041.17.25.349,W072.10.01.803/ho CREAM HVN"
       },
       {
@@ -2100,6 +2104,7 @@
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. DENNA HVN",
+        "speed_restriction": 250,
         "waypoints": "N041.17.24.607,W073.43.06.291 CMK/ho DENNA HVN"
       },
       {
@@ -2117,6 +2122,7 @@
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. BDR HVN",
+        "speed_restriction": 250,
         "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747/ho BDR HVN"
       },
       {
@@ -2140,6 +2146,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. DPK",
+        "speed_restriction": 250,
         "waypoints": "N041.46.50.426,W073.20.24.261 N041.39.56.516,W073.19.39.025/ho DPK"
       },
       {
@@ -2175,6 +2182,7 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. ZIGGI",
+        "speed_restriction": 250,
         "waypoints": "N039.59.17.221,W074.02.27.134 ZIGGI/h40/ho JFK"
       },
       {
@@ -2202,6 +2210,7 @@
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. COL",
+        "speed_restriction": 250,
         "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636/ho COL JFK"
       }
     ],
