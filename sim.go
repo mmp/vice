@@ -657,6 +657,8 @@ func (sim *Sim) CancelHandoff(callsign string) error {
 	} else if ac.TrackingController != sim.Scenario.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
+		delete(sim.Handoffs, ac.Callsign)
+
 		ac.OutboundHandoffController = ""
 		// TODO: we are inconsistent in other control backends about events
 		// when user does things like this; sometimes no event, sometimes
