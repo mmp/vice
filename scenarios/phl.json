@@ -7,7 +7,7 @@
           "runway": "17",
           "type": "ILS",
           "waypoints": [
-            "COWAD@a3000 HYILL@a2000 HOOCH@a760 N039.53.14.508,W075.14.09.655@a50"
+            "COWAD/a3000 HYILL/a2000 HOOCH/a760 N039.53.14.508,W075.14.09.655/a50"
           ]
         },
         "27L": {
@@ -15,7 +15,7 @@
           "runway": "27L",
           "type": "ILS",
           "waypoints": [
-            "FESTI@a3000 TORNE@a3000 GLOUS@a2060 XIVOY@a400 N039.52.08.453,W075.14.02.761@a50"
+            "FESTI/a3000 TORNE/a3000 GLOUS/a2060 XIVOY/a400 N039.52.08.453,W075.14.02.761/a50"
           ]
         },
         "27R": {
@@ -23,7 +23,7 @@
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
-            "MENGE@a3000 MRTIN@a3000 JALTO@a2100 HADNI@a740 N039.52.28.008,W075.13.25.682@a50"
+            "MENGE/a3000 MRTIN/a3000 JALTO/a2100 HADNI/a740 N039.52.28.008,W075.13.25.682/a50"
           ]
         },
         "9RZ": {
@@ -31,7 +31,7 @@
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
-            "BWINE@a4000 ASOCI@a3000 KELEE@a1800 BALDN@a740 N039.51.39.133,W075.16.29.620@a50"
+            "BWINE/a4000 ASOCI/a3000 KELEE/a1800 BALDN/a740 N039.51.39.133,W075.16.29.620/a50"
           ]
         },
         "G35": {
@@ -39,7 +39,7 @@
           "runway": "35",
           "type": "RNAV",
           "waypoints": [
-            "WIKAV@a3000 JEPUG@a3000 HARLU@a2000 CEMEK@a900 N039.52.16.047,W075.13.40.458@a50"
+            "WIKAV/a3000 JEPUG/a3000 HARLU/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50"
           ]
         },
         "I26": {
@@ -47,7 +47,7 @@
           "runway": "26",
           "type": "ILS",
           "waypoints": [
-            "HOLEY FOSOM@a2000 ESKOE@a2000 N039.52.54.183,W075.12.47.257@a50"
+            "HOLEY FOSOM/a2000 ESKOE/a2000 N039.52.54.183,W075.12.47.257/a50"
           ]
         },
         "I9L": {
@@ -55,7 +55,7 @@
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
-            "QWEST@a4000 OBEKE@a3000 ANNET@a2100 LANDI@a760 N039.52.07.340,W075.15.19.692@a50 "
+            "QWEST/a4000 OBEKE/a3000 ANNET/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50 "
           ]
         }
       },
@@ -64,39 +64,39 @@
           "ARD,FJC,MAZIE,MXE,PTW": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #265"
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675/h265"
           },
           "DITCH,OOD,RUUTH": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #230"
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675/h230"
           },
           "DQO,STOEN": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675 #245"
+            "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675/h245"
           }
         },
         "9L": {
           "ARD,MAZIE,PTW,RUUTH": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #95"
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h95"
           },
           "DITCH": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #110"
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h110"
           },
           "DQO,OOD": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #125"
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h125"
           },
           "FJC,MXE,STOEN": {
             "cleared_altitude": 5000,
             "route": "PHL2",
-            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226 #80"
+            "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h80"
           }
         }
       },
@@ -4685,13 +4685,13 @@
         "initial_speed": 250,
         "route": "/. BOJID3",
         "runway_waypoints": {
-          "17": "SCOOL #104",
-          "27L": "SCOOL BOJID HIFAL EYRIE FERUS #085",
-          "27R": "SCOOL BOJID HIFAL EYRIE FERUS #085",
-          "9L": "SCOOL KYILL EXPRS WHEYY #265",
-          "9R": "SCOOL KYILL EXPRS WHEYY #265"
+          "17": "SCOOL/h104",
+          "27L": "SCOOL BOJID HIFAL EYRIE FERUS/h085",
+          "27R": "SCOOL BOJID HIFAL EYRIE FERUS/h085",
+          "9L": "SCOOL KYILL EXPRS WHEYY/h265",
+          "9R": "SCOOL KYILL EXPRS WHEYY/h265"
         },
-        "waypoints": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591 @ TRAGG BUNTS SCOOL"
+        "waypoints": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591/ho TRAGG BUNTS SCOOL"
       }
     ],
     "FINAL27_NORTH": [
@@ -4741,7 +4741,7 @@
         "speed_restriction": 220,
         "route": "/. BOJID3",
         "scratchpad": "27R",
-        "waypoints": "BOJID N040.01.51.140,W075.11.43.262 @ HIFAL EYRIE FERUS #085"
+        "waypoints": "BOJID N040.01.51.140,W075.11.43.262/ho HIFAL EYRIE FERUS/h085"
       }
     ],
     "FINAL27_SOUTH": [
@@ -4779,7 +4779,7 @@
         "speed_restriction": 220,
         "route": "/. PAATS4",
         "scratchpad": "27R",
-        "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN @ PSOUT MKORD #087"
+        "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
       }
     ],
     "JIIMS4": [
@@ -4823,14 +4823,14 @@
         "initial_speed": 250,
         "route": "/. JIIMS4",
         "runway_waypoints": {
-          "27L": "JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
-          "27R": "JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
-          "17": "JIIMS@a8000 SNEDE #312",
-          "35": "JIIMS@a8000 SNEDE #312",
-          "9L": "JIIMS@a8000 WUDRR WEVVE ERNYY #268",
-          "9R": "JIIMS@a8000 WUDRR WEVVE ERNYY #268"
+          "27L": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
+          "27R": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
+          "17": "JIIMS/a8000 SNEDE/h312",
+          "35": "JIIMS/a8000 SNEDE/h312",
+          "9L": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268",
+          "9R": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268"
         },
-        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000"
+        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS/a8000"
       },
       {
         "airlines": {
@@ -4852,14 +4852,14 @@
         "initial_speed": 250,
         "route": "/. JIIMS4",
         "runway_waypoints": {
-          "27L": "JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
-          "27R": "JIIMS@a8000 ZMRMN CHPMN PSOUT MKORD #87",
-          "17": "JIIMS@a8000 SNEDE #312",
-          "35": "JIIMS@a8000 SNEDE #312",
-          "9L": "JIIMS@a8000 WUDRR WEVVE ERNYY #268",
-          "9R": "JIIMS@a8000 WUDRR WEVVE ERNYY #268"
+          "27L": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
+          "27R": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
+          "17": "JIIMS/a8000 SNEDE/h312",
+          "35": "JIIMS/a8000 SNEDE/h312",
+          "9L": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268",
+          "9R": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268"
         },
-        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400 @ JIIMS@a8000"
+        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS/a8000"
       }
     ],
     "PAATS4": [
@@ -4895,13 +4895,13 @@
         "initial_speed": 250,
         "route": "/. PAATS4",
         "runway_waypoints": {
-          "27L": "PAATS RROLL CHPMN PSOUT MKORD #87",
-          "27R": "PAATS RROLL CHPMN PSOUT MKORD #87",
-          "35": "PAATS TEBEE #57",
-          "9L": "PAATS TRNBL WEVVE ERNYY #268",
-          "9R": "PAATS TRNBL WEVVE ERNYY #268"
+          "27L": "PAATS RROLL CHPMN PSOUT MKORD/h87",
+          "27R": "PAATS RROLL CHPMN PSOUT MKORD/h87",
+          "35": "PAATS TEBEE/h57",
+          "9L": "PAATS TRNBL WEVVE ERNYY/h268",
+          "9R": "PAATS TRNBL WEVVE ERNYY/h268"
         },
-        "waypoints": "N039.12.04.205,W075.38.03.975 ESSSO @ PAATS"
+        "waypoints": "N039.12.04.205,W075.38.03.975 ESSSO/ho PAATS"
       }
     ],
     "SPUDS5": [
@@ -4929,12 +4929,12 @@
         "initial_speed": 250,
         "route": "/. SPUDS5",
         "runway_waypoints": {
-          "27L": "ANMAR BOJID HIFAL EYRIE FERUS #085",
-          "27R": "ANMAR BOJID HIFAL EYRIE FERUS #085",
-          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY #265",
-          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY #265"
+          "27L": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
+          "27R": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
+          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY/h265",
+          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY/h265"
         },
-        "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR"
+        "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735/ho SPUDS ANMAR"
       },
       {
         "airlines": {
@@ -4952,12 +4952,12 @@
         "initial_speed": 250,
         "route": "/. SPUDS5",
         "runway_waypoints": {
-          "27L": "ANMAR BOJID HIFAL EYRIE FERUS #085",
-          "27R": "ANMAR BOJID HIFAL EYRIE FERUS #085",
-          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY #265",
-          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY #265"
+          "27L": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
+          "27R": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
+          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY/h265",
+          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY/h265"
         },
-        "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735 @ SPUDS ANMAR"
+        "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735/ho SPUDS ANMAR"
       }
     ]
   },

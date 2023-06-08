@@ -7,7 +7,7 @@
           "runway": "11",
           "type": "ILS",
           "waypoints": [
-            "JARIT@a1600 JEENO@a1600 _EWR_11"
+            "JARIT/a1600 JEENO/a1600 _EWR_11"
           ]
         },
         "I2L": {
@@ -15,7 +15,7 @@
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
-            "PATRN IZEKO@a3000 GIMEE@a2500 BUZZD@a1500 _EWR_22L@a50"
+            "PATRN IZEKO/a3000 GIMEE/a2500 BUZZD/a1500 _EWR_22L/a50"
           ]
         },
         "I2R": {
@@ -23,7 +23,7 @@
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
-            "PATRN AGNSS@a3000 VERDE@a2500 TALTE@a1500 _EWR_22R@a50"
+            "PATRN AGNSS/a3000 VERDE/a2500 TALTE/a1500 _EWR_22R/a50"
           ]
         },
         "I4L": {
@@ -31,7 +31,7 @@
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
-            "KILMA EMBAY@a2800 HOWYA@a2000 _EWR_4L@a50"
+            "KILMA EMBAY/a2800 HOWYA/a2000 _EWR_4L/a50"
           ]
         },
         "I4R": {
@@ -39,7 +39,7 @@
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
-            "KILMA GRITY@a2800 DOOIN@a1700 _EWR_4R@a50"
+            "KILMA GRITY/a2800 DOOIN/a1700 _EWR_4R/a50"
           ]
         },
         "R29": {
@@ -47,7 +47,7 @@
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
-            "FLIKR CASHH ZIAAA PIJAY UJODY@a2000 STATU@a1400 ISERE _EWR_29@a50"
+            "FLIKR CASHH ZIAAA PIJAY UJODY/a2000 STATU/a1400 ISERE _EWR_29/a50"
           ]
         },
         "RY9": {
@@ -55,7 +55,7 @@
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
-            "TETER@a3000 GIMEE@a2500 JIMLO@a2500 COPKO _EWR_29@a50"
+            "TETER/a3000 GIMEE/a2500 JIMLO/a2500 COPKO _EWR_29/a50"
           ]
         },
         "RZ9": {
@@ -63,7 +63,7 @@
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
-            "KILMA GRITY@a3000 COWWE@a3000 NNICK@a3000 CORTO@a2327 GOLSN@a2000 HALPA@a823 _EWR_29@a50"
+            "KILMA GRITY/a3000 COWWE/a3000 NNICK/a3000 CORTO/a2327 GOLSN/a2000 HALPA/a823 _EWR_29/a50"
           ]
         }
       },
@@ -72,14 +72,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2500,
             "route": "EWR4",
-            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra #220"
+            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
           }
         },
         "4L": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "route": "EWR4",
-            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La #290"
+            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
           }
         }
       },
@@ -951,7 +951,7 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-            "SBJ VINGS@a2000 DANDY@a1500 _TEB_6@a50"
+            "SBJ VINGS/a2000 DANDY/a1500 _TEB_6/a50"
           ]
         },
         "I19": {
@@ -959,7 +959,7 @@
           "runway": "19",
           "type": "ILS",
           "waypoints": [
-            "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
+            "STRAD SKUBY NIPIE UNVIL/a2100 TUGGZ/a1500 _TEB_19/a50"
           ]
         },
         "R24": {
@@ -967,7 +967,7 @@
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
-            "STRAD SKUBY NIPIE WHEZY SHREW@a2000 ANGLE@a1700 BAITH _TEB_24@a50"
+            "STRAD SKUBY NIPIE WHEZY SHREW/a2000 ANGLE/a1700 BAITH _TEB_24/a50"
           ]
         },
         "RX6": {
@@ -975,9 +975,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE ALIDA FRNKI@a2000 PESME@a1700 TBERN@a1300 JEBUV _TEB_6@a50",
-            "STW ELIZE ALIDA FRNKI@a2000 PESME@a1700 TBERN@a1300 JEBUV _TEB_6@a50",
-            "SBJ JERSE FRNKI@a2000 PESME@a1700 TBERN@a1300 JEBUV _TEB_6@a50"
+            "COATE ELIZE ALIDA FRNKI/a2000 PESME/a1700 TBERN/a1300 JEBUV _TEB_6/a50",
+            "STW ELIZE ALIDA FRNKI/a2000 PESME/a1700 TBERN/a1300 JEBUV _TEB_6/a50",
+            "SBJ JERSE FRNKI/a2000 PESME/a1700 TBERN/a1300 JEBUV _TEB_6/a50"
           ]
         },
         "RX9": {
@@ -985,7 +985,7 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "CUROK WHOLN MOOGZ@a1700 DUUNE@a1500 COFFS _TEB_19@a50"
+            "CUROK WHOLN MOOGZ/a1700 DUUNE/a1500 COFFS _TEB_19/a50"
           ]
         },
         "RY6": {
@@ -993,9 +993,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE ALIDA DWURF JUGGY@a2000 DANDY@a1500 STICC@a1300 _TEB_6@a50",
-            "STW ELIZE ALIDA DWURF JUGGY@a2000 DANDY@a1500 STICC@a1300 _TEB_6@a50",
-            "SBJ ALIDA DWURF JUGGY@a2000 DANDY@a1500 STICC@a1300 _TEB_6@a50"
+            "COATE ELIZE ALIDA DWURF JUGGY/a2000 DANDY/a1500 STICC/a1300 _TEB_6/a50",
+            "STW ELIZE ALIDA DWURF JUGGY/a2000 DANDY/a1500 STICC/a1300 _TEB_6/a50",
+            "SBJ ALIDA DWURF JUGGY/a2000 DANDY/a1500 STICC/a1300 _TEB_6/a50"
           ]
         },
         "RY9": {
@@ -1003,7 +1003,7 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "STRAD SKUBY NIPIE UNVIL@a2100 TUGGZ@a1500 _TEB_19@a50"
+            "STRAD SKUBY NIPIE UNVIL/a2100 TUGGZ/a1500 _TEB_19/a50"
           ]
         },
         "RZ6": {
@@ -1011,9 +1011,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE GUZTI@a3000 CATXO@a2000 HOLUR@a1700 EVEGE@a1500 AWKEB@a1300 OFFEC _TEB_6@a50",
-            "STW ELIZE GUZTI@a3000 CATXO@a2000 HOLUR@a1700 EVEGE@a1500 AWKEB@a1300 OFFEC _TEB_6@a50",
-            "SBJ GUZTI@a3000 CATXO@a2000 HOLUR@a1700 EVEGE@a1500 AWKEB@a1300 OFFEC _TEB_6@a50"
+            "COATE ELIZE GUZTI/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/a1500 AWKEB/a1300 OFFEC _TEB_6/a50",
+            "STW ELIZE GUZTI/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/a1500 AWKEB/a1300 OFFEC _TEB_6/a50",
+            "SBJ GUZTI/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/a1500 AWKEB/a1300 OFFEC _TEB_6/a50"
           ]
         },
         "RZ9": {
@@ -1021,9 +1021,9 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "COATE LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50",
-            "STW LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50",
-            "SBJ SHOTT LELME COMOK@a3000 HOOTH@a2000 ALSIW@a1500 JAPIR _TEB_19@a50"
+            "COATE LELME COMOK/a3000 HOOTH/a2000 ALSIW/a1500 JAPIR _TEB_19/a50",
+            "STW LELME COMOK/a3000 HOOTH/a2000 ALSIW/a1500 JAPIR _TEB_19/a50",
+            "SBJ SHOTT LELME COMOK/a3000 HOOTH/a2000 ALSIW/a1500 JAPIR _TEB_19/a50"
           ]
         }
       },
@@ -1032,14 +1032,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "route": "TEB4",
-            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a #280"
+            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a/h280"
           }
         },
         "24": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "route": "RUUDY6",
-            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY #280"
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ RUUDY/h280"
           }
         }
       },
@@ -1743,7 +1743,7 @@
         "initial_speed": 300,
         "route": "/ ALB V489 COATE",
         "speed_restriction": null,
-        "waypoints": "FILPS WEARD @ CAMMO HUO LEMOR@a6000 COATE KEWR"
+        "waypoints": "FILPS WEARD/ho CAMMO HUO LEMOR/a6000 COATE KEWR"
       }
     ],
     "FLOSI4": [
@@ -1823,7 +1823,7 @@
         "initial_speed": 300,
         "route": "/ FLOSI4",
         "speed_restriction": null,
-        "waypoints": "ACOVE TALCO WEETS @ HELON FLOSI CRANK@a7000 SHAFF SAX PHLBO HOKIR #180"
+        "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180"
       }
     ],
     "FQM3": [
@@ -1903,7 +1903,7 @@
         "initial_speed": 300,
         "route": "/ FQM3",
         "speed_restriction": null,
-        "waypoints": "HAYED@a18000 RACKI@a13000 @ PENNS SWEET@a7000 BWZ #122"
+        "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122"
       }
     ],
     "LVZ4": [
@@ -1983,7 +1983,7 @@
         "initial_speed": 300,
         "route": "/ LVZ4",
         "speed_restriction": null,
-        "waypoints": "LVZ@a18000 @ HARTY MUGZY@a6000 STW #125"
+        "waypoints": "LVZ/a18000/ho HARTY MUGZY/a6000 STW/h125"
       }
     ],
     "MAZIE3": [
@@ -2063,7 +2063,7 @@
         "initial_speed": 300,
         "route": "/ MAZIE3",
         "speed_restriction": null,
-        "waypoints": "JAIKE ILENE@a12000 @ WACKI@a11000 MAZIE REGLE@a7000 GNNZO SBJ #059"
+        "waypoints": "JAIKE ILENE/a12000/ho WACKI/a11000 MAZIE REGLE/a7000 GNNZO SBJ/h059"
       }
     ],
     "North": [
@@ -2143,7 +2143,7 @@
         "initial_speed": 250,
         "route": "/ FLOSI4",
         "speed_restriction": null,
-        "waypoints": "SHAFF @ SAX PHLBO HOKIR #180"
+        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180"
       }
     ],
     "PHL": [
@@ -2167,7 +2167,7 @@
         "initial_speed": 300,
         "route": "/ RUUTH V123 RBV",
         "speed_restriction": null,
-        "waypoints": "RUUTH @ RBV KEWR"
+        "waypoints": "RUUTH/ho RBV KEWR"
       }
     ],
     "PHLBO4": [
@@ -2247,7 +2247,7 @@
         "initial_speed": 300,
         "route": "/ PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DQO@a20000 STEFE@a13000 @ SOMTO@a11000 DYLIN@a8000 MERSR METRO MARRT PHLBO #025"
+        "waypoints": "DQO/a20000 STEFE/a13000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
       }
     ],
     "South": [
@@ -2327,7 +2327,7 @@
         "initial_speed": 250,
         "route": "/ PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DYLIN @ MERSR METRO MARRT PHLBO #025"
+        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025"
       }
     ],
     "WRI": [
@@ -2347,7 +2347,7 @@
         "initial_speed": 300,
         "route": "/ CYN GXU RBV V249 METRO",
         "speed_restriction": null,
-        "waypoints": "CYN @ GXU RBV METRO KEWR"
+        "waypoints": "CYN/ho GXU RBV METRO KEWR"
       }
     ]
   },

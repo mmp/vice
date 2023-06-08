@@ -407,23 +407,23 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 	for _, w := range wslice {
 		s := w.Fix
 		if w.Altitude != 0 {
-			s += fmt.Sprintf("@a%d", w.Altitude)
+			s += fmt.Sprintf("/a%d", w.Altitude)
 		}
 		if w.Speed != 0 {
-			s += fmt.Sprintf("@s%d", w.Speed)
+			s += fmt.Sprintf("/s%d", w.Speed)
 		}
 		if pt := w.ProcedureTurn; pt != nil {
 			if pt.Type == PTStandard45 {
 				if !pt.RightTurns {
-					s += "@lpt45"
+					s += "/lpt45"
 				} else {
-					s += "@pt45"
+					s += "/pt45"
 				}
 			} else {
 				if !pt.RightTurns {
-					s += "@lhilpt"
+					s += "/lhilpt"
 				} else {
-					s += "@hilpt"
+					s += "/hilpt"
 				}
 			}
 			if pt.MinuteLimit != 0 {
@@ -432,26 +432,27 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 				s += fmt.Sprintf("%dnm", pt.NmLimit)
 			}
 			if pt.Entry180NoPT {
-				s += "@nopt180"
+				s += "/nopt180"
 			}
 			if pt.ExitAltitude != 0 {
-				s += fmt.Sprintf("@pta%d", pt.ExitAltitude)
+				s += fmt.Sprintf("/pta%d", pt.ExitAltitude)
 			}
 		}
 		if w.NoPT {
-			s += "@nopt"
-		}
-		entries = append(entries, s)
-
-		if w.Heading != 0 {
-			entries = append(entries, fmt.Sprintf("#%d", w.Heading))
+			s += "/nopt"
 		}
 		if w.Handoff {
-			entries = append(entries, "@")
+			s += "/ho"
 		}
 		if w.Delete {
-			entries = append(entries, "*")
+			s += "/delete"
 		}
+		if w.Heading != 0 {
+			s += fmt.Sprintf("/h%d", w.Heading)
+		}
+
+		entries = append(entries, s)
+
 	}
 
 	return []byte("\"" + strings.Join(entries, " ") + "\""), nil
@@ -501,101 +502,93 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			return nil, fmt.Errorf("Empty waypoint in string: \"%s\"", str)
 		}
 
-		if field == "@" {
-			if len(waypoints) == 0 {
-				return nil, fmt.Errorf("No previous waypoint before handoff specifier")
-			}
-			waypoints[len(waypoints)-1].Handoff = true
-		} else if field[0] == '#' {
-			if len(waypoints) == 0 {
-				return nil, fmt.Errorf("No previous waypoint before heading specifier")
-			}
-			if hdg, err := strconv.Atoi(field[1:]); err != nil {
-				return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", field[1:], err)
+		wp := Waypoint{}
+		for i, f := range strings.Split(field, "/") {
+			if i == 0 {
+				wp.Fix = f
+			} else if len(f) == 0 {
+				return nil, fmt.Errorf("no command found after @ in \"%s\"", field)
 			} else {
-				waypoints[len(waypoints)-1].Heading = hdg
-			}
-		} else if field == "*" {
-			if len(waypoints) == 0 {
-				return nil, fmt.Errorf("No previous waypoint before delete aircraft specifier")
-			}
-			waypoints[len(waypoints)-1].Delete = true
-		} else {
-			wp := Waypoint{}
-			for i, f := range strings.Split(field, "@") {
-				if i == 0 {
-					wp.Fix = f
-				} else if len(f) == 0 {
-					return nil, fmt.Errorf("no command found after @ in \"%s\"", field)
-				} else {
-					if f[0] == 'a' {
-						alt, err := strconv.Atoi(f[1:])
-						if err != nil {
-							return nil, err
-						}
-						wp.Altitude = alt
-					} else if f[0] == 's' {
-						kts, err := strconv.Atoi(f[1:])
-						if err != nil {
-							return nil, err
-						}
-						wp.Speed = kts
-					} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
-						if wp.ProcedureTurn == nil {
-							wp.ProcedureTurn = &ProcedureTurn{}
-						}
-						wp.ProcedureTurn.Type = PTStandard45
-						wp.ProcedureTurn.RightTurns = f[0] == 'p'
-
-						extent := f[5:]
-						if !wp.ProcedureTurn.RightTurns {
-							extent = extent[1:]
-						}
-						if err := parsePTExtent(wp.ProcedureTurn, extent); err != nil {
-							return nil, err
-						}
-					} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
-						if wp.ProcedureTurn == nil {
-							wp.ProcedureTurn = &ProcedureTurn{}
-						}
-						wp.ProcedureTurn.Type = PTRacetrack
-						wp.ProcedureTurn.RightTurns = f[0] == 'h'
-
-						extent := f[5:]
-						if !wp.ProcedureTurn.RightTurns {
-							extent = extent[1:]
-						}
-						if err := parsePTExtent(wp.ProcedureTurn, extent); err != nil {
-							return nil, err
-						}
-					} else if len(f) >= 4 && f[:3] == "pta" {
-						if wp.ProcedureTurn == nil {
-							wp.ProcedureTurn = &ProcedureTurn{}
-						}
-
-						var err error
-						if wp.ProcedureTurn.ExitAltitude, err = strconv.Atoi(f[3:]); err != nil {
-							return nil, fmt.Errorf("%s error parsing procedure turn exit altitude: %v", f[3:], err)
-						}
-					} else if f == "nopt" {
-						wp.NoPT = true
-					} else if f == "nopt180" {
-						if wp.ProcedureTurn == nil {
-							wp.ProcedureTurn = &ProcedureTurn{}
-						}
-						wp.ProcedureTurn.Entry180NoPT = true
-					} else {
-						return nil, fmt.Errorf("%s: unknown @ command '%s'", field, f)
+				if f == "ho" {
+					wp.Handoff = true
+				} else if f == "delete" {
+					wp.Delete = true
+				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
+					if wp.ProcedureTurn == nil {
+						wp.ProcedureTurn = &ProcedureTurn{}
 					}
+					wp.ProcedureTurn.Type = PTStandard45
+					wp.ProcedureTurn.RightTurns = f[0] == 'p'
+
+					extent := f[5:]
+					if !wp.ProcedureTurn.RightTurns {
+						extent = extent[1:]
+					}
+					if err := parsePTExtent(wp.ProcedureTurn, extent); err != nil {
+						return nil, err
+					}
+				} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
+					if wp.ProcedureTurn == nil {
+						wp.ProcedureTurn = &ProcedureTurn{}
+					}
+					wp.ProcedureTurn.Type = PTRacetrack
+					wp.ProcedureTurn.RightTurns = f[0] == 'h'
+
+					extent := f[5:]
+					if !wp.ProcedureTurn.RightTurns {
+						extent = extent[1:]
+					}
+					if err := parsePTExtent(wp.ProcedureTurn, extent); err != nil {
+						return nil, err
+					}
+				} else if len(f) >= 4 && f[:3] == "pta" {
+					if wp.ProcedureTurn == nil {
+						wp.ProcedureTurn = &ProcedureTurn{}
+					}
+
+					var err error
+					if wp.ProcedureTurn.ExitAltitude, err = strconv.Atoi(f[3:]); err != nil {
+						return nil, fmt.Errorf("%s error parsing procedure turn exit altitude: %v", f[3:], err)
+					}
+				} else if f == "nopt" {
+					wp.NoPT = true
+				} else if f == "nopt180" {
+					if wp.ProcedureTurn == nil {
+						wp.ProcedureTurn = &ProcedureTurn{}
+					}
+					wp.ProcedureTurn.Entry180NoPT = true
+
+					// Do these last since they only match the first character...
+				} else if f[0] == 'a' {
+					alt, err := strconv.Atoi(f[1:])
+					if err != nil {
+						return nil, err
+					}
+					wp.Altitude = alt
+				} else if f[0] == 's' {
+					kts, err := strconv.Atoi(f[1:])
+					if err != nil {
+						return nil, err
+					}
+					wp.Speed = kts
+				} else if f[0] == 'h' { // after "ho" and "hilpt" check...
+					if hdg, err := strconv.Atoi(f[1:]); err != nil {
+						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else {
+						wp.Heading = hdg
+					}
+
+				} else {
+					return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
 				}
 			}
-
-			if wp.ProcedureTurn != nil && wp.ProcedureTurn.Type == PTUndefined {
-				return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
-			}
-
-			waypoints = append(waypoints, wp)
 		}
+
+		if wp.ProcedureTurn != nil && wp.ProcedureTurn.Type == PTUndefined {
+			return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
+		}
+
+		waypoints = append(waypoints, wp)
 	}
 
 	return waypoints, nil

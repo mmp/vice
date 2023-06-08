@@ -7,7 +7,7 @@
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "N040.48.42.061,W073.32.03.431@a2000 FRIKK@a1600@hilpt@pta1400 _FRG_14@a50"
+            "N040.48.42.061,W073.32.03.431/a2000 FRIKK/a1600/hilpt/pta1400 _FRG_14/a50"
           ]
         },
         "R1": {
@@ -15,8 +15,8 @@
           "runway": "1",
           "type": "RNAV",
           "waypoints": [
-            "WULUG@a2000 BLAND@a1500 DEUCE@a1600 XAREW@a1500 _FRG_1@a50",
-            "ZACHS@a2000 BLAND@a1500 DEUCE@a1600 XAREW@a1500 _FRG_1@a50"
+            "WULUG/a2000 BLAND/a1500 DEUCE/a1600 XAREW/a1500 _FRG_1/a50",
+            "ZACHS/a2000 BLAND/a1500 DEUCE/a1600 XAREW/a1500 _FRG_1/a50"
           ]
         },
         "R14": {
@@ -24,8 +24,8 @@
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "HOBAM@a2000 LAAZE@a2000 ALABE@a1400 _FRG_14@a50",
-            "CAMRN@a4000 HEREK@a2000 SEHDO@a2000 WUPMA@a1400@s180 ALABE@a1400 _FRG_14@a50"
+            "HOBAM/a2000 LAAZE/a2000 ALABE/a1400 _FRG_14/a50",
+            "CAMRN/a4000 HEREK/a2000 SEHDO/a2000 WUPMA/a1400/s180 ALABE/a1400 _FRG_14/a50"
           ]
         },
         "R19": {
@@ -33,8 +33,8 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "BLINZ@a2000 DEBYE@a2000 MOIRE@a1500 WULOP@a800 _FRG_19@a50",
-            "ZOSAB@a2000 DEBYE@a2000 MOIRE@a1500 WULOP@a800 _FRG_19@a50"
+            "BLINZ/a2000 DEBYE/a2000 MOIRE/a1500 WULOP/a800 _FRG_19/a50",
+            "ZOSAB/a2000 DEBYE/a2000 MOIRE/a1500 WULOP/a800 _FRG_19/a50"
           ]
         },
         "R32": {
@@ -42,8 +42,8 @@
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "JUSIN@a2000 TRCCY@a2000 ALFED@a1400 _FRG_32@a50",
-            "SHYNA@a2000 TRCCY@a2000 ALFED@a1400 _FRG_32@a50"
+            "JUSIN/a2000 TRCCY/a2000 ALFED/a1400 _FRG_32/a50",
+            "SHYNA/a2000 TRCCY/a2000 ALFED/a1400 _FRG_32/a50"
           ]
         }
       },
@@ -52,28 +52,28 @@
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_1 _FRG_19 _FRG_1a #13"
+            "waypoints": "_FRG_1 _FRG_19 _FRG_1a/h13"
           }
         },
         "14": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_14 _FRG_32 _FRG_14a #220"
+            "waypoints": "_FRG_14 _FRG_32 _FRG_14a/h220"
           }
         },
         "19": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_19 _FRG_1 _FRG_19a #220"
+            "waypoints": "_FRG_19 _FRG_1 _FRG_19a/h220"
           }
         },
         "32": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "route": "REP1",
-            "waypoints": "_FRG_32 _FRG_14 _FRG_32a #10"
+            "waypoints": "_FRG_32 _FRG_14 _FRG_32a/h10"
           }
         }
       },
@@ -221,7 +221,7 @@
           "runway": "2",
           "type": "ILS",
           "waypoints": [
-            "CCC@nopt PEPER SALLT@a1500@hilpt _HVN_20@a50"
+            "CCC/nopt PEPER SALLT/a1500/hilpt _HVN_20/a50"
           ]
         },
         "R2": {
@@ -229,8 +229,8 @@
           "runway": "2",
           "type": "RNAV",
           "waypoints": [
-            "KEYED@nopt PEPER@a1800@hilpt SALLT@a1500 _HVN_20@a50",
-            "NESSI PEPER@a1800@hilpt SALLT@a1500 _HVN_20@a50"
+            "KEYED/nopt PEPER/a1800/hilpt SALLT/a1500 _HVN_20/a50",
+            "NESSI PEPER/a1800/hilpt SALLT/a1500 _HVN_20/a50"
           ]
         },
         "R20": {
@@ -238,8 +238,8 @@
           "runway": "20",
           "type": "RNAV",
           "waypoints": [
-            "SOARS SORRY GUUMP@a2600 ELLVS@a1700 YERNU@a920 _HVN_2@a50",
-            "HFD GUUMP@a2600 ELLVS@a1700 YERNU@a920 _HVN_2@a50"
+            "SOARS SORRY GUUMP/a2600 ELLVS/a1700 YERNU/a920 _HVN_2/a50",
+            "HFD GUUMP/a2600 ELLVS/a1700 YERNU/a920 _HVN_2/a50"
           ]
         }
       },
@@ -248,14 +248,14 @@
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "route": "BHAVN1",
-            "waypoints": "_HVN_20 _HVN_2 #20"
+            "waypoints": "_HVN_20 _HVN_2/h20"
           }
         },
         "20": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "route": "BHAVN1",
-            "waypoints": "_HVN_2 _HVN_20 #200"
+            "waypoints": "_HVN_2 _HVN_20/h200"
           }
         }
       },
@@ -391,7 +391,7 @@
           "runway": "15R",
           "type": "RNAV",
           "waypoints": [
-              "CCC FORMU@a2000@hilpt ZIVUX@a1600 WENGA N040.48.07.275,W073.06.25.784@a50"
+              "CCC FORMU/a2000/hilpt ZIVUX/a1600 WENGA N040.48.07.275,W073.06.25.784/a50"
           ]
         },
         "I24": {
@@ -399,7 +399,7 @@
           "runway": "24",
           "type": "ILS",
           "waypoints": [
-              "CCC CORAM@a2000 RIZER@a1400 N040.48.07.728,W073.05.41.070@a50"
+              "CCC CORAM/a2000 RIZER/a1400 N040.48.07.728,W073.05.41.070/a50"
           ]
         },
         "R24": {
@@ -407,7 +407,7 @@
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
-              "CCC CORAM@a2000 UKEGE@a1400 N040.48.07.728,W073.05.41.070@a50"
+              "CCC CORAM/a2000 UKEGE/a1400 N040.48.07.728,W073.05.41.070/a50"
           ]
         },
         "R3L": {
@@ -415,7 +415,7 @@
           "runway": "33L",
           "type": "RNAV",
           "waypoints": [
-              "CCC BJACK@a2000@hilpt JATEV@a1500 N040.47.32.215,W073.05.39.669@a50"
+              "CCC BJACK/a2000/hilpt JATEV/a1500 N040.47.32.215,W073.05.39.669/a50"
           ]
         },
         "I6": {
@@ -423,7 +423,7 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-              "CCC YOSUR@a1600@hilpt WILAK@a500 N040.47.19.677,W073.06.44.434@a50"
+              "CCC YOSUR/a1600/hilpt WILAK/a500 N040.47.19.677,W073.06.44.434/a50"
           ]
         },
         "R6": {
@@ -431,7 +431,7 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-              "CCC DEERY@a2000@hilpt YOSUR@a1600 N040.47.19.677,W073.06.44.434@a50"
+              "CCC DEERY/a2000/hilpt YOSUR/a1600 N040.47.19.677,W073.06.44.434/a50"
           ]
         }
       },
@@ -440,28 +440,28 @@
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_15R _ISP_15Ra #150"
+            "waypoints": "_ISP_15R _ISP_15Ra/h150"
           }
         },
         "24": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_24 _ISP_24a #240"
+            "waypoints": "_ISP_24 _ISP_24a/h240"
           }
         },
         "33L": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_33L _ISP_33La #330"
+            "waypoints": "_ISP_33L _ISP_33La/h330"
           }
         },
         "6": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "route": "LONGI7",
-            "waypoints": "_ISP_6 _ISP_6a #60"
+            "waypoints": "_ISP_6 _ISP_6a/h60"
           }
         }
       },
@@ -678,8 +678,8 @@
           "runway": "31L",
           "type": "ILS",
           "waypoints": [
-            "CHANT@a2000 ZACHS@a2000 MEALS@a1500 _JFK_31L@a50",
-            "DPK@a2000 ZACHS@a2000 MEALS@a1500 _JFK_31L@a50"
+            "CHANT/a2000 ZACHS/a2000 MEALS/a1500 _JFK_31L/a50",
+            "DPK/a2000 ZACHS/a2000 MEALS/a1500 _JFK_31L/a50"
           ]
         },
         "I1R": {
@@ -687,7 +687,7 @@
           "runway": "31R",
           "type": "ILS",
           "waypoints": [
-            "CATOD@a3000 MALDE@a3000 ZULAB@a1900 _JFK_31R@a50"
+            "CATOD/a3000 MALDE/a3000 ZULAB/a1900 _JFK_31R/a50"
           ]
         },
         "I2L": {
@@ -695,8 +695,8 @@
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
-            "CIMBL@a14000 HAIRR@a14000 CEEGL@a10000 TAPPR@a8000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 ROSLY@a3000 ZALPO@a1800 _JFK_22L@a50",
-            "NRTON@a10000 SAJUL@a10000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 ROSLY@a3000 ZALPO@a1800 _JFK_22L@a50"
+            "CIMBL/a14000 HAIRR/a14000 CEEGL/a10000 TAPPR/a8000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000 ZALPO/a1800 _JFK_22L/a50",
+            "NRTON/a10000 SAJUL/a10000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000 ZALPO/a1800 _JFK_22L/a50"
           ]
         },
         "I2R": {
@@ -704,8 +704,8 @@
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
-            "CIMBL@a14000 HAIRR@a14000 CEEGL@a10000 TAPPR@a8000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 CORVT@a3000 MATTR@a1800 _JFK_22R@a50",
-            "NRTON@a10000 SAJUL@a10000 DETGY@a7000 HAUPT@a6000 LEFER@a4000 CORVT@a3000 MATTR@a1900 _JFK_22R@a50"
+            "CIMBL/a14000 HAIRR/a14000 CEEGL/a10000 TAPPR/a8000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 CORVT/a3000 MATTR/a1800 _JFK_22R/a50",
+            "NRTON/a10000 SAJUL/a10000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 CORVT/a3000 MATTR/a1900 _JFK_22R/a50"
           ]
         },
         "I3L": {
@@ -713,7 +713,7 @@
           "runway": "13L",
           "type": "ILS",
           "waypoints": [
-            "COVIR@a3000 KMCHI@a2900 BUZON@a2900 TELEX@a2100 CAXUN@a1500 UXHUB@a680 _JFK_13L@a50"
+            "COVIR/a3000 KMCHI/a2900 BUZON/a2900 TELEX/a2100 CAXUN/a1500 UXHUB/a680 _JFK_13L/a50"
           ]
         },
         "I4L": {
@@ -721,7 +721,7 @@
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
-            "AROKE@a2000 KRSTL@a1500 _JFK_4L@a50"
+            "AROKE/a2000 KRSTL/a1500 _JFK_4L/a50"
           ]
         },
         "I4R": {
@@ -729,7 +729,7 @@
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
-            "ZETAL@a2000 EBBEE@a1500 _JFK_4R@a50"
+            "ZETAL/a2000 EBBEE/a1500 _JFK_4R/a50"
           ]
         },
         "R1L": {
@@ -737,8 +737,8 @@
           "runway": "31L",
           "type": "RNAV",
           "waypoints": [
-            "SESKE ZACHS@a2000@s210 CUVKU@a1800 _JFK_31L@a50",
-            "RISSY ZACHS@a2000@s210 CUVKU@a1800 _JFK_31L@a50"
+            "SESKE ZACHS/a2000/s210 CUVKU/a1800 _JFK_31L/a50",
+            "RISSY ZACHS/a2000/s210 CUVKU/a1800 _JFK_31L/a50"
           ]
         },
         "R1R": {
@@ -746,8 +746,8 @@
           "runway": "31R",
           "type": "RNAV",
           "waypoints": [
-            "PZULU CATOD@a3000@s210 IGIDE@a1900 _JFK_31R@a50",
-            "VIDIO CATOD@a3000@s210 IGIDE@a1900 _JFK_31R@a50"
+            "PZULU CATOD/a3000/s210 IGIDE/a1900 _JFK_31R/a50",
+            "VIDIO CATOD/a3000/s210 IGIDE/a1900 _JFK_31R/a50"
           ]
         },
         "R2L": {
@@ -755,7 +755,7 @@
           "runway": "22L",
           "type": "RNAV",
           "waypoints": [
-            "WIKOL@a3000 GIGPE@a2900 CAPIT@a2900 ENEEE@a1700 ZOSDO@a800 _JFK_22L@a50"
+            "WIKOL/a3000 GIGPE/a2900 CAPIT/a2900 ENEEE/a1700 ZOSDO/a800 _JFK_22L/a50"
           ]
         },
         "R2R": {
@@ -763,7 +763,7 @@
           "runway": "22R",
           "type": "RNAV",
           "waypoints": [
-            "RIVRA@a3000 HENEB@a1900 _JFK_22R@a50"
+            "RIVRA/a3000 HENEB/a1900 _JFK_22R/a50"
           ]
         },
         "R3L": {
@@ -771,7 +771,7 @@
           "runway": "13L",
           "type": "RNAV",
           "waypoints": [
-            "ASALT@a3000@s210 CNRSE@a2000 LEISA@a1246 SILJY@a835 ROBJE@a456 _JFK_13L@a50"
+            "ASALT/a3000/s210 CNRSE/a2000 LEISA/a1246 SILJY/a835 ROBJE/a456 _JFK_13L/a50"
           ]
         },
         "R3R": {
@@ -779,7 +779,7 @@
           "runway": "13R",
           "type": "RNAV",
           "waypoints": [
-            "ASALT@a3000@s210 NUCRI@a2000 PEEBO@a921 MAYMA@a520 _JFK_13R@a50"
+            "ASALT/a3000/s210 NUCRI/a2000 PEEBO/a921 MAYMA/a520 _JFK_13R/a50"
           ]
         },
         "R4L": {
@@ -787,7 +787,7 @@
           "runway": "4L",
           "type": "RNAV",
           "waypoints": [
-            "REPRE@a2000 KRSTL@a1500 _JFK_4L@a50"
+            "REPRE/a2000 KRSTL/a1500 _JFK_4L/a50"
           ]
         },
         "R4R": {
@@ -795,7 +795,7 @@
           "runway": "4R",
           "type": "RNAV",
           "waypoints": [
-            "VERRU@a2000 EBBEE@a1500 _JFK_4R@a50"
+            "VERRU/a2000 EBBEE/a1500 _JFK_4R/a50"
           ]
         }
       },
@@ -804,68 +804,68 @@
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
             "route": "JFK5",
-            "waypoints": "_JFK_13R _JFK_31L #185"
+            "waypoints": "_JFK_13R _JFK_31L/h185"
           },
           "BAYYS,BDR,COATE,GAYEL,GREKI,HAAYS,MERIT,NEION": {
             "cleared_altitude": 5000,
             "route": "JFK5",
-            "waypoints": "_JFK_13R _JFK_31L #110"
+            "waypoints": "_JFK_13R _JFK_31L/h110"
           },
           "BETTE,HAPIE": {
             "cleared_altitude": 5000,
             "route": "JFK5",
-            "waypoints": "_JFK_13R _JFK_31L #155"
+            "waypoints": "_JFK_13R _JFK_31L/h155"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
             "route": "DEEZZ5",
-            "waypoints": "_JFK_13R _JFK_31L #109"
+            "waypoints": "_JFK_13R _JFK_31L/h109"
           },
           "SHIPP,WAVEY": {
             "cleared_altitude": 5000,
             "route": "JFK5",
-            "waypoints": "_JFK_13R _JFK_31L #170"
+            "waypoints": "_JFK_13R _JFK_31L/h170"
           }
         },
         "22R": {
           "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 5000,
             "route": "JFK5",
-            "waypoints": "_JFK_22R _JFK_4L #222"
+            "waypoints": "_JFK_22R _JFK_4L/h222"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
             "route": "DEEZZ5",
-            "waypoints": "_JFK_22R _JFK_4L #222"
+            "waypoints": "_JFK_22R _JFK_4L/h222"
           }
         },
         "31L": {
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
             "route": "SKORR5.RNGRR",
-            "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR #223"
+            "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR/h223"
           },
           "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
             "route": "SKORR5.YNKEE",
-            "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE #172"
+            "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
             "route": "DEEZZ5",
-            "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE #172"
+            "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
           }
         },
         "4L": {
           "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 5000,
             "route": "JFK5",
-            "waypoints": "_JFK_4L _JFK_4La #100"
+            "waypoints": "_JFK_4L _JFK_4La/h100"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
             "route": "DEEZZ5",
-            "waypoints": "_JFK_4L _JFK_4La #100"
+            "waypoints": "_JFK_4L _JFK_4La/h100"
           }
         }
       },
@@ -1594,48 +1594,48 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
-            "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"
+            "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
-            "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b @ JFK"
+            "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           }
         },
         "22": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
-            "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"
+            "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
-            "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b @ JFK"
+            "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           }
         },
         "31": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
-            "waypoints": "_LGA_31 _LGA_13 _LGA_13a @ JFK"
+            "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
-            "waypoints": "_LGA_31 _LGA_13 _LGA_13a @ JFK"
+            "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           }
         },
         "4": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
-            "waypoints": "_LGA_4 _LGA_22 _LGA_22a @ JFK"
+            "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
-            "waypoints": "_LGA_4 _LGA_22 _LGA_22a @ JFK"
+            "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           }
         }
       },
@@ -1926,7 +1926,7 @@
         "initial_speed": 300,
         "route": "/. CAMRN4",
         "speed_restriction": 250,
-        "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935 @ CAMRN #40"
+        "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935/ho CAMRN/h40"
       }
     ],
     "Intra-TRACON": [
@@ -1953,7 +1953,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HTO V46 CCC ISP",
-        "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808 @ HTO CCC ISP"
+        "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC ISP"
       },
       {
         "airlines": {
@@ -1978,7 +1978,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HVN",
-        "waypoints": "HFD N041.33.29.632,W072.36.20.511 @ HVN"
+        "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho HVN"
       },
       {
         "airlines": {
@@ -1995,7 +1995,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CCC ISP",
-        "waypoints": "N041.28.15.080,W072.08.52.040 SALEM @ CCC ISP"
+        "waypoints": "N041.28.15.080,W072.08.52.040 SALEM/ho CCC ISP"
       },
       {
         "airlines": {
@@ -2024,7 +2024,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. MAD V1 BELTT ISP",
-        "waypoints": "HFD N041.33.29.632,W072.36.20.511 @ MAD BELTT ISP"
+        "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT ISP"
       },
       {
         "airlines": {
@@ -2049,7 +2049,7 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. JFK CCC ISP",
-        "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI @ JFK CCC ISP"
+        "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC ISP"
       },
       {
         "airlines": {
@@ -2066,7 +2066,7 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. SARDI V139 RICED KEYED HVN",
-        "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131 @ SARDI RICED KEYED HVN"
+        "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131/ho SARDI RICED KEYED HVN"
       },
       {
         "airlines": {
@@ -2083,7 +2083,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CREAM HVN",
-        "waypoints": "GON N041.17.25.349,W072.10.01.803 @ CREAM HVN"
+        "waypoints": "GON N041.17.25.349,W072.10.01.803/ho CREAM HVN"
       },
       {
         "airlines": {
@@ -2100,7 +2100,7 @@
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. DENNA HVN",
-        "waypoints": "N041.17.24.607,W073.43.06.291 CMK @ DENNA HVN"
+        "waypoints": "N041.17.24.607,W073.43.06.291 CMK/ho DENNA HVN"
       },
       {
         "airlines": {
@@ -2117,7 +2117,7 @@
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. BDR HVN",
-        "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747 @ BDR HVN"
+        "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747/ho BDR HVN"
       },
       {
         "airlines": {
@@ -2140,7 +2140,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. DPK",
-        "waypoints": "N041.46.50.426,W073.20.24.261 N041.39.56.516,W073.19.39.025 @ DPK"
+        "waypoints": "N041.46.50.426,W073.20.24.261 N041.39.56.516,W073.19.39.025/ho DPK"
       },
       {
         "airlines": {
@@ -2175,7 +2175,7 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. ZIGGI",
-        "waypoints": "N039.59.17.221,W074.02.27.134 ZIGGI #40 @ JFK"
+        "waypoints": "N039.59.17.221,W074.02.27.134 ZIGGI/h40/ho JFK"
       },
       {
         "airlines": {
@@ -2202,7 +2202,7 @@
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. COL",
-        "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636 @ COL JFK"
+        "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636/ho COL JFK"
       }
     ],
     "LENDY8/IGN1": [
@@ -2329,7 +2329,7 @@
         "initial_speed": 300,
         "route": "/. LENDY8",
         "speed_restriction": 250,
-        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628 @ LENDY #135"
+        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY/h135"
       },
       {
         "airlines": {
@@ -2426,7 +2426,7 @@
         "initial_speed": 300,
         "route": "/. IGN1",
         "speed_restriction": 250,
-        "waypoints": "DOORE N040.58.27.742,W074.16.12.647 @ LENDY #135"
+        "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY/h135"
       }
     ],
     "DENNA3/LOVES2": [
@@ -2454,7 +2454,7 @@
         "initial_speed": 250,
         "route": "/. DENNA3",
         "speed_restriction": 250,
-        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006 @ LOVES DENNA"
+        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006/ho LOVES DENNA"
       },
       {
         "airlines": {
@@ -2484,7 +2484,7 @@
         "initial_speed": 250,
         "route": "/. LOVES2",
         "speed_restriction": 250,
-        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006 @ LOVES BDR CCC"
+        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006/ho LOVES BDR CCC"
       }
     ],
     "NELIE3": [
@@ -2516,7 +2516,7 @@
         "initial_speed": 250,
         "route": "/. LOVES2",
         "speed_restriction": 250,
-        "waypoints": "N041.28.15.767,W072.03.53.020 WANDI @ CCC"
+        "waypoints": "N041.28.15.767,W072.03.53.020 WANDI/ho CCC"
       }
     ],
     "OWENZ": [
@@ -2562,7 +2562,7 @@
         "initial_speed": 300,
         "route": "/. OWENZ CAMRN",
         "speed_restriction": 250,
-        "waypoints": "N039.54.57.463,W073.27.31.931 N039.55.59.825,W073.30.27.355 @ CAMRN #40"
+        "waypoints": "N039.54.57.463,W073.27.31.931 N039.55.59.825,W073.30.27.355/ho CAMRN/h40"
       }
     ],
     "PARCH3/ROBER2": [
@@ -2732,11 +2732,11 @@
         "initial_speed": 275,
         "route": "/. PARCH3",
         "runway_waypoints": {
-          "22L": "ROBER CRAIL #302",
-          "22R": "ROBER CRAIL #302"
+          "22L": "ROBER CRAIL/h302",
+          "22R": "ROBER CRAIL/h302"
         },
         "speed_restriction": 250,
-        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER #278"
+        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h278"
       },
       {
         "airlines": {
@@ -2763,7 +2763,7 @@
         "initial_speed": 275,
         "route": "/. ROBER2",
         "speed_restriction": 250,
-        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791 @ CCC ROBER #276"
+        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h276"
       }
     ]
   },

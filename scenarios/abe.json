@@ -7,7 +7,7 @@
           "runway": "13",
           "type": "ILS",
           "waypoints": [
-            "HASIS@a3000 CAVRU@a2700 MOOVY@a2400 IZKIP@a1260 _ABE31@a380"
+            "HASIS/a3000 CAVRU/a2700 MOOVY/a2400 IZKIP/a1260 _ABE31/a380"
           ]
         },
         "I24": {
@@ -15,7 +15,7 @@
           "runway": "24",
           "type": "ILS",
           "waypoints": [
-            "MUDRE@a3000 MUSYK@a2400 NENTE@a1380 _ABE6@a380"
+            "MUDRE/a3000 MUSYK/a2400 NENTE/a1380 _ABE6/a380"
           ]
         },
         "I6": {
@@ -23,7 +23,7 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-            "JISTO@a3000 SHAGY@a2400 _ABE24@a380"
+            "JISTO/a3000 SHAGY/a2400 _ABE24/a380"
           ]
         },
         "R13": {
@@ -31,8 +31,8 @@
           "runway": "13",
           "type": "RNAV",
           "waypoints": [
-            "BEERS TIKLE LOCID@a3000 MOOVY@a2400 IZKIP@a1260 _ABE31@a380",
-            "DUMMR JAREV LOCID@a3000 MOOVY@a2400 IZKIP@a1260 _ABE31@a380"
+            "BEERS TIKLE LOCID/a3000 MOOVY/a2400 IZKIP/a1260 _ABE31/a380",
+            "DUMMR JAREV LOCID/a3000 MOOVY/a2400 IZKIP/a1260 _ABE31/a380"
           ]
         },
         "R31": {
@@ -40,8 +40,8 @@
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
-            "BEERS FINRA BURAY@a3000 BEHEM@a2400 ASOMY@a1540 _ABE13@a380",
-            "FONUP FINRA BURAY@a3000 BEHEM@a2400 ASOMY@a1540 _ABE13@a380"
+            "BEERS FINRA BURAY/a3000 BEHEM/a2400 ASOMY/a1540 _ABE13/a380",
+            "FONUP FINRA BURAY/a3000 BEHEM/a2400 ASOMY/a1540 _ABE13/a380"
           ]
         },
         "R6": {
@@ -49,8 +49,8 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "SAYOV JISTO@a3000 SHAGY@a2400 GEBLE@a1400 _ABE24@a380",
-            "HADAD JISTO@a3000 SHAGY@a2400 GEBLE@a1400 _ABE24@a380"
+            "SAYOV JISTO/a3000 SHAGY/a2400 GEBLE/a1400 _ABE24/a380",
+            "HADAD JISTO/a3000 SHAGY/a2400 GEBLE/a1400 _ABE24/a380"
           ]
         }
       },
@@ -59,14 +59,14 @@
           "FJC,SAX,ARD,RBV,PTW,ETX": {
             "cleared_altitude": 3000,
             "route": "",
-            "waypoints": "_ABE6 _ABE24 #240"
+            "waypoints": "_ABE6 _ABE24/h240"
           }
         },
         "6": {
           "FJC,SAX,ARD,RBV,PTW,ETX": {
             "cleared_altitude": 3000,
             "route": "",
-            "waypoints": "_ABE24 _ABE6 #060"
+            "waypoints": "_ABE24 _ABE6/h060"
           }
         }
       },
@@ -272,7 +272,7 @@
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. FJC",
-        "waypoints": "N040.34.21.392,W074.40.37.976 N040.35.20.320,W074.49.09.252 @ FJC"
+        "waypoints": "N040.34.21.392,W074.40.37.976 N040.35.20.320,W074.49.09.252/ho FJC"
       },
       {
         "airlines": {
@@ -290,7 +290,7 @@
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. FJC",
-        "waypoints": "N040.48.51.729,W074.41.06.897 BWZ @ FJC"
+        "waypoints": "N040.48.51.729,W074.41.06.897 BWZ/ho FJC"
       },
       {
         "airlines": {
@@ -307,7 +307,7 @@
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. FJC",
-        "waypoints": "HUO N041.20.10.803,W074.41.14.423 @ N041.03.09.610,W075.02.14.170 FJC"
+        "waypoints": "HUO N041.20.10.803,W074.41.14.423/ho N041.03.09.610,W075.02.14.170 FJC"
       }
     ],
     "MDT/RDG": [
@@ -331,7 +331,7 @@
           "24": "FLOAT FJC",
           "6": "FLOAT ETX"
         },
-        "waypoints": "N040.13.18.884,W076.09.35.958 BOYER @ FLOAT"
+        "waypoints": "N040.13.18.884,W076.09.35.958 BOYER/ho FLOAT"
       },
       {
         "airlines": {
@@ -349,7 +349,7 @@
         "initial_controller": "MDT_APP",
         "initial_speed": 250,
         "route": "/. ETX",
-        "waypoints": "KRDG N040.23.52.301,W075.55.26.797 @ ETX"
+        "waypoints": "KRDG N040.23.52.301,W075.55.26.797/ho ETX"
       }
     ],
     "PHL": [
@@ -377,7 +377,7 @@
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 250,
         "route": "/. FJC",
-        "waypoints": "N040.13.33.015,W075.17.45.151 N040.20.16.955,W075.20.02.838 @ FJC"
+        "waypoints": "N040.13.33.015,W075.17.45.151 N040.20.16.955,W075.20.02.838/ho FJC"
       }
     ],
     "ZNY Northwest": [
@@ -408,7 +408,7 @@
           "24": "KRAZE FJC",
           "6": "KRAZE ETX"
         },
-        "waypoints": "MARRC N040.53.30.177,W076.08.25.233 @ KRAZE"
+        "waypoints": "MARRC N040.53.30.177,W076.08.25.233/ho KRAZE"
       },
       {
         "airlines": {
@@ -437,7 +437,7 @@
           "24": "SLATT FJC",
           "6": "SLATT ETX"
         },
-        "waypoints": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760 @ SNOWY SLATT"
+        "waypoints": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760/ho SNOWY SLATT"
       },
       {
         "airlines": {
@@ -467,7 +467,7 @@
           "24": "SLATT FJC",
           "6": "SLATT ETX"
         },
-        "waypoints": "N041.09.29.229,W075.41.57.572 WHITT @ SLATT"
+        "waypoints": "N041.09.29.229,W075.41.57.572 WHITT/ho SLATT"
       }
     ],
     "ZNY Southwest": [
@@ -494,7 +494,7 @@
           "24": "DUMMR FJC",
           "6": "DUMMR ETX"
         },
-        "waypoints": "N040.20.24.385,W076.33.17.726 HWANG @ DUMMR"
+        "waypoints": "N040.20.24.385,W076.33.17.726 HWANG/ho DUMMR"
       },
       {
         "airlines": {
@@ -524,7 +524,7 @@
           "24": "DUMMR FJC",
           "6": "DUMMR ETX"
         },
-        "waypoints": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120 @ DUMMR"
+        "waypoints": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120/ho DUMMR"
       }
     ]
   },
