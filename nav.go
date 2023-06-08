@@ -544,12 +544,8 @@ func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float
 			// even though the actual turn will be that plus 180.
 			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading, fp.OutboundTurnMethod)
 
-		case ParallelEntry:
-			// Swapped turn direction
+		case ParallelEntry, TeardropEntry:
 			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading, fp.OutboundTurnMethod)
-
-		case TeardropEntry:
-			startTurn = eta < 2
 		}
 
 		if startTurn {
@@ -701,6 +697,10 @@ func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
 	if fp.Entry == ParallelEntry {
 		// Swapped turn direction
 		fp.OutboundTurnMethod = TurnMethod(Select(pt.RightTurns, TurnLeft, TurnRight))
+	} else if fp.Entry == TeardropEntry {
+		// Turn may be left or right, depending on angle; nearest is always
+		// correct, though.
+		fp.OutboundTurnMethod = TurnClosest
 	}
 
 	// Figure out the outbound leg length.
@@ -719,7 +719,7 @@ func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
 		case RNAVApproach:
 			// 4nm by default for RNAV, though that's the distance from the
 			// fix, so turn earlier...
-			fp.OutboundLegLength = lerp(rand.Float32(), 1, 2.5)
+			fp.OutboundLegLength = 2
 
 		default:
 			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach.Type)
@@ -730,7 +730,7 @@ func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
 	// Lengthen it a bit for teardrop since we're flying along the
 	// diagonal.
 	if fp.Entry == TeardropEntry {
-		fp.OutboundLegLength /= cos(radians(30))
+		fp.OutboundLegLength *= 1.5
 	}
 
 	return fp
