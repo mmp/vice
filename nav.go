@@ -800,11 +800,31 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 		return ac.IAS, MaximumRate
 	}
 
+	toAirport := headingp2ll(ac.Position, airportPos, scenarioGroup.MagneticVariation)
+	if headingDifference(toAirport, ac.Heading) > 30 {
+		// Don't slow down if the aircraft isn't facing the airport (e.g.,
+		// is in the middle of a procedure turn)
+		return ac.IAS, MaximumRate
+	}
+
+	// Calculate distance to the airport: distance to the next fix plus sum
+	// of the distances between remaining fixes.
+	var airportDist float32
+	if wp := ac.Waypoints; len(wp) == 0 {
+		// This should never happen(tm), but...
+		lg.Errorf("%s: no waypoints left??", ac.Callsign)
+		airportDist = nmdistance2ll(ac.Position, airportPos)
+	} else {
+		airportDist = nmdistance2ll(ac.Position, wp[0].Location)
+		for i := 0; i < len(wp)-1; i++ {
+			airportDist += nmdistance2ll(wp[i].Location, wp[i+1].Location)
+		}
+	}
+
 	// Expected speed at 10 DME, without further direction.
 	spd := ac.Performance.Speed
 	approachSpeed := min(1.6*spd.Landing, float32(spd.Cruise))
 
-	airportDist := nmdistance2ll(ac.Position, airportPos)
 	if airportDist < 1 {
 		return spd.Landing, MaximumRate
 	} else if airportDist > 10 {
