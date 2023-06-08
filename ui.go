@@ -25,8 +25,9 @@ import (
 
 var (
 	ui struct {
-		font      *Font
-		aboutFont *Font
+		font           *Font
+		aboutFont      *Font
+		aboutFontSmall *Font
 
 		menuBarHeight float32
 
@@ -96,6 +97,7 @@ func imguiInit() *imgui.Context {
 func uiInit(renderer Renderer) {
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
+	ui.aboutFontSmall = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 14})
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
@@ -735,9 +737,6 @@ func showAboutDialog() {
 	imgui.PushFont(ui.aboutFont.ifont)
 	center("vice")
 	center(FontAwesomeIconCopyright + "2023 Matt Pharr")
-	center("Thanks to Adam Bolek, Mike K,")
-	center("and Arya T for contributing")
-	center("additional scenarios!")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")
@@ -747,6 +746,26 @@ func showAboutDialog() {
 	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
 		browser.OpenURL("https://github.com/mmp/vice")
 	}
+	imgui.PopFont()
+
+	imgui.Separator()
+
+	imgui.PushFont(ui.aboutFontSmall.ifont)
+	// We would very much like to use imgui.{Push,Pop}TextWrapPos()
+	// here, but for unclear reasons that makes the info window
+	// vertically maximized. So we hand-wrap the lines for the
+	// font we're using...
+	credits :=
+		`Additional credits: Thanks to Adam Bolek, Mike K,
+and Arya T for contributing additional scenarios.
+Video maps are thanks to the ZNY and ZJX
+VATSIM ARTCCs. Thanks also to OpenScope for
+the airline fleet and aircraft performance
+databases. See the file CREDITS.txt in the vice
+source code distribution for third-party software,
+fonts, sounds, etc.`
+
+	imgui.Text(credits)
 
 	imgui.PopFont()
 
