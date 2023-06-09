@@ -55,7 +55,7 @@ func (n *NAVState) MarshalJSON() ([]byte, error) {
 	m.LNavType = fmt.Sprintf("%T", n.L)
 
 	switch lnav := n.L.(type) {
-	case *FlyHeading, *FlyRoute, *FlyProcedureTurn:
+	case *FlyHeading, *FlyRoute, *FlyRacetrackPT:
 		b, err := json.Marshal(lnav)
 		if err != nil {
 			return nil, err
@@ -83,7 +83,7 @@ func (n *NAVState) MarshalJSON() ([]byte, error) {
 	m.VNavType = fmt.Sprintf("%T", n.V)
 
 	switch vnav := n.V.(type) {
-	case *MaintainAltitude, *FlyRoute, *FlyProcedureTurn:
+	case *MaintainAltitude, *FlyRoute, *FlyRacetrackPT:
 		b, err := json.Marshal(vnav)
 		if err != nil {
 			return nil, err
@@ -127,8 +127,8 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 		n.L, err = unmarshalStruct[FlyRoute](m.LNavStruct)
 	case "*main.FlyHeading":
 		n.L, err = unmarshalStruct[FlyHeading](m.LNavStruct)
-	case "*main.FlyProcedureTurn":
-		n.L, err = unmarshalStruct[FlyProcedureTurn](m.LNavStruct)
+	case "*main.FlyRacetrackPT":
+		n.L, err = unmarshalStruct[FlyRacetrackPT](m.LNavStruct)
 	default:
 		panic("unhandled lnav command")
 	}
@@ -155,8 +155,8 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 		n.V, err = unmarshalStruct[MaintainAltitude](m.VNavStruct)
 	case "*main.FlyRoute":
 		n.V, err = unmarshalStruct[FlyRoute](m.VNavStruct)
-	case "*main.FlyProcedureTurn":
-		n.V, err = unmarshalStruct[FlyProcedureTurn](m.VNavStruct)
+	case "*main.FlyRacetrackPT":
+		n.V, err = unmarshalStruct[FlyRacetrackPT](m.VNavStruct)
 	default:
 		panic("unhandled vnav command")
 	}
@@ -513,7 +513,7 @@ const (
 	PTStateTurningInbound
 )
 
-type FlyProcedureTurn struct {
+type FlyRacetrackPT struct {
 	ProcedureTurn      *ProcedureTurn
 	Fix                string
 	FixLocation        Point2LL
@@ -526,7 +526,7 @@ type FlyProcedureTurn struct {
 	State              int
 }
 
-func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	pt := fp.ProcedureTurn
 
 	switch fp.State {
@@ -599,12 +599,12 @@ func (fp *FlyProcedureTurn) GetHeading(ac *Aircraft) (float32, TurnMethod, float
 	}
 }
 
-func (fp *FlyProcedureTurn) shouldDescend(ac *Aircraft) bool {
+func (fp *FlyRacetrackPT) shouldDescend(ac *Aircraft) bool {
 	return fp.ProcedureTurn.ExitAltitude != 0 && ac.Altitude > float32(fp.ProcedureTurn.ExitAltitude) &&
 		fp.State != PTStateApproaching
 }
 
-func (fp *FlyProcedureTurn) GetAltitude(ac *Aircraft) (float32, float32) {
+func (fp *FlyRacetrackPT) GetAltitude(ac *Aircraft) (float32, float32) {
 	if fp.shouldDescend(ac) {
 		return float32(fp.ProcedureTurn.ExitAltitude), MaximumRate
 	} else {
@@ -613,11 +613,11 @@ func (fp *FlyProcedureTurn) GetAltitude(ac *Aircraft) (float32, float32) {
 	}
 }
 
-func (fp *FlyProcedureTurn) PassesWaypoints() bool {
+func (fp *FlyRacetrackPT) PassesWaypoints() bool {
 	return false
 }
 
-func (fp *FlyProcedureTurn) VSummary(ac *Aircraft) string {
+func (fp *FlyRacetrackPT) VSummary(ac *Aircraft) string {
 	if fp.ProcedureTurn.ExitAltitude != 0 && ac.Altitude > float32(fp.ProcedureTurn.ExitAltitude) {
 		return fmt.Sprintf("Descend to %d in the procedure turn", fp.ProcedureTurn.ExitAltitude)
 	} else {
@@ -626,7 +626,7 @@ func (fp *FlyProcedureTurn) VSummary(ac *Aircraft) string {
 	}
 }
 
-func (fp *FlyProcedureTurn) LSummary(ac *Aircraft) string {
+func (fp *FlyRacetrackPT) LSummary(ac *Aircraft) string {
 	s := fmt.Sprintf("Fly the %s procedure turn at %s", fp.ProcedureTurn.Type, fp.Fix)
 	if fp.ProcedureTurn.Type == PTRacetrack {
 		s += ", " + fp.Entry.String() + " entry"
@@ -634,32 +634,28 @@ func (fp *FlyProcedureTurn) LSummary(ac *Aircraft) string {
 	return s
 }
 
-func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyProcedureTurn {
+func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyRacetrackPT {
 	if ac.NoPT {
 		lg.Errorf("%s: MakeFlyProcedureTurn called even though ac.NoPT set", ac.Callsign)
 	}
 
 	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
 		scenarioGroup.MagneticVariation)
+	aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location,
+		scenarioGroup.MagneticVariation)
 
 	pt := wp[0].ProcedureTurn
 
-	fp := &FlyProcedureTurn{
+	fp := &FlyRacetrackPT{
 		ProcedureTurn:  wp[0].ProcedureTurn,
+		Entry:          pt.SelectRacetrackEntry(inboundHeading, aircraftFixHeading),
 		Fix:            wp[0].Fix,
 		FixLocation:    wp[0].Location,
 		InboundHeading: inboundHeading,
 		State:          PTStateApproaching,
 	}
 
-	if pt.Type == PTRacetrack {
-		aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location,
-			scenarioGroup.MagneticVariation)
-		fp.Entry = pt.SelectRacetrackEntry(inboundHeading, aircraftFixHeading)
-		lg.Printf("%s: entry %s", ac.Callsign, fp.Entry)
-	} else {
-		panic("TODO")
-	}
+	lg.Printf("%s: entry %s", ac.Callsign, fp.Entry)
 
 	// Set the outbound heading. For everything but teardrop, it's the
 	// opposite of the inbound heading.
