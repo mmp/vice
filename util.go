@@ -356,6 +356,18 @@ func headingAsHour(heading float32) int {
 	return 1 + int(heading/30)
 }
 
+// Reduces it to [0,360).
+func NormalizeHeading(h float32) float32 {
+	if h < 0 {
+		return 360 - NormalizeHeading(-h)
+	}
+	return mod(h, 360)
+}
+
+func OppositeHeading(h float32) float32 {
+	return NormalizeHeading(h + 180)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Extent2D
 

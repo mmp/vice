@@ -439,3 +439,27 @@ func TestPointInPolygon(t *testing.T) {
 		})
 	}
 }
+
+func TestOppositeHeading(t *testing.T) {
+	h := [][2]float32{{90, 270}, {1, 181}, {2, 182}, {350, 170}}
+	for _, pair := range h {
+		if OppositeHeading(pair[0]) != pair[1] {
+			t.Errorf("opposite heading error: %f -> %f, expected %f",
+				pair[0], OppositeHeading(pair[0]), pair[1])
+		}
+		if OppositeHeading(pair[1]) != pair[0] {
+			t.Errorf("opposite heading error: %f -> %f, expected %f",
+				pair[1], OppositeHeading(pair[1]), pair[0])
+		}
+	}
+}
+
+func TestNormalizeHeading(t *testing.T) {
+	h := [][2]float32{{90, 90}, {360, 0}, {-10, 350}, {380, 20}, {-380, 340}}
+	for _, pair := range h {
+		if NormalizeHeading(pair[0]) != pair[1] {
+			t.Errorf("normalize heading error: %f -> %f, expected %f",
+				pair[0], NormalizeHeading(pair[0]), pair[1])
+		}
+	}
+}
