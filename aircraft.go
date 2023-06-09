@@ -769,3 +769,34 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	// fixes where there's little to no turn...
 	return eta < max(2, turnAngle/3/2)
 }
+
+// Given a point and a radial, returns true when the aircraft should
+// start turning to intercept(ish) the radial.
+func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32) bool {
+	p0 = ll2nm(p0)
+	p1 := add2f(p0, [2]float32{sin(radians(hdg - scenarioGroup.MagneticVariation)),
+		cos(radians(hdg - scenarioGroup.MagneticVariation))})
+
+	ap0 := ll2nm(ac.Position)
+	acHdg := ac.Heading - scenarioGroup.MagneticVariation
+	acHeadingVector := [2]float32{sin(radians(acHdg)), cos(radians(acHdg))}
+	ap1 := add2f(ap0, acHeadingVector)
+
+	// Find the intersection of aircraft's path with the line
+	isect, ok := LineLineIntersect(p0, p1, ap0, ap1)
+	if !ok {
+		lg.Errorf("no intersect!")
+		return false // better luck next time...
+	}
+
+	// Is the intersection behind the aircraft? (This can happen if it
+	// has flown through the localizer.) Ignore it if so.
+	v := sub2f(isect, ap0)
+
+	if v[0]*acHeadingVector[0]+v[1]*acHeadingVector[1] < 0 {
+		lg.Errorf("%s: localizer intersection is behind us...", ac.Callsign)
+		return false
+	}
+
+	return ac.ShouldTurnForOutbound(nm2ll(isect), hdg, TurnClosest)
+}

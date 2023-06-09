@@ -297,31 +297,9 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	// Estimate time to intercept.  Do this using nm coordinates
 	loc := ap.Line()
-	loc[0], loc[1] = ll2nm(loc[0]), ll2nm(loc[1])
 
-	pos := ll2nm(ac.Position)
-	hdg := ac.Heading - scenarioGroup.MagneticVariation
-	headingVector := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-	pos1 := add2f(pos, headingVector)
-
-	// Intersection of aircraft's path with the localizer
-	isect, ok := LineLineIntersect(loc[0], loc[1], pos, pos1)
-	if !ok {
-		lg.Errorf("no intersect!")
-		return false // better luck next time...
-	}
-
-	// Is the intersection behind the aircraft? (This can happen if it
-	// has flown through the localizer.) Ignore it if so.
-	v := sub2f(isect, pos)
-	if v[0]*headingVector[0]+v[1]*headingVector[1] < 0 {
-		lg.Errorf("%s: localizer intersection is behind us...", ac.Callsign)
-		return false
-	}
-
-	if ac.ShouldTurnForOutbound(nm2ll(isect), ap.Heading(), TurnClosest) {
+	if ac.ShouldTurnToIntercept(loc[0], ap.Heading()) {
 		lg.Printf("%s: assigned approach heading! %.1f", ac.Callsign, ap.Heading())
 
 		ac.Nav.L = &FlyHeading{Heading: float32(ap.Heading())}
