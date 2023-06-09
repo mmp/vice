@@ -1188,7 +1188,7 @@ func (sim *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
-	d := float32(sim.Scenario.Wind.Direction + 180)
+	d := OppositeHeading(float32(sim.Scenario.Wind.Direction))
 	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
 	vWind = scale2f(vWind, windSpeed/3600)
 	return vWind

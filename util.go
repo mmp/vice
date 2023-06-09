@@ -299,11 +299,7 @@ func headingv2ll(v Point2LL, magCorrection float32) float32 {
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
 	angle := degrees(atan2(v[0]*scenarioGroup.NmPerLongitude, v[1]*scenarioGroup.NmPerLatitude))
-	angle += magCorrection
-	for angle < 0 {
-		angle += 360
-	}
-	return mod(angle, 360)
+	return NormalizeHeading(angle + magCorrection)
 }
 
 // headingDifference returns the minimum difference between two
@@ -324,7 +320,7 @@ func headingDifference(a float32, b float32) float32 {
 // compass converts a heading expressed into degrees into a string
 // corresponding to the closest compass direction.
 func compass(heading float32) string {
-	h := mod(heading+22.5, 360) // now [0,45] is north, etc...
+	h := NormalizeHeading(heading + 22.5) // now [0,45] is north, etc...
 	idx := int(h / 45)
 	return [...]string{"North", "Northeast", "East", "Southeast",
 		"South", "Southwest", "West", "Northwest"}[idx]
@@ -333,7 +329,7 @@ func compass(heading float32) string {
 // shortCompass converts a heading expressed in degrees into an abbreviated
 // string corresponding to the closest compass direction.
 func shortCompass(heading float32) string {
-	h := mod(heading+22.5, 360) // now [0,45] is north, etc...
+	h := NormalizeHeading(heading + 22.5) // now [0,45] is north, etc...
 	idx := int(h / 45)
 	return [...]string{"N", "NE", "E", "SE", "S", "SW", "W", "NW"}[idx]
 }
@@ -341,17 +337,7 @@ func shortCompass(heading float32) string {
 // headingAsHour converts a heading expressed in degrees into the closest
 // "o'clock" value, with an integer result in the range [1,12].
 func headingAsHour(heading float32) int {
-	for heading < 0 {
-		heading += 360
-	}
-	for heading > 360 {
-		heading -= 360
-	}
-
-	heading -= 15
-	if heading < 0 {
-		heading += 360
-	}
+	heading = NormalizeHeading(heading - 15)
 	// now [0,30] is 1 o'clock, etc
 	return 1 + int(heading/30)
 }

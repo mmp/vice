@@ -780,23 +780,14 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 
 	// Set the outbound heading. For everything but teardrop, it's the
 	// opposite of the inbound heading.
-	fp.OutboundHeading = fp.InboundHeading + 180
-	if fp.OutboundHeading > 360 {
-		fp.OutboundHeading -= 360
-	}
+	fp.OutboundHeading = OppositeHeading(fp.InboundHeading)
 	if fp.Entry == TeardropEntry {
 		// For teardrop, it's offset by 30 degrees, toward the outbound
 		// track.
 		if pt.RightTurns {
-			fp.OutboundHeading -= 30
-			if fp.OutboundHeading < 0 {
-				fp.OutboundHeading += 360
-			}
+			fp.OutboundHeading = NormalizeHeading(fp.OutboundHeading - 30)
 		} else {
-			fp.OutboundHeading += 30
-			if fp.OutboundHeading > 360 {
-				fp.OutboundHeading -= 360
-			}
+			fp.OutboundHeading = NormalizeHeading(fp.OutboundHeading + 30)
 		}
 	}
 

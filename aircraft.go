@@ -316,10 +316,7 @@ func (ac *Aircraft) TurnLeft(deg int) (string, error) {
 		ac.CancelApproachClearance()
 	}
 
-	heading -= float32(deg)
-	if heading <= 0 {
-		heading += 360
-	}
+	heading = NormalizeHeading(heading - float32(deg))
 	ac.Nav.L = &FlyHeading{Heading: heading}
 	ac.NoPT = false
 
@@ -336,10 +333,7 @@ func (ac *Aircraft) TurnRight(deg int) (string, error) {
 		ac.CancelApproachClearance()
 	}
 
-	heading += float32(deg)
-	if heading > 360 {
-		heading -= 360
-	}
+	heading = NormalizeHeading(heading + float32(deg))
 	ac.Nav.L = &FlyHeading{Heading: heading}
 	ac.NoPT = false
 
@@ -620,18 +614,12 @@ func (ac *Aircraft) updateHeading() {
 	var turn float32
 	switch turnDirection {
 	case TurnLeft:
-		angle := ac.Heading - targetHeading
-		if angle < 0 {
-			angle += 360
-		}
+		angle := NormalizeHeading(ac.Heading - targetHeading)
 		angle = min(angle, turnRate)
 		turn = -angle
 
 	case TurnRight:
-		angle := targetHeading - ac.Heading
-		if angle < 0 {
-			angle += 360
-		}
+		angle := NormalizeHeading(targetHeading - ac.Heading)
 		angle = min(angle, turnRate)
 		turn = angle
 
@@ -640,21 +628,13 @@ func (ac *Aircraft) updateHeading() {
 		// the target heading by so that it's aligned with 180
 		// degrees. This lets us not worry about the complexities of the
 		// wrap around at 0/360..
-		rot := 180 - targetHeading
-		if rot < 0 {
-			rot += 360
-		}
-		cur := mod(ac.Heading+rot, 360) // w.r.t. 180 target
+		rot := NormalizeHeading(180 - targetHeading)
+		cur := NormalizeHeading(ac.Heading + rot) // w.r.t. 180 target
 		turn = clamp(180-cur, -turnRate, turnRate)
 	}
 
 	// Finally, do the turn.
-	ac.Heading += turn
-	if ac.Heading < 0 {
-		ac.Heading += 360
-	} else if ac.Heading > 360 {
-		ac.Heading -= 360
-	}
+	ac.Heading = NormalizeHeading(ac.Heading + turn)
 }
 
 func (ac *Aircraft) updatePositionAndGS() {
@@ -758,10 +738,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	case TurnClosest:
 		turnAngle = abs(headingDifference(ac.Heading, hdg))
 	}
-
-	if turnAngle < 0 {
-		turnAngle += 360
-	}
+	turnAngle = NormalizeHeading(turnAngle)
 
 	// lg.Printf("dist %.2f eta %.1f angle %.1f", dist, eta, turnAngle)
 
