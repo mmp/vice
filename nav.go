@@ -55,7 +55,7 @@ func (n *NAVState) MarshalJSON() ([]byte, error) {
 	m.LNavType = fmt.Sprintf("%T", n.L)
 
 	switch lnav := n.L.(type) {
-	case *FlyHeading, *FlyRoute, *FlyRacetrackPT:
+	case *FlyHeading, *FlyRoute, *FlyRacetrackPT, *FlyStandard45PT:
 		b, err := json.Marshal(lnav)
 		if err != nil {
 			return nil, err
@@ -129,6 +129,8 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 		n.L, err = unmarshalStruct[FlyHeading](m.LNavStruct)
 	case "*main.FlyRacetrackPT":
 		n.L, err = unmarshalStruct[FlyRacetrackPT](m.LNavStruct)
+	case "*main.FlyStandard45PT":
+		n.L, err = unmarshalStruct[FlyStandard45PT](m.LNavStruct)
 	default:
 		panic("unhandled lnav command")
 	}
@@ -612,11 +614,152 @@ func (fp *FlyRacetrackPT) LSummary(ac *Aircraft) string {
 	return s
 }
 
-func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyRacetrackPT {
+func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) (LNavCommand, VNavCommand) {
 	if ac.NoPT {
 		lg.Errorf("%s: MakeFlyProcedureTurn called even though ac.NoPT set", ac.Callsign)
 	}
 
+	switch wp[0].ProcedureTurn.Type {
+	case PTRacetrack:
+		return MakeFlyRacetrackPT(ac, wp)
+
+	case PTStandard45:
+		return MakeFlyStandard45PT(ac, wp)
+
+	default:
+		lg.Errorf("Unhandled procedure turn type")
+		return nil, nil
+	}
+}
+
+type FlyStandard45PT struct {
+	ProcedureTurn    *ProcedureTurn
+	Fix              string
+	FixLocation      Point2LL
+	InboundHeading   float32 // fix->airport
+	AwayHeading      float32 // outbound + 45 offset
+	State            int
+	SecondsRemaining int
+}
+
+const (
+	PT45StateApproaching = iota
+	PT45StateTurningOutbound
+	PT45StateFlyingOutbound
+	PT45StateTurningAway
+	PT45StateFlyingAway
+	PT45StateTurningIn
+	PT45StateFlyingIn
+	PT45StateTurningToIntercept
+)
+
+func (fp *FlyStandard45PT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+	outboundHeading := OppositeHeading(fp.InboundHeading)
+
+	switch fp.State {
+	case PT45StateApproaching:
+		if ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest) {
+			lg.Printf("%s: turning outbound to %.0f", ac.Callsign, outboundHeading)
+			fp.State = PT45StateTurningOutbound
+		}
+
+		// Fly toward the fix until it's time to turn outbound
+		fixHeading := headingp2ll(ac.Position, fp.FixLocation, scenarioGroup.MagneticVariation)
+		return fixHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningOutbound:
+		if ac.Heading == outboundHeading {
+			fp.State = PTStateFlyingOutbound
+			fp.SecondsRemaining = 60
+			lg.Printf("%s: flying outbound for %ds", ac.Callsign, fp.SecondsRemaining)
+		}
+		return outboundHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateFlyingOutbound:
+		fp.SecondsRemaining--
+		if fp.SecondsRemaining == 0 {
+			fp.State = PT45StateTurningAway
+			lg.Printf("%s: turning away from outbound to %.0f", ac.Callsign, fp.AwayHeading)
+
+		}
+		return outboundHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningAway:
+		if ac.Heading == fp.AwayHeading {
+			fp.State = PT45StateFlyingAway
+			fp.SecondsRemaining = 60
+			lg.Printf("%s: flying away for %ds", ac.Callsign, fp.SecondsRemaining)
+		}
+
+		return fp.AwayHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateFlyingAway:
+		fp.SecondsRemaining--
+		if fp.SecondsRemaining == 0 {
+			fp.State = PT45StateTurningIn
+			lg.Printf("%s: turning in to %.0f", ac.Callsign, OppositeHeading(fp.AwayHeading))
+		}
+		return fp.AwayHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningIn:
+		hdg := OppositeHeading(fp.AwayHeading)
+		if ac.Heading == hdg {
+			fp.State = PT45StateFlyingIn
+			lg.Printf("%s: flying in", ac.Callsign)
+		}
+
+		turn := Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft)
+		return hdg, TurnMethod(turn), StandardTurnRate
+
+	case PT45StateFlyingIn:
+		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading) {
+			fp.State = PT45StateTurningToIntercept
+			lg.Printf("%s: starting turn to intercept %.0f", ac.Callsign, fp.InboundHeading)
+		}
+		return ac.Heading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningToIntercept:
+		if ac.Heading == fp.InboundHeading {
+			ac.Nav.L = &FlyRoute{}
+			lg.Printf("%s: done! direct to the fix now", ac.Callsign)
+		}
+
+		return fp.InboundHeading, TurnClosest, StandardTurnRate
+
+	default:
+		lg.Errorf("unhandled PT state: %d", fp.State)
+		return ac.Heading, TurnClosest, StandardTurnRate
+	}
+}
+
+func (fp *FlyStandard45PT) PassesWaypoints() bool {
+	return false
+}
+
+func (fp *FlyStandard45PT) LSummary(ac *Aircraft) string {
+	return fmt.Sprintf("Fly the standard 45/180 procedure turn at %s", fp.Fix)
+}
+
+func MakeFlyStandard45PT(ac *Aircraft, wp []Waypoint) (*FlyStandard45PT, VNavCommand) {
+	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
+		scenarioGroup.MagneticVariation)
+
+	fp := &FlyStandard45PT{
+		ProcedureTurn:  wp[0].ProcedureTurn,
+		Fix:            wp[0].Fix,
+		FixLocation:    wp[0].Location,
+		InboundHeading: inboundHeading,
+		State:          PTStateApproaching,
+	}
+
+	hdg := OppositeHeading(fp.InboundHeading)
+	hdg += float32(Select(wp[0].ProcedureTurn.RightTurns, -45, 45))
+	fp.AwayHeading = NormalizeHeading(hdg)
+
+	return fp, nil
+}
+
+func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacetrackPT) {
 	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
 		scenarioGroup.MagneticVariation)
 	aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location,
@@ -707,7 +850,7 @@ func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) *FlyRacetrackPT {
 		fp.OutboundLegLength *= 1.5
 	}
 
-	return fp
+	return fp, fp
 }
 
 ///////////////////////////////////////////////////////////////////////////

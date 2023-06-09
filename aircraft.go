@@ -411,9 +411,13 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 		}
 	}
 
-	fp := MakeFlyProcedureTurn(ac, ac.Waypoints)
-	ac.Nav.L = fp
-	ac.Nav.V = fp
+	lnav, vnav := MakeFlyProcedureTurn(ac, ac.Waypoints)
+	if lnav != nil {
+		ac.Nav.L = lnav
+	}
+	if vnav != nil {
+		ac.Nav.V = vnav
+	}
 	return true
 }
 

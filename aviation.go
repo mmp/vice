@@ -520,7 +520,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					wp.ProcedureTurn.Type = PTStandard45
 					wp.ProcedureTurn.RightTurns = f[0] == 'p'
 
-					extent := f[5:]
+					extent := f[4:]
 					if !wp.ProcedureTurn.RightTurns {
 						extent = extent[1:]
 					}
