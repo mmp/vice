@@ -53,6 +53,7 @@ type Aircraft struct {
 	ArrivalRunwayWaypoints map[string]WaypointArray
 
 	Approach            *Approach // if assigned
+	ApproachId          string
 	ApproachCleared     bool
 	HaveEnteredAirspace bool
 }
@@ -415,8 +416,9 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 	return true
 }
 
-func (ac *Aircraft) ExpectApproach(ap *Approach) (string, error) {
+func (ac *Aircraft) ExpectApproach(ap *Approach, id string) (string, error) {
 	ac.Approach = ap
+	ac.ApproachId = id
 
 	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
 		// Splice the runway-specific waypoints in with the aircraft's

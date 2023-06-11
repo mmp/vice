@@ -987,7 +987,7 @@ func (sim *Sim) ExpectApproach(callsign string, approach string) error {
 		return ErrOtherControllerHasTrack
 	}
 
-	resp, err := ac.ExpectApproach(ap)
+	resp, err := ac.ExpectApproach(ap, approach)
 	if resp != "" {
 		pilotResponse(callsign, "%s", resp)
 	}

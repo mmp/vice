@@ -3471,9 +3471,16 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 			continue
 		}
 
-		// No conflict alerts with aircraft established on different approaches
-		if ac.Approach != nil && other.Approach != nil && ac.Approach != other.Approach {
-			continue
+		// No conflict alerts with aircraft established on different
+		// approaches to the same airport within 3 miles of the airport
+		if ac.FlightPlan.ArrivalAirport == other.FlightPlan.ArrivalAirport &&
+			ac.ApproachId != "" && other.ApproachId != "" &&
+			ac.ApproachId != other.ApproachId {
+			d, err := ac.FinalApproachDistance()
+			od, oerr := other.FinalApproachDistance()
+			if err == nil && oerr == nil && (d < 3 || od < 3) {
+				continue
+			}
 		}
 
 		// No conflict alerts with another aircraft on an approach if we're
