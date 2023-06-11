@@ -191,7 +191,7 @@ func (ac *Aircraft) Update() {
 	}
 }
 
-func (ac *Aircraft) GoAround(sim *Sim) {
+func (ac *Aircraft) GoAround() {
 	ac.Nav.L = &FlyHeading{Heading: ac.Heading}
 
 	spd := ac.Performance.Speed
@@ -208,12 +208,6 @@ func (ac *Aircraft) GoAround(sim *Sim) {
 	ac.ApproachCleared = false
 	ac.Waypoints = nil
 	ac.NoPT = false
-
-	// If it was handed off to tower, hand it back to us
-	if ac.TrackingController != "" && ac.TrackingController != sim.Callsign() {
-		ac.InboundHandoffController = sim.Callsign()
-		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
-	}
 
 	// Nuke all of them...
 	ac.Nav.FutureCommands = make(map[FutureNavCommand]interface{})

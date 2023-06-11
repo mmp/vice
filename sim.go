@@ -865,135 +865,117 @@ func (sim *Sim) GetWindowTitle() string {
 	return sim.Scenario.Callsign + ": " + sim.Scenario.Name()
 }
 
-func pilotResponse(callsign string, fm string, args ...interface{}) {
-	lg.Printf("%s: %s", callsign, fmt.Sprintf(fm, args...))
-	eventStream.Post(&RadioTransmissionEvent{callsign: callsign, message: fmt.Sprintf(fm, args...)})
+func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
+	lg.Printf("%s: %s", ac.Callsign, fmt.Sprintf(fm, args...))
+	eventStream.Post(&RadioTransmissionEvent{callsign: ac.Callsign, message: fmt.Sprintf(fm, args...)})
 }
 
-func (sim *Sim) AssignAltitude(callsign string, altitude int) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) AssignAltitude(ac *Aircraft, altitude int) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignAltitude(altitude)
 		if resp != "" {
-			pilotResponse(callsign, "%s", resp)
+			pilotResponse(ac, "%s", resp)
 		}
 		return err
 	}
 }
 
-func (sim *Sim) AssignHeading(callsign string, heading int, turn int) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) AssignHeading(ac *Aircraft, heading int, turn int) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignHeading(heading, turn)
 		if resp != "" {
-			pilotResponse(callsign, "%s", resp)
+			pilotResponse(ac, "%s", resp)
 		}
 		return err
 	}
 }
 
-func (sim *Sim) FlyPresentHeading(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) FlyPresentHeading(ac *Aircraft) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		_, err := ac.AssignHeading(int(ac.Heading), TurnClosest)
 		if err == nil {
-			pilotResponse(callsign, "fly present heading")
+			pilotResponse(ac, "fly present heading")
 		}
 		return err
 	}
 }
 
-func (sim *Sim) TurnLeft(callsign string, deg int) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) TurnLeft(ac *Aircraft, deg int) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.TurnLeft(deg)
 		if resp != "" {
-			pilotResponse(callsign, "%s", resp)
+			pilotResponse(ac, "%s", resp)
 		}
 		return err
 	}
 }
 
-func (sim *Sim) TurnRight(callsign string, deg int) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) TurnRight(ac *Aircraft, deg int) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.TurnRight(deg)
 		if resp != "" {
-			pilotResponse(callsign, "%s", resp)
+			pilotResponse(ac, "%s", resp)
 		}
 		return err
 	}
 }
 
-func (sim *Sim) AssignSpeed(callsign string, speed int) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) AssignSpeed(ac *Aircraft, speed int) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignSpeed(speed)
 		if resp != "" {
-			pilotResponse(callsign, "%s", resp)
+			pilotResponse(ac, "%s", resp)
 		}
 		return err
 	}
 }
 
-func (sim *Sim) DirectFix(callsign string, fix string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.ControllingController != sim.Callsign() {
+func (sim *Sim) DirectFix(ac *Aircraft, fix string) error {
+	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.DirectFix(fix)
 		if resp != "" {
-			pilotResponse(callsign, "%s", resp)
+			pilotResponse(ac, "%s", resp)
 		}
 		return err
 	}
 }
 
-func (sim *Sim) getApproach(callsign string, approach string) (*Approach, *Aircraft, error) {
-	ac, ok := sim.Aircraft[callsign]
-	if !ok {
-		return nil, nil, ErrNoAircraftForCallsign
-	}
+func (sim *Sim) getApproach(ac *Aircraft, approach string) (*Approach, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
-		return nil, nil, ErrNoFlightPlan
+		return nil, ErrNoFlightPlan
 	}
 
 	ap, ok := scenarioGroup.Airports[fp.ArrivalAirport]
 	if !ok {
-		lg.Errorf("Can't find TRACON airport %s for %s approach for %s", fp.ArrivalAirport, approach, callsign)
-		return nil, nil, ErrArrivalAirportUnknown
+		lg.Errorf("Can't find TRACON airport %s for %s approach for %s", fp.ArrivalAirport, approach, ac.Callsign)
+		return nil, ErrArrivalAirportUnknown
 	}
 
 	for name, appr := range ap.Approaches {
 		if name == approach {
-			return &appr, ac, nil
+			return &appr, nil
 		}
 	}
-	return nil, nil, ErrUnknownApproach
+	return nil, ErrUnknownApproach
 }
 
-func (sim *Sim) ExpectApproach(callsign string, approach string) error {
-	ap, ac, err := sim.getApproach(callsign, approach)
+func (sim *Sim) ExpectApproach(ac *Aircraft, approach string) error {
+	ap, err := sim.getApproach(ac, approach)
 	if err != nil {
 		return err
 	}
@@ -1004,26 +986,26 @@ func (sim *Sim) ExpectApproach(callsign string, approach string) error {
 
 	resp, err := ac.ExpectApproach(ap, approach)
 	if resp != "" {
-		pilotResponse(callsign, "%s", resp)
+		pilotResponse(ac, "%s", resp)
 	}
 	return err
 }
 
-func (sim *Sim) ClearedApproach(callsign string, approach string) error {
-	ap, ac, err := sim.getApproach(callsign, approach)
+func (sim *Sim) ClearedApproach(ac *Aircraft, approach string) error {
+	ap, err := sim.getApproach(ac, approach)
 	if err != nil {
 		return err
 	}
 
 	resp, err := ac.ClearedApproach(ap)
 	if resp != "" {
-		pilotResponse(callsign, "%s", resp)
+		pilotResponse(ac, "%s", resp)
 	}
 	return err
 }
 
-func (sim *Sim) ClearedStraightInApproach(callsign string, approach string) error {
-	ap, ac, err := sim.getApproach(callsign, approach)
+func (sim *Sim) ClearedStraightInApproach(ac *Aircraft, approach string) error {
+	ap, err := sim.getApproach(ac, approach)
 	if err != nil {
 		return err
 	}
@@ -1034,35 +1016,40 @@ func (sim *Sim) ClearedStraightInApproach(callsign string, approach string) erro
 
 	resp, err := ac.ClearedStraightInApproach(ap)
 	if resp != "" {
-		pilotResponse(callsign, "%s", resp)
+		pilotResponse(ac, "%s", resp)
 	}
 	return err
 }
 
-func (sim *Sim) PrintInfo(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else {
-		lg.Errorf("%s", spew.Sdump(ac))
+func (sim *Sim) GoAround(ac *Aircraft) error {
+	ac.GoAround()
 
-		s := fmt.Sprintf("%s: current alt %f, heading %f, IAS %.1f, GS %.1f",
-			ac.Callsign, ac.Altitude, ac.Heading, ac.IAS, ac.GS)
-		if ac.ApproachCleared {
-			s += ", cleared approach"
-		}
-		lg.Errorf("%s", s)
+	// If it was handed off to tower, hand it back to us
+	if ac.TrackingController != "" && ac.TrackingController != sim.Callsign() {
+		ac.InboundHandoffController = sim.Callsign()
+		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
+
+	pilotResponse(ac, "Going around")
 	return nil
 }
 
-func (sim *Sim) DeleteAircraft(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else {
-		eventStream.Post(&RemovedAircraftEvent{ac: ac})
-		delete(sim.Aircraft, callsign)
-		return nil
+func (sim *Sim) PrintInfo(ac *Aircraft) error {
+	lg.Errorf("%s", spew.Sdump(ac))
+
+	s := fmt.Sprintf("%s: current alt %f, heading %f, IAS %.1f, GS %.1f",
+		ac.Callsign, ac.Altitude, ac.Heading, ac.IAS, ac.GS)
+	if ac.ApproachCleared {
+		s += ", cleared approach"
 	}
+	lg.Errorf("%s", s)
+	return nil
+}
+
+func (sim *Sim) DeleteAircraft(ac *Aircraft) error {
+	eventStream.Post(&RemovedAircraftEvent{ac: ac})
+	delete(sim.Aircraft, ac.Callsign)
+	return nil
 }
 
 func (sim *Sim) IsPaused() bool {
@@ -1572,7 +1559,7 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 	return ac
 }
 
-func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, error) {
+func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error) {
 	commands := strings.Fields(cmds)
 	for i, command := range commands {
 		switch command[0] {
@@ -1581,11 +1568,11 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 			if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
 				if alt, err := strconv.Atoi(command[1:]); err != nil || alt > 390 {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignAltitude(callsign, 100*alt) != nil {
+				} else if sim.AssignAltitude(ac, 100*alt) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			} else if _, ok := scenarioGroup.Locate(string(command[1:])); ok {
-				if err := sim.DirectFix(callsign, command[1:]); err != nil {
+				if err := sim.DirectFix(ac, command[1:]); err != nil {
 					if err == ErrNoAircraftForCallsign {
 						return commands[i:], ErrSTARSIllegalTrack
 					} else {
@@ -1598,14 +1585,14 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 
 		case 'H':
 			if len(command) == 1 {
-				if err := sim.FlyPresentHeading(callsign); err != nil {
+				if err := sim.FlyPresentHeading(ac); err != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
 				return commands[i:], ErrSTARSIllegalParam
 			} else if hdg > 360 {
 				return commands[i:], ErrSTARSIllegalParam
-			} else if sim.AssignHeading(callsign, hdg, 0) != nil {
+			} else if sim.AssignHeading(ac, hdg, 0) != nil {
 				return commands[i:], ErrSTARSIllegalTrack
 			}
 
@@ -1614,7 +1601,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 				// turn left x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.TurnLeft(callsign, deg) != nil {
+				} else if sim.TurnLeft(ac, deg) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			} else {
@@ -1623,7 +1610,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 					return commands[i:], ErrSTARSIllegalParam
 				} else if hdg > 360 {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignHeading(callsign, hdg, -1) != nil {
+				} else if sim.AssignHeading(ac, hdg, -1) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			}
@@ -1633,7 +1620,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 				// turn right x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.TurnRight(callsign, deg) != nil {
+				} else if sim.TurnRight(ac, deg) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			} else {
@@ -1642,7 +1629,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 					return commands[i:], ErrSTARSIllegalParam
 				} else if hdg > 360 {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignHeading(callsign, hdg, 1) != nil {
+				} else if sim.AssignHeading(ac, hdg, 1) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			}
@@ -1659,7 +1646,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 			}
 			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
-				if err := sim.ClearedStraightInApproach(callsign, command[3:]); err != nil {
+				if err := sim.ClearedStraightInApproach(ac, command[3:]); err != nil {
 					if err == ErrOtherControllerHasTrack {
 						return commands[i:], ErrSTARSIllegalTrack
 					} else {
@@ -1668,7 +1655,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 				}
 			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
 				// Cleared approach.
-				if err := sim.ClearedApproach(callsign, command[1:]); err != nil {
+				if err := sim.ClearedApproach(ac, command[1:]); err != nil {
 					if err == ErrOtherControllerHasTrack {
 						return commands[i:], ErrSTARSIllegalTrack
 					} else {
@@ -1679,7 +1666,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 				// Otherwise look for an altitude
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignAltitude(callsign, 100*alt) != nil {
+				} else if sim.AssignAltitude(ac, 100*alt) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			}
@@ -1688,7 +1675,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 			if len(command) > 1 {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignSpeed(callsign, kts) != nil {
+				} else if sim.AssignSpeed(ac, kts) != nil {
 					return commands[i:], ErrSTARSIllegalTrack
 				}
 			}
@@ -1696,7 +1683,7 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 		case 'E':
 			// Expect approach.
 			if len(command) > 1 {
-				if err := sim.ExpectApproach(callsign, command[1:]); err != nil {
+				if err := sim.ExpectApproach(ac, command[1:]); err != nil {
 					if err == ErrOtherControllerHasTrack {
 						return commands[i:], ErrSTARSIllegalTrack
 					} else {
@@ -1706,12 +1693,12 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 			}
 
 		case '?':
-			if sim.PrintInfo(callsign) != nil {
+			if sim.PrintInfo(ac) != nil {
 				return commands[i:], ErrSTARSIllegalTrack
 			}
 
 		case 'X':
-			if sim.DeleteAircraft(callsign) != nil {
+			if sim.DeleteAircraft(ac) != nil {
 				return commands[i:], ErrSTARSIllegalTrack
 			}
 

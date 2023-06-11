@@ -1981,7 +1981,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			}
 
 			if len(cmd) > 0 {
-				remaining, err := sim.RunAircraftCommands(ac.Callsign, cmd)
+				remaining, err := sim.RunAircraftCommands(ac, cmd)
 				if err != nil {
 					// Leave the unexecuted commands for editing, etc.
 					globalConfig.Audio.PlaySound(AudioEventCommandError)

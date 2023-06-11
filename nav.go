@@ -387,8 +387,7 @@ func (g *GoAround) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	ac.GoAround(sim)
-	pilotResponse(ac.Callsign, "Going around")
+	sim.GoAround(ac)
 	return true
 }
 
