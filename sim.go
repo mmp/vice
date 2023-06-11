@@ -898,6 +898,20 @@ func (sim *Sim) AssignHeading(callsign string, heading int, turn int) error {
 	}
 }
 
+func (sim *Sim) FlyPresentHeading(callsign string) error {
+	if ac, ok := sim.Aircraft[callsign]; !ok {
+		return ErrNoAircraftForCallsign
+	} else if ac.ControllingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
+	} else {
+		_, err := ac.AssignHeading(int(ac.Heading), TurnClosest)
+		if err == nil {
+			pilotResponse(callsign, "fly present heading")
+		}
+		return err
+	}
+}
+
 func (sim *Sim) TurnLeft(callsign string, deg int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
@@ -1583,7 +1597,11 @@ func (sim *Sim) RunAircraftCommands(callsign string, cmds string) ([]string, err
 			}
 
 		case 'H':
-			if hdg, err := strconv.Atoi(command[1:]); err != nil {
+			if len(command) == 1 {
+				if err := sim.FlyPresentHeading(callsign); err != nil {
+					return commands[i:], ErrSTARSIllegalTrack
+				}
+			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
 				return commands[i:], ErrSTARSIllegalParam
 			} else if hdg > 360 {
 				return commands[i:], ErrSTARSIllegalParam
