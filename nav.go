@@ -797,7 +797,14 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 		// Since we have less than 180 degrees in our turn, turn more
 		// slowly so that we more or less end up the right offset distance
 		// from the inbound path.
-		fp.OutboundTurnRate = 3 * headingDifference(fp.OutboundHeading, ac.Heading) / 180
+		acFixHeading := headingp2ll(ac.Position, wp[0].Location,
+			scenarioGroup.MagneticVariation)
+		diff := headingDifference(fp.OutboundHeading, acFixHeading)
+		fp.OutboundTurnRate = 3 * diff / 180
+		lg.Printf("%s: hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
+			ac.Callsign, acFixHeading, fp.OutboundHeading,
+			headingDifference(fp.OutboundHeading, acFixHeading),
+			fp.OutboundTurnRate)
 	}
 
 	// Set the outbound turn method.
