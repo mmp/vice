@@ -915,18 +915,10 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 		return ac.IAS, MaximumRate
 	}
 
-	// Calculate distance to the airport: distance to the next fix plus sum
-	// of the distances between remaining fixes.
-	var airportDist float32
-	if wp := ac.Waypoints; len(wp) == 0 {
-		// This should never happen(tm), but...
-		lg.Errorf("%s: no waypoints left??", ac.Callsign)
+	airportDist, err := ac.FinalApproachDistance()
+	if err != nil {
+		lg.Errorf("%s: couldn't get final approach distance: %v", ac.Callsign, err)
 		airportDist = nmdistance2ll(ac.Position, airportPos)
-	} else {
-		airportDist = nmdistance2ll(ac.Position, wp[0].Location)
-		for i := 0; i < len(wp)-1; i++ {
-			airportDist += nmdistance2ll(wp[i].Location, wp[i+1].Location)
-		}
 	}
 
 	// Expected speed at 10 DME, without further direction.

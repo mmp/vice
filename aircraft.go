@@ -781,3 +781,24 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32) bool {
 
 	return ac.ShouldTurnForOutbound(nm2ll(isect), hdg, TurnClosest)
 }
+
+// FinalApproachDistance returns the total remaining flying distance
+// for an aircraft that has been given an approach.
+func (ac *Aircraft) FinalApproachDistance() (float32, error) {
+	if ac.Approach == nil {
+		return 0, fmt.Errorf("not cleared for approach")
+	}
+
+	// Calculate distance to the airport: distance to the next fix plus sum
+	// of the distances between remaining fixes.
+	if wp := ac.Waypoints; len(wp) == 0 {
+		// This should never happen(tm), but...
+		return 0, fmt.Errorf("no waypoints left??")
+	} else {
+		d := nmdistance2ll(ac.Position, wp[0].Location)
+		for i := 0; i < len(wp)-1; i++ {
+			d += nmdistance2ll(wp[i].Location, wp[i+1].Location)
+		}
+		return d, nil
+	}
+}
