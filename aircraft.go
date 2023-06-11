@@ -727,6 +727,11 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	dist := nmdistance2ll(ac.Position, p)
 	eta := dist / ac.GS * 3600 // in seconds
 
+	// Always start the turn if we've almost passed the fix.
+	if eta < 2 {
+		return true
+	}
+
 	// TODO: it's not clear that the logic here works sense for turns of
 	// >180 degrees...
 	var turnAngle float32
@@ -748,9 +753,12 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	// heading leaving the waypoint when turnAngle/3==eta, though we'd turn
 	// too early then since turning starts to put us in the new direction
 	// away from the fix.  An ad-hoc angle/5 generally seems to work well
-	// instead. Also checking against 2 seconds ensures that we don't miss
-	// fixes where there's little to no turn...
-	return eta < max(2, turnAngle/3/2)
+	// instead.
+	if turnAngle < 40 {
+		return eta < turnAngle/6
+	} else {
+		return eta < turnAngle/4
+	}
 }
 
 // Given a point and a radial, returns true when the aircraft should
