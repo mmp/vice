@@ -1986,6 +1986,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					// Leave the unexecuted commands for editing, etc.
 					globalConfig.Audio.PlaySound(AudioEventCommandError)
 					sp.previewAreaInput = strings.Join(remaining, " ")
+					status.err = err
 				} else {
 					status.clear = true
 				}
