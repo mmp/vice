@@ -342,6 +342,29 @@ func (ac *Aircraft) TurnRight(deg int) (string, error) {
 	return fmt.Sprintf("turn %d degrees right", deg), nil
 }
 
+func (ac *Aircraft) visitRouteFix(fix string, cb func(*Waypoint) bool) {
+	for i := range ac.Waypoints {
+		if fix == ac.Waypoints[i].Fix {
+			if !cb(&ac.Waypoints[i]) {
+				return
+			}
+		}
+	}
+
+	if ac.Approach == nil {
+		return
+	}
+	for _, route := range ac.Approach.Waypoints {
+		for i := range route {
+			if fix == route[i].Fix {
+				if !cb(&route[i]) {
+					return
+				}
+			}
+		}
+	}
+}
+
 func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	fix = strings.ToUpper(fix)
 
@@ -394,22 +417,12 @@ func (ac *Aircraft) DepartFixHeading(fix string, hdg int) (string, error) {
 		return "", ErrInvalidHeading
 	}
 
-	setHeading := func(wp []Waypoint) bool {
-		for i := range wp {
-			if wp[i].Fix == fix {
-				wp[i].Heading = hdg
-				return true
-			}
-		}
-		return false
-	}
-
-	found := setHeading(ac.Waypoints)
-	if !found && ac.Approach != nil {
-		for _, route := range ac.Approach.Waypoints {
-			found = setHeading(route) || found // be careful to not short-circuit with ||...
-		}
-	}
+	found := false
+	ac.visitRouteFix(fix, func(wp *Waypoint) bool {
+		wp.Heading = hdg
+		found = true
+		return true
+	})
 
 	if found {
 		return fmt.Sprintf("depart %s heading %03d", fix, hdg), nil
