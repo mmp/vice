@@ -214,6 +214,10 @@ func (ac *Aircraft) GoAround() {
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
+	if altitude > int(ac.Performance.Ceiling) {
+		return "unable-that altitude is above our ceiling", ErrInvalidAltitude
+	}
+
 	var response string
 	if float32(altitude) > ac.Altitude {
 		response = fmt.Sprintf("climb and maintain %d", altitude)
@@ -277,6 +281,9 @@ func (ac *Aircraft) AssignHeading(heading int, turn int) (response string, err e
 	// unassigned heading.
 	if heading == 0 {
 		heading = 360
+	}
+	if heading < 0 || heading > 360 {
+		return "", ErrInvalidHeading
 	}
 
 	// Only cancel approach clearance if the aircraft wasn't on a

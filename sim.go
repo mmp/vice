@@ -30,6 +30,9 @@ var (
 	ErrNoController                 = errors.New("No controller with that callsign")
 	ErrUnknownAircraftType          = errors.New("Unknown aircraft type")
 	ErrUnableCommand                = errors.New("Unable")
+	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
+	ErrInvalidHeading               = errors.New("Invalid heading")
+	ErrInvalidCommandSyntax         = errors.New("Invalid command syntax")
 )
 
 type NewSimConfiguration struct {
@@ -1564,54 +1567,46 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 	for i, command := range commands {
 		switch command[0] {
 		case 'D':
-			// Is it an altitude?
 			if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-				if alt, err := strconv.Atoi(command[1:]); err != nil || alt > 390 {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignAltitude(ac, 100*alt) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+				// Looks like an altitude.
+				if alt, err := strconv.Atoi(command[1:]); err != nil {
+					return commands[i:], err
+				} else if err := sim.AssignAltitude(ac, 100*alt); err != nil {
+					return commands[i:], err
 				}
 			} else if _, ok := scenarioGroup.Locate(string(command[1:])); ok {
 				if err := sim.DirectFix(ac, command[1:]); err != nil {
-					if err == ErrNoAircraftForCallsign {
-						return commands[i:], ErrSTARSIllegalTrack
-					} else {
-						return commands[i:], ErrSTARSIllegalParam
-					}
+					return commands[i:], err
 				}
 			} else {
-				return commands[i:], ErrSTARSIllegalParam
+				return commands[i:], ErrInvalidCommandSyntax
 			}
 
 		case 'H':
 			if len(command) == 1 {
 				if err := sim.FlyPresentHeading(ac); err != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
 				}
 			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
-				return commands[i:], ErrSTARSIllegalParam
-			} else if hdg > 360 {
-				return commands[i:], ErrSTARSIllegalParam
-			} else if sim.AssignHeading(ac, hdg, 0) != nil {
-				return commands[i:], ErrSTARSIllegalTrack
+				return commands[i:], err
+			} else if err := sim.AssignHeading(ac, hdg, 0); err != nil {
+				return commands[i:], err
 			}
 
 		case 'L':
 			if l := len(command); l > 2 && command[l-1] == 'D' {
 				// turn left x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.TurnLeft(ac, deg) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
+				} else if err := sim.TurnLeft(ac, deg); err != nil {
+					return commands[i:], err
 				}
 			} else {
-				// fly heading...
+				// turn left heading...
 				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if hdg > 360 {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignHeading(ac, hdg, -1) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
+				} else if err := sim.AssignHeading(ac, hdg, -1); err != nil {
+					return commands[i:], err
 				}
 			}
 
@@ -1619,18 +1614,16 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 			if l := len(command); l > 2 && command[l-1] == 'D' {
 				// turn right x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.TurnRight(ac, deg) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
+				} else if err := sim.TurnRight(ac, deg); err != nil {
+					return commands[i:], err
 				}
 			} else {
-				// fly heading...
+				// turn right heading...
 				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if hdg > 360 {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignHeading(ac, hdg, 1) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
+				} else if err := sim.AssignHeading(ac, hdg, 1); err != nil {
+					return commands[i:], err
 				}
 			}
 
@@ -1647,36 +1640,28 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := sim.ClearedStraightInApproach(ac, command[3:]); err != nil {
-					if err == ErrOtherControllerHasTrack {
-						return commands[i:], ErrSTARSIllegalTrack
-					} else {
-						return commands[i:], ErrSTARSIllegalParam
-					}
+					return commands[i:], err
 				}
 			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
 				// Cleared approach.
 				if err := sim.ClearedApproach(ac, command[1:]); err != nil {
-					if err == ErrOtherControllerHasTrack {
-						return commands[i:], ErrSTARSIllegalTrack
-					} else {
-						return commands[i:], ErrSTARSIllegalParam
-					}
+					return commands[i:], err
 				}
 			} else {
 				// Otherwise look for an altitude
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignAltitude(ac, 100*alt) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
+				} else if err := sim.AssignAltitude(ac, 100*alt); err != nil {
+					return commands[i:], err
 				}
 			}
 
 		case 'S':
 			if len(command) > 1 {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], ErrSTARSIllegalParam
-				} else if sim.AssignSpeed(ac, kts) != nil {
-					return commands[i:], ErrSTARSIllegalTrack
+					return commands[i:], err
+				} else if err := sim.AssignSpeed(ac, kts); err != nil {
+					return commands[i:], err
 				}
 			}
 
@@ -1684,26 +1669,24 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 			// Expect approach.
 			if len(command) > 1 {
 				if err := sim.ExpectApproach(ac, command[1:]); err != nil {
-					if err == ErrOtherControllerHasTrack {
-						return commands[i:], ErrSTARSIllegalTrack
-					} else {
-						return commands[i:], ErrSTARSIllegalParam
-					}
+					return commands[i:], err
 				}
+			} else {
+				return commands[i:], ErrInvalidCommandSyntax
 			}
 
 		case '?':
-			if sim.PrintInfo(ac) != nil {
-				return commands[i:], ErrSTARSIllegalTrack
+			if err := sim.PrintInfo(ac); err != nil {
+				return commands[i:], err
 			}
 
 		case 'X':
-			if sim.DeleteAircraft(ac) != nil {
-				return commands[i:], ErrSTARSIllegalTrack
+			if err := sim.DeleteAircraft(ac); err != nil {
+				return commands[i:], err
 			}
 
 		default:
-			return commands[i:], ErrSTARSCommandFormat
+			return commands[i:], ErrInvalidCommandSyntax
 		}
 	}
 	return nil, nil

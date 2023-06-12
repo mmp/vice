@@ -1983,10 +1983,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			if len(cmd) > 0 {
 				remaining, err := sim.RunAircraftCommands(ac, cmd)
 				if err != nil {
+					if err == ErrInvalidAltitude || err == ErrInvalidHeading {
+						status.err = ErrSTARSIllegalParam
+					} else {
+						status.err = ErrSTARSCommandFormat
+					}
+
 					// Leave the unexecuted commands for editing, etc.
 					globalConfig.Audio.PlaySound(AudioEventCommandError)
 					sp.previewAreaInput = strings.Join(remaining, " ")
-					status.err = err
 				} else {
 					status.clear = true
 				}
