@@ -431,6 +431,33 @@ func (ac *Aircraft) DepartFixHeading(fix string, hdg int) (string, error) {
 	}
 }
 
+func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) (string, error) {
+	fix = strings.ToUpper(fix)
+
+	found := false
+	ac.visitRouteFix(fix, func(wp *Waypoint) bool {
+		wp.Altitude = alt
+		wp.Speed = speed
+		found = true
+		return true
+	})
+
+	if !found {
+		return "", ErrFixNotInRoute
+	}
+
+	response := "cross " + fix
+	if alt != 0 {
+		ac.Nav.V = &FlyRoute{}
+		response += fmt.Sprintf(" at and maintain %d", alt)
+	}
+	if speed != 0 {
+		ac.Nav.S = &FlyRoute{}
+		response += fmt.Sprintf(" at %d knots", speed)
+	}
+	return response, nil
+}
+
 func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 	wp := ac.Waypoints
 	if !ac.ApproachCleared || len(wp) == 0 || wp[0].ProcedureTurn == nil || ac.NoPT {

@@ -970,6 +970,18 @@ func (sim *Sim) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
 	}
 }
 
+func (sim *Sim) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
+	if ac.ControllingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
+	} else {
+		resp, err := ac.CrossFixAt(fix, alt, speed)
+		if resp != "" {
+			pilotResponse(ac, "%s", resp)
+		}
+		return err
+	}
+}
+
 func (sim *Sim) getApproach(ac *Aircraft, approach string) (*Approach, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
@@ -1668,8 +1680,34 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 					return commands[i:], err
 				}
 			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
-				// Cleared approach.
-				if err := sim.ClearedApproach(ac, command[1:]); err != nil {
+				if components := strings.Split(command, "/"); len(components) > 1 {
+					// Cross fix [at altitude] [at speed]
+					fix := components[0][1:]
+					alt, speed := 0, 0
+
+					for _, cmd := range components[1:] {
+						if len(cmd) == 0 {
+							return commands[i:], ErrInvalidCommandSyntax
+						}
+
+						var err error
+						if cmd[0] == 'A' {
+							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
+								return commands[i:], err
+							}
+						} else if cmd[0] == 'S' {
+							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+								return commands[i:], err
+							}
+						} else {
+							return commands[i:], ErrInvalidCommandSyntax
+						}
+					}
+
+					if err := sim.CrossFixAt(ac, fix, 100*alt, speed); err != nil {
+						return commands[i:], err
+					}
+				} else if err := sim.ClearedApproach(ac, command[1:]); err != nil {
 					return commands[i:], err
 				}
 			} else {
