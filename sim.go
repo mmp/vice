@@ -1657,7 +1657,12 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 			}
 
 		case 'S':
-			if len(command) > 1 {
+			if len(command) == 1 {
+				// Cancel speed restrictions
+				if err := sim.AssignSpeed(ac, 0); err != nil {
+					return commands[i:], err
+				}
+			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					return commands[i:], err
 				} else if err := sim.AssignSpeed(ac, kts); err != nil {
