@@ -33,6 +33,7 @@ var (
 	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
 	ErrInvalidHeading               = errors.New("Invalid heading")
 	ErrInvalidCommandSyntax         = errors.New("Invalid command syntax")
+	ErrFixNotInRoute                = errors.New("Fix not in aircraft's route")
 )
 
 type NewSimConfiguration struct {
@@ -957,6 +958,18 @@ func (sim *Sim) DirectFix(ac *Aircraft, fix string) error {
 	}
 }
 
+func (sim *Sim) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
+	if ac.ControllingController != sim.Callsign() {
+		return ErrOtherControllerHasTrack
+	} else {
+		resp, err := ac.DepartFixHeading(fix, hdg)
+		if resp != "" {
+			pilotResponse(ac, "%s", resp)
+		}
+		return err
+	}
+}
+
 func (sim *Sim) getApproach(ac *Aircraft, approach string) (*Approach, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
@@ -1567,7 +1580,19 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 	for i, command := range commands {
 		switch command[0] {
 		case 'D':
-			if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
+			if components := strings.Split(command, "/"); len(components) > 1 {
+				// Depart <fix> at heading <hdg>
+				fix := components[0][1:]
+
+				if components[1][0] != 'H' {
+					return commands[i:], ErrInvalidCommandSyntax
+				}
+				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
+					return commands[i:], err
+				} else if err := sim.DepartFixHeading(ac, fix, hdg); err != nil {
+					return commands[i:], err
+				}
+			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
 				// Looks like an altitude.
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
 					return commands[i:], err

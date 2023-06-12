@@ -383,7 +383,38 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 		}
 		return "direct " + fix, nil
 	} else {
-		return "", fmt.Errorf("%s: fix not found in route", fix)
+		return "", ErrFixNotInRoute
+	}
+}
+
+func (ac *Aircraft) DepartFixHeading(fix string, hdg int) (string, error) {
+	fix = strings.ToUpper(fix)
+
+	if hdg <= 0 || hdg > 360 {
+		return "", ErrInvalidHeading
+	}
+
+	setHeading := func(wp []Waypoint) bool {
+		for i := range wp {
+			if wp[i].Fix == fix {
+				wp[i].Heading = hdg
+				return true
+			}
+		}
+		return false
+	}
+
+	found := setHeading(ac.Waypoints)
+	if !found && ac.Approach != nil {
+		for _, route := range ac.Approach.Waypoints {
+			found = setHeading(route) || found // be careful to not short-circuit with ||...
+		}
+	}
+
+	if found {
+		return fmt.Sprintf("depart %s heading %03d", fix, hdg), nil
+	} else {
+		return "", ErrFixNotInRoute
 	}
 }
 
