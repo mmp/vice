@@ -28,6 +28,11 @@ type Airport struct {
 func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	for name, ap := range ap.Approaches {
 		e.Push("Approach " + name)
+
+		if isAllNumbers(name) {
+			e.ErrorString("Approach names cannot only have numbers in them")
+		}
+
 		for i := range ap.Waypoints {
 			n := len(ap.Waypoints[i])
 			ap.Waypoints[i][n-1].Delete = true

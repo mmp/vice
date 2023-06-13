@@ -1665,15 +1665,6 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 			}
 
 		case 'C', 'A':
-			var isAllNumbers func(s string) bool
-			isAllNumbers = func(s string) bool {
-				if s == "" {
-					return true
-				} else if s[0] < '0' || s[0] > '9' {
-					return false
-				}
-				return isAllNumbers(s[1:])
-			}
 			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := sim.ClearedStraightInApproach(ac, command[3:]); err != nil {

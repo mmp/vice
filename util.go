@@ -128,6 +128,15 @@ func atof(s string) float64 {
 	}
 }
 
+func isAllNumbers(s string) bool {
+	for _, ch := range s {
+		if ch < '0' || ch > '9' {
+			return false
+		}
+	}
+	return true
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // core math
 
