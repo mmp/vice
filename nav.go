@@ -253,11 +253,18 @@ func (aas *AltitudeAfterSpeed) Summary(ac *Aircraft) string {
 type ApproachSpeedAt5DME struct{}
 
 func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft) bool {
-	ap := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]
-	if nmdistance2ll(ac.Position, ap.Location) > 5 {
+	d, err := ac.FinalApproachDistance()
+	if err != nil {
+		ap := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]
+		d = nmdistance2ll(ac.Position, ap.Location)
+	}
+
+	if d > 5 {
 		return false
 	}
 
+	lg.Printf("%s: at 5 DME; snav reducing to final approach (if not already)",
+		ac.Callsign)
 	ac.Nav.S = &FinalApproachSpeed{}
 	return true
 }
