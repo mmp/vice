@@ -256,7 +256,10 @@ func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 		return
 	}
 
-	if alt, _ := ac.Nav.V.GetAltitude(ac); alt != ac.Altitude {
+	if ac.ApproachCleared {
+		response = fmt.Sprintf("maintain %d knots until 5 mile final", speed)
+		ac.Nav.S = &MaintainSpeed{IAS: float32(speed)}
+	} else if alt, _ := ac.Nav.V.GetAltitude(ac); alt != ac.Altitude {
 		response = fmt.Sprintf("at %.0f feet, maintain %d knots",
 			alt, speed)
 		ac.AddFutureNavCommand(&SpeedAfterAltitude{
@@ -267,10 +270,6 @@ func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 	} else {
 		response = fmt.Sprintf("maintain %d knots", speed)
 		ac.Nav.S = &MaintainSpeed{IAS: float32(speed)}
-
-		if ac.ApproachCleared {
-			response += " until 5 mile final"
-		}
 	}
 	return
 }
