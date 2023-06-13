@@ -755,6 +755,8 @@ func (ac *Aircraft) updateWaypoints() {
 	}
 
 	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest) {
+		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
+
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp)
 
@@ -795,6 +797,9 @@ func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
 	}
 }
 
+// Given a fix location and an outbound heading, returns true when the
+// aircraft should start the turn to outbound to intercept the outbound
+// radial.
 func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMethod) bool {
 	dist := nmdistance2ll(ac.Position, p)
 	eta := dist / ac.GS * 3600 // in seconds
@@ -804,64 +809,81 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 		return true
 	}
 
-	// TODO: it's not clear that the logic here works sense for turns of
-	// >180 degrees...
-	var turnAngle float32
-	switch turn {
-	case TurnLeft:
-		turnAngle = ac.Heading - hdg
-
-	case TurnRight:
-		turnAngle = hdg - ac.Heading
-
-	case TurnClosest:
-		turnAngle = abs(headingDifference(ac.Heading, hdg))
+	// Alternatively, if we're far away w.r.t. the needed turn, don't even
+	// consider it. This is both for performance but also so that we don't
+	// make tiny turns miles away from fixes in some cases.
+	turnAngle := TurnAngle(ac.Heading, hdg, turn)
+	if turnAngle/2 < eta {
+		return false
 	}
-	turnAngle = NormalizeHeading(turnAngle)
 
-	// lg.Printf("dist %.2f eta %.1f angle %.1f", dist, eta, turnAngle)
+	// Get two points that give the line of the outbound course.
+	p0 := ll2nm(p)
+	hm := hdg - scenarioGroup.MagneticVariation
+	p1 := add2f(p0, [2]float32{sin(radians(hm)), cos(radians(hm))})
 
-	// Assuming 3 degree/second turns, we might start to turn to the
-	// heading leaving the waypoint when turnAngle/3==eta, though we'd turn
-	// too early then since turning starts to put us in the new direction
-	// away from the fix.  An ad-hoc angle/5 generally seems to work well
-	// instead.
-	if turnAngle < 40 {
-		return eta < turnAngle/6
-	} else {
-		return eta < turnAngle/4
+	// Make a ghost aircraft to use to simulate the turn. Checking this way
+	// may be somewhat brittle/dangerous, e.g., if there is underlying
+	// shared mutable state between ac and ac2.
+	ac2 := *ac
+	ac2.AssignHeading(int(hdg), turn)
+	ac2.Nav.FutureCommands = nil
+
+	initialDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
+
+	// Don't simulate the turn longer than it will take to do it.
+	n := int(1 + turnAngle/3)
+	for i := 0; i < n; i++ {
+		ac2.Update()
+		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
+		if sign(initialDist) != sign(curDist) {
+			// Aircraft is on the other side of the line than it started on.
+			lg.Printf("%s: turning now to intercept outbound in %d seconds",
+				ac.Callsign, i)
+			//globalConfig.highlightedLocation = ac2.Position
+			//globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
+			return true
+		}
 	}
+	return false
 }
 
 // Given a point and a radial, returns true when the aircraft should
-// start turning to intercept(ish) the radial.
-func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32) bool {
+// start turning to intercept the radial.
+func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod) bool {
 	p0 = ll2nm(p0)
 	p1 := add2f(p0, [2]float32{sin(radians(hdg - scenarioGroup.MagneticVariation)),
 		cos(radians(hdg - scenarioGroup.MagneticVariation))})
 
-	ap0 := ll2nm(ac.Position)
-	acHdg := ac.Heading - scenarioGroup.MagneticVariation
-	acHeadingVector := [2]float32{sin(radians(acHdg)), cos(radians(acHdg))}
-	ap1 := add2f(ap0, acHeadingVector)
-
-	// Find the intersection of aircraft's path with the line
-	isect, ok := LineLineIntersect(p0, p1, ap0, ap1)
-	if !ok {
-		lg.Errorf("no intersect!")
-		return false // better luck next time...
+	initialDist := SignedPointLineDistance(ll2nm(ac.Position), p0, p1)
+	eta := abs(initialDist) / ac.GS * 3600 // in seconds
+	if eta < 2 {
+		// Just in case, start the turn
+		return true
 	}
 
-	// Is the intersection behind the aircraft? (This can happen if it
-	// has flown through the localizer.) Ignore it if so.
-	v := sub2f(isect, ap0)
-
-	if v[0]*acHeadingVector[0]+v[1]*acHeadingVector[1] < 0 {
-		lg.Errorf("%s: localizer intersection is behind us...", ac.Callsign)
+	// As above, don't consider starting the turn if we're far away.
+	turnAngle := TurnAngle(ac.Heading, hdg, turn)
+	if turnAngle/2 < eta {
 		return false
 	}
 
-	return ac.ShouldTurnForOutbound(nm2ll(isect), hdg, TurnClosest)
+	ac2 := *ac
+	ac2.AssignHeading(int(hdg), turn)
+	ac2.Nav.FutureCommands = nil
+
+	n := int(1 + turnAngle/3)
+	for i := 0; i < n; i++ {
+		ac2.Update()
+		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
+		if sign(initialDist) != sign(curDist) && abs(curDist) < .25 && headingDifference(hdg, ac2.Heading) < 3.5 {
+			lg.Printf("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
+			//globalConfig.highlightedLocation = ac2.Position
+			//globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
+			return true
+		}
+	}
+	return false
 }
 
 // FinalApproachDistance returns the total remaining flying distance

@@ -312,7 +312,7 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
 
 	loc := ap.Line()
 
-	if ac.ShouldTurnToIntercept(loc[0], ap.Heading()) {
+	if ac.ShouldTurnToIntercept(loc[0], ap.Heading(), TurnClosest) {
 		lg.Printf("%s: assigned approach heading! %.1f", ac.Callsign, ap.Heading())
 
 		ac.Nav.L = &FlyHeading{Heading: float32(ap.Heading())}
@@ -708,7 +708,8 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft) (float32, TurnMethod, float3
 		return hdg, TurnMethod(turn), StandardTurnRate
 
 	case PT45StateFlyingIn:
-		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading) {
+		turn := TurnMethod(Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
+		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn) {
 			fp.State = PT45StateTurningToIntercept
 			lg.Printf("%s: starting turn to intercept %.0f", ac.Callsign, fp.InboundHeading)
 		}
