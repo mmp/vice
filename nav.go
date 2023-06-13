@@ -216,7 +216,11 @@ func (saa *SpeedAfterAltitude) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	ac.Nav.S = &MaintainSpeed{IAS: saa.IAS}
+	// Don't override final approach speed if it's in effect.
+	if _, ok := ac.Nav.S.(*FinalApproachSpeed); !ok {
+		ac.Nav.S = &MaintainSpeed{IAS: saa.IAS}
+	}
+
 	return true
 }
 
