@@ -549,7 +549,15 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 
 	case PTStateFlyingOutbound:
 		d := nmdistance2ll(ac.Position, fp.FixLocation)
-		if d > fp.OutboundLegLength {
+
+		if fp.Entry == TeardropEntry {
+			// start the turn when we will intercept the inbound radial
+			turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
+			if d > 0.5 && ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn) {
+				lg.Errorf("%s: teardrop Turning inbound!", ac.Callsign)
+				fp.State = PTStateTurningInbound
+			}
+		} else if d > fp.OutboundLegLength {
 			lg.Errorf("%s: Turning inbound!", ac.Callsign)
 			fp.State = PTStateTurningInbound
 		}
