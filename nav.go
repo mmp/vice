@@ -405,20 +405,6 @@ func (g *GoAround) Summary(ac *Aircraft) string {
 ///////////////////////////////////////////////////////////////////////////
 // LNavCommand and implementations
 
-type TurnMethod int
-
-const (
-	TurnClosest = iota // default
-	TurnLeft
-	TurnRight
-)
-
-func (t TurnMethod) String() string {
-	return []string{"closest", "left", "right"}[t]
-}
-
-const StandardTurnRate = 3
-
 type LNavCommand interface {
 	GetHeading(ac *Aircraft) (float32, TurnMethod, float32) // heading, turn type, rate
 	PassesWaypoints() bool

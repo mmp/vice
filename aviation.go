@@ -288,6 +288,38 @@ func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+
+type TurnMethod int
+
+const (
+	TurnClosest = iota // default
+	TurnLeft
+	TurnRight
+)
+
+func (t TurnMethod) String() string {
+	return []string{"closest", "left", "right"}[t]
+}
+
+const StandardTurnRate = 3
+
+func TurnAngle(from, to float32, turn TurnMethod) float32 {
+	switch turn {
+	case TurnLeft:
+		return NormalizeHeading(from - to)
+
+	case TurnRight:
+		return NormalizeHeading(to - from)
+
+	case TurnClosest:
+		return abs(headingDifference(from, to))
+
+	default:
+		panic("unhandled TurnMethod")
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 // HILPT
 
 type PTType int
