@@ -274,7 +274,7 @@ func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
 	return
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn int) (response string, err error) {
+func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) (response string, err error) {
 	// A 0 heading shouldn't be specified, but at least cause the
 	// aircraft to do what is intended, since 0 represents an
 	// unassigned heading.
@@ -291,18 +291,19 @@ func (ac *Aircraft) AssignHeading(heading int, turn int) (response string, err e
 		ac.CancelApproachClearance()
 	}
 
-	if turn > 0 {
-		response = fmt.Sprintf("turn right heading %d", heading)
-		ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: TurnRight}
-	} else if turn == 0 {
+	switch turn {
+	case TurnClosest:
 		response = fmt.Sprintf("fly heading %d", heading)
-		ac.Nav.L = &FlyHeading{Heading: float32(heading)}
-	} else {
+
+	case TurnRight:
+		response = fmt.Sprintf("turn right heading %d", heading)
+
+	case TurnLeft:
 		response = fmt.Sprintf("turn left heading %d", heading)
-		ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: TurnLeft}
 	}
 
 	ac.NoPT = false
+	ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: turn}
 
 	return
 }

@@ -508,7 +508,6 @@ func (sim *Sim) Activate() error {
 			for i := range ac.Approach.Waypoints {
 				scenarioGroup.InitializeWaypointLocations(ac.Approach.Waypoints[i], &e)
 			}
-			lg.Errorf("%s", spew.Sdump(ac.Approach))
 		}
 
 		for rwy, wp := range ac.ArrivalRunwayWaypoints {
@@ -886,7 +885,7 @@ func (sim *Sim) AssignAltitude(ac *Aircraft, altitude int) error {
 	}
 }
 
-func (sim *Sim) AssignHeading(ac *Aircraft, heading int, turn int) error {
+func (sim *Sim) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error {
 	if ac.ControllingController != sim.Callsign() {
 		return ErrOtherControllerHasTrack
 	} else {
@@ -1626,7 +1625,7 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 				}
 			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
 				return commands[i:], err
-			} else if err := sim.AssignHeading(ac, hdg, 0); err != nil {
+			} else if err := sim.AssignHeading(ac, hdg, TurnClosest); err != nil {
 				return commands[i:], err
 			}
 
@@ -1642,7 +1641,7 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 				// turn left heading...
 				if hdg, err := strconv.Atoi(command[1:]); err != nil {
 					return commands[i:], err
-				} else if err := sim.AssignHeading(ac, hdg, -1); err != nil {
+				} else if err := sim.AssignHeading(ac, hdg, TurnLeft); err != nil {
 					return commands[i:], err
 				}
 			}
@@ -1659,7 +1658,7 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 				// turn right heading...
 				if hdg, err := strconv.Atoi(command[1:]); err != nil {
 					return commands[i:], err
-				} else if err := sim.AssignHeading(ac, hdg, 1); err != nil {
+				} else if err := sim.AssignHeading(ac, hdg, TurnRight); err != nil {
 					return commands[i:], err
 				}
 			}
