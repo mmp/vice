@@ -12,7 +12,7 @@ import (
 	"math"
 
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -387,7 +387,7 @@ type GLFWClipboard struct {
 }
 
 func (cb GLFWClipboard) Text() (string, error) {
-	return cb.window.GetClipboardString()
+	return cb.window.GetClipboardString(), nil
 }
 
 func (cb GLFWClipboard) SetText(text string) {
