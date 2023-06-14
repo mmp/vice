@@ -539,7 +539,7 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 		return fixHeading, TurnClosest, StandardTurnRate
 
 	case PTStateTurningOutbound:
-		if abs(ac.Heading-fp.OutboundHeading) < 1 {
+		if headingDifference(ac.Heading, fp.OutboundHeading) < 1 {
 			// Finished the turn; now we'll fly the leg.
 			lg.Errorf("%s: finished the turn; ac heading %.1f outbound %.1f; flying outbound leg",
 				ac.Callsign, ac.Heading, fp.OutboundHeading)

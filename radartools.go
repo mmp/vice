@@ -362,7 +362,7 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 			// Laterally: compute the heading to the threshold and compare to the
 			// glideslope's lateral spread.
 			h := headingp2ll(ac.TrackPosition(), src.Threshold, scenarioGroup.MagneticVariation)
-			if abs(h-src.Heading) > c.GlideslopeLateralSpread {
+			if headingDifference(h, src.Heading) > c.GlideslopeLateralSpread {
 				return nil
 			}
 

@@ -680,7 +680,7 @@ func (ac *Aircraft) updateAltitude() {
 func (ac *Aircraft) updateHeading() {
 	targetHeading, turnDirection, turnRate := ac.Nav.L.GetHeading(ac)
 
-	if abs(ac.Heading-targetHeading) < 1 {
+	if headingDifference(ac.Heading, targetHeading) < 1 {
 		ac.Heading = targetHeading
 		return
 	}
