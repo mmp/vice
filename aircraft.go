@@ -826,8 +826,13 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	// may be somewhat brittle/dangerous, e.g., if there is underlying
 	// shared mutable state between ac and ac2.
 	ac2 := *ac
-	ac2.AssignHeading(int(hdg), turn)
-	ac2.Nav.FutureCommands = nil
+	// Don't call Aircraft FlyHeading() since it cancels approach
+	// clearance, etc.
+	ac2.Nav.L = &FlyHeading{Heading: hdg, Turn: turn}
+	ac2.Nav.FutureCommands = make(map[FutureNavCommand]interface{})
+	for cmd := range ac.Nav.FutureCommands {
+		ac2.Nav.FutureCommands[cmd] = nil
+	}
 
 	initialDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
 
@@ -869,8 +874,13 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 	}
 
 	ac2 := *ac
-	ac2.AssignHeading(int(hdg), turn)
-	ac2.Nav.FutureCommands = nil
+	// Don't call Aircraft FlyHeading() since it cancels approach
+	// clearance, etc.
+	ac2.Nav.L = &FlyHeading{Heading: hdg, Turn: turn}
+	ac2.Nav.FutureCommands = make(map[FutureNavCommand]interface{})
+	for cmd := range ac.Nav.FutureCommands {
+		ac2.Nav.FutureCommands[cmd] = nil
+	}
 
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
