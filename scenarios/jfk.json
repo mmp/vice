@@ -2443,8 +2443,18 @@
         "airlines": {
           "KHVN": [
             {
+              "airport": "KALB",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "airport": "KAVP",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
               "airport": "KBUF",
-              "icao": "N"
+              "icao": "DPJ"
             },
             {
               "airport": "KBNA",
@@ -2456,7 +2466,7 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "cleared_altitude": 5000,
         "cruise_altitude": 15000,
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
@@ -2468,10 +2478,6 @@
       {
         "airlines": {
           "KISP": [
-            {
-              "airport": "KBUF",
-              "icao": "N"
-            },
             {
               "airport": "KACY",
               "icao": "JBU"
@@ -2486,7 +2492,7 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "cleared_altitude": 5000,
         "cruise_altitude": 29000,
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
