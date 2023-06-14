@@ -487,6 +487,7 @@ const (
 	PTStateTurningOutbound
 	PTStateFlyingOutbound
 	PTStateTurningInbound
+	PTStateFlyingInbound // parallel entry only
 )
 
 type FlyRacetrackPT struct {
@@ -564,19 +565,40 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 		return fp.OutboundHeading, TurnClosest, fp.OutboundTurnRate
 
 	case PTStateTurningInbound:
-		if abs(ac.Heading-fp.InboundHeading) < 1 {
-			// go direct to the fix
-			lg.Errorf("%s: direct fix--done with the HILPT!", ac.Callsign)
+		if fp.Entry == ParallelEntry {
+			// Parallel is special: we fly at the 30 degree
+			// offset-from-true-inbound heading until it is time to turn to
+			// intercept.
+			hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
+			lg.Printf("%s: parallel inbound turning to %.1f", ac.Callsign, hdg)
+			if headingDifference(ac.Heading, hdg) < 1 {
+				fp.State = PTStateFlyingInbound
+			}
+			// This turn is in the opposite direction than usual
+			turn := Select(!pt.RightTurns, TurnRight, TurnLeft)
+			return hdg, TurnMethod(turn), StandardTurnRate
+		} else {
+			if headingDifference(ac.Heading, fp.InboundHeading) < 1 {
+				// otherwise go direct to the fix
+				lg.Errorf("%s: direct fix--done with the HILPT!", ac.Callsign)
+				ac.Nav.L = &FlyRoute{}
+				ac.Nav.V = &FlyRoute{}
+			}
+
+			turn := Select(pt.RightTurns, TurnRight, TurnLeft)
+			return fp.InboundHeading, TurnMethod(turn), StandardTurnRate
+		}
+
+	case PTStateFlyingInbound:
+		// This state is only used for ParallelEntry
+		turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
+		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn) {
+			lg.Errorf("%s: parallel inbound direct fix", ac.Callsign)
 			ac.Nav.L = &FlyRoute{}
 			ac.Nav.V = &FlyRoute{}
 		}
-
-		turn := Select(pt.RightTurns, TurnRight, TurnLeft)
-		if fp.Entry == ParallelEntry {
-			// This turn is in the opposite direction than usual
-			turn = Select(!pt.RightTurns, TurnRight, TurnLeft)
-		}
-		return fp.InboundHeading, TurnMethod(turn), StandardTurnRate
+		hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
+		return hdg, TurnClosest, StandardTurnRate
 
 	default:
 		panic("unhandled state")
