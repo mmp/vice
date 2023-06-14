@@ -255,7 +255,8 @@ func fontsInit(r Renderer) {
 			if runtime.GOOS == "windows" {
 				// Fix font sizes to account for Windows using 96dpi but
 				// everyone else using 72...
-				sp *= 96. / 72.
+				sp *= 96. / 72. * dpiScale(platform)
+				sp = float32(int(sp + 0.5))
 			}
 
 			ifont := io.Fonts().AddFontFromMemoryTTFV(ttf, sp, imgui.DefaultFontConfig, imgui.EmptyGlyphRanges)

@@ -10,6 +10,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"runtime"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -61,7 +62,12 @@ type Platform interface {
 
 // Scaling factor to account for Retina-style displays
 func dpiScale(p Platform) float32 {
-	return p.FramebufferSize()[0] / p.DisplaySize()[0]
+	if runtime.GOOS == "windows" {
+		sx, sy := glfw.GetPrimaryMonitor().GetContentScale()
+		return float32(int((sx + sy) / 2))
+	} else {
+		return p.FramebufferSize()[0] / p.DisplaySize()[0]
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
