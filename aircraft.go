@@ -485,7 +485,7 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 	if vnav != nil {
 		ac.Nav.V = vnav
 	}
-	return true
+	return lnav != nil || vnav != nil
 }
 
 func (ac *Aircraft) ExpectApproach(ap *Approach, id string) (string, error) {

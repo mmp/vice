@@ -641,8 +641,10 @@ func (fp *FlyRacetrackPT) LSummary(ac *Aircraft) string {
 }
 
 func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) (LNavCommand, VNavCommand) {
-	if ac.NoPT {
-		lg.Errorf("%s: MakeFlyProcedureTurn called even though ac.NoPT set", ac.Callsign)
+	if len(wp) < 2 {
+		lg.Errorf("%s: MakeFlyProcedureTurn called with insufficient waypoints: %s",
+			ac.Callsign, spew.Sdump(wp))
+		return nil, nil
 	}
 
 	switch wp[0].ProcedureTurn.Type {
