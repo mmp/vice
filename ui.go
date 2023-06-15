@@ -706,6 +706,13 @@ func (nr *WhatsNewModalClient) Opening() {}
 func (nr *WhatsNewModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
 		ModalDialogButton{
+			text: "View Release Notes",
+			action: func() bool {
+				browser.OpenURL("https://pharr.org/vice/index.html#releases")
+				return false
+			},
+		},
+		ModalDialogButton{
 			text: "Ok",
 			action: func() bool {
 				globalConfig.WhatsNewIndex = len(whatsNew)
