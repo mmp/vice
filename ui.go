@@ -71,6 +71,14 @@ var (
 		"Vice now remembers the active aircraft when you quit and restores the simulation when you launch it again",
 		"When vice is paused, hovering the mouse on a radar track shows the directions it has been given",
 		"Fixed a bug where the STARS window wouldn't display anything",
+		"All new flight modeling engine supports procedure turns and more accurate turns to intercept",
+		"Updated approaches to include procedure turns, where appropriate",
+		"Fixed very small fonts on Windows systems with high-DPI displays",
+		"Added \"depart fix at heading\" and \"cross fix at altitude/speed\" commands",
+		"Added \"cancel speed restrictions\" and \"fly present heading\" commands",
+		"Handed-off departures don't start to climb until they are clicked post-handoff",
+		"Improved wind modeling",
+		"Fixed a bug that would cause arrivals to fly faster than the aircraft is capable of",
 	}
 )
 
