@@ -210,5 +210,5 @@ func (ap *Approach) Line() [2]Point2LL {
 
 func (ap *Approach) Heading() float32 {
 	p := ap.Line()
-	return headingp2ll(p[0], p[1], scenarioGroup.MagneticVariation)
+	return headingp2ll(p[0], p[1], sim.MagneticVariation())
 }

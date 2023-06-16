@@ -691,7 +691,7 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 		// Account for magnetic variation and any user-specified rotation
 		Rotate(-radians(rotationAngle+sim.MagneticVariation())).
 		// Scale based on range and nm per latitude / longitude
-		Scale(scenarioGroup.NmPerLongitude/rangenm, scenarioGroup.NmPerLatitude/rangenm).
+		Scale(sim.NmPerLongitude()/rangenm, sim.NmPerLatitude()/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 

@@ -278,7 +278,7 @@ func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 			altitude = 37000
 		}
 
-		if headingp2ll(pDep, pArr, scenarioGroup.MagneticVariation) > 180 {
+		if headingp2ll(pDep, pArr, sim.MagneticVariation()) > 180 {
 			altitude += 1000
 		}
 	} else {

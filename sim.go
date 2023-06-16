@@ -293,7 +293,7 @@ func (c *NewSimConfiguration) Start() error {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
 	sim.Disconnect()
-	sim = NewSim(*c, c.scenarioGroup.MagneticVariation)
+	sim = NewSim(*c)
 	scenarioGroup = c.scenarioGroup
 	sim.prespawn()
 
@@ -354,15 +354,17 @@ type Sim struct {
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
 
-	ScenarioMagneticVariation float32
+	ScenarioGroup struct {
+		MagneticVariation             float32
+		NmPerLatitude, NmPerLongitude float32
+	}
 }
 
-func NewSim(ssc NewSimConfiguration, magVar float32) *Sim {
+func NewSim(ssc NewSimConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	sim := &Sim{
-		Scenario:                  ssc.scenario,
-		ScenarioMagneticVariation: magVar,
+		Scenario: ssc.scenario,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),
@@ -378,6 +380,9 @@ func NewSim(ssc NewSimConfiguration, magVar float32) *Sim {
 		DepartureChallenge: ssc.departureChallenge,
 		GoAroundRate:       ssc.goAroundRate,
 	}
+	sim.ScenarioGroup.MagneticVariation = ssc.scenarioGroup.MagneticVariation
+	sim.ScenarioGroup.NmPerLatitude = ssc.scenarioGroup.NmPerLatitude
+	sim.ScenarioGroup.NmPerLongitude = ssc.scenarioGroup.NmPerLongitude
 
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
@@ -420,7 +425,15 @@ func NewSim(ssc NewSimConfiguration, magVar float32) *Sim {
 }
 
 func (sim *Sim) MagneticVariation() float32 {
-	return sim.ScenarioMagneticVariation
+	return sim.ScenarioGroup.MagneticVariation
+}
+
+func (sim *Sim) NmPerLatitude() float32 {
+	return sim.ScenarioGroup.NmPerLatitude
+}
+
+func (sim *Sim) NmPerLongitude() float32 {
+	return sim.ScenarioGroup.NmPerLongitude
 }
 
 func (sim *Sim) DepartureAirports() map[string]interface{} {
