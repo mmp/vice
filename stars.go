@@ -3061,11 +3061,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			text += format(userCtrl, false) + "\n"
 		}
 
-		ctrl := sim.GetAllControllers()
-		sort.Slice(ctrl, func(i, j int) bool { return ctrl[i].Callsign < ctrl[j].Callsign })
-		for _, c := range ctrl {
-			if c != userCtrl {
-				if ctext := format(c, true); ctext != "" {
+		for _, callsign := range SortedMapKeys(sim.GetAllControllers()) {
+			ctrl := sim.GetController(callsign)
+			if ctrl != userCtrl {
+				if ctext := format(ctrl, true); ctext != "" {
 					text += ctext + "\n"
 				}
 			}

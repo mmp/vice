@@ -315,9 +315,10 @@ func (c *NewSimConfiguration) Start() error {
 type Sim struct {
 	Scenario *Scenario
 
-	Aircraft map[string]*Aircraft
-	Handoffs map[string]time.Time
-	METAR    map[string]*METAR
+	Aircraft    map[string]*Aircraft
+	Handoffs    map[string]time.Time
+	METAR       map[string]*METAR
+	Controllers map[string]*Controller
 
 	SerializeTime time.Time // for updating times on deserialize
 
@@ -397,6 +398,14 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		SimRate:            1,
 		DepartureChallenge: ssc.departureChallenge,
 		GoAroundRate:       ssc.goAroundRate,
+	}
+
+	sim.Controllers = make(map[string]*Controller)
+	// Extract just the active controllers
+	for callsign, ctrl := range ssc.scenarioGroup.ControlPositions {
+		if Find(sim.Scenario.Controllers, callsign) != -1 {
+			sim.Controllers[callsign] = ctrl
+		}
 	}
 
 	// Make some fake METARs; slightly different for all airports.
@@ -787,29 +796,25 @@ func (sim *Sim) GetController(callsign string) *Controller {
 		return nil
 	}
 
-	ctrl, ok := scenarioGroup.ControlPositions[callsign]
-	if ok {
+	if ctrl := sim.Controllers[callsign]; ctrl != nil {
 		return ctrl
 	}
 
-	for _, c := range scenarioGroup.ControlPositions {
-		// Make sure that the controller is active in the scenarioGroup...
-		if c.SectorId == callsign && Find(sim.Scenario.Controllers, c.Callsign) != -1 {
-			return c
+	// Look up by id
+	for _, ctrl := range sim.Controllers {
+		if ctrl.SectorId == callsign {
+			return ctrl
 		}
 	}
 
-	return ctrl
+	return nil
 }
 
-func (sim *Sim) GetAllControllers() []*Controller {
+func (sim *Sim) GetAllControllers() map[string]*Controller {
 	if sim.Scenario == nil {
 		return nil
 	}
-
-	_, ctrl := FlattenMap(scenarioGroup.ControlPositions)
-	return FilterSlice(ctrl,
-		func(ctrl *Controller) bool { return Find(sim.Scenario.Controllers, ctrl.Callsign) != -1 })
+	return sim.Controllers
 }
 
 func (sim *Sim) GetUpdates() {
