@@ -360,6 +360,8 @@ type Sim struct {
 	NmPerLatitude, NmPerLongitude float32
 	Airports                      map[string]*Airport
 	Fixes                         map[string]Point2LL
+	PrimaryAirport                string
+	RadarSites                    map[string]*RadarSite
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -373,6 +375,8 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		NmPerLongitude:    ssc.scenarioGroup.NmPerLongitude,
 		Airports:          ssc.scenarioGroup.Airports,
 		Fixes:             ssc.scenarioGroup.Fixes,
+		PrimaryAirport:    ssc.scenarioGroup.PrimaryAirport,
+		RadarSites:        ssc.scenarioGroup.RadarSites,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),

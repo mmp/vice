@@ -1760,12 +1760,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			return
 		} else if len(cmd) > 0 {
 			// Index, character id, or name
-			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < len(scenarioGroup.RadarSites) {
-				ps.RadarSiteSelected = SortedMapKeys(scenarioGroup.RadarSites)[i]
+			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < len(sim.RadarSites) {
+				ps.RadarSiteSelected = SortedMapKeys(sim.RadarSites)[i]
 				status.clear = true
 				return
 			}
-			for id, rs := range scenarioGroup.RadarSites {
+			for id, rs := range sim.RadarSites {
 				if cmd == rs.Char || cmd == id {
 					ps.RadarSiteSelected = id
 					status.clear = true
@@ -2586,8 +2586,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		}
 
 	case DCBMenuSite:
-		for _, id := range SortedMapKeys(scenarioGroup.RadarSites) {
-			site := scenarioGroup.RadarSites[id]
+		for _, id := range SortedMapKeys(sim.RadarSites) {
+			site := sim.RadarSites[id]
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
 			if STARSToggleButton(label, &selected, STARSButtonFull) {
@@ -2775,8 +2775,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 				text += sim.CurrentTime().UTC().Format("1504/05 ")
 			}
 			if filter.All || filter.Altimeter {
-				if metar := sim.GetMETAR(scenarioGroup.PrimaryAirport); metar != nil {
-					text += formatMETAR(scenarioGroup.PrimaryAirport, metar)
+				if metar := sim.GetMETAR(sim.PrimaryAirport); metar != nil {
+					text += formatMETAR(sim.PrimaryAirport, metar)
 				}
 			}
 			td.AddText(text, pw, style)
@@ -2881,9 +2881,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			airports, _ := FlattenMap(sim.AllAirports())
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
-				if airports[i] == scenarioGroup.PrimaryAirport {
+				if airports[i] == sim.PrimaryAirport {
 					return true
-				} else if airports[j] == scenarioGroup.PrimaryAirport {
+				} else if airports[j] == sim.PrimaryAirport {
 					return false
 				} else {
 					a, b := sim.GetAirport(airports[i]), sim.GetAirport(airports[j])
@@ -4233,7 +4233,7 @@ func (sp *STARSPane) resetInputState() {
 
 func (sp *STARSPane) multiRadarMode() bool {
 	ps := sp.CurrentPreferenceSet
-	_, ok := scenarioGroup.RadarSites[ps.RadarSiteSelected]
+	_, ok := sim.RadarSites[ps.RadarSiteSelected]
 	return ps.RadarSiteSelected == "" || !ok
 }
 
@@ -4241,7 +4241,7 @@ func (sp *STARSPane) radarVisibility(pos Point2LL, alt int) (primary, secondary 
 	ps := sp.CurrentPreferenceSet
 	distance = 1e30
 	multi := sp.multiRadarMode()
-	for id, site := range scenarioGroup.RadarSites {
+	for id, site := range sim.RadarSites {
 		if !multi && ps.RadarSiteSelected != id {
 			continue
 		}
@@ -4276,7 +4276,7 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 			}
 		}
 
-		for id, site := range scenarioGroup.RadarSites {
+		for id, site := range sim.RadarSites {
 			if !multi && ps.RadarSiteSelected != id {
 				continue
 			}
@@ -4340,7 +4340,7 @@ func (sp *STARSPane) tryGetClickedAircraft(mousePosition [2]float32, transforms 
 
 func (sp *STARSPane) radarSiteId() string {
 	ps := sp.CurrentPreferenceSet
-	if _, ok := scenarioGroup.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
+	if _, ok := sim.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
 		return ps.RadarSiteSelected
 	}
 	return "MULTI"
