@@ -371,8 +371,8 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 
 	ps.DisplayDCB = true
 
-	ps.Center = scenarioGroup.Center
-	ps.Range = scenarioGroup.Range
+	ps.Center = sim.Center
+	ps.Range = sim.Range
 
 	ps.CurrentCenter = ps.Center
 
@@ -601,8 +601,8 @@ func (sp *STARSPane) Deactivate() {
 func (sp *STARSPane) ResetScenarioGroup() {
 	ps := &sp.CurrentPreferenceSet
 
-	ps.Center = scenarioGroup.Center
-	ps.Range = scenarioGroup.Range
+	ps.Center = sim.Center
+	ps.Range = sim.Range
 	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
 
@@ -913,7 +913,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		case KeyF1:
 			if ctx.keyboard.IsPressed(KeyControl) {
 				// Recenter
-				ps.Center = scenarioGroup.Center
+				ps.Center = sim.Center
 				ps.CurrentCenter = ps.Center
 			}
 
