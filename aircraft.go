@@ -102,7 +102,7 @@ func (a *Aircraft) TrackGroundspeed() int {
 
 // Note: returned value includes the magnetic correction
 func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + scenarioGroup.MagneticVariation
+	return a.Tracks[0].Heading + sim.MagneticVariation()
 }
 
 // Perhaps confusingly, the vector returned by HeadingVector() is not
@@ -129,7 +129,7 @@ func (a *Aircraft) HaveHeading() bool {
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, scenarioGroup.MagneticVariation)
+	return headingp2ll(a.TrackPosition(), p, sim.MagneticVariation())
 }
 
 func (a *Aircraft) LostTrack(now time.Time) bool {
@@ -466,9 +466,9 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 
 	if wp[0].ProcedureTurn.Entry180NoPT {
 		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
-			scenarioGroup.MagneticVariation)
+			sim.MagneticVariation())
 		acFixHeading := headingp2ll(ac.Position, wp[0].Location,
-			scenarioGroup.MagneticVariation)
+			sim.MagneticVariation())
 		lg.Errorf("%s: ac %.1f inbound %.1f diff %.1f", ac.Callsign,
 			acFixHeading, inboundHeading,
 			headingDifference(acFixHeading, inboundHeading))
@@ -714,7 +714,7 @@ func (ac *Aircraft) updateHeading() {
 func (ac *Aircraft) updatePositionAndGS() {
 	// Update position given current heading
 	prev := ac.Position
-	hdg := ac.Heading - scenarioGroup.MagneticVariation
+	hdg := ac.Heading - sim.MagneticVariation()
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 
 	// Compute ground speed: TAS, modified for wind.
@@ -747,7 +747,7 @@ func (ac *Aircraft) updateWaypoints() {
 		hdg = float32(wp.Heading)
 	} else if len(ac.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
-		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, scenarioGroup.MagneticVariation)
+		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, sim.MagneticVariation())
 	} else {
 		// No more waypoints (likely about to land), so just
 		// plan to stay on the current heading.
@@ -819,7 +819,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 
 	// Get two points that give the line of the outbound course.
 	p0 := ll2nm(p)
-	hm := hdg - scenarioGroup.MagneticVariation
+	hm := hdg - sim.MagneticVariation()
 	p1 := add2f(p0, [2]float32{sin(radians(hm)), cos(radians(hm))})
 
 	// Make a ghost aircraft to use to simulate the turn. Checking this way
@@ -857,8 +857,8 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 // start turning to intercept the radial.
 func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod) bool {
 	p0 = ll2nm(p0)
-	p1 := add2f(p0, [2]float32{sin(radians(hdg - scenarioGroup.MagneticVariation)),
-		cos(radians(hdg - scenarioGroup.MagneticVariation))})
+	p1 := add2f(p0, [2]float32{sin(radians(hdg - sim.MagneticVariation())),
+		cos(radians(hdg - sim.MagneticVariation()))})
 
 	initialDist := SignedPointLineDistance(ll2nm(ac.Position), p0, p1)
 	eta := abs(initialDist) / ac.GS * 3600 // in seconds

@@ -293,7 +293,7 @@ func (c *NewSimConfiguration) Start() error {
 		eventStream.Post(&RemovedAircraftEvent{ac: ac})
 	}
 	sim.Disconnect()
-	sim = NewSim(*c)
+	sim = NewSim(*c, c.scenarioGroup.MagneticVariation)
 	scenarioGroup = c.scenarioGroup
 	sim.prespawn()
 
@@ -353,13 +353,16 @@ type Sim struct {
 
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
+
+	ScenarioMagneticVariation float32
 }
 
-func NewSim(ssc NewSimConfiguration) *Sim {
+func NewSim(ssc NewSimConfiguration, magVar float32) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	sim := &Sim{
-		Scenario: ssc.scenario,
+		Scenario:                  ssc.scenario,
+		ScenarioMagneticVariation: magVar,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),
@@ -414,6 +417,10 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	sim.setInitialSpawnTimes()
 
 	return sim
+}
+
+func (sim *Sim) MagneticVariation() float32 {
+	return sim.ScenarioMagneticVariation
 }
 
 func (sim *Sim) DepartureAirports() map[string]interface{} {
@@ -834,7 +841,7 @@ func (sim *Sim) updateState() {
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
 				Groundspeed: int(ac.GS),
-				Heading:     ac.Heading - scenarioGroup.MagneticVariation,
+				Heading:     ac.Heading - sim.MagneticVariation(),
 				Time:        now,
 			})
 
@@ -1260,7 +1267,7 @@ func (sim *Sim) SpawnAircraft() {
 
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, scenarioGroup.MagneticVariation)
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, sim.MagneticVariation())
 		}
 		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
