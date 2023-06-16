@@ -4265,14 +4265,16 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 
 	for ac := range sp.aircraft {
 		// Is it on the ground?
-		if ap, ok := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]; ok {
-			if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
-				continue
+		if ac.FlightPlan != nil {
+			if ap, ok := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]; ok {
+				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
+					continue
+				}
 			}
-		}
-		if ap, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]; ok {
-			if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
-				continue
+			if ap, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]; ok {
+				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
+					continue
+				}
 			}
 		}
 
