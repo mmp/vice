@@ -253,7 +253,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 ///////////////////////////////////////////////////////////////////////////
 // ScenarioGroup
 
-func (sg *ScenarioGroup) Locate(s string) (Point2LL, bool) {
+func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if ap, ok := sg.Airports[s]; ok {
@@ -278,7 +278,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 	sg.Fixes = make(map[string]Point2LL)
 	for fix, latlong := range sg.FixesStrings {
 		fix := strings.ToUpper(fix)
-		if pos, ok := sg.Locate(latlong); !ok {
+		if pos, ok := sg.locate(latlong); !ok {
 			e.ErrorString("unknown location \"%s\" specified for fix \"%s\"", latlong, fix)
 		} else if _, ok := sg.Fixes[fix]; ok {
 			e.ErrorString("fix \"%s\" has multiple definitions", fix)
@@ -309,7 +309,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 
 	if sg.PrimaryAirport == "" {
 		e.ErrorString("\"primary_airport\" not specified")
-	} else if _, ok := sg.Locate(sg.PrimaryAirport); !ok {
+	} else if _, ok := sg.locate(sg.PrimaryAirport); !ok {
 		e.ErrorString("\"primary_airport\" \"%s\" unknown", sg.PrimaryAirport)
 	}
 
@@ -359,7 +359,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 
 	if sg.CenterString == "" {
 		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.Locate(sg.CenterString); !ok {
+	} else if pos, ok := sg.locate(sg.CenterString); !ok {
 		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
 	} else {
 		sg.Center = pos
@@ -374,7 +374,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 	}
 	for name, rs := range sg.RadarSites {
 		e.Push("Radar site " + name)
-		if _, ok := sg.Locate(rs.Position); rs.Position == "" || !ok {
+		if _, ok := sg.locate(rs.Position); rs.Position == "" || !ok {
 			e.ErrorString("radar site position \"%s\" not found", rs.Position)
 		}
 		if rs.Char == "" {
@@ -445,7 +445,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		if e != nil {
 			e.Push("Fix " + wp.Fix)
 		}
-		if pos, ok := sg.Locate(wp.Fix); !ok {
+		if pos, ok := sg.locate(wp.Fix); !ok {
 			if e != nil {
 				e.ErrorString("unable to locate waypoint")
 			}

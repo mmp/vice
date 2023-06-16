@@ -938,7 +938,7 @@ func (fr *FlyRoute) SSummary(ac *Aircraft) string {
 type FinalApproachSpeed struct{}
 
 func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
-	airportPos, ok := scenarioGroup.Locate(ac.FlightPlan.ArrivalAirport)
+	airportPos, ok := sim.Locate(ac.FlightPlan.ArrivalAirport)
 	if !ok {
 		lg.ErrorfUp1("%s: unable to find airport", ac.FlightPlan.ArrivalAirport)
 		return ac.IAS, MaximumRate

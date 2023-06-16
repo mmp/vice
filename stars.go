@@ -1139,7 +1139,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				status.clear = true
 				return
 			} else if f[0] == ".FIND" {
-				if pos, ok := scenarioGroup.Locate(f[1]); ok {
+				if pos, ok := sim.Locate(f[1]); ok {
 					globalConfig.highlightedLocation = pos
 					globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 					status.clear = true

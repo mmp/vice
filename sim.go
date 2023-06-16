@@ -358,6 +358,8 @@ type Sim struct {
 		MagneticVariation             float32
 		NmPerLatitude, NmPerLongitude float32
 	}
+	Airports map[string]*Airport
+	Fixes    map[string]Point2LL
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -365,6 +367,9 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 
 	sim := &Sim{
 		Scenario: ssc.scenario,
+
+		Airports: ssc.scenarioGroup.Airports,
+		Fixes:    ssc.scenarioGroup.Fixes,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),
@@ -434,6 +439,26 @@ func (sim *Sim) NmPerLatitude() float32 {
 
 func (sim *Sim) NmPerLongitude() float32 {
 	return sim.ScenarioGroup.NmPerLongitude
+}
+
+func (sim *Sim) Locate(s string) (Point2LL, bool) {
+	s = strings.ToUpper(s)
+	// ScenarioGroup's definitions take precedence...
+	if ap, ok := sim.Airports[s]; ok {
+		return ap.Location, true
+	} else if p, ok := sim.Fixes[s]; ok {
+		return p, true
+	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
+		return n.Location, ok
+	} else if ap, ok := database.Airports[strings.ToUpper(s)]; ok {
+		return ap.Location, ok
+	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
+		return f.Location, ok
+	} else if p, err := ParseLatLong([]byte(s)); err == nil {
+		return p, true
+	} else {
+		return Point2LL{}, false
+	}
 }
 
 func (sim *Sim) DepartureAirports() map[string]interface{} {
@@ -1630,7 +1655,7 @@ func (sim *Sim) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 				} else if err := sim.AssignAltitude(ac, 100*alt); err != nil {
 					return commands[i:], err
 				}
-			} else if _, ok := scenarioGroup.Locate(string(command[1:])); ok {
+			} else if _, ok := sim.Locate(string(command[1:])); ok {
 				if err := sim.DirectFix(ac, command[1:]); err != nil {
 					return commands[i:], err
 				}
