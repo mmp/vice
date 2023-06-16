@@ -35,9 +35,8 @@ type GlobalConfig struct {
 	DevVideoMapFile string
 
 	// These are only for serialize / deserialize
-	Sim               *Sim
-	ScenarioGroupName string
-	ScenarioName      string
+	Sim          *Sim
+	ScenarioName string
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
@@ -80,7 +79,6 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool
 	gc.Sim = sim // so that it's serialized out...
 	gc.Sim.SerializeTime = sim.CurrentTime()
 
-	gc.ScenarioGroupName = scenarioGroup.Name
 	gc.ScenarioName = ""
 	for name, scenario := range scenarioGroup.Scenarios {
 		if scenario == gc.Sim.Scenario {
@@ -158,7 +156,6 @@ func LoadOrMakeDefaultConfig() {
 			// representation has changed and it's not worth trying to
 			// remap it to the new one.
 			globalConfig.Sim = nil
-			globalConfig.ScenarioGroupName = ""
 			globalConfig.ScenarioName = ""
 			globalConfig.Version = 3
 		}
@@ -200,8 +197,8 @@ func (gc *GlobalConfig) Activate() {
 	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
 
 	if gc.Sim != nil {
-		if sg, ok := scenarioGroups[gc.ScenarioGroupName]; !ok {
-			lg.Errorf("%s: couldn't find serialized scenario group", gc.ScenarioGroupName)
+		if sg, ok := scenarioGroups[gc.Sim.ScenarioGroupName]; !ok {
+			lg.Errorf("%s: couldn't find serialized scenario group", gc.Sim.ScenarioGroupName)
 		} else {
 			scenarioGroup = sg
 		}
@@ -214,7 +211,7 @@ func (gc *GlobalConfig) Activate() {
 
 		sim.Paused = false // override
 
-		if err := gc.Sim.Activate(); err != nil {
+		if err := gc.Sim.Activate(scenarioGroup); err != nil {
 			gc.Sim = nil
 			sim = &Sim{}
 		}

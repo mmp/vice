@@ -315,6 +315,8 @@ func (c *NewSimConfiguration) Start() error {
 type Sim struct {
 	Scenario *Scenario
 
+	ScenarioGroupName string
+
 	Aircraft    map[string]*Aircraft
 	Handoffs    map[string]time.Time
 	METAR       map[string]*METAR
@@ -372,7 +374,8 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	sim := &Sim{
-		Scenario: ssc.scenario,
+		Scenario:          ssc.scenario,
+		ScenarioGroupName: ssc.scenarioGroup.Name,
 
 		MagneticVariation: ssc.scenarioGroup.MagneticVariation,
 		NmPerLatitude:     ssc.scenarioGroup.NmPerLatitude,
@@ -547,7 +550,7 @@ func (sim *Sim) setInitialSpawnTimes() {
 	}
 }
 
-func (sim *Sim) Activate() error {
+func (sim *Sim) Activate(sg *ScenarioGroup) error {
 	var e ErrorLogger
 	now := time.Now()
 	sim.currentTime = now
@@ -595,6 +598,20 @@ func (sim *Sim) Activate() error {
 	for airport, runwayTimes := range sim.NextDepartureSpawn {
 		for runway, t := range runwayTimes {
 			sim.NextDepartureSpawn[airport][runway] = updateTime(t)
+		}
+	}
+
+	if len(sg.STARSMaps) != len(sim.STARSMaps) {
+		e.ErrorString("Different number of STARSMaps in ScenarioGroup and Saved sim")
+	} else {
+		for i := range sim.STARSMaps {
+			if sg.STARSMaps[i].Name != sim.STARSMaps[i].Name {
+				e.ErrorString("Name mismatch in STARSMaps: ScenarioGroup \"" + sg.STARSMaps[i].Name +
+					"\", Sim \"" + sim.STARSMaps[i].Name + "\"")
+			} else {
+				// Copy the command buffer so we can draw the thing...
+				sim.STARSMaps[i].cb = sg.STARSMaps[i].cb
+			}
 		}
 	}
 
