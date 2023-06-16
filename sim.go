@@ -441,6 +441,10 @@ func (sim *Sim) NmPerLongitude() float32 {
 	return sim.ScenarioGroup.NmPerLongitude
 }
 
+func (sim *Sim) GetAirport(icao string) *Airport {
+	return sim.Airports[icao]
+}
+
 func (sim *Sim) Locate(s string) (Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
@@ -461,13 +465,13 @@ func (sim *Sim) Locate(s string) (Point2LL, bool) {
 	}
 }
 
-func (sim *Sim) DepartureAirports() map[string]interface{} {
-	airports := make(map[string]interface{})
-	for ap, runwayRates := range sim.DepartureRates {
+func (sim *Sim) DepartureAirports() map[string]*Airport {
+	airports := make(map[string]*Airport)
+	for name, runwayRates := range sim.DepartureRates {
 		for _, categoryRates := range runwayRates {
 			for _, rate := range categoryRates {
 				if *rate > 0 {
-					airports[ap] = nil
+					airports[name] = sim.GetAirport(name)
 				}
 			}
 		}
@@ -475,16 +479,24 @@ func (sim *Sim) DepartureAirports() map[string]interface{} {
 	return airports
 }
 
-func (sim *Sim) ArrivalAirports() map[string]interface{} {
-	airports := make(map[string]interface{})
+func (sim *Sim) ArrivalAirports() map[string]*Airport {
+	airports := make(map[string]*Airport)
 	for _, airportRates := range sim.ArrivalGroupRates {
-		for ap, rate := range airportRates {
+		for name, rate := range airportRates {
 			if *rate > 0 {
-				airports[ap] = nil
+				airports[name] = sim.GetAirport(name)
 			}
 		}
 	}
 	return airports
+}
+
+func (sim *Sim) AllAirports() map[string]*Airport {
+	all := sim.DepartureAirports()
+	for name, ap := range sim.ArrivalAirports() {
+		all[name] = ap
+	}
+	return all
 }
 
 func (sim *Sim) setInitialSpawnTimes() {
@@ -867,7 +879,7 @@ func (sim *Sim) updateState() {
 		sim.lastTrackUpdate = now
 
 		for callsign, ac := range sim.Aircraft {
-			if ap, ok := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]; ok && ac.IsDeparture {
+			if ap := sim.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture {
 				if nmdistance2ll(ac.Position, ap.Location) > 200 {
 					eventStream.Post(&RemovedAircraftEvent{ac: ac})
 					delete(sim.Aircraft, callsign)
@@ -1032,8 +1044,8 @@ func (sim *Sim) getApproach(ac *Aircraft, approach string) (*Approach, error) {
 		return nil, ErrNoFlightPlan
 	}
 
-	ap, ok := scenarioGroup.Airports[fp.ArrivalAirport]
-	if !ok {
+	ap := sim.GetAirport(fp.ArrivalAirport)
+	if ap == nil {
 		lg.Errorf("Can't find TRACON airport %s for %s approach for %s", fp.ArrivalAirport, approach, ac.Callsign)
 		return nil, ErrArrivalAirportUnknown
 	}
@@ -1346,7 +1358,7 @@ func (sim *Sim) SpawnAircraft() {
 				continue
 			}
 
-			ap := scenarioGroup.Airports[airport]
+			ap := sim.GetAirport(airport)
 			idx := FindIf(sim.Scenario.DepartureRunways,
 				func(r ScenarioGroupDepartureRunway) bool {
 					return r.Airport == airport && r.Runway == runway && r.Category == category
@@ -1535,7 +1547,8 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
-		if appr, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport].Approaches[arr.ExpectApproach]; ok {
+		ap := sim.GetAirport(ac.FlightPlan.ArrivalAirport)
+		if appr, ok := ap.Approaches[arr.ExpectApproach]; ok {
 			ac.Approach = &appr
 		} else {
 			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)

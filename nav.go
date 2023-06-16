@@ -259,7 +259,7 @@ type ApproachSpeedAt5DME struct{}
 func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft) bool {
 	d, err := ac.FinalApproachDistance()
 	if err != nil {
-		ap := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]
+		ap := sim.GetAirport(ac.FlightPlan.ArrivalAirport)
 		d = nmdistance2ll(ac.Position, ap.Location)
 	}
 

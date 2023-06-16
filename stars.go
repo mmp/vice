@@ -1123,12 +1123,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 						sp.AutoTrackDepartures = make(map[string]interface{})
 					} else if airport == "ALL" {
 						sp.AutoTrackDepartures = make(map[string]interface{})
-						for name := range scenarioGroup.Airports {
+						for name := range sim.DepartureAirports() {
 							sp.AutoTrackDepartures[name] = nil
 						}
 					} else {
 						// See if it's in the facility
-						if _, ok := scenarioGroup.Airports[airport]; ok {
+						if sim.DepartureAirports()[airport] != nil {
 							sp.AutoTrackDepartures[airport] = nil
 						} else {
 							status.err = ErrSTARSIllegalParam
@@ -2651,7 +2651,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	transforms ScopeTransformations, cb *CommandBuffer) {
-	for name := range scenarioGroup.Airports {
+	for name := range sim.AllAirports() {
 		sim.AddAirportForWeather(name)
 	}
 
@@ -2878,18 +2878,20 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 		if filter.All || filter.AirportWeather {
 			var lines []string
-			airports, _ := FlattenMap(scenarioGroup.Airports)
+			airports, _ := FlattenMap(sim.AllAirports())
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
-				a, b := scenarioGroup.Airports[airports[i]], scenarioGroup.Airports[airports[j]]
 				if airports[i] == scenarioGroup.PrimaryAirport {
 					return true
 				} else if airports[j] == scenarioGroup.PrimaryAirport {
 					return false
-				} else if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
-					return true
-				} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
-					return false
+				} else {
+					a, b := sim.GetAirport(airports[i]), sim.GetAirport(airports[j])
+					if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
+						return true
+					} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
+						return false
+					}
 				}
 				return airports[i] < airports[j]
 			})
@@ -2965,11 +2967,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		// Untracked departures departing from one of our airports
 		for _, ac := range aircraft {
 			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
-				for ap := range scenarioGroup.Airports {
-					if fp.DepartureAirport == ap {
-						dep[sp.getAircraftIndex(ac)] = ac
-						break
-					}
+				if ap := sim.DepartureAirports()[fp.DepartureAirport]; ap != nil {
+					dep[sp.getAircraftIndex(ac)] = ac
+					break
 				}
 			}
 		}
@@ -3020,7 +3020,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		for name, ap := range scenarioGroup.Airports {
+		for name, ap := range sim.AllAirports() {
 			if ap.TowerListIndex == i+1 {
 				text := stripK(name) + " TOWER\n"
 				m := make(map[float32]string)
@@ -4264,12 +4264,12 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 	for ac := range sp.aircraft {
 		// Is it on the ground?
 		if ac.FlightPlan != nil {
-			if ap, ok := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]; ok {
+			if ap := sim.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil {
 				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
 					continue
 				}
 			}
-			if ap, ok := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]; ok {
+			if ap := sim.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil {
 				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
 					continue
 				}
@@ -4317,12 +4317,9 @@ func (sp *STARSPane) getLeaderLineVector(ac *Aircraft) [2]float32 {
 }
 
 func (sp *STARSPane) isOverflight(ac *Aircraft) bool {
-	if ac.FlightPlan == nil {
-		return false
-	}
-	_, dep := scenarioGroup.Airports[ac.FlightPlan.DepartureAirport]
-	_, arr := scenarioGroup.Airports[ac.FlightPlan.ArrivalAirport]
-	return dep || arr
+	return ac.FlightPlan != nil &&
+		(sim.GetAirport(ac.FlightPlan.DepartureAirport) != nil ||
+			sim.GetAirport(ac.FlightPlan.ArrivalAirport) != nil)
 }
 
 func (sp *STARSPane) tryGetClickedAircraft(mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
