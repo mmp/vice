@@ -354,12 +354,12 @@ type Sim struct {
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
 
-	ScenarioGroup struct {
-		MagneticVariation             float32
-		NmPerLatitude, NmPerLongitude float32
-	}
-	Airports map[string]*Airport
-	Fixes    map[string]Point2LL
+	// This is all read-only data that we expect other parts of the system
+	// to access directly.
+	MagneticVariation             float32
+	NmPerLatitude, NmPerLongitude float32
+	Airports                      map[string]*Airport
+	Fixes                         map[string]Point2LL
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -368,8 +368,11 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	sim := &Sim{
 		Scenario: ssc.scenario,
 
-		Airports: ssc.scenarioGroup.Airports,
-		Fixes:    ssc.scenarioGroup.Fixes,
+		MagneticVariation: ssc.scenarioGroup.MagneticVariation,
+		NmPerLatitude:     ssc.scenarioGroup.NmPerLatitude,
+		NmPerLongitude:    ssc.scenarioGroup.NmPerLongitude,
+		Airports:          ssc.scenarioGroup.Airports,
+		Fixes:             ssc.scenarioGroup.Fixes,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),
@@ -385,9 +388,6 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		DepartureChallenge: ssc.departureChallenge,
 		GoAroundRate:       ssc.goAroundRate,
 	}
-	sim.ScenarioGroup.MagneticVariation = ssc.scenarioGroup.MagneticVariation
-	sim.ScenarioGroup.NmPerLatitude = ssc.scenarioGroup.NmPerLatitude
-	sim.ScenarioGroup.NmPerLongitude = ssc.scenarioGroup.NmPerLongitude
 
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
@@ -427,18 +427,6 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	sim.setInitialSpawnTimes()
 
 	return sim
-}
-
-func (sim *Sim) MagneticVariation() float32 {
-	return sim.ScenarioGroup.MagneticVariation
-}
-
-func (sim *Sim) NmPerLatitude() float32 {
-	return sim.ScenarioGroup.NmPerLatitude
-}
-
-func (sim *Sim) NmPerLongitude() float32 {
-	return sim.ScenarioGroup.NmPerLongitude
 }
 
 func (sim *Sim) GetAirport(icao string) *Airport {
@@ -891,7 +879,7 @@ func (sim *Sim) updateState() {
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
 				Groundspeed: int(ac.GS),
-				Heading:     ac.Heading - sim.MagneticVariation(),
+				Heading:     ac.Heading - sim.MagneticVariation,
 				Time:        now,
 			})
 
@@ -1317,7 +1305,7 @@ func (sim *Sim) SpawnAircraft() {
 
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, sim.MagneticVariation())
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, sim.MagneticVariation)
 		}
 		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
