@@ -382,8 +382,8 @@ func MakePreferenceSet(name string, facility STARSFacility) STARSPreferenceSet {
 	ps.RadarTrackHistory = 5
 
 	ps.VideoMapVisible = make(map[string]interface{})
-	if len(scenarioGroup.STARSMaps) > 0 {
-		ps.VideoMapVisible[scenarioGroup.STARSMaps[0].Name] = nil
+	if len(sim.STARSMaps) > 0 {
+		ps.VideoMapVisible[sim.STARSMaps[0].Name] = nil
 	}
 	ps.LeaderLineDirection = North
 	ps.LeaderLineLength = 1
@@ -469,8 +469,8 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 func (ps *STARSPreferenceSet) Activate() {
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
-		if len(scenarioGroup.STARSMaps) > 0 {
-			ps.VideoMapVisible[scenarioGroup.STARSMaps[0].Name] = nil
+		if len(sim.STARSMaps) > 0 {
+			ps.VideoMapVisible[sim.STARSMaps[0].Name] = nil
 		}
 	}
 }
@@ -607,8 +607,8 @@ func (sp *STARSPane) ResetScenarioGroup() {
 	ps.RangeRingsCenter = ps.Center
 
 	ps.VideoMapVisible = make(map[string]interface{})
-	if len(scenarioGroup.STARSMaps) > 0 {
-		ps.VideoMapVisible[scenarioGroup.STARSMaps[0].Name] = nil
+	if len(sim.STARSMaps) > 0 {
+		ps.VideoMapVisible[sim.STARSMaps[0].Name] = nil
 	}
 }
 
@@ -789,7 +789,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Maps
 	cb.PointSize(5)
 	cb.LineWidth(1)
-	for _, vmap := range scenarioGroup.STARSMaps {
+	for _, vmap := range sim.STARSMaps {
 		if _, ok := ps.VideoMapVisible[vmap.Name]; !ok {
 			continue
 		}
@@ -1698,9 +1698,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 	case CommandModeMaps:
 		if len(cmd) > 0 {
-			if m, err := strconv.Atoi(cmd); err == nil && m > 0 && m < len(scenarioGroup.STARSMaps) {
+			if m, err := strconv.Atoi(cmd); err == nil && m > 0 && m < len(sim.STARSMaps) {
 				m--
-				name := scenarioGroup.STARSMaps[m].Name
+				name := sim.STARSMaps[m].Name
 				if _, ok := ps.VideoMapVisible[name]; ok {
 					delete(ps.VideoMapVisible, name)
 				} else {
@@ -2364,11 +2364,11 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			sp.activeDCBMenu = DCBMenuMaps
 		}
 		for i := 0; i < 6; i++ {
-			if i >= len(scenarioGroup.STARSMaps) {
+			if i >= len(sim.STARSMaps) {
 				STARSDisabledButton(fmt.Sprintf(" %d\n", i+1), STARSButtonHalfVertical)
 			} else {
-				text := fmt.Sprintf(" %d\n%s", i+1, scenarioGroup.STARSMaps[i].Label)
-				name := scenarioGroup.STARSMaps[i].Name
+				text := fmt.Sprintf(" %d\n%s", i+1, sim.STARSMaps[i].Label)
+				name := sim.STARSMaps[i].Name
 				_, visible := ps.VideoMapVisible[name]
 				if STARSToggleButton(text, &visible, STARSButtonHalfVertical) {
 					if visible {
@@ -2476,12 +2476,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			ps.VideoMapVisible = make(map[string]interface{})
 		}
 		for i := 0; i < NumSTARSMaps; i++ {
-			if i >= len(scenarioGroup.STARSMaps) {
+			if i >= len(sim.STARSMaps) {
 				STARSDisabledButton(fmt.Sprintf(" %d", i+1), STARSButtonHalfVertical)
 			} else {
-				name := scenarioGroup.STARSMaps[i].Name
+				name := sim.STARSMaps[i].Name
 				_, visible := ps.VideoMapVisible[name]
-				if STARSToggleButton(scenarioGroup.STARSMaps[i].Label, &visible, STARSButtonHalfVertical) {
+				if STARSToggleButton(sim.STARSMaps[i].Label, &visible, STARSButtonHalfVertical) {
 					if visible {
 						ps.VideoMapVisible[name] = nil
 					} else {

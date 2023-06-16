@@ -364,6 +364,7 @@ type Sim struct {
 	RadarSites                    map[string]*RadarSite
 	Center                        Point2LL
 	Range                         float32
+	STARSMaps                     []STARSMap
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -381,6 +382,7 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		RadarSites:        ssc.scenarioGroup.RadarSites,
 		Center:            ssc.scenarioGroup.Center,
 		Range:             ssc.scenarioGroup.Range,
+		STARSMaps:         ssc.scenarioGroup.STARSMaps,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),
