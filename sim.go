@@ -368,6 +368,8 @@ type Sim struct {
 	Center                        Point2LL
 	Range                         float32
 	STARSMaps                     []STARSMap
+	Wind                          Wind
+	Callsign                      string
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -376,6 +378,9 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	sim := &Sim{
 		Scenario:          ssc.scenario,
 		ScenarioGroupName: ssc.scenarioGroup.Name,
+
+		Wind:     ssc.scenario.Wind,
+		Callsign: ssc.scenario.Callsign,
 
 		MagneticVariation: ssc.scenarioGroup.MagneticVariation,
 		NmPerLatitude:     ssc.scenarioGroup.NmPerLatitude,
@@ -414,18 +419,18 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
 	fakeMETAR := func(icao string) {
-		spd := sim.Scenario.Wind.Speed - 3 + rand.Int31n(6)
+		spd := sim.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
 			wind = "00000KT"
 		} else if spd < 4 {
 			wind = fmt.Sprintf("VRB%02dKT", spd)
 		} else {
-			dir := 10 * ((sim.Scenario.Wind.Direction + 5) / 10)
+			dir := 10 * ((sim.Wind.Direction + 5) / 10)
 			dir += [3]int32{-10, 0, 10}[rand.Intn(3)]
 			wind = fmt.Sprintf("%03d%02d", dir, spd)
-			gst := sim.Scenario.Wind.Gust - 3 + rand.Int31n(6)
-			if gst-sim.Scenario.Wind.Speed > 5 {
+			gst := sim.Wind.Gust - 3 + rand.Int31n(6)
+			if gst-sim.Wind.Speed > 5 {
 				wind += fmt.Sprintf("G%02d", gst)
 			}
 			wind += "KT"
@@ -647,7 +652,7 @@ func (sim *Sim) SetSquawkAutomatic(callsign string) error {
 func (sim *Sim) SetScratchpad(callsign string, scratchpad string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Scenario.Callsign {
+	} else if ac.TrackingController != sim.Callsign {
 		// Scratchpad is tracking controller, not controlling controller
 		return ErrOtherControllerHasTrack
 	} else {
@@ -660,7 +665,7 @@ func (sim *Sim) SetScratchpad(callsign string, scratchpad string) error {
 func (sim *Sim) SetTemporaryAltitude(callsign string, alt int) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Scenario.Callsign {
+	} else if ac.TrackingController != sim.Callsign {
 		// Temp alt is tracking controller, not controlling controller
 		return ErrOtherControllerHasTrack
 	} else {
@@ -679,8 +684,8 @@ func (sim *Sim) InitiateTrack(callsign string) error {
 	} else if ac.TrackingController != "" {
 		return ErrOtherControllerHasTrack
 	} else {
-		ac.TrackingController = sim.Scenario.Callsign
-		ac.ControllingController = sim.Scenario.Callsign
+		ac.TrackingController = sim.Callsign
+		ac.ControllingController = sim.Callsign
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
 		eventStream.Post(&InitiatedTrackEvent{ac: ac})
 		return nil
@@ -690,7 +695,7 @@ func (sim *Sim) InitiateTrack(callsign string) error {
 func (sim *Sim) DropTrack(callsign string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Scenario.Callsign {
+	} else if ac.TrackingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		ac.TrackingController = ""
@@ -704,7 +709,7 @@ func (sim *Sim) DropTrack(callsign string) error {
 func (sim *Sim) Handoff(callsign string, controller string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Scenario.Callsign {
+	} else if ac.TrackingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else if ctrl := sim.GetController(controller); ctrl == nil {
 		return ErrNoController
@@ -720,13 +725,13 @@ func (sim *Sim) Handoff(callsign string, controller string) error {
 func (sim *Sim) AcceptHandoff(callsign string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.InboundHandoffController != sim.Scenario.Callsign {
+	} else if ac.InboundHandoffController != sim.Callsign {
 		return ErrNotBeingHandedOffToMe
 	} else {
 		ac.InboundHandoffController = ""
-		ac.TrackingController = sim.Callsign()
-		ac.ControllingController = sim.Callsign()
-		eventStream.Post(&AcceptedHandoffEvent{controller: sim.Callsign(), ac: ac})
+		ac.TrackingController = sim.Callsign
+		ac.ControllingController = sim.Callsign
+		eventStream.Post(&AcceptedHandoffEvent{controller: sim.Callsign, ac: ac})
 		eventStream.Post(&ModifiedAircraftEvent{ac: ac}) // FIXME...
 		return nil
 	}
@@ -739,7 +744,7 @@ func (sim *Sim) RejectHandoff(callsign string) error {
 func (sim *Sim) CancelHandoff(callsign string) error {
 	if ac, ok := sim.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Scenario.Callsign {
+	} else if ac.TrackingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		delete(sim.Handoffs, ac.Callsign)
@@ -809,10 +814,6 @@ func (sim *Sim) GetAirportATIS(airport string) []ATIS {
 }
 
 func (sim *Sim) GetController(callsign string) *Controller {
-	if sim.Scenario == nil {
-		return nil
-	}
-
 	if ctrl := sim.Controllers[callsign]; ctrl != nil {
 		return ctrl
 	}
@@ -828,14 +829,11 @@ func (sim *Sim) GetController(callsign string) *Controller {
 }
 
 func (sim *Sim) GetAllControllers() map[string]*Controller {
-	if sim.Scenario == nil {
-		return nil
-	}
 	return sim.Controllers
 }
 
 func (sim *Sim) GetUpdates() {
-	if sim.Paused || sim.Scenario == nil {
+	if sim.Paused {
 		return
 	}
 
@@ -926,23 +924,12 @@ func (sim *Sim) Connected() bool {
 	return true
 }
 
-func (sim *Sim) Callsign() string {
-	if sim.Scenario != nil {
-		return sim.Scenario.Callsign
-	} else {
-		return "(disconnected)"
-	}
-}
-
 func (sim *Sim) CurrentTime() time.Time {
 	return sim.currentTime
 }
 
 func (sim *Sim) GetWindowTitle() string {
-	if sim.Scenario == nil {
-		return "(disconnected)"
-	}
-	return sim.Scenario.Callsign + ": " + sim.Scenario.Name()
+	return sim.Callsign + ": " + sim.Scenario.Name()
 }
 
 func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
@@ -951,7 +938,7 @@ func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
 }
 
 func (sim *Sim) AssignAltitude(ac *Aircraft, altitude int) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignAltitude(altitude)
@@ -963,7 +950,7 @@ func (sim *Sim) AssignAltitude(ac *Aircraft, altitude int) error {
 }
 
 func (sim *Sim) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignHeading(heading, turn)
@@ -975,7 +962,7 @@ func (sim *Sim) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error 
 }
 
 func (sim *Sim) FlyPresentHeading(ac *Aircraft) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		_, err := ac.AssignHeading(int(ac.Heading), TurnClosest)
@@ -987,7 +974,7 @@ func (sim *Sim) FlyPresentHeading(ac *Aircraft) error {
 }
 
 func (sim *Sim) TurnLeft(ac *Aircraft, deg int) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.TurnLeft(deg)
@@ -999,7 +986,7 @@ func (sim *Sim) TurnLeft(ac *Aircraft, deg int) error {
 }
 
 func (sim *Sim) TurnRight(ac *Aircraft, deg int) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.TurnRight(deg)
@@ -1011,7 +998,7 @@ func (sim *Sim) TurnRight(ac *Aircraft, deg int) error {
 }
 
 func (sim *Sim) AssignSpeed(ac *Aircraft, speed int) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.AssignSpeed(speed)
@@ -1023,7 +1010,7 @@ func (sim *Sim) AssignSpeed(ac *Aircraft, speed int) error {
 }
 
 func (sim *Sim) DirectFix(ac *Aircraft, fix string) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.DirectFix(fix)
@@ -1035,7 +1022,7 @@ func (sim *Sim) DirectFix(ac *Aircraft, fix string) error {
 }
 
 func (sim *Sim) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.DepartFixHeading(fix, hdg)
@@ -1047,7 +1034,7 @@ func (sim *Sim) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
 }
 
 func (sim *Sim) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	} else {
 		resp, err := ac.CrossFixAt(fix, alt, speed)
@@ -1084,7 +1071,7 @@ func (sim *Sim) ExpectApproach(ac *Aircraft, approach string) error {
 		return err
 	}
 
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	}
 
@@ -1114,7 +1101,7 @@ func (sim *Sim) ClearedStraightInApproach(ac *Aircraft, approach string) error {
 		return err
 	}
 
-	if ac.ControllingController != sim.Callsign() {
+	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	}
 
@@ -1129,8 +1116,8 @@ func (sim *Sim) GoAround(ac *Aircraft) error {
 	ac.GoAround()
 
 	// If it was handed off to tower, hand it back to us
-	if ac.TrackingController != "" && ac.TrackingController != sim.Callsign() {
-		ac.InboundHandoffController = sim.Callsign()
+	if ac.TrackingController != "" && ac.TrackingController != sim.Callsign {
+		ac.InboundHandoffController = sim.Callsign
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
 
@@ -1289,12 +1276,12 @@ func (sim *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
 	// gust and then back...
 	base := time.UnixMicro(0)
 	s := sim.currentTime.Sub(base).Seconds()
-	windSpeed := float32(sim.Scenario.Wind.Speed) +
-		float32(sim.Scenario.Wind.Gust)*float32(1+math.Cos(s/4))/2
+	windSpeed := float32(sim.Wind.Speed) +
+		float32(sim.Wind.Gust)*float32(1+math.Cos(s/4))/2
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
-	d := OppositeHeading(float32(sim.Scenario.Wind.Direction))
+	d := OppositeHeading(float32(sim.Wind.Direction))
 	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
 	vWind = scale2f(vWind, windSpeed/3600)
 	return vWind

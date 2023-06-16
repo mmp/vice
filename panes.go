@@ -347,7 +347,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *AddedAircraftEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign() {
+			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign {
 				possiblyAdd(v.ac)
 			} else if v.ac.TrackingController == "" &&
 				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
@@ -355,7 +355,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *ModifiedAircraftEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign() {
+			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign {
 				possiblyAdd(v.ac)
 			} else if v.ac.TrackingController == "" &&
 				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
@@ -363,7 +363,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *InitiatedTrackEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign() {
+			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign {
 				possiblyAdd(v.ac)
 			}
 
@@ -373,9 +373,9 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *AcceptedHandoffEvent:
-			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == sim.Callsign() {
+			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == sim.Callsign {
 				possiblyAdd(v.ac)
-			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != sim.Callsign() {
+			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != sim.Callsign {
 				remove(v.ac)
 			}
 

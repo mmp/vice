@@ -786,7 +786,7 @@ func (ac *Aircraft) updateWaypoints() {
 
 func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
 	if wp.Handoff {
-		ac.InboundHandoffController = sim.Callsign()
+		ac.InboundHandoffController = sim.Callsign
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
 	if wp.Delete {

@@ -656,7 +656,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 		switch v := event.(type) {
 		case *AddedAircraftEvent:
 			sa := &STARSAircraftState{}
-			cs := sim.Callsign()
+			cs := sim.Callsign
 			if v.ac.TrackingController == cs || v.ac.ControllingController == cs {
 				sa.datablockType = FullDatablock
 			}
@@ -730,7 +730,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
-			if v.controller != sim.Callsign() {
+			if v.controller != sim.Callsign {
 				state := sp.aircraft[v.ac]
 				state.outboundHandoffAccepted = true
 				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
@@ -1169,7 +1169,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 	case CommandModeTerminateControl:
 		if cmd == "ALL" {
 			for ac := range sp.aircraft {
-				if ac.TrackingController == sim.Callsign() {
+				if ac.TrackingController == sim.Callsign {
 					status.err = sim.DropTrack(ac.Callsign)
 				}
 			}
@@ -1364,7 +1364,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			case 1:
 				if dir, ok := numpadToDirection(cmd[0]); ok {
 					// Tracked by me
-					me := sim.Callsign()
+					me := sim.Callsign
 					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == me })
 					status.clear = true
 				} else {
@@ -1379,7 +1379,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 					status.clear = true
 				} else if ok && cmd[1] == '*' {
 					// Tracked by other controllers
-					me := sim.Callsign()
+					me := sim.Callsign
 					setLLDir(dir, func(ac *Aircraft) bool {
 						return ac.TrackingController != "" &&
 							ac.TrackingController != me
@@ -1836,7 +1836,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock
 						// do not collapse datablock if user is tracking the aircraft
-					} else if ac.TrackingController != sim.Callsign() {
+					} else if ac.TrackingController != sim.Callsign {
 						state.datablockType = PartialDatablock
 					}
 				}
@@ -3056,7 +3056,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 		// User first
 		text := ""
-		userCtrl := sim.GetController(sim.Callsign())
+		userCtrl := sim.GetController(sim.Callsign)
 		if userCtrl != nil {
 			text += format(userCtrl, false) + "\n"
 		}
@@ -3085,7 +3085,7 @@ func (sp *STARSPane) datablockType(ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
-	if ac.InboundHandoffController == sim.Callsign() {
+	if ac.InboundHandoffController == sim.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -3293,7 +3293,7 @@ func (sp *STARSPane) updateDatablockTextAndPosition(aircraft []*Aircraft) {
 
 func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool) {
 	// Only report on ones that are tracked by us
-	if ac.TrackingController != sim.Callsign() {
+	if ac.TrackingController != sim.Callsign {
 		return
 	}
 
@@ -3511,14 +3511,14 @@ func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
 	if _, ok := sp.pointedOutAircraft.Get(ac); ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
-	} else if ac.TrackingController == sim.Callsign() {
+	} else if ac.TrackingController == sim.Callsign {
 		// white if we are tracking, unless it's selected
 		if state.isSelected {
 			return br.ScaleRGB(STARSSelectedAircraftColor)
 		} else {
 			return br.ScaleRGB(STARSTrackedAircraftColor)
 		}
-	} else if ac.InboundHandoffController == sim.Callsign() {
+	} else if ac.InboundHandoffController == sim.Callsign {
 		// flashing white if it's being handed off to us.
 		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
 			br /= 3
@@ -3605,7 +3605,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 			continue
 		}
 		state := sp.aircraft[ac]
-		if !(state.displayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == sim.Callsign())) {
+		if !(state.displayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == sim.Callsign)) {
 			continue
 		}
 
