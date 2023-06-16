@@ -295,7 +295,7 @@ func (c *NewSimConfiguration) Start() error {
 	sim.Disconnect()
 	sim = NewSim(*c)
 	scenarioGroup = c.scenarioGroup
-	sim.Prespawn()
+	sim.prespawn()
 
 	globalConfig.LastScenarioGroup = c.scenarioGroup.Name
 
@@ -411,7 +411,7 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		fakeMETAR(ap)
 	}
 
-	sim.SetInitialSpawnTimes()
+	sim.setInitialSpawnTimes()
 
 	return sim
 }
@@ -442,7 +442,7 @@ func (sim *Sim) ArrivalAirports() map[string]interface{} {
 	return airports
 }
 
-func (sim *Sim) SetInitialSpawnTimes() {
+func (sim *Sim) setInitialSpawnTimes() {
 	// Randomize next spawn time for departures and arrivals; may be before
 	// or after the current time.
 	randomSpawn := func(rate int) time.Time {
@@ -541,7 +541,7 @@ func (sim *Sim) Activate() error {
 	return nil
 }
 
-func (sim *Sim) Prespawn() {
+func (sim *Sim) prespawn() {
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
 	for i := 0; i < initialSimSeconds; i++ {
