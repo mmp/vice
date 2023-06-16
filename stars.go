@@ -4184,11 +4184,9 @@ func amendFlightPlan(callsign string, amend func(fp *FlightPlan)) error {
 	if ac := sim.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		if ac.FlightPlan == nil {
-			ac.FlightPlan = &FlightPlan{}
-		}
-		amend(ac.FlightPlan)
-		return sim.AmendFlightPlan(callsign, *ac.FlightPlan)
+		fp := Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
+		amend(fp)
+		return sim.AmendFlightPlan(callsign, *fp)
 	}
 }
 
