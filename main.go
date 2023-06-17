@@ -61,6 +61,8 @@ func init() {
 }
 
 func main() {
+	flag.Parse()
+
 	// Catch any panics so that we can put up a dialog box and hopefully
 	// get a bug report.
 	var context *imgui.Context
@@ -90,7 +92,6 @@ func main() {
 	///////////////////////////////////////////////////////////////////////////
 	// Global initialization and set up. Note that there are some subtle
 	// inter-dependencies in the following; the order is carefully crafted.
-	flag.Parse()
 
 	// Make this early so things can subscribe during their initalization
 	eventStream = NewEventStream()
