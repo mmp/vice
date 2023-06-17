@@ -53,7 +53,14 @@ type NewSimConfiguration struct {
 func (c *NewSimConfiguration) Initialize() {
 	c.departureChallenge = 0.25
 	c.goAroundRate = 0.10
-	c.SetScenarioGroup(scenarioGroup)
+
+	// Use the last scenario, if available.
+	sg := scenarioGroups[globalConfig.LastScenarioGroup]
+	if sg == nil && len(scenarioGroups) > 0 {
+		// Otherwise take the first one alphabetically.
+		sg = scenarioGroups[SortedMapKeys(scenarioGroups)[0]]
+	}
+	c.SetScenarioGroup(sg)
 }
 
 func (c *NewSimConfiguration) SetScenarioGroup(sg *ScenarioGroup) {
@@ -294,7 +301,6 @@ func (c *NewSimConfiguration) Start() error {
 	}
 	sim.Disconnect()
 	sim = NewSim(*c)
-	scenarioGroup = c.scenarioGroup
 	sim.prespawn()
 
 	globalConfig.LastScenarioGroup = c.scenarioGroup.Name
@@ -372,6 +378,8 @@ type Sim struct {
 	ApproachAirspace              []AirspaceVolume
 	DepartureAirspace             []AirspaceVolume
 	DepartureRunways              []ScenarioGroupDepartureRunway
+	Scratchpads                   map[string]string
+	ArrivalGroups                 map[string][]Arrival
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -393,6 +401,8 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		Center:            ssc.scenarioGroup.Center,
 		Range:             ssc.scenarioGroup.Range,
 		STARSMaps:         ssc.scenarioGroup.STARSMaps,
+		Scratchpads:       ssc.scenarioGroup.Scratchpads,
+		ArrivalGroups:     ssc.scenarioGroup.ArrivalGroups,
 		ApproachAirspace:  ssc.scenario.ApproachAirspace,
 		DepartureAirspace: ssc.scenario.DepartureAirspace,
 		DepartureRunways:  ssc.scenario.DepartureRunways,
@@ -559,7 +569,7 @@ func (sim *Sim) setInitialSpawnTimes() {
 	}
 }
 
-func (sim *Sim) Activate(sg *ScenarioGroup) error {
+func (sim *Sim) Activate() error {
 	var e ErrorLogger
 	now := time.Now()
 	sim.currentTime = now
@@ -573,6 +583,24 @@ func (sim *Sim) Activate(sg *ScenarioGroup) error {
 		return now.Add(t.Sub(sim.SerializeTime))
 	}
 
+	initializeWaypointLocations := func(waypoints []Waypoint, e *ErrorLogger) {
+		for i, wp := range waypoints {
+			if e != nil {
+				e.Push("Fix " + wp.Fix)
+			}
+			if pos, ok := sim.Locate(wp.Fix); !ok {
+				if e != nil {
+					e.ErrorString("unable to locate waypoint")
+				}
+			} else {
+				waypoints[i].Location = pos
+			}
+			if e != nil {
+				e.Pop()
+			}
+		}
+	}
+
 	for _, ac := range sim.Aircraft {
 		e.Push(ac.Callsign)
 		// Rewrite the radar track times to be w.r.t now
@@ -582,13 +610,13 @@ func (sim *Sim) Activate(sg *ScenarioGroup) error {
 
 		if ac.Approach != nil {
 			for i := range ac.Approach.Waypoints {
-				scenarioGroup.InitializeWaypointLocations(ac.Approach.Waypoints[i], &e)
+				initializeWaypointLocations(ac.Approach.Waypoints[i], &e)
 			}
 		}
 
 		for rwy, wp := range ac.ArrivalRunwayWaypoints {
 			e.Push("Arrival runway " + rwy)
-			scenarioGroup.InitializeWaypointLocations(wp, &e)
+			initializeWaypointLocations(wp, &e)
 			e.Pop()
 		}
 
@@ -610,16 +638,22 @@ func (sim *Sim) Activate(sg *ScenarioGroup) error {
 		}
 	}
 
-	if len(sg.STARSMaps) != len(sim.STARSMaps) {
-		e.ErrorString("Different number of STARSMaps in ScenarioGroup and Saved sim")
+	sg := scenarioGroups[sim.ScenarioGroupName]
+
+	if sg == nil {
+		e.ErrorString(sim.ScenarioGroupName + ": unknown scenario group")
 	} else {
-		for i := range sim.STARSMaps {
-			if sg.STARSMaps[i].Name != sim.STARSMaps[i].Name {
-				e.ErrorString("Name mismatch in STARSMaps: ScenarioGroup \"" + sg.STARSMaps[i].Name +
-					"\", Sim \"" + sim.STARSMaps[i].Name + "\"")
-			} else {
-				// Copy the command buffer so we can draw the thing...
-				sim.STARSMaps[i].cb = sg.STARSMaps[i].cb
+		if len(sg.STARSMaps) != len(sim.STARSMaps) {
+			e.ErrorString("Different number of STARSMaps in ScenarioGroup and Saved sim")
+		} else {
+			for i := range sim.STARSMaps {
+				if sg.STARSMaps[i].Name != sim.STARSMaps[i].Name {
+					e.ErrorString("Name mismatch in STARSMaps: ScenarioGroup \"" + sg.STARSMaps[i].Name +
+						"\", Sim \"" + sim.STARSMaps[i].Name + "\"")
+				} else {
+					// Copy the command buffer so we can draw the thing...
+					sim.STARSMaps[i].cb = sg.STARSMaps[i].cb
+				}
 			}
 		}
 	}
@@ -627,7 +661,16 @@ func (sim *Sim) Activate(sg *ScenarioGroup) error {
 	for i, rwy := range sim.DepartureRunways {
 		sim.DepartureRunways[i].lastDeparture = nil
 		for _, route := range rwy.ExitRoutes {
-			scenarioGroup.InitializeWaypointLocations(route.Waypoints, &e)
+			initializeWaypointLocations(route.Waypoints, &e)
+		}
+	}
+
+	for _, arrivals := range sim.ArrivalGroups {
+		for _, arr := range arrivals {
+			initializeWaypointLocations(arr.Waypoints, &e)
+			for _, rwp := range arr.RunwayWaypoints {
+				initializeWaypointLocations(rwp, &e)
+			}
 		}
 	}
 
@@ -1525,7 +1568,7 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 }
 
 func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
-	arrivals := scenarioGroup.ArrivalGroups[arrivalGroup]
+	arrivals := sim.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
 		_, ok := ar.Airlines[airportName]
@@ -1639,7 +1682,7 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 
 	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
 	ac.FlightPlan.ArrivalAirport = dep.Destination
-	ac.Scratchpad = scenarioGroup.Scratchpads[dep.Exit]
+	ac.Scratchpad = sim.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
 	} else {

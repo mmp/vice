@@ -702,12 +702,7 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 			}
 		}
 
-		// This is horribly hacky but PostDeserialize ends up calling
-		// functions that access the scenario global
-		// (e.g. nmdistance2ll)...
-		scenarioGroup = sgroup
 		sgroup.PostDeserialize(e)
-		scenarioGroup = nil
 
 		e.Pop()
 	}

@@ -183,15 +183,9 @@ func (gc *GlobalConfig) Activate() {
 	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
 
 	if gc.Sim != nil {
-		if sg, ok := scenarioGroups[gc.Sim.ScenarioGroupName]; !ok {
-			lg.Errorf("%s: couldn't find serialized scenario group", gc.Sim.ScenarioGroupName)
-		} else {
-			scenarioGroup = sg
-		}
-
 		sim.Paused = false // override
 
-		if err := gc.Sim.Activate(scenarioGroup); err != nil {
+		if err := gc.Sim.Activate(); err != nil {
 			gc.Sim = nil
 			sim = &Sim{}
 		}

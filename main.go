@@ -39,7 +39,6 @@ var (
 	eventStream    *EventStream
 	lg             *Logger
 	scenarioGroups map[string]*ScenarioGroup
-	scenarioGroup  *ScenarioGroup
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -134,14 +133,6 @@ func main() {
 	if e.HaveErrors() {
 		e.PrintErrors()
 		os.Exit(1)
-	}
-
-	// Use the last scenario, if available.
-	if s, ok := scenarioGroups[globalConfig.LastScenarioGroup]; ok {
-		scenarioGroup = s
-	} else if len(scenarioGroups) > 0 {
-		// Otherwise take the first one alphabetically.
-		scenarioGroup = scenarioGroups[SortedMapKeys(scenarioGroups)[0]]
 	}
 
 	multisample := runtime.GOOS != "darwin"
