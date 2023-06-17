@@ -52,10 +52,14 @@ type Aircraft struct {
 	// Set for arrivals, if there are runway-specific waypoints.
 	ArrivalRunwayWaypoints map[string]WaypointArray
 
-	Approach            *Approach // if assigned
 	ApproachId          string
 	ApproachCleared     bool
 	HaveEnteredAirspace bool
+}
+
+func (a *Aircraft) Approach() *Approach {
+	ap, _ := a.getApproach(a.ApproachId)
+	return ap
 }
 
 func (a *Aircraft) TrackAltitude() int {
@@ -204,7 +208,7 @@ func (ac *Aircraft) GoAround() {
 		ac.Nav.V = &MaintainAltitude{Altitude: float32(1000 * ((int(ac.Altitude) + 2500) / 1000))}
 	}
 
-	ac.Approach = nil
+	ac.ApproachId = ""
 	ac.ApproachCleared = false
 	ac.Waypoints = nil
 	ac.NoPT = false
@@ -351,10 +355,11 @@ func (ac *Aircraft) visitRouteFix(fix string, cb func(*Waypoint) bool) {
 		}
 	}
 
-	if ac.Approach == nil {
+	ap := ac.Approach()
+	if ap == nil {
 		return
 	}
-	for _, route := range ac.Approach.Waypoints {
+	for _, route := range ap.Waypoints {
 		for i := range route {
 			if fix == route[i].Fix {
 				if !cb(&route[i]) {
@@ -378,13 +383,16 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 		}
 	}
 
-	if !found && ac.Approach != nil {
-		for _, route := range ac.Approach.Waypoints {
-			for _, wp := range route {
-				if wp.Fix == fix {
-					ac.Waypoints = []Waypoint{wp}
-					found = true
-					break
+	if !found {
+		ap := ac.Approach()
+		if ap != nil {
+			for _, route := range ap.Waypoints {
+				for _, wp := range route {
+					if wp.Fix == fix {
+						ac.Waypoints = []Waypoint{wp}
+						found = true
+						break
+					}
 				}
 			}
 		}
@@ -488,8 +496,36 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 	return lnav != nil || vnav != nil
 }
 
-func (ac *Aircraft) ExpectApproach(ap *Approach, id string) (string, error) {
-	ac.Approach = ap
+func (ac *Aircraft) getApproach(id string) (*Approach, error) {
+	if id == "" {
+		return nil, ErrInvalidApproach
+	}
+
+	fp := ac.FlightPlan
+	if fp == nil {
+		return nil, ErrNoFlightPlan
+	}
+
+	ap := sim.GetAirport(fp.ArrivalAirport)
+	if ap == nil {
+		lg.Errorf("Can't find airport %s for %s approach for %s", fp.ArrivalAirport, id, ac.Callsign)
+		return nil, ErrArrivalAirportUnknown
+	}
+
+	for name, appr := range ap.Approaches {
+		if name == id {
+			return &appr, nil
+		}
+	}
+	return nil, ErrUnknownApproach
+}
+
+func (ac *Aircraft) ExpectApproach(id string) (string, error) {
+	ap, err := ac.getApproach(id)
+	if err != nil {
+		return "", err
+	}
+
 	ac.ApproachId = id
 
 	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
@@ -513,22 +549,27 @@ func (ac *Aircraft) ExpectApproach(ap *Approach, id string) (string, error) {
 	return "we'll expect the " + ap.FullName + " approach", nil
 }
 
-func (ac *Aircraft) ClearedApproach(ap *Approach) (response string, err error) {
-	return ac.clearedApproach(ap, false)
+func (ac *Aircraft) ClearedApproach(id string) (response string, err error) {
+	return ac.clearedApproach(id, false)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(ap *Approach) (response string, err error) {
-	return ac.clearedApproach(ap, true)
+func (ac *Aircraft) ClearedStraightInApproach(id string) (response string, err error) {
+	return ac.clearedApproach(id, true)
 }
 
-func (ac *Aircraft) clearedApproach(ap *Approach, straightIn bool) (response string, err error) {
-	if ac.Approach == nil {
+func (ac *Aircraft) clearedApproach(id string, straightIn bool) (response string, err error) {
+	if ac.ApproachId == "" {
 		// allow it anyway...
-		response = "you never told us to expect an approach, but ok, cleared " + ap.FullName
-		ac.Approach = ap
+		if _, err = ac.ExpectApproach(id); err != nil {
+			return
+		}
+		response = "you never told us to expect an approach, but ok, cleared " + ac.Approach().FullName
+		ac.ApproachId = id
 	}
-	if ac.Approach.FullName != ap.FullName {
-		response = "but you cleared us for the " + ac.Approach.FullName + " approach..."
+
+	ap := ac.Approach()
+	if id != ac.ApproachId {
+		response = "but you cleared us for the " + ap.FullName + " approach..."
 		err = ErrClearedForUnexpectedApproach
 		return
 	}
@@ -554,7 +595,7 @@ func (ac *Aircraft) clearedApproach(ap *Approach, straightIn bool) (response str
 		}
 	}
 
-	if ac.Approach.Type == ILSApproach {
+	if ap.Type == ILSApproach {
 		if directApproachFix {
 			if remainingApproachWaypoints != nil {
 				ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
@@ -899,7 +940,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 // FinalApproachDistance returns the total remaining flying distance
 // for an aircraft that has been given an approach.
 func (ac *Aircraft) FinalApproachDistance() (float32, error) {
-	if ac.Approach == nil {
+	if ac.Approach() == nil {
 		return 0, fmt.Errorf("not cleared for approach")
 	}
 

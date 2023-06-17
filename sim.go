@@ -32,6 +32,7 @@ var (
 	ErrUnableCommand                = errors.New("Unable")
 	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
 	ErrInvalidHeading               = errors.New("Invalid heading")
+	ErrInvalidApproach              = errors.New("Invalid approach")
 	ErrInvalidCommandSyntax         = errors.New("Invalid command syntax")
 	ErrFixNotInRoute                = errors.New("Fix not in aircraft's route")
 )
@@ -608,9 +609,9 @@ func (sim *Sim) Activate() error {
 			ac.Tracks[i].Time = updateTime(ac.Tracks[i].Time)
 		}
 
-		if ac.Approach != nil {
-			for i := range ac.Approach.Waypoints {
-				initializeWaypointLocations(ac.Approach.Waypoints[i], &e)
+		if ap := ac.Approach(); ap != nil {
+			for i := range ap.Waypoints {
+				initializeWaypointLocations(ap.Waypoints[i], &e)
 			}
 		}
 
@@ -1103,37 +1104,12 @@ func (sim *Sim) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
 	}
 }
 
-func (sim *Sim) getApproach(ac *Aircraft, approach string) (*Approach, error) {
-	fp := ac.FlightPlan
-	if fp == nil {
-		return nil, ErrNoFlightPlan
-	}
-
-	ap := sim.GetAirport(fp.ArrivalAirport)
-	if ap == nil {
-		lg.Errorf("Can't find TRACON airport %s for %s approach for %s", fp.ArrivalAirport, approach, ac.Callsign)
-		return nil, ErrArrivalAirportUnknown
-	}
-
-	for name, appr := range ap.Approaches {
-		if name == approach {
-			return &appr, nil
-		}
-	}
-	return nil, ErrUnknownApproach
-}
-
 func (sim *Sim) ExpectApproach(ac *Aircraft, approach string) error {
-	ap, err := sim.getApproach(ac, approach)
-	if err != nil {
-		return err
-	}
-
 	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	}
 
-	resp, err := ac.ExpectApproach(ap, approach)
+	resp, err := ac.ExpectApproach(approach)
 	if resp != "" {
 		pilotResponse(ac, "%s", resp)
 	}
@@ -1141,12 +1117,11 @@ func (sim *Sim) ExpectApproach(ac *Aircraft, approach string) error {
 }
 
 func (sim *Sim) ClearedApproach(ac *Aircraft, approach string) error {
-	ap, err := sim.getApproach(ac, approach)
-	if err != nil {
-		return err
+	if ac.ControllingController != sim.Callsign {
+		return ErrOtherControllerHasTrack
 	}
 
-	resp, err := ac.ClearedApproach(ap)
+	resp, err := ac.ClearedApproach(approach)
 	if resp != "" {
 		pilotResponse(ac, "%s", resp)
 	}
@@ -1154,16 +1129,11 @@ func (sim *Sim) ClearedApproach(ac *Aircraft, approach string) error {
 }
 
 func (sim *Sim) ClearedStraightInApproach(ac *Aircraft, approach string) error {
-	ap, err := sim.getApproach(ac, approach)
-	if err != nil {
-		return err
-	}
-
 	if ac.ControllingController != sim.Callsign {
 		return ErrOtherControllerHasTrack
 	}
 
-	resp, err := ac.ClearedStraightInApproach(ap)
+	resp, err := ac.ClearedStraightInApproach(approach)
 	if resp != "" {
 		pilotResponse(ac, "%s", resp)
 	}
@@ -1613,8 +1583,8 @@ func (sim *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
 		ap := sim.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if appr, ok := ap.Approaches[arr.ExpectApproach]; ok {
-			ac.Approach = &appr
+		if _, ok := ap.Approaches[arr.ExpectApproach]; ok {
+			ac.ApproachId = arr.ExpectApproach
 		} else {
 			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
 			return nil
