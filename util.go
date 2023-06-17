@@ -861,9 +861,14 @@ func length2ll(v Point2LL) float32 {
 // nmdistance2ll returns the distance in nautical miles between two
 // provided lat-long coordinates.
 func nmdistance2ll(a Point2LL, b Point2LL) float32 {
-	dlat := (a[1] - b[1]) * sim.NmPerLatitude
-	dlong := (a[0] - b[0]) * sim.NmPerLongitude
-	return sqrt(sqr(dlat) + sqr(dlong))
+	// https://www.movable-type.co.uk/scripts/latlong.html
+	const r = 3634.449 // earth's radius in nautical miles
+	rad := func(d float64) float64 { return d / 180 * math.Pi }
+
+	// Spherical law of cosines
+	phi := [2]float64{rad(float64(a[1])), rad(float64(b[1]))}
+	d := r * math.Acos(clamp(math.Sin(phi[0])*math.Sin(phi[1])+math.Cos(phi[0])*math.Cos(phi[1])*math.Cos(rad(float64(a[0])-float64(b[0]))), -1, 1))
+	return float32(d)
 }
 
 // nmlength2ll returns the length of a vector expressed in lat-long
