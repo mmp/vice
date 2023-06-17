@@ -632,6 +632,10 @@ func (sim *Sim) Activate() error {
 		sim.NextArrivalSpawn[group] = updateTime(t)
 	}
 
+	for callsign := range sim.Controllers {
+		sim.Controllers[callsign].Callsign = callsign
+	}
+
 	for airport, runwayTimes := range sim.NextDepartureSpawn {
 		for runway, t := range runwayTimes {
 			sim.NextDepartureSpawn[airport][runway] = updateTime(t)
