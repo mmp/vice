@@ -3298,8 +3298,8 @@ func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool)
 	}
 
 	if _, ok := sim.DepartureAirports()[ac.FlightPlan.DepartureAirport]; ok {
-		if len(sim.Scenario.DepartureAirspace) > 0 {
-			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.Scenario.DepartureAirspace)
+		if len(sim.DepartureAirspace) > 0 {
+			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.DepartureAirspace)
 			if !ac.HaveEnteredAirspace {
 				ac.HaveEnteredAirspace = inDepartureAirspace
 			} else {
@@ -3308,8 +3308,8 @@ func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool)
 			}
 		}
 	} else if _, ok := sim.ArrivalAirports()[ac.FlightPlan.ArrivalAirport]; ok {
-		if len(sim.Scenario.ApproachAirspace) > 0 {
-			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.Scenario.ApproachAirspace)
+		if len(sim.ApproachAirspace) > 0 {
+			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.ApproachAirspace)
 			if !ac.HaveEnteredAirspace {
 				ac.HaveEnteredAirspace = inApproachAirspace
 			} else {
@@ -3838,11 +3838,11 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	}
 
 	if sp.drawApproachAirspace {
-		drawSectors(sim.Scenario.ApproachAirspace)
+		drawSectors(sim.ApproachAirspace)
 	}
 
 	if sp.drawDepartureAirspace {
-		drawSectors(sim.Scenario.DepartureAirspace)
+		drawSectors(sim.DepartureAirspace)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)

@@ -100,7 +100,7 @@ type ScenarioGroupDepartureRunway struct {
 	DefaultRate int32  `json:"rate"`
 
 	lastDeparture *Departure
-	exitRoutes    map[string]ExitRoute // copied from DepartureRunway
+	ExitRoutes    map[string]ExitRoute // copied from DepartureRunway; not specified in JSON
 }
 
 type ScenarioGroupArrivalRunway struct {
@@ -159,7 +159,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
 			} else {
-				s.DepartureRunways[i].exitRoutes = routes
+				s.DepartureRunways[i].ExitRoutes = routes
 			}
 
 			if rwy.Category != "" {

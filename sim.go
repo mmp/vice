@@ -313,9 +313,8 @@ func (c *NewSimConfiguration) Start() error {
 // Sim
 
 type Sim struct {
-	Scenario *Scenario
-
 	ScenarioGroupName string
+	ScenarioName      string
 
 	Aircraft    map[string]*Aircraft
 	Handoffs    map[string]time.Time
@@ -370,18 +369,20 @@ type Sim struct {
 	STARSMaps                     []STARSMap
 	Wind                          Wind
 	Callsign                      string
+	ApproachAirspace              []AirspaceVolume
+	DepartureAirspace             []AirspaceVolume
+	DepartureRunways              []ScenarioGroupDepartureRunway
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	sim := &Sim{
-		Scenario:          ssc.scenario,
 		ScenarioGroupName: ssc.scenarioGroup.Name,
+		ScenarioName:      ssc.scenario.Name(),
 
-		Wind:     ssc.scenario.Wind,
-		Callsign: ssc.scenario.Callsign,
-
+		Wind:              ssc.scenario.Wind,
+		Callsign:          ssc.scenario.Callsign,
 		MagneticVariation: ssc.scenarioGroup.MagneticVariation,
 		NmPerLatitude:     ssc.scenarioGroup.NmPerLatitude,
 		NmPerLongitude:    ssc.scenarioGroup.NmPerLongitude,
@@ -392,6 +393,9 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		Center:            ssc.scenarioGroup.Center,
 		Range:             ssc.scenarioGroup.Range,
 		STARSMaps:         ssc.scenarioGroup.STARSMaps,
+		ApproachAirspace:  ssc.scenario.ApproachAirspace,
+		DepartureAirspace: ssc.scenario.DepartureAirspace,
+		DepartureRunways:  ssc.scenario.DepartureRunways,
 
 		Aircraft: make(map[string]*Aircraft),
 		Handoffs: make(map[string]time.Time),
@@ -411,7 +415,7 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	sim.Controllers = make(map[string]*Controller)
 	// Extract just the active controllers
 	for callsign, ctrl := range ssc.scenarioGroup.ControlPositions {
-		if Find(sim.Scenario.Controllers, callsign) != -1 {
+		if Find(ssc.scenario.Controllers, callsign) != -1 {
 			sim.Controllers[callsign] = ctrl
 		}
 	}
@@ -617,6 +621,13 @@ func (sim *Sim) Activate(sg *ScenarioGroup) error {
 				// Copy the command buffer so we can draw the thing...
 				sim.STARSMaps[i].cb = sg.STARSMaps[i].cb
 			}
+		}
+	}
+
+	for i, rwy := range sim.DepartureRunways {
+		sim.DepartureRunways[i].lastDeparture = nil
+		for _, route := range rwy.ExitRoutes {
+			scenarioGroup.InitializeWaypointLocations(route.Waypoints, &e)
 		}
 	}
 
@@ -929,7 +940,7 @@ func (sim *Sim) CurrentTime() time.Time {
 }
 
 func (sim *Sim) GetWindowTitle() string {
-	return sim.Callsign + ": " + sim.Scenario.Name()
+	return sim.Callsign + ": " + sim.ScenarioName
 }
 
 func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
@@ -1366,16 +1377,16 @@ func (sim *Sim) SpawnAircraft() {
 			}
 
 			ap := sim.GetAirport(airport)
-			idx := FindIf(sim.Scenario.DepartureRunways,
+			idx := FindIf(sim.DepartureRunways,
 				func(r ScenarioGroupDepartureRunway) bool {
 					return r.Airport == airport && r.Runway == runway && r.Category == category
 				})
 			if idx == -1 {
-				lg.Errorf("%s/%s/%s: couldn't find airport/runway/category for spawning departure. rates %s dep runways %s", airport, runway, category, spew.Sdump(sim.DepartureRates[airport][runway]), spew.Sdump(sim.Scenario.DepartureRunways))
+				lg.Errorf("%s/%s/%s: couldn't find airport/runway/category for spawning departure. rates %s dep runways %s", airport, runway, category, spew.Sdump(sim.DepartureRates[airport][runway]), spew.Sdump(sim.DepartureRunways))
 				continue
 			}
 
-			if ac := sim.SpawnDeparture(ap, &sim.Scenario.DepartureRunways[idx]); ac != nil {
+			if ac := sim.SpawnDeparture(ap, &sim.DepartureRunways[idx]); ac != nil {
 				ac.FlightPlan.DepartureAirport = airport
 				addAircraft(ac)
 				sim.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
@@ -1622,7 +1633,7 @@ func (sim *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *
 	airline := Sample(dep.Airlines)
 	ac := sampleAircraft(airline.ICAO, airline.Fleet)
 
-	exitRoute := rwy.exitRoutes[dep.Exit]
+	exitRoute := rwy.ExitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
 	ac.Waypoints = append(ac.Waypoints, dep.routeWaypoints...)
 
