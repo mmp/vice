@@ -182,7 +182,7 @@ func (w *World) PointOut(callsign string, controller string) error {
 
 func (w *World) Disconnect() {
 	for _, ac := range w.Aircraft {
-		eventStream.Post(&RemovedAircraftEvent{ac: ac})
+		eventStream.Post(&RemovedAircraftEvent{Callsign: ac.Callsign})
 	}
 	if w.eventsId != InvalidEventSubscriberId {
 		eventStream.Unsubscribe(w.eventsId)
@@ -273,7 +273,7 @@ func (w *World) GetWindowTitle() string {
 
 func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
 	lg.Printf("%s: %s", ac.Callsign, fmt.Sprintf(fm, args...))
-	eventStream.Post(&RadioTransmissionEvent{callsign: ac.Callsign, message: fmt.Sprintf(fm, args...)})
+	eventStream.Post(&RadioTransmissionEvent{Callsign: ac.Callsign, Message: fmt.Sprintf(fm, args...)})
 }
 
 func (w *World) AssignAltitude(ac *Aircraft, altitude int) error {

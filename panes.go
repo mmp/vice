@@ -342,45 +342,51 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 	for _, event := range es.Get(fsp.eventsId) {
 		switch v := event.(type) {
 		case *PushedFlightStripEvent:
-			if Find(fsp.strips, v.callsign) == -1 {
-				fsp.strips = append(fsp.strips, v.callsign)
+			if Find(fsp.strips, v.Callsign) == -1 {
+				fsp.strips = append(fsp.strips, v.Callsign)
 			}
 
 		case *AddedAircraftEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == world.Callsign {
-				possiblyAdd(v.ac)
-			} else if v.ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
-				possiblyAdd(v.ac)
+			ac := world.Aircraft[v.Callsign]
+			if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+				possiblyAdd(ac)
+			} else if ac.TrackingController == "" &&
+				((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+				possiblyAdd(ac)
 			}
 
 		case *ModifiedAircraftEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == world.Callsign {
-				possiblyAdd(v.ac)
-			} else if v.ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
-				possiblyAdd(v.ac)
+			ac := world.Aircraft[v.Callsign]
+			if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+				possiblyAdd(ac)
+			} else if ac.TrackingController == "" &&
+				((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+				possiblyAdd(ac)
 			}
 
 		case *InitiatedTrackEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == world.Callsign {
-				possiblyAdd(v.ac)
+			ac := world.Aircraft[v.Callsign]
+			if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+				possiblyAdd(ac)
 			}
 
 		case *DroppedTrackEvent:
+			ac := world.Aircraft[v.Callsign]
 			if fsp.AutoRemoveDropped {
-				remove(v.ac)
+				remove(ac)
 			}
 
 		case *AcceptedHandoffEvent:
-			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == world.Callsign {
-				possiblyAdd(v.ac)
-			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != world.Callsign {
-				remove(v.ac)
+			ac := world.Aircraft[v.Callsign]
+			if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == world.Callsign {
+				possiblyAdd(ac)
+			} else if fsp.AutoRemoveHandoffs && ac.TrackingController != world.Callsign {
+				remove(ac)
 			}
 
 		case *RemovedAircraftEvent:
-			remove(v.ac)
+			ac := world.Aircraft[v.Callsign]
+			remove(ac)
 		}
 	}
 

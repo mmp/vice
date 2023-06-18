@@ -160,101 +160,101 @@ func (e *EventStream) Dump() string {
 ///////////////////////////////////////////////////////////////////////////
 
 type AddedAircraftEvent struct {
-	ac *Aircraft
+	Callsign string
 }
 
 func (e *AddedAircraftEvent) String() string {
-	return "AddedAircraftEvent: " + e.ac.Callsign
+	return "AddedAircraftEvent: " + e.Callsign
 }
 
 type ModifiedAircraftEvent struct {
-	ac *Aircraft
+	Callsign string
 }
 
 func (e *ModifiedAircraftEvent) String() string {
-	return "ModifiedAircraftEvent: " + e.ac.Callsign
+	return "ModifiedAircraftEvent: " + e.Callsign
 }
 
 type RemovedAircraftEvent struct {
-	ac *Aircraft
+	Callsign string
 }
 
 func (e *RemovedAircraftEvent) String() string {
-	return "RemovedAircraftEvent: " + e.ac.Callsign
+	return "RemovedAircraftEvent: " + e.Callsign
 }
 
 type InitiatedTrackEvent struct {
-	ac *Aircraft
+	Callsign string
 }
 
 func (e *InitiatedTrackEvent) String() string {
-	return "InitiatedTrackEvent: " + e.ac.Callsign
+	return "InitiatedTrackEvent: " + e.Callsign
 }
 
 type DroppedTrackEvent struct {
-	ac *Aircraft
+	Callsign string
 }
 
 func (e *DroppedTrackEvent) String() string {
-	return "DroppedTrackEvent: " + e.ac.Callsign
+	return "DroppedTrackEvent: " + e.Callsign
 }
 
 type PushedFlightStripEvent struct {
-	callsign string
+	Callsign string
 }
 
 func (e *PushedFlightStripEvent) String() string {
-	return "PushedFlightStripEvent: " + e.callsign
+	return "PushedFlightStripEvent: " + e.Callsign
 }
 
 type PointOutEvent struct {
-	controller string
-	ac         *Aircraft
+	Controller string
+	Callsign   string
 }
 
 func (e *PointOutEvent) String() string {
-	return "PointOutEvent: " + e.controller + " " + e.ac.Callsign
+	return "PointOutEvent: " + e.Controller + " " + e.Callsign
 }
 
 type AcceptedHandoffEvent struct {
-	controller string
-	ac         *Aircraft
+	Controller string
+	Callsign   string
 }
 
 func (e *AcceptedHandoffEvent) String() string {
-	return "AcceptedHandoffEvent: " + e.controller + " " + e.ac.Callsign
+	return "AcceptedHandoffEvent: " + e.Controller + " " + e.Callsign
 }
 
 type CanceledHandoffEvent struct {
-	controller string
-	ac         *Aircraft
+	Controller string
+	Callsign   string
 }
 
 func (e *CanceledHandoffEvent) String() string {
-	return "CanceledHandoffEvent: " + e.controller + " " + e.ac.Callsign
+	return "CanceledHandoffEvent: " + e.Controller + " " + e.Callsign
 }
 
 type RejectedHandoffEvent struct {
-	controller string
-	ac         *Aircraft
+	Controller string
+	Callsign   string
 }
 
 func (e *RejectedHandoffEvent) String() string {
-	return "RejectedHandoffEvent: " + e.controller + " " + e.ac.Callsign
+	return "RejectedHandoffEvent: " + e.Controller + " " + e.Callsign
 }
 
 type AckedHandoffEvent struct {
-	ac *Aircraft
+	Callsign string
 }
 
 func (e *AckedHandoffEvent) String() string {
-	return "AckedHandoffEvent: " + e.ac.Callsign
+	return "AckedHandoffEvent: " + e.Callsign
 }
 
 type RadioTransmissionEvent struct {
-	callsign, message string
+	Callsign, Message string
 }
 
 func (e *RadioTransmissionEvent) String() string {
-	return "RadioTransmissionEvent: callsign: " + e.callsign + ", message: " + e.message
+	return "RadioTransmissionEvent: callsign: " + e.Callsign + ", message: " + e.Message
 }

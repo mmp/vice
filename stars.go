@@ -655,23 +655,24 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 		case *AddedAircraftEvent:
 			sa := &STARSAircraftState{}
 			cs := world.Callsign
-			if v.ac.TrackingController == cs || v.ac.ControllingController == cs {
+			ac := world.Aircraft[v.Callsign]
+			if ac.TrackingController == cs || ac.ControllingController == cs {
 				sa.datablockType = FullDatablock
 			}
-			sp.aircraft[v.ac] = sa
+			sp.aircraft[ac] = sa
 
-			if fp := v.ac.FlightPlan; fp != nil {
-				if v.ac.TrackingController == "" {
+			if fp := ac.FlightPlan; fp != nil {
+				if ac.TrackingController == "" {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
-						world.InitiateTrack(v.ac.Callsign) // ignore error...
-						sp.aircraft[v.ac].datablockType = FullDatablock
+						world.InitiateTrack(ac.Callsign) // ignore error...
+						sp.aircraft[ac].datablockType = FullDatablock
 					}
 				}
 			}
 
 			if !ps.DisableCRDA {
-				if ghost := sp.Facility.CRDAConfig.GetGhost(v.ac); ghost != nil {
-					sp.ghostAircraft[v.ac] = ghost
+				if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
+					sp.ghostAircraft[ac] = ghost
 					sp.aircraft[ghost] = &STARSAircraftState{
 						// TODO: other defaults?
 						isGhost:        true,
@@ -679,57 +680,61 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 					}
 				}
 			}
-			if squawkingSPC(v.ac.Squawk) {
-				if _, ok := sp.havePlayedSPCAlertSound[v.ac]; !ok {
-					sp.havePlayedSPCAlertSound[v.ac] = nil
+			if squawkingSPC(ac.Squawk) {
+				if _, ok := sp.havePlayedSPCAlertSound[ac]; !ok {
+					sp.havePlayedSPCAlertSound[ac] = nil
 					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 				}
 			}
 
 		case *RemovedAircraftEvent:
-			if ghost, ok := sp.ghostAircraft[v.ac]; ok {
+			ac := world.Aircraft[v.Callsign]
+			if ghost, ok := sp.ghostAircraft[ac]; ok {
 				delete(sp.aircraft, ghost)
 			}
-			delete(sp.aircraft, v.ac)
-			delete(sp.ghostAircraft, v.ac)
+			delete(sp.aircraft, ac)
+			delete(sp.ghostAircraft, ac)
 
 		case *ModifiedAircraftEvent:
-			if squawkingSPC(v.ac.Squawk) {
-				if _, ok := sp.havePlayedSPCAlertSound[v.ac]; !ok {
-					sp.havePlayedSPCAlertSound[v.ac] = nil
+			ac := world.Aircraft[v.Callsign]
+			if squawkingSPC(ac.Squawk) {
+				if _, ok := sp.havePlayedSPCAlertSound[ac]; !ok {
+					sp.havePlayedSPCAlertSound[ac] = nil
 					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 				}
 			}
 
 			if !ps.DisableCRDA {
 				// always start out by removing the old ghost
-				if oldGhost, ok := sp.ghostAircraft[v.ac]; ok {
+				if oldGhost, ok := sp.ghostAircraft[ac]; ok {
 					delete(sp.aircraft, oldGhost)
-					delete(sp.ghostAircraft, v.ac)
+					delete(sp.ghostAircraft, ac)
 				}
 			}
 
-			if _, ok := sp.aircraft[v.ac]; !ok {
-				sp.aircraft[v.ac] = &STARSAircraftState{}
+			if _, ok := sp.aircraft[ac]; !ok {
+				sp.aircraft[ac] = &STARSAircraftState{}
 			}
 
 			// new ghost
 			if !ps.DisableCRDA {
-				if ghost := sp.Facility.CRDAConfig.GetGhost(v.ac); ghost != nil {
-					sp.ghostAircraft[v.ac] = ghost
+				if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
+					sp.ghostAircraft[ac] = ghost
 					sp.aircraft[ghost] = &STARSAircraftState{isGhost: true}
 				}
 			}
 
 		case *PointOutEvent:
-			sp.pointedOutAircraft.Add(v.ac, v.controller, 10*time.Second)
+			ac := world.Aircraft[v.Callsign]
+			sp.pointedOutAircraft.Add(ac, v.Controller, 10*time.Second)
 
 		case *AcceptedHandoffEvent:
 			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
-			if v.controller != world.Callsign {
-				state := sp.aircraft[v.ac]
+			if v.Controller != world.Callsign {
+				ac := world.Aircraft[v.Callsign]
+				state := sp.aircraft[ac]
 				state.outboundHandoffAccepted = true
 				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 			}
@@ -1829,7 +1834,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					// ack accepted handoff by other controller
 					state.outboundHandoffAccepted = false
 					state.outboundHandoffFlashEnd = time.Now()
-					eventStream.Post(&AckedHandoffEvent{ac: ac})
+					eventStream.Post(&AckedHandoffEvent{Callsign: ac.Callsign})
 				} else { //if ac.IsAssociated() {
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock

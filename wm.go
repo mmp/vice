@@ -594,15 +594,15 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 			// Split the callsign into the ICAO and the flight number
 			// Note: this is buggy if we process multiple senders in a
 			// single call here, but that shouldn't happen...
-			idx := strings.IndexAny(v.callsign, "0123456789")
+			idx := strings.IndexAny(v.Callsign, "0123456789")
 			if idx == -1 {
-				textCallsign = v.callsign
+				textCallsign = v.Callsign
 			} else {
 				// Try to get the telephony.
-				icao, flight := v.callsign[:idx], v.callsign[idx:]
+				icao, flight := v.Callsign[:idx], v.Callsign[idx:]
 				if cs, ok := database.Callsigns[icao]; ok {
 					textCallsign = cs.Telephony + " " + flight
-					if ac := world.GetAircraft(v.callsign); ac != nil {
+					if ac := world.GetAircraft(v.Callsign); ac != nil {
 						if fp := ac.FlightPlan; fp != nil {
 							if strings.HasPrefix(fp.AircraftType, "H/") {
 								textCallsign += " heavy"
@@ -612,11 +612,11 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 						}
 					}
 				} else {
-					textCallsign = v.callsign
+					textCallsign = v.Callsign
 				}
 			}
 
-			texts = append(texts, v.message)
+			texts = append(texts, v.Message)
 		}
 	}
 	if texts != nil {
