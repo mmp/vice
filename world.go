@@ -73,7 +73,7 @@ type World struct {
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
-	return server.GetWindVector(p, alt)
+	return sim.GetWindVector(p, alt)
 }
 
 func (w *World) GetAirport(icao string) *Airport {
@@ -117,7 +117,7 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 }
 
 func (w *World) SetScratchpad(callsign string, scratchpad string) error {
-	return server.SetScratchpad(&AircraftPropertiesSpecifier{
+	return sim.SetScratchpad(&AircraftPropertiesSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Scratchpad:      scratchpad,
@@ -125,7 +125,7 @@ func (w *World) SetScratchpad(callsign string, scratchpad string) error {
 }
 
 func (w *World) SetTemporaryAltitude(callsign string, alt int) error {
-	return server.SetTemporaryAltitude(&AltitudeAssignment{
+	return sim.SetTemporaryAltitude(&AltitudeAssignment{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Altitude:        alt,
@@ -137,21 +137,21 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (w *World) InitiateTrack(callsign string) error {
-	return server.InitiateTrack(&AircraftSpecifier{
+	return sim.InitiateTrack(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
 }
 
 func (w *World) DropTrack(callsign string) error {
-	return server.DropTrack(&AircraftSpecifier{
+	return sim.DropTrack(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
 }
 
 func (w *World) Handoff(callsign string, controller string) error {
-	return server.Handoff(&HandoffSpecifier{
+	return sim.Handoff(&HandoffSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Controller:      controller,
@@ -159,7 +159,7 @@ func (w *World) Handoff(callsign string, controller string) error {
 }
 
 func (w *World) AcceptHandoff(callsign string) error {
-	return server.AcceptHandoff(&AircraftSpecifier{
+	return sim.AcceptHandoff(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
@@ -170,7 +170,7 @@ func (w *World) RejectHandoff(callsign string) error {
 }
 
 func (w *World) CancelHandoff(callsign string) error {
-	return server.CancelHandoff(&AircraftSpecifier{
+	return sim.CancelHandoff(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
@@ -251,20 +251,20 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) GetUpdates() {
-	if server != nil {
-		server.Update()
+	if sim != nil {
+		sim.Update()
 	}
 }
 
 func (w *World) Connected() bool {
-	return server != nil
+	return sim != nil
 }
 
 func (w *World) CurrentTime() time.Time {
-	if server == nil {
+	if sim == nil {
 		return time.Time{}
 	}
-	return server.CurrentTime()
+	return sim.CurrentTime()
 }
 
 func (w *World) GetWindowTitle() string {
@@ -278,7 +278,7 @@ func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
 
 func (w *World) AssignAltitude(ac *Aircraft, altitude int) error {
 	var resp string
-	err := server.AssignAltitude(&AltitudeAssignment{
+	err := sim.AssignAltitude(&AltitudeAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Altitude:        altitude,
@@ -291,7 +291,7 @@ func (w *World) AssignAltitude(ac *Aircraft, altitude int) error {
 
 func (w *World) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error {
 	var resp string
-	err := server.AssignHeading(&HeadingAssignment{
+	err := sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Heading:         heading,
@@ -305,7 +305,7 @@ func (w *World) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error 
 
 func (w *World) FlyPresentHeading(ac *Aircraft) error {
 	var resp string
-	err := server.AssignHeading(&HeadingAssignment{
+	err := sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Present:         true,
@@ -318,7 +318,7 @@ func (w *World) FlyPresentHeading(ac *Aircraft) error {
 
 func (w *World) TurnLeft(ac *Aircraft, deg int) error {
 	var resp string
-	err := server.AssignHeading(&HeadingAssignment{
+	err := sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		LeftDegrees:     deg,
@@ -331,7 +331,7 @@ func (w *World) TurnLeft(ac *Aircraft, deg int) error {
 
 func (w *World) TurnRight(ac *Aircraft, deg int) error {
 	var resp string
-	err := server.AssignHeading(&HeadingAssignment{
+	err := sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		RightDegrees:    deg,
@@ -344,7 +344,7 @@ func (w *World) TurnRight(ac *Aircraft, deg int) error {
 
 func (w *World) AssignSpeed(ac *Aircraft, speed int) error {
 	var resp string
-	err := server.AssignSpeed(&SpeedAssignment{
+	err := sim.AssignSpeed(&SpeedAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Speed:           speed,
@@ -357,7 +357,7 @@ func (w *World) AssignSpeed(ac *Aircraft, speed int) error {
 
 func (w *World) DirectFix(ac *Aircraft, fix string) error {
 	var resp string
-	err := server.DirectFix(&FixSpecifier{
+	err := sim.DirectFix(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
@@ -370,7 +370,7 @@ func (w *World) DirectFix(ac *Aircraft, fix string) error {
 
 func (w *World) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
 	var resp string
-	err := server.DepartFixHeading(&FixSpecifier{
+	err := sim.DepartFixHeading(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
@@ -384,7 +384,7 @@ func (w *World) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
 
 func (w *World) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
 	var resp string
-	err := server.CrossFixAt(&FixSpecifier{
+	err := sim.CrossFixAt(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
@@ -399,7 +399,7 @@ func (w *World) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
 
 func (w *World) ExpectApproach(ac *Aircraft, approach string) error {
 	var resp string
-	err := server.ExpectApproach(&ApproachAssignment{
+	err := sim.ExpectApproach(&ApproachAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
@@ -412,7 +412,7 @@ func (w *World) ExpectApproach(ac *Aircraft, approach string) error {
 
 func (w *World) ClearedApproach(ac *Aircraft, approach string) error {
 	var resp string
-	err := server.ClearedApproach(&ApproachClearance{
+	err := sim.ClearedApproach(&ApproachClearance{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
@@ -425,7 +425,7 @@ func (w *World) ClearedApproach(ac *Aircraft, approach string) error {
 
 func (w *World) ClearedStraightInApproach(ac *Aircraft, approach string) error {
 	var resp string
-	err := server.ClearedApproach(&ApproachClearance{
+	err := sim.ClearedApproach(&ApproachClearance{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
@@ -463,7 +463,7 @@ func (w *World) PrintInfo(ac *Aircraft) error {
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft) error {
-	return server.DeleteAircraft(&AircraftSpecifier{
+	return sim.DeleteAircraft(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 	}, nil)

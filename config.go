@@ -35,7 +35,7 @@ type GlobalConfig struct {
 	DevVideoMapFile string
 
 	// This is only for serialize / deserialize
-	Server   *Server
+	Sim      *Sim
 	Callsign string
 
 	highlightedLocation        Point2LL
@@ -76,8 +76,8 @@ func (c *GlobalConfig) Save() error {
 }
 
 func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
-	gc.Server = server // so that it's serialized out...
-	gc.Server.SerializeTime = server.CurrentTime()
+	gc.Sim = sim // so that it's serialized out...
+	gc.Sim.SerializeTime = sim.CurrentTime()
 	gc.Callsign = world.Callsign
 
 	// Grab assorted things that may have changed during this session.
@@ -181,13 +181,13 @@ func (gc *GlobalConfig) Activate() {
 
 	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
 
-	if gc.Server != nil {
-		server = gc.Server
-		server.Paused = false // override
-		if err := server.Activate(); err != nil {
-			server = nil
+	if gc.Sim != nil {
+		sim = gc.Sim
+		sim.Paused = false // override
+		if err := sim.Activate(); err != nil {
+			sim = nil
 		} else {
-			world, err = server.SignOn(gc.Callsign)
+			world, err = sim.SignOn(gc.Callsign)
 			if err != nil {
 				lg.Errorf("%v", err) // TODO how handle this?
 			}

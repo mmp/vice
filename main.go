@@ -36,7 +36,7 @@ var (
 	stats          Stats
 	database       *StaticDatabase
 	world          *World
-	server         *Server
+	sim            *Sim
 	eventStream    *EventStream
 	lg             *Logger
 	scenarioGroups map[string]*ScenarioGroup
@@ -120,10 +120,10 @@ func main() {
 
 	LoadOrMakeDefaultConfig()
 
-	if globalConfig.Server != nil {
+	if globalConfig.Sim != nil {
 		// To have them around for initialization...
-		server = globalConfig.Server
-		world = globalConfig.Server.World
+		sim = globalConfig.Sim
+		world = globalConfig.Sim.World
 	} else {
 		world = &World{}
 	}

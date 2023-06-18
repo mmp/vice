@@ -133,7 +133,7 @@ func uiInit(renderer Renderer) {
 		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}), false)
 	}
 
-	if globalConfig.Server == nil {
+	if globalConfig.Sim == nil {
 		uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 	}
 }
@@ -187,17 +187,17 @@ func drawUI(platform Platform) {
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
-		if server != nil {
-			if server.IsPaused() {
+		if sim != nil {
+			if sim.IsPaused() {
 				if imgui.Button(FontAwesomeIconPlayCircle) {
-					server.TogglePause()
+					sim.TogglePause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
 				if imgui.Button(FontAwesomeIconPauseCircle) {
-					server.TogglePause()
+					sim.TogglePause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Pause simulation")
@@ -212,9 +212,9 @@ func drawUI(platform Platform) {
 			imgui.SetTooltip("Start new simulation")
 		}
 
-		if server != nil {
+		if sim != nil {
 			if imgui.Button(FontAwesomeIconCog) {
-				server.ToggleActivateSettingsWindow()
+				sim.ToggleActivateSettingsWindow()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Open settings window")
@@ -249,8 +249,8 @@ func drawUI(platform Platform) {
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	if server != nil {
-		server.DrawSettingsWindow()
+	if sim != nil {
+		sim.DrawSettingsWindow()
 	}
 
 	drawActiveDialogBoxes()

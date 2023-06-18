@@ -1,4 +1,4 @@
-// server.go
+// sim.go
 // Copyright(c) 2023 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -25,12 +25,6 @@ var (
 
 /*
 TODO:
-***   maybe Sim is really something like World and is purely read-only data for stars, etc?
- then Server becomes Sim, it handles all changes to the world.
- need to move time management, lots of other stuff to server
- then things like server rate need to come through the api...
-  - automatic handoffs, etc should be handled here.
-
 - prespawn not working?
 - don't want eventsId allocated for the Sim inside Server...
 
@@ -317,9 +311,9 @@ func (c *NewSimConfiguration) Start() error {
 	}
 	world.Disconnect()
 
-	server = NewServer(*c)
+	sim = NewSim(*c)
 	var err error
-	world, err = server.SignOn(c.scenario.Callsign)
+	world, err = sim.SignOn(c.scenario.Callsign)
 	if err != nil {
 		return err
 	}
@@ -334,7 +328,7 @@ func (c *NewSimConfiguration) Start() error {
 	return nil
 }
 
-type Server struct {
+type Sim struct {
 	World       *World
 	controllers map[string]*ServerController // from token
 
@@ -381,10 +375,10 @@ type ServerController struct {
 	// *net.Conn?
 }
 
-func NewServer(ssc NewSimConfiguration) *Server {
+func NewSim(ssc NewSimConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
-	s := &Server{
+	s := &Sim{
 		controllers: make(map[string]*ServerController),
 
 		DepartureRates:    DuplicateMap(ssc.departureRates),
@@ -408,7 +402,7 @@ func NewServer(ssc NewSimConfiguration) *Server {
 	return s
 }
 
-func newWorld(ssc NewSimConfiguration, s *Server) *World {
+func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 	w := &World{
 		ScenarioGroupName: ssc.scenarioGroup.Name,
 		ScenarioName:      ssc.scenario.Name(),
@@ -502,7 +496,7 @@ func newWorld(ssc NewSimConfiguration, s *Server) *World {
 	return w
 }
 
-func (s *Server) SignOn(callsign string) (*World, error) {
+func (s *Sim) SignOn(callsign string) (*World, error) {
 	for _, ctrl := range s.controllers {
 		if ctrl.Callsign == callsign {
 			return nil, ErrControllerAlreadySignedIn
@@ -527,25 +521,25 @@ func (s *Server) SignOn(callsign string) (*World, error) {
 	return w, nil
 }
 
-func (s *Server) SignOff(token string, _ *struct{}) error {
+func (s *Sim) SignOff(token string, _ *struct{}) error {
 	delete(s.controllers, token)
 	return nil
 }
 
-func (s *Server) IsPaused() bool {
+func (s *Sim) IsPaused() bool {
 	return s.Paused
 }
 
-func (s *Server) TogglePause() {
+func (s *Sim) TogglePause() {
 	s.Paused = !s.Paused
 	s.lastUpdateTime = time.Now() // ignore time passage...
 }
 
-func (s *Server) CurrentTime() time.Time {
+func (s *Sim) CurrentTime() time.Time {
 	return s.currentTime
 }
 
-func (s *Server) GetWindVector(p Point2LL, alt float32) Point2LL {
+func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
 	base := time.UnixMicro(0)
@@ -561,7 +555,7 @@ func (s *Server) GetWindVector(p Point2LL, alt float32) Point2LL {
 	return vWind
 }
 
-func (s *Server) Activate() error {
+func (s *Sim) Activate() error {
 	var e ErrorLogger
 
 	s.controllers = make(map[string]*ServerController)
@@ -685,11 +679,11 @@ func (s *Server) Activate() error {
 ///////////////////////////////////////////////////////////////////////////
 // Settings
 
-func (s *Server) ToggleActivateSettingsWindow() {
+func (s *Sim) ToggleActivateSettingsWindow() {
 	s.showSettings = !s.showSettings
 }
 
-func (s *Server) DrawSettingsWindow() {
+func (s *Sim) DrawSettingsWindow() {
 	if !s.showSettings {
 		return
 	}
@@ -807,7 +801,7 @@ func (s *Server) DrawSettingsWindow() {
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
-func (s *Server) Update() {
+func (s *Sim) Update() {
 	if s.Paused {
 		return
 	}
@@ -843,7 +837,7 @@ func (s *Server) Update() {
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
-func (s *Server) updateState() {
+func (s *Sim) updateState() {
 	now := s.currentTime
 	for callsign, t := range s.Handoffs {
 		if now.After(t) {
@@ -894,7 +888,7 @@ func (s *Server) updateState() {
 	s.spawnAircraft()
 }
 
-func (s *Server) prespawn() {
+func (s *Sim) prespawn() {
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
 	for i := 0; i < initialSimSeconds; i++ {
@@ -911,7 +905,7 @@ func (s *Server) prespawn() {
 ///////////////////////////////////////////////////////////////////////////
 // Spawning aircraft
 
-func (s *Server) setInitialSpawnTimes() {
+func (s *Sim) setInitialSpawnTimes() {
 	// Randomize next spawn time for departures and arrivals; may be before
 	// or after the current time.
 	randomSpawn := func(rate int) time.Time {
@@ -966,7 +960,7 @@ func sampleRateMap(rates map[string]*int32) (string, int) {
 	return result, rateSum
 }
 
-func (s *Server) spawnAircraft() {
+func (s *Sim) spawnAircraft() {
 	now := world.CurrentTime()
 
 	addAircraft := func(ac *Aircraft) {
@@ -1176,7 +1170,7 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 	}
 }
 
-func (s *Server) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
+func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	arrivals := s.World.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
@@ -1245,7 +1239,7 @@ func (s *Server) SpawnArrival(airportName string, arrivalGroup string) *Aircraft
 	return ac
 }
 
-func (s *Server) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
+func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < s.DepartureChallenge {
 		// 50/50 split between the exact same departure and a departure to
@@ -1328,7 +1322,7 @@ type AircraftPropertiesSpecifier struct {
 	Scratchpad      string
 }
 
-func (s *Server) dispatchCommand(token string, callsign string,
+func (s *Sim) dispatchCommand(token string, callsign string,
 	check func(c *Controller, ac *Aircraft) error,
 	cmd func(*Controller, *Aircraft) (string, error), response *string) error {
 	if sc, ok := s.controllers[token]; !ok {
@@ -1355,7 +1349,7 @@ func (s *Server) dispatchCommand(token string, callsign string,
 
 // Commands that are allowed by the controlling controller, who may not still have the track;
 // e.g., turns after handoffs.
-func (s *Server) dispatchControllingCommand(token string, callsign string,
+func (s *Sim) dispatchControllingCommand(token string, callsign string,
 	cmd func(*Controller, *Aircraft) (string, error), response *string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -1368,7 +1362,7 @@ func (s *Server) dispatchControllingCommand(token string, callsign string,
 }
 
 // Commands that are allowed by tracking controller only.
-func (s *Server) dispatchTrackingCommand(token string, callsign string,
+func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	cmd func(*Controller, *Aircraft) (string, error), response *string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -1380,7 +1374,7 @@ func (s *Server) dispatchTrackingCommand(token string, callsign string,
 		cmd, response)
 }
 
-func (s *Server) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
+func (s *Sim) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
 	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.Scratchpad = a.Scratchpad
@@ -1389,7 +1383,7 @@ func (s *Server) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) erro
 		}, nil)
 }
 
-func (s *Server) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(a.ControllerToken, a.Callsign,
 		func(c *Controller, ac *Aircraft) error {
 			// Make sure no one has the track already
@@ -1407,7 +1401,7 @@ func (s *Server) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 		}, nil)
 }
 
-func (s *Server) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TrackingController = ""
@@ -1424,7 +1418,7 @@ type HandoffSpecifier struct {
 	Controller      string
 }
 
-func (s *Server) Handoff(h *HandoffSpecifier, _ *struct{}) error {
+func (s *Sim) Handoff(h *HandoffSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(h.ControllerToken, h.Callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
@@ -1445,7 +1439,7 @@ func (s *Server) Handoff(h *HandoffSpecifier, _ *struct{}) error {
 		}, nil)
 }
 
-func (s *Server) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.InboundHandoffController != ctrl.Callsign {
@@ -1463,7 +1457,7 @@ func (s *Server) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 		}, nil)
 }
 
-func (s *Server) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			delete(s.Handoffs, ac.Callsign)
@@ -1483,13 +1477,13 @@ type AltitudeAssignment struct {
 	Altitude        int
 }
 
-func (s *Server) AssignAltitude(alt *AltitudeAssignment, response *string) error {
+func (s *Sim) AssignAltitude(alt *AltitudeAssignment, response *string) error {
 	return s.dispatchControllingCommand(alt.ControllerToken, alt.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.AssignAltitude(alt.Altitude) },
 		response)
 }
 
-func (s *Server) SetTemporaryAltitude(alt *AltitudeAssignment, response *string) error {
+func (s *Sim) SetTemporaryAltitude(alt *AltitudeAssignment, response *string) error {
 	return s.dispatchTrackingCommand(alt.ControllerToken, alt.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TempAltitude = alt.Altitude
@@ -1507,7 +1501,7 @@ type HeadingAssignment struct {
 	Turn            TurnMethod
 }
 
-func (s *Server) AssignHeading(hdg *HeadingAssignment, response *string) error {
+func (s *Sim) AssignHeading(hdg *HeadingAssignment, response *string) error {
 	return s.dispatchControllingCommand(hdg.ControllerToken, hdg.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			if hdg.Present {
@@ -1532,7 +1526,7 @@ type SpeedAssignment struct {
 	Speed           int
 }
 
-func (s *Server) AssignSpeed(sa *SpeedAssignment, response *string) error {
+func (s *Sim) AssignSpeed(sa *SpeedAssignment, response *string) error {
 	return s.dispatchControllingCommand(sa.ControllerToken, sa.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.AssignSpeed(sa.Speed) },
 		response)
@@ -1547,19 +1541,19 @@ type FixSpecifier struct {
 	Speed           int
 }
 
-func (s *Server) DirectFix(f *FixSpecifier, response *string) error {
+func (s *Sim) DirectFix(f *FixSpecifier, response *string) error {
 	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.DirectFix(f.Fix) },
 		response)
 }
 
-func (s *Server) DepartFixHeading(f *FixSpecifier, response *string) error {
+func (s *Sim) DepartFixHeading(f *FixSpecifier, response *string) error {
 	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.DepartFixHeading(f.Fix, f.Heading) },
 		response)
 }
 
-func (s *Server) CrossFixAt(f *FixSpecifier, response *string) error {
+func (s *Sim) CrossFixAt(f *FixSpecifier, response *string) error {
 	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.CrossFixAt(f.Fix, f.Altitude, f.Speed) },
 		response)
@@ -1571,7 +1565,7 @@ type ApproachAssignment struct {
 	Approach        string
 }
 
-func (s *Server) ExpectApproach(a *ApproachAssignment, response *string) error {
+func (s *Sim) ExpectApproach(a *ApproachAssignment, response *string) error {
 	return s.dispatchControllingCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.ExpectApproach(a.Approach) },
 		response)
@@ -1584,7 +1578,7 @@ type ApproachClearance struct {
 	StraightIn      bool
 }
 
-func (s *Server) ClearedApproach(c *ApproachClearance, response *string) error {
+func (s *Sim) ClearedApproach(c *ApproachClearance, response *string) error {
 	return s.dispatchControllingCommand(c.ControllerToken, c.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			if c.StraightIn {
@@ -1595,7 +1589,7 @@ func (s *Server) ClearedApproach(c *ApproachClearance, response *string) error {
 		}, response)
 }
 
-func (s *Server) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) error { return nil },
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
@@ -1611,6 +1605,6 @@ type ServerUpdates struct {
 	Aircraft map[string]*Aircraft
 }
 
-func (s *Server) GetUpdates(token string, u *ServerUpdates) error {
+func (s *Sim) GetUpdates(token string, u *ServerUpdates) error {
 	return nil
 }
