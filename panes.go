@@ -311,11 +311,11 @@ func (fsp *FlightStripPane) Deactivate() {
 }
 
 func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
-	return ac.FlightPlan != nil && sim.DepartureAirports()[ac.FlightPlan.DepartureAirport] != nil
+	return ac.FlightPlan != nil && sim.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
 }
 
 func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
-	return ac.FlightPlan != nil && sim.ArrivalAirports()[ac.FlightPlan.ArrivalAirport] != nil
+	return ac.FlightPlan != nil && sim.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }

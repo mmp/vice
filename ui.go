@@ -133,7 +133,7 @@ func uiInit(renderer Renderer) {
 		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}), false)
 	}
 
-	if globalConfig.Sim == nil {
+	if globalConfig.Server == nil {
 		uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 	}
 }
@@ -187,19 +187,21 @@ func drawUI(platform Platform) {
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
-		if sim.IsPaused() {
-			if imgui.Button(FontAwesomeIconPlayCircle) {
-				sim.TogglePause()
-			}
-			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Resume simulation")
-			}
-		} else {
-			if imgui.Button(FontAwesomeIconPauseCircle) {
-				sim.TogglePause()
-			}
-			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Pause simulation")
+		if server != nil {
+			if server.IsPaused() {
+				if imgui.Button(FontAwesomeIconPlayCircle) {
+					server.TogglePause()
+				}
+				if imgui.IsItemHovered() {
+					imgui.SetTooltip("Resume simulation")
+				}
+			} else {
+				if imgui.Button(FontAwesomeIconPauseCircle) {
+					server.TogglePause()
+				}
+				if imgui.IsItemHovered() {
+					imgui.SetTooltip("Pause simulation")
+				}
 			}
 		}
 
@@ -210,11 +212,13 @@ func drawUI(platform Platform) {
 			imgui.SetTooltip("Start new simulation")
 		}
 
-		if imgui.Button(FontAwesomeIconCog) {
-			sim.ToggleActivateSettingsWindow()
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Open settings window")
+		if server != nil {
+			if imgui.Button(FontAwesomeIconCog) {
+				server.ToggleActivateSettingsWindow()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Open settings window")
+			}
 		}
 
 		if imgui.Button(FontAwesomeIconQuestionCircle) {
@@ -245,7 +249,9 @@ func drawUI(platform Platform) {
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	sim.DrawSettingsWindow()
+	if server != nil {
+		server.DrawSettingsWindow()
+	}
 
 	drawActiveDialogBoxes()
 

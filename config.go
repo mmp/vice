@@ -35,7 +35,8 @@ type GlobalConfig struct {
 	DevVideoMapFile string
 
 	// This is only for serialize / deserialize
-	Sim *Sim
+	Server   *Server
+	Callsign string
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
@@ -75,8 +76,9 @@ func (c *GlobalConfig) Save() error {
 }
 
 func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
-	gc.Sim = sim // so that it's serialized out...
-	gc.Sim.SerializeTime = sim.CurrentTime()
+	gc.Server = server // so that it's serialized out...
+	gc.Server.SerializeTime = server.CurrentTime()
+	gc.Callsign = sim.Callsign
 
 	// Grab assorted things that may have changed during this session.
 	gc.ImGuiSettings = imgui.SaveIniSettingsToMemory()
@@ -139,10 +141,7 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.Version = 1
 		}
 		if globalConfig.Version < 3 {
-			// Just knock out any in-progress sim since the Aircraft
-			// representation has changed and it's not worth trying to
-			// remap it to the new one.
-			globalConfig.Sim = nil
+			// No need to clear out the *Sim pointer any more...
 			globalConfig.Version = 3
 		}
 	}
@@ -182,12 +181,16 @@ func (gc *GlobalConfig) Activate() {
 
 	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
 
-	if gc.Sim != nil {
-		sim.Paused = false // override
-
-		if err := gc.Sim.Activate(); err != nil {
-			gc.Sim = nil
-			sim = &Sim{}
+	if gc.Server != nil {
+		server = gc.Server
+		server.Paused = false // override
+		if err := server.Activate(); err != nil {
+			server = nil
+		} else {
+			sim, err = server.SignOn(gc.Callsign)
+			if err != nil {
+				lg.Errorf("%v", err) // TODO how handle this?
+			}
 		}
 	}
 }

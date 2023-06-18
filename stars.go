@@ -598,7 +598,7 @@ func (sp *STARSPane) Deactivate() {
 	sp.weatherRadar.Deactivate()
 }
 
-func (sp *STARSPane) ResetScenarioGroup() {
+func (sp *STARSPane) ResetWorld() {
 	ps := &sp.CurrentPreferenceSet
 
 	ps.Center = sim.Center
@@ -610,13 +610,11 @@ func (sp *STARSPane) ResetScenarioGroup() {
 	if len(sim.STARSMaps) > 0 {
 		ps.VideoMapVisible[sim.STARSMaps[0].Name] = nil
 	}
-}
 
-func (sp *STARSPane) ResetScenario(s *Scenario) {
 	// Make the scenario's default video map be visible
-	ps := &sp.CurrentPreferenceSet
-	ps.VideoMapVisible = make(map[string]interface{})
-	ps.VideoMapVisible[s.DefaultMap] = nil
+	sg := scenarioGroups[sim.ScenarioGroupName]
+	sc := sg.Scenarios[sim.ScenarioName]
+	ps.VideoMapVisible[sc.DefaultMap] = nil
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -1123,12 +1121,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 						sp.AutoTrackDepartures = make(map[string]interface{})
 					} else if airport == "ALL" {
 						sp.AutoTrackDepartures = make(map[string]interface{})
-						for name := range sim.DepartureAirports() {
+						for name := range sim.DepartureAirports {
 							sp.AutoTrackDepartures[name] = nil
 						}
 					} else {
 						// See if it's in the facility
-						if sim.DepartureAirports()[airport] != nil {
+						if sim.DepartureAirports[airport] != nil {
 							sp.AutoTrackDepartures[airport] = nil
 						} else {
 							status.err = ErrSTARSIllegalParam
@@ -2967,7 +2965,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 		// Untracked departures departing from one of our airports
 		for _, ac := range aircraft {
 			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
-				if ap := sim.DepartureAirports()[fp.DepartureAirport]; ap != nil {
+				if ap := sim.DepartureAirports[fp.DepartureAirport]; ap != nil {
 					dep[sp.getAircraftIndex(ac)] = ac
 					break
 				}
@@ -3297,7 +3295,7 @@ func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool)
 		return
 	}
 
-	if _, ok := sim.DepartureAirports()[ac.FlightPlan.DepartureAirport]; ok {
+	if _, ok := sim.DepartureAirports[ac.FlightPlan.DepartureAirport]; ok {
 		if len(sim.DepartureAirspace) > 0 {
 			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.DepartureAirspace)
 			if !ac.HaveEnteredAirspace {
@@ -3307,7 +3305,7 @@ func (sp *STARSPane) OutsideAirspace(ac *Aircraft) (alts [][2]int, outside bool)
 				outside = !inDepartureAirspace
 			}
 		}
-	} else if _, ok := sim.ArrivalAirports()[ac.FlightPlan.ArrivalAirport]; ok {
+	} else if _, ok := sim.ArrivalAirports[ac.FlightPlan.ArrivalAirport]; ok {
 		if len(sim.ApproachAirspace) > 0 {
 			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, sim.ApproachAirspace)
 			if !ac.HaveEnteredAirspace {
@@ -3892,7 +3890,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 				state.isSelected = !state.isSelected
 			}
 		}
-	} else if sim.Paused {
+	} else if server != nil && server.IsPaused() {
 		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
 			var info []string
 			if ac.IsDeparture {
