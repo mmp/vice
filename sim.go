@@ -320,11 +320,13 @@ func (c *NewSimConfiguration) Start() error {
 // Sim
 
 type Sim struct {
+	Server *Server
+	token  string
+
 	ScenarioGroupName string
 	ScenarioName      string
 
 	Aircraft    map[string]*Aircraft
-	Handoffs    map[string]time.Time
 	METAR       map[string]*METAR
 	Controllers map[string]*Controller
 
@@ -409,7 +411,6 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		DepartureRunways:  ssc.scenario.DepartureRunways,
 
 		Aircraft: make(map[string]*Aircraft),
-		Handoffs: make(map[string]time.Time),
 		METAR:    make(map[string]*METAR),
 
 		DepartureRates:    DuplicateMap(ssc.departureRates),
@@ -467,6 +468,13 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	}
 
 	sim.setInitialSpawnTimes()
+
+	sim.Server = NewServer(sim)
+	var err error
+	sim.token, err = sim.Server.SignOn(sim.Callsign)
+	if err != nil {
+		panic(err)
+	}
 
 	return sim
 }
@@ -577,6 +585,14 @@ func (sim *Sim) Activate() error {
 	sim.lastUpdateTime = now
 	sim.eventsId = eventStream.Subscribe()
 
+	// TEMPORARY HAX
+	sim.Server = NewServer(sim)
+	var err error
+	sim.token, err = sim.Server.SignOn(sim.Callsign)
+	if err != nil {
+		panic(err)
+	}
+
 	// A number of time.Time values are included in the serialized Sim.
 	// updateTime is a helper function that rewrites them to be in terms of
 	// the current time, using the serializion time as a baseline.
@@ -625,9 +641,11 @@ func (sim *Sim) Activate() error {
 		eventStream.Post(&AddedAircraftEvent{ac: ac})
 	}
 
-	for ho, t := range sim.Handoffs {
-		sim.Handoffs[ho] = updateTime(t)
-	}
+	/*
+		for ho, t := range sim.Handoffs {
+			sim.Handoffs[ho] = updateTime(t)
+		}
+	*/
 
 	for group, t := range sim.NextArrivalSpawn {
 		sim.NextArrivalSpawn[group] = updateTime(t)
@@ -709,28 +727,19 @@ func (sim *Sim) SetSquawkAutomatic(callsign string) error {
 }
 
 func (sim *Sim) SetScratchpad(callsign string, scratchpad string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Callsign {
-		// Scratchpad is tracking controller, not controlling controller
-		return ErrOtherControllerHasTrack
-	} else {
-		ac.Scratchpad = scratchpad
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		return nil
-	}
+	return sim.Server.SetScratchpad(&AircraftPropertiesSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+		Scratchpad:      scratchpad,
+	}, nil)
 }
 
 func (sim *Sim) SetTemporaryAltitude(callsign string, alt int) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Callsign {
-		// Temp alt is tracking controller, not controlling controller
-		return ErrOtherControllerHasTrack
-	} else {
-		ac.TempAltitude = alt
-		return nil
-	}
+	return sim.Server.SetTemporaryAltitude(&AltitudeAssignment{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+		Altitude:        alt,
+	}, nil)
 }
 
 func (sim *Sim) AmendFlightPlan(callsign string, fp FlightPlan) error {
@@ -738,62 +747,32 @@ func (sim *Sim) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (sim *Sim) InitiateTrack(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != "" {
-		return ErrOtherControllerHasTrack
-	} else {
-		ac.TrackingController = sim.Callsign
-		ac.ControllingController = sim.Callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		eventStream.Post(&InitiatedTrackEvent{ac: ac})
-		return nil
-	}
+	return sim.Server.InitiateTrack(&AircraftSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+	}, nil)
 }
 
 func (sim *Sim) DropTrack(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		ac.TrackingController = ""
-		ac.ControllingController = ""
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		eventStream.Post(&DroppedTrackEvent{ac: ac})
-		return nil
-	}
+	return sim.Server.DropTrack(&AircraftSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+	}, nil)
 }
 
 func (sim *Sim) Handoff(callsign string, controller string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else if ctrl := sim.GetController(controller); ctrl == nil {
-		return ErrNoController
-	} else {
-		ac.OutboundHandoffController = ctrl.Callsign
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		acceptDelay := 4 + rand.Intn(10)
-		sim.Handoffs[callsign] = sim.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
-		return nil
-	}
+	return sim.Server.Handoff(&HandoffSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+		Controller:      controller,
+	}, nil)
 }
 
 func (sim *Sim) AcceptHandoff(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.InboundHandoffController != sim.Callsign {
-		return ErrNotBeingHandedOffToMe
-	} else {
-		ac.InboundHandoffController = ""
-		ac.TrackingController = sim.Callsign
-		ac.ControllingController = sim.Callsign
-		eventStream.Post(&AcceptedHandoffEvent{controller: sim.Callsign, ac: ac})
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac}) // FIXME...
-		return nil
-	}
+	return sim.Server.AcceptHandoff(&AircraftSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+	}, nil)
 }
 
 func (sim *Sim) RejectHandoff(callsign string) error {
@@ -801,20 +780,10 @@ func (sim *Sim) RejectHandoff(callsign string) error {
 }
 
 func (sim *Sim) CancelHandoff(callsign string) error {
-	if ac, ok := sim.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
-	} else if ac.TrackingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		delete(sim.Handoffs, ac.Callsign)
-
-		ac.OutboundHandoffController = ""
-		// TODO: we are inconsistent in other control backends about events
-		// when user does things like this; sometimes no event, sometimes
-		// modified a/c event...
-		eventStream.Post(&ModifiedAircraftEvent{ac: ac})
-		return nil
-	}
+	return sim.Server.CancelHandoff(&AircraftSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        callsign,
+	}, nil)
 }
 
 func (sim *Sim) PointOut(callsign string, controller string) error {
@@ -928,21 +897,13 @@ func (sim *Sim) GetUpdates() {
 
 // FIXME: this is poorly named...
 func (sim *Sim) updateState() {
-	// Accept any handoffs whose time has time...
-	now := sim.CurrentTime()
-	for callsign, t := range sim.Handoffs {
-		if now.After(t) {
-			if ac, ok := sim.Aircraft[callsign]; ok {
-				ac.TrackingController = ac.OutboundHandoffController
-				ac.OutboundHandoffController = ""
-				eventStream.Post(&AcceptedHandoffEvent{controller: ac.TrackingController, ac: ac})
-				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
-			}
-			delete(sim.Handoffs, callsign)
-		}
+	// Let the server do its thing (TODO: subsume all of this into that...)
+	if sim.Server != nil {
+		sim.Server.Update()
 	}
 
 	// Update the simulation state once a second.
+	now := sim.CurrentTime()
 	if now.Sub(sim.lastSimUpdate) >= time.Second {
 		sim.lastSimUpdate = now
 		for _, ac := range sim.Aircraft {
@@ -997,119 +958,133 @@ func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
 }
 
 func (sim *Sim) AssignAltitude(ac *Aircraft, altitude int) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.AssignAltitude(altitude)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.AssignAltitude(&AltitudeAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Altitude:        altitude,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.AssignHeading(heading, turn)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.AssignHeading(&HeadingAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Heading:         heading,
+		Turn:            turn,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) FlyPresentHeading(ac *Aircraft) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		_, err := ac.AssignHeading(int(ac.Heading), TurnClosest)
-		if err == nil {
-			pilotResponse(ac, "fly present heading")
-		}
-		return err
+	var resp string
+	err := sim.Server.AssignHeading(&HeadingAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Present:         true,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) TurnLeft(ac *Aircraft, deg int) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.TurnLeft(deg)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.AssignHeading(&HeadingAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		LeftDegrees:     deg,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) TurnRight(ac *Aircraft, deg int) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.TurnRight(deg)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.AssignHeading(&HeadingAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		RightDegrees:    deg,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) AssignSpeed(ac *Aircraft, speed int) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.AssignSpeed(speed)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.AssignSpeed(&SpeedAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Speed:           speed,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) DirectFix(ac *Aircraft, fix string) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.DirectFix(fix)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.DirectFix(&FixSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Fix:             fix,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.DepartFixHeading(fix, hdg)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.DepartFixHeading(&FixSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Fix:             fix,
+		Heading:         hdg,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	} else {
-		resp, err := ac.CrossFixAt(fix, alt, speed)
-		if resp != "" {
-			pilotResponse(ac, "%s", resp)
-		}
-		return err
+	var resp string
+	err := sim.Server.CrossFixAt(&FixSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Fix:             fix,
+		Altitude:        alt,
+		Speed:           speed,
+	}, &resp)
+	if resp != "" {
+		pilotResponse(ac, "%s", resp)
 	}
+	return err
 }
 
 func (sim *Sim) ExpectApproach(ac *Aircraft, approach string) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	}
-
-	resp, err := ac.ExpectApproach(approach)
+	var resp string
+	err := sim.Server.ExpectApproach(&ApproachAssignment{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Approach:        approach,
+	}, &resp)
 	if resp != "" {
 		pilotResponse(ac, "%s", resp)
 	}
@@ -1117,11 +1092,12 @@ func (sim *Sim) ExpectApproach(ac *Aircraft, approach string) error {
 }
 
 func (sim *Sim) ClearedApproach(ac *Aircraft, approach string) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	}
-
-	resp, err := ac.ClearedApproach(approach)
+	var resp string
+	err := sim.Server.ClearedApproach(&ApproachClearance{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Approach:        approach,
+	}, &resp)
 	if resp != "" {
 		pilotResponse(ac, "%s", resp)
 	}
@@ -1129,11 +1105,13 @@ func (sim *Sim) ClearedApproach(ac *Aircraft, approach string) error {
 }
 
 func (sim *Sim) ClearedStraightInApproach(ac *Aircraft, approach string) error {
-	if ac.ControllingController != sim.Callsign {
-		return ErrOtherControllerHasTrack
-	}
-
-	resp, err := ac.ClearedStraightInApproach(approach)
+	var resp string
+	err := sim.Server.ClearedApproach(&ApproachClearance{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+		Approach:        approach,
+		StraightIn:      true,
+	}, &resp)
 	if resp != "" {
 		pilotResponse(ac, "%s", resp)
 	}
@@ -1166,9 +1144,10 @@ func (sim *Sim) PrintInfo(ac *Aircraft) error {
 }
 
 func (sim *Sim) DeleteAircraft(ac *Aircraft) error {
-	eventStream.Post(&RemovedAircraftEvent{ac: ac})
-	delete(sim.Aircraft, ac.Callsign)
-	return nil
+	return sim.Server.DeleteAircraft(&AircraftSpecifier{
+		ControllerToken: sim.token,
+		Callsign:        ac.Callsign,
+	}, nil)
 }
 
 func (sim *Sim) IsPaused() bool {
