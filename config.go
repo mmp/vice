@@ -78,7 +78,7 @@ func (c *GlobalConfig) Save() error {
 func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
 	gc.Server = server // so that it's serialized out...
 	gc.Server.SerializeTime = server.CurrentTime()
-	gc.Callsign = sim.Callsign
+	gc.Callsign = world.Callsign
 
 	// Grab assorted things that may have changed during this session.
 	gc.ImGuiSettings = imgui.SaveIniSettingsToMemory()
@@ -187,7 +187,7 @@ func (gc *GlobalConfig) Activate() {
 		if err := server.Activate(); err != nil {
 			server = nil
 		} else {
-			sim, err = server.SignOn(gc.Callsign)
+			world, err = server.SignOn(gc.Callsign)
 			if err != nil {
 				lg.Errorf("%v", err) // TODO how handle this?
 			}

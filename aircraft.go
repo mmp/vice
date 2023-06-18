@@ -106,7 +106,7 @@ func (a *Aircraft) TrackGroundspeed() int {
 
 // Note: returned value includes the magnetic correction
 func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + sim.MagneticVariation
+	return a.Tracks[0].Heading + world.MagneticVariation
 }
 
 // Perhaps confusingly, the vector returned by HeadingVector() is not
@@ -133,7 +133,7 @@ func (a *Aircraft) HaveHeading() bool {
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, sim.MagneticVariation)
+	return headingp2ll(a.TrackPosition(), p, world.MagneticVariation)
 }
 
 func (a *Aircraft) LostTrack(now time.Time) bool {
@@ -474,9 +474,9 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 
 	if wp[0].ProcedureTurn.Entry180NoPT {
 		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
-			sim.MagneticVariation)
+			world.MagneticVariation)
 		acFixHeading := headingp2ll(ac.Position, wp[0].Location,
-			sim.MagneticVariation)
+			world.MagneticVariation)
 		lg.Errorf("%s: ac %.1f inbound %.1f diff %.1f", ac.Callsign,
 			acFixHeading, inboundHeading,
 			headingDifference(acFixHeading, inboundHeading))
@@ -506,7 +506,7 @@ func (ac *Aircraft) getApproach(id string) (*Approach, error) {
 		return nil, ErrNoFlightPlan
 	}
 
-	ap := sim.GetAirport(fp.ArrivalAirport)
+	ap := world.GetAirport(fp.ArrivalAirport)
 	if ap == nil {
 		lg.Errorf("Can't find airport %s for %s approach for %s", fp.ArrivalAirport, id, ac.Callsign)
 		return nil, ErrArrivalAirportUnknown
@@ -755,14 +755,14 @@ func (ac *Aircraft) updateHeading() {
 func (ac *Aircraft) updatePositionAndGS() {
 	// Update position given current heading
 	prev := ac.Position
-	hdg := ac.Heading - sim.MagneticVariation
+	hdg := ac.Heading - world.MagneticVariation
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 
 	// Compute ground speed: TAS, modified for wind.
 	GS := ac.TAS() / 3600
 	airborne := ac.IAS >= 1.1*ac.Performance.Speed.Min
 	if airborne {
-		windVector := sim.GetWindVector(ac.Position, ac.Altitude)
+		windVector := world.GetWindVector(ac.Position, ac.Altitude)
 		delta := windVector[0]*v[0] + windVector[1]*v[1]
 		GS += delta
 	}
@@ -788,7 +788,7 @@ func (ac *Aircraft) updateWaypoints() {
 		hdg = float32(wp.Heading)
 	} else if len(ac.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
-		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, sim.MagneticVariation)
+		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, world.MagneticVariation)
 	} else {
 		// No more waypoints (likely about to land), so just
 		// plan to stay on the current heading.
@@ -827,7 +827,7 @@ func (ac *Aircraft) updateWaypoints() {
 
 func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
 	if wp.Handoff {
-		ac.InboundHandoffController = sim.Callsign
+		ac.InboundHandoffController = world.Callsign
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
 	if wp.Delete {
@@ -860,7 +860,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 
 	// Get two points that give the line of the outbound course.
 	p0 := ll2nm(p)
-	hm := hdg - sim.MagneticVariation
+	hm := hdg - world.MagneticVariation
 	p1 := add2f(p0, [2]float32{sin(radians(hm)), cos(radians(hm))})
 
 	// Make a ghost aircraft to use to simulate the turn. Checking this way
@@ -898,8 +898,8 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 // start turning to intercept the radial.
 func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod) bool {
 	p0 = ll2nm(p0)
-	p1 := add2f(p0, [2]float32{sin(radians(hdg - sim.MagneticVariation)),
-		cos(radians(hdg - sim.MagneticVariation))})
+	p1 := add2f(p0, [2]float32{sin(radians(hdg - world.MagneticVariation)),
+		cos(radians(hdg - world.MagneticVariation))})
 
 	initialDist := SignedPointLineDistance(ll2nm(ac.Position), p0, p1)
 	eta := abs(initialDist) / ac.GS * 3600 // in seconds

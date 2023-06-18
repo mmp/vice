@@ -311,11 +311,11 @@ func (fsp *FlightStripPane) Deactivate() {
 }
 
 func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
-	return ac.FlightPlan != nil && sim.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
+	return ac.FlightPlan != nil && world.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
 }
 
 func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
-	return ac.FlightPlan != nil && sim.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
+	return ac.FlightPlan != nil && world.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
@@ -347,7 +347,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *AddedAircraftEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign {
+			if fsp.AutoAddTracked && v.ac.TrackingController == world.Callsign {
 				possiblyAdd(v.ac)
 			} else if v.ac.TrackingController == "" &&
 				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
@@ -355,7 +355,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *ModifiedAircraftEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign {
+			if fsp.AutoAddTracked && v.ac.TrackingController == world.Callsign {
 				possiblyAdd(v.ac)
 			} else if v.ac.TrackingController == "" &&
 				((fsp.AutoAddDepartures && fsp.isDeparture(v.ac)) || (fsp.AutoAddArrivals && fsp.isArrival(v.ac))) {
@@ -363,7 +363,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *InitiatedTrackEvent:
-			if fsp.AutoAddTracked && v.ac.TrackingController == sim.Callsign {
+			if fsp.AutoAddTracked && v.ac.TrackingController == world.Callsign {
 				possiblyAdd(v.ac)
 			}
 
@@ -373,9 +373,9 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			}
 
 		case *AcceptedHandoffEvent:
-			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == sim.Callsign {
+			if fsp.AutoAddAcceptedHandoffs && v.ac.TrackingController == world.Callsign {
 				possiblyAdd(v.ac)
-			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != sim.Callsign {
+			} else if fsp.AutoRemoveHandoffs && v.ac.TrackingController != world.Callsign {
 				remove(v.ac)
 			}
 
@@ -386,13 +386,13 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
-		ac := sim.GetAircraft(callsign)
+		ac := world.GetAircraft(callsign)
 		return ac != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			if ac := sim.GetAircraft(callsign); ac == nil {
+			if ac := world.GetAircraft(callsign); ac == nil {
 				return false
 			} else {
 				return fsp.isDeparture(ac)
@@ -484,8 +484,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	y := stripHeight - 1 - vpad
 	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
-		strip := sim.GetFlightStrip(callsign)
-		ac := sim.GetAircraft(callsign)
+		strip := world.GetFlightStrip(callsign)
+		ac := world.GetAircraft(callsign)
 		if ac == nil {
 			lg.Errorf("%s: no aircraft for callsign?!", strip.callsign)
 			continue
@@ -645,7 +645,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				} else {
 					// select the aircraft
 					callsign := fsp.strips[stripIndex]
-					fsp.selectedAircraft = sim.GetAircraft(callsign)
+					fsp.selectedAircraft = world.GetAircraft(callsign)
 				}
 			}
 		}
@@ -719,7 +719,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					fsp.selectedAnnotation = 3*ya + xa
 
 					callsign := fsp.strips[fsp.selectedStrip]
-					strip := sim.GetFlightStrip(callsign)
+					strip := world.GetFlightStrip(callsign)
 					fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
 				}
 			}

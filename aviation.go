@@ -265,8 +265,8 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 
 func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 	// try to figure out direction of flight
-	pDep, depOk := sim.Locate(fp.DepartureAirport)
-	pArr, arrOk := sim.Locate(fp.ArrivalAirport)
+	pDep, depOk := world.Locate(fp.DepartureAirport)
+	pArr, arrOk := world.Locate(fp.ArrivalAirport)
 	if depOk && arrOk {
 		if nmdistance2ll(pDep, pArr) < 100 {
 			altitude = 7000
@@ -278,7 +278,7 @@ func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
 			altitude = 37000
 		}
 
-		if headingp2ll(pDep, pArr, sim.MagneticVariation) > 180 {
+		if headingp2ll(pDep, pArr, world.MagneticVariation) > 180 {
 			altitude += 1000
 		}
 	} else {
@@ -644,7 +644,7 @@ func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, seconda
 		return
 	}
 
-	pRadar, ok := sim.Locate(rs.Position)
+	pRadar, ok := world.Locate(rs.Position)
 	if !ok {
 		// Really, this method shouldn't be called if the site is invalid,
 		// but if it is, there's not much else we can do.

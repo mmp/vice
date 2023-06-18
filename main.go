@@ -35,7 +35,7 @@ var (
 	renderer       Renderer
 	stats          Stats
 	database       *StaticDatabase
-	sim            *Sim
+	world          *World
 	server         *Server
 	eventStream    *EventStream
 	lg             *Logger
@@ -123,9 +123,9 @@ func main() {
 	if globalConfig.Server != nil {
 		// To have them around for initialization...
 		server = globalConfig.Server
-		sim = globalConfig.Server.Sim
+		world = globalConfig.Server.World
 	} else {
-		sim = &Sim{}
+		world = &World{}
 	}
 
 	database = InitializeStaticDatabase()
@@ -165,7 +165,7 @@ func main() {
 	frameIndex := 0
 	stats.startTime = time.Now()
 	for {
-		platform.SetWindowTitle("vice: " + sim.GetWindowTitle())
+		platform.SetWindowTitle("vice: " + world.GetWindowTitle())
 
 		// Inform imgui about input events from the user.
 		platform.ProcessEvents()
@@ -182,7 +182,7 @@ func main() {
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes.
-		sim.GetUpdates()
+		world.GetUpdates()
 
 		platform.NewFrame()
 		imgui.NewFrame()
