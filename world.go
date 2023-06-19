@@ -272,174 +272,105 @@ func (w *World) GetWindowTitle() string {
 	return w.Callsign + ": " + sim.Description()
 }
 
-func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
-	lg.Printf("%s: %s", ac.Callsign, fmt.Sprintf(fm, args...))
-	eventStream.Post(Event{
-		Type:     RadioTransmissionEvent,
-		Callsign: ac.Callsign,
-		Message:  fmt.Sprintf(fm, args...),
-	})
-}
-
 func (w *World) AssignAltitude(ac *Aircraft, altitude int) error {
-	var resp string
-	err := sim.AssignAltitude(&AltitudeAssignment{
+	return sim.AssignAltitude(&AltitudeAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Altitude:        altitude,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error {
-	var resp string
-	err := sim.AssignHeading(&HeadingAssignment{
+	return sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Heading:         heading,
 		Turn:            turn,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) FlyPresentHeading(ac *Aircraft) error {
-	var resp string
-	err := sim.AssignHeading(&HeadingAssignment{
+	return sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Present:         true,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) TurnLeft(ac *Aircraft, deg int) error {
-	var resp string
-	err := sim.AssignHeading(&HeadingAssignment{
+	return sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		LeftDegrees:     deg,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) TurnRight(ac *Aircraft, deg int) error {
-	var resp string
-	err := sim.AssignHeading(&HeadingAssignment{
+	return sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		RightDegrees:    deg,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) AssignSpeed(ac *Aircraft, speed int) error {
-	var resp string
-	err := sim.AssignSpeed(&SpeedAssignment{
+	return sim.AssignSpeed(&SpeedAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Speed:           speed,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) DirectFix(ac *Aircraft, fix string) error {
-	var resp string
-	err := sim.DirectFix(&FixSpecifier{
+	return sim.DirectFix(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
-	var resp string
-	err := sim.DepartFixHeading(&FixSpecifier{
+	return sim.DepartFixHeading(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
 		Heading:         hdg,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
-	var resp string
-	err := sim.CrossFixAt(&FixSpecifier{
+	return sim.CrossFixAt(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
 		Altitude:        alt,
 		Speed:           speed,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) ExpectApproach(ac *Aircraft, approach string) error {
-	var resp string
-	err := sim.ExpectApproach(&ApproachAssignment{
+	return sim.ExpectApproach(&ApproachAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) ClearedApproach(ac *Aircraft, approach string) error {
-	var resp string
-	err := sim.ClearedApproach(&ApproachClearance{
+	return sim.ClearedApproach(&ApproachClearance{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) ClearedStraightInApproach(ac *Aircraft, approach string) error {
-	var resp string
-	err := sim.ClearedApproach(&ApproachClearance{
+	return sim.ClearedApproach(&ApproachClearance{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
 		StraightIn:      true,
-	}, &resp)
-	if resp != "" {
-		pilotResponse(ac, "%s", resp)
-	}
-	return err
+	}, nil)
 }
 
 func (w *World) GoAround(ac *Aircraft) error {
@@ -451,7 +382,12 @@ func (w *World) GoAround(ac *Aircraft) error {
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
 
-	pilotResponse(ac, "Going around")
+	eventStream.Post(Event{
+		Type:     RadioTransmissionEvent,
+		Callsign: ac.Callsign,
+		Message:  "Going around",
+	})
+
 	return nil
 }
 

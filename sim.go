@@ -1364,7 +1364,7 @@ type AircraftPropertiesSpecifier struct {
 
 func (s *Sim) dispatchCommand(token string, callsign string,
 	check func(c *Controller, ac *Aircraft) error,
-	cmd func(*Controller, *Aircraft) (string, error), response *string) error {
+	cmd func(*Controller, *Aircraft) (string, error)) error {
 	if sc, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else if ac, ok := s.World.Aircraft[callsign]; !ok {
@@ -1378,9 +1378,14 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		if err := check(ctrl, ac); err != nil {
 			return err
 		} else {
-			resp, err := cmd(ctrl, ac)
-			if response != nil {
-				*response = resp
+			response, err := cmd(ctrl, ac)
+			if response != "" {
+				lg.Printf("%s: %s", ac.Callsign, response)
+				eventStream.Post(Event{
+					Type:     RadioTransmissionEvent,
+					Callsign: ac.Callsign,
+					Message:  response,
+				})
 			}
 			return err
 		}
@@ -1390,7 +1395,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 // Commands that are allowed by the controlling controller, who may not still have the track;
 // e.g., turns after handoffs.
 func (s *Sim) dispatchControllingCommand(token string, callsign string,
-	cmd func(*Controller, *Aircraft) (string, error), response *string) error {
+	cmd func(*Controller, *Aircraft) (string, error)) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.ControllingController != ctrl.Callsign {
@@ -1398,12 +1403,12 @@ func (s *Sim) dispatchControllingCommand(token string, callsign string,
 			}
 			return nil
 		},
-		cmd, response)
+		cmd)
 }
 
 // Commands that are allowed by tracking controller only.
 func (s *Sim) dispatchTrackingCommand(token string, callsign string,
-	cmd func(*Controller, *Aircraft) (string, error), response *string) error {
+	cmd func(*Controller, *Aircraft) (string, error)) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
@@ -1411,7 +1416,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 			}
 			return nil
 		},
-		cmd, response)
+		cmd)
 }
 
 func (s *Sim) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
@@ -1420,7 +1425,7 @@ func (s *Sim) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
 			ac.Scratchpad = a.Scratchpad
 			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 			return "", nil
-		}, nil)
+		})
 }
 
 func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
@@ -1438,7 +1443,7 @@ func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 			eventStream.Post(Event{Type: InitiatedTrackEvent, Callsign: ac.Callsign})
 			return "", nil
-		}, nil)
+		})
 }
 
 func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
@@ -1449,7 +1454,7 @@ func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 			eventStream.Post(Event{Type: DroppedTrackEvent, Callsign: ac.Callsign})
 			return "", nil
-		}, nil)
+		})
 }
 
 type HandoffSpecifier struct {
@@ -1476,7 +1481,7 @@ func (s *Sim) Handoff(h *HandoffSpecifier, _ *struct{}) error {
 				s.Handoffs[ac.Callsign] = s.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 				return "", nil
 			}
-		}, nil)
+		})
 }
 
 func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
@@ -1494,7 +1499,7 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ctrl.Callsign, Callsign: ac.Callsign})
 			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign}) // FIXME...
 			return "", nil
-		}, nil)
+		})
 }
 
 func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
@@ -1508,7 +1513,7 @@ func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			// modified a/c event...
 			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 			return "", nil
-		}, nil)
+		})
 }
 
 type AltitudeAssignment struct {
@@ -1517,18 +1522,17 @@ type AltitudeAssignment struct {
 	Altitude        int
 }
 
-func (s *Sim) AssignAltitude(alt *AltitudeAssignment, response *string) error {
+func (s *Sim) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
 	return s.dispatchControllingCommand(alt.ControllerToken, alt.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.AssignAltitude(alt.Altitude) },
-		response)
+		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.AssignAltitude(alt.Altitude) })
 }
 
-func (s *Sim) SetTemporaryAltitude(alt *AltitudeAssignment, response *string) error {
+func (s *Sim) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{}) error {
 	return s.dispatchTrackingCommand(alt.ControllerToken, alt.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TempAltitude = alt.Altitude
 			return "", nil
-		}, response)
+		})
 }
 
 type HeadingAssignment struct {
@@ -1541,7 +1545,7 @@ type HeadingAssignment struct {
 	Turn            TurnMethod
 }
 
-func (s *Sim) AssignHeading(hdg *HeadingAssignment, response *string) error {
+func (s *Sim) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
 	return s.dispatchControllingCommand(hdg.ControllerToken, hdg.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			if hdg.Present {
@@ -1557,7 +1561,7 @@ func (s *Sim) AssignHeading(hdg *HeadingAssignment, response *string) error {
 			} else {
 				return ac.AssignHeading(hdg.Heading, hdg.Turn)
 			}
-		}, response)
+		})
 }
 
 type SpeedAssignment struct {
@@ -1566,10 +1570,9 @@ type SpeedAssignment struct {
 	Speed           int
 }
 
-func (s *Sim) AssignSpeed(sa *SpeedAssignment, response *string) error {
+func (s *Sim) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
 	return s.dispatchControllingCommand(sa.ControllerToken, sa.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.AssignSpeed(sa.Speed) },
-		response)
+		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.AssignSpeed(sa.Speed) })
 }
 
 type FixSpecifier struct {
@@ -1581,22 +1584,19 @@ type FixSpecifier struct {
 	Speed           int
 }
 
-func (s *Sim) DirectFix(f *FixSpecifier, response *string) error {
+func (s *Sim) DirectFix(f *FixSpecifier, _ *struct{}) error {
 	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.DirectFix(f.Fix) },
-		response)
+		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.DirectFix(f.Fix) })
 }
 
-func (s *Sim) DepartFixHeading(f *FixSpecifier, response *string) error {
+func (s *Sim) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
 	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.DepartFixHeading(f.Fix, f.Heading) },
-		response)
+		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.DepartFixHeading(f.Fix, f.Heading) })
 }
 
-func (s *Sim) CrossFixAt(f *FixSpecifier, response *string) error {
+func (s *Sim) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
 	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.CrossFixAt(f.Fix, f.Altitude, f.Speed) },
-		response)
+		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.CrossFixAt(f.Fix, f.Altitude, f.Speed) })
 }
 
 type ApproachAssignment struct {
@@ -1605,10 +1605,9 @@ type ApproachAssignment struct {
 	Approach        string
 }
 
-func (s *Sim) ExpectApproach(a *ApproachAssignment, response *string) error {
+func (s *Sim) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
 	return s.dispatchControllingCommand(a.ControllerToken, a.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.ExpectApproach(a.Approach) },
-		response)
+		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.ExpectApproach(a.Approach) })
 }
 
 type ApproachClearance struct {
@@ -1618,7 +1617,7 @@ type ApproachClearance struct {
 	StraightIn      bool
 }
 
-func (s *Sim) ClearedApproach(c *ApproachClearance, response *string) error {
+func (s *Sim) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
 	return s.dispatchControllingCommand(c.ControllerToken, c.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			if c.StraightIn {
@@ -1626,7 +1625,7 @@ func (s *Sim) ClearedApproach(c *ApproachClearance, response *string) error {
 			} else {
 				return ac.ClearedApproach(c.Approach)
 			}
-		}, response)
+		})
 }
 
 func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
@@ -1636,7 +1635,7 @@ func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 			eventStream.Post(Event{Type: RemovedAircraftEvent, Callsign: ac.Callsign})
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", nil
-		}, nil)
+		})
 }
 
 type ServerUpdates struct {
