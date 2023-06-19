@@ -303,6 +303,17 @@ func (fsp *FlightStripPane) Activate() {
 		fsp.scrollbar = NewScrollBar(4, true)
 	}
 	fsp.eventsId = eventStream.Subscribe()
+
+	for _, ac := range world.GetAllAircraft() {
+		if fsp.AutoAddTracked && ac.TrackingController == world.Callsign && ac.FlightPlan != nil {
+			fsp.strips = append(fsp.strips, ac.Callsign)
+			fsp.addedAircraft[ac.Callsign] = nil
+		} else if ac.TrackingController == "" &&
+			((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+			fsp.strips = append(fsp.strips, ac.Callsign)
+			fsp.addedAircraft[ac.Callsign] = nil
+		}
+	}
 }
 
 func (fsp *FlightStripPane) Deactivate() {

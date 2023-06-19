@@ -25,23 +25,20 @@ var (
 
 /*
 TODO:
+big open questions:
+1. think about events in general: client -> server? server -> client?
+2. catch errors early, on client side, when possible (though server is canonical for e.g. who is the tracking controller)
+3. server sends world update to client
+4. actual RPC to a separate process
+
 - reset new scenario doesn't nuke old aircraft (immediately...)
+- world disconnect shouldn't be posting removed aircraft event if e.g. the sim continues on...
+  maybe want a Disconnected and a Connected event...
+  maybe a way to flag events as local-only.
 
 - events: race-like thing where if world processes them first then if consumers do world.Aircraft[callsign], it's no joy...
 
-- think about events in general: client -> server? server -> client?
-
-- move to server(?)
-	ScenarioGroupName string
-	ScenarioName      string
-
-- world disconnect shouldn't be posting removed aircraft event if e.g. the sim continues on...
-  maybe want a Disconnected and a Connected event...
-
-- post radio transmissions on the sim side, not world.go
 - radiotransmission events should have a frequency associated with them, then users monitor one or more frequencies..
-
-- catch errors early, on client side, when possible (though server is canonical for e.g. who is the tracking controller)
 
 - make sure not using world.Callsign in this file!!!! (or world.Aircraft, etc. etc.)
   more generally it should be able to run with the global World being null...
@@ -52,7 +49,6 @@ TODO:
 - is a mutex needed? how is concurrency handled by net/rpc?
 - stars contorller list should be updated based on who is signed in
 - review serialize/deserialize of Server
-
   updates: can reduce size by not transmitting runways, departure routes, etc. each time..
 */
 
@@ -69,12 +65,16 @@ type NewSimConfiguration struct {
 	ArrivalGroupRates map[string]map[string]int
 }
 
-func (c *NewSimConfiguration) Initialize() {
-	c.DepartureChallenge = 0.25
-	c.GoAroundRate = 0.10
+func MakeSimConfiguration() NewSimConfiguration {
+	c := NewSimConfiguration{
+		DepartureChallenge: 0.25,
+		GoAroundRate:       0.10,
+	}
 
 	// Use the last scenario, if available.
 	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
+
+	return c
 }
 
 func (c *NewSimConfiguration) SetScenarioGroup(name string) {
@@ -650,7 +650,6 @@ func (s *Sim) Activate() error {
 		}
 
 		e.Pop()
-		eventStream.Post(Event{Type: AddedAircraftEvent, Callsign: ac.Callsign})
 	}
 
 	for callsign := range s.World.Controllers {

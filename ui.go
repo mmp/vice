@@ -540,7 +540,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.err = ""
-	c.config.Initialize()
+	c.config = MakeSimConfiguration()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {

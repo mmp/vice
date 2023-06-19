@@ -180,17 +180,4 @@ func (gc *GlobalConfig) Activate() {
 	}
 
 	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate() })
-
-	if gc.Sim != nil {
-		sim = gc.Sim
-		sim.Paused = false // override
-		if err := sim.Activate(); err != nil {
-			sim = nil
-		} else {
-			world, err = sim.SignOn(gc.Callsign)
-			if err != nil {
-				lg.Errorf("%v", err) // TODO how handle this?
-			}
-		}
-	}
 }

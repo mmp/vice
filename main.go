@@ -120,14 +120,6 @@ func main() {
 
 	LoadOrMakeDefaultConfig()
 
-	if globalConfig.Sim != nil {
-		// To have them around for initialization...
-		sim = globalConfig.Sim
-		world = globalConfig.Sim.World
-	} else {
-		world = &World{}
-	}
-
 	database = InitializeStaticDatabase()
 
 	// After the database is loaded
@@ -157,11 +149,23 @@ func main() {
 
 	uiInit(renderer)
 
-	globalConfig.Activate()
-
-	if world == nil {
-		world = &World{}
+	if globalConfig.Sim != nil {
+		sim = globalConfig.Sim
+		sim.Activate()
+	} else {
+		sim = NewSim(MakeSimConfiguration())
 	}
+
+	world, err = sim.SignOn(globalConfig.Callsign)
+	if err != nil {
+		lg.Errorf("%s: %v", globalConfig.Callsign, err)
+		world, err = sim.SignOn("") // default
+		if err != nil {
+			lg.Errorf("default callsign: %v", err)
+		}
+	}
+
+	globalConfig.Activate()
 
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop

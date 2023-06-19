@@ -4208,7 +4208,11 @@ func (sp *STARSPane) initializeAircraft() {
 
 	ps := sp.CurrentPreferenceSet
 	for _, ac := range world.GetAllAircraft() {
-		sp.aircraft[ac] = &STARSAircraftState{}
+		sa := &STARSAircraftState{}
+		sp.aircraft[ac] = sa
+		if ac.TrackingController == world.Callsign || ac.ControllingController == world.Callsign {
+			sa.datablockType = FullDatablock
+		}
 
 		if !ps.DisableCRDA {
 			if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
