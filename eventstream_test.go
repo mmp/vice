@@ -11,27 +11,25 @@ import (
 func TestEventStream(t *testing.T) {
 	es := NewEventStream()
 
-	es.Post(0)
+	es.Post(Event{})
 	id := es.Subscribe()
 	if len(es.Get(id)) != 0 {
 		t.Errorf("Returned non-empty slice")
 	}
 
-	es.Post(1)
-	es.Post(2)
+	es.Post(Event{Type: 1})
+	es.Post(Event{Type: 2})
 	s := es.Get(id)
 	if len(s) != 2 {
 		t.Errorf("didn't return 2 item slice")
 	}
-	checkint := func(i interface{}, value int) {
-		if v, ok := i.(int); !ok {
-			t.Errorf("didn't return an integer")
-		} else if v != value {
-			t.Errorf("got value %d; expected %d", v, value)
-		}
+
+	if s[0].Type != 1 {
+		t.Errorf("Expected type 1, got %v", s[0])
 	}
-	checkint(s[0], 1)
-	checkint(s[1], 2)
+	if s[1].Type != 2 {
+		t.Errorf("Expected type 1, got %v", s[1])
+	}
 
 	if len(es.Get(id)) != 0 {
 		t.Errorf("Returned non-empty slice")
@@ -53,7 +51,7 @@ func TestEventStreamCompact(t *testing.T) {
 		// Add a bunch of consecutive numbers to the stream
 		n := rand.Intn(255)
 		for j := 0; j < n; j++ {
-			es.Post(i + j)
+			es.Post(Event{Type: EventType(i + j)})
 		}
 		i += n
 
@@ -67,8 +65,8 @@ func TestEventStreamCompact(t *testing.T) {
 			}
 			s := es.Get(id[c])
 			for _, sv := range s {
-				if idx[c] != sv {
-					t.Errorf("expected %d, got %d for consumer %d", idx[c], sv, c)
+				if idx[c] != int(sv.Type) {
+					t.Errorf("expected %d, got %d for consumer %d", idx[c], int(sv.Type), c)
 				}
 				idx[c]++
 			}

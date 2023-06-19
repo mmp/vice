@@ -651,11 +651,11 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 	ps := sp.CurrentPreferenceSet
 
 	for _, event := range es.Get(sp.eventsId) {
-		switch v := event.(type) {
-		case *AddedAircraftEvent:
+		switch event.Type {
+		case AddedAircraftEvent:
 			sa := &STARSAircraftState{}
 			cs := world.Callsign
-			ac := world.Aircraft[v.Callsign]
+			ac := world.Aircraft[event.Callsign]
 			if ac.TrackingController == cs || ac.ControllingController == cs {
 				sa.datablockType = FullDatablock
 			}
@@ -687,16 +687,16 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 				}
 			}
 
-		case *RemovedAircraftEvent:
-			ac := world.Aircraft[v.Callsign]
+		case RemovedAircraftEvent:
+			ac := world.Aircraft[event.Callsign]
 			if ghost, ok := sp.ghostAircraft[ac]; ok {
 				delete(sp.aircraft, ghost)
 			}
 			delete(sp.aircraft, ac)
 			delete(sp.ghostAircraft, ac)
 
-		case *ModifiedAircraftEvent:
-			ac := world.Aircraft[v.Callsign]
+		case ModifiedAircraftEvent:
+			ac := world.Aircraft[event.Callsign]
 			if squawkingSPC(ac.Squawk) {
 				if _, ok := sp.havePlayedSPCAlertSound[ac]; !ok {
 					sp.havePlayedSPCAlertSound[ac] = nil
@@ -724,16 +724,16 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 				}
 			}
 
-		case *PointOutEvent:
-			ac := world.Aircraft[v.Callsign]
-			sp.pointedOutAircraft.Add(ac, v.Controller, 10*time.Second)
+		case PointOutEvent:
+			ac := world.Aircraft[event.Callsign]
+			sp.pointedOutAircraft.Add(ac, event.Controller, 10*time.Second)
 
-		case *AcceptedHandoffEvent:
+		case AcceptedHandoffEvent:
 			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
-			if v.Controller != world.Callsign {
-				ac := world.Aircraft[v.Callsign]
+			if event.Controller != world.Callsign {
+				ac := world.Aircraft[event.Callsign]
 				state := sp.aircraft[ac]
 				state.outboundHandoffAccepted = true
 				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
@@ -1834,7 +1834,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					// ack accepted handoff by other controller
 					state.outboundHandoffAccepted = false
 					state.outboundHandoffFlashEnd = time.Now()
-					eventStream.Post(&AckedHandoffEvent{Callsign: ac.Callsign})
+					eventStream.Post(Event{Type: AckedHandoffEvent, Callsign: ac.Callsign})
 				} else { //if ac.IsAssociated() {
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock

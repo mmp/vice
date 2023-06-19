@@ -335,58 +335,60 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 		fsp.addedAircraft[callsign] = nil
 	}
 
-	remove := func(ac *Aircraft) {
-		fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != ac.Callsign })
+	remove := func(c string) {
+		fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
 	}
 
 	for _, event := range es.Get(fsp.eventsId) {
-		switch v := event.(type) {
-		case *PushedFlightStripEvent:
-			if Find(fsp.strips, v.Callsign) == -1 {
-				fsp.strips = append(fsp.strips, v.Callsign)
+		switch event.Type {
+		case PushedFlightStripEvent:
+			if Find(fsp.strips, event.Callsign) == -1 {
+				fsp.strips = append(fsp.strips, event.Callsign)
 			}
 
-		case *AddedAircraftEvent:
-			ac := world.Aircraft[v.Callsign]
-			if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
-				possiblyAdd(ac)
-			} else if ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
-				possiblyAdd(ac)
+		case AddedAircraftEvent:
+			if ac, ok := world.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+					possiblyAdd(ac)
+				} else if ac.TrackingController == "" &&
+					((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+					possiblyAdd(ac)
+				}
 			}
 
-		case *ModifiedAircraftEvent:
-			ac := world.Aircraft[v.Callsign]
-			if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
-				possiblyAdd(ac)
-			} else if ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
-				possiblyAdd(ac)
+		case ModifiedAircraftEvent:
+			if ac, ok := world.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+					possiblyAdd(ac)
+				} else if ac.TrackingController == "" &&
+					((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+					possiblyAdd(ac)
+				}
 			}
 
-		case *InitiatedTrackEvent:
-			ac := world.Aircraft[v.Callsign]
-			if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
-				possiblyAdd(ac)
+		case InitiatedTrackEvent:
+			if ac, ok := world.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+					possiblyAdd(ac)
+				}
 			}
 
-		case *DroppedTrackEvent:
-			ac := world.Aircraft[v.Callsign]
+		case DroppedTrackEvent:
 			if fsp.AutoRemoveDropped {
-				remove(ac)
+				remove(event.Callsign)
 			}
 
-		case *AcceptedHandoffEvent:
-			ac := world.Aircraft[v.Callsign]
-			if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == world.Callsign {
-				possiblyAdd(ac)
-			} else if fsp.AutoRemoveHandoffs && ac.TrackingController != world.Callsign {
-				remove(ac)
+		case AcceptedHandoffEvent:
+			if ac, ok := world.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == world.Callsign {
+					possiblyAdd(ac)
+				} else if fsp.AutoRemoveHandoffs && ac.TrackingController != world.Callsign {
+					remove(event.Callsign)
+				}
 			}
 
-		case *RemovedAircraftEvent:
-			ac := world.Aircraft[v.Callsign]
-			remove(ac)
+		case RemovedAircraftEvent:
+			remove(event.Callsign)
 		}
 	}
 

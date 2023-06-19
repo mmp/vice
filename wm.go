@@ -589,35 +589,36 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 	var texts []string
 	textCallsign := ""
 	for _, event := range eventStream.Get(wm.eventsId) {
-		switch v := event.(type) {
-		case *RadioTransmissionEvent:
-			// Split the callsign into the ICAO and the flight number
-			// Note: this is buggy if we process multiple senders in a
-			// single call here, but that shouldn't happen...
-			idx := strings.IndexAny(v.Callsign, "0123456789")
-			if idx == -1 {
-				textCallsign = v.Callsign
-			} else {
-				// Try to get the telephony.
-				icao, flight := v.Callsign[:idx], v.Callsign[idx:]
-				if cs, ok := database.Callsigns[icao]; ok {
-					textCallsign = cs.Telephony + " " + flight
-					if ac := world.GetAircraft(v.Callsign); ac != nil {
-						if fp := ac.FlightPlan; fp != nil {
-							if strings.HasPrefix(fp.AircraftType, "H/") {
-								textCallsign += " heavy"
-							} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
-								textCallsign += " super"
-							}
+		if event.Type != RadioTransmissionEvent {
+			continue
+		}
+
+		// Split the callsign into the ICAO and the flight number
+		// Note: this is buggy if we process multiple senders in a
+		// single call here, but that shouldn't happen...
+		idx := strings.IndexAny(event.Callsign, "0123456789")
+		if idx == -1 {
+			textCallsign = event.Callsign
+		} else {
+			// Try to get the telephony.
+			icao, flight := event.Callsign[:idx], event.Callsign[idx:]
+			if cs, ok := database.Callsigns[icao]; ok {
+				textCallsign = cs.Telephony + " " + flight
+				if ac := world.GetAircraft(event.Callsign); ac != nil {
+					if fp := ac.FlightPlan; fp != nil {
+						if strings.HasPrefix(fp.AircraftType, "H/") {
+							textCallsign += " heavy"
+						} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+							textCallsign += " super"
 						}
 					}
-				} else {
-					textCallsign = v.Callsign
 				}
+			} else {
+				textCallsign = event.Callsign
 			}
-
-			texts = append(texts, v.Message)
 		}
+
+		texts = append(texts, event.Message)
 	}
 	if texts != nil {
 		wm.lastAircraftResponse = strings.Join(texts, ", ") + ", " + textCallsign

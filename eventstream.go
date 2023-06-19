@@ -27,7 +27,7 @@ const InvalidEventSubscriberId = 0
 // communicating events, world updates, and user actions across the various
 // parts of the system.
 type EventStream struct {
-	stream      []interface{}
+	stream      []Event
 	subscribers map[EventSubscriberId]*EventSubscriber
 }
 
@@ -72,15 +72,10 @@ func (e *EventStream) Unsubscribe(id EventSubscriberId) {
 // Post adds an event to the event stream. The type used to encode the
 // event is arbitrary; it's up to the EventStream users to establish
 // conventions.
-func (e *EventStream) Post(event interface{}) {
+func (e *EventStream) Post(event Event) {
 	if false && *devmode {
-		if s, ok := event.(interface{ String() string }); ok {
-			lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
-				s.String(), len(e.subscribers), len(e.stream), cap(e.stream))
-		} else {
-			lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
-				s, len(e.subscribers), len(e.stream), cap(e.stream))
-		}
+		lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
+			event.String(), len(e.subscribers), len(e.stream), cap(e.stream))
 	}
 
 	// Ignore the event if no one's paying attention.
@@ -99,7 +94,7 @@ func (e *EventStream) Post(event interface{}) {
 // Get returns all of the events from the stream since the last time Get
 // was called with the given id.  Note that events before an id was created
 // with Subscribe are never reported for that id.
-func (e *EventStream) Get(id EventSubscriberId) []interface{} {
+func (e *EventStream) Get(id EventSubscriberId) []Event {
 	sub, ok := e.subscribers[id]
 	if !ok {
 		lg.ErrorfUp1("Attempted to get with invalid id: %d", id)
@@ -159,102 +154,37 @@ func (e *EventStream) Dump() string {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type AddedAircraftEvent struct {
-	Callsign string
+type EventType int
+
+const (
+	AddedAircraftEvent = iota
+	ModifiedAircraftEvent
+	RemovedAircraftEvent
+	InitiatedTrackEvent
+	DroppedTrackEvent
+	PushedFlightStripEvent
+	PointOutEvent
+	AcceptedHandoffEvent
+	CanceledHandoffEvent
+	RejectedHandoffEvent
+	AckedHandoffEvent
+	RadioTransmissionEvent
+)
+
+func (t EventType) String() string {
+	return []string{"AddedAircraft", "ModifiedAircraft", "RemovedAircraft", "InitiatedTrack",
+		"DroppedTrack", "PushedFlightStrip", "PointOut", "AcceptedHandoff",
+		"CanceledHandoff", "RejectedHandoff", "AckedHandoff", "RadioTransmission"}[t]
 }
 
-func (e *AddedAircraftEvent) String() string {
-	return "AddedAircraftEvent: " + e.Callsign
-}
-
-type ModifiedAircraftEvent struct {
-	Callsign string
-}
-
-func (e *ModifiedAircraftEvent) String() string {
-	return "ModifiedAircraftEvent: " + e.Callsign
-}
-
-type RemovedAircraftEvent struct {
-	Callsign string
-}
-
-func (e *RemovedAircraftEvent) String() string {
-	return "RemovedAircraftEvent: " + e.Callsign
-}
-
-type InitiatedTrackEvent struct {
-	Callsign string
-}
-
-func (e *InitiatedTrackEvent) String() string {
-	return "InitiatedTrackEvent: " + e.Callsign
-}
-
-type DroppedTrackEvent struct {
-	Callsign string
-}
-
-func (e *DroppedTrackEvent) String() string {
-	return "DroppedTrackEvent: " + e.Callsign
-}
-
-type PushedFlightStripEvent struct {
-	Callsign string
-}
-
-func (e *PushedFlightStripEvent) String() string {
-	return "PushedFlightStripEvent: " + e.Callsign
-}
-
-type PointOutEvent struct {
-	Controller string
+type Event struct {
+	Type       EventType
 	Callsign   string
-}
-
-func (e *PointOutEvent) String() string {
-	return "PointOutEvent: " + e.Controller + " " + e.Callsign
-}
-
-type AcceptedHandoffEvent struct {
 	Controller string
-	Callsign   string
+	Message    string
 }
 
-func (e *AcceptedHandoffEvent) String() string {
-	return "AcceptedHandoffEvent: " + e.Controller + " " + e.Callsign
-}
-
-type CanceledHandoffEvent struct {
-	Controller string
-	Callsign   string
-}
-
-func (e *CanceledHandoffEvent) String() string {
-	return "CanceledHandoffEvent: " + e.Controller + " " + e.Callsign
-}
-
-type RejectedHandoffEvent struct {
-	Controller string
-	Callsign   string
-}
-
-func (e *RejectedHandoffEvent) String() string {
-	return "RejectedHandoffEvent: " + e.Controller + " " + e.Callsign
-}
-
-type AckedHandoffEvent struct {
-	Callsign string
-}
-
-func (e *AckedHandoffEvent) String() string {
-	return "AckedHandoffEvent: " + e.Callsign
-}
-
-type RadioTransmissionEvent struct {
-	Callsign, Message string
-}
-
-func (e *RadioTransmissionEvent) String() string {
-	return "RadioTransmissionEvent: callsign: " + e.Callsign + ", message: " + e.Message
+func (e *Event) String() string {
+	return fmt.Sprintf("%s: callsign %s controller %s message %s",
+		e.Type, e.Callsign, e.Controller, e.Message)
 }

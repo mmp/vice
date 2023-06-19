@@ -25,22 +25,31 @@ var (
 
 /*
 TODO:
-- prespawn not working?
-- don't want eventsId allocated for the Sim inside Server...
+- events: race-like thing where if world processes them first then if consumers do world.Aircraft[callsign], it's no joy...
 
-move to server(?)
+- think about events in general: client -> server? server -> client?
+
+- move to server(?)
 	ScenarioGroupName string
 	ScenarioName      string
 
+- world disconnect shouldn't be posting removed aircraft event if e.g. the sim continues on...
+- post radio transmissions on the sim side, not world.go
+- radiotransmission events should have a frequency associated with them, then users monitor one or more frequencies..
+
 - catch errors early, on client side, when possible (though server is canonical for e.g. who is the tracking controller)
-- make sure not using world.Callsign in this file!!!!
+
+- make sure not using world.Callsign in this file!!!! (or world.Aircraft, etc. etc.)
+  more generally it should be able to run with the global World being null...
+  -> maybe we should try to nuke the global
 - stop holding *Aircraft and assuming callsign->*Aircraft will be
   consistent (mostly an issue in STARSPane); just use callsign?
-  -> this is necessary for events when *Aircraft pointers are different
 - drop controller if no messages for some period of time
 - is a mutex needed? how is concurrency handled by net/rpc?
 - stars contorller list should be updated based on who is signed in
 - review serialize/deserialize of Server
+
+  updates: can reduce size by not transmitting runways, departure routes, etc. each time..
 */
 
 type NewSimConfiguration struct {
@@ -304,7 +313,7 @@ func (c *NewSimConfiguration) Start() error {
 	// Send out events to remove any existing aircraft (necessary for when
 	// we restart...)
 	for _, ac := range world.GetAllAircraft() {
-		eventStream.Post(&RemovedAircraftEvent{Callsign: ac.Callsign})
+		eventStream.Post(Event{Type: RemovedAircraftEvent, Callsign: ac.Callsign})
 	}
 	world.Disconnect()
 
@@ -424,8 +433,6 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 
 		Aircraft: make(map[string]*Aircraft),
 		METAR:    make(map[string]*METAR),
-
-		eventsId: eventStream.Subscribe(),
 	}
 
 	w.Controllers = make(map[string]*Controller)
@@ -503,6 +510,7 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 	w := &World{}
 	*w = *s.World
 	w.Callsign = callsign
+	w.eventsId = eventStream.Subscribe()
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -562,7 +570,7 @@ func (s *Sim) Activate() error {
 			if e != nil {
 				e.Push("Fix " + wp.Fix)
 			}
-			if pos, ok := world.Locate(wp.Fix); !ok {
+			if pos, ok := s.World.Locate(wp.Fix); !ok {
 				if e != nil {
 					e.ErrorString("unable to locate waypoint")
 				}
@@ -608,41 +616,41 @@ func (s *Sim) Activate() error {
 		}
 
 		e.Pop()
-		eventStream.Post(&AddedAircraftEvent{Callsign: ac.Callsign})
+		eventStream.Post(Event{Type: AddedAircraftEvent, Callsign: ac.Callsign})
 	}
 
-	for callsign := range world.Controllers {
-		world.Controllers[callsign].Callsign = callsign
+	for callsign := range s.World.Controllers {
+		s.World.Controllers[callsign].Callsign = callsign
 	}
 
-	sg := scenarioGroups[world.ScenarioGroupName]
+	sg := scenarioGroups[s.World.ScenarioGroupName]
 
 	if sg == nil {
-		e.ErrorString(world.ScenarioGroupName + ": unknown scenario group")
+		e.ErrorString(s.World.ScenarioGroupName + ": unknown scenario group")
 	} else {
-		if len(sg.STARSMaps) != len(world.STARSMaps) {
+		if len(sg.STARSMaps) != len(s.World.STARSMaps) {
 			e.ErrorString("Different number of STARSMaps in ScenarioGroup and Saved sim")
 		} else {
-			for i := range world.STARSMaps {
-				if sg.STARSMaps[i].Name != world.STARSMaps[i].Name {
+			for i := range s.World.STARSMaps {
+				if sg.STARSMaps[i].Name != s.World.STARSMaps[i].Name {
 					e.ErrorString("Name mismatch in STARSMaps: ScenarioGroup \"" + sg.STARSMaps[i].Name +
-						"\", Sim \"" + world.STARSMaps[i].Name + "\"")
+						"\", Sim \"" + s.World.STARSMaps[i].Name + "\"")
 				} else {
 					// Copy the command buffer so we can draw the thing...
-					world.STARSMaps[i].cb = sg.STARSMaps[i].cb
+					s.World.STARSMaps[i].cb = sg.STARSMaps[i].cb
 				}
 			}
 		}
 	}
 
-	for i, rwy := range world.DepartureRunways {
+	for i, rwy := range s.World.DepartureRunways {
 		s.World.DepartureRunways[i].lastDeparture = nil
 		for _, route := range rwy.ExitRoutes {
 			initializeWaypointLocations(route.Waypoints, &e)
 		}
 	}
 
-	for _, arrivals := range world.ArrivalGroups {
+	for _, arrivals := range s.World.ArrivalGroups {
 		for _, arr := range arrivals {
 			initializeWaypointLocations(arr.Waypoints, &e)
 			for _, rwp := range arr.RunwayWaypoints {
@@ -806,17 +814,16 @@ func (s *Sim) Update() {
 	// Process events
 	if s.eventsId != InvalidEventSubscriberId {
 		for _, ev := range eventStream.Get(s.eventsId) {
-			if rem, ok := ev.(*RemovedAircraftEvent); ok {
-				delete(s.World.Aircraft, rem.Callsign)
-			}
-			if ack, ok := ev.(*AckedHandoffEvent); ok {
+			if ev.Type == RemovedAircraftEvent {
+				delete(s.World.Aircraft, ev.Callsign)
+			} else if ev.Type == AckedHandoffEvent {
 				// the user acknowledged that the other controller took the
 				// handoff. This is the point where the other controller
 				// takes control.  We'll just climb them to their cruise
 				// altitude...
-				ac := s.World.Aircraft[ack.Callsign]
+				ac := s.World.Aircraft[ev.Callsign]
 				if ac.IsDeparture {
-					lg.Errorf("%s: climbing to %d", ack.Callsign, ac.FlightPlan.Altitude)
+					lg.Errorf("%s: climbing to %d", ev.Callsign, ac.FlightPlan.Altitude)
 					ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
 				}
 			}
@@ -840,7 +847,7 @@ func (s *Sim) updateState() {
 			if ac, ok := s.World.Aircraft[callsign]; ok {
 				ac.TrackingController = ac.OutboundHandoffController
 				ac.OutboundHandoffController = ""
-				eventStream.Post(&AcceptedHandoffEvent{Controller: ac.TrackingController, Callsign: ac.Callsign})
+				eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ac.TrackingController, Callsign: ac.Callsign})
 				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 			}
 			delete(s.Handoffs, callsign)
@@ -863,7 +870,7 @@ func (s *Sim) updateState() {
 		for callsign, ac := range s.World.Aircraft {
 			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture {
 				if nmdistance2ll(ac.Position, ap.Location) > 200 {
-					eventStream.Post(&RemovedAircraftEvent{Callsign: ac.Callsign})
+					eventStream.Post(Event{Type: RemovedAircraftEvent, Callsign: ac.Callsign})
 					delete(s.World.Aircraft, callsign)
 					continue
 				}
@@ -877,7 +884,7 @@ func (s *Sim) updateState() {
 				Time:        now,
 			})
 
-			eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 		}
 	}
 
@@ -957,14 +964,14 @@ func sampleRateMap(rates map[string]*int32) (string, int) {
 }
 
 func (s *Sim) spawnAircraft() {
-	now := world.CurrentTime()
+	now := s.CurrentTime()
 
 	addAircraft := func(ac *Aircraft) {
-		if _, ok := world.Aircraft[ac.Callsign]; ok {
+		if _, ok := s.World.Aircraft[ac.Callsign]; ok {
 			lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
 			return
 		}
-		world.Aircraft[ac.Callsign] = ac
+		s.World.Aircraft[ac.Callsign] = ac
 
 		ac.RunWaypointCommands(ac.Waypoints[0])
 
@@ -976,11 +983,11 @@ func (s *Sim) spawnAircraft() {
 
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, world.MagneticVariation)
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, s.World.MagneticVariation)
 		}
 		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
-		eventStream.Post(&AddedAircraftEvent{Callsign: ac.Callsign})
+		eventStream.Post(Event{Type: AddedAircraftEvent, Callsign: ac.Callsign})
 	}
 
 	randomWait := func(rate int) time.Duration {
@@ -1017,18 +1024,18 @@ func (s *Sim) spawnAircraft() {
 				continue
 			}
 
-			ap := world.GetAirport(airport)
-			idx := FindIf(world.DepartureRunways,
+			ap := s.World.GetAirport(airport)
+			idx := FindIf(s.World.DepartureRunways,
 				func(r ScenarioGroupDepartureRunway) bool {
 					return r.Airport == airport && r.Runway == runway && r.Category == category
 				})
 			if idx == -1 {
 				lg.Errorf("%s/%s/%s: couldn't find airport/runway/category for spawning departure. rates %s dep runways %s",
-					airport, runway, category, spew.Sdump(s.DepartureRates[airport][runway]), spew.Sdump(world.DepartureRunways))
+					airport, runway, category, spew.Sdump(s.DepartureRates[airport][runway]), spew.Sdump(s.World.DepartureRunways))
 				continue
 			}
 
-			if ac := s.SpawnDeparture(ap, &world.DepartureRunways[idx]); ac != nil {
+			if ac := s.SpawnDeparture(ap, &s.World.DepartureRunways[idx]); ac != nil {
 				ac.FlightPlan.DepartureAirport = airport
 				addAircraft(ac)
 				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
@@ -1207,7 +1214,7 @@ func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
-		ap := world.GetAirport(ac.FlightPlan.ArrivalAirport)
+		ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport)
 		if _, ok := ap.Approaches[arr.ExpectApproach]; ok {
 			ac.ApproachId = arr.ExpectApproach
 		} else {
@@ -1281,7 +1288,7 @@ func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Ai
 
 	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
 	ac.FlightPlan.ArrivalAirport = dep.Destination
-	ac.Scratchpad = world.Scratchpads[dep.Exit]
+	ac.Scratchpad = s.World.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
 	} else {
@@ -1326,7 +1333,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 	} else if ac, ok := s.World.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
-		ctrl := world.GetController(sc.Callsign)
+		ctrl := s.World.GetController(sc.Callsign)
 		if ctrl == nil {
 			panic("wtf")
 		}
@@ -1374,7 +1381,7 @@ func (s *Sim) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
 	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.Scratchpad = a.Scratchpad
-			eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 			return "", nil
 		}, nil)
 }
@@ -1391,8 +1398,8 @@ func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TrackingController = ctrl.Callsign
 			ac.ControllingController = ctrl.Callsign
-			eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign})
-			eventStream.Post(&InitiatedTrackEvent{Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: InitiatedTrackEvent, Callsign: ac.Callsign})
 			return "", nil
 		}, nil)
 }
@@ -1402,8 +1409,8 @@ func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TrackingController = ""
 			ac.ControllingController = ""
-			eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign})
-			eventStream.Post(&DroppedTrackEvent{Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: DroppedTrackEvent, Callsign: ac.Callsign})
 			return "", nil
 		}, nil)
 }
@@ -1423,13 +1430,13 @@ func (s *Sim) Handoff(h *HandoffSpecifier, _ *struct{}) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
-			if octrl := world.GetController(h.Controller); octrl == nil {
+			if octrl := s.World.GetController(h.Controller); octrl == nil {
 				return "", ErrNoController
 			} else {
 				ac.OutboundHandoffController = octrl.Callsign
-				eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign})
+				eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 				acceptDelay := 4 + rand.Intn(10)
-				s.Handoffs[ac.Callsign] = world.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
+				s.Handoffs[ac.Callsign] = s.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 				return "", nil
 			}
 		}, nil)
@@ -1447,8 +1454,8 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			ac.InboundHandoffController = ""
 			ac.TrackingController = ctrl.Callsign
 			ac.ControllingController = ctrl.Callsign
-			eventStream.Post(&AcceptedHandoffEvent{Controller: ctrl.Callsign, Callsign: ac.Callsign})
-			eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign}) // FIXME...
+			eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ctrl.Callsign, Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign}) // FIXME...
 			return "", nil
 		}, nil)
 }
@@ -1462,7 +1469,7 @@ func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			// TODO: we are inconsistent in other control backends about events
 			// when user does things like this; sometimes no event, sometimes
 			// modified a/c event...
-			eventStream.Post(&ModifiedAircraftEvent{Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 			return "", nil
 		}, nil)
 }
@@ -1589,7 +1596,7 @@ func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) error { return nil },
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
-			eventStream.Post(&RemovedAircraftEvent{Callsign: ac.Callsign})
+			eventStream.Post(Event{Type: RemovedAircraftEvent, Callsign: ac.Callsign})
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", nil
 		}, nil)

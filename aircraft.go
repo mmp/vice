@@ -831,7 +831,7 @@ func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
 	if wp.Delete {
-		eventStream.Post(&RemovedAircraftEvent{Callsign: ac.Callsign})
+		eventStream.Post(Event{Type: RemovedAircraftEvent, Callsign: ac.Callsign})
 	}
 	if wp.NoPT {
 		ac.NoPT = true
