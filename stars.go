@@ -612,9 +612,7 @@ func (sp *STARSPane) ResetWorld() {
 	}
 
 	// Make the scenario's default video map be visible
-	sg := scenarioGroups[world.ScenarioGroupName]
-	sc := sg.Scenarios[world.ScenarioName]
-	ps.VideoMapVisible[sc.DefaultMap] = nil
+	ps.VideoMapVisible[world.DefaultMap] = nil
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {

@@ -159,6 +159,10 @@ func main() {
 
 	globalConfig.Activate()
 
+	if world == nil {
+		world = &World{}
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop
 	lg.Printf("Starting main loop")

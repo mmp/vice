@@ -36,6 +36,8 @@ TODO:
 	ScenarioName      string
 
 - world disconnect shouldn't be posting removed aircraft event if e.g. the sim continues on...
+  maybe want a Disconnected and a Connected event...
+
 - post radio transmissions on the sim side, not world.go
 - radiotransmission events should have a frequency associated with them, then users monitor one or more frequencies..
 
@@ -43,7 +45,7 @@ TODO:
 
 - make sure not using world.Callsign in this file!!!! (or world.Aircraft, etc. etc.)
   more generally it should be able to run with the global World being null...
-  -> maybe we should try to nuke the global
+  -> maybe we should try to nuke the global. can we boil it down to a global for nm per and mag var?
 - stop holding *Aircraft and assuming callsign->*Aircraft will be
   consistent (mostly an issue in STARSPane); just use callsign?
 - drop controller if no messages for some period of time
@@ -330,6 +332,8 @@ func (c *NewSimConfiguration) Start() error {
 	world.Disconnect()
 
 	sim = NewSim(*c)
+	sim.prespawn() // do after the global has been initialized
+
 	var err error
 	world, err = sim.SignOn(c.Callsign)
 	if err != nil {
@@ -347,6 +351,9 @@ func (c *NewSimConfiguration) Start() error {
 }
 
 type Sim struct {
+	ScenarioGroup string
+	Scenario      string
+
 	World       *World
 	controllers map[string]*ServerController // from token
 
@@ -397,6 +404,9 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	s := &Sim{
+		ScenarioGroup: ssc.ScenarioGroup,
+		Scenario:      ssc.Scenario,
+
 		controllers: make(map[string]*ServerController),
 
 		DepartureRates:    DuplicateMap(ssc.DepartureRates),
@@ -415,7 +425,6 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	s.World = newWorld(ssc, s)
 
 	s.setInitialSpawnTimes()
-	s.prespawn()
 
 	return s
 }
@@ -433,9 +442,6 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 	}
 
 	w := &World{
-		ScenarioGroupName: ssc.ScenarioGroup,
-		ScenarioName:      ssc.Scenario,
-
 		Callsign:          "__SERVER__",
 		Wind:              sc.Wind,
 		MagneticVariation: sg.MagneticVariation,
@@ -447,6 +453,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 		RadarSites:        sg.RadarSites,
 		Center:            sg.Center,
 		Range:             sg.Range,
+		DefaultMap:        sc.DefaultMap,
 		STARSMaps:         sg.STARSMaps,
 		Scratchpads:       sg.Scratchpads,
 		ArrivalGroups:     sg.ArrivalGroups,
@@ -583,6 +590,10 @@ func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
 	return vWind
 }
 
+func (s *Sim) Description() string {
+	return s.Scenario
+}
+
 func (s *Sim) Activate() error {
 	var e ErrorLogger
 
@@ -646,10 +657,10 @@ func (s *Sim) Activate() error {
 		s.World.Controllers[callsign].Callsign = callsign
 	}
 
-	sg := scenarioGroups[s.World.ScenarioGroupName]
+	sg := scenarioGroups[s.ScenarioGroup]
 
 	if sg == nil {
-		e.ErrorString(s.World.ScenarioGroupName + ": unknown scenario group")
+		e.ErrorString(s.ScenarioGroup + ": unknown scenario group")
 	} else {
 		if len(sg.STARSMaps) != len(s.World.STARSMaps) {
 			e.ErrorString("Different number of STARSMaps in ScenarioGroup and Saved sim")

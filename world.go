@@ -40,9 +40,6 @@ var (
 type World struct {
 	token string
 
-	ScenarioGroupName string
-	ScenarioName      string
-
 	Aircraft    map[string]*Aircraft
 	METAR       map[string]*METAR
 	Controllers map[string]*Controller
@@ -62,6 +59,7 @@ type World struct {
 	RadarSites                    map[string]*RadarSite
 	Center                        Point2LL
 	Range                         float32
+	DefaultMap                    string
 	STARSMaps                     []STARSMap
 	Wind                          Wind
 	Callsign                      string
@@ -268,7 +266,10 @@ func (w *World) CurrentTime() time.Time {
 }
 
 func (w *World) GetWindowTitle() string {
-	return w.Callsign + ": " + w.ScenarioName
+	if sim == nil {
+		return "(disconnected)"
+	}
+	return w.Callsign + ": " + sim.Description()
 }
 
 func pilotResponse(ac *Aircraft, fm string, args ...interface{}) {
