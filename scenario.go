@@ -80,7 +80,7 @@ type Scenario struct {
 	Controllers []string `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
-	ArrivalGroupDefaultRates map[string]map[string]*int32 `json:"arrivals"`
+	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
 	ApproachAirspace       []AirspaceVolume `json:"-"`
 	DepartureAirspace      []AirspaceVolume `json:"-"`
@@ -97,7 +97,7 @@ type ScenarioGroupDepartureRunway struct {
 	Airport     string `json:"airport"`
 	Runway      string `json:"runway"`
 	Category    string `json:"category,omitempty"`
-	DefaultRate int32  `json:"rate"`
+	DefaultRate int    `json:"rate"`
 
 	lastDeparture *Departure
 	ExitRoutes    map[string]ExitRoute // copied from DepartureRunway; not specified in JSON

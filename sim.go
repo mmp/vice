@@ -62,9 +62,9 @@ type NewSimConfiguration struct {
 	Callsign           string
 
 	// airport -> runway -> category -> rate
-	DepartureRates map[string]map[string]map[string]*int32
+	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]*int32
+	ArrivalGroupRates map[string]map[string]int
 }
 
 func (c *NewSimConfiguration) Initialize() {
@@ -103,16 +103,15 @@ func (c *NewSimConfiguration) SetScenario(name string) {
 
 	c.ArrivalGroupRates = DuplicateMap(scenario.ArrivalGroupDefaultRates)
 
-	c.DepartureRates = make(map[string]map[string]map[string]*int32)
+	c.DepartureRates = make(map[string]map[string]map[string]int)
 	for _, rwy := range scenario.DepartureRunways {
 		if _, ok := c.DepartureRates[rwy.Airport]; !ok {
-			c.DepartureRates[rwy.Airport] = make(map[string]map[string]*int32)
+			c.DepartureRates[rwy.Airport] = make(map[string]map[string]int)
 		}
 		if _, ok := c.DepartureRates[rwy.Airport][rwy.Runway]; !ok {
-			c.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]*int32)
+			c.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]int)
 		}
-		c.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = new(int32)
-		*c.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
+		c.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
 	}
 }
 
@@ -178,7 +177,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			for airport, runwayRates := range c.DepartureRates {
 				for runway, categoryRates := range runwayRates {
 					for _, rate := range categoryRates {
-						if *rate > 0 {
+						if rate > 0 {
 							runways = append(runways, airport+"/"+runway)
 							break
 						}
@@ -223,7 +222,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		for _, runwayRates := range c.DepartureRates {
 			for _, categoryRates := range runwayRates {
 				for _, rate := range categoryRates {
-					sumRates += int(*rate)
+					sumRates += rate
 				}
 			}
 		}
@@ -244,7 +243,6 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				for _, runway := range SortedMapKeys(c.DepartureRates[airport]) {
 					imgui.PushID(runway)
 					for _, category := range SortedMapKeys(c.DepartureRates[airport][runway]) {
-						rate := c.DepartureRates[airport][runway][category]
 						imgui.PushID(category)
 
 						imgui.TableNextRow()
@@ -259,7 +257,10 @@ func (c *NewSimConfiguration) DrawUI() bool {
 							imgui.Text(category)
 						}
 						imgui.TableNextColumn()
-						imgui.InputIntV("##adr", rate, 0, 120, 0)
+
+						r := int32(c.DepartureRates[airport][runway][category])
+						imgui.InputIntV("##adr", &r, 0, 120, 0)
+						c.DepartureRates[airport][runway][category] = int(r)
 
 						imgui.PopID()
 					}
@@ -279,7 +280,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		for _, agr := range c.ArrivalGroupRates {
 			for ap, rate := range agr {
 				allAirports[ap] = nil
-				sumRates += int(*rate)
+				sumRates += rate
 			}
 		}
 		nAirports := len(allAirports)
@@ -306,7 +307,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				for _, ap := range sortedAirports {
 					imgui.TableNextColumn()
 					if rate, ok := c.ArrivalGroupRates[group][ap]; ok {
-						imgui.InputIntV("##aar-"+ap, rate, 0, 120, 0)
+						r := int32(rate)
+						imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0)
+						c.ArrivalGroupRates[group][ap] = int(r)
 					}
 				}
 				imgui.PopID()
@@ -352,9 +355,9 @@ type Sim struct {
 	SerializeTime time.Time // for updating times on deserialize
 
 	// airport -> runway -> category -> rate
-	DepartureRates map[string]map[string]map[string]*int32
+	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]*int32
+	ArrivalGroupRates map[string]map[string]int
 
 	// The same runway may be present multiple times in DepartureRates,
 	// with different categories. However, we want to make sure that we
@@ -495,7 +498,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 	for name, runwayRates := range s.DepartureRates {
 		for _, categoryRates := range runwayRates {
 			for _, rate := range categoryRates {
-				if *rate > 0 {
+				if rate > 0 {
 					w.DepartureAirports[name] = w.GetAirport(name)
 				}
 			}
@@ -504,7 +507,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 	w.ArrivalAirports = make(map[string]*Airport)
 	for _, airportRates := range s.ArrivalGroupRates {
 		for name, rate := range airportRates {
-			if *rate > 0 {
+			if rate > 0 {
 				w.ArrivalAirports[name] = w.GetAirport(name)
 			}
 		}
@@ -944,7 +947,7 @@ func (s *Sim) setInitialSpawnTimes() {
 	for group, rates := range s.ArrivalGroupRates {
 		rateSum := 0
 		for _, rate := range rates {
-			rateSum += int(*rate)
+			rateSum += rate
 		}
 		s.NextArrivalSpawn[group] = randomSpawn(rateSum)
 	}
@@ -956,7 +959,7 @@ func (s *Sim) setInitialSpawnTimes() {
 		for runway, categoryRates := range runwayRates {
 			rateSum := 0
 			for _, rate := range categoryRates {
-				rateSum += int(*rate)
+				rateSum += rate
 			}
 			if rateSum > 0 {
 				spawn[runway] = randomSpawn(rateSum)
@@ -969,14 +972,17 @@ func (s *Sim) setInitialSpawnTimes() {
 	}
 }
 
-func sampleRateMap(rates map[string]*int32) (string, int) {
+func sampleRateMap(rates map[string]int) (string, int) {
 	// Choose randomly in proportion to the rates in the map
 	rateSum := 0
 	var result string
 	for item, rate := range rates {
-		rateSum += int(*rate)
+		if rate == 0 {
+			continue
+		}
+		rateSum += rate
 		// Weighted reservoir sampling...
-		if rand.Float32() < float32(int(*rate))/float32(rateSum) {
+		if rand.Float32() < float32(rate)/float32(rateSum) {
 			result = item
 		}
 	}
