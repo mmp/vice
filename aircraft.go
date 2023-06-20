@@ -771,7 +771,18 @@ func (ac *Aircraft) updateWaypoints() {
 			}
 		}
 
-		if ac.Waypoints[0].Heading != 0 {
+		if wp.Altitude != 0 {
+			if fr, ok := ac.Nav.V.(*FlyRoute); ok {
+				fr.AltitudeRestriction = float32(wp.Altitude)
+			}
+		}
+		if wp.Speed != 0 {
+			if fr, ok := ac.Nav.S.(*FlyRoute); ok {
+				fr.SpeedRestriction = float32(wp.Speed)
+			}
+		}
+
+		if wp.Heading != 0 {
 			// We have an outbound heading
 			ac.Nav.L = &FlyHeading{Heading: float32(wp.Heading)}
 			ac.Waypoints = ac.Waypoints[1:]
