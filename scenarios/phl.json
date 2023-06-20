@@ -4852,14 +4852,14 @@
         "initial_speed": 250,
         "route": "/. JIIMS4",
         "runway_waypoints": {
-          "27L": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
-          "27R": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
-          "17": "JIIMS/a8000 SNEDE/h312",
-          "35": "JIIMS/a8000 SNEDE/h312",
-          "9L": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268",
-          "9R": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268"
+          "27L": "JIIMS ZMRMN CHPMN PSOUT MKORD/h87",
+          "27R": "JIIMS ZMRMN CHPMN PSOUT MKORD/h87",
+          "17": "JIIMS SNEDE/h312",
+          "35": "JIIMS SNEDE/h312",
+          "9L": "JIIMS WUDRR WEVVE ERNYY/h268",
+          "9R": "JIIMS WUDRR WEVVE ERNYY/h268"
         },
-        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS/a8000"
+        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS"
       }
     ],
     "PAATS4": [
