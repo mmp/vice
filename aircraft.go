@@ -195,7 +195,7 @@ func (ac *Aircraft) Update() {
 	}
 }
 
-func (ac *Aircraft) GoAround() {
+func (ac *Aircraft) GoAround() string {
 	ac.Nav.L = &FlyHeading{Heading: ac.Heading}
 
 	spd := ac.Performance.Speed
@@ -215,6 +215,8 @@ func (ac *Aircraft) GoAround() {
 
 	// Nuke all of them...
 	ac.Nav.FutureCommands = make(map[FutureNavCommand]interface{})
+
+	return "Going around"
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {

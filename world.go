@@ -374,21 +374,10 @@ func (w *World) ClearedStraightInApproach(ac *Aircraft, approach string) error {
 }
 
 func (w *World) GoAround(ac *Aircraft) error {
-	ac.GoAround()
-
-	// If it was handed off to tower, hand it back to us
-	if ac.TrackingController != "" && ac.TrackingController != w.Callsign {
-		ac.InboundHandoffController = w.Callsign
-		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
-	}
-
-	eventStream.Post(Event{
-		Type:     RadioTransmissionEvent,
-		Callsign: ac.Callsign,
-		Message:  "Going around",
-	})
-
-	return nil
+	return sim.GoAround(&AircraftSpecifier{
+		ControllerToken: w.token,
+		Callsign:        ac.Callsign,
+	}, nil)
 }
 
 func (w *World) PrintInfo(ac *Aircraft) error {

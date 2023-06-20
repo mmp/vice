@@ -398,7 +398,22 @@ func (g *GoAround) Evaluate(ac *Aircraft) bool {
 		return false
 	}
 
-	world.GoAround(ac)
+	response := ac.GoAround()
+	if response != "" {
+		lg.Printf("%s: %s", ac.Callsign, response)
+		eventStream.Post(Event{
+			Type:     RadioTransmissionEvent,
+			Callsign: ac.Callsign,
+			Message:  response,
+		})
+	}
+
+	// If it was handed off to tower, hand it back to us
+	if ac.TrackingController != "" && ac.TrackingController != world.Callsign {
+		ac.InboundHandoffController = world.Callsign
+		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+	}
+
 	return true
 }
 

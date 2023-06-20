@@ -27,9 +27,26 @@ var (
 TODO:
 big open questions:
 1. think about events in general: client -> server? server -> client?
+   all are posted server side except stars AckedHandoffEvent and the RemovedAircraftEvent in world
+   -> fix that removed aircraft one to just be controller disconnected message (and add connected as well),
+      then can always hand all back and forth
+   maybe acked is a world/sim command and not an event, then it's server->client and local only
 2. catch errors early, on client side, when possible (though server is canonical for e.g. who is the tracking controller)
 3. server sends world update to client
+   also need to handle delayed errors from commands
 4. actual RPC to a separate process
+
+client calls
+world.Update() each frame
+  periodically (and if not still waiting), it launches a goroutine to RPC a server update request
+  WorldUpdate struct {
+   	Aircraft    map[string]*Aircraft
+	METAR       map[string]*METAR
+	Controllers map[string]*Controller
+    Events []Event
+  }
+  waits for results on a channel
+  we add events to our local stream, merge the rest (maintain a/c pointers, etc.)
 
 - reset new scenario doesn't nuke old aircraft (immediately...)
 - world disconnect shouldn't be posting removed aircraft event if e.g. the sim continues on...
@@ -1624,6 +1641,13 @@ func (s *Sim) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
 			} else {
 				return ac.ClearedApproach(c.Approach)
 			}
+		})
+}
+
+func (s *Sim) GoAround(a *AircraftSpecifier, _ *struct{}) error {
+	return s.dispatchControllingCommand(a.ControllerToken, a.Callsign,
+		func(ctrl *Controller, ac *Aircraft) (string, error) {
+			return ac.GoAround(), nil
 		})
 }
 
