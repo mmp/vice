@@ -1275,15 +1275,11 @@ func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	}
 
 	ac.Nav.L = &FlyRoute{}
-	if arr.SpeedRestriction != 0 {
-		ac.Nav.S = &MaintainSpeed{IAS: min(arr.SpeedRestriction, ac.Performance.Speed.Cruise)}
-	} else {
-		ac.Nav.S = &FlyRoute{}
+	ac.Nav.S = &FlyRoute{
+		SpeedRestriction: min(arr.SpeedRestriction, ac.Performance.Speed.Cruise),
 	}
-	if arr.ClearedAltitude != 0 {
-		ac.Nav.V = &MaintainAltitude{Altitude: arr.ClearedAltitude}
-	} else {
-		ac.Nav.V = &FlyRoute{}
+	ac.Nav.V = &FlyRoute{
+		AltitudeRestriction: arr.ClearedAltitude,
 	}
 
 	return ac

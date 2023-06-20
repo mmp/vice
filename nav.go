@@ -462,7 +462,11 @@ func (fh *FlyHeading) LSummary(ac *Aircraft) string {
 	}
 }
 
-type FlyRoute struct{}
+type FlyRoute struct {
+	// These are both inherited from previous waypoints.
+	AltitudeRestriction float32
+	SpeedRestriction    float32
+}
 
 func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	if len(ac.Waypoints) == 0 {
@@ -915,29 +919,58 @@ func (ms *MaintainSpeed) SSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Maintain %.0f kts", ms.IAS)
 }
 
-func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
-	if len(ac.Waypoints) > 0 && ac.Waypoints[0].Speed != 0 {
-		eta, ok := ac.NextFixETA()
-		if !ok {
-			return float32(ac.Waypoints[0].Speed), MaximumRate
-		}
-
-		cs := float32(ac.Waypoints[0].Speed)
-
-		// Start with a linear acceleration
-		rate := abs(cs-ac.IAS) / float32(eta.Seconds())
-		if cs < ac.IAS {
-			// We're slowing so can take it easy
-			rate *= 0.8
+func getUpcomingSpeedRestriction(ac *Aircraft) (*Waypoint, float32) {
+	var eta float32
+	for i, wp := range ac.Waypoints {
+		if i == 0 {
+			eta = float32(wp.ETA(ac.Position, ac.GS).Seconds())
 		} else {
-			// We're speeding up so will start to close distance more
-			// quickly, so need a higher rate
-			rate *= 1.25
+			d := nmdistance2ll(wp.Location, ac.Waypoints[i-1].Location)
+			etaHours := d / ac.GS
+			eta += etaHours * 3600
 		}
 
-		//lg.Errorf("%s: eta %f seconds IAS %f crossing speed %f -> rate (sec) %f",
-		//ac.Callsign, eta.Seconds(), ac.IAS, cs, rate)
-		return cs, rate * 60 // per minute
+		if wp.Speed != 0 {
+			// Ignore the speed restriction for now if it's a deceleration
+			// and we're far enough away that we don't need to start
+			// slowing just yet...
+			if float32(wp.Speed) < ac.IAS {
+				// 2-seconds required to decelerate, assuming straight-line deceleration
+				s := (ac.IAS - float32(wp.Speed)) / (ac.Performance.Rate.Decelerate / 2)
+				if s < eta {
+					lg.Printf("%s: ignoring speed at %s for now...", ac.Callsign, wp.Fix)
+					return nil, 0
+				}
+			}
+			lg.Printf("%s: slowing for speed at %s for now...", ac.Callsign, wp.Fix)
+			return &wp, eta
+		}
+	}
+	return nil, 0
+}
+
+func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
+	if wp, eta := getUpcomingSpeedRestriction(ac); wp != nil {
+		if eta < 5 { // includes unknown ETA case
+			return float32(wp.Speed), MaximumRate
+		}
+
+		cs := float32(wp.Speed)
+		if cs > ac.IAS {
+			// accelerate immediately
+			return cs, MaximumRate
+		} else {
+			// go slow on deceleration
+			rate := abs(cs-ac.IAS) / eta
+			// Ad-hoc since as we slow, ETA increases...
+			rate *= 0.8
+
+			//lg.Errorf("%s: eta %f seconds IAS %f crossing speed %f -> rate (sec) %f",
+			//ac.Callsign, eta.Seconds(), ac.IAS, cs, rate)
+			return cs, rate * 60 // per minute
+		}
+	} else if fr.SpeedRestriction != 0 {
+		return fr.SpeedRestriction, MaximumRate
 	} else if ac.Altitude < 10000 { // Assume it's a departure(?)
 		return min(ac.Performance.Speed.Cruise, float32(250)), MaximumRate
 	} else {
@@ -947,7 +980,13 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 }
 
 func (fr *FlyRoute) SSummary(ac *Aircraft) string {
-	return ""
+	if wp, _ := getUpcomingSpeedRestriction(ac); wp != nil {
+		return fmt.Sprintf("speed %d knots for %s", wp.Speed, wp.Fix)
+	} else if fr.SpeedRestriction != 0 {
+		return fmt.Sprintf("speed %0.f knots from previous crossing restriction", fr.SpeedRestriction)
+	} else {
+		return ""
+	}
 }
 
 type FinalApproachSpeed struct{}
@@ -1011,27 +1050,52 @@ func (ma *MaintainAltitude) VSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Maintain %.0f feet", ma.Altitude)
 }
 
+func getUpcomingAltitudeRestriction(ac *Aircraft) (*Waypoint, float32) {
+	var eta float32
+	for i, wp := range ac.Waypoints {
+		if i == 0 {
+			eta = float32(wp.ETA(ac.Position, ac.GS).Seconds())
+		} else {
+			d := nmdistance2ll(wp.Location, ac.Waypoints[i-1].Location)
+			etaHours := d / ac.GS
+			eta += etaHours * 3600
+		}
+
+		if wp.Altitude != 0 {
+			// Ignore the altitude restriction if we're an approach that is
+			// already below it.
+			if ac.ApproachCleared && ac.Altitude < float32(wp.Altitude) {
+				return nil, 0
+			}
+
+			return &wp, eta
+		}
+	}
+	return nil, 0
+}
+
 func (fr *FlyRoute) GetAltitude(ac *Aircraft) (float32, float32) {
-	if len(ac.Waypoints) > 0 && ac.Waypoints[0].Altitude != 0 {
-		// Ignore the crossing altitude it if the aircraft is below it and
-		// it has been cleared for the approach--i.e., don't climb to meet it!
-		if ac.ApproachCleared && ac.Altitude < float32(ac.Waypoints[0].Altitude) {
-			return ac.Altitude, 0
+	if wp, eta := getUpcomingAltitudeRestriction(ac); wp != nil {
+		if eta < 5 {
+			return float32(wp.Altitude), MaximumRate
+		} else {
+			rate := abs(float32(wp.Altitude)-ac.Altitude) / eta
+			lg.Printf("%s: descending to %d for %s at %.1f fpm", ac.Callsign, wp.Altitude, wp.Fix, rate*60)
+			return float32(wp.Altitude), rate * 60 // rate is in feet per minute
 		}
-
-		eta, ok := ac.NextFixETA()
-		if !ok {
-			return float32(ac.Waypoints[0].Altitude), MaximumRate
-		}
-		rate := abs(float32(ac.Waypoints[0].Altitude)-ac.Altitude) /
-			float32(eta.Minutes())
-
-		return float32(ac.Waypoints[0].Altitude), rate
+	} else if fr.AltitudeRestriction != 0 {
+		return fr.AltitudeRestriction, MaximumRate
 	} else {
 		return float32(ac.Altitude), MaximumRate
 	}
 }
 
 func (fr *FlyRoute) VSummary(ac *Aircraft) string {
+	if fr.AltitudeRestriction != 0 {
+		return fmt.Sprintf("maintain %.0f feet (due to previous crossing restriction)",
+			fr.AltitudeRestriction)
+	} else if wp, _ := getUpcomingAltitudeRestriction(ac); wp != nil {
+		return fmt.Sprintf("maintain %d feet for fix %s", wp.Altitude, wp.Fix)
+	}
 	return ""
 }
