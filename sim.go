@@ -893,7 +893,6 @@ func (s *Sim) updateState() {
 				ac.TrackingController = ac.OutboundHandoffController
 				ac.OutboundHandoffController = ""
 				eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ac.TrackingController, Callsign: ac.Callsign})
-				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 			}
 			delete(s.Handoffs, callsign)
 		}

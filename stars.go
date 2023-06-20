@@ -735,6 +735,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 				state := sp.aircraft[ac]
 				state.outboundHandoffAccepted = true
 				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 			}
 		}
 	}
