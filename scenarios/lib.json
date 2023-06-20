@@ -2401,56 +2401,67 @@
   "control_positions": {
     "BOS_SW_CTR": {
       "frequency": 134000,
+      "full_name": "Boston center",
       "scope_char": "C",
       "sector_id": "B19"
     },
     "EWR_DEP": {
       "frequency": 119200,
+      "full_name": "New York departure",
       "scope_char": "N",
       "sector_id": "4N"
     },
     "JFK_DEP": {
       "frequency": 135900,
+      "full_name": "New York departure",
       "scope_char": "J",
       "sector_id": "2J"
     },
     "LGA_DEP": {
       "frequency": 120400,
+      "full_name": "New York departure",
       "scope_char": "L",
       "sector_id": "1L"
     },
     "NY_B_CTR": {
       "frequency": 125325,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_C_CTR": {
       "frequency": 132175,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N34"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
+      "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
     "NY_LN_DEP": {
       "frequency": 118170,
+      "full_name": "New York departure",
       "scope_char": "T",
       "sector_id": "5T"
     },
     "NY_LS_DEP": {
       "frequency": 124750,
+      "full_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
     },
     "NY_LW_DEP": {
       "frequency": 120850,
+      "full_name": "New York departure",
       "scope_char": "W",
       "sector_id": "5W"
     },
     "NY_L_DEP": {
       "frequency": 126800,
+      "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     }

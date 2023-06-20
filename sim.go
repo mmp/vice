@@ -25,6 +25,8 @@ var (
 
 /*
 TODO:
+controller full_name: do other scenarios, then require on deserialize
+
 big open questions:
 1. think about events in general: client -> server? server -> client?
    all are posted server side except stars AckedHandoffEvent and the RemovedAircraftEvent in world
@@ -1513,7 +1515,11 @@ func (s *Sim) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
 			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
 
 			if octrl := s.World.GetController(ac.ControllingController); octrl != nil {
-					return fmt.Sprintf("contact %s on %s, good day", octrl.Callsign, octrl.Frequency), nil
+				if octrl.FullName != "" {
+					return fmt.Sprintf("over to %s on %s, good day", octrl.FullName, octrl.Frequency), nil
+				} else {
+					return fmt.Sprintf("over to %s on %s, good day", octrl.Callsign, octrl.Frequency), nil
+				}
 			} else {
 				return "goodbye", nil
 			}

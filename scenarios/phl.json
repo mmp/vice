@@ -4965,61 +4965,73 @@
   "control_positions": {
     "DC_CTR": {
       "frequency": 133725,
+      "full_name": "Washington center",
       "scope_char": "C",
       "sector_id": "W32"
     },
     "EWR_APP": {
       "frequency": 128550,
+      "full_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P"
     },
     "LGA_DEP": {
       "frequency": 120400,
+      "full_name": "New York departure",
       "scope_char": "L",
       "sector_id": "1L"
     },
     "NY_B_CTR": {
       "frequency": 125325,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_CTR": {
       "frequency": 125325,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_C_CTR": {
       "frequency": 132175,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N34"
     },
     "NY_F_CTR": {
       "frequency": 128300,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N66"
     },
     "PHL_F1_APP": {
       "frequency": 124500,
+      "full_name": "Philly approach",
       "scope_char": "F",
       "sector_id": "6F"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
+      "full_name": "Philly approach",
       "scope_char": "N",
       "sector_id": "6N"
     },
     "PHL_ND_DEP": {
       "frequency": 124350,
+      "full_name": "Philly departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
     "PHL_SA_APP": {
       "frequency": 133870,
+      "full_name": "Philly approach",
       "scope_char": "S",
       "sector_id": "6S"
     },
     "PHL_TWR": {
       "frequency": 118500,
+      "full_name": "Philly tower",
       "scope_char": "T",
       "sector_id": "6A"
     }

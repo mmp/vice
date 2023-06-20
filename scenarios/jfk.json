@@ -2786,86 +2786,103 @@
   "control_positions": {
     "BOS_E_CTR": {
       "frequency": 133450,
+      "full_name": "Boston center",
       "scope_char": "C",
       "sector_id": "B17"
     },
     "EWR_APP": {
       "frequency": 128550,
+      "full_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P"
     },
     "FRG_TWR": {
       "frequency": 118800,
+      "full_name": "Republic tower",
       "scope_char": "M",
       "sector_id": "2M"
     },
     "HVN_TWR": {
       "frequency": 124800,
+      "full_name": "New Haven tower",
       "scope_char": "T",
       "sector_id": "3P"
     },
     "ISP_TWR": {
       "frequency": 119300,
+      "full_name": "Long Island Macarthur tower",
       "scope_char": "T",
       "sector_id": "3C"
     },
     "JFK_APP": {
       "frequency": 128125,
+      "full_name": "New York approach",
       "scope_char": "G",
       "sector_id": "2G"
     },
     "JFK_DEP": {
       "frequency": 135900,
+      "full_name": "New York departure",
       "scope_char": "J",
       "sector_id": "2J"
     },
     "JFK_TWR": {
       "frequency": 119100,
+      "full_name": "Kennedy tower",
       "scope_char": "T",
       "sector_id": "2W"
     },
     "LGA_APP": {
       "frequency": 120800,
+      "full_name": "New York approach",
       "scope_char": "V",
       "sector_id": "1V"
     },
     "LGA_DEP": {
       "frequency": 120400,
+      "full_name": "New York departure",
       "scope_char": "L",
       "sector_id": "1L"
     },
     "NY_B_CTR": {
       "frequency": 125325,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_CTR": {
       "frequency": 125325,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56"
     },
     "NY_C_CTR": {
       "frequency": 132175,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N34"
     },
     "NY_F_CTR": {
       "frequency": 128300,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N66"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
+      "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
     "NY_LS_DEP": {
       "frequency": 124750,
+      "full_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
     },
     "NY_L_DEP": {
       "frequency": 126800,
+      "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     }

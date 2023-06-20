@@ -532,36 +532,43 @@
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
+      "full_name": "Allentown approach",
       "scope_char": "F",
       "sector_id": "SF"
     },
     "ABE_TWR": {
       "frequency": 120500,
+      "full_name": "Lehigh Valley tower",
       "scope_char": "T",
       "sector_id": "AL"
     },
     "AVE_APP": {
       "frequency": 120950,
+      "full_name": "Wilkes Barre approach",
       "scope_char": "B",
       "sector_id": "WB"
     },
     "EWR_APP": {
       "frequency": 128550,
+      "full_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P"
     },
     "MDT_APP": {
       "frequency": 126450,
+      "full_name": "Harrisburg approach",
       "scope_char": "S",
       "sector_id": "HS"
     },
     "NY_CTR": {
       "frequency": 125325,
+      "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
+      "full_name": "Philly approach",
       "scope_char": "N",
       "sector_id": "6N"
     }
