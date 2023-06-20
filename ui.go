@@ -79,6 +79,8 @@ var (
 		"Handed-off departures don't start to climb until they are clicked post-handoff",
 		"Improved wind modeling",
 		"Fixed a bug that would cause arrivals to fly faster than the aircraft is capable of",
+		"Fixed bugs with arrivals not obeying crossing restrictions",
+		"Improved navigation model to better make crossing restrictions at fixes",
 	}
 )
 
