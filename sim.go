@@ -31,11 +31,14 @@ big open questions:
    -> fix that removed aircraft one to just be controller disconnected message (and add connected as well),
       then can always hand all back and forth
    maybe acked is a world/sim command and not an event, then it's server->client and local only
+-> sim doesn't need eventsId?? just maintain them per client?
+
 2. catch errors early, on client side, when possible (though server is canonical for e.g. who is the tracking controller)
 3. server sends world update to client
    also need to handle delayed errors from commands
 4. actual RPC to a separate process
 
+delete aircraft broken?
 client calls
 world.Update() each frame
   periodically (and if not still waiting), it launches a goroutine to RPC a server update request
@@ -866,16 +869,6 @@ func (s *Sim) Update() {
 		for _, ev := range eventStream.Get(s.eventsId) {
 			if ev.Type == RemovedAircraftEvent {
 				delete(s.World.Aircraft, ev.Callsign)
-			} else if ev.Type == AckedHandoffEvent {
-				// the user acknowledged that the other controller took the
-				// handoff. This is the point where the other controller
-				// takes control.  We'll just climb them to their cruise
-				// altitude...
-				ac := s.World.Aircraft[ev.Callsign]
-				if ac.IsDeparture {
-					lg.Errorf("%s: climbing to %d", ev.Callsign, ac.FlightPlan.Altitude)
-					ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
-				}
 			}
 		}
 	}
@@ -1479,7 +1472,7 @@ type HandoffSpecifier struct {
 	Controller      string
 }
 
-func (s *Sim) Handoff(h *HandoffSpecifier, _ *struct{}) error {
+func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(h.ControllerToken, h.Callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
@@ -1496,6 +1489,33 @@ func (s *Sim) Handoff(h *HandoffSpecifier, _ *struct{}) error {
 				acceptDelay := 4 + rand.Intn(10)
 				s.Handoffs[ac.Callsign] = s.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
 				return "", nil
+			}
+		})
+}
+
+func (s *Sim) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
+	return s.dispatchCommand(h.ControllerToken, h.Callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if ac.ControllingController != ctrl.Callsign {
+				return ErrOtherControllerHasTrack
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) (string, error) {
+			ac.ControllingController = ac.TrackingController
+
+			// Go ahead and climb departures the rest of the way now.
+			if ac.IsDeparture {
+				lg.Errorf("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
+				ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
+			}
+
+			eventStream.Post(Event{Type: ModifiedAircraftEvent, Callsign: ac.Callsign})
+
+			if octrl := s.World.GetController(ac.ControllingController); octrl != nil {
+					return fmt.Sprintf("contact %s on %s, good day", octrl.Callsign, octrl.Frequency), nil
+			} else {
+				return "goodbye", nil
 			}
 		})
 }

@@ -167,14 +167,13 @@ const (
 	AcceptedHandoffEvent
 	CanceledHandoffEvent
 	RejectedHandoffEvent
-	AckedHandoffEvent
 	RadioTransmissionEvent
 )
 
 func (t EventType) String() string {
 	return []string{"AddedAircraft", "ModifiedAircraft", "RemovedAircraft", "InitiatedTrack",
 		"DroppedTrack", "PushedFlightStrip", "PointOut", "AcceptedHandoff",
-		"CanceledHandoff", "RejectedHandoff", "AckedHandoff", "RadioTransmission"}[t]
+		"CanceledHandoff", "RejectedHandoff", "RadioTransmission"}[t]
 }
 
 type Event struct {

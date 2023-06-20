@@ -1211,7 +1211,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 			status.clear = true
 			return
 		case 2:
-			status.err = world.Handoff(lookupCallsign(f[1]), f[0])
+			status.err = world.HandoffTrack(lookupCallsign(f[1]), f[0])
 			status.clear = true
 			return
 		}
@@ -1829,10 +1829,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					status.clear = true
 					return
 				} else if state.outboundHandoffAccepted {
-					// ack accepted handoff by other controller
+					// ack an accepted handoff, which we will treat as also
+					// handing off control.
 					state.outboundHandoffAccepted = false
 					state.outboundHandoffFlashEnd = time.Now()
-					eventStream.Post(Event{Type: AckedHandoffEvent, Callsign: ac.Callsign})
+					world.HandoffControl(ac.Callsign)
 				} else { //if ac.IsAssociated() {
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock
@@ -1876,7 +1877,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			case 2:
 				if isControllerId(cmd) {
 					status.clear = true
-					status.err = world.Handoff(ac.Callsign, cmd)
+					status.err = world.HandoffTrack(ac.Callsign, cmd)
 					return
 				} else if cmd == "*J" {
 					// remove j-ring for aircraft
@@ -1903,7 +1904,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 			case 3:
 				if isControllerId(cmd) {
 					status.clear = true
-					status.err = world.Handoff(ac.Callsign, cmd)
+					status.err = world.HandoffTrack(ac.Callsign, cmd)
 					return
 				} else if cmd == "*D+" {
 					ps.DisplayTPASize = !ps.DisplayTPASize
@@ -2022,7 +2023,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 				status.err = world.CancelHandoff(ac.Callsign)
 			} else {
 				status.clear = true
-				status.err = world.Handoff(ac.Callsign, cmd)
+				status.err = world.HandoffTrack(ac.Callsign, cmd)
 			}
 			return
 

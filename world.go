@@ -148,11 +148,18 @@ func (w *World) DropTrack(callsign string) error {
 	}, nil)
 }
 
-func (w *World) Handoff(callsign string, controller string) error {
-	return sim.Handoff(&HandoffSpecifier{
+func (w *World) HandoffTrack(callsign string, controller string) error {
+	return sim.HandoffTrack(&HandoffSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Controller:      controller,
+	}, nil)
+}
+
+func (w *World) HandoffControl(callsign string) error {
+	return sim.HandoffControl(&HandoffSpecifier{
+		ControllerToken: w.token,
+		Callsign:        callsign,
 	}, nil)
 }
 
