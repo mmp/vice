@@ -47,7 +47,7 @@ type World struct {
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
 
-	eventsId EventSubscriberId
+	lastUpdate time.Time
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -191,11 +191,6 @@ func (w *World) Disconnect() {
 	}
 	w.Aircraft = nil
 	w.Controllers = nil
-
-	if w.eventsId != InvalidEventSubscriberId {
-		eventStream.Unsubscribe(w.eventsId)
-		w.eventsId = InvalidEventSubscriberId
-	}
 }
 
 func (w *World) GetAircraft(callsign string) *Aircraft {
@@ -259,8 +254,25 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) GetUpdates() {
-	if sim != nil {
-		sim.Update()
+	if sim == nil {
+		return
+	}
+
+	sim.Update()
+
+	if time.Since(w.lastUpdate) > 1*time.Second {
+		updates, err := sim.GetWorldUpdate(w.token)
+		if err != nil {
+			lg.Errorf("Error getting world update: %v", err)
+		}
+
+		w.Aircraft = updates.Aircraft
+		w.Controllers = updates.Controllers
+		for _, e := range updates.Events {
+			eventStream.Post(e)
+		}
+
+		w.lastUpdate = time.Now()
 	}
 }
 

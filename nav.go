@@ -401,7 +401,7 @@ func (g *GoAround) Evaluate(ac *Aircraft) bool {
 	response := ac.GoAround()
 	if response != "" {
 		lg.Printf("%s: %s", ac.Callsign, response)
-		eventStream.Post(Event{
+		sim.PostEvent(Event{
 			Type:     RadioTransmissionEvent,
 			Callsign: ac.Callsign,
 			Message:  response,

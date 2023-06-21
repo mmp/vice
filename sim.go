@@ -325,6 +325,8 @@ type Sim struct {
 
 	showSettings bool
 
+	eventStream *EventStream
+
 	SerializeTime time.Time // for updating times on deserialize
 
 	// airport -> runway -> category -> rate
@@ -373,6 +375,8 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		Scenario:      ssc.Scenario,
 
 		controllers: make(map[string]*ServerController),
+
+		eventStream: NewEventStream(),
 
 		DepartureRates:    DuplicateMap(ssc.DepartureRates),
 		ArrivalGroupRates: DuplicateMap(ssc.ArrivalGroupRates),
@@ -504,7 +508,6 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 	w := &World{}
 	*w = *s.World
 	w.Callsign = callsign
-	w.eventsId = eventStream.Subscribe()
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -514,14 +517,19 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 	w.token = base64.StdEncoding.EncodeToString(buf[:])
 	s.controllers[w.token] = &ServerController{
 		Callsign: callsign,
-		EventsId: eventStream.Subscribe(),
+		EventsId: s.eventStream.Subscribe(),
 	}
 
 	return w, nil
 }
 
 func (s *Sim) SignOff(token string, _ *struct{}) error {
-	delete(s.controllers, token)
+	if ctrl, ok := s.controllers[token]; !ok {
+		return ErrInvalidControllerToken
+	} else {
+		s.eventStream.Unsubscribe(ctrl.EventsId)
+		delete(s.controllers, token)
+	}
 	return nil
 }
 
@@ -536,6 +544,28 @@ func (s *Sim) TogglePause() {
 
 func (s *Sim) CurrentTime() time.Time {
 	return s.currentTime
+}
+
+func (s *Sim) PostEvent(e Event) {
+	s.eventStream.Post(e)
+}
+
+type SimWorldUpdate struct {
+	Aircraft    map[string]*Aircraft
+	Controllers map[string]*Controller
+	Events      []Event
+}
+
+func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
+	if ctrl, ok := s.controllers[token]; !ok {
+		return nil, ErrInvalidControllerToken
+	} else {
+		return &SimWorldUpdate{
+			Aircraft:    s.World.Aircraft,
+			Controllers: s.World.Controllers,
+			Events:      s.eventStream.Get(ctrl.EventsId),
+		}, nil
+	}
 }
 
 func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -562,6 +592,7 @@ func (s *Sim) Activate() error {
 	var e ErrorLogger
 
 	s.controllers = make(map[string]*ServerController)
+	s.eventStream = NewEventStream()
 
 	initializeWaypointLocations := func(waypoints []Waypoint, e *ErrorLogger) {
 		for i, wp := range waypoints {
@@ -824,7 +855,7 @@ func (s *Sim) updateState() {
 			if ac, ok := s.World.Aircraft[callsign]; ok {
 				ac.TrackingController = ac.OutboundHandoffController
 				ac.OutboundHandoffController = ""
-				eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ac.TrackingController, Callsign: ac.Callsign})
+				s.eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ac.TrackingController, Callsign: ac.Callsign})
 			}
 			delete(s.Handoffs, callsign)
 		}
@@ -1314,7 +1345,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			response, err := cmd(ctrl, ac)
 			if response != "" {
 				lg.Printf("%s: %s", ac.Callsign, response)
-				eventStream.Post(Event{
+				s.eventStream.Post(Event{
 					Type:     RadioTransmissionEvent,
 					Callsign: ac.Callsign,
 					Message:  response,
@@ -1372,7 +1403,7 @@ func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TrackingController = ctrl.Callsign
 			ac.ControllingController = ctrl.Callsign
-			eventStream.Post(Event{Type: InitiatedTrackEvent, Callsign: ac.Callsign})
+			s.eventStream.Post(Event{Type: InitiatedTrackEvent, Callsign: ac.Callsign})
 			return "", nil
 		})
 }
@@ -1382,7 +1413,7 @@ func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			ac.TrackingController = ""
 			ac.ControllingController = ""
-			eventStream.Post(Event{Type: DroppedTrackEvent, Callsign: ac.Callsign})
+			s.eventStream.Post(Event{Type: DroppedTrackEvent, Callsign: ac.Callsign})
 			return "", nil
 		})
 }
@@ -1454,7 +1485,7 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			ac.InboundHandoffController = ""
 			ac.TrackingController = ctrl.Callsign
 			ac.ControllingController = ctrl.Callsign
-			eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ctrl.Callsign, Callsign: ac.Callsign})
+			s.eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ctrl.Callsign, Callsign: ac.Callsign})
 			return "", nil
 		})
 }
