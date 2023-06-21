@@ -63,8 +63,8 @@ type STARSPane struct {
 	// map from legit to their ghost, if present
 	// ghostAircraft map[string]*Aircraft
 
-	aircraftToIndex map[*Aircraft]int // for use in lists
-	indexToAircraft map[int]*Aircraft // map is sort of wasteful since it's dense, but...
+	aircraftToIndex map[string]int // for use in lists
+	indexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
 
 	AutoTrackDepartures map[string]interface{}
 
@@ -72,7 +72,7 @@ type STARSPane struct {
 	queryUnassociated  *TransientMap[string, interface{}]
 
 	rangeBearingLines []STARSRangeBearingLine
-	minSepAircraft    [2]*Aircraft
+	minSepAircraft    [2]string
 
 	// Various UI state
 	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
@@ -569,8 +569,8 @@ func (sp *STARSPane) Activate() {
 
 	sp.initializeSystemFonts()
 
-	sp.aircraftToIndex = make(map[*Aircraft]int)
-	sp.indexToAircraft = make(map[int]*Aircraft)
+	sp.aircraftToIndex = make(map[string]int)
+	sp.indexToAircraft = make(map[int]string)
 
 	if sp.AutoTrackDepartures == nil {
 		sp.AutoTrackDepartures = make(map[string]interface{})
@@ -991,12 +991,12 @@ func (sp *STARSPane) activateMenuSpinner(ptr unsafe.Pointer) {
 }
 
 func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
-	if idx, ok := sp.aircraftToIndex[ac]; ok {
+	if idx, ok := sp.aircraftToIndex[ac.Callsign]; ok {
 		return idx
 	} else {
 		idx := len(sp.aircraftToIndex) + 1
-		sp.aircraftToIndex[ac] = idx
-		sp.indexToAircraft[idx] = ac
+		sp.aircraftToIndex[ac.Callsign] = idx
+		sp.indexToAircraft[idx] = ac.Callsign
 		return idx
 	}
 }
@@ -1015,8 +1015,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		}
 
 		if idx, err := strconv.Atoi(callsign); err == nil {
-			if ac, ok := sp.indexToAircraft[idx]; ok {
-				return ac
+			if callsign, ok := sp.indexToAircraft[idx]; ok {
+				return world.Aircraft[callsign]
 			}
 		}
 
@@ -1656,8 +1656,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 	case CommandModeMin:
 		if cmd == "" {
 			// Clear min sep
-			sp.minSepAircraft[0] = nil
-			sp.minSepAircraft[1] = nil
+			sp.minSepAircraft[0] = ""
+			sp.minSepAircraft[1] = ""
 			status.clear = true
 		} else {
 			status.err = ErrSTARSCommandFormat
@@ -2140,10 +2140,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 		case CommandModeMin:
 			if cmd == "" {
-				sp.minSepAircraft[0] = ac
+				sp.minSepAircraft[0] = ac.Callsign
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 					if ac := sp.tryGetClickedAircraft(pw, transforms); ac != nil {
-						sp.minSepAircraft[1] = ac
+						sp.minSepAircraft[1] = ac.Callsign
 						status.clear = true
 					} else {
 						status.err = ErrSTARSIllegalTrack
@@ -3747,9 +3747,15 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 
 // Draw the minimum separation line between two aircraft, if selected.
 func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	ac0, ac1 := sp.minSepAircraft[0], sp.minSepAircraft[1]
-	if ac0 == nil || ac1 == nil {
+	cs0, cs1 := sp.minSepAircraft[0], sp.minSepAircraft[1]
+	if cs0 == "" || cs1 == "" {
 		// Two aircraft haven't been specified.
+		return
+	}
+	ac0, ok0 := world.Aircraft[cs0]
+	ac1, ok1 := world.Aircraft[cs1]
+	if !ok0 || !ok1 {
+		// Missing aircraft
 		return
 	}
 
