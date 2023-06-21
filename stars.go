@@ -59,17 +59,17 @@ type STARSPane struct {
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
-	aircraft map[*Aircraft]*STARSAircraftState
+	aircraft map[string]*STARSAircraftState
 	// map from legit to their ghost, if present
-	ghostAircraft map[*Aircraft]*Aircraft
+	// ghostAircraft map[string]*Aircraft
 
 	aircraftToIndex map[*Aircraft]int // for use in lists
 	indexToAircraft map[int]*Aircraft // map is sort of wasteful since it's dense, but...
 
 	AutoTrackDepartures map[string]interface{}
 
-	pointedOutAircraft *TransientMap[*Aircraft, string]
-	queryUnassociated  *TransientMap[*Aircraft, interface{}]
+	pointedOutAircraft *TransientMap[string, string]
+	queryUnassociated  *TransientMap[string, interface{}]
 
 	rangeBearingLines []STARSRangeBearingLine
 	minSepAircraft    [2]*Aircraft
@@ -83,7 +83,7 @@ type STARSPane struct {
 	previewAreaOutput string
 	previewAreaInput  string
 
-	havePlayedSPCAlertSound map[*Aircraft]interface{}
+	havePlayedSPCAlertSound map[string]interface{}
 
 	lastCASoundTime time.Time
 
@@ -558,13 +558,13 @@ func (sp *STARSPane) Activate() {
 	sp.CurrentPreferenceSet.Activate()
 
 	if sp.havePlayedSPCAlertSound == nil {
-		sp.havePlayedSPCAlertSound = make(map[*Aircraft]interface{})
+		sp.havePlayedSPCAlertSound = make(map[string]interface{})
 	}
 	if sp.pointedOutAircraft == nil {
-		sp.pointedOutAircraft = NewTransientMap[*Aircraft, string]()
+		sp.pointedOutAircraft = NewTransientMap[string, string]()
 	}
 	if sp.queryUnassociated == nil {
-		sp.queryUnassociated = NewTransientMap[*Aircraft, interface{}]()
+		sp.queryUnassociated = NewTransientMap[string, interface{}]()
 	}
 
 	sp.initializeSystemFonts()
@@ -590,7 +590,7 @@ func (sp *STARSPane) Activate() {
 func (sp *STARSPane) Deactivate() {
 	// Drop all of them
 	sp.aircraft = nil
-	sp.ghostAircraft = nil
+	//sp.ghostAircraft = nil
 
 	eventStream.Unsubscribe(sp.eventsId)
 	sp.eventsId = InvalidEventSubscriberId
@@ -646,93 +646,104 @@ func (sp *STARSPane) DrawUI() {
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
 func (sp *STARSPane) processEvents(es *EventStream) {
-	ps := sp.CurrentPreferenceSet
-
 	for _, event := range es.Get(sp.eventsId) {
 		switch event.Type {
 		case AddedAircraftEvent:
 			sa := &STARSAircraftState{}
 			cs := world.Callsign
-			ac := world.Aircraft[event.Callsign]
+			ac, ok := world.Aircraft[event.Callsign]
+			if !ok {
+				lg.Errorf("%s: no aircraft in world?", event.Callsign)
+				break
+			}
 			if ac.TrackingController == cs || ac.ControllingController == cs {
 				sa.datablockType = FullDatablock
 			}
-			sp.aircraft[ac] = sa
+			sp.aircraft[ac.Callsign] = sa
 
 			if fp := ac.FlightPlan; fp != nil {
 				if ac.TrackingController == "" {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
 						world.InitiateTrack(ac.Callsign) // ignore error...
-						sp.aircraft[ac].datablockType = FullDatablock
+						sp.aircraft[ac.Callsign].datablockType = FullDatablock
 					}
 				}
 			}
 
-			if !ps.DisableCRDA {
-				if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
-					sp.ghostAircraft[ac] = ghost
-					sp.aircraft[ghost] = &STARSAircraftState{
-						// TODO: other defaults?
-						isGhost:        true,
-						displayTPASize: ps.DisplayTPASize,
+			/*
+				if !ps.DisableCRDA {
+					if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
+						sp.ghostAircraft[ac.Callsign] = ghost
+						sp.aircraft[ghost] = &STARSAircraftState{
+							// TODO: other defaults?
+							isGhost:        true,
+							displayTPASize: ps.DisplayTPASize,
+						}
 					}
 				}
-			}
+			*/
 			if squawkingSPC(ac.Squawk) {
-				if _, ok := sp.havePlayedSPCAlertSound[ac]; !ok {
-					sp.havePlayedSPCAlertSound[ac] = nil
+				if _, ok := sp.havePlayedSPCAlertSound[ac.Callsign]; !ok {
+					sp.havePlayedSPCAlertSound[ac.Callsign] = nil
 					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 				}
 			}
 
 		case RemovedAircraftEvent:
-			ac := world.Aircraft[event.Callsign]
-			if ghost, ok := sp.ghostAircraft[ac]; ok {
-				delete(sp.aircraft, ghost)
-			}
-			delete(sp.aircraft, ac)
-			delete(sp.ghostAircraft, ac)
+			/*
+				if ghost, ok := sp.ghostAircraft[ac]; ok {
+					delete(sp.aircraft, ghost)
+				}
+			*/
+			delete(sp.aircraft, event.Callsign)
+			//delete(sp.ghostAircraft, ac)
 
 		case ModifiedAircraftEvent:
-			ac := world.Aircraft[event.Callsign]
+			ac, ok := world.Aircraft[event.Callsign]
+			if !ok {
+				lg.Errorf("%s: no aircraft in world?!", event.Callsign)
+				break
+			}
+
 			if squawkingSPC(ac.Squawk) {
-				if _, ok := sp.havePlayedSPCAlertSound[ac]; !ok {
-					sp.havePlayedSPCAlertSound[ac] = nil
+				if _, ok := sp.havePlayedSPCAlertSound[ac.Callsign]; !ok {
+					sp.havePlayedSPCAlertSound[ac.Callsign] = nil
 					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 				}
 			}
 
-			if !ps.DisableCRDA {
-				// always start out by removing the old ghost
-				if oldGhost, ok := sp.ghostAircraft[ac]; ok {
-					delete(sp.aircraft, oldGhost)
-					delete(sp.ghostAircraft, ac)
+			/*
+				if !ps.DisableCRDA {
+					// always start out by removing the old ghost
+					if oldGhost, ok := sp.ghostAircraft[ac]; ok {
+						delete(sp.aircraft, oldGhost)
+						delete(sp.ghostAircraft, ac)
+					}
 				}
-			}
-
-			if _, ok := sp.aircraft[ac]; !ok {
-				sp.aircraft[ac] = &STARSAircraftState{}
+			*/
+			if _, ok := sp.aircraft[ac.Callsign]; !ok {
+				sp.aircraft[ac.Callsign] = &STARSAircraftState{}
 			}
 
 			// new ghost
-			if !ps.DisableCRDA {
-				if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
-					sp.ghostAircraft[ac] = ghost
-					sp.aircraft[ghost] = &STARSAircraftState{isGhost: true}
+			/*
+				if !ps.DisableCRDA {
+					if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
+						sp.ghostAircraft[ac] = ghost
+						sp.aircraft[ghost] = &STARSAircraftState{isGhost: true}
+					}
 				}
-			}
+			*/
 
 		case PointOutEvent:
-			ac := world.Aircraft[event.Callsign]
-			sp.pointedOutAircraft.Add(ac, event.Controller, 10*time.Second)
+			sp.pointedOutAircraft.Add(event.Callsign, event.Controller, 10*time.Second)
 
 		case AcceptedHandoffEvent:
 			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
 			if event.Controller != world.Callsign {
-				ac := world.Aircraft[event.Callsign]
-				state := sp.aircraft[ac]
+				state := sp.aircraft[event.Callsign]
 				state.outboundHandoffAccepted = true
 				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
@@ -1159,7 +1170,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		} else {
 			status.err = world.InitiateTrack(lookupCallsign(cmd))
 			status.clear = true
-			state := sp.aircraft[ac]
+			state := sp.aircraft[ac.Callsign]
 			state.datablockType = FullDatablock
 			// Display flight plan
 			if status.err == nil {
@@ -1170,9 +1181,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 
 	case CommandModeTerminateControl:
 		if cmd == "ALL" {
-			for ac := range sp.aircraft {
+			for callsign, ac := range world.Aircraft {
 				if ac.TrackingController == world.Callsign {
-					status.err = world.DropTrack(ac.Callsign)
+					status.err = world.DropTrack(callsign)
 				}
 			}
 			status.clear = true
@@ -1352,8 +1363,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		case "L":
 			// leader lines
 			setLLDir := func(dir *CardinalOrdinalDirection, pred func(*Aircraft) bool) {
-				for ac, state := range sp.aircraft {
+				for callsign, ac := range world.Aircraft {
 					if pred(ac) {
+						state := sp.aircraft[callsign]
 						state.leaderLineDirection = dir
 					}
 				}
@@ -1412,7 +1424,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 					// We know len(cmd) >= 3 given the above cases...
 					callsign := lookupCallsign(cmd[2:])
 					if ac := world.GetAircraft(callsign); ac != nil {
-						sp.aircraft[ac].leaderLineDirection = dir
+						sp.aircraft[ac.Callsign].leaderLineDirection = dir
 						status.clear = true
 						return
 					}
@@ -1597,9 +1609,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				// Y callsign -> clear scratchpad and reported altitude
 				// Clear pilot alt. and scratchpad
 				callsign := lookupCallsign(f[0])
-				if ac := world.GetAircraft(callsign); ac != nil {
-					sp.aircraft[ac].pilotAltitude = 0
-				}
+				sp.aircraft[callsign].pilotAltitude = 0
 				status.err = world.SetScratchpad(callsign, "")
 				status.clear = true
 				return
@@ -1612,7 +1622,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 				if ac := world.GetAircraft(callsign); ac == nil {
 					status.err = ErrSTARSIllegalTrack
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
-					sp.aircraft[ac].pilotAltitude = alt * 100
+					sp.aircraft[callsign].pilotAltitude = alt * 100
 				} else {
 					status.err = world.SetScratchpad(callsign, f[1])
 				}
@@ -1661,7 +1671,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string) (status STARSCommandStatus)
 		if len(cmd) > 3 && cmd[:2] == "K " {
 			callsign := lookupCallsign(cmd[2:])
 			if ac := world.GetAircraft(callsign); ac != nil {
-				state := sp.aircraft[ac]
+				state := sp.aircraft[callsign]
 				state.disableCAWarnings = !state.disableCAWarnings
 			} else {
 				status.err = ErrSTARSIllegalParam
@@ -1803,7 +1813,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 	ps := &sp.CurrentPreferenceSet
 
 	if ac != nil {
-		state := sp.aircraft[ac]
+		state := sp.aircraft[ac.Callsign]
 
 		switch sp.commandMode {
 		case CommandModeNone:
@@ -1824,9 +1834,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 					status.clear = true
 					status.err = world.CancelHandoff(ac.Callsign)
 					return
-				} else if _, ok := sp.pointedOutAircraft.Get(ac); ok {
+				} else if _, ok := sp.pointedOutAircraft.Get(ac.Callsign); ok {
 					// ack point out
-					sp.pointedOutAircraft.Delete(ac)
+					sp.pointedOutAircraft.Delete(ac.Callsign)
 					status.clear = true
 					return
 				} else if state.outboundHandoffAccepted {
@@ -2155,7 +2165,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(cmd string, mousePosition [2]flo
 
 		case CommandModeCollisionAlert:
 			if cmd == "K" {
-				state := sp.aircraft[ac]
+				state := sp.aircraft[ac.Callsign]
 				state.disableCAWarnings = !state.disableCAWarnings
 				status.clear = true
 				// TODO: check should we set sp.commandMode = CommandMode
@@ -2827,7 +2837,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 			// those.
 			var hj, rf, em, mi bool
 			for _, ac := range aircraft {
-				state := sp.aircraft[ac]
+				state := sp.aircraft[ac.Callsign]
 				if ac.Squawk == Squawk(0o7500) || state.spcOverride == "HJ" {
 					hj = true
 				} else if ac.Squawk == Squawk(0o7600) || state.spcOverride == "RF" {
@@ -3080,7 +3090,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 }
 
 func (sp *STARSPane) datablockType(ac *Aircraft) DatablockType {
-	state := sp.aircraft[ac]
+	state := sp.aircraft[ac.Callsign]
 	dt := state.datablockType
 
 	// TODO: when do we do a partial vs limited datablock?
@@ -3163,7 +3173,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
 		}
 
-		state := sp.aircraft[ac]
+		state := sp.aircraft[ac.Callsign]
 		if state.isGhost {
 			// TODO: handle
 			// color = ctx.cs.GhostDatablock
@@ -3235,7 +3245,7 @@ func (sp *STARSPane) updateDatablockTextAndPosition(aircraft []*Aircraft) {
 			continue
 		}
 
-		state := sp.aircraft[ac]
+		state := sp.aircraft[ac.Callsign]
 		state.datablockErrText, state.datablockText = sp.formatDatablock(ac)
 
 		// For westerly directions the datablock text should be right
@@ -3332,17 +3342,22 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 	}
 
 	for other := range sp.aircraft {
-		if other == ac || other.TrackAltitude() < int(sp.Facility.CA.Floor) {
+		if other == ac.Callsign {
+			continue
+		}
+
+		otherac, ok := world.Aircraft[other]
+		if ok && otherac.TrackAltitude() < int(sp.Facility.CA.Floor) {
 			continue
 		}
 
 		// No conflict alerts with aircraft established on different
 		// approaches to the same airport within 3 miles of the airport
-		if ac.FlightPlan.ArrivalAirport == other.FlightPlan.ArrivalAirport &&
-			ac.ApproachId != "" && other.ApproachId != "" &&
-			ac.ApproachId != other.ApproachId {
+		if ac.FlightPlan.ArrivalAirport == otherac.FlightPlan.ArrivalAirport &&
+			ac.ApproachId != "" && otherac.ApproachId != "" &&
+			ac.ApproachId != otherac.ApproachId {
 			d, err := ac.FinalApproachDistance()
-			od, oerr := other.FinalApproachDistance()
+			od, oerr := otherac.FinalApproachDistance()
 			if err == nil && oerr == nil && (d < 3 || od < 3) {
 				continue
 			}
@@ -3350,16 +3365,16 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 
 		// No conflict alerts with another aircraft on an approach if we're
 		// departing (assume <1000' and no assigned approach implies this)
-		if ac.Approach() == nil && ac.Altitude < 1000 && other.Approach() != nil {
+		if ac.Approach() == nil && ac.Altitude < 1000 && otherac.Approach() != nil {
 			continue
 		}
 		// Converse of the above
-		if ac.Approach() != nil && other.Altitude < 1000 && other.Approach() == nil {
+		if ac.Approach() != nil && otherac.Altitude < 1000 && otherac.Approach() == nil {
 			continue
 		}
 
-		if nmdistance2ll(ac.TrackPosition(), other.TrackPosition()) <= sp.Facility.CA.LateralMinimum &&
-			abs(ac.TrackAltitude()-other.TrackAltitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
+		if nmdistance2ll(ac.TrackPosition(), otherac.TrackPosition()) <= sp.Facility.CA.LateralMinimum &&
+			abs(ac.TrackAltitude()-otherac.TrackAltitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
 			return true
 		}
 	}
@@ -3367,7 +3382,7 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 }
 
 func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [2][]string) {
-	state := sp.aircraft[ac]
+	state := sp.aircraft[ac.Callsign]
 
 	var errs []string
 	if ac.Squawk == Squawk(0o7500) || state.spcOverride == "HJ" {
@@ -3439,7 +3454,7 @@ func (sp *STARSPane) formatDatablock(ac *Aircraft) (errblock string, mainblock [
 		if ac.Mode == Ident {
 			cs += " ID"
 		}
-		if _, ok := sp.pointedOutAircraft.Get(ac); ok {
+		if _, ok := sp.pointedOutAircraft.Get(ac.Callsign); ok {
 			cs += " PO"
 		}
 		mainblock[0] = append(mainblock[0], cs)
@@ -3509,9 +3524,9 @@ func (sp *STARSPane) datablockColor(ac *Aircraft) RGB {
 	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.CurrentPreferenceSet
 	br := ps.Brightness.FullDatablocks
-	state := sp.aircraft[ac]
+	state := sp.aircraft[ac.Callsign]
 
-	if _, ok := sp.pointedOutAircraft.Get(ac); ok {
+	if _, ok := sp.pointedOutAircraft.Get(ac.Callsign); ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
 	} else if ac.TrackingController == world.Callsign {
@@ -3562,10 +3577,10 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		// or for inbound handoff
 		if ac.Mode == Ident {
 		}
-		if _, ok := sp.pointedOutAircraft.Get(ac); ok {
+		if _, ok := sp.pointedOutAircraft.Get(ac.Callsign); ok {
 		}
 
-		state := sp.aircraft[ac]
+		state := sp.aircraft[ac.Callsign]
 
 		color := sp.datablockColor(ac)
 		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: -2}
@@ -3607,7 +3622,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		if ac.LostTrack(now) || !ac.HaveHeading() {
 			continue
 		}
-		state := sp.aircraft[ac]
+		state := sp.aircraft[ac.Callsign]
 		if !(state.displayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == world.Callsign)) {
 			continue
 		}
@@ -3656,7 +3671,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			}
 		}
 
-		state := sp.aircraft[ac]
+		state := sp.aircraft[ac.Callsign]
 		if state.jRingRadius > 0 {
 			const nsegs = 360
 			pc := transforms.WindowFromLatLongP(ac.TrackPosition())
@@ -3735,7 +3750,7 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 			if ac.LostTrack(world.CurrentTime()) || !sp.datablockVisible(ac) {
 				continue
 			}
-			if _, ok := sp.aircraft[ac]; !ok {
+			if _, ok := sp.aircraft[ac.Callsign]; !ok {
 				continue
 			}
 			p0 = ac.TrackPosition()
@@ -3744,7 +3759,7 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 			if ac.LostTrack(world.CurrentTime()) || !sp.datablockVisible(ac) {
 				continue
 			}
-			if _, ok := sp.aircraft[ac]; !ok {
+			if _, ok := sp.aircraft[ac.Callsign]; !ok {
 				continue
 			}
 			p1 = ac.TrackPosition()
@@ -3786,8 +3801,9 @@ func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformatio
 	ld := GetLinesDrawBuilder()
 	defer ReturnLinesDrawBuilder(ld)
 
-	for ac := range sp.aircraft {
-		if !sp.IsCAActive(ac) {
+	for callsign := range sp.aircraft {
+		ac, ok := world.Aircraft[callsign]
+		if !ok || (ok && !sp.IsCAActive(ac)) {
 			continue
 		}
 
@@ -3891,7 +3907,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 		}
 	} else if ctx.mouse.Clicked[MouseButtonTertiary] {
 		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
-			if state := sp.aircraft[ac]; state != nil {
+			if state := sp.aircraft[ac.Callsign]; state != nil {
 				state.isSelected = !state.isSelected
 			}
 		}
@@ -4205,26 +4221,27 @@ func (sp *STARSPane) initializeSystemFonts() {
 
 func (sp *STARSPane) initializeAircraft() {
 	// Reset and initialize all of these
-	sp.aircraft = make(map[*Aircraft]*STARSAircraftState)
-	sp.ghostAircraft = make(map[*Aircraft]*Aircraft)
+	sp.aircraft = make(map[string]*STARSAircraftState)
+	//sp.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
-	ps := sp.CurrentPreferenceSet
 	for _, ac := range world.GetAllAircraft() {
 		sa := &STARSAircraftState{}
-		sp.aircraft[ac] = sa
+		sp.aircraft[ac.Callsign] = sa
 		if ac.TrackingController == world.Callsign || ac.ControllingController == world.Callsign {
 			sa.datablockType = FullDatablock
 		}
 
-		if !ps.DisableCRDA {
-			if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
-				sp.ghostAircraft[ac] = ghost
-				sp.aircraft[ghost] = &STARSAircraftState{
-					isGhost:        true,
-					displayTPASize: ps.DisplayTPASize,
+		/*
+			if !ps.DisableCRDA {
+				if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
+					sp.ghostAircraft[ac] = ghost
+					sp.aircraft[ghost] = &STARSAircraftState{
+						isGhost:        true,
+						displayTPASize: ps.DisplayTPASize,
+					}
 				}
 			}
-		}
+		*/
 	}
 }
 
@@ -4267,7 +4284,12 @@ func (sp *STARSPane) visibleAircraft() []*Aircraft {
 	ps := sp.CurrentPreferenceSet
 	multi := sp.multiRadarMode()
 
-	for ac := range sp.aircraft {
+	for callsign := range sp.aircraft {
+		ac, ok := world.Aircraft[callsign]
+		if !ok {
+			continue
+		}
+
 		// Is it on the ground?
 		if ac.FlightPlan != nil {
 			if ap := world.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil {
@@ -4307,7 +4329,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft) bool {
 }
 
 func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft) CardinalOrdinalDirection {
-	if lld := sp.aircraft[ac].leaderLineDirection; lld != nil {
+	if lld := sp.aircraft[ac.Callsign].leaderLineDirection; lld != nil {
 		return *lld
 	} else {
 		return sp.CurrentPreferenceSet.LeaderLineDirection
