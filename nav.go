@@ -299,7 +299,7 @@ func (ca *ClimbOnceAirborne) Summary(ac *Aircraft) string {
 type TurnToInterceptLocalizer struct{}
 
 func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
-	ap := ac.Approach()
+	ap := ac.Approach(world)
 	if ap.Type != ILSApproach {
 		panic("not an ils approach")
 	}
@@ -334,7 +334,7 @@ func (il *TurnToInterceptLocalizer) Summary(ac *Aircraft) string {
 type HoldLocalizerAfterIntercept struct{}
 
 func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft) bool {
-	ap := ac.Approach()
+	ap := ac.Approach(world)
 	loc := ap.Line()
 	dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
 	if dist > .2 {
@@ -874,7 +874,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 	}
 	if fp.OutboundLegLength == 0 {
 		// Select a default based on the approach type.
-		switch ac.Approach().Type {
+		switch ac.Approach(world).Type {
 		case ILSApproach:
 			// 1 minute by default on ILS
 			fp.OutboundLegLength = ac.GS / 60
@@ -885,7 +885,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 			fp.OutboundLegLength = 2
 
 		default:
-			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach().Type)
+			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach(world).Type)
 			fp.OutboundLegLength = ac.GS / 60
 
 		}

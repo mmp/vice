@@ -3328,11 +3328,11 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 
 		// No conflict alerts with another aircraft on an approach if we're
 		// departing (assume <1000' and no assigned approach implies this)
-		if ac.Approach() == nil && ac.Altitude < 1000 && other.Approach() != nil {
+		if ac.Approach(world) == nil && ac.Altitude < 1000 && other.Approach(world) != nil {
 			continue
 		}
 		// Converse of the above
-		if ac.Approach() != nil && other.Altitude < 1000 && other.Approach() == nil {
+		if ac.Approach(world) != nil && other.Altitude < 1000 && other.Approach(world) == nil {
 			continue
 		}
 
@@ -3884,7 +3884,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			}
 			info = append(info, ac.Nav.Summary(ac))
 
-			if ap := ac.Approach(); ap != nil {
+			if ap := ac.Approach(world); ap != nil {
 				if ac.ApproachCleared {
 					info = append(info, "Cleared "+ap.FullName+" approach")
 				} else {

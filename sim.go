@@ -600,7 +600,7 @@ func (s *Sim) Activate() error {
 			ac.Tracks[i].Time = updateTime(ac.Tracks[i].Time)
 		}
 
-		if ap := ac.Approach(); ap != nil {
+		if ap := ac.Approach(s.World); ap != nil {
 			for i := range ap.Waypoints {
 				initializeWaypointLocations(ap.Waypoints[i], &e)
 			}
