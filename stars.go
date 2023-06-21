@@ -646,26 +646,21 @@ func (sp *STARSPane) DrawUI() {
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
 func (sp *STARSPane) processEvents(es *EventStream) {
-	for _, event := range es.Get(sp.eventsId) {
-		switch event.Type {
-		case AddedAircraftEvent:
+	// First handle changes in world.Aircraft
+	for callsign, ac := range world.Aircraft {
+		if _, ok := sp.aircraft[callsign]; !ok {
+			// First we've seen it; create the *STARSAircraftState for it
 			sa := &STARSAircraftState{}
-			cs := world.Callsign
-			ac, ok := world.Aircraft[event.Callsign]
-			if !ok {
-				lg.Errorf("%s: no aircraft in world?", event.Callsign)
-				break
-			}
-			if ac.TrackingController == cs || ac.ControllingController == cs {
+			if ac.TrackingController == world.Callsign || ac.ControllingController == world.Callsign {
 				sa.datablockType = FullDatablock
 			}
-			sp.aircraft[ac.Callsign] = sa
+			sp.aircraft[callsign] = sa
 
 			if fp := ac.FlightPlan; fp != nil {
 				if ac.TrackingController == "" {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
-						world.InitiateTrack(ac.Callsign) // ignore error...
-						sp.aircraft[ac.Callsign].datablockType = FullDatablock
+						world.InitiateTrack(callsign) // ignore error...
+						sp.aircraft[callsign].datablockType = FullDatablock
 					}
 				}
 			}
@@ -682,59 +677,26 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 					}
 				}
 			*/
-			if squawkingSPC(ac.Squawk) {
-				if _, ok := sp.havePlayedSPCAlertSound[ac.Callsign]; !ok {
-					sp.havePlayedSPCAlertSound[ac.Callsign] = nil
-					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
-				}
+		}
+
+		if squawkingSPC(ac.Squawk) {
+			if _, ok := sp.havePlayedSPCAlertSound[ac.Callsign]; !ok {
+				sp.havePlayedSPCAlertSound[ac.Callsign] = nil
+				//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 			}
+		}
+	}
 
-		case RemovedAircraftEvent:
-			/*
-				if ghost, ok := sp.ghostAircraft[ac]; ok {
-					delete(sp.aircraft, ghost)
-				}
-			*/
-			delete(sp.aircraft, event.Callsign)
-			//delete(sp.ghostAircraft, ac)
+	// See if any aircraft we have state for have been removed
+	for callsign := range sp.aircraft {
+		if _, ok := world.Aircraft[callsign]; !ok {
+			delete(sp.aircraft, callsign)
+			// delete ghost a/c
+		}
+	}
 
-		case ModifiedAircraftEvent:
-			ac, ok := world.Aircraft[event.Callsign]
-			if !ok {
-				lg.Errorf("%s: no aircraft in world?!", event.Callsign)
-				break
-			}
-
-			if squawkingSPC(ac.Squawk) {
-				if _, ok := sp.havePlayedSPCAlertSound[ac.Callsign]; !ok {
-					sp.havePlayedSPCAlertSound[ac.Callsign] = nil
-					//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
-				}
-			}
-
-			/*
-				if !ps.DisableCRDA {
-					// always start out by removing the old ghost
-					if oldGhost, ok := sp.ghostAircraft[ac]; ok {
-						delete(sp.aircraft, oldGhost)
-						delete(sp.ghostAircraft, ac)
-					}
-				}
-			*/
-			if _, ok := sp.aircraft[ac.Callsign]; !ok {
-				sp.aircraft[ac.Callsign] = &STARSAircraftState{}
-			}
-
-			// new ghost
-			/*
-				if !ps.DisableCRDA {
-					if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
-						sp.ghostAircraft[ac] = ghost
-						sp.aircraft[ghost] = &STARSAircraftState{isGhost: true}
-					}
-				}
-			*/
-
+	for _, event := range es.Get(sp.eventsId) {
+		switch event.Type {
 		case PointOutEvent:
 			sp.pointedOutAircraft.Add(event.Callsign, event.Controller, 10*time.Second)
 
@@ -743,10 +705,13 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
 			if event.Controller != world.Callsign {
-				state := sp.aircraft[event.Callsign]
-				state.outboundHandoffAccepted = true
-				state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-				globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
+				if state, ok := sp.aircraft[event.Callsign]; !ok {
+					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
+				} else {
+					state.outboundHandoffAccepted = true
+					state.outboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+					globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
+				}
 			}
 		}
 	}
@@ -3341,23 +3306,21 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 		return false
 	}
 
-	for other := range sp.aircraft {
-		if other == ac.Callsign {
+	for ocs, other := range world.Aircraft {
+		if ocs == ac.Callsign {
 			continue
 		}
-
-		otherac, ok := world.Aircraft[other]
-		if ok && otherac.TrackAltitude() < int(sp.Facility.CA.Floor) {
+		if other.TrackAltitude() < int(sp.Facility.CA.Floor) {
 			continue
 		}
 
 		// No conflict alerts with aircraft established on different
 		// approaches to the same airport within 3 miles of the airport
-		if ac.FlightPlan.ArrivalAirport == otherac.FlightPlan.ArrivalAirport &&
-			ac.ApproachId != "" && otherac.ApproachId != "" &&
-			ac.ApproachId != otherac.ApproachId {
+		if ac.FlightPlan.ArrivalAirport == other.FlightPlan.ArrivalAirport &&
+			ac.ApproachId != "" && other.ApproachId != "" &&
+			ac.ApproachId != other.ApproachId {
 			d, err := ac.FinalApproachDistance()
-			od, oerr := otherac.FinalApproachDistance()
+			od, oerr := other.FinalApproachDistance()
 			if err == nil && oerr == nil && (d < 3 || od < 3) {
 				continue
 			}
@@ -3365,16 +3328,16 @@ func (sp *STARSPane) IsCAActive(ac *Aircraft) bool {
 
 		// No conflict alerts with another aircraft on an approach if we're
 		// departing (assume <1000' and no assigned approach implies this)
-		if ac.Approach() == nil && ac.Altitude < 1000 && otherac.Approach() != nil {
+		if ac.Approach() == nil && ac.Altitude < 1000 && other.Approach() != nil {
 			continue
 		}
 		// Converse of the above
-		if ac.Approach() != nil && otherac.Altitude < 1000 && otherac.Approach() == nil {
+		if ac.Approach() != nil && other.Altitude < 1000 && other.Approach() == nil {
 			continue
 		}
 
-		if nmdistance2ll(ac.TrackPosition(), otherac.TrackPosition()) <= sp.Facility.CA.LateralMinimum &&
-			abs(ac.TrackAltitude()-otherac.TrackAltitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
+		if nmdistance2ll(ac.TrackPosition(), other.TrackPosition()) <= sp.Facility.CA.LateralMinimum &&
+			abs(ac.TrackAltitude()-other.TrackAltitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
 			return true
 		}
 	}

@@ -279,7 +279,7 @@ type FlightStripPane struct {
 	eventsId  EventSubscriberId
 	scrollbar *ScrollBar
 
-	selectedAircraft *Aircraft
+	selectedAircraft string
 }
 
 func NewFlightStripPane() *FlightStripPane {
@@ -333,8 +333,7 @@ func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ 
 
 func (fsp *FlightStripPane) processEvents(es *EventStream) {
 	possiblyAdd := func(ac *Aircraft) {
-		callsign := ac.Callsign
-		if _, ok := fsp.addedAircraft[callsign]; ok {
+		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
 		}
 
@@ -342,39 +341,38 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 			return
 		}
 
-		fsp.strips = append(fsp.strips, callsign)
-		fsp.addedAircraft[callsign] = nil
+		fsp.strips = append(fsp.strips, ac.Callsign)
+		fsp.addedAircraft[ac.Callsign] = nil
 	}
+
+	// First account for changes in world.Aircraft
+	// Added aircraft
+	for _, ac := range world.Aircraft {
+		if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+			possiblyAdd(ac)
+		} else if ac.TrackingController == "" &&
+			((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+			possiblyAdd(ac)
+		}
+	}
+	// Removed aircraft
+	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
+		_, ok := world.Aircraft[callsign]
+		return ok
+	})
 
 	remove := func(c string) {
 		fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
+		if fsp.selectedAircraft == c {
+			fsp.selectedAircraft = ""
+		}
 	}
 
 	for _, event := range es.Get(fsp.eventsId) {
 		switch event.Type {
 		case PushedFlightStripEvent:
-			if Find(fsp.strips, event.Callsign) == -1 {
-				fsp.strips = append(fsp.strips, event.Callsign)
-			}
-
-		case AddedAircraftEvent:
-			if ac, ok := world.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
-					possiblyAdd(ac)
-				} else if ac.TrackingController == "" &&
-					((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
-					possiblyAdd(ac)
-				}
-			}
-
-		case ModifiedAircraftEvent:
-			if ac, ok := world.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
-					possiblyAdd(ac)
-				} else if ac.TrackingController == "" &&
-					((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
-					possiblyAdd(ac)
-				}
+			if ac, ok := world.Aircraft[event.Callsign]; ok && fsp.AddPushed {
+				possiblyAdd(ac)
 			}
 
 		case InitiatedTrackEvent:
@@ -397,9 +395,6 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 					remove(event.Callsign)
 				}
 			}
-
-		case RemovedAircraftEvent:
-			remove(event.Callsign)
 		}
 	}
 
@@ -664,7 +659,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				} else {
 					// select the aircraft
 					callsign := fsp.strips[stripIndex]
-					fsp.selectedAircraft = world.GetAircraft(callsign)
+					fsp.selectedAircraft = callsign
 				}
 			}
 		}
@@ -682,18 +677,17 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[MouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
-		if fsp.selectedAircraft == nil {
+		if fsp.selectedAircraft == "" {
 			lg.Printf("No selected aircraft for flight strip drag?!")
 		} else {
 			// Figure out the index for the selected aircraft.
 			selectedIndex := func() int {
-				callsign := fsp.selectedAircraft.Callsign
 				for i, fs := range fsp.strips {
-					if fs == callsign {
+					if fs == fsp.selectedAircraft {
 						return i
 					}
 				}
-				lg.Printf("Couldn't find %s in flight strips?!", callsign)
+				lg.Printf("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
 				return -1
 			}()
 

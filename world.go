@@ -186,9 +186,12 @@ func (w *World) PointOut(callsign string, controller string) error {
 }
 
 func (w *World) Disconnect() {
-	for _, ac := range w.Aircraft {
-		eventStream.Post(Event{Type: RemovedAircraftEvent, Callsign: ac.Callsign})
+	if err := sim.SignOff(w.token, nil); err != nil {
+		lg.Errorf("Error signing off from sim: %v", err)
 	}
+	w.Aircraft = nil
+	w.Controllers = nil
+
 	if w.eventsId != InvalidEventSubscriberId {
 		eventStream.Unsubscribe(w.eventsId)
 		w.eventsId = InvalidEventSubscriberId
