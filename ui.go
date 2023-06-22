@@ -105,9 +105,9 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(renderer Renderer) {
+func uiInit(renderer Renderer, p Platform) {
 	if runtime.GOOS == "windows" {
-		imgui.CurrentStyle().ScaleAllSizes(dpiScale(platform))
+		imgui.CurrentStyle().ScaleAllSizes(dpiScale(p))
 	}
 
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
@@ -170,7 +170,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(platform Platform) {
+func drawUI(p Platform) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -231,7 +231,7 @@ func drawUI(platform Platform) {
 		}
 
 		width, _ := ui.font.BoundText(FontAwesomeIconInfoCircle, 0)
-		imgui.SetCursorPos(imgui.Vec2{platform.DisplaySize()[0] - float32(4*width+10), 0})
+		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(4*width+10), 0})
 		if imgui.Button(FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
@@ -257,7 +257,7 @@ func drawUI(platform Platform) {
 
 	drawActiveDialogBoxes()
 
-	wmDrawUI(platform)
+	wmDrawUI(p)
 
 	imgui.PopFont()
 

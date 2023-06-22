@@ -139,7 +139,7 @@ func main() {
 		panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 	}
 
-	fontsInit(renderer)
+	fontsInit(renderer, platform)
 
 	if globalConfig.Sim != nil {
 		sim = globalConfig.Sim
@@ -159,7 +159,7 @@ func main() {
 
 	wmInit(world)
 
-	uiInit(renderer)
+	uiInit(renderer, platform)
 
 	globalConfig.Activate(world)
 

@@ -743,7 +743,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// scissor so we can't draw in the DCB area
 		paneRemaining := ctx.paneExtent
 		paneRemaining.p1[1] -= STARSButtonHeight
-		fbPaneExtent := paneRemaining.Scale(dpiScale(platform))
+		fbPaneExtent := paneRemaining.Scale(dpiScale(ctx.platform))
 		cb.Scissor(int(fbPaneExtent.p0[0]), int(fbPaneExtent.p0[1]),
 			int(fbPaneExtent.Width()+.5), int(fbPaneExtent.Height()+.5))
 	}
@@ -886,7 +886,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			sp.activeDCBMenu = DCBMenuMain
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
-			sp.disableMenuSpinner()
+			sp.disableMenuSpinner(ctx)
 
 		case KeyF1:
 			if ctx.keyboard.IsPressed(KeyControl) {
@@ -897,7 +897,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF2:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuMaps
 			} else {
 				sp.resetInputState()
@@ -910,7 +910,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF4:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuBrite
 			} else {
 				sp.resetInputState()
@@ -928,7 +928,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF6:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuCharSize
 			} else {
 				sp.resetInputState()
@@ -937,7 +937,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF7:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				if sp.activeDCBMenu == DCBMenuMain {
 					sp.activeDCBMenu = DCBMenuAux
 				} else {
@@ -950,13 +950,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF8:
 			if ctx.keyboard.IsPressed(KeyControl) {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			}
 
 		case KeyF9:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(unsafe.Pointer(&ps.RangeRingRadius))
 			} else {
 				sp.resetInputState()
@@ -965,13 +965,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF10:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(unsafe.Pointer(&ps.Range))
 			}
 
 		case KeyF11:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner()
+				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuSite
 			} else {
 				sp.resetInputState()
@@ -981,9 +981,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 	}
 }
 
-func (sp *STARSPane) disableMenuSpinner() {
+func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 	activeSpinner = nil
-	platform.EndCaptureMouse()
+	ctx.platform.EndCaptureMouse()
 }
 
 func (sp *STARSPane) activateMenuSpinner(ptr unsafe.Pointer) {
@@ -2284,7 +2284,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
-		STARSCallbackSpinner("RANGE\n", &ps.Range,
+		STARSCallbackSpinner(ctx, "RANGE\n", &ps.Range,
 			func(v float32) string { return fmt.Sprintf("%d", int(v)) },
 			func(v, delta float32) float32 {
 				if delta > 0 {
@@ -2307,7 +2307,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical) {
 			ps.CurrentCenter = ps.Center
 		}
-		STARSCallbackSpinner("RR\n", &ps.RangeRingRadius,
+		STARSCallbackSpinner(ctx, "RR\n", &ps.RangeRingRadius,
 			func(v int) string { return fmt.Sprintf("%d", v) },
 			func(v int, delta float32) int {
 				di := 0
@@ -2379,7 +2379,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		if STARSSelectButton("BRITE", STARSButtonFull) {
 			sp.activeDCBMenu = DCBMenuBrite
 		}
-		STARSCallbackSpinner("LDR DIR\n   ", &ps.LeaderLineDirection,
+		STARSCallbackSpinner(ctx, "LDR DIR\n   ", &ps.LeaderLineDirection,
 			func(d CardinalOrdinalDirection) string { return d.ShortString() },
 			func(d CardinalOrdinalDirection, delta float32) CardinalOrdinalDirection {
 				if delta == 0 {
@@ -2390,7 +2390,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 					return CardinalOrdinalDirection((d + 1) % 8)
 				}
 			}, STARSButtonHalfVertical)
-		STARSCallbackSpinner("LDR\n ", &ps.LeaderLineLength,
+		STARSCallbackSpinner(ctx, "LDR\n ", &ps.LeaderLineLength,
 			func(v int) string { return fmt.Sprintf("%d", v) },
 			func(v int, delta float32) int {
 				if delta == 0 {
@@ -2426,7 +2426,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 	case DCBMenuAux:
 		STARSDisabledButton("VOL\n10", STARSButtonFull)
-		STARSIntSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 5, STARSButtonFull)
+		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 5, STARSButtonFull)
 		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull)
 		STARSDisabledButton("CSR SPD\n4", STARSButtonFull)
 		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull)
@@ -2438,7 +2438,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		STARSDisabledButton("DCP\nLEFT", STARSButtonHalfVertical)
 		STARSDisabledButton("DCP\nRIGHT", STARSButtonHalfVertical)
 		STARSDisabledButton("DCP\nBOTTOM", STARSButtonHalfVertical)
-		STARSFloatSpinner("PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull)
+		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull)
 		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical)
 		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical)
 		if STARSSelectButton("SHIFT", STARSButtonFull) {
@@ -2480,19 +2480,19 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		STARSDisabledButton("BRITE", STARSButtonFull)
 		STARSDisabledButton("DCB 100", STARSButtonHalfVertical)
 		STARSDisabledButton("BKC 100", STARSButtonHalfVertical)
-		STARSBrightnessSpinner("MPA ", &ps.Brightness.VideoGroupA, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("MPB ", &ps.Brightness.VideoGroupB, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("FDB ", &ps.Brightness.FullDatablocks, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("LST ", &ps.Brightness.Lists, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("POS ", &ps.Brightness.Positions, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("LDB ", &ps.Brightness.LimitedDatablocks, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("OTH ", &ps.Brightness.OtherTracks, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("TLS ", &ps.Brightness.Lines, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("RR ", &ps.Brightness.RangeRings, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("CMP ", &ps.Brightness.Compass, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("BCN ", &ps.Brightness.BeaconSymbols, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("PRI ", &ps.Brightness.PrimarySymbols, STARSButtonHalfVertical)
-		STARSBrightnessSpinner("HST ", &ps.Brightness.History, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "LST ", &ps.Brightness.Lists, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "POS ", &ps.Brightness.Positions, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "LDB ", &ps.Brightness.LimitedDatablocks, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "OTH ", &ps.Brightness.OtherTracks, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "TLS ", &ps.Brightness.Lines, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "RR ", &ps.Brightness.RangeRings, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "CMP ", &ps.Brightness.Compass, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, STARSButtonHalfVertical)
+		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, STARSButtonHalfVertical)
 		STARSDisabledButton("WX 100", STARSButtonHalfVertical)
 		STARSDisabledButton("WXC 100", STARSButtonHalfVertical)
 		STARSDisabledButton("", STARSButtonHalfVertical)
@@ -2502,11 +2502,11 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 	case DCBMenuCharSize:
 		STARSDisabledButton("BRITE", STARSButtonFull)
-		STARSIntSpinner(" DATA\nBLOCKS\n  ", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull)
-		STARSIntSpinner("LISTS\n  ", &ps.CharSize.Lists, 0, 5, STARSButtonFull)
+		STARSIntSpinner(ctx, " DATA\nBLOCKS\n  ", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull)
+		STARSIntSpinner(ctx, "LISTS\n  ", &ps.CharSize.Lists, 0, 5, STARSButtonFull)
 		STARSDisabledButton("DCB\n 1", STARSButtonFull)
-		STARSIntSpinner("TOOLS\n  ", &ps.CharSize.Tools, 0, 5, STARSButtonFull)
-		STARSIntSpinner("POS\n ", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull)
+		STARSIntSpinner(ctx, "TOOLS\n  ", &ps.CharSize.Tools, 0, 5, STARSButtonFull)
+		STARSIntSpinner(ctx, "POS\n ", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull)
 		if STARSSelectButton("DONE", STARSButtonFull) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
@@ -3853,7 +3853,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyShift) && ctx.keyboard.IsPressed(KeyControl) {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
-			platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
 		// If a scope click handler has been registered, give it the click
@@ -3983,7 +3983,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext) {
 
 	starsBarWindowPos = imgui.Vec2{
 		X: ctx.paneExtent.p0[0],
-		Y: float32(platform.WindowSize()[1]) - ctx.paneExtent.p1[1] + 1}
+		Y: float32(ctx.platform.WindowSize()[1]) - ctx.paneExtent.p1[1] + 1}
 	imgui.SetNextWindowPosV(starsBarWindowPos, imgui.ConditionAlways, imgui.Vec2{})
 	imgui.SetNextWindowSize(imgui.Vec2{ctx.paneExtent.Width() - 2, STARSButtonHeight})
 	imgui.BeginV(fmt.Sprintf("STARS Button Bar##%p", sp), nil, flags)
@@ -4063,8 +4063,8 @@ var (
 	activeSpinner unsafe.Pointer
 )
 
-func STARSIntSpinner(text string, value *int, min int, max int, flags int) {
-	STARSCallbackSpinner[int](text, value,
+func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int) {
+	STARSCallbackSpinner[int](ctx, text, value,
 		func(v int) string { return fmt.Sprintf("%d", v) },
 		func(v int, delta float32) int {
 			di := 0
@@ -4077,7 +4077,7 @@ func STARSIntSpinner(text string, value *int, min int, max int, flags int) {
 		}, flags)
 }
 
-func STARSCallbackSpinner[V any](text string, value *V, print func(v V) string,
+func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print func(v V) string,
 	callback func(v V, delta float32) V, flags int) {
 	text += print(*value)
 
@@ -4089,7 +4089,7 @@ func STARSCallbackSpinner[V any](text string, value *V, print func(v V) string,
 			p1: [2]float32{pos.X + buttonSize.X, pos.Y + buttonSize.Y}}
 		buttonBounds.p0 = add2f(buttonBounds.p0, [2]float32{starsBarWindowPos.X, starsBarWindowPos.Y})
 		buttonBounds.p1 = add2f(buttonBounds.p1, [2]float32{starsBarWindowPos.X, starsBarWindowPos.Y})
-		platform.StartCaptureMouse(buttonBounds)
+		ctx.platform.StartCaptureMouse(buttonBounds)
 
 		imgui.PushID(text) // TODO why: comes from ModalButtonSet Draw() method
 		h := imgui.CurrentStyle().Color(imgui.StyleColorButtonActive)
@@ -4097,7 +4097,7 @@ func STARSCallbackSpinner[V any](text string, value *V, print func(v V) string,
 		imgui.ButtonV(text, buttonSize)
 		if imgui.IsItemClicked() {
 			activeSpinner = nil
-			platform.EndCaptureMouse()
+			ctx.platform.EndCaptureMouse()
 		}
 
 		_, wy := imgui.CurrentIO().MouseWheel()
@@ -4111,15 +4111,15 @@ func STARSCallbackSpinner[V any](text string, value *V, print func(v V) string,
 	updateImguiCursor(flags, pos)
 }
 
-func STARSFloatSpinner(text string, value *float32, min float32, max float32, flags int) {
-	STARSCallbackSpinner(text, value, func(f float32) string { return fmt.Sprintf("%.1f", *value) },
+func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float32, max float32, flags int) {
+	STARSCallbackSpinner(ctx, text, value, func(f float32) string { return fmt.Sprintf("%.1f", *value) },
 		func(v float32, delta float32) float32 {
 			return clamp(v+delta/10, min, max)
 		}, flags)
 }
 
-func STARSBrightnessSpinner(text string, b *STARSBrightness, flags int) {
-	STARSCallbackSpinner(text, b,
+func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, flags int) {
+	STARSCallbackSpinner(ctx, text, b,
 		func(b STARSBrightness) string {
 			if b == 0 {
 				return "OFF"

@@ -428,7 +428,7 @@ func wmPaneIsPresent(pane Pane) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(platform Platform, renderer Renderer) {
+func wmDrawPanes(p Platform, renderer Renderer) {
 	if !wmPaneIsPresent(wm.keyboardFocusPane) {
 		// It was deleted in the config editor or a new config was loaded.
 		wm.keyboardFocusPane = nil
@@ -436,17 +436,17 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	if wm.keyboardFocusPane == nil {
 		// Take any one that can take keyboard events.
 		if wm.keyboardFocusPane == nil {
-			globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-				if p.CanTakeKeyboardFocus() {
-					wm.keyboardFocusPane = p
+			globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
+				if pane.CanTakeKeyboardFocus() {
+					wm.keyboardFocusPane = pane
 				}
 			})
 		}
 	}
 
 	// Useful values related to the display size.
-	fbSize := platform.FramebufferSize()
-	displaySize := platform.DisplaySize()
+	fbSize := p.FramebufferSize()
+	displaySize := p.DisplaySize()
 	highDPIScale := fbSize[1] / displaySize[1]
 
 	topItemsHeight := ui.menuBarHeight + wmStatusBarHeight()
@@ -509,7 +509,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	commandBuffer.ClearRGB(RGB{})
 
 	// Draw the status bar underneath the menu bar
-	wmDrawStatusBar(fbSize, displaySize, commandBuffer)
+	wmDrawStatusBar(fbSize, displaySize, commandBuffer, p)
 
 	// By default we'll visit the tree starting at
 	// DisplayRoot. However, if a Pane has been maximized to cover the
@@ -519,7 +519,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 	// Actually visit the panes.
 	var keyboard *KeyboardState
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
-		keyboard = NewKeyboardState()
+		keyboard = NewKeyboardState(p)
 	}
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
 		func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
@@ -584,7 +584,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 }
 
 // wmDrawStatus bar draws the status bar underneath the main menu bar
-func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer) {
+func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer, platform Platform) {
 	var texts []string
 	textCallsign := ""
 	for _, event := range wm.events.Get() {

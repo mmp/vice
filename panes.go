@@ -127,10 +127,10 @@ type KeyboardState struct {
 	Pressed map[Key]interface{}
 }
 
-func NewKeyboardState() *KeyboardState {
+func NewKeyboardState(p Platform) *KeyboardState {
 	keyboard := &KeyboardState{Pressed: make(map[Key]interface{})}
 
-	keyboard.Input = platform.InputCharacters()
+	keyboard.Input = p.InputCharacters()
 
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
 		keyboard.Pressed[KeyEnter] = nil
