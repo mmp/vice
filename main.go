@@ -30,12 +30,14 @@ var (
 	// Note that in some cases they are passed down from main (e.g.,
 	// platform); this is plumbing in preparation for reducing the
 	// number of these in the future.
-	globalConfig   *GlobalConfig
-	platform       Platform
-	database       *StaticDatabase
-	world          *World
-	lg             *Logger
-	scenarioGroups map[string]*ScenarioGroup
+	globalConfig                  *GlobalConfig
+	platform                      Platform
+	database                      *StaticDatabase
+	world                         *World
+	lg                            *Logger
+	scenarioGroups                map[string]*ScenarioGroup
+	MagneticVariation             float32
+	NmPerLatitude, NmPerLongitude float32
 
 	//go:embed resources/version.txt
 	buildVersion string

@@ -307,7 +307,7 @@ func headingv2ll(v Point2LL, magCorrection float32) float32 {
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
-	angle := degrees(atan2(v[0]*world.NmPerLongitude, v[1]*world.NmPerLatitude))
+	angle := degrees(atan2(v[0]*NmPerLongitude, v[1]*NmPerLatitude))
 	return NormalizeHeading(angle + magCorrection)
 }
 
@@ -874,22 +874,22 @@ func nmdistance2ll(a Point2LL, b Point2LL) float32 {
 // nmlength2ll returns the length of a vector expressed in lat-long
 // coordinates.
 func nmlength2ll(a Point2LL) float32 {
-	x := a[0] * world.NmPerLongitude
-	y := a[1] * world.NmPerLatitude
+	x := a[0] * NmPerLongitude
+	y := a[1] * NmPerLatitude
 	return sqrt(sqr(x) + sqr(y))
 }
 
 // nm2ll converts a point expressed in nautical mile coordinates to
 // lat-long.
 func nm2ll(p [2]float32) Point2LL {
-	return Point2LL{p[0] / world.NmPerLongitude, p[1] / world.NmPerLatitude}
+	return Point2LL{p[0] / NmPerLongitude, p[1] / NmPerLatitude}
 }
 
 // ll2nm converts a point expressed in latitude-longitude coordinates to
 // nautical mile coordinates; this is useful for example for reasoning
 // about distances, since both axes then have the same measure.
 func ll2nm(p Point2LL) [2]float32 {
-	return [2]float32{p[0] * world.NmPerLongitude, p[1] * world.NmPerLatitude}
+	return [2]float32{p[0] * NmPerLongitude, p[1] * NmPerLatitude}
 }
 
 func normalize2ll(a Point2LL) Point2LL {

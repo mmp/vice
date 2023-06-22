@@ -1836,7 +1836,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					from := ac.TrackPosition()
 					sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 						p := transforms.LatLongFromWindowP(pw)
-						hdg := headingp2ll(from, p, ctx.world.MagneticVariation)
+						hdg := headingp2ll(from, p, MagneticVariation)
 						dist := nmdistance2ll(from, p)
 
 						status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
@@ -3594,7 +3594,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(ac.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := ac.TrackHeading() - ctx.world.MagneticVariation
+		hdg := ac.TrackHeading() - MagneticVariation
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
 		end := add2ll(ac.TrackPosition(), nm2ll(h))
@@ -3729,7 +3729,7 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 		}
 
 		// Format the range-bearing line text for the two positions.
-		hdg := headingp2ll(p0, p1, ctx.world.MagneticVariation)
+		hdg := headingp2ll(p0, p1, MagneticVariation)
 		dist := nmdistance2ll(p0, p1)
 		text := fmt.Sprintf("%d/%.2f-%d", int(hdg+.5), dist, i+1)
 

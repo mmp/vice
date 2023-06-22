@@ -406,12 +406,14 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 		return nil
 	}
 
+	// Set some related globals..
+
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
-	w.Wind = sc.Wind
 	w.MagneticVariation = sg.MagneticVariation
 	w.NmPerLatitude = sg.NmPerLatitude
 	w.NmPerLongitude = sg.NmPerLongitude
+	w.Wind = sc.Wind
 	w.Airports = sg.Airports
 	w.Fixes = sg.Fixes
 	w.PrimaryAirport = sg.PrimaryAirport
@@ -501,6 +503,10 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 	w.Assign(s.World)
 	w.sim = s
 	w.Callsign = callsign
+
+	MagneticVariation = w.MagneticVariation
+	NmPerLatitude = w.NmPerLatitude
+	NmPerLongitude = w.NmPerLongitude
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -757,7 +763,7 @@ func (s *Sim) updateState() {
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
 				Groundspeed: int(ac.GS),
-				Heading:     ac.Heading - s.World.MagneticVariation,
+				Heading:     ac.Heading - MagneticVariation,
 				Time:        now,
 			})
 		}
@@ -851,7 +857,7 @@ func (s *Sim) spawnAircraft() {
 		}
 		s.World.Aircraft[ac.Callsign] = ac
 
-		ac.RunWaypointCommands(ac.Waypoints[0])
+		ac.RunWaypointCommands(ac.Waypoints[0], s.World)
 
 		ac.Position = ac.Waypoints[0].Location
 		if ac.Position.IsZero() {
@@ -861,7 +867,7 @@ func (s *Sim) spawnAircraft() {
 
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, s.World.MagneticVariation)
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, MagneticVariation)
 		}
 		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 	}

@@ -356,7 +356,7 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, sim *Sim) bool {
 		// 2. Closer to the threshold than the aircraft.
 		// 3. On the localizer
 		if i+1 < len(ap.Waypoints[0]) {
-			wpToThresholdHeading := headingp2ll(wp.Location, ap.Waypoints[0][n-1].Location, world.MagneticVariation)
+			wpToThresholdHeading := headingp2ll(wp.Location, ap.Waypoints[0][n-1].Location, MagneticVariation)
 			lg.Errorf("%s: wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
 			if headingDifference(wpToThresholdHeading, float32(ap.Heading())) > 3 {
 				lg.Errorf("%s: fix is in front but not on the localizer", wp.Fix)
@@ -364,7 +364,7 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, sim *Sim) bool {
 			}
 		}
 
-		acToWpHeading := headingp2ll(ac.Position, wp.Location, world.MagneticVariation)
+		acToWpHeading := headingp2ll(ac.Position, wp.Location, MagneticVariation)
 		inFront := headingDifference(ac.Heading, acToWpHeading) < 70
 		lg.Printf("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
 			ac.Callsign, wp.Fix, ac.Heading, acToWpHeading, inFront, thresholdDistance)
@@ -472,8 +472,7 @@ func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
 	if len(ac.Waypoints) == 0 {
 		return ac.Heading, TurnClosest, StandardTurnRate
 	} else {
-		hdg := headingp2ll(ac.Position, ac.Waypoints[0].Location,
-			world.MagneticVariation)
+		hdg := headingp2ll(ac.Position, ac.Waypoints[0].Location, MagneticVariation)
 		return hdg, TurnClosest, StandardTurnRate
 	}
 }
@@ -554,7 +553,7 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 
 		// Even if we're turning, this last time we'll keep the heading to
 		// the fix.
-		fixHeading := headingp2ll(ac.Position, fp.FixLocation, world.MagneticVariation)
+		fixHeading := headingp2ll(ac.Position, fp.FixLocation, MagneticVariation)
 		return fixHeading, TurnClosest, StandardTurnRate
 
 	case PTStateTurningOutbound:
@@ -711,7 +710,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft) (float32, TurnMethod, float3
 		}
 
 		// Fly toward the fix until it's time to turn outbound
-		fixHeading := headingp2ll(ac.Position, fp.FixLocation, world.MagneticVariation)
+		fixHeading := headingp2ll(ac.Position, fp.FixLocation, MagneticVariation)
 		return fixHeading, TurnClosest, StandardTurnRate
 
 	case PT45StateTurningOutbound:
@@ -789,8 +788,7 @@ func (fp *FlyStandard45PT) LSummary(ac *Aircraft) string {
 }
 
 func MakeFlyStandard45PT(ac *Aircraft, wp []Waypoint) (*FlyStandard45PT, VNavCommand) {
-	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
-		world.MagneticVariation)
+	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, MagneticVariation)
 
 	fp := &FlyStandard45PT{
 		ProcedureTurn:  wp[0].ProcedureTurn,
@@ -808,10 +806,8 @@ func MakeFlyStandard45PT(ac *Aircraft, wp []Waypoint) (*FlyStandard45PT, VNavCom
 }
 
 func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacetrackPT) {
-	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
-		world.MagneticVariation)
-	aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location,
-		world.MagneticVariation)
+	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, MagneticVariation)
+	aircraftFixHeading := headingp2ll(ac.Position, wp[0].Location, MagneticVariation)
 
 	pt := wp[0].ProcedureTurn
 
@@ -845,8 +841,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 		// Since we have less than 180 degrees in our turn, turn more
 		// slowly so that we more or less end up the right offset distance
 		// from the inbound path.
-		acFixHeading := headingp2ll(ac.Position, wp[0].Location,
-			world.MagneticVariation)
+		acFixHeading := headingp2ll(ac.Position, wp[0].Location, MagneticVariation)
 		diff := headingDifference(fp.OutboundHeading, acFixHeading)
 		fp.OutboundTurnRate = 3 * diff / 180
 		lg.Printf("%s: hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
@@ -998,7 +993,7 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 		return ac.IAS, MaximumRate
 	}
 
-	toAirport := headingp2ll(ac.Position, airportPos, world.MagneticVariation)
+	toAirport := headingp2ll(ac.Position, airportPos, MagneticVariation)
 	if headingDifference(toAirport, ac.Heading) > 30 {
 		// Don't slow down if the aircraft isn't facing the airport (e.g.,
 		// is in the middle of a procedure turn)

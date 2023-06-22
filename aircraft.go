@@ -106,7 +106,7 @@ func (a *Aircraft) TrackGroundspeed() int {
 
 // Note: returned value includes the magnetic correction
 func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + world.MagneticVariation
+	return a.Tracks[0].Heading + MagneticVariation
 }
 
 // Perhaps confusingly, the vector returned by HeadingVector() is not
@@ -133,7 +133,7 @@ func (a *Aircraft) HaveHeading() bool {
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, world.MagneticVariation)
+	return headingp2ll(a.TrackPosition(), p, MagneticVariation)
 }
 
 func (a *Aircraft) LostTrack(now time.Time) bool {
@@ -185,7 +185,7 @@ func (ac *Aircraft) Update(sim *Sim) {
 	ac.updateHeading()
 	ac.updatePositionAndGS()
 	if ac.Nav.L.PassesWaypoints() {
-		ac.updateWaypoints()
+		ac.updateWaypoints(sim.World)
 	}
 
 	for cmd := range ac.Nav.FutureCommands {
@@ -475,13 +475,10 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 	}
 
 	if wp[0].ProcedureTurn.Entry180NoPT {
-		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location,
-			world.MagneticVariation)
-		acFixHeading := headingp2ll(ac.Position, wp[0].Location,
-			world.MagneticVariation)
+		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, MagneticVariation)
+		acFixHeading := headingp2ll(ac.Position, wp[0].Location, MagneticVariation)
 		lg.Errorf("%s: ac %.1f inbound %.1f diff %.1f", ac.Callsign,
-			acFixHeading, inboundHeading,
-			headingDifference(acFixHeading, inboundHeading))
+			acFixHeading, inboundHeading, headingDifference(acFixHeading, inboundHeading))
 
 		if headingDifference(acFixHeading, inboundHeading) < 90 {
 			return false
@@ -757,7 +754,7 @@ func (ac *Aircraft) updateHeading() {
 func (ac *Aircraft) updatePositionAndGS() {
 	// Update position given current heading
 	prev := ac.Position
-	hdg := ac.Heading - world.MagneticVariation
+	hdg := ac.Heading - MagneticVariation
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 
 	// Compute ground speed: TAS, modified for wind.
@@ -775,7 +772,7 @@ func (ac *Aircraft) updatePositionAndGS() {
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 }
 
-func (ac *Aircraft) updateWaypoints() {
+func (ac *Aircraft) updateWaypoints(w *World) {
 	if len(ac.Waypoints) == 0 {
 		return
 	}
@@ -790,7 +787,7 @@ func (ac *Aircraft) updateWaypoints() {
 		hdg = float32(wp.Heading)
 	} else if len(ac.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
-		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, world.MagneticVariation)
+		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, MagneticVariation)
 	} else {
 		// No more waypoints (likely about to land), so just
 		// plan to stay on the current heading.
@@ -801,7 +798,7 @@ func (ac *Aircraft) updateWaypoints() {
 		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
 
 		// Execute any commands associated with the waypoint
-		ac.RunWaypointCommands(wp)
+		ac.RunWaypointCommands(wp, w)
 
 		if ac.ApproachCleared {
 			// The aircraft has made it to the approach fix they
@@ -838,13 +835,13 @@ func (ac *Aircraft) updateWaypoints() {
 	}
 }
 
-func (ac *Aircraft) RunWaypointCommands(wp Waypoint) {
+func (ac *Aircraft) RunWaypointCommands(wp Waypoint, w *World) {
 	if wp.Handoff {
-		ac.InboundHandoffController = world.Callsign
+		ac.InboundHandoffController = w.Callsign
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
-	if wp.Delete {
-		world.DeleteAircraft(ac)
+	if wp.Delete && w != nil {
+		w.DeleteAircraft(ac)
 	}
 	if wp.NoPT {
 		ac.NoPT = true
@@ -873,7 +870,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 
 	// Get two points that give the line of the outbound course.
 	p0 := ll2nm(p)
-	hm := hdg - world.MagneticVariation
+	hm := hdg - MagneticVariation
 	p1 := add2f(p0, [2]float32{sin(radians(hm)), cos(radians(hm))})
 
 	// Make a ghost aircraft to use to simulate the turn. Checking this way
@@ -911,8 +908,8 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 // start turning to intercept the radial.
 func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod) bool {
 	p0 = ll2nm(p0)
-	p1 := add2f(p0, [2]float32{sin(radians(hdg - world.MagneticVariation)),
-		cos(radians(hdg - world.MagneticVariation))})
+	p1 := add2f(p0, [2]float32{sin(radians(hdg - MagneticVariation)),
+		cos(radians(hdg - MagneticVariation))})
 
 	initialDist := SignedPointLineDistance(ll2nm(ac.Position), p0, p1)
 	eta := abs(initialDist) / ac.GS * 3600 // in seconds
