@@ -428,7 +428,7 @@ func wmPaneIsPresent(pane Pane) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p Platform, r Renderer) {
+func wmDrawPanes(p Platform, r Renderer, stats *Stats) {
 	if !wmPaneIsPresent(wm.keyboardFocusPane) {
 		// It was deleted in the config editor or a new config was loaded.
 		wm.keyboardFocusPane = nil

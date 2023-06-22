@@ -32,7 +32,6 @@ var (
 	// number of these in the future.
 	globalConfig   *GlobalConfig
 	platform       Platform
-	stats          Stats
 	database       *StaticDatabase
 	world          *World
 	sim            *Sim
@@ -61,6 +60,7 @@ func init() {
 func main() {
 	flag.Parse()
 
+	var stats Stats
 	var renderer Renderer
 
 	// Catch any panics so that we can put up a dialog box and hopefully
@@ -194,11 +194,11 @@ func main() {
 		imgui.NewFrame()
 
 		// Generate and render vice draw lists
-		wmDrawPanes(platform, renderer)
+		wmDrawPanes(platform, renderer, &stats)
 		timeMarker(&stats.drawPanes)
 
 		// Draw the user interface
-		drawUI(platform, renderer)
+		drawUI(platform, renderer, &stats)
 		timeMarker(&stats.drawImgui)
 
 		// Wait for vsync
