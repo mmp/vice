@@ -200,7 +200,7 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 // FutureNavCommand
 
 type FutureNavCommand interface {
-	Evaluate(ac *Aircraft) bool
+	Evaluate(ac *Aircraft, sim *Sim) bool
 	Summary(ac *Aircraft) string
 }
 
@@ -210,7 +210,7 @@ type SpeedAfterAltitude struct {
 	IAS       float32
 }
 
-func (saa *SpeedAfterAltitude) Evaluate(ac *Aircraft) bool {
+func (saa *SpeedAfterAltitude) Evaluate(ac *Aircraft, sim *Sim) bool {
 	if (saa.FromAbove && ac.Altitude > saa.Altitude) ||
 		(!saa.FromAbove && ac.Altitude < saa.Altitude) {
 		return false
@@ -234,7 +234,7 @@ type AltitudeAfterSpeed struct {
 	Altitude  float32
 }
 
-func (aas *AltitudeAfterSpeed) Evaluate(ac *Aircraft) bool {
+func (aas *AltitudeAfterSpeed) Evaluate(ac *Aircraft, sim *Sim) bool {
 	if (aas.FromAbove && ac.IAS > aas.IAS) ||
 		(!aas.FromAbove && ac.IAS < aas.IAS) {
 		return false
@@ -256,7 +256,7 @@ func (aas *AltitudeAfterSpeed) Summary(ac *Aircraft) string {
 
 type ApproachSpeedAt5DME struct{}
 
-func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft) bool {
+func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft, sim *Sim) bool {
 	d, err := ac.FinalApproachDistance()
 	if err != nil {
 		ap := world.GetAirport(ac.FlightPlan.ArrivalAirport)
@@ -281,7 +281,7 @@ type ClimbOnceAirborne struct {
 	Altitude float32
 }
 
-func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft) bool {
+func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft, sim *Sim) bool {
 	// Only considers speed; assumes that this is part of the takeoff
 	// commands...
 	if ac.IAS < 1.1*ac.Performance.Speed.Min {
@@ -298,7 +298,7 @@ func (ca *ClimbOnceAirborne) Summary(ac *Aircraft) string {
 
 type TurnToInterceptLocalizer struct{}
 
-func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft) bool {
+func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft, sim *Sim) bool {
 	ap := ac.Approach(world)
 	if ap.Type != ILSApproach {
 		panic("not an ils approach")
@@ -333,7 +333,7 @@ func (il *TurnToInterceptLocalizer) Summary(ac *Aircraft) string {
 
 type HoldLocalizerAfterIntercept struct{}
 
-func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft) bool {
+func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, sim *Sim) bool {
 	ap := ac.Approach(world)
 	loc := ap.Line()
 	dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
@@ -392,14 +392,14 @@ type GoAround struct {
 	AirportDistance float32
 }
 
-func (g *GoAround) Evaluate(ac *Aircraft) bool {
+func (g *GoAround) Evaluate(ac *Aircraft, sim *Sim) bool {
 	ap := database.Airports[ac.FlightPlan.ArrivalAirport]
 	if dist := nmdistance2ll(ac.Position, ap.Location); dist > g.AirportDistance {
 		return false
 	}
 
 	response := ac.GoAround()
-	if response != "" {
+	if response != "" && sim != nil /* FIXME: nil sim possibility--turn prediction sims.. */ {
 		lg.Printf("%s: %s", ac.Callsign, response)
 		sim.PostEvent(Event{
 			Type:     RadioTransmissionEvent,

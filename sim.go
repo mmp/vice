@@ -294,16 +294,15 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	return false
 }
 
-func (c *NewSimConfiguration) Start() error {
+func (c *NewSimConfiguration) Start() (*World, error) {
 	world.Disconnect() // ???
 
-	sim = NewSim(*c)
+	sim := NewSim(*c)
 	sim.prespawn() // do after the global has been initialized
 
-	var err error
-	world, err = sim.SignOn(c.Callsign)
+	world, err := sim.SignOn(c.Callsign)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	globalConfig.LastScenarioGroup = c.ScenarioGroup
 
@@ -313,7 +312,7 @@ func (c *NewSimConfiguration) Start() error {
 		}
 	})
 
-	return nil
+	return world, nil
 }
 
 type Sim struct {
@@ -322,8 +321,6 @@ type Sim struct {
 
 	World       *World
 	controllers map[string]*ServerController // from token
-
-	showSettings bool
 
 	eventStream *EventStream
 
@@ -502,6 +499,7 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 
 	w := NewWorld()
 	w.Assign(s.World)
+	w.sim = s
 	w.Callsign = callsign
 
 	var buf [16]byte
@@ -704,128 +702,6 @@ func (s *Sim) Activate() error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Settings
-
-func (s *Sim) ToggleActivateSettingsWindow() {
-	s.showSettings = !s.showSettings
-}
-
-func (s *Sim) DrawSettingsWindow() {
-	if !s.showSettings {
-		return
-	}
-
-	imgui.BeginV("Simulation Settings", &s.showSettings, imgui.WindowFlagsAlwaysAutoResize)
-
-	if *devmode {
-		imgui.SliderFloatV("Simulation speed", &s.SimRate, 1, 100, "%.1f", 0)
-	} else {
-		imgui.SliderFloatV("Simulation speed", &s.SimRate, 1, 10, "%.1f", 0)
-	}
-
-	if imgui.BeginComboV("UI Font Size", fmt.Sprintf("%d", globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := make(map[int]interface{})
-		for fontid := range fonts {
-			if fontid.Name == "Roboto Regular" {
-				sizes[fontid.Size] = nil
-			}
-		}
-		for _, size := range SortedMapKeys(sizes) {
-			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
-				globalConfig.UIFontSize = size
-				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
-			}
-		}
-		imgui.EndCombo()
-	}
-	if imgui.BeginComboV("STARS DCB Font Size", fmt.Sprintf("%d", globalConfig.DCBFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := make(map[int]interface{})
-		for fontid := range fonts {
-			if fontid.Name == "Inconsolata Condensed Regular" {
-				sizes[fontid.Size] = nil
-			}
-		}
-		for _, size := range SortedMapKeys(sizes) {
-			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.DCBFontSize, 0, imgui.Vec2{}) {
-				globalConfig.DCBFontSize = size
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	var fsp *FlightStripPane
-	var stars *STARSPane
-	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-		switch pane := p.(type) {
-		case *FlightStripPane:
-			fsp = pane
-		case *STARSPane:
-			stars = pane
-		}
-	})
-
-	stars.DrawUI()
-
-	imgui.Separator()
-
-	if imgui.CollapsingHeader("Audio") {
-		globalConfig.Audio.DrawUI()
-	}
-	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
-		fsp.DrawUI()
-	}
-	if imgui.CollapsingHeader("Developer") {
-		if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Scenario:")
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.DevScenarioFile)
-			imgui.TableNextColumn()
-			if imgui.Button("New...##scenario") {
-				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
-					globalConfig.DevScenarioFile, func(filename string) {
-						globalConfig.DevScenarioFile = filename
-						ui.jsonSelectDialog = nil
-					})
-				ui.jsonSelectDialog.Activate()
-			}
-			imgui.TableNextColumn()
-			if globalConfig.DevScenarioFile != "" && imgui.Button("Clear##scenario") {
-				globalConfig.DevScenarioFile = ""
-			}
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Video maps:")
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.DevVideoMapFile)
-			imgui.TableNextColumn()
-			if imgui.Button("New...##vid") {
-				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
-					globalConfig.DevVideoMapFile, func(filename string) {
-						globalConfig.DevVideoMapFile = filename
-						ui.jsonSelectDialog = nil
-					})
-				ui.jsonSelectDialog.Activate()
-			}
-			imgui.TableNextColumn()
-			if globalConfig.DevVideoMapFile != "" && imgui.Button("Clear##vid") {
-				globalConfig.DevVideoMapFile = ""
-			}
-
-			imgui.EndTable()
-		}
-
-		if ui.jsonSelectDialog != nil {
-			ui.jsonSelectDialog.Draw()
-		}
-	}
-
-	imgui.End()
-}
-
-///////////////////////////////////////////////////////////////////////////
 // Simulation
 
 func (s *Sim) Update() {
@@ -860,7 +736,7 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 		for _, ac := range s.World.Aircraft {
-			ac.Update()
+			ac.Update(s)
 		}
 	}
 

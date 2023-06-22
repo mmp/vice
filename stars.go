@@ -3880,7 +3880,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 				state.isSelected = !state.isSelected
 			}
 		}
-	} else if sim != nil && sim.IsPaused() {
+	} else if world.SimIsPaused() {
 		if ac := sp.tryGetClickedAircraft(ctx.mouse.Pos, transforms); ac != nil {
 			var info []string
 			if ac.IsDeparture {

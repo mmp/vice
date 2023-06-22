@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/mmp/imgui-go/v4"
 )
 
 const initialSimSeconds = 45
@@ -39,6 +40,7 @@ var (
 
 type World struct {
 	token string
+	sim   *Sim
 
 	Aircraft    map[string]*Aircraft
 	METAR       map[string]*METAR
@@ -47,8 +49,9 @@ type World struct {
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
 
-	lastUpdate  time.Time
-	eventStream *EventStream
+	lastUpdate   time.Time
+	eventStream  *EventStream
+	showSettings bool
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -112,8 +115,16 @@ func (w *World) SubscribeEvents() *EventsSubscription {
 	return w.eventStream.Subscribe()
 }
 
+func (w *World) GetSerializeSim() *Sim {
+	if w.sim != nil {
+		// FIXME: should do this in sim.go
+		w.sim.SerializeTime = w.sim.CurrentTime()
+	}
+	return w.sim
+}
+
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
-	return sim.GetWindVector(p, alt)
+	return w.sim.GetWindVector(p, alt)
 }
 
 func (w *World) GetAirport(icao string) *Airport {
@@ -157,7 +168,7 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 }
 
 func (w *World) SetScratchpad(callsign string, scratchpad string) error {
-	return sim.SetScratchpad(&AircraftPropertiesSpecifier{
+	return w.sim.SetScratchpad(&AircraftPropertiesSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Scratchpad:      scratchpad,
@@ -165,7 +176,7 @@ func (w *World) SetScratchpad(callsign string, scratchpad string) error {
 }
 
 func (w *World) SetTemporaryAltitude(callsign string, alt int) error {
-	return sim.SetTemporaryAltitude(&AltitudeAssignment{
+	return w.sim.SetTemporaryAltitude(&AltitudeAssignment{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Altitude:        alt,
@@ -177,21 +188,21 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (w *World) InitiateTrack(callsign string) error {
-	return sim.InitiateTrack(&AircraftSpecifier{
+	return w.sim.InitiateTrack(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
 }
 
 func (w *World) DropTrack(callsign string) error {
-	return sim.DropTrack(&AircraftSpecifier{
+	return w.sim.DropTrack(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
 }
 
 func (w *World) HandoffTrack(callsign string, controller string) error {
-	return sim.HandoffTrack(&HandoffSpecifier{
+	return w.sim.HandoffTrack(&HandoffSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 		Controller:      controller,
@@ -199,14 +210,14 @@ func (w *World) HandoffTrack(callsign string, controller string) error {
 }
 
 func (w *World) HandoffControl(callsign string) error {
-	return sim.HandoffControl(&HandoffSpecifier{
+	return w.sim.HandoffControl(&HandoffSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
 }
 
 func (w *World) AcceptHandoff(callsign string) error {
-	return sim.AcceptHandoff(&AircraftSpecifier{
+	return w.sim.AcceptHandoff(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
@@ -217,7 +228,7 @@ func (w *World) RejectHandoff(callsign string) error {
 }
 
 func (w *World) CancelHandoff(callsign string) error {
-	return sim.CancelHandoff(&AircraftSpecifier{
+	return w.sim.CancelHandoff(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        callsign,
 	}, nil)
@@ -228,7 +239,7 @@ func (w *World) PointOut(callsign string, controller string) error {
 }
 
 func (w *World) Disconnect() {
-	if err := sim.SignOff(w.token, nil); err != nil {
+	if err := w.sim.SignOff(w.token, nil); err != nil {
 		lg.Errorf("Error signing off from sim: %v", err)
 	}
 	w.Aircraft = nil
@@ -296,14 +307,14 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) GetUpdates() {
-	if sim == nil {
+	if w.sim == nil {
 		return
 	}
 
-	sim.Update()
+	w.sim.Update()
 
 	if time.Since(w.lastUpdate) > 1*time.Second {
-		updates, err := sim.GetWorldUpdate(w.token)
+		updates, err := w.sim.GetWorldUpdate(w.token)
 		if err != nil {
 			lg.Errorf("Error getting world update: %v", err)
 		}
@@ -319,25 +330,35 @@ func (w *World) GetUpdates() {
 }
 
 func (w *World) Connected() bool {
-	return sim != nil
+	return w.sim != nil
+}
+
+func (w *World) SimIsPaused() bool {
+	return w.sim != nil && w.sim.IsPaused()
+}
+
+func (w *World) ToggleSimPause() {
+	if w.sim != nil {
+		w.sim.TogglePause()
+	}
 }
 
 func (w *World) CurrentTime() time.Time {
-	if sim == nil {
+	if w.sim == nil {
 		return time.Time{}
 	}
-	return sim.CurrentTime()
+	return w.sim.CurrentTime()
 }
 
 func (w *World) GetWindowTitle() string {
-	if sim == nil {
+	if w.sim == nil {
 		return "(disconnected)"
 	}
-	return w.Callsign + ": " + sim.Description()
+	return w.Callsign + ": " + w.sim.Description()
 }
 
 func (w *World) AssignAltitude(ac *Aircraft, altitude int) error {
-	return sim.AssignAltitude(&AltitudeAssignment{
+	return w.sim.AssignAltitude(&AltitudeAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Altitude:        altitude,
@@ -345,7 +366,7 @@ func (w *World) AssignAltitude(ac *Aircraft, altitude int) error {
 }
 
 func (w *World) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error {
-	return sim.AssignHeading(&HeadingAssignment{
+	return w.sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Heading:         heading,
@@ -354,7 +375,7 @@ func (w *World) AssignHeading(ac *Aircraft, heading int, turn TurnMethod) error 
 }
 
 func (w *World) FlyPresentHeading(ac *Aircraft) error {
-	return sim.AssignHeading(&HeadingAssignment{
+	return w.sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Present:         true,
@@ -362,7 +383,7 @@ func (w *World) FlyPresentHeading(ac *Aircraft) error {
 }
 
 func (w *World) TurnLeft(ac *Aircraft, deg int) error {
-	return sim.AssignHeading(&HeadingAssignment{
+	return w.sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		LeftDegrees:     deg,
@@ -370,7 +391,7 @@ func (w *World) TurnLeft(ac *Aircraft, deg int) error {
 }
 
 func (w *World) TurnRight(ac *Aircraft, deg int) error {
-	return sim.AssignHeading(&HeadingAssignment{
+	return w.sim.AssignHeading(&HeadingAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		RightDegrees:    deg,
@@ -378,7 +399,7 @@ func (w *World) TurnRight(ac *Aircraft, deg int) error {
 }
 
 func (w *World) AssignSpeed(ac *Aircraft, speed int) error {
-	return sim.AssignSpeed(&SpeedAssignment{
+	return w.sim.AssignSpeed(&SpeedAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Speed:           speed,
@@ -386,7 +407,7 @@ func (w *World) AssignSpeed(ac *Aircraft, speed int) error {
 }
 
 func (w *World) DirectFix(ac *Aircraft, fix string) error {
-	return sim.DirectFix(&FixSpecifier{
+	return w.sim.DirectFix(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
@@ -394,7 +415,7 @@ func (w *World) DirectFix(ac *Aircraft, fix string) error {
 }
 
 func (w *World) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
-	return sim.DepartFixHeading(&FixSpecifier{
+	return w.sim.DepartFixHeading(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
@@ -403,7 +424,7 @@ func (w *World) DepartFixHeading(ac *Aircraft, fix string, hdg int) error {
 }
 
 func (w *World) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
-	return sim.CrossFixAt(&FixSpecifier{
+	return w.sim.CrossFixAt(&FixSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Fix:             fix,
@@ -413,7 +434,7 @@ func (w *World) CrossFixAt(ac *Aircraft, fix string, alt int, speed int) error {
 }
 
 func (w *World) ExpectApproach(ac *Aircraft, approach string) error {
-	return sim.ExpectApproach(&ApproachAssignment{
+	return w.sim.ExpectApproach(&ApproachAssignment{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
@@ -421,7 +442,7 @@ func (w *World) ExpectApproach(ac *Aircraft, approach string) error {
 }
 
 func (w *World) ClearedApproach(ac *Aircraft, approach string) error {
-	return sim.ClearedApproach(&ApproachClearance{
+	return w.sim.ClearedApproach(&ApproachClearance{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
@@ -429,7 +450,7 @@ func (w *World) ClearedApproach(ac *Aircraft, approach string) error {
 }
 
 func (w *World) ClearedStraightInApproach(ac *Aircraft, approach string) error {
-	return sim.ClearedApproach(&ApproachClearance{
+	return w.sim.ClearedApproach(&ApproachClearance{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 		Approach:        approach,
@@ -438,7 +459,7 @@ func (w *World) ClearedStraightInApproach(ac *Aircraft, approach string) error {
 }
 
 func (w *World) GoAround(ac *Aircraft) error {
-	return sim.GoAround(&AircraftSpecifier{
+	return w.sim.GoAround(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 	}, nil)
@@ -457,7 +478,7 @@ func (w *World) PrintInfo(ac *Aircraft) error {
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft) error {
-	return sim.DeleteAircraft(&AircraftSpecifier{
+	return w.sim.DeleteAircraft(&AircraftSpecifier{
 		ControllerToken: w.token,
 		Callsign:        ac.Callsign,
 	}, nil)
@@ -625,4 +646,128 @@ func (w *World) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error)
 		}
 	}
 	return nil, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Settings
+
+func (w *World) ToggleActivateSettingsWindow() {
+	w.showSettings = !w.showSettings
+}
+
+func (w *World) DrawSettingsWindow() {
+	if !w.showSettings {
+		return
+	}
+
+	imgui.BeginV("Settings", &w.showSettings, imgui.WindowFlagsAlwaysAutoResize)
+
+	/*
+		if *devmode {
+			imgui.SliderFloatV("Simulation speed", &s.SimRate, 1, 100, "%.1f", 0)
+		} else {
+			imgui.SliderFloatV("Simulation speed", &s.SimRate, 1, 10, "%.1f", 0)
+		}
+	*/
+
+	if imgui.BeginComboV("UI Font Size", fmt.Sprintf("%d", globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
+		sizes := make(map[int]interface{})
+		for fontid := range fonts {
+			if fontid.Name == "Roboto Regular" {
+				sizes[fontid.Size] = nil
+			}
+		}
+		for _, size := range SortedMapKeys(sizes) {
+			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
+				globalConfig.UIFontSize = size
+				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+			}
+		}
+		imgui.EndCombo()
+	}
+	if imgui.BeginComboV("STARS DCB Font Size", fmt.Sprintf("%d", globalConfig.DCBFontSize), imgui.ComboFlagsHeightLarge) {
+		sizes := make(map[int]interface{})
+		for fontid := range fonts {
+			if fontid.Name == "Inconsolata Condensed Regular" {
+				sizes[fontid.Size] = nil
+			}
+		}
+		for _, size := range SortedMapKeys(sizes) {
+			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.DCBFontSize, 0, imgui.Vec2{}) {
+				globalConfig.DCBFontSize = size
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	var fsp *FlightStripPane
+	var stars *STARSPane
+	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+		switch pane := p.(type) {
+		case *FlightStripPane:
+			fsp = pane
+		case *STARSPane:
+			stars = pane
+		}
+	})
+
+	stars.DrawUI()
+
+	imgui.Separator()
+
+	if imgui.CollapsingHeader("Audio") {
+		globalConfig.Audio.DrawUI()
+	}
+	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
+		fsp.DrawUI()
+	}
+	if imgui.CollapsingHeader("Developer") {
+		if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Scenario:")
+			imgui.TableNextColumn()
+			imgui.Text(globalConfig.DevScenarioFile)
+			imgui.TableNextColumn()
+			if imgui.Button("New...##scenario") {
+				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
+					globalConfig.DevScenarioFile, func(filename string) {
+						globalConfig.DevScenarioFile = filename
+						ui.jsonSelectDialog = nil
+					})
+				ui.jsonSelectDialog.Activate()
+			}
+			imgui.TableNextColumn()
+			if globalConfig.DevScenarioFile != "" && imgui.Button("Clear##scenario") {
+				globalConfig.DevScenarioFile = ""
+			}
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Video maps:")
+			imgui.TableNextColumn()
+			imgui.Text(globalConfig.DevVideoMapFile)
+			imgui.TableNextColumn()
+			if imgui.Button("New...##vid") {
+				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
+					globalConfig.DevVideoMapFile, func(filename string) {
+						globalConfig.DevVideoMapFile = filename
+						ui.jsonSelectDialog = nil
+					})
+				ui.jsonSelectDialog.Activate()
+			}
+			imgui.TableNextColumn()
+			if globalConfig.DevVideoMapFile != "" && imgui.Button("Clear##vid") {
+				globalConfig.DevVideoMapFile = ""
+			}
+
+			imgui.EndTable()
+		}
+
+		if ui.jsonSelectDialog != nil {
+			ui.jsonSelectDialog.Draw()
+		}
+	}
+
+	imgui.End()
 }

@@ -34,7 +34,6 @@ var (
 	platform       Platform
 	database       *StaticDatabase
 	world          *World
-	sim            *Sim
 	lg             *Logger
 	scenarioGroups map[string]*ScenarioGroup
 
@@ -143,8 +142,8 @@ func main() {
 
 	fontsInit(renderer, platform)
 
-	if globalConfig.Sim != nil {
-		sim = globalConfig.Sim
+	sim := globalConfig.Sim
+	if sim != nil {
 		sim.Activate()
 	} else {
 		sim = NewSim(MakeSimConfiguration())
@@ -171,7 +170,11 @@ func main() {
 	frameIndex := 0
 	stats.startTime = time.Now()
 	for {
-		platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+		if world == nil {
+			platform.SetWindowTitle("vice: [disconnected]")
+		} else {
+			platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+		}
 
 		// Inform imgui about input events from the user.
 		platform.ProcessEvents()
@@ -188,13 +191,17 @@ func main() {
 		// Let the world update its state based on messages from the
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes.
-		world.GetUpdates()
+		if world != nil {
+			world.GetUpdates()
+		}
 
 		platform.NewFrame()
 		imgui.NewFrame()
 
 		// Generate and render vice draw lists
-		wmDrawPanes(platform, renderer, &stats)
+		if world != nil {
+			wmDrawPanes(platform, renderer, &stats)
+		}
 		timeMarker(&stats.drawPanes)
 
 		// Draw the user interface

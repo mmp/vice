@@ -189,17 +189,17 @@ func drawUI(p Platform, r Renderer, stats *Stats) {
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
-		if sim != nil {
-			if sim.IsPaused() {
+		if world != nil && world.Connected() {
+			if world.SimIsPaused() {
 				if imgui.Button(FontAwesomeIconPlayCircle) {
-					sim.TogglePause()
+					world.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
 				if imgui.Button(FontAwesomeIconPauseCircle) {
-					sim.TogglePause()
+					world.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Pause simulation")
@@ -214,9 +214,9 @@ func drawUI(p Platform, r Renderer, stats *Stats) {
 			imgui.SetTooltip("Start new simulation")
 		}
 
-		if sim != nil {
+		if world != nil && world.Connected() {
 			if imgui.Button(FontAwesomeIconCog) {
-				sim.ToggleActivateSettingsWindow()
+				world.ToggleActivateSettingsWindow()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Open settings window")
@@ -251,8 +251,8 @@ func drawUI(p Platform, r Renderer, stats *Stats) {
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	if sim != nil {
-		sim.DrawSettingsWindow()
+	if world != nil {
+		world.DrawSettingsWindow()
 	}
 
 	drawActiveDialogBoxes()
@@ -549,15 +549,19 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
 	b = append(b, ModalDialogButton{text: "Cancel"})
 
-	ok := ModalDialogButton{text: "Ok", action: func() bool {
-		err := c.config.Start()
-		if err == nil {
-			c.err = ""
-		} else {
+	ok := ModalDialogButton{
+		text: "Ok",
+		action: func() bool {
+			var err error
+			world, err = c.config.Start()
+			if err == nil {
+				c.err = ""
+				return true
+			}
 			c.err = err.Error()
-		}
-		return err == nil
-	}}
+			return false
+		},
+	}
 
 	return append(b, ok)
 }

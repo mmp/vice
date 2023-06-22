@@ -179,7 +179,7 @@ func (ac *Aircraft) HaveAssignedSpeed() bool {
 	return false
 }
 
-func (ac *Aircraft) Update() {
+func (ac *Aircraft) Update(sim *Sim) {
 	ac.updateAirspeed()
 	ac.updateAltitude()
 	ac.updateHeading()
@@ -189,7 +189,7 @@ func (ac *Aircraft) Update() {
 	}
 
 	for cmd := range ac.Nav.FutureCommands {
-		if cmd.Evaluate(ac) {
+		if cmd.Evaluate(ac, sim) {
 			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
@@ -893,7 +893,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		ac2.Update()
+		ac2.Update(nil)
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
 		if sign(initialDist) != sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
@@ -938,7 +938,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		ac2.Update()
+		ac2.Update(nil)
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
 		if sign(initialDist) != sign(curDist) && abs(curDist) < .25 && headingDifference(hdg, ac2.Heading) < 3.5 {
 			lg.Printf("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
