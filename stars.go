@@ -698,13 +698,20 @@ func (sp *STARSPane) processEvents(w *World) {
 	for _, event := range sp.events.Get() {
 		switch event.Type {
 		case PointOutEvent:
-			sp.pointedOutAircraft.Add(event.Callsign, event.Controller, 10*time.Second)
+			if event.ToController == w.Callsign {
+				sp.pointedOutAircraft.Add(event.Callsign, event.FromController, 10*time.Second)
+			}
+
+		case OfferedHandoffEvent:
+			if event.ToController == w.Callsign {
+				globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+			}
 
 		case AcceptedHandoffEvent:
 			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
-			if event.Controller != w.Callsign {
+			if event.ToController != w.Callsign {
 				if state, ok := sp.aircraft[event.Callsign]; !ok {
 					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
 				} else {

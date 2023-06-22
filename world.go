@@ -330,6 +330,9 @@ func (w *World) GetUpdates(eventStream *EventStream) {
 		w.Aircraft = updates.Aircraft
 		w.Controllers = updates.Controllers
 		w.UpdateSimTime = updates.Time
+
+		// Important: do this after updating aircraft, controllers, etc.,
+		// so that they reflect any changes the events are flagging.
 		for _, e := range updates.Events {
 			eventStream.Post(e)
 		}

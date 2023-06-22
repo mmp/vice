@@ -157,6 +157,7 @@ const (
 	DroppedTrackEvent
 	PushedFlightStripEvent
 	PointOutEvent
+	OfferedHandoffEvent
 	AcceptedHandoffEvent
 	CanceledHandoffEvent
 	RejectedHandoffEvent
@@ -165,17 +166,19 @@ const (
 
 func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
-		"AcceptedHandoff", "CanceledHandoff", "RejectedHandoff", "RadioTransmission"}[t]
+		"OfferedHandoff", "AcceptedHandoff", "CanceledHandoff", "RejectedHandoff",
+		"RadioTransmission"}[t]
 }
 
 type Event struct {
-	Type       EventType
-	Callsign   string
-	Controller string
-	Message    string
+	Type           EventType
+	Callsign       string
+	FromController string
+	ToController   string
+	Message        string
 }
 
 func (e *Event) String() string {
-	return fmt.Sprintf("%s: callsign %s controller %s message %s",
-		e.Type, e.Callsign, e.Controller, e.Message)
+	return fmt.Sprintf("%s: callsign %s controller %s->%s message %s",
+		e.Type, e.Callsign, e.FromController, e.ToController, e.Message)
 }

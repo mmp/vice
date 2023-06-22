@@ -410,7 +410,14 @@ func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	// If it was handed off to tower, hand it back to us
 	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
 		ac.InboundHandoffController = ac.ApproachController
-		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+		if ep != nil {
+			ep.PostEvent(Event{
+				Type:           OfferedHandoffEvent,
+				Callsign:       ac.Callsign,
+				FromController: ac.TrackingController,
+				ToController:   ac.ApproachController,
+			})
+		}
 	}
 
 	return true

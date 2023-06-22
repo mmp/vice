@@ -714,9 +714,15 @@ func (s *Sim) updateState() {
 	for callsign, t := range s.Handoffs {
 		if now.After(t) {
 			if ac, ok := s.World.Aircraft[callsign]; ok {
+				s.eventStream.Post(Event{
+					Type:           AcceptedHandoffEvent,
+					FromController: ac.TrackingController,
+					ToController:   ac.OutboundHandoffController,
+					Callsign:       ac.Callsign,
+				})
+
 				ac.TrackingController = ac.OutboundHandoffController
 				ac.OutboundHandoffController = ""
-				s.eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ac.TrackingController, Callsign: ac.Callsign})
 			}
 			delete(s.Handoffs, callsign)
 		}
@@ -732,6 +738,12 @@ func (s *Sim) updateState() {
 				// We hit a /ho at a fix; update to the correct controller.
 				sg := scenarioGroups[s.ScenarioGroup]
 				ac.InboundHandoffController = sg.ControlPositions[sg.DefaultController].Callsign
+				s.eventStream.Post(Event{
+					Type:           OfferedHandoffEvent,
+					Callsign:       ac.Callsign,
+					FromController: ac.ControllingController,
+					ToController:   ac.InboundHandoffController,
+				})
 			}
 		}
 	}
@@ -847,7 +859,7 @@ func (s *Sim) spawnAircraft() {
 		}
 		s.World.Aircraft[ac.Callsign] = ac
 
-		ac.RunWaypointCommands(ac.Waypoints[0], s.World)
+		ac.RunWaypointCommands(ac.Waypoints[0], s.World, s)
 
 		ac.Position = ac.Waypoints[0].Location
 		if ac.Position.IsZero() {
@@ -1335,6 +1347,13 @@ func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 			if octrl := s.World.GetController(h.Controller); octrl == nil {
 				return "", ErrNoController
 			} else {
+				s.eventStream.Post(Event{
+					Type:           OfferedHandoffEvent,
+					FromController: ctrl.Callsign,
+					ToController:   octrl.Callsign,
+					Callsign:       ac.Callsign,
+				})
+
 				ac.OutboundHandoffController = octrl.Callsign
 				acceptDelay := 4 + rand.Intn(10)
 				s.Handoffs[ac.Callsign] = s.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
@@ -1381,10 +1400,16 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
+			s.eventStream.Post(Event{
+				Type:           AcceptedHandoffEvent,
+				FromController: ac.ControllingController,
+				ToController:   ctrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+
 			ac.InboundHandoffController = ""
 			ac.TrackingController = ctrl.Callsign
 			ac.ControllingController = ctrl.Callsign
-			s.eventStream.Post(Event{Type: AcceptedHandoffEvent, Controller: ctrl.Callsign, Callsign: ac.Callsign})
 			return "", nil
 		})
 }

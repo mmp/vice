@@ -184,7 +184,7 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	ac.updateHeading(wind)
 	ac.updatePositionAndGS(wind)
 	if ac.Nav.L.PassesWaypoints() {
-		ac.updateWaypoints(w)
+		ac.updateWaypoints(w, ep)
 	}
 
 	for cmd := range ac.Nav.FutureCommands {
@@ -774,7 +774,7 @@ func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
 }
 
-func (ac *Aircraft) updateWaypoints(w *World) {
+func (ac *Aircraft) updateWaypoints(w *World, ep EventPoster) {
 	if len(ac.Waypoints) == 0 {
 		return
 	}
@@ -800,7 +800,7 @@ func (ac *Aircraft) updateWaypoints(w *World) {
 		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
 
 		// Execute any commands associated with the waypoint
-		ac.RunWaypointCommands(wp, w)
+		ac.RunWaypointCommands(wp, w, ep)
 
 		if ac.ApproachCleared {
 			// The aircraft has made it to the approach fix they
@@ -837,10 +837,17 @@ func (ac *Aircraft) updateWaypoints(w *World) {
 	}
 }
 
-func (ac *Aircraft) RunWaypointCommands(wp Waypoint, w *World) {
+func (ac *Aircraft) RunWaypointCommands(wp Waypoint, w *World, ep EventPoster) {
 	if wp.Handoff {
 		ac.InboundHandoffController = w.Callsign
-		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+		if ep != nil {
+			ep.PostEvent(Event{
+				Type:           OfferedHandoffEvent,
+				Callsign:       ac.Callsign,
+				FromController: ac.ControllingController,
+				ToController:   ac.InboundHandoffController,
+			})
+		}
 	}
 	if wp.Delete && w != nil {
 		w.DeleteAircraft(ac)
