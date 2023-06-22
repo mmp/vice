@@ -755,7 +755,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 	if weatherIntensity != 0 {
-		sp.weatherRadar.Draw(weatherIntensity, transforms, cb)
+		sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
 	}
 
 	color := ps.Brightness.RangeRings.RGB()

@@ -35,6 +35,7 @@ type PaneContext struct {
 	parentPaneExtent Extent2D
 
 	platform  Platform
+	renderer  Renderer
 	mouse     *MouseState
 	keyboard  *KeyboardState
 	haveFocus bool

@@ -195,7 +195,7 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 // available, it returns rather than stalling waiting for it). The provided
 // CommandBuffer should be set up with viewing matrices such that vertex
 // coordinates are provided in latitude-longitude.
-func (w *WeatherRadar) Draw(intensity float32, transforms ScopeTransformations, cb *CommandBuffer) {
+func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Try to receive an updated image from the fetchWather goroutine, if
 	// one is available.
 	select {
@@ -203,9 +203,9 @@ func (w *WeatherRadar) Draw(intensity float32, transforms ScopeTransformations, 
 		if ok {
 			w.radarBounds = ib.bounds
 			if w.texId == 0 {
-				w.texId = renderer.CreateTextureFromImage(ib.img)
+				w.texId = ctx.renderer.CreateTextureFromImage(ib.img)
 			} else {
-				renderer.UpdateTextureFromImage(w.texId, ib.img)
+				ctx.renderer.UpdateTextureFromImage(w.texId, ib.img)
 			}
 		}
 	default:
@@ -845,13 +845,13 @@ type PlaneIconSpec struct {
 // DrawPlaneIcons issues draw commands to the provided command buffer that
 // draw aircraft icons with the specified color, as specified by the slice
 // of PlaneIconSpec structs.
-func DrawPlaneIcons(specs []PlaneIconSpec, color RGB, cb *CommandBuffer) {
+func DrawPlaneIcons(ctx *PaneContext, specs []PlaneIconSpec, color RGB, cb *CommandBuffer) {
 	if planeIconTextureId == 0 {
 		if iconImage, err := png.Decode(bytes.NewReader([]byte(planeIconPNG))); err != nil {
 			lg.Errorf("Unable to decode plane icon PNG: %v", err)
 		} else {
 			pyramid := GenerateImagePyramid(iconImage)
-			planeIconTextureId = renderer.CreateTextureFromImages(pyramid)
+			planeIconTextureId = ctx.renderer.CreateTextureFromImages(pyramid)
 		}
 	}
 

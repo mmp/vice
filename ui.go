@@ -105,7 +105,7 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(renderer Renderer, p Platform) {
+func uiInit(r Renderer, p Platform) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(dpiScale(p))
 	}
@@ -117,13 +117,13 @@ func uiInit(renderer Renderer, p Platform) {
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
 	} else {
-		ui.iconTextureID = renderer.CreateTextureFromImage(iconImage)
+		ui.iconTextureID = r.CreateTextureFromImage(iconImage)
 	}
 
 	if sadTowerImage, err := png.Decode(bytes.NewReader([]byte(sadTowerPNG))); err != nil {
 		lg.Errorf("Unable to decode sad tower PNG: %v", err)
 	} else {
-		ui.sadTowerTextureID = renderer.CreateTextureFromImage(sadTowerImage)
+		ui.sadTowerTextureID = r.CreateTextureFromImage(sadTowerImage)
 	}
 
 	// Do this asynchronously since it involves network traffic and may
@@ -170,7 +170,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(p Platform) {
+func drawUI(p Platform, r Renderer) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -266,7 +266,7 @@ func drawUI(p Platform) {
 	cb := GetCommandBuffer()
 	defer ReturnCommandBuffer(cb)
 	GenerateImguiCommandBuffer(cb)
-	stats.renderUI = renderer.RenderCommandBuffer(cb)
+	stats.renderUI = r.RenderCommandBuffer(cb)
 }
 
 func drawActiveDialogBoxes() {
@@ -1038,14 +1038,14 @@ func ShowErrorDialog(s string, args ...interface{}) {
 	lg.ErrorfUp1(s, args...)
 }
 
-func ShowFatalErrorDialog(s string, args ...interface{}) {
+func ShowFatalErrorDialog(r Renderer, p Platform, s string, args ...interface{}) {
 	lg.ErrorfUp1(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
 
 	for !d.closed {
-		platform.ProcessEvents()
-		platform.NewFrame()
+		p.ProcessEvents()
+		p.NewFrame()
 		imgui.NewFrame()
 		imgui.PushFont(ui.font.ifont)
 		d.Draw()
@@ -1054,9 +1054,9 @@ func ShowFatalErrorDialog(s string, args ...interface{}) {
 		imgui.Render()
 		var cb CommandBuffer
 		GenerateImguiCommandBuffer(&cb)
-		renderer.RenderCommandBuffer(&cb)
+		r.RenderCommandBuffer(&cb)
 
-		platform.PostRender()
+		p.PostRender()
 	}
 }
 

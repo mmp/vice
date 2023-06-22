@@ -428,7 +428,7 @@ func wmPaneIsPresent(pane Pane) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p Platform, renderer Renderer) {
+func wmDrawPanes(p Platform, r Renderer) {
 	if !wmPaneIsPresent(wm.keyboardFocusPane) {
 		// It was deleted in the config editor or a new config was loaded.
 		wm.keyboardFocusPane = nil
@@ -527,7 +527,8 @@ func wmDrawPanes(p Platform, renderer Renderer) {
 			ctx := PaneContext{
 				paneExtent:       paneExtent,
 				parentPaneExtent: parentExtent,
-				platform:         platform,
+				platform:         p,
+				renderer:         r,
 				keyboard:         keyboard,
 				haveFocus:        haveFocus}
 
@@ -579,7 +580,7 @@ func wmDrawPanes(p Platform, renderer Renderer) {
 	// traversal, etc., though, so that events are still consumed and
 	// memory use doesn't grow.
 	if fbSize[0] > 0 && fbSize[1] > 0 {
-		stats.render = renderer.RenderCommandBuffer(commandBuffer)
+		stats.render = r.RenderCommandBuffer(commandBuffer)
 	}
 }
 

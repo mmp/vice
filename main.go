@@ -28,11 +28,10 @@ var (
 	// no!) globals, it's cleaner to have these easily accessible where in
 	// the system without having to pass them through deep callchains.
 	// Note that in some cases they are passed down from main (e.g.,
-	// platform); this is plumbing in preparation for possibly reducing the
+	// platform); this is plumbing in preparation for reducing the
 	// number of these in the future.
 	globalConfig   *GlobalConfig
 	platform       Platform
-	renderer       Renderer
 	stats          Stats
 	database       *StaticDatabase
 	world          *World
@@ -62,6 +61,8 @@ func init() {
 func main() {
 	flag.Parse()
 
+	var renderer Renderer
+
 	// Catch any panics so that we can put up a dialog box and hopefully
 	// get a bug report.
 	var context *imgui.Context
@@ -69,9 +70,10 @@ func main() {
 		defer func() {
 			if err := recover(); err != nil {
 				lg.Errorf("Panic stack: %s", string(debug.Stack()))
-				ShowFatalErrorDialog("Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
-					"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
-					"this bug can be fixed.\n\nError: %v", err)
+				ShowFatalErrorDialog(renderer, platform,
+					"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
+						"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
+						"this bug can be fixed.\n\nError: %v", err)
 			}
 			lg.SaveLogs()
 
@@ -196,7 +198,7 @@ func main() {
 		timeMarker(&stats.drawPanes)
 
 		// Draw the user interface
-		drawUI(platform)
+		drawUI(platform, renderer)
 		timeMarker(&stats.drawImgui)
 
 		// Wait for vsync
