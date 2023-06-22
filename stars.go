@@ -549,7 +549,7 @@ func NewSTARSPane(w *World) *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate(w *World) {
+func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, w)
@@ -576,7 +576,7 @@ func (sp *STARSPane) Activate(w *World) {
 		sp.AutoTrackDepartures = make(map[string]interface{})
 	}
 
-	sp.events = w.SubscribeEvents()
+	sp.events = eventStream.Subscribe()
 
 	ps := sp.CurrentPreferenceSet
 	if Find(ps.WeatherIntensity[:], true) != -1 {
@@ -3328,11 +3328,11 @@ func (sp *STARSPane) IsCAActive(ctx *PaneContext, ac *Aircraft) bool {
 
 		// No conflict alerts with another aircraft on an approach if we're
 		// departing (assume <1000' and no assigned approach implies this)
-		if ac.Approach(ctx.world) == nil && ac.Altitude < 1000 && other.Approach(ctx.world) != nil {
+		if ac.Approach == nil && ac.Altitude < 1000 && other.Approach != nil {
 			continue
 		}
 		// Converse of the above
-		if ac.Approach(ctx.world) != nil && other.Altitude < 1000 && other.Approach(ctx.world) == nil {
+		if ac.Approach != nil && other.Altitude < 1000 && other.Approach == nil {
 			continue
 		}
 
@@ -3890,7 +3890,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			}
 			info = append(info, ac.Nav.Summary(ac))
 
-			if ap := ac.Approach(ctx.world); ap != nil {
+			if ap := ac.Approach; ap != nil {
 				if ac.ApproachCleared {
 					info = append(info, "Cleared "+ap.FullName+" approach")
 				} else {

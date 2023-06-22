@@ -33,7 +33,6 @@ var (
 	globalConfig                  *GlobalConfig
 	platform                      Platform
 	database                      *StaticDatabase
-	world                         *World
 	lg                            *Logger
 	scenarioGroups                map[string]*ScenarioGroup
 	MagneticVariation             float32
@@ -111,6 +110,8 @@ func main() {
 		}
 	}
 
+	eventStream := NewEventStream()
+
 	context = imguiInit()
 
 	var err error
@@ -153,7 +154,7 @@ func main() {
 	}
 
 	newWorldChan = make(chan *World, 1)
-	world, err = sim.SignOn(globalConfig.Callsign)
+	world, err := sim.SignOn(globalConfig.Callsign)
 	if err != nil {
 		lg.Errorf("%s: %v", globalConfig.Callsign, err)
 		world, err = sim.SignOn("") // default
@@ -162,11 +163,11 @@ func main() {
 		}
 	}
 
-	wmInit(world)
+	wmInit(world, eventStream)
 
 	uiInit(renderer, platform)
 
-	globalConfig.Activate(world)
+	globalConfig.Activate(world, eventStream)
 
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop
@@ -205,7 +206,7 @@ func main() {
 		// network; a synopsis of changes to aircraft is then passed along
 		// to the window panes.
 		if world != nil {
-			world.GetUpdates()
+			world.GetUpdates(eventStream)
 		}
 
 		platform.NewFrame()

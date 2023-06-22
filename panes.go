@@ -18,7 +18,7 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(w *World)
+	Activate(w *World, eventStream *EventStream)
 	Deactivate()
 
 	CanTakeKeyboardFocus() bool
@@ -244,9 +244,9 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*World)            {}
-func (ep *EmptyPane) Deactivate()                {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
+func (ep *EmptyPane) Activate(*World, *EventStream) {}
+func (ep *EmptyPane) Deactivate()                   {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool    { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
@@ -292,7 +292,7 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(w *World) {
+func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 	if fsp.font = GetFont(fsp.FontIdentifier); fsp.font == nil {
 		fsp.font = GetDefaultFont()
 		fsp.FontIdentifier = fsp.font.id
@@ -303,7 +303,7 @@ func (fsp *FlightStripPane) Activate(w *World) {
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewScrollBar(4, true)
 	}
-	fsp.events = w.SubscribeEvents()
+	fsp.events = eventStream.Subscribe()
 
 	for _, ac := range w.GetAllAircraft() {
 		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign && ac.FlightPlan != nil {

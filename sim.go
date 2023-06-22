@@ -9,7 +9,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"math"
 	"sort"
 	"strings"
 	"time"
@@ -551,6 +550,7 @@ func (s *Sim) PostEvent(e Event) {
 type SimWorldUpdate struct {
 	Aircraft    map[string]*Aircraft
 	Controllers map[string]*Controller
+	Time        time.Time
 	Events      []Event
 }
 
@@ -561,25 +561,10 @@ func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
 		return &SimWorldUpdate{
 			Aircraft:    s.World.Aircraft,
 			Controllers: s.World.Controllers,
+			Time:        s.currentTime,
 			Events:      ctrl.events.Get(),
 		}, nil
 	}
-}
-
-func (s *Sim) GetWindVector(p Point2LL, alt float32) Point2LL {
-	// Sinusoidal wind speed variation from the base speed up to base +
-	// gust and then back...
-	base := time.UnixMicro(0)
-	sec := s.currentTime.Sub(base).Seconds()
-	windSpeed := float32(s.World.Wind.Speed) +
-		float32(s.World.Wind.Gust)*float32(1+math.Cos(sec/4))/2
-
-	// Wind.Direction is where it's coming from, so +180 to get the vector
-	// that affects the aircraft's course.
-	d := OppositeHeading(float32(s.World.Wind.Direction))
-	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
-	vWind = scale2f(vWind, windSpeed/3600)
-	return vWind
 }
 
 func (s *Sim) Description() string {
@@ -629,7 +614,7 @@ func (s *Sim) Activate() error {
 			ac.Tracks[i].Time = updateTime(ac.Tracks[i].Time)
 		}
 
-		if ap := ac.Approach(s.World); ap != nil {
+		if ap := ac.Approach; ap != nil {
 			for i := range ap.Waypoints {
 				initializeWaypointLocations(ap.Waypoints[i], &e)
 			}
@@ -741,7 +726,13 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 		for _, ac := range s.World.Aircraft {
-			ac.Update(s)
+			ac.Update(s.World, s.World, s)
+
+			if ac.InboundHandoffController == s.World.Callsign {
+				// We hit a /ho at a fix; update to the correct controller.
+				sg := scenarioGroups[s.ScenarioGroup]
+				ac.InboundHandoffController = sg.ControlPositions[sg.DefaultController].Callsign
+			}
 		}
 	}
 
@@ -1083,7 +1074,8 @@ func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	var ok bool
 	if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
 		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
-		return nil
+		// This is fine; it's probably international and we shouldn't need the departure location for an arrival...
+		//return nil
 	}
 
 	ac.FlightPlan.ArrivalAirport = airportName
@@ -1497,7 +1489,9 @@ type ApproachAssignment struct {
 
 func (s *Sim) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
 	return s.dispatchControllingCommand(a.ControllerToken, a.Callsign,
-		func(ctrl *Controller, ac *Aircraft) (string, error) { return ac.ExpectApproach(a.Approach) })
+		func(ctrl *Controller, ac *Aircraft) (string, error) {
+			return ac.ExpectApproach(a.Approach, s.World)
+		})
 }
 
 type ApproachClearance struct {
@@ -1511,9 +1505,9 @@ func (s *Sim) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
 	return s.dispatchControllingCommand(c.ControllerToken, c.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			if c.StraightIn {
-				return ac.ClearedStraightInApproach(c.Approach)
+				return ac.ClearedStraightInApproach(c.Approach, s.World)
 			} else {
-				return ac.ClearedApproach(c.Approach)
+				return ac.ClearedApproach(c.Approach, s.World)
 			}
 		})
 }
@@ -1532,14 +1526,4 @@ func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", nil
 		})
-}
-
-type ServerUpdates struct {
-	// events
-	Events   []interface{} // GACK: no go for gob encoding...
-	Aircraft map[string]*Aircraft
-}
-
-func (s *Sim) GetUpdates(token string, u *ServerUpdates) error {
-	return nil
 }

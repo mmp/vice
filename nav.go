@@ -200,7 +200,7 @@ func (n *NAVState) UnmarshalJSON(s []byte) error {
 // FutureNavCommand
 
 type FutureNavCommand interface {
-	Evaluate(ac *Aircraft, sim *Sim) bool
+	Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool
 	Summary(ac *Aircraft) string
 }
 
@@ -210,7 +210,7 @@ type SpeedAfterAltitude struct {
 	IAS       float32
 }
 
-func (saa *SpeedAfterAltitude) Evaluate(ac *Aircraft, sim *Sim) bool {
+func (saa *SpeedAfterAltitude) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	if (saa.FromAbove && ac.Altitude > saa.Altitude) ||
 		(!saa.FromAbove && ac.Altitude < saa.Altitude) {
 		return false
@@ -234,7 +234,7 @@ type AltitudeAfterSpeed struct {
 	Altitude  float32
 }
 
-func (aas *AltitudeAfterSpeed) Evaluate(ac *Aircraft, sim *Sim) bool {
+func (aas *AltitudeAfterSpeed) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	if (aas.FromAbove && ac.IAS > aas.IAS) ||
 		(!aas.FromAbove && ac.IAS < aas.IAS) {
 		return false
@@ -256,11 +256,10 @@ func (aas *AltitudeAfterSpeed) Summary(ac *Aircraft) string {
 
 type ApproachSpeedAt5DME struct{}
 
-func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft, sim *Sim) bool {
+func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	d, err := ac.FinalApproachDistance()
 	if err != nil {
-		ap := sim.World.GetAirport(ac.FlightPlan.ArrivalAirport)
-		d = nmdistance2ll(ac.Position, ap.Location)
+		d = nmdistance2ll(ac.Position, ac.FlightPlan.ArrivalAirportLocation)
 	}
 
 	if d > 5 {
@@ -281,7 +280,7 @@ type ClimbOnceAirborne struct {
 	Altitude float32
 }
 
-func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft, sim *Sim) bool {
+func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	// Only considers speed; assumes that this is part of the takeoff
 	// commands...
 	if ac.IAS < 1.1*ac.Performance.Speed.Min {
@@ -298,8 +297,8 @@ func (ca *ClimbOnceAirborne) Summary(ac *Aircraft) string {
 
 type TurnToInterceptLocalizer struct{}
 
-func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft, sim *Sim) bool {
-	ap := ac.Approach(sim.World)
+func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
+	ap := ac.Approach
 	if ap.Type != ILSApproach {
 		panic("not an ils approach")
 	}
@@ -312,7 +311,7 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft, sim *Sim) bool {
 
 	loc := ap.Line()
 
-	if ac.ShouldTurnToIntercept(loc[0], ap.Heading(), TurnClosest) {
+	if ac.ShouldTurnToIntercept(loc[0], ap.Heading(), TurnClosest, wind) {
 		lg.Printf("%s: assigned approach heading! %.1f", ac.Callsign, ap.Heading())
 
 		ac.Nav.L = &FlyHeading{Heading: float32(ap.Heading())}
@@ -333,8 +332,8 @@ func (il *TurnToInterceptLocalizer) Summary(ac *Aircraft) string {
 
 type HoldLocalizerAfterIntercept struct{}
 
-func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, sim *Sim) bool {
-	ap := ac.Approach(sim.World)
+func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
+	ap := ac.Approach
 	loc := ap.Line()
 	dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
 	if dist > .2 {
@@ -392,16 +391,16 @@ type GoAround struct {
 	AirportDistance float32
 }
 
-func (g *GoAround) Evaluate(ac *Aircraft, sim *Sim) bool {
+func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	ap := database.Airports[ac.FlightPlan.ArrivalAirport]
 	if dist := nmdistance2ll(ac.Position, ap.Location); dist > g.AirportDistance {
 		return false
 	}
 
 	response := ac.GoAround()
-	if response != "" && sim != nil /* FIXME: nil sim possibility--turn prediction sims.. */ {
+	if response != "" && ep != nil {
 		lg.Printf("%s: %s", ac.Callsign, response)
-		sim.PostEvent(Event{
+		ep.PostEvent(Event{
 			Type:     RadioTransmissionEvent,
 			Callsign: ac.Callsign,
 			Message:  response,
@@ -425,7 +424,7 @@ func (g *GoAround) Summary(ac *Aircraft) string {
 // LNavCommand and implementations
 
 type LNavCommand interface {
-	GetHeading(ac *Aircraft) (float32, TurnMethod, float32) // heading, turn type, rate
+	GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) // heading, turn type, rate
 	PassesWaypoints() bool
 	LSummary(ac *Aircraft) string
 }
@@ -436,7 +435,7 @@ type FlyHeading struct {
 	Rate    float32
 }
 
-func (fh *FlyHeading) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+func (fh *FlyHeading) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) {
 	if fh.Rate == 0 {
 		// 3 degree/s turn by default
 		return fh.Heading, fh.Turn, StandardTurnRate
@@ -468,7 +467,7 @@ type FlyRoute struct {
 	SpeedRestriction    float32
 }
 
-func (fr *FlyRoute) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+func (fr *FlyRoute) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) {
 	if len(ac.Waypoints) == 0 {
 		return ac.Heading, TurnClosest, StandardTurnRate
 	} else {
@@ -521,7 +520,7 @@ type FlyRacetrackPT struct {
 	State              int
 }
 
-func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) {
 	pt := fp.ProcedureTurn
 
 	switch fp.State {
@@ -537,10 +536,12 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 		case DirectEntryLongTurn:
 			// Turn start is based on lining up for the inbound heading,
 			// even though the actual turn will be that plus 180.
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading, fp.OutboundTurnMethod)
+			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading,
+				fp.OutboundTurnMethod, wind)
 
 		case ParallelEntry, TeardropEntry:
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading, fp.OutboundTurnMethod)
+			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading,
+				fp.OutboundTurnMethod, wind)
 		}
 
 		if startTurn {
@@ -572,7 +573,7 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 		if fp.Entry == TeardropEntry {
 			// start the turn when we will intercept the inbound radial
 			turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
-			if d > 0.5 && ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn) {
+			if d > 0.5 && ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
 				lg.Errorf("%s: teardrop Turning inbound!", ac.Callsign)
 				fp.State = PTStateTurningInbound
 			}
@@ -610,7 +611,7 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32
 	case PTStateFlyingInbound:
 		// This state is only used for ParallelEntry
 		turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
-		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn) {
+		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
 			lg.Errorf("%s: parallel inbound direct fix", ac.Callsign)
 			ac.Nav.L = &FlyRoute{}
 			ac.Nav.V = &FlyRoute{}
@@ -699,12 +700,12 @@ const (
 	PT45StateTurningToIntercept
 )
 
-func (fp *FlyStandard45PT) GetHeading(ac *Aircraft) (float32, TurnMethod, float32) {
+func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) {
 	outboundHeading := OppositeHeading(fp.InboundHeading)
 
 	switch fp.State {
 	case PT45StateApproaching:
-		if ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest) {
+		if ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, wind) {
 			lg.Printf("%s: turning outbound to %.0f", ac.Callsign, outboundHeading)
 			fp.State = PT45StateTurningOutbound
 		}
@@ -759,7 +760,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft) (float32, TurnMethod, float3
 
 	case PT45StateFlyingIn:
 		turn := TurnMethod(Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
-		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn) {
+		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
 			fp.State = PT45StateTurningToIntercept
 			lg.Printf("%s: starting turn to intercept %.0f", ac.Callsign, fp.InboundHeading)
 		}
@@ -869,7 +870,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 	}
 	if fp.OutboundLegLength == 0 {
 		// Select a default based on the approach type.
-		switch ac.Approach(world).Type {
+		switch ac.Approach.Type {
 		case ILSApproach:
 			// 1 minute by default on ILS
 			fp.OutboundLegLength = ac.GS / 60
@@ -880,7 +881,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 			fp.OutboundLegLength = 2
 
 		default:
-			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach(world).Type)
+			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach.Type)
 			fp.OutboundLegLength = ac.GS / 60
 
 		}
@@ -933,11 +934,11 @@ func getUpcomingSpeedRestriction(ac *Aircraft) (*Waypoint, float32) {
 				// 2-seconds required to decelerate, assuming straight-line deceleration
 				s := (ac.IAS - float32(wp.Speed)) / (ac.Performance.Rate.Decelerate / 2)
 				if s < eta {
-					lg.Printf("%s: ignoring speed at %s for now...", ac.Callsign, wp.Fix)
+					//lg.Printf("%s: ignoring speed at %s for now...", ac.Callsign, wp.Fix)
 					return nil, 0
 				}
 			}
-			lg.Printf("%s: slowing for speed at %s for now...", ac.Callsign, wp.Fix)
+			//lg.Printf("%s: slowing for speed at %s for now...", ac.Callsign, wp.Fix)
 			return &wp, eta
 		}
 	}
@@ -1075,7 +1076,7 @@ func (fr *FlyRoute) GetAltitude(ac *Aircraft) (float32, float32) {
 			return float32(wp.Altitude), MaximumRate
 		} else {
 			rate := abs(float32(wp.Altitude)-ac.Altitude) / eta
-			lg.Printf("%s: descending to %d for %s at %.1f fpm", ac.Callsign, wp.Altitude, wp.Fix, rate*60)
+			//lg.Printf("%s: descending to %d for %s at %.1f fpm", ac.Callsign, wp.Altitude, wp.Fix, rate*60)
 			return float32(wp.Altitude), rate * 60 // rate is in feet per minute
 		}
 	} else if fr.AltitudeRestriction != 0 {

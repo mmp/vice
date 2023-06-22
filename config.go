@@ -155,7 +155,7 @@ func LoadOrMakeDefaultConfig() {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World) {
+func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
 	if gc.DisplayRoot == nil {
 		stars := NewSTARSPane(w)
 
@@ -178,5 +178,5 @@ func (gc *GlobalConfig) Activate(w *World) {
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w) })
+	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, eventStream) })
 }

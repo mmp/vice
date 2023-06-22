@@ -7,6 +7,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -50,11 +51,11 @@ type World struct {
 	ArrivalAirports   map[string]*Airport
 
 	lastUpdate   time.Time
-	eventStream  *EventStream
 	showSettings bool
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
+	UpdateSimTime                 time.Time
 	MagneticVariation             float32
 	NmPerLatitude, NmPerLongitude float32
 	Airports                      map[string]*Airport
@@ -79,7 +80,6 @@ func NewWorld() *World {
 		Aircraft:    make(map[string]*Aircraft),
 		METAR:       make(map[string]*METAR),
 		Controllers: make(map[string]*Controller),
-		eventStream: NewEventStream(),
 	}
 }
 
@@ -111,10 +111,6 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 }
 
-func (w *World) SubscribeEvents() *EventsSubscription {
-	return w.eventStream.Subscribe()
-}
-
 func (w *World) GetSerializeSim() *Sim {
 	if w.sim != nil {
 		// FIXME: should do this in sim.go
@@ -124,7 +120,19 @@ func (w *World) GetSerializeSim() *Sim {
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
-	return w.sim.GetWindVector(p, alt)
+	// Sinusoidal wind speed variation from the base speed up to base +
+	// gust and then back...
+	base := time.UnixMicro(0)
+	sec := w.UpdateSimTime.Sub(base).Seconds()
+	windSpeed := float32(w.Wind.Speed) +
+		float32(w.Wind.Gust)*float32(1+math.Cos(sec/4))/2
+
+	// Wind.Direction is where it's coming from, so +180 to get the vector
+	// that affects the aircraft's course.
+	d := OppositeHeading(float32(w.Wind.Direction))
+	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
+	vWind = scale2f(vWind, windSpeed/3600)
+	return vWind
 }
 
 func (w *World) GetAirport(icao string) *Airport {
@@ -306,7 +314,7 @@ func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
 }
 
-func (w *World) GetUpdates() {
+func (w *World) GetUpdates(eventStream *EventStream) {
 	if w.sim == nil {
 		return
 	}
@@ -321,8 +329,9 @@ func (w *World) GetUpdates() {
 
 		w.Aircraft = updates.Aircraft
 		w.Controllers = updates.Controllers
+		w.UpdateSimTime = updates.Time
 		for _, e := range updates.Events {
-			w.eventStream.Post(e)
+			eventStream.Post(e)
 		}
 
 		w.lastUpdate = time.Now()
@@ -358,7 +367,7 @@ func (w *World) SetSimRate(r float32) {
 
 func (w *World) CurrentTime() time.Time {
 	if w.sim == nil {
-		return time.Time{}
+		return w.UpdateSimTime
 	}
 	return w.sim.CurrentTime()
 }
@@ -491,10 +500,15 @@ func (w *World) PrintInfo(ac *Aircraft) error {
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft) error {
-	return w.sim.DeleteAircraft(&AircraftSpecifier{
-		ControllerToken: w.token,
-		Callsign:        ac.Callsign,
-	}, nil)
+	if w.sim != nil {
+		return w.sim.DeleteAircraft(&AircraftSpecifier{
+			ControllerToken: w.token,
+			Callsign:        ac.Callsign,
+		}, nil)
+	} else {
+		delete(w.Aircraft, ac.Callsign)
+		return nil
+	}
 }
 
 func (w *World) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error) {

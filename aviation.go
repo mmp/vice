@@ -412,6 +412,19 @@ func (pt *ProcedureTurn) SelectRacetrackEntry(inboundHeading float32, aircraftFi
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Wind
+
+type Wind struct {
+	Direction int32 `json:"direction"`
+	Speed     int32 `json:"speed"`
+	Gust      int32 `json:"gust"`
+}
+
+type WindModel interface {
+	GetWindVector(p Point2LL, alt float32) Point2LL
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
 type Waypoint struct {

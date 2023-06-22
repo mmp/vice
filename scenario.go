@@ -108,12 +108,6 @@ type ScenarioGroupArrivalRunway struct {
 	Runway  string `json:"runway"`
 }
 
-type Wind struct {
-	Direction int32 `json:"direction"`
-	Speed     int32 `json:"speed"`
-	Gust      int32 `json:"gust"`
-}
-
 func (s *Scenario) Name() string {
 	for _, sgroup := range scenarioGroups {
 		for name, scenario := range sgroup.Scenarios {

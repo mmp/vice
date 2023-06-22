@@ -55,14 +55,10 @@ type Aircraft struct {
 	// Set for arrivals, if there are runway-specific waypoints.
 	ArrivalRunwayWaypoints map[string]WaypointArray
 
+	Approach            *Approach
 	ApproachId          string
 	ApproachCleared     bool
 	HaveEnteredAirspace bool
-}
-
-func (a *Aircraft) Approach(w *World) *Approach {
-	ap, _ := a.getApproach(a.ApproachId, w)
-	return ap
 }
 
 func (a *Aircraft) TrackAltitude() int {
@@ -182,17 +178,17 @@ func (ac *Aircraft) HaveAssignedSpeed() bool {
 	return false
 }
 
-func (ac *Aircraft) Update(sim *Sim) {
+func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	ac.updateAirspeed()
 	ac.updateAltitude()
-	ac.updateHeading()
-	ac.updatePositionAndGS()
+	ac.updateHeading(wind)
+	ac.updatePositionAndGS(wind)
 	if ac.Nav.L.PassesWaypoints() {
-		ac.updateWaypoints(sim.World)
+		ac.updateWaypoints(w)
 	}
 
 	for cmd := range ac.Nav.FutureCommands {
-		if cmd.Evaluate(ac, sim) {
+		if cmd.Evaluate(ac, ep, w) {
 			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
@@ -211,6 +207,7 @@ func (ac *Aircraft) GoAround() string {
 		ac.Nav.V = &MaintainAltitude{Altitude: float32(1000 * ((int(ac.Altitude) + 2500) / 1000))}
 	}
 
+	ac.Approach = nil
 	ac.ApproachId = ""
 	ac.ApproachCleared = false
 	ac.ApproachController = ""
@@ -361,7 +358,7 @@ func (ac *Aircraft) visitRouteFix(fix string, cb func(*Waypoint) bool) {
 		}
 	}
 
-	ap := ac.Approach(world)
+	ap := ac.Approach
 	if ap == nil {
 		return
 	}
@@ -390,8 +387,7 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 	}
 
 	if !found {
-		ap := ac.Approach(world)
-		if ap != nil {
+		if ap := ac.Approach; ap != nil {
 			for _, route := range ap.Waypoints {
 				for _, wp := range route {
 					if wp.Fix == fix {
@@ -523,12 +519,13 @@ func (ac *Aircraft) getApproach(id string, w *World) (*Approach, error) {
 	return nil, ErrUnknownApproach
 }
 
-func (ac *Aircraft) ExpectApproach(id string) (string, error) {
-	ap, err := ac.getApproach(id, world)
+func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
+	ap, err := ac.getApproach(id, w)
 	if err != nil {
 		return "", err
 	}
 
+	ac.Approach = ap
 	ac.ApproachId = id
 
 	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
@@ -552,25 +549,25 @@ func (ac *Aircraft) ExpectApproach(id string) (string, error) {
 	return "we'll expect the " + ap.FullName + " approach", nil
 }
 
-func (ac *Aircraft) ClearedApproach(id string) (response string, err error) {
-	return ac.clearedApproach(id, false)
+func (ac *Aircraft) ClearedApproach(id string, w *World) (response string, err error) {
+	return ac.clearedApproach(id, false, w)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string) (response string, err error) {
-	return ac.clearedApproach(id, true)
+func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) (response string, err error) {
+	return ac.clearedApproach(id, true, w)
 }
 
-func (ac *Aircraft) clearedApproach(id string, straightIn bool) (response string, err error) {
+func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (response string, err error) {
 	if ac.ApproachId == "" {
 		// allow it anyway...
-		if _, err = ac.ExpectApproach(id); err != nil {
+		if _, err = ac.ExpectApproach(id, w); err != nil {
 			return
 		}
-		response = "you never told us to expect an approach, but ok, cleared " + ac.Approach(world).FullName
+		response = "you never told us to expect an approach, but ok, cleared " + ac.Approach.FullName
 		ac.ApproachId = id
 	}
 
-	ap := ac.Approach(world)
+	ap := ac.Approach
 	if id != ac.ApproachId {
 		response = "but you cleared us for the " + ap.FullName + " approach..."
 		err = ErrClearedForUnexpectedApproach
@@ -722,8 +719,8 @@ func (ac *Aircraft) updateAltitude() {
 	}
 }
 
-func (ac *Aircraft) updateHeading() {
-	targetHeading, turnDirection, turnRate := ac.Nav.L.GetHeading(ac)
+func (ac *Aircraft) updateHeading(wind WindModel) {
+	targetHeading, turnDirection, turnRate := ac.Nav.L.GetHeading(ac, wind)
 
 	if headingDifference(ac.Heading, targetHeading) < 1 {
 		ac.Heading = targetHeading
@@ -756,7 +753,7 @@ func (ac *Aircraft) updateHeading() {
 	ac.Heading = NormalizeHeading(ac.Heading + turn)
 }
 
-func (ac *Aircraft) updatePositionAndGS() {
+func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	// Update position given current heading
 	prev := ac.Position
 	hdg := ac.Heading - MagneticVariation
@@ -766,7 +763,7 @@ func (ac *Aircraft) updatePositionAndGS() {
 	GS := ac.TAS() / 3600
 	airborne := ac.IAS >= 1.1*ac.Performance.Speed.Min
 	if airborne {
-		windVector := world.GetWindVector(ac.Position, ac.Altitude)
+		windVector := wind.GetWindVector(ac.Position, ac.Altitude)
 		delta := windVector[0]*v[0] + windVector[1]*v[1]
 		GS += delta
 	}
@@ -799,7 +796,7 @@ func (ac *Aircraft) updateWaypoints(w *World) {
 		hdg = ac.Heading
 	}
 
-	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest) {
+	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest, w) {
 		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
 
 		// Execute any commands associated with the waypoint
@@ -856,7 +853,7 @@ func (ac *Aircraft) RunWaypointCommands(wp Waypoint, w *World) {
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial.
-func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMethod) bool {
+func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMethod, wind WindModel) bool {
 	dist := nmdistance2ll(ac.Position, p)
 	eta := dist / ac.GS * 3600 // in seconds
 
@@ -895,7 +892,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		ac2.Update(nil)
+		ac2.Update(wind, nil, nil)
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
 		if sign(initialDist) != sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
@@ -911,7 +908,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 
 // Given a point and a radial, returns true when the aircraft should
 // start turning to intercept the radial.
-func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod) bool {
+func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod, wind WindModel) bool {
 	p0 = ll2nm(p0)
 	p1 := add2f(p0, [2]float32{sin(radians(hdg - MagneticVariation)),
 		cos(radians(hdg - MagneticVariation))})
@@ -940,7 +937,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		ac2.Update(nil)
+		ac2.Update(wind, nil, nil)
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
 		if sign(initialDist) != sign(curDist) && abs(curDist) < .25 && headingDifference(hdg, ac2.Heading) < 3.5 {
 			lg.Printf("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
@@ -955,7 +952,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 // FinalApproachDistance returns the total remaining flying distance
 // for an aircraft that has been given an approach.
 func (ac *Aircraft) FinalApproachDistance() (float32, error) {
-	if ac.Approach(world) == nil {
+	if ac.Approach == nil {
 		return 0, fmt.Errorf("not cleared for approach")
 	}
 

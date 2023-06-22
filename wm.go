@@ -71,9 +71,9 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(*World)            {}
-func (s *SplitLine) Deactivate()                {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool { return false }
+func (s *SplitLine) Activate(*World, *EventStream) {}
+func (s *SplitLine) Deactivate()                   {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool    { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
@@ -362,10 +362,10 @@ func (d *DisplayNode) getString(indent string) string {
 
 // wmInit handles general initialization for the window (pane) management
 // system.
-func wmInit(w *World) {
+func wmInit(w *World, eventStream *EventStream) {
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
-	wm.events = w.SubscribeEvents()
+	wm.events = eventStream.Subscribe()
 }
 
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
