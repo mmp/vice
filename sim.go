@@ -294,15 +294,13 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	return false
 }
 
-func (c *NewSimConfiguration) Start() (*World, error) {
-	world.Disconnect() // ???
-
+func (c *NewSimConfiguration) Start() error {
 	sim := NewSim(*c)
 	sim.prespawn() // do after the global has been initialized
 
 	world, err := sim.SignOn(c.Callsign)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	globalConfig.LastScenarioGroup = c.ScenarioGroup
 
@@ -312,7 +310,8 @@ func (c *NewSimConfiguration) Start() (*World, error) {
 		}
 	})
 
-	return world, nil
+	newWorldChan <- world
+	return nil
 }
 
 type Sim struct {
@@ -919,8 +918,13 @@ func (s *Sim) spawnAircraft() {
 
 			if ac := s.SpawnDeparture(ap, &s.World.DepartureRunways[idx]); ac != nil {
 				ac.FlightPlan.DepartureAirport = airport
-				addAircraft(ac)
-				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
+				var ok bool
+				if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
+					lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
+				} else {
+					addAircraft(ac)
+					s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
+				}
 			}
 		}
 	}
@@ -1076,12 +1080,23 @@ func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	}
 
 	ac.FlightPlan.DepartureAirport = airline.Airport
+	var ok bool
+	if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
+		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
+		return nil
+	}
+
 	ac.FlightPlan.ArrivalAirport = airportName
+	if ac.FlightPlan.ArrivalAirportLocation, ok = s.World.Locate(ac.FlightPlan.ArrivalAirport); !ok {
+		lg.Errorf("%s: unable to find arrival airport %s location?", ac.Callsign, ac.FlightPlan.ArrivalAirport)
+		return nil
+	}
+
 	ac.TrackingController = arr.InitialController
 	ac.ControllingController = arr.InitialController
 	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
 	if ac.FlightPlan.Altitude == 0 { // unspecified
-		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
+		ac.FlightPlan.Altitude = PlausibleFinalAltitude(s.World, ac.FlightPlan)
 	}
 	ac.FlightPlan.Route = arr.Route
 
@@ -1166,9 +1181,15 @@ func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Ai
 
 	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
 	ac.FlightPlan.ArrivalAirport = dep.Destination
+	var ok bool
+	if ac.FlightPlan.ArrivalAirportLocation, ok = s.World.Locate(ac.FlightPlan.ArrivalAirport); !ok {
+		lg.Errorf("%s: unable to find arrival airport %s location?", ac.Callsign, ac.FlightPlan.ArrivalAirport)
+		return nil
+	}
+
 	ac.Scratchpad = s.World.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
-		ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan)
+		ac.FlightPlan.Altitude = PlausibleFinalAltitude(s.World, ac.FlightPlan)
 	} else {
 		ac.FlightPlan.Altitude = dep.Altitude
 	}

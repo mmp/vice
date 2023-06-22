@@ -259,7 +259,7 @@ type ApproachSpeedAt5DME struct{}
 func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft, sim *Sim) bool {
 	d, err := ac.FinalApproachDistance()
 	if err != nil {
-		ap := world.GetAirport(ac.FlightPlan.ArrivalAirport)
+		ap := sim.World.GetAirport(ac.FlightPlan.ArrivalAirport)
 		d = nmdistance2ll(ac.Position, ap.Location)
 	}
 
@@ -299,7 +299,7 @@ func (ca *ClimbOnceAirborne) Summary(ac *Aircraft) string {
 type TurnToInterceptLocalizer struct{}
 
 func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft, sim *Sim) bool {
-	ap := ac.Approach(world)
+	ap := ac.Approach(sim.World)
 	if ap.Type != ILSApproach {
 		panic("not an ils approach")
 	}
@@ -334,7 +334,7 @@ func (il *TurnToInterceptLocalizer) Summary(ac *Aircraft) string {
 type HoldLocalizerAfterIntercept struct{}
 
 func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, sim *Sim) bool {
-	ap := ac.Approach(world)
+	ap := ac.Approach(sim.World)
 	loc := ap.Line()
 	dist := PointLineDistance(ll2nm(ac.Position), ll2nm(loc[0]), ll2nm(loc[1]))
 	if dist > .2 {
@@ -409,8 +409,8 @@ func (g *GoAround) Evaluate(ac *Aircraft, sim *Sim) bool {
 	}
 
 	// If it was handed off to tower, hand it back to us
-	if ac.TrackingController != "" && ac.TrackingController != world.Callsign {
-		ac.InboundHandoffController = world.Callsign
+	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
+		ac.InboundHandoffController = ac.ApproachController
 		globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
 	}
 
@@ -987,13 +987,13 @@ func (fr *FlyRoute) SSummary(ac *Aircraft) string {
 type FinalApproachSpeed struct{}
 
 func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
-	airportPos, ok := world.Locate(ac.FlightPlan.ArrivalAirport)
-	if !ok {
-		lg.ErrorfUp1("%s: unable to find airport", ac.FlightPlan.ArrivalAirport)
+	fp := ac.FlightPlan
+	if fp == nil {
+		lg.Errorf("%s: no flight plan--can't get arrival airport location", ac.Callsign)
 		return ac.IAS, MaximumRate
 	}
 
-	toAirport := headingp2ll(ac.Position, airportPos, MagneticVariation)
+	toAirport := headingp2ll(ac.Position, fp.ArrivalAirportLocation, MagneticVariation)
 	if headingDifference(toAirport, ac.Heading) > 30 {
 		// Don't slow down if the aircraft isn't facing the airport (e.g.,
 		// is in the middle of a procedure turn)
@@ -1003,7 +1003,7 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 	airportDist, err := ac.FinalApproachDistance()
 	if err != nil {
 		lg.Errorf("%s: couldn't get final approach distance: %v", ac.Callsign, err)
-		airportDist = nmdistance2ll(ac.Position, airportPos)
+		airportDist = nmdistance2ll(ac.Position, fp.ArrivalAirportLocation)
 	}
 
 	// Expected speed at 10 DME, without further direction.

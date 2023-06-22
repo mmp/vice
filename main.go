@@ -38,6 +38,7 @@ var (
 	scenarioGroups                map[string]*ScenarioGroup
 	MagneticVariation             float32
 	NmPerLatitude, NmPerLongitude float32
+	newWorldChan                  chan *World
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -151,6 +152,7 @@ func main() {
 		sim = NewSim(MakeSimConfiguration())
 	}
 
+	newWorldChan = make(chan *World, 1)
 	world, err = sim.SignOn(globalConfig.Callsign)
 	if err != nil {
 		lg.Errorf("%s: %v", globalConfig.Callsign, err)
@@ -172,6 +174,15 @@ func main() {
 	frameIndex := 0
 	stats.startTime = time.Now()
 	for {
+		select {
+		case nw := <-newWorldChan:
+			world.Disconnect()
+			world = nw
+
+		default:
+
+		}
+
 		if world == nil {
 			platform.SetWindowTitle("vice: [disconnected]")
 		} else {

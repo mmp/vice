@@ -322,17 +322,17 @@ func (fsp *FlightStripPane) Deactivate() {
 	fsp.events = nil
 }
 
-func (fsp *FlightStripPane) isDeparture(ac *Aircraft, world *World) bool {
-	return ac.FlightPlan != nil && world.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
+func (fsp *FlightStripPane) isDeparture(ac *Aircraft, w *World) bool {
+	return ac.FlightPlan != nil && w.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
 }
 
-func (fsp *FlightStripPane) isArrival(ac *Aircraft, world *World) bool {
-	return ac.FlightPlan != nil && world.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
+func (fsp *FlightStripPane) isArrival(ac *Aircraft, w *World) bool {
+	return ac.FlightPlan != nil && w.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
-func (fsp *FlightStripPane) processEvents(world *World) {
+func (fsp *FlightStripPane) processEvents(w *World) {
 	possiblyAdd := func(ac *Aircraft) {
 		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
@@ -348,17 +348,17 @@ func (fsp *FlightStripPane) processEvents(world *World) {
 
 	// First account for changes in world.Aircraft
 	// Added aircraft
-	for _, ac := range world.Aircraft {
-		if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+	for _, ac := range w.Aircraft {
+		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign {
 			possiblyAdd(ac)
 		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && fsp.isDeparture(ac, world)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, world))) {
+			((fsp.AutoAddDepartures && fsp.isDeparture(ac, w)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, w))) {
 			possiblyAdd(ac)
 		}
 	}
 	// Removed aircraft
 	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
-		_, ok := world.Aircraft[callsign]
+		_, ok := w.Aircraft[callsign]
 		return ok
 	})
 
@@ -372,13 +372,13 @@ func (fsp *FlightStripPane) processEvents(world *World) {
 	for _, event := range fsp.events.Get() {
 		switch event.Type {
 		case PushedFlightStripEvent:
-			if ac, ok := world.Aircraft[event.Callsign]; ok && fsp.AddPushed {
+			if ac, ok := w.Aircraft[event.Callsign]; ok && fsp.AddPushed {
 				possiblyAdd(ac)
 			}
 
 		case InitiatedTrackEvent:
-			if ac, ok := world.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
+			if ac, ok := w.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddTracked && ac.TrackingController == w.Callsign {
 					possiblyAdd(ac)
 				}
 			}
@@ -389,10 +389,10 @@ func (fsp *FlightStripPane) processEvents(world *World) {
 			}
 
 		case AcceptedHandoffEvent:
-			if ac, ok := world.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == world.Callsign {
+			if ac, ok := w.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == w.Callsign {
 					possiblyAdd(ac)
-				} else if fsp.AutoRemoveHandoffs && ac.TrackingController != world.Callsign {
+				} else if fsp.AutoRemoveHandoffs && ac.TrackingController != w.Callsign {
 					remove(event.Callsign)
 				}
 			}
@@ -401,16 +401,16 @@ func (fsp *FlightStripPane) processEvents(world *World) {
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
-		ac := world.GetAircraft(callsign)
+		ac := w.GetAircraft(callsign)
 		return ac != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			if ac := world.GetAircraft(callsign); ac == nil {
+			if ac := w.GetAircraft(callsign); ac == nil {
 				return false
 			} else {
-				return fsp.isDeparture(ac, world)
+				return fsp.isDeparture(ac, w)
 			}
 		}
 		dep := FilterSlice(fsp.strips, isDeparture)
@@ -733,7 +733,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 					fsp.selectedAnnotation = 3*ya + xa
 
 					callsign := fsp.strips[fsp.selectedStrip]
-					strip := world.GetFlightStrip(callsign)
+					strip := ctx.world.GetFlightStrip(callsign)
 					fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
 				}
 			}

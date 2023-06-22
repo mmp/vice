@@ -189,7 +189,7 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
-		if world != nil && w.Connected() {
+		if w != nil && w.Connected() {
 			if w.SimIsPaused() {
 				if imgui.Button(FontAwesomeIconPlayCircle) {
 					w.ToggleSimPause()
@@ -214,7 +214,7 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 			imgui.SetTooltip("Start new simulation")
 		}
 
-		if world != nil && w.Connected() {
+		if w != nil && w.Connected() {
 			if imgui.Button(FontAwesomeIconCog) {
 				w.ToggleActivateSettingsWindow()
 			}
@@ -552,14 +552,13 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	ok := ModalDialogButton{
 		text: "Ok",
 		action: func() bool {
-			var err error
-			world, err = c.config.Start()
-			if err == nil {
+			if err := c.config.Start(); err == nil {
 				c.err = ""
 				return true
+			} else {
+				c.err = err.Error()
+				return false
 			}
-			c.err = err.Error()
-			return false
 		},
 	}
 

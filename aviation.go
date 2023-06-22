@@ -138,19 +138,21 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Rules                  FlightRules
-	AircraftType           string
-	CruiseSpeed            int
-	DepartureAirport       string
-	DepartTimeEst          int
-	DepartTimeActual       int
-	Altitude               int
-	ArrivalAirport         string
-	Hours, Minutes         int
-	FuelHours, FuelMinutes int
-	AlternateAirport       string
-	Route                  string
-	Remarks                string
+	Rules                    FlightRules
+	AircraftType             string
+	CruiseSpeed              int
+	DepartureAirport         string
+	DepartureAirportLocation Point2LL
+	DepartTimeEst            int
+	DepartTimeActual         int
+	Altitude                 int
+	ArrivalAirport           string
+	ArrivalAirportLocation   Point2LL
+	Hours, Minutes           int
+	FuelHours, FuelMinutes   int
+	AlternateAirport         string
+	Route                    string
+	Remarks                  string
 }
 
 type FlightStrip struct {
@@ -264,27 +266,24 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 	}
 }
 
-func PlausibleFinalAltitude(fp *FlightPlan) (altitude int) {
+func PlausibleFinalAltitude(w *World, fp *FlightPlan) (altitude int) {
 	// try to figure out direction of flight
-	pDep, depOk := world.Locate(fp.DepartureAirport)
-	pArr, arrOk := world.Locate(fp.ArrivalAirport)
-	if depOk && arrOk {
-		if nmdistance2ll(pDep, pArr) < 100 {
-			altitude = 7000
-		} else if nmdistance2ll(pDep, pArr) < 200 {
-			altitude = 11000
-		} else if nmdistance2ll(pDep, pArr) < 300 {
-			altitude = 21000
-		} else {
-			altitude = 37000
-		}
+	pDep, pArr := fp.DepartureAirportLocation, fp.ArrivalAirportLocation
 
-		if headingp2ll(pDep, pArr, MagneticVariation) > 180 {
-			altitude += 1000
-		}
+	if nmdistance2ll(pDep, pArr) < 100 {
+		altitude = 7000
+	} else if nmdistance2ll(pDep, pArr) < 200 {
+		altitude = 11000
+	} else if nmdistance2ll(pDep, pArr) < 300 {
+		altitude = 21000
 	} else {
-		altitude = 39000
+		altitude = 37000
 	}
+
+	if headingp2ll(pDep, pArr, MagneticVariation) > 180 {
+		altitude += 1000
+	}
+
 	return
 }
 
@@ -638,14 +637,14 @@ type RadarSite struct {
 	SilenceAngle   float32 `json:"silence_angle"`
 }
 
-func (rs *RadarSite) CheckVisibility(p Point2LL, altitude int) (primary, secondary bool, distance float32) {
+func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primary, secondary bool, distance float32) {
 	// Check altitude first; this is a quick first cull that
 	// e.g. takes care of everyone on the ground.
 	if altitude < int(rs.Elevation) {
 		return
 	}
 
-	pRadar, ok := world.Locate(rs.Position)
+	pRadar, ok := w.Locate(rs.Position)
 	if !ok {
 		// Really, this method shouldn't be called if the site is invalid,
 		// but if it is, there's not much else we can do.

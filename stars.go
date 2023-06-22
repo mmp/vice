@@ -364,15 +364,15 @@ type STARSPreferenceSet struct {
 	}
 }
 
-func MakePreferenceSet(name string, facility STARSFacility, world *World) STARSPreferenceSet {
+func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPreferenceSet {
 	var ps STARSPreferenceSet
 
 	ps.Name = name
 
 	ps.DisplayDCB = true
 
-	ps.Center = world.Center
-	ps.Range = world.Range
+	ps.Center = w.Center
+	ps.Range = w.Range
 
 	ps.CurrentCenter = ps.Center
 
@@ -382,8 +382,8 @@ func MakePreferenceSet(name string, facility STARSFacility, world *World) STARSP
 	ps.RadarTrackHistory = 5
 
 	ps.VideoMapVisible = make(map[string]interface{})
-	if len(world.STARSMaps) > 0 {
-		ps.VideoMapVisible[world.STARSMaps[0].Name] = nil
+	if len(w.STARSMaps) > 0 {
+		ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 	}
 	ps.LeaderLineDirection = North
 	ps.LeaderLineLength = 1
@@ -466,11 +466,11 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	return dupe
 }
 
-func (ps *STARSPreferenceSet) Activate(world *World) {
+func (ps *STARSPreferenceSet) Activate(w *World) {
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
-		if len(world.STARSMaps) > 0 {
-			ps.VideoMapVisible[world.STARSMaps[0].Name] = nil
+		if len(w.STARSMaps) > 0 {
+			ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 		}
 	}
 }
@@ -486,7 +486,7 @@ const (
 	FullDatablock
 )
 
-func flightPlanSTARS(world *World, ac *Aircraft) (string, error) {
+func flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
 		return "", ErrSTARSIllegalTrack // ??
@@ -495,7 +495,7 @@ func flightPlanSTARS(world *World, ac *Aircraft) (string, error) {
 	// AAL1416 B738/L squawk controller id
 	// (start of route) (alt 100s)
 	result := ac.Callsign + " " + fp.AircraftType + " " + ac.AssignedSquawk.String() + " "
-	if ctrl := world.GetController(ac.TrackingController); ctrl != nil {
+	if ctrl := w.GetController(ac.TrackingController); ctrl != nil {
 		result += ctrl.SectorId
 	}
 	result += "\n"
@@ -538,12 +538,12 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 // STARSPane proper
 
 // Takes aircraft position in window coordinates
-func NewSTARSPane(world *World) *STARSPane {
+func NewSTARSPane(w *World) *STARSPane {
 	sp := &STARSPane{
 		Facility:              MakeDefaultFacility(),
 		SelectedPreferenceSet: -1,
 	}
-	sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, world)
+	sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, w)
 	return sp
 }
 
@@ -598,21 +598,21 @@ func (sp *STARSPane) Deactivate() {
 	sp.weatherRadar.Deactivate()
 }
 
-func (sp *STARSPane) ResetWorld(world *World) {
+func (sp *STARSPane) ResetWorld(w *World) {
 	ps := &sp.CurrentPreferenceSet
 
-	ps.Center = world.Center
-	ps.Range = world.Range
+	ps.Center = w.Center
+	ps.Range = w.Range
 	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
 
 	ps.VideoMapVisible = make(map[string]interface{})
-	if len(world.STARSMaps) > 0 {
-		ps.VideoMapVisible[world.STARSMaps[0].Name] = nil
+	if len(w.STARSMaps) > 0 {
+		ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 	}
 
 	// Make the scenario's default video map be visible
-	ps.VideoMapVisible[world.DefaultMap] = nil
+	ps.VideoMapVisible[w.DefaultMap] = nil
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -645,13 +645,13 @@ func (sp *STARSPane) DrawUI() {
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
-func (sp *STARSPane) processEvents(world *World) {
+func (sp *STARSPane) processEvents(w *World) {
 	// First handle changes in world.Aircraft
-	for callsign, ac := range world.Aircraft {
+	for callsign, ac := range w.Aircraft {
 		if _, ok := sp.aircraft[callsign]; !ok {
 			// First we've seen it; create the *STARSAircraftState for it
 			sa := &STARSAircraftState{}
-			if ac.TrackingController == world.Callsign || ac.ControllingController == world.Callsign {
+			if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 				sa.datablockType = FullDatablock
 			}
 			sp.aircraft[callsign] = sa
@@ -659,7 +659,7 @@ func (sp *STARSPane) processEvents(world *World) {
 			if fp := ac.FlightPlan; fp != nil {
 				if ac.TrackingController == "" {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
-						world.InitiateTrack(callsign) // ignore error...
+						w.InitiateTrack(callsign) // ignore error...
 						sp.aircraft[callsign].datablockType = FullDatablock
 					}
 				}
@@ -689,7 +689,7 @@ func (sp *STARSPane) processEvents(world *World) {
 
 	// See if any aircraft we have state for have been removed
 	for callsign := range sp.aircraft {
-		if _, ok := world.Aircraft[callsign]; !ok {
+		if _, ok := w.Aircraft[callsign]; !ok {
 			delete(sp.aircraft, callsign)
 			// delete ghost a/c
 		}
@@ -704,7 +704,7 @@ func (sp *STARSPane) processEvents(world *World) {
 			// Note that we only want to do this if we were the handing-off
 			// from controller, but that info isn't available to us
 			// currently. For the purposes of vice/Sim, that's fine...
-			if event.Controller != world.Callsign {
+			if event.Controller != w.Callsign {
 				if state, ok := sp.aircraft[event.Callsign]; !ok {
 					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
 				} else {
@@ -3483,7 +3483,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 	return
 }
 
-func (sp *STARSPane) datablockColor(world *World, ac *Aircraft) RGB {
+func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.CurrentPreferenceSet
 	br := ps.Brightness.FullDatablocks
@@ -3492,14 +3492,14 @@ func (sp *STARSPane) datablockColor(world *World, ac *Aircraft) RGB {
 	if _, ok := sp.pointedOutAircraft.Get(ac.Callsign); ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
-	} else if ac.TrackingController == world.Callsign {
+	} else if ac.TrackingController == w.Callsign {
 		// white if we are tracking, unless it's selected
 		if state.isSelected {
 			return br.ScaleRGB(STARSSelectedAircraftColor)
 		} else {
 			return br.ScaleRGB(STARSTrackedAircraftColor)
 		}
-	} else if ac.InboundHandoffController == world.Callsign {
+	} else if ac.InboundHandoffController == w.Callsign {
 		// flashing white if it's being handed off to us.
 		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
 			br /= 3
@@ -4167,13 +4167,13 @@ func STARSDisabledButton(text string, flags int) {
 // amendFlightPlan is a useful utility function for changing an entry in
 // the flightplan; the provided callback function should make the update
 // and the rest of the details are handled here.
-func amendFlightPlan(world *World, callsign string, amend func(fp *FlightPlan)) error {
-	if ac := world.GetAircraft(callsign); ac == nil {
+func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) error {
+	if ac := w.GetAircraft(callsign); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
 		fp := Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
 		amend(fp)
-		return world.AmendFlightPlan(callsign, *fp)
+		return w.AmendFlightPlan(callsign, *fp)
 	}
 }
 
@@ -4188,15 +4188,15 @@ func (sp *STARSPane) initializeSystemFonts() {
 	}
 }
 
-func (sp *STARSPane) initializeAircraft(world *World) {
+func (sp *STARSPane) initializeAircraft(w *World) {
 	// Reset and initialize all of these
 	sp.aircraft = make(map[string]*STARSAircraftState)
 	//sp.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
-	for _, ac := range world.GetAllAircraft() {
+	for _, ac := range w.GetAllAircraft() {
 		sa := &STARSAircraftState{}
 		sp.aircraft[ac.Callsign] = sa
-		if ac.TrackingController == world.Callsign || ac.ControllingController == world.Callsign {
+		if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 			sa.datablockType = FullDatablock
 		}
 
@@ -4223,22 +4223,22 @@ func (sp *STARSPane) resetInputState() {
 	sp.scopeClickHandler = nil
 }
 
-func (sp *STARSPane) multiRadarMode(world *World) bool {
+func (sp *STARSPane) multiRadarMode(w *World) bool {
 	ps := sp.CurrentPreferenceSet
-	_, ok := world.RadarSites[ps.RadarSiteSelected]
+	_, ok := w.RadarSites[ps.RadarSiteSelected]
 	return ps.RadarSiteSelected == "" || !ok
 }
 
-func (sp *STARSPane) radarVisibility(world *World, pos Point2LL, alt int) (primary, secondary bool, distance float32) {
+func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, secondary bool, distance float32) {
 	ps := sp.CurrentPreferenceSet
 	distance = 1e30
-	multi := sp.multiRadarMode(world)
-	for id, site := range world.RadarSites {
+	multi := sp.multiRadarMode(w)
+	for id, site := range w.RadarSites {
 		if !multi && ps.RadarSiteSelected != id {
 			continue
 		}
 
-		if p, s, dist := site.CheckVisibility(pos, alt); p || s {
+		if p, s, dist := site.CheckVisibility(w, pos, alt); p || s {
 			primary = primary || p
 			secondary = secondary || s
 			distance = min(distance, dist)
@@ -4248,36 +4248,36 @@ func (sp *STARSPane) radarVisibility(world *World, pos Point2LL, alt int) (prima
 	return
 }
 
-func (sp *STARSPane) visibleAircraft(world *World) []*Aircraft {
+func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 	var aircraft []*Aircraft
 	ps := sp.CurrentPreferenceSet
-	multi := sp.multiRadarMode(world)
+	multi := sp.multiRadarMode(w)
 
 	for callsign := range sp.aircraft {
-		ac, ok := world.Aircraft[callsign]
+		ac, ok := w.Aircraft[callsign]
 		if !ok {
 			continue
 		}
 
 		// Is it on the ground?
 		if ac.FlightPlan != nil {
-			if ap := world.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil {
+			if ap := w.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil {
 				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
 					continue
 				}
 			}
-			if ap := world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil {
+			if ap := w.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil {
 				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
 					continue
 				}
 			}
 		}
 
-		for id, site := range world.RadarSites {
+		for id, site := range w.RadarSites {
 			if !multi && ps.RadarSiteSelected != id {
 				continue
 			}
-			if p, s, _ := site.CheckVisibility(ac.TrackPosition(), ac.TrackAltitude()); p || s {
+			if p, s, _ := site.CheckVisibility(w, ac.TrackPosition(), ac.TrackAltitude()); p || s {
 				aircraft = append(aircraft, ac)
 				break
 			}
@@ -4319,11 +4319,11 @@ func (sp *STARSPane) isOverflight(ctx *PaneContext, ac *Aircraft) bool {
 			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) != nil)
 }
 
-func (sp *STARSPane) tryGetClickedAircraft(world *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
+func (sp *STARSPane) tryGetClickedAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
 	var ac *Aircraft
 	distance := float32(20) // in pixels; don't consider anything farther away
 
-	for _, a := range sp.visibleAircraft(world) {
+	for _, a := range sp.visibleAircraft(w) {
 		pw := transforms.WindowFromLatLongP(a.TrackPosition())
 		dist := distance2f(pw, mousePosition)
 		if dist < distance {
@@ -4335,9 +4335,9 @@ func (sp *STARSPane) tryGetClickedAircraft(world *World, mousePosition [2]float3
 	return ac
 }
 
-func (sp *STARSPane) radarSiteId(world *World) string {
+func (sp *STARSPane) radarSiteId(w *World) string {
 	ps := sp.CurrentPreferenceSet
-	if _, ok := world.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
+	if _, ok := w.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
 		return ps.RadarSiteSelected
 	}
 	return "MULTI"

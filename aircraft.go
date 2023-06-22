@@ -35,6 +35,9 @@ type Aircraft struct {
 	InboundHandoffController  string
 	OutboundHandoffController string
 
+	// The controller who gave approach clearance
+	ApproachController string
+
 	Performance AircraftPerformance
 	Strip       FlightStrip
 	Waypoints   []Waypoint
@@ -210,6 +213,7 @@ func (ac *Aircraft) GoAround() string {
 
 	ac.ApproachId = ""
 	ac.ApproachCleared = false
+	ac.ApproachController = ""
 	ac.Waypoints = nil
 	ac.NoPT = false
 
@@ -633,6 +637,7 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool) (response string
 	// Cleared approach also cancels speed restrictions, but let's not do
 	// that.
 	ac.ApproachCleared = true
+	ac.ApproachController = ac.ControllingController
 	ac.AddFutureNavCommand(&ApproachSpeedAt5DME{})
 
 	ac.flyProcedureTurnIfNecessary()
