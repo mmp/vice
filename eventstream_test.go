@@ -12,14 +12,14 @@ func TestEventStream(t *testing.T) {
 	es := NewEventStream()
 
 	es.Post(Event{})
-	id := es.Subscribe()
-	if len(es.Get(id)) != 0 {
+	sub := es.Subscribe()
+	if len(sub.Get()) != 0 {
 		t.Errorf("Returned non-empty slice")
 	}
 
 	es.Post(Event{Type: 1})
 	es.Post(Event{Type: 2})
-	s := es.Get(id)
+	s := sub.Get()
 	if len(s) != 2 {
 		t.Errorf("didn't return 2 item slice")
 	}
@@ -31,7 +31,7 @@ func TestEventStream(t *testing.T) {
 		t.Errorf("Expected type 1, got %v", s[1])
 	}
 
-	if len(es.Get(id)) != 0 {
+	if len(sub.Get()) != 0 {
 		t.Errorf("Returned non-empty slice")
 	}
 }
@@ -40,7 +40,7 @@ func TestEventStreamCompact(t *testing.T) {
 	es := NewEventStream()
 
 	// multiple consumers, at different offsets
-	id := [4]EventSubscriberId{es.Subscribe(), es.Subscribe(), es.Subscribe(), es.Subscribe()}
+	subs := [4]*EventsSubscription{es.Subscribe(), es.Subscribe(), es.Subscribe(), es.Subscribe()}
 	// consume probability
 	p := [4]float32{1, 0.75, 0.05, 0.5}
 	// next value we expect to get from the stream
@@ -56,14 +56,14 @@ func TestEventStreamCompact(t *testing.T) {
 		i += n
 
 		if iter == 1 {
-			es.Unsubscribe(id[1])
+			subs[1].Unsubscribe()
 		}
 
 		for c, prob := range p {
 			if rand.Float32() > prob || (iter > 0 && c == 1) /* unsubscribed */ {
 				continue
 			}
-			s := es.Get(id[c])
+			s := subs[c].Get()
 			for _, sv := range s {
 				if idx[c] != int(sv.Type) {
 					t.Errorf("expected %d, got %d for consumer %d", idx[c], int(sv.Type), c)
@@ -76,7 +76,7 @@ func TestEventStreamCompact(t *testing.T) {
 		iter++
 	}
 
-	if cap(es.stream) > i/2 {
-		t.Errorf("is compaction not happening? len %d cap %d", len(es.stream), cap(es.stream))
+	if cap(es.events) > i/2 {
+		t.Errorf("is compaction not happening? len %d cap %d", len(es.events), cap(es.events))
 	}
 }

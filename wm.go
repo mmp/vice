@@ -42,7 +42,7 @@ var (
 		keyboardFocusStack []Pane
 
 		lastAircraftResponse string
-		eventsId             EventSubscriberId
+		events               *EventsSubscription
 	}
 )
 
@@ -71,7 +71,7 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate()                  {}
+func (s *SplitLine) Activate(*World)            {}
 func (s *SplitLine) Deactivate()                {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool { return false }
 
@@ -362,10 +362,10 @@ func (d *DisplayNode) getString(indent string) string {
 
 // wmInit handles general initialization for the window (pane) management
 // system.
-func wmInit() {
+func wmInit(w *World) {
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
-	wm.eventsId = eventStream.Subscribe()
+	wm.events = w.SubscribeEvents()
 }
 
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
@@ -528,7 +528,6 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 				paneExtent:       paneExtent,
 				parentPaneExtent: parentExtent,
 				platform:         platform,
-				events:           eventStream,
 				keyboard:         keyboard,
 				haveFocus:        haveFocus}
 
@@ -588,7 +587,7 @@ func wmDrawPanes(platform Platform, renderer Renderer) {
 func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer) {
 	var texts []string
 	textCallsign := ""
-	for _, event := range eventStream.Get(wm.eventsId) {
+	for _, event := range wm.events.Get() {
 		if event.Type != RadioTransmissionEvent {
 			continue
 		}

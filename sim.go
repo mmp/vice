@@ -363,7 +363,7 @@ type Sim struct {
 
 type ServerController struct {
 	Callsign string
-	EventsId EventSubscriberId
+	events   *EventsSubscription
 	// *net.Conn?
 }
 
@@ -409,31 +409,26 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 		return nil
 	}
 
-	w := &World{
-		Callsign:          "__SERVER__",
-		Wind:              sc.Wind,
-		MagneticVariation: sg.MagneticVariation,
-		NmPerLatitude:     sg.NmPerLatitude,
-		NmPerLongitude:    sg.NmPerLongitude,
-		Airports:          sg.Airports,
-		Fixes:             sg.Fixes,
-		PrimaryAirport:    sg.PrimaryAirport,
-		RadarSites:        sg.RadarSites,
-		Center:            sg.Center,
-		Range:             sg.Range,
-		DefaultMap:        sc.DefaultMap,
-		STARSMaps:         sg.STARSMaps,
-		Scratchpads:       sg.Scratchpads,
-		ArrivalGroups:     sg.ArrivalGroups,
-		ApproachAirspace:  sc.ApproachAirspace,
-		DepartureAirspace: sc.DepartureAirspace,
-		DepartureRunways:  sc.DepartureRunways,
+	w := NewWorld()
+	w.Callsign = "__SERVER__"
+	w.Wind = sc.Wind
+	w.MagneticVariation = sg.MagneticVariation
+	w.NmPerLatitude = sg.NmPerLatitude
+	w.NmPerLongitude = sg.NmPerLongitude
+	w.Airports = sg.Airports
+	w.Fixes = sg.Fixes
+	w.PrimaryAirport = sg.PrimaryAirport
+	w.RadarSites = sg.RadarSites
+	w.Center = sg.Center
+	w.Range = sg.Range
+	w.DefaultMap = sc.DefaultMap
+	w.STARSMaps = sg.STARSMaps
+	w.Scratchpads = sg.Scratchpads
+	w.ArrivalGroups = sg.ArrivalGroups
+	w.ApproachAirspace = sc.ApproachAirspace
+	w.DepartureAirspace = sc.DepartureAirspace
+	w.DepartureRunways = sc.DepartureRunways
 
-		Aircraft: make(map[string]*Aircraft),
-		METAR:    make(map[string]*METAR),
-	}
-
-	w.Controllers = make(map[string]*Controller)
 	// Extract just the active controllers
 	for callsign, ctrl := range sg.ControlPositions {
 		if Find(sc.Controllers, callsign) != -1 {
@@ -505,8 +500,8 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 		}
 	}
 
-	w := &World{}
-	*w = *s.World
+	w := NewWorld()
+	w.Assign(s.World)
 	w.Callsign = callsign
 
 	var buf [16]byte
@@ -517,7 +512,7 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 	w.token = base64.StdEncoding.EncodeToString(buf[:])
 	s.controllers[w.token] = &ServerController{
 		Callsign: callsign,
-		EventsId: s.eventStream.Subscribe(),
+		events:   s.eventStream.Subscribe(),
 	}
 
 	return w, nil
@@ -527,7 +522,7 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
-		s.eventStream.Unsubscribe(ctrl.EventsId)
+		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
 	}
 	return nil
@@ -563,7 +558,7 @@ func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
 		return &SimWorldUpdate{
 			Aircraft:    s.World.Aircraft,
 			Controllers: s.World.Controllers,
-			Events:      s.eventStream.Get(ctrl.EventsId),
+			Events:      ctrl.events.Get(),
 		}, nil
 	}
 }

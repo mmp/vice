@@ -18,7 +18,7 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate()
+	Activate(w *World)
 	Deactivate()
 
 	CanTakeKeyboardFocus() bool
@@ -38,7 +38,6 @@ type PaneContext struct {
 	mouse     *MouseState
 	keyboard  *KeyboardState
 	haveFocus bool
-	events    *EventStream
 }
 
 type MouseState struct {
@@ -243,7 +242,7 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate()                  {}
+func (ep *EmptyPane) Activate(*World)            {}
 func (ep *EmptyPane) Deactivate()                {}
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 
@@ -276,7 +275,7 @@ type FlightStripPane struct {
 	selectedAnnotation  int
 	annotationCursorPos int
 
-	eventsId  EventSubscriberId
+	events    *EventsSubscription
 	scrollbar *ScrollBar
 
 	selectedAircraft string
@@ -291,7 +290,7 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate() {
+func (fsp *FlightStripPane) Activate(w *World) {
 	if fsp.font = GetFont(fsp.FontIdentifier); fsp.font == nil {
 		fsp.font = GetDefaultFont()
 		fsp.FontIdentifier = fsp.font.id
@@ -302,7 +301,7 @@ func (fsp *FlightStripPane) Activate() {
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewScrollBar(4, true)
 	}
-	fsp.eventsId = eventStream.Subscribe()
+	fsp.events = w.SubscribeEvents()
 
 	for _, ac := range world.GetAllAircraft() {
 		if fsp.AutoAddTracked && ac.TrackingController == world.Callsign && ac.FlightPlan != nil {
@@ -317,8 +316,8 @@ func (fsp *FlightStripPane) Activate() {
 }
 
 func (fsp *FlightStripPane) Deactivate() {
-	eventStream.Unsubscribe(fsp.eventsId)
-	fsp.eventsId = InvalidEventSubscriberId
+	fsp.events.Unsubscribe()
+	fsp.events = nil
 }
 
 func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
@@ -331,7 +330,7 @@ func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
-func (fsp *FlightStripPane) processEvents(es *EventStream) {
+func (fsp *FlightStripPane) processEvents() {
 	possiblyAdd := func(ac *Aircraft) {
 		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
@@ -368,7 +367,7 @@ func (fsp *FlightStripPane) processEvents(es *EventStream) {
 		}
 	}
 
-	for _, event := range es.Get(fsp.eventsId) {
+	for _, event := range fsp.events.Get() {
 		switch event.Type {
 		case PushedFlightStripEvent:
 			if ac, ok := world.Aircraft[event.Callsign]; ok && fsp.AddPushed {
@@ -440,7 +439,7 @@ func (fsp *FlightStripPane) DrawUI() {
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	fsp.processEvents(ctx.events)
+	fsp.processEvents()
 
 	// Font width and height
 	bx, _ := fsp.font.BoundText(" ", 0)

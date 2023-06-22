@@ -37,7 +37,6 @@ var (
 	database       *StaticDatabase
 	world          *World
 	sim            *Sim
-	eventStream    *EventStream
 	lg             *Logger
 	scenarioGroups map[string]*ScenarioGroup
 
@@ -93,9 +92,6 @@ func main() {
 	// Global initialization and set up. Note that there are some subtle
 	// inter-dependencies in the following; the order is carefully crafted.
 
-	// Make this early so things can subscribe during their initalization
-	eventStream = NewEventStream()
-
 	// Initialize the logging system first and foremost.
 	lg = NewLogger(true, *devmode, 50000)
 
@@ -145,10 +141,6 @@ func main() {
 
 	fontsInit(renderer)
 
-	wmInit()
-
-	uiInit(renderer)
-
 	if globalConfig.Sim != nil {
 		sim = globalConfig.Sim
 		sim.Activate()
@@ -165,7 +157,11 @@ func main() {
 		}
 	}
 
-	globalConfig.Activate()
+	wmInit(world)
+
+	uiInit(renderer)
+
+	globalConfig.Activate(world)
 
 	///////////////////////////////////////////////////////////////////////////
 	// Main event / rendering loop

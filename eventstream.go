@@ -12,26 +12,19 @@ import (
 
 type EventSubscriberId int
 
-var (
-	nextSubscriberId EventSubscriberId
-	lastCompact      time.Time
-)
-
-// Reserve 0 as an invalid id so that zero-initialization of objects that
-// store EventSubscriberIds works well.
-const InvalidEventSubscriberId = 0
-
 // EventStream provides a basic pub/sub event interface that allows any
 // part of the system to post an event to the stream and other parts to
 // subscribe and receive messages from the stream. It is the backbone for
 // communicating events, world updates, and user actions across the various
 // parts of the system.
 type EventStream struct {
-	stream      []Event
-	subscribers map[EventSubscriberId]*EventSubscriber
+	events        []Event
+	lastCompact   time.Time
+	subscriptions map[*EventsSubscription]interface{}
 }
 
-type EventSubscriber struct {
+type EventsSubscription struct {
+	stream *EventStream
 	// offset is offset in the EventStream stream array up to which the
 	// subscriber has consumed events so far.
 	offset int
@@ -39,34 +32,34 @@ type EventSubscriber struct {
 }
 
 func NewEventStream() *EventStream {
-	return &EventStream{subscribers: make(map[EventSubscriberId]*EventSubscriber)}
+	return &EventStream{subscriptions: make(map[*EventsSubscription]interface{})}
 }
 
 // Subscribe registers a new subscriber to the stream and returns an
 // EventSubscriberId for the subscriber that can then be passed to other
 // EventStream methods.
-func (e *EventStream) Subscribe() EventSubscriberId {
-	nextSubscriberId++ // start handing them out at 1
-	id := nextSubscriberId
-
+func (e *EventStream) Subscribe() *EventsSubscription {
 	// Record the subscriber's callsite, so that we can more easily debug
 	// subscribers that aren't consuming events.
 	_, fn, line, _ := runtime.Caller(1)
 	source := fmt.Sprintf("%s:%d", fn, line)
 
-	e.subscribers[id] = &EventSubscriber{
-		offset: len(e.stream),
-		source: source}
-	return id
+	sub := &EventsSubscription{
+		stream: e,
+		offset: len(e.events),
+		source: source,
+	}
+	e.subscriptions[sub] = nil
+	return sub
 }
 
-// Unsubscribe removes a subscriber from the subscriber list; the provided
-// id can no longer be passed to the Get method to get events.
-func (e *EventStream) Unsubscribe(id EventSubscriberId) {
-	if _, ok := e.subscribers[id]; !ok {
-		lg.ErrorfUp1("Attempted to unsubscribe invalid id: %d", id)
+// Unsubscribe removes a subscriber from the subscriber list
+func (e *EventsSubscription) Unsubscribe() {
+	if _, ok := e.stream.subscriptions[e]; !ok {
+		lg.ErrorfUp1("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
-	delete(e.subscribers, id)
+	delete(e.stream.subscriptions, e)
+	e.stream = nil
 }
 
 // Post adds an event to the event stream. The type used to encode the
@@ -75,65 +68,64 @@ func (e *EventStream) Unsubscribe(id EventSubscriberId) {
 func (e *EventStream) Post(event Event) {
 	if false && *devmode {
 		lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
-			event.String(), len(e.subscribers), len(e.stream), cap(e.stream))
+			event.String(), len(e.subscriptions), len(e.events), cap(e.events))
 	}
 
 	// Ignore the event if no one's paying attention.
-	if len(e.subscribers) > 0 {
-		if len(e.stream)+1 == cap(e.stream) && *devmode && lg != nil {
+	if len(e.subscriptions) > 0 {
+		if len(e.events)+1 == cap(e.events) && *devmode && lg != nil {
 			// Dump the state of things if the array's about to grow; in
 			// general we expect it to pretty quickly reach steady state
 			// with just a handful of entries.
 			lg.Printf("%s", e.Dump())
 		}
 
-		e.stream = append(e.stream, event)
+		e.events = append(e.events, event)
 	}
 }
 
 // Get returns all of the events from the stream since the last time Get
 // was called with the given id.  Note that events before an id was created
 // with Subscribe are never reported for that id.
-func (e *EventStream) Get(id EventSubscriberId) []Event {
-	sub, ok := e.subscribers[id]
-	if !ok {
-		lg.ErrorfUp1("Attempted to get with invalid id: %d", id)
+func (e *EventsSubscription) Get() []Event {
+	if _, ok := e.stream.subscriptions[e]; !ok {
+		lg.ErrorfUp1("Attempted to get with unregistered subscription: %+v", e)
 		return nil
 	}
 
-	s := e.stream[sub.offset:]
-	sub.offset = len(e.stream)
+	events := e.stream.events[e.offset:]
+	e.offset = len(e.stream.events)
 
-	if time.Since(lastCompact) > 1*time.Second {
-		e.compact()
-		lastCompact = time.Now()
+	if time.Since(e.stream.lastCompact) > 1*time.Second {
+		e.stream.compact()
+		e.stream.lastCompact = time.Now()
 	}
 
-	return s
+	return events
 }
 
 // compact reclaims storage for events that all subscribers have seen; it
 // is called periodically so that EventStream memory usage doesn't grow
 // without bound.
 func (e *EventStream) compact() {
-	minOffset := len(e.stream)
-	for _, sub := range e.subscribers {
+	minOffset := len(e.events)
+	for sub := range e.subscriptions {
 		if sub.offset < minOffset {
 			minOffset = sub.offset
 		}
 	}
 
-	if len(e.stream) > 1000 && lg != nil {
-		lg.Errorf("EventStream length %d", len(e.stream))
+	if len(e.events) > 1000 && lg != nil {
+		lg.Errorf("EventStream length %d", len(e.events))
 	}
 
-	if minOffset > cap(e.stream)/2 {
-		n := len(e.stream) - minOffset
+	if minOffset > cap(e.events)/2 {
+		n := len(e.events) - minOffset
 
-		copy(e.stream, e.stream[minOffset:])
-		e.stream = e.stream[:n]
+		copy(e.events, e.events[minOffset:])
+		e.events = e.events[:n]
 
-		for _, sub := range e.subscribers {
+		for sub := range e.subscriptions {
 			sub.offset -= minOffset
 		}
 	}
@@ -142,12 +134,12 @@ func (e *EventStream) compact() {
 // Dump prints out information about the internals of the event stream that
 // may be useful for debugging.
 func (e *EventStream) Dump() string {
-	s := fmt.Sprintf("stream: len %d cap %d", len(e.stream), cap(e.stream))
-	if len(e.stream) > 0 {
-		s += fmt.Sprintf("\n  last elt %v", e.stream[len(e.stream)-1])
+	s := fmt.Sprintf("stream: len %d cap %d", len(e.events), cap(e.events))
+	if len(e.events) > 0 {
+		s += fmt.Sprintf("\n  last elt %v", e.events[len(e.events)-1])
 	}
-	for i, sub := range e.subscribers {
-		s += fmt.Sprintf(" sub %d: %+v", i, sub)
+	for sub := range e.subscriptions {
+		s += fmt.Sprintf(" sub %+v", sub)
 	}
 	return s
 }

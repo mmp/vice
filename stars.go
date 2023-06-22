@@ -55,7 +55,7 @@ type STARSPane struct {
 
 	systemFont [6]*Font
 
-	eventsId EventSubscriberId
+	events *EventsSubscription
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
@@ -549,7 +549,7 @@ func NewSTARSPane() *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate() {
+func (sp *STARSPane) Activate(w *World) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility)
@@ -576,7 +576,7 @@ func (sp *STARSPane) Activate() {
 		sp.AutoTrackDepartures = make(map[string]interface{})
 	}
 
-	sp.eventsId = eventStream.Subscribe()
+	sp.events = w.SubscribeEvents()
 
 	ps := sp.CurrentPreferenceSet
 	if Find(ps.WeatherIntensity[:], true) != -1 {
@@ -592,8 +592,8 @@ func (sp *STARSPane) Deactivate() {
 	sp.aircraft = nil
 	//sp.ghostAircraft = nil
 
-	eventStream.Unsubscribe(sp.eventsId)
-	sp.eventsId = InvalidEventSubscriberId
+	sp.events.Unsubscribe()
+	sp.events = nil
 
 	sp.weatherRadar.Deactivate()
 }
@@ -645,7 +645,7 @@ func (sp *STARSPane) DrawUI() {
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
-func (sp *STARSPane) processEvents(es *EventStream) {
+func (sp *STARSPane) processEvents() {
 	// First handle changes in world.Aircraft
 	for callsign, ac := range world.Aircraft {
 		if _, ok := sp.aircraft[callsign]; !ok {
@@ -695,7 +695,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 		}
 	}
 
-	for _, event := range es.Get(sp.eventsId) {
+	for _, event := range sp.events.Get() {
 		switch event.Type {
 		case PointOutEvent:
 			sp.pointedOutAircraft.Add(event.Callsign, event.Controller, 10*time.Second)
@@ -718,7 +718,7 @@ func (sp *STARSPane) processEvents(es *EventStream) {
 }
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	sp.processEvents(ctx.events)
+	sp.processEvents()
 
 	cb.ClearRGB(RGB{}) // clear to black, regardless of the color scheme
 

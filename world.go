@@ -47,7 +47,8 @@ type World struct {
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
 
-	lastUpdate time.Time
+	lastUpdate  time.Time
+	eventStream *EventStream
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -68,6 +69,47 @@ type World struct {
 	DepartureRunways              []ScenarioGroupDepartureRunway
 	Scratchpads                   map[string]string
 	ArrivalGroups                 map[string][]Arrival
+}
+
+func NewWorld() *World {
+	return &World{
+		Aircraft:    make(map[string]*Aircraft),
+		METAR:       make(map[string]*METAR),
+		Controllers: make(map[string]*Controller),
+		eventStream: NewEventStream(),
+	}
+}
+
+func (w *World) Assign(other *World) {
+	w.Aircraft = DuplicateMap(other.Aircraft)
+	w.METAR = DuplicateMap(other.METAR)
+	w.Controllers = DuplicateMap(other.Controllers)
+
+	w.DepartureAirports = other.DepartureAirports
+	w.ArrivalAirports = other.ArrivalAirports
+
+	w.MagneticVariation = other.MagneticVariation
+	w.NmPerLatitude = other.NmPerLatitude
+	w.NmPerLongitude = other.NmPerLongitude
+	w.Airports = other.Airports
+	w.Fixes = other.Fixes
+	w.PrimaryAirport = other.PrimaryAirport
+	w.RadarSites = other.RadarSites
+	w.Center = other.Center
+	w.Range = other.Range
+	w.DefaultMap = other.DefaultMap
+	w.STARSMaps = other.STARSMaps
+	w.Wind = other.Wind
+	w.Callsign = other.Callsign
+	w.ApproachAirspace = other.ApproachAirspace
+	w.DepartureAirspace = other.DepartureAirspace
+	w.DepartureRunways = other.DepartureRunways
+	w.Scratchpads = other.Scratchpads
+	w.ArrivalGroups = other.ArrivalGroups
+}
+
+func (w *World) SubscribeEvents() *EventsSubscription {
+	return w.eventStream.Subscribe()
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -269,7 +311,7 @@ func (w *World) GetUpdates() {
 		w.Aircraft = updates.Aircraft
 		w.Controllers = updates.Controllers
 		for _, e := range updates.Events {
-			eventStream.Post(e)
+			w.eventStream.Post(e)
 		}
 
 		w.lastUpdate = time.Now()
