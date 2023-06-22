@@ -450,8 +450,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 
 	// we have the runway heading, but we want to go the opposite direction
 	// and then +/- HeadingTolerance.
-	rota := src.Heading + 180 - c.GlideslopeLateralSpread - world.MagneticVariation
-	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - world.MagneticVariation
+	rota := src.Heading + 180 - c.GlideslopeLateralSpread - ctx.world.MagneticVariation
+	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - ctx.world.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
 	sina, cosa := sin(radians(rota)), cos(radians(rota))
@@ -689,9 +689,9 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
 		// Account for magnetic variation and any user-specified rotation
-		Rotate(-radians(rotationAngle+world.MagneticVariation)).
+		Rotate(-radians(rotationAngle+ctx.world.MagneticVariation)).
 		// Scale based on range and nm per latitude / longitude
-		Scale(world.NmPerLongitude/rangenm, world.NmPerLatitude/rangenm).
+		Scale(world.NmPerLongitude/rangenm, ctx.world.NmPerLatitude/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 

@@ -308,7 +308,7 @@ func (c *NewSimConfiguration) Start() (*World, error) {
 
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 		if stars, ok := p.(*STARSPane); ok {
-			stars.ResetWorld()
+			stars.ResetWorld(world)
 		}
 	})
 
@@ -1185,6 +1185,15 @@ func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Ai
 
 ///////////////////////////////////////////////////////////////////////////
 // Commands from the user
+
+func (s *Sim) GetSimRate() float32 {
+	return s.SimRate
+}
+
+func (s *Sim) SetSimRate(r *float32, _ *struct{}) error {
+	s.SimRate = *r
+	return nil
+}
 
 type AircraftSpecifier struct {
 	ControllerToken string

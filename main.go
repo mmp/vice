@@ -200,12 +200,12 @@ func main() {
 
 		// Generate and render vice draw lists
 		if world != nil {
-			wmDrawPanes(platform, renderer, &stats)
+			wmDrawPanes(platform, renderer, world, &stats)
 		}
 		timeMarker(&stats.drawPanes)
 
 		// Draw the user interface
-		drawUI(platform, renderer, &stats)
+		drawUI(platform, renderer, world, &stats)
 		timeMarker(&stats.drawImgui)
 
 		// Wait for vsync
@@ -219,7 +219,7 @@ func main() {
 
 		if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 			// Do this while we're still running the event loop.
-			globalConfig.SaveIfChanged(renderer, platform)
+			globalConfig.SaveIfChanged(renderer, platform, world)
 			break
 		}
 	}

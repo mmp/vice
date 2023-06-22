@@ -343,6 +343,19 @@ func (w *World) ToggleSimPause() {
 	}
 }
 
+func (w *World) GetSimRate() float32 {
+	if w.sim == nil {
+		return 1
+	}
+	return w.sim.GetSimRate()
+}
+
+func (w *World) SetSimRate(r float32) {
+	if w.sim != nil {
+		w.sim.SetSimRate(&r, nil)
+	}
+}
+
 func (w *World) CurrentTime() time.Time {
 	if w.sim == nil {
 		return time.Time{}
@@ -662,13 +675,11 @@ func (w *World) DrawSettingsWindow() {
 
 	imgui.BeginV("Settings", &w.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
-	/*
-		if *devmode {
-			imgui.SliderFloatV("Simulation speed", &s.SimRate, 1, 100, "%.1f", 0)
-		} else {
-			imgui.SliderFloatV("Simulation speed", &s.SimRate, 1, 10, "%.1f", 0)
-		}
-	*/
+	r := w.GetSimRate()
+	max := Select(*devmode, float32(100), float32(10))
+	if imgui.SliderFloatV("Simulation speed", &r, 1, max, "%.1f", 0) {
+		w.SetSimRate(r)
+	}
 
 	if imgui.BeginComboV("UI Font Size", fmt.Sprintf("%d", globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := make(map[int]interface{})

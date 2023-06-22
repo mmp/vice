@@ -428,7 +428,7 @@ func wmPaneIsPresent(pane Pane) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p Platform, r Renderer, stats *Stats) {
+func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	if !wmPaneIsPresent(wm.keyboardFocusPane) {
 		// It was deleted in the config editor or a new config was loaded.
 		wm.keyboardFocusPane = nil
@@ -509,7 +509,7 @@ func wmDrawPanes(p Platform, r Renderer, stats *Stats) {
 	commandBuffer.ClearRGB(RGB{})
 
 	// Draw the status bar underneath the menu bar
-	wmDrawStatusBar(fbSize, displaySize, commandBuffer, p)
+	wmDrawStatusBar(fbSize, displaySize, commandBuffer, p, w)
 
 	// By default we'll visit the tree starting at
 	// DisplayRoot. However, if a Pane has been maximized to cover the
@@ -529,6 +529,7 @@ func wmDrawPanes(p Platform, r Renderer, stats *Stats) {
 				parentPaneExtent: parentExtent,
 				platform:         p,
 				renderer:         r,
+				world:            w,
 				keyboard:         keyboard,
 				haveFocus:        haveFocus}
 
@@ -585,7 +586,7 @@ func wmDrawPanes(p Platform, r Renderer, stats *Stats) {
 }
 
 // wmDrawStatus bar draws the status bar underneath the main menu bar
-func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer, platform Platform) {
+func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer, platform Platform, w *World) {
 	var texts []string
 	textCallsign := ""
 	for _, event := range wm.events.Get() {
@@ -604,7 +605,7 @@ func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffe
 			icao, flight := event.Callsign[:idx], event.Callsign[idx:]
 			if cs, ok := database.Callsigns[icao]; ok {
 				textCallsign = cs.Telephony + " " + flight
-				if ac := world.GetAircraft(event.Callsign); ac != nil {
+				if ac := w.GetAircraft(event.Callsign); ac != nil {
 					if fp := ac.FlightPlan; fp != nil {
 						if strings.HasPrefix(fp.AircraftType, "H/") {
 							textCallsign += " heavy"

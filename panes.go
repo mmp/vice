@@ -36,6 +36,7 @@ type PaneContext struct {
 
 	platform  Platform
 	renderer  Renderer
+	world     *World
 	mouse     *MouseState
 	keyboard  *KeyboardState
 	haveFocus bool
@@ -304,12 +305,12 @@ func (fsp *FlightStripPane) Activate(w *World) {
 	}
 	fsp.events = w.SubscribeEvents()
 
-	for _, ac := range world.GetAllAircraft() {
-		if fsp.AutoAddTracked && ac.TrackingController == world.Callsign && ac.FlightPlan != nil {
+	for _, ac := range w.GetAllAircraft() {
+		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign && ac.FlightPlan != nil {
 			fsp.strips = append(fsp.strips, ac.Callsign)
 			fsp.addedAircraft[ac.Callsign] = nil
 		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+			((fsp.AutoAddDepartures && fsp.isDeparture(ac, w)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, w))) {
 			fsp.strips = append(fsp.strips, ac.Callsign)
 			fsp.addedAircraft[ac.Callsign] = nil
 		}
@@ -321,17 +322,17 @@ func (fsp *FlightStripPane) Deactivate() {
 	fsp.events = nil
 }
 
-func (fsp *FlightStripPane) isDeparture(ac *Aircraft) bool {
+func (fsp *FlightStripPane) isDeparture(ac *Aircraft, world *World) bool {
 	return ac.FlightPlan != nil && world.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
 }
 
-func (fsp *FlightStripPane) isArrival(ac *Aircraft) bool {
+func (fsp *FlightStripPane) isArrival(ac *Aircraft, world *World) bool {
 	return ac.FlightPlan != nil && world.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
-func (fsp *FlightStripPane) processEvents() {
+func (fsp *FlightStripPane) processEvents(world *World) {
 	possiblyAdd := func(ac *Aircraft) {
 		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
@@ -351,7 +352,7 @@ func (fsp *FlightStripPane) processEvents() {
 		if fsp.AutoAddTracked && ac.TrackingController == world.Callsign {
 			possiblyAdd(ac)
 		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && fsp.isDeparture(ac)) || (fsp.AutoAddArrivals && fsp.isArrival(ac))) {
+			((fsp.AutoAddDepartures && fsp.isDeparture(ac, world)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, world))) {
 			possiblyAdd(ac)
 		}
 	}
@@ -409,7 +410,7 @@ func (fsp *FlightStripPane) processEvents() {
 			if ac := world.GetAircraft(callsign); ac == nil {
 				return false
 			} else {
-				return fsp.isDeparture(ac)
+				return fsp.isDeparture(ac, world)
 			}
 		}
 		dep := FilterSlice(fsp.strips, isDeparture)
@@ -440,7 +441,7 @@ func (fsp *FlightStripPane) DrawUI() {
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
-	fsp.processEvents()
+	fsp.processEvents(ctx.world)
 
 	// Font width and height
 	bx, _ := fsp.font.BoundText(" ", 0)
@@ -498,8 +499,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	y := stripHeight - 1 - vpad
 	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
-		strip := world.GetFlightStrip(callsign)
-		ac := world.GetAircraft(callsign)
+		strip := ctx.world.GetFlightStrip(callsign)
+		ac := ctx.world.GetAircraft(callsign)
 		if ac == nil {
 			lg.Errorf("%s: no aircraft for callsign?!", strip.callsign)
 			continue

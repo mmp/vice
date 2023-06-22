@@ -170,7 +170,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(p Platform, r Renderer, stats *Stats) {
+func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -189,17 +189,17 @@ func drawUI(p Platform, r Renderer, stats *Stats) {
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
-		if world != nil && world.Connected() {
-			if world.SimIsPaused() {
+		if world != nil && w.Connected() {
+			if w.SimIsPaused() {
 				if imgui.Button(FontAwesomeIconPlayCircle) {
-					world.ToggleSimPause()
+					w.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
 				if imgui.Button(FontAwesomeIconPauseCircle) {
-					world.ToggleSimPause()
+					w.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Pause simulation")
@@ -214,9 +214,9 @@ func drawUI(p Platform, r Renderer, stats *Stats) {
 			imgui.SetTooltip("Start new simulation")
 		}
 
-		if world != nil && world.Connected() {
+		if world != nil && w.Connected() {
 			if imgui.Button(FontAwesomeIconCog) {
-				world.ToggleActivateSettingsWindow()
+				w.ToggleActivateSettingsWindow()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Open settings window")
@@ -251,8 +251,8 @@ func drawUI(p Platform, r Renderer, stats *Stats) {
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	if world != nil {
-		world.DrawSettingsWindow()
+	if w != nil {
+		w.DrawSettingsWindow()
 	}
 
 	drawActiveDialogBoxes()

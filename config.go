@@ -75,9 +75,9 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform) bool {
-	gc.Sim = world.GetSerializeSim()
-	gc.Callsign = world.Callsign
+func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *World) bool {
+	gc.Sim = w.GetSerializeSim()
+	gc.Callsign = w.Callsign
 
 	// Grab assorted things that may have changed during this session.
 	gc.ImGuiSettings = imgui.SaveIniSettingsToMemory()
@@ -157,7 +157,7 @@ func LoadOrMakeDefaultConfig() {
 
 func (gc *GlobalConfig) Activate(w *World) {
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane()
+		stars := NewSTARSPane(w)
 
 		fsp := NewFlightStripPane()
 		fsp.AutoAddDepartures = true
