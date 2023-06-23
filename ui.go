@@ -190,7 +190,7 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
 		if w != nil && w.Connected() {
-			if w.SimIsPaused() {
+			if w.SimIsPaused {
 				if imgui.Button(FontAwesomeIconPlayCircle) {
 					w.ToggleSimPause()
 				}

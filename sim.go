@@ -535,9 +535,10 @@ func (s *Sim) IsPaused() bool {
 	return s.Paused
 }
 
-func (s *Sim) TogglePause() {
+func (s *Sim) TogglePause(_, _ *struct{}) error {
 	s.Paused = !s.Paused
 	s.lastUpdateTime = time.Now() // ignore time passage...
+	return nil
 }
 
 func (s *Sim) CurrentTime() time.Time {
@@ -549,10 +550,13 @@ func (s *Sim) PostEvent(e Event) {
 }
 
 type SimWorldUpdate struct {
-	Aircraft    map[string]*Aircraft
-	Controllers map[string]*Controller
-	Time        time.Time
-	Events      []Event
+	Aircraft       map[string]*Aircraft
+	Controllers    map[string]*Controller
+	Time           time.Time
+	SimIsPaused    bool
+	SimRate        float32
+	SimDescription string
+	Events         []Event
 }
 
 func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
@@ -560,16 +564,15 @@ func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
 		return nil, ErrInvalidControllerToken
 	} else {
 		return &SimWorldUpdate{
-			Aircraft:    s.World.Aircraft,
-			Controllers: s.World.Controllers,
-			Time:        s.currentTime,
-			Events:      ctrl.events.Get(),
+			Aircraft:       s.World.Aircraft,
+			Controllers:    s.World.Controllers,
+			Time:           s.currentTime,
+			SimIsPaused:    s.Paused,
+			SimRate:        s.SimRate,
+			SimDescription: s.Scenario,
+			Events:         ctrl.events.Get(),
 		}, nil
 	}
-}
-
-func (s *Sim) Description() string {
-	return s.Scenario
 }
 
 func (s *Sim) Activate() error {

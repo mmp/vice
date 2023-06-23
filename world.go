@@ -54,6 +54,9 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
+	SimIsPaused                   bool
+	SimRate                       float32
+	SimDescription                string
 	UpdateSimTime                 time.Time
 	MagneticVariation             float32
 	NmPerLatitude, NmPerLongitude float32
@@ -329,6 +332,9 @@ func (w *World) GetUpdates(eventStream *EventStream) {
 		w.Aircraft = updates.Aircraft
 		w.Controllers = updates.Controllers
 		w.UpdateSimTime = updates.Time
+		w.SimIsPaused = updates.SimIsPaused
+		w.SimRate = updates.SimRate
+		w.SimDescription = updates.SimDescription
 
 		// Important: do this after updating aircraft, controllers, etc.,
 		// so that they reflect any changes the events are flagging.
@@ -344,41 +350,41 @@ func (w *World) Connected() bool {
 	return w.sim != nil
 }
 
-func (w *World) SimIsPaused() bool {
-	return w.sim != nil && w.sim.IsPaused()
-}
-
 func (w *World) ToggleSimPause() {
 	if w.sim != nil {
-		w.sim.TogglePause()
+		if err := w.sim.TogglePause(nil, nil); err != nil {
+			lg.Errorf("TogglePause: %v", err)
+		}
 	}
 }
 
 func (w *World) GetSimRate() float32 {
-	if w.sim == nil {
+	if w.SimRate == 0 {
 		return 1
 	}
-	return w.sim.GetSimRate()
+	return w.SimRate
 }
 
 func (w *World) SetSimRate(r float32) {
 	if w.sim != nil {
 		w.sim.SetSimRate(&r, nil)
+		w.SimRate = r // so the UI is well-behaved...
 	}
 }
 
 func (w *World) CurrentTime() time.Time {
-	if w.sim == nil {
-		return w.UpdateSimTime
+	d := time.Since(w.lastUpdate)
+	if w.SimRate != 0 {
+		d = time.Duration(float64(d) * float64(w.SimRate))
 	}
-	return w.sim.CurrentTime()
+	return w.UpdateSimTime.Add(d)
 }
 
 func (w *World) GetWindowTitle() string {
-	if w.sim == nil {
+	if w.SimDescription == "" {
 		return "(disconnected)"
 	}
-	return w.Callsign + ": " + w.sim.Description()
+	return w.Callsign + ": " + w.SimDescription
 }
 
 func (w *World) PrintInfo(ac *Aircraft) error {
@@ -429,10 +435,9 @@ func (w *World) DrawSettingsWindow() {
 
 	imgui.BeginV("Settings", &w.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
-	r := w.GetSimRate()
 	max := Select(*devmode, float32(100), float32(10))
-	if imgui.SliderFloatV("Simulation speed", &r, 1, max, "%.1f", 0) {
-		w.SetSimRate(r)
+	if imgui.SliderFloatV("Simulation speed", &w.SimRate, 1, max, "%.1f", 0) {
+		w.SetSimRate(w.SimRate)
 	}
 
 	if imgui.BeginComboV("UI Font Size", fmt.Sprintf("%d", globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
