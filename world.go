@@ -114,10 +114,6 @@ func (w *World) Assign(other *World) {
 }
 
 func (w *World) GetSerializeSim() *Sim {
-	if w.sim != nil {
-		// FIXME: should do this in sim.go
-		//		w.sim.SerializeTime = w.sim.CurrentTime()
-	}
 	return w.sim
 }
 

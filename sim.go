@@ -323,8 +323,6 @@ type Sim struct {
 
 	eventStream *EventStream
 
-	SerializeTime time.Time // for updating times on deserialize
-
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
@@ -351,7 +349,7 @@ type Sim struct {
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
-	currentTime    time.Time // this is our fake time--accounting for pauses & simRate..
+	CurrentTime    time.Time // this is our fake time--accounting for pauses & simRate..
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 	SimRate        float32
 	Paused         bool
@@ -377,7 +375,7 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		DepartureRates:    DuplicateMap(ssc.DepartureRates),
 		ArrivalGroupRates: DuplicateMap(ssc.ArrivalGroupRates),
 
-		currentTime:    time.Now(),
+		CurrentTime:    time.Now(),
 		lastUpdateTime: time.Now(),
 
 		SimRate:            1,
@@ -531,18 +529,10 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 	return nil
 }
 
-func (s *Sim) IsPaused() bool {
-	return s.Paused
-}
-
 func (s *Sim) TogglePause(_, _ *struct{}) error {
 	s.Paused = !s.Paused
 	s.lastUpdateTime = time.Now() // ignore time passage...
 	return nil
-}
-
-func (s *Sim) CurrentTime() time.Time {
-	return s.currentTime
 }
 
 func (s *Sim) PostEvent(e Event) {
@@ -566,7 +556,7 @@ func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
 		return &SimWorldUpdate{
 			Aircraft:       s.World.Aircraft,
 			Controllers:    s.World.Controllers,
-			Time:           s.currentTime,
+			Time:           s.CurrentTime,
 			SimIsPaused:    s.Paused,
 			SimRate:        s.SimRate,
 			SimDescription: s.Scenario,
@@ -599,16 +589,17 @@ func (s *Sim) Activate() error {
 		}
 	}
 
-	now := time.Now()
-	s.currentTime = now
-	s.lastUpdateTime = now
-
 	// A number of time.Time values are included in the serialized World.
 	// updateTime is a helper function that rewrites them to be in terms of
 	// the current time, using the serializion time as a baseline.
+	now := time.Now()
+	serializeTime := s.CurrentTime
 	updateTime := func(t time.Time) time.Time {
-		return now.Add(t.Sub(s.SerializeTime))
+		return now.Add(t.Sub(serializeTime))
 	}
+
+	s.CurrentTime = now
+	s.lastUpdateTime = now
 
 	for _, ac := range s.World.Aircraft {
 		e.Push(ac.Callsign)
@@ -706,7 +697,7 @@ func (s *Sim) Update() {
 	// Update the current time
 	elapsed := time.Since(s.lastUpdateTime)
 	elapsed = time.Duration(s.SimRate * float32(elapsed))
-	s.currentTime = s.currentTime.Add(elapsed)
+	s.CurrentTime = s.CurrentTime.Add(elapsed)
 	s.lastUpdateTime = time.Now()
 
 	s.updateState()
@@ -714,7 +705,7 @@ func (s *Sim) Update() {
 
 // separate so time management can be outside this so we can do the prespawn stuff...
 func (s *Sim) updateState() {
-	now := s.currentTime
+	now := s.CurrentTime
 	for callsign, t := range s.Handoffs {
 		if now.After(t) {
 			if ac, ok := s.World.Aircraft[callsign]; ok {
@@ -782,13 +773,13 @@ func (s *Sim) prespawn() {
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
 	for i := 0; i < initialSimSeconds; i++ {
-		s.currentTime = t
+		s.CurrentTime = t
 		s.lastUpdateTime = t
 		t = t.Add(1 * time.Second)
 
 		s.updateState()
 	}
-	s.currentTime = time.Now()
+	s.CurrentTime = time.Now()
 	s.lastUpdateTime = time.Now()
 }
 
@@ -854,7 +845,7 @@ func sampleRateMap(rates map[string]int) (string, int) {
 }
 
 func (s *Sim) spawnAircraft() {
-	now := s.CurrentTime()
+	now := s.CurrentTime
 
 	addAircraft := func(ac *Aircraft) {
 		if _, ok := s.World.Aircraft[ac.Callsign]; ok {
@@ -1360,7 +1351,7 @@ func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 
 				ac.OutboundHandoffController = octrl.Callsign
 				acceptDelay := 4 + rand.Intn(10)
-				s.Handoffs[ac.Callsign] = s.CurrentTime().Add(time.Duration(acceptDelay) * time.Second)
+				s.Handoffs[ac.Callsign] = s.CurrentTime.Add(time.Duration(acceptDelay) * time.Second)
 				return "", nil
 			}
 		})
