@@ -25,14 +25,6 @@ type Logger struct {
 	verbose       *CircularLogBuffer
 	err           *CircularLogBuffer
 	start         time.Time
-	monitors      map[ErrorMonitor]interface{}
-}
-
-// ErrorMonitor is an interface for objects that wish to be made aware of
-// error messages from elsewhere in the system. Logger passes messages
-// along to the monitors that have registered with it.
-type ErrorMonitor interface {
-	ErrorReported(msg string)
 }
 
 // Each log message is stored using a LogEntry, which also records the time
@@ -76,7 +68,6 @@ func NewLogger(verbose bool, printToStderr bool, maxLines int) *Logger {
 		l.verbose = NewCircularLogBuffer(maxLines)
 	}
 	l.err = NewCircularLogBuffer(maxLines)
-	l.monitors = make(map[ErrorMonitor]interface{})
 
 	// Start out the logs with some basic information about the system
 	// we're running on and the build of vice that's being used.
@@ -154,27 +145,9 @@ func (l *Logger) errorf(levels int, f string, args ...interface{}) {
 	// Always print it
 	fmt.Fprint(os.Stderr, "ERROR: "+msg)
 
-	for m := range l.monitors {
-		m.ErrorReported(msg)
-	}
-
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.err.Add(msg)
-}
-
-func (l *Logger) RegisterErrorMonitor(m ErrorMonitor) {
-	l.monitors[m] = nil
-
-	// Poke into the error buffer and forward along anything that's already
-	// in there...
-	for i := 0; i < l.err.rb.Size(); i++ {
-		m.ErrorReported(l.err.rb.Get(i).String())
-	}
-}
-
-func (l *Logger) DeregisterErrorMonitor(m ErrorMonitor) {
-	delete(l.monitors, m)
 }
 
 func (l *Logger) GetVerboseLog() string {
