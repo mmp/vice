@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -1551,4 +1552,255 @@ func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", nil
 		})
+}
+
+type AircraftCommandsSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Commands        string
+}
+
+type AircraftCommandsResult struct {
+	RemainingCommands []string
+}
+
+func (s *Sim) RunAircraftCommands(cmd *AircraftCommandsSpecifier, result *AircraftCommandsResult) error {
+	commands := strings.Fields(cmd.Commands)
+	for i, command := range commands {
+		result.RemainingCommands = commands[i:]
+
+		switch command[0] {
+		case 'D':
+			if components := strings.Split(command, "/"); len(components) > 1 {
+				// Depart <fix> at heading <hdg>
+				fix := components[0][1:]
+
+				if components[1][0] != 'H' {
+					return ErrInvalidCommandSyntax
+				}
+				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
+					return err
+				} else if err := s.DepartFixHeading(&FixSpecifier{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Fix:             fix,
+					Heading:         hdg,
+				}, nil); err != nil {
+					return err
+				}
+			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
+				// Looks like an altitude.
+				if alt, err := strconv.Atoi(command[1:]); err != nil {
+					return err
+				} else if err := s.AssignAltitude(&AltitudeAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Altitude:        100 * alt,
+				}, nil); err != nil {
+					return err
+				}
+			} else if _, ok := s.World.Locate(string(command[1:])); ok {
+				if err := s.DirectFix(&FixSpecifier{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Fix:             command[1:],
+				}, nil); err != nil {
+					return err
+				}
+			} else {
+				return ErrInvalidCommandSyntax
+			}
+
+		case 'H':
+			if len(command) == 1 {
+				if err := s.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Present:         true,
+				}, nil); err != nil {
+					return err
+				}
+			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
+				return err
+			} else if err := s.AssignHeading(&HeadingAssignment{
+				ControllerToken: cmd.ControllerToken,
+				Callsign:        cmd.Callsign,
+				Heading:         hdg,
+				Turn:            TurnClosest,
+			}, nil); err != nil {
+				return err
+			}
+
+		case 'L':
+			if l := len(command); l > 2 && command[l-1] == 'D' {
+				// turn left x degrees
+				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
+					return err
+				} else if err := s.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					LeftDegrees:     deg,
+				}, nil); err != nil {
+					return err
+				}
+			} else {
+				// turn left heading...
+				if hdg, err := strconv.Atoi(command[1:]); err != nil {
+					return err
+				} else if err := s.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Heading:         hdg,
+					Turn:            TurnLeft,
+				}, nil); err != nil {
+					return err
+				}
+			}
+
+		case 'R':
+			if l := len(command); l > 2 && command[l-1] == 'D' {
+				// turn right x degrees
+				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
+					return err
+				} else if err := s.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					RightDegrees:    deg,
+				}, nil); err != nil {
+					return err
+				}
+			} else {
+				// turn right heading...
+				if hdg, err := strconv.Atoi(command[1:]); err != nil {
+					return err
+				} else if err := s.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Heading:         hdg,
+					Turn:            TurnRight,
+				}, nil); err != nil {
+					return err
+				}
+			}
+
+		case 'C', 'A':
+			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+				// Cleared straight in approach.
+				if err := s.ClearedApproach(&ApproachClearance{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Approach:        command[3:],
+					StraightIn:      true,
+				}, nil); err != nil {
+					return err
+				}
+			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
+				if components := strings.Split(command, "/"); len(components) > 1 {
+					// Cross fix [at altitude] [at speed]
+					fix := components[0][1:]
+					alt, speed := 0, 0
+
+					for _, cmd := range components[1:] {
+						if len(cmd) == 0 {
+							return ErrInvalidCommandSyntax
+						}
+
+						var err error
+						if cmd[0] == 'A' {
+							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
+								return err
+							}
+						} else if cmd[0] == 'S' {
+							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+								return err
+							}
+						} else {
+							return ErrInvalidCommandSyntax
+						}
+					}
+
+					if err := s.CrossFixAt(&FixSpecifier{
+						ControllerToken: cmd.ControllerToken,
+						Callsign:        cmd.Callsign,
+						Fix:             fix,
+						Altitude:        100 * alt,
+						Speed:           speed,
+					}, nil); err != nil {
+						return err
+					}
+				} else if err := s.ClearedApproach(&ApproachClearance{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Approach:        command[1:],
+				}, nil); err != nil {
+					return err
+				}
+			} else {
+				// Otherwise look for an altitude
+				if alt, err := strconv.Atoi(command[1:]); err != nil {
+					return err
+				} else if err := s.AssignAltitude(&AltitudeAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Altitude:        100 * alt,
+				}, nil); err != nil {
+					return err
+				}
+			}
+
+		case 'S':
+			if len(command) == 1 {
+				// Cancel speed restrictions
+				if err := s.AssignSpeed(&SpeedAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Speed:           0,
+				}, nil); err != nil {
+					return err
+				}
+			} else {
+				if kts, err := strconv.Atoi(command[1:]); err != nil {
+					return err
+				} else if err := s.AssignSpeed(&SpeedAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Speed:           kts,
+				}, nil); err != nil {
+					return err
+				}
+			}
+
+		case 'E':
+			// Expect approach.
+			if len(command) > 1 {
+				if err := s.ExpectApproach(&ApproachAssignment{
+					ControllerToken: cmd.ControllerToken,
+					Callsign:        cmd.Callsign,
+					Approach:        command[1:],
+				}, nil); err != nil {
+					return err
+				}
+			} else {
+				return ErrInvalidCommandSyntax
+			}
+
+		case '?':
+			if ac, ok := s.World.Aircraft[cmd.Callsign]; !ok {
+				return ErrNoAircraftForCallsign
+			} else if err := s.World.PrintInfo(ac); err != nil {
+				return err
+			}
+
+		case 'X':
+			if ac, ok := s.World.Aircraft[cmd.Callsign]; !ok {
+				return ErrNoAircraftForCallsign
+			} else if err := s.World.DeleteAircraft(ac); err != nil {
+				return err
+			}
+
+		default:
+			return ErrInvalidCommandSyntax
+		}
+	}
+	return nil
 }

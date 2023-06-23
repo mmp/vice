@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"strconv"
 	"strings"
 	"time"
 
@@ -515,167 +514,13 @@ func (w *World) DeleteAircraft(ac *Aircraft) error {
 }
 
 func (w *World) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error) {
-	commands := strings.Fields(cmds)
-	for i, command := range commands {
-		switch command[0] {
-		case 'D':
-			if components := strings.Split(command, "/"); len(components) > 1 {
-				// Depart <fix> at heading <hdg>
-				fix := components[0][1:]
-
-				if components[1][0] != 'H' {
-					return commands[i:], ErrInvalidCommandSyntax
-				}
-				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
-					return commands[i:], err
-				} else if err := w.DepartFixHeading(ac, fix, hdg); err != nil {
-					return commands[i:], err
-				}
-			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-				// Looks like an altitude.
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], err
-				} else if err := w.AssignAltitude(ac, 100*alt); err != nil {
-					return commands[i:], err
-				}
-			} else if _, ok := w.Locate(string(command[1:])); ok {
-				if err := w.DirectFix(ac, command[1:]); err != nil {
-					return commands[i:], err
-				}
-			} else {
-				return commands[i:], ErrInvalidCommandSyntax
-			}
-
-		case 'H':
-			if len(command) == 1 {
-				if err := w.FlyPresentHeading(ac); err != nil {
-					return commands[i:], err
-				}
-			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
-				return commands[i:], err
-			} else if err := w.AssignHeading(ac, hdg, TurnClosest); err != nil {
-				return commands[i:], err
-			}
-
-		case 'L':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
-				// turn left x degrees
-				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return commands[i:], err
-				} else if err := w.TurnLeft(ac, deg); err != nil {
-					return commands[i:], err
-				}
-			} else {
-				// turn left heading...
-				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], err
-				} else if err := w.AssignHeading(ac, hdg, TurnLeft); err != nil {
-					return commands[i:], err
-				}
-			}
-
-		case 'R':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
-				// turn right x degrees
-				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return commands[i:], err
-				} else if err := w.TurnRight(ac, deg); err != nil {
-					return commands[i:], err
-				}
-			} else {
-				// turn right heading...
-				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], err
-				} else if err := w.AssignHeading(ac, hdg, TurnRight); err != nil {
-					return commands[i:], err
-				}
-			}
-
-		case 'C', 'A':
-			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
-				// Cleared straight in approach.
-				if err := w.ClearedStraightInApproach(ac, command[3:]); err != nil {
-					return commands[i:], err
-				}
-			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
-				if components := strings.Split(command, "/"); len(components) > 1 {
-					// Cross fix [at altitude] [at speed]
-					fix := components[0][1:]
-					alt, speed := 0, 0
-
-					for _, cmd := range components[1:] {
-						if len(cmd) == 0 {
-							return commands[i:], ErrInvalidCommandSyntax
-						}
-
-						var err error
-						if cmd[0] == 'A' {
-							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
-								return commands[i:], err
-							}
-						} else if cmd[0] == 'S' {
-							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-								return commands[i:], err
-							}
-						} else {
-							return commands[i:], ErrInvalidCommandSyntax
-						}
-					}
-
-					if err := w.CrossFixAt(ac, fix, 100*alt, speed); err != nil {
-						return commands[i:], err
-					}
-				} else if err := w.ClearedApproach(ac, command[1:]); err != nil {
-					return commands[i:], err
-				}
-			} else {
-				// Otherwise look for an altitude
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], err
-				} else if err := w.AssignAltitude(ac, 100*alt); err != nil {
-					return commands[i:], err
-				}
-			}
-
-		case 'S':
-			if len(command) == 1 {
-				// Cancel speed restrictions
-				if err := w.AssignSpeed(ac, 0); err != nil {
-					return commands[i:], err
-				}
-			} else {
-				if kts, err := strconv.Atoi(command[1:]); err != nil {
-					return commands[i:], err
-				} else if err := w.AssignSpeed(ac, kts); err != nil {
-					return commands[i:], err
-				}
-			}
-
-		case 'E':
-			// Expect approach.
-			if len(command) > 1 {
-				if err := w.ExpectApproach(ac, command[1:]); err != nil {
-					return commands[i:], err
-				}
-			} else {
-				return commands[i:], ErrInvalidCommandSyntax
-			}
-
-		case '?':
-			if err := w.PrintInfo(ac); err != nil {
-				return commands[i:], err
-			}
-
-		case 'X':
-			if err := w.DeleteAircraft(ac); err != nil {
-				return commands[i:], err
-			}
-
-		default:
-			return commands[i:], ErrInvalidCommandSyntax
-		}
-	}
-	return nil, nil
+	var result AircraftCommandsResult
+	err := w.sim.RunAircraftCommands(&AircraftCommandsSpecifier{
+		ControllerToken: w.token,
+		Callsign:        ac.Callsign,
+		Commands:        cmds,
+	}, &result)
+	return result.RemainingCommands, err
 }
 
 ///////////////////////////////////////////////////////////////////////////
