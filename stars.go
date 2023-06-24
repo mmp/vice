@@ -371,8 +371,13 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 
 	ps.DisplayDCB = true
 
-	ps.Center = w.Center
-	ps.Range = w.Range
+	if w != nil {
+		ps.Center = w.Center
+		ps.Range = w.Range
+	} else {
+		ps.Center = Point2LL{73.475, 40.395} // JFK-ish
+		ps.Range = 50
+	}
 
 	ps.CurrentCenter = ps.Center
 
@@ -382,7 +387,7 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 	ps.RadarTrackHistory = 5
 
 	ps.VideoMapVisible = make(map[string]interface{})
-	if len(w.STARSMaps) > 0 {
+	if w != nil && len(w.STARSMaps) > 0 {
 		ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 	}
 	ps.LeaderLineDirection = North
@@ -469,7 +474,7 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 func (ps *STARSPreferenceSet) Activate(w *World) {
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
-		if len(w.STARSMaps) > 0 {
+		if w != nil && len(w.STARSMaps) > 0 {
 			ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 		}
 	}
@@ -659,7 +664,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			if fp := ac.FlightPlan; fp != nil {
 				if ac.TrackingController == "" {
 					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
-						w.InitiateTrack(callsign) // ignore error...
+						w.InitiateTrack(callsign, nil, nil) // ignore error...
 						sp.aircraft[callsign].datablockType = FullDatablock
 					}
 				}
@@ -1140,14 +1145,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		if ac := lookupAircraft(cmd); ac == nil {
 			status.err = ErrSTARSIllegalTrack // error code?
 		} else {
-			status.err = ctx.world.InitiateTrack(lookupCallsign(cmd))
+			sp.initiateTrack(ctx, ac.Callsign)
 			status.clear = true
-			state := sp.aircraft[ac.Callsign]
-			state.datablockType = FullDatablock
-			// Display flight plan
-			if status.err == nil {
-				status.output, _ = flightPlanSTARS(ctx.world, ac)
-			}
 		}
 		return
 
@@ -1155,14 +1154,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		if cmd == "ALL" {
 			for callsign, ac := range ctx.world.Aircraft {
 				if ac.TrackingController == ctx.world.Callsign {
-					status.err = ctx.world.DropTrack(callsign)
+					sp.dropTrack(ctx, callsign)
 				}
 			}
 			status.clear = true
 			return
 		} else {
-			status.err = ctx.world.DropTrack(lookupCallsign(cmd))
-			status.clear = true
+			sp.dropTrack(ctx, lookupCallsign(cmd))
 			return
 		}
 
@@ -1182,20 +1180,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 
 			if closest != nil {
-				status.err = ctx.world.AcceptHandoff(closest.Callsign)
-				// Display flight plan
-				if status.err == nil {
-					status.output, _ = flightPlanSTARS(ctx.world, closest)
-				}
+				sp.acceptHandoff(ctx, closest.Callsign)
 			}
 			status.clear = true
 			return
 		case 1:
-			status.err = ctx.world.CancelHandoff(lookupCallsign(f[0]))
+			sp.cancelHandoff(ctx, lookupCallsign(f[0]))
 			status.clear = true
 			return
 		case 2:
-			status.err = ctx.world.HandoffTrack(lookupCallsign(f[1]), f[0])
+			sp.handoffTrack(ctx, lookupCallsign(f[1]), f[0])
 			status.clear = true
 			return
 		}
@@ -1582,7 +1576,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// Clear pilot alt. and scratchpad
 				callsign := lookupCallsign(f[0])
 				sp.aircraft[callsign].pilotAltitude = 0
-				status.err = ctx.world.SetScratchpad(callsign, "")
+				sp.setScratchpad(ctx, callsign, "")
 				status.clear = true
 				return
 			} else if len(f) == 2 {
@@ -1596,7 +1590,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.aircraft[callsign].pilotAltitude = alt * 100
 				} else {
-					status.err = ctx.world.SetScratchpad(callsign, f[1])
+					sp.setScratchpad(ctx, callsign, f[1])
 				}
 				status.clear = true
 				return
@@ -1766,6 +1760,92 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	return
 }
 
+func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string) {
+	ctx.world.SetScratchpad(callsign, contents, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
+	ctx.world.SetTemporaryAltitude(callsign, alt, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
+	ctx.world.InitiateTrack(callsign,
+		func() {
+			if state, ok := sp.aircraft[callsign]; ok {
+				state.datablockType = FullDatablock
+			}
+			if ac, ok := ctx.world.Aircraft[callsign]; ok {
+				sp.previewAreaOutput, _ = flightPlanSTARS(ctx.world, ac)
+			}
+		},
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
+	ctx.world.DropTrack(callsign, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
+	ctx.world.AcceptHandoff(callsign,
+		func() {
+			if state, ok := sp.aircraft[callsign]; ok {
+				state.datablockType = FullDatablock
+			}
+			if ac, ok := ctx.world.Aircraft[callsign]; ok {
+				sp.previewAreaOutput, _ = flightPlanSTARS(ctx.world, ac)
+			}
+		},
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
+	ctx.world.HandoffTrack(callsign, controller, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
+	ctx.world.HandoffControl(callsign, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
+	ctx.world.PointOut(callsign, controller, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
+	ctx.world.CancelHandoff(callsign, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
+func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
+	ctx.world.RejectHandoff(callsign, nil,
+		func(err error) {
+			sp.previewAreaOutput = err.Error()
+		})
+}
+
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
 	transforms ScopeTransformations) (status STARSCommandStatus) {
 	// See if an aircraft was clicked
@@ -1794,17 +1874,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if ac.InboundHandoffController != "" {
 					// Accept inbound h/o
 					status.clear = true
-					status.err = ctx.world.AcceptHandoff(ac.Callsign)
-					state.datablockType = FullDatablock
-					// Display flight plan
-					if status.err == nil {
-						status.output, _ = flightPlanSTARS(ctx.world, ac)
-					}
+					sp.acceptHandoff(ctx, ac.Callsign)
 					return
 				} else if ac.OutboundHandoffController != "" {
 					// cancel offered handoff offered
 					status.clear = true
-					status.err = ctx.world.CancelHandoff(ac.Callsign)
+					sp.cancelHandoff(ctx, ac.Callsign)
 					return
 				} else if _, ok := sp.pointedOutAircraft.Get(ac.Callsign); ok {
 					// ack point out
@@ -1816,7 +1891,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					// handing off control.
 					state.outboundHandoffAccepted = false
 					state.outboundHandoffFlashEnd = time.Now()
-					ctx.world.HandoffControl(ac.Callsign)
+					sp.handoffControl(ctx, ac.Callsign)
 				} else { //if ac.IsAssociated() {
 					if state.datablockType != FullDatablock {
 						state.datablockType = FullDatablock
@@ -1833,11 +1908,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			case 1:
 				if cmd == "." {
 					status.clear = true
-					status.err = ctx.world.SetScratchpad(ac.Callsign, "")
+					sp.setScratchpad(ctx, ac.Callsign, "")
 					return
 				} else if cmd == "U" {
 					status.clear = true
-					status.err = ctx.world.RejectHandoff(ac.Callsign)
+					sp.rejectHandoff(ctx, ac.Callsign)
 					return
 				} else if cmd == "*" {
 					from := ac.TrackPosition()
@@ -1860,7 +1935,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			case 2:
 				if isControllerId(cmd) {
 					status.clear = true
-					status.err = ctx.world.HandoffTrack(ac.Callsign, cmd)
+					sp.handoffTrack(ctx, ac.Callsign, cmd)
 					return
 				} else if cmd == "*J" {
 					// remove j-ring for aircraft
@@ -1887,7 +1962,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			case 3:
 				if isControllerId(cmd) {
 					status.clear = true
-					status.err = ctx.world.HandoffTrack(ac.Callsign, cmd)
+					sp.handoffTrack(ctx, ac.Callsign, cmd)
 					return
 				} else if cmd == "*D+" {
 					ps.DisplayTPASize = !ps.DisplayTPASize
@@ -1895,7 +1970,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				} else if cmd[2] == '*' && isControllerId(cmd[:2]) {
 					status.clear = true
-					status.err = ctx.world.PointOut(ac.Callsign, cmd[:2])
+					sp.pointOut(ctx, ac.Callsign, cmd[:2])
 					return
 				} else {
 					if alt, err := strconv.Atoi(cmd); err == nil {
@@ -1909,7 +1984,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if cmd[0] == '+' {
 					if alt, err := strconv.Atoi(cmd[1:]); err == nil {
 						status.clear = true
-						status.err = ctx.world.SetTemporaryAltitude(ac.Callsign, alt*100)
+						sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
 					} else {
 						status.err = ErrSTARSIllegalParam
 					}
@@ -1966,47 +2041,42 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			}
 
 			if len(cmd) > 0 {
-				remaining, err := ctx.world.RunAircraftCommands(ac, cmd)
-				if err != nil {
-					if err == ErrInvalidAltitude || err == ErrInvalidHeading {
-						status.err = ErrSTARSIllegalParam
-					} else {
-						status.err = ErrSTARSCommandFormat
-					}
+				ctx.world.RunAircraftCommands(ac, cmd,
+					func(err error, remaining []string) {
+						if err == ErrInvalidAltitude || err == ErrInvalidHeading {
+							status.err = ErrSTARSIllegalParam
+						} else {
+							status.err = ErrSTARSCommandFormat
+						}
 
-					// Leave the unexecuted commands for editing, etc.
-					globalConfig.Audio.PlaySound(AudioEventCommandError)
-					sp.previewAreaInput = strings.Join(remaining, " ")
-				} else {
-					status.clear = true
-				}
+						// Leave the unexecuted commands for editing, etc.
+						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						sp.previewAreaInput = strings.Join(remaining, " ")
+					})
+
+				status.clear = true
 				return
 			}
 
 		case CommandModeInitiateControl:
 			// TODO: error if cmd != ""?
 			status.clear = true
-			status.err = ctx.world.InitiateTrack(ac.Callsign)
-			state.datablockType = FullDatablock
-			if status.err == nil {
-				// Display flight plan
-				status.output, _ = flightPlanSTARS(ctx.world, ac)
-			}
+			sp.initiateTrack(ctx, ac.Callsign)
 			return
 
 		case CommandModeTerminateControl:
 			// TODO: error if cmd != ""?
 			status.clear = true
-			status.err = ctx.world.DropTrack(ac.Callsign)
+			sp.dropTrack(ctx, ac.Callsign)
 			return
 
 		case CommandModeHandOff:
 			if cmd == "" {
 				status.clear = true
-				status.err = ctx.world.CancelHandoff(ac.Callsign)
+				sp.cancelHandoff(ctx, ac.Callsign)
 			} else {
 				status.clear = true
-				status.err = ctx.world.HandoffTrack(ac.Callsign, cmd)
+				sp.handoffTrack(ctx, ac.Callsign, cmd)
 			}
 			return
 
@@ -2105,7 +2175,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
 					status.clear = true
-					status.err = ctx.world.SetScratchpad(ac.Callsign, "")
+					sp.setScratchpad(ctx, ac.Callsign, "")
 					return
 				} else {
 					// Is it an altitude or a scratchpad update?
@@ -2114,7 +2184,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.clear = true
 					} else {
 						status.clear = true
-						status.err = ctx.world.SetScratchpad(ac.Callsign, cmd)
+						sp.setScratchpad(ctx, ac.Callsign, cmd)
 					}
 					return
 				}
@@ -4200,24 +4270,26 @@ func (sp *STARSPane) initializeAircraft(w *World) {
 	sp.aircraft = make(map[string]*STARSAircraftState)
 	//sp.ghostAircraft = make(map[*Aircraft]*Aircraft)
 
-	for _, ac := range w.GetAllAircraft() {
-		sa := &STARSAircraftState{}
-		sp.aircraft[ac.Callsign] = sa
-		if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
-			sa.datablockType = FullDatablock
-		}
+	if w != nil {
+		for _, ac := range w.GetAllAircraft() {
+			sa := &STARSAircraftState{}
+			sp.aircraft[ac.Callsign] = sa
+			if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
+				sa.datablockType = FullDatablock
+			}
 
-		/*
-			if !ps.DisableCRDA {
-				if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
-					sp.ghostAircraft[ac] = ghost
-					sp.aircraft[ghost] = &STARSAircraftState{
-						isGhost:        true,
-						displayTPASize: ps.DisplayTPASize,
+			/*
+				if !ps.DisableCRDA {
+					if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
+						sp.ghostAircraft[ac] = ghost
+						sp.aircraft[ghost] = &STARSAircraftState{
+							isGhost:        true,
+							displayTPASize: ps.DisplayTPASize,
+						}
 					}
 				}
-			}
-		*/
+			*/
+		}
 	}
 }
 

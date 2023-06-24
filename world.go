@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"net/rpc"
 	"strings"
 	"time"
 
@@ -39,8 +40,8 @@ var (
 // World
 
 type World struct {
-	token string
-	sim   *Sim
+	// Used on the client side only
+	simProxy *SimProxy
 
 	Aircraft    map[string]*Aircraft
 	METAR       map[string]*METAR
@@ -50,7 +51,11 @@ type World struct {
 	ArrivalAirports   map[string]*Airport
 
 	lastUpdate   time.Time
+	updateCall   *PendingCall
 	showSettings bool
+
+	pendingCalls            []*PendingCall
+	pendingAircraftCommands []*PendingAircraftCommands
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -75,6 +80,37 @@ type World struct {
 	DepartureRunways              []ScenarioGroupDepartureRunway
 	Scratchpads                   map[string]string
 	ArrivalGroups                 map[string][]Arrival
+}
+
+type PendingCall struct {
+	Call      *rpc.Call
+	IssueTime time.Time
+	OnSuccess func()
+	OnErr     func(error)
+}
+
+func (p *PendingCall) CheckFinished() bool {
+	select {
+	case c := <-p.Call.Done:
+		lg.Printf("%s: returned in %s", c.ServiceMethod, time.Since(p.IssueTime))
+		if c.Error != nil {
+			if p.OnErr != nil {
+				p.OnErr(c.Error)
+			}
+		} else if p.OnSuccess != nil {
+			p.OnSuccess()
+		}
+		return true
+	default:
+		return false
+	}
+}
+
+type PendingAircraftCommands struct {
+	Calls     []*rpc.Call
+	Commands  []string
+	IssueTime time.Time
+	OnErr     func(error, []string)
 }
 
 func NewWorld() *World {
@@ -111,10 +147,6 @@ func (w *World) Assign(other *World) {
 	w.DepartureRunways = other.DepartureRunways
 	w.Scratchpads = other.Scratchpads
 	w.ArrivalGroups = other.ArrivalGroups
-}
-
-func (w *World) GetSerializeSim() *Sim {
-	return w.sim
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -173,79 +205,100 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (w *World) SetScratchpad(callsign string, scratchpad string) error {
-	return w.sim.SetScratchpad(&AircraftPropertiesSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-		Scratchpad:      scratchpad,
-	}, nil)
+func (w *World) SetScratchpad(callsign string, scratchpad string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetScratchpad(callsign, scratchpad),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) SetTemporaryAltitude(callsign string, alt int) error {
-	return w.sim.SetTemporaryAltitude(&AltitudeAssignment{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-		Altitude:        alt,
-	}, nil)
+func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetTemporaryAltitude(callsign, alt),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
 func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (w *World) InitiateTrack(callsign string) error {
-	return w.sim.InitiateTrack(&AircraftSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-	}, nil)
+func (w *World) InitiateTrack(callsign string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.InitiateTrack(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) DropTrack(callsign string) error {
-	return w.sim.DropTrack(&AircraftSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-	}, nil)
+func (w *World) DropTrack(callsign string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.DropTrack(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) HandoffTrack(callsign string, controller string) error {
-	return w.sim.HandoffTrack(&HandoffSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-		Controller:      controller,
-	}, nil)
+func (w *World) HandoffTrack(callsign string, controller string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.HandoffTrack(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) HandoffControl(callsign string) error {
-	return w.sim.HandoffControl(&HandoffSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-	}, nil)
+func (w *World) HandoffControl(callsign string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.HandoffControl(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) AcceptHandoff(callsign string) error {
-	return w.sim.AcceptHandoff(&AircraftSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-	}, nil)
+func (w *World) AcceptHandoff(callsign string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AcceptHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) RejectHandoff(callsign string) error {
-	return nil // UNIMPLEMENTED
+func (w *World) RejectHandoff(callsign string, success func(), err func(error)) {
+	// UNIMPLEMENTED
 }
 
-func (w *World) CancelHandoff(callsign string) error {
-	return w.sim.CancelHandoff(&AircraftSpecifier{
-		ControllerToken: w.token,
-		Callsign:        callsign,
-	}, nil)
+func (w *World) CancelHandoff(callsign string, success func(), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.CancelHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
-func (w *World) PointOut(callsign string, controller string) error {
-	return nil // UNIMPLEMENTED
+func (w *World) PointOut(callsign string, controller string, success func(), err func(error)) {
+	// UNIMPLEMENTED
 }
 
 func (w *World) Disconnect() {
-	if err := w.sim.SignOff(w.token, nil); err != nil {
+	if err := w.simProxy.SignOff(nil, nil); err != nil {
 		lg.Errorf("Error signing off from sim: %v", err)
 	}
 	w.Aircraft = nil
@@ -313,45 +366,104 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) GetUpdates(eventStream *EventStream) {
-	if w.sim == nil {
+	if w.simProxy == nil {
 		return
 	}
 
-	w.sim.Update()
+	if w.updateCall != nil && w.updateCall.CheckFinished() {
+		w.updateCall = nil
+		return
+	}
+
+	w.checkPendingRPCs()
 
 	if time.Since(w.lastUpdate) > 1*time.Second {
-		updates, err := w.sim.GetWorldUpdate(w.token)
-		if err != nil {
-			lg.Errorf("Error getting world update: %v", err)
+		if w.updateCall != nil {
+			lg.Errorf("Still waiting on last update call!")
+			return
 		}
 
-		w.Aircraft = updates.Aircraft
-		w.Controllers = updates.Controllers
-		w.UpdateSimTime = updates.Time
-		w.SimIsPaused = updates.SimIsPaused
-		w.SimRate = updates.SimRate
-		w.SimDescription = updates.SimDescription
+		wu := &SimWorldUpdate{}
+		w.updateCall = &PendingCall{
+			Call:      w.simProxy.GetWorldUpdate(wu),
+			IssueTime: time.Now(),
+			OnSuccess: func() {
+				w.Aircraft = wu.Aircraft
+				w.Controllers = wu.Controllers
+				w.UpdateSimTime = wu.Time
+				w.SimIsPaused = wu.SimIsPaused
+				w.SimRate = wu.SimRate
+				w.SimDescription = wu.SimDescription
 
-		// Important: do this after updating aircraft, controllers, etc.,
-		// so that they reflect any changes the events are flagging.
-		for _, e := range updates.Events {
-			eventStream.Post(e)
+				// Important: do this after updating aircraft, controllers, etc.,
+				// so that they reflect any changes the events are flagging.
+				for _, e := range wu.Events {
+					eventStream.Post(e)
+				}
+
+				w.lastUpdate = time.Now()
+			},
+			OnErr: func(err error) {
+				lg.Errorf("Error getting world update: %v", err)
+			},
 		}
-
-		w.lastUpdate = time.Now()
 	}
+}
+
+func (w *World) checkPendingRPCs() {
+	cleared := 0
+	for i, call := range w.pendingCalls {
+		if call.CheckFinished() {
+			cleared = i
+		} else {
+			// Stop checking additional ones
+			break
+		}
+	}
+	w.pendingCalls = w.pendingCalls[cleared:] // FIXME: will the slice cap grow forever?
+
+	clearedCmds := 0
+	for _, pac := range w.pendingAircraftCommands {
+		clearedCalls := 0
+		for _, call := range pac.Calls {
+			select {
+			case call := <-call.Done:
+				if call.Error != nil {
+					if pac.OnErr != nil {
+						if pac.OnErr != nil {
+							pac.OnErr(call.Error, pac.Commands[clearedCalls:])
+						}
+					}
+					pac.Calls = pac.Calls[clearedCalls+1:]
+					return
+				} else {
+					clearedCalls++
+				}
+
+			default:
+			}
+		}
+
+		pac.Calls = pac.Calls[clearedCalls:]
+		pac.Commands = pac.Commands[clearedCalls:]
+		if len(pac.Calls) == 0 {
+			clearedCmds++
+		}
+	}
+
+	w.pendingAircraftCommands = w.pendingAircraftCommands[clearedCmds:]
+
 }
 
 func (w *World) Connected() bool {
-	return w.sim != nil
+	return w.simProxy != nil
 }
 
 func (w *World) ToggleSimPause() {
-	if w.sim != nil {
-		if err := w.sim.TogglePause(nil, nil); err != nil {
-			lg.Errorf("TogglePause: %v", err)
-		}
-	}
+	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+		Call:      w.simProxy.TogglePause(),
+		IssueTime: time.Now(),
+	})
 }
 
 func (w *World) GetSimRate() float32 {
@@ -362,10 +474,11 @@ func (w *World) GetSimRate() float32 {
 }
 
 func (w *World) SetSimRate(r float32) {
-	if w.sim != nil {
-		w.sim.SetSimRate(&r, nil)
-		w.SimRate = r // so the UI is well-behaved...
-	}
+	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+		Call:      w.simProxy.SetSimRate(r),
+		IssueTime: time.Now(),
+	})
+	w.SimRate = r // so the UI is well-behaved...
 }
 
 func (w *World) CurrentTime() time.Time {
@@ -395,26 +508,33 @@ func (w *World) PrintInfo(ac *Aircraft) error {
 	return nil
 }
 
-func (w *World) DeleteAircraft(ac *Aircraft) error {
-	if w.sim != nil {
-		return w.sim.DeleteAircraft(&AircraftSpecifier{
-			ControllerToken: w.token,
-			Callsign:        ac.Callsign,
-		}, nil)
+func (w *World) DeleteAircraft(ac *Aircraft) {
+	if w.simProxy != nil {
+		w.pendingCalls = append(w.pendingCalls,
+			&PendingCall{
+				Call:      w.simProxy.DeleteAircraft(ac.Callsign),
+				IssueTime: time.Now(),
+			})
 	} else {
 		delete(w.Aircraft, ac.Callsign)
-		return nil
 	}
 }
 
-func (w *World) RunAircraftCommands(ac *Aircraft, cmds string) ([]string, error) {
-	var result AircraftCommandsResult
-	err := w.sim.RunAircraftCommands(&AircraftCommandsSpecifier{
-		ControllerToken: w.token,
-		Callsign:        ac.Callsign,
-		Commands:        cmds,
-	}, &result)
-	return result.RemainingCommands, err
+func (w *World) RunAircraftCommands(ac *Aircraft, cmdstring string, onErr func(err error, remaining []string)) {
+	cmds := strings.Fields(cmdstring)
+	calls, calledCommands, uncalledCommands, err := w.simProxy.RunAircraftCommands(ac.Callsign, cmds, w)
+
+	w.pendingAircraftCommands = append(w.pendingAircraftCommands,
+		&PendingAircraftCommands{
+			Calls:     calls,
+			Commands:  calledCommands,
+			IssueTime: time.Now(),
+			OnErr:     onErr,
+		})
+
+	if err != nil {
+		onErr(err, uncalledCommands)
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

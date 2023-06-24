@@ -156,8 +156,8 @@ type FlightPlan struct {
 }
 
 type FlightStrip struct {
-	callsign    string
-	annotations [9]string
+	Callsign    string
+	Annotations [9]string
 }
 
 type Squawk int

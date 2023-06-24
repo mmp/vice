@@ -134,10 +134,6 @@ func uiInit(r Renderer, p Platform) {
 	if globalConfig.WhatsNewIndex < len(whatsNew) {
 		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}), false)
 	}
-
-	if globalConfig.Sim == nil {
-		uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
-	}
 }
 
 func uiShowModalDialog(d *ModalDialogBox, atFront bool) {

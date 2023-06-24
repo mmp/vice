@@ -305,14 +305,16 @@ func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 	}
 	fsp.events = eventStream.Subscribe()
 
-	for _, ac := range w.GetAllAircraft() {
-		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign && ac.FlightPlan != nil {
-			fsp.strips = append(fsp.strips, ac.Callsign)
-			fsp.addedAircraft[ac.Callsign] = nil
-		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && fsp.isDeparture(ac, w)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, w))) {
-			fsp.strips = append(fsp.strips, ac.Callsign)
-			fsp.addedAircraft[ac.Callsign] = nil
+	if w != nil {
+		for _, ac := range w.GetAllAircraft() {
+			if fsp.AutoAddTracked && ac.TrackingController == w.Callsign && ac.FlightPlan != nil {
+				fsp.strips = append(fsp.strips, ac.Callsign)
+				fsp.addedAircraft[ac.Callsign] = nil
+			} else if ac.TrackingController == "" &&
+				((fsp.AutoAddDepartures && fsp.isDeparture(ac, w)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, w))) {
+				fsp.strips = append(fsp.strips, ac.Callsign)
+				fsp.addedAircraft[ac.Callsign] = nil
+			}
 		}
 	}
 }
@@ -502,7 +504,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		strip := ctx.world.GetFlightStrip(callsign)
 		ac := ctx.world.GetAircraft(callsign)
 		if ac == nil {
-			lg.Errorf("%s: no aircraft for callsign?!", strip.callsign)
+			lg.Errorf("%s: no aircraft for callsign?!", strip.Callsign)
 			continue
 		}
 		fp := ac.FlightPlan
@@ -588,7 +590,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Annotations
 		x += widthCenter
 		var editResult int
-		for ai, ann := range strip.annotations {
+		for ai, ann := range strip.Annotations {
 			ix, iy := ai%3, ai/3
 			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
 
@@ -598,12 +600,12 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				// it according to keyboard input, etc.
 				cursorStyle := TextStyle{Font: fsp.font, Color: bgColor,
 					DrawBackground: true, BackgroundColor: style.Color}
-				editResult, _ = uiDrawTextEdit(&strip.annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
+				editResult, _ = uiDrawTextEdit(&strip.Annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
 					ctx.keyboard, [2]float32{xp, yp}, style, cursorStyle, cb)
-				if len(strip.annotations[fsp.selectedAnnotation]) >= 3 {
+				if len(strip.Annotations[fsp.selectedAnnotation]) >= 3 {
 					// Limit it to three characters
-					strip.annotations[fsp.selectedAnnotation] = strip.annotations[fsp.selectedAnnotation][:3]
-					fsp.annotationCursorPos = min(fsp.annotationCursorPos, len(strip.annotations[fsp.selectedAnnotation]))
+					strip.Annotations[fsp.selectedAnnotation] = strip.Annotations[fsp.selectedAnnotation][:3]
+					fsp.annotationCursorPos = min(fsp.annotationCursorPos, len(strip.Annotations[fsp.selectedAnnotation]))
 				}
 			} else {
 				td.AddText(ann, [2]float32{xp, yp}, style)
@@ -621,11 +623,11 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			wmReleaseKeyboardFocus()
 		case TextEditReturnNext:
 			fsp.selectedAnnotation = (fsp.selectedAnnotation + 1) % 9
-			fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+			fsp.annotationCursorPos = len(strip.Annotations[fsp.selectedAnnotation])
 		case TextEditReturnPrev:
 			// +8 rather than -1 to keep it positive for the mod...
 			fsp.selectedAnnotation = (fsp.selectedAnnotation + 8) % 9
-			fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
+			fsp.annotationCursorPos = len(strip.Annotations[fsp.selectedAnnotation])
 		}
 
 		// Horizontal lines

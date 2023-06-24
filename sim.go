@@ -7,8 +7,12 @@ package main
 import (
 	crand "crypto/rand"
 	"encoding/base64"
+	"encoding/gob"
 	"errors"
 	"fmt"
+	"net"
+	"net/http"
+	"net/rpc"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,6 +21,27 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
 )
+
+func init() {
+	gob.Register(&FlyHeading{})
+	gob.Register(&FlyRoute{})
+	gob.Register(&FlyRacetrackPT{})
+	gob.Register(&FlyStandard45PT{})
+
+	gob.Register(&MaintainSpeed{})
+	gob.Register(&FinalApproachSpeed{})
+
+	gob.Register(&MaintainAltitude{})
+	gob.Register(&FlyRacetrackPT{})
+
+	gob.Register(&SpeedAfterAltitude{})
+	gob.Register(&AltitudeAfterSpeed{})
+	gob.Register(&ApproachSpeedAt5DME{})
+	gob.Register(&ClimbOnceAirborne{})
+	gob.Register(&TurnToInterceptLocalizer{})
+	gob.Register(&HoldLocalizerAfterIntercept{})
+	gob.Register(&GoAround{})
+}
 
 var (
 	ErrControllerAlreadySignedIn = errors.New("controller with that callsign already signed in")
@@ -295,24 +320,636 @@ func (c *NewSimConfiguration) DrawUI() bool {
 }
 
 func (c *NewSimConfiguration) Start() error {
-	sim := NewSim(*c)
-	sim.prespawn() // do after the global has been initialized
-
-	world, err := sim.SignOn(c.Callsign)
+	client, err := DialSimServer()
 	if err != nil {
 		return err
 	}
+
+	var result NewSimResult
+	err = client.Call("SimFactory.New", c, &result)
+	if err != nil {
+		return err
+	}
+
+	result.World.simProxy = &SimProxy{
+		Token:  result.Token,
+		Client: client,
+	}
+
 	globalConfig.LastScenarioGroup = c.ScenarioGroup
 
-	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-		if stars, ok := p.(*STARSPane); ok {
-			stars.ResetWorld(world)
+	if sg := scenarioGroups[c.ScenarioGroup]; sg == nil {
+		return fmt.Errorf("%s: unknown scenario group", c.ScenarioGroup)
+	} else {
+		err := sg.InitializeWorld(result.World)
+		if err != nil {
+			return err
 		}
-	})
+	}
 
-	newWorldChan <- world
+	newWorldChan <- result.World
+
 	return nil
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+type SimProxy struct {
+	Token  string
+	Client *rpc.Client
+}
+
+func (s *SimProxy) TogglePause() *rpc.Call {
+	return s.Client.Go("Sim.TogglePause", s.Token, nil, nil)
+}
+
+func (s *SimProxy) SignOff(_, _ *struct{}) error {
+	return s.Client.Call("Sim.SignOff", s.Token, nil)
+}
+
+func (s *SimProxy) GetWorldUpdate(wu *SimWorldUpdate) *rpc.Call {
+	return s.Client.Go("Sim.GetWorldUpdate", s.Token, wu, nil)
+}
+
+func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
+	return s.Client.Go("Sim.SetSimRate",
+		&SimRateSpecifier{
+			ControllerToken: s.Token,
+			Rate:            r,
+		}, nil, nil)
+}
+
+func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
+	return s.Client.Go("Sim.SetScratchpad", &AircraftPropertiesSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+		Scratchpad:      scratchpad,
+	}, nil, nil)
+}
+
+func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", &AircraftSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) DropTrack(callsign string) *rpc.Call {
+	return s.Client.Go("sim.DropTrack", &AircraftSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
+	return s.Client.Go("sim.HandoffTrack", &HandoffSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+		Controller:      controller,
+	}, nil, nil)
+}
+
+func (s *SimProxy) HandoffControl(callsign string) *rpc.Call {
+	return s.Client.Go("sim.HandoffControl", &HandoffSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("sim.AcceptHandoff", &AircraftSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("sim.CancelHandoff", &AircraftSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) AssignAltitude(callsign string, alt int) *rpc.Call {
+	return s.Client.Go("sim.SetAltitude", &AltitudeAssignment{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+		Altitude:        alt,
+	}, nil, nil)
+}
+
+func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
+	return s.Client.Go("sim.SetTemporaryAltitude", &AltitudeAssignment{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+		Altitude:        alt,
+	}, nil, nil)
+}
+
+func (s *SimProxy) GoAround(callsign string) *rpc.Call {
+	return s.Client.Go("sim.GoAround", &AircraftSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
+	return s.Client.Go("sim.DeleteAircraft", &AircraftSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+type AircraftCommandsCalls struct {
+	// If Err is set, this only has the calls up to the error...
+	Calls    []*rpc.Call
+	Commands []string
+	Err      error
+}
+
+func (s *SimProxy) RunAircraftCommands(callsign string, commands []string, w *World) (
+	calls []*rpc.Call, calledCommands []string, uncalledCommands []string, err error) {
+	call := func(cmd string, method string, input any) {
+		calls = append(calls, s.Client.Go(method, input, nil, nil))
+		calledCommands = append(calledCommands, cmd)
+	}
+
+	for i, command := range commands {
+		uncalledCommands = commands[i:]
+
+		switch command[0] {
+		case 'D':
+			if components := strings.Split(command, "/"); len(components) > 1 {
+				// Depart <fix> at heading <hdg>
+				fix := components[0][1:]
+
+				if components[1][0] != 'H' {
+					err = ErrInvalidCommandSyntax
+					return
+				}
+				var hdg int
+				if hdg, err = strconv.Atoi(components[1][1:]); err != nil {
+					return
+				} else {
+					call(command, "sim.DepartFixHeading", &FixSpecifier{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Fix:             fix,
+						Heading:         hdg,
+					})
+				}
+			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
+				// Looks like an altitude.
+				var alt int
+				if alt, err = strconv.Atoi(command[1:]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignAltitude", &AltitudeAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Altitude:        100 * alt,
+					})
+				}
+			} else if _, ok := w.Locate(string(command[1:])); ok {
+				call(command, "sim.DirectFix", &FixSpecifier{
+					ControllerToken: s.Token,
+					Callsign:        callsign,
+					Fix:             command[1:],
+				})
+			} else {
+				err = ErrInvalidCommandSyntax
+				return
+			}
+
+		case 'H':
+			var hdg int
+			if len(command) == 1 {
+				call(command, "sim.AssignHeading", &HeadingAssignment{
+					ControllerToken: s.Token,
+					Callsign:        callsign,
+					Present:         true,
+				})
+			} else if hdg, err = strconv.Atoi(command[1:]); err != nil {
+				return
+			} else {
+				call(command, "sim.AssignHeading", &HeadingAssignment{
+					ControllerToken: s.Token,
+					Callsign:        callsign,
+					Heading:         hdg,
+					Turn:            TurnClosest,
+				})
+			}
+
+		case 'L':
+			if l := len(command); l > 2 && command[l-1] == 'D' {
+				// turn left x degrees
+				var deg int
+				if deg, err = strconv.Atoi(command[1 : l-1]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignHeading", &HeadingAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						LeftDegrees:     deg,
+					})
+				}
+			} else {
+				// turn left heading...
+				var hdg int
+				if hdg, err = strconv.Atoi(command[1:]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignHeading", &HeadingAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Heading:         hdg,
+						Turn:            TurnLeft,
+					})
+				}
+			}
+
+		case 'R':
+			if l := len(command); l > 2 && command[l-1] == 'D' {
+				// turn right x degrees
+				var deg int
+				if deg, err = strconv.Atoi(command[1 : l-1]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignHeading", &HeadingAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						RightDegrees:    deg,
+					})
+				}
+			} else {
+				// turn right heading...
+				var hdg int
+				if hdg, err = strconv.Atoi(command[1:]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignHeading", &HeadingAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Heading:         hdg,
+						Turn:            TurnRight,
+					})
+				}
+			}
+
+		case 'C', 'A':
+			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+				// Cleared straight in approach.
+				call(command, "sim.ClearedApproach", &ApproachClearance{
+					ControllerToken: s.Token,
+					Callsign:        callsign,
+					Approach:        command[3:],
+					StraightIn:      true,
+				})
+			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
+				if components := strings.Split(command, "/"); len(components) > 1 {
+					// Cross fix [at altitude] [at speed]
+					fix := components[0][1:]
+					alt, speed := 0, 0
+
+					for _, cmd := range components[1:] {
+						if len(cmd) == 0 {
+							err = ErrInvalidCommandSyntax
+							return
+						}
+
+						if cmd[0] == 'A' {
+							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
+								return
+							}
+						} else if cmd[0] == 'S' {
+							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+								return
+							}
+						} else {
+							err = ErrInvalidCommandSyntax
+							return
+						}
+					}
+
+					call(command, "sim.CrossFixAt", &FixSpecifier{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Fix:             fix,
+						Altitude:        100 * alt,
+						Speed:           speed,
+					})
+				} else {
+					call(command, "sim.ClearedApproach", &ApproachClearance{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Approach:        command[1:],
+					})
+				}
+			} else {
+				// Otherwise look for an altitude
+				var alt int
+				if alt, err = strconv.Atoi(command[1:]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignAltitude", &AltitudeAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Altitude:        100 * alt,
+					})
+				}
+			}
+
+		case 'S':
+			if len(command) == 1 {
+				// Cancel speed restrictions
+				call(command, "sim.AssignSpeed", &SpeedAssignment{
+					ControllerToken: s.Token,
+					Callsign:        callsign,
+					Speed:           0,
+				})
+			} else {
+				var kts int
+				if kts, err = strconv.Atoi(command[1:]); err != nil {
+					return
+				} else {
+					call(command, "sim.AssignSpeed", &SpeedAssignment{
+						ControllerToken: s.Token,
+						Callsign:        callsign,
+						Speed:           kts,
+					})
+				}
+			}
+
+		case 'E':
+			// Expect approach.
+			if len(command) > 1 {
+				call(command, "sim.ExpectApproach", &ApproachAssignment{
+					ControllerToken: s.Token,
+					Callsign:        callsign,
+					Approach:        command[1:],
+				})
+			} else {
+				err = ErrInvalidCommandSyntax
+				return
+			}
+
+		case '?':
+			if ac, ok := w.Aircraft[callsign]; !ok {
+				err = ErrNoAircraftForCallsign
+				return
+			} else if err = w.PrintInfo(ac); err != nil {
+				return
+			}
+
+		case 'X':
+			if _, ok := w.Aircraft[callsign]; !ok {
+				err = ErrNoAircraftForCallsign
+				return
+			} else {
+				call(command, "sim.DeleteAircraft", callsign)
+			}
+
+		default:
+			err = ErrInvalidCommandSyntax
+			return
+		}
+	}
+	return
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+type SimFactory struct{}
+
+var activeSims map[int]*Sim
+var controllerTokenToSim map[string]*Sim
+
+type NewSimResult struct {
+	World    *World
+	Token    string
+	SimIndex int
+}
+
+func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error {
+	lg.Printf("New %+v", *config)
+
+	if activeSims == nil {
+		activeSims = make(map[int]*Sim)
+	}
+	if controllerTokenToSim == nil {
+		controllerTokenToSim = make(map[string]*Sim)
+	}
+
+	sim := NewSim(*config)
+	simIndex := len(activeSims)
+	activeSims[simIndex] = sim
+
+	sim.prespawn()
+
+	world, token, err := sim.SignOn(config.Callsign)
+	if err != nil {
+		return err
+	}
+	controllerTokenToSim[token] = sim
+
+	go func() {
+		for {
+			sim.Update()
+			time.Sleep(10 * time.Millisecond)
+		}
+	}()
+
+	*result = NewSimResult{
+		World:    world,
+		Token:    token,
+		SimIndex: simIndex,
+	}
+
+	return nil
+}
+
+type SimDispatcher struct{}
+
+func (*SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error {
+	if sim, ok := controllerTokenToSim[token]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.GetWorldUpdate(token, update)
+	}
+}
+
+func (*SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[r.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.SetSimRate(r, nil)
+	}
+}
+
+func (*SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.SetScratchpad(a, nil)
+	}
+}
+
+func (*SimDispatcher) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.InitiateTrack(a, nil)
+	}
+}
+
+func (*SimDispatcher) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.DropTrack(a, nil)
+	}
+}
+
+func (*SimDispatcher) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[h.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.HandoffTrack(h, nil)
+	}
+}
+
+func (*SimDispatcher) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[h.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.HandoffControl(h, nil)
+	}
+}
+
+func (*SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.AcceptHandoff(a, nil)
+	}
+}
+
+func (*SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.CancelHandoff(a, nil)
+	}
+}
+
+func (*SimDispatcher) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[alt.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.AssignAltitude(alt, nil)
+	}
+}
+
+func (*SimDispatcher) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[alt.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.SetTemporaryAltitude(alt, nil)
+	}
+}
+
+func (*SimDispatcher) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[hdg.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.AssignHeading(hdg, nil)
+	}
+}
+
+func (*SimDispatcher) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[sa.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.AssignSpeed(sa, nil)
+	}
+}
+
+func (*SimDispatcher) DirectFix(f *FixSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.DirectFix(f, nil)
+	}
+}
+
+func (*SimDispatcher) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.DepartFixHeading(f, nil)
+	}
+}
+
+func (*SimDispatcher) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.CrossFixAt(f, nil)
+	}
+}
+
+func (*SimDispatcher) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.ExpectApproach(a, nil)
+	}
+}
+
+func (*SimDispatcher) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[c.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.ClearedApproach(c, nil)
+	}
+}
+
+func (*SimDispatcher) GoAround(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.GoAround(a, nil)
+	}
+}
+
+func (*SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.DeleteAircraft(a, nil)
+	}
+}
+
+func RunSimServer() {
+	rpc.Register(&SimFactory{})
+	rpc.RegisterName("Sim", &SimDispatcher{})
+
+	rpc.HandleHTTP()
+	l, err := net.Listen("tcp", ":6502")
+	if err != nil {
+		lg.Errorf("tcp listen: %v", err)
+	} else {
+		lg.Printf("Listening on %+v", l)
+		/*go*/ http.Serve(l, nil)
+	}
+
+}
+
+func DialSimServer() (*rpc.Client, error) {
+	return rpc.DialHTTP("tcp", "localhost:6502")
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 type Sim struct {
 	ScenarioGroup string
@@ -358,7 +995,6 @@ type Sim struct {
 type ServerController struct {
 	Callsign string
 	events   *EventsSubscription
-	// *net.Conn?
 }
 
 func NewSim(ssc NewSimConfiguration) *Sim {
@@ -489,16 +1125,15 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 	return w
 }
 
-func (s *Sim) SignOn(callsign string) (*World, error) {
+func (s *Sim) SignOn(callsign string) (*World, string, error) {
 	for _, ctrl := range s.controllers {
 		if ctrl.Callsign == callsign {
-			return nil, ErrControllerAlreadySignedIn
+			return nil, "", ErrControllerAlreadySignedIn
 		}
 	}
 
 	w := NewWorld()
 	w.Assign(s.World)
-	w.sim = s
 	w.Callsign = callsign
 
 	MagneticVariation = w.MagneticVariation
@@ -507,16 +1142,16 @@ func (s *Sim) SignOn(callsign string) (*World, error) {
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	w.token = base64.StdEncoding.EncodeToString(buf[:])
-	s.controllers[w.token] = &ServerController{
+	token := base64.StdEncoding.EncodeToString(buf[:])
+	s.controllers[token] = &ServerController{
 		Callsign: callsign,
 		events:   s.eventStream.Subscribe(),
 	}
 
-	return w, nil
+	return w, token, nil
 }
 
 func (s *Sim) SignOff(token string, _ *struct{}) error {
@@ -529,10 +1164,14 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 	return nil
 }
 
-func (s *Sim) TogglePause(_, _ *struct{}) error {
-	s.Paused = !s.Paused
-	s.lastUpdateTime = time.Now() // ignore time passage...
-	return nil
+func (s *Sim) TogglePause(token string, _ *struct{}) error {
+	if _, ok := s.controllers[token]; !ok {
+		return ErrInvalidControllerToken
+	} else {
+		s.Paused = !s.Paused
+		s.lastUpdateTime = time.Now() // ignore time passage...
+		return nil
+	}
 }
 
 func (s *Sim) PostEvent(e Event) {
@@ -549,11 +1188,11 @@ type SimWorldUpdate struct {
 	Events         []Event
 }
 
-func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
+func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	if ctrl, ok := s.controllers[token]; !ok {
-		return nil, ErrInvalidControllerToken
+		return ErrInvalidControllerToken
 	} else {
-		return &SimWorldUpdate{
+		*update = SimWorldUpdate{
 			Aircraft:       s.World.Aircraft,
 			Controllers:    s.World.Controllers,
 			Time:           s.CurrentTime,
@@ -561,7 +1200,8 @@ func (s *Sim) GetWorldUpdate(token string) (*SimWorldUpdate, error) {
 			SimRate:        s.SimRate,
 			SimDescription: s.Scenario,
 			Events:         ctrl.events.Get(),
-		}, nil
+		}
+		return nil
 	}
 }
 
@@ -628,23 +1268,12 @@ func (s *Sim) Activate() error {
 		s.World.Controllers[callsign].Callsign = callsign
 	}
 
-	sg := scenarioGroups[s.ScenarioGroup]
-
-	if sg == nil {
+	if sg := scenarioGroups[s.ScenarioGroup]; sg == nil {
 		e.ErrorString(s.ScenarioGroup + ": unknown scenario group")
 	} else {
-		if len(sg.STARSMaps) != len(s.World.STARSMaps) {
-			e.ErrorString("Different number of STARSMaps in ScenarioGroup and Saved sim")
-		} else {
-			for i := range s.World.STARSMaps {
-				if sg.STARSMaps[i].Name != s.World.STARSMaps[i].Name {
-					e.ErrorString("Name mismatch in STARSMaps: ScenarioGroup \"" + sg.STARSMaps[i].Name +
-						"\", Sim \"" + s.World.STARSMaps[i].Name + "\"")
-				} else {
-					// Copy the command buffer so we can draw the thing...
-					s.World.STARSMaps[i].cb = sg.STARSMaps[i].cb
-				}
-			}
+		err := sg.InitializeWorld(s.World)
+		if err != nil {
+			e.Error(err)
 		}
 	}
 
@@ -1212,13 +1841,18 @@ func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Ai
 ///////////////////////////////////////////////////////////////////////////
 // Commands from the user
 
-func (s *Sim) GetSimRate() float32 {
-	return s.SimRate
+type SimRateSpecifier struct {
+	ControllerToken string
+	Rate            float32
 }
 
-func (s *Sim) SetSimRate(r *float32, _ *struct{}) error {
-	s.SimRate = *r
-	return nil
+func (s *Sim) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
+	if _, ok := s.controllers[r.ControllerToken]; !ok {
+		return ErrInvalidControllerToken
+	} else {
+		s.SimRate = r.Rate
+		return nil
+	}
 }
 
 type AircraftSpecifier struct {
@@ -1546,255 +2180,4 @@ func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", nil
 		})
-}
-
-type AircraftCommandsSpecifier struct {
-	ControllerToken string
-	Callsign        string
-	Commands        string
-}
-
-type AircraftCommandsResult struct {
-	RemainingCommands []string
-}
-
-func (s *Sim) RunAircraftCommands(cmd *AircraftCommandsSpecifier, result *AircraftCommandsResult) error {
-	commands := strings.Fields(cmd.Commands)
-	for i, command := range commands {
-		result.RemainingCommands = commands[i:]
-
-		switch command[0] {
-		case 'D':
-			if components := strings.Split(command, "/"); len(components) > 1 {
-				// Depart <fix> at heading <hdg>
-				fix := components[0][1:]
-
-				if components[1][0] != 'H' {
-					return ErrInvalidCommandSyntax
-				}
-				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
-					return err
-				} else if err := s.DepartFixHeading(&FixSpecifier{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Fix:             fix,
-					Heading:         hdg,
-				}, nil); err != nil {
-					return err
-				}
-			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-				// Looks like an altitude.
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return err
-				} else if err := s.AssignAltitude(&AltitudeAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Altitude:        100 * alt,
-				}, nil); err != nil {
-					return err
-				}
-			} else if _, ok := s.World.Locate(string(command[1:])); ok {
-				if err := s.DirectFix(&FixSpecifier{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Fix:             command[1:],
-				}, nil); err != nil {
-					return err
-				}
-			} else {
-				return ErrInvalidCommandSyntax
-			}
-
-		case 'H':
-			if len(command) == 1 {
-				if err := s.AssignHeading(&HeadingAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Present:         true,
-				}, nil); err != nil {
-					return err
-				}
-			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
-				return err
-			} else if err := s.AssignHeading(&HeadingAssignment{
-				ControllerToken: cmd.ControllerToken,
-				Callsign:        cmd.Callsign,
-				Heading:         hdg,
-				Turn:            TurnClosest,
-			}, nil); err != nil {
-				return err
-			}
-
-		case 'L':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
-				// turn left x degrees
-				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return err
-				} else if err := s.AssignHeading(&HeadingAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					LeftDegrees:     deg,
-				}, nil); err != nil {
-					return err
-				}
-			} else {
-				// turn left heading...
-				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return err
-				} else if err := s.AssignHeading(&HeadingAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Heading:         hdg,
-					Turn:            TurnLeft,
-				}, nil); err != nil {
-					return err
-				}
-			}
-
-		case 'R':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
-				// turn right x degrees
-				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return err
-				} else if err := s.AssignHeading(&HeadingAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					RightDegrees:    deg,
-				}, nil); err != nil {
-					return err
-				}
-			} else {
-				// turn right heading...
-				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return err
-				} else if err := s.AssignHeading(&HeadingAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Heading:         hdg,
-					Turn:            TurnRight,
-				}, nil); err != nil {
-					return err
-				}
-			}
-
-		case 'C', 'A':
-			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
-				// Cleared straight in approach.
-				if err := s.ClearedApproach(&ApproachClearance{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Approach:        command[3:],
-					StraightIn:      true,
-				}, nil); err != nil {
-					return err
-				}
-			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
-				if components := strings.Split(command, "/"); len(components) > 1 {
-					// Cross fix [at altitude] [at speed]
-					fix := components[0][1:]
-					alt, speed := 0, 0
-
-					for _, cmd := range components[1:] {
-						if len(cmd) == 0 {
-							return ErrInvalidCommandSyntax
-						}
-
-						var err error
-						if cmd[0] == 'A' {
-							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
-								return err
-							}
-						} else if cmd[0] == 'S' {
-							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-								return err
-							}
-						} else {
-							return ErrInvalidCommandSyntax
-						}
-					}
-
-					if err := s.CrossFixAt(&FixSpecifier{
-						ControllerToken: cmd.ControllerToken,
-						Callsign:        cmd.Callsign,
-						Fix:             fix,
-						Altitude:        100 * alt,
-						Speed:           speed,
-					}, nil); err != nil {
-						return err
-					}
-				} else if err := s.ClearedApproach(&ApproachClearance{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Approach:        command[1:],
-				}, nil); err != nil {
-					return err
-				}
-			} else {
-				// Otherwise look for an altitude
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return err
-				} else if err := s.AssignAltitude(&AltitudeAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Altitude:        100 * alt,
-				}, nil); err != nil {
-					return err
-				}
-			}
-
-		case 'S':
-			if len(command) == 1 {
-				// Cancel speed restrictions
-				if err := s.AssignSpeed(&SpeedAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Speed:           0,
-				}, nil); err != nil {
-					return err
-				}
-			} else {
-				if kts, err := strconv.Atoi(command[1:]); err != nil {
-					return err
-				} else if err := s.AssignSpeed(&SpeedAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Speed:           kts,
-				}, nil); err != nil {
-					return err
-				}
-			}
-
-		case 'E':
-			// Expect approach.
-			if len(command) > 1 {
-				if err := s.ExpectApproach(&ApproachAssignment{
-					ControllerToken: cmd.ControllerToken,
-					Callsign:        cmd.Callsign,
-					Approach:        command[1:],
-				}, nil); err != nil {
-					return err
-				}
-			} else {
-				return ErrInvalidCommandSyntax
-			}
-
-		case '?':
-			if ac, ok := s.World.Aircraft[cmd.Callsign]; !ok {
-				return ErrNoAircraftForCallsign
-			} else if err := s.World.PrintInfo(ac); err != nil {
-				return err
-			}
-
-		case 'X':
-			if ac, ok := s.World.Aircraft[cmd.Callsign]; !ok {
-				return ErrNoAircraftForCallsign
-			} else if err := s.World.DeleteAircraft(ac); err != nil {
-				return err
-			}
-
-		default:
-			return ErrInvalidCommandSyntax
-		}
-	}
-	return nil
 }

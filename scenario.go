@@ -6,6 +6,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -459,6 +460,23 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 	}
 }
 
+func (sg *ScenarioGroup) InitializeWorld(w *World) error {
+	if len(sg.STARSMaps) != len(w.STARSMaps) {
+		return fmt.Errorf("Different number of STARSMaps in ScenarioGroup and Saved sim")
+	} else {
+		for i := range w.STARSMaps {
+			if sg.STARSMaps[i].Name != w.STARSMaps[i].Name {
+				return fmt.Errorf("Name mismatch in STARSMaps: ScenarioGroup \"%s\", Sim \"%s\"",
+					sg.STARSMaps[i].Name, w.STARSMaps[i].Name)
+			} else {
+				// Copy the command buffer so we can draw the thing...
+				w.STARSMaps[i].cb = sg.STARSMaps[i].cb
+			}
+		}
+		return nil
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Airspace
 
@@ -609,7 +627,7 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 	}
 
 	// Load the video map specified on the command line, if any.
-	for _, filename := range []string{*videoMapFilename, globalConfig.DevVideoMapFile} {
+	loadVid := func(filename string) {
 		if filename != "" {
 			fs := func() fs.FS {
 				if filepath.IsAbs(filename) {
@@ -623,6 +641,10 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 				videoMapCommandBuffers[filename] = vm
 			}
 		}
+	}
+	loadVid(*videoMapFilename)
+	if globalConfig != nil {
+		loadVid(globalConfig.DevVideoMapFile)
 	}
 
 	// Now load the scenarios.
@@ -649,7 +671,7 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 	}
 
 	// Load the scenario specified on command line, if any.
-	for _, filename := range []string{*scenarioFilename, globalConfig.DevScenarioFile} {
+	loadScenario := func(filename string) {
 		if filename != "" {
 			fs := func() fs.FS {
 				if filepath.IsAbs(filename) {
@@ -673,6 +695,10 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 				scenarioGroups[s.Name] = s
 			}
 		}
+	}
+	loadScenario(*scenarioFilename)
+	if globalConfig != nil {
+		loadScenario(globalConfig.DevScenarioFile)
 	}
 
 	// Final tidying before we return the loaded scenarios.

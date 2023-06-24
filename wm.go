@@ -362,7 +362,7 @@ func (d *DisplayNode) getString(indent string) string {
 
 // wmInit handles general initialization for the window (pane) management
 // system.
-func wmInit(w *World, eventStream *EventStream) {
+func wmInit(eventStream *EventStream) {
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
 	wm.events = eventStream.Subscribe()
