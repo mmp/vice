@@ -332,8 +332,8 @@ func (c *NewSimConfiguration) Start() error {
 	}
 
 	result.World.simProxy = &SimProxy{
-		Token:  result.Token,
-		Client: client,
+		ControllerToken: result.ControllerToken,
+		Client:          client,
 	}
 
 	globalConfig.LastScenarioGroup = c.ScenarioGroup
@@ -355,33 +355,33 @@ func (c *NewSimConfiguration) Start() error {
 ///////////////////////////////////////////////////////////////////////////
 
 type SimProxy struct {
-	Token  string
-	Client *rpc.Client
+	ControllerToken string
+	Client          *rpc.Client
 }
 
 func (s *SimProxy) TogglePause() *rpc.Call {
-	return s.Client.Go("Sim.TogglePause", s.Token, nil, nil)
+	return s.Client.Go("Sim.TogglePause", s.ControllerToken, nil, nil)
 }
 
 func (s *SimProxy) SignOff(_, _ *struct{}) error {
-	return s.Client.Call("Sim.SignOff", s.Token, nil)
+	return s.Client.Call("Sim.SignOff", s.ControllerToken, nil)
 }
 
 func (s *SimProxy) GetWorldUpdate(wu *SimWorldUpdate) *rpc.Call {
-	return s.Client.Go("Sim.GetWorldUpdate", s.Token, wu, nil)
+	return s.Client.Go("Sim.GetWorldUpdate", s.ControllerToken, wu, nil)
 }
 
 func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
 	return s.Client.Go("Sim.SetSimRate",
 		&SimRateSpecifier{
-			ControllerToken: s.Token,
+			ControllerToken: s.ControllerToken,
 			Rate:            r,
 		}, nil, nil)
 }
 
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &AircraftPropertiesSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Scratchpad:      scratchpad,
 	}, nil, nil)
@@ -389,21 +389,21 @@ func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 
 func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.InitiateTrack", &AircraftSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) DropTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.DropTrack", &AircraftSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 	return s.Client.Go("Sim.HandoffTrack", &HandoffSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Controller:      controller,
 	}, nil, nil)
@@ -411,28 +411,28 @@ func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 
 func (s *SimProxy) HandoffControl(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.HandoffControl", &HandoffSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptHandoff", &AircraftSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.CancelHandoff", &AircraftSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) AssignAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetAltitude", &AltitudeAssignment{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Altitude:        alt,
 	}, nil, nil)
@@ -440,7 +440,7 @@ func (s *SimProxy) AssignAltitude(callsign string, alt int) *rpc.Call {
 
 func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetTemporaryAltitude", &AltitudeAssignment{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Altitude:        alt,
 	}, nil, nil)
@@ -448,14 +448,14 @@ func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 
 func (s *SimProxy) GoAround(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.GoAround", &AircraftSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.DeleteAircraft", &AircraftSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
@@ -468,7 +468,7 @@ type AircraftCommandsSpecifier struct {
 
 func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, w *World) *rpc.Call {
 	return s.Client.Go("sim.RunAircraftCommands", &AircraftCommandsSpecifier{
-		ControllerToken: s.Token,
+		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Commands:        cmds,
 	}, nil, nil)
@@ -482,9 +482,9 @@ var activeSims map[int]*Sim
 var controllerTokenToSim map[string]*Sim
 
 type NewSimResult struct {
-	World    *World
-	Token    string
-	SimIndex int
+	World           *World
+	ControllerToken string
+	SimIndex        int
 }
 
 func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error {
@@ -517,9 +517,9 @@ func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error 
 	}()
 
 	*result = NewSimResult{
-		World:    world,
-		Token:    token,
-		SimIndex: simIndex,
+		World:           world,
+		ControllerToken: token,
+		SimIndex:        simIndex,
 	}
 
 	return nil
