@@ -883,9 +883,23 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		case KeyEnter:
 			status := sp.executeSTARSCommand(sp.previewAreaInput, ctx)
 			if status.err != nil {
-				// TODO: rewrite errors returned by the ATCServer to e.g.,
-				// ILL TRK, etc.
-				sp.previewAreaOutput = status.err.Error()
+				switch status.err {
+				case ErrSTARSIllegalParam, ErrSTARSIllegalTrack, ErrSTARSCommandFormat:
+					sp.previewAreaOutput = status.err.Error()
+
+				case ErrNoAircraftForCallsign, ErrNoFlightPlan,
+					ErrOtherControllerHasTrack, ErrNotBeingHandedOffToMe:
+					sp.previewAreaOutput = ErrSTARSIllegalTrack.Error()
+
+				case ErrInvalidAltitude, ErrInvalidHeading, ErrInvalidApproach,
+					ErrInvalidCommandSyntax, ErrArrivalAirportUnknown, ErrUnknownApproach,
+					ErrClearedForUnexpectedApproach, ErrNoController, ErrUnknownAircraftType,
+					ErrUnableCommand, ErrFixNotInRoute:
+					sp.previewAreaOutput = ErrSTARSIllegalParam.Error()
+
+				default:
+					sp.previewAreaOutput = ErrSTARSCommandFormat.Error()
+				}
 			} else {
 				if status.clear {
 					sp.resetInputState()
