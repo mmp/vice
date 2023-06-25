@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"image/png"
 	"net/http"
+	"net/rpc"
 	"os"
 	"path"
 	"runtime"
@@ -144,6 +145,11 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 	}
 }
 
+func uiCloseModalDialog(d *ModalDialogBox) {
+	ui.activeModalDialogs = FilterSlice(ui.activeModalDialogs,
+		func(m *ModalDialogBox) bool { return m != d })
+}
+
 // If |b| is true, all following imgui elements will be disabled (and drawn
 // accordingly).
 func uiStartDisable(b bool) {
@@ -166,7 +172,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
+func drawUI(p Platform, r Renderer, w *World, client *rpc.Client, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -204,7 +210,7 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 		}
 
 		if imgui.Button(FontAwesomeIconRedo) {
-			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{client: client}), false)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -532,6 +538,7 @@ func (m *ModalDialogBox) Draw() {
 type ConnectModalClient struct {
 	err    string
 	config NewSimConfiguration
+	client *rpc.Client
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
@@ -548,7 +555,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	ok := ModalDialogButton{
 		text: "Ok",
 		action: func() bool {
-			if err := c.config.Start(); err == nil {
+			if err := c.config.Start(c.client); err == nil {
 				c.err = ""
 				return true
 			} else {
@@ -573,6 +580,34 @@ func (c *ConnectModalClient) Draw() int {
 	} else {
 		return -1
 	}
+}
+
+type WaitingForScenariosModalClient struct {
+	start time.Time
+}
+
+func (w *WaitingForScenariosModalClient) Title() string {
+	return "Downloading scenarios from server..."
+}
+
+func (w *WaitingForScenariosModalClient) Opening() {
+	w.start = time.Now()
+}
+
+func (w *WaitingForScenariosModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Cancel", action: func() bool {
+		os.Exit(0)
+		return true
+	}})
+	return b
+}
+
+func (w *WaitingForScenariosModalClient) Draw() int {
+	s := int(time.Since(w.start).Seconds())
+	t := "It shouldn't be long ." + fmt.Sprintf("%*c", s%3, '.')
+	imgui.Text(t)
+	return -1
 }
 
 type YesOrNoModalClient struct {

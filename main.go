@@ -38,6 +38,7 @@ var (
 	MagneticVariation             float32
 	NmPerLatitude, NmPerLongitude float32
 	newWorldChan                  chan *World
+	scenarioGroupsChan            chan map[string]*ScenarioGroup
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -134,17 +135,17 @@ func main() {
 			lg.Errorf("Unable to initialize audio: %v", err)
 		}
 
+		client, err := DialSimServer()
+		if err != nil {
+			ShowFatalErrorDialog(renderer, platform,
+				"Unable to connect to the vice server: %v", err)
+		}
+
 		LoadOrMakeDefaultConfig()
 
 		database = InitializeStaticDatabase()
 
-		// After the database is loaded
-		var e ErrorLogger
-		scenarioGroups = LoadScenarioGroups(&e)
-		if e.HaveErrors() {
-			e.PrintErrors()
-			os.Exit(1)
-		}
+		scenarioGroupsChan = FetchScenarioGroups(client)
 
 		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
@@ -171,8 +172,11 @@ func main() {
 		globalConfig.Activate(world, eventStream)
 
 		if world == nil {
-			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{client: client}), false)
 		}
+
+		scenariosModal := NewModalDialogBox(&WaitingForScenariosModalClient{})
+		uiShowModalDialog(scenariosModal, true)
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
@@ -180,6 +184,16 @@ func main() {
 		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
+			if scenarioGroups == nil {
+				select {
+				case scenarioGroups = <-scenarioGroupsChan:
+					lg.Printf("got scenario groups!")
+					uiCloseModalDialog(scenariosModal)
+
+				default:
+				}
+			}
+
 			select {
 			case nw := <-newWorldChan:
 				if world != nil {
@@ -236,7 +250,7 @@ func main() {
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(platform, renderer, world, &stats)
+			drawUI(platform, renderer, world, client, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync

@@ -319,15 +319,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	return false
 }
 
-func (c *NewSimConfiguration) Start() error {
-	client, err := DialSimServer()
-	if err != nil {
-		return err
-	}
-
+func (c *NewSimConfiguration) Start(client *rpc.Client) error {
 	var result NewSimResult
-	err = client.Call("SimFactory.New", c, &result)
-	if err != nil {
+	if err := client.Call("SimFactory.New", c, &result); err != nil {
 		return err
 	}
 
@@ -341,6 +335,26 @@ func (c *NewSimConfiguration) Start() error {
 	newWorldChan <- result.World
 
 	return nil
+}
+
+func FetchScenarioGroups(client *rpc.Client) chan map[string]*ScenarioGroup {
+	var result map[string]*ScenarioGroup
+	ch := make(chan map[string]*ScenarioGroup)
+	call := client.Go("SimFactory.GetScenarioGroups", 0, &result, nil)
+
+	go func() {
+		call = <-call.Done
+		if call.Error != nil {
+			lg.Errorf("%v", call.Error)
+		}
+		if sg, ok := call.Reply.(*map[string]*ScenarioGroup); !ok {
+			lg.Errorf("Didn't get expected type; got %T", sg)
+		} else {
+			ch <- *sg
+		}
+	}()
+
+	return ch
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -510,6 +524,36 @@ func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error 
 		ControllerToken: token,
 	}
 
+	return nil
+}
+
+func (*SimFactory) GetScenarioGroups(_ int, result *map[string]*ScenarioGroup) error {
+	*result = make(map[string]*ScenarioGroup)
+
+	for name, sg := range scenarioGroups {
+		reduced := &ScenarioGroup{}
+		*reduced = *sg
+		(*result)[name] = reduced
+
+		reduced.Airspace = Airspace{}
+
+		reduced.STARSMaps = DuplicateSlice(sg.STARSMaps)
+		for i := range reduced.STARSMaps {
+			reduced.STARSMaps[i].CommandBuffer = CommandBuffer{}
+		}
+
+		reduced.Scenarios = make(map[string]*Scenario)
+		for name, sc := range sg.Scenarios {
+			rsc := &Scenario{}
+			*rsc = *sc
+			reduced.Scenarios[name] = rsc
+
+			rsc.ApproachAirspace = nil
+			rsc.DepartureAirspace = nil
+		}
+	}
+
+	lg.Printf("Encoded scenario groups size: %d", encodedGobSize(result))
 	return nil
 }
 
