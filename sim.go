@@ -469,28 +469,26 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, w *World) *
 
 type SimFactory struct{}
 
-var activeSims map[int]*Sim
+var activeSims map[*Sim]interface{}
 var controllerTokenToSim map[string]*Sim
 
 type NewSimResult struct {
 	World           *World
 	ControllerToken string
-	SimIndex        int
 }
 
 func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error {
 	lg.Printf("New %+v", *config)
 
 	if activeSims == nil {
-		activeSims = make(map[int]*Sim)
+		activeSims = make(map[*Sim]interface{})
 	}
 	if controllerTokenToSim == nil {
 		controllerTokenToSim = make(map[string]*Sim)
 	}
 
 	sim := NewSim(*config)
-	simIndex := len(activeSims)
-	activeSims[simIndex] = sim
+	activeSims[sim] = nil
 
 	sim.prespawn()
 
@@ -510,7 +508,6 @@ func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error 
 	*result = NewSimResult{
 		World:           world,
 		ControllerToken: token,
-		SimIndex:        simIndex,
 	}
 
 	return nil
