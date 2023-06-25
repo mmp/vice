@@ -478,8 +478,8 @@ type AircraftCommandsSpecifier struct {
 	Commands        string
 }
 
-func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, w *World) *rpc.Call {
-	return s.Client.Go("sim.RunAircraftCommands", &AircraftCommandsSpecifier{
+func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
+	return s.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsSpecifier{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Commands:        cmds,
