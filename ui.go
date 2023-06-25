@@ -545,7 +545,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.err = ""
-	c.config = MakeSimConfiguration()
+	c.config = MakeNewSimConfiguration()
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {

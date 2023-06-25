@@ -48,98 +48,104 @@ var (
 	ErrInvalidControllerToken    = errors.New("invalid controller token")
 )
 
-type NewSimConfiguration struct {
+type SimConfiguration struct {
+	ScenarioConfigs   map[string]*SimScenarioConfiguration
+	ControlPositions  map[string]*Controller
+	DefaultScenario   string
+	DefaultController string
+}
+
+type SimScenarioConfiguration struct {
 	DepartureChallenge float32
 	GoAroundRate       float32
-	Scenario           string
-	ScenarioGroup      string
 	Callsign           string
+	Wind               Wind
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
+
+	DepartureRunways []ScenarioGroupDepartureRunway
+	ArrivalRunways   []ScenarioGroupArrivalRunway
 }
 
-func MakeSimConfiguration() NewSimConfiguration {
-	c := NewSimConfiguration{
-		DepartureChallenge: 0.25,
-		GoAroundRate:       0.10,
-	}
+type NewSimConfiguration struct {
+	Group        *SimConfiguration
+	GroupName    string
+	Scenario     *SimScenarioConfiguration
+	ScenarioName string
+}
 
-	// Use the last scenario, if available.
-	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
+func MakeNewSimConfiguration() NewSimConfiguration {
+	c := NewSimConfiguration{}
+
+	name := globalConfig.LastScenarioGroup
+	var ok bool
+	if c.Group, ok = simConfigurations[name]; !ok {
+		name = SortedMapKeys(simConfigurations)[0]
+		c.Group = simConfigurations[name]
+	}
+	c.GroupName = name
+
+	name = c.Group.DefaultScenario
+	if c.Scenario, ok = c.Group.ScenarioConfigs[name]; !ok {
+		// This should be caught in validation, but ...
+		name = SortedMapKeys(c.Group.ScenarioConfigs)[0]
+		c.Scenario = c.Group.ScenarioConfigs[name]
+	}
+	c.ScenarioName = name
 
 	return c
 }
 
 func (c *NewSimConfiguration) SetScenarioGroup(name string) {
-	sg, ok := scenarioGroups[name]
-	if !ok {
-		// Take the first one alphabetically if unavailable
-		name = SortedMapKeys(scenarioGroups)[0]
-		sg = scenarioGroups[name]
+	var ok bool
+	if c.Group, ok = simConfigurations[name]; !ok {
+		lg.Errorf("%s: scenario group not found!", name)
+		name = SortedMapKeys(simConfigurations)[0] // first one
+		c.Group = simConfigurations[name]
 	}
+	c.GroupName = name
 
-	c.ScenarioGroup = name
-	c.Callsign = sg.ControlPositions[sg.DefaultController].Callsign
-	c.SetScenario(sg.DefaultScenario)
+	c.SetScenario(c.Group.DefaultScenario)
 }
 
 func (c *NewSimConfiguration) SetScenario(name string) {
-	sg, ok := scenarioGroups[c.ScenarioGroup]
-	if !ok {
-		lg.Errorf("%s: unknown scenario group?", c.ScenarioGroup)
-		return
+	var ok bool
+	if c.Scenario, ok = c.Group.ScenarioConfigs[name]; !ok {
+		lg.Errorf("%s: scenario not found in group %s", name, c.GroupName)
+		name = SortedMapKeys(c.Group.ScenarioConfigs)[0]
+		c.Scenario = c.Group.ScenarioConfigs[name]
 	}
-	scenario, ok := sg.Scenarios[name]
-	if !ok {
-		lg.Errorf("%s: called SetScenario with an unknown scenario name???", name)
-		return
-	}
-	c.Scenario = name
-
-	c.ArrivalGroupRates = DuplicateMap(scenario.ArrivalGroupDefaultRates)
-
-	c.DepartureRates = make(map[string]map[string]map[string]int)
-	for _, rwy := range scenario.DepartureRunways {
-		if _, ok := c.DepartureRates[rwy.Airport]; !ok {
-			c.DepartureRates[rwy.Airport] = make(map[string]map[string]int)
-		}
-		if _, ok := c.DepartureRates[rwy.Airport][rwy.Runway]; !ok {
-			c.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]int)
-		}
-		c.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
-	}
+	c.ScenarioName = name
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
-	sg := scenarioGroups[c.ScenarioGroup]
-	scenario := sg.Scenarios[c.Scenario]
-	controller := sg.ControlPositions[c.Callsign]
+	// controller := sg.ControlPositions[c.Callsign]
 
-	if imgui.BeginComboV("Scenario Group", c.ScenarioGroup, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(scenarioGroups) {
-			if imgui.SelectableV(name, name == c.ScenarioGroup, 0, imgui.Vec2{}) {
+	if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
+		for _, name := range SortedMapKeys(simConfigurations) {
+			if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
 				c.SetScenarioGroup(name)
 			}
 		}
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginComboV("Control Position", controller.Callsign, imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("Control Position", c.Scenario.Callsign, imgui.ComboFlagsHeightLarge) {
 		positions := make(map[string]*Controller)
-		for _, sc := range sg.Scenarios {
-			positions[sc.Callsign] = sg.ControlPositions[sc.Callsign]
+		for _, sc := range c.Group.ScenarioConfigs {
+			positions[sc.Callsign] = c.Group.ControlPositions[c.Scenario.Callsign]
 		}
 
 		for _, controllerName := range SortedMapKeys(positions) {
-			if imgui.SelectableV(controllerName, controllerName == c.Callsign, 0, imgui.Vec2{}) {
-				c.Callsign = controllerName
+			if imgui.SelectableV(controllerName, controllerName == c.Scenario.Callsign, 0, imgui.Vec2{}) {
+				c.Scenario.Callsign = controllerName
 				// Set the current scenario to the first one alphabetically
 				// with the selected controller.
-				for _, scenarioName := range SortedMapKeys(sg.Scenarios) {
-					if sg.Scenarios[scenarioName].Callsign == controllerName {
+				for _, scenarioName := range SortedMapKeys(c.Group.ScenarioConfigs) {
+					if c.Group.ScenarioConfigs[scenarioName].Callsign == controllerName {
 						c.SetScenario(scenarioName)
 						break
 					}
@@ -149,12 +155,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginComboV("Config", scenario.Name(), imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(sg.Scenarios) {
-			if sg.Scenarios[name].Callsign != c.Callsign {
+	if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
+		for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
+			if c.Group.ScenarioConfigs[name].Callsign != c.Scenario.Callsign {
 				continue
 			}
-			if imgui.SelectableV(name, name == scenario.Name(), 0, imgui.Vec2{}) {
+			if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
 				c.SetScenario(name)
 			}
 		}
@@ -165,14 +171,14 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 
-		if len(c.DepartureRates) > 0 {
+		if len(c.Scenario.DepartureRates) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Departing:")
 			imgui.TableNextColumn()
 
 			var runways []string
-			for airport, runwayRates := range c.DepartureRates {
+			for airport, runwayRates := range c.Scenario.DepartureRates {
 				for runway, categoryRates := range runwayRates {
 					for _, rate := range categoryRates {
 						if rate > 0 {
@@ -186,14 +192,14 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.Text(strings.Join(runways, ", "))
 		}
 
-		if len(scenario.ArrivalRunways) > 0 {
+		if len(c.Scenario.ArrivalRunways) > 0 {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Landing:")
 			imgui.TableNextColumn()
 
 			var a []string
-			for _, rwy := range scenario.ArrivalRunways {
+			for _, rwy := range c.Scenario.ArrivalRunways {
 				a = append(a, rwy.Airport+"/"+rwy.Runway)
 			}
 			sort.Strings(a)
@@ -204,20 +210,21 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.TableNextColumn()
 		imgui.Text("Wind:")
 		imgui.TableNextColumn()
-		if scenario.Wind.Gust > scenario.Wind.Speed {
-			imgui.Text(fmt.Sprintf("%d at %d gust %d", scenario.Wind.Direction, scenario.Wind.Speed, scenario.Wind.Gust))
+		wind := c.Scenario.Wind
+		if wind.Gust > wind.Speed {
+			imgui.Text(fmt.Sprintf("%d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 		} else {
-			imgui.Text(fmt.Sprintf("%d at %d", scenario.Wind.Direction, scenario.Wind.Speed))
+			imgui.Text(fmt.Sprintf("%d at %d", wind.Direction, wind.Speed))
 		}
 		imgui.EndTable()
 	}
 
-	if len(scenario.DepartureRunways) > 0 {
+	if len(c.Scenario.DepartureRunways) > 0 {
 		imgui.Separator()
 		imgui.Text("Departures")
 
 		sumRates := 0
-		for _, runwayRates := range c.DepartureRates {
+		for _, runwayRates := range c.Scenario.DepartureRates {
 			for _, categoryRates := range runwayRates {
 				for _, rate := range categoryRates {
 					sumRates += rate
@@ -226,7 +233,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 		imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
 
-		imgui.SliderFloatV("Sequencing challenge", &c.DepartureChallenge, 0, 1, "%.02f", 0)
+		imgui.SliderFloatV("Sequencing challenge", &c.Scenario.DepartureChallenge, 0, 1, "%.02f", 0)
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
 		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
@@ -236,11 +243,11 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableSetupColumn("ADR")
 			imgui.TableHeadersRow()
 
-			for _, airport := range SortedMapKeys(c.DepartureRates) {
+			for _, airport := range SortedMapKeys(c.Scenario.DepartureRates) {
 				imgui.PushID(airport)
-				for _, runway := range SortedMapKeys(c.DepartureRates[airport]) {
+				for _, runway := range SortedMapKeys(c.Scenario.DepartureRates[airport]) {
 					imgui.PushID(runway)
-					for _, category := range SortedMapKeys(c.DepartureRates[airport][runway]) {
+					for _, category := range SortedMapKeys(c.Scenario.DepartureRates[airport][runway]) {
 						imgui.PushID(category)
 
 						imgui.TableNextRow()
@@ -256,9 +263,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 						}
 						imgui.TableNextColumn()
 
-						r := int32(c.DepartureRates[airport][runway][category])
+						r := int32(c.Scenario.DepartureRates[airport][runway][category])
 						imgui.InputIntV("##adr", &r, 0, 120, 0)
-						c.DepartureRates[airport][runway][category] = int(r)
+						c.Scenario.DepartureRates[airport][runway][category] = int(r)
 
 						imgui.PopID()
 					}
@@ -270,12 +277,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 	}
 
-	if len(c.ArrivalGroupRates) > 0 {
+	if len(c.Scenario.ArrivalGroupRates) > 0 {
 		// Figure out how many unique airports we've got for AAR columns in the table
 		// and also sum up the overall arrival rate
 		allAirports := make(map[string]interface{})
 		sumRates := 0
-		for _, agr := range c.ArrivalGroupRates {
+		for _, agr := range c.Scenario.ArrivalGroupRates {
 			for ap, rate := range agr {
 				allAirports[ap] = nil
 				sumRates += rate
@@ -286,7 +293,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Separator()
 		imgui.Text("Arrivals")
 		imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
-		imgui.SliderFloatV("Go around probability", &c.GoAroundRate, 0, 1, "%.02f", 0)
+		imgui.SliderFloatV("Go around probability", &c.Scenario.GoAroundRate, 0, 1, "%.02f", 0)
 
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 		if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
@@ -297,17 +304,17 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			}
 			imgui.TableHeadersRow()
 
-			for _, group := range SortedMapKeys(c.ArrivalGroupRates) {
+			for _, group := range SortedMapKeys(c.Scenario.ArrivalGroupRates) {
 				imgui.PushID(group)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(group)
 				for _, ap := range sortedAirports {
 					imgui.TableNextColumn()
-					if rate, ok := c.ArrivalGroupRates[group][ap]; ok {
+					if rate, ok := c.Scenario.ArrivalGroupRates[group][ap]; ok {
 						r := int32(rate)
 						imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0)
-						c.ArrivalGroupRates[group][ap] = int(r)
+						c.Scenario.ArrivalGroupRates[group][ap] = int(r)
 					}
 				}
 				imgui.PopID()
@@ -330,27 +337,27 @@ func (c *NewSimConfiguration) Start(client *rpc.Client) error {
 		Client:          client,
 	}
 
-	globalConfig.LastScenarioGroup = c.ScenarioGroup
+	globalConfig.LastScenarioGroup = c.GroupName
 
 	newWorldChan <- result.World
 
 	return nil
 }
 
-func FetchScenarioGroups(client *rpc.Client) chan map[string]*ScenarioGroup {
-	var result map[string]*ScenarioGroup
-	ch := make(chan map[string]*ScenarioGroup)
-	call := client.Go("SimFactory.GetScenarioGroups", 0, &result, nil)
+func FetchSimConfigurations(client *rpc.Client) chan map[string]*SimConfiguration {
+	var result map[string]*SimConfiguration
+	call := client.Go("SimFactory.GetSimConfigurations", 0, &result, nil)
 
+	ch := make(chan map[string]*SimConfiguration)
 	go func() {
 		call = <-call.Done
 		if call.Error != nil {
 			lg.Errorf("%v", call.Error)
 		}
-		if sg, ok := call.Reply.(*map[string]*ScenarioGroup); !ok {
-			lg.Errorf("Didn't get expected type; got %T", sg)
+		if nsc, ok := call.Reply.(*map[string]*SimConfiguration); !ok {
+			lg.Errorf("Didn't get expected type; got %T", nsc)
 		} else {
-			ch <- *sg
+			ch <- *nsc
 		}
 	}()
 
@@ -506,7 +513,7 @@ func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error 
 
 	sim.prespawn()
 
-	world, token, err := sim.SignOn(config.Callsign)
+	world, token, err := sim.SignOn(config.Scenario.Callsign)
 	if err != nil {
 		return err
 	}
@@ -527,33 +534,9 @@ func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error 
 	return nil
 }
 
-func (*SimFactory) GetScenarioGroups(_ int, result *map[string]*ScenarioGroup) error {
-	*result = make(map[string]*ScenarioGroup)
-
-	for name, sg := range scenarioGroups {
-		reduced := &ScenarioGroup{}
-		*reduced = *sg
-		(*result)[name] = reduced
-
-		reduced.Airspace = Airspace{}
-
-		reduced.STARSMaps = DuplicateSlice(sg.STARSMaps)
-		for i := range reduced.STARSMaps {
-			reduced.STARSMaps[i].CommandBuffer = CommandBuffer{}
-		}
-
-		reduced.Scenarios = make(map[string]*Scenario)
-		for name, sc := range sg.Scenarios {
-			rsc := &Scenario{}
-			*rsc = *sc
-			reduced.Scenarios[name] = rsc
-
-			rsc.ApproachAirspace = nil
-			rsc.DepartureAirspace = nil
-		}
-	}
-
-	lg.Printf("Encoded scenario groups size: %d", encodedGobSize(result))
+func (*SimFactory) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
+	*result = simConfigurations
+	lg.Printf("Encoded scenario groups size: %d", encodedGobSize(*result))
 	return nil
 }
 
@@ -1058,22 +1041,22 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	s := &Sim{
-		ScenarioGroup: ssc.ScenarioGroup,
-		Scenario:      ssc.Scenario,
+		ScenarioGroup: ssc.GroupName,
+		Scenario:      ssc.ScenarioName,
 
 		controllers: make(map[string]*ServerController),
 
 		eventStream: NewEventStream(),
 
-		DepartureRates:    DuplicateMap(ssc.DepartureRates),
-		ArrivalGroupRates: DuplicateMap(ssc.ArrivalGroupRates),
+		DepartureRates:    DuplicateMap(ssc.Scenario.DepartureRates),
+		ArrivalGroupRates: DuplicateMap(ssc.Scenario.ArrivalGroupRates),
 
 		CurrentTime:    time.Now(),
 		lastUpdateTime: time.Now(),
 
 		SimRate:            1,
-		DepartureChallenge: ssc.DepartureChallenge,
-		GoAroundRate:       ssc.GoAroundRate,
+		DepartureChallenge: ssc.Scenario.DepartureChallenge,
+		GoAroundRate:       ssc.Scenario.GoAroundRate,
 		Handoffs:           make(map[string]time.Time),
 	}
 
@@ -1085,14 +1068,14 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 }
 
 func newWorld(ssc NewSimConfiguration, s *Sim) *World {
-	sg, ok := scenarioGroups[ssc.ScenarioGroup]
+	sg, ok := scenarioGroups[ssc.GroupName]
 	if !ok {
-		lg.Errorf("%s: unknown scenario group", ssc.ScenarioGroup)
+		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
 		return nil
 	}
-	sc, ok := sg.Scenarios[ssc.Scenario]
+	sc, ok := sg.Scenarios[ssc.ScenarioName]
 	if !ok {
-		lg.Errorf("%s: unknown scenario", ssc.Scenario)
+		lg.Errorf("%s: unknown scenario", ssc.ScenarioName)
 		return nil
 	}
 

@@ -430,6 +430,48 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		s.PostDeserialize(sg, e)
 		e.Pop()
 	}
+
+	initializeSimConfigurations(sg)
+}
+
+func initializeSimConfigurations(sg *ScenarioGroup) {
+	if simConfigurations == nil {
+		simConfigurations = make(map[string]*SimConfiguration)
+	}
+
+	config := &SimConfiguration{
+		ScenarioConfigs:   make(map[string]*SimScenarioConfiguration),
+		ControlPositions:  sg.ControlPositions,
+		DefaultScenario:   sg.DefaultScenario,
+		DefaultController: sg.DefaultController,
+	}
+
+	for name, scenario := range sg.Scenarios {
+		sc := &SimScenarioConfiguration{
+			DepartureChallenge: 0.25,
+			GoAroundRate:       0.05,
+			Callsign:           scenario.Callsign,
+			Wind:               scenario.Wind,
+			ArrivalGroupRates:  scenario.ArrivalGroupDefaultRates,
+			DepartureRunways:   scenario.DepartureRunways,
+			ArrivalRunways:     scenario.ArrivalRunways,
+		}
+
+		sc.DepartureRates = make(map[string]map[string]map[string]int)
+		for _, rwy := range scenario.DepartureRunways {
+			if _, ok := sc.DepartureRates[rwy.Airport]; !ok {
+				sc.DepartureRates[rwy.Airport] = make(map[string]map[string]int)
+			}
+			if _, ok := sc.DepartureRates[rwy.Airport][rwy.Runway]; !ok {
+				sc.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]int)
+			}
+			sc.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
+		}
+
+		config.ScenarioConfigs[name] = sc
+	}
+
+	simConfigurations[sg.Name] = config
 }
 
 func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *ErrorLogger) {

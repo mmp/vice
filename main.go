@@ -30,15 +30,21 @@ var (
 	// Note that in some cases they are passed down from main (e.g.,
 	// platform); this is plumbing in preparation for reducing the
 	// number of these in the future.
-	globalConfig                  *GlobalConfig
-	platform                      Platform
-	database                      *StaticDatabase
-	lg                            *Logger
-	scenarioGroups                map[string]*ScenarioGroup
+	globalConfig      *GlobalConfig
+	platform          Platform
+	database          *StaticDatabase
+	lg                *Logger
+	simConfigurations map[string]*SimConfiguration
+
 	MagneticVariation             float32
 	NmPerLatitude, NmPerLongitude float32
-	newWorldChan                  chan *World
-	scenarioGroupsChan            chan map[string]*ScenarioGroup
+
+	// server only
+	scenarioGroups map[string]*ScenarioGroup
+
+	// client only
+	newWorldChan          chan *World
+	simConfigurationsChan chan map[string]*SimConfiguration
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -145,7 +151,7 @@ func main() {
 
 		database = InitializeStaticDatabase()
 
-		scenarioGroupsChan = FetchScenarioGroups(client)
+		simConfigurationsChan = FetchSimConfigurations(client)
 
 		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
@@ -171,10 +177,6 @@ func main() {
 
 		globalConfig.Activate(world, eventStream)
 
-		if world == nil {
-			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{client: client}), false)
-		}
-
 		scenariosModal := NewModalDialogBox(&WaitingForScenariosModalClient{})
 		uiShowModalDialog(scenariosModal, true)
 
@@ -186,9 +188,11 @@ func main() {
 		for {
 			if scenarioGroups == nil {
 				select {
-				case scenarioGroups = <-scenarioGroupsChan:
-					lg.Printf("got scenario groups!")
+				case simConfigurations = <-simConfigurationsChan:
+					lg.Printf("got sim configurations!")
 					uiCloseModalDialog(scenariosModal)
+
+					uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{client: client}), false)
 
 				default:
 				}
