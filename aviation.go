@@ -901,9 +901,7 @@ func parseAirports() map[string]FAAAirport {
 		f := strings.Split(line, ":")
 		if len(f) != 16 {
 			lg.Errorf("Expected 16 fields, got %d: %s", len(f), line)
-		}
-
-		if elevation, err := strconv.ParseFloat(f[13], 64); err != nil {
+		} else if elevation, err := strconv.ParseFloat(f[13], 64); err != nil {
 			lg.Errorf("%s: error parsing elevation: %s", f[13], err)
 		} else {
 			elevation *= 3.28084 // meters to feet

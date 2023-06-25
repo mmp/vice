@@ -380,19 +380,7 @@ func (w *World) GetUpdates(eventStream *EventStream) {
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
 			OnSuccess: func() {
-				w.Aircraft = wu.Aircraft
-				w.Controllers = wu.Controllers
-				w.UpdateSimTime = wu.Time
-				w.SimIsPaused = wu.SimIsPaused
-				w.SimRate = wu.SimRate
-				w.SimDescription = wu.SimDescription
-
-				// Important: do this after updating aircraft, controllers, etc.,
-				// so that they reflect any changes the events are flagging.
-				for _, e := range wu.Events {
-					eventStream.Post(e)
-				}
-
+				wu.UpdateWorld(w, eventStream)
 				w.lastUpdate = time.Now()
 			},
 			OnErr: func(err error) {

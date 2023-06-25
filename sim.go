@@ -1213,6 +1213,21 @@ type SimWorldUpdate struct {
 	Events         []Event
 }
 
+func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
+	w.Aircraft = wu.Aircraft
+	w.Controllers = wu.Controllers
+	w.UpdateSimTime = wu.Time
+	w.SimIsPaused = wu.SimIsPaused
+	w.SimRate = wu.SimRate
+	w.SimDescription = wu.SimDescription
+
+	// Important: do this after updating aircraft, controllers, etc.,
+	// so that they reflect any changes the events are flagging.
+	for _, e := range wu.Events {
+		eventStream.Post(e)
+	}
+}
+
 func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
