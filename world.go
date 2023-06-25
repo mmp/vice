@@ -357,7 +357,7 @@ func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
 }
 
-func (w *World) GetUpdates(eventStream *EventStream) {
+func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if w.simProxy == nil {
 		return
 	}
@@ -383,9 +383,7 @@ func (w *World) GetUpdates(eventStream *EventStream) {
 				wu.UpdateWorld(w, eventStream)
 				w.lastUpdate = time.Now()
 			},
-			OnErr: func(err error) {
-				lg.Errorf("Error getting world update: %v", err)
-			},
+			OnErr: onErr,
 		}
 	}
 }

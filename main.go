@@ -240,7 +240,11 @@ func main() {
 			// network; a synopsis of changes to aircraft is then passed along
 			// to the window panes.
 			if world != nil {
-				world.GetUpdates(eventStream)
+				world.GetUpdates(eventStream,
+					func(err error) {
+						// TODO: at least handle network errors...
+						lg.Errorf("Error getting world update: %v", err)
+					})
 			}
 
 			platform.NewFrame()
