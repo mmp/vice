@@ -1103,7 +1103,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 
 	// Extract just the active controllers
 	for callsign, ctrl := range sg.ControlPositions {
-		if Find(sc.Controllers, callsign) != -1 {
+		if callsign == sc.Callsign || Find(sc.Controllers, callsign) != -1 {
 			w.Controllers[callsign] = ctrl
 		}
 	}
@@ -1922,7 +1922,9 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 	} else {
 		ctrl := s.World.GetController(sc.Callsign)
 		if ctrl == nil {
-			panic("wtf")
+			lg.Errorf("couldn't get controller \"%s\". world controllers: %s",
+				sc.Callsign, spew.Sdump(s.World.Controllers))
+			panic("yolo")
 		}
 
 		if err := check(ctrl, ac); err != nil {
