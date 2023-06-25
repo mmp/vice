@@ -61,7 +61,7 @@ type World struct {
 	SimIsPaused                   bool
 	SimRate                       float32
 	SimDescription                string
-	UpdateSimTime                 time.Time
+	SimTime                       time.Time
 	MagneticVariation             float32
 	NmPerLatitude, NmPerLongitude float32
 	Airports                      map[string]*Airport
@@ -149,7 +149,7 @@ func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
 	base := time.UnixMicro(0)
-	sec := w.UpdateSimTime.Sub(base).Seconds()
+	sec := w.SimTime.Sub(base).Seconds()
 	windSpeed := float32(w.Wind.Speed) +
 		float32(w.Wind.Gust)*float32(1+math.Cos(sec/4))/2
 
@@ -428,7 +428,7 @@ func (w *World) CurrentTime() time.Time {
 	if w.SimRate != 0 {
 		d = time.Duration(float64(d) * float64(w.SimRate))
 	}
-	return w.UpdateSimTime.Add(d)
+	return w.SimTime.Add(d)
 }
 
 func (w *World) GetWindowTitle() string {

@@ -1224,7 +1224,7 @@ type SimWorldUpdate struct {
 func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.Aircraft = wu.Aircraft
 	w.Controllers = wu.Controllers
-	w.UpdateSimTime = wu.Time
+	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
 	w.SimDescription = wu.SimDescription
