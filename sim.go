@@ -395,14 +395,14 @@ func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
 }
 
 func (s *SimProxy) DropTrack(callsign string) *rpc.Call {
-	return s.Client.Go("sim.DropTrack", &AircraftSpecifier{
+	return s.Client.Go("Sim.DropTrack", &AircraftSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
-	return s.Client.Go("sim.HandoffTrack", &HandoffSpecifier{
+	return s.Client.Go("Sim.HandoffTrack", &HandoffSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 		Controller:      controller,
@@ -410,28 +410,28 @@ func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 }
 
 func (s *SimProxy) HandoffControl(callsign string) *rpc.Call {
-	return s.Client.Go("sim.HandoffControl", &HandoffSpecifier{
+	return s.Client.Go("Sim.HandoffControl", &HandoffSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("sim.AcceptHandoff", &AircraftSpecifier{
+	return s.Client.Go("Sim.AcceptHandoff", &AircraftSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("sim.CancelHandoff", &AircraftSpecifier{
+	return s.Client.Go("Sim.CancelHandoff", &AircraftSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) AssignAltitude(callsign string, alt int) *rpc.Call {
-	return s.Client.Go("sim.SetAltitude", &AltitudeAssignment{
+	return s.Client.Go("Sim.SetAltitude", &AltitudeAssignment{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 		Altitude:        alt,
@@ -439,7 +439,7 @@ func (s *SimProxy) AssignAltitude(callsign string, alt int) *rpc.Call {
 }
 
 func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
-	return s.Client.Go("sim.SetTemporaryAltitude", &AltitudeAssignment{
+	return s.Client.Go("Sim.SetTemporaryAltitude", &AltitudeAssignment{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 		Altitude:        alt,
@@ -447,14 +447,14 @@ func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 }
 
 func (s *SimProxy) GoAround(callsign string) *rpc.Call {
-	return s.Client.Go("sim.GoAround", &AircraftSpecifier{
+	return s.Client.Go("Sim.GoAround", &AircraftSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
-	return s.Client.Go("sim.DeleteAircraft", &AircraftSpecifier{
+	return s.Client.Go("Sim.DeleteAircraft", &AircraftSpecifier{
 		ControllerToken: s.Token,
 		Callsign:        callsign,
 	}, nil, nil)
