@@ -1944,6 +1944,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.leaderLineDirection = dir
 					status.clear = true
 					return
+				} else if cmd == "?" {
+					ctx.world.PrintInfo(ac)
 				}
 
 			case 2:

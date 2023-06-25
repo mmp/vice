@@ -946,13 +946,6 @@ func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *st
 				return wrapError(ErrInvalidCommandSyntax)
 			}
 
-		case '?':
-			if ac, ok := sim.World.Aircraft[cmds.Callsign]; !ok {
-				return wrapError(ErrNoAircraftForCallsign)
-			} else if err := sim.World.PrintInfo(ac); err != nil {
-				return wrapError(err)
-			}
-
 		case 'X':
 			if _, ok := sim.World.Aircraft[cmds.Callsign]; !ok {
 				return wrapError(ErrNoAircraftForCallsign)

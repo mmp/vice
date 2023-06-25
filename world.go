@@ -442,7 +442,7 @@ func (w *World) GetWindowTitle() string {
 	return w.Callsign + ": " + w.SimDescription
 }
 
-func (w *World) PrintInfo(ac *Aircraft) error {
+func (w *World) PrintInfo(ac *Aircraft) {
 	lg.Errorf("%s", spew.Sdump(ac))
 
 	s := fmt.Sprintf("%s: current alt %f, heading %f, IAS %.1f, GS %.1f",
@@ -451,7 +451,6 @@ func (w *World) PrintInfo(ac *Aircraft) error {
 		s += ", cleared approach"
 	}
 	lg.Errorf("%s", s)
-	return nil
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft) {
