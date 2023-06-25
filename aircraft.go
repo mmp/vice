@@ -22,6 +22,9 @@ type Aircraft struct {
 	TempAltitude   int
 	FlightPlan     *FlightPlan
 
+	MagneticVariation float32
+	NmPerLongitude    float32
+
 	Tracks [10]RadarTrack
 
 	// Who has the radar track
@@ -105,7 +108,7 @@ func (a *Aircraft) TrackGroundspeed() int {
 
 // Note: returned value includes the magnetic correction
 func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + MagneticVariation
+	return a.Tracks[0].Heading + a.MagneticVariation
 }
 
 // Perhaps confusingly, the vector returned by HeadingVector() is not
@@ -122,7 +125,7 @@ func (a *Aircraft) HeadingVector() Point2LL {
 		v = sub2ll(p0, p1)
 	}
 
-	nm := nmlength2ll(v)
+	nm := nmlength2ll(v, a.NmPerLongitude)
 	// v's length should be groundspeed / 60 nm.
 	return scale2ll(v, float32(a.TrackGroundspeed())/(60*nm))
 }
@@ -132,7 +135,7 @@ func (a *Aircraft) HaveHeading() bool {
 }
 
 func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, MagneticVariation)
+	return headingp2ll(a.TrackPosition(), p, a.NmPerLongitude, a.MagneticVariation)
 }
 
 func (a *Aircraft) LostTrack(now time.Time) bool {
@@ -481,8 +484,10 @@ func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
 	}
 
 	if wp[0].ProcedureTurn.Entry180NoPT {
-		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, MagneticVariation)
-		acFixHeading := headingp2ll(ac.Position, wp[0].Location, MagneticVariation)
+		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, ac.NmPerLongitude,
+			ac.MagneticVariation)
+		acFixHeading := headingp2ll(ac.Position, wp[0].Location, ac.NmPerLongitude,
+			ac.MagneticVariation)
 		lg.Errorf("%s: ac %.1f inbound %.1f diff %.1f", ac.Callsign,
 			acFixHeading, inboundHeading, headingDifference(acFixHeading, inboundHeading))
 
@@ -762,7 +767,7 @@ func (ac *Aircraft) updateHeading(wind WindModel) {
 func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	// Update position given current heading
 	prev := ac.Position
-	hdg := ac.Heading - MagneticVariation
+	hdg := ac.Heading - ac.MagneticVariation
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 
 	// Compute ground speed: TAS, modified for wind.
@@ -775,9 +780,9 @@ func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	}
 
 	// Finally update position and groundspeed.
-	newPos := add2f(ll2nm(ac.Position), scale2f(v, GS))
-	ac.Position = nm2ll(newPos)
-	ac.GS = distance2f(ll2nm(prev), newPos) * 3600
+	newPos := add2f(ll2nm(ac.Position, ac.NmPerLongitude), scale2f(v, GS))
+	ac.Position = nm2ll(newPos, ac.NmPerLongitude)
+	ac.GS = nmdistance2ll(prev, ac.Position) * 3600
 }
 
 func (ac *Aircraft) updateWaypoints(w *World, ep EventPoster) {
@@ -795,7 +800,8 @@ func (ac *Aircraft) updateWaypoints(w *World, ep EventPoster) {
 		hdg = float32(wp.Heading)
 	} else if len(ac.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
-		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, MagneticVariation)
+		hdg = headingp2ll(wp.Location, ac.Waypoints[1].Location, ac.NmPerLongitude,
+			ac.MagneticVariation)
 	} else {
 		// No more waypoints (likely about to land), so just
 		// plan to stay on the current heading.
@@ -884,8 +890,8 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 	}
 
 	// Get two points that give the line of the outbound course.
-	p0 := ll2nm(p)
-	hm := hdg - MagneticVariation
+	p0 := ll2nm(p, ac.NmPerLongitude)
+	hm := hdg - ac.MagneticVariation
 	p1 := add2f(p0, [2]float32{sin(radians(hm)), cos(radians(hm))})
 
 	// Make a ghost aircraft to use to simulate the turn. Checking this way
@@ -900,13 +906,13 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 		ac2.Nav.FutureCommands[cmd] = nil
 	}
 
-	initialDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
+	initialDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
 		ac2.Update(wind, nil, nil)
-		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
+		curDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 		if sign(initialDist) != sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
 			lg.Printf("%s: turning now to intercept outbound in %d seconds",
@@ -922,11 +928,11 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 // Given a point and a radial, returns true when the aircraft should
 // start turning to intercept the radial.
 func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMethod, wind WindModel) bool {
-	p0 = ll2nm(p0)
-	p1 := add2f(p0, [2]float32{sin(radians(hdg - MagneticVariation)),
-		cos(radians(hdg - MagneticVariation))})
+	p0 = ll2nm(p0, ac.NmPerLongitude)
+	p1 := add2f(p0, [2]float32{sin(radians(hdg - ac.MagneticVariation)),
+		cos(radians(hdg - ac.MagneticVariation))})
 
-	initialDist := SignedPointLineDistance(ll2nm(ac.Position), p0, p1)
+	initialDist := SignedPointLineDistance(ll2nm(ac.Position, ac.NmPerLongitude), p0, p1)
 	eta := abs(initialDist) / ac.GS * 3600 // in seconds
 	if eta < 2 {
 		// Just in case, start the turn
@@ -951,7 +957,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
 		ac2.Update(wind, nil, nil)
-		curDist := SignedPointLineDistance(ll2nm(ac2.Position), p0, p1)
+		curDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 		if sign(initialDist) != sign(curDist) && abs(curDist) < .25 && headingDifference(hdg, ac2.Heading) < 3.5 {
 			lg.Printf("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
 			//globalConfig.highlightedLocation = ac2.Position

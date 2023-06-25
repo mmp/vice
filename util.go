@@ -28,6 +28,8 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
+const nmPerLatitude = 60
+
 ///////////////////////////////////////////////////////////////////////////
 // decompression
 
@@ -292,24 +294,23 @@ func (co CardinalOrdinalDirection) ShortString() string {
 	}
 }
 
+func nmPerLongitude(p Point2LL) float32 {
+	return 45
+	// WANT: return 60 * sin(radians(p[1]))
+}
+
 // headingp2ll returns the heading from the point |from| to the point |to|
 // in degrees.  The provided points should be in latitude-longitude
 // coordinates and the provided magnetic correction is applied to the
 // result.
-func headingp2ll(from Point2LL, to Point2LL, magCorrection float32) float32 {
+func headingp2ll(from Point2LL, to Point2LL, nmPerLongitude float32, magCorrection float32) float32 {
 	v := Point2LL{to[0] - from[0], to[1] - from[1]}
-	return headingv2ll(v, magCorrection)
-}
 
-// headingv2ll returns the heading in degrees corresponding to the provided
-// vector expressed in latitude-longitude coordinates with the provided
-// magnetic correction applied.
-func headingv2ll(v Point2LL, magCorrection float32) float32 {
 	// Note that atan2() normally measures w.r.t. the +x axis and angles
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
-	angle := degrees(atan2(v[0]*NmPerLongitude, v[1]*NmPerLatitude))
+	angle := degrees(atan2(v[0]*nmPerLongitude, v[1]*nmPerLatitude))
 	return NormalizeHeading(angle + magCorrection)
 }
 
@@ -875,23 +876,23 @@ func nmdistance2ll(a Point2LL, b Point2LL) float32 {
 
 // nmlength2ll returns the length of a vector expressed in lat-long
 // coordinates.
-func nmlength2ll(a Point2LL) float32 {
-	x := a[0] * NmPerLongitude
-	y := a[1] * NmPerLatitude
+func nmlength2ll(a Point2LL, nmPerLongitude float32) float32 {
+	x := a[0] * nmPerLongitude
+	y := a[1] * nmPerLatitude
 	return sqrt(sqr(x) + sqr(y))
 }
 
 // nm2ll converts a point expressed in nautical mile coordinates to
 // lat-long.
-func nm2ll(p [2]float32) Point2LL {
-	return Point2LL{p[0] / NmPerLongitude, p[1] / NmPerLatitude}
+func nm2ll(p [2]float32, nmPerLongitude float32) Point2LL {
+	return Point2LL{p[0] / nmPerLongitude, p[1] / nmPerLatitude}
 }
 
 // ll2nm converts a point expressed in latitude-longitude coordinates to
 // nautical mile coordinates; this is useful for example for reasoning
 // about distances, since both axes then have the same measure.
-func ll2nm(p Point2LL) [2]float32 {
-	return [2]float32{p[0] * NmPerLongitude, p[1] * NmPerLatitude}
+func ll2nm(p Point2LL, nmPerLongitude float32) [2]float32 {
+	return [2]float32{p[0] * nmPerLongitude, p[1] * nmPerLatitude}
 }
 
 func normalize2ll(a Point2LL) Point2LL {

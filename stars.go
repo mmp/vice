@@ -772,7 +772,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	color := ps.Brightness.RangeRings.RGB()
 	cb.LineWidth(1)
-	DrawRangeRings(ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
+	DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 
@@ -1932,7 +1932,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					from := ac.TrackPosition()
 					sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 						p := transforms.LatLongFromWindowP(pw)
-						hdg := headingp2ll(from, p, MagneticVariation)
+						hdg := headingp2ll(from, p, ac.NmPerLongitude, ac.MagneticVariation)
 						dist := nmdistance2ll(from, p)
 
 						status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
@@ -3685,12 +3685,12 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(ac.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := ac.TrackHeading() - MagneticVariation
+		hdg := ac.Heading - ac.MagneticVariation
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
-		end := add2ll(ac.TrackPosition(), nm2ll(h))
+		end := add2f(ll2nm(ac.TrackPosition(), ac.NmPerLongitude), h)
 
-		ld.AddLine(ac.TrackPosition(), end, color)
+		ld.AddLine(ac.TrackPosition(), nm2ll(end, ac.NmPerLongitude), color)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -3729,7 +3729,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 		if state.jRingRadius > 0 {
 			const nsegs = 360
 			pc := transforms.WindowFromLatLongP(ac.TrackPosition())
-			radius := state.jRingRadius / transforms.PixelDistanceNM()
+			radius := state.jRingRadius / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 			ld.AddCircle(pc, radius, nsegs, color)
 
 			if ps.DisplayTPASize || state.displayTPASize {
@@ -3751,7 +3751,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			v := [4][2]float32{[2]float32{0, 0}, [2]float32{-.04, 1}, [2]float32{.04, 1}}
 
 			// Now we want to get that triangle in window coordinates...
-			length := state.coneLength / transforms.PixelDistanceNM()
+			length := state.coneLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 			rot := rotator2f(ac.TrackHeading())
 			for i := range v {
 				// First scale it to make it the desired length in nautical
@@ -3820,7 +3820,7 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 		}
 
 		// Format the range-bearing line text for the two positions.
-		hdg := headingp2ll(p0, p1, MagneticVariation)
+		hdg := headingp2ll(p0, p1, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
 		dist := nmdistance2ll(p0, p1)
 		text := fmt.Sprintf("%d/%.2f-%d", int(hdg+.5), dist, i+1)
 
@@ -3868,7 +3868,7 @@ func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformatio
 		}
 
 		pc := transforms.WindowFromLatLongP(ac.TrackPosition())
-		radius := sp.Facility.CA.LateralMinimum / transforms.PixelDistanceNM()
+		radius := sp.Facility.CA.LateralMinimum / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 		ld.AddCircle(pc, radius, 360 /* nsegs */)
 
 		if time.Since(sp.lastCASoundTime) > 2*time.Second {

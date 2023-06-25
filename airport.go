@@ -208,7 +208,7 @@ func (ap *Approach) Line() [2]Point2LL {
 	return [2]Point2LL{wp[n-2].Location, wp[n-1].Location}
 }
 
-func (ap *Approach) Heading() float32 {
+func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
 	p := ap.Line()
-	return headingp2ll(p[0], p[1], MagneticVariation)
+	return headingp2ll(p[0], p[1], nmPerLongitude, magneticVariation)
 }

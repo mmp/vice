@@ -36,9 +36,6 @@ var (
 	lg                *Logger
 	simConfigurations map[string]*SimConfiguration
 
-	MagneticVariation             float32
-	NmPerLatitude, NmPerLongitude float32
-
 	// server only
 	scenarioGroups map[string]*ScenarioGroup
 
@@ -203,10 +200,6 @@ func main() {
 					world.Disconnect()
 				}
 				world = nw
-
-				MagneticVariation = world.MagneticVariation
-				NmPerLatitude = world.NmPerLatitude
-				NmPerLongitude = world.NmPerLongitude
 
 				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 					if stars, ok := p.(*STARSPane); ok {

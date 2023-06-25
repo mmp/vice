@@ -1077,7 +1077,6 @@ func newWorld(ssc NewSimConfiguration, s *Sim) *World {
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
 	w.MagneticVariation = sg.MagneticVariation
-	w.NmPerLatitude = sg.NmPerLatitude
 	w.NmPerLongitude = sg.NmPerLongitude
 	w.Wind = sc.Wind
 	w.Airports = sg.Airports
@@ -1168,10 +1167,6 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 	w := NewWorld()
 	w.Assign(s.World)
 	w.Callsign = callsign
-
-	MagneticVariation = w.MagneticVariation
-	NmPerLatitude = w.NmPerLatitude
-	NmPerLongitude = w.NmPerLongitude
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -1428,7 +1423,7 @@ func (s *Sim) updateState() {
 				Position:    ac.Position,
 				Altitude:    int(ac.Altitude),
 				Groundspeed: int(ac.GS),
-				Heading:     ac.Heading - MagneticVariation,
+				Heading:     ac.Heading - ac.MagneticVariation,
 				Time:        now,
 			})
 		}
@@ -1522,6 +1517,9 @@ func (s *Sim) spawnAircraft() {
 		}
 		s.World.Aircraft[ac.Callsign] = ac
 
+		ac.MagneticVariation = s.World.MagneticVariation
+		ac.NmPerLongitude = s.World.NmPerLongitude
+
 		ac.RunWaypointCommands(ac.Waypoints[0], s.World, s)
 
 		ac.Position = ac.Waypoints[0].Location
@@ -1532,7 +1530,8 @@ func (s *Sim) spawnAircraft() {
 
 		ac.Heading = float32(ac.Waypoints[0].Heading)
 		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, MagneticVariation)
+			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, ac.NmPerLongitude,
+				ac.MagneticVariation)
 		}
 		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 	}
@@ -1553,6 +1552,7 @@ func (s *Sim) spawnAircraft() {
 			if ac := s.SpawnArrival(arrivalAirport, group); ac != nil {
 				ac.FlightPlan.ArrivalAirport = arrivalAirport
 				addAircraft(ac)
+				lg.Printf("%s: spawned arrival", ac.Callsign)
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1589,6 +1589,7 @@ func (s *Sim) spawnAircraft() {
 					lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
 				} else {
 					addAircraft(ac)
+					lg.Printf("%s: starting takeoff roll", ac.Callsign)
 					s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 				}
 			}

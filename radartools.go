@@ -316,9 +316,9 @@ func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway
 	return
 }
 
-func runwayIntersection(a *Runway, b *Runway) (Point2LL, bool) {
-	p1, p2 := ll2nm(a.Threshold), ll2nm(a.End)
-	p3, p4 := ll2nm(b.Threshold), ll2nm(b.End)
+func runwayIntersection(w *World, a *Runway, b *Runway) (Point2LL, bool) {
+	p1, p2 := ll2nm(a.Threshold, w.NmPerLongitude), ll2nm(a.End, w.NmPerLongitude)
+	p3, p4 := ll2nm(b.Threshold, w.NmPerLongitude), ll2nm(b.End, w.NmPerLongitude)
 	p, ok := LineLineIntersect(p1, p2, p3, p4)
 
 	centroid := mid2f(mid2f(p1, p2), mid2f(p3, p4))
@@ -328,7 +328,7 @@ func runwayIntersection(a *Runway, b *Runway) (Point2LL, bool) {
 		ok = false
 	}
 
-	return nm2ll(p), ok
+	return nm2ll(p, w.NmPerLongitude), ok
 }
 
 func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
@@ -437,7 +437,7 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 	}
 
 	if dst != nil {
-		p, ok := runwayIntersection(src, dst)
+		p, ok := runwayIntersection(ctx.world, src, dst)
 		if !ok {
 			lg.Printf("no intersection between runways?!")
 		}
@@ -450,8 +450,8 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 
 	// we have the runway heading, but we want to go the opposite direction
 	// and then +/- HeadingTolerance.
-	rota := src.Heading + 180 - c.GlideslopeLateralSpread - MagneticVariation
-	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - MagneticVariation
+	rota := src.Heading + 180 - c.GlideslopeLateralSpread - ctx.world.MagneticVariation
+	rotb := src.Heading + 180 + c.GlideslopeLateralSpread - ctx.world.MagneticVariation
 
 	// Lay out the vectors in nm space, not lat-long
 	sina, cosa := sin(radians(rota)), cos(radians(rota))
@@ -463,7 +463,7 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 	vb := scale2f([2]float32{sinb, cosb}, dist)
 
 	// Over to lat-long to draw the lines
-	vall, vbll := nm2ll(va), nm2ll(vb)
+	vall, vbll := nm2ll(va, ctx.world.NmPerLongitude), nm2ll(vb, ctx.world.NmPerLongitude)
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 	ld.AddLine(src.Threshold, add2ll(src.Threshold, vall), UICautionColor)
@@ -648,9 +648,9 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(center Point2LL, radius float32, color RGB, transforms ScopeTransformations,
+func DrawRangeRings(ctx *PaneContext, center Point2LL, radius float32, color RGB, transforms ScopeTransformations,
 	cb *CommandBuffer) {
-	pixelDistanceNm := transforms.PixelDistanceNM()
+	pixelDistanceNm := transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 	centerWindow := transforms.WindowFromLatLongP(center)
 
 	ld := GetColoredLinesDrawBuilder()
@@ -689,9 +689,9 @@ func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32,
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
 		// Account for magnetic variation and any user-specified rotation
-		Rotate(-radians(rotationAngle+MagneticVariation)).
+		Rotate(-radians(rotationAngle+ctx.world.MagneticVariation)).
 		// Scale based on range and nm per latitude / longitude
-		Scale(NmPerLongitude/rangenm, NmPerLatitude/rangenm).
+		Scale(ctx.world.NmPerLongitude/rangenm, nmPerLatitude/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 
@@ -754,9 +754,9 @@ func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) Point2LL {
 
 // PixelDistanceNM returns the space between adjacent pixels expressed in
 // nautical miles.
-func (st *ScopeTransformations) PixelDistanceNM() float32 {
+func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 {
 	ll := st.LatLongFromWindowV([2]float32{1, 0})
-	return nmlength2ll(ll)
+	return nmlength2ll(ll, nmPerLongitude)
 }
 
 ///////////////////////////////////////////////////////////////////////////

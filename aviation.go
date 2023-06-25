@@ -281,7 +281,7 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan) (altitude int) {
 		altitude = 37000
 	}
 
-	if headingp2ll(pDep, pArr, MagneticVariation) > 180 {
+	if headingp2ll(pDep, pArr, w.NmPerLongitude, w.MagneticVariation) > 180 {
 		altitude += 1000
 	}
 
@@ -665,16 +665,12 @@ func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primar
 		return
 	}
 
-	// Time to check the angles; we'll do all of this in nm coordinates,
-	// since that's how we check the range anyway.
-	p = ll2nm(p)
+	// Time to check the angles..
 	palt := float32(altitude) * FeetToNauticalMiles
-	pRadar = ll2nm(pRadar)
 	ralt := float32(rs.Elevation) * FeetToNauticalMiles
-
-	dxy := sub2f(p, pRadar)
 	dalt := palt - ralt
-	distance = sqrt(sqr(dxy[0]) + sqr(dxy[1]) + sqr(dalt))
+	// not quite true distance, but close enough
+	distance = nmdistance2ll(pRadar, p) + abs(palt-ralt)
 
 	// If we normalize the vector from the radar site to the aircraft, then
 	// the z (altitude) component gives the cosine of the angle with the

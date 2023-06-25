@@ -58,27 +58,27 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	SimIsPaused                   bool
-	SimRate                       float32
-	SimDescription                string
-	SimTime                       time.Time
-	MagneticVariation             float32
-	NmPerLatitude, NmPerLongitude float32
-	Airports                      map[string]*Airport
-	Fixes                         map[string]Point2LL
-	PrimaryAirport                string
-	RadarSites                    map[string]*RadarSite
-	Center                        Point2LL
-	Range                         float32
-	DefaultMap                    string
-	STARSMaps                     []STARSMap
-	Wind                          Wind
-	Callsign                      string
-	ApproachAirspace              []AirspaceVolume
-	DepartureAirspace             []AirspaceVolume
-	DepartureRunways              []ScenarioGroupDepartureRunway
-	Scratchpads                   map[string]string
-	ArrivalGroups                 map[string][]Arrival
+	SimIsPaused       bool
+	SimRate           float32
+	SimDescription    string
+	SimTime           time.Time
+	MagneticVariation float32
+	NmPerLongitude    float32
+	Airports          map[string]*Airport
+	Fixes             map[string]Point2LL
+	PrimaryAirport    string
+	RadarSites        map[string]*RadarSite
+	Center            Point2LL
+	Range             float32
+	DefaultMap        string
+	STARSMaps         []STARSMap
+	Wind              Wind
+	Callsign          string
+	ApproachAirspace  []AirspaceVolume
+	DepartureAirspace []AirspaceVolume
+	DepartureRunways  []ScenarioGroupDepartureRunway
+	Scratchpads       map[string]string
+	ArrivalGroups     map[string][]Arrival
 }
 
 type PendingCall struct {
@@ -126,7 +126,6 @@ func (w *World) Assign(other *World) {
 	w.ArrivalAirports = other.ArrivalAirports
 
 	w.MagneticVariation = other.MagneticVariation
-	w.NmPerLatitude = other.NmPerLatitude
 	w.NmPerLongitude = other.NmPerLongitude
 	w.Airports = other.Airports
 	w.Fixes = other.Fixes
@@ -385,6 +384,11 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 			IssueTime: time.Now(),
 			OnSuccess: func() {
 				wu.UpdateWorld(w, eventStream)
+				for _, ac := range w.Aircraft {
+					if math.IsNaN(float64(ac.Position[0])) || math.IsNaN(float64(ac.Position[1])) {
+						panic("wah")
+					}
+				}
 				w.lastUpdate = time.Now()
 			},
 			OnErr: onErr,
