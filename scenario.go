@@ -6,7 +6,6 @@ package main
 
 import (
 	"embed"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -460,23 +459,6 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 	}
 }
 
-func (sg *ScenarioGroup) InitializeWorld(w *World) error {
-	if len(sg.STARSMaps) != len(w.STARSMaps) {
-		return fmt.Errorf("Different number of STARSMaps in ScenarioGroup and Saved sim")
-	} else {
-		for i := range w.STARSMaps {
-			if sg.STARSMaps[i].Name != w.STARSMaps[i].Name {
-				return fmt.Errorf("Name mismatch in STARSMaps: ScenarioGroup \"%s\", Sim \"%s\"",
-					sg.STARSMaps[i].Name, w.STARSMaps[i].Name)
-			} else {
-				// Copy the command buffer so we can draw the thing...
-				w.STARSMaps[i].cb = sg.STARSMaps[i].cb
-			}
-		}
-		return nil
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Airspace
 
@@ -716,7 +698,7 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 					if cb, ok := bufferMap[sm.Name]; !ok {
 						e.ErrorString("video map \"%s\" not found", sm.Name)
 					} else {
-						sgroup.STARSMaps[i].cb = cb
+						sgroup.STARSMaps[i].CommandBuffer = cb
 					}
 				}
 			}

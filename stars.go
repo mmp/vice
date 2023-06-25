@@ -184,10 +184,10 @@ type STARSFacility struct {
 }
 
 type STARSMap struct {
-	Label string `json:"label"`
-	Group int    `json:"group"` // 0 -> A, 1 -> B
-	Name  string `json:"name"`
-	cb    CommandBuffer
+	Label         string        `json:"label"`
+	Group         int           `json:"group"` // 0 -> A, 1 -> B
+	Name          string        `json:"name"`
+	CommandBuffer CommandBuffer `json:"command_buffer"`
 }
 
 func MakeDefaultFacility() STARSFacility {
@@ -790,7 +790,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		cb.SetRGB(color)
 		transforms.LoadLatLongViewingMatrices(cb)
-		cb.Call(vmap.cb)
+		cb.Call(vmap.CommandBuffer)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)

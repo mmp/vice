@@ -338,15 +338,6 @@ func (c *NewSimConfiguration) Start() error {
 
 	globalConfig.LastScenarioGroup = c.ScenarioGroup
 
-	if sg := scenarioGroups[c.ScenarioGroup]; sg == nil {
-		return fmt.Errorf("%s: unknown scenario group", c.ScenarioGroup)
-	} else {
-		err := sg.InitializeWorld(result.World)
-		if err != nil {
-			return err
-		}
-	}
-
 	newWorldChan <- result.World
 
 	return nil
@@ -1306,15 +1297,6 @@ func (s *Sim) Activate() error {
 
 	for callsign := range s.World.Controllers {
 		s.World.Controllers[callsign].Callsign = callsign
-	}
-
-	if sg := scenarioGroups[s.ScenarioGroup]; sg == nil {
-		e.ErrorString(s.ScenarioGroup + ": unknown scenario group")
-	} else {
-		err := sg.InitializeWorld(s.World)
-		if err != nil {
-			e.Error(err)
-		}
 	}
 
 	for i, rwy := range s.World.DepartureRunways {

@@ -117,11 +117,11 @@ func (ogl2 *OpenGL2Renderer) DestroyTexture(texid uint32) {
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {
 	var stats RendererStats
 	stats.nBuffers++
-	stats.bufferBytes += 4 * len(cb.buf)
+	stats.bufferBytes += 4 * len(cb.Buf)
 
 	i := 0
 	ui32 := func() uint32 {
-		v := cb.buf[i]
+		v := cb.Buf[i]
 		i++
 		return v
 	}
@@ -132,19 +132,19 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		return math.Float32frombits(ui32())
 	}
 
-	for i < len(cb.buf) {
-		cmd := cb.buf[i]
+	for i < len(cb.Buf) {
+		cmd := cb.Buf[i]
 		i++
 		switch cmd {
 		case RendererLoadProjectionMatrix:
 			gl.MatrixMode(gl.PROJECTION)
-			ptr := (*float32)(unsafe.Pointer(&cb.buf[i]))
+			ptr := (*float32)(unsafe.Pointer(&cb.Buf[i]))
 			gl.LoadMatrixf(ptr)
 			i += 16
 
 		case RendererLoadModelViewMatrix:
 			gl.MatrixMode(gl.MODELVIEW)
-			ptr := (*float32)(unsafe.Pointer(&cb.buf[i]))
+			ptr := (*float32)(unsafe.Pointer(&cb.Buf[i]))
 			gl.LoadMatrixf(ptr)
 			i += 16
 
@@ -200,7 +200,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		case RendererVertexArray:
 			gl.EnableClientState(gl.VERTEX_ARRAY)
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			nc := i32()
 			stride := i32()
 			gl.VertexPointer(nc, gl.FLOAT, stride, unsafe.Pointer(ptr))
@@ -211,7 +211,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		case RendererRGB32Array:
 			gl.EnableClientState(gl.COLOR_ARRAY)
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			nc := i32()
 			stride := i32()
 			gl.ColorPointer(nc, gl.FLOAT, stride, unsafe.Pointer(ptr))
@@ -219,7 +219,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		case RendererRGB8Array:
 			gl.EnableClientState(gl.COLOR_ARRAY)
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			nc := i32()
 			stride := i32()
 			gl.ColorPointer(nc, gl.UNSIGNED_BYTE, stride, unsafe.Pointer(ptr))
@@ -230,7 +230,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		case RendererTexCoordArray:
 			gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			nc := i32()
 			stride := i32()
 			gl.TexCoordPointer(nc, gl.FLOAT, stride, unsafe.Pointer(ptr))
@@ -243,7 +243,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 
 		case RendererDrawPoints:
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			count := i32()
 
 			gl.Enable(gl.ALPHA_TEST)
@@ -266,7 +266,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 
 		case RendererDrawLines:
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			count := i32()
 			gl.DrawElements(gl.LINES, count, gl.UNSIGNED_INT, unsafe.Pointer(ptr))
 
@@ -275,7 +275,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 
 		case RendererDrawTriangles:
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			count := i32()
 			gl.DrawElements(gl.TRIANGLES, count, gl.UNSIGNED_INT, unsafe.Pointer(ptr))
 
@@ -284,7 +284,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 
 		case RendererDrawQuads:
 			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(offset)
+			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
 			count := i32()
 			gl.DrawElements(gl.QUADS, count, gl.UNSIGNED_INT, unsafe.Pointer(ptr))
 

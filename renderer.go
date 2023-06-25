@@ -123,7 +123,7 @@ const (
 // "pre-bake" rendering work into a form that can be efficiently processed
 // by a Renderer and possibly reused over multiple frames.
 type CommandBuffer struct {
-	buf    []uint32
+	Buf    []uint32
 	called []CommandBuffer
 }
 
@@ -143,24 +143,24 @@ func ReturnCommandBuffer(cb *CommandBuffer) {
 // Reset resets the command buffer's length to zero so that it can be
 // reused.
 func (cb *CommandBuffer) Reset() {
-	cb.buf = cb.buf[:0]
+	cb.Buf = cb.Buf[:0]
 	cb.called = cb.called[:0]
 }
 
 // growFor ensures that at least n more values can be added to the end of
 // the buffer without going past its capacity.
 func (cb *CommandBuffer) growFor(n int) {
-	if len(cb.buf)+n > cap(cb.buf) {
-		sz := 2 * cap(cb.buf)
+	if len(cb.Buf)+n > cap(cb.Buf) {
+		sz := 2 * cap(cb.Buf)
 		if sz < 1024 {
 			sz = 1024
 		}
-		if sz < len(cb.buf)+n {
-			sz = 2 * (len(cb.buf) + n)
+		if sz < len(cb.Buf)+n {
+			sz = 2 * (len(cb.Buf) + n)
 		}
-		b := make([]uint32, len(cb.buf), sz)
-		copy(b, cb.buf)
-		cb.buf = b
+		b := make([]uint32, len(cb.Buf), sz)
+		copy(b, cb.Buf)
+		cb.Buf = b
 	}
 }
 
@@ -168,7 +168,7 @@ func (cb *CommandBuffer) appendFloats(floats ...float32) {
 	for _, f := range floats {
 		// Convert each one to a uint32 since that's the type that is
 		// actually stored...
-		cb.buf = append(cb.buf, math.Float32bits(f))
+		cb.Buf = append(cb.Buf, math.Float32bits(f))
 	}
 }
 
@@ -177,7 +177,7 @@ func (cb *CommandBuffer) appendInts(ints ...int) {
 		if i != int(uint32(i)) {
 			lg.ErrorfUp1("%d: attempting to add non-32-bit value to CommandBuffer", i)
 		}
-		cb.buf = append(cb.buf, uint32(i))
+		cb.Buf = append(cb.Buf, uint32(i))
 	}
 }
 
@@ -193,7 +193,7 @@ func (cb *CommandBuffer) FloatSlice(start, length int) []float32 {
 	if start%4 != 0 {
 		lg.ErrorfUp1("%d: unaligned offset passed to FloatSlice", start)
 	}
-	ptr := (*float32)(unsafe.Pointer(&cb.buf[start/4]))
+	ptr := (*float32)(unsafe.Pointer(&cb.Buf[start/4]))
 	return unsafe.Slice(ptr, length)
 }
 
@@ -269,13 +269,13 @@ func (cb *CommandBuffer) DisableBlend() {
 // VertexArray to specify this array.
 func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
 	cb.appendInts(RendererFloatBuffer, 2*len(buf))
-	offset := 4 * len(cb.buf)
+	offset := 4 * len(cb.Buf)
 
 	n := 2 * len(buf)
 	cb.growFor(n)
-	start := len(cb.buf)
-	cb.buf = cb.buf[:start+n]
-	copy(cb.buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
+	start := len(cb.Buf)
+	cb.Buf = cb.Buf[:start+n]
+	copy(cb.Buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
 
 	return offset
 }
@@ -285,13 +285,13 @@ func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
 // stored.
 func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
 	cb.appendInts(RendererFloatBuffer, 3*len(buf))
-	offset := 4 * len(cb.buf)
+	offset := 4 * len(cb.Buf)
 
 	n := 3 * len(buf)
 	cb.growFor(n)
-	start := len(cb.buf)
-	copy(cb.buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
-	cb.buf = cb.buf[:start+n]
+	start := len(cb.Buf)
+	copy(cb.Buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
+	cb.Buf = cb.Buf[:start+n]
 
 	return offset
 }
@@ -300,13 +300,13 @@ func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
 // and returns the byte offset where the first value of the slice is stored.
 func (cb *CommandBuffer) IntBuffer(buf []int32) int {
 	cb.appendInts(RendererIntBuffer, len(buf))
-	offset := 4 * len(cb.buf)
+	offset := 4 * len(cb.Buf)
 
 	n := len(buf)
 	cb.growFor(n)
-	start := len(cb.buf)
-	copy(cb.buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
-	cb.buf = cb.buf[:start+n]
+	start := len(cb.Buf)
+	copy(cb.Buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
+	cb.Buf = cb.Buf[:start+n]
 
 	return offset
 }
@@ -317,14 +317,14 @@ func (cb *CommandBuffer) IntBuffer(buf []int32) int {
 func (cb *CommandBuffer) RawBuffer(buf []byte) int {
 	nints := (len(buf) + 3) / 4
 	cb.appendInts(RendererRawBuffer, nints)
-	offset := 4 * len(cb.buf)
+	offset := 4 * len(cb.Buf)
 
 	cb.growFor(nints)
-	start := len(cb.buf)
-	ptr := uintptr(unsafe.Pointer(&cb.buf[0])) + uintptr(4*start)
+	start := len(cb.Buf)
+	ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(4*start)
 	slice := unsafe.Slice((*byte)(unsafe.Pointer(ptr)), len(buf))
 	copy(slice, buf)
-	cb.buf = cb.buf[:start+nints]
+	cb.Buf = cb.Buf[:start+nints]
 
 	return offset
 }
@@ -444,7 +444,7 @@ func (cb *CommandBuffer) DrawQuads(offset, count int) {
 // of the command buffer is reached, processing of command in the current
 // command buffer continues.
 func (cb *CommandBuffer) Call(sub CommandBuffer) {
-	if sub.buf == nil {
+	if sub.Buf == nil {
 		// make it a no-op
 		return
 	}
