@@ -100,7 +100,11 @@ func (p *PendingCall) CheckFinished() bool {
 			p.OnSuccess()
 		}
 		return true
+
 	default:
+		if s := time.Since(p.IssueTime); s > time.Second {
+			lg.Errorf("%s: no response still... %s", p.Call.ServiceMethod, s)
+		}
 		return false
 	}
 }
@@ -389,16 +393,8 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 }
 
 func (w *World) checkPendingRPCs() {
-	cleared := 0
-	for i, call := range w.pendingCalls {
-		if call.CheckFinished() {
-			cleared = i
-		} else {
-			// Stop checking additional ones
-			break
-		}
-	}
-	w.pendingCalls = w.pendingCalls[cleared:] // FIXME: will the slice cap grow forever?
+	w.pendingCalls = FilterSlice(w.pendingCalls,
+		func(call *PendingCall) bool { return !call.CheckFinished() })
 }
 
 func (w *World) Connected() bool {
