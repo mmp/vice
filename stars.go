@@ -2056,16 +2056,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			if len(cmd) > 0 {
 				ctx.world.RunAircraftCommands(ac, cmd,
-					func(err error, remaining []string) {
-						if err == ErrInvalidAltitude || err == ErrInvalidHeading {
-							status.err = ErrSTARSIllegalParam
-						} else {
-							status.err = ErrSTARSCommandFormat
-						}
-
-						// Leave the unexecuted commands for editing, etc.
+					func(err error) {
+						status.err = err
 						globalConfig.Audio.PlaySound(AudioEventCommandError)
-						sp.previewAreaInput = strings.Join(remaining, " ")
+
+						if acerr, ok := err.(*AircraftCommandsError); ok {
+							// Leave the unexecuted commands for editing, etc.
+							sp.previewAreaInput = strings.Join(acerr.Remaining, " ")
+						}
 					})
 
 				status.clear = true

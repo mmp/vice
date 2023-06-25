@@ -460,261 +460,18 @@ func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-type AircraftCommandsCalls struct {
-	// If Err is set, this only has the calls up to the error...
-	Calls    []*rpc.Call
-	Commands []string
-	Err      error
+type AircraftCommandsSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Commands        string
 }
 
-func (s *SimProxy) RunAircraftCommands(callsign string, commands []string, w *World) (
-	calls []*rpc.Call, calledCommands []string, uncalledCommands []string, err error) {
-	call := func(cmd string, method string, input any) {
-		calls = append(calls, s.Client.Go(method, input, nil, nil))
-		calledCommands = append(calledCommands, cmd)
-	}
-
-	for i, command := range commands {
-		uncalledCommands = commands[i:]
-
-		switch command[0] {
-		case 'D':
-			if components := strings.Split(command, "/"); len(components) > 1 {
-				// Depart <fix> at heading <hdg>
-				fix := components[0][1:]
-
-				if components[1][0] != 'H' {
-					err = ErrInvalidCommandSyntax
-					return
-				}
-				var hdg int
-				if hdg, err = strconv.Atoi(components[1][1:]); err != nil {
-					return
-				} else {
-					call(command, "sim.DepartFixHeading", &FixSpecifier{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Fix:             fix,
-						Heading:         hdg,
-					})
-				}
-			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-				// Looks like an altitude.
-				var alt int
-				if alt, err = strconv.Atoi(command[1:]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignAltitude", &AltitudeAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Altitude:        100 * alt,
-					})
-				}
-			} else if _, ok := w.Locate(string(command[1:])); ok {
-				call(command, "sim.DirectFix", &FixSpecifier{
-					ControllerToken: s.Token,
-					Callsign:        callsign,
-					Fix:             command[1:],
-				})
-			} else {
-				err = ErrInvalidCommandSyntax
-				return
-			}
-
-		case 'H':
-			var hdg int
-			if len(command) == 1 {
-				call(command, "sim.AssignHeading", &HeadingAssignment{
-					ControllerToken: s.Token,
-					Callsign:        callsign,
-					Present:         true,
-				})
-			} else if hdg, err = strconv.Atoi(command[1:]); err != nil {
-				return
-			} else {
-				call(command, "sim.AssignHeading", &HeadingAssignment{
-					ControllerToken: s.Token,
-					Callsign:        callsign,
-					Heading:         hdg,
-					Turn:            TurnClosest,
-				})
-			}
-
-		case 'L':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
-				// turn left x degrees
-				var deg int
-				if deg, err = strconv.Atoi(command[1 : l-1]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignHeading", &HeadingAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						LeftDegrees:     deg,
-					})
-				}
-			} else {
-				// turn left heading...
-				var hdg int
-				if hdg, err = strconv.Atoi(command[1:]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignHeading", &HeadingAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Heading:         hdg,
-						Turn:            TurnLeft,
-					})
-				}
-			}
-
-		case 'R':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
-				// turn right x degrees
-				var deg int
-				if deg, err = strconv.Atoi(command[1 : l-1]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignHeading", &HeadingAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						RightDegrees:    deg,
-					})
-				}
-			} else {
-				// turn right heading...
-				var hdg int
-				if hdg, err = strconv.Atoi(command[1:]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignHeading", &HeadingAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Heading:         hdg,
-						Turn:            TurnRight,
-					})
-				}
-			}
-
-		case 'C', 'A':
-			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
-				// Cleared straight in approach.
-				call(command, "sim.ClearedApproach", &ApproachClearance{
-					ControllerToken: s.Token,
-					Callsign:        callsign,
-					Approach:        command[3:],
-					StraightIn:      true,
-				})
-			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
-				if components := strings.Split(command, "/"); len(components) > 1 {
-					// Cross fix [at altitude] [at speed]
-					fix := components[0][1:]
-					alt, speed := 0, 0
-
-					for _, cmd := range components[1:] {
-						if len(cmd) == 0 {
-							err = ErrInvalidCommandSyntax
-							return
-						}
-
-						if cmd[0] == 'A' {
-							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
-								return
-							}
-						} else if cmd[0] == 'S' {
-							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-								return
-							}
-						} else {
-							err = ErrInvalidCommandSyntax
-							return
-						}
-					}
-
-					call(command, "sim.CrossFixAt", &FixSpecifier{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Fix:             fix,
-						Altitude:        100 * alt,
-						Speed:           speed,
-					})
-				} else {
-					call(command, "sim.ClearedApproach", &ApproachClearance{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Approach:        command[1:],
-					})
-				}
-			} else {
-				// Otherwise look for an altitude
-				var alt int
-				if alt, err = strconv.Atoi(command[1:]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignAltitude", &AltitudeAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Altitude:        100 * alt,
-					})
-				}
-			}
-
-		case 'S':
-			if len(command) == 1 {
-				// Cancel speed restrictions
-				call(command, "sim.AssignSpeed", &SpeedAssignment{
-					ControllerToken: s.Token,
-					Callsign:        callsign,
-					Speed:           0,
-				})
-			} else {
-				var kts int
-				if kts, err = strconv.Atoi(command[1:]); err != nil {
-					return
-				} else {
-					call(command, "sim.AssignSpeed", &SpeedAssignment{
-						ControllerToken: s.Token,
-						Callsign:        callsign,
-						Speed:           kts,
-					})
-				}
-			}
-
-		case 'E':
-			// Expect approach.
-			if len(command) > 1 {
-				call(command, "sim.ExpectApproach", &ApproachAssignment{
-					ControllerToken: s.Token,
-					Callsign:        callsign,
-					Approach:        command[1:],
-				})
-			} else {
-				err = ErrInvalidCommandSyntax
-				return
-			}
-
-		case '?':
-			if ac, ok := w.Aircraft[callsign]; !ok {
-				err = ErrNoAircraftForCallsign
-				return
-			} else if err = w.PrintInfo(ac); err != nil {
-				return
-			}
-
-		case 'X':
-			if _, ok := w.Aircraft[callsign]; !ok {
-				err = ErrNoAircraftForCallsign
-				return
-			} else {
-				call(command, "sim.DeleteAircraft", callsign)
-			}
-
-		default:
-			err = ErrInvalidCommandSyntax
-			return
-		}
-	}
-	return
+func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, w *World) *rpc.Call {
+	return s.Client.Go("sim.RunAircraftCommands", &AircraftCommandsSpecifier{
+		ControllerToken: s.Token,
+		Callsign:        callsign,
+		Commands:        cmds,
+	}, nil, nil)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -928,6 +685,274 @@ func (*SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 	} else {
 		return sim.DeleteAircraft(a, nil)
 	}
+}
+
+type AircraftCommandsError struct {
+	error
+	Remaining []string
+}
+
+func (e AircraftCommandsError) Error() string {
+	s := e.error.Error()
+	if len(e.Remaining) > 0 {
+		s += " remaining: " + strings.Join(e.Remaining, " ")
+	}
+	return s
+}
+
+func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *struct{}) error {
+	sim, ok := controllerTokenToSim[cmds.ControllerToken]
+	if !ok {
+		return errors.New("No Sim running for this controller")
+	}
+
+	commands := strings.Fields(cmds.Commands)
+
+	for i, command := range commands {
+		wrapError := func(e error) error {
+			return &AircraftCommandsError{
+				error:     e,
+				Remaining: commands[i:],
+			}
+		}
+
+		switch command[0] {
+		case 'D':
+			if components := strings.Split(command, "/"); len(components) > 1 {
+				// Depart <fix> at heading <hdg>
+				fix := components[0][1:]
+
+				if components[1][0] != 'H' {
+					return wrapError(ErrInvalidCommandSyntax)
+				}
+				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
+					return wrapError(err)
+				} else if err := sim.DepartFixHeading(&FixSpecifier{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Fix:             fix,
+					Heading:         hdg,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
+				// Looks like an altitude.
+				if alt, err := strconv.Atoi(command[1:]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignAltitude(&AltitudeAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Altitude:        100 * alt,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else if _, ok := sim.World.Locate(string(command[1:])); ok {
+				if err := sim.DirectFix(&FixSpecifier{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Fix:             command[1:],
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else {
+				return wrapError(ErrInvalidCommandSyntax)
+			}
+
+		case 'H':
+			if len(command) == 1 {
+				if err := sim.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Present:         true,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
+				return wrapError(err)
+			} else if err := sim.AssignHeading(&HeadingAssignment{
+				ControllerToken: cmds.ControllerToken,
+				Callsign:        cmds.Callsign,
+				Heading:         hdg,
+				Turn:            TurnClosest,
+			}, nil); err != nil {
+				return wrapError(err)
+			}
+
+		case 'L':
+			if l := len(command); l > 2 && command[l-1] == 'D' {
+				// turn left x degrees
+				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					LeftDegrees:     deg,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else {
+				// turn left heading...
+				if hdg, err := strconv.Atoi(command[1:]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Heading:         hdg,
+					Turn:            TurnLeft,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			}
+
+		case 'R':
+			if l := len(command); l > 2 && command[l-1] == 'D' {
+				// turn right x degrees
+				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					RightDegrees:    deg,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else {
+				// turn right heading...
+				if hdg, err := strconv.Atoi(command[1:]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignHeading(&HeadingAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Heading:         hdg,
+					Turn:            TurnRight,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			}
+
+		case 'C', 'A':
+			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+				// Cleared straight in approach.
+				if err := sim.ClearedApproach(&ApproachClearance{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Approach:        command[3:],
+					StraightIn:      true,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
+				if components := strings.Split(command, "/"); len(components) > 1 {
+					// Cross fix [at altitude] [at speed]
+					fix := components[0][1:]
+					alt, speed := 0, 0
+
+					for _, cmd := range components[1:] {
+						if len(cmd) == 0 {
+							return wrapError(ErrInvalidCommandSyntax)
+						}
+
+						var err error
+						if cmd[0] == 'A' {
+							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
+								return wrapError(err)
+							}
+						} else if cmd[0] == 'S' {
+							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+								return wrapError(err)
+							}
+						} else {
+							return wrapError(ErrInvalidCommandSyntax)
+						}
+					}
+
+					if err := sim.CrossFixAt(&FixSpecifier{
+						ControllerToken: cmds.ControllerToken,
+						Callsign:        cmds.Callsign,
+						Fix:             fix,
+						Altitude:        100 * alt,
+						Speed:           speed,
+					}, nil); err != nil {
+						return wrapError(err)
+					}
+				} else if err := sim.ClearedApproach(&ApproachClearance{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Approach:        command[1:],
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else {
+				// Otherwise look for an altitude
+				if alt, err := strconv.Atoi(command[1:]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignAltitude(&AltitudeAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Altitude:        100 * alt,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			}
+
+		case 'S':
+			if len(command) == 1 {
+				// Cancel speed restrictions
+				if err := sim.AssignSpeed(&SpeedAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Speed:           0,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else {
+				if kts, err := strconv.Atoi(command[1:]); err != nil {
+					return wrapError(err)
+				} else if err := sim.AssignSpeed(&SpeedAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Speed:           kts,
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			}
+
+		case 'E':
+			// Expect approach.
+			if len(command) > 1 {
+				if err := sim.ExpectApproach(&ApproachAssignment{
+					ControllerToken: cmds.ControllerToken,
+					Callsign:        cmds.Callsign,
+					Approach:        command[1:],
+				}, nil); err != nil {
+					return wrapError(err)
+				}
+			} else {
+				return wrapError(ErrInvalidCommandSyntax)
+			}
+
+		case '?':
+			if ac, ok := sim.World.Aircraft[cmds.Callsign]; !ok {
+				return wrapError(ErrNoAircraftForCallsign)
+			} else if err := sim.World.PrintInfo(ac); err != nil {
+				return wrapError(err)
+			}
+
+		case 'X':
+			if _, ok := sim.World.Aircraft[cmds.Callsign]; !ok {
+				return wrapError(ErrNoAircraftForCallsign)
+			} else if err := sim.DeleteAircraft(&AircraftSpecifier{
+				ControllerToken: cmds.ControllerToken,
+				Callsign:        cmds.Callsign,
+			}, nil); err != nil {
+				return wrapError(err)
+			}
+
+		default:
+			return wrapError(ErrInvalidCommandSyntax)
+		}
+	}
+	return nil
 }
 
 func RunSimServer() {

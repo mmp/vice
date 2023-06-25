@@ -54,8 +54,7 @@ type World struct {
 	updateCall   *PendingCall
 	showSettings bool
 
-	pendingCalls            []*PendingCall
-	pendingAircraftCommands []*PendingAircraftCommands
+	pendingCalls []*PendingCall
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -104,13 +103,6 @@ func (p *PendingCall) CheckFinished() bool {
 	default:
 		return false
 	}
-}
-
-type PendingAircraftCommands struct {
-	Calls     []*rpc.Call
-	Commands  []string
-	IssueTime time.Time
-	OnErr     func(error, []string)
 }
 
 func NewWorld() *World {
@@ -421,38 +413,6 @@ func (w *World) checkPendingRPCs() {
 		}
 	}
 	w.pendingCalls = w.pendingCalls[cleared:] // FIXME: will the slice cap grow forever?
-
-	clearedCmds := 0
-	for _, pac := range w.pendingAircraftCommands {
-		clearedCalls := 0
-		for _, call := range pac.Calls {
-			select {
-			case call := <-call.Done:
-				if call.Error != nil {
-					if pac.OnErr != nil {
-						if pac.OnErr != nil {
-							pac.OnErr(call.Error, pac.Commands[clearedCalls:])
-						}
-					}
-					pac.Calls = pac.Calls[clearedCalls+1:]
-					return
-				} else {
-					clearedCalls++
-				}
-
-			default:
-			}
-		}
-
-		pac.Calls = pac.Calls[clearedCalls:]
-		pac.Commands = pac.Commands[clearedCalls:]
-		if len(pac.Calls) == 0 {
-			clearedCmds++
-		}
-	}
-
-	w.pendingAircraftCommands = w.pendingAircraftCommands[clearedCmds:]
-
 }
 
 func (w *World) Connected() bool {
@@ -520,21 +480,14 @@ func (w *World) DeleteAircraft(ac *Aircraft) {
 	}
 }
 
-func (w *World) RunAircraftCommands(ac *Aircraft, cmdstring string, onErr func(err error, remaining []string)) {
-	cmds := strings.Fields(cmdstring)
-	calls, calledCommands, uncalledCommands, err := w.simProxy.RunAircraftCommands(ac.Callsign, cmds, w)
-
-	w.pendingAircraftCommands = append(w.pendingAircraftCommands,
-		&PendingAircraftCommands{
-			Calls:     calls,
-			Commands:  calledCommands,
+func (w *World) RunAircraftCommands(ac *Aircraft, cmds string, onErr func(err error)) {
+	call := w.simProxy.RunAircraftCommands(ac.Callsign, cmds, w)
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      call,
 			IssueTime: time.Now(),
 			OnErr:     onErr,
 		})
-
-	if err != nil {
-		onErr(err, uncalledCommands)
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
