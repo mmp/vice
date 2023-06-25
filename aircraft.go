@@ -414,7 +414,13 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 				delete(ac.Nav.FutureCommands, cmd)
 			}
 		}
-		return "direct " + fix, nil
+
+		// If it's a VOR, read back the actual name
+		if nav, ok := database.Navaids[fix]; ok {
+			return "direct " + stopShouting(nav.Name), nil
+		} else {
+			return "direct " + fix, nil
+		}
 	} else {
 		return "", ErrFixNotInRoute
 	}
