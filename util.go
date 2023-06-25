@@ -5,6 +5,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"golang.org/x/exp/constraints"
@@ -1570,4 +1572,14 @@ func (e *ErrorLogger) PrintErrors() {
 	for _, err := range e.errors {
 		fmt.Fprintln(os.Stderr, err)
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// Utility function that returns an object's size, when gob-encoded.
+func encodedGobSize(t any) int {
+	var b bytes.Buffer
+	enc := gob.NewEncoder(&b)
+	enc.Encode(t)
+	return b.Len()
 }
