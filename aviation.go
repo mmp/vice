@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	_ "embed"
 	"encoding/csv"
@@ -786,6 +787,11 @@ var (
 	fixesRaw string
 	//go:embed resources/callsigns.csv.zst
 	callsignsRaw string
+
+	// Via Arash Partow, MIT licensed
+	// https://www.partow.net/miscellaneous/airportdatabase/
+	//go:embed resources/GlobalAirportDatabase.txt.zst
+	globalAirportsRaw string
 )
 
 // Utility function for parsing CSV files as strings; it breaks each line
@@ -886,6 +892,32 @@ func parseAirports() map[string]FAAAirport {
 				}
 			}
 		})
+
+	// Global database; this isn't in CSV, so we need to parse it manually.
+	r := bytes.NewReader([]byte(decompressZstd(globalAirportsRaw)))
+	scan := bufio.NewScanner(r)
+	for scan.Scan() {
+		line := scan.Text()
+		f := strings.Split(line, ":")
+		if len(f) != 16 {
+			lg.Errorf("Expected 16 fields, got %d: %s", len(f), line)
+		}
+
+		if elevation, err := strconv.ParseFloat(f[13], 64); err != nil {
+			lg.Errorf("%s: error parsing elevation: %s", f[13], err)
+		} else {
+			elevation *= 3.28084 // meters to feet
+
+			ap := FAAAirport{
+				Id:        f[0],
+				Name:      f[2],
+				Location:  Point2LL{float32(atof(f[15])), float32(atof(f[14]))},
+				Elevation: int(elevation)}
+			if ap.Id != "" {
+				airports[ap.Id] = ap
+			}
+		}
+	}
 
 	return airports
 }
