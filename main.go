@@ -43,8 +43,7 @@ var (
 	scenarioGroups map[string]*ScenarioGroup
 
 	// client only
-	newWorldChan          chan *World
-	simConfigurationsChan chan map[string]*SimConfiguration
+	newWorldChan chan *World
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -151,7 +150,7 @@ func main() {
 
 		database = InitializeStaticDatabase()
 
-		simConfigurationsChan = FetchSimConfigurations(client)
+		simConfigurationsChan := FetchSimConfigurations(client)
 
 		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
