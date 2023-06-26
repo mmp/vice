@@ -563,6 +563,14 @@ func (*SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
 	}
 }
 
+func (s *SimDispatcher) TogglePause(token string, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[token]; !ok {
+		return errors.New("No Sim running for this controller")
+	} else {
+		return sim.TogglePause(token, nil)
+	}
+}
+
 func (*SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
 		return errors.New("No Sim running for this controller")
