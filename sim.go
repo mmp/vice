@@ -59,9 +59,8 @@ type SimConfiguration struct {
 type SimScenarioConfiguration struct {
 	DepartureChallenge float32
 	GoAroundRate       float32
-	Callsign           string
-	Wind               Wind
 	Controller         string
+	Wind               Wind
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
@@ -135,21 +134,23 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginComboV("Control Position", c.Scenario.Callsign, imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("Control Position", c.Scenario.Controller, imgui.ComboFlagsHeightLarge) {
 		positions := make(map[string]*Controller)
 		for _, sc := range c.Group.ScenarioConfigs {
-			positions[sc.Callsign] = c.Group.ControlPositions[c.Scenario.Callsign]
+			positions[sc.Controller] = c.Group.ControlPositions[c.Scenario.Controller]
 		}
 
 		for _, controllerName := range SortedMapKeys(positions) {
-			if imgui.SelectableV(controllerName, controllerName == c.Scenario.Callsign, 0, imgui.Vec2{}) {
-				c.Scenario.Callsign = controllerName
-				// Set the current scenario to the first one alphabetically
-				// with the selected controller.
-				for _, scenarioName := range SortedMapKeys(c.Group.ScenarioConfigs) {
-					if c.Group.ScenarioConfigs[scenarioName].Callsign == controllerName {
-						c.SetScenario(scenarioName)
-						break
+			if imgui.SelectableV(controllerName, controllerName == c.Scenario.Controller, 0, imgui.Vec2{}) {
+				if controllerName != c.Scenario.Controller {
+					// Selected a different position than the current
+					// scenario uses; set the current scenario to the first
+					// one alphabetically with the selected controller.
+					for _, scenarioName := range SortedMapKeys(c.Group.ScenarioConfigs) {
+						if c.Group.ScenarioConfigs[scenarioName].Controller == controllerName {
+							c.SetScenario(scenarioName)
+							break
+						}
 					}
 				}
 			}
@@ -159,7 +160,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 	if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
-			if c.Group.ScenarioConfigs[name].Callsign != c.Scenario.Callsign {
+			if c.Group.ScenarioConfigs[name].Controller != c.Scenario.Controller {
 				continue
 			}
 			if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
@@ -517,7 +518,7 @@ func (sf *SimFactory) New(config *NewSimConfiguration, result *NewSimResult) err
 
 	sim.prespawn()
 
-	world, token, err := sim.SignOn(config.Scenario.Callsign)
+	world, token, err := sim.SignOn(config.Scenario.Controller)
 	if err != nil {
 		return err
 	}
@@ -1110,7 +1111,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*Scenar
 
 	// Extract just the active controllers
 	for callsign, ctrl := range sg.ControlPositions {
-		if callsign == sc.Callsign || Find(sc.Controllers, callsign) != -1 {
+		if callsign == sc.Controller || Find(sc.Controllers, callsign) != -1 {
 			w.Controllers[callsign] = ctrl
 		}
 	}

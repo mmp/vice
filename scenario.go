@@ -75,7 +75,7 @@ type AirspaceVolume struct {
 }
 
 type Scenario struct {
-	Callsign    string   `json:"callsign"`
+	Controller  string   `json:"callsign"`
 	Wind        Wind     `json:"wind"`
 	Controllers []string `json:"controllers"`
 
@@ -330,7 +330,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		// make sure the controller has at least one scenario..
 		found := false
 		for _, sc := range sg.Scenarios {
-			if sc.Callsign == sg.DefaultController {
+			if sc.Controller == sg.DefaultController {
 				found = true
 				break
 			}
@@ -439,9 +439,8 @@ func initializeSimConfigurations(sg *ScenarioGroup) {
 		sc := &SimScenarioConfiguration{
 			DepartureChallenge: 0.25,
 			GoAroundRate:       0.05,
-			Callsign:           scenario.Callsign,
+			Controller:         scenario.Controller,
 			Wind:               scenario.Wind,
-			Controller:         scenario.Callsign,
 			ArrivalGroupRates:  scenario.ArrivalGroupDefaultRates,
 			DepartureRunways:   scenario.DepartureRunways,
 			ArrivalRunways:     scenario.ArrivalRunways,
