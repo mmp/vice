@@ -108,17 +108,6 @@ type ScenarioGroupArrivalRunway struct {
 	Runway  string `json:"runway"`
 }
 
-func (s *Scenario) Name() string {
-	for _, sgroup := range scenarioGroups {
-		for name, scenario := range sgroup.Scenarios {
-			if s == scenario {
-				return name
-			}
-		}
-	}
-	return "(unknown)"
-}
-
 func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	for _, as := range s.ApproachAirspaceNames {
 		if vol, ok := sg.Airspace.Volumes[as]; !ok {
@@ -452,6 +441,7 @@ func initializeSimConfigurations(sg *ScenarioGroup) {
 			GoAroundRate:       0.05,
 			Callsign:           scenario.Callsign,
 			Wind:               scenario.Wind,
+			Controller:         scenario.Callsign,
 			ArrivalGroupRates:  scenario.ArrivalGroupDefaultRates,
 			DepartureRunways:   scenario.DepartureRunways,
 			ArrivalRunways:     scenario.ArrivalRunways,

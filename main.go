@@ -36,9 +36,6 @@ var (
 	lg                *Logger
 	simConfigurations map[string]*SimConfiguration
 
-	// server only
-	scenarioGroups map[string]*ScenarioGroup
-
 	// client only
 	newWorldChan chan *World
 
@@ -89,15 +86,6 @@ func main() {
 
 	if *server {
 		database = InitializeStaticDatabase()
-
-		// After the database is loaded
-		var e ErrorLogger
-		scenarioGroups = LoadScenarioGroups(&e)
-		if e.HaveErrors() {
-			e.PrintErrors()
-			os.Exit(1)
-		}
-
 		RunSimServer()
 	} else {
 		var stats Stats
@@ -182,7 +170,7 @@ func main() {
 		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
-			if scenarioGroups == nil {
+			if simConfigurations == nil {
 				select {
 				case simConfigurations = <-simConfigurationsChan:
 					lg.Printf("got sim configurations!")

@@ -13,6 +13,7 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -60,6 +61,7 @@ type SimScenarioConfiguration struct {
 	GoAroundRate       float32
 	Callsign           string
 	Wind               Wind
+	Controller         string
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
@@ -488,7 +490,9 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type SimFactory struct{}
+type SimFactory struct {
+	scenarioGroups map[string]*ScenarioGroup
+}
 
 var activeSims map[*Sim]interface{}
 var controllerTokenToSim map[string]*Sim
@@ -498,7 +502,7 @@ type NewSimResult struct {
 	ControllerToken string
 }
 
-func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error {
+func (sf *SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error {
 	lg.Printf("New %+v", *config)
 
 	if activeSims == nil {
@@ -508,7 +512,7 @@ func (*SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error 
 		controllerTokenToSim = make(map[string]*Sim)
 	}
 
-	sim := NewSim(*config)
+	sim := NewSim(*config, sf.scenarioGroups)
 	activeSims[sim] = nil
 
 	sim.prespawn()
@@ -964,7 +968,14 @@ func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *st
 }
 
 func RunSimServer() {
-	rpc.Register(&SimFactory{})
+	var e ErrorLogger
+	scenarioGroups := LoadScenarioGroups(&e)
+	if e.HaveErrors() {
+		e.PrintErrors()
+		os.Exit(1)
+	}
+
+	rpc.Register(&SimFactory{scenarioGroups: scenarioGroups})
 	rpc.RegisterName("Sim", &SimDispatcher{})
 
 	rpc.HandleHTTP()
@@ -992,6 +1003,9 @@ type Sim struct {
 	controllers map[string]*ServerController // from token
 
 	eventStream *EventStream
+
+	// For now, there's just one...
+	InboundHandoffController string
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
@@ -1030,14 +1044,15 @@ type ServerController struct {
 	events   *EventsSubscription
 }
 
-func NewSim(ssc NewSimConfiguration) *Sim {
+func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
 	s := &Sim{
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
 
-		controllers: make(map[string]*ServerController),
+		controllers:              make(map[string]*ServerController),
+		InboundHandoffController: ssc.Scenario.Controller,
 
 		eventStream: NewEventStream(),
 
@@ -1053,14 +1068,14 @@ func NewSim(ssc NewSimConfiguration) *Sim {
 		Handoffs:           make(map[string]time.Time),
 	}
 
-	s.World = newWorld(ssc, s)
+	s.World = newWorld(ssc, s, scenarioGroups)
 
 	s.setInitialSpawnTimes()
 
 	return s
 }
 
-func newWorld(ssc NewSimConfiguration, s *Sim) *World {
+func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*ScenarioGroup) *World {
 	sg, ok := scenarioGroups[ssc.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
@@ -1394,8 +1409,7 @@ func (s *Sim) updateState() {
 
 			if ac.InboundHandoffController == s.World.Callsign {
 				// We hit a /ho at a fix; update to the correct controller.
-				sg := scenarioGroups[s.ScenarioGroup]
-				ac.InboundHandoffController = sg.ControlPositions[sg.DefaultController].Callsign
+				ac.InboundHandoffController = s.InboundHandoffController
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
