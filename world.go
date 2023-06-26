@@ -91,10 +91,11 @@ type PendingCall struct {
 func (p *PendingCall) CheckFinished() bool {
 	select {
 	case c := <-p.Call.Done:
-		lg.Printf("%s: returned in %s", c.ServiceMethod, time.Since(p.IssueTime))
 		if c.Error != nil {
 			if p.OnErr != nil {
 				p.OnErr(c.Error)
+			} else {
+				lg.Errorf("%v", c.Error)
 			}
 		} else if p.OnSuccess != nil {
 			p.OnSuccess()
