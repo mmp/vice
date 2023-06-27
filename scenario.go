@@ -256,7 +256,7 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 	}
 }
 
-func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
+func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]*SimConfiguration) {
 	// Do these first!
 	sg.Fixes = make(map[string]Point2LL)
 	for fix, latlong := range sg.FixesStrings {
@@ -420,14 +420,11 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger) {
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg)
+	initializeSimConfigurations(sg, simConfigurations)
 }
 
-func initializeSimConfigurations(sg *ScenarioGroup) {
-	if simConfigurations == nil {
-		simConfigurations = make(map[string]*SimConfiguration)
-	}
-
+func initializeSimConfigurations(sg *ScenarioGroup,
+	simConfigurations map[string]*SimConfiguration) {
 	config := &SimConfiguration{
 		ScenarioConfigs:   make(map[string]*SimScenarioConfiguration),
 		ControlPositions:  sg.ControlPositions,
@@ -619,7 +616,7 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
+func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*SimConfiguration) {
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 	err := fs.WalkDir(embeddedVideoMaps, "videomaps", func(path string, d fs.DirEntry, err error) error {
@@ -662,6 +659,8 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 
 	// Now load the scenarios.
 	scenarioGroups := make(map[string]*ScenarioGroup)
+	simConfigurations := make(map[string]*SimConfiguration)
+
 	err = fs.WalkDir(embeddedScenarioGroups, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
@@ -735,10 +734,10 @@ func LoadScenarioGroups(e *ErrorLogger) map[string]*ScenarioGroup {
 			}
 		}
 
-		sgroup.PostDeserialize(e)
+		sgroup.PostDeserialize(e, simConfigurations)
 
 		e.Pop()
 	}
 
-	return scenarioGroups
+	return scenarioGroups, simConfigurations
 }

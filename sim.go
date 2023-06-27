@@ -71,41 +71,45 @@ type SimScenarioConfiguration struct {
 	ArrivalRunways   []ScenarioGroupArrivalRunway
 }
 
-type NewSimConfiguration struct {
-	Group        *SimConfiguration
-	GroupName    string
-	Scenario     *SimScenarioConfiguration
-	ScenarioName string
+type SimServer struct {
+	name    string
+	client  *rpc.Client
+	configs map[string]*SimConfiguration
 }
 
-func MakeNewSimConfiguration() NewSimConfiguration {
-	c := NewSimConfiguration{}
+type NewSimConfiguration struct {
+	Group          *SimConfiguration
+	GroupName      string
+	Scenario       *SimScenarioConfiguration
+	ScenarioName   string
+	servers        []*SimServer
+	selectedServer *SimServer
+}
 
-	name := globalConfig.LastScenarioGroup
-	var ok bool
-	if c.Group, ok = simConfigurations[name]; !ok {
-		name = SortedMapKeys(simConfigurations)[0]
-		c.Group = simConfigurations[name]
+func MakeNewSimConfiguration(servers []*SimServer) NewSimConfiguration {
+	idx := FindIf(servers, func(s *SimServer) bool {
+		return s.name == globalConfig.LastServer
+	})
+	if idx == -1 {
+		idx = 0
 	}
-	c.GroupName = name
 
-	name = c.Group.DefaultScenario
-	if c.Scenario, ok = c.Group.ScenarioConfigs[name]; !ok {
-		// This should be caught in validation, but ...
-		name = SortedMapKeys(c.Group.ScenarioConfigs)[0]
-		c.Scenario = c.Group.ScenarioConfigs[name]
+	c := NewSimConfiguration{
+		servers:        servers,
+		selectedServer: servers[idx],
 	}
-	c.ScenarioName = name
+
+	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
 
 	return c
 }
 
 func (c *NewSimConfiguration) SetScenarioGroup(name string) {
 	var ok bool
-	if c.Group, ok = simConfigurations[name]; !ok {
+	if c.Group, ok = c.selectedServer.configs[name]; !ok {
 		lg.Errorf("%s: scenario group not found!", name)
-		name = SortedMapKeys(simConfigurations)[0] // first one
-		c.Group = simConfigurations[name]
+		name = SortedMapKeys(c.selectedServer.configs)[0] // first one
+		c.Group = c.selectedServer.configs[name]
 	}
 	c.GroupName = name
 
@@ -123,10 +127,21 @@ func (c *NewSimConfiguration) SetScenario(name string) {
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
-	// controller := sg.ControlPositions[c.Callsign]
+	imgui.Text("Configuration: ")
+	serverIdx := Find(c.servers, c.selectedServer)
+	lg.Printf("selected %d / %+v", serverIdx, c.selectedServer)
+	for i, srv := range c.servers {
+		imgui.SameLine()
+		if imgui.RadioButtonInt(srv.name, &serverIdx, i) &&
+			c.servers[i] != c.selectedServer {
+			c.selectedServer = c.servers[i]
+			c.SetScenarioGroup("")
+		}
+	}
+	imgui.Separator()
 
 	if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(simConfigurations) {
+		for _, name := range SortedMapKeys(c.selectedServer.configs) {
 			if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
 				c.SetScenarioGroup(name)
 			}
@@ -329,15 +344,15 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	return false
 }
 
-func (c *NewSimConfiguration) Start(client *rpc.Client) error {
+func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
-	if err := client.Call("SimFactory.New", c, &result); err != nil {
+	if err := c.selectedServer.client.Call("SimFactory.New", c, &result); err != nil {
 		return err
 	}
 
 	result.World.simProxy = &SimProxy{
 		ControllerToken: result.ControllerToken,
-		Client:          client,
+		Client:          c.selectedServer.client,
 	}
 
 	globalConfig.LastScenarioGroup = c.GroupName
@@ -345,26 +360,6 @@ func (c *NewSimConfiguration) Start(client *rpc.Client) error {
 	newWorldChan <- result.World
 
 	return nil
-}
-
-func FetchSimConfigurations(client *rpc.Client) chan map[string]*SimConfiguration {
-	var result map[string]*SimConfiguration
-	call := client.Go("SimFactory.GetSimConfigurations", 0, &result, nil)
-
-	ch := make(chan map[string]*SimConfiguration)
-	go func() {
-		call = <-call.Done
-		if call.Error != nil {
-			lg.Errorf("%v", call.Error)
-		}
-		if nsc, ok := call.Reply.(*map[string]*SimConfiguration); !ok {
-			lg.Errorf("Didn't get expected type; got %T", nsc)
-		} else {
-			ch <- *nsc
-		}
-	}()
-
-	return ch
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -493,6 +488,7 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
 
 type SimFactory struct {
 	scenarioGroups map[string]*ScenarioGroup
+	configs        map[string]*SimConfiguration
 }
 
 var activeSims map[*Sim]interface{}
@@ -539,8 +535,8 @@ func (sf *SimFactory) New(config *NewSimConfiguration, result *NewSimResult) err
 	return nil
 }
 
-func (*SimFactory) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
-	*result = simConfigurations
+func (sf *SimFactory) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
+	*result = sf.configs
 	lg.Printf("Encoded scenario groups size: %d", encodedGobSize(*result))
 	return nil
 }
@@ -977,29 +973,100 @@ func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *st
 }
 
 func RunSimServer() {
-	var e ErrorLogger
-	scenarioGroups := LoadScenarioGroups(&e)
-	if e.HaveErrors() {
-		e.PrintErrors()
-		os.Exit(1)
-	}
-
-	rpc.Register(&SimFactory{scenarioGroups: scenarioGroups})
-	rpc.RegisterName("Sim", &SimDispatcher{})
-
-	rpc.HandleHTTP()
-	l, err := net.Listen("tcp", ":6502")
+	l, err := net.Listen("tcp", ":8000")
 	if err != nil {
 		lg.Errorf("tcp listen: %v", err)
-	} else {
-		lg.Printf("Listening on %+v", l)
-		/*go*/ http.Serve(l, nil)
+		return
 	}
 
+	// If we're just running the server, we don't care about the returned
+	// configs...
+	runServer(l, false)
 }
 
-func DialSimServer() (*rpc.Client, error) {
-	return rpc.DialHTTP("tcp", "localhost:6502")
+func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
+	client, err := rpc.DialHTTP("tcp", hostname)
+	if err != nil {
+		return nil, err
+	}
+
+	ch := make(chan *SimServer, 1)
+	go func() {
+		var configs map[string]*SimConfiguration
+		if err := client.Call("SimFactory.GetSimConfigurations", 0, &configs); err != nil {
+			close(ch)
+		} else {
+			ch <- &SimServer{
+				name:    "Network (Multi-controller)",
+				client:  client,
+				configs: configs,
+			}
+		}
+	}()
+
+	return ch, nil
+}
+
+func LaunchLocalSimServer() (chan *SimServer, error) {
+	l, err := net.Listen("tcp", ":0")
+	if err != nil {
+		return nil, err
+	}
+
+	port := l.Addr().(*net.TCPAddr).Port
+
+	configsChan := runServer(l, true)
+
+	ch := make(chan *SimServer, 1)
+	go func() {
+		configs := <-configsChan
+
+		client, err := rpc.DialHTTP("tcp", fmt.Sprintf("localhost:%d", port))
+		if err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
+
+		ch <- &SimServer{
+			name:    "Local (Single controller)",
+			client:  client,
+			configs: configs,
+		}
+	}()
+
+	return ch, nil
+}
+
+func runServer(l net.Listener, async bool) chan map[string]*SimConfiguration {
+	ch := make(chan map[string]*SimConfiguration, 1)
+
+	server := func() {
+		var e ErrorLogger
+		scenarioGroups, simConfigurations := LoadScenarioGroups(&e)
+		if e.HaveErrors() {
+			e.PrintErrors()
+			os.Exit(1)
+		}
+
+		rpc.Register(&SimFactory{
+			scenarioGroups: scenarioGroups,
+			configs:        simConfigurations,
+		})
+		rpc.RegisterName("Sim", &SimDispatcher{})
+		rpc.HandleHTTP()
+
+		ch <- simConfigurations
+
+		lg.Printf("Listening on %+v", l)
+		http.Serve(l, nil) // noreturn
+	}
+
+	if async {
+		go server()
+	} else {
+		server()
+	}
+	return ch
 }
 
 ///////////////////////////////////////////////////////////////////////////

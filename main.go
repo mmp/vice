@@ -30,11 +30,10 @@ var (
 	// Note that in some cases they are passed down from main (e.g.,
 	// platform); this is plumbing in preparation for reducing the
 	// number of these in the future.
-	globalConfig      *GlobalConfig
-	platform          Platform
-	database          *StaticDatabase
-	lg                *Logger
-	simConfigurations map[string]*SimConfiguration
+	globalConfig *GlobalConfig
+	platform     Platform
+	database     *StaticDatabase
+	lg           *Logger
 
 	// client only
 	newWorldChan chan *World
@@ -84,10 +83,21 @@ func main() {
 		}
 	}
 
+	database = InitializeStaticDatabase()
+
 	if *server {
-		database = InitializeStaticDatabase()
 		RunSimServer()
 	} else {
+		localSimServerChan, err := LaunchLocalSimServer()
+		if err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
+		remoteSimServerChan, err := TryConnectRemoteServer("localhost:8000")
+		if err != nil {
+			// TODO warn can't connect to remote
+		}
+
 		var stats Stats
 		var renderer Renderer
 
@@ -120,22 +130,11 @@ func main() {
 
 		context = imguiInit()
 
-		var err error
 		if err = audioInit(); err != nil {
 			lg.Errorf("Unable to initialize audio: %v", err)
 		}
 
-		client, err := DialSimServer()
-		if err != nil {
-			ShowFatalErrorDialog(renderer, platform,
-				"Unable to connect to the vice server: %v", err)
-		}
-
 		LoadOrMakeDefaultConfig()
-
-		database = InitializeStaticDatabase()
-
-		simConfigurationsChan := FetchSimConfigurations(client)
 
 		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
@@ -155,14 +154,19 @@ func main() {
 		newWorldChan = make(chan *World, 1)
 		var world *World
 
+		// TODO: put up dialog box while we wait for these...
+		servers := FilterSlice([]*SimServer{
+			<-localSimServerChan,
+			<-remoteSimServerChan,
+		}, func(s *SimServer) bool { return s != nil })
+
 		wmInit(eventStream)
 
-		uiInit(renderer, platform)
+		uiInit(renderer, platform, servers)
 
 		globalConfig.Activate(world, eventStream)
 
-		scenariosModal := NewModalDialogBox(&WaitingForScenariosModalClient{})
-		uiShowModalDialog(scenariosModal, true)
+		uiShowConnectDialog()
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
@@ -170,18 +174,6 @@ func main() {
 		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
-			if simConfigurations == nil {
-				select {
-				case simConfigurations = <-simConfigurationsChan:
-					lg.Printf("got sim configurations!")
-					uiCloseModalDialog(scenariosModal)
-
-					uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{client: client}), false)
-
-				default:
-				}
-			}
-
 			select {
 			case nw := <-newWorldChan:
 				if world != nil {
@@ -238,7 +230,7 @@ func main() {
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(platform, renderer, world, client, &stats)
+			drawUI(platform, renderer, world, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync

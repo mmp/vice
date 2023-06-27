@@ -23,6 +23,7 @@ type GlobalConfig struct {
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
 	WhatsNewIndex         int
+	LastServer            string
 	LastScenarioGroup     string
 	UIFontSize            int
 	DCBFontSize           int

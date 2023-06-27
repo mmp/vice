@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"image/png"
 	"net/http"
-	"net/rpc"
 	"os"
 	"path"
 	"runtime"
@@ -41,6 +40,9 @@ var (
 		jsonSelectDialog *FileSelectDialogBox
 
 		activeModalDialogs []*ModalDialogBox
+
+		servers            []*SimServer
+		connectModalDialog *ModalDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
 	}
@@ -106,10 +108,13 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r Renderer, p Platform) {
+func uiInit(r Renderer, p Platform, servers []*SimServer) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(dpiScale(p))
 	}
+
+	ui.servers = servers
+	ui.connectModalDialog = NewModalDialogBox(&ConnectModalClient{})
 
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
@@ -150,6 +155,10 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 		func(m *ModalDialogBox) bool { return m != d })
 }
 
+func uiShowConnectDialog() {
+	uiShowModalDialog(ui.connectModalDialog, false)
+}
+
 // If |b| is true, all following imgui elements will be disabled (and drawn
 // accordingly).
 func uiStartDisable(b bool) {
@@ -172,7 +181,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(p Platform, r Renderer, w *World, client *rpc.Client, stats *Stats) {
+func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -210,7 +219,7 @@ func drawUI(p Platform, r Renderer, w *World, client *rpc.Client, stats *Stats) 
 		}
 
 		if imgui.Button(FontAwesomeIconRedo) {
-			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{client: client}), false)
+			uiShowConnectDialog()
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -538,14 +547,13 @@ func (m *ModalDialogBox) Draw() {
 type ConnectModalClient struct {
 	err    string
 	config NewSimConfiguration
-	client *rpc.Client
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.err = ""
-	c.config = MakeNewSimConfiguration()
+	c.config = MakeNewSimConfiguration(ui.servers)
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -555,7 +563,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	ok := ModalDialogButton{
 		text: "Ok",
 		action: func() bool {
-			if err := c.config.Start(c.client); err == nil {
+			if err := c.config.Start(); err == nil {
 				c.err = ""
 				return true
 			} else {
