@@ -126,7 +126,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
-		globalConfig.Version = 3
+		globalConfig.Version = 4
 		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
@@ -158,8 +158,37 @@ func LoadOrMakeDefaultConfig() {
 }
 
 func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
+	// Upgrade old ones without a MessagesPane
+	if gc.DisplayRoot != nil {
+		haveMessages := false
+		gc.DisplayRoot.VisitPanes(func(p Pane) {
+			if _, ok := p.(*MessagesPane); ok {
+				haveMessages = true
+			}
+		})
+		if !haveMessages {
+			root := gc.DisplayRoot
+			if root.SplitLine.Axis == SplitAxisX && root.Children[0] != nil {
+				messages := NewMessagesPane()
+				root.Children[0] = &DisplayNode{
+					SplitLine: SplitLine{
+						Pos:  0.075,
+						Axis: SplitAxisY,
+					},
+					Children: [2]*DisplayNode{
+						&DisplayNode{Pane: messages},
+						&DisplayNode{Pane: root.Children[0].Pane},
+					},
+				}
+			} else {
+				gc.DisplayRoot = nil
+			}
+		}
+	}
+
 	if gc.DisplayRoot == nil {
 		stars := NewSTARSPane(w)
+		messages := NewMessagesPane()
 
 		fsp := NewFlightStripPane()
 		fsp.AutoAddDepartures = true
@@ -174,7 +203,16 @@ func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
 				Axis: SplitAxisX,
 			},
 			Children: [2]*DisplayNode{
-				&DisplayNode{Pane: stars},
+				&DisplayNode{
+					SplitLine: SplitLine{
+						Pos:  0.075,
+						Axis: SplitAxisY,
+					},
+					Children: [2]*DisplayNode{
+						&DisplayNode{Pane: messages},
+						&DisplayNode{Pane: stars},
+					},
+				},
 				&DisplayNode{Pane: fsp},
 			},
 		}

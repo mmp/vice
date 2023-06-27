@@ -525,6 +525,7 @@ func (w *World) DrawSettingsWindow() {
 	}
 
 	var fsp *FlightStripPane
+	var messages *MessagesPane
 	var stars *STARSPane
 	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 		switch pane := p.(type) {
@@ -532,6 +533,8 @@ func (w *World) DrawSettingsWindow() {
 			fsp = pane
 		case *STARSPane:
 			stars = pane
+		case *MessagesPane:
+			messages = pane
 		}
 	})
 
@@ -545,6 +548,10 @@ func (w *World) DrawSettingsWindow() {
 	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
 		fsp.DrawUI()
 	}
+	if messages != nil && imgui.CollapsingHeader("Messages") {
+		messages.DrawUI()
+	}
+
 	if imgui.CollapsingHeader("Developer") {
 		if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
 			imgui.TableNextRow()

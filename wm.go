@@ -14,7 +14,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -449,10 +448,8 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	displaySize := p.DisplaySize()
 	highDPIScale := fbSize[1] / displaySize[1]
 
-	topItemsHeight := ui.menuBarHeight + wmStatusBarHeight()
-
 	// Area left for actually drawing Panes
-	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - topItemsHeight}}
+	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - ui.menuBarHeight}}
 
 	// Get the mouse position from imgui; flip y so that it lines up with
 	// our window coordinates.
@@ -507,9 +504,6 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	// Now traverse all of the Panes...
 	// First clear the entire window to the background color.
 	commandBuffer.ClearRGB(RGB{})
-
-	// Draw the status bar underneath the menu bar
-	wmDrawStatusBar(fbSize, displaySize, commandBuffer, p, w)
 
 	// By default we'll visit the tree starting at
 	// DisplayRoot. However, if a Pane has been maximized to cover the
@@ -583,79 +577,4 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	if fbSize[0] > 0 && fbSize[1] > 0 {
 		stats.render = r.RenderCommandBuffer(commandBuffer)
 	}
-}
-
-// wmDrawStatus bar draws the status bar underneath the main menu bar
-func wmDrawStatusBar(fbSize [2]float32, displaySize [2]float32, cb *CommandBuffer, platform Platform, w *World) {
-	var texts []string
-	textCallsign := ""
-	for _, event := range wm.events.Get() {
-		if event.Type != RadioTransmissionEvent {
-			continue
-		}
-
-		// Split the callsign into the ICAO and the flight number
-		// Note: this is buggy if we process multiple senders in a
-		// single call here, but that shouldn't happen...
-		idx := strings.IndexAny(event.Callsign, "0123456789")
-		if idx == -1 {
-			textCallsign = event.Callsign
-		} else {
-			// Try to get the telephony.
-			icao, flight := event.Callsign[:idx], event.Callsign[idx:]
-			if cs, ok := database.Callsigns[icao]; ok {
-				textCallsign = cs.Telephony + " " + flight
-				if ac := w.GetAircraft(event.Callsign); ac != nil {
-					if fp := ac.FlightPlan; fp != nil {
-						if strings.HasPrefix(fp.AircraftType, "H/") {
-							textCallsign += " heavy"
-						} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
-							textCallsign += " super"
-						}
-					}
-				}
-			} else {
-				textCallsign = event.Callsign
-			}
-		}
-
-		texts = append(texts, event.Message)
-	}
-	if texts != nil {
-		wm.lastAircraftResponse = strings.Join(texts, ", ") + ", " + textCallsign
-	}
-
-	if wm.lastAircraftResponse == "" {
-		return
-	}
-
-	top := displaySize[1] - ui.menuBarHeight
-	bottom := displaySize[1] - ui.menuBarHeight - wmStatusBarHeight()
-	statusBarDisplayExtent := Extent2D{p0: [2]float32{0, bottom}, p1: [2]float32{displaySize[0], top}}
-	statusBarFbExtent := statusBarDisplayExtent.Scale(dpiScale(platform))
-
-	cb.Scissor(int(statusBarFbExtent.p0[0]), int(statusBarFbExtent.p0[1]),
-		int(statusBarFbExtent.Width()+.5), int(statusBarFbExtent.Height()+.5))
-	cb.Viewport(int(statusBarFbExtent.p0[0]), int(statusBarFbExtent.p0[1]),
-		int(statusBarFbExtent.Width()+.5), int(statusBarFbExtent.Height()+.5))
-
-	statusBarHeight := wmStatusBarHeight()
-	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, displaySize[0], 0, statusBarHeight))
-	cb.LoadModelViewMatrix(Identity3x3())
-
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	textp := [2]float32{15, float32(5 + ui.font.size)}
-	style := TextStyle{Font: ui.font, Color: UITextColor}
-	td.AddText(wm.lastAircraftResponse, textp, style)
-
-	// Finally, add the text drawing commands to the graphics command buffer.
-	cb.ResetState()
-	td.GenerateCommands(cb)
-
-	cb.ResetState()
-}
-
-func wmStatusBarHeight() float32 {
-	return float32(10 + ui.font.size)
 }

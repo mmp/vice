@@ -752,3 +752,134 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	cb.LineWidth(3)
 	selectionLd.GenerateCommands(cb)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// MessagesPane
+
+type Message struct {
+	contents string
+	error    bool
+}
+
+type MessagesPane struct {
+	FontIdentifier FontIdentifier
+	font           *Font
+	scrollbar      *ScrollBar
+	events         *EventsSubscription
+	messages       []Message
+}
+
+func NewMessagesPane() *MessagesPane {
+	return &MessagesPane{
+		FontIdentifier: FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
+	}
+}
+
+func (mp *MessagesPane) Name() string { return "Messages" }
+
+func (mp *MessagesPane) Activate(w *World, eventStream *EventStream) {
+	if mp.font = GetFont(mp.FontIdentifier); mp.font == nil {
+		mp.font = GetDefaultFont()
+		mp.FontIdentifier = mp.font.id
+	}
+	if mp.scrollbar == nil {
+		mp.scrollbar = NewScrollBar(4, true)
+	}
+	mp.events = eventStream.Subscribe()
+}
+
+func (mp *MessagesPane) Deactivate() {
+	mp.events.Unsubscribe()
+	mp.events = nil
+}
+
+func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
+
+func (mp *MessagesPane) DrawUI() {
+	if newFont, changed := DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
+		mp.font = newFont
+	}
+}
+
+func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+	mp.processEvents(ctx.world)
+
+	lineHeight := float32(mp.font.size + 1)
+	visibleLines := int(ctx.paneExtent.Height() / lineHeight)
+	mp.scrollbar.Update(len(mp.messages), visibleLines, ctx)
+
+	drawWidth := ctx.paneExtent.Width()
+	if mp.scrollbar.Visible() {
+		drawWidth -= float32(mp.scrollbar.Width())
+	}
+
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+
+	indent := float32(2)
+	style := TextStyle{Font: mp.font, Color: RGB{1, 1, 1}}
+	errorStyle := TextStyle{Font: mp.font, Color: RGB{.1, .9, .1}}
+
+	scrollOffset := mp.scrollbar.Offset()
+	y := lineHeight
+	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
+		// TODO? wrap text
+		msg := mp.messages[len(mp.messages)-1-i]
+		td.AddText(msg.contents, [2]float32{indent, y}, Select(msg.error, errorStyle, style))
+		y += lineHeight
+	}
+
+	ctx.SetWindowCoordinateMatrices(cb)
+	mp.scrollbar.Draw(ctx, cb)
+	td.GenerateCommands(cb)
+}
+
+func (mp *MessagesPane) processEvents(w *World) {
+	lastRadioCallsign := ""
+	var transmissions []string
+
+	addTransmissions := func() {
+		// Split the callsign into the ICAO and the flight number
+		// Note: this is buggy if we process multiple senders in a
+		// single call here, but that shouldn't happen...
+		callsign := lastRadioCallsign
+		radioCallsign := lastRadioCallsign
+		if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
+			// Try to get the telephony.
+			icao, flight := callsign[:idx], callsign[idx:]
+			if cs, ok := database.Callsigns[icao]; ok {
+				radioCallsign = cs.Telephony + " " + flight
+				if ac := w.GetAircraft(callsign); ac != nil {
+					if fp := ac.FlightPlan; fp != nil {
+						if strings.HasPrefix(fp.AircraftType, "H/") {
+							radioCallsign += " heavy"
+						} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+							radioCallsign += " super"
+						}
+					}
+				}
+			}
+		}
+
+		response := strings.Join(transmissions, ", ") + ", " + radioCallsign
+		mp.messages = append(mp.messages, Message{contents: response})
+	}
+
+	for _, event := range mp.events.Get() {
+		if event.Type != RadioTransmissionEvent {
+			continue
+		}
+
+		if event.Callsign != lastRadioCallsign {
+			if len(transmissions) > 0 {
+				addTransmissions()
+				transmissions = nil
+			}
+			lastRadioCallsign = event.Callsign
+		}
+		transmissions = append(transmissions, event.Message)
+	}
+	if len(transmissions) > 0 {
+		addTransmissions()
+	}
+}
