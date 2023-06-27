@@ -169,7 +169,7 @@ func main() {
 
 		globalConfig.Activate(world, eventStream)
 
-		uiShowConnectDialog()
+		uiShowConnectDialog(false)
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop

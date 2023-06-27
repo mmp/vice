@@ -155,8 +155,8 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 		func(m *ModalDialogBox) bool { return m != d })
 }
 
-func uiShowConnectDialog() {
-	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
+func uiShowConnectDialog(allowCancel bool) {
+	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{allowCancel: allowCancel}), false)
 }
 
 // If |b| is true, all following imgui elements will be disabled (and drawn
@@ -219,7 +219,7 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 		}
 
 		if imgui.Button(FontAwesomeIconRedo) {
-			uiShowConnectDialog()
+			uiShowConnectDialog(true)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -545,8 +545,9 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	err    string
-	config NewSimConfiguration
+	err         string
+	config      NewSimConfiguration
+	allowCancel bool
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
@@ -558,7 +559,9 @@ func (c *ConnectModalClient) Opening() {
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel"})
+	if c.allowCancel {
+		b = append(b, ModalDialogButton{text: "Cancel"})
+	}
 
 	ok := ModalDialogButton{
 		text: "Ok",
