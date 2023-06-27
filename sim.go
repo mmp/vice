@@ -136,8 +136,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			c.SetScenarioGroup("")
 		}
 	} else {
-		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .2, .2, 1})
-		imgui.Text("Unable to connect to multi-controller vice server")
+		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text("Unable to connect to the multi-controller vice server; " +
+			"only single-player scenarios are available.")
 		imgui.PopStyleColor()
 	}
 	imgui.Separator()
@@ -232,9 +233,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.TableNextColumn()
 		wind := c.Scenario.Wind
 		if wind.Gust > wind.Speed {
-			imgui.Text(fmt.Sprintf("%d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
+			imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 		} else {
-			imgui.Text(fmt.Sprintf("%d at %d", wind.Direction, wind.Speed))
+			imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
 		}
 		imgui.EndTable()
 	}
