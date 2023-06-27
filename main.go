@@ -188,9 +188,7 @@ func main() {
 				world = nw
 
 				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-					if stars, ok := p.(*STARSPane); ok {
-						stars.ResetWorld(world)
-					}
+					p.ResetWorld(world)
 				})
 
 			default:

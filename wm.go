@@ -72,6 +72,7 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 
 func (s *SplitLine) Activate(*World, *EventStream) {}
 func (s *SplitLine) Deactivate()                   {}
+func (s *SplitLine) ResetWorld(w *World)           {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool    { return false }
 
 func (s *SplitLine) Name() string {

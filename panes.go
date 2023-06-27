@@ -20,6 +20,7 @@ type Pane interface {
 
 	Activate(w *World, eventStream *EventStream)
 	Deactivate()
+	ResetWorld(w *World)
 
 	CanTakeKeyboardFocus() bool
 
@@ -249,6 +250,7 @@ func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
 func (ep *EmptyPane) Activate(*World, *EventStream) {}
 func (ep *EmptyPane) Deactivate()                   {}
+func (ep *EmptyPane) ResetWorld(w *World)           {}
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool    { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
@@ -325,6 +327,11 @@ func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 func (fsp *FlightStripPane) Deactivate() {
 	fsp.events.Unsubscribe()
 	fsp.events = nil
+}
+
+func (fsp *FlightStripPane) ResetWorld(w *World) {
+	fsp.strips = nil
+	fsp.addedAircraft = make(map[string]interface{})
 }
 
 func (fsp *FlightStripPane) isDeparture(ac *Aircraft, w *World) bool {
@@ -794,6 +801,10 @@ func (mp *MessagesPane) Activate(w *World, eventStream *EventStream) {
 func (mp *MessagesPane) Deactivate() {
 	mp.events.Unsubscribe()
 	mp.events = nil
+}
+
+func (mp *MessagesPane) ResetWorld(w *World) {
+	mp.messages = nil
 }
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
