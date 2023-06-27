@@ -224,6 +224,9 @@ func unmarshalPane(paneType string, data []byte) (Pane, error) {
 	case "*main.FlightStripPane":
 		return unmarshalPaneHelper[*FlightStripPane](data)
 
+	case "*main.MessagesPane":
+		return unmarshalPaneHelper[*MessagesPane](data)
+
 	case "*main.STARSPane":
 		return unmarshalPaneHelper[*STARSPane](data)
 
