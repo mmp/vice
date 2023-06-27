@@ -880,19 +880,33 @@ func (mp *MessagesPane) processEvents(w *World) {
 	}
 
 	for _, event := range mp.events.Get() {
-		if event.Type != RadioTransmissionEvent {
-			continue
-		}
-
-		if event.Callsign != lastRadioCallsign {
-			if len(transmissions) > 0 {
-				addTransmissions()
-				transmissions = nil
+		switch event.Type {
+		case RadioTransmissionEvent:
+			if event.Callsign != lastRadioCallsign {
+				if len(transmissions) > 0 {
+					addTransmissions()
+					transmissions = nil
+				}
+				lastRadioCallsign = event.Callsign
 			}
-			lastRadioCallsign = event.Callsign
+			transmissions = append(transmissions, event.Message)
+
+		case StatusMessageEvent:
+			// Don't spam the same message repeatedly; look in the most recent 5.
+			n := len(mp.messages)
+			start := max(0, n-5)
+			if idx := FindIf(mp.messages[start:], func(m Message) bool {
+				return m.contents == event.Message
+			}); idx == -1 {
+				mp.messages = append(mp.messages,
+					Message{
+						contents: event.Message,
+						error:    true,
+					})
+			}
 		}
-		transmissions = append(transmissions, event.Message)
 	}
+
 	if len(transmissions) > 0 {
 		addTransmissions()
 	}

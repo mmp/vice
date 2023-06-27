@@ -82,13 +82,14 @@ type World struct {
 }
 
 type PendingCall struct {
-	Call      *rpc.Call
-	IssueTime time.Time
-	OnSuccess func()
-	OnErr     func(error)
+	Call                *rpc.Call
+	IssueTime           time.Time
+	OnSuccess           func()
+	OnErr               func(error)
+	haveWarnedNoUpdates bool
 }
 
-func (p *PendingCall) CheckFinished() bool {
+func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
 	select {
 	case c := <-p.Call.Done:
 		if c.Error != nil {
@@ -98,13 +99,24 @@ func (p *PendingCall) CheckFinished() bool {
 				lg.Errorf("%v", c.Error)
 			}
 		} else if p.OnSuccess != nil {
+			if p.haveWarnedNoUpdates {
+				p.haveWarnedNoUpdates = false
+				eventStream.Post(Event{
+					Type:    StatusMessageEvent,
+					Message: "Server connection reestablished!",
+				})
+			}
 			p.OnSuccess()
 		}
 		return true
 
 	default:
-		if s := time.Since(p.IssueTime); s > time.Second {
-			lg.Errorf("%s: no response still... %s", p.Call.ServiceMethod, s)
+		if s := time.Since(p.IssueTime); s > 5*time.Second {
+			p.haveWarnedNoUpdates = true
+			eventStream.Post(Event{
+				Type:    StatusMessageEvent,
+				Message: "No updates from server in over 5 seconds. Network may have disconnected.",
+			})
 		}
 		return false
 	}
@@ -366,12 +378,12 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 		return
 	}
 
-	if w.updateCall != nil && w.updateCall.CheckFinished() {
+	if w.updateCall != nil && w.updateCall.CheckFinished(eventStream) {
 		w.updateCall = nil
 		return
 	}
 
-	w.checkPendingRPCs()
+	w.checkPendingRPCs(eventStream)
 
 	if time.Since(w.lastUpdate) > 1*time.Second {
 		if w.updateCall != nil {
@@ -385,11 +397,6 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 			IssueTime: time.Now(),
 			OnSuccess: func() {
 				wu.UpdateWorld(w, eventStream)
-				for _, ac := range w.Aircraft {
-					if math.IsNaN(float64(ac.Position[0])) || math.IsNaN(float64(ac.Position[1])) {
-						panic("wah")
-					}
-				}
 				w.lastUpdate = time.Now()
 			},
 			OnErr: onErr,
@@ -397,9 +404,9 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	}
 }
 
-func (w *World) checkPendingRPCs() {
+func (w *World) checkPendingRPCs(eventStream *EventStream) {
 	w.pendingCalls = FilterSlice(w.pendingCalls,
-		func(call *PendingCall) bool { return !call.CheckFinished() })
+		func(call *PendingCall) bool { return !call.CheckFinished(eventStream) })
 }
 
 func (w *World) Connected() bool {

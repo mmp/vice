@@ -83,6 +83,8 @@ func main() {
 		}
 	}
 
+	eventStream := NewEventStream()
+
 	database = InitializeStaticDatabase()
 
 	if *server {
@@ -96,7 +98,6 @@ func main() {
 		remoteSimServerChan, err := TryConnectRemoteServer("localhost:8000")
 		if err != nil {
 			lg.Errorf("%v", err)
-			// TODO warn user can't connect to remote
 		}
 
 		var stats Stats
@@ -126,8 +127,6 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Global initialization and set up. Note that there are some subtle
 		// inter-dependencies in the following; the order is carefully crafted.
-
-		eventStream := NewEventStream()
 
 		context = imguiInit()
 
@@ -219,8 +218,10 @@ func main() {
 			if world != nil {
 				world.GetUpdates(eventStream,
 					func(err error) {
-						// TODO: at least handle network errors...
-						lg.Errorf("Error getting world update: %v", err)
+						eventStream.Post(Event{
+							Type:    StatusMessageEvent,
+							Message: "Error getting update from server: " + err.Error(),
+						})
 					})
 			}
 
