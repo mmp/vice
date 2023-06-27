@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"unicode"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -875,8 +876,10 @@ func (mp *MessagesPane) processEvents(w *World) {
 			}
 		}
 
-		response := strings.Join(transmissions, ", ") + ", " + radioCallsign
-		mp.messages = append(mp.messages, Message{contents: response})
+		// Capitalize first letter
+		response := []rune(strings.Join(transmissions, ", ") + ", " + radioCallsign)
+		response[0] = unicode.ToUpper(response[0])
+		mp.messages = append(mp.messages, Message{contents: string(response)})
 	}
 
 	for _, event := range mp.events.Get() {
