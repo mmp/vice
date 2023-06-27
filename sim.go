@@ -127,18 +127,19 @@ func (c *NewSimConfiguration) SetScenario(name string) {
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
-	imgui.Text("Configuration: ")
-	serverIdx := Find(c.servers, c.selectedServer)
-	lg.Printf("selected %d / %+v", serverIdx, c.selectedServer)
-	for i, srv := range c.servers {
-		imgui.SameLine()
-		if imgui.RadioButtonInt(srv.name, &serverIdx, i) &&
-			c.servers[i] != c.selectedServer {
-			c.selectedServer = c.servers[i]
-			c.SetScenarioGroup("")
+	if len(c.servers) > 1 {
+		imgui.Text("Configuration: ")
+		serverIdx := Find(c.servers, c.selectedServer)
+		for i, srv := range c.servers {
+			imgui.SameLine()
+			if imgui.RadioButtonInt(srv.name, &serverIdx, i) &&
+				c.servers[i] != c.selectedServer {
+				c.selectedServer = c.servers[i]
+				c.SetScenarioGroup("")
+			}
 		}
+		imgui.Separator()
 	}
-	imgui.Separator()
 
 	if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(c.selectedServer.configs) {

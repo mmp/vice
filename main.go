@@ -95,7 +95,8 @@ func main() {
 		}
 		remoteSimServerChan, err := TryConnectRemoteServer("localhost:8000")
 		if err != nil {
-			// TODO warn can't connect to remote
+			lg.Errorf("%v", err)
+			// TODO warn user can't connect to remote
 		}
 
 		var stats Stats
@@ -155,10 +156,15 @@ func main() {
 		var world *World
 
 		// TODO: put up dialog box while we wait for these...
-		servers := FilterSlice([]*SimServer{
-			<-localSimServerChan,
-			<-remoteSimServerChan,
-		}, func(s *SimServer) bool { return s != nil })
+		servers := FilterSlice(MapSlice(
+			[]chan *SimServer{localSimServerChan, remoteSimServerChan},
+			func(ch chan *SimServer) *SimServer {
+				if ch == nil {
+					return nil
+				}
+				return <-ch
+			}),
+			func(s *SimServer) bool { return s != nil })
 
 		wmInit(eventStream)
 
