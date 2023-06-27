@@ -41,7 +41,8 @@ var (
 
 		activeModalDialogs []*ModalDialogBox
 
-		servers []*SimServer
+		localServer  *SimServer
+		remoteServer *SimServer
 
 		newReleaseDialogChan chan *NewReleaseModalClient
 	}
@@ -107,12 +108,13 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r Renderer, p Platform, servers []*SimServer) {
+func uiInit(r Renderer, p Platform, localServer *SimServer, remoteServer *SimServer) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(dpiScale(p))
 	}
 
-	ui.servers = servers
+	ui.localServer = localServer
+	ui.remoteServer = remoteServer
 
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
@@ -551,7 +553,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.err = ""
-	c.config = MakeNewSimConfiguration(ui.servers)
+	c.config = MakeNewSimConfiguration(ui.localServer, ui.remoteServer)
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {

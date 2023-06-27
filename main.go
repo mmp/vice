@@ -22,6 +22,8 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
+const ViceServerAddress = "localhost:8000"
+
 var (
 	// There are a handful of widely-used global variables in vice, all
 	// defined here.  While in principle it would be nice to have fewer (or
@@ -95,7 +97,7 @@ func main() {
 			lg.Errorf("%v", err)
 			os.Exit(1)
 		}
-		remoteSimServerChan, err := TryConnectRemoteServer("localhost:8000")
+		remoteSimServerChan, err := TryConnectRemoteServer(ViceServerAddress)
 		if err != nil {
 			lg.Errorf("%v", err)
 		}
@@ -155,19 +157,15 @@ func main() {
 		var world *World
 
 		// TODO: put up dialog box while we wait for these...
-		servers := FilterSlice(MapSlice(
-			[]chan *SimServer{localSimServerChan, remoteSimServerChan},
-			func(ch chan *SimServer) *SimServer {
-				if ch == nil {
-					return nil
-				}
-				return <-ch
-			}),
-			func(s *SimServer) bool { return s != nil })
+		localServer := <-localSimServerChan
+		var remoteServer *SimServer
+		if remoteSimServerChan != nil {
+			remoteServer = <-remoteSimServerChan
+		}
 
 		wmInit(eventStream)
 
-		uiInit(renderer, platform, servers)
+		uiInit(renderer, platform, localServer, remoteServer)
 
 		globalConfig.Activate(world, eventStream)
 

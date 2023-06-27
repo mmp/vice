@@ -78,25 +78,19 @@ type SimServer struct {
 }
 
 type NewSimConfiguration struct {
-	Group          *SimConfiguration
-	GroupName      string
-	Scenario       *SimScenarioConfiguration
-	ScenarioName   string
-	servers        []*SimServer
-	selectedServer *SimServer
+	Group                     *SimConfiguration
+	GroupName                 string
+	Scenario                  *SimScenarioConfiguration
+	ScenarioName              string
+	localServer, remoteServer *SimServer
+	selectedServer            *SimServer
 }
 
-func MakeNewSimConfiguration(servers []*SimServer) NewSimConfiguration {
-	idx := FindIf(servers, func(s *SimServer) bool {
-		return s.name == globalConfig.LastServer
-	})
-	if idx == -1 {
-		idx = 0
-	}
-
+func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) NewSimConfiguration {
 	c := NewSimConfiguration{
-		servers:        servers,
-		selectedServer: servers[idx],
+		localServer:    localServer,
+		remoteServer:   remoteServer,
+		selectedServer: localServer,
 	}
 
 	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
@@ -127,19 +121,26 @@ func (c *NewSimConfiguration) SetScenario(name string) {
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
-	if len(c.servers) > 1 {
+	if c.remoteServer != nil {
 		imgui.Text("Configuration: ")
-		serverIdx := Find(c.servers, c.selectedServer)
-		for i, srv := range c.servers {
-			imgui.SameLine()
-			if imgui.RadioButtonInt(srv.name, &serverIdx, i) &&
-				c.servers[i] != c.selectedServer {
-				c.selectedServer = c.servers[i]
-				c.SetScenarioGroup("")
-			}
+		imgui.SameLine()
+		serverIdx := Select(c.selectedServer == c.localServer, 0, 1)
+		origIdx := serverIdx
+		if imgui.RadioButtonInt(c.localServer.name, &serverIdx, 0) && origIdx != 0 {
+			c.selectedServer = c.localServer
+			c.SetScenarioGroup("")
 		}
-		imgui.Separator()
+		imgui.SameLine()
+		if imgui.RadioButtonInt(c.remoteServer.name, &serverIdx, 1) && origIdx != 1 {
+			c.selectedServer = c.remoteServer
+			c.SetScenarioGroup("")
+		}
+	} else {
+		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .2, .2, 1})
+		imgui.Text("Unable to connect to multi-controller vice server")
+		imgui.PopStyleColor()
 	}
+	imgui.Separator()
 
 	if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
 		for _, name := range SortedMapKeys(c.selectedServer.configs) {
@@ -996,6 +997,7 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 		var configs map[string]*SimConfiguration
 		if err := client.Call("SimFactory.GetSimConfigurations", 0, &configs); err != nil {
 			close(ch)
+			lg.Errorf("%v", err)
 		} else {
 			ch <- &SimServer{
 				name:    "Network (Multi-controller)",
