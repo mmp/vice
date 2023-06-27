@@ -41,8 +41,7 @@ var (
 
 		activeModalDialogs []*ModalDialogBox
 
-		servers            []*SimServer
-		connectModalDialog *ModalDialogBox
+		servers []*SimServer
 
 		newReleaseDialogChan chan *NewReleaseModalClient
 	}
@@ -114,7 +113,6 @@ func uiInit(r Renderer, p Platform, servers []*SimServer) {
 	}
 
 	ui.servers = servers
-	ui.connectModalDialog = NewModalDialogBox(&ConnectModalClient{})
 
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
@@ -156,7 +154,7 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 }
 
 func uiShowConnectDialog() {
-	uiShowModalDialog(ui.connectModalDialog, false)
+	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{}), false)
 }
 
 // If |b| is true, all following imgui elements will be disabled (and drawn
