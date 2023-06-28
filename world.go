@@ -413,6 +413,10 @@ func (w *World) Connected() bool {
 	return w.simProxy != nil
 }
 
+func (w *World) GetSerializeSim() (*Sim, error) {
+	return w.simProxy.GetSerializeSim()
+}
+
 func (w *World) ToggleSimPause() {
 	w.pendingCalls = append(w.pendingCalls, &PendingCall{
 		Call:      w.simProxy.TogglePause(),

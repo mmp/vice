@@ -350,7 +350,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
-	if err := c.selectedServer.client.Call("SimFactory.New", c, &result); err != nil {
+	if err := c.selectedServer.client.Call("SimManager.New", c, &result); err != nil {
 		return err
 	}
 
@@ -379,6 +379,12 @@ func (s *SimProxy) TogglePause() *rpc.Call {
 
 func (s *SimProxy) SignOff(_, _ *struct{}) error {
 	return s.Client.Call("Sim.SignOff", s.ControllerToken, nil)
+}
+
+func (s *SimProxy) GetSerializeSim() (*Sim, error) {
+	var sim Sim
+	err := s.Client.Call("SimManager.GetSerializeSim", s.ControllerToken, &sim)
+	return &sim, err
 }
 
 func (s *SimProxy) GetWorldUpdate(wu *SimWorldUpdate) *rpc.Call {
@@ -489,8 +495,9 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// SimManager
 
-type SimFactory struct {
+type SimManager struct {
 	scenarioGroups map[string]*ScenarioGroup
 	configs        map[string]*SimConfiguration
 }
@@ -503,9 +510,22 @@ type NewSimResult struct {
 	ControllerToken string
 }
 
-func (sf *SimFactory) New(config *NewSimConfiguration, result *NewSimResult) error {
-	lg.Printf("New %+v", *config)
+func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
+	sim := NewSim(*config, sm.scenarioGroups)
+	sim.prespawn()
 
+	return sm.Add(&AddSimConfiguration{
+		Sim:        sim,
+		Controller: config.Scenario.Controller,
+	}, result)
+}
+
+type AddSimConfiguration struct {
+	Sim        *Sim
+	Controller string
+}
+
+func (sm *SimManager) Add(as *AddSimConfiguration, result *NewSimResult) error {
 	if activeSims == nil {
 		activeSims = make(map[*Sim]interface{})
 	}
@@ -513,12 +533,12 @@ func (sf *SimFactory) New(config *NewSimConfiguration, result *NewSimResult) err
 		controllerTokenToSim = make(map[string]*Sim)
 	}
 
-	sim := NewSim(*config, sf.scenarioGroups)
+	sim := as.Sim
+	sim.Activate()
+
 	activeSims[sim] = nil
 
-	sim.prespawn()
-
-	world, token, err := sim.SignOn(config.Scenario.Controller)
+	world, token, err := sim.SignOn(as.Controller)
 	if err != nil {
 		return err
 	}
@@ -539,11 +559,26 @@ func (sf *SimFactory) New(config *NewSimConfiguration, result *NewSimResult) err
 	return nil
 }
 
-func (sf *SimFactory) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
-	*result = sf.configs
+func (sm *SimManager) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
+	*result = sm.configs
 	lg.Printf("Encoded scenario groups size: %d", encodedGobSize(*result))
 	return nil
 }
+
+func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
+	if controllerTokenToSim == nil {
+		return ErrNoSimForControllerToken
+	}
+	sim, ok := controllerTokenToSim[token]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	*s = *sim
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SimDispatcher
 
 type SimDispatcher struct{}
 
@@ -997,7 +1032,7 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 	ch := make(chan *SimServer, 1)
 	go func() {
 		var configs map[string]*SimConfiguration
-		if err := client.Call("SimFactory.GetSimConfigurations", 0, &configs); err != nil {
+		if err := client.Call("SimManager.GetSimConfigurations", 0, &configs); err != nil {
 			close(ch)
 			lg.Errorf("%v", err)
 		} else {
@@ -1053,7 +1088,7 @@ func runServer(l net.Listener, async bool) chan map[string]*SimConfiguration {
 			os.Exit(1)
 		}
 
-		rpc.Register(&SimFactory{
+		rpc.Register(&SimManager{
 			scenarioGroups: scenarioGroups,
 			configs:        simConfigurations,
 		})

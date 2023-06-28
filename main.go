@@ -163,13 +163,32 @@ func main() {
 			remoteServer = <-remoteSimServerChan
 		}
 
+		if globalConfig.Sim != nil {
+			var result NewSimResult
+			if err := localServer.client.Call("SimManager.Add",
+				&AddSimConfiguration{
+					Sim:        globalConfig.Sim,
+					Controller: globalConfig.Callsign,
+				}, &result); err != nil {
+				lg.Errorf("%v", err)
+			} else {
+				world = result.World
+				world.simProxy = &SimProxy{
+					ControllerToken: result.ControllerToken,
+					Client:          localServer.client,
+				}
+			}
+		}
+
 		wmInit(eventStream)
 
 		uiInit(renderer, platform, localServer, remoteServer)
 
 		globalConfig.Activate(world, eventStream)
 
-		uiShowConnectDialog(false)
+		if world == nil {
+			uiShowConnectDialog(false)
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
@@ -247,7 +266,8 @@ func main() {
 
 			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
-				globalConfig.SaveIfChanged(renderer, platform, world)
+				saveSim := world != nil && world.simProxy.Client == localServer.client
+				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)
 				break
 			}
 		}

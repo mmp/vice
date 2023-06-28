@@ -76,10 +76,17 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *World) bool {
-	panic("save fi changed")
-	//	gc.Sim = w.GetSerializeSim()
-	//gc.Callsign = w.Callsign
+func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *World, saveSim bool) bool {
+	gc.Sim = nil
+	gc.Callsign = ""
+	if saveSim {
+		if sim, err := w.GetSerializeSim(); err != nil {
+			lg.Errorf("%v", err)
+		} else {
+			gc.Sim = sim
+			gc.Callsign = w.Callsign
+		}
+	}
 
 	// Grab assorted things that may have changed during this session.
 	gc.ImGuiSettings = imgui.SaveIniSettingsToMemory()
