@@ -876,9 +876,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 			}
 		}
 
-		// Capitalize first letter
-		response := []rune(strings.Join(transmissions, ", ") + ", " + radioCallsign)
-		response[0] = unicode.ToUpper(response[0])
+		response := strings.Join(transmissions, ". ") + ". " + radioCallsign
 		mp.messages = append(mp.messages, Message{contents: string(response)})
 	}
 
@@ -892,7 +890,9 @@ func (mp *MessagesPane) processEvents(w *World) {
 				}
 				lastRadioCallsign = event.Callsign
 			}
-			transmissions = append(transmissions, event.Message)
+			msg := []rune(event.Message)
+			msg[0] = unicode.ToUpper(msg[0])
+			transmissions = append(transmissions, string(msg))
 
 		case StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
