@@ -45,6 +45,7 @@ func init() {
 }
 
 var (
+	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
 	ErrControllerAlreadySignedIn = errors.New("controller with that callsign already signed in")
 	ErrInvalidControllerToken    = errors.New("invalid controller token")
 )
@@ -548,7 +549,7 @@ type SimDispatcher struct{}
 
 func (*SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	if sim, ok := controllerTokenToSim[token]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.GetWorldUpdate(token, update)
 	}
@@ -556,7 +557,7 @@ func (*SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error
 
 func (*SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[r.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetSimRate(r, nil)
 	}
@@ -564,7 +565,7 @@ func (*SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
 
 func (s *SimDispatcher) TogglePause(token string, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[token]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.TogglePause(token, nil)
 	}
@@ -572,7 +573,7 @@ func (s *SimDispatcher) TogglePause(token string, _ *struct{}) error {
 
 func (*SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetScratchpad(a, nil)
 	}
@@ -580,7 +581,7 @@ func (*SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{})
 
 func (*SimDispatcher) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.InitiateTrack(a, nil)
 	}
@@ -588,7 +589,7 @@ func (*SimDispatcher) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.DropTrack(a, nil)
 	}
@@ -596,7 +597,7 @@ func (*SimDispatcher) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[h.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.HandoffTrack(h, nil)
 	}
@@ -604,7 +605,7 @@ func (*SimDispatcher) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[h.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.HandoffControl(h, nil)
 	}
@@ -612,7 +613,7 @@ func (*SimDispatcher) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.AcceptHandoff(a, nil)
 	}
@@ -620,7 +621,7 @@ func (*SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.CancelHandoff(a, nil)
 	}
@@ -628,7 +629,7 @@ func (*SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[alt.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.AssignAltitude(alt, nil)
 	}
@@ -636,7 +637,7 @@ func (*SimDispatcher) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error
 
 func (*SimDispatcher) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[alt.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetTemporaryAltitude(alt, nil)
 	}
@@ -644,7 +645,7 @@ func (*SimDispatcher) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{})
 
 func (*SimDispatcher) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[hdg.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.AssignHeading(hdg, nil)
 	}
@@ -652,7 +653,7 @@ func (*SimDispatcher) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
 
 func (*SimDispatcher) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[sa.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.AssignSpeed(sa, nil)
 	}
@@ -660,7 +661,7 @@ func (*SimDispatcher) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
 
 func (*SimDispatcher) DirectFix(f *FixSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.DirectFix(f, nil)
 	}
@@ -668,7 +669,7 @@ func (*SimDispatcher) DirectFix(f *FixSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.DepartFixHeading(f, nil)
 	}
@@ -676,7 +677,7 @@ func (*SimDispatcher) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.CrossFixAt(f, nil)
 	}
@@ -684,7 +685,7 @@ func (*SimDispatcher) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.ExpectApproach(a, nil)
 	}
@@ -692,7 +693,7 @@ func (*SimDispatcher) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
 
 func (*SimDispatcher) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[c.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.ClearedApproach(c, nil)
 	}
@@ -700,7 +701,7 @@ func (*SimDispatcher) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
 
 func (*SimDispatcher) GoAround(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.GoAround(a, nil)
 	}
@@ -708,7 +709,7 @@ func (*SimDispatcher) GoAround(a *AircraftSpecifier, _ *struct{}) error {
 
 func (*SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	} else {
 		return sim.DeleteAircraft(a, nil)
 	}
@@ -730,7 +731,7 @@ func (e AircraftCommandsError) Error() string {
 func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *struct{}) error {
 	sim, ok := controllerTokenToSim[cmds.ControllerToken]
 	if !ok {
-		return errors.New("No Sim running for this controller")
+		return ErrNoSimForControllerToken
 	}
 
 	commands := strings.Fields(cmds.Commands)
