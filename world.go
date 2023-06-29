@@ -84,7 +84,7 @@ type World struct {
 type PendingCall struct {
 	Call                *rpc.Call
 	IssueTime           time.Time
-	OnSuccess           func()
+	OnSuccess           func(any)
 	OnErr               func(error)
 	haveWarnedNoUpdates bool
 }
@@ -106,7 +106,7 @@ func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
 					Message: "Server connection reestablished!",
 				})
 			}
-			p.OnSuccess()
+			p.OnSuccess(c.Reply)
 		}
 		return true
 
@@ -213,7 +213,7 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (w *World) SetScratchpad(callsign string, scratchpad string, success func(), err func(error)) {
+func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetScratchpad(callsign, scratchpad),
@@ -223,7 +223,7 @@ func (w *World) SetScratchpad(callsign string, scratchpad string, success func()
 		})
 }
 
-func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(), err func(error)) {
+func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetTemporaryAltitude(callsign, alt),
@@ -237,7 +237,7 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (w *World) InitiateTrack(callsign string, success func(), err func(error)) {
+func (w *World) InitiateTrack(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.InitiateTrack(callsign),
@@ -247,7 +247,7 @@ func (w *World) InitiateTrack(callsign string, success func(), err func(error)) 
 		})
 }
 
-func (w *World) DropTrack(callsign string, success func(), err func(error)) {
+func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.DropTrack(callsign),
@@ -257,7 +257,7 @@ func (w *World) DropTrack(callsign string, success func(), err func(error)) {
 		})
 }
 
-func (w *World) HandoffTrack(callsign string, controller string, success func(), err func(error)) {
+func (w *World) HandoffTrack(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.HandoffTrack(callsign, controller),
@@ -267,7 +267,7 @@ func (w *World) HandoffTrack(callsign string, controller string, success func(),
 		})
 }
 
-func (w *World) HandoffControl(callsign string, success func(), err func(error)) {
+func (w *World) HandoffControl(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.HandoffControl(callsign),
@@ -277,7 +277,7 @@ func (w *World) HandoffControl(callsign string, success func(), err func(error))
 		})
 }
 
-func (w *World) AcceptHandoff(callsign string, success func(), err func(error)) {
+func (w *World) AcceptHandoff(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.AcceptHandoff(callsign),
@@ -287,11 +287,11 @@ func (w *World) AcceptHandoff(callsign string, success func(), err func(error)) 
 		})
 }
 
-func (w *World) RejectHandoff(callsign string, success func(), err func(error)) {
+func (w *World) RejectHandoff(callsign string, success func(any), err func(error)) {
 	// UNIMPLEMENTED
 }
 
-func (w *World) CancelHandoff(callsign string, success func(), err func(error)) {
+func (w *World) CancelHandoff(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.CancelHandoff(callsign),
@@ -301,7 +301,7 @@ func (w *World) CancelHandoff(callsign string, success func(), err func(error)) 
 		})
 }
 
-func (w *World) PointOut(callsign string, controller string, success func(), err func(error)) {
+func (w *World) PointOut(callsign string, controller string, success func(any), err func(error)) {
 	// UNIMPLEMENTED
 }
 
@@ -395,7 +395,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 		w.updateCall = &PendingCall{
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
-			OnSuccess: func() {
+			OnSuccess: func(any) {
 				wu.UpdateWorld(w, eventStream)
 				w.lastUpdate = time.Now()
 			},

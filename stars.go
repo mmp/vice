@@ -1790,7 +1790,7 @@ func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt
 
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 	ctx.world.InitiateTrack(callsign,
-		func() {
+		func(any) {
 			if state, ok := sp.aircraft[callsign]; ok {
 				state.datablockType = FullDatablock
 			}
@@ -1812,7 +1812,7 @@ func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
 
 func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.AcceptHandoff(callsign,
-		func() {
+		func(any) {
 			if state, ok := sp.aircraft[callsign]; ok {
 				state.datablockType = FullDatablock
 			}
