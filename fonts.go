@@ -50,6 +50,7 @@ var (
 	FontAwesomeIconPauseCircle         = faUsedIcons["PauseCircle"]
 	FontAwesomeIconPlayCircle          = faUsedIcons["PlayCircle"]
 	FontAwesomeIconQuestionCircle      = faUsedIcons["QuestionCircle"]
+	FontAwesomeIconPlaneDeparture      = faUsedIcons["PlaneDeparture"]
 	FontAwesomeIconRedo                = faUsedIcons["Redo"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
@@ -84,6 +85,7 @@ var (
 		"PauseCircle":         FontAwesomeString("PauseCircle"),
 		"PlayCircle":          FontAwesomeString("PlayCircle"),
 		"QuestionCircle":      FontAwesomeString("QuestionCircle"),
+		"PlaneDeparture":      FontAwesomeString("PlaneDeparture"),
 		"Redo":                FontAwesomeString("Redo"),
 		"Square":              FontAwesomeString("Square"),
 		"Trash":               FontAwesomeString("Trash"),

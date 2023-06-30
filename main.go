@@ -252,7 +252,7 @@ func main() {
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(platform, renderer, world, &stats)
+			drawUI(platform, renderer, world, eventStream, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync

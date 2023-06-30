@@ -399,6 +399,10 @@ func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
 		}, nil, nil)
 }
 
+func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
+	return s.Client.Go("Sim.TakeOrReturnLaunchControl", s.ControllerToken, nil, nil)
+}
+
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &AircraftPropertiesSpecifier{
 		ControllerToken: s.ControllerToken,
@@ -491,6 +495,13 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Commands:        cmds,
+	}, nil, nil)
+}
+
+func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
+	return s.Client.Go("Sim.LaunchAircraft", &LaunchSpecifier{
+		ControllerToken: s.ControllerToken,
+		Aircraft:        ac,
 	}, nil, nil)
 }
 
@@ -587,6 +598,14 @@ func (*SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.GetWorldUpdate(token, update)
+	}
+}
+
+func (*SimDispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
+	if sim, ok := controllerTokenToSim[token]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.TakeOrReturnLaunchControl(token)
 	}
 }
 
@@ -1011,6 +1030,20 @@ func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *st
 	return nil
 }
 
+type LaunchSpecifier struct {
+	ControllerToken string
+	Aircraft        Aircraft
+}
+
+func (*SimDispatcher) LaunchAircraft(ls *LaunchSpecifier, _ *struct{}) error {
+	sim, ok := controllerTokenToSim[ls.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	sim.LaunchAircraft(ls.Aircraft)
+	return nil
+}
+
 func RunSimServer() {
 	l, err := net.Listen("tcp", ":8000")
 	if err != nil {
@@ -1119,6 +1152,8 @@ type Sim struct {
 	controllers map[string]*ServerController // from token
 
 	eventStream *EventStream
+
+	LaunchController string
 
 	// For now, there's just one...
 	InboundHandoffController string
@@ -1338,18 +1373,20 @@ func (s *Sim) PostEvent(e Event) {
 }
 
 type SimWorldUpdate struct {
-	Aircraft       map[string]*Aircraft
-	Controllers    map[string]*Controller
-	Time           time.Time
-	SimIsPaused    bool
-	SimRate        float32
-	SimDescription string
-	Events         []Event
+	Aircraft         map[string]*Aircraft
+	Controllers      map[string]*Controller
+	Time             time.Time
+	LaunchController string
+	SimIsPaused      bool
+	SimRate          float32
+	SimDescription   string
+	Events           []Event
 }
 
 func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.Aircraft = wu.Aircraft
 	w.Controllers = wu.Controllers
+	w.LaunchController = wu.LaunchController
 	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
@@ -1367,13 +1404,14 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		return ErrInvalidControllerToken
 	} else {
 		*update = SimWorldUpdate{
-			Aircraft:       s.World.Aircraft,
-			Controllers:    s.World.Controllers,
-			Time:           s.CurrentTime,
-			SimIsPaused:    s.Paused,
-			SimRate:        s.SimRate,
-			SimDescription: s.Scenario,
-			Events:         ctrl.events.Get(),
+			Aircraft:         s.World.Aircraft,
+			Controllers:      s.World.Controllers,
+			Time:             s.CurrentTime,
+			LaunchController: s.LaunchController,
+			SimIsPaused:      s.Paused,
+			SimRate:          s.SimRate,
+			SimDescription:   s.Scenario,
+			Events:           ctrl.events.Get(),
 		}
 		return nil
 	}
@@ -1640,32 +1678,6 @@ func sampleRateMap(rates map[string]int) (string, int) {
 func (s *Sim) spawnAircraft() {
 	now := s.CurrentTime
 
-	addAircraft := func(ac *Aircraft) {
-		if _, ok := s.World.Aircraft[ac.Callsign]; ok {
-			lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
-			return
-		}
-		s.World.Aircraft[ac.Callsign] = ac
-
-		ac.MagneticVariation = s.World.MagneticVariation
-		ac.NmPerLongitude = s.World.NmPerLongitude
-
-		ac.RunWaypointCommands(ac.Waypoints[0], s.World, s)
-
-		ac.Position = ac.Waypoints[0].Location
-		if ac.Position.IsZero() {
-			lg.Errorf("%s: uninitialized initial waypoint position! %+v", ac.Callsign, ac.Waypoints[0])
-			return
-		}
-
-		ac.Heading = float32(ac.Waypoints[0].Heading)
-		if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-			ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, ac.NmPerLongitude,
-				ac.MagneticVariation)
-		}
-		ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
-	}
-
 	randomWait := func(rate int) time.Duration {
 		if rate == 0 {
 			return 365 * 24 * time.Hour
@@ -1680,8 +1692,7 @@ func (s *Sim) spawnAircraft() {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
 			if ac := s.SpawnArrival(arrivalAirport, group); ac != nil {
-				ac.FlightPlan.ArrivalAirport = arrivalAirport
-				addAircraft(ac)
+				s.LaunchAircraft(*ac)
 				lg.Printf("%s: spawned arrival", ac.Callsign)
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
@@ -1712,16 +1723,10 @@ func (s *Sim) spawnAircraft() {
 				continue
 			}
 
-			if ac := s.SpawnDeparture(ap, &s.World.DepartureRunways[idx]); ac != nil {
-				ac.FlightPlan.DepartureAirport = airport
-				var ok bool
-				if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
-					lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
-				} else {
-					addAircraft(ac)
-					lg.Printf("%s: starting takeoff roll", ac.Callsign)
-					s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
-				}
+			if ac := s.SpawnDeparture(airport, ap, &s.World.DepartureRunways[idx]); ac != nil {
+				s.LaunchAircraft(*ac)
+				lg.Printf("%s: starting takeoff roll", ac.Callsign)
+				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 			}
 		}
 	}
@@ -1877,6 +1882,7 @@ func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	}
 
 	ac.FlightPlan.DepartureAirport = airline.Airport
+	ac.FlightPlan.ArrivalAirport = airportName
 	var ok bool
 	if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
 		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
@@ -1933,7 +1939,7 @@ func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
 	return ac
 }
 
-func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
+func (s *Sim) SpawnDeparture(airportICAO string, ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
 	var dep *Departure
 	if rand.Float32() < s.DepartureChallenge {
 		// 50/50 split between the exact same departure and a departure to
@@ -2005,6 +2011,12 @@ func (s *Sim) SpawnDeparture(ap *Airport, rwy *ScenarioGroupDepartureRunway) *Ai
 		Altitude: float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)),
 	})
 
+	ac.FlightPlan.DepartureAirport = airportICAO
+	if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
+		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
+		return nil
+	}
+
 	return ac
 }
 
@@ -2023,6 +2035,55 @@ func (s *Sim) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
 		s.SimRate = r.Rate
 		return nil
 	}
+}
+
+func (s *Sim) TakeOrReturnLaunchControl(token string) error {
+	if ctrl, ok := s.controllers[token]; !ok {
+		return ErrInvalidControllerToken
+	} else if s.LaunchController != "" && ctrl.Callsign != s.LaunchController {
+		return fmt.Errorf("Launches are already under the control of %s",
+			s.LaunchController)
+	} else if s.LaunchController == "" {
+		s.LaunchController = ctrl.Callsign
+		s.eventStream.Post(Event{
+			Type:    StatusMessageEvent,
+			Message: ctrl.Callsign + " is now controlling aircraft launches",
+		})
+		return nil
+	} else {
+		s.eventStream.Post(Event{
+			Type:    StatusMessageEvent,
+			Message: s.LaunchController + " is no longer controlling aircraft launches",
+		})
+		s.LaunchController = ""
+		return nil
+	}
+}
+
+func (s *Sim) LaunchAircraft(ac Aircraft) {
+	if _, ok := s.World.Aircraft[ac.Callsign]; ok {
+		lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
+		return
+	}
+	s.World.Aircraft[ac.Callsign] = &ac
+
+	ac.MagneticVariation = s.World.MagneticVariation
+	ac.NmPerLongitude = s.World.NmPerLongitude
+
+	ac.RunWaypointCommands(ac.Waypoints[0], s.World, s)
+
+	ac.Position = ac.Waypoints[0].Location
+	if ac.Position.IsZero() {
+		lg.Errorf("%s: uninitialized initial waypoint position! %+v", ac.Callsign, ac.Waypoints[0])
+		return
+	}
+
+	ac.Heading = float32(ac.Waypoints[0].Heading)
+	if ac.Heading == 0 { // unassigned, so get the heading from the next fix
+		ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, ac.NmPerLongitude,
+			ac.MagneticVariation)
+	}
+	ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 }
 
 type AircraftSpecifier struct {

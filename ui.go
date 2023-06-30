@@ -181,7 +181,7 @@ func (c RGB) imgui() imgui.Vec4 {
 	return imgui.Vec4{c.R, c.G, c.B, 1}
 }
 
-func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
+func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -234,6 +234,21 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 			}
 		}
 
+		enableLaunch := w != nil && (w.LaunchController == "" || w.LaunchController == w.Callsign)
+		uiStartDisable(!enableLaunch)
+		if imgui.Button(FontAwesomeIconPlaneDeparture) {
+			w.TakeOrReturnLaunchControl(eventStream)
+		}
+		if imgui.IsItemHovered() {
+			verb := Select(w.LaunchController == "", "Start", "Stop")
+			tip := verb + " manually control spawning new aircraft"
+			if w.LaunchController != "" {
+				tip += "\nCurrent controller: " + w.LaunchController
+			}
+			imgui.SetTooltip(tip)
+		}
+		uiEndDisable(!enableLaunch)
+
 		if imgui.Button(FontAwesomeIconQuestionCircle) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
@@ -264,6 +279,10 @@ func drawUI(p Platform, r Renderer, w *World, stats *Stats) {
 
 	if w != nil {
 		w.DrawSettingsWindow()
+
+		if w.LaunchController == w.Callsign {
+			drawLaunchControls(w, eventStream)
+		}
 	}
 
 	drawActiveDialogBoxes()
@@ -1290,4 +1309,19 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 	}
 
 	return
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+func drawLaunchControls(w *World, eventStream *EventStream) {
+	flags := imgui.WindowFlagsNoResize
+	showLaunchControls := true
+	imgui.BeginV("Launch Controls", &showLaunchControls, flags)
+
+	imgui.Text("LauncH!")
+	imgui.End()
+
+	if !showLaunchControls {
+		w.TakeOrReturnLaunchControl(eventStream)
+	}
 }

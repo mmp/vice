@@ -58,6 +58,7 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
+	LaunchController  string
 	SimIsPaused       bool
 	SimRate           float32
 	SimDescription    string
@@ -211,6 +212,28 @@ func (w *World) SetSquawk(callsign string, squawk Squawk) error {
 
 func (w *World) SetSquawkAutomatic(callsign string) error {
 	return nil // UNIMPLEMENTED
+}
+
+func (w *World) TakeOrReturnLaunchControl(eventStream *EventStream) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.TakeOrReturnLaunchControl(),
+			IssueTime: time.Now(),
+			OnErr: func(e error) {
+				eventStream.Post(Event{
+					Type:    StatusMessageEvent,
+					Message: e.Error(),
+				})
+			},
+		})
+}
+
+func (w *World) LaunchAircraft(ac Aircraft) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.LaunchAircraft(ac),
+			IssueTime: time.Now(),
+		})
 }
 
 func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
