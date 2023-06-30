@@ -86,6 +86,7 @@ type World struct {
 	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
+	GoAroundRate      float32
 }
 
 type PendingCall struct {
@@ -164,6 +165,7 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.DepartureRates = other.DepartureRates
 	w.ArrivalGroupRates = other.ArrivalGroupRates
+	w.GoAroundRate = other.GoAroundRate
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -646,7 +648,7 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 	}
 }
 
-func (w *World) CreateArrival(airportName string, arrivalGroup string, goAround bool) *Aircraft {
+func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround bool) (*Aircraft, error) {
 	arrivals := w.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
@@ -654,31 +656,27 @@ func (w *World) CreateArrival(airportName string, arrivalGroup string, goAround 
 		return ok
 	})
 	if idx == -1 {
-		lg.Errorf("unable to find route in arrival group %s for airport %s?!",
+		return nil, fmt.Errorf("unable to find route in arrival group %s for airport %s?!",
 			arrivalGroup, airportName)
-		return nil
 	}
 	arr := arrivals[idx]
 
 	airline := Sample(arr.Airlines[airportName])
 	ac := sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
-		return nil
+		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
 	ac.FlightPlan.DepartureAirport = airline.Airport
 	ac.FlightPlan.ArrivalAirport = airportName
 	var ok bool
 	if ac.FlightPlan.DepartureAirportLocation, ok = w.Locate(ac.FlightPlan.DepartureAirport); !ok {
-		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
-		// This is fine; it's probably international and we shouldn't need the departure location for an arrival...
-		//return nil
+		return nil, fmt.Errorf("%s: unable to find departure airport location?", ac.FlightPlan.DepartureAirport)
 	}
 
 	ac.FlightPlan.ArrivalAirport = airportName
 	if ac.FlightPlan.ArrivalAirportLocation, ok = w.Locate(ac.FlightPlan.ArrivalAirport); !ok {
-		lg.Errorf("%s: unable to find arrival airport %s location?", ac.Callsign, ac.FlightPlan.ArrivalAirport)
-		return nil
+		return nil, fmt.Errorf("%s: unable to find arrival airport location?", ac.FlightPlan.ArrivalAirport)
 	}
 
 	ac.TrackingController = arr.InitialController
@@ -695,6 +693,7 @@ func (w *World) CreateArrival(airportName string, arrivalGroup string, goAround 
 	// Hold onto these with the Aircraft so we have them later.
 	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
 
+	ac.Position = ac.Waypoints[0].Location
 	ac.Altitude = arr.InitialAltitude
 	ac.IAS = min(arr.InitialSpeed, ac.Performance.Speed.Cruise)
 
@@ -704,8 +703,7 @@ func (w *World) CreateArrival(airportName string, arrivalGroup string, goAround 
 		if _, ok := ap.Approaches[arr.ExpectApproach]; ok {
 			ac.ApproachId = arr.ExpectApproach
 		} else {
-			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
-			return nil
+			return nil, fmt.Errorf("%s: unable to find expected approach", arr.ExpectApproach)
 		}
 	}
 
@@ -721,7 +719,7 @@ func (w *World) CreateArrival(airportName string, arrivalGroup string, goAround 
 		AltitudeRestriction: arr.ClearedAltitude,
 	}
 
-	return ac
+	return ac, nil
 }
 
 func (w *World) CreateDeparture(airport, runway, category string, challenge float32) (*Aircraft, error) {

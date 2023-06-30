@@ -1260,6 +1260,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*Scenar
 	w.DepartureRunways = sc.DepartureRunways
 	w.DepartureRates = s.DepartureRates
 	w.ArrivalGroupRates = s.ArrivalGroupRates
+	w.GoAroundRate = s.GoAroundRate
 
 	// Extract just the active controllers
 	for callsign, ctrl := range sg.ControlPositions {
@@ -1697,7 +1698,9 @@ func (s *Sim) spawnAircraft() {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
 			goAround := rand.Float32() < s.GoAroundRate
-			if ac := s.World.CreateArrival(arrivalAirport, group, goAround); ac != nil {
+			if ac, err := s.World.CreateArrival(group, arrivalAirport, goAround); err != nil {
+				lg.Errorf("%v", err)
+			} else if ac != nil {
 				s.LaunchAircraft(*ac)
 				lg.Printf("%s: spawned arrival", ac.Callsign)
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))

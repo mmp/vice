@@ -274,6 +274,18 @@ func TestRingBuffer(t *testing.T) {
 	}
 }
 
+func TestReduceSlice(t *testing.T) {
+	v := []int{1, -2, 3, 4}
+
+	if r := ReduceSlice(v, func(v int, r int) int { return v + r }, 10); r != 16 {
+		t.Errorf("ReduceSlice with + got %d, not 16 expected", r)
+	}
+
+	if r := ReduceSlice(v, func(v int, r int) int { return v * r }, 2); r != -48 {
+		t.Errorf("ReduceSlice with * got %d, not -48 expected", r)
+	}
+}
+
 func TestReduceMap(t *testing.T) {
 	m := map[int]string{
 		0:  "hello",

@@ -1070,6 +1070,18 @@ func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
 	return mnew
 }
 
+// ReduceSlice applies the provided reduction function to the given slice,
+// starting with the provided initial value.  The update rule applied is
+// result=reduce( value, result), where the initial value of result is
+// given by the initial parameter.
+func ReduceSlice[V any, R any](s []V, reduce func(V, R) R, initial R) R {
+	result := initial
+	for _, v := range s {
+		result = reduce(v, result)
+	}
+	return result
+}
+
 // ReduceMap applies the provided reduction function to the given map,
 // starting with the provided initial value.  The update rule applied is
 // result=reduce(key, value, result), where the initial value of result is
