@@ -1323,7 +1323,7 @@ type LaunchControlWindow struct {
 }
 
 type LaunchDeparture struct {
-	Aircraft           Aircraft
+	Aircraft           *Aircraft
 	Airport            string
 	Runway             string
 	Category           string
@@ -1332,7 +1332,7 @@ type LaunchDeparture struct {
 }
 
 type LaunchArrival struct {
-	Aircraft           Aircraft
+	Aircraft           *Aircraft
 	Group              string
 	LastLaunchCallsign string
 	LastLaunchTime     time.Time
@@ -1362,9 +1362,13 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 	return lc
 }
 
-func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) Aircraft {
-	panic("todo")
-	return Aircraft{}
+func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *Aircraft {
+	for i := 0; i < 100; i++ {
+		if ac, err := lc.w.CreateDeparture(airport, rwy, category, 0); err == nil {
+			return ac
+		}
+	}
+	panic("unable to spawn a departure")
 }
 
 func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
@@ -1374,8 +1378,16 @@ func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 	// TODO: global pause button (if we do auto launches...?)
 
 	imgui.Text("Departures")
-	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
-	if imgui.BeginTableV("dep", 7, flags, imgui.Vec2{}, 0.0) {
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV("dep", 8, flags, imgui.Vec2{500, 0}, 0.0) {
+		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("Callsign")
+		imgui.TableSetupColumn("A/C Type")
+		imgui.TableSetupColumn("Exit")
+		imgui.TableSetupColumn("MIT")
+		imgui.TableSetupColumn("Time")
+		imgui.TableHeadersRow()
+
 		for _, dep := range lc.departures {
 			imgui.TableNextRow()
 
@@ -1389,10 +1401,13 @@ func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 			imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
 
 			imgui.TableNextColumn()
+			imgui.Text(dep.Aircraft.Scratchpad)
+
+			imgui.TableNextColumn()
 			if dep.LastLaunchCallsign != "" {
 				if ac := lc.w.Aircraft[dep.LastLaunchCallsign]; ac != nil {
 					d := nmdistance2ll(ac.Position, dep.Aircraft.Position)
-					imgui.Text(fmt.Sprintf("%.1f MIT", d))
+					imgui.Text(fmt.Sprintf("%.1f", d))
 				}
 			}
 
@@ -1405,9 +1420,12 @@ func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 
 			imgui.TableNextColumn()
 			if imgui.Button(FontAwesomeIconPlaneDeparture) {
-				// TODO
+				lc.w.LaunchAircraft(*dep.Aircraft)
 				dep.LastLaunchCallsign = dep.Aircraft.Callsign
 				dep.LastLaunchTime = lc.w.SimTime
+
+				dep.Aircraft = lc.spawnDeparture(dep.Airport, dep.Runway, dep.Category)
+
 			}
 
 			imgui.TableNextColumn()

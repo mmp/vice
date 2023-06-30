@@ -1599,7 +1599,10 @@ func (s *Sim) updateState() {
 		}
 	}
 
-	s.spawnAircraft()
+	// Don't spawn automatically if someone is spawning manually.
+	if s.LaunchController == "" {
+		s.spawnAircraft()
+	}
 }
 
 func (s *Sim) prespawn() {
@@ -1693,7 +1696,8 @@ func (s *Sim) spawnAircraft() {
 		if now.After(s.NextArrivalSpawn[group]) {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
-			if ac := s.SpawnArrival(arrivalAirport, group); ac != nil {
+			goAround := rand.Float32() < s.GoAroundRate
+			if ac := s.World.CreateArrival(arrivalAirport, group, goAround); ac != nil {
 				s.LaunchAircraft(*ac)
 				lg.Printf("%s: spawned arrival", ac.Callsign)
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
@@ -1714,7 +1718,6 @@ func (s *Sim) spawnAircraft() {
 				continue
 			}
 
-			ap := s.World.GetAirport(airport)
 			idx := FindIf(s.World.DepartureRunways,
 				func(r ScenarioGroupDepartureRunway) bool {
 					return r.Airport == airport && r.Runway == runway && r.Category == category
@@ -1725,301 +1728,16 @@ func (s *Sim) spawnAircraft() {
 				continue
 			}
 
-			if ac := s.SpawnDeparture(airport, ap, &s.World.DepartureRunways[idx]); ac != nil {
+			ac, err := s.World.CreateDeparture(airport, runway, category, s.DepartureChallenge)
+			if err != nil {
+				lg.Errorf("%v", err)
+			} else {
 				s.LaunchAircraft(*ac)
 				lg.Printf("%s: starting takeoff roll", ac.Callsign)
 				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 			}
 		}
 	}
-}
-
-var badCallsigns map[string]interface{} = map[string]interface{}{
-	// 9/11
-	"AAL11":  nil,
-	"UAL175": nil,
-	"AAL77":  nil,
-	"UAL93":  nil,
-
-	// Pilot suicide
-	"MAS17":   nil,
-	"MAS370":  nil,
-	"GWI18G":  nil,
-	"GWI9525": nil,
-	"MSR990":  nil,
-
-	// Hijackings
-	"FDX705":  nil,
-	"AFR8969": nil,
-
-	// Selected major crashes (leaning toward callsigns vice uses or is
-	// likely to use in the future, via
-	// https://en.wikipedia.org/wiki/List_of_deadliest_aircraft_accidents_and_incidents
-	"PAA1736": nil,
-	"KLM4805": nil,
-	"JAL123":  nil,
-	"AIC182":  nil,
-	"AAL191":  nil,
-	"PAA103":  nil,
-	"KAL007":  nil,
-	"AAL587":  nil,
-	"CAL140":  nil,
-	"TWA800":  nil,
-	"SWR111":  nil,
-	"KAL801":  nil,
-	"AFR447":  nil,
-	"CAL611":  nil,
-	"LOT5055": nil,
-	"ICE001":  nil,
-}
-
-func sampleAircraft(icao, fleet string) *Aircraft {
-	al, ok := database.Airlines[icao]
-	if !ok {
-		// TODO: this should be caught at load validation time...
-		lg.Errorf("Chose airline %s, not found in database", icao)
-		return nil
-	}
-
-	if fleet == "" {
-		fleet = "default"
-	}
-
-	fl, ok := al.Fleets[fleet]
-	if !ok {
-		// TODO: this also should be caught at validation time...
-		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", icao, fleet)
-		return nil
-	}
-
-	// Sample according to fleet count
-	var aircraft string
-	acCount := 0
-	for _, ac := range fl {
-		// Reservoir sampling...
-		acCount += ac.Count
-		if rand.Float32() < float32(ac.Count)/float32(acCount) {
-			aircraft = ac.ICAO
-		}
-	}
-
-	perf, ok := database.AircraftPerformance[aircraft]
-	if !ok {
-		// TODO: validation stage...
-		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
-			aircraft, fleet, icao)
-		return nil
-	}
-
-	// random callsign
-	callsign := strings.ToUpper(icao)
-	for {
-		format := "####"
-		if len(al.Callsign.CallsignFormats) > 0 {
-			format = Sample(al.Callsign.CallsignFormats)
-		}
-		for {
-			id := ""
-			for _, ch := range format {
-				switch ch {
-				case '#':
-					id += fmt.Sprintf("%d", rand.Intn(10))
-				case '@':
-					id += string(rune('A' + rand.Intn(26)))
-				}
-			}
-			if id != "0" {
-				callsign += id
-				break
-			}
-		}
-		// Only break and accept the callsign if it's not a bad one..
-		if _, found := badCallsigns[callsign]; !found {
-			break
-		}
-	}
-
-	squawk := Squawk(rand.Intn(0o7000))
-
-	acType := aircraft
-	if perf.WeightClass == "H" {
-		acType = "H/" + acType
-	}
-	if perf.WeightClass == "J" {
-		acType = "J/" + acType
-	}
-
-	return &Aircraft{
-		Callsign:       callsign,
-		AssignedSquawk: squawk,
-		Squawk:         squawk,
-		Mode:           Charlie,
-		FlightPlan: &FlightPlan{
-			Rules:        IFR,
-			AircraftType: acType,
-		},
-
-		Performance: perf,
-	}
-}
-
-func (s *Sim) SpawnArrival(airportName string, arrivalGroup string) *Aircraft {
-	arrivals := s.World.ArrivalGroups[arrivalGroup]
-	// Randomly sample from the arrivals that have a route to this airport.
-	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
-		_, ok := ar.Airlines[airportName]
-		return ok
-	})
-	if idx == -1 {
-		lg.Errorf("unable to find route in arrival group %s for airport %s?!",
-			arrivalGroup, airportName)
-		return nil
-	}
-	arr := arrivals[idx]
-
-	airline := Sample(arr.Airlines[airportName])
-	ac := sampleAircraft(airline.ICAO, airline.Fleet)
-	if ac == nil {
-		return nil
-	}
-
-	ac.FlightPlan.DepartureAirport = airline.Airport
-	ac.FlightPlan.ArrivalAirport = airportName
-	var ok bool
-	if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
-		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
-		// This is fine; it's probably international and we shouldn't need the departure location for an arrival...
-		//return nil
-	}
-
-	ac.FlightPlan.ArrivalAirport = airportName
-	if ac.FlightPlan.ArrivalAirportLocation, ok = s.World.Locate(ac.FlightPlan.ArrivalAirport); !ok {
-		lg.Errorf("%s: unable to find arrival airport %s location?", ac.Callsign, ac.FlightPlan.ArrivalAirport)
-		return nil
-	}
-
-	ac.TrackingController = arr.InitialController
-	ac.ControllingController = arr.InitialController
-	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
-	if ac.FlightPlan.Altitude == 0 { // unspecified
-		ac.FlightPlan.Altitude = PlausibleFinalAltitude(s.World, ac.FlightPlan)
-	}
-	ac.FlightPlan.Route = arr.Route
-
-	// Start with the default waypoints for the arrival; these may be
-	// updated when an 'expect' approach is given...
-	ac.Waypoints = arr.Waypoints
-	// Hold onto these with the Aircraft so we have them later.
-	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
-
-	ac.Altitude = arr.InitialAltitude
-	ac.IAS = min(arr.InitialSpeed, ac.Performance.Speed.Cruise)
-
-	ac.Scratchpad = arr.Scratchpad
-	if arr.ExpectApproach != "" {
-		ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if _, ok := ap.Approaches[arr.ExpectApproach]; ok {
-			ac.ApproachId = arr.ExpectApproach
-		} else {
-			lg.Errorf("%s: unable to find expected %s approach", ac.Callsign, arr.ExpectApproach)
-			return nil
-		}
-	}
-
-	if rand.Float32() < s.GoAroundRate {
-		ac.AddFutureNavCommand(&GoAround{AirportDistance: 0.1 + .6*rand.Float32()})
-	}
-
-	ac.Nav.L = &FlyRoute{}
-	ac.Nav.S = &FlyRoute{
-		SpeedRestriction: min(arr.SpeedRestriction, ac.Performance.Speed.Cruise),
-	}
-	ac.Nav.V = &FlyRoute{
-		AltitudeRestriction: arr.ClearedAltitude,
-	}
-
-	return ac
-}
-
-func (s *Sim) SpawnDeparture(airportICAO string, ap *Airport, rwy *ScenarioGroupDepartureRunway) *Aircraft {
-	var dep *Departure
-	if rand.Float32() < s.DepartureChallenge {
-		// 50/50 split between the exact same departure and a departure to
-		// the same gate as the last departure.
-		if rand.Float32() < .5 {
-			dep = rwy.lastDeparture
-		} else if rwy.lastDeparture != nil {
-			idx := SampleFiltered(ap.Departures,
-				func(d Departure) bool {
-					return ap.ExitCategories[d.Exit] == ap.ExitCategories[rwy.lastDeparture.Exit]
-				})
-			if idx == -1 {
-				// This shouldn't ever happen...
-				lg.Errorf("%s: unable to find a valid departure: %s", rwy.Runway, spew.Sdump(ap))
-				return nil
-			}
-			dep = &ap.Departures[idx]
-		}
-	}
-
-	if dep == nil {
-		// Sample uniformly, minding the category, if specified
-		idx := SampleFiltered(ap.Departures,
-			func(d Departure) bool {
-				return rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit]
-			})
-		if idx == -1 {
-			// This shouldn't ever happen...
-			lg.Errorf("%s: unable to find a valid departure: %s", rwy.Runway, spew.Sdump(ap))
-			return nil
-		}
-		dep = &ap.Departures[idx]
-	}
-
-	rwy.lastDeparture = dep
-
-	airline := Sample(dep.Airlines)
-	ac := sampleAircraft(airline.ICAO, airline.Fleet)
-
-	exitRoute := rwy.ExitRoutes[dep.Exit]
-	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
-	ac.Waypoints = append(ac.Waypoints, dep.routeWaypoints...)
-
-	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
-	ac.FlightPlan.ArrivalAirport = dep.Destination
-	var ok bool
-	if ac.FlightPlan.ArrivalAirportLocation, ok = s.World.Locate(ac.FlightPlan.ArrivalAirport); !ok {
-		lg.Errorf("%s: unable to find arrival airport %s location?", ac.Callsign, ac.FlightPlan.ArrivalAirport)
-		return nil
-	}
-
-	ac.Scratchpad = s.World.Scratchpads[dep.Exit]
-	if dep.Altitude == 0 {
-		ac.FlightPlan.Altitude = PlausibleFinalAltitude(s.World, ac.FlightPlan)
-	} else {
-		ac.FlightPlan.Altitude = dep.Altitude
-	}
-
-	ac.TrackingController = ap.DepartureController
-	ac.ControllingController = ap.DepartureController
-	ac.Altitude = float32(ap.Elevation)
-	ac.IsDeparture = true
-
-	ac.Nav.L = &FlyRoute{}
-	ac.Nav.S = &FlyRoute{}
-	ac.Nav.V = &MaintainAltitude{Altitude: float32(ap.Elevation)}
-
-	ac.AddFutureNavCommand(&ClimbOnceAirborne{
-		Altitude: float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)),
-	})
-
-	ac.FlightPlan.DepartureAirport = airportICAO
-	if ac.FlightPlan.DepartureAirportLocation, ok = s.World.Locate(ac.FlightPlan.DepartureAirport); !ok {
-		lg.Errorf("%s: unable to find departure airport %s location?", ac.Callsign, ac.FlightPlan.DepartureAirport)
-		return nil
-	}
-
-	return ac
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2086,6 +1804,13 @@ func (s *Sim) LaunchAircraft(ac Aircraft) {
 			ac.MagneticVariation)
 	}
 	ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
+
+	s.eventStream.Post(Event{
+		Type: StatusMessageEvent,
+		Message: fmt.Sprintf("%s launched %s departing %s",
+			s.LaunchController, ac.Callsign, ac.FlightPlan.DepartureAirport),
+	})
+
 }
 
 type AircraftSpecifier struct {
