@@ -54,6 +54,8 @@ type World struct {
 	updateCall   *PendingCall
 	showSettings bool
 
+	launchControlWindow *LaunchControlWindow
+
 	pendingCalls []*PendingCall
 
 	// This is all read-only data that we expect other parts of the system
@@ -80,6 +82,10 @@ type World struct {
 	DepartureRunways  []ScenarioGroupDepartureRunway
 	Scratchpads       map[string]string
 	ArrivalGroups     map[string][]Arrival
+	// airport -> runway -> category -> rate
+	DepartureRates map[string]map[string]map[string]int
+	// arrival group -> airport -> rate
+	ArrivalGroupRates map[string]map[string]int
 }
 
 type PendingCall struct {
@@ -156,6 +162,8 @@ func (w *World) Assign(other *World) {
 	w.DepartureRunways = other.DepartureRunways
 	w.Scratchpads = other.Scratchpads
 	w.ArrivalGroups = other.ArrivalGroups
+	w.DepartureRates = other.DepartureRates
+	w.ArrivalGroupRates = other.ArrivalGroupRates
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {

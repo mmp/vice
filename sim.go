@@ -1258,6 +1258,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*Scenar
 	w.ApproachAirspace = sc.ApproachAirspace
 	w.DepartureAirspace = sc.DepartureAirspace
 	w.DepartureRunways = sc.DepartureRunways
+	w.DepartureRates = s.DepartureRates
+	w.ArrivalGroupRates = s.ArrivalGroupRates
 
 	// Extract just the active controllers
 	for callsign, ctrl := range sg.ControlPositions {

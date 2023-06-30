@@ -281,7 +281,10 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		w.DrawSettingsWindow()
 
 		if w.LaunchController == w.Callsign {
-			drawLaunchControls(w, eventStream)
+			if w.launchControlWindow == nil {
+				w.launchControlWindow = MakeLaunchControlWindow(w)
+			}
+			w.launchControlWindow.Draw(eventStream)
 		}
 	}
 
@@ -1313,15 +1316,127 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 
 ///////////////////////////////////////////////////////////////////////////
 
-func drawLaunchControls(w *World, eventStream *EventStream) {
-	flags := imgui.WindowFlagsNoResize
-	showLaunchControls := true
-	imgui.BeginV("Launch Controls", &showLaunchControls, flags)
+type LaunchControlWindow struct {
+	w          *World
+	departures []*LaunchDeparture
+	arrivals   []*LaunchArrival
+}
 
-	imgui.Text("LauncH!")
+type LaunchDeparture struct {
+	Aircraft           Aircraft
+	Airport            string
+	Runway             string
+	Category           string
+	LastLaunchCallsign string
+	LastLaunchTime     time.Time
+}
+
+type LaunchArrival struct {
+	Aircraft           Aircraft
+	Group              string
+	LastLaunchCallsign string
+	LastLaunchTime     time.Time
+}
+
+func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
+	lc := &LaunchControlWindow{
+		w: w,
+	}
+
+	for _, airport := range SortedMapKeys(lc.w.DepartureRates) {
+		runwayRates := lc.w.DepartureRates[airport]
+		for _, rwy := range SortedMapKeys(runwayRates) {
+			for _, category := range SortedMapKeys(runwayRates[rwy]) {
+				if runwayRates[rwy][category] > 0 {
+					lc.departures = append(lc.departures, &LaunchDeparture{
+						Aircraft: lc.spawnDeparture(airport, rwy, category),
+						Airport:  airport,
+						Runway:   rwy,
+						Category: category,
+					})
+				}
+			}
+		}
+	}
+
+	return lc
+}
+
+func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) Aircraft {
+	panic("todo")
+	return Aircraft{}
+}
+
+func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
+	showLaunchControls := true
+	imgui.BeginV("Launch Controls", &showLaunchControls, imgui.WindowFlagsNoResize)
+
+	// TODO: global pause button (if we do auto launches...?)
+
+	imgui.Text("Departures")
+	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
+	if imgui.BeginTableV("dep", 7, flags, imgui.Vec2{}, 0.0) {
+		for _, dep := range lc.departures {
+			imgui.TableNextRow()
+
+			imgui.TableNextColumn()
+			imgui.Text(dep.Airport + " " + dep.Runway + " " + dep.Category)
+
+			imgui.TableNextColumn()
+			imgui.Text(dep.Aircraft.Callsign)
+
+			imgui.TableNextColumn()
+			imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
+
+			imgui.TableNextColumn()
+			if dep.LastLaunchCallsign != "" {
+				if ac := lc.w.Aircraft[dep.LastLaunchCallsign]; ac != nil {
+					d := nmdistance2ll(ac.Position, dep.Aircraft.Position)
+					imgui.Text(fmt.Sprintf("%.1f MIT", d))
+				}
+			}
+
+			imgui.TableNextColumn()
+			if dep.LastLaunchCallsign != "" {
+				d := lc.w.SimTime.Sub(dep.LastLaunchTime).Round(time.Second).Seconds()
+				m, s := int(d)/60, int(d)%60
+				imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
+			}
+
+			imgui.TableNextColumn()
+			if imgui.Button(FontAwesomeIconPlaneDeparture) {
+				// TODO
+				dep.LastLaunchCallsign = dep.Aircraft.Callsign
+				dep.LastLaunchTime = lc.w.SimTime
+			}
+
+			imgui.TableNextColumn()
+			if imgui.Button(FontAwesomeIconRedo) {
+				dep.Aircraft = lc.spawnDeparture(dep.Airport, dep.Runway, dep.Category)
+			}
+		}
+
+		imgui.EndTable()
+	}
+
+	imgui.Separator()
+
+	imgui.Text("Arrivals")
+
+	/*
+		w.ArrivalAirports = make(map[string]*Airport)
+		for _, airportRates := range s.ArrivalGroupRates {
+			for name, rate := range airportRates {
+				if rate > 0 {
+					w.ArrivalAirports[name] = w.GetAirport(name)
+				}
+			}
+		}
+	*/
+
 	imgui.End()
 
 	if !showLaunchControls {
-		w.TakeOrReturnLaunchControl(eventStream)
+		lc.w.TakeOrReturnLaunchControl(eventStream)
 	}
 }
