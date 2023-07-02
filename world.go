@@ -247,6 +247,10 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 }
 
 func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.Scratchpad = scratchpad
+	}
+
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetScratchpad(callsign, scratchpad),
@@ -257,6 +261,10 @@ func (w *World) SetScratchpad(callsign string, scratchpad string, success func(a
 }
 
 func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.TempAltitude = alt
+	}
+
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetTemporaryAltitude(callsign, alt),
@@ -271,6 +279,14 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (w *World) InitiateTrack(callsign string, success func(any), err func(error)) {
+	// Modifying locally is not canonical but improves perceived latency in
+	// the common case; the RPC may fail, though that's fine; the next
+	// world update will roll back these changes anyway.
+	if ac := w.Aircraft[callsign]; ac != nil &&
+		ac.TrackingController == "" && ac.ControllingController == "" {
+		ac.TrackingController = w.Callsign
+	}
+
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.InitiateTrack(callsign),
@@ -281,6 +297,11 @@ func (w *World) InitiateTrack(callsign string, success func(any), err func(error
 }
 
 func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.TrackingController = ""
+		ac.ControllingController = ""
+	}
+
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.DropTrack(callsign),
@@ -311,6 +332,12 @@ func (w *World) HandoffControl(callsign string, success func(any), err func(erro
 }
 
 func (w *World) AcceptHandoff(callsign string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.InboundHandoffController == w.Callsign {
+		ac.InboundHandoffController = ""
+		ac.TrackingController = w.Callsign
+		ac.ControllingController = w.Callsign
+	}
+
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.AcceptHandoff(callsign),
@@ -498,12 +525,17 @@ func (w *World) PrintInfo(ac *Aircraft) {
 	lg.Errorf("%s", s)
 }
 
-func (w *World) DeleteAircraft(ac *Aircraft) {
+func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 	if w.simProxy != nil {
+		if w.LaunchController == "" || w.LaunchController == w.Callsign {
+			delete(w.Aircraft, ac.Callsign)
+		}
+
 		w.pendingCalls = append(w.pendingCalls,
 			&PendingCall{
 				Call:      w.simProxy.DeleteAircraft(ac.Callsign),
 				IssueTime: time.Now(),
+				OnErr:     onErr,
 			})
 	} else {
 		delete(w.Aircraft, ac.Callsign)

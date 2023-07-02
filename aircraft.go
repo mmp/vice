@@ -862,7 +862,7 @@ func (ac *Aircraft) RunWaypointCommands(wp Waypoint, w *World, ep EventPoster) {
 		}
 	}
 	if wp.Delete && w != nil {
-		w.DeleteAircraft(ac)
+		w.DeleteAircraft(ac, nil)
 	}
 	if wp.NoPT {
 		ac.NoPT = true

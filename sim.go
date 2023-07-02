@@ -1013,16 +1013,6 @@ func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *st
 				return wrapError(ErrInvalidCommandSyntax)
 			}
 
-		case 'X':
-			if _, ok := sim.World.Aircraft[cmds.Callsign]; !ok {
-				return wrapError(ErrNoAircraftForCallsign)
-			} else if err := sim.DeleteAircraft(&AircraftSpecifier{
-				ControllerToken: cmds.ControllerToken,
-				Callsign:        cmds.Callsign,
-			}, nil); err != nil {
-				return wrapError(err)
-			}
-
 		default:
 			return wrapError(ErrInvalidCommandSyntax)
 		}
@@ -2138,7 +2128,12 @@ func (s *Sim) GoAround(a *AircraftSpecifier, _ *struct{}) error {
 
 func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchCommand(a.ControllerToken, a.Callsign,
-		func(ctrl *Controller, ac *Aircraft) error { return nil },
+		func(ctrl *Controller, ac *Aircraft) error {
+			if s.LaunchController != "" && s.LaunchController != ctrl.Callsign {
+				return ErrOtherControllerHasTrack
+			}
+			return nil
+		},
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", nil
