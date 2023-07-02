@@ -1416,7 +1416,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 
 		imgui.TableNextColumn()
 		if lastLaunchCallsign != "" {
-			d := lc.w.SimTime.Sub(lastLaunchTime).Round(time.Second).Seconds()
+			d := lc.w.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
 			m, s := int(d)/60, int(d)%60
 			imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
 		}
@@ -1465,7 +1465,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 			if imgui.Button(FontAwesomeIconPlaneDeparture) {
 				lc.w.LaunchAircraft(*dep.Aircraft)
 				dep.LastLaunchCallsign = dep.Aircraft.Callsign
-				dep.LastLaunchTime = lc.w.SimTime
+				dep.LastLaunchTime = lc.w.CurrentTime()
 				dep.TotalLaunches++
 
 				dep.Aircraft = lc.spawnDeparture(dep.Airport, dep.Runway, dep.Category)
@@ -1526,7 +1526,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 			if imgui.Button(FontAwesomeIconPlaneDeparture) {
 				lc.w.LaunchAircraft(*arr.Aircraft)
 				arr.LastLaunchCallsign = arr.Aircraft.Callsign
-				arr.LastLaunchTime = lc.w.SimTime
+				arr.LastLaunchTime = lc.w.CurrentTime()
 				arr.TotalLaunches++
 
 				arr.Aircraft = lc.spawnArrival(arr.Group, arr.Airport)
