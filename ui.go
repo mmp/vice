@@ -1333,6 +1333,12 @@ type LaunchDeparture struct {
 	TotalLaunches      int
 }
 
+func (ld *LaunchDeparture) Reset() {
+	ld.LastLaunchCallsign = ""
+	ld.LastLaunchTime = time.Time{}
+	ld.TotalLaunches = 0
+}
+
 type LaunchArrival struct {
 	Aircraft           *Aircraft
 	Airport            string
@@ -1340,6 +1346,12 @@ type LaunchArrival struct {
 	LastLaunchCallsign string
 	LastLaunchTime     time.Time
 	TotalLaunches      int
+}
+
+func (la *LaunchArrival) Reset() {
+	la.LastLaunchCallsign = ""
+	la.LastLaunchTime = time.Time{}
+	la.TotalLaunches = 0
 }
 
 func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
@@ -1401,6 +1413,46 @@ func (lc *LaunchControlWindow) spawnArrival(group, airport string) *Aircraft {
 func (lc *LaunchControlWindow) Draw(eventStream *EventStream) {
 	showLaunchControls := true
 	imgui.BeginV("Launch Controls", &showLaunchControls, imgui.WindowFlagsNoResize)
+
+	if lc.w != nil && lc.w.Connected() {
+		if lc.w.SimIsPaused {
+			if imgui.Button(FontAwesomeIconPlayCircle) {
+				lc.w.ToggleSimPause()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Resume simulation")
+			}
+		} else {
+			if imgui.Button(FontAwesomeIconPauseCircle) {
+				lc.w.ToggleSimPause()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Pause simulation")
+			}
+		}
+	}
+
+	imgui.SameLine()
+	if imgui.Button(FontAwesomeIconRedo) {
+		uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
+			title: "Are you sure?",
+			query: "All aircraft will be deleted. Go ahead?",
+			ok: func() {
+				for _, ac := range lc.w.Aircraft {
+					lc.w.DeleteAircraft(ac, nil)
+					for _, dep := range lc.departures {
+						dep.Reset()
+					}
+					for _, arr := range lc.arrivals {
+						arr.Reset()
+					}
+				}
+			},
+		}), true)
+	}
+	if imgui.IsItemHovered() {
+		imgui.SetTooltip("Delete all aircraft and restart")
+	}
 
 	// TODO: global pause button (if we do auto launches...?)
 
