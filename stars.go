@@ -3742,8 +3742,9 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 	}
 
 	wp := sp.wipRBL.p[0]
-	if !wp.loc.IsZero() ||
-		(wp.ac != nil && !wp.ac.LostTrack(sim.CurrentTime()) && sp.datablockVisible(wp.ac)) {
+	if ctx.mouse != nil &&
+		(!wp.loc.IsZero() ||
+			(wp.ac != nil && !wp.ac.LostTrack(sim.CurrentTime()) && sp.datablockVisible(wp.ac))) {
 		p0 := wp.loc
 		if wp.ac != nil {
 			p0 = wp.ac.Position
