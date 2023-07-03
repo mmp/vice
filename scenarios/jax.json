@@ -338,7 +338,6 @@
                             "SAWGY": "South"
                         },
                         "location": "N30.29.38.517,W81.41.16.247",
-                        "primary": true,
                         "tower_list": 1
                     }
                 },
@@ -617,31 +616,26 @@
                 "center": "KJAX",
                 "control_positions": {
                     "JAX_30_CTR": {
-                        "callsign": "JAX_30_CTR",
                         "frequency": 135925,
                         "scope_char": "C",
                         "sector_id": "30"
                     },
                     "MCO_E_APP": {
-                        "callsign": "MCO_E_APP",
                         "frequency": 124800,
                         "scope_char": "E",
                         "sector_id": "4E"
                     },
                     "DAB_H_APP": {
-                        "callsign": "DAB_H_APP",
                         "frequency": 125725,
                         "scope_char": "H",
                         "sector_id": "5H"
                     },
                     "JAX_N_APP": {
-                        "callsign": "JAX_N_APP",
                         "frequency": 127000,
                         "scope_char": "N",
                         "sector_id": "1N"
                     },
                     "JAX_TWR": {
-                        "callsign": "JAX_TWR",
                         "frequency": 118300,
                         "scope_char": "T",
                         "sector_id": "1JT"
