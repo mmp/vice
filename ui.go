@@ -85,6 +85,7 @@ var (
 		"Fixed bugs with arrivals not obeying crossing restrictions",
 		"Improved navigation model to better make crossing restrictions at fixes",
 		"Fixed *T in the STARS scope: the line is drawn starting with the first click",
+		"For facility engineers: an error is issued for any unused items in the scenario JSON files",
 	}
 )
 

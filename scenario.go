@@ -591,6 +591,11 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioG
 		return nil
 	}
 
+	CheckJSONVsSchema[ScenarioGroup](contents, e)
+	if e.HaveErrors() {
+		return nil
+	}
+
 	var s ScenarioGroup
 	if err := UnmarshalJSON(contents, &s); err != nil {
 		e.Error(err)

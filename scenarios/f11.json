@@ -840,7 +840,6 @@
         "VIYAP": "FATHE",
         "ZALEN": "DDANY"
       },
-      "icao": "KMCO",
       "location": "N028.25.45.781,W081.18.32.260",
       "tower_list": 2
     },
@@ -924,7 +923,6 @@
         "DDANY": "South",
         "MLB": "South"
       },
-      "icao": "KORL",
       "location": "N28.32.45.979,W81.19.58.601",
       "tower_list": 1
     },
@@ -1108,7 +1106,6 @@
         "GDUNN": "West",
         "OSPRY": "West"
       },
-      "icao": "KSFB",
       "location": "N028.46.37.847,W081.14.05.700",
       "tower_list": 2
     },
@@ -1242,7 +1239,6 @@
         "WORMS": "North",
         "KLMAN": "West"
       },
-      "icao": "KMLB",
       "location": "N028.06.09.896,W080.38.42.894",
       "tower_list": 1
     }
@@ -1565,7 +1561,7 @@
             "MCOTWR"
           ],
           "lower": 0,
-          "upper ": 3000
+          "upper": 3000
         }
       ],
       "MCO_W_TWR": [
@@ -1574,7 +1570,7 @@
             "MCOWTWR"
           ],
           "lower": 0,
-          "upper ": 3000
+          "upper": 3000
         }
       ],
       "ISM_TWR": [
@@ -1583,7 +1579,7 @@
             "ISMTWR"
           ],
           "lower": 0,
-          "upper ": 1600
+          "upper": 1600
         }
       ],
       "ORL_TWR": [
@@ -1592,7 +1588,7 @@
             "ORLTWR"
           ],
           "lower": 0,
-          "upper ": 1600
+          "upper": 1600
         }
       ],
       "MLB_TWR": [
@@ -1601,7 +1597,7 @@
             "MLBTWR"
           ],
           "lower": 0,
-          "upper ": 1600
+          "upper": 1600
         }
       ],
       "SFB_N_TWR": [
@@ -1610,14 +1606,14 @@
             "SFBNTWR030"
           ],
           "lower": 0,
-          "upper ": 3000
+          "upper": 3000
         },
         {
           "boundaries": [
             "SFBNTWR007"
           ],
           "lower": 0,
-          "upper ": 700
+          "upper": 700
         }
       ],
       "SFB_S_TWR": [
@@ -1626,14 +1622,14 @@
             "SFBSTWR030"
           ],
           "lower": 0,
-          "upper ": 3000
+          "upper": 3000
         },
         {
           "boundaries": [
             "SFBSTWR007"
           ],
           "lower": 0,
-          "upper ": 700
+          "upper": 700
         }
       ]
     }
@@ -2430,11 +2426,11 @@
               "icao": "SWA"
             },
             {
-              "airrport": "KPHL",
+              "airport": "KPHL",
               "icao": "SWA"
             },
             {
-              "airrport": "KPHL",
+              "airport": "KPHL",
               "icao": "NKS"
             },
             {
@@ -2447,7 +2443,7 @@
               "icao": "AAL"
             },
             {
-              "airrport": "KRDU",
+              "airport": "KRDU",
               "icao": "SWA"
             },
             {
@@ -2459,12 +2455,12 @@
               "icao": "FFT"
             },
             {
-              "airrport": "KRDU",
+              "airport": "KRDU",
               "fleet": "short",
               "icao": "DAL"
             },
             {
-              "airrport": "KPVD",
+              "airport": "KPVD",
               "icao": "FFT"
             },
             {
@@ -2477,7 +2473,7 @@
               "icao": "FFT"
             },
             {
-              "airrport": "KROC",
+              "airport": "KROC",
               "icao": "NKS"
             },
             {
@@ -2649,7 +2645,7 @@
           ],
           "KSFB": [
             {
-              "airoprt": "KRSW",
+              "airport": "KRSW",
               "icao": "AAY"
             },
             {
@@ -3271,11 +3267,11 @@
               "icao": "SWA"
             },
             {
-              "airrport": "KPHL",
+              "airport": "KPHL",
               "icao": "SWA"
             },
             {
-              "airrport": "KPHL",
+              "airport": "KPHL",
               "icao": "NKS"
             },
             {
@@ -3288,7 +3284,7 @@
               "icao": "AAL"
             },
             {
-              "airrport": "KRDU",
+              "airport": "KRDU",
               "icao": "SWA"
             },
             {
@@ -3300,12 +3296,12 @@
               "icao": "FFT"
             },
             {
-              "airrport": "KRDU",
+              "airport": "KRDU",
               "fleet": "short",
               "icao": "DAL"
             },
             {
-              "airrport": "KPVD",
+              "airport": "KPVD",
               "icao": "FFT"
             },
             {
@@ -3318,7 +3314,7 @@
               "icao": "FFT"
             },
             {
-              "airrport": "KROC",
+              "airport": "KROC",
               "icao": "NKS"
             },
             {
