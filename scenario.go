@@ -46,6 +46,7 @@ type Arrival struct {
 	Route           string                   `json:"route"`
 
 	InitialController string  `json:"initial_controller"`
+	HandoffController string  `json:"handoff_controller"`
 	InitialAltitude   float32 `json:"initial_altitude"`
 	ClearedAltitude   float32 `json:"cleared_altitude"`
 	InitialSpeed      float32 `json:"initial_speed"`
@@ -75,9 +76,10 @@ type AirspaceVolume struct {
 }
 
 type Scenario struct {
-	Controller  string   `json:"callsign"`
-	Wind        Wind     `json:"wind"`
-	Controllers []string `json:"controllers"`
+	SoloController   string                          `json:"solo_controller"`
+	MultiControllers map[string]*MultiUserController `json:"multi_controllers"`
+	Wind             Wind                            `json:"wind"`
+	Controllers      []string                        `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
@@ -91,6 +93,11 @@ type Scenario struct {
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
 	DefaultMap string `json:"default_map"`
+}
+
+type MultiUserController struct {
+	Primary          bool   `json:"primary"`
+	BackupController string `json:"backup"`
 }
 
 type ScenarioGroupDepartureRunway struct {
@@ -188,6 +195,64 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Pop()
 	}
 
+	// These shouldn't be listed in "controllers"; just silently remove
+	// them if they're there.
+	s.Controllers = FilterSlice(s.Controllers, func(c string) bool {
+		_, ok := s.MultiControllers[c]
+		return !ok && c != s.SoloController
+	})
+
+	if _, ok := sg.ControlPositions[s.SoloController]; s.SoloController != "" && !ok {
+		e.ErrorString("controller \"%s\" for \"solo_controller\" is unknown", s.SoloController)
+	}
+
+	// Various multi_controllers validations
+	primaryController := ""
+	for callsign, mc := range s.MultiControllers {
+		if mc.Primary {
+			if primaryController != "" {
+				e.ErrorString("multiple controllers specified as \"primary\": %s %s",
+					primaryController, callsign)
+			} else {
+				primaryController = callsign
+			}
+		}
+	}
+	if len(s.MultiControllers) > 0 && primaryController == "" {
+		e.ErrorString("No controller in \"multi_controllers\" was specified as \"primary\"")
+	}
+
+	havePathToPrimary := make(map[string]interface{})
+	havePathToPrimary[primaryController] = nil
+	var followPathToPrimary func(callsign string, mc *MultiUserController, depth int) bool
+	followPathToPrimary = func(callsign string, mc *MultiUserController, depth int) bool {
+		if callsign == "" {
+			return false
+		}
+		if _, ok := havePathToPrimary[callsign]; ok {
+			return true
+		}
+		if depth == 0 || mc.BackupController == "" {
+			return false
+		}
+
+		bmc, ok := s.MultiControllers[mc.BackupController]
+		if !ok {
+			e.ErrorString("Backup controller \"%s\" for \"%s\" is unknown",
+				mc.BackupController, callsign)
+			return false
+		}
+
+		if followPathToPrimary(mc.BackupController, bmc, depth-1) {
+			havePathToPrimary[callsign] = nil
+			return true
+		}
+		return false
+	}
+	for callsign, mc := range s.MultiControllers {
+		followPathToPrimary(callsign, mc, 25)
+	}
+
 	for _, name := range SortedMapKeys(s.ArrivalGroupDefaultRates) {
 		e.Push("Arrival group " + name)
 		// Make sure the arrival group has been defined
@@ -212,6 +277,19 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 					}
 				}
 				e.Pop()
+			}
+
+			// If this scenario supports multi-user, then make sure all of
+			// the handoff_controllers are specified and valid.
+			if len(s.MultiControllers) > 0 {
+				for _, arr := range arrivals {
+					if arr.HandoffController == "" {
+						e.ErrorString("No \"handoff_controller\" specified for arrival")
+					} else if _, ok := havePathToPrimary[arr.HandoffController]; !ok {
+						e.ErrorString("Specified \"handoff_controller\" \"%s\" is not eventually backed up by \"%s\"",
+							arr.HandoffController, primaryController)
+					}
+				}
 			}
 		}
 		e.Pop()
@@ -330,7 +408,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		// make sure the controller has at least one scenario..
 		found := false
 		for _, sc := range sg.Scenarios {
-			if sc.Controller == sg.DefaultController {
+			if sc.SoloController == sg.DefaultController {
 				found = true
 				break
 			}
@@ -405,9 +483,15 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				e.Pop()
 			}
 
-			if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
-				e.ErrorString("controller \"%s\" not found", ar.InitialController)
+			if ar.InitialController == "" {
+				e.ErrorString("\"initial_controller\" missing")
+			} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
+				e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
 			}
+			// Don't worry about handoff_controller here: it's only used if multi_controllers
+			// is specified and then it doesn't have to be a valid controller (e.g. JFK_LENDY_APP,
+			// which either goes to JFK_G_APP or JFK_K_APP, depending on the configuration...)
+
 			e.Pop()
 		}
 		e.Pop()
@@ -436,7 +520,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		sc := &SimScenarioConfiguration{
 			DepartureChallenge: 0.25,
 			GoAroundRate:       0.05,
-			Controller:         scenario.Controller,
+			Controller:         scenario.SoloController,
 			Wind:               scenario.Wind,
 			ArrivalGroupRates:  scenario.ArrivalGroupDefaultRates,
 			DepartureRunways:   scenario.DepartureRunways,

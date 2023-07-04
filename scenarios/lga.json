@@ -883,7 +883,7 @@
     },
     "scenarios": {
       "KLGA Depart 13": {
-        "callsign": "LGA_DEP",
+        "solo_controller": "LGA_DEP",
         "controllers": [
           "LGA_DEP",
           "BOS_E_CTR",
@@ -929,7 +929,7 @@
         }
       },
       "KLGA Depart 4": {
-        "callsign": "LGA_DEP",
+        "solo_controller": "LGA_DEP",
         "controllers": [
           "LGA_DEP",
           "BOS_E_CTR",
@@ -975,7 +975,7 @@
         }
       },
       "KLGA Depart 31": {
-        "callsign": "LGA_DEP",
+        "solo_controller": "LGA_DEP",
         "controllers": [
           "LGA_DEP",
           "BOS_E_CTR",
@@ -1038,7 +1038,7 @@
             "KLGA": 10
           }
         },
-        "callsign": "LGA_APP",
+        "solo_controller": "LGA_APP",
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1101,7 +1101,7 @@
             "KLGA": 10
           }
         },
-        "callsign": "LGA_APP",
+        "solo_controller": "LGA_APP",
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1164,7 +1164,7 @@
             "KLGA": 10
           }
         },
-        "callsign": "LGA_APP",
+        "solo_controller": "LGA_APP",
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1227,7 +1227,7 @@
             "KLGA": 10
           }
         },
-        "callsign": "LGA_APP",
+        "solo_controller": "LGA_APP",
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1290,7 +1290,7 @@
             "KLGA": 10
           }
         },
-        "callsign": "LGA_APP",
+        "solo_controller": "LGA_APP",
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",

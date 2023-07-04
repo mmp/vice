@@ -3609,7 +3609,7 @@
           "KMCO": 10
         }
       },
-      "callsign": "MCO_E_APP",
+      "solo_controller": "MCO_E_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -3744,7 +3744,7 @@
           "KMCO": 15
         }
       },
-      "callsign": "MCO_E_APP",
+      "solo_controller": "MCO_E_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -3835,7 +3835,7 @@
         "MCO_E1_APP",
         "MCO_E2_APP"
       ],
-      "callsign": "MCO_W_DEP",
+      "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -3926,7 +3926,7 @@
         "MCO_E1_APP",
         "MCO_E2_APP"
       ],
-      "callsign": "MCO_W_DEP",
+      "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",

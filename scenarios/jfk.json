@@ -1919,6 +1919,7 @@
         },
         "cleared_altitude": 11000,
         "cruise_altitude": 39000,
+        "handoff_controller": "JFK_G_APP",
         "initial_altitude": 12000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -1947,6 +1948,7 @@
         },
         "cleared_altitude": 10000,
         "cruise_altitude": 14000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 10000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -1973,6 +1975,7 @@
         },
         "cleared_altitude": 10000,
         "cruise_altitude": 14000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 10000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -1991,6 +1994,7 @@
         },
         "cleared_altitude": 8000,
         "cruise_altitude": 8000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 8000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -2020,6 +2024,7 @@
         },
         "cleared_altitude": 10000,
         "cruise_altitude": 10000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 10000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -2046,6 +2051,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
+        "handoff_controller": "JFK_G_APP",
         "initial_altitude": 5000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2063,6 +2069,7 @@
         },
         "cleared_altitude": 7000,
         "cruise_altitude": 27000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 7000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2080,6 +2087,7 @@
         },
         "cleared_altitude": 10000,
         "cruise_altitude": 10000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 10000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -2098,6 +2106,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 5000,
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
@@ -2116,6 +2125,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 5000,
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
@@ -2140,6 +2150,7 @@
         },
         "cleared_altitude": 10000,
         "cruise_altitude": 16000,
+        "handoff_controller": "JFK_K_APP",
         "initial_altitude": 9000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -2176,6 +2187,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
+        "handoff_controller": "JFK_G_APP",
         "initial_altitude": 5000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2204,6 +2216,7 @@
         },
         "cleared_altitude": 4000,
         "cruise_altitude": 9000,
+        "handoff_controller": "JFK_G_APP",
         "initial_altitude": 4000,
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
@@ -2331,6 +2344,7 @@
         },
         "cleared_altitude": 19000,
         "cruise_altitude": 37000,
+        "handoff_controller": "JFK_LENDY_APP",
         "initial_altitude": 20000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2428,6 +2442,7 @@
         },
         "cleared_altitude": 19000,
         "cruise_altitude": 39000,
+        "handoff_controller": "JFK_LENDY_APP",
         "initial_altitude": 19000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2466,6 +2481,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 15000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2492,6 +2508,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 29000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2524,6 +2541,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 22000,
+        "handoff_controller": "ISP_APP",
         "initial_altitude": 6000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
@@ -2570,6 +2588,7 @@
         },
         "cleared_altitude": 9000,
         "cruise_altitude": 41000,
+        "handoff_controller": "JFK_G_APP",
         "initial_altitude": 11000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2740,6 +2759,7 @@
         },
         "cleared_altitude": 12000,
         "cruise_altitude": 36000,
+        "handoff_controller": "JFK_K_APP",
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
@@ -2771,6 +2791,7 @@
         },
         "cleared_altitude": 12000,
         "cruise_altitude": 36000,
+        "handoff_controller": "JFK_K_APP",
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
@@ -2806,6 +2827,12 @@
       "scope_char": "T",
       "sector_id": "3P"
     },
+    "ISP_APP": {
+      "frequency": 120050,
+      "full_name": "New York approach",
+      "scope_char": "H",
+      "sector_id": "3H"
+    },
     "ISP_TWR": {
       "frequency": 119300,
       "full_name": "Long Island Macarthur tower",
@@ -2817,6 +2844,30 @@
       "full_name": "New York approach",
       "scope_char": "G",
       "sector_id": "2G"
+    },
+    "JFK_A_APP": {
+      "frequency": 132400,
+      "full_name": "New York approach",
+      "scope_char": "A",
+      "sector_id": "2A"
+    },
+    "JFK_G_APP": {
+      "frequency": 128125,
+      "full_name": "New York approach",
+      "scope_char": "G",
+      "sector_id": "2G"
+    },
+    "JFK_K_APP": {
+      "frequency": 125700,
+      "full_name": "New York approach",
+      "scope_char": "K",
+      "sector_id": "2K"
+    },
+    "JFK_S_APP": {
+      "frequency": 118400,
+      "full_name": "New York approach",
+      "scope_char": "S",
+      "sector_id": "2S"
     },
     "JFK_DEP": {
       "frequency": 135900,
@@ -2987,9 +3038,8 @@
   },
   "scenarios": {
     "KJFK Depart 13R": {
-      "callsign": "JFK_DEP",
+      "solo_controller": "JFK_DEP",
       "controllers": [
-        "JFK_DEP",
         "BOS_E_CTR",
         "JFK_TWR",
         "LGA_DEP",
@@ -3107,9 +3157,29 @@
           "KJFK": 12
         }
       },
-      "callsign": "JFK_APP",
+      "solo_controller": "JFK_APP",
+      "multi_controllers": {
+            "JFK_G_APP": {
+                "primary": true
+            },
+            "ISP_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_A_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_LENDY_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_K_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_S_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_DEP": { }
+      },
       "controllers": [
-        "JFK_APP",
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
@@ -3215,7 +3285,28 @@
           "KJFK": 12
         }
       },
-      "callsign": "JFK_APP",
+      "solo_controller": "JFK_APP",
+      "multi_controllers": {
+            "JFK_G_APP": {
+                "primary": true
+            },
+            "ISP_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_A_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_LENDY_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_K_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_S_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_DEP": { }
+      },
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
@@ -3271,9 +3362,8 @@
       }
     },
     "KJFK Depart 22R": {
-      "callsign": "JFK_DEP",
+      "solo_controller": "JFK_DEP",
       "controllers": [
-        "JFK_DEP",
         "BOS_E_CTR",
         "JFK_TWR",
         "LGA_APP",
@@ -3395,7 +3485,28 @@
           "KJFK": 12
         }
       },
-      "callsign": "JFK_APP",
+      "solo_controller": "JFK_APP",
+      "multi_controllers": {
+            "JFK_G_APP": {
+                "primary": true
+            },
+            "ISP_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_A_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_LENDY_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_K_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_S_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_DEP": { }
+      },
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
@@ -3451,9 +3562,8 @@
       }
     },
     "KJFK Depart 31L": {
-      "callsign": "JFK_DEP",
+      "solo_controller": "JFK_DEP",
       "controllers": [
-        "JFK_DEP",
         "BOS_E_CTR",
         "JFK_TWR",
         "LGA_APP",
@@ -3575,9 +3685,29 @@
           "KJFK": 12
         }
       },
-      "callsign": "JFK_APP",
+      "solo_controller": "JFK_APP",
+      "multi_controllers": {
+            "JFK_G_APP": {
+                "primary": true
+            },
+            "ISP_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_LENDY_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_A_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_K_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_S_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_DEP": { }
+      },
       "controllers": [
-        "JFK_APP",
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
@@ -3631,9 +3761,8 @@
       }
     },
     "KJFK Depart 4L": {
-      "callsign": "JFK_DEP",
+      "solo_controller": "JFK_DEP",
       "controllers": [
-        "JFK_DEP",
         "BOS_E_CTR",
         "JFK_TWR",
         "LGA_APP",
@@ -3755,9 +3884,29 @@
           "KJFK": 12
         }
       },
-      "callsign": "JFK_APP",
+      "solo_controller": "JFK_APP",
+      "multi_controllers": {
+            "JFK_G_APP": {
+                "primary": true
+            },
+            "ISP_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_A_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_LENDY_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_K_APP": {
+                "backup": "JFK_G_APP"
+            },
+            "JFK_S_APP": {
+                "backup": "JFK_K_APP"
+            },
+            "JFK_DEP": { }
+      },
       "controllers": [
-        "JFK_APP",
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",

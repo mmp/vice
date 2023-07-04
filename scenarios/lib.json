@@ -2571,7 +2571,7 @@
   },
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
-      "callsign": "NY_L_DEP",
+      "solo_controller": "NY_L_DEP",
       "controllers": [
         "NY_L_DEP",
         "EWR_DEP",
@@ -2636,7 +2636,7 @@
       ]
     },
     "Liberty Combined - LGA Owns Coney": {
-      "callsign": "NY_L_DEP",
+      "solo_controller": "NY_L_DEP",
       "controllers": [
         "NY_L_DEP",
         "EWR_DEP",
@@ -2696,7 +2696,7 @@
       ]
     },
     "Liberty East": {
-      "callsign": "NY_LE_DEP",
+      "solo_controller": "NY_LE_DEP",
       "controllers": [
         "NY_LE_DEP",
         "NY_LW_DEP",
@@ -2786,7 +2786,7 @@
       ]
     },
     "Liberty North": {
-      "callsign": "NY_LN_DEP",
+      "solo_controller": "NY_LN_DEP",
       "controllers": [
         "NY_LE_DEP",
         "NY_LW_DEP",
@@ -2840,7 +2840,7 @@
       ]
     },
     "Liberty South JFK Owns Coney": {
-      "callsign": "NY_LS_DEP",
+      "solo_controller": "NY_LS_DEP",
       "controllers": [
         "NY_LE_DEP",
         "NY_LW_DEP",
@@ -2918,7 +2918,7 @@
       ]
     },
     "Liberty South LGA Owns Coney": {
-      "callsign": "NY_LS_DEP",
+      "solo_controller": "NY_LS_DEP",
       "controllers": [
         "NY_LE_DEP",
         "NY_LW_DEP",
@@ -2990,7 +2990,7 @@
       ]
     },
     "Liberty West": {
-      "callsign": "NY_LW_DEP",
+      "solo_controller": "NY_LW_DEP",
       "controllers": [
         "NY_LE_DEP",
         "NY_LW_DEP",

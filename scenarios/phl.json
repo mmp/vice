@@ -5083,7 +5083,7 @@
           "KPHL": 22
         }
       },
-      "callsign": "PHL_F1_APP",
+      "solo_controller": "PHL_F1_APP",
       "controllers": [
         "PHL_TWR",
         "PHL_NA_APP",
@@ -5132,7 +5132,7 @@
           "KPHL": 10
         }
       },
-      "callsign": "PHL_NA_APP",
+      "solo_controller": "PHL_NA_APP",
       "controllers": [
         "PHL_TWR",
         "DC_CTR",
@@ -5193,7 +5193,7 @@
           "KPHL": 10
         }
       },
-      "callsign": "PHL_NA_APP",
+      "solo_controller": "PHL_NA_APP",
       "controllers": [
         "PHL_TWR",
         "DC_CTR",

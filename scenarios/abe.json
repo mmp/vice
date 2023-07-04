@@ -630,7 +630,7 @@
           "KABE": 14
         }
       },
-      "callsign": "ABE_APP",
+      "solo_controller": "ABE_APP",
       "controllers": [
         "ABE_TWR",
         "ABE_APP",
@@ -678,7 +678,7 @@
           "KABE": 14
         }
       },
-      "callsign": "ABE_APP",
+      "solo_controller": "ABE_APP",
       "controllers": [
         "ABE_TWR",
         "ABE_APP",

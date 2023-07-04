@@ -1257,7 +1257,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*Scenar
 
 	// Extract just the active controllers
 	for callsign, ctrl := range sg.ControlPositions {
-		if callsign == sc.Controller || Find(sc.Controllers, callsign) != -1 {
+		if callsign == sc.SoloController || Find(sc.Controllers, callsign) != -1 {
 			w.Controllers[callsign] = ctrl
 		}
 	}

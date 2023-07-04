@@ -690,7 +690,7 @@
                                 "KJAX": 2
                             }
                             },
-                        "callsign": "JAX_N_APP",
+                        "solo_controller": "JAX_N_APP",
                         "controllers": [
                             "JAX_30_CTR",
                             "DAB_H_APP",
@@ -738,7 +738,7 @@
                                 "KJAX": 2
                             }
                         },
-                        "callsign": "JAX_N_APP",
+                        "solo_controller": "JAX_N_APP",
                         "controllers": [
                             "JAX_30_CTR",
                             "DAB_H_APP",
