@@ -165,11 +165,7 @@ func main() {
 
 		if globalConfig.Sim != nil {
 			var result NewSimResult
-			if err := localServer.client.Call("SimManager.Add",
-				&AddSimConfiguration{
-					Sim:        globalConfig.Sim,
-					Controller: globalConfig.Callsign,
-				}, &result); err != nil {
+			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 				lg.Errorf("%v", err)
 			} else {
 				world = result.World

@@ -56,7 +56,8 @@ type Aircraft struct {
 	Nav NAVState
 
 	// Set for arrivals, if there are runway-specific waypoints.
-	ArrivalRunwayWaypoints map[string]WaypointArray
+	ArrivalRunwayWaypoints   map[string]WaypointArray
+	ArrivalHandoffController string
 
 	Approach            *Approach
 	ApproachId          string

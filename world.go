@@ -61,6 +61,9 @@ type World struct {
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	LaunchController  string
+	PrimaryController string
+	MultiControllers  map[string]*MultiUserController
+
 	SimIsPaused       bool
 	SimRate           float32
 	SimDescription    string
@@ -730,6 +733,7 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	ac.Position = ac.Waypoints[0].Location
 	ac.Altitude = arr.InitialAltitude
 	ac.IAS = min(arr.InitialSpeed, ac.Performance.Speed.Cruise)
+	ac.ArrivalHandoffController = arr.HandoffController
 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {

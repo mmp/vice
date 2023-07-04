@@ -79,7 +79,8 @@ type Scenario struct {
 	SoloController   string                          `json:"solo_controller"`
 	MultiControllers map[string]*MultiUserController `json:"multi_controllers"`
 	Wind             Wind                            `json:"wind"`
-	Controllers      []string                        `json:"controllers"`
+	// Virtual ones only here
+	Controllers []string `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
@@ -504,11 +505,11 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg, simConfigurations)
+	initializeSimConfigurations(sg, simConfigurations, *server == true)
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,
-	simConfigurations map[string]*SimConfiguration) {
+	simConfigurations map[string]*SimConfiguration, multiController bool) {
 	config := &SimConfiguration{
 		ScenarioConfigs:   make(map[string]*SimScenarioConfiguration),
 		ControlPositions:  sg.ControlPositions,
@@ -520,11 +521,28 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		sc := &SimScenarioConfiguration{
 			DepartureChallenge: 0.25,
 			GoAroundRate:       0.05,
-			Controller:         scenario.SoloController,
 			Wind:               scenario.Wind,
 			ArrivalGroupRates:  scenario.ArrivalGroupDefaultRates,
 			DepartureRunways:   scenario.DepartureRunways,
 			ArrivalRunways:     scenario.ArrivalRunways,
+		}
+
+		if multiController {
+			if len(scenario.MultiControllers) == 0 {
+				// not a multi-controller scenario
+				continue
+			}
+			sc.SelectedController, _ = GetPrimaryController(scenario.MultiControllers)
+			sc.OpenControlPositions = SortedMapKeys(scenario.MultiControllers)
+			sc.AllControlPositions = DuplicateSlice(sc.OpenControlPositions)
+		} else {
+			if scenario.SoloController == "" {
+				// multi-controller only
+				continue
+			}
+			sc.SelectedController = scenario.SoloController
+			sc.OpenControlPositions = []string{scenario.SoloController}
+			sc.AllControlPositions = []string{scenario.SoloController}
 		}
 
 		sc.DepartureRates = make(map[string]map[string]map[string]int)
@@ -541,7 +559,11 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		config.ScenarioConfigs[name] = sc
 	}
 
-	simConfigurations[sg.Name] = config
+	// Skip scenario groups that don't have any single/multi-controller
+	// scenarios, as appropriate.
+	if len(config.ScenarioConfigs) > 0 {
+		simConfigurations[sg.Name] = config
+	}
 }
 
 func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *ErrorLogger) {
@@ -829,4 +851,16 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	}
 
 	return scenarioGroups, simConfigurations
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Multi-controller utilities
+
+func GetPrimaryController(multi map[string]*MultiUserController) (string, bool) {
+	for callsign, mc := range multi {
+		if mc.Primary {
+			return callsign, true
+		}
+	}
+	return "", false
 }

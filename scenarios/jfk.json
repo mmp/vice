@@ -2344,7 +2344,7 @@
         },
         "cleared_altitude": 19000,
         "cruise_altitude": 37000,
-        "handoff_controller": "JFK_LENDY_APP",
+        "handoff_controller": "_JFK_LENDY_APP",
         "initial_altitude": 20000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2442,7 +2442,7 @@
         },
         "cleared_altitude": 19000,
         "cruise_altitude": 39000,
-        "handoff_controller": "JFK_LENDY_APP",
+        "handoff_controller": "_JFK_LENDY_APP",
         "initial_altitude": 19000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -3168,7 +3168,7 @@
             "JFK_A_APP": {
                 "backup": "JFK_G_APP"
             },
-            "JFK_LENDY_APP": {
+            "_JFK_LENDY_APP": {
                 "backup": "JFK_K_APP"
             },
             "JFK_K_APP": {
@@ -3296,7 +3296,7 @@
             "JFK_A_APP": {
                 "backup": "JFK_G_APP"
             },
-            "JFK_LENDY_APP": {
+            "_JFK_LENDY_APP": {
                 "backup": "JFK_G_APP"
             },
             "JFK_K_APP": {
@@ -3496,7 +3496,7 @@
             "JFK_A_APP": {
                 "backup": "JFK_K_APP"
             },
-            "JFK_LENDY_APP": {
+            "_JFK_LENDY_APP": {
                 "backup": "JFK_G_APP"
             },
             "JFK_K_APP": {
@@ -3693,7 +3693,7 @@
             "ISP_APP": {
                 "backup": "JFK_G_APP"
             },
-            "JFK_LENDY_APP": {
+            "_JFK_LENDY_APP": {
                 "backup": "JFK_G_APP"
             },
             "JFK_A_APP": {
@@ -3895,7 +3895,7 @@
             "JFK_A_APP": {
                 "backup": "JFK_G_APP"
             },
-            "JFK_LENDY_APP": {
+            "_JFK_LENDY_APP": {
                 "backup": "JFK_K_APP"
             },
             "JFK_K_APP": {

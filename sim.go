@@ -59,10 +59,12 @@ type SimConfiguration struct {
 }
 
 type SimScenarioConfiguration struct {
-	DepartureChallenge float32
-	GoAroundRate       float32
-	Controller         string
-	Wind               Wind
+	DepartureChallenge   float32
+	GoAroundRate         float32
+	SelectedController   string
+	AllControlPositions  []string
+	OpenControlPositions []string
+	Wind                 Wind
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
@@ -154,38 +156,26 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginComboV("Control Position", c.Scenario.Controller, imgui.ComboFlagsHeightLarge) {
-		positions := make(map[string]*Controller)
-		for _, sc := range c.Group.ScenarioConfigs {
-			positions[sc.Controller] = c.Group.ControlPositions[c.Scenario.Controller]
-		}
-
-		for _, controllerName := range SortedMapKeys(positions) {
-			if imgui.SelectableV(controllerName, controllerName == c.Scenario.Controller, 0, imgui.Vec2{}) {
-				if controllerName != c.Scenario.Controller {
-					// Selected a different position than the current
-					// scenario uses; set the current scenario to the first
-					// one alphabetically with the selected controller.
-					for _, scenarioName := range SortedMapKeys(c.Group.ScenarioConfigs) {
-						if c.Group.ScenarioConfigs[scenarioName].Controller == controllerName {
-							c.SetScenario(scenarioName)
-							break
-						}
-					}
-				}
+	if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
+		for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
+			if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+				c.SetScenario(name)
 			}
 		}
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
-			if c.Group.ScenarioConfigs[name].Controller != c.Scenario.Controller {
+	if imgui.BeginComboV("Control Position", c.Scenario.SelectedController, imgui.ComboFlagsHeightLarge) {
+		for _, controllerName := range c.Scenario.AllControlPositions {
+			if controllerName[0] == '_' {
 				continue
 			}
-			if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-				c.SetScenario(name)
+			disable := Find(c.Scenario.OpenControlPositions, controllerName) == -1
+			uiStartDisable(disable)
+			if imgui.SelectableV(controllerName, controllerName == c.Scenario.SelectedController, 0, imgui.Vec2{}) {
+				c.Scenario.SelectedController = controllerName
 			}
+			uiEndDisable(disable)
 		}
 		imgui.EndCombo()
 	}
@@ -526,18 +516,10 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 	sim := NewSim(*config, sm.scenarioGroups)
 	sim.prespawn()
 
-	return sm.Add(&AddSimConfiguration{
-		Sim:        sim,
-		Controller: config.Scenario.Controller,
-	}, result)
+	return sm.Add(sim, result)
 }
 
-type AddSimConfiguration struct {
-	Sim        *Sim
-	Controller string
-}
-
-func (sm *SimManager) Add(as *AddSimConfiguration, result *NewSimResult) error {
+func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	if activeSims == nil {
 		activeSims = make(map[*Sim]interface{})
 	}
@@ -545,12 +527,11 @@ func (sm *SimManager) Add(as *AddSimConfiguration, result *NewSimResult) error {
 		controllerTokenToSim = make(map[string]*Sim)
 	}
 
-	sim := as.Sim
 	sim.Activate()
 
 	activeSims[sim] = nil
 
-	world, token, err := sim.SignOn(as.Controller)
+	world, token, err := sim.SignOn(sim.World.PrimaryController)
 	if err != nil {
 		return err
 	}
@@ -1101,7 +1082,7 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 	return ch, nil
 }
 
-func runServer(l net.Listener, async bool) chan map[string]*SimConfiguration {
+func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 	ch := make(chan map[string]*SimConfiguration, 1)
 
 	server := func() {
@@ -1111,6 +1092,10 @@ func runServer(l net.Listener, async bool) chan map[string]*SimConfiguration {
 			e.PrintErrors()
 			os.Exit(1)
 		}
+
+		// Filter the scenarios and configs: for local, we only want ones
+		// with solo_controller specified, and for the remote server, we
+		// only want the ones with multi_controllers.
 
 		rpc.Register(&SimManager{
 			scenarioGroups: scenarioGroups,
@@ -1125,7 +1110,7 @@ func runServer(l net.Listener, async bool) chan map[string]*SimConfiguration {
 		http.Serve(l, nil) // noreturn
 	}
 
-	if async {
+	if isLocal {
 		go server()
 	} else {
 		server()
@@ -1147,9 +1132,6 @@ type Sim struct {
 	eventStream *EventStream
 
 	LaunchController string
-
-	// For now, there's just one...
-	InboundHandoffController string
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
@@ -1195,8 +1177,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
 
-		controllers:              make(map[string]*ServerController),
-		InboundHandoffController: ssc.Scenario.Controller,
+		controllers: make(map[string]*ServerController),
 
 		eventStream: NewEventStream(),
 
@@ -1235,6 +1216,12 @@ func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*Scenar
 
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
+	if *server {
+		w.PrimaryController, _ = GetPrimaryController(sc.MultiControllers)
+		w.MultiControllers = DuplicateMap(sc.MultiControllers)
+	} else {
+		w.PrimaryController = sc.SoloController
+	}
 	w.MagneticVariation = sg.MagneticVariation
 	w.NmPerLongitude = sg.NmPerLongitude
 	w.Wind = sc.Wind
@@ -1572,9 +1559,31 @@ func (s *Sim) updateState() {
 		for _, ac := range s.World.Aircraft {
 			ac.Update(s.World, s.World, s)
 
+			// FIXME: this is sort of ugly to have here...
 			if ac.InboundHandoffController == s.World.Callsign {
 				// We hit a /ho at a fix; update to the correct controller.
-				ac.InboundHandoffController = s.InboundHandoffController
+				if len(s.World.MultiControllers) > 0 {
+					callsign := ac.ArrivalHandoffController
+					i := 0
+					for {
+						if _, ok := s.controllers[callsign]; ok {
+							ac.InboundHandoffController = callsign
+							break
+						}
+						callsign = s.World.MultiControllers[callsign].BackupController
+						i++
+						if i == 20 {
+							lg.Errorf("%s: unable to find backup for arrival handoff controller",
+								ac.ArrivalHandoffController)
+							ac.InboundHandoffController = ""
+							break
+						}
+					}
+
+				} else {
+					ac.InboundHandoffController = s.World.PrimaryController
+				}
+
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
