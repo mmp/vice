@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"net/rpc"
 	"strings"
 	"time"
 
@@ -90,47 +89,6 @@ type World struct {
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
 	GoAroundRate      float32
-}
-
-type PendingCall struct {
-	Call                *rpc.Call
-	IssueTime           time.Time
-	OnSuccess           func(any)
-	OnErr               func(error)
-	haveWarnedNoUpdates bool
-}
-
-func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
-	select {
-	case c := <-p.Call.Done:
-		if c.Error != nil {
-			if p.OnErr != nil {
-				p.OnErr(c.Error)
-			} else {
-				lg.Errorf("%v", c.Error)
-			}
-		} else if p.OnSuccess != nil {
-			if p.haveWarnedNoUpdates {
-				p.haveWarnedNoUpdates = false
-				eventStream.Post(Event{
-					Type:    StatusMessageEvent,
-					Message: "Server connection reestablished!",
-				})
-			}
-			p.OnSuccess(c.Reply)
-		}
-		return true
-
-	default:
-		if s := time.Since(p.IssueTime); s > 5*time.Second {
-			p.haveWarnedNoUpdates = true
-			eventStream.Post(Event{
-				Type:    StatusMessageEvent,
-				Message: "No updates from server in over 5 seconds. Network may have disconnected.",
-			})
-		}
-		return false
-	}
 }
 
 func NewWorld() *World {
