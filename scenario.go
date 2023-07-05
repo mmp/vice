@@ -97,6 +97,7 @@ type Scenario struct {
 
 type MultiUserController struct {
 	Primary          bool   `json:"primary"`
+	Departure        bool   `json:"departure"`
 	BackupController string `json:"backup"`
 }
 
@@ -208,6 +209,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 	// Various multi_controllers validations
 	primaryController := ""
+	departureController := ""
 	for callsign, mc := range s.MultiControllers {
 		if mc.Primary {
 			if primaryController != "" {
@@ -217,9 +219,20 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				primaryController = callsign
 			}
 		}
+		if mc.Departure {
+			if departureController != "" {
+				e.ErrorString("multiple controllers specified as \"departure\": %s %s",
+					departureController, callsign)
+			} else {
+				departureController = callsign
+			}
+		}
 	}
 	if len(s.MultiControllers) > 0 && primaryController == "" {
 		e.ErrorString("No controller in \"multi_controllers\" was specified as \"primary\"")
+	}
+	if len(s.MultiControllers) > 0 && departureController == "" {
+		e.ErrorString("No controller in \"multi_controllers\" was specified as \"departure\"")
 	}
 
 	havePathToPrimary := make(map[string]interface{})

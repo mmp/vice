@@ -3176,7 +3176,9 @@
             "JFK_S_APP": {
                 "backup": "JFK_K_APP"
             },
-            "JFK_DEP": { }
+            "JFK_DEP": {
+                "departure": true
+            }
       },
       "controllers": [
         "BOS_E_CTR",
@@ -3304,7 +3306,9 @@
             "JFK_S_APP": {
                 "backup": "JFK_K_APP"
             },
-            "JFK_DEP": { }
+            "JFK_DEP": {
+                "departure": true
+            }
       },
       "controllers": [
         "JFK_APP",
@@ -3504,7 +3508,9 @@
             "JFK_S_APP": {
                 "backup": "JFK_K_APP"
             },
-            "JFK_DEP": { }
+            "JFK_DEP": {
+                "departure": true
+            }
       },
       "controllers": [
         "JFK_APP",
@@ -3704,7 +3710,9 @@
             "JFK_S_APP": {
                 "backup": "JFK_K_APP"
             },
-            "JFK_DEP": { }
+            "JFK_DEP": {
+                "departure": true
+            }
       },
       "controllers": [
         "BOS_E_CTR",
@@ -3903,7 +3911,9 @@
             "JFK_S_APP": {
                 "backup": "JFK_K_APP"
             },
-            "JFK_DEP": { }
+            "JFK_DEP": {
+                "departure": true
+            }
       },
       "controllers": [
         "BOS_E_CTR",
