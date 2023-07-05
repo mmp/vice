@@ -2465,7 +2465,6 @@
       "sector_id": "5E"
     }
   },
-  "default_controller": "NY_L_DEP",
   "default_scenario": "Liberty Combined - JFK Owns Coney",
   "fixes": {
     "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",

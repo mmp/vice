@@ -641,7 +641,6 @@
                         "sector_id": "1JT"
                     }
                 },
-                "default_controller": "JAX_N_APP",
                 "default_scenario": "KJAX East",
                 "fixes": {
                     "KJAX": "N30.29.38.597,W81.41.16.018",

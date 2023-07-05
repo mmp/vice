@@ -5035,7 +5035,6 @@
       "sector_id": "6A"
     }
   },
-  "default_controller": "PHL_NA_APP",
   "default_scenario": "KPHL Depart 27L Land 27R/35",
   "fixes": { },
   "magnetic_variation": 13.3,

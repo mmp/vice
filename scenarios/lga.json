@@ -780,7 +780,6 @@
         "sector_id": "5E"
       }
     },
-    "default_controller": "LGA_APP",
     "default_scenario": "KLGA Depart 13 Land 22",
     "fixes": {
       "_FRG_1": "N040.43.20.230,W073.24.51.229",

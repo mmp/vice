@@ -2498,7 +2498,6 @@
       "sector_id": "MY"
     }
   },
-  "default_controller": "EWR_APP",
   "default_scenario": "KEWR Depart 22R Land 22L",
   "fixes": {
     "_CDW_10": "N040.52.37.814,W074.17.12.769",

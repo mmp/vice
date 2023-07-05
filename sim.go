@@ -52,10 +52,9 @@ var (
 )
 
 type SimConfiguration struct {
-	ScenarioConfigs   map[string]*SimScenarioConfiguration
-	ControlPositions  map[string]*Controller
-	DefaultScenario   string
-	DefaultController string
+	ScenarioConfigs  map[string]*SimScenarioConfiguration
+	ControlPositions map[string]*Controller
+	DefaultScenario  string
 }
 
 type SimScenarioConfiguration struct {

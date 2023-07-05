@@ -14,18 +14,17 @@ import (
 )
 
 type ScenarioGroup struct {
-	Name              string                 `json:"name"`
-	Airports          map[string]*Airport    `json:"airports"`
-	VideoMapFile      string                 `json:"video_map_file"`
-	Fixes             map[string]Point2LL    `json:"-"`
-	FixesStrings      map[string]string      `json:"fixes"`
-	Scenarios         map[string]*Scenario   `json:"scenarios"`
-	DefaultController string                 `json:"default_controller"`
-	DefaultScenario   string                 `json:"default_scenario"`
-	ControlPositions  map[string]*Controller `json:"control_positions"`
-	Scratchpads       map[string]string      `json:"scratchpads"`
-	Airspace          Airspace               `json:"airspace"`
-	ArrivalGroups     map[string][]Arrival   `json:"arrival_groups"`
+	Name             string                 `json:"name"`
+	Airports         map[string]*Airport    `json:"airports"`
+	VideoMapFile     string                 `json:"video_map_file"`
+	Fixes            map[string]Point2LL    `json:"-"`
+	FixesStrings     map[string]string      `json:"fixes"`
+	Scenarios        map[string]*Scenario   `json:"scenarios"`
+	DefaultScenario  string                 `json:"default_scenario"`
+	ControlPositions map[string]*Controller `json:"control_positions"`
+	Scratchpads      map[string]string      `json:"scratchpads"`
+	Airspace         Airspace               `json:"airspace"`
+	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
 
 	Center         Point2LL              `json:"-"`
 	CenterString   string                `json:"center"`
@@ -403,22 +402,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Pop()
 	}
 
-	if _, ok := sg.ControlPositions[sg.DefaultController]; !ok {
-		e.ErrorString("default controller \"%s\" not found in \"control_positions\"", sg.DefaultController)
-	} else {
-		// make sure the controller has at least one scenario..
-		found := false
-		for _, sc := range sg.Scenarios {
-			if sc.SoloController == sg.DefaultController {
-				found = true
-				break
-			}
-		}
-		if !found {
-			e.ErrorString("default controller \"%s\" not used in any scenarios", sg.DefaultController)
-		}
-	}
-
 	if sg.CenterString == "" {
 		e.ErrorString("No \"center\" specified")
 	} else if pos, ok := sg.locate(sg.CenterString); !ok {
@@ -511,10 +494,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 func initializeSimConfigurations(sg *ScenarioGroup,
 	simConfigurations map[string]*SimConfiguration, multiController bool) {
 	config := &SimConfiguration{
-		ScenarioConfigs:   make(map[string]*SimScenarioConfiguration),
-		ControlPositions:  sg.ControlPositions,
-		DefaultScenario:   sg.DefaultScenario,
-		DefaultController: sg.DefaultController,
+		ScenarioConfigs:  make(map[string]*SimScenarioConfiguration),
+		ControlPositions: sg.ControlPositions,
+		DefaultScenario:  sg.DefaultScenario,
 	}
 
 	for name, scenario := range sg.Scenarios {

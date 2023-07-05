@@ -3474,7 +3474,6 @@
       "sector_id": "4OT"
     }
   },
-  "default_controller": "MCO_E_APP",
   "default_scenario": "KMCO South",
   "fixes": {
     "KISM": "N028.17.23.303,W081.26.13.489",

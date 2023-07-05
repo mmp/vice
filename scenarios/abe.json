@@ -572,7 +572,6 @@
       "sector_id": "6N"
     }
   },
-  "default_controller": "ABE_APP",
   "default_scenario": "KABE Depart 6 Land 6",
   "fixes": {
     "_ABE13": "N040.38.47.604,W075.25.56.652",
