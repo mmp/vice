@@ -3136,23 +3136,22 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 	}
 
 	if ps.SignOnList.Visible {
-		format := func(ctrl *Controller, requirePosition bool) string {
-			return fmt.Sprintf("%3s", ctrl.SectorId) + " " + ctrl.Frequency.String() + " " + ctrl.Callsign
+		format := func(ctrl *Controller) string {
+			return fmt.Sprintf("%3s", ctrl.SectorId) + " " + ctrl.Frequency.String() + " " +
+				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n"
 		}
 
 		// User first
 		text := ""
 		userCtrl := ctx.world.GetController(ctx.world.Callsign)
 		if userCtrl != nil {
-			text += format(userCtrl, false) + "\n"
+			text += format(userCtrl)
 		}
 
 		for _, callsign := range SortedMapKeys(ctx.world.GetAllControllers()) {
 			ctrl := ctx.world.GetController(callsign)
 			if ctrl != userCtrl {
-				if ctext := format(ctrl, true); ctext != "" {
-					text += ctext + "\n"
-				}
+				text += format(ctrl)
 			}
 		}
 

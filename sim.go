@@ -46,6 +46,7 @@ func init() {
 }
 
 var (
+	ErrNoNamedSim                = errors.New("No Sim with that name")
 	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
 	ErrControllerAlreadySignedIn = errors.New("controller with that callsign already signed in")
 	ErrInvalidControllerToken    = errors.New("invalid controller token")
@@ -58,12 +59,10 @@ type SimConfiguration struct {
 }
 
 type SimScenarioConfiguration struct {
-	DepartureChallenge   float32
-	GoAroundRate         float32
-	SelectedController   string
-	AllControlPositions  []string
-	OpenControlPositions []string
-	Wind                 Wind
+	DepartureChallenge float32
+	GoAroundRate       float32
+	SelectedController string
+	Wind               Wind
 
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
@@ -87,9 +86,12 @@ type NewSimConfiguration struct {
 	ScenarioName              string
 	localServer, remoteServer *SimServer
 	selectedServer            *SimServer
-	newSimName                string // for create remote only
+	NewSimName                string // for create remote only
 	NewSimType                int
+
 	availableRemoteSims       map[string]*RemoteSim
+	SelectedRemoteSim         string
+	SelectedRemoteSimPosition string
 	lastRemoteSimsUpdate      time.Time
 	updateRemoteSimsCall      *PendingCall
 }
@@ -97,7 +99,7 @@ type NewSimConfiguration struct {
 type RemoteSim struct {
 	GroupName          string
 	ScenarioName       string
-	AvailablePositions map[string]interface{}
+	AvailablePositions map[string]struct{}
 }
 
 const (
@@ -123,16 +125,13 @@ func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) Ne
 func (c *NewSimConfiguration) updateRemoteSims() {
 	if time.Since(c.lastRemoteSimsUpdate) > 1*time.Second && c.remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
+		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &PendingCall{
-			Call:      c.remoteServer.client.Go("SimManager.GetRunningSims", 0, nil, nil),
+			Call:      c.remoteServer.client.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
-			OnSuccess: func(avail any) {
-				if avail != nil {
-					var ok bool
-					if c.availableRemoteSims, ok = avail.(map[string]*RemoteSim); !ok {
-						lg.Errorf("got type %T rather than map[string]*RemoteSim", avail)
-					}
-				}
+			OnSuccess: func(result any) {
+				c.availableRemoteSims = rs
+				lg.Errorf("success: %s", spew.Sdump(c.availableRemoteSims))
 			},
 			OnErr: func(e error) {
 				lg.Errorf("%v", e)
@@ -166,6 +165,8 @@ func (c *NewSimConfiguration) SetScenario(name string) {
 func (c *NewSimConfiguration) DrawUI() bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
 		c.updateRemoteSimsCall = nil
+	} else {
+		c.updateRemoteSims()
 	}
 
 	if c.remoteServer != nil {
@@ -233,8 +234,8 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 
 		if c.NewSimType == NewSimCreateRemote {
-			imgui.InputTextV("Name", &c.newSimName, 0, nil)
-			if c.newSimName == "" {
+			imgui.InputTextV("Name", &c.NewSimName, 0, nil)
+			if c.NewSimName == "" {
 				imgui.SameLine()
 				imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
 				imgui.Text(FontAwesomeIconExclamationTriangle)
@@ -402,21 +403,35 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 	} else {
 		// Join remote
-		if len(c.Scenario.AllControlPositions) > 1 {
-			if imgui.BeginComboV("Control Position", c.Scenario.SelectedController, imgui.ComboFlagsHeightLarge) {
-				for _, controllerName := range c.Scenario.AllControlPositions {
-					if controllerName[0] == '_' {
-						continue
-					}
-					disable := Find(c.Scenario.OpenControlPositions, controllerName) == -1
-					uiStartDisable(disable)
-					if imgui.SelectableV(controllerName, controllerName == c.Scenario.SelectedController, 0, imgui.Vec2{}) {
-						c.Scenario.SelectedController = controllerName
-					}
-					uiEndDisable(disable)
+		if c.SelectedRemoteSim == "" {
+			c.SelectedRemoteSim = SortedMapKeys(c.availableRemoteSims)[0]
+		}
+
+		rs := c.availableRemoteSims[c.SelectedRemoteSim]
+		if imgui.BeginComboV("Simulation", c.SelectedRemoteSim+": "+rs.ScenarioName, imgui.ComboFlagsHeightLarge) {
+			for _, simName := range SortedMapKeys(c.availableRemoteSims) {
+				scenarioName := c.availableRemoteSims[simName].ScenarioName
+				if imgui.SelectableV(simName+": "+scenarioName, simName == c.SelectedRemoteSim, 0, imgui.Vec2{}) {
+					c.SelectedRemoteSim = simName
 				}
-				imgui.EndCombo()
 			}
+			imgui.EndCombo()
+		}
+
+		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; !ok {
+			c.SelectedRemoteSimPosition = SortedMapKeys(rs.AvailablePositions)[0]
+		}
+
+		if imgui.BeginComboV("Position", c.SelectedRemoteSimPosition, 0) {
+			for _, pos := range SortedMapKeys(rs.AvailablePositions) {
+				if pos[0] == '_' {
+					continue
+				}
+				if imgui.SelectableV(pos, pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+					c.SelectedRemoteSimPosition = pos
+				}
+			}
+			imgui.EndCombo()
 		}
 	}
 
@@ -424,7 +439,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
-	return c.NewSimType == NewSimCreateRemote && c.newSimName == ""
+	return c.NewSimType == NewSimCreateRemote && c.NewSimName == ""
 }
 
 func (c *NewSimConfiguration) Start() error {
@@ -592,6 +607,7 @@ type SimManager struct {
 	configs              map[string]*SimConfiguration
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
+	mu                   sync.Mutex
 }
 
 func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
@@ -610,26 +626,64 @@ type NewSimResult struct {
 }
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
-	sim := NewSim(*config, sm.scenarioGroups)
-	sim.prespawn()
+	sm.mu.Lock()
 
-	return sm.Add(sim, result)
+	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
+		sim := NewSim(*config, sm.scenarioGroups)
+		sm.mu.Unlock()
+		sim.prespawn()
+
+		return sm.Add(sim, result)
+	} else {
+		sim, ok := sm.activeSims[config.SelectedRemoteSim]
+		if !ok {
+			return ErrNoNamedSim
+		}
+		if _, ok := sim.World.Controllers[config.SelectedRemoteSimPosition]; ok {
+			return ErrNoController
+		}
+
+		sm.mu.Unlock()
+		world, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
+		if err != nil {
+			return err
+		}
+
+		sm.mu.Lock()
+		sm.controllerTokenToSim[token] = sim
+		sm.mu.Unlock()
+
+		*result = NewSimResult{
+			World:           world,
+			ControllerToken: token,
+		}
+		return nil
+	}
 }
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sim.Activate()
 
+	sm.mu.Lock()
+
 	// Empty sim name is just a local sim, so no problem with replacing it...
 	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
 		return errors.New(sim.Name + ": a sim with that name already exists")
 	}
+
+	lg.Printf("%s: starting new sim", sim.Name)
 	sm.activeSims[sim.Name] = sim
+
+	sm.mu.Unlock()
 
 	world, token, err := sim.SignOn(sim.World.PrimaryController)
 	if err != nil {
 		return err
 	}
+
+	sm.mu.Lock()
 	sm.controllerTokenToSim[token] = sim
+	sm.mu.Unlock()
 
 	go func() {
 		for {
@@ -647,27 +701,38 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 }
 
 func (sm *SimManager) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
 	*result = sm.configs
-	lg.Printf("Encoded scenario groups size: %d", encodedGobSize(*result))
 	return nil
 }
 
-func (sm *SimManager) GetRunningSims(_ int, result *map[string]map[string]interface{}) error {
-	running := make(map[string]map[string]interface{})
+func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
+	running := make(map[string]*RemoteSim)
 	for name, s := range sm.activeSims {
-		running[name] = make(map[string]interface{})
+		s.mu.Lock()
+		rs := &RemoteSim{
+			GroupName:          s.ScenarioGroup,
+			ScenarioName:       s.Scenario,
+			AvailablePositions: make(map[string]struct{}),
+		}
 
 		// Figure out which positions are available; start with all of the possible ones,
 		// then delete those that are active
-		s.mu.Lock()
-		running[name][s.World.PrimaryController] = nil
+		rs.AvailablePositions[s.World.PrimaryController] = struct{}{}
 		for callsign := range s.World.MultiControllers {
-			running[name][callsign] = nil
+			rs.AvailablePositions[callsign] = struct{}{}
 		}
 		for _, ctrl := range s.controllers {
-			delete(running[name], ctrl.Callsign)
+			delete(rs.AvailablePositions, ctrl.Callsign)
 		}
 		s.mu.Unlock()
+
+		running[name] = rs
 	}
 
 	*result = running
@@ -675,6 +740,9 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]map[string]interf
 }
 
 func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
 	if sm.controllerTokenToSim == nil {
 		return ErrNoSimForControllerToken
 	}
@@ -686,6 +754,14 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 	return nil
 }
 
+func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
+	sim, ok := sm.controllerTokenToSim[token]
+	return sim, ok
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // SimDispatcher
 
@@ -694,7 +770,7 @@ type SimDispatcher struct {
 }
 
 func (sd *SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error {
-	if sim, ok := sd.sm.controllerTokenToSim[token]; !ok {
+	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.GetWorldUpdate(token, update)
@@ -702,7 +778,7 @@ func (sd *SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) er
 }
 
 func (sd *SimDispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[token]; !ok {
+	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.TakeOrReturnLaunchControl(token)
@@ -718,7 +794,7 @@ func (sd *SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
 }
 
 func (sd *SimDispatcher) TogglePause(token string, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[token]; !ok {
+	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.TogglePause(token, nil)
@@ -1304,7 +1380,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 	}
 
 	s := &Sim{
-		Name:          ssc.newSimName,
+		Name:          ssc.NewSimName,
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
 
@@ -1454,15 +1530,15 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 		return nil, "", ErrControllerAlreadySignedIn
 	}
 
-	w := NewWorld()
-	w.Assign(s.World)
-	w.Callsign = callsign
-
 	ctrl, ok := s.SignOnPositions[callsign]
 	if !ok {
 		return nil, "", ErrNoController
 	}
 	s.World.Controllers[callsign] = ctrl
+
+	w := NewWorld()
+	w.Assign(s.World)
+	w.Callsign = callsign
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -1474,6 +1550,11 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 		Callsign: callsign,
 		events:   s.eventStream.Subscribe(),
 	}
+
+	s.eventStream.Post(Event{
+		Type:    StatusMessageEvent,
+		Message: callsign + " has signed on.",
+	})
 
 	return w, token, nil
 }
@@ -1488,6 +1569,11 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
 		delete(s.World.Controllers, ctrl.Callsign)
+
+		s.eventStream.Post(Event{
+			Type:    StatusMessageEvent,
+			Message: ctrl.Callsign + " has signed off.",
+		})
 	}
 	return nil
 }
@@ -1682,20 +1768,23 @@ func (s *Sim) Update() {
 func (s *Sim) updateState() {
 	now := s.CurrentTime
 	for callsign, t := range s.Handoffs {
-		if now.After(t) {
-			if ac, ok := s.World.Aircraft[callsign]; ok {
-				s.eventStream.Post(Event{
-					Type:           AcceptedHandoffEvent,
-					FromController: ac.TrackingController,
-					ToController:   ac.OutboundHandoffController,
-					Callsign:       ac.Callsign,
-				})
-
-				ac.TrackingController = ac.OutboundHandoffController
-				ac.OutboundHandoffController = ""
-			}
-			delete(s.Handoffs, callsign)
+		if !now.After(t) {
+			continue
 		}
+
+		if ac, ok := s.World.Aircraft[callsign]; ok &&
+			!s.controllerIsSignedIn(ac.OutboundHandoffController) {
+			s.eventStream.Post(Event{
+				Type:           AcceptedHandoffEvent,
+				FromController: ac.TrackingController,
+				ToController:   ac.OutboundHandoffController,
+				Callsign:       ac.Callsign,
+			})
+
+			ac.TrackingController = ac.OutboundHandoffController
+			ac.OutboundHandoffController = ""
+		}
+		delete(s.Handoffs, callsign)
 	}
 
 	// Update the simulation state once a second.

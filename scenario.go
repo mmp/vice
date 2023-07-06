@@ -527,16 +527,12 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 				continue
 			}
 			sc.SelectedController, _ = GetPrimaryController(scenario.MultiControllers)
-			sc.OpenControlPositions = SortedMapKeys(scenario.MultiControllers)
-			sc.AllControlPositions = DuplicateSlice(sc.OpenControlPositions)
 		} else {
 			if scenario.SoloController == "" {
 				// multi-controller only
 				continue
 			}
 			sc.SelectedController = scenario.SoloController
-			sc.OpenControlPositions = []string{scenario.SoloController}
-			sc.AllControlPositions = []string{scenario.SoloController}
 		}
 
 		sc.DepartureRates = make(map[string]map[string]map[string]int)
