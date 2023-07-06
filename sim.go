@@ -87,7 +87,24 @@ type NewSimConfiguration struct {
 	ScenarioName              string
 	localServer, remoteServer *SimServer
 	selectedServer            *SimServer
+	newSimName                string // for create remote only
+	NewSimType                int
+	availableRemoteSims       map[string]*RemoteSim
+	lastRemoteSimsUpdate      time.Time
+	updateRemoteSimsCall      *PendingCall
 }
+
+type RemoteSim struct {
+	GroupName          string
+	ScenarioName       string
+	AvailablePositions map[string]interface{}
+}
+
+const (
+	NewSimCreateLocal = iota
+	NewSimCreateRemote
+	NewSimJoinRemote
+)
 
 func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) NewSimConfiguration {
 	c := NewSimConfiguration{
@@ -96,9 +113,32 @@ func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) Ne
 		selectedServer: localServer,
 	}
 
+	c.updateRemoteSims()
+
 	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
 
 	return c
+}
+
+func (c *NewSimConfiguration) updateRemoteSims() {
+	if time.Since(c.lastRemoteSimsUpdate) > 1*time.Second && c.remoteServer != nil {
+		c.lastRemoteSimsUpdate = time.Now()
+		c.updateRemoteSimsCall = &PendingCall{
+			Call:      c.remoteServer.client.Go("SimManager.GetRunningSims", 0, nil, nil),
+			IssueTime: time.Now(),
+			OnSuccess: func(avail any) {
+				if avail != nil {
+					var ok bool
+					if c.availableRemoteSims, ok = avail.(map[string]*RemoteSim); !ok {
+						lg.Errorf("got type %T rather than map[string]*RemoteSim", avail)
+					}
+				}
+			},
+			OnErr: func(e error) {
+				lg.Errorf("%v", e)
+			},
+		}
+	}
 }
 
 func (c *NewSimConfiguration) SetScenarioGroup(name string) {
@@ -124,19 +164,46 @@ func (c *NewSimConfiguration) SetScenario(name string) {
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
+	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
+		c.updateRemoteSimsCall = nil
+	}
+
 	if c.remoteServer != nil {
-		imgui.Text("Configuration: ")
-		imgui.SameLine()
-		serverIdx := Select(c.selectedServer == c.localServer, 0, 1)
-		origIdx := serverIdx
-		if imgui.RadioButtonInt(c.localServer.name, &serverIdx, 0) && origIdx != 0 {
-			c.selectedServer = c.localServer
-			c.SetScenarioGroup("")
-		}
-		imgui.SameLine()
-		if imgui.RadioButtonInt(c.remoteServer.name, &serverIdx, 1) && origIdx != 1 {
-			c.selectedServer = c.remoteServer
-			c.SetScenarioGroup("")
+		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{500, 0}, 0.) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Server type:")
+
+			origType := c.NewSimType
+
+			imgui.TableNextColumn()
+			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, NewSimCreateLocal) &&
+				origType != NewSimCreateLocal {
+				c.selectedServer = c.localServer
+				c.SetScenarioGroup("")
+			}
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.TableNextColumn()
+			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, NewSimCreateRemote) &&
+				origType != NewSimCreateRemote {
+				c.selectedServer = c.remoteServer
+				c.SetScenarioGroup("")
+			}
+
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.TableNextColumn()
+			disable := len(c.availableRemoteSims) == 0
+			uiStartDisable(disable)
+			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
+				origType != NewSimJoinRemote {
+				c.selectedServer = c.remoteServer
+			}
+			uiEndDisable(disable)
+
+			imgui.EndTable()
 		}
 	} else {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
@@ -146,196 +213,218 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	}
 	imgui.Separator()
 
-	if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(c.selectedServer.configs) {
-			if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
-				c.SetScenarioGroup(name)
+	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
+		if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
+			for _, name := range SortedMapKeys(c.selectedServer.configs) {
+				if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
+					c.SetScenarioGroup(name)
+				}
+			}
+			imgui.EndCombo()
+		}
+
+		if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
+			for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
+				if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+					c.SetScenario(name)
+				}
+			}
+			imgui.EndCombo()
+		}
+
+		if c.NewSimType == NewSimCreateRemote {
+			imgui.InputTextV("Name", &c.newSimName, 0, nil)
+			if c.newSimName == "" {
+				imgui.SameLine()
+				imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
+				imgui.Text(FontAwesomeIconExclamationTriangle)
+				imgui.PopStyleColor()
 			}
 		}
-		imgui.EndCombo()
-	}
 
-	if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
-		for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
-			if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-				c.SetScenario(name)
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	if imgui.BeginComboV("Control Position", c.Scenario.SelectedController, imgui.ComboFlagsHeightLarge) {
-		for _, controllerName := range c.Scenario.AllControlPositions {
-			if controllerName[0] == '_' {
-				continue
-			}
-			disable := Find(c.Scenario.OpenControlPositions, controllerName) == -1
-			uiStartDisable(disable)
-			if imgui.SelectableV(controllerName, controllerName == c.Scenario.SelectedController, 0, imgui.Vec2{}) {
-				c.Scenario.SelectedController = controllerName
-			}
-			uiEndDisable(disable)
-		}
-		imgui.EndCombo()
-	}
-
-	if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{500, 0}, 0.) {
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-
-		if len(c.Scenario.DepartureRates) > 0 {
+		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text("Departing:")
+			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
+			imgui.Text(c.Scenario.SelectedController)
 
-			var runways []string
-			for airport, runwayRates := range c.Scenario.DepartureRates {
-				for runway, categoryRates := range runwayRates {
-					for _, rate := range categoryRates {
-						if rate > 0 {
-							runways = append(runways, airport+"/"+runway)
-							break
+			if len(c.Scenario.DepartureRates) > 0 {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Departing:")
+				imgui.TableNextColumn()
+
+				var runways []string
+				for airport, runwayRates := range c.Scenario.DepartureRates {
+					for runway, categoryRates := range runwayRates {
+						for _, rate := range categoryRates {
+							if rate > 0 {
+								runways = append(runways, airport+"/"+runway)
+								break
+							}
 						}
 					}
 				}
+				sort.Strings(runways)
+				imgui.Text(strings.Join(runways, ", "))
 			}
-			sort.Strings(runways)
-			imgui.Text(strings.Join(runways, ", "))
-		}
 
-		if len(c.Scenario.ArrivalRunways) > 0 {
+			if len(c.Scenario.ArrivalRunways) > 0 {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Landing:")
+				imgui.TableNextColumn()
+
+				var a []string
+				for _, rwy := range c.Scenario.ArrivalRunways {
+					a = append(a, rwy.Airport+"/"+rwy.Runway)
+				}
+				sort.Strings(a)
+				imgui.Text(strings.Join(a, ", "))
+			}
+
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text("Landing:")
+			imgui.Text("Wind:")
 			imgui.TableNextColumn()
-
-			var a []string
-			for _, rwy := range c.Scenario.ArrivalRunways {
-				a = append(a, rwy.Airport+"/"+rwy.Runway)
+			wind := c.Scenario.Wind
+			if wind.Gust > wind.Speed {
+				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
+			} else {
+				imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
 			}
-			sort.Strings(a)
-			imgui.Text(strings.Join(a, ", "))
+			imgui.EndTable()
 		}
 
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Wind:")
-		imgui.TableNextColumn()
-		wind := c.Scenario.Wind
-		if wind.Gust > wind.Speed {
-			imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
-		} else {
-			imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
-		}
-		imgui.EndTable()
-	}
+		if len(c.Scenario.DepartureRunways) > 0 {
+			imgui.Separator()
+			imgui.Text("Departures")
 
-	if len(c.Scenario.DepartureRunways) > 0 {
-		imgui.Separator()
-		imgui.Text("Departures")
-
-		sumRates := 0
-		for _, runwayRates := range c.Scenario.DepartureRates {
-			for _, categoryRates := range runwayRates {
-				for _, rate := range categoryRates {
-					sumRates += rate
+			sumRates := 0
+			for _, runwayRates := range c.Scenario.DepartureRates {
+				for _, categoryRates := range runwayRates {
+					for _, rate := range categoryRates {
+						sumRates += rate
+					}
 				}
 			}
-		}
-		imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
+			imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
 
-		imgui.SliderFloatV("Sequencing challenge", &c.Scenario.DepartureChallenge, 0, 1, "%.02f", 0)
-		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+			imgui.SliderFloatV("Sequencing challenge", &c.Scenario.DepartureChallenge, 0, 1, "%.02f", 0)
+			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-		if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Category")
-			imgui.TableSetupColumn("ADR")
-			imgui.TableHeadersRow()
+			if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
+				imgui.TableSetupColumn("Airport")
+				imgui.TableSetupColumn("Runway")
+				imgui.TableSetupColumn("Category")
+				imgui.TableSetupColumn("ADR")
+				imgui.TableHeadersRow()
 
-			for _, airport := range SortedMapKeys(c.Scenario.DepartureRates) {
-				imgui.PushID(airport)
-				for _, runway := range SortedMapKeys(c.Scenario.DepartureRates[airport]) {
-					imgui.PushID(runway)
-					for _, category := range SortedMapKeys(c.Scenario.DepartureRates[airport][runway]) {
-						imgui.PushID(category)
+				for _, airport := range SortedMapKeys(c.Scenario.DepartureRates) {
+					imgui.PushID(airport)
+					for _, runway := range SortedMapKeys(c.Scenario.DepartureRates[airport]) {
+						imgui.PushID(runway)
+						for _, category := range SortedMapKeys(c.Scenario.DepartureRates[airport][runway]) {
+							imgui.PushID(category)
 
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						imgui.Text(airport)
-						imgui.TableNextColumn()
-						imgui.Text(runway)
-						imgui.TableNextColumn()
-						if category == "" {
-							imgui.Text("(All)")
-						} else {
-							imgui.Text(category)
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+							imgui.Text(airport)
+							imgui.TableNextColumn()
+							imgui.Text(runway)
+							imgui.TableNextColumn()
+							if category == "" {
+								imgui.Text("(All)")
+							} else {
+								imgui.Text(category)
+							}
+							imgui.TableNextColumn()
+
+							r := int32(c.Scenario.DepartureRates[airport][runway][category])
+							imgui.InputIntV("##adr", &r, 0, 120, 0)
+							c.Scenario.DepartureRates[airport][runway][category] = int(r)
+
+							imgui.PopID()
 						}
-						imgui.TableNextColumn()
-
-						r := int32(c.Scenario.DepartureRates[airport][runway][category])
-						imgui.InputIntV("##adr", &r, 0, 120, 0)
-						c.Scenario.DepartureRates[airport][runway][category] = int(r)
-
 						imgui.PopID()
 					}
 					imgui.PopID()
 				}
-				imgui.PopID()
-			}
-			imgui.EndTable()
-		}
-	}
-
-	if len(c.Scenario.ArrivalGroupRates) > 0 {
-		// Figure out how many unique airports we've got for AAR columns in the table
-		// and also sum up the overall arrival rate
-		allAirports := make(map[string]interface{})
-		sumRates := 0
-		for _, agr := range c.Scenario.ArrivalGroupRates {
-			for ap, rate := range agr {
-				allAirports[ap] = nil
-				sumRates += rate
+				imgui.EndTable()
 			}
 		}
-		nAirports := len(allAirports)
 
-		imgui.Separator()
-		imgui.Text("Arrivals")
-		imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
-		imgui.SliderFloatV("Go around probability", &c.Scenario.GoAroundRate, 0, 1, "%.02f", 0)
-
-		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
-			imgui.TableSetupColumn("Arrival")
-			sortedAirports := SortedMapKeys(allAirports)
-			for _, ap := range sortedAirports {
-				imgui.TableSetupColumn(ap + " AAR")
-			}
-			imgui.TableHeadersRow()
-
-			for _, group := range SortedMapKeys(c.Scenario.ArrivalGroupRates) {
-				imgui.PushID(group)
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text(group)
-				for _, ap := range sortedAirports {
-					imgui.TableNextColumn()
-					if rate, ok := c.Scenario.ArrivalGroupRates[group][ap]; ok {
-						r := int32(rate)
-						imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0)
-						c.Scenario.ArrivalGroupRates[group][ap] = int(r)
-					}
+		if len(c.Scenario.ArrivalGroupRates) > 0 {
+			// Figure out how many unique airports we've got for AAR columns in the table
+			// and also sum up the overall arrival rate
+			allAirports := make(map[string]interface{})
+			sumRates := 0
+			for _, agr := range c.Scenario.ArrivalGroupRates {
+				for ap, rate := range agr {
+					allAirports[ap] = nil
+					sumRates += rate
 				}
-				imgui.PopID()
 			}
-			imgui.EndTable()
+			nAirports := len(allAirports)
+
+			imgui.Separator()
+			imgui.Text("Arrivals")
+			imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
+			imgui.SliderFloatV("Go around probability", &c.Scenario.GoAroundRate, 0, 1, "%.02f", 0)
+
+			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+			if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
+				imgui.TableSetupColumn("Arrival")
+				sortedAirports := SortedMapKeys(allAirports)
+				for _, ap := range sortedAirports {
+					imgui.TableSetupColumn(ap + " AAR")
+				}
+				imgui.TableHeadersRow()
+
+				for _, group := range SortedMapKeys(c.Scenario.ArrivalGroupRates) {
+					imgui.PushID(group)
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Text(group)
+					for _, ap := range sortedAirports {
+						imgui.TableNextColumn()
+						if rate, ok := c.Scenario.ArrivalGroupRates[group][ap]; ok {
+							r := int32(rate)
+							imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0)
+							c.Scenario.ArrivalGroupRates[group][ap] = int(r)
+						}
+					}
+					imgui.PopID()
+				}
+				imgui.EndTable()
+			}
+		}
+	} else {
+		// Join remote
+		if len(c.Scenario.AllControlPositions) > 1 {
+			if imgui.BeginComboV("Control Position", c.Scenario.SelectedController, imgui.ComboFlagsHeightLarge) {
+				for _, controllerName := range c.Scenario.AllControlPositions {
+					if controllerName[0] == '_' {
+						continue
+					}
+					disable := Find(c.Scenario.OpenControlPositions, controllerName) == -1
+					uiStartDisable(disable)
+					if imgui.SelectableV(controllerName, controllerName == c.Scenario.SelectedController, 0, imgui.Vec2{}) {
+						c.Scenario.SelectedController = controllerName
+					}
+					uiEndDisable(disable)
+				}
+				imgui.EndCombo()
+			}
 		}
 	}
 
 	return false
+}
+
+func (c *NewSimConfiguration) OkDisabled() bool {
+	return c.NewSimType == NewSimCreateRemote && c.newSimName == ""
 }
 
 func (c *NewSimConfiguration) Start() error {
@@ -499,12 +588,21 @@ func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
 // SimManager
 
 type SimManager struct {
-	scenarioGroups map[string]*ScenarioGroup
-	configs        map[string]*SimConfiguration
+	scenarioGroups       map[string]*ScenarioGroup
+	configs              map[string]*SimConfiguration
+	activeSims           map[string]*Sim
+	controllerTokenToSim map[string]*Sim
 }
 
-var activeSims map[*Sim]interface{}
-var controllerTokenToSim map[string]*Sim
+func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
+	simConfigurations map[string]*SimConfiguration) *SimManager {
+	return &SimManager{
+		scenarioGroups:       scenarioGroups,
+		configs:              simConfigurations,
+		activeSims:           make(map[string]*Sim),
+		controllerTokenToSim: make(map[string]*Sim),
+	}
+}
 
 type NewSimResult struct {
 	World           *World
@@ -519,22 +617,19 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 }
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
-	if activeSims == nil {
-		activeSims = make(map[*Sim]interface{})
-	}
-	if controllerTokenToSim == nil {
-		controllerTokenToSim = make(map[string]*Sim)
-	}
-
 	sim.Activate()
 
-	activeSims[sim] = nil
+	// Empty sim name is just a local sim, so no problem with replacing it...
+	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
+		return errors.New(sim.Name + ": a sim with that name already exists")
+	}
+	sm.activeSims[sim.Name] = sim
 
 	world, token, err := sim.SignOn(sim.World.PrimaryController)
 	if err != nil {
 		return err
 	}
-	controllerTokenToSim[token] = sim
+	sm.controllerTokenToSim[token] = sim
 
 	go func() {
 		for {
@@ -557,11 +652,33 @@ func (sm *SimManager) GetSimConfigurations(_ int, result *map[string]*SimConfigu
 	return nil
 }
 
+func (sm *SimManager) GetRunningSims(_ int, result *map[string]map[string]interface{}) error {
+	running := make(map[string]map[string]interface{})
+	for name, s := range sm.activeSims {
+		running[name] = make(map[string]interface{})
+
+		// Figure out which positions are available; start with all of the possible ones,
+		// then delete those that are active
+		s.mu.Lock()
+		running[name][s.World.PrimaryController] = nil
+		for callsign := range s.World.MultiControllers {
+			running[name][callsign] = nil
+		}
+		for _, ctrl := range s.controllers {
+			delete(running[name], ctrl.Callsign)
+		}
+		s.mu.Unlock()
+	}
+
+	*result = running
+	return nil
+}
+
 func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
-	if controllerTokenToSim == nil {
+	if sm.controllerTokenToSim == nil {
 		return ErrNoSimForControllerToken
 	}
-	sim, ok := controllerTokenToSim[token]
+	sim, ok := sm.controllerTokenToSim[token]
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
@@ -572,178 +689,180 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 ///////////////////////////////////////////////////////////////////////////
 // SimDispatcher
 
-type SimDispatcher struct{}
+type SimDispatcher struct {
+	sm *SimManager
+}
 
-func (*SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error {
-	if sim, ok := controllerTokenToSim[token]; !ok {
+func (sd *SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error {
+	if sim, ok := sd.sm.controllerTokenToSim[token]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.GetWorldUpdate(token, update)
 	}
 }
 
-func (*SimDispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[token]; !ok {
+func (sd *SimDispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[token]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.TakeOrReturnLaunchControl(token)
 	}
 }
 
-func (*SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[r.ControllerToken]; !ok {
+func (sd *SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[r.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetSimRate(r, nil)
 	}
 }
 
-func (s *SimDispatcher) TogglePause(token string, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[token]; !ok {
+func (sd *SimDispatcher) TogglePause(token string, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[token]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.TogglePause(token, nil)
 	}
 }
 
-func (*SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetScratchpad(a, nil)
 	}
 }
 
-func (*SimDispatcher) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.InitiateTrack(a, nil)
 	}
 }
 
-func (*SimDispatcher) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.DropTrack(a, nil)
 	}
 }
 
-func (*SimDispatcher) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[h.ControllerToken]; !ok {
+func (sd *SimDispatcher) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.HandoffTrack(h, nil)
 	}
 }
 
-func (*SimDispatcher) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[h.ControllerToken]; !ok {
+func (sd *SimDispatcher) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.HandoffControl(h, nil)
 	}
 }
 
-func (*SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AcceptHandoff(a, nil)
 	}
 }
 
-func (*SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.CancelHandoff(a, nil)
 	}
 }
 
-func (*SimDispatcher) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[alt.ControllerToken]; !ok {
+func (sd *SimDispatcher) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[alt.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AssignAltitude(alt, nil)
 	}
 }
 
-func (*SimDispatcher) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[alt.ControllerToken]; !ok {
+func (sd *SimDispatcher) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[alt.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetTemporaryAltitude(alt, nil)
 	}
 }
 
-func (*SimDispatcher) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[hdg.ControllerToken]; !ok {
+func (sd *SimDispatcher) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[hdg.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AssignHeading(hdg, nil)
 	}
 }
 
-func (*SimDispatcher) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[sa.ControllerToken]; !ok {
+func (sd *SimDispatcher) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[sa.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AssignSpeed(sa, nil)
 	}
 }
 
-func (*SimDispatcher) DirectFix(f *FixSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
+func (sd *SimDispatcher) DirectFix(f *FixSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[f.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.DirectFix(f, nil)
 	}
 }
 
-func (*SimDispatcher) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
+func (sd *SimDispatcher) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[f.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.DepartFixHeading(f, nil)
 	}
 }
 
-func (*SimDispatcher) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[f.ControllerToken]; !ok {
+func (sd *SimDispatcher) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[f.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.CrossFixAt(f, nil)
 	}
 }
 
-func (*SimDispatcher) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.ExpectApproach(a, nil)
 	}
 }
 
-func (*SimDispatcher) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[c.ControllerToken]; !ok {
+func (sd *SimDispatcher) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[c.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.ClearedApproach(c, nil)
 	}
 }
 
-func (*SimDispatcher) GoAround(a *AircraftSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) GoAround(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.GoAround(a, nil)
 	}
 }
 
-func (*SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
-	if sim, ok := controllerTokenToSim[a.ControllerToken]; !ok {
+func (sd *SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.DeleteAircraft(a, nil)
@@ -763,8 +882,8 @@ func (e AircraftCommandsError) Error() string {
 	return s
 }
 
-func (*SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *struct{}) error {
-	sim, ok := controllerTokenToSim[cmds.ControllerToken]
+func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ *struct{}) error {
+	sim, ok := sd.sm.controllerTokenToSim[cmds.ControllerToken]
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
@@ -1006,8 +1125,8 @@ type LaunchSpecifier struct {
 	Aircraft        Aircraft
 }
 
-func (*SimDispatcher) LaunchAircraft(ls *LaunchSpecifier, _ *struct{}) error {
-	sim, ok := controllerTokenToSim[ls.ControllerToken]
+func (sd *SimDispatcher) LaunchAircraft(ls *LaunchSpecifier, _ *struct{}) error {
+	sim, ok := sd.sm.controllerTokenToSim[ls.ControllerToken]
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
@@ -1096,11 +1215,9 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 		// with solo_controller specified, and for the remote server, we
 		// only want the ones with multi_controllers.
 
-		rpc.Register(&SimManager{
-			scenarioGroups: scenarioGroups,
-			configs:        simConfigurations,
-		})
-		rpc.RegisterName("Sim", &SimDispatcher{})
+		sm := NewSimManager(scenarioGroups, simConfigurations)
+		rpc.Register(sm)
+		rpc.RegisterName("Sim", &SimDispatcher{sm: sm})
 		rpc.HandleHTTP()
 
 		ch <- simConfigurations
@@ -1120,13 +1237,16 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 ///////////////////////////////////////////////////////////////////////////
 
 type Sim struct {
+	Name string // mostly for multi-controller...
+
 	mu sync.Mutex
 
 	ScenarioGroup string
 	Scenario      string
 
-	World       *World
-	controllers map[string]*ServerController // from token
+	World           *World
+	controllers     map[string]*ServerController // from token
+	SignOnPositions map[string]*Controller
 
 	eventStream *EventStream
 
@@ -1172,7 +1292,19 @@ type ServerController struct {
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *Sim {
 	rand.Seed(time.Now().UnixNano())
 
+	sg, ok := scenarioGroups[ssc.GroupName]
+	if !ok {
+		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
+		return nil
+	}
+	sc, ok := sg.Scenarios[ssc.ScenarioName]
+	if !ok {
+		lg.Errorf("%s: unknown scenario", ssc.ScenarioName)
+		return nil
+	}
+
 	s := &Sim{
+		Name:          ssc.newSimName,
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
 
@@ -1192,27 +1324,35 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 		Handoffs:           make(map[string]time.Time),
 	}
 
-	s.World = newWorld(ssc, s, scenarioGroups)
+	s.SignOnPositions = make(map[string]*Controller)
+	add := func(callsign string) {
+		if callsign[0] == '_' { // virtual position for handoff management
+			return
+		}
+		if ctrl, ok := sg.ControlPositions[callsign]; !ok {
+			lg.Errorf("%s: control position unknown??!", callsign)
+		} else {
+			ctrlCopy := *ctrl
+			ctrlCopy.IsHuman = true
+			s.SignOnPositions[callsign] = &ctrlCopy
+		}
+	}
+	if *server {
+		for callsign := range sc.MultiControllers {
+			add(callsign)
+		}
+	} else {
+		add(sc.SoloController)
+	}
+
+	s.World = newWorld(ssc, s, sg, sc)
 
 	s.setInitialSpawnTimes()
 
 	return s
 }
 
-func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*ScenarioGroup) *World {
-	sg, ok := scenarioGroups[ssc.GroupName]
-	if !ok {
-		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
-		return nil
-	}
-	sc, ok := sg.Scenarios[ssc.ScenarioName]
-	if !ok {
-		lg.Errorf("%s: unknown scenario", ssc.ScenarioName)
-		return nil
-	}
-
-	// Set some related globals..
-
+func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) *World {
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
 	if *server {
@@ -1241,10 +1381,11 @@ func newWorld(ssc NewSimConfiguration, s *Sim, scenarioGroups map[string]*Scenar
 	w.ArrivalGroupRates = s.ArrivalGroupRates
 	w.GoAroundRate = s.GoAroundRate
 
-	// Extract just the active controllers
-	for callsign, ctrl := range sg.ControlPositions {
-		if callsign == sc.SoloController || Find(sc.Controllers, callsign) != -1 {
+	for _, callsign := range sc.VirtualControllers {
+		if ctrl, ok := sg.ControlPositions[callsign]; ok {
 			w.Controllers[callsign] = ctrl
+		} else {
+			lg.Errorf("%s: controller not found in ControlPositions??", callsign)
 		}
 	}
 
@@ -1309,15 +1450,19 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	for _, ctrl := range s.controllers {
-		if ctrl.Callsign == callsign {
-			return nil, "", ErrControllerAlreadySignedIn
-		}
+	if s.controllerIsSignedIn(callsign) {
+		return nil, "", ErrControllerAlreadySignedIn
 	}
 
 	w := NewWorld()
 	w.Assign(s.World)
 	w.Callsign = callsign
+
+	ctrl, ok := s.SignOnPositions[callsign]
+	if !ok {
+		return nil, "", ErrNoController
+	}
+	s.World.Controllers[callsign] = ctrl
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -1342,6 +1487,7 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 	} else {
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
+		delete(s.World.Controllers, ctrl.Callsign)
 	}
 	return nil
 }
@@ -1561,11 +1707,32 @@ func (s *Sim) updateState() {
 			// FIXME: this is sort of ugly to have here...
 			if ac.InboundHandoffController == s.World.Callsign {
 				// We hit a /ho at a fix; update to the correct controller.
-				if len(s.World.MultiControllers) > 0 {
-					callsign := ac.ArrivalHandoffController
+				// Note that s.controllers may be empty when initially
+				// running the sim after it has been launched. Just hand
+				// off to the primary controller in that case...
+				if len(s.World.MultiControllers) > 0 && len(s.controllers) > 0 {
+					callsign := ""
+					if ac.IsDeparture {
+						for cs, ctrl := range s.World.MultiControllers {
+							if ctrl.Departure {
+								if s.controllerIsSignedIn(cs) {
+									callsign = cs
+								} else {
+									callsign = s.World.PrimaryController
+								}
+								break
+							}
+						}
+					} else {
+						callsign = ac.ArrivalHandoffController
+					}
+					if callsign == "" {
+						ac.InboundHandoffController = ""
+					}
+
 					i := 0
 					for {
-						if _, ok := s.controllers[callsign]; ok {
+						if s.controllerIsSignedIn(callsign) {
 							ac.InboundHandoffController = callsign
 							break
 						}
@@ -1620,6 +1787,15 @@ func (s *Sim) updateState() {
 	if s.LaunchController == "" {
 		s.spawnAircraft()
 	}
+}
+
+func (s *Sim) controllerIsSignedIn(callsign string) bool {
+	for _, ctrl := range s.controllers {
+		if ctrl.Callsign == callsign {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *Sim) prespawn() {

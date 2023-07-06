@@ -122,6 +122,7 @@ type Controller struct {
 	Frequency Frequency `json:"frequency"`
 	SectorId  string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope     string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
+	IsHuman   bool      `json:"-"`
 }
 
 type FlightRules int

@@ -588,7 +588,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	}
 
 	ok := ModalDialogButton{
-		text: "Ok",
+		text:     "Ok",
+		disabled: c.config.OkDisabled(),
 		action: func() bool {
 			if err := c.config.Start(); err == nil {
 				c.err = ""

@@ -75,11 +75,10 @@ type AirspaceVolume struct {
 }
 
 type Scenario struct {
-	SoloController   string                          `json:"solo_controller"`
-	MultiControllers map[string]*MultiUserController `json:"multi_controllers"`
-	Wind             Wind                            `json:"wind"`
-	// Virtual ones only here
-	Controllers []string `json:"controllers"`
+	SoloController     string                          `json:"solo_controller"`
+	MultiControllers   map[string]*MultiUserController `json:"multi_controllers"`
+	Wind               Wind                            `json:"wind"`
+	VirtualControllers []string                        `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
@@ -198,7 +197,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 	// These shouldn't be listed in "controllers"; just silently remove
 	// them if they're there.
-	s.Controllers = FilterSlice(s.Controllers, func(c string) bool {
+	s.VirtualControllers = FilterSlice(s.VirtualControllers, func(c string) bool {
 		_, ok := s.MultiControllers[c]
 		return !ok && c != s.SoloController
 	})
@@ -308,7 +307,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Pop()
 	}
 
-	for _, ctrl := range s.Controllers {
+	for _, ctrl := range s.VirtualControllers {
 		if _, ok := sg.ControlPositions[ctrl]; !ok {
 			e.ErrorString("controller \"%s\" unknown", ctrl)
 		}
