@@ -1691,7 +1691,7 @@ func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
 			} else {
 				lg.Errorf("%v", c.Error)
 			}
-		} else if p.OnSuccess != nil {
+		} else {
 			if p.haveWarnedNoUpdates {
 				p.haveWarnedNoUpdates = false
 				if eventStream != nil {
@@ -1703,7 +1703,9 @@ func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
 					lg.Errorf("Server connection reesablished")
 				}
 			}
-			p.OnSuccess(c.Reply)
+			if p.OnSuccess != nil {
+				p.OnSuccess(c.Reply)
+			}
 		}
 		return true
 
