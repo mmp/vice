@@ -1675,8 +1675,20 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			})
 		}
 
+		// Copy the aircraft and zero out various fields that the client
+		// doesn't need to save bandwidth.
+		aircraft := make(map[string]*Aircraft)
+		for callsign, ac := range s.World.Aircraft {
+			updateAc := *ac
+			updateAc.Waypoints = nil
+			updateAc.Nav = NAVState{}
+			updateAc.ArrivalRunwayWaypoints = nil
+			updateAc.Approach = nil
+			aircraft[callsign] = &updateAc
+		}
+
 		*update = SimWorldUpdate{
-			Aircraft:         s.World.Aircraft,
+			Aircraft:         aircraft,
 			Time:             s.CurrentTime,
 			LaunchController: s.LaunchController,
 			SimIsPaused:      s.Paused,
