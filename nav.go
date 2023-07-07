@@ -283,7 +283,7 @@ type ClimbOnceAirborne struct {
 func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	// Only considers speed; assumes that this is part of the takeoff
 	// commands...
-	if ac.IAS < 1.1*ac.Performance.Speed.Min {
+	if ac.IAS < 1.1*ac.Performance().Speed.Min {
 		return false
 	}
 
@@ -951,7 +951,7 @@ func getUpcomingSpeedRestriction(ac *Aircraft) (*Waypoint, float32) {
 			// slowing just yet...
 			if float32(wp.Speed) < ac.IAS {
 				// 2-seconds required to decelerate, assuming straight-line deceleration
-				s := (ac.IAS - float32(wp.Speed)) / (ac.Performance.Rate.Decelerate / 2)
+				s := (ac.IAS - float32(wp.Speed)) / (ac.Performance().Rate.Decelerate / 2)
 				if s < eta {
 					//lg.Printf("%s: ignoring speed at %s for now...", ac.Callsign, wp.Fix)
 					return nil, 0
@@ -987,10 +987,10 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 	} else if fr.SpeedRestriction != 0 {
 		return fr.SpeedRestriction, MaximumRate
 	} else if ac.Altitude < 10000 { // Assume it's a departure(?)
-		return min(ac.Performance.Speed.Cruise, float32(250)), MaximumRate
+		return min(ac.Performance().Speed.Cruise, float32(250)), MaximumRate
 	} else {
 		// Assume climbing or descending
-		return ac.Performance.Speed.Cruise * 7 / 10, MaximumRate
+		return ac.Performance().Speed.Cruise * 7 / 10, MaximumRate
 	}
 }
 
@@ -1028,7 +1028,7 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 	}
 
 	// Expected speed at 10 DME, without further direction.
-	spd := ac.Performance.Speed
+	spd := ac.Performance().Speed
 	approachSpeed := min(1.6*spd.Landing, float32(spd.Cruise))
 
 	if airportDist < 1 {

@@ -638,8 +638,6 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 			Rules:        IFR,
 			AircraftType: acType,
 		},
-
-		Performance: perf,
 	}
 }
 
@@ -688,9 +686,11 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	// Hold onto these with the Aircraft so we have them later.
 	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
 
+	perf := ac.Performance()
+
 	ac.Position = ac.Waypoints[0].Location
 	ac.Altitude = arr.InitialAltitude
-	ac.IAS = min(arr.InitialSpeed, ac.Performance.Speed.Cruise)
+	ac.IAS = min(arr.InitialSpeed, perf.Speed.Cruise)
 	ac.ArrivalHandoffController = arr.HandoffController
 
 	ac.Scratchpad = arr.Scratchpad
@@ -709,7 +709,7 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 
 	ac.Nav.L = &FlyRoute{}
 	ac.Nav.S = &FlyRoute{
-		SpeedRestriction: min(arr.SpeedRestriction, ac.Performance.Speed.Cruise),
+		SpeedRestriction: min(arr.SpeedRestriction, perf.Speed.Cruise),
 	}
 	ac.Nav.V = &FlyRoute{
 		AltitudeRestriction: arr.ClearedAltitude,

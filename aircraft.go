@@ -41,9 +41,8 @@ type Aircraft struct {
 	// The controller who gave approach clearance
 	ApproachController string
 
-	Performance AircraftPerformance
-	Strip       FlightStrip
-	Waypoints   []Waypoint
+	Strip     FlightStrip
+	Waypoints []Waypoint
 
 	Position Point2LL
 	Heading  float32
@@ -63,6 +62,14 @@ type Aircraft struct {
 	ApproachId          string
 	ApproachCleared     bool
 	HaveEnteredAirspace bool
+}
+
+func (a *Aircraft) Performance() AircraftPerformance {
+	perf, ok := database.AircraftPerformance[a.FlightPlan.BaseType()]
+	if !ok {
+		lg.Errorf("%s: unable to get performance model?!", a.Callsign)
+	}
+	return perf
 }
 
 func (a *Aircraft) TrackAltitude() int {
@@ -201,7 +208,7 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 func (ac *Aircraft) GoAround() string {
 	ac.Nav.L = &FlyHeading{Heading: ac.Heading}
 
-	spd := ac.Performance.Speed
+	spd := ac.Performance().Speed
 	targetSpeed := min(1.6*spd.Landing, 0.8*spd.Cruise)
 	ac.Nav.S = &MaintainSpeed{IAS: targetSpeed}
 
@@ -225,7 +232,7 @@ func (ac *Aircraft) GoAround() string {
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
-	if altitude > int(ac.Performance.Ceiling) {
+	if altitude > int(ac.Performance().Ceiling) {
 		return "unable-that altitude is above our ceiling", ErrInvalidAltitude
 	}
 
@@ -253,16 +260,18 @@ func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
 }
 
 func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
+	perf := ac.Performance()
+
 	if speed == 0 {
 		response = "cancel speed restrictions"
 		ac.Nav.S = &FlyRoute{}
 		return
-	} else if float32(speed) < ac.Performance.Speed.Landing {
-		response = fmt.Sprintf("unable--our minimum speed is %.0f knots", ac.Performance.Speed.Landing)
+	} else if float32(speed) < perf.Speed.Landing {
+		response = fmt.Sprintf("unable--our minimum speed is %.0f knots", perf.Speed.Landing)
 		err = ErrUnableCommand
 		return
-	} else if float32(speed) > ac.Performance.Speed.Max {
-		response = fmt.Sprintf("unable--our maximum speed is %.0f knots", ac.Performance.Speed.Max)
+	} else if float32(speed) > perf.Speed.Max {
+		response = fmt.Sprintf("unable--our maximum speed is %.0f knots", perf.Speed.Max)
 		err = ErrUnableCommand
 		return
 	}
@@ -678,7 +687,7 @@ func (ac *Aircraft) updateAirspeed() {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.  cruising speed.
-	perf := ac.Performance
+	perf := ac.Performance()
 
 	targetSpeed, targetRate := ac.Nav.S.GetSpeed(ac)
 
@@ -686,11 +695,11 @@ func (ac *Aircraft) updateAirspeed() {
 	targetSpeed = clamp(targetSpeed, perf.Speed.Min, perf.Speed.Max)
 
 	if ac.IAS < targetSpeed {
-		accel := ac.Performance.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
+		accel := perf.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 		accel = min(accel, targetRate/60)
 		ac.IAS = min(targetSpeed, ac.IAS+accel)
 	} else if ac.IAS > targetSpeed {
-		decel := ac.Performance.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
+		decel := perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
 		ac.IAS = max(targetSpeed, ac.IAS-decel)
 	}
@@ -705,7 +714,8 @@ func (ac *Aircraft) updateAltitude() {
 	}
 
 	// Baseline climb and descent capabilities in ft/minute
-	climb, descent := ac.Performance.Rate.Climb, ac.Performance.Rate.Descent
+	perf := ac.Performance()
+	climb, descent := perf.Rate.Climb, perf.Rate.Descent
 
 	// For high performing aircraft, reduce climb rate after 5,000'
 	if climb >= 2500 && ac.Altitude > 5000 {
@@ -772,8 +782,9 @@ func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 
 	// Compute ground speed: TAS, modified for wind.
+	perf := ac.Performance()
 	GS := ac.TAS() / 3600
-	airborne := ac.IAS >= 1.1*ac.Performance.Speed.Min
+	airborne := ac.IAS >= 1.1*perf.Speed.Min
 	if airborne {
 		windVector := wind.GetWindVector(ac.Position, ac.Altitude)
 		delta := windVector[0]*v[0] + windVector[1]*v[1]
