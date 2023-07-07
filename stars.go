@@ -717,10 +717,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			}
 
 		case AcceptedHandoffEvent:
-			// Note that we only want to do this if we were the handing-off
-			// from controller, but that info isn't available to us
-			// currently. For the purposes of vice/Sim, that's fine...
-			if event.ToController != w.Callsign {
+			if event.FromController == w.Callsign && event.ToController != w.Callsign {
 				if state, ok := sp.aircraft[event.Callsign]; !ok {
 					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
 				} else {
@@ -885,25 +882,8 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			sp.commandMode = CommandModeMin
 
 		case KeyEnter:
-			status := sp.executeSTARSCommand(sp.previewAreaInput, ctx)
-			if status.err != nil {
-				switch status.err {
-				case ErrSTARSIllegalParam, ErrSTARSIllegalTrack, ErrSTARSCommandFormat:
-					sp.previewAreaOutput = status.err.Error()
-
-				case ErrNoAircraftForCallsign, ErrNoFlightPlan,
-					ErrOtherControllerHasTrack, ErrNotBeingHandedOffToMe:
-					sp.previewAreaOutput = ErrSTARSIllegalTrack.Error()
-
-				case ErrInvalidAltitude, ErrInvalidHeading, ErrInvalidApproach,
-					ErrInvalidCommandSyntax, ErrArrivalAirportUnknown, ErrUnknownApproach,
-					ErrClearedForUnexpectedApproach, ErrNoController, ErrUnknownAircraftType,
-					ErrUnableCommand, ErrFixNotInRoute:
-					sp.previewAreaOutput = ErrSTARSIllegalParam.Error()
-
-				default:
-					sp.previewAreaOutput = ErrSTARSCommandFormat.Error()
-				}
+			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
+				sp.displayError(status.err)
 			} else {
 				if status.clear {
 					sp.resetInputState()
@@ -1008,6 +988,25 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.commandMode = CommandModeCollisionAlert
 			}
 		}
+	}
+}
+
+func (sp *STARSPane) displayError(err error) {
+	if errors.Is(err, ErrSTARSIllegalParam) || errors.Is(err, ErrSTARSIllegalTrack) ||
+		errors.Is(err, ErrSTARSCommandFormat) {
+		sp.previewAreaOutput = err.Error()
+	} else if errors.Is(err, ErrNoAircraftForCallsign) || errors.Is(err, ErrNoFlightPlan) ||
+		errors.Is(err, ErrOtherControllerHasTrack) || errors.Is(err, ErrNotBeingHandedOffToMe) {
+		sp.previewAreaOutput = ErrSTARSIllegalTrack.Error()
+	} else if errors.Is(err, ErrInvalidAltitude) || errors.Is(err, ErrInvalidHeading) ||
+		errors.Is(err, ErrInvalidApproach) || errors.Is(err, ErrInvalidCommandSyntax) ||
+		errors.Is(err, ErrArrivalAirportUnknown) || errors.Is(err, ErrUnknownApproach) ||
+		errors.Is(err, ErrClearedForUnexpectedApproach) || errors.Is(err, ErrNoController) ||
+		errors.Is(err, ErrUnknownAircraftType) || errors.Is(err, ErrUnableCommand) ||
+		errors.Is(err, ErrFixNotInRoute) {
+		sp.previewAreaOutput = ErrSTARSIllegalParam.Error()
+	} else {
+		sp.previewAreaOutput = ErrSTARSCommandFormat.Error()
 	}
 }
 
@@ -1191,6 +1190,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			var closest *Aircraft
 			var closestDistance float32
 			for _, ac := range sp.visibleAircraft(ctx.world) {
+				if ac.HandoffTrackController != ctx.world.Callsign {
+					continue
+				}
+
 				d := nmdistance2ll(ps.RangeRingsCenter, ac.TrackPosition())
 				if closest == nil || d < closestDistance {
 					closest = ac
@@ -1782,14 +1785,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string) {
 	ctx.world.SetScratchpad(callsign, contents, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
 	ctx.world.SetTemporaryAltitude(callsign, alt, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
@@ -1804,14 +1807,14 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 			}
 		},
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
 	ctx.world.DropTrack(callsign, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
@@ -1826,42 +1829,42 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 			}
 		},
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
 	ctx.world.HandoffTrack(callsign, controller, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 	ctx.world.HandoffControl(callsign, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
 	ctx.world.PointOut(callsign, controller, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.CancelHandoff(callsign, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
 func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.RejectHandoff(callsign, nil,
 		func(err error) {
-			sp.previewAreaOutput = err.Error()
+			sp.displayError(err)
 		})
 }
 
@@ -1890,12 +1893,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		case CommandModeNone:
 			switch len(cmd) {
 			case 0:
-				if ac.InboundHandoffController != "" {
+				if ac.HandoffTrackController == ctx.world.Callsign {
 					// Accept inbound h/o
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
-				} else if ac.OutboundHandoffController != "" {
+				} else if ac.HandoffTrackController != ctx.world.Callsign &&
+					ac.TrackingController == ctx.world.Callsign {
 					// cancel offered handoff offered
 					status.clear = true
 					sp.cancelHandoff(ctx, ac.Callsign)
@@ -2072,12 +2076,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if len(cmd) > 0 {
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
-						status.err = err
 						globalConfig.Audio.PlaySound(AudioEventCommandError)
 
-						if acerr, ok := err.(*AircraftCommandsError); ok {
+						sp.displayError(err)
+						var ace *AircraftCommandsError
+						if errors.As(err, &ace) {
 							// Leave the unexecuted commands for editing, etc.
-							sp.previewAreaInput = strings.Join(acerr.Remaining, " ")
+							sp.previewAreaInput = strings.Join(ace.Remaining, " ")
 						}
 					})
 
@@ -3170,7 +3175,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = PartialDatablock
 	}
 
-	if ac.InboundHandoffController == ctx.world.Callsign {
+	if ac.HandoffTrackController == ctx.world.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -3532,12 +3537,8 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 
 		// Second line of the non-error datablock
 		ho := "  "
-		if ac.InboundHandoffController != "" {
-			if ctrl := ctx.world.GetController(ac.InboundHandoffController); ctrl != nil {
-				ho = ctrl.SectorId
-			}
-		} else if ac.OutboundHandoffController != "" {
-			if ctrl := ctx.world.GetController(ac.OutboundHandoffController); ctrl != nil {
+		if ac.HandoffTrackController != "" {
+			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
 				ho = ctrl.SectorId
 			}
 		}
@@ -3606,7 +3607,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 		} else {
 			return br.ScaleRGB(STARSTrackedAircraftColor)
 		}
-	} else if ac.InboundHandoffController == w.Callsign {
+	} else if ac.HandoffTrackController == w.Callsign {
 		// flashing white if it's being handed off to us.
 		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
 			br /= 3

@@ -414,7 +414,7 @@ func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 
 	// If it was handed off to tower, hand it back to us
 	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-		ac.InboundHandoffController = ac.ApproachController
+		ac.HandoffTrackController = ac.ApproachController
 		if ep != nil {
 			ep.PostEvent(Event{
 				Type:           OfferedHandoffEvent,

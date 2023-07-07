@@ -35,8 +35,8 @@ type Aircraft struct {
 	// controller.
 	ControllingController string
 
-	InboundHandoffController  string
-	OutboundHandoffController string
+	// Handoff offered but not yet accepted
+	HandoffTrackController string
 
 	// The controller who gave approach clearance
 	ApproachController string
@@ -852,13 +852,13 @@ func (ac *Aircraft) updateWaypoints(w *World, ep EventPoster) {
 
 func (ac *Aircraft) RunWaypointCommands(wp Waypoint, w *World, ep EventPoster) {
 	if wp.Handoff {
-		ac.InboundHandoffController = w.Callsign
+		ac.HandoffTrackController = w.Callsign
 		if ep != nil {
 			ep.PostEvent(Event{
 				Type:           OfferedHandoffEvent,
 				Callsign:       ac.Callsign,
 				FromController: ac.ControllingController,
-				ToController:   ac.InboundHandoffController,
+				ToController:   ac.HandoffTrackController,
 			})
 		}
 	}

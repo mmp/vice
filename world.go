@@ -293,8 +293,8 @@ func (w *World) HandoffControl(callsign string, success func(any), err func(erro
 }
 
 func (w *World) AcceptHandoff(callsign string, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.InboundHandoffController == w.Callsign {
-		ac.InboundHandoffController = ""
+	if ac := w.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == w.Callsign {
+		ac.HandoffTrackController = ""
 		ac.TrackingController = w.Callsign
 		ac.ControllingController = w.Callsign
 	}

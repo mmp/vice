@@ -131,7 +131,6 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
 				c.availableRemoteSims = rs
-				lg.Errorf("success: %s", spew.Sdump(c.availableRemoteSims))
 			},
 			OnErr: func(e error) {
 				lg.Errorf("%v", e)
@@ -946,12 +945,14 @@ func (sd *SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error
 }
 
 type AircraftCommandsError struct {
-	error
+	Err       error
 	Remaining []string
 }
 
+func (ace *AircraftCommandsError) Unwrap() error { return ace.Err }
+
 func (e AircraftCommandsError) Error() string {
-	s := e.error.Error()
+	s := e.Err.Error()
 	if len(e.Remaining) > 0 {
 		s += " remaining: " + strings.Join(e.Remaining, " ")
 	}
@@ -969,7 +970,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 	for i, command := range commands {
 		wrapError := func(e error) error {
 			return &AircraftCommandsError{
-				error:     e,
+				Err:       e,
 				Remaining: commands[i:],
 			}
 		}
@@ -1361,8 +1362,10 @@ type Sim struct {
 }
 
 type ServerController struct {
-	Callsign string
-	events   *EventsSubscription
+	Callsign            string
+	lastUpdateCall      time.Time
+	warnedNoUpdateCalls bool
+	events              *EventsSubscription
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *Sim {
@@ -1547,15 +1550,15 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 
 	token := base64.StdEncoding.EncodeToString(buf[:])
 	s.controllers[token] = &ServerController{
-		Callsign: callsign,
-		events:   s.eventStream.Subscribe(),
+		Callsign:       callsign,
+		lastUpdateCall: time.Now(),
+		events:         s.eventStream.Subscribe(),
 	}
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
 	})
-
 	return w, token, nil
 }
 
@@ -1629,6 +1632,16 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
+		ctrl.lastUpdateCall = time.Now()
+		if ctrl.warnedNoUpdateCalls {
+			ctrl.warnedNoUpdateCalls = false
+			lg.Errorf("%s: connection re-established", ctrl.Callsign)
+			s.eventStream.Post(Event{
+				Type:    StatusMessageEvent,
+				Message: ctrl.Callsign + " is back online.",
+			})
+		}
+
 		*update = SimWorldUpdate{
 			Aircraft:         s.World.Aircraft,
 			Controllers:      s.World.Controllers,
@@ -1646,8 +1659,12 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 func (s *Sim) Activate() error {
 	var e ErrorLogger
 
-	s.controllers = make(map[string]*ServerController)
-	s.eventStream = NewEventStream()
+	if s.controllers == nil {
+		s.controllers = make(map[string]*ServerController)
+	}
+	if s.eventStream == nil {
+		s.eventStream = NewEventStream()
+	}
 
 	initializeWaypointLocations := func(waypoints []Waypoint, e *ErrorLogger) {
 		for i, wp := range waypoints {
@@ -1755,6 +1772,28 @@ func (s *Sim) Update() {
 		return
 	}
 
+	for _ /*token*/, ctrl := range s.controllers {
+		if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
+			if !ctrl.warnedNoUpdateCalls {
+				ctrl.warnedNoUpdateCalls = true
+				lg.Errorf("%s: no messages for 5 seconds", ctrl.Callsign)
+				s.eventStream.Post(Event{
+					Type:    StatusMessageEvent,
+					Message: ctrl.Callsign + " has not been heard from for 5 seconds. Connection lost?",
+				})
+			}
+
+			/*
+				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
+					lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
+					s.mu.Unlock()
+					s.SignOff(token, nil)
+					s.mu.Lock()
+				}
+			*/
+		}
+	}
+
 	// Update the current time
 	elapsed := time.Since(s.lastUpdateTime)
 	elapsed = time.Duration(s.SimRate * float32(elapsed))
@@ -1772,17 +1811,17 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if ac, ok := s.World.Aircraft[callsign]; ok &&
-			!s.controllerIsSignedIn(ac.OutboundHandoffController) {
+		if ac, ok := s.World.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
+			!s.controllerIsSignedIn(ac.HandoffTrackController) {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: ac.TrackingController,
-				ToController:   ac.OutboundHandoffController,
+				ToController:   ac.HandoffTrackController,
 				Callsign:       ac.Callsign,
 			})
 
-			ac.TrackingController = ac.OutboundHandoffController
-			ac.OutboundHandoffController = ""
+			ac.TrackingController = ac.HandoffTrackController
+			ac.HandoffTrackController = ""
 		}
 		delete(s.Handoffs, callsign)
 	}
@@ -1794,7 +1833,7 @@ func (s *Sim) updateState() {
 			ac.Update(s.World, s.World, s)
 
 			// FIXME: this is sort of ugly to have here...
-			if ac.InboundHandoffController == s.World.Callsign {
+			if ac.HandoffTrackController == s.World.Callsign {
 				// We hit a /ho at a fix; update to the correct controller.
 				// Note that s.controllers may be empty when initially
 				// running the sim after it has been launched. Just hand
@@ -1816,34 +1855,41 @@ func (s *Sim) updateState() {
 						callsign = ac.ArrivalHandoffController
 					}
 					if callsign == "" {
-						ac.InboundHandoffController = ""
+						ac.HandoffTrackController = ""
 					}
 
 					i := 0
 					for {
 						if s.controllerIsSignedIn(callsign) {
-							ac.InboundHandoffController = callsign
+							ac.HandoffTrackController = callsign
 							break
 						}
-						callsign = s.World.MultiControllers[callsign].BackupController
+						mc, ok := s.World.MultiControllers[callsign]
+						if !ok {
+							lg.Errorf("%s: failed to find controller in MultiControllers", callsign)
+							ac.HandoffTrackController = ""
+							break
+						}
+						callsign = mc.BackupController
+
 						i++
 						if i == 20 {
 							lg.Errorf("%s: unable to find backup for arrival handoff controller",
 								ac.ArrivalHandoffController)
-							ac.InboundHandoffController = ""
+							ac.HandoffTrackController = ""
 							break
 						}
 					}
 
 				} else {
-					ac.InboundHandoffController = s.World.PrimaryController
+					ac.HandoffTrackController = s.World.PrimaryController
 				}
 
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
 					FromController: ac.ControllingController,
-					ToController:   ac.InboundHandoffController,
+					ToController:   ac.HandoffTrackController,
 				})
 			}
 		}
@@ -2253,7 +2299,8 @@ func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 					Callsign:       ac.Callsign,
 				})
 
-				ac.OutboundHandoffController = octrl.Callsign
+				ac.HandoffTrackController = octrl.Callsign
+
 				acceptDelay := 4 + rand.Intn(10)
 				s.Handoffs[ac.Callsign] = s.CurrentTime.Add(time.Duration(acceptDelay) * time.Second)
 				return "", nil
@@ -2299,7 +2346,7 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 
 	return s.dispatchCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.InboundHandoffController != ctrl.Callsign {
+			if ac.HandoffTrackController != ctrl.Callsign {
 				return ErrNotBeingHandedOffToMe
 			}
 			return nil
@@ -2312,9 +2359,12 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 				Callsign:       ac.Callsign,
 			})
 
-			ac.InboundHandoffController = ""
+			ac.HandoffTrackController = ""
 			ac.TrackingController = ctrl.Callsign
-			ac.ControllingController = ctrl.Callsign
+			if !s.controllerIsSignedIn(ac.ControllingController) {
+				// Only take control on handoffs from virtual
+				ac.ControllingController = ctrl.Callsign
+			}
 			return "", nil
 		})
 }
@@ -2326,7 +2376,7 @@ func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, error) {
 			delete(s.Handoffs, ac.Callsign)
-			ac.OutboundHandoffController = ""
+			ac.HandoffTrackController = ""
 			return "", nil
 		})
 }
