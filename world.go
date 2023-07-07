@@ -407,7 +407,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	w.checkPendingRPCs(eventStream)
 
 	// Wait in seconds between update fetches; no less than 100ms
-	rate := min(0.1, 1/w.SimRate)
+	rate := clamp(1/w.SimRate, 0.1, 1)
 	if time.Since(w.lastUpdate) > time.Duration(rate*float32(time.Second)) {
 		if w.updateCall != nil {
 			lg.Errorf("Still waiting on last update call!")
