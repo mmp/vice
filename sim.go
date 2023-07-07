@@ -1379,6 +1379,7 @@ type ServerController struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	events              *EventsSubscription
+	lastSentControllers map[string]*Controller
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *Sim {
@@ -1629,7 +1630,9 @@ type SimWorldUpdate struct {
 
 func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.Aircraft = wu.Aircraft
-	w.Controllers = wu.Controllers
+	if wu.Controllers != nil {
+		w.Controllers = wu.Controllers
+	}
 	w.LaunchController = wu.LaunchController
 	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
@@ -1641,6 +1644,18 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	for _, e := range wu.Events {
 		eventStream.Post(e)
 	}
+}
+
+func controllersChanged(a, b map[string]*Controller) bool {
+	if len(a) != len(b) {
+		return true
+	}
+	for cs := range a {
+		if _, ok := b[cs]; !ok {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
@@ -1662,7 +1677,6 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 
 		*update = SimWorldUpdate{
 			Aircraft:         s.World.Aircraft,
-			Controllers:      s.World.Controllers,
 			Time:             s.CurrentTime,
 			LaunchController: s.LaunchController,
 			SimIsPaused:      s.Paused,
@@ -1670,6 +1684,12 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			SimDescription:   s.Scenario,
 			Events:           ctrl.events.Get(),
 		}
+
+		if controllersChanged(s.World.Controllers, ctrl.lastSentControllers) {
+			update.Controllers = s.World.Controllers
+			ctrl.lastSentControllers = DuplicateMap(s.World.Controllers)
+		}
+
 		return nil
 	}
 }
