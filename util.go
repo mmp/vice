@@ -15,6 +15,7 @@ import (
 	"image/draw"
 	"io"
 	"math"
+	"net"
 	"net/http"
 	"net/rpc"
 	"os"
@@ -23,6 +24,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 	"unicode"
 
@@ -1672,7 +1674,43 @@ func checkJSONVsSchemaRecursive(json interface{}, ty reflect.Type, e *ErrorLogge
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// RPC stuff
+// RPC/Networking stuff
+
+type LoggingConn struct {
+	net.Conn
+	sent, received *int64
+}
+
+func (c *LoggingConn) Read(b []byte) (n int, err error) {
+	n, err = c.Conn.Read(b)
+	atomic.AddInt64(c.received, int64(n))
+	lg.Printf("Read %d", n)
+	return
+}
+
+func (c *LoggingConn) Write(b []byte) (n int, err error) {
+	n, err = c.Conn.Write(b)
+	atomic.AddInt64(c.sent, int64(n))
+	lg.Printf("Write %d", n)
+	return
+}
+
+type LoggingListener struct {
+	net.Listener
+	sent, received *int64
+}
+
+func MakeLoggingListener(l net.Listener, sent, received *int64) *LoggingListener {
+	return &LoggingListener{l, sent, received}
+}
+
+func (l *LoggingListener) Accept() (net.Conn, error) {
+	c, e := l.Listener.Accept()
+	if e != nil {
+		return c, e
+	}
+	return &LoggingConn{c, l.sent, l.received}, nil
+}
 
 type PendingCall struct {
 	Call                *rpc.Call

@@ -602,11 +602,14 @@ func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
 // SimManager
 
 type SimManager struct {
-	scenarioGroups       map[string]*ScenarioGroup
-	configs              map[string]*SimConfiguration
-	activeSims           map[string]*Sim
-	controllerTokenToSim map[string]*Sim
-	mu                   sync.Mutex
+	scenarioGroups           map[string]*ScenarioGroup
+	configs                  map[string]*SimConfiguration
+	activeSims               map[string]*Sim
+	controllerTokenToSim     map[string]*Sim
+	mu                       sync.Mutex
+	sentBytes, receivedBytes int64
+	startTime                time.Time
+	lastBandwidthLog         time.Time
 }
 
 func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
@@ -616,6 +619,7 @@ func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
 		configs:              simConfigurations,
 		activeSims:           make(map[string]*Sim),
 		controllerTokenToSim: make(map[string]*Sim),
+		startTime:            time.Now(),
 	}
 }
 
@@ -756,6 +760,15 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
+
+	if time.Since(sm.lastBandwidthLog) > 15*time.Second {
+		sm.lastBandwidthLog = time.Now()
+		lg.Printf("Total bandwidth: %d sent, %d received", sm.sentBytes, sm.receivedBytes)
+
+		min := time.Since(sm.startTime).Minutes()
+		lg.Printf("Average bandwidth per minute: %d sent, %d received",
+			int(float64(sm.sentBytes)/min), int(float64(sm.receivedBytes)/min))
+	}
 
 	sim, ok := sm.controllerTokenToSim[token]
 	return sim, ok
@@ -1300,7 +1313,7 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 		ch <- simConfigurations
 
 		lg.Printf("Listening on %+v", l)
-		http.Serve(l, nil) // noreturn
+		http.Serve(MakeLoggingListener(l, &sm.sentBytes, &sm.receivedBytes), nil) // noreturn
 	}
 
 	if isLocal {
@@ -1459,6 +1472,11 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.DepartureRates = s.DepartureRates
 	w.ArrivalGroupRates = s.ArrivalGroupRates
 	w.GoAroundRate = s.GoAroundRate
+	w.SimTime = s.CurrentTime
+	w.LaunchController = s.LaunchController
+	w.SimIsPaused = s.Paused
+	w.SimRate = s.SimRate
+	w.SimDescription = s.Scenario
 
 	for _, callsign := range sc.VirtualControllers {
 		if ctrl, ok := sg.ControlPositions[callsign]; ok {
