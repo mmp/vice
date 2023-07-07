@@ -282,6 +282,8 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 	if w != nil {
 		w.DrawSettingsWindow()
 
+		w.DrawMissingPrimaryDialog()
+
 		if w.LaunchController == w.Callsign {
 			if w.launchControlWindow == nil {
 				w.launchControlWindow = MakeLaunchControlWindow(w)

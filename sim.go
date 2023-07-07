@@ -474,6 +474,15 @@ func (s *SimProxy) SignOff(_, _ *struct{}) error {
 	return s.Client.Call("Sim.SignOff", s.ControllerToken, nil)
 }
 
+func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error {
+	return s.Client.Call("Sim.ChangeControlPosition",
+		&ControllerSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign:        callsign,
+			KeepTracks:      keepTracks,
+		}, nil)
+}
+
 func (s *SimProxy) GetSerializeSim() (*Sim, error) {
 	var sim Sim
 	err := s.Client.Call("SimManager.GetSerializeSim", s.ControllerToken, &sim)
@@ -786,6 +795,22 @@ func (sd *SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) er
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.GetWorldUpdate(token, update)
+	}
+}
+
+func (sd *SimDispatcher) SignOff(token string, _ *struct{}) error {
+	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SignOff(token, nil)
+	}
+}
+
+func (sd *SimDispatcher) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.ControllerTokenToSim(cs.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ChangeControlPosition(cs, nil)
 	}
 }
 
@@ -1545,40 +1570,48 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 }
 
 func (s *Sim) SignOn(callsign string) (*World, string, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	if s.controllerIsSignedIn(callsign) {
-		return nil, "", ErrControllerAlreadySignedIn
+	if err := s.signOn(callsign); err != nil {
+		return nil, "", err
 	}
-
-	ctrl, ok := s.SignOnPositions[callsign]
-	if !ok {
-		return nil, "", ErrNoController
-	}
-	s.World.Controllers[callsign] = ctrl
-
-	w := NewWorld()
-	w.Assign(s.World)
-	w.Callsign = callsign
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
 		return nil, "", err
 	}
-
 	token := base64.StdEncoding.EncodeToString(buf[:])
+
 	s.controllers[token] = &ServerController{
 		Callsign:       callsign,
 		lastUpdateCall: time.Now(),
 		events:         s.eventStream.Subscribe(),
 	}
 
+	w := NewWorld()
+	w.Assign(s.World)
+	w.Callsign = callsign
+
+	return w, token, nil
+}
+
+func (s *Sim) signOn(callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.controllerIsSignedIn(callsign) {
+		return ErrControllerAlreadySignedIn
+	}
+
+	ctrl, ok := s.SignOnPositions[callsign]
+	if !ok {
+		return ErrNoController
+	}
+	s.World.Controllers[callsign] = ctrl
+
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
 	})
-	return w, token, nil
+	return nil
 }
 
 func (s *Sim) SignOff(token string, _ *struct{}) error {
@@ -1588,6 +1621,12 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
+		lg.Printf("%s: signing off", ctrl.Callsign)
+		// Drop track on controlled aircraft
+		for _, ac := range s.World.Aircraft {
+			ac.DropControllerTrack(ctrl.Callsign)
+		}
+
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
 		delete(s.World.Controllers, ctrl.Callsign)
@@ -1597,6 +1636,44 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 			Message: ctrl.Callsign + " has signed off.",
 		})
 	}
+	return nil
+}
+
+type ControllerSpecifier struct {
+	Callsign        string
+	ControllerToken string
+	KeepTracks      bool
+}
+
+func (s *Sim) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error {
+	ctrl, ok := s.controllers[cs.ControllerToken]
+	if !ok {
+		return ErrInvalidControllerToken
+	}
+	oldCallsign := ctrl.Callsign
+
+	// Make sure we can successfully sign on before signing off from the
+	// current position.
+	if err := s.signOn(cs.Callsign); err != nil {
+		return err
+	}
+	ctrl.Callsign = cs.Callsign
+
+	delete(s.World.Controllers, oldCallsign)
+
+	s.eventStream.Post(Event{
+		Type:    StatusMessageEvent,
+		Message: oldCallsign + " has signed off.",
+	})
+
+	for _, ac := range s.World.Aircraft {
+		if cs.KeepTracks {
+			ac.TransferTracks(oldCallsign, ctrl.Callsign)
+		} else {
+			ac.DropControllerTrack(ctrl.Callsign)
+		}
+	}
+
 	return nil
 }
 
@@ -1818,10 +1895,6 @@ func (s *Sim) Update() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.Paused {
-		return
-	}
-
 	for _ /*token*/, ctrl := range s.controllers {
 		if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
 			if !ctrl.warnedNoUpdateCalls {
@@ -1842,6 +1915,15 @@ func (s *Sim) Update() {
 				}
 			*/
 		}
+	}
+
+	if s.Paused {
+		return
+	}
+
+	if !s.controllerIsSignedIn(s.World.PrimaryController) {
+		// Pause the sim if the primary controller is gone
+		return
 	}
 
 	// Update the current time

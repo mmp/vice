@@ -57,6 +57,8 @@ type World struct {
 
 	pendingCalls []*PendingCall
 
+	missingPrimaryDialog *ModalDialogBox
+
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	LaunchController  string
@@ -103,6 +105,12 @@ func (w *World) Assign(other *World) {
 	w.Aircraft = DuplicateMap(other.Aircraft)
 	w.METAR = DuplicateMap(other.METAR)
 	w.Controllers = DuplicateMap(other.Controllers)
+	w.PrimaryController = other.PrimaryController
+	w.MultiControllers = DuplicateMap(other.MultiControllers)
+
+	w.SimRate = other.SimRate
+	w.SimIsPaused = other.SimIsPaused
+	w.SimDescription = other.SimDescription
 
 	w.DepartureAirports = other.DepartureAirports
 	w.ArrivalAirports = other.ArrivalAirports
@@ -324,6 +332,14 @@ func (w *World) CancelHandoff(callsign string, success func(any), err func(error
 
 func (w *World) PointOut(callsign string, controller string, success func(any), err func(error)) {
 	// UNIMPLEMENTED
+}
+
+func (w *World) ChangeControlPosition(callsign string, keepTracks bool) error {
+	err := w.simProxy.ChangeControlPosition(callsign, keepTracks)
+	if err == nil {
+		w.Callsign = callsign
+	}
+	return err
 }
 
 func (w *World) Disconnect() {
@@ -815,6 +831,49 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 
 func (w *World) ToggleActivateSettingsWindow() {
 	w.showSettings = !w.showSettings
+}
+
+type MissingPrimaryModalClient struct {
+	world *World
+}
+
+func (mp *MissingPrimaryModalClient) Title() string {
+	return "Missing Primary Controller"
+}
+
+func (mp *MissingPrimaryModalClient) Opening() {}
+
+func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Sign in to " + mp.world.PrimaryController, action: func() bool {
+		err := mp.world.ChangeControlPosition(mp.world.PrimaryController, true)
+		return err == nil
+	}})
+	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
+		newWorldChan <- nil // This will lead to a World Disconnect() call in main.go
+		uiCloseModalDialog(mp.world.missingPrimaryDialog)
+		return true
+	}})
+	return b
+}
+
+func (mp *MissingPrimaryModalClient) Draw() int {
+	imgui.Text("The primary controller, " + mp.world.PrimaryController + ", has disconnected from the server or is otherwise unreachable.\nThe simulation will be paused until a primary controller signs in.")
+	return -1
+}
+
+func (w *World) DrawMissingPrimaryDialog() {
+	if _, ok := w.Controllers[w.PrimaryController]; ok {
+		if w.missingPrimaryDialog != nil {
+			uiCloseModalDialog(w.missingPrimaryDialog)
+			w.missingPrimaryDialog = nil
+		}
+	} else {
+		if w.missingPrimaryDialog == nil {
+			w.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w})
+			uiShowModalDialog(w.missingPrimaryDialog, true)
+		}
+	}
 }
 
 func (w *World) DrawSettingsWindow() {

@@ -153,7 +153,7 @@ func main() {
 
 		fontsInit(renderer, platform)
 
-		newWorldChan = make(chan *World, 1)
+		newWorldChan = make(chan *World, 2)
 		var world *World
 
 		// TODO: put up dialog box while we wait for these...
@@ -199,9 +199,13 @@ func main() {
 				}
 				world = nw
 
-				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-					p.ResetWorld(world)
-				})
+				if world == nil {
+					uiShowConnectDialog(false)
+				} else if world != nil {
+					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+						p.ResetWorld(world)
+					})
+				}
 
 			default:
 
@@ -244,7 +248,13 @@ func main() {
 			// Generate and render vice draw lists
 			if world != nil {
 				wmDrawPanes(platform, renderer, world, &stats)
+			} else {
+				commandBuffer := GetCommandBuffer()
+				commandBuffer.ClearRGB(RGB{})
+				stats.render = renderer.RenderCommandBuffer(commandBuffer)
+				ReturnCommandBuffer(commandBuffer)
 			}
+
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
@@ -261,6 +271,9 @@ func main() {
 			frameIndex++
 
 			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
+				if world != nil {
+					world.Disconnect()
+				}
 				// Do this while we're still running the event loop.
 				saveSim := world != nil && world.simProxy.Client == localServer.client
 				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)

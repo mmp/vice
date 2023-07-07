@@ -189,6 +189,40 @@ func (ac *Aircraft) HaveAssignedSpeed() bool {
 	return false
 }
 
+func (ac *Aircraft) DropControllerTrack(callsign string) {
+	if ac.HandoffTrackController == callsign {
+		ac.HandoffTrackController = ""
+	}
+	if ac.ControllingController == callsign {
+		if ac.TrackingController == callsign {
+			ac.TrackingController = ""
+			ac.ControllingController = ""
+		} else {
+			// Another controller has the track but not yet control;
+			// just give them control
+			ac.ControllingController = ac.TrackingController
+		}
+	}
+}
+
+func (ac *Aircraft) TransferTracks(from, to string) {
+	if ac.HandoffTrackController == from {
+		ac.HandoffTrackController = to
+	}
+	if ac.TrackingController == from {
+		ac.TrackingController = to
+	}
+	if ac.ControllingController == from {
+		ac.ControllingController = to
+	}
+	if ac.ApproachController == from {
+		ac.ApproachController = to
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Navigation and simulation
+
 func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	ac.updateAirspeed()
 	ac.updateAltitude()
