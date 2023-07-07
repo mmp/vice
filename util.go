@@ -1684,14 +1684,12 @@ type LoggingConn struct {
 func (c *LoggingConn) Read(b []byte) (n int, err error) {
 	n, err = c.Conn.Read(b)
 	atomic.AddInt64(c.received, int64(n))
-	lg.Printf("Read %d", n)
 	return
 }
 
 func (c *LoggingConn) Write(b []byte) (n int, err error) {
 	n, err = c.Conn.Write(b)
 	atomic.AddInt64(c.sent, int64(n))
-	lg.Printf("Write %d", n)
 	return
 }
 
