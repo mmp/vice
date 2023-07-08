@@ -317,7 +317,13 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 }
 
 func (w *World) RejectHandoff(callsign string, success func(any), err func(error)) {
-	// UNIMPLEMENTED
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RejectHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
 func (w *World) CancelHandoff(callsign string, success func(any), err func(error)) {
@@ -331,7 +337,13 @@ func (w *World) CancelHandoff(callsign string, success func(any), err func(error
 }
 
 func (w *World) PointOut(callsign string, controller string, success func(any), err func(error)) {
-	// UNIMPLEMENTED
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.PointOut(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
 }
 
 func (w *World) ChangeControlPosition(callsign string, keepTracks bool) error {

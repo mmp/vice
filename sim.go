@@ -549,10 +549,25 @@ func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) RejectHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.RejectHandoff", &AircraftSpecifier{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
 func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.CancelHandoff", &AircraftSpecifier{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) PointOut(callsign string, controller string) *rpc.Call {
+	return s.Client.Go("Sim.PointOut", &PointOutSpecifier{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      controller,
 	}, nil, nil)
 }
 
@@ -886,11 +901,27 @@ func (sd *SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error 
 	}
 }
 
+func (sd *SimDispatcher) RejectHandoff(a *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RejectHandoff(a, nil)
+	}
+}
+
 func (sd *SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.CancelHandoff(a, nil)
+	}
+}
+
+func (sd *SimDispatcher) PointOut(po *PointOutSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.PointOut(po, nil)
 	}
 }
 
@@ -2501,6 +2532,30 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 		})
 }
 
+func (s *Sim) RejectHandoff(a *AircraftSpecifier, _ *struct{}) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchCommand(a.ControllerToken, a.Callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if ac.HandoffTrackController != ctrl.Callsign {
+				return ErrNotBeingHandedOffToMe
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) (string, error) {
+			s.eventStream.Post(Event{
+				Type:           RejectedHandoffEvent,
+				FromController: ac.ControllingController,
+				ToController:   ctrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+
+			ac.HandoffTrackController = ""
+			return "", nil
+		})
+}
+
 func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -2510,6 +2565,29 @@ func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
 			return "", nil
+		})
+}
+
+type PointOutSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Controller      string
+}
+
+func (s *Sim) PointOut(po *PointOutSpecifier, _ *struct{}) error {
+	return s.dispatchControllingCommand(po.ControllerToken, po.Callsign,
+		func(ctrl *Controller, ac *Aircraft) (string, error) {
+			if octrl := s.World.GetController(po.Controller); octrl == nil {
+				return "", ErrNoController
+			} else {
+				s.eventStream.Post(Event{
+					Type:           PointOutEvent,
+					FromController: ctrl.Callsign,
+					ToController:   octrl.Callsign,
+					Callsign:       ac.Callsign,
+				})
+				return "", nil
+			}
 		})
 }
 
