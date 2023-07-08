@@ -410,15 +410,21 @@ func (sd *SimDispatcher) SignOff(token string, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.SignOff(token, nil)
+		return sim.SignOff(token)
 	}
+}
+
+type ControllerSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	KeepTracks      bool
 }
 
 func (sd *SimDispatcher) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(cs.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.ChangeControlPosition(cs, nil)
+		return sim.ChangeControlPosition(cs.ControllerToken, cs.Callsign, cs.KeepTracks)
 	}
 }
 
@@ -430,11 +436,16 @@ func (sd *SimDispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) er
 	}
 }
 
+type SimRateSpecifier struct {
+	ControllerToken string
+	Rate            float32
+}
+
 func (sd *SimDispatcher) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[r.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.SetSimRate(r, nil)
+		return sim.SetSimRate(r.ControllerToken, r.Rate)
 	}
 }
 
@@ -442,15 +453,26 @@ func (sd *SimDispatcher) TogglePause(token string, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.TogglePause(token, nil)
+		return sim.TogglePause(token)
 	}
+}
+
+type AircraftSpecifier struct {
+	ControllerToken string
+	Callsign        string
+}
+
+type AircraftPropertiesSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Scratchpad      string
 }
 
 func (sd *SimDispatcher) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.SetScratchpad(a, nil)
+		return sim.SetScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
 	}
 }
 
@@ -458,7 +480,7 @@ func (sd *SimDispatcher) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error 
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.InitiateTrack(a, nil)
+		return sim.InitiateTrack(a.ControllerToken, a.Callsign)
 	}
 }
 
@@ -466,15 +488,21 @@ func (sd *SimDispatcher) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.DropTrack(a, nil)
+		return sim.DropTrack(a.ControllerToken, a.Callsign)
 	}
+}
+
+type HandoffSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Controller      string
 }
 
 func (sd *SimDispatcher) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.HandoffTrack(h, nil)
+		return sim.HandoffTrack(h.ControllerToken, h.Callsign, h.Controller)
 	}
 }
 
@@ -482,7 +510,7 @@ func (sd *SimDispatcher) HandoffControl(h *HandoffSpecifier, _ *struct{}) error 
 	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.HandoffControl(h, nil)
+		return sim.HandoffControl(h.ControllerToken, h.Callsign)
 	}
 }
 
@@ -490,7 +518,7 @@ func (sd *SimDispatcher) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error 
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.AcceptHandoff(a, nil)
+		return sim.AcceptHandoff(a.ControllerToken, a.Callsign)
 	}
 }
 
@@ -498,7 +526,7 @@ func (sd *SimDispatcher) RejectHandoff(a *AircraftSpecifier, _ *struct{}) error 
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.RejectHandoff(a, nil)
+		return sim.RejectHandoff(a.ControllerToken, a.Callsign)
 	}
 }
 
@@ -506,23 +534,35 @@ func (sd *SimDispatcher) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error 
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.CancelHandoff(a, nil)
+		return sim.CancelHandoff(a.ControllerToken, a.Callsign)
 	}
+}
+
+type PointOutSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Controller      string
 }
 
 func (sd *SimDispatcher) PointOut(po *PointOutSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.PointOut(po, nil)
+		return sim.PointOut(po.ControllerToken, po.Callsign, po.Controller)
 	}
+}
+
+type AltitudeAssignment struct {
+	ControllerToken string
+	Callsign        string
+	Altitude        int
 }
 
 func (sd *SimDispatcher) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[alt.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.AssignAltitude(alt, nil)
+		return sim.AssignAltitude(alt.ControllerToken, alt.Callsign, alt.Altitude)
 	}
 }
 
@@ -530,31 +570,56 @@ func (sd *SimDispatcher) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct
 	if sim, ok := sd.sm.controllerTokenToSim[alt.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.SetTemporaryAltitude(alt, nil)
+		return sim.SetTemporaryAltitude(alt.ControllerToken, alt.Callsign, alt.Altitude)
 	}
+}
+
+type HeadingAssignment struct {
+	ControllerToken string
+	Callsign        string
+	Heading         int
+	Present         bool
+	LeftDegrees     int
+	RightDegrees    int
+	Turn            TurnMethod
 }
 
 func (sd *SimDispatcher) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[hdg.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.AssignHeading(hdg, nil)
+		return sim.AssignHeading(hdg)
 	}
+}
+
+type SpeedAssignment struct {
+	ControllerToken string
+	Callsign        string
+	Speed           int
 }
 
 func (sd *SimDispatcher) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[sa.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.AssignSpeed(sa, nil)
+		return sim.AssignSpeed(sa.ControllerToken, sa.Callsign, sa.Speed)
 	}
+}
+
+type FixSpecifier struct {
+	ControllerToken string
+	Callsign        string
+	Fix             string
+	Heading         int
+	Altitude        int
+	Speed           int
 }
 
 func (sd *SimDispatcher) DirectFix(f *FixSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[f.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.DirectFix(f, nil)
+		return sim.DirectFix(f.ControllerToken, f.Callsign, f.Fix)
 	}
 }
 
@@ -562,7 +627,7 @@ func (sd *SimDispatcher) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[f.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.DepartFixHeading(f, nil)
+		return sim.DepartFixHeading(f.ControllerToken, f.Callsign, f.Fix, f.Heading)
 	}
 }
 
@@ -570,23 +635,36 @@ func (sd *SimDispatcher) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[f.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.CrossFixAt(f, nil)
+		return sim.CrossFixAt(f.ControllerToken, f.Callsign, f.Fix, f.Altitude, f.Speed)
 	}
+}
+
+type ApproachAssignment struct {
+	ControllerToken string
+	Callsign        string
+	Approach        string
 }
 
 func (sd *SimDispatcher) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.ExpectApproach(a, nil)
+		return sim.ExpectApproach(a.ControllerToken, a.Callsign, a.Approach)
 	}
+}
+
+type ApproachClearance struct {
+	ControllerToken string
+	Callsign        string
+	Approach        string
+	StraightIn      bool
 }
 
 func (sd *SimDispatcher) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[c.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.ClearedApproach(c, nil)
+		return sim.ClearedApproach(c.ControllerToken, c.Callsign, c.Approach, c.StraightIn)
 	}
 }
 
@@ -594,7 +672,7 @@ func (sd *SimDispatcher) GoAround(a *AircraftSpecifier, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.GoAround(a, nil)
+		return sim.GoAround(a.ControllerToken, a.Callsign)
 	}
 }
 
@@ -602,7 +680,7 @@ func (sd *SimDispatcher) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.DeleteAircraft(a, nil)
+		return sim.DeleteAircraft(a.ControllerToken, a.Callsign)
 	}
 }
 
@@ -648,31 +726,18 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 				}
 				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
 					return wrapError(err)
-				} else if err := sim.DepartFixHeading(&FixSpecifier{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Fix:             fix,
-					Heading:         hdg,
-				}, nil); err != nil {
+				} else if err := sim.DepartFixHeading(cmds.ControllerToken, cmds.Callsign, fix, hdg); err != nil {
 					return wrapError(err)
 				}
 			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
 				// Looks like an altitude.
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
 					return wrapError(err)
-				} else if err := sim.AssignAltitude(&AltitudeAssignment{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Altitude:        100 * alt,
-				}, nil); err != nil {
+				} else if err := sim.AssignAltitude(cmds.ControllerToken, cmds.Callsign, 100*alt); err != nil {
 					return wrapError(err)
 				}
 			} else if _, ok := sim.World.Locate(string(command[1:])); ok {
-				if err := sim.DirectFix(&FixSpecifier{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Fix:             command[1:],
-				}, nil); err != nil {
+				if err := sim.DirectFix(cmds.ControllerToken, cmds.Callsign, command[1:]); err != nil {
 					return wrapError(err)
 				}
 			} else {
@@ -685,7 +750,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					Present:         true,
-				}, nil); err != nil {
+				}); err != nil {
 					return wrapError(err)
 				}
 			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
@@ -695,7 +760,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 				Callsign:        cmds.Callsign,
 				Heading:         hdg,
 				Turn:            TurnClosest,
-			}, nil); err != nil {
+			}); err != nil {
 				return wrapError(err)
 			}
 
@@ -708,7 +773,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					LeftDegrees:     deg,
-				}, nil); err != nil {
+				}); err != nil {
 					return wrapError(err)
 				}
 			} else {
@@ -720,7 +785,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 					Callsign:        cmds.Callsign,
 					Heading:         hdg,
 					Turn:            TurnLeft,
-				}, nil); err != nil {
+				}); err != nil {
 					return wrapError(err)
 				}
 			}
@@ -734,7 +799,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					RightDegrees:    deg,
-				}, nil); err != nil {
+				}); err != nil {
 					return wrapError(err)
 				}
 			} else {
@@ -746,7 +811,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 					Callsign:        cmds.Callsign,
 					Heading:         hdg,
 					Turn:            TurnRight,
-				}, nil); err != nil {
+				}); err != nil {
 					return wrapError(err)
 				}
 			}
@@ -754,12 +819,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 		case 'C', 'A':
 			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
-				if err := sim.ClearedApproach(&ApproachClearance{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Approach:        command[3:],
-					StraightIn:      true,
-				}, nil); err != nil {
+				if err := sim.ClearedApproach(cmds.ControllerToken, cmds.Callsign, command[3:], true); err != nil {
 					return wrapError(err)
 				}
 			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
@@ -787,31 +847,17 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 						}
 					}
 
-					if err := sim.CrossFixAt(&FixSpecifier{
-						ControllerToken: cmds.ControllerToken,
-						Callsign:        cmds.Callsign,
-						Fix:             fix,
-						Altitude:        100 * alt,
-						Speed:           speed,
-					}, nil); err != nil {
+					if err := sim.CrossFixAt(cmds.ControllerToken, cmds.Callsign, fix, 100*alt, speed); err != nil {
 						return wrapError(err)
 					}
-				} else if err := sim.ClearedApproach(&ApproachClearance{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Approach:        command[1:],
-				}, nil); err != nil {
+				} else if err := sim.ClearedApproach(cmds.ControllerToken, cmds.Callsign, command[1:], false); err != nil {
 					return wrapError(err)
 				}
 			} else {
 				// Otherwise look for an altitude
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
 					return wrapError(err)
-				} else if err := sim.AssignAltitude(&AltitudeAssignment{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Altitude:        100 * alt,
-				}, nil); err != nil {
+				} else if err := sim.AssignAltitude(cmds.ControllerToken, cmds.Callsign, 100*alt); err != nil {
 					return wrapError(err)
 				}
 			}
@@ -819,21 +865,13 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 		case 'S':
 			if len(command) == 1 {
 				// Cancel speed restrictions
-				if err := sim.AssignSpeed(&SpeedAssignment{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Speed:           0,
-				}, nil); err != nil {
+				if err := sim.AssignSpeed(cmds.ControllerToken, cmds.Callsign, 0); err != nil {
 					return wrapError(err)
 				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					return wrapError(err)
-				} else if err := sim.AssignSpeed(&SpeedAssignment{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Speed:           kts,
-				}, nil); err != nil {
+				} else if err := sim.AssignSpeed(cmds.ControllerToken, cmds.Callsign, kts); err != nil {
 					return wrapError(err)
 				}
 			}
@@ -841,11 +879,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsSpecifier, _ 
 		case 'E':
 			// Expect approach.
 			if len(command) > 1 {
-				if err := sim.ExpectApproach(&ApproachAssignment{
-					ControllerToken: cmds.ControllerToken,
-					Callsign:        cmds.Callsign,
-					Approach:        command[1:],
-				}, nil); err != nil {
+				if err := sim.ExpectApproach(cmds.ControllerToken, cmds.Callsign, command[1:]); err != nil {
 					return wrapError(err)
 				}
 			} else {

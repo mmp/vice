@@ -685,7 +685,7 @@ func (s *Sim) signOn(callsign string) error {
 	return nil
 }
 
-func (s *Sim) SignOff(token string, _ *struct{}) error {
+func (s *Sim) SignOff(token string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -710,14 +710,8 @@ func (s *Sim) SignOff(token string, _ *struct{}) error {
 	return nil
 }
 
-type ControllerSpecifier struct {
-	Callsign        string
-	ControllerToken string
-	KeepTracks      bool
-}
-
-func (s *Sim) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error {
-	ctrl, ok := s.controllers[cs.ControllerToken]
+func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bool) error {
+	ctrl, ok := s.controllers[token]
 	if !ok {
 		return ErrInvalidControllerToken
 	}
@@ -725,10 +719,10 @@ func (s *Sim) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error 
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position.
-	if err := s.signOn(cs.Callsign); err != nil {
+	if err := s.signOn(callsign); err != nil {
 		return err
 	}
-	ctrl.Callsign = cs.Callsign
+	ctrl.Callsign = callsign
 
 	delete(s.World.Controllers, oldCallsign)
 
@@ -738,7 +732,7 @@ func (s *Sim) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error 
 	})
 
 	for _, ac := range s.World.Aircraft {
-		if cs.KeepTracks {
+		if keepTracks {
 			ac.TransferTracks(oldCallsign, ctrl.Callsign)
 		} else {
 			ac.DropControllerTrack(ctrl.Callsign)
@@ -748,7 +742,7 @@ func (s *Sim) ChangeControlPosition(cs *ControllerSpecifier, _ *struct{}) error 
 	return nil
 }
 
-func (s *Sim) TogglePause(token string, _ *struct{}) error {
+func (s *Sim) TogglePause(token string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -1276,19 +1270,14 @@ func (s *Sim) spawnAircraft() {
 ///////////////////////////////////////////////////////////////////////////
 // Commands from the user
 
-type SimRateSpecifier struct {
-	ControllerToken string
-	Rate            float32
-}
-
-func (s *Sim) SetSimRate(r *SimRateSpecifier, _ *struct{}) error {
+func (s *Sim) SetSimRate(token string, rate float32) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if _, ok := s.controllers[r.ControllerToken]; !ok {
+	if _, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
-		s.SimRate = r.Rate
+		s.SimRate = rate
 		return nil
 	}
 }
@@ -1358,17 +1347,6 @@ func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 			s.LaunchController, ac.Callsign, ac.FlightPlan.DepartureAirport),
 	})
 
-}
-
-type AircraftSpecifier struct {
-	ControllerToken string
-	Callsign        string
-}
-
-type AircraftPropertiesSpecifier struct {
-	ControllerToken string
-	Callsign        string
-	Scratchpad      string
 }
 
 func (s *Sim) dispatchCommand(token string, callsign string,
@@ -1442,22 +1420,22 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 		cmd)
 }
 
-func (s *Sim) SetScratchpad(a *AircraftPropertiesSpecifier, _ *struct{}) error {
+func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			ac.Scratchpad = a.Scratchpad
+			ac.Scratchpad = scratchpad
 			return "", "", nil
 		})
 }
 
-func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) InitiateTrack(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchCommand(token, callsign,
 		func(c *Controller, ac *Aircraft) error {
 			// Make sure no one has the track already
 			if ac.TrackingController != "" {
@@ -1473,11 +1451,11 @@ func (s *Sim) InitiateTrack(a *AircraftSpecifier, _ *struct{}) error {
 		})
 }
 
-func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) DropTrack(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
 			ac.TrackingController = ""
 			ac.ControllingController = ""
@@ -1486,17 +1464,11 @@ func (s *Sim) DropTrack(a *AircraftSpecifier, _ *struct{}) error {
 		})
 }
 
-type HandoffSpecifier struct {
-	ControllerToken string
-	Callsign        string
-	Controller      string
-}
-
-func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
+func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchCommand(h.ControllerToken, h.Callsign,
+	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
@@ -1504,7 +1476,7 @@ func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			if octrl := s.World.GetController(h.Controller); octrl == nil {
+			if octrl := s.World.GetController(controller); octrl == nil {
 				return "", "", ErrNoController
 			} else {
 				s.eventStream.Post(Event{
@@ -1523,11 +1495,11 @@ func (s *Sim) HandoffTrack(h *HandoffSpecifier, _ *struct{}) error {
 		})
 }
 
-func (s *Sim) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
+func (s *Sim) HandoffControl(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchCommand(h.ControllerToken, h.Callsign,
+	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.ControllingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
@@ -1552,11 +1524,11 @@ func (s *Sim) HandoffControl(h *HandoffSpecifier, _ *struct{}) error {
 		})
 }
 
-func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) AcceptHandoff(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.HandoffTrackController != ctrl.Callsign {
 				return ErrNotBeingHandedOffToMe
@@ -1581,11 +1553,11 @@ func (s *Sim) AcceptHandoff(a *AircraftSpecifier, _ *struct{}) error {
 		})
 }
 
-func (s *Sim) RejectHandoff(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) RejectHandoff(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.HandoffTrackController != ctrl.Callsign {
 				return ErrNotBeingHandedOffToMe
@@ -1605,11 +1577,11 @@ func (s *Sim) RejectHandoff(a *AircraftSpecifier, _ *struct{}) error {
 		})
 }
 
-func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) CancelHandoff(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchTrackingCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
@@ -1617,16 +1589,10 @@ func (s *Sim) CancelHandoff(a *AircraftSpecifier, _ *struct{}) error {
 		})
 }
 
-type PointOutSpecifier struct {
-	ControllerToken string
-	Callsign        string
-	Controller      string
-}
-
-func (s *Sim) PointOut(po *PointOutSpecifier, _ *struct{}) error {
-	return s.dispatchControllingCommand(po.ControllerToken, po.Callsign,
+func (s *Sim) PointOut(token, callsign, controller string) error {
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			if octrl := s.World.GetController(po.Controller); octrl == nil {
+			if octrl := s.World.GetController(controller); octrl == nil {
 				return "", "", ErrNoController
 			} else {
 				s.eventStream.Post(Event{
@@ -1640,45 +1606,29 @@ func (s *Sim) PointOut(po *PointOutSpecifier, _ *struct{}) error {
 		})
 }
 
-type AltitudeAssignment struct {
-	ControllerToken string
-	Callsign        string
-	Altitude        int
-}
-
-func (s *Sim) AssignAltitude(alt *AltitudeAssignment, _ *struct{}) error {
+func (s *Sim) AssignAltitude(token, callsign string, altitude int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(alt.ControllerToken, alt.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp, err := ac.AssignAltitude(alt.Altitude)
+			resp, err := ac.AssignAltitude(altitude)
 			return resp, "", err
 		})
 }
 
-func (s *Sim) SetTemporaryAltitude(alt *AltitudeAssignment, _ *struct{}) error {
+func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchTrackingCommand(alt.ControllerToken, alt.Callsign,
+	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			ac.TempAltitude = alt.Altitude
+			ac.TempAltitude = altitude
 			return "", "", nil
 		})
 }
 
-type HeadingAssignment struct {
-	ControllerToken string
-	Callsign        string
-	Heading         int
-	Present         bool
-	LeftDegrees     int
-	RightDegrees    int
-	Turn            TurnMethod
-}
-
-func (s *Sim) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
+func (s *Sim) AssignHeading(hdg *HeadingAssignment) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -1703,121 +1653,92 @@ func (s *Sim) AssignHeading(hdg *HeadingAssignment, _ *struct{}) error {
 		})
 }
 
-type SpeedAssignment struct {
-	ControllerToken string
-	Callsign        string
-	Speed           int
-}
-
-func (s *Sim) AssignSpeed(sa *SpeedAssignment, _ *struct{}) error {
+func (s *Sim) AssignSpeed(token, callsign string, speed int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(sa.ControllerToken, sa.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp, err := ac.AssignSpeed(sa.Speed)
+			resp, err := ac.AssignSpeed(speed)
 			return resp, "", err
 		})
 }
 
-type FixSpecifier struct {
-	ControllerToken string
-	Callsign        string
-	Fix             string
-	Heading         int
-	Altitude        int
-	Speed           int
-}
-
-func (s *Sim) DirectFix(f *FixSpecifier, _ *struct{}) error {
+func (s *Sim) DirectFix(token, callsign, fix string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp, err := ac.DirectFix(f.Fix)
+			resp, err := ac.DirectFix(fix)
 			return resp, "", err
 		})
 }
 
-func (s *Sim) DepartFixHeading(f *FixSpecifier, _ *struct{}) error {
+func (s *Sim) DepartFixHeading(token, callsign, fix string, heading int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp, err := ac.DepartFixHeading(f.Fix, f.Heading)
+			resp, err := ac.DepartFixHeading(fix, heading)
 			return resp, "", err
 		})
 }
 
-func (s *Sim) CrossFixAt(f *FixSpecifier, _ *struct{}) error {
+func (s *Sim) CrossFixAt(token, callsign, fix string, alt, speed int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(f.ControllerToken, f.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp, err := ac.CrossFixAt(f.Fix, f.Altitude, f.Speed)
+			resp, err := ac.CrossFixAt(fix, alt, speed)
 			return resp, "", err
 		})
 }
 
-type ApproachAssignment struct {
-	ControllerToken string
-	Callsign        string
-	Approach        string
-}
-
-func (s *Sim) ExpectApproach(a *ApproachAssignment, _ *struct{}) error {
+func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp, err := ac.ExpectApproach(a.Approach, s.World)
+			resp, err := ac.ExpectApproach(approach, s.World)
 			return resp, "", err
 		})
 }
 
-type ApproachClearance struct {
-	ControllerToken string
-	Callsign        string
-	Approach        string
-	StraightIn      bool
-}
-
-func (s *Sim) ClearedApproach(c *ApproachClearance, _ *struct{}) error {
+func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(c.ControllerToken, c.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			if c.StraightIn {
-				resp, err := ac.ClearedStraightInApproach(c.Approach, s.World)
+			if straightIn {
+				resp, err := ac.ClearedStraightInApproach(approach, s.World)
 				return resp, "", err
 			} else {
-				resp, err := ac.ClearedApproach(c.Approach, s.World)
+				resp, err := ac.ClearedApproach(approach, s.World)
 				return resp, "", err
 			}
 		})
 }
 
-func (s *Sim) GoAround(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) GoAround(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchControllingCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
-			resp := ac.GoAround()
-			return resp, "", nil
+			return ac.GoAround(), "", nil
 		})
 }
 
-func (s *Sim) DeleteAircraft(a *AircraftSpecifier, _ *struct{}) error {
+func (s *Sim) DeleteAircraft(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.dispatchCommand(a.ControllerToken, a.Callsign,
+	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if s.LaunchController != "" && s.LaunchController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
