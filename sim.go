@@ -822,8 +822,6 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		aircraft := make(map[string]*Aircraft)
 		for callsign, ac := range s.World.Aircraft {
 			updateAc := *ac
-			updateAc.Waypoints = nil
-			updateAc.Nav = NAVState{}
 			updateAc.ArrivalRunwayWaypoints = nil
 			updateAc.Approach = nil
 			aircraft[callsign] = &updateAc

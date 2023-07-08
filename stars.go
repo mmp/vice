@@ -4011,7 +4011,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			}
 			info = append(info, ac.Nav.Summary(ac))
 
-			if ap := ac.Approach; ap != nil {
+			if ap, _ := ac.getApproach(ac.ApproachId, ctx.world); ap != nil {
 				if ac.ApproachCleared {
 					info = append(info, "Cleared "+ap.FullName+" approach")
 				} else {
