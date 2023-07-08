@@ -67,6 +67,7 @@ type World struct {
 
 	SimIsPaused       bool
 	SimRate           float32
+	SimName           string
 	SimDescription    string
 	SimTime           time.Time
 	MagneticVariation float32
@@ -111,6 +112,7 @@ func (w *World) Assign(other *World) {
 	w.SimRate = other.SimRate
 	w.SimIsPaused = other.SimIsPaused
 	w.SimDescription = other.SimDescription
+	w.SimName = other.SimName
 
 	w.DepartureAirports = other.DepartureAirports
 	w.ArrivalAirports = other.ArrivalAirports
@@ -501,8 +503,11 @@ func (w *World) CurrentTime() time.Time {
 func (w *World) GetWindowTitle() string {
 	if w.SimDescription == "" {
 		return "(disconnected)"
+	} else if w.SimName == "" {
+		return w.Callsign + ": " + w.SimDescription
+	} else {
+		return w.Callsign + "@" + w.SimName + ": " + w.SimDescription
 	}
-	return w.Callsign + ": " + w.SimDescription
 }
 
 func (w *World) PrintInfo(ac *Aircraft) {

@@ -573,6 +573,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.LaunchController = s.LaunchController
 	w.SimIsPaused = s.Paused
 	w.SimRate = s.SimRate
+	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 
 	for _, callsign := range sc.VirtualControllers {
