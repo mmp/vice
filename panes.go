@@ -883,16 +883,18 @@ func (mp *MessagesPane) processEvents(w *World) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case RadioTransmissionEvent:
-			if event.Callsign != lastRadioCallsign {
-				if len(transmissions) > 0 {
-					addTransmissions()
-					transmissions = nil
+			if event.ToController == w.Callsign {
+				if event.Callsign != lastRadioCallsign {
+					if len(transmissions) > 0 {
+						addTransmissions()
+						transmissions = nil
+					}
+					lastRadioCallsign = event.Callsign
 				}
-				lastRadioCallsign = event.Callsign
+				msg := []rune(event.Message)
+				msg[0] = unicode.ToUpper(msg[0])
+				transmissions = append(transmissions, string(msg))
 			}
-			msg := []rune(event.Message)
-			msg[0] = unicode.ToUpper(msg[0])
-			transmissions = append(transmissions, string(msg))
 
 		case StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.

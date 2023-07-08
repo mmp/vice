@@ -406,9 +406,10 @@ func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	if response != "" && ep != nil {
 		lg.Printf("%s: %s", ac.Callsign, response)
 		ep.PostEvent(Event{
-			Type:     RadioTransmissionEvent,
-			Callsign: ac.Callsign,
-			Message:  response,
+			Type:         RadioTransmissionEvent,
+			Callsign:     ac.Callsign,
+			ToController: ac.ControllingController,
+			Message:      response,
 		})
 	}
 

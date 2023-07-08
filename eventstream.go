@@ -175,7 +175,7 @@ type Event struct {
 	Type           EventType
 	Callsign       string
 	FromController string
-	ToController   string
+	ToController   string // For radio transmissions, the controlling controller.
 	Message        string
 }
 
