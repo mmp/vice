@@ -1626,7 +1626,7 @@ func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
 		})
 }
 
-func (s *Sim) AssignHeading(hdg *HeadingAssignment) error {
+func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
