@@ -49,7 +49,6 @@ type NewSimConfiguration struct {
 	NewSimName                string // for create remote only
 	NewSimType                int
 
-	availableRemoteSims       map[string]*RemoteSim
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
 	lastRemoteSimsUpdate      time.Time
@@ -75,22 +74,20 @@ func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) Ne
 		selectedServer: localServer,
 	}
 
-	c.updateRemoteSims()
-
 	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
 
 	return c
 }
 
 func (c *NewSimConfiguration) updateRemoteSims() {
-	if time.Since(c.lastRemoteSimsUpdate) > 1*time.Second && c.remoteServer != nil {
+	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && c.remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &PendingCall{
 			Call:      c.remoteServer.client.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
-				c.availableRemoteSims = rs
+				c.remoteServer.runningSims = rs
 			},
 			OnErr: func(e error) {
 				lg.Errorf("%v", e)
@@ -155,7 +152,8 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
-			disable := len(c.availableRemoteSims) == 0
+
+			disable := len(c.remoteServer.runningSims) == 0
 			uiStartDisable(disable)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
@@ -362,14 +360,15 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 	} else {
 		// Join remote
+		runningSims := c.remoteServer.runningSims
 		if c.SelectedRemoteSim == "" {
-			c.SelectedRemoteSim = SortedMapKeys(c.availableRemoteSims)[0]
+			c.SelectedRemoteSim = SortedMapKeys(runningSims)[0]
 		}
 
-		rs := c.availableRemoteSims[c.SelectedRemoteSim]
+		rs := runningSims[c.SelectedRemoteSim]
 		if imgui.BeginComboV("Simulation", c.SelectedRemoteSim+": "+rs.ScenarioName, imgui.ComboFlagsHeightLarge) {
-			for _, simName := range SortedMapKeys(c.availableRemoteSims) {
-				scenarioName := c.availableRemoteSims[simName].ScenarioName
+			for _, simName := range SortedMapKeys(runningSims) {
+				scenarioName := runningSims[simName].ScenarioName
 				if imgui.SelectableV(simName+": "+scenarioName, simName == c.SelectedRemoteSim, 0, imgui.Vec2{}) {
 					c.SelectedRemoteSim = simName
 				}

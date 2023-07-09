@@ -46,9 +46,10 @@ var (
 )
 
 type SimServer struct {
-	name    string
-	client  *rpc.Client
-	configs map[string]*SimConfiguration
+	name        string
+	client      *rpc.Client
+	configs     map[string]*SimConfiguration
+	runningSims map[string]*RemoteSim
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -944,14 +945,21 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 	ch := make(chan *SimServer, 1)
 	go func() {
 		var configs map[string]*SimConfiguration
+		var running map[string]*RemoteSim
+		start := time.Now()
 		if err := client.Call("SimManager.GetSimConfigurations", 0, &configs); err != nil {
 			close(ch)
 			lg.Errorf("%v", err)
+		} else if err := client.Call("SimManager.GetRunningSims", 0, &configs); err != nil {
+			close(ch)
+			lg.Errorf("%v", err)
 		} else {
+			lg.Printf("%s: server returned configuration in %s", hostname, time.Since(start))
 			ch <- &SimServer{
-				name:    "Network (Multi-controller)",
-				client:  client,
-				configs: configs,
+				name:        "Network (Multi-controller)",
+				client:      client,
+				configs:     configs,
+				runningSims: running,
 			}
 		}
 	}()
