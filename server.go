@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"net/http"
 	"net/rpc"
 	"os"
 	"strconv"
@@ -934,7 +933,7 @@ func RunSimServer() {
 }
 
 func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
-	client, err := rpc.DialHTTP("tcp", hostname)
+	client, err := rpc.Dial("tcp", hostname)
 	if err != nil {
 		return nil, err
 	}
@@ -971,7 +970,7 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 	go func() {
 		configs := <-configsChan
 
-		client, err := rpc.DialHTTP("tcp", fmt.Sprintf("localhost:%d", port))
+		client, err := rpc.Dial("tcp", fmt.Sprintf("localhost:%d", port))
 		if err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
@@ -1005,12 +1004,20 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 		sm := NewSimManager(scenarioGroups, simConfigurations)
 		rpc.Register(sm)
 		rpc.RegisterName("Sim", &SimDispatcher{sm: sm})
-		rpc.HandleHTTP()
 
 		ch <- simConfigurations
 
 		lg.Printf("Listening on %+v", l)
-		http.Serve(MakeLoggingListener(l, &sm.sentBytes, &sm.receivedBytes), nil) // noreturn
+
+		ll := MakeLoggingListener(l, &sm.sentBytes, &sm.receivedBytes)
+		for {
+			conn, err := ll.Accept()
+			if err != nil {
+				lg.Errorf("Accept error: %v", err)
+			} else {
+				go rpc.ServeConn(conn)
+			}
+		}
 	}
 
 	if isLocal {
