@@ -223,14 +223,13 @@ func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
 // SimManager
 
 type SimManager struct {
-	scenarioGroups           map[string]*ScenarioGroup
-	configs                  map[string]*SimConfiguration
-	activeSims               map[string]*Sim
-	controllerTokenToSim     map[string]*Sim
-	mu                       sync.Mutex
-	sentBytes, receivedBytes int64
-	startTime                time.Time
-	lastBandwidthLog         time.Time
+	scenarioGroups       map[string]*ScenarioGroup
+	configs              map[string]*SimConfiguration
+	activeSims           map[string]*Sim
+	controllerTokenToSim map[string]*Sim
+	mu                   sync.Mutex
+	startTime            time.Time
+	lastBandwidthLog     time.Time
 }
 
 func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
@@ -381,15 +380,6 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
-
-	if time.Since(sm.lastBandwidthLog) > 15*time.Second {
-		sm.lastBandwidthLog = time.Now()
-		lg.Printf("Total bandwidth: %d sent, %d received", sm.sentBytes, sm.receivedBytes)
-
-		min := time.Since(sm.startTime).Minutes()
-		lg.Printf("Average bandwidth per minute: %d sent, %d received",
-			int(float64(sm.sentBytes)/min), int(float64(sm.receivedBytes)/min))
-	}
 
 	sim, ok := sm.controllerTokenToSim[token]
 	return sim, ok
@@ -932,8 +922,21 @@ func RunSimServer() {
 	runServer(l, false)
 }
 
+func getClient(hostname string) (*rpc.Client, error) {
+	conn, err := net.Dial("tcp", hostname)
+	if err != nil {
+		return nil, err
+	}
+
+	cc, err := MakeCompressedConn(conn)
+	if err != nil {
+		return nil, err
+	}
+	return rpc.NewClient(cc), nil
+}
+
 func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
-	client, err := rpc.Dial("tcp", hostname)
+	client, err := getClient(hostname)
 	if err != nil {
 		return nil, err
 	}
@@ -970,7 +973,7 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 	go func() {
 		configs := <-configsChan
 
-		client, err := rpc.Dial("tcp", fmt.Sprintf("localhost:%d", port))
+		client, err := getClient(fmt.Sprintf("localhost:%d", port))
 		if err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
@@ -1009,13 +1012,14 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 
 		lg.Printf("Listening on %+v", l)
 
-		ll := MakeLoggingListener(l, &sm.sentBytes, &sm.receivedBytes)
 		for {
-			conn, err := ll.Accept()
+			conn, err := l.Accept()
 			if err != nil {
 				lg.Errorf("Accept error: %v", err)
+			} else if cc, err := MakeCompressedConn(MakeLoggingConn(conn)); err != nil {
+				lg.Errorf("MakeCompressedConn: %v", err)
 			} else {
-				go rpc.ServeConn(conn)
+				go rpc.ServeConn(cc)
 			}
 		}
 	}

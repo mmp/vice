@@ -24,7 +24,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync/atomic"
+	"sync"
 	"time"
 	"unicode"
 
@@ -1676,38 +1676,81 @@ func checkJSONVsSchemaRecursive(json interface{}, ty reflect.Type, e *ErrorLogge
 ///////////////////////////////////////////////////////////////////////////
 // RPC/Networking stuff
 
+type CompressedConn struct {
+	net.Conn
+	r *zstd.Decoder
+	w *zstd.Encoder
+}
+
+func MakeCompressedConn(c net.Conn) (*CompressedConn, error) {
+	cc := &CompressedConn{Conn: c}
+	var err error
+	if cc.r, err = zstd.NewReader(c); err != nil {
+		return nil, err
+	}
+	if cc.w, err = zstd.NewWriter(c); err != nil {
+		return nil, err
+	}
+	return cc, nil
+}
+
+func (c *CompressedConn) Read(b []byte) (n int, err error) {
+	n, err = c.r.Read(b)
+	return
+}
+
+func (c *CompressedConn) Write(b []byte) (n int, err error) {
+	n, err = c.w.Write(b)
+	c.w.Flush()
+	return
+}
+
 type LoggingConn struct {
 	net.Conn
-	sent, received *int64
+	sent, received int
+	mu             sync.Mutex
+	start          time.Time
+	lastReport     time.Time
+}
+
+func MakeLoggingConn(c net.Conn) *LoggingConn {
+	return &LoggingConn{
+		Conn:       c,
+		start:      time.Now(),
+		lastReport: time.Now(),
+	}
 }
 
 func (c *LoggingConn) Read(b []byte) (n int, err error) {
 	n, err = c.Conn.Read(b)
-	atomic.AddInt64(c.received, int64(n))
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.received += n
+	c.maybeReport()
+
 	return
 }
 
 func (c *LoggingConn) Write(b []byte) (n int, err error) {
 	n, err = c.Conn.Write(b)
-	atomic.AddInt64(c.sent, int64(n))
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.sent += n
+	c.maybeReport()
+
 	return
 }
 
-type LoggingListener struct {
-	net.Listener
-	sent, received *int64
-}
-
-func MakeLoggingListener(l net.Listener, sent, received *int64) *LoggingListener {
-	return &LoggingListener{l, sent, received}
-}
-
-func (l *LoggingListener) Accept() (net.Conn, error) {
-	c, e := l.Listener.Accept()
-	if e != nil {
-		return c, e
+func (c *LoggingConn) maybeReport() {
+	if time.Since(c.lastReport) > 1*time.Minute {
+		min := time.Since(c.start).Minutes()
+		lg.Printf("%s: %d bytes read (%d/minute), %d bytes written (%d/minute)",
+			c.Conn.RemoteAddr(), c.received, int(float64(c.received)/min),
+			c.sent, int(float64(c.sent)/min))
+		c.lastReport = time.Now()
 	}
-	return &LoggingConn{c, l.sent, l.received}, nil
 }
 
 type PendingCall struct {
