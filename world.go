@@ -631,23 +631,18 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 		if len(al.Callsign.CallsignFormats) > 0 {
 			format = Sample(al.Callsign.CallsignFormats)
 		}
-		for {
-			id := ""
-			for _, ch := range format {
-				switch ch {
-				case '#':
-					id += fmt.Sprintf("%d", rand.Intn(10))
-				case '@':
-					id += string(rune('A' + rand.Intn(26)))
-				}
-			}
-			if id != "0" {
-				callsign += id
-				break
+
+		id := ""
+		for _, ch := range format {
+			switch ch {
+			case '#':
+				id += fmt.Sprintf("%d", rand.Intn(10))
+			case '@':
+				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		// Only break and accept the callsign if it's not a bad one..
-		if _, found := badCallsigns[callsign]; !found {
+		if _, found := badCallsigns[callsign+id]; !found && id != "0" {
+			callsign += id
 			break
 		}
 	}
