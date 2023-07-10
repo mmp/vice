@@ -116,7 +116,7 @@ func uiInit(r Renderer, p Platform, localServer *SimServer, remoteServer *SimSer
 	}
 
 	ui.localServer = localServer
-	if remoteServer.err == nil {
+	if remoteServer != nil && remoteServer.err == nil {
 		ui.remoteServer = remoteServer
 	}
 
