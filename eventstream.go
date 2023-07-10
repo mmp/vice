@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"sync"
 	"time"
 )
 
@@ -18,6 +19,7 @@ type EventSubscriberId int
 // communicating events, world updates, and user actions across the various
 // parts of the system.
 type EventStream struct {
+	mu            sync.Mutex
 	events        []Event
 	lastCompact   time.Time
 	subscriptions map[*EventsSubscription]interface{}
@@ -53,12 +55,19 @@ func (e *EventStream) Subscribe() *EventsSubscription {
 		offset: len(e.events),
 		source: source,
 	}
+
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
 	e.subscriptions[sub] = nil
 	return sub
 }
 
 // Unsubscribe removes a subscriber from the subscriber list
 func (e *EventsSubscription) Unsubscribe() {
+	e.stream.mu.Lock()
+	defer e.stream.mu.Unlock()
+
 	if _, ok := e.stream.subscriptions[e]; !ok {
 		lg.ErrorfUp1("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
@@ -75,13 +84,18 @@ func (e *EventStream) Post(event Event) {
 			event.String(), len(e.subscriptions), len(e.events), cap(e.events))
 	}
 
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
 	// Ignore the event if no one's paying attention.
 	if len(e.subscriptions) > 0 {
 		if len(e.events)+1 == cap(e.events) && *devmode && lg != nil {
 			// Dump the state of things if the array's about to grow; in
 			// general we expect it to pretty quickly reach steady state
 			// with just a handful of entries.
+			e.mu.Unlock()
 			lg.Printf("%s", e.Dump())
+			e.mu.Lock()
 		}
 
 		e.events = append(e.events, event)
@@ -92,6 +106,9 @@ func (e *EventStream) Post(event Event) {
 // was called with the given id.  Note that events before an id was created
 // with Subscribe are never reported for that id.
 func (e *EventsSubscription) Get() []Event {
+	e.stream.mu.Lock()
+	defer e.stream.mu.Unlock()
+
 	if _, ok := e.stream.subscriptions[e]; !ok {
 		lg.ErrorfUp1("Attempted to get with unregistered subscription: %+v", e)
 		return nil
@@ -138,6 +155,9 @@ func (e *EventStream) compact() {
 // Dump prints out information about the internals of the event stream that
 // may be useful for debugging.
 func (e *EventStream) Dump() string {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
 	s := fmt.Sprintf("stream: len %d cap %d", len(e.events), cap(e.events))
 	if len(e.events) > 0 {
 		s += fmt.Sprintf("\n  last elt %v", e.events[len(e.events)-1])
