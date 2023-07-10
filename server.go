@@ -317,7 +317,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	go func() {
 		for {
 			sim.Update()
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(100 * time.Millisecond)
 		}
 	}()
 

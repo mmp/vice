@@ -465,6 +465,8 @@ type Sim struct {
 	lastSimUpdate   time.Time
 
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
+	updateTimeSlop time.Duration
+
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 	SimRate        float32
 	Paused         bool
@@ -990,13 +992,20 @@ func (s *Sim) Update() {
 		return
 	}
 
-	// Update the current time
+	// Figure out how much time has passed since the last update: wallclock
+	// time is scaled by the sim rate, then we add in any time from the
+	// last update that wasn't accounted for.
 	elapsed := time.Since(s.lastUpdateTime)
-	elapsed = time.Duration(s.SimRate * float32(elapsed))
-	s.SimTime = s.SimTime.Add(elapsed)
-	s.lastUpdateTime = time.Now()
+	elapsed = time.Duration(s.SimRate*float32(elapsed)) + s.updateTimeSlop
+	// Run the sim for this many seconds
+	ns := int(elapsed.Truncate(time.Second).Seconds())
+	for i := 0; i < ns; i++ {
+		s.SimTime = s.SimTime.Add(time.Second)
+		s.updateState()
+	}
+	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
-	s.updateState()
+	s.lastUpdateTime = time.Now()
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
