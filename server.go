@@ -17,6 +17,8 @@ import (
 	"time"
 )
 
+const ViceRPCVersion = 1
+
 func init() {
 	gob.Register(&FlyHeading{})
 	gob.Register(&FlyRoute{})
@@ -43,6 +45,7 @@ var (
 	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
 	ErrControllerAlreadySignedIn = errors.New("controller with that callsign already signed in")
 	ErrInvalidControllerToken    = errors.New("invalid controller token")
+	ErrRPCVersionMismatch        = errors.New("client and server RPC versions don't match")
 )
 
 type SimServer struct {
@@ -50,6 +53,7 @@ type SimServer struct {
 	client      *rpc.Client
 	configs     map[string]*SimConfiguration
 	runningSims map[string]*RemoteSim
+	err         error
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -324,11 +328,26 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	return nil
 }
 
-func (sm *SimManager) GetSimConfigurations(_ int, result *map[string]*SimConfiguration) error {
+type SignOnResult struct {
+	Configurations map[string]*SimConfiguration
+	RunningSims    map[string]*RemoteSim
+}
+
+func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
+	if version != ViceRPCVersion {
+		return ErrRPCVersionMismatch
+	}
+
+	// Before we acquire the lock...
+	if err := sm.GetRunningSims(0, &result.RunningSims); err != nil {
+		return err
+	}
+
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
 
-	*result = sm.configs
+	result.Configurations = sm.configs
+
 	return nil
 }
 
@@ -944,22 +963,19 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 
 	ch := make(chan *SimServer, 1)
 	go func() {
-		var configs map[string]*SimConfiguration
-		var running map[string]*RemoteSim
+		var so SignOnResult
 		start := time.Now()
-		if err := client.Call("SimManager.GetSimConfigurations", 0, &configs); err != nil {
-			close(ch)
-			lg.Errorf("%v", err)
-		} else if err := client.Call("SimManager.GetRunningSims", 0, &configs); err != nil {
-			close(ch)
-			lg.Errorf("%v", err)
+		if err := client.Call("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
+			ch <- &SimServer{
+				err: err,
+			}
 		} else {
 			lg.Printf("%s: server returned configuration in %s", hostname, time.Since(start))
 			ch <- &SimServer{
 				name:        "Network (Multi-controller)",
 				client:      client,
-				configs:     configs,
-				runningSims: running,
+				configs:     so.Configurations,
+				runningSims: so.RunningSims,
 			}
 		}
 	}()

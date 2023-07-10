@@ -186,6 +186,15 @@ func main() {
 			uiShowConnectDialog(false)
 		}
 
+		// Check this now, after uiInit
+		if remoteServer.err != nil {
+			uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
+				message: "This version of vice is incompatible with vice multi-controller server.\n" +
+					"Please upgrade to the latest version of vice for multi-controller functionality.",
+			}), true)
+			remoteServer = nil
+		}
+
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Printf("Starting main loop")

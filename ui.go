@@ -116,7 +116,9 @@ func uiInit(r Renderer, p Platform, localServer *SimServer, remoteServer *SimSer
 	}
 
 	ui.localServer = localServer
-	ui.remoteServer = remoteServer
+	if remoteServer.err == nil {
+		ui.remoteServer = remoteServer
+	}
 
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
