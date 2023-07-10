@@ -618,34 +618,6 @@ func (c *ConnectModalClient) Draw() int {
 	}
 }
 
-type WaitingForScenariosModalClient struct {
-	start time.Time
-}
-
-func (w *WaitingForScenariosModalClient) Title() string {
-	return "Downloading scenarios from server..."
-}
-
-func (w *WaitingForScenariosModalClient) Opening() {
-	w.start = time.Now()
-}
-
-func (w *WaitingForScenariosModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Cancel", action: func() bool {
-		os.Exit(0)
-		return true
-	}})
-	return b
-}
-
-func (w *WaitingForScenariosModalClient) Draw() int {
-	s := int(time.Since(w.start).Seconds())
-	t := "It shouldn't be long ." + fmt.Sprintf("%*c", s%3, '.')
-	imgui.Text(t)
-	return -1
-}
-
 type YesOrNoModalClient struct {
 	title, query string
 	ok, notok    func()
