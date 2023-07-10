@@ -1293,13 +1293,13 @@ func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 		s.LaunchController = ctrl.Callsign
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
-			Message: ctrl.Callsign + " is now controlling aircraft launches",
+			Message: ctrl.Callsign + " is now controlling aircraft launches.",
 		})
 		return nil
 	} else {
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
-			Message: s.LaunchController + " is no longer controlling aircraft launches",
+			Message: s.LaunchController + " is no longer controlling aircraft launches.",
 		})
 		s.LaunchController = ""
 		return nil
@@ -1338,13 +1338,6 @@ func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 			ac.MagneticVariation)
 	}
 	ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
-
-	s.eventStream.Post(Event{
-		Type: StatusMessageEvent,
-		Message: fmt.Sprintf("%s launched %s departing %s",
-			s.LaunchController, ac.Callsign, ac.FlightPlan.DepartureAirport),
-	})
-
 }
 
 func (s *Sim) dispatchCommand(token string, callsign string,
