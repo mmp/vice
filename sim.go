@@ -1036,16 +1036,7 @@ func (s *Sim) updateState() {
 				if len(s.World.MultiControllers) > 0 && len(s.controllers) > 0 {
 					callsign := ""
 					if ac.IsDeparture {
-						for cs, ctrl := range s.World.MultiControllers {
-							if ctrl.Departure {
-								if s.controllerIsSignedIn(cs) {
-									callsign = cs
-								} else {
-									callsign = s.World.PrimaryController
-								}
-								break
-							}
-						}
+						callsign = s.getDepartureController(ac)
 					} else {
 						callsign = ac.ArrivalHandoffController
 					}
@@ -1126,6 +1117,15 @@ func (s *Sim) controllerIsSignedIn(callsign string) bool {
 		}
 	}
 	return false
+}
+
+func (s *Sim) getDepartureController(ac *Aircraft) string {
+	for cs, ctrl := range s.World.MultiControllers {
+		if ctrl.Departure && s.controllerIsSignedIn(cs) {
+			return cs
+		}
+	}
+	return s.World.PrimaryController
 }
 
 func (s *Sim) prespawn() {

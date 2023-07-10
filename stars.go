@@ -666,8 +666,19 @@ func (sp *STARSPane) processEvents(w *World) {
 			sp.aircraft[callsign] = sa
 
 			if fp := ac.FlightPlan; fp != nil {
-				if ac.TrackingController == "" {
-					if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok {
+				if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
+					// We'd like to auto-track this departure, but first
+					// check that we are the departure controller.
+
+					departureController := w.PrimaryController // default
+					// See if the departure controller is signed in
+					for cs, mc := range w.MultiControllers {
+						if _, ok := w.Controllers[cs]; ok && mc.Departure {
+							departureController = cs
+						}
+					}
+
+					if w.Callsign == departureController {
 						w.InitiateTrack(callsign, nil, nil) // ignore error...
 						sp.aircraft[callsign].datablockType = FullDatablock
 					}
