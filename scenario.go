@@ -453,8 +453,8 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 			e.Push("Route " + ar.Route)
 
-			if len(ar.Waypoints) == 0 {
-				e.ErrorString("must provide \"waypoints\" for approach " +
+			if len(ar.Waypoints) < 2 {
+				e.ErrorString("must provide at least two \"waypoints\" for approach " +
 					"(even if \"runway_waypoints\" are provided)")
 			} else {
 				sg.InitializeWaypointLocations(ar.Waypoints, e)
