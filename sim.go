@@ -72,6 +72,7 @@ func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) Ne
 		localServer:    localServer,
 		remoteServer:   remoteServer,
 		selectedServer: localServer,
+		NewSimName:     getRandomAdjectiveNoun(),
 	}
 
 	c.SetScenarioGroup(globalConfig.LastScenarioGroup)

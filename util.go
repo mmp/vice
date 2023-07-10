@@ -5,6 +5,7 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"golang.org/x/exp/constraints"
@@ -141,6 +142,28 @@ func isAllNumbers(s string) bool {
 		}
 	}
 	return true
+}
+
+var (
+	//go:embed resources/nouns.txt
+	nounsFile string
+	nounList  []string
+
+	//go:embed resources/adjectives.txt
+	adjectivesFile string
+	adjectiveList  []string
+)
+
+func getRandomAdjectiveNoun() string {
+	if nounList == nil {
+		nounList = strings.Split(nounsFile, "\n")
+	}
+	if adjectiveList == nil {
+		adjectiveList = strings.Split(adjectivesFile, "\n")
+	}
+
+	return adjectiveList[rand.Intn(len(adjectiveList))] + "-" +
+		nounList[rand.Intn(len(nounList))]
 }
 
 ///////////////////////////////////////////////////////////////////////////
