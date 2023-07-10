@@ -181,10 +181,6 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func (c RGB) imgui() imgui.Vec4 {
-	return imgui.Vec4{c.R, c.G, c.B, 1}
-}
-
 func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {

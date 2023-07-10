@@ -672,7 +672,7 @@ func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 
 func (l *ColoredLinesDrawBuilder) AddPolyline(p [2]float32, color RGB, shape [][2]float32) {
 	l.LinesDrawBuilder.AddPolyline(p, shape)
-	for _ = range shape {
+	for range shape {
 		l.color = append(l.color, color)
 	}
 }

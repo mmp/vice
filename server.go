@@ -234,7 +234,6 @@ type SimManager struct {
 	controllerTokenToSim map[string]*Sim
 	mu                   sync.Mutex
 	startTime            time.Time
-	lastBandwidthLog     time.Time
 }
 
 func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
@@ -290,7 +289,9 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 }
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
-	sim.Activate()
+	if err := sim.Activate(); err != nil {
+		return err
+	}
 
 	sm.mu.Lock()
 
@@ -1029,8 +1030,14 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 		// only want the ones with multi_controllers.
 
 		sm := NewSimManager(scenarioGroups, simConfigurations)
-		rpc.Register(sm)
-		rpc.RegisterName("Sim", &SimDispatcher{sm: sm})
+		if err := rpc.Register(sm); err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
+		if err := rpc.RegisterName("Sim", &SimDispatcher{sm: sm}); err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
 
 		ch <- simConfigurations
 

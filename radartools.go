@@ -288,13 +288,13 @@ func NewCRDAConfig() CRDAConfig {
 func (c *CRDAConfig) getRunway(n string) *Runway {
 	panic("FIXME")
 	/*
-		for _, rwy := range database.runways[c.Airport] {
-			if rwy.Number == n {
-				return &rwy
+			for _, rwy := range database.runways[c.Airport] {
+				if rwy.Number == n {
+					return &rwy
+				}
 			}
-		}
+		return nil
 	*/
-	return nil
 }
 
 func (c *CRDAConfig) getRunways() (ghostSource *Runway, ghostDestination *Runway) {
