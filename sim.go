@@ -1576,7 +1576,9 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			if octrl := s.World.GetController(ac.ControllingController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
-				return fmt.Sprintf("over to %s on %s, good day", name, octrl.Frequency), name, nil
+				goodbye := fmt.Sprintf("over to %s on %s, good day", name, octrl.Frequency)
+				contact := ac.Nav.ContactMessage(ac)
+				return goodbye, contact, nil
 			} else {
 				return "goodbye", "", nil
 			}
@@ -1608,6 +1610,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				// Only take control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign
 			}
+
 			return "", "", nil
 		})
 }

@@ -59,6 +59,10 @@ func (n *NAVState) ContactMessage(ac *Aircraft) string {
 		msgs = append(msgs, fmt.Sprintf("%d knots", int(ms.IAS)))
 	}
 
+	if len(msgs) == 0 {
+		return "goodday"
+	}
+
 	return strings.Join(msgs, ", ")
 }
 

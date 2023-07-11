@@ -190,14 +190,14 @@ type RadarTrack struct {
 
 func FormatAltitude(alt int) string {
 	if alt >= 18000 {
-		return "flight level " + fmt.Sprintf("%d", alt/100)
+		return "FL" + fmt.Sprintf("%d", alt/100)
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100 * 100
 		if hu == 0 {
-			return fmt.Sprintf("%d thousand", th)
+			return fmt.Sprintf("%d,000", th)
 		} else {
-			return fmt.Sprintf("%d thousand %d hundred", th, hu)
+			return fmt.Sprintf("%d,%03d", th, hu)
 		}
 	}
 }

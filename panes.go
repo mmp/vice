@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"unicode"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -778,6 +777,7 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
+	acHasContacted map[string]struct{}
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -796,16 +796,19 @@ func (mp *MessagesPane) Activate(w *World, eventStream *EventStream) {
 	if mp.scrollbar == nil {
 		mp.scrollbar = NewScrollBar(4, true)
 	}
+	mp.acHasContacted = make(map[string]struct{})
 	mp.events = eventStream.Subscribe()
 }
 
 func (mp *MessagesPane) Deactivate() {
+	mp.acHasContacted = nil
 	mp.events.Unsubscribe()
 	mp.events = nil
 }
 
 func (mp *MessagesPane) ResetWorld(w *World) {
 	mp.messages = nil
+	mp.acHasContacted = make(map[string]struct{})
 }
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
@@ -876,8 +879,14 @@ func (mp *MessagesPane) processEvents(w *World) {
 			}
 		}
 
-		response := strings.Join(transmissions, ". ") + ". " + radioCallsign
-		mp.messages = append(mp.messages, Message{contents: string(response)})
+		response := strings.Join(transmissions, ", ")
+		if _, ok := mp.acHasContacted[radioCallsign]; ok {
+			mp.messages = append(mp.messages, Message{contents: response + ". " + radioCallsign})
+		} else {
+			ctrl := w.Controllers[w.Callsign]
+			mp.messages = append(mp.messages, Message{contents: ctrl.FullName + ", " + radioCallsign + ", " + response})
+			mp.acHasContacted[radioCallsign] = struct{}{}
+		}
 	}
 
 	for _, event := range mp.events.Get() {
@@ -891,9 +900,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 					}
 					lastRadioCallsign = event.Callsign
 				}
-				msg := []rune(event.Message)
-				msg[0] = unicode.ToUpper(msg[0])
-				transmissions = append(transmissions, string(msg))
+				transmissions = append(transmissions, event.Message)
 			}
 
 		case StatusMessageEvent:
