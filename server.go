@@ -1052,6 +1052,7 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 
 		for {
 			conn, err := l.Accept()
+			lg.Printf("%s: new connection", conn.RemoteAddr())
 			if err != nil {
 				lg.Errorf("Accept error: %v", err)
 			} else if cc, err := MakeCompressedConn(MakeLoggingConn(conn)); err != nil {

@@ -7,6 +7,7 @@ package main
 import (
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"golang.org/x/exp/constraints"
 	"image"
@@ -1764,6 +1765,11 @@ func (c *LoggingConn) maybeReport() {
 			c.sent, int(float64(c.sent)/min))
 		c.lastReport = time.Now()
 	}
+}
+
+func isRPCServerError(err error) bool {
+	_, ok := remoteServer.err.(rpc.ServerError)
+	return ok || errors.Is(remoteServer.err, rpc.ErrShutdown)
 }
 
 type PendingCall struct {
