@@ -57,7 +57,9 @@ type NewSimConfiguration struct {
 type RemoteSim struct {
 	GroupName          string
 	ScenarioName       string
+	PrimaryController  string
 	AvailablePositions map[string]struct{}
+	CoveredPositions   map[string]struct{}
 }
 
 const (

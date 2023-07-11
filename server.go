@@ -353,7 +353,9 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 		rs := &RemoteSim{
 			GroupName:          s.ScenarioGroup,
 			ScenarioName:       s.Scenario,
+			PrimaryController:  s.World.PrimaryController,
 			AvailablePositions: make(map[string]struct{}),
+			CoveredPositions:   make(map[string]struct{}),
 		}
 
 		// Figure out which positions are available; start with all of the possible ones,
@@ -364,6 +366,9 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 		}
 		for _, ctrl := range s.controllers {
 			delete(rs.AvailablePositions, ctrl.Callsign)
+			if wc, ok := s.World.Controllers[ctrl.Callsign]; ok && wc.IsHuman {
+				rs.CoveredPositions[ctrl.Callsign] = struct{}{}
+			}
 		}
 		s.mu.Unlock()
 
