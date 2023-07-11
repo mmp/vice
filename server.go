@@ -288,6 +288,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
 	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
+		sm.mu.Unlock()
 		return ErrDuplicateSimName
 	}
 
