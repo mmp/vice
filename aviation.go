@@ -117,12 +117,12 @@ func (f Frequency) String() string {
 }
 
 type Controller struct {
-	Callsign  string    `json:"-"`
+	Callsign  string    // Not provided in scenario JSON
 	FullName  string    `json:"full_name"`
 	Frequency Frequency `json:"frequency"`
 	SectorId  string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope     string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
-	IsHuman   bool      `json:"-"`
+	IsHuman   bool      // Not provided in scenario JSON
 }
 
 type FlightRules int

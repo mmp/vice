@@ -283,12 +283,13 @@ func main() {
 			frameIndex++
 
 			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
-				if world != nil {
-					world.Disconnect()
-				}
 				// Do this while we're still running the event loop.
 				saveSim := world != nil && world.simProxy.Client == localServer.client
 				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)
+
+				if world != nil {
+					world.Disconnect()
+				}
 				break
 			}
 		}
