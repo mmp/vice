@@ -39,6 +39,8 @@ var (
 
 	// client only
 	newWorldChan chan *World
+	localServer  *SimServer
+	remoteServer *SimServer
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -159,11 +161,10 @@ func main() {
 		var world *World
 
 		// TODO: put up dialog box while we wait for these...
-		localServer := <-localSimServerChan
-		var remoteServer *SimServer
 		if remoteSimServerChan != nil {
 			remoteServer = <-remoteSimServerChan
 		}
+		localServer = <-localSimServerChan
 
 		if globalConfig.Sim != nil {
 			var result NewSimResult
@@ -180,7 +181,7 @@ func main() {
 
 		wmInit(eventStream)
 
-		uiInit(renderer, platform, localServer, remoteServer)
+		uiInit(renderer, platform)
 
 		globalConfig.Activate(world, eventStream)
 

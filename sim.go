@@ -39,14 +39,13 @@ type SimScenarioConfiguration struct {
 }
 
 type NewSimConfiguration struct {
-	Group                     *SimConfiguration
-	GroupName                 string
-	Scenario                  *SimScenarioConfiguration
-	ScenarioName              string
-	localServer, remoteServer *SimServer
-	selectedServer            *SimServer
-	NewSimName                string // for create remote only
-	NewSimType                int
+	Group          *SimConfiguration
+	GroupName      string
+	Scenario       *SimScenarioConfiguration
+	ScenarioName   string
+	selectedServer *SimServer
+	NewSimName     string // for create remote only
+	NewSimType     int
 
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
@@ -70,10 +69,8 @@ const (
 	NewSimJoinRemote
 )
 
-func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) NewSimConfiguration {
+func MakeNewSimConfiguration() NewSimConfiguration {
 	c := NewSimConfiguration{
-		localServer:    localServer,
-		remoteServer:   remoteServer,
 		selectedServer: localServer,
 		NewSimName:     getRandomAdjectiveNoun(),
 	}
@@ -84,14 +81,14 @@ func MakeNewSimConfiguration(localServer *SimServer, remoteServer *SimServer) Ne
 }
 
 func (c *NewSimConfiguration) updateRemoteSims() {
-	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && c.remoteServer != nil {
+	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &PendingCall{
-			Call:      c.remoteServer.client.Go("SimManager.GetRunningSims", 0, &rs, nil),
+			Call:      remoteServer.client.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
-				c.remoteServer.runningSims = rs
+				remoteServer.runningSims = rs
 			},
 			OnErr: func(e error) {
 				lg.Errorf("%v", e)
@@ -136,7 +133,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Separator()
 	}
 
-	if c.remoteServer != nil {
+	if remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -147,7 +144,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, NewSimCreateLocal) &&
 				origType != NewSimCreateLocal {
-				c.selectedServer = c.localServer
+				c.selectedServer = localServer
 				c.SetScenarioGroup("")
 				c.displayError = nil
 			}
@@ -157,7 +154,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, NewSimCreateRemote) &&
 				origType != NewSimCreateRemote {
-				c.selectedServer = c.remoteServer
+				c.selectedServer = remoteServer
 				c.SetScenarioGroup("")
 				c.displayError = nil
 			}
@@ -169,7 +166,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			// If join remote was selected but there are no longer any available remote sims, then
 			// switch to "create remote"...
 			anyOpenRemote := false
-			for _, rs := range c.remoteServer.runningSims {
+			for _, rs := range remoteServer.runningSims {
 				if len(rs.AvailablePositions) > 0 {
 					anyOpenRemote = true
 				}
@@ -180,7 +177,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			uiStartDisable(!anyOpenRemote)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
-				c.selectedServer = c.remoteServer
+				c.selectedServer = remoteServer
 				c.displayError = nil
 			}
 			uiEndDisable(!anyOpenRemote)
@@ -386,7 +383,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 	} else {
 		// Join remote
-		runningSims := c.remoteServer.runningSims
+		runningSims := remoteServer.runningSims
 
 		rs, ok := runningSims[c.SelectedRemoteSim]
 		if !ok || c.SelectedRemoteSim == "" {
