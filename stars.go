@@ -35,10 +35,39 @@ var (
 	STARSUntrackedAircraftColor  = RGB{.1, .9, .1}
 	STARSPointedOutAircraftColor = RGB{.9, .9, .1}
 	STARSSelectedAircraftColor   = RGB{.1, .9, .9}
+)
 
-	ErrSTARSIllegalParam  = errors.New("ILL PARAM")
-	ErrSTARSIllegalTrack  = errors.New("ILL TRK")
-	ErrSTARSCommandFormat = errors.New("FORMAT")
+type STARSError string
+
+func (e STARSError) Error() string { return string(e) }
+
+func (e STARSError) Is(err error) bool {
+	if se, ok := err.(STARSError); ok {
+		return string(se) == string(e)
+	}
+	return false
+}
+
+func MakeSTARSError(s string) STARSError {
+	return STARSError(s)
+}
+
+var (
+	ErrSTARSCommandFormat     = MakeSTARSError("FORMAT")
+	ErrSTARSDuplicateBeacon   = MakeSTARSError("DUP BCN")
+	ErrSTARSIllegalATIS       = MakeSTARSError("ILL ATIS")
+	ErrSTARSIllegalAirport    = MakeSTARSError("ILL AIRPORT")
+	ErrSTARSIllegalCode       = MakeSTARSError("ILL CODE")
+	ErrSTARSIllegalFix        = MakeSTARSError("ILL FIX")
+	ErrSTARSIllegalFlight     = MakeSTARSError("ILL FLIGHT")
+	ErrSTARSIllegalLine       = MakeSTARSError("ILL LINE")
+	ErrSTARSIllegalParam      = MakeSTARSError("ILL PARAM")
+	ErrSTARSIllegalScratchpad = MakeSTARSError("ILL SCR")
+	ErrSTARSIllegalSector     = MakeSTARSError("ILL SECTOR")
+	ErrSTARSIllegalText       = MakeSTARSError("ILL TEXT")
+	ErrSTARSIllegalTrack      = MakeSTARSError("ILL TRK")
+	ErrSTARSIllegalValue      = MakeSTARSError("ILL VALUE")
+	ErrSTARSNoFlight          = MakeSTARSError("NO FLIGHT")
 )
 
 const NumSTARSPreferenceSets = 32
@@ -498,7 +527,7 @@ const (
 func flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
-		return "", ErrSTARSIllegalTrack // ??
+		return "", ErrSTARSIllegalFlight
 	}
 
 	// AAL1416 B738/L squawk controller id
@@ -894,7 +923,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
-				sp.displayError(status.err)
+				sp.previewAreaOutput = GetSTARSError(status.err).Error()
 			} else {
 				if status.clear {
 					sp.resetInputState()
@@ -1002,23 +1031,42 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 	}
 }
 
-func (sp *STARSPane) displayError(err error) {
-	if errors.Is(err, ErrSTARSIllegalParam) || errors.Is(err, ErrSTARSIllegalTrack) ||
-		errors.Is(err, ErrSTARSCommandFormat) {
-		sp.previewAreaOutput = err.Error()
-	} else if errors.Is(err, ErrNoAircraftForCallsign) || errors.Is(err, ErrNoFlightPlan) ||
-		errors.Is(err, ErrOtherControllerHasTrack) || errors.Is(err, ErrNotBeingHandedOffToMe) {
-		sp.previewAreaOutput = ErrSTARSIllegalTrack.Error()
-	} else if errors.Is(err, ErrInvalidAltitude) || errors.Is(err, ErrInvalidHeading) ||
-		errors.Is(err, ErrInvalidApproach) || errors.Is(err, ErrInvalidCommandSyntax) ||
-		errors.Is(err, ErrArrivalAirportUnknown) || errors.Is(err, ErrUnknownApproach) ||
-		errors.Is(err, ErrClearedForUnexpectedApproach) || errors.Is(err, ErrNoController) ||
-		errors.Is(err, ErrUnknownAircraftType) || errors.Is(err, ErrUnableCommand) ||
-		errors.Is(err, ErrFixNotInRoute) {
-		sp.previewAreaOutput = ErrSTARSIllegalParam.Error()
-	} else {
-		sp.previewAreaOutput = ErrSTARSCommandFormat.Error()
+var starsErrorRemap = map[error]STARSError{
+	ErrNoAircraftForCallsign:        ErrSTARSNoFlight,
+	ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
+	ErrOtherControllerHasTrack:      ErrSTARSIllegalTrack,
+	ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
+	ErrInvalidAltitude:              ErrSTARSIllegalValue,
+	ErrInvalidHeading:               ErrSTARSIllegalValue,
+	ErrInvalidApproach:              ErrSTARSIllegalValue,
+	ErrInvalidCommandSyntax:         ErrSTARSCommandFormat,
+	ErrArrivalAirportUnknown:        ErrSTARSIllegalAirport,
+	ErrUnknownApproach:              ErrSTARSIllegalValue,
+	ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
+	ErrNoController:                 ErrSTARSIllegalSector,
+	ErrUnknownAircraftType:          ErrSTARSIllegalParam,
+	ErrUnableCommand:                ErrSTARSIllegalValue,
+	ErrFixNotInRoute:                ErrSTARSIllegalFix,
+}
+
+func GetSTARSError(e error) STARSError {
+	var se STARSError
+	if errors.As(e, &se) {
+		return se
 	}
+
+	if se, ok := starsErrorRemap[e]; ok {
+		return se
+	}
+
+	for err, se := range starsErrorRemap {
+		if errors.Is(e, err) {
+			return se
+		}
+	}
+
+	lg.Errorf("%v: unexpected error passed to GetSTARSError", e)
+	return ErrSTARSCommandFormat
 }
 
 func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
@@ -1150,7 +1198,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						if ctx.world.DepartureAirports[airport] != nil {
 							sp.AutoTrackDepartures[airport] = nil
 						} else {
-							status.err = ErrSTARSIllegalParam
+							status.err = ErrSTARSIllegalAirport
 							return
 						}
 					}
@@ -1164,7 +1212,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.clear = true
 					return
 				} else {
-					status.err = ErrSTARSIllegalParam
+					status.err = ErrSTARSIllegalFix
 					return
 				}
 			}
@@ -1288,7 +1336,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// Display flight plan
 				status.output, status.err = flightPlanSTARS(ctx.world, ac)
 			} else {
-				status.err = ErrSTARSIllegalTrack // error code?
+				status.err = ErrSTARSNoFlight
 			}
 			return
 
@@ -1381,7 +1429,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == me })
 					status.clear = true
 				} else {
-					status.err = ErrSTARSCommandFormat
+					status.err = ErrSTARSIllegalParam
 				}
 				return
 
@@ -1399,7 +1447,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					})
 					status.clear = true
 				} else {
-					status.err = ErrSTARSCommandFormat
+					status.err = ErrSTARSIllegalParam
 				}
 				return
 
@@ -1426,11 +1474,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						sp.aircraft[ac.Callsign].leaderLineDirection = dir
 						status.clear = true
 						return
+					} else {
+						status.err = ErrSTARSNoFlight
 					}
+				} else {
+					status.err = ErrSTARSCommandFormat
 				}
-				status.err = ErrSTARSCommandFormat
 				return
-
 			}
 
 		case "N":
@@ -1619,7 +1669,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				callsign := lookupCallsign(f[0])
 				// Either pilot alt or scratchpad entry
 				if ac := ctx.world.GetAircraft(callsign); ac == nil {
-					status.err = ErrSTARSIllegalTrack
+					status.err = ErrSTARSNoFlight
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.aircraft[callsign].pilotAltitude = alt * 100
 				} else {
@@ -1658,7 +1708,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				callsign := lookupCallsign(f[0])
 				status.err = ctx.world.SetSquawk(callsign, squawk)
 			} else {
-				status.err = ErrSTARSIllegalParam
+				status.err = ErrSTARSIllegalCode
 			}
 		} else {
 			status.err = ErrSTARSCommandFormat
@@ -1673,7 +1723,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				state := sp.aircraft[callsign]
 				state.disableCAWarnings = !state.disableCAWarnings
 			} else {
-				status.err = ErrSTARSIllegalParam
+				status.err = ErrSTARSNoFlight
 			}
 			status.clear = true
 			return
@@ -1709,7 +1759,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeMaps:
 		if len(cmd) > 0 {
-			if m, err := strconv.Atoi(cmd); err == nil && m > 0 && m < len(ctx.world.STARSMaps) {
+			if m, err := strconv.Atoi(cmd); err != nil {
+				status.err = ErrSTARSCommandFormat
+			} else if m <= 0 || m > len(ctx.world.STARSMaps) {
+				status.err = ErrSTARSIllegalValue
+			} else {
 				m--
 				name := ctx.world.STARSMaps[m].Name
 				if _, ok := ps.VideoMapVisible[name]; ok {
@@ -1717,9 +1771,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else {
 					ps.VideoMapVisible[name] = nil
 				}
-				return
-			} else {
-				status.err = ErrSTARSCommandFormat
 			}
 			status.clear = true
 			return
@@ -1727,10 +1778,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeLDR:
 		if len(cmd) > 0 {
-			if r, err := strconv.Atoi(cmd); err == nil {
-				ps.Range = clamp(float32(r), 0, 7)
+			if r, err := strconv.Atoi(cmd); err != nil {
+				status.err = ErrSTARSCommandFormat
+			} else if r < 0 || r > 7 {
+				status.err = ErrSTARSIllegalValue
 			} else {
-				status.err = ErrSTARSIllegalParam
+				ps.Range = float32(r)
 			}
 			status.clear = true
 			return
@@ -1748,17 +1801,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		case "20":
 			ps.RangeRingRadius = 20
 		default:
-			status.err = ErrSTARSIllegalParam
+			status.err = ErrSTARSIllegalValue
 		}
 		status.clear = true
 		return
 
 	case CommandModeRange:
 		if len(cmd) > 0 {
-			if r, err := strconv.Atoi(cmd); err == nil {
-				ps.Range = clamp(float32(r), 6, 256)
+			if r, err := strconv.Atoi(cmd); err != nil {
+				status.err = ErrSTARSCommandFormat
+			} else if r < 6 || r > 256 {
+				status.err = ErrSTARSIllegalValue
 			} else {
-				status.err = ErrSTARSIllegalParam
+				ps.Range = float32(r)
 			}
 			status.clear = true
 			return
@@ -1771,9 +1826,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		} else if len(cmd) > 0 {
 			// Index, character id, or name
-			if i, err := strconv.Atoi(cmd); err == nil && i >= 0 && i < len(ctx.world.RadarSites) {
-				ps.RadarSiteSelected = SortedMapKeys(ctx.world.RadarSites)[i]
-				status.clear = true
+			if i, err := strconv.Atoi(cmd); err == nil {
+				if i < 0 || i >= len(ctx.world.RadarSites) {
+					status.err = ErrSTARSIllegalValue
+				} else {
+					ps.RadarSiteSelected = SortedMapKeys(ctx.world.RadarSites)[i]
+					status.clear = true
+				}
 				return
 			}
 			for id, rs := range ctx.world.RadarSites {
@@ -1796,14 +1855,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string) {
 	ctx.world.SetScratchpad(callsign, contents, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
 	ctx.world.SetTemporaryAltitude(callsign, alt, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
@@ -1818,14 +1877,14 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 			}
 		},
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
 	ctx.world.DropTrack(callsign, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
@@ -1840,42 +1899,42 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 			}
 		},
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
 	ctx.world.HandoffTrack(callsign, controller, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 	ctx.world.HandoffControl(callsign, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
 	ctx.world.PointOut(callsign, controller, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.CancelHandoff(callsign, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
 func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.RejectHandoff(callsign, nil,
 		func(err error) {
-			sp.displayError(err)
+			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
 
@@ -2024,7 +2083,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.clear = true
 						sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
 					} else {
-						status.err = ErrSTARSIllegalParam
+						status.err = ErrSTARSCommandFormat
 					}
 					return
 				} else {
@@ -2047,7 +2106,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						})
 						status.clear = true
 					} else {
-						status.err = ErrSTARSIllegalParam
+						status.err = ErrSTARSCommandFormat
 					}
 					return
 				}
@@ -2055,10 +2114,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			if len(cmd) > 2 && cmd[:2] == "*J" {
 				if r, err := strconv.Atoi(cmd[2:]); err == nil {
-					state.jRingRadius = clamp(float32(r), 1, 30)
+					if r < 1 || r > 30 {
+						status.err = ErrSTARSIllegalValue
+					} else {
+						state.jRingRadius = float32(r)
+					}
 					status.clear = true
 				} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
-					state.jRingRadius = clamp(float32(r), 1, 30)
+					if r < 1 || r > 30 {
+						status.err = ErrSTARSIllegalValue
+					} else {
+						state.jRingRadius = float32(r)
+					}
 					status.clear = true
 				} else {
 					status.err = ErrSTARSIllegalParam
@@ -2067,10 +2134,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			}
 			if len(cmd) > 2 && cmd[:2] == "*P" {
 				if r, err := strconv.Atoi(cmd[2:]); err == nil {
-					state.coneLength = clamp(float32(r), 1, 30)
+					if r < 1 || r > 30 {
+						status.err = ErrSTARSIllegalValue
+					} else {
+						state.coneLength = float32(r)
+					}
 					status.clear = true
 				} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
-					state.coneLength = clamp(float32(r), 1, 30)
+					if r < 1 || r > 30 {
+						status.err = ErrSTARSIllegalValue
+					} else {
+						state.coneLength = float32(r)
+					}
 					status.clear = true
 				} else {
 					status.err = ErrSTARSIllegalParam
@@ -2088,7 +2163,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					func(err error) {
 						globalConfig.Audio.PlaySound(AudioEventCommandError)
 
-						sp.displayError(err)
+						sp.previewAreaOutput = GetSTARSError(err).Error()
 						var ace *AircraftCommandsError
 						if errors.As(err, &ace) {
 							// Leave the unexecuted commands for editing, etc.
@@ -2265,7 +2340,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.minSepAircraft[1] = ac.Callsign
 						status.clear = true
 					} else {
-						status.err = ErrSTARSIllegalTrack
+						status.err = ErrSTARSNoFlight
 					}
 					return
 				}
