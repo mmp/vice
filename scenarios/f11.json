@@ -3395,16 +3395,19 @@
   "control_positions": {
     "MIA_46_CTR": {
       "frequency": 135175,
+      "full_name": "Miami center",
       "scope_char": "C",
       "sector_id": "R46"
     },
     "JAX_30_CTR": {
       "frequency": 135925,
+      "full_name": "Jacksonville center",
       "scope_char": "C",
       "sector_id": "30"
     },
     "JAX_N_APP": {
       "frequency": 127000,
+      "full_name": "Jacksonville approach",
       "scope_char": "N",
       "sector_id": "1N"
     },
@@ -3415,36 +3418,43 @@
     },
     "TPA_E_APP": {
       "frequency": 118150,
+      "full_name": "Tampa approach",
       "scope_char": "A",
       "sector_id": "TE"
     },
     "MCO_E_APP": {
       "frequency": 124800,
+      "full_name": "Orlando approach",
       "scope_char": "E",
       "sector_id": "4E"
     },
     "MCO_B_APP": {
       "frequency": 128375,
+      "full_name": "Orlando approach",
       "scope_char": "B",
       "sector_id": "4B"
     },
     "MCO_W_DEP": {
       "frequency": 120150,
+      "full_name": "Orlando departure",
       "scope_char": "W",
       "sector_id": "4W"
     },
     "MCO_E_TWR": {
       "frequency": 118450,
+      "full_name": "Orlando tower",
       "scope_char": "T",
       "sector_id": "4ET"
     },
     "MCO_D_APP": {
       "frequency": 119400,
+      "full_name": "Orlando approach",
       "scope_char": "D",
       "sector_id": "4D"
     },
     "MCO_W_TWR": {
       "frequency": 126400,
+      "full_name": "Orlando tower",
       "scope_char": "T",
       "sector_id": "4WT"
     },

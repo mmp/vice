@@ -617,11 +617,13 @@
                 "control_positions": {
                     "JAX_30_CTR": {
                         "frequency": 135925,
+                        "full_name": "Jacksonville center",
                         "scope_char": "C",
                         "sector_id": "30"
                     },
                     "MCO_E_APP": {
                         "frequency": 124800,
+                        "full_name": "Orlando approach",
                         "scope_char": "E",
                         "sector_id": "4E"
                     },
@@ -632,11 +634,13 @@
                     },
                     "JAX_N_APP": {
                         "frequency": 127000,
+                        "full_name": "Jacksonville approach",
                         "scope_char": "N",
                         "sector_id": "1N"
                     },
                     "JAX_TWR": {
                         "frequency": 118300,
+                        "full_name": "Jacksonville tower",
                         "scope_char": "T",
                         "sector_id": "1JT"
                     }
