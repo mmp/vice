@@ -442,6 +442,9 @@ type Sim struct {
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
 
+	// airport -> runway -> category
+	lastDeparture map[string]map[string]map[string]*Departure
+
 	// The same runway may be present multiple times in DepartureRates,
 	// with different categories. However, we want to make sure that we
 	// don't spawn two aircraft on the same runway at the same time (or
@@ -506,6 +509,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 
 		DepartureRates:    DuplicateMap(ssc.Scenario.DepartureRates),
 		ArrivalGroupRates: DuplicateMap(ssc.Scenario.ArrivalGroupRates),
+		lastDeparture:     make(map[string]map[string]map[string]*Departure),
 
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
@@ -514,6 +518,13 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 		DepartureChallenge: ssc.Scenario.DepartureChallenge,
 		GoAroundRate:       ssc.Scenario.GoAroundRate,
 		Handoffs:           make(map[string]time.Time),
+	}
+
+	for ap := range s.DepartureRates {
+		s.lastDeparture[ap] = make(map[string]map[string]*Departure)
+		for rwy := range s.DepartureRates[ap] {
+			s.lastDeparture[ap][rwy] = make(map[string]*Departure)
+		}
 	}
 
 	s.SignOnPositions = make(map[string]*Controller)
@@ -919,8 +930,7 @@ func (s *Sim) Activate() error {
 		s.World.Controllers[callsign].Callsign = callsign
 	}
 
-	for i, rwy := range s.World.DepartureRunways {
-		s.World.DepartureRunways[i].lastDeparture = nil
+	for _, rwy := range s.World.DepartureRunways {
 		for _, route := range rwy.ExitRoutes {
 			initializeWaypointLocations(route.Waypoints, &e)
 		}
@@ -1260,20 +1270,14 @@ func (s *Sim) spawnAircraft() {
 				continue
 			}
 
-			idx := FindIf(s.World.DepartureRunways,
-				func(r ScenarioGroupDepartureRunway) bool {
-					return r.Airport == airport && r.Runway == runway && r.Category == category
-				})
-			if idx == -1 {
-				lg.Errorf("%s/%s/%s: couldn't find airport/runway/category for spawning departure. rates %s dep runways %s",
-					airport, runway, category, spew.Sdump(s.DepartureRates[airport][runway]), spew.Sdump(s.World.DepartureRunways))
-				continue
-			}
-
-			ac, err := s.World.CreateDeparture(airport, runway, category, s.DepartureChallenge)
+			prevDep := s.lastDeparture[airport][runway][category]
+			lg.Printf("%s/%s/%s: prev dep", airport, runway, category)
+			ac, dep, err := s.World.CreateDeparture(airport, runway, category, s.DepartureChallenge, prevDep)
 			if err != nil {
 				lg.Errorf("%v", err)
 			} else {
+				s.lastDeparture[airport][runway][category] = dep
+				lg.Printf("%s/%s/%s: launch dep", airport, runway, category)
 				s.launchAircraftNoLock(*ac)
 				lg.Printf("%s: starting takeoff roll", ac.Callsign)
 				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))

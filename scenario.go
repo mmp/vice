@@ -106,8 +106,7 @@ type ScenarioGroupDepartureRunway struct {
 	Category    string `json:"category,omitempty"`
 	DefaultRate int    `json:"rate"`
 
-	lastDeparture *Departure
-	ExitRoutes    map[string]ExitRoute // copied from DepartureRunway; not specified in JSON
+	ExitRoutes map[string]ExitRoute // copied from airport's  departure_routes
 }
 
 type ScenarioGroupArrivalRunway struct {

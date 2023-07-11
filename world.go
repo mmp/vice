@@ -729,10 +729,12 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	return ac, nil
 }
 
-func (w *World) CreateDeparture(airport, runway, category string, challenge float32) (*Aircraft, error) {
+func (w *World) CreateDeparture(airport, runway, category string, challenge float32,
+	lastDeparture *Departure) (ac *Aircraft, dep *Departure, err error) {
 	ap := w.Airports[airport]
 	if ap == nil {
-		return nil, ErrUnknownAirport
+		err = ErrUnknownAirport
+		return
 	}
 
 	idx := FindIf(w.DepartureRunways,
@@ -740,25 +742,24 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 			return r.Airport == airport && r.Runway == runway && r.Category == category
 		})
 	if idx == -1 {
-		return nil, ErrUnknownRunway
+		err = ErrUnknownRunway
+		return
 	}
 	rwy := &w.DepartureRunways[idx]
 
-	var dep *Departure
-	if rand.Float32() < challenge {
+	if rand.Float32() < challenge && lastDeparture != nil {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
-		if rand.Float32() < .5 {
-			dep = rwy.lastDeparture
-		} else if rwy.lastDeparture != nil {
-			idx := SampleFiltered(ap.Departures,
-				func(d Departure) bool {
-					return ap.ExitCategories[d.Exit] == ap.ExitCategories[rwy.lastDeparture.Exit]
-				})
-			if idx == -1 {
-				// This shouldn't ever happen...
-				return nil, ErrNoValidDepartureFound
-			}
+		pred := Select(rand.Float32() < .5,
+			func(d Departure) bool { return d.Exit == lastDeparture.Exit },
+			func(d Departure) bool {
+				return ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
+			})
+
+		if idx := SampleFiltered(ap.Departures, pred); idx == -1 {
+			// This should never happen...
+			lg.Errorf("%s/%s/%s: unable to sample departure", airport, runway, category)
+		} else {
 			dep = &ap.Departures[idx]
 		}
 	}
@@ -771,15 +772,14 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
-			return nil, fmt.Errorf("%s/%s: unable to find a valid departure", airport, rwy.Runway)
+			err = fmt.Errorf("%s/%s: unable to find a valid departure", airport, rwy.Runway)
+			return
 		}
 		dep = &ap.Departures[idx]
 	}
 
-	rwy.lastDeparture = dep
-
 	airline := Sample(dep.Airlines)
-	ac := sampleAircraft(airline.ICAO, airline.Fleet)
+	ac = sampleAircraft(airline.ICAO, airline.Fleet)
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
@@ -790,7 +790,8 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 	ac.FlightPlan.ArrivalAirport = dep.Destination
 	var ok bool
 	if ac.FlightPlan.ArrivalAirportLocation, ok = w.Locate(ac.FlightPlan.ArrivalAirport); !ok {
-		return nil, fmt.Errorf("%s: unable to find arrival airport location?", ac.FlightPlan.ArrivalAirport)
+		err = fmt.Errorf("%s: unable to find arrival airport location?", ac.FlightPlan.ArrivalAirport)
+		return
 	}
 
 	ac.Scratchpad = w.Scratchpads[dep.Exit]
@@ -815,10 +816,11 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 
 	ac.FlightPlan.DepartureAirport = airport
 	if ac.FlightPlan.DepartureAirportLocation, ok = w.Locate(ac.FlightPlan.DepartureAirport); !ok {
-		return nil, fmt.Errorf("%s: unable to find departure airport location?", ac.FlightPlan.DepartureAirport)
+		err = fmt.Errorf("%s: unable to find departure airport location?", ac.FlightPlan.DepartureAirport)
+		return
 	}
 
-	return ac, nil
+	return
 }
 
 ///////////////////////////////////////////////////////////////////////////

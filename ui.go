@@ -1366,7 +1366,7 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 
 func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *Aircraft {
 	for i := 0; i < 100; i++ {
-		if ac, err := lc.w.CreateDeparture(airport, rwy, category, 0); err == nil {
+		if ac, _, err := lc.w.CreateDeparture(airport, rwy, category, 0, nil); err == nil {
 			return ac
 		}
 	}
