@@ -38,6 +38,30 @@ func (n *NAVState) Summary(ac *Aircraft) string {
 	return strings.Join(info, "\n")
 }
 
+func (n *NAVState) ContactMessage(ac *Aircraft) string {
+	// Rather than making all of the *Navs implement a ContactMessage
+	// method, we'll just handle the few ones we care about directly here.
+	msgs := []string{}
+
+	if ma, ok := ac.Nav.V.(*MaintainAltitude); ok {
+		if abs(ac.Altitude-ma.Altitude) < 100 {
+			msgs = append(msgs, "at "+FormatAltitude(int(ma.Altitude)))
+		} else {
+			msgs = append(msgs, "at "+FormatAltitude(int(ac.Altitude))+" for "+FormatAltitude(int(ma.Altitude)))
+		}
+	}
+
+	if fh, ok := ac.Nav.L.(*FlyHeading); ok {
+		msgs = append(msgs, fmt.Sprintf("heading %d", int(fh.Heading)))
+	}
+
+	if ms, ok := ac.Nav.S.(*MaintainSpeed); ok {
+		msgs = append(msgs, fmt.Sprintf("%d knots", int(ms.IAS)))
+	}
+
+	return strings.Join(msgs, ", ")
+}
+
 type NAVStateMarshal struct {
 	LNavType       string
 	LNavStruct     string

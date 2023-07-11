@@ -188,6 +188,20 @@ type RadarTrack struct {
 	Time        time.Time
 }
 
+func FormatAltitude(alt int) string {
+	if alt >= 18000 {
+		return "flight level " + fmt.Sprintf("%d", alt/100)
+	} else {
+		th := alt / 1000
+		hu := (alt % 1000) / 100 * 100
+		if hu == 0 {
+			return fmt.Sprintf("%d thousand", th)
+		} else {
+			return fmt.Sprintf("%d thousand %d hundred", th, hu)
+		}
+	}
+}
+
 type TransponderMode int
 
 const (
