@@ -155,13 +155,23 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
-			disable := len(c.remoteServer.runningSims) == 0
-			uiStartDisable(disable)
+			// If join remote was selected but there are no longer any available remote sims, then
+			// switch to "create remote"...
+			anyOpenRemote := false
+			for _, rs := range c.remoteServer.runningSims {
+				if len(rs.AvailablePositions) > 0 {
+					anyOpenRemote = true
+				}
+			}
+			if c.NewSimType == NewSimJoinRemote && !anyOpenRemote {
+				c.NewSimType = NewSimCreateRemote
+			}
+			uiStartDisable(!anyOpenRemote)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
 				c.selectedServer = c.remoteServer
 			}
-			uiEndDisable(disable)
+			uiEndDisable(!anyOpenRemote)
 
 			imgui.EndTable()
 		}
@@ -363,21 +373,40 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	} else {
 		// Join remote
 		runningSims := c.remoteServer.runningSims
-		if c.SelectedRemoteSim == "" {
+
+		rs, ok := runningSims[c.SelectedRemoteSim]
+		if !ok || c.SelectedRemoteSim == "" {
 			c.SelectedRemoteSim = SortedMapKeys(runningSims)[0]
+
+			rs = runningSims[c.SelectedRemoteSim]
+			if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
+				// If the primary position isn't currently covered, make that the default selection.
+				c.SelectedRemoteSimPosition = rs.PrimaryController
+			}
 		}
 
-		rs := runningSims[c.SelectedRemoteSim]
 		if imgui.BeginComboV("Simulation", c.SelectedRemoteSim+": "+rs.ScenarioName, imgui.ComboFlagsHeightLarge) {
 			for _, simName := range SortedMapKeys(runningSims) {
+				if len(runningSims[simName].AvailablePositions) == 0 {
+					// No open positions left; don't even offer it.
+					continue
+				}
+
 				scenarioName := runningSims[simName].ScenarioName
 				if imgui.SelectableV(simName+": "+scenarioName, simName == c.SelectedRemoteSim, 0, imgui.Vec2{}) {
 					c.SelectedRemoteSim = simName
+
+					rs = runningSims[c.SelectedRemoteSim]
+					if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
+						// If the primary position isn't currently covered, make that the default selection.
+						c.SelectedRemoteSimPosition = rs.PrimaryController
+					}
 				}
 			}
 			imgui.EndCombo()
 		}
 
+		// Handle the case of someone else signing in to the position
 		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; !ok {
 			c.SelectedRemoteSimPosition = SortedMapKeys(rs.AvailablePositions)[0]
 		}
@@ -392,6 +421,13 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				}
 			}
 			imgui.EndCombo()
+		}
+
+		active := SortedMapKeys(rs.CoveredPositions)
+		if len(active) == 0 {
+			imgui.Text("Covered positions: none")
+		} else {
+			imgui.Text("Covered positions: " + strings.Join(active, ", "))
 		}
 	}
 
