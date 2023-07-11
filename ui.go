@@ -569,7 +569,6 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	err         string
 	config      NewSimConfiguration
 	allowCancel bool
 }
@@ -577,7 +576,6 @@ type ConnectModalClient struct {
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.err = ""
 	c.config = MakeNewSimConfiguration(ui.localServer, ui.remoteServer)
 }
 
@@ -591,13 +589,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		text:     "Ok",
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
-			if err := c.config.Start(); err == nil {
-				c.err = ""
-				return true
-			} else {
-				c.err = err.Error()
-				return false
-			}
+			c.config.displayError = c.config.Start()
+			return c.config.displayError == nil
 		},
 	}
 
@@ -605,13 +598,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *ConnectModalClient) Draw() int {
-	enter := c.config.DrawUI()
-
-	if c.err != "" {
-		imgui.Text(c.err)
-	}
-
-	if enter {
+	if enter := c.config.DrawUI(); enter {
 		return 1
 	} else {
 		return -1

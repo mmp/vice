@@ -52,6 +52,8 @@ type NewSimConfiguration struct {
 	SelectedRemoteSimPosition string
 	lastRemoteSimsUpdate      time.Time
 	updateRemoteSimsCall      *PendingCall
+
+	displayError error
 }
 
 type RemoteSim struct {
@@ -127,6 +129,13 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		c.updateRemoteSims()
 	}
 
+	if c.displayError != nil {
+		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(c.displayError.Error())
+		imgui.PopStyleColor()
+		imgui.Separator()
+	}
+
 	if c.remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{500, 0}, 0.) {
 			imgui.TableNextRow()
@@ -140,6 +149,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				origType != NewSimCreateLocal {
 				c.selectedServer = c.localServer
 				c.SetScenarioGroup("")
+				c.displayError = nil
 			}
 
 			imgui.TableNextRow()
@@ -149,6 +159,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				origType != NewSimCreateRemote {
 				c.selectedServer = c.remoteServer
 				c.SetScenarioGroup("")
+				c.displayError = nil
 			}
 
 			imgui.TableNextRow()
@@ -170,6 +181,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
 				c.selectedServer = c.remoteServer
+				c.displayError = nil
 			}
 			uiEndDisable(!anyOpenRemote)
 
@@ -203,7 +215,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 
 		if c.NewSimType == NewSimCreateRemote {
-			imgui.InputTextV("Name", &c.NewSimName, 0, nil)
+			if imgui.InputTextV("Name", &c.NewSimName, 0, nil) {
+				c.displayError = nil
+			}
 			if c.NewSimName == "" {
 				imgui.SameLine()
 				imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
