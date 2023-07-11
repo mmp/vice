@@ -396,15 +396,29 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			}
 		}
 
-		if imgui.BeginComboV("Simulation", c.SelectedRemoteSim+": "+rs.ScenarioName, imgui.ComboFlagsHeightLarge) {
+		imgui.Text("Available simulations:")
+		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
+			imgui.TableFlagsSizingFixedFit
+		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{500, 0}, 0.) {
+			imgui.TableSetupColumn("Name")
+			imgui.TableSetupColumn("Configuration")
+			imgui.TableSetupColumn("Controllers")
+			imgui.TableHeadersRow()
+
 			for _, simName := range SortedMapKeys(runningSims) {
-				if len(runningSims[simName].AvailablePositions) == 0 {
+				rs := runningSims[simName]
+				if len(rs.AvailablePositions) == 0 {
 					// No open positions left; don't even offer it.
 					continue
 				}
 
-				scenarioName := runningSims[simName].ScenarioName
-				if imgui.SelectableV(simName+": "+scenarioName, simName == c.SelectedRemoteSim, 0, imgui.Vec2{}) {
+				imgui.PushID(simName)
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+
+				selected := simName == c.SelectedRemoteSim
+				selFlags := imgui.SelectableFlagsSpanAllColumns | imgui.SelectableFlagsDontClosePopups
+				if imgui.SelectableV(simName, selected, selFlags, imgui.Vec2{}) {
 					c.SelectedRemoteSim = simName
 
 					rs = runningSims[c.SelectedRemoteSim]
@@ -413,8 +427,21 @@ func (c *NewSimConfiguration) DrawUI() bool {
 						c.SelectedRemoteSimPosition = rs.PrimaryController
 					}
 				}
+
+				imgui.TableNextColumn()
+				imgui.Text(runningSims[simName].ScenarioName)
+
+				imgui.TableNextColumn()
+				covered, available := len(rs.CoveredPositions), len(rs.AvailablePositions)
+				controllers := fmt.Sprintf("%d / %d", covered, covered+available)
+				imgui.Text(controllers)
+				if imgui.IsItemHovered() && len(rs.CoveredPositions) > 0 {
+					imgui.SetTooltip(strings.Join(SortedMapKeys(rs.CoveredPositions), ", "))
+				}
+
+				imgui.PopID()
 			}
-			imgui.EndCombo()
+			imgui.EndTable()
 		}
 
 		// Handle the case of someone else signing in to the position
@@ -432,13 +459,6 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				}
 			}
 			imgui.EndCombo()
-		}
-
-		active := SortedMapKeys(rs.CoveredPositions)
-		if len(active) == 0 {
-			imgui.Text("Covered positions: none")
-		} else {
-			imgui.Text("Covered positions: " + strings.Join(active, ", "))
 		}
 	}
 
