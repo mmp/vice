@@ -244,15 +244,14 @@ type NewSimResult struct {
 }
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
-	sm.mu.Lock()
-
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
 		sim := NewSim(*config, sm.scenarioGroups)
-		sm.mu.Unlock()
 		sim.prespawn()
-
 		return sm.Add(sim, result)
 	} else {
+		sm.mu.Lock()
+		defer sm.mu.Unlock()
+
 		sim, ok := sm.activeSims[config.SelectedRemoteSim]
 		if !ok {
 			return ErrNoNamedSim
@@ -261,15 +260,12 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrNoController
 		}
 
-		sm.mu.Unlock()
 		world, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
 		if err != nil {
 			return err
 		}
 
-		sm.mu.Lock()
 		sm.controllerTokenToSim[token] = sim
-		sm.mu.Unlock()
 
 		*result = NewSimResult{
 			World:           world,
