@@ -5,7 +5,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"math"
 	"strings"
@@ -16,24 +15,6 @@ import (
 )
 
 const initialSimSeconds = 45
-
-var (
-	ErrArrivalAirportUnknown        = errors.New("Arrival airport unknown")
-	ErrUnknownApproach              = errors.New("Unknown approach")
-	ErrClearedForUnexpectedApproach = errors.New("Cleared for unexpected approach")
-	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
-	ErrNoFlightPlan                 = errors.New("No flight plan has been filed for aircraft")
-	ErrOtherControllerHasTrack      = errors.New("Another controller is already tracking the aircraft")
-	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
-	ErrNoController                 = errors.New("No controller with that callsign")
-	ErrUnknownAircraftType          = errors.New("Unknown aircraft type")
-	ErrUnableCommand                = errors.New("Unable")
-	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
-	ErrInvalidHeading               = errors.New("Invalid heading")
-	ErrInvalidApproach              = errors.New("Invalid approach")
-	ErrInvalidCommandSyntax         = errors.New("Invalid command syntax")
-	ErrFixNotInRoute                = errors.New("Fix not in aircraft's route")
-)
 
 ///////////////////////////////////////////////////////////////////////////
 // World
@@ -92,6 +73,8 @@ type World struct {
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
 	GoAroundRate      float32
+
+	STARSInputOverride string
 }
 
 func NewWorld() *World {
@@ -749,7 +732,7 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 func (w *World) CreateDeparture(airport, runway, category string, challenge float32) (*Aircraft, error) {
 	ap := w.Airports[airport]
 	if ap == nil {
-		return nil, errors.New(airport + ":unknown airport")
+		return nil, ErrUnknownAirport
 	}
 
 	idx := FindIf(w.DepartureRunways,
@@ -757,7 +740,7 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 			return r.Airport == airport && r.Runway == runway && r.Category == category
 		})
 	if idx == -1 {
-		return nil, errors.New(airport + "/" + runway + "/" + category + ": unknown runway")
+		return nil, ErrUnknownRunway
 	}
 	rwy := &w.DepartureRunways[idx]
 
@@ -774,7 +757,7 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 				})
 			if idx == -1 {
 				// This shouldn't ever happen...
-				return nil, errors.New("unable to find a valid departure")
+				return nil, ErrNoValidDepartureFound
 			}
 			dep = &ap.Departures[idx]
 		}

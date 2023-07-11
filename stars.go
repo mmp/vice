@@ -10,7 +10,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"math"
 	"sort"
@@ -35,39 +34,6 @@ var (
 	STARSUntrackedAircraftColor  = RGB{.1, .9, .1}
 	STARSPointedOutAircraftColor = RGB{.9, .9, .1}
 	STARSSelectedAircraftColor   = RGB{.1, .9, .9}
-)
-
-type STARSError string
-
-func (e STARSError) Error() string { return string(e) }
-
-func (e STARSError) Is(err error) bool {
-	if se, ok := err.(STARSError); ok {
-		return string(se) == string(e)
-	}
-	return false
-}
-
-func MakeSTARSError(s string) STARSError {
-	return STARSError(s)
-}
-
-var (
-	ErrSTARSCommandFormat     = MakeSTARSError("FORMAT")
-	ErrSTARSDuplicateBeacon   = MakeSTARSError("DUP BCN")
-	ErrSTARSIllegalATIS       = MakeSTARSError("ILL ATIS")
-	ErrSTARSIllegalAirport    = MakeSTARSError("ILL AIRPORT")
-	ErrSTARSIllegalCode       = MakeSTARSError("ILL CODE")
-	ErrSTARSIllegalFix        = MakeSTARSError("ILL FIX")
-	ErrSTARSIllegalFlight     = MakeSTARSError("ILL FLIGHT")
-	ErrSTARSIllegalLine       = MakeSTARSError("ILL LINE")
-	ErrSTARSIllegalParam      = MakeSTARSError("ILL PARAM")
-	ErrSTARSIllegalScratchpad = MakeSTARSError("ILL SCR")
-	ErrSTARSIllegalSector     = MakeSTARSError("ILL SECTOR")
-	ErrSTARSIllegalText       = MakeSTARSError("ILL TEXT")
-	ErrSTARSIllegalTrack      = MakeSTARSError("ILL TRK")
-	ErrSTARSIllegalValue      = MakeSTARSError("ILL VALUE")
-	ErrSTARSNoFlight          = MakeSTARSError("NO FLIGHT")
 )
 
 const NumSTARSPreferenceSets = 32
@@ -773,6 +739,11 @@ func (sp *STARSPane) processEvents(w *World) {
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.processEvents(ctx.world)
 
+	if ctx.world.STARSInputOverride != "" {
+		sp.previewAreaInput = ctx.world.STARSInputOverride
+		ctx.world.STARSInputOverride = ""
+	}
+
 	cb.ClearRGB(RGB{}) // clear to black, regardless of the color scheme
 
 	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
@@ -1029,44 +1000,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			}
 		}
 	}
-}
-
-var starsErrorRemap = map[error]STARSError{
-	ErrNoAircraftForCallsign:        ErrSTARSNoFlight,
-	ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
-	ErrOtherControllerHasTrack:      ErrSTARSIllegalTrack,
-	ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
-	ErrInvalidAltitude:              ErrSTARSIllegalValue,
-	ErrInvalidHeading:               ErrSTARSIllegalValue,
-	ErrInvalidApproach:              ErrSTARSIllegalValue,
-	ErrInvalidCommandSyntax:         ErrSTARSCommandFormat,
-	ErrArrivalAirportUnknown:        ErrSTARSIllegalAirport,
-	ErrUnknownApproach:              ErrSTARSIllegalValue,
-	ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
-	ErrNoController:                 ErrSTARSIllegalSector,
-	ErrUnknownAircraftType:          ErrSTARSIllegalParam,
-	ErrUnableCommand:                ErrSTARSIllegalValue,
-	ErrFixNotInRoute:                ErrSTARSIllegalFix,
-}
-
-func GetSTARSError(e error) STARSError {
-	var se STARSError
-	if errors.As(e, &se) {
-		return se
-	}
-
-	if se, ok := starsErrorRemap[e]; ok {
-		return se
-	}
-
-	for err, se := range starsErrorRemap {
-		if errors.Is(e, err) {
-			return se
-		}
-	}
-
-	lg.Errorf("%v: unexpected error passed to GetSTARSError", e)
-	return ErrSTARSCommandFormat
 }
 
 func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
@@ -2162,13 +2095,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						globalConfig.Audio.PlaySound(AudioEventCommandError)
-
 						sp.previewAreaOutput = GetSTARSError(err).Error()
-						var ace *AircraftCommandsError
-						if errors.As(err, &ace) {
-							// Leave the unexecuted commands for editing, etc.
-							sp.previewAreaInput = strings.Join(ace.Remaining, " ")
-						}
 					})
 
 				status.clear = true

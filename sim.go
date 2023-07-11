@@ -7,7 +7,6 @@ package main
 import (
 	crand "crypto/rand"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -470,6 +469,8 @@ type Sim struct {
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 	SimRate        float32
 	Paused         bool
+
+	STARSInputOverride string
 }
 
 type ServerController struct {
@@ -770,6 +771,7 @@ type SimWorldUpdate struct {
 	SimIsPaused      bool
 	SimRate          float32
 	SimDescription   string
+	STARSInput       string
 	Events           []Event
 }
 
@@ -783,6 +785,7 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
 	w.SimDescription = wu.SimDescription
+	w.STARSInputOverride = wu.STARSInput
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
@@ -948,10 +951,14 @@ func (s *Sim) Activate() error {
 
 	if e.HaveErrors() {
 		e.PrintErrors()
-		return errors.New("Errors during state restoration")
+		return ErrRestoringSavedState
 	}
 	return nil
 
+}
+
+func (s *Sim) SetSTARSInput(input string) {
+	s.STARSInputOverride = input
 }
 
 ///////////////////////////////////////////////////////////////////////////

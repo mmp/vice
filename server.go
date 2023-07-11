@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"net"
 	"net/rpc"
@@ -39,14 +38,6 @@ func init() {
 	gob.Register(&HoldLocalizerAfterIntercept{})
 	gob.Register(&GoAround{})
 }
-
-var (
-	ErrNoNamedSim                = errors.New("No Sim with that name")
-	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
-	ErrControllerAlreadySignedIn = errors.New("controller with that callsign already signed in")
-	ErrInvalidControllerToken    = errors.New("invalid controller token")
-	ErrRPCVersionMismatch        = errors.New("client and server RPC versions don't match")
-)
 
 type SimServer struct {
 	name        string
@@ -297,7 +288,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
 	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
-		return errors.New(sim.Name + ": a sim with that name already exists")
+		return ErrDuplicateSimName
 	}
 
 	lg.Printf("%s: starting new sim", sim.Name)
@@ -708,21 +699,6 @@ func (sd *SimDispatcher) DeleteAircraft(da *DeleteAircraftArgs, _ *struct{}) err
 	}
 }
 
-type AircraftCommandsError struct {
-	Err       error
-	Remaining []string
-}
-
-func (ace *AircraftCommandsError) Unwrap() error { return ace.Err }
-
-func (e AircraftCommandsError) Error() string {
-	s := e.Err.Error()
-	if len(e.Remaining) > 0 {
-		s += " remaining: " + strings.Join(e.Remaining, " ")
-	}
-	return s
-}
-
 func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *struct{}) error {
 	sim, ok := sd.sm.controllerTokenToSim[cmds.ControllerToken]
 	if !ok {
@@ -732,13 +708,6 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 	commands := strings.Fields(cmds.Commands)
 
 	for i, command := range commands {
-		wrapError := func(e error) error {
-			return &AircraftCommandsError{
-				Err:       e,
-				Remaining: commands[i:],
-			}
-		}
-
 		switch command[0] {
 		case 'D':
 			if components := strings.Split(command, "/"); len(components) > 1 {
@@ -746,26 +715,33 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 				fix := components[0][1:]
 
 				if components[1][0] != 'H' {
-					return wrapError(ErrInvalidCommandSyntax)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return ErrInvalidCommandSyntax
 				}
 				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.DepartFixHeading(cmds.ControllerToken, cmds.Callsign, fix, hdg); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
 				// Looks like an altitude.
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignAltitude(cmds.ControllerToken, cmds.Callsign, 100*alt); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else if _, ok := sim.World.Locate(string(command[1:])); ok {
 				if err := sim.DirectFix(cmds.ControllerToken, cmds.Callsign, command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else {
-				return wrapError(ErrInvalidCommandSyntax)
+				sim.SetSTARSInput(strings.Join(commands[i:], " "))
+				return ErrInvalidCommandSyntax
 			}
 
 		case 'H':
@@ -775,42 +751,49 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					Callsign:        cmds.Callsign,
 					Present:         true,
 				}); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else if hdg, err := strconv.Atoi(command[1:]); err != nil {
-				return wrapError(err)
+				sim.SetSTARSInput(strings.Join(commands[i:], " "))
+				return err
 			} else if err := sim.AssignHeading(&HeadingArgs{
 				ControllerToken: cmds.ControllerToken,
 				Callsign:        cmds.Callsign,
 				Heading:         hdg,
 				Turn:            TurnClosest,
 			}); err != nil {
-				return wrapError(err)
+				sim.SetSTARSInput(strings.Join(commands[i:], " "))
+				return err
 			}
 
 		case 'L':
 			if l := len(command); l > 2 && command[l-1] == 'D' {
 				// turn left x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignHeading(&HeadingArgs{
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					LeftDegrees:     deg,
 				}); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else {
 				// turn left heading...
 				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignHeading(&HeadingArgs{
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					Heading:         hdg,
 					Turn:            TurnLeft,
 				}); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			}
 
@@ -818,25 +801,29 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			if l := len(command); l > 2 && command[l-1] == 'D' {
 				// turn right x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignHeading(&HeadingArgs{
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					RightDegrees:    deg,
 				}); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else {
 				// turn right heading...
 				if hdg, err := strconv.Atoi(command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignHeading(&HeadingArgs{
 					ControllerToken: cmds.ControllerToken,
 					Callsign:        cmds.Callsign,
 					Heading:         hdg,
 					Turn:            TurnRight,
 				}); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			}
 
@@ -844,7 +831,8 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := sim.ClearedApproach(cmds.ControllerToken, cmds.Callsign, command[3:], true); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
 				if components := strings.Split(command, "/"); len(components) > 1 {
@@ -854,35 +842,43 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 
 					for _, cmd := range components[1:] {
 						if len(cmd) == 0 {
-							return wrapError(ErrInvalidCommandSyntax)
+							sim.SetSTARSInput(strings.Join(commands[i:], " "))
+							return ErrInvalidCommandSyntax
 						}
 
 						var err error
 						if cmd[0] == 'A' {
 							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
-								return wrapError(err)
+								sim.SetSTARSInput(strings.Join(commands[i:], " "))
+								return err
 							}
 						} else if cmd[0] == 'S' {
 							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-								return wrapError(err)
+								sim.SetSTARSInput(strings.Join(commands[i:], " "))
+								return err
 							}
 						} else {
-							return wrapError(ErrInvalidCommandSyntax)
+							sim.SetSTARSInput(strings.Join(commands[i:], " "))
+							return ErrInvalidCommandSyntax
 						}
 					}
 
 					if err := sim.CrossFixAt(cmds.ControllerToken, cmds.Callsign, fix, 100*alt, speed); err != nil {
-						return wrapError(err)
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return err
 					}
 				} else if err := sim.ClearedApproach(cmds.ControllerToken, cmds.Callsign, command[1:], false); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else {
 				// Otherwise look for an altitude
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignAltitude(cmds.ControllerToken, cmds.Callsign, 100*alt); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			}
 
@@ -890,13 +886,16 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			if len(command) == 1 {
 				// Cancel speed restrictions
 				if err := sim.AssignSpeed(cmds.ControllerToken, cmds.Callsign, 0); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				} else if err := sim.AssignSpeed(cmds.ControllerToken, cmds.Callsign, kts); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			}
 
@@ -904,14 +903,17 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			// Expect approach.
 			if len(command) > 1 {
 				if err := sim.ExpectApproach(cmds.ControllerToken, cmds.Callsign, command[1:]); err != nil {
-					return wrapError(err)
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
 				}
 			} else {
-				return wrapError(ErrInvalidCommandSyntax)
+				sim.SetSTARSInput(strings.Join(commands[i:], " "))
+				return ErrInvalidCommandSyntax
 			}
 
 		default:
-			return wrapError(ErrInvalidCommandSyntax)
+			sim.SetSTARSInput(strings.Join(commands[i:], " "))
+			return ErrInvalidCommandSyntax
 		}
 	}
 	return nil
