@@ -1025,7 +1025,7 @@ func (s *Sim) Update() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	for _ /*token*/, ctrl := range s.controllers {
+	for token, ctrl := range s.controllers {
 		if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
 			if !ctrl.warnedNoUpdateCalls {
 				ctrl.warnedNoUpdateCalls = true
@@ -1036,14 +1036,12 @@ func (s *Sim) Update() {
 				})
 			}
 
-			/*
-				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-					lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
-					s.mu.Unlock()
-					s.SignOff(token, nil)
-					s.mu.Lock()
-				}
-			*/
+			if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
+				lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
+				s.mu.Unlock()
+				s.SignOff(token)
+				s.mu.Lock()
+			}
 		}
 	}
 
