@@ -485,8 +485,6 @@ type ServerController struct {
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *Sim {
-	rand.Seed(time.Now().UnixNano())
-
 	sg, ok := scenarioGroups[ssc.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", ssc.GroupName)

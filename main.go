@@ -63,6 +63,8 @@ func init() {
 func main() {
 	flag.Parse()
 
+	rand.Seed(time.Now().UnixNano())
+
 	// Common initialization for both client and server
 	if err := fixconsole.FixConsoleIfNeeded(); err != nil {
 		// Not sure this will actually appear, but what else are we going
