@@ -277,6 +277,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	if err := sim.Activate(); err != nil {
+		lg.Printf("%s: activate fail: %v", sim.Name, err)
 		return err
 	}
 
@@ -303,10 +304,23 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sm.mu.Unlock()
 
 	go func() {
-		for {
+		// Terminate idle Sims after 4 hours, but not unnamed Sims, since
+		// they're local and not running on the server.
+		for !sm.SimShouldExit(sim) {
 			sim.Update()
 			time.Sleep(100 * time.Millisecond)
 		}
+
+		lg.Printf("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
+		sm.mu.Lock()
+		delete(sm.activeSims, sim.Name)
+		// FIXME: these don't get cleaned up during Sim SignOff()
+		for tok, s := range sm.controllerTokenToSim {
+			if s == sim {
+				delete(sm.controllerTokenToSim, tok)
+			}
+		}
+		sm.mu.Unlock()
 	}()
 
 	*result = NewSimResult{
@@ -374,6 +388,25 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 
 	*result = running
 	return nil
+}
+
+const simIdleLimit = 4 * time.Hour
+
+func (sm *SimManager) SimShouldExit(sim *Sim) bool {
+	if sim.IdleTime() < simIdleLimit {
+		return false
+	}
+
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
+	nIdle := 0
+	for _, sim := range sm.activeSims {
+		if sim.IdleTime() >= simIdleLimit {
+			nIdle++
+		}
+	}
+	return nIdle > 10
 }
 
 func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {

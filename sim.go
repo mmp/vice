@@ -740,6 +740,7 @@ func (s *Sim) signOn(callsign string) error {
 	}
 	s.World.Controllers[callsign] = ctrl
 
+	lg.Printf("%s/%s: signing on", s.Name, callsign)
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
@@ -754,7 +755,7 @@ func (s *Sim) SignOff(token string) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
-		lg.Printf("%s: signing off", ctrl.Callsign)
+		lg.Printf("%s/%s: signing off", s.Name, ctrl.Callsign)
 		// Drop track on controlled aircraft
 		for _, ac := range s.World.Aircraft {
 			ac.DropControllerTrack(ctrl.Callsign)
@@ -1180,6 +1181,12 @@ func (s *Sim) updateState() {
 	if s.LaunchController == "" {
 		s.spawnAircraft()
 	}
+}
+
+func (s *Sim) IdleTime() time.Duration {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return time.Since(s.lastSimUpdate)
 }
 
 func (s *Sim) controllerIsSignedIn(callsign string) bool {
