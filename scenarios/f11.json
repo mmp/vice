@@ -3413,12 +3413,13 @@
     },
     "DAB_H_APP": {
       "frequency": 125725,
+      "full_name": "Daytona Beach approach",
       "scope_char": "H",
       "sector_id": "5H"
     },
     "TPA_E_APP": {
       "frequency": 118150,
-      "full_name": "Tampa approach",
+      "full_name": "Tampa Bay approach",
       "scope_char": "A",
       "sector_id": "TE"
     },
@@ -3460,26 +3461,31 @@
     },
     "SFB_N_TWR": {
       "frequency": 120300,
+      "full_name": "Sanford tower",
       "scope_char": "T",
       "sector_id": "4NT"
     },
     "SFB_S_TWR": {
       "frequency": 135250,
+      "full_name": "Sanford tower",
       "scope_char": "T",
       "sector_id": "4ST"
     },
     "MLB_TWR": {
       "frequency": 118200,
+      "full_name": "Melbourne Orlando tower",
       "scope_char": "T",
       "sector_id": "4MT"
     },
     "ISM_TWR": {
       "frequency": 124450,
+      "full_name": "Kissimee Gateway tower",
       "scope_char": "T",
       "sector_id": "4IT"
     },
     "ORL_TWR": {
       "frequency": 118700,
+      "full_name": "Orlando Executive tower",
       "scope_char": "T",
       "sector_id": "4OT"
     }

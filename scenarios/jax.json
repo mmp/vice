@@ -629,6 +629,7 @@
                     },
                     "DAB_H_APP": {
                         "frequency": 125725,
+                        "full_name": "Daytona Beach approach",
                         "scope_char": "H",
                         "sector_id": "5H"
                     },

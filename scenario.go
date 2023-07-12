@@ -410,11 +410,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		if ctrl.Scope == "" {
 			e.ErrorString("no \"scope_char\" specified")
 		}
-		/*
-			if ctrl.FullName == "" {
-				e.ErrorString("no \"full_name\" specified")
-			}
-		*/
+		if ctrl.FullName == "" {
+			e.ErrorString("no \"full_name\" specified")
+		}
 		e.Pop()
 	}
 
