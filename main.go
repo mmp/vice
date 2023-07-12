@@ -49,6 +49,7 @@ var (
 	cpuprofile       = flag.String("cpuprofile", "", "write CPU profile to file")
 	memprofile       = flag.String("memprofile", "", "write memory profile to this file")
 	devmode          = flag.Bool("devmode", false, "developer mode")
+	logRPC           = flag.Bool("logrpc", false, "log RPC calls")
 	server           = flag.Bool("server", false, "run vice scenario server")
 	scenarioFilename = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 	videoMapFilename = flag.String("videomap", "", "filename of JSON file with video map definitions")
@@ -64,6 +65,11 @@ func init() {
 
 func main() {
 	flag.Parse()
+
+	if *logRPC && !*devmode {
+		fmt.Printf("vice: must provide -devmode with -logrpc\n")
+		os.Exit(1)
+	}
 
 	rand.Seed(time.Now().UnixNano())
 

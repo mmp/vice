@@ -5,7 +5,9 @@
 package main
 
 import (
+	"bufio"
 	_ "embed"
+	"encoding/gob"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -1689,6 +1691,141 @@ func checkJSONVsSchemaRecursive(json interface{}, ty reflect.Type, e *ErrorLogge
 
 ///////////////////////////////////////////////////////////////////////////
 // RPC/Networking stuff
+
+// Straight out of net/rpc/server.go
+type gobServerCodec struct {
+	rwc    io.ReadWriteCloser
+	dec    *gob.Decoder
+	enc    *gob.Encoder
+	encBuf *bufio.Writer
+	closed bool
+}
+
+func (c *gobServerCodec) ReadRequestHeader(r *rpc.Request) error {
+	return c.dec.Decode(r)
+}
+
+func (c *gobServerCodec) ReadRequestBody(body any) error {
+	return c.dec.Decode(body)
+}
+
+func (c *gobServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
+	if err = c.enc.Encode(r); err != nil {
+		if c.encBuf.Flush() == nil {
+			// Gob couldn't encode the header. Should not happen, so if it does,
+			// shut down the connection to signal that the connection is broken.
+			lg.Printf("rpc: gob error encoding response: %v", err)
+			c.Close()
+		}
+		return
+	}
+	if err = c.enc.Encode(body); err != nil {
+		if c.encBuf.Flush() == nil {
+			// Was a gob problem encoding the body but the header has been written.
+			// Shut down the connection to signal that the connection is broken.
+			lg.Printf("rpc: gob error encoding body: %v", err)
+			c.Close()
+		}
+		return
+	}
+	return c.encBuf.Flush()
+}
+
+func (c *gobServerCodec) Close() error {
+	if c.closed {
+		// Only call c.rwc.Close once; otherwise the semantics are undefined.
+		return nil
+	}
+	c.closed = true
+	return c.rwc.Close()
+}
+
+func MakeGOBServerCodec(conn io.ReadWriteCloser) rpc.ServerCodec {
+	buf := bufio.NewWriter(conn)
+	return &gobServerCodec{
+		rwc:    conn,
+		dec:    gob.NewDecoder(conn),
+		enc:    gob.NewEncoder(buf),
+		encBuf: buf,
+	}
+}
+
+type LoggingServerCodec struct {
+	rpc.ServerCodec
+	label string
+}
+
+func MakeLoggingServerCodec(label string, c rpc.ServerCodec) *LoggingServerCodec {
+	return &LoggingServerCodec{ServerCodec: c, label: label}
+}
+
+func (c *LoggingServerCodec) ReadRequestHeader(r *rpc.Request) error {
+	err := c.ServerCodec.ReadRequestHeader(r)
+	lg.Printf("%s: RPC server receive request %s -> %v", c.label, r.ServiceMethod, err)
+	return err
+}
+
+func (c *LoggingServerCodec) WriteResponse(r *rpc.Response, body any) error {
+	err := c.ServerCodec.WriteResponse(r, body)
+	lg.Printf("%s: RPC server send response %s -> %v", c.label, r.ServiceMethod, err)
+	return err
+}
+
+// This from net/rpc/client.go...
+type gobClientCodec struct {
+	rwc    io.ReadWriteCloser
+	dec    *gob.Decoder
+	enc    *gob.Encoder
+	encBuf *bufio.Writer
+}
+
+func (c *gobClientCodec) WriteRequest(r *rpc.Request, body any) (err error) {
+	if err = c.enc.Encode(r); err != nil {
+		return
+	}
+	if err = c.enc.Encode(body); err != nil {
+		return
+	}
+	return c.encBuf.Flush()
+}
+
+func (c *gobClientCodec) ReadResponseHeader(r *rpc.Response) error {
+	return c.dec.Decode(r)
+}
+
+func (c *gobClientCodec) ReadResponseBody(body any) error {
+	return c.dec.Decode(body)
+}
+
+func (c *gobClientCodec) Close() error {
+	return c.rwc.Close()
+}
+
+func MakeGOBClientCodec(conn io.ReadWriteCloser) rpc.ClientCodec {
+	encBuf := bufio.NewWriter(conn)
+	return &gobClientCodec{conn, gob.NewDecoder(conn), gob.NewEncoder(encBuf), encBuf}
+}
+
+type LoggingClientCodec struct {
+	rpc.ClientCodec
+	label string
+}
+
+func MakeLoggingClientCodec(label string, c rpc.ClientCodec) *LoggingClientCodec {
+	return &LoggingClientCodec{ClientCodec: c, label: label}
+}
+
+func (c *LoggingClientCodec) WriteRequest(r *rpc.Request, v any) error {
+	err := c.ClientCodec.WriteRequest(r, v)
+	lg.Printf("%s: RPC client send request %s -> %v", c.label, r.ServiceMethod, err)
+	return err
+}
+
+func (c *LoggingClientCodec) ReadResponseHeader(r *rpc.Response) error {
+	err := c.ClientCodec.ReadResponseHeader(r)
+	lg.Printf("%s: RPC client receive response %s -> %v", c.label, r.ServiceMethod, err)
+	return err
+}
 
 type CompressedConn struct {
 	net.Conn

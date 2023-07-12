@@ -990,7 +990,12 @@ func getClient(hostname string) (*rpc.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return rpc.NewClient(cc), nil
+
+	codec := MakeGOBClientCodec(cc)
+	if *logRPC {
+		codec = MakeLoggingClientCodec(hostname, codec)
+	}
+	return rpc.NewClientWithCodec(codec), nil
 }
 
 func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
@@ -1062,16 +1067,14 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 			os.Exit(1)
 		}
 
-		// Filter the scenarios and configs: for local, we only want ones
-		// with solo_controller specified, and for the remote server, we
-		// only want the ones with multi_controllers.
+		server := rpc.NewServer()
 
 		sm := NewSimManager(scenarioGroups, simConfigurations)
-		if err := rpc.Register(sm); err != nil {
+		if err := server.Register(sm); err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
 		}
-		if err := rpc.RegisterName("Sim", &SimDispatcher{sm: sm}); err != nil {
+		if err := server.RegisterName("Sim", &SimDispatcher{sm: sm}); err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
 		}
@@ -1088,7 +1091,11 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 			} else if cc, err := MakeCompressedConn(MakeLoggingConn(conn)); err != nil {
 				lg.Errorf("MakeCompressedConn: %v", err)
 			} else {
-				go rpc.ServeConn(cc)
+				codec := MakeGOBServerCodec(cc)
+				if *logRPC {
+					codec = MakeLoggingServerCodec(conn.RemoteAddr().String(), codec)
+				}
+				go server.ServeCodec(codec)
 			}
 		}
 	}
