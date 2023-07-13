@@ -8697,6 +8697,13 @@
         }
       },
       "solo_controller": "MCO_E_APP",
+      "multi_controllers": {
+        "MCO_L_APP": {"primary" : true, "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_E_DEP" : {"departure": true},
+        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
+        "MCO_W_DEP" : {"backup" : "MCO_W_DEP" }            
+      },
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -8832,6 +8839,13 @@
         }
       },
       "solo_controller": "MCO_E_APP",
+      "multi_controllers": {
+        "MCO_L_APP": {"primary" : true, "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_E_DEP" : {"departure": true},
+        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "RIDES2", "SNFLD3" ] },
+        "MCO_W_DEP" : {"backup" : "MCO_W_DEP" }            
+      },
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",

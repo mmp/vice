@@ -702,7 +702,17 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	ac.Position = ac.Waypoints[0].Location
 	ac.Altitude = arr.InitialAltitude
 	ac.IAS = min(arr.InitialSpeed, perf.Speed.Cruise)
-	ac.ArrivalHandoffController = arr.HandoffController
+
+	if len(w.MultiControllers) > 0 {
+		for callsign, mc := range w.MultiControllers {
+			if idx := Find(mc.Arrivals, arrivalGroup); idx != -1 {
+				ac.ArrivalHandoffController = callsign
+			}
+		}
+		if ac.ArrivalHandoffController == "" {
+			panic("couldn't find arrival controller")
+		}
+	}
 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {

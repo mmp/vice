@@ -45,7 +45,6 @@ type Arrival struct {
 	Route           string                   `json:"route"`
 
 	InitialController string  `json:"initial_controller"`
-	HandoffController string  `json:"handoff_controller"`
 	InitialAltitude   float32 `json:"initial_altitude"`
 	ClearedAltitude   float32 `json:"cleared_altitude"`
 	InitialSpeed      float32 `json:"initial_speed"`
@@ -95,9 +94,10 @@ type Scenario struct {
 }
 
 type MultiUserController struct {
-	Primary          bool   `json:"primary"`
-	Departure        bool   `json:"departure"`
-	BackupController string `json:"backup"`
+	Primary          bool     `json:"primary"`
+	Departure        bool     `json:"departure"`
+	BackupController string   `json:"backup"`
+	Arrivals         []string `json:"arrivals"`
 }
 
 type ScenarioGroupDepartureRunway struct {
@@ -209,6 +209,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	primaryController := ""
 	departureController := ""
 	for callsign, mc := range s.MultiControllers {
+		e.Push("\"multi_controllers\": " + callsign)
 		if mc.Primary {
 			if primaryController != "" {
 				e.ErrorString("multiple controllers specified as \"primary\": %s %s",
@@ -225,6 +226,16 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				departureController = callsign
 			}
 		}
+
+		// Make sure all arrivals are valid. Below we make sure all
+		// included arrivals have a controller.
+		for _, arr := range mc.Arrivals {
+			if _, ok := s.ArrivalGroupDefaultRates[arr]; !ok {
+				e.ErrorString("arrival \"%s\" not found in scenario", arr)
+			}
+		}
+
+		e.Pop()
 	}
 	if len(s.MultiControllers) > 0 && primaryController == "" {
 		e.ErrorString("No controller in \"multi_controllers\" was specified as \"primary\"")
@@ -290,16 +301,19 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.Pop()
 			}
 
-			// If this scenario supports multi-user, then make sure all of
-			// the handoff_controllers are specified and valid.
+			// For multi-controller, sure some controller covers the
+			// arrival group.
 			if len(s.MultiControllers) > 0 {
-				for _, arr := range arrivals {
-					if arr.HandoffController == "" {
-						e.ErrorString("No \"handoff_controller\" specified for arrival")
-					} else if _, ok := havePathToPrimary[arr.HandoffController]; !ok {
-						e.ErrorString("Specified \"handoff_controller\" \"%s\" is not eventually backed up by \"%s\"",
-							arr.HandoffController, primaryController)
+				count := 0
+				for _, mc := range s.MultiControllers {
+					if idx := Find(mc.Arrivals, name); idx != -1 {
+						count++
 					}
+				}
+				if count == 0 {
+					e.ErrorString("no controller in \"multi_controllers\" has this arrival group in their \"arrivals\"")
+				} else if count > 1 {
+					e.ErrorString("more than one controller in \"multi_controllers\" has this arrival group in their \"arrivals\"")
 				}
 			}
 		}
@@ -486,9 +500,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
 				e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
 			}
-			// Don't worry about handoff_controller here: it's only used if multi_controllers
-			// is specified and then it doesn't have to be a valid controller (e.g. JFK_LENDY_APP,
-			// which either goes to JFK_G_APP or JFK_K_APP, depending on the configuration...)
 
 			e.Pop()
 		}

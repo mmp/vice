@@ -639,6 +639,42 @@
                         "scope_char": "N",
                         "sector_id": "3N"
                     },
+                    "JAX_W_APP": {
+                        "frequency": 127775,
+                        "full_name": "Jacksonville approach",
+                        "scope_char": "W",
+                        "sector_id": "3W"
+                    },
+                    "JAX_E_APP": {
+                        "frequency": 132775,
+                        "full_name": "Jacksonville approach",
+                        "scope_char": "E",
+                        "sector_id": "3E"
+                    },
+                    "JAX_R_APP": {
+                        "frequency": 119000,
+                        "full_name": "Jacksonville approach",
+                        "scope_char": "R",
+                        "sector_id": "3R"
+                    },
+                    "JAX_J_APP": {
+                        "frequency": 119850,
+                        "full_name": "Jacksonville approach",
+                        "scope_char": "J",
+                        "sector_id": "3J"
+                    },
+                    "JAX_S_APP": {
+                        "frequency": 120750,
+                        "full_name": "Jacksonville approach",
+                        "scope_char": "S",
+                        "sector_id": "3S"
+                    },
+                    "JAX_V_APP": {
+                        "frequency": 118600,
+                        "full_name": "Jacksonville approach",
+                        "scope_char": "V",
+                        "sector_id": "3V"
+                    },
                     "JAX_TWR": {
                         "frequency": 118300,
                         "full_name": "Jacksonville tower",
@@ -695,6 +731,15 @@
                             }
                             },
                         "solo_controller": "JAX_N_APP",
+                        "multi_controllers": {
+                            "JAX_N_APP" : {"primary": true, "departure": true, "arrivals": [ "LUNNI1" ]}, 
+                            "JAX_J_APP" : {"backup": "JAX_R_APP"},
+                            "JAX_R_APP" : {"backup": "JAX_N_APP", "arrivals": [ "MARQO2", "OHDEA1" ]},
+                            "JAX_W_APP" : {"backup": "JAX_R_APP"},
+                            "JAX_V_APP" : {"backup": "JAX_W_APP"},
+                            "JAX_E_APP" : {"backup": "JAX_N_APP", "arrivals": [ "QUBEN1" ]},
+                            "JAX_S_APP" : {"backup": "JAX_E_APP"}
+                        },
                         "controllers": [
                             "JAX_30_CTR",
                             "DAB_H_APP",
@@ -743,6 +788,15 @@
                             }
                         },
                         "solo_controller": "JAX_N_APP",
+                        "multi_controllers": {
+                            "JAX_N_APP" : {"primary": true, "departure": true, "arrivals": [ "LUNNI1", "OHDEA1", "MARQO2" ]}, 
+                            "JAX_J_APP" : {"backup": "JAX_R_APP"},
+                            "JAX_R_APP" : {"backup": "JAX_N_APP"},
+                            "JAX_W_APP" : {"backup": "JAX_N_APP"},
+                            "JAX_V_APP" : {"backup": "JAX_W_APP"},
+                            "JAX_E_APP" : {"backup": "JAX_N_APP", "arrivals": [ "QUBEN1" ]},
+                            "JAX_S_APP" : {"backup": "JAX_E_APP"}
+                        },
                         "controllers": [
                             "JAX_30_CTR",
                             "DAB_H_APP",
