@@ -1,0 +1,468 @@
+{
+    "airports": {
+        "KDAB": {
+            "approaches": {
+                "I7L": {
+                    "full_name": "ILS 7L",
+                    "runway": "7L",
+                    "type": "ILS",
+                    "waypoints": [
+                        "WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30"
+                    ]
+                },
+                "R7R": {
+                    "full_name": "RNAV 7R",
+                    "runway": "7R",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600 _DAB_7R/a32",
+                        "TACUR/lhilpt4nm/a1700 JUSAD/a1600 _DAB_7R/a32"
+                    ]
+                },
+                "R16": {
+                    "full_name": "RNAV 16",
+                    "runway": "16",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800 _DAB_16/a30",
+                        "CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800 _DAB_16/a30"
+                    ]
+                },
+                "I5R": {
+                    "full_name": "ILS 25R",
+                    "runway": "25R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "WISPO/a3000 RINEE/a2700 DIYAK/a1600 _DAB_25R/a34"
+                    ]
+                },
+                "R5L": {
+                    "full_name": "RNAV 25L",
+                    "runway": "25L",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020 _DAB_25L/a33"
+                    ]
+                },
+                "R34": {
+                    "full_name": "RNAV 34",
+                    "runway": "34",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34",
+                        "OAKIE/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34",
+                        "KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34"
+                    ]
+                }
+                },
+                "departure_routes": {
+                    "7L": {
+                        "CRG": {
+                            "cleared_altitude": 4000,
+                            "route": "ROYES7",
+                            "waypoints": "_DAB_7L _DAB_25R/h070 BARBS ROYES CRG"
+                        },
+                        "MALET": {
+                            "cleared_altitude": 4000,
+                            "route": "MALET",
+                            "waypoints": "_DAB_7L _DAB_25R/h070 MALET"
+                        }
+                        },
+                        "25R": {
+                            "CRG": {
+                                "cleared_altitude": 4000,
+                                "route": "ROYES7",
+                                "waypoints": "_DAB_25R _DAB_7L/h250 BARBS ROYES CRG"
+                            },
+                            "MALET": {
+                                "cleared_altitude": 4000,
+                                "route": "MALET",
+                                "waypoints": "_DAB_25R _DAB_7L/h250 MALET"
+                            }
+                        }
+                    },
+                    "departures": [
+                        {
+                            "airlines": [
+                                {
+                                    "fleet": "short",
+                                    "icao": "DAL"
+                                }
+                            ],
+                            "destination": "KATL",
+                            "exit": "CRG",
+                            "route": "CRG SHRKS LAIRI LARZZ JJEDI3"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "fleet": "short",
+                                    "icao": "AAL"
+                                }
+                            ],
+                            "destination": "KCLT",
+                            "exit": "CRG",
+                            "route": "CRG VIYAP CHECR STOCR3"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "VXP"
+                                }
+                            ],
+                            "destination": "KILG",
+                            "exit": "CRG",
+                            "route":  "CRG VIYAP Q87 JROSS LCAPE Q87 ASHEL Q87 NOWAE THHMP ARLFT2"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "JIA"
+                                }
+                            ],
+                            "destination": "KPHL",
+                            "exit": "CRG",
+                            "route": "CRG VIYAP Q87 JROSS RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "VXP"
+                                }
+                            ],
+                            "destination": "KHVN",
+                            "exit": "CRG",
+                            "route": "CRG VIYAP Q87 JROSS LAANA Q190 DFENC SAWED Q97 DLAAY RADDS Q445 WNSTN Q445 BRIGS Q439 SARDI V139 RICED KEYED"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "fleet": "short",
+                                    "icao": "AAL"
+                                }
+                            ],
+                            "destination": "KDFW",
+                            "exit": "CRG",
+                            "route": "CRG SHRKS CABLO DEFUN CEW J50 AEX PNUTS BEREE2"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "JIA"
+                                }
+                            ],
+                            "destination": "KMIA",
+                            "exit": "MALET",
+                            "route": "MALET T208 VALKA T345 MARKT"
+                        }
+                    ],
+                    "elevation": 33,
+                    "exit_categories": {
+                        "MALET": "South",
+                        "CRG": "North"
+                    },
+                    "location": "N29.10.47.724,W81.03.28.574",
+                    "tower_list": 2
+                }
+            },
+            "airspace": {
+                "boundaries": {
+                    "DAB050": [
+                        "N29.00.01.409,W81.28.01.348",
+                        "N28.57.55.696,W81.28.23.588",
+                        "N28.56.18.031,W81.18.56.225",
+                        "N28.56.22.050,W81.05.12.991",
+                        "N28.51.03.604,W80.55.52.144",
+                        "N28.53.59.888,W80.44.02.688",
+                        "N28.56.01.977,W80.33.28.160",
+                        "N29.00.00.304,W80.36.18.562",
+                        "N29.00.00.926,W81.28.00.500"
+                    ],
+                    "DAB0110": [
+                        "N28.59.59.818,W80.36.17.475",
+                        "N29.07.05.792,W80.41.00.028",
+                        "N29.07.38.951,W80.41.10.780",
+                        "N29.08.33.904,W80.41.28.557",
+                        "N29.09.45.235,W80.42.01.024",
+                        "N29.10.50.212,W80.42.40.322",
+                        "N29.11.36.085,W80.43.14.903",
+                        "N29.13.36.119,W80.45.14.606",
+                        "N29.48.28.520,W81.01.25.222",
+                        "N29.49.52.524,W81.01.54.925",
+                        "N29.51.17.667,W81.02.01.424",
+                        "N29.49.25.144,W81.34.00.112",
+                        "N29.37.44.179,W81.32.27.361",
+                        "N29.29.18.810,W81.32.02.790",
+                        "N29.20.29.445,W81.30.26.769",
+                        "N29.00.01.471,W81.28.01.813",
+                        "N29.00.00.663,W80.36.13.716"
+                    ]
+                },
+                "volumes": {
+                    "DAB_H_APP": [
+                        {
+                            "boundaries": [
+                                "DAB0110"
+                            ],
+                            "lower": 0,
+                            "upper": 11000
+                        },
+                        {
+                            "boundaries": [
+                                "DAB050"
+                            ],
+                            "lower": 0,
+                            "upper": 5000
+                        }
+                    ]
+                }
+            },
+            "arrival_groups": {
+                "TTHOR3": [
+                    {
+                        "airlines": {
+                            "KDAB": [
+                                {
+                                    "airport": "KPHL",
+                                    "icao": "AAL"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "AAL"
+                                },
+                                {
+                                    "airport": "KCLT",
+                                    "icao": "AAL"
+                                },
+                                {
+                                    "airport": "KATL",
+                                    "icao": "DAL"
+                                },
+                                {
+                                    "airport": "KHVN",
+                                    "icao": "VXP"
+                                },
+                                {
+                                    "airport": "KILG",
+                                    "icao": "VXP"
+                                }
+                            ]
+                        },
+                        "cleared_altitude": 12000,
+                        "cruise_altitude": 36000,
+                        "initial_altitude": 14000,
+                        "initial_controller": "JAX_30_CTR",
+                        "initial_speed": 250,
+                        "route": "/. TTHOR3 ",
+                        "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165"
+                    }
+                ]
+            },
+            "center": "KDAB",
+            "control_positions": {
+                "JAX_30_CTR": {
+                    "frequency": 135925,
+                    "full_name": "Jacksonville center",
+                    "scope_char": "C",
+                    "sector_id": "30"
+                },
+                "DAB_H_APP": {
+                    "frequency": 125725,
+                    "full_name": "Daytona Beach approach",
+                    "scope_char": "H",
+                    "sector_id": "5H"
+                },
+                "MCO_E_APP": {
+                    "frequency": 124800,
+                    "full_name": "Orlando approach",
+                    "scope_char": "E",
+                    "sector_id": "4E"
+                },
+                "JAX_N_APP": {
+                    "frequency": 127000,
+                    "full_name": "Jacksonville approach",
+                    "scope_char": "N",
+                    "sector_id": "3N"
+                },
+                "DAB_N_TWR": {
+                    "frequency": 120700,
+                    "full_name": "Daytona Beach tower",
+                    "scope_char": "T",
+                    "sector_id": "5NT"
+                },
+                "DAB_S_TWR": {
+                    "frequency": 118100,
+                    "full_name": "Daytona Beach tower",
+                    "scope_char": "T",
+                    "sector_id": "5ST"
+                }
+                },
+                "default_scenario": "KDAB Depart 7L/R Land 7L/R",
+                "fixes": {
+                    "_DAB_7L": "N29.10.21.125,W81.04.39.972",
+                    "_DAB_7R": "N29.10.33.723,W81.03.24.554",
+                    "_DAB_16": "N29.11.26.967,W81.03.22.765",
+                    "_DAB_25L": "N29.10.47.054,W81.02.51.844",
+                    "_DAB_25R": "N29.11.04.685,W81.02.52.469",
+                    "_DAB_34": "N29.10.32.499,W81.02.56.387",
+                    "KDAB": "N29.10.47.737,W81.03.28.719",
+                    "DAB": "N29.10.47.737,W81.03.28.719"
+                },
+                "magnetic_variation": 6.8,
+                "name": "KDAB",
+                "nm_per_latitude": 60.00721,
+                "nm_per_longitude": 48.99478,
+                "primary_airport": "KDAB",
+                "radar_sites": {
+                    "OMN": {
+                        "char": "O",
+                        "elevation": 33,
+                        "position": "OMN",
+                        "primary_range": 60,
+                        "secondary_range": 120,
+                        "silence_angle": 50.4,
+                        "slope_angle": 0.175
+                    },
+                    "DAB": {
+                        "char": "D",
+                        "elevation": 33,
+                        "position": "DAB",
+                        "primary_range": 60,
+                        "secondary_range": 120,
+                        "silence_angle": 50.4,
+                        "slope_angle": 0.175
+                    }
+                },
+                "scenarios": {
+                    "KDAB Depart 7L/R Land 7L/R": {
+                        "approach_airspace": [
+                            "DAB_H_APP"
+                        ],
+                        "arrival_runways": [
+                            {
+                                "airport": "KDAB",
+                                "runway": "7L"
+                            },
+                            {
+                                "airport": "KDAB",
+                                "runway": "7R"
+                            }
+                        ],
+                        "arrivals": {
+                            "TTHOR3": {
+                                "KDAB": 25
+                            }
+                        },
+                        "solo_controller": "DAB_H_APP",
+                        "controllers": [
+                            "DAB_H_APP",
+                            "DAB_N_TWR",
+                            "DAB_S_TWR",
+                            "JAX_30_CTR",
+                            "MCO_E_APP",
+                            "JAX_N_APP"
+                        ],
+                        "default_map": "DAB East Ops",
+                        "departure_airspace": [
+                            "DAB_H_APP"
+                        ],
+                        "departure_runways": [
+                            {
+                                "airport": "KDAB",
+                                "rate": 25,
+                                "runway": "7L"
+                            }
+                        ],
+                        "wind": {
+                            "direction": 180,
+                            "speed": 10
+                        }
+                    },
+                    "KDAB Depart 25L/R Land 25L/R": {
+                        "approach_airspace": [
+                            "DAB_H_APP"
+                        ],
+                        "arrival_runways": [
+                            {
+                                "airport": "KDAB",
+                                "runway": "25L"
+                            },
+                            {
+                                "airport": "KDAB",
+                                "runway": "25R"
+                            }
+                        ],
+                        "arrivals": {
+                            "TTHOR3": {
+                                "KDAB": 25
+                            }
+                        },
+                        "solo_controller": "DAB_H_APP",
+                        "controllers": [
+                            "DAB_H_APP",
+                            "DAB_N_TWR",
+                            "DAB_S_TWR",
+                            "JAX_30_CTR",
+                            "MCO_E_APP",
+                            "JAX_N_APP"
+                        ],
+                        "default_map": "DAB WEST OPS",
+                        "departure_airspace": [
+                            "DAB_H_APP"
+                        ],
+                        "departure_runways": [
+                            {
+                                "airport": "KDAB",
+                                "rate": 25,
+                                "runway": "25R"
+                            }
+                        ],
+                        "wind": {
+                            "direction": 180,
+                            "speed": 10
+                        }
+                    }
+                },
+                "scratchpads": {
+                    "CRG": "ROY",
+                    "MALET": "MAL"
+                },
+                "stars_maps": [
+                    {
+                        "group": 0,
+                        "label": "DAB East Ops",
+                        "name": "DAB East Ops"
+                    },
+                    {
+                        "group": 0,
+                        "label": "DAB WEST OPS",
+                        "name": "DAB WEST OPS"
+                    },
+                    {
+                        "group": 0,
+                        "label": "DAB RNAV",
+                        "name": "DAB RNAV"
+                    },
+                    {
+                        "group": 0,
+                        "label": "VFR MAP",
+                        "name": "VFR MAP"
+                    },
+                    {
+                        "group": 0,
+                        "label": "D34",
+                        "name": "D34"
+                    },
+                    {
+                        "group": 0,
+                        "label": "DAB Approach Boundaries",
+                        "name": "DAB Approach Boundaries"
+                    },
+                    {
+                        "group": 0,
+                        "label": "DAB CLASS C",
+                        "name": "DAB CLASS C"
+                    }
+                ],
+                "video_map_file": "videomaps/dab-maps.json.zst"
+                }

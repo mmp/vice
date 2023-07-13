@@ -637,13 +637,13 @@
                         "frequency": 127000,
                         "full_name": "Jacksonville approach",
                         "scope_char": "N",
-                        "sector_id": "1N"
+                        "sector_id": "3N"
                     },
                     "JAX_TWR": {
                         "frequency": 118300,
                         "full_name": "Jacksonville tower",
                         "scope_char": "T",
-                        "sector_id": "1JT"
+                        "sector_id": "3JT"
                     }
                 },
                 "default_scenario": "KJAX East",
