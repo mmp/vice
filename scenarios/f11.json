@@ -117,7 +117,7 @@
           "runway": "36L",
           "type": "RNAV",
           "waypoints": [
-            "LORRA/a7000/nopt EXBAN/a4000/hilpt AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
+            "LORRA/a7000 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
           ]
         }
       },
