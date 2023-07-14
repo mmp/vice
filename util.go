@@ -27,6 +27,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unicode"
 
@@ -1856,6 +1857,8 @@ func (c *CompressedConn) Write(b []byte) (n int, err error) {
 	return
 }
 
+var RXTotal, TXTotal int64
+
 type LoggingConn struct {
 	net.Conn
 	sent, received int
@@ -1872,12 +1875,17 @@ func MakeLoggingConn(c net.Conn) *LoggingConn {
 	}
 }
 
+func GetLoggedRPCBandwidth() (int64, int64) {
+	return RXTotal, TXTotal
+}
+
 func (c *LoggingConn) Read(b []byte) (n int, err error) {
 	n, err = c.Conn.Read(b)
 
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.received += n
+	atomic.AddInt64(&RXTotal, int64(n))
 	c.maybeReport()
 
 	return
@@ -1889,6 +1897,7 @@ func (c *LoggingConn) Write(b []byte) (n int, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.sent += n
+	atomic.AddInt64(&TXTotal, int64(n))
 	c.maybeReport()
 
 	return

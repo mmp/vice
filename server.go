@@ -7,13 +7,20 @@ package main
 import (
 	"encoding/gob"
 	"fmt"
+	"html/template"
+	"math"
 	"net"
+	"net/http"
 	"net/rpc"
 	"os"
+	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
 const ViceRPCVersion = 1
@@ -430,6 +437,39 @@ func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 
 	sim, ok := sm.controllerTokenToSim[token]
 	return sim, ok
+}
+
+type SimStatus struct {
+	Name        string
+	Config      string
+	IdleTime    time.Duration
+	Controllers string
+}
+
+func (sm *SimManager) GetSimStatus() []SimStatus {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
+	var ss []SimStatus
+	for _, name := range SortedMapKeys(sm.activeSims) {
+		sim := sm.activeSims[name]
+		status := SimStatus{
+			Name:     name,
+			Config:   sim.Scenario,
+			IdleTime: sim.IdleTime().Round(time.Second),
+		}
+
+		var controllers []string
+		for _, ctrl := range sim.controllers {
+			controllers = append(controllers, ctrl.Callsign)
+		}
+		sort.Strings(controllers)
+		status.Controllers = strings.Join(controllers, ", ")
+
+		ss = append(ss, status)
+	}
+
+	return ss
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1079,6 +1119,8 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 			os.Exit(1)
 		}
 
+		go launchHTTPStats(sm)
+
 		ch <- simConfigurations
 
 		lg.Printf("Listening on %+v", l)
@@ -1106,4 +1148,149 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 		server()
 	}
 	return ch
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Status / statistics via HTTP...
+
+var launchTime time.Time
+
+func launchHTTPStats(sm *SimManager) {
+	launchTime = time.Now()
+	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
+		statsHandler(w, r, sm)
+	})
+
+	if err := http.ListenAndServe(":6502", nil); err != nil {
+		lg.Printf("Failed to start HTTP server for stats: %v\n", err)
+	}
+}
+
+type ServerStats struct {
+	Uptime           time.Duration
+	AllocMemory      uint64
+	TotalAllocMemory uint64
+	SysMemory        uint64
+	RX, TX           int64
+	NumGC            uint32
+	NumGoRoutines    int
+	CPUUsage         int
+
+	SimStatus []SimStatus
+	Errors    []string
+}
+
+func bandwidth(v int64) string {
+	if v < 1024 {
+		return fmt.Sprintf("%d B", v)
+	} else if v < 1024*1024 {
+		return fmt.Sprintf("%d KiB", v/1024)
+	} else if v < 1024*1024*1024 {
+		return fmt.Sprintf("%d MiB", v/1024/1024)
+	} else {
+		return fmt.Sprintf("%d GiB", v/1024/1024/1024)
+	}
+}
+
+var templateFuncs = template.FuncMap{"bandwidth": bandwidth}
+
+var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
+<!DOCTYPE html>
+<html>
+<head>
+<title>vice vice baby</title>
+<meta http-equiv="refresh" content="10">
+</head>
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#log {
+    font-family: "Courier New", monospace;  /* use a monospace font */
+    width: 100%;
+    height: 300px;  /* adjust as needed */
+    overflow: auto;  /* add scrollbars as necessary */
+    white-space: pre-wrap;  /* wrap text */
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+</style>
+<body>
+<h1>Server Status</h1>
+<ul>
+  <li>Uptime: {{.Uptime}}</li>
+  <li>CPU usage: {{.CPUUsage}}%</li>
+  <li>Bandwidth: {{bandwidth .RX}} RX, {{bandwidth .TX}} TX</li>
+  <li>Allocated memory: {{.AllocMemory}} MB</li>
+  <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
+  <li>System memory: {{.SysMemory}} MB</li>
+  <li>Garbage collection passes: {{.NumGC}}</li>
+  <li>Running goroutines: {{.NumGoRoutines}}</li>
+</ul>
+
+<h1>Sim Status</h1>
+<table>
+  <tr>
+  <th>Name</th>
+  <th>Scenario</th>
+  <th>Idle Time</th>
+  <th>Active Controllers</th>
+
+{{range .SimStatus}}
+  </tr>
+  <td>{{.Name}}</td>
+  <td>{{.Config}}</td>
+  <td>{{.IdleTime}}</td>
+  <td><tt>{{.Controllers}}</tt></td>
+</tr>
+{{end}}
+</table>
+
+<h1>Errors</h1>
+<div id="log">
+{{range .Errors}}{{.}}{{end}}
+</div>
+
+</body>
+</html>
+`))
+
+func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+
+	usage, _ := cpu.Percent(time.Second, false)
+	stats := ServerStats{
+		Uptime:           time.Since(launchTime).Round(time.Second),
+		AllocMemory:      m.Alloc / (1024 * 1024),
+		TotalAllocMemory: m.TotalAlloc / (1024 * 1024),
+		SysMemory:        m.Sys / (1024 * 1024),
+		NumGC:            m.NumGC,
+		NumGoRoutines:    runtime.NumGoroutine(),
+		CPUUsage:         int(math.Round(usage[0])),
+
+		SimStatus: sm.GetSimStatus(),
+		Errors:    lg.GetErrorLog(),
+	}
+
+	stats.RX, stats.TX = GetLoggedRPCBandwidth()
+
+	// Limit to 100 most recent errors
+	if n := len(stats.Errors); n > 100 {
+		stats.Errors = stats.Errors[n-100:]
+	}
+
+	statsTemplate.Execute(w, stats)
 }

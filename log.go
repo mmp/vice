@@ -35,7 +35,7 @@ type LogEntry struct {
 }
 
 func (l LogEntry) String() string {
-	return fmt.Sprintf("%16s %s", l.offset.Round(time.Millisecond), l.message)
+	return l.message // offset is already encoded in it
 }
 
 // CircularLogBuffer stores a fixed maximum number of logging messages; this
@@ -56,6 +56,14 @@ func (c *CircularLogBuffer) String() string {
 		b.WriteString(c.rb.Get(i).String())
 	}
 	return b.String()
+}
+
+func (c *CircularLogBuffer) Get() []string {
+	var strs []string
+	for i := 0; i < c.rb.Size(); i++ {
+		strs = append(strs, c.rb.Get(i).String())
+	}
+	return strs
 }
 
 func NewCircularLogBuffer(maxLines int) *CircularLogBuffer {
@@ -157,8 +165,8 @@ func (l *Logger) GetVerboseLog() string {
 	return l.verbose.String()
 }
 
-func (l *Logger) GetErrorLog() string {
-	return l.err.String()
+func (l *Logger) GetErrorLog() []string {
+	return l.err.Get()
 }
 
 // format is a utility function for formatting logging messages. It
