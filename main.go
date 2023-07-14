@@ -22,7 +22,7 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-const ViceServerAddress = "localhost:8000"
+const ViceServerAddress = "vice.pharr.org:8000"
 
 var (
 	// There are a handful of widely-used global variables in vice, all
