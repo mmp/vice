@@ -8491,7 +8491,7 @@
       "scope_char": "B",
       "sector_id": "4B"
     },
-    "MCO_W_DEP": {
+    "MCO_W_APP": {
       "frequency": 120150,
       "full_name": "Orlando departure",
       "scope_char": "W",
@@ -8698,11 +8698,11 @@
       },
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-        "MCO_L_APP": {"primary" : true, "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_E_DEP" : {"departure": true},
-        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
-        "MCO_W_DEP" : {"backup" : "MCO_W_DEP" }            
+        "MCO_E_APP" : {"departure": true, "primary": true},
+        "MCO_W_APP" : {"backup" : "MCO_E_APP" },
+        "MCO_L_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_B_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
+        "MCO_G_APP" : {"backup" : "MCO_B_APP" }
       },
       "controllers": [
         "TPA_E_APP",
@@ -8840,11 +8840,11 @@
       },
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-        "MCO_L_APP": {"primary" : true, "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_E_DEP" : {"departure": true},
-        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "RIDES2", "SNFLD3" ] },
-        "MCO_W_DEP" : {"backup" : "MCO_W_DEP" }            
+        "MCO_E_APP" : {"departure": true, "primary": true},
+        "MCO_W_APP" : {"backup" : "MCO_E_APP" },
+        "MCO_L_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_B_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "ALYNA3", "GOOFY7", "RIDES2", "SNFLD3" ] },
+        "MCO_G_APP" : {"backup" : "MCO_B_APP" }
       },
       "controllers": [
         "TPA_E_APP",
@@ -8936,7 +8936,7 @@
         "MCO_E1_APP",
         "MCO_E2_APP"
       ],
-      "solo_controller": "MCO_W_DEP",
+      "solo_controller": "MCO_W_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9410,7 +9410,7 @@
         "MCO_E1_APP",
         "MCO_E2_APP"
       ],
-      "solo_controller": "MCO_W_DEP",
+      "solo_controller": "MCO_W_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
