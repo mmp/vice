@@ -93,6 +93,12 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 			},
 			OnErr: func(e error) {
 				lg.Errorf("%v", e)
+
+				// nil out the server if we've lost the connection; the
+				// main loop will attempt to reconnect.
+				if isRPCServerError(e) {
+					remoteServer = nil
+				}
 			},
 		}
 	}
@@ -129,7 +135,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 	if c.displayError != nil {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
-		if errors.Is(c.displayError, ErrRPCTimeout) {
+		if errors.Is(c.displayError, ErrRPCTimeout) || isRPCServerError(c.displayError) {
 			imgui.Text("Unable to reach vice server")
 		} else {
 			imgui.Text(c.displayError.Error())
@@ -477,6 +483,10 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
 	if err := c.selectedServer.client.CallWithTimeout("SimManager.New", c, &result); err != nil {
+		// Problem with the connection to the remote server? Let the main
+		// loop try to reconnect.
+		remoteServer = nil
+
 		return err
 	}
 

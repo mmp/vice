@@ -1914,8 +1914,8 @@ func (c *LoggingConn) maybeReport() {
 }
 
 func isRPCServerError(err error) bool {
-	_, ok := remoteServer.err.(rpc.ServerError)
-	return ok || errors.Is(remoteServer.err, rpc.ErrShutdown)
+	_, ok := err.(rpc.ServerError)
+	return ok || errors.Is(err, rpc.ErrShutdown)
 }
 
 type RPCClient struct {

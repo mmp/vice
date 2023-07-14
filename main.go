@@ -107,6 +107,8 @@ func main() {
 			lg.Errorf("%v", err)
 			os.Exit(1)
 		}
+
+		lastRemoteServerAttempt := time.Now()
 		remoteSimServerChan, err := TryConnectRemoteServer(ViceServerAddress)
 		if err != nil {
 			lg.Errorf("%v", err)
@@ -166,10 +168,6 @@ func main() {
 		newWorldChan = make(chan *World, 2)
 		var world *World
 
-		// TODO: put up dialog box while we wait for these...
-		if remoteSimServerChan != nil {
-			remoteServer = <-remoteSimServerChan
-		}
 		localServer = <-localSimServerChan
 
 		if globalConfig.Sim != nil {
@@ -195,15 +193,6 @@ func main() {
 			uiShowConnectDialog(false)
 		}
 
-		// Check this now, after uiInit
-		if remoteServer != nil && remoteServer.err != nil {
-			uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
-				message: "This version of vice is incompatible with the vice multi-controller server.\n" +
-					"Please upgrade to the latest version of vice for multi-controller functionality.",
-			}), true)
-			remoteServer = nil
-		}
-
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Printf("Starting main loop")
@@ -225,14 +214,30 @@ func main() {
 					})
 				}
 
-			default:
+			case remoteServer = <-remoteSimServerChan:
+				if remoteServer != nil && remoteServer.err != nil {
+					uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
+						message: "This version of vice is incompatible with the vice multi-controller server.\n" +
+							"Please upgrade to the latest version of vice for multi-controller functionality.",
+					}), true)
+					remoteServer = nil
+				}
 
+			default:
 			}
 
 			if world == nil {
 				platform.SetWindowTitle("vice: [disconnected]")
 			} else {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+			}
+
+			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second {
+				lastRemoteServerAttempt = time.Now()
+				remoteSimServerChan, err = TryConnectRemoteServer(ViceServerAddress)
+				if err != nil {
+					lg.Errorf("TryConnectRemoteServer: %v", err)
+				}
 			}
 
 			// Inform imgui about input events from the user.
@@ -257,6 +262,16 @@ func main() {
 							Type:    StatusMessageEvent,
 							Message: "Error getting update from server: " + err.Error(),
 						})
+						if isRPCServerError(err) {
+							uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
+								message: "Lost connection to the vice server.",
+							}), true)
+
+							remoteServer = nil
+							world = nil
+
+							uiShowConnectDialog(false)
+						}
 					})
 			}
 
