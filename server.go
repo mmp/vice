@@ -245,7 +245,7 @@ type NewSimResult struct {
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		sim := NewSim(*config, sm.scenarioGroups)
+		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal)
 		sim.prespawn()
 		return sm.Add(sim, result)
 	} else {

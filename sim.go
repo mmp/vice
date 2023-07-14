@@ -553,7 +553,7 @@ type ServerController struct {
 	lastSentControllers map[string]*Controller
 }
 
-func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *Sim {
+func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool) *Sim {
 	sg, ok := scenarioGroups[ssc.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
@@ -566,7 +566,6 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 	}
 
 	s := &Sim{
-		Name:          ssc.NewSimName,
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
 
@@ -585,6 +584,10 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup) *
 		DepartureChallenge: ssc.Scenario.DepartureChallenge,
 		GoAroundRate:       ssc.Scenario.GoAroundRate,
 		Handoffs:           make(map[string]time.Time),
+	}
+
+	if !isLocal {
+		s.Name = ssc.NewSimName
 	}
 
 	for ap := range s.DepartureRates {
