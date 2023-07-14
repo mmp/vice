@@ -1918,6 +1918,25 @@ func isRPCServerError(err error) bool {
 	return ok || errors.Is(remoteServer.err, rpc.ErrShutdown)
 }
 
+type RPCClient struct {
+	*rpc.Client
+}
+
+func (c *RPCClient) CallWithTimeout(serviceMethod string, args any, reply any) error {
+	pc := &PendingCall{
+		Call:      c.Go(serviceMethod, args, reply, nil),
+		IssueTime: time.Now(),
+	}
+
+	select {
+	case <-pc.Call.Done:
+		return pc.Call.Error
+
+	case <-time.After(5 * time.Second):
+		return ErrRPCTimeout
+	}
+}
+
 type PendingCall struct {
 	Call                *rpc.Call
 	IssueTime           time.Time

@@ -7,6 +7,7 @@ package main
 import (
 	crand "crypto/rand"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -128,7 +129,11 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 	if c.displayError != nil {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
-		imgui.Text(c.displayError.Error())
+		if errors.Is(c.displayError, ErrRPCTimeout) {
+			imgui.Text("Unable to reach vice server")
+		} else {
+			imgui.Text(c.displayError.Error())
+		}
 		imgui.PopStyleColor()
 		imgui.Separator()
 	}
@@ -471,7 +476,7 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 
 func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
-	if err := c.selectedServer.client.Call("SimManager.New", c, &result); err != nil {
+	if err := c.selectedServer.client.CallWithTimeout("SimManager.New", c, &result); err != nil {
 		return err
 	}
 

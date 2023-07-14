@@ -38,6 +38,7 @@ var (
 	ErrInvalidControllerToken    = errors.New("Invalid controller token")
 	ErrNoNamedSim                = errors.New("No Sim with that name")
 	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
+	ErrRPCTimeout                = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
 	ErrRestoringSavedState       = errors.New("Errors during state restoration")
 )
@@ -66,6 +67,7 @@ var errorStringToError = map[string]error{
 	ErrInvalidControllerToken.Error():       ErrInvalidControllerToken,
 	ErrNoNamedSim.Error():                   ErrNoNamedSim,
 	ErrNoSimForControllerToken.Error():      ErrNoSimForControllerToken,
+	ErrRPCTimeout.Error():                   ErrRPCTimeout,
 	ErrRPCVersionMismatch.Error():           ErrRPCVersionMismatch,
 	ErrRestoringSavedState.Error():          ErrRestoringSavedState,
 }

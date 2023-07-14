@@ -48,7 +48,7 @@ func init() {
 
 type SimServer struct {
 	name        string
-	client      *rpc.Client
+	client      *RPCClient
 	configs     map[string]*SimConfiguration
 	runningSims map[string]*RemoteSim
 	err         error
@@ -58,7 +58,7 @@ type SimServer struct {
 
 type SimProxy struct {
 	ControllerToken string
-	Client          *rpc.Client
+	Client          *RPCClient
 }
 
 type AircraftSpecifier struct {
@@ -71,11 +71,11 @@ func (s *SimProxy) TogglePause() *rpc.Call {
 }
 
 func (s *SimProxy) SignOff(_, _ *struct{}) error {
-	return s.Client.Call("Sim.SignOff", s.ControllerToken, nil)
+	return s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil)
 }
 
 func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error {
-	return s.Client.Call("Sim.ChangeControlPosition",
+	return s.Client.CallWithTimeout("Sim.ChangeControlPosition",
 		&ChangeControlPositionArgs{
 			ControllerToken: s.ControllerToken,
 			Callsign:        callsign,
@@ -85,7 +85,7 @@ func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error
 
 func (s *SimProxy) GetSerializeSim() (*Sim, error) {
 	var sim Sim
-	err := s.Client.Call("SimManager.GetSerializeSim", s.ControllerToken, &sim)
+	err := s.Client.CallWithTimeout("SimManager.GetSerializeSim", s.ControllerToken, &sim)
 	return &sim, err
 }
 
@@ -1020,7 +1020,7 @@ func RunSimServer() {
 	runServer(l, false)
 }
 
-func getClient(hostname string) (*rpc.Client, error) {
+func getClient(hostname string) (*RPCClient, error) {
 	conn, err := net.Dial("tcp", hostname)
 	if err != nil {
 		return nil, err
@@ -1035,7 +1035,7 @@ func getClient(hostname string) (*rpc.Client, error) {
 	if *logRPC {
 		codec = MakeLoggingClientCodec(hostname, codec)
 	}
-	return rpc.NewClientWithCodec(codec), nil
+	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
 func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
@@ -1048,7 +1048,7 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 	go func() {
 		var so SignOnResult
 		start := time.Now()
-		if err := client.Call("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
+		if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
 			ch <- &SimServer{
 				err: err,
 			}
