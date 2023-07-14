@@ -30,9 +30,9 @@ type World struct {
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
 
-	lastUpdate   time.Time
-	updateCall   *PendingCall
-	showSettings bool
+	lastUpdateRequest time.Time
+	updateCall        *PendingCall
+	showSettings      bool
 
 	launchControlWindow *LaunchControlWindow
 
@@ -421,19 +421,20 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 
 	// Wait in seconds between update fetches; no less than 100ms
 	rate := clamp(1/w.SimRate, 0.1, 1)
-	if time.Since(w.lastUpdate) > time.Duration(rate*float32(time.Second)) {
+	if d := time.Since(w.lastUpdateRequest); d > time.Duration(rate*float32(time.Second)) {
 		if w.updateCall != nil {
-			lg.Errorf("Still waiting on last update call!")
+			lg.Errorf("Still waiting on last update call! %s", d)
 			return
 		}
+		w.lastUpdateRequest = time.Now()
 
 		wu := &SimWorldUpdate{}
 		w.updateCall = &PendingCall{
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
+				lg.Printf("Got world update after %s", time.Since(w.updateCall.IssueTime))
 				wu.UpdateWorld(w, eventStream)
-				w.lastUpdate = time.Now()
 			},
 			OnErr: onErr,
 		}
@@ -476,7 +477,7 @@ func (w *World) SetSimRate(r float32) {
 }
 
 func (w *World) CurrentTime() time.Time {
-	d := time.Since(w.lastUpdate)
+	d := time.Since(w.lastUpdateRequest)
 	if w.SimRate != 0 {
 		d = time.Duration(float64(d) * float64(w.SimRate))
 	}

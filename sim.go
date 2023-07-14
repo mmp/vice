@@ -1608,7 +1608,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way now.
 			if ac.IsDeparture {
-				lg.Errorf("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
+				lg.Printf("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
 				ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
 			}
 
