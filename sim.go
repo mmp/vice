@@ -550,7 +550,6 @@ type ServerController struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	events              *EventsSubscription
-	lastSentControllers map[string]*Controller
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool) *Sim {
@@ -917,17 +916,13 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 
 		*update = SimWorldUpdate{
 			Aircraft:         aircraft,
+			Controllers:      s.World.Controllers,
 			Time:             s.SimTime,
 			LaunchController: s.LaunchController,
 			SimIsPaused:      s.Paused,
 			SimRate:          s.SimRate,
 			SimDescription:   s.Scenario,
 			Events:           ctrl.events.Get(),
-		}
-
-		if controllersChanged(s.World.Controllers, ctrl.lastSentControllers) {
-			update.Controllers = s.World.Controllers
-			ctrl.lastSentControllers = DuplicateMap(s.World.Controllers)
 		}
 
 		return nil
