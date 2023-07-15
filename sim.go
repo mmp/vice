@@ -1017,6 +1017,14 @@ func (s *Sim) Activate() error {
 		}
 	}
 
+	s.lastDeparture = make(map[string]map[string]map[string]*Departure)
+	for ap := range s.DepartureRates {
+		s.lastDeparture[ap] = make(map[string]map[string]*Departure)
+		for rwy := range s.DepartureRates[ap] {
+			s.lastDeparture[ap][rwy] = make(map[string]*Departure)
+		}
+	}
+
 	for _, arrivals := range s.World.ArrivalGroups {
 		for _, arr := range arrivals {
 			initializeWaypointLocations(arr.Waypoints, &e)
