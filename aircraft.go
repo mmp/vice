@@ -233,7 +233,7 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	}
 
 	for cmd := range ac.Nav.FutureCommands {
-		if cmd.Evaluate(ac, ep, w) {
+		if cmd.Evaluate(ac, ep, wind) {
 			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
