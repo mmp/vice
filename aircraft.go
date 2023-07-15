@@ -819,7 +819,7 @@ func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	perf := ac.Performance()
 	GS := ac.TAS() / 3600
 	airborne := ac.IAS >= 1.1*perf.Speed.Min
-	if airborne {
+	if airborne && wind != nil {
 		windVector := wind.GetWindVector(ac.Position, ac.Altitude)
 		delta := windVector[0]*v[0] + windVector[1]*v[1]
 		GS += delta
