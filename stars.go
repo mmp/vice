@@ -2403,7 +2403,11 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 }
 
 func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) {
-	sp.StartDrawDCB(ctx)
+	// Find a scale factor so that the buttons all fit in the window, if necessary
+	const NumDCBSlots = 19
+	buttonScale := min(float32(1), (ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
+
+	sp.StartDrawDCB(ctx, buttonScale)
 
 	ps := &sp.CurrentPreferenceSet
 
@@ -2418,8 +2422,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 					v--
 				}
 				return clamp(v, 6, 256)
-			}, STARSButtonFull)
-		if STARSSelectButton("PLACE\nCNTR", STARSButtonHalfVertical) {
+			}, STARSButtonFull, buttonScale)
+		if STARSSelectButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale) {
 			sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
 				ps.CurrentCenter = ps.Center
@@ -2429,7 +2433,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			}
 		}
 		ps.OffCenter = ps.CurrentCenter != ps.Center
-		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical) {
+		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
 		}
 		STARSCallbackSpinner(ctx, "RR\n", &ps.RangeRingRadius,
@@ -2451,29 +2455,29 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 				}
 				lg.Errorf("%d: invalid value for RR spinner", v)
 				return valid[0]
-			}, STARSButtonFull)
-		if STARSSelectButton("PLACE\nRR", STARSButtonHalfVertical) {
+			}, STARSButtonFull, buttonScale)
+		if STARSSelectButton("PLACE\nRR", STARSButtonHalfVertical, buttonScale) {
 			sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
 				status.clear = true
 				return
 			}
 		}
-		if STARSSelectButton("RR\nCNTR", STARSButtonHalfVertical) {
+		if STARSSelectButton("RR\nCNTR", STARSButtonHalfVertical, buttonScale) {
 			cw := [2]float32{ctx.paneExtent.Width() / 2, ctx.paneExtent.Height() / 2}
 			ps.RangeRingsCenter = transforms.LatLongFromWindowP(cw)
 		}
-		if STARSSelectButton("MAPS", STARSButtonFull) {
+		if STARSSelectButton("MAPS", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMaps
 		}
 		for i := 0; i < 6; i++ {
 			if i >= len(ctx.world.STARSMaps) {
-				STARSDisabledButton(fmt.Sprintf(" %d\n", i+1), STARSButtonHalfVertical)
+				STARSDisabledButton(fmt.Sprintf(" %d\n", i+1), STARSButtonHalfVertical, buttonScale)
 			} else {
 				text := fmt.Sprintf(" %d\n%s", i+1, ctx.world.STARSMaps[i].Label)
 				name := ctx.world.STARSMaps[i].Name
 				_, visible := ps.VideoMapVisible[name]
-				if STARSToggleButton(text, &visible, STARSButtonHalfVertical) {
+				if STARSToggleButton(text, &visible, STARSButtonHalfVertical, buttonScale) {
 					if visible {
 						ps.VideoMapVisible[name] = nil
 					} else {
@@ -2484,7 +2488,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		}
 		for i := range ps.WeatherIntensity {
 			if STARSToggleButton("WX"+fmt.Sprintf("%d", i), &ps.WeatherIntensity[i],
-				STARSButtonHalfHorizontal) {
+				STARSButtonHalfHorizontal, buttonScale) {
 				if ps.WeatherIntensity[i] {
 					// turn off others
 					for j := range ps.WeatherIntensity {
@@ -2501,7 +2505,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 				}
 			}
 		}
-		if STARSSelectButton("BRITE", STARSButtonFull) {
+		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
 		}
 		STARSCallbackSpinner(ctx, "LDR DIR\n   ", &ps.LeaderLineDirection,
@@ -2514,7 +2518,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 				} else {
 					return CardinalOrdinalDirection((d + 1) % 8)
 				}
-			}, STARSButtonHalfVertical)
+			}, STARSButtonHalfVertical, buttonScale)
 		STARSCallbackSpinner(ctx, "LDR\n ", &ps.LeaderLineLength,
 			func(v int) string { return fmt.Sprintf("%d", v) },
 			func(v int, delta float32) int {
@@ -2525,66 +2529,66 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 				} else {
 					return min(7, v+1)
 				}
-			}, STARSButtonHalfVertical)
+			}, STARSButtonHalfVertical, buttonScale)
 
-		if STARSSelectButton("CHAR\nSIZE", STARSButtonFull) {
+		if STARSSelectButton("CHAR\nSIZE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuCharSize
 		}
-		STARSDisabledButton("MODE\nFSL", STARSButtonFull)
-		if STARSSelectButton("PREF\n"+ps.Name, STARSButtonFull) {
+		STARSDisabledButton("MODE\nFSL", STARSButtonFull, buttonScale)
+		if STARSSelectButton("PREF\n"+ps.Name, STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuPref
 		}
 
 		site := sp.radarSiteId(ctx.world)
-		if STARSSelectButton("SITE\n"+site, STARSButtonFull) {
+		if STARSSelectButton("SITE\n"+site, STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuSite
 		}
-		if STARSSelectButton("SSA\nFILTER", STARSButtonHalfVertical) {
+		if STARSSelectButton("SSA\nFILTER", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuSSAFilter
 		}
-		if STARSSelectButton("GI TEXT\nFILTER", STARSButtonHalfVertical) {
+		if STARSSelectButton("GI TEXT\nFILTER", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuGITextFilter
 		}
-		if STARSSelectButton("SHIFT", STARSButtonFull) {
+		if STARSSelectButton("SHIFT", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuAux
 		}
 
 	case DCBMenuAux:
-		STARSDisabledButton("VOL\n10", STARSButtonFull)
-		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 5, STARSButtonFull)
-		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull)
-		STARSDisabledButton("CSR SPD\n4", STARSButtonFull)
-		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull)
-		STARSToggleButton("UNCOR", &ps.DisplayUncorrelatedTargets, STARSButtonFull)
-		STARSDisabledButton("BEACON\nMODE-2", STARSButtonFull)
-		STARSDisabledButton("RTQC", STARSButtonFull)
-		STARSDisabledButton("MCP", STARSButtonFull)
-		STARSDisabledButton("DCP\nTOP", STARSButtonHalfVertical)
-		STARSDisabledButton("DCP\nLEFT", STARSButtonHalfVertical)
-		STARSDisabledButton("DCP\nRIGHT", STARSButtonHalfVertical)
-		STARSDisabledButton("DCP\nBOTTOM", STARSButtonHalfVertical)
-		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull)
-		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical)
-		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical)
-		if STARSSelectButton("SHIFT", STARSButtonFull) {
+		STARSDisabledButton("VOL\n10", STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 5, STARSButtonFull, buttonScale)
+		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull, buttonScale)
+		STARSDisabledButton("CSR SPD\n4", STARSButtonFull, buttonScale)
+		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull, buttonScale)
+		STARSToggleButton("UNCOR", &ps.DisplayUncorrelatedTargets, STARSButtonFull, buttonScale)
+		STARSDisabledButton("BEACON\nMODE-2", STARSButtonFull, buttonScale)
+		STARSDisabledButton("RTQC", STARSButtonFull, buttonScale)
+		STARSDisabledButton("MCP", STARSButtonFull, buttonScale)
+		STARSDisabledButton("DCP\nTOP", STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("DCP\nLEFT", STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("DCP\nRIGHT", STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("DCP\nBOTTOM", STARSButtonHalfVertical, buttonScale)
+		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull, buttonScale)
+		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
+		if STARSSelectButton("SHIFT", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
 	case DCBMenuMaps:
-		STARSDisabledButton("MAPS", STARSButtonFull)
-		if STARSSelectButton("DONE", STARSButtonHalfVertical) {
+		STARSDisabledButton("MAPS", STARSButtonFull, buttonScale)
+		if STARSSelectButton("DONE", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
-		if STARSSelectButton("CLR ALL", STARSButtonHalfVertical) {
+		if STARSSelectButton("CLR ALL", STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapVisible = make(map[string]interface{})
 		}
 		for i := 0; i < NumSTARSMaps; i++ {
 			if i >= len(ctx.world.STARSMaps) {
-				STARSDisabledButton(fmt.Sprintf(" %d", i+1), STARSButtonHalfVertical)
+				STARSDisabledButton(fmt.Sprintf(" %d", i+1), STARSButtonHalfVertical, buttonScale)
 			} else {
 				name := ctx.world.STARSMaps[i].Name
 				_, visible := ps.VideoMapVisible[name]
-				if STARSToggleButton(ctx.world.STARSMaps[i].Label, &visible, STARSButtonHalfVertical) {
+				if STARSToggleButton(ctx.world.STARSMaps[i].Label, &visible, STARSButtonHalfVertical, buttonScale) {
 					if visible {
 						ps.VideoMapVisible[name] = nil
 					} else {
@@ -2593,46 +2597,46 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 				}
 			}
 		}
-		STARSToggleButton("GEO\nMAPS", &ps.VideoMapsList.Visible, STARSButtonHalfVertical)
-		STARSDisabledButton("DANGER\nAREAS", STARSButtonHalfVertical)
-		if STARSSelectButton("SYS\nPROC", STARSButtonHalfVertical) {
+		STARSToggleButton("GEO\nMAPS", &ps.VideoMapsList.Visible, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("DANGER\nAREAS", STARSButtonHalfVertical, buttonScale)
+		if STARSSelectButton("SYS\nPROC", STARSButtonHalfVertical, buttonScale) {
 			// TODO--this is a toggle that displays a "PROCESSING AREAS"
 			// list in the top middle of the screen.
 		}
-		STARSToggleButton("CURRENT", &ps.ListSelectedMaps, STARSButtonHalfVertical)
+		STARSToggleButton("CURRENT", &ps.ListSelectedMaps, STARSButtonHalfVertical, buttonScale)
 
 	case DCBMenuBrite:
-		STARSDisabledButton("BRITE", STARSButtonFull)
-		STARSDisabledButton("DCB 100", STARSButtonHalfVertical)
-		STARSDisabledButton("BKC 100", STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "LST ", &ps.Brightness.Lists, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "POS ", &ps.Brightness.Positions, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "LDB ", &ps.Brightness.LimitedDatablocks, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "OTH ", &ps.Brightness.OtherTracks, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "TLS ", &ps.Brightness.Lines, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "RR ", &ps.Brightness.RangeRings, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "CMP ", &ps.Brightness.Compass, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, STARSButtonHalfVertical)
-		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, STARSButtonHalfVertical)
-		STARSDisabledButton("WX 100", STARSButtonHalfVertical)
-		STARSDisabledButton("WXC 100", STARSButtonHalfVertical)
-		STARSDisabledButton("", STARSButtonHalfVertical)
-		if STARSSelectButton("DONE", STARSButtonFull) {
+		STARSDisabledButton("BRITE", STARSButtonFull, buttonScale)
+		STARSDisabledButton("DCB 100", STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("BKC 100", STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "LST ", &ps.Brightness.Lists, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "POS ", &ps.Brightness.Positions, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "LDB ", &ps.Brightness.LimitedDatablocks, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "OTH ", &ps.Brightness.OtherTracks, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "TLS ", &ps.Brightness.Lines, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "RR ", &ps.Brightness.RangeRings, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "CMP ", &ps.Brightness.Compass, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("WX 100", STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("WXC 100", STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("", STARSButtonHalfVertical, buttonScale)
+		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
 	case DCBMenuCharSize:
-		STARSDisabledButton("BRITE", STARSButtonFull)
-		STARSIntSpinner(ctx, " DATA\nBLOCKS\n  ", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull)
-		STARSIntSpinner(ctx, "LISTS\n  ", &ps.CharSize.Lists, 0, 5, STARSButtonFull)
-		STARSDisabledButton("DCB\n 1", STARSButtonFull)
-		STARSIntSpinner(ctx, "TOOLS\n  ", &ps.CharSize.Tools, 0, 5, STARSButtonFull)
-		STARSIntSpinner(ctx, "POS\n ", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull)
-		if STARSSelectButton("DONE", STARSButtonFull) {
+		STARSDisabledButton("BRITE", STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, " DATA\nBLOCKS\n  ", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "LISTS\n  ", &ps.CharSize.Lists, 0, 5, STARSButtonFull, buttonScale)
+		STARSDisabledButton("DCB\n 1", STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "TOOLS\n  ", &ps.CharSize.Tools, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "POS\n ", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull, buttonScale)
+		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
@@ -2643,48 +2647,48 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			if i == sp.SelectedPreferenceSet {
 				flags = flags | STARSButtonSelected
 			}
-			if STARSSelectButton(text, flags) {
+			if STARSSelectButton(text, flags, buttonScale) {
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumSTARSPreferenceSets; i++ {
-			STARSDisabledButton(fmt.Sprintf("%d\n", i+1), STARSButtonHalfVertical)
+			STARSDisabledButton(fmt.Sprintf("%d\n", i+1), STARSButtonHalfVertical, buttonScale)
 		}
 
-		if STARSSelectButton("DEFAULT", STARSButtonHalfVertical) {
+		if STARSSelectButton("DEFAULT", STARSButtonHalfVertical, buttonScale) {
 			sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, ctx.world)
 		}
-		STARSDisabledButton("FSSTARS", STARSButtonHalfVertical)
-		if STARSSelectButton("RESTORE", STARSButtonHalfVertical) {
+		STARSDisabledButton("FSSTARS", STARSButtonHalfVertical, buttonScale)
+		if STARSSelectButton("RESTORE", STARSButtonHalfVertical, buttonScale) {
 			// TODO: restore settings in effect when entered the Pref sub-menu
 		}
 
 		validSelection := sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets)
 		if validSelection {
-			if STARSSelectButton("SAVE", STARSButtonHalfVertical) {
+			if STARSSelectButton("SAVE", STARSButtonHalfVertical, buttonScale) {
 				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.CurrentPreferenceSet
 				globalConfig.Save()
 			}
 		} else {
-			STARSDisabledButton("SAVE", STARSButtonHalfVertical)
+			STARSDisabledButton("SAVE", STARSButtonHalfVertical, buttonScale)
 		}
-		STARSDisabledButton("CHG PIN", STARSButtonHalfVertical)
-		if STARSSelectButton("SAVE AS", STARSButtonHalfVertical) {
+		STARSDisabledButton("CHG PIN", STARSButtonHalfVertical, buttonScale)
+		if STARSSelectButton("SAVE AS", STARSButtonHalfVertical, buttonScale) {
 			// A command mode handles prompting for the name and then saves
 			// when enter is pressed.
 			sp.commandMode = CommandModeSavePrefAs
 		}
 		if validSelection {
-			if STARSSelectButton("DELETE", STARSButtonHalfVertical) {
+			if STARSSelectButton("DELETE", STARSButtonHalfVertical, buttonScale) {
 				sp.PreferenceSets = DeleteSliceElement(sp.PreferenceSets, sp.SelectedPreferenceSet)
 			}
 		} else {
-			STARSDisabledButton("DELETE", STARSButtonHalfVertical)
+			STARSDisabledButton("DELETE", STARSButtonHalfVertical, buttonScale)
 		}
 
-		if STARSSelectButton("DONE", STARSButtonHalfVertical) {
+		if STARSSelectButton("DONE", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
@@ -2693,7 +2697,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			site := ctx.world.RadarSites[id]
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
-			if STARSToggleButton(label, &selected, STARSButtonFull) {
+			if STARSToggleButton(label, &selected, STARSButtonFull, buttonScale) {
 				if selected {
 					ps.RadarSiteSelected = id
 				} else {
@@ -2702,49 +2706,49 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			}
 		}
 		multi := sp.multiRadarMode(ctx.world)
-		if STARSToggleButton("MULTI", &multi, STARSButtonFull) && multi {
+		if STARSToggleButton("MULTI", &multi, STARSButtonFull, buttonScale) && multi {
 			ps.RadarSiteSelected = ""
 		}
-		if STARSSelectButton("DONE", STARSButtonFull) {
+		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
 	case DCBMenuSSAFilter:
-		STARSToggleButton("All", &ps.SSAList.Filter.All, STARSButtonHalfVertical)
-		STARSDisabledButton("WX", STARSButtonHalfVertical) // ?? TODO
-		STARSToggleButton("TIME", &ps.SSAList.Filter.Time, STARSButtonHalfVertical)
-		STARSToggleButton("ALTSTG", &ps.SSAList.Filter.Altimeter, STARSButtonHalfVertical)
-		STARSToggleButton("STATUS", &ps.SSAList.Filter.Status, STARSButtonHalfVertical)
-		STARSDisabledButton("PLAN", STARSButtonHalfVertical) // ?? TODO
-		STARSToggleButton("RADAR", &ps.SSAList.Filter.Radar, STARSButtonHalfVertical)
-		STARSToggleButton("CODES", &ps.SSAList.Filter.Codes, STARSButtonHalfVertical)
-		STARSToggleButton("SPC", &ps.SSAList.Filter.SpecialPurposeCodes, STARSButtonHalfVertical)
-		STARSDisabledButton("SYS OFF", STARSButtonHalfVertical) // ?? TODO
-		STARSToggleButton("RANGE", &ps.SSAList.Filter.Range, STARSButtonHalfVertical)
-		STARSToggleButton("PTL", &ps.SSAList.Filter.PredictedTrackLines, STARSButtonHalfVertical)
-		STARSToggleButton("ALT FIL", &ps.SSAList.Filter.AltitudeFilters, STARSButtonHalfVertical)
-		STARSDisabledButton("NAS I/F", STARSButtonHalfVertical) // ?? TODO
-		STARSToggleButton("AIRPORT", &ps.SSAList.Filter.AirportWeather, STARSButtonHalfVertical)
-		STARSDisabledButton("OP MODE", STARSButtonHalfVertical) // ?? TODO
-		STARSDisabledButton("TT", STARSButtonHalfVertical)      // ?? TODO
-		STARSDisabledButton("WX HIST", STARSButtonHalfVertical) // ?? TODO
-		STARSToggleButton("QL", &ps.SSAList.Filter.QuickLookPositions, STARSButtonHalfVertical)
-		STARSToggleButton("TW OFF", &ps.SSAList.Filter.DisabledTerminal, STARSButtonHalfVertical)
-		STARSDisabledButton("CON/CPL", STARSButtonHalfVertical) // ?? TODO
-		STARSDisabledButton("OFF IND", STARSButtonHalfVertical) // ?? TODO
-		STARSToggleButton("CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, STARSButtonHalfVertical)
-		STARSDisabledButton("", STARSButtonHalfVertical)
-		if STARSSelectButton("DONE", STARSButtonFull) {
+		STARSToggleButton("All", &ps.SSAList.Filter.All, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("WX", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSToggleButton("TIME", &ps.SSAList.Filter.Time, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("ALTSTG", &ps.SSAList.Filter.Altimeter, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("STATUS", &ps.SSAList.Filter.Status, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("PLAN", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSToggleButton("RADAR", &ps.SSAList.Filter.Radar, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("CODES", &ps.SSAList.Filter.Codes, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("SPC", &ps.SSAList.Filter.SpecialPurposeCodes, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("SYS OFF", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSToggleButton("RANGE", &ps.SSAList.Filter.Range, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("PTL", &ps.SSAList.Filter.PredictedTrackLines, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("ALT FIL", &ps.SSAList.Filter.AltitudeFilters, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("NAS I/F", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSToggleButton("AIRPORT", &ps.SSAList.Filter.AirportWeather, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("OP MODE", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSDisabledButton("TT", STARSButtonHalfVertical, buttonScale)      // ?? TODO
+		STARSDisabledButton("WX HIST", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSToggleButton("QL", &ps.SSAList.Filter.QuickLookPositions, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("TW OFF", &ps.SSAList.Filter.DisabledTerminal, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("CON/CPL", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSDisabledButton("OFF IND", STARSButtonHalfVertical, buttonScale) // ?? TODO
+		STARSToggleButton("CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, STARSButtonHalfVertical, buttonScale)
+		STARSDisabledButton("", STARSButtonHalfVertical, buttonScale)
+		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
 	case DCBMenuGITextFilter:
-		STARSToggleButton("MAIN", &ps.SSAList.Filter.Text.Main, STARSButtonHalfVertical)
+		STARSToggleButton("MAIN", &ps.SSAList.Filter.Text.Main, STARSButtonHalfVertical, buttonScale)
 		for i := range ps.SSAList.Filter.Text.GI {
 			STARSToggleButton(fmt.Sprintf("GI %d", i+1), &ps.SSAList.Filter.Text.GI[i],
-				STARSButtonHalfVertical)
+				STARSButtonHalfVertical, buttonScale)
 		}
-		if STARSSelectButton("DONE", STARSButtonFull) {
+		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 	}
@@ -4093,20 +4097,20 @@ const (
 	STARSButtonSelected
 )
 
-func starsButtonSize(flags int) imgui.Vec2 {
+func starsButtonSize(flags int, scale float32) imgui.Vec2 {
 	if (flags & STARSButtonFull) != 0 {
-		return imgui.Vec2{X: STARSButtonWidth, Y: STARSButtonHeight}
+		return imgui.Vec2{X: scale * STARSButtonWidth, Y: scale * STARSButtonHeight}
 	} else if (flags & STARSButtonHalfVertical) != 0 {
-		return imgui.Vec2{X: STARSButtonWidth, Y: STARSButtonHeight / 2}
+		return imgui.Vec2{X: scale * STARSButtonWidth, Y: scale * (STARSButtonHeight / 2)}
 	} else if (flags & STARSButtonHalfHorizontal) != 0 {
-		return imgui.Vec2{X: STARSButtonWidth / 2, Y: STARSButtonHeight}
+		return imgui.Vec2{X: scale * (STARSButtonWidth / 2), Y: scale * STARSButtonHeight}
 	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
-		return imgui.Vec2{X: STARSButtonWidth, Y: STARSButtonHeight}
+		return imgui.Vec2{X: scale * STARSButtonWidth, Y: scale * STARSButtonHeight}
 	}
 }
 
-func (sp *STARSPane) StartDrawDCB(ctx *PaneContext) {
+func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32) {
 	var flags imgui.WindowFlags
 	flags = imgui.WindowFlagsNoDecoration
 	flags |= imgui.WindowFlagsNoSavedSettings
@@ -4119,7 +4123,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext) {
 		X: ctx.paneExtent.p0[0],
 		Y: float32(ctx.platform.WindowSize()[1]) - ctx.paneExtent.p1[1] + 1}
 	imgui.SetNextWindowPosV(starsBarWindowPos, imgui.ConditionAlways, imgui.Vec2{})
-	imgui.SetNextWindowSize(imgui.Vec2{ctx.paneExtent.Width() - 2, STARSButtonHeight})
+	imgui.SetNextWindowSize(imgui.Vec2{ctx.paneExtent.Width() - 2, scale * STARSButtonHeight})
 	imgui.BeginV(fmt.Sprintf("STARS Button Bar##%p", sp), nil, flags)
 
 	//	imgui.WindowDrawList().AddRectFilledV(imgui.Vec2{}, imgui.Vec2{X: ctx.paneExtent.Width() - 2, Y: STARSButtonHeight},
@@ -4155,37 +4159,37 @@ func (sp *STARSPane) EndDrawDCB() {
 	imgui.End()
 }
 
-func updateImguiCursor(flags int, pos imgui.Vec2) {
+func updateImguiCursor(flags int, pos imgui.Vec2, buttonScale float32) {
 	if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfHorizontal) != 0 {
 		imgui.SameLine()
 	} else if (flags & STARSButtonHalfVertical) != 0 {
 		if pos.Y == 0 {
-			imgui.SetCursorPos(imgui.Vec2{X: pos.X, Y: STARSButtonHeight / 2})
+			imgui.SetCursorPos(imgui.Vec2{X: pos.X, Y: buttonScale * (STARSButtonHeight / 2)})
 		} else {
-			imgui.SetCursorPos(imgui.Vec2{X: pos.X + STARSButtonWidth, Y: 0})
+			imgui.SetCursorPos(imgui.Vec2{X: pos.X + buttonScale*STARSButtonWidth, Y: 0})
 		}
 	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
 	}
 }
 
-func STARSToggleButton(text string, state *bool, flags int) (clicked bool) {
+func STARSToggleButton(text string, state *bool, flags int, buttonScale float32) (clicked bool) {
 	startPos := imgui.CursorPos()
 	if *state {
 		imgui.PushID(text) // TODO why: comes from Middleton's Draw() method
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorButtonActive))
-		imgui.ButtonV(text, starsButtonSize(flags))
+		imgui.ButtonV(text, starsButtonSize(flags, buttonScale))
 		if imgui.IsItemClicked() {
 			*state = false
 			clicked = true
 		}
 		imgui.PopStyleColorV(1)
 		imgui.PopID()
-	} else if imgui.ButtonV(text, starsButtonSize(flags)) {
+	} else if imgui.ButtonV(text, starsButtonSize(flags, buttonScale)) {
 		*state = true
 		clicked = true
 	}
-	updateImguiCursor(flags, startPos)
+	updateImguiCursor(flags, startPos, buttonScale)
 	return
 }
 
@@ -4197,7 +4201,7 @@ var (
 	activeSpinner unsafe.Pointer
 )
 
-func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int) {
+func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int, buttonScale float32) {
 	STARSCallbackSpinner[int](ctx, text, value,
 		func(v int) string { return fmt.Sprintf("%d", v) },
 		func(v int, delta float32) int {
@@ -4208,15 +4212,15 @@ func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int
 				di = -1
 			}
 			return clamp(v+di, min, max)
-		}, flags)
+		}, flags, buttonScale)
 }
 
 func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print func(v V) string,
-	callback func(v V, delta float32) V, flags int) {
+	callback func(v V, delta float32) V, flags int, buttonScale float32) {
 	text += print(*value)
 
 	pos := imgui.CursorPos()
-	buttonSize := starsButtonSize(flags)
+	buttonSize := starsButtonSize(flags, buttonScale)
 	if activeSpinner == unsafe.Pointer(value) {
 		buttonBounds := Extent2D{
 			p0: [2]float32{pos.X, pos.Y},
@@ -4242,17 +4246,17 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 	} else if imgui.ButtonV(text, buttonSize) {
 		activeSpinner = unsafe.Pointer(value)
 	}
-	updateImguiCursor(flags, pos)
+	updateImguiCursor(flags, pos, buttonScale)
 }
 
-func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float32, max float32, flags int) {
+func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float32, max float32, flags int, buttonScale float32) {
 	STARSCallbackSpinner(ctx, text, value, func(f float32) string { return fmt.Sprintf("%.1f", *value) },
 		func(v float32, delta float32) float32 {
 			return clamp(v+delta/10, min, max)
-		}, flags)
+		}, flags, buttonScale)
 }
 
-func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, flags int) {
+func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, flags int, buttonScale float32) {
 	STARSCallbackSpinner(ctx, text, b,
 		func(b STARSBrightness) string {
 			if b == 0 {
@@ -4269,30 +4273,30 @@ func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, f
 			} else {
 				return b
 			}
-		}, flags)
+		}, flags, buttonScale)
 }
 
-func STARSSelectButton(text string, flags int) bool {
+func STARSSelectButton(text string, flags int, buttonScale float32) bool {
 	pos := imgui.CursorPos()
 	if flags&STARSButtonSelected != 0 {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorButtonActive))
 	}
-	result := imgui.ButtonV(text, starsButtonSize(flags))
+	result := imgui.ButtonV(text, starsButtonSize(flags, buttonScale))
 	if flags&STARSButtonSelected != 0 {
 		imgui.PopStyleColorV(1)
 	}
-	updateImguiCursor(flags, pos)
+	updateImguiCursor(flags, pos, buttonScale)
 	return result
 }
 
-func STARSDisabledButton(text string, flags int) {
+func STARSDisabledButton(text string, flags int, buttonScale float32) {
 	pos := imgui.CursorPos()
 	imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
 	imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.3, .3, .3, 1})
-	imgui.ButtonV(text, starsButtonSize(flags))
+	imgui.ButtonV(text, starsButtonSize(flags, buttonScale))
 	imgui.PopStyleColorV(1)
 	imgui.PopItemFlag()
-	updateImguiCursor(flags, pos)
+	updateImguiCursor(flags, pos, buttonScale)
 }
 
 ///////////////////////////////////////////////////////////////////////////
