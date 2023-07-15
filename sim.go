@@ -174,24 +174,11 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
-			// If join remote was selected but there are no longer any available remote sims, then
-			// switch to "create remote"...
-			anyOpenRemote := false
-			for _, rs := range remoteServer.runningSims {
-				if len(rs.AvailablePositions) > 0 {
-					anyOpenRemote = true
-				}
-			}
-			if c.NewSimType == NewSimJoinRemote && !anyOpenRemote {
-				c.NewSimType = NewSimCreateRemote
-			}
-			uiStartDisable(!anyOpenRemote)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
 				c.selectedServer = remoteServer
 				c.displayError = nil
 			}
-			uiEndDisable(!anyOpenRemote)
 
 			imgui.EndTable()
 		}
@@ -456,7 +443,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 
 		// Handle the case of someone else signing in to the position
-		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; !ok {
+		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; c.SelectedRemoteSimPosition != "Observer" && !ok {
 			c.SelectedRemoteSimPosition = SortedMapKeys(rs.AvailablePositions)[0]
 		}
 
@@ -469,6 +456,11 @@ func (c *NewSimConfiguration) DrawUI() bool {
 					c.SelectedRemoteSimPosition = pos
 				}
 			}
+
+			if imgui.SelectableV("Observer", "Observer" == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+				c.SelectedRemoteSimPosition = "Observer"
+			}
+
 			imgui.EndCombo()
 		}
 	}
@@ -613,9 +605,6 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 
 	s.SignOnPositions = make(map[string]*Controller)
 	add := func(callsign string) {
-		if callsign[0] == '_' { // virtual position for handoff management
-			return
-		}
 		if ctrl, ok := sg.ControlPositions[callsign]; !ok {
 			lg.Errorf("%s: control position unknown??!", callsign)
 		} else {
@@ -767,21 +756,25 @@ func (s *Sim) signOn(callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.controllerIsSignedIn(callsign) {
-		return ErrControllerAlreadySignedIn
+	if callsign != "Observer" {
+		if s.controllerIsSignedIn(callsign) {
+			return ErrControllerAlreadySignedIn
+		}
+
+		ctrl, ok := s.SignOnPositions[callsign]
+		if !ok {
+			return ErrNoController
+		}
+		s.World.Controllers[callsign] = ctrl
+
 	}
 
-	ctrl, ok := s.SignOnPositions[callsign]
-	if !ok {
-		return ErrNoController
-	}
-	s.World.Controllers[callsign] = ctrl
-
-	lg.Printf("%s/%s: signing on", s.Name, callsign)
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
 	})
+	lg.Printf("%s/%s: signing on", s.Name, callsign)
+
 	return nil
 }
 
@@ -792,7 +785,6 @@ func (s *Sim) SignOff(token string) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
-		lg.Printf("%s/%s: signing off", s.Name, ctrl.Callsign)
 		// Drop track on controlled aircraft
 		for _, ac := range s.World.Aircraft {
 			ac.DropControllerTrack(ctrl.Callsign)
@@ -806,6 +798,7 @@ func (s *Sim) SignOff(token string) error {
 			Type:    StatusMessageEvent,
 			Message: ctrl.Callsign + " has signed off.",
 		})
+		lg.Printf("%s/%s: signing off", s.Name, ctrl.Callsign)
 	}
 	return nil
 }
@@ -1466,10 +1459,12 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		if ctrl == nil {
 			lg.Errorf("couldn't get controller \"%s\". world controllers: %s",
 				sc.Callsign, spew.Sdump(s.World.Controllers))
-			panic("yolo")
+			return ErrNoController
 		}
 
-		if err := check(ctrl, ac); err != nil {
+		if ctrl.Callsign == "Observer" {
+			return ErrOtherControllerHasTrack
+		} else if err := check(ctrl, ac); err != nil {
 			return err
 		} else {
 			octrl := ac.ControllingController
