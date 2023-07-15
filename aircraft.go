@@ -229,7 +229,7 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	ac.updateHeading(wind)
 	ac.updatePositionAndGS(wind)
 	if ac.Nav.L.PassesWaypoints() {
-		ac.updateWaypoints(w, ep)
+		ac.updateWaypoints(wind, w, ep)
 	}
 
 	for cmd := range ac.Nav.FutureCommands {
@@ -831,7 +831,7 @@ func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	ac.GS = nmdistance2ll(prev, ac.Position) * 3600
 }
 
-func (ac *Aircraft) updateWaypoints(w *World, ep EventPoster) {
+func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 	if len(ac.Waypoints) == 0 {
 		return
 	}
@@ -854,7 +854,7 @@ func (ac *Aircraft) updateWaypoints(w *World, ep EventPoster) {
 		hdg = ac.Heading
 	}
 
-	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest, w) {
+	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind) {
 		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
 
 		// Execute any commands associated with the waypoint
