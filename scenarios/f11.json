@@ -8485,17 +8485,59 @@
       "scope_char": "E",
       "sector_id": "4E"
     },
+    "MCO_E_DEP": {
+      "frequency": 124800,
+      "full_name": "Orlando approach",
+      "scope_char": "E",
+      "sector_id": "4E"
+    },
     "MCO_B_APP": {
       "frequency": 128375,
       "full_name": "Orlando approach",
       "scope_char": "B",
       "sector_id": "4B"
     },
-    "MCO_W_APP": {
+    "MCO_W_DEP": {
       "frequency": 120150,
       "full_name": "Orlando departure",
       "scope_char": "W",
       "sector_id": "4W"
+    },
+    "MCO_M_APP": {
+      "frequency": 123850,
+      "full_name": "Orlando Approach",
+      "scope_char": "M",
+      "sector_id": "4M"
+    },
+    "MCO_K_APP": {
+      "frequency": 134950,
+      "full_name": "Orlando Approach",
+      "scope_char": "K",
+      "sector_id": "4K"
+    },
+    "MCO_N_APP": {
+      "frequency": 121100,
+      "full_name": "Orlando Approach",
+      "scope_char": "N",
+      "sector_id": "4N"
+    },
+    "MCO_S_APP": {
+      "frequency": 132650,
+      "full_name": "Orlando Approach",
+      "scope_char": "S",
+      "sector_id": "4S"
+    },
+    "MCO_V_APP": {
+      "frequency": 119775,
+      "full_name": "Orlando Approach",
+      "scope_char" :"V",
+      "sector_id": "4V"
+    },
+    "MCO_P_APP" : {
+      "frequency": 135300,
+      "full_name": "Orlando Approach",
+      "scope_char": "P",
+      "sector_id": "4P"
     },
     "MCO_E_TWR": {
       "frequency": 118450,
@@ -8698,11 +8740,18 @@
       },
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-        "MCO_E_APP" : {"departure": true, "primary": true},
-        "MCO_W_APP" : {"backup" : "MCO_E_APP" },
-        "MCO_L_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_B_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
-        "MCO_G_APP" : {"backup" : "MCO_B_APP" }
+        "MCO_E_DEP" : {"departure": true, "primary": true},
+        "MCO_L_APP" : {"backup" : "MCO_E_DEP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
+        "MCO_G_APP" : {"backup" : "MCO_B_APP" },
+        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_D_APP" : {"backup" : "MCO_W_DEP" },
+        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_S_APP" : {"backup" : "MCO_K_APP" },
+        "MCO_N_APP" : {"backup" : "MCO_K_APP" },
+        "MCO_P_APP" : {"backup" : "MCO_N_APP" },
+        "MCO_V_APP" : {"backup" : "MCO_N_APP" } 
       },
       "controllers": [
         "TPA_E_APP",
@@ -8840,11 +8889,18 @@
       },
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-        "MCO_E_APP" : {"departure": true, "primary": true},
-        "MCO_W_APP" : {"backup" : "MCO_E_APP" },
-        "MCO_L_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_B_APP" : {"backup" : "MCO_W_APP", "arrivals": [ "ALYNA3", "GOOFY7", "RIDES2", "SNFLD3" ] },
-        "MCO_G_APP" : {"backup" : "MCO_B_APP" }
+        "MCO_E_DEP" : {"departure": true, "primary": true},
+        "MCO_L_APP" : {"backup" : "MCO_E_DEP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "SNFLD3", "RIDES2" ] },
+        "MCO_G_APP" : {"backup" : "MCO_B_APP" },
+        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_D_APP" : {"backup" : "MCO_W_DEP" },
+        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_S_APP" : {"backup" : "MCO_K_APP" },
+        "MCO_N_APP" : {"backup" : "MCO_K_APP" },
+        "MCO_P_APP" : {"backup" : "MCO_N_APP" },
+        "MCO_V_APP" : {"backup" : "MCO_N_APP" } 
       },
       "controllers": [
         "TPA_E_APP",
@@ -8936,7 +8992,7 @@
         "MCO_E1_APP",
         "MCO_E2_APP"
       ],
-      "solo_controller": "MCO_W_APP",
+      "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9410,7 +9466,7 @@
         "MCO_E1_APP",
         "MCO_E2_APP"
       ],
-      "solo_controller": "MCO_W_APP",
+      "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
