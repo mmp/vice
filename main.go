@@ -51,6 +51,7 @@ var (
 	devmode          = flag.Bool("devmode", false, "developer mode")
 	logRPC           = flag.Bool("logrpc", false, "log RPC calls")
 	server           = flag.Bool("server", false, "run vice scenario server")
+	serverIP         = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
 	scenarioFilename = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 	videoMapFilename = flag.String("videomap", "", "filename of JSON file with video map definitions")
 )
@@ -109,7 +110,7 @@ func main() {
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan, err := TryConnectRemoteServer(ViceServerAddress)
+		remoteSimServerChan, err := TryConnectRemoteServer(*serverIP)
 		if err != nil {
 			lg.Errorf("%v", err)
 		}
@@ -234,7 +235,7 @@ func main() {
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan, err = TryConnectRemoteServer(ViceServerAddress)
+				remoteSimServerChan, err = TryConnectRemoteServer(*serverIP)
 				if err != nil {
 					lg.Errorf("TryConnectRemoteServer: %v", err)
 				}
