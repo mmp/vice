@@ -583,21 +583,26 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 	ac.Approach = ap
 	ac.ApproachId = id
 
-	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
-		// Splice the runway-specific waypoints in with the aircraft's
-		// current waypoints...
-		idx := FindIf(ac.Waypoints, func(w Waypoint) bool {
-			return w.Fix == wp[0].Fix
-		})
-		if idx == -1 {
+	if waypoints, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(waypoints) > 0 {
+		// Try to splice the runway-specific waypoints in with the
+		// aircraft's current waypoints...
+		found := false
+		for i, wp := range waypoints {
+			if idx := FindIf(ac.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+				ac.Waypoints = ac.Waypoints[:idx]
+				ac.Waypoints = append(ac.Waypoints, waypoints[i:]...)
+
+				found = true
+				break
+			}
+		}
+
+		if !found {
 			lg.Errorf("%s: Aircraft waypoints %s don't match up with arrival runway waypoints %s",
-				ac.Callsign, spew.Sdump(ac.Waypoints), spew.Sdump(wp))
+				ac.Callsign, spew.Sdump(ac.Waypoints), spew.Sdump(waypoints))
 			// Assume that it has (hopefully recently) passed the last fix
 			// and that patching in the rest will work out..
-			ac.Waypoints = DuplicateSlice(wp[1:])
-		} else {
-			ac.Waypoints = ac.Waypoints[:idx]
-			ac.Waypoints = append(ac.Waypoints, wp...)
+			ac.Waypoints = DuplicateSlice(waypoints[1:])
 		}
 	}
 
