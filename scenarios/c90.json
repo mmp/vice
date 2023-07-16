@@ -1,0 +1,546 @@
+{
+    "airports": {
+        "KORD": {
+            "approaches": {
+                "G4R": {
+                    "full_name": "ILS 4R",
+                    "runway": "4R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200 _ORD_4R/a661"
+                    ]
+                },
+                "I9L": {
+                    "full_name": "ILS 9L",
+                    "runway": "9L",
+                    "type": "ILS",
+                    "waypoints": [
+                        "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760 _ORD_9L/a668"
+                    ]
+                },
+                "I9C": {
+                    "full_name": "ILS 9C",
+                    "runway": "9C",
+                    "type": "ILS",
+                    "waypoints": [
+                        "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400 _ORD_9C/a673"
+                    ]
+                },
+                "I9R": {
+                    "full_name": "ILS 9R",
+                    "runway": "9R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380 _ORD_9R/a668"
+                    ]
+                },
+                "I1L": {
+                    "full_name": "ILS 10L",
+                    "runway": "10L",
+                    "type": "ILS",
+                    "waypoints": [
+                        "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200 _ORD_10L/a672"
+                    ]
+                },
+                "I1C": {
+                    "full_name": "ILS 10C",
+                    "runway": "10C",
+                    "type": "ILS",
+                    "waypoints": [
+                        "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220 _ORD_10C/a669"
+                    ]
+                },
+                "I1R": {
+                    "full_name": "ILS 10R",
+                    "runway": "10R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220 _ORD_10R/a680"
+                    ]
+                },
+                "I7L": {
+                    "full_name": "ILS 27L",
+                    "runway": "27L",
+                    "type": "ILS",
+                    "waypoints": [
+                        "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160 _ORD_27L/a654"
+                    ]
+                },
+                "I7C": {
+                    "full_name": "ILS 27C",
+                    "runway": "27C",
+                    "type": "ILS",
+                    "waypoints": [
+                        "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160 _ORD_27C/a653"
+                    ]
+                },
+                "I7R": {
+                    "full_name": "ILS 27R",
+                    "runway": "27R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200 _ORD_27R/a664"
+                    ]
+                },
+                "I8L": {
+                    "full_name": "ILS 28L",
+                    "runway": "28L",
+                    "type": "ILS",
+                    "waypoints": [
+                        "VOLGR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240 _ORD_28L/a667"
+                    ]
+                },
+                "I8C": {
+                    "full_name": "ILS 28C",
+                    "runway": "28C",
+                    "type": "ILS",
+                    "waypoints": [
+                        "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KEONN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300 _ORD_28C/a651"
+                    ]
+                },
+                "I8R": {
+                    "full_name": "ILS 28R",
+                    "runway": "28R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200 _ORD_28R/a651"
+                    ]
+                }
+                },
+                "deaprture_routes": {
+                    "10L": {
+                        "EARND, DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
+                            "cleared_altitude": 5000,
+                            "route": "ORD7",
+                            "waypoints": "_ORD_10L _ORD_28R/h180"
+                        }
+                    },
+                    "9R": {
+                        "EARND, DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
+                            "cleared_altitude": 5000,
+                            "route": "ORD7",
+                            "waypoints": "_ORD_9R _ORD_27L/h320"
+                        }
+                    },
+                    "22L": {
+                        "EARND, DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
+                            "cleared_altitude": 5000,
+                            "route": "ORD7",
+                            "waypoints": "_ORD_22L _ORD_4R/h180"
+                        }
+                    },
+                    "28R": {
+                        "EARND, DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
+                            "cleared_altitude": 5000,
+                            "route": "ORD7",
+                            "waypoints": "_ORD_28R _ORD_10L/h250"
+                        }
+                    },
+                    "27L": {
+                        "EARND, DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
+                            "cleared_altitude": 5000,
+                            "route": "ORD7",
+                            "waypoints": "_ORD_27L _ORD_9R/h010"
+                        }
+                    }
+                }
+                },
+                "departures": [
+                    {
+                        "airlines": [
+                            {
+                                "icao": "AWI"
+                            }
+                        ],
+                        "destination": "KSPI",
+                        "exit": "ACITO",
+                        "route": "ACITO ADELL AKMIE"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "ETD"
+                            }
+                        ],
+                        "destination": "OMAA",
+                        "exit": "EBAKE",
+                        "route": "EBAKE WISMO POSTS PADDE SVM 47N080W 55N070W PEPKI NIFTY 63N050W 65N040W 66N030W 66N020W 65N010W ISVIG AMROR LENOV BADOR MAXOV ARTAT UP975 EZS UG8 OTKEP UM688 SIDAD P975 LONOS P708 OVONA N318 KAPUM M552 ALNEV Q415 UKILI UKIL1B"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "SKW"
+                            },
+                            {
+                                "icao": "ENY"
+                            }
+                        ],
+                        "destination": "KLIT",
+                        "exit": "BACEN",
+                        "route": "BACEN BLOKR BEKKI FAM"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "ETH"
+                            }
+                        ],
+                        "destination": "HAAB",
+                        "exit": "RAYNR",
+                        "route": "RAYNR BRTMN TAAYZ MKG ODAXY YBG YBC MIGLI ELSIR 4900N/05000W 4900N/04000W 4800N/03000W 4500N/02000W MUDOS STG SUSOS UN725 ORKUM UM603 ELSAG ALG ABKON ROSAS BELIX SALUN N705 BOPIX N710 TAKRI P751 LXR M999 SEDVA M999 JDW G650 RASKA UG650 KONET EKBOB T114 MEKEL MEKEL1B"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "SKW"
+                            }
+                        ],
+                        "destination": "KCAK",
+                        "exit": "DUFEE",
+                        "route": "DUFEE LOGGR DETMR BRWNZ4"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "PDT"
+                            },
+                            {
+                                "icao": "AWI"
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            }
+                        ],
+                        "destination": "KALB",
+                        "exit": "EBAKE",
+                        "route": "EBAKE WISMO POSTS PADDE SVM DKK ALB"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"   
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "AAL"
+                            }
+                        ],
+                        "destination": "KABQ",
+                        "exit": "PEKUE",
+                        "route": "PEKUE PIPPN ELYNA STJ J18 GCK J18 DRAWL TAMEY SNDIA4"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "AWI"
+                            },
+                            {
+                                "icao": "SKW"
+                            }
+                        ],
+                        "destination": "KATW",
+                        "exit": "RAYNR",
+                        "route": "RAYNR BRTMN TAAYZ"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "GJS"
+                            },
+                            {
+                                "icao": "SKW"
+                            }
+                        ],
+                        "destination": "KAVL",
+                        "exit": "EARND",
+                        "route": "EARND ELANR EMMLY JAKKS RID HNN SUG"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "SKW"
+                            }
+                        ],
+                        "destination": "KASE",
+                        "exit": "OLINN",
+                        "route": "OLINN OREOS OBENE OGALE DRABS HCT FQF WERNR ZAKOR"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "long",
+                                "icao": "AAL"
+                            }
+                        ],
+                        "destination": "LGAV",
+                        "exit": "RAYNR",
+                        "route": "RAYNR BRTMN TAAYZ PECOK ASP MUSIT YSB GOVAT 5200N/07000W DUVBI BOKTO 5800N/05000W 5800N/04000W 5700N/03000W 5500N/02000W DOGAL BEXET ENJEX ADHAV AXNEF ZIPWE OZZIL SAWPE Q63 CPT UL9 BIG L607 KONAN UL607 REMBA M624 DIK M150 PITES EDISA PICWI UTABA BEMKI ELMEM GIRIS GIKEB LAMPO AKADO L613 UTAME T292 KAPPO L612 NOSTO UL612 ARA UB34 NEMES"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "long",
+                                "icao": "ANZ"
+                            }
+                        ],
+                        "destination": "NZAA",
+                        "exit": "PEKUE",
+                        "route": "PEKUE PIGGG QUANE CARET IRK BQS MCI KK54E KIRKE LBL CURLY ZUN MOMAR OCN SXC C1177 GOATZ C1177 MALIT 3135N/12121W FICKY B577 AHNDO B577 BELAN 1700N/14000W 1400N/14500W 1100N/15000W WAYSE 0500N/15700W 0000N/15900W 0500S/16200W 1000S/16500W 1500S/16700W 2000S/16900W 2500S/17200W 3000S/17600W 3500S/18000E OLBEX EXOPI1B"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "SKW"
+                            },
+                            {
+                                "icao": "AWI"
+                            },
+                            {
+                                "icao": "ENY"
+                            }
+                        ],
+                        "destination": "KGRB",
+                        "exit": "PMPKN",
+                        "route": "PMPKN NEATO DLLAN RONIC BAE"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "ENY"
+                            },
+                            {
+                                "icao": "SWA"
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "AAL"
+                            }
+                        ],
+                        "destination": "KAUS",
+                        "exit": "ACITO",
+                        "route": "ACITO ADELL ARLYN STL ZALDA FSM BROBB WINDU SEWZY6"
+                    },
+                    {
+                        "airlines" : [
+                            {
+                                "icao": "SWA"
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "AAL"
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            }
+                        ],
+                        "destination": "KBWI",
+                        "exit": "MOBLE",
+                        "route": "MOBLE ADIME OTENS ANEWA JERRI NUSMM ANTHM3"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "ENY"
+                            },
+                            {
+                                "icao": "SKW"
+                            }
+                        ],
+                        "destination": "KBGR",
+                        "exit": "EBAKE",
+                        "route": "EBAKE WISMO POSTS PADDE SVM DKK ALB"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "long",
+                                "icao": "IBE"
+                            }
+                        ],
+                        "destination": "LEMD",
+                        "exit": "EBAKE",
+                        "route": "EBAKE WISMO POSTS PADDE SVM DKK SYR ALLEX JEBBY 4300N/05000W 4300N/04000W 4300N/03000W 4330N/02000W ARMED EPOPO ADORO UL155 ZMR"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "long",
+                                "icao": "UAL"
+                            }
+                        ],
+                        "destination": "ZBAA",
+                        "exit": "PMPKN",
+                        "route": "PMPKN NEATO DLLAN RONIC BAE J89 DLH J538 HLDOL J538 VBI YNE YYL BOTER 6600N/12000W YEV ADREW NCA80 LISKI L160 BANOT T634 MAGIT R213 JMU G212 TGO G212 UKDUM W49 OSUBA"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "ASL"
+                            }
+                        ],
+                        "destination": "LYBE",
+                        "exit": "EBAKE",
+                        "route": "EBAKE WISMO POSTS PADDE SVM WOZEE SYR ALLEX RAFIN 4500N/05000W 4700N/04000W 4800N/03000W 4900N/02000W BEDRA NASBA RATKA LARLA GANTO JSY TURDU TADUP TEPRI UN491 EPL UM164 LUPEN BATUB MOMUK BERAS T23 BIRGI GOTAR OKORA KEROP TISAK"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "long",
+                                "icao": "UAL"
+                            }
+                        ],
+                        "destination": "LLBG",
+                        "exit": "RAYNR",
+                        "route": "RAYNR BRTMN TAAYZ PETTY SSM 4900N/08000W 5500N/07100W MIBNO LIBOR 6400N/05000W 6500N/04000W 6500N/03000W 6400N/02000W 6300N/01000W VALDI LAGUM L621 KULUD SALLO BINKA ROVEK ADVAB KELEL KEKED BADOR APROB ADORU UN739 EKI UW81 YAYLA UL854 KULAR UT39 TOMBI IDAKU L35 PIKOG L609 ZUKKO"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "ENY"
+                            }
+                        ],
+                        "destination": "KBIL",
+                        "exit": "MYKIE",
+                        "route": "MYKIE MONNY IANNA FSD J16 BIL"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "RPA"
+                            },
+                            {
+                                "icao": "AWI"
+                            },
+                            {
+                                "icao": "ENY"
+                            }
+                        ],
+                        "destination": "KBHM",
+                        "exit": "CMSKY",
+                        "route": "CMSKY CARYN CYBIL PXV RQZ NULLS"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "AWI"
+                            },
+                            {
+                                "icao": "ENY"
+                            }
+                        ],
+                        "destination": "KFNT",
+                        "exit": "DUFEE",
+                        "route": "DUFEE ELX"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "icao": "QXE"
+                            },
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            }
+                        ],
+                        "destination": "KBOI",
+                        "exit": "MYKIE",
+                        "route": "MYKIE MONNY SMIDD ONTIJ J16 FSD J82 RAP REAPS KOURT4"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            },
+                            {
+                                "icao": "RPA"
+                            }
+                        ],
+                        "destination": "KBDL",
+                        "exit": "DUFEE",
+                        "route": "DUFEE ELX HAAKK DOXXY DXO JHW Q82 MEMMS WILET STELA1"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "long",
+                                "icao": "UAL"
+                            }
+                        ],
+                        "destination": "EBBR",
+                        "exit": "RAYNR",
+                        "route": "RAYNR BRTMN TAAYZ TVC YVO NOWAA JOVIE AVUTI 5900N/05000W 6000N/04000W 5900N/03000W 5700N/02000W ETARI MOGLO REVNU MORAG NUCHU L607 BIG Q70 VABIK Q70 KOK"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            },
+                            {
+                                "icao": "SKW"
+                            }
+                        ],
+                        "destination": "KBUF",
+                        "exit": "DUFEE",
+                        "route": "DUFEE ELX HAAKK DOXXY SOSIC WETVR DOBIE DKK"
+                    }
+                ],
+                "elevation": 668,
+                "exit_categories": {
+                    "EBAKE": "East",
+                    "DUFEE": "East",
+                    "MOBLE": "East",
+                    "EARND": "South",
+                    "DENNT": "South",
+                    "CMSKY": "South",
+                    "BACEN": "South",
+                    "ACITO": "South",
+                    "PMPKN": "North",
+                    "RAYNR": "North",
+                    "MYKIE": "West",
+                    "NOOMY": "West",
+                    "SIMMN": "West",
+                    "OLINN": "West",
+                    "PEKUE": "West"
+                },
+                "location": "KORD",
+                "tower_list": 4
+                },
+                "KMDW": {
+                    "approaches": {
+                        "I4R": {
+                            "full_name": "ILS 4R",
+                            "runway": "4R",
+                            "type": "ILS",
+                            "waypoints": [
+                                "ALQUE/a6000 BANER/a5000 CADON/a4000 CITGO/a2400 OLOXE/a1460 _MDW_4R/a619"
+                            ]
+                        },
+                        "I3C": {
+                            "full_name": "ILS 13C",
+                            "runway": "13C",
+                            "type": "ILS",
+                            "waypoints": [
+                                "DPA/a2600 HEBKU/a2600 HITOB/a2000 HISKO/a1440 _MDW_13C/a611",
+                                "HEBKU/a2600 HITOB/a2000 HISKO/a1440 _MDW_13C/a611"
+                            ]
+                        },
+                        "R2L": {
+                            "full_name": "RNAV 22L",
+                            "runway": "22L",
+                            "type": "RNAV",
+                            "waypoints": [
+                                "STERE/a3000 TACTT/a3000 SAILZ/a3000 DXXON/a3000 MNDOE/a2400 JIBBB/a1900 YACHT/a1500 _MDW_22L/a611"
+                            ]
+                        }
+                    }
+                }
+            }
