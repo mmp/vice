@@ -288,8 +288,8 @@ type STARSPreferenceSet struct {
 		BeaconSymbols     STARSBrightness
 		PrimarySymbols    STARSBrightness
 		History           STARSBrightness
-		Weather				  STARSBrightness
-		WxContrast		  STARSBrightness
+		Weather           STARSBrightness
+		WxContrast        STARSBrightness
 	}
 
 	CharSize struct {
