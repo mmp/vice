@@ -776,7 +776,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			int(fbPaneExtent.Width()+.5), int(fbPaneExtent.Height()+.5))
 	}
 
-	weatherIntensity = float32(ps.Brightness.Weather) / float32(100)
+	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
 		sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
 	
 
