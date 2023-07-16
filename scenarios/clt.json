@@ -1777,56 +1777,107 @@
                 "control_positions": {
                     "ATL_CTR": {
                         "frequency": 132975,
+                        "full_name": "Atlanta Center",
                         "scope_char": "C",
                         "sector_id": "43"
                     },
-                    "CLT_APP": {
+                    "CLT_W_APP": {
                         "frequency": 119500,
+                        "full_name": "Charlotte Approach",
                         "scope_char": "W",
                         "sector_id": "1W"
                     },
-                    "CLT_A_APP": {
-                        "frequency": 127700,
-                        "scope_char": "A",
-                        "sector_id": "1A"
+                    "CLT_W_DEP": {
+                        "frequency": 119500,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "W",
+                        "sector_id": "1W"
+                    },
+                    "CLT_E_DEP": {
+                        "frequency": 124000,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "E",
+                        "sector_id": "1E"
+                    },
+                    "CLT_N_APP": {
+                        "frequency": 134750,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "N",
+                        "sector_id": "1N"
+                    },
+                    "CLT_S_APP": {
+                        "frequency": 120050,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "S",
+                        "sector_id": "1S"
+                    },
+                    "CLT_Q_APP": {
+                        "frequency": 128320,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "Q",
+                        "sector_id": "1Q"
                     },
                     "CLT_H_APP": {
                         "frequency": 126150,
+                        "full_name": "Charlotte Approach",
                         "scope_char": "H",
                         "sector_id": "1H"
                     },
                     "CLT_U_APP": {
                         "frequency": 125350,
+                        "full_name": "Charlotte Approach",
                         "scope_char": "U",
                         "sector_id": "1U"
                     },
                     "CLT_D_APP": {
                         "frequency": 135600,
+                        "full_name": "Charlotte Approach",
                         "scope_char": "D",
                         "sector_id": "1D"
                     },
+                    "CLT_A_APP": {
+                        "frequency": 127700,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "A",
+                        "sector_id": "1A"
+                    },
+                    "CLT_M_APP": {
+                        "frequency": 119000,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "M",
+                        "sector_id": "1M"
+                    },
+                    "CLT_F_APP": {
+                        "frequency": 132700,
+                        "full_name": "Charlotte Approach",
+                        "scope_char": "F",
+                        "sector_id": "1F"
+                    },
                     "JAX_30_CTR": {
                         "frequency": 135925,
+                        "full_name": "Jacksonville Center",
                         "scope_char": "C",
                         "sector_id": "J30"
                     },
                     "DC_CTR": {
                         "frequency": 133725,
+                        "full_name": "Washington Center",
                         "scope_char": "C",
                         "sector_id": "W32"
                       },
                       "GSO_APP": {
                         "frequency": 124350,
+                        "full_name": "Greensboro Approach",
                         "scope_char": "W",
                         "sector_id": "4W"
                       },
                       "CLT_TWR": {
                         "frequency": 118100,
+                        "full_name": "Charlotte Tower",
                         "scope_char": "T",
                         "sector_id": "CT"
                       }
                     },
-                    "default_controller": "CLT_APP",
                     "default_scenario": "CLT Land 18L/C/R Depart 18C/L",
                     "fixes": {
                         "_CLT_18L_183_2": "N35.10.03.516,W80.55.51.553",
@@ -1896,7 +1947,20 @@
                                     "KCLT": 6
                                 }
                             },
-                        "callsign": "CLT_APP",
+                        "solo_controller": "CLT_APP",
+                        "multi_controllers": {
+                            "CLT_W_DEP": {"departure": true, "primary": true},
+                            "CLT_H_APP": {"backup": "CLT_W_DEP"},
+                            "CLT_A_APP": {"backup": "CLT_H_APP"},
+                            "CLT_M_APP": {"backup": "CLT_A_APP"},
+                            "CLT_F_APP": {"backup": "CLT_M_APP"},
+                            "CLT_E_DEP": {"backup": "CLT_W_DEP"},
+                            "CLT_U_APP": {"backup": "CLT_H_APP"},
+                            "CLT_D_APP": {"backup": "CLT_U_APP"},
+                            "CLT_S_APP": {"backup": "CLT_E_DEP"},
+                            "CLT_N_APP": {"backup": "CLT_S_APP"},
+                            "CLT_Q_APP": {"backup": "CLT_N_APP"}
+                        },
                         "controllers": [
                             "ATL_CTR",
                             "DC_CTR",
@@ -2013,7 +2077,20 @@
                                     "KCLT": 6
                                 }
                             },
-                            "callsign": "CLT_APP",
+                            "solo_controller": "CLT_APP",
+                            "multi_controllers": {
+                                "CLT_W_DEP": {"departure": true, "primary": true},
+                                "CLT_H_APP": {"backup": "CLT_W_DEP"},
+                                "CLT_A_APP": {"backup": "CLT_H_APP"},
+                                "CLT_M_APP": {"backup": "CLT_A_APP"},
+                                "CLT_F_APP": {"backup": "CLT_M_APP"},
+                                "CLT_E_DEP": {"backup": "CLT_W_DEP"},
+                                "CLT_U_APP": {"backup": "CLT_H_APP"},
+                                "CLT_D_APP": {"backup": "CLT_U_APP"},
+                                "CLT_S_APP": {"backup": "CLT_E_DEP"},
+                                "CLT_N_APP": {"backup": "CLT_S_APP"},
+                                "CLT_Q_APP": {"backup": "CLT_N_APP"}
+                            },
                             "controllers": [
                                 "ATL_CTR",
                                 "DC_CTR",
