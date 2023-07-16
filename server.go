@@ -1160,6 +1160,15 @@ func launchHTTPStats(sm *SimManager) {
 	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		statsHandler(w, r, sm)
 	})
+	http.HandleFunc("/log.txt", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		for _, entry := range lg.GetLog() {
+			if _, err := w.Write([]byte(entry)); err != nil {
+				lg.Errorf("log.txt: %v", err)
+				break
+			}
+		}
+	})
 
 	if err := http.ListenAndServe(":6502", nil); err != nil {
 		lg.Printf("Failed to start HTTP server for stats: %v\n", err)
@@ -1199,7 +1208,6 @@ var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
 <html>
 <head>
 <title>vice vice baby</title>
-<meta http-equiv="refresh" content="10">
 </head>
 <style>
 table {
@@ -1220,7 +1228,8 @@ tr:nth-child(even) {
 #log {
     font-family: "Courier New", monospace;  /* use a monospace font */
     width: 100%;
-    height: 300px;  /* adjust as needed */
+    height: 500px;
+    font-size: 12px;
     overflow: auto;  /* add scrollbars as necessary */
     white-space: pre-wrap;  /* wrap text */
     border: 1px solid #ccc;
@@ -1259,9 +1268,20 @@ tr:nth-child(even) {
 </table>
 
 <h1>Errors</h1>
-<div id="log">
+<div id="log" class="bot">
 {{range .Errors}}{{.}}{{end}}
 </div>
+
+<a href="/log.txt">Full log</a>
+
+<script>
+window.onload = function() {
+    var divs = document.getElementsByClassName("bot");
+    for (var i = 0; i < divs.length; i++) {
+        divs[i].scrollTop = divs[i].scrollHeight - divs[i].clientHeight;
+    }
+}
+</script>
 
 </body>
 </html>
@@ -1286,11 +1306,6 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 	}
 
 	stats.RX, stats.TX = GetLoggedRPCBandwidth()
-
-	// Limit to 100 most recent errors
-	if n := len(stats.Errors); n > 100 {
-		stats.Errors = stats.Errors[n-100:]
-	}
 
 	statsTemplate.Execute(w, stats)
 }

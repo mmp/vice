@@ -546,6 +546,7 @@ type Sim struct {
 	updateTimeSlop time.Duration
 
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
+	lastLogTime    time.Time
 	SimRate        float32
 	Paused         bool
 
@@ -773,7 +774,7 @@ func (s *Sim) signOn(callsign string) error {
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
 	})
-	lg.Printf("%s/%s: signing on", s.Name, callsign)
+	lg.Printf("%s/%s: signing on", Select(s.Name != "", s.Name, "(local)"), callsign)
 
 	return nil
 }
@@ -798,7 +799,7 @@ func (s *Sim) SignOff(token string) error {
 			Type:    StatusMessageEvent,
 			Message: ctrl.Callsign + " has signed off.",
 		})
-		lg.Printf("%s/%s: signing off", s.Name, ctrl.Callsign)
+		lg.Printf("%s/%s: signing off", Select(s.Name != "", s.Name, "(local)"), ctrl.Callsign)
 	}
 	return nil
 }
@@ -1103,6 +1104,20 @@ func (s *Sim) Update() {
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
 	s.lastUpdateTime = time.Now()
+
+	// Log the current state of everything once a minute
+	if time.Since(s.lastLogTime) > time.Minute {
+		s.lastLogTime = time.Now()
+
+		name := Select(s.Name != "", s.Name, "(local)")
+		for _, ctrl := range s.controllers {
+			lg.Printf("%s: launch controller %s", name, s.LaunchController)
+			lg.Printf("%s: %s is currently signed in and controlling", name, ctrl.Callsign)
+		}
+		for _, ac := range s.World.Aircraft {
+			lg.Printf("%s: active aircraft %s", name, spew.Sdump(ac))
+		}
+	}
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
@@ -1338,6 +1353,7 @@ func (s *Sim) spawnAircraft() {
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
 				lg.Printf("%s: spawned arrival", ac.Callsign)
+				lg.Printf("%s", spew.Sdump(ac))
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1366,6 +1382,7 @@ func (s *Sim) spawnAircraft() {
 				lg.Printf("%s/%s/%s: launch dep", airport, runway, category)
 				s.launchAircraftNoLock(*ac)
 				lg.Printf("%s: starting takeoff roll", ac.Callsign)
+				lg.Printf("%s", spew.Sdump(ac))
 				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1546,7 +1563,11 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
 			ac.TrackingController = ctrl.Callsign
 			ac.ControllingController = ctrl.Callsign
-			s.eventStream.Post(Event{Type: InitiatedTrackEvent, Callsign: ac.Callsign})
+			s.eventStream.Post(Event{
+				Type:         InitiatedTrackEvent,
+				Callsign:     ac.Callsign,
+				ToController: ctrl.Callsign,
+			})
 			return "", "", nil
 		})
 }
@@ -1559,7 +1580,11 @@ func (s *Sim) DropTrack(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
 			ac.TrackingController = ""
 			ac.ControllingController = ""
-			s.eventStream.Post(Event{Type: DroppedTrackEvent, Callsign: ac.Callsign})
+			s.eventStream.Post(Event{
+				Type:           DroppedTrackEvent,
+				Callsign:       ac.Callsign,
+				FromController: ctrl.Callsign,
+			})
 			return "", "", nil
 		})
 }

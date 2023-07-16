@@ -433,7 +433,10 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
-				lg.Printf("Got world update after %s", time.Since(w.updateCall.IssueTime))
+				d := time.Since(w.updateCall.IssueTime)
+				if d > 250*time.Millisecond {
+					lg.Printf("Slow world update response: %s", d)
+				}
 				wu.UpdateWorld(w, eventStream)
 			},
 			OnErr: onErr,

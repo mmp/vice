@@ -28,14 +28,14 @@ type Logger struct {
 }
 
 // Each log message is stored using a LogEntry, which also records the time
-// it was submitted (w.r.t. the time at which logging was initialized.)
+// it was submitted.
 type LogEntry struct {
 	message string
-	offset  time.Duration
+	time    time.Time
 }
 
 func (l LogEntry) String() string {
-	return l.message // offset is already encoded in it
+	return l.message // time is already encoded in it
 }
 
 // CircularLogBuffer stores a fixed maximum number of logging messages; this
@@ -47,7 +47,7 @@ type CircularLogBuffer struct {
 }
 
 func (c *CircularLogBuffer) Add(s string) {
-	c.rb.Add(LogEntry{message: s, offset: time.Since(c.start)})
+	c.rb.Add(LogEntry{message: s, time: time.Now()})
 }
 
 func (c *CircularLogBuffer) String() string {
@@ -114,6 +114,11 @@ func (l *Logger) PrintfUp1(f string, args ...interface{}) {
 }
 
 func (l *Logger) printf(levels int, f string, args ...interface{}) {
+	if l == nil {
+		fmt.Fprintf(os.Stderr, f, args...)
+		return
+	}
+
 	if l.verbose == nil {
 		return
 	}
@@ -148,10 +153,10 @@ func (l *Logger) ErrorfUp1(f string, args ...interface{}) {
 }
 
 func (l *Logger) errorf(levels int, f string, args ...interface{}) {
-	msg := l.format(levels, f, args...)
+	msg := l.format(levels, "\033[1;31mERROR: "+f+"\033[0m: ", args...)
 
 	// Always print it
-	fmt.Fprint(os.Stderr, "ERROR: "+msg)
+	fmt.Fprint(os.Stderr, msg)
 
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -169,6 +174,10 @@ func (l *Logger) GetErrorLog() []string {
 	return l.err.Get()
 }
 
+func (l *Logger) GetLog() []string {
+	return l.verbose.Get()
+}
+
 // format is a utility function for formatting logging messages. It
 // prepends the source file and line number of the logging call to the
 // returned message string.
@@ -176,8 +185,8 @@ func (l *Logger) format(levels int, f string, args ...interface{}) string {
 	// Go up the call stack the specified nubmer of levels
 	_, fn, line, _ := runtime.Caller(levels)
 
-	// Elapsed time
-	s := fmt.Sprintf("%8.2fs ", time.Since(l.start).Seconds())
+	// Current time
+	s := time.Now().Format(time.RFC1123) + " "
 
 	// Source file and line
 	fnline := path.Base(fn) + fmt.Sprintf(":%d", line)

@@ -87,6 +87,8 @@ func (e *EventStream) Post(event Event) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
+	lg.Printf("Event posted: %s", event.String())
+
 	// Ignore the event if no one's paying attention.
 	if len(e.subscriptions) > 0 {
 		if len(e.events)+1 == cap(e.events) && *devmode && lg != nil {

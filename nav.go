@@ -387,10 +387,10 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, ep EventPoster, wi
 		if i+1 < len(ap.Waypoints[0]) {
 			wpToThresholdHeading := headingp2ll(wp.Location, ap.Waypoints[0][n-1].Location,
 				ac.NmPerLongitude, ac.MagneticVariation)
-			lg.Errorf("%s: wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
+			lg.Printf("%s: wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
 			if headingDifference(wpToThresholdHeading,
 				ap.Heading(ac.NmPerLongitude, ac.MagneticVariation)) > 3 {
-				lg.Errorf("%s: fix is in front but not on the localizer", wp.Fix)
+				lg.Printf("%s: fix is in front but not on the localizer", wp.Fix)
 				continue
 			}
 		}
