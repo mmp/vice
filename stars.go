@@ -288,6 +288,8 @@ type STARSPreferenceSet struct {
 		BeaconSymbols     STARSBrightness
 		PrimarySymbols    STARSBrightness
 		History           STARSBrightness
+		Weather				  STARSBrightness
+		WxContrast		  STARSBrightness
 	}
 
 	CharSize struct {
@@ -414,6 +416,8 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 	ps.Brightness.BeaconSymbols = 55
 	ps.Brightness.PrimarySymbols = 80
 	ps.Brightness.History = 60
+	ps.Brightness.Weather = 60
+	ps.Brightness.WxContrast = 60
 
 	ps.CharSize.Datablocks = 1
 	ps.CharSize.Lists = 1
@@ -583,7 +587,7 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	sp.events = eventStream.Subscribe()
 
 	ps := sp.CurrentPreferenceSet
-	if Find(ps.WeatherIntensity[:], true) != -1 {
+	if ps.Brightness.Weather != 0 {
 		sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
 	}
 
@@ -772,15 +776,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			int(fbPaneExtent.Width()+.5), int(fbPaneExtent.Height()+.5))
 	}
 
-	weatherIntensity := float32(0)
-	for i, set := range ps.WeatherIntensity {
-		if set {
-			weatherIntensity = float32(i) / float32(len(ps.WeatherIntensity)-1)
-		}
-	}
-	if weatherIntensity != 0 {
+	weatherIntensity = float32(ps.Brightness.Weather) / float32(100)
 		sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
-	}
+	
 
 	color := ps.Brightness.RangeRings.RGB()
 	cb.LineWidth(1)
@@ -2487,23 +2485,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 			}
 		}
 		for i := range ps.WeatherIntensity {
-			if STARSToggleButton("WX"+fmt.Sprintf("%d", i), &ps.WeatherIntensity[i],
-				STARSButtonHalfHorizontal, buttonScale) {
-				if ps.WeatherIntensity[i] {
-					// turn off others
-					for j := range ps.WeatherIntensity {
-						if i != j {
-							ps.WeatherIntensity[j] = false
-						}
-					}
-				}
-				if Find(ps.WeatherIntensity[:], true) != -1 {
-					sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
-				} else {
-					// Don't fetch weather maps if they're not going to be displayed.
-					sp.weatherRadar.Deactivate()
-				}
-			}
+			STARSDisabledButton("WX"+fmt.Sprintf("%d", i), STARSButtonHalfHorizontal, buttonScale)
+			
 		}
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
@@ -2622,8 +2605,14 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("WX 100", STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("WXC 100", STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "WX", &ps.Brightness.Weather, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "WXC", &ps.Brightness.WxContrast, STARSButtonHalfVertical, buttonScale)
+		if ps.Brightness.Weather != 0 {
+			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
+		} else {
+			// Don't fetch weather maps if they're not going to be displayed.
+			sp.weatherRadar.Deactivate()
+		}
 		STARSDisabledButton("", STARSButtonHalfVertical, buttonScale)
 		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
