@@ -416,8 +416,8 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 	ps.Brightness.BeaconSymbols = 55
 	ps.Brightness.PrimarySymbols = 80
 	ps.Brightness.History = 60
-	ps.Brightness.Weather = 60
-	ps.Brightness.WxContrast = 60
+	ps.Brightness.Weather = 30
+	ps.Brightness.WxContrast = 30
 
 	ps.CharSize.Datablocks = 1
 	ps.CharSize.Lists = 1
