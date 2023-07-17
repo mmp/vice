@@ -6,76 +6,60 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
 	"time"
+
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Logger provides a simple logging system with a few different log levels;
 // debugging and verbose output may both be suppressed independently.
 type Logger struct {
-	// Note that CircularLogBuffer is not thread-safe, so Logger must hold
-	// this mutex before calling into it.
-	mu            sync.Mutex
-	printToStderr bool
-	verbose       *CircularLogBuffer
-	err           *CircularLogBuffer
+	w, errors     io.Writer
 	start         time.Time
+	printToStderr bool
 }
 
-// Each log message is stored using a LogEntry, which also records the time
-// it was submitted.
-type LogEntry struct {
-	message string
-	time    time.Time
-}
-
-func (l LogEntry) String() string {
-	return l.message // time is already encoded in it
-}
-
-// CircularLogBuffer stores a fixed maximum number of logging messages; this
-// lets us hold on to logging messages for use in bug reports without worrying
-// about whether we're using too much memory to do so.
-type CircularLogBuffer struct {
-	rb    *RingBuffer[LogEntry]
-	start time.Time
-}
-
-func (c *CircularLogBuffer) Add(s string) {
-	c.rb.Add(LogEntry{message: s, time: time.Now()})
-}
-
-func (c *CircularLogBuffer) String() string {
-	var b strings.Builder
-	for i := 0; i < c.rb.Size(); i++ {
-		b.WriteString(c.rb.Get(i).String())
+func NewLogger(server bool, printToStderr bool) *Logger {
+	l := &Logger{
+		start:         time.Now(),
+		printToStderr: printToStderr,
 	}
-	return b.String()
-}
 
-func (c *CircularLogBuffer) Get() []string {
-	var strs []string
-	for i := 0; i < c.rb.Size(); i++ {
-		strs = append(strs, c.rb.Get(i).String())
+	if server {
+		l.w = &lumberjack.Logger{
+			Filename: "vice-logs/full",
+			MaxSize:  100, // MB
+			MaxAge:   14,
+			Compress: false,
+		}
+		l.errors = &lumberjack.Logger{
+			Filename: "vice-logs/errors",
+			MaxSize:  10, // MB
+			MaxAge:   14,
+			Compress: false,
+		}
+	} else {
+		dir, err := os.UserConfigDir()
+		if err != nil {
+			lg.Errorf("Unable to find user config dir: %v", err)
+			dir = "."
+		}
+		fn := path.Join(dir, "Vice", "vice.log")
+
+		l.w, err = os.Create(fn)
+		if err != nil {
+			lg.Errorf("%s: %v", fn, err)
+			l.w = os.Stderr
+		} else if printToStderr {
+			l.w = io.MultiWriter(l.w, os.Stderr)
+		}
 	}
-	return strs
-}
-
-func NewCircularLogBuffer(maxLines int) *CircularLogBuffer {
-	return &CircularLogBuffer{rb: NewRingBuffer[LogEntry](maxLines), start: time.Now()}
-}
-
-func NewLogger(verbose bool, printToStderr bool, maxLines int) *Logger {
-	l := &Logger{printToStderr: printToStderr, start: time.Now()}
-	if verbose {
-		l.verbose = NewCircularLogBuffer(maxLines)
-	}
-	l.err = NewCircularLogBuffer(maxLines)
 
 	// Start out the logs with some basic information about the system
 	// we're running on and the build of vice that's being used.
@@ -119,18 +103,12 @@ func (l *Logger) printf(levels int, f string, args ...interface{}) {
 		return
 	}
 
-	if l.verbose == nil {
-		return
-	}
-
 	msg := l.format(levels, f, args...)
 	if l.printToStderr {
 		fmt.Fprint(os.Stderr, msg)
 	}
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.verbose.Add(msg)
+	l.w.Write([]byte(msg))
 }
 
 // Errorf adds the given message, specified using Printf-style format
@@ -153,29 +131,15 @@ func (l *Logger) ErrorfUp1(f string, args ...interface{}) {
 }
 
 func (l *Logger) errorf(levels int, f string, args ...interface{}) {
-	msg := l.format(levels, "\033[1;31mERROR: "+f+"\033[0m: ", args...)
+	msg := l.format(levels, "ERROR: "+f, args...)
 
 	// Always print it
 	fmt.Fprint(os.Stderr, msg)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.err.Add(msg)
-}
-
-func (l *Logger) GetVerboseLog() string {
-	if l.verbose == nil {
-		return ""
+	if l.errors != nil {
+		l.errors.Write([]byte(msg))
 	}
-	return l.verbose.String()
-}
-
-func (l *Logger) GetErrorLog() []string {
-	return l.err.Get()
-}
-
-func (l *Logger) GetLog() []string {
-	return l.verbose.Get()
+	l.w.Write([]byte(msg))
 }
 
 // format is a utility function for formatting logging messages. It
@@ -238,16 +202,4 @@ func (l *Logger) LogStats(stats Stats) {
 
 	lg.Printf("Stats: rendering: %s", stats.render.String())
 	lg.Printf("Stats: UI rendering: %s", stats.renderUI.String())
-}
-
-func (l *Logger) SaveLogs() {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		lg.Errorf("Unable to find user config dir: %v", err)
-		dir = "."
-	}
-
-	fn := path.Join(dir, "Vice", "vice.log")
-	s := l.verbose.String() + "\n-----\nErrors:\n" + l.err.String()
-	os.WriteFile(fn, []byte(s), 0600)
 }

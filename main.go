@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg = NewLogger(true, *devmode, 50000)
+	lg = NewLogger(*server, *devmode)
 
 	if *cpuprofile != "" {
 		if f, err := os.Create(*cpuprofile); err != nil {
@@ -130,7 +130,6 @@ func main() {
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
 				}
-				lg.SaveLogs()
 
 				// Clean up in backwards order from how things were created.
 				renderer.Dispose()
@@ -327,9 +326,5 @@ func main() {
 			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
 		}
 		f.Close()
-	}
-
-	if *devmode {
-		fmt.Print(lg.GetErrorLog())
 	}
 }

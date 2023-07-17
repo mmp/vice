@@ -8,6 +8,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"html/template"
+	"io"
 	"math"
 	"net"
 	"net/http"
@@ -1164,12 +1165,11 @@ func launchHTTPStats(sm *SimManager) {
 	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		statsHandler(w, r, sm)
 	})
-	http.HandleFunc("/log.txt", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
-		for _, entry := range lg.GetLog() {
-			if _, err := w.Write([]byte(entry)); err != nil {
-				lg.Errorf("log.txt: %v", err)
-				break
+		if f, err := os.Open("." + r.URL.String()); err == nil {
+			if _, err := io.Copy(w, f); err != nil {
+				lg.Errorf("%s: %v", r.URL.String(), err)
 			}
 		}
 	})
@@ -1190,10 +1190,17 @@ type ServerStats struct {
 	CPUUsage         int
 
 	SimStatus []SimStatus
-	Errors    []string
+	Errors    string
+	LogFiles  []ServerLogFile
 }
 
-func bandwidth(v int64) string {
+type ServerLogFile struct {
+	Filename string
+	Date     string
+	Size     int64
+}
+
+func formatBytes(v int64) string {
 	if v < 1024 {
 		return fmt.Sprintf("%d B", v)
 	} else if v < 1024*1024 {
@@ -1205,7 +1212,7 @@ func bandwidth(v int64) string {
 	}
 }
 
-var templateFuncs = template.FuncMap{"bandwidth": bandwidth}
+var templateFuncs = template.FuncMap{"bytes": formatBytes}
 
 var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
 <!DOCTYPE html>
@@ -1245,7 +1252,7 @@ tr:nth-child(even) {
 <ul>
   <li>Uptime: {{.Uptime}}</li>
   <li>CPU usage: {{.CPUUsage}}%</li>
-  <li>Bandwidth: {{bandwidth .RX}} RX, {{bandwidth .TX}} TX</li>
+  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX</li>
   <li>Allocated memory: {{.AllocMemory}} MB</li>
   <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
   <li>System memory: {{.SysMemory}} MB</li>
@@ -1277,10 +1284,15 @@ tr:nth-child(even) {
 
 <h1>Errors</h1>
 <div id="log" class="bot">
-{{range .Errors}}{{.}}{{end}}
+{{.Errors}}
 </div>
 
-<a href="/log.txt">Full log</a>
+<h1>Logs</h1>
+<ul>
+{{range .LogFiles}}
+<li><a href="/logs/{{.Filename}}">{{.Filename}}</a> - {{.Date}} - ({{bytes .Size}})</li>
+{{end}}
+</ul>
 
 <script>
 window.onload = function() {
@@ -1310,10 +1322,27 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		CPUUsage:         int(math.Round(usage[0])),
 
 		SimStatus: sm.GetSimStatus(),
-		Errors:    lg.GetErrorLog(),
 	}
-
+	if errs, err := os.ReadFile("logs/errors"); err == nil {
+		stats.Errors = string(errs)
+	}
 	stats.RX, stats.TX = GetLoggedRPCBandwidth()
+
+	if de, err := os.ReadDir("logs"); err == nil {
+		for _, entry := range de {
+			if info, err := entry.Info(); err == nil {
+				stats.LogFiles = append(stats.LogFiles,
+					ServerLogFile{
+						Filename: entry.Name(),
+						Date:     info.ModTime().Format(time.RFC1123),
+						Size:     info.Size(),
+					})
+			}
+		}
+	}
+	sort.Slice(stats.LogFiles, func(i, j int) bool {
+		return stats.LogFiles[i].Filename < stats.LogFiles[j].Filename
+	})
 
 	statsTemplate.Execute(w, stats)
 }
