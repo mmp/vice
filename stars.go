@@ -3245,17 +3245,17 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 		color := brightness.ScaleRGB(STARSTrackBlockColor)
-		primary, secondary, _ := sp.radarVisibility(ctx.world, ac.TrackPosition(), ac.TrackAltitude())
-		if primary || !sp.multiRadarMode(ctx.world) {
+		primary, secondary, within40nm, _ := sp.radarVisibility(ctx.world, ac.TrackPosition(), ac.TrackAltitude())
+
+		if (primary && !sp.multiRadarMode(ctx.world)) || within40nm {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
-		} else if secondary {
-			// If it's just a secondary return, only draw the box outline.
-			// TODO: is this 40nm, or secondary?
+		} else if sp.multiRadarMode(ctx.world) {
+			// If it's outside 40nm from a radar, just draw the outline.
 			ld.AddPolyline([2]float32{}, color, box[:])
 		}
 
-		if !sp.multiRadarMode(ctx.world) {
+		if !sp.multiRadarMode(ctx.world) && secondary {
 			// green line
 			// TODO: size based on distance to radar
 			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
@@ -4361,7 +4361,7 @@ func (sp *STARSPane) multiRadarMode(w *World) bool {
 	return ps.RadarSiteSelected == "" || !ok
 }
 
-func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, secondary bool, distance float32) {
+func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, secondary, within40nm bool, distance float32) {
 	ps := sp.CurrentPreferenceSet
 	distance = 1e30
 	multi := sp.multiRadarMode(w)
@@ -4370,10 +4370,11 @@ func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, 
 			continue
 		}
 
-		if p, s, dist := site.CheckVisibility(w, pos, alt); p || s {
+		if p, s, w40nm, dist := site.CheckVisibility(w, pos, alt); p || s {
 			primary = primary || p
 			secondary = secondary || s
 			distance = min(distance, dist)
+			within40nm = within40nm || w40nm
 		}
 	}
 
@@ -4423,7 +4424,7 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 			if !multi && ps.RadarSiteSelected != id {
 				continue
 			}
-			if p, s, _ := site.CheckVisibility(w, ac.TrackPosition(), ac.TrackAltitude()); p || s {
+			if p, s, _, _ := site.CheckVisibility(w, ac.TrackPosition(), ac.TrackAltitude()); p || s {
 				aircraft = append(aircraft, ac)
 				break
 			}
