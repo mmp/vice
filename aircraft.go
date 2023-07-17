@@ -580,6 +580,10 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 		return "", err
 	}
 
+	if id == ac.ApproachId && ac.Approach != nil {
+		return "you already told us to expect the " + ap.FullName + " approach", nil
+	}
+
 	ac.Approach = ap
 	ac.ApproachId = id
 
