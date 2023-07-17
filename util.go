@@ -265,7 +265,7 @@ func pow(a, b float32) float32 {
 	return float32(math.Pow(float64(a), float64(b)))
 }
 
-func sqr(v float32) float32 { return v * v }
+func sqr[V constraints.Integer | constraints.Float](v V) V { return v * v }
 
 func clamp[T constraints.Ordered](x T, low T, high T) T {
 	if x < low {
@@ -894,13 +894,17 @@ func length2ll(v Point2LL) float32 {
 // provided lat-long coordinates.
 func nmdistance2ll(a Point2LL, b Point2LL) float32 {
 	// https://www.movable-type.co.uk/scripts/latlong.html
-	const r = 3634.449 // earth's radius in nautical miles
-	rad := func(d float64) float64 { return d / 180 * math.Pi }
+	const R = 6371000 // metres
+	rad := func(d float64) float64 { return float64(d) / 180 * math.Pi }
+	lat1, lon1 := rad(float64(a[1])), rad(float64(a[0]))
+	lat2, lon2 := rad(float64(b[1])), rad(float64(b[0]))
+	dlat, dlon := lat2-lat1, lon2-lon1
 
-	// Spherical law of cosines
-	phi := [2]float64{rad(float64(a[1])), rad(float64(b[1]))}
-	d := r * math.Acos(clamp(math.Sin(phi[0])*math.Sin(phi[1])+math.Cos(phi[0])*math.Cos(phi[1])*math.Cos(rad(float64(a[0])-float64(b[0]))), -1, 1))
-	return float32(d)
+	x := sqr(math.Sin(dlat/2)) + math.Cos(lat1)*math.Cos(lat2)*sqr(math.Sin(dlon/2))
+	c := 2 * math.Atan2(math.Sqrt(x), math.Sqrt(1-x))
+	dm := R * c // in metres
+
+	return float32(dm * 0.000539957)
 }
 
 // nmlength2ll returns the length of a vector expressed in lat-long
