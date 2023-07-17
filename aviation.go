@@ -666,7 +666,7 @@ type RadarSite struct {
 	SilenceAngle   float32 `json:"silence_angle"`
 }
 
-func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primary, secondary bool, distance float32) {
+func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primary, secondary, within40nm bool, distance float32) {
 	// Check altitude first; this is a quick first cull that
 	// e.g. takes care of everyone on the ground.
 	if altitude < int(rs.Elevation) {
@@ -706,7 +706,8 @@ func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primar
 	}
 
 	primary = distance <= float32(rs.PrimaryRange)
-	secondary = !primary && distance <= float32(rs.SecondaryRange)
+	secondary = distance <= float32(rs.SecondaryRange)
+	within40nm = distance <= float32(40)
 	return
 }
 
