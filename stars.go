@@ -3246,7 +3246,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		}
 		color := brightness.ScaleRGB(STARSTrackBlockColor)
 		primary, secondary, _ := sp.radarVisibility(ctx.world, ac.TrackPosition(), ac.TrackAltitude())
-		if primary {
+		if primary || !sp.multiRadarMode(ctx.world) {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
 		} else if secondary {
