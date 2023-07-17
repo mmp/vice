@@ -107,7 +107,9 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 func (c *NewSimConfiguration) SetScenarioGroup(name string) {
 	var ok bool
 	if c.Group, ok = c.selectedServer.configs[name]; !ok {
-		lg.Errorf("%s: scenario group not found!", name)
+		if name != "" {
+			lg.Errorf("%s: scenario group not found!", name)
+		}
 		name = SortedMapKeys(c.selectedServer.configs)[0] // first one
 		c.Group = c.selectedServer.configs[name]
 	}
@@ -119,7 +121,9 @@ func (c *NewSimConfiguration) SetScenarioGroup(name string) {
 func (c *NewSimConfiguration) SetScenario(name string) {
 	var ok bool
 	if c.Scenario, ok = c.Group.ScenarioConfigs[name]; !ok {
-		lg.Errorf("%s: scenario not found in group %s", name, c.GroupName)
+		if name != "" {
+			lg.Errorf("%s: scenario not found in group %s", name, c.GroupName)
+		}
 		name = SortedMapKeys(c.Group.ScenarioConfigs)[0]
 		c.Scenario = c.Group.ScenarioConfigs[name]
 	}
