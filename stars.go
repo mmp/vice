@@ -781,8 +781,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
-		sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
-	
+	sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
 
 	color := ps.Brightness.RangeRings.RGB()
 	cb.LineWidth(1)
@@ -2490,7 +2489,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		}
 		for i := range ps.WeatherIntensity {
 			STARSDisabledButton("WX"+fmt.Sprintf("%d", i), STARSButtonHalfHorizontal, buttonScale)
-			
+
 		}
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
@@ -3228,8 +3227,11 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		pos := ac.TrackPosition()
 		pw := transforms.WindowFromLatLongP(pos)
-		// TODO: orient based on radar center if just one radar
+
 		orientation := ac.TrackHeading()
+		if !sp.multiRadarMode(ctx.world) {
+			orientation = sp.acRadarAzimuth(ctx.world, ac)
+		}
 		if math.IsNaN(float64(orientation)) {
 			orientation = 0
 		}
@@ -4376,6 +4378,20 @@ func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, 
 	}
 
 	return
+}
+
+func (sp *STARSPane) acRadarAzimuth(w *World, ac *Aircraft) float32 {
+	ps := sp.CurrentPreferenceSet
+	multi := sp.multiRadarMode(w)
+
+	for id, site := range w.RadarSites {
+		if !multi && ps.RadarSiteSelected != id {
+			continue
+		}
+		pRadar, _ := w.Locate(site.Position)
+		return headingp2ll(ac.TrackPosition(), pRadar, w.NmPerLongitude, w.MagneticVariation)
+	}
+	return 0
 }
 
 func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
