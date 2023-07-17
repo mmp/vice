@@ -27,13 +27,13 @@ var (
 	STARSBackgroundColor         = RGB{0, 0, 0}
 	STARSListColor               = RGB{.1, .9, .1}
 	STARSTextAlertColor          = RGB{1, .1, .1}
-	STARSTrackBlockColor         = RGB{0.1, 0.4, 1}
-	STARSTrackHistoryColor       = RGB{.2, 0, 1}
+	STARSTrackBlockColor         = RGB{0.12, 0.48, 1}
+	STARSTrackHistoryColors      [5]RGB
 	STARSJRingConeColor          = RGB{.5, .5, 1}
 	STARSTrackedAircraftColor    = RGB{1, 1, 1}
 	STARSUntrackedAircraftColor  = RGB{.1, .9, .1}
-	STARSPointedOutAircraftColor = RGB{.9, .9, .1}
-	STARSSelectedAircraftColor   = RGB{.1, .9, .9}
+	STARSPointedOutAircraftColor = RGB{1, 1, 0}
+	STARSSelectedAircraftColor   = RGB{0, 1, 1}
 )
 
 const NumSTARSPreferenceSets = 32
@@ -558,7 +558,11 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, w)
 	}
-
+	STARSTrackHistoryColors[0] = RGB{.12, .31, .78}
+	STARSTrackHistoryColors[1] = RGB{.28, .28, .67}
+	STARSTrackHistoryColors[2] = RGB{.2, .2, .51}
+	STARSTrackHistoryColors[3] = RGB{.16, .16, .43}
+	STARSTrackHistoryColors[4] = RGB{.12, .12, .35}
 	sp.CurrentPreferenceSet.Activate(w)
 
 	if sp.havePlayedSPCAlertSound == nil {
@@ -2555,7 +2559,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 
 	case DCBMenuAux:
 		STARSDisabledButton("VOL\n10", STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 10, STARSButtonFull, buttonScale)
 		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull, buttonScale)
 		STARSDisabledButton("CSR SPD\n4", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull, buttonScale)
@@ -3309,16 +3313,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		// Draw in reverse order so that if it's not moving, more recent tracks (which will have
 		// more contrast with the background), will be the ones that are visible.
-		histColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColor)
 		n := ps.RadarTrackHistory
 		for i := n; i > 1; i-- {
-			// blend the track color with the background color; more
-			// background further into history but only a 50/50 blend
-			// at the oldest track.
-			// 1e-6 addition to avoid NaN with RadarTrackHistory == 1.
-			x := float32(i-1) / (1e-6 + float32(2*(n-1))) // 0 <= x <= 0.5
-			trackColor := lerpRGB(x, histColor, STARSBackgroundColor)
-
+			trackColorNum := len(STARSTrackHistoryColors) - 1
+			if i-1 < trackColorNum {
+				trackColorNum = i - 1
+			}
+			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 			p := ac.Tracks[i-1].Position
 
 			pd.AddPoint(p, trackColor)
