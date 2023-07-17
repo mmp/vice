@@ -539,6 +539,9 @@ type Sim struct {
 	DepartureChallenge float32
 	GoAroundRate       float32
 
+	TotalDepartures int
+	TotalArrivals   int
+
 	lastTrackUpdate time.Time
 	lastSimUpdate   time.Time
 
@@ -863,6 +866,8 @@ type SimWorldUpdate struct {
 	SimDescription   string
 	STARSInput       string
 	Events           []Event
+	TotalDepartures  int
+	TotalArrivals    int
 }
 
 func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
@@ -876,6 +881,8 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.SimRate = wu.SimRate
 	w.SimDescription = wu.SimDescription
 	w.STARSInputOverride = wu.STARSInput
+	w.TotalDepartures = wu.TotalDepartures
+	w.TotalArrivals = wu.TotalArrivals
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
@@ -932,6 +939,8 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			SimRate:          s.SimRate,
 			SimDescription:   s.Scenario,
 			Events:           ctrl.events.Get(),
+			TotalDepartures:  s.TotalDepartures,
+			TotalArrivals:    s.TotalArrivals,
 		}
 
 		return nil
@@ -1445,6 +1454,12 @@ func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 	}
 	s.World.Aircraft[ac.Callsign] = &ac
 
+	if ac.IsDeparture {
+		s.TotalDepartures++
+	} else {
+		s.TotalArrivals++
+	}
+
 	ac.MagneticVariation = s.World.MagneticVariation
 	ac.NmPerLongitude = s.World.NmPerLongitude
 
@@ -1874,6 +1889,12 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
+			if ac.IsDeparture {
+				s.TotalDepartures--
+			} else {
+				s.TotalArrivals--
+			}
+
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", "", nil
 		})

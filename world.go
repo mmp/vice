@@ -73,6 +73,8 @@ type World struct {
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
 	GoAroundRate      float32
+	TotalDepartures   int
+	TotalArrivals     int
 
 	STARSInputOverride string
 }
@@ -120,6 +122,8 @@ func (w *World) Assign(other *World) {
 	w.DepartureRates = other.DepartureRates
 	w.ArrivalGroupRates = other.ArrivalGroupRates
 	w.GoAroundRate = other.GoAroundRate
+	w.TotalDepartures = other.TotalDepartures
+	w.TotalArrivals = other.TotalArrivals
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -490,10 +494,13 @@ func (w *World) CurrentTime() time.Time {
 func (w *World) GetWindowTitle() string {
 	if w.SimDescription == "" {
 		return "(disconnected)"
-	} else if w.SimName == "" {
-		return w.Callsign + ": " + w.SimDescription
 	} else {
-		return w.Callsign + "@" + w.SimName + ": " + w.SimDescription
+		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", w.TotalDepartures, w.TotalArrivals)
+		if w.SimName == "" {
+			return w.Callsign + ": " + w.SimDescription + deparr
+		} else {
+			return w.Callsign + "@" + w.SimName + ": " + w.SimDescription + deparr
+		}
 	}
 }
 

@@ -440,10 +440,12 @@ func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 }
 
 type SimStatus struct {
-	Name        string
-	Config      string
-	IdleTime    time.Duration
-	Controllers string
+	Name            string
+	Config          string
+	IdleTime        time.Duration
+	Controllers     string
+	TotalDepartures int
+	TotalArrivals   int
 }
 
 func (sm *SimManager) GetSimStatus() []SimStatus {
@@ -454,9 +456,11 @@ func (sm *SimManager) GetSimStatus() []SimStatus {
 	for _, name := range SortedMapKeys(sm.activeSims) {
 		sim := sm.activeSims[name]
 		status := SimStatus{
-			Name:     name,
-			Config:   sim.Scenario,
-			IdleTime: sim.IdleTime().Round(time.Second),
+			Name:            name,
+			Config:          sim.Scenario,
+			IdleTime:        sim.IdleTime().Round(time.Second),
+			TotalDepartures: sim.TotalDepartures,
+			TotalArrivals:   sim.TotalArrivals,
 		}
 
 		var controllers []string
@@ -1254,6 +1258,8 @@ tr:nth-child(even) {
   <tr>
   <th>Name</th>
   <th>Scenario</th>
+  <th>Dep</th>
+  <th>Arr</th>
   <th>Idle Time</th>
   <th>Active Controllers</th>
 
@@ -1261,6 +1267,8 @@ tr:nth-child(even) {
   </tr>
   <td>{{.Name}}</td>
   <td>{{.Config}}</td>
+  <td>{{.TotalDepartures}}</td>
+  <td>{{.TotalArrivals}}</td>
   <td>{{.IdleTime}}</td>
   <td><tt>{{.Controllers}}</tt></td>
 </tr>
