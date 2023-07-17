@@ -4367,7 +4367,7 @@ func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, 
 			primary = primary || p
 			secondary = secondary || s
 			distance = min(distance, dist)
-			within40nm = within40nm || w40nm
+			within40nm = (p && w40nm) || within40nm
 		}
 	}
 
