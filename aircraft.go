@@ -815,25 +815,23 @@ func (ac *Aircraft) updateHeading(wind WindModel) {
 }
 
 func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
-	// Update position given current heading
-	prev := ac.Position
+	// Calculate offset vector based on heading and current TAS.
 	hdg := ac.Heading - ac.MagneticVariation
-	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+	TAS := ac.TAS() / 3600
+	flightVector := scale2f([2]float32{sin(radians(hdg)), cos(radians(hdg))}, TAS)
 
-	// Compute ground speed: TAS, modified for wind.
+	// Further offset based on the wind
 	perf := ac.Performance()
-	GS := ac.TAS() / 3600
 	airborne := ac.IAS >= 1.1*perf.Speed.Min
+	var windVector [2]float32
 	if airborne && wind != nil {
-		windVector := wind.GetWindVector(ac.Position, ac.Altitude)
-		delta := windVector[0]*v[0] + windVector[1]*v[1]
-		GS += delta
+		windVector = wind.GetWindVector(ac.Position, ac.Altitude)
 	}
 
-	// Finally update position and groundspeed.
-	newPos := add2f(ll2nm(ac.Position, ac.NmPerLongitude), scale2f(v, GS))
-	ac.Position = nm2ll(newPos, ac.NmPerLongitude)
-	ac.GS = nmdistance2ll(prev, ac.Position) * 3600
+	// Update the aircraft's state
+	p := add2f(ll2nm(ac.Position, ac.NmPerLongitude), add2f(flightVector, windVector))
+	ac.Position = nm2ll(p, ac.NmPerLongitude)
+	ac.GS = length2f(add2f(flightVector, windVector)) * 3600
 }
 
 func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
