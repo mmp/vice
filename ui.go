@@ -805,14 +805,16 @@ func showAboutDialog() {
 	// vertically maximized. So we hand-wrap the lines for the
 	// font we're using...
 	credits :=
-		`Additional credits: Thanks to Adam Bolek, Mike K,
-and Arya T for contributing additional scenarios.
-Video maps are thanks to the ZNY and ZJX
-VATSIM ARTCCs. Thanks also to OpenScope for
-the airline fleet and aircraft performance
-databases. See the file CREDITS.txt in the vice
-source code distribution for third-party software,
-fonts, sounds, etc.`
+		`Additional credits: Thanks to Dennis Graiani for
+improvements to vice's STARS emulation
+and to Adam Bolek, Mike K, and Arya T for
+contributing additional scenarios. Video maps
+are thanks to the ZNY and ZJX VATSIM ARTCCs.
+Thanks also to OpenScope for the airline fleet
+and aircraft performance databases. See the
+file CREDITS.txt in the vice source code
+distribution for third-party software, fonts,
+sounds, etc.`
 
 	imgui.Text(credits)
 
