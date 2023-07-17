@@ -721,8 +721,9 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
 		ap := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if _, ok := ap.Approaches[arr.ExpectApproach]; ok {
+		if appr, ok := ap.Approaches[arr.ExpectApproach]; ok {
 			ac.ApproachId = arr.ExpectApproach
+			ac.Approach = &appr
 		} else {
 			return nil, fmt.Errorf("%s: unable to find expected approach", arr.ExpectApproach)
 		}
