@@ -49,6 +49,7 @@ var (
 	cpuprofile       = flag.String("cpuprofile", "", "write CPU profile to file")
 	memprofile       = flag.String("memprofile", "", "write memory profile to this file")
 	devmode          = flag.Bool("devmode", false, "developer mode")
+	lintScenarios    = flag.Bool("lint", false, "check the validity of the built-in scenarios")
 	logRPC           = flag.Bool("logrpc", false, "log RPC calls")
 	server           = flag.Bool("server", false, "run vice scenario server")
 	serverIP         = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
@@ -100,7 +101,14 @@ func main() {
 
 	database = InitializeStaticDatabase()
 
-	if *server {
+	if *lintScenarios {
+		var e ErrorLogger
+		_, _ = LoadScenarioGroups(&e)
+		if e.HaveErrors() {
+			e.PrintErrors()
+			os.Exit(1)
+		}
+	} else if *server {
 		RunSimServer()
 	} else {
 		localSimServerChan, err := LaunchLocalSimServer()

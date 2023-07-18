@@ -47,3 +47,7 @@ jobs:
     - name: Run tests
       run:
         go test -v
+
+    - name: Check scenarios
+      run:
+        ./vice -lint
