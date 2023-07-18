@@ -34,8 +34,8 @@ type SimScenarioConfiguration struct {
 }
 
 const (
-	LaunchManual = iota
-	LaunchAutomatic
+	LaunchAutomatic = iota
+	LaunchManual
 )
 
 // LaunchConfig collects settings related to launching aircraft in the sim.
