@@ -1186,7 +1186,7 @@ func launchHTTPStats(sm *SimManager) {
 	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		statsHandler(w, r, sm)
 	})
-	http.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/vice-logs/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		if f, err := os.Open("." + r.URL.String()); err == nil {
 			if _, err := io.Copy(w, f); err != nil {
@@ -1311,7 +1311,7 @@ tr:nth-child(even) {
 <h1>Logs</h1>
 <ul>
 {{range .LogFiles}}
-<li><a href="/logs/{{.Filename}}">{{.Filename}}</a> - {{.Date}} - ({{bytes .Size}})</li>
+<li><a href="/vice-logs/{{.Filename}}">{{.Filename}}</a> - {{.Date}} - ({{bytes .Size}})</li>
 {{end}}
 </ul>
 
@@ -1344,12 +1344,12 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 
 		SimStatus: sm.GetSimStatus(),
 	}
-	if errs, err := os.ReadFile("logs/errors"); err == nil {
+	if errs, err := os.ReadFile("vice-logs/errors"); err == nil {
 		stats.Errors = string(errs)
 	}
 	stats.RX, stats.TX = GetLoggedRPCBandwidth()
 
-	if de, err := os.ReadDir("logs"); err == nil {
+	if de, err := os.ReadDir("vice-logs"); err == nil {
 		for _, entry := range de {
 			if info, err := entry.Info(); err == nil {
 				stats.LogFiles = append(stats.LogFiles,
