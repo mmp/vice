@@ -3244,7 +3244,9 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			box[i] = add2f(rot(box[i]), pw)
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+
+		primBrightness := ps.Brightness.PrimarySymbols
+		color := primBrightness.ScaleRGB(STARSTrackBlockColor)
 		primary, secondary, within40nm, _ := sp.radarVisibility(ctx.world, ac.TrackPosition(), ac.TrackAltitude())
 
 		if (primary && !sp.multiRadarMode(ctx.world)) || within40nm {
@@ -3258,12 +3260,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		if !sp.multiRadarMode(ctx.world) && secondary {
 			// green line
 			// TODO: size based on distance to radar
+			bcnBrightness := ps.Brightness.BeaconSymbols
 			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
 			for i := range line {
 				line[i] = add2f(rot(line[i]), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
 			}
-			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+			ld.AddLine(line[0], line[1], bcnBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
 		}
 
 		state := sp.aircraft[ac.Callsign]
