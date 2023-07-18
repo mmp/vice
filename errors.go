@@ -20,6 +20,7 @@ var (
 	ErrInvalidHeading               = errors.New("Invalid heading")
 	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
 	ErrNoController                 = errors.New("No controller with that callsign")
+	ErrNotLaunchController          = errors.New("Not signed in as the launch controller")
 	ErrNoFlightPlan                 = errors.New("No flight plan has been filed for aircraft")
 	ErrNoValidDepartureFound        = errors.New("Unable to find a valid departure")
 	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")

@@ -42,10 +42,9 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	LaunchController  string
+	LaunchConfig      LaunchConfig
 	PrimaryController string
 	MultiControllers  map[string]*MultiUserController
-
 	SimIsPaused       bool
 	SimRate           float32
 	SimName           string
@@ -68,11 +67,6 @@ type World struct {
 	DepartureRunways  []ScenarioGroupDepartureRunway
 	Scratchpads       map[string]string
 	ArrivalGroups     map[string][]Arrival
-	// airport -> runway -> category -> rate
-	DepartureRates map[string]map[string]map[string]int
-	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]int
-	GoAroundRate      float32
 	TotalDepartures   int
 	TotalArrivals     int
 
@@ -119,9 +113,7 @@ func (w *World) Assign(other *World) {
 	w.DepartureRunways = other.DepartureRunways
 	w.Scratchpads = other.Scratchpads
 	w.ArrivalGroups = other.ArrivalGroups
-	w.DepartureRates = other.DepartureRates
-	w.ArrivalGroupRates = other.ArrivalGroupRates
-	w.GoAroundRate = other.GoAroundRate
+	w.LaunchConfig = other.LaunchConfig
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
 }
@@ -483,6 +475,14 @@ func (w *World) SetSimRate(r float32) {
 	w.SimRate = r // so the UI is well-behaved...
 }
 
+func (w *World) SetLaunchConfig(lc LaunchConfig) {
+	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+		Call:      w.simProxy.SetLaunchConfig(lc),
+		IssueTime: time.Now(),
+	})
+	w.LaunchConfig = lc // for the UI's benefit...
+}
+
 func (w *World) CurrentTime() time.Time {
 	d := time.Since(w.lastUpdateRequest)
 	if w.SimRate != 0 {
@@ -517,7 +517,7 @@ func (w *World) PrintInfo(ac *Aircraft) {
 
 func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 	if w.simProxy != nil {
-		if w.LaunchController == "" || w.LaunchController == w.Callsign {
+		if lctrl := w.LaunchConfig.Controller; lctrl == "" || lctrl == w.Callsign {
 			delete(w.Aircraft, ac.Callsign)
 		}
 

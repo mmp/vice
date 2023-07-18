@@ -25,18 +25,195 @@ type SimConfiguration struct {
 }
 
 type SimScenarioConfiguration struct {
-	DepartureChallenge float32
-	GoAroundRate       float32
 	SelectedController string
 	Wind               Wind
+	LaunchConfig       LaunchConfig
 
+	DepartureRunways []ScenarioGroupDepartureRunway
+	ArrivalRunways   []ScenarioGroupArrivalRunway
+}
+
+const (
+	LaunchManual = iota
+	LaunchAutomatic
+)
+
+// LaunchConfig collects settings related to launching aircraft in the sim.
+type LaunchConfig struct {
+	// Controller is the controller in charge of the launch settings; if empty then
+	// launch control may be taken by any signed in controller.
+	Controller string
+	// LaunchManual or LaunchAutomatic
+	Mode int
+
+	DepartureChallenge float32
+	GoAroundRate       float32
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
 	ArrivalGroupRates map[string]map[string]int
+}
 
-	DepartureRunways []ScenarioGroupDepartureRunway
-	ArrivalRunways   []ScenarioGroupArrivalRunway
+func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, arr map[string]map[string]int) LaunchConfig {
+	lc := LaunchConfig{
+		DepartureChallenge: 0.25,
+		GoAroundRate:       0.05,
+		ArrivalGroupRates:  arr,
+	}
+
+	// Walk the departure runways to create the map for departures.
+	lc.DepartureRates = make(map[string]map[string]map[string]int)
+	for _, rwy := range dep {
+		if _, ok := lc.DepartureRates[rwy.Airport]; !ok {
+			lc.DepartureRates[rwy.Airport] = make(map[string]map[string]int)
+		}
+		if _, ok := lc.DepartureRates[rwy.Airport][rwy.Runway]; !ok {
+			lc.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]int)
+		}
+		lc.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
+	}
+
+	return lc
+}
+
+func (lc *LaunchConfig) DrawActiveDepartureRunways() {
+	var runways []string
+	for airport, runwayRates := range lc.DepartureRates {
+		for runway, categoryRates := range runwayRates {
+			for _, rate := range categoryRates {
+				if rate > 0 {
+					runways = append(runways, airport+"/"+runway)
+					break
+				}
+			}
+		}
+	}
+
+	if len(runways) > 0 {
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Departing:")
+		imgui.TableNextColumn()
+
+		sort.Strings(runways)
+		imgui.Text(strings.Join(runways, ", "))
+	}
+}
+
+func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
+	if len(lc.DepartureRates) == 0 {
+		return
+	}
+
+	sumRates := 0
+	for _, runwayRates := range lc.DepartureRates {
+		for _, categoryRates := range runwayRates {
+			for _, rate := range categoryRates {
+				sumRates += rate
+			}
+		}
+	}
+
+	imgui.Text("Departures")
+
+	imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
+
+	changed = imgui.SliderFloatV("Sequencing challenge", &lc.DepartureChallenge, 0, 1, "%.02f", 0) || changed
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+
+	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
+		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("Runway")
+		imgui.TableSetupColumn("Category")
+		imgui.TableSetupColumn("ADR")
+		imgui.TableHeadersRow()
+
+		for _, airport := range SortedMapKeys(lc.DepartureRates) {
+			imgui.PushID(airport)
+			for _, runway := range SortedMapKeys(lc.DepartureRates[airport]) {
+				imgui.PushID(runway)
+				for _, category := range SortedMapKeys(lc.DepartureRates[airport][runway]) {
+					imgui.PushID(category)
+
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Text(airport)
+					imgui.TableNextColumn()
+					imgui.Text(runway)
+					imgui.TableNextColumn()
+					if category == "" {
+						imgui.Text("(All)")
+					} else {
+						imgui.Text(category)
+					}
+					imgui.TableNextColumn()
+
+					r := int32(lc.DepartureRates[airport][runway][category])
+					changed = imgui.InputIntV("##adr", &r, 0, 120, 0) || changed
+					lc.DepartureRates[airport][runway][category] = int(r)
+
+					imgui.PopID()
+				}
+				imgui.PopID()
+			}
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+	imgui.Separator()
+
+	return
+}
+
+func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
+	if len(lc.ArrivalGroupRates) == 0 {
+		return
+	}
+
+	// Figure out how many unique airports we've got for AAR columns in the table
+	// and also sum up the overall arrival rate
+	allAirports := make(map[string]interface{})
+	sumRates := 0
+	for _, agr := range lc.ArrivalGroupRates {
+		for ap, rate := range agr {
+			allAirports[ap] = nil
+			sumRates += rate
+		}
+	}
+	nAirports := len(allAirports)
+
+	imgui.Text("Arrivals")
+	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
+	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
+		imgui.TableSetupColumn("Arrival")
+		sortedAirports := SortedMapKeys(allAirports)
+		for _, ap := range sortedAirports {
+			imgui.TableSetupColumn(ap + " AAR")
+		}
+		imgui.TableHeadersRow()
+
+		for _, group := range SortedMapKeys(lc.ArrivalGroupRates) {
+			imgui.PushID(group)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(group)
+			for _, ap := range sortedAirports {
+				imgui.TableNextColumn()
+				if rate, ok := lc.ArrivalGroupRates[group][ap]; ok {
+					r := int32(rate)
+					changed = imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) || changed
+					lc.ArrivalGroupRates[group][ap] = int(r)
+				}
+			}
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+
+	return
 }
 
 type NewSimConfiguration struct {
@@ -232,26 +409,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			imgui.Text(c.Scenario.SelectedController)
 
-			if len(c.Scenario.DepartureRates) > 0 {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text("Departing:")
-				imgui.TableNextColumn()
-
-				var runways []string
-				for airport, runwayRates := range c.Scenario.DepartureRates {
-					for runway, categoryRates := range runwayRates {
-						for _, rate := range categoryRates {
-							if rate > 0 {
-								runways = append(runways, airport+"/"+runway)
-								break
-							}
-						}
-					}
-				}
-				sort.Strings(runways)
-				imgui.Text(strings.Join(runways, ", "))
-			}
+			c.Scenario.LaunchConfig.DrawActiveDepartureRunways()
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -280,109 +438,8 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.EndTable()
 		}
 
-		if len(c.Scenario.DepartureRunways) > 0 {
-			imgui.Separator()
-			imgui.Text("Departures")
-
-			sumRates := 0
-			for _, runwayRates := range c.Scenario.DepartureRates {
-				for _, categoryRates := range runwayRates {
-					for _, rate := range categoryRates {
-						sumRates += rate
-					}
-				}
-			}
-			imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
-
-			imgui.SliderFloatV("Sequencing challenge", &c.Scenario.DepartureChallenge, 0, 1, "%.02f", 0)
-			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-
-			if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
-				imgui.TableSetupColumn("Airport")
-				imgui.TableSetupColumn("Runway")
-				imgui.TableSetupColumn("Category")
-				imgui.TableSetupColumn("ADR")
-				imgui.TableHeadersRow()
-
-				for _, airport := range SortedMapKeys(c.Scenario.DepartureRates) {
-					imgui.PushID(airport)
-					for _, runway := range SortedMapKeys(c.Scenario.DepartureRates[airport]) {
-						imgui.PushID(runway)
-						for _, category := range SortedMapKeys(c.Scenario.DepartureRates[airport][runway]) {
-							imgui.PushID(category)
-
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-							imgui.Text(airport)
-							imgui.TableNextColumn()
-							imgui.Text(runway)
-							imgui.TableNextColumn()
-							if category == "" {
-								imgui.Text("(All)")
-							} else {
-								imgui.Text(category)
-							}
-							imgui.TableNextColumn()
-
-							r := int32(c.Scenario.DepartureRates[airport][runway][category])
-							imgui.InputIntV("##adr", &r, 0, 120, 0)
-							c.Scenario.DepartureRates[airport][runway][category] = int(r)
-
-							imgui.PopID()
-						}
-						imgui.PopID()
-					}
-					imgui.PopID()
-				}
-				imgui.EndTable()
-			}
-		}
-
-		if len(c.Scenario.ArrivalGroupRates) > 0 {
-			// Figure out how many unique airports we've got for AAR columns in the table
-			// and also sum up the overall arrival rate
-			allAirports := make(map[string]interface{})
-			sumRates := 0
-			for _, agr := range c.Scenario.ArrivalGroupRates {
-				for ap, rate := range agr {
-					allAirports[ap] = nil
-					sumRates += rate
-				}
-			}
-			nAirports := len(allAirports)
-
-			imgui.Separator()
-			imgui.Text("Arrivals")
-			imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
-			imgui.SliderFloatV("Go around probability", &c.Scenario.GoAroundRate, 0, 1, "%.02f", 0)
-
-			flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-			if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
-				imgui.TableSetupColumn("Arrival")
-				sortedAirports := SortedMapKeys(allAirports)
-				for _, ap := range sortedAirports {
-					imgui.TableSetupColumn(ap + " AAR")
-				}
-				imgui.TableHeadersRow()
-
-				for _, group := range SortedMapKeys(c.Scenario.ArrivalGroupRates) {
-					imgui.PushID(group)
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(group)
-					for _, ap := range sortedAirports {
-						imgui.TableNextColumn()
-						if rate, ok := c.Scenario.ArrivalGroupRates[group][ap]; ok {
-							r := int32(rate)
-							imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0)
-							c.Scenario.ArrivalGroupRates[group][ap] = int(r)
-						}
-					}
-					imgui.PopID()
-				}
-				imgui.EndTable()
-			}
-		}
+		c.Scenario.LaunchConfig.DrawDepartureUI()
+		c.Scenario.LaunchConfig.DrawArrivalUI()
 	} else {
 		// Join remote
 		runningSims := remoteServer.runningSims
@@ -515,12 +572,7 @@ type Sim struct {
 
 	eventStream *EventStream
 
-	LaunchController string
-
-	// airport -> runway -> category -> rate
-	DepartureRates map[string]map[string]map[string]int
-	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]int
+	LaunchConfig LaunchConfig
 
 	// airport -> runway -> category
 	lastDeparture map[string]map[string]map[string]*Departure
@@ -539,9 +591,6 @@ type Sim struct {
 	NextArrivalSpawn map[string]time.Time
 
 	Handoffs map[string]time.Time
-
-	DepartureChallenge float32
-	GoAroundRate       float32
 
 	TotalDepartures int
 	TotalArrivals   int
@@ -582,31 +631,28 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 	s := &Sim{
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
+		LaunchConfig:  ssc.Scenario.LaunchConfig,
 
 		controllers: make(map[string]*ServerController),
 
 		eventStream: NewEventStream(),
 
-		DepartureRates:    DuplicateMap(ssc.Scenario.DepartureRates),
-		ArrivalGroupRates: DuplicateMap(ssc.Scenario.ArrivalGroupRates),
-		lastDeparture:     make(map[string]map[string]map[string]*Departure),
+		lastDeparture: make(map[string]map[string]map[string]*Departure),
 
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
 
-		SimRate:            1,
-		DepartureChallenge: ssc.Scenario.DepartureChallenge,
-		GoAroundRate:       ssc.Scenario.GoAroundRate,
-		Handoffs:           make(map[string]time.Time),
+		SimRate:  1,
+		Handoffs: make(map[string]time.Time),
 	}
 
 	if !isLocal {
 		s.Name = ssc.NewSimName
 	}
 
-	for ap := range s.DepartureRates {
+	for ap := range s.LaunchConfig.DepartureRates {
 		s.lastDeparture[ap] = make(map[string]map[string]*Departure)
-		for rwy := range s.DepartureRates[ap] {
+		for rwy := range s.LaunchConfig.DepartureRates[ap] {
 			s.lastDeparture[ap][rwy] = make(map[string]*Departure)
 		}
 	}
@@ -661,11 +707,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.ApproachAirspace = sc.ApproachAirspace
 	w.DepartureAirspace = sc.DepartureAirspace
 	w.DepartureRunways = sc.DepartureRunways
-	w.DepartureRates = s.DepartureRates
-	w.ArrivalGroupRates = s.ArrivalGroupRates
-	w.GoAroundRate = s.GoAroundRate
-	w.SimTime = s.SimTime
-	w.LaunchController = s.LaunchController
+	w.LaunchConfig = s.LaunchConfig
 	w.SimIsPaused = s.Paused
 	w.SimRate = s.SimRate
 	w.SimName = s.Name
@@ -708,7 +750,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	}
 
 	w.DepartureAirports = make(map[string]*Airport)
-	for name, runwayRates := range s.DepartureRates {
+	for name, runwayRates := range s.LaunchConfig.DepartureRates {
 		for _, categoryRates := range runwayRates {
 			for _, rate := range categoryRates {
 				if rate > 0 {
@@ -718,7 +760,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 	}
 	w.ArrivalAirports = make(map[string]*Airport)
-	for _, airportRates := range s.ArrivalGroupRates {
+	for _, airportRates := range s.LaunchConfig.ArrivalGroupRates {
 		for name, rate := range airportRates {
 			if rate > 0 {
 				w.ArrivalAirports[name] = w.GetAirport(name)
@@ -861,17 +903,19 @@ func (s *Sim) PostEvent(e Event) {
 }
 
 type SimWorldUpdate struct {
-	Aircraft         map[string]*Aircraft
-	Controllers      map[string]*Controller
-	Time             time.Time
-	LaunchController string
-	SimIsPaused      bool
-	SimRate          float32
-	SimDescription   string
-	STARSInput       string
-	Events           []Event
-	TotalDepartures  int
-	TotalArrivals    int
+	Aircraft    map[string]*Aircraft
+	Controllers map[string]*Controller
+	Time        time.Time
+
+	LaunchConfig LaunchConfig
+
+	SimIsPaused     bool
+	SimRate         float32
+	SimDescription  string
+	STARSInput      string
+	Events          []Event
+	TotalDepartures int
+	TotalArrivals   int
 }
 
 func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
@@ -879,7 +923,9 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	if wu.Controllers != nil {
 		w.Controllers = wu.Controllers
 	}
-	w.LaunchController = wu.LaunchController
+
+	w.LaunchConfig = wu.LaunchConfig
+
 	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
@@ -925,16 +971,16 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		}
 
 		*update = SimWorldUpdate{
-			Aircraft:         s.World.Aircraft,
-			Controllers:      s.World.Controllers,
-			Time:             s.SimTime,
-			LaunchController: s.LaunchController,
-			SimIsPaused:      s.Paused,
-			SimRate:          s.SimRate,
-			SimDescription:   s.Scenario,
-			Events:           ctrl.events.Get(),
-			TotalDepartures:  s.TotalDepartures,
-			TotalArrivals:    s.TotalArrivals,
+			Aircraft:        s.World.Aircraft,
+			Controllers:     s.World.Controllers,
+			Time:            s.SimTime,
+			LaunchConfig:    s.LaunchConfig,
+			SimIsPaused:     s.Paused,
+			SimRate:         s.SimRate,
+			SimDescription:  s.Scenario,
+			Events:          ctrl.events.Get(),
+			TotalDepartures: s.TotalDepartures,
+			TotalArrivals:   s.TotalArrivals,
 		}
 
 		return nil
@@ -1015,9 +1061,9 @@ func (s *Sim) Activate() error {
 	}
 
 	s.lastDeparture = make(map[string]map[string]map[string]*Departure)
-	for ap := range s.DepartureRates {
+	for ap := range s.LaunchConfig.DepartureRates {
 		s.lastDeparture[ap] = make(map[string]map[string]*Departure)
-		for rwy := range s.DepartureRates[ap] {
+		for rwy := range s.LaunchConfig.DepartureRates[ap] {
 			s.lastDeparture[ap][rwy] = make(map[string]*Departure)
 		}
 	}
@@ -1114,7 +1160,7 @@ func (s *Sim) Update() {
 
 		name := Select(s.Name != "", s.Name, "(local)")
 		for _, ctrl := range s.controllers {
-			lg.Printf("%s: launch controller %s", name, s.LaunchController)
+			lg.Printf("%s: launch controller %s", name, s.LaunchConfig.Controller)
 			lg.Printf("%s: %s is currently signed in and controlling", name, ctrl.Callsign)
 		}
 		for _, ac := range s.World.Aircraft {
@@ -1230,7 +1276,7 @@ func (s *Sim) updateState() {
 	}
 
 	// Don't spawn automatically if someone is spawning manually.
-	if s.LaunchController == "" {
+	if s.LaunchConfig.Mode == LaunchAutomatic {
 		s.spawnAircraft()
 	}
 }
@@ -1289,7 +1335,7 @@ func (s *Sim) setInitialSpawnTimes() {
 	}
 
 	s.NextArrivalSpawn = make(map[string]time.Time)
-	for group, rates := range s.ArrivalGroupRates {
+	for group, rates := range s.LaunchConfig.ArrivalGroupRates {
 		rateSum := 0
 		for _, rate := range rates {
 			rateSum += rate
@@ -1298,7 +1344,7 @@ func (s *Sim) setInitialSpawnTimes() {
 	}
 
 	s.NextDepartureSpawn = make(map[string]map[string]time.Time)
-	for airport, runwayRates := range s.DepartureRates {
+	for airport, runwayRates := range s.LaunchConfig.DepartureRates {
 		spawn := make(map[string]time.Time)
 
 		for runway, categoryRates := range runwayRates {
@@ -1334,23 +1380,23 @@ func sampleRateMap(rates map[string]int) (string, int) {
 	return result, rateSum
 }
 
+func randomWait(rate int) time.Duration {
+	if rate == 0 {
+		return 365 * 24 * time.Hour
+	}
+	avgSeconds := 3600 / float32(rate)
+	seconds := lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
+	return time.Duration(seconds * float32(time.Second))
+}
+
 func (s *Sim) spawnAircraft() {
 	now := s.SimTime
 
-	randomWait := func(rate int) time.Duration {
-		if rate == 0 {
-			return 365 * 24 * time.Hour
-		}
-		avgSeconds := 3600 / float32(rate)
-		seconds := lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
-		return time.Duration(seconds * float32(time.Second))
-	}
-
-	for group, airportRates := range s.ArrivalGroupRates {
+	for group, airportRates := range s.LaunchConfig.ArrivalGroupRates {
 		if now.After(s.NextArrivalSpawn[group]) {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
-			goAround := rand.Float32() < s.GoAroundRate
+			goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
 			if ac, err := s.World.CreateArrival(group, arrivalAirport, goAround); err != nil {
 				lg.Errorf("%v", err)
 			} else if ac != nil {
@@ -1369,7 +1415,7 @@ func (s *Sim) spawnAircraft() {
 			}
 
 			// Figure out which category to launch
-			category, rateSum := sampleRateMap(s.DepartureRates[airport][runway])
+			category, rateSum := sampleRateMap(s.LaunchConfig.DepartureRates[airport][runway])
 			if rateSum == 0 {
 				lg.Errorf("%s/%s: couldn't find a matching runway for spawning departure?", airport, runway)
 				continue
@@ -1377,7 +1423,8 @@ func (s *Sim) spawnAircraft() {
 
 			prevDep := s.lastDeparture[airport][runway][category]
 			lg.Printf("%s/%s/%s: prev dep", airport, runway, category)
-			ac, dep, err := s.World.CreateDeparture(airport, runway, category, s.DepartureChallenge, prevDep)
+			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
+				s.LaunchConfig.DepartureChallenge, prevDep)
 			if err != nil {
 				lg.Errorf("%v", err)
 			} else {
@@ -1407,17 +1454,57 @@ func (s *Sim) SetSimRate(token string, rate float32) error {
 	}
 }
 
+func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if ctrl, ok := s.controllers[token]; !ok {
+		return ErrInvalidControllerToken
+	} else if ctrl.Callsign != s.LaunchConfig.Controller {
+		return ErrNotLaunchController
+	} else {
+		// Update the next spawn time for any rates that changed.
+		for ap, rwyRates := range lc.DepartureRates {
+			for rwy, categoryRates := range rwyRates {
+				newSum, oldSum := 0, 0
+				for category, rate := range categoryRates {
+					newSum += rate
+					oldSum += s.LaunchConfig.DepartureRates[ap][rwy][category]
+				}
+				if newSum != oldSum {
+					lg.Printf("%s/%s: rate sum %d -> %d", ap, rwy, oldSum, newSum)
+					s.NextDepartureSpawn[ap][rwy] = s.SimTime.Add(randomWait(newSum))
+				}
+			}
+		}
+		for group, groupRates := range lc.ArrivalGroupRates {
+			newSum, oldSum := 0, 0
+			for ap, rate := range groupRates {
+				newSum += rate
+				oldSum += s.LaunchConfig.ArrivalGroupRates[group][ap]
+			}
+			if newSum != oldSum {
+				lg.Printf("%s: rate sum %d -> %d", group, oldSum, newSum)
+				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum))
+			}
+
+		}
+
+		s.LaunchConfig = lc
+		return nil
+	}
+}
+
 func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
-	} else if s.LaunchController != "" && ctrl.Callsign != s.LaunchController {
-		return fmt.Errorf("Launches are already under the control of %s",
-			s.LaunchController)
-	} else if s.LaunchController == "" {
-		s.LaunchController = ctrl.Callsign
+	} else if lctrl := s.LaunchConfig.Controller; lctrl != "" && ctrl.Callsign != lctrl {
+		return ErrNotLaunchController
+	} else if lctrl == "" {
+		s.LaunchConfig.Controller = ctrl.Callsign
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
 			Message: ctrl.Callsign + " is now controlling aircraft launches.",
@@ -1426,9 +1513,9 @@ func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 	} else {
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
-			Message: s.LaunchController + " is no longer controlling aircraft launches.",
+			Message: s.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
-		s.LaunchController = ""
+		s.LaunchConfig.Controller = ""
 		return nil
 	}
 }
@@ -1877,7 +1964,7 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if s.LaunchController != "" && s.LaunchController != ctrl.Callsign {
+			if lctrl := s.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			return nil

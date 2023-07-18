@@ -102,6 +102,14 @@ func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
 		}, nil, nil)
 }
 
+func (s *SimProxy) SetLaunchConfig(lc LaunchConfig) *rpc.Call {
+	return s.Client.Go("Sim.SetLaunchConfig",
+		&SetLaunchConfigArgs{
+			ControllerToken: s.ControllerToken,
+			Config:          lc,
+		}, nil, nil)
+}
+
 func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
 	return s.Client.Go("Sim.TakeOrReturnLaunchControl", s.ControllerToken, nil, nil)
 }
@@ -532,6 +540,19 @@ func (sd *SimDispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetSimRate(r.ControllerToken, r.Rate)
+	}
+}
+
+type SetLaunchConfigArgs struct {
+	ControllerToken string
+	Config          LaunchConfig
+}
+
+func (sd *SimDispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[lc.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetLaunchConfig(lc.ControllerToken, lc.Config)
 	}
 }
 
