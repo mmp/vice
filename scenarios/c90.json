@@ -107,7 +107,7 @@
                     ]
                 }
                 },
-                "deaprture_routes": {
+                "departure_routes": {
                     "10L": {
                         "EARND, DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
@@ -540,7 +540,214 @@
                             "waypoints": [
                                 "STERE/a3000 TACTT/a3000 SAILZ/a3000 DXXON/a3000 MNDOE/a2400 JIBBB/a1900 YACHT/a1500 _MDW_22L/a611"
                             ]
+                        },
+                        "I1C": {
+                            "full_name": "ILS 31C",
+                            "runway": "31C",
+                            "type": "ILS",
+                            "waypoints": [
+                                "HILLS/a5000 GLEAM/a4000 RUNTS/a2500 HOBEL/a17000 _MDW_31C/a613"
+                            ]
                         }
-                    }
+                    },
+                    "departure_routes": {
+                        "4R": {
+                            "PETTY, LEWKE": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_4R _MDW_22L/h100"
+                            },
+                            "ACITO, BACEN, CMSKY, DENNT, EARND": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_4R _MDW_22L/h130"
+                            },
+                            "PMPKN, RAYNR, PEKUE, SIMMN": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_4R _MDW_22L/h250"
+                            }
+                        },
+                        "13C": {
+                            "PETTY, LEWKE": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_13C _MDW_31C/h090"
+                            },
+                            "ACITO, BACEN, CMSKY, DENNT, EARND": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_13C _MDW_31C/h170"
+                            },
+                            "PMPKN, RAYNR, PEKUE, SIMMN": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_13C _MDW_31C/h200"
+                            }
+                        },
+                        "22L": {
+                            "PETTY, LEWKE": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_4R _MDW_22L/h140"
+                            },
+                            "ACITO, BACEN, CMSKY, DENNT, EARND": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_4R _MDW_22L/h180"
+                            },
+                            "PMPKN, RAYNR, PEKUE, SIMMN": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_22L _MDW_4R/h250"
+                            }
+                        },
+                        "31C": {
+                            "PETTY, LEWKE": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_31C _MDW_13C/h100"
+                            },
+                            "ACITO, BACEN, CMSKY, DENNT, EARND": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_31C _MDW_13C/h220"
+                            },
+                            "PMPKN, RAYNR, PEKUE, SIMMN": {
+                                "cleared_altitude": 3000,
+                                "route": "MIDWA6",
+                                "waypoints": "_MDW_31C _MDW_13C/h250"
+                            }
+                        }
+                    },
+                    "departures": [
+                        {
+                            "airlines": [
+                                {
+                                "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 37000,
+                            "destination": "KBHM",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PXV NULLS"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "FFT"
+                                },
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 36000,
+                            "destination": "KPHX",
+                            "exit": "PEKUE",
+                            "route": "PEKUE PIPPN ELYNA BACNN J18 SLN J96 CIM ZUN EAGUL6"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 38000,
+                            "destination": "KLAX",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE MONNY IANNA KD69A DBL CHESZ Q88 PROMT Q88 HAKMN ANJUL4"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 38000,
+                            "destination": "KOAK",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE OGALE LNK DVV J60 DBL J80 MLF KITTN KATTS TATOO MONOH OAKES2"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 36000,
+                            "destination": "KONT",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE OGALE LNK J60 DBL BAWER Q114 NATEE JCKIE2"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 34000,
+                            "destination": "KSMF",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE MONNY JORDY KD72U LCU J94 LLC ANAHO SLMMR5"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 36000,
+                            "destination": "KSAN",
+                            "exit": "PEKUE",
+                            "route": "PEKUE PIGGG QUANE CARET ROEZZ SLN GUP PXR GBN J18 HOGGZ LUCKI1"
+                        },
+                        {
+                         "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 36000,
+                            "destination": "KSFO",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE OGALE LEONG Q114 AYOLE SNY J84 DTA J148 KROST RUMPS OAL INYOE DYAMD5"   
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 38000,
+                            "destination": "KSJC",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE MONNY JORDY ONL J148 DTA KATTS KNGRY RAZRR5"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 38000,
+                            "destination": "KBUR",
+                            "exit": "PEKUE",
+                            "route": "PEKUE OBENE MONNY IANNA YANKI SNY J100 EKR KIMMR Q96 PURSE JANNY5"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 38000,
+                            "destination": "KLGB",
+                            "exit1": "PEKUE",
+                            "route": "PEKUE ELYNA BACNN J18 GCK J96 CIM GUP J134 DRK HIMDU DSNEE5"
+                        }
+                    ]
                 }
             }

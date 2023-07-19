@@ -9121,7 +9121,8 @@
         "SFB_N_TWR",
         "SFB_S_TWR",
         "MCO_W_TWR",
-        "MCO_B_APP"
+        "MCO_B_APP",
+        "MCO_L_APP"
       ],
       "default_map": "Final South Ops",
       "wind": {

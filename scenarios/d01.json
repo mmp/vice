@@ -1,0 +1,46 @@
+{
+  "airports": {
+    "KDEN": {
+      "approaches": {
+        "I7": {
+          "full_name": "ILS Runway 7",
+          "runway": "7",
+          "type": "ILS",
+          "waypoints": [
+            "SARAH/a9000 ASURE/a8000 TAILR/a7000 SUNKE/a5740 _DEN_7/a5352"
+          ]
+        },
+        "I8": {
+          "full_name": "ILS Runway 8",
+          "runway": "8",
+          "type": "ILS",
+          "waypoints": [
+            "LIPPS/a10000 OWNER/a7000 _DEN_8/a5354"
+          ]
+        },
+        "I6L": {
+          "full_name": "ILS Runway 16L",
+          "runway": "16L",
+          "type": "ILS",
+          "waypoints": [
+            "JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357",
+            "KIPPR/a12000/s210 HAYLY JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357",
+            "TSHNR/a13000/s210 JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357",
+            "KAILE/a11000/s210 BJETN BJETN/a10000/s210 JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357"
+          ]
+        },
+        "I6R": {
+          "full_name": "ILS Runway 16R",
+          "runway": "16R",
+          "type": "ILS",
+          "waypoints": [
+            "SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326",
+            "KIPPR/a12000/s210 HAYLY SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326",
+            "TSHNR/a13000/s210 SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326",
+            "KAILE/a11000/s210 SHROM SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326"
+          ]
+        }
+      }
+    }
+  }
+}
