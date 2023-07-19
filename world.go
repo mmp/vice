@@ -31,6 +31,7 @@ type World struct {
 	ArrivalAirports   map[string]*Airport
 
 	lastUpdateRequest time.Time
+	lastReturnedTime  time.Time
 	updateCall        *PendingCall
 	showSettings      bool
 
@@ -483,12 +484,38 @@ func (w *World) SetLaunchConfig(lc LaunchConfig) {
 	w.LaunchConfig = lc // for the UI's benefit...
 }
 
+// CurrentTime returns an extrapolated value that models the current Sim's time.
+// (Because the Sim may be running remotely, we have to make some approximations,
+// though they shouldn't cause much trouble since we get an update from the Sim
+// at least once a second...)
 func (w *World) CurrentTime() time.Time {
-	d := time.Since(w.lastUpdateRequest)
-	if w.SimRate != 0 {
+	t := w.SimTime
+
+	if !w.SimIsPaused {
+		d := time.Since(w.lastUpdateRequest)
+
+		// Roughly account for RPC overhead; more for a remote server (where
+		// SimName will be set.)
+		if w.SimName == "" {
+			d -= 10 * time.Millisecond
+		} else {
+			d -= 50 * time.Millisecond
+		}
+		d = max(0, d)
+
+		// Account for sim rate
 		d = time.Duration(float64(d) * float64(w.SimRate))
+
+		t = t.Add(d)
 	}
-	return w.SimTime.Add(d)
+
+	// Make sure we don't ever go backward; this can happen due to
+	// approximations in the above when an updated current time comes in
+	// with a Sim update.
+	if t.After(w.lastReturnedTime) {
+		w.lastReturnedTime = t
+	}
+	return w.lastReturnedTime
 }
 
 func (w *World) GetWindowTitle() string {
