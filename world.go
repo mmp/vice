@@ -34,6 +34,7 @@ type World struct {
 	lastReturnedTime  time.Time
 	updateCall        *PendingCall
 	showSettings      bool
+	showApproaches    bool
 
 	launchControlWindow *LaunchControlWindow
 
@@ -66,6 +67,7 @@ type World struct {
 	ApproachAirspace  []AirspaceVolume
 	DepartureAirspace []AirspaceVolume
 	DepartureRunways  []ScenarioGroupDepartureRunway
+	ArrivalRunways    []ScenarioGroupArrivalRunway
 	Scratchpads       map[string]string
 	ArrivalGroups     map[string][]Arrival
 	TotalDepartures   int
@@ -112,6 +114,7 @@ func (w *World) Assign(other *World) {
 	w.ApproachAirspace = other.ApproachAirspace
 	w.DepartureAirspace = other.DepartureAirspace
 	w.DepartureRunways = other.DepartureRunways
+	w.ArrivalRunways = other.ArrivalRunways
 	w.Scratchpads = other.Scratchpads
 	w.ArrivalGroups = other.ArrivalGroups
 	w.LaunchConfig = other.LaunchConfig
@@ -879,6 +882,10 @@ func (w *World) ToggleActivateSettingsWindow() {
 	w.showSettings = !w.showSettings
 }
 
+func (w *World) ToggleShowApproachesWindow() {
+	w.showApproaches = !w.showApproaches
+}
+
 type MissingPrimaryModalClient struct {
 	world *World
 }
@@ -920,6 +927,47 @@ func (w *World) DrawMissingPrimaryDialog() {
 			uiShowModalDialog(w.missingPrimaryDialog, true)
 		}
 	}
+}
+
+func (w *World) DrawApproachesWindow() {
+	if !w.showApproaches {
+		return
+	}
+
+	imgui.BeginV("Available Approaches", &w.showApproaches, imgui.WindowFlagsAlwaysAutoResize)
+
+	if imgui.BeginTableV("appr", 4, 0, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("Runway")
+		imgui.TableSetupColumn("Code")
+		imgui.TableSetupColumn("Description")
+		imgui.TableHeadersRow()
+
+		for _, rwy := range w.ArrivalRunways {
+			if ap, ok := w.Airports[rwy.Airport]; !ok {
+				lg.Errorf("%s: arrival %s airport not in world airports %s", rwy.Airport,
+					spew.Sdump(rwy), spew.Sdump(w.Airports))
+			} else {
+				for _, name := range SortedMapKeys(ap.Approaches) {
+					appr := ap.Approaches[name]
+					if appr.Runway == rwy.Runway {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(rwy.Airport)
+						imgui.TableNextColumn()
+						imgui.Text(rwy.Runway)
+						imgui.TableNextColumn()
+						imgui.Text(name)
+						imgui.TableNextColumn()
+						imgui.Text(appr.FullName)
+					}
+				}
+			}
+		}
+		imgui.EndTable()
+	}
+
+	imgui.End()
 }
 
 func (w *World) DrawSettingsWindow() {

@@ -188,6 +188,7 @@ func main() {
 					ControllerToken: result.ControllerToken,
 					Client:          localServer.client,
 				}
+				world.ToggleShowApproachesWindow()
 			}
 		}
 
@@ -217,6 +218,7 @@ func main() {
 				if world == nil {
 					uiShowConnectDialog(false)
 				} else if world != nil {
+					world.ToggleShowApproachesWindow()
 					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 						p.ResetWorld(world)
 					})

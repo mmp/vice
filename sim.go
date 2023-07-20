@@ -707,6 +707,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.ApproachAirspace = sc.ApproachAirspace
 	w.DepartureAirspace = sc.DepartureAirspace
 	w.DepartureRunways = sc.DepartureRunways
+	w.ArrivalRunways = sc.ArrivalRunways
 	w.LaunchConfig = s.LaunchConfig
 	w.SimIsPaused = s.Paused
 	w.SimRate = s.SimRate

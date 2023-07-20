@@ -224,6 +224,13 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Open settings window")
 			}
+
+			if imgui.Button(FontAwesomeIconQuestionCircle) {
+				w.ToggleShowApproachesWindow()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Show available approaches")
+			}
 		}
 
 		enableLaunch := w != nil &&
@@ -272,6 +279,8 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 
 	if w != nil {
 		w.DrawSettingsWindow()
+
+		w.DrawApproachesWindow()
 
 		w.DrawMissingPrimaryDialog()
 
