@@ -249,7 +249,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		}
 		uiEndDisable(!enableLaunch)
 
-		if imgui.Button(FontAwesomeIconQuestionCircle) {
+		if imgui.Button(FontAwesomeIconBook) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
 		if imgui.IsItemHovered() {
