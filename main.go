@@ -191,7 +191,7 @@ func main() {
 			}
 		}
 
-		wmInit(eventStream)
+		wmInit()
 
 		uiInit(renderer, platform)
 
