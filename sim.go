@@ -1007,25 +1007,12 @@ func (s *Sim) Activate() error {
 		}
 	}
 
-	// A number of time.Time values are included in the serialized World.
-	// updateTime is a helper function that rewrites them to be in terms of
-	// the current time, using the serializion time as a baseline.
 	now := time.Now()
-	serializeTime := s.SimTime
-	updateTime := func(t time.Time) time.Time {
-		return now.Add(t.Sub(serializeTime))
-	}
-
-	s.SimTime = now
 	s.lastUpdateTime = now
+	s.World.lastUpdateRequest = now
 
 	for _, ac := range s.World.Aircraft {
 		e.Push(ac.Callsign)
-
-		// Rewrite the radar track times to be w.r.t now
-		for i := range ac.Tracks {
-			ac.Tracks[i].Time = updateTime(ac.Tracks[i].Time)
-		}
 
 		if ap := ac.Approach; ap != nil {
 			for i := range ap.Waypoints {
@@ -1066,20 +1053,6 @@ func (s *Sim) Activate() error {
 			for _, rwp := range arr.RunwayWaypoints {
 				initializeWaypointLocations(rwp, &e)
 			}
-		}
-	}
-
-	for ho, t := range s.Handoffs {
-		s.Handoffs[ho] = updateTime(t)
-	}
-
-	for group, t := range s.NextArrivalSpawn {
-		s.NextArrivalSpawn[group] = updateTime(t)
-	}
-
-	for airport, runwayTimes := range s.NextDepartureSpawn {
-		for runway, t := range runwayTimes {
-			s.NextDepartureSpawn[airport][runway] = updateTime(t)
 		}
 	}
 
