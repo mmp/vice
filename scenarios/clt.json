@@ -1800,7 +1800,7 @@
                         "scope_char": "C",
                         "sector_id": "43"
                     },
-                    "CLT_W_APP": {
+                    "CLT_APP": {
                         "frequency": 119500,
                         "full_name": "Charlotte Approach",
                         "scope_char": "W",
@@ -1969,13 +1969,13 @@
                         "solo_controller": "CLT_APP",
                         "multi_controllers": {
                             "CLT_W_DEP": {"departure": true, "primary": true},
-                            "CLT_H_APP": {"backup": "CLT_W_DEP"},
+                            "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3", "CHSLY5"]},
                             "CLT_A_APP": {"backup": "CLT_H_APP"},
                             "CLT_M_APP": {"backup": "CLT_A_APP"},
                             "CLT_F_APP": {"backup": "CLT_M_APP"},
                             "CLT_E_DEP": {"backup": "CLT_W_DEP"},
-                            "CLT_U_APP": {"backup": "CLT_H_APP"},
-                            "CLT_D_APP": {"backup": "CLT_U_APP"},
+                            "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3", "PARQR3"]},
+                            "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3", "JONZE3"]},
                             "CLT_S_APP": {"backup": "CLT_E_DEP"},
                             "CLT_N_APP": {"backup": "CLT_S_APP"},
                             "CLT_Q_APP": {"backup": "CLT_N_APP"}
