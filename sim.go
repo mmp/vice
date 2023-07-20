@@ -904,7 +904,6 @@ type SimWorldUpdate struct {
 
 	SimIsPaused     bool
 	SimRate         float32
-	SimDescription  string
 	STARSInput      string
 	Events          []Event
 	TotalDepartures int
@@ -922,7 +921,6 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
-	w.SimDescription = wu.SimDescription
 	w.STARSInputOverride = wu.STARSInput
 	w.TotalDepartures = wu.TotalDepartures
 	w.TotalArrivals = wu.TotalArrivals
@@ -970,7 +968,6 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			LaunchConfig:    s.LaunchConfig,
 			SimIsPaused:     s.Paused,
 			SimRate:         s.SimRate,
-			SimDescription:  s.Scenario,
 			Events:          ctrl.events.Get(),
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
