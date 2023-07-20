@@ -41,7 +41,6 @@ var (
 		keyboardFocusStack []Pane
 
 		lastAircraftResponse string
-		events               *EventsSubscription
 	}
 )
 
@@ -362,10 +361,9 @@ func (d *DisplayNode) getString(indent string) string {
 
 // wmInit handles general initialization for the window (pane) management
 // system.
-func wmInit(eventStream *EventStream) {
+func wmInit() {
 	wm.showPaneSettings = make(map[Pane]*bool)
 	wm.showPaneName = make(map[Pane]string)
-	wm.events = eventStream.Subscribe()
 }
 
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
