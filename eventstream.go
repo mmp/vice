@@ -185,6 +185,7 @@ const (
 	RejectedHandoffEvent
 	RadioTransmissionEvent
 	StatusMessageEvent
+	NumEventTypes
 )
 
 func (t EventType) String() string {

@@ -97,7 +97,7 @@ func (l *Logger) PrintfUp1(f string, args ...interface{}) {
 
 func (l *Logger) printf(levels int, f string, args ...interface{}) {
 	if l == nil {
-		fmt.Fprintf(os.Stderr, f, args...)
+		// ignore
 		return
 	}
 
