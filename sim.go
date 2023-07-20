@@ -833,6 +833,11 @@ func (s *Sim) SignOff(token string) error {
 			ac.DropControllerTrack(ctrl.Callsign)
 		}
 
+		if ctrl.Callsign == s.LaunchConfig.Controller {
+			// give up control of launches so someone else can take it.
+			s.LaunchConfig.Controller = ""
+		}
+
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
 		delete(s.World.Controllers, ctrl.Callsign)
