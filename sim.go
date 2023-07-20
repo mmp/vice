@@ -1533,6 +1533,10 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 	} else if ac, ok := s.World.Aircraft[callsign]; !ok {
 		return ErrNoAircraftForCallsign
 	} else {
+		if sc.Callsign == "Observer" {
+			return ErrOtherControllerHasTrack
+		}
+
 		ctrl := s.World.GetController(sc.Callsign)
 		if ctrl == nil {
 			lg.Errorf("couldn't get controller \"%s\". world controllers: %s",
@@ -1540,9 +1544,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			return ErrNoController
 		}
 
-		if ctrl.Callsign == "Observer" {
-			return ErrOtherControllerHasTrack
-		} else if err := check(ctrl, ac); err != nil {
+		if err := check(ctrl, ac); err != nil {
 			return err
 		} else {
 			octrl := ac.ControllingController
