@@ -20,15 +20,13 @@ import (
 // Logger provides a simple logging system with a few different log levels;
 // debugging and verbose output may both be suppressed independently.
 type Logger struct {
-	w, errors     io.Writer
-	start         time.Time
-	printToStderr bool
+	w, errors io.Writer
+	start     time.Time
 }
 
 func NewLogger(server bool, printToStderr bool) *Logger {
 	l := &Logger{
-		start:         time.Now(),
-		printToStderr: printToStderr,
+		start: time.Now(),
 	}
 
 	if server {
@@ -104,10 +102,6 @@ func (l *Logger) printf(levels int, f string, args ...interface{}) {
 	}
 
 	msg := l.format(levels, f, args...)
-	if l.printToStderr {
-		fmt.Fprint(os.Stderr, msg)
-	}
-
 	l.w.Write([]byte(msg))
 }
 
