@@ -316,7 +316,7 @@ func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 				fsp.strips = append(fsp.strips, ac.Callsign)
 				fsp.addedAircraft[ac.Callsign] = nil
 			} else if ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && fsp.isDeparture(ac, w)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, w))) {
+				((fsp.AutoAddDepartures && ac.IsDeparture) || (fsp.AutoAddArrivals && !ac.IsDeparture)) {
 				fsp.strips = append(fsp.strips, ac.Callsign)
 				fsp.addedAircraft[ac.Callsign] = nil
 			}
@@ -332,14 +332,6 @@ func (fsp *FlightStripPane) Deactivate() {
 func (fsp *FlightStripPane) ResetWorld(w *World) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
-}
-
-func (fsp *FlightStripPane) isDeparture(ac *Aircraft, w *World) bool {
-	return ac.FlightPlan != nil && w.DepartureAirports[ac.FlightPlan.DepartureAirport] != nil
-}
-
-func (fsp *FlightStripPane) isArrival(ac *Aircraft, w *World) bool {
-	return ac.FlightPlan != nil && w.ArrivalAirports[ac.FlightPlan.ArrivalAirport] != nil
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
@@ -364,7 +356,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign {
 			possiblyAdd(ac)
 		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && fsp.isDeparture(ac, w)) || (fsp.AutoAddArrivals && fsp.isArrival(ac, w))) {
+			((fsp.AutoAddDepartures && ac.IsDeparture) || (fsp.AutoAddArrivals && !ac.IsDeparture)) {
 			possiblyAdd(ac)
 		}
 	}
@@ -419,11 +411,8 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			if ac := w.GetAircraft(callsign); ac == nil {
-				return false
-			} else {
-				return fsp.isDeparture(ac, w)
-			}
+			ac := w.GetAircraft(callsign)
+			return ac != nil && ac.IsDeparture
 		}
 		dep := FilterSlice(fsp.strips, isDeparture)
 		arr := FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })

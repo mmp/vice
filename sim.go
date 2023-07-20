@@ -750,21 +750,13 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	}
 
 	w.DepartureAirports = make(map[string]*Airport)
-	for name, runwayRates := range s.LaunchConfig.DepartureRates {
-		for _, categoryRates := range runwayRates {
-			for _, rate := range categoryRates {
-				if rate > 0 {
-					w.DepartureAirports[name] = w.GetAirport(name)
-				}
-			}
-		}
+	for name := range s.LaunchConfig.DepartureRates {
+		w.DepartureAirports[name] = w.GetAirport(name)
 	}
 	w.ArrivalAirports = make(map[string]*Airport)
 	for _, airportRates := range s.LaunchConfig.ArrivalGroupRates {
-		for name, rate := range airportRates {
-			if rate > 0 {
-				w.ArrivalAirports[name] = w.GetAirport(name)
-			}
+		for name := range airportRates {
+			w.ArrivalAirports[name] = w.GetAirport(name)
 		}
 	}
 

@@ -19,7 +19,6 @@ import (
 	"unicode"
 	"unsafe"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -781,8 +780,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
-		sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
-	
+	sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
 
 	color := ps.Brightness.RangeRings.RGB()
 	cb.LineWidth(1)
@@ -2490,7 +2488,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 		}
 		for i := range ps.WeatherIntensity {
 			STARSDisabledButton("WX"+fmt.Sprintf("%d", i), STARSButtonHalfHorizontal, buttonScale)
-			
+
 		}
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
@@ -3398,7 +3396,7 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 		return
 	}
 
-	if _, ok := ctx.world.DepartureAirports[ac.FlightPlan.DepartureAirport]; ok {
+	if ac.IsDeparture {
 		if len(ctx.world.DepartureAirspace) > 0 {
 			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, ctx.world.DepartureAirspace)
 			if !ac.HaveEnteredAirspace {
@@ -3408,7 +3406,7 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 				outside = !inDepartureAirspace
 			}
 		}
-	} else if _, ok := ctx.world.ArrivalAirports[ac.FlightPlan.ArrivalAirport]; ok {
+	} else {
 		if len(ctx.world.ApproachAirspace) > 0 {
 			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, ctx.world.ApproachAirspace)
 			if !ac.HaveEnteredAirspace {
@@ -3418,8 +3416,6 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 				outside = !inApproachAirspace
 			}
 		}
-	} else {
-		lg.Errorf("%s: neither a departure nor an arrival??!? %s", ac.Callsign, spew.Sdump(ac.FlightPlan))
 	}
 	return
 }
