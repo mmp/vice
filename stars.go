@@ -12,6 +12,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -2401,7 +2402,9 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) {
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 19
-	buttonScale := min(float32(1), (ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
+	// Sigh; on windows we want the button size in pixels on high DPI displays
+	ds := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	buttonScale := min(float32(1), (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
 
 	sp.StartDrawDCB(ctx, buttonScale)
 
@@ -3229,11 +3232,14 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		}
 		rot := rotator2f(orientation)
 
+		// On high DPI windows displays we need to scale up the tracks
+		scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+
 		// blue box: x +/-9 pixels, y +/-3 pixels
 		// TODO: size based on distance to radar, if not MULTI
 		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 		for i := range box {
-			box[i] = add2f(rot(box[i]), pw)
+			box[i] = add2f(rot(scale2f(box[i], scale)), pw)
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 		color := brightness.ScaleRGB(STARSTrackBlockColor)
@@ -3252,7 +3258,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			// TODO: size based on distance to radar
 			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
 			for i := range line {
-				line[i] = add2f(rot(line[i]), pw)
+				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
 			}
 			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
@@ -3282,7 +3288,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 				return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
 			}
 
-			px := float32(3)
+			px := float32(3) * scale
 			// diagonals
 			diagPx := px * 0.707107                                     /* 1/sqrt(2) */
 			trackColor := brightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
