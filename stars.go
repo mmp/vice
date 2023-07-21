@@ -3362,9 +3362,7 @@ func (sp *STARSPane) updateDatablockTextAndPosition(ctx *PaneContext, aircraft [
 				return fmt.Sprintf("%*c", maxLen-len(s), ' ') + s
 			}
 			for i := 0; i < 2; i++ {
-				for j := range state.datablockText[i] {
-					state.datablockText[i][j] = justify(state.datablockText[i][j])
-				}
+				state.datablockText[i][0] = justify(state.datablockText[i][0])
 			}
 		}
 
