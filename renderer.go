@@ -395,7 +395,7 @@ func (cb *CommandBuffer) DisableTexCoordArray() {
 func (cb *CommandBuffer) PointSize(w float32) {
 	cb.appendInts(RendererPointSize)
 	// Scale as needed so that points are the same size on retina-style displays.
-	cb.appendFloats(w * dpiScale(platform))
+	cb.appendFloats(w * platform.DPIScale())
 }
 
 // DrawPoints adds a command to the command buffer to draw a number of points.
@@ -411,7 +411,7 @@ func (cb *CommandBuffer) DrawPoints(offset, count int) {
 func (cb *CommandBuffer) LineWidth(w float32) {
 	cb.appendInts(RendererLineWidth)
 	// Scale as needed so that lines are the same width on retina-style displays.
-	cb.appendFloats(w * dpiScale(platform))
+	cb.appendFloats(w * platform.DPIScale())
 }
 
 // DrawLines adds a command to the command buffer to draw a number of

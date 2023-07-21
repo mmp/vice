@@ -98,7 +98,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 }
 
 func splitLineWidth() int {
-	return int(2*dpiScale(platform) + 0.5)
+	return int(2*platform.DPIScale() + 0.5)
 }
 
 ///////////////////////////////////////////////////////////////////////////

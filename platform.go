@@ -58,16 +58,8 @@ type Platform interface {
 	StartCaptureMouse(e Extent2D)
 	// Disable mouse capture.
 	EndCaptureMouse()
-}
-
-// Scaling factor to account for Retina-style displays
-func dpiScale(p Platform) float32 {
-	if runtime.GOOS == "windows" {
-		sx, sy := glfw.GetPrimaryMonitor().GetContentScale()
-		return float32(int((sx + sy) / 2))
-	} else {
-		return p.FramebufferSize()[0] / p.DisplaySize()[0]
-	}
+	// Scaling factor to account for Retina-style displays
+	DPIScale() float32
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -139,6 +131,15 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 
 	lg.Printf("Finished GLFW initialization")
 	return platform, nil
+}
+
+func (g *GLFWPlatform) DPIScale() float32 {
+	if runtime.GOOS == "windows" {
+		sx, sy := g.window.GetContentScale()
+		return float32(int((sx + sy) / 2))
+	} else {
+		return g.FramebufferSize()[0] / g.DisplaySize()[0]
+	}
 }
 
 func (g *GLFWPlatform) EnableVSync(sync bool) {

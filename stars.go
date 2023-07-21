@@ -770,7 +770,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// scissor so we can't draw in the DCB area
 		paneRemaining := ctx.paneExtent
 		paneRemaining.p1[1] -= STARSButtonHeight
-		fbPaneExtent := paneRemaining.Scale(dpiScale(ctx.platform))
+		fbPaneExtent := paneRemaining.Scale(ctx.platform.DPIScale())
 		cb.Scissor(int(fbPaneExtent.p0[0]), int(fbPaneExtent.p0[1]),
 			int(fbPaneExtent.Width()+.5), int(fbPaneExtent.Height()+.5))
 	}
