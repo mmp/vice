@@ -436,7 +436,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
 			}
 			imgui.EndTable()
+
 		}
+		imgui.Separator()
 
 		c.Scenario.LaunchConfig.DrawDepartureUI()
 		c.Scenario.LaunchConfig.DrawArrivalUI()
