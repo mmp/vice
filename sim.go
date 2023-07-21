@@ -1082,22 +1082,29 @@ func (s *Sim) Update() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	for token, ctrl := range s.controllers {
-		if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
-			if !ctrl.warnedNoUpdateCalls {
-				ctrl.warnedNoUpdateCalls = true
-				lg.Errorf("%s: no messages for 5 seconds", ctrl.Callsign)
-				s.eventStream.Post(Event{
-					Type:    StatusMessageEvent,
-					Message: ctrl.Callsign + " has not been heard from for 5 seconds. Connection lost?",
-				})
-			}
+	if s.Name != "" {
+		// Sign off controllers we haven't heard from in 15 seconds so that
+		// someone else can take their place. We only make this check for
+		// multi-controller sims; we don't want to do this for local sims
+		// so that we don't kick people off e.g. when their computer
+		// sleeps.
+		for token, ctrl := range s.controllers {
+			if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
+				if !ctrl.warnedNoUpdateCalls {
+					ctrl.warnedNoUpdateCalls = true
+					lg.Errorf("%s: no messages for 5 seconds", ctrl.Callsign)
+					s.eventStream.Post(Event{
+						Type:    StatusMessageEvent,
+						Message: ctrl.Callsign + " has not been heard from for 5 seconds. Connection lost?",
+					})
+				}
 
-			if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-				lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
-				s.mu.Unlock()
-				s.SignOff(token)
-				s.mu.Lock()
+				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
+					lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
+					s.mu.Unlock()
+					s.SignOff(token)
+					s.mu.Lock()
+				}
 			}
 		}
 	}
