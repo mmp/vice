@@ -4436,8 +4436,8 @@ func (sp *STARSPane) getLeaderLineVector(ac *Aircraft) [2]float32 {
 
 func (sp *STARSPane) isOverflight(ctx *PaneContext, ac *Aircraft) bool {
 	return ac.FlightPlan != nil &&
-		(ctx.world.GetAirport(ac.FlightPlan.DepartureAirport) != nil ||
-			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) != nil)
+		(ctx.world.GetAirport(ac.FlightPlan.DepartureAirport) == nil &&
+			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) == nil)
 }
 
 func (sp *STARSPane) tryGetClickedAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
