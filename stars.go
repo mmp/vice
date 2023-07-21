@@ -3383,11 +3383,11 @@ func (sp *STARSPane) updateDatablockTextAndPosition(ctx *PaneContext, aircraft [
 		bw, bh := float32(w), float32(h)
 		switch dir {
 		case North:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw / 2, bh})
+			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, bh})
 		case NorthEast, East, SouthEast:
 			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, bh / 2})
 		case South:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw / 2, 0})
+			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, 0})
 		case SouthWest, West, NorthWest:
 			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw, bh / 2})
 		}
