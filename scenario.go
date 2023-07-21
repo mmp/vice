@@ -5,7 +5,6 @@
 package main
 
 import (
-	"embed"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -633,14 +632,6 @@ func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]i
 ///////////////////////////////////////////////////////////////////////////
 // LoadScenarioGroups
 
-var (
-	//go:embed scenarios/*.json
-	embeddedScenarioGroups embed.FS
-
-	//go:embed videomaps/*.json.zst
-	embeddedVideoMaps embed.FS
-)
-
 func loadVideoMaps(filesystem fs.FS, path string, e *ErrorLogger) map[string]CommandBuffer {
 	e.Push("File " + path)
 	defer e.Pop()
@@ -721,13 +712,27 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*SimConfiguration) {
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
-	err := fs.WalkDir(embeddedVideoMaps, "videomaps", func(path string, d fs.DirEntry, err error) error {
+
+	rd := getResourcesDirectory()
+	lg.Printf("%s: resources directory", rd)
+	fsys := os.DirFS(rd)
+
+	err := fs.WalkDir(fsys, "videomaps", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			lg.Errorf("%v", err)
+			return nil
+		}
+
 		if d.IsDir() {
 			return nil
 		}
 
-		lg.Printf("%s: loading embedded video map", path)
-		vm := loadVideoMaps(embeddedVideoMaps, path, e)
+		if filepath.Ext(path) != ".json" && filepath.Ext(path) != ".zst" {
+			return nil
+		}
+
+		lg.Printf("%s: loading video map", path)
+		vm := loadVideoMaps(fsys, path, e)
 		if vm != nil {
 			videoMapCommandBuffers[path] = vm
 		}
@@ -763,13 +768,22 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	scenarioGroups := make(map[string]*ScenarioGroup)
 	simConfigurations := make(map[string]*SimConfiguration)
 
-	err = fs.WalkDir(embeddedScenarioGroups, "scenarios", func(path string, d fs.DirEntry, err error) error {
+	err = fs.WalkDir(fsys, "scenarios", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			lg.Errorf("%v", err)
+			return nil
+		}
+
 		if d.IsDir() {
 			return nil
 		}
 
-		lg.Printf("%s: loading embedded scenario", path)
-		s := loadScenarioGroup(embeddedScenarioGroups, path, e)
+		if filepath.Ext(path) != ".json" {
+			return nil
+		}
+
+		lg.Printf("%s: loading scenario", path)
+		s := loadScenarioGroup(fsys, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.Name]; ok {
 				e.ErrorString("%s: scenario redefined", s.Name)

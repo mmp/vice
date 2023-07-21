@@ -21,8 +21,10 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -1989,5 +1991,20 @@ func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
 			}
 		}
 		return false
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+func getResourcesDirectory() string {
+	path, err := os.Executable()
+	if err != nil {
+		lg.Errorf("%s: error getting executable path", err)
+	}
+
+	if runtime.GOOS == "darwin" {
+		return filepath.Clean(filepath.Join(path, "..", "..", "Resources"))
+	} else {
+		return path
 	}
 }
