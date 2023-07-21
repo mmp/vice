@@ -3502,17 +3502,38 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			mainblock[0] = append(mainblock[0], sq)
 			mainblock[1] = append(mainblock[1], sq+"WHO")
 		}
+		actype := ac.FlightPlan.TypeWithoutSuffix()
+		suffix := "  "
+		if ac.FlightPlan.Rules == VFR {
+			suffix = "V"
+		} else if sp.isOverflight(ctx, ac) {
+			suffix = "E"
+		} else {
+			suffix = " "
+		}
+		if actype == "B757" {
+			suffix += "F"
+		} else if strings.HasPrefix(actype, "H/") {
+			actype = strings.TrimPrefix(actype, "H/")
+			suffix += "H"
+		} else if strings.HasPrefix(actype, "S/") {
+			actype = strings.TrimPrefix(actype, "S/")
+			suffix += "J"
+		} else if strings.HasPrefix(actype, "J/") {
+			actype = strings.TrimPrefix(actype, "J/")
+			suffix += "J"
+		}
 
 		// Unassociated with LDB should be 2 lines: squawk, altitude--unless
 		// beacon codes are inhibited in LDBs.
 
 		if fp := ac.FlightPlan; fp != nil && fp.Rules == IFR {
 			// Alternate between altitude and either scratchpad or destination airport.
-			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (ac.TrackAltitude()+50)/100))
+			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (ac.TrackAltitude()+50)/100)+suffix)
 			if ac.Scratchpad != "" {
-				mainblock[1] = append(mainblock[1], ac.Scratchpad)
+				mainblock[1] = append(mainblock[1], ac.Scratchpad+suffix)
 			} else {
-				mainblock[1] = append(mainblock[1], fp.ArrivalAirport)
+				mainblock[1] = append(mainblock[1], fp.ArrivalAirport+suffix)
 			}
 		} else {
 			as := fmt.Sprintf("%03d  %02d", (ac.TrackAltitude()+50)/100, (ac.TrackGroundspeed()+5)/10)
