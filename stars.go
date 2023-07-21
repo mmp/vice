@@ -3351,9 +3351,7 @@ func (sp *STARSPane) updateDatablockTextAndPosition(ctx *PaneContext, aircraft [
 				return fmt.Sprintf("%*c", maxLen-len(s), ' ') + s
 			}
 			for i := 0; i < 2; i++ {
-				for j := range state.datablockText[i] {
-					state.datablockText[i][j] = justify(state.datablockText[i][j])
-				}
+				state.datablockText[i][0] = justify(state.datablockText[i][0])
 			}
 		}
 
@@ -3374,11 +3372,11 @@ func (sp *STARSPane) updateDatablockTextAndPosition(ctx *PaneContext, aircraft [
 		bw, bh := float32(w), float32(h)
 		switch dir {
 		case North:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw / 2, bh})
+			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, bh})
 		case NorthEast, East, SouthEast:
 			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, bh / 2})
 		case South:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw / 2, 0})
+			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, 0})
 		case SouthWest, West, NorthWest:
 			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw, bh / 2})
 		}
@@ -3504,17 +3502,38 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			mainblock[0] = append(mainblock[0], sq)
 			mainblock[1] = append(mainblock[1], sq+"WHO")
 		}
+		actype := ac.FlightPlan.TypeWithoutSuffix()
+		suffix := "  "
+		if ac.FlightPlan.Rules == VFR {
+			suffix = "V"
+		} else if sp.isOverflight(ctx, ac) {
+			suffix = "E"
+		} else {
+			suffix = " "
+		}
+		if actype == "B757" {
+			suffix += "F"
+		} else if strings.HasPrefix(actype, "H/") {
+			actype = strings.TrimPrefix(actype, "H/")
+			suffix += "H"
+		} else if strings.HasPrefix(actype, "S/") {
+			actype = strings.TrimPrefix(actype, "S/")
+			suffix += "J"
+		} else if strings.HasPrefix(actype, "J/") {
+			actype = strings.TrimPrefix(actype, "J/")
+			suffix += "J"
+		}
 
 		// Unassociated with LDB should be 2 lines: squawk, altitude--unless
 		// beacon codes are inhibited in LDBs.
 
 		if fp := ac.FlightPlan; fp != nil && fp.Rules == IFR {
 			// Alternate between altitude and either scratchpad or destination airport.
-			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (ac.TrackAltitude()+50)/100))
+			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (ac.TrackAltitude()+50)/100)+suffix)
 			if ac.Scratchpad != "" {
-				mainblock[1] = append(mainblock[1], ac.Scratchpad)
+				mainblock[1] = append(mainblock[1], ac.Scratchpad+suffix)
 			} else {
-				mainblock[1] = append(mainblock[1], fp.ArrivalAirport)
+				mainblock[1] = append(mainblock[1], fp.ArrivalAirport+suffix)
 			}
 		} else {
 			as := fmt.Sprintf("%03d  %02d", (ac.TrackAltitude()+50)/100, (ac.TrackGroundspeed()+5)/10)
@@ -3539,10 +3558,10 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		mainblock[1] = append(mainblock[1], cs)
 
 		// Second line of the non-error datablock
-		ho := "  "
+		ho := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				ho = ctrl.SectorId
+				ho = ctrl.SectorId[len(ctrl.SectorId)-1:]
 			}
 		}
 
@@ -3553,7 +3572,28 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		}
 		speed := fmt.Sprintf("%02d", (ac.TrackGroundspeed()+5)/10)
 		// TODO: pilot reported altitude. Asterisk after alt when showing.
-		mainblock[0] = append(mainblock[0], alt+ho+speed)
+		actype := ac.FlightPlan.TypeWithoutSuffix()
+		suffix := "  "
+		if ac.FlightPlan.Rules == VFR {
+			suffix = "V"
+		} else if sp.isOverflight(ctx, ac) {
+			suffix = "E"
+		} else {
+			suffix = " "
+		}
+		if actype == "B757" {
+			suffix += "F"
+		} else if strings.HasPrefix(actype, "H/") {
+			actype = strings.TrimPrefix(actype, "H/")
+			suffix += "H"
+		} else if strings.HasPrefix(actype, "S/") {
+			actype = strings.TrimPrefix(actype, "S/")
+			suffix += "J"
+		} else if strings.HasPrefix(actype, "J/") {
+			actype = strings.TrimPrefix(actype, "J/")
+			suffix += "J"
+		}
+		mainblock[0] = append(mainblock[0], alt+ho+speed+suffix)
 
 		// mainblock[1]
 		arrscr := ac.FlightPlan.ArrivalAirport
@@ -3561,27 +3601,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			arrscr = ac.Scratchpad
 		}
 
-		actype := ac.FlightPlan.TypeWithoutSuffix()
-		suffix := ""
-		if sp.isOverflight(ctx, ac) {
-			suffix += "E"
-		}
-		if ac.FlightPlan.Rules == VFR {
-			suffix += "V"
-		} else if actype == "B757" {
-			suffix += " F"
-		} else if strings.HasPrefix(actype, "H/") {
-			actype = strings.TrimPrefix(actype, "H/")
-			suffix += " H"
-		} else if strings.HasPrefix(actype, "S/") {
-			actype = strings.TrimPrefix(actype, "S/")
-			suffix += " J"
-		} else if strings.HasPrefix(actype, "J/") {
-			actype = strings.TrimPrefix(actype, "J/")
-			suffix += " J"
-		}
-
-		mainblock[1] = append(mainblock[1], arrscr+ho+actype+suffix)
+		mainblock[1] = append(mainblock[1], arrscr+ho+actype)
 	}
 
 	if ac.TempAltitude != 0 {
@@ -4437,8 +4457,8 @@ func (sp *STARSPane) getLeaderLineVector(ac *Aircraft) [2]float32 {
 
 func (sp *STARSPane) isOverflight(ctx *PaneContext, ac *Aircraft) bool {
 	return ac.FlightPlan != nil &&
-		(ctx.world.GetAirport(ac.FlightPlan.DepartureAirport) != nil ||
-			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) != nil)
+		(ctx.world.GetAirport(ac.FlightPlan.DepartureAirport) == nil &&
+			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) == nil)
 }
 
 func (sp *STARSPane) tryGetClickedAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
