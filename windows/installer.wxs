@@ -38,32 +38,32 @@
             <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
           </Component>
           <Component Id="Resources" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
-            <File Id="c90-maps.json.zst"
+            <File Id="c90maps"
                   Source="videomaps\\c90-maps.json.zst" KeyPath="yes" />
-            <File Id="cle-maps.json.zst"
+            <File Id="clemaps"
                   Source="videomaps\\cle-maps.json.zst" />
-            <File Id="cltmaps.json.zst"
+            <File Id="cltmaps"
                   Source="videomaps\\cltmaps.json.zst" />
-            <File Id="dab-maps.json.zst"
+            <File Id="dabmaps"
                   Source="videomaps\\dab-maps.json.zst" />
-            <File Id="jax-maps.json.zst"
+            <File Id="jaxmaps"
                   Source="videomaps\\jax-maps.json.zst" />
-            <File Id="zjx-maps.json.zst"
+            <File Id="zjxmaps"
                   Source="videomaps\\zjx-maps.json.zst" />
-            <File Id="zny-maps.json.zst"
+            <File Id="znymaps"
                   Source="videomaps\\zny-maps.json.zst" />
-            <File Id="abe.json" Source="scenarios\\abe.json" />
-            <File Id="c90.json" Source="scenarios\\c90.json" />
-            <File Id="cle.json" Source="scenarios\\cle.json" />
-            <File Id="clt.json" Source="scenarios\\clt.json" />
-            <File Id="dab.json" Source="scenarios\\dab.json" />
-            <File Id="ewr.json" Source="scenarios\\ewr.json" />
-            <File Id="f11.json" Source="scenarios\\f11.json" />
-            <File Id="jax.json" Source="scenarios\\jax.json" />
-            <File Id="jfk.json" Source="scenarios\\jfk.json" />
-            <File Id="lga.json" Source="scenarios\\lga.json" />
-            <File Id="lib.json" Source="scenarios\\lib.json" />
-            <File Id="phl.json" Source="scenarios\\phl.json" />
+            <File Id="abe" Source="scenarios\\abe.json" />
+            <File Id="c90" Source="scenarios\\c90.json" />
+            <File Id="cle" Source="scenarios\\cle.json" />
+            <File Id="clt" Source="scenarios\\clt.json" />
+            <File Id="dab" Source="scenarios\\dab.json" />
+            <File Id="ewr" Source="scenarios\\ewr.json" />
+            <File Id="f11" Source="scenarios\\f11.json" />
+            <File Id="jax" Source="scenarios\\jax.json" />
+            <File Id="jfk" Source="scenarios\\jfk.json" />
+            <File Id="lga" Source="scenarios\\lga.json" />
+            <File Id="lib" Source="scenarios\\lib.json" />
+            <File Id="phl" Source="scenarios\\phl.json" />
           </Component>
 
         </Directory>
