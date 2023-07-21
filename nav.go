@@ -1136,11 +1136,13 @@ func (fr *FlyRoute) GetAltitude(ac *Aircraft) (float32, float32) {
 }
 
 func (fr *FlyRoute) VSummary(ac *Aircraft) string {
-	if fr.AltitudeRestriction != 0 {
-		return fmt.Sprintf("maintain %.0f feet (due to previous crossing restriction)",
+	if wp, _ := getUpcomingAltitudeRestriction(ac); wp != nil {
+		return fmt.Sprintf("Maintain %d feet to cross %s", wp.Altitude, wp.Fix)
+	} else if fr.AltitudeRestriction != 0 {
+		return fmt.Sprintf("Maintain %.0f feet (due to previous crossing restriction)",
 			fr.AltitudeRestriction)
 	} else if wp, _ := getUpcomingAltitudeRestriction(ac); wp != nil {
-		return fmt.Sprintf("maintain %d feet for fix %s", wp.Altitude, wp.Fix)
+		return fmt.Sprintf("Maintain %d feet for fix %s", wp.Altitude, wp.Fix)
 	}
 	return ""
 }

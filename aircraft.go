@@ -880,7 +880,11 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 
 		if wp.Altitude != 0 {
 			if fr, ok := ac.Nav.V.(*FlyRoute); ok {
-				fr.AltitudeRestriction = float32(wp.Altitude)
+				if !ac.ApproachCleared || wp.Altitude < int(ac.Altitude) {
+					// Don't climb if we're cleared approach and below the
+					// next fix's altitude.
+					fr.AltitudeRestriction = float32(wp.Altitude)
+				}
 			}
 		}
 		if wp.Speed != 0 {
