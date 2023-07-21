@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -326,7 +327,8 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	}
 
 	if remoteServer != nil {
-		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{platform.DPIScale() * 500, 0}, 0.) {
+		sc := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{sc * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Server type:")
