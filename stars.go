@@ -3551,7 +3551,28 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		}
 		speed := fmt.Sprintf("%02d", (ac.TrackGroundspeed()+5)/10)
 		// TODO: pilot reported altitude. Asterisk after alt when showing.
-		mainblock[0] = append(mainblock[0], alt+ho+speed)
+		actype := ac.FlightPlan.TypeWithoutSuffix()
+		suffix := "  "
+		if ac.FlightPlan.Rules == VFR {
+			suffix = "V"
+		} else if sp.isOverflight(ctx, ac) {
+			suffix = "E"
+		} else {
+			suffix = " "
+		}
+		if actype == "B757" {
+			suffix += "F"
+		} else if strings.HasPrefix(actype, "H/") {
+			actype = strings.TrimPrefix(actype, "H/")
+			suffix += "H"
+		} else if strings.HasPrefix(actype, "S/") {
+			actype = strings.TrimPrefix(actype, "S/")
+			suffix += "J"
+		} else if strings.HasPrefix(actype, "J/") {
+			actype = strings.TrimPrefix(actype, "J/")
+			suffix += "J"
+		}
+		mainblock[0] = append(mainblock[0], alt+ho+speed+suffix)
 
 		// mainblock[1]
 		arrscr := ac.FlightPlan.ArrivalAirport
@@ -3559,27 +3580,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			arrscr = ac.Scratchpad
 		}
 
-		actype := ac.FlightPlan.TypeWithoutSuffix()
-		suffix := ""
-		if sp.isOverflight(ctx, ac) {
-			suffix += "E"
-		}
-		if ac.FlightPlan.Rules == VFR {
-			suffix += "V"
-		} else if actype == "B757" {
-			suffix += " F"
-		} else if strings.HasPrefix(actype, "H/") {
-			actype = strings.TrimPrefix(actype, "H/")
-			suffix += " H"
-		} else if strings.HasPrefix(actype, "S/") {
-			actype = strings.TrimPrefix(actype, "S/")
-			suffix += " J"
-		} else if strings.HasPrefix(actype, "J/") {
-			actype = strings.TrimPrefix(actype, "J/")
-			suffix += " J"
-		}
-
-		mainblock[1] = append(mainblock[1], arrscr+ho+actype+suffix)
+		mainblock[1] = append(mainblock[1], arrscr+ho+actype)
 	}
 
 	if ac.TempAltitude != 0 {
