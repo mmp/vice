@@ -611,6 +611,42 @@
                             },
                             "waypoints": "SHINR/a16000/ho POGIE/a13000 QUBEN/a10000/s250 BETLE/a5000/s230"
                         }
+                    ],
+                    "TEBOW1": [
+                        {
+                            "airlines": {
+                                "KJAX": [
+                                    {
+                                        "airport": "KTPA",
+                                        "icao": "UAL"
+                                    },
+                                    {
+                                        "airport": "KRSW",
+                                        "icao": "SWA"
+                                    },
+                                    {
+                                        "airport": "KMCO",
+                                        "icao": "FFT"
+                                    },
+                                    {
+                                        "airport": "KMIA",
+                                        "icao": "ENY"
+                                    }
+                                ]
+                            },
+                                "cleared_altitude": 10000,
+                                "initial_altitude": 12000,
+                                "initial_controller": "JAX_30_CTR",
+                                "initial_speed": 250,
+                                "route": "/. TEBOW1",
+                                "runway_waypoints": {
+                                    "8": "TEBOW/a11000 JERZI/a5000/s230 FAROT/a3000/s210/h038",
+                                    "14": "TEBOW/a11000 GRRAS/a6000 KAYEM/a4000/s210 DUNTE JAKRU/h317",
+                                    "26": "TEBOW/a11000 BETLE/a7000/s230 GUTNE/a4000/s210 CLART/h084",
+                                    "32": "TEBOW/a11000 BETLE/a7000/s230 GURDE/a3000/s210/h023"
+                                },
+                                "waypoints": "HILIS/a17000/s280 FABES/a13000/ho TEBOW/a11000"
+                            }
                     ]
                 },
                 "center": "KJAX",
@@ -728,6 +764,9 @@
                             },
                             "QUBEN1": {
                                 "KJAX": 2
+                            },
+                            "TEBOW1": {
+                                "KJAX": 5
                             }
                             },
                         "solo_controller": "JAX_N_APP",
@@ -735,7 +774,7 @@
                             "JAX_N_APP" : {"primary": true, "departure": true, "arrivals": [ "LUNNI1" ]}, 
                             "JAX_J_APP" : {"backup": "JAX_R_APP"},
                             "JAX_R_APP" : {"backup": "JAX_N_APP", "arrivals": [ "MARQO2", "OHDEA1" ]},
-                            "JAX_W_APP" : {"backup": "JAX_R_APP"},
+                            "JAX_W_APP" : {"backup": "JAX_R_APP", "arrivals": ["TEBOW1"]},
                             "JAX_V_APP" : {"backup": "JAX_W_APP"},
                             "JAX_E_APP" : {"backup": "JAX_N_APP", "arrivals": [ "QUBEN1" ]},
                             "JAX_S_APP" : {"backup": "JAX_E_APP"}
@@ -785,6 +824,9 @@
                             },
                             "QUBEN1": {
                                 "KJAX": 2
+                            },
+                            "TEBOW1": {
+                                "KJAX": 5
                             }
                         },
                         "solo_controller": "JAX_N_APP",
@@ -792,7 +834,7 @@
                             "JAX_N_APP" : {"primary": true, "departure": true, "arrivals": [ "LUNNI1", "OHDEA1", "MARQO2" ]}, 
                             "JAX_J_APP" : {"backup": "JAX_R_APP"},
                             "JAX_R_APP" : {"backup": "JAX_N_APP"},
-                            "JAX_W_APP" : {"backup": "JAX_N_APP"},
+                            "JAX_W_APP" : {"backup": "JAX_N_APP", "arrivals": ["TEBOW1"]},
                             "JAX_V_APP" : {"backup": "JAX_W_APP"},
                             "JAX_E_APP" : {"backup": "JAX_N_APP", "arrivals": [ "QUBEN1" ]},
                             "JAX_S_APP" : {"backup": "JAX_E_APP"}
