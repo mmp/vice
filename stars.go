@@ -3537,10 +3537,10 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		mainblock[1] = append(mainblock[1], cs)
 
 		// Second line of the non-error datablock
-		ho := "  "
+		ho := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				ho = ctrl.SectorId
+				ho = ctrl.SectorId[len(ctrl.SectorId)-1:]
 			}
 		}
 
