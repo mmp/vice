@@ -401,7 +401,7 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, ep EventPoster, wi
 		lg.Printf("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
 			ac.Callsign, wp.Fix, ac.Heading, acToWpHeading, inFront, thresholdDistance)
 		if inFront && nmdistance2ll(wp.Location, threshold) < thresholdDistance {
-			ac.Waypoints = ap.Waypoints[0][i:]
+			ac.Waypoints = DuplicateSlice(ap.Waypoints[0][i:])
 			lg.Printf("%s: added future waypoints %s...", ac.Callsign, spew.Sdump(ac.Waypoints))
 			break
 		}

@@ -734,7 +734,7 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 
 	// Start with the default waypoints for the arrival; these may be
 	// updated when an 'expect' approach is given...
-	ac.Waypoints = arr.Waypoints
+	ac.Waypoints = DuplicateSlice(arr.Waypoints)
 	// Hold onto these with the Aircraft so we have them later.
 	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
 
