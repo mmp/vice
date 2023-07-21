@@ -123,11 +123,6 @@ func LoadOrMakeDefaultConfig() {
 	globalConfig = &GlobalConfig{}
 	config, err := os.ReadFile(fn)
 	if err != nil {
-		globalConfig.InitialWindowSize[0] = 1920
-		globalConfig.InitialWindowSize[1] = 1080
-		globalConfig.InitialWindowPosition[0] = 100
-		globalConfig.InitialWindowPosition[1] = 100
-
 		globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
 		globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
