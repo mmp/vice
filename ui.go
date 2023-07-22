@@ -30,6 +30,8 @@ var (
 		aboutFont      *Font
 		aboutFontSmall *Font
 
+		eventsSubscription *EventsSubscription
+
 		menuBarHeight float32
 
 		showAboutDialog bool
@@ -107,7 +109,7 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r Renderer, p Platform) {
+func uiInit(r Renderer, p Platform, es *EventStream) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
@@ -115,6 +117,7 @@ func uiInit(r Renderer, p Platform) {
 	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
 	ui.aboutFontSmall = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 14})
+	ui.eventsSubscription = es.Subscribe()
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
@@ -289,6 +292,12 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 				w.launchControlWindow = MakeLaunchControlWindow(w)
 			}
 			w.launchControlWindow.Draw(w, eventStream)
+		}
+	}
+
+	for _, event := range ui.eventsSubscription.Get() {
+		if event.Type == ServerBroadcastMessageEvent {
+			uiShowModalDialog(NewModalDialogBox(&BroadcoastModalDialog{Message: event.Message}), false)
 		}
 	}
 
@@ -773,6 +782,32 @@ func (nr *WhatsNewModalClient) Draw() int {
 	for i := globalConfig.WhatsNewIndex; i < len(whatsNew); i++ {
 		imgui.Text(FontAwesomeIconSquare + " " + whatsNew[i])
 	}
+	return -1
+}
+
+type BroadcoastModalDialog struct {
+	Message string
+}
+
+func (b *BroadcoastModalDialog) Title() string {
+	return "Server Broadcast Message"
+}
+
+func (b *BroadcoastModalDialog) Opening() {}
+
+func (b *BroadcoastModalDialog) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Ok",
+			action: func() bool {
+				return true
+			},
+		},
+	}
+}
+
+func (b *BroadcoastModalDialog) Draw() int {
+	imgui.Text(b.Message)
 	return -1
 }
 

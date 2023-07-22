@@ -42,6 +42,7 @@ var (
 	ErrRPCTimeout                = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
 	ErrRestoringSavedState       = errors.New("Errors during state restoration")
+	ErrInvalidPassword           = errors.New("Invalid password")
 )
 
 var errorStringToError = map[string]error{

@@ -185,13 +185,14 @@ const (
 	RejectedHandoffEvent
 	RadioTransmissionEvent
 	StatusMessageEvent
+	ServerBroadcastMessageEvent
 	NumEventTypes
 )
 
 func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
 		"OfferedHandoff", "AcceptedHandoff", "CanceledHandoff", "RejectedHandoff",
-		"RadioTransmission", "StatusMessage"}[t]
+		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage"}[t]
 }
 
 type Event struct {

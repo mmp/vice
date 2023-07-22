@@ -485,6 +485,57 @@ func (sm *SimManager) GetSimStatus() []SimStatus {
 	return ss
 }
 
+type SimBroadcastMessage struct {
+	Password string
+	Message  string
+}
+
+func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
+	pw, err := os.ReadFile("password")
+	if err != nil {
+		return err
+	}
+
+	password := strings.TrimRight(string(pw), "\n\r")
+	if password != m.Password {
+		return ErrInvalidPassword
+	}
+
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
+	lg.Printf("Broadcasting message: %s", m.Message)
+
+	for _, sim := range sm.activeSims {
+		sim.mu.Lock()
+
+		sim.eventStream.Post(Event{
+			Type:    ServerBroadcastMessageEvent,
+			Message: m.Message,
+		})
+
+		sim.mu.Unlock()
+	}
+	return nil
+}
+
+func BroadcastMessage(hostname, msg, password string) {
+	client, err := getClient(hostname)
+	if err != nil {
+		lg.Errorf("%v", err)
+		return
+	}
+
+	err = client.CallWithTimeout("SimManager.Broadcast", &SimBroadcastMessage{
+		Password: password,
+		Message:  msg,
+	}, nil)
+
+	if err != nil {
+		lg.Errorf("%v", err)
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // SimDispatcher
 

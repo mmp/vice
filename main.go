@@ -46,15 +46,17 @@ var (
 	buildVersion string
 
 	// Command-line options are only used for developer features.
-	cpuprofile       = flag.String("cpuprofile", "", "write CPU profile to file")
-	memprofile       = flag.String("memprofile", "", "write memory profile to this file")
-	devmode          = flag.Bool("devmode", false, "developer mode")
-	lintScenarios    = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	logRPC           = flag.Bool("logrpc", false, "log RPC calls")
-	server           = flag.Bool("server", false, "run vice scenario server")
-	serverIP         = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
-	scenarioFilename = flag.String("scenario", "", "filename of JSON file with a scenario definition")
-	videoMapFilename = flag.String("videomap", "", "filename of JSON file with video map definitions")
+	cpuprofile        = flag.String("cpuprofile", "", "write CPU profile to file")
+	memprofile        = flag.String("memprofile", "", "write memory profile to this file")
+	devmode           = flag.Bool("devmode", false, "developer mode")
+	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	logRPC            = flag.Bool("logrpc", false, "log RPC calls")
+	server            = flag.Bool("server", false, "run vice scenario server")
+	serverAddress     = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
+	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
+	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
+	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
+	broadcastPassword = flag.String("password", "", "password to authenticate with server for broadcast message")
 )
 
 func init() {
@@ -108,6 +110,8 @@ func main() {
 			e.PrintErrors()
 			os.Exit(1)
 		}
+	} else if *broadcastMessage != "" {
+		BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword)
 	} else if *server {
 		RunSimServer()
 	} else {
@@ -118,7 +122,7 @@ func main() {
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan, err := TryConnectRemoteServer(*serverIP)
+		remoteSimServerChan, err := TryConnectRemoteServer(*serverAddress)
 		if err != nil {
 			lg.Errorf("%v", err)
 		}
@@ -194,7 +198,7 @@ func main() {
 
 		wmInit()
 
-		uiInit(renderer, platform)
+		uiInit(renderer, platform, eventStream)
 
 		globalConfig.Activate(world, eventStream)
 
@@ -244,7 +248,7 @@ func main() {
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan, err = TryConnectRemoteServer(*serverIP)
+				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
 				if err != nil {
 					lg.Errorf("TryConnectRemoteServer: %v", err)
 				}
