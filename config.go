@@ -128,7 +128,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
-		globalConfig.Version = 4
+		globalConfig.Version = 5
 		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
@@ -146,6 +146,11 @@ func LoadOrMakeDefaultConfig() {
 		if globalConfig.Version < 3 {
 			// No need to clear out the *Sim pointer any more...
 			globalConfig.Version = 3
+		}
+		if globalConfig.Version < 5 {
+			globalConfig.Sim = nil
+			globalConfig.Callsign = ""
+			globalConfig.Version = 5
 		}
 	}
 

@@ -85,6 +85,9 @@ var (
 		"Improved navigation model to better make crossing restrictions at fixes",
 		"Fixed *T in the STARS scope: the line is drawn starting with the first click",
 		"For facility engineers: an error is issued for any unused items in the scenario JSON files",
+		"Added support for multi-controller simulations(!!)",
+		"Added manual launch control option",
+		"Many new scenarios added, including C90, CLE, and CLT",
 	}
 )
 
