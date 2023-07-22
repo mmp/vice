@@ -2487,7 +2487,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) 
 	const NumDCBSlots = 19
 	// Sigh; on windows we want the button size in pixels on high DPI displays
 	ds := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
-	buttonScale := min(float32(1), (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
+	buttonScale := min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
 
 	sp.StartDrawDCB(ctx, buttonScale)
 
