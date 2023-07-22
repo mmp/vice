@@ -2006,6 +2006,6 @@ func getResourcesDirectory() string {
 	if runtime.GOOS == "darwin" {
 		return filepath.Clean(filepath.Join(dir, "..", "Resources"))
 	} else {
-		return path
+		return dir
 	}
 }
