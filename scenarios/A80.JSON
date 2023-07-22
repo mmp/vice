@@ -1488,7 +1488,107 @@
         "gust": 2,
         "speed": 1
          }
-        }
+        },
+        "KATL East": {
+          "approach_airspace": [
+            "ATLAPP"
+          ],
+          "arrival_runways": [
+            {
+              "airport": "KATL",
+              "runway": "8L"
+            },
+            {
+              "airport": "KATL",
+              "runway": "9R"
+            },
+            {
+              "airport": "KATL",
+              "runway": "10"
+            }
+          ],
+          "arrivals": {
+            "CHPPR1": {
+              "KATL": 10
+            },
+            "GLAVN1": {
+              "KATL": 10
+            },
+            "HOBTT2": {
+              "KATL": 10
+            },
+            "SITTH2": {
+              "KATL": 10
+            },
+            "ONDRE1": {
+              "KATL": 10
+            },
+            "OZZZI1": {
+              "KATL": 10
+            }
+            },
+            "solo_controller": "ATL_APP",
+            "multi_controllers": {
+              "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]},
+              "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"]},
+              "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"]},
+              "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["HOBTT2"]},
+              "ATL_O_APP": {"backup": "ATL_H_APP"},
+              "ATL_V_APP": {"backup": "ATL_D_APP"},
+              "ATL_A_APP": {"backup": "ATL_L_APP"},
+              "ATL_N_DEP": {"departure": true, "backup": "ATL_H_APP"},
+              "ATL_S_DEP": {"backup": "ATL_N_DEP"},
+              "ATL_I_DEP": {"backup": "ATL_S_DEP"},
+              "ATL_P_APP": {"backup": "ATL_I_DEP"},
+              "ATL_F_APP": {"backup": "ATL_P_APP"},
+              "ATL_X_APP": {"backup": "ATL_F_APP"},
+              "ATL_G_APP": {"backup": "ATL_X_APP"},
+              "ATL_Q_APP": {"backup": "ATL_G_APP"}
+            },
+            "controllers": [
+              "ATL_1_TWR",
+              "ATL_CTR",
+              "_ATL_2_TWR",
+              "_ATL_3_TWR",
+              "_ATL_4_TWR",
+              "_ATL_5_TWR"
+            ],
+            "default_map": "TAR EAST",
+            "departure_airspace": [
+              "ATLAPP"
+            ],
+            "departure_runways": [
+              {
+                "airport": "KATL",
+                "rate": 15,
+                "runway": "8R",
+                "category": "North"
+              },
+              {
+                "airport": "KATL",
+                "rate": 15,
+                "runway": "8R",
+                "category": "West"
+              },
+              {
+                "airport": "KATL",
+                "rate": 15,
+                "runway": "9L",
+                "category": "East"
+              },
+              {
+                "airport": "KATL",
+                "rate": 15,
+                "runway": "9L",
+                "category": "South"
+              }
+            ],
+            "wind": {
+            "direction": 80,
+            "gust": 2,
+            "speed": 1
+             }
+            }
       },
       "scratchpads": {
         "LUCKK": "BAN",
@@ -1532,28 +1632,28 @@
         },
         {
           "group": 0,
-          "label": "",
-          "name": ""
+          "label": "TAR EAST",
+          "name": "TERMINAL ARRIVAL RADAR EAST"
         },
         {
           "group": 0,
-          "label": "",
-          "name": ""
+          "label": "AR EAST TRIPS",
+          "name": "ARRIVAL RADAR EAST TRIPS"
         },
         {
           "group": 0,
-          "label": "",
-          "name": ""
+          "label": "MVA",
+          "name": "FUSION MINIMUM VECTORING ALTITUDES"
         },
         {
           "group": 0,
-          "label": "",
-          "name": ""
+          "label": "DR EAST",
+          "name": "DEPARTURE RADAR EAST"
         },
         {
           "group": 0,
-          "label": "",
-          "name": ""
+          "label": "DR WEST",
+          "name": "DEPARTURE RADAR WEST"
         },
         {
           "group": 0,
