@@ -209,6 +209,7 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Printf("Starting main loop")
+		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
@@ -235,6 +236,7 @@ func main() {
 							"Please upgrade to the latest version of vice for multi-controller functionality.",
 					}), true)
 					remoteServer = nil
+					stopConnectingRemoteServer = true
 				}
 
 			default:
@@ -246,7 +248,7 @@ func main() {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
 			}
 
-			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second {
+			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
 				lastRemoteServerAttempt = time.Now()
 				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
 				if err != nil {
