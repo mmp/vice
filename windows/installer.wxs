@@ -37,21 +37,26 @@
           <Component Id="libstdcpp" Guid='a7080cc5-8ddf-45b9-bf09-466652cc8b06'>
             <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
           </Component>
-          <Component Id="Resources" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
-            <File Id="c90maps"
-                  Source="videomaps\\c90-maps.json.zst" KeyPath="yes" />
-            <File Id="clemaps"
-                  Source="videomaps\\cle-maps.json.zst" />
-            <File Id="cltmaps"
-                  Source="videomaps\\cltmaps.json.zst" />
-            <File Id="dabmaps"
-                  Source="videomaps\\dab-maps.json.zst" />
-            <File Id="jaxmaps"
-                  Source="videomaps\\jax-maps.json.zst" />
-            <File Id="zjxmaps"
-                  Source="videomaps\\zjx-maps.json.zst" />
-            <File Id="znymaps"
-                  Source="videomaps\\zny-maps.json.zst" />
+          <Directory Id="VideoMapsFolder" Name="videomaps">
+            <Component Id="VideoMapsId" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
+              <File Id="c90maps"
+                    Source="videomaps\\c90-maps.json.zst" KeyPath="yes" />
+              <File Id="clemaps"
+                    Source="videomaps\\cle-maps.json.zst" />
+              <File Id="cltmaps"
+                    Source="videomaps\\cltmaps.json.zst" />
+              <File Id="dabmaps"
+                    Source="videomaps\\dab-maps.json.zst" />
+              <File Id="jaxmaps"
+                    Source="videomaps\\jax-maps.json.zst" />
+              <File Id="zjxmaps"
+                    Source="videomaps\\zjx-maps.json.zst" />
+              <File Id="znymaps"
+                    Source="videomaps\\zny-maps.json.zst" />
+            </Component>
+          </Directory>
+          <Directory Id="ScenariosFolder" Name="scenarios">
+            <Component Id="ScenariosId" Guid="3072033b-c670-4e11-b941-2ea9bf892a83">
             <File Id="abe" Source="scenarios\\abe.json" />
             <File Id="c90" Source="scenarios\\c90.json" />
             <File Id="cle" Source="scenarios\\cle.json" />
@@ -65,6 +70,7 @@
             <File Id="lib" Source="scenarios\\lib.json" />
             <File Id="phl" Source="scenarios\\phl.json" />
           </Component>
+          </Directory>
 
         </Directory>
 
@@ -134,7 +140,8 @@
       <ComponentRef Id="SDLDLL" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
-      <ComponentRef Id="Resources" />
+      <ComponentRef Id="ScenariosId" />
+      <ComponentRef Id="VideoMapsId" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
