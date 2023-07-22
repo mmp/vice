@@ -2002,8 +2002,9 @@ func getResourcesDirectory() string {
 		lg.Errorf("%s: error getting executable path", err)
 	}
 
+	dir := filepath.Dir(path)
 	if runtime.GOOS == "darwin" {
-		return filepath.Clean(filepath.Join(path, "..", "..", "Resources"))
+		return filepath.Clean(filepath.Join(dir, "..", "Resources"))
 	} else {
 		return path
 	}
