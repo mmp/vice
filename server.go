@@ -780,6 +780,16 @@ func (sd *SimDispatcher) ClearedApproach(c *ClearedApproachArgs, _ *struct{}) er
 	}
 }
 
+type CancelApproachArgs AircraftSpecifier
+
+func (sd *SimDispatcher) CancelApproachClearance(c *CancelApproachArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[c.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CancelApproachClearance(c.ControllerToken, c.Callsign)
+	}
+}
+
 type GoAroundArgs AircraftSpecifier
 
 func (sd *SimDispatcher) GoAround(ga *GoAroundArgs, _ *struct{}) error {
@@ -929,7 +939,13 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			}
 
 		case 'C', 'A':
-			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+			if len(command) == 3 && command == "CAC" {
+				// Cancel approach clearance
+				if err := sim.CancelApproachClearance(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := sim.ClearedApproach(cmds.ControllerToken, cmds.Callsign, command[3:], true); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))

@@ -711,7 +711,11 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 	return
 }
 
-func (ac *Aircraft) CancelApproachClearance() {
+func (ac *Aircraft) CancelApproachClearance() (string, error) {
+	if !ac.ApproachCleared {
+		return "We're not currently cleared for an approach", nil
+	}
+
 	ac.ApproachCleared = false
 
 	for cmd := range ac.Nav.FutureCommands {
@@ -724,6 +728,8 @@ func (ac *Aircraft) CancelApproachClearance() {
 			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
+
+	return "Cancel approach clearance", nil
 }
 
 func (ac *Aircraft) updateAirspeed() {

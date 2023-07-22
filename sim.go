@@ -1929,6 +1929,17 @@ func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool)
 		})
 }
 
+func (s *Sim) CancelApproachClearance(token, callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) (string, string, error) {
+			resp, err := ac.CancelApproachClearance()
+			return resp, "", err
+		})
+}
+
 func (s *Sim) GoAround(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
