@@ -25,8 +25,6 @@ type Aircraft struct {
 	MagneticVariation float32
 	NmPerLongitude    float32
 
-	Tracks [10]RadarTrack
-
 	// Who has the radar track
 	TrackingController string
 	// Who has control of the aircraft; may not be the same as
@@ -72,20 +70,6 @@ func (a *Aircraft) Performance() AircraftPerformance {
 	return perf
 }
 
-func (a *Aircraft) TrackAltitude() int {
-	return a.Tracks[0].Altitude
-}
-
-// Reported in feet per minute
-func (a *Aircraft) AltitudeChange() int {
-	if a.Tracks[0].Position.IsZero() || a.Tracks[1].Position.IsZero() {
-		return 0
-	}
-
-	dt := a.Tracks[0].Time.Sub(a.Tracks[1].Time)
-	return int(float64(a.Tracks[0].Altitude-a.Tracks[1].Altitude) / dt.Minutes())
-}
-
 func (ac *Aircraft) TAS() float32 {
 	// Simple model for the increase in TAS as a function of altitude: 2%
 	// additional TAS on top of IAS for each 1000 feet.
@@ -100,64 +84,6 @@ func (ac *Aircraft) NextFixETA() (time.Duration, bool) {
 		return 0, false
 	}
 	return ac.Waypoints[0].ETA(ac.Position, ac.GS), true
-}
-
-func (a *Aircraft) HaveTrack() bool {
-	return a.TrackPosition()[0] != 0 || a.TrackPosition()[1] != 0
-}
-
-func (a *Aircraft) TrackPosition() Point2LL {
-	return a.Tracks[0].Position
-}
-
-func (a *Aircraft) TrackGroundspeed() int {
-	return a.Tracks[0].Groundspeed
-}
-
-// Note: returned value includes the magnetic correction
-func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + a.MagneticVariation
-}
-
-// Perhaps confusingly, the vector returned by HeadingVector() is not
-// aligned with the reported heading but is instead along the aircraft's
-// extrapolated path.  Thus, it includes the effect of wind.  The returned
-// vector is scaled so that it represents where it is expected to be one
-// minute in the future.
-func (a *Aircraft) HeadingVector() Point2LL {
-	var v [2]float32
-	if !a.HaveHeading() {
-		v = [2]float32{cos(radians(a.TrackHeading())), sin(radians(a.TrackHeading()))}
-	} else {
-		p0, p1 := a.Tracks[0].Position, a.Tracks[1].Position
-		v = sub2ll(p0, p1)
-	}
-
-	nm := nmlength2ll(v, a.NmPerLongitude)
-	// v's length should be groundspeed / 60 nm.
-	return scale2ll(v, float32(a.TrackGroundspeed())/(60*nm))
-}
-
-func (a *Aircraft) HaveHeading() bool {
-	return !a.Tracks[0].Position.IsZero() && !a.Tracks[1].Position.IsZero()
-}
-
-func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, a.NmPerLongitude, a.MagneticVariation)
-}
-
-func (a *Aircraft) LostTrack(now time.Time) bool {
-	// Only return true if we have at least one valid track from the past
-	// but haven't heard from the aircraft recently.
-	return !a.Tracks[0].Position.IsZero() && now.Sub(a.Tracks[0].Time) > 30*time.Second
-}
-
-func (a *Aircraft) AddTrack(t RadarTrack) {
-	// Move everthing forward one to make space for the new one. We could
-	// be clever and use a circular buffer to skip the copies, though at
-	// the cost of more painful indexing elsewhere...
-	copy(a.Tracks[1:], a.Tracks[:len(a.Tracks)-1])
-	a.Tracks[0] = t
 }
 
 func (a *Aircraft) IsAssociated() bool {

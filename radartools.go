@@ -884,13 +884,11 @@ func DrawPlaneIcons(ctx *PaneContext, specs []PlaneIconSpec, color RGB, cb *Comm
 // aircraft will be the closest together and then draws lines indicating
 // where they will be at that point and also text indicating their
 // estimated separation then.
-func DrawMinimumSeparationLine(ac0, ac1 *Aircraft, color RGB, backgroundColor RGB,
+func DrawMinimumSeparationLine(p0, d0, p1, d1 Point2LL, color RGB, backgroundColor RGB,
 	font *Font, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Find the parametric distance along the respective rays of the
 	// aircrafts' courses where they at at a minimum distance; this is
 	// linearly extrapolating their positions.
-	p0, d0 := ac0.TrackPosition(), ac0.HeadingVector()
-	p1, d1 := ac1.TrackPosition(), ac1.HeadingVector()
 	tmin := RayRayMinimumDistance(p0, d0, p1, d1)
 
 	// If something blew up in RayRayMinimumDistance then just bail out here.

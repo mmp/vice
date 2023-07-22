@@ -599,8 +599,7 @@ type Sim struct {
 	TotalDepartures int
 	TotalArrivals   int
 
-	lastTrackUpdate time.Time
-	lastSimUpdate   time.Time
+	lastSimUpdate time.Time
 
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 	updateTimeSlop time.Duration
@@ -1174,8 +1173,15 @@ func (s *Sim) updateState() {
 	// Update the simulation state once a second.
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
-		for _, ac := range s.World.Aircraft {
+		for callsign, ac := range s.World.Aircraft {
 			ac.Update(s.World, s.World, s)
+
+			// Cull departures that are far from the airport.
+			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture {
+				if nmdistance2ll(ac.Position, ap.Location) > 200 {
+					delete(s.World.Aircraft, callsign)
+				}
+			}
 
 			// FIXME: this is sort of ugly to have here...
 			if ac.HandoffTrackController == s.World.Callsign {
@@ -1228,29 +1234,6 @@ func (s *Sim) updateState() {
 					ToController:   ac.HandoffTrackController,
 				})
 			}
-		}
-	}
-
-	// Add a new radar track every 5 seconds.  While we're at it, cull
-	// departures that are far from the airport.
-	if now.Sub(s.lastTrackUpdate) >= 5*time.Second {
-		s.lastTrackUpdate = now
-
-		for callsign, ac := range s.World.Aircraft {
-			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture {
-				if nmdistance2ll(ac.Position, ap.Location) > 200 {
-					delete(s.World.Aircraft, callsign)
-					continue
-				}
-			}
-
-			ac.AddTrack(RadarTrack{
-				Position:    ac.Position,
-				Altitude:    int(ac.Altitude),
-				Groundspeed: int(ac.GS),
-				Heading:     ac.Heading - ac.MagneticVariation,
-				Time:        now,
-			})
 		}
 	}
 
