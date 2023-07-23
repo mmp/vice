@@ -884,8 +884,11 @@ func DrawPlaneIcons(ctx *PaneContext, specs []PlaneIconSpec, color RGB, cb *Comm
 // aircraft will be the closest together and then draws lines indicating
 // where they will be at that point and also text indicating their
 // estimated separation then.
-func DrawMinimumSeparationLine(p0, d0, p1, d1 Point2LL, color RGB, backgroundColor RGB,
+func DrawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, nmPerLongitude float32, color RGB, backgroundColor RGB,
 	font *Font, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	p0, d0 := ll2nm(p0ll, nmPerLongitude), ll2nm(d0ll, nmPerLongitude)
+	p1, d1 := ll2nm(p1ll, nmPerLongitude), ll2nm(d1ll, nmPerLongitude)
+
 	// Find the parametric distance along the respective rays of the
 	// aircrafts' courses where they at at a minimum distance; this is
 	// linearly extrapolating their positions.
@@ -907,17 +910,18 @@ func DrawMinimumSeparationLine(p0, d0, p1, d1 Point2LL, color RGB, backgroundCol
 	if tmin < 0 {
 		// The closest approach was in the past; just draw a line between
 		// the two tracks and initialize the above coordinates.
-		ld.AddLine(p0, p1, color)
-		p0tmin, p1tmin = p0, p1
-		pw0, pw1 = transforms.WindowFromLatLongP(p0), transforms.WindowFromLatLongP(p1)
+		ld.AddLine(p0ll, p1ll, color)
+		p0tmin, p1tmin = p0ll, p1ll
+		pw0, pw1 = transforms.WindowFromLatLongP(p0ll), transforms.WindowFromLatLongP(p1ll)
 	} else {
 		// Closest approach in the future: draw a line from each track to
 		// the minimum separation line as well as the minimum separation
 		// line itself.
-		p0tmin, p1tmin = add2f(p0, scale2f(d0, tmin)), add2f(p1, scale2f(d1, tmin))
-		ld.AddLine(p0, p0tmin, color)
+		p0tmin = nm2ll(add2f(p0, scale2f(d0, tmin)), nmPerLongitude)
+		p1tmin = nm2ll(add2f(p1, scale2f(d1, tmin)), nmPerLongitude)
+		ld.AddLine(p0ll, p0tmin, color)
 		ld.AddLine(p0tmin, p1tmin, color)
-		ld.AddLine(p1tmin, p1, color)
+		ld.AddLine(p1tmin, p1ll, color)
 
 		// Draw small filled triangles centered at p0tmin and p1tmin.
 		pw0, pw1 = transforms.WindowFromLatLongP(p0tmin), transforms.WindowFromLatLongP(p1tmin)

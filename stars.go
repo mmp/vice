@@ -3999,7 +3999,7 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	}
 	DrawMinimumSeparationLine(s0.TrackPosition(), s0.HeadingVector(ac0.NmPerLongitude, ac0.MagneticVariation),
 		s1.TrackPosition(), s1.HeadingVector(ac1.NmPerLongitude, ac1.MagneticVariation),
-		color, RGB{}, sp.systemFont[ps.CharSize.Tools], ctx, transforms, cb)
+		ac0.NmPerLongitude, color, RGB{}, sp.systemFont[ps.CharSize.Tools], ctx, transforms, cb)
 }
 
 func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
