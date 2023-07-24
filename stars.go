@@ -1669,11 +1669,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			f := strings.Fields(cmd)
 			if len(f) == 1 {
 				// Y callsign -> clear scratchpad and reported altitude
-				// Clear pilot alt. and scratchpad
 				callsign := lookupCallsign(f[0])
-				sp.aircraft[callsign].pilotAltitude = 0
-				sp.setScratchpad(ctx, callsign, "")
-				status.clear = true
+				if state, ok := sp.aircraft[callsign]; ok {
+					state.pilotAltitude = 0
+					sp.setScratchpad(ctx, callsign, "")
+					status.clear = true
+				}
 				return
 			} else if len(f) == 2 {
 				// Y callsign <space> scratch -> set scatchpad
