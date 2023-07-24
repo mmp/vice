@@ -79,7 +79,7 @@
           "runway": "28",
           "type": "ILS",
           "waypoints": [
-            "PRMAN/a4000 WONZR/a4000 JUBBA/a2700 _ATL_28/a998"
+            "N033.37.09.702,W083.54.02.559 PRMAN/a4000 WONZR/a4000 JUBBA/a2700 _ATL_28/a998"
           ]
         }
       },
@@ -834,6 +834,128 @@
         "N033.27.36.449,W084.20.26.403",
         "N033.29.52.460,W084.20.24.426",
         "N033.29.53.586,W083.54.07.888"
+      ],
+      "ATLAAPP4060": [
+        "N033.29.53.820,W084.00.32.354",
+        "N033.29.51.238,W083.54.07.503",
+        "N033.38.17.529,W083.54.03.054",
+        "N033.38.12.050,W084.00.39.385",
+        "N033.29.52.611,W084.00.31.311"
+      ],
+      "ATLAAPP040": [
+        "N033.38.16.485,W084.20.29.205",
+        "N033.38.18.284,W084.13.38.728",
+        "N033.38.07.037,W084.13.42.601",
+        "N033.37.53.689,W084.13.45.347",
+        "N033.37.16.830,W084.13.49.248",
+        "N033.36.34.931,W084.14.04.628",
+        "N033.34.35.578,W084.15.08.734",
+        "N033.32.56.948,W084.16.16.931",
+        "N033.32.06.054,W084.16.40.167",
+        "N033.31.27.945,W084.17.14.225",
+        "N033.29.58.915,W084.18.27.119",
+        "N033.29.54.767,W084.20.20.773",
+        "N033.38.17.639,W084.20.28.546"
+      ],
+      "ATLAAPP2540": [
+        "N033.37.54.293,W084.13.43.260",
+        "N033.37.54.760,W084.10.43.688",
+        "N033.37.09.084,W084.10.50.830",
+        "N033.36.37.828,W084.10.57.284",
+        "N033.35.33.119,W084.11.19.229",
+        "N033.35.33.119,W084.11.19.229",
+        "N033.35.33.119,W084.11.19.229",
+        "N033.33.49.257,W084.15.50.399",
+        "N033.34.56.809,W084.14.53.655",
+        "N033.36.01.532,W084.14.15.175",
+        "N033.36.44.956,W084.13.59.492",
+        "N033.37.21.114,W084.13.46.913",
+        "N033.37.21.114,W084.13.46.913"
+      ],
+      "ATLAAPP3040": [
+        "N033.38.17.337,W084.12.51.130",
+        "N033.38.17.653,W084.00.43.807",
+        "N033.29.54.561,W084.00.32.080",
+        "N033.32.56.948,W084.16.16.931",
+        "N033.32.06.054,W084.16.40.167",
+        "N033.31.27.945,W084.17.14.225",
+        "N033.29.58.915,W084.18.27.119",
+        "N033.33.52.965,W084.12.19.764",
+        "N033.34.25.512,W084.11.56.638",
+        "N033.35.10.803,W084.11.32.166",
+        "N033.36.15.924,W084.11.03.189",
+        "N033.36.52.261,W084.10.49.511",
+        "N033.37.56.092,W084.10.45.199"
+      ],
+      "ATLOAPP70": [
+        "N033.46.49.780,W084.00.28.921",
+        "N033.46.48.627,W083.53.58.659",
+        "N033.29.52.089,W083.54.03.493",
+        "N033.29.53.106,W084.00.34.387",
+        "N033.46.49.877,W084.00.30.212"
+      ],
+      "ATLVAPP4060": [
+       "N033.41.15.000,W084.00.35.211",
+       "N033.38.15.318,W084.00.38.973",
+       "N033.38.14.165,W083.54.02.065",
+       "N033.38.44.089,W083.54.02.230",
+       "N033.41.17.101,W084.00.39.028"
+      ],
+      "ATLVAPP5060": [
+       "N033.46.48.984,W084.00.30.459",
+       "N033.46.47.199,W083.54.00.664",
+       "N033.38.43.402,W083.54.03.411",
+       "N033.41.13.091,W084.00.32.080",
+       "N033.46.49.313,W084.00.30.212"
+      ],
+      "ATLVAPP4050": [
+        "N033.41.14.697,W084.00.34.469",
+        "N033.46.48.709,W084.00.29.360",
+        "N033.46.50.440,W084.14.29.293",
+        "N033.41.13.173,W084.00.31.668"
+      ],
+      "ATLVAPP2550": [
+        "N033.38.15.991,W084.13.41.997",
+        "N033.38.15.991,W084.13.41.997",
+        "N033.39.34.104,W084.13.49.138",
+        "N033.41.44.649,W084.14.49.727",
+        "N033.42.38.825,W084.15.29.690",
+        "N033.42.33.085,W084.11.59.110",
+        "N033.41.44.690,W084.11.33.072",
+        "N033.40.59.481,W084.11.16.043",
+        "N033.40.09.054,W084.10.53.659",
+        "N033.39.22.417,W084.10.48.797",
+        "N033.38.18.710,W084.10.43.826",
+        "N033.38.16.513,W084.13.43.452"
+      ],
+      "ATLVAPP3050": [
+        "N033.42.33.085,W084.11.59.110",
+        "N033.41.44.690,W084.11.33.072",
+        "N033.40.59.481,W084.11.16.043",
+        "N033.40.09.054,W084.10.53.659",
+        "N033.39.22.417,W084.10.48.797",
+        "N033.38.18.710,W084.10.43.826",
+        "N033.38.14.274,W084.00.39.468",
+        "N033.41.14.615,W084.00.33.398",
+        "N033.46.50.330,W084.14.30.309",
+        "N033.46.52.623,W084.14.25.255",
+        "N033.46.48.915,W084.18.32.942",
+        "N033.42.33.085,W084.11.59.110"
+      ],
+      "ATLVAPP050": [
+       "N033.38.15.991,W084.13.41.997",
+       "N033.38.15.991,W084.13.41.997",
+       "N033.39.34.104,W084.13.49.138",
+       "N033.41.44.649,W084.14.49.727",
+       "N033.42.38.825,W084.15.29.690",
+       "N033.42.53.533,W084.15.43.533",
+       "N033.43.35.940,W084.16.20.831",
+       "N033.44.39.785,W084.17.02.360",
+       "N033.45.31.036,W084.17.47.953",
+       "N033.46.50.316,W084.19.16.091",
+       "N033.46.52.019,W084.20.31.484",
+       "N033.38.16.307,W084.20.23.464",
+       "N033.38.15.648,W084.13.44.441"
       ]
     },
     "volumes": {
@@ -844,6 +966,96 @@
           ],
           "lower": 0,
           "upper" : 14000
+        }
+      ],
+      "ATL_A_APPW": [
+        {
+          "boundaries": [
+            "ATLAAPP3040"
+          ],
+          "lower": 3000,
+          "upper": 4000
+        },
+        {
+          "boundaries": [
+            "ATLAAPP2540"
+          ],
+          "lower": 2500,
+          "upper": 4000
+        },
+        {
+          "boundaries": [
+            "ATLAAPP040"
+          ],
+          "lower": 0,
+          "upper": 4000
+        },
+        {
+          "boundaries": [
+            "ATLAAPP40"
+          ],
+          "lower": 4000,
+          "upper": 4000
+        },
+        {
+          "boundaries": [
+            "ATLAAPP4060"
+          ],
+          "lower": 4000,
+          "upper": 6000
+        }
+      ],
+      "ATL_O_APPW": [
+        {
+          "boundaries": [
+            "ATLOAPP70"
+          ],
+          "lower": 7000,
+          "upper": 7000
+        }
+      ],
+      "ATL_V_APPW": [
+        {
+          "boundaries": [
+            "ATLVAPP050"
+          ],
+          "lower": 0,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "ATLVAPP2550"
+          ],
+          "lower": 2500,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "ATLVAPP3050"
+          ],
+          "lower": 3000,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "ATLVAPP4050"
+          ],
+          "lower": 4000,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "ATLVAPP4060"
+          ],
+          "lower": 4000,
+          "upper": 6000
+        },
+        {
+          "boundaries": [
+            "ATLVAPP5060"
+          ],
+          "lower": 5000,
+          "upper": 6000
         }
       ]
     }
@@ -936,6 +1148,84 @@
         "speed_restriction": 250,
         "waypoints": "OWNNS/ho CHPPR/a13000 MRCHH"
      }
+   ],
+   "NW_FINALTRIPS": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "KSEA",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KOMA",
+            "icao": "EDV"
+          },
+          {
+            "airport": "KLNK",
+            "icao": "EDV"
+          },
+          {
+            "airport": "KCOS",
+            "icao": "EDV"
+          },
+          {
+            "airport": "KLAS",
+            "icao": "EDV"
+          },
+          {
+            "airport": "KRNO",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KORD",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KORD",
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "airport": "KORD",
+            "fleet": "short",
+            "icao": "AAL"
+          },
+          {
+            "airport": "KMDW",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KCVG",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KMSP",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KBOI",
+            "fleet": "short",
+            "icao": "DAL"
+          }
+        ]
+      },
+      "cleared_altitude": 6000,
+      "cruise_altitude": 35000,
+      "expect_approach": "I6R",
+      "initial_altitude": 8000,
+      "initial_controller": "ATL_D_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
+      "route": "/. GLAVN1",
+      "scratchpad": "I6R",
+      "waypoints": "KLOWD/ho SWEPT KYMMY KEAVY/h095"
+    }
    ],
    "GLAVN1": [
     {
@@ -1157,6 +1447,138 @@
       "waypoints": "SMAWG/a17000/ho HOBTT/a1400 ENSLL/a12000"
     }
    ],
+   "HOBTT2_AFINALT": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "KIAH",
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "airport": "KIAH",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KHOU",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KDAL",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KDFW",
+            "fleet": "short",
+            "icao": "AAL"
+          },
+          {
+            "airport": "KDFW",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KABQ",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KPHX",
+            "fleet": "short",
+            "icao": "AAL"
+          },
+          {
+            "airport": "KOKC",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KLBB",
+            "fleet": "short",
+            "icao": "DAL"
+          }
+        ]
+      },
+      "cleared_altitude": 6000,
+      "cruise_altitude": 34000,
+      "expect_approach": "I28",
+      "initial_altitude": 8000,
+      "initial_controller": "ATL_Y_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
+      "route": "/.GNDLF2",
+      "scratchpad": "I28",
+      "waypoints": "SHURT/ho FOGER HITTT YURII/h095"
+    }
+   ],
+   "HOBTT2_AFINALD": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "KIAH",
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "airport": "KIAH",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KHOU",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KDAL",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KDFW",
+            "fleet": "short",
+            "icao": "AAL"
+          },
+          {
+            "airport": "KDFW",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KABQ",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KPHX",
+            "fleet": "short",
+            "icao": "AAL"
+          },
+          {
+            "airport": "KOKC",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KLBB",
+            "fleet": "short",
+            "icao": "DAL"
+          }
+        ]
+      },
+      "cleared_altitude": 6000,
+      "cruise_altitude": 34000,
+      "expect_approach": "I7L",
+      "initial_altitude": 8000,
+      "initial_controller": "ATL_Y_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
+      "route": "/.GNDLF2",
+      "scratchpad": "I7L",
+      "waypoints": "SHURT/ho FOGER HITTT YURII/h095"
+    }
+   ],
    "JJEDI3": [
     {
       "airlines": {
@@ -1239,8 +1661,255 @@
       "speed_restriction": 250,
       "waypoints": "DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h004"
     }
+   ],"JJEDI3_FINALD": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "KMCO",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "MKCO",
+            "icao": "FFT"
+          },
+          {
+            "airport": "KMCO",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KMCO",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KMIA",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KMIA",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KFLL",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KFLL",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KFLL",
+            "icao": "JBU"
+          },
+          {
+            "airport": "KJAX",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KCHS",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KSAV",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KMYR",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KTPA",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KTPA",
+            "icao": "SWA"
+          }
+        ]
+      },
+      "cleared_altitude": 6000,
+      "cruise_altitude": 35000,
+      "expect_approach": "I7L",
+      "initial_altitude": 8000,
+      "initial_controller": "ATL_H_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
+      "route": "/. JJEDI3",
+      "scratchpad" : "I7L",
+      "waypoints": "GRHAM/ho POOBA/h004"
+    }
+   ],
+   "JJEDI3_FINALT": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "KMCO",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "MKCO",
+            "icao": "FFT"
+          },
+          {
+            "airport": "KMCO",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KMCO",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KMIA",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KMIA",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KFLL",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KFLL",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KFLL",
+            "icao": "JBU"
+          },
+          {
+            "airport": "KJAX",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KCHS",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KSAV",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KMYR",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KTPA",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KTPA",
+            "icao": "SWA"
+          }
+        ]
+      },
+      "cleared_altitude": 6000,
+      "cruise_altitude": 35000,
+      "expect_approach": "I28",
+      "initial_altitude": 8000,
+      "initial_controller": "ATL_H_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
+      "route": "/. JJEDI3",
+      "scratchpad" : "I28",
+      "waypoints": "GRHAM/ho POOBA/h004"
+    }
    ],
    "ONDRE1": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "EGLL",
+            "fleet": "long",
+            "icao": "BAW"
+          },
+          {
+            "airport": "EGLL",
+            "fleet": "long",
+            "icao": "DAL"
+          },
+          {
+            "airport": "EIDW",
+            "fleet": "long",
+            "icao": "EIN"
+          },
+          {
+            "airport": "EHAM",
+            "fleet": "long",
+            "icao": "KLM"
+          },
+          {
+            "airport" : "EGLL",
+            "fleet": "long",
+            "icao": "THY"
+          },
+          {
+            "airport": "OMDB",
+            "icao": "UAE"
+          },
+          {
+            "airport": "LGAV",
+            "fleet": "long",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KBOS",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KJFK",
+            "fleet": "long",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KLGA",
+            "fleet": "short",
+            "icao": "DAL"
+          }
+        ]
+      },
+      "cleared_altitude": 13000,
+      "initial_altitude": 15000,
+      "initial_controller": "ATL_CTR",
+      "initial_speed": 290,
+      "route": "/. ONDRE1",
+      "runway_waypoints": {
+        "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+        "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+        "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+        "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+        "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+        "26L": "SMELY VOLTS/a9000/h175",
+        "26R": "SMELY VOLTS/a9000/h175",
+        "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+        "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
+        "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+      },
+      "speed_restriction": 250,
+      "waypoints": "STRWY/ho ONDRE/a13000/s250 SMELY"
+    }
+   ],
+   "ONDRE1_FINALWT": [
     {
       "airlines": {
         "KATL": [
@@ -1295,25 +1964,16 @@
           }
         ]
       },
-      "cleared_altitude": 13000,
-      "initial_altitude": 15000,
-      "initial_controller": "ATL_CTR",
-      "initial_speed": 290,
+      "cleared_altitude": 6000,
+      "cruise_altitude": 34000,
+      "expect_approach": "I6R",
+      "initial_altitude": 8000,
+      "initial_controller": "ATL_L_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
       "route": "/. ONDRE1",
-      "runway_waypoints": {
-        "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "SMELY VOLTS/a9000/h175",
-        "26R": "SMELY VOLTS/a9000/h175",
-        "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
-        "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
-      },
-      "speed_restriction": 250,
-      "waypoints": "STRWY/ho ONDRE/a13000/s250 SMELY"
+      "scratchpad" : "I6R",
+      "waypoints": "SMELY VOLTS/ho/h175"
     }
    ],
    "OZZZI1": [
@@ -1390,6 +2050,73 @@
       },
       "speed_restriction": 250,
       "waypoints": "WINNG/ho OZZZI/a13000 HAARY"
+    }
+   ],
+   "OZZZI1_FINALWT": [
+    {
+      "airlines": {
+        "KATL": [
+          {
+            "airport": "EGLL",
+            "fleet": "long",
+            "icao": "BAW"
+          },
+          {
+            "airport": "EGLL",
+            "fleet": "long",
+            "icao": "DAL"
+          },
+          {
+            "airport": "EIDW",
+            "fleet": "long",
+            "icao": "EIN"
+          },
+          {
+            "airport": "EHAM",
+            "fleet": "long",
+            "icao": "KLM"
+          },
+          {
+            "airport" : "LFTM",
+            "fleet": "long",
+            "icao": "THY"
+          },
+          {
+            "airport": "OMDB",
+            "icao": "UAE"
+          },
+          {
+            "airport": "LGAV",
+            "fleet": "long",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KBOS",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KJFK",
+            "fleet": "long",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KLGA",
+            "fleet": "short",
+            "icao": "DAL"
+          }
+        ]
+      },
+      "cleared_altitude": 8000,
+      "cruise_altitude": 34000,
+      "expect_approach": "I7L",
+      "initial_altitude": 10000,
+      "initial_controller": "ATL_Y_APP",
+      "initial_speed": 250,
+      "speed_restriction": 220,
+      "route": "/. ONDRE1",
+      "scratchpad" : "I7L",
+      "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275"
     }
    ],
    "SITTH2": [
@@ -1631,7 +2358,7 @@
     "_ATL_26R": "N33.38.58.337,W84.24.34.056",
     "_ATL_27L": "N33.37.54.590,W84.25.06.201",
     "_ATL_27R": "N33.38.04.838,W84.24.26.142",
-    "_ATL_28": "N33.38.04.935,W84.24.26.040"
+    "_ATL_28": "N033.37.13.918,W084.25.07.434"
   },
   "magnetic_variation": -4.0,
   "name": "KATL",
@@ -1848,6 +2575,62 @@
             "gust": 2,
             "speed": 1
              }
+            },
+            "KATL West Final Trips": {
+              "approach_airspace": [
+                "ATL_V_APPW",
+                "ATL_A_APPW",
+                "ATL_O_APPW"
+              ],
+              "arrival_runways": [
+                {
+                  "airport" : "KATL",
+                  "runway": "28"
+                },
+                {
+                  "airport": "KATL",
+                  "runway": "27L"
+                },
+                {
+                  "airport": "KATL",
+                  "runway": "26R"
+                }
+              ],
+              "arrivals": {
+                "NW_FINALTRIPS": {
+                  "KATL": 30
+                },
+                "HOBTT2_AFINALT": {
+                  "KATL": 15
+                },
+                "JJEDI3_FINALT": {
+                  "KATL": 25
+                },
+                "ONDRE1_FINALWT": {
+                  "KATL": 10
+                },
+                "OZZZI1_FINALWT": {
+                  "KATL": 25
+                }
+              },
+              "solo_controller": "ATL_O_APP",
+              "controllers": [
+                "ATL_D_APP",
+                "ATL_L_APP",
+                "ATL_Y_APP",
+                "ATL_H_APP",
+                "ATL_1_TWR",
+                "ATL_2_TWR",
+                "ATL_3_TWR",
+                "ATL_4_TWR",
+                "ATL_5_TWR",
+                "ATL_CTR"
+              ],
+              "default_map": "ARRIVAL RADAR WEST TRIPLES",
+              "wind": {
+                "direction": 270,
+                "speed": 5
+              }
             }
       },
       "scratchpads": {

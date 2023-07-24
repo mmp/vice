@@ -149,7 +149,22 @@
                     "WINDU": {
                         "cleared_altitude": 10000,
                         "route": "JASPA7",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ENIKE JASPA "
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ENIKE JASPA"
+                    },
+                    "BRHMA": {
+                        "cleared_altitude": 10000,
+                        "route": "KATZZ2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
+                    },
+                    "ROLLS": {
+                        "cleared_altitude": 10000,
+                        "route": "LOWGN8",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/s240 CORTS BIGGD CMORE LOWGN ADM MRMAC"
+                    },
+                    "BDDAY,ZALEA": {
+                        "cleared_altitude": 10000,
+                        "route": "MRSSH3",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX JOLEN THHOR JJANE MRSSH"
                     }
                 }
             }
