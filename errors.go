@@ -77,25 +77,33 @@ var errorStringToError = map[string]error{
 ///////////////////////////////////////////////////////////////////////////
 // STARS
 
+type STARSError struct {
+	error
+}
+
+func NewSTARSError(msg string) *STARSError {
+	return &STARSError{errors.New(msg)}
+}
+
 var (
-	ErrSTARSCommandFormat     = errors.New("FORMAT")
-	ErrSTARSDuplicateBeacon   = errors.New("DUP BCN")
-	ErrSTARSIllegalATIS       = errors.New("ILL ATIS")
-	ErrSTARSIllegalAirport    = errors.New("ILL AIRPORT")
-	ErrSTARSIllegalCode       = errors.New("ILL CODE")
-	ErrSTARSIllegalFix        = errors.New("ILL FIX")
-	ErrSTARSIllegalFlight     = errors.New("ILL FLIGHT")
-	ErrSTARSIllegalLine       = errors.New("ILL LINE")
-	ErrSTARSIllegalParam      = errors.New("ILL PARAM")
-	ErrSTARSIllegalScratchpad = errors.New("ILL SCR")
-	ErrSTARSIllegalSector     = errors.New("ILL SECTOR")
-	ErrSTARSIllegalText       = errors.New("ILL TEXT")
-	ErrSTARSIllegalTrack      = errors.New("ILL TRK")
-	ErrSTARSIllegalValue      = errors.New("ILL VALUE")
-	ErrSTARSNoFlight          = errors.New("NO FLIGHT")
+	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
+	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
+	ErrSTARSIllegalATIS       = NewSTARSError("ILL ATIS")
+	ErrSTARSIllegalAirport    = NewSTARSError("ILL AIRPORT")
+	ErrSTARSIllegalCode       = NewSTARSError("ILL CODE")
+	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
+	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
+	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
+	ErrSTARSIllegalParam      = NewSTARSError("ILL PARAM")
+	ErrSTARSIllegalScratchpad = NewSTARSError("ILL SCR")
+	ErrSTARSIllegalSector     = NewSTARSError("ILL SECTOR")
+	ErrSTARSIllegalText       = NewSTARSError("ILL TEXT")
+	ErrSTARSIllegalTrack      = NewSTARSError("ILL TRK")
+	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
+	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
 )
 
-var starsErrorRemap = map[error]error{
+var starsErrorRemap = map[error]*STARSError{
 	ErrArrivalAirportUnknown:        ErrSTARSIllegalAirport,
 	ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	ErrFixNotInRoute:                ErrSTARSIllegalFix,
@@ -115,7 +123,11 @@ var starsErrorRemap = map[error]error{
 	ErrUnknownRunway:                ErrSTARSIllegalValue,
 }
 
-func GetSTARSError(e error) error {
+func GetSTARSError(e error) *STARSError {
+	if se, ok := e.(*STARSError); ok {
+		return se
+	}
+
 	if _, ok := e.(rpc.ServerError); ok {
 		if err, ok := errorStringToError[e.Error()]; ok {
 			e = err
