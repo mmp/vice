@@ -826,6 +826,143 @@
                             "destination": "KRSW",
                             "exit": "EARND",
                             "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV THRSR HONID Q81 NICKI PLYER TYNEE2"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude" : 37000,
+                            "destination": "KJAX",
+                            "exit": "DENNT",
+                            "route": "DENNT DARCY DREGS DUMGE SCOTO SWAPP THRSR DUCHY OHDEA1"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 34000,
+                            "destination": "KMIA",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PVX HITMN ACORI FROGZ4"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KMCO",
+                            "exit": "DENNT",
+                            "route": "DENNT DARCY DREGS DUMGE SCOTO SWAPP Q79 THRSR ZJAYX GRNCH4"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "AAY"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KPGD",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV WIGVO KYYLU LUBBR3"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 29000,
+                            "destination": "KTPA",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV WIGVO BAAMF DADES1"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KSRQ",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV WIGVO KYYLU LUBBR3"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KPNS",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PXV MSL PENSI CILEB"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KECP",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PVX VLKNN MGMRY RLTID"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "AAY"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KVPS",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN RIGGL JUDDI KM39O CALCO MGM CORKY"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "fleet": "short",
+                                    "icao": "DAL"
+                                },
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KATL",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PVX HITMN NEWBB IHAVE MTHEW CHPPR1"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "AAY"
+                                }
+                            ],
+                            "altitude": 37000,
+                            "destination": "KSAV",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ERECO IIU J99 VXV CANTR PLZZZ"
                         }
                     ],
                     "elevation": 620,

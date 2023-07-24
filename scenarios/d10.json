@@ -134,6 +134,180 @@
                     "OKM": {
                         "cleared_altitude": 10000,
                         "route": "GRABE8",
+                        "waypoints": "_DFW_17R _DFW_35L JGIRL/s240 CORTS BIGGD CMORE GRABE EAKER"
+                    },
+                    "HULZE": {
+                        "cleared_altitude": 10000,
+                        "route": "HRPER3",
+                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/s240 TYGGR DBLSS HRPER"
+                    },
+                    "HUDAD": {
+                        "cleared_altitude": 10000,
+                        "route": "HUDAD2",
+                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/s240 FIRMM PGLET MUTEE"
+                    },
+                    "WINDU": {
+                        "cleared_altitude": 10000,
+                        "route": "JASPA7",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ENIKE JASPA"
+                    },
+                    "BRHMA": {
+                        "cleared_altitude": 10000,
+                        "route": "KATZZ2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
+                    },
+                    "ROLLS": {
+                        "cleared_altitude": 10000,
+                        "route": "LOWGN8",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/s240 CORTS BIGGD CMORE LOWGN ADM MRMAC"
+                    },
+                    "BDDAY,ZALEA": {
+                        "cleared_altitude": 10000,
+                        "route": "MRSSH3",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX JOLEN THHOR JJANE MRSSH"
+                    },
+                    "SAT": {
+                        "cleared_altitude": 10000,
+                        "route": "NEYLN6",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ONKAE NELYN ACT PRIZE"
+                    },
+                    "LOOSE": {
+                        "cleared_altitude": 10000,
+                        "route": "TRYTN4",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL CORTS TRRCH JAYXX TRYTN"
+                    },
+                    "CIKAN,DOSXX": {
+                        "cleared_altitude": 10000,
+                        "route": "WSTEX2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM RBBIT LYNDE WSTEX"
+                    },
+                    "BSKAT": {
+                        "cleared_altitude": 10000,
+                        "route": "ZACHH4",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL CORTS ZERLU SWDIA ZACHH"
+                    }
+                },
+                "18L": {
+                    "MLC": {
+                        "cleared_altitude": 10000,
+                        "route": "AKUNA9",
+                        "waypoints" : "_DFW_18L _DFW_36R BPARK YAMEL/s240 FIRMN BINGM BEMMR AKUNA TIKYS"
+                    },
+                    "ALIAN": {
+                        "cleared_altitude": 10000,
+                        "route": "ALIAN2",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 GIGEM RBBIT FUMED"
+                    },
+                    "CLL": {
+                        "cleared_altitude": 10000,
+                        "route": "ARDIA7",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 LIZIE ARDIA ELLVR"
+                    },
+                    "IRW,TUL": {
+                        "cleared_altitude": 10000,
+                        "route": "BLECO8",
+                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/s240 FIRMN BINGM BEMMR BLECO ZEMMA"
+                    },
+                    "TNV": {
+                        "cleared_altitude": 10000,
+                        "route": "DARTZ9",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 LIZIE CALEK DARTZ BRDEN TORNN BILEE"
+                    },
+                    "FORCK": {
+                        "cleared_altitude": 10000,
+                        "route": "FORCK3",
+                        "waypoints": "_DFW_18L _DFW_36R TREXX JOLEN PAXTN HANUH"
+                    },
+                    "OKM": {
+                        "cleared_altitude": 10000,
+                        "route": "GRABE8",
+                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/s240 FIRMN BINGM BEMMR GRABE EAKER"
+                    },
+                    "HULZE": {
+                        "cleared_altitude": 10000,
+                        "route": "HRPER3",
+                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/s240 TYGGR DBLSS HRPER"
+                    },
+                    "HUDAD": {
+                        "cleared_altitude": 10000,
+                        "route": "HUDAD2",
+                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/s240 FIRMM PGLET MUTEE"
+                    },
+                    "WINDU": {
+                        "cleared_altitude": 10000,
+                        "route": "JASPA7",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 JUGEL JASPA"
+                    },
+                    "BRHMA": {
+                        "cleared_altitude": 10000,
+                        "route": "KATZZ2",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
+                    },
+                    "ROLLS": {
+                        "cleared_altitude": 10000,
+                        "route": "LOWGN8",
+                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/s240 FIRMN BINGM BEMMR LOWGN ADM MRMAC"
+                    },
+                    "BDDAY,ZALEA": {
+                        "cleared_altitude": 10000,
+                        "route": "MRSSH3",
+                        "waypoints": "_DFW_18L _DFW_36R TREXX JOLEN THHOR JJANE MRSSH"
+                    },
+                    "SAT": {
+                        "cleared_altitude": 10000,
+                        "route": "NEYLN6",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 WETUR NELYN ACT PRIZE"
+                    },
+                    "LOOSE": {
+                        "cleared_altitude": 10000,
+                        "route": "TRYTN4",
+                        "waypoints": "_DFW_18L _DFW_36R SPERA JGIRL CORTS TRRCH JAYXX TRYTN"
+                    },
+                    "CIKAN,DOSXX": {
+                        "cleared_altitude": 10000,
+                        "route": "WSTEX2",
+                        "waypoints": "_DFW_18L _DFW_36R LARRN/s240 GIGEM RBBIT LYNDE WSTEX"
+                    },
+                    "BSKAT": {
+                        "cleared_altitude": 10000,
+                        "route": "ZACHH4",
+                        "waypoints": "_DFW_18L _DFW_36R SPERA JGIRL CORTS ZERLU SWDIA ZACHH"
+                    }
+                },
+                "35L": {
+                    "MLC": {
+                        "cleared_altitude": 10000,
+                        "route": "AKUNA9",
+                        "waypoints" : "_DFW_35L _DFW_17R HAZKL/s240 RYNNE AKUNA TIKYS"
+                    },
+                    "ALIAN": {
+                        "cleared_altitude": 10000,
+                        "route": "ALIAN2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM RBBIT FUMED"
+                    },
+                    "CLL": {
+                        "cleared_altitude": 10000,
+                        "route": "ARDIA7",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY NEAPS ARDIA ELLVR"
+                    },
+                    "IRW,TUL": {
+                        "cleared_altitude": 10000,
+                        "route": "BLECO8",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/s240 CORTS BIGGD CMORE BLECO ZEMMA"
+                    },
+                    "TNV": {
+                        "cleared_altitude": 10000,
+                        "route": "DARTZ9",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY OUTTR DARTZ BRDEN TORNN BILEE"
+                    },
+                    "FORCK": {
+                        "cleared_altitude": 10000,
+                        "route": "FORCK3",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX JOLEN PAXTN HANUH"
+                    },
+                    "OKM": {
+                        "cleared_altitude": 10000,
+                        "route": "GRABE8",
                         "waypoints": "_DFW_17R _DFW_35L JGIRL/s240 CORTS BIGGD CMORE GRABE EAKER["
                     },
                     "HULZE": {
@@ -165,6 +339,113 @@
                         "cleared_altitude": 10000,
                         "route": "MRSSH3",
                         "waypoints": "_DFW_17R _DFW_35L TREXX JOLEN THHOR JJANE MRSSH"
+                    },
+                    "SAT": {
+                        "cleared_altitude": 10000,
+                        "route": "NEYLN6",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ONKAE NELYN ACT PRIZE"
+                    },
+                    "LOOSE": {
+                        "cleared_altitude": 10000,
+                        "route": "TRYTN4",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL CORTS TRRCH JAYXX TRYTN"
+                    },
+                    "CIKAN,DOSXX": {
+                        "cleared_altitude": 10000,
+                        "route": "WSTEX2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM RBBIT LYNDE WSTEX"
+                    },
+                    "BSKAT": {
+                        "cleared_altitude": 10000,
+                        "route": "ZACHH4",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL CORTS ZERLU SWDIA ZACHH"
+                    }
+                },
+                "17R": {
+                    "MLC": {
+                        "cleared_altitude": 10000,
+                        "route": "AKUNA9",
+                        "waypoints" : "_DFW_17R _DFW_35L SPERA JGIRL/a5000/s240 CORTS BIGGD CMORE AKUNA TIKYS"
+                    },
+                    "ALIAN": {
+                        "cleared_altitude": 10000,
+                        "route": "ALIAN2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM RBBIT FUMED"
+                    },
+                    "CLL": {
+                        "cleared_altitude": 10000,
+                        "route": "ARDIA7",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY NEAPS ARDIA ELLVR"
+                    },
+                    "IRW,TUL": {
+                        "cleared_altitude": 10000,
+                        "route": "BLECO8",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/s240 CORTS BIGGD CMORE BLECO ZEMMA"
+                    },
+                    "TNV": {
+                        "cleared_altitude": 10000,
+                        "route": "DARTZ9",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY OUTTR DARTZ BRDEN TORNN BILEE"
+                    },
+                    "FORCK": {
+                        "cleared_altitude": 10000,
+                        "route": "FORCK3",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX JOLEN PAXTN HANUH"
+                    },
+                    "OKM": {
+                        "cleared_altitude": 10000,
+                        "route": "GRABE8",
+                        "waypoints": "_DFW_17R _DFW_35L JGIRL/s240 CORTS BIGGD CMORE GRABE EAKER["
+                    },
+                    "HULZE": {
+                        "cleared_altitude": 10000,
+                        "route": "HRPER3",
+                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/s240 TYGGR DBLSS HRPER"
+                    },
+                    "HUDAD": {
+                        "cleared_altitude": 10000,
+                        "route": "HUDAD2",
+                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/s240 FIRMM PGLET MUTEE"
+                    },
+                    "WINDU": {
+                        "cleared_altitude": 10000,
+                        "route": "JASPA7",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ENIKE JASPA"
+                    },
+                    "BRHMA": {
+                        "cleared_altitude": 10000,
+                        "route": "KATZZ2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
+                    },
+                    "ROLLS": {
+                        "cleared_altitude": 10000,
+                        "route": "LOWGN8",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/s240 CORTS BIGGD CMORE LOWGN ADM MRMAC"
+                    },
+                    "BDDAY,ZALEA": {
+                        "cleared_altitude": 10000,
+                        "route": "MRSSH3",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX JOLEN THHOR JJANE MRSSH"
+                    },
+                    "SAT": {
+                        "cleared_altitude": 10000,
+                        "route": "NEYLN6",
+                        "waypoints": "_DFW_17R _DFW_35L TREXX/s240 DALBY ONKAE NELYN ACT PRIZE"
+                    },
+                    "LOOSE": {
+                        "cleared_altitude": 10000,
+                        "route": "TRYTN4",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL CORTS TRRCH JAYXX TRYTN"
+                    },
+                    "CIKAN,DOSXX": {
+                        "cleared_altitude": 10000,
+                        "route": "WSTEX2",
+                        "waypoints": "_DFW_17R _DFW_35L LARRN/s240 GIGEM RBBIT LYNDE WSTEX"
+                    },
+                    "BSKAT": {
+                        "cleared_altitude": 10000,
+                        "route": "ZACHH4",
+                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL CORTS ZERLU SWDIA ZACHH"
                     }
                 }
             }

@@ -2631,6 +2631,58 @@
                 "direction": 270,
                 "speed": 5
               }
+            },
+            "KATL West Final Duals": {
+              "approach_airspace": [
+                "ATL_V_APPW",
+                "ATL_A_APPW",
+                "ATL_O_APPW"
+              ],
+              "arrival_runways": [
+                {
+                  "airport": "KATL",
+                  "runway": "27L"
+                },
+                {
+                  "airport": "KATL",
+                  "runway": "26R"
+                }
+              ],
+              "arrivals": {
+                "NW_FINALTRIPS": {
+                  "KATL": 15
+                },
+                "HOBTT2_AFINALD": {
+                  "KATL": 8
+                },
+                "JJEDI3_FINALD": {
+                  "KATL": 15
+                },
+                "ONDRE1_FINALWT": {
+                  "KATL": 8
+                },
+                "OZZZI1_FINALWT": {
+                  "KATL": 13
+                }
+              },
+              "solo_controller": "ATL_O_APP",
+              "controllers": [
+                "ATL_D_APP",
+                "ATL_L_APP",
+                "ATL_Y_APP",
+                "ATL_H_APP",
+                "ATL_1_TWR",
+                "ATL_2_TWR",
+                "ATL_3_TWR",
+                "ATL_4_TWR",
+                "ATL_5_TWR",
+                "ATL_CTR"
+              ],
+              "default_map": "ARRIVAL RADAR WEST DUALS",
+              "wind": {
+                "direction": 270,
+                "speed": 5
+              }
             }
       },
       "scratchpads": {
