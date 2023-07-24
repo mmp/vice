@@ -25,15 +25,15 @@ type OpenGL2Renderer struct {
 // NewOpenGL2Renderer creates an OpenGL context and creates a texture for the imgui fonts.
 // Thus, all font creation must be finished before the renderer is created.
 func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
-	lg.Printf("Starting OpenGL2Renderer initialization")
+	lg.Info("Starting OpenGL2Renderer initialization")
 	if err := gl.Init(); err != nil {
 		return nil, fmt.Errorf("failed to initialize OpenGL: %w", err)
 	}
 	vendor, renderer := gl.GetString(gl.VENDOR), gl.GetString(gl.RENDERER)
 	v, r := (*C.char)(unsafe.Pointer(vendor)), (*C.char)(unsafe.Pointer(renderer))
-	lg.Printf("OpenGL vendor %s renderer %s", C.GoString(v), C.GoString(r))
+	lg.Infof("OpenGL vendor %s renderer %s", C.GoString(v), C.GoString(r))
 
-	lg.Printf("Finished OpenGL2Renderer initialization")
+	lg.Info("Finished OpenGL2Renderer initialization")
 	return &OpenGL2Renderer{
 		imguiIO:         io,
 		createdTextures: make(map[uint32]int),
@@ -56,9 +56,9 @@ func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
 	mb := float32(total) / (1024 * 1024)
 
 	if exists {
-		lg.Printf("Updated tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
+		lg.Infof("Updated tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
 	} else {
-		lg.Printf("Created tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
+		lg.Infof("Created tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
 	}
 }
 
@@ -306,7 +306,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 			stats.Merge(s2)
 
 		default:
-			lg.Errorf("unhandled command")
+			lg.Error("unhandled command")
 		}
 	}
 

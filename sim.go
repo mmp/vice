@@ -17,6 +17,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slog"
 )
 
 type SimConfiguration struct {
@@ -819,7 +820,7 @@ func (s *Sim) signOn(callsign string) error {
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
 	})
-	lg.Printf("%s/%s: signing on", Select(s.Name != "", s.Name, "(local)"), callsign)
+	lg.Infof("%s/%s: signing on", Select(s.Name != "", s.Name, "(local)"), callsign)
 
 	return nil
 }
@@ -849,7 +850,7 @@ func (s *Sim) SignOff(token string) error {
 			Type:    StatusMessageEvent,
 			Message: ctrl.Callsign + " has signed off.",
 		})
-		lg.Printf("%s/%s: signing off", Select(s.Name != "", s.Name, "(local)"), ctrl.Callsign)
+		lg.Infof("%s/%s: signing off", Select(s.Name != "", s.Name, "(local)"), ctrl.Callsign)
 	}
 	return nil
 }
@@ -1138,11 +1139,11 @@ func (s *Sim) Update() {
 
 		name := Select(s.Name != "", s.Name, "(local)")
 		for _, ctrl := range s.controllers {
-			lg.Printf("%s: launch controller %s", name, s.LaunchConfig.Controller)
-			lg.Printf("%s: %s is currently signed in and controlling", name, ctrl.Callsign)
+			lg.Infof("%s: launch controller %s", name, s.LaunchConfig.Controller)
+			lg.Infof("%s: %s is currently signed in and controlling", name, ctrl.Callsign)
 		}
 		for _, ac := range s.World.Aircraft {
-			lg.Printf("%s: active aircraft %s", name, spew.Sdump(ac))
+			lg.Info("active_aircraft", slog.Any("Aircraft", ac))
 		}
 	}
 }
@@ -1363,8 +1364,8 @@ func (s *Sim) spawnAircraft() {
 				lg.Errorf("%v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
-				lg.Printf("%s: spawned arrival", ac.Callsign)
-				lg.Printf("%s", spew.Sdump(ac))
+				lg.Infof("%s: spawned arrival", ac.Callsign)
+				lg.Infof("%s", spew.Sdump(ac))
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1384,17 +1385,17 @@ func (s *Sim) spawnAircraft() {
 			}
 
 			prevDep := s.lastDeparture[airport][runway][category]
-			lg.Printf("%s/%s/%s: prev dep", airport, runway, category)
+			lg.Infof("%s/%s/%s: prev dep", airport, runway, category)
 			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
 				s.LaunchConfig.DepartureChallenge, prevDep)
 			if err != nil {
 				lg.Errorf("%v", err)
 			} else {
 				s.lastDeparture[airport][runway][category] = dep
-				lg.Printf("%s/%s/%s: launch dep", airport, runway, category)
+				lg.Infof("%s/%s/%s: launch dep", airport, runway, category)
 				s.launchAircraftNoLock(*ac)
-				lg.Printf("%s: starting takeoff roll", ac.Callsign)
-				lg.Printf("%s", spew.Sdump(ac))
+				lg.Infof("%s: starting takeoff roll", ac.Callsign)
+				lg.Infof("%s", spew.Sdump(ac))
 				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1434,7 +1435,7 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 					oldSum += s.LaunchConfig.DepartureRates[ap][rwy][category]
 				}
 				if newSum != oldSum {
-					lg.Printf("%s/%s: rate sum %d -> %d", ap, rwy, oldSum, newSum)
+					lg.Infof("%s/%s: rate sum %d -> %d", ap, rwy, oldSum, newSum)
 					s.NextDepartureSpawn[ap][rwy] = s.SimTime.Add(randomWait(newSum))
 				}
 			}
@@ -1446,7 +1447,7 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 				oldSum += s.LaunchConfig.ArrivalGroupRates[group][ap]
 			}
 			if newSum != oldSum {
-				lg.Printf("%s: rate sum %d -> %d", group, oldSum, newSum)
+				lg.Infof("%s: rate sum %d -> %d", group, oldSum, newSum)
 				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum))
 			}
 
@@ -1548,7 +1549,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 
 			preResponse, postResponse, err := cmd(ctrl, ac)
 			if preResponse != "" {
-				lg.Printf("%s@%s: %s", ac.Callsign, octrl, preResponse)
+				lg.Infof("%s@%s: %s", ac.Callsign, octrl, preResponse)
 				s.eventStream.Post(Event{
 					Type:         RadioTransmissionEvent,
 					Callsign:     ac.Callsign,
@@ -1557,7 +1558,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 				})
 			}
 			if postResponse != "" {
-				lg.Printf("%s@%s: %s", ac.Callsign, ac.ControllingController, postResponse)
+				lg.Infof("%s@%s: %s", ac.Callsign, ac.ControllingController, postResponse)
 				s.eventStream.Post(Event{
 					Type:         RadioTransmissionEvent,
 					Callsign:     ac.Callsign,
@@ -1696,7 +1697,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way now.
 			if ac.IsDeparture {
-				lg.Printf("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
+				lg.Infof("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
 				ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
 			}
 

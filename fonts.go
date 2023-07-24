@@ -216,8 +216,8 @@ func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
 	return (*[unrealisticLargePointer / 2]uint16)(p)[:]
 }
 
-func fontsInit(r Renderer, platform Platform) {
-	lg.Printf("Starting to initialize fonts")
+func fontsInit(r Renderer, platform Platform, lg *Logger) {
+	lg.Info("Starting to initialize fonts")
 	fonts = make(map[FontIdentifier]*Font)
 	io := imgui.CurrentIO()
 
@@ -287,7 +287,7 @@ func fontsInit(r Renderer, platform Platform) {
 	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
 
 	img := io.Fonts().TextureDataRGBA32()
-	lg.Printf("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
+	lg.Infof("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
 	rgb8Image := &image.RGBA{
 		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
 		Stride: 4 * img.Width,
@@ -295,7 +295,7 @@ func fontsInit(r Renderer, platform Platform) {
 	fontId := r.CreateTextureFromImage(rgb8Image)
 	io.Fonts().SetTextureID(imgui.TextureID(fontId))
 
-	lg.Printf("Finished initializing fonts")
+	lg.Info("Finished initializing fonts")
 }
 
 // GetAllFonts returns a FontIdentifier slice that gives identifiers for

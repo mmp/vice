@@ -69,7 +69,7 @@ func (e *EventsSubscription) Unsubscribe() {
 	defer e.stream.mu.Unlock()
 
 	if _, ok := e.stream.subscriptions[e]; !ok {
-		lg.ErrorfUp1("Attempted to unsubscribe invalid subscription: %+v", e)
+		lg.Errorf("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
 	delete(e.stream.subscriptions, e)
 	e.stream = nil
@@ -80,14 +80,14 @@ func (e *EventsSubscription) Unsubscribe() {
 // conventions.
 func (e *EventStream) Post(event Event) {
 	if false && *devmode {
-		lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
+		lg.Infof("Post %s; %d subscribers stream length %d, cap %d",
 			event.String(), len(e.subscriptions), len(e.events), cap(e.events))
 	}
 
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	lg.Printf("Event posted: %s", event.String())
+	lg.Infof("Event posted: %s", event.String())
 
 	// Ignore the event if no one's paying attention.
 	if len(e.subscriptions) > 0 {
@@ -96,7 +96,7 @@ func (e *EventStream) Post(event Event) {
 			// general we expect it to pretty quickly reach steady state
 			// with just a handful of entries.
 			e.mu.Unlock()
-			lg.Printf("%s", e.Dump())
+			lg.Info(e.Dump())
 			e.mu.Lock()
 		}
 
@@ -112,7 +112,7 @@ func (e *EventsSubscription) Get() []Event {
 	defer e.stream.mu.Unlock()
 
 	if _, ok := e.stream.subscriptions[e]; !ok {
-		lg.ErrorfUp1("Attempted to get with unregistered subscription: %+v", e)
+		lg.Errorf("Attempted to get with unregistered subscription: %+v", e)
 		return nil
 	}
 

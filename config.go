@@ -66,7 +66,7 @@ func (gc *GlobalConfig) Encode(w io.Writer) error {
 }
 
 func (c *GlobalConfig) Save() error {
-	lg.Printf("Saving config to: %s", configFilePath())
+	lg.Infof("Saving config to: %s", configFilePath())
 	f, err := os.Create(configFilePath())
 	if err != nil {
 		return err
@@ -96,7 +96,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 	fn := configFilePath()
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
-		lg.Printf("%s: unable to read config file: %v", fn, err)
+		lg.Infof("%s: unable to read config file: %v", fn, err)
 	}
 
 	var b strings.Builder
@@ -118,7 +118,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 
 func LoadOrMakeDefaultConfig() {
 	fn := configFilePath()
-	lg.Printf("Loading config from: %s", fn)
+	lg.Infof("Loading config from: %s", fn)
 
 	globalConfig = &GlobalConfig{}
 	config, err := os.ReadFile(fn)

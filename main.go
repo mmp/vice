@@ -20,6 +20,7 @@ import (
 
 	"github.com/apenwarr/fixconsole"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slog"
 )
 
 const ViceServerAddress = "vice.pharr.org:8000"
@@ -117,14 +118,14 @@ func main() {
 	} else {
 		localSimServerChan, err := LaunchLocalSimServer()
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
 		}
 
 		lastRemoteServerAttempt := time.Now()
 		remoteSimServerChan, err := TryConnectRemoteServer(*serverAddress)
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Warnf("error connecting to remote server: %v", err)
 		}
 
 		var stats Stats
@@ -136,7 +137,7 @@ func main() {
 		if !*devmode {
 			defer func() {
 				if err := recover(); err != nil {
-					lg.Errorf("Panic stack: %s", string(debug.Stack()))
+					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
 					ShowFatalErrorDialog(renderer, platform,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
@@ -156,7 +157,7 @@ func main() {
 
 		context = imguiInit()
 
-		if err = audioInit(); err != nil {
+		if err = audioInit(lg); err != nil {
 			lg.Errorf("Unable to initialize audio: %v", err)
 		}
 
@@ -175,7 +176,7 @@ func main() {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 
-		fontsInit(renderer, platform)
+		fontsInit(renderer, platform, lg)
 
 		newWorldChan = make(chan *World, 2)
 		var world *World
@@ -185,7 +186,7 @@ func main() {
 		if globalConfig.Sim != nil {
 			var result NewSimResult
 			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
-				lg.Errorf("%v", err)
+				lg.Errorf("error restoring saved Sim: %v", err)
 			} else {
 				world = result.World
 				world.simProxy = &SimProxy{
@@ -208,7 +209,7 @@ func main() {
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
-		lg.Printf("Starting main loop")
+		lg.Info("Starting main loop")
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
@@ -252,7 +253,7 @@ func main() {
 				lastRemoteServerAttempt = time.Now()
 				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
 				if err != nil {
-					lg.Errorf("TryConnectRemoteServer: %v", err)
+					lg.Warnf("TryConnectRemoteServer: %v", err)
 				}
 			}
 
@@ -315,7 +316,7 @@ func main() {
 
 			// Periodically log current memory use, etc.
 			if *devmode && frameIndex%18000 == 0 {
-				lg.LogStats(stats)
+				stats.Log(lg)
 			}
 			frameIndex++
 

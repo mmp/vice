@@ -794,7 +794,7 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 	}
 
 	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind) {
-		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
+		lg.Infof("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
 
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp, w, ep)
@@ -834,7 +834,7 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 			ac.flyProcedureTurnIfNecessary()
 		}
 
-		//lg.Printf("%s", spew.Sdump(ac))
+		//lg.Infof("%s", spew.Sdump(ac))
 	}
 }
 
@@ -907,7 +907,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 		if sign(initialDist) != sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
-			lg.Printf("%s: turning now to intercept outbound in %d seconds",
+			lg.Infof("%s: turning now to intercept outbound in %d seconds",
 				ac.Callsign, i)
 			//globalConfig.highlightedLocation = ac2.Position
 			//globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
@@ -954,7 +954,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 		ac2.Update(wind, nil, nil)
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 		if sign(initialDist) != sign(curDist) && abs(curDist) < .25 && headingDifference(hdg, ac2.Heading) < 3.5 {
-			lg.Printf("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
+			lg.Infof("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
 			//globalConfig.highlightedLocation = ac2.Position
 			//globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 			return true

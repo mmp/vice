@@ -143,19 +143,19 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.p0[0], rb.p0[1], rb.p1[0], rb.p1[1]))
 
 		url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
-		lg.Printf("Fetching weather: %s", url)
+		lg.Infof("Fetching weather: %s", url)
 
 		// Request the image
 		resp, err := http.Get(url)
 		if err != nil {
-			lg.Printf("Weather error: %s", err)
+			lg.Infof("Weather error: %s", err)
 			continue
 		}
 		defer resp.Body.Close()
 
 		img, err := png.Decode(resp.Body)
 		if err != nil {
-			lg.Printf("Weather error: %s", err)
+			lg.Infof("Weather error: %s", err)
 			continue
 		}
 
@@ -183,7 +183,7 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 
 		// Send it back to the main thread.
 		imageChan <- ImageAndBounds{img: resized, bounds: rb}
-		lg.Printf("finish weather fetch")
+		lg.Infof("finish weather fetch")
 
 		if !timedOut {
 			time.Sleep(15 * time.Second)
@@ -340,13 +340,13 @@ func (c *CRDAConfig) GetGhost(ac *Aircraft) *Aircraft {
 
 		pIntersect, ok := runwayIntersection(src, dst)
 		if !ok {
-			lg.Printf("No intersection between runways??!?")
+			lg.Infof("No intersection between runways??!?")
 			return nil
 		}
 
 			airport, ok := database.FAA.airports[c.Airport]
 			if !ok {
-				lg.Printf("%s: airport unknown?!", c.Airport)
+				lg.Infof("%s: airport unknown?!", c.Airport)
 				return nil
 			}
 
@@ -439,7 +439,7 @@ func (c *CRDAConfig) DrawRegions(ctx *PaneContext, transforms ScopeTransformatio
 	if dst != nil {
 		p, ok := runwayIntersection(ctx.world, src, dst)
 		if !ok {
-			lg.Printf("no intersection between runways?!")
+			lg.Infof("no intersection between runways?!")
 		}
 		//		rs.linesDrawBuilder.AddLine(src.threshold, src.end, RGB{0, 1, 0})
 		//		rs.linesDrawBuilder.AddLine(dst.threshold, dst.end, RGB{0, 1, 0})
@@ -589,7 +589,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 		isect, _, t := bounds.IntersectRay(pw, dir)
 		if !isect {
 			// Happens on initial launch w/o a sector file...
-			//lg.Printf("no isect?! p %+v dir %+v bounds %+v", pw, dir, ctx.paneExtent)
+			//lg.Infof("no isect?! p %+v dir %+v bounds %+v", pw, dir, ctx.paneExtent)
 			continue
 		}
 
@@ -634,7 +634,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 				// top edge
 				pText[0] -= float32(bx) / 2
 			} else {
-				lg.Printf("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
+				lg.Infof("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
 
 			td.AddText(string(label), pText, TextStyle{Font: font, Color: color})

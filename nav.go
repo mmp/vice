@@ -294,7 +294,7 @@ func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft, ep EventPoster, wind WindM
 		return false
 	}
 
-	lg.Printf("%s: at 5 DME; snav reducing to final approach (if not already)",
+	lg.Infof("%s: at 5 DME; snav reducing to final approach (if not already)",
 		ac.Callsign)
 	ac.Nav.S = &FinalApproachSpeed{}
 	return true
@@ -341,7 +341,7 @@ func (il *TurnToInterceptLocalizer) Evaluate(ac *Aircraft, ep EventPoster, wind 
 	loc := ap.Line()
 
 	if ac.ShouldTurnToIntercept(loc[0], hdg, TurnClosest, wind) {
-		lg.Printf("%s: assigned approach heading! %.1f", ac.Callsign, hdg)
+		lg.Infof("%s: assigned approach heading! %.1f", ac.Callsign, hdg)
 
 		ac.Nav.L = &FlyHeading{Heading: ap.Heading(ac.NmPerLongitude, ac.MagneticVariation)}
 		// Just in case.. Thus we will be ready to pick up the
@@ -376,7 +376,7 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, ep EventPoster, wi
 	n := len(ap.Waypoints[0])
 	threshold := ap.Waypoints[0][n-1].Location
 	thresholdDistance := nmdistance2ll(ac.Position, threshold)
-	lg.Printf("%s: intercepted the localizer @ %.2fnm!", ac.Callsign, thresholdDistance)
+	lg.Infof("%s: intercepted the localizer @ %.2fnm!", ac.Callsign, thresholdDistance)
 
 	ac.Waypoints = nil
 	for i, wp := range ap.Waypoints[0] {
@@ -387,10 +387,10 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, ep EventPoster, wi
 		if i+1 < len(ap.Waypoints[0]) {
 			wpToThresholdHeading := headingp2ll(wp.Location, ap.Waypoints[0][n-1].Location,
 				ac.NmPerLongitude, ac.MagneticVariation)
-			lg.Printf("%s: wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
+			lg.Infof("%s: wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
 			if headingDifference(wpToThresholdHeading,
 				ap.Heading(ac.NmPerLongitude, ac.MagneticVariation)) > 3 {
-				lg.Printf("%s: fix is in front but not on the localizer", wp.Fix)
+				lg.Infof("%s: fix is in front but not on the localizer", wp.Fix)
 				continue
 			}
 		}
@@ -398,11 +398,11 @@ func (hl *HoldLocalizerAfterIntercept) Evaluate(ac *Aircraft, ep EventPoster, wi
 		acToWpHeading := headingp2ll(ac.Position, wp.Location, ac.NmPerLongitude,
 			ac.MagneticVariation)
 		inFront := headingDifference(ac.Heading, acToWpHeading) < 70
-		lg.Printf("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
+		lg.Infof("%s: %s ac heading %f wp heading %f in front %v threshold distance %f",
 			ac.Callsign, wp.Fix, ac.Heading, acToWpHeading, inFront, thresholdDistance)
 		if inFront && nmdistance2ll(wp.Location, threshold) < thresholdDistance {
 			ac.Waypoints = DuplicateSlice(ap.Waypoints[0][i:])
-			lg.Printf("%s: added future waypoints %s...", ac.Callsign, spew.Sdump(ac.Waypoints))
+			lg.Infof("%s: added future waypoints %s...", ac.Callsign, spew.Sdump(ac.Waypoints))
 			break
 		}
 	}
@@ -432,7 +432,7 @@ func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 
 	response := ac.GoAround()
 	if response != "" && ep != nil {
-		lg.Printf("%s: %s", ac.Callsign, response)
+		lg.Infof("%s: %s", ac.Callsign, response)
 		ep.PostEvent(Event{
 			Type:         RadioTransmissionEvent,
 			Callsign:     ac.Callsign,
@@ -632,7 +632,7 @@ func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tur
 			// offset-from-true-inbound heading until it is time to turn to
 			// intercept.
 			hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
-			lg.Printf("%s: parallel inbound turning to %.1f", ac.Callsign, hdg)
+			lg.Infof("%s: parallel inbound turning to %.1f", ac.Callsign, hdg)
 			if headingDifference(ac.Heading, hdg) < 1 {
 				fp.State = PTStateFlyingInbound
 			}
@@ -749,7 +749,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 	switch fp.State {
 	case PT45StateApproaching:
 		if ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, wind) {
-			lg.Printf("%s: turning outbound to %.0f", ac.Callsign, outboundHeading)
+			lg.Infof("%s: turning outbound to %.0f", ac.Callsign, outboundHeading)
 			fp.State = PT45StateTurningOutbound
 		}
 
@@ -762,7 +762,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 		if ac.Heading == outboundHeading {
 			fp.State = PTStateFlyingOutbound
 			fp.SecondsRemaining = 60
-			lg.Printf("%s: flying outbound for %ds", ac.Callsign, fp.SecondsRemaining)
+			lg.Infof("%s: flying outbound for %ds", ac.Callsign, fp.SecondsRemaining)
 		}
 		return outboundHeading, TurnClosest, StandardTurnRate
 
@@ -770,7 +770,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 		fp.SecondsRemaining--
 		if fp.SecondsRemaining == 0 {
 			fp.State = PT45StateTurningAway
-			lg.Printf("%s: turning away from outbound to %.0f", ac.Callsign, fp.AwayHeading)
+			lg.Infof("%s: turning away from outbound to %.0f", ac.Callsign, fp.AwayHeading)
 
 		}
 		return outboundHeading, TurnClosest, StandardTurnRate
@@ -779,7 +779,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 		if ac.Heading == fp.AwayHeading {
 			fp.State = PT45StateFlyingAway
 			fp.SecondsRemaining = 60
-			lg.Printf("%s: flying away for %ds", ac.Callsign, fp.SecondsRemaining)
+			lg.Infof("%s: flying away for %ds", ac.Callsign, fp.SecondsRemaining)
 		}
 
 		return fp.AwayHeading, TurnClosest, StandardTurnRate
@@ -788,7 +788,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 		fp.SecondsRemaining--
 		if fp.SecondsRemaining == 0 {
 			fp.State = PT45StateTurningIn
-			lg.Printf("%s: turning in to %.0f", ac.Callsign, OppositeHeading(fp.AwayHeading))
+			lg.Infof("%s: turning in to %.0f", ac.Callsign, OppositeHeading(fp.AwayHeading))
 		}
 		return fp.AwayHeading, TurnClosest, StandardTurnRate
 
@@ -796,7 +796,7 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 		hdg := OppositeHeading(fp.AwayHeading)
 		if ac.Heading == hdg {
 			fp.State = PT45StateFlyingIn
-			lg.Printf("%s: flying in", ac.Callsign)
+			lg.Infof("%s: flying in", ac.Callsign)
 		}
 
 		turn := Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft)
@@ -806,14 +806,14 @@ func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, Tu
 		turn := TurnMethod(Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
 		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
 			fp.State = PT45StateTurningToIntercept
-			lg.Printf("%s: starting turn to intercept %.0f", ac.Callsign, fp.InboundHeading)
+			lg.Infof("%s: starting turn to intercept %.0f", ac.Callsign, fp.InboundHeading)
 		}
 		return ac.Heading, TurnClosest, StandardTurnRate
 
 	case PT45StateTurningToIntercept:
 		if ac.Heading == fp.InboundHeading {
 			ac.Nav.L = &FlyRoute{}
-			lg.Printf("%s: done! direct to the fix now", ac.Callsign)
+			lg.Infof("%s: done! direct to the fix now", ac.Callsign)
 		}
 
 		return fp.InboundHeading, TurnClosest, StandardTurnRate
@@ -868,7 +868,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 		State:          PTStateApproaching,
 	}
 
-	lg.Printf("%s: entry %s", ac.Callsign, fp.Entry)
+	lg.Infof("%s: entry %s", ac.Callsign, fp.Entry)
 
 	// Set the outbound heading. For everything but teardrop, it's the
 	// opposite of the inbound heading.
@@ -893,7 +893,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 			ac.MagneticVariation)
 		diff := headingDifference(fp.OutboundHeading, acFixHeading)
 		fp.OutboundTurnRate = 3 * diff / 180
-		lg.Printf("%s: hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
+		lg.Infof("%s: hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
 			ac.Callsign, acFixHeading, fp.OutboundHeading,
 			headingDifference(fp.OutboundHeading, acFixHeading),
 			fp.OutboundTurnRate)
@@ -982,11 +982,11 @@ func getUpcomingSpeedRestriction(ac *Aircraft) (*Waypoint, float32) {
 				// 2-seconds required to decelerate, assuming straight-line deceleration
 				s := (ac.IAS - float32(wp.Speed)) / (ac.Performance().Rate.Decelerate / 2)
 				if s < eta {
-					//lg.Printf("%s: ignoring speed at %s for now...", ac.Callsign, wp.Fix)
+					//lg.Infof("%s: ignoring speed at %s for now...", ac.Callsign, wp.Fix)
 					return nil, 0
 				}
 			}
-			//lg.Printf("%s: slowing for speed at %s for now...", ac.Callsign, wp.Fix)
+			//lg.Infof("%s: slowing for speed at %s for now...", ac.Callsign, wp.Fix)
 			return &wp, eta
 		}
 	}
@@ -1125,7 +1125,7 @@ func (fr *FlyRoute) GetAltitude(ac *Aircraft) (float32, float32) {
 			return float32(wp.Altitude), MaximumRate
 		} else {
 			rate := abs(float32(wp.Altitude)-ac.Altitude) / eta
-			//lg.Printf("%s: descending to %d for %s at %.1f fpm", ac.Callsign, wp.Altitude, wp.Fix, rate*60)
+			//lg.Infof("%s: descending to %d for %s at %.1f fpm", ac.Callsign, wp.Altitude, wp.Fix, rate*60)
 			return float32(wp.Altitude), rate * 60 // rate is in feet per minute
 		}
 	} else if fr.AltitudeRestriction != 0 {

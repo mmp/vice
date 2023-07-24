@@ -714,7 +714,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 
 	rd := getResourcesDirectory()
-	lg.Printf("%s: resources directory", rd)
+	lg.Infof("%s: resources directory", rd)
 	fsys, ok := os.DirFS(rd).(fs.StatFS)
 	if !ok {
 		e.ErrorString("FS from DirFS is not a StatFS?")
@@ -728,7 +728,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			return nil, nil
 		}
 
-		lg.Printf("%s: trying CWD for videomaps and scenarios", wd)
+		lg.Infof("%s: trying CWD for videomaps and scenarios", wd)
 		fsys, ok = os.DirFS(wd).(fs.StatFS)
 		if !ok {
 			e.ErrorString("FS from DirFS is not a StatFS?")
@@ -758,7 +758,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			return nil
 		}
 
-		lg.Printf("%s: loading video map", path)
+		lg.Infof("%s: loading video map", path)
 		vm := loadVideoMaps(fsys, path, e)
 		if vm != nil {
 			videoMapCommandBuffers[path] = vm
@@ -809,7 +809,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			return nil
 		}
 
-		lg.Printf("%s: loading scenario", path)
+		lg.Infof("%s: loading scenario", path)
 		s := loadScenarioGroup(fsys, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.Name]; ok {
