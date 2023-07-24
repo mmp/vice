@@ -86,6 +86,11 @@ type AudioSettings struct {
 	muteUntil     time.Time
 	lastPlay      [AudioEventCount]time.Time
 	lastPlayMutex sync.Mutex
+	lg            *Logger
+}
+
+func (a *AudioSettings) Activate(lg *Logger) {
+	a.lg = lg
 }
 
 // Play no sounds for the specified period of time. This is mostly useful
@@ -107,14 +112,14 @@ func (a *AudioSettings) PlaySound(e AudioEvent) {
 		// This should only happen if a built-in sound effect is removed
 		// and an old config file refers to it. Arguably the user should be
 		// notified in this (unexpected) case...
-		lg.Errorf("%s: sound effect disappeared?!", effect)
+		a.lg.Errorf("%s: sound effect disappeared?!", effect)
 		a.SoundEffects[e] = ""
 	} else {
 		a.lastPlayMutex.Lock()
 		defer a.lastPlayMutex.Unlock()
 		if time.Since(a.lastPlay[e]) > 2*time.Second {
 			a.lastPlay[e] = time.Now()
-			se.Play()
+			se.Play(a.lg)
 		}
 	}
 }
@@ -127,7 +132,7 @@ type SoundEffect struct {
 	spec     *sdl.AudioSpec
 }
 
-func (s *SoundEffect) Play() {
+func (s *SoundEffect) Play(lg *Logger) {
 	// Play the sound effect in a separate thread so that Play()
 	// immediately returns to the caller.
 	go func() {
@@ -196,7 +201,7 @@ func addEffect(wav string, name string, repeat int, lg *Logger) {
 	loaded, spec := sdl.LoadWAVRW(rw, false /* do not free */)
 
 	if _, ok := soundEffects[name]; ok {
-		lg.Error(name + " used repeatedly")
+		lg.Error("audio: sound effect \"" + name + "\" used repeatedly")
 		return
 	}
 
@@ -208,7 +213,8 @@ func addEffect(wav string, name string, repeat int, lg *Logger) {
 		wav:      loaded,
 		duration: time.Duration(duration * 1e9),
 		repeat:   repeat,
-		spec:     spec}
+		spec:     spec,
+	}
 
 	if err = rw.Close(); err != nil {
 		lg.Errorf("SDL error: %v", err)
@@ -267,7 +273,7 @@ func (a *AudioSettings) DrawUI() {
 				for _, sound := range sortedSounds {
 					if imgui.SelectableV(sound, sound == a.SoundEffects[i], flags, imgui.Vec2{}) {
 						a.SoundEffects[i] = sound
-						soundEffects[sound].Play()
+						soundEffects[sound].Play(a.lg)
 					}
 				}
 				imgui.EndCombo()

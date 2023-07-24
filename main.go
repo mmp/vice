@@ -165,7 +165,7 @@ func main() {
 
 		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition, multisample)
+			globalConfig.InitialWindowPosition, multisample, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
@@ -201,7 +201,7 @@ func main() {
 
 		uiInit(renderer, platform, eventStream)
 
-		globalConfig.Activate(world, eventStream)
+		globalConfig.Activate(world, eventStream, lg)
 
 		if world == nil {
 			uiShowConnectDialog(false)
