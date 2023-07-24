@@ -1232,7 +1232,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeInitiateControl:
 		if ac := lookupAircraft(cmd); ac == nil {
-			status.err = ErrSTARSIllegalTrack // error code?
+			status.err = ErrSTARSNoFlight
 		} else {
 			sp.initiateTrack(ctx, ac.Callsign)
 			status.clear = true
@@ -1345,7 +1345,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "D":
 			// D(callsign)
-			if ac := ctx.world.GetAircraft(lookupCallsign(cmd)); ac != nil {
+			if ac := lookupAircraft(cmd); ac != nil {
 				// Display flight plan
 				status.output, status.err = flightPlanSTARS(ctx.world, ac)
 			} else {
@@ -1482,8 +1482,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// L(dir)(space)(callsign)
 				if dir, ok := numpadToDirection(cmd[0]); ok && cmd[1] == ' ' {
 					// We know len(cmd) >= 3 given the above cases...
-					callsign := lookupCallsign(cmd[2:])
-					if ac := ctx.world.GetAircraft(callsign); ac != nil {
+					if ac := lookupAircraft(cmd[2:]); ac != nil {
 						sp.aircraft[ac.Callsign].leaderLineDirection = dir
 						status.clear = true
 						return
@@ -1680,14 +1679,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// Y callsign <space> scratch -> set scatchpad
 				// Y callsign <space> ### -> set pilot alt
 
-				callsign := lookupCallsign(f[0])
 				// Either pilot alt or scratchpad entry
-				if ac := ctx.world.GetAircraft(callsign); ac == nil {
+				if ac := lookupAircraft(f[0]); ac == nil {
 					status.err = ErrSTARSNoFlight
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
-					sp.aircraft[callsign].pilotAltitude = alt * 100
+					sp.aircraft[ac.Callsign].pilotAltitude = alt * 100
 				} else {
-					sp.setScratchpad(ctx, callsign, f[1])
+					sp.setScratchpad(ctx, ac.Callsign, f[1])
 				}
 				status.clear = true
 				return
@@ -1732,9 +1730,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
-			callsign := lookupCallsign(cmd[2:])
-			if ac := ctx.world.GetAircraft(callsign); ac != nil {
-				state := sp.aircraft[callsign]
+			if ac := lookupAircraft(cmd[2:]); ac != nil {
+				state := sp.aircraft[ac.Callsign]
 				state.disableCAWarnings = !state.disableCAWarnings
 			} else {
 				status.err = ErrSTARSNoFlight
