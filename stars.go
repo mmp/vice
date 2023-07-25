@@ -647,7 +647,7 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 
 	// start tracking all of the active aircraft
 	sp.initializeAircraft(w)
-	sp.lastTrackUpdate = time.Now()
+	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 }
 
 func (sp *STARSPane) Deactivate() {
@@ -679,17 +679,11 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	}
 	ps.RadarSiteSelected = ""
 
-	sp.lastTrackUpdate = time.Now()
+	sp.lastTrackUpdate = time.Time{} // force update
 }
 
 func (sp *STARSPane) DrawUI() {
 	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
-
-	/*
-		if newFont, changed := DrawFontPicker(&sp.LabelFontIdentifier, "Label font"); changed {
-			sp.labelFont = newFont
-		}
-	*/
 
 	if imgui.CollapsingHeader("Collision alerts") {
 		imgui.SliderFloatV("Lateral minimum (nm)", &sp.Facility.CA.LateralMinimum, 0, 10, "%.1f", 0)
@@ -898,10 +892,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 func (sp *STARSPane) updateRadarTracks(w *World) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
-	if time.Since(sp.lastTrackUpdate) < 5*time.Second {
+	now := w.CurrentTime()
+	if now.Sub(sp.lastTrackUpdate) < 5*time.Second {
 		return
 	}
-	sp.lastTrackUpdate = time.Now()
+	sp.lastTrackUpdate = now
 
 	for callsign, state := range sp.aircraft {
 		ac, ok := w.Aircraft[callsign]
@@ -919,7 +914,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Altitude:    int(ac.Altitude),
 			Groundspeed: int(ac.GS),
 			Heading:     ac.Heading,
-			Time:        w.CurrentTime(),
+			Time:        now,
 		}
 	}
 }
@@ -3309,7 +3304,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		pos := state.TrackPosition()
 		pw := transforms.WindowFromLatLongP(pos)
 		// TODO: orient based on radar center if just one radar
-		orientation := state.TrackHeading(ac.MagneticVariation)
+		orientation := state.TrackHeading(0)
 		if math.IsNaN(float64(orientation)) {
 			orientation = 0
 		}
@@ -3759,7 +3754,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		color := sp.datablockColor(ctx.world, ac)
-		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: -2}
+		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: 0}
 		dbText := state.datablockText[(realNow.Second()/2)&1] // 2 second cycle
 
 		// Draw characters starting at the upper left.
@@ -3769,7 +3764,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			errorStyle := TextStyle{
 				Font:        font,
 				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor),
-				LineSpacing: -2}
+				LineSpacing: 0}
 			pt = td.AddText(state.datablockErrText+"\n", pt, errorStyle)
 		}
 		td.AddText(strings.Join(dbText, "\n"), pt, style)
@@ -3807,7 +3802,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(state.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := ac.Heading - ac.MagneticVariation
+		hdg := state.TrackHeading(-ac.MagneticVariation)
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
 		end := add2f(ll2nm(state.TrackPosition(), ac.NmPerLongitude), h)
@@ -4227,7 +4222,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32) {
 	//	imgui.WindowDrawList().AddRectFilledV(imgui.Vec2{}, imgui.Vec2{X: ctx.paneExtent.Width() - 2, Y: STARSButtonHeight},
 	//		0xff0000ff, 1, 0)
 
-	buttonFont := GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: globalConfig.DCBFontSize})
+	buttonFont := GetFont(FontIdentifier{Name: "Fixed Demi Bold", Size: globalConfig.DCBFontSize})
 	if buttonFont == nil {
 		lg.Errorf("nil buttonFont??")
 		buttonFont = GetDefaultFont()
@@ -4414,8 +4409,8 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 }
 
 func (sp *STARSPane) initializeSystemFonts() {
-	for i, sz := range []int{16, 18, 20, 22, 24, 28} {
-		id := FontIdentifier{Name: "VT323 Regular", Size: sz}
+	for i, sz := range []int{9, 11, 12, 13, 14, 16} {
+		id := FontIdentifier{Name: "Fixed Demi Bold", Size: sz}
 		sp.systemFont[i] = GetFont(id)
 		if sp.systemFont[i] == nil {
 			lg.Errorf("Font not found for %+v", id)

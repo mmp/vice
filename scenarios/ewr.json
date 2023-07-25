@@ -519,7 +519,7 @@
             }
           ],
           "altitude": 36000,
-          "destination": "KSCL",
+          "destination": "KSLC",
           "exit": "COATE",
           "route": "COATE Q436 RAAKK Q440 HUFFR DKOTA DDY NORDK6"
         },
@@ -1235,7 +1235,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KCMG",
+          "destination": "KCMH",
           "exit": "ZIMMZ",
           "route": "ZIMMZ Q42 MIKYG Q480 AIR CLPRR2"
         },

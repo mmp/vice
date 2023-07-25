@@ -88,6 +88,9 @@ var (
 		"Added support for multi-controller simulations(!!)",
 		"Added manual launch control option",
 		"Many new scenarios added, including C90, CLE, and CLT",
+		"Replaced the font used in the STARS radar scope",
+		"Fixed a few graphics bugs in the STARS radar scope",
+		"Fixed a rare crash with incorrect command input to the STARS scope",
 	}
 )
 

@@ -461,7 +461,7 @@
             }
           ],
           "altitude": 36000,
-          "destination": "KSCL",
+          "destination": "KSLC",
           "exit": "COATE",
           "route": "COATE Q436 RAAKK Q440 HUFFR DKOTA DDY NORDK6"
         },
@@ -1974,7 +1974,7 @@
             }
           ],
           "altitude": 36000,
-          "destination": "KSCL",
+          "destination": "KSLC",
           "exit": "COATE",
           "route": "COATE Q436 RAAKK Q440 HUFFR DKOTA DDY NORDK6"
         },

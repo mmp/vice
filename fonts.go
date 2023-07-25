@@ -107,6 +107,9 @@ var (
 	//go:embed resources/VT323-Regular.ttf.zst
 	vt323RegularTTF string
 
+	//go:embed resources/FixedDemiBold.otf.zst
+	fixedDemiBoldOTF string
+
 	//go:embed resources/Inconsolata/static/Inconsolata_Condensed/Inconsolata_Condensed-Regular.ttf.zst
 	inconsolataCondensedRegularTTF string
 
@@ -254,7 +257,7 @@ func fontsInit(r Renderer, platform Platform) {
 
 	add := func(ttfZstd string, mono bool, name string) {
 		ttf := []byte(decompressZstd(ttfZstd))
-		for _, size := range []int{8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
+		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
 				// Fix font sizes to account for Windows using 96dpi but
@@ -284,6 +287,7 @@ func fontsInit(r Renderer, platform Platform) {
 
 	add(robotoRegularTTF, false, "Roboto Regular")
 	add(vt323RegularTTF, true, "VT323 Regular")
+	add(fixedDemiBoldOTF, true, "Fixed Demi Bold")
 	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
 
 	img := io.Fonts().TextureDataRGBA32()

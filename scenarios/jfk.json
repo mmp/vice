@@ -311,7 +311,7 @@
             }
           ],
           "altitude": 17000,
-          "destination": "BGR",
+          "destination": "KBGR",
           "exit": "HTO",
           "route": "HTO V308 GON T320 GDM T314 ENE T295 BGR BGR"
         },
@@ -877,7 +877,7 @@
               "icao": "AFR"
             }
           ],
-          "destination": "LPFG",
+          "destination": "LFPG",
           "exit": "HAPIE",
           "route": "HAPIE YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E"
         },
@@ -2642,7 +2642,7 @@
               "icao": "AAL"
             },
             {
-              "airport": "LPFG",
+              "airport": "LFPG",
               "fleet": "long",
               "icao": "AFR"
             },

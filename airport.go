@@ -97,6 +97,10 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
+		if _, ok := database.Airports[dep.Destination]; !ok {
+			e.ErrorString("destination airport \"%s\" unknown", dep.Destination)
+		}
+
 		// Make sure that all runways have a route to the exit
 		for rwy, routes := range ap.DepartureRoutes {
 			e.Push("Runway " + rwy)

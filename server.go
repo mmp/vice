@@ -1445,21 +1445,23 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 	}
 	stats.RX, stats.TX = GetLoggedRPCBandwidth()
 
-	if de, err := os.ReadDir("vice-logs"); err == nil {
-		for _, entry := range de {
-			if info, err := entry.Info(); err == nil {
-				stats.LogFiles = append(stats.LogFiles,
-					ServerLogFile{
-						Filename: entry.Name(),
-						Date:     info.ModTime().Format(time.RFC1123),
-						Size:     info.Size(),
-					})
+	/*
+		if de, err := os.ReadDir("vice-logs"); err == nil {
+			for _, entry := range de {
+				if info, err := entry.Info(); err == nil {
+					stats.LogFiles = append(stats.LogFiles,
+						ServerLogFile{
+							Filename: entry.Name(),
+							Date:     info.ModTime().Format(time.RFC1123),
+							Size:     info.Size(),
+						})
+				}
 			}
 		}
-	}
-	sort.Slice(stats.LogFiles, func(i, j int) bool {
-		return stats.LogFiles[i].Filename < stats.LogFiles[j].Filename
-	})
+		sort.Slice(stats.LogFiles, func(i, j int) bool {
+			return stats.LogFiles[i].Filename < stats.LogFiles[j].Filename
+		})
+	*/
 
 	statsTemplate.Execute(w, stats)
 }

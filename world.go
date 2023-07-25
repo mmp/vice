@@ -88,17 +88,18 @@ func (w *World) Assign(other *World) {
 	w.Aircraft = DuplicateMap(other.Aircraft)
 	w.METAR = DuplicateMap(other.METAR)
 	w.Controllers = DuplicateMap(other.Controllers)
-	w.PrimaryController = other.PrimaryController
-	w.MultiControllers = DuplicateMap(other.MultiControllers)
-
-	w.SimRate = other.SimRate
-	w.SimIsPaused = other.SimIsPaused
-	w.SimDescription = other.SimDescription
-	w.SimName = other.SimName
 
 	w.DepartureAirports = other.DepartureAirports
 	w.ArrivalAirports = other.ArrivalAirports
 
+	w.LaunchConfig = other.LaunchConfig
+	w.PrimaryController = other.PrimaryController
+	w.MultiControllers = DuplicateMap(other.MultiControllers)
+	w.SimIsPaused = other.SimIsPaused
+	w.SimRate = other.SimRate
+	w.SimName = other.SimName
+	w.SimDescription = other.SimDescription
+	w.SimTime = other.SimTime
 	w.MagneticVariation = other.MagneticVariation
 	w.NmPerLongitude = other.NmPerLongitude
 	w.Airports = other.Airports
@@ -117,7 +118,6 @@ func (w *World) Assign(other *World) {
 	w.ArrivalRunways = other.ArrivalRunways
 	w.Scratchpads = other.Scratchpads
 	w.ArrivalGroups = other.ArrivalGroups
-	w.LaunchConfig = other.LaunchConfig
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
 }
