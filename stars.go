@@ -3312,7 +3312,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		pos := state.TrackPosition()
 		pw := transforms.WindowFromLatLongP(pos)
 		// TODO: orient based on radar center if just one radar
-		orientation := state.TrackHeading(ac.MagneticVariation)
+		orientation := state.TrackHeading(0)
 		if math.IsNaN(float64(orientation)) {
 			orientation = 0
 		}
@@ -3810,7 +3810,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(state.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := ac.Heading - ac.MagneticVariation
+		hdg := state.TrackHeading(-ac.MagneticVariation)
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
 		end := add2f(ll2nm(state.TrackPosition(), ac.NmPerLongitude), h)
