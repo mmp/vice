@@ -35,6 +35,7 @@ import (
 
 	"github.com/MichaelTJones/pcg"
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/exp/slog"
 )
 
 const nmPerLatitude = 60
@@ -1616,7 +1617,13 @@ func (e *ErrorLogger) HaveErrors() bool {
 	return len(e.errors) > 0
 }
 
-func (e *ErrorLogger) PrintErrors() {
+func (e *ErrorLogger) PrintErrors(lg *Logger) {
+	// Two loops so they aren't interleaved with logging to stdout
+	if lg != nil {
+		for _, err := range e.errors {
+			lg.Errorf("%+v", err)
+		}
+	}
 	for _, err := range e.errors {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -1912,9 +1919,12 @@ func (c *LoggingConn) Write(b []byte) (n int, err error) {
 func (c *LoggingConn) maybeReport() {
 	if time.Since(c.lastReport) > 1*time.Minute {
 		min := time.Since(c.start).Minutes()
-		lg.Infof("%s: %d bytes read (%d/minute), %d bytes written (%d/minute)",
-			c.Conn.RemoteAddr(), c.received, int(float64(c.received)/min),
-			c.sent, int(float64(c.sent)/min))
+		lg.Info("bandwidth",
+			slog.String("address", c.Conn.RemoteAddr().String()),
+			slog.Int("bytes_received", c.received),
+			slog.Int("bytes_received_per_minute", int(float64(c.received)/min)),
+			slog.Int("bytes_transmitted", c.sent),
+			slog.Int("bytes_transmitted_per_minute", int(float64(c.sent)/min)))
 		c.lastReport = time.Now()
 	}
 }

@@ -193,8 +193,6 @@ func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream, lg *Logger)
 		}
 	}
 
-	gc.Audio.Activate(lg)
-
 	if gc.DisplayRoot == nil {
 		stars := NewSTARSPane(w)
 		messages := NewMessagesPane()

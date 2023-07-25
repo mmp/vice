@@ -15,7 +15,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -271,7 +270,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 				remoteServer.runningSims = rs
 			},
 			OnErr: func(e error) {
-				lg.Errorf("%v", e)
+				lg.Errorf("GetRunningSims: %v", e)
 
 				// nil out the server if we've lost the connection; the
 				// main loop will attempt to reconnect.
@@ -564,7 +563,7 @@ func (c *NewSimConfiguration) Start() error {
 // Sim
 
 type Sim struct {
-	Name string // mostly for multi-controller...
+	Name string
 
 	mu sync.Mutex
 
@@ -576,6 +575,7 @@ type Sim struct {
 	SignOnPositions map[string]*Controller
 
 	eventStream *EventStream
+	lg          *Logger
 
 	LaunchConfig LaunchConfig
 
@@ -620,7 +620,16 @@ type ServerController struct {
 	events              *EventsSubscription
 }
 
-func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool) *Sim {
+func (sc *ServerController) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("callsign", sc.Callsign),
+		slog.Time("last_update", sc.lastUpdateCall),
+		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
+}
+
+func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
+	lg = &Logger{Logger: lg.With(slog.String("sim_name", ssc.NewSimName))}
+
 	sg, ok := scenarioGroups[ssc.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
@@ -640,6 +649,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 		controllers: make(map[string]*ServerController),
 
 		eventStream: NewEventStream(),
+		lg:          lg,
 
 		lastDeparture: make(map[string]map[string]map[string]*Departure),
 
@@ -722,7 +732,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		if ctrl, ok := sg.ControlPositions[callsign]; ok {
 			w.Controllers[callsign] = ctrl
 		} else {
-			lg.Errorf("%s: controller not found in ControlPositions??", callsign)
+			s.lg.Errorf("%s: controller not found in ControlPositions??", callsign)
 		}
 	}
 
@@ -775,6 +785,24 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	return w
 }
 
+func (s *Sim) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("name", s.Name),
+		slog.String("scenario_group", s.ScenarioGroup),
+		slog.String("scenario", s.Scenario),
+		slog.Any("controllers", s.World.Controllers),
+		slog.Any("launch_config", s.LaunchConfig),
+		slog.Any("next_departure_spawn", s.NextDepartureSpawn),
+		slog.Any("next_arrival_spawn", s.NextArrivalSpawn),
+		slog.Any("automatic_handoffs", s.Handoffs),
+		slog.Int("departures", s.TotalDepartures),
+		slog.Int("arrivals", s.TotalArrivals),
+		slog.Time("sim_time", s.SimTime),
+		slog.Float64("sim_rate", float64(s.SimRate)),
+		slog.Bool("paused", s.Paused),
+		slog.Any("aircraft", s.World.Aircraft))
+}
+
 func (s *Sim) SignOn(callsign string) (*World, string, error) {
 	if err := s.signOn(callsign); err != nil {
 		return nil, "", err
@@ -820,7 +848,7 @@ func (s *Sim) signOn(callsign string) error {
 		Type:    StatusMessageEvent,
 		Message: callsign + " has signed on.",
 	})
-	lg.Infof("%s/%s: signing on", Select(s.Name != "", s.Name, "(local)"), callsign)
+	s.lg.Infof("%s: controller signed", callsign)
 
 	return nil
 }
@@ -850,7 +878,7 @@ func (s *Sim) SignOff(token string) error {
 			Type:    StatusMessageEvent,
 			Message: ctrl.Callsign + " has signed off.",
 		})
-		lg.Infof("%s/%s: signing off", Select(s.Name != "", s.Name, "(local)"), ctrl.Callsign)
+		s.lg.Infof("%s: controller signing off", ctrl.Callsign)
 	}
 	return nil
 }
@@ -861,6 +889,8 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 		return ErrInvalidControllerToken
 	}
 	oldCallsign := ctrl.Callsign
+
+	s.lg.Infof("%s: switching to %s", oldCallsign, callsign)
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position.
@@ -895,6 +925,7 @@ func (s *Sim) TogglePause(token string) error {
 		return ErrInvalidControllerToken
 	} else {
 		s.Paused = !s.Paused
+		s.lg.Infof("paused: %v", s.Paused)
 		s.lastUpdateTime = time.Now() // ignore time passage...
 		return nil
 	}
@@ -963,7 +994,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		ctrl.lastUpdateCall = time.Now()
 		if ctrl.warnedNoUpdateCalls {
 			ctrl.warnedNoUpdateCalls = false
-			lg.Errorf("%s: connection re-established", ctrl.Callsign)
+			s.lg.Errorf("%s: connection re-established", ctrl.Callsign)
 			s.eventStream.Post(Event{
 				Type:    StatusMessageEvent,
 				Message: ctrl.Callsign + " is back online.",
@@ -986,7 +1017,9 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	}
 }
 
-func (s *Sim) Activate() error {
+func (s *Sim) Activate(lg *Logger) error {
+	s.lg = &Logger{Logger: lg.With(slog.String("sim_name", s.Name))}
+
 	var e ErrorLogger
 
 	if s.controllers == nil {
@@ -1064,7 +1097,7 @@ func (s *Sim) Activate() error {
 	}
 
 	if e.HaveErrors() {
-		e.PrintErrors()
+		e.PrintErrors(s.lg)
 		return ErrRestoringSavedState
 	}
 	return nil
@@ -1092,7 +1125,7 @@ func (s *Sim) Update() {
 			if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
 				if !ctrl.warnedNoUpdateCalls {
 					ctrl.warnedNoUpdateCalls = true
-					lg.Errorf("%s: no messages for 5 seconds", ctrl.Callsign)
+					s.lg.Errorf("%s: no messages for 5 seconds", ctrl.Callsign)
 					s.eventStream.Post(Event{
 						Type:    StatusMessageEvent,
 						Message: ctrl.Callsign + " has not been heard from for 5 seconds. Connection lost?",
@@ -1100,7 +1133,7 @@ func (s *Sim) Update() {
 				}
 
 				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-					lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
+					s.lg.Errorf("%s: signing off idle controller", ctrl.Callsign)
 					s.mu.Unlock()
 					s.SignOff(token)
 					s.mu.Lock()
@@ -1109,41 +1142,33 @@ func (s *Sim) Update() {
 		}
 	}
 
-	if s.Paused {
-		return
-	}
+	paused := s.Paused || !s.controllerIsSignedIn(s.World.PrimaryController)
 
-	if !s.controllerIsSignedIn(s.World.PrimaryController) {
-		// Pause the sim if the primary controller is gone
-		return
-	}
+	if !paused {
+		// Figure out how much time has passed since the last update: wallclock
+		// time is scaled by the sim rate, then we add in any time from the
+		// last update that wasn't accounted for.
+		elapsed := time.Since(s.lastUpdateTime)
+		elapsed = time.Duration(s.SimRate*float32(elapsed)) + s.updateTimeSlop
+		// Run the sim for this many seconds
+		ns := int(elapsed.Truncate(time.Second).Seconds())
+		for i := 0; i < ns; i++ {
+			s.SimTime = s.SimTime.Add(time.Second)
+			s.updateState()
+		}
+		s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
-	// Figure out how much time has passed since the last update: wallclock
-	// time is scaled by the sim rate, then we add in any time from the
-	// last update that wasn't accounted for.
-	elapsed := time.Since(s.lastUpdateTime)
-	elapsed = time.Duration(s.SimRate*float32(elapsed)) + s.updateTimeSlop
-	// Run the sim for this many seconds
-	ns := int(elapsed.Truncate(time.Second).Seconds())
-	for i := 0; i < ns; i++ {
-		s.SimTime = s.SimTime.Add(time.Second)
-		s.updateState()
+		s.lastUpdateTime = time.Now()
 	}
-	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
-
-	s.lastUpdateTime = time.Now()
 
 	// Log the current state of everything once a minute
 	if time.Since(s.lastLogTime) > time.Minute {
 		s.lastLogTime = time.Now()
 
-		name := Select(s.Name != "", s.Name, "(local)")
-		for _, ctrl := range s.controllers {
-			lg.Infof("%s: launch controller %s", name, s.LaunchConfig.Controller)
-			lg.Infof("%s: %s is currently signed in and controlling", name, ctrl.Callsign)
-		}
-		for _, ac := range s.World.Aircraft {
-			lg.Info("active_aircraft", slog.Any("Aircraft", ac))
+		if paused {
+			s.lg.Info("sim is paused", slog.Any("state", s))
+		} else {
+			s.lg.Info("sim is active", slog.Any("state", s))
 		}
 	}
 }
@@ -1164,6 +1189,8 @@ func (s *Sim) updateState() {
 				ToController:   ac.HandoffTrackController,
 				Callsign:       ac.Callsign,
 			})
+			s.lg.Infof("%s: automatic accept of handoff from %s to %s", ac.Callsign,
+				ac.TrackingController, ac.HandoffTrackController)
 
 			ac.TrackingController = ac.HandoffTrackController
 			ac.HandoffTrackController = ""
@@ -1180,6 +1207,7 @@ func (s *Sim) updateState() {
 			// Cull departures that are far from the airport.
 			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture {
 				if nmdistance2ll(ac.Position, ap.Location) > 200 {
+					s.lg.Infof("%s: culled far-away departure", callsign)
 					delete(s.World.Aircraft, callsign)
 				}
 			}
@@ -1209,7 +1237,7 @@ func (s *Sim) updateState() {
 						}
 						mc, ok := s.World.MultiControllers[callsign]
 						if !ok {
-							lg.Errorf("%s: failed to find controller in MultiControllers", callsign)
+							s.lg.Errorf("%s: failed to find controller in MultiControllers", callsign)
 							ac.HandoffTrackController = ""
 							break
 						}
@@ -1217,7 +1245,7 @@ func (s *Sim) updateState() {
 
 						i++
 						if i == 20 {
-							lg.Errorf("%s: unable to find backup for arrival handoff controller",
+							s.lg.Errorf("%s: unable to find backup for arrival handoff controller",
 								ac.ArrivalHandoffController)
 							ac.HandoffTrackController = ""
 							break
@@ -1227,6 +1255,9 @@ func (s *Sim) updateState() {
 				} else {
 					ac.HandoffTrackController = s.World.PrimaryController
 				}
+
+				s.lg.Infof("%s: resolved handoff: %s -> %s", ac.Callsign, ac.ControllingController,
+					ac.HandoffTrackController)
 
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,
@@ -1269,6 +1300,8 @@ func (s *Sim) getDepartureController(ac *Aircraft) string {
 }
 
 func (s *Sim) prespawn() {
+	s.lg.Infof("starting aircraft prespawn")
+
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
 	for i := 0; i < initialSimSeconds; i++ {
@@ -1280,6 +1313,8 @@ func (s *Sim) prespawn() {
 	}
 	s.SimTime = time.Now()
 	s.lastUpdateTime = time.Now()
+
+	s.lg.Infof("finished aircraft prespawn")
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1361,11 +1396,10 @@ func (s *Sim) spawnAircraft() {
 
 			goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
 			if ac, err := s.World.CreateArrival(group, arrivalAirport, goAround); err != nil {
-				lg.Errorf("%v", err)
+				s.lg.Errorf("CreateArrival: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
-				lg.Infof("%s: spawned arrival", ac.Callsign)
-				lg.Infof("%s", spew.Sdump(ac))
+				s.lg.Info("spawned arrival", slog.Any("aircraft", ac))
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1380,22 +1414,21 @@ func (s *Sim) spawnAircraft() {
 			// Figure out which category to launch
 			category, rateSum := sampleRateMap(s.LaunchConfig.DepartureRates[airport][runway])
 			if rateSum == 0 {
-				lg.Errorf("%s/%s: couldn't find a matching runway for spawning departure?", airport, runway)
+				s.lg.Errorf("%s/%s: couldn't find a matching runway for spawning departure?", airport, runway)
 				continue
 			}
 
 			prevDep := s.lastDeparture[airport][runway][category]
-			lg.Infof("%s/%s/%s: prev dep", airport, runway, category)
+			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
 			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
 				s.LaunchConfig.DepartureChallenge, prevDep)
 			if err != nil {
-				lg.Errorf("%v", err)
+				s.lg.Errorf("CreateDeparture: %v", err)
 			} else {
 				s.lastDeparture[airport][runway][category] = dep
-				lg.Infof("%s/%s/%s: launch dep", airport, runway, category)
+				s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
 				s.launchAircraftNoLock(*ac)
-				lg.Infof("%s: starting takeoff roll", ac.Callsign)
-				lg.Infof("%s", spew.Sdump(ac))
+				s.lg.Info("spawned departure", slog.Any("aircraft", ac))
 				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
 			}
 		}
@@ -1413,6 +1446,7 @@ func (s *Sim) SetSimRate(token string, rate float32) error {
 		return ErrInvalidControllerToken
 	} else {
 		s.SimRate = rate
+		s.lg.Infof("sim rate set to %f", s.SimRate)
 		return nil
 	}
 }
@@ -1435,7 +1469,7 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 					oldSum += s.LaunchConfig.DepartureRates[ap][rwy][category]
 				}
 				if newSum != oldSum {
-					lg.Infof("%s/%s: rate sum %d -> %d", ap, rwy, oldSum, newSum)
+					s.lg.Infof("%s/%s: departure rate changed %d -> %d", ap, rwy, oldSum, newSum)
 					s.NextDepartureSpawn[ap][rwy] = s.SimTime.Add(randomWait(newSum))
 				}
 			}
@@ -1447,7 +1481,7 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 				oldSum += s.LaunchConfig.ArrivalGroupRates[group][ap]
 			}
 			if newSum != oldSum {
-				lg.Infof("%s: rate sum %d -> %d", group, oldSum, newSum)
+				s.lg.Infof("%s: arrival rate changed %d -> %d", group, oldSum, newSum)
 				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum))
 			}
 
@@ -1472,12 +1506,14 @@ func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 			Type:    StatusMessageEvent,
 			Message: ctrl.Callsign + " is now controlling aircraft launches.",
 		})
+		s.lg.Infof("%s: now controlling launches", ctrl.Callsign)
 		return nil
 	} else {
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
 			Message: s.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
+		s.lg.Infof("%s: no longer controlling launches", ctrl.Callsign)
 		s.LaunchConfig.Controller = ""
 		return nil
 	}
@@ -1493,7 +1529,7 @@ func (s *Sim) LaunchAircraft(ac Aircraft) {
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
 func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 	if _, ok := s.World.Aircraft[ac.Callsign]; ok {
-		lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
+		s.lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
 		return
 	}
 	s.World.Aircraft[ac.Callsign] = &ac
@@ -1511,7 +1547,7 @@ func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 
 	ac.Position = ac.Waypoints[0].Location
 	if ac.Position.IsZero() {
-		lg.Errorf("%s: uninitialized initial waypoint position! %+v", ac.Callsign, ac.Waypoints[0])
+		s.lg.Errorf("%s: uninitialized initial waypoint position! %+v", ac.Callsign, ac.Waypoints[0])
 		return
 	}
 
@@ -1537,8 +1573,8 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 
 		ctrl := s.World.GetController(sc.Callsign)
 		if ctrl == nil {
-			lg.Errorf("couldn't get controller \"%s\". world controllers: %s",
-				sc.Callsign, spew.Sdump(s.World.Controllers))
+			s.lg.Error(sc.Callsign+": couldn't get controller",
+				slog.Any("world_controllers", s.World.Controllers))
 			return ErrNoController
 		}
 
@@ -1549,7 +1585,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 
 			preResponse, postResponse, err := cmd(ctrl, ac)
 			if preResponse != "" {
-				lg.Infof("%s@%s: %s", ac.Callsign, octrl, preResponse)
+				s.lg.Infof("%s@%s: %s", ac.Callsign, octrl, preResponse)
 				s.eventStream.Post(Event{
 					Type:         RadioTransmissionEvent,
 					Callsign:     ac.Callsign,
@@ -1558,7 +1594,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 				})
 			}
 			if postResponse != "" {
-				lg.Infof("%s@%s: %s", ac.Callsign, ac.ControllingController, postResponse)
+				s.lg.Infof("%s@%s: %s", ac.Callsign, ac.ControllingController, postResponse)
 				s.eventStream.Post(Event{
 					Type:         RadioTransmissionEvent,
 					Callsign:     ac.Callsign,
@@ -1697,7 +1733,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way now.
 			if ac.IsDeparture {
-				lg.Infof("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
+				s.lg.Infof("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
 				ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
 			}
 
@@ -1952,6 +1988,7 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 				s.TotalArrivals--
 			}
 
+			lg.Infof("%s: deleting aircraft", ac.Callsign)
 			delete(s.World.Aircraft, ac.Callsign)
 			return "", "", nil
 		})

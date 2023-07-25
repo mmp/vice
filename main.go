@@ -108,15 +108,15 @@ func main() {
 		var e ErrorLogger
 		_, _ = LoadScenarioGroups(&e)
 		if e.HaveErrors() {
-			e.PrintErrors()
+			e.PrintErrors(nil)
 			os.Exit(1)
 		}
 	} else if *broadcastMessage != "" {
 		BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword)
 	} else if *server {
-		RunSimServer()
+		RunSimServer(lg)
 	} else {
-		localSimServerChan, err := LaunchLocalSimServer()
+		localSimServerChan, err := LaunchLocalSimServer(lg)
 		if err != nil {
 			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
@@ -157,7 +157,7 @@ func main() {
 
 		context = imguiInit()
 
-		if err = audioInit(lg); err != nil {
+		if err = audioInit(); err != nil {
 			lg.Errorf("Unable to initialize audio: %v", err)
 		}
 
@@ -176,7 +176,7 @@ func main() {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 
-		fontsInit(renderer, platform, lg)
+		fontsInit(renderer, platform)
 
 		newWorldChan = make(chan *World, 2)
 		var world *World
@@ -316,7 +316,7 @@ func main() {
 
 			// Periodically log current memory use, etc.
 			if *devmode && frameIndex%18000 == 0 {
-				stats.Log(lg)
+				lg.Info("performance", slog.Any("stats", stats))
 			}
 			frameIndex++
 

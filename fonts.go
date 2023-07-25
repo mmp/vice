@@ -216,7 +216,7 @@ func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
 	return (*[unrealisticLargePointer / 2]uint16)(p)[:]
 }
 
-func fontsInit(r Renderer, platform Platform, lg *Logger) {
+func fontsInit(r Renderer, platform Platform) {
 	lg.Info("Starting to initialize fonts")
 	fonts = make(map[FontIdentifier]*Font)
 	io := imgui.CurrentIO()

@@ -117,6 +117,7 @@ func callstack() slog.Attr {
 // callstacks included.
 func (l *Logger) Debug(msg string, args ...any) {
 	if l == nil {
+		slog.Debug(msg, args...)
 		return
 	}
 	args = append([]any{callstack()}, args...)
@@ -127,6 +128,7 @@ func (l *Logger) Debug(msg string, args ...any) {
 // printf-style formatting of the provided args.
 func (l *Logger) Debugf(msg string, args ...any) {
 	if l == nil {
+		slog.Debug(fmt.Sprintf(msg, args...), callstack())
 		return
 	}
 	l.Logger.Debug(fmt.Sprintf(msg, args...), callstack())
@@ -134,6 +136,7 @@ func (l *Logger) Debugf(msg string, args ...any) {
 
 func (l *Logger) Info(msg string, args ...any) {
 	if l == nil {
+		slog.Info(msg, args...)
 		return
 	}
 	args = append([]any{callstack()}, args...)
@@ -142,6 +145,7 @@ func (l *Logger) Info(msg string, args ...any) {
 
 func (l *Logger) Infof(msg string, args ...any) {
 	if l == nil {
+		slog.Info(fmt.Sprintf(msg, args...), callstack())
 		return
 	}
 	l.Logger.Info(fmt.Sprintf(msg, args...), callstack())
@@ -149,6 +153,7 @@ func (l *Logger) Infof(msg string, args ...any) {
 
 func (l *Logger) Error(msg string, args ...any) {
 	if l == nil {
+		slog.Error(msg, args...)
 		return
 	}
 	args = append([]any{callstack()}, args...)
@@ -157,6 +162,7 @@ func (l *Logger) Error(msg string, args ...any) {
 
 func (l *Logger) Errorf(msg string, args ...any) {
 	if l == nil {
+		slog.Error(fmt.Sprintf(msg, args...), callstack())
 		return
 	}
 	l.Logger.Error(fmt.Sprintf(msg, args...), callstack())
@@ -164,6 +170,7 @@ func (l *Logger) Errorf(msg string, args ...any) {
 
 func (l *Logger) Warn(msg string, args ...any) {
 	if l == nil {
+		slog.Warn(msg, args...)
 		return
 	}
 	args = append([]any{callstack()}, args...)
@@ -172,6 +179,7 @@ func (l *Logger) Warn(msg string, args ...any) {
 
 func (l *Logger) Warnf(msg string, args ...any) {
 	if l == nil {
+		slog.Warn(fmt.Sprintf(msg, args...), callstack())
 		return
 	}
 	l.Logger.Warn(fmt.Sprintf(msg, args...), callstack())
@@ -190,9 +198,7 @@ type Stats struct {
 
 var startupMallocs uint64
 
-// Log adds the Stats to the provided Logger and also includes information
-// about the current system performance, memory use, etc.
-func (stats *Stats) Log(lg *Logger) {
+func (stats Stats) LogValue() slog.Value {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
 
@@ -203,13 +209,13 @@ func (stats *Stats) Log(lg *Logger) {
 	elapsed := time.Since(lg.start).Seconds()
 	mallocsPerSecond := float64(mem.Mallocs-startupMallocs) / elapsed
 
-	lg.Info("Performance",
-		slog.Float64("Redraws/second", float64(stats.redraws)/time.Since(stats.startTime).Seconds()),
-		slog.Float64("Mallocs/second", mallocsPerSecond),
-		slog.Int64("Active mallocs", int64(mem.Mallocs-mem.Frees)),
-		slog.Int64("Memory in use", int64(mem.HeapAlloc)),
-		slog.Duration("Draw panes", stats.drawPanes),
-		slog.Duration("Draw imgui", stats.drawImgui),
-		slog.Group("Render", stats.render.LogAttrs()...),
-		slog.Group("UI", stats.renderUI.LogAttrs()...))
+	return slog.GroupValue(
+		slog.Float64("redraws_per_second", float64(stats.redraws)/time.Since(stats.startTime).Seconds()),
+		slog.Float64("mallocs_per_second", mallocsPerSecond),
+		slog.Int64("active_mallocs", int64(mem.Mallocs-mem.Frees)),
+		slog.Int64("memory_in_use", int64(mem.HeapAlloc)),
+		slog.Duration("draw_panes", stats.drawPanes),
+		slog.Duration("draw_imgui", stats.drawImgui),
+		slog.Any("render", stats.render),
+		slog.Any("ui", stats.renderUI))
 }

@@ -86,11 +86,6 @@ type AudioSettings struct {
 	muteUntil     time.Time
 	lastPlay      [AudioEventCount]time.Time
 	lastPlayMutex sync.Mutex
-	lg            *Logger
-}
-
-func (a *AudioSettings) Activate(lg *Logger) {
-	a.lg = lg
 }
 
 // Play no sounds for the specified period of time. This is mostly useful
@@ -112,14 +107,14 @@ func (a *AudioSettings) PlaySound(e AudioEvent) {
 		// This should only happen if a built-in sound effect is removed
 		// and an old config file refers to it. Arguably the user should be
 		// notified in this (unexpected) case...
-		a.lg.Errorf("%s: sound effect disappeared?!", effect)
+		lg.Errorf("%s: sound effect disappeared?!", effect)
 		a.SoundEffects[e] = ""
 	} else {
 		a.lastPlayMutex.Lock()
 		defer a.lastPlayMutex.Unlock()
 		if time.Since(a.lastPlay[e]) > 2*time.Second {
 			a.lastPlay[e] = time.Now()
-			se.Play(a.lg)
+			se.Play()
 		}
 	}
 }
@@ -132,7 +127,7 @@ type SoundEffect struct {
 	spec     *sdl.AudioSpec
 }
 
-func (s *SoundEffect) Play(lg *Logger) {
+func (s *SoundEffect) Play() {
 	// Play the sound effect in a separate thread so that Play()
 	// immediately returns to the caller.
 	go func() {
@@ -191,7 +186,7 @@ func (s *SoundEffect) Play(lg *Logger) {
 	}()
 }
 
-func addEffect(wav string, name string, repeat int, lg *Logger) {
+func addEffect(wav string, name string, repeat int) {
 	rw, err := sdl.RWFromMem([]byte(wav))
 	if err != nil {
 		lg.Errorf("%s: unable to add audio effect: %v", name, err)
@@ -224,7 +219,7 @@ func addEffect(wav string, name string, repeat int, lg *Logger) {
 	// something that was not allocated.
 }
 
-func audioInit(lg *Logger) error {
+func audioInit() error {
 	lg.Info("Starting to initialize audio")
 	err := sdl.Init(sdl.INIT_AUDIO)
 	if err != nil {
@@ -232,22 +227,22 @@ func audioInit(lg *Logger) error {
 	}
 
 	soundEffects = make(map[string]*SoundEffect)
-	addEffect(bbrocer__digital_alarm_loopWAV, "Alarm - Digital", 2, lg)
-	addEffect(beetlemuse__alert_1WAV, "Alert", 1, lg)
-	addEffect(dland__hintWAV, "Hint", 1, lg)
-	addEffect(gabrielaraujo__powerup_successWAV, "Success", 1, lg)
-	addEffect(michaelatoz__alertwo_cc0WAV, "Alert 2", 1, lg)
-	addEffect(nsstudios__blip2WAV, "Blip", 1, lg)
-	addEffect(pan14__sine_fifths_up_beepWAV, "Beep Up Fifths", 1, lg)
-	addEffect(pan14__sine_octaves_up_beepWAV, "Beep Up", 1, lg)
-	addEffect(pan14__sine_tri_tone_down_negative_beep_amb_verbWAV, "Beep Negative", 1, lg)
-	addEffect(pan14__sine_up_flutter_beepWAV, "Beep Flutter", 1, lg)
-	addEffect(pan14__tone_beep_lower_slowerWAV, "Beep Slow", 1, lg)
-	addEffect(pan14__tri_tone_up_beepWAV, "Beep Tone Up", 1, lg)
-	addEffect(pan14__upward_beep_chromatic_fifthsWAV, "Beep Chromatic", 1, lg)
-	addEffect(ranner__ui_clickWAV, "Click", 1, lg)
-	addEffect(soundwarf__alert_shortWAV, "Alert Short", 1, lg)
-	addEffect(thisusernameis__beep4WAV, "Beep Double", 1, lg)
+	addEffect(bbrocer__digital_alarm_loopWAV, "Alarm - Digital", 2)
+	addEffect(beetlemuse__alert_1WAV, "Alert", 1)
+	addEffect(dland__hintWAV, "Hint", 1)
+	addEffect(gabrielaraujo__powerup_successWAV, "Success", 1)
+	addEffect(michaelatoz__alertwo_cc0WAV, "Alert 2", 1)
+	addEffect(nsstudios__blip2WAV, "Blip", 1)
+	addEffect(pan14__sine_fifths_up_beepWAV, "Beep Up Fifths", 1)
+	addEffect(pan14__sine_octaves_up_beepWAV, "Beep Up", 1)
+	addEffect(pan14__sine_tri_tone_down_negative_beep_amb_verbWAV, "Beep Negative", 1)
+	addEffect(pan14__sine_up_flutter_beepWAV, "Beep Flutter", 1)
+	addEffect(pan14__tone_beep_lower_slowerWAV, "Beep Slow", 1)
+	addEffect(pan14__tri_tone_up_beepWAV, "Beep Tone Up", 1)
+	addEffect(pan14__upward_beep_chromatic_fifthsWAV, "Beep Chromatic", 1)
+	addEffect(ranner__ui_clickWAV, "Click", 1)
+	addEffect(soundwarf__alert_shortWAV, "Alert Short", 1)
+	addEffect(thisusernameis__beep4WAV, "Beep Double", 1)
 
 	lg.Info("Finished initializing audio")
 	return nil
@@ -273,7 +268,7 @@ func (a *AudioSettings) DrawUI() {
 				for _, sound := range sortedSounds {
 					if imgui.SelectableV(sound, sound == a.SoundEffects[i], flags, imgui.Vec2{}) {
 						a.SoundEffects[i] = sound
-						soundEffects[sound].Play(a.lg)
+						soundEffects[sound].Play()
 					}
 				}
 				imgui.EndCombo()
