@@ -685,12 +685,6 @@ func (sp *STARSPane) ResetWorld(w *World) {
 func (sp *STARSPane) DrawUI() {
 	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
 
-	/*
-		if newFont, changed := DrawFontPicker(&sp.LabelFontIdentifier, "Label font"); changed {
-			sp.labelFont = newFont
-		}
-	*/
-
 	if imgui.CollapsingHeader("Collision alerts") {
 		imgui.SliderFloatV("Lateral minimum (nm)", &sp.Facility.CA.LateralMinimum, 0, 10, "%.1f", 0)
 		imgui.InputIntV("Vertical minimum (feet)", &sp.Facility.CA.VerticalMinimum, 100, 100, 0)
@@ -3763,7 +3757,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		color := sp.datablockColor(ctx.world, ac)
-		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: -2}
+		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: 0}
 		dbText := state.datablockText[(realNow.Second()/2)&1] // 2 second cycle
 
 		// Draw characters starting at the upper left.
@@ -3773,7 +3767,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			errorStyle := TextStyle{
 				Font:        font,
 				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor),
-				LineSpacing: -2}
+				LineSpacing: 0}
 			pt = td.AddText(state.datablockErrText+"\n", pt, errorStyle)
 		}
 		td.AddText(strings.Join(dbText, "\n"), pt, style)
@@ -4231,7 +4225,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32) {
 	//	imgui.WindowDrawList().AddRectFilledV(imgui.Vec2{}, imgui.Vec2{X: ctx.paneExtent.Width() - 2, Y: STARSButtonHeight},
 	//		0xff0000ff, 1, 0)
 
-	buttonFont := GetFont(FontIdentifier{Name: "Inconsolata Condensed Regular", Size: globalConfig.DCBFontSize})
+	buttonFont := GetFont(FontIdentifier{Name: "Fixed Demi Bold", Size: globalConfig.DCBFontSize})
 	if buttonFont == nil {
 		lg.Errorf("nil buttonFont??")
 		buttonFont = GetDefaultFont()
@@ -4418,8 +4412,8 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 }
 
 func (sp *STARSPane) initializeSystemFonts() {
-	for i, sz := range []int{16, 18, 20, 22, 24, 28} {
-		id := FontIdentifier{Name: "VT323 Regular", Size: sz}
+	for i, sz := range []int{9, 11, 12, 13, 14, 16} {
+		id := FontIdentifier{Name: "Fixed Demi Bold", Size: sz}
 		sp.systemFont[i] = GetFont(id)
 		if sp.systemFont[i] == nil {
 			lg.Errorf("Font not found for %+v", id)
