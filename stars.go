@@ -898,10 +898,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 func (sp *STARSPane) updateRadarTracks(w *World) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
-	if time.Since(sp.lastTrackUpdate) < 5*time.Second {
+	now := w.CurrentTime()
+	if now.Sub(sp.lastTrackUpdate) < 5*time.Second {
 		return
 	}
-	sp.lastTrackUpdate = time.Now()
+	sp.lastTrackUpdate = now
 
 	for callsign, state := range sp.aircraft {
 		ac, ok := w.Aircraft[callsign]
@@ -919,7 +920,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Altitude:    int(ac.Altitude),
 			Groundspeed: int(ac.GS),
 			Heading:     ac.Heading,
-			Time:        w.CurrentTime(),
+			Time:        now,
 		}
 	}
 }
