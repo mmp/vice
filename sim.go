@@ -1129,6 +1129,7 @@ func (s *Sim) Update() {
 		s.updateState()
 	}
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
+	s.World.SimTime = s.SimTime
 
 	s.lastUpdateTime = time.Now()
 

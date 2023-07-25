@@ -647,7 +647,7 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 
 	// start tracking all of the active aircraft
 	sp.initializeAircraft(w)
-	sp.lastTrackUpdate = time.Now()
+	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 }
 
 func (sp *STARSPane) Deactivate() {
@@ -679,7 +679,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	}
 	ps.RadarSiteSelected = ""
 
-	sp.lastTrackUpdate = time.Now()
+	sp.lastTrackUpdate = time.Time{} // force update
 }
 
 func (sp *STARSPane) DrawUI() {
