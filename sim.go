@@ -716,6 +716,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimRate = s.SimRate
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
+	w.SimTime = s.SimTime
 
 	for _, callsign := range sc.VirtualControllers {
 		if ctrl, ok := sg.ControlPositions[callsign]; ok {
@@ -1279,6 +1280,7 @@ func (s *Sim) prespawn() {
 		s.updateState()
 	}
 	s.SimTime = time.Now()
+	s.World.SimTime = s.SimTime
 	s.lastUpdateTime = time.Now()
 }
 
