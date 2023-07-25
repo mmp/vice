@@ -490,6 +490,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				e.Push("Arrival airport " + arrivalAirport)
 				for _, al := range airlines {
 					database.CheckAirline(al.ICAO, al.Fleet, e)
+					if _, ok := database.Airports[al.Airport]; !ok {
+						e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
+					}
 				}
 				e.Pop()
 			}
