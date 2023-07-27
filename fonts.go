@@ -110,6 +110,9 @@ var (
 	//go:embed resources/FixedDemiBold.otf.zst
 	fixedDemiBoldOTF string
 
+	//go:embed resources/Flight-Strip-Printer.ttf.zst
+	flightStripPrinterTTF string
+
 	//go:embed resources/Inconsolata/static/Inconsolata_Condensed/Inconsolata_Condensed-Regular.ttf.zst
 	inconsolataCondensedRegularTTF string
 
@@ -288,6 +291,7 @@ func fontsInit(r Renderer, platform Platform) {
 	add(robotoRegularTTF, false, "Roboto Regular")
 	add(vt323RegularTTF, true, "VT323 Regular")
 	add(fixedDemiBoldOTF, true, "Fixed Demi Bold")
+	add(flightStripPrinterTTF, true, "Flight Strip Printer")
 	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
 
 	img := io.Fonts().TextureDataRGBA32()
@@ -344,19 +348,27 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 		imgui.EndCombo()
 	}
 
-	if imgui.BeginComboV(fmt.Sprintf("Size##%p", id), fmt.Sprintf("%d", id.Size), imgui.ComboFlagsHeightLarge) {
-		for _, font := range f {
+	if nf, ch := DrawFontSizeSelector(id); ch {
+		changed = true
+		newFont = nf
+	}
+
+	return
+}
+
+func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {
+	if imgui.BeginComboV(fmt.Sprintf("Font Size##%s", id.Name), fmt.Sprintf("%d", id.Size), imgui.ComboFlagsHeightLarge) {
+		for _, font := range GetAllFonts() {
 			if font.Name == id.Name {
 				if imgui.SelectableV(fmt.Sprintf("%d", font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {
 					id.Size = font.Size
-					newFont = GetFont(*id)
+					newFont = GetFont(font)
 					changed = true
 				}
 			}
 		}
 		imgui.EndCombo()
 	}
-
 	return
 }
 

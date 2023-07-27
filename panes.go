@@ -261,8 +261,8 @@ func (ep *EmptyPane) Draw(ctx *PaneContext, cb *CommandBuffer) {}
 // FlightStripPane
 
 type FlightStripPane struct {
-	FontIdentifier FontIdentifier
-	font           *Font
+	FontSize int
+	font     *Font
 
 	AutoAddDepartures         bool
 	AutoAddArrivals           bool
@@ -291,16 +291,18 @@ type FlightStripPane struct {
 func NewFlightStripPane() *FlightStripPane {
 	return &FlightStripPane{
 		AddPushed:          true,
-		FontIdentifier:     FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 14},
+		FontSize:           12,
 		selectedStrip:      -1,
 		selectedAnnotation: -1,
 	}
 }
 
 func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
-	if fsp.font = GetFont(fsp.FontIdentifier); fsp.font == nil {
+	if fsp.FontSize == 0 {
+		fsp.FontSize = 12
+	}
+	if fsp.font = GetFont(FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
 		fsp.font = GetDefaultFont()
-		fsp.FontIdentifier = fsp.font.id
 	}
 	if fsp.addedAircraft == nil {
 		fsp.addedAircraft = make(map[string]interface{})
@@ -436,7 +438,9 @@ func (fsp *FlightStripPane) DrawUI() {
 
 	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
 
-	if newFont, changed := DrawFontPicker(&fsp.FontIdentifier, "Font"); changed {
+	id := FontIdentifier{Name: fsp.font.id.Name, Size: fsp.FontSize}
+	if newFont, changed := DrawFontSizeSelector(&id); changed {
+		fsp.FontSize = newFont.size
 		fsp.font = newFont
 	}
 }
@@ -445,7 +449,9 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	fsp.processEvents(ctx.world)
 
 	// Font width and height
-	bx, _ := fsp.font.BoundText(" ", 0)
+	// the 'Flight Strip Printer' font seems to have an unusually thin space,
+	// so instead use 'X' to get the expected per-character width for layout.
+	bx, _ := fsp.font.BoundText("X", 0)
 	fw, fh := float32(bx), float32(fsp.font.size)
 
 	ctx.SetWindowCoordinateMatrices(cb)
