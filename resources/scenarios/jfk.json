@@ -25,7 +25,7 @@
           "type": "RNAV",
           "waypoints": [
             "HOBAM/a2000 LAAZE/a2000 ALABE/a1400 _FRG_14/a50",
-            "CAMRN/a4000 HEREK/a2000 SEHDO/a2000 WUPMA/a1400/s180 ALABE/a1400 _FRG_14/a50"
+            "CAMRN/a4000 HEREK/a2000 SEHDO/a2000 WUPMA/a1400/s180 N040.45.19.596,W073.33.27.971 N040.46.28.220,W073.32.38.148 N040.46.38.973,W073.31.02.567 ALABE/a1400 _FRG_14/a50"
           ]
         },
         "R19": {
