@@ -716,36 +716,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 
-	rd := getResourcesDirectory()
-	lg.Printf("%s: resources directory", rd)
-	fsys, ok := os.DirFS(rd).(fs.StatFS)
-	if !ok {
-		e.ErrorString("FS from DirFS is not a StatFS?")
-		return nil, nil
-	}
-
-	if _, err := fsys.Stat("videomaps"); err != nil {
-		wd, err := os.Getwd()
-		if err != nil {
-			e.Error(err)
-			return nil, nil
-		}
-
-		lg.Printf("%s: trying CWD for videomaps and scenarios", wd)
-		fsys, ok = os.DirFS(wd).(fs.StatFS)
-		if !ok {
-			e.ErrorString("FS from DirFS is not a StatFS?")
-			return nil, nil
-		}
-		if _, err := fsys.Stat("videomaps"); err != nil {
-			e.Error(err)
-			return nil, nil
-		}
-	}
-	if _, err := fsys.Stat("scenarios"); err != nil {
-		e.Error(err)
-		return nil, nil
-	}
+	fsys := getResourcesFS()
 
 	err := fs.WalkDir(fsys, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {

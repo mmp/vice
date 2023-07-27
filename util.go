@@ -16,6 +16,7 @@ import (
 	"image/color"
 	"image/draw"
 	"io"
+	"io/fs"
 	"math"
 	"net"
 	"net/http"
@@ -1996,16 +1997,49 @@ func (p *PendingCall) CheckFinished(eventStream *EventStream) bool {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func getResourcesDirectory() string {
+func getResourcesFS() fs.StatFS {
 	path, err := os.Executable()
 	if err != nil {
-		lg.Errorf("%s: error getting executable path", err)
+		panic(err)
 	}
 
 	dir := filepath.Dir(path)
 	if runtime.GOOS == "darwin" {
-		return filepath.Clean(filepath.Join(dir, "..", "Resources"))
-	} else {
-		return dir
+		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
 	}
+
+	fsys, ok := os.DirFS(dir).(fs.StatFS)
+	if !ok {
+		panic("FS from DirFS is not a StatFS?")
+	}
+
+	check := func(fs fs.StatFS) bool {
+		_, errv := fsys.Stat("videomaps")
+		_, errs := fsys.Stat("scenarios")
+		return errv == nil && errs == nil
+	}
+
+	if check(fsys) {
+		lg.Printf("%s: resources directory", dir)
+		return fsys
+	}
+
+	// Try CWD (this is useful for development and debugging but shouldn't
+	// be needed for release builds.
+	lg.Errorf("Trying CWD for resources FS")
+
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	fsys, ok = os.DirFS(wd).(fs.StatFS)
+	if !ok {
+		panic("FS from DirFS is not a StatFS?")
+	}
+
+	if check(fsys) {
+		return fsys
+	}
+	panic("unable to find videomaps in CWD")
 }
