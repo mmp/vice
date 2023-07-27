@@ -894,7 +894,7 @@
           "NY_LE_DEP",
           "NY_LS_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -940,7 +940,7 @@
           "NY_LE_DEP",
           "NY_LS_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -986,7 +986,7 @@
           "NY_LE_DEP",
           "NY_LS_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1049,7 +1049,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1112,7 +1112,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1175,7 +1175,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1238,7 +1238,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1301,7 +1301,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "N90 LGA - Video Map",
+        "default_map": "LGA",
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1362,34 +1362,34 @@
       {
         "group": 0,
         "label": "LGA",
-        "name": "N90 LGA - Video Map"
+        "name": "LGA"
       },
       {
         "group": 0,
         "label": "LGA RTL",
-        "name": "N90 LGA - Right Turn Line"
+        "name": "LGA Right Turn Line"
       },
       {
         "group": 0,
         "label": "LOC 31",
-        "name": "N90 LGA - LOC 31"
+        "name": "LGA LOC 31"
       },
       {
         "group": 1,
         "label": "NY B",
-        "name": "New York Class B"
+        "name": "N90 CLASS B"
       },
       {
         "group": 1,
         "label": "LGA GEO",
-        "name": "N90 LGA - GEO"
+        "name": "LGA GEO"
       },
       {
         "group": 1,
         "label": "MVA",
-        "name": "N90 - MVA"
+        "name": "N90 MVA"
       }
       
     ],
-    "video_map_file": "videomaps/zny-maps.json.zst"
+    "video_map_file": "videomaps/n90-maps.json.zst"
   }

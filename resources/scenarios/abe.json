@@ -639,7 +639,7 @@
         "MDT_APP",
         "NY_CTR"
       ],
-      "default_map": "ABE",
+      "default_map": "Allentown TRACON Video Map",
       "departure_runways": [
         {
           "airport": "KABE",
@@ -687,7 +687,7 @@
         "MDT_APP",
         "NY_CTR"
       ],
-      "default_map": "ABE",
+      "default_map": "Allentown TRACON Video Map",
       "departure_runways": [
         {
           "airport": "KABE",
@@ -713,18 +713,13 @@
     {
       "group": 0,
       "label": "ABE",
-      "name": "ABE"
+      "name": "Allentown TRACON Video Map"
     },
     {
       "group": 1,
       "label": "ABE MVA",
-      "name": "ABE - MVA"
-    },
-    {
-      "group": 1,
-      "label": "Class C/D",
-      "name": "Class C/D"
+      "name": "ABE MVA"
     }
   ],
-  "video_map_file": "videomaps/zny-maps.json.zst"
+  "video_map_file": "videomaps/abe-maps.json.zst"
 }

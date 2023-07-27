@@ -5090,7 +5090,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "PHL - Video Map West",
+      "default_map": "Philadelphia Map West",
       "wind": {
         "direction": 290,
         "speed": 8
@@ -5143,7 +5143,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "PHL - Video Map West",
+      "default_map": "Philadelphia Map West",
       "departure_airspace": [
         "PHL_N_DEP27",
         "PHL_S_DEP27",
@@ -5210,7 +5210,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "PHL - Video Map East",
+      "default_map": "Philadelphia Map East",
       "departure_airspace": [
         "PHL_N_DEP9",
         "PHL_N_HIGH9",
@@ -5258,23 +5258,23 @@
     {
       "group": 0,
       "label": "PHL WEST",
-      "name": "PHL - Video Map West"
+      "name": "Philadelphia Map West"
     },
     {
       "group": 0,
       "label": "PHL EAST",
-      "name": "PHL - Video Map East"
+      "name": "Philadelphia Map East"
     },
     {
       "group": 1,
       "label": "PHL MVA",
-      "name": "PHL - MVA"
+      "name": "Philly MVA"
     },
     {
       "group": 1,
       "label": "PHL B",
-      "name": "Philadelphia Class B"
+      "name": "Philly Class B"
     }
   ],
-  "video_map_file": "videomaps/zny-maps.json.zst"
+  "video_map_file": "videomaps/phl-maps.json.zst"
 }

@@ -3030,7 +3030,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "default_map": "N90 JFK - 13s",
+      "default_map": "JFK 13s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3181,7 +3181,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "N90 JFK - 13s",
+      "default_map": "JFK 13s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3318,7 +3318,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "N90 JFK - 22s",
+      "default_map": "JFK 22s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3370,7 +3370,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "default_map": "N90 JFK - 22s",
+      "default_map": "JFK 22s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3526,7 +3526,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "N90 JFK - 22s",
+      "default_map": "JFK 22s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3578,7 +3578,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "default_map": "N90 JFK - 31s",
+      "default_map": "JFK 31s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3733,7 +3733,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "N90 JFK - 31s",
+      "default_map": "JFK 31s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3785,7 +3785,7 @@
         "NY_LE_DEP",
         "NY_LS_DEP"
       ],
-      "default_map": "N90 JFK - 4s",
+      "default_map": "JFK 4s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3940,7 +3940,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "N90 JFK - 4s",
+      "default_map": "JFK 4s",
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -4028,48 +4028,53 @@
     {
       "group": 0,
       "label": "JFK4",
-      "name": "N90 JFK - 4s"
+      "name": "JFK 4s"
     },
     {
       "group": 0,
       "label": "JFK13",
-      "name": "N90 JFK - 13s"
+      "name": "JFK 13s"
     },
     {
       "group": 0,
       "label": "JFK22",
-      "name": "N90 JFK - 22s"
+      "name": "JFK 22s"
     },
     {
       "group": 0,
       "label": "JFK31",
-      "name": "N90 JFK - 31s"
+      "name": "JFK 31s"
     },
     {
       "group": 0,
       "label": "ISP",
-      "name": "N90 ISP - Video Map"
+      "name": "ISP"
     },
     {
       "group": 1,
       "label": "NY B",
-      "name": "New York Class B"
+      "name": "N90 CLASS B"
     },
     {
       "group": 1,
       "label": "MVA",
-      "name": "N90 - MVA"
+      "name": "N90 MVA"
     },
     {
       "group": 0,
       "label": "JFK22 ILS",
-      "name": "N90 JFK - ILS 22s"
+      "name": "JFK ILS 22s"
     },
     {
       "group": 0,
       "label": "JFK31 NTZ",
-      "name": "N90 JFK - 31s NTZ"
+      "name": "JFK 31s NTZ"
+    },
+    {
+      "group": 0,
+      "label": "Airports",
+      "name": "Airport Diagrams"
     }
   ],
-  "video_map_file": "videomaps/zny-maps.json.zst"
+  "video_map_file": "videomaps/n90-maps.json.zst"
 }

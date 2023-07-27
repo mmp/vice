@@ -2594,7 +2594,7 @@
         "NY_LN_DEP",
         "NY_LS_DEP"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2670,7 +2670,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2708,7 +2708,7 @@
         "NY_LN_DEP",
         "NY_LS_DEP"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2784,7 +2784,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2838,7 +2838,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2874,7 +2874,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2910,7 +2910,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -2946,7 +2946,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "N90 EWR - Video Map",
+      "default_map": "EWR",
       "wind": {
         "direction": 30,
         "gust": 0,
@@ -2982,73 +2982,73 @@
     {
       "group": 0,
       "label": "EWR",
-      "name": "N90 EWR - Video Map"
+      "name": "EWR"
     },
     {
       "group": 0,
       "label": "EWR SAT",
-      "name": "N90 EWR - Satellite"
+      "name": "EWR Satellites"
     },
     {
       "group": 0,
       "label": "EWR CRDA",
-      "name": "N90 EWR - CRDA"
+      "name": "EWR CRDA"
     },
     {
       "group": 1,
       "label": "NY B",
-      "name": "New York Class B"
+      "name": "N90 CLASS B"
     },
     {
       "group": 1,
       "label": "MVA",
-      "name": "N90 - MVA"
+      "name": "N90 MVA"
     },
     {
       "group": 0,
       "label": "JFK4",
-      "name": "N90 JFK - 4s"
+      "name": "JFK 4s"
     },
     {
       "group": 0,
       "label": "JFK13",
-      "name": "N90 JFK - 13s"
+      "name": "JFK 13s"
     },
     {
       "group": 0,
       "label": "JFK22",
-      "name": "N90 JFK - 22s"
+      "name": "JFK 22s"
     },
     {
       "group": 0,
       "label": "JFK31",
-      "name": "N90 JFK - 31s"
+      "name": "JFK 31s"
     },
     {
       "group": 0,
       "label": "JFK22 ILS",
-      "name": "N90 JFK - ILS 22s"
+      "name": "JFK ILS 22s"
     },
     {
       "group": 0,
       "label": "JFK31 NTZ",
-      "name": "N90 JFK - 31s NTZ"
+      "name": "JFK 31s NTZ"
     },
     {
       "group": 0,
       "label": "LGA",
-      "name": "N90 LGA - Video Map"
+      "name": "LGA"
     },
     {
       "group": 0,
       "label": "LIB D",
-      "name": "N90 LIB - Departure"
+      "name": "LIB Departure"
     },
     {
       "group": 0,
       "label": "LIB C",
-      "name": "N90 LIB - Catskill"
+      "name": "LIB Catskill"
     }
   ],
-  "video_map_file": "videomaps/zny-maps.json.zst"
+  "video_map_file": "videomaps/n90-maps.json.zst"
 }
