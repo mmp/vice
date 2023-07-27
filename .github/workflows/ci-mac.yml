@@ -76,9 +76,9 @@ jobs:
         cp icon.icns Vice.app/Contents/Resources
         cp resources/airports.csv.zst Vice.app/Contents/Resources
         mkdir Vice.app/Contents/Resources/scenarios
-        cp scenarios/*json Vice.app/Contents/Resources/scenarios
+        cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios
         mkdir Vice.app/Contents/Resources/videomaps
-        cp videomaps/*json.zst Vice.app/Contents/Resources/videomaps
+        cp resources/videomaps/*json.zst Vice.app/Contents/Resources/videomaps
 
     - name: Set up keychain for signing binary
       env:
