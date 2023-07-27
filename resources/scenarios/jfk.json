@@ -20,7 +20,7 @@
           ]
         },
         "R14": {
-          "full_name": "RNAV Runway 14",
+          "full_name": "RNAV Z Runway 14",
           "runway": "14",
           "type": "RNAV",
           "waypoints": [

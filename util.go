@@ -2006,6 +2006,8 @@ func getResourcesFS() fs.StatFS {
 	dir := filepath.Dir(path)
 	if runtime.GOOS == "darwin" {
 		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
+	} else {
+		dir = filepath.Join(dir, "resources")
 	}
 
 	fsys, ok := os.DirFS(dir).(fs.StatFS)
@@ -2033,7 +2035,9 @@ func getResourcesFS() fs.StatFS {
 		panic(err)
 	}
 
-	fsys, ok = os.DirFS(wd).(fs.StatFS)
+	dir = filepath.Join(wd, "resources")
+
+	fsys, ok = os.DirFS(dir).(fs.StatFS)
 	if !ok {
 		panic("FS from DirFS is not a StatFS?")
 	}
