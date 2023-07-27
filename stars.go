@@ -3869,7 +3869,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 
 			// Now we want to get that triangle in window coordinates...
 			length := state.coneLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
-			rot := rotator2f(state.TrackHeading(ac.MagneticVariation))
+			rot := rotator2f(state.TrackHeading(0))
 			for i := range v {
 				// First scale it to make it the desired length in nautical
 				// miles; while we're at it, we'll convert that over to

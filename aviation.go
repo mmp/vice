@@ -5,13 +5,13 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	_ "embed"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"strconv"
 	"strings"
 	"sync"
@@ -792,17 +792,10 @@ var (
 	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2022-07-14/
 	//go:embed resources/NAV_BASE.csv.zst
 	navBaseRaw string
-	//go:embed resources/APT_BASE.csv.zst
-	airportsRaw string
 	//go:embed resources/FIX_BASE.csv.zst
 	fixesRaw string
 	//go:embed resources/callsigns.csv.zst
 	callsignsRaw string
-
-	// Via Arash Partow, MIT licensed
-	// https://www.partow.net/miscellaneous/airportdatabase/
-	//go:embed resources/GlobalAirportDatabase.txt.zst
-	globalAirportsRaw string
 )
 
 // Utility function for parsing CSV files as strings; it breaks each line
@@ -885,48 +878,26 @@ func point2LLFromComponents(lat []string, long []string) Point2LL {
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 
+	fsys := getResourcesFS()
+	airportsRaw, err := fs.ReadFile(fsys, "airports.csv.zst") // https://ourairports.com/data/
+	if err != nil {
+		panic(err)
+	}
+
 	// FAA database
-	mungeCSV("airports", decompressZstd(airportsRaw),
-		[]string{"ICAO_ID", "ARPT_ID", "ARPT_NAME", "ELEV", "LAT_DEG", "LAT_MIN", "LAT_SEC", "LAT_HEMIS",
-			"LONG_DEG", "LONG_MIN", "LONG_SEC", "LONG_HEMIS"},
+	mungeCSV("airports", decompressZstd(string(airportsRaw)),
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "ident", "name"},
 		func(s []string) {
-			if elevation, err := strconv.ParseFloat(s[3], 64); err != nil {
-				lg.Errorf("%s: error parsing elevation: %s", s[3], err)
-			} else {
-				loc := point2LLFromComponents(s[4:8], s[8:12])
-				ap := FAAAirport{Id: s[0], Name: s[2], Location: loc, Elevation: int(elevation)}
-				if ap.Id == "" {
-					ap.Id = s[1] // No ICAO code so grab the FAA airport id
-				}
-				if ap.Id != "" {
-					airports[ap.Id] = ap
-				}
+			elevation := float64(0)
+			if s[2] != "" {
+				elevation = atof(s[2])
 			}
-		})
-
-	// Global database; this isn't in CSV, so we need to parse it manually.
-	r := bytes.NewReader([]byte(decompressZstd(globalAirportsRaw)))
-	scan := bufio.NewScanner(r)
-	for scan.Scan() {
-		line := scan.Text()
-		f := strings.Split(line, ":")
-		if len(f) != 16 {
-			lg.Errorf("Expected 16 fields, got %d: %s", len(f), line)
-		} else if elevation, err := strconv.ParseFloat(f[13], 64); err != nil {
-			lg.Errorf("%s: error parsing elevation: %s", f[13], err)
-		} else {
-			elevation *= 3.28084 // meters to feet
-
-			ap := FAAAirport{
-				Id:        f[0],
-				Name:      f[2],
-				Location:  Point2LL{float32(atof(f[15])), float32(atof(f[14]))},
-				Elevation: int(elevation)}
+			loc := Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
+			ap := FAAAirport{Id: s[3], Name: s[4], Location: loc, Elevation: int(elevation)}
 			if ap.Id != "" {
 				airports[ap.Id] = ap
 			}
-		}
-	}
+		})
 
 	return airports
 }
