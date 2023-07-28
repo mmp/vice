@@ -374,7 +374,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	imgui.Separator()
 
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
-		if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
+		if imgui.BeginComboV("Airport/Scenario", c.GroupName, imgui.ComboFlagsHeightLarge) {
 			for _, name := range SortedMapKeys(c.selectedServer.configs) {
 				if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
 					c.SetScenarioGroup(name)
