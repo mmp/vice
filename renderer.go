@@ -240,10 +240,10 @@ func (cb *CommandBuffer) Viewport(x, y, w, h int) {
 func (cb *CommandBuffer) SetDrawBounds(b Extent2D) {
 	// One messy detail here is that these windows are specified in
 	// framebuffer coordinates, not display coordinates, so they must be
-	// scaled by the DPI scale for e.g., retina displays.
-	highDPIScale := platform.DPIScale()
-	x0, y0 := int(highDPIScale*b.p0[0]), int(highDPIScale*b.p0[1])
-	w, h := int(highDPIScale*b.Width()), int(highDPIScale*b.Height())
+	// scaled for e.g., retina displays.
+	scale := platform.FramebufferSize()[1] / platform.DisplaySize()[1]
+	x0, y0 := int(scale*b.p0[0]), int(scale*b.p0[1])
+	w, h := int(scale*b.Width()), int(scale*b.Height())
 	cb.Scissor(x0, y0, w, h)
 	cb.Viewport(x0, y0, w, h)
 }
