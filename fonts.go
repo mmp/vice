@@ -110,7 +110,7 @@ var (
 	//go:embed resources/FixedDemiBold.otf.zst
 	fixedDemiBoldOTF string
 
-	//go:embed resources/Inconsolata-Semibold.ttf.zst
+	//go:embed resources/Inconsolata-SemiBold.ttf.zst
 	inconsolataSemiBoldTTF string
 
 	//go:embed resources/Flight-Strip-Printer.ttf.zst
