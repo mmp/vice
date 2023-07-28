@@ -4327,14 +4327,19 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	ext := Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := dcbDrawState.mouse
 	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
+	mouseDownInside := dcbDrawState.mouseDownPos != nil &&
+		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]})
 
 	var buttonColor RGB
 	if disabled {
 		buttonColor = STARSDCBDisabledButtonColor
 	} else if mouseInside {
-		buttonColor = Select(mouse.Down[MouseButtonPrimary],
-			Select(selected, STARSDCBButtonColor, STARSDCBActiveButtonColor),
-			STARSDCBInsideButtonColor)
+		if mouseDownInside {
+			// Swap selected/regular color to indicate the tentative result
+			buttonColor = Select(selected, STARSDCBButtonColor, STARSDCBActiveButtonColor)
+		} else {
+			buttonColor = STARSDCBInsideButtonColor
+		}
 	} else {
 		buttonColor = Select(selected, STARSDCBActiveButtonColor, STARSDCBButtonColor)
 	}
@@ -4343,7 +4348,7 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
 	drawDCBText(text, td, sz, STARSDCBTextColor)
 
-	if (selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary]) {
+	if !disabled && ((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
 		// Depressed bevel scheme: darker top/left, highlight bottom/right
 		ld.AddLine(p0, p1, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
 		ld.AddLine(p0, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
@@ -4373,9 +4378,7 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	ld.GenerateCommands(dcbDrawState.cb)
 	td.GenerateCommands(dcbDrawState.cb)
 
-	if mouse != nil && mouseInside && mouse.Released[MouseButtonPrimary] &&
-		dcbDrawState.mouseDownPos != nil &&
-		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]}) {
+	if mouse != nil && mouseInside && mouse.Released[MouseButtonPrimary] && mouseDownInside {
 		return ext, true /* clicked and released */
 	}
 	return ext, false
