@@ -445,7 +445,6 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	// Useful values related to the display size.
 	fbSize := p.FramebufferSize()
 	displaySize := p.DisplaySize()
-	highDPIScale := platform.DPIScale()
 
 	// Area left for actually drawing Panes
 	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - ui.menuBarHeight}}
@@ -544,15 +543,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 			// Pane coordinates, independent of where it is actually
 			// placed in the overall window, but this also ensures that
 			// the Pane can't inadvertently draw over other Panes.
-			//
-			// One messy detail here is that these windows are
-			// specified in framebuffer coordinates, not display
-			// coordinates, so they must be scaled by the DPI scale for
-			// e.g., retina displays.
-			x0, y0 := int(highDPIScale*paneExtent.p0[0]), int(highDPIScale*paneExtent.p0[1])
-			w, h := int(highDPIScale*paneExtent.Width()), int(highDPIScale*paneExtent.Height())
-			commandBuffer.Scissor(x0, y0, w, h)
-			commandBuffer.Viewport(x0, y0, w, h)
+			commandBuffer.SetDrawBounds(paneExtent)
 
 			// Let the Pane do its thing
 			pane.Draw(&ctx, commandBuffer)

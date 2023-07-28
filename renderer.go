@@ -234,6 +234,20 @@ func (cb *CommandBuffer) Viewport(x, y, w, h int) {
 	cb.appendInts(RendererViewport, x, y, w, h)
 }
 
+// SetDrawBounds sets the scissor rectangle and viewport according to the
+// specified bounds so that subsequent code can assume window (or Pane)
+// coordinates from (0,0)-(width,height) when drawing things.
+func (cb *CommandBuffer) SetDrawBounds(b Extent2D) {
+	// One messy detail here is that these windows are specified in
+	// framebuffer coordinates, not display coordinates, so they must be
+	// scaled by the DPI scale for e.g., retina displays.
+	highDPIScale := platform.DPIScale()
+	x0, y0 := int(highDPIScale*b.p0[0]), int(highDPIScale*b.p0[1])
+	w, h := int(highDPIScale*b.Width()), int(highDPIScale*b.Height())
+	cb.Scissor(x0, y0, w, h)
+	cb.Viewport(x0, y0, w, h)
+}
+
 // SetRGBA adds a command to the command buffer to set the current RGBA
 // color. Subsequent draw commands will inherit this color unless they
 // specify e.g., per-vertex colors themselves.
