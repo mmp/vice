@@ -35,11 +35,11 @@ var (
 	STARSPointedOutAircraftColor = RGB{1, 1, 0}
 	STARSSelectedAircraftColor   = RGB{0, 1, 1}
 
-	STARSDCBButtonColor         = RGB{0, .15, 0}
-	STARSDCBActiveButtonColor   = RGB{0, .4, 0}
-	STARSDCBInsideButtonColor   = RGB{.5, .5, .5}
+	STARSDCBButtonColor         = RGB{0, .4, 0}
+	STARSDCBActiveButtonColor   = RGB{0, .8, 0}
+	STARSDCBInsideButtonColor   = RGB{.75, .75, .75}
 	STARSDCBTextColor           = RGB{1, 1, 1}
-	STARSDCBDisabledButtonColor = RGB{.2, .2, .2}
+	STARSDCBDisabledButtonColor = RGB{.4, .4, .4}
 	STARSDCBDisabledTextColor   = RGB{.8, .8, .8}
 )
 
@@ -333,6 +333,7 @@ type STARSPreferenceSet struct {
 	}
 
 	Brightness struct {
+		DCB               STARSBrightness
 		VideoGroupA       STARSBrightness
 		VideoGroupB       STARSBrightness
 		FullDatablocks    STARSBrightness
@@ -799,8 +800,10 @@ func (sp *STARSPane) processEvents(w *World) {
 
 func (sp *STARSPane) Upgrade(from, to int) {
 	if from < 8 {
+		sp.CurrentPreferenceSet.Brightness.DCB = 60
 		sp.CurrentPreferenceSet.CharSize.DCB = 1
 		for i := range sp.PreferenceSets {
+			sp.PreferenceSets[i].Brightness.DCB = 60
 			sp.PreferenceSets[i].CharSize.DCB = 1
 		}
 	}
@@ -2690,23 +2693,24 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	case DCBMenuBrite:
 		STARSDisabledButton("BRITE", STARSButtonFull, buttonScale)
-		STARSDisabledButton("DCB 100", STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "DCB ", &ps.Brightness.DCB, 25, false, STARSButtonHalfVertical, buttonScale)
 		STARSDisabledButton("BKC 100", STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "LST ", &ps.Brightness.Lists, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "POS ", &ps.Brightness.Positions, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "LDB ", &ps.Brightness.LimitedDatablocks, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "OTH ", &ps.Brightness.OtherTracks, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "TLS ", &ps.Brightness.Lines, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "RR ", &ps.Brightness.RangeRings, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "CMP ", &ps.Brightness.Compass, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "WX", &ps.Brightness.Weather, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "WXC", &ps.Brightness.WxContrast, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, 5, false, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, 5, false, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "LST ", &ps.Brightness.Lists, 25, false, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "POS ", &ps.Brightness.Positions, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "LDB ", &ps.Brightness.LimitedDatablocks, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "OTH ", &ps.Brightness.OtherTracks, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "TLS ", &ps.Brightness.Lines, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "RR ", &ps.Brightness.RangeRings, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "CMP ", &ps.Brightness.Compass, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, 5, true, STARSButtonHalfVertical, buttonScale)
+		// The STARS manual, p.4-74 actually says that weather can't go to OFF... FIXME?
+		STARSBrightnessSpinner(ctx, "WX ", &ps.Brightness.Weather, 5, true, STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "WXC ", &ps.Brightness.WxContrast, 5, false, STARSButtonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
 			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
 		} else {
@@ -4232,6 +4236,7 @@ var dcbDrawState struct {
 	cursor       [2]float32
 	y0           float32
 	style        TextStyle
+	brightness   STARSBrightness
 }
 
 func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32, transforms ScopeTransformations, cb *CommandBuffer) {
@@ -4240,6 +4245,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32, transforms Sc
 
 	dcbDrawState.y0 = ctx.paneExtent.Height()
 	dcbDrawState.cursor = [2]float32{0, dcbDrawState.y0}
+	dcbDrawState.brightness = sp.CurrentPreferenceSet.Brightness.DCB
 
 	dcbDrawState.style = TextStyle{
 		Font:        sp.dcbFont[sp.CurrentPreferenceSet.CharSize.DCB],
@@ -4287,7 +4293,7 @@ func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color 
 	}
 
 	style := dcbDrawState.style
-	style.Color = color
+	style.Color = lerpRGB(.5, color, dcbDrawState.brightness.ScaleRGB(color))
 	_, h := style.Font.BoundText(strings.Join(lines, "\n"), dcbDrawState.style.LineSpacing)
 
 	slop := buttonSize[1] - float32(h) // todo: what if negative...
@@ -4332,6 +4338,7 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	} else {
 		buttonColor = Select(selected, STARSDCBActiveButtonColor, STARSDCBButtonColor)
 	}
+	buttonColor = dcbDrawState.brightness.ScaleRGB(buttonColor)
 
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
 	drawDCBText(text, td, sz, STARSDCBTextColor)
@@ -4463,7 +4470,8 @@ func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float3
 		}, flags, buttonScale)
 }
 
-func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, flags int, buttonScale float32) {
+func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, min STARSBrightness, allowOff bool,
+	flags int, buttonScale float32) {
 	STARSCallbackSpinner(ctx, text, b,
 		func(b STARSBrightness) string {
 			if b == 0 {
@@ -4474,9 +4482,19 @@ func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, f
 		},
 		func(b STARSBrightness, delta float32) STARSBrightness {
 			if delta > 0 {
-				return min(b+1, 100)
+				if b == 0 && allowOff {
+					return STARSBrightness(min)
+				} else {
+					b++
+					return STARSBrightness(clamp(b, min, 100))
+				}
 			} else if delta < 0 {
-				return max(0, b-1)
+				if b == min && allowOff {
+					return STARSBrightness(0)
+				} else {
+					b--
+					return STARSBrightness(clamp(b, min, 100))
+				}
 			} else {
 				return b
 			}
