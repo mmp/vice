@@ -56,6 +56,7 @@ type STARSPane struct {
 	weatherRadar WeatherRadar
 
 	systemFont [6]*Font
+	dcbFont    [3]*Font // 0, 1, 2 only
 
 	events *EventsSubscription
 
@@ -350,6 +351,7 @@ type STARSPreferenceSet struct {
 	}
 
 	CharSize struct {
+		DCB             int
 		Datablocks      int
 		Lists           int
 		Tools           int
@@ -476,6 +478,7 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 	ps.Brightness.Weather = 30
 	ps.Brightness.WxContrast = 30
 
+	ps.CharSize.DCB = 1
 	ps.CharSize.Datablocks = 1
 	ps.CharSize.Lists = 1
 	ps.CharSize.Tools = 1
@@ -636,7 +639,7 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 		sp.queryUnassociated = NewTransientMap[string, interface{}]()
 	}
 
-	sp.initializeSystemFonts()
+	sp.initializeFonts()
 
 	sp.aircraftToIndex = make(map[string]int)
 	sp.indexToAircraft = make(map[int]string)
@@ -790,6 +793,15 @@ func (sp *STARSPane) processEvents(w *World) {
 					globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 				}
 			}
+		}
+	}
+}
+
+func (sp *STARSPane) Upgrade(from, to int) {
+	if from < 8 {
+		sp.CurrentPreferenceSet.CharSize.DCB = 1
+		for i := range sp.PreferenceSets {
+			sp.PreferenceSets[i].CharSize.DCB = 1
 		}
 	}
 }
@@ -2708,11 +2720,11 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	case DCBMenuCharSize:
 		STARSDisabledButton("BRITE", STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, " DATA\nBLOCKS\n  ", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "LISTS\n  ", &ps.CharSize.Lists, 0, 5, STARSButtonFull, buttonScale)
-		STARSDisabledButton("DCB\n 1", STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "TOOLS\n  ", &ps.CharSize.Tools, 0, 5, STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "POS\n ", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "LISTS\n", &ps.CharSize.Lists, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "DCB\n", &ps.CharSize.DCB, 0, 2, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "TOOLS\n", &ps.CharSize.Tools, 0, 5, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "POS\n", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull, buttonScale)
 		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
@@ -4230,7 +4242,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32, transforms Sc
 	dcbDrawState.cursor = [2]float32{0, dcbDrawState.y0}
 
 	dcbDrawState.style = TextStyle{
-		Font:        GetFont(FontIdentifier{Name: "Inconsolata SemiBold", Size: globalConfig.DCBFontSize}),
+		Font:        sp.dcbFont[sp.CurrentPreferenceSet.CharSize.DCB],
 		Color:       RGB{1, 1, 1},
 		LineSpacing: 1,
 		// DropShadow: true, // ????
@@ -4496,15 +4508,20 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 	}
 }
 
-func (sp *STARSPane) initializeSystemFonts() {
-	for i, sz := range []int{9, 11, 12, 13, 14, 16} {
-		id := FontIdentifier{Name: "Fixed Demi Bold", Size: sz}
-		sp.systemFont[i] = GetFont(id)
-		if sp.systemFont[i] == nil {
-			lg.Errorf("Font not found for %+v", id)
-			sp.systemFont[i] = GetDefaultFont()
+func (sp *STARSPane) initializeFonts() {
+	init := func(fonts []*Font, name string, sizes []int) {
+		for i, sz := range sizes {
+			id := FontIdentifier{Name: name, Size: sz}
+			fonts[i] = GetFont(id)
+			if fonts[i] == nil {
+				lg.Errorf("Font not found for %+v", id)
+				fonts[i] = GetDefaultFont()
+			}
 		}
 	}
+
+	init(sp.systemFont[:], "Fixed Demi Bold", []int{9, 11, 12, 13, 14, 16})
+	init(sp.dcbFont[:], "Inconsolata SemiBold", []int{10, 12, 14})
 }
 
 func (sp *STARSPane) initializeAircraft(w *World) {

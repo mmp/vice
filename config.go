@@ -30,7 +30,6 @@ type GlobalConfig struct {
 	LastServer            string
 	LastScenarioGroup     string
 	UIFontSize            int
-	DCBFontSize           int
 
 	Audio AudioSettings
 
@@ -147,10 +146,6 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.DisplayRoot = nil
 			globalConfig.Version = 1
 		}
-		if globalConfig.Version < 3 {
-			// No need to clear out the *Sim pointer any more...
-			globalConfig.Version = 3
-		}
 		if globalConfig.Version < 5 {
 			globalConfig.Sim = nil
 			globalConfig.Callsign = ""
@@ -169,16 +164,6 @@ func LoadOrMakeDefaultConfig() {
 	if globalConfig.UIFontSize == 0 {
 		globalConfig.UIFontSize = 16
 	}
-	if globalConfig.DCBFontSize == 0 {
-		globalConfig.DCBFontSize = 8
-	}
-	if globalConfig.DCBFontSize == 12 && globalConfig.Version < 6 {
-		globalConfig.DCBFontSize = 8
-	}
-	if globalConfig.DCBFontSize == 8 && globalConfig.Version < 7 {
-		globalConfig.DCBFontSize = 12
-	}
-	globalConfig.Version = 7
 	globalConfig.Version = CurrentConfigVersion
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)

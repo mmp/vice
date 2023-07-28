@@ -997,20 +997,6 @@ func (w *World) DrawSettingsWindow() {
 		}
 		imgui.EndCombo()
 	}
-	if imgui.BeginComboV("STARS DCB Font Size", fmt.Sprintf("%d", globalConfig.DCBFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := make(map[int]interface{})
-		for fontid := range fonts {
-			if fontid.Name == "Inconsolata SemiBold" {
-				sizes[fontid.Size] = nil
-			}
-		}
-		for _, size := range SortedMapKeys(sizes) {
-			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.DCBFontSize, 0, imgui.Vec2{}) {
-				globalConfig.DCBFontSize = size
-			}
-		}
-		imgui.EndCombo()
-	}
 
 	var fsp *FlightStripPane
 	var messages *MessagesPane
