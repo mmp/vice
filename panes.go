@@ -31,6 +31,10 @@ type PaneUIDrawer interface {
 	DrawUI()
 }
 
+type PaneUpgrader interface {
+	Upgrade(prev, current int)
+}
+
 type PaneContext struct {
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D

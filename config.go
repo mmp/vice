@@ -17,6 +17,10 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
+// Version history 0-7 not explicitly recorded
+// 8: STARSPane DCB improvements, added DCB font size control
+const CurrentConfigVersion = 8
+
 type GlobalConfig struct {
 	Version               int
 	InitialWindowSize     [2]int
@@ -128,7 +132,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
-		globalConfig.Version = 5
+		globalConfig.Version = CurrentConfigVersion
 		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
@@ -152,6 +156,14 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.Callsign = ""
 			globalConfig.Version = 5
 		}
+
+		if globalConfig.Version < CurrentConfigVersion && globalConfig.DisplayRoot != nil {
+			globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+				if up, ok := p.(PaneUpgrader); ok {
+					up.Upgrade(globalConfig.Version, CurrentConfigVersion)
+				}
+			})
+		}
 	}
 
 	if globalConfig.UIFontSize == 0 {
@@ -167,6 +179,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.DCBFontSize = 12
 	}
 	globalConfig.Version = 7
+	globalConfig.Version = CurrentConfigVersion
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
