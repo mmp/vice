@@ -91,6 +91,9 @@ var (
 		"Replaced the font used in the STARS radar scope",
 		"Fixed a few graphics bugs in the STARS radar scope",
 		"Fixed a rare crash with incorrect command input to the STARS scope",
+		"New scenarios covering the A80 (ATL) and A90 (BOS) TRACONS",
+		"Fixed a bug with drawing *P cones",
+		"Many improvements to the STARS DCB implementation",
 	}
 )
 
