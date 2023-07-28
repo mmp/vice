@@ -818,14 +818,15 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		p0: [2]float32{0, 0},
 		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
 
+	dcbButtonHeight := 0
 	if ps.DisplayDCB {
-		sp.DrawDCB(ctx, transforms, cb)
+		dcbButtonHeight = sp.DrawDCB(ctx, transforms, cb)
 
-		drawBounds.p1[1] -= STARSButtonHeight
+		drawBounds.p1[1] -= float32(dcbButtonHeight)
 
 		// scissor so we can't draw in the DCB area
 		paneRemaining := ctx.paneExtent
-		paneRemaining.p1[1] -= STARSButtonHeight
+		paneRemaining.p1[1] -= float32(dcbButtonHeight)
 		fbPaneExtent := paneRemaining.Scale(ctx.platform.DPIScale())
 		cb.Scissor(int(fbPaneExtent.p0[0]), int(fbPaneExtent.p0[1]),
 			int(fbPaneExtent.Width()+.5), int(fbPaneExtent.Height()+.5))
@@ -877,7 +878,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.drawSystemLists(aircraft, ctx, transforms, cb)
+	sp.drawSystemLists(aircraft, ctx, dcbButtonHeight, transforms, cb)
 
 	sp.Facility.CRDAConfig.DrawRegions(ctx, transforms, cb)
 
@@ -2485,7 +2486,7 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	}
 }
 
-func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) int {
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 19
 	// Sigh; on windows we want the button size in pixels on high DPI displays
@@ -2830,9 +2831,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	}
 
 	sp.EndDrawDCB()
+
+	sz := starsButtonSize(STARSButtonFull, buttonScale)
+	return int(sz[1]) // height
 }
 
-func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
+func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, dcbButtonHeight int,
 	transforms ScopeTransformations, cb *CommandBuffer) {
 	for name := range ctx.world.AllAirports() {
 		ctx.world.AddAirportForWeather(name)
@@ -2859,7 +2863,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext,
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
 		if ps.DisplayDCB {
-			return [2]float32{p[0] * ctx.paneExtent.Width(), p[1] * (ctx.paneExtent.Height() - STARSButtonHeight)}
+			return [2]float32{p[0] * ctx.paneExtent.Width(), p[1] * (ctx.paneExtent.Height() - float32(dcbButtonHeight))}
 		} else {
 			return [2]float32{p[0] * ctx.paneExtent.Width(), p[1] * ctx.paneExtent.Height()}
 		}
@@ -4198,14 +4202,14 @@ const (
 
 func starsButtonSize(flags int, scale float32) [2]float32 {
 	if (flags & STARSButtonFull) != 0 {
-		return [2]float32{scale * STARSButtonWidth, STARSButtonHeight}
+		return [2]float32{scale * STARSButtonWidth, scale * STARSButtonHeight}
 	} else if (flags & STARSButtonHalfVertical) != 0 {
-		return [2]float32{scale * STARSButtonWidth, (STARSButtonHeight / 2)}
+		return [2]float32{scale * STARSButtonWidth, scale * (STARSButtonHeight / 2)}
 	} else if (flags & STARSButtonHalfHorizontal) != 0 {
-		return [2]float32{scale * (STARSButtonWidth / 2), STARSButtonHeight}
+		return [2]float32{scale * (STARSButtonWidth / 2), scale * STARSButtonHeight}
 	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
-		return [2]float32{scale * STARSButtonWidth, STARSButtonHeight}
+		return [2]float32{scale * STARSButtonWidth, scale * STARSButtonHeight}
 	}
 }
 
@@ -4320,12 +4324,19 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
 	drawDCBText(text, td, sz, STARSDCBTextColor)
 
-	// Highlight top and left
-	ld.AddLine(p0, p1, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
-	ld.AddLine(p0, p3, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
-	// Darker bottom and right
-	ld.AddLine(p1, p2, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
-	ld.AddLine(p2, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+	if (selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary]) {
+		// Depressed bevel scheme: darker top/left, highlight bottom/right
+		ld.AddLine(p0, p1, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+		ld.AddLine(p0, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+		ld.AddLine(p1, p2, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+		ld.AddLine(p2, p3, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+	} else {
+		// Normal bevel scheme: highlight top and left, darker bottom and right
+		ld.AddLine(p0, p1, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+		ld.AddLine(p0, p3, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+		ld.AddLine(p1, p2, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+		ld.AddLine(p2, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+	}
 
 	updateDCBCursor(flags, sz)
 
@@ -4343,7 +4354,9 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	ld.GenerateCommands(dcbDrawState.cb)
 	td.GenerateCommands(dcbDrawState.cb)
 
-	if mouse != nil && mouseInside && mouse.Released[MouseButtonPrimary] {
+	if mouse != nil && mouseInside && mouse.Released[MouseButtonPrimary] &&
+		dcbDrawState.mouseDownPos != nil &&
+		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]}) {
 		return ext, true /* clicked and released */
 	}
 	return ext, false
