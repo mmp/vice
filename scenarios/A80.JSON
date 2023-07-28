@@ -708,7 +708,7 @@
               "icao": "AAL"
             }
           ],
-          "destination": "BURGG",
+          "destination": "KPHL",
           "exit": "BURGG",
           "route": "BURGG Q22 BEARI BBDOL PAATS4"
         },
@@ -729,23 +729,6 @@
           "destination": "KCLT",
           "exit": "HRTWL",
           "route": "HRTWL JONZE JONZE3"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "icao": "NKS"
-            },
-            {
-              "icao": "JBU"
-            }
-          ],
-          "destination": "KBOS",
-          "exit": "BURGG",
-          "route": "BURGG Q22 RBV Q419 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -806,7 +789,7 @@
   "airspace": {
     "boundaries": {
       "ATLAPP": [
-        "N33.38.31.431,W84.25.47.527",
+        "N032.57.53.066,W084.25.31.961",
         "N33.00.10.733,W84.09.11.257",
         "N33.06.21.376,W83.56.29.713",
         "N33.06.21.376,W83.56.29.713",
@@ -1311,7 +1294,7 @@
         "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
       },
       "speed_restriction": 250,
-      "waypoints": "JKSON MADDX/ho GLAVN/a13000/s250 STHRN"
+      "waypoints": "MADDX GLAVN/a13000/s250/ho STHRN"
     }
    ],
    "GNDLF2": [
@@ -1589,7 +1572,7 @@
             "icao": "DAL"
           },
           {
-            "airport": "MKCO",
+            "airport": "KMCO",
             "icao": "FFT"
           },
           {
@@ -1671,7 +1654,7 @@
             "icao": "DAL"
           },
           {
-            "airport": "MKCO",
+            "airport": "KMCO",
             "icao": "FFT"
           },
           {
@@ -1757,7 +1740,7 @@
             "icao": "DAL"
           },
           {
-            "airport": "MKCO",
+            "airport": "KMCO",
             "icao": "FFT"
           },
           {
@@ -1934,11 +1917,6 @@
             "icao": "KLM"
           },
           {
-            "airport" : "LFTM",
-            "fleet": "long",
-            "icao": "THY"
-          },
-          {
             "airport": "OMDB",
             "icao": "UAE"
           },
@@ -1999,11 +1977,6 @@
             "airport": "EHAM",
             "fleet": "long",
             "icao": "KLM"
-          },
-          {
-            "airport" : "LFTM",
-            "fleet": "long",
-            "icao": "THY"
           },
           {
             "airport": "OMDB",
@@ -2077,11 +2050,6 @@
             "icao": "KLM"
           },
           {
-            "airport" : "LFTM",
-            "fleet": "long",
-            "icao": "THY"
-          },
-          {
             "airport": "OMDB",
             "icao": "UAE"
           },
@@ -2129,7 +2097,7 @@
             "icao": "DAL"
           },
           {
-            "airport": "MKCO",
+            "airport": "KMCO",
             "icao": "FFT"
           },
           {
@@ -2360,7 +2328,7 @@
     "_ATL_27R": "N33.38.04.838,W84.24.26.142",
     "_ATL_28": "N033.37.13.918,W084.25.07.434"
   },
-  "magnetic_variation": -4.0,
+  "magnetic_variation": 5.2,
   "name": "KATL",
   "nm_per_latitude": 60,
   "nm_per_longitude": 40,

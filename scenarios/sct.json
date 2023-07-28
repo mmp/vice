@@ -1,0 +1,78 @@
+{
+  "airports": {
+    "KSNA": {
+      "approaches": {
+        "R2L": {
+          "full_mame": "RNAV YANKEE Runway 2L",
+          "runway": "2L",
+          "type": "RNAV",
+          "waypoints": [
+            "MINOE/a3000 NEWPO/a1600 WUNAD/a740 _SNA_2L/a56"
+          ]
+        },
+        "I0R": {
+          "full_mame": "ILS Runway 20R",
+          "runway": "20R",
+          "type": "ILS",
+          "waypoints": [
+            "SAGER/a3500/hilpt SNAKE/a3400 HUKEM/a2800 LEMON/a2200 DYERS/a1040 _SNA_20R/a54"
+          ]
+        }
+      },
+      "departure_routes": {
+        "2L": {
+          "LAS": {
+            "cleared_altitude": 17000,
+            "route": "HOBOW3",
+            "waypoints": "_SNA_2L _SNA_20R LIION CHOAK JAABB KLMCH/s210 TKDWN TRAYN/a11000 JUMPP HOBOW CAHIL/a16000 ZOOMM/a17000 SEBBY PLAYY NNAVY BLAZN"
+          },
+          "MISEN": {
+            "cleared_altitude": 17000,
+            "route": "HOBOW3",
+            "waypoints": "SNA_2L _SNA_20R LIION CHOAK JAABB KLMCH/s210 TKDWN TRAYN/a11000 JUMPP HOBOW CAHIL/a16000 ZOOMM/a17000 SEBBY PLAYY ARCUS YELAH"
+          },
+          "BEALE": {
+            "cleared_altitude": 17000,
+            "route": "HOBOW3",
+            "waypoints": "SNA_2L _SNA_20R LIION CHOAK JAABB KLMCH/s210 TKDWN TRAYN/a11000 JUMPP HOBOW CAHIL/a16000 ZOOMM/a17000 SEBBY PLAYY ARCUS YELAH"
+          },
+          "HAILO": {
+            "cleared_altitude": 17000,
+            "route": "FINZZ3",
+            "waypoints": "_SNA_2L _SNA_20R STREL/a4000 DOLFF/a7000 FINZZ/a900 CAHIL/a14000 ZOOMM/a15000 SEBBY PLAYY GUNNR ARRMY"
+          },
+          "OROSZ": {
+            "cleared_altitude": 2000,
+            "route": "HHERO3",
+            "waypoints": "SNA_2L _SNA_20R STREL/a4000 DOLLF/a7000 MIKAA SNYPR HHERO CAMINO/a21000 RIDDL TWINE"
+          },
+          "EHF": {
+            "cleared_altitude": 2000,
+            "route": "HHERO3",
+            "waypoints": "_SNA_2L _SNA_20R STREL/a4000 DOLLF/a7000 MIKAA SNYPR HHERO CAMINO/a21000 RIDDL LANDO"
+          },
+          "IKAYE": {
+            "cleared_altitude": 2000,
+            "route": "HHERO3",
+            "waypoints": "_SNA_2L _SNA_20R STREL/a4000 DOLLF/a7000 MIKAA SNYPR HHERO FAYHE/a23000"
+          },
+          "HHERO": {
+            "cleared_altitude": 2000,
+            "route": "MIKAA1",
+            "waypoints": "_SNA_2L _SNA_20R LIION CHOAK JAABB KLNCH/s210 DOLLF MIKAA SNYPR"
+          },
+          "AVVRY": {
+            "cleared_altitude": 13000,
+            "route": "PIGGN3",
+            "waypoints": "_SNA_2L _SNA_20R STREL/a4000 TANGL SHIRR/a8000 PIGGN/a12000 FNCHH TBERD PEELR MTBAL"
+          },
+          "CNERY": {
+            "cleared_altitude": 13000,
+            "route": "PIGGN3",
+            "waypoints": "_SNA_2L _SNA_20R STREL/a4000 TANGL SHIRR/a9000 PIGGN/a12000 FNCHH "
+          }
+        }
+      }
+    }
+  }
+}
