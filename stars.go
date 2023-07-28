@@ -264,7 +264,8 @@ func MakeDefaultFacility() STARSFacility {
 type STARSPreferenceSet struct {
 	Name string
 
-	DisplayDCB bool
+	DisplayDCB  bool
+	DCBPosition int
 
 	Center Point2LL
 	Range  float32
@@ -425,12 +426,20 @@ type STARSPreferenceSet struct {
 	}
 }
 
+const (
+	DCBPositionTop = iota
+	DCBPositionLeft
+	DCBPositionRight
+	DCBPositionBottom
+)
+
 func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPreferenceSet {
 	var ps STARSPreferenceSet
 
 	ps.Name = name
 
 	ps.DisplayDCB = true
+	ps.DCBPosition = DCBPositionTop
 
 	if w != nil {
 		ps.Center = w.Center
@@ -825,26 +834,28 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	sp.processKeyboardInput(ctx)
 
-	transforms := GetScopeTransformations(ctx, sp.CurrentPreferenceSet.CurrentCenter,
-		float32(sp.CurrentPreferenceSet.Range), 0)
+	transforms := GetScopeTransformations(ctx.paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
+		sp.CurrentPreferenceSet.CurrentCenter, float32(sp.CurrentPreferenceSet.Range), 0)
 	ps := sp.CurrentPreferenceSet
 
-	drawBounds := Extent2D{
-		p0: [2]float32{0, 0},
-		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
-
-	dcbButtonHeight := 0
+	paneExtent := ctx.paneExtent
 	if ps.DisplayDCB {
-		dcbButtonHeight = sp.DrawDCB(ctx, transforms, cb)
+		paneExtent = sp.DrawDCB(ctx, transforms, cb)
 
-		drawBounds.p1[1] -= float32(dcbButtonHeight)
+		// Update scissor and viewport for what's left and to protect the DCB.
+		cb.SetDrawBounds(paneExtent)
 
-		// scissor so we can't draw in the DCB area
-		paneRemaining := ctx.paneExtent
-		paneRemaining.p1[1] -= float32(dcbButtonHeight)
-		fbPaneExtent := paneRemaining.Scale(ctx.platform.DPIScale())
-		cb.Scissor(int(fbPaneExtent.p0[0]), int(fbPaneExtent.p0[1]),
-			int(fbPaneExtent.Width()+.5), int(fbPaneExtent.Height()+.5))
+		// Clean up for the updated paneExtent that accounts for the space the DCB took.
+		transforms = GetScopeTransformations(paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
+			sp.CurrentPreferenceSet.CurrentCenter, float32(sp.CurrentPreferenceSet.Range), 0)
+		if ctx.mouse != nil {
+			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
+			// the DCB is at the top, in which case it's unchanged.
+			ms := *ctx.mouse
+			ctx.mouse = &ms
+			ctx.mouse.Pos[0] += ctx.paneExtent.p0[0] - paneExtent.p0[0]
+			ctx.mouse.Pos[1] += ctx.paneExtent.p0[1] - paneExtent.p0[1]
+		}
 	}
 
 	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
@@ -879,7 +890,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		cb.LineWidth(1)
 		cbright := ps.Brightness.Compass.RGB()
 		font := sp.systemFont[ps.CharSize.Tools]
-		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, drawBounds, transforms, cb)
+		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
 	}
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
@@ -893,7 +904,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.drawSystemLists(aircraft, ctx, dcbButtonHeight, transforms, cb)
+	sp.drawSystemLists(aircraft, ctx, paneExtent, transforms, cb)
 
 	sp.Facility.CRDAConfig.DrawRegions(ctx, transforms, cb)
 
@@ -2501,16 +2512,22 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	}
 }
 
-func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) int {
+func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) Extent2D {
+	ps := &sp.CurrentPreferenceSet
+
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 19
 	// Sigh; on windows we want the button size in pixels on high DPI displays
 	ds := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
-	buttonScale := min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
+	var buttonScale float32
+	// Scale based on width or height available depending on DCB position
+	if ps.DCBPosition == DCBPositionTop || ps.DCBPosition == DCBPositionBottom {
+		buttonScale = min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonSize))
+	} else {
+		buttonScale = min(ds, (ds*ctx.paneExtent.Height()-4)/(NumDCBSlots*STARSButtonSize))
+	}
 
 	sp.StartDrawDCB(ctx, buttonScale, transforms, cb)
-
-	ps := &sp.CurrentPreferenceSet
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
@@ -2649,10 +2666,22 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSDisabledButton("BEACON\nMODE-2", STARSButtonFull, buttonScale)
 		STARSDisabledButton("RTQC", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MCP", STARSButtonFull, buttonScale)
-		STARSDisabledButton("DCP\nTOP", STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("DCP\nLEFT", STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("DCP\nRIGHT", STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("DCP\nBOTTOM", STARSButtonHalfVertical, buttonScale)
+		top := ps.DCBPosition == DCBPositionTop
+		if STARSToggleButton("DCB\nTOP", &top, STARSButtonHalfVertical, buttonScale) {
+			ps.DCBPosition = DCBPositionTop
+		}
+		left := ps.DCBPosition == DCBPositionLeft
+		if STARSToggleButton("DCB\nLEFT", &left, STARSButtonHalfVertical, buttonScale) {
+			ps.DCBPosition = DCBPositionLeft
+		}
+		right := ps.DCBPosition == DCBPositionRight
+		if STARSToggleButton("DCB\nRIGHT", &right, STARSButtonHalfVertical, buttonScale) {
+			ps.DCBPosition = DCBPositionRight
+		}
+		bottom := ps.DCBPosition == DCBPositionBottom
+		if STARSToggleButton("DCB\nBOTTOM", &bottom, STARSButtonHalfVertical, buttonScale) {
+			ps.DCBPosition = DCBPositionBottom
+		}
 		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull, buttonScale)
 		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
 		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
@@ -2849,10 +2878,25 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	sp.EndDrawDCB()
 
 	sz := starsButtonSize(STARSButtonFull, buttonScale)
-	return int(sz[1]) // height
+	paneExtent := ctx.paneExtent
+	switch ps.DCBPosition {
+	case DCBPositionTop:
+		paneExtent.p1[1] -= sz[1]
+
+	case DCBPositionLeft:
+		paneExtent.p0[0] += sz[0]
+
+	case DCBPositionRight:
+		paneExtent.p1[0] -= sz[0]
+
+	case DCBPositionBottom:
+		paneExtent.p0[1] += sz[1]
+	}
+
+	return paneExtent
 }
 
-func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, dcbButtonHeight int,
+func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, paneExtent Extent2D,
 	transforms ScopeTransformations, cb *CommandBuffer) {
 	for name := range ctx.world.AllAirports() {
 		ctx.world.AddAirportForWeather(name)
@@ -2878,11 +2922,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, dcb
 	defer ReturnTextDrawBuilder(td)
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
-		if ps.DisplayDCB {
-			return [2]float32{p[0] * ctx.paneExtent.Width(), p[1] * (ctx.paneExtent.Height() - float32(dcbButtonHeight))}
-		} else {
-			return [2]float32{p[0] * ctx.paneExtent.Width(), p[1] * ctx.paneExtent.Height()}
-		}
+		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 	drawList := func(text string, p [2]float32) {
 		if text != "" {
@@ -4206,8 +4246,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 ///////////////////////////////////////////////////////////////////////////
 // DCB menu on top
 
-const STARSButtonWidth = 70
-const STARSButtonHeight = 70
+const STARSButtonSize = 70
 
 const (
 	STARSButtonFull = 1 << iota
@@ -4217,15 +4256,17 @@ const (
 )
 
 func starsButtonSize(flags int, scale float32) [2]float32 {
+	bs := func(s float32) float32 { return float32(int(s*STARSButtonSize + 0.5)) }
+
 	if (flags & STARSButtonFull) != 0 {
-		return [2]float32{scale * STARSButtonWidth, scale * STARSButtonHeight}
+		return [2]float32{bs(scale), bs(scale)}
 	} else if (flags & STARSButtonHalfVertical) != 0 {
-		return [2]float32{scale * STARSButtonWidth, scale * (STARSButtonHeight / 2)}
+		return [2]float32{bs(scale), bs(scale / 2)}
 	} else if (flags & STARSButtonHalfHorizontal) != 0 {
-		return [2]float32{scale * (STARSButtonWidth / 2), scale * STARSButtonHeight}
+		return [2]float32{bs(scale / 2), bs(scale)}
 	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
-		return [2]float32{scale * STARSButtonWidth, scale * STARSButtonHeight}
+		return [2]float32{bs(scale), bs(scale)}
 	}
 }
 
@@ -4234,23 +4275,40 @@ var dcbDrawState struct {
 	mouse        *MouseState
 	mouseDownPos []float32
 	cursor       [2]float32
-	y0           float32
+	drawStartPos [2]float32
 	style        TextStyle
 	brightness   STARSBrightness
+	position     int
 }
 
-func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transforms ScopeTransformations,
+	cb *CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.mouse
 
-	dcbDrawState.y0 = ctx.paneExtent.Height()
-	dcbDrawState.cursor = [2]float32{0, dcbDrawState.y0}
-	dcbDrawState.brightness = sp.CurrentPreferenceSet.Brightness.DCB
+	ps := sp.CurrentPreferenceSet
+	dcbDrawState.brightness = ps.Brightness.DCB
+	dcbDrawState.position = ps.DCBPosition
+	switch dcbDrawState.position {
+	case DCBPositionTop, DCBPositionLeft:
+		// FIXME: why isn't this p0[0], p1[1] ?
+		dcbDrawState.drawStartPos = [2]float32{0, ctx.paneExtent.Height()}
+
+	case DCBPositionRight:
+		sz := starsButtonSize(STARSButtonFull, buttonScale) // FIXME: there should be a better way to get the default
+		dcbDrawState.drawStartPos = [2]float32{ctx.paneExtent.Width() - sz[0], ctx.paneExtent.Height()}
+
+	case DCBPositionBottom:
+		sz := starsButtonSize(STARSButtonFull, buttonScale)
+		dcbDrawState.drawStartPos = [2]float32{0, sz[1]}
+	}
+
+	dcbDrawState.cursor = dcbDrawState.drawStartPos
 
 	dcbDrawState.style = TextStyle{
-		Font:        sp.dcbFont[sp.CurrentPreferenceSet.CharSize.DCB],
+		Font:        sp.dcbFont[ps.CharSize.DCB],
 		Color:       RGB{1, 1, 1},
-		LineSpacing: 1,
+		LineSpacing: 0,
 		// DropShadow: true, // ????
 		// DropShadowColor: RGB{0,0,0}, // ????
 	}
@@ -4385,20 +4443,46 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 }
 
 func updateDCBCursor(flags int, sz [2]float32) {
-	if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfHorizontal) != 0 {
-		dcbDrawState.cursor[0] += sz[0]
-		dcbDrawState.cursor[1] = dcbDrawState.y0
-	} else if (flags & STARSButtonHalfVertical) != 0 {
-		if dcbDrawState.cursor[1] == dcbDrawState.y0 {
-			dcbDrawState.cursor[1] -= sz[1]
-		} else {
+	if dcbDrawState.position == DCBPositionTop || dcbDrawState.position == DCBPositionBottom {
+		// Drawing left to right
+		if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfHorizontal) != 0 {
+			// For full height buttons, always go to the next column
 			dcbDrawState.cursor[0] += sz[0]
-			dcbDrawState.cursor[1] = dcbDrawState.y0
+			dcbDrawState.cursor[1] = dcbDrawState.drawStartPos[1]
+		} else if (flags & STARSButtonHalfVertical) != 0 {
+			if dcbDrawState.cursor[1] == dcbDrawState.drawStartPos[1] {
+				// Room for another half-height button below
+				dcbDrawState.cursor[1] -= sz[1]
+			} else {
+				// On to the next column
+				dcbDrawState.cursor[0] += sz[0]
+				dcbDrawState.cursor[1] = dcbDrawState.drawStartPos[1]
+			}
+		} else {
+			lg.Errorf("unhandled starsButtonFlags %d", flags)
+			dcbDrawState.cursor[0] += sz[0]
+			dcbDrawState.cursor[1] = dcbDrawState.drawStartPos[1]
 		}
 	} else {
-		lg.Errorf("unhandled starsButtonFlags %d", flags)
-		dcbDrawState.cursor[0] += sz[0]
-		dcbDrawState.cursor[1] = dcbDrawState.y0
+		// Drawing top to bottom
+		if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfVertical) != 0 {
+			// For full width buttons, always go to the next row
+			dcbDrawState.cursor[0] = dcbDrawState.drawStartPos[0]
+			dcbDrawState.cursor[1] -= sz[1]
+		} else if (flags & STARSButtonHalfHorizontal) != 0 {
+			if dcbDrawState.cursor[0] == dcbDrawState.drawStartPos[0] {
+				// Room for another half-width button to the right
+				dcbDrawState.cursor[0] += sz[0]
+			} else {
+				// On to the next row
+				dcbDrawState.cursor[0] = dcbDrawState.drawStartPos[0]
+				dcbDrawState.cursor[1] -= sz[1]
+			}
+		} else {
+			lg.Errorf("unhandled starsButtonFlags %d", flags)
+			dcbDrawState.cursor[0] = dcbDrawState.drawStartPos[0]
+			dcbDrawState.cursor[1] -= sz[0]
+		}
 	}
 }
 

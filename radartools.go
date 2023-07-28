@@ -571,10 +571,11 @@ func (c *CRDAConfig) DrawUI() bool {
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
 func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font, color RGB,
-	bounds Extent2D, transforms ScopeTransformations, cb *CommandBuffer) {
+	paneBounds Extent2D, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
 	pw := transforms.WindowFromLatLongP(p)
+	bounds := Extent2D{p1: [2]float32{paneBounds.Width(), paneBounds.Height()}}
 
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
@@ -681,17 +682,18 @@ type ScopeTransformations struct {
 // GetScopeTransformations returns a ScopeTransformations object
 // corresponding to the specified radar scope center, range, and rotation
 // angle.
-func GetScopeTransformations(ctx *PaneContext, center Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
-	width, height := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+func GetScopeTransformations(paneExtent Extent2D, magneticVariation float32, nmPerLongitude float32,
+	center Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
+	width, height := paneExtent.Width(), paneExtent.Height()
 	aspect := width / height
 	ndcFromLatLong := Identity3x3().
 		// Final orthographic projection including the effect of the
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
 		// Account for magnetic variation and any user-specified rotation
-		Rotate(-radians(rotationAngle+ctx.world.MagneticVariation)).
+		Rotate(-radians(rotationAngle+magneticVariation)).
 		// Scale based on range and nm per latitude / longitude
-		Scale(ctx.world.NmPerLongitude/rangenm, nmPerLatitude/rangenm).
+		Scale(nmPerLongitude/rangenm, nmPerLatitude/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 
