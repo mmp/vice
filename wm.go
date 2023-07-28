@@ -445,7 +445,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	// Useful values related to the display size.
 	fbSize := p.FramebufferSize()
 	displaySize := p.DisplaySize()
-	highDPIScale := fbSize[1] / displaySize[1]
+	highDPIScale := platform.DPIScale()
 
 	// Area left for actually drawing Panes
 	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - ui.menuBarHeight}}
