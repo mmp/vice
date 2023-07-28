@@ -754,6 +754,24 @@
           "destination": "KRDU",
           "exit": "IRQ",
           "route": "IRQ PYRES DMSTR1"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "icao": "VIR"
+            },
+            {
+              "fleet": "long",
+              "icao":"BAW"
+            }
+          ],
+          "destination": "EGLL",
+          "exit": "BURGG",
+          "route": "BURGG"
         }
       ],
       "elevation": 1026,
