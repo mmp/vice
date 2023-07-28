@@ -110,6 +110,9 @@ var (
 	//go:embed resources/FixedDemiBold.otf.zst
 	fixedDemiBoldOTF string
 
+	//go:embed resources/Inconsolata-Semibold.ttf.zst
+	inconsolataSemiBoldTTF string
+
 	//go:embed resources/Flight-Strip-Printer.ttf.zst
 	flightStripPrinterTTF string
 
@@ -291,6 +294,7 @@ func fontsInit(r Renderer, platform Platform) {
 	add(robotoRegularTTF, false, "Roboto Regular")
 	add(vt323RegularTTF, true, "VT323 Regular")
 	add(fixedDemiBoldOTF, true, "Fixed Demi Bold")
+	add(inconsolataSemiBoldTTF, true, "Inconsolata SemiBold")
 	add(flightStripPrinterTTF, true, "Flight Strip Printer")
 	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
 

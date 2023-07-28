@@ -163,7 +163,10 @@ func LoadOrMakeDefaultConfig() {
 	if globalConfig.DCBFontSize == 12 && globalConfig.Version < 6 {
 		globalConfig.DCBFontSize = 8
 	}
-	globalConfig.Version = 6
+	if globalConfig.DCBFontSize == 8 && globalConfig.Version < 7 {
+		globalConfig.DCBFontSize = 12
+	}
+	globalConfig.Version = 7
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }

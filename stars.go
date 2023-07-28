@@ -34,6 +34,13 @@ var (
 	STARSUntrackedAircraftColor  = RGB{.1, .9, .1}
 	STARSPointedOutAircraftColor = RGB{1, 1, 0}
 	STARSSelectedAircraftColor   = RGB{0, 1, 1}
+
+	STARSDCBButtonColor         = RGB{0, .15, 0}
+	STARSDCBActiveButtonColor   = RGB{0, .4, 0}
+	STARSDCBInsideButtonColor   = RGB{.5, .5, .5}
+	STARSDCBTextColor           = RGB{1, 1, 1}
+	STARSDCBDisabledButtonColor = RGB{.2, .2, .2}
+	STARSDCBDisabledTextColor   = RGB{.8, .8, .8}
 )
 
 const NumSTARSPreferenceSets = 32
@@ -812,7 +819,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		p1: [2]float32{ctx.paneExtent.Width(), ctx.paneExtent.Height()}}
 
 	if ps.DisplayDCB {
-		sp.DrawDCB(ctx, transforms)
+		sp.DrawDCB(ctx, transforms, cb)
 
 		drawBounds.p1[1] -= STARSButtonHeight
 
@@ -2478,14 +2485,14 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	}
 }
 
-func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations) {
+func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 19
 	// Sigh; on windows we want the button size in pixels on high DPI displays
 	ds := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 	buttonScale := min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonWidth))
 
-	sp.StartDrawDCB(ctx, buttonScale)
+	sp.StartDrawDCB(ctx, buttonScale, transforms, cb)
 
 	ps := &sp.CurrentPreferenceSet
 
@@ -4182,10 +4189,6 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 const STARSButtonWidth = 70
 const STARSButtonHeight = 70
 
-var (
-	starsBarWindowPos imgui.Vec2
-)
-
 const (
 	STARSButtonFull = 1 << iota
 	STARSButtonHalfVertical
@@ -4193,100 +4196,185 @@ const (
 	STARSButtonSelected
 )
 
-func starsButtonSize(flags int, scale float32) imgui.Vec2 {
+func starsButtonSize(flags int, scale float32) [2]float32 {
 	if (flags & STARSButtonFull) != 0 {
-		return imgui.Vec2{X: scale * STARSButtonWidth, Y: scale * STARSButtonHeight}
+		return [2]float32{scale * STARSButtonWidth, STARSButtonHeight}
 	} else if (flags & STARSButtonHalfVertical) != 0 {
-		return imgui.Vec2{X: scale * STARSButtonWidth, Y: scale * (STARSButtonHeight / 2)}
+		return [2]float32{scale * STARSButtonWidth, (STARSButtonHeight / 2)}
 	} else if (flags & STARSButtonHalfHorizontal) != 0 {
-		return imgui.Vec2{X: scale * (STARSButtonWidth / 2), Y: scale * STARSButtonHeight}
+		return [2]float32{scale * (STARSButtonWidth / 2), STARSButtonHeight}
 	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
-		return imgui.Vec2{X: scale * STARSButtonWidth, Y: scale * STARSButtonHeight}
+		return [2]float32{scale * STARSButtonWidth, STARSButtonHeight}
 	}
 }
 
-func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32) {
-	var flags imgui.WindowFlags
-	flags = imgui.WindowFlagsNoDecoration
-	flags |= imgui.WindowFlagsNoSavedSettings
-	flags |= imgui.WindowFlagsNoNav
-	flags |= imgui.WindowFlagsNoResize
-	flags |= imgui.WindowFlagsNoScrollWithMouse
-	flags |= imgui.WindowFlagsNoBackground
+var dcbDrawState struct {
+	cb           *CommandBuffer
+	mouse        *MouseState
+	mouseDownPos []float32
+	cursor       [2]float32
+	y0           float32
+	style        TextStyle
+}
 
-	starsBarWindowPos = imgui.Vec2{
-		X: ctx.paneExtent.p0[0],
-		Y: float32(ctx.platform.WindowSize()[1]) - ctx.paneExtent.p1[1] + 1}
-	imgui.SetNextWindowPosV(starsBarWindowPos, imgui.ConditionAlways, imgui.Vec2{})
-	imgui.SetNextWindowSize(imgui.Vec2{ctx.paneExtent.Width() - 2, scale * STARSButtonHeight})
-	imgui.BeginV(fmt.Sprintf("STARS Button Bar##%p", sp), nil, flags)
+func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, scale float32, transforms ScopeTransformations, cb *CommandBuffer) {
+	dcbDrawState.cb = cb
+	dcbDrawState.mouse = ctx.mouse
 
-	//	imgui.WindowDrawList().AddRectFilledV(imgui.Vec2{}, imgui.Vec2{X: ctx.paneExtent.Width() - 2, Y: STARSButtonHeight},
-	//		0xff0000ff, 1, 0)
+	dcbDrawState.y0 = ctx.paneExtent.Height()
+	dcbDrawState.cursor = [2]float32{0, dcbDrawState.y0}
 
-	buttonFont := GetFont(FontIdentifier{Name: "Fixed Demi Bold", Size: globalConfig.DCBFontSize})
-	if buttonFont == nil {
+	dcbDrawState.style = TextStyle{
+		Font:        GetFont(FontIdentifier{Name: "Inconsolata SemiBold", Size: globalConfig.DCBFontSize}),
+		Color:       RGB{1, 1, 1},
+		LineSpacing: 1,
+		// DropShadow: true, // ????
+		// DropShadowColor: RGB{0,0,0}, // ????
+	}
+	if dcbDrawState.style.Font == nil {
 		lg.Errorf("nil buttonFont??")
-		buttonFont = GetDefaultFont()
+		dcbDrawState.style.Font = GetDefaultFont()
 	}
 
-	imgui.PushFont(buttonFont.ifont)
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1)
 
-	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, imgui.Vec2{1, 0})
-	imgui.PushStyleVarVec2(imgui.StyleVarFramePadding, imgui.Vec2{1, 1})
-	imgui.PushStyleVarFloat(imgui.StyleVarFrameRounding, 0.) // squared off buttons
-	imgui.PushStyleVarFloat(imgui.StyleVarWindowBorderSize, 0)
-	imgui.PushStyleVarFloat(imgui.StyleVarWindowRounding, 0)
-	imgui.PushStyleVarVec2(imgui.StyleVarWindowPadding, imgui.Vec2{0, 0})
+	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
+		dcbDrawState.mouseDownPos = ctx.mouse.Pos[:]
+	}
 
-	imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .7, .7, 1})
-	imgui.PushStyleColor(imgui.StyleColorButton, imgui.Vec4{.075, .075, .075, 1})
-	imgui.PushStyleColor(imgui.StyleColorButtonHovered, imgui.Vec4{.3, .3, .3, 1})
-	imgui.PushStyleColor(imgui.StyleColorButtonActive, imgui.Vec4{0, .2, 0, 1})
-
-	imgui.SetCursorPos(imgui.Vec2{-1, 0})
+	/*
+		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .7, .7, 1})
+		imgui.PushStyleColor(imgui.StyleColorButton, imgui.Vec4{.075, .075, .075, 1})
+		imgui.PushStyleColor(imgui.StyleColorButtonHovered, imgui.Vec4{.3, .3, .3, 1})
+		imgui.PushStyleColor(imgui.StyleColorButtonActive, imgui.Vec4{0, .2, 0, 1})
+	*/
 }
 
 func (sp *STARSPane) EndDrawDCB() {
-	imgui.PopStyleVarV(6)
-	imgui.PopStyleColorV(4)
-	imgui.PopFont()
-	imgui.End()
+	// Clear out the scissor et al...
+	dcbDrawState.cb.ResetState()
+
+	if mouse := dcbDrawState.mouse; mouse != nil {
+		if mouse.Released[MouseButtonPrimary] {
+			dcbDrawState.mouseDownPos = nil
+		}
+	}
 }
 
-func updateImguiCursor(flags int, pos imgui.Vec2, buttonScale float32) {
+func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color RGB) {
+	// Clean up the text
+	lines := strings.Split(strings.TrimSpace(text), "\n")
+	for i := range lines {
+		lines[i] = strings.TrimSpace(lines[i])
+	}
+
+	style := dcbDrawState.style
+	style.Color = color
+	_, h := style.Font.BoundText(strings.Join(lines, "\n"), dcbDrawState.style.LineSpacing)
+
+	slop := buttonSize[1] - float32(h) // todo: what if negative...
+	y0 := dcbDrawState.cursor[1] - slop/2
+	for _, line := range lines {
+		lw, lh := style.Font.BoundText(line, style.LineSpacing)
+		x0 := dcbDrawState.cursor[0] + (buttonSize[0]-float32(lw))/2
+
+		td.AddText(line, [2]float32{x0, y0}, style)
+		y0 -= float32(lh)
+	}
+}
+
+func drawDCBButton(text string, flags int, buttonScale float32, selected bool, disabled bool) (Extent2D, bool) {
+	ld := GetColoredLinesDrawBuilder()
+	trid := GetColoredTrianglesDrawBuilder()
+	td := GetTextDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+	defer ReturnColoredTrianglesDrawBuilder(trid)
+	defer ReturnTextDrawBuilder(td)
+
+	sz := starsButtonSize(flags, buttonScale)
+
+	// Offset for spacing
+	const delta = 1
+	p0 := add2f(dcbDrawState.cursor, [2]float32{delta, -delta})
+	p1 := add2f(p0, [2]float32{sz[0] - 2*delta, 0})
+	p2 := add2f(p1, [2]float32{0, -sz[1] + 2*delta})
+	p3 := add2f(p2, [2]float32{-sz[0] + 2*delta, 0})
+
+	ext := Extent2DFromPoints([][2]float32{p0, p2})
+	mouse := dcbDrawState.mouse
+	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
+
+	var buttonColor RGB
+	if disabled {
+		buttonColor = STARSDCBDisabledButtonColor
+	} else if mouseInside {
+		buttonColor = Select(mouse.Down[MouseButtonPrimary],
+			Select(selected, STARSDCBButtonColor, STARSDCBActiveButtonColor),
+			STARSDCBInsideButtonColor)
+	} else {
+		buttonColor = Select(selected, STARSDCBActiveButtonColor, STARSDCBButtonColor)
+	}
+
+	trid.AddQuad(p0, p1, p2, p3, buttonColor)
+	drawDCBText(text, td, sz, STARSDCBTextColor)
+
+	// Highlight top and left
+	ld.AddLine(p0, p1, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+	ld.AddLine(p0, p3, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+	// Darker bottom and right
+	ld.AddLine(p1, p2, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+	ld.AddLine(p2, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+
+	updateDCBCursor(flags, sz)
+
+	// FIXME: Attempt at scissoring when drawing buttons--breaks for half
+	// height buttons--needs to be w.r.t. window coordinates (I think).
+	/*
+		highDPIScale := platform.DPIScale()
+		x0, y0 := int(highDPIScale*p0[0]), int(highDPIScale*p0[1])
+		w, h := int(highDPIScale*sz.X), int(highDPIScale*sz.Y)
+		dcbDrawState.cb.Scissor(x0, y0, w, h)
+	*/
+
+	// Text last!
+	trid.GenerateCommands(dcbDrawState.cb)
+	ld.GenerateCommands(dcbDrawState.cb)
+	td.GenerateCommands(dcbDrawState.cb)
+
+	if mouse != nil && mouseInside && mouse.Released[MouseButtonPrimary] {
+		return ext, true /* clicked and released */
+	}
+	return ext, false
+}
+
+func updateDCBCursor(flags int, sz [2]float32) {
 	if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfHorizontal) != 0 {
-		imgui.SameLine()
+		dcbDrawState.cursor[0] += sz[0]
+		dcbDrawState.cursor[1] = dcbDrawState.y0
 	} else if (flags & STARSButtonHalfVertical) != 0 {
-		if pos.Y == 0 {
-			imgui.SetCursorPos(imgui.Vec2{X: pos.X, Y: buttonScale * (STARSButtonHeight / 2)})
+		if dcbDrawState.cursor[1] == dcbDrawState.y0 {
+			dcbDrawState.cursor[1] -= sz[1]
 		} else {
-			imgui.SetCursorPos(imgui.Vec2{X: pos.X + buttonScale*STARSButtonWidth, Y: 0})
+			dcbDrawState.cursor[0] += sz[0]
+			dcbDrawState.cursor[1] = dcbDrawState.y0
 		}
 	} else {
 		lg.Errorf("unhandled starsButtonFlags %d", flags)
+		dcbDrawState.cursor[0] += sz[0]
+		dcbDrawState.cursor[1] = dcbDrawState.y0
 	}
 }
 
-func STARSToggleButton(text string, state *bool, flags int, buttonScale float32) (clicked bool) {
-	startPos := imgui.CursorPos()
-	if *state {
-		imgui.PushID(text) // TODO why: comes from Middleton's Draw() method
-		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorButtonActive))
-		imgui.ButtonV(text, starsButtonSize(flags, buttonScale))
-		if imgui.IsItemClicked() {
-			*state = false
-			clicked = true
-		}
-		imgui.PopStyleColorV(1)
-		imgui.PopID()
-	} else if imgui.ButtonV(text, starsButtonSize(flags, buttonScale)) {
-		*state = true
-		clicked = true
+func STARSToggleButton(text string, state *bool, flags int, buttonScale float32) bool {
+	_, clicked := drawDCBButton(text, flags, buttonScale, *state, false)
+
+	if clicked {
+		*state = !*state
 	}
-	updateImguiCursor(flags, startPos, buttonScale)
-	return
+
+	return clicked
 }
 
 var (
@@ -4315,34 +4403,32 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 	callback func(v V, delta float32) V, flags int, buttonScale float32) {
 	text += print(*value)
 
-	pos := imgui.CursorPos()
-	buttonSize := starsButtonSize(flags, buttonScale)
 	if activeSpinner == unsafe.Pointer(value) {
-		buttonBounds := Extent2D{
-			p0: [2]float32{pos.X, pos.Y},
-			p1: [2]float32{pos.X + buttonSize.X, pos.Y + buttonSize.Y}}
-		buttonBounds.p0 = add2f(buttonBounds.p0, [2]float32{starsBarWindowPos.X, starsBarWindowPos.Y})
-		buttonBounds.p1 = add2f(buttonBounds.p1, [2]float32{starsBarWindowPos.X, starsBarWindowPos.Y})
+		buttonBounds, clicked := drawDCBButton(text, flags, buttonScale, true, false)
+		// This is horrific and one of many ugly things about capturing the
+		// mouse, but most of Panes' work is in the simplified space of a
+		// pane coordinate system; here we need something in terms of
+		// window coordinates, so need to both account for the viewport
+		// call that lets us draw things oblivious to the menubar as well
+		// as flip things in y.
+		h := ctx.paneExtent.Height() + ui.menuBarHeight
+		buttonBounds.p0[1], buttonBounds.p1[1] = h-buttonBounds.p1[1], h-buttonBounds.p0[1]
 		ctx.platform.StartCaptureMouse(buttonBounds)
 
-		imgui.PushID(text) // TODO why: comes from ModalButtonSet Draw() method
-		h := imgui.CurrentStyle().Color(imgui.StyleColorButtonActive)
-		imgui.PushStyleColor(imgui.StyleColorButton, h)
-		imgui.ButtonV(text, buttonSize)
-		if imgui.IsItemClicked() {
+		if clicked {
 			activeSpinner = nil
 			ctx.platform.EndCaptureMouse()
 		}
 
-		_, wy := imgui.CurrentIO().MouseWheel()
-		*value = callback(*value, wy)
-
-		imgui.PopStyleColorV(1)
-		imgui.PopID()
-	} else if imgui.ButtonV(text, buttonSize) {
-		activeSpinner = unsafe.Pointer(value)
+		if ctx.mouse != nil {
+			*value = callback(*value, -ctx.mouse.Wheel[1])
+		}
+	} else {
+		_, clicked := drawDCBButton(text, flags, buttonScale, false, false)
+		if clicked {
+			activeSpinner = unsafe.Pointer(value)
+		}
 	}
-	updateImguiCursor(flags, pos, buttonScale)
 }
 
 func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float32, max float32, flags int, buttonScale float32) {
@@ -4373,26 +4459,12 @@ func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, f
 }
 
 func STARSSelectButton(text string, flags int, buttonScale float32) bool {
-	pos := imgui.CursorPos()
-	if flags&STARSButtonSelected != 0 {
-		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorButtonActive))
-	}
-	result := imgui.ButtonV(text, starsButtonSize(flags, buttonScale))
-	if flags&STARSButtonSelected != 0 {
-		imgui.PopStyleColorV(1)
-	}
-	updateImguiCursor(flags, pos, buttonScale)
-	return result
+	_, clicked := drawDCBButton(text, flags, buttonScale, flags&STARSButtonSelected != 0, false)
+	return clicked
 }
 
 func STARSDisabledButton(text string, flags int, buttonScale float32) {
-	pos := imgui.CursorPos()
-	imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-	imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.3, .3, .3, 1})
-	imgui.ButtonV(text, starsButtonSize(flags, buttonScale))
-	imgui.PopStyleColorV(1)
-	imgui.PopItemFlag()
-	updateImguiCursor(flags, pos, buttonScale)
+	drawDCBButton(text, flags, buttonScale, false, true)
 }
 
 ///////////////////////////////////////////////////////////////////////////

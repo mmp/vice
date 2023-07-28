@@ -1000,7 +1000,7 @@ func (w *World) DrawSettingsWindow() {
 	if imgui.BeginComboV("STARS DCB Font Size", fmt.Sprintf("%d", globalConfig.DCBFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := make(map[int]interface{})
 		for fontid := range fonts {
-			if fontid.Name == "Inconsolata Condensed Regular" {
+			if fontid.Name == "Inconsolata SemiBold" {
 				sizes[fontid.Size] = nil
 			}
 		}
