@@ -1322,9 +1322,7 @@ func (s *Sim) setInitialSpawnTimes() {
 			}
 		}
 
-		if len(spawn) > 0 {
-			s.NextDepartureSpawn[airport] = spawn
-		}
+		s.NextDepartureSpawn[airport] = spawn
 	}
 }
 
