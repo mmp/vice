@@ -922,6 +922,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.updateDatablockTextAndPosition(ctx, aircraft)
 	sp.drawDatablocks(aircraft, ctx, transforms, cb)
 	sp.consumeMouseEvents(ctx, transforms, cb)
+	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 }
 
 func (sp *STARSPane) updateRadarTracks(w *World) {
@@ -4243,6 +4244,35 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 	}
 }
 
+func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, transforms ScopeTransformations,
+	cb *CommandBuffer) {
+	if ctx.mouse == nil {
+		return
+	}
+
+	// If the mouse is inside the scope, disable the standard mouse cursor
+	// and draw a cross for the cursor; otherwise leave the default arrow
+	// for the DCB.
+	if ctx.mouse.Pos[0] >= 0 && ctx.mouse.Pos[0] < paneExtent.Width() &&
+		ctx.mouse.Pos[1] >= 0 && ctx.mouse.Pos[1] < paneExtent.Height() {
+		ctx.mouse.SetCursor(imgui.MouseCursorNone)
+		ld := GetLinesDrawBuilder()
+		defer ReturnLinesDrawBuilder(ld)
+
+		const w = 7
+		ld.AddLine(add2f(ctx.mouse.Pos, [2]float32{-w, 0}), add2f(ctx.mouse.Pos, [2]float32{w, 0}))
+		ld.AddLine(add2f(ctx.mouse.Pos, [2]float32{0, -w}), add2f(ctx.mouse.Pos, [2]float32{0, w}))
+
+		transforms.LoadWindowViewingMatrices(cb)
+		// STARS Operators Manual 4-74: FDB brightness is used for the cursor
+		ps := sp.CurrentPreferenceSet
+		cb.SetRGB(ps.Brightness.FullDatablocks.RGB())
+		ld.GenerateCommands(cb)
+	} else {
+		ctx.mouse.SetCursor(imgui.MouseCursorArrow)
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // DCB menu on top
 
@@ -4291,7 +4321,6 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 	dcbDrawState.position = ps.DCBPosition
 	switch dcbDrawState.position {
 	case DCBPositionTop, DCBPositionLeft:
-		// FIXME: why isn't this p0[0], p1[1] ?
 		dcbDrawState.drawStartPos = [2]float32{0, ctx.paneExtent.Height()}
 
 	case DCBPositionRight:

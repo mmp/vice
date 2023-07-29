@@ -58,6 +58,10 @@ type MouseState struct {
 	Wheel         [2]float32
 }
 
+func (ms *MouseState) SetCursor(id imgui.MouseCursorID) {
+	imgui.SetMouseCursor(id)
+}
+
 const (
 	MouseButtonPrimary   = 0
 	MouseButtonSecondary = 1
