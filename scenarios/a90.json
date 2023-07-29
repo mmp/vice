@@ -2301,7 +2301,7 @@
       "sector_id": "37"
     }
    },
-   "default_scenario": "KBOS Land 4R Depart 9",
+   "default_scenario": "KBOS Land 4R/L Depart 9",
    "fixes": {
     "_BOS_4L": "N42.21.28.758,W71.00.51.518",
     "_BOS_4R": "N42.21.14.449,W71.00.37.024",
