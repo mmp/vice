@@ -1378,6 +1378,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			if ac := ctx.world.GetAircraft(lookupCallsign(cmd)); ac != nil {
 				// Display flight plan
 				status.output, status.err = flightPlanSTARS(ctx.world, ac)
+				if status.err == nil {
+					status.clear = true
+				}
 			} else {
 				status.err = ErrSTARSNoFlight
 			}
@@ -2254,6 +2257,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			case "D":
 				if cmd == "" {
 					status.output, status.err = flightPlanSTARS(ctx.world, ac)
+					if status.err == nil {
+						status.clear = true
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
