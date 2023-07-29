@@ -309,9 +309,7 @@ type ClimbOnceAirborne struct {
 }
 
 func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
-	// Only considers speed; assumes that this is part of the takeoff
-	// commands...
-	if ac.IAS < 1.1*ac.Performance().Speed.Min {
+	if !ac.IsAirborne() {
 		return false
 	}
 

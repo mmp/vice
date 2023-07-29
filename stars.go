@@ -173,6 +173,9 @@ type STARSAircraftState struct {
 
 	spcOverride string
 
+	firstSeen       time.Time
+	firstRadarTrack time.Time
+
 	outboundHandoffAccepted bool
 	outboundHandoffFlashEnd time.Time
 }
@@ -564,28 +567,75 @@ const (
 	FullDatablock
 )
 
-func flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
+// See STARS Operators Manual 5-184...
+func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
 		return "", ErrSTARSIllegalFlight
 	}
 
-	// AAL1416 B738/L squawk controller id
-	// (start of route) (alt 100s)
-	result := ac.Callsign + " " + fp.AircraftType + " " + ac.AssignedSquawk.String() + " "
+	fmtTime := func(t time.Time) string {
+		return t.UTC().Format("1504")
+	}
+
+	// Common stuff
+	owner := ""
 	if ctrl := w.GetController(ac.TrackingController); ctrl != nil {
-		result += ctrl.SectorId
+		owner = ctrl.SectorId
 	}
-	result += "\n"
 
-	// Display the first two items in the route
-	routeFields := strings.Fields(fp.Route)
-	if len(routeFields) > 2 {
-		routeFields = routeFields[:2]
+	numType := ""
+	if num, ok := sp.aircraftToIndex[ac.Callsign]; ok {
+		numType += fmt.Sprintf("%d/", num)
 	}
-	result += strings.Join(routeFields, " ") + " "
+	numType += fp.AircraftType
 
-	result += fmt.Sprintf("%d", fp.Altitude/100)
+	state := sp.aircraft[ac.Callsign]
+
+	result := ac.Callsign + " " // all start with aricraft id
+	if ac.IsDeparture {
+		if state.firstRadarTrack.IsZero() {
+			// Proposed departure
+			result += numType + " "
+			result += ac.AssignedSquawk.String() + " " + owner + "\n"
+
+			if len(fp.DepartureAirport) > 0 {
+				result += fp.DepartureAirport[1:] + " "
+			}
+			result += ac.Scratchpad + " "
+			result += "P" + fmtTime(state.firstSeen) + " "
+			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100)
+		} else {
+			// Active departure
+			result += ac.AssignedSquawk.String() + " "
+			if len(fp.DepartureAirport) > 0 {
+				result += fp.DepartureAirport[1:] + " "
+			}
+			result += "D" + fmtTime(state.firstRadarTrack) + " "
+			result += fmt.Sprintf("%03d", int(ac.Altitude)/100) + "\n"
+
+			result += ac.Scratchpad + " "
+			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + " "
+
+			result += numType
+		}
+	} else {
+		// Format it as an arrival (we don't do overflights...)
+		result += numType + " "
+		result += ac.AssignedSquawk.String() + " "
+		result += owner + " "
+		result += fmt.Sprintf("%03d", int(ac.Altitude)/100) + "\n"
+
+		// Use the last item in the route for the entry fix
+		routeFields := strings.Fields(fp.Route)
+		if n := len(routeFields); n > 0 {
+			result += routeFields[n-1] + " "
+		}
+		result += "A" + fmtTime(state.firstRadarTrack) + " "
+		if len(fp.ArrivalAirport) > 0 {
+			result += fp.ArrivalAirport[1:] + " "
+		}
+	}
 
 	return result, nil
 }
@@ -731,25 +781,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			}
 			sp.aircraft[callsign] = sa
 
-			if fp := ac.FlightPlan; fp != nil {
-				if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
-					// We'd like to auto-track this departure, but first
-					// check that we are the departure controller.
-
-					departureController := w.PrimaryController // default
-					// See if the departure controller is signed in
-					for cs, mc := range w.MultiControllers {
-						if _, ok := w.Controllers[cs]; ok && mc.Departure {
-							departureController = cs
-						}
-					}
-
-					if w.Callsign == departureController {
-						w.InitiateTrack(callsign, nil, nil) // ignore error...
-						sp.aircraft[callsign].datablockType = FullDatablock
-					}
-				}
-			}
+			sa.firstSeen = w.CurrentTime()
 
 			/*
 				if !ps.DisableCRDA {
@@ -1377,7 +1409,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			// D(callsign)
 			if ac := ctx.world.GetAircraft(lookupCallsign(cmd)); ac != nil {
 				// Display flight plan
-				status.output, status.err = flightPlanSTARS(ctx.world, ac)
+				status.output, status.err = sp.flightPlanSTARS(ctx.world, ac)
 				if status.err == nil {
 					status.clear = true
 				}
@@ -1920,7 +1952,7 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 				state.datablockType = FullDatablock
 			}
 			if ac, ok := ctx.world.Aircraft[callsign]; ok {
-				sp.previewAreaOutput, _ = flightPlanSTARS(ctx.world, ac)
+				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
 		},
 		func(err error) {
@@ -1942,7 +1974,7 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 				state.datablockType = FullDatablock
 			}
 			if ac, ok := ctx.world.Aircraft[callsign]; ok {
-				sp.previewAreaOutput, _ = flightPlanSTARS(ctx.world, ac)
+				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
 		},
 		func(err error) {
@@ -2256,7 +2288,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "D":
 				if cmd == "" {
-					status.output, status.err = flightPlanSTARS(ctx.world, ac)
+					status.output, status.err = sp.flightPlanSTARS(ctx.world, ac)
 					if status.err == nil {
 						status.clear = true
 					}
@@ -4676,6 +4708,7 @@ func (sp *STARSPane) initializeAircraft(w *World) {
 			if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 				sa.datablockType = FullDatablock
 			}
+			sa.firstSeen = w.CurrentTime()
 
 			/*
 				if !ps.DisableCRDA {
@@ -4762,6 +4795,31 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 
 			if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
 				aircraft = append(aircraft, ac)
+
+				if state.firstRadarTrack.IsZero() {
+					state.firstRadarTrack = w.CurrentTime()
+
+					if fp := ac.FlightPlan; fp != nil {
+						if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
+							// We'd like to auto-track this departure, but first
+							// check that we are the departure controller.
+
+							departureController := w.PrimaryController // default
+							// See if the departure controller is signed in
+							for cs, mc := range w.MultiControllers {
+								if _, ok := w.Controllers[cs]; ok && mc.Departure {
+									departureController = cs
+								}
+							}
+
+							if w.Callsign == departureController {
+								w.InitiateTrack(callsign, nil, nil) // ignore error...
+								sp.aircraft[callsign].datablockType = FullDatablock
+							}
+						}
+					}
+				}
+
 				break
 			}
 		}
