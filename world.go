@@ -494,7 +494,7 @@ func (w *World) SetLaunchConfig(lc LaunchConfig) {
 func (w *World) CurrentTime() time.Time {
 	t := w.SimTime
 
-	if !w.SimIsPaused {
+	if !w.SimIsPaused && !w.lastUpdateRequest.IsZero() {
 		d := time.Since(w.lastUpdateRequest)
 
 		// Roughly account for RPC overhead; more for a remote server (where
