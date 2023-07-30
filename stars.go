@@ -81,6 +81,8 @@ type STARSPane struct {
 	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
 	activeDCBMenu     int
 
+	dwellAircraft string
+
 	commandMode       CommandMode
 	multiFuncPrefix   string
 	previewAreaOutput string
@@ -327,6 +329,8 @@ type STARSPreferenceSet struct {
 	PTLLength      float32
 	PTLOwn, PTLAll bool
 
+	DwellMode DwellMode
+
 	TopDownMode     bool
 	GroundRangeMode bool
 
@@ -426,6 +430,31 @@ type STARSPreferenceSet struct {
 		Position [2]float32
 		Visible  bool
 		Lines    int
+	}
+}
+
+type DwellMode int
+
+const (
+	// Make 0 be "on" so zero-initialization gives "on"
+	DwellModeOn = iota
+	DwellModeLock
+	DwellModeOff
+)
+
+func (d DwellMode) String() string {
+	switch d {
+	case DwellModeOn:
+		return "ON"
+
+	case DwellModeLock:
+		return "LOCK"
+
+	case DwellModeOff:
+		return "OFF"
+
+	default:
+		return "unhandled DwellMode"
 	}
 }
 
@@ -1412,8 +1441,20 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 
 		case "D":
-			// D(callsign)
-			if ac := ctx.world.GetAircraft(lookupCallsign(cmd)); ac != nil {
+			if cmd == "E" {
+				ps.DwellMode = DwellModeOn
+				status.clear = true
+			} else if cmd == "L" {
+				ps.DwellMode = DwellModeLock
+				status.clear = true
+			} else if cmd == "I" { // inhibit
+				ps.DwellMode = DwellModeOff
+				status.clear = true
+			} else if len(cmd) == 1 {
+				// illegal value for dwell
+				status.err = ErrSTARSIllegalValue
+			} else if ac := ctx.world.GetAircraft(lookupCallsign(cmd)); ac != nil {
+				// D(callsign)
 				// Display flight plan
 				status.output, status.err = sp.flightPlanSTARS(ctx.world, ac)
 				if status.err == nil {
@@ -2026,7 +2067,7 @@ func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
 	transforms ScopeTransformations) (status STARSCommandStatus) {
 	// See if an aircraft was clicked
-	ac := sp.tryGetClickedAircraft(ctx.world, mousePosition, transforms)
+	ac := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 
 	isControllerId := func(id string) bool {
 		// FIXME: check--this is likely to be pretty slow, relatively
@@ -2418,7 +2459,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if cmd == "" {
 				sp.MinSepAircraft[0] = ac.Callsign
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
-					if ac := sp.tryGetClickedAircraft(ctx.world, pw, transforms); ac != nil {
+					if ac := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
 						sp.MinSepAircraft[1] = ac.Callsign
 						status.clear = true
 					} else {
@@ -2546,7 +2587,7 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	return func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 		rbl := sp.wipRBL
 		sp.wipRBL = STARSRangeBearingLine{}
-		if ac := sp.tryGetClickedAircraft(ctx.world, pw, transforms); ac != nil {
+		if ac := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
 			rbl.p[1].callsign = ac.Callsign
 		} else {
 			rbl.p[1].loc = transforms.LatLongFromWindowP(pw)
@@ -2730,6 +2771,17 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull, buttonScale)
 		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
 		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
+		STARSCallbackSpinner(ctx, "DWELL\n", &ps.DwellMode,
+			func(mode DwellMode) string { return mode.String() },
+			func(mode DwellMode, delta float32) DwellMode {
+				if delta > 0 {
+					return [3]DwellMode{DwellModeLock, DwellModeLock, DwellModeOn}[mode]
+				} else if delta < 0 {
+					return [3]DwellMode{DwellModeOff, DwellModeOn, DwellModeOff}[mode]
+				}
+				return mode
+			},
+			STARSButtonFull, buttonScale)
 		if STARSSelectButton("SHIFT", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
@@ -3820,6 +3872,10 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	br := ps.Brightness.FullDatablocks
 	state := sp.Aircraft[ac.Callsign]
 
+	if ac.Callsign == sp.dwellAircraft {
+		br = STARSBrightness(100)
+	}
+
 	if _, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
 		// yellow for pointed out
 		return br.ScaleRGB(STARSPointedOutAircraftColor)
@@ -4220,13 +4276,31 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			sp.previewAreaOutput = status.output
 		}
 	} else if ctx.mouse.Clicked[MouseButtonTertiary] {
-		if ac := sp.tryGetClickedAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+		if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 			if state := sp.Aircraft[ac.Callsign]; state != nil {
 				state.IsSelected = !state.IsSelected
 			}
 		}
-	} else if ctx.world.SimIsPaused {
-		if ac := sp.tryGetClickedAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+	} else if !ctx.world.SimIsPaused {
+		switch sp.CurrentPreferenceSet.DwellMode {
+		case DwellModeOff:
+			sp.dwellAircraft = ""
+
+		case DwellModeOn:
+			if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+				sp.dwellAircraft = ac.Callsign
+			} else {
+				sp.dwellAircraft = ""
+			}
+
+		case DwellModeLock:
+			if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+				sp.dwellAircraft = ac.Callsign
+			}
+			// Otherwise leave sp.dwellAircraft as is
+		}
+	} else {
+		if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 			var info []string
 			if ac.IsDeparture {
 				info = append(info, "Departure")
@@ -4837,7 +4911,7 @@ func (sp *STARSPane) isOverflight(ctx *PaneContext, ac *Aircraft) bool {
 			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) == nil)
 }
 
-func (sp *STARSPane) tryGetClickedAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
+func (sp *STARSPane) tryGetClosestAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
 	var ac *Aircraft
 	distance := float32(20) // in pixels; don't consider anything farther away
 
