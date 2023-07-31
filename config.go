@@ -17,6 +17,11 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
+// Version history 0-7 not explicitly recorded
+// 8: STARSPane DCB improvements, added DCB font size control
+// 9: correct STARSColors, so update brightness settings to compensate
+const CurrentConfigVersion = 9
+
 type GlobalConfig struct {
 	Version               int
 	InitialWindowSize     [2]int
@@ -26,7 +31,6 @@ type GlobalConfig struct {
 	LastServer            string
 	LastScenarioGroup     string
 	UIFontSize            int
-	DCBFontSize           int
 
 	Audio AudioSettings
 
@@ -128,7 +132,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
-		globalConfig.Version = 5
+		globalConfig.Version = CurrentConfigVersion
 		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
@@ -143,27 +147,25 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.DisplayRoot = nil
 			globalConfig.Version = 1
 		}
-		if globalConfig.Version < 3 {
-			// No need to clear out the *Sim pointer any more...
-			globalConfig.Version = 3
-		}
 		if globalConfig.Version < 5 {
 			globalConfig.Sim = nil
 			globalConfig.Callsign = ""
 			globalConfig.Version = 5
+		}
+
+		if globalConfig.Version < CurrentConfigVersion && globalConfig.DisplayRoot != nil {
+			globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+				if up, ok := p.(PaneUpgrader); ok {
+					up.Upgrade(globalConfig.Version, CurrentConfigVersion)
+				}
+			})
 		}
 	}
 
 	if globalConfig.UIFontSize == 0 {
 		globalConfig.UIFontSize = 16
 	}
-	if globalConfig.DCBFontSize == 0 {
-		globalConfig.DCBFontSize = 8
-	}
-	if globalConfig.DCBFontSize == 12 && globalConfig.Version < 6 {
-		globalConfig.DCBFontSize = 8
-	}
-	globalConfig.Version = 6
+	globalConfig.Version = CurrentConfigVersion
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }

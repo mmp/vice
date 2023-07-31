@@ -31,6 +31,10 @@ type PaneUIDrawer interface {
 	DrawUI()
 }
 
+type PaneUpgrader interface {
+	Upgrade(prev, current int)
+}
+
 type PaneContext struct {
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D
@@ -52,6 +56,10 @@ type MouseState struct {
 	Dragging      [MouseButtonCount]bool
 	DragDelta     [2]float32
 	Wheel         [2]float32
+}
+
+func (ms *MouseState) SetCursor(id imgui.MouseCursorID) {
+	imgui.SetMouseCursor(id)
 }
 
 const (

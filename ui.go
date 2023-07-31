@@ -91,6 +91,9 @@ var (
 		"Replaced the font used in the STARS radar scope",
 		"Fixed a few graphics bugs in the STARS radar scope",
 		"Fixed a rare crash with incorrect command input to the STARS scope",
+		"New scenarios covering the A80 (ATL) and A90 (BOS) TRACONS",
+		"Fixed a bug with drawing *P cones",
+		"Many improvements to the STARS DCB implementation",
 	}
 )
 
@@ -418,6 +421,7 @@ func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 		sz.Y = float32((1 + config.MaxDisplayed) * (6 + ui.font.size))
 	}
 
+	sz.X *= Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("##"+id, len(config.ColumnHeaders), flags, sz, 0.0) {
 		for _, name := range config.ColumnHeaders {
 			imgui.TableSetupColumn(name)
@@ -1006,8 +1010,9 @@ func (fs *FileSelectDialogBox) Draw() {
 		fileSelected := false
 		// unique per-directory id maintains the scroll position in each
 		// directory (and starts newly visited ones at the top!)
+		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 		if imgui.BeginTableV("Files##"+fs.directory, 1, flags,
-			imgui.Vec2{500, float32(platform.WindowSize()[1] * 3 / 4)}, 0) {
+			imgui.Vec2{tableScale * 500, float32(platform.WindowSize()[1] * 3 / 4)}, 0) {
 			imgui.TableSetupColumn("Filename")
 			for _, entry := range fs.dirEntries {
 				icon := ""
@@ -1498,7 +1503,8 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 		imgui.Text(fmt.Sprintf("Departures: %d total", ndep))
 
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("dep", 9, flags, imgui.Vec2{600, 0}, 0.0) {
+		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		if imgui.BeginTableV("dep", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
 			imgui.TableSetupColumn("Airport")
 			imgui.TableSetupColumn("Launches")
 			imgui.TableSetupColumn("Callsign")
@@ -1559,7 +1565,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 		}, 0)
 		imgui.Text(fmt.Sprintf("Arrivals: %d total", narr))
 
-		if imgui.BeginTableV("arr", 9, flags, imgui.Vec2{600, 0}, 0.0) {
+		if imgui.BeginTableV("arr", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
 			imgui.TableSetupColumn("Group")
 			imgui.TableSetupColumn("Launches")
 			imgui.TableSetupColumn("Airport")
@@ -1614,7 +1620,8 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 		}
 	} else {
 		// Slightly messy, but DrawActiveDepartureRunways expects a table context...
-		if imgui.BeginTableV("runways", 2, 0, imgui.Vec2{500, 0}, 0.) {
+		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		if imgui.BeginTableV("runways", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			lc.w.LaunchConfig.DrawActiveDepartureRunways()
 			imgui.EndTable()
 		}

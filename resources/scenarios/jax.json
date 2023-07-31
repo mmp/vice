@@ -785,7 +785,7 @@
                             "MCO_E_APP",
                             "JAX_TWR"
                         ],
-                        "default_map": "JAX EAST OPRATIONS",
+                        "default_map": "JAX EAST OPERATIONS",
                         "departure_airspace": [
                             "JAX_N_APP"
                         ],
@@ -876,12 +876,12 @@
                 "stars_maps": [
                     {
                         "group": 0,
-                        "label": "JAX EAST OPRATIONS",
-                        "name":  "JAX EAST OPRATIONS"
+                        "label": "E OPS",
+                        "name":  "JAX EAST OPERATIONS"
                     },
                     {
                         "group": 0,
-                        "label": "JAX WEST OPERATIONS",
+                        "label": "W OPS",
                         "name": "JAX WEST OPERATIONS"
                     },
                     {

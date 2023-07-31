@@ -826,6 +826,143 @@
                             "destination": "KRSW",
                             "exit": "EARND",
                             "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV THRSR HONID Q81 NICKI PLYER TYNEE2"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude" : 37000,
+                            "destination": "KJAX",
+                            "exit": "DENNT",
+                            "route": "DENNT DARCY DREGS DUMGE SCOTO SWAPP THRSR DUCHY OHDEA1"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 34000,
+                            "destination": "KMIA",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PVX HITMN ACORI FROGZ4"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KMCO",
+                            "exit": "DENNT",
+                            "route": "DENNT DARCY DREGS DUMGE SCOTO SWAPP Q79 THRSR ZJAYX GRNCH4"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "AAY"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KPGD",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV WIGVO KYYLU LUBBR3"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 29000,
+                            "destination": "KTPA",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV WIGVO BAAMF DADES1"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KSRQ",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ETAME EMEGE FLM J43 VXV WIGVO KYYLU LUBBR3"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KPNS",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PXV MSL PENSI CILEB"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KECP",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PVX VLKNN MGMRY RLTID"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "AAY"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KVPS",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN RIGGL JUDDI KM39O CALCO MGM CORKY"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "fleet": "short",
+                                    "icao": "DAL"
+                                },
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "FFT"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KATL",
+                            "exit": "CMSKY",
+                            "route": "CMSKY CARYN CYBIL PVX HITMN NEWBB IHAVE MTHEW CHPPR1"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "SWA"
+                                },
+                                {
+                                    "icao": "AAY"
+                                }
+                            ],
+                            "altitude": 37000,
+                            "destination": "KSAV",
+                            "exit": "EARND",
+                            "route": "EARND ELANR EMMLY ERECO IIU J99 VXV CANTR PLZZZ"
                         }
                     ],
                     "elevation": 620,
@@ -4336,7 +4473,7 @@
             "stars_maps": [
                 {
                     "group": 0,
-                    "label": "C90 MAIN",
+                    "label": "MAIN",
                     "name": "C90 MAIN"
                 },
                 {
@@ -4346,37 +4483,37 @@
                 },
                 {
                     "group": 0,
-                    "label": "ORD STAR FIXES",
+                    "label": "STAR",
                     "name": "ORD STAR WAYPOINTS"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL WEST",
+                    "label": "FINAL/FEED W",
                     "name": "C90 FEEDER/FINAL ORD WEST"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL EAST",
+                    "label": "FINAL/FEED E",
                     "name": "C90 FEEDER/FINAL ORD EAST"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL ORD 4R",
+                    "label": "FINAL/FEED 4R",
                     "name": "C90 FEEDER/FINAL ORD 4R"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL ORD 22",
+                    "label": "FINAL/FEED 22",
                     "name": "C90 FEEDER/FINAL ORD 22"
                 },
                 {
                     "group": 0,
-                    "label": "ORD CAPTURE BARS",
+                    "label": "CPT BARS",
                     "name": "ORD SIMUL CAPTURE BARS"
                 },
                 {
                     "group": 0,
-                    "label": "DEPARTURES",
+                    "label": "DEPS",
                     "name": "C90 DEPARTURES"
                 },
                 {
@@ -4401,7 +4538,7 @@
                 },
                 {
                     "group": 0,
-                    "label": "LOW SEC BDRYS",
+                    "label": "LOW SEC",
                     "name": "ZAU LOW SECTOR BOUNDARIES"
                 },
                 {
@@ -4431,7 +4568,7 @@
                 }
                 ,{
                     "group": 0,
-                    "label": "C90 SAT APCHS",
+                    "label": "SAT APCHS",
                     "name": "C90 SAT AIRPORT APCHS"
                 },
                 {

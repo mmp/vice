@@ -494,7 +494,7 @@ func (w *World) SetLaunchConfig(lc LaunchConfig) {
 func (w *World) CurrentTime() time.Time {
 	t := w.SimTime
 
-	if !w.SimIsPaused {
+	if !w.SimIsPaused && !w.lastUpdateRequest.IsZero() {
 		d := time.Since(w.lastUpdateRequest)
 
 		// Roughly account for RPC overhead; more for a remote server (where
@@ -993,20 +993,6 @@ func (w *World) DrawSettingsWindow() {
 			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
 				globalConfig.UIFontSize = size
 				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
-			}
-		}
-		imgui.EndCombo()
-	}
-	if imgui.BeginComboV("STARS DCB Font Size", fmt.Sprintf("%d", globalConfig.DCBFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := make(map[int]interface{})
-		for fontid := range fonts {
-			if fontid.Name == "Inconsolata Condensed Regular" {
-				sizes[fontid.Size] = nil
-			}
-		}
-		for _, size := range SortedMapKeys(sizes) {
-			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.DCBFontSize, 0, imgui.Vec2{}) {
-				globalConfig.DCBFontSize = size
 			}
 		}
 		imgui.EndCombo()

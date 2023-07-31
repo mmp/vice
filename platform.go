@@ -248,9 +248,9 @@ func (g *GLFWPlatform) NewFrame() {
 	// Mouse cursor
 	imgui_cursor := imgui.MouseCursor()
 
-	if imgui_cursor == imgui.MouseCursorNone { //  || io.MouseDrawCursor) {
+	if imgui_cursor == imgui.MouseCursorNone {
 		// Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
-		//glfw.SetInputMode(g.window, glfw.Cursor, glfw.CursorHidden)
+		g.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
 	} else {
 		// Show OS mouse cursor
 		cursor := g.mouseCursors[imgui_cursor]

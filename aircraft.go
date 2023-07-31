@@ -90,6 +90,12 @@ func (a *Aircraft) IsAssociated() bool {
 	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
 }
 
+func (ac *Aircraft) IsAirborne() bool {
+	// FIXME: this only considers speed, which is probably ok but is somewhat unsatisfying.
+	// More explicitly model "on the ground" vs "airborne" states?
+	return ac.IAS > 1.1*ac.Performance().Speed.Min
+}
+
 func (ac *Aircraft) AddFutureNavCommand(cmd FutureNavCommand) {
 	if ac.Nav.FutureCommands == nil {
 		ac.Nav.FutureCommands = make(map[FutureNavCommand]interface{})

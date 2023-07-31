@@ -122,7 +122,8 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 	changed = imgui.SliderFloatV("Sequencing challenge", &lc.DepartureChallenge, 0, 1, "%.02f", 0) || changed
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{500, 0}, 0.) {
+	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Runway")
 		imgui.TableSetupColumn("Category")
@@ -188,7 +189,8 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{500, 0}, 0.) {
+	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Arrival")
 		sortedAirports := SortedMapKeys(allAirports)
 		for _, ap := range sortedAirports {
@@ -326,9 +328,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Separator()
 	}
 
+	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if remoteServer != nil {
-		sc := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{sc * 500, 0}, 0.) {
+		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Server type:")
@@ -374,7 +376,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	imgui.Separator()
 
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
-		if imgui.BeginComboV("Scenario Group", c.GroupName, imgui.ComboFlagsHeightLarge) {
+		if imgui.BeginComboV("Airport/Scenario", c.GroupName, imgui.ComboFlagsHeightLarge) {
 			for _, name := range SortedMapKeys(c.selectedServer.configs) {
 				if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
 					c.SetScenarioGroup(name)
@@ -404,7 +406,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			}
 		}
 
-		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{500, 0}, 0.) {
+		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Control Position:")
@@ -462,7 +464,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Text("Available simulations:")
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingFixedFit
-		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{500, 0}, 0.) {
+		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{tableScale * 700, 0}, 0.) {
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Configuration")
 			imgui.TableSetupColumn("Controllers")
@@ -1358,9 +1360,7 @@ func (s *Sim) setInitialSpawnTimes() {
 			}
 		}
 
-		if len(spawn) > 0 {
-			s.NextDepartureSpawn[airport] = spawn
-		}
+		s.NextDepartureSpawn[airport] = spawn
 	}
 }
 
