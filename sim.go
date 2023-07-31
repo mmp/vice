@@ -464,7 +464,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Text("Available simulations:")
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingFixedFit
-		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
+		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{tableScale * 700, 0}, 0.) {
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Configuration")
 			imgui.TableSetupColumn("Controllers")
