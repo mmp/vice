@@ -87,6 +87,7 @@ var (
 	ErrSTARSIllegalFlight     = errors.New("ILL FLIGHT")
 	ErrSTARSIllegalLine       = errors.New("ILL LINE")
 	ErrSTARSIllegalParam      = errors.New("ILL PARAM")
+	ErrSTARSIllegalPosition   = errors.New("ILL POS")
 	ErrSTARSIllegalScratchpad = errors.New("ILL SCR")
 	ErrSTARSIllegalSector     = errors.New("ILL SECTOR")
 	ErrSTARSIllegalText       = errors.New("ILL TEXT")

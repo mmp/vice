@@ -5,7 +5,6 @@
 // Main missing features:
 // Altitude alerts
 // CDRA (can build off of CRDAConfig, however)
-// Quicklook
 
 package main
 
@@ -77,6 +76,10 @@ type STARSPane struct {
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]string
 
+	QuickLookAll       bool
+	QuickLookAllIsPlus bool
+	QuickLookPositions []QuickLookPosition
+
 	// Various UI state
 	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
 	activeDCBMenu     int
@@ -107,6 +110,87 @@ type STARSRangeBearingLine struct {
 		loc      Point2LL
 		callsign string
 	}
+}
+
+type QuickLookPosition struct {
+	Callsign string
+	Id       string
+	Plus     bool
+}
+
+func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, error) {
+	var positions []QuickLookPosition
+
+	ctrl, ok := w.Controllers[w.Callsign]
+	if !ok {
+		lg.Errorf("%s: couldn't get *Controller for us?", w.Callsign)
+		return nil, s, ErrSTARSIllegalPosition
+	}
+	num := string(ctrl.SectorId[0])
+
+	idx := 0
+
+	tryAddController := func(id string) bool {
+		ctrl := w.GetController(id)
+		if ctrl != nil {
+			plus := idx < len(s) && s[idx] == '+'
+			if plus {
+				idx++
+			}
+			positions = append(positions, QuickLookPosition{
+				Callsign: ctrl.Callsign,
+				Id:       id,
+				Plus:     plus,
+			})
+		}
+		return ctrl != nil
+	}
+
+	// per 6-94, this is "fun"
+	// - in general the string is a list of TCPs / sector ids.
+	// - each may have a plus at the end
+	// - if a single character id is entered, then we prepend the number for
+	//   the current controller's sector id. in that case a space is required
+	//   before the next one, if any
+	id := ""
+	for idx < len(s) {
+		// Start work on a new controller id
+		id = string(s[idx])
+		idx++
+		if id == " " {
+			// Allow multiple spaces between ids
+			id = ""
+			continue
+		}
+
+		// Just a single character id (maybe with a plus), so prepend
+		// our id number and see if it works.
+		if tryAddController(num + id) {
+			// Must have a space next (or be done)
+			if idx < len(s) && s[idx] != ' ' {
+				return positions, s[idx:], ErrSTARSIllegalParam
+			} else {
+				id = ""
+			}
+		} else {
+			// Multi-character position specification
+			for idx < len(s) {
+				// Loop precondition: we have a partial but invalid specification.
+				id += string(s[idx])
+				idx++
+
+				if tryAddController(id) {
+					id = ""
+					break
+				}
+			}
+			if id != "" {
+				return positions, id, ErrSTARSIllegalPosition
+			}
+		}
+	}
+
+	return positions, "", nil
 }
 
 type CommandMode int
@@ -1657,6 +1741,66 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					updateTowerList(2)
 					return
 				}
+			}
+
+		case "Q": // quicklook
+			if len(cmd) == 0 {
+				// inhibit for all
+				sp.QuickLookAll = false
+				sp.QuickLookAllIsPlus = false
+				sp.QuickLookPositions = nil
+				status.clear = true
+				return
+			} else if cmd == "ALL" {
+				if sp.QuickLookAll && sp.QuickLookAllIsPlus {
+					sp.QuickLookAllIsPlus = false
+				} else {
+					sp.QuickLookAll = !sp.QuickLookAll
+					sp.QuickLookAllIsPlus = false
+					sp.QuickLookPositions = nil
+				}
+				status.clear = true
+				return
+			} else if cmd == "ALL+" {
+				if sp.QuickLookAll && !sp.QuickLookAllIsPlus {
+					sp.QuickLookAllIsPlus = true
+				} else {
+					sp.QuickLookAll = !sp.QuickLookAll
+					sp.QuickLookAllIsPlus = false
+					sp.QuickLookPositions = nil
+				}
+				status.clear = true
+				return
+			} else {
+				positions, input, err := parseQuickLookPositions(ctx.world, cmd)
+				if len(positions) > 0 {
+					sp.QuickLookAll = false
+
+					for _, pos := range positions {
+						// Toggle
+						match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+						matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+						if idx := FindIf(sp.QuickLookPositions, match); idx != -1 {
+							nomatch := func(q QuickLookPosition) bool { return !match(q) }
+							sp.QuickLookPositions = FilterSlice(sp.QuickLookPositions, nomatch)
+						} else if idx := FindIf(sp.QuickLookPositions, matchId); idx != -1 {
+							// Toggle plus
+							sp.QuickLookPositions[idx].Plus = !sp.QuickLookPositions[idx].Plus
+						} else {
+							sp.QuickLookPositions = append(sp.QuickLookPositions, pos)
+						}
+					}
+					sort.Slice(sp.QuickLookPositions,
+						func(i, j int) bool { return sp.QuickLookPositions[i].Id < sp.QuickLookPositions[j].Id })
+				}
+
+				if err == nil {
+					status.clear = true
+				} else {
+					status.err = err
+					sp.previewAreaInput = input
+				}
+				return
 			}
 
 		case "S":
@@ -3247,9 +3391,21 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		if filter.All || filter.QuickLookPositions {
-			// TODO
-			// QL: ALL, etc, depending on quicklook setting (or a specific controller)
+		if (filter.All || filter.QuickLookPositions) && (sp.QuickLookAll || len(sp.QuickLookPositions) > 0) {
+			if sp.QuickLookAll {
+				if sp.QuickLookAllIsPlus {
+					pw = td.AddText("QL: ALL+", pw, style)
+				} else {
+					pw = td.AddText("QL: ALL", pw, style)
+				}
+			} else {
+				pos := MapSlice(sp.QuickLookPositions,
+					func(q QuickLookPosition) string {
+						return q.Id + Select(q.Plus, "+", "")
+					})
+				pw = td.AddText("QL: "+strings.Join(pos, " "), pw, style)
+			}
+			newline()
 		}
 
 		if filter.All || filter.DisabledTerminal {
@@ -3431,6 +3587,14 @@ func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 
 	// Point outs are FDB until acked.
 	if _, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
+		dt = FullDatablock
+	}
+
+	// Quicklook
+	if sp.QuickLookAll {
+		dt = FullDatablock
+	} else if idx := FindIf(sp.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }); idx != -1 {
 		dt = FullDatablock
 	}
 
@@ -3899,6 +4063,13 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 			// flash for 10 seconds after accept
 			br /= 3
 		}
+		return br.ScaleRGB(STARSTrackedAircraftColor)
+	} else if sp.QuickLookAll && sp.QuickLookAllIsPlus {
+		// quick look all plus
+		return br.ScaleRGB(STARSTrackedAircraftColor)
+	} else if idx := FindIf(sp.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }); idx != -1 {
+		// individual quicklook plus controller
 		return br.ScaleRGB(STARSTrackedAircraftColor)
 	}
 
