@@ -23,21 +23,24 @@ import (
 )
 
 var (
-	STARSBackgroundColor         = RGB{0, 0, 0}
+	STARSBackgroundColor         = RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor               = RGB{.1, .9, .1}
-	STARSTextAlertColor          = RGB{1, .1, .1}
+	STARSTextAlertColor          = RGB{1, 0, 0}
+	STARSMapColor                = RGB{.55, .55, .55}
+	STARSCompassColor            = RGB{.55, .55, .55}
+	STARSRangeRingColor          = RGB{.55, .55, .55}
 	STARSTrackBlockColor         = RGB{0.12, 0.48, 1}
 	STARSTrackHistoryColors      [5]RGB
 	STARSJRingConeColor          = RGB{.5, .5, 1}
 	STARSTrackedAircraftColor    = RGB{1, 1, 1}
-	STARSUntrackedAircraftColor  = RGB{.1, .9, .1}
+	STARSUntrackedAircraftColor  = RGB{0, 1, 0}
 	STARSPointedOutAircraftColor = RGB{1, 1, 0}
 	STARSSelectedAircraftColor   = RGB{0, 1, 1}
 
 	STARSDCBButtonColor         = RGB{0, .4, 0}
 	STARSDCBActiveButtonColor   = RGB{0, .8, 0}
-	STARSDCBInsideButtonColor   = RGB{.75, .75, .75}
 	STARSDCBTextColor           = RGB{1, 1, 1}
+	STARSDCBTextSelectedColor   = RGB{1, 1, 0}
 	STARSDCBDisabledButtonColor = RGB{.4, .4, .4}
 	STARSDCBDisabledTextColor   = RGB{.8, .8, .8}
 )
@@ -81,8 +84,9 @@ type STARSPane struct {
 	QuickLookPositions []QuickLookPosition
 
 	// Various UI state
-	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
-	activeDCBMenu     int
+	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
+	activeDCBMenu       int
+	selectedPlaceButton string
 
 	dwellAircraft string
 
@@ -425,22 +429,23 @@ type STARSPreferenceSet struct {
 	}
 
 	Brightness struct {
-		DCB               STARSBrightness
-		VideoGroupA       STARSBrightness
-		VideoGroupB       STARSBrightness
-		FullDatablocks    STARSBrightness
-		Lists             STARSBrightness
-		Positions         STARSBrightness
-		LimitedDatablocks STARSBrightness
-		OtherTracks       STARSBrightness
-		Lines             STARSBrightness
-		RangeRings        STARSBrightness
-		Compass           STARSBrightness
-		BeaconSymbols     STARSBrightness
-		PrimarySymbols    STARSBrightness
-		History           STARSBrightness
-		Weather           STARSBrightness
-		WxContrast        STARSBrightness
+		DCB                STARSBrightness
+		BackgroundContrast STARSBrightness
+		VideoGroupA        STARSBrightness
+		VideoGroupB        STARSBrightness
+		FullDatablocks     STARSBrightness
+		Lists              STARSBrightness
+		Positions          STARSBrightness
+		LimitedDatablocks  STARSBrightness
+		OtherTracks        STARSBrightness
+		Lines              STARSBrightness
+		RangeRings         STARSBrightness
+		Compass            STARSBrightness
+		BeaconSymbols      STARSBrightness
+		PrimarySymbols     STARSBrightness
+		History            STARSBrightness
+		Weather            STARSBrightness
+		WxContrast         STARSBrightness
 	}
 
 	CharSize struct {
@@ -588,6 +593,7 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 
 	ps.PTLLength = 1
 
+	ps.Brightness.BackgroundContrast = 0
 	ps.Brightness.VideoGroupA = 50
 	ps.Brightness.VideoGroupB = 40
 	ps.Brightness.FullDatablocks = 80
@@ -596,8 +602,8 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 	ps.Brightness.LimitedDatablocks = 80
 	ps.Brightness.OtherTracks = 80
 	ps.Brightness.Lines = 40
-	ps.Brightness.RangeRings = 10
-	ps.Brightness.Compass = 30
+	ps.Brightness.RangeRings = 20
+	ps.Brightness.Compass = 40
 	ps.Brightness.BeaconSymbols = 55
 	ps.Brightness.PrimarySymbols = 80
 	ps.Brightness.History = 60
@@ -967,6 +973,21 @@ func (sp *STARSPane) Upgrade(from, to int) {
 			sp.PreferenceSets[i].CharSize.DCB = 1
 		}
 	}
+	if from < 9 {
+		remap := func(b *STARSBrightness) {
+			*b = STARSBrightness(min(*b*2, 100))
+		}
+		remap(&sp.CurrentPreferenceSet.Brightness.VideoGroupA)
+		remap(&sp.CurrentPreferenceSet.Brightness.VideoGroupB)
+		remap(&sp.CurrentPreferenceSet.Brightness.RangeRings)
+		remap(&sp.CurrentPreferenceSet.Brightness.Compass)
+		for i := range sp.PreferenceSets {
+			remap(&sp.PreferenceSets[i].Brightness.VideoGroupA)
+			remap(&sp.PreferenceSets[i].Brightness.VideoGroupB)
+			remap(&sp.PreferenceSets[i].Brightness.RangeRings)
+			remap(&sp.PreferenceSets[i].Brightness.Compass)
+		}
+	}
 }
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -978,7 +999,10 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		ctx.world.STARSInputOverride = ""
 	}
 
-	cb.ClearRGB(RGB{}) // clear to black, regardless of the color scheme
+	ps := sp.CurrentPreferenceSet
+
+	// Clear to background color
+	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
 
 	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
 		wmTakeKeyboardFocus(sp, false)
@@ -986,8 +1010,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.processKeyboardInput(ctx)
 
 	transforms := GetScopeTransformations(ctx.paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
-		sp.CurrentPreferenceSet.CurrentCenter, float32(sp.CurrentPreferenceSet.Range), 0)
-	ps := sp.CurrentPreferenceSet
+		ps.CurrentCenter, float32(ps.Range), 0)
 
 	paneExtent := ctx.paneExtent
 	if ps.DisplayDCB {
@@ -1012,7 +1035,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
 	sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
 
-	color := ps.Brightness.RangeRings.RGB()
+	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
 	cb.LineWidth(1)
 	DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 
@@ -1026,9 +1049,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			continue
 		}
 
-		color := ps.Brightness.VideoGroupA.RGB()
+		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
 		if vmap.Group == 1 {
-			color = ps.Brightness.VideoGroupB.RGB()
+			color = ps.Brightness.VideoGroupB.ScaleRGB(STARSMapColor)
 		}
 		cb.SetRGB(color)
 		transforms.LoadLatLongViewingMatrices(cb)
@@ -1039,7 +1062,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	if ps.Brightness.Compass > 0 {
 		cb.LineWidth(1)
-		cbright := ps.Brightness.Compass.RGB()
+		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
 		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
 	}
@@ -2746,7 +2769,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	ps := &sp.CurrentPreferenceSet
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
-	const NumDCBSlots = 19
+	const NumDCBSlots = 20
 	// Sigh; on windows we want the button size in pixels on high DPI displays
 	ds := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 	var buttonScale float32
@@ -2771,15 +2794,14 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				}
 				return clamp(v, 6, 256)
 			}, STARSButtonFull, buttonScale)
-		if STARSSelectButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale) {
-			sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
+		sp.STARSPlaceButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale,
+			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
 				ps.CurrentCenter = ps.Center
 				sp.weatherRadar.UpdateCenter(ps.Center)
 				status.clear = true
 				return
-			}
-		}
+			})
 		ps.OffCenter = ps.CurrentCenter != ps.Center
 		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
@@ -2804,13 +2826,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				lg.Errorf("%d: invalid value for RR spinner", v)
 				return valid[0]
 			}, STARSButtonFull, buttonScale)
-		if STARSSelectButton("PLACE\nRR", STARSButtonHalfVertical, buttonScale) {
-			sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
+		sp.STARSPlaceButton("PLACE\nRR", STARSButtonHalfVertical, buttonScale,
+			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
 				status.clear = true
 				return
-			}
-		}
+			})
 		if STARSSelectButton("RR\nCNTR", STARSButtonHalfVertical, buttonScale) {
 			cw := [2]float32{ctx.paneExtent.Width() / 2, ctx.paneExtent.Height() / 2}
 			ps.RangeRingsCenter = transforms.LatLongFromWindowP(cw)
@@ -2962,9 +2983,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSToggleButton("CURRENT", &ps.ListSelectedMaps, STARSButtonHalfVertical, buttonScale)
 
 	case DCBMenuBrite:
-		STARSDisabledButton("BRITE", STARSButtonFull, buttonScale)
 		STARSBrightnessSpinner(ctx, "DCB ", &ps.Brightness.DCB, 25, false, STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("BKC 100", STARSButtonHalfVertical, buttonScale)
+		STARSBrightnessSpinner(ctx, "BKC ", &ps.Brightness.BackgroundContrast, 0, false, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, 5, false, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, 5, false, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, 5, true, STARSButtonHalfVertical, buttonScale)
@@ -2987,13 +3007,11 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			// Don't fetch weather maps if they're not going to be displayed.
 			sp.weatherRadar.Deactivate()
 		}
-		STARSDisabledButton("", STARSButtonHalfVertical, buttonScale)
-		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
+		if STARSSelectButton("DONE", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
 
 	case DCBMenuCharSize:
-		STARSDisabledButton("BRITE", STARSButtonFull, buttonScale)
 		STARSIntSpinner(ctx, "DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull, buttonScale)
 		STARSIntSpinner(ctx, "LISTS\n", &ps.CharSize.Lists, 0, 5, STARSButtonFull, buttonScale)
 		STARSIntSpinner(ctx, "DCB\n", &ps.CharSize.DCB, 0, 2, STARSButtonFull, buttonScale)
@@ -3067,6 +3085,10 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 					ps.RadarSiteSelected = ""
 				}
 			}
+		}
+		// Fill extras with empty disabled buttons
+		for i := len(ctx.world.RadarSites); i < 16; i++ {
+			STARSDisabledButton("", STARSButtonFull, buttonScale)
 		}
 		multi := sp.multiRadarMode(ctx.world)
 		if STARSToggleButton("MULTI", &multi, STARSButtonFull, buttonScale) && multi {
@@ -4683,7 +4705,7 @@ func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color 
 	}
 }
 
-func drawDCBButton(text string, flags int, buttonScale float32, selected bool, disabled bool) (Extent2D, bool) {
+func drawDCBButton(text string, flags int, buttonScale float32, pushedIn bool, disabled bool) (Extent2D, bool) {
 	ld := GetColoredLinesDrawBuilder()
 	trid := GetColoredTrianglesDrawBuilder()
 	td := GetTextDrawBuilder()
@@ -4706,25 +4728,27 @@ func drawDCBButton(text string, flags int, buttonScale float32, selected bool, d
 	mouseDownInside := dcbDrawState.mouseDownPos != nil &&
 		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]})
 
-	var buttonColor RGB
+	var buttonColor, textColor RGB
 	if disabled {
 		buttonColor = STARSDCBDisabledButtonColor
-	} else if mouseInside {
-		if mouseDownInside {
-			// Swap selected/regular color to indicate the tentative result
-			buttonColor = Select(selected, STARSDCBButtonColor, STARSDCBActiveButtonColor)
-		} else {
-			buttonColor = STARSDCBInsideButtonColor
+		textColor = STARSDCBDisabledTextColor
+	}
+	if !disabled {
+		if mouseInside && mouseDownInside {
+			pushedIn = !pushedIn
 		}
-	} else {
-		buttonColor = Select(selected, STARSDCBActiveButtonColor, STARSDCBButtonColor)
+
+		// Swap selected/regular color to indicate the tentative result
+		buttonColor = Select(pushedIn, STARSDCBActiveButtonColor, STARSDCBButtonColor)
+		textColor = Select(mouseInside, STARSDCBTextSelectedColor, STARSDCBTextColor)
 	}
 	buttonColor = dcbDrawState.brightness.ScaleRGB(buttonColor)
+	//textColor = dcbDrawState.brightness.ScaleRGB(textColor)
 
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
-	drawDCBText(text, td, sz, STARSDCBTextColor)
+	drawDCBText(text, td, sz, textColor)
 
-	if !disabled && ((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
+	if !disabled && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
 		// Depressed bevel scheme: darker top/left, highlight bottom/right
 		ld.AddLine(p0, p1, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
 		ld.AddLine(p0, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
@@ -4911,6 +4935,18 @@ func STARSSelectButton(text string, flags int, buttonScale float32) bool {
 	return clicked
 }
 
+func (sp *STARSPane) STARSPlaceButton(text string, flags int, buttonScale float32,
+	callback func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus) {
+	_, clicked := drawDCBButton(text, flags, buttonScale, text == sp.selectedPlaceButton, false)
+	if clicked {
+		sp.selectedPlaceButton = text
+		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus {
+			sp.selectedPlaceButton = ""
+			return callback(pw, transforms)
+		}
+	}
+}
+
 func STARSDisabledButton(text string, flags int, buttonScale float32) {
 	drawDCBButton(text, flags, buttonScale, false, true)
 }
@@ -4954,6 +4990,7 @@ func (sp *STARSPane) resetInputState() {
 	sp.multiFuncPrefix = ""
 
 	sp.scopeClickHandler = nil
+	sp.selectedPlaceButton = ""
 }
 
 func (sp *STARSPane) multiRadarMode(w *World) bool {

@@ -19,7 +19,8 @@ import (
 
 // Version history 0-7 not explicitly recorded
 // 8: STARSPane DCB improvements, added DCB font size control
-const CurrentConfigVersion = 8
+// 9: correct STARSColors, so update brightness settings to compensate
+const CurrentConfigVersion = 9
 
 type GlobalConfig struct {
 	Version               int
