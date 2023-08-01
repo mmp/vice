@@ -94,6 +94,10 @@ var (
 		"New scenarios covering the A80 (ATL) and A90 (BOS) TRACONS",
 		"Fixed a bug with drawing *P cones",
 		"Many improvements to the STARS DCB implementation",
+		"STARS now supports quick-look",
+		"Fixed a rare crash when manually adjusting launch rates",
+		"Numerous minor improvements to the STARS UI and functionality (including adding dwell mode)",
+		"Small fixes to the JAX and CLT scenario files",
 	}
 )
 
