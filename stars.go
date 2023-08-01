@@ -65,8 +65,6 @@ type STARSPane struct {
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
 	Aircraft map[string]*STARSAircraftState
-	// map from legit to their ghost, if present
-	// ghostAircraft map[string]*Aircraft
 
 	AircraftToIndex map[string]int // for use in lists
 	IndexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
@@ -232,11 +230,6 @@ const (
 type STARSAircraftState struct {
 	tracks [10]RadarTrack
 
-	isGhost       bool
-	suppressGhost bool // for ghost only
-
-	forceGhost bool // for non-ghost only
-
 	DatablockType DatablockType
 
 	datablockErrText    string
@@ -326,7 +319,6 @@ type STARSFacility struct {
 		VerticalMinimum int32
 		Floor           int32
 	}
-	CRDAConfig CRDAConfig
 
 	// TODO: transition alt -> show pressure altitude above
 	// TODO: RNAV patterns
@@ -346,7 +338,6 @@ func MakeDefaultFacility() STARSFacility {
 	f.CA.LateralMinimum = 3
 	f.CA.VerticalMinimum = 1000
 	f.CA.Floor = 500
-	f.CRDAConfig = NewCRDAConfig()
 
 	return f
 }
@@ -848,7 +839,6 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 func (sp *STARSPane) Deactivate() {
 	// Drop all of them
 	sp.Aircraft = nil
-	//sp.ghostAircraft = nil
 
 	sp.events.Unsubscribe()
 	sp.events = nil
@@ -885,12 +875,6 @@ func (sp *STARSPane) DrawUI() {
 		imgui.InputIntV("Vertical minimum (feet)", &sp.Facility.CA.VerticalMinimum, 100, 100, 0)
 		imgui.InputIntV("Altitude floor (feet)", &sp.Facility.CA.Floor, 100, 100, 0)
 	}
-
-	/*
-		if imgui.CollapsingHeader("CRDA") {
-			sp.Facility.CRDAConfig.DrawUI()
-		}
-	*/
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -907,19 +891,6 @@ func (sp *STARSPane) processEvents(w *World) {
 			sp.Aircraft[callsign] = sa
 
 			sa.FirstSeen = w.CurrentTime()
-
-			/*
-				if !ps.DisableCRDA {
-					if ghost := sp.Facility.CRDAConfig.GetGhost(ac); ghost != nil {
-						sp.ghostAircraft[ac.Callsign] = ghost
-						sp.Aircraft[ghost] = &STARSAircraftState{
-							// TODO: other defaults?
-							isGhost:        true,
-							DisplayTPASize: ps.DisplayTPASize,
-						}
-					}
-				}
-			*/
 		}
 
 		if squawkingSPC(ac.Squawk) {
@@ -934,7 +905,6 @@ func (sp *STARSPane) processEvents(w *World) {
 	for callsign := range sp.Aircraft {
 		if _, ok := w.Aircraft[callsign]; !ok {
 			delete(sp.Aircraft, callsign)
-			// delete ghost a/c
 		}
 	}
 
@@ -1079,8 +1049,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	})
 
 	sp.drawSystemLists(aircraft, ctx, paneExtent, transforms, cb)
-
-	sp.Facility.CRDAConfig.DrawRegions(ctx, transforms, cb)
 
 	// Tools before datablocks
 	sp.drawPTLs(aircraft, ctx, transforms, cb)
@@ -2533,21 +2501,23 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "N":
 				// CRDA
-				if cmd == "" {
-					if state.isGhost {
-						state.suppressGhost = true
+				/*
+					if cmd == "" {
+						if state.isGhost {
+							state.suppressGhost = true
+						} else {
+							state.forceGhost = true
+						}
+					} else if cmd == "*" {
+						if state.isGhost {
+							// TODO: display parent track info for slewed ghost
+						} else {
+							state.forceGhost = true // ?? redundant with cmd == ""?
+						}
 					} else {
-						state.forceGhost = true
+						status.err = ErrSTARSCommandFormat
 					}
-				} else if cmd == "*" {
-					if state.isGhost {
-						// TODO: display parent track info for slewed ghost
-					} else {
-						state.forceGhost = true // ?? redundant with cmd == ""?
-					}
-				} else {
-					status.err = ErrSTARSCommandFormat
-				}
+				*/
 				return
 
 			case "Q":
@@ -3693,11 +3663,6 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 				line[i] = transforms.LatLongFromWindowP(line[i])
 			}
 			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
-		}
-
-		if state.isGhost {
-			// TODO: handle
-			// color = ctx.cs.GhostDatablock
 		}
 
 		// Draw main track symbol letter
