@@ -232,10 +232,6 @@ type STARSAircraftState struct {
 
 	DatablockType DatablockType
 
-	datablockErrText    string
-	datablockText       [2][]string
-	datablockDrawOffset [2]float32
-
 	IsSelected bool // middle click
 
 	// Only drawn if non-zero
@@ -1061,7 +1057,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	DrawHighlighted(ctx, transforms, cb)
 
 	sp.drawTracks(aircraft, ctx, transforms, cb)
-	sp.updateDatablockTextAndPosition(ctx, aircraft)
 	sp.drawDatablocks(aircraft, ctx, transforms, cb)
 	sp.consumeMouseEvents(ctx, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
@@ -3719,70 +3714,67 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) updateDatablockTextAndPosition(ctx *PaneContext, aircraft []*Aircraft) {
+func (sp *STARSPane) getDatablockTextAndPosition(ctx *PaneContext, ac *Aircraft) (errText string, text [2][]string, drawOffset [2]float32) {
 	now := ctx.world.CurrentTime()
 	font := sp.systemFont[sp.CurrentPreferenceSet.CharSize.Datablocks]
 
-	for _, ac := range aircraft {
-		state := sp.Aircraft[ac.Callsign]
-		if state.LostTrack(now) || !sp.datablockVisible(ac) {
-			continue
-		}
+	state := sp.Aircraft[ac.Callsign]
+	if state.LostTrack(now) || !sp.datablockVisible(ac) {
+		return
+	}
 
-		state.datablockErrText, state.datablockText = sp.formatDatablock(ctx, ac)
+	errText, text = sp.formatDatablock(ctx, ac)
 
-		// For westerly directions the datablock text should be right
-		// justified, since the leader line will be connecting on that
-		// side.
-		dir := sp.getLeaderLineDirection(ac)
-		rightJustify := dir > South
-		if rightJustify {
-			maxLen := 0
-			for i := 0; i < 2; i++ {
-				for j := range state.datablockText[i] {
-					state.datablockText[i][j] = strings.TrimSpace(state.datablockText[i][j])
-					maxLen = max(maxLen, len(state.datablockText[i][j]))
-				}
-			}
-
-			justify := func(s string) string {
-				if len(s) == maxLen {
-					return s
-				}
-				return fmt.Sprintf("%*c", maxLen-len(s), ' ') + s
-			}
-			for i := 0; i < 2; i++ {
-				state.datablockText[i][0] = justify(state.datablockText[i][0])
+	// For westerly directions the datablock text should be right
+	// justified, since the leader line will be connecting on that side.
+	dir := sp.getLeaderLineDirection(ac)
+	rightJustify := dir > South
+	if rightJustify {
+		maxLen := 0
+		for i := 0; i < 2; i++ {
+			for j := range text[i] {
+				text[i][j] = strings.TrimSpace(text[i][j])
+				maxLen = max(maxLen, len(text[i][j]))
 			}
 		}
 
-		// Compute the bounds of the datablock; it's fine to use just one of them here,.
-		var text []string
-		if state.datablockErrText != "" {
-			text = append(text, state.datablockErrText)
+		justify := func(s string) string {
+			if len(s) == maxLen {
+				return s
+			}
+			return fmt.Sprintf("%*c", maxLen-len(s), ' ') + s
 		}
-		text = append(text, state.datablockText[0]...)
-		w, h := font.BoundText(strings.Join(text, "\n"), -2)
-
-		// To place the datablock, start with the vector for the leader line.
-		state.datablockDrawOffset = sp.getLeaderLineVector(ac)
-
-		// And now fine-tune so that e.g., for East, the datablock is
-		// vertically aligned with the track line. (And similarly for other
-		// directions...)
-		bw, bh := float32(w), float32(h)
-		switch dir {
-		case North:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, bh})
-		case NorthEast, East, SouthEast:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, bh / 2})
-		case South:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{0, 0})
-		case SouthWest, West, NorthWest:
-			state.datablockDrawOffset = add2f(state.datablockDrawOffset, [2]float32{-bw, bh / 2})
+		for i := 0; i < 2; i++ {
+			text[i][0] = justify(text[i][0])
 		}
 	}
 
+	// Compute the bounds of the datablock; it's fine to use just one of them here,.
+	var boundsText []string
+	if errText != "" {
+		boundsText = append(boundsText, errText)
+	}
+	boundsText = append(boundsText, text[0]...)
+	w, h := font.BoundText(strings.Join(boundsText, "\n"), -2)
+
+	// To place the datablock, start with the vector for the leader line.
+	drawOffset = sp.getLeaderLineVector(ac)
+
+	// And now fine-tune so that e.g., for East, the datablock is
+	// vertically aligned with the track line. (And similarly for other
+	// directions...)
+	bw, bh := float32(w), float32(h)
+	switch dir {
+	case North:
+		drawOffset = add2f(drawOffset, [2]float32{0, bh})
+	case NorthEast, East, SouthEast:
+		drawOffset = add2f(drawOffset, [2]float32{0, bh / 2})
+	case South:
+		drawOffset = add2f(drawOffset, [2]float32{0, 0})
+	case SouthWest, West, NorthWest:
+		drawOffset = add2f(drawOffset, [2]float32{-bw, bh / 2})
+	}
+	return
 }
 
 func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
@@ -4082,21 +4074,23 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
+		errText, datablockText, drawOffset := sp.getDatablockTextAndPosition(ctx, ac)
+
 		color := sp.datablockColor(ctx.world, ac)
 		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: 0}
-		dbText := state.datablockText[(realNow.Second()/2)&1] // 2 second cycle
+		currentDatablockText := datablockText[(realNow.Second()/2)&1] // 2 second cycle
 
 		// Draw characters starting at the upper left.
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		pt := add2f(state.datablockDrawOffset, pac)
-		if state.datablockErrText != "" {
+		pt := add2f(drawOffset, pac)
+		if errText != "" {
 			errorStyle := TextStyle{
 				Font:        font,
 				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor),
 				LineSpacing: 0}
-			pt = td.AddText(state.datablockErrText+"\n", pt, errorStyle)
+			pt = td.AddText(errText+"\n", pt, errorStyle)
 		}
-		td.AddText(strings.Join(dbText, "\n"), pt, style)
+		td.AddText(strings.Join(currentDatablockText, "\n"), pt, style)
 
 		// Leader line
 		v := sp.getLeaderLineVector(ac)
