@@ -3597,11 +3597,9 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	defer ReturnColoredLinesDrawBuilder(ld)
 	trid := GetColoredTrianglesDrawBuilder()
 	defer ReturnColoredTrianglesDrawBuilder(trid)
-
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
 	ps := sp.CurrentPreferenceSet
-	font := sp.systemFont[ps.CharSize.PositionSymbols]
 
 	now := ctx.world.CurrentTime()
 	for _, ac := range aircraft {
@@ -3619,90 +3617,16 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			brightness = ps.Brightness.LimitedDatablocks
 		}
 
-		pos := state.TrackPosition()
-		pw := transforms.WindowFromLatLongP(pos)
-		// TODO: orient based on radar center if just one radar
-		orientation := state.TrackHeading(0)
-		if math.IsNaN(float64(orientation)) {
-			orientation = 0
-		}
-		rot := rotator2f(orientation)
-
-		// On high DPI windows displays we need to scale up the tracks
-		scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
-
-		// blue box: x +/-9 pixels, y +/-3 pixels
-		// TODO: size based on distance to radar, if not MULTI
-		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
-		for i := range box {
-			box[i] = add2f(rot(scale2f(box[i], scale)), pw)
-			box[i] = transforms.LatLongFromWindowP(box[i])
-		}
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
-		primary, secondary, _ := sp.radarVisibility(ctx.world, state.TrackPosition(), state.TrackAltitude())
-		if primary {
-			// Draw a filled box
-			trid.AddQuad(box[0], box[1], box[2], box[3], color)
-		} else if secondary {
-			// If it's just a secondary return, only draw the box outline.
-			// TODO: is this 40nm, or secondary?
-			ld.AddPolyline([2]float32{}, color, box[:])
-		}
-
-		if !sp.multiRadarMode(ctx.world) {
-			// green line
-			// TODO: size based on distance to radar
-			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
-			for i := range line {
-				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
-				line[i] = transforms.LatLongFromWindowP(line[i])
-			}
-			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
-		}
-
-		// Draw main track symbol letter
+		trackId := ""
 		if ac.TrackingController != "" {
-			ch := "?"
+			trackId = "?"
 			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil {
-				ch = ctrl.Scope
+				trackId = ctrl.Scope
 			}
-			td.AddTextCentered(ch, pw, TextStyle{Font: font, Color: brightness.RGB(), DropShadow: true})
-		} else {
-			// TODO: draw box if in range of squawks we have selected
-
-			// diagonals
-			dx := transforms.LatLongFromWindowV([2]float32{1, 0})
-			dy := transforms.LatLongFromWindowV([2]float32{0, 1})
-			// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
-			delta := func(p Point2LL, x, y float32) Point2LL {
-				return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
-			}
-
-			px := float32(3) * scale
-			// diagonals
-			diagPx := px * 0.707107                                     /* 1/sqrt(2) */
-			trackColor := brightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
-			ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
-			ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
-			// horizontal line
-			ld.AddLine(delta(pos, -px, 0), delta(pos, px, 0), trackColor)
-			// vertical line
-			ld.AddLine(delta(pos, 0, -px), delta(pos, 0, px), trackColor)
 		}
 
-		// Draw in reverse order so that if it's not moving, more recent tracks (which will have
-		// more contrast with the background), will be the ones that are visible.
-		n := ps.RadarTrackHistory
-		for i := n; i > 1; i-- {
-			trackColorNum := len(STARSTrackHistoryColors) - 1
-			if i-1 < trackColorNum {
-				trackColorNum = i - 1
-			}
-			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
-			p := state.tracks[i-1].Position
-
-			pd.AddPoint(p, trackColor)
-		}
+		sp.drawRadarTrack(state.tracks, ctx, transforms, brightness, STARSTrackBlockColor, trackId,
+			ld, trid, td)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -3714,10 +3638,82 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) getDatablockTextAndPosition(ctx *PaneContext, ac *Aircraft) (errText string, text [2][]string, drawOffset [2]float32) {
-	now := ctx.world.CurrentTime()
-	font := sp.systemFont[sp.CurrentPreferenceSet.CharSize.Datablocks]
+func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, ctx *PaneContext, transforms ScopeTransformations,
+	brightness STARSBrightness, trackColor RGB, trackId string,
+	ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
+	ps := sp.CurrentPreferenceSet
+	// TODO: orient based on radar center if just one radar
+	orientation := tracks[0].Heading
+	if math.IsNaN(float64(orientation)) {
+		orientation = 0
+	}
 
+	rot := rotator2f(orientation)
+	pos := tracks[0].Position
+	pw := transforms.WindowFromLatLongP(pos)
+
+	// On high DPI windows displays we need to scale up the tracks
+	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+
+	// blue box: x +/-9 pixels, y +/-3 pixels
+	// TODO: size based on distance to radar, if not MULTI
+	box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+	for i := range box {
+		box[i] = add2f(rot(scale2f(box[i], scale)), pw)
+		box[i] = transforms.LatLongFromWindowP(box[i])
+	}
+	color := brightness.ScaleRGB(STARSTrackBlockColor)
+	primary, secondary, _ := sp.radarVisibility(ctx.world, pos, tracks[0].Altitude)
+	if primary {
+		// Draw a filled box
+		trid.AddQuad(box[0], box[1], box[2], box[3], color)
+	} else if secondary {
+		// If it's just a secondary return, only draw the box outline.
+		// TODO: is this 40nm, or secondary?
+		ld.AddPolyline([2]float32{}, color, box[:])
+	}
+
+	if !sp.multiRadarMode(ctx.world) {
+		// green line
+		// TODO: size based on distance to radar
+		line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
+		for i := range line {
+			line[i] = add2f(rot(scale2f(line[i], scale)), pw)
+			line[i] = transforms.LatLongFromWindowP(line[i])
+		}
+		ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+	}
+
+	// Draw main track symbol letter
+	if trackId != "" {
+		font := sp.systemFont[ps.CharSize.PositionSymbols]
+		td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: brightness.RGB(), DropShadow: true})
+	} else {
+		// TODO: draw box if in range of squawks we have selected
+
+		// diagonals
+		dx := transforms.LatLongFromWindowV([2]float32{1, 0})
+		dy := transforms.LatLongFromWindowV([2]float32{0, 1})
+		// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
+		delta := func(p Point2LL, x, y float32) Point2LL {
+			return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
+		}
+
+		px := float32(3) * scale
+		// diagonals
+		diagPx := px * 0.707107                                     /* 1/sqrt(2) */
+		trackColor := brightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+		ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
+		ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
+		// horizontal line
+		ld.AddLine(delta(pos, -px, 0), delta(pos, px, 0), trackColor)
+		// vertical line
+		ld.AddLine(delta(pos, 0, -px), delta(pos, 0, px), trackColor)
+	}
+}
+
+func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText string, text [2][]string) {
+	now := ctx.world.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac) {
 		return
@@ -3749,32 +3745,28 @@ func (sp *STARSPane) getDatablockTextAndPosition(ctx *PaneContext, ac *Aircraft)
 		}
 	}
 
-	// Compute the bounds of the datablock; it's fine to use just one of them here,.
-	var boundsText []string
-	if errText != "" {
-		boundsText = append(boundsText, errText)
-	}
-	boundsText = append(boundsText, text[0]...)
-	w, h := font.BoundText(strings.Join(boundsText, "\n"), -2)
+	return
+}
 
+func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir CardinalOrdinalDirection) [2]float32 {
 	// To place the datablock, start with the vector for the leader line.
-	drawOffset = sp.getLeaderLineVector(ac)
+	drawOffset := sp.getLeaderLineVector(leaderDir)
 
 	// And now fine-tune so that e.g., for East, the datablock is
 	// vertically aligned with the track line. (And similarly for other
 	// directions...)
-	bw, bh := float32(w), float32(h)
-	switch dir {
+	switch leaderDir {
 	case North:
-		drawOffset = add2f(drawOffset, [2]float32{0, bh})
+		drawOffset = add2f(drawOffset, [2]float32{0, textBounds[1]})
 	case NorthEast, East, SouthEast:
-		drawOffset = add2f(drawOffset, [2]float32{0, bh / 2})
+		drawOffset = add2f(drawOffset, [2]float32{0, textBounds[1] / 2})
 	case South:
 		drawOffset = add2f(drawOffset, [2]float32{0, 0})
 	case SouthWest, West, NorthWest:
-		drawOffset = add2f(drawOffset, [2]float32{-bw, bh / 2})
+		drawOffset = add2f(drawOffset, [2]float32{-textBounds[0], textBounds[1] / 2})
 	}
-	return
+
+	return drawOffset
 }
 
 func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
@@ -4074,15 +4066,26 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		errText, datablockText, drawOffset := sp.getDatablockTextAndPosition(ctx, ac)
+		errText, datablockText := sp.getDatablockText(ctx, ac)
 
 		color := sp.datablockColor(ctx.world, ac)
 		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: 0}
 		currentDatablockText := datablockText[(realNow.Second()/2)&1] // 2 second cycle
 
+		// Compute the bounds of the datablock; always use the first one so
+		// things don't jump around when it switches between them.
+		var boundsText []string
+		if errText != "" {
+			boundsText = append(boundsText, errText)
+		}
+		boundsText = append(boundsText, datablockText[0]...)
+		w, h := font.BoundText(strings.Join(boundsText, "\n"), style.LineSpacing)
+		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
+			sp.getLeaderLineDirection(ac))
+
 		// Draw characters starting at the upper left.
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		pt := add2f(drawOffset, pac)
+		pt := add2f(datablockOffset, pac)
 		if errText != "" {
 			errorStyle := TextStyle{
 				Font:        font,
@@ -4093,8 +4096,9 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		td.AddText(strings.Join(currentDatablockText, "\n"), pt, style)
 
 		// Leader line
-		v := sp.getLeaderLineVector(ac)
-		p0, p1 := add2f(pac, scale2f(v, .05)), add2f(pac, v)
+		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac))
+		p0 := add2f(pac, scale2f(normalize2f(v), float32(2+font.size/2)))
+		p1 := add2f(pac, v)
 		ld.AddLine(p0, p1, color)
 	}
 
@@ -5064,8 +5068,7 @@ func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft) CardinalOrdinalDirecti
 	}
 }
 
-func (sp *STARSPane) getLeaderLineVector(ac *Aircraft) [2]float32 {
-	dir := sp.getLeaderLineDirection(ac)
+func (sp *STARSPane) getLeaderLineVector(dir CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{sin(radians(angle)), cos(radians(angle))}
 	ps := sp.CurrentPreferenceSet
