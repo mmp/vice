@@ -3633,6 +3633,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	cb.PointSize(5)
 	pd.GenerateCommands(cb)
 	trid.GenerateCommands(cb)
+	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
@@ -4104,6 +4105,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 }
 
