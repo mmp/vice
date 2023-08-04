@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
-	github.com/go-gl/glfw v0.0.0-20191125211704-12ad95a8df72
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f
@@ -21,6 +20,8 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
+	github.com/mmp/glfw v0.0.0-20230804160230-e26567bd44fb // indirect
+	github.com/mmp/glfw/v3.3/glfw v0.0.0-20230804160230-e26567bd44fb // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
