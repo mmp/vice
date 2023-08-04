@@ -51,6 +51,150 @@
           ]
         }
       },
+      "approach_regions": {
+        "27": {
+          "heading_tolerance": 90,
+          "near_distance": 3,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.36024,-70.98742",
+          "reference_heading": 272,
+          "reference_length": 25,
+          "reference_altitude": 0
+        },
+        "22L": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.37716,-70.99916",
+          "reference_heading": 215,
+          "reference_length": 25,
+          "reference_altitude": 0
+        },
+        "33L": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.35465,-70.991586",
+          "reference_heading": 330,
+          "reference_length": 30,
+          "reference_altitude": 0
+        },
+        "4L": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.357988,-71.01433",
+          "reference_heading": 35,
+          "reference_length": 30,
+          "reference_altitude": 0
+        },
+        "4R": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.351058,-71.011793",
+          "reference_heading": 35,
+          "reference_length": 30,
+          "reference_altitude": 0
+        },
+        "15R": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.374271,-71.017892",
+          "reference_heading": 149,
+          "reference_length": 30,
+          "reference_altitude": 0
+        },
+        "32": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 10.1,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 800,
+          "below_altitude_tolerance": 500,
+          "reference_point": "42.348599,-71.008246",
+          "reference_heading": 330,
+          "reference_length": 30,
+          "reference_altitude": 0
+        }
+      },
+      "converging_runways": [
+        {
+            "runways": ["27", "22L"],
+            "leader_directions": [ "W", "S"],
+            "tie_symbol": "/",
+            "stagger_symbol": "0",
+            "tie_offset": 2.5
+        },
+        {
+          "runways": ["27", "33L"],
+          "leader_directions": [ "W", "E"],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset"  : 2.5
+        },
+        {
+          "runways": ["4L", "15R"],
+          "leader_directions": [ "W", "E"],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset"  : 2.5
+        },
+        {
+          "runways": ["4R", "15R"],
+          "leader_directions": [ "W", "E"],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset"  : 2.5
+        },
+        {
+          "runways": ["27", "32"],
+          "leader_directions": [ "W", "E"],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset"  : 2.5
+        },
+        {
+          "runways": ["4L", "33L"],
+          "leader_directions": [ "W", "E"],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset"  : 2.5
+        }
+      ],
       "departure_routes": {
         "9": {
           "BLZZR": {
@@ -1468,6 +1612,48 @@
         "N42.18.45.949,W70.57.30.342",
         "N42.15.36.467,W70.53.09.965",
         "N42.00.51.419,W71.00.21.518"
+      ],
+      "BOSF2APP05022": [
+        "N42.21.53.855,W71.00.20.352",
+        "N42.30.20.669,W70.50.22.521",
+        "N42.32.28.687,W70.38.17.941",
+        "N42.33.13.356,W70.39.04.878",
+        "N42.34.03.028,W70.39.56.813",
+        "N42.36.49.510,W70.44.04.488",
+        "N42.37.26.116,W70.45.03.109",
+        "N42.37.52.953,W70.46.14.562",
+        "N42.39.39.970,W70.50.26.316",
+        "N42.39.53.248,W70.51.38.621",
+        "N42.40.08.109,W70.53.03.958",
+        "N42.40.50.834,W70.58.30.815",
+        "N42.40.53.435,W71.01.16.047",
+        "N42.25.23.141,W71.08.37.623",
+        "N42.21.58.897,W71.00.32.383"
+      ],
+      "BOSF1APP06027": [
+        "N42.21.32.869,W71.00.26.598",
+        "N42.27.06.372,W70.27.36.242",
+        "N42.31.55.932,W70.29.49.329",
+        "N42.33.35.222,W70.31.17.578",
+        "N42.30.19.533,W70.50.21.442",
+        "N42.21.27.634,W70.59.48.148"
+      ],
+      "BOSF1APP05027": [
+        "N42.18.12.294,W70.37.40.457",
+        "N42.19.12.952,W70.37.30.473",
+        "N42.20.18.021,W70.37.24.539",
+        "N42.21.31.606,W70.37.21.437",
+        "N42.23.45.865,W70.37.42.811",
+        "N42.20.39.456,W70.55.38.638",
+        "N42.20.52.252,W70.58.48.434",
+        "N42.21.29.575,W70.59.49.422",
+        "N42.27.07.976,W70.27.39.119",
+        "N42.26.03.051,W70.27.18.706",
+        "N42.24.32.671,W70.26.58.038",
+        "N42.22.06.681,W70.26.41.389",
+       "N42.20.02.489,W70.26.33.789",
+       "N42.18.04.632,W70.37.39.686",
+       "N42.20.14.100,W70.37.17.120"
       ]
     },
     "volumes": {
@@ -1616,6 +1802,29 @@
           "lower": 0,
           "upper": 6000
         }
+      ],
+      "BOS_F_APP2722L": [
+        {
+          "boundaries": [
+            "BOSF2APP05022"
+          ],
+          "lower": 0,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "BOSF1APP06027"
+          ],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": [
+            "BOSF1APP05027"
+          ],
+          "lower": 0,
+          "upper": 5000
+        }
       ]
     }
   },
@@ -1703,6 +1912,86 @@
         },
         "speed_restriction": 270,
         "waypoints": "DUBLE/a17000/ho BASEZ JFUND"
+      }
+    ],
+    "JFUND2_22L": [
+      {
+        "airlines": {
+          "KBOS": [
+            {
+              "airport": "CYUL",
+              "icao": "JBU"
+            },
+            {
+              "airport": "CYUL",
+              "icao": "JZA"
+            },
+            {
+              "airport": "CYUL",
+              "fleet": "short",
+              "icao": "ACA"
+            },
+            {
+              "airport": "CYYZ",
+              "icao": "JBU"
+            },
+            {
+              "airport": "CYYZ",
+              "icao": "JZA"
+            },
+            {
+              "airport": "CYYZ",
+              "fleet": "short",
+              "icao": "ACA"
+            },
+            {
+              "airport": "CYOW",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KORD",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KMDW",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KMKE",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KCLE",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KCLE",
+              "icao": "JBU"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "cruise_altitude": 35000,
+        "expect_approach": "I2L",
+        "initial_altitude": 8000,
+        "initial_controller": "BOS_N_APP",
+        "initial_speed": 250,
+        "speed_restriction": 220,
+        "route": "/. JFUND2",
+        "scratchpad": "I2L",
+        "waypoints": "HRRIS/ho ISLAY/a6000/s220 LWLND/a6000/s210/h035"
       }
     ],
     "NORTH_4FINAL": [
@@ -2026,6 +2315,177 @@
         "waypoints": "EURRO OOSHN/a11000/s250/ho"
       }
     ],
+    "OOSHN5_22L": [
+      {
+        "airlines": {
+          "KBOS": [
+            {
+              "airport": "EGLL",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "EGLL",
+              "icao": "JBU"
+            },
+            {
+              "airport": "EGLL",
+              "fleet": "long",
+              "icao": "BAW"
+            },
+            {
+              "airport": "EINN",
+              "icao": "EIN"
+            },
+            {
+              "airport": "EIDW",
+              "fleet": "long",
+              "icao": "EIN"
+            },
+            {
+              "airport": "EIDW",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "EGKK",
+              "icao": "JBU"
+            },
+            {
+              "airport": "EHAM",
+              "fleet": "long",
+              "icao": "KLM"
+            },
+            {
+              "airport": "EHAM",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "OMDB",
+              "icao": "UAE"
+            },
+            {
+              "airport": "LGAV",
+              "fleet": "long",
+              "icao": "ACA"
+            },
+            {
+              "airport": "LEMD",
+              "fleet": "long",
+              "icao": "IBE"
+            },
+            {
+              "airport": "LEBL",
+              "fleet": "long",
+              "icao": "IBE"
+            },
+            {
+              "airport": "LPPT",
+              "icao": "TAP"
+            },
+            {
+              "airport": "LIRF",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "LFPG",
+              "fleet": "long",
+              "icao": "AFR"
+            },
+            {
+              "airport": "LFPG",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "LSZH",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "EKCH",
+              "fleet": "long",
+              "icao": "SAS"
+            },
+            {
+              "airport": "EDDM",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "EDDF",
+              "fleet": "long",
+              "icao": "DAL"
+            },
+            {
+              "airport": "CYHZ",
+              "fleet": "short",
+              "icao": "ACA"
+            },
+            {
+              "airport": "CYHZ",
+              "icao": "WJA"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "cruise_altitude": 34000,
+        "expect_approach": "I2L",
+        "initial_altitude": 7000,
+        "initial_controller": "BOS_N_APP",
+        "initial_speed": 230,
+        "speed_restriction": 220,
+        "route": "/. OOSHN5",
+        "scratchpad": "I2L",
+        "waypoints": "BRGIT/a7000/ho ADDDA/a6000/s220 LEEZI/a6000/s210/h035"
+      }
+    ],
+    "OOSHN5_27": [
+      {
+        "airlines": {
+          "KBOS": [
+            {
+              "airport": "CYHZ",
+              "icao": "JBU"
+            },
+            {
+              "airport": "CYHZ",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KBGR",
+              "icao": "JBU"
+            },
+            {
+              "airport": "CYHZ",
+              "fleet": "short",
+              "icao": "ACA"
+            },
+            {
+              "airport": "CYHZ",
+              "icao": "WJA"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "cruise_altitude": 34000,
+        "expect_approach": "I27",
+        "initial_altitude": 7000,
+        "initial_controller": "BOS_N_APP",
+        "initial_speed": 230,
+        "speed_restriction": 220,
+        "route": "/. OOSHN5",
+        "scratchpad": "I27",
+        "waypoints": "PUDJJ/ho AYBEE/a6000/s210 KLANE/a4000"
+      }
+    ],
     "ROBUC3": [
       {
         "airlines": {
@@ -2126,6 +2586,103 @@
         },
         "speed_restriction": 260,
         "waypoints": "BANKI ROBUC/a13000/s260/ho"
+      }
+    ],
+    "ROBUC3_27": [
+      {
+        "airlines": {
+          "KBOS": [
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KDCA",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDCA",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KPHL",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KPHL",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KIAD",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KBWI",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KMCO",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KMCO",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KATL",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KATL",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ]
+        },
+        "cleared_altitude": 6000,
+        "cruise_altitude": 35000,
+        "expect_approach": "I27",
+        "initial_altitude": 7000,
+        "initial_controller": "BOS_S_APP",
+        "initial_speed": 230,
+        "speed_restriction": 220,
+        "route": "/. ROBUC3",
+        "scratchpad": "I27",
+        "waypoints": "N42.14.36.266,W70.35.07.328/ho HOKDU/a5000/s210/h024"
       }
     ],
     "ROBUC3_4FINAL": [
@@ -2589,6 +3146,48 @@
       "default_map": "4R/L",
       "wind": {
         "direction": 70,
+        "speed": 10
+      }
+    },
+    "KBOS 27/22L Final": {
+      "approach_airspace": [
+        "BOS_F_APP2722L"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KBOS",
+          "runway": "22L"
+        },
+        {
+          "airport": "KBOS",
+          "runway": "27"
+        }
+      ],
+      "arrivals": {
+        "JFUND2_22L": {
+          "KBOS": 20
+        },
+        "ROBUC3_27": {
+          "KBOS": 30
+        },
+        "OOSHN5_27": {
+          "KBOS": 10
+        },
+        "OOSHN5_22L": {
+          "KBOS": 15
+        }
+      },
+      "solo_controller": "BOS_F_APP",
+      "controllers": [
+        "BOS_E_TWR",
+        "BOS_W_TWR",
+        "BOS_CTR",
+        "BOS_N_APP",
+        "BOS_S_APP"
+      ],
+      "default_map": "27/22",
+      "wind": {
+        "direction": 240,
         "speed": 10
       }
     }

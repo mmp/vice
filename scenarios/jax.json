@@ -66,6 +66,80 @@
                     ]
                 }
                 },
+                "approach_regions": {
+                    "8": {
+                        "heading_tolerance": 90,
+                        "near_distance": 5,
+                        "far_half_width": 6,
+                        "region_length": 30,
+                        "descent_distance": 10,
+                        "descent_altitude": 3000,
+                        "above_altitude_tolerance": 1000,
+                        "below_altitude_tolerance": 1000,
+                        "reference_point": "30.496226,-81.700006",
+                        "reference_heading": 77,
+                        "reference_length": 30,
+                        "reference_altitude": 0
+                    },
+                    "14": {
+                        "heading_tolerance": 90,
+                        "near_distance": 5,
+                        "far_half_width": 6,
+                        "region_length": 30,
+                        "descent_distance": 10,
+                        "descent_altitude": 3000,
+                        "above_altitude_tolerance": 1000,
+                        "below_altitude_tolerance": 1000,
+                        "reference_point": "30.492192,-81.700877",
+                        "reference_heading": 137,
+                        "reference_length": 30,
+                        "reference_altitude": 0
+                    },
+                    "26": {
+                        "heading_tolerance": 90,
+                        "near_distance": 5,
+                        "far_half_width": 6,
+                        "region_length": 30,
+                        "descent_distance": 10,
+                        "descent_altitude": 3000,
+                        "above_altitude_tolerance": 1000,
+                        "below_altitude_tolerance": 1000,
+                        "reference_point": "30.505386,-81.670002",
+                        "reference_heading": 257,
+                        "reference_length": 30,
+                        "reference_altitude": 0
+                    },
+                    "32": {
+                        "heading_tolerance": 90,
+                        "near_distance": 5,
+                        "far_half_width": 6,
+                        "region_length": 30,
+                        "descent_distance": 10,
+                        "descent_altitude": 3000,
+                        "above_altitude_tolerance": 1000,
+                        "below_altitude_tolerance": 1000,
+                        "reference_point": "30.478402,-81.682265",
+                        "reference_heading": 317,
+                        "reference_length": 30,
+                        "reference_altitude": 0
+                    }
+                },
+                "converging_runways": [
+                    {
+                        "runways": ["8", "14"],
+                        "leader_directions": ["E", "S"],
+                        "tie_symbol": "/",
+                        "stagger_symbol": "0",
+                        "tie_offset": 2.5
+                    },
+                    {
+                        "runways": ["26", "32"],
+                        "leader_directions": ["W", "N"],
+                        "tie_symbol": "/",
+                        "stagger_symbol": "0",
+                        "tie_offset": 2.5
+                    }
+                ],
                 "departure_routes": {
                     "8": {
                         "AMG,BAXLY": {
@@ -632,7 +706,8 @@
                                         "airport": "KMIA",
                                         "icao": "ENY"
                                     }
-                                ],
+                                ]
+                            },
                                 "cleared_altitude": 10000,
                                 "initial_altitude": 12000,
                                 "initial_controller": "JAX_30_CTR",
@@ -646,8 +721,7 @@
                                 },
                                 "waypoints": "HILIS/a17000/s280 FABES/a13000/ho TEBOW/a11000"
                             }
-                        }
-                    ]
+                        ]
                 },
                 "center": "KJAX",
                 "control_positions": {
@@ -750,6 +824,10 @@
                             {
                                 "airport": "KJAX",
                                 "runway": "8"
+                            },
+                            {
+                                "airport": "KJAX",
+                                "runway": "14"
                             }
                         ],
                         "arrivals": {
@@ -785,7 +863,7 @@
                             "MCO_E_APP",
                             "JAX_TWR"
                         ],
-                        "default_map": "JAX EAST OPRATIONS",
+                        "default_map": "JAX EAST OPERATIONS",
                         "departure_airspace": [
                             "JAX_N_APP"
                         ],
@@ -810,6 +888,10 @@
                             {
                                 "airport": "KJAX",
                                 "runway": "26"
+                            },
+                            {
+                                "airport": "KJAX",
+                                "runway": "32"
                             }
                         ],
                         "arrivals": {
@@ -876,12 +958,12 @@
                 "stars_maps": [
                     {
                         "group": 0,
-                        "label": "JAX EAST OPRATIONS",
-                        "name":  "JAX EAST OPRATIONS"
+                        "label": "E OPS",
+                        "name":  "JAX EAST OPERATIONS"
                     },
                     {
                         "group": 0,
-                        "label": "JAX WEST OPERATIONS",
+                        "label": "W OPS",
                         "name": "JAX WEST OPERATIONS"
                     },
                     {

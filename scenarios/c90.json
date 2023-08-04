@@ -4473,7 +4473,7 @@
             "stars_maps": [
                 {
                     "group": 0,
-                    "label": "C90 MAIN",
+                    "label": "MAIN",
                     "name": "C90 MAIN"
                 },
                 {
@@ -4483,37 +4483,37 @@
                 },
                 {
                     "group": 0,
-                    "label": "ORD STAR FIXES",
+                    "label": "STAR",
                     "name": "ORD STAR WAYPOINTS"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL WEST",
+                    "label": "FINAL/FEED W",
                     "name": "C90 FEEDER/FINAL ORD WEST"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL EAST",
+                    "label": "FINAL/FEED E",
                     "name": "C90 FEEDER/FINAL ORD EAST"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL ORD 4R",
+                    "label": "FINAL/FEED 4R",
                     "name": "C90 FEEDER/FINAL ORD 4R"
                 },
                 {
                     "group": 0,
-                    "label": "FEEDER/FINAL ORD 22",
+                    "label": "FINAL/FEED 22",
                     "name": "C90 FEEDER/FINAL ORD 22"
                 },
                 {
                     "group": 0,
-                    "label": "ORD CAPTURE BARS",
+                    "label": "CPT BARS",
                     "name": "ORD SIMUL CAPTURE BARS"
                 },
                 {
                     "group": 0,
-                    "label": "DEPARTURES",
+                    "label": "DEPS",
                     "name": "C90 DEPARTURES"
                 },
                 {
@@ -4538,7 +4538,7 @@
                 },
                 {
                     "group": 0,
-                    "label": "LOW SEC BDRYS",
+                    "label": "LOW SEC",
                     "name": "ZAU LOW SECTOR BOUNDARIES"
                 },
                 {
@@ -4568,7 +4568,7 @@
                 }
                 ,{
                     "group": 0,
-                    "label": "C90 SAT APCHS",
+                    "label": "SAT APCHS",
                     "name": "C90 SAT AIRPORT APCHS"
                 },
                 {
