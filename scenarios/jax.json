@@ -100,29 +100,31 @@
         "26": {
           "heading_tolerance": 90,
           "near_distance": 5,
+          "near_half_width": 3,
           "far_half_width": 6,
-          "region_length": 30,
+          "region_length": 25,
           "descent_distance": 10,
           "descent_altitude": 3000,
           "above_altitude_tolerance": 1000,
           "below_altitude_tolerance": 1000,
-          "reference_point": "30.505386,-81.670002",
+          "reference_point": "30.50539,-81.67000",
           "reference_heading": 257,
-          "reference_length": 30,
+          "reference_length": 25,
           "reference_altitude": 0
         },
         "32": {
           "heading_tolerance": 90,
           "near_distance": 5,
           "far_half_width": 6,
-          "region_length": 30,
+          "near_half_width": 3,
+          "region_length": 25,
           "descent_distance": 10,
           "descent_altitude": 3000,
           "above_altitude_tolerance": 1000,
           "below_altitude_tolerance": 1000,
-          "reference_point": "30.478402,-81.682265",
+          "reference_point": "30.47840,-81.68227",
           "reference_heading": 317,
-          "reference_length": 30,
+          "reference_length": 25,
           "reference_altitude": 0
         }
       },
@@ -146,7 +148,7 @@
             "32"
           ],
           "leader_directions": [
-            "W",
+            "N",
             "N"
           ],
           "tie_symbol": "/",
