@@ -578,7 +578,7 @@ func (l *LinesDrawBuilder) AddLine(p0, p1 [2]float32) {
 }
 
 // AddPolyline adds multiple lines to the lines draw builder where the
-// vertex positions of the liens are found by adding each vertex of the
+// vertex positions of the lines are found by adding each vertex of the
 // provided shape array to the center point p.
 func (l *LinesDrawBuilder) AddPolyline(p [2]float32, shape [][2]float32) {
 	idx := int32(len(l.p))

@@ -327,6 +327,29 @@ func (co CardinalOrdinalDirection) ShortString() string {
 	}
 }
 
+func ParseCardinalOrdinalDirection(s string) (CardinalOrdinalDirection, error) {
+	switch s {
+	case "N":
+		return North, nil
+	case "NE":
+		return NorthEast, nil
+	case "E":
+		return East, nil
+	case "SE":
+		return SouthEast, nil
+	case "S":
+		return South, nil
+	case "SW":
+		return SouthWest, nil
+	case "W":
+		return West, nil
+	case "NW":
+		return NorthWest, nil
+	}
+
+	return CardinalOrdinalDirection(0), fmt.Errorf("invalid direction")
+}
+
 func nmPerLongitude(p Point2LL) float32 {
 	return 45
 	// WANT: return 60 * sin(radians(p[1]))
@@ -571,6 +594,17 @@ func SignedPointLineDistance(p, p0, p1 [2]float32) float32 {
 // PointLineDistance returns the minimum distance from the point p to the infinite line defined by (p0, p1).
 func PointLineDistance(p, p0, p1 [2]float32) float32 {
 	return abs(SignedPointLineDistance(p, p0, p1))
+}
+
+// ClosestPointOnLine returns the closest point on the (infinite) line to
+// the given point p.
+func ClosestPointOnLine(line [2][2]float32, p [2]float32) [2]float32 {
+	x1, y1 := line[0][0], line[0][1]
+	x2, y2 := line[1][0], line[1][1]
+
+	t := (((p[0] - x1) * (x2 - x1)) + ((p[1] - y1) * (y2 - y1))) / ((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1))
+
+	return [2]float32{lerp(t, x1, x2), lerp(t, y1, y2)}
 }
 
 // Returns the vertex coordinates of an equilateral triangle centered at

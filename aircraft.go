@@ -569,22 +569,16 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 		err = ErrClearedForUnexpectedApproach
 		return
 	}
-	if ac.ApproachCleared && ac.NoPT == straightIn {
-		response = "you already cleared us for the " + ap.FullName + " approach..."
-		return
-	}
 
 	directApproachFix := false
-	var remainingApproachWaypoints []Waypoint
 	if _, ok := ac.Nav.L.(*FlyRoute); ok && len(ac.Waypoints) > 0 {
 		// Is the aircraft cleared direct to a waypoint on the approach?
 		for _, approach := range ap.Waypoints {
 			for i, wp := range approach {
 				if wp.Fix == ac.Waypoints[0].Fix {
 					directApproachFix = true
-					if i+1 < len(approach) {
-						remainingApproachWaypoints = approach[i+1:]
-					}
+					// Add the rest of the approach waypoints to our route
+					ac.Waypoints = DuplicateSlice(approach[i:])
 					break
 				}
 			}
@@ -593,9 +587,7 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 
 	if ap.Type == ILSApproach {
 		if directApproachFix {
-			if remainingApproachWaypoints != nil {
-				ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
-			}
+			// all good
 		} else if _, ok := ac.Nav.L.(*FlyHeading); ok {
 			ac.AddFutureNavCommand(&TurnToInterceptLocalizer{})
 		} else {
@@ -610,10 +602,6 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 		if !directApproachFix {
 			response = "we need direct to a fix on the approach..."
 			return
-		}
-
-		if remainingApproachWaypoints != nil {
-			ac.Waypoints = append(ac.Waypoints, remainingApproachWaypoints...)
 		}
 
 		// LNav is already known to be FlyRoute; leave SNav and VNav as is

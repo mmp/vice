@@ -756,15 +756,6 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	}
 
 	ac.Scratchpad = arr.Scratchpad
-	if arr.ExpectApproach != "" {
-		ap := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if appr, ok := ap.Approaches[arr.ExpectApproach]; ok {
-			ac.ApproachId = arr.ExpectApproach
-			ac.Approach = &appr
-		} else {
-			return nil, fmt.Errorf("%s: unable to find expected approach", arr.ExpectApproach)
-		}
-	}
 
 	if goAround {
 		ac.AddFutureNavCommand(&GoAround{AirportDistance: 0.1 + .6*rand.Float32()})
@@ -776,6 +767,13 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	}
 	ac.Nav.V = &FlyRoute{
 		AltitudeRestriction: arr.ClearedAltitude,
+	}
+
+	if arr.ExpectApproach != "" {
+		resp, err := ac.ExpectApproach(arr.ExpectApproach, w)
+		if err != nil {
+			return nil, fmt.Errorf("%s: unable to find expected approach: %s: %w", arr.ExpectApproach, resp, err)
+		}
 	}
 
 	return ac, nil
