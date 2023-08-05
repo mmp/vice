@@ -819,7 +819,7 @@
   "magnetic_variation": 5,
   "name": "KJAX",
   "nm_per_latitude": 60,
-  "nm_per_longitude": 40,
+  "nm_per_longitude": 52,
   "primary_airport": "KJAX",
   "radar_sites": {
     "JAX": {
@@ -1065,18 +1065,23 @@
   "stars_maps": [
     {
       "group": 0,
-      "label": "E OPS",
+      "label": "JAX E",
       "name": "JAX EAST OPERATIONS"
     },
     {
       "group": 0,
-      "label": "W OPS",
+      "label": "JAX W",
       "name": "JAX WEST OPERATIONS"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "CLASS C",
       "name": "JAX CLASS C SURFACE AREA"
+    },
+    {
+      "group":1,
+      "label": "CLASS D",
+      "name": "JAX CLASS D SURFACE AREAS"
     },
     {
       "group": 0,
