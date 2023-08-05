@@ -1571,7 +1571,7 @@
       "KDEN": "N39.51.41.421,W104.40.23.005",
       "DEN": "N39.51.41.421,W104.40.23.005"
     },
-    "magnetic_variation": 10.5,
+    "magnetic_variation": 7.9,
     "name": "KDEN",
    "nm_per_latitude": 60,
    "nm_per_longitude": 45,
@@ -1705,6 +1705,1118 @@
             "category": "WEST",
             "rate": 15,
             "runway": "25"
+          }
+        ],
+        "wind": {
+          "direction": 140,
+          "speed": 1
+        }
+      },
+      "North Calm": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "34R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35L"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35R"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "34L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "25"
+          }
+        ],
+        "wind": {
+          "direction": 300,
+          "speed": 1
+        }
+      },
+      "South and East": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "7"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "16R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "17R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "16L"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "17L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "17L"
+          }
+        ],
+        "wind": {
+          "direction": 140,
+          "speed": 15
+        }
+      },
+      "South and West": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "16L"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "16R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "17R"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "17L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "17L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "25"
+          }
+        ],
+        "wind": {
+          "direction": 210,
+          "speed": 15
+        }
+      },
+      "North and East": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "34R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35L"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35R"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "34L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "34L"
+          }
+        ],
+        "wind": {
+          "direction": 80,
+          "speed": 12
+        }
+      },
+      "North and West": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "34R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35L"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35R"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "34L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "34L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "25"
+          }
+        ],
+        "wind": {
+          "direction": 140,
+          "speed": 1
+        }
+      },
+      "South All": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "17L"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "16R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "17R"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "17L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "16L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "17L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "16L"
+          }
+        ],
+        "wind": {
+          "direction": 140,
+          "speed": 35
+        }
+      },
+      "North All": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "34R"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35L"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "35R"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "34R"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "34R"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "34L"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "34L"
+          }
+        ],
+        "wind": {
+          "direction": 20,
+          "speed": 31
+        }
+      },
+      "West All": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "26"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "25"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "25"
+          }
+        ],
+        "wind": {
+          "direction": 270,
+          "speed": 33
+        }
+      },
+      "East All": {
+        "arrival_runways": [
+          {
+            "airport": "KDEN",
+            "runway": "7"
+          },
+          {
+            "airport": "KDEN",
+            "runway": "8"
+          }
+        ],
+        "arrivals": {
+          "AALLE3": {
+            "KDEN": 10
+          },
+          "CLASH4": {
+            "KDEN": 10
+          },
+          "FLATI3": {
+            "KDEN": 10
+          },
+          "LAWGR3": {
+            "KDEN": 10
+          },
+          "LONGZ2": {
+            "KDEN": 10
+          },
+          "NIIXX3": {
+            "KDEN": 10
+          },
+          "SSKII3": {
+            "KDEN": 10
+          },
+          "TBARR3": {
+            "KDEN": 10
+          }
+        },
+        "solo_controller": "DEN_I_APP",
+        "multi_controllers": {
+          "DEN_I_APP": {
+            "primary": true,
+            "arrivals": ["SSKII3", "TBARR3"]
+          },
+          "DEN_H_APP": {
+            "backup": "DEN_I_APP",
+            "arrivals": ["FLATI3", "LONGZ2"]
+          },
+          "DEN_G_APP": {
+            "backup": "DEN_H_APP",
+            "arrivals": ["AALLE3", "LAWGR3"]
+          },
+          "DEN_X_APP": {
+            "backup": "DEN_G_APP",
+            "arrivals": ["NIIXX3", "CLASH4"]
+          },
+          "DEN_W_APP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_E_APP": {
+            "backup": "DEN_W_APP"
+          },
+          "DEN_O_APP": {
+            "backup": "DEN_E_APP"
+          },
+          "DEN_T_APP": {
+            "backup": "DEN_O_APP"
+          },
+          "DEN_L_DEP": {
+            "backup": "DEN_I_APP"
+          },
+          "DEN_N_DEP": {
+            "backup": "DEN_L_DEP",
+            "departure": true
+          },
+          "DEN_R_DEP": {
+            "backup": "DEN_N_DEP"
+          },
+          "DEN_S_DEP": {
+            "backup": "DEN_R_DEP"
+          }
+        },
+        "controllers": [
+          "DEN_E_TWR",
+          "DEN_W_TWR",
+          "DEN_N_TWR",
+          "DEN_S_TWR",
+          "DEN_17_CTR"
+        ],
+        "default_map": "AR BASE",
+        "departure_runways": [
+          {
+            "airport": "KDEN",
+            "category": "EAST",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "NORTH",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "SOUTH",
+            "rate": 15,
+            "runway": "8"
+          },
+          {
+            "airport": "KDEN",
+            "category": "WEST",
+            "rate": 15,
+            "runway": "8"
           }
         ],
         "wind": {
