@@ -1355,11 +1355,11 @@
         "N28.18.41.270,W81.36.45.033"
       ],
       "MCOLAPPS901202": [
-       "N28.05.59.070,W81.53.29.542",
-       "N27.57.08.582,W81.40.01.393",
-       "N27.55.40.423,W81.49.58.943",
-       "N28.00.26.469,W81.49.57.734",
-       "N28.05.59.032,W81.53.28.674"
+        "N28.05.59.070,W81.53.29.542",
+        "N27.57.08.582,W81.40.01.393",
+        "N27.55.40.423,W81.49.58.943",
+        "N28.00.26.469,W81.49.57.734",
+        "N28.05.59.032,W81.53.28.674"
       ],
       "MCOLAPPN90120": [
         "N28.47.03.085,W81.52.14.489",
@@ -2043,7 +2043,7 @@
       "MCO_B_APPS": [
         {
           "boundaries": [
-            "MCOBAPPS60160"  
+            "MCOBAPPS60160"
           ],
           "lower": 6000,
           "upper": 16000
@@ -2172,26 +2172,26 @@
           "upper": 9000
         },
         {
-        "boundaries": [
-          "MCOLAPPS50100"
-        ],
-        "lower": 5000,
-        "upper": 10000
-      },
-      {
-        "boundaries": [
-          "MCOLAPPS80110"
-        ],
-        "lower": 8000,
-        "upper": 11000
-      },
-      {
-        "boundaries": [
-          "MCOLAPPS90130"
-        ],
-        "lower": 9000,
-        "upper": 13000
-      }
+          "boundaries": [
+            "MCOLAPPS50100"
+          ],
+          "lower": 5000,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "MCOLAPPS80110"
+          ],
+          "lower": 8000,
+          "upper": 11000
+        },
+        {
+          "boundaries": [
+            "MCOLAPPS90130"
+          ],
+          "lower": 9000,
+          "upper": 13000
+        }
       ],
       "ISM_TWR": [
         {
@@ -2246,7 +2246,7 @@
         },
         {
           "boundaries": [
-           "MCOGAPPS2250"
+            "MCOGAPPS2250"
           ],
           "lower": 2200,
           "upper": 5000
@@ -2272,30 +2272,30 @@
           "lower": 4000,
           "upper": 5000
         }
+      ],
+      "MCO_G_APPN": [
+        {
+          "boundaries": [
+            "MCOGAPPN050"
           ],
-          "MCO_G_APPN": [
-            {
-              "boundaries": [
-                "MCOGAPPN050"
-              ],
-              "lower": 0,
-              "upper": 5000
-            },
-            {
-              "boundaries": [
-                "MCOGAPPN3050"
-              ],
-              "lower": 3000,
-              "upper": 5000
-            },
-            {
-              "boundaries": [
-                "MCOGAPPN4050"
-              ],
-              "lower": 4000,
-              "upper": 5000
-            }
+          "lower": 0,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "MCOGAPPN3050"
           ],
+          "lower": 3000,
+          "upper": 5000
+        },
+        {
+          "boundaries": [
+            "MCOGAPPN4050"
+          ],
+          "lower": 4000,
+          "upper": 5000
+        }
+      ],
       "SFB_S_TWR": [
         {
           "boundaries": [
@@ -8530,10 +8530,10 @@
     "MCO_V_APP": {
       "frequency": 119775,
       "full_name": "Orlando Approach",
-      "scope_char" :"V",
+      "scope_char": "V",
       "sector_id": "4V"
     },
-    "MCO_P_APP" : {
+    "MCO_P_APP": {
       "frequency": 135300,
       "full_name": "Orlando Approach",
       "scope_char": "P",
@@ -8641,45 +8641,50 @@
   "nm_per_longitude": 40,
   "primary_airport": "KMCO",
   "radar_sites": {
-    "KMLB": {
-      "char": "L",
-      "elevation": 33,
-      "position": "KMLB",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KISM": {
-      "char": "I",
-      "elevation": 80,
-      "position": "KISM",
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KMCO": {
+    "MCO": {
       "char": "M",
-      "elevation": 96,
-      "position": "N028.25.45.781, W081.18.32.260",
+      "elevation": 100,
+      "position": "28.39483,-81.30464",
       "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
+      "secondary_range": 60,
+      "slope_angle": 0.175,
+      "silence_angle": 15
     },
-    "KORL": {
-      "char": "O",
-      "elevation": 113,
-      "position": "KORL",
+    "DAB": {
+      "char": "D",
+      "elevation": 38,
+      "position": "29.17267,-81.19224",
       "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
+      "secondary_range": 60,
+      "slope_angle": 0.175,
+      "silence_angle": 15
     },
-    "KSFB": {
-      "char": "S",
-      "elevation": 55,
-      "position": "N028.46.37.847, W081.14.05.700",
+    "MLB": {
+      "char": "B",
+      "elevation": 30,
+      "position": "28.11171,-80.66856",
       "primary_range": 60,
       "secondary_range": 120,
-      "slope_angle": 0.175
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    },
+    "GNV": {
+      "char": "G",
+      "elevation": 155,
+      "position": "29.41514,-82.23247",
+      "primary_range": 60,
+      "secondary_range": 60,
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    },
+    "ZMLB": {
+      "char": "Z",
+      "elevation": 22,
+      "position": "28.08427,-80.79808",
+      "primary_range": 250,
+      "secondary_range": 250,
+      "slope_angle": 0.175,
+      "silence_angle": 15
     }
   },
   "scenarios": {
@@ -8740,18 +8745,54 @@
       },
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-        "MCO_E_DEP" : {"departure": true, "primary": true},
-        "MCO_L_APP" : {"backup" : "MCO_E_DEP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
-        "MCO_G_APP" : {"backup" : "MCO_B_APP" },
-        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_D_APP" : {"backup" : "MCO_W_DEP" },
-        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_S_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_N_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_P_APP" : {"backup" : "MCO_N_APP" },
-        "MCO_V_APP" : {"backup" : "MCO_N_APP" } 
+        "MCO_E_DEP": {
+          "departure": true,
+          "primary": true
+        },
+        "MCO_L_APP": {
+          "backup": "MCO_E_DEP",
+          "arrivals": [
+            "GRNCH4",
+            "JOKRS3",
+            "PRICY3"
+          ]
+        },
+        "MCO_W_DEP": {
+          "backup": "MCO_E_DEP"
+        },
+        "MCO_B_APP": {
+          "backup": "MCO_L_APP",
+          "arrivals": [
+            "ALYNA3",
+            "GOOFY7",
+            "GTOUT1",
+            "RIDES2"
+          ]
+        },
+        "MCO_G_APP": {
+          "backup": "MCO_B_APP"
+        },
+        "MCO_M_APP": {
+          "backup": "MCO_L_APP"
+        },
+        "MCO_D_APP": {
+          "backup": "MCO_W_DEP"
+        },
+        "MCO_K_APP": {
+          "backup": "MCO_D_APP"
+        },
+        "MCO_S_APP": {
+          "backup": "MCO_K_APP"
+        },
+        "MCO_N_APP": {
+          "backup": "MCO_K_APP"
+        },
+        "MCO_P_APP": {
+          "backup": "MCO_N_APP"
+        },
+        "MCO_V_APP": {
+          "backup": "MCO_N_APP"
+        }
       },
       "controllers": [
         "TPA_E_APP",
@@ -8889,18 +8930,54 @@
       },
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-        "MCO_E_DEP" : {"departure": true, "primary": true},
-        "MCO_L_APP" : {"backup" : "MCO_E_DEP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "SNFLD3", "RIDES2" ] },
-        "MCO_G_APP" : {"backup" : "MCO_B_APP" },
-        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_D_APP" : {"backup" : "MCO_W_DEP" },
-        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_S_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_N_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_P_APP" : {"backup" : "MCO_N_APP" },
-        "MCO_V_APP" : {"backup" : "MCO_N_APP" } 
+        "MCO_E_DEP": {
+          "departure": true,
+          "primary": true
+        },
+        "MCO_L_APP": {
+          "backup": "MCO_E_DEP",
+          "arrivals": [
+            "GRNCH4",
+            "JOKRS3",
+            "PRICY3"
+          ]
+        },
+        "MCO_W_DEP": {
+          "backup": "MCO_E_DEP"
+        },
+        "MCO_B_APP": {
+          "backup": "MCO_L_APP",
+          "arrivals": [
+            "ALYNA3",
+            "GOOFY7",
+            "SNFLD3",
+            "RIDES2"
+          ]
+        },
+        "MCO_G_APP": {
+          "backup": "MCO_B_APP"
+        },
+        "MCO_M_APP": {
+          "backup": "MCO_L_APP"
+        },
+        "MCO_D_APP": {
+          "backup": "MCO_W_DEP"
+        },
+        "MCO_K_APP": {
+          "backup": "MCO_D_APP"
+        },
+        "MCO_S_APP": {
+          "backup": "MCO_K_APP"
+        },
+        "MCO_N_APP": {
+          "backup": "MCO_K_APP"
+        },
+        "MCO_P_APP": {
+          "backup": "MCO_N_APP"
+        },
+        "MCO_V_APP": {
+          "backup": "MCO_N_APP"
+        }
       },
       "controllers": [
         "TPA_E_APP",
@@ -9081,7 +9158,7 @@
       "approach_airspace": [
         "MCO_G_APPS"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "17L"
@@ -9107,8 +9184,8 @@
         "RIDES2_SFINAL": {
           "KMCO": 5
         }
-        },
-      "solo_controller":"MCO_G_APP",
+      },
+      "solo_controller": "MCO_G_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9135,7 +9212,7 @@
       "approach_airspace": [
         "MCO_L_APPS"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "18R"
@@ -9148,8 +9225,8 @@
         "PRICY3_LSU": {
           "KMCO": 10
         }
-        },
-      "solo_controller":"MCO_L_APP",
+      },
+      "solo_controller": "MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9177,7 +9254,7 @@
         "MCO_L_APPS",
         "MCO_B_APPS"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "18R"
@@ -9204,7 +9281,7 @@
           "KMCO": 10
         }
       },
-      "solo_controller":"MCO_L_APP",
+      "solo_controller": "MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9231,7 +9308,7 @@
       "approach_airspace": [
         "MCO_B_APPS"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "17L"
@@ -9247,8 +9324,8 @@
         "ALYNA3_BSU": {
           "KMCO": 10
         }
-        },
-      "solo_controller":"MCO_B_APP",
+      },
+      "solo_controller": "MCO_B_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9275,7 +9352,7 @@
       "approach_airspace": [
         "MCO_L_APPNU"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "36L"
@@ -9288,8 +9365,8 @@
         "PRICY3_LNU": {
           "KMCO": 10
         }
-        },
-      "solo_controller":"MCO_L_APP",
+      },
+      "solo_controller": "MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9317,7 +9394,7 @@
         "MCO_L_APPNU",
         "MCO_B_APPN"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "36L"
@@ -9344,7 +9421,7 @@
           "KMCO": 5
         }
       },
-      "solo_controller":"MCO_L_APP",
+      "solo_controller": "MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9371,7 +9448,7 @@
       "approach_airspace": [
         "MCO_B_APPN"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "35R"
@@ -9387,8 +9464,8 @@
         "ALYNA3_BNU": {
           "KMCO": 10
         }
-        },
-      "solo_controller":"MCO_B_APP",
+      },
+      "solo_controller": "MCO_B_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9415,7 +9492,7 @@
       "approach_airspace": [
         "MCO_G_APPN"
       ],
-      "arrival_runways":[
+      "arrival_runways": [
         {
           "airport": "KMCO",
           "runway": "35R"
@@ -9438,8 +9515,8 @@
         "SNFLD3_NFINAL": {
           "KMCO": 15
         }
-        },
-      "solo_controller":"MCO_G_APP",
+      },
+      "solo_controller": "MCO_G_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
