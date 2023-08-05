@@ -31,8 +31,10 @@ type World struct {
 	ArrivalAirports   map[string]*Airport
 
 	lastUpdateRequest time.Time
+	lastReturnedTime  time.Time
 	updateCall        *PendingCall
 	showSettings      bool
+	showApproaches    bool
 
 	launchControlWindow *LaunchControlWindow
 
@@ -42,10 +44,9 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	LaunchController  string
+	LaunchConfig      LaunchConfig
 	PrimaryController string
 	MultiControllers  map[string]*MultiUserController
-
 	SimIsPaused       bool
 	SimRate           float32
 	SimName           string
@@ -66,13 +67,11 @@ type World struct {
 	ApproachAirspace  []AirspaceVolume
 	DepartureAirspace []AirspaceVolume
 	DepartureRunways  []ScenarioGroupDepartureRunway
+	ArrivalRunways    []ScenarioGroupArrivalRunway
 	Scratchpads       map[string]string
 	ArrivalGroups     map[string][]Arrival
-	// airport -> runway -> category -> rate
-	DepartureRates map[string]map[string]map[string]int
-	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]int
-	GoAroundRate      float32
+	TotalDepartures   int
+	TotalArrivals     int
 
 	STARSInputOverride string
 }
@@ -115,11 +114,12 @@ func (w *World) Assign(other *World) {
 	w.ApproachAirspace = other.ApproachAirspace
 	w.DepartureAirspace = other.DepartureAirspace
 	w.DepartureRunways = other.DepartureRunways
+	w.ArrivalRunways = other.ArrivalRunways
 	w.Scratchpads = other.Scratchpads
 	w.ArrivalGroups = other.ArrivalGroups
-	w.DepartureRates = other.DepartureRates
-	w.ArrivalGroupRates = other.ArrivalGroupRates
-	w.GoAroundRate = other.GoAroundRate
+	w.LaunchConfig = other.LaunchConfig
+	w.TotalDepartures = other.TotalDepartures
+	w.TotalArrivals = other.TotalArrivals
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -433,7 +433,10 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
-				lg.Printf("Got world update after %s", time.Since(w.updateCall.IssueTime))
+				d := time.Since(w.updateCall.IssueTime)
+				if d > 250*time.Millisecond {
+					lg.Infof("Slow world update response: %s", d)
+				}
 				wu.UpdateWorld(w, eventStream)
 			},
 			OnErr: onErr,
@@ -476,21 +479,58 @@ func (w *World) SetSimRate(r float32) {
 	w.SimRate = r // so the UI is well-behaved...
 }
 
+func (w *World) SetLaunchConfig(lc LaunchConfig) {
+	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+		Call:      w.simProxy.SetLaunchConfig(lc),
+		IssueTime: time.Now(),
+	})
+	w.LaunchConfig = lc // for the UI's benefit...
+}
+
+// CurrentTime returns an extrapolated value that models the current Sim's time.
+// (Because the Sim may be running remotely, we have to make some approximations,
+// though they shouldn't cause much trouble since we get an update from the Sim
+// at least once a second...)
 func (w *World) CurrentTime() time.Time {
-	d := time.Since(w.lastUpdateRequest)
-	if w.SimRate != 0 {
+	t := w.SimTime
+
+	if !w.SimIsPaused {
+		d := time.Since(w.lastUpdateRequest)
+
+		// Roughly account for RPC overhead; more for a remote server (where
+		// SimName will be set.)
+		if w.SimName == "" {
+			d -= 10 * time.Millisecond
+		} else {
+			d -= 50 * time.Millisecond
+		}
+		d = max(0, d)
+
+		// Account for sim rate
 		d = time.Duration(float64(d) * float64(w.SimRate))
+
+		t = t.Add(d)
 	}
-	return w.SimTime.Add(d)
+
+	// Make sure we don't ever go backward; this can happen due to
+	// approximations in the above when an updated current time comes in
+	// with a Sim update.
+	if t.After(w.lastReturnedTime) {
+		w.lastReturnedTime = t
+	}
+	return w.lastReturnedTime
 }
 
 func (w *World) GetWindowTitle() string {
 	if w.SimDescription == "" {
 		return "(disconnected)"
-	} else if w.SimName == "" {
-		return w.Callsign + ": " + w.SimDescription
 	} else {
-		return w.Callsign + "@" + w.SimName + ": " + w.SimDescription
+		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", w.TotalDepartures, w.TotalArrivals)
+		if w.SimName == "" {
+			return w.Callsign + ": " + w.SimDescription + deparr
+		} else {
+			return w.Callsign + "@" + w.SimName + ": " + w.SimDescription + deparr
+		}
 	}
 }
 
@@ -507,7 +547,7 @@ func (w *World) PrintInfo(ac *Aircraft) {
 
 func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 	if w.simProxy != nil {
-		if w.LaunchController == "" || w.LaunchController == w.Callsign {
+		if lctrl := w.LaunchConfig.Controller; lctrl == "" || lctrl == w.Callsign {
 			delete(w.Aircraft, ac.Callsign)
 		}
 
@@ -694,7 +734,7 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 
 	// Start with the default waypoints for the arrival; these may be
 	// updated when an 'expect' approach is given...
-	ac.Waypoints = arr.Waypoints
+	ac.Waypoints = DuplicateSlice(arr.Waypoints)
 	// Hold onto these with the Aircraft so we have them later.
 	ac.ArrivalRunwayWaypoints = arr.RunwayWaypoints
 
@@ -718,8 +758,9 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	ac.Scratchpad = arr.Scratchpad
 	if arr.ExpectApproach != "" {
 		ap := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if _, ok := ap.Approaches[arr.ExpectApproach]; ok {
+		if appr, ok := ap.Approaches[arr.ExpectApproach]; ok {
 			ac.ApproachId = arr.ExpectApproach
+			ac.Approach = &appr
 		} else {
 			return nil, fmt.Errorf("%s: unable to find expected approach", arr.ExpectApproach)
 		}
@@ -841,6 +882,10 @@ func (w *World) ToggleActivateSettingsWindow() {
 	w.showSettings = !w.showSettings
 }
 
+func (w *World) ToggleShowApproachesWindow() {
+	w.showApproaches = !w.showApproaches
+}
+
 type MissingPrimaryModalClient struct {
 	world *World
 }
@@ -882,6 +927,47 @@ func (w *World) DrawMissingPrimaryDialog() {
 			uiShowModalDialog(w.missingPrimaryDialog, true)
 		}
 	}
+}
+
+func (w *World) DrawApproachesWindow() {
+	if !w.showApproaches {
+		return
+	}
+
+	imgui.BeginV("Available Approaches", &w.showApproaches, imgui.WindowFlagsAlwaysAutoResize)
+
+	if imgui.BeginTableV("appr", 4, 0, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("Runway")
+		imgui.TableSetupColumn("Code")
+		imgui.TableSetupColumn("Description")
+		imgui.TableHeadersRow()
+
+		for _, rwy := range w.ArrivalRunways {
+			if ap, ok := w.Airports[rwy.Airport]; !ok {
+				lg.Errorf("%s: arrival %s airport not in world airports %s", rwy.Airport,
+					spew.Sdump(rwy), spew.Sdump(w.Airports))
+			} else {
+				for _, name := range SortedMapKeys(ap.Approaches) {
+					appr := ap.Approaches[name]
+					if appr.Runway == rwy.Runway {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(rwy.Airport)
+						imgui.TableNextColumn()
+						imgui.Text(rwy.Runway)
+						imgui.TableNextColumn()
+						imgui.Text(name)
+						imgui.TableNextColumn()
+						imgui.Text(appr.FullName)
+					}
+				}
+			}
+		}
+		imgui.EndTable()
+	}
+
+	imgui.End()
 }
 
 func (w *World) DrawSettingsWindow() {

@@ -3405,5 +3405,6 @@
                             "name": "SOUTH SID",
                             "label": "SOUTH SID"
                         }
-                    ]
+                    ],
+                "video_map_file": "videomaps/cle-maps.json.zst"
                 }

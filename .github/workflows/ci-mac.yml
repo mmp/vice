@@ -24,10 +24,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Setup go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version-file: go.mod
-        cache: true
         cache-dependency-path: go.sum
 
     - name: Check go install
@@ -46,6 +45,10 @@ jobs:
     - name: Run tests
       run:
         go test -v
+
+    - name: Check scenarios
+      run:
+        ./vice -lint
 
     - name: Create icons
       run: |
@@ -71,6 +74,10 @@ jobs:
         mkdir Vice.app/Contents/Resources
         cp icon.icns Vice.app/Contents/Resources
         cp vice Vice.app/Contents/MacOS/
+        mkdir Vice.app/Contents/Resources/scenarios
+        cp scenarios/*json Vice.app/Contents/Resources/scenarios
+        mkdir Vice.app/Contents/Resources/videomaps
+        cp videomaps/*json.zst Vice.app/Contents/Resources/videomaps
 
     - name: Set up keychain for signing binary
       env:

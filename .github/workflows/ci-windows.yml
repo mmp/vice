@@ -24,10 +24,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Setup go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version-file: go.mod
-        cache: true
         cache-dependency-path: go.sum
 
     - name: Checkout Windows prebuilts
@@ -58,6 +57,10 @@ jobs:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
+
+    - name: Check scenarios
+      run:
+        ./vice.exe -lint
 
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH

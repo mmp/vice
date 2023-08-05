@@ -66,7 +66,7 @@ func (gc *GlobalConfig) Encode(w io.Writer) error {
 }
 
 func (c *GlobalConfig) Save() error {
-	lg.Printf("Saving config to: %s", configFilePath())
+	lg.Infof("Saving config to: %s", configFilePath())
 	f, err := os.Create(configFilePath())
 	if err != nil {
 		return err
@@ -96,7 +96,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 	fn := configFilePath()
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
-		lg.Printf("%s: unable to read config file: %v", fn, err)
+		lg.Infof("%s: unable to read config file: %v", fn, err)
 	}
 
 	var b strings.Builder
@@ -118,22 +118,17 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 
 func LoadOrMakeDefaultConfig() {
 	fn := configFilePath()
-	lg.Printf("Loading config from: %s", fn)
+	lg.Infof("Loading config from: %s", fn)
 
 	globalConfig = &GlobalConfig{}
 	config, err := os.ReadFile(fn)
 	if err != nil {
-		globalConfig.InitialWindowSize[0] = 1920
-		globalConfig.InitialWindowSize[1] = 1080
-		globalConfig.InitialWindowPosition[0] = 100
-		globalConfig.InitialWindowPosition[1] = 100
-
 		globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
 		globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
 		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
 		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
-		globalConfig.Version = 4
+		globalConfig.Version = 5
 		globalConfig.WhatsNewIndex = len(whatsNew)
 	} else {
 		r := bytes.NewReader(config)
@@ -152,6 +147,11 @@ func LoadOrMakeDefaultConfig() {
 			// No need to clear out the *Sim pointer any more...
 			globalConfig.Version = 3
 		}
+		if globalConfig.Version < 5 {
+			globalConfig.Sim = nil
+			globalConfig.Callsign = ""
+			globalConfig.Version = 5
+		}
 	}
 
 	if globalConfig.UIFontSize == 0 {
@@ -164,7 +164,7 @@ func LoadOrMakeDefaultConfig() {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
+func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream, lg *Logger) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false

@@ -31,6 +31,7 @@ var (
 	FontAwesomeIconArrowLeft           = faUsedIcons["ArrowLeft"]
 	FontAwesomeIconArrowRight          = faUsedIcons["ArrowRight"]
 	FontAwesomeIconArrowUp             = faUsedIcons["ArrowUp"]
+	FontAwesomeIconBook                = faUsedIcons["Book"]
 	FontAwesomeIconBug                 = faUsedIcons["Bug"]
 	FontAwesomeIconCaretDown           = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
@@ -68,6 +69,7 @@ var (
 		"ArrowLeft":           FontAwesomeString("ArrowLeft"),
 		"ArrowRight":          FontAwesomeString("ArrowRight"),
 		"ArrowUp":             FontAwesomeString("ArrowUp"),
+		"Book":                FontAwesomeString("Book"),
 		"Bug":                 FontAwesomeString("Bug"),
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
@@ -215,7 +217,7 @@ func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
 }
 
 func fontsInit(r Renderer, platform Platform) {
-	lg.Printf("Starting to initialize fonts")
+	lg.Info("Starting to initialize fonts")
 	fonts = make(map[FontIdentifier]*Font)
 	io := imgui.CurrentIO()
 
@@ -257,7 +259,7 @@ func fontsInit(r Renderer, platform Platform) {
 			if runtime.GOOS == "windows" {
 				// Fix font sizes to account for Windows using 96dpi but
 				// everyone else using 72...
-				sp *= 96. / 72. * dpiScale(platform)
+				sp *= 96. / 72. * platform.DPIScale()
 				sp = float32(int(sp + 0.5))
 			}
 
@@ -285,7 +287,7 @@ func fontsInit(r Renderer, platform Platform) {
 	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
 
 	img := io.Fonts().TextureDataRGBA32()
-	lg.Printf("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
+	lg.Infof("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
 	rgb8Image := &image.RGBA{
 		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
 		Stride: 4 * img.Width,
@@ -293,7 +295,7 @@ func fontsInit(r Renderer, platform Platform) {
 	fontId := r.CreateTextureFromImage(rgb8Image)
 	io.Fonts().SetTextureID(imgui.TextureID(fontId))
 
-	lg.Printf("Finished initializing fonts")
+	lg.Info("Finished initializing fonts")
 }
 
 // GetAllFonts returns a FontIdentifier slice that gives identifiers for
@@ -369,7 +371,7 @@ func GetDefaultFont() *Font {
 func FontAwesomeString(id string) string {
 	s, ok := IconFontCppHeaders.FontAwesome5.Icons[id]
 	if !ok {
-		lg.Errorf("%s: FA string unknown", id)
+		panic(fmt.Sprintf("%s: FA string unknown", id))
 	}
 	return s
 }
@@ -377,7 +379,7 @@ func FontAwesomeString(id string) string {
 func FontAwesomeBrandsString(id string) string {
 	s, ok := IconFontCppHeaders.FontAwesome5Brands.Icons[id]
 	if !ok {
-		lg.Errorf("%s: FA string unknown", id)
+		panic(fmt.Sprintf("%s: FA string unknown", id))
 	}
 	return s
 }

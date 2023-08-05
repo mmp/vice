@@ -6,192 +6,183 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
 	"time"
+
+	"golang.org/x/exp/slog"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Logger provides a simple logging system with a few different log levels;
 // debugging and verbose output may both be suppressed independently.
 type Logger struct {
-	// Note that CircularLogBuffer is not thread-safe, so Logger must hold
-	// this mutex before calling into it.
-	mu            sync.Mutex
-	printToStderr bool
-	verbose       *CircularLogBuffer
-	err           *CircularLogBuffer
-	start         time.Time
-}
-
-// Each log message is stored using a LogEntry, which also records the time
-// it was submitted (w.r.t. the time at which logging was initialized.)
-type LogEntry struct {
-	message string
-	offset  time.Duration
-}
-
-func (l LogEntry) String() string {
-	return l.message // offset is already encoded in it
-}
-
-// CircularLogBuffer stores a fixed maximum number of logging messages; this
-// lets us hold on to logging messages for use in bug reports without worrying
-// about whether we're using too much memory to do so.
-type CircularLogBuffer struct {
-	rb    *RingBuffer[LogEntry]
+	*slog.Logger
 	start time.Time
 }
 
-func (c *CircularLogBuffer) Add(s string) {
-	c.rb.Add(LogEntry{message: s, offset: time.Since(c.start)})
-}
+func NewLogger(server bool, printToStderr bool) *Logger {
+	var w io.Writer
 
-func (c *CircularLogBuffer) String() string {
-	var b strings.Builder
-	for i := 0; i < c.rb.Size(); i++ {
-		b.WriteString(c.rb.Get(i).String())
+	if server {
+		w = &lumberjack.Logger{
+			Filename: "vice-logs/slog",
+			MaxSize:  100, // MB
+			MaxAge:   14,
+			Compress: false,
+		}
+	} else {
+		dir, err := os.UserConfigDir()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Unable to find user config dir: %v", err)
+			dir = "."
+		}
+		fn := path.Join(dir, "Vice", "vice.log")
+
+		w, err = os.Create(fn)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %v", fn, err)
+			w = os.Stderr
+		} else if printToStderr {
+			w = io.MultiWriter(w, os.Stderr)
+		}
 	}
-	return b.String()
-}
 
-func (c *CircularLogBuffer) Get() []string {
-	var strs []string
-	for i := 0; i < c.rb.Size(); i++ {
-		strs = append(strs, c.rb.Get(i).String())
+	h := slog.NewJSONHandler(w, nil)
+	l := &Logger{
+		Logger: slog.New(h),
+		start:  time.Now(),
 	}
-	return strs
-}
-
-func NewCircularLogBuffer(maxLines int) *CircularLogBuffer {
-	return &CircularLogBuffer{rb: NewRingBuffer[LogEntry](maxLines), start: time.Now()}
-}
-
-func NewLogger(verbose bool, printToStderr bool, maxLines int) *Logger {
-	l := &Logger{printToStderr: printToStderr, start: time.Now()}
-	if verbose {
-		l.verbose = NewCircularLogBuffer(maxLines)
-	}
-	l.err = NewCircularLogBuffer(maxLines)
 
 	// Start out the logs with some basic information about the system
 	// we're running on and the build of vice that's being used.
-	l.Printf("Hello logging at %s", time.Now())
-	l.Printf("Arch: %s OS: %s CPUs: %d", runtime.GOARCH, runtime.GOOS, runtime.NumCPU())
+	l.Info("Hello logging", slog.Time("start", time.Now()))
+	l.Info("System information",
+		slog.String("GOARCH", runtime.GOARCH),
+		slog.String("GOOS", runtime.GOOS),
+		slog.Int("NumCPUs", runtime.NumCPU()))
+
+	var deps, settings []any
 	if bi, ok := debug.ReadBuildInfo(); ok {
-		l.Printf("Build: go %s path %s", bi.GoVersion, bi.Path)
 		for _, dep := range bi.Deps {
-			if dep.Replace == nil {
-				l.Printf("Module %s @ %s", dep.Path, dep.Version)
-			} else {
-				l.Printf("Module %s @ %s replaced by %s @ %s", dep.Path, dep.Version,
-					dep.Replace.Path, dep.Replace.Version)
+			deps = append(deps, slog.String(dep.Path, dep.Version))
+			if dep.Replace != nil {
+				deps = append(deps, slog.String("Replacement "+dep.Replace.Path, dep.Replace.Version))
 			}
 		}
 		for _, setting := range bi.Settings {
-			l.Printf("Build setting %s = %s", setting.Key, setting.Value)
+			settings = append(settings, slog.String(setting.Key, setting.Value))
 		}
+
+		l.Info("Build",
+			slog.String("Go version", bi.GoVersion),
+			slog.String("Path", bi.Path),
+			slog.Group("Dependencies", deps...),
+			slog.Group("Settings", settings...))
 	}
 
 	return l
 }
 
-// Printf adds the given message, specified using Printf-style format
-// string, to the "verbose" log.  If verbose logging is not enabled, the
-// message is discarded.
-func (l *Logger) Printf(f string, args ...interface{}) {
-	l.printf(3, f, args...)
-}
+// callstack returns slog.Attr representing the callstack, starting at the function
+// that called into one of the logging functions
+func callstack() slog.Attr {
+	var callers [16]uintptr
+	n := runtime.Callers(3, callers[:]) // skip up to function that is doing logging
+	frames := runtime.CallersFrames(callers[:n])
 
-// PrintfUp1 adds the given message to the error log, but with reported the
-// source file and line number are one level up in the call stack from the
-// function that called it.
-func (l *Logger) PrintfUp1(f string, args ...interface{}) {
-	l.printf(4, f, args...)
-}
+	var s []any
+	for i := 0; ; i++ {
+		frame, more := frames.Next()
+		s = append(s, slog.Group("frame"+fmt.Sprintf("%d", i),
+			slog.String("file", path.Base(frame.File)),
+			slog.Int("line", frame.Line),
+			slog.String("function", strings.TrimPrefix(frame.Function, "main."))))
 
-func (l *Logger) printf(levels int, f string, args ...interface{}) {
-	if l.verbose == nil {
-		return
+		// Don't keep going up into go runtime stack frames.
+		if !more || frame.Function == "main.main" {
+			break
+		}
 	}
-
-	msg := l.format(levels, f, args...)
-	if l.printToStderr {
-		fmt.Fprint(os.Stderr, msg)
-	}
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.verbose.Add(msg)
+	return slog.Group("callstack", s...)
 }
 
-// Errorf adds the given message, specified using Printf-style format
-// string, to the error log.
-func (l *Logger) Errorf(f string, args ...interface{}) {
+// Debug wraps slog.Debug to add call stack information (and similarly for
+// Info, Error, and Warn below). Note that we do not wrap the entire slog
+// logging interface, so, for example, InfoContext or Log do not have
+// callstacks included.
+func (l *Logger) Debug(msg string, args ...any) {
 	if l == nil {
-		fmt.Fprintf(os.Stderr, "ERROR: "+f, args...)
+		slog.Debug(msg, args...)
 		return
 	}
-	l.errorf(3, f, args...)
+	args = append([]any{callstack()}, args...)
+	l.Logger.Debug(msg, args...)
 }
 
-// ErrorfUp1 adds the given message to the error log, though the source
-// file and line number logged are one level up in the call stack from the
-// function that calls ErrorfUp1. (This can be useful for functions that
-// are called from many places and where the context of the calling
-// function is more likely to be useful for debugging the error.)
-func (l *Logger) ErrorfUp1(f string, args ...interface{}) {
-	l.errorf(4, f, args...)
-}
-
-func (l *Logger) errorf(levels int, f string, args ...interface{}) {
-	msg := l.format(levels, f, args...)
-
-	// Always print it
-	fmt.Fprint(os.Stderr, "ERROR: "+msg)
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.err.Add(msg)
-}
-
-func (l *Logger) GetVerboseLog() string {
-	if l.verbose == nil {
-		return ""
+// Debugf is a convenience wrapper that logs just a message and allows
+// printf-style formatting of the provided args.
+func (l *Logger) Debugf(msg string, args ...any) {
+	if l == nil {
+		slog.Debug(fmt.Sprintf(msg, args...), callstack())
+		return
 	}
-	return l.verbose.String()
+	l.Logger.Debug(fmt.Sprintf(msg, args...), callstack())
 }
 
-func (l *Logger) GetErrorLog() []string {
-	return l.err.Get()
-}
-
-// format is a utility function for formatting logging messages. It
-// prepends the source file and line number of the logging call to the
-// returned message string.
-func (l *Logger) format(levels int, f string, args ...interface{}) string {
-	// Go up the call stack the specified nubmer of levels
-	_, fn, line, _ := runtime.Caller(levels)
-
-	// Elapsed time
-	s := fmt.Sprintf("%8.2fs ", time.Since(l.start).Seconds())
-
-	// Source file and line
-	fnline := path.Base(fn) + fmt.Sprintf(":%d", line)
-	s += fmt.Sprintf("%-20s ", fnline)
-
-	// Add the provided logging message.
-	s += fmt.Sprintf(f, args...)
-
-	// The message shouldn't have a newline at the end but if it does, we
-	// won't gratuitously add another one.
-	if !strings.HasSuffix(s, "\n") {
-		s += "\n"
+func (l *Logger) Info(msg string, args ...any) {
+	if l == nil {
+		slog.Info(msg, args...)
+		return
 	}
-	return s
+	args = append([]any{callstack()}, args...)
+	l.Logger.Info(msg, args...)
+}
+
+func (l *Logger) Infof(msg string, args ...any) {
+	if l == nil {
+		slog.Info(fmt.Sprintf(msg, args...), callstack())
+		return
+	}
+	l.Logger.Info(fmt.Sprintf(msg, args...), callstack())
+}
+
+func (l *Logger) Error(msg string, args ...any) {
+	if l == nil {
+		slog.Error(msg, args...)
+		return
+	}
+	args = append([]any{callstack()}, args...)
+	l.Logger.Error(msg, args...)
+}
+
+func (l *Logger) Errorf(msg string, args ...any) {
+	if l == nil {
+		slog.Error(fmt.Sprintf(msg, args...), callstack())
+		return
+	}
+	l.Logger.Error(fmt.Sprintf(msg, args...), callstack())
+}
+
+func (l *Logger) Warn(msg string, args ...any) {
+	if l == nil {
+		slog.Warn(msg, args...)
+		return
+	}
+	args = append([]any{callstack()}, args...)
+	l.Logger.Warn(msg, args...)
+}
+
+func (l *Logger) Warnf(msg string, args ...any) {
+	if l == nil {
+		slog.Warn(fmt.Sprintf(msg, args...), callstack())
+		return
+	}
+	l.Logger.Warn(fmt.Sprintf(msg, args...), callstack())
 }
 
 // Stats collects a few statistics related to rendering and time spent in
@@ -207,38 +198,24 @@ type Stats struct {
 
 var startupMallocs uint64
 
-// LogStats adds the proivded Stats to the log and also includes information about
-// the current system performance, memory use, etc.
-func (l *Logger) LogStats(stats Stats) {
-	lg.Printf("Redraws per second: %.1f", float64(stats.redraws)/time.Since(stats.startTime).Seconds())
-
+func (stats Stats) LogValue() slog.Value {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
 
-	if startupMallocs == 0 {
+	if startupMallocs == 0 { // first call
 		startupMallocs = mem.Mallocs
 	}
 
-	elapsed := time.Since(l.start).Seconds()
-	mallocsPerSecond := int(float64(mem.Mallocs-startupMallocs) / elapsed)
-	active1000s := (mem.Mallocs - mem.Frees) / 1000
-	lg.Printf("Stats: mallocs/second %d (%dk active) %d MB in use", mallocsPerSecond, active1000s,
-		mem.HeapAlloc/(1024*1024))
+	elapsed := time.Since(lg.start).Seconds()
+	mallocsPerSecond := float64(mem.Mallocs-startupMallocs) / elapsed
 
-	lg.Printf("Stats: draw panes %s draw imgui %s", stats.drawPanes.String(), stats.drawImgui.String())
-
-	lg.Printf("Stats: rendering: %s", stats.render.String())
-	lg.Printf("Stats: UI rendering: %s", stats.renderUI.String())
-}
-
-func (l *Logger) SaveLogs() {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		lg.Errorf("Unable to find user config dir: %v", err)
-		dir = "."
-	}
-
-	fn := path.Join(dir, "Vice", "vice.log")
-	s := l.verbose.String() + "\n-----\nErrors:\n" + l.err.String()
-	os.WriteFile(fn, []byte(s), 0600)
+	return slog.GroupValue(
+		slog.Float64("redraws_per_second", float64(stats.redraws)/time.Since(stats.startTime).Seconds()),
+		slog.Float64("mallocs_per_second", mallocsPerSecond),
+		slog.Int64("active_mallocs", int64(mem.Mallocs-mem.Frees)),
+		slog.Int64("memory_in_use", int64(mem.HeapAlloc)),
+		slog.Duration("draw_panes", stats.drawPanes),
+		slog.Duration("draw_imgui", stats.drawImgui),
+		slog.Any("render", stats.render),
+		slog.Any("ui", stats.renderUI))
 }

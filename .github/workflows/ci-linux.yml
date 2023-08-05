@@ -24,10 +24,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Setup go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version-file: go.mod
-        cache: true
         cache-dependency-path: go.sum
 
     - name: Check go install
@@ -47,3 +46,7 @@ jobs:
     - name: Run tests
       run:
         go test -v
+
+    - name: Check scenarios
+      run:
+        ./vice -lint
