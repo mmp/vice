@@ -1084,14 +1084,49 @@
       "name": "JAX CLASS D SURFACE AREAS"
     },
     {
-      "group": 0,
+      "group": 1,
+      "label": "LOW",
+      "name": "JAX LOW ROUTES"
+    },
+    {
+      "group": 1,
+      "label": "GND",
+      "name": "Airport Diagrams"
+    },
+    {
+      "group": 1,
+      "label": "HIGH",
+      "name": "JAX HIGH ROUTES"
+    },
+    {
+      "group": 1,
       "label": "GEO",
       "name": "GEOGRAPHY"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "MVA",
       "name": "MINIMUM VECTORING ALT"
+    },
+    {
+      "group": 0,
+      "label": "GPS",
+      "name": "JAX_GPS"
+    },
+    {
+      "group": 0,
+      "label": "VOR",
+      "name": "JAX VOR APPROACHES"
+    },
+    {
+      "group": 0,
+      "label": "SID",
+      "name": "SID WAYPOINTS"
+    },
+    {
+      "group": 1,
+      "label": "IR",
+      "name": "IR ROUTES"
     },
     {
       "group": 0,
