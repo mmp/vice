@@ -732,7 +732,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			return nil
 		}
 
-		lg.Infof("%s: loading video map", path)
+		lg.Printf("%s: loading video map", path)
 		vm := loadVideoMaps(fsys, path, e)
 		if vm != nil {
 			videoMapCommandBuffers[path] = vm
@@ -783,7 +783,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			return nil
 		}
 
-		lg.Infof("%s: loading scenario", path)
+		lg.Printf("%s: loading scenario", path)
 		s := loadScenarioGroup(fsys, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.Name]; ok {

@@ -12,7 +12,6 @@ import (
 	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slog"
 )
 
 // Renderer defines an interface for all of the various drawing that happens in vice.
@@ -68,18 +67,6 @@ func (rs *RendererStats) Merge(s RendererStats) {
 	rs.nLines += s.nLines
 	rs.nTriangles += s.nTriangles
 	rs.nQuads += s.nQuads
-}
-
-func (rs *RendererStats) LogAttrs() []any {
-	return []any{
-		slog.Int("buffers", rs.nBuffers),
-		slog.Int("buffer_memory", rs.bufferBytes),
-		slog.Int("draw_calls", rs.nDrawCalls),
-		slog.Int("points_drawn", rs.nPoints),
-		slog.Int("lines", rs.nLines),
-		slog.Int("tris", rs.nTriangles),
-		slog.Int("quads", rs.nQuads),
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -188,7 +175,7 @@ func (cb *CommandBuffer) appendFloats(floats ...float32) {
 func (cb *CommandBuffer) appendInts(ints ...int) {
 	for _, i := range ints {
 		if i != int(uint32(i)) {
-			lg.Errorf("%d: attempting to add non-32-bit value to CommandBuffer", i)
+			lg.ErrorfUp1("%d: attempting to add non-32-bit value to CommandBuffer", i)
 		}
 		cb.Buf = append(cb.Buf, uint32(i))
 	}
@@ -204,7 +191,7 @@ func (cb *CommandBuffer) FloatSlice(start, length int) []float32 {
 		return nil
 	}
 	if start%4 != 0 {
-		lg.Errorf("%d: unaligned offset passed to FloatSlice", start)
+		lg.ErrorfUp1("%d: unaligned offset passed to FloatSlice", start)
 	}
 	ptr := (*float32)(unsafe.Pointer(&cb.Buf[start/4]))
 	return unsafe.Slice(ptr, length)
@@ -1258,7 +1245,7 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer) {
 
 		for _, command := range commandList.Commands() {
 			if command.HasUserCallback() {
-				lg.Error("Unexpected user callback in imgui draw list")
+				lg.Errorf("Unexpected user callback in imgui draw list")
 			} else {
 				clipRect := command.ClipRect()
 				cb.Scissor(int(clipRect.X), int(fbHeight)-int(clipRect.W),

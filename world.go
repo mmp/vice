@@ -435,7 +435,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 			OnSuccess: func(any) {
 				d := time.Since(w.updateCall.IssueTime)
 				if d > 250*time.Millisecond {
-					lg.Infof("Slow world update response: %s", d)
+					lg.Printf("Slow world update response: %s", d)
 				}
 				wu.UpdateWorld(w, eventStream)
 			},

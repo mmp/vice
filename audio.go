@@ -12,7 +12,6 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/veandco/go-sdl2/sdl"
-	"golang.org/x/exp/slog"
 )
 
 // All of the available audio effects are directly embedded in the binary
@@ -107,7 +106,7 @@ func (a *AudioSettings) PlaySound(e AudioEvent) {
 		// This should only happen if a built-in sound effect is removed
 		// and an old config file refers to it. Arguably the user should be
 		// notified in this (unexpected) case...
-		lg.Errorf("%s: sound effect disappeared?!", effect)
+		lg.Printf("%s: sound effect disappeared?!", effect)
 		a.SoundEffects[e] = ""
 	} else {
 		a.lastPlayMutex.Lock()
@@ -133,7 +132,7 @@ func (s *SoundEffect) Play() {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				lg.Error("SDL panic playing audio", slog.Any("panic", err))
+				lg.Errorf("SDL panic playing audio: %v", err)
 			}
 		}()
 
@@ -149,14 +148,14 @@ func (s *SoundEffect) Play() {
 		var obtained sdl.AudioSpec
 		audioDevice, err := sdl.OpenAudioDevice("", false /* no record */, s.spec, &obtained, 0)
 		if err != nil {
-			lg.Errorf("Unable to open SDL audio device: %v", err)
+			lg.Printf("Unable to open SDL audio device: %v", err)
 			sdlMutex.Unlock()
 			return
 		}
 
 		for i := 0; i < s.repeat; i++ {
 			if err = sdl.QueueAudio(audioDevice, s.wav); err != nil {
-				lg.Errorf("Unable to queue SDL audio: %v", err)
+				lg.Printf("Unable to queue SDL audio: %v", err)
 			}
 		}
 
@@ -186,7 +185,7 @@ func (s *SoundEffect) Play() {
 	}()
 }
 
-func addEffect(wav string, name string, repeat int, lg *Logger) {
+func addEffect(wav string, name string, repeat int) {
 	rw, err := sdl.RWFromMem([]byte(wav))
 	if err != nil {
 		lg.Errorf("%s: unable to add audio effect: %v", name, err)
@@ -196,7 +195,7 @@ func addEffect(wav string, name string, repeat int, lg *Logger) {
 	loaded, spec := sdl.LoadWAVRW(rw, false /* do not free */)
 
 	if _, ok := soundEffects[name]; ok {
-		lg.Error(name + " used repeatedly")
+		lg.Errorf(name + " used repeatedly")
 		return
 	}
 
@@ -218,32 +217,32 @@ func addEffect(wav string, name string, repeat int, lg *Logger) {
 	// something that was not allocated.
 }
 
-func audioInit(lg *Logger) error {
-	lg.Info("Starting to initialize audio")
+func audioInit() error {
+	lg.Printf("Starting to initialize audio")
 	err := sdl.Init(sdl.INIT_AUDIO)
 	if err != nil {
 		return fmt.Errorf("failed to initialize SDL2 audio: %w", err)
 	}
 
 	soundEffects = make(map[string]*SoundEffect)
-	addEffect(bbrocer__digital_alarm_loopWAV, "Alarm - Digital", 2, lg)
-	addEffect(beetlemuse__alert_1WAV, "Alert", 1, lg)
-	addEffect(dland__hintWAV, "Hint", 1, lg)
-	addEffect(gabrielaraujo__powerup_successWAV, "Success", 1, lg)
-	addEffect(michaelatoz__alertwo_cc0WAV, "Alert 2", 1, lg)
-	addEffect(nsstudios__blip2WAV, "Blip", 1, lg)
-	addEffect(pan14__sine_fifths_up_beepWAV, "Beep Up Fifths", 1, lg)
-	addEffect(pan14__sine_octaves_up_beepWAV, "Beep Up", 1, lg)
-	addEffect(pan14__sine_tri_tone_down_negative_beep_amb_verbWAV, "Beep Negative", 1, lg)
-	addEffect(pan14__sine_up_flutter_beepWAV, "Beep Flutter", 1, lg)
-	addEffect(pan14__tone_beep_lower_slowerWAV, "Beep Slow", 1, lg)
-	addEffect(pan14__tri_tone_up_beepWAV, "Beep Tone Up", 1, lg)
-	addEffect(pan14__upward_beep_chromatic_fifthsWAV, "Beep Chromatic", 1, lg)
-	addEffect(ranner__ui_clickWAV, "Click", 1, lg)
-	addEffect(soundwarf__alert_shortWAV, "Alert Short", 1, lg)
-	addEffect(thisusernameis__beep4WAV, "Beep Double", 1, lg)
+	addEffect(bbrocer__digital_alarm_loopWAV, "Alarm - Digital", 2)
+	addEffect(beetlemuse__alert_1WAV, "Alert", 1)
+	addEffect(dland__hintWAV, "Hint", 1)
+	addEffect(gabrielaraujo__powerup_successWAV, "Success", 1)
+	addEffect(michaelatoz__alertwo_cc0WAV, "Alert 2", 1)
+	addEffect(nsstudios__blip2WAV, "Blip", 1)
+	addEffect(pan14__sine_fifths_up_beepWAV, "Beep Up Fifths", 1)
+	addEffect(pan14__sine_octaves_up_beepWAV, "Beep Up", 1)
+	addEffect(pan14__sine_tri_tone_down_negative_beep_amb_verbWAV, "Beep Negative", 1)
+	addEffect(pan14__sine_up_flutter_beepWAV, "Beep Flutter", 1)
+	addEffect(pan14__tone_beep_lower_slowerWAV, "Beep Slow", 1)
+	addEffect(pan14__tri_tone_up_beepWAV, "Beep Tone Up", 1)
+	addEffect(pan14__upward_beep_chromatic_fifthsWAV, "Beep Chromatic", 1)
+	addEffect(ranner__ui_clickWAV, "Click", 1)
+	addEffect(soundwarf__alert_shortWAV, "Alert Short", 1)
+	addEffect(thisusernameis__beep4WAV, "Beep Double", 1)
 
-	lg.Info("Finished initializing audio")
+	lg.Printf("Finished initializing audio")
 	return nil
 }
 

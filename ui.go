@@ -702,7 +702,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 		return
 	}
 
-	lg.Infof("newest release found: %v", newestRelease)
+	lg.Printf("newest release found: %v", newestRelease)
 
 	buildTime := ""
 	if bi, ok := debug.ReadBuildInfo(); !ok {
@@ -725,13 +725,13 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
 		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
 	} else if newestRelease.Created.UTC().After(bt.UTC()) {
-		lg.Infof("build time %s newest release %s -> release is newer",
+		lg.Printf("build time %s newest release %s -> release is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
 		newReleaseDialogChan <- &NewReleaseModalClient{
 			version: newestRelease.TagName,
 			date:    newestRelease.Created}
 	} else {
-		lg.Infof("build time %s newest release %s -> build is newer",
+		lg.Printf("build time %s newest release %s -> build is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
 	}
 }
@@ -1119,11 +1119,11 @@ func ShowErrorDialog(s string, args ...interface{}) {
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
 	uiShowModalDialog(d, true)
 
-	lg.Errorf(s, args...)
+	lg.ErrorfUp1(s, args...)
 }
 
 func ShowFatalErrorDialog(r Renderer, p Platform, s string, args ...interface{}) {
-	lg.Errorf(s, args...)
+	lg.ErrorfUp1(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
 

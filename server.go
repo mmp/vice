@@ -293,7 +293,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	if err := sim.Activate(); err != nil {
-		lg.Errorf("%s: activate fail: %v", sim.Name, err)
+		lg.Printf("%s: activate fail: %v", sim.Name, err)
 		return err
 	}
 
@@ -305,7 +305,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 		return ErrDuplicateSimName
 	}
 
-	lg.Infof("%s: starting new sim", sim.Name)
+	lg.Printf("%s: starting new sim", sim.Name)
 	sm.activeSims[sim.Name] = sim
 
 	sm.mu.Unlock()
@@ -327,7 +327,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
+		lg.Printf("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
 		sm.mu.Lock()
 		delete(sm.activeSims, sim.Name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
@@ -504,7 +504,7 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
 
-	lg.Infof("Broadcasting message: %s", m.Message)
+	lg.Printf("Broadcasting message: %s", m.Message)
 
 	for _, sim := range sm.activeSims {
 		sim.mu.Lock()
@@ -1146,7 +1146,7 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 				err: err,
 			}
 		} else {
-			lg.Infof("%s: server returned configuration in %s", hostname, time.Since(start))
+			lg.Printf("%s: server returned configuration in %s", hostname, time.Since(start))
 			ch <- &SimServer{
 				name:        "Network (Multi-controller)",
 				client:      client,
@@ -1216,11 +1216,11 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 
 		ch <- simConfigurations
 
-		lg.Infof("Listening on %+v", l)
+		lg.Printf("Listening on %+v", l)
 
 		for {
 			conn, err := l.Accept()
-			lg.Infof("%s: new connection", conn.RemoteAddr())
+			lg.Printf("%s: new connection", conn.RemoteAddr())
 			if err != nil {
 				lg.Errorf("Accept error: %v", err)
 			} else if cc, err := MakeCompressedConn(MakeLoggingConn(conn)); err != nil {
@@ -1263,7 +1263,7 @@ func launchHTTPStats(sm *SimManager) {
 	})
 
 	if err := http.ListenAndServe(":6502", nil); err != nil {
-		lg.Errorf("Failed to start HTTP server for stats: %v\n", err)
+		lg.Printf("Failed to start HTTP server for stats: %v\n", err)
 	}
 }
 
