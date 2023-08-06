@@ -58,16 +58,8 @@ type Platform interface {
 	StartCaptureMouse(e Extent2D)
 	// Disable mouse capture.
 	EndCaptureMouse()
-}
-
-// Scaling factor to account for Retina-style displays
-func dpiScale(p Platform) float32 {
-	if runtime.GOOS == "windows" {
-		sx, sy := glfw.GetPrimaryMonitor().GetContentScale()
-		return float32(int((sx + sy) / 2))
-	} else {
-		return p.FramebufferSize()[0] / p.DisplaySize()[0]
-	}
+	// Scaling factor to account for Retina-style displays
+	DPIScale() float32
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -92,24 +84,23 @@ type GLFWPlatform struct {
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
 // of the specified size open at the specified position on the screen.
-func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool) (Platform, error) {
-	lg.Printf("Starting GLFW initialization")
+func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool, lg *Logger) (Platform, error) {
+	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize glfw: %w", err)
 	}
-	lg.Printf("GLFW: %s", glfw.GetVersionString())
+	lg.Infof("GLFW: %s", glfw.GetVersionString())
 
 	io.SetBackendFlags(io.GetBackendFlags() | imgui.BackendFlagsHasMouseCursors)
 
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
-	if windowSize[0] == 0 {
-		windowSize[0] = 1920
-	}
-	if windowSize[1] == 0 {
-		windowSize[1] = 1080
+	if windowSize[0] == 0 || windowSize[1] == 0 {
+		vm := glfw.GetPrimaryMonitor().GetVideoMode()
+		windowSize[0] = vm.Width - 100
+		windowSize[1] = vm.Height - 100
 	}
 
 	// Start with an invisible window so that we can position it first
@@ -137,8 +128,17 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	platform.createMouseCursors()
 	platform.EnableVSync(true)
 
-	lg.Printf("Finished GLFW initialization")
+	lg.Info("Finished GLFW initialization")
 	return platform, nil
+}
+
+func (g *GLFWPlatform) DPIScale() float32 {
+	if runtime.GOOS == "windows" {
+		sx, sy := g.window.GetContentScale()
+		return float32(int((sx + sy) / 2))
+	} else {
+		return g.FramebufferSize()[0] / g.DisplaySize()[0]
+	}
 }
 
 func (g *GLFWPlatform) EnableVSync(sync bool) {

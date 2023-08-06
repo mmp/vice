@@ -1,6 +1,6 @@
 module github.com/mmp/vice
 
-go 1.18
+go 1.19
 
 require (
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
@@ -10,7 +10,7 @@ require (
 	github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/veandco/go-sdl2 v0.5.0-alpha.3.0.20220913133553-3c4862273074
-	golang.org/x/exp v0.0.0-20221208152030-732eee02a75a
+	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1
 )
 
 require (
@@ -28,4 +28,5 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/image v0.0.0-20190321063152-3fc05d484e9f // indirect
 	golang.org/x/sys v0.2.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )

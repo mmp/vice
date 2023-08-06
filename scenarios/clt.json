@@ -1316,7 +1316,7 @@
                     }
                 },
                 "arrival_groups": {
-                    "BANKR3S": [
+                    "BANKR3": [
                         {
                             "airlines": {
                                 "KCLT": [
@@ -1358,55 +1358,18 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.BANKR3",
-                            "waypoints": "BANKR/a18000/s270/ho DEBBT/a18000 ROBRR/a14000 FOBAR/a13000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003"
-                        }
-                    ],
-                    "BANKR3N": [
-                        {
-                            "airlines": {
-                                "KCLT": [
-                                    {
-                                        "airport": "KTPA",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KTPA",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KRSW",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KMCO",
-                                        "icao": "FFT"
-                                    },
-                                    {
-                                        "airport": "KMIA",
-                                        "icao": "ENY"
-                                    },
-                                    {
-                                        "airport": "KFLL",
-                                        "icao": "NKS"
-                                    },
-                                    {
-                                        "airport": "KFLL",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    }
-                                ]
+                            "runway_waypoints": {
+                                "18L": "DEBBT/a18000 ROBRR/a14000 FOBAR/a13000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003",
+                                "18C": "DEBBT/a18000 ROBRR/a14000 FOBAR/a13000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003",
+                                "18R": "DEBBT/a18000 ROBRR/a14000 FOBAR/a13000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003",
+                                "36L": "DEBBT/a13000 CONTR/a11000 OPALS/a10000 BLNCE/a9000/s210/h090",
+                                "36C": "DEBBT/a13000 CONTR/a11000 OPALS/a10000 BLNCE/a9000/s210/h090",
+                                "36R": "DEBBT/a13000 CONTR/a11000 OPALS/a10000 BLNCE/a9000/s210/h090"
                             },
-                            "cleared_altitude": 10000,
-                            "cruise_altitude": 35000,
-                            "initial_altitude": 13000,
-                            "initial_controller": "ATL_CTR",
-                            "initial_speed": 280,
-                            "route": "/.BANKR3",
-                            "waypoints": "BANKR/a18000/s270/ho DEBBT/a13000 CONTR/a11000 OPALS/a10000 BLNCE/a9000/s210/h090"
+                            "waypoints": "BANKR/a18000/s270/ho DEBBT/a18000"
                         }
                     ],
-                    "CHSLY5S": [
+                    "CHSLY5": [
                         {
                             "airlines": {
                                 "KCLT": [
@@ -1530,137 +1493,18 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.CHSLY5",
-                            "waypoints": "BOOTS/a18000 CHSLY/a15000/s250/ho KRISS/a11000 NODEW/a8000/s230 HEELZ/a6000/s210/h270"
-                        }
-                    ],
-                    "CHSLY5N": [
-                        {
-                            "airlines": {
-                                "KCLT": [
-                                    {
-                                        "airport": "KJFK",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KJFK",
-                                        "icao": "DAL"
-                                    },
-                                    {
-                                        "airport": "KLGA",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "EGLL",
-                                        "fleet": "long",
-                                        "icao": "BAW"
-                                    },
-                                    {
-                                        "airport": "EGLL",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "EIDW",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "EHAM",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "EDDM",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "EDDF",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "EDDM",
-                                        "fleet": "long",
-                                        "icao": "DLH"
-                                    },
-                                    {
-                                        "airport": "LFPG",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "LIRF",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "LEMD",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "LEBL",
-                                        "fleet": "long",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KJFK",
-                                        "icao": "JBU"
-                                    },
-                                    {
-                                        "airport": "KBOS",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KBOS",
-                                        "icao": "JBU"
-                                    },
-                                    {
-                                        "airport": "KIAD",
-                                         "fleet": "short",
-                                        "icao": "UAL"
-                                    },
-                                    {
-                                        "airport": "KDCA",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KBWI",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KHVN",
-                                        "icao": "VXP"
-                                    },
-                                    {
-                                        "airport": "KILG",
-                                        "icao": "VXP"
-                                    },
-                                    {
-                                        "airport": "KPHL",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KSYR",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    }
-                                ]
+                            "runway_waypoints": {
+                                "18L": "CHSLY/a15000/s250/ho KRISS/a11000 NODEW/a8000/s230 HEELZ/a6000/s210/h270",
+                                "18C": "CHSLY/a15000/s250/ho KRISS/a11000 NODEW/a8000/s230 HEELZ/a6000/s210/h270",
+                                "18R": "CHSLY/a15000/s250/ho KRISS/a11000 NODEW/a8000/s230 HEELZ/a6000/s210/h270",
+                                "36L": "CHSLY/a18000/s250/ho KRISS/a15000 JAMGO/a13000/s250 WHIZE/a10000 CAATT/a9000/s210 EPAYE/a6000/s210/h183",
+                                "36C": "CHSLY/a18000/s250/ho KRISS/a15000 JAMGO/a13000/s250 WHIZE/a10000 CAATT/a9000/s210 EPAYE/a6000/s210/h183",
+                                "36R": "CHSLY/a18000/s250/ho KRISS/a15000 JAMGO/a13000/s250 WHIZE/a10000 CAATT/a9000/s210 EPAYE/a6000/s210/h183"
                             },
-                            "cleared_altitude": 18000,
-                            "cruise_altitude": 34000,
-                            "initial_altitude": 18000,
-                            "initial_controller": "ATL_CTR",
-                            "initial_speed": 280,
-                            "route": "/.CHSLY5",
-                            "waypoints": "BOOTS/a18000 CHSLY/a18000/s250/ho KRISS/a15000 JAMGO/a13000/s250 WHIZE/a10000 CAATT/a9000/s210 EPAYE/a6000/s210/h183"
+                            "waypoints": "BOOTS/a18000 CHSLY/a15000/s250/ho"
                         }
                     ],
-                    "FLIPZ3N": [
+                    "FLIPZ3": [
                         {
                             "airlines": {
                                 "KCLT": [
@@ -1723,76 +1567,18 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.FLIPZ3",
-                            "waypoints": "JJENY/a20000 N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a18000/s270 ADOWN/a16000/s250 INWAL/a13000/s250 JELNO/a11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183"
-                        }
-                    ],
-                    "FLIPZ3S": [
-                        {
-                            "airlines": {
-                                "KCLT": [
-                                    {
-                                        "airport": "KBNA",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KATL",
-                                        "icao": "DAL"
-                                    },
-                                    {
-                                        "airport": "KSEA",
-                                        "icao": "ASA"
-                                    },
-                                    {
-                                        "airport": "KDEN",
-                                        "fleet": "short",
-                                        "icao": "UAL"
-                                    },
-                                    {
-                                        "airport": "KORD",
-                                        "icao": "UAL"
-                                    },
-                                    {
-                                        "airport": "KDFW",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KPHX",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KMDW",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KSTL",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KDSM",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KCLE",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KIND",
-                                        "fleet": "short",
-                                        "icao": "AAL"
-                                    }
-                                ]
+                            "runway_waypoints": {
+                                "18L": "N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a16000/s270 GLAXI/a13000/s250 JOBOT/a11000/s250 ERHRT/a10000 FISHN/a7000/s210/h090",
+                                "18C": "N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a16000/s270 GLAXI/a13000/s250 JOBOT/a11000/s250 ERHRT/a10000 FISHN/a7000/s210/h090",
+                                "18R": "N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a16000/s270 GLAXI/a13000/s250 JOBOT/a11000/s250 ERHRT/a10000 FISHN/a7000/s210/h090",
+                                "36L": "N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a18000/s270 ADOWN/a16000/s250 INWAL/a13000/s250 JELNO/a11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183",
+                                "36C": "N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a18000/s270 ADOWN/a16000/s250 INWAL/a13000/s250 JELNO/a11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183",
+                                "36R": "N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a18000/s270 ADOWN/a16000/s250 INWAL/a13000/s250 JELNO/a11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183"
                             },
-                            "cleared_altitude": 18000,
-                            "cruise_altitude": 37000,
-                            "initial_altitude": 18000,
-                            "initial_controller": "ATL_CTR",
-                            "initial_speed": 280,
-                            "route": "/.FLIPZ3",
-                            "waypoints": "JJENY/a20000 N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a16000/s270 GLAXI/a13000/s250 JOBOT/a11000/s250 ERHRT/a10000 FISHN/a7000/s210/h090"
+                            "waypoints": "JJENY/a20000 N35.35.11.189,W82.06.58.014/a18000/ho"
                         }
                     ],
-                    "JONZE3S": [
+                    "JONZE3": [
                         {
                             "airlines": {
                                 "KCLT": [
@@ -1848,69 +1634,18 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.JONZE3",
-                            "waypoints": "CAAKE/a26000/s270 N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a18000/s250 WHYLE/a13000 FREEK/a11000/s250 AAIRE/a9000/s210 JRDEN/a6000/s210/h003"
-                        }
-                    ],
-                    "JONZE3N": [
-                        {
-                            "airlines": {
-                                "KCLT": [
-                                    {
-                                        "airport": "KBNA",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KATL",
-                                        "icao": "DAL"
-                                    },
-                                    {
-                                        "airport": "KSEA",
-                                        "icao": "ASA"
-                                    },
-                                    {
-                                        "airport": "KMGM",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KAGS",
-                                        "icao": "PDT"
-                                    },
-                                    {
-                                        "airport": "KBFM",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KMSY",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KIAH",
-                                        "icao": "UAL"
-                                    },
-                                    {
-                                        "airport": "KHOU",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KAUS",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KSAT",
-                                        "icao": "JIA"
-                                    }
-                                ]
+                            "runway_waypoints": {
+                                "18L": "N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a18000/s250 WHYLE/a13000 FREEK/a11000/s250 AAIRE/a9000/s210 JRDEN/a6000/s210/h003",
+                                "18C": "N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a18000/s250 WHYLE/a13000 FREEK/a11000/s250 AAIRE/a9000/s210 JRDEN/a6000/s210/h003",
+                                "18R": "N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a18000/s250 WHYLE/a13000 FREEK/a11000/s250 AAIRE/a9000/s210 JRDEN/a6000/s210/h003",
+                                "36L": "N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a14000/s250 DUBBB/a12000 CHELE/a7000/s210/h090",
+                                "36C": "N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a14000/s250 DUBBB/a12000 CHELE/a7000/s210/h090",
+                                "36R": "N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a14000/s250 DUBBB/a12000 CHELE/a7000/s210/h090"
                             },
-                            "cleared_altitude": 18000,
-                            "cruise_altitude": 37000,
-                            "initial_altitude": 18000,
-                            "initial_controller": "ATL_CTR",
-                            "initial_speed": 280,
-                            "route": "/.JONZE3",
-                            "waypoints": "CAAKE/a26000/s270 N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a14000/s250 DUBBB/a12000 CHELE/a7000/s210/h090"
+                            "waypoints": "CAAKE/a26000/s270 N34.39.58.235,W81.40.33.200/a20000/ho"
                         }
                     ],
-                    "PARQR3S": [
+                    "PARQR3": [
                         {
                             "airlines": {
                                 "KCLT": [
@@ -1970,73 +1705,18 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.PARQR3",
-                            "waypoints": "SUZNN/a23000/s270 N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 NCOMA/a11000 BOATN/a9000 CAMPR/a9000/s220/h092"
-                        }
-                    ],
-                    "PARQR3N": [
-                        {
-                            "airlines": {
-                                "KCLT": [
-                                    {
-                                        "airport": "CYYZ",
-                                        "icao": "ACA"
-                                    },
-                                    {
-                                        "airport": "KCLE",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KIND",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KCMH",
-                                        "icao": "UAL"
-                                    },
-                                    {
-                                        "airport": "KAZO",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KDTW",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KCAK",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KMSP",
-                                        "icao": "DAL"
-                                    },
-                                    {
-                                        "airport": "KMSP",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KMDW",
-                                        "icao": "SWA"
-                                    },
-                                    {
-                                        "airport": "KMKE",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KDSM",
-                                        "icao": "JIA"
-                                    }
-                                ]
+                            "runway_waypoints": {
+                                "18L": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 NCOMA/a11000 BOATN/a9000 CAMPR/a9000/s220/h092",
+                                "18C": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 NCOMA/a11000 BOATN/a9000 CAMPR/a9000/s220/h092",
+                                "18R": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 NCOMA/a11000 BOATN/a9000 CAMPR/a9000/s220/h092",
+                                "36L": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 PAYKN/a13000 THACK/a12000/s250 BBQEE CEDOX VALLL/a6000/s210/h183",
+                                "36C": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 PAYKN/a13000 THACK/a12000/s250 BBQEE CEDOX VALLL/a6000/s210/h183",
+                                "36R": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 PAYKN/a13000 THACK/a12000/s250 BBQEE CEDOX VALLL/a6000/s210/h183"
                             },
-                            "cleared_altitude": 18000,
-                            "cruise_altitude": 32000,
-                            "initial_altitude": 18000,
-                            "initial_controller": "ATL_CTR",
-                            "initial_speed": 280,
-                            "route": "/.PARQR3",
-                            "waypoints": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 PAYKN/a13000 THACK/a12000/s250 BBQEE CEDOX VALLL/a6000/s210/h183"
+                            "waypoints": "SUZNN/a23000/s270 N35.56.19.889,W81.28.07.689/ho"
                         }
                     ],
-                    "STOCR3S": [
+                    "STOCR3": [
                         {
                             "airlines": {
                                 "KCLT": [
@@ -2100,74 +1780,15 @@
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "route": "/.STOCR3",
-                            "waypoints": "FFNSH/a19000/s280/ho STOCR/a17000/s250 LLAPP/a16000/s270 ZYMKO/a12000/s250 DOOMY/a10000 POORE LEEKS/a9000/s210 INNOR HANDO/a8000/s210/h003"
-                        }
-                    ],
-                    "STOCR3N": [
-                        {
-                            "airlines": {
-                                "KCLT": [
-                                    {
-                                        "airport": "KDAB",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KMIA",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KFLL",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KEYW",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "MKJS",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "MKJP",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KMCO",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "MYNN",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "TNCA",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KGNV",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KJAX",
-                                        "icao": "AAL"
-                                    },
-                                    {
-                                        "airport": "KMLB",
-                                        "icao": "JIA"
-                                    },
-                                    {
-                                        "airport": "KPBI",
-                                        "icao": "JIA"
-                                    }
-                                ]
+                            "runway_waypoints": {
+                                "18L": "STOCR/a17000/s250 LLAPP/a16000/s270 ZYMKO/a12000/s250 DOOMY/a10000 POORE LEEKS/a9000/s210 INNOR HANDO/a8000/s210/h003",
+                                "18C": "STOCR/a17000/s250 LLAPP/a16000/s270 ZYMKO/a12000/s250 DOOMY/a10000 POORE LEEKS/a9000/s210 INNOR HANDO/a8000/s210/h003",
+                                "18R": "STOCR/a17000/s250 LLAPP/a16000/s270 ZYMKO/a12000/s250 DOOMY/a10000 POORE LEEKS/a9000/s210 INNOR HANDO/a8000/s210/h003",
+                                "36L": "STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a1000 TERIE/a7000 GATEE/a6000/s210/h273",
+                                "36C": "STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a1000 TERIE/a7000 GATEE/a6000/s210/h273",
+                                "36R": "STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a1000 TERIE/a7000 GATEE/a6000/s210/h273"
                             },
-                            "cleared_altitude": 18000,
-                            "cruise_altitude": 32000,
-                            "initial_altitude": 18000,
-                            "initial_controller": "JAX_30_CTR",
-                            "initial_speed": 280,
-                            "route": "/.STOCR3",
-                            "waypoints": "FFNSH/a19000/s280/ho STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a1000 TERIE/a7000 GATEE/a6000/s210/h273"
+                            "waypoints": "FFNSH/a19000/s280/ho STOCR/a17000/s250"
                         }
                     ]
                 },
@@ -2326,35 +1947,35 @@
                                 }
                             ],
                             "arrivals": {
-                                "BANKR3S": {
+                                "BANKR3": {
                                     "KCLT": 7
                                 },
-                                "STOCR3S": {
+                                "STOCR3": {
                                     "KCLT": 8
                                 },
-                                "CHSLY5S": {
+                                "CHSLY5": {
                                     "KCLT": 12
                                 },
-                                "FLIPZ3S": {
+                                "FLIPZ3": {
                                     "KCLT": 8
                                 },
-                                "JONZE3S": {
+                                "JONZE3": {
                                     "KCLT": 10
                                 },
-                                "PARQR3S": {
+                                "PARQR3": {
                                     "KCLT": 6
                                 }
                             },
                         "solo_controller": "CLT_APP",
                         "multi_controllers": {
                             "CLT_W_DEP": {"departure": true, "primary": true},
-                            "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3S", "CHSLY5S"]},
+                            "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3", "CHSLY5"]},
                             "CLT_A_APP": {"backup": "CLT_H_APP"},
                             "CLT_M_APP": {"backup": "CLT_A_APP"},
                             "CLT_F_APP": {"backup": "CLT_M_APP"},
                             "CLT_E_DEP": {"backup": "CLT_W_DEP"},
-                            "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3S", "PARQR3S"]},
-                            "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3S", "JONZE3S"]},
+                            "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3", "PARQR3"]},
+                            "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3", "JONZE3"]},
                             "CLT_S_APP": {"backup": "CLT_E_DEP"},
                             "CLT_N_APP": {"backup": "CLT_S_APP"},
                             "CLT_Q_APP": {"backup": "CLT_N_APP"}
@@ -2456,35 +2077,35 @@
                                 }
                             ],
                             "arrivals": {
-                                "BANKR3N": {
+                                "BANKR3": {
                                     "KCLT": 7
                                 },
-                                "STOCR3N": {
+                                "STOCR3": {
                                     "KCLT": 8
                                 },
-                                "CHSLY5N": {
+                                "CHSLY5": {
                                     "KCLT": 12
                                 },
-                                "FLIPZ3N": {
+                                "FLIPZ3": {
                                     "KCLT": 8
                                 },
-                                "JONZE3N": {
+                                "JONZE3": {
                                     "KCLT": 10
                                 },
-                                "PARQR3N": {
+                                "PARQR3": {
                                     "KCLT": 6
                                 }
                             },
                             "solo_controller": "CLT_APP",
                             "multi_controllers": {
                                 "CLT_W_DEP": {"departure": true, "primary": true},
-                                "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3N", "CHSLY5N"]},
+                                "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3", "CHSLY5"]},
                                 "CLT_A_APP": {"backup": "CLT_H_APP"},
                                 "CLT_M_APP": {"backup": "CLT_A_APP"},
                                 "CLT_F_APP": {"backup": "CLT_M_APP"},
                                 "CLT_E_DEP": {"backup": "CLT_W_DEP"},
-                                "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3N", "PARQR3N"]},
-                                "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3N", "JONZE3N"]},
+                                "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3", "PARQR3"]},
+                                "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3", "JONZE3"]},
                                 "CLT_S_APP": {"backup": "CLT_E_DEP"},
                                 "CLT_N_APP": {"backup": "CLT_S_APP"},
                                 "CLT_Q_APP": {"backup": "CLT_N_APP"}
@@ -2669,5 +2290,6 @@
                             "label": "CLT S",
                             "name": "AR/DR/SAT SOUTH"
                         }
-                    ]
+                    ],
+                "video_map_file": "videomaps/cltmaps.json.zst"
                }

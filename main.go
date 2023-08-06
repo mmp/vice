@@ -20,6 +20,7 @@ import (
 
 	"github.com/apenwarr/fixconsole"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slog"
 )
 
 const ViceServerAddress = "vice.pharr.org:8000"
@@ -46,14 +47,17 @@ var (
 	buildVersion string
 
 	// Command-line options are only used for developer features.
-	cpuprofile       = flag.String("cpuprofile", "", "write CPU profile to file")
-	memprofile       = flag.String("memprofile", "", "write memory profile to this file")
-	devmode          = flag.Bool("devmode", false, "developer mode")
-	logRPC           = flag.Bool("logrpc", false, "log RPC calls")
-	server           = flag.Bool("server", false, "run vice scenario server")
-	serverIP         = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
-	scenarioFilename = flag.String("scenario", "", "filename of JSON file with a scenario definition")
-	videoMapFilename = flag.String("videomap", "", "filename of JSON file with video map definitions")
+	cpuprofile        = flag.String("cpuprofile", "", "write CPU profile to file")
+	memprofile        = flag.String("memprofile", "", "write memory profile to this file")
+	devmode           = flag.Bool("devmode", false, "developer mode")
+	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	logRPC            = flag.Bool("logrpc", false, "log RPC calls")
+	server            = flag.Bool("server", false, "run vice scenario server")
+	serverAddress     = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
+	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
+	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
+	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
+	broadcastPassword = flag.String("password", "", "password to authenticate with server for broadcast message")
 )
 
 func init() {
@@ -82,7 +86,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg = NewLogger(true, *devmode, 50000)
+	lg = NewLogger(*server, *devmode)
 
 	if *cpuprofile != "" {
 		if f, err := os.Create(*cpuprofile); err != nil {
@@ -100,19 +104,28 @@ func main() {
 
 	database = InitializeStaticDatabase()
 
-	if *server {
-		RunSimServer()
+	if *lintScenarios {
+		var e ErrorLogger
+		_, _ = LoadScenarioGroups(&e)
+		if e.HaveErrors() {
+			e.PrintErrors(nil)
+			os.Exit(1)
+		}
+	} else if *broadcastMessage != "" {
+		BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword)
+	} else if *server {
+		RunSimServer(lg)
 	} else {
-		localSimServerChan, err := LaunchLocalSimServer()
+		localSimServerChan, err := LaunchLocalSimServer(lg)
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan, err := TryConnectRemoteServer(*serverIP)
+		remoteSimServerChan, err := TryConnectRemoteServer(*serverAddress)
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Warnf("error connecting to remote server: %v", err)
 		}
 
 		var stats Stats
@@ -124,13 +137,12 @@ func main() {
 		if !*devmode {
 			defer func() {
 				if err := recover(); err != nil {
-					lg.Errorf("Panic stack: %s", string(debug.Stack()))
+					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
 					ShowFatalErrorDialog(renderer, platform,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
 				}
-				lg.SaveLogs()
 
 				// Clean up in backwards order from how things were created.
 				renderer.Dispose()
@@ -153,7 +165,7 @@ func main() {
 
 		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition, multisample)
+			globalConfig.InitialWindowPosition, multisample, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
@@ -174,21 +186,22 @@ func main() {
 		if globalConfig.Sim != nil {
 			var result NewSimResult
 			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
-				lg.Errorf("%v", err)
+				lg.Errorf("error restoring saved Sim: %v", err)
 			} else {
 				world = result.World
 				world.simProxy = &SimProxy{
 					ControllerToken: result.ControllerToken,
 					Client:          localServer.client,
 				}
+				world.ToggleShowApproachesWindow()
 			}
 		}
 
-		wmInit(eventStream)
+		wmInit()
 
-		uiInit(renderer, platform)
+		uiInit(renderer, platform, eventStream)
 
-		globalConfig.Activate(world, eventStream)
+		globalConfig.Activate(world, eventStream, lg)
 
 		if world == nil {
 			uiShowConnectDialog(false)
@@ -196,7 +209,8 @@ func main() {
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
-		lg.Printf("Starting main loop")
+		lg.Info("Starting main loop")
+		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
@@ -210,6 +224,7 @@ func main() {
 				if world == nil {
 					uiShowConnectDialog(false)
 				} else if world != nil {
+					world.ToggleShowApproachesWindow()
 					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 						p.ResetWorld(world)
 					})
@@ -222,6 +237,7 @@ func main() {
 							"Please upgrade to the latest version of vice for multi-controller functionality.",
 					}), true)
 					remoteServer = nil
+					stopConnectingRemoteServer = true
 				}
 
 			default:
@@ -233,11 +249,11 @@ func main() {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
 			}
 
-			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second {
+			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan, err = TryConnectRemoteServer(*serverIP)
+				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
 				if err != nil {
-					lg.Errorf("TryConnectRemoteServer: %v", err)
+					lg.Warnf("TryConnectRemoteServer: %v", err)
 				}
 			}
 
@@ -300,7 +316,7 @@ func main() {
 
 			// Periodically log current memory use, etc.
 			if *devmode && frameIndex%18000 == 0 {
-				lg.LogStats(stats)
+				lg.Info("performance", slog.Any("stats", stats))
 			}
 			frameIndex++
 
@@ -327,9 +343,5 @@ func main() {
 			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
 		}
 		f.Close()
-	}
-
-	if *devmode {
-		fmt.Print(lg.GetErrorLog())
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"html/template"
+	"io"
 	"math"
 	"net"
 	"net/http"
@@ -21,9 +22,10 @@ import (
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
+	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 1
+const ViceRPCVersion = 3
 
 func init() {
 	gob.Register(&FlyHeading{})
@@ -98,6 +100,14 @@ func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
 		&SetSimRateArgs{
 			ControllerToken: s.ControllerToken,
 			Rate:            r,
+		}, nil, nil)
+}
+
+func (s *SimProxy) SetLaunchConfig(lc LaunchConfig) *rpc.Call {
+	return s.Client.Go("Sim.SetLaunchConfig",
+		&SetLaunchConfigArgs{
+			ControllerToken: s.ControllerToken,
+			Config:          lc,
 		}, nil, nil)
 }
 
@@ -232,17 +242,23 @@ type SimManager struct {
 	controllerTokenToSim map[string]*Sim
 	mu                   sync.Mutex
 	startTime            time.Time
+	lg                   *Logger
 }
 
 func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
-	simConfigurations map[string]*SimConfiguration) *SimManager {
-	return &SimManager{
+	simConfigurations map[string]*SimConfiguration, lg *Logger) *SimManager {
+	sm := &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
 		activeSims:           make(map[string]*Sim),
 		controllerTokenToSim: make(map[string]*Sim),
 		startTime:            time.Now(),
+		lg:                   lg,
 	}
+
+	go sm.LogStats()
+
+	return sm
 }
 
 type NewSimResult struct {
@@ -252,7 +268,7 @@ type NewSimResult struct {
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal)
+		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.lg)
 		sim.prespawn()
 		return sm.Add(sim, result)
 	} else {
@@ -283,8 +299,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 }
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
-	if err := sim.Activate(); err != nil {
-		lg.Printf("%s: activate fail: %v", sim.Name, err)
+	if err := sim.Activate(sm.lg); err != nil {
 		return err
 	}
 
@@ -296,7 +311,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 		return ErrDuplicateSimName
 	}
 
-	lg.Printf("%s: starting new sim", sim.Name)
+	lg.Infof("%s: adding sim", sim.Name)
 	sm.activeSims[sim.Name] = sim
 
 	sm.mu.Unlock()
@@ -318,7 +333,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		lg.Printf("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
+		lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
 		sm.mu.Lock()
 		delete(sm.activeSims, sim.Name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
@@ -440,10 +455,22 @@ func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 }
 
 type SimStatus struct {
-	Name        string
-	Config      string
-	IdleTime    time.Duration
-	Controllers string
+	Name            string
+	Config          string
+	IdleTime        time.Duration
+	Controllers     string
+	TotalDepartures int
+	TotalArrivals   int
+}
+
+func (ss SimStatus) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("name", ss.Name),
+		slog.String("config", ss.Config),
+		slog.Duration("idle", ss.IdleTime),
+		slog.String("controllers", ss.Controllers),
+		slog.Int("departures", ss.TotalDepartures),
+		slog.Int("arrivals", ss.TotalArrivals))
 }
 
 func (sm *SimManager) GetSimStatus() []SimStatus {
@@ -454,9 +481,11 @@ func (sm *SimManager) GetSimStatus() []SimStatus {
 	for _, name := range SortedMapKeys(sm.activeSims) {
 		sim := sm.activeSims[name]
 		status := SimStatus{
-			Name:     name,
-			Config:   sim.Scenario,
-			IdleTime: sim.IdleTime().Round(time.Second),
+			Name:            name,
+			Config:          sim.Scenario,
+			IdleTime:        sim.IdleTime().Round(time.Second),
+			TotalDepartures: sim.TotalDepartures,
+			TotalArrivals:   sim.TotalArrivals,
 		}
 
 		var controllers []string
@@ -470,6 +499,67 @@ func (sm *SimManager) GetSimStatus() []SimStatus {
 	}
 
 	return ss
+}
+
+func (sm *SimManager) LogStats() {
+	for {
+		sm.mu.Lock()
+		lg.Info("SimManager: %d Sims active", len(sm.activeSims))
+		sm.mu.Unlock()
+
+		time.Sleep(1 * time.Minute)
+	}
+}
+
+type SimBroadcastMessage struct {
+	Password string
+	Message  string
+}
+
+func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
+	pw, err := os.ReadFile("password")
+	if err != nil {
+		return err
+	}
+
+	password := strings.TrimRight(string(pw), "\n\r")
+	if password != m.Password {
+		return ErrInvalidPassword
+	}
+
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+
+	lg.Infof("Broadcasting message: %s", m.Message)
+
+	for _, sim := range sm.activeSims {
+		sim.mu.Lock()
+
+		sim.eventStream.Post(Event{
+			Type:    ServerBroadcastMessageEvent,
+			Message: m.Message,
+		})
+
+		sim.mu.Unlock()
+	}
+	return nil
+}
+
+func BroadcastMessage(hostname, msg, password string) {
+	client, err := getClient(hostname)
+	if err != nil {
+		lg.Errorf("%v", err)
+		return
+	}
+
+	err = client.CallWithTimeout("SimManager.Broadcast", &SimBroadcastMessage{
+		Password: password,
+		Message:  msg,
+	}, nil)
+
+	if err != nil {
+		lg.Errorf("%v", err)
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -527,6 +617,19 @@ func (sd *SimDispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetSimRate(r.ControllerToken, r.Rate)
+	}
+}
+
+type SetLaunchConfigArgs struct {
+	ControllerToken string
+	Config          LaunchConfig
+}
+
+func (sd *SimDispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[lc.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetLaunchConfig(lc.ControllerToken, lc.Config)
 	}
 }
 
@@ -754,6 +857,16 @@ func (sd *SimDispatcher) ClearedApproach(c *ClearedApproachArgs, _ *struct{}) er
 	}
 }
 
+type CancelApproachArgs AircraftSpecifier
+
+func (sd *SimDispatcher) CancelApproachClearance(c *CancelApproachArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[c.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CancelApproachClearance(c.ControllerToken, c.Callsign)
+	}
+}
+
 type GoAroundArgs AircraftSpecifier
 
 func (sd *SimDispatcher) GoAround(ga *GoAroundArgs, _ *struct{}) error {
@@ -903,7 +1016,13 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			}
 
 		case 'C', 'A':
-			if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+			if len(command) == 3 && command == "CAC" {
+				// Cancel approach clearance
+				if err := sim.CancelApproachClearance(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := sim.ClearedApproach(cmds.ControllerToken, cmds.Callsign, command[3:], true); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
@@ -1008,7 +1127,7 @@ func (sd *SimDispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) err
 	return nil
 }
 
-func RunSimServer() {
+func RunSimServer(lg *Logger) {
 	l, err := net.Listen("tcp", ":8000")
 	if err != nil {
 		lg.Errorf("tcp listen: %v", err)
@@ -1017,7 +1136,7 @@ func RunSimServer() {
 
 	// If we're just running the server, we don't care about the returned
 	// configs...
-	runServer(l, false)
+	runServer(l, false, lg)
 }
 
 func getClient(hostname string) (*RPCClient, error) {
@@ -1053,7 +1172,7 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 				err: err,
 			}
 		} else {
-			lg.Printf("%s: server returned configuration in %s", hostname, time.Since(start))
+			lg.Infof("%s: server returned configuration in %s", hostname, time.Since(start))
 			ch <- &SimServer{
 				name:        "Network (Multi-controller)",
 				client:      client,
@@ -1066,7 +1185,7 @@ func TryConnectRemoteServer(hostname string) (chan *SimServer, error) {
 	return ch, nil
 }
 
-func LaunchLocalSimServer() (chan *SimServer, error) {
+func LaunchLocalSimServer(lg *Logger) (chan *SimServer, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return nil, err
@@ -1074,7 +1193,7 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 
 	port := l.Addr().(*net.TCPAddr).Port
 
-	configsChan := runServer(l, true)
+	configsChan := runServer(l, true, lg)
 
 	ch := make(chan *SimServer, 1)
 	go func() {
@@ -1096,20 +1215,20 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 	return ch, nil
 }
 
-func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
+func runServer(l net.Listener, isLocal bool, lg *Logger) chan map[string]*SimConfiguration {
 	ch := make(chan map[string]*SimConfiguration, 1)
 
 	server := func() {
 		var e ErrorLogger
 		scenarioGroups, simConfigurations := LoadScenarioGroups(&e)
 		if e.HaveErrors() {
-			e.PrintErrors()
+			e.PrintErrors(lg)
 			os.Exit(1)
 		}
 
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations)
+		sm := NewSimManager(scenarioGroups, simConfigurations, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("%v", err)
 			os.Exit(1)
@@ -1123,11 +1242,11 @@ func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
 
 		ch <- simConfigurations
 
-		lg.Printf("Listening on %+v", l)
+		lg.Infof("Listening on %+v", l)
 
 		for {
 			conn, err := l.Accept()
-			lg.Printf("%s: new connection", conn.RemoteAddr())
+			lg.Infof("%s: new connection", conn.RemoteAddr())
 			if err != nil {
 				lg.Errorf("Accept error: %v", err)
 			} else if cc, err := MakeCompressedConn(MakeLoggingConn(conn)); err != nil {
@@ -1159,10 +1278,21 @@ func launchHTTPStats(sm *SimManager) {
 	launchTime = time.Now()
 	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		statsHandler(w, r, sm)
+		lg.Infof("%s: served stats request", r.URL.String())
+	})
+	http.HandleFunc("/vice-logs/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		if f, err := os.Open("." + r.URL.String()); err == nil {
+			if n, err := io.Copy(w, f); err != nil {
+				lg.Errorf("%s: %v", r.URL.String(), err)
+			} else {
+				lg.Infof("%s: served %d bytes", r.URL.String(), n)
+			}
+		}
 	})
 
 	if err := http.ListenAndServe(":6502", nil); err != nil {
-		lg.Printf("Failed to start HTTP server for stats: %v\n", err)
+		lg.Errorf("Failed to start HTTP server for stats: %v\n", err)
 	}
 }
 
@@ -1177,10 +1307,17 @@ type ServerStats struct {
 	CPUUsage         int
 
 	SimStatus []SimStatus
-	Errors    []string
+	Errors    string
+	LogFiles  []ServerLogFile
 }
 
-func bandwidth(v int64) string {
+type ServerLogFile struct {
+	Filename string
+	Date     string
+	Size     int64
+}
+
+func formatBytes(v int64) string {
 	if v < 1024 {
 		return fmt.Sprintf("%d B", v)
 	} else if v < 1024*1024 {
@@ -1192,14 +1329,13 @@ func bandwidth(v int64) string {
 	}
 }
 
-var templateFuncs = template.FuncMap{"bandwidth": bandwidth}
+var templateFuncs = template.FuncMap{"bytes": formatBytes}
 
 var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
 <!DOCTYPE html>
 <html>
 <head>
 <title>vice vice baby</title>
-<meta http-equiv="refresh" content="10">
 </head>
 <style>
 table {
@@ -1220,7 +1356,8 @@ tr:nth-child(even) {
 #log {
     font-family: "Courier New", monospace;  /* use a monospace font */
     width: 100%;
-    height: 300px;  /* adjust as needed */
+    height: 500px;
+    font-size: 12px;
     overflow: auto;  /* add scrollbars as necessary */
     white-space: pre-wrap;  /* wrap text */
     border: 1px solid #ccc;
@@ -1232,7 +1369,7 @@ tr:nth-child(even) {
 <ul>
   <li>Uptime: {{.Uptime}}</li>
   <li>CPU usage: {{.CPUUsage}}%</li>
-  <li>Bandwidth: {{bandwidth .RX}} RX, {{bandwidth .TX}} TX</li>
+  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX</li>
   <li>Allocated memory: {{.AllocMemory}} MB</li>
   <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
   <li>System memory: {{.SysMemory}} MB</li>
@@ -1245,6 +1382,8 @@ tr:nth-child(even) {
   <tr>
   <th>Name</th>
   <th>Scenario</th>
+  <th>Dep</th>
+  <th>Arr</th>
   <th>Idle Time</th>
   <th>Active Controllers</th>
 
@@ -1252,6 +1391,8 @@ tr:nth-child(even) {
   </tr>
   <td>{{.Name}}</td>
   <td>{{.Config}}</td>
+  <td>{{.TotalDepartures}}</td>
+  <td>{{.TotalArrivals}}</td>
   <td>{{.IdleTime}}</td>
   <td><tt>{{.Controllers}}</tt></td>
 </tr>
@@ -1259,9 +1400,25 @@ tr:nth-child(even) {
 </table>
 
 <h1>Errors</h1>
-<div id="log">
-{{range .Errors}}{{.}}{{end}}
+<div id="log" class="bot">
+{{.Errors}}
 </div>
+
+<h1>Logs</h1>
+<ul>
+{{range .LogFiles}}
+<li><a href="/vice-logs/{{.Filename}}">{{.Filename}}</a> - {{.Date}} - ({{bytes .Size}})</li>
+{{end}}
+</ul>
+
+<script>
+window.onload = function() {
+    var divs = document.getElementsByClassName("bot");
+    for (var i = 0; i < divs.length; i++) {
+        divs[i].scrollTop = divs[i].scrollHeight - divs[i].clientHeight;
+    }
+}
+</script>
 
 </body>
 </html>
@@ -1282,15 +1439,27 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		CPUUsage:         int(math.Round(usage[0])),
 
 		SimStatus: sm.GetSimStatus(),
-		Errors:    lg.GetErrorLog(),
 	}
-
+	if errs, err := os.ReadFile("vice-logs/errors"); err == nil {
+		stats.Errors = string(errs)
+	}
 	stats.RX, stats.TX = GetLoggedRPCBandwidth()
 
-	// Limit to 100 most recent errors
-	if n := len(stats.Errors); n > 100 {
-		stats.Errors = stats.Errors[n-100:]
+	if de, err := os.ReadDir("vice-logs"); err == nil {
+		for _, entry := range de {
+			if info, err := entry.Info(); err == nil {
+				stats.LogFiles = append(stats.LogFiles,
+					ServerLogFile{
+						Filename: entry.Name(),
+						Date:     info.ModTime().Format(time.RFC1123),
+						Size:     info.Size(),
+					})
+			}
+		}
 	}
+	sort.Slice(stats.LogFiles, func(i, j int) bool {
+		return stats.LogFiles[i].Filename < stats.LogFiles[j].Filename
+	})
 
 	statsTemplate.Execute(w, stats)
 }

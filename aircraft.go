@@ -25,8 +25,6 @@ type Aircraft struct {
 	MagneticVariation float32
 	NmPerLongitude    float32
 
-	Tracks [10]RadarTrack
-
 	// Who has the radar track
 	TrackingController string
 	// Who has control of the aircraft; may not be the same as
@@ -72,20 +70,6 @@ func (a *Aircraft) Performance() AircraftPerformance {
 	return perf
 }
 
-func (a *Aircraft) TrackAltitude() int {
-	return a.Tracks[0].Altitude
-}
-
-// Reported in feet per minute
-func (a *Aircraft) AltitudeChange() int {
-	if a.Tracks[0].Position.IsZero() || a.Tracks[1].Position.IsZero() {
-		return 0
-	}
-
-	dt := a.Tracks[0].Time.Sub(a.Tracks[1].Time)
-	return int(float64(a.Tracks[0].Altitude-a.Tracks[1].Altitude) / dt.Minutes())
-}
-
 func (ac *Aircraft) TAS() float32 {
 	// Simple model for the increase in TAS as a function of altitude: 2%
 	// additional TAS on top of IAS for each 1000 feet.
@@ -100,64 +84,6 @@ func (ac *Aircraft) NextFixETA() (time.Duration, bool) {
 		return 0, false
 	}
 	return ac.Waypoints[0].ETA(ac.Position, ac.GS), true
-}
-
-func (a *Aircraft) HaveTrack() bool {
-	return a.TrackPosition()[0] != 0 || a.TrackPosition()[1] != 0
-}
-
-func (a *Aircraft) TrackPosition() Point2LL {
-	return a.Tracks[0].Position
-}
-
-func (a *Aircraft) TrackGroundspeed() int {
-	return a.Tracks[0].Groundspeed
-}
-
-// Note: returned value includes the magnetic correction
-func (a *Aircraft) TrackHeading() float32 {
-	return a.Tracks[0].Heading + a.MagneticVariation
-}
-
-// Perhaps confusingly, the vector returned by HeadingVector() is not
-// aligned with the reported heading but is instead along the aircraft's
-// extrapolated path.  Thus, it includes the effect of wind.  The returned
-// vector is scaled so that it represents where it is expected to be one
-// minute in the future.
-func (a *Aircraft) HeadingVector() Point2LL {
-	var v [2]float32
-	if !a.HaveHeading() {
-		v = [2]float32{cos(radians(a.TrackHeading())), sin(radians(a.TrackHeading()))}
-	} else {
-		p0, p1 := a.Tracks[0].Position, a.Tracks[1].Position
-		v = sub2ll(p0, p1)
-	}
-
-	nm := nmlength2ll(v, a.NmPerLongitude)
-	// v's length should be groundspeed / 60 nm.
-	return scale2ll(v, float32(a.TrackGroundspeed())/(60*nm))
-}
-
-func (a *Aircraft) HaveHeading() bool {
-	return !a.Tracks[0].Position.IsZero() && !a.Tracks[1].Position.IsZero()
-}
-
-func (a *Aircraft) HeadingTo(p Point2LL) float32 {
-	return headingp2ll(a.TrackPosition(), p, a.NmPerLongitude, a.MagneticVariation)
-}
-
-func (a *Aircraft) LostTrack(now time.Time) bool {
-	// Only return true if we have at least one valid track from the past
-	// but haven't heard from the aircraft recently.
-	return !a.Tracks[0].Position.IsZero() && now.Sub(a.Tracks[0].Time) > 30*time.Second
-}
-
-func (a *Aircraft) AddTrack(t RadarTrack) {
-	// Move everthing forward one to make space for the new one. We could
-	// be clever and use a circular buffer to skip the copies, though at
-	// the cost of more painful indexing elsewhere...
-	copy(a.Tracks[1:], a.Tracks[:len(a.Tracks)-1])
-	a.Tracks[0] = t
 }
 
 func (a *Aircraft) IsAssociated() bool {
@@ -580,24 +506,33 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 		return "", err
 	}
 
+	if id == ac.ApproachId && ac.Approach != nil {
+		return "you already told us to expect the " + ap.FullName + " approach", nil
+	}
+
 	ac.Approach = ap
 	ac.ApproachId = id
 
-	if wp, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(wp) > 0 {
-		// Splice the runway-specific waypoints in with the aircraft's
-		// current waypoints...
-		idx := FindIf(ac.Waypoints, func(w Waypoint) bool {
-			return w.Fix == wp[0].Fix
-		})
-		if idx == -1 {
+	if waypoints, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(waypoints) > 0 {
+		// Try to splice the runway-specific waypoints in with the
+		// aircraft's current waypoints...
+		found := false
+		for i, wp := range waypoints {
+			if idx := FindIf(ac.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+				ac.Waypoints = ac.Waypoints[:idx]
+				ac.Waypoints = append(ac.Waypoints, waypoints[i:]...)
+
+				found = true
+				break
+			}
+		}
+
+		if !found {
 			lg.Errorf("%s: Aircraft waypoints %s don't match up with arrival runway waypoints %s",
-				ac.Callsign, spew.Sdump(ac.Waypoints), spew.Sdump(wp))
+				ac.Callsign, spew.Sdump(ac.Waypoints), spew.Sdump(waypoints))
 			// Assume that it has (hopefully recently) passed the last fix
 			// and that patching in the rest will work out..
-			ac.Waypoints = DuplicateSlice(wp[1:])
-		} else {
-			ac.Waypoints = ac.Waypoints[:idx]
-			ac.Waypoints = append(ac.Waypoints, wp...)
+			ac.Waypoints = DuplicateSlice(waypoints[1:])
 		}
 	}
 
@@ -702,7 +637,11 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 	return
 }
 
-func (ac *Aircraft) CancelApproachClearance() {
+func (ac *Aircraft) CancelApproachClearance() (string, error) {
+	if !ac.ApproachCleared {
+		return "We're not currently cleared for an approach", nil
+	}
+
 	ac.ApproachCleared = false
 
 	for cmd := range ac.Nav.FutureCommands {
@@ -715,6 +654,8 @@ func (ac *Aircraft) CancelApproachClearance() {
 			delete(ac.Nav.FutureCommands, cmd)
 		}
 	}
+
+	return "Cancel approach clearance", nil
 }
 
 func (ac *Aircraft) updateAirspeed() {
@@ -810,25 +751,23 @@ func (ac *Aircraft) updateHeading(wind WindModel) {
 }
 
 func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
-	// Update position given current heading
-	prev := ac.Position
+	// Calculate offset vector based on heading and current TAS.
 	hdg := ac.Heading - ac.MagneticVariation
-	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+	TAS := ac.TAS() / 3600
+	flightVector := scale2f([2]float32{sin(radians(hdg)), cos(radians(hdg))}, TAS)
 
-	// Compute ground speed: TAS, modified for wind.
+	// Further offset based on the wind
 	perf := ac.Performance()
-	GS := ac.TAS() / 3600
 	airborne := ac.IAS >= 1.1*perf.Speed.Min
+	var windVector [2]float32
 	if airborne && wind != nil {
-		windVector := wind.GetWindVector(ac.Position, ac.Altitude)
-		delta := windVector[0]*v[0] + windVector[1]*v[1]
-		GS += delta
+		windVector = wind.GetWindVector(ac.Position, ac.Altitude)
 	}
 
-	// Finally update position and groundspeed.
-	newPos := add2f(ll2nm(ac.Position, ac.NmPerLongitude), scale2f(v, GS))
-	ac.Position = nm2ll(newPos, ac.NmPerLongitude)
-	ac.GS = nmdistance2ll(prev, ac.Position) * 3600
+	// Update the aircraft's state
+	p := add2f(ll2nm(ac.Position, ac.NmPerLongitude), add2f(flightVector, windVector))
+	ac.Position = nm2ll(p, ac.NmPerLongitude)
+	ac.GS = length2f(add2f(flightVector, windVector)) * 3600
 }
 
 func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
@@ -855,7 +794,7 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 	}
 
 	if ac.ShouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind) {
-		lg.Printf("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
+		lg.Infof("%s: turning outbound from %.1f to %.1f for %s", ac.Callsign, ac.Heading, hdg, wp.Fix)
 
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp, w, ep)
@@ -873,7 +812,11 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 
 		if wp.Altitude != 0 {
 			if fr, ok := ac.Nav.V.(*FlyRoute); ok {
-				fr.AltitudeRestriction = float32(wp.Altitude)
+				if !ac.ApproachCleared || wp.Altitude < int(ac.Altitude) {
+					// Don't climb if we're cleared approach and below the
+					// next fix's altitude.
+					fr.AltitudeRestriction = float32(wp.Altitude)
+				}
 			}
 		}
 		if wp.Speed != 0 {
@@ -891,7 +834,7 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 			ac.flyProcedureTurnIfNecessary()
 		}
 
-		//lg.Printf("%s", spew.Sdump(ac))
+		//lg.Infof("%s", spew.Sdump(ac))
 	}
 }
 
@@ -964,7 +907,7 @@ func (ac *Aircraft) ShouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMeth
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 		if sign(initialDist) != sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
-			lg.Printf("%s: turning now to intercept outbound in %d seconds",
+			lg.Infof("%s: turning now to intercept outbound in %d seconds",
 				ac.Callsign, i)
 			//globalConfig.highlightedLocation = ac2.Position
 			//globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
@@ -1011,7 +954,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 		ac2.Update(wind, nil, nil)
 		curDist := SignedPointLineDistance(ll2nm(ac2.Position, ac2.NmPerLongitude), p0, p1)
 		if sign(initialDist) != sign(curDist) && abs(curDist) < .25 && headingDifference(hdg, ac2.Heading) < 3.5 {
-			lg.Printf("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
+			lg.Infof("%s: turning now to intercept radial in %d seconds", ac.Callsign, i)
 			//globalConfig.highlightedLocation = ac2.Position
 			//globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 			return true

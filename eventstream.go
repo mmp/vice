@@ -9,6 +9,8 @@ import (
 	"runtime"
 	"sync"
 	"time"
+
+	"golang.org/x/exp/slog"
 )
 
 type EventSubscriberId int
@@ -35,6 +37,12 @@ type EventsSubscription struct {
 	// subscriber has consumed events so far.
 	offset int
 	source string
+}
+
+func (e *EventsSubscription) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.Int("offset", e.offset),
+		slog.String("source", e.source))
 }
 
 func NewEventStream() *EventStream {
@@ -69,7 +77,7 @@ func (e *EventsSubscription) Unsubscribe() {
 	defer e.stream.mu.Unlock()
 
 	if _, ok := e.stream.subscriptions[e]; !ok {
-		lg.ErrorfUp1("Attempted to unsubscribe invalid subscription: %+v", e)
+		lg.Errorf("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
 	delete(e.stream.subscriptions, e)
 	e.stream = nil
@@ -80,12 +88,14 @@ func (e *EventsSubscription) Unsubscribe() {
 // conventions.
 func (e *EventStream) Post(event Event) {
 	if false && *devmode {
-		lg.PrintfUp1("Post %s; %d subscribers stream length %d, cap %d",
+		lg.Infof("Post %s; %d subscribers stream length %d, cap %d",
 			event.String(), len(e.subscriptions), len(e.events), cap(e.events))
 	}
 
 	e.mu.Lock()
 	defer e.mu.Unlock()
+
+	lg.Info("posted event", slog.Any("event", event))
 
 	// Ignore the event if no one's paying attention.
 	if len(e.subscriptions) > 0 {
@@ -94,7 +104,7 @@ func (e *EventStream) Post(event Event) {
 			// general we expect it to pretty quickly reach steady state
 			// with just a handful of entries.
 			e.mu.Unlock()
-			lg.Printf("%s", e.Dump())
+			lg.Info("current event stream", slog.Any("event_stream", e))
 			e.mu.Lock()
 		}
 
@@ -110,7 +120,7 @@ func (e *EventsSubscription) Get() []Event {
 	defer e.stream.mu.Unlock()
 
 	if _, ok := e.stream.subscriptions[e]; !ok {
-		lg.ErrorfUp1("Attempted to get with unregistered subscription: %+v", e)
+		lg.Errorf("Attempted to get with unregistered subscription: %+v", e)
 		return nil
 	}
 
@@ -152,20 +162,19 @@ func (e *EventStream) compact() {
 	}
 }
 
-// Dump prints out information about the internals of the event stream that
-// may be useful for debugging.
-func (e *EventStream) Dump() string {
+// implements slog.LogValuer
+func (e *EventStream) LogValue() slog.Value {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	s := fmt.Sprintf("stream: len %d cap %d", len(e.events), cap(e.events))
+	items := []slog.Attr{slog.Int("len", len(e.events)), slog.Int("cap", cap(e.events))}
 	if len(e.events) > 0 {
-		s += fmt.Sprintf("\n  last elt %v", e.events[len(e.events)-1])
+		items = append(items, slog.Any("last_element", e.events[len(e.events)-1]))
 	}
 	for sub := range e.subscriptions {
-		s += fmt.Sprintf(" sub %+v", sub)
+		items = append(items, slog.Any(fmt.Sprintf("subscriber_%p", sub), sub))
 	}
-	return s
+	return slog.GroupValue(items...)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -183,12 +192,14 @@ const (
 	RejectedHandoffEvent
 	RadioTransmissionEvent
 	StatusMessageEvent
+	ServerBroadcastMessageEvent
+	NumEventTypes
 )
 
 func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
 		"OfferedHandoff", "AcceptedHandoff", "CanceledHandoff", "RejectedHandoff",
-		"RadioTransmission", "StatusMessage"}[t]
+		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage"}[t]
 }
 
 type Event struct {
@@ -202,4 +213,21 @@ type Event struct {
 func (e *Event) String() string {
 	return fmt.Sprintf("%s: callsign %s controller %s->%s message %s",
 		e.Type, e.Callsign, e.FromController, e.ToController, e.Message)
+}
+
+func (e Event) LogValue() slog.Value {
+	attrs := []slog.Attr{slog.String("type", e.Type.String())}
+	if e.Callsign != "" {
+		attrs = append(attrs, slog.String("callsign", e.Callsign))
+	}
+	if e.FromController != "" {
+		attrs = append(attrs, slog.String("from_controller", e.FromController))
+	}
+	if e.ToController != "" {
+		attrs = append(attrs, slog.String("to_controller", e.ToController))
+	}
+	if e.Message != "" {
+		attrs = append(attrs, slog.String("message", e.Message))
+	}
+	return slog.GroupValue(attrs...)
 }
