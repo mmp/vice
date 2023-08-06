@@ -2634,39 +2634,48 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			return
 		} else if cmd == "S" {
 			ps.SSAList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.SSAList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "T" {
 			ps.TABList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.TABList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "TV" {
 			ps.VFRList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.VFRList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "TM" {
 			ps.AlertList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.AlertList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "TC" {
 			ps.CoastList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.CoastList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "TS" {
 			ps.SignOnList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.SignOnList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "TX" {
 			ps.VideoMapsList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.VideoMapsList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "TN" {
 			ps.CRDAStatusList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.CRDAStatusList.Visible = true
 			status.clear = true
 			return
 		} else if len(cmd) == 2 && cmd[0] == 'P' {
 			if idx, err := strconv.Atoi(cmd[1:]); err == nil && idx > 0 && idx <= 3 {
 				ps.TowerLists[idx-1].Position = transforms.NormalizedFromWindowP(mousePosition)
+				ps.TowerLists[idx-1].Visible = true
 				status.clear = true
 				return
 			}
