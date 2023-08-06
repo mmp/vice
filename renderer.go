@@ -70,8 +70,8 @@ func (rs *RendererStats) Merge(s RendererStats) {
 	rs.nQuads += s.nQuads
 }
 
-func (rs RendererStats) LogValue() slog.Value {
-	return slog.GroupValue(
+func (rs *RendererStats) LogAttrs() []any {
+	return []any{
 		slog.Int("buffers", rs.nBuffers),
 		slog.Int("buffer_memory", rs.bufferBytes),
 		slog.Int("draw_calls", rs.nDrawCalls),
@@ -79,7 +79,7 @@ func (rs RendererStats) LogValue() slog.Value {
 		slog.Int("lines", rs.nLines),
 		slog.Int("tris", rs.nTriangles),
 		slog.Int("quads", rs.nQuads),
-	)
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
