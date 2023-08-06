@@ -44,10 +44,12 @@
             </Component>
             <Directory Id="VideoMapsFolder" Name="videomaps">
               <Component Id="VideoMapsId" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
-                <File Id="atlmaps"
-                      Source="resources\\videomaps\\atl-maps.json.zst" />
                 <File Id="a90maps"
                       Source="resources\\videomaps\\a90-maps.json.zst" />
+                <File Id="abemaps"
+                      Source="resources\\videomaps\\abe-maps.json.zst" />
+                <File Id="atlmaps"
+                      Source="resources\\videomaps\\atl-maps.json.zst" />
                 <File Id="c90maps"
                       Source="resources\\videomaps\\c90-maps.json.zst" KeyPath="yes" />
                 <File Id="clemaps"
@@ -58,17 +60,19 @@
                       Source="resources\\videomaps\\dab-maps.json.zst" />
                 <File Id="jaxmaps"
                       Source="resources\\videomaps\\jax-maps.json.zst" />
+                <File Id="n90maps"
+                      Source="resources\\videomaps\\n90-maps.json.zst" />
+                <File Id="phlmaps"
+                      Source="resources\\videomaps\\phl-maps.json.zst" />
                 <File Id="zjxmaps"
                       Source="resources\\videomaps\\zjx-maps.json.zst" />
-                <File Id="znymaps"
-                      Source="resources\\videomaps\\zny-maps.json.zst" />
               </Component>
             </Directory>
             <Directory Id="ScenariosFolder" Name="scenarios">
               <Component Id="ScenariosId" Guid="3072033b-c670-4e11-b941-2ea9bf892a83">
-                <File Id="abe" Source="resources\\scenarios\\abe.json" KeyPath="yes" />
                 <File Id="a80" Source="resources\\scenarios\\a80.json" />
                 <File Id="a90" Source="resources\\scenarios\\a90.json" />
+                <File Id="abe" Source="resources\\scenarios\\abe.json" KeyPath="yes" />
                 <File Id="c90" Source="resources\\scenarios\\c90.json" />
                 <File Id="cle" Source="resources\\scenarios\\cle.json" />
                 <File Id="clt" Source="resources\\scenarios\\clt.json" />
