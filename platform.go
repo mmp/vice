@@ -84,7 +84,7 @@ type GLFWPlatform struct {
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
 // of the specified size open at the specified position on the screen.
-func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool, lg *Logger) (Platform, error) {
+func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool) (Platform, error) {
 	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {

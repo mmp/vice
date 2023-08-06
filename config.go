@@ -170,7 +170,7 @@ func LoadOrMakeDefaultConfig() {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream, lg *Logger) {
+func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
@@ -198,8 +198,6 @@ func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream, lg *Logger)
 			}
 		}
 	}
-
-	gc.Audio.Activate(lg)
 
 	if gc.DisplayRoot == nil {
 		stars := NewSTARSPane(w)

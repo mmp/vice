@@ -391,7 +391,7 @@ func GetDefaultFont() *Font {
 func FontAwesomeString(id string) string {
 	s, ok := IconFontCppHeaders.FontAwesome5.Icons[id]
 	if !ok {
-		panic(fmt.Sprintf("%s: FA string unknown", id))
+		lg.Errorf("%s: FA string unknown", id)
 	}
 	return s
 }
@@ -399,7 +399,7 @@ func FontAwesomeString(id string) string {
 func FontAwesomeBrandsString(id string) string {
 	s, ok := IconFontCppHeaders.FontAwesome5Brands.Icons[id]
 	if !ok {
-		panic(fmt.Sprintf("%s: FA string unknown", id))
+		lg.Errorf("%s: FA string unknown", id)
 	}
 	return s
 }
