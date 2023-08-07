@@ -5,51 +5,13 @@
 package main
 
 import (
-	_ "embed"
 	"fmt"
+	"path/filepath"
 	"sync"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/veandco/go-sdl2/sdl"
-)
-
-// All of the available audio effects are directly embedded in the binary
-// as WAV files.
-
-var (
-	//go:embed resources/audio/389511__bbrocer__digital-alarm-loop.wav
-	bbrocer__digital_alarm_loopWAV string
-	//go:embed resources/audio/529626__beetlemuse__alert-1.wav
-	beetlemuse__alert_1WAV string
-	//go:embed resources/audio/320181__dland__hint.wav
-	dland__hintWAV string
-	//go:embed resources/audio/242501__gabrielaraujo__powerup-success.wav
-	gabrielaraujo__powerup_successWAV string
-	//go:embed resources/audio/427961__michaelatoz__alertwo-cc0.wav
-	michaelatoz__alertwo_cc0WAV string
-	//go:embed resources/audio/321104__nsstudios__blip2.wav
-	nsstudios__blip2WAV string
-	//go:embed resources/audio/263123__pan14__sine-tri-tone-down-negative-beep-amb-verb.wav
-	pan14__sine_tri_tone_down_negative_beep_amb_verbWAV string
-	//go:embed resources/audio/263124__pan14__sine-octaves-up-beep.wav
-	pan14__sine_octaves_up_beepWAV string
-	//go:embed resources/audio/263125__pan14__sine-fifths-up-beep.wav
-	pan14__sine_fifths_up_beepWAV string
-	//go:embed resources/audio/263126__pan14__tone-beep-lower-slower.wav
-	pan14__tone_beep_lower_slowerWAV string
-	//go:embed resources/audio/263129__pan14__sine-up-flutter-beep.wav
-	pan14__sine_up_flutter_beepWAV string
-	//go:embed resources/audio/263132__pan14__tri-tone-up-beep.wav
-	pan14__tri_tone_up_beepWAV string
-	//go:embed resources/audio/263655__pan14__upward-beep-chromatic-fifths.wav
-	pan14__upward_beep_chromatic_fifthsWAV string
-	//go:embed resources/audio/487588__ranner__ui-click.wav
-	ranner__ui_clickWAV string
-	//go:embed resources/audio/387533__soundwarf__alert-short.wav
-	soundwarf__alert_shortWAV string
-	//go:embed resources/audio/426888__thisusernameis__beep4.wav
-	thisusernameis__beep4WAV string
 )
 
 var (
@@ -185,7 +147,8 @@ func (s *SoundEffect) Play() {
 	}()
 }
 
-func addEffect(wav string, name string, repeat int) {
+func addEffect(filename string, name string, repeat int) {
+	wav := LoadResource(filepath.Join("audio", filename))
 	rw, err := sdl.RWFromMem([]byte(wav))
 	if err != nil {
 		lg.Errorf("%s: unable to add audio effect: %v", name, err)
@@ -225,22 +188,22 @@ func audioInit() error {
 	}
 
 	soundEffects = make(map[string]*SoundEffect)
-	addEffect(bbrocer__digital_alarm_loopWAV, "Alarm - Digital", 2)
-	addEffect(beetlemuse__alert_1WAV, "Alert", 1)
-	addEffect(dland__hintWAV, "Hint", 1)
-	addEffect(gabrielaraujo__powerup_successWAV, "Success", 1)
-	addEffect(michaelatoz__alertwo_cc0WAV, "Alert 2", 1)
-	addEffect(nsstudios__blip2WAV, "Blip", 1)
-	addEffect(pan14__sine_fifths_up_beepWAV, "Beep Up Fifths", 1)
-	addEffect(pan14__sine_octaves_up_beepWAV, "Beep Up", 1)
-	addEffect(pan14__sine_tri_tone_down_negative_beep_amb_verbWAV, "Beep Negative", 1)
-	addEffect(pan14__sine_up_flutter_beepWAV, "Beep Flutter", 1)
-	addEffect(pan14__tone_beep_lower_slowerWAV, "Beep Slow", 1)
-	addEffect(pan14__tri_tone_up_beepWAV, "Beep Tone Up", 1)
-	addEffect(pan14__upward_beep_chromatic_fifthsWAV, "Beep Chromatic", 1)
-	addEffect(ranner__ui_clickWAV, "Click", 1)
-	addEffect(soundwarf__alert_shortWAV, "Alert Short", 1)
-	addEffect(thisusernameis__beep4WAV, "Beep Double", 1)
+	addEffect("389511__bbrocer__digital-alarm-loop.wav", "Alarm - Digital", 2)
+	addEffect("529626__beetlemuse__alert-1.wav", "Alert", 1)
+	addEffect("320181__dland__hint.wav", "Hint", 1)
+	addEffect("242501__gabrielaraujo__powerup-success.wav", "Success", 1)
+	addEffect("427961__michaelatoz__alertwo-cc0.wav", "Alert 2", 1)
+	addEffect("321104__nsstudios__blip2.wav", "Blip", 1)
+	addEffect("263125__pan14__sine-fifths-up-beep.wav", "Beep Up Fifths", 1)
+	addEffect("263124__pan14__sine-octaves-up-beep.wav", "Beep Up", 1)
+	addEffect("263123__pan14__sine-tri-tone-down-negative-beep-amb-verb.wav", "Beep Negative", 1)
+	addEffect("263129__pan14__sine-up-flutter-beep.wav", "Beep Flutter", 1)
+	addEffect("263126__pan14__tone-beep-lower-slower.wav", "Beep Slow", 1)
+	addEffect("263132__pan14__tri-tone-up-beep.wav", "Beep Tone Up", 1)
+	addEffect("263655__pan14__upward-beep-chromatic-fifths.wav", "Beep Chromatic", 1)
+	addEffect("487588__ranner__ui-click.wav", "Click", 1)
+	addEffect("387533__soundwarf__alert-short.wav", "Alert Short", 1)
+	addEffect("426888__thisusernameis__beep4.wav", "Beep Double", 1)
 
 	lg.Printf("Finished initializing audio")
 	return nil

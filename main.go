@@ -12,6 +12,7 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
+	"io/fs"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -36,6 +37,7 @@ var (
 	platform     Platform
 	database     *StaticDatabase
 	lg           *Logger
+	resourcesFS  fs.StatFS
 
 	// client only
 	newWorldChan chan *World
@@ -98,6 +100,8 @@ func main() {
 			}
 		}
 	}
+
+	resourcesFS = getResourcesFS()
 
 	eventStream := NewEventStream()
 

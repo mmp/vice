@@ -6,7 +6,6 @@ package main
 
 import (
 	"bytes"
-	_ "embed"
 	"encoding/json"
 	"io"
 	"os"

@@ -716,9 +716,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 
-	fsys := getResourcesFS()
-
-	err := fs.WalkDir(fsys, "videomaps", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("%v", err)
 			return nil
@@ -733,7 +731,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 		}
 
 		lg.Printf("%s: loading video map", path)
-		vm := loadVideoMaps(fsys, path, e)
+		vm := loadVideoMaps(resourcesFS, path, e)
 		if vm != nil {
 			videoMapCommandBuffers[path] = vm
 		}
@@ -769,7 +767,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	scenarioGroups := make(map[string]*ScenarioGroup)
 	simConfigurations := make(map[string]*SimConfiguration)
 
-	err = fs.WalkDir(fsys, "scenarios", func(path string, d fs.DirEntry, err error) error {
+	err = fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("%v", err)
 			return nil
@@ -784,7 +782,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 		}
 
 		lg.Printf("%s: loading scenario", path)
-		s := loadScenarioGroup(fsys, path, e)
+		s := loadScenarioGroup(resourcesFS, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.Name]; ok {
 				e.ErrorString("%s: scenario redefined", s.Name)

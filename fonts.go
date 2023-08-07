@@ -6,10 +6,10 @@ package main
 
 import (
 	"C"
-	_ "embed"
 	"fmt"
 	"image"
 	"math"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"unicode/utf8"
@@ -96,38 +96,6 @@ var (
 		"Discord": FontAwesomeBrandsString("Discord"),
 		"Github":  FontAwesomeBrandsString("Github"),
 	}
-
-	// Font data; they're all embedded in the executable as strings at
-	// compile time, which saves us any worries about having trouble
-	// finding them at runtime.
-
-	//go:embed resources/Roboto-Regular.ttf.zst
-	robotoRegularTTF string
-
-	//go:embed resources/VT323-Regular.ttf.zst
-	vt323RegularTTF string
-
-	//go:embed resources/FixedDemiBold.otf.zst
-	fixedDemiBoldOTF string
-
-	//go:embed resources/Inconsolata-SemiBold.ttf.zst
-	inconsolataSemiBoldTTF string
-
-	//go:embed resources/Flight-Strip-Printer.ttf.zst
-	flightStripPrinterTTF string
-
-	//go:embed resources/Inconsolata/static/Inconsolata_Condensed/Inconsolata_Condensed-Regular.ttf.zst
-	inconsolataCondensedRegularTTF string
-
-	//go:embed "resources/Font Awesome 5 Brands-Regular-400.otf.zst"
-	fa5BrandsRegularTTF string
-	//go:embed "resources/Font Awesome 5 Free-Regular-400.otf.zst"
-	fa5RegularTTF string
-	//go:embed "resources/Font Awesome 5 Free-Solid-900.otf.zst"
-	fa5SolidTTF string
-
-	//----go:embed "resources/ibm_ega_8x14.ttf.zst"
-	//ibmEGA8x14 string
 )
 
 // Each loaded (font,size) combination is represented by (surprise) a Font.
@@ -256,13 +224,13 @@ func fontsInit(r Renderer, platform Platform) {
 	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
-	faTTF := []byte(decompressZstd(fa5SolidTTF))
+	faTTF := LoadResource(filepath.Join("fonts", "Font Awesome 5 Free-Solid-900.otf.zst"))
+	fabrTTF := LoadResource(filepath.Join("fonts", "Font Awesome 5 Brands-Regular-400.otf.zst"))
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
-	fabrTTF := []byte(decompressZstd(fa5BrandsRegularTTF))
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
-	add := func(ttfZstd string, mono bool, name string) {
-		ttf := []byte(decompressZstd(ttfZstd))
+	add := func(filename string, mono bool, name string) {
+		ttf := LoadResource(filepath.Join("fonts", filename))
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
@@ -291,12 +259,12 @@ func fontsInit(r Renderer, platform Platform) {
 		}
 	}
 
-	add(robotoRegularTTF, false, "Roboto Regular")
-	add(vt323RegularTTF, true, "VT323 Regular")
-	add(fixedDemiBoldOTF, true, "Fixed Demi Bold")
-	add(inconsolataSemiBoldTTF, true, "Inconsolata SemiBold")
-	add(flightStripPrinterTTF, true, "Flight Strip Printer")
-	add(inconsolataCondensedRegularTTF, true, "Inconsolata Condensed Regular")
+	add("Roboto-Regular.ttf.zst", false, "Roboto Regular")
+	add("VT323-Regular.ttf.zst", true, "VT323 Regular")
+	add("FixedDemiBold.otf.zst", true, "Fixed Demi Bold")
+	add("Inconsolata-SemiBold.ttf.zst", true, "Inconsolata SemiBold")
+	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
+	add("Inconsolata_Condensed-Regular.ttf.zst", true, "Inconsolata Condensed Regular")
 
 	img := io.Fonts().TextureDataRGBA32()
 	lg.Printf("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))

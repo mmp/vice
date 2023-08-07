@@ -6,12 +6,10 @@ package main
 
 import (
 	"bytes"
-	_ "embed"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/fs"
 	"strconv"
 	"strings"
 	"sync"
@@ -788,16 +786,6 @@ func InitializeStaticDatabase() *StaticDatabase {
 ///////////////////////////////////////////////////////////////////////////
 // FAA databases
 
-var (
-	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2022-07-14/
-	//go:embed resources/NAV_BASE.csv.zst
-	navBaseRaw string
-	//go:embed resources/FIX_BASE.csv.zst
-	fixesRaw string
-	//go:embed resources/callsigns.csv.zst
-	callsignsRaw string
-)
-
 // Utility function for parsing CSV files as strings; it breaks each line
 // of the file into fields and calls the provided callback function for
 // each one.
@@ -845,7 +833,9 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 func parseNavaids() map[string]Navaid {
 	navaids := make(map[string]Navaid)
 
-	mungeCSV("navaids", decompressZstd(navBaseRaw),
+	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2022-07-14/
+	navBaseRaw := LoadResource("NAV_BASE.csv.zst")
+	mungeCSV("navaids", string(navBaseRaw),
 		[]string{"NAV_ID", "NAV_TYPE", "NAME", "LONG_DECIMAL", "LAT_DECIMAL"},
 		func(s []string) {
 			n := Navaid{
@@ -878,14 +868,10 @@ func point2LLFromComponents(lat []string, long []string) Point2LL {
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 
-	fsys := getResourcesFS()
-	airportsRaw, err := fs.ReadFile(fsys, "airports.csv.zst") // https://ourairports.com/data/
-	if err != nil {
-		panic(err)
-	}
+	airportsRaw := LoadResource("airports.csv.zst") // https://ourairports.com/data/
 
 	// FAA database
-	mungeCSV("airports", decompressZstd(string(airportsRaw)),
+	mungeCSV("airports", string(airportsRaw),
 		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "ident", "name"},
 		func(s []string) {
 			elevation := float64(0)
@@ -905,7 +891,9 @@ func parseAirports() map[string]FAAAirport {
 func parseFixes() map[string]Fix {
 	fixes := make(map[string]Fix)
 
-	mungeCSV("fixes", decompressZstd(fixesRaw),
+	fixesRaw := LoadResource("FIX_BASE.csv.zst")
+
+	mungeCSV("fixes", string(fixesRaw),
 		[]string{"FIX_ID", "LONG_DECIMAL", "LAT_DECIMAL"},
 		func(s []string) {
 			f := Fix{
@@ -936,21 +924,22 @@ func parseCallsigns() map[string]Callsign {
 		}
 	}
 
-	mungeCSV("callsigns", decompressZstd(callsignsRaw),
+	callsignsRaw := LoadResource("callsigns.csv.zst")
+
+	mungeCSV("callsigns", string(callsignsRaw),
 		[]string{"COMPANY", "COUNTRY", "TELEPHONY", "3 LETTER"},
 		addCallsign)
 
 	return callsigns
 }
 
-//go:embed resources/openscope-aircraft.json
-var openscopeAircraft string
-
 func parseAircraftPerformance() map[string]AircraftPerformance {
+	openscopeAircraft := LoadResource("openscope-aircraft.json")
+
 	var acStruct struct {
 		Aircraft []AircraftPerformance `json:"aircraft"`
 	}
-	if err := json.Unmarshal([]byte(openscopeAircraft), &acStruct); err != nil {
+	if err := json.Unmarshal(openscopeAircraft, &acStruct); err != nil {
 		lg.Errorf("%v", err)
 	}
 
@@ -962,10 +951,9 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 	return ap
 }
 
-//go:embed resources/openscope-airlines.json
-var openscopeAirlines string
-
 func parseAirlines() map[string]Airline {
+	openscopeAirlines := LoadResource("openscope-airlines.json")
+
 	var alStruct struct {
 		Airlines []Airline `json:"airlines"`
 	}

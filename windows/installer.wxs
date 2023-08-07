@@ -41,7 +41,75 @@
             <Component Id="ResourcesFilesId" Guid="b5e58c58-4d43-4613-91f7-d55fb9fdde91">
               <File Id="airportdb"
                     Source="resources\\airports.csv.zst" KeyPath="yes" />
+              <File Id="NAVBASE"
+                    Source="resources\\NAV_BASE.csv.zst" />
+              <File Id="FIXBASE"
+                    Source="resources\\FIX_BASE.csv.zst" />
+              <File Id="callsigns"
+                    Source="resources\\callsigns.csv.zst" />
+              <File Id="openscopeaircraft"
+                    Source="resources\\openscope-aircraft.json" />
+              <File Id="openscopeairlines"
+                    Source="resources\\openscope-airlines.json" />
             </Component>
+            <Directory Id="AudioFolder" Name="audio">
+              <Component Id="AudioId" Guid="e14412f8-b08c-45d3-a753-706bf5f560f5">
+                <File Id="242501__gabrielaraujo__powerup-success"
+                      Source="resources\\audio\\242501__gabrielaraujo__powerup-success.wav" KeyPath="yes" />
+                <File Id="263123__pan14__sine-tri-tone-down-negative-beep-amb-verb"
+                      Source="resources\\audio\\263123__pan14__sine-tri-tone-down-negative-beep-amb-verb.wav" />
+                <File Id="263124__pan14__sine-octaves-up-beep"
+                      Source="resources\\audio\\263124__pan14__sine-octaves-up-beep.wav" />
+                <File Id="263125__pan14__sine-fifths-up-beep"
+                      Source="resources\\audio\\263125__pan14__sine-fifths-up-beep.wav" />
+                <File Id="263126__pan14__tone-beep-lower-slower"
+                      Source="resources\\audio\\263126__pan14__tone-beep-lower-slower.wav" />
+                <File Id="263129__pan14__sine-up-flutter-beep"
+                      Source="resources\\audio\\263129__pan14__sine-up-flutter-beep.wav" />
+                <File Id="263132__pan14__tri-tone-up-beep"
+                      Source="resources\\audio\\263132__pan14__tri-tone-up-beep.wav" />
+                <File Id="263655__pan14__upward-beep-chromatic-fifths"
+                      Source="resources\\audio\\263655__pan14__upward-beep-chromatic-fifths.wav" />
+                <File Id="320181__dland__hint"
+                      Source="resources\\audio\\320181__dland__hint.wav" />
+                <File Id="321104__nsstudios__blip2"
+                      Source="resources\\audio\\321104__nsstudios__blip2.wav" />
+                <File Id="387533__soundwarf__alert-short"
+                      Source="resources\\audio\\387533__soundwarf__alert-short.wav" />
+                <File Id="389511__bbrocer__digital-alarm-loop"
+                      Source="resources\\audio\\389511__bbrocer__digital-alarm-loop.wav" />
+                <File Id="426888__thisusernameis__beep4"
+                      Source="resources\\audio\\426888__thisusernameis__beep4.wav" />
+                <File Id="427961__michaelatoz__alertwo-cc0"
+                      Source="resources\\audio\\427961__michaelatoz__alertwo-cc0.wav" />
+                <File Id="487588__ranner__ui-click"
+                      Source="resources\\audio\\487588__ranner__ui-click.wav" />
+                <File Id="529626__beetlemuse__alert-1"
+                      Source="resources\\audio\\529626__beetlemuse__alert-1.wav" />
+              </Component>
+            </Directory>
+            <Directory Id="FontsFolder" Name="fonts">
+              <Component Id="FontsId" Guid="263928e7-8110-4fae-8030-2ee477cb0595">
+                <File Id="FixedDemiBold"
+                      Source="resources\\fonts\\FixedDemiBold.otf.zst" KeyPath="yes" />
+                <File Id="FlightStripPrinter"
+                      Source="resources\\fonts\\Flight-Strip-Printer.ttf.zst" />
+                <File Id="FontAwesome5BrandsRegular400"
+                      Source="resources\\fonts\\Font Awesome 5 Brands-Regular-400.otf.zst" />
+                <File Id="FontAwesome5FreeRegular400"
+                      Source="resources\\fonts\\Font Awesome 5 Free-Regular-400.otf.zst" />
+                <File Id="FontAwesome5FreeSolid900"
+                      Source="resources\\fonts\\Font Awesome 5 Free-Solid-900.otf.zst" />
+                <File Id="InconsolataSemiBold"
+                      Source="resources\\fonts\\Inconsolata-SemiBold.ttf.zst" />
+                <File Id="InconsolataCondensedRegular"
+                      Source="resources\\fonts\\Inconsolata_Condensed-Regular.ttf.zst" />
+                <File Id="RobotoRegular"
+                      Source="resources\\fonts\\Roboto-Regular.ttf.zst" />
+                <File Id="VT323Regular"
+                      Source="resources\\fonts\\VT323-Regular.ttf.zst" />
+              </Component>
+            </Directory>
             <Directory Id="VideoMapsFolder" Name="videomaps">
               <Component Id="VideoMapsId" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
                 <File Id="a90maps"
@@ -156,6 +224,8 @@
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
       <ComponentRef Id="ResourcesFilesId" />
+      <ComponentRef Id="AudioId" />
+      <ComponentRef Id="FontsId" />
       <ComponentRef Id="ScenariosId" />
       <ComponentRef Id="VideoMapsId" />
       <ComponentRef Id="ApplicationShortcut" />

@@ -2062,7 +2062,7 @@ func getResourcesFS() fs.StatFS {
 
 	// Try CWD (this is useful for development and debugging but shouldn't
 	// be needed for release builds.
-	lg.Errorf("Trying CWD for resources FS")
+	lg.Printf("Trying CWD for resources FS")
 
 	wd, err := os.Getwd()
 	if err != nil {
@@ -2080,4 +2080,20 @@ func getResourcesFS() fs.StatFS {
 		return fsys
 	}
 	panic("unable to find videomaps in CWD")
+}
+
+// LoadResource loads the specified file from the resources directory, decompressing it if
+// it is zstd compressed. It panics if the file is not found; missing resources are pretty
+// much impossible to recover from.
+func LoadResource(path string) []byte {
+	b, err := fs.ReadFile(resourcesFS, path)
+	if err != nil {
+		panic(err)
+	}
+
+	if filepath.Ext(path) == ".zst" {
+		return []byte(decompressZstd(string(b)))
+	}
+
+	return b
 }
