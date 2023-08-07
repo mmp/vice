@@ -4459,7 +4459,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	ps := sp.CurrentPreferenceSet
 	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
 
-	drawSectors := func(volumes []AirspaceVolume) {
+	drawSectors := func(volumes []ControllerAirspaceVolume) {
 		for _, v := range volumes {
 			e := EmptyExtent2D()
 

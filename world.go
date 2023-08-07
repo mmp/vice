@@ -64,8 +64,8 @@ type World struct {
 	STARSMaps         []STARSMap
 	Wind              Wind
 	Callsign          string
-	ApproachAirspace  []AirspaceVolume
-	DepartureAirspace []AirspaceVolume
+	ApproachAirspace  []ControllerAirspaceVolume
+	DepartureAirspace []ControllerAirspaceVolume
 	DepartureRunways  []ScenarioGroupDepartureRunway
 	ArrivalRunways    []ScenarioGroupArrivalRunway
 	Scratchpads       map[string]string

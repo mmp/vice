@@ -61,11 +61,11 @@ type ArrivalAirline struct {
 }
 
 type Airspace struct {
-	Boundaries map[string][]Point2LL       `json:"boundaries"`
-	Volumes    map[string][]AirspaceVolume `json:"volumes"`
+	Boundaries map[string][]Point2LL                 `json:"boundaries"`
+	Volumes    map[string][]ControllerAirspaceVolume `json:"volumes"`
 }
 
-type AirspaceVolume struct {
+type ControllerAirspaceVolume struct {
 	LowerLimit    int          `json:"lower"`
 	UpperLimit    int          `json:"upper"`
 	Boundaries    [][]Point2LL `json:"-"`
@@ -81,10 +81,10 @@ type Scenario struct {
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
-	ApproachAirspace       []AirspaceVolume `json:"-"`
-	DepartureAirspace      []AirspaceVolume `json:"-"`
-	ApproachAirspaceNames  []string         `json:"approach_airspace"`
-	DepartureAirspaceNames []string         `json:"departure_airspace"`
+	ApproachAirspace       []ControllerAirspaceVolume `json:"-"`
+	DepartureAirspace      []ControllerAirspaceVolume `json:"-"`
+	ApproachAirspaceNames  []string                   `json:"approach_airspace"`
+	DepartureAirspaceNames []string                   `json:"departure_airspace"`
 
 	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
@@ -589,7 +589,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 ///////////////////////////////////////////////////////////////////////////
 // Airspace
 
-func InAirspace(p Point2LL, alt float32, volumes []AirspaceVolume) (bool, [][2]int) {
+func InAirspace(p Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
 	var altRanges [][2]int
 	for _, v := range volumes {
 		inside := false
