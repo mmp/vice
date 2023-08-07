@@ -79,10 +79,6 @@ type STARSPane struct {
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]string
 
-	QuickLookAll       bool
-	QuickLookAllIsPlus bool
-	QuickLookPositions []QuickLookPosition
-
 	// Various UI state
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
 	activeDCBMenu       int
@@ -374,6 +370,10 @@ type STARSPreferenceSet struct {
 		Unassociated [2]int // low, high
 		Associated   [2]int
 	}
+
+	QuickLookAll       bool
+	QuickLookAllIsPlus bool
+	QuickLookPositions []QuickLookPosition
 
 	DisableCRDA bool
 
@@ -1784,52 +1784,52 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		case "Q": // quicklook
 			if len(cmd) == 0 {
 				// inhibit for all
-				sp.QuickLookAll = false
-				sp.QuickLookAllIsPlus = false
-				sp.QuickLookPositions = nil
+				ps.QuickLookAll = false
+				ps.QuickLookAllIsPlus = false
+				ps.QuickLookPositions = nil
 				status.clear = true
 				return
 			} else if cmd == "ALL" {
-				if sp.QuickLookAll && sp.QuickLookAllIsPlus {
-					sp.QuickLookAllIsPlus = false
+				if ps.QuickLookAll && ps.QuickLookAllIsPlus {
+					ps.QuickLookAllIsPlus = false
 				} else {
-					sp.QuickLookAll = !sp.QuickLookAll
-					sp.QuickLookAllIsPlus = false
-					sp.QuickLookPositions = nil
+					ps.QuickLookAll = !ps.QuickLookAll
+					ps.QuickLookAllIsPlus = false
+					ps.QuickLookPositions = nil
 				}
 				status.clear = true
 				return
 			} else if cmd == "ALL+" {
-				if sp.QuickLookAll && !sp.QuickLookAllIsPlus {
-					sp.QuickLookAllIsPlus = true
+				if ps.QuickLookAll && !ps.QuickLookAllIsPlus {
+					ps.QuickLookAllIsPlus = true
 				} else {
-					sp.QuickLookAll = !sp.QuickLookAll
-					sp.QuickLookAllIsPlus = false
-					sp.QuickLookPositions = nil
+					ps.QuickLookAll = !ps.QuickLookAll
+					ps.QuickLookAllIsPlus = false
+					ps.QuickLookPositions = nil
 				}
 				status.clear = true
 				return
 			} else {
 				positions, input, err := parseQuickLookPositions(ctx.world, cmd)
 				if len(positions) > 0 {
-					sp.QuickLookAll = false
+					ps.QuickLookAll = false
 
 					for _, pos := range positions {
 						// Toggle
 						match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
 						matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-						if idx := FindIf(sp.QuickLookPositions, match); idx != -1 {
+						if idx := FindIf(ps.QuickLookPositions, match); idx != -1 {
 							nomatch := func(q QuickLookPosition) bool { return !match(q) }
-							sp.QuickLookPositions = FilterSlice(sp.QuickLookPositions, nomatch)
-						} else if idx := FindIf(sp.QuickLookPositions, matchId); idx != -1 {
+							ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+						} else if idx := FindIf(ps.QuickLookPositions, matchId); idx != -1 {
 							// Toggle plus
-							sp.QuickLookPositions[idx].Plus = !sp.QuickLookPositions[idx].Plus
+							ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
 						} else {
-							sp.QuickLookPositions = append(sp.QuickLookPositions, pos)
+							ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
 						}
 					}
-					sort.Slice(sp.QuickLookPositions,
-						func(i, j int) bool { return sp.QuickLookPositions[i].Id < sp.QuickLookPositions[j].Id })
+					sort.Slice(ps.QuickLookPositions,
+						func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
 				}
 
 				if err == nil {
@@ -3455,15 +3455,15 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		if (filter.All || filter.QuickLookPositions) && (sp.QuickLookAll || len(sp.QuickLookPositions) > 0) {
-			if sp.QuickLookAll {
-				if sp.QuickLookAllIsPlus {
+		if (filter.All || filter.QuickLookPositions) && (ps.QuickLookAll || len(ps.QuickLookPositions) > 0) {
+			if ps.QuickLookAll {
+				if ps.QuickLookAllIsPlus {
 					pw = td.AddText("QL: ALL+", pw, style)
 				} else {
 					pw = td.AddText("QL: ALL", pw, style)
 				}
 			} else {
-				pos := MapSlice(sp.QuickLookPositions,
+				pos := MapSlice(ps.QuickLookPositions,
 					func(q QuickLookPosition) string {
 						return q.Id + Select(q.Plus, "+", "")
 					})
@@ -3677,9 +3677,10 @@ func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 	}
 
 	// Quicklook
-	if sp.QuickLookAll {
+	ps := sp.CurrentPreferenceSet
+	if ps.QuickLookAll {
 		dt = FullDatablock
-	} else if idx := FindIf(sp.QuickLookPositions,
+	} else if idx := FindIf(ps.QuickLookPositions,
 		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }); idx != -1 {
 		dt = FullDatablock
 	}
@@ -4135,10 +4136,10 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 			br /= 3
 		}
 		return br.ScaleRGB(STARSTrackedAircraftColor)
-	} else if sp.QuickLookAll && sp.QuickLookAllIsPlus {
+	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 		// quick look all plus
 		return br.ScaleRGB(STARSTrackedAircraftColor)
-	} else if idx := FindIf(sp.QuickLookPositions,
+	} else if idx := FindIf(ps.QuickLookPositions,
 		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }); idx != -1 {
 		// individual quicklook plus controller
 		return br.ScaleRGB(STARSTrackedAircraftColor)
