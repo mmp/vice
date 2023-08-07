@@ -54,37 +54,37 @@
             </Component>
             <Directory Id="AudioFolder" Name="audio">
               <Component Id="AudioId" Guid="e14412f8-b08c-45d3-a753-706bf5f560f5">
-                <File Id="gabrielaraujo__powerup-success"
+                <File Id="gabrielaraujo__powerup_success"
                       Source="resources\\audio\\242501__gabrielaraujo__powerup-success.wav" KeyPath="yes" />
-                <File Id="pan14__sine-tri-tone-down-negative-beep-amb-verb"
+                <File Id="pan14__sine_tri_tone_down_negative_beep_amb_verb"
                       Source="resources\\audio\\263123__pan14__sine-tri-tone-down-negative-beep-amb-verb.wav" />
-                <File Id="pan14__sine-octaves-up-beep"
+                <File Id="pan14__sine_octaves_up_beep"
                       Source="resources\\audio\\263124__pan14__sine-octaves-up-beep.wav" />
-                <File Id="pan14__sine-fifths-up-beep"
+                <File Id="pan14__sine_fifths_up_beep"
                       Source="resources\\audio\\263125__pan14__sine-fifths-up-beep.wav" />
-                <File Id="pan14__tone-beep-lower-slower"
+                <File Id="pan14__tone_beep_lower_slower"
                       Source="resources\\audio\\263126__pan14__tone-beep-lower-slower.wav" />
-                <File Id="pan14__sine-up-flutter-beep"
+                <File Id="pan14__sine_up_flutter_beep"
                       Source="resources\\audio\\263129__pan14__sine-up-flutter-beep.wav" />
-                <File Id="pan14__tri-tone-up-beep"
+                <File Id="pan14__tri_tone_up_beep"
                       Source="resources\\audio\\263132__pan14__tri-tone-up-beep.wav" />
-                <File Id="pan14__upward-beep-chromatic-fifths"
+                <File Id="pan14__upward_beep_chromatic_fifths"
                       Source="resources\\audio\\263655__pan14__upward-beep-chromatic-fifths.wav" />
                 <File Id="dland__hint"
                       Source="resources\\audio\\320181__dland__hint.wav" />
                 <File Id="nsstudios__blip2"
                       Source="resources\\audio\\321104__nsstudios__blip2.wav" />
-                <File Id="soundwarf__alert-short"
+                <File Id="soundwarf__alert_short"
                       Source="resources\\audio\\387533__soundwarf__alert-short.wav" />
-                <File Id="bbrocer__digital-alarm-loop"
+                <File Id="bbrocer__digital_alarm_loop"
                       Source="resources\\audio\\389511__bbrocer__digital-alarm-loop.wav" />
                 <File Id="thisusernameis__beep4"
                       Source="resources\\audio\\426888__thisusernameis__beep4.wav" />
-                <File Id="michaelatoz__alertwo-cc0"
+                <File Id="michaelatoz__alertwo_cc0"
                       Source="resources\\audio\\427961__michaelatoz__alertwo-cc0.wav" />
-                <File Id="ranner__ui-click"
+                <File Id="ranner__ui_click"
                       Source="resources\\audio\\487588__ranner__ui-click.wav" />
-                <File Id="beetlemuse__alert-1"
+                <File Id="beetlemuse__alert_1"
                       Source="resources\\audio\\529626__beetlemuse__alert-1.wav" />
               </Component>
             </Directory>
