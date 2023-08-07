@@ -55,6 +55,8 @@ type STARSPane struct {
 
 	Facility STARSFacility
 
+	SystemMaps map[int]*STARSMap
+
 	weatherRadar WeatherRadar
 
 	systemFont [6]*Font
@@ -315,10 +317,6 @@ type STARSFacility struct {
 		VerticalMinimum int32
 		Floor           int32
 	}
-
-	// TODO: transition alt -> show pressure altitude above
-	// TODO: RNAV patterns
-	// TODO: automatic scratchpad stuff
 }
 
 type STARSMap struct {
@@ -372,11 +370,6 @@ type STARSPreferenceSet struct {
 	LeaderLineDirection CardinalOrdinalDirection
 	LeaderLineLength    int // 0-7
 
-	ListSelectedMaps bool // TODO: show this list, e.g.:
-	// CURRENT MAPS
-	// >  2 EAST   PHILADELPHIA MAP EAST
-	// >  ...
-
 	AltitudeFilters struct {
 		Unassociated [2]int // low, high
 		Associated   [2]int
@@ -399,7 +392,8 @@ type STARSPreferenceSet struct {
 
 	DisplayTPASize bool
 
-	VideoMapVisible map[string]interface{}
+	VideoMapVisible  map[string]interface{}
+	SystemMapVisible map[int]interface{}
 
 	PTLLength      float32
 	PTLOwn, PTLAll bool
@@ -495,8 +489,9 @@ type STARSPreferenceSet struct {
 		Visible  bool
 	}
 	VideoMapsList struct {
-		Position [2]float32
-		Visible  bool
+		Position  [2]float32
+		Visible   bool
+		Selection VideoMapsGroup
 	}
 	CRDAStatusList struct {
 		Position [2]float32
@@ -508,6 +503,13 @@ type STARSPreferenceSet struct {
 		Lines    int
 	}
 }
+
+type VideoMapsGroup int
+
+const (
+	VideoMapsGroupGeo = iota
+	VideoMapsGroupSysProc
+)
 
 type DwellMode int
 
@@ -568,6 +570,8 @@ func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPrefe
 	if w != nil && len(w.STARSMaps) > 0 {
 		ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 	}
+	ps.SystemMapVisible = make(map[int]interface{})
+
 	ps.LeaderLineDirection = North
 	ps.LeaderLineLength = 1
 
@@ -650,6 +654,7 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = DuplicateSlice(ps.SelectedBeaconCodes)
 	dupe.VideoMapVisible = DuplicateMap(ps.VideoMapVisible)
+	dupe.SystemMapVisible = DuplicateMap(ps.SystemMapVisible)
 	return dupe
 }
 
@@ -659,6 +664,9 @@ func (ps *STARSPreferenceSet) Activate(w *World) {
 		if w != nil && len(w.STARSMaps) > 0 {
 			ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
 		}
+	}
+	if ps.SystemMapVisible == nil {
+		ps.SystemMapVisible = make(map[int]interface{})
 	}
 }
 
@@ -853,6 +861,43 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	ps.VideoMapVisible = make(map[string]interface{})
 	// Make the scenario's default video map be visible
 	ps.VideoMapVisible[w.DefaultMap] = nil
+	ps.SystemMapVisible = make(map[int]interface{})
+
+	sp.SystemMaps = make(map[int]*STARSMap)
+	radarIndex := 701
+	for _, name := range SortedMapKeys(w.RadarSites) {
+		site := w.RadarSites[name]
+		pRadar, ok := w.Locate(site.Position)
+		if !ok {
+			lg.Errorf("%s: unable to get radar site position to make system map", name)
+			continue
+		}
+
+		sm := &STARSMap{
+			Label: name + "RCM",
+			Name:  name + " RADAR COVERAGE MAP",
+		}
+
+		ld := GetLinesDrawBuilder()
+		// We want vertices in lat-long space but will draw the circle in
+		// nm space since distance is uniform there.
+		pc := ll2nm(pRadar, w.NmPerLongitude)
+		for i := 0; i < 360; i++ {
+			pt := func(a int, r int32) [2]float32 {
+				v := [2]float32{sin(radians(float32(a))), cos(radians(float32(a)))}
+				v = scale2f(v, float32(r))
+				return nm2ll(add2f(pc, v), w.NmPerLongitude)
+			}
+			ld.AddLine(pt(i, site.PrimaryRange), pt(i+1, site.PrimaryRange))
+			ld.AddLine(pt(i, site.SecondaryRange), pt(i+1, site.SecondaryRange))
+		}
+		ld.GenerateCommands(&sm.CommandBuffer)
+
+		sp.SystemMaps[radarIndex] = sm
+
+		radarIndex++
+		ReturnLinesDrawBuilder(ld)
+	}
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -1024,6 +1069,13 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		cb.Call(vmap.CommandBuffer)
 	}
 
+	for _, idx := range SortedMapKeys(ps.SystemMapVisible) {
+		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
+		cb.SetRGB(color)
+		transforms.LoadLatLongViewingMatrices(cb)
+		cb.Call(sp.SystemMaps[idx].CommandBuffer)
+	}
+
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
@@ -1163,10 +1215,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			}
 
 		case KeyF2:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = DCBMenuMaps
-			} else {
+			if ctx.keyboard.IsPressed(KeyControl) {
+				if ps.DisplayDCB {
+					sp.disableMenuSpinner(ctx)
+					sp.activeDCBMenu = DCBMenuMaps
+				}
 				sp.resetInputState()
 				sp.commandMode = CommandModeMaps
 			}
@@ -2012,13 +2065,25 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeMaps:
 		if len(cmd) > 0 {
-			if m, err := strconv.Atoi(cmd); err != nil {
+			if idx, err := strconv.Atoi(cmd); err != nil {
 				status.err = ErrSTARSCommandFormat
-			} else if m <= 0 || m > len(ctx.world.STARSMaps) {
+			} else if idx <= 0 {
+				status.err = ErrSTARSIllegalValue
+			} else if idx > len(ctx.world.STARSMaps) {
+				// is it a system map?
+				if _, ok := sp.SystemMaps[idx]; ok {
+					if _, ok := ps.SystemMapVisible[idx]; ok {
+						delete(ps.SystemMapVisible, idx)
+					} else {
+						ps.SystemMapVisible[idx] = nil
+					}
+					status.clear = true
+					return
+				}
 				status.err = ErrSTARSIllegalValue
 			} else {
-				m--
-				name := ctx.world.STARSMaps[m].Name
+				idx--
+				name := ctx.world.STARSMaps[idx].Name
 				if _, ok := ps.VideoMapVisible[name]; ok {
 					delete(ps.VideoMapVisible, name)
 				} else {
@@ -2945,13 +3010,19 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				}
 			}
 		}
-		STARSToggleButton("GEO\nMAPS", &ps.VideoMapsList.Visible, STARSButtonHalfVertical, buttonScale)
-		STARSDisabledButton("DANGER\nAREAS", STARSButtonHalfVertical, buttonScale)
-		if STARSSelectButton("SYS\nPROC", STARSButtonHalfVertical, buttonScale) {
-			// TODO--this is a toggle that displays a "PROCESSING AREAS"
-			// list in the top middle of the screen.
+
+		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo
+		if STARSToggleButton("GEO\nMAPS", &geoMapsSelected, STARSButtonHalfVertical, buttonScale) {
+			ps.VideoMapsList.Selection = VideoMapsGroupGeo
+			ps.VideoMapsList.Visible = true
 		}
-		STARSToggleButton("CURRENT", &ps.ListSelectedMaps, STARSButtonHalfVertical, buttonScale)
+		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc
+		if STARSToggleButton("SYS\nPROC", &sysProcSelected, STARSButtonHalfVertical, buttonScale) {
+			ps.VideoMapsList.Selection = VideoMapsGroupSysProc
+			ps.VideoMapsList.Visible = true
+		}
+		STARSDisabledButton("", STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("CURRENT", &ps.VideoMapsList.Visible, STARSButtonHalfVertical, buttonScale)
 
 	case DCBMenuBrite:
 		STARSBrightnessSpinner(ctx, "DCB ", &ps.Brightness.DCB, 25, false, STARSButtonHalfVertical, buttonScale)
@@ -3493,8 +3564,30 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.VideoMapsList.Visible {
-		text := "GEOGRAPHIC MAPS"
-		// TODO
+		text := ""
+		format := func(m STARSMap, i int, vis bool) string {
+			text := Select(vis, ">", " ") + " "
+			text += fmt.Sprintf("%3d ", i)
+			text += fmt.Sprintf("%8s ", strings.ToUpper(m.Label))
+			text += strings.ToUpper(m.Name) + "\n"
+			return text
+		}
+		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
+			text += "GEOGRAPHIC MAPS\n"
+			for i, m := range ctx.world.STARSMaps {
+				_, vis := ps.VideoMapVisible[m.Name]
+				text += format(m, i+1, vis) // 1-based indexing
+			}
+		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
+			text += "PROCESSING AREAS\n"
+			for _, index := range SortedMapKeys(sp.SystemMaps) {
+				_, vis := ps.SystemMapVisible[index]
+				text += format(*sp.SystemMaps[index], index, vis)
+			}
+		} else {
+			lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
+		}
+
 		drawList(text, ps.VideoMapsList.Position)
 	}
 
