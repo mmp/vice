@@ -707,6 +707,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Range = sg.Range
 	w.DefaultMap = sc.DefaultMap
 	w.STARSMaps = sg.STARSMaps
+	w.InhibitCAVolumes = sg.InhibitCAVolumes
 	w.Scratchpads = sg.Scratchpads
 	w.ArrivalGroups = sg.ArrivalGroups
 	w.ApproachAirspace = sc.ApproachAirspace

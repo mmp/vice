@@ -708,6 +708,88 @@ func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primar
 	return
 }
 
+type AirspaceVolume struct {
+	Name    string             `json:"name"`
+	Type    AirspaceVolumeType `json:"type"`
+	Floor   int                `json:"floor"`
+	Ceiling int                `json:"ceiling"`
+	// Polygon
+	Vertices []Point2LL `json:"vertices"`
+	// Circle
+	Center Point2LL `json:"center"`
+	Radius float32  `json:"radius"`
+}
+
+type AirspaceVolumeType int
+
+const (
+	AirspaceVolumePolygon = iota
+	AirspaceVolumeCircle
+)
+
+func (t *AirspaceVolumeType) MarshalJSON() ([]byte, error) {
+	switch *t {
+	case AirspaceVolumePolygon:
+		return []byte("\"polygon\""), nil
+	case AirspaceVolumeCircle:
+		return []byte("\"circle\""), nil
+	default:
+		return nil, fmt.Errorf("%d: unknown airspace volume type", *t)
+	}
+}
+
+func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
+	switch string(b) {
+	case "\"polygon\"":
+		*t = AirspaceVolumePolygon
+		return nil
+	case "\"circle\"":
+		*t = AirspaceVolumeCircle
+		return nil
+	default:
+		return fmt.Errorf("%s: unknown airspace volume type", string(b))
+	}
+}
+
+func (a *AirspaceVolume) Inside(p Point2LL, alt int) bool {
+	if alt <= a.Floor || alt > a.Ceiling {
+		return false
+	}
+
+	switch a.Type {
+	case AirspaceVolumePolygon:
+		return PointInPolygon(p, a.Vertices)
+	case AirspaceVolumeCircle:
+		return nmdistance2ll(p, a.Center) < a.Radius
+	default:
+		lg.Errorf("%d: unhandled airspace volume type", a.Type)
+		return false
+	}
+}
+
+func (a *AirspaceVolume) GenerateDrawCommands(cb *CommandBuffer, nmPerLongitude float32) {
+	ld := GetLinesDrawBuilder()
+
+	switch a.Type {
+	case AirspaceVolumePolygon:
+		var v [][2]float32
+		for _, vtx := range a.Vertices {
+			v = append(v, [2]float32(vtx))
+		}
+		ld.AddPolyline([2]float32{}, v)
+	case AirspaceVolumeCircle:
+		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
+	default:
+		lg.Errorf("%d: unhandled airspace volume type", a.Type)
+	}
+
+	ld.GenerateCommands(cb)
+	ReturnLinesDrawBuilder(ld)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// StaticDatabase
+
 // StaticDatabase is a catch-all for data about the world that doesn't
 // change after it's loaded.
 type StaticDatabase struct {

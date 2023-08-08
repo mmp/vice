@@ -25,12 +25,13 @@ type ScenarioGroup struct {
 	Airspace         Airspace               `json:"airspace"`
 	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
 
-	Center         Point2LL              `json:"-"`
-	CenterString   string                `json:"center"`
-	Range          float32               `json:"range"`
-	PrimaryAirport string                `json:"primary_airport"`
-	RadarSites     map[string]*RadarSite `json:"radar_sites"`
-	STARSMaps      []STARSMap            `json:"stars_maps"`
+	Center           Point2LL              `json:"-"`
+	CenterString     string                `json:"center"`
+	Range            float32               `json:"range"`
+	PrimaryAirport   string                `json:"primary_airport"`
+	RadarSites       map[string]*RadarSite `json:"radar_sites"`
+	STARSMaps        []STARSMap            `json:"stars_maps"`
+	InhibitCAVolumes []AirspaceVolume      `json:"inhibit_ca_volumes"`
 
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`

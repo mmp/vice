@@ -62,6 +62,7 @@ type World struct {
 	Range             float32
 	DefaultMap        string
 	STARSMaps         []STARSMap
+	InhibitCAVolumes  []AirspaceVolume
 	Wind              Wind
 	Callsign          string
 	ApproachAirspace  []ControllerAirspaceVolume
@@ -110,6 +111,7 @@ func (w *World) Assign(other *World) {
 	w.Range = other.Range
 	w.DefaultMap = other.DefaultMap
 	w.STARSMaps = other.STARSMaps
+	w.InhibitCAVolumes = other.InhibitCAVolumes
 	w.Wind = other.Wind
 	w.Callsign = other.Callsign
 	w.ApproachAirspace = other.ApproachAirspace

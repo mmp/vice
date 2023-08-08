@@ -22,6 +22,10 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
+// IFR TRACON separation requirements
+const LateralMinimum = 3
+const VerticalMinimum = 1000
+
 var (
 	STARSBackgroundColor         = RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor               = RGB{.1, .9, .1}
@@ -53,8 +57,6 @@ type STARSPane struct {
 	SelectedPreferenceSet int
 	PreferenceSets        []STARSPreferenceSet
 
-	Facility STARSFacility
-
 	SystemMaps map[int]*STARSMap
 
 	weatherRadar WeatherRadar
@@ -78,6 +80,8 @@ type STARSPane struct {
 
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]string
+
+	CAAircraft []CAAircraft
 
 	// Various UI state
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
@@ -110,6 +114,11 @@ type STARSRangeBearingLine struct {
 		loc      Point2LL
 		callsign string
 	}
+}
+
+type CAAircraft struct {
+	Callsigns    [2]string // sorted alphabetically
+	Acknowledged bool
 }
 
 type QuickLookPosition struct {
@@ -304,32 +313,11 @@ func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 	return !s.tracks[0].Position.IsZero() && now.Sub(s.tracks[0].Time) > 30*time.Second
 }
 
-///////////////////////////////////////////////////////////////////////////
-// STARSFacility and related
-
-type STARSFacility struct {
-	CA struct {
-		LateralMinimum  float32
-		VerticalMinimum int32
-		Floor           int32
-	}
-}
-
 type STARSMap struct {
 	Label         string        `json:"label"`
 	Group         int           `json:"group"` // 0 -> A, 1 -> B
 	Name          string        `json:"name"`
 	CommandBuffer CommandBuffer `json:"command_buffer"`
-}
-
-func MakeDefaultFacility() STARSFacility {
-	var f STARSFacility
-
-	f.CA.LateralMinimum = 3
-	f.CA.VerticalMinimum = 1000
-	f.CA.Floor = 500
-
-	return f
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -543,7 +531,7 @@ const (
 	DCBPositionBottom
 )
 
-func MakePreferenceSet(name string, facility STARSFacility, w *World) STARSPreferenceSet {
+func MakePreferenceSet(name string, w *World) STARSPreferenceSet {
 	var ps STARSPreferenceSet
 
 	ps.Name = name
@@ -782,10 +770,9 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 // Takes aircraft position in window coordinates
 func NewSTARSPane(w *World) *STARSPane {
 	sp := &STARSPane{
-		Facility:              MakeDefaultFacility(),
 		SelectedPreferenceSet: -1,
 	}
-	sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, w)
+	sp.CurrentPreferenceSet = MakePreferenceSet("", w)
 	return sp
 }
 
@@ -794,7 +781,7 @@ func (sp *STARSPane) Name() string { return "STARS" }
 func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
-		sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, w)
+		sp.CurrentPreferenceSet = MakePreferenceSet("", w)
 	}
 	STARSTrackHistoryColors[0] = RGB{.12, .31, .78}
 	STARSTrackHistoryColors[1] = RGB{.28, .28, .67}
@@ -863,7 +850,31 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	ps.VideoMapVisible[w.DefaultMap] = nil
 	ps.SystemMapVisible = make(map[int]interface{})
 
-	sp.SystemMaps = make(map[int]*STARSMap)
+	sp.SystemMaps = makeSystemMaps(w)
+
+	ps.CurrentATIS = ""
+	for i := range ps.GIText {
+		ps.GIText[i] = ""
+	}
+	ps.RadarSiteSelected = ""
+
+	sp.lastTrackUpdate = time.Time{} // force update
+}
+
+func makeSystemMaps(w *World) map[int]*STARSMap {
+	maps := make(map[int]*STARSMap)
+
+	// CA suppression filters
+	csf := &STARSMap{
+		Label: "ALLCASU",
+		Name:  "ALL CA SUPPRESSION FILTERS",
+	}
+	for _, vol := range w.InhibitCAVolumes {
+		vol.GenerateDrawCommands(&csf.CommandBuffer, w.NmPerLongitude)
+	}
+	maps[400] = csf
+
+	// Radar maps
 	radarIndex := 701
 	for _, name := range SortedMapKeys(w.RadarSites) {
 		site := w.RadarSites[name]
@@ -882,30 +893,17 @@ func (sp *STARSPane) ResetWorld(w *World) {
 		ld.AddLatLongCircle(pRadar, w.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(pRadar, w.NmPerLongitude, float32(site.SecondaryRange), 360)
 		ld.GenerateCommands(&sm.CommandBuffer)
-
-		sp.SystemMaps[radarIndex] = sm
+		maps[radarIndex] = sm
 
 		radarIndex++
 		ReturnLinesDrawBuilder(ld)
 	}
 
-	ps.CurrentATIS = ""
-	for i := range ps.GIText {
-		ps.GIText[i] = ""
-	}
-	ps.RadarSiteSelected = ""
-
-	sp.lastTrackUpdate = time.Time{} // force update
+	return maps
 }
 
 func (sp *STARSPane) DrawUI() {
 	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
-
-	if imgui.CollapsingHeader("Collision alerts") {
-		imgui.SliderFloatV("Lateral minimum (nm)", &sp.Facility.CA.LateralMinimum, 0, 10, "%.1f", 0)
-		imgui.InputIntV("Vertical minimum (feet)", &sp.Facility.CA.VerticalMinimum, 100, 100, 0)
-		imgui.InputIntV("Altitude floor (feet)", &sp.Facility.CA.Floor, 100, 100, 0)
-	}
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -938,6 +936,13 @@ func (sp *STARSPane) processEvents(w *World) {
 			delete(sp.Aircraft, callsign)
 		}
 	}
+
+	// Filter out any removed aircraft from the CA list
+	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+		_, a := w.Aircraft[ca.Callsigns[0]]
+		_, b := w.Aircraft[ca.Callsigns[1]]
+		return a && b
+	})
 
 	for _, event := range sp.events.Get() {
 		switch event.Type {
@@ -1086,6 +1091,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
+	sp.updateCAAircraft(ctx, aircraft)
+
 	sp.drawSystemLists(aircraft, ctx, paneExtent, transforms, cb)
 
 	// Tools before datablocks
@@ -1093,7 +1100,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawRingsAndCones(aircraft, ctx, transforms, cb)
 	sp.drawRBLs(ctx, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
-	sp.drawCARings(ctx, transforms, cb)
 	sp.drawAirspace(ctx, transforms, cb)
 
 	DrawHighlighted(ctx, transforms, cb)
@@ -2272,7 +2278,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		case CommandModeNone:
 			switch len(cmd) {
 			case 0:
-				if ac.HandoffTrackController == ctx.world.Callsign {
+				if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool {
+					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
+						!ca.Acknowledged
+				}) {
+					// Acknowledged a CA
+					for i, ca := range sp.CAAircraft {
+						if ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign {
+							sp.CAAircraft[i].Acknowledged = true
+						}
+					}
+				} else if ac.HandoffTrackController == ctx.world.Callsign {
 					// Accept inbound h/o
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
@@ -3007,12 +3023,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			ps.VideoMapsList.Selection = VideoMapsGroupGeo
 			ps.VideoMapsList.Visible = true
 		}
+		STARSDisabledButton("AIRPORT", STARSButtonHalfVertical, buttonScale)
 		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc
 		if STARSToggleButton("SYS\nPROC", &sysProcSelected, STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupSysProc
 			ps.VideoMapsList.Visible = true
 		}
-		STARSDisabledButton("", STARSButtonHalfVertical, buttonScale)
 		STARSToggleButton("CURRENT", &ps.VideoMapsList.Visible, STARSButtonHalfVertical, buttonScale)
 
 	case DCBMenuBrite:
@@ -3072,7 +3088,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 		if STARSSelectButton("DEFAULT", STARSButtonHalfVertical, buttonScale) {
-			sp.CurrentPreferenceSet = MakePreferenceSet("", sp.Facility, ctx.world)
+			sp.CurrentPreferenceSet = MakePreferenceSet("", ctx.world)
 		}
 		STARSDisabledButton("FSSTARS", STARSButtonHalfVertical, buttonScale)
 		if STARSSelectButton("RESTORE", STARSButtonHalfVertical, buttonScale) {
@@ -3543,8 +3559,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.AlertList.Visible {
-		text := "LA/CA/MCI"
-		// TODO
+		text := "LA/CA/MCI\n"
+		for _, pair := range sp.CAAircraft {
+			text += pair.Callsigns[0] + "*" + pair.Callsigns[1] + " CA\n"
+		}
 		drawList(text, ps.AlertList.Position)
 	}
 
@@ -3891,49 +3909,61 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 	return
 }
 
-func (sp *STARSPane) IsCAActive(ctx *PaneContext, ac *Aircraft) bool {
-	state := sp.Aircraft[ac.Callsign]
-	if state.TrackAltitude() < int(sp.Facility.CA.Floor) {
+func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*Aircraft) {
+	inCAVolumes := func(state *STARSAircraftState) bool {
+		for _, vol := range ctx.world.InhibitCAVolumes {
+			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
+				return true
+			}
+		}
 		return false
 	}
 
-	for ocs, other := range ctx.world.Aircraft {
-		if ocs == ac.Callsign {
-			continue
+	conflicting := func(callsigna, callsignb string) bool {
+		sa, sb := sp.Aircraft[callsigna], sp.Aircraft[callsignb]
+		if inCAVolumes(sa) || inCAVolumes(sb) {
+			return false
 		}
-		ostate := sp.Aircraft[ocs]
-		if ostate.TrackAltitude() < int(sp.Facility.CA.Floor) {
-			continue
-		}
+		return nmdistance2ll(sa.TrackPosition(), sb.TrackPosition()) <= LateralMinimum &&
+			/*small slop for fp error*/
+			abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5
+	}
 
-		// No conflict alerts with aircraft established on different
-		// approaches to the same airport within 3 miles of the airport
-		if ac.FlightPlan.ArrivalAirport == other.FlightPlan.ArrivalAirport &&
-			ac.ApproachId != "" && other.ApproachId != "" &&
-			ac.ApproachId != other.ApproachId {
-			d, err := ac.FinalApproachDistance()
-			od, oerr := other.FinalApproachDistance()
-			if err == nil && oerr == nil && (d < 3 || od < 3) {
-				continue
+	// Remove ones that are no longer conflicting
+	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+		return conflicting(ca.Callsigns[0], ca.Callsigns[1])
+	})
+
+	// Remove ones that are no longer visible
+	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+		return AnySlice(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
+			AnySlice(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
+	})
+
+	// Add new conflicts; by appending we keep them sorted by when they
+	// were first detected...
+	callsigns := MapSlice(aircraft, func(ac *Aircraft) string { return ac.Callsign })
+	for i, callsign := range callsigns {
+		for _, ocs := range callsigns[i+1:] {
+			if conflicting(callsign, ocs) {
+				if !AnySlice(sp.CAAircraft, func(ca CAAircraft) bool {
+					return callsign == ca.Callsigns[0] && ocs == ca.Callsigns[1]
+				}) {
+					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
+						Callsigns: [2]string{callsign, ocs},
+					})
+				}
 			}
 		}
+	}
 
-		// No conflict alerts with another aircraft on an approach if we're
-		// departing (assume <1000' and no assigned approach implies this)
-		if ac.Approach == nil && ac.Altitude < 1000 && other.Approach != nil {
-			continue
-		}
-		// Converse of the above
-		if ac.Approach != nil && other.Altitude < 1000 && other.Approach == nil {
-			continue
-		}
-
-		if nmdistance2ll(state.TrackPosition(), ostate.TrackPosition()) <= sp.Facility.CA.LateralMinimum &&
-			abs(state.TrackAltitude()-ostate.TrackAltitude()) <= int(sp.Facility.CA.VerticalMinimum-50 /*small slop for fp error*/) {
-			return true
+	// Play the sound if any are unacknowledged and it has been 2s since the last sound
+	if now := ctx.world.CurrentTime(); now.Sub(sp.LastCASoundTime) > 2*time.Second {
+		if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
+			globalConfig.Audio.PlaySound(AudioEventConflictAlert)
+			sp.LastCASoundTime = now
 		}
 	}
-	return false
 }
 
 func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock string, mainblock [2][]string) {
@@ -3951,7 +3981,8 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 	} else if ac.Squawk == Squawk(0o1236) {
 		errs = append(errs, "SA")
 	}
-	if sp.IsCAActive(ctx, ac) {
+	if AnySlice(sp.CAAircraft,
+		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
 	}
 	if alts, outside := sp.OutsideAirspace(ctx, ac); outside {
@@ -4413,32 +4444,6 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	DrawMinimumSeparationLine(s0.TrackPosition(), s0.HeadingVector(ac0.NmPerLongitude, ac0.MagneticVariation),
 		s1.TrackPosition(), s1.HeadingVector(ac1.NmPerLongitude, ac1.MagneticVariation),
 		ac0.NmPerLongitude, color, RGB{}, sp.systemFont[ps.CharSize.Tools], ctx, transforms, cb)
-}
-
-func (sp *STARSPane) drawCARings(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	ld := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(ld)
-
-	for callsign := range sp.Aircraft {
-		ac, ok := ctx.world.Aircraft[callsign]
-		if !ok || (ok && !sp.IsCAActive(ctx, ac)) {
-			continue
-		}
-		state := sp.Aircraft[callsign]
-
-		pc := transforms.WindowFromLatLongP(state.TrackPosition())
-		radius := sp.Facility.CA.LateralMinimum / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
-		ld.AddCircle(pc, radius, 360 /* nsegs */)
-
-		if time.Since(sp.LastCASoundTime) > 2*time.Second {
-			globalConfig.Audio.PlaySound(AudioEventConflictAlert)
-			sp.LastCASoundTime = time.Now()
-		}
-	}
-
-	cb.LineWidth(1)
-	ps := sp.CurrentPreferenceSet
-	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 }
 
 func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
