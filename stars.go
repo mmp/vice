@@ -1206,6 +1206,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
+			sp.wipRBL = STARSRangeBearingLine{}
 
 		case KeyF1:
 			if ctx.keyboard.IsPressed(KeyControl) {
