@@ -879,18 +879,8 @@ func (sp *STARSPane) ResetWorld(w *World) {
 		}
 
 		ld := GetLinesDrawBuilder()
-		// We want vertices in lat-long space but will draw the circle in
-		// nm space since distance is uniform there.
-		pc := ll2nm(pRadar, w.NmPerLongitude)
-		for i := 0; i < 360; i++ {
-			pt := func(a int, r int32) [2]float32 {
-				v := [2]float32{sin(radians(float32(a))), cos(radians(float32(a)))}
-				v = scale2f(v, float32(r))
-				return nm2ll(add2f(pc, v), w.NmPerLongitude)
-			}
-			ld.AddLine(pt(i, site.PrimaryRange), pt(i+1, site.PrimaryRange))
-			ld.AddLine(pt(i, site.SecondaryRange), pt(i+1, site.SecondaryRange))
-		}
+		ld.AddLatLongCircle(pRadar, w.NmPerLongitude, float32(site.PrimaryRange), 360)
+		ld.AddLatLongCircle(pRadar, w.NmPerLongitude, float32(site.SecondaryRange), 360)
 		ld.GenerateCommands(&sm.CommandBuffer)
 
 		sp.SystemMaps[radarIndex] = sm

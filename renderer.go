@@ -628,6 +628,21 @@ func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
 	}
 }
 
+func (l *LinesDrawBuilder) AddLatLongCircle(p Point2LL, nmPerLongitude float32, r float32, nsegs int) {
+	// We want vertices in lat-long space but will draw the circle in
+	// nm space since distance is uniform there.
+	pc := ll2nm(p, nmPerLongitude)
+	for i := 0; i < nsegs; i++ {
+		pt := func(i int) [2]float32 {
+			a := float32(i) / float32(nsegs) * 2 * math.Pi
+			v := [2]float32{sin(a), cos(a)}
+			v = scale2f(v, r)
+			return nm2ll(add2f(pc, v), nmPerLongitude)
+		}
+		l.AddLine(pt(i), pt(i+1))
+	}
+}
+
 // Bounds returns the 2D bounding box of the specified lines.
 func (l *LinesDrawBuilder) Bounds() Extent2D {
 	return Extent2DFromPoints(l.p)
