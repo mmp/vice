@@ -244,6 +244,16 @@ func TestFindSlice(t *testing.T) {
 	}
 }
 
+func TestAnySlice(t *testing.T) {
+	a := []int{0, 1, 2, 3, 4, 5}
+	if !AnySlice(a, func(v int) bool { return v == 5 }) {
+		t.Errorf("expected true from AnySlice")
+	}
+	if AnySlice(a, func(v int) bool { return v < 0 }) {
+		t.Errorf("expected false from AnySlice")
+	}
+}
+
 func TestRingBuffer(t *testing.T) {
 	rb := NewRingBuffer[int](10)
 

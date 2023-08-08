@@ -1251,6 +1251,19 @@ func FindIf[V any](s []V, pred func(V) bool) int {
 	return -1
 }
 
+// AnySlice applies the given predicate to each element of the provided
+// slice in sequence and returns true after the first element where the
+// predicate returns true.  False is returned if the predicate always
+// evaluates to false.
+func AnySlice[V any](s []V, pred func(V) bool) bool {
+	for _, v := range s {
+		if pred(v) {
+			return true
+		}
+	}
+	return false
+}
+
 // Sample uniformly randomly samples an element of a non-empty slice.
 func Sample[T any](slice []T) T {
 	return slice[rand.Intn(len(slice))]
