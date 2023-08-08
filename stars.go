@@ -246,7 +246,9 @@ type STARSAircraftState struct {
 	ConeLength     float32
 	DisplayTPASize bool // flip this so that zero-init works here? (What is the default?)
 
-	LeaderLineDirection *CardinalOrdinalDirection // nil -> unset
+	// This is only set if a leader line direction was specified for this
+	// aircraft individually
+	LeaderLineDirection *CardinalOrdinalDirection
 
 	displayPilotAltitude bool
 	pilotAltitude        int
@@ -351,8 +353,15 @@ type STARSPreferenceSet struct {
 	// get errors parsing old configs, which stored this as an array...
 	RadarSiteSelected string `json:"RadarSiteSelectedName"`
 
+	// For tracked by the user
 	LeaderLineDirection CardinalOrdinalDirection
 	LeaderLineLength    int // 0-7
+	// For tracked by other controllers
+	ControllerLeaderLineDirections map[string]CardinalOrdinalDirection
+	// If not specified in ControllerLeaderLineDirections...
+	OtherControllerLeaderLineDirection *CardinalOrdinalDirection
+	// Only set if specified by the user (and not used currently...)
+	UnassociatedLeaderLineDirection *CardinalOrdinalDirection
 
 	AltitudeFilters struct {
 		Unassociated [2]int // low, high
@@ -1654,77 +1663,68 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "L":
 			// leader lines
-			setLLDir := func(dir *CardinalOrdinalDirection, pred func(*Aircraft) bool) {
-				for callsign, ac := range ctx.world.Aircraft {
-					if pred(ac) {
-						state := sp.Aircraft[callsign]
-						state.LeaderLineDirection = dir
-					}
-				}
-			}
-			switch len(cmd) {
-			case 0:
+			if l := len(cmd); l == 0 {
 				status.err = ErrSTARSCommandFormat
 				return
-
-			case 1:
-				if dir, ok := numpadToDirection(cmd[0]); ok {
+			} else if l == 1 {
+				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil {
 					// Tracked by me
-					me := ctx.world.Callsign
-					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == me })
+					ps.LeaderLineDirection = *dir
 					status.clear = true
 				} else {
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-
-			case 2:
+			} else if l == 2 {
 				if dir, ok := numpadToDirection(cmd[0]); ok && cmd[1] == 'U' {
-					// FIXME: should be unassociated tracks
-					setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == "" })
+					// Unassociated tracks
+					ps.UnassociatedLeaderLineDirection = dir
 					status.clear = true
 				} else if ok && cmd[1] == '*' {
 					// Tracked by other controllers
-					me := ctx.world.Callsign
-					setLLDir(dir, func(ac *Aircraft) bool {
-						return ac.TrackingController != "" &&
-							ac.TrackingController != me
-					})
+					ps.OtherControllerLeaderLineDirection = dir
 					status.clear = true
 				} else {
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-
-			case 4:
-				// L(id)(space)(dir)
-				status.err = ErrSTARSCommandFormat // set preemptively; clear on success
-				for _, ctrl := range ctx.world.GetAllControllers() {
-					if ctrl.SectorId == cmd[:2] {
-						if dir, ok := numpadToDirection(cmd[3]); ok && cmd[2] == ' ' {
-							setLLDir(dir, func(ac *Aircraft) bool { return ac.TrackingController == ctrl.Callsign })
+			} else if f := strings.Fields(cmd); len(f) == 2 {
+				// either L(id)(space)(dir) or L(dir)(space)(callsign)
+				if len(f[0]) == 1 {
+					// L(dir)(space)(callsign)
+					if dir, ok := numpadToDirection(f[0][0]); ok {
+						if ac := lookupAircraft(f[1]); ac != nil {
+							sp.Aircraft[ac.Callsign].LeaderLineDirection = dir
 							status.clear = true
-							status.err = nil
+						} else {
+							status.err = ErrSTARSNoFlight
 						}
-					}
-				}
-				return
-
-			default:
-				// L(dir)(space)(callsign)
-				if dir, ok := numpadToDirection(cmd[0]); ok && cmd[1] == ' ' {
-					// We know len(cmd) >= 3 given the above cases...
-					if ac := lookupAircraft(cmd[2:]); ac != nil {
-						sp.Aircraft[ac.Callsign].LeaderLineDirection = dir
-						status.clear = true
-						return
 					} else {
-						status.err = ErrSTARSNoFlight
+						status.err = ErrSTARSCommandFormat
 					}
+					return
 				} else {
-					status.err = ErrSTARSCommandFormat
+					// L(id)(space)(dir)
+					if ctrl := ctx.world.GetController(f[0]); ctrl != nil {
+						if dir, ok := numpadToDirection(f[1][0]); ok && len(f[1]) == 1 {
+							// Per-controller leaderline
+							if ps.ControllerLeaderLineDirections == nil {
+								ps.ControllerLeaderLineDirections = make(map[string]CardinalOrdinalDirection)
+							}
+							if dir != nil {
+								ps.ControllerLeaderLineDirections[ctrl.Callsign] = *dir
+							} else {
+								delete(ps.ControllerLeaderLineDirections, ctrl.Callsign)
+							}
+							status.clear = true
+						} else {
+							status.err = ErrSTARSCommandFormat
+						}
+					} else {
+						status.err = ErrSTARSIllegalPosition
+					}
+					return
 				}
-				return
 			}
 
 		case "N":
@@ -3833,7 +3833,7 @@ func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText s
 
 	// For westerly directions the datablock text should be right
 	// justified, since the leader line will be connecting on that side.
-	dir := sp.getLeaderLineDirection(ac)
+	dir := sp.getLeaderLineDirection(ac, ctx.world)
 	rightJustify := dir > South
 	if rightJustify {
 		maxLen := 0
@@ -4204,7 +4204,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		boundsText = append(boundsText, datablockText[0]...)
 		w, h := font.BoundText(strings.Join(boundsText, "\n"), style.LineSpacing)
 		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
-			sp.getLeaderLineDirection(ac))
+			sp.getLeaderLineDirection(ac, ctx.world))
 
 		// Draw characters starting at the upper left.
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
@@ -4219,7 +4219,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		td.AddText(strings.Join(currentDatablockText, "\n"), pt, style)
 
 		// Leader line
-		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac))
+		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
 		p0 := add2f(pac, scale2f(normalize2f(v), float32(2+font.size/2)))
 		p1 := add2f(pac, v)
 		ld.AddLine(p0, p1, color)
@@ -5160,11 +5160,24 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft) bool {
 	}
 }
 
-func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft) CardinalOrdinalDirection {
+func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdinalDirection {
+	ps := sp.CurrentPreferenceSet
+
 	if lld := sp.Aircraft[ac.Callsign].LeaderLineDirection; lld != nil {
+		// The direction was specified for the aircraft specifically
 		return *lld
+	} else if ac.TrackingController == w.Callsign {
+		// Tracked by us
+		return ps.LeaderLineDirection
+	} else if dir, ok := ps.ControllerLeaderLineDirections[ac.TrackingController]; ok {
+		// Tracked by another controller for whom a direction was specified
+		return dir
+	} else if ps.OtherControllerLeaderLineDirection != nil {
+		// Tracked by another controller without a per-controller direction specified
+		return *ps.OtherControllerLeaderLineDirection
 	} else {
-		return sp.CurrentPreferenceSet.LeaderLineDirection
+		// TODO: should this case have a user-specifiable default?
+		return CardinalOrdinalDirection(North)
 	}
 }
 
