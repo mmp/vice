@@ -10,7 +10,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"runtime"
 	"sort"
 	"strconv"
@@ -284,29 +283,26 @@ func (s *STARSAircraftState) HaveHeading() bool {
 	return !s.tracks[0].Position.IsZero() && !s.tracks[1].Position.IsZero()
 }
 
-// Perhaps confusingly, the vector returned by HeadingVector() is not
-// aligned with the reported heading but is instead along the aircraft's
+// Note that the vector returned by HeadingVector() is along the aircraft's
 // extrapolated path.  Thus, it includes the effect of wind.  The returned
 // vector is scaled so that it represents where it is expected to be one
 // minute in the future.
 func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) Point2LL {
-	var v [2]float32
 	if !s.HaveHeading() {
-		v = [2]float32{cos(radians(s.TrackHeading(magneticVariation))),
-			sin(radians(s.TrackHeading(magneticVariation)))}
-	} else {
-		p0, p1 := s.tracks[0].Position, s.tracks[1].Position
-		v = sub2ll(p0, p1)
+		return Point2LL{}
 	}
 
-	nm := nmlength2ll(v, nmPerLongitude)
+	p0 := ll2nm(s.tracks[0].Position, nmPerLongitude)
+	p1 := ll2nm(s.tracks[1].Position, nmPerLongitude)
+	v := sub2ll(p0, p1)
+	v = normalize2f(v)
 	// v's length should be groundspeed / 60 nm.
-	return scale2ll(v, float32(s.TrackGroundspeed())/(60*nm))
+	v = scale2f(v, float32(s.TrackGroundspeed())/60) // hours to minutes
+	return nm2ll(v, nmPerLongitude)
 }
 
-// Note: returned value includes the magnetic correction
-func (s *STARSAircraftState) TrackHeading(magneticVariation float32) float32 {
-	return s.tracks[0].Heading + magneticVariation
+func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
+	return headingp2ll(s.tracks[1].Position, s.tracks[0].Position, nmPerLongitude, 0)
 }
 
 func (s *STARSAircraftState) LostTrack(now time.Time) bool {
@@ -1142,7 +1138,6 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Position:    ac.Position,
 			Altitude:    int(ac.Altitude),
 			Groundspeed: int(ac.GS),
-			Heading:     ac.Heading,
 			Time:        now,
 		}
 	}
@@ -3750,8 +3745,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			}
 		}
 
-		sp.drawRadarTrack(state.tracks, ctx, transforms, brightness, STARSTrackBlockColor, trackId,
-			ld, trid, td)
+		// "cheat" by using ac.Heading if we don't yet have two radar tracks to compute the
+		// heading with; this makes things look better when we first see a track or when
+		// restarting a simulation...
+		heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude), ac.Heading) +
+			ac.MagneticVariation
+		sp.drawRadarTrack(state.tracks, heading, ctx, transforms, brightness, STARSTrackBlockColor,
+			trackId, ld, trid, td)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -3764,17 +3764,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, ctx *PaneContext, transforms ScopeTransformations,
-	brightness STARSBrightness, trackColor RGB, trackId string,
+func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, heading float32, ctx *PaneContext,
+	transforms ScopeTransformations, brightness STARSBrightness, trackColor RGB, trackId string,
 	ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
-	orientation := tracks[0].Heading
-	if math.IsNaN(float64(orientation)) {
-		orientation = 0
-	}
 
-	rot := rotator2f(orientation)
+	rot := rotator2f(heading)
 	pos := tracks[0].Position
 	pw := transforms.WindowFromLatLongP(pos)
 
@@ -4269,7 +4265,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(state.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := state.TrackHeading(-ac.MagneticVariation)
+		hdg := state.TrackHeading(ac.NmPerLongitude)
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
 		end := add2f(ll2nm(state.TrackPosition(), ac.NmPerLongitude), h)
@@ -4336,7 +4332,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 
 			// Now we want to get that triangle in window coordinates...
 			length := state.ConeLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
-			rot := rotator2f(state.TrackHeading(0))
+			rot := rotator2f(state.TrackHeading(ac.NmPerLongitude) + ac.MagneticVariation)
 			for i := range v {
 				// First scale it to make it the desired length in nautical
 				// miles; while we're at it, we'll convert that over to

@@ -182,7 +182,6 @@ type RadarTrack struct {
 	Position    Point2LL
 	Altitude    int
 	Groundspeed int
-	Heading     float32
 	Time        time.Time
 }
 
@@ -436,6 +435,7 @@ type Wind struct {
 
 type WindModel interface {
 	GetWindVector(p Point2LL, alt float32) Point2LL
+	AverageWindVector() [2]float32
 }
 
 ///////////////////////////////////////////////////////////////////////////

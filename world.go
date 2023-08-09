@@ -140,6 +140,12 @@ func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
 	return vWind
 }
 
+func (w *World) AverageWindVector() [2]float32 {
+	d := OppositeHeading(float32(w.Wind.Direction))
+	v := [2]float32{sin(radians(d)), cos(radians(d))}
+	return scale2f(v, float32(w.Wind.Speed)/3600)
+}
+
 func (w *World) GetAirport(icao string) *Airport {
 	return w.Airports[icao]
 }
