@@ -94,6 +94,7 @@ var (
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
 	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
+	ErrSTARSIllegalMap        = NewSTARSError("ILL MAP")
 	ErrSTARSIllegalParam      = NewSTARSError("ILL PARAM")
 	ErrSTARSIllegalPosition   = NewSTARSError("ILL POS")
 	ErrSTARSIllegalScratchpad = NewSTARSError("ILL SCR")

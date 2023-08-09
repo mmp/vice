@@ -2061,29 +2061,44 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		return
 
 	case CommandModeMaps:
-		if len(cmd) > 0 {
+		if cmd == "A" {
+			// remove all maps
+			ps.VideoMapVisible = make(map[string]interface{})
+			ps.SystemMapVisible = make(map[int]interface{})
+			status.clear = true
+			return
+		} else if n := len(cmd); n >= 2 {
+			op := "T"            // toggle by default
+			if cmd[n-1] == 'E' { // enable
+				op = "E"
+				cmd = cmd[:n-1]
+			} else if cmd[n-1] == 'I' { // inhibit
+				op = "T"
+				cmd = cmd[:n-1]
+			}
+
 			if idx, err := strconv.Atoi(cmd); err != nil {
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
-				status.err = ErrSTARSIllegalValue
+				status.err = ErrSTARSIllegalMap
 			} else if idx > len(ctx.world.STARSMaps) {
 				// is it a system map?
 				if _, ok := sp.SystemMaps[idx]; ok {
-					if _, ok := ps.SystemMapVisible[idx]; ok {
+					if _, ok := ps.SystemMapVisible[idx]; (ok && op == "T") || op == "I" {
 						delete(ps.SystemMapVisible, idx)
-					} else {
+					} else if (!ok && op == "T") || op == "E" {
 						ps.SystemMapVisible[idx] = nil
 					}
 					status.clear = true
 					return
 				}
-				status.err = ErrSTARSIllegalValue
+				status.err = ErrSTARSIllegalMap
 			} else {
 				idx--
 				name := ctx.world.STARSMaps[idx].Name
-				if _, ok := ps.VideoMapVisible[name]; ok {
+				if _, ok := ps.VideoMapVisible[name]; (ok && op == "T") || op == "I" {
 					delete(ps.VideoMapVisible, name)
-				} else {
+				} else if (!ok && op == "T") || op == "E" {
 					ps.VideoMapVisible[name] = nil
 				}
 			}
