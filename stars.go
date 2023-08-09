@@ -3016,6 +3016,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 		if STARSSelectButton("CLR ALL", STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapVisible = make(map[string]interface{})
+			ps.SystemMapVisible = make(map[int]interface{})
 		}
 		for i := 0; i < NumSTARSMaps; i++ {
 			if i >= len(ctx.world.STARSMaps) {
