@@ -26,14 +26,20 @@ const LateralMinimum = 3
 const VerticalMinimum = 1000
 
 var (
-	STARSBackgroundColor         = RGB{.2, .2, .2} // at 100 contrast
-	STARSListColor               = RGB{.1, .9, .1}
-	STARSTextAlertColor          = RGB{1, 0, 0}
-	STARSMapColor                = RGB{.55, .55, .55}
-	STARSCompassColor            = RGB{.55, .55, .55}
-	STARSRangeRingColor          = RGB{.55, .55, .55}
-	STARSTrackBlockColor         = RGB{0.12, 0.48, 1}
-	STARSTrackHistoryColors      [5]RGB
+	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
+	STARSListColor          = RGB{.1, .9, .1}
+	STARSTextAlertColor     = RGB{1, 0, 0}
+	STARSMapColor           = RGB{.55, .55, .55}
+	STARSCompassColor       = RGB{.55, .55, .55}
+	STARSRangeRingColor     = RGB{.55, .55, .55}
+	STARSTrackBlockColor    = RGB{0.12, 0.48, 1}
+	STARSTrackHistoryColors = [5]RGB{
+		RGB{.12, .31, .78},
+		RGB{.28, .28, .67},
+		RGB{.2, .2, .51},
+		RGB{.16, .16, .43},
+		RGB{.12, .12, .35},
+	}
 	STARSJRingConeColor          = RGB{.5, .5, 1}
 	STARSTrackedAircraftColor    = RGB{1, 1, 1}
 	STARSUntrackedAircraftColor  = RGB{0, 1, 0}
@@ -788,11 +794,6 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = MakePreferenceSet("", w)
 	}
-	STARSTrackHistoryColors[0] = RGB{.12, .31, .78}
-	STARSTrackHistoryColors[1] = RGB{.28, .28, .67}
-	STARSTrackHistoryColors[2] = RGB{.2, .2, .51}
-	STARSTrackHistoryColors[3] = RGB{.16, .16, .43}
-	STARSTrackHistoryColors[4] = RGB{.12, .12, .35}
 	sp.CurrentPreferenceSet.Activate(w)
 
 	if sp.HavePlayedSPCAlertSound == nil {
@@ -3751,7 +3752,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude), ac.Heading) +
 			ac.MagneticVariation
 		sp.drawRadarTrack(state.tracks, heading, ctx, transforms, brightness, STARSTrackBlockColor,
-			trackId, ld, trid, td)
+			trackId, &pd, ld, trid, td)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -3766,7 +3767,8 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, heading float32, ctx *PaneContext,
 	transforms ScopeTransformations, brightness STARSBrightness, trackColor RGB, trackId string,
-	ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
+	pd *PointsDrawBuilder, ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder,
+	td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
@@ -3831,6 +3833,18 @@ func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, heading float32, ctx 
 		ld.AddLine(delta(pos, -px, 0), delta(pos, px, 0), trackColor)
 		// vertical line
 		ld.AddLine(delta(pos, 0, -px), delta(pos, 0, px), trackColor)
+	}
+
+	// Draw history in reverse order so that if it's not moving, more
+	// recent tracks (which will have more contrast with the background),
+	// will be the ones that are visible.
+	n := ps.RadarTrackHistory
+	for i := n; i > 1; i-- {
+		trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
+		trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
+		p := tracks[i-1].Position
+
+		pd.AddPoint(p, trackColor)
 	}
 }
 
