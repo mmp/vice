@@ -4,7 +4,6 @@
 
 // Main missing features:
 // Altitude alerts
-// CDRA (can build off of CRDAConfig, however)
 
 package main
 
@@ -44,6 +43,7 @@ var (
 	STARSTrackedAircraftColor    = RGB{1, 1, 1}
 	STARSUntrackedAircraftColor  = RGB{0, 1, 0}
 	STARSPointedOutAircraftColor = RGB{1, 1, 0}
+	STARSGhostColor              = RGB{1, 1, 0}
 	STARSSelectedAircraftColor   = RGB{0, 1, 1}
 
 	STARSDCBButtonColor         = RGB{0, .4, 0}
@@ -87,6 +87,9 @@ type STARSPane struct {
 	MinSepAircraft    [2]string
 
 	CAAircraft []CAAircraft
+
+	// For CRDA
+	ConvergingRunways []STARSConvergingRunways
 
 	// Various UI state
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
@@ -207,6 +210,39 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 	return positions, "", nil
 }
 
+type CRDAMode int
+
+const (
+	CRDAModeStagger = iota
+	CRDAModeTie
+)
+
+// this is read-only, stored in STARSPane for convenience
+type STARSConvergingRunways struct {
+	ConvergingRunways
+	ApproachRegions [2]*ApproachRegion
+	Airport         string
+	Index           int
+}
+
+type CRDARunwayState struct {
+	Enabled                 bool
+	LeaderLineDirection     *CardinalOrdinalDirection // nil -> unset
+	DrawCourseLines         bool
+	DrawQualificationRegion bool
+}
+
+// stores the per-preference set state for each STARSConvergingRunways
+type CRDARunwayPairState struct {
+	Enabled     bool
+	Mode        CRDAMode
+	RunwayState [2]CRDARunwayState
+}
+
+func (c *STARSConvergingRunways) getRunwaysString() string {
+	return c.Runways[0] + "/" + c.Runways[1]
+}
+
 type CommandMode int
 
 const (
@@ -255,6 +291,11 @@ type STARSAircraftState struct {
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
 
+	Ghost struct {
+		PartialDatablock bool
+		State            GhostState
+	}
+
 	displayPilotAltitude bool
 	pilotAltitude        int
 
@@ -272,6 +313,14 @@ type STARSAircraftState struct {
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
 }
+
+type GhostState int
+
+const (
+	GhostStateRegular = iota
+	GhostStateSuppressed
+	GhostStateForced
+)
 
 func (s *STARSAircraftState) TrackAltitude() int {
 	return s.tracks[0].Altitude
@@ -374,7 +423,13 @@ type STARSPreferenceSet struct {
 	QuickLookAllIsPlus bool
 	QuickLookPositions []QuickLookPosition
 
-	DisableCRDA bool
+	CRDA struct {
+		Disabled bool
+		// Has the same size and indexing as corresponding STARSPane
+		// STARSConvergingRunways
+		RunwayPairState []CRDARunwayPairState
+		ForceAllGhosts  bool
+	}
 
 	DisplayLDBBeaconCodes bool // TODO: default?
 	SelectedBeaconCodes   []string
@@ -510,6 +565,16 @@ const (
 	VideoMapsGroupSysProc
 )
 
+func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
+	ps.CRDA.RunwayPairState = nil
+	state := CRDARunwayPairState{}
+	// The first runway is enabled by default
+	state.RunwayState[0].Enabled = true
+	for range rwys {
+		ps.CRDA.RunwayPairState = append(ps.CRDA.RunwayPairState, state)
+	}
+}
+
 type DwellMode int
 
 const (
@@ -542,7 +607,7 @@ const (
 	DCBPositionBottom
 )
 
-func MakePreferenceSet(name string, w *World) STARSPreferenceSet {
+func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet {
 	var ps STARSPreferenceSet
 
 	ps.Name = name
@@ -646,12 +711,15 @@ func MakePreferenceSet(name string, w *World) STARSPreferenceSet {
 	ps.TowerLists[2].Position = [2]float32{.05, .9}
 	ps.TowerLists[2].Lines = 5
 
+	ps.ResetCRDAState(sp.ConvergingRunways)
+
 	return ps
 }
 
 func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = DuplicateSlice(ps.SelectedBeaconCodes)
+	dupe.CRDA.RunwayPairState = DuplicateSlice(ps.CRDA.RunwayPairState)
 	dupe.VideoMapVisible = DuplicateMap(ps.VideoMapVisible)
 	dupe.SystemMapVisible = DuplicateMap(ps.SystemMapVisible)
 	return dupe
@@ -778,12 +846,11 @@ func (b STARSBrightness) ScaleRGB(r RGB) RGB {
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
-// Takes aircraft position in window coordinates
 func NewSTARSPane(w *World) *STARSPane {
 	sp := &STARSPane{
 		SelectedPreferenceSet: -1,
 	}
-	sp.CurrentPreferenceSet = MakePreferenceSet("", w)
+	sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
 	return sp
 }
 
@@ -792,7 +859,7 @@ func (sp *STARSPane) Name() string { return "STARS" }
 func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
-		sp.CurrentPreferenceSet = MakePreferenceSet("", w)
+		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
 	}
 	sp.CurrentPreferenceSet.Activate(w)
 
@@ -863,6 +930,25 @@ func (sp *STARSPane) ResetWorld(w *World) {
 		ps.GIText[i] = ""
 	}
 	ps.RadarSiteSelected = ""
+
+	sp.ConvergingRunways = nil
+	for _, name := range SortedMapKeys(w.Airports) {
+		ap := w.Airports[name]
+		for idx, pair := range ap.ConvergingRunways {
+			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
+				ConvergingRunways: pair,
+				ApproachRegions: [2]*ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
+					ap.ApproachRegions[pair.Runways[1]]},
+				Airport: name[1:], // drop the leading "K"
+				Index:   idx + 1,  // 1-based
+			})
+		}
+	}
+
+	ps.ResetCRDAState(sp.ConvergingRunways)
+	for i := range sp.PreferenceSets {
+		sp.PreferenceSets[i].ResetCRDAState(sp.ConvergingRunways)
+	}
 
 	sp.lastTrackUpdate = time.Time{} // force update
 }
@@ -1077,6 +1163,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		cb.Call(sp.SystemMaps[idx].CommandBuffer)
 	}
 
+	sp.drawCRDARegions(ctx, transforms, cb)
+
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
@@ -1112,7 +1200,10 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	sp.drawTracks(aircraft, ctx, transforms, cb)
 	sp.drawDatablocks(aircraft, ctx, transforms, cb)
-	sp.consumeMouseEvents(ctx, transforms, cb)
+
+	ghosts := sp.getGhostAircraft(aircraft, ctx)
+	sp.drawGhosts(ghosts, ctx, transforms, cb)
+	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 }
 
@@ -1726,7 +1817,167 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		case "N":
 			// CRDA...
 			if cmd == "" {
-				// TODO: toggle CRDA processing (on by default)
+				// Toggle CRDA processing (on by default). Note that when
+				// it is disabled we still hold on to CRDARunwayPairState array so
+				// that we're back where we started if CRDA is reenabled.
+				ps.CRDA.Disabled = !ps.CRDA.Disabled
+				status.clear = true
+				return
+			} else if cmd == "*ALL" {
+				ps.CRDA.ForceAllGhosts = !ps.CRDA.ForceAllGhosts
+				status.clear = true
+				return
+			} else if n := len(cmd); n >= 5 {
+				// All commands are at least 5 characters, so check that up front
+				validAirport := func(ap string) bool {
+					for _, pair := range sp.ConvergingRunways {
+						if pair.Airport == ap {
+							return true
+						}
+					}
+					return false
+				}
+
+				getRunway := func(s string) (string, string) {
+					i := 0
+					for i < len(s) {
+						ch := s[i]
+						if ch >= '0' && ch <= '9' {
+							i++
+						} else if ch == 'L' || ch == 'R' || ch == 'C' {
+							i++
+							break
+						} else {
+							break
+						}
+					}
+					return s[:i], s[i:]
+				}
+
+				getState := func(ap, rwy string) (*CRDARunwayPairState, *CRDARunwayState) {
+					for i, pair := range sp.ConvergingRunways {
+						if pair.Airport != ap {
+							continue
+						}
+
+						pairState := &ps.CRDA.RunwayPairState[i]
+						if !pairState.Enabled {
+							continue
+						}
+
+						for j, pairRunway := range pair.Runways {
+							if rwy == pairRunway {
+								return pairState, &pairState.RunwayState[j]
+							}
+						}
+					}
+					return nil, nil
+				}
+
+				if cmd[0] == 'L' && validAirport(cmd[1:4]) {
+					// Set leader line direction: NL<airport><runway><1-9>
+					rwy, num := getRunway(cmd[4:])
+					_, runwayState := getState(cmd[1:4], rwy)
+					if len(num) == 1 {
+						if dir, ok := numpadToDirection(num[0]); ok {
+							runwayState.LeaderLineDirection = dir
+							status.clear = true
+							return
+						}
+					}
+				} else if ap := cmd[:3]; validAirport(ap) {
+					if cmd[n-1] == 'S' || cmd[n-1] == 'T' || cmd[n-1] == 'D' {
+						// enable/disable a runway pair
+						if index, err := strconv.Atoi(cmd[3 : n-1]); err == nil {
+							for i, pair := range sp.ConvergingRunways {
+								if pair.Airport == ap && pair.Index == index {
+									if cmd[n-1] == 'D' {
+										ps.CRDA.RunwayPairState[i].Enabled = false
+										status.clear = true
+										status.output = ap + " " + pair.getRunwaysString() + " INHIBITED"
+										return
+									} else {
+										// Make sure neither of the runways involved is already enabled with
+										// another pair.
+										for j, pairState := range ps.CRDA.RunwayPairState {
+											if !pairState.Enabled {
+												continue
+											}
+											if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
+												sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
+												sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
+												sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
+												status.err = ErrSTARSIllegalParam
+												return
+											}
+										}
+
+										if cmd[n-1] == 'S' {
+											ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
+										} else {
+											ps.CRDA.RunwayPairState[i].Mode = CRDAModeTie
+										}
+										ps.CRDA.RunwayPairState[i].Enabled = true
+										status.output = ap + " " + pair.getRunwaysString() + " ENABLED"
+										status.clear = true
+										return
+									}
+								}
+							}
+						}
+					} else {
+						// there should be a valid runway following the
+						// airport
+						rwy, extra := getRunway(cmd[3:])
+
+						pairState, runwayState := getState(ap, rwy)
+						if pairState != nil && runwayState != nil {
+							switch extra {
+							case "":
+								// toggle ghosts for runway
+								runwayState.Enabled = !runwayState.Enabled
+								status.output = ap + " " + rwy + " GHOSTING " +
+									Select(runwayState.Enabled, "ENABLED", "INHIBITED")
+								if !runwayState.Enabled {
+									runwayState.DrawQualificationRegion = false
+									runwayState.DrawCourseLines = false
+								}
+								status.clear = true
+								return
+
+							case "E":
+								// enable ghosts for runway
+								runwayState.Enabled = true
+								status.output = ap + " " + rwy + " GHOSTING ENABLED"
+								status.clear = true
+								return
+
+							case "I":
+								// disable ghosts for runway
+								runwayState.Enabled = false
+								status.output = ap + " " + rwy + " GHOSTING INHIBITED"
+								// this also disables the runway's visualizations
+								runwayState.DrawQualificationRegion = false
+								runwayState.DrawCourseLines = false
+								status.clear = true
+								return
+
+							case " B":
+								runwayState.DrawQualificationRegion = !runwayState.DrawQualificationRegion
+								status.clear = true
+								return
+
+							case " L":
+								runwayState.DrawCourseLines = !runwayState.DrawCourseLines
+								status.clear = true
+								return
+							}
+						}
+					}
+				}
+
+				status.err = ErrSTARSIllegalParam
+				return
 			}
 
 		case "O":
@@ -2265,9 +2516,10 @@ func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
-	transforms ScopeTransformations) (status STARSCommandStatus) {
+	ghosts []*GhostAircraft, transforms ScopeTransformations) (status STARSCommandStatus) {
 	// See if an aircraft was clicked
-	ac := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
+	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
+	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
 	isControllerId := func(id string) bool {
 		// FIXME: check--this is likely to be pretty slow, relatively
@@ -2281,6 +2533,34 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	}
 
 	ps := &sp.CurrentPreferenceSet
+
+	// The only thing that can happen with a ghost is to switch between a full/partial
+	// datablock. Note that if we found both an aircraft and a ghost and a command was entered,
+	// we don't issue an error for a bad ghost command but
+	if ghost != nil && ghostDistance < acDistance {
+		if sp.commandMode == CommandModeNone && cmd == "" {
+			state := sp.Aircraft[ghost.Callsign]
+			state.Ghost.PartialDatablock = !state.Ghost.PartialDatablock
+			status.clear = true
+			return
+		} else if sp.commandMode == CommandModeMultiFunc && sp.multiFuncPrefix == "N" {
+			if cmd == "" {
+				// Suppress ghost
+				state := sp.Aircraft[ghost.Callsign]
+				state.Ghost.State = GhostStateSuppressed
+				status.clear = true
+				return
+			} else if cmd == "*" {
+				// Display parent aircraft flight plan
+				ac := ctx.world.Aircraft[ghost.Callsign]
+				status.output, status.err = sp.flightPlanSTARS(ctx.world, ac)
+				if status.err == nil {
+					status.clear = true
+				}
+				return
+			}
+		}
+	}
 
 	if ac != nil {
 		state := sp.Aircraft[ac.Callsign]
@@ -2576,23 +2856,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "N":
 				// CRDA
-				/*
-					if cmd == "" {
-						if state.isGhost {
-							state.suppressGhost = true
-						} else {
-							state.forceGhost = true
-						}
-					} else if cmd == "*" {
-						if state.isGhost {
-							// TODO: display parent track info for slewed ghost
-						} else {
-							state.forceGhost = true // ?? redundant with cmd == ""?
-						}
+				if cmd == "" || cmd == "*" { // TODO: it's not clear what the difference should be
+					if state.Ghost.State == GhostStateForced {
+						state.Ghost.State = GhostStateRegular
 					} else {
-						status.err = ErrSTARSCommandFormat
+						state.Ghost.State = GhostStateForced
 					}
-				*/
+					status.clear = true
+				} else {
+					status.err = ErrSTARSCommandFormat
+				}
 				return
 
 			case "Q":
@@ -2671,7 +2944,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if cmd == "" {
 				sp.MinSepAircraft[0] = ac.Callsign
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
-					if ac := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
+					if ac, _ := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
 						sp.MinSepAircraft[1] = ac.Callsign
 						status.clear = true
 					} else {
@@ -2808,7 +3081,7 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	return func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 		rbl := sp.wipRBL
 		sp.wipRBL = STARSRangeBearingLine{}
-		if ac := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
+		if ac, _ := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
 			rbl.p[1].callsign = ac.Callsign
 		} else {
 			rbl.p[1].loc = transforms.LatLongFromWindowP(pw)
@@ -3100,7 +3373,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 		if STARSSelectButton("DEFAULT", STARSButtonHalfVertical, buttonScale) {
-			sp.CurrentPreferenceSet = MakePreferenceSet("", ctx.world)
+			sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ctx.world)
 		}
 		STARSDisabledButton("FSSTARS", STARSButtonHalfVertical, buttonScale)
 		if STARSSelectButton("RESTORE", STARSButtonHalfVertical, buttonScale) {
@@ -3160,7 +3433,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 	case DCBMenuSSAFilter:
-		STARSToggleButton("All", &ps.SSAList.Filter.All, STARSButtonHalfVertical, buttonScale)
+		STARSToggleButton("ALL", &ps.SSAList.Filter.All, STARSButtonHalfVertical, buttonScale)
 		STARSDisabledButton("WX", STARSButtonHalfVertical, buttonScale) // ?? TODO
 		STARSToggleButton("TIME", &ps.SSAList.Filter.Time, STARSButtonHalfVertical, buttonScale)
 		STARSToggleButton("ALTSTG", &ps.SSAList.Filter.Altimeter, STARSButtonHalfVertical, buttonScale)
@@ -3496,7 +3769,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			if ps.DisableCAWarnings {
 				disabled = append(disabled, "CA")
 			}
-			if ps.DisableCRDA {
+			if ps.CRDA.Disabled {
 				disabled = append(disabled, "CRDA")
 			}
 			if ps.DisableMSAW {
@@ -3510,8 +3783,20 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		if filter.All || filter.ActiveCRDAPairs {
-			// TODO
+		if (filter.All || filter.ActiveCRDAPairs) && !ps.CRDA.Disabled {
+			for i, crda := range ps.CRDA.RunwayPairState {
+				if !crda.Enabled {
+					continue
+				}
+
+				text := "*"
+				text += Select(crda.Mode == CRDAModeStagger, "S ", "T ")
+				text += sp.ConvergingRunways[i].Airport + " "
+				text += sp.ConvergingRunways[i].getRunwaysString()
+
+				pw = td.AddText(text, pw, style)
+				newline()
+			}
 		}
 	}
 
@@ -3613,8 +3898,37 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.CRDAStatusList.Visible {
-		text := "CRDA STATUS"
-		// TODO
+		text := "CRDA STATUS\n"
+		pairIndex := 0 // reset for each new airport
+		currentAirport := ""
+		for i, crda := range ps.CRDA.RunwayPairState {
+			line := ""
+			if !crda.Enabled {
+				line += " "
+			} else {
+				line += Select(crda.Mode == CRDAModeStagger, "S", "T")
+			}
+
+			pair := sp.ConvergingRunways[i]
+			ap := pair.Airport
+			if ap != currentAirport {
+				currentAirport = ap
+				pairIndex = 1
+			}
+
+			line += fmt.Sprintf("%d ", pairIndex)
+			pairIndex++
+			line += ap + " "
+			line += pair.getRunwaysString()
+			if crda.Enabled {
+				for len(line) < 16 {
+					line += " "
+				}
+				ctrl := ctx.world.Controllers[ctx.world.Callsign]
+				line += ctrl.SectorId
+			}
+			text += line + "\n"
+		}
 		drawList(text, ps.CRDAStatusList.Position)
 	}
 
@@ -3676,6 +3990,46 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	transforms.LoadLatLongViewingMatrices(cb)
+
+	ps := sp.CurrentPreferenceSet
+	for i, state := range ps.CRDA.RunwayPairState {
+		if !state.Enabled {
+			continue
+		}
+		for j, rwyState := range state.RunwayState {
+			if !rwyState.Enabled {
+				continue
+			}
+
+			if rwyState.DrawCourseLines {
+				region := sp.ConvergingRunways[i].ApproachRegions[j]
+				line, _ := region.GetLateralGeometry(ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
+
+				ld := GetLinesDrawBuilder()
+				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
+				ld.AddLine(line[0], line[1])
+
+				ld.GenerateCommands(cb)
+				ReturnLinesDrawBuilder(ld)
+			}
+
+			if rwyState.DrawQualificationRegion {
+				region := sp.ConvergingRunways[i].ApproachRegions[j]
+				_, quad := region.GetLateralGeometry(ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
+
+				ld := GetLinesDrawBuilder()
+				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
+				ld.AddPolyline([2]float32{0, 0}, [][2]float32{quad[0], quad[1], quad[2], quad[3]})
+
+				ld.GenerateCommands(cb)
+				ReturnLinesDrawBuilder(ld)
+			}
+		}
+	}
 }
 
 func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
@@ -3763,6 +4117,120 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	ld.GenerateCommands(cb)
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []*GhostAircraft {
+	var ghosts []*GhostAircraft
+	ps := sp.CurrentPreferenceSet
+	now := ctx.world.CurrentTime()
+
+	for i, pairState := range ps.CRDA.RunwayPairState {
+		if !pairState.Enabled {
+			continue
+		}
+		for j, rwyState := range pairState.RunwayState {
+			if !rwyState.Enabled {
+				continue
+			}
+
+			// Leader line direction comes from the scenario configuration, unless it
+			// has been overridden for the runway via <multifunc>NL.
+			leaderDirection := sp.ConvergingRunways[i].LeaderDirections[j]
+			if rwyState.LeaderLineDirection != nil {
+				leaderDirection = *rwyState.LeaderLineDirection
+			}
+
+			runwayIntersection := sp.ConvergingRunways[i].RunwayIntersection
+			region := sp.ConvergingRunways[i].ApproachRegions[j]
+			otherRegion := sp.ConvergingRunways[i].ApproachRegions[(j+1)%2]
+
+			trackId := Select(pairState.Mode == CRDAModeStagger, sp.ConvergingRunways[i].StaggerSymbol,
+				sp.ConvergingRunways[i].TieSymbol)
+			offset := Select(pairState.Mode == CRDAModeTie, sp.ConvergingRunways[i].TieOffset, float32(0))
+
+			for _, ac := range aircraft {
+				state := sp.Aircraft[ac.Callsign]
+				if state.LostTrack(now) {
+					continue
+				}
+
+				// Create a ghost track if appropriate, add it to the
+				// ghosts slice, and draw its radar track.
+				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
+				heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude),
+					ac.Heading)
+				ghost := region.TryMakeGhost(ac.Callsign, state.tracks[0], heading, ac.Scratchpad, force,
+					offset, leaderDirection, runwayIntersection, ac.NmPerLongitude, ac.MagneticVariation,
+					otherRegion)
+				if ghost != nil {
+					ghost.TrackId = trackId
+					ghosts = append(ghosts, ghost)
+				}
+			}
+		}
+	}
+
+	return ghosts
+}
+
+func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, transforms ScopeTransformations,
+	cb *CommandBuffer) {
+	td := GetTextDrawBuilder()
+	defer ReturnTextDrawBuilder(td)
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+
+	ps := sp.CurrentPreferenceSet
+	color := ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor)
+	trackFont := sp.systemFont[ps.CharSize.PositionSymbols]
+	trackStyle := TextStyle{Font: trackFont, Color: color, DropShadow: true, LineSpacing: 0}
+	datablockFont := sp.systemFont[ps.CharSize.Datablocks]
+	datablockStyle := TextStyle{Font: datablockFont, Color: color, DropShadow: true, LineSpacing: 0}
+
+	for _, ghost := range ghosts {
+		state := sp.Aircraft[ghost.Callsign]
+
+		if state.Ghost.State == GhostStateSuppressed {
+			continue
+		}
+
+		// The track is just the single character..
+		pw := transforms.WindowFromLatLongP(ghost.Position)
+		td.AddTextCentered(ghost.TrackId, pw, trackStyle)
+
+		var datablockText string
+		if state.Ghost.PartialDatablock {
+			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
+			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
+
+			fp := ctx.world.Aircraft[ghost.Callsign].FlightPlan
+			fields := strings.Split(fp.AircraftType, "/")
+			if len(fields) > 1 && (fields[0] == "H" || fields[0] == "J" || fields[0] == "S") {
+				datablockText += fields[0]
+			}
+		} else {
+			// The full datablock ain't much more...
+			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
+		}
+		w, h := datablockFont.BoundText(datablockText, datablockStyle.LineSpacing)
+		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
+			ghost.LeaderLineDirection)
+
+		// Draw datablock
+		pac := transforms.WindowFromLatLongP(ghost.Position)
+		pt := add2f(datablockOffset, pac)
+		td.AddText(datablockText, pt, datablockStyle)
+
+		// Leader line
+		v := sp.getLeaderLineVector(ghost.LeaderLineDirection)
+		p0 := add2f(pac, scale2f(normalize2f(v), float32(2+trackFont.size/2)))
+		p1 := add2f(pac, v)
+		ld.AddLine(p0, p1, color)
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, heading float32, ctx *PaneContext,
@@ -4520,7 +4988,8 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraft,
+	transforms ScopeTransformations, cb *CommandBuffer) {
 	if ctx.mouse == nil {
 		return
 	}
@@ -4543,7 +5012,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx.mouse.Pos, transforms)
 		} else {
-			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.mouse.Pos, transforms)
+			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.mouse.Pos, ghosts, transforms)
 		}
 
 		if status.err != nil {
@@ -4556,7 +5025,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			sp.previewAreaOutput = status.output
 		}
 	} else if ctx.mouse.Clicked[MouseButtonTertiary] {
-		if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 			if state := sp.Aircraft[ac.Callsign]; state != nil {
 				state.IsSelected = !state.IsSelected
 			}
@@ -4567,20 +5036,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, transforms ScopeTransf
 			sp.dwellAircraft = ""
 
 		case DwellModeOn:
-			if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 				sp.dwellAircraft = ac.Callsign
 			} else {
 				sp.dwellAircraft = ""
 			}
 
 		case DwellModeLock:
-			if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 				sp.dwellAircraft = ac.Callsign
 			}
 			// Otherwise leave sp.dwellAircraft as is
 		}
 	} else {
-		if ac := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 			var info []string
 			if ac.IsDeparture {
 				info = append(info, "Departure")
@@ -5220,7 +5689,7 @@ func (sp *STARSPane) isOverflight(ctx *PaneContext, ac *Aircraft) bool {
 			ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport) == nil)
 }
 
-func (sp *STARSPane) tryGetClosestAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) *Aircraft {
+func (sp *STARSPane) tryGetClosestAircraft(w *World, mousePosition [2]float32, transforms ScopeTransformations) (*Aircraft, float32) {
 	var ac *Aircraft
 	distance := float32(20) // in pixels; don't consider anything farther away
 
@@ -5233,7 +5702,23 @@ func (sp *STARSPane) tryGetClosestAircraft(w *World, mousePosition [2]float32, t
 		}
 	}
 
-	return ac
+	return ac, distance
+}
+
+func (sp *STARSPane) tryGetClosestGhost(ghosts []*GhostAircraft, mousePosition [2]float32, transforms ScopeTransformations) (*GhostAircraft, float32) {
+	var ghost *GhostAircraft
+	distance := float32(20) // in pixels; don't consider anything farther away
+
+	for _, g := range ghosts {
+		pw := transforms.WindowFromLatLongP(g.Position)
+		dist := distance2f(pw, mousePosition)
+		if dist < distance {
+			ghost = g
+			distance = dist
+		}
+	}
+
+	return ghost, distance
 }
 
 func (sp *STARSPane) radarSiteId(w *World) string {
