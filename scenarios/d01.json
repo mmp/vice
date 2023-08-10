@@ -663,6 +663,61 @@
                 "icao": "UAL"
               },
               {
+                "icao": "FFT"
+              }
+            ],
+            "altitude": 40000,
+            "destination": "KLAS",
+            "exit": "WERNR",
+            "route": "WERNR ZAKRY GGAPP CHOWW2"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SKW"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
+                "fleet": "short",
+                "icao": "DAL"
+              }
+            ],
+            "altitude": 38000,
+            "destination": "KSLC",
+            "exit": "CHNGY",
+            "route": "CHNGY EKR LEEHY5"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "FFT"
+              },
+              {
+                "icao": "SCX"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ],
+            "altitude": 37000,
+            "destination": "KMSP",
+            "exit": "CHUWY",
+            "route": "CHUWY SSWAN TORGY3"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
                 "fleet": "short",
                 "icao": "DAL"
               },
@@ -674,6 +729,166 @@
             "destination": "KLAX",
             "exit": "TEHRU",
             "route": "TEHRU JASSE Q90 DNERO ANJLL4"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "icao": "ASA"
+              },
+              {
+                "icao": "FFT"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
+                "fleet": "short",
+                "icao": "DAL"
+              }
+            ],
+            "altitude": 34000,
+            "destination": "KSEA",
+            "exit": "DDRTH",
+            "route": "DDRTH DBS PDT CHINS5"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "ASH"
+              },
+              {
+                "fleet": "short",
+                "icao": "AAL"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
+                "icao": "FFT"
+              }
+            ],
+            "altitude": 33000,
+            "destination": "KDFW",
+            "exit": "SLEEK",
+            "route": "SLEEK EZEEE MDANO VKTRY2"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
+                "fleet": "short",
+                "icao": "DAL"
+              }
+            ],
+            "altitude": 35000,
+            "destination": "KATL",
+            "exit": "SHAYK",
+            "route": "SHAYK SLN BUM FAM HITMN NEWBB IHAVE MTHEW CHPPR1"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "icao": "FFT"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ],
+            "altitude": 40000,
+            "destination": "KSAN",
+            "exit": "TEHRU",
+            "route": "TEHRU PUNDL Q86 TTRUE LUCKI1"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "icao": "FFT"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ],
+            "altitude": 38000,
+            "destination": "KSFO",
+            "exit": "VOAXA",
+            "route": "VOAXA Q136  OAL INYOE DYAMD5"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "icao": "JBU"
+              },
+              {
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ],
+            "altitude": 37000,
+            "destination": "KLGA",
+            "exit": "ZIRKL",
+            "route": "ZIRKL MCK LNK J60 DJB YNG ETG MIP4"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "icao": "SWA"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ],
+            "altitude": 33000,
+            "destination": "KIAH",
+            "exit": "SLEEK",
+            "route": "SLEEK NOSEW MQP DRLLR5"
+          },
+          {
+            "airlines": [
+              {
+                "icao": "SWA"
+              },
+              {
+                "icao": "FFT"
+              },
+              {
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ],
+            "altitude": 38000,
+            "destination": "KPDX",
+            "exit": "DDRTH",
+            "route": "DDRTH DBS BEAMO JKNOX HHOOD4"
           },
           {
             "airlines": [
