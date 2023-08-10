@@ -74,11 +74,11 @@ jobs:
         cp osx/Info.plist Vice.App/Contents/
         mkdir Vice.app/Contents/Resources
         cp icon.icns Vice.app/Contents/Resources
-        cp resources/airports.csv.zst Vice.app/Contents/Resources
-        mkdir Vice.app/Contents/Resources/scenarios
-        cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios
-        mkdir Vice.app/Contents/Resources/videomaps
-        cp resources/videomaps/*json.zst Vice.app/Contents/Resources/videomaps
+        cp resources/*.zst resources/*.json Vice.app/Contents/Resources
+        for d in audio fonts scenarios videomaps; do
+            mkdir Vice.app/Contents/Resources/$d
+            cp resources/$d/*.{json,zst} Vice.app/Contents/Resources/$d
+        done
 
     - name: Set up keychain for signing binary
       env:
