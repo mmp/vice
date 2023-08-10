@@ -439,18 +439,145 @@ type WindModel interface {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// AltitudeRestriction
+
+type AltitudeRestriction struct {
+	// We treat 0 as "unset", which works naturally for the bottom but
+	// requires occasional care at the top.
+	Range [2]float32
+}
+
+func (a *AltitudeRestriction) UnmarshalJSON(b []byte) error {
+	// For backwards compatibility with saved scenarios, we allow
+	// unmarshaling from the single-valued altitude restrictions we had
+	// before.
+	if alt, err := strconv.Atoi(string(b)); err == nil {
+		a.Range = [2]float32{float32(alt), float32(alt)}
+		return nil
+	} else {
+		// Otherwise declare a temporary variable with matching structure
+		// but a different type to avoid an infinite loop when
+		// json.Unmarshal is called.
+		ar := struct{ Range [2]float32 }{}
+		if err := json.Unmarshal(b, &ar); err == nil {
+			a.Range = ar.Range
+			return nil
+		} else {
+			return err
+		}
+	}
+}
+
+func (a AltitudeRestriction) TargetAltitude(alt float32) float32 {
+	return clamp(alt, a.Range[0], a.Range[1])
+}
+
+// ClampRange limits a range of altitudes to satisfy the altitude
+// restriction; the returned Boolean indicates whether the ranges
+// overlapped.
+func (a AltitudeRestriction) ClampRange(r [2]float32) ([2]float32, bool) {
+	a0, a1 := a.Range[0], a.Range[1]
+	if a1 == 0 {
+		a1 = 1000000
+	}
+
+	ok := r[0] <= a1 || r[1] >= a0
+	return [2]float32{clamp(r[0], a0, a1), clamp(r[1], a0, a1)}, ok
+}
+
+// Summary returns a human-readable summary of the altitude
+// restriction.
+func (a AltitudeRestriction) Summary() string {
+	if a.Range[0] != 0 {
+		if a.Range[1] == a.Range[0] {
+			return fmt.Sprintf("%.0f feet", a.Range[0])
+		} else if a.Range[1] != 0 {
+			return fmt.Sprintf("between %.0f-%.0f feet", a.Range[0], a.Range[1])
+		} else {
+			return fmt.Sprintf("at or above %.0f feet", a.Range[0])
+		}
+	} else if a.Range[1] != 0 {
+		return fmt.Sprintf("at or below %.0f feet", a.Range[1])
+	} else {
+		return ""
+	}
+}
+
+// Encoded returns the restriction in the encoded form in which it is
+// specified in scenario configuration files, e.g. "5000+" for "at or above
+// 5000".
+func (a AltitudeRestriction) Encoded() string {
+	if a.Range[0] != 0 {
+		if a.Range[0] == a.Range[1] {
+			return fmt.Sprintf("%.0f", a.Range[0])
+		} else if a.Range[1] != 0 {
+			return fmt.Sprintf("%.0f-%.0f", a.Range[0], a.Range[1])
+		} else {
+			return fmt.Sprintf("%.0f+", a.Range[0])
+		}
+	} else if a.Range[1] != 0 {
+		return fmt.Sprintf("%.0f-", a.Range[1])
+	} else {
+		return ""
+	}
+}
+
+// ParseAltitudeRestriction parses an altitude restriction in the compact
+// text format used in scenario definition files.
+func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
+	n := len(s)
+	if n == 0 {
+		return nil, fmt.Errorf("%s: no altitude provided for crossing restriction", s)
+	}
+
+	if s[n-1] == '-' {
+		// At or below
+		alt, err := strconv.Atoi(s[:n-1])
+		if err != nil {
+			return nil, err
+		}
+		return &AltitudeRestriction{Range: [2]float32{0, float32(alt)}}, nil
+	} else if s[n-1] == '+' {
+		// At or above
+		alt, err := strconv.Atoi(s[:n-1])
+		if err != nil {
+			return nil, err
+		}
+		return &AltitudeRestriction{Range: [2]float32{float32(alt), 0}}, nil
+	} else if alts := strings.Split(s, "-"); len(alts) == 2 {
+		// Between
+		if low, err := strconv.Atoi(alts[0]); err != nil {
+			return nil, err
+		} else if high, err := strconv.Atoi(alts[1]); err != nil {
+			return nil, err
+		} else if low > high {
+			return nil, fmt.Errorf("low altitude %d is above high altitude %d", low, high)
+		} else {
+			return &AltitudeRestriction{Range: [2]float32{float32(low), float32(high)}}, nil
+		}
+	} else {
+		// At
+		if alt, err := strconv.Atoi(s); err != nil {
+			return nil, err
+		} else {
+			return &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}, nil
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
 type Waypoint struct {
-	Fix           string         `json:"fix"`
-	Location      Point2LL       // not provided in scenario JSON; derived from fix
-	Altitude      int            `json:"altitude,omitempty"`
-	Speed         int            `json:"speed,omitempty"`
-	Heading       int            `json:"heading,omitempty"` // outbound heading after waypoint
-	ProcedureTurn *ProcedureTurn `json:"pt,omitempty"`
-	NoPT          bool           `json:"nopt,omitempty"`
-	Handoff       bool           `json:"handoff,omitempty"`
-	Delete        bool           `json:"delete,omitempty"`
+	Fix                 string               `json:"fix"`
+	Location            Point2LL             // not provided in scenario JSON; derived from fix
+	AltitudeRestriction *AltitudeRestriction `json:"altitude_restriction,omitempty"`
+	Speed               int                  `json:"speed,omitempty"`
+	Heading             int                  `json:"heading,omitempty"` // outbound heading after waypoint
+	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
+	NoPT                bool                 `json:"nopt,omitempty"`
+	Handoff             bool                 `json:"handoff,omitempty"`
+	Delete              bool                 `json:"delete,omitempty"`
 }
 
 func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
@@ -465,8 +592,8 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 	var entries []string
 	for _, w := range wslice {
 		s := w.Fix
-		if w.Altitude != 0 {
-			s += fmt.Sprintf("/a%d", w.Altitude)
+		if w.AltitudeRestriction != nil {
+			s += "/a" + w.AltitudeRestriction.Encoded()
 		}
 		if w.Speed != 0 {
 			s += fmt.Sprintf("/s%d", w.Speed)
@@ -619,11 +746,11 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 
 					// Do these last since they only match the first character...
 				} else if f[0] == 'a' {
-					alt, err := strconv.Atoi(f[1:])
+					var err error
+					wp.AltitudeRestriction, err = ParseAltitudeRestriction(f[1:])
 					if err != nil {
 						return nil, err
 					}
-					wp.Altitude = alt
 				} else if f[0] == 's' {
 					kts, err := strconv.Atoi(f[1:])
 					if err != nil {

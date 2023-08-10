@@ -431,7 +431,7 @@ func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) (string, error) {
 
 	found := false
 	ac.visitRouteFix(fix, func(wp *Waypoint) bool {
-		wp.Altitude = alt
+		wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}
 		wp.Speed = speed
 		found = true
 		return true
@@ -804,12 +804,13 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 			}
 		}
 
-		if wp.Altitude != 0 {
+		if wp.AltitudeRestriction != nil {
 			if fr, ok := ac.Nav.V.(*FlyRoute); ok {
-				if !ac.ApproachCleared || wp.Altitude < int(ac.Altitude) {
+				if !ac.ApproachCleared || wp.AltitudeRestriction.Range[0] < ac.Altitude {
 					// Don't climb if we're cleared approach and below the
 					// next fix's altitude.
-					fr.AltitudeRestriction = float32(wp.Altitude)
+					ar := *wp.AltitudeRestriction
+					fr.AltitudeRestriction = &ar
 				}
 			}
 		}

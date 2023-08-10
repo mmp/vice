@@ -502,7 +502,7 @@ func (fh *FlyHeading) LSummary(ac *Aircraft) string {
 
 type FlyRoute struct {
 	// These are both inherited from previous waypoints.
-	AltitudeRestriction float32
+	AltitudeRestriction *AltitudeRestriction
 	SpeedRestriction    float32
 }
 
@@ -536,8 +536,8 @@ func (fr *FlyRoute) LSummary(ac *Aircraft) string {
 	} else {
 		wp := ac.Waypoints[0]
 		s := "Fly assigned route, next fix is " + wp.Fix
-		if wp.Altitude != 0 {
-			s += fmt.Sprintf(", cross at %d ft", wp.Altitude)
+		if wp.AltitudeRestriction != nil {
+			s += ", cross " + wp.AltitudeRestriction.Summary()
 		}
 		if wp.Speed != 0 {
 			s += fmt.Sprintf(", cross at %d kts", wp.Speed)
@@ -971,7 +971,7 @@ func (ms *MaintainSpeed) SSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Maintain %.0f kts", ms.IAS)
 }
 
-func getUpcomingSpeedRestriction(ac *Aircraft) (*Waypoint, float32) {
+func getUpcomingSpeedRestrictionWaypoint(ac *Aircraft) (*Waypoint, float32) {
 	var eta float32
 	for i, wp := range ac.Waypoints {
 		if i == 0 {
@@ -1002,7 +1002,7 @@ func getUpcomingSpeedRestriction(ac *Aircraft) (*Waypoint, float32) {
 }
 
 func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
-	if wp, eta := getUpcomingSpeedRestriction(ac); wp != nil {
+	if wp, eta := getUpcomingSpeedRestrictionWaypoint(ac); wp != nil {
 		if eta < 5 { // includes unknown ETA case
 			return float32(wp.Speed), MaximumRate
 		}
@@ -1032,7 +1032,7 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 }
 
 func (fr *FlyRoute) SSummary(ac *Aircraft) string {
-	if wp, _ := getUpcomingSpeedRestriction(ac); wp != nil {
+	if wp, _ := getUpcomingSpeedRestrictionWaypoint(ac); wp != nil {
 		return fmt.Sprintf("speed %d knots for %s", wp.Speed, wp.Fix)
 	} else if fr.SpeedRestriction != 0 {
 		return fmt.Sprintf("speed %0.f knots from previous crossing restriction", fr.SpeedRestriction)
@@ -1103,54 +1103,177 @@ func (ma *MaintainAltitude) VSummary(ac *Aircraft) string {
 	return fmt.Sprintf("Maintain %.0f feet", ma.Altitude)
 }
 
-func getUpcomingAltitudeRestriction(ac *Aircraft) (*Waypoint, float32) {
-	var eta float32
-	for i, wp := range ac.Waypoints {
-		if i == 0 {
-			eta = float32(wp.ETA(ac.Position, ac.GS).Seconds())
-		} else {
-			d := nmdistance2ll(wp.Location, ac.Waypoints[i-1].Location)
-			etaHours := d / ac.GS
-			eta += etaHours * 3600
-		}
-
-		if wp.Altitude != 0 {
-			// Ignore the altitude restriction if we're an approach that is
-			// already below it.
-			if ac.ApproachCleared && ac.Altitude < float32(wp.Altitude) {
-				return nil, 0
-			}
-
-			return &wp, eta
-		}
-	}
-	return nil, 0
-}
-
 func (fr *FlyRoute) GetAltitude(ac *Aircraft) (float32, float32) {
-	if wp, eta := getUpcomingAltitudeRestriction(ac); wp != nil {
-		if eta < 5 {
-			return float32(wp.Altitude), MaximumRate
+	if c := fr.getWaypointAltitudeConstraint(ac); c != nil {
+		if c.ETA < 5 {
+			return c.Altitude, MaximumRate
 		} else {
-			rate := abs(float32(wp.Altitude)-ac.Altitude) / eta
-			//lg.Printf("%s: descending to %d for %s at %.1f fpm", ac.Callsign, wp.Altitude, wp.Fix, rate*60)
-			return float32(wp.Altitude), rate * 60 // rate is in feet per minute
+			rate := abs(c.Altitude-ac.Altitude) / c.ETA
+			return c.Altitude, rate * 60 // rate is in feet per minute
 		}
-	} else if fr.AltitudeRestriction != 0 {
-		return fr.AltitudeRestriction, MaximumRate
+	} else if fr.AltitudeRestriction != nil {
+		return fr.AltitudeRestriction.TargetAltitude(ac.Altitude), MaximumRate
 	} else {
-		return float32(ac.Altitude), MaximumRate
+		return ac.Altitude, MaximumRate
 	}
 }
 
 func (fr *FlyRoute) VSummary(ac *Aircraft) string {
-	if wp, _ := getUpcomingAltitudeRestriction(ac); wp != nil {
-		return fmt.Sprintf("Maintain %d feet to cross %s", wp.Altitude, wp.Fix)
-	} else if fr.AltitudeRestriction != 0 {
-		return fmt.Sprintf("Maintain %.0f feet (due to previous crossing restriction)",
-			fr.AltitudeRestriction)
-	} else if wp, _ := getUpcomingAltitudeRestriction(ac); wp != nil {
-		return fmt.Sprintf("Maintain %d feet for fix %s", wp.Altitude, wp.Fix)
+	if c := fr.getWaypointAltitudeConstraint(ac); c != nil {
+		if c.Altitude < ac.Altitude {
+			return fmt.Sprintf("Descend to %.0f to eventually cross %s at %.0f",
+				c.Altitude, c.FinalFix, c.FinalAltitude)
+		} else if c.Altitude > ac.Altitude {
+			return fmt.Sprintf("Climb to %.0f to eventually cross %s at %.0f",
+				c.Altitude, c.FinalFix, c.FinalAltitude)
+		} else {
+			return fmt.Sprintf("Maintain %.0f to eventually cross %s at %.0f",
+				c.Altitude, c.FinalFix, c.FinalAltitude)
+		}
+	} else if fr.AltitudeRestriction != nil {
+		return fmt.Sprintf("Maintain %s (due to previous crossing restriction)",
+			fr.AltitudeRestriction.Summary())
 	}
 	return ""
+}
+
+type WaypointCrossingConstraint struct {
+	Altitude      float32
+	ETA           float32 // seconds
+	FinalFix      string
+	FinalAltitude float32
+}
+
+// getWaypointAltitudeConstraint looks at the waypoint altitude
+// restrictions in the aircraft's upcoming route and determines the
+// altitude at which it will cross the next waypoint with a crossing
+// restriction. It balances the general principle of preferring to be at
+// higher altitudes (speed, efficiency) with the aircraft's performance and
+// subsequent altitude restrictions--e.g., sometimes it needs to be lower
+// than it would otherwise at one waypoint in order to make a restriction
+// at a subsequent waypoint.
+func (fr *FlyRoute) getWaypointAltitudeConstraint(ac *Aircraft) *WaypointCrossingConstraint {
+	// Find the last waypoint that has an altitude restriction for our
+	// starting point.
+	lastWp := -1
+	for i := len(ac.Waypoints) - 1; i >= 0; i-- {
+		if ac.Waypoints[i].AltitudeRestriction != nil {
+			lastWp = i
+			break
+		}
+	}
+	if lastWp == -1 {
+		// No altitude restrictions, so nothing to do here.
+		return nil
+	}
+
+	// Figure out what climb/descent rate we will use for modeling the
+	// flight path.
+	perf := ac.Performance()
+	var altRate float32
+	if !ac.IsDeparture {
+		altRate = perf.Rate.Descent
+		// This unfortunately mirrors logic in the Aircraft
+		// updateAltitude() method.  It would be nice to unify the nav
+		// modeling and the aircraft's flight modeling to eliminate this...
+		if ac.Altitude < 10000 {
+			altRate = min(altRate, 2000)
+			altRate *= min(ac.IAS/250, 1)
+		}
+		// Reduce the expected rate by a fudge factor to try to account for
+		// slowing down at lower altitudes, speed reductions on approach,
+		// and the fact that aircraft cut corners at turns rather than
+		// going the longer way and overflying fixes.
+		altRate *= 0.7
+	} else {
+		// This also mirrors logic in Aircraft updateAltitude() and has its
+		// own fudge factor, though a smaller one. Note that it doesn't
+		// include a model for pausing the climb at 10k feet to accelerate,
+		// though at that point we're likely leaving the TRACON airspace
+		// anyway...
+		altRate = 0.9 * Select(perf.Rate.Climb > 2500, perf.Rate.Climb-500, perf.Rate.Climb)
+	}
+
+	// altRange is the range of altitudes that the aircraft may be in and
+	// successfully meet all of the restrictions. It will be updated
+	// incrementally working backwards from the last altitude restriction.
+	altRange := ac.Waypoints[lastWp].AltitudeRestriction.Range
+	//lg.Printf("%s: last wp %s range %+v altRate %.1f", ac.Callsign, ac.Waypoints[lastWp].Fix, altRange, altRate)
+
+	// Unless we can't make the constraints, we'll cross the last waypoint
+	// at the upper range of the altitude restrictions.
+	finalAlt := altRange[1]
+
+	// Sum of distances in nm since the last waypoint with an altitude
+	// restriction.
+	sumDist := float32(0)
+
+	// Loop over waypoints in reverse starting at the one before the last
+	// one with a waypoint restriction.
+	for i := lastWp - 1; i >= 0; i-- {
+		sumDist += nmdistance2ll(ac.Waypoints[i+1].Location, ac.Waypoints[i].Location)
+		wp := ac.Waypoints[i]
+
+		// Does this one have a relevant altitude restriction?
+		if wp.AltitudeRestriction == nil {
+			continue
+		}
+		// Ignore it if the aircraft is cleared for the approach and is below it.
+		if ac.ApproachCleared && ac.Altitude < wp.AltitudeRestriction.Range[0] {
+			continue
+		}
+
+		// TODO: account for decreasing GS with altitude?
+		// TODO: incorporate a simple wind model in GS?
+		eta := sumDist / ac.GS * 3600 // seconds
+
+		// Maximum change in altitude possible before reaching this
+		// waypoint.
+		dalt := altRate * eta / 60
+
+		// possibleRange is altitude range might we have at this waypoint,
+		// assuming we meet the constraint at the subsequent waypoint with
+		// an altitude restriction. Note that dalt only applies to one
+		// limit, since the aircraft can always maintain its current
+		// altitude between waypoints; which limit depends on whether it is
+		// climbing or descending (but then it's confusingly backwards
+		// since we're going through waypoints in reverse order...)
+		possibleRange := Select(ac.IsDeparture,
+			[2]float32{altRange[0] - dalt, altRange[1]},
+			[2]float32{altRange[0], altRange[1] + dalt})
+
+		//lg.Printf("%s: distance to %s %.1f, eta %.1fs, possible range %v", ac.Callsign, wp.Fix, sumDist, eta, possibleRange)
+
+		// Limit the possible range to the restriction at the current
+		// waypoint.
+		var ok bool
+		altRange, ok = wp.AltitudeRestriction.ClampRange(possibleRange)
+		if !ok {
+			lg.Errorf("%s: unable to fulfill altitude restriction at %s: possible %v required %v",
+				ac.Callsign, wp.Fix, possibleRange, wp.AltitudeRestriction.Range)
+			// Keep using altRange, FWIW; it will be clamped to whichever of the
+			// low and high of the restriction's range it is closest to.
+		}
+
+		//lg.Printf("%s: clamped range %v", ac.Callsign, altRange)
+
+		// Reset this so we compute the right eta next time we have a
+		// waypoint with an altitude restriction.
+		sumDist = 0
+	}
+
+	// Distance and ETA between the aircraft and the first waypoint with an
+	// altitude restriction.
+	d := sumDist + nmdistance2ll(ac.Position, ac.Waypoints[0].Location)
+	eta := d / ac.GS * 3600 // seconds
+	alt := altRange[1]      // prefer to be higher rather than lower
+
+	//lg.Printf("%s: Final alt to make restrictions: %.1f, eta %.1fs", ac.Callsign, alt, eta)
+
+	return &WaypointCrossingConstraint{
+		Altitude:      alt,
+		ETA:           eta,
+		FinalFix:      ac.Waypoints[lastWp].Fix,
+		FinalAltitude: finalAlt,
+	}
 }

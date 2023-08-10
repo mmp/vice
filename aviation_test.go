@@ -39,3 +39,27 @@ func TestParseSquawk(t *testing.T) {
 		}
 	}
 }
+
+func TestParseAltitudeRestriction(t *testing.T) {
+	type testcase struct {
+		s  string
+		ar AltitudeRestriction
+	}
+	for _, test := range []testcase{
+		testcase{s: "1000", ar: AltitudeRestriction{Range: [2]float32{1000, 1000}}},
+		testcase{s: "3000-5000", ar: AltitudeRestriction{Range: [2]float32{3000, 5000}}},
+		testcase{s: "7000+", ar: AltitudeRestriction{Range: [2]float32{7000, 0}}},
+		testcase{s: "9000-", ar: AltitudeRestriction{Range: [2]float32{0, 9000}}},
+	} {
+		ar, err := ParseAltitudeRestriction(test.s)
+		if err != nil {
+			t.Errorf("%s: unexpected error parsing: %v", test.s, err)
+		}
+		if ar.Range[0] != test.ar.Range[0] || ar.Range[1] != test.ar.Range[1] {
+			t.Errorf("%s: got range %v, expected %v", test.s, ar, test.ar)
+		}
+		if enc := ar.Encoded(); enc != test.s {
+			t.Errorf("encoding mismatch: got \"%s\", expected \"%s\"", enc, test.s)
+		}
+	}
+}

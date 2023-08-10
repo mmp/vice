@@ -774,13 +774,14 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 		SpeedRestriction: min(arr.SpeedRestriction, perf.Speed.Cruise),
 	}
 	ac.Nav.V = &FlyRoute{
-		AltitudeRestriction: arr.ClearedAltitude,
+		AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{arr.ClearedAltitude, arr.ClearedAltitude}},
 	}
 
 	if arr.ExpectApproach != "" {
 		resp, err := ac.ExpectApproach(arr.ExpectApproach, w)
 		if err != nil {
-			return nil, fmt.Errorf("%s: unable to find expected approach: %s: %w", arr.ExpectApproach, resp, err)
+			return nil, fmt.Errorf("%s: unable to find expected approach: %s: %w", arr.ExpectApproach,
+				resp, err)
 		}
 	}
 
