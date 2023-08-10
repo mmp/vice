@@ -2966,6 +2966,40 @@
     "_LGA_4a": "N040.44.56.662,W073.51.53.497",
     "_LGA_4b": "N040.47.59.557,W073.47.11.533"
   },
+  "inhibit_ca_volumes": [
+      {
+          "name": "JFK NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KJFK"
+      },
+      {
+          "name": "FRG NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KFRG"
+      },
+      {
+          "name": "ISP NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KISP"
+      },
+      {
+          "name": "HVN NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KHVN"
+      }
+  ],
   "magnetic_variation": 13.3,
   "name": "KJFK",
   "nm_per_latitude": 60,

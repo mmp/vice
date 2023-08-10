@@ -2654,6 +2654,16 @@
     "_TEB_24": "N040.51.27.762,W074.03.14.842",
     "_TEB_6": "N040.50.48.376,W074.04.13.509"
   },
+  "inhibit_ca_volumes": [
+      {
+          "name": "EWR NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KEWR"
+      }
+  ],
   "magnetic_variation": 13.3,
   "name": "KEWR",
   "nm_per_latitude": 60,
