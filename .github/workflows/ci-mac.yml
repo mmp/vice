@@ -77,7 +77,7 @@ jobs:
         cp resources/*.zst resources/*.json Vice.app/Contents/Resources
         for d in audio fonts scenarios videomaps; do
             mkdir Vice.app/Contents/Resources/$d
-            cp resources/$d/*.{json,zst} Vice.app/Contents/Resources/$d
+            cp resources/$d/*.{json,zst,wav} Vice.app/Contents/Resources/$d
         done
 
     - name: Set up keychain for signing binary
