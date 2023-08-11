@@ -275,7 +275,9 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				// nil here so errors aren't logged if it's not the actual exit.
 				sg.InitializeWaypointLocations(wp, nil)
 			}
-			ap.Departures[i].routeWaypoints = append(ap.Departures[i].routeWaypoints, wp[0])
+			if !wp[0].Location.IsZero() {
+				ap.Departures[i].RouteWaypoints = append(ap.Departures[i].RouteWaypoints, wp[0])
+			}
 		}
 		if !sawExit {
 			e.ErrorString("exit not found in departure route")
@@ -349,10 +351,10 @@ type ExitRoute struct {
 type Departure struct {
 	Exit string `json:"exit"`
 
-	Destination    string `json:"destination"`
-	Altitude       int    `json:"altitude,omitempty"`
-	Route          string `json:"route"`
-	routeWaypoints []Waypoint
+	Destination    string             `json:"destination"`
+	Altitude       int                `json:"altitude,omitempty"`
+	Route          string             `json:"route"`
+	RouteWaypoints WaypointArray      // not specified in user JSON
 	Airlines       []DepartureAirline `json:"airlines"`
 }
 

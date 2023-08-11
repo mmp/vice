@@ -19,7 +19,8 @@ import (
 // Version history 0-7 not explicitly recorded
 // 8: STARSPane DCB improvements, added DCB font size control
 // 9: correct STARSColors, so update brightness settings to compensate
-const CurrentConfigVersion = 9
+// 10: stop being clever about JSON encoding Waypoint arrays to strings
+const CurrentConfigVersion = 10
 
 type GlobalConfig struct {
 	Version               int
@@ -144,12 +145,13 @@ func LoadOrMakeDefaultConfig() {
 		if globalConfig.Version < 1 {
 			// Force upgrade via upcoming Activate() call...
 			globalConfig.DisplayRoot = nil
-			globalConfig.Version = 1
 		}
 		if globalConfig.Version < 5 {
 			globalConfig.Sim = nil
 			globalConfig.Callsign = ""
-			globalConfig.Version = 5
+		}
+		if globalConfig.Version < 10 {
+			globalConfig.Sim = nil
 		}
 
 		if globalConfig.Version < CurrentConfigVersion && globalConfig.DisplayRoot != nil {

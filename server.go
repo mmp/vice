@@ -24,7 +24,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 3
+const ViceRPCVersion = 4
 
 func init() {
 	gob.Register(&FlyHeading{})

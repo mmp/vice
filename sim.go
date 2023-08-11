@@ -990,8 +990,6 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 }
 
 func (s *Sim) Activate() error {
-	var e ErrorLogger
-
 	if s.controllers == nil {
 		s.controllers = make(map[string]*ServerController)
 	}
@@ -999,55 +997,9 @@ func (s *Sim) Activate() error {
 		s.eventStream = NewEventStream()
 	}
 
-	initializeWaypointLocations := func(waypoints []Waypoint, e *ErrorLogger) {
-		for i, wp := range waypoints {
-			if e != nil {
-				e.Push("Fix " + wp.Fix)
-			}
-			if pos, ok := s.World.Locate(wp.Fix); !ok {
-				if e != nil {
-					e.ErrorString("unable to locate waypoint")
-				}
-			} else {
-				waypoints[i].Location = pos
-			}
-			if e != nil {
-				e.Pop()
-			}
-		}
-	}
-
 	now := time.Now()
 	s.lastUpdateTime = now
 	s.World.lastUpdateRequest = now
-
-	for _, ac := range s.World.Aircraft {
-		e.Push(ac.Callsign)
-
-		if ap := ac.Approach; ap != nil {
-			for i := range ap.Waypoints {
-				initializeWaypointLocations(ap.Waypoints[i], &e)
-			}
-		}
-
-		for rwy, wp := range ac.ArrivalRunwayWaypoints {
-			e.Push("Arrival runway " + rwy)
-			initializeWaypointLocations(wp, &e)
-			e.Pop()
-		}
-
-		e.Pop()
-	}
-
-	for callsign := range s.World.Controllers {
-		s.World.Controllers[callsign].Callsign = callsign
-	}
-
-	for _, rwy := range s.World.DepartureRunways {
-		for _, route := range rwy.ExitRoutes {
-			initializeWaypointLocations(route.Waypoints, &e)
-		}
-	}
 
 	s.lastDeparture = make(map[string]map[string]map[string]*Departure)
 	for ap := range s.LaunchConfig.DepartureRates {
@@ -1057,21 +1009,7 @@ func (s *Sim) Activate() error {
 		}
 	}
 
-	for _, arrivals := range s.World.ArrivalGroups {
-		for _, arr := range arrivals {
-			initializeWaypointLocations(arr.Waypoints, &e)
-			for _, rwp := range arr.RunwayWaypoints {
-				initializeWaypointLocations(rwp, &e)
-			}
-		}
-	}
-
-	if e.HaveErrors() {
-		e.PrintErrors()
-		return ErrRestoringSavedState
-	}
 	return nil
-
 }
 
 func (s *Sim) SetSTARSInput(input string) {

@@ -844,7 +844,7 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
-	ac.Waypoints = append(ac.Waypoints, dep.routeWaypoints...)
+	ac.Waypoints = append(ac.Waypoints, dep.RouteWaypoints...)
 	ac.Waypoints = FilterSlice(ac.Waypoints, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 	ac.Position = ac.Waypoints[0].Location
 

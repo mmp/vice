@@ -588,7 +588,7 @@ func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
 
 type WaypointArray []Waypoint
 
-func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
+func (wslice WaypointArray) Encode() string {
 	var entries []string
 	for _, w := range wslice {
 		s := w.Fix
@@ -641,19 +641,26 @@ func (wslice WaypointArray) MarshalJSON() ([]byte, error) {
 
 	}
 
-	return []byte("\"" + strings.Join(entries, " ") + "\""), nil
+	return strings.Join(entries, " ")
 }
 
 func (w *WaypointArray) UnmarshalJSON(b []byte) error {
-	if len(b) < 2 {
-		*w = nil
-		return nil
+	if len(b) > 2 && b[0] == '"' && b[len(b)-1] == '"' {
+		// Handle the string encoding used in scenario JSON files
+		wp, err := parseWaypoints(string(b[1 : len(b)-1]))
+		if err == nil {
+			*w = wp
+		}
+		return err
+	} else {
+		// Otherwise unmarshal it normally
+		var wp []Waypoint
+		err := json.Unmarshal(b, &wp)
+		if err == nil {
+			*w = wp
+		}
+		return err
 	}
-	wp, err := parseWaypoints(string(b[1 : len(b)-1]))
-	if err == nil {
-		*w = wp
-	}
-	return err
 }
 
 func parsePTExtent(pt *ProcedureTurn, extent string) error {

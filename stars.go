@@ -5068,8 +5068,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 					info = append(info, "Straight in approach")
 				}
 			}
-			wp, _ := WaypointArray(ac.Waypoints).MarshalJSON()
-			info = append(info, "Route: "+string(wp))
+			info = append(info, "Route: "+WaypointArray(ac.Waypoints).Encode())
 
 			info = FilterSlice(info, func(s string) bool { return s != "" })
 			infoLines := strings.Join(info, "\n")
