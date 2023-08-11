@@ -68,9 +68,7 @@ jobs:
 
     - name: Create installer
       run: |
-        candle.exe windows/installer.wxs
-        light.exe -ext WixUIExtension installer.wixobj
-        move installer.msi Vice-installer.msi
+        .\windows\makeinstaller.bat
 
     - name: Save executable
       uses: actions/upload-artifact@v3
