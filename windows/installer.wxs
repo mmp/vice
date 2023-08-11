@@ -105,7 +105,7 @@
       <ComponentRef Id="SDLDLL" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
-      <ComponentGroupRef Id=" ResourcesGroup" />
+      <ComponentGroupRef Id="ResourcesGroup" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
