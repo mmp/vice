@@ -5127,7 +5127,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, tran
 		ld := GetLinesDrawBuilder()
 		defer ReturnLinesDrawBuilder(ld)
 
-		const w = 7
+		w := float32(7) * Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 		ld.AddLine(add2f(ctx.mouse.Pos, [2]float32{-w, 0}), add2f(ctx.mouse.Pos, [2]float32{w, 0}))
 		ld.AddLine(add2f(ctx.mouse.Pos, [2]float32{0, -w}), add2f(ctx.mouse.Pos, [2]float32{0, w}))
 
