@@ -88,7 +88,7 @@
                       Source="resources\\audio\\529626__beetlemuse__alert-1.wav" />
               </Component>
             </Directory>
-            <Directory Id="FontsFolder" Name="fonts">
+            <Directory Id="MyFontsFolder" Name="fonts">
               <Component Id="FontsId" Guid="263928e7-8110-4fae-8030-2ee477cb0595">
                 <File Id="FixedDemiBold"
                       Source="resources\\fonts\\FixedDemiBold.otf.zst" KeyPath="yes" />
