@@ -693,7 +693,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			if i == 0 {
 				wp.Fix = f
 			} else if len(f) == 0 {
-				return nil, fmt.Errorf("no command found after @ in \"%s\"", field)
+				return nil, fmt.Errorf("no command found after / in \"%s\"", field)
 			} else {
 				if f == "ho" {
 					wp.Handoff = true
