@@ -1085,6 +1085,10 @@ func (s *Sim) Update() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	for _, ac := range s.World.Aircraft {
+		ac.CheckWaypoints()
+	}
+
 	if s.Name != "" {
 		// Sign off controllers we haven't heard from in 15 seconds so that
 		// someone else can take their place. We only make this check for

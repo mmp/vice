@@ -62,6 +62,30 @@ type Aircraft struct {
 	HaveEnteredAirspace bool
 }
 
+func (a *Aircraft) CheckWaypoints() {
+	check := func(waypoints []Waypoint, what string) {
+		for _, wp := range waypoints {
+			if wp.Location.IsZero() {
+				if *devmode {
+					panic(wp)
+				} else {
+					lg.Errorf("%s: zero waypoint location for %s in %s", a.Callsign, wp.Fix, what)
+				}
+			}
+		}
+	}
+
+	check(a.Waypoints, "waypoints")
+	for rwy, waypoints := range a.ArrivalRunwayWaypoints {
+		check(waypoints, rwy)
+	}
+	if a.Approach != nil {
+		for i, waypoints := range a.Approach.Waypoints {
+			check(waypoints, fmt.Sprintf("approach %d waypoints", i))
+		}
+	}
+}
+
 func (a *Aircraft) Performance() AircraftPerformance {
 	perf, ok := database.AircraftPerformance[a.FlightPlan.BaseType()]
 	if !ok {
@@ -528,6 +552,8 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 				ac.Waypoints = ac.Waypoints[:idx]
 				ac.Waypoints = append(ac.Waypoints, waypoints[i:]...)
 
+				ac.CheckWaypoints()
+
 				found = true
 				break
 			}
@@ -792,6 +818,8 @@ func (ac *Aircraft) updateWaypoints(wind WindModel, w *World, ep EventPoster) {
 
 		// Execute any commands associated with the waypoint
 		ac.RunWaypointCommands(wp, w, ep)
+
+		ac.CheckWaypoints()
 
 		if ac.ApproachCleared {
 			// The aircraft has made it to the approach fix they

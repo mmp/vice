@@ -785,6 +785,8 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 		}
 	}
 
+	ac.CheckWaypoints()
+
 	return ac, nil
 }
 
@@ -878,6 +880,8 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 		err = fmt.Errorf("%s: unable to find departure airport location?", ac.FlightPlan.DepartureAirport)
 		return
 	}
+
+	ac.CheckWaypoints()
 
 	return
 }
