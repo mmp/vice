@@ -68,7 +68,8 @@ jobs:
 
     - name: Create installer
       run: |
-        candle.exe windows/installer.wxs
+        heat.exe dir resources -dr ResourcesId -gg -srd -cg ResourcesGroup -out resources.wxs
+        candle.exe windows/installer.wxs resources.wxs
         light.exe -ext WixUIExtension installer.wixobj
         move installer.msi Vice-installer.msi
 
