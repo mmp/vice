@@ -52,8 +52,9 @@ type Aircraft struct {
 
 	Nav NAVState
 
-	// Set for arrivals, if there are runway-specific waypoints.
-	ArrivalRunwayWaypoints   map[string]WaypointArray
+	// Arrival-related state
+	ArrivalGroup             string
+	ArrivalGroupIndex        int
 	ArrivalHandoffController string
 
 	Approach            *Approach
@@ -76,9 +77,6 @@ func (a *Aircraft) CheckWaypoints() {
 	}
 
 	check(a.Waypoints, "waypoints")
-	for rwy, waypoints := range a.ArrivalRunwayWaypoints {
-		check(waypoints, rwy)
-	}
 	if a.Approach != nil {
 		for i, waypoints := range a.Approach.Waypoints {
 			check(waypoints, fmt.Sprintf("approach %d waypoints", i))
@@ -543,7 +541,15 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 	ac.Approach = ap
 	ac.ApproachId = id
 
-	if waypoints, ok := ac.ArrivalRunwayWaypoints[ap.Runway]; ok && len(waypoints) > 0 {
+	var arrivals []Arrival
+	arrivals = w.ArrivalGroups[ac.ArrivalGroup]
+	if ac.ArrivalGroupIndex >= len(arrivals) {
+		lg.Errorf("%s: invalid arrival group %s or index %d", ac.Callsign, ac.ArrivalGroup,
+			ac.ArrivalGroupIndex)
+		return "", nil
+	}
+
+	if waypoints := arrivals[ac.ArrivalGroupIndex].RunwayWaypoints[ap.Runway]; len(waypoints) > 0 {
 		// Try to splice the runway-specific waypoints in with the
 		// aircraft's current waypoints...
 		found := false
