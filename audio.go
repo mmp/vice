@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
 	"sync"
 	"time"
 
@@ -148,7 +147,7 @@ func (s *SoundEffect) Play() {
 }
 
 func addEffect(filename string, name string, repeat int) {
-	wav := LoadResource(filepath.Join("audio", filename))
+	wav := LoadResource("audio/" + filename)
 	rw, err := sdl.RWFromMem([]byte(wav))
 	if err != nil {
 		lg.Errorf("%s: unable to add audio effect: %v", name, err)

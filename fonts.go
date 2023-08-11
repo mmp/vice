@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"image"
 	"math"
-	"path/filepath"
 	"runtime"
 	"sort"
 	"unicode/utf8"
@@ -224,13 +223,13 @@ func fontsInit(r Renderer, platform Platform) {
 	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
-	faTTF := LoadResource(filepath.Join("fonts", "Font Awesome 5 Free-Solid-900.otf.zst"))
-	fabrTTF := LoadResource(filepath.Join("fonts", "Font Awesome 5 Brands-Regular-400.otf.zst"))
+	faTTF := LoadResource("fonts/Font Awesome 5 Free-Solid-900.otf.zst")
+	fabrTTF := LoadResource("fonts/Font Awesome 5 Brands-Regular-400.otf.zst")
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
 	add := func(filename string, mono bool, name string) {
-		ttf := LoadResource(filepath.Join("fonts", filename))
+		ttf := LoadResource("fonts/" + filename)
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
