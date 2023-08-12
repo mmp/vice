@@ -618,12 +618,12 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"ICE001":  nil,
 }
 
-func sampleAircraft(icao, fleet string) *Aircraft {
+func sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	al, ok := database.Airlines[icao]
 	if !ok {
 		// TODO: this should be caught at load validation time...
 		lg.Errorf("Chose airline %s, not found in database", icao)
-		return nil
+		return nil, ""
 	}
 
 	if fleet == "" {
@@ -634,7 +634,7 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 	if !ok {
 		// TODO: this also should be caught at validation time...
 		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", icao, fleet)
-		return nil
+		return nil, ""
 	}
 
 	// Sample according to fleet count
@@ -653,7 +653,7 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 		// TODO: validation stage...
 		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
 			aircraft, fleet, icao)
-		return nil
+		return nil, ""
 	}
 
 	// random callsign
@@ -694,46 +694,36 @@ func sampleAircraft(icao, fleet string) *Aircraft {
 		AssignedSquawk: squawk,
 		Squawk:         squawk,
 		Mode:           Charlie,
-		FlightPlan: &FlightPlan{
-			Rules:        IFR,
-			AircraftType: acType,
-		},
-	}
+	}, acType
 }
 
-func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround bool) (*Aircraft, error) {
+func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool) (*Aircraft, error) {
 	arrivals := w.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
-		_, ok := ar.Airlines[airportName]
+		_, ok := ar.Airlines[arrivalAirport]
 		return ok
 	})
 	if idx == -1 {
 		return nil, fmt.Errorf("unable to find route in arrival group %s for airport %s?!",
-			arrivalGroup, airportName)
+			arrivalGroup, arrivalAirport)
 	}
 	arr := arrivals[idx]
 
-	airline := Sample(arr.Airlines[airportName])
-	ac := sampleAircraft(airline.ICAO, airline.Fleet)
+	airline := Sample(arr.Airlines[arrivalAirport])
+	ac, acType := sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
+	var err error
+	ac.FlightPlan, err = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
+	if err != nil {
+		return nil, err
+	}
+
 	ac.ArrivalGroup = arrivalGroup
 	ac.ArrivalGroupIndex = idx
-
-	ac.FlightPlan.DepartureAirport = airline.Airport
-	ac.FlightPlan.ArrivalAirport = airportName
-	var ok bool
-	if ac.FlightPlan.DepartureAirportLocation, ok = w.Locate(ac.FlightPlan.DepartureAirport); !ok {
-		return nil, fmt.Errorf("%s: unable to find departure airport location?", ac.FlightPlan.DepartureAirport)
-	}
-
-	ac.FlightPlan.ArrivalAirport = airportName
-	if ac.FlightPlan.ArrivalAirportLocation, ok = w.Locate(ac.FlightPlan.ArrivalAirport); !ok {
-		return nil, fmt.Errorf("%s: unable to find arrival airport location?", ac.FlightPlan.ArrivalAirport)
-	}
 
 	ac.TrackingController = arr.InitialController
 	ac.ControllingController = arr.InitialController
@@ -791,9 +781,9 @@ func (w *World) CreateArrival(arrivalGroup string, airportName string, goAround 
 	return ac, nil
 }
 
-func (w *World) CreateDeparture(airport, runway, category string, challenge float32,
+func (w *World) CreateDeparture(departureAirport, runway, category string, challenge float32,
 	lastDeparture *Departure) (ac *Aircraft, dep *Departure, err error) {
-	ap := w.Airports[airport]
+	ap := w.Airports[departureAirport]
 	if ap == nil {
 		err = ErrUnknownAirport
 		return
@@ -801,7 +791,7 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 
 	idx := FindIf(w.DepartureRunways,
 		func(r ScenarioGroupDepartureRunway) bool {
-			return r.Airport == airport && r.Runway == runway && r.Category == category
+			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
 		})
 	if idx == -1 {
 		err = ErrUnknownRunway
@@ -820,7 +810,7 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 
 		if idx := SampleFiltered(ap.Departures, pred); idx == -1 {
 			// This should never happen...
-			lg.Errorf("%s/%s/%s: unable to sample departure", airport, runway, category)
+			lg.Errorf("%s/%s/%s: unable to sample departure", departureAirport, runway, category)
 		} else {
 			dep = &ap.Departures[idx]
 		}
@@ -834,14 +824,22 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
-			err = fmt.Errorf("%s/%s: unable to find a valid departure", airport, rwy.Runway)
+			err = fmt.Errorf("%s/%s: unable to find a valid departure", departureAirport, rwy.Runway)
 			return
 		}
 		dep = &ap.Departures[idx]
 	}
 
 	airline := Sample(dep.Airlines)
-	ac = sampleAircraft(airline.ICAO, airline.Fleet)
+	ac, acType := sampleAircraft(airline.ICAO, airline.Fleet)
+	if ac == nil {
+		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
+	}
+
+	ac.FlightPlan, err = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
@@ -850,12 +848,6 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 	ac.Position = ac.Waypoints[0].Location
 
 	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
-	ac.FlightPlan.ArrivalAirport = dep.Destination
-	var ok bool
-	if ac.FlightPlan.ArrivalAirportLocation, ok = w.Locate(ac.FlightPlan.ArrivalAirport); !ok {
-		err = fmt.Errorf("%s: unable to find arrival airport location?", ac.FlightPlan.ArrivalAirport)
-		return
-	}
 
 	ac.Scratchpad = w.Scratchpads[dep.Exit]
 	if dep.Altitude == 0 {
@@ -876,12 +868,6 @@ func (w *World) CreateDeparture(airport, runway, category string, challenge floa
 	ac.AddFutureNavCommand(&ClimbOnceAirborne{
 		Altitude: float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)),
 	})
-
-	ac.FlightPlan.DepartureAirport = airport
-	if ac.FlightPlan.DepartureAirportLocation, ok = w.Locate(ac.FlightPlan.DepartureAirport); !ok {
-		err = fmt.Errorf("%s: unable to find departure airport location?", ac.FlightPlan.DepartureAirport)
-		return
-	}
 
 	ac.CheckWaypoints()
 

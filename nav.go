@@ -423,8 +423,7 @@ type GoAround struct {
 }
 
 func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
-	ap := database.Airports[ac.FlightPlan.ArrivalAirport]
-	if dist := nmdistance2ll(ac.Position, ap.Location); dist > g.AirportDistance {
+	if dist := nmdistance2ll(ac.Position, ac.FlightPlan.ArrivalAirportLocation); dist > g.AirportDistance {
 		return false
 	}
 

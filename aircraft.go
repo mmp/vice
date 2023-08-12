@@ -200,11 +200,8 @@ func (ac *Aircraft) GoAround() string {
 	targetSpeed := min(1.6*spd.Landing, 0.8*spd.Cruise)
 	ac.Nav.S = &MaintainSpeed{IAS: targetSpeed}
 
-	if ap, ok := database.Airports[ac.FlightPlan.ArrivalAirport]; ok {
-		ac.Nav.V = &MaintainAltitude{Altitude: float32(1000 * ((ap.Elevation + 2500) / 1000))}
-	} else {
-		ac.Nav.V = &MaintainAltitude{Altitude: float32(1000 * ((int(ac.Altitude) + 2500) / 1000))}
-	}
+	alt := float32(1000 * int((ac.FlightPlan.ArrivalAirportElevation+2500)/1000))
+	ac.Nav.V = &MaintainAltitude{Altitude: alt}
 
 	ac.Approach = nil
 	ac.ApproachId = ""

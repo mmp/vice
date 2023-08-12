@@ -138,21 +138,23 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Rules                    FlightRules
-	AircraftType             string
-	CruiseSpeed              int
-	DepartureAirport         string
-	DepartureAirportLocation Point2LL
-	DepartTimeEst            int
-	DepartTimeActual         int
-	Altitude                 int
-	ArrivalAirport           string
-	ArrivalAirportLocation   Point2LL
-	Hours, Minutes           int
-	FuelHours, FuelMinutes   int
-	AlternateAirport         string
-	Route                    string
-	Remarks                  string
+	Rules                     FlightRules
+	AircraftType              string
+	CruiseSpeed               int
+	DepartureAirport          string
+	DepartureAirportLocation  Point2LL
+	DepartureAirportElevation int
+	DepartTimeEst             int
+	DepartTimeActual          int
+	Altitude                  int
+	ArrivalAirport            string
+	ArrivalAirportLocation    Point2LL
+	ArrivalAirportElevation   int
+	Hours, Minutes            int
+	FuelHours, FuelMinutes    int
+	AlternateAirport          string
+	Route                     string
+	Remarks                   string
 }
 
 type FlightStrip struct {
@@ -249,6 +251,31 @@ func ParseAltitude(s string) (int, error) {
 	} else {
 		return alt, nil
 	}
+}
+
+func NewFlightPlan(r FlightRules, ac, dep, arr string) (*FlightPlan, error) {
+	fp := &FlightPlan{
+		Rules:            r,
+		AircraftType:     ac,
+		DepartureAirport: dep,
+		ArrivalAirport:   arr,
+	}
+
+	if ap, ok := database.Airports[fp.DepartureAirport]; !ok {
+		return nil, ErrUnknownAirport
+	} else {
+		fp.DepartureAirportLocation = ap.Location
+		fp.DepartureAirportElevation = ap.Elevation
+	}
+
+	if ap, ok := database.Airports[fp.ArrivalAirport]; !ok {
+		return nil, ErrUnknownAirport
+	} else {
+		fp.ArrivalAirportLocation = ap.Location
+		fp.ArrivalAirportElevation = ap.Elevation
+	}
+
+	return fp, nil
 }
 
 func (fp FlightPlan) BaseType() string {
