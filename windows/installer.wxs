@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Name='Vice'
-    	     Manufacturer='Matt Pharr'
-	     Id='*'
-	     UpgradeCode='A10E3C66-BA55-406A-B4E2-586D7108D622'
-	     Language='1033'
-	     Codepage='1252'
-	     Version='0.10.3'
-	     >
+  <Product Name='Vice'
+	   Manufacturer='Matt Pharr'
+	   Id='*'
+	   UpgradeCode='A10E3C66-BA55-406A-B4E2-586D7108D622'
+	   Language='1033'
+	   Codepage='1252'
+	   Version='0.10.3'
+	   >
     <Package Id='*'
     	     Keywords='Installer'
 	     Description="Vice Installer"
