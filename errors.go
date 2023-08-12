@@ -11,7 +11,6 @@ import (
 
 // Aviation-related
 var (
-	ErrArrivalAirportUnknown        = errors.New("Arrival airport unknown")
 	ErrClearedForUnexpectedApproach = errors.New("Cleared for unexpected approach")
 	ErrFixNotInRoute                = errors.New("Fix not in aircraft's route")
 	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
@@ -46,7 +45,6 @@ var (
 )
 
 var errorStringToError = map[string]error{
-	ErrArrivalAirportUnknown.Error():        ErrArrivalAirportUnknown,
 	ErrClearedForUnexpectedApproach.Error(): ErrClearedForUnexpectedApproach,
 	ErrFixNotInRoute.Error():                ErrFixNotInRoute,
 	ErrInvalidAltitude.Error():              ErrInvalidAltitude,
@@ -106,7 +104,6 @@ var (
 )
 
 var starsErrorRemap = map[error]*STARSError{
-	ErrArrivalAirportUnknown:        ErrSTARSIllegalAirport,
 	ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	ErrFixNotInRoute:                ErrSTARSIllegalFix,
 	ErrInvalidAltitude:              ErrSTARSIllegalValue,

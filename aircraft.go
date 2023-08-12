@@ -517,7 +517,7 @@ func (ac *Aircraft) getApproach(id string, w *World) (*Approach, error) {
 	ap := w.GetAirport(fp.ArrivalAirport)
 	if ap == nil {
 		lg.Errorf("Can't find airport %s for %s approach for %s", fp.ArrivalAirport, id, ac.Callsign)
-		return nil, ErrArrivalAirportUnknown
+		return nil, ErrUnknownAirport
 	}
 
 	for name, appr := range ap.Approaches {
