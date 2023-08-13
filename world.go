@@ -769,10 +769,8 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	}
 
 	if arr.ExpectApproach != "" {
-		resp, err := ac.ExpectApproach(arr.ExpectApproach, w)
-		if err != nil {
-			return nil, fmt.Errorf("%s: unable to find expected approach: %s: %w", arr.ExpectApproach,
-				resp, err)
+		if _, err := ac.ExpectApproach(arr.ExpectApproach, w); err != nil {
+			return nil, fmt.Errorf("%s: unable to find expected approach: %w", arr.ExpectApproach, err)
 		}
 	}
 

@@ -196,14 +196,20 @@ func (t EventType) String() string {
 }
 
 type Event struct {
-	Type           EventType
-	Callsign       string
-	FromController string
-	ToController   string // For radio transmissions, the controlling controller.
-	Message        string
+	Type                  EventType
+	Callsign              string
+	FromController        string
+	ToController          string // For radio transmissions, the controlling controller.
+	Message               string
+	RadioTransmissionType RadioTransmissionType // For radio transmissions only
 }
 
 func (e *Event) String() string {
-	return fmt.Sprintf("%s: callsign %s controller %s->%s message %s",
-		e.Type, e.Callsign, e.FromController, e.ToController, e.Message)
+	if e.Type == RadioTransmissionEvent {
+		return fmt.Sprintf("%s: callsign %s controller %s->%s message %s type %v",
+			e.Type, e.Callsign, e.FromController, e.ToController, e.Message, e.RadioTransmissionType)
+	} else {
+		return fmt.Sprintf("%s: callsign %s controller %s->%s message %s",
+			e.Type, e.Callsign, e.FromController, e.ToController, e.Message)
+	}
 }

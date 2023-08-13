@@ -193,7 +193,9 @@ func FormatAltitude(alt int) string {
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100 * 100
-		if hu == 0 {
+		if th == 0 {
+			return fmt.Sprintf("%d", hu)
+		} else if hu == 0 {
 			return fmt.Sprintf("%d,000", th)
 		} else {
 			return fmt.Sprintf("%d,%03d", th, hu)
@@ -325,6 +327,33 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan) (altitude int) {
 	}
 
 	return
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+type RadioTransmissionType int
+
+const (
+	RadioTransmissionContact  = iota // Messages initiated by the pilot
+	RadioTransmissionReadback        // Reading back an instruction
+)
+
+type RadioTransmission struct {
+	Controller string
+	Message    string
+	Type       RadioTransmissionType
+}
+
+func PostRadioEvents(from string, transmissions []RadioTransmission, ep EventPoster) {
+	for _, rt := range transmissions {
+		ep.PostEvent(Event{
+			Type:                  RadioTransmissionEvent,
+			Callsign:              from,
+			ToController:          rt.Controller,
+			Message:               rt.Message,
+			RadioTransmissionType: rt.Type,
+		})
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

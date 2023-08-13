@@ -177,6 +177,16 @@ func (ac *Aircraft) TransferTracks(from, to string) {
 ///////////////////////////////////////////////////////////////////////////
 // Navigation and simulation
 
+// Helper function to make the code for the common case of a readback
+// response more compact.
+func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission {
+	return []RadioTransmission{RadioTransmission{
+		Controller: ac.ControllingController,
+		Message:    fmt.Sprintf(f, args...),
+		Type:       RadioTransmissionReadback,
+	}}
+}
+
 func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	ac.updateAirspeed()
 	ac.updateAltitude()
@@ -193,7 +203,7 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	}
 }
 
-func (ac *Aircraft) GoAround() string {
+func (ac *Aircraft) GoAround() ([]RadioTransmission, error) {
 	ac.Nav.L = &FlyHeading{Heading: ac.Heading}
 
 	spd := ac.Performance().Speed
@@ -213,12 +223,16 @@ func (ac *Aircraft) GoAround() string {
 	// Nuke all of them...
 	ac.Nav.FutureCommands = make(map[FutureNavCommand]interface{})
 
-	return "Going around"
+	return []RadioTransmission{RadioTransmission{
+		Controller: ac.ControllingController,
+		Message:    Sample([]string{"going around", "on the go"}),
+		Type:       RadioTransmissionContact,
+	}}, nil
 }
 
-func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
+func (ac *Aircraft) AssignAltitude(altitude int) ([]RadioTransmission, error) {
 	if altitude > int(ac.Performance().Ceiling) {
-		return "unable-that altitude is above our ceiling", ErrInvalidAltitude
+		return ac.readback("unable. That altitude is above our ceiling."), ErrInvalidAltitude
 	}
 
 	var response string
@@ -241,45 +255,38 @@ func (ac *Aircraft) AssignAltitude(altitude int) (string, error) {
 		ac.Nav.V = &MaintainAltitude{Altitude: float32(altitude)}
 	}
 
-	return response, nil
+	return ac.readback(response), nil
 }
 
-func (ac *Aircraft) AssignSpeed(speed int) (response string, err error) {
+func (ac *Aircraft) AssignSpeed(speed int) ([]RadioTransmission, error) {
 	perf := ac.Performance()
 
 	if speed == 0 {
-		response = "cancel speed restrictions"
 		ac.Nav.S = &FlyRoute{}
-		return
+		return ac.readback("cancel speed restrictions"), nil
 	} else if float32(speed) < perf.Speed.Landing {
-		response = fmt.Sprintf("unable--our minimum speed is %.0f knots", perf.Speed.Landing)
-		err = ErrUnableCommand
-		return
+		return ac.readback("unable. Our minimum speed is %.0f knots", perf.Speed.Landing), ErrUnableCommand
 	} else if float32(speed) > perf.Speed.Max {
-		response = fmt.Sprintf("unable--our maximum speed is %.0f knots", perf.Speed.Max)
-		err = ErrUnableCommand
-		return
+		return ac.readback("unable. Our maximum speed is %.0f knots", perf.Speed.Max), ErrUnableCommand
 	}
 
 	if ac.ApproachCleared {
-		response = fmt.Sprintf("maintain %d knots until 5 mile final", speed)
 		ac.Nav.S = &MaintainSpeed{IAS: float32(speed)}
+		return ac.readback("maintain %d knots until 5 mile final", speed), nil
 	} else if alt, _ := ac.Nav.V.GetAltitude(ac); alt != ac.Altitude {
-		response = fmt.Sprintf("at %.0f feet, maintain %d knots",
-			alt, speed)
 		ac.AddFutureNavCommand(&SpeedAfterAltitude{
 			Altitude:  alt,
 			FromAbove: alt < ac.Altitude,
 			IAS:       float32(speed),
 		})
+		return ac.readback("at %.0f feet maintain %d knots", alt, speed), nil
 	} else {
-		response = fmt.Sprintf("maintain %d knots", speed)
 		ac.Nav.S = &MaintainSpeed{IAS: float32(speed)}
+		return ac.readback("maintain %d knots", speed), nil
 	}
-	return
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) (response string, err error) {
+func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) ([]RadioTransmission, error) {
 	// A 0 heading shouldn't be specified, but at least cause the
 	// aircraft to do what is intended, since 0 represents an
 	// unassigned heading.
@@ -287,7 +294,7 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) (response string
 		heading = 360
 	}
 	if heading < 0 || heading > 360 {
-		return "", ErrInvalidHeading
+		return nil, ErrInvalidHeading
 	}
 
 	// Only cancel approach clearance if the aircraft wasn't on a
@@ -296,24 +303,26 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) (response string
 		ac.CancelApproachClearance()
 	}
 
-	switch turn {
-	case TurnClosest:
-		response = fmt.Sprintf("fly heading %d", heading)
-
-	case TurnRight:
-		response = fmt.Sprintf("turn right heading %d", heading)
-
-	case TurnLeft:
-		response = fmt.Sprintf("turn left heading %d", heading)
-	}
-
 	ac.NoPT = false
 	ac.Nav.L = &FlyHeading{Heading: float32(heading), Turn: turn}
 
-	return
+	switch turn {
+	case TurnClosest:
+		return ac.readback("fly heading %d", heading), nil
+
+	case TurnRight:
+		return ac.readback("turn right heading %d", heading), nil
+
+	case TurnLeft:
+		return ac.readback("turn left heading %d", heading), nil
+
+	default:
+		lg.Errorf("%d: unhandled turn type", turn)
+		return nil, ErrInvalidHeading
+	}
 }
 
-func (ac *Aircraft) TurnLeft(deg int) (string, error) {
+func (ac *Aircraft) TurnLeft(deg int) ([]RadioTransmission, error) {
 	heading := ac.Heading
 	if fh, ok := ac.Nav.L.(*FlyHeading); ok {
 		heading = fh.Heading
@@ -327,10 +336,10 @@ func (ac *Aircraft) TurnLeft(deg int) (string, error) {
 	ac.Nav.L = &FlyHeading{Heading: heading}
 	ac.NoPT = false
 
-	return fmt.Sprintf("turn %d degrees left", deg), nil
+	return ac.readback(Sample([]string{"turn %d degrees left", "%d to the left"}), deg), nil
 }
 
-func (ac *Aircraft) TurnRight(deg int) (string, error) {
+func (ac *Aircraft) TurnRight(deg int) ([]RadioTransmission, error) {
 	heading := ac.Heading
 	if fh, ok := ac.Nav.L.(*FlyHeading); ok {
 		heading = fh.Heading
@@ -344,7 +353,19 @@ func (ac *Aircraft) TurnRight(deg int) (string, error) {
 	ac.Nav.L = &FlyHeading{Heading: heading}
 	ac.NoPT = false
 
-	return fmt.Sprintf("turn %d degrees right", deg), nil
+	return ac.readback(Sample([]string{"turn %d degrees right", "%d to the right"}), deg), nil
+}
+
+func (ac *Aircraft) FlyPresentHeading() ([]RadioTransmission, error) {
+	// Only cancel approach clearance if the aircraft wasn't on a
+	// heading and now we're giving them one.
+	if _, ok := ac.Nav.L.(*FlyHeading); !ok {
+		ac.CancelApproachClearance()
+	}
+
+	ac.Nav.L = &FlyHeading{Heading: ac.Heading, Turn: TurnClosest}
+	ac.NoPT = false
+	return ac.readback("fly present heading"), nil
 }
 
 func (ac *Aircraft) visitRouteFix(fix string, cb func(*Waypoint) bool) {
@@ -371,7 +392,7 @@ func (ac *Aircraft) visitRouteFix(fix string, cb func(*Waypoint) bool) {
 	}
 }
 
-func (ac *Aircraft) DirectFix(fix string) (string, error) {
+func (ac *Aircraft) DirectFix(fix string) ([]RadioTransmission, error) {
 	fix = strings.ToUpper(fix)
 
 	// Look for the fix in the waypoints in the flight plan.
@@ -415,20 +436,20 @@ func (ac *Aircraft) DirectFix(fix string) (string, error) {
 
 		// If it's a VOR, read back the actual name
 		if nav, ok := database.Navaids[fix]; ok {
-			return "direct " + stopShouting(nav.Name), nil
+			return ac.readback("direct " + stopShouting(nav.Name)), nil
 		} else {
-			return "direct " + fix, nil
+			return ac.readback("direct " + fix), nil
 		}
 	} else {
-		return "", ErrFixNotInRoute
+		return ac.readback("unable. " + fix + " isn't in our route"), ErrFixNotInRoute
 	}
 }
 
-func (ac *Aircraft) DepartFixHeading(fix string, hdg int) (string, error) {
+func (ac *Aircraft) DepartFixHeading(fix string, hdg int) ([]RadioTransmission, error) {
 	fix = strings.ToUpper(fix)
 
 	if hdg <= 0 || hdg > 360 {
-		return "", ErrInvalidHeading
+		return nil, ErrInvalidHeading
 	}
 
 	found := false
@@ -439,13 +460,13 @@ func (ac *Aircraft) DepartFixHeading(fix string, hdg int) (string, error) {
 	})
 
 	if found {
-		return fmt.Sprintf("depart %s heading %03d", fix, hdg), nil
+		return ac.readback("depart %s heading %03d", fix, hdg), nil
 	} else {
-		return "", ErrFixNotInRoute
+		return ac.readback("unable. " + fix + " isn't in our route"), ErrFixNotInRoute
 	}
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) (string, error) {
+func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) ([]RadioTransmission, error) {
 	fix = strings.ToUpper(fix)
 
 	found := false
@@ -457,10 +478,16 @@ func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) (string, error) {
 	})
 
 	if !found {
-		return "", ErrFixNotInRoute
+		return ac.readback("unable. " + fix + " isn't in our route"), ErrFixNotInRoute
 	}
 
-	response := "cross " + fix
+	response := "cross "
+	if nav, ok := database.Navaids[fix]; ok {
+		response += stopShouting(nav.Name)
+	} else {
+		response += fix
+	}
+
 	if alt != 0 {
 		ac.Nav.V = &FlyRoute{}
 		response += fmt.Sprintf(" at and maintain %d", alt)
@@ -469,7 +496,7 @@ func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) (string, error) {
 		ac.Nav.S = &FlyRoute{}
 		response += fmt.Sprintf(" at %d knots", speed)
 	}
-	return response, nil
+	return ac.readback(response), nil
 }
 
 func (ac *Aircraft) flyProcedureTurnIfNecessary() bool {
@@ -525,14 +552,14 @@ func (ac *Aircraft) getApproach(id string, w *World) (*Approach, error) {
 	return nil, ErrUnknownApproach
 }
 
-func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
+func (ac *Aircraft) ExpectApproach(id string, w *World) ([]RadioTransmission, error) {
 	ap, err := ac.getApproach(id, w)
 	if err != nil {
-		return "", err
+		return ac.readback("unable. We don't know the " + id + " approach."), err
 	}
 
 	if id == ac.ApproachId && ac.Approach != nil {
-		return "you already told us to expect the " + ap.FullName + " approach", nil
+		return ac.readback("you already told us to expect the " + ap.FullName + " approach"), nil
 	}
 
 	ac.Approach = ap
@@ -543,7 +570,7 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 	if ac.ArrivalGroupIndex >= len(arrivals) {
 		lg.Errorf("%s: invalid arrival group %s or index %d", ac.Callsign, ac.ArrivalGroup,
 			ac.ArrivalGroupIndex)
-		return "", nil
+		return nil, nil
 	}
 
 	if waypoints := arrivals[ac.ArrivalGroupIndex].RunwayWaypoints[ap.Runway]; len(waypoints) > 0 {
@@ -571,32 +598,33 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) (string, error) {
 		}
 	}
 
-	return "we'll expect the " + ap.FullName + " approach", nil
+	opener := Sample([]string{"we'll expect the", "expecting the", "we'll plan for the"})
+	return ac.readback(opener + " " + ap.FullName + " approach"), nil
 }
 
-func (ac *Aircraft) ClearedApproach(id string, w *World) (response string, err error) {
+func (ac *Aircraft) ClearedApproach(id string, w *World) ([]RadioTransmission, error) {
 	return ac.clearedApproach(id, false, w)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) (response string, err error) {
+func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) ([]RadioTransmission, error) {
 	return ac.clearedApproach(id, true, w)
 }
 
-func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (response string, err error) {
+func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) ([]RadioTransmission, error) {
+	var response string
 	if ac.ApproachId == "" {
 		// allow it anyway...
-		if _, err = ac.ExpectApproach(id, w); err != nil {
-			return
+		if _, err := ac.ExpectApproach(id, w); err != nil {
+			return nil, err
 		}
-		response = "you never told us to expect an approach, but ok, cleared " + ac.Approach.FullName
+		response = "you never told us to expect an approach, but ok, "
 		ac.ApproachId = id
 	}
 
 	ap := ac.Approach
 	if id != ac.ApproachId {
-		response = "but you cleared us for the " + ap.FullName + " approach..."
-		err = ErrClearedForUnexpectedApproach
-		return
+		return ac.readback("unable. We were told to expect the " + ap.FullName + " approach..."),
+			ErrClearedForUnexpectedApproach
 	}
 
 	directApproachFix := false
@@ -620,8 +648,7 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 		} else if _, ok := ac.Nav.L.(*FlyHeading); ok {
 			ac.AddFutureNavCommand(&TurnToInterceptLocalizer{})
 		} else {
-			response = "we need either direct or a heading to intercept"
-			return
+			return ac.readback("we need either direct or a heading to intercept"), nil
 		}
 		// If the aircraft is on a heading, there's nothing more to do for
 		// now; keep flying the heading and after we intercept we'll add
@@ -629,8 +656,7 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 	} else {
 		// RNAV
 		if !directApproachFix {
-			response = "we need direct to a fix on the approach..."
-			return
+			return ac.readback("we need direct to a fix on the approach..."), nil
 		}
 
 		// LNav is already known to be FlyRoute; leave SNav and VNav as is
@@ -657,12 +683,12 @@ func (ac *Aircraft) clearedApproach(id string, straightIn bool, w *World) (respo
 	} else {
 		response += "cleared " + ap.FullName + " approach"
 	}
-	return
+	return ac.readback(response), nil
 }
 
-func (ac *Aircraft) CancelApproachClearance() (string, error) {
+func (ac *Aircraft) CancelApproachClearance() ([]RadioTransmission, error) {
 	if !ac.ApproachCleared {
-		return "We're not currently cleared for an approach", nil
+		return ac.readback("we're not currently cleared for an approach"), nil
 	}
 
 	ac.ApproachCleared = false
@@ -678,7 +704,7 @@ func (ac *Aircraft) CancelApproachClearance() (string, error) {
 		}
 	}
 
-	return "Cancel approach clearance", nil
+	return ac.readback("cancel approach clearance"), nil
 }
 
 func (ac *Aircraft) updateAirspeed() {

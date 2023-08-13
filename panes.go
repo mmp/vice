@@ -780,7 +780,6 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
-	acHasContacted map[string]struct{}
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -799,19 +798,16 @@ func (mp *MessagesPane) Activate(w *World, eventStream *EventStream) {
 	if mp.scrollbar == nil {
 		mp.scrollbar = NewScrollBar(4, true)
 	}
-	mp.acHasContacted = make(map[string]struct{})
 	mp.events = eventStream.Subscribe()
 }
 
 func (mp *MessagesPane) Deactivate() {
-	mp.acHasContacted = nil
 	mp.events.Unsubscribe()
 	mp.events = nil
 }
 
 func (mp *MessagesPane) ResetWorld(w *World) {
 	mp.messages = nil
-	mp.acHasContacted = make(map[string]struct{})
 }
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
@@ -857,6 +853,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 func (mp *MessagesPane) processEvents(w *World) {
 	lastRadioCallsign := ""
+	var lastRadioType RadioTransmissionType
 	var transmissions []string
 
 	addTransmissions := func() {
@@ -883,12 +880,19 @@ func (mp *MessagesPane) processEvents(w *World) {
 		}
 
 		response := strings.Join(transmissions, ", ")
-		if _, ok := mp.acHasContacted[radioCallsign]; ok {
-			mp.messages = append(mp.messages, Message{contents: response + ". " + radioCallsign})
-		} else {
+		if lastRadioType == RadioTransmissionContact {
 			ctrl := w.Controllers[w.Callsign]
-			mp.messages = append(mp.messages, Message{contents: ctrl.FullName + ", " + radioCallsign + ", " + response})
-			mp.acHasContacted[radioCallsign] = struct{}{}
+			fullName := ctrl.FullName
+			if ac := w.Aircraft[callsign]; ac != nil && ac.IsDeparture {
+				// Always refer to the controller as "departure" for departing aircraft.
+				fullName = strings.ReplaceAll(fullName, "approach", "departure")
+			}
+			mp.messages = append(mp.messages, Message{contents: fullName + ", " + radioCallsign + ", " + response})
+		} else {
+			if len(response) > 0 {
+				response = strings.ToUpper(response[:1]) + response[1:]
+			}
+			mp.messages = append(mp.messages, Message{contents: response + ". " + radioCallsign})
 		}
 	}
 
@@ -896,12 +900,13 @@ func (mp *MessagesPane) processEvents(w *World) {
 		switch event.Type {
 		case RadioTransmissionEvent:
 			if event.ToController == w.Callsign {
-				if event.Callsign != lastRadioCallsign {
+				if event.Callsign != lastRadioCallsign || event.RadioTransmissionType != lastRadioType {
 					if len(transmissions) > 0 {
 						addTransmissions()
 						transmissions = nil
 					}
 					lastRadioCallsign = event.Callsign
+					lastRadioType = event.RadioTransmissionType
 				}
 				transmissions = append(transmissions, event.Message)
 			}

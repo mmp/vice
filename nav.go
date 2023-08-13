@@ -461,16 +461,13 @@ func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 		return false
 	}
 
-	response := ac.GoAround()
-	if response != "" && ep != nil {
-		lg.Printf("%s: %s", ac.Callsign, response)
-		ep.PostEvent(Event{
-			Type:         RadioTransmissionEvent,
-			Callsign:     ac.Callsign,
-			ToController: ac.ControllingController,
-			Message:      response,
-		})
+	radioTransmissions, err := ac.GoAround()
+	if err != nil {
+		lg.Errorf("%s: %v", ac.Callsign, err)
+		return true
 	}
+
+	PostRadioEvents(ac.Callsign, radioTransmissions, ep)
 
 	// If it was handed off to tower, hand it back to us
 	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
