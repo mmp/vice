@@ -1,0 +1,306 @@
+{
+  "airports": {
+    "KSAV": {
+      "approaches": {
+        "I1": {
+          "full_name":" ILS Runway 1",
+          "runway": "1",
+          "type": "ILS",
+          "waypoints": [
+            "TERBE/a2000 MIZLU/a2000 _SAV_1/a39"
+          ]
+        },
+        "R1": {
+          "full_name":" RNAV Runway 1",
+          "runway": "1",
+          "type": "RNAV",
+          "waypoints": [
+            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39",
+            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39"
+          ]
+        },
+        "I10": {
+          "full_name": "ILS Runway 10",
+          "runway": "10",
+          "type": "ILS",
+          "waypoints": [
+            "TILEE/a2600 SOVIE/a2000 _SAV_10/a30"
+          ]
+        },
+        "R10": {
+          "full_name": "RNAV Runway 10",
+          "runway": "10",
+          "type": "RNAV",
+          "waypoints": [
+            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30",
+            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30"
+          ]
+        },
+        "R19": {
+          "full_name": "RNAV Runway 19",
+          "runway": "19",
+          "type": "RNAV",
+          "waypoints": [
+            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47",
+            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47"
+          ]
+        },
+        "R28": {
+          "full_name": "RNAV Zulu Runway 28",
+          "runway": "28",
+          "type": "RNAV",
+          "waypoints": [
+            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50",
+            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50"
+          ]
+        }
+      },
+      "departure_routes": {
+        "10": {
+            "GIPPL": {
+              "cleared_altitude": 3000,
+              "route": "GIPPL",
+              "waypoints": "_SAV_10 _SAV_28/h097"
+            },
+            "JROSS": {
+              "cleared_altitude": 3000,
+              "route": "JROSS",
+              "waypoints": "_SAV_10 _SAV_28/h097"
+            },
+            "SMALZ": {
+              "cleared_altitude": 3000,
+              "route": "SMALZ",
+              "waypoints": "_SAV_10 _SAV_28/h097"
+            }
+        },
+        "28": {
+            "GIPPL": {
+              "cleared_altitude": 3000,
+              "route": "GIPPL",
+              "waypoints": "_SAV_28 _SAV_10/h277"
+            },
+            "JROSS": {
+              "cleared_altitude": 3000,
+              "route": "JROSS",
+              "waypoints": "_SAV_28 _SAV_10/h277"
+            },
+            "SMALZ": {
+              "cleared_altitude": 3000,
+              "route": "SMALZ",
+              "waypoints": "_SAV_28 _SAV_10/h277"
+            }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "SMALZ",
+          "route": "SMALZ TYFTR JJEDI3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "JROSS",
+          "route": "JROSS FLLGG STOCR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "JROSS",
+          "route": "JROSS LAANA Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAY"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "JROSS",
+          "route": "JROSS Q87 HINTZ Q87 ALWZZ OGRAE Q99 QUART PHLBO4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "GJS"
+            },
+            {
+              "icao": "SKW"
+            },
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "SMALZ",
+          "route": "SMALZ MILEN QUIWE Q93 HEVAN BONNT VEECK5"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "SMALZ",
+          "route": "SMALZ WIGVO DBN MGM MLU YUYUN BEREE2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASH"
+            }
+          ],
+          "destination": "KIAD",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ GSO DORRN CAVLR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "JROSS",
+          "route": "JROSS Q87 HURTS HUBBS PXT KORRY4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAK"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "JROSS",
+          "route": "JROSS ALWZZ OGRAE Q99 PEETT BBDOL PAATS4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBWI",
+          "exit": "JROSS",
+          "route": "JROSS Q87 RAYVO Q113 AARNN THHMP RAVNN6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "JROSS",
+          "route": "JROSS Q87 RAYVO Q113 AARNN WAVES CAPSS3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASH"
+            }
+          ],
+          "destination": "KIAH",
+          "exit": "JROSS",
+          "route": "SMALZ AMG CEW J2 SJI LINKK1"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KMIA",
+          "exit": "GIPPL",
+          "route": "GIPPL WOPNR Q97 DEBRL CSTAL2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KMDW",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ VXV J99 IIU DROSE FISSK6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KBOS",
+          "exit": "JROSS",
+          "route": "JROSS LCAPE Q87 GEARS BBOBO Q22 RBV Q419 JFK ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBNA",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ JAGIR SWFFT2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "SMALZ",
+          "route": "SMALZ MILEN QUIWE BURGG NEALS J85  HVQ J85 JAMOX BONZZ2"
+        }
+      ]
+    }
+  }
+}
