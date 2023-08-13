@@ -890,6 +890,13 @@
         "slope_angle": 0.175
       }
     },
+    "reporting_points": [
+        "BEUTY",
+        "DAVYS",
+        "HOLEY",
+        "IGN",
+        "VALRE"
+    ],
     "scenarios": {
       "KLGA Depart 13": {
         "solo_controller": "LGA_DEP",

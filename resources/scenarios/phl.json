@@ -5300,6 +5300,15 @@
       "slope_angle": 0.175
     }
   },
+  "reporting_points": [
+      "BOJID",
+      "HIFAL",
+      "JIIMS",
+      "PAATS",
+      "PSOUT",
+      "SPUDS",
+      "TRAGG"
+  ],
   "scenarios": {
     "KPHL 27R Final": {
       "approach_airspace": [

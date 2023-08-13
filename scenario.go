@@ -33,9 +33,18 @@ type ScenarioGroup struct {
 	STARSMaps        []STARSMap            `json:"stars_maps"`
 	InhibitCAVolumes []AirspaceVolume      `json:"inhibit_ca_volumes"`
 
+	ReportingPointStrings []string         `json:"reporting_points"`
+	ReportingPoints       []ReportingPoint // not in JSON
+
 	NmPerLatitude     float32 `json:"nm_per_latitude"`
 	NmPerLongitude    float32 `json:"nm_per_longitude"`
 	MagneticVariation float32 `json:"magnetic_variation"`
+}
+
+type ReportingPoint struct {
+	Fix          string
+	ReadbackName string
+	Location     Point2LL
 }
 
 type Arrival struct {
@@ -507,6 +516,19 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			e.Pop()
 		}
 		e.Pop()
+	}
+
+	for _, rp := range sg.ReportingPointStrings {
+		if loc, ok := sg.locate(rp); !ok {
+			e.ErrorString("unknown \"reporting_point\" \"%s\"", rp)
+		} else {
+			name := rp
+			if nav, ok := database.Navaids[rp]; ok {
+				name = stopShouting(nav.Name)
+			}
+			sg.ReportingPoints = append(sg.ReportingPoints,
+				ReportingPoint{Fix: rp, ReadbackName: name, Location: loc})
+		}
 	}
 
 	// Do after airports!

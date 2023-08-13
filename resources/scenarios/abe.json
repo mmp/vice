@@ -614,6 +614,17 @@
       "slope_angle": 0.175
     }
   },
+  "reporting_points": [
+      "BWZ",
+      "DUMMR",
+      "ETX",
+      "FJC",
+      "FLOAT",
+      "HUO",
+      "KRAZE",
+      "SLATT",
+      "SNOWY"
+  ],
   "scenarios": {
     "KABE Depart 24 Land 24": {
       "arrival_runways": [

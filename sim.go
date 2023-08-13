@@ -601,6 +601,8 @@ type Sim struct {
 	TotalDepartures int
 	TotalArrivals   int
 
+	ReportingPoints []ReportingPoint
+
 	lastSimUpdate time.Time
 
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
@@ -643,6 +645,8 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 		eventStream: NewEventStream(),
 
 		lastDeparture: make(map[string]map[string]map[string]*Departure),
+
+		ReportingPoints: sg.ReportingPoints,
 
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),

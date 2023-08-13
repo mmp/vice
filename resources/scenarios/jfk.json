@@ -3052,6 +3052,29 @@
       "slope_angle": 0.175
     }
   },
+  "reporting_points": [
+      "BDR",
+      "BEADS",
+      "CAMRN",
+      "CCC",
+      "COL",
+      "CREAM",
+      "DENNA",
+      "DPK",
+      "HTO",
+      "HVN",
+      "JFK",
+      "KURTY",
+      "LENDY",
+      "LOVES",
+      "MAD",
+      "MANTA",
+      "PEPER",
+      "RICED",
+      "ROBER",
+      "SARDI",
+      "ZIGGI"
+  ],
   "scenarios": {
     "KJFK Depart 13R": {
       "solo_controller": "JFK_DEP",

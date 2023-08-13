@@ -2716,6 +2716,25 @@
       "slope_angle": 0.175
     }
   },
+  "reporting_points": [
+      "CAMMO",
+      "CYN",
+      "DYLIN",
+      "FLOSI",
+      "GXU",
+      "HARTY",
+      "HELON",
+      "HUO",
+      "MAZIE",
+      "MERSR",
+      "MUGZY",
+      "PENNS",
+      "PHLBO",
+      "RBV",
+      "SAX",
+      "SOMTO",
+      "WACKI"
+  ],
   "scenarios": {
     "KEWR Depart 22R": {
       "solo_controller": "EWR_DEP",
