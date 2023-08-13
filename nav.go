@@ -38,17 +38,48 @@ func (n *NAVState) Summary(ac *Aircraft) string {
 	return strings.Join(info, "\n")
 }
 
-func (n *NAVState) ContactMessage(ac *Aircraft) string {
+func (n *NAVState) AltitudeMessage(ac *Aircraft) string {
+	if ma, ok := ac.Nav.V.(*MaintainAltitude); ok {
+		if abs(ac.Altitude-ma.Altitude) < 100 {
+			return "at " + FormatAltitude(int(ma.Altitude))
+		} else {
+			return "at " + FormatAltitude(int(ac.Altitude)) + " for " + FormatAltitude(int(ma.Altitude))
+		}
+	}
+	if fr, ok := ac.Nav.V.(*FlyRoute); ok && fr.AltitudeRestriction != nil {
+		ta := fr.AltitudeRestriction.TargetAltitude(ac.Altitude)
+		if abs(ac.Altitude-ta) < 100 {
+			return "at " + FormatAltitude(int(ta))
+		} else {
+			return "at " + FormatAltitude(int(ac.Altitude)) + " for " + FormatAltitude(int(ta))
+		}
+	}
+	return ""
+}
+
+func (n *NAVState) ContactMessage(ac *Aircraft, reportingPoints []ReportingPoint) string {
 	// Rather than making all of the *Navs implement a ContactMessage
 	// method, we'll just handle the few ones we care about directly here.
 	msgs := []string{}
 
-	if ma, ok := ac.Nav.V.(*MaintainAltitude); ok {
-		if abs(ac.Altitude-ma.Altitude) < 100 {
-			msgs = append(msgs, "at "+FormatAltitude(int(ma.Altitude)))
-		} else {
-			msgs = append(msgs, "at "+FormatAltitude(int(ac.Altitude))+" for "+FormatAltitude(int(ma.Altitude)))
+	var closestRP *ReportingPoint
+	closestRPDistance := float32(10000)
+	for i, rp := range reportingPoints {
+		if d := nmdistance2ll(ac.Position, rp.Location); d < closestRPDistance {
+			closestRP = &reportingPoints[i]
+			closestRPDistance = d
 		}
+	}
+	if closestRP != nil {
+		direction := compass(headingp2ll(closestRP.Location, ac.Position,
+			ac.NmPerLongitude, ac.MagneticVariation))
+		report := fmt.Sprintf("%d miles %s of %s", int(closestRPDistance+0.5), direction,
+			closestRP.ReadbackName)
+		msgs = append(msgs, report)
+	}
+
+	if alt := n.AltitudeMessage(ac); alt != "" {
+		msgs = append(msgs, alt)
 	}
 
 	if fh, ok := ac.Nav.L.(*FlyHeading); ok {
@@ -57,6 +88,9 @@ func (n *NAVState) ContactMessage(ac *Aircraft) string {
 
 	if ms, ok := ac.Nav.S.(*MaintainSpeed); ok {
 		msgs = append(msgs, fmt.Sprintf("%d knots", int(ms.IAS)))
+	}
+	if fr, ok := ac.Nav.S.(*FlyRoute); ok && fr.SpeedRestriction != 0 {
+		msgs = append(msgs, fmt.Sprintf("at %d knots", int(fr.SpeedRestriction)))
 	}
 
 	if len(msgs) == 0 {
