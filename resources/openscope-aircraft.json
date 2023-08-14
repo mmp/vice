@@ -26,6 +26,7 @@
     },
     "speed": {
       "min": 115,
+      "v2": 145,
       "landing": 130,
       "cruise": 454,
       "cruiseM": null,
@@ -63,6 +64,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 145,
       "landing": 135,
       "cruise": 447,
       "cruiseM": null,
@@ -137,6 +139,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 155,
       "landing": 140,
       "cruise": 487,
       "cruiseM": null,
@@ -285,6 +288,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 160,
       "landing": 125,
       "cruise": 459,
       "cruiseM": 0.8,
@@ -359,6 +363,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 135,
       "landing": 125,
       "cruise": 454,
       "cruiseM": null,
@@ -396,6 +401,7 @@
     },
     "speed": {
       "min": 115,
+      "v2": 145,
       "landing": 130,
       "cruise": 454,
       "cruiseM": null,
@@ -433,6 +439,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 145,
       "landing": 135,
       "cruise": 447,
       "cruiseM": null,
@@ -470,6 +477,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 145,
       "landing": 130,
       "cruise": 465,
       "cruiseM": null,
@@ -507,6 +515,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 145,
       "landing": 130,
       "cruise": 464,
       "cruiseM": null,
@@ -544,6 +553,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 145,
       "landing": 130,
       "cruise": 464,
       "cruiseM": null,
@@ -581,6 +591,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 145,
       "landing": 130,
       "cruise": 464,
       "cruiseM": null,
@@ -618,6 +629,7 @@
     },
     "speed": {
       "min": 145,
+      "v2": 145,
       "landing": 150,
       "cruise": 475,
       "cruiseM": null,
@@ -692,6 +704,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 145,
       "landing": 140,
       "cruise": 450,
       "cruiseM": null,
@@ -729,6 +742,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 150,
       "landing": 140,
       "cruise": 487,
       "cruiseM": null,
@@ -766,6 +780,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 150,
       "landing": 135,
       "cruise": 560,
       "cruiseM": 0.85,
@@ -988,6 +1003,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 110,
       "landing": 100,
       "cruise": 245,
       "cruiseM": null,
@@ -1025,6 +1041,7 @@
     },
     "speed": {
       "min": 100,
+      "v2": 110,
       "landing": 110,
       "cruise": 299,
       "cruiseM": null,
@@ -1062,6 +1079,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 110,
       "landing": 100,
       "cruise": 248,
       "cruiseM": null,
@@ -1099,6 +1117,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 110,
       "landing": 120,
       "cruise": 280,
       "cruiseM": null,
@@ -1210,6 +1229,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 145,
       "landing": 140,
       "cruise": 460,
       "cruiseM": null,
@@ -1247,6 +1267,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 149,
       "landing": 135,
       "cruise": 460,
       "cruiseM": null,
@@ -1358,6 +1379,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 168,
       "landing": 140,
       "cruise": 488,
       "cruiseM": null,
@@ -1580,6 +1602,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 130,
       "landing": 125,
       "cruise": 437,
       "cruiseM": 0.77,
@@ -1691,6 +1714,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 140,
       "landing": 140,
       "cruise": 429,
       "cruiseM": null,
@@ -1728,6 +1752,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 150,
       "landing": 140,
       "cruise": 439,
       "cruiseM": null,
@@ -1765,6 +1790,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 139,
       "landing": 140,
       "cruise": 430,
       "cruiseM": null,
@@ -1802,6 +1828,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 135,
       "landing": 125,
       "cruise": 460,
       "cruiseM": null,
@@ -1839,6 +1866,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 150,
       "landing": 125,
       "cruise": 460,
       "cruiseM": null,
@@ -1876,6 +1904,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 145,
       "landing": 140,
       "cruise": 460,
       "cruiseM": null,
@@ -1913,6 +1942,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 149,
       "landing": 135,
       "cruise": 460,
       "cruiseM": null,
@@ -2024,6 +2054,7 @@
     },
     "speed": {
       "min": 135,
+      "v2": 178,
       "landing": 160,
       "cruise": 510,
       "cruiseM": 0.84,
@@ -2061,6 +2092,7 @@
     },
     "speed": {
       "min": 135,
+      "v2": 185,
       "landing": 150,
       "cruise": 492,
       "cruiseM": null,
@@ -2098,6 +2130,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 175,
       "landing": 145,
       "cruise": 495,
       "cruiseM": 0.855,
@@ -2135,6 +2168,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 145,
       "landing": 125,
       "cruise": 460,
       "cruiseM": null,
@@ -2172,6 +2206,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 145,
       "landing": 125,
       "cruise": 473,
       "cruiseM": null,
@@ -2209,6 +2244,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 160,
       "landing": 140,
       "cruise": 461,
       "cruiseM": null,
@@ -2246,6 +2282,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 160,
       "landing": 140,
       "cruise": 460,
       "cruiseM": null,
@@ -2283,6 +2320,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 160,
       "landing": 150,
       "cruise": 460,
       "cruiseM": 0.8,
@@ -2320,6 +2358,7 @@
     },
     "speed": {
       "min": 125,
+      "v2": 170,
       "landing": 140,
       "cruise": 460,
       "cruiseM": null,
@@ -2357,6 +2396,7 @@
     },
     "speed": {
       "min": 130,
+      "v2": 168,
       "landing": 140,
       "cruise": 488,
       "cruiseM": null,
@@ -2394,6 +2434,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 165,
       "landing": 130,
       "cruise": 487,
       "cruiseM": 0.85,
@@ -2431,6 +2472,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 165,
       "landing": 130,
       "cruise": 487,
       "cruiseM": 0.85,
@@ -2579,6 +2621,7 @@
     },
     "speed": {
       "min": 52,
+      "v2": 75,
       "landing": 70,
       "cruise": 160,
       "cruiseM": null,
@@ -2616,6 +2659,7 @@
     },
     "speed": {
       "min": 93,
+      "v2": 130,
       "landing": 120,
       "cruise": 445,
       "cruiseM": 0.77,
@@ -2801,6 +2845,7 @@
     },
     "speed": {
       "min": 48,
+      "v2": 55,
       "landing": 65,
       "cruise": 100,
       "cruiseM": null,
@@ -2838,6 +2883,7 @@
     },
     "speed": {
       "min": 50,
+      "v2": 60,
       "landing": 65,
       "cruise": 122,
       "cruiseM": null,
@@ -2875,6 +2921,7 @@
     },
     "speed": {
       "min": 49,
+      "v2": 65,
       "landing": 65,
       "cruise": 145,
       "cruiseM": null,
@@ -2912,6 +2959,7 @@
     },
     "speed": {
       "min": 80,
+      "v2": 85,
       "landing": 90,
       "cruise": 184,
       "cruiseM": null,
@@ -2949,6 +2997,7 @@
     },
     "speed": {
       "min": 60,
+      "v2": 85,
       "landing": 90,
       "cruise": 165,
       "cruiseM": null,
@@ -3171,6 +3220,7 @@
     },
     "speed": {
       "min": 105,
+      "v2": 145,
       "landing": 125,
       "cruise": 460,
       "cruiseM": 0.79,
@@ -3208,6 +3258,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 125,
       "landing": 135,
       "cruise": 609,
       "cruiseM": 0.9,
@@ -3245,6 +3296,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 140,
       "landing": 130,
       "cruise": 460,
       "cruiseM": 0.75,
@@ -3282,6 +3334,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 140,
       "landing": 130,
       "cruise": 459,
       "cruiseM": 0.8,
@@ -3319,6 +3372,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 145,
       "landing": 130,
       "cruise": 460,
       "cruiseM": 0.75,
@@ -3393,6 +3447,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 135,
       "landing": 100,
       "cruise": 424,
       "cruiseM": null,
@@ -3430,6 +3485,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 135,
       "landing": 100,
       "cruise": 447,
       "cruiseM": 0.78,
@@ -3652,6 +3708,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 150,
       "landing": 140,
       "cruise": 499,
       "cruiseM": null,
@@ -3837,6 +3894,7 @@
     },
     "speed": {
       "min": 75,
+      "v2": 110,
       "landing": 120,
       "cruise": 280,
       "cruiseM": null,
@@ -3874,6 +3932,7 @@
     },
     "speed": {
       "min": 100,
+      "v2": 115,
       "landing": 130,
       "cruise": 340,
       "cruiseM": null,
@@ -4207,6 +4266,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 125,
       "landing": 100,
       "cruise": 445,
       "cruiseM": null,
@@ -4244,6 +4304,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 130,
       "landing": 100,
       "cruise": 447,
       "cruiseM": 0.78,
@@ -4281,6 +4342,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 138,
       "landing": 120,
       "cruise": 475,
       "cruiseM": null,
@@ -4318,6 +4380,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 138,
       "landing": 120,
       "cruise": 475,
       "cruiseM": null,
@@ -4503,6 +4566,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 120,
       "landing": 130,
       "cruise": 470,
       "cruiseM": 0.8,
@@ -4651,6 +4715,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 125,
       "landing": 130,
       "cruise": 470,
       "cruiseM": 0.81,
@@ -4762,6 +4827,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 145,
       "landing": 140,
       "cruise": 450,
       "cruiseM": 0.8,
@@ -4799,6 +4865,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 145,
       "landing": 140,
       "cruise": 459,
       "cruiseM": 0.85,
@@ -4836,6 +4903,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 125,
       "landing": 130,
       "cruise": 402,
       "cruiseM": 0.79,
@@ -5058,6 +5126,7 @@
     },
     "speed": {
       "min": 87,
+      "v2": 110,
       "landing": 113,
       "cruise": 230,
       "cruiseM": 0.385,
@@ -5095,6 +5164,7 @@
     },
     "speed": {
       "min": 87,
+      "v2": 110,
       "landing": 113,
       "cruise": 230,
       "cruiseM": 0.382,
@@ -5243,6 +5313,7 @@
     },
     "speed": {
       "min": 105,
+      "v2": 110,
       "landing": 116,
       "cruise": 457,
       "cruiseM": null,
@@ -5280,6 +5351,7 @@
     },
     "speed": {
       "min": 100,
+      "v2": 110,
       "landing": 110,
       "cruise": 445,
       "cruiseM": null,
@@ -5391,6 +5463,7 @@
     },
     "speed": {
       "min": 120,
+      "v2": 160,
       "landing": 140,
       "cruise": 473,
       "cruiseM": 0.8,
@@ -5576,6 +5649,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 140,
       "landing": 125,
       "cruise": 473,
       "cruiseM": 0.76,
@@ -5613,6 +5687,7 @@
     },
     "speed": {
       "min": 110,
+      "v2": 140,
       "landing": 125,
       "cruise": 437,
       "cruiseM": 0.76,
@@ -5650,6 +5725,7 @@
     },
     "speed": {
       "min": 50,
+      "v2": 65,
       "landing": 65,
       "cruise": 120,
       "cruiseM": null,
@@ -5946,6 +6022,7 @@
     },
     "speed": {
       "min": 88,
+      "v2": 110,
       "landing": 96,
       "cruise": 252,
       "cruiseM": null,

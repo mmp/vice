@@ -877,6 +877,29 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 		e.Pop()
 	}
 
+	// Walk all of the scenario groups to get all of the possible departing aircraft
+	// types to see where V2 is needed in the performance database..
+	acTypes := make(map[string]struct{})
+	for _, sg := range scenarioGroups {
+		for _, ap := range sg.Airports {
+			for _, dep := range ap.Departures {
+				for _, al := range dep.Airlines {
+					fleet := Select(al.Fleet != "", al.Fleet, "default")
+					for _, ac := range database.Airlines[al.ICAO].Fleets[fleet] {
+						acTypes[ac.ICAO] = struct{}{}
+					}
+				}
+			}
+		}
+	}
+	var missing []string
+	for _, t := range SortedMapKeys(acTypes) {
+		if database.AircraftPerformance[t].Speed.V2 == 0 {
+			missing = append(missing, t)
+		}
+	}
+	lg.Errorf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
+
 	return scenarioGroups, simConfigurations
 }
 

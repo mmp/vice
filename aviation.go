@@ -1010,6 +1010,7 @@ type AircraftPerformance struct {
 	} `json:"runway"`
 	Speed struct {
 		Min     float32 `json:"min"`
+		V2      float32 `json:"v2"`
 		Landing float32 `json:"landing"`
 		Cruise  float32 `json:"cruise"`
 		Max     float32 `json:"max"`
@@ -1216,8 +1217,12 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 	}
 
 	ap := make(map[string]AircraftPerformance)
-	for i, ac := range acStruct.Aircraft {
-		ap[ac.ICAO] = acStruct.Aircraft[i]
+	for _, ac := range acStruct.Aircraft {
+		ap[ac.ICAO] = ac
+		if ac.Speed.V2 != 0 && ac.Speed.V2 > 1.5*ac.Speed.Min {
+			lg.Errorf("%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
+				ac.ICAO, ac.Speed.V2, ac.Speed.Min)
+		}
 	}
 
 	return ap

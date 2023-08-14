@@ -113,9 +113,15 @@ func (a *Aircraft) IsAssociated() bool {
 }
 
 func (ac *Aircraft) IsAirborne() bool {
+	v2 := ac.Performance().Speed.V2
+	if v2 == 0 {
+		// Unfortunately we don't always have V2 in the performance database, so approximate...
+		v2 = 1.15 * ac.Performance().Speed.Landing
+	}
+
 	// FIXME: this only considers speed, which is probably ok but is somewhat unsatisfying.
 	// More explicitly model "on the ground" vs "airborne" states?
-	return ac.IAS > 1.1*ac.Performance().Speed.Min
+	return ac.IAS > v2
 }
 
 func (ac *Aircraft) AddFutureNavCommand(cmd FutureNavCommand) {
