@@ -757,7 +757,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	ac.Scratchpad = arr.Scratchpad
 
 	if goAround {
-		ac.AddFutureNavCommand(&GoAround{AirportDistance: 0.1 + .6*rand.Float32()})
+		ac.AddFutureNavCommand(&GoAround{ThresholdDistance: 0.1 + .6*rand.Float32()})
 	}
 
 	ac.Nav.L = &FlyRoute{}

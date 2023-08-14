@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -453,11 +454,18 @@ func (hl *HoldLocalizerAfterIntercept) Summary(ac *Aircraft) string {
 }
 
 type GoAround struct {
-	AirportDistance float32
+	ThresholdDistance float32
 }
 
 func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
-	if dist := nmdistance2ll(ac.Position, ac.FlightPlan.ArrivalAirportLocation); dist > g.AirportDistance {
+	if dist, err := ac.FinalApproachDistance(); errors.Is(err, ErrNotClearedForApproach) {
+		// No problem..
+		return false
+	} else if err != nil {
+		lg.Errorf("%s: FinalApproachDistance error: %v", ac.Callsign, err)
+		return false
+	} else if dist > g.ThresholdDistance {
+		// Not there yet
 		return false
 	}
 
