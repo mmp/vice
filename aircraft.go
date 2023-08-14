@@ -1019,7 +1019,7 @@ func (ac *Aircraft) ShouldTurnToIntercept(p0 Point2LL, hdg float32, turn TurnMet
 // for an aircraft that has been given an approach.
 func (ac *Aircraft) FinalApproachDistance() (float32, error) {
 	if ac.Approach == nil {
-		return 0, fmt.Errorf("not cleared for approach")
+		return 0, ErrNotClearedForApproach
 	}
 
 	// Calculate distance to the airport: distance to the next fix plus sum
