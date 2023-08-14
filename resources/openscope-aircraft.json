@@ -2938,8 +2938,8 @@
     },
     "ceiling": 19500,
     "rate": {
-      "climb": 2000,
-      "descent": 1000,
+      "climb": 800,
+      "descent": 800,
       "accelerate": 4,
       "decelerate": 3
     },
@@ -2948,9 +2948,9 @@
       "landing": 0.45
     },
     "speed": {
-      "min": 50,
-      "landing": 60,
-      "cruise": 125,
+      "min": 60,
+      "landing": 90,
+      "cruise": 165,
       "cruiseM": null,
       "max": 173,
       "maxM": null
