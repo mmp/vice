@@ -1636,8 +1636,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			if octrl := s.World.GetController(ac.TrackingController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := Sample([]string{"good day", "seeya"})
-				contact := Sample([]string{"contact", "over to", ""})
-				goodbye := contact + " " + name + " on " + octrl.Frequency.String() + ", " + bye
+				contact := Sample([]string{"contact ", "over to ", ""})
+				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
 				radioTransmissions = append(radioTransmissions, RadioTransmission{
 					Controller: ac.ControllingController,
 					Message:    goodbye,
