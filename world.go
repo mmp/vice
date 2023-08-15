@@ -861,11 +861,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	ac.Nav.L = &FlyRoute{}
 	ac.Nav.S = &FlyRoute{}
-	ac.Nav.V = &MaintainAltitude{Altitude: float32(ap.Elevation)}
-
-	ac.AddFutureNavCommand(&ClimbOnceAirborne{
-		Altitude: float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude)),
-	})
+	initialAltitude := float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude))
+	ac.Nav.V = &MaintainAltitude{Altitude: initialAltitude}
 
 	ac.CheckWaypoints()
 

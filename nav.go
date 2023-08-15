@@ -339,21 +339,15 @@ func (as *ApproachSpeedAt5DME) Summary(ac *Aircraft) string {
 	return "Reduce to approach speed at 5 DME"
 }
 
-type ClimbOnceAirborne struct {
-	Altitude float32
-}
+// No longer used but left for deserialization backwards compatibility
+type ClimbOnceAirborne struct{}
 
 func (ca *ClimbOnceAirborne) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
-	if !ac.IsAirborne() {
-		return false
-	}
-
-	ac.Nav.V = &MaintainAltitude{Altitude: ca.Altitude}
 	return true
 }
 
 func (ca *ClimbOnceAirborne) Summary(ac *Aircraft) string {
-	return fmt.Sprintf("Climb and maintain %.0f once airborne", ca.Altitude)
+	return ""
 }
 
 type TurnToInterceptLocalizer struct{}
@@ -1040,6 +1034,22 @@ func getUpcomingSpeedRestrictionWaypoint(ac *Aircraft) (*Waypoint, float32) {
 }
 
 func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
+	perf := ac.Performance()
+	// Accel is given in "per 2 seconds...", want to return per minute..
+	maxAccel := perf.Rate.Accelerate * 30
+
+	if ac.IsDeparture {
+		targetSpeed := min(250, perf.Speed.Cruise)
+
+		if !ac.IsAirborne() {
+			return targetSpeed, 0.8 * maxAccel
+		} else if ac.Altitude-float32(ac.FlightPlan.DepartureAirportElevation) < 1000 {
+			// Just airborne; prioritize climb
+			return targetSpeed, 0.2 * maxAccel
+		}
+		// Otherwise fall through to the cases below
+	}
+
 	if wp, eta := getUpcomingSpeedRestrictionWaypoint(ac); wp != nil {
 		if eta < 5 { // includes unknown ETA case
 			return float32(wp.Speed), MaximumRate
@@ -1061,11 +1071,21 @@ func (fr *FlyRoute) GetSpeed(ac *Aircraft) (float32, float32) {
 		}
 	} else if fr.SpeedRestriction != 0 {
 		return fr.SpeedRestriction, MaximumRate
-	} else if ac.Altitude < 10000 { // Assume it's a departure(?)
-		return min(ac.Performance().Speed.Cruise, float32(250)), MaximumRate
+	} else if ac.IsDeparture {
+		if ac.Altitude < 10000 {
+			// Accelerate to target speed once it's past 1000' AGL; note
+			// that this is coupled with the assumption that VNav will slow
+			// the rate of climb at this point points..
+			return min(perf.Speed.Cruise, 250), 0.8 * maxAccel
+		} else {
+			// And then accelerate to cruise starting at 10,000' altitude; set
+			// the target speed by lerping from 250 to cruise based on altitude
+			x := clamp((ac.Altitude-10000)/(perf.Ceiling-10000), 0, 1)
+			speed := lerp(x, min(perf.Speed.Cruise, 250), perf.Speed.Cruise)
+			return speed, 0.8 * maxAccel
+		}
 	} else {
-		// Assume climbing or descending
-		return ac.Performance().Speed.Cruise * 7 / 10, MaximumRate
+		return min(250, perf.Speed.Cruise*7/10), MaximumRate
 	}
 }
 
@@ -1134,6 +1154,30 @@ type MaintainAltitude struct {
 }
 
 func (ma *MaintainAltitude) GetAltitude(ac *Aircraft) (float32, float32) {
+	if ac.IsDeparture {
+		perf := ac.Performance()
+		// Accel is given in "per 2 seconds...", want to return per minute..
+		maxClimb := perf.Rate.Climb
+
+		if !ac.IsAirborne() {
+			// Rolling down the runway
+			return ac.Altitude, 0
+		} else if ac.Altitude-float32(ac.FlightPlan.DepartureAirportElevation) < 1000 {
+			// Just airborne; prioritize climb, though slightly nerf the rate
+			// so aircraft are not too high too soon
+			return ma.Altitude, 0.6 * maxClimb
+		} else if ac.Altitude < 10000 {
+			targetSpeed := min(250, perf.Speed.Cruise)
+			if ac.IAS < targetSpeed {
+				// Prioritize accelerate over climb at 1000 AGL
+				return ma.Altitude, 0.2 * maxClimb
+			}
+		}
+
+		// Climb normally if at target speed or >10,000'.
+		return ma.Altitude, 0.7 * maxClimb
+	}
+
 	return ma.Altitude, MaximumRate
 }
 
