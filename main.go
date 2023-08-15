@@ -59,6 +59,7 @@ var (
 	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
 	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
 	broadcastPassword = flag.String("password", "", "password to authenticate with server for broadcast message")
+	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
 )
 
 func init() {
@@ -186,7 +187,7 @@ func main() {
 
 		localServer = <-localSimServerChan
 
-		if globalConfig.Sim != nil {
+		if globalConfig.Sim != nil && !*resetSim {
 			var result NewSimResult
 			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 				lg.Errorf("%v", err)
