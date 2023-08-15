@@ -96,7 +96,8 @@ type STARSPane struct {
 	activeDCBMenu       int
 	selectedPlaceButton string
 
-	dwellAircraft string
+	dwellAircraft     string
+	drawRouteAircraft string
 
 	commandMode       CommandMode
 	multiFuncPrefix   string
@@ -1164,6 +1165,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	sp.drawCRDARegions(ctx, transforms, cb)
+	sp.drawSelectedRoute(ctx, transforms, cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 
@@ -1487,6 +1489,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "DD":
 			sp.drawDepartureAirspace = !sp.drawDepartureAirspace
+			status.clear = true
+			return
+
+		case ".ROUTE":
+			sp.drawRouteAircraft = ""
 			status.clear = true
 			return
 		}
@@ -2726,6 +2733,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				}
+			}
+
+			if cmd == ".ROUTE" {
+				sp.drawRouteAircraft = ac.Callsign
+				status.clear = true
+				return
 			}
 
 			if len(cmd) > 2 && cmd[:2] == "*J" {
@@ -4030,6 +4043,32 @@ func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransform
 			}
 		}
 	}
+}
+
+func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+	if sp.drawRouteAircraft == "" {
+		return
+	}
+	ac, ok := ctx.world.Aircraft[sp.drawRouteAircraft]
+	if !ok {
+		sp.drawRouteAircraft = ""
+		return
+	}
+
+	ld := GetLinesDrawBuilder()
+	defer ReturnLinesDrawBuilder(ld)
+
+	prev := ac.Position
+	for _, wp := range ac.Waypoints {
+		ld.AddLine(prev, wp.Location)
+		prev = wp.Location
+	}
+
+	ps := sp.CurrentPreferenceSet
+	cb.LineWidth(3)
+	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
+	transforms.LoadLatLongViewingMatrices(cb)
+	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
