@@ -549,9 +549,7 @@ func (m *ModalDialogBox) Draw() {
 	}
 
 	title := fmt.Sprintf("%s##%p", m.client.Title(), m)
-	if !m.isOpen {
-		imgui.OpenPopup(title)
-	}
+	imgui.OpenPopup(title)
 
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	if imgui.BeginPopupModalV(title, nil, flags) {
