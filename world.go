@@ -130,7 +130,7 @@ func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
 	base := time.UnixMicro(0)
 	sec := w.SimTime.Sub(base).Seconds()
 	windSpeed := float32(w.Wind.Speed) +
-		float32(w.Wind.Gust)*float32(1+math.Cos(sec/4))/2
+		float32(w.Wind.Gust-w.Wind.Speed)*float32(1+math.Cos(sec/4))/2
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
