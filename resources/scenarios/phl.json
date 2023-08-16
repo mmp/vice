@@ -178,8 +178,7 @@
               "leader_directions": [ "S", "N" ],
               "tie_symbol": "/",
               "stagger_symbol": "7",
-              "tie_offset": 5,
-              "runway_intersection": "N039.52.23.270,W075.13.20.106"
+              "tie_offset": 5
           },
           {
               "runways": [ "27L", "35" ],

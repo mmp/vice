@@ -35,7 +35,7 @@ type ConvergingRunways struct {
 	TieOffset              float32                     `json:"tie_offset"`
 	LeaderDirectionStrings [2]string                   `json:"leader_directions"`
 	LeaderDirections       [2]CardinalOrdinalDirection // not in JSON, set during deserialize
-	RunwayIntersection     Point2LL                    `json:"runway_intersection"` // optional
+	RunwayIntersection     Point2LL                    // not in JSON, set during deserialize
 }
 
 type ApproachRegion struct {
@@ -306,28 +306,28 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 	for i, pair := range ap.ConvergingRunways {
 		e.Push("Converging runways " + pair.Runways[0] + "/" + pair.Runways[1])
-		// If runway intersection isn't specified then the two runways
-		// should have a nearby intersection...
-		if pair.RunwayIntersection.IsZero() {
-			reg0, reg1 := ap.ApproachRegions[pair.Runways[0]], ap.ApproachRegions[pair.Runways[1]]
-			if reg0 != nil && reg1 != nil {
-				// If either is nil, we'll flag the error below, so it's fine to ignore that here.
-				r0n := reg0.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
-				r0f := reg0.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
-				r1n := reg1.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
-				r1f := reg1.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
 
-				p, ok := LineLineIntersect(r0n, r0f, r1n, r1f)
-				if !ok || distance2f(p, r0n) > 10 || distance2f(p, r1n) > 10 {
-					e.ErrorString("no \"runway_intersection\" specified and runways do not intersect within 10nm of the airport")
-				} else {
-					ap.ConvergingRunways[i].RunwayIntersection = nm2ll(p, sg.NmPerLongitude)
-				}
+		// Find the runway intersection point
+		reg0, reg1 := ap.ApproachRegions[pair.Runways[0]], ap.ApproachRegions[pair.Runways[1]]
+		if reg0 != nil && reg1 != nil {
+			// If either is nil, we'll flag the error below, so it's fine to ignore that here.
+			r0n := reg0.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
+			r0f := reg0.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
+			r1n := reg1.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
+			r1f := reg1.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
+
+			p, ok := LineLineIntersect(r0n, r0f, r1n, r1f)
+			if ok && distance2f(p, r0n) < 10 && distance2f(p, r1n) < 10 {
+				ap.ConvergingRunways[i].RunwayIntersection = nm2ll(p, sg.NmPerLongitude)
+			} else {
+				mid := scale2f(add2f(ll2nm(reg0.ReferencePoint, sg.NmPerLongitude),
+					ll2nm(reg1.ReferencePoint, sg.NmPerLongitude)), 0.5)
+				ap.ConvergingRunways[i].RunwayIntersection = nm2ll(mid, sg.NmPerLongitude)
 			}
-			e.Pop()
 		}
 
 		for j, rwy := range pair.Runways {
+			e.Push(rwy)
 			var err error
 			ap.ConvergingRunways[i].LeaderDirections[j], err =
 				ParseCardinalOrdinalDirection(pair.LeaderDirectionStrings[j])
@@ -336,9 +336,11 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			}
 
 			if _, ok := ap.ApproachRegions[rwy]; !ok {
-				e.ErrorString("%s: runway not defined in \"approach_regions\"", rwy)
+				e.ErrorString("runway not defined in \"approach_regions\"")
 			}
+			e.Pop()
 		}
+		e.Pop()
 	}
 }
 
