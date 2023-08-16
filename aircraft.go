@@ -812,10 +812,8 @@ func (ac *Aircraft) updatePositionAndGS(wind WindModel) {
 	flightVector := scale2f([2]float32{sin(radians(hdg)), cos(radians(hdg))}, TAS)
 
 	// Further offset based on the wind
-	perf := ac.Performance()
-	airborne := ac.IAS >= 1.1*perf.Speed.Min
 	var windVector [2]float32
-	if airborne && wind != nil {
+	if ac.IsAirborne() && wind != nil {
 		windVector = wind.GetWindVector(ac.Position, ac.Altitude)
 	}
 
