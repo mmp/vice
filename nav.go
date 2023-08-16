@@ -547,14 +547,28 @@ func (fr *FlyRoute) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMetho
 		v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		v = scale2f(v, ac.GS)
 
-		// Adjust for wind; subtract since we want to turn into the wind
-		v = sub2f(v, wind.AverageWindVector())
-		hdg = degrees(atan2(v[0]*ac.NmPerLongitude, v[1]*nmPerLatitude))
+		// where we'll actually end up, given the wind
+		vp := add2f(v, wind.AverageWindVector())
+
+		// Find the deflection angle of how much the wind pushes us off course.
+		vn, vpn := normalize2f(v), normalize2f(vp)
+		deflection := degrees(angleBetween(vn, vpn))
+		// Get a signed angle: take the cross product and then (effectively)
+		// dot with (0,0,1) to figure out which way it goes
+		if vn[0]*vpn[1]-vn[1]*vpn[0] > 0 {
+			deflection = -deflection
+		}
+
+		// Turn into the wind; this is a bit of an approximation, since
+		// turning changes how much the wind affects the aircraft, but this
+		// should be minor since the aircraft's speed should be much
+		// greater than the wind speed...
+		hdg -= deflection
 
 		// Incorporate magnetic variation in the final heading
-		hdg = NormalizeHeading(hdg + ac.MagneticVariation)
+		hdg += ac.MagneticVariation
 
-		return hdg, TurnClosest, StandardTurnRate
+		return NormalizeHeading(hdg), TurnClosest, StandardTurnRate
 	}
 }
 

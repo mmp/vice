@@ -1042,6 +1042,10 @@ func scale2f(a [2]float32, s float32) [2]float32 {
 	return [2]float32{s * a[0], s * a[1]}
 }
 
+func dot(a, b [2]float32) float32 {
+	return a[0]*b[0] + a[1]*b[1]
+}
+
 // Linearly interpolate x of the way between a and b. x==0 corresponds to
 // a, x==1 corresponds to b, etc.
 func lerp2f(x float32, a [2]float32, b [2]float32) [2]float32 {
@@ -1073,6 +1077,20 @@ func rotator2f(angle float32) func([2]float32) [2]float32 {
 	s, c := sin(radians(angle)), cos(radians(angle))
 	return func(p [2]float32) [2]float32 {
 		return [2]float32{c*p[0] + s*p[1], -s*p[0] + c*p[1]}
+	}
+}
+
+// Equivalent to acos(Dot(a, b)), but more numerically stable.
+// via http://www.plunk.org/~hatch/rightway.html
+func angleBetween(v1, v2 [2]float32) float32 {
+	asin := func(a float32) float32 {
+		return float32(math.Asin(float64(clamp(a, -1, 1))))
+	}
+
+	if dot(v1, v2) < 0 {
+		return math.Pi - 2*asin(length2f(add2f(v1, v2))/2)
+	} else {
+		return 2 * asin(length2f(sub2f(v2, v1))/2)
 	}
 }
 
