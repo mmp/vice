@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -321,11 +320,7 @@ type ApproachSpeedAt5DME struct{}
 
 func (as *ApproachSpeedAt5DME) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
 	d, err := ac.FinalApproachDistance()
-	if err != nil {
-		d = nmdistance2ll(ac.Position, ac.FlightPlan.ArrivalAirportLocation)
-	}
-
-	if d > 5 {
+	if err != nil || d > 5 {
 		return false
 	}
 
@@ -452,11 +447,8 @@ type GoAround struct {
 }
 
 func (g *GoAround) Evaluate(ac *Aircraft, ep EventPoster, wind WindModel) bool {
-	if dist, err := ac.FinalApproachDistance(); errors.Is(err, ErrNotClearedForApproach) {
+	if dist, err := ac.FinalApproachDistance(); err != nil {
 		// No problem..
-		return false
-	} else if err != nil {
-		lg.Errorf("%s: FinalApproachDistance error: %v", ac.Callsign, err)
 		return false
 	} else if dist > g.ThresholdDistance {
 		// Not there yet
@@ -1132,6 +1124,7 @@ func (fa *FinalApproachSpeed) GetSpeed(ac *Aircraft) (float32, float32) {
 
 	airportDist, err := ac.FinalApproachDistance()
 	if err != nil {
+		// This shouldn't happen at this point...
 		lg.Errorf("%s: couldn't get final approach distance: %v", ac.Callsign, err)
 		airportDist = nmdistance2ll(ac.Position, fp.ArrivalAirportLocation)
 	}

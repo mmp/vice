@@ -1026,12 +1026,21 @@ func (ac *Aircraft) FinalApproachDistance() (float32, error) {
 		return 0, ErrNotClearedForApproach
 	}
 
-	// Calculate distance to the airport: distance to the next fix plus sum
-	// of the distances between remaining fixes.
+	if _, ok := ac.Nav.L.(*FlyRoute); !ok {
+		// We're not currently on the route, so it's a little unclear. Rather than
+		// guessing, we'll just error out and let callers decide how to handle this.
+		return 0, ErrNotFlyingRoute
+	}
+
+	// Calculate flying distance to the airport
 	if wp := ac.Waypoints; len(wp) == 0 {
-		// This should never happen(tm), but...
-		return 0, fmt.Errorf("no waypoints left??")
+		// This shouldn't happen since the aircraft should be deleted when
+		// it reaches the final waypoint.  Nevertheless...
+		d := nmdistance2ll(ac.Position, ac.FlightPlan.ArrivalAirportLocation)
+		return d, nil
 	} else {
+		// Distance to the next fix plus sum of the distances between
+		// remaining fixes.
 		d := nmdistance2ll(ac.Position, wp[0].Location)
 		for i := 0; i < len(wp)-1; i++ {
 			d += nmdistance2ll(wp[i].Location, wp[i+1].Location)
