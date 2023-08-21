@@ -138,23 +138,19 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Rules                     FlightRules
-	AircraftType              string
-	CruiseSpeed               int
-	DepartureAirport          string
-	DepartureAirportLocation  Point2LL
-	DepartureAirportElevation int
-	DepartTimeEst             int
-	DepartTimeActual          int
-	Altitude                  int
-	ArrivalAirport            string
-	ArrivalAirportLocation    Point2LL
-	ArrivalAirportElevation   int
-	Hours, Minutes            int
-	FuelHours, FuelMinutes    int
-	AlternateAirport          string
-	Route                     string
-	Remarks                   string
+	Rules                  FlightRules
+	AircraftType           string
+	CruiseSpeed            int
+	DepartureAirport       string
+	DepartTimeEst          int
+	DepartTimeActual       int
+	Altitude               int
+	ArrivalAirport         string
+	Hours, Minutes         int
+	FuelHours, FuelMinutes int
+	AlternateAirport       string
+	Route                  string
+	Remarks                string
 }
 
 type FlightStrip struct {
@@ -255,29 +251,13 @@ func ParseAltitude(s string) (int, error) {
 	}
 }
 
-func NewFlightPlan(r FlightRules, ac, dep, arr string) (*FlightPlan, error) {
-	fp := &FlightPlan{
+func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
+	return &FlightPlan{
 		Rules:            r,
 		AircraftType:     ac,
 		DepartureAirport: dep,
 		ArrivalAirport:   arr,
 	}
-
-	if ap, ok := database.Airports[fp.DepartureAirport]; !ok {
-		return nil, ErrUnknownAirport
-	} else {
-		fp.DepartureAirportLocation = ap.Location
-		fp.DepartureAirportElevation = ap.Elevation
-	}
-
-	if ap, ok := database.Airports[fp.ArrivalAirport]; !ok {
-		return nil, ErrUnknownAirport
-	} else {
-		fp.ArrivalAirportLocation = ap.Location
-		fp.ArrivalAirportElevation = ap.Elevation
-	}
-
-	return fp, nil
 }
 
 func (fp FlightPlan) BaseType() string {
@@ -308,10 +288,15 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 	}
 }
 
-func PlausibleFinalAltitude(w *World, fp *FlightPlan) (altitude int) {
+func PlausibleFinalAltitude(w *World, fp *FlightPlan, perf AircraftPerformance) (altitude int) {
 	// try to figure out direction of flight
-	pDep, pArr := fp.DepartureAirportLocation, fp.ArrivalAirportLocation
+	dep, dok := database.Airports[fp.DepartureAirport]
+	arr, aok := database.Airports[fp.ArrivalAirport]
+	if !dok || !aok {
+		return 34000
+	}
 
+	pDep, pArr := dep.Location, arr.Location
 	if nmdistance2ll(pDep, pArr) < 100 {
 		altitude = 7000
 	} else if nmdistance2ll(pDep, pArr) < 200 {
@@ -321,6 +306,7 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan) (altitude int) {
 	} else {
 		altitude = 37000
 	}
+	altitude = min(altitude, int(perf.Ceiling))
 
 	if headingp2ll(pDep, pArr, w.NmPerLongitude, w.MagneticVariation) > 180 {
 		altitude += 1000

@@ -544,13 +544,7 @@ func (w *World) GetWindowTitle() string {
 
 func (w *World) PrintInfo(ac *Aircraft) {
 	lg.Errorf("%s", spew.Sdump(ac))
-
-	s := fmt.Sprintf("%s: current alt %f, heading %f, IAS %.1f, GS %.1f",
-		ac.Callsign, ac.Altitude, ac.Heading, ac.IAS, ac.GS)
-	if ac.ApproachCleared {
-		s += ", cleared approach"
-	}
-	lg.Errorf("%s", s)
+	lg.Errorf("%s: %s", ac.Nav.FlightState.Summary())
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
@@ -618,7 +612,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"ICE001":  nil,
 }
 
-func sampleAircraft(icao, fleet string) (*Aircraft, string) {
+func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	al, ok := database.Airlines[icao]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -673,7 +667,13 @@ func sampleAircraft(icao, fleet string) (*Aircraft, string) {
 				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		if _, found := badCallsigns[callsign+id]; !found && id != "0" {
+		if id == "0" {
+			continue // bleh, try again
+		} else if _, ok := w.Aircraft[callsign+id]; ok {
+			continue // it already exits
+		} else if _, ok := badCallsigns[callsign+id]; ok {
+			continue // nope
+		} else {
 			callsign += id
 			break
 		}
@@ -711,80 +711,23 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	arr := arrivals[idx]
 
 	airline := Sample(arr.Airlines[arrivalAirport])
-	ac, acType := sampleAircraft(airline.ICAO, airline.Fleet)
+	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	var err error
-	ac.FlightPlan, err = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
-	if err != nil {
+	ac.FlightPlan = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
+	if err := ac.InitializeArrival(w, arrivalGroup, idx, goAround); err != nil {
 		return nil, err
 	}
-
-	ac.ArrivalGroup = arrivalGroup
-	ac.ArrivalGroupIndex = idx
-
-	ac.TrackingController = arr.InitialController
-	ac.ControllingController = arr.InitialController
-	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
-	if ac.FlightPlan.Altitude == 0 { // unspecified
-		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan)
-	}
-	ac.FlightPlan.Route = arr.Route
-
-	// Start with the default waypoints for the arrival; these may be
-	// updated when an 'expect' approach is given...
-	ac.Waypoints = DuplicateSlice(arr.Waypoints)
-
-	perf := ac.Performance()
-
-	ac.Position = ac.Waypoints[0].Location
-	ac.Altitude = arr.InitialAltitude
-	ac.IAS = min(arr.InitialSpeed, perf.Speed.Cruise)
-
-	if len(w.MultiControllers) > 0 {
-		for callsign, mc := range w.MultiControllers {
-			if idx := Find(mc.Arrivals, arrivalGroup); idx != -1 {
-				ac.ArrivalHandoffController = callsign
-			}
-		}
-		if ac.ArrivalHandoffController == "" {
-			panic("couldn't find arrival controller")
-		}
-	}
-
-	ac.Scratchpad = arr.Scratchpad
-
-	if goAround {
-		ac.AddFutureNavCommand(&GoAround{ThresholdDistance: 0.1 + .6*rand.Float32()})
-	}
-
-	ac.Nav.L = &FlyRoute{}
-	ac.Nav.S = &FlyRoute{
-		SpeedRestriction: min(arr.SpeedRestriction, perf.Speed.Cruise),
-	}
-	ac.Nav.V = &FlyRoute{
-		AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{arr.ClearedAltitude, arr.ClearedAltitude}},
-	}
-
-	if arr.ExpectApproach != "" {
-		if _, err := ac.ExpectApproach(arr.ExpectApproach, w); err != nil {
-			return nil, fmt.Errorf("%s: unable to find expected approach: %w", arr.ExpectApproach, err)
-		}
-	}
-
-	ac.CheckWaypoints()
-
 	return ac, nil
 }
 
 func (w *World) CreateDeparture(departureAirport, runway, category string, challenge float32,
-	lastDeparture *Departure) (ac *Aircraft, dep *Departure, err error) {
+	lastDeparture *Departure) (*Aircraft, *Departure, error) {
 	ap := w.Airports[departureAirport]
 	if ap == nil {
-		err = ErrUnknownAirport
-		return
+		return nil, nil, ErrUnknownAirport
 	}
 
 	idx := FindIf(w.DepartureRunways,
@@ -792,11 +735,11 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
 		})
 	if idx == -1 {
-		err = ErrUnknownRunway
-		return
+		return nil, nil, ErrUnknownRunway
 	}
 	rwy := &w.DepartureRunways[idx]
 
+	var dep *Departure
 	if rand.Float32() < challenge && lastDeparture != nil {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
@@ -822,51 +765,25 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
-			err = fmt.Errorf("%s/%s: unable to find a valid departure", departureAirport, rwy.Runway)
-			return
+			return nil, nil, fmt.Errorf("%s/%s: unable to find a valid departure",
+				departureAirport, rwy.Runway)
 		}
 		dep = &ap.Departures[idx]
 	}
 
 	airline := Sample(dep.Airlines)
-	ac, acType := sampleAircraft(airline.ICAO, airline.Fleet)
+	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan, err = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
-	if err != nil {
+	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	exitRoute := rwy.ExitRoutes[dep.Exit]
+	if err := ac.InitializeDeparture(w, ap, dep, exitRoute); err != nil {
 		return nil, nil, err
 	}
 
-	exitRoute := rwy.ExitRoutes[dep.Exit]
-	ac.Waypoints = DuplicateSlice(exitRoute.Waypoints)
-	ac.Waypoints = append(ac.Waypoints, dep.RouteWaypoints...)
-	ac.Waypoints = FilterSlice(ac.Waypoints, func(wp Waypoint) bool { return !wp.Location.IsZero() })
-	ac.Position = ac.Waypoints[0].Location
-
-	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
-
-	ac.Scratchpad = w.Scratchpads[dep.Exit]
-	if dep.Altitude == 0 {
-		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan)
-	} else {
-		ac.FlightPlan.Altitude = dep.Altitude
-	}
-
-	ac.TrackingController = ap.DepartureController
-	ac.ControllingController = ap.DepartureController
-	ac.Altitude = float32(ap.Elevation)
-	ac.IsDeparture = true
-
-	ac.Nav.L = &FlyRoute{}
-	ac.Nav.S = &FlyRoute{}
-	initialAltitude := float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude))
-	ac.Nav.V = &MaintainAltitude{Altitude: initialAltitude}
-
-	ac.CheckWaypoints()
-
-	return
+	return ac, dep, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

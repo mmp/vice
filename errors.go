@@ -21,6 +21,7 @@ var (
 	ErrNoController                 = errors.New("No controller with that callsign")
 	ErrNotLaunchController          = errors.New("Not signed in as the launch controller")
 	ErrNoFlightPlan                 = errors.New("No flight plan has been filed for aircraft")
+	ErrNoValidArrivalFound          = errors.New("Unable to find a valid arrival")
 	ErrNoValidDepartureFound        = errors.New("Unable to find a valid departure")
 	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
 	ErrNotClearedForApproach        = errors.New("Aircraft has not been cleared for an approach")

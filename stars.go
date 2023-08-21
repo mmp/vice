@@ -177,7 +177,6 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 		idx++
 		if id == " " {
 			// Allow multiple spaces between ids
-			id = ""
 			continue
 		}
 
@@ -187,8 +186,6 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 			// Must have a space next (or be done)
 			if idx < len(s) && s[idx] != ' ' {
 				return positions, s[idx:], ErrSTARSIllegalParam
-			} else {
-				id = ""
 			}
 		} else {
 			// Multi-character position specification
@@ -775,7 +772,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	state := sp.Aircraft[ac.Callsign]
 
 	result := ac.Callsign + " " // all start with aricraft id
-	if ac.IsDeparture {
+	if ac.IsDeparture() {
 		if state.FirstRadarTrack.IsZero() {
 			// Proposed departure
 			result += numType + " "
@@ -794,7 +791,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 				result += fp.DepartureAirport[1:] + " "
 			}
 			result += "D" + fmtTime(state.FirstRadarTrack) + " "
-			result += fmt.Sprintf("%03d", int(ac.Altitude)/100) + "\n"
+			result += fmt.Sprintf("%03d", int(ac.Altitude())/100) + "\n"
 
 			result += ac.Scratchpad + " "
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + " "
@@ -806,7 +803,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 		result += numType + " "
 		result += ac.AssignedSquawk.String() + " "
 		result += owner + " "
-		result += fmt.Sprintf("%03d", int(ac.Altitude)/100) + "\n"
+		result += fmt.Sprintf("%03d", int(ac.Altitude())/100) + "\n"
 
 		// Use the last item in the route for the entry fix
 		routeFields := strings.Fields(fp.Route)
@@ -1229,9 +1226,9 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 		// the cost of more painful indexing elsewhere...
 		copy(state.tracks[1:], state.tracks[:len(state.tracks)-1])
 		state.tracks[0] = RadarTrack{
-			Position:    ac.Position,
-			Altitude:    int(ac.Altitude),
-			Groundspeed: int(ac.GS),
+			Position:    ac.Position(),
+			Altitude:    int(ac.Altitude()),
+			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
 	}
@@ -2634,7 +2631,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					from := sp.Aircraft[ac.Callsign].TrackPosition()
 					sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 						p := transforms.LatLongFromWindowP(pw)
-						hdg := headingp2ll(from, p, ac.NmPerLongitude, ac.MagneticVariation)
+						hdg := headingp2ll(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
 						dist := nmdistance2ll(from, p)
 
 						status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
@@ -4058,8 +4055,8 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld := GetLinesDrawBuilder()
 	defer ReturnLinesDrawBuilder(ld)
 
-	prev := ac.Position
-	for _, wp := range ac.Waypoints {
+	prev := ac.Position()
+	for _, wp := range ac.Nav.Waypoints {
 		ld.AddLine(prev, wp.Location)
 		prev = wp.Location
 	}
@@ -4139,11 +4136,11 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			}
 		}
 
-		// "cheat" by using ac.Heading if we don't yet have two radar tracks to compute the
+		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
 		// heading with; this makes things look better when we first see a track or when
 		// restarting a simulation...
-		heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude), ac.Heading) +
-			ac.MagneticVariation
+		heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()), ac.Heading()) +
+			ac.MagneticVariation()
 		sp.drawRadarTrack(state.tracks, heading, ctx, transforms, brightness, STARSTrackBlockColor,
 			trackId, &pd, ld, trid, td)
 	}
@@ -4196,10 +4193,10 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 				// Create a ghost track if appropriate, add it to the
 				// ghosts slice, and draw its radar track.
 				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
-				heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude),
-					ac.Heading)
+				heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()),
+					ac.Heading())
 				ghost := region.TryMakeGhost(ac.Callsign, state.tracks[0], heading, ac.Scratchpad, force,
-					offset, leaderDirection, runwayIntersection, ac.NmPerLongitude, ac.MagneticVariation,
+					offset, leaderDirection, runwayIntersection, ac.NmPerLongitude(), ac.MagneticVariation(),
 					otherRegion)
 				if ghost != nil {
 					ghost.TrackId = trackId
@@ -4418,9 +4415,9 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 		return
 	}
 
-	if ac.IsDeparture {
+	if ac.IsDeparture() {
 		if len(ctx.world.DepartureAirspace) > 0 {
-			inDepartureAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, ctx.world.DepartureAirspace)
+			inDepartureAirspace, depAlts := InAirspace(ac.Position(), ac.Altitude(), ctx.world.DepartureAirspace)
 			if !ac.HaveEnteredAirspace {
 				ac.HaveEnteredAirspace = inDepartureAirspace
 			} else {
@@ -4430,7 +4427,7 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 		}
 	} else {
 		if len(ctx.world.ApproachAirspace) > 0 {
-			inApproachAirspace, depAlts := InAirspace(ac.Position, ac.Altitude, ctx.world.ApproachAirspace)
+			inApproachAirspace, depAlts := InAirspace(ac.Position(), ac.Altitude(), ctx.world.ApproachAirspace)
 			if !ac.HaveEnteredAirspace {
 				ac.HaveEnteredAirspace = inApproachAirspace
 			} else {
@@ -4546,7 +4543,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			mainblock[1] = append(mainblock[1], sq+"WHO")
 		}
 		actype := ac.FlightPlan.TypeWithoutSuffix()
-		suffix := "  "
+		var suffix string
 		if ac.FlightPlan.Rules == VFR {
 			suffix = "V"
 		} else if sp.isOverflight(ctx, ac) {
@@ -4557,13 +4554,8 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		if actype == "B757" {
 			suffix += "F"
 		} else if strings.HasPrefix(actype, "H/") {
-			actype = strings.TrimPrefix(actype, "H/")
 			suffix += "H"
-		} else if strings.HasPrefix(actype, "S/") {
-			actype = strings.TrimPrefix(actype, "S/")
-			suffix += "J"
-		} else if strings.HasPrefix(actype, "J/") {
-			actype = strings.TrimPrefix(actype, "J/")
+		} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
 			suffix += "J"
 		}
 
@@ -4616,7 +4608,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 		// TODO: pilot reported altitude. Asterisk after alt when showing.
 		actype := ac.FlightPlan.TypeWithoutSuffix()
-		suffix := "  "
+		var suffix string
 		if ac.FlightPlan.Rules == VFR {
 			suffix = "V"
 		} else if sp.isOverflight(ctx, ac) {
@@ -4786,12 +4778,12 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		dist := float32(state.TrackGroundspeed()) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := state.TrackHeading(ac.NmPerLongitude)
+		hdg := state.TrackHeading(ac.NmPerLongitude())
 		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		h = scale2f(h, dist)
-		end := add2f(ll2nm(state.TrackPosition(), ac.NmPerLongitude), h)
+		end := add2f(ll2nm(state.TrackPosition(), ac.NmPerLongitude()), h)
 
-		ld.AddLine(state.TrackPosition(), nm2ll(end, ac.NmPerLongitude), color)
+		ld.AddLine(state.TrackPosition(), nm2ll(end, ac.NmPerLongitude()), color)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -4853,7 +4845,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 
 			// Now we want to get that triangle in window coordinates...
 			length := state.ConeLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
-			rot := rotator2f(state.TrackHeading(ac.NmPerLongitude) + ac.MagneticVariation)
+			rot := rotator2f(state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation())
 			for i := range v {
 				// First scale it to make it the desired length in nautical
 				// miles; while we're at it, we'll convert that over to
@@ -4974,9 +4966,12 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	if !ok0 || !ok1 {
 		return
 	}
-	DrawMinimumSeparationLine(s0.TrackPosition(), s0.HeadingVector(ac0.NmPerLongitude, ac0.MagneticVariation),
-		s1.TrackPosition(), s1.HeadingVector(ac1.NmPerLongitude, ac1.MagneticVariation),
-		ac0.NmPerLongitude, color, RGB{}, sp.systemFont[ps.CharSize.Tools], ctx, transforms, cb)
+	DrawMinimumSeparationLine(s0.TrackPosition(),
+		s0.HeadingVector(ac0.NmPerLongitude(), ac0.MagneticVariation()),
+		s1.TrackPosition(),
+		s1.HeadingVector(ac1.NmPerLongitude(), ac1.MagneticVariation()),
+		ac0.NmPerLongitude(), color, RGB{}, sp.systemFont[ps.CharSize.Tools],
+		ctx, transforms, cb)
 }
 
 func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
@@ -5089,29 +5084,6 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		}
 	} else {
 		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
-			var info []string
-			if ac.IsDeparture {
-				info = append(info, "Departure")
-			} else {
-				info = append(info, "Arrival")
-			}
-			info = append(info, ac.Nav.Summary(ac))
-
-			if ap, _ := ac.getApproach(ac.ApproachId, ctx.world); ap != nil {
-				if ac.ApproachCleared {
-					info = append(info, "Cleared "+ap.FullName+" approach")
-				} else {
-					info = append(info, "Expecting "+ap.FullName+" approach")
-				}
-				if ac.NoPT {
-					info = append(info, "Straight in approach")
-				}
-			}
-			info = append(info, "Route: "+WaypointArray(ac.Waypoints).Encode())
-
-			info = FilterSlice(info, func(s string) bool { return s != "" })
-			infoLines := strings.Join(info, "\n")
-
 			td := GetTextDrawBuilder()
 			defer ReturnTextDrawBuilder(td)
 
@@ -5129,12 +5101,13 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			// Upper-left corner of where we start drawing the text
 			pad := float32(5)
 			ptext := add2f([2]float32{2 * pad, 0}, pac)
-			td.AddText(infoLines, ptext, style)
+			info := ac.NavSummary()
+			td.AddText(info, ptext, style)
 
 			// Draw an alpha-blended quad behind the text to make it more legible.
 			trid := GetTrianglesDrawBuilder()
 			defer ReturnTrianglesDrawBuilder(trid)
-			bx, by := font.BoundText(infoLines, style.LineSpacing)
+			bx, by := font.BoundText(info, style.LineSpacing)
 			trid.AddQuad(add2f(ptext, [2]float32{-pad, 0}),
 				add2f(ptext, [2]float32{float32(bx) + pad, 0}),
 				add2f(ptext, [2]float32{float32(bx) + pad, -float32(by) - pad}),
@@ -5632,12 +5605,12 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 		// Is it on the ground?
 		if ac.FlightPlan != nil {
 			if ap := w.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil {
-				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
+				if int(ac.Altitude())-ap.Elevation < 100 && nmdistance2ll(ac.Position(), ap.Location) < 2 {
 					continue
 				}
 			}
 			if ap := w.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil {
-				if int(ac.Altitude)-ap.Elevation < 100 && nmdistance2ll(ac.Position, ap.Location) < 2 {
+				if int(ac.Altitude())-ap.Elevation < 100 && nmdistance2ll(ac.Position(), ap.Location) < 2 {
 					continue
 				}
 			}

@@ -1486,7 +1486,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 			imgui.TableNextColumn()
 			if lastLaunchCallsign != "" {
 				if ac := lc.w.Aircraft[lastLaunchCallsign]; ac != nil {
-					d := nmdistance2ll(ac.Position, launchPosition)
+					d := nmdistance2ll(ac.Position(), launchPosition)
 					imgui.Text(fmt.Sprintf("%.1f", d))
 				}
 			}
@@ -1536,8 +1536,8 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 				imgui.TableNextColumn()
 				imgui.Text(dep.Aircraft.Scratchpad)
 
-				mitAndTime(dep.Aircraft, dep.Aircraft.Position,
-					dep.LastLaunchCallsign, dep.LastLaunchTime)
+				mitAndTime(dep.Aircraft, dep.Aircraft.Position(), dep.LastLaunchCallsign,
+					dep.LastLaunchTime)
 
 				imgui.TableNextColumn()
 				if imgui.Button(FontAwesomeIconPlaneDeparture) {
@@ -1597,8 +1597,8 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 				imgui.TableNextColumn()
 				imgui.Text(arr.Aircraft.FlightPlan.TypeWithoutSuffix())
 
-				mitAndTime(arr.Aircraft, arr.Aircraft.Position,
-					arr.LastLaunchCallsign, arr.LastLaunchTime)
+				mitAndTime(arr.Aircraft, arr.Aircraft.Position(), arr.LastLaunchCallsign,
+					arr.LastLaunchTime)
 
 				imgui.TableNextColumn()
 				if imgui.Button(FontAwesomeIconPlaneDeparture) {

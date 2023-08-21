@@ -948,18 +948,6 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	}
 }
 
-func controllersChanged(a, b map[string]*Controller) bool {
-	if len(a) != len(b) {
-		return true
-	}
-	for cs := range a {
-		if _, ok := b[cs]; !ok {
-			return true
-		}
-	}
-	return false
-}
-
 func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -1028,7 +1016,7 @@ func (s *Sim) Update() {
 	defer s.mu.Unlock()
 
 	for _, ac := range s.World.Aircraft {
-		ac.CheckWaypoints()
+		ac.Check()
 	}
 
 	if s.Name != "" {
@@ -1128,8 +1116,8 @@ func (s *Sim) updateState() {
 			ac.Update(s.World, s.World, s)
 
 			// Cull departures that are far from the airport.
-			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture {
-				if nmdistance2ll(ac.Position, ap.Location) > 200 {
+			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture() {
+				if nmdistance2ll(ac.Position(), ap.Location) > 200 {
 					delete(s.World.Aircraft, callsign)
 				}
 			}
@@ -1142,7 +1130,7 @@ func (s *Sim) updateState() {
 				// off to the primary controller in that case...
 				if len(s.World.MultiControllers) > 0 && len(s.controllers) > 0 {
 					callsign := ""
-					if ac.IsDeparture {
+					if ac.IsDeparture() {
 						callsign = s.getDepartureController(ac)
 					} else {
 						callsign = ac.ArrivalHandoffController
@@ -1445,31 +1433,14 @@ func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 		lg.Errorf("%s: already have an aircraft with that callsign!", ac.Callsign)
 		return
 	}
+
 	s.World.Aircraft[ac.Callsign] = &ac
 
-	if ac.IsDeparture {
+	if ac.IsDeparture() {
 		s.TotalDepartures++
 	} else {
 		s.TotalArrivals++
 	}
-
-	ac.MagneticVariation = s.World.MagneticVariation
-	ac.NmPerLongitude = s.World.NmPerLongitude
-
-	ac.RunWaypointCommands(ac.Waypoints[0], s.World, s)
-
-	ac.Position = ac.Waypoints[0].Location
-	if ac.Position.IsZero() {
-		lg.Errorf("%s: uninitialized initial waypoint position! %+v", ac.Callsign, ac.Waypoints[0])
-		return
-	}
-
-	ac.Heading = float32(ac.Waypoints[0].Heading)
-	if ac.Heading == 0 { // unassigned, so get the heading from the next fix
-		ac.Heading = headingp2ll(ac.Position, ac.Waypoints[1].Location, ac.NmPerLongitude,
-			ac.MagneticVariation)
-	}
-	ac.Waypoints = FilterSlice(ac.Waypoints[1:], func(wp Waypoint) bool { return !wp.Location.IsZero() })
 }
 
 func (s *Sim) dispatchCommand(token string, callsign string,
@@ -1560,10 +1531,10 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 				ToController: ctrl.Callsign,
 			})
 
-			if ac.IsDeparture {
+			if ac.IsDeparture() {
 				return []RadioTransmission{RadioTransmission{
 					Controller: ctrl.Callsign,
-					Message:    ac.Nav.AltitudeMessage(ac),
+					Message:    ac.DepartureMessage(),
 					Type:       RadioTransmissionContact,
 				}}, nil
 			} else {
@@ -1645,7 +1616,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 				})
 				radioTransmissions = append(radioTransmissions, RadioTransmission{
 					Controller: ac.TrackingController,
-					Message:    ac.Nav.ContactMessage(ac, s.ReportingPoints),
+					Message:    ac.ContactMessage(s.ReportingPoints),
 					Type:       RadioTransmissionContact,
 				})
 			} else {
@@ -1658,10 +1629,11 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			ac.ControllingController = ac.TrackingController
 
-			// Go ahead and climb departures the rest of the way now.
-			if ac.IsDeparture {
+			// Go ahead and climb departures the rest of the way and send
+			// them direct to their first fix (if they aren't already).
+			if ac.IsDeparture() {
 				lg.Printf("%s: climbing to %d", ac.Callsign, ac.FlightPlan.Altitude)
-				ac.Nav.V = &MaintainAltitude{Altitude: float32(ac.FlightPlan.Altitude)}
+				ac.DepartOnCourse()
 			}
 
 			return radioTransmissions, nil
@@ -1693,7 +1665,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				Callsign:              ac.Callsign,
 				ToController:          ctrl.Callsign,
 				RadioTransmissionType: RadioTransmissionContact,
-				Message:               ac.Nav.ContactMessage(ac, s.ReportingPoints),
+				Message:               ac.ContactMessage(s.ReportingPoints),
 			})
 
 			ac.HandoffTrackController = ""
@@ -1895,7 +1867,7 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) ([]RadioTransmission, error) {
-			if ac.IsDeparture {
+			if ac.IsDeparture() {
 				s.TotalDepartures--
 			} else {
 				s.TotalArrivals--

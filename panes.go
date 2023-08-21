@@ -326,7 +326,7 @@ func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 				fsp.strips = append(fsp.strips, ac.Callsign)
 				fsp.addedAircraft[ac.Callsign] = nil
 			} else if ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && ac.IsDeparture) || (fsp.AutoAddArrivals && !ac.IsDeparture)) {
+				((fsp.AutoAddDepartures && ac.IsDeparture()) || (fsp.AutoAddArrivals && !ac.IsDeparture())) {
 				fsp.strips = append(fsp.strips, ac.Callsign)
 				fsp.addedAircraft[ac.Callsign] = nil
 			}
@@ -366,7 +366,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign {
 			possiblyAdd(ac)
 		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && ac.IsDeparture) || (fsp.AutoAddArrivals && !ac.IsDeparture)) {
+			((fsp.AutoAddDepartures && ac.IsDeparture()) || (fsp.AutoAddArrivals && !ac.IsDeparture())) {
 			possiblyAdd(ac)
 		}
 	}
@@ -422,7 +422,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
 			ac := w.GetAircraft(callsign)
-			return ac != nil && ac.IsDeparture
+			return ac != nil && ac.IsDeparture()
 		}
 		dep := FilterSlice(fsp.strips, isDeparture)
 		arr := FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })
@@ -883,7 +883,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 		if lastRadioType == RadioTransmissionContact {
 			ctrl := w.Controllers[w.Callsign]
 			fullName := ctrl.FullName
-			if ac := w.Aircraft[callsign]; ac != nil && ac.IsDeparture {
+			if ac := w.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
 				// Always refer to the controller as "departure" for departing aircraft.
 				fullName = strings.ReplaceAll(fullName, "approach", "departure")
 			}

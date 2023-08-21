@@ -918,18 +918,6 @@ func sub2ll(a Point2LL, b Point2LL) Point2LL {
 	return Point2LL(sub2f(a, b))
 }
 
-func scale2ll(a Point2LL, s float32) Point2LL {
-	return Point2LL(scale2f(a, s))
-}
-
-func lerp2ll(x float32, a Point2LL, b Point2LL) Point2LL {
-	return Point2LL(lerp2f(x, a, b))
-}
-
-func length2ll(v Point2LL) float32 {
-	return length2f(v)
-}
-
 // nmdistance2ll returns the distance in nautical miles between two
 // provided lat-long coordinates.
 func nmdistance2ll(a Point2LL, b Point2LL) float32 {
@@ -966,14 +954,6 @@ func nm2ll(p [2]float32, nmPerLongitude float32) Point2LL {
 // about distances, since both axes then have the same measure.
 func ll2nm(p Point2LL, nmPerLongitude float32) [2]float32 {
 	return [2]float32{p[0] * nmPerLongitude, p[1] * nmPerLatitude}
-}
-
-func normalize2ll(a Point2LL) Point2LL {
-	l := length2ll(a)
-	if l == 0 {
-		return Point2LL{0, 0}
-	}
-	return scale2ll(a, 1/l)
 }
 
 // Store Point2LLs as strings is JSON, for compactness/friendliness...

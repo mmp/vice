@@ -5,7 +5,6 @@
 package main
 
 import (
-	"encoding/gob"
 	"fmt"
 	"html/template"
 	"io"
@@ -25,27 +24,6 @@ import (
 )
 
 const ViceRPCVersion = 4
-
-func init() {
-	gob.Register(&FlyHeading{})
-	gob.Register(&FlyRoute{})
-	gob.Register(&FlyRacetrackPT{})
-	gob.Register(&FlyStandard45PT{})
-
-	gob.Register(&MaintainSpeed{})
-	gob.Register(&FinalApproachSpeed{})
-
-	gob.Register(&MaintainAltitude{})
-	gob.Register(&FlyRacetrackPT{})
-
-	gob.Register(&SpeedAfterAltitude{})
-	gob.Register(&AltitudeAfterSpeed{})
-	gob.Register(&ApproachSpeedAt5DME{})
-	gob.Register(&ClimbOnceAirborne{})
-	gob.Register(&TurnToInterceptLocalizer{})
-	gob.Register(&HoldLocalizerAfterIntercept{})
-	gob.Register(&GoAround{})
-}
 
 type SimServer struct {
 	name        string
