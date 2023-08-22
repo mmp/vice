@@ -42,8 +42,6 @@ type Aircraft struct {
 	ArrivalGroup             string
 	ArrivalGroupIndex        int
 	ArrivalHandoffController string
-
-	HaveEnteredAirspace bool
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -305,8 +305,9 @@ type STARSAircraftState struct {
 
 	SPCOverride string
 
-	FirstSeen       time.Time
-	FirstRadarTrack time.Time
+	FirstSeen           time.Time
+	FirstRadarTrack     time.Time
+	HaveEnteredAirspace bool
 
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
@@ -4415,11 +4416,12 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 		return
 	}
 
+	state := sp.Aircraft[ac.Callsign]
 	if ac.IsDeparture() {
 		if len(ctx.world.DepartureAirspace) > 0 {
 			inDepartureAirspace, depAlts := InAirspace(ac.Position(), ac.Altitude(), ctx.world.DepartureAirspace)
-			if !ac.HaveEnteredAirspace {
-				ac.HaveEnteredAirspace = inDepartureAirspace
+			if !state.HaveEnteredAirspace {
+				state.HaveEnteredAirspace = inDepartureAirspace
 			} else {
 				alts = depAlts
 				outside = !inDepartureAirspace
@@ -4428,8 +4430,8 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 	} else {
 		if len(ctx.world.ApproachAirspace) > 0 {
 			inApproachAirspace, depAlts := InAirspace(ac.Position(), ac.Altitude(), ctx.world.ApproachAirspace)
-			if !ac.HaveEnteredAirspace {
-				ac.HaveEnteredAirspace = inApproachAirspace
+			if !state.HaveEnteredAirspace {
+				state.HaveEnteredAirspace = inApproachAirspace
 			} else {
 				alts = depAlts
 				outside = !inApproachAirspace
