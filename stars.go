@@ -5602,20 +5602,6 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 			continue
 		}
 
-		// Is it on the ground?
-		if ac.FlightPlan != nil {
-			if ap := w.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil {
-				if int(ac.Altitude())-ap.Elevation < 100 && nmdistance2ll(ac.Position(), ap.Location) < 2 {
-					continue
-				}
-			}
-			if ap := w.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil {
-				if int(ac.Altitude())-ap.Elevation < 100 && nmdistance2ll(ac.Position(), ap.Location) < 2 {
-					continue
-				}
-			}
-		}
-
 		for id, site := range w.RadarSites {
 			if !multi && ps.RadarSiteSelected != id {
 				continue
