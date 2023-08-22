@@ -417,7 +417,6 @@
           "route": "AMG YANTI THRSR WESSN JAGIR SWFFT2"
         }
       ],
-      "elevation": 29,
       "exit_categories": {
         "AMG": "North",
         "BAXLY": "North",
@@ -824,7 +823,6 @@
   "radar_sites": {
     "JAX": {
       "char": "J",
-      "elevation": 40,
       "position": "30.49333,-81.69267",
       "primary_range": 60,
       "secondary_range": 60,
@@ -833,7 +831,6 @@
     },
     "GNV": {
       "char": "G",
-      "elevation": 155,
       "position": "29.41514,-82.23247",
       "primary_range": 60,
       "secondary_range": 60,
@@ -842,7 +839,6 @@
     },
     "ZNEN": {
       "char": "N",
-      "elevation": 95,
       "position": "30.34600,-81.87397",
       "primary_range": 250,
       "secondary_range": 250,
@@ -851,7 +847,6 @@
     },
     "ZCTY": {
       "char": "C",
-      "elevation": 62,
       "position": "29.74403,-83.00106",
       "primary_range": 250,
       "secondary_range": 250,
@@ -860,7 +855,6 @@
     },
     "DAB": {
       "char": "D",
-      "elevation": 38,
       "position": "29.17267,-81.19224",
       "primary_range": 60,
       "secondary_range": 60,

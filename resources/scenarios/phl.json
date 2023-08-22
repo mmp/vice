@@ -445,7 +445,6 @@
           "route": "DITCH V312 WINKK V44 CAMRN"
         }
       ],
-      "elevation": 36,
       "exit_categories": {
         "ARD": "North",
         "DITCH": "South",
@@ -5282,7 +5281,6 @@
   "radar_sites": {
     "NXX": {
       "char": "N",
-      "elevation": 408,
       "position": "40.19980, -75.14820",
       "primary_range": 60,
       "secondary_range": 120,
@@ -5291,7 +5289,6 @@
     },
     "PHL": {
       "char": "P",
-      "elevation": 90,
       "position": "PHL",
       "primary_range": 60,
       "secondary_range": 120,

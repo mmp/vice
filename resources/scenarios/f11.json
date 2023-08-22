@@ -817,7 +817,6 @@
           "route": "JFRYS PATOY Q116 JAWJA MGM SQS KF33E KK39C HALEN NIIXX3"
         }
       ],
-      "elevation": 96,
       "exit_categories": {
         "BORRD": "DDANY",
         "CIGAR": "OSPRY",
@@ -918,7 +917,6 @@
           "route": "MLB BLUFI4"
         }
       ],
-      "elevation": 64,
       "exit_categories": {
         "DDANY": "South",
         "MLB": "South"
@@ -1099,7 +1097,6 @@
           "route": "KLMAN FSHUN ROGAN RSW KARTR GIGIH"
         }
       ],
-      "elevation": 48,
       "exit_categories": {
         "WORMS": "North",
         "KLMAN": "South",
@@ -1233,7 +1230,6 @@
           "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2"
         }
       ],
-      "elevation": 33,
       "exit_categories": {
         "MLB": "South",
         "WORMS": "North",
@@ -8657,7 +8653,6 @@
   "radar_sites": {
     "KMLB": {
       "char": "L",
-      "elevation": 33,
       "position": "KMLB",
       "primary_range": 60,
       "secondary_range": 120,
@@ -8665,7 +8660,6 @@
     },
     "KISM": {
       "char": "I",
-      "elevation": 80,
       "position": "KISM",
       "primary_range": 60,
       "secondary_range": 120,
@@ -8673,7 +8667,6 @@
     },
     "KMCO": {
       "char": "M",
-      "elevation": 96,
       "position": "N028.25.45.781, W081.18.32.260",
       "primary_range": 60,
       "secondary_range": 120,
@@ -8681,7 +8674,6 @@
     },
     "KORL": {
       "char": "O",
-      "elevation": 113,
       "position": "KORL",
       "primary_range": 60,
       "secondary_range": 120,
@@ -8689,7 +8681,6 @@
     },
     "KSFB": {
       "char": "S",
-      "elevation": 55,
       "position": "N028.46.37.847, W081.14.05.700",
       "primary_range": 60,
       "secondary_range": 120,

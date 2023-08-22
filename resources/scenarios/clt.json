@@ -1141,7 +1141,6 @@
                             "route": "FILDS ROCKA EWC"
                         }
                     ],
-                    "elevation": 748,
                     "exit_categories": {
                         "RDU": "BARMY4",
                         "TYI": "BARMY4",
@@ -2298,7 +2297,6 @@
                     "radar_sites": {
                         "CLT": {
                             "char": "C",
-                            "elevation": 748,
                             "position": "KCLT",
                             "primary_range": 60,
                             "secondary_range": 120,

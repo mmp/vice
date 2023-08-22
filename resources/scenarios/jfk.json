@@ -191,7 +191,6 @@
           "route": "BDR"
         }
       ],
-      "elevation": 64,
       "exit_categories": {
         "ARD": "Southwest",
         "BAYYS": "East",
@@ -360,7 +359,6 @@
           "route": "BEADS V139 BRIGS JIIMS3"
         }
       ],
-      "elevation": 12,
       "exit_categories": {
         "BDR": "East",
         "BEADS": "ISP East",
@@ -646,7 +644,6 @@
           "route": "COATE LAAYK ULW WOZEE LINNG3"
         }
       ],
-      "elevation": 87,
       "exit_categories": {
         "BDR": "East",
         "BEADS": "ISP East",
@@ -1563,7 +1560,6 @@
           "route": "BETTE ACK KANNI N195A NICSO NATY MALOT NATY GISTI EVRIN L607 NUMPO L607 KONAN UL607 MATUG BOMBI TENLO LAMSI STEIN TEGRI BULEN L742 RIXEN UA17 YAVRU UA4 ERZ UN161 YAVUZ UN161 INDUR N161 EDATA M11 RODAR A909 BABUM A477 BUPOR B198 OGNOB G555 USETU G500 BUTRA L181 POMIR G500 FIRUZ P500 PS T400 SULOM A466 IGINO IGIN5A"
         }
       ],
-      "elevation": 13,
       "exit_categories": {
         "ARD": "Southwest",
         "BAYYS": "East",
@@ -1813,7 +1809,6 @@
         }
       ],
       "departure_controller": "LGA_DEP",
-      "elevation": 7,
       "exit_categories": {
         "ARD": "Southwest",
         "BETTE": "Water",
@@ -3008,7 +3003,6 @@
   "radar_sites": {
     "EWR": {
       "char": "E",
-      "elevation": 136,
       "position": "KEWR",
       "primary_range": 60,
       "secondary_range": 120,
@@ -3017,7 +3011,6 @@
     },
     "HPN": {
       "char": "H",
-      "elevation": 708,
       "position": "KHPN",
       "primary_range": 60,
       "secondary_range": 120,
@@ -3026,7 +3019,6 @@
     },
     "ISP": {
       "char": "I",
-      "elevation": 185,
       "position": "KISP",
       "primary_range": 60,
       "secondary_range": 120,
@@ -3035,7 +3027,6 @@
     },
     "JFK": {
       "char": "J",
-      "elevation": 143,
       "position": "KJFK",
       "primary_range": 60,
       "secondary_range": 120,
@@ -3044,7 +3035,6 @@
     },
     "SWF": {
       "char": "S",
-      "elevation": 972,
       "position": "KSWF",
       "primary_range": 60,
       "secondary_range": 120,

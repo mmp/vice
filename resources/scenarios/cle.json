@@ -656,7 +656,6 @@
                             "route": "ALPHE PMM BAE FSD DDY BPI BAM LLC LEGGS BDEGA3"
                         }
                     ],
-                    "elevation": 791,
                     "exit_categories": {
                         "APE": "NORTH",
                         "ALPHE": "NORTH",
@@ -852,7 +851,6 @@
                                 "route": "APE J83 SPA IRQ OSPRI7"
                             }
                         ],
-                        "elevation": 879,
                         "exit_categories": {
                             "NUSMM": "NORTH",
                             "EWC": "NORTH",
@@ -3068,7 +3066,6 @@
                         "radar_sites": {
                           "KCLE": {
                             "char": "L",
-                            "elevation": 33,
                             "position": "KCLE",
                             "primary_range": 60,
                             "secondary_range": 120,

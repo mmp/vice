@@ -492,7 +492,6 @@
                         "route": "DUFEE ELX HAAKK DOXXY SOSIC WETVR DOBIE DKK"
                     }
                 ],
-                "elevation": 668,
                 "exit_categories": {
                     "EBAKE": "East",
                     "DUFEE": "East",
@@ -965,7 +964,6 @@
                             "route": "EARND ELANR EMMLY ERECO IIU J99 VXV CANTR PLZZZ"
                         }
                     ],
-                    "elevation": 620,
                     "exit_categories": {
                         "PETTY": "North",
                         "PMPKN": "North",
@@ -3386,7 +3384,6 @@
             "radar_sites": {
                 "KORD": {
                     "char": "O",
-                    "elevation": 680,
                     "position": "KORD",
                     "primary_range": 60,
                     "secondary_range": 120,
@@ -3394,7 +3391,6 @@
                 },
                 "KMDW": {
                     "char": "M",
-                    "elevation": 620,
                     "position": "KMDW",
                     "primary_range": 60,
                     "secondary_range": 120,

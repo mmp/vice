@@ -774,7 +774,6 @@
           "route": "BURGG"
         }
       ],
-      "elevation": 1026,
       "exit_categories": {
         "LUCKK": "South",
         "HANKO": "West",
@@ -2354,7 +2353,6 @@
   "radar_sites": {
     "KATL": {
       "char": "A",
-      "elevation": 1026,
       "position": "ATL",
       "primary_range": 60,
       "secondary_range": 120,

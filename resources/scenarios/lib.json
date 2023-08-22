@@ -798,7 +798,6 @@
           "route": "ELVAE COL DIXIE Y481 OHRYN Y482 SQUAD DARUX L456 HANCY L456 THANK L458 PANMO JOSHE L325 SCAPA"
         }
       ],
-      "elevation": 19,
       "exit_categories": {
         "BAYYS": "East",
         "BDR": "East",
@@ -1378,7 +1377,6 @@
           "route": "GAYEL Q818 WOZEE Q917 DUTEL Q917 SSM YRL 5400N/10000W 5800N/11000W 6000N/12000W 6100N/13000W IGSOM OMSUN NCA20 ELLAM TED NODLE R220 NOSHO R220 NIKLL R220 NIPPI R220 NOGAL R220 NANAC Y810 OLDIV Y809 SUPOK"
         }
       ],
-      "elevation": 13,
       "exit_categories": {
         "ARD": "Southwest",
         "BAYYS": "East",
@@ -2367,7 +2365,6 @@
           "route": "ELVAE COL WHITE J209 SBY ILM WYLMS"
         }
       ],
-      "elevation": 19,
       "exit_categories": {
         "BAYYS": "East",
         "BIGGY": "West",
@@ -2524,7 +2521,6 @@
   "radar_sites": {
     "EWR": {
       "char": "E",
-      "elevation": 136,
       "position": "KEWR",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2533,7 +2529,6 @@
     },
     "HPN": {
       "char": "H",
-      "elevation": 708,
       "position": "41.066953,-73.707565",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2542,7 +2537,6 @@
     },
     "ISP": {
       "char": "I",
-      "elevation": 185,
       "position": "ISP",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2551,7 +2545,6 @@
     },
     "JFK": {
       "char": "J",
-      "elevation": 143,
       "position": "KJFK",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2560,7 +2553,6 @@
     },
     "SWF": {
       "char": "S",
-      "elevation": 972,
       "position": "41.498564,-74.100438",
       "primary_range": 60,
       "secondary_range": 120,

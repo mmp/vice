@@ -156,7 +156,6 @@
                             "route": "MALET T208 VALKA T345 MARKT"
                         }
                     ],
-                    "elevation": 33,
                     "exit_categories": {
                         "MALET": "South",
                         "CRG": "North"
@@ -316,7 +315,6 @@
                 "radar_sites": {
                     "OMN": {
                         "char": "O",
-                        "elevation": 33,
                         "position": "OMN",
                         "primary_range": 60,
                         "secondary_range": 120,
@@ -325,7 +323,6 @@
                     },
                     "DAB": {
                         "char": "D",
-                        "elevation": 33,
                         "position": "DAB",
                         "primary_range": 60,
                         "secondary_range": 120,

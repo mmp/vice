@@ -10,7 +10,6 @@ import (
 )
 
 type Airport struct {
-	Elevation      int      `json:"elevation"`
 	Location       Point2LL `json:"location"`
 	TowerListIndex int      `json:"tower_list"`
 

@@ -1328,7 +1328,6 @@
           "route": "CELTK FRILL BRADD N197A NICSO NATW XETBO NORLA PEWBI OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 REMBA UL607 SPI T180 UNOKO UNOKO4A"
         }
       ],
-      "elevation": 19,
       "exit_categories": {
         "BLZZR": "ALL",
         "BRUWN": "ALL",
@@ -2324,7 +2323,6 @@
    "radar_sites": {
      "KMLB": {
        "char": "B",
-       "elevation": 17,
        "position": "KBOS",
        "primary_range": 60,
        "secondary_range": 120,

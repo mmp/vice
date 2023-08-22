@@ -358,7 +358,6 @@
             "route": "GAYEL Q818 WOZEE LINNG3"
           }
         ],
-        "elevation": 21,
         "exit_categories": {
           "SAX": "North",
           "COATE": "North",
@@ -846,7 +845,6 @@
     "radar_sites": {
       "EWR": {
         "char": "E",
-        "elevation": 136,
         "position": "KEWR",
         "primary_range": 60,
         "secondary_range": 120,
@@ -855,7 +853,6 @@
       },
       "HPN": {
         "char": "H",
-        "elevation": 708,
         "position": "KHPN",
         "primary_range": 60,
         "secondary_range": 120,
@@ -864,7 +861,6 @@
       },
       "ISP": {
         "char": "I",
-        "elevation": 185,
         "position": "KISP",
         "primary_range": 60,
         "secondary_range": 120,
@@ -873,7 +869,6 @@
       },
       "JFK": {
         "char": "J",
-        "elevation": 143,
         "position": "KJFK",
         "primary_range": 60,
         "secondary_range": 120,
@@ -882,7 +877,6 @@
       },
       "SWF": {
         "char": "S",
-        "elevation": 972,
         "position": "KSWF",
         "primary_range": 60,
         "secondary_range": 120,

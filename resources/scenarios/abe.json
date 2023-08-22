@@ -244,7 +244,6 @@
           "route": "FJC T221 RITTY"
         }
       ],
-      "elevation": 380,
       "exit_categories": {
         "ARD": "Southeast",
         "ETX": "West",
@@ -600,7 +599,6 @@
   "radar_sites": {
     "ABE": {
       "char": "A",
-      "elevation": 413,
       "position": "40.673611,-75.453333",
       "primary_range": 60,
       "secondary_range": 120,
@@ -609,7 +607,6 @@
     },
     "NXX": {
       "char": "N",
-      "elevation": 408,
       "position": "40.19980, -75.14820",
       "primary_range": 60,
       "secondary_range": 120,

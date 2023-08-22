@@ -1048,7 +1048,6 @@
           "route": "ELVAE COL DIXIE Y481 OHRYN Y482 SQUAD DARUX L456 HANCY L456 THANK L458 PANMO JOSHE L325 SCAPA"
         }
       ],
-      "elevation": 19,
       "exit_categories": {
         "BAYYS": "East",
         "BDR": "East",
@@ -1769,7 +1768,6 @@
           "route": "ELVAE COL DIXIE V1 HOWIE"
         }
       ],
-      "elevation": 8,
       "exit_categories": {
         "BAYYS": "East",
         "BDR": "East",
@@ -2672,7 +2670,6 @@
   "radar_sites": {
     "EWR": {
       "char": "E",
-      "elevation": 136,
       "position": "KEWR",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2681,7 +2678,6 @@
     },
     "HPN": {
       "char": "H",
-      "elevation": 708,
       "position": "KHPN",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2690,7 +2686,6 @@
     },
     "ISP": {
       "char": "I",
-      "elevation": 185,
       "position": "ISP",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2699,7 +2694,6 @@
     },
     "JFK": {
       "char": "J",
-      "elevation": 143,
       "position": "JFK",
       "primary_range": 60,
       "secondary_range": 120,
@@ -2708,7 +2702,6 @@
     },
     "SWF": {
       "char": "S",
-      "elevation": 972,
       "position": "KSWF",
       "primary_range": 60,
       "secondary_range": 120,
