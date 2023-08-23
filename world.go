@@ -544,7 +544,7 @@ func (w *World) GetWindowTitle() string {
 
 func (w *World) PrintInfo(ac *Aircraft) {
 	lg.Errorf("%s", spew.Sdump(ac))
-	lg.Errorf("%s: %s", ac.Nav.FlightState.Summary())
+	lg.Errorf("%s", ac.Nav.FlightState.Summary())
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {

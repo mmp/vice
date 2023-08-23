@@ -38,6 +38,8 @@ type Aircraft struct {
 	// nil -> unset/unspecified.
 	Nav Nav
 
+	GoAroundDistance *float32
+
 	// Arrival-related state
 	ArrivalGroup             string
 	ArrivalGroupIndex        int
@@ -112,8 +114,26 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 				})
 			}
 		}
-		if passedWaypoint.Delete && w != nil {
+		if passedWaypoint.Delete {
 			w.DeleteAircraft(ac, nil)
+		}
+	}
+
+	if ac.GoAroundDistance != nil {
+		if d, err := ac.Nav.finalApproachDistance(); err == nil && d < *ac.GoAroundDistance {
+			rt := ac.GoAround()
+			PostRadioEvents(ac.Callsign, rt, ep)
+
+			// If it was handed off to tower, hand it back to us
+			if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
+				ac.HandoffTrackController = ac.ApproachController
+				ep.PostEvent(Event{
+					Type:           OfferedHandoffEvent,
+					Callsign:       ac.Callsign,
+					FromController: ac.TrackingController,
+					ToController:   ac.ApproachController,
+				})
+			}
 		}
 	}
 }
@@ -176,14 +196,13 @@ func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) []RadioTransmissi
 }
 
 func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
-	var arrivals []Arrival
 	if arrivals, ok := w.ArrivalGroups[ac.ArrivalGroup]; !ok || ac.ArrivalGroupIndex >= len(arrivals) {
 		lg.Errorf("%s: invalid arrival group %s or index %d", ac.Callsign, ac.ArrivalGroup,
 			ac.ArrivalGroupIndex)
 		return nil, ErrNoValidArrivalFound
+	} else {
+		return &arrivals[ac.ArrivalGroupIndex], nil
 	}
-
-	return &arrivals[ac.ArrivalGroupIndex], nil
 }
 
 func (ac *Aircraft) ExpectApproach(id string, w *World) []RadioTransmission {
@@ -271,8 +290,12 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	}
 	ac.FlightPlan.Route = arr.Route
 
-	nav := MakeArrivalNav(w, arr, *ac.FlightPlan, perf,
-		Select(goAround, 0.1+.6*rand.Float32(), 0))
+	if goAround {
+		d := 0.1 + .6*rand.Float32()
+		ac.GoAroundDistance = &d
+	}
+
+	nav := MakeArrivalNav(w, arr, *ac.FlightPlan, perf)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -324,7 +347,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 }
 
 func (ac *Aircraft) NavSummary() string {
-	return ac.Callsign + ":\n" + ac.Nav.Summary(*ac.FlightPlan)
+	return ac.Nav.Summary(*ac.FlightPlan)
 }
 
 func (ac *Aircraft) DepartureMessage() string {
@@ -365,4 +388,8 @@ func (ac *Aircraft) NmPerLongitude() float32 {
 
 func (ac *Aircraft) MagneticVariation() float32 {
 	return ac.Nav.FlightState.MagneticVariation
+}
+
+func (ac *Aircraft) IsAirborne() bool {
+	return ac.Nav.IsAirborne()
 }

@@ -5594,12 +5594,8 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 	ps := sp.CurrentPreferenceSet
 	multi := sp.multiRadarMode(w)
 
-	for callsign := range sp.Aircraft {
+	for callsign, state := range sp.Aircraft {
 		ac, ok := w.Aircraft[callsign]
-		if !ok {
-			continue
-		}
-		state, ok := sp.Aircraft[callsign]
 		if !ok {
 			continue
 		}
