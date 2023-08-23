@@ -504,6 +504,17 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 						e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
 					}
 				}
+
+				ap, ok := sg.Airports[arrivalAirport]
+				if !ok {
+					e.ErrorString("arrival airport \"%s\" unknown", arrivalAirport)
+				} else if ar.ExpectApproach != "" {
+					if _, ok := ap.Approaches[ar.ExpectApproach]; !ok {
+						e.ErrorString("arrival airport \"%s\" doesn't have a \"%s\" approach",
+							arrivalAirport, ar.ExpectApproach)
+					}
+				}
+
 				e.Pop()
 			}
 

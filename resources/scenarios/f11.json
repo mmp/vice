@@ -2566,7 +2566,21 @@
               "airport": "EDDF",
               "icao": "DLH"
             }
-          ],
+          ]
+        },
+        "cleared_altitude": 7000,
+        "cruise_altitude": 39000,
+        "expect_approach": "I7L",
+        "initial_altitude": 7000,
+        "initial_controller": "MCO_B_APP",
+        "initial_speed": 220,
+        "speed_restriction": 220,
+        "route": "/. AYLNA3",
+        "scratchpad": "I7L",
+        "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
+      },
+      {
+        "airlines": {
           "KSFB": [
             {
               "airport": "KISP",
@@ -2584,13 +2598,13 @@
         },
         "cleared_altitude": 7000,
         "cruise_altitude": 39000,
-        "expect_approach": "I7L",
+        "expect_approach": "I9L",
         "initial_altitude": 7000,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "route": "/. AYLNA3",
-        "scratchpad": "I7L",
+        "scratchpad": "I9L",
         "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       }
     ],
