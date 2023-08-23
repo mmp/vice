@@ -865,8 +865,8 @@ func (mp *MessagesPane) processEvents(w *World) {
 		if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
 			// Try to get the telephony.
 			icao, flight := callsign[:idx], callsign[idx:]
-			if cs, ok := database.Callsigns[icao]; ok {
-				radioCallsign = cs.Telephony + " " + flight
+			if telephony, ok := database.Callsigns[icao]; ok {
+				radioCallsign = telephony + " " + flight
 				if ac := w.GetAircraft(callsign); ac != nil {
 					if fp := ac.FlightPlan; fp != nil {
 						if strings.HasPrefix(fp.AircraftType, "H/") {

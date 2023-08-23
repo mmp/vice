@@ -229,13 +229,6 @@ type Fix struct {
 	Location Point2LL
 }
 
-type Callsign struct {
-	Company     string
-	Country     string
-	Telephony   string
-	ThreeLetter string
-}
-
 func ParseAltitude(s string) (int, error) {
 	s = strings.ToUpper(s)
 	if strings.HasPrefix(s, "FL") {
@@ -973,7 +966,7 @@ type StaticDatabase struct {
 	Navaids             map[string]Navaid
 	Airports            map[string]FAAAirport
 	Fixes               map[string]Fix
-	Callsigns           map[string]Callsign
+	Callsigns           map[string]string // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
@@ -1008,6 +1001,7 @@ type Airline struct {
 	ICAO     string `json:"icao"`
 	Name     string `json:"name"`
 	Callsign struct {
+		Name            string   `json:"name"`
 		CallsignFormats []string `json:"callsignFormats"`
 	} `json:"callsign"`
 	JSONFleets map[string][][2]interface{} `json:"fleets"`
@@ -1031,11 +1025,9 @@ func InitializeStaticDatabase() *StaticDatabase {
 	wg.Add(1)
 	go func() { db.Fixes = parseFixes(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.Callsigns = parseCallsigns(); wg.Done() }()
-	wg.Add(1)
 	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.Airlines = parseAirlines(); wg.Done() }()
+	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	wg.Wait()
 
 	lg.Printf("Parsed built-in databases in %v", time.Since(start))
@@ -1168,31 +1160,6 @@ func parseFixes() map[string]Fix {
 	return fixes
 }
 
-func parseCallsigns() map[string]Callsign {
-	callsigns := make(map[string]Callsign)
-
-	addCallsign := func(s []string) {
-		fix := func(s string) string { return stopShouting(strings.TrimSpace(s)) }
-
-		cs := Callsign{
-			Company:     fix(s[0]),
-			Country:     fix(s[1]),
-			Telephony:   fix(s[2]),
-			ThreeLetter: strings.TrimSpace(s[3])}
-		if cs.ThreeLetter != "" && cs.ThreeLetter != "..." {
-			callsigns[cs.ThreeLetter] = cs
-		}
-	}
-
-	callsignsRaw := LoadResource("callsigns.csv.zst")
-
-	mungeCSV("callsigns", string(callsignsRaw),
-		[]string{"COMPANY", "COUNTRY", "TELEPHONY", "3 LETTER"},
-		addCallsign)
-
-	return callsigns
-}
-
 func parseAircraftPerformance() map[string]AircraftPerformance {
 	openscopeAircraft := LoadResource("openscope-aircraft.json")
 
@@ -1215,7 +1182,7 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 	return ap
 }
 
-func parseAirlines() map[string]Airline {
+func parseAirlines() (map[string]Airline, map[string]string) {
 	openscopeAirlines := LoadResource("openscope-airlines.json")
 
 	var alStruct struct {
@@ -1226,6 +1193,7 @@ func parseAirlines() map[string]Airline {
 	}
 
 	airlines := make(map[string]Airline)
+	callsigns := make(map[string]string)
 	for _, al := range alStruct.Airlines {
 		fixedAirline := al
 		fixedAirline.Fleets = make(map[string][]FleetAircraft)
@@ -1241,8 +1209,9 @@ func parseAirlines() map[string]Airline {
 		fixedAirline.JSONFleets = nil
 
 		airlines[strings.ToUpper(al.ICAO)] = fixedAirline
+		callsigns[strings.ToUpper(al.ICAO)] = al.Callsign.Name
 	}
-	return airlines
+	return airlines, callsigns
 }
 
 ///////////////////////////////////////////////////////////////////////////

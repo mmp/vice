@@ -45,8 +45,6 @@
                     Source="resources\\NAV_BASE.csv.zst" />
               <File Id="FIXBASE"
                     Source="resources\\FIX_BASE.csv.zst" />
-              <File Id="callsigns"
-                    Source="resources\\callsigns.csv.zst" />
               <File Id="openscopeaircraft"
                     Source="resources\\openscope-aircraft.json" />
               <File Id="openscopeairlines"
