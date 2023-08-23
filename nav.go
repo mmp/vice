@@ -70,8 +70,10 @@ type NavSpeed struct {
 }
 
 type NavHeading struct {
-	Assigned *float32
-	Turn     *TurnMethod
+	Assigned     *float32
+	Turn         *TurnMethod
+	RacetrackPT  *FlyRacetrackPT
+	Standard45PT *FlyStandard45PT
 }
 
 type NavApproach struct {
@@ -285,6 +287,28 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			line += ", established on the localizer"
 		}
 		lines = append(lines, line)
+
+		/*
+					   func (fp *FlyRacetrackPT) VSummary(ac *Aircraft) string {
+					   	if fp.ProcedureTurn.ExitAltitude != 0 && nav.FlightState.Altitude > float32(fp.ProcedureTurn.ExitAltitude) {
+					   		return fmt.Sprintf("Descend to %d in the procedure turn", fp.ProcedureTurn.ExitAltitude)
+					   	} else {
+					   		fr := &FlyRoute{}
+					   		return fr.VSummary(ac)
+					   	}
+					   }
+
+					   func (fp *FlyRacetrackPT) LSummary(ac *Aircraft) string {
+					   	s := fmt.Sprintf("Fly the %s procedure turn at %s", fp.ProcedureTurn.Type, fp.Fix)
+					   	if fp.ProcedureTurn.Type == PTRacetrack {
+					   		s += ", " + fp.Entry.String() + " entry"
+					   	}
+					   	return s
+					   }
+			func (fp *FlyStandard45PT) LSummary(ac *Aircraft) string {
+				return fmt.Sprintf("Fly the standard 45/180 procedure turn at %s", fp.Fix)
+			}
+		*/
 	}
 
 	lines = append(lines, "Route: "+WaypointArray(nav.Waypoints).Encode())
@@ -499,6 +523,13 @@ func (nav *Nav) TargetHeading(wind WindModel) (heading float32, turn TurnMethod,
 		return nav.LocalizerHeading(wind)
 	}
 
+	if nav.Heading.RacetrackPT != nil {
+		return nav.Heading.RacetrackPT.GetHeading(nav, wind)
+	}
+	if nav.Heading.Standard45PT != nil {
+		return nav.Heading.Standard45PT.GetHeading(nav, wind)
+	}
+
 	if nav.Heading.Assigned != nil {
 		heading = *nav.Heading.Assigned
 		if nav.Heading.Turn != nil {
@@ -565,7 +596,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel) (heading float32, turn TurnMeth
 			lg.Printf("assigned approach heading! %.1f", hdg)
 
 			nav.Approach.InterceptState = TurningToJoin
-			nav.Heading.Assigned = &hdg
+			nav.Heading = NavHeading{Assigned: &hdg}
 			// Just in case.. Thus we will be ready to pick up the
 			// approach waypoints once we capture.
 			nav.Waypoints = nil
@@ -657,6 +688,14 @@ func (nav *Nav) TargetAltitude() (alt, rate float32) {
 			// Just airborne; prioritize climb, though slightly nerf the rate
 			// so aircraft are not too high too soon
 			return elev + 1000, 0.6 * maxClimb
+		}
+	}
+
+	// Ugly to be digging into heading here, but anyway...
+	if nav.Heading.RacetrackPT != nil {
+		alt, ok := nav.Heading.RacetrackPT.GetAltitude(nav)
+		if ok {
+			return alt, MaximumRate
 		}
 	}
 
@@ -1041,11 +1080,11 @@ func (nav *Nav) updateWaypoints(wind WindModel) *Waypoint {
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 			// Controller-assigned heading
 			hdg := *nfa.Depart.Heading
-			nav.Heading.Assigned = &hdg
+			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if wp.Heading != 0 {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
-			nav.Heading.Assigned = &hdg
+			nav.Heading = NavHeading{Assigned: &hdg}
 		}
 
 		if wp.NoPT {
@@ -1090,11 +1129,10 @@ func (nav *Nav) shouldTurnForOutbound(p Point2LL, hdg float32, turn TurnMethod, 
 	hm := hdg - nav.FlightState.MagneticVariation
 	p1 := add2f(p0, [2]float32{sin(radians(hm)), cos(radians(hm))})
 
-	// Make a ghost aircraft to use to simulate the turn. Checking this way
-	// may be somewhat brittle/dangerous, e.g., if there is underlying
-	// shared mutable state between ac and ac2.
+	// Make a ghost aircraft to use to simulate the turn.
 	nav2 := *nav
 	nav2.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
+	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
 
 	initialDist := SignedPointLineDistance(ll2nm(nav2.FlightState.Position,
 		nav2.FlightState.NmPerLongitude), p0, p1)
@@ -1527,47 +1565,6 @@ func (nav *Nav) CancelApproachClearance() string {
 ///////////////////////////////////////////////////////////////////////////
 // Procedure turns
 
-func (nav *Nav) flyProcedureTurnIfNecessary() bool {
-	/*
-		wp := ac.Waypoints
-		if !ac.ApproachCleared || len(wp) == 0 || wp[0].ProcedureTurn == nil || ac.NoPT {
-			return false
-		}
-
-		if wp[0].ProcedureTurn.Entry180NoPT {
-			inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, ac.FlightState.NmPerLongitude,
-				ac.FlightState.MagneticVariation)
-			acFixHeading := headingp2ll(ac.FlightState.Position, wp[0].Location, ac.FlightState.NmPerLongitude,
-				ac.FlightState.MagneticVariation)
-			lg.Errorf("%s: ac %.1f inbound %.1f diff %.1f", ac.Callsign,
-				acFixHeading, inboundHeading, headingDifference(acFixHeading, inboundHeading))
-
-			if headingDifference(acFixHeading, inboundHeading) < 90 {
-				return false
-			}
-		}
-
-		lnav, vnav := MakeFlyProcedureTurn(ac, ac.Waypoints)
-		if lnav != nil {
-			ac.Nav.L = lnav
-		}
-		if vnav != nil {
-			ac.Nav.V = vnav
-		}
-		return lnav != nil || vnav != nil
-	*/
-	return false
-}
-
-/*
-const (
-	PTStateApproaching = iota
-	PTStateTurningOutbound
-	PTStateFlyingOutbound
-	PTStateTurningInbound
-	PTStateFlyingInbound // parallel entry only
-)
-
 type FlyRacetrackPT struct {
 	ProcedureTurn      *ProcedureTurn
 	Fix                string
@@ -1581,165 +1578,13 @@ type FlyRacetrackPT struct {
 	State              int
 }
 
-func (fp *FlyRacetrackPT) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) {
-	pt := fp.ProcedureTurn
-
-	switch fp.State {
-	case PTStateApproaching:
-		dist := nmdistance2ll(ac.FlightState.Position, fp.FixLocation)
-		eta := dist / ac.FlightState.GS * 3600 // in seconds
-		startTurn := false
-
-		switch fp.Entry {
-		case DirectEntryShortTurn:
-			startTurn = eta < 2
-
-		case DirectEntryLongTurn:
-			// Turn start is based on lining up for the inbound heading,
-			// even though the actual turn will be that plus 180.
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.InboundHeading,
-				fp.OutboundTurnMethod, wind)
-
-		case ParallelEntry, TeardropEntry:
-			startTurn = ac.ShouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading,
-				fp.OutboundTurnMethod, wind)
-		}
-
-		if startTurn {
-			fp.State = PTStateTurningOutbound
-			lg.Errorf("%s: starting outbound turn-heading %.1f rate %.2f method %s",
-				ac.Callsign, fp.OutboundHeading, fp.OutboundTurnRate,
-				fp.OutboundTurnMethod.String())
-			//lg.Errorf("%s: full fp %s", ac.Callsign, spew.Sdump(fp))
-		}
-
-		// Even if we're turning, this last time we'll keep the heading to
-		// the fix.
-		fixHeading := headingp2ll(ac.FlightState.Position, fp.FixLocation, ac.FlightState.NmPerLongitude,
-			ac.FlightState.MagneticVariation)
-		return fixHeading, TurnClosest, StandardTurnRate
-
-	case PTStateTurningOutbound:
-		if headingDifference(ac.FlightState.Heading, fp.OutboundHeading) < 1 {
-			// Finished the turn; now we'll fly the leg.
-			lg.Errorf("%s: finished the turn; ac heading %.1f outbound %.1f; flying outbound leg",
-				ac.Callsign, ac.FlightState.Heading, fp.OutboundHeading)
-			fp.State = PTStateFlyingOutbound
-		}
-
-		return fp.OutboundHeading, fp.OutboundTurnMethod, fp.OutboundTurnRate
-
-	case PTStateFlyingOutbound:
-		d := nmdistance2ll(ac.FlightState.Position, fp.FixLocation)
-
-		if fp.Entry == TeardropEntry {
-			// start the turn when we will intercept the inbound radial
-			turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
-			if d > 0.5 && ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
-				lg.Errorf("%s: teardrop Turning inbound!", ac.Callsign)
-				fp.State = PTStateTurningInbound
-			}
-		} else if d > fp.OutboundLegLength {
-			lg.Errorf("%s: Turning inbound!", ac.Callsign)
-			fp.State = PTStateTurningInbound
-		}
-		return fp.OutboundHeading, TurnClosest, fp.OutboundTurnRate
-
-	case PTStateTurningInbound:
-		if fp.Entry == ParallelEntry {
-			// Parallel is special: we fly at the 30 degree
-			// offset-from-true-inbound heading until it is time to turn to
-			// intercept.
-			hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
-			lg.Printf("%s: parallel inbound turning to %.1f", ac.Callsign, hdg)
-			if headingDifference(ac.FlightState.Heading, hdg) < 1 {
-				fp.State = PTStateFlyingInbound
-			}
-			// This turn is in the opposite direction than usual
-			turn := Select(!pt.RightTurns, TurnRight, TurnLeft)
-			return hdg, TurnMethod(turn), StandardTurnRate
-		} else {
-			if headingDifference(ac.FlightState.Heading, fp.InboundHeading) < 1 {
-				// otherwise go direct to the fix
-				lg.Errorf("%s: direct fix--done with the HILPT!", ac.Callsign)
-				ac.Nav.L = &FlyRoute{}
-				ac.Nav.V = &FlyRoute{}
-			}
-
-			turn := Select(pt.RightTurns, TurnRight, TurnLeft)
-			return fp.InboundHeading, TurnMethod(turn), StandardTurnRate
-		}
-
-	case PTStateFlyingInbound:
-		// This state is only used for ParallelEntry
-		turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
-		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
-			lg.Errorf("%s: parallel inbound direct fix", ac.Callsign)
-			ac.Nav.L = &FlyRoute{}
-			ac.Nav.V = &FlyRoute{}
-		}
-		hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
-		return hdg, TurnClosest, StandardTurnRate
-
-	default:
-		panic("unhandled state")
-	}
-}
-
-func (fp *FlyRacetrackPT) shouldDescend(ac *Aircraft) bool {
-	return fp.ProcedureTurn.ExitAltitude != 0 && ac.FlightState.Altitude > float32(fp.ProcedureTurn.ExitAltitude) &&
-		fp.State != PTStateApproaching
-}
-
-func (fp *FlyRacetrackPT) GetAltitude(ac *Aircraft) (float32, float32) {
-	if fp.shouldDescend(ac) {
-		return float32(fp.ProcedureTurn.ExitAltitude), MaximumRate
-	} else {
-		fr := &FlyRoute{}
-		return fr.GetAltitude(ac)
-	}
-}
-
-func (fp *FlyRacetrackPT) PassesWaypoints() bool {
-	return false
-}
-
-func (fp *FlyRacetrackPT) VSummary(ac *Aircraft) string {
-	if fp.ProcedureTurn.ExitAltitude != 0 && ac.FlightState.Altitude > float32(fp.ProcedureTurn.ExitAltitude) {
-		return fmt.Sprintf("Descend to %d in the procedure turn", fp.ProcedureTurn.ExitAltitude)
-	} else {
-		fr := &FlyRoute{}
-		return fr.VSummary(ac)
-	}
-}
-
-func (fp *FlyRacetrackPT) LSummary(ac *Aircraft) string {
-	s := fmt.Sprintf("Fly the %s procedure turn at %s", fp.ProcedureTurn.Type, fp.Fix)
-	if fp.ProcedureTurn.Type == PTRacetrack {
-		s += ", " + fp.Entry.String() + " entry"
-	}
-	return s
-}
-
-func MakeFlyProcedureTurn(ac *Aircraft, wp []Waypoint) (LNavCommand, VNavCommand) {
-	if len(wp) < 2 {
-		lg.Errorf("%s: MakeFlyProcedureTurn called with insufficient waypoints: %s",
-			ac.Callsign, spew.Sdump(wp))
-		return nil, nil
-	}
-
-	switch wp[0].ProcedureTurn.Type {
-	case PTRacetrack:
-		return MakeFlyRacetrackPT(ac, wp)
-
-	case PTStandard45:
-		return MakeFlyStandard45PT(ac, wp)
-
-	default:
-		lg.Errorf("Unhandled procedure turn type")
-		return nil, nil
-	}
-}
+const (
+	PTStateApproaching = iota
+	PTStateTurningOutbound
+	PTStateFlyingOutbound
+	PTStateTurningInbound
+	PTStateFlyingInbound // parallel entry only
+)
 
 type FlyStandard45PT struct {
 	ProcedureTurn    *ProcedureTurn
@@ -1762,119 +1607,59 @@ const (
 	PT45StateTurningToIntercept
 )
 
-func (fp *FlyStandard45PT) GetHeading(ac *Aircraft, wind WindModel) (float32, TurnMethod, float32) {
-	outboundHeading := OppositeHeading(fp.InboundHeading)
+func (nav *Nav) flyProcedureTurnIfNecessary() {
+	wp := nav.Waypoints
+	if !nav.Approach.Cleared || len(wp) < 2 || wp[0].ProcedureTurn == nil || nav.Approach.NoPT {
+		return
+	}
 
-	switch fp.State {
-	case PT45StateApproaching:
-		if ac.ShouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, wind) {
-			lg.Printf("%s: turning outbound to %.0f", ac.Callsign, outboundHeading)
-			fp.State = PT45StateTurningOutbound
+	if wp[0].ProcedureTurn.Entry180NoPT {
+		inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, nav.FlightState.NmPerLongitude,
+			nav.FlightState.MagneticVariation)
+		acFixHeading := headingp2ll(nav.FlightState.Position, wp[0].Location,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		//lg.Errorf("ac %.1f inbound %.1f diff %.1f",
+		// acFixHeading, inboundHeading, headingDifference(acFixHeading, inboundHeading))
+
+		if headingDifference(acFixHeading, inboundHeading) < 90 {
+			return
 		}
+	}
 
-		// Fly toward the fix until it's time to turn outbound
-		fixHeading := headingp2ll(ac.FlightState.Position, fp.FixLocation, ac.FlightState.NmPerLongitude,
-			ac.FlightState.MagneticVariation)
-		return fixHeading, TurnClosest, StandardTurnRate
+	switch wp[0].ProcedureTurn.Type {
+	case PTRacetrack:
+		nav.Heading = NavHeading{RacetrackPT: MakeFlyRacetrackPT(nav, wp)}
 
-	case PT45StateTurningOutbound:
-		if ac.FlightState.Heading == outboundHeading {
-			fp.State = PTStateFlyingOutbound
-			fp.SecondsRemaining = 60
-			lg.Printf("%s: flying outbound for %ds", ac.Callsign, fp.SecondsRemaining)
-		}
-		return outboundHeading, TurnClosest, StandardTurnRate
-
-	case PT45StateFlyingOutbound:
-		fp.SecondsRemaining--
-		if fp.SecondsRemaining == 0 {
-			fp.State = PT45StateTurningAway
-			lg.Printf("%s: turning away from outbound to %.0f", ac.Callsign, fp.AwayHeading)
-
-		}
-		return outboundHeading, TurnClosest, StandardTurnRate
-
-	case PT45StateTurningAway:
-		if ac.FlightState.Heading == fp.AwayHeading {
-			fp.State = PT45StateFlyingAway
-			fp.SecondsRemaining = 60
-			lg.Printf("%s: flying away for %ds", ac.Callsign, fp.SecondsRemaining)
-		}
-
-		return fp.AwayHeading, TurnClosest, StandardTurnRate
-
-	case PT45StateFlyingAway:
-		fp.SecondsRemaining--
-		if fp.SecondsRemaining == 0 {
-			fp.State = PT45StateTurningIn
-			lg.Printf("%s: turning in to %.0f", ac.Callsign, OppositeHeading(fp.AwayHeading))
-		}
-		return fp.AwayHeading, TurnClosest, StandardTurnRate
-
-	case PT45StateTurningIn:
-		hdg := OppositeHeading(fp.AwayHeading)
-		if ac.FlightState.Heading == hdg {
-			fp.State = PT45StateFlyingIn
-			lg.Printf("%s: flying in", ac.Callsign)
-		}
-
-		turn := Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft)
-		return hdg, TurnMethod(turn), StandardTurnRate
-
-	case PT45StateFlyingIn:
-		turn := TurnMethod(Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
-		if ac.ShouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
-			fp.State = PT45StateTurningToIntercept
-			lg.Printf("%s: starting turn to intercept %.0f", ac.Callsign, fp.InboundHeading)
-		}
-		return ac.FlightState.Heading, TurnClosest, StandardTurnRate
-
-	case PT45StateTurningToIntercept:
-		if ac.FlightState.Heading == fp.InboundHeading {
-			ac.Nav.L = &FlyRoute{}
-			lg.Printf("%s: done! direct to the fix now", ac.Callsign)
-		}
-
-		return fp.InboundHeading, TurnClosest, StandardTurnRate
+	case PTStandard45:
+		nav.Heading = NavHeading{Standard45PT: MakeFlyStandard45PT(nav, wp)}
 
 	default:
-		lg.Errorf("unhandled PT state: %d", fp.State)
-		return ac.FlightState.Heading, TurnClosest, StandardTurnRate
+		lg.Errorf("Unhandled procedure turn type")
 	}
 }
 
-func (fp *FlyStandard45PT) PassesWaypoints() bool {
-	return false
-}
+func MakeFlyStandard45PT(nav *Nav, wp []Waypoint) *FlyStandard45PT {
+	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, nav.FlightState.NmPerLongitude,
+		nav.FlightState.MagneticVariation)
 
-func (fp *FlyStandard45PT) LSummary(ac *Aircraft) string {
-	return fmt.Sprintf("Fly the standard 45/180 procedure turn at %s", fp.Fix)
-}
+	awayHeading := OppositeHeading(inboundHeading)
+	awayHeading += float32(Select(wp[0].ProcedureTurn.RightTurns, -45, 45))
 
-func MakeFlyStandard45PT(ac *Aircraft, wp []Waypoint) (*FlyStandard45PT, VNavCommand) {
-	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, ac.FlightState.NmPerLongitude,
-		ac.FlightState.MagneticVariation)
-
-	fp := &FlyStandard45PT{
+	return &FlyStandard45PT{
 		ProcedureTurn:  wp[0].ProcedureTurn,
 		Fix:            wp[0].Fix,
 		FixLocation:    wp[0].Location,
 		InboundHeading: inboundHeading,
+		AwayHeading:    NormalizeHeading(awayHeading),
 		State:          PTStateApproaching,
 	}
-
-	hdg := OppositeHeading(fp.InboundHeading)
-	hdg += float32(Select(wp[0].ProcedureTurn.RightTurns, -45, 45))
-	fp.AwayHeading = NormalizeHeading(hdg)
-
-	return fp, nil
 }
 
-func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacetrackPT) {
-	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, ac.FlightState.NmPerLongitude,
-		ac.FlightState.MagneticVariation)
-	aircraftFixHeading := headingp2ll(ac.FlightState.Position, wp[0].Location, ac.FlightState.NmPerLongitude,
-		ac.FlightState.MagneticVariation)
+func MakeFlyRacetrackPT(nav *Nav, wp []Waypoint) *FlyRacetrackPT {
+	inboundHeading := headingp2ll(wp[0].Location, wp[1].Location, nav.FlightState.NmPerLongitude,
+		nav.FlightState.MagneticVariation)
+	aircraftFixHeading := headingp2ll(nav.FlightState.Position, wp[0].Location,
+		nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 	pt := wp[0].ProcedureTurn
 
@@ -1887,7 +1672,7 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 		State:          PTStateApproaching,
 	}
 
-	lg.Printf("%s: entry %s", ac.Callsign, fp.Entry)
+	lg.Printf("racetrack entry %s", fp.Entry)
 
 	// Set the outbound heading. For everything but teardrop, it's the
 	// opposite of the inbound heading.
@@ -1908,12 +1693,12 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 		// Since we have less than 180 degrees in our turn, turn more
 		// slowly so that we more or less end up the right offset distance
 		// from the inbound path.
-		acFixHeading := headingp2ll(ac.FlightState.Position, wp[0].Location, ac.FlightState.NmPerLongitude,
-			ac.FlightState.MagneticVariation)
+		acFixHeading := headingp2ll(nav.FlightState.Position, wp[0].Location,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		diff := headingDifference(fp.OutboundHeading, acFixHeading)
 		fp.OutboundTurnRate = 3 * diff / 180
-		lg.Printf("%s: hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
-			ac.Callsign, acFixHeading, fp.OutboundHeading,
+		lg.Printf("hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
+			acFixHeading, fp.OutboundHeading,
 			headingDifference(fp.OutboundHeading, acFixHeading),
 			fp.OutboundTurnRate)
 	}
@@ -1933,14 +1718,14 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 	// Specified by the user?
 	fp.OutboundLegLength = float32(pt.NmLimit) / 2
 	if fp.OutboundLegLength == 0 {
-		fp.OutboundLegLength = float32(pt.MinuteLimit) * ac.FlightState.GS / 60
+		fp.OutboundLegLength = float32(pt.MinuteLimit) * nav.FlightState.GS / 60
 	}
 	if fp.OutboundLegLength == 0 {
 		// Select a default based on the approach type.
-		switch ac.Approach.Type {
+		switch nav.Approach.Assigned.Type {
 		case ILSApproach:
 			// 1 minute by default on ILS
-			fp.OutboundLegLength = ac.FlightState.GS / 60
+			fp.OutboundLegLength = nav.FlightState.GS / 60
 
 		case RNAVApproach:
 			// 4nm by default for RNAV, though that's the distance from the
@@ -1948,8 +1733,8 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 			fp.OutboundLegLength = 2
 
 		default:
-			lg.Errorf("%s: unhandled approach type: %s", ac.Callsign, ac.Approach.Type)
-			fp.OutboundLegLength = ac.FlightState.GS / 60
+			lg.Errorf("unhandled approach type: %s", nav.Approach.Assigned.Type)
+			fp.OutboundLegLength = nav.FlightState.GS / 60
 
 		}
 	}
@@ -1959,6 +1744,199 @@ func MakeFlyRacetrackPT(ac *Aircraft, wp []Waypoint) (*FlyRacetrackPT, *FlyRacet
 		fp.OutboundLegLength *= 1.5
 	}
 
-	return fp, fp
+	return fp
 }
-*/
+
+func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMethod, float32) {
+	pt := fp.ProcedureTurn
+
+	switch fp.State {
+	case PTStateApproaching:
+		dist := nmdistance2ll(nav.FlightState.Position, fp.FixLocation)
+		eta := dist / nav.FlightState.GS * 3600 // in seconds
+		startTurn := false
+
+		switch fp.Entry {
+		case DirectEntryShortTurn:
+			startTurn = eta < 2
+
+		case DirectEntryLongTurn:
+			// Turn start is based on lining up for the inbound heading,
+			// even though the actual turn will be that plus 180.
+			startTurn = nav.shouldTurnForOutbound(fp.FixLocation, fp.InboundHeading,
+				fp.OutboundTurnMethod, wind)
+
+		case ParallelEntry, TeardropEntry:
+			startTurn = nav.shouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading,
+				fp.OutboundTurnMethod, wind)
+		}
+
+		if startTurn {
+			fp.State = PTStateTurningOutbound
+			lg.Errorf("starting outbound turn-heading %.1f rate %.2f method %s",
+				fp.OutboundHeading, fp.OutboundTurnRate,
+				fp.OutboundTurnMethod.String())
+			//lg.Errorf("%s: full fp %s", ac.Callsign, spew.Sdump(fp))
+		}
+
+		// Even if we're turning, this last time we'll keep the heading to
+		// the fix.
+		fixHeading := headingp2ll(nav.FlightState.Position, fp.FixLocation, nav.FlightState.NmPerLongitude,
+			nav.FlightState.MagneticVariation)
+		return fixHeading, TurnClosest, StandardTurnRate
+
+	case PTStateTurningOutbound:
+		if headingDifference(nav.FlightState.Heading, fp.OutboundHeading) < 1 {
+			// Finished the turn; now we'll fly the leg.
+			lg.Errorf("finished the turn; ac heading %.1f outbound %.1f; flying outbound leg",
+				nav.FlightState.Heading, fp.OutboundHeading)
+			fp.State = PTStateFlyingOutbound
+		}
+
+		return fp.OutboundHeading, fp.OutboundTurnMethod, fp.OutboundTurnRate
+
+	case PTStateFlyingOutbound:
+		d := nmdistance2ll(nav.FlightState.Position, fp.FixLocation)
+
+		if fp.Entry == TeardropEntry {
+			// start the turn when we will intercept the inbound radial
+			turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
+			if d > 0.5 && nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
+				lg.Errorf("teardrop Turning inbound!")
+				fp.State = PTStateTurningInbound
+			}
+		} else if d > fp.OutboundLegLength {
+			lg.Errorf("Turning inbound!")
+			fp.State = PTStateTurningInbound
+		}
+		return fp.OutboundHeading, TurnClosest, fp.OutboundTurnRate
+
+	case PTStateTurningInbound:
+		if fp.Entry == ParallelEntry {
+			// Parallel is special: we fly at the 30 degree
+			// offset-from-true-inbound heading until it is time to turn to
+			// intercept.
+			hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
+			lg.Printf("parallel inbound turning to %.1f", hdg)
+			if headingDifference(nav.FlightState.Heading, hdg) < 1 {
+				fp.State = PTStateFlyingInbound
+			}
+			// This turn is in the opposite direction than usual
+			turn := Select(!pt.RightTurns, TurnRight, TurnLeft)
+			return hdg, TurnMethod(turn), StandardTurnRate
+		} else {
+			if headingDifference(nav.FlightState.Heading, fp.InboundHeading) < 1 {
+				// otherwise go direct to the fix
+				lg.Errorf("direct fix--done with the HILPT!")
+				nav.Heading = NavHeading{}
+				nav.Altitude = NavAltitude{}
+			}
+
+			turn := Select(pt.RightTurns, TurnRight, TurnLeft)
+			return fp.InboundHeading, TurnMethod(turn), StandardTurnRate
+		}
+
+	case PTStateFlyingInbound:
+		// This state is only used for ParallelEntry
+		turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
+		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
+			lg.Errorf("parallel inbound direct fix")
+			nav.Heading = NavHeading{}
+			nav.Altitude = NavAltitude{}
+		}
+		hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
+		return hdg, TurnClosest, StandardTurnRate
+
+	default:
+		panic("unhandled state")
+	}
+}
+
+func (fp *FlyRacetrackPT) GetAltitude(nav *Nav) (float32, bool) {
+	descend := fp.ProcedureTurn.ExitAltitude != 0 &&
+		nav.FlightState.Altitude > fp.ProcedureTurn.ExitAltitude &&
+		fp.State != PTStateApproaching
+	return fp.ProcedureTurn.ExitAltitude, descend
+}
+
+func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMethod, float32) {
+	outboundHeading := OppositeHeading(fp.InboundHeading)
+
+	switch fp.State {
+	case PT45StateApproaching:
+		if nav.shouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, wind) {
+			lg.Printf("turning outbound to %.0f", outboundHeading)
+			fp.State = PT45StateTurningOutbound
+		}
+
+		// Fly toward the fix until it's time to turn outbound
+		fixHeading := headingp2ll(nav.FlightState.Position, fp.FixLocation,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		return fixHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningOutbound:
+		if nav.FlightState.Heading == outboundHeading {
+			fp.State = PTStateFlyingOutbound
+			fp.SecondsRemaining = 60
+			lg.Printf("flying outbound for %ds", fp.SecondsRemaining)
+		}
+		return outboundHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateFlyingOutbound:
+		fp.SecondsRemaining--
+		if fp.SecondsRemaining == 0 {
+			fp.State = PT45StateTurningAway
+			lg.Printf("turning away from outbound to %.0f", fp.AwayHeading)
+
+		}
+		return outboundHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningAway:
+		if nav.FlightState.Heading == fp.AwayHeading {
+			fp.State = PT45StateFlyingAway
+			fp.SecondsRemaining = 60
+			lg.Printf("flying away for %ds", fp.SecondsRemaining)
+		}
+
+		return fp.AwayHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateFlyingAway:
+		fp.SecondsRemaining--
+		if fp.SecondsRemaining == 0 {
+			fp.State = PT45StateTurningIn
+			lg.Printf("turning in to %.0f", OppositeHeading(fp.AwayHeading))
+		}
+		return fp.AwayHeading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningIn:
+		hdg := OppositeHeading(fp.AwayHeading)
+		if nav.FlightState.Heading == hdg {
+			fp.State = PT45StateFlyingIn
+			lg.Printf("flying in")
+		}
+
+		turn := Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft)
+		return hdg, TurnMethod(turn), StandardTurnRate
+
+	case PT45StateFlyingIn:
+		turn := TurnMethod(Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
+		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
+			fp.State = PT45StateTurningToIntercept
+			lg.Printf("starting turn to intercept %.0f", fp.InboundHeading)
+		}
+		return nav.FlightState.Heading, TurnClosest, StandardTurnRate
+
+	case PT45StateTurningToIntercept:
+		if nav.FlightState.Heading == fp.InboundHeading {
+			nav.Heading = NavHeading{}
+			nav.Altitude = NavAltitude{}
+			lg.Printf("done! direct to the fix now")
+		}
+
+		return fp.InboundHeading, TurnClosest, StandardTurnRate
+
+	default:
+		lg.Errorf("unhandled PT state: %d", fp.State)
+		return nav.FlightState.Heading, TurnClosest, StandardTurnRate
+	}
+}

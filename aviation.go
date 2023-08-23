@@ -392,10 +392,10 @@ func (pt PTType) String() string {
 type ProcedureTurn struct {
 	Type         PTType
 	RightTurns   bool
-	ExitAltitude int  `json:",omitempty"`
-	MinuteLimit  int  `json:",omitempty"`
-	NmLimit      int  `json:",omitempty"`
-	Entry180NoPT bool `json:",omitempty"`
+	ExitAltitude float32 `json:",omitempty"`
+	MinuteLimit  int     `json:",omitempty"`
+	NmLimit      int     `json:",omitempty"`
+	Entry180NoPT bool    `json:",omitempty"`
 }
 
 type RacetrackPTEntry int
@@ -663,7 +663,7 @@ func (wslice WaypointArray) Encode() string {
 				s += "/nopt180"
 			}
 			if pt.ExitAltitude != 0 {
-				s += fmt.Sprintf("/pta%d", pt.ExitAltitude)
+				s += fmt.Sprintf("/pta%0f", pt.ExitAltitude)
 			}
 		}
 		if w.NoPT {
@@ -781,8 +781,9 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 						wp.ProcedureTurn = &ProcedureTurn{}
 					}
 
-					var err error
-					if wp.ProcedureTurn.ExitAltitude, err = strconv.Atoi(f[3:]); err != nil {
+					if alt, err := strconv.Atoi(f[3:]); err == nil {
+						wp.ProcedureTurn.ExitAltitude = float32(alt)
+					} else {
 						return nil, fmt.Errorf("%s error parsing procedure turn exit altitude: %v", f[3:], err)
 					}
 				} else if f == "nopt" {
