@@ -543,8 +543,8 @@
       "scope_char": "T",
       "sector_id": "AL"
     },
-    "AVE_APP": {
-      "frequency": 120950,
+    "AVP_APP": {
+      "frequency": 126300,
       "full_name": "Wilkes Barre approach",
       "scope_char": "B",
       "sector_id": "WB"
@@ -656,7 +656,7 @@
         "ABE_APP",
         "PHL_NA_APP",
         "EWR_APP",
-        "AVE_APP",
+        "AVP_APP",
         "MDT_APP",
         "NY_CTR"
       ],
@@ -704,7 +704,7 @@
         "ABE_APP",
         "PHL_NA_APP",
         "EWR_APP",
-        "AVE_APP",
+        "AVP_APP",
         "MDT_APP",
         "NY_CTR"
       ],
