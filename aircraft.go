@@ -120,71 +120,61 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 	}
 }
 
-func (ac *Aircraft) GoAround() ([]RadioTransmission, error) {
+func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
 
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp,
 		Type:       RadioTransmissionContact,
-	}}, nil
+	}}
 }
 
-func (ac *Aircraft) AssignAltitude(altitude int) ([]RadioTransmission, error) {
+func (ac *Aircraft) AssignAltitude(altitude int) []RadioTransmission {
 	response := ac.Nav.AssignAltitude(float32(altitude))
-	return ac.readback(response), nil
+	return ac.readback(response)
 }
 
-func (ac *Aircraft) AssignSpeed(speed int) ([]RadioTransmission, error) {
+func (ac *Aircraft) AssignSpeed(speed int) []RadioTransmission {
 	resp := ac.Nav.AssignSpeed(float32(speed))
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) ([]RadioTransmission, error) {
-	// A 0 heading shouldn't be specified, but at least cause the
-	// aircraft to do what is intended, since 0 represents an
-	// unassigned heading.
-	if heading == 0 {
-		heading = 360
-	}
-	if heading < 0 || heading > 360 {
-		return nil, ErrInvalidHeading
-	}
-
+func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmission {
 	resp := ac.Nav.AssignHeading(float32(heading), turn)
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) TurnLeft(deg int) ([]RadioTransmission, error) {
+func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
 	hdg := NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnLeft)
-	return ac.readback(Sample([]string{"turn %d degrees left", "%d to the left"}), deg), nil
+	return ac.readback(Sample([]string{"turn %d degrees left", "%d to the left"}), deg)
 }
 
-func (ac *Aircraft) TurnRight(deg int) ([]RadioTransmission, error) {
+func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
 	hdg := NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnRight)
-	return ac.readback(Sample([]string{"turn %d degrees right", "%d to the right"}), deg), nil
+	return ac.readback(Sample([]string{"turn %d degrees right", "%d to the right"}), deg)
 }
 
-func (ac *Aircraft) FlyPresentHeading() ([]RadioTransmission, error) {
+func (ac *Aircraft) FlyPresentHeading() []RadioTransmission {
 	resp := ac.Nav.FlyPresentHeading()
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) DirectFix(fix string) ([]RadioTransmission, error) {
+func (ac *Aircraft) DirectFix(fix string) []RadioTransmission {
 	resp := ac.Nav.DirectFix(strings.ToUpper(fix))
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) DepartFixHeading(fix string, hdg int) ([]RadioTransmission, error) {
+func (ac *Aircraft) DepartFixHeading(fix string, hdg int) []RadioTransmission {
 	resp := ac.Nav.DepartFixHeading(strings.ToUpper(fix), float32(hdg))
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) ([]RadioTransmission, error) {
+func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) []RadioTransmission {
 	resp := ac.Nav.CrossFixAt(strings.ToUpper(fix), float32(alt), float32(speed))
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
 func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
@@ -198,57 +188,57 @@ func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
 	return &arrivals[ac.ArrivalGroupIndex], nil
 }
 
-func (ac *Aircraft) ExpectApproach(id string, w *World) ([]RadioTransmission, error) {
+func (ac *Aircraft) ExpectApproach(id string, w *World) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure."), ErrUnableCommand
+		return ac.readback("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable."), ErrUnableCommand
+		return ac.readback("unable.")
 	}
 
-	resp, err := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, id, arr, w)
-	return ac.readback(resp), err
+	resp, _ := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, id, arr, w)
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) ClearedApproach(id string, w *World) ([]RadioTransmission, error) {
+func (ac *Aircraft) ClearedApproach(id string, w *World) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure."), ErrUnableCommand
+		return ac.readback("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable."), ErrUnableCommand
+		return ac.readback("unable.")
 	}
 
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false, arr, w)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
 	}
-	return ac.readback(resp), err
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) ([]RadioTransmission, error) {
+func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure."), ErrUnableCommand
+		return ac.readback("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable."), ErrUnableCommand
+		return ac.readback("unable.")
 	}
 
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true, arr, w)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
 	}
-	return ac.readback(resp), err
+	return ac.readback(resp)
 }
 
-func (ac *Aircraft) CancelApproachClearance() ([]RadioTransmission, error) {
+func (ac *Aircraft) CancelApproachClearance() []RadioTransmission {
 	resp := ac.Nav.CancelApproachClearance()
-	return ac.readback(resp), nil
+	return ac.readback(resp)
 }
 
 func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
@@ -291,10 +281,7 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	ac.Nav = *nav
 
 	if arr.ExpectApproach != "" {
-		if _, err := ac.ExpectApproach(arr.ExpectApproach, w); err != nil {
-			return fmt.Errorf("%s: %s: unable to find expected approach: %w", ac.Callsign,
-				arr.ExpectApproach, err)
-		}
+		ac.ExpectApproach(arr.ExpectApproach, w)
 	}
 
 	ac.Nav.Check(ac.Callsign)
