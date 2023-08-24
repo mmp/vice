@@ -223,7 +223,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s",
 			*nav.Altitude.AfterSpeedSpeed, dir, alt(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil {
-		dir := Select(c.Altitude > nav.FlightState.Altitude, "climbing", "descending")
+		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		lines = append(lines, dir+" to "+alt(c.Altitude)+" to cross "+
 			c.FinalFix+" at "+alt(c.FinalAltitude))
 	} else if nav.Altitude.Restriction != nil {
@@ -288,27 +288,19 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		}
 		lines = append(lines, line)
 
-		/*
-					   func (fp *FlyRacetrackPT) VSummary(ac *Aircraft) string {
-					   	if fp.ProcedureTurn.ExitAltitude != 0 && nav.FlightState.Altitude > float32(fp.ProcedureTurn.ExitAltitude) {
-					   		return fmt.Sprintf("Descend to %d in the procedure turn", fp.ProcedureTurn.ExitAltitude)
-					   	} else {
-					   		fr := &FlyRoute{}
-					   		return fr.VSummary(ac)
-					   	}
-					   }
-
-					   func (fp *FlyRacetrackPT) LSummary(ac *Aircraft) string {
-					   	s := fmt.Sprintf("Fly the %s procedure turn at %s", fp.ProcedureTurn.Type, fp.Fix)
-					   	if fp.ProcedureTurn.Type == PTRacetrack {
-					   		s += ", " + fp.Entry.String() + " entry"
-					   	}
-					   	return s
-					   }
-			func (fp *FlyStandard45PT) LSummary(ac *Aircraft) string {
-				return fmt.Sprintf("Fly the standard 45/180 procedure turn at %s", fp.Fix)
+		if pt := nav.Heading.RacetrackPT; pt != nil {
+			lines = append(lines,
+				fmt.Sprintf("Fly the %s procedure turn at %s, %s entry", pt.ProcedureTurn.Type,
+					pt.Fix, pt.Entry.String()))
+			if pt.ProcedureTurn.ExitAltitude != 0 &&
+				nav.FlightState.Altitude > pt.ProcedureTurn.ExitAltitude {
+				lines = append(lines, fmt.Sprintf("Descend to %d in the procedure turn",
+					int(pt.ProcedureTurn.ExitAltitude)))
 			}
-		*/
+		}
+		if pt := nav.Heading.Standard45PT; pt != nil {
+			lines = append(lines, fmt.Sprintf("Fly the standard 45/180 procedure turn at %s", pt.Fix))
+		}
 	}
 
 	lines = append(lines, "Route: "+WaypointArray(nav.Waypoints).Encode())
@@ -1672,7 +1664,7 @@ func MakeFlyRacetrackPT(nav *Nav, wp []Waypoint) *FlyRacetrackPT {
 		State:          PTStateApproaching,
 	}
 
-	lg.Printf("racetrack entry %s", fp.Entry)
+	//lg.Printf("racetrack entry %s", fp.Entry)
 
 	// Set the outbound heading. For everything but teardrop, it's the
 	// opposite of the inbound heading.
@@ -1697,10 +1689,10 @@ func MakeFlyRacetrackPT(nav *Nav, wp []Waypoint) *FlyRacetrackPT {
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		diff := headingDifference(fp.OutboundHeading, acFixHeading)
 		fp.OutboundTurnRate = 3 * diff / 180
-		lg.Printf("hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
-			acFixHeading, fp.OutboundHeading,
-			headingDifference(fp.OutboundHeading, acFixHeading),
-			fp.OutboundTurnRate)
+		//lg.Printf("hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
+		//acFixHeading, fp.OutboundHeading,
+		//headingDifference(fp.OutboundHeading, acFixHeading),
+		//fp.OutboundTurnRate)
 	}
 
 	// Set the outbound turn method.
@@ -1773,10 +1765,9 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMet
 
 		if startTurn {
 			fp.State = PTStateTurningOutbound
-			lg.Errorf("starting outbound turn-heading %.1f rate %.2f method %s",
-				fp.OutboundHeading, fp.OutboundTurnRate,
-				fp.OutboundTurnMethod.String())
-			//lg.Errorf("%s: full fp %s", ac.Callsign, spew.Sdump(fp))
+			//lg.Printf("starting outbound turn-heading %.1f rate %.2f method %s",
+			//fp.OutboundHeading, fp.OutboundTurnRate,
+			//fp.OutboundTurnMethod.String())
 		}
 
 		// Even if we're turning, this last time we'll keep the heading to
@@ -1788,8 +1779,8 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMet
 	case PTStateTurningOutbound:
 		if headingDifference(nav.FlightState.Heading, fp.OutboundHeading) < 1 {
 			// Finished the turn; now we'll fly the leg.
-			lg.Errorf("finished the turn; ac heading %.1f outbound %.1f; flying outbound leg",
-				nav.FlightState.Heading, fp.OutboundHeading)
+			//lg.Printf("finished the turn; ac heading %.1f outbound %.1f; flying outbound leg",
+			//nav.FlightState.Heading, fp.OutboundHeading)
 			fp.State = PTStateFlyingOutbound
 		}
 
@@ -1802,11 +1793,11 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMet
 			// start the turn when we will intercept the inbound radial
 			turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
 			if d > 0.5 && nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
-				lg.Errorf("teardrop Turning inbound!")
+				//lg.Printf("teardrop Turning inbound!")
 				fp.State = PTStateTurningInbound
 			}
 		} else if d > fp.OutboundLegLength {
-			lg.Errorf("Turning inbound!")
+			//lg.Printf("Turning inbound!")
 			fp.State = PTStateTurningInbound
 		}
 		return fp.OutboundHeading, TurnClosest, fp.OutboundTurnRate
@@ -1817,7 +1808,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMet
 			// offset-from-true-inbound heading until it is time to turn to
 			// intercept.
 			hdg := NormalizeHeading(fp.InboundHeading + float32(Select(pt.RightTurns, -30, 30)))
-			lg.Printf("parallel inbound turning to %.1f", hdg)
+			//lg.Printf("parallel inbound turning to %.1f", hdg)
 			if headingDifference(nav.FlightState.Heading, hdg) < 1 {
 				fp.State = PTStateFlyingInbound
 			}
@@ -1827,7 +1818,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMet
 		} else {
 			if headingDifference(nav.FlightState.Heading, fp.InboundHeading) < 1 {
 				// otherwise go direct to the fix
-				lg.Errorf("direct fix--done with the HILPT!")
+				//lg.Printf("direct fix--done with the HILPT!")
 				nav.Heading = NavHeading{}
 				nav.Altitude = NavAltitude{}
 			}
@@ -1840,7 +1831,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMet
 		// This state is only used for ParallelEntry
 		turn := TurnMethod(Select(pt.RightTurns, TurnRight, TurnLeft))
 		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
-			lg.Errorf("parallel inbound direct fix")
+			//lg.Printf("parallel inbound direct fix")
 			nav.Heading = NavHeading{}
 			nav.Altitude = NavAltitude{}
 		}
@@ -1865,7 +1856,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 	switch fp.State {
 	case PT45StateApproaching:
 		if nav.shouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, wind) {
-			lg.Printf("turning outbound to %.0f", outboundHeading)
+			//lg.Printf("turning outbound to %.0f", outboundHeading)
 			fp.State = PT45StateTurningOutbound
 		}
 
@@ -1878,7 +1869,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		if nav.FlightState.Heading == outboundHeading {
 			fp.State = PTStateFlyingOutbound
 			fp.SecondsRemaining = 60
-			lg.Printf("flying outbound for %ds", fp.SecondsRemaining)
+			//lg.Printf("flying outbound for %ds", fp.SecondsRemaining)
 		}
 		return outboundHeading, TurnClosest, StandardTurnRate
 
@@ -1886,7 +1877,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		fp.SecondsRemaining--
 		if fp.SecondsRemaining == 0 {
 			fp.State = PT45StateTurningAway
-			lg.Printf("turning away from outbound to %.0f", fp.AwayHeading)
+			//lg.Printf("turning away from outbound to %.0f", fp.AwayHeading)
 
 		}
 		return outboundHeading, TurnClosest, StandardTurnRate
@@ -1895,7 +1886,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		if nav.FlightState.Heading == fp.AwayHeading {
 			fp.State = PT45StateFlyingAway
 			fp.SecondsRemaining = 60
-			lg.Printf("flying away for %ds", fp.SecondsRemaining)
+			//lg.Printf("flying away for %ds", fp.SecondsRemaining)
 		}
 
 		return fp.AwayHeading, TurnClosest, StandardTurnRate
@@ -1904,7 +1895,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		fp.SecondsRemaining--
 		if fp.SecondsRemaining == 0 {
 			fp.State = PT45StateTurningIn
-			lg.Printf("turning in to %.0f", OppositeHeading(fp.AwayHeading))
+			//lg.Printf("turning in to %.0f", OppositeHeading(fp.AwayHeading))
 		}
 		return fp.AwayHeading, TurnClosest, StandardTurnRate
 
@@ -1912,7 +1903,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		hdg := OppositeHeading(fp.AwayHeading)
 		if nav.FlightState.Heading == hdg {
 			fp.State = PT45StateFlyingIn
-			lg.Printf("flying in")
+			//lg.Printf("flying in")
 		}
 
 		turn := Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft)
@@ -1922,7 +1913,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		turn := TurnMethod(Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
 		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind) {
 			fp.State = PT45StateTurningToIntercept
-			lg.Printf("starting turn to intercept %.0f", fp.InboundHeading)
+			//lg.Printf("starting turn to intercept %.0f", fp.InboundHeading)
 		}
 		return nav.FlightState.Heading, TurnClosest, StandardTurnRate
 
@@ -1930,7 +1921,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel) (float32, TurnMe
 		if nav.FlightState.Heading == fp.InboundHeading {
 			nav.Heading = NavHeading{}
 			nav.Altitude = NavAltitude{}
-			lg.Printf("done! direct to the fix now")
+			//lg.Printf("done! direct to the fix now")
 		}
 
 		return fp.InboundHeading, TurnClosest, StandardTurnRate
