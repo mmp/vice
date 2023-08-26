@@ -183,7 +183,8 @@ type RadarTrack struct {
 	Time        time.Time
 }
 
-func FormatAltitude(alt int) string {
+func FormatAltitude(falt float32) string {
+	alt := int(falt)
 	if alt >= 18000 {
 		return "FL" + fmt.Sprintf("%d", alt/100)
 	} else {

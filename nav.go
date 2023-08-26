@@ -209,33 +209,32 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		lines = append(lines, "Arrival to "+fp.ArrivalAirport)
 	}
 
-	alt := func(a float32) string { return FormatAltitude(int(a)) }
 	if nav.Altitude.Assigned != nil {
 		if abs(nav.FlightState.Altitude-*nav.Altitude.Assigned) < 100 {
 			lines = append(lines, "At assigned altitude "+
-				FormatAltitude(int(*nav.Altitude.Assigned)))
+				FormatAltitude(*nav.Altitude.Assigned))
 		} else {
-			lines = append(lines, "At "+alt(nav.FlightState.Altitude)+
-				" for "+alt(*nav.Altitude.Assigned))
+			lines = append(lines, "At "+FormatAltitude(nav.FlightState.Altitude)+
+				" for "+FormatAltitude(*nav.Altitude.Assigned))
 		}
 	} else if nav.Altitude.AfterSpeed != nil {
 		dir := Select(*nav.Altitude.AfterSpeed > nav.FlightState.Altitude, "climb", "descend")
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s",
-			*nav.Altitude.AfterSpeedSpeed, dir, alt(*nav.Altitude.AfterSpeed)))
+			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil {
 		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
-		lines = append(lines, dir+" to "+alt(c.Altitude)+" to cross "+
-			c.FinalFix+" at "+alt(c.FinalAltitude))
+		lines = append(lines, dir+" to "+FormatAltitude(c.Altitude)+" to cross "+
+			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
 	} else if nav.Altitude.Restriction != nil {
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
 		if tgt == nav.FlightState.Altitude {
-			lines = append(lines, "At "+alt(tgt)+" due to previous crossing restriction")
+			lines = append(lines, "At "+FormatAltitude(tgt)+" due to previous crossing restriction")
 		} else if tgt < nav.FlightState.Altitude {
-			lines = append(lines, "Descending "+alt(nav.FlightState.Altitude)+
-				" to "+alt(tgt)+" from previous crossing restriction")
+			lines = append(lines, "Descending "+FormatAltitude(nav.FlightState.Altitude)+
+				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		} else {
-			lines = append(lines, "Climbing "+alt(nav.FlightState.Altitude)+
-				" to "+alt(tgt)+" from previous crossing restriction")
+			lines = append(lines, "Climbing "+FormatAltitude(nav.FlightState.Altitude)+
+				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		}
 	}
 
@@ -309,11 +308,10 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 }
 
 func (nav *Nav) DepartureMessage() string {
-	alt := func(a float32) string { return FormatAltitude(int(a)) }
 	if nav.Altitude.Assigned == nil || nav.FlightState.Altitude == *nav.Altitude.Assigned {
-		return "at " + alt(nav.FlightState.Altitude)
+		return "at " + FormatAltitude(nav.FlightState.Altitude)
 	} else {
-		return "at " + alt(nav.FlightState.Altitude) + " for " + alt(*nav.Altitude.Assigned)
+		return "at " + FormatAltitude(nav.FlightState.Altitude) + " for " + FormatAltitude(*nav.Altitude.Assigned)
 	}
 }
 
@@ -342,12 +340,11 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint) string {
 			int(*nav.Heading.Assigned)))
 	}
 
-	alt := func(a float32) string { return FormatAltitude(int(a)) }
 	if nav.Altitude.Assigned != nil {
-		msgs = append(msgs, "at "+alt(nav.FlightState.Altitude)+" for "+
-			alt(*nav.Altitude.Assigned)+" assigned")
+		msgs = append(msgs, "at "+FormatAltitude(nav.FlightState.Altitude)+" for "+
+			FormatAltitude(*nav.Altitude.Assigned)+" assigned")
 	} else {
-		msgs = append(msgs, "at "+alt(nav.FlightState.Altitude))
+		msgs = append(msgs, "at "+FormatAltitude(nav.FlightState.Altitude))
 	}
 
 	if nav.Speed.Assigned != nil {
@@ -1399,7 +1396,7 @@ func (nav *Nav) CrossFixAt(fix string, alt float32, speed float32) string {
 	if alt != 0 {
 		ar := &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}
 		nfa.Arrive.Altitude = ar
-		response += " at and maintain " + FormatAltitude(int(alt))
+		response += " at and maintain " + FormatAltitude(alt)
 		// Delete other altitude restrictions
 		nav.Altitude = NavAltitude{}
 	}
