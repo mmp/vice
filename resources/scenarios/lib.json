@@ -2522,6 +2522,7 @@
     "EWR": {
       "char": "E",
       "position": "KEWR",
+      "elevation": 136,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
@@ -2529,7 +2530,8 @@
     },
     "HPN": {
       "char": "H",
-      "position": "41.066953,-73.707565",
+      "position": "KHPN",
+      "elevation": 708,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
@@ -2537,7 +2539,8 @@
     },
     "ISP": {
       "char": "I",
-      "position": "ISP",
+      "position": "KISP",
+      "elevation": 185,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
@@ -2546,6 +2549,7 @@
     "JFK": {
       "char": "J",
       "position": "KJFK",
+      "elevation": 143,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
@@ -2553,7 +2557,8 @@
     },
     "SWF": {
       "char": "S",
-      "position": "41.498564,-74.100438",
+      "position": "KSWF",
+      "elevation": 972,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,

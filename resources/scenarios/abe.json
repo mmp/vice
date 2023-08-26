@@ -600,6 +600,7 @@
     "ABE": {
       "char": "A",
       "position": "40.673611,-75.453333",
+      "elevation": 413,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 30,
@@ -608,6 +609,7 @@
     "NXX": {
       "char": "N",
       "position": "40.19980, -75.14820",
+      "elevation": 408,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 50.4,

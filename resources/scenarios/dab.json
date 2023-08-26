@@ -316,6 +316,7 @@
                     "OMN": {
                         "char": "O",
                         "position": "OMN",
+                        "elevation": 150,
                         "primary_range": 60,
                         "secondary_range": 120,
                         "silence_angle": 50.4,
@@ -324,6 +325,7 @@
                     "DAB": {
                         "char": "D",
                         "position": "DAB",
+                        "elevation": 150,
                         "primary_range": 60,
                         "secondary_range": 120,
                         "silence_angle": 50.4,

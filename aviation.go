@@ -824,8 +824,9 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 }
 
 type RadarSite struct {
-	Char     string `json:"char"`
-	Position string `json:"position"`
+	Char           string   `json:"char"`
+	PositionString string   `json:"position"`
+	Position       Point2LL // not in JSON, set during deserialize
 
 	Elevation      int32   `json:"elevation"`
 	PrimaryRange   int32   `json:"primary_range"`
@@ -837,14 +838,7 @@ type RadarSite struct {
 func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primary, secondary bool, distance float32) {
 	// Check altitude first; this is a quick first cull that
 	// e.g. takes care of everyone on the ground.
-	if altitude < int(rs.Elevation) {
-		return
-	}
-
-	pRadar, ok := w.Locate(rs.Position)
-	if !ok {
-		// Really, this method shouldn't be called if the site is invalid,
-		// but if it is, there's not much else we can do.
+	if altitude <= int(rs.Elevation) {
 		return
 	}
 
@@ -853,7 +847,7 @@ func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primar
 	ralt := float32(rs.Elevation) * FeetToNauticalMiles
 	dalt := palt - ralt
 	// not quite true distance, but close enough
-	distance = nmdistance2ll(pRadar, p) + abs(palt-ralt)
+	distance = nmdistance2ll(rs.Position, p) + abs(palt-ralt)
 
 	// If we normalize the vector from the radar site to the aircraft, then
 	// the z (altitude) component gives the cosine of the angle with the

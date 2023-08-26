@@ -3067,6 +3067,7 @@
                           "KCLE": {
                             "char": "L",
                             "position": "KCLE",
+                            "elevation": 900,
                             "primary_range": 60,
                             "secondary_range": 120,
                             "slope_angle": 0.175

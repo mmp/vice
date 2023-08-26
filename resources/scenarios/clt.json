@@ -2298,6 +2298,7 @@
                         "CLT": {
                             "char": "C",
                             "position": "KCLT",
+                            "elevation": 850,
                             "primary_range": 60,
                             "secondary_range": 120,
                             "silence_angle": 10,

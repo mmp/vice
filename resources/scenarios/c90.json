@@ -3385,6 +3385,7 @@
                 "KORD": {
                     "char": "O",
                     "position": "KORD",
+                    "elevation": 750,
                     "primary_range": 60,
                     "secondary_range": 120,
                     "slope_angle": 0.175
@@ -3392,6 +3393,7 @@
                 "KMDW": {
                     "char": "M",
                     "position": "KMDW",
+                    "elevation": 750,
                     "primary_range": 60,
                     "secondary_range": 120,
                     "slope_angle": 0.175

@@ -8654,6 +8654,7 @@
     "KMLB": {
       "char": "L",
       "position": "KMLB",
+      "elevation": 150,
       "primary_range": 60,
       "secondary_range": 120,
       "slope_angle": 0.175
@@ -8661,6 +8662,7 @@
     "KISM": {
       "char": "I",
       "position": "KISM",
+      "elevation": 200,
       "primary_range": 60,
       "secondary_range": 120,
       "slope_angle": 0.175
@@ -8668,6 +8670,7 @@
     "KMCO": {
       "char": "M",
       "position": "N028.25.45.781, W081.18.32.260",
+      "elevation": 100,
       "primary_range": 60,
       "secondary_range": 120,
       "slope_angle": 0.175
@@ -8675,6 +8678,7 @@
     "KORL": {
       "char": "O",
       "position": "KORL",
+      "elevation": 200,
       "primary_range": 60,
       "secondary_range": 120,
       "slope_angle": 0.175
@@ -8682,6 +8686,7 @@
     "KSFB": {
       "char": "S",
       "position": "N028.46.37.847, W081.14.05.700",
+      "elevation": 150,
       "primary_range": 60,
       "secondary_range": 120,
       "slope_angle": 0.175

@@ -2354,6 +2354,7 @@
     "KATL": {
       "char": "A",
       "position": "ATL",
+      "elevation": 1150,
       "primary_range": 60,
       "secondary_range": 120,
       "slope_angle": 0.175

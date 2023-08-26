@@ -968,21 +968,15 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 	// Radar maps
 	radarIndex := 701
 	for _, name := range SortedMapKeys(w.RadarSites) {
-		site := w.RadarSites[name]
-		pRadar, ok := w.Locate(site.Position)
-		if !ok {
-			lg.Errorf("%s: unable to get radar site position to make system map", name)
-			continue
-		}
-
 		sm := &STARSMap{
 			Label: name + "RCM",
 			Name:  name + " RADAR COVERAGE MAP",
 		}
 
+		site := w.RadarSites[name]
 		ld := GetLinesDrawBuilder()
-		ld.AddLatLongCircle(pRadar, w.NmPerLongitude, float32(site.PrimaryRange), 360)
-		ld.AddLatLongCircle(pRadar, w.NmPerLongitude, float32(site.SecondaryRange), 360)
+		ld.AddLatLongCircle(site.Position, w.NmPerLongitude, float32(site.PrimaryRange), 360)
+		ld.AddLatLongCircle(site.Position, w.NmPerLongitude, float32(site.SecondaryRange), 360)
 		ld.GenerateCommands(&sm.CommandBuffer)
 		maps[radarIndex] = sm
 
