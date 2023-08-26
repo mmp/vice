@@ -78,7 +78,7 @@ type Airspace struct {
 type ControllerAirspaceVolume struct {
 	LowerLimit    int          `json:"lower"`
 	UpperLimit    int          `json:"upper"`
-	Boundaries    [][]Point2LL `json:"-"`
+	Boundaries    [][]Point2LL `json:"boundary_polylines"` // not in JSON
 	BoundaryNames []string     `json:"boundaries"`
 }
 
@@ -91,8 +91,8 @@ type Scenario struct {
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
-	ApproachAirspace       []ControllerAirspaceVolume `json:"-"`
-	DepartureAirspace      []ControllerAirspaceVolume `json:"-"`
+	ApproachAirspace       []ControllerAirspaceVolume `json:"approach_airspace_volumes"`  // not in JSON
+	DepartureAirspace      []ControllerAirspaceVolume `json:"departure_airspace_volumes"` // not in JSON
 	ApproachAirspaceNames  []string                   `json:"approach_airspace"`
 	DepartureAirspaceNames []string                   `json:"departure_airspace"`
 
