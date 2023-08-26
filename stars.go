@@ -5608,6 +5608,7 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 			if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
 				aircraft = append(aircraft, ac)
 
+				// Is this the first we've seen it?
 				if state.FirstRadarTrack.IsZero() {
 					state.FirstRadarTrack = w.CurrentTime()
 
@@ -5616,14 +5617,9 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 							// We'd like to auto-track this departure, but first
 							// check that we are the departure controller.
 
-							departureController := w.PrimaryController // default
-							// See if the departure controller is signed in
-							for cs, mc := range w.MultiControllers {
-								if _, ok := w.Controllers[cs]; ok && mc.Departure {
-									departureController = cs
-								}
-							}
+							departureController := w.GetDepartureController(ac)
 
+							// Turns out that we are in fact the departure controller.
 							if w.Callsign == departureController {
 								w.InitiateTrack(callsign, nil, nil) // ignore error...
 								sp.Aircraft[callsign].DatablockType = FullDatablock

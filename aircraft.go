@@ -38,7 +38,8 @@ type Aircraft struct {
 	// nil -> unset/unspecified.
 	Nav Nav
 
-	GoAroundDistance *float32
+	GoAroundDistance         *float32
+	DepartureContactAltitude float32
 
 	// Arrival-related state
 	ArrivalGroup             string
@@ -117,6 +118,24 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 		if passedWaypoint.Delete {
 			w.DeleteAircraft(ac, nil)
 		}
+	}
+
+	if ac.IsDeparture() && ac.DepartureContactAltitude != 0 &&
+		ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+		// We're above the contact altitude, so time to check in.
+		dep := w.GetDepartureController(ac)
+		PostRadioEvents(ac.Callsign, []RadioTransmission{RadioTransmission{
+			Controller: dep,
+			Message:    ac.Nav.DepartureMessage(),
+			Type:       RadioTransmissionContact,
+		}}, ep)
+
+		// Clear this out so we only send one contact message
+		ac.DepartureContactAltitude = 0
+
+		// Only after we're on frequency can the controller start
+		// issuing control commands..
+		ac.ControllingController = dep
 	}
 
 	if ac.GoAroundDistance != nil {
@@ -340,6 +359,9 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 
 	ac.TrackingController = ap.DepartureController
 	ac.ControllingController = ap.DepartureController
+	ac.DepartureContactAltitude =
+		ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
+	ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 
 	ac.Nav.Check(ac.Callsign)
 
@@ -348,10 +370,6 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 
 func (ac *Aircraft) NavSummary() string {
 	return ac.Nav.Summary(*ac.FlightPlan)
-}
-
-func (ac *Aircraft) DepartureMessage() string {
-	return ac.Nav.DepartureMessage()
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) string {

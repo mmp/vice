@@ -244,8 +244,10 @@ func (w *World) InitiateTrack(callsign string, success func(any), err func(error
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
 	// world update will roll back these changes anyway.
-	if ac := w.Aircraft[callsign]; ac != nil &&
-		ac.TrackingController == "" && ac.ControllingController == "" {
+	//
+	// As in sim.go, only check for an unset TrackingController; we may already
+	// have ControllingController due to a pilot checkin on a departure.
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == "" {
 		ac.TrackingController = w.Callsign
 	}
 
@@ -413,6 +415,16 @@ func (w *World) GetController(callsign string) *Controller {
 
 func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
+}
+
+func (w *World) GetDepartureController(ac *Aircraft) string {
+	// See if the departure controller is signed in
+	for callsign, mc := range w.MultiControllers {
+		if _, ok := w.Controllers[callsign]; ok && mc.Departure {
+			return callsign
+		}
+	}
+	return w.PrimaryController // default
 }
 
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {

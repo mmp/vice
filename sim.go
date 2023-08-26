@@ -1523,23 +1523,16 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			// Note: only tracking controller, not controlling yet; that
+			// only comes after the aircraft checks in with departure.
 			ac.TrackingController = ctrl.Callsign
-			ac.ControllingController = ctrl.Callsign
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
 				Callsign:     ac.Callsign,
 				ToController: ctrl.Callsign,
 			})
 
-			if ac.IsDeparture() {
-				return []RadioTransmission{RadioTransmission{
-					Controller: ctrl.Callsign,
-					Message:    ac.DepartureMessage(),
-					Type:       RadioTransmissionContact,
-				}}
-			} else {
-				return nil
-			}
+			return nil
 		})
 }
 
