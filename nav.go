@@ -1204,11 +1204,11 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 
 	var response string
 	if alt > nav.FlightState.Altitude {
-		response = fmt.Sprintf("climb and maintain %.0f", alt)
+		response = "climb and maintain " + FormatAltitude(alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = fmt.Sprintf("maintain %.0f", alt)
+		response = "maintain " + FormatAltitude(alt)
 	} else {
-		response = fmt.Sprintf("descend and maintain %.0f", alt)
+		response = "descend and maintain " + FormatAltitude(alt)
 	}
 
 	if nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
