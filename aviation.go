@@ -526,14 +526,14 @@ func (a AltitudeRestriction) ClampRange(r [2]float32) ([2]float32, bool) {
 func (a AltitudeRestriction) Summary() string {
 	if a.Range[0] != 0 {
 		if a.Range[1] == a.Range[0] {
-			return fmt.Sprintf("%.0f feet", a.Range[0])
+			return fmt.Sprintf("at %s", FormatAltitude(a.Range[0]))
 		} else if a.Range[1] != 0 {
-			return fmt.Sprintf("between %.0f-%.0f feet", a.Range[0], a.Range[1])
+			return fmt.Sprintf("between %s-%s", FormatAltitude(a.Range[0]), FormatAltitude(a.Range[1]))
 		} else {
-			return fmt.Sprintf("at or above %.0f feet", a.Range[0])
+			return fmt.Sprintf("at or above %s", FormatAltitude(a.Range[0]))
 		}
 	} else if a.Range[1] != 0 {
-		return fmt.Sprintf("at or below %.0f feet", a.Range[1])
+		return fmt.Sprintf("at or below %s", FormatAltitude(a.Range[1]))
 	} else {
 		return ""
 	}
