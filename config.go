@@ -20,7 +20,8 @@ import (
 // 8: STARSPane DCB improvements, added DCB font size control
 // 9: correct STARSColors, so update brightness settings to compensate
 // 10: stop being clever about JSON encoding Waypoint arrays to strings
-const CurrentConfigVersion = 10
+// 11: expedite, intercept localizer, fix airspace serialization
+const CurrentConfigVersion = 11
 
 type GlobalConfig struct {
 	Version               int
@@ -150,16 +151,16 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.Sim = nil
 			globalConfig.Callsign = ""
 		}
-		if globalConfig.Version < 10 {
+		if globalConfig.Version < CurrentConfigVersion {
 			globalConfig.Sim = nil
-		}
 
-		if globalConfig.Version < CurrentConfigVersion && globalConfig.DisplayRoot != nil {
-			globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-				if up, ok := p.(PaneUpgrader); ok {
-					up.Upgrade(globalConfig.Version, CurrentConfigVersion)
-				}
-			})
+			if globalConfig.DisplayRoot != nil {
+				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+					if up, ok := p.(PaneUpgrader); ok {
+						up.Upgrade(globalConfig.Version, CurrentConfigVersion)
+					}
+				})
+			}
 		}
 	}
 

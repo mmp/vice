@@ -23,7 +23,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 4
+const ViceRPCVersion = 5
 
 type SimServer struct {
 	name        string
