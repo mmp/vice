@@ -4134,8 +4134,9 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
 		// heading with; this makes things look better when we first see a track or when
 		// restarting a simulation...
-		heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()), ac.Heading()) +
-			ac.MagneticVariation()
+		heading := Select(state.HaveHeading(),
+			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
+
 		sp.drawRadarTrack(state.tracks, heading, ctx, transforms, brightness, STARSTrackBlockColor,
 			trackId, &pd, ld, trid, td)
 	}
