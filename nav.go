@@ -334,9 +334,12 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint) string {
 	if closestRP != nil {
 		direction := compass(headingp2ll(closestRP.Location, nav.FlightState.Position,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation))
-		report := fmt.Sprintf("%d miles %s of %s", int(closestRPDistance+0.5), direction,
-			closestRP.ReadbackName)
-		msgs = append(msgs, report)
+		if dist := int(closestRPDistance + 0.5); dist <= 1 {
+			msgs = append(msgs, "passing "+closestRP.ReadbackName)
+		} else {
+			msgs = append(msgs, fmt.Sprintf("%d miles %s of %s", dist, direction,
+				closestRP.ReadbackName))
+		}
 	}
 
 	if nav.Heading.Assigned != nil {
@@ -1217,11 +1220,11 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 
 	var response string
 	if alt > nav.FlightState.Altitude {
-		response = "climb and maintain " + FormatAltitude(alt)
+		response = Sample([]string{"climb and maintain ", "up to "}) + FormatAltitude(alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = "maintain " + FormatAltitude(alt)
+		response = Sample([]string{"maintain ", "we'll keep it at "}) + FormatAltitude(alt)
 	} else {
-		response = "descend and maintain " + FormatAltitude(alt)
+		response = Sample([]string{"descend and maintain ", "down to "}) + FormatAltitude(alt)
 	}
 
 	if nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
