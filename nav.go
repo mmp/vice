@@ -261,8 +261,14 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 
 	// Speed; don't be as exhaustive as we are for altitude
 	ias, _ := nav.TargetSpeed()
-	if ias != nav.FlightState.IAS {
+	if nav.Speed.MaintainSlowestPractical {
+		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
+	} else if nav.Speed.MaintainMaximumForward {
+		lines = append(lines, fmt.Sprintf("Maintain maximum forward speed: %.0f kts", ias))
+	} else if ias != nav.FlightState.IAS {
 		lines = append(lines, fmt.Sprintf("Speed %.0f kts to %.0f", nav.FlightState.IAS, ias))
+	} else if nav.Speed.Assigned != nil {
+		lines = append(lines, fmt.Sprintf("Maintaining %.0f kts assignment", *nav.Speed.Assigned))
 	}
 
 	for _, fix := range SortedMapKeys(nav.FixAssignments) {
@@ -290,9 +296,14 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			verb += " straight-in"
 		}
 		line := verb + " " + nav.Approach.Assigned.FullName
-		if nav.Approach.InterceptState == TurningToJoin {
+		switch nav.Approach.InterceptState {
+		case NotIntercepting:
+			// nada
+		case InitialHeading:
+			line += ", will join the localizer"
+		case TurningToJoin:
 			line += ", turning to join the localizer"
-		} else if nav.Approach.InterceptState == HoldingLocalizer {
+		case HoldingLocalizer:
 			line += ", established on the localizer"
 		}
 		lines = append(lines, line)
@@ -1285,7 +1296,7 @@ func (nav *Nav) AssignSpeed(speed float32) string {
 		alt := *nav.Altitude.Assigned
 		nav.Speed.AfterAltitudeAltitude = &alt
 
-		return fmt.Sprintf("at %.0f feet maintain %.0f knots", alt, speed)
+		return fmt.Sprintf("at %s feet maintain %.0f knots", FormatAltitude(alt), speed)
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
