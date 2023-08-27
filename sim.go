@@ -1778,6 +1778,26 @@ func (s *Sim) AssignSpeed(token, callsign string, speed int) error {
 		})
 }
 
+func (s *Sim) MaintainSlowestPractical(token, callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.MaintainSlowestPractical()
+		})
+}
+
+func (s *Sim) MaintainMaximumForward(token, callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.MaintainMaximumForward()
+		})
+}
+
 func (s *Sim) ExpediteDescent(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

@@ -1057,6 +1057,16 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return err
 				}
+			} else if command == "SMIN" {
+				if err := sim.MaintainSlowestPractical(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if command == "SMAX" {
+				if err := sim.MaintainMaximumForward(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))

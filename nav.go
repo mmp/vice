@@ -62,9 +62,11 @@ type NavAltitude struct {
 }
 
 type NavSpeed struct {
-	Assigned              *float32
-	AfterAltitude         *float32
-	AfterAltitudeAltitude *float32
+	Assigned                 *float32
+	AfterAltitude            *float32
+	AfterAltitudeAltitude    *float32
+	MaintainSlowestPractical bool
+	MaintainMaximumForward   bool
 	// Carried after passing a waypoint
 	Restriction *float32
 }
@@ -182,12 +184,16 @@ func (nav *Nav) TAS() float32 {
 	return nav.FlightState.IAS * (1 + .02*nav.FlightState.Altitude/1000)
 }
 
-func (nav *Nav) IsAirborne() bool {
-	v2 := nav.Perf.Speed.V2
-	if v2 == 0 {
+func (nav *Nav) v2() float32 {
+	if nav.Perf.Speed.V2 == 0 {
 		// Unfortunately we don't always have V2 in the performance database, so approximate...
-		v2 = 1.15 * nav.Perf.Speed.Landing
+		return 1.15 * nav.Perf.Speed.Landing
 	}
+	return nav.Perf.Speed.V2
+}
+
+func (nav *Nav) IsAirborne() bool {
+	v2 := nav.v2()
 
 	// FIXME: this only considers speed, which is probably ok but is somewhat unsatisfying.
 	// More explicitly model "on the ground" vs "airborne" states?
@@ -909,6 +915,19 @@ func (nav *Nav) TargetSpeed() (float32, float32) {
 		}
 	}
 
+	if nav.Speed.MaintainSlowestPractical {
+		return nav.v2() + 5, MaximumRate
+	}
+	if nav.Speed.MaintainMaximumForward {
+		if nav.Approach.Cleared {
+			// (We expect this to usually be the case.) Ad-hoc speed based
+			// on V2, also assuming some flaps are out, so we don't just
+			// want to return 250 knots here...
+			return min(nav.v2()*1.6, min(250, nav.Perf.Speed.Cruise)), MaximumRate
+		}
+		return nav.targetAltitudeIAS()
+	}
+
 	// Absent speed restrictions, slow down arrivals starting 10 miles out
 	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
 		// Expected speed at 10 DME, without further direction.
@@ -965,8 +984,16 @@ func (nav *Nav) TargetSpeed() (float32, float32) {
 		return *nav.Speed.Restriction, MaximumRate
 	}
 
-	// Further baseline cases for if there's no waypoint-based or
-	// controller-assigned speed restriction.
+	// Nothing assigned by the controller or the route, so set a target
+	// based on the aircraft's altitude.
+	return nav.targetAltitudeIAS()
+}
+
+// Compute target airspeed for higher altitudes speed by lerping from 250
+// to cruise speed based on altitude.
+func (nav *Nav) targetAltitudeIAS() (float32, float32) {
+	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
+
 	if nav.FlightState.Altitude < 10000 {
 		// 250kts under 10k.  We can assume a high acceleration rate for
 		// departures when this kicks in at 1000' AGL given that VNav will
@@ -975,11 +1002,8 @@ func (nav *Nav) TargetSpeed() (float32, float32) {
 		return min(nav.Perf.Speed.Cruise, 250), 0.8 * maxAccel
 	}
 
-	// Otherwise set the target speed by lerping from 250 to cruise based
-	// on altitude.
 	x := clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
-	ias := lerp(x, min(nav.Perf.Speed.Cruise, 250), nav.Perf.Speed.Cruise)
-	return ias, 0.8 * maxAccel
+	return lerp(x, min(nav.Perf.Speed.Cruise, 250), nav.Perf.Speed.Cruise), 0.8 * maxAccel
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float32) {
@@ -1270,6 +1294,16 @@ func (nav *Nav) AssignSpeed(speed float32) string {
 			return fmt.Sprintf("maintain %.0f knots", speed)
 		}
 	}
+}
+
+func (nav *Nav) MaintainSlowestPractical() string {
+	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
+	return Sample([]string{"we'll maintain slowest practical speed", "slowing as much as we can"})
+}
+
+func (nav *Nav) MaintainMaximumForward() string {
+	nav.Speed = NavSpeed{MaintainMaximumForward: true}
+	return Sample([]string{"we'll keep it at maximum forward speed", "maintaining maximum forward speed"})
 }
 
 func (nav *Nav) ExpediteDescent() string {

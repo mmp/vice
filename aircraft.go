@@ -177,6 +177,14 @@ func (ac *Aircraft) AssignSpeed(speed int) []RadioTransmission {
 	return ac.readback(resp)
 }
 
+func (ac *Aircraft) MaintainSlowestPractical() []RadioTransmission {
+	return ac.readback(ac.Nav.MaintainSlowestPractical())
+}
+
+func (ac *Aircraft) MaintainMaximumForward() []RadioTransmission {
+	return ac.readback(ac.Nav.MaintainMaximumForward())
+}
+
 func (ac *Aircraft) ExpediteDescent() []RadioTransmission {
 	resp := ac.Nav.ExpediteDescent()
 	return ac.readback(resp)
