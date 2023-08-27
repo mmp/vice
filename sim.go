@@ -1750,6 +1750,16 @@ func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
 		})
 }
 
+type HeadingArgs struct {
+	ControllerToken string
+	Callsign        string
+	Heading         int
+	Present         bool
+	LeftDegrees     int
+	RightDegrees    int
+	Turn            TurnMethod
+}
+
 func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
