@@ -529,8 +529,8 @@ func (nav *Nav) Update(wind WindModel) *Waypoint {
 func (nav *Nav) TargetHeading(wind WindModel) (heading float32, turn TurnMethod, rate float32) {
 	heading, turn, rate = nav.FlightState.Heading, TurnClosest, 3 // baseline
 
-	if nav.Approach.InterceptState != NotIntercepting &&
-		nav.Approach.InterceptState != HoldingLocalizer {
+	if nav.Approach.InterceptState == InitialHeading ||
+		nav.Approach.InterceptState == TurningToJoin {
 		return nav.LocalizerHeading(wind)
 	}
 
@@ -661,7 +661,11 @@ func (nav *Nav) LocalizerHeading(wind WindModel) (heading float32, turn TurnMeth
 			}
 		}
 
-		nav.Altitude = NavAltitude{}
+		// Ignore the approach altitude constraints if the aircraft is only
+		// intercepting but isn't cleared.
+		if nav.Approach.Cleared {
+			nav.Altitude = NavAltitude{}
+		}
 		nav.Heading = NavHeading{}
 		nav.Approach.InterceptState = HoldingLocalizer
 		return
@@ -1551,22 +1555,34 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 	return opener + " " + ap.FullName + " approach", nil
 }
 
-func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *Arrival,
-	w *World) (string, error) {
-	var response string
+func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival, w *World) string {
 	if nav.Approach.AssignedId == "" {
-		// attempt to allow it anyway...
-		if resp, err := nav.ExpectApproach(airport, id, arr, w); err != nil {
-			return resp, err
-		}
-		response = "you never told us to expect an approach, but ok, "
+		return "you never told us to expect an approach"
 	}
 
 	ap := nav.Approach.Assigned
-	if id != nav.Approach.AssignedId {
-		return "unable. We were told to expect the " + ap.FullName + " approach...",
-			ErrClearedForUnexpectedApproach
+	if ap.Type != ILSApproach {
+		return "we can only intercept an ILS approach"
 	}
+	if nav.Heading.Assigned == nil {
+		return "we have to be flying a heading to intercept"
+	}
+
+	resp, err := nav.prepareForApproach(airport, false, arr, w)
+	if err != nil {
+		return resp
+	} else {
+		return Sample([]string{"intercepting the " + ap.FullName + " approach",
+			"intercepting " + ap.FullName})
+	}
+}
+
+func (nav *Nav) prepareForApproach(airport string, straightIn bool, arr *Arrival, w *World) (string, error) {
+	if nav.Approach.AssignedId == "" {
+		return "you never told us to expect an approach", ErrClearedForUnexpectedApproach
+	}
+
+	ap := nav.Approach.Assigned
 
 	directApproachFix := false
 	if nav.Heading.Assigned == nil && len(nav.Waypoints) > 0 {
@@ -1605,18 +1621,33 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr 
 	// No procedure turn if it intercepts via a heading
 	nav.Approach.NoPT = straightIn || nav.Heading.Assigned != nil
 
-	// Cleared approach also cancels speed restrictions, but let's not do
-	// that.
-	nav.Approach.Cleared = true
+	return "", nil
+}
 
-	nav.flyProcedureTurnIfNecessary()
-
-	if straightIn {
-		response += "cleared straight in " + ap.FullName + " approach"
-	} else {
-		response += "cleared " + ap.FullName + " approach"
+func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *Arrival,
+	w *World) (string, error) {
+	ap := nav.Approach.Assigned
+	if nav.Approach.AssignedId != id {
+		return "unable. We were told to expect the " + ap.FullName + " approach...",
+			ErrClearedForUnexpectedApproach
 	}
-	return response, nil
+
+	if resp, err := nav.prepareForApproach(airport, straightIn, arr, w); err != nil {
+		return resp, err
+	} else {
+		// Cleared approach also cancels speed restrictions, but let's not do
+		// that.
+		nav.Approach.Cleared = true
+		nav.Altitude = NavAltitude{} // in case we have intercepted but are only being cleared now
+
+		nav.flyProcedureTurnIfNecessary()
+
+		if straightIn {
+			return "cleared straight in " + ap.FullName + " approach", nil
+		} else {
+			return "cleared " + ap.FullName + " approach", nil
+		}
+	}
 }
 
 func (nav *Nav) CancelApproachClearance() string {

@@ -1872,6 +1872,16 @@ func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool)
 		})
 }
 
+func (s *Sim) InterceptLocalizer(token, callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.InterceptLocalizer(s.World)
+		})
+}
+
 func (s *Sim) CancelApproachClearance(token, callsign string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

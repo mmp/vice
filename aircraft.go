@@ -295,6 +295,20 @@ func (ac *Aircraft) CancelApproachClearance() []RadioTransmission {
 	return ac.readback(resp)
 }
 
+func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {
+	if ac.IsDeparture() {
+		return ac.readback("unable. This aircraft is a departure.")
+	}
+
+	arr, err := ac.getArrival(w)
+	if err != nil {
+		return ac.readback("unable.")
+	}
+
+	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport, arr, w)
+	return ac.readback(resp)
+}
+
 func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	arrivalGroupIndex int, goAround bool) error {
 	arr := &w.ArrivalGroups[arrivalGroup][arrivalGroupIndex]

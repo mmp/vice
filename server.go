@@ -990,6 +990,17 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 				return err
 			}
 
+		case 'I':
+			if len(command) == 1 {
+				if err := sim.InterceptLocalizer(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else {
+				sim.SetSTARSInput(strings.Join(commands[i:], " "))
+				return ErrInvalidCommandSyntax
+			}
+
 		case 'L':
 			if l := len(command); l > 2 && command[l-1] == 'D' {
 				// turn left x degrees
