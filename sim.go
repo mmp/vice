@@ -1848,13 +1848,13 @@ func (s *Sim) DepartFixHeading(token, callsign, fix string, heading int) error {
 		})
 }
 
-func (s *Sim) CrossFixAt(token, callsign, fix string, alt, speed int) error {
+func (s *Sim) CrossFixAt(token, callsign, fix string, ar *AltitudeRestriction, speed int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.CrossFixAt(fix, alt, speed)
+			return ac.CrossFixAt(fix, ar, speed)
 		})
 }
 

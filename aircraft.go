@@ -227,8 +227,8 @@ func (ac *Aircraft) DepartFixHeading(fix string, hdg int) []RadioTransmission {
 	return ac.readback(resp)
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, alt int, speed int) []RadioTransmission {
-	resp := ac.Nav.CrossFixAt(strings.ToUpper(fix), float32(alt), float32(speed))
+func (ac *Aircraft) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) []RadioTransmission {
+	resp := ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed)
 	return ac.readback(resp)
 }
 

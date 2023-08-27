@@ -1473,7 +1473,7 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) string {
 	return fmt.Sprintf(response+" heading %03d", int(hdg))
 }
 
-func (nav *Nav) CrossFixAt(fix string, alt float32, speed float32) string {
+func (nav *Nav) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) string {
 	if !nav.fixInRoute(fix) {
 		return "unable. " + fix + " isn't in our route"
 	}
@@ -1484,19 +1484,19 @@ func (nav *Nav) CrossFixAt(fix string, alt float32, speed float32) string {
 	} else {
 		response += fix
 	}
+	response += " "
 
 	nfa := nav.FixAssignments[fix]
-	if alt != 0 {
-		ar := &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}
+	if ar != nil {
 		nfa.Arrive.Altitude = ar
-		response += " at and maintain " + FormatAltitude(alt)
+		response += ar.Summary()
 		// Delete other altitude restrictions
 		nav.Altitude = NavAltitude{}
 	}
 	if speed != 0 {
 		s := float32(speed)
 		nfa.Arrive.Speed = &s
-		response += fmt.Sprintf(" at %.0f knots", speed)
+		response += fmt.Sprintf(" at %.0f knots", s)
 		// Delete other speed restrictions
 		nav.Speed = NavSpeed{}
 	}

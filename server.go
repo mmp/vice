@@ -745,7 +745,8 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 				if components := strings.Split(command, "/"); len(components) > 1 {
 					// Cross fix [at altitude] [at speed]
 					fix := components[0][1:]
-					alt, speed := 0, 0
+					var ar *AltitudeRestriction
+					speed := 0
 
 					for _, cmd := range components[1:] {
 						if len(cmd) == 0 {
@@ -754,11 +755,14 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 						}
 
 						var err error
-						if cmd[0] == 'A' {
-							if alt, err = strconv.Atoi(cmd[1:]); err != nil {
+						if cmd[0] == 'A' && len(cmd) > 1 {
+							if ar, err = ParseAltitudeRestriction(cmd[1:]); err != nil {
 								sim.SetSTARSInput(strings.Join(commands[i:], " "))
-								return err
+								return ErrInvalidCommandSyntax
 							}
+							// User input here is 100s of feet, while AltitudeRestriction is feet...
+							ar.Range[0] *= 100
+							ar.Range[1] *= 100
 						} else if cmd[0] == 'S' {
 							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
 								sim.SetSTARSInput(strings.Join(commands[i:], " "))
@@ -770,7 +774,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 						}
 					}
 
-					if err := sim.CrossFixAt(cmds.ControllerToken, cmds.Callsign, fix, 100*alt, speed); err != nil {
+					if err := sim.CrossFixAt(cmds.ControllerToken, cmds.Callsign, fix, ar, speed); err != nil {
 						sim.SetSTARSInput(strings.Join(commands[i:], " "))
 						return err
 					}
