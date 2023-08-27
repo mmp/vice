@@ -56,7 +56,7 @@ type NavAltitude struct {
 	Assigned        *float32
 	AfterSpeed      *float32
 	AfterSpeedSpeed *float32
-	// Expedite        bool
+	Expedite        bool
 	// Carried after passing a waypoint
 	Restriction *AltitudeRestriction
 }
@@ -214,8 +214,12 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			lines = append(lines, "At assigned altitude "+
 				FormatAltitude(*nav.Altitude.Assigned))
 		} else {
-			lines = append(lines, "At "+FormatAltitude(nav.FlightState.Altitude)+
-				" for "+FormatAltitude(*nav.Altitude.Assigned))
+			line := "At " + FormatAltitude(nav.FlightState.Altitude) + " for " +
+				FormatAltitude(*nav.Altitude.Assigned)
+			if nav.Altitude.Expedite {
+				line += ", expediting"
+			}
+			lines = append(lines, line)
 		}
 	} else if nav.Altitude.AfterSpeed != nil {
 		dir := Select(*nav.Altitude.AfterSpeed > nav.FlightState.Altitude, "climb", "descend")
@@ -358,6 +362,11 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint) string {
 // Simulation
 
 func (nav *Nav) updateAirspeed() {
+	if nav.Altitude.Expedite {
+		// Don't accelerate or decelerate if we're expediting
+		return
+	}
+
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.  cruising speed.
@@ -382,24 +391,28 @@ func (nav *Nav) updateAltitude() {
 
 	if abs(targetAltitude-nav.FlightState.Altitude) < 3 {
 		nav.FlightState.Altitude = targetAltitude
+		nav.Altitude.Expedite = false
 		return
 	}
 
 	// Baseline climb and descent capabilities in ft/minute
 	climb, descent := nav.Perf.Rate.Climb, nav.Perf.Rate.Descent
 
-	// For high performing aircraft, reduce climb rate after 5,000'
-	if climb >= 2500 && nav.FlightState.Altitude > 5000 {
-		climb -= 500
+	// Reduce rates from highest possible to be more realistic.
+	if !nav.Altitude.Expedite {
+		// For high performing aircraft, reduce climb rate after 5,000'
+		if climb >= 2500 && nav.FlightState.Altitude > 5000 {
+			climb -= 500
+		}
+		if nav.FlightState.Altitude < 10000 {
+			// Have a slower baseline rate of descent on approach
+			descent = min(descent, 2000)
+			// And reduce it based on airspeed as well
+			descent *= min(nav.FlightState.IAS/250, 1)
+		}
+		climb = min(climb, targetRate)
+		descent = min(descent, targetRate)
 	}
-	if nav.FlightState.Altitude < 10000 {
-		// Have a slower baseline rate of descent on approach
-		descent = min(descent, 2000)
-		// And reduce it based on airspeed as well
-		descent *= min(nav.FlightState.IAS/250, 1)
-	}
-	climb = min(climb, targetRate)
-	descent = min(descent, targetRate)
 
 	if nav.FlightState.Altitude < targetAltitude {
 		// Simple model: we just update altitude based on the rated climb
@@ -1218,7 +1231,7 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 
 		return fmt.Sprintf("at %.0f knots, ", *nav.Speed.Assigned) + response
 	} else {
-		nav.Altitude.Assigned = &alt
+		nav.Altitude = NavAltitude{Assigned: &alt}
 		return response
 	}
 }
@@ -1254,6 +1267,34 @@ func (nav *Nav) AssignSpeed(speed float32) string {
 			return fmt.Sprintf("maintain %.0f knots", speed)
 		}
 	}
+}
+
+func (nav *Nav) ExpediteDescent() string {
+	alt, _ := nav.TargetAltitude()
+	if alt >= nav.FlightState.Altitude {
+		return "unable. We're not descending"
+	}
+	if nav.Altitude.Expedite {
+		return Sample([]string{"we're already expediting", "that's our best rate"})
+	}
+
+	nav.Altitude.Expedite = true
+	resp := Sample([]string{"expediting down to", "expedite to"})
+	return resp + " " + FormatAltitude(alt)
+}
+
+func (nav *Nav) ExpediteClimb() string {
+	alt, _ := nav.TargetAltitude()
+	if alt <= nav.FlightState.Altitude {
+		return "unable. We're not climbing"
+	}
+	if nav.Altitude.Expedite {
+		return Sample([]string{"we're already expediting", "that's our best rate"})
+	}
+
+	nav.Altitude.Expedite = true
+	resp := Sample([]string{"expediting up to", "expedite to"})
+	return resp + " " + FormatAltitude(alt)
 }
 
 func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {

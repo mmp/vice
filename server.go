@@ -946,8 +946,18 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			}
 
 		case 'E':
-			// Expect approach.
-			if len(command) > 1 {
+			if command == "ED" {
+				if err := sim.ExpediteDescent(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if command == "EC" {
+				if err := sim.ExpediteClimb(cmds.ControllerToken, cmds.Callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if len(command) > 1 {
+				// Expect approach.
 				if err := sim.ExpectApproach(cmds.ControllerToken, cmds.Callsign, command[1:]); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return err

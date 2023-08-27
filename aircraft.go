@@ -177,6 +177,16 @@ func (ac *Aircraft) AssignSpeed(speed int) []RadioTransmission {
 	return ac.readback(resp)
 }
 
+func (ac *Aircraft) ExpediteDescent() []RadioTransmission {
+	resp := ac.Nav.ExpediteDescent()
+	return ac.readback(resp)
+}
+
+func (ac *Aircraft) ExpediteClimb() []RadioTransmission {
+	resp := ac.Nav.ExpediteClimb()
+	return ac.readback(resp)
+}
+
 func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmission {
 	resp := ac.Nav.AssignHeading(float32(heading), turn)
 	return ac.readback(resp)
