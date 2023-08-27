@@ -1858,6 +1858,16 @@ func (s *Sim) CrossFixAt(token, callsign, fix string, ar *AltitudeRestriction, s
 		})
 }
 
+func (s *Sim) AtFixCleared(token, callsign, fix, approach string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.AtFixCleared(fix, approach)
+		})
+}
+
 func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

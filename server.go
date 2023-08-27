@@ -719,7 +719,8 @@ func (sd *SimDispatcher) DeleteAircraft(da *DeleteAircraftArgs, _ *struct{}) err
 }
 
 func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *struct{}) error {
-	sim, ok := sd.sm.controllerTokenToSim[cmds.ControllerToken]
+	token, callsign := cmds.ControllerToken, cmds.Callsign
+	sim, ok := sd.sm.controllerTokenToSim[token]
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
@@ -783,6 +784,21 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					return err
 				}
 			} else {
+				if command[0] == 'A' {
+					components := strings.Split(command, "/")
+					if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return ErrInvalidCommandSyntax
+					}
+
+					fix := strings.ToUpper(components[0][1:])
+					approach := components[1][1:]
+					if err := sim.AtFixCleared(token, callsign, fix, approach); err != nil {
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return err
+					}
+				}
+
 				// Otherwise look for an altitude
 				if alt, err := strconv.Atoi(command[1:]); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))

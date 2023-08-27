@@ -79,11 +79,12 @@ type NavHeading struct {
 }
 
 type NavApproach struct {
-	Assigned       *Approach
-	AssignedId     string
-	Cleared        bool
-	InterceptState InterceptLocalizerState
-	NoPT           bool
+	Assigned          *Approach
+	AssignedId        string
+	Cleared           bool
+	InterceptState    InterceptLocalizerState
+	NoPT              bool
+	AtFixClearedRoute []Waypoint
 }
 
 type NavFixAssignment struct {
@@ -1084,7 +1085,11 @@ func (nav *Nav) updateWaypoints(wind WindModel) *Waypoint {
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
 	// First, figure out the outbound heading.
 	var hdg float32
-	if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
+	if len(nav.Waypoints) == 1 && nav.Approach.AtFixClearedRoute != nil &&
+		nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
+		hdg = headingp2ll(wp.Location, nav.Approach.AtFixClearedRoute[0].Location,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 		// controller assigned heading at the fix.
 		hdg = *nfa.Depart.Heading
 	} else if wp.Heading != 0 {
@@ -1103,6 +1108,11 @@ func (nav *Nav) updateWaypoints(wind WindModel) *Waypoint {
 	if nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind) {
 		lg.Printf("turning outbound from %.1f to %.1f for %s", nav.FlightState.Heading,
 			hdg, wp.Fix)
+
+		if nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
+			nav.Approach.Cleared = true
+			nav.Waypoints = nav.Approach.AtFixClearedRoute
+		}
 
 		if nav.Approach.Cleared {
 			// The aircraft has made it to the approach fix they
@@ -1586,6 +1596,32 @@ func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival, w *World) strin
 		return Sample([]string{"intercepting the " + ap.FullName + " approach",
 			"intercepting " + ap.FullName})
 	}
+}
+
+func (nav *Nav) AtFixCleared(fix, id string) string {
+	if nav.Approach.AssignedId == "" {
+		return "you never told us to expect an approach"
+	}
+
+	ap := nav.Approach.Assigned
+	if nav.Approach.AssignedId != id {
+		return "unable. We were told to expect the " + ap.FullName + " approach..."
+	}
+
+	if idx := FindIf(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }); idx == -1 {
+		return "unable. " + fix + " is not in our route"
+	}
+	nav.Approach.AtFixClearedRoute = nil
+	for _, route := range ap.Waypoints {
+		for i, wp := range route {
+			if wp.Fix == fix {
+				nav.Approach.AtFixClearedRoute = DuplicateSlice(route[i:])
+			}
+		}
+	}
+
+	return Sample([]string{"at " + fix + ", cleared " + ap.FullName,
+		"cleared " + ap.FullName + " at " + fix})
 }
 
 func (nav *Nav) prepareForApproach(airport string, straightIn bool, arr *Arrival, w *World) (string, error) {

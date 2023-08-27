@@ -256,6 +256,10 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) []RadioTransmission {
 	return ac.readback(resp)
 }
 
+func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
+	return ac.readback(ac.Nav.AtFixCleared(fix, approach))
+}
+
 func (ac *Aircraft) ClearedApproach(id string, w *World) []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readback("unable. This aircraft is a departure.")
