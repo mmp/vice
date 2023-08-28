@@ -115,7 +115,7 @@ func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
 				})
 			}
 		}
-		if passedWaypoint.Delete {
+		if passedWaypoint.Delete && ac.Nav.Approach.Cleared {
 			w.DeleteAircraft(ac, nil)
 		}
 	}
