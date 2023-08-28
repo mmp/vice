@@ -418,6 +418,12 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) GetDepartureController(ac *Aircraft) string {
+	// This may be already set, e.g. for a departure with a specified
+	// initial controller at another airport.
+	if ac.ControllingController != "" {
+		return ac.ControllingController
+	}
+
 	// See if the departure controller is signed in
 	for callsign, mc := range w.MultiControllers {
 		if _, ok := w.Controllers[callsign]; ok && mc.Departure {
