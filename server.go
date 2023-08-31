@@ -730,9 +730,14 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 	for i, command := range commands {
 		switch command[0] {
 		case 'A', 'C':
-			if len(command) == 3 && command == "CAC" {
+			if command == "CAC" {
 				// Cancel approach clearance
 				if err := sim.CancelApproachClearance(token, callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if command == "CVS" {
+				if err := sim.ClimbViaSID(token, callsign); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return err
 				}
@@ -810,20 +815,34 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			}
 
 		case 'D':
-			if components := strings.Split(command, "/"); len(components) > 1 {
-				// Depart <fix> at heading <hdg>
+			if command == "DVS" {
+				if err := sim.DescendViaSTAR(token, callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if components := strings.Split(command, "/"); len(components) > 1 && len(components[1]) > 1 {
 				fix := components[0][1:]
 
-				if components[1][0] != 'H' {
+				switch components[1][0] {
+				case 'D':
+					// Depart <fix1> direct <fix2>
+					if err := sim.DepartFixDirect(token, callsign, fix, components[1][1:]); err != nil {
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return err
+					}
+				case 'H':
+					// Depart <fix> at heading <hdg>
+					if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return err
+					} else if err := sim.DepartFixHeading(token, callsign, fix, hdg); err != nil {
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return err
+					}
+
+				default:
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return ErrInvalidCommandSyntax
-				}
-				if hdg, err := strconv.Atoi(components[1][1:]); err != nil {
-					sim.SetSTARSInput(strings.Join(commands[i:], " "))
-					return err
-				} else if err := sim.DepartFixHeading(token, callsign, fix, hdg); err != nil {
-					sim.SetSTARSInput(strings.Join(commands[i:], " "))
-					return err
 				}
 			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
 				// Looks like an altitude.

@@ -227,6 +227,11 @@ func (ac *Aircraft) DepartFixHeading(fix string, hdg int) []RadioTransmission {
 	return ac.readback(resp)
 }
 
+func (ac *Aircraft) DepartFixDirect(fixa, fixb string) []RadioTransmission {
+	resp := ac.Nav.DepartFixDirect(strings.ToUpper(fixa), strings.ToUpper(fixb))
+	return ac.readback(resp)
+}
+
 func (ac *Aircraft) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) []RadioTransmission {
 	resp := ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed)
 	return ac.readback(resp)
@@ -297,6 +302,14 @@ func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) []RadioTransm
 func (ac *Aircraft) CancelApproachClearance() []RadioTransmission {
 	resp := ac.Nav.CancelApproachClearance()
 	return ac.readback(resp)
+}
+
+func (ac *Aircraft) ClimbViaSID() []RadioTransmission {
+	return ac.readback(ac.Nav.ClimbViaSID())
+}
+
+func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
+	return ac.readback(ac.Nav.DescendViaSTAR())
 }
 
 func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {

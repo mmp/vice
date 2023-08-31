@@ -93,6 +93,7 @@ type NavFixAssignment struct {
 		Speed    *float32
 	}
 	Depart struct {
+		Fix     *Waypoint
 		Heading *float32
 	}
 }
@@ -1092,6 +1093,10 @@ func (nav *Nav) updateWaypoints(wind WindModel) *Waypoint {
 	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 		// controller assigned heading at the fix.
 		hdg = *nfa.Depart.Heading
+	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
+		// depart fix direct
+		hdg = headingp2ll(wp.Location, nfa.Depart.Fix.Location,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = float32(wp.Heading)
@@ -1135,6 +1140,15 @@ func (nav *Nav) updateWaypoints(wind WindModel) *Waypoint {
 			// Controller-assigned heading
 			hdg := *nfa.Depart.Heading
 			nav.Heading = NavHeading{Assigned: &hdg}
+		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
+			if !nav.directFix(nfa.Depart.Fix.Fix) {
+				lg.Errorf("unable direct %s after %s???", nfa.Depart.Fix.Fix, wp.Fix)
+			} else {
+				// Hacky: directFix updates the route but below we peel off
+				// the current waypoint, so re-add it here so everything
+				// works out.
+				nav.Waypoints = append([]Waypoint{wp}, nav.Waypoints...)
+			}
 		} else if wp.Heading != 0 {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
@@ -1420,32 +1434,69 @@ func (nav *Nav) fixInRoute(fix string) bool {
 	return false
 }
 
-func (nav *Nav) DirectFix(fix string) string {
-	// Look for the fix in the waypoints in the flight plan.
-	found := false
-	for i, wp := range nav.Waypoints {
-		if fix == wp.Fix {
-			nav.Waypoints = nav.Waypoints[i:]
-			found = true
-			break
-		}
+func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
+	find := func(f string, wp []Waypoint) int {
+		return FindIf(wp, func(wp Waypoint) bool { return wp.Fix == f })
 	}
 
-	if !found {
-		if ap := nav.Approach.Assigned; ap != nil {
-			for _, route := range ap.Waypoints {
-				for _, wp := range route {
-					if wp.Fix == fix {
-						nav.Waypoints = []Waypoint{wp}
-						found = true
-						break
-					}
+	var apWaypoints []WaypointArray
+	if nav.Approach.Assigned != nil {
+		apWaypoints = nav.Approach.Assigned.Waypoints
+	}
+
+	if ia := find(fixa, nav.Waypoints); ia != -1 {
+		// First fix is in the current route
+		fa = &nav.Waypoints[ia]
+		if ib := find(fixb, nav.Waypoints[ia:]); ib != -1 {
+			// As is the second, and after the first
+			fb = &nav.Waypoints[ia+ib]
+			return
+		}
+		for _, wp := range apWaypoints {
+			if idx := find(fixb, wp); idx != -1 {
+				fb = &wp[idx]
+				return
+			}
+		}
+	} else {
+		// Check the approaches
+		for _, wp := range apWaypoints {
+			if ia := find(fixa, wp); ia != -1 {
+				fa = &wp[ia]
+				if ib := find(fixb, wp[ia:]); ib != -1 {
+					fb = &wp[ia+ib]
+					return
 				}
 			}
 		}
 	}
+	return
+}
 
-	if found {
+func (nav *Nav) directFix(fix string) bool {
+	// Look for the fix in the waypoints in the flight plan.
+	for i, wp := range nav.Waypoints {
+		if fix == wp.Fix {
+			nav.Waypoints = nav.Waypoints[i:]
+			return true
+		}
+	}
+
+	if ap := nav.Approach.Assigned; ap != nil {
+		for _, route := range ap.Waypoints {
+			for _, wp := range route {
+				if wp.Fix == fix {
+					nav.Waypoints = []Waypoint{wp}
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (nav *Nav) DirectFix(fix string) string {
+	if nav.directFix(fix) {
 		nav.Heading = NavHeading{}
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
@@ -1454,6 +1505,22 @@ func (nav *Nav) DirectFix(fix string) string {
 	} else {
 		return "unable. " + FixReadback(fix) + " isn't in our route"
 	}
+}
+
+func (nav *Nav) DepartFixDirect(fixa string, fixb string) string {
+	fa, fb := nav.fixPairInRoute(fixa, fixb)
+	if fa == nil {
+		return "unable. " + fixa + " isn't in our route"
+	}
+	if fb == nil {
+		return "unable. " + fixb + " isn't in our route after " + fixa
+	}
+
+	nfa := nav.FixAssignments[fixa]
+	nfa.Depart.Fix = fb
+	nav.FixAssignments[fixa] = nfa
+
+	return "depart " + FixReadback(fixa) + " direct " + FixReadback(fixb)
 }
 
 func (nav *Nav) DepartFixHeading(fix string, hdg float32) string {
@@ -1689,6 +1756,34 @@ func (nav *Nav) CancelApproachClearance() string {
 	nav.Approach.Cleared = false
 
 	return "cancel approach clearance."
+}
+
+func (nav *Nav) ClimbViaSID() string {
+	if !nav.FlightState.IsDeparture {
+		return "unable. We're not a departure"
+	}
+	if len(nav.Waypoints) == 0 {
+		return "unable. We are not on a route"
+	}
+
+	nav.Altitude = NavAltitude{}
+	nav.Speed = NavSpeed{}
+	nav.Heading = NavHeading{}
+	return "climb via the SID"
+}
+
+func (nav *Nav) DescendViaSTAR() string {
+	if nav.FlightState.IsDeparture {
+		return "unable. We're not an arrival"
+	}
+	if len(nav.Waypoints) == 0 {
+		return "unable. We are not on a route"
+	}
+
+	nav.Altitude = NavAltitude{}
+	nav.Speed = NavSpeed{}
+	nav.Heading = NavHeading{}
+	return "descend via the STAR"
 }
 
 ///////////////////////////////////////////////////////////////////////////

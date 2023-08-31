@@ -1838,6 +1838,16 @@ func (s *Sim) DirectFix(token, callsign, fix string) error {
 		})
 }
 
+func (s *Sim) DepartFixDirect(token, callsign, fixa string, fixb string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.DepartFixDirect(fixa, fixb)
+		})
+}
+
 func (s *Sim) DepartFixHeading(token, callsign, fix string, heading int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -1909,6 +1919,26 @@ func (s *Sim) CancelApproachClearance(token, callsign string) error {
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			return ac.CancelApproachClearance()
+		})
+}
+
+func (s *Sim) ClimbViaSID(token, callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.ClimbViaSID()
+		})
+}
+
+func (s *Sim) DescendViaSTAR(token, callsign string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.DescendViaSTAR()
 		})
 }
 
