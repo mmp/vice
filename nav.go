@@ -946,23 +946,6 @@ func (nav *Nav) TargetSpeed() (float32, float32) {
 		return nav.targetAltitudeIAS()
 	}
 
-	// Absent speed restrictions, slow down arrivals starting 10 miles out
-	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
-		// Expected speed at 10 DME, without further direction.
-		spd := nav.Perf.Speed
-		approachSpeed := min(1.6*spd.Landing, float32(spd.Cruise))
-
-		if fd < 1 {
-			return spd.Landing, MaximumRate
-		} else if fd > 10 {
-			// Don't accelerate if the aircraft is already under the target speed.
-			return min(approachSpeed, nav.FlightState.IAS), MaximumRate
-		} else {
-			return min(lerp((fd-1)/9, spd.Landing, approachSpeed), nav.FlightState.IAS),
-				MaximumRate
-		}
-	}
-
 	if nav.FlightState.IsDeparture {
 		targetSpeed := min(250, nav.Perf.Speed.Cruise)
 
@@ -997,9 +980,28 @@ func (nav *Nav) TargetSpeed() (float32, float32) {
 		return *nav.Speed.Assigned, MaximumRate
 	}
 
-	// Something from a previous waypoint?
-	if nav.Speed.Restriction != nil {
+	// Something from a previous waypoint; ignore it if we're cleared for the approach.
+	if nav.Speed.Restriction != nil && !nav.Approach.Cleared {
 		return *nav.Speed.Restriction, MaximumRate
+	}
+
+	// Absent controller speed restrictions, slow down arrivals starting 15 miles out.
+	if nav.Speed.Assigned == nil && fd != 0 && fd < 15 {
+		spd := nav.Perf.Speed
+		// Expected speed at 10 DME, without further direction.
+		approachSpeed := 1.25 * spd.Landing
+
+		x := clamp((fd-1)/9, float32(0), float32(1))
+		ias := lerp(x, spd.Landing, approachSpeed)
+		// Don't speed up after being been cleared to land.
+		ias = min(ias, nav.FlightState.IAS)
+
+		return ias, MaximumRate
+	}
+
+	if nav.Approach.Cleared {
+		// Don't speed up if we're cleared and farther away
+		return nav.FlightState.IAS, MaximumRate
 	}
 
 	// Nothing assigned by the controller or the route, so set a target
@@ -1117,6 +1119,7 @@ func (nav *Nav) updateWaypoints(wind WindModel) *Waypoint {
 
 		if nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
 			nav.Approach.Cleared = true
+			nav.Speed = NavSpeed{}
 			nav.Waypoints = nav.Approach.AtFixClearedRoute
 		}
 
@@ -1738,10 +1741,10 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr 
 	if resp, err := nav.prepareForApproach(airport, straightIn, arr, w); err != nil {
 		return resp, err
 	} else {
-		// Cleared approach also cancels speed restrictions, but let's not do
-		// that.
 		nav.Approach.Cleared = true
 		nav.Altitude = NavAltitude{} // in case we have intercepted but are only being cleared now
+		// Cleared approach also cancels speed restrictions.
+		nav.Speed = NavSpeed{}
 
 		nav.flyProcedureTurnIfNecessary()
 
