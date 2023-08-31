@@ -1375,6 +1375,10 @@ func (nav *Nav) ExpediteClimb() string {
 }
 
 func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {
+	if hdg < 0 || hdg >= 360 {
+		return fmt.Sprintf("unable. %.0f isn't a valid heading", hdg)
+	}
+
 	// Only cancel approach clearance if the aircraft wasn't on a
 	// heading and now we're giving them one.
 	if nav.Heading.Assigned == nil {
