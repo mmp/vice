@@ -1249,3 +1249,11 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
 		e.Pop()
 	}
 }
+
+func FixReadback(fix string) string {
+	if aid, ok := database.Navaids[fix]; ok {
+		return stopShouting(aid.Name)
+	} else {
+		return fix
+	}
+}

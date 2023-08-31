@@ -353,10 +353,10 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint) string {
 		direction := compass(headingp2ll(closestRP.Location, nav.FlightState.Position,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation))
 		if dist := int(closestRPDistance + 0.5); dist <= 1 {
-			msgs = append(msgs, "passing "+closestRP.ReadbackName)
+			msgs = append(msgs, "passing "+FixReadback(closestRP.Fix))
 		} else {
 			msgs = append(msgs, fmt.Sprintf("%d miles %s of %s", dist, direction,
-				closestRP.ReadbackName))
+				FixReadback(closestRP.Fix)))
 		}
 	}
 
@@ -1450,14 +1450,9 @@ func (nav *Nav) DirectFix(fix string) string {
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
 
-		// If it's a VOR, read back the actual name
-		if nav, ok := database.Navaids[fix]; ok {
-			return "direct " + stopShouting(nav.Name)
-		} else {
-			return "direct " + fix
-		}
+		return "direct " + FixReadback(fix)
 	} else {
-		return "unable. " + fix + " isn't in our route"
+		return "unable. " + FixReadback(fix) + " isn't in our route"
 	}
 }
 
@@ -1474,12 +1469,7 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) string {
 	nfa.Depart.Heading = &h
 	nav.FixAssignments[fix] = nfa
 
-	response := "depart "
-	if aid, ok := database.Navaids[fix]; ok {
-		response += stopShouting(aid.Name)
-	} else {
-		response += fix
-	}
+	response := "depart " + FixReadback(fix)
 	return fmt.Sprintf(response+" heading %03d", int(hdg))
 }
 
@@ -1488,13 +1478,7 @@ func (nav *Nav) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) strin
 		return "unable. " + fix + " isn't in our route"
 	}
 
-	response := "cross "
-	if aid, ok := database.Navaids[fix]; ok {
-		response += stopShouting(aid.Name)
-	} else {
-		response += fix
-	}
-	response += " "
+	response := "cross " + FixReadback(fix) + " "
 
 	nfa := nav.FixAssignments[fix]
 	if ar != nil {

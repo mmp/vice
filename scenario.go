@@ -42,9 +42,8 @@ type ScenarioGroup struct {
 }
 
 type ReportingPoint struct {
-	Fix          string
-	ReadbackName string
-	Location     Point2LL
+	Fix      string
+	Location Point2LL
 }
 
 type Arrival struct {
@@ -538,12 +537,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		if loc, ok := sg.locate(rp); !ok {
 			e.ErrorString("unknown \"reporting_point\" \"%s\"", rp)
 		} else {
-			name := rp
-			if nav, ok := database.Navaids[rp]; ok {
-				name = stopShouting(nav.Name)
-			}
-			sg.ReportingPoints = append(sg.ReportingPoints,
-				ReportingPoint{Fix: rp, ReadbackName: name, Location: loc})
+			sg.ReportingPoints = append(sg.ReportingPoints, ReportingPoint{Fix: rp, Location: loc})
 		}
 	}
 
