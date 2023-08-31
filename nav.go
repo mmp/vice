@@ -688,6 +688,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel) (heading float32, turn TurnMeth
 }
 
 const MaximumRate = 100000
+const initialClimbAltitude = 1500
 
 func (nav *Nav) TargetAltitude() (alt, rate float32) {
 	// Baseline...
@@ -712,10 +713,10 @@ func (nav *Nav) TargetAltitude() (alt, rate float32) {
 		}
 
 		elev := nav.FlightState.DepartureAirportElevation
-		if nav.FlightState.Altitude-elev < 1000 {
+		if nav.FlightState.Altitude-elev < initialClimbAltitude {
 			// Just airborne; prioritize climb, though slightly nerf the rate
 			// so aircraft are not too high too soon
-			return elev + 1000, 0.6 * maxClimb
+			return elev + initialClimbAltitude, 0.6 * maxClimb
 		}
 	}
 
@@ -733,8 +734,8 @@ func (nav *Nav) TargetAltitude() (alt, rate float32) {
 		if nav.FlightState.IsDeparture {
 			if nav.FlightState.Altitude < 10000 {
 				targetSpeed := min(250, nav.Perf.Speed.Cruise)
-				if nav.FlightState.IAS < targetSpeed {
-					// Prioritize accelerate over climb at 1000 AGL
+				if nav.FlightState.IAS < 0.9*targetSpeed {
+					// Prioritize accelerate over climb starting at 1500 AGL
 					rate = 0.2 * nav.Perf.Rate.Climb
 					return
 				}
@@ -967,7 +968,7 @@ func (nav *Nav) TargetSpeed() (float32, float32) {
 
 		if !nav.IsAirborne() {
 			return targetSpeed, 0.8 * maxAccel
-		} else if nav.FlightState.Altitude-nav.FlightState.DepartureAirportElevation < 1000 {
+		} else if nav.FlightState.Altitude-nav.FlightState.DepartureAirportElevation < initialClimbAltitude {
 			// Just airborne; prioritize climb
 			return targetSpeed, 0.2 * maxAccel
 		}
@@ -1013,7 +1014,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 
 	if nav.FlightState.Altitude < 10000 {
 		// 250kts under 10k.  We can assume a high acceleration rate for
-		// departures when this kicks in at 1000' AGL given that VNav will
+		// departures when this kicks in at 1500' AGL given that VNav will
 		// slow the rate of climb at that point until we reach the target
 		// speed.
 		return min(nav.Perf.Speed.Cruise, 250), 0.8 * maxAccel
