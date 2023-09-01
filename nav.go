@@ -159,7 +159,7 @@ func makeNav(w *World, fp FlightPlan, perf AircraftPerformance, wp []Waypoint) *
 	}
 
 	// Filter out airways...
-	nav.Waypoints = FilterSlice(nav.Waypoints[1:],
+	nav.Waypoints = FilterSlice(nav.Waypoints,
 		func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if ap, ok := database.Airports[fp.DepartureAirport]; !ok {
