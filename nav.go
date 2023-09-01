@@ -1378,7 +1378,7 @@ func (nav *Nav) ExpediteClimb() string {
 }
 
 func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {
-	if hdg < 0 || hdg >= 360 {
+	if hdg <= 0 || hdg > 360 {
 		return fmt.Sprintf("unable. %.0f isn't a valid heading", hdg)
 	}
 
