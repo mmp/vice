@@ -102,8 +102,8 @@ func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission 
 	}}
 }
 
-func (ac *Aircraft) Update(wind WindModel, w *World, ep EventPoster) {
-	if passedWaypoint := ac.Nav.Update(wind); passedWaypoint != nil {
+func (ac *Aircraft) Update(w *World, ep EventPoster) {
+	if passedWaypoint := ac.Nav.Update(w); passedWaypoint != nil {
 		if passedWaypoint.Handoff {
 			ac.HandoffTrackController = w.Callsign
 			if ep != nil {

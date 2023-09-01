@@ -1113,7 +1113,7 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 		for callsign, ac := range s.World.Aircraft {
-			ac.Update(s.World, s.World, s)
+			ac.Update(s.World, s)
 
 			// Cull departures that are far from the airport.
 			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture() {
