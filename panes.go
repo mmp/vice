@@ -694,7 +694,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		fsp.mouseDragging = false
 
 		if fsp.selectedAircraft == "" {
-			lg.Printf("No selected aircraft for flight strip drag?!")
+			lg.Infof("No selected aircraft for flight strip drag?!")
 		} else {
 			// Figure out the index for the selected aircraft.
 			selectedIndex := func() int {
@@ -703,7 +703,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 						return i
 					}
 				}
-				lg.Printf("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
+				lg.Infof("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
 				return -1
 			}()
 

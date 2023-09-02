@@ -700,7 +700,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 		return
 	}
 
-	lg.Printf("newest release found: %v", newestRelease)
+	lg.Infof("newest release found: %v", newestRelease)
 
 	buildTime := ""
 	if bi, ok := debug.ReadBuildInfo(); !ok {
@@ -723,13 +723,13 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
 		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
 	} else if newestRelease.Created.UTC().After(bt.UTC()) {
-		lg.Printf("build time %s newest release %s -> release is newer",
+		lg.Infof("build time %s newest release %s -> release is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
 		newReleaseDialogChan <- &NewReleaseModalClient{
 			version: newestRelease.TagName,
 			date:    newestRelease.Created}
 	} else {
-		lg.Printf("build time %s newest release %s -> build is newer",
+		lg.Infof("build time %s newest release %s -> build is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
 	}
 }

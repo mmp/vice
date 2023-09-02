@@ -80,7 +80,7 @@ func ParseMETAR(str string) (*METAR, error) {
 
 	if s := next(); s != "RMK" {
 		// TODO: improve the METAR parser...
-		lg.Printf("Expecting RMK where %s is in METAR \"%s\"", s, str)
+		lg.Infof("Expecting RMK where %s is in METAR \"%s\"", s, str)
 	} else {
 		for s != "" {
 			s = next()
@@ -1025,7 +1025,7 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	wg.Wait()
 
-	lg.Printf("Parsed built-in databases in %v", time.Since(start))
+	lg.Infof("Parsed built-in databases in %v", time.Since(start))
 
 	return db
 }

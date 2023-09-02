@@ -67,7 +67,7 @@ func (a *AudioSettings) PlaySound(e AudioEvent) {
 		// This should only happen if a built-in sound effect is removed
 		// and an old config file refers to it. Arguably the user should be
 		// notified in this (unexpected) case...
-		lg.Printf("%s: sound effect disappeared?!", effect)
+		lg.Infof("%s: sound effect disappeared?!", effect)
 		a.SoundEffects[e] = ""
 	} else {
 		a.lastPlayMutex.Lock()
@@ -109,14 +109,14 @@ func (s *SoundEffect) Play() {
 		var obtained sdl.AudioSpec
 		audioDevice, err := sdl.OpenAudioDevice("", false /* no record */, s.spec, &obtained, 0)
 		if err != nil {
-			lg.Printf("Unable to open SDL audio device: %v", err)
+			lg.Infof("Unable to open SDL audio device: %v", err)
 			sdlMutex.Unlock()
 			return
 		}
 
 		for i := 0; i < s.repeat; i++ {
 			if err = sdl.QueueAudio(audioDevice, s.wav); err != nil {
-				lg.Printf("Unable to queue SDL audio: %v", err)
+				lg.Infof("Unable to queue SDL audio: %v", err)
 			}
 		}
 
@@ -180,7 +180,7 @@ func addEffect(filename string, name string, repeat int) {
 }
 
 func audioInit() error {
-	lg.Printf("Starting to initialize audio")
+	lg.Infof("Starting to initialize audio")
 	err := sdl.Init(sdl.INIT_AUDIO)
 	if err != nil {
 		return fmt.Errorf("failed to initialize SDL2 audio: %w", err)
@@ -204,7 +204,7 @@ func audioInit() error {
 	addEffect("387533__soundwarf__alert-short.wav", "Alert Short", 1)
 	addEffect("426888__thisusernameis__beep4.wav", "Beep Double", 1)
 
-	lg.Printf("Finished initializing audio")
+	lg.Infof("Finished initializing audio")
 	return nil
 }
 

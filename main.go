@@ -213,7 +213,7 @@ func main() {
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
-		lg.Printf("Starting main loop")
+		lg.Infof("Starting main loop")
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()

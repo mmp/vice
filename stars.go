@@ -1243,7 +1243,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 	ps := &sp.CurrentPreferenceSet
 
-	//lg.Printf("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
+	//lg.Infof("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
 	if ctx.keyboard.IsPressed(KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
 		// This test should be redundant given the IsDigit check, but just to be safe...

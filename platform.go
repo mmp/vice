@@ -85,12 +85,12 @@ type GLFWPlatform struct {
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
 // of the specified size open at the specified position on the screen.
 func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool) (Platform, error) {
-	lg.Printf("Starting GLFW initialization")
+	lg.Infof("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize glfw: %w", err)
 	}
-	lg.Printf("GLFW: %s", glfw.GetVersionString())
+	lg.Infof("GLFW: %s", glfw.GetVersionString())
 
 	io.SetBackendFlags(io.GetBackendFlags() | imgui.BackendFlagsHasMouseCursors)
 
@@ -128,7 +128,7 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	platform.createMouseCursors()
 	platform.EnableVSync(true)
 
-	lg.Printf("Finished GLFW initialization")
+	lg.Infof("Finished GLFW initialization")
 	return platform, nil
 }
 

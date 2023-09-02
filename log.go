@@ -61,37 +61,37 @@ func NewLogger(server bool, printToStderr bool) *Logger {
 
 	// Start out the logs with some basic information about the system
 	// we're running on and the build of vice that's being used.
-	l.Printf("Hello logging at %s", time.Now())
-	l.Printf("Arch: %s OS: %s CPUs: %d", runtime.GOARCH, runtime.GOOS, runtime.NumCPU())
+	l.Infof("Hello logging at %s", time.Now())
+	l.Infof("Arch: %s OS: %s CPUs: %d", runtime.GOARCH, runtime.GOOS, runtime.NumCPU())
 	if bi, ok := debug.ReadBuildInfo(); ok {
-		l.Printf("Build: go %s path %s", bi.GoVersion, bi.Path)
+		l.Infof("Build: go %s path %s", bi.GoVersion, bi.Path)
 		for _, dep := range bi.Deps {
 			if dep.Replace == nil {
-				l.Printf("Module %s @ %s", dep.Path, dep.Version)
+				l.Infof("Module %s @ %s", dep.Path, dep.Version)
 			} else {
-				l.Printf("Module %s @ %s replaced by %s @ %s", dep.Path, dep.Version,
+				l.Infof("Module %s @ %s replaced by %s @ %s", dep.Path, dep.Version,
 					dep.Replace.Path, dep.Replace.Version)
 			}
 		}
 		for _, setting := range bi.Settings {
-			l.Printf("Build setting %s = %s", setting.Key, setting.Value)
+			l.Infof("Build setting %s = %s", setting.Key, setting.Value)
 		}
 	}
 
 	return l
 }
 
-// Printf adds the given message, specified using Printf-style format
+// Infof adds the given message, specified using Infof-style format
 // string, to the "verbose" log.  If verbose logging is not enabled, the
 // message is discarded.
-func (l *Logger) Printf(f string, args ...interface{}) {
+func (l *Logger) Infof(f string, args ...interface{}) {
 	l.printf(3, f, args...)
 }
 
-// PrintfUp1 adds the given message to the error log, but with reported the
+// InfofUp1 adds the given message to the error log, but with reported the
 // source file and line number are one level up in the call stack from the
 // function that called it.
-func (l *Logger) PrintfUp1(f string, args ...interface{}) {
+func (l *Logger) InfofUp1(f string, args ...interface{}) {
 	l.printf(4, f, args...)
 }
 
@@ -177,7 +177,7 @@ var startupMallocs uint64
 // LogStats adds the proivded Stats to the log and also includes information about
 // the current system performance, memory use, etc.
 func (l *Logger) LogStats(stats Stats) {
-	lg.Printf("Redraws per second: %.1f", float64(stats.redraws)/time.Since(stats.startTime).Seconds())
+	lg.Infof("Redraws per second: %.1f", float64(stats.redraws)/time.Since(stats.startTime).Seconds())
 
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
@@ -189,11 +189,11 @@ func (l *Logger) LogStats(stats Stats) {
 	elapsed := time.Since(l.start).Seconds()
 	mallocsPerSecond := int(float64(mem.Mallocs-startupMallocs) / elapsed)
 	active1000s := (mem.Mallocs - mem.Frees) / 1000
-	lg.Printf("Stats: mallocs/second %d (%dk active) %d MB in use", mallocsPerSecond, active1000s,
+	lg.Infof("Stats: mallocs/second %d (%dk active) %d MB in use", mallocsPerSecond, active1000s,
 		mem.HeapAlloc/(1024*1024))
 
-	lg.Printf("Stats: draw panes %s draw imgui %s", stats.drawPanes.String(), stats.drawImgui.String())
+	lg.Infof("Stats: draw panes %s draw imgui %s", stats.drawPanes.String(), stats.drawImgui.String())
 
-	lg.Printf("Stats: rendering: %s", stats.render.String())
-	lg.Printf("Stats: UI rendering: %s", stats.renderUI.String())
+	lg.Infof("Stats: rendering: %s", stats.render.String())
+	lg.Infof("Stats: UI rendering: %s", stats.renderUI.String())
 }
