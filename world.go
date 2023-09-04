@@ -906,8 +906,7 @@ func (w *World) DrawSettingsWindow() {
 
 	imgui.BeginV("Settings", &w.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
-	max := Select(*devmode, float32(100), float32(10))
-	if imgui.SliderFloatV("Simulation speed", &w.SimRate, 1, max, "%.1f", 0) {
+	if imgui.SliderFloatV("Simulation speed", &w.SimRate, 1, 20, "%.1f", 0) {
 		w.SetSimRate(w.SimRate)
 	}
 
