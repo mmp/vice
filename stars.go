@@ -4395,14 +4395,14 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 	// recent tracks (which will have more contrast with the background),
 	// will be the ones that are visible.
 	n := ps.RadarTrackHistory
-	for i := n; i > 1; i-- {
+	for i := n; i >= 1; i-- {
 		trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
 		trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
 		idx := (state.tracksIndex - 1 -
 			Select(sp.radarMode(ctx.world) == RadarModeFused, 5, 1)*i) % len(state.tracks)
 		if idx < 0 {
-			break
+			continue
 		}
 
 		p := state.tracks[idx].Position
