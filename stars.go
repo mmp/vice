@@ -107,6 +107,8 @@ type STARSPane struct {
 	HavePlayedSPCAlertSound map[string]interface{}
 
 	lastTrackUpdate time.Time
+	discardTracks   bool
+
 	LastCASoundTime time.Time
 
 	drawApproachAirspace  bool
@@ -274,7 +276,14 @@ const (
 )
 
 type STARSAircraftState struct {
-	tracks [10]RadarTrack
+	// Radar tracks are maintained as a ring buffer where tracksIndex is
+	// the index of the next track to be written.  (Thus, tracksIndex==0
+	// implies that there are no tracks.)  In FUSED mode, radar tracks are
+	// updated once per second; otherwise they are updated once every 5
+	// seconds. Changing to/from FUSED mode causes tracksIndex to be reset,
+	// thus discarding previous tracks.
+	tracks      [50]RadarTrack
+	tracksIndex int
 
 	DatablockType DatablockType
 
@@ -322,19 +331,22 @@ const (
 )
 
 func (s *STARSAircraftState) TrackAltitude() int {
-	return s.tracks[0].Altitude
+	idx := (s.tracksIndex - 1) % len(s.tracks)
+	return s.tracks[idx].Altitude
 }
 
 func (s *STARSAircraftState) TrackPosition() Point2LL {
-	return s.tracks[0].Position
+	idx := (s.tracksIndex - 1) % len(s.tracks)
+	return s.tracks[idx].Position
 }
 
 func (s *STARSAircraftState) TrackGroundspeed() int {
-	return s.tracks[0].Groundspeed
+	idx := (s.tracksIndex - 1) % len(s.tracks)
+	return s.tracks[idx].Groundspeed
 }
 
 func (s *STARSAircraftState) HaveHeading() bool {
-	return !s.tracks[0].Position.IsZero() && !s.tracks[1].Position.IsZero()
+	return s.tracksIndex > 1
 }
 
 // Note that the vector returned by HeadingVector() is along the aircraft's
@@ -346,8 +358,10 @@ func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation flo
 		return Point2LL{}
 	}
 
-	p0 := ll2nm(s.tracks[0].Position, nmPerLongitude)
-	p1 := ll2nm(s.tracks[1].Position, nmPerLongitude)
+	idx0, idx1 := (s.tracksIndex-1)%len(s.tracks), (s.tracksIndex-2)%len(s.tracks)
+
+	p0 := ll2nm(s.tracks[idx0].Position, nmPerLongitude)
+	p1 := ll2nm(s.tracks[idx1].Position, nmPerLongitude)
 	v := sub2ll(p0, p1)
 	v = normalize2f(v)
 	// v's length should be groundspeed / 60 nm.
@@ -356,13 +370,18 @@ func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation flo
 }
 
 func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
-	return headingp2ll(s.tracks[1].Position, s.tracks[0].Position, nmPerLongitude, 0)
+	if !s.HaveHeading() {
+		return 0
+	}
+	idx0, idx1 := (s.tracksIndex-1)%len(s.tracks), (s.tracksIndex-2)%len(s.tracks)
+	return headingp2ll(s.tracks[idx1].Position, s.tracks[idx0].Position, nmPerLongitude, 0)
 }
 
 func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
-	return !s.tracks[0].Position.IsZero() && now.Sub(s.tracks[0].Time) > 30*time.Second
+	idx := (s.tracksIndex - 1) % len(s.tracks)
+	return s.tracksIndex == 0 || now.Sub(s.tracks[idx].Time) > 30*time.Second
 }
 
 type STARSMap struct {
@@ -399,9 +418,11 @@ type STARSPreferenceSet struct {
 
 	WeatherIntensity [6]bool
 
-	// If empty, then then MULTI mode.  The custom JSON name is so we don't
-	// get errors parsing old configs, which stored this as an array...
+	// If empty, then then MULTI or FUSED mode, depending on
+	// FusedRadarMode.  The custom JSON name is so we don't get errors
+	// parsing old configs, which stored this as an array...
 	RadarSiteSelected string `json:"RadarSiteSelectedName"`
+	FusedRadarMode    bool
 
 	// For tracked by the user
 	LeaderLineDirection CardinalOrdinalDirection
@@ -1199,13 +1220,29 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
 	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
+
+	// Do this at the end of drawing so that we hold on to the tracks we
+	// have for rendering the current frame.
+	if sp.discardTracks == true {
+		for _, state := range sp.Aircraft {
+			state.tracksIndex = 0
+		}
+		sp.lastTrackUpdate = time.Time{} // force update
+		sp.discardTracks = false
+	}
 }
 
 func (sp *STARSPane) updateRadarTracks(w *World) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := w.CurrentTime()
-	if now.Sub(sp.lastTrackUpdate) < 5*time.Second {
-		return
+	if sp.radarMode(w) == RadarModeFused {
+		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {
+			return
+		}
+	} else {
+		if now.Sub(sp.lastTrackUpdate) < 5*time.Second {
+			return
+		}
 	}
 	sp.lastTrackUpdate = now
 
@@ -1216,16 +1253,14 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			continue
 		}
 
-		// Move everthing forward one to make space for the new one. We could
-		// be clever and use a circular buffer to skip the copies, though at
-		// the cost of more painful indexing elsewhere...
-		copy(state.tracks[1:], state.tracks[:len(state.tracks)-1])
-		state.tracks[0] = RadarTrack{
+		idx := state.tracksIndex % len(state.tracks)
+		state.tracks[idx] = RadarTrack{
 			Position:    ac.Position(),
 			Altitude:    int(ac.Altitude()),
 			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
+		state.tracksIndex++
 	}
 }
 
@@ -3426,12 +3461,22 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			}
 		}
 		// Fill extras with empty disabled buttons
-		for i := len(ctx.world.RadarSites); i < 16; i++ {
+		for i := len(ctx.world.RadarSites); i < 15; i++ {
 			STARSDisabledButton("", STARSButtonFull, buttonScale)
 		}
-		multi := sp.multiRadarMode(ctx.world)
+		multi := sp.radarMode(ctx.world) == RadarModeMulti
 		if STARSToggleButton("MULTI", &multi, STARSButtonFull, buttonScale) && multi {
 			ps.RadarSiteSelected = ""
+			if ps.FusedRadarMode {
+				sp.discardTracks = true
+			}
+			ps.FusedRadarMode = false
+		}
+		fused := sp.radarMode(ctx.world) == RadarModeFused
+		if STARSToggleButton("FUSED", &fused, STARSButtonFull, buttonScale) && fused {
+			ps.RadarSiteSelected = ""
+			ps.FusedRadarMode = true
+			sp.discardTracks = true
 		}
 		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
@@ -4099,6 +4144,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 	pd := PointsDrawBuilder{}
+	pd2 := PointsDrawBuilder{}
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 	trid := GetColoredTrianglesDrawBuilder()
@@ -4137,11 +4183,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(state.tracks, heading, ctx, transforms, brightness, STARSTrackBlockColor,
-			trackId, &pd, ld, trid, td)
+		sp.drawRadarTrack(state, heading, ctx, transforms, brightness, STARSTrackBlockColor,
+			trackId, &pd, &pd2, ld, trid, td)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
+	cb.PointSize(12) // bigger points for fused mode primary tracks
+	pd2.GenerateCommands(cb)
 	cb.PointSize(5)
 	pd.GenerateCommands(cb)
 	trid.GenerateCommands(cb)
@@ -4191,7 +4239,8 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
 				heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()),
 					ac.Heading())
-				ghost := region.TryMakeGhost(ac.Callsign, state.tracks[0], heading, ac.Scratchpad, force,
+				idx := (state.tracksIndex - 1) % len(state.tracks)
+				ghost := region.TryMakeGhost(ac.Callsign, state.tracks[idx], heading, ac.Scratchpad, force,
 					offset, leaderDirection, runwayIntersection, ac.NmPerLongitude(), ac.MagneticVariation(),
 					otherRegion)
 				if ghost != nil {
@@ -4265,47 +4314,54 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, heading float32, ctx *PaneContext,
+func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, ctx *PaneContext,
 	transforms ScopeTransformations, brightness STARSBrightness, trackColor RGB, trackId string,
-	pd *PointsDrawBuilder, ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder,
-	td *TextDrawBuilder) {
+	pd *PointsDrawBuilder, pd2 *PointsDrawBuilder, ld *ColoredLinesDrawBuilder,
+	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
 	rot := rotator2f(heading)
-	pos := tracks[0].Position
+	pos := state.TrackPosition()
 	pw := transforms.WindowFromLatLongP(pos)
 
 	// On high DPI windows displays we need to scale up the tracks
 	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 
-	// blue box: x +/-9 pixels, y +/-3 pixels
-	// TODO: size based on distance to radar, if not MULTI
-	box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
-	for i := range box {
-		box[i] = add2f(rot(scale2f(box[i], scale)), pw)
-		box[i] = transforms.LatLongFromWindowP(box[i])
-	}
-	color := brightness.ScaleRGB(STARSTrackBlockColor)
-	primary, secondary, _ := sp.radarVisibility(ctx.world, pos, tracks[0].Altitude)
-	if primary {
-		// Draw a filled box
-		trid.AddQuad(box[0], box[1], box[2], box[3], color)
-	} else if secondary {
-		// If it's just a secondary return, only draw the box outline.
-		// TODO: is this 40nm, or secondary?
-		ld.AddPolyline([2]float32{}, color, box[:])
-	}
-
-	if !sp.multiRadarMode(ctx.world) {
-		// green line
-		// TODO: size based on distance to radar
-		line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
-		for i := range line {
-			line[i] = add2f(rot(scale2f(line[i], scale)), pw)
-			line[i] = transforms.LatLongFromWindowP(line[i])
+	switch mode := sp.radarMode(ctx.world); mode {
+	case RadarModeSingle, RadarModeMulti:
+		// blue box: x +/-9 pixels, y +/-3 pixels
+		// TODO: size based on distance to radar, if not MULTI
+		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+		for i := range box {
+			box[i] = add2f(rot(scale2f(box[i], scale)), pw)
+			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
-		ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
+		if primary {
+			// Draw a filled box
+			trid.AddQuad(box[0], box[1], box[2], box[3], color)
+		} else if secondary {
+			// If it's just a secondary return, only draw the box outline.
+			// TODO: is this 40nm, or secondary?
+			ld.AddPolyline([2]float32{}, color, box[:])
+		}
+
+		if mode == RadarModeSingle {
+			// green line
+			// TODO: size based on distance to radar
+			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
+			for i := range line {
+				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
+				line[i] = transforms.LatLongFromWindowP(line[i])
+			}
+			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+		}
+
+	case RadarModeFused:
+		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		pd2.AddPoint(pos, color)
 	}
 
 	// Draw main track symbol letter
@@ -4342,9 +4398,17 @@ func (sp *STARSPane) drawRadarTrack(tracks [10]RadarTrack, heading float32, ctx 
 	for i := n; i > 1; i-- {
 		trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
 		trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
-		p := tracks[i-1].Position
 
-		pd.AddPoint(p, trackColor)
+		idx := (state.tracksIndex - 1 -
+			Select(sp.radarMode(ctx.world) == RadarModeFused, 5, 1)*i) % len(state.tracks)
+		if idx < 0 {
+			break
+		}
+
+		p := state.tracks[idx].Position
+		if !p.IsZero() {
+			pd.AddPoint(p, trackColor)
+		}
 	}
 }
 
@@ -5559,18 +5623,29 @@ func (sp *STARSPane) resetInputState() {
 	sp.selectedPlaceButton = ""
 }
 
-func (sp *STARSPane) multiRadarMode(w *World) bool {
+const (
+	RadarModeSingle = iota
+	RadarModeMulti
+	RadarModeFused
+)
+
+func (sp *STARSPane) radarMode(w *World) int {
 	ps := sp.CurrentPreferenceSet
-	_, ok := w.RadarSites[ps.RadarSiteSelected]
-	return ps.RadarSiteSelected == "" || !ok
+	if _, ok := w.RadarSites[ps.RadarSiteSelected]; ps.RadarSiteSelected != "" && ok {
+		return RadarModeSingle
+	} else if ps.FusedRadarMode {
+		return RadarModeFused
+	} else {
+		return RadarModeMulti
+	}
 }
 
 func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, secondary bool, distance float32) {
 	ps := sp.CurrentPreferenceSet
 	distance = 1e30
-	multi := sp.multiRadarMode(w)
+	single := sp.radarMode(w) == RadarModeSingle
 	for id, site := range w.RadarSites {
-		if !multi && ps.RadarSiteSelected != id {
+		if single && ps.RadarSiteSelected != id {
 			continue
 		}
 
@@ -5587,16 +5662,21 @@ func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, 
 func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 	var aircraft []*Aircraft
 	ps := sp.CurrentPreferenceSet
-	multi := sp.multiRadarMode(w)
-
+	single := sp.radarMode(w) == RadarModeSingle
+	now := w.CurrentTime()
 	for callsign, state := range sp.Aircraft {
 		ac, ok := w.Aircraft[callsign]
 		if !ok {
 			continue
 		}
+		// This includes the case of a spawned aircraft for which we don't
+		// yet have a radar track.
+		if state.LostTrack(now) {
+			continue
+		}
 
 		for id, site := range w.RadarSites {
-			if !multi && ps.RadarSiteSelected != id {
+			if single && ps.RadarSiteSelected != id {
 				continue
 			}
 
@@ -5605,7 +5685,7 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 
 				// Is this the first we've seen it?
 				if state.FirstRadarTrack.IsZero() {
-					state.FirstRadarTrack = w.CurrentTime()
+					state.FirstRadarTrack = now
 
 					if fp := ac.FlightPlan; fp != nil {
 						if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
@@ -5708,9 +5788,14 @@ func (sp *STARSPane) tryGetClosestGhost(ghosts []*GhostAircraft, mousePosition [
 }
 
 func (sp *STARSPane) radarSiteId(w *World) string {
-	ps := sp.CurrentPreferenceSet
-	if _, ok := w.RadarSites[ps.RadarSiteSelected]; ok && ps.RadarSiteSelected != "" {
-		return ps.RadarSiteSelected
+	switch sp.radarMode(w) {
+	case RadarModeSingle:
+		return sp.CurrentPreferenceSet.RadarSiteSelected
+	case RadarModeMulti:
+		return "MULTI"
+	case RadarModeFused:
+		return "FUSED"
+	default:
+		return "UNKNOWN"
 	}
-	return "MULTI"
 }
