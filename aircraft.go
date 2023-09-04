@@ -7,6 +7,8 @@ package main
 import (
 	"fmt"
 	"strings"
+
+	"golang.org/x/exp/slog"
 )
 
 type Aircraft struct {
@@ -102,10 +104,17 @@ func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission 
 	}}
 }
 
-func (ac *Aircraft) Update(w *World, ep EventPoster) {
-	if passedWaypoint := ac.Nav.Update(w); passedWaypoint != nil {
+func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) {
+	lg := &Logger{Logger: simlg.With(slog.String("callsign", ac.Callsign))}
+
+	if passedWaypoint := ac.Nav.Update(w, lg); passedWaypoint != nil {
+		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
 		if passedWaypoint.Handoff {
 			ac.HandoffTrackController = w.Callsign
+			lg.Info("handing off at waypoint",
+				slog.String("fix", passedWaypoint.Fix),
+				slog.String("controller", w.Callsign))
+
 			if ep != nil {
 				ep.PostEvent(Event{
 					Type:           OfferedHandoffEvent,
@@ -116,6 +125,7 @@ func (ac *Aircraft) Update(w *World, ep EventPoster) {
 			}
 		}
 		if passedWaypoint.Delete && ac.Nav.Approach.Cleared {
+			lg.Info("deleting aircraft after landing")
 			w.DeleteAircraft(ac, nil)
 		}
 	}
@@ -129,6 +139,7 @@ func (ac *Aircraft) Update(w *World, ep EventPoster) {
 			Message:    ac.Nav.DepartureMessage(),
 			Type:       RadioTransmissionContact,
 		}}, ep)
+		lg.Info("contacting departure controller", slog.String("callsign", dep))
 
 		// Clear this out so we only send one contact message
 		ac.DepartureContactAltitude = 0
@@ -140,6 +151,7 @@ func (ac *Aircraft) Update(w *World, ep EventPoster) {
 
 	if ac.GoAroundDistance != nil {
 		if d, err := ac.Nav.finalApproachDistance(); err == nil && d < *ac.GoAroundDistance {
+			lg.Info("randomly going around")
 			rt := ac.GoAround()
 			PostRadioEvents(ac.Callsign, rt, ep)
 
@@ -239,8 +251,10 @@ func (ac *Aircraft) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) [
 
 func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
 	if arrivals, ok := w.ArrivalGroups[ac.ArrivalGroup]; !ok || ac.ArrivalGroupIndex >= len(arrivals) {
-		lg.Errorf("%s: invalid arrival group %s or index %d", ac.Callsign, ac.ArrivalGroup,
-			ac.ArrivalGroupIndex)
+		lg.Error("invalid arrival group or index",
+			slog.String("callsign", ac.Callsign),
+			slog.String("arrival_group", ac.ArrivalGroup),
+			slog.Int("index", ac.ArrivalGroupIndex))
 		return nil, ErrNoValidArrivalFound
 	} else {
 		return &arrivals[ac.ArrivalGroupIndex], nil
@@ -373,8 +387,6 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 		ac.ExpectApproach(arr.ExpectApproach, w)
 	}
 
-	ac.Nav.Check(ac.Callsign)
-
 	return nil
 }
 
@@ -412,7 +424,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 		ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
 	ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 
-	ac.Nav.Check(ac.Callsign)
+	ac.Nav.Check(lg)
 
 	return nil
 }
@@ -433,8 +445,8 @@ func (ac *Aircraft) IsDeparture() bool {
 	return ac.Nav.FlightState.IsDeparture
 }
 
-func (ac *Aircraft) Check() {
-	ac.Nav.Check(ac.Callsign)
+func (ac *Aircraft) Check(lg *Logger) {
+	ac.Nav.Check(lg)
 }
 
 func (ac *Aircraft) Position() Point2LL {

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slog"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower
@@ -694,7 +695,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		fsp.mouseDragging = false
 
 		if fsp.selectedAircraft == "" {
-			lg.Infof("No selected aircraft for flight strip drag?!")
+			lg.Debug("No selected aircraft for flight strip drag?!")
 		} else {
 			// Figure out the index for the selected aircraft.
 			selectedIndex := func() int {
@@ -703,7 +704,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 						return i
 					}
 				}
-				lg.Infof("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
+				lg.Warnf("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
 				return -1
 			}()
 
@@ -880,6 +881,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 		}
 
 		response := strings.Join(transmissions, ", ")
+		var msg Message
 		if lastRadioType == RadioTransmissionContact {
 			ctrl := w.Controllers[w.Callsign]
 			fullName := ctrl.FullName
@@ -887,13 +889,15 @@ func (mp *MessagesPane) processEvents(w *World) {
 				// Always refer to the controller as "departure" for departing aircraft.
 				fullName = strings.ReplaceAll(fullName, "approach", "departure")
 			}
-			mp.messages = append(mp.messages, Message{contents: fullName + ", " + radioCallsign + ", " + response})
+			msg = Message{contents: fullName + ", " + radioCallsign + ", " + response}
 		} else {
 			if len(response) > 0 {
 				response = strings.ToUpper(response[:1]) + response[1:]
 			}
-			mp.messages = append(mp.messages, Message{contents: response + ". " + radioCallsign})
+			msg = Message{contents: response + ". " + radioCallsign}
 		}
+		lg.Debug("radio_transmission", slog.String("callsign", callsign), slog.Any("message", msg))
+		mp.messages = append(mp.messages, msg)
 	}
 
 	for _, event := range mp.events.Get() {

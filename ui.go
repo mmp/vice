@@ -22,6 +22,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
+	"golang.org/x/exp/slog"
 )
 
 var (
@@ -666,7 +667,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		lg.Errorf("%s: get err: %v", url, err)
+		lg.Warn("new release GET error", slog.String("url", url), slog.Any("error", err))
 		return
 	}
 	defer resp.Body.Close()
@@ -696,7 +697,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
 		}
 	}
 	if newestRelease == nil {
-		lg.Errorf("No vice releases found?")
+		lg.Warnf("No vice releases found?")
 		return
 	}
 
@@ -1117,11 +1118,11 @@ func ShowErrorDialog(s string, args ...interface{}) {
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
 	uiShowModalDialog(d, true)
 
-	lg.ErrorfUp1(s, args...)
+	lg.Errorf(s, args...)
 }
 
 func ShowFatalErrorDialog(r Renderer, p Platform, s string, args ...interface{}) {
-	lg.ErrorfUp1(s, args...)
+	lg.Errorf(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
 

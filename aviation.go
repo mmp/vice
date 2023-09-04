@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"golang.org/x/exp/slog"
 )
 
 type FAAAirport struct {
@@ -80,7 +81,7 @@ func ParseMETAR(str string) (*METAR, error) {
 
 	if s := next(); s != "RMK" {
 		// TODO: improve the METAR parser...
-		lg.Infof("Expecting RMK where %s is in METAR \"%s\"", s, str)
+		lg.Warnf("Expecting RMK where %s is in METAR \"%s\"", s, str)
 	} else {
 		for s != "" {
 			s = next()
@@ -317,6 +318,17 @@ const (
 	RadioTransmissionContact  = iota // Messages initiated by the pilot
 	RadioTransmissionReadback        // Reading back an instruction
 )
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	default:
+		return "(unhandled type)"
+	}
+}
 
 type RadioTransmission struct {
 	Controller string
@@ -614,6 +626,32 @@ type Waypoint struct {
 	NoPT                bool                 `json:"nopt,omitempty"`
 	Handoff             bool                 `json:"handoff,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
+}
+
+func (wp Waypoint) LogValue() slog.Value {
+	attrs := []slog.Attr{slog.String("fix", wp.Fix)}
+	if wp.AltitudeRestriction != nil {
+		attrs = append(attrs, slog.Any("altitude_restriction", wp.AltitudeRestriction))
+	}
+	if wp.Speed != 0 {
+		attrs = append(attrs, slog.Int("speed", wp.Speed))
+	}
+	if wp.Heading != 0 {
+		attrs = append(attrs, slog.Int("heading", wp.Heading))
+	}
+	if wp.ProcedureTurn != nil {
+		attrs = append(attrs, slog.Any("procedure_turn", wp.ProcedureTurn))
+	}
+	if wp.NoPT {
+		attrs = append(attrs, slog.Bool("no_pt", wp.NoPT))
+	}
+	if wp.Handoff {
+		attrs = append(attrs, slog.Bool("handoff", wp.Handoff))
+	}
+	if wp.Delete {
+		attrs = append(attrs, slog.Bool("delete", wp.Delete))
+	}
+	return slog.GroupValue(attrs...)
 }
 
 func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
@@ -1054,8 +1092,10 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 				}
 			}
 			if len(fieldIndices) != fi+1 {
-				lg.Errorf("%s: did not field header for requested field \"%s\"", filename, f)
-				lg.Errorf("options: %+v", header)
+				lg.Error("did not find requested field header",
+					slog.String("filename", filename),
+					slog.String("field", f),
+					slog.Any("header", header))
 			}
 		}
 	}
@@ -1162,12 +1202,13 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 		Aircraft []AircraftPerformance `json:"aircraft"`
 	}
 	if err := json.Unmarshal(openscopeAircraft, &acStruct); err != nil {
-		lg.Errorf("%v", err)
+		lg.Errorf("error in JSON unmarshal of openscope-aircraft: %v", err)
 	}
 
 	ap := make(map[string]AircraftPerformance)
 	for _, ac := range acStruct.Aircraft {
 		ap[ac.ICAO] = ac
+
 		if ac.Speed.V2 != 0 && ac.Speed.V2 > 1.5*ac.Speed.Min {
 			lg.Errorf("%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
 				ac.ICAO, ac.Speed.V2, ac.Speed.Min)
@@ -1184,7 +1225,7 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 		Airlines []Airline `json:"airlines"`
 	}
 	if err := json.Unmarshal([]byte(openscopeAirlines), &alStruct); err != nil {
-		lg.Errorf("%v", err)
+		lg.Errorf("error in JSON unmarshal of openscope-airlines: %v", err)
 	}
 
 	airlines := make(map[string]Airline)

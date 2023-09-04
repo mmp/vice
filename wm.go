@@ -65,7 +65,7 @@ type SplitLine struct {
 }
 
 func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
-	lg.Errorf("This actually should never be called...")
+	lg.Errorf("SplitLine Duplicate shouldn't have been called...")
 	return &SplitLine{}
 }
 
@@ -258,7 +258,7 @@ func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplay
 // storing newChild as the's second child.
 func (d *DisplayNode) SplitX(x float32, newChild *DisplayNode) *DisplayNode {
 	if d.SplitLine.Axis != SplitAxisNone {
-		lg.Errorf("splitting a non-leaf node: %v", d)
+		lg.Errorf("DisplayNode splitting a non-leaf node: %v", d)
 	}
 	return &DisplayNode{SplitLine: SplitLine{Axis: SplitAxisX, Pos: x},
 		Children: [2]*DisplayNode{d, newChild}}
@@ -268,7 +268,7 @@ func (d *DisplayNode) SplitX(x float32, newChild *DisplayNode) *DisplayNode {
 // vertically, analogous to the SplitX method.
 func (d *DisplayNode) SplitY(y float32, newChild *DisplayNode) *DisplayNode {
 	if d.SplitLine.Axis != SplitAxisNone {
-		lg.Errorf("splitting a non-leaf node: %v", d)
+		lg.Errorf("DisplayNode splitting a non-leaf node: %v", d)
 	}
 	return &DisplayNode{SplitLine: SplitLine{Axis: SplitAxisX, Pos: y},
 		Children: [2]*DisplayNode{d, newChild}}

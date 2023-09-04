@@ -12,6 +12,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slog"
 )
 
 const initialSimSeconds = 45
@@ -449,7 +450,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	rate := clamp(1/w.SimRate, 0.1, 1)
 	if d := time.Since(w.lastUpdateRequest); d > time.Duration(rate*float32(time.Second)) {
 		if w.updateCall != nil {
-			lg.Errorf("Still waiting on last update call! %s", d)
+			lg.Warnf("GetUpdates still waiting for %s on last update call", d)
 			return
 		}
 		w.lastUpdateRequest = time.Now()
@@ -461,7 +462,9 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 			OnSuccess: func(any) {
 				d := time.Since(w.updateCall.IssueTime)
 				if d > 250*time.Millisecond {
-					lg.Infof("Slow world update response: %s", d)
+					lg.Warnf("Slow world update response %s", d)
+				} else {
+					lg.Debugf("World update response time %s", d)
 				}
 				wu.UpdateWorld(w, eventStream)
 			},
@@ -561,8 +564,9 @@ func (w *World) GetWindowTitle() string {
 }
 
 func (w *World) PrintInfo(ac *Aircraft) {
-	lg.Errorf("%s", spew.Sdump(ac))
-	lg.Errorf("%s", ac.Nav.FlightState.Summary())
+	lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
+		slog.Any("aircraft", ac))
+	fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
@@ -738,6 +742,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	if err := ac.InitializeArrival(w, arrivalGroup, idx, goAround); err != nil {
 		return nil, err
 	}
+
 	return ac, nil
 }
 
@@ -874,8 +879,7 @@ func (w *World) DrawApproachesWindow() {
 
 		for _, rwy := range w.ArrivalRunways {
 			if ap, ok := w.Airports[rwy.Airport]; !ok {
-				lg.Errorf("%s: arrival %s airport not in world airports %s", rwy.Airport,
-					spew.Sdump(rwy), spew.Sdump(w.Airports))
+				lg.Errorf("%s: arrival airport not in world airports", rwy.Airport)
 			} else {
 				for _, name := range SortedMapKeys(ap.Approaches) {
 					appr := ap.Approaches[name]

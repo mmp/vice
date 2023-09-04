@@ -21,6 +21,7 @@ import (
 
 	"github.com/apenwarr/fixconsole"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slog"
 )
 
 const ViceServerAddress = "vice.pharr.org:8000"
@@ -50,9 +51,8 @@ var (
 	// Command-line options are only used for developer features.
 	cpuprofile        = flag.String("cpuprofile", "", "write CPU profile to file")
 	memprofile        = flag.String("memprofile", "", "write memory profile to this file")
-	devmode           = flag.Bool("devmode", false, "developer mode")
+	logLevel          = flag.String("loglevel", "info", "logging level: debug, info, warn, error")
 	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	logRPC            = flag.Bool("logrpc", false, "log RPC calls")
 	server            = flag.Bool("server", false, "run vice scenario server")
 	serverAddress     = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
 	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
@@ -73,11 +73,6 @@ func init() {
 func main() {
 	flag.Parse()
 
-	if *logRPC && !*devmode {
-		fmt.Printf("vice: must provide -devmode with -logrpc\n")
-		os.Exit(1)
-	}
-
 	rand.Seed(time.Now().UnixNano())
 
 	// Common initialization for both client and server
@@ -88,7 +83,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg = NewLogger(*server, *devmode)
+	lg = NewLogger(*server, *logLevel)
 
 	if *cpuprofile != "" {
 		if f, err := os.Create(*cpuprofile); err != nil {
@@ -112,7 +107,7 @@ func main() {
 		var e ErrorLogger
 		_, _ = LoadScenarioGroups(&e)
 		if e.HaveErrors() {
-			e.PrintErrors()
+			e.PrintErrors(nil)
 			os.Exit(1)
 		}
 	} else if *broadcastMessage != "" {
@@ -122,14 +117,14 @@ func main() {
 	} else {
 		localSimServerChan, err := LaunchLocalSimServer()
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
 		}
 
 		lastRemoteServerAttempt := time.Now()
 		remoteSimServerChan, err := TryConnectRemoteServer(*serverAddress)
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Warnf("error connecting to remote server: %v", err)
 		}
 
 		var stats Stats
@@ -138,10 +133,10 @@ func main() {
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
 		var context *imgui.Context
-		if !*devmode {
+		if os.Getenv("DELVE_GOVERSION") == "" { // hack: don't catch panics when debugging..
 			defer func() {
 				if err := recover(); err != nil {
-					lg.Errorf("Panic stack: %s", string(debug.Stack()))
+					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
 					ShowFatalErrorDialog(renderer, platform,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
@@ -190,7 +185,7 @@ func main() {
 		if globalConfig.Sim != nil && !*resetSim {
 			var result NewSimResult
 			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
-				lg.Errorf("%v", err)
+				lg.Errorf("error restoring saved Sim: %v", err)
 			} else {
 				world = result.World
 				world.simProxy = &SimProxy{
@@ -213,7 +208,7 @@ func main() {
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
-		lg.Infof("Starting main loop")
+		lg.Info("Starting main loop")
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
@@ -257,7 +252,7 @@ func main() {
 				lastRemoteServerAttempt = time.Now()
 				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
 				if err != nil {
-					lg.Errorf("TryConnectRemoteServer: %v", err)
+					lg.Warnf("TryConnectRemoteServer: %v", err)
 				}
 			}
 
@@ -319,8 +314,8 @@ func main() {
 			platform.PostRender()
 
 			// Periodically log current memory use, etc.
-			if *devmode && frameIndex%18000 == 0 {
-				lg.LogStats(stats)
+			if frameIndex%18000 == 0 {
+				lg.Debug("performance", slog.Any("stats", stats))
 			}
 			frameIndex++
 

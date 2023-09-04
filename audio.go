@@ -11,6 +11,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/veandco/go-sdl2/sdl"
+	"golang.org/x/exp/slog"
 )
 
 var (
@@ -67,7 +68,7 @@ func (a *AudioSettings) PlaySound(e AudioEvent) {
 		// This should only happen if a built-in sound effect is removed
 		// and an old config file refers to it. Arguably the user should be
 		// notified in this (unexpected) case...
-		lg.Infof("%s: sound effect disappeared?!", effect)
+		lg.Errorf("%s: sound effect disappeared?!", effect)
 		a.SoundEffects[e] = ""
 	} else {
 		a.lastPlayMutex.Lock()
@@ -93,7 +94,7 @@ func (s *SoundEffect) Play() {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				lg.Errorf("SDL panic playing audio: %v", err)
+				lg.Error("SDL panic playing audio", slog.Any("panic", err))
 			}
 		}()
 
@@ -109,14 +110,14 @@ func (s *SoundEffect) Play() {
 		var obtained sdl.AudioSpec
 		audioDevice, err := sdl.OpenAudioDevice("", false /* no record */, s.spec, &obtained, 0)
 		if err != nil {
-			lg.Infof("Unable to open SDL audio device: %v", err)
+			lg.Errorf("Unable to open SDL audio device: %v", err)
 			sdlMutex.Unlock()
 			return
 		}
 
 		for i := 0; i < s.repeat; i++ {
 			if err = sdl.QueueAudio(audioDevice, s.wav); err != nil {
-				lg.Infof("Unable to queue SDL audio: %v", err)
+				lg.Errorf("Unable to queue SDL audio: %v", err)
 			}
 		}
 
@@ -157,7 +158,7 @@ func addEffect(filename string, name string, repeat int) {
 	loaded, spec := sdl.LoadWAVRW(rw, false /* do not free */)
 
 	if _, ok := soundEffects[name]; ok {
-		lg.Errorf(name + " used repeatedly")
+		lg.Error("audio: sound effect \"" + name + "\" used repeatedly")
 		return
 	}
 
@@ -169,7 +170,8 @@ func addEffect(filename string, name string, repeat int) {
 		wav:      loaded,
 		duration: time.Duration(duration * 1e9),
 		repeat:   repeat,
-		spec:     spec}
+		spec:     spec,
+	}
 
 	if err = rw.Close(); err != nil {
 		lg.Errorf("SDL error: %v", err)
@@ -180,7 +182,7 @@ func addEffect(filename string, name string, repeat int) {
 }
 
 func audioInit() error {
-	lg.Infof("Starting to initialize audio")
+	lg.Info("Starting to initialize audio")
 	err := sdl.Init(sdl.INIT_AUDIO)
 	if err != nil {
 		return fmt.Errorf("failed to initialize SDL2 audio: %w", err)
@@ -204,7 +206,7 @@ func audioInit() error {
 	addEffect("387533__soundwarf__alert-short.wav", "Alert Short", 1)
 	addEffect("426888__thisusernameis__beep4.wav", "Beep Double", 1)
 
-	lg.Infof("Finished initializing audio")
+	lg.Info("Finished initializing audio")
 	return nil
 }
 

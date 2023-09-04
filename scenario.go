@@ -751,7 +751,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 
 	err := fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Errorf("error walking videomaps: %v", err)
 			return nil
 		}
 
@@ -771,7 +771,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 		return nil
 	})
 	if err != nil {
-		lg.Errorf("%v", err)
+		lg.Errorf("error loading videomaps: %v", err)
 		os.Exit(1)
 	}
 
@@ -802,7 +802,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 
 	err = fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			lg.Errorf("%v", err)
+			lg.Errorf("error walking scenarios/: %v", err)
 			return nil
 		}
 
@@ -826,7 +826,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 		return nil
 	})
 	if err != nil {
-		lg.Errorf("%v", err)
+		lg.Errorf("error walking scenarios: %v", err)
 		os.Exit(1)
 	}
 
@@ -908,7 +908,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			missing = append(missing, t)
 		}
 	}
-	lg.Errorf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
+	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	return scenarioGroups, simConfigurations
 }

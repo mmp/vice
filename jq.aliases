@@ -1,0 +1,40 @@
+
+# --unbufferred so tail works
+
+alias tailvice='tail -c +0 -f ~/Library/Application\ Support/Vice/vice.slog'
+
+jqcallsign() {
+  jq -c --unbuffered --arg cs $1 'select(.callsign == $cs or .aircraft.Callsign == $cs)'
+}
+
+jqnav() {
+  jq -c --unbuffered 'select(.msg == "nav_update") | .flight_state'
+}
+
+jqtidy() {
+  jq --unbuffered 'del(.callstack,.callsign,.time)'
+}
+
+jqdeepdiffac() {
+  jq -c --unbuffered 'def deepdiff($a; $b):
+  if $a == $b then
+    empty
+  elif (($a | type) == "object" and ($b | type) == "object") then
+    reduce (($a | keys) + ($b | keys) | unique[]) as $key ({};
+        .[$key] |= deepdiff($a[$key]; $b[$key])
+    )
+  else
+    [$a, $b]
+  end;
+  if deepdiff(.prepost_aircraft[0]; .prepost_aircraft[1]) != {} then
+    { "callsign": .callsign,
+      "command": .callstack | map(select(.function == (.function | ltrimstr("(*Sim).dispatch")))) | first.function,
+      "diffs": deepdiff(.prepost_aircraft[0]; .prepost_aircraft[1]),
+      "radio": .radio_transmissions
+    }
+  else
+    empty
+  end
+'
+}
+  

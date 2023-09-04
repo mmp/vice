@@ -25,7 +25,7 @@ type OpenGL2Renderer struct {
 // NewOpenGL2Renderer creates an OpenGL context and creates a texture for the imgui fonts.
 // Thus, all font creation must be finished before the renderer is created.
 func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
-	lg.Infof("Starting OpenGL2Renderer initialization")
+	lg.Info("Starting OpenGL2Renderer initialization")
 	if err := gl.Init(); err != nil {
 		return nil, fmt.Errorf("failed to initialize OpenGL: %w", err)
 	}
@@ -33,7 +33,7 @@ func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
 	v, r := (*C.char)(unsafe.Pointer(vendor)), (*C.char)(unsafe.Pointer(renderer))
 	lg.Infof("OpenGL vendor %s renderer %s", C.GoString(v), C.GoString(r))
 
-	lg.Infof("Finished OpenGL2Renderer initialization")
+	lg.Info("Finished OpenGL2Renderer initialization")
 	return &OpenGL2Renderer{
 		imguiIO:         io,
 		createdTextures: make(map[uint32]int),
@@ -306,7 +306,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 			stats.Merge(s2)
 
 		default:
-			lg.Errorf("unhandled command")
+			lg.Error("unhandled command")
 		}
 	}
 

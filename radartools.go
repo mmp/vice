@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/nfnt/resize"
+	"golang.org/x/exp/slog"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -143,7 +144,7 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.p0[0], rb.p0[1], rb.p1[0], rb.p1[1]))
 
 		url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
-		lg.Infof("Fetching weather: %s", url)
+		lg.Info("Fetching weather", slog.String("url", url))
 
 		// Request the image
 		resp, err := http.Get(url)
@@ -183,7 +184,7 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 
 		// Send it back to the main thread.
 		imageChan <- ImageAndBounds{img: resized, bounds: rb}
-		lg.Infof("finish weather fetch")
+		lg.Info("finish weather fetch")
 
 		if !timedOut {
 			time.Sleep(15 * time.Second)

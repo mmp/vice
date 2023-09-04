@@ -36,6 +36,7 @@ import (
 
 	"github.com/MichaelTJones/pcg"
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/exp/slog"
 )
 
 const nmPerLatitude = 60
@@ -52,7 +53,7 @@ var decoder, _ = zstd.NewReader(nil, zstd.WithDecoderConcurrency(0))
 func decompressZstd(s string) string {
 	b, err := decoder.DecodeAll([]byte(s), nil)
 	if err != nil {
-		lg.ErrorfUp1("Error decompressing buffer")
+		lg.Errorf("Error decompressing buffer")
 	}
 	return string(b)
 }
@@ -135,7 +136,7 @@ func stopShouting(orig string) string {
 // the logging system.
 func atof(s string) float64 {
 	if v, err := strconv.ParseFloat(strings.TrimSpace(s), 64); err != nil {
-		lg.ErrorfUp1("%s: error converting to float: %s", s, err)
+		lg.Errorf("%s: error converting to float: %s", s, err)
 		return 0
 	} else {
 		return v
@@ -1665,7 +1666,13 @@ func (e *ErrorLogger) HaveErrors() bool {
 	return len(e.errors) > 0
 }
 
-func (e *ErrorLogger) PrintErrors() {
+func (e *ErrorLogger) PrintErrors(lg *Logger) {
+	// Two loops so they aren't interleaved with logging to stdout
+	if lg != nil {
+		for _, err := range e.errors {
+			lg.Errorf("%+v", err)
+		}
+	}
 	for _, err := range e.errors {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -1770,7 +1777,7 @@ func (c *gobServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
 		if c.encBuf.Flush() == nil {
 			// Gob couldn't encode the header. Should not happen, so if it does,
 			// shut down the connection to signal that the connection is broken.
-			lg.Infof("rpc: gob error encoding response: %v", err)
+			lg.Errorf("rpc: gob error encoding response: %v", err)
 			c.Close()
 		}
 		return
@@ -1779,7 +1786,7 @@ func (c *gobServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
 		if c.encBuf.Flush() == nil {
 			// Was a gob problem encoding the body but the header has been written.
 			// Shut down the connection to signal that the connection is broken.
-			lg.Infof("rpc: gob error encoding body: %v", err)
+			lg.Errorf("rpc: gob error encoding body: %v", err)
 			c.Close()
 		}
 		return
@@ -1817,13 +1824,17 @@ func MakeLoggingServerCodec(label string, c rpc.ServerCodec) *LoggingServerCodec
 
 func (c *LoggingServerCodec) ReadRequestHeader(r *rpc.Request) error {
 	err := c.ServerCodec.ReadRequestHeader(r)
-	lg.Infof("%s: RPC server receive request %s -> %v", c.label, r.ServiceMethod, err)
+	lg.Debug("server: rpc request", slog.String("label", c.label),
+		slog.String("service_method", r.ServiceMethod),
+		slog.Any("error", err))
 	return err
 }
 
 func (c *LoggingServerCodec) WriteResponse(r *rpc.Response, body any) error {
 	err := c.ServerCodec.WriteResponse(r, body)
-	lg.Infof("%s: RPC server send response %s -> %v", c.label, r.ServiceMethod, err)
+	lg.Debug("server: rpc response", slog.String("label", c.label),
+		slog.String("service_method", r.ServiceMethod),
+		slog.Any("error", err))
 	return err
 }
 
@@ -1873,13 +1884,17 @@ func MakeLoggingClientCodec(label string, c rpc.ClientCodec) *LoggingClientCodec
 
 func (c *LoggingClientCodec) WriteRequest(r *rpc.Request, v any) error {
 	err := c.ClientCodec.WriteRequest(r, v)
-	lg.Infof("%s: RPC client send request %s -> %v", c.label, r.ServiceMethod, err)
+	lg.Debug("client: rpc request", slog.String("label", c.label),
+		slog.String("service_method", r.ServiceMethod),
+		slog.Any("error", err))
 	return err
 }
 
 func (c *LoggingClientCodec) ReadResponseHeader(r *rpc.Response) error {
 	err := c.ClientCodec.ReadResponseHeader(r)
-	lg.Infof("%s: RPC client receive response %s -> %v", c.label, r.ServiceMethod, err)
+	lg.Debug("client: rpc response", slog.String("label", c.label),
+		slog.String("service_method", r.ServiceMethod),
+		slog.Any("error", err))
 	return err
 }
 
@@ -1961,9 +1976,12 @@ func (c *LoggingConn) Write(b []byte) (n int, err error) {
 func (c *LoggingConn) maybeReport() {
 	if time.Since(c.lastReport) > 1*time.Minute {
 		min := time.Since(c.start).Minutes()
-		lg.Infof("%s: %d bytes read (%d/minute), %d bytes written (%d/minute)",
-			c.Conn.RemoteAddr(), c.received, int(float64(c.received)/min),
-			c.sent, int(float64(c.sent)/min))
+		lg.Info("bandwidth",
+			slog.String("address", c.Conn.RemoteAddr().String()),
+			slog.Int("bytes_received", c.received),
+			slog.Int("bytes_received_per_minute", int(float64(c.received)/min)),
+			slog.Int("bytes_transmitted", c.sent),
+			slog.Int("bytes_transmitted_per_minute", int(float64(c.sent)/min)))
 		c.lastReport = time.Now()
 	}
 }

@@ -101,7 +101,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 	fn := configFilePath()
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
-		lg.Infof("%s: unable to read config file: %v", fn, err)
+		lg.Warnf("%s: unable to read config file: %v", fn, err)
 	}
 
 	var b strings.Builder
