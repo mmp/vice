@@ -1146,12 +1146,20 @@ func (s *Sim) updateState() {
 		for callsign, ac := range s.World.Aircraft {
 			ac.Update(s.World, s, s.lg)
 
-			// Cull departures that are far from the airport.
-			if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil && ac.IsDeparture() {
-				if nmdistance2ll(ac.Position(), ap.Location) > 200 {
+			// Cull far-away departures/arrivals
+			if ac.IsDeparture() {
+				if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil &&
+					nmdistance2ll(ac.Position(), ap.Location) > 250 {
 					s.lg.Info("culled far-away departure", slog.String("callsign", callsign))
 					delete(s.World.Aircraft, callsign)
 				}
+			} else if ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil &&
+				nmdistance2ll(ac.Position(), ap.Location) > 250 {
+				// We only expect this case to hit for an unattended vice,
+				// where aircraft are being spawned but are then flying
+				// along on a heading without being controlled...
+				s.lg.Info("culled far-away arrival", slog.String("callsign", callsign))
+				delete(s.World.Aircraft, callsign)
 			}
 
 			// FIXME: this is sort of ugly to have here...
