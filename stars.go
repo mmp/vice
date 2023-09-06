@@ -119,12 +119,32 @@ type STARSPane struct {
 }
 
 type STARSRangeBearingLine struct {
-	p [2]struct {
+	P [2]struct {
 		// If callsign is given, use that aircraft's position;
 		// otherwise we have a fixed position.
-		loc      Point2LL
-		callsign string
+		Loc      Point2LL
+		Callsign string
 	}
+}
+
+func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraft, sp *STARSPane) (p0, p1 Point2LL) {
+	// Each line endpoint may be specified either by an aircraft's
+	// position or by a fixed position. We'll start with the fixed
+	// position and then override it if there's a valid *Aircraft.
+	p0, p1 = rbl.P[0].Loc, rbl.P[1].Loc
+	if ac := ctx.world.Aircraft[rbl.P[0].Callsign]; ac != nil {
+		state, ok := sp.Aircraft[ac.Callsign]
+		if ok && !state.LostTrack(ctx.world.CurrentTime()) && Find(aircraft, ac) != -1 {
+			p0 = state.TrackPosition()
+		}
+	}
+	if ac := ctx.world.Aircraft[rbl.P[1].Callsign]; ac != nil {
+		state, ok := sp.Aircraft[ac.Callsign]
+		if ok && !state.LostTrack(ctx.world.CurrentTime()) && Find(aircraft, ac) != -1 {
+			p1 = state.TrackPosition()
+		}
+	}
+	return
 }
 
 type CAAircraft struct {
@@ -1207,7 +1227,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Tools before datablocks
 	sp.drawPTLs(aircraft, ctx, transforms, cb)
 	sp.drawRingsAndCones(aircraft, ctx, transforms, cb)
-	sp.drawRBLs(ctx, transforms, cb)
+	sp.drawRBLs(aircraft, ctx, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
 	sp.drawAirspace(ctx, transforms, cb)
 
@@ -2703,7 +2723,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if cmd == "*T" {
 					// range bearing line
 					sp.wipRBL = STARSRangeBearingLine{}
-					sp.wipRBL.p[0].callsign = ac.Callsign
+					sp.wipRBL.P[0].Callsign = ac.Callsign
 					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 					return
 				} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
@@ -3003,7 +3023,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	if sp.commandMode == CommandModeNone {
 		if cmd == "*T" {
 			sp.wipRBL = STARSRangeBearingLine{}
-			sp.wipRBL.p[0].loc = transforms.LatLongFromWindowP(mousePosition)
+			sp.wipRBL.P[0].Loc = transforms.LatLongFromWindowP(mousePosition)
 			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 			return
 		}
@@ -3122,9 +3142,9 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 		rbl := sp.wipRBL
 		sp.wipRBL = STARSRangeBearingLine{}
 		if ac, _ := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
-			rbl.p[1].callsign = ac.Callsign
+			rbl.P[1].Callsign = ac.Callsign
 		} else {
-			rbl.p[1].loc = transforms.LatLongFromWindowP(pw)
+			rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
 		}
 		sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
 		status.clear = true
@@ -4935,7 +4955,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 	ld := GetColoredLinesDrawBuilder()
@@ -4962,42 +4982,30 @@ func (sp *STARSPane) drawRBLs(ctx *PaneContext, transforms ScopeTransformations,
 	}
 
 	// Maybe draw a wip RBL with p1 as the mouse's position
-	wp := sp.wipRBL.p[0]
-	if ctx.mouse != nil && (!wp.loc.IsZero() || wp.callsign != "") {
+	wp := sp.wipRBL.P[0]
+	if ctx.mouse != nil && (!wp.Loc.IsZero() || wp.Callsign != "") {
 		p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
-		if wp.callsign != "" {
-			if ac := ctx.world.Aircraft[wp.callsign]; ac != nil && sp.datablockVisible(ac) {
-				if state, ok := sp.Aircraft[wp.callsign]; ok {
+		if wp.Callsign != "" {
+			if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
+				Find(aircraft, ac) != -1 {
+				if state, ok := sp.Aircraft[wp.Callsign]; ok {
 					drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1)
 				}
 			}
 		} else {
-			drawRBL(wp.loc, p1, len(sp.RangeBearingLines)+1)
+			drawRBL(wp.Loc, p1, len(sp.RangeBearingLines)+1)
 		}
 	}
 
 	for i, rbl := range sp.RangeBearingLines {
-		// Each line endpoint may be specified either by an aircraft's
-		// position or by a fixed position. We'll start with the fixed
-		// position and then override it if there's a valid *Aircraft.
-		p0, p1 := rbl.p[0].loc, rbl.p[1].loc
-		if ac := ctx.world.Aircraft[rbl.p[0].callsign]; ac != nil {
-			state, ok := sp.Aircraft[ac.Callsign]
-			if !ok || state.LostTrack(ctx.world.CurrentTime()) || !sp.datablockVisible(ac) {
-				continue
-			}
-			p0 = state.TrackPosition()
+		if p0, p1 := rbl.GetPoints(ctx, aircraft, sp); !p0.IsZero() && !p1.IsZero() {
+			drawRBL(p0, p1, i+1)
 		}
-		if ac := ctx.world.Aircraft[rbl.p[1].callsign]; ac != nil {
-			state, ok := sp.Aircraft[ac.Callsign]
-			if !ok || state.LostTrack(ctx.world.CurrentTime()) || !sp.datablockVisible(ac) {
-				continue
-			}
-			p1 = state.TrackPosition()
-		}
-
-		drawRBL(p0, p1, i+1)
 	}
+	sp.RangeBearingLines = FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
+		p0, p1 := rbl.GetPoints(ctx, aircraft, sp)
+		return !p0.IsZero() && !p1.IsZero()
+	})
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
