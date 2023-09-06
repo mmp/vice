@@ -99,6 +99,12 @@ var (
 		"Fixed a rare crash when manually adjusting launch rates",
 		"Numerous minor improvements to the STARS UI and functionality (including adding dwell mode)",
 		"Small fixes to the JAX and CLT scenario files",
+		"Added support for STARS FUSED mode (choose \"FUSED\" in the \"SITE\" menu in the DCB)",
+		"New commands: EC/ED: expedite climb/descent",
+		"New command: I: intercept the localizer",
+		"New commands: SMIN/SMAX: maintain slowest practical / maximum forward speed",
+		"New command: AFIX/CAPP: at FIX cleared APP approach",
+		"Altitude crossing restrictions are more flexible: CFIX/A100-, CFIX/A80+, CFIX/A140-160, etc.",
 	}
 )
 
