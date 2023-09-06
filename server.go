@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
 	"io"
@@ -13,6 +14,7 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"os/exec"
 	"runtime"
 	"sort"
 	"strconv"
@@ -1218,7 +1220,6 @@ type ServerStats struct {
 
 	SimStatus []SimStatus
 	Errors    string
-	LogFiles  []ServerLogFile
 }
 
 type ServerLogFile struct {
@@ -1314,13 +1315,6 @@ tr:nth-child(even) {
 {{.Errors}}
 </div>
 
-<h1>Logs</h1>
-<ul>
-{{range .LogFiles}}
-<li><a href="/vice-logs/{{.Filename}}">{{.Filename}}</a> - {{.Date}} - ({{bytes .Size}})</li>
-{{end}}
-</ul>
-
 <script>
 window.onload = function() {
     var divs = document.getElementsByClassName("bot");
@@ -1350,28 +1344,20 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 
 		SimStatus: sm.GetSimStatus(),
 	}
-	if errs, err := os.ReadFile("vice-logs/errors"); err == nil {
-		stats.Errors = string(errs)
-	}
-	stats.RX, stats.TX = GetLoggedRPCBandwidth()
 
-	/*
-		if de, err := os.ReadDir("vice-logs"); err == nil {
-			for _, entry := range de {
-				if info, err := entry.Info(); err == nil {
-					stats.LogFiles = append(stats.LogFiles,
-						ServerLogFile{
-							Filename: entry.Name(),
-							Date:     info.ModTime().Format(time.RFC1123),
-							Size:     info.Size(),
-						})
-				}
-			}
-		}
-		sort.Slice(stats.LogFiles, func(i, j int) bool {
-			return stats.LogFiles[i].Filename < stats.LogFiles[j].Filename
-		})
-	*/
+	// process logs
+	cmd := exec.Command("jq", `select(.level == "WARN" or .level == "ERROR")|.callstack = .callstack[0]`,
+		lg.logFile)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		stats.Errors = "jq: " + err.Error() + "\n" + stderr.String()
+	} else {
+		stats.Errors = stdout.String()
+	}
+
+	stats.RX, stats.TX = GetLoggedRPCBandwidth()
 
 	statsTemplate.Execute(w, stats)
 }

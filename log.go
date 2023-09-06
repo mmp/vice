@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path"
 	"runtime"
@@ -20,11 +19,12 @@ import (
 
 type Logger struct {
 	*slog.Logger
-	start time.Time
+	logFile string
+	start   time.Time
 }
 
 func NewLogger(server bool, level string) *Logger {
-	var w io.Writer
+	var w *lumberjack.Logger
 
 	if server {
 		w = &lumberjack.Logger{
@@ -64,8 +64,9 @@ func NewLogger(server bool, level string) *Logger {
 
 	h := slog.NewJSONHandler(w, &slog.HandlerOptions{Level: lvl})
 	l := &Logger{
-		Logger: slog.New(h),
-		start:  time.Now(),
+		Logger:  slog.New(h),
+		logFile: w.Filename,
+		start:   time.Now(),
 	}
 
 	// Start out the logs with some basic information about the system
