@@ -131,22 +131,22 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) {
 	}
 
 	if ac.IsDeparture() && ac.DepartureContactAltitude != 0 &&
-		ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
-		// We're above the contact altitude, so time to check in.
-		dep := w.GetDepartureController(ac)
+		ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
+		ac.TrackingController != "" {
+		// Tracked and above the contact altitude, so time to check in.
 		PostRadioEvents(ac.Callsign, []RadioTransmission{RadioTransmission{
-			Controller: dep,
+			Controller: ac.TrackingController,
 			Message:    ac.Nav.DepartureMessage(),
 			Type:       RadioTransmissionContact,
 		}}, ep)
-		lg.Info("contacting departure controller", slog.String("callsign", dep))
+		lg.Info("contacting departure controller", slog.String("callsign", ac.TrackingController))
 
 		// Clear this out so we only send one contact message
 		ac.DepartureContactAltitude = 0
 
 		// Only after we're on frequency can the controller start
 		// issuing control commands..
-		ac.ControllingController = dep
+		ac.ControllingController = ac.TrackingController
 	}
 
 	if ac.GoAroundDistance != nil {
