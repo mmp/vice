@@ -43,7 +43,7 @@ func NewLogger(server bool, level string) *Logger {
 
 		w = &lumberjack.Logger{
 			Filename:   fn,
-			MaxSize:    32, // MB
+			MaxSize:    Select(level == "debug", 512, 32), // MB
 			MaxBackups: 1,
 		}
 	}
