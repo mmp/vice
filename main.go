@@ -233,7 +233,10 @@ func main() {
 				if remoteServer != nil && remoteServer.err != nil {
 					uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 						message: "This version of vice is incompatible with the vice multi-controller server.\n" +
-							"Please upgrade to the latest version of vice for multi-controller functionality.",
+							"If you're using an older version of vice, please upgrade to the latest\n" +
+							"version for multi-controller support. (If you're using a beta build, then\n" +
+							"thanks for your help testing vice; when the beta is released, the server\n" +
+							"will be updated as well.)",
 					}), true)
 					remoteServer = nil
 					stopConnectingRemoteServer = true
