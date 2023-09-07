@@ -1518,7 +1518,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		} else {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
-			s.lg.Debug("dispatch_command", slog.String("callsign", ac.Callsign),
+			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
 				slog.Any("prepost_aircraft", []Aircraft{preAc, *ac}),
 				slog.Any("radio_transmissions", radioTransmissions))
 			PostRadioEvents(ac.Callsign, radioTransmissions, s)
@@ -1681,7 +1681,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
 			if ac.IsDeparture() {
-				s.lg.Debug("departing on course", slog.String("callsign", ac.Callsign),
+				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
 				ac.DepartOnCourse()
 			}
@@ -2026,7 +2026,8 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 				s.TotalArrivals--
 			}
 
-			s.lg.Info("deleting aircraft", slog.String("callsign", ac.Callsign))
+			s.lg.Info("deleted aircraft", slog.String("callsign", ac.Callsign),
+				slog.String("controller", ctrl.Callsign))
 			delete(s.World.Aircraft, ac.Callsign)
 			return nil
 		})
