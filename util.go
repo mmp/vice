@@ -170,8 +170,8 @@ func getRandomAdjectiveNoun() string {
 		adjectiveList = strings.Split(adjectivesFile, "\n")
 	}
 
-	return adjectiveList[rand.Intn(len(adjectiveList))] + "-" +
-		nounList[rand.Intn(len(nounList))]
+	return strings.TrimSpace(adjectiveList[rand.Intn(len(adjectiveList))]) + "-" +
+		strings.TrimSpace(nounList[rand.Intn(len(nounList))])
 }
 
 ///////////////////////////////////////////////////////////////////////////
