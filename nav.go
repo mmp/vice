@@ -127,6 +127,10 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = min(arr.InitialSpeed, nav.Perf.Speed.Cruise)
+		// This won't be quite right but it's better than leaving GS to be
+		// 0 for the first nav update tick which leads to various Inf and
+		// NaN cases...
+		nav.FlightState.GS = nav.FlightState.IAS
 
 		return nav
 	}
