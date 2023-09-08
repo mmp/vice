@@ -359,11 +359,13 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
+			uiStartDisable(len(remoteServer.runningSims) == 0)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
 				c.selectedServer = remoteServer
 				c.displayError = nil
 			}
+			uiEndDisable(len(remoteServer.runningSims) == 0)
 
 			imgui.EndTable()
 		}
