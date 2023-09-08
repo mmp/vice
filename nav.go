@@ -780,7 +780,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			return
 		}
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil {
-		lg.Debug("alt: waypoint %s altitude %.0f in %.0f seconds", c.FinalFix, c.Altitude, c.ETA)
+		lg.Debugf("alt: altitude %.0f for final waypoint %s in %.0f seconds", c.Altitude, c.FinalFix, c.ETA)
 		if c.ETA < 5 {
 			return c.Altitude, MaximumRate
 		} else {
