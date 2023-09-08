@@ -65,7 +65,7 @@
                         "MALET": {
                             "cleared_altitude": 4000,
                             "route": "MALET",
-                            "waypoints": "_DAB_7L _DAB_25R/h070 MALET"
+                            "waypoints": "_DAB_7R _DAB_25L/h070 MALET"
                         }
                         },
                         "25R": {
@@ -148,15 +148,34 @@
                         {
                             "airlines": [
                                 {
-                                    "icao": "JIA"
+                                    "icao": "ERU"
                                 }
                             ],
-                            "destination": "KMIA",
+                            "destination": "KMLB",
                             "exit": "MALET",
-                            "route": "MALET T208 VALKA T345 MARKT"
+                            "route": "MALET T208 VALKA MLB"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KVRB",
+                            "exit": "MALET",
+                            "route": "MALET T208 VALKA PBI"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KTIX",
+                            "exit": "MALET",
+                            "route": "MALET MLB"
                         }
                     ],
-                    "elevation": 33,
                     "exit_categories": {
                         "MALET": "South",
                         "CRG": "North"
@@ -250,7 +269,7 @@
                         },
                         "cleared_altitude": 12000,
                         "cruise_altitude": 36000,
-                        "initial_altitude": 14000,
+                        "initial_altitude": 17000,
                         "initial_controller": "JAX_30_CTR",
                         "initial_speed": 250,
                         "route": "/. TTHOR3 ",

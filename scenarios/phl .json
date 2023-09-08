@@ -55,10 +55,139 @@
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
-            "QWEST/a4000 OBEKE/a3000 ANNET/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50 "
+            "QWEST/a4000 OBEKE/a3000 ANNET/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50"
           ]
         }
       },
+      "approach_regions": {
+          "9L": {
+              "heading_tolerance":  90,
+
+              "near_distance": 0.01,
+              "near_half_width": 1.5,
+              "far_half_width": 5,
+              "region_length": 20,
+
+              "descent_distance": 11.4,
+              "descent_altitude": 3000,
+              "above_altitude_tolerance": 1000,
+              "below_altitude_tolerance": 1000,
+
+              "reference_point": "39.868525,-75.256239",
+              "reference_heading": 87.7,
+              "reference_length": 22,
+              "reference_altitude": 0
+          },
+          "27L": {
+              "heading_tolerance":  90,
+
+              "near_distance": 0.01,
+              "near_half_width": 1.5,
+              "far_half_width": 5,
+              "region_length": 20,
+
+              "descent_distance": 11.4,
+              "descent_altitude": 3000,
+              "above_altitude_tolerance": 1000,
+              "below_altitude_tolerance": 1000,
+
+              "reference_point": "39.86913,-75.23322",
+              "reference_heading": 267.7,
+              "reference_length": 22,
+              "reference_altitude": 0
+          },
+          "27R": {
+              "heading_tolerance":  90,
+
+              "near_distance": 0.01,
+              "near_half_width": 1.5,
+              "far_half_width": 5,
+              "region_length": 20,
+
+              "descent_distance": 11.4,
+              "descent_altitude": 3000,
+              "above_altitude_tolerance": 1000,
+              "below_altitude_tolerance": 1000,
+
+              "reference_point": "39.87528,-75.22262",
+              "reference_heading": 267.7,
+              "reference_length": 22,
+              "reference_altitude": 0
+          },
+          "17": {
+              "heading_tolerance":  90,
+
+              "near_distance": 0.01,
+              "near_half_width": 1.5,
+              "far_half_width": 6,
+              "region_length": 20,
+
+              "descent_distance": 11.4,
+              "descent_altitude": 3000,
+              "above_altitude_tolerance": 1000,
+              "below_altitude_tolerance": 1000,
+
+              "reference_point": "39.887977,-75.236228",
+              "reference_heading": 171.3,
+              "reference_length": 20,
+              "reference_altitude": 0
+          },
+          "35": {
+              "heading_tolerance":  90,
+
+              "near_distance": 0.01,
+              "near_half_width": 1.5,
+              "far_half_width": 5,
+              "region_length": 20,
+
+              "descent_distance": 11.4,
+              "descent_altitude": 3000,
+              "above_altitude_tolerance": 1000,
+              "below_altitude_tolerance": 1000,
+
+              "reference_point": "39.869,-75.22675",
+              "reference_heading": 351.3,
+              "reference_length": 20,
+              "reference_altitude": 3
+          }
+      },
+      "converging_runways": [
+          {
+              "runways": [ "27R", "35" ],
+              "leader_directions": [ "W", "N" ],
+              "tie_symbol": "/",
+              "stagger_symbol": "7",
+              "tie_offset": 0.88
+          },
+          {
+              "runways": [ "27R", "17" ],
+              "leader_directions": [ "W", "N" ],
+              "tie_symbol": "/",
+              "stagger_symbol": "7",
+              "tie_offset": 1.15
+          },
+          {
+              "runways": [ "9L", "17" ],
+              "leader_directions": [ "E", "N" ],
+              "tie_symbol": "/",
+              "stagger_symbol": "7",
+              "tie_offset": 0.01
+          },
+          {
+              "runways": [ "27R", "27L" ],
+              "leader_directions": [ "S", "N" ],
+              "tie_symbol": "/",
+              "stagger_symbol": "7",
+              "tie_offset": 5
+          },
+          {
+              "runways": [ "27L", "35" ],
+              "leader_directions": [ "W", "N" ],
+              "tie_symbol": "/",
+              "stagger_symbol": "7",
+              "tie_offset": 1
+          }
+      ],
       "departure_routes": {
         "27L": {
           "ARD,FJC,MAZIE,MXE,PTW": {
@@ -316,7 +445,6 @@
           "route": "DITCH V312 WINKK V44 CAMRN"
         }
       ],
-      "elevation": 36,
       "exit_categories": {
         "ARD": "North",
         "DITCH": "South",
@@ -4781,6 +4909,44 @@
         "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
       }
     ],
+    "FINAL17_NORTH": [
+      {
+        "airlines": {
+          "KPHL": [
+            {
+              "airport": "KBUF",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KPIT",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KPWM",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KCLE",
+              "icao": "NKS"
+            }
+          ]
+        },
+        "cleared_altitude": 5000,
+        "cruise_altitude": 37000,
+        "expect_approach": "17Z",
+        "initial_altitude": 8000,
+        "initial_controller": "PHL_NA_APP",
+        "initial_speed": 220,
+        "speed_restriction": 220,
+        "route": "/. BOJID3",
+        "scratchpad": "17Z",
+        "waypoints": "N040.05.01.382,W075.44.56.319 N040.04.20.458,W075.35.49.255/ho/h110"
+      }
+    ],
     "JIIMS4": [
       {
         "airlines": {
@@ -5037,6 +5203,76 @@
   },
   "default_scenario": "KPHL Depart 27L Land 27R/35",
   "fixes": { },
+  "inhibit_ca_volumes": [
+      {
+          "name": "PHL NO CA",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 1200,
+          "vertices": [
+              "39.99353,-75.27406",
+              "39.88791,-75.21548",
+              "39.93058,-75.047",
+              "39.89772,-75.03668",
+              "39.85968,-75.20819",
+              "39.73525,-75.14333",
+              "39.7281,-75.1677",
+              "39.86025,-75.23223",
+              "39.82196,-75.42499",
+              "39.84186,-75.43244",
+              "39.8784,-75.24258",
+              "39.98712,-75.2978"
+          ]
+      },
+      {
+          "name": "ILG NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 7,
+          "center": "39.67787,-75.60479"
+      },
+      {
+          "name": "PNE NO CA",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 1200,
+          "vertices": [
+              "40.07569,-75.03271",
+              "40.01926,-75.1147",
+              "40.0049,-75.10013",
+              "40.06448,-75.01097",
+              "39.99652,-74.94562",
+              "40.0159,-74.91596",
+              "40.07651,-74.99092",
+              "40.14525,-74.89523",
+              "40.16401,-74.91683",
+              "40.09764,-75.00448",
+              "40.22654,-75.14552",
+              "40.21517,-75.16453"
+          ]
+      },
+      {
+          "name": "TTN NO CA",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 1200,
+          "vertices": [
+              "40.27265,-74.82605",
+              "40.21457,-74.90508",
+              "40.20265,-74.88945",
+              "40.26373,-74.81612",
+              "40.1944,-74.75272",
+              "40.20421,-74.73504",
+              "40.27346,-74.80138",
+              "40.29985,-74.71533",
+              "40.31505,-74.72249",
+              "40.28611,-74.80537",
+              "40.36191,-74.87496",
+              "40.35088,-74.897"
+          ]
+      }
+  ],
   "magnetic_variation": 13.3,
   "name": "KPHL",
   "nm_per_latitude": 60,
@@ -5045,8 +5281,8 @@
   "radar_sites": {
     "NXX": {
       "char": "N",
-      "elevation": 408,
       "position": "40.19980, -75.14820",
+      "elevation": 408,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 50.4,
@@ -5054,14 +5290,23 @@
     },
     "PHL": {
       "char": "P",
-      "elevation": 90,
       "position": "PHL",
+      "elevation": 150,
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 50.4,
       "slope_angle": 0.175
     }
   },
+  "reporting_points": [
+      "BOJID",
+      "HIFAL",
+      "JIIMS",
+      "PAATS",
+      "PSOUT",
+      "SPUDS",
+      "TRAGG"
+  ],
   "scenarios": {
     "KPHL 27R Final": {
       "approach_airspace": [
@@ -5076,10 +5321,13 @@
       ],
       "arrivals": {
         "FINAL27_NORTH": {
-          "KPHL": 22
+          "KPHL": 20
         },
         "FINAL27_SOUTH": {
-          "KPHL": 22
+          "KPHL": 20
+        },
+        "FINAL17_NORTH": {
+          "KPHL": 20
         }
       },
       "solo_controller": "PHL_F1_APP",
@@ -5090,7 +5338,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "PHL - Video Map West",
+      "default_map": "Philadelphia Map West",
       "wind": {
         "direction": 290,
         "speed": 8
@@ -5143,7 +5391,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "PHL - Video Map West",
+      "default_map": "Philadelphia Map West",
       "departure_airspace": [
         "PHL_N_DEP27",
         "PHL_S_DEP27",
@@ -5210,7 +5458,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "PHL - Video Map East",
+      "default_map": "Philadelphia Map East",
       "departure_airspace": [
         "PHL_N_DEP9",
         "PHL_N_HIGH9",
@@ -5258,23 +5506,23 @@
     {
       "group": 0,
       "label": "PHL WEST",
-      "name": "PHL - Video Map West"
+      "name": "Philadelphia Map West"
     },
     {
       "group": 0,
       "label": "PHL EAST",
-      "name": "PHL - Video Map East"
+      "name": "Philadelphia Map East"
     },
     {
       "group": 1,
       "label": "PHL MVA",
-      "name": "PHL - MVA"
+      "name": "Philly MVA"
     },
     {
       "group": 1,
       "label": "PHL B",
-      "name": "Philadelphia Class B"
+      "name": "Philly Class B"
     }
   ],
-  "video_map_file": "videomaps/zny-maps.json.zst"
+  "video_map_file": "videomaps/phl-maps.json.zst"
 }
