@@ -1044,7 +1044,7 @@ func (sd *SimDispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) err
 }
 
 func RunSimServer() {
-	l, err := net.Listen("tcp", ":8000")
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", *serverPort))
 	if err != nil {
 		lg.Errorf("tcp listen: %v", err)
 		return

@@ -24,7 +24,8 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceServerAddress = "vice.pharr.org:8000"
+const ViceServerAddress = "vice.pharr.org"
+const ViceServerPort = 8000
 
 var (
 	// There are a handful of widely-used global variables in vice, all
@@ -53,8 +54,9 @@ var (
 	memprofile        = flag.String("memprofile", "", "write memory profile to this file")
 	logLevel          = flag.String("loglevel", "info", "logging level: debug, info, warn, error")
 	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	server            = flag.Bool("server", false, "run vice scenario server")
-	serverAddress     = flag.String("serverip", ViceServerAddress, "IP address of vice multi-controller server")
+	server            = flag.Bool("runserver", false, "run vice scenario server")
+	serverPort        = flag.Int("port", ViceServerPort, "port to listen on when running server")
+	serverAddress     = flag.String("server", ViceServerAddress, "IP address of vice multi-controller server")
 	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
 	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
