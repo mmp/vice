@@ -550,6 +550,12 @@ func (nav *Nav) Check(lg *Logger) {
 
 // returns passed waypoint if any
 func (nav *Nav) Update(wind WindModel, lg *Logger) *Waypoint {
+	// FIXME: temporary server-side workaround for clients that don't yet
+	// have 698a241103b847.
+	if nav.FlightState.GS == 0 {
+		nav.FlightState.GS = nav.FlightState.IAS
+	}
+
 	nav.updateAirspeed(lg)
 	nav.updateAltitude(lg)
 	nav.updateHeading(wind, lg)
