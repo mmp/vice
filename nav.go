@@ -1000,6 +1000,11 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		// Otherwise fall through to the cases below
 	}
 
+	if nav.Speed.Assigned != nil {
+		lg.Debugf("speed: %.0f assigned", *nav.Speed.Assigned)
+		return *nav.Speed.Assigned, MaximumRate
+	}
+
 	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); wp != nil {
 		lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
@@ -1017,11 +1022,6 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 
 			return speed, rate * 60 // per minute
 		}
-	}
-
-	if nav.Speed.Assigned != nil {
-		lg.Debugf("speed: %.0f assigned", *nav.Speed.Assigned)
-		return *nav.Speed.Assigned, MaximumRate
 	}
 
 	// Something from a previous waypoint; ignore it if we're cleared for the approach.
