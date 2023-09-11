@@ -26,7 +26,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 6
+const ViceRPCVersion = 5
 
 type SimServer struct {
 	name        string
