@@ -1120,7 +1120,7 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 func parseNavaids() map[string]Navaid {
 	navaids := make(map[string]Navaid)
 
-	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2022-07-14/
+	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2023-09-07/
 	navBaseRaw := LoadResource("NAV_BASE.csv.zst")
 	mungeCSV("navaids", string(navBaseRaw),
 		[]string{"NAV_ID", "NAV_TYPE", "NAME", "LONG_DECIMAL", "LAT_DECIMAL"},
