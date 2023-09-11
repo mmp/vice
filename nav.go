@@ -286,6 +286,9 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		lines = append(lines, fmt.Sprintf("Speed %.0f kts to %.0f", nav.FlightState.IAS, ias))
 	} else if nav.Speed.Assigned != nil {
 		lines = append(lines, fmt.Sprintf("Maintaining %.0f kts assignment", *nav.Speed.Assigned))
+	} else if nav.Speed.AfterAltitude != nil && nav.Speed.AfterAltitudeAltitude != nil {
+		lines = append(lines, fmt.Sprintf("At %s, maintain %0.f kts", FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
+			*nav.Speed.AfterAltitude))
 	}
 
 	for _, fix := range SortedMapKeys(nav.FixAssignments) {
@@ -416,10 +419,18 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 	if nav.FlightState.IAS < targetSpeed {
 		accel := nav.Perf.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 		accel = min(accel, targetRate/60)
+		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude < *nav.Altitude.Assigned {
+			// Reduce acceleration since also climbing
+			accel *= 0.6
+		}
 		nav.FlightState.IAS = min(targetSpeed, nav.FlightState.IAS+accel)
 	} else if nav.FlightState.IAS > targetSpeed {
 		decel := nav.Perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
+		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude > *nav.Altitude.Assigned {
+			// Reduce deceleration since also descending
+			decel *= 0.6
+		}
 		nav.FlightState.IAS = max(targetSpeed, nav.FlightState.IAS-decel)
 	}
 }
@@ -458,12 +469,16 @@ func (nav *Nav) updateAltitude(lg *Logger) {
 	}
 
 	if nav.FlightState.Altitude < targetAltitude {
-		// Simple model: we just update altitude based on the rated climb
-		// rate; does not account for simultaneous acceleration, etc...
+		if nav.Speed.Assigned != nil && nav.FlightState.IAS < *nav.Speed.Assigned {
+			// Reduce rate due to concurrent acceleration
+			climb *= 0.7
+		}
 		nav.FlightState.Altitude = min(targetAltitude, nav.FlightState.Altitude+climb/60)
 	} else if nav.FlightState.Altitude > targetAltitude {
-		// Similarly, descent modeling doesn't account for airspeed or
-		// acceleration/deceleration...
+		if nav.Speed.Assigned != nil && nav.FlightState.IAS > *nav.Speed.Assigned {
+			// Reduce rate due to concurrent deceleration
+			descent *= 0.7
+		}
 		nav.FlightState.Altitude = max(targetAltitude, nav.FlightState.Altitude-descent/60)
 	}
 }
@@ -1324,7 +1339,7 @@ func (nav *Nav) GoAround() string {
 	return Sample([]string{"going around", "on the go"})
 }
 
-func (nav *Nav) AssignAltitude(alt float32) string {
+func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) string {
 	if alt > nav.Perf.Ceiling {
 		return "unable. That altitude is above our ceiling."
 	}
@@ -1338,7 +1353,7 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 		response = Sample([]string{"descend and maintain ", "down to "}) + FormatAltitude(alt)
 	}
 
-	if nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
+	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
 		nav.Altitude.AfterSpeed = &alt
 		spd := *nav.Speed.Assigned
 		nav.Altitude.AfterSpeedSpeed = &spd
@@ -1350,7 +1365,7 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 	}
 }
 
-func (nav *Nav) AssignSpeed(speed float32) string {
+func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) string {
 	if speed == 0 {
 		nav.Speed = NavSpeed{}
 		return "cancel speed restrictions"
@@ -1362,7 +1377,7 @@ func (nav *Nav) AssignSpeed(speed float32) string {
 		// TODO: make sure we're not within 5 miles...
 		nav.Speed = NavSpeed{Assigned: &speed}
 		return fmt.Sprintf("maintain %.0f knots until 5 mile final", speed)
-	} else if nav.Altitude.Assigned != nil &&
+	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		nav.Speed.AfterAltitude = &speed
 		alt := *nav.Altitude.Assigned
