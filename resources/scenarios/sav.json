@@ -1,0 +1,987 @@
+{
+  "airports": {
+    "KSAV": {
+      "approaches": {
+        "I1": {
+          "full_name":" ILS Runway 1",
+          "runway": "1",
+          "type": "ILS",
+          "waypoints": [
+            "TERBE/a2000 MIZLU/a2000 _SAV_1/a39"
+          ]
+        },
+        "R1": {
+          "full_name":" RNAV Runway 1",
+          "runway": "1",
+          "type": "RNAV",
+          "waypoints": [
+            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39",
+            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39"
+          ]
+        },
+        "I10": {
+          "full_name": "ILS Runway 10",
+          "runway": "10",
+          "type": "ILS",
+          "waypoints": [
+            "TILEE/a2600 SOVIE/a2000 _SAV_10/a30"
+          ]
+        },
+        "R10": {
+          "full_name": "RNAV Runway 10",
+          "runway": "10",
+          "type": "RNAV",
+          "waypoints": [
+            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30",
+            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30"
+          ]
+        },
+        "R19": {
+          "full_name": "RNAV Runway 19",
+          "runway": "19",
+          "type": "RNAV",
+          "waypoints": [
+            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47",
+            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47"
+          ]
+        },
+        "R28": {
+          "full_name": "RNAV Zulu Runway 28",
+          "runway": "28",
+          "type": "RNAV",
+          "waypoints": [
+            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50",
+            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50"
+          ]
+        }
+      },
+      "departure_routes": {
+        "10": {
+            "GIPPL": {
+              "cleared_altitude": 3000,
+              "route": "GIPPL",
+              "waypoints": "_SAV_10 _SAV_28/h097"
+            },
+            "JROSS": {
+              "cleared_altitude": 3000,
+              "route": "JROSS",
+              "waypoints": "_SAV_10 _SAV_28/h097"
+            },
+            "SMALZ": {
+              "cleared_altitude": 3000,
+              "route": "SMALZ",
+              "waypoints": "_SAV_10 _SAV_28/h097"
+            }
+        },
+        "28": {
+            "GIPPL": {
+              "cleared_altitude": 3000,
+              "route": "GIPPL",
+              "waypoints": "_SAV_28 _SAV_10/h277"
+            },
+            "JROSS": {
+              "cleared_altitude": 3000,
+              "route": "JROSS",
+              "waypoints": "_SAV_28 _SAV_10/h277"
+            },
+            "SMALZ": {
+              "cleared_altitude": 3000,
+              "route": "SMALZ",
+              "waypoints": "_SAV_28 _SAV_10/h277"
+            }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "SMALZ",
+          "route": "SMALZ TYFTR JJEDI3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "JROSS",
+          "route": "JROSS FLLGG STOCR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "JROSS",
+          "route": "JROSS LAANA Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAY"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "JROSS",
+          "route": "JROSS Q87 HINTZ Q87 ALWZZ OGRAE Q99 QUART PHLBO4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "GJS"
+            },
+            {
+              "icao": "SKW"
+            },
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "SMALZ",
+          "route": "SMALZ MILEN QUIWE Q93 HEVAN BONNT VEECK5"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "SMALZ",
+          "route": "SMALZ WIGVO DBN MGM MLU YUYUN BEREE2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASH"
+            }
+          ],
+          "destination": "KIAD",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ GSO DORRN CAVLR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "JROSS",
+          "route": "JROSS Q87 HURTS HUBBS PXT KORRY4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "JROSS",
+          "route": "JROSS ALWZZ OGRAE Q99 PEETT BBDOL PAATS4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBWI",
+          "exit": "JROSS",
+          "route": "JROSS Q87 RAYVO Q113 AARNN THHMP RAVNN6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "JROSS",
+          "route": "JROSS Q87 RAYVO Q113 AARNN WAVES CAPSS3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASH"
+            }
+          ],
+          "destination": "KIAH",
+          "exit": "SMALZ",
+          "route": "SMALZ AMG CEW J2 SJI LINKK1"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KMIA",
+          "exit": "GIPPL",
+          "route": "GIPPL WOPNR Q97 DEBRL CSTAL2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KMDW",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ VXV J99 IIU DROSE FISSK6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KBOS",
+          "exit": "JROSS",
+          "route": "JROSS LCAPE Q87 GEARS BBOBO Q22 RBV Q419 JFK ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBNA",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ JAGIR SWFFT2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "SMALZ",
+          "route": "SMALZ MILEN QUIWE BURGG NEALS J85  HVQ J85 JAMOX BONZZ2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSAV",
+          "exit": "SMALZ",
+          "route": "SMALZ DEFUN J2 SJI Q56 HRV KCEEE TKNIQ MOLLR JCT Q20 CNX GNDLA TBARR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KDAL",
+          "exit": "SMALZ",
+          "route": "SMALZ WIGVO DBN MGM J20 MEI J20 MHZ MLU PUDJE REDDN4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KHOU",
+          "exit": "SMALZ",
+          "route": "SMALZ WIGVO DBN MGMRY CATLN SJI BAYYY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KCVG",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ VXV JAKIE5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SIL"
+            }
+          ],
+          "destination": "KFLL",
+          "exit": "GIPPL",
+          "route": "GIPPL WOPNR KENLL TARPN3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SCX"
+            },
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KMSP",
+          "exit": "SMALZ",
+          "route": "SMALZ WIGVO IIU J89 OBK KAMMA KKILR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SIL"
+            }
+          ],
+          "destination": "KTPA",
+          "exit": "GIPPL",
+          "route": "GIPPL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "destination": "KHVN",
+          "exit": "JROSS",
+          "route": "JROSS ELLDE Q97 DLAAY RADDS Q445 WNSTN Q445 BRIGS Q439 SARDI V139 RICED KEYED"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KLCK",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ SPA J85 NEALS MCGNS SCRLT1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KPIT",
+          "exit": "SMALZ",
+          "route": "SMALZ IRQ SPA PSK ILLSA Q69 RICCS LEJOY DEMME5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY"
+            },
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "destination" : "KCAK",
+          "exit":  "SMALZ",
+          "route": "SMALZ MILEN QUIWE SPA J85 HVQ JPU ZZIPS1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "destination": "KBDL",
+          "exit": "JROSS",
+          "route": "JROSS ELLDE Q97 YEASO Q97 PAACK JAMIE CONFR Q481 DPK DPK3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "destination": "KMSY",
+          "exit": "SMALZ",
+          "route": "SMALZ CEW SJI MNSTR1"
+        }
+      ],
+      "exit_categories": {
+        "JROSS": "ALL",
+        "SMALZ": "ALL",
+        "GIPPL": "ALL"
+      },
+      "location": "N32.07.39.191,W81.12.07.633",
+      "tower_list": 1
+    }
+  },
+  "airspace": {
+    "boundaries": {
+        "SAVAPP40100": [
+          "N031.27.36.463,W081.11.28.044",
+          "N031.35.29.920,W081.11.42.960",
+          "N031.35.29.850,W081.25.59.731",
+          "N031.27.35.008,W081.25.59.786",
+          "N031.27.36.463,W081.11.28.044"
+        ],
+        "SAVAPP30100": [
+          "N032.19.47.051,W81.43.57.707",
+          "N032.24.31.291,W81.47.10.275",
+          "N032.24.49.934,W81.47.39.478",
+          "N032.26.23.094,W81.49.10.591",
+          "N032.27.10.888,W81.49.37.124",
+          "N032.27.31.578,W81.49.46.869",
+          "N032.28.33.752,W81.50.01.193",
+          "N032.29.49.184,W81.49.57.395",
+          "N032.31.01.892,W81.49.28.711",
+          "N032.31.51.059,W81.48.54.266",
+          "N032.32.26.018,W81.48.20.977",
+          "N032.32.31.287,W81.48.17.768",
+          "N032.33.02.961,W81.47.34.931",
+          "N032.33.21.636,W81.46.58.212",
+          "N032.33.34.740,W81.46.28.034",
+          "N032.33.37.330,W81.46.17.758",
+          "N032.33.39.813,W81.46.13.247",
+          "N032.33.48.447,W81.45.42.043",
+          "N032.33.58.585,W81.44.17.581",
+          "N032.33.50.951,W81.42.52.396",
+          "N032.33.20.208,W81.41.16.689",
+          "N032.32.59.190,W81.40.38.498",
+          "N032.32.00.077,W81.33.06.249",
+          "N032.19.47.051,W81.43.57.707"
+        ],
+        "SAVAPP20100": [
+        "N032.09.00.264,W080.37.35.026",
+        "N032.09.56.545,W080.36.58.015",
+        "N032.10.23.606,W080.36.43.529",
+        "N032.10.51.592,W080.36.30.104",
+        "N032.11.51.939,W080.36.11.377",
+        "N032.12.51.935,W080.35.58.773",
+        "N032.13.54.933,W080.35.58.157",
+        "N032.14.30.784,W080.36.03.952",
+        "N032.14.55.221,W080.36.11.677",
+        "N032.15.53.159,W080.36.39.851",
+        "N032.16.41.928,W080.37.20.244",
+        "N032.17.26.387,W080.38.15.049",
+        "N032.17.57.584,W080.39.16.210",
+        "N032.18.19.097,W080.40.25.086",
+        "N032.18.26.645,W080.41.33.484",
+        "N032.18.21.194,W080.42.48.272",
+        "N032.17.12.656,W080.49.58.212",
+        "N032.09.00.264,W080.37.35.026"
+        ],
+        "SAVAPP0100": [
+        "N031.27.35.019,W080.47.47.835",
+        "N031.35.52.666,W080.41.41.850",
+        "N031.59.59.985,W080.28.57.105",
+        "N032.13.39.392,W080.42.06.350",
+        "N032.14.26.706,W080.44.01.518",
+        "N032.19.59.614,W080.55.58.734",
+        "N032.29.59.213,W081.01.29.038",
+        "N032.37.59.830,W081.01.18.588",
+        "N032.37.58.677,W081.27.42.430",
+        "N032.01.28.098,W081.59.58.734",
+        "N031.50.55.728,W081.59.58.500",
+        "N031.35.31.436,W081.47.45.124",
+        "N031.35.27.676,W081.25.57.046",
+        "N031.27.31.955,W081.25.57.791",
+        "N031.27.35.019,W080.47.47.835"
+        ]
+    },
+    "volumes": {
+      "SAVAPP": [
+        {
+          "boundaries": [
+            "SAVAPP40100"
+          ],
+          "lower": 4000,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "SAVAPP30100"
+          ],
+          "lower": 3000,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "SAVAPP20100"
+          ],
+          "lower": 2000,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "SAVAPP0100"
+          ],
+          "lower": 0,
+          "upper": 10000
+        }
+      ]
+    }
+  },
+  "arrival_groups": {
+    "SOOOP": [
+      {
+        "airlines": {
+          "KSAV": [
+            {
+              "airport": "KJFK",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KJFK",
+              "icao": "EDV"
+            },
+            {
+              "airport": "KEWR",
+              "icao": "AAY"
+            },
+            {
+              "airport": "KEWR",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "EDV"
+            },
+            {
+              "airport": "KIAD",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KBWI",
+              "icao": "SWA"
+            },
+            {
+              "airport" : "KDCA",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "JBU"  
+            },
+            {
+              "airport": "KPHL",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KBDL",
+              "icao": "MXY"
+            },
+            {
+              "airport": "KHVN",
+              "icao": "VXP"
+            },
+            {
+              "airport": "KHPN",
+              "icao": "MXY"
+            }
+          ]
+        },
+        "cruise_altitude": 38000,
+        "cleared_altitude": 11000,
+        "initial_altitude": 12000,
+        "initial_controller": "JAX_30_CTR",
+        "initial_speed": 250,
+        "route": "SOOOP",
+        "waypoints": "MEECH SOOOP/ho/h252 "
+      }
+    ],
+    "PLZZZ": [
+      {
+        "airlines": {
+          "KSAV": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMDW",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KMSP",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KCVG",
+              "icao": "AAY"
+            },
+            {
+              "airport": "KLCK",
+              "icao": "AAY"
+            },
+            {
+              "airport": "KPIT",
+              "icao": "AAY"
+            },
+            {
+              "airport": "KGRR",
+              "icao": "AAY"
+            }
+          ]
+        },
+        "cleared_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "JAX_30_CTR",
+        "initial_speed": 250,
+        "route": "/. PLZZZ",
+        "waypoints": "LUCNE PLZZZ/ho/h184"
+      }
+    ],
+     "LOTTS": [
+      {
+        "airlines": {
+          "KSAV": [
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDFW",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KDAL",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KIAH",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KHOU",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KDEN",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSP",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "cleared_altitude": 11000,
+        "cruise_altitude": 33000,
+        "initial_altitude": 12000,
+        "initial_controller": "JAX_30_CTR",
+        "initial_speed": 250,
+        "route": "/. LOTTS",
+        "waypoints": "EHEJO JAMEB/ho LOTTS/h115"
+      }
+     ],
+     "VIYAP": [
+      {
+        "airlines": {
+          "KSAV": [
+            {
+              "airport": "KMIA",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KTPA",
+              "icao": "SIL"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "SIL"
+            }
+          ]
+        },
+        "cleared_altitude": 11000,
+        "cruise_altitude": 31000,
+        "initial_altitude": 12000,
+        "initial_controller": "JAX_30_CTR",
+        "initial_speed": 250,
+        "route": "/. VIYAP",
+        "waypoints": "HUDES VIYAP/ho/h018"
+      }
+    ]
+  },
+  "center": "KSAV",
+  "control_positions": {
+    "JAX_30_CTR": {
+      "frequency": 135925,
+      "full_name": "Jacksonville Center",
+      "scope_char": "C",
+      "sector_id": "30"
+    },
+    "SAV_N_APP": {
+      "frequency": 125300,
+      "full_name": "Savannah Approach",
+      "scope_char": "N",
+      "sector_id": "6N"
+    },
+    "SAV_W_APP": {
+      "frequency": 118400,
+      "full_name": "Savannah Approach",
+      "scope_char": "W",
+      "sector_id": "6W"
+    },
+    "SAV_S_APP": {
+      "frequency": 120400,
+      "full_name": "Savannah Approach",
+      "scope_char": "S",
+      "sector_id": "6S"
+    },
+    "SAV_TWR": {
+      "frequency": 125975,
+      "full_name": "Savannah Tower",
+      "scope_char": "T",
+      "sector_id": "6ST"
+    }
+  },
+  "default_scenario": "KSAV Depart 10/1 Land 10/1",
+  "fixes": {
+    "_SAV_1":  "N32.06.59.665,W81.11.59.962",
+    "_SAV_10": "N32.07.43.590,W81.13.07.675",
+    "_SAV_19": "N32.08.08.959,W81.12.00.495",
+    "_SAV_28": "N32.07.42.544,W81.11.18.875",
+    "SAV":     "N32.08.46.464,W81.11.56.648",
+    "KSAV":    "N32.07.39.009,W81.12.07.892"
+  },
+  "magnetic_variation": 7.1,
+  "name": "KSAV",
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 49,
+  "primary_airport": "KSAV",
+  "radar_sites": {
+    "SAV": {
+      "char": "S",
+      "position": "32.13347,-81.21328",
+      "elevation": 35,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    }
+  },
+  "reporting_points": [
+    "LOTTS",
+    "PLZZZ",
+    "SOOOP",
+    "VIYAP"
+  ],
+  "scenarios": {
+    "KSAV Depart 10/1 Land 10/1": {
+      "approach_airspace": [
+        "SAVAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KSAV",
+          "runway": "10"
+        },
+        {
+          "airport": "KSAV",
+          "runway": "1"
+        }
+      ],
+      "arrivals": {
+        "VIYAP": {
+          "KSAV": 5
+        },
+        "PLZZZ": {
+          "KSAV": 10
+        },
+        "LOTTS": {
+          "KSAV": 10
+        },
+        "SOOOP": {
+          "KSAV": 10
+        }
+      },
+      "solo_controller": "SAV_N_APP",
+      "multi_controllers": {
+        "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"], "departure": true},
+        "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"]},
+        "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
+      },
+      "controllers": [
+        "SAV_N_APP",
+        "JAX_30_CTR",
+        "SAV_TWR"
+      ],
+      "default_map": "Basic ACTC Sector",
+      "departure_airspace": [
+        "SAVAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KSAV",
+          "rate" : 35,
+          "runway": "10"
+        }
+      ],
+      "wind": {
+        "direction": 80,
+        "speed": 5
+      }
+    },
+    "KSAV Depart 28/19 Land 28/19": {
+      "approach_airspace": [
+        "SAVAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KSAV",
+          "runway": "28"
+        },
+        {
+          "airport": "KSAV",
+          "runway": "19"
+        }
+      ],
+      "arrivals": {
+        "VIYAP": {
+          "KSAV": 5
+        },
+        "PLZZZ": {
+          "KSAV": 10
+        },
+        "LOTTS": {
+          "KSAV": 10
+        },
+        "SOOOP": {
+          "KSAV": 10
+        }
+      },
+      "solo_controller": "SAV_N_APP",
+      "multi_controllers": {
+        "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"]},
+        "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"], "departure": true}, 
+        "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
+      },
+      "controllers": [
+        "SAV_N_APP",
+        "JAX_30_CTR",
+        "SAV_TWR"
+      ],
+      "default_map": "Basic ACTC Sector",
+      "departure_airspace": [
+        "SAVAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KSAV",
+          "rate": 35,
+          "runway": "28"
+        }
+      ],
+      "wind": {
+        "direction": 280,
+        "speed": 5
+      }
+    }
+  },
+  "scratchpads": {
+    "GIPPL": "GIP",
+    "JROSS": "JRO",
+    "SMALZ": "SMA"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "Basic",
+      "name": "Basic ACTC Sector"
+    },
+    {
+      "group": 0,
+      "label": "MVA",
+      "name": "MVA"
+    },
+    {
+      "group": 0,
+      "label": "SAV C",
+      "name": "Class Airspace with Altitudes"
+    },
+    {
+      "group": 0,
+      "label": "GPS",
+      "name": "Secondary/SAV  GPS"
+    },
+    {
+      "group": 0,
+      "label": "MOA 1",
+      "name": "Coastal MOA 1E, 1W, 2"
+    },
+    {
+      "group": 0,
+      "label": "MOA 2",
+      "name": "Coastal MOA 4B NBC"
+    }
+  ],
+  "video_map_file": "videomaps/sav-maps.json.zst"
+}

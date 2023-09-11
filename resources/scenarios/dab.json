@@ -63,9 +63,14 @@
                             "waypoints": "_DAB_7L _DAB_25R/h070 BARBS ROYES CRG"
                         },
                         "MALET": {
-                            "cleared_altitude": 4000,
+                            "cleared_altitude": 3000,
                             "route": "MALET",
-                            "waypoints": "_DAB_7L _DAB_25R/h070 MALET"
+                            "waypoints": "_DAB_7R _DAB_25L/h070 MALET"
+                        },
+                        "ROYES": {
+                            "cleared_altitude": 3000,
+                            "route": "ROYES",
+                            "waypoints": "_DAB_7L _DAB_25R/h070 ROYES"
                         }
                         },
                         "25R": {
@@ -75,9 +80,14 @@
                                 "waypoints": "_DAB_25R _DAB_7L/h250 BARBS ROYES CRG"
                             },
                             "MALET": {
-                                "cleared_altitude": 4000,
+                                "cleared_altitude": 3000,
                                 "route": "MALET",
-                                "waypoints": "_DAB_25R _DAB_7L/h250 MALET"
+                                "waypoints": "_DAB_25L _DAB_7R/h250 MALET"
+                            },
+                            "ROYES": {
+                                "cleared_altitude": 3000,
+                                "route": "ROYES",
+                                "waypoints": "_DAB_25R _DAB_7L/h250 ROYES"
                             }
                         }
                     },
@@ -148,17 +158,98 @@
                         {
                             "airlines": [
                                 {
-                                    "icao": "JIA"
+                                    "icao": "ERU"
                                 }
                             ],
-                            "destination": "KMIA",
+                            "destination": "KMLB",
                             "exit": "MALET",
-                            "route": "MALET T208 VALKA T345 MARKT"
+                            "route": "MALET T208 VALKA MLB"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KVRB",
+                            "exit": "MALET",
+                            "route": "MALET T208 VALKA PBI"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KTIX",
+                            "exit": "MALET",
+                            "route": "MALET MLB"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KLCQ",
+                            "exit": "ROYES",
+                            "route": "ROYES TAY"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KJAX",
+                            "exit": "ROYES",
+                            "route": "ROYES CRG"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KSAV",
+                            "exit": "ROYES",
+                            "route": "ROYES CRG VIYAP SAV"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KCRG",
+                            "exit": "ROYES",
+                            "route": "ROYES CRG"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KCHS",
+                            "exit": "ROYES",
+                            "route": "ROYES CRG VIYAP SAV CHS"
+                        },
+                        {
+                            "airlines": [
+                                {
+                                    "icao": "ERU"
+                                }
+                            ],
+                            "destination": "KMYR",
+                            "exit": "ROYES",
+                            "route": "ROYES CRG VIYAP SAV CHS CHACA"
                         }
                     ],
                     "exit_categories": {
                         "MALET": "South",
-                        "CRG": "North"
+                        "CRG": "North",
+                        "ROYES": "North"
                     },
                     "location": "N29.10.47.724,W81.03.28.574",
                     "tower_list": 2
@@ -249,11 +340,147 @@
                         },
                         "cleared_altitude": 12000,
                         "cruise_altitude": 36000,
-                        "initial_altitude": 14000,
+                        "initial_altitude": 17000,
                         "initial_controller": "JAX_30_CTR",
                         "initial_speed": 250,
                         "route": "/. TTHOR3 ",
                         "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165"
+                    }
+                ],
+                "FONEX": [
+                    {
+                        "airlines": {
+                            "KDAB": [
+                                {
+                                    "airport": "KLCQ",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KPNS",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KTLH",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KGNV",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KOCF",
+                                    "icao": "ERU"
+                                }
+                            ]
+                        },
+                            "cleared_altitude": 9000,
+                            "cruise_altitude": 11000,
+                            "initial_altitude": 11000,
+                            "initial_controller": "JAX_N_APP",
+                            "initial_speed": 130,
+                            "route": "/. FONEX ",
+                            "waypoints": "WEXUR IMEKE/ho FONEX OMN"
+                    }
+                ],
+                "FOLUT": [
+                    {
+                        "airlines": {
+                            "KDAB": [
+                                {
+                                    "airport": "KSAV",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KCHS",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KJAX",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KMYR",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KCRE",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KCRG",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KVLD",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KSSI",
+                                    "icao": "ERU"
+                                }
+                            ]
+                        },
+                        "cleared_altitude": 7000,
+                        "cruise_altitude": 9000,
+                        "initial_altitude": 8000,
+                        "initial_controller": "JAX_N_APP",
+                        "initial_speed": 130,
+                        "route": "/. FOLUT ",
+                        "waypoints": "BUNDE CODMO/ho FOLUT OMN"
+                    }
+                ],
+                "KIZER": [
+                    {
+                        "airlines": {
+                            "KDAB": [
+                                {
+                                    "airport": "KPIE",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KSRQ",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KPGD",
+                                    "icao": "ERU"
+                                }
+                            ]
+                        },
+                        "cleared_altitude": 5000,
+                        "cruise_altitude": 7000,
+                        "initial_altitude": 6000,
+                        "initial_controller": "MCO_E_APP",
+                        "initial_speed": 130,
+                        "route": "/. KIZER ",
+                        "waypoints": "WHOVL UDUZI/ho KIZER"
+                    }
+                ],
+                "DOMES": [
+                    {
+                        "airlines": {
+                            "KDAB": [
+                                {
+                                    "airport": "KMLB",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KVRB",
+                                    "icao": "ERU"
+                                },
+                                {
+                                    "airport": "KORL",
+                                    "icao": "ERU"
+                                }
+                            ]
+                        },
+                        "cleared_altitude": 5000,
+                            "cruise_altitude": 9000,
+                            "initial_altitude": 8000,
+                            "initial_controller": "MCO_E_APP",
+                            "initial_speed": 130,
+                            "route": "/. DOMES ",
+                            "waypoints": "ROCIT APEAK/ho DOMES EYORE"
                     }
                 ]
             },
@@ -349,7 +576,19 @@
                         ],
                         "arrivals": {
                             "TTHOR3": {
-                                "KDAB": 25
+                                "KDAB": 5
+                            },
+                            "FONEX": {
+                                "KDAB": 10
+                            },
+                            "FOLUT": {
+                                "KDAB": 10
+                            },
+                            "KIZER": {
+                                "KDAB": 10
+                            },
+                            "DOMES": {
+                                "KDAB": 10
                             }
                         },
                         "solo_controller": "DAB_H_APP",
@@ -393,7 +632,19 @@
                         ],
                         "arrivals": {
                             "TTHOR3": {
-                                "KDAB": 25
+                                "KDAB": 5
+                            },
+                            "FONEX": {
+                                "KDAB": 10
+                            },
+                            "FOLUT": {
+                                "KDAB": 10
+                            },
+                            "KIZER": {
+                                "KDAB": 10
+                            },
+                            "DOMES": {
+                                "KDAB": 10
                             }
                         },
                         "solo_controller": "DAB_H_APP",
@@ -424,7 +675,8 @@
                 },
                 "scratchpads": {
                     "CRG": "ROY",
-                    "MALET": "MAL"
+                    "MALET": "MAL",
+                    "ROYES": "ROY"
                 },
                 "stars_maps": [
                     {
