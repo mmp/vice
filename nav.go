@@ -300,7 +300,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			}
 			lines = append(lines, line)
 		}
-		if nfa.Depart.Heading != nil {
+		if nfa.Depart.Heading != nil && nav.Heading.Assigned == nil {
 			lines = append(lines, fmt.Sprintf("Depart "+fix+" heading %03d",
 				int(*nfa.Depart.Heading)))
 		}
