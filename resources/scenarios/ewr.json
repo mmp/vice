@@ -1105,9 +1105,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE ALIDA FRNKI/a2000 PESME/a1700 TBERN/a1300 JEBUV _TEB_6/a50",
-            "STW ELIZE ALIDA FRNKI/a2000 PESME/a1700 TBERN/a1300 JEBUV _TEB_6/a50",
-            "SBJ JERSE FRNKI/a2000 PESME/a1700 TBERN/a1300 JEBUV _TEB_6/a50"
+            "COATE ELIZE ALIDA FRNKI/a2000 PESME/a1700 TBERN/a1300 _TEB_6/a50",
+            "STW ELIZE ALIDA FRNKI/a2000 PESME/a1700 TBERN/a1300 _TEB_6/a50",
+            "SBJ JERSE FRNKI/a2000 PESME/a1700 TBERN/a1300 _TEB_6/a50"
           ]
         },
         "RX9": {

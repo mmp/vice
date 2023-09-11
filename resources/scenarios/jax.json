@@ -160,8 +160,8 @@
         "08": {
           "AMG,BAXLY": {
             "cleared_altitude": 3000,
-            "route": "ARNEY2",
-            "waypoints": "_JAX_08 _JAX_26/h077 KIMML ARNEY"
+            "route": "BRSTL1",
+            "waypoints": "_JAX_08 _JAX_26/h077 TEREE BRSTL"
           },
           "WISPR": {
             "cleared_altitude": 3000,
@@ -192,8 +192,8 @@
         "26": {
           "AMG,BAXLY": {
             "cleared_altitude": 3000,
-            "route": "ARNEY2",
-            "waypoints": "_JAX_26 _JAX_08/h260 KIMML ARNEY"
+            "route": "BRSTL1",
+            "waypoints": "_JAX_26 _JAX_08/h260 TEREE BRSTL"
           },
           "WISPR": {
             "cleared_altitude": 3000,
