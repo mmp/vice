@@ -7,7 +7,8 @@
                     "runway": "7L",
                     "type": "ILS",
                     "waypoints": [
-                        "WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30"
+                        "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30",
+                        "SMYRA/arc18.9OMN WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30"
                     ]
                 },
                 "R7R": {

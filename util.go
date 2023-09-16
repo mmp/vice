@@ -1678,6 +1678,10 @@ func (e *ErrorLogger) PrintErrors(lg *Logger) {
 	}
 }
 
+func (e *ErrorLogger) String() string {
+	return strings.Join(e.errors, "\n")
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 func CheckJSONVsSchema[T any](contents []byte, e *ErrorLogger) {

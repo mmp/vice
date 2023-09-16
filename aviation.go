@@ -614,6 +614,17 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// DMEArc
+
+type DMEArc struct {
+	Fix            string
+	Center         Point2LL
+	Radius         float32
+	InitialHeading float32
+	Clockwise      bool
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Waypoint
 
 type Waypoint struct {
@@ -626,6 +637,7 @@ type Waypoint struct {
 	NoPT                bool                 `json:"nopt,omitempty"`
 	Handoff             bool                 `json:"handoff,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
+	Arc                 *DMEArc              `json:"arc,omitempty"`
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -651,6 +663,10 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.Delete {
 		attrs = append(attrs, slog.Bool("delete", wp.Delete))
 	}
+	if wp.Arc != nil {
+		attrs = append(attrs, slog.Any("arc", wp.Arc))
+	}
+
 	return slog.GroupValue(attrs...)
 }
 
@@ -709,6 +725,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.Heading != 0 {
 			s += fmt.Sprintf("/h%d", w.Heading)
+		}
+		if w.Arc != nil {
+			s += fmt.Sprintf("/arc%.0f%s", w.Arc.Radius, w.Arc.Fix)
 		}
 
 		entries = append(entries, s)
@@ -825,6 +844,24 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 						wp.ProcedureTurn = &ProcedureTurn{}
 					}
 					wp.ProcedureTurn.Entry180NoPT = true
+				} else if len(f) > 5 && f[:3] == "arc" {
+					spec := f[3:]
+					rend := 0
+					for rend < len(spec) &&
+						((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
+						rend++
+					}
+					if rend == 0 {
+						return nil, fmt.Errorf("%s: radius not found after /arc", f)
+					}
+					radius, err := strconv.ParseFloat(spec[:rend], 32)
+					if err != nil {
+						return nil, fmt.Errorf("%s: invalid radius: %w", f, err)
+					}
+					wp.Arc = &DMEArc{
+						Fix:    spec[rend:],
+						Radius: float32(radius),
+					}
 
 					// Do these last since they only match the first character...
 				} else if f[0] == 'a' {

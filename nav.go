@@ -85,6 +85,8 @@ type NavSpeed struct {
 type NavHeading struct {
 	Assigned     *float32
 	Turn         *TurnMethod
+	Arc          *DMEArc
+	JoiningArc   bool
 	RacetrackPT  *FlyRacetrackPT
 	Standard45PT *FlyStandard45PT
 }
@@ -602,16 +604,43 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 		lg.Debugf("heading: assigned %.0f", heading)
 		return
 	} else {
-		if len(nav.Waypoints) == 0 {
-			lg.Debug("heading: route empty, no heading assigned", heading)
-			return // fly present heading...
+		// Either on an arc or to a waypoint. Figure out the point we're
+		// heading to and then common code will handle wind correction,
+		// etc...
+		var pTarget Point2LL
+
+		if arc := nav.Heading.Arc; arc != nil {
+			if nav.Heading.JoiningArc {
+				heading = nav.Heading.Arc.InitialHeading
+				if headingDifference(nav.FlightState.Heading, heading) < 1 {
+					nav.Heading.JoiningArc = false
+				}
+				return
+			}
+
+			// Work in nm coordinates
+			pc := ll2nm(arc.Center, nav.FlightState.NmPerLongitude)
+			pac := ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+			v := sub2f(pac, pc)
+			// Heading from center to aircraft, which we assume to be more
+			// or less on the arc already.
+			angle := degrees(atan2(v[0], v[1])) // x, y, as elsewhere..
+
+			// Choose a point a bit farther ahead on the arc
+			angle += float32(Select(arc.Clockwise, 10, -10))
+			p := add2f(pc, scale2f([2]float32{sin(radians(angle)), cos(radians(angle))}, arc.Radius))
+			pTarget = nm2ll(p, nav.FlightState.NmPerLongitude)
+		} else {
+			if len(nav.Waypoints) == 0 {
+				lg.Debug("heading: route empty, no heading assigned", heading)
+				return // fly present heading...
+			}
+
+			pTarget = nav.Waypoints[0].Location
 		}
 
-		// Find the heading that will take us to the next waypoint...
-
 		// No magnetic correction yet, just the raw geometric heading vector
-		hdg := headingp2ll(nav.FlightState.Position, nav.Waypoints[0].Location,
-			nav.FlightState.NmPerLongitude, 0)
+		hdg := headingp2ll(nav.FlightState.Position, pTarget, nav.FlightState.NmPerLongitude, 0)
 		v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		v = scale2f(v, nav.FlightState.GS)
 
@@ -637,7 +666,12 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 		hdg += nav.FlightState.MagneticVariation
 
 		heading = NormalizeHeading(hdg)
-		lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
+		if nav.Heading.Arc != nil {
+			lg.Debugf("heading: flying %.0f for %.1f %s arc", heading, nav.Heading.Arc.Radius,
+				nav.Heading.Arc.Fix)
+		} else {
+			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
+		}
 		return
 	}
 }
@@ -1161,6 +1195,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = float32(wp.Heading)
+	} else if wp.Arc != nil {
+		// Joining a DME arc after the heading
+		hdg = wp.Arc.InitialHeading
 	} else if len(nav.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
 		hdg = headingp2ll(wp.Location, nav.Waypoints[1].Location,
@@ -1179,6 +1216,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
 			nav.Waypoints = nav.Approach.AtFixClearedRoute
+		}
+		if nav.Heading.Arc != nil {
+			nav.Heading = NavHeading{}
 		}
 
 		if nav.Approach.Cleared {
@@ -1215,6 +1255,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
 			nav.Heading = NavHeading{Assigned: &hdg}
+		} else if wp.Arc != nil {
+			// Fly the DME arc
+			nav.Heading = NavHeading{Arc: wp.Arc, JoiningArc: true}
 		}
 
 		if wp.NoPT {
