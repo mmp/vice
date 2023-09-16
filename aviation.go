@@ -1159,7 +1159,7 @@ func parseAirports() map[string]FAAAirport {
 
 	// FAA database
 	mungeCSV("airports", string(airportsRaw),
-		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "ident", "name"},
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name"},
 		func(s []string) {
 			elevation := float64(0)
 			if s[2] != "" {
