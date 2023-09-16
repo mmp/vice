@@ -233,9 +233,13 @@ func fontsInit(r Renderer, platform Platform) {
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
-				// Fix font sizes to account for Windows using 96dpi but
-				// everyone else using 72...
-				sp *= 96. / 72. * platform.DPIScale()
+				if dpis := platform.DPIScale(); dpis > 1 {
+					sp *= platform.DPIScale()
+				} else {
+					// Fix font sizes to account for Windows using 96dpi but
+					// everyone else using 72...
+					sp *= 96. / 72.
+				}
 				sp = float32(int(sp + 0.5))
 			}
 

@@ -1787,13 +1787,13 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 		})
 }
 
-func (s *Sim) AssignAltitude(token, callsign string, altitude int) error {
+func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.AssignAltitude(altitude)
+			return ac.AssignAltitude(altitude, afterSpeed)
 		})
 }
 
@@ -1836,13 +1836,13 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 		})
 }
 
-func (s *Sim) AssignSpeed(token, callsign string, speed int) error {
+func (s *Sim) AssignSpeed(token, callsign string, speed int, afterAltitude bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.AssignSpeed(speed)
+			return ac.AssignSpeed(speed, afterAltitude)
 		})
 }
 

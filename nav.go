@@ -85,6 +85,8 @@ type NavSpeed struct {
 type NavHeading struct {
 	Assigned     *float32
 	Turn         *TurnMethod
+	Arc          *DMEArc
+	JoiningArc   bool
 	RacetrackPT  *FlyRacetrackPT
 	Standard45PT *FlyStandard45PT
 }
@@ -286,6 +288,9 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		lines = append(lines, fmt.Sprintf("Speed %.0f kts to %.0f", nav.FlightState.IAS, ias))
 	} else if nav.Speed.Assigned != nil {
 		lines = append(lines, fmt.Sprintf("Maintaining %.0f kts assignment", *nav.Speed.Assigned))
+	} else if nav.Speed.AfterAltitude != nil && nav.Speed.AfterAltitudeAltitude != nil {
+		lines = append(lines, fmt.Sprintf("At %s, maintain %0.f kts", FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
+			*nav.Speed.AfterAltitude))
 	}
 
 	for _, fix := range SortedMapKeys(nav.FixAssignments) {
@@ -300,7 +305,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			}
 			lines = append(lines, line)
 		}
-		if nfa.Depart.Heading != nil {
+		if nfa.Depart.Heading != nil && nav.Heading.Assigned == nil {
 			lines = append(lines, fmt.Sprintf("Depart "+fix+" heading %03d",
 				int(*nfa.Depart.Heading)))
 		}
@@ -416,10 +421,18 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 	if nav.FlightState.IAS < targetSpeed {
 		accel := nav.Perf.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 		accel = min(accel, targetRate/60)
+		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude < *nav.Altitude.Assigned {
+			// Reduce acceleration since also climbing
+			accel *= 0.6
+		}
 		nav.FlightState.IAS = min(targetSpeed, nav.FlightState.IAS+accel)
 	} else if nav.FlightState.IAS > targetSpeed {
 		decel := nav.Perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
+		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude > *nav.Altitude.Assigned {
+			// Reduce deceleration since also descending
+			decel *= 0.6
+		}
 		nav.FlightState.IAS = max(targetSpeed, nav.FlightState.IAS-decel)
 	}
 }
@@ -458,12 +471,16 @@ func (nav *Nav) updateAltitude(lg *Logger) {
 	}
 
 	if nav.FlightState.Altitude < targetAltitude {
-		// Simple model: we just update altitude based on the rated climb
-		// rate; does not account for simultaneous acceleration, etc...
+		if nav.Speed.Assigned != nil && nav.FlightState.IAS < *nav.Speed.Assigned {
+			// Reduce rate due to concurrent acceleration
+			climb *= 0.7
+		}
 		nav.FlightState.Altitude = min(targetAltitude, nav.FlightState.Altitude+climb/60)
 	} else if nav.FlightState.Altitude > targetAltitude {
-		// Similarly, descent modeling doesn't account for airspeed or
-		// acceleration/deceleration...
+		if nav.Speed.Assigned != nil && nav.FlightState.IAS > *nav.Speed.Assigned {
+			// Reduce rate due to concurrent deceleration
+			descent *= 0.7
+		}
 		nav.FlightState.Altitude = max(targetAltitude, nav.FlightState.Altitude-descent/60)
 	}
 }
@@ -550,12 +567,6 @@ func (nav *Nav) Check(lg *Logger) {
 
 // returns passed waypoint if any
 func (nav *Nav) Update(wind WindModel, lg *Logger) *Waypoint {
-	// FIXME: temporary server-side workaround for clients that don't yet
-	// have 698a241103b847.
-	if nav.FlightState.GS == 0 {
-		nav.FlightState.GS = nav.FlightState.IAS
-	}
-
 	nav.updateAirspeed(lg)
 	nav.updateAltitude(lg)
 	nav.updateHeading(wind, lg)
@@ -593,16 +604,43 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 		lg.Debugf("heading: assigned %.0f", heading)
 		return
 	} else {
-		if len(nav.Waypoints) == 0 {
-			lg.Debug("heading: route empty, no heading assigned", heading)
-			return // fly present heading...
+		// Either on an arc or to a waypoint. Figure out the point we're
+		// heading to and then common code will handle wind correction,
+		// etc...
+		var pTarget Point2LL
+
+		if arc := nav.Heading.Arc; arc != nil {
+			if nav.Heading.JoiningArc {
+				heading = nav.Heading.Arc.InitialHeading
+				if headingDifference(nav.FlightState.Heading, heading) < 1 {
+					nav.Heading.JoiningArc = false
+				}
+				return
+			}
+
+			// Work in nm coordinates
+			pc := ll2nm(arc.Center, nav.FlightState.NmPerLongitude)
+			pac := ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+			v := sub2f(pac, pc)
+			// Heading from center to aircraft, which we assume to be more
+			// or less on the arc already.
+			angle := degrees(atan2(v[0], v[1])) // x, y, as elsewhere..
+
+			// Choose a point a bit farther ahead on the arc
+			angle += float32(Select(arc.Clockwise, 10, -10))
+			p := add2f(pc, scale2f([2]float32{sin(radians(angle)), cos(radians(angle))}, arc.Radius))
+			pTarget = nm2ll(p, nav.FlightState.NmPerLongitude)
+		} else {
+			if len(nav.Waypoints) == 0 {
+				lg.Debug("heading: route empty, no heading assigned", heading)
+				return // fly present heading...
+			}
+
+			pTarget = nav.Waypoints[0].Location
 		}
 
-		// Find the heading that will take us to the next waypoint...
-
 		// No magnetic correction yet, just the raw geometric heading vector
-		hdg := headingp2ll(nav.FlightState.Position, nav.Waypoints[0].Location,
-			nav.FlightState.NmPerLongitude, 0)
+		hdg := headingp2ll(nav.FlightState.Position, pTarget, nav.FlightState.NmPerLongitude, 0)
 		v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		v = scale2f(v, nav.FlightState.GS)
 
@@ -628,7 +666,12 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 		hdg += nav.FlightState.MagneticVariation
 
 		heading = NormalizeHeading(hdg)
-		lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
+		if nav.Heading.Arc != nil {
+			lg.Debugf("heading: flying %.0f for %.1f %s arc", heading, nav.Heading.Arc.Radius,
+				nav.Heading.Arc.Fix)
+		} else {
+			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
+		}
 		return
 	}
 }
@@ -1000,6 +1043,11 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		// Otherwise fall through to the cases below
 	}
 
+	if nav.Speed.Assigned != nil {
+		lg.Debugf("speed: %.0f assigned", *nav.Speed.Assigned)
+		return *nav.Speed.Assigned, MaximumRate
+	}
+
 	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); wp != nil {
 		lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
@@ -1017,11 +1065,6 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 
 			return speed, rate * 60 // per minute
 		}
-	}
-
-	if nav.Speed.Assigned != nil {
-		lg.Debugf("speed: %.0f assigned", *nav.Speed.Assigned)
-		return *nav.Speed.Assigned, MaximumRate
 	}
 
 	// Something from a previous waypoint; ignore it if we're cleared for the approach.
@@ -1152,6 +1195,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = float32(wp.Heading)
+	} else if wp.Arc != nil {
+		// Joining a DME arc after the heading
+		hdg = wp.Arc.InitialHeading
 	} else if len(nav.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
 		hdg = headingp2ll(wp.Location, nav.Waypoints[1].Location,
@@ -1170,6 +1216,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
 			nav.Waypoints = nav.Approach.AtFixClearedRoute
+		}
+		if nav.Heading.Arc != nil {
+			nav.Heading = NavHeading{}
 		}
 
 		if nav.Approach.Cleared {
@@ -1206,6 +1255,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
 			nav.Heading = NavHeading{Assigned: &hdg}
+		} else if wp.Arc != nil {
+			// Fly the DME arc
+			nav.Heading = NavHeading{Arc: wp.Arc, JoiningArc: true}
 		}
 
 		if wp.NoPT {
@@ -1324,7 +1376,7 @@ func (nav *Nav) GoAround() string {
 	return Sample([]string{"going around", "on the go"})
 }
 
-func (nav *Nav) AssignAltitude(alt float32) string {
+func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) string {
 	if alt > nav.Perf.Ceiling {
 		return "unable. That altitude is above our ceiling."
 	}
@@ -1338,7 +1390,7 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 		response = Sample([]string{"descend and maintain ", "down to "}) + FormatAltitude(alt)
 	}
 
-	if nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
+	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
 		nav.Altitude.AfterSpeed = &alt
 		spd := *nav.Speed.Assigned
 		nav.Altitude.AfterSpeedSpeed = &spd
@@ -1350,7 +1402,7 @@ func (nav *Nav) AssignAltitude(alt float32) string {
 	}
 }
 
-func (nav *Nav) AssignSpeed(speed float32) string {
+func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) string {
 	if speed == 0 {
 		nav.Speed = NavSpeed{}
 		return "cancel speed restrictions"
@@ -1362,7 +1414,7 @@ func (nav *Nav) AssignSpeed(speed float32) string {
 		// TODO: make sure we're not within 5 miles...
 		nav.Speed = NavSpeed{Assigned: &speed}
 		return fmt.Sprintf("maintain %.0f knots until 5 mile final", speed)
-	} else if nav.Altitude.Assigned != nil &&
+	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		nav.Speed.AfterAltitude = &speed
 		alt := *nav.Altitude.Assigned

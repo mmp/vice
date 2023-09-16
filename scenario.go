@@ -613,6 +613,48 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			}
 			prev = waypoints[i].Location
 		}
+
+		if e != nil {
+			e.Pop()
+		}
+	}
+
+	// Do DME arcs after wp.Locations have been initialized
+	for i, wp := range waypoints {
+		if wp.Arc == nil {
+			continue
+		}
+
+		if e != nil {
+			e.Push("Fix " + wp.Fix)
+		}
+
+		if pos, ok := sg.locate(wp.Arc.Fix); !ok {
+			if e != nil {
+				e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+			}
+		} else {
+			wp.Arc.Center = pos
+		}
+
+		if i+1 == len(waypoints) {
+			if e != nil {
+				e.ErrorString("can't have DME arc after final waypoint")
+			}
+		} else {
+			hpre := headingp2ll(wp.Arc.Center, waypoints[i].Location, 60 /* nm per */, 0 /* mag */)
+			hpost := headingp2ll(wp.Arc.Center, waypoints[i+1].Location, 60 /* nm per */, 0 /* mag */)
+
+			h := NormalizeHeading(hpost - hpre)
+			wp.Arc.Clockwise = h < 180
+		}
+
+		// Heading from the center of the arc to the current fix
+		hfix := headingp2ll(wp.Arc.Center, wp.Location,
+			sg.NmPerLongitude, sg.MagneticVariation)
+		// Then perpendicular to that, depending on the arc's direction
+		wp.Arc.InitialHeading = NormalizeHeading(hfix + float32(Select(wp.Arc.Clockwise, 90, -90)))
+
 		if e != nil {
 			e.Pop()
 		}

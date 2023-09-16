@@ -105,6 +105,7 @@ var (
 		"New commands: SMIN/SMAX: maintain slowest practical / maximum forward speed",
 		"New command: AFIX/CAPP: at FIX cleared APP approach",
 		"Altitude crossing restrictions are more flexible: CFIX/A100-, CFIX/A80+, CFIX/A140-160, etc.",
+		"Fixed a bug where arrivals would disappear with some scenarios",
 	}
 )
 

@@ -179,13 +179,13 @@ func (ac *Aircraft) GoAround() []RadioTransmission {
 	}}
 }
 
-func (ac *Aircraft) AssignAltitude(altitude int) []RadioTransmission {
-	response := ac.Nav.AssignAltitude(float32(altitude))
+func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) []RadioTransmission {
+	response := ac.Nav.AssignAltitude(float32(altitude), afterSpeed)
 	return ac.readback(response)
 }
 
-func (ac *Aircraft) AssignSpeed(speed int) []RadioTransmission {
-	resp := ac.Nav.AssignSpeed(float32(speed))
+func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) []RadioTransmission {
+	resp := ac.Nav.AssignSpeed(float32(speed), afterAltitude)
 	return ac.readback(resp)
 }
 

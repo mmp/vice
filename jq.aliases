@@ -15,6 +15,10 @@ jqtidy() {
   jq --unbuffered 'del(.callstack,.callsign,.time)'
 }
 
+jqerr() {
+  jq -c --unbuffered 'select(.level == "ERROR")'
+}
+  
 jqdeepdiffac() {
   jq -c --unbuffered 'def deepdiff($a; $b):
   if $a == $b then
