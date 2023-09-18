@@ -1942,7 +1942,7 @@ func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.ExpectApproach(approach, s.World)
+			return ac.ExpectApproach(approach, s.World, s.lg)
 		})
 }
 

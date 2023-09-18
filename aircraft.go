@@ -261,7 +261,7 @@ func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
 	}
 }
 
-func (ac *Aircraft) ExpectApproach(id string, w *World) []RadioTransmission {
+func (ac *Aircraft) ExpectApproach(id string, w *World, lg *Logger) []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readback("unable. This aircraft is a departure.")
 	}
@@ -271,7 +271,8 @@ func (ac *Aircraft) ExpectApproach(id string, w *World) []RadioTransmission {
 		return ac.readback("unable.")
 	}
 
-	resp, _ := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, id, arr, w)
+	lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+	resp, _ := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, id, arr, w, lg)
 	return ac.readback(resp)
 }
 
@@ -384,7 +385,8 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	ac.Nav = *nav
 
 	if arr.ExpectApproach != "" {
-		ac.ExpectApproach(arr.ExpectApproach, w)
+		lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+		ac.ExpectApproach(arr.ExpectApproach, w, lg)
 	}
 
 	return nil
