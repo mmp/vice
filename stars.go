@@ -4341,7 +4341,6 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
-	rot := rotator2f(heading)
 	pos := state.TrackPosition()
 	pw := transforms.WindowFromLatLongP(pos)
 
@@ -4349,16 +4348,26 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 
 	switch mode := sp.radarMode(ctx.world); mode {
-	case RadarModeSingle, RadarModeMulti:
+	case RadarModeSingle:
+		site := ctx.world.RadarSites[ps.RadarSiteSelected]
+		primary, secondary, dist := site.CheckVisibility(ctx.world, pos, state.TrackAltitude())
+
+		// Orient the box toward the radar
+		h := headingp2ll(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
+		rot := rotator2f(h)
+
 		// blue box: x +/-9 pixels, y +/-3 pixels
-		// TODO: size based on distance to radar, if not MULTI
 		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+
+		// Scale box based on distance from the radar; TODO: what exactly should this be?
+		scale *= float32(clamp(dist/40, .5, 1.5))
 		for i := range box {
-			box[i] = add2f(rot(scale2f(box[i], scale)), pw)
+			box[i] = scale2f(box[i], scale)
+			box[i] = add2f(rot(box[i]), pw)
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
+
 		color := brightness.ScaleRGB(STARSTrackBlockColor)
-		primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
 		if primary {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -4368,15 +4377,34 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			ld.AddPolyline([2]float32{}, color, box[:])
 		}
 
-		if mode == RadarModeSingle {
-			// green line
-			// TODO: size based on distance to radar
-			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
-			for i := range line {
-				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
-				line[i] = transforms.LatLongFromWindowP(line[i])
-			}
-			ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+		// green line
+		line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
+		for i := range line {
+			line[i] = add2f(rot(scale2f(line[i], scale)), pw)
+			line[i] = transforms.LatLongFromWindowP(line[i])
+		}
+		ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+
+	case RadarModeMulti:
+		primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
+		rot := rotator2f(heading)
+
+		// blue box: x +/-9 pixels, y +/-3 pixels
+		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+		for i := range box {
+			box[i] = scale2f(box[i], scale)
+			box[i] = add2f(rot(box[i]), pw)
+			box[i] = transforms.LatLongFromWindowP(box[i])
+		}
+
+		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		if primary {
+			// Draw a filled box
+			trid.AddQuad(box[0], box[1], box[2], box[3], color)
+		} else if secondary {
+			// If it's just a secondary return, only draw the box outline.
+			// TODO: is this 40nm, or secondary?
+			ld.AddPolyline([2]float32{}, color, box[:])
 		}
 
 	case RadarModeFused:
