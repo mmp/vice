@@ -198,6 +198,14 @@ func (l *Logger) Errorf(msg string, args ...any) {
 	}
 }
 
+func (l *Logger) With(args ...any) *Logger {
+	return &Logger{
+		Logger:  l.Logger.With(args...),
+		logFile: l.logFile,
+		start:   l.start,
+	}
+}
+
 // Stats collects a few statistics related to rendering and time spent in
 // various phases of the system.
 type Stats struct {

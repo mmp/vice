@@ -105,7 +105,7 @@ func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission 
 }
 
 func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) {
-	lg := &Logger{Logger: simlg.With(slog.String("callsign", ac.Callsign))}
+	lg := simlg.With(slog.String("callsign", ac.Callsign))
 
 	if passedWaypoint := ac.Nav.Update(w, lg); passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))

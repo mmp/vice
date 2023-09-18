@@ -634,7 +634,7 @@ func (sc *ServerController) LogValue() slog.Value {
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
-	lg = &Logger{Logger: lg.With(slog.String("sim_name", ssc.NewSimName))}
+	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
 
 	sg, ok := scenarioGroups[ssc.GroupName]
 	if !ok {
@@ -1019,7 +1019,7 @@ func (s *Sim) Activate(lg *Logger) {
 	if s.Name == "" {
 		s.lg = lg
 	} else {
-		s.lg = &Logger{Logger: lg.With(slog.String("sim_name", s.Name))}
+		s.lg = lg.With(slog.String("sim_name", s.Name))
 	}
 
 	if s.controllers == nil {
