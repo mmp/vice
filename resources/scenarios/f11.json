@@ -8651,45 +8651,21 @@
   "nm_per_longitude": 40,
   "primary_airport": "KMCO",
   "radar_sites": {
-    "KMLB": {
-      "char": "L",
-      "position": "KMLB",
-      "elevation": 150,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KISM": {
-      "char": "I",
-      "position": "KISM",
-      "elevation": 200,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KMCO": {
+    "MCO": {
       "char": "M",
-      "position": "N028.25.45.781, W081.18.32.260",
+      "position": "28.394833, -81.304639",
       "elevation": 100,
       "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
+      "secondary_range": 60,
+      "slope_angle": 50.4
     },
-    "KORL": {
-      "char": "O",
-      "position": "KORL",
-      "elevation": 200,
+    "DAB": {
+      "char": "D",
+      "position": "29.172639, -81.192194",
+      "elevation": 38,
       "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KSFB": {
-      "char": "S",
-      "position": "N028.46.37.847, W081.14.05.700",
-      "elevation": 150,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
+      "secondary_range": 60,
+      "slope_angle": 49.7
     }
   },
   "scenarios": {
