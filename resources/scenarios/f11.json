@@ -8648,7 +8648,7 @@
   "magnetic_variation": 5,
   "name": "KMCO",
   "nm_per_latitude": 60,
-  "nm_per_longitude": 40,
+  "nm_per_longitude": 52,
   "primary_airport": "KMCO",
   "radar_sites": {
     "MCO": {
@@ -9688,28 +9688,28 @@
       "name": "Class Airspace Map"
     },
     {
-      "group": 0,
-      "label": "AIRPORT DIAGRAMS",
+      "group": 1,
+      "label": "GND",
       "name": "Airport Diagrams"
     },
     {
-      "group": 0,
-      "label": "LOW AIRWAYS",
+      "group": 1,
+      "label": "LOW",
       "name": "LOW AIRWAYS"
     },
     {
-      "group": 0,
-      "label": "HIGH AIRWAYS",
+      "group": 1,
+      "label": "HIGH",
       "name": "HIGH AIRWAYS"
     },
     {
-      "group": 0,
-      "label": "DISNEY TFR",
+      "group": 1,
+      "label": "DISNEY",
       "name": "DISNEY TFR SFC-3000"
     },
     {
       "group": 0,
-      "label": "CLASS DELTA",
+      "label": "CLASS D",
       "name": "F11 Class Delta Airspace"
     },
     {
@@ -9718,78 +9718,78 @@
       "name": "F11 Airspace Fixes"
     },
     {
-      "group": 0,
-      "label": "INTERSTATES",
+      "group": 1,
+      "label": "HWY",
       "name": "Interstates Map"
     },
     {
-      "group": 0,
-      "label": "COASTLINE",
+      "group": 1,
+      "label": "COAST",
       "name": "Coastline"
     },
     {
-      "group": 0,
-      "label": "VFR MAP",
+      "group": 1,
+      "label": "VFR",
       "name": "VFR Map"
     },
     {
       "group": 0,
-      "label": "ORL RWY 7",
+      "label": "ORL-7",
       "name": "Orlando runway 7"
     },
     {
       "group": 0,
-      "label": "ORL RWY 25",
+      "label": "ORL-25",
       "name": "Orlando runway 25"
     },
     {
       "group": 0,
-      "label": "MCO TWR",
+      "label": "MCO",
       "name": "MCO TWR"
     },
     {
       "group": 0,
-      "label": "MCO RNAV FINALS",
+      "label": "RNAV",
       "name": "KMCO RNAV Finals"
     },
     {
       "group": 0,
-      "label": "MCO FINAL NTZ",
+      "label": "NTZ",
       "name": "MCO FINAL NTZ"
     },
     {
       "group": 0,
-      "label": "RNAV APPROACH FIXES",
+      "label": "GPS",
       "name": "RNAV Approach Fixes"
     },
     {
       "group": 0,
-      "label": "AREA RESTRICTED AIRSPACE",
+      "label": "RESTRICTED",
       "name": "Area Restricted Airspace"
     },
     {
       "group": 0,
-      "label": "SAT-N SFB 9",
+      "label": "SATN9",
       "name": "SAT-N SFB 9"
     },
     {
       "group": 0,
-      "label": "SAT-S SFB 27",
+      "label": "STS27",
       "name": "SAT-S SFB 27"
     },
     {
       "group": 0,
-      "label": "SAT-N SFB 27",
+      "label": "STN27",
       "name": "SAT-N SFB 27"
     },
     {
       "group": 0,
-      "label": "SAT-S SFB 09",
+      "label": "STS09",
       "name": "SAT-S SFB 09"
     },
     {
       "group": 0,
-      "label": "RNAV X21/XMR",
+      "label": "X21/XMR",
       "name": "RNAV X21/XMR"
     }
   ],
