@@ -9593,88 +9593,88 @@
   },
   "stars_maps": [
     {
-      "group": 0,
-      "label": "RNAV SIDS",
+      "group": 1,
+      "label": "RSIDS",
       "name": "RNAV SIDS"
     },
     {
-      "group": 0,
-      "label": "RNAV STARS",
+      "group": 1,
+      "label": "RSTARS",
       "name": "RNAV STARS"
     },
     {
       "group": 0,
-      "label": "DEP RADAR NORTH FLOW",
+      "label": "DR-N",
       "name": "Dep Radar North Flow"
     },
     {
       "group": 0,
-      "label": "DEP RADAR SOUTH FLOW",
+      "label": "DR-S",
       "name": "Dep Radar South Flow"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR NORTH OPS",
+      "label": "AR-N",
       "name": "ARRIVAL RADAR NORTH OPS"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR SOUTH OPS",
+      "label": "AR-S",
       "name": "ARRIVAL RADAR SOUTH OPS"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR NORTH OPS",
+      "label": "AR-NS",
       "name": "ARRIVAL RADAR NORTH OPS SIMPLE"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR SOUTH OPS SIMPLE",
+      "label": "AR-SS",
       "name": "ARRIVAL RADAR SOUTH OPS SIMPLE"
     },
     {
       "group": 0,
-      "label": "ARM FINAL MONITOR",
+      "label": "ARM",
       "name": "ARM FINAL MONITOR"
     },
     {
       "group": 0,
-      "label": "FINAL NORTH OPS",
+      "label": "ARM-N",
       "name": "Final North Ops"
     },
     {
       "group": 0,
-      "label": "FINAL SOUTH OPS",
+      "label": "ARM-S",
       "name": "Final South Ops"
     },
     {
       "group": 0,
-      "label": "SATELLITE NORTH OPS",
+      "label": "SAT-N",
       "name": "Satellite North Operations"
     },
     {
       "group": 0,
-      "label": "SATELLITE SOUTH OPS",
+      "label": "SAT-S",
       "name": "Satellite South Operations"
     },
     {
       "group": 0,
-      "label": "ORL FINALS",
+      "label": "FINAL",
       "name": "ORL FINALS"
     },
     {
-      "group": 0,
-      "label": "AIRPORTS",
+      "group": 1,
+      "label": "APT",
       "name": "AIRPORTS"
     },
     {
       "group": 0,
-      "label": "ILS FIXES",
+      "label": "ILS",
       "name": "ILS FIXES"
     },
     {
       "group": 0,
-      "label": "RNAV ARRIVAL POINTS",
+      "label": "RNAV-A",
       "name": "RNAV Arrival Points"
     },
     {
