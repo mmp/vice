@@ -1689,7 +1689,7 @@ func (nav *Nav) getApproach(airport string, id string, w *World) (*Approach, err
 	return nil, ErrUnknownApproach
 }
 
-func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World) (string, error) {
+func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World, lg *Logger) (string, error) {
 	ap, err := nav.getApproach(airport, id, w)
 	if err != nil {
 		return "unable. We don't know the " + id + " approach.", ErrInvalidApproach
