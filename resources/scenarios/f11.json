@@ -9678,7 +9678,7 @@
       "name": "RNAV Arrival Points"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "MVA",
       "name": "MVA"
     },
