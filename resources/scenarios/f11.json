@@ -8657,7 +8657,8 @@
       "elevation": 100,
       "primary_range": 60,
       "secondary_range": 60,
-      "slope_angle": 50.4
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
     },
     "DAB": {
       "char": "D",
@@ -8665,7 +8666,35 @@
       "elevation": 38,
       "primary_range": 60,
       "secondary_range": 60,
-      "slope_angle": 49.7
+      "silence_angle": 49.7,
+      "slope_angle": 0.175
+    },
+    "MLB": {
+      "char": "B",
+      "position": "28.111714, -80.668556",
+      "elevation": 30,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 49.7,
+      "slope_angle": 0.175
+    },
+    "GNV": {
+      "char": "G",
+      "position": "29.41538, -82.23232",
+      "elevation": 155,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "ZMLB": {
+      "char": "Z",
+      "position": "28.08427, -80.79808",
+      "elevation": 22,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
     }
   },
   "scenarios": {
