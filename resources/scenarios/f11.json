@@ -8645,6 +8645,20 @@
     "_MCO_35R_BITHO": "N28.12.51.499,W81.11.03.126",
     "_MCO_17L_BITHO": "N28.40.01.555,W81.11.30.377"
   },
+  "inhibit_ca_volumes": [
+    {
+      "name": "MCON FINAL 1",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+        "28.41091, -81.36375", 
+        "28.42071, -81.24334",
+        "28.27062, -81.24346",
+        "28.26492, -81.36209"
+      ]
+    }
+  ],
   "magnetic_variation": 5,
   "name": "KMCO",
   "nm_per_latitude": 60,
