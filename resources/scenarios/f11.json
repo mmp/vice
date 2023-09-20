@@ -8645,50 +8645,105 @@
     "_MCO_35R_BITHO": "N28.12.51.499,W81.11.03.126",
     "_MCO_17L_BITHO": "N28.40.01.555,W81.11.30.377"
   },
+  "inhibit_ca_volumes": [
+    {
+      "name": "MCON FINAL 1",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+        "28.41091, -81.36375", 
+        "28.42071, -81.24334",
+        "28.27062, -81.24346",
+        "28.26492, -81.36209"
+      ]
+    }, 
+    {
+      "name": "MCON FINAL 2",
+      "type": "polygon",
+      "floor": 1500,
+      "ceiling": 5500,
+      "vertices": [
+        "28.26492, -81.36209",
+        "28.270617, -81.243458",
+        "28.174966, -81.243933",
+        "28.162737, -81.363028"
+      ]
+    },
+    {
+      "name": "MCOS FINAL 1",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+        "28.440698, -81.366071",
+        "28.597189, -81.369039",
+        "28.595685, -81.245422",
+        "28.441817, -81.244156"
+      ]
+    },
+    {
+      "name": "MCOS FINAL 2",
+      "type": "polygon",
+      "floor": 1500,
+      "ceiling": 6000,
+      "vertices": [
+        "28.597189, -81.369039",
+        "28.741967, -81.374263",
+        "28.744883, -81.245658",
+        "28.59685, -81.245422"
+      ]
+    }
+  ],
   "magnetic_variation": 5,
   "name": "KMCO",
   "nm_per_latitude": 60,
-  "nm_per_longitude": 40,
+  "nm_per_longitude": 52,
   "primary_airport": "KMCO",
   "radar_sites": {
-    "KMLB": {
-      "char": "L",
-      "position": "KMLB",
-      "elevation": 150,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KISM": {
-      "char": "I",
-      "position": "KISM",
-      "elevation": 200,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    },
-    "KMCO": {
+    "MCO": {
       "char": "M",
-      "position": "N028.25.45.781, W081.18.32.260",
+      "position": "28.394833, -81.304639",
       "elevation": 100,
       "primary_range": 60,
-      "secondary_range": 120,
+      "secondary_range": 60,
+      "silence_angle": 50.4,
       "slope_angle": 0.175
     },
-    "KORL": {
-      "char": "O",
-      "position": "KORL",
-      "elevation": 200,
+    "DAB": {
+      "char": "D",
+      "position": "29.172639, -81.192194",
+      "elevation": 38,
       "primary_range": 60,
-      "secondary_range": 120,
+      "secondary_range": 60,
+      "silence_angle": 49.7,
       "slope_angle": 0.175
     },
-    "KSFB": {
-      "char": "S",
-      "position": "N028.46.37.847, W081.14.05.700",
-      "elevation": 150,
+    "MLB": {
+      "char": "B",
+      "position": "28.111714, -80.668556",
+      "elevation": 30,
       "primary_range": 60,
-      "secondary_range": 120,
+      "secondary_range": 60,
+      "silence_angle": 49.7,
+      "slope_angle": 0.175
+    },
+    "GNV": {
+      "char": "G",
+      "position": "29.41538, -82.23232",
+      "elevation": 155,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "ZMLB": {
+      "char": "Z",
+      "position": "28.08427, -80.79808",
+      "elevation": 22,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
       "slope_angle": 0.175
     }
   },
@@ -8748,20 +8803,20 @@
           "KMCO": 10
         }
       },
-      "solo_controller": "MCO_E_APP",
+      "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-        "MCO_E_DEP" : {"departure": true, "primary": true},
-        "MCO_L_APP" : {"backup" : "MCO_E_DEP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
-        "MCO_G_APP" : {"backup" : "MCO_B_APP" },
+        "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
+        "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
         "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_D_APP" : {"backup" : "MCO_W_DEP" },
+        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP"},
+        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
         "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_S_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_N_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_P_APP" : {"backup" : "MCO_N_APP" },
-        "MCO_V_APP" : {"backup" : "MCO_N_APP" } 
+        "MCO_S_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_N_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_P_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
       },
       "controllers": [
         "TPA_E_APP",
@@ -8897,20 +8952,20 @@
           "KMCO": 15
         }
       },
-      "solo_controller": "MCO_E_APP",
+      "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-        "MCO_E_DEP" : {"departure": true, "primary": true},
-        "MCO_L_APP" : {"backup" : "MCO_E_DEP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_B_APP" : {"backup" : "MCO_L_APP", "arrivals": [ "ALYNA3", "GOOFY7", "SNFLD3", "RIDES2" ] },
-        "MCO_G_APP" : {"backup" : "MCO_B_APP" },
+        "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "SNFLD3", "RIDES2" ] },
+        "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
         "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_D_APP" : {"backup" : "MCO_W_DEP" },
+        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP"},
+        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
         "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_S_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_N_APP" : {"backup" : "MCO_K_APP" },
-        "MCO_P_APP" : {"backup" : "MCO_N_APP" },
-        "MCO_V_APP" : {"backup" : "MCO_N_APP" } 
+        "MCO_S_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_N_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_P_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
       },
       "controllers": [
         "TPA_E_APP",
@@ -9588,123 +9643,123 @@
   },
   "stars_maps": [
     {
-      "group": 0,
-      "label": "RNAV SIDS",
+      "group": 1,
+      "label": "RSIDS",
       "name": "RNAV SIDS"
     },
     {
-      "group": 0,
-      "label": "RNAV STARS",
+      "group": 1,
+      "label": "RSTARS",
       "name": "RNAV STARS"
     },
     {
       "group": 0,
-      "label": "DEP RADAR NORTH FLOW",
+      "label": "DR-N",
       "name": "Dep Radar North Flow"
     },
     {
       "group": 0,
-      "label": "DEP RADAR SOUTH FLOW",
+      "label": "DR-S",
       "name": "Dep Radar South Flow"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR NORTH OPS",
+      "label": "AR-N",
       "name": "ARRIVAL RADAR NORTH OPS"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR SOUTH OPS",
+      "label": "AR-S",
       "name": "ARRIVAL RADAR SOUTH OPS"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR NORTH OPS",
+      "label": "AR-NS",
       "name": "ARRIVAL RADAR NORTH OPS SIMPLE"
     },
     {
       "group": 0,
-      "label": "ARRIVAL RADAR SOUTH OPS SIMPLE",
+      "label": "AR-SS",
       "name": "ARRIVAL RADAR SOUTH OPS SIMPLE"
     },
     {
       "group": 0,
-      "label": "ARM FINAL MONITOR",
+      "label": "ARM",
       "name": "ARM FINAL MONITOR"
     },
     {
       "group": 0,
-      "label": "FINAL NORTH OPS",
+      "label": "ARM-N",
       "name": "Final North Ops"
     },
     {
       "group": 0,
-      "label": "FINAL SOUTH OPS",
+      "label": "ARM-S",
       "name": "Final South Ops"
     },
     {
       "group": 0,
-      "label": "SATELLITE NORTH OPS",
+      "label": "SAT-N",
       "name": "Satellite North Operations"
     },
     {
       "group": 0,
-      "label": "SATELLITE SOUTH OPS",
+      "label": "SAT-S",
       "name": "Satellite South Operations"
     },
     {
       "group": 0,
-      "label": "ORL FINALS",
+      "label": "FINAL",
       "name": "ORL FINALS"
     },
     {
-      "group": 0,
-      "label": "AIRPORTS",
+      "group": 1,
+      "label": "APT",
       "name": "AIRPORTS"
     },
     {
       "group": 0,
-      "label": "ILS FIXES",
+      "label": "ILS",
       "name": "ILS FIXES"
     },
     {
       "group": 0,
-      "label": "RNAV ARRIVAL POINTS",
+      "label": "RNAV-A",
       "name": "RNAV Arrival Points"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "MVA",
       "name": "MVA"
     },
     {
-      "group": 0,
-      "label": "CLASS B",
+      "group": 1,
+      "label": "CAS",
       "name": "Class Airspace Map"
     },
     {
-      "group": 0,
-      "label": "AIRPORT DIAGRAMS",
+      "group": 1,
+      "label": "GND",
       "name": "Airport Diagrams"
     },
     {
-      "group": 0,
-      "label": "LOW AIRWAYS",
+      "group": 1,
+      "label": "LOW",
       "name": "LOW AIRWAYS"
     },
     {
-      "group": 0,
-      "label": "HIGH AIRWAYS",
+      "group": 1,
+      "label": "HIGH",
       "name": "HIGH AIRWAYS"
     },
     {
-      "group": 0,
-      "label": "DISNEY TFR",
+      "group": 1,
+      "label": "DISNEY",
       "name": "DISNEY TFR SFC-3000"
     },
     {
       "group": 0,
-      "label": "CLASS DELTA",
+      "label": "CLASS D",
       "name": "F11 Class Delta Airspace"
     },
     {
@@ -9713,78 +9768,78 @@
       "name": "F11 Airspace Fixes"
     },
     {
-      "group": 0,
-      "label": "INTERSTATES",
+      "group": 1,
+      "label": "HWY",
       "name": "Interstates Map"
     },
     {
-      "group": 0,
-      "label": "COASTLINE",
+      "group": 1,
+      "label": "COAST",
       "name": "Coastline"
     },
     {
-      "group": 0,
-      "label": "VFR MAP",
+      "group": 1,
+      "label": "VFR",
       "name": "VFR Map"
     },
     {
       "group": 0,
-      "label": "ORL RWY 7",
+      "label": "ORL-7",
       "name": "Orlando runway 7"
     },
     {
       "group": 0,
-      "label": "ORL RWY 25",
+      "label": "ORL-25",
       "name": "Orlando runway 25"
     },
     {
       "group": 0,
-      "label": "MCO TWR",
+      "label": "MCO",
       "name": "MCO TWR"
     },
     {
       "group": 0,
-      "label": "MCO RNAV FINALS",
+      "label": "RNAV",
       "name": "KMCO RNAV Finals"
     },
     {
       "group": 0,
-      "label": "MCO FINAL NTZ",
+      "label": "NTZ",
       "name": "MCO FINAL NTZ"
     },
     {
       "group": 0,
-      "label": "RNAV APPROACH FIXES",
+      "label": "GPS",
       "name": "RNAV Approach Fixes"
     },
     {
       "group": 0,
-      "label": "AREA RESTRICTED AIRSPACE",
+      "label": "RESTRICTED",
       "name": "Area Restricted Airspace"
     },
     {
       "group": 0,
-      "label": "SAT-N SFB 9",
+      "label": "SATN9",
       "name": "SAT-N SFB 9"
     },
     {
       "group": 0,
-      "label": "SAT-S SFB 27",
+      "label": "STS27",
       "name": "SAT-S SFB 27"
     },
     {
       "group": 0,
-      "label": "SAT-N SFB 27",
+      "label": "STN27",
       "name": "SAT-N SFB 27"
     },
     {
       "group": 0,
-      "label": "SAT-S SFB 09",
+      "label": "STS09",
       "name": "SAT-S SFB 09"
     },
     {
       "group": 0,
-      "label": "RNAV X21/XMR",
+      "label": "X21/XMR",
       "name": "RNAV X21/XMR"
     }
   ],
