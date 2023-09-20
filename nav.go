@@ -1703,25 +1703,38 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 	nav.Approach.AssignedId = id
 
 	if waypoints := arr.RunwayWaypoints[ap.Runway]; len(waypoints) > 0 {
-		// Try to splice the runway-specific waypoints in with the
-		// aircraft's current waypoints...
-		found := false
-		for i, wp := range waypoints {
-			if idx := FindIf(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
-				nav.Waypoints = nav.Waypoints[:idx]
-				nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			lg.Warn("aircraft waypoints don't match up with arrival runway waypoints",
-				slog.Any("aircraft", nav.Waypoints),
-				slog.Any("runway", waypoints))
-			// Assume that it has (hopefully recently) passed the last fix
-			// and that patching in the rest will work out..
+		if len(nav.Waypoints) == 0 {
+			// Nothing left on our route; assume that it has (hopefully
+			// recently) passed the last fix and that patching in the rest
+			// will work out.
 			nav.Waypoints = DuplicateSlice(waypoints[1:])
+		} else {
+			// Try to splice the runway-specific waypoints in with the
+			// aircraft's current waypoints...
+			found := false
+			for i, wp := range waypoints {
+				if idx := FindIf(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+					nav.Waypoints = nav.Waypoints[:idx]
+					nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				// Most likely they were told to expect one runway, then
+				// given a different one, but after they passed the common
+				// set of waypoints on the arrival.  We'll replace the
+				// waypoints but leave them on their current heading; then
+				// it's over to the controller to either vector them or
+				// send them direct somewhere reasonable...
+				lg.Warn("aircraft waypoints don't match up with arrival runway waypoints. splicing...",
+					slog.Any("aircraft", nav.Waypoints),
+					slog.Any("runway", waypoints))
+				nav.Waypoints = DuplicateSlice(waypoints)
+				hdg := nav.FlightState.Heading
+				nav.Heading = NavHeading{Assigned: &hdg}
+			}
 		}
 	}
 
