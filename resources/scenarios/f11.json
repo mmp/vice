@@ -8803,7 +8803,7 @@
           "KMCO": 10
         }
       },
-      "solo_controller": "MCO_E_APP",
+      "solo_controller": "MCO_B_APP",
       "multi_controllers": {
         "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
         "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
@@ -8811,7 +8811,7 @@
         "MCO_G_APP" : {"backup" : "MCO_L_APP" },
         "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP"},
         "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_D_APP" : {"backup" : "MCO_B_DEP" },
+        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
         "MCO_K_APP" : {"backup" : "MCO_D_APP" },
         "MCO_S_APP" : {"backup" : "MCO_D_APP" },
         "MCO_N_APP" : {"backup" : "MCO_D_APP" },
@@ -8952,15 +8952,15 @@
           "KMCO": 15
         }
       },
-      "solo_controller": "MCO_E_APP",
+      "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-        "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
+        "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "SNFLD3", "RIDES2" ] },
         "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
         "MCO_M_APP" : {"backup" : "MCO_L_APP" },
         "MCO_G_APP" : {"backup" : "MCO_L_APP" },
         "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP"},
         "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_D_APP" : {"backup" : "MCO_B_DEP" },
+        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
         "MCO_K_APP" : {"backup" : "MCO_D_APP" },
         "MCO_S_APP" : {"backup" : "MCO_D_APP" },
         "MCO_N_APP" : {"backup" : "MCO_D_APP" },
