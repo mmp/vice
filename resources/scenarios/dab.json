@@ -565,7 +565,26 @@
       "elevation": 100,
       "primary_range": 60,
       "secondary_range": 60,
-      
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "GNV": {
+      "char": "G",
+      "position": "29.41538, -82.23232",
+      "elevation": 155,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "NEN": {
+      "char": "W",
+      "position": "30.34593, -81.87403",
+      "elevation": 22,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
     }
   },
   "scenarios": {
