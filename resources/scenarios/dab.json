@@ -542,6 +542,29 @@
   "primary_airport": "KDAB",
   "radar_sites": {
     "DAB": {
+      "char": "D",
+      "position": "29.17264, -81.19219",
+      "elevation": 38,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "JAX": {
+      "char": "J",
+      "position": "30.49333, -81.69267",
+      "elevation": 40,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "MCO": {
+      "char": "O",
+      "position": "28.37483, -81.30463",
+      "elevation": 100,
+      "primary_range": 60,
+      "secondary_range": 60,
       
     }
   },
