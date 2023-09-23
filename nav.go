@@ -180,7 +180,7 @@ func makeNav(w *World, fp FlightPlan, perf AircraftPerformance, wp []Waypoint) *
 		func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if ap, ok := database.Airports[fp.DepartureAirport]; !ok {
-		lg.Errorf("%s: arrival airport unknown", fp.DepartureAirport)
+		lg.Errorf("%s: departure airport unknown", fp.DepartureAirport)
 		return nil
 	} else {
 		nav.FlightState.DepartureAirportLocation = ap.Location
