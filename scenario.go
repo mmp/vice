@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/iancoleman/orderedmap"
 )
 
 type ScenarioGroup struct {
@@ -17,7 +19,7 @@ type ScenarioGroup struct {
 	Airports         map[string]*Airport    `json:"airports"`
 	VideoMapFile     string                 `json:"video_map_file"`
 	Fixes            map[string]Point2LL    `json:"-"`
-	FixesStrings     map[string]string      `json:"fixes"`
+	FixesStrings     orderedmap.OrderedMap  `json:"fixes"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
 	DefaultScenario  string                 `json:"default_scenario"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
@@ -370,7 +372,14 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]*SimConfiguration) {
 	// Do these first!
 	sg.Fixes = make(map[string]Point2LL)
-	for fix, latlong := range sg.FixesStrings {
+	for _, fix := range sg.FixesStrings.Keys() {
+		loc, _ := sg.FixesStrings.Get(fix)
+		latlong, ok := loc.(string)
+		if !ok {
+			e.ErrorString("location for fix \"%s\" is not a string: %+v", fix, loc)
+			continue
+		}
+
 		fix := strings.ToUpper(fix)
 		if pos, ok := sg.locate(latlong); !ok {
 			e.ErrorString("unknown location \"%s\" specified for fix \"%s\"", latlong, fix)
