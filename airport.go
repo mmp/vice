@@ -244,7 +244,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
 
-		if _, ok := sg.Scratchpads[dep.Exit]; !ok {
+		if _, ok := sg.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
@@ -357,6 +357,7 @@ type Departure struct {
 	Route          string             `json:"route"`
 	RouteWaypoints WaypointArray      // not specified in user JSON
 	Airlines       []DepartureAirline `json:"airlines"`
+	Scratchpad     string             `json:"scratchpad"` // optional
 }
 
 type DepartureAirline struct {
