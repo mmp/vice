@@ -1194,6 +1194,29 @@ func parseAirports() map[string]FAAAirport {
 
 	airportsRaw := LoadResource("airports.csv.zst") // https://ourairports.com/data/
 
+	parse := func(s string) Point2LL {
+		loc, err := ParseLatLong([]byte(s))
+		if err != nil {
+			panic(err)
+		}
+		return loc
+	}
+
+	// These aren't in the FAA database but we need to have them defined
+	// for the AAC scenario...
+	airports["4V4"] = FAAAirport{Id: "4V4", Name: "", Elevation: 623,
+		Location: parse("N36.02.19.900,W95.28.49.512")}
+	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
+		Location: parse("N36.26.30.006,W95.36.21.936")}
+	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
+		Location: parse("N036.11.08.930,W095.45.53.942")}
+	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
+		Location: parse("N36.30.26.585,W96.16.28.968")}
+	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
+		Location: parse("N035.56.19.765,W095.42.49.812")}
+	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
+		Location: parse("N36.05.06.948,W96.26.57.501")}
+
 	// FAA database
 	mungeCSV("airports", string(airportsRaw),
 		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name"},
