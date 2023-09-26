@@ -499,11 +499,47 @@
       "scope_char": "H",
       "sector_id": "5H"
     },
-    "MCO_E_APP": {
-      "frequency": 124800,
-      "full_name": "Orlando approach",
+    "DAB_M_APP": {
+      "frequency": 118850,
+      "full_name": "Daytona Beach approach",
+      "scope_char": "M",
+      "sector_id": "5M"
+    },
+    "DAB_L_APP": {
+      "frequency": 127075,
+      "full_name": "Daytona Beach approach",
+      "scope_char": "L",
+      "sector_id": "5L"
+    },
+    "DAB_N_APP": {
+      "frequency": 125800,
+      "full_name": "Daytona Beach approach",
+      "scope_char": "N",
+      "sector_id": "5N"
+    },
+    "DAB_S_APP": {
+      "frequency": 125350,
+      "full_name": "Daytona Beach approach",
+      "scope_char": "S",
+      "sector_id": "5S"
+    },
+    "DAB_E_APP": {
+      "frequency": 123900,
+      "full_name": "Daytona Beach approach",
       "scope_char": "E",
-      "sector_id": "4E"
+      "sector_id": "5E"
+    },
+    "DAB_W_APP": {
+      "frequency": 126550,
+      "full_name": "Daytona Beach approach",
+      "scope_char": "W",
+      "sector_id": "5W"
+    },
+    "MCO_B_APP": {
+      "frequency": 128375,
+      "full_name": "Orlando approach",
+      "scope_char": "B",
+      "sector_id": "4B"
     },
     "JAX_N_APP": {
       "frequency": 127000,
@@ -580,6 +616,15 @@
     "NEN": {
       "char": "W",
       "position": "30.34593, -81.87403",
+      "elevation": 95,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "MLB": {
+      "char": "M",
+      "position": "28.08427, -80.79808",
       "elevation": 22,
       "primary_range": 250,
       "secondary_range": 250,
@@ -620,12 +665,21 @@
         }
       },
       "solo_controller": "DAB_H_APP",
+      "multi_controllers": {
+        "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
+        "DAB_M_APP": {"backup": "DAB_H_APP"},
+        "DAB_L_APP": {"backup": "DAB_H_APP"},
+        "DAB_N_APP": {"backup": "DAB_H_APP"},
+        "DAB_S_APP": {"backup": "DAB_H_APP"},
+        "DAB_E_APP": {"backup": "DAB_H_APP"},
+        "DAB_W_APP": {"backup": "DAB_H_APP"}
+      },
       "controllers": [
         "DAB_H_APP",
         "DAB_N_TWR",
         "DAB_S_TWR",
         "JAX_30_CTR",
-        "MCO_E_APP",
+        "MCO_B_APP",
         "JAX_N_APP"
       ],
       "default_map": "DAB East Ops",
