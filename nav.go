@@ -866,6 +866,10 @@ type WaypointCrossingConstraint struct {
 // than it would otherwise at one waypoint in order to make a restriction
 // at a subsequent waypoint.
 func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
+	if nav.Heading.Assigned != nil {
+		// ignore what's going on with the fixes
+	}
+
 	getRestriction := func(i int) *AltitudeRestriction {
 		wp := nav.Waypoints[i]
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
@@ -1048,7 +1052,7 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		return *nav.Speed.Assigned, MaximumRate
 	}
 
-	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); wp != nil {
+	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
 		lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
 			return speed, MaximumRate
