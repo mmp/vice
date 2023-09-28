@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 type Airport struct {
@@ -265,14 +266,27 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.Pop()
 		}
 
+		// We may have multiple ways to reach an exit (e.g. different for
+		// jets vs piston aircraft); in that case the departure exit may be
+		// specified like COLIN.P, etc.  Therefore, here we remove any
+		// trailing non-alphabetical characters for the departure exit name
+		// used below.
+		depExit := dep.Exit
+		for i, ch := range depExit {
+			if !unicode.IsLetter(ch) {
+				depExit = depExit[:i]
+				break
+			}
+		}
+
 		sawExit := false
 		for _, fix := range strings.Fields(dep.Route) {
-			sawExit = sawExit || fix == dep.Exit
+			sawExit = sawExit || fix == depExit
 			wp := []Waypoint{Waypoint{Fix: fix}}
 			// Best effort only to find waypoint locations; this will fail
 			// for airways, international ones not in the FAA database,
 			// latlongs in the flight plan, etc.
-			if fix == dep.Exit {
+			if fix == depExit {
 				sg.InitializeWaypointLocations(wp, e)
 			} else {
 				// nil here so errors aren't logged if it's not the actual exit.
