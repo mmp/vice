@@ -177,6 +177,10 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 }
 
 func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+	if ap.Location.IsZero() {
+		e.ErrorString("Must specify \"location\" for airport")
+	}
+
 	for name, ap := range ap.Approaches {
 		e.Push("Approach " + name)
 
