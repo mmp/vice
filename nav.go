@@ -868,6 +868,7 @@ type WaypointCrossingConstraint struct {
 func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	if nav.Heading.Assigned != nil {
 		// ignore what's going on with the fixes
+		return nil
 	}
 
 	getRestriction := func(i int) *AltitudeRestriction {
