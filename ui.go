@@ -111,6 +111,8 @@ var (
 		"Allow altitude and speed instructions to be either simultaneous or consecutive",
 		"Added a new KAAC/KJKE scenario",
 		"Various minor bugfixes and STARS simulation improvements",
+		"Many improvements to the accuracy of the KAAC scenario",
+		"Fixed a bug where arrivals would sometimes climb after being cleared",
 	}
 )
 
