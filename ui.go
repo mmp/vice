@@ -112,7 +112,7 @@ var (
 		"Added a new KAAC/KJKE scenario",
 		"Various minor bugfixes and STARS simulation improvements",
 		"Many improvements to the accuracy of the KAAC scenario",
-		"Fixed a bug where arrivals would sometimes climb after being cleared",
+		"Fixed a bug where arrivals would sometimes climb after being cleared for the approach",
 	}
 )
 
