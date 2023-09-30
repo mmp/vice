@@ -29,69 +29,37 @@
       },
       "departure_routes": {
         "28L": {
-          "COLIN.P": {
+          "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h010"
           },
-          "COLIN.JT": {
+          "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h310"
           },
-          "MAYES.P": {
-            "cleared_altitude": 5000,
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h010"
-          },
-          "MAYES.JT": {
-            "cleared_altitude": 9000,
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h310"
-          },
-          "NOBLE.P": {
+          "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h190"
           },
-          "NOBLE.JT": {
-            "cleared_altitude": 9000,
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h260"
-          },
-          "SHAWN.P": {
-            "cleared_altitude": 5000,
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h190"
-          },
-          "SHAWN.JT": {
+          "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h260"
           }
         },
         "28R": {
-          "COLIN.P": {
+          "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h010"
           },
-          "COLIN.JT": {
+          "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h310"
           },
-          "MAYES.P": {
-            "cleared_altitude": 5000,
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h010"
-          },
-          "MAYES.JT": {
-            "cleared_altitude": 9000,
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h310"
-          },
-          "NOBLE.P": {
+          "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h190"
           },
-          "NOBLE.JT": {
-            "cleared_altitude": 9000,
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h260"
-          },
-          "SHAWN.P": {
-            "cleared_altitude": 5000,
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h190"
-          },
-          "SHAWN.JT": {
+          "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h260"
           }
