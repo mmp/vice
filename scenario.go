@@ -63,6 +63,7 @@ type Arrival struct {
 	SpeedRestriction  float32 `json:"speed_restriction"`
 	ExpectApproach    string  `json:"expect_approach"`
 	Scratchpad        string  `json:"scratchpad"`
+	Description       string  `json:"description"`
 
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
 }

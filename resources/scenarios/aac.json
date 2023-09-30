@@ -31,36 +31,44 @@
         "28L": {
           "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
+            "description": "props",
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h010"
           },
           "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
+            "description": "jets/turboprops",
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h310"
           },
           "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
+            "description": "props",
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h190"
           },
           "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
+            "description": "jets/turboprops",
             "waypoints": "_KAAC_28Lb _KAAC_28Le/h260"
           }
         },
         "28R": {
           "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
+            "description": "props",
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h010"
           },
           "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
+            "description": "jets/turboprops",
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h310"
           },
           "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
+            "description": "props",
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h190"
           },
           "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
+            "description": "jets/turboprops",
             "waypoints": "_KAAC_28Rb _KAAC_28Re/h260"
           }
         }
@@ -957,6 +965,7 @@
         },
         "cleared_altitude": 15000,
         "cruise_altitude": 39000,
+        "description": "jets",
         "initial_altitude": 16000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -975,6 +984,7 @@
         },
         "cleared_altitude": 12000,
         "cruise_altitude": 31000,
+        "description": "turboprops",
         "initial_altitude": 14000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -993,6 +1003,7 @@
         },
         "cleared_altitude": 6000,
         "cruise_altitude": 11000,
+        "description": "pistons",
         "initial_altitude": 7000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 150,
@@ -1085,6 +1096,7 @@
         },
         "cleared_altitude": 15000,
         "cruise_altitude": 39000,
+        "description": "jets",
         "initial_altitude": 18000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -1108,6 +1120,7 @@
         },
         "cleared_altitude": 12000,
         "cruise_altitude": 31000,
+        "description": "turboprops",
         "initial_altitude": 14000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -1126,6 +1139,7 @@
         },
         "cleared_altitude": 6000,
         "cruise_altitude": 31000,
+        "description": "pistons",
         "initial_altitude": 8000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 150,
@@ -1254,6 +1268,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 13000,
+        "description": "jets",
         "cleared_altitude": 10000,
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
@@ -1272,6 +1287,7 @@
         },
         "cleared_altitude": 9000,
         "cruise_altitude": 31000,
+        "description": "turboprops",
         "initial_altitude": 10000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -1290,6 +1306,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 10000,
+        "description": "pistons",
         "initial_altitude": 6000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 150,
@@ -1430,6 +1447,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
+        "description": "jets",
         "cleared_altitude": 11000,
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
@@ -1448,6 +1466,7 @@
         },
         "cleared_altitude": 10000,
         "cruise_altitude": 31000,
+        "description": "turboprops",
         "initial_altitude": 11000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -1466,6 +1485,7 @@
         },
         "cleared_altitude": 6000,
         "cruise_altitude": 9000,
+        "description": "pistons",
         "initial_altitude": 7000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 150,

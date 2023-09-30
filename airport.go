@@ -365,6 +365,7 @@ type ExitRoute struct {
 	InitialRoute    string        `json:"route"`
 	ClearedAltitude int           `json:"cleared_altitude"`
 	Waypoints       WaypointArray `json:"waypoints"`
+	Description     string        `json:"description"`
 }
 
 type Departure struct {
