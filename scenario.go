@@ -8,8 +8,12 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
+
+	"github.com/iancoleman/orderedmap"
 )
 
 type ScenarioGroup struct {
@@ -17,7 +21,7 @@ type ScenarioGroup struct {
 	Airports         map[string]*Airport    `json:"airports"`
 	VideoMapFile     string                 `json:"video_map_file"`
 	Fixes            map[string]Point2LL    `json:"-"`
-	FixesStrings     map[string]string      `json:"fixes"`
+	FixesStrings     orderedmap.OrderedMap  `json:"fixes"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
 	DefaultScenario  string                 `json:"default_scenario"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
@@ -342,6 +346,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.ErrorString("video map \"%s\" not found in \"stars_maps\"", s.DefaultMap)
 		}
 	}
+
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -367,18 +372,54 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 	}
 }
 
+var (
+	// "FIX@HDG/DIST"
+	reFixHeadingDistance = regexp.MustCompile(`^([\w]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
+)
+
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]*SimConfiguration) {
 	// Do these first!
 	sg.Fixes = make(map[string]Point2LL)
-	for fix, latlong := range sg.FixesStrings {
-		fix := strings.ToUpper(fix)
-		if pos, ok := sg.locate(latlong); !ok {
-			e.ErrorString("unknown location \"%s\" specified for fix \"%s\"", latlong, fix)
-		} else if _, ok := sg.Fixes[fix]; ok {
-			e.ErrorString("fix \"%s\" has multiple definitions", fix)
-		} else {
-			sg.Fixes[fix] = pos
+	for _, fix := range sg.FixesStrings.Keys() {
+		loc, _ := sg.FixesStrings.Get(fix)
+		location, ok := loc.(string)
+		if !ok {
+			e.ErrorString("location for fix \"%s\" is not a string: %+v", fix, loc)
+			continue
 		}
+
+		fix := strings.ToUpper(fix)
+		e.Push("Fix  " + fix)
+
+		if _, ok := sg.Fixes[fix]; ok {
+			e.ErrorString("fix has multiple definitions")
+		} else if pos, ok := sg.locate(location); ok {
+			// It's something simple, likely a latlong that we could parse
+			// directly.
+			sg.Fixes[fix] = pos
+		} else if strs := reFixHeadingDistance.FindStringSubmatch(location); len(strs) >= 4 {
+			// "FIX@HDG/DIST"
+			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
+			if pll, ok := sg.locate(strs[1]); !ok {
+				e.ErrorString("base fix \"" + strs[1] + "\" unknown")
+			} else if hdg, err := strconv.Atoi(strs[2]); err != nil {
+				e.ErrorString("heading \"%s\": %v", strs[2], err)
+			} else if dist, err := strconv.ParseFloat(strs[3], 32); err != nil {
+				e.ErrorString("distance \"%s\": %v", strs[3], err)
+			} else {
+				// Offset along the given heading and distance from the fix.
+				p := ll2nm(pll, sg.NmPerLongitude)
+				h := radians(float32(hdg))
+				v := [2]float32{sin(h), cos(h)}
+				v = scale2f(v, float32(dist))
+				p = add2f(p, v)
+				sg.Fixes[fix] = nm2ll(p, sg.NmPerLongitude)
+			}
+		} else {
+			e.ErrorString("invalid location syntax \"%s\" for fix \"%s\"", location, fix)
+		}
+
+		e.Pop()
 	}
 
 	for name, volumes := range sg.Airspace.Volumes {

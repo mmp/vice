@@ -406,7 +406,11 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 		return ErrUnknownAircraftType
 	}
 
-	ac.Scratchpad = w.Scratchpads[dep.Exit]
+	ac.Scratchpad = dep.Scratchpad
+	if ac.Scratchpad == "" {
+		ac.Scratchpad = w.Scratchpads[dep.Exit]
+	}
+
 	if dep.Altitude == 0 {
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan, perf)
 	} else {

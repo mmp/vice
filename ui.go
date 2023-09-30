@@ -106,6 +106,13 @@ var (
 		"New command: AFIX/CAPP: at FIX cleared APP approach",
 		"Altitude crossing restrictions are more flexible: CFIX/A100-, CFIX/A80+, CFIX/A140-160, etc.",
 		"Fixed a bug where arrivals would disappear with some scenarios",
+		"Various updates to the JAX, C90, and F11 scenarios",
+		"Added D01, KSAV, and KSDF scenarios",
+		"Allow altitude and speed instructions to be either simultaneous or consecutive",
+		"Added a new KAAC/KJKE scenario",
+		"Various minor bugfixes and STARS simulation improvements",
+		"Many improvements to the accuracy of the KAAC scenario",
+		"Fixed a bug where arrivals would sometimes climb after being cleared for the approach",
 	}
 )
 
