@@ -7,7 +7,7 @@
           "runway": "28R",
           "type": "ILS",
           "waypoints": [
-            "GRAYY/a4000+ ADCOK/a4000- RUSTY/a3000+ WOODY/a2100+ _KAAC_28Rb/a690"
+            "GRAYY/iaf/if/a4000+ ADCOK/a4000- RUSTY/a3000+ WOODY/faf/a2100+ _KAAC_28Rb/a690"
           ]
         },
         "R8L": {
@@ -15,7 +15,7 @@
           "runway": "28L",
           "type": "RNAV",
           "waypoints": [
-            "CHAPP/a5000+ LITTL/a4000+ RICKY/a3000+ ONETA/a2100+ _KAAC_28Lb/a690"
+            "CHAPP/iaf/if/a5000+ LITTL/a4000+ RICKY/a3000+ ONETA/faf/a2100+ _KAAC_28Lb/a690"
           ]
         },
         "R8R": {
@@ -23,7 +23,7 @@
           "runway": "28R",
           "type": "RNAV",
           "waypoints": [
-            "GRAYY/a4000 ADCOK/a3000+ RUSTY/a3000+ WOODY/a2100+ _KAAC_28Rb/a690"
+            "GRAYY/iaf/if/a4000 ADCOK/a3000+ RUSTY/a3000+ WOODY/faf/a2100+ _KAAC_28Rb/a690"
           ]
         }
       },
@@ -517,7 +517,7 @@
           "runway": "27",
           "type": "ILS",
           "waypoints": [
-            "BEJEO/a4000+ ARREL/a3000+ CHAPL/a2400+ _KJKE_27b/a620"
+            "BEJEO/iaf/a4000+ ARREL/if/a3000+ CHAPL/faf/a2400+ _KJKE_27b/a620"
           ]
         }
       },

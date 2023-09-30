@@ -638,6 +638,7 @@ type Waypoint struct {
 	Handoff             bool                 `json:"handoff,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
+	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -653,6 +654,15 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.ProcedureTurn != nil {
 		attrs = append(attrs, slog.Any("procedure_turn", wp.ProcedureTurn))
+	}
+	if wp.IAF {
+		attrs = append(attrs, slog.Bool("IAF", wp.IAF))
+	}
+	if wp.IF {
+		attrs = append(attrs, slog.Bool("IF", wp.IF))
+	}
+	if wp.FAF {
+		attrs = append(attrs, slog.Bool("FAF", wp.FAF))
 	}
 	if wp.NoPT {
 		attrs = append(attrs, slog.Bool("no_pt", wp.NoPT))
@@ -713,6 +723,15 @@ func (wslice WaypointArray) Encode() string {
 			if pt.ExitAltitude != 0 {
 				s += fmt.Sprintf("/pta%0f", pt.ExitAltitude)
 			}
+		}
+		if w.IAF {
+			s += "/iaf"
+		}
+		if w.IF {
+			s += "/if"
+		}
+		if w.FAF {
+			s += "/faf"
 		}
 		if w.NoPT {
 			s += "/nopt"
@@ -799,6 +818,12 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					wp.Handoff = true
 				} else if f == "delete" {
 					wp.Delete = true
+				} else if f == "iaf" {
+					wp.IAF = true
+				} else if f == "if" {
+					wp.IF = true
+				} else if f == "faf" {
+					wp.FAF = true
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
 					if wp.ProcedureTurn == nil {
 						wp.ProcedureTurn = &ProcedureTurn{}
@@ -898,6 +923,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 
 	return waypoints, nil
 }
+
+///////////////////////////////////////////////////////////////////////////
 
 type RadarSite struct {
 	Char           string   `json:"char"`
