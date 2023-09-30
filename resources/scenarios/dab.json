@@ -451,7 +451,7 @@
         "cleared_altitude": 5000,
         "cruise_altitude": 7000,
         "initial_altitude": 6000,
-        "initial_controller": "MCO_E_APP",
+        "initial_controller": "MCO_B_APP",
         "initial_speed": 130,
         "route": "/. KIZER ",
         "waypoints": "WHOVL UDUZI/ho KIZER"
@@ -478,7 +478,7 @@
         "cleared_altitude": 5000,
         "cruise_altitude": 9000,
         "initial_altitude": 8000,
-        "initial_controller": "MCO_E_APP",
+        "initial_controller": "MCO_B_APP",
         "initial_speed": 130,
         "route": "/. DOMES ",
         "waypoints": "ROCIT APEAK/ho DOMES EYORE"
@@ -671,7 +671,7 @@
         "DAB_L_APP": {"backup": "DAB_H_APP"},
         "DAB_N_APP": {"backup": "DAB_H_APP"},
         "DAB_S_APP": {"backup": "DAB_H_APP"},
-        "DAB_E_APP": {"backup": "DAB_H_APP"},
+        "DAB_E_APP": {"backup": "DAB_H_APP", "departure": true},
         "DAB_W_APP": {"backup": "DAB_H_APP"}
       },
       "controllers": [
@@ -735,7 +735,7 @@
         "DAB_N_TWR",
         "DAB_S_TWR",
         "JAX_30_CTR",
-        "MCO_E_APP",
+        "MCO_B_APP",
         "JAX_N_APP"
       ],
       "default_map": "DAB WEST OPS",
