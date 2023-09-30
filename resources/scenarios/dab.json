@@ -573,8 +573,8 @@
   },
   "magnetic_variation": 6.8,
   "name": "KDAB",
-  "nm_per_latitude": 60.00721,
-  "nm_per_longitude": 48.99478,
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 52,
   "primary_airport": "KDAB",
   "radar_sites": {
     "DAB": {
@@ -730,6 +730,15 @@
         }
       },
       "solo_controller": "DAB_H_APP",
+      "multi_controllers": {
+        "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
+        "DAB_M_APP": {"backup": "DAB_H_APP"},
+        "DAB_L_APP": {"backup": "DAB_H_APP"},
+        "DAB_N_APP": {"backup": "DAB_H_APP"},
+        "DAB_S_APP": {"backup": "DAB_H_APP"},
+        "DAB_E_APP": {"backup": "DAB_H_APP"},
+        "DAB_W_APP": {"backup": "DAB_H_APP", "departure": true}
+      },
       "controllers": [
         "DAB_H_APP",
         "DAB_N_TWR",
@@ -763,12 +772,12 @@
   "stars_maps": [
     {
       "group": 0,
-      "label": "DAB East Ops",
+      "label": "EAST OPS",
       "name": "DAB East Ops"
     },
     {
       "group": 0,
-      "label": "DAB WEST OPS",
+      "label": "WEST OPS",
       "name": "DAB WEST OPS"
     },
     {
@@ -777,7 +786,7 @@
       "name": "DAB RNAV"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "VFR MAP",
       "name": "VFR MAP"
     },
@@ -788,12 +797,37 @@
     },
     {
       "group": 0,
-      "label": "DAB Approach Boundaries",
+      "label": "APPROACH",
       "name": "DAB Approach Boundaries"
     },
     {
       "group": 0,
-      "label": "DAB CLASS C",
+      "label": "DED RNAV",
+      "name": "DED RNAV"
+    },
+    {
+      "group": 0,
+      "label": "TOWER",
+      "name": "TOWER"
+    },
+    {
+      "group": 1,
+      "label": "AIR-HIGH",
+      "name": "High Airways"
+    },
+    {
+      "group": 1,
+      "label": "AIR-LOW",
+      "name": "Low Airways"
+    },
+    {
+      "group": 0,
+      "label": "ASR",
+      "name": "DAB ASR"
+    },
+    {
+      "group": 1,
+      "label": "CLASS C",
       "name": "DAB CLASS C"
     }
   ],
