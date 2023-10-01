@@ -113,6 +113,8 @@ var (
 		"Various minor bugfixes and STARS simulation improvements",
 		"Many improvements to the accuracy of the KAAC scenario",
 		"Fixed a bug where arrivals would sometimes climb after being cleared for the approach",
+		"Fixed a bug in the Windows installer that caused new scenarios (AAC, SAV, SDF) to not be installed locally",
+		"Added the ability to draw active departure, arrival, and approach routes on the radar scope",
 	}
 )
 
