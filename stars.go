@@ -1197,6 +1197,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		cb.Call(sp.SystemMaps[idx].CommandBuffer)
 	}
 
+	ctx.world.DrawScenarioRoutes(transforms, sp.systemFont[ps.CharSize.Tools],
+		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
+
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)
 

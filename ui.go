@@ -257,7 +257,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			}
 
 			if imgui.Button(FontAwesomeIconQuestionCircle) {
-				w.ToggleShowApproachesWindow()
+				w.ToggleShowScenarioInfoWindow()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Show available approaches")
@@ -311,7 +311,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 	if w != nil {
 		w.DrawSettingsWindow()
 
-		w.DrawApproachesWindow()
+		w.DrawScenarioInfoWindow()
 
 		w.DrawMissingPrimaryDialog()
 
