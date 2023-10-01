@@ -112,6 +112,8 @@
               <Component Id="VideoMapsId" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
                 <File Id="a90maps"
                       Source="resources\\videomaps\\a90-maps.json.zst" />
+                <File Id="aacmaps"
+                      Source="resources\\videomaps\\aac-maps.json.zst" />
                 <File Id="abemaps"
                       Source="resources\\videomaps\\abe-maps.json.zst" />
                 <File Id="atlmaps"
@@ -130,6 +132,10 @@
                       Source="resources\\videomaps\\n90-maps.json.zst" />
                 <File Id="phlmaps"
                       Source="resources\\videomaps\\phl-maps.json.zst" />
+                <File Id="savmaps"
+                      Source="resources\\videomaps\\sav-maps.json.zst" />
+                <File Id="sdfmaps"
+                      Source="resources\\videomaps\\sdf-maps.json.zst" />
                 <File Id="zjxmaps"
                       Source="resources\\videomaps\\zjx-maps.json.zst" />
               </Component>
@@ -138,6 +144,7 @@
               <Component Id="ScenariosId" Guid="3072033b-c670-4e11-b941-2ea9bf892a83">
                 <File Id="a80" Source="resources\\scenarios\\a80.json" />
                 <File Id="a90" Source="resources\\scenarios\\a90.json" />
+                <File Id="aac" Source="resources\\scenarios\\aac.json" />
                 <File Id="abe" Source="resources\\scenarios\\abe.json" KeyPath="yes" />
                 <File Id="c90" Source="resources\\scenarios\\c90.json" />
                 <File Id="cle" Source="resources\\scenarios\\cle.json" />
@@ -150,6 +157,8 @@
                 <File Id="lga" Source="resources\\scenarios\\lga.json" />
                 <File Id="lib" Source="resources\\scenarios\\lib.json" />
                 <File Id="phl" Source="resources\\scenarios\\phl.json" />
+                <File Id="sav" Source="resources\\scenarios\\sav.json" />
+                <File Id="sdf" Source="resources\\scenarios\\sdf.json" />
               </Component>
             </Directory>
           </Directory>
