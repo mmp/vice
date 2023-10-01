@@ -231,21 +231,6 @@ type Fix struct {
 	Location Point2LL
 }
 
-func ParseAltitude(s string) (int, error) {
-	s = strings.ToUpper(s)
-	if strings.HasPrefix(s, "FL") {
-		if alt, err := strconv.Atoi(s[2:]); err != nil {
-			return 0, err
-		} else {
-			return alt * 100, nil
-		}
-	} else if alt, err := strconv.Atoi(s); err != nil {
-		return 0, err
-	} else {
-		return alt, nil
-	}
-}
-
 func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
 	return &FlightPlan{
 		Rules:            r,
