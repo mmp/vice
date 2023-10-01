@@ -188,6 +188,8 @@ func FormatAltitude(falt float32) string {
 	alt := int(falt)
 	if alt >= 18000 {
 		return "FL" + fmt.Sprintf("%d", alt/100)
+	} else if alt < 1000 {
+		return fmt.Sprintf("%d", alt)
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100 * 100
@@ -758,6 +760,95 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 		}
 		return err
 	}
+}
+
+func (w WaypointArray) CheckDeparture(e *ErrorLogger) {
+	w.checkBasics(e)
+
+	var lastMin float32 // previous minimum altitude restriction
+	var minFix string
+
+	for _, wp := range w {
+		e.Push(wp.Fix)
+		if wp.IAF || wp.IF || wp.FAF {
+			e.ErrorString("Unexpected IAF/IF/FAF specification in departure")
+		}
+		if war := wp.AltitudeRestriction; war != nil {
+			// Make sure it's generally reasonable
+			if war.Range[0] < 0 || war.Range[0] >= 50000 || war.Range[1] < 0 || war.Range[1] >= 50000 {
+				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
+					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
+			}
+			if war.Range[0] != 0 {
+				if lastMin != 0 && war.Range[0] < lastMin {
+					// our minimum must be >= the previous minimum
+					e.ErrorString("Minimum altitude %s is lower than previous fix %s's minimum %s",
+						FormatAltitude(war.Range[0]), minFix, FormatAltitude(lastMin))
+				}
+				lastMin = war.Range[0]
+				minFix = wp.Fix
+			}
+		}
+
+		e.Pop()
+	}
+}
+
+func (w WaypointArray) checkBasics(e *ErrorLogger) {
+	for _, wp := range w {
+		e.Push(wp.Fix)
+		if wp.Speed < 0 || wp.Speed > 300 {
+			e.ErrorString("invalid speed restriction %d", wp.Speed)
+		}
+		e.Pop()
+	}
+}
+
+func (w WaypointArray) CheckApproach(e *ErrorLogger) {
+	w.checkBasics(e)
+	w.checkDescending(e)
+}
+
+func (w WaypointArray) CheckArrival(e *ErrorLogger) {
+	w.checkBasics(e)
+	w.checkDescending(e)
+
+	for _, wp := range w {
+		e.Push(wp.Fix)
+		if wp.IAF || wp.IF || wp.FAF {
+			e.ErrorString("Unexpected IAF/IF/FAF specification in arrival")
+		}
+		e.Pop()
+	}
+}
+
+func (w WaypointArray) checkDescending(e *ErrorLogger) {
+	// or at least, check not climbing...
+	var lastMax float32 // previous maximum altitude restriction
+	var maxFix string
+
+	for _, wp := range w {
+		e.Push(wp.Fix)
+
+		if war := wp.AltitudeRestriction; war != nil {
+			// Make sure it's generally reasonable
+			if war.Range[0] < 0 || war.Range[0] >= 50000 || war.Range[1] < 0 || war.Range[1] >= 50000 {
+				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
+					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
+			}
+			if war.Range[1] != 0 {
+				if lastMax != 0 && war.Range[1] > lastMax {
+					e.ErrorString("Maximum altitude %s is higher than previous fix %s's maximum %s",
+						FormatAltitude(war.Range[1]), maxFix, FormatAltitude(lastMax))
+				}
+				lastMax = war.Range[1]
+				maxFix = wp.Fix
+			}
+		}
+
+		e.Pop()
+	}
+
 }
 
 func parsePTExtent(pt *ProcedureTurn, extent string) error {

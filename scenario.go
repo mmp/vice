@@ -530,6 +530,8 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			} else {
 				sg.InitializeWaypointLocations(ar.Waypoints, e)
 
+				ar.Waypoints.CheckArrival(e)
+
 				for rwy, wp := range ar.RunwayWaypoints {
 					e.Push("Runway " + rwy)
 					sg.InitializeWaypointLocations(wp, e)
@@ -538,6 +540,14 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 						e.ErrorString("initial \"runway_waypoints\" fix must match " +
 							"last \"waypoints\" fix")
 					}
+
+					// For the check, splice together the last common
+					// waypoint and the runway waypoints.  This will give
+					// us a repeated first fix, but this way we can check
+					// compliance with restrictions at that fix...
+					ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
+					WaypointArray(ewp).CheckArrival(e)
+
 					e.Pop()
 				}
 			}

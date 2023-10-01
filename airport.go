@@ -207,7 +207,10 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				}
 				e.Pop()
 			}
+
+			ap.Waypoints[i].CheckApproach(e)
 		}
+
 		if ap.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
@@ -230,6 +233,8 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
 			sg.InitializeWaypointLocations(route.Waypoints, e)
+
+			route.Waypoints.CheckDeparture(e)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
