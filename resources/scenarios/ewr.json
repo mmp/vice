@@ -2376,7 +2376,7 @@
         "initial_speed": 300,
         "route": "/ PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DQO/a20000 STEFE/a13000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
+        "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
       }
     ],
     "South": [
