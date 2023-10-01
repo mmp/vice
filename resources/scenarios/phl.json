@@ -5052,7 +5052,7 @@
         "waypoints": "N039.12.04.205,W075.38.03.975 ESSSO/ho PAATS"
       }
     ],
-    "SPUDS5": [
+    "SPUDS6": [
       {
         "airlines": {
           "KPHL": [
@@ -5078,12 +5078,12 @@
         "initial_altitude": 10000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
-        "route": "/. SPUDS5",
+        "route": "/. SPUDS6",
         "runway_waypoints": {
-          "27L": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
-          "27R": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
-          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY/h265",
-          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY/h265"
+          "27L": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
+          "27R": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
+          "9L": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265",
+          "9R": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265"
         },
         "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735/ho SPUDS ANMAR"
       }
@@ -5338,13 +5338,13 @@
         "PAATS4": {
           "KPHL": 12
         },
-        "SPUDS5": {
+        "SPUDS6": {
           "KPHL": 10
         }
       },
       "solo_controller": "PHL_NA_APP",
       "multi_controllers": {
-        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS5" ] },
+        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS6" ] },
         "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
         "PHL_F1_APP": { "backup": "PHL_NA_APP" },
         "PHL_ND_DEP": { "departure": true }
@@ -5405,13 +5405,13 @@
         "PAATS4": {
           "KPHL": 12
         },
-        "SPUDS5": {
+        "SPUDS6": {
           "KPHL": 10
         }
       },
       "solo_controller": "PHL_NA_APP",
       "multi_controllers": {
-        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS5" ] },
+        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS6" ] },
         "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
         "PHL_F1_APP": { "backup": "PHL_NA_APP" },
         "PHL_ND_DEP": { "departure": true }
