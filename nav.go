@@ -180,7 +180,7 @@ func makeNav(w *World, fp FlightPlan, perf AircraftPerformance, wp []Waypoint) *
 		func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if ap, ok := database.Airports[fp.DepartureAirport]; !ok {
-		lg.Errorf("%s: arrival airport unknown", fp.DepartureAirport)
+		lg.Errorf("%s: departure airport unknown", fp.DepartureAirport)
 		return nil
 	} else {
 		nav.FlightState.DepartureAirportLocation = ap.Location
@@ -866,6 +866,11 @@ type WaypointCrossingConstraint struct {
 // than it would otherwise at one waypoint in order to make a restriction
 // at a subsequent waypoint.
 func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
+	if nav.Heading.Assigned != nil {
+		// ignore what's going on with the fixes
+		return nil
+	}
+
 	getRestriction := func(i int) *AltitudeRestriction {
 		wp := nav.Waypoints[i]
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
@@ -1048,7 +1053,7 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		return *nav.Speed.Assigned, MaximumRate
 	}
 
-	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); wp != nil {
+	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
 		lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
 			return speed, MaximumRate
@@ -1212,7 +1217,8 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 		lg.Debugf("turning outbound from %.1f to %.1f for %s", nav.FlightState.Heading,
 			hdg, wp.Fix)
 
-		if nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
+		clearedAtFix := nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix
+		if clearedAtFix {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
 			nav.Waypoints = nav.Approach.AtFixClearedRoute
@@ -1251,7 +1257,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 				// works out.
 				nav.Waypoints = append([]Waypoint{wp}, nav.Waypoints...)
 			}
-		} else if wp.Heading != 0 {
+		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
 			nav.Heading = NavHeading{Assigned: &hdg}

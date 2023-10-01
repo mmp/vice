@@ -7,7 +7,8 @@
           "runway": "17",
           "type": "ILS",
           "waypoints": [
-            "COWAD/a3000 HYILL/a2000 HOOCH/a760 N039.53.14.508,W075.14.09.655/a50"
+            "PTW/iaf COWAD/if/a3000 HYILL/faf/a2000 HOOCH/a760 N039.53.14.508,W075.14.09.655/a50",
+            "ARD/iaf COWAD/if/a3000 HYILL/faf/a2000 HOOCH/a760 N039.53.14.508,W075.14.09.655/a50"
           ]
         },
         "27L": {
@@ -15,7 +16,7 @@
           "runway": "27L",
           "type": "ILS",
           "waypoints": [
-            "FESTI/a3000 TORNE/a3000 GLOUS/a2060 XIVOY/a400 N039.52.08.453,W075.14.02.761/a50"
+            "CYN/iaf FESTI/if/a3000 TORNE/faf/a3000 GLOUS/a2060 XIVOY/a400 N039.52.08.453,W075.14.02.761/a50"
           ]
         },
         "27R": {
@@ -23,7 +24,8 @@
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
-            "MENGE/a3000 MRTIN/a3000 JALTO/a2100 HADNI/a740 N039.52.28.008,W075.13.25.682/a50"
+            "MENGE/iaf MRTIN/if/a3000 JALTO/faf/a2100 HADNI/a740 N039.52.28.008,W075.13.25.682/a50",
+            "ENZEW/iaf MRTIN/if/a3000 JALTO/faf/a2100 HADNI/a740 N039.52.28.008,W075.13.25.682/a50"
           ]
         },
         "9RZ": {
@@ -31,7 +33,7 @@
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
-            "BWINE/a4000 ASOCI/a3000 KELEE/a1800 BALDN/a740 N039.51.39.133,W075.16.29.620/a50"
+            "MXE/iaf BWINE/if/a4000 ASOCI/a3000 KELEE/faf/a1800 BALDN/a740 N039.51.39.133,W075.16.29.620/a50"
           ]
         },
         "G35": {
@@ -39,7 +41,9 @@
           "runway": "35",
           "type": "RNAV",
           "waypoints": [
-            "WIKAV/a3000 JEPUG/a3000 HARLU/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50"
+            "WIKAV/iaf JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50",
+            "JIIMS BDAWK/iaf/a3000+ JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50",
+            "ALBEK KUSLE/iaf/a4700+ JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50"
           ]
         },
         "I26": {
@@ -47,7 +51,7 @@
           "runway": "26",
           "type": "ILS",
           "waypoints": [
-            "HOLEY FOSOM/a2000 ESKOE/a2000 N039.52.54.183,W075.12.47.257/a50"
+            "HOLEY/iaf FOSOM/if/a2000 ESKOE/faf/a2000 N039.52.54.183,W075.12.47.257/a50"
           ]
         },
         "I9L": {
@@ -55,7 +59,8 @@
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
-            "QWEST/a4000 OBEKE/a3000 ANNET/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50"
+            "MXE/iaf QWEST/if/a4000 OBEKE/a3000 ANNET/faf/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50",
+            "DQO/iaf QWEST/if/a4000 OBEKE/a3000 ANNET/faf/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50"
           ]
         }
       },
@@ -4978,11 +4983,18 @@
             {
               "airport": "KPBI",
               "icao": "AAL"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "RPA"
             }
           ]
         },
         "cleared_altitude": 9000,
-        "cruise_altitude": 39000,
         "initial_altitude": 9000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
@@ -4996,35 +5008,6 @@
           "9R": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268"
         },
         "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS/a8000"
-      },
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KBOS",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "RPA"
-            }
-          ]
-        },
-        "cleared_altitude": 9000,
-        "cruise_altitude": 22000,
-        "initial_altitude": 9000,
-        "initial_controller": "DC_CTR",
-        "initial_speed": 250,
-        "route": "/. JIIMS4",
-        "runway_waypoints": {
-          "27L": "JIIMS ZMRMN CHPMN PSOUT MKORD/h87",
-          "27R": "JIIMS ZMRMN CHPMN PSOUT MKORD/h87",
-          "17": "JIIMS SNEDE/h312",
-          "35": "JIIMS SNEDE/h312",
-          "9L": "JIIMS WUDRR WEVVE ERNYY/h268",
-          "9R": "JIIMS WUDRR WEVVE ERNYY/h268"
-        },
-        "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS"
       }
     ],
     "PAATS4": [
@@ -5069,7 +5052,7 @@
         "waypoints": "N039.12.04.205,W075.38.03.975 ESSSO/ho PAATS"
       }
     ],
-    "SPUDS5": [
+    "SPUDS6": [
       {
         "airlines": {
           "KPHL": [
@@ -5084,26 +5067,7 @@
             {
               "airport": "KBUF",
               "icao": "LXJ"
-            }
-          ]
-        },
-        "cleared_altitude": 10000,
-        "cruise_altitude": 16000,
-        "initial_altitude": 10000,
-        "initial_controller": "NY_CTR",
-        "initial_speed": 250,
-        "route": "/. SPUDS5",
-        "runway_waypoints": {
-          "27L": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
-          "27R": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
-          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY/h265",
-          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY/h265"
-        },
-        "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735/ho SPUDS ANMAR"
-      },
-      {
-        "airlines": {
-          "KPHL": [
+            },
             {
               "airport": "CYUL",
               "icao": "PDT"
@@ -5111,16 +5075,15 @@
           ]
         },
         "cleared_altitude": 10000,
-        "cruise_altitude": 32000,
         "initial_altitude": 10000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
-        "route": "/. SPUDS5",
+        "route": "/. SPUDS6",
         "runway_waypoints": {
-          "27L": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
-          "27R": "ANMAR BOJID HIFAL EYRIE FERUS/h085",
-          "9L": "ANMAR SCOOL KYILL EXPRS WHEYY/h265",
-          "9R": "ANMAR SCOOL KYILL EXPRS WHEYY/h265"
+          "27L": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
+          "27R": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
+          "9L": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265",
+          "9R": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265"
         },
         "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735/ho SPUDS ANMAR"
       }
@@ -5375,13 +5338,13 @@
         "PAATS4": {
           "KPHL": 12
         },
-        "SPUDS5": {
+        "SPUDS6": {
           "KPHL": 10
         }
       },
       "solo_controller": "PHL_NA_APP",
       "multi_controllers": {
-        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS5" ] },
+        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS6" ] },
         "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
         "PHL_F1_APP": { "backup": "PHL_NA_APP" },
         "PHL_ND_DEP": { "departure": true }
@@ -5442,13 +5405,13 @@
         "PAATS4": {
           "KPHL": 12
         },
-        "SPUDS5": {
+        "SPUDS6": {
           "KPHL": 10
         }
       },
       "solo_controller": "PHL_NA_APP",
       "multi_controllers": {
-        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS5" ] },
+        "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS6" ] },
         "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
         "PHL_F1_APP": { "backup": "PHL_NA_APP" },
         "PHL_ND_DEP": { "departure": true }

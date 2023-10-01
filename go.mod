@@ -20,6 +20,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
