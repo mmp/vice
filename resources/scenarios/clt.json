@@ -2166,7 +2166,7 @@
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "route": "/.STOCR3",
-                            "waypoints": "FFNSH/a19000/s280/ho STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a1000 TERIE/a7000 GATEE/a6000/s210/h273"
+                            "waypoints": "FFNSH/a19000/s280/ho STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a10000 TERIE/a7000 GATEE/a6000/s210/h273"
                         }
                     ]
                 },

@@ -37,7 +37,7 @@
                         "GILLS/a4000 TAMDE/a3000 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783",
                         "TAMDE/a3000 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783",
                         "FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783",
-                        "DJB/a400 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783"
+                        "DJB/a4000 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783"
                     ]
                 },
                 "I4L": {
@@ -100,7 +100,7 @@
                     "DAIFE": {
                         "cleared_altitude": 14000,
                         "route": "GTLKE4",
-                        "waypoints": "_CLE_6R _CLE_24L EDMNN/a2000/s240 FTTZZ GRALD/a8000 XMASS AYYLE/a9000 BRNIN/a140 GTLKE ELEOT NOLNN"
+                        "waypoints": "_CLE_6R _CLE_24L EDMNN/a2000/s240 FTTZZ GRALD/a8000 XMASS AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT NOLNN"
                     },
                     "BAGEL": {
                         "cleared_altitude": 14000,
@@ -177,7 +177,7 @@
                         "DAIFE": {
                             "cleared_altitude": 14000,
                             "route": "GTLKE4",
-                            "waypoints": "_CLE_24L _CLE_6R CNWAY/a6000 AYYLE/a9000 BRNIN/a140 GTLKE ELEOT NOLNN"
+                            "waypoints": "_CLE_24L _CLE_6R CNWAY/a6000 AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT NOLNN"
                         },
                         "BAGEL": {
                             "cleared_altitude": 14000,
