@@ -1,4 +1,5 @@
-go run windows/makeinstaller.go > windows/installer.wxs
-candle.exe windows/installer.wxs
+go run windows\makeinstaller.go > installer.wxs
+dir
+candle.exe installer.wxs
 light.exe -ext WixUIExtension installer.wixobj
 move installer.msi Vice-installer.msi
