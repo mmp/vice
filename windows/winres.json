@@ -13,7 +13,7 @@
   "RT_MANIFEST": {
     "#1": {
       "0409": {
-        "description": "A prototype client for VATSIM",
+        "description": "A virtual air traffic control simulator",
         "minimum-os": "win7",
         "execution-level": "as invoker",
         "ui-access": false,
@@ -45,7 +45,7 @@
             "FileDescription": "",
             "FileVersion": "",
             "InternalName": "",
-            "LegalCopyright": "©2022 Matt Pharr",
+            "LegalCopyright": "©2023 Matt Pharr",
             "LegalTrademarks": "",
             "OriginalFilename": "",
             "PrivateBuild": "",

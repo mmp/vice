@@ -27,8 +27,10 @@ type Release struct {
 }
 
 func main() {
-	tag, err := os.ReadFile("tag.txt")
-	if err != nil {
+	var tag string
+	if t, err := os.ReadFile("tag.txt"); err == nil {
+		tag = string(t)
+	} else {
 		cmd := exec.Command("git", "describe", "--tags", "--abbrev=0")
 		var out bytes.Buffer
 		cmd.Stdout = &out
