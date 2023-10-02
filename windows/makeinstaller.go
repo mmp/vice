@@ -26,19 +26,20 @@ type Release struct {
 	ScenarioFiles []InstallFile
 }
 
-func getLatestGitTag() string {
-	cmd := exec.Command("git", "describe", "--tags", "--abbrev=0")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		panic(err)
-	}
-	return strings.TrimSpace(out.String())
-}
-
 func main() {
-	tag := getLatestGitTag()
+	tag, err := os.ReadFile("tag.txt")
+	if err != nil {
+		cmd := exec.Command("git", "describe", "--tags", "--abbrev=0")
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		err := cmd.Run()
+		if err != nil {
+			panic(err)
+		}
+		tag = out.String()
+	}
+
+	tag = strings.TrimSpace(tag)
 	if tag[0] != 'v' {
 		panic(tag)
 	}

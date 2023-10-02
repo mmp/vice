@@ -68,6 +68,7 @@ jobs:
 
     - name: Create installer
       run: |
+        git describe --tags --abbrev=0 > tag.txt
         .\windows\makeinstaller.bat
 
     - name: Save executable
