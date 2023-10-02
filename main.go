@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/apenwarr/fixconsole"
+	"github.com/hugolgst/rich-go/client"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -40,6 +41,7 @@ var (
 	database     *StaticDatabase
 	lg           *Logger
 	resourcesFS  fs.StatFS
+	now          time.Time
 
 	// client only
 	newWorldChan chan *World
@@ -206,6 +208,27 @@ func main() {
 
 		if world == nil {
 			uiShowConnectDialog(false)
+		}
+
+		//Init discord RPC
+		now = time.Now()
+		discord_err := client.Login("1158220406352781353")
+		if discord_err != nil {
+			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
+			panic(discord_err)
+		}
+		discord_err = client.SetActivity(client.Activity{
+			State: "In the main menu",
+			Details: "On Break",
+			LargeImage: "towerlarge",
+			LargeText: "Vice ATC",
+			Timestamps: &client.Timestamps{
+				Start: &now,
+			},
+		})
+		if discord_err != nil {
+			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
+			panic(discord_err)
 		}
 
 		///////////////////////////////////////////////////////////////////////////
