@@ -57,9 +57,12 @@ func main() {
 
 			for _, f := range matches {
 				id := filepath.Base(f)
-				id, _, _ = strings.Cut(id, ".")
+				if unicode.IsDigit(rune(id[0])) {
+					// Can't start with a digit
+					id = "_" + id
+				}
 				id = strings.Map(func(ch rune) rune {
-					if unicode.IsLetter(ch) || unicode.IsDigit(ch) {
+					if unicode.IsLetter(ch) || unicode.IsDigit(ch) || ch == '.' {
 						return ch
 					}
 					return '_'
