@@ -23,6 +23,7 @@ require (
 require (
 	github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect

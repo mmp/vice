@@ -332,7 +332,7 @@
           "BORRD,VALKA,JIPOD,ZALEN": {
             "cleared_altitude": 7000,
             "route": "DDANY3",
-            "waypoints": "_MCO_36R _MCO_18L GOHOM/a26000 MIEGS/a5000 LAPUU/a7000 UKAYY DDANY"
+            "waypoints": "_MCO_36R _MCO_18L GOHOM/a2600 MIEGS/a5000 LAPUU/a7000 UKAYY DDANY"
           },
           "VIYAP": {
             "cleared_altitude": 7000,
@@ -6990,17 +6990,17 @@
         "initial_speed": 280,
         "route": "/. RIDES2",
         "runway_waypoints": {
-          "17L": "RIDES/a11000 WISRD THEAM/a10000 PARRX/a9000/s220 HAANZ/a8000/s220  PTMAN/a5000/s210/h005",
-          "17R": "RIDES/a11000 WISRD THEAM/a10000 PARRX/a9000/s220 HAANZ/a8000/s220  PTMAN/a5000/s210/h005",
-          "18L": "RIDES/a11000 WISRD THEAM/a10000 PARRX/a9000/s220 HAANZ/a8000/s220  PTMAN/a5000/s210/h005",
-          "18R": "RIDES/a11000 WISRD THEAM/a10000 PARRX/a9000/s220 HAANZ/a8000/s220  PTMAN/a5000/s210/h005",
-          "36L": "RIDES/a8000 WISRD HAHNA/a6000/s210/h339",
-          "36R": "RIDES/a8000 WISRD HAHNA/a6000/s210/h339",
-          "35L": "RIDES/a8000 WISRD HAHNA/a6000/s210/h339",
-          "35R": "RIDES/a8000 WISRD HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000"
+          "17L": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+          "17R": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+          "18L": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+          "18R": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+          "36L": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
+          "36R": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
+          "35L": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
+          "35R": "RIDES/a8000+ WISRD HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000"
         },
         "speed_restriction": 250,
-        "waypoints": "MOOTS/a15000/ho RIDES/a8000"
+        "waypoints": "MOOTS/a15000+/ho RIDES"
       }
     ],
     "RIDES2_SFINAL": [

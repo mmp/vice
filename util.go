@@ -35,6 +35,7 @@ import (
 	"unicode"
 
 	"github.com/MichaelTJones/pcg"
+	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
 	"golang.org/x/exp/slog"
 )
@@ -1732,6 +1733,10 @@ func checkJSONVsSchemaRecursive(json interface{}, ty reflect.Type, e *ErrorLogge
 		if items, ok := json.(map[string]interface{}); !ok {
 			e.ErrorString("unexpected data format provided for object: %s",
 				reflect.TypeOf(json))
+		} else if ty == reflect.TypeOf(orderedmap.OrderedMap{}) {
+			// Special case this since it has its own unmarshal support;
+			// since it is a map[string]interface{}, there's nothing more
+			// to check here...
 		} else {
 			for item, values := range items {
 				found := false
