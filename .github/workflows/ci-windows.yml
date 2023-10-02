@@ -23,6 +23,11 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v3
 
+    - name: Check git tags
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long
+        git describe --tags --abbrev=0
+
     - name: Setup go
       uses: actions/setup-go@v4
       with:
