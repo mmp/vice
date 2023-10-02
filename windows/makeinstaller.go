@@ -90,8 +90,7 @@ func main() {
 	tmpl.Execute(os.Stdout, r)
 }
 
-const xmlTemplate = `
-<?xml version='1.0' encoding='utf-8'?>
+const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <Product Name='Vice'
 	   Manufacturer='Matt Pharr'
