@@ -210,13 +210,13 @@ func main() {
 			uiShowConnectDialog(false)
 		}
 
-		//Init discord RPC
+		//Initialize discord RPC
 		now = time.Now()
-		discord_err := client.Login("1158220406352781353")
+		discord_err := client.Login("1158289394717970473")
 		if discord_err != nil {
 			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
-			panic(discord_err)
 		}
+		//Set intial activity
 		discord_err = client.SetActivity(client.Activity{
 			State: "In the main menu",
 			Details: "On Break",
@@ -228,7 +228,6 @@ func main() {
 		})
 		if discord_err != nil {
 			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
-			panic(discord_err)
 		}
 
 		///////////////////////////////////////////////////////////////////////////

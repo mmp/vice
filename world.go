@@ -556,6 +556,7 @@ func (w *World) GetWindowTitle() string {
 		return "(disconnected)"
 	} else {
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", w.TotalDepartures, w.TotalArrivals)
+		//Update discord RPC
 		client.SetActivity(client.Activity{
 			State: strings.Replace(strings.Replace(deparr, "[", "", -1), "]", "", -1),
 			Details: "Controlling " + w.Callsign,
