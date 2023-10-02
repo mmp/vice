@@ -22,6 +22,7 @@ jobs:
     steps:
     - name: Checkout source
       uses: actions/checkout@v3
+        fetch-depth: 0   # fetch whole history so we can get tags for the installer :-(
 
     - name: Check git tags
       run: |
@@ -31,7 +32,6 @@ jobs:
     - name: Setup go
       uses: actions/setup-go@v4
       with:
-        fetch-depth: 0   # fetch whole history so we can get tags for the installer :-(
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
