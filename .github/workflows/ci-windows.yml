@@ -26,6 +26,7 @@ jobs:
     - name: Setup go
       uses: actions/setup-go@v4
       with:
+        fetch-depth: 0   # fetch whole history so we can get tags for the installer :-(
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
@@ -68,7 +69,6 @@ jobs:
 
     - name: Create installer
       run: |
-        git describe --tags --abbrev=0 > tag.txt
         .\windows\makeinstaller.bat
 
     - name: Save executable
