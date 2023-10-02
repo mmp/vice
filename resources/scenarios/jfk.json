@@ -42,8 +42,8 @@
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "JUSIN/iaf TRCCY/a2000 ALFED/faf/a1400 _FRG_32/a50",
-            "SHYNA/iaf TRCCY/a2000 ALFED/faf/a1400 _FRG_32/a50"
+            "JUSIN/iaf TRCCY/if/a2000 ALFED/faf/a1400 _FRG_32/a50",
+            "SHYNA/iaf TRCCY/if/a2000 ALFED/faf/a1400 _FRG_32/a50"
           ]
         }
       },
