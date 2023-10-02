@@ -810,6 +810,8 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			return alt, MaximumRate
 		}
 	}
+	flyingPT := (nav.Heading.RacetrackPT != nil && nav.Heading.RacetrackPT.State != PTStateApproaching) ||
+		(nav.Heading.Standard45PT != nil && nav.Heading.Standard45PT.State != PT45StateApproaching)
 
 	if nav.Altitude.Assigned != nil {
 		alt = *nav.Altitude.Assigned
@@ -832,7 +834,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			rate = MaximumRate
 			return
 		}
-	} else if c := nav.getWaypointAltitudeConstraint(); c != nil {
+	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !flyingPT {
 		lg.Debugf("alt: altitude %.0f for final waypoint %s in %.0f seconds", c.Altitude, c.FinalFix, c.ETA)
 		if c.ETA < 5 {
 			return c.Altitude, MaximumRate
