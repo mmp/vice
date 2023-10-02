@@ -2126,7 +2126,7 @@
         "initial_speed": 250,
         "route": "/. BDR HVN",
         "speed_restriction": 250,
-        "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747/ho BDR HVN"
+        "waypoints": "N040.57.00.469,W073.31.33.740 N041.01.04.242,W073.23.53.468/ho BDR HVN"
       }
     ],
     "Intra-TRACON (JFK/FRG East)": [
