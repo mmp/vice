@@ -933,7 +933,7 @@ func (w *World) DrawScenarioInfoWindow() {
 	imgui.Separator()
 
 	if imgui.CollapsingHeader("Approaches") {
-		if imgui.BeginTableV("appr", 5, tableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
 			if w.scopeDraw.approaches == nil {
 				w.scopeDraw.approaches = make(map[string]map[string]bool)
 			}
@@ -943,6 +943,7 @@ func (w *World) DrawScenarioInfoWindow() {
 			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("Code")
 			imgui.TableSetupColumn("Description")
+			imgui.TableSetupColumn("FAF")
 			imgui.TableHeadersRow()
 
 			for _, rwy := range w.ArrivalRunways {
@@ -972,6 +973,14 @@ func (w *World) DrawScenarioInfoWindow() {
 
 							imgui.TableNextColumn()
 							imgui.Text(appr.FullName)
+
+							imgui.TableNextColumn()
+							for _, wp := range appr.Waypoints[0] {
+								if wp.FAF {
+									imgui.Text(wp.Fix)
+									break
+								}
+							}
 						}
 					}
 				}

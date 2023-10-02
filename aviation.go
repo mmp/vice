@@ -807,6 +807,20 @@ func (w WaypointArray) checkBasics(e *ErrorLogger) {
 func (w WaypointArray) CheckApproach(e *ErrorLogger) {
 	w.checkBasics(e)
 	w.checkDescending(e)
+
+	/*
+		// Disable for now...
+		foundFAF := false
+		for _, wp := range w {
+			if wp.FAF {
+				foundFAF = true
+				break
+			}
+		}
+		if !foundFAF {
+			e.ErrorString("No /faf specifier found in approach")
+		}
+	*/
 }
 
 func (w WaypointArray) CheckArrival(e *ErrorLogger) {
