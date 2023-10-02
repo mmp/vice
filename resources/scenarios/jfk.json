@@ -24,7 +24,7 @@
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "HOBAM/iaf LAAZE/if/a2000+ ALABE/a1400 _FRG_14/a50",
+            "HOBAM/iaf LAAZE/if/a2000+ ALABE/faf/a1400 _FRG_14/a50",
             "CAMRN HEREK/iaf/a4000+ SEHDO/if/a2000+ WUPMA/a2000+/s180 N040.45.19.596,W073.33.27.971/a1400+ N040.46.28.220,W073.32.38.148/a1400+ N040.46.38.973,W073.31.02.567/a1400+ ALABE/faf/a1400 _FRG_14/a50"
           ]
         },
@@ -692,7 +692,7 @@
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
-            "CIMBL/iaf HAIRR/a14000+ CEEGL/a10000+ TAPPR/a8000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ ROSLY/if/a3000 ZALPO/a1800 _JFK_22L/a50",
+            "CIMBL/iaf HAIRR/a14000+ CEEGL/a10000+ TAPPR/a8000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ ROSLY/if/a3000 ZALPO/faf/a1800 _JFK_22L/a50",
             "NRTON/iaf SAJUL/a10000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ ROSLY/if/a3000+ ZALPO/faf/a1800 _JFK_22L/a50"
           ]
         },
