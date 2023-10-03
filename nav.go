@@ -542,7 +542,11 @@ func (nav *Nav) updatePositionAndGS(wind WindModel, lg *Logger) {
 	nav.FlightState.GS = length2f(add2f(flightVector, windVector)) * 3600
 }
 
-func (nav *Nav) DepartOnCourse(alt float32) {
+func (nav *Nav) DepartOnCourse(alt float32, exit string) {
+	// Make sure we are going direct to the exit.
+	if idx := FindIf(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
+		nav.Waypoints = nav.Waypoints[idx:]
+	}
 	nav.Altitude = NavAltitude{Assigned: &alt}
 	nav.Speed = NavSpeed{}
 	nav.Heading = NavHeading{}
