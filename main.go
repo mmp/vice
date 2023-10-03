@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/apenwarr/fixconsole"
-	"github.com/hugolgst/rich-go/client"
+	discord_client "github.com/hugolgst/rich-go/client"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -41,7 +41,7 @@ var (
 	database     *StaticDatabase
 	lg           *Logger
 	resourcesFS  fs.StatFS
-	now          time.Time
+	simStartTime time.Time
 
 	// client only
 	newWorldChan chan *World
@@ -211,19 +211,19 @@ func main() {
 		}
 
 		//Initialize discord RPC
-		now = time.Now()
-		discord_err := client.Login("1158289394717970473")
+		simStartTime = time.Now()
+		discord_err := discord_client.Login("1158289394717970473")
 		if discord_err != nil {
 			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
 		}
 		//Set intial activity
-		discord_err = client.SetActivity(client.Activity{
+		discord_err = discord_client.SetActivity(discord_client.Activity{
 			State: "In the main menu",
 			Details: "On Break",
 			LargeImage: "towerlarge",
 			LargeText: "Vice ATC",
-			Timestamps: &client.Timestamps{
-				Start: &now,
+			Timestamps: &discord_client.Timestamps{
+				Start: &simStartTime,
 			},
 		})
 		if discord_err != nil {
@@ -236,7 +236,20 @@ func main() {
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
+		lastDiscordUpdate := time.Now()
 		for {
+			if time.Since(lastDiscordUpdate) > 5 * time.Second {
+				discord_client.SetActivity(discord_client.Activity{
+					State: "In the main menu",
+					Details: "On Break",
+					LargeImage: "towerlarge",
+					LargeText: "Vice ATC",
+					Timestamps: &discord_client.Timestamps{
+						Start: &simStartTime,
+					},
+				})
+				lastDiscordUpdate = time.Now()
+			}
 			select {
 			case nw := <-newWorldChan:
 				if world != nil {

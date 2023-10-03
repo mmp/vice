@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/hugolgst/rich-go/client"
+	discord_client "github.com/hugolgst/rich-go/client"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -564,13 +564,13 @@ func (w *World) GetWindowTitle() string {
 	} else {
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", w.TotalDepartures, w.TotalArrivals)
 		//Update discord RPC
-		client.SetActivity(client.Activity{
+		discord_client.SetActivity(discord_client.Activity{
 			State: strings.Replace(strings.Replace(deparr, "[", "", -1), "]", "", -1),
 			Details: "Controlling " + w.Callsign,
 			LargeImage: "towerlarge",
 			LargeText: "Vice ATC",
-			Timestamps: &client.Timestamps{
-				Start: &now,
+			Timestamps: &discord_client.Timestamps{
+				Start: &simStartTime,
 			},
 		})
 		if w.SimName == "" {
