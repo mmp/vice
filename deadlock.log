@@ -1,0 +1,1009 @@
+git pull origin master && go build -o ./vice . && echo GOGOGOGO; env GOTRACEBACK=crash ./vice -runserver
+remote: Enumerating objects: 25, done.
+remote: Counting objects: 100% (25/25), done.
+remote: Compressing objects: 100% (11/11), done.
+remote: Total 25 (delta 16), reused 23 (delta 14), pack-reused 0
+Unpacking objects: 100% (25/25), 27.80 KiB | 632.00 KiB/s, done.
+From https://github.com/mmp/vice
+ * branch            master     -> FETCH_HEAD
+   337cca1..9c60ef1  master     -> origin/master
+Updating 337cca1..9c60ef1
+Fast-forward
+ airport.go                   |  22 +-
+ nav.go                       |   7 +-
+ resources/scenarios/aac.json | 942 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------
+ ui.go                        |   2 +
+ windows/installer.wxs        |   2 +-
+ 5 files changed, 781 insertions(+), 194 deletions(-)
+GOGOGOGO
+^Z
+[1]+  Stopped                 env GOTRACEBACK=crash ./vice -runserver
+matt_pharr@vice:~/vice$ bg
+[1]+ env GOTRACEBACK=crash ./vice -runserver &
+matt_pharr@vice:~/vice$ killall -ABRT vice >& abort.log
+matt_pharr@vice:~/vice$ SIGABRT: abort
+PC=0x4e42c1 m=0 sigcode=0
+
+goroutine 0 [idle]:
+runtime.futex()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:554 +0x21 fp=0x7ffe28c423e0 sp=0x7ffe28c423d8 pc=0x4e42c1
+runtime.futexsleep(0x10ba8e0?, 0x38000?, 0xa7a?)
+        /usr/local/go/src/runtime/os_linux.go:69 +0x36 fp=0x7ffe28c42430 sp=0x7ffe28c423e0 pc=0x4ab7d6
+runtime.notesleep(0x10baa28)
+        /usr/local/go/src/runtime/lock_futex.go:160 +0x87 fp=0x7ffe28c42468 sp=0x7ffe28c42430 pc=0x4853a7
+runtime.mPark()
+        /usr/local/go/src/runtime/proc.go:1531 +0x25 fp=0x7ffe28c42488 sp=0x7ffe28c42468 pc=0x4b4c45
+runtime.stoplockedm()
+        /usr/local/go/src/runtime/proc.go:2579 +0x65 fp=0x7ffe28c424d8 sp=0x7ffe28c42488 pc=0x4b69e5
+runtime.schedule()
+        /usr/local/go/src/runtime/proc.go:3357 +0x3d fp=0x7ffe28c42510 sp=0x7ffe28c424d8 pc=0x4b879d
+runtime.park_m(0xc0000061a0?)
+        /usr/local/go/src/runtime/proc.go:3529 +0x12d fp=0x7ffe28c42540 sp=0x7ffe28c42510 pc=0x4b8d2d
+runtime.mcall()
+        /usr/local/go/src/runtime/asm_amd64.s:452 +0x43 fp=0x7ffe28c42550 sp=0x7ffe28c42540 pc=0x4e0183
+
+goroutine 1 [IO wait, 1 minutes, locked to thread]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000add7d0 sp=0xc000add7b0 pc=0x4b2256
+runtime.netpollblock(0x7fb2ea25cb68?, 0x47c90f?, 0x0?)
+        /usr/local/go/src/runtime/netpoll.go:527 +0xf7 fp=0xc000add808 sp=0xc000add7d0 pc=0x4aaaf7
+internal/poll.runtime_pollWait(0x7fb2f83faf98, 0x72)
+        /usr/local/go/src/runtime/netpoll.go:306 +0x89 fp=0xc000add828 sp=0xc000add808 pc=0x4dc8c9
+internal/poll.(*pollDesc).wait(0xc0000a2380?, 0x14?, 0x0)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:84 +0x32 fp=0xc000add850 sp=0xc000add828 pc=0x550892
+internal/poll.(*pollDesc).waitRead(...)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0xc0000a2380)
+        /usr/local/go/src/internal/poll/fd_unix.go:614 +0x2bd fp=0xc000add8f8 sp=0xc000add850 pc=0x55619d
+net.(*netFD).accept(0xc0000a2380)
+        /usr/local/go/src/net/fd_unix.go:172 +0x35 fp=0xc000add9b0 sp=0xc000add8f8 pc=0x6449f5
+net.(*TCPListener).accept(0xc00093e0f0)
+        /usr/local/go/src/net/tcpsock_posix.go:148 +0x25 fp=0xc000add9d8 sp=0xc000add9b0 pc=0x659ac5
+net.(*TCPListener).Accept(0xc00093e0f0)
+        /usr/local/go/src/net/tcpsock.go:297 +0x3d fp=0xc000adda08 sp=0xc000add9d8 pc=0x658bbd
+main.runServer.func1()
+        /home/matt_pharr/vice/server.go:1169 +0x3c6 fp=0xc000addb40 sp=0xc000adda08 pc=0x94eac6
+main.runServer({0xcb11a0?, 0xc00093e0f0}, 0x0)
+        /home/matt_pharr/vice/server.go:1186 +0xbe fp=0xc000addb70 sp=0xc000addb40 pc=0x94e6be
+main.RunSimServer()
+        /home/matt_pharr/vice/server.go:1062 +0xc6 fp=0xc000addbc0 sp=0xc000addb70 pc=0x94dde6
+main.main()
+        /home/matt_pharr/vice/main.go:118 +0x387 fp=0xc000addf80 sp=0xc000addbc0 pc=0x913dc7
+runtime.main()
+        /usr/local/go/src/runtime/proc.go:250 +0x207 fp=0xc000addfe0 sp=0xc000addf80 pc=0x4b1e27
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000addfe8 sp=0xc000addfe0 pc=0x4e23c1
+
+goroutine 2 [force gc (idle), 10 minutes]:
+runtime.gopark(0x8323de8f8bb1b?, 0x0?, 0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00004afb0 sp=0xc00004af90 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.forcegchelper()
+        /usr/local/go/src/runtime/proc.go:305 +0xb0 fp=0xc00004afe0 sp=0xc00004afb0 pc=0x4b2090
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00004afe8 sp=0xc00004afe0 pc=0x4e23c1
+created by runtime.init.6
+        /usr/local/go/src/runtime/proc.go:293 +0x25
+
+goroutine 3 [runnable]:
+runtime.goschedIfBusy()
+        /usr/local/go/src/runtime/proc.go:344 +0x30 fp=0xc00004b780 sp=0xc00004b768 pc=0x4b2150
+runtime.bgsweep(0x0?)
+        /usr/local/go/src/runtime/mgcsweep.go:303 +0x151 fp=0xc00004b7c8 sp=0xc00004b780 pc=0x49d391
+runtime.gcenable.func1()
+        /usr/local/go/src/runtime/mgc.go:178 +0x26 fp=0xc00004b7e0 sp=0xc00004b7c8 pc=0x492586
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00004b7e8 sp=0xc00004b7e0 pc=0x4e23c1
+created by runtime.gcenable
+        /usr/local/go/src/runtime/mgc.go:178 +0x6b
+
+goroutine 4 [GC scavenge wait]:
+runtime.gopark(0x8329f997ccd4d?, 0x8c1c7b1?, 0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00004bf70 sp=0xc00004bf50 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.(*scavengerState).park(0x10ba180)
+        /usr/local/go/src/runtime/mgcscavenge.go:400 +0x53 fp=0xc00004bfa0 sp=0xc00004bf70 pc=0x49b1f3
+runtime.bgscavenge(0x0?)
+        /usr/local/go/src/runtime/mgcscavenge.go:633 +0x65 fp=0xc00004bfc8 sp=0xc00004bfa0 pc=0x49b7e5
+runtime.gcenable.func2()
+        /usr/local/go/src/runtime/mgc.go:179 +0x26 fp=0xc00004bfe0 sp=0xc00004bfc8 pc=0x492526
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00004bfe8 sp=0xc00004bfe0 pc=0x4e23c1
+created by runtime.gcenable
+        /usr/local/go/src/runtime/mgc.go:179 +0xaa
+
+goroutine 5 [finalizer wait, 8 minutes]:
+runtime.gopark(0x0?, 0xc185e0?, 0x0?, 0x80?, 0x2000000020?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00004a628 sp=0xc00004a608 pc=0x4b2256
+runtime.runfinq()
+        /usr/local/go/src/runtime/mfinal.go:193 +0x107 fp=0xc00004a7e0 sp=0xc00004a628 pc=0x4915c7
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00004a7e8 sp=0xc00004a7e0 pc=0x4e23c1
+created by runtime.createfing
+        /usr/local/go/src/runtime/mfinal.go:163 +0x45
+
+goroutine 6 [chan receive, 6576 minutes]:
+runtime.gopark(0xadc1c0?, 0xc00005efaf?, 0xc0?, 0xa4?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00005eee0 sp=0xc00005eec0 pc=0x4b2256
+runtime.chanrecv(0xc00006a460, 0xc00005efaf, 0x1)
+        /usr/local/go/src/runtime/chan.go:583 +0x49d fp=0xc00005ef70 sp=0xc00005eee0 pc=0x4800bd
+runtime.chanrecv2(0xc00006ef00?, 0x0?)
+        /usr/local/go/src/runtime/chan.go:447 +0x18 fp=0xc00005ef98 sp=0xc00005ef70 pc=0x47fbf8
+gopkg.in/natefinch/lumberjack%2ev2.(*Logger).millRun(0xc00006ef00)
+        /home/matt_pharr/go/pkg/mod/gopkg.in/natefinch/lumberjack.v2@v2.2.1/lumberjack.go:379 +0x45 fp=0xc00005efc8 sp=0xc00005ef98 pc=0x843ca5
+gopkg.in/natefinch/lumberjack%2ev2.(*Logger).mill.func1.1()
+        /home/matt_pharr/go/pkg/mod/gopkg.in/natefinch/lumberjack.v2@v2.2.1/lumberjack.go:390 +0x26 fp=0xc00005efe0 sp=0xc00005efc8 pc=0x843e66
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00005efe8 sp=0xc00005efe0 pc=0x4e23c1
+created by gopkg.in/natefinch/lumberjack%2ev2.(*Logger).mill.func1
+        /home/matt_pharr/go/pkg/mod/gopkg.in/natefinch/lumberjack.v2@v2.2.1/lumberjack.go:390 +0x96
+
+goroutine 17212 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0xed?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b3ed58 sp=0xc000b3ed38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x8f?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b3edc0 sp=0xc000b3ed58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x2?, 0x78586e73cc3b?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000b3edf8 sp=0xc000b3edc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000b3ee48 sp=0xc000b3edf8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc00d225760?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc000b3ef00 sp=0xc000b3ee48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000b3efe0 sp=0xc000b3ef00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b3efe8 sp=0xc000b3efe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 13 [IO wait, 5 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00005fbc8 sp=0xc00005fba8 pc=0x4b2256
+runtime.netpollblock(0x7fb2ea68ef28?, 0x47c90f?, 0x0?)
+        /usr/local/go/src/runtime/netpoll.go:527 +0xf7 fp=0xc00005fc00 sp=0xc00005fbc8 pc=0x4aaaf7
+internal/poll.runtime_pollWait(0x7fb2f83faea8, 0x72)
+        /usr/local/go/src/runtime/netpoll.go:306 +0x89 fp=0xc00005fc20 sp=0xc00005fc00 pc=0x4dc8c9
+internal/poll.(*pollDesc).wait(0xc00ebd1f00?, 0x4?, 0x0)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:84 +0x32 fp=0xc00005fc48 sp=0xc00005fc20 pc=0x550892
+internal/poll.(*pollDesc).waitRead(...)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0xc00ebd1f00)
+        /usr/local/go/src/internal/poll/fd_unix.go:614 +0x2bd fp=0xc00005fcf0 sp=0xc00005fc48 pc=0x55619d
+net.(*netFD).accept(0xc00ebd1f00)
+        /usr/local/go/src/net/fd_unix.go:172 +0x35 fp=0xc00005fda8 sp=0xc00005fcf0 pc=0x6449f5
+net.(*TCPListener).accept(0xc00ec6e2b8)
+        /usr/local/go/src/net/tcpsock_posix.go:148 +0x25 fp=0xc00005fdd0 sp=0xc00005fda8 pc=0x659ac5
+net.(*TCPListener).Accept(0xc00ec6e2b8)
+        /usr/local/go/src/net/tcpsock.go:297 +0x3d fp=0xc00005fe00 sp=0xc00005fdd0 pc=0x658bbd
+net/http.(*onceCloseListener).Accept(0xc005af5200?)
+        <autogenerated>:1 +0x2a fp=0xc00005fe18 sp=0xc00005fe00 pc=0x802f0a
+net/http.(*Server).Serve(0xc00e9934a0, {0xcb11a0, 0xc00ec6e2b8})
+        /usr/local/go/src/net/http/server.go:3059 +0x385 fp=0xc00005ff48 sp=0xc00005fe18 pc=0x7de6a5
+net/http.(*Server).ListenAndServe(0xc00e9934a0)
+        /usr/local/go/src/net/http/server.go:2988 +0x7d fp=0xc00005ff78 sp=0xc00005ff48 pc=0x7de2dd
+net/http.ListenAndServe(...)
+        /usr/local/go/src/net/http/server.go:3242
+main.launchHTTPStats(0xc00ec19cc0)
+        /home/matt_pharr/vice/server.go:1213 +0x106 fp=0xc00005ffc8 sp=0xc00005ff78 pc=0x94ef26
+main.runServer.func1.1()
+        /home/matt_pharr/vice/server.go:1162 +0x26 fp=0xc00005ffe0 sp=0xc00005ffc8 pc=0x94ede6
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00005ffe8 sp=0xc00005ffe0 pc=0x4e23c1
+created by main.runServer.func1
+        /home/matt_pharr/vice/server.go:1162 +0x345
+
+goroutine 36912 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x7?, 0xaf0d20?, 0x70?, 0x46?, 0xcad3a0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000ad95e8 sp=0xc000ad95c8 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0xd7?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000ad9650 sp=0xc000ad95e8 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x0?, 0x4?, 0x0?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000ad9688 sp=0xc000ad9650 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000ad96d8 sp=0xc000ad9688 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).ControllerTokenToSim(0x51e2be?, {0xc000da02d0?, 0x18?})
+        /home/matt_pharr/vice/server.go:411 +0x71 fp=0xc000ad9740 sp=0xc000ad96d8 pc=0x948851
+main.(*SimDispatcher).GetWorldUpdate(0x2?, {0xc000da02d0, 0x18}, 0x4dec59?)
+        /home/matt_pharr/vice/server.go:524 +0x2b fp=0xc000ad9778 sp=0xc000ad9740 pc=0x949a4b
+runtime.call32(0xc00d128a20, 0xc000015ac8, 0x0, 0x0, 0x0, 0x20, 0xc000ad9cb8)
+        /usr/local/go/src/runtime/asm_amd64.s:729 +0x49 fp=0xc000ad97a8 sp=0xc000ad9778 pc=0x4e0789
+runtime.reflectcall(0xb01b80?, 0xc003cb88c0?, 0x4?, 0xbb62a5?, 0x0?, 0x12?, 0xb01b80?)
+        <autogenerated>:1 +0x3c fp=0xc000ad97e8 sp=0xc000ad97a8 pc=0x4e4e7c
+reflect.Value.call({0xc000928540?, 0xc000015ac8?, 0x13?}, {0xb9cb08, 0x4}, {0xc000b40ef8, 0x3, 0x3?})
+        /usr/local/go/src/reflect/value.go:586 +0xb0b fp=0xc000ad9dd8 sp=0xc000ad97e8 pc=0x5138cb
+reflect.Value.Call({0xc000928540?, 0xc000015ac8?, 0xc000049ec8?}, {0xc000049ef8?, 0xc00e76e140?, 0x50?})
+        /usr/local/go/src/reflect/value.go:370 +0xbc fp=0xc000ad9e50 sp=0xc000ad9dd8 pc=0x512b7c
+net/rpc.(*service).call(0xc00ec42680, 0xc00e76e140?, 0x0?, 0xc00d8ee050, 0xc00ebd1780, 0xc00e76e140?, {0xae2c40?, 0xc002fa1f70?, 0x7d3766?}, {0xb01b80, ...}, ...)
+        /usr/local/go/src/net/rpc/server.go:382 +0x226 fp=0xc000ad9f58 sp=0xc000ad9e50 pc=0x83ebe6
+net/rpc.(*Server).ServeCodec.func1()
+        /usr/local/go/src/net/rpc/server.go:479 +0x8a fp=0xc000ad9fe0 sp=0xc000ad9f58 pc=0x83f2ca
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000ad9fe8 sp=0xc000ad9fe0 pc=0x4e23c1
+created by net/rpc.(*Server).ServeCodec
+        /usr/local/go/src/net/rpc/server.go:479 +0x3fe
+
+goroutine 934 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0xf9?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00005dd58 sp=0xc00005dd38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0xcc?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc00005ddc0 sp=0xc00005dd58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x2?, 0x1543f358abeb0?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc00005ddf8 sp=0xc00005ddc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc00005de48 sp=0xc00005ddf8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc0000c5080?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc00005df00 sp=0xc00005de48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc00005dfe0 sp=0xc00005df00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00005dfe8 sp=0xc00005dfe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 12 [GC worker (idle)]:
+runtime.gopark(0x832b3ce227d0a?, 0x2?, 0x30?, 0x18?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00004d750 sp=0xc00004d730 pc=0x4b2256
+runtime.gcBgMarkWorker()
+        /usr/local/go/src/runtime/mgc.go:1275 +0xf1 fp=0xc00004d7e0 sp=0xc00004d750 pc=0x4942f1
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00004d7e8 sp=0xc00004d7e0 pc=0x4e23c1
+created by runtime.gcBgMarkStartWorkers
+        /usr/local/go/src/runtime/mgc.go:1199 +0x25
+
+goroutine 36438 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0x4d?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b44d58 sp=0xc000b44d38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x42?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b44dc0 sp=0xc000b44d58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x2?, 0x188e7c61d90a?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000b44df8 sp=0xc000b44dc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000b44e48 sp=0xc000b44df8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc00dd569a0?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc000b44f00 sp=0xc000b44e48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000b44fe0 sp=0xc000b44f00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b44fe8 sp=0xc000b44fe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 36919 [IO wait, 5 minutes]:
+runtime.gopark(0xc00a7ab040?, 0xb?, 0x0?, 0x0?, 0xb?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b0dda0 sp=0xc000b0dd80 pc=0x4b2256
+runtime.netpollblock(0x533fe5?, 0x47c90f?, 0x0?)
+        /usr/local/go/src/runtime/netpoll.go:527 +0xf7 fp=0xc000b0ddd8 sp=0xc000b0dda0 pc=0x4aaaf7
+internal/poll.runtime_pollWait(0x7fb2f83fa548, 0x72)
+        /usr/local/go/src/runtime/netpoll.go:306 +0x89 fp=0xc000b0ddf8 sp=0xc000b0ddd8 pc=0x4dc8c9
+internal/poll.(*pollDesc).wait(0xc00e856680?, 0xc005e6ee51?, 0x0)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:84 +0x32 fp=0xc000b0de20 sp=0xc000b0ddf8 pc=0x550892
+internal/poll.(*pollDesc).waitRead(...)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0xc00e856680, {0xc005e6ee51, 0x1, 0x1})
+        /usr/local/go/src/internal/poll/fd_unix.go:167 +0x299 fp=0xc000b0deb8 sp=0xc000b0de20 pc=0x551c79
+net.(*netFD).Read(0xc00e856680, {0xc005e6ee51?, 0xae2000?, 0xc00e16c8b0?})
+        /usr/local/go/src/net/fd_posix.go:55 +0x29 fp=0xc000b0df00 sp=0xc000b0deb8 pc=0x642869
+net.(*conn).Read(0xc00f01d0b8, {0xc005e6ee51?, 0xad0600?, 0xc007478ba0?})
+        /usr/local/go/src/net/net.go:183 +0x45 fp=0xc000b0df48 sp=0xc000b0df00 pc=0x650c05
+net.(*TCPConn).Read(0xc007802c40?, {0xc005e6ee51?, 0x0?, 0x0?})
+        <autogenerated>:1 +0x29 fp=0xc000b0df78 sp=0xc000b0df48 pc=0x6633e9
+net/http.(*connReader).backgroundRead(0xc005e6ee40)
+        /usr/local/go/src/net/http/server.go:674 +0x3f fp=0xc000b0dfc8 sp=0xc000b0df78 pc=0x7d383f
+net/http.(*connReader).startBackgroundRead.func2()
+        /usr/local/go/src/net/http/server.go:670 +0x26 fp=0xc000b0dfe0 sp=0xc000b0dfc8 pc=0x7d3766
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b0dfe8 sp=0xc000b0dfe0 pc=0x4e23c1
+created by net/http.(*connReader).startBackgroundRead
+        /usr/local/go/src/net/http/server.go:670 +0xca
+
+goroutine 32450 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0x8d?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000058d58 sp=0xc000058d38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0xf2?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000058dc0 sp=0xc000058d58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x3?, 0x5d01a6907762?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000058df8 sp=0xc000058dc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000058e48 sp=0xc000058df8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc003545e40?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc000058f00 sp=0xc000058e48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000058fe0 sp=0xc000058f00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000058fe8 sp=0xc000058fe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 7269 [sleep]:
+runtime.gopark(0x832b42c5789cb?, 0x1?, 0x6?, 0x1?, 0x1?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b0aec0 sp=0xc000b0aea0 pc=0x4b2256
+time.Sleep(0x5f5e100)
+        /usr/local/go/src/runtime/time.go:195 +0x135 fp=0xc000b0af00 sp=0xc000b0aec0 pc=0x4df235
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:294 +0x4f fp=0xc000b0afe0 sp=0xc000b0af00 pc=0x947a4f
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b0afe8 sp=0xc000b0afe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 36913 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0xc0118b4670?, 0xcad3a0?, 0x30?, 0x6e?, 0xc000dca190?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc002bfd5f8 sp=0xc002bfd5d8 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0xc?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc002bfd660 sp=0xc002bfd5f8 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x0?, 0x0?, 0x2?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc002bfd698 sp=0xc002bfd660 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc002bfd6e8 sp=0xc002bfd698 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).ControllerTokenToSim(0x0?, {0xc000a6da58?, 0x18?})
+        /home/matt_pharr/vice/server.go:411 +0x71 fp=0xc002bfd750 sp=0xc002bfd6e8 pc=0x948851
+main.(*SimDispatcher).SignOff(0x2?, {0xc000a6da58, 0x18}, 0x4dec59?)
+        /home/matt_pharr/vice/server.go:532 +0x26 fp=0xc002bfd778 sp=0xc002bfd750 pc=0x949ae6
+runtime.call32(0xc00e9cbad0, 0xc000015c30, 0x0, 0x0, 0x0, 0x20, 0xc002bfdcb8)
+        /usr/local/go/src/runtime/asm_amd64.s:729 +0x49 fp=0xc002bfd7a8 sp=0xc002bfd778 pc=0x4e0789
+runtime.reflectcall(0xad3980?, 0x1113020?, 0x4?, 0xbb62a5?, 0x0?, 0x12?, 0xad3980?)
+        <autogenerated>:1 +0x3c fp=0xc002bfd7e8 sp=0xc002bfd7a8 pc=0x4e4e7c
+reflect.Value.call({0xc000928a20?, 0xc000015c30?, 0x13?}, {0xb9cb08, 0x4}, {0xc000b40ef8, 0x3, 0x3?})
+        /usr/local/go/src/reflect/value.go:586 +0xb0b fp=0xc002bfddd8 sp=0xc002bfd7e8 pc=0x5138cb
+reflect.Value.Call({0xc000928a20?, 0xc000015c30?, 0xc000049ec8?}, {0xc000b40ef8?, 0xc00e76e140?, 0x50?})
+        /usr/local/go/src/reflect/value.go:370 +0xbc fp=0xc002bfde50 sp=0xc002bfddd8 pc=0x512b7c
+net/rpc.(*service).call(0xc00ec42680, 0xc00e76e140?, 0x0?, 0xc00d8ee050, 0xc00ebd1d80, 0xc00e76e140?, {0xae2c40?, 0xc0054a3440?, 0x7d3766?}, {0xad3980, ...}, ...)
+        /usr/local/go/src/net/rpc/server.go:382 +0x226 fp=0xc002bfdf58 sp=0xc002bfde50 pc=0x83ebe6
+net/rpc.(*Server).ServeCodec.func1()
+        /usr/local/go/src/net/rpc/server.go:479 +0x8a fp=0xc002bfdfe0 sp=0xc002bfdf58 pc=0x83f2ca
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc002bfdfe8 sp=0xc002bfdfe0 pc=0x4e23c1
+created by net/rpc.(*Server).ServeCodec
+        /usr/local/go/src/net/rpc/server.go:479 +0x3fe
+
+goroutine 32642 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x7fb2ea773200?, 0x4e01ee?, 0xe0?, 0xf9?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b3fcf8 sp=0xc000b3fcd8 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00e97d4b4, 0x0?, 0x3, 0x1, 0xdf?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b3fd60 sp=0xc000b3fcf8 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x1666d28e27285?, 0x0?, 0xc13d9c2297e5e2fb?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000b3fd98 sp=0xc000b3fd60 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00e97d4b0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000b3fde8 sp=0xc000b3fd98 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*Sim).IdleTime(0xc000b3fe88?)
+        /home/matt_pharr/vice/sim.go:1232 +0x5b fp=0xc000b3fe48 sp=0xc000b3fde8 pc=0x95963b
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc00dbde9a0?)
+        /home/matt_pharr/vice/server.go:388 +0x133 fp=0xc000b3ff00 sp=0xc000b3fe48 pc=0x948453
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000b3ffe0 sp=0xc000b3ff00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b3ffe8 sp=0xc000b3ffe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 36915 [sync.Mutex.Lock, 7 minutes]:
+runtime.gopark(0xc00ab3db80?, 0xc008ba1bd0?, 0x1?, 0x0?, 0x8?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc002bfb458 sp=0xc002bfb438 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x26?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc002bfb4c0 sp=0xc002bfb458 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x6?, 0x2?, 0xc000b0d578?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc002bfb4f8 sp=0xc002bfb4c0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc002bfb548 sp=0xc002bfb4f8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).GetRunningSims(0xc00ec19cc0, 0xc001ea46c0?, 0xc007478ba8)
+        /home/matt_pharr/vice/server.go:341 +0x79 fp=0xc002bfb718 sp=0xc002bfb548 pc=0x947e59
+main.(*SimManager).SignOn(0xc00ec19cc0, 0xc00ec56148?, 0xc007478ba0)
+        /home/matt_pharr/vice/server.go:328 +0x53 fp=0xc002bfb778 sp=0xc002bfb718 pc=0x947c53
+runtime.call32(0xc00ecb6810, 0xc000015998, 0x0, 0x0, 0x0, 0x18, 0xc002bfbcb8)
+        /usr/local/go/src/runtime/asm_amd64.s:729 +0x49 fp=0xc002bfb7a8 sp=0xc002bfb778 pc=0x4e0789
+runtime.reflectcall(0xad0600?, 0xc007478ba0?, 0x4?, 0xbb62a5?, 0x0?, 0x12?, 0xad0600?)
+        <autogenerated>:1 +0x3c fp=0xc002bfb7e8 sp=0xc002bfb7a8 pc=0x4e4e7c
+reflect.Value.call({0xc0008f3e60?, 0xc000015998?, 0x13?}, {0xb9cb08, 0x4}, {0xc000b0def8, 0x3, 0x3?})
+        /usr/local/go/src/reflect/value.go:586 +0xb0b fp=0xc002bfbdd8 sp=0xc002bfb7e8 pc=0x5138cb
+reflect.Value.Call({0xc0008f3e60?, 0xc000015998?, 0x7fb32178c108?}, {0xc000047ef8?, 0xc00004f800?, 0xc00e16c7c0?})
+        /usr/local/go/src/reflect/value.go:370 +0xbc fp=0xc002bfbe50 sp=0xc002bfbdd8 pc=0x512b7c
+net/rpc.(*service).call(0xc00ec42400, 0x0?, 0x0?, 0xc00e16c7c0, 0xc00ebd1480, 0xc000047fd0?, {0xae2000?, 0xc00e16c8b0?, 0xcb1e00?}, {0xad0600, ...}, ...)
+        /usr/local/go/src/net/rpc/server.go:382 +0x226 fp=0xc002bfbf58 sp=0xc002bfbe50 pc=0x83ebe6
+net/rpc.(*Server).ServeCodec.func1()
+        /usr/local/go/src/net/rpc/server.go:479 +0x8a fp=0xc002bfbfe0 sp=0xc002bfbf58 pc=0x83f2ca
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc002bfbfe8 sp=0xc002bfbfe0 pc=0x4e23c1
+created by net/rpc.(*Server).ServeCodec
+        /usr/local/go/src/net/rpc/server.go:479 +0x3fe
+
+goroutine 36914 [IO wait, 7 minutes]:
+runtime.gopark(0xc00f0075f8?, 0xb?, 0x0?, 0x0?, 0xc?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00f007330 sp=0xc00f007310 pc=0x4b2256
+runtime.netpollblock(0x533fe5?, 0x47c90f?, 0x0?)
+        /usr/local/go/src/runtime/netpoll.go:527 +0xf7 fp=0xc00f007368 sp=0xc00f007330 pc=0x4aaaf7
+internal/poll.runtime_pollWait(0x7fb2f83fa368, 0x72)
+        /usr/local/go/src/runtime/netpoll.go:306 +0x89 fp=0xc00f007388 sp=0xc00f007368 pc=0x4dc8c9
+internal/poll.(*pollDesc).wait(0xc00ab3db80?, 0xc008ba1bd0?, 0x0)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:84 +0x32 fp=0xc00f0073b0 sp=0xc00f007388 pc=0x550892
+internal/poll.(*pollDesc).waitRead(...)
+        /usr/local/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0xc00ab3db80, {0xc008ba1bd0, 0x3, 0x8})
+        /usr/local/go/src/internal/poll/fd_unix.go:167 +0x299 fp=0xc00f007448 sp=0xc00f0073b0 pc=0x551c79
+net.(*netFD).Read(0xc00ab3db80, {0xc008ba1bd0?, 0x0?, 0x0?})
+        /usr/local/go/src/net/fd_posix.go:55 +0x29 fp=0xc00f007490 sp=0xc00f007448 pc=0x642869
+net.(*conn).Read(0xc00f01cde0, {0xc008ba1bd0?, 0x0?, 0x0?})
+        /usr/local/go/src/net/net.go:183 +0x45 fp=0xc00f0074d8 sp=0xc00f007490 pc=0x650c05
+net.(*TCPConn).Read(0x0?, {0xc008ba1bd0?, 0x0?, 0x0?})
+        <autogenerated>:1 +0x29 fp=0xc00f007508 sp=0xc00f0074d8 pc=0x6633e9
+main.(*LoggingConn).Read(0xc00006efc0, {0xc008ba1bd0?, 0x0?, 0x0?})
+        /home/matt_pharr/vice/util.go:1962 +0x52 fp=0xc00f007578 sp=0xc00f007508 pc=0x9a39b2
+io.ReadAtLeast({0x7fb2ea675220, 0xc00006efc0}, {0xc008ba1bd0, 0x3, 0x8}, 0x3)
+        /usr/local/go/src/io/io.go:332 +0x9a fp=0xc00f0075c0 sp=0xc00f007578 pc=0x52a49a
+io.ReadFull(...)
+        /usr/local/go/src/io/io.go:351
+github.com/klauspost/compress/zstd.(*readerWrapper).readSmall(0xc00ec42240?, 0x3?)
+        /home/matt_pharr/go/pkg/mod/github.com/klauspost/compress@v1.15.9/zstd/bytebuf.go:87 +0x55 fp=0xc00f007618 sp=0xc00f0075c0 pc=0x8d5cf5
+github.com/klauspost/compress/zstd.(*blockDec).reset(0xc00cfc8300, {0xcb19d8, 0xc008ba1bc0}, 0x800000)
+        /home/matt_pharr/go/pkg/mod/github.com/klauspost/compress@v1.15.9/zstd/blockdec.go:133 +0x3e fp=0xc00f007670 sp=0xc00f007618 pc=0x8cf31e
+github.com/klauspost/compress/zstd.(*frameDec).next(0x0?, 0xc00cfc8300)
+        /home/matt_pharr/go/pkg/mod/github.com/klauspost/compress@v1.15.9/zstd/framedec.go:285 +0x36 fp=0xc00f0076a0 sp=0xc00f007670 pc=0x8ee616
+github.com/klauspost/compress/zstd.(*Decoder).nextBlockSync(0xc008ba1b20)
+        /home/matt_pharr/go/pkg/mod/github.com/klauspost/compress@v1.15.9/zstd/decoder.go:500 +0x445 fp=0xc00f0078a0 sp=0xc00f0076a0 pc=0x8d88e5
+github.com/klauspost/compress/zstd.(*Decoder).nextBlock(0xc008ba1b20, 0x40?)
+        /home/matt_pharr/go/pkg/mod/github.com/klauspost/compress@v1.15.9/zstd/decoder.go:412 +0x57 fp=0xc00f007948 sp=0xc00f0078a0 pc=0x8d8037
+github.com/klauspost/compress/zstd.(*Decoder).Read(0xc008ba1b20, {0xc00f020000?, 0xc00f007a78?, 0x48edf0?})
+        /home/matt_pharr/go/pkg/mod/github.com/klauspost/compress@v1.15.9/zstd/decoder.go:146 +0x156 fp=0xc00f0079b0 sp=0xc00f007948 pc=0x8d6816
+main.(*CompressedConn).Read(0xc007802da0?, {0xc00f020000?, 0x48edf0?, 0xc008b454a0?})
+        /home/matt_pharr/vice/util.go:1929 +0x25 fp=0xc00f0079e0 sp=0xc00f0079b0 pc=0x9a3745
+bufio.(*Reader).Read(0xc00006f0e0, {0xc00e16c795, 0x1, 0xad8b60?})
+        /usr/local/go/src/bufio/bufio.go:237 +0x1bb fp=0xc00f007a18 sp=0xc00f0079e0 pc=0x5c5abb
+io.ReadAtLeast({0xcad020, 0xc00006f0e0}, {0xc00e16c795, 0x1, 0x9}, 0x1)
+        /usr/local/go/src/io/io.go:332 +0x9a fp=0xc00f007a60 sp=0xc00f007a18 pc=0x52a49a
+io.ReadFull(...)
+        /usr/local/go/src/io/io.go:351
+encoding/gob.decodeUintReader({0xcad020?, 0xc00006f0e0?}, {0xc00e16c795?, 0x9?, 0x9?})
+        /usr/local/go/src/encoding/gob/decode.go:116 +0x57 fp=0xc00f007ab8 sp=0xc00f007a60 pc=0x605597
+encoding/gob.(*Decoder).recvMessage(0xc00ab3dc00)
+        /usr/local/go/src/encoding/gob/decoder.go:82 +0x39 fp=0xc00f007af0 sp=0xc00f007ab8 pc=0x60f159
+encoding/gob.(*Decoder).decodeTypeSequence(0xc00ab3dc00, 0x0)
+        /usr/local/go/src/encoding/gob/decoder.go:148 +0x4f fp=0xc00f007b20 sp=0xc00f007af0 pc=0x60f4ef
+encoding/gob.(*Decoder).DecodeValue(0xc00ab3dc00, {0xad1d80?, 0xc007802e40?, 0xc00f007bd0?})
+        /usr/local/go/src/encoding/gob/decoder.go:227 +0x18f fp=0xc00f007ba0 sp=0xc00f007b20 pc=0x60f98f
+encoding/gob.(*Decoder).Decode(0xc00ab3dc00, {0xad1d80?, 0xc007802e40?})
+        /usr/local/go/src/encoding/gob/decoder.go:204 +0x165 fp=0xc00f007bf8 sp=0xc00f007ba0 pc=0x60f7a5
+main.(*gobServerCodec).ReadRequestHeader(0x9?, 0x1?)
+        /home/matt_pharr/vice/util.go:1777 +0x27 fp=0xc00f007c20 sp=0xc00f007bf8 pc=0x9a2007
+main.(*LoggingServerCodec).ReadRequestHeader(0xc007802c40, 0xc007802e40)
+        /home/matt_pharr/vice/util.go:1835 +0x46 fp=0xc00f007d18 sp=0xc00f007c20 pc=0x9a26c6
+net/rpc.(*Server).readRequestHeader(0xc00ec423c0, {0xcb1e00, 0xc007802c40})
+        /usr/local/go/src/net/rpc/server.go:588 +0x66 fp=0xc00f007de8 sp=0xc00f007d18 pc=0x83fbe6
+net/rpc.(*Server).readRequest(0xacfcc0?, {0xcb1e00, 0xc007802c40})
+        /usr/local/go/src/net/rpc/server.go:548 +0x3b fp=0xc00f007ec0 sp=0xc00f007de8 pc=0x83f73b
+net/rpc.(*Server).ServeCodec(0xc00ec423c0, {0xcb1e00?, 0xc007802c40})
+        /usr/local/go/src/net/rpc/server.go:463 +0x87 fp=0xc00f007fb8 sp=0xc00f007ec0 pc=0x83ee67
+main.runServer.func1.2()
+        /home/matt_pharr/vice/server.go:1178 +0x2e fp=0xc00f007fe0 sp=0xc00f007fb8 pc=0x94ed8e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00f007fe8 sp=0xc00f007fe0 pc=0x4e23c1
+created by main.runServer.func1
+        /home/matt_pharr/vice/server.go:1178 +0x63d
+
+goroutine 21711 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0xed?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b0ed58 sp=0xc000b0ed38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x7f?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b0edc0 sp=0xc000b0ed58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x3?, 0x59c533e62e2b?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000b0edf8 sp=0xc000b0edc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000b0ee48 sp=0xc000b0edf8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc00e0c9340?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc000b0ef00 sp=0xc000b0ee48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000b0efe0 sp=0xc000b0ef00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b0efe8 sp=0xc000b0efe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 32644 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0xcd?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b0cd58 sp=0xc000b0cd38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0xae?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b0cdc0 sp=0xc000b0cd58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x0?, 0x5cbe749791b1?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000b0cdf8 sp=0xc000b0cdc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000b0ce48 sp=0xc000b0cdf8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc00e97d080?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc000b0cf00 sp=0xc000b0ce48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000b0cfe0 sp=0xc000b0cf00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b0cfe8 sp=0xc000b0cfe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 19105 [runnable]:
+runtime.asyncPreempt2()
+        /usr/local/go/src/runtime/preempt.go:307 +0x3f fp=0xc00f00b030 sp=0xc00f00b010 pc=0x4b095f
+runtime.asyncPreempt()
+        /usr/local/go/src/runtime/preempt_amd64.s:53 +0xdb fp=0xc00f00b1b8 sp=0xc00f00b030 pc=0x4e3a1b
+main.(*Nav).TargetHeading(0x1?, {0xcaf528?, 0xc0009c2000?}, 0x919d87?)
+        /home/matt_pharr/vice/nav.go:600 +0xad fp=0xc00f00b380 sp=0xc00f00b1b8 pc=0x91ac0d
+main.(*Nav).updateHeading(0xc00e319628, {0xcaf528?, 0xc0009c2000?}, 0x1?)
+        /home/matt_pharr/vice/nav.go:489 +0x31 fp=0xc00f00b3e8 sp=0xc00f00b380 pc=0x919fb1
+main.(*Nav).Update(0xc00e319628, {0xcaf528, 0xc0009c2000}, 0x1?)
+        /home/matt_pharr/vice/nav.go:572 +0x71 fp=0xc00f00b468 sp=0xc00f00b3e8 pc=0x91aa11
+main.(*Aircraft).Update(0xc00e319500, 0xc0009c2000, {0xcad5a0, 0xc00e97d4a0}, 0xc010972c30)
+        /home/matt_pharr/vice/aircraft.go:110 +0x1a5 fp=0xc00f00b820 sp=0xc00f00b468 pc=0x8fc5c5
+main.(*Sim).updateState(0xc00e97d4a0)
+        /home/matt_pharr/vice/sim.go:1149 +0x639 fp=0xc00f00bcd8 sp=0xc00f00b820 pc=0x958a39
+main.(*Sim).Update(0xc00e97d4a0)
+        /home/matt_pharr/vice/sim.go:1105 +0x61f fp=0xc00f00bf00 sp=0xc00f00bcd8 pc=0x9580df
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:293 +0x45 fp=0xc00f00bfe0 sp=0xc00f00bf00 pc=0x947a45
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00f00bfe8 sp=0xc00f00bfe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 36918 [sync.Mutex.Lock, 5 minutes]:
+runtime.gopark(0x403ab5c28f5c28f6?, 0x0?, 0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc0102d5f48 sp=0xc0102d5f28 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x9c?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc0102d5fb0 sp=0xc0102d5f48 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x40c60c799999999a?, 0x9a?, 0x41416b58f999999a?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc0102d5fe8 sp=0xc0102d5fb0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc0102d6038 sp=0xc0102d5fe8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).GetSimStatus(0xc00ec19cc0)
+        /home/matt_pharr/vice/server.go:438 +0x85 fp=0xc0102d6208 sp=0xc0102d6038 pc=0x948f45
+main.statsHandler({0xcb13b0?, 0xc008864700}, 0xc00cfc8400?, 0xc00ec19cc0?)
+        /home/matt_pharr/vice/server.go:1352 +0x1d7 fp=0xc0102d7a08 sp=0xc0102d6208 pc=0x94f3f7
+main.launchHTTPStats.func1({0xcb13b0?, 0xc008864700?}, 0xc00cfc8400)
+        /home/matt_pharr/vice/server.go:1199 +0x2c fp=0xc0102d7a58 sp=0xc0102d7a08 pc=0x94efcc
+net/http.HandlerFunc.ServeHTTP(0xc00e856680?, {0xcb13b0?, 0xc008864700?}, 0x486bca?)
+        /usr/local/go/src/net/http/server.go:2122 +0x2f fp=0xc0102d7a80 sp=0xc0102d7a58 pc=0x7dafef
+net/http.(*ServeMux).ServeHTTP(0x0?, {0xcb13b0, 0xc008864700}, 0xc00cfc8400)
+        /usr/local/go/src/net/http/server.go:2500 +0x149 fp=0xc0102d7ad0 sp=0xc0102d7a80 pc=0x7dc989
+net/http.serverHandler.ServeHTTP({0xc005e6ee40?}, {0xcb13b0, 0xc008864700}, 0xc00cfc8400)
+        /usr/local/go/src/net/http/server.go:2936 +0x316 fp=0xc0102d7b80 sp=0xc0102d7ad0 pc=0x7de136
+net/http.(*conn).serve(0xc005af5200, {0xcb1888, 0xc00ec4af30})
+        /usr/local/go/src/net/http/server.go:1995 +0x612 fp=0xc0102d7fb8 sp=0xc0102d7b80 pc=0x7d9b12
+net/http.(*Server).Serve.func3()
+        /usr/local/go/src/net/http/server.go:3089 +0x2e fp=0xc0102d7fe0 sp=0xc0102d7fb8 pc=0x7dea8e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc0102d7fe8 sp=0xc0102d7fe0 pc=0x4e23c1
+created by net/http.(*Server).Serve
+        /usr/local/go/src/net/http/server.go:3089 +0x5ed
+
+goroutine 36916 [sync.Mutex.Lock, 7 minutes]:
+runtime.gopark(0x403ab33333333333?, 0x0?, 0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc0102d9f48 sp=0xc0102d9f28 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x32?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc0102d9fb0 sp=0xc0102d9f48 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x40c5e40147ae147b?, 0x7b?, 0x41416b58f999999a?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc0102d9fe8 sp=0xc0102d9fb0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc0102da038 sp=0xc0102d9fe8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).GetSimStatus(0xc00ec19cc0)
+        /home/matt_pharr/vice/server.go:438 +0x85 fp=0xc0102da208 sp=0xc0102da038 pc=0x948f45
+main.statsHandler({0xcb13b0?, 0xc00ccdefc0}, 0xc00cfc8000?, 0xc00ec19cc0?)
+        /home/matt_pharr/vice/server.go:1352 +0x1d7 fp=0xc0102dba08 sp=0xc0102da208 pc=0x94f3f7
+main.launchHTTPStats.func1({0xcb13b0?, 0xc00ccdefc0?}, 0xc00cfc8000)
+        /home/matt_pharr/vice/server.go:1199 +0x2c fp=0xc0102dba58 sp=0xc0102dba08 pc=0x94efcc
+net/http.HandlerFunc.ServeHTTP(0xc00e856f00?, {0xcb13b0?, 0xc00ccdefc0?}, 0x486bca?)
+        /usr/local/go/src/net/http/server.go:2122 +0x2f fp=0xc0102dba80 sp=0xc0102dba58 pc=0x7dafef
+net/http.(*ServeMux).ServeHTTP(0x0?, {0xcb13b0, 0xc00ccdefc0}, 0xc00cfc8000)
+        /usr/local/go/src/net/http/server.go:2500 +0x149 fp=0xc0102dbad0 sp=0xc0102dba80 pc=0x7dc989
+net/http.serverHandler.ServeHTTP({0xc00a784450?}, {0xcb13b0, 0xc00ccdefc0}, 0xc00cfc8000)
+        /usr/local/go/src/net/http/server.go:2936 +0x316 fp=0xc0102dbb80 sp=0xc0102dbad0 pc=0x7de136
+net/http.(*conn).serve(0xc009765cb0, {0xcb1888, 0xc00ec4af30})
+        /usr/local/go/src/net/http/server.go:1995 +0x612 fp=0xc0102dbfb8 sp=0xc0102dbb80 pc=0x7d9b12
+net/http.(*Server).Serve.func3()
+        /usr/local/go/src/net/http/server.go:3089 +0x2e fp=0xc0102dbfe0 sp=0xc0102dbfb8 pc=0x7dea8e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc0102dbfe8 sp=0xc0102dbfe0 pc=0x4e23c1
+created by net/http.(*Server).Serve
+        /usr/local/go/src/net/http/server.go:3089 +0x5ed
+
+goroutine 35741 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0xbd?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b0bd58 sp=0xc000b0bd38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x10?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b0bdc0 sp=0xc000b0bd58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x1?, 0x55d53f794fed?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc000b0bdf8 sp=0xc000b0bdc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc000b0be48 sp=0xc000b0bdf8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0x16?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc000b0bf00 sp=0xc000b0be48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc000b0bfe0 sp=0xc000b0bf00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b0bfe8 sp=0xc000b0bfe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 35681 [sync.Mutex.Lock, 8 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x80?, 0xad?, 0x4d1453?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc00005ad58 sp=0xc00005ad38 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00ec19ce4, 0x0?, 0x3, 0x1, 0x15?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc00005adc0 sp=0xc00005ad58 pc=0x4c380f
+sync.runtime_SemacquireMutex(0x10ba060?, 0x1?, 0x55e29397a8d3?)
+        /usr/local/go/src/runtime/sema.go:77 +0x26 fp=0xc00005adf8 sp=0xc00005adc0 pc=0x4de3a6
+sync.(*Mutex).lockSlow(0xc00ec19ce0)
+        /usr/local/go/src/sync/mutex.go:171 +0x165 fp=0xc00005ae48 sp=0xc00005adf8 pc=0x4fbce5
+sync.(*Mutex).Lock(...)
+        /usr/local/go/src/sync/mutex.go:90
+main.(*SimManager).SimShouldExit(0xc00ec19cc0, 0xc00e97cf20?)
+        /home/matt_pharr/vice/server.go:383 +0x94 fp=0xc00005af00 sp=0xc00005ae48 pc=0x9483b4
+main.(*SimManager).Add.func1()
+        /home/matt_pharr/vice/server.go:292 +0x5e fp=0xc00005afe0 sp=0xc00005af00 pc=0x947a5e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc00005afe8 sp=0xc00005afe0 pc=0x4e23c1
+created by main.(*SimManager).Add
+        /home/matt_pharr/vice/server.go:289 +0x2ad
+
+goroutine 36899 [semacquire, 8 minutes]:
+runtime.gopark(0xc00e98c040?, 0xb09f80?, 0x20?, 0x2a?, 0x3?)
+        /usr/local/go/src/runtime/proc.go:381 +0xd6 fp=0xc000b40df8 sp=0xc000b40dd8 pc=0x4b2256
+runtime.goparkunlock(...)
+        /usr/local/go/src/runtime/proc.go:387
+runtime.semacquire1(0xc00d8ee058, 0x80?, 0x1, 0x0, 0xd1?)
+        /usr/local/go/src/runtime/sema.go:160 +0x20f fp=0xc000b40e60 sp=0xc000b40df8 pc=0x4c380f
+sync.runtime_Semacquire(0x0?)
+        /usr/local/go/src/runtime/sema.go:62 +0x27 fp=0xc000b40e98 sp=0xc000b40e60 pc=0x4de287
+sync.(*WaitGroup).Wait(0xc00d8ee000?)
+        /usr/local/go/src/sync/waitgroup.go:116 +0x4b fp=0xc000b40ec0 sp=0xc000b40e98 pc=0x4fd7eb
+net/rpc.(*Server).ServeCodec(0xc00ec423c0, {0xcb1e00?, 0xc00e98c040})
+        /usr/local/go/src/net/rpc/server.go:483 +0x40f fp=0xc000b40fb8 sp=0xc000b40ec0 pc=0x83f1ef
+main.runServer.func1.2()
+        /home/matt_pharr/vice/server.go:1178 +0x2e fp=0xc000b40fe0 sp=0xc000b40fb8 pc=0x94ed8e
+runtime.goexit()
+        /usr/local/go/src/runtime/asm_amd64.s:1598 +0x1 fp=0xc000b40fe8 sp=0xc000b40fe0 pc=0x4e23c1
+created by main.runServer.func1
+        /home/matt_pharr/vice/server.go:1178 +0x63d
+
+rax    0xca
+rbx    0x0
+rcx    0x4e42c3
+rdx    0x0
+rdi    0x10baa28
+rsi    0x80
+rbp    0x7ffe28c42420
+rsp    0x7ffe28c423d8
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0x4b8c00
+r13    0x0
+r14    0x10ba540
+r15    0x1000
+rip    0x4e42c1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+
+-----
+
+SIGQUIT: quit
+PC=0x4e3cbd m=2 sigcode=0
+
+goroutine 0 [idle]:
+runtime.usleep()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:135 +0x3d fp=0x7fb2fa435c78 sp=0x7fb2fa435c58 pc=0x4e3cbd
+runtime.sysmon()
+        /usr/local/go/src/runtime/proc.go:5316 +0xa5 fp=0x7fb2fa435ce8 sp=0x7fb2fa435c78 pc=0x4bd385
+runtime.mstart1()
+        /usr/local/go/src/runtime/proc.go:1499 +0x93 fp=0x7fb2fa435d10 sp=0x7fb2fa435ce8 pc=0x4b4b53
+runtime.mstart0()
+        /usr/local/go/src/runtime/proc.go:1456 +0x7a fp=0x7fb2fa435d40 sp=0x7fb2fa435d10 pc=0x4b4a9a
+runtime.mstart()
+        /usr/local/go/src/runtime/asm_amd64.s:394 +0x5 fp=0x7fb2fa435d48 sp=0x7fb2fa435d40 pc=0x4e0105
+rax    0xfffffffffffffffc
+rbx    0x2710
+rcx    0x4e3cbd
+rdx    0x0
+rdi    0x7fb2fa435c58
+rsi    0x0
+rbp    0x7fb2fa435c68
+rsp    0x7fb2fa435c58
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x202
+r12    0x7fb2fa435678
+r13    0x40
+r14    0xc0000069c0
+r15    0x1000
+rip    0x4e3cbd
+rflags 0x202
+cs     0x33
+fs     0x0
+gs     0x0
+
+-----
+
+SIGQUIT: quit
+PC=0x4e42c1 m=3 sigcode=0
+
+goroutine 0 [idle]:
+runtime.futex()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:554 +0x21 fp=0x7fb2f9c34c20 sp=0x7fb2f9c34c18 pc=0x4e42c1
+runtime.futexsleep(0x0?, 0x0?, 0x0?)
+        /usr/local/go/src/runtime/os_linux.go:69 +0x36 fp=0x7fb2f9c34c70 sp=0x7fb2f9c34c20 pc=0x4ab7d6
+runtime.notesleep(0xc00004e948)
+        /usr/local/go/src/runtime/lock_futex.go:160 +0x87 fp=0x7fb2f9c34ca8 sp=0x7fb2f9c34c70 pc=0x4853a7
+runtime.mPark(...)
+        /usr/local/go/src/runtime/proc.go:1531
+runtime.stopm()
+        /usr/local/go/src/runtime/proc.go:2335 +0x8c fp=0x7fb2f9c34cd8 sp=0x7fb2f9c34ca8 pc=0x4b612c
+runtime.exitsyscall0(0xc0000cb1e0)
+        /usr/local/go/src/runtime/proc.go:4140 +0x15a fp=0x7fb2f9c34d08 sp=0x7fb2f9c34cd8 pc=0x4ba61a
+runtime.mcall()
+        /usr/local/go/src/runtime/asm_amd64.s:452 +0x43 fp=0x7fb2f9c34d18 sp=0x7fb2f9c34d08 pc=0x4e0183
+rax    0xca
+rbx    0x0
+rcx    0x4e42c3
+rdx    0x0
+rdi    0xc00004e948
+rsi    0x80
+rbp    0x7fb2f9c34c60
+rsp    0x7fb2f9c34c18
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0x4ba4c0
+r13    0x0
+r14    0xc0000071e0
+r15    0xc00005e000
+rip    0x4e42c1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+
+-----
+
+SIGQUIT: quit
+PC=0x4e42c1 m=4 sigcode=0
+
+goroutine 0 [idle]:
+runtime.futex()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:554 +0x21 fp=0x7fb2f9433ae0 sp=0x7fb2f9433ad8 pc=0x4e42c1
+runtime.futexsleep(0x10000000000?, 0x0?, 0x3?)
+        /usr/local/go/src/runtime/os_linux.go:69 +0x36 fp=0x7fb2f9433b30 sp=0x7fb2f9433ae0 pc=0x4ab7d6
+runtime.notesleep(0xc00004ed48)
+        /usr/local/go/src/runtime/lock_futex.go:160 +0x87 fp=0x7fb2f9433b68 sp=0x7fb2f9433b30 pc=0x4853a7
+runtime.mPark(...)
+        /usr/local/go/src/runtime/proc.go:1531
+runtime.stopm()
+        /usr/local/go/src/runtime/proc.go:2335 +0x8c fp=0x7fb2f9433b98 sp=0x7fb2f9433b68 pc=0x4b612c
+runtime.findRunnable()
+        /usr/local/go/src/runtime/proc.go:3025 +0xabc fp=0x7fb2f9433ca0 sp=0x7fb2f9433b98 pc=0x4b79dc
+runtime.schedule()
+        /usr/local/go/src/runtime/proc.go:3378 +0xb1 fp=0x7fb2f9433cd8 sp=0x7fb2f9433ca0 pc=0x4b8811
+runtime.park_m(0xc000006d00?)
+        /usr/local/go/src/runtime/proc.go:3529 +0x12d fp=0x7fb2f9433d08 sp=0x7fb2f9433cd8 pc=0x4b8d2d
+runtime.mcall()
+        /usr/local/go/src/runtime/asm_amd64.s:452 +0x43 fp=0x7fb2f9433d18 sp=0x7fb2f9433d08 pc=0x4e0183
+rax    0xca
+rbx    0x0
+rcx    0x4e42c3
+rdx    0x0
+rdi    0xc00004ed48
+rsi    0x80
+rbp    0x7fb2f9433b20
+rsp    0x7fb2f9433ad8
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0xc000038000
+r13    0x0
+r14    0xc000007520
+r15    0x0
+rip    0x4e42c1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+
+-----
+
+SIGQUIT: quit
+PC=0x4e42c1 m=5 sigcode=0
+
+goroutine 0 [idle]:
+runtime.futex()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:554 +0x21 fp=0x7fb2f8c32c40 sp=0x7fb2f8c32c38 pc=0x4e42c1
+runtime.futexsleep(0x7fb2f8c32ca8?, 0x0?, 0x8?)
+        /usr/local/go/src/runtime/os_linux.go:69 +0x36 fp=0x7fb2f8c32c90 sp=0x7fb2f8c32c40 pc=0x4ab7d6
+runtime.notesleep(0x1113558)
+        /usr/local/go/src/runtime/lock_futex.go:160 +0x87 fp=0x7fb2f8c32cc8 sp=0x7fb2f8c32c90 pc=0x4853a7
+runtime.templateThread()
+        /usr/local/go/src/runtime/proc.go:2313 +0x71 fp=0x7fb2f8c32ce8 sp=0x7fb2f8c32cc8 pc=0x4b6011
+runtime.mstart1()
+        /usr/local/go/src/runtime/proc.go:1499 +0x93 fp=0x7fb2f8c32d10 sp=0x7fb2f8c32ce8 pc=0x4b4b53
+runtime.mstart0()
+        /usr/local/go/src/runtime/proc.go:1456 +0x7a fp=0x7fb2f8c32d40 sp=0x7fb2f8c32d10 pc=0x4b4a9a
+runtime.mstart()
+        /usr/local/go/src/runtime/asm_amd64.s:394 +0x5 fp=0x7fb2f8c32d48 sp=0x7fb2f8c32d40 pc=0x4e0105
+rax    0xca
+rbx    0x0
+rcx    0x4e42c3
+rdx    0x0
+rdi    0x1113558
+rsi    0x80
+rbp    0x7fb2f8c32c80
+rsp    0x7fb2f8c32c38
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0xc000007860
+r13    0x16
+r14    0xc000007860
+r15    0x7ffe28c42250
+rip    0x4e42c1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+
+-----
+
+SIGQUIT: quit
+PC=0x4e42c1 m=6 sigcode=0
+
+goroutine 0 [idle]:
+runtime.futex()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:554 +0x21 fp=0x7fb2ebffea70 sp=0x7fb2ebffea68 pc=0x4e42c1
+runtime.futexsleep(0x8fc5c5?, 0x11fe00?, 0x947a45?)
+        /usr/local/go/src/runtime/os_linux.go:69 +0x36 fp=0x7fb2ebffeac0 sp=0x7fb2ebffea70 pc=0x4ab7d6
+runtime.notesleep(0xc00004f548)
+        /usr/local/go/src/runtime/lock_futex.go:160 +0x87 fp=0x7fb2ebffeaf8 sp=0x7fb2ebffeac0 pc=0x4853a7
+runtime.mPark(...)
+        /usr/local/go/src/runtime/proc.go:1531
+runtime.stopm()
+        /usr/local/go/src/runtime/proc.go:2335 +0x8c fp=0x7fb2ebffeb28 sp=0x7fb2ebffeaf8 pc=0x4b612c
+runtime.gcstopm()
+        /usr/local/go/src/runtime/proc.go:2634 +0xaa fp=0x7fb2ebffeb50 sp=0x7fb2ebffeb28 pc=0x4b6d4a
+runtime.findRunnable()
+        /usr/local/go/src/runtime/proc.go:2700 +0x49 fp=0x7fb2ebffec58 sp=0x7fb2ebffeb50 pc=0x4b6f69
+runtime.schedule()
+        /usr/local/go/src/runtime/proc.go:3378 +0xb1 fp=0x7fb2ebffec90 sp=0x7fb2ebffec58 pc=0x4b8811
+runtime.goschedImpl(0xc0039b6680)
+        /usr/local/go/src/runtime/proc.go:3544 +0xca fp=0x7fb2ebffecc8 sp=0x7fb2ebffec90 pc=0x4b8e2a
+runtime.gopreempt_m(0xc0039b6680?)
+        /usr/local/go/src/runtime/proc.go:3572 +0x55 fp=0x7fb2ebffed08 sp=0x7fb2ebffecc8 pc=0x4b9115
+runtime.mcall()
+        /usr/local/go/src/runtime/asm_amd64.s:452 +0x43 fp=0x7fb2ebffed18 sp=0x7fb2ebffed08 pc=0x4e0183
+rax    0xca
+rbx    0x0
+rcx    0x4e42c3
+rdx    0x0
+rdi    0xc00004f548
+rsi    0x80
+rbp    0x7fb2ebffeab0
+rsp    0x7fb2ebffea68
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0x7fb2ebffebd0
+r13    0x2e
+r14    0xc0000cb520
+r15    0x10000000000
+rip    0x4e42c1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+
+-----
+
+SIGQUIT: quit
+PC=0x4e42c1 m=7 sigcode=0
+
+goroutine 0 [idle]:
+runtime.futex()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:554 +0x21 fp=0x7fb2eb7fdc20 sp=0x7fb2eb7fdc18 pc=0x4e42c1
+runtime.futexsleep(0x0?, 0xf00b468?, 0x0?)
+        /usr/local/go/src/runtime/os_linux.go:69 +0x36 fp=0x7fb2eb7fdc70 sp=0x7fb2eb7fdc20 pc=0x4ab7d6
+runtime.notesleep(0xc00004f948)
+        /usr/local/go/src/runtime/lock_futex.go:160 +0x87 fp=0x7fb2eb7fdca8 sp=0x7fb2eb7fdc70 pc=0x4853a7
+runtime.mPark(...)
+        /usr/local/go/src/runtime/proc.go:1531
+runtime.stopm()
+        /usr/local/go/src/runtime/proc.go:2335 +0x8c fp=0x7fb2eb7fdcd8 sp=0x7fb2eb7fdca8 pc=0x4b612c
+runtime.exitsyscall0(0xc0039b6680)
+        /usr/local/go/src/runtime/proc.go:4140 +0x15a fp=0x7fb2eb7fdd08 sp=0x7fb2eb7fdcd8 pc=0x4ba61a
+runtime.mcall()
+        /usr/local/go/src/runtime/asm_amd64.s:452 +0x43 fp=0x7fb2eb7fdd18 sp=0x7fb2eb7fdd08 pc=0x4e0183
+rax    0xca
+rbx    0x0
+rcx    0x4e42c3
+rdx    0x0
+rdi    0xc00004f948
+rsi    0x80
+rbp    0x7fb2eb7fdc60
+rsp    0x7fb2eb7fdc18
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0x4ba4c0
+r13    0x0
+r14    0xc0000cb860
+r15    0xc00004f800
+rip    0x4e42c1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+matt_pharr@vice:~/vice$ sudo reboot^C                                                                          [1]+  Aborted                 (core dumped) env GOTRACEBACK=crash ./vice -runserver
+matt_pharr@vice:~/vice$ ls -lh !$
+ls -lh abort.log
+-rw-rw-r-- 1 matt_pharr matt_pharr 0 Oct  3 06:10 abort.log
+matt_pharr@vice:~/vice$ ls -t
+abort.log    aircraft.go  fonts.go               panes.go        eventstream_test.go  log6   CREDITS.txt
+vice         aviation.go  jq.aliases             platform.go     ogl2renderer.go      log5   LICENSE.txt
+ui.go        go.mod       log.go                 radartools.go   util_test.go         log4   README.md
+windows      go.sum       vice-logs              renderer.go     aviation_test.go     log3
+airport.go   sim.go       main.go                audio.go        stars_test.go        log2
+nav.go       stars.go     __debug_bin1024233782  config.go       log9                 log
+scenario.go  server.go    wm.go                  errors.go       log8                 icons
+util.go      resources    world.go               eventstream.go  log7                 osx
+matt_pharr@vice:~/vice$

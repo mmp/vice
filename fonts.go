@@ -45,8 +45,10 @@ var (
 	FontAwesomeIconHandPointLeft       = faUsedIcons["HandPointLeft"]
 	FontAwesomeIconHome                = faUsedIcons["Home"]
 	FontAwesomeIconInfoCircle          = faUsedIcons["InfoCircle"]
+	FontAwesomeIconKeyboard            = faUsedIcons["Keyboard"]
 	FontAwesomeIconLevelUpAlt          = faUsedIcons["LevelUpAlt"]
 	FontAwesomeIconLock                = faUsedIcons["Lock"]
+	FontAwesomeIconMouse               = faUsedIcons["Mouse"]
 	FontAwesomeIconPauseCircle         = faUsedIcons["PauseCircle"]
 	FontAwesomeIconPlayCircle          = faUsedIcons["PlayCircle"]
 	FontAwesomeIconQuestionCircle      = faUsedIcons["QuestionCircle"]
@@ -81,8 +83,10 @@ var (
 		"HandPointLeft":       FontAwesomeString("HandPointLeft"),
 		"Home":                FontAwesomeString("Home"),
 		"InfoCircle":          FontAwesomeString("InfoCircle"),
+		"Keyboard":            FontAwesomeString("Keyboard"),
 		"LevelUpAlt":          FontAwesomeString("LevelUpAlt"),
 		"Lock":                FontAwesomeString("Lock"),
+		"Mouse":               FontAwesomeString("Mouse"),
 		"PauseCircle":         FontAwesomeString("PauseCircle"),
 		"PlayCircle":          FontAwesomeString("PlayCircle"),
 		"QuestionCircle":      FontAwesomeString("QuestionCircle"),
@@ -263,6 +267,8 @@ func fontsInit(r Renderer, platform Platform) {
 	}
 
 	add("Roboto-Regular.ttf.zst", false, "Roboto Regular")
+	add("RobotoMono-Medium.ttf.zst", false, "Roboto Mono")
+	add("RobotoMono-MediumItalic.ttf.zst", false, "Roboto Mono Italic")
 	add("VT323-Regular.ttf.zst", true, "VT323 Regular")
 	add("FixedDemiBold.otf.zst", true, "Fixed Demi Bold")
 	add("Inconsolata-SemiBold.ttf.zst", true, "Inconsolata SemiBold")
