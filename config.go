@@ -135,6 +135,8 @@ func LoadOrMakeDefaultConfig() {
 
 		globalConfig.Version = CurrentConfigVersion
 		globalConfig.WhatsNewIndex = len(whatsNew)
+
+		globalConfig.InitialWindowPosition = [2]int{100, 100}
 	} else {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)
