@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	discord_client "github.com/hugolgst/rich-go/client"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -563,16 +562,6 @@ func (w *World) GetWindowTitle() string {
 		return "(disconnected)"
 	} else {
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", w.TotalDepartures, w.TotalArrivals)
-		//Update discord RPC
-		discord_client.SetActivity(discord_client.Activity{
-			State: strings.Replace(strings.Replace(deparr, "[", "", -1), "]", "", -1),
-			Details: "Controlling " + w.Callsign,
-			LargeImage: "towerlarge",
-			LargeText: "Vice ATC",
-			Timestamps: &discord_client.Timestamps{
-				Start: &simStartTime,
-			},
-		})
 		if w.SimName == "" {
 			return w.Callsign + ": " + w.SimDescription + deparr
 		} else {

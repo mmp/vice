@@ -17,6 +17,7 @@ import (
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
+	"strconv"
 	"time"
 
 	"github.com/apenwarr/fixconsole"
@@ -286,6 +287,16 @@ func main() {
 				platform.SetWindowTitle("vice: [disconnected]")
 			} else {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+				//Update discord RPC
+				discord_client.SetActivity(discord_client.Activity{
+					State: strconv.Itoa(world.TotalDepartures) + " departures" + " | " + strconv.Itoa(world.TotalArrivals) + " arrivals",
+					Details: "Controlling " + world.Callsign,
+					LargeImage: "towerlarge",
+					LargeText: "Vice ATC",
+					Timestamps: &discord_client.Timestamps{
+						Start: &simStartTime,
+					},
+				})
 			}
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
