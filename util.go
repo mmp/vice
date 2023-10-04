@@ -29,7 +29,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"sync/atomic"
 	"time"
 	"unicode"
@@ -1940,8 +1939,7 @@ var RXTotal, TXTotal int64
 
 type LoggingConn struct {
 	net.Conn
-	sent, received int
-	mu             sync.Mutex
+	sent, received int64
 	start          time.Time
 	lastReport     time.Time
 }
@@ -1955,15 +1953,13 @@ func MakeLoggingConn(c net.Conn) *LoggingConn {
 }
 
 func GetLoggedRPCBandwidth() (int64, int64) {
-	return RXTotal, TXTotal
+	return atomic.LoadInt64(&RXTotal), atomic.LoadInt64(&TXTotal)
 }
 
 func (c *LoggingConn) Read(b []byte) (n int, err error) {
 	n, err = c.Conn.Read(b)
 
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.received += n
+	atomic.AddInt64(&c.received, int64(n))
 	atomic.AddInt64(&RXTotal, int64(n))
 	c.maybeReport()
 
@@ -1973,9 +1969,7 @@ func (c *LoggingConn) Read(b []byte) (n int, err error) {
 func (c *LoggingConn) Write(b []byte) (n int, err error) {
 	n, err = c.Conn.Write(b)
 
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.sent += n
+	atomic.AddInt64(&c.sent, int64(n))
 	atomic.AddInt64(&TXTotal, int64(n))
 	c.maybeReport()
 
@@ -1985,12 +1979,13 @@ func (c *LoggingConn) Write(b []byte) (n int, err error) {
 func (c *LoggingConn) maybeReport() {
 	if time.Since(c.lastReport) > 1*time.Minute {
 		min := time.Since(c.start).Minutes()
+		rec, sent := atomic.LoadInt64(&c.received), atomic.LoadInt64(&c.sent)
 		lg.Info("bandwidth",
 			slog.String("address", c.Conn.RemoteAddr().String()),
-			slog.Int("bytes_received", c.received),
-			slog.Int("bytes_received_per_minute", int(float64(c.received)/min)),
-			slog.Int("bytes_transmitted", c.sent),
-			slog.Int("bytes_transmitted_per_minute", int(float64(c.sent)/min)))
+			slog.Int64("bytes_received", rec),
+			slog.Int("bytes_received_per_minute", int(float64(rec)/min)),
+			slog.Int64("bytes_transmitted", sent),
+			slog.Int("bytes_transmitted_per_minute", int(float64(sent)/min)))
 		c.lastReport = time.Now()
 	}
 }
