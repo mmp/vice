@@ -137,7 +137,7 @@ func callstack() slog.Attr {
 // debug and info messages are discarded (though warnings and errors still
 // go through to slog.)
 func (l *Logger) Debug(msg string, args ...any) {
-	if l != nil {
+	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
 		args = append([]any{callstack()}, args...)
 		l.Logger.Debug(msg, args...)
 	}
@@ -146,20 +146,20 @@ func (l *Logger) Debug(msg string, args ...any) {
 // Debugf is a convenience wrapper that logs just a message and allows
 // printf-style formatting of the provided args.
 func (l *Logger) Debugf(msg string, args ...any) {
-	if l != nil {
+	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
 		l.Logger.Debug(fmt.Sprintf(msg, args...), callstack())
 	}
 }
 
 func (l *Logger) Info(msg string, args ...any) {
-	if l != nil {
+	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
 		args = append([]any{callstack()}, args...)
 		l.Logger.Info(msg, args...)
 	}
 }
 
 func (l *Logger) Infof(msg string, args ...any) {
-	if l != nil {
+	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
 		l.Logger.Info(fmt.Sprintf(msg, args...), callstack())
 	}
 }
