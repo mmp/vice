@@ -1234,8 +1234,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.updateCAAircraft(ctx, aircraft)
-
 	sp.drawSystemLists(aircraft, ctx, paneExtent, transforms, cb)
 
 	// Tools before datablocks
@@ -1296,6 +1294,8 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 		}
 		state.tracksIndex++
 	}
+
+	sp.updateCAAircraft(w)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -4569,9 +4569,14 @@ func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]
 	return
 }
 
-func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*Aircraft) {
+func (sp *STARSPane) updateCAAircraft(w *World) {
+	aircraft := sp.visibleAircraft(w)
+	sort.Slice(aircraft, func(i, j int) bool {
+		return aircraft[i].Callsign < aircraft[j].Callsign
+	})
+
 	inCAVolumes := func(state *STARSAircraftState) bool {
-		for _, vol := range ctx.world.InhibitCAVolumes {
+		for _, vol := range w.InhibitCAVolumes {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
 				return true
 			}
@@ -4618,7 +4623,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*Aircraft) {
 	}
 
 	// Play the sound if any are unacknowledged and it has been 2s since the last sound
-	if now := ctx.world.CurrentTime(); now.Sub(sp.LastCASoundTime) > 2*time.Second {
+	if now := w.CurrentTime(); now.Sub(sp.LastCASoundTime) > 2*time.Second {
 		if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
 			globalConfig.Audio.PlaySound(AudioEventConflictAlert)
 			sp.LastCASoundTime = now
