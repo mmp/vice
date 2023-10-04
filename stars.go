@@ -688,6 +688,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 
 	ps.PTLLength = 1
 
+	ps.Brightness.DCB = 60
 	ps.Brightness.BackgroundContrast = 0
 	ps.Brightness.VideoGroupA = 50
 	ps.Brightness.VideoGroupB = 40
@@ -1118,6 +1119,16 @@ func (sp *STARSPane) Upgrade(from, to int) {
 			remap(&sp.PreferenceSets[i].Brightness.VideoGroupB)
 			remap(&sp.PreferenceSets[i].Brightness.RangeRings)
 			remap(&sp.PreferenceSets[i].Brightness.Compass)
+		}
+	}
+	if from < 12 {
+		if sp.CurrentPreferenceSet.Brightness.DCB == 0 {
+			sp.CurrentPreferenceSet.Brightness.DCB = 60
+		}
+		for i := range sp.PreferenceSets {
+			if sp.PreferenceSets[i].Brightness.DCB == 0 {
+				sp.PreferenceSets[i].Brightness.DCB = 60
+			}
 		}
 	}
 }

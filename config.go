@@ -21,7 +21,8 @@ import (
 // 9: correct STARSColors, so update brightness settings to compensate
 // 10: stop being clever about JSON encoding Waypoint arrays to strings
 // 11: expedite, intercept localizer, fix airspace serialization
-const CurrentConfigVersion = 11
+// 12: set 0 DCB brightness to 50 (WAR not setting a default for it)
+const CurrentConfigVersion = 12
 
 type GlobalConfig struct {
 	Version               int
