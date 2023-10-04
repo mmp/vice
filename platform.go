@@ -98,15 +98,9 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
 	if windowSize[0] == 0 || windowSize[1] == 0 {
-		mon := glfw.GetPrimaryMonitor()
-		vm := mon.GetVideoMode()
-		w, h := vm.Width, vm.Height
-		if runtime.GOOS == "windows" {
-			// Adjust window size to account for DPI scaling
-			sx, sy := mon.GetContentScale()
-			w, h = int(float32(w)/sx), int(float32(h)/sy)
-		}
-		windowSize = [2]int{w - 100, h - 100}
+		vm := glfw.GetPrimaryMonitor().GetVideoMode()
+		windowSize[0] = vm.Width - 100
+		windowSize[1] = vm.Height - 100
 	}
 
 	// Start with an invisible window so that we can position it first
