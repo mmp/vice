@@ -3941,8 +3941,15 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.AlertList.Visible {
 		text := "LA/CA/MCI\n"
-		for _, pair := range sp.CAAircraft {
+		if len(sp.CAAircraft) > ps.AlertList.Lines {
+			text += fmt.Sprintf("MORE: %d/%d\n", ps.AlertList.Lines, len(sp.CAAircraft))
+		}
+		for i, pair := range sp.CAAircraft {
 			text += pair.Callsigns[0] + "*" + pair.Callsigns[1] + " CA\n"
+			if i+1 == ps.AlertList.Lines {
+				// No need to add more...
+				break
+			}
 		}
 		drawList(text, ps.AlertList.Position)
 	}
