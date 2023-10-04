@@ -1231,7 +1231,7 @@ func (s *Sim) updateState() {
 func (s *Sim) IdleTime() time.Duration {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return time.Since(s.lastSimUpdate)
+	return time.Since(s.lastUpdateTime)
 }
 
 func (s *Sim) controllerIsSignedIn(callsign string) bool {
