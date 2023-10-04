@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
@@ -95,6 +96,17 @@ func main() {
 				lg.Errorf("unable to start CPU profile: %v", err)
 			} else {
 				defer pprof.StopCPUProfile()
+
+				// Catch ctrl-c and to write out the profile before exiting
+				sig := make(chan os.Signal, 1)
+				signal.Notify(sig, os.Interrupt)
+
+				go func() {
+					<-sig
+					pprof.StopCPUProfile()
+					f.Close()
+					os.Exit(0)
+				}()
 			}
 		}
 	}
