@@ -62,12 +62,26 @@ func (a *Aircraft) IsAssociated() bool {
 	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
 }
 
-func (ac *Aircraft) DropControllerTrack(callsign string) {
-	if ac.HandoffTrackController == callsign {
-		ac.HandoffTrackController = ""
+func (ac *Aircraft) HandleControllerDisconnect(callsign string, w *World) {
+	if callsign == w.PrimaryController {
+		// Don't change anything; the sim will pause without the primary
+		// controller, so we might as well have all of the tracks and
+		// inbound handoffs waiting for them when they return.
+		return
 	}
+
+	if ac.HandoffTrackController == callsign {
+		// Otherwise redirect handoffs to the primary controller. This is
+		// not a perfect solution; for an arrival, for example, we should
+		// re-resolve it based on the signed-in controllers, as is done in
+		// Sim updateState() for arrivals when they are first handed
+		// off. We don't have all of that information here, though...
+		ac.HandoffTrackController = w.PrimaryController
+	}
+
 	if ac.ControllingController == callsign {
 		if ac.TrackingController == callsign {
+			// Drop track of aircraft that we control
 			ac.TrackingController = ""
 			ac.ControllingController = ""
 		} else {

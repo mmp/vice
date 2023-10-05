@@ -877,7 +877,7 @@ func (s *Sim) SignOff(token string) error {
 	} else {
 		// Drop track on controlled aircraft
 		for _, ac := range s.World.Aircraft {
-			ac.DropControllerTrack(ctrl.Callsign)
+			ac.HandleControllerDisconnect(ctrl.Callsign, s.World)
 		}
 
 		if ctrl.Callsign == s.LaunchConfig.Controller {
@@ -925,7 +925,7 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 		if keepTracks {
 			ac.TransferTracks(oldCallsign, ctrl.Callsign)
 		} else {
-			ac.DropControllerTrack(ctrl.Callsign)
+			ac.HandleControllerDisconnect(ctrl.Callsign, s.World)
 		}
 	}
 
