@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 	"time"
 
@@ -691,7 +692,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		for _, ch := range format {
 			switch ch {
 			case '#':
-				id += fmt.Sprintf("%d", rand.Intn(10))
+				id += strconv.Itoa(rand.Intn(10))
 			case '@':
 				id += string(rune('A' + rand.Intn(26)))
 			}
@@ -1507,7 +1508,7 @@ func (w *World) DrawSettingsWindow() {
 		w.SetSimRate(w.SimRate)
 	}
 
-	if imgui.BeginComboV("UI Font Size", fmt.Sprintf("%d", globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("UI Font Size", strconv.Itoa(globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := make(map[int]interface{})
 		for fontid := range fonts {
 			if fontid.Name == "Roboto Regular" {
@@ -1515,7 +1516,7 @@ func (w *World) DrawSettingsWindow() {
 			}
 		}
 		for _, size := range SortedMapKeys(sizes) {
-			if imgui.SelectableV(fmt.Sprintf("%d", size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
+			if imgui.SelectableV(strconv.Itoa(size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
 				globalConfig.UIFontSize = size
 				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 			}

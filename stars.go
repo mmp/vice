@@ -3186,7 +3186,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
 		STARSCallbackSpinner(ctx, "RANGE\n", &ps.Range,
-			func(v float32) string { return fmt.Sprintf("%d", int(v)) },
+			func(v float32) string { return strconv.Itoa(int(v)) },
 			func(v, delta float32) float32 {
 				if delta > 0 {
 					v++
@@ -3208,7 +3208,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			ps.CurrentCenter = ps.Center
 		}
 		STARSCallbackSpinner(ctx, "RR\n", &ps.RangeRingRadius,
-			func(v int) string { return fmt.Sprintf("%d", v) },
+			func(v int) string { return strconv.Itoa(v) },
 			func(v int, delta float32) int {
 				di := 0
 				if delta > 0 {
@@ -3257,7 +3257,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			}
 		}
 		for i := range ps.WeatherIntensity {
-			STARSDisabledButton("WX"+fmt.Sprintf("%d", i), STARSButtonHalfHorizontal, buttonScale)
+			STARSDisabledButton("WX"+strconv.Itoa(i), STARSButtonHalfHorizontal, buttonScale)
 
 		}
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
@@ -3275,7 +3275,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				}
 			}, STARSButtonHalfVertical, buttonScale)
 		STARSCallbackSpinner(ctx, "LDR\n ", &ps.LeaderLineLength,
-			func(v int) string { return fmt.Sprintf("%d", v) },
+			func(v int) string { return strconv.Itoa(v) },
 			func(v int, delta float32) int {
 				if delta == 0 {
 					return v
@@ -4948,7 +4948,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 		// an integer value.
 		format := func(v float32) string {
 			if v == float32(int(v)) {
-				return fmt.Sprintf("%d", int(v))
+				return strconv.Itoa(int(v))
 			} else {
 				return fmt.Sprintf("%.1f", v)
 			}
@@ -5540,7 +5540,7 @@ var (
 
 func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int, buttonScale float32) {
 	STARSCallbackSpinner[int](ctx, text, value,
-		func(v int) string { return fmt.Sprintf("%d", v) },
+		func(v int) string { return strconv.Itoa(v) },
 		func(v int, delta float32) int {
 			di := 0
 			if delta > 0 {

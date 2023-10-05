@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"runtime/debug"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -1552,7 +1553,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 				imgui.Text(dep.Airport + " " + dep.Runway + " " + dep.Category)
 
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%d", dep.TotalLaunches))
+				imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
 				imgui.TableNextColumn()
 				imgui.Text(dep.Aircraft.Callsign)
@@ -1613,7 +1614,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 				imgui.Text(arr.Group)
 
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%d", arr.TotalLaunches))
+				imgui.Text(strconv.Itoa(arr.TotalLaunches))
 
 				imgui.TableNextColumn()
 				imgui.Text(arr.Airport)

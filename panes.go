@@ -6,7 +6,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
@@ -553,9 +553,9 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Second column; 3 entries
 		x += width0
 		td.AddText(ac.AssignedSquawk.String(), [2]float32{x, y}, style)
-		td.AddText(fmt.Sprintf("%d", ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
+		td.AddText(strconv.Itoa(ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
 		if fp != nil {
-			td.AddText(fmt.Sprintf("%d", fp.Altitude), [2]float32{x, y - fh*3}, style)
+			td.AddText(strconv.Itoa(fp.Altitude), [2]float32{x, y - fh*3}, style)
 		}
 		ld.AddLine([2]float32{width0, y - 4./3.*fh}, [2]float32{width0 + width1, y - 4./3.*fh})
 		ld.AddLine([2]float32{width0, y - 8./3.*fh}, [2]float32{width0 + width1, y - 8./3.*fh})

@@ -11,6 +11,7 @@ import (
 	"math"
 	"runtime"
 	"sort"
+	"strconv"
 	"unicode/utf8"
 	"unsafe"
 
@@ -338,10 +339,10 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 }
 
 func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {
-	if imgui.BeginComboV(fmt.Sprintf("Font Size##%s", id.Name), fmt.Sprintf("%d", id.Size), imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV(fmt.Sprintf("Font Size##%s", id.Name), strconv.Itoa(id.Size), imgui.ComboFlagsHeightLarge) {
 		for _, font := range GetAllFonts() {
 			if font.Name == id.Name {
-				if imgui.SelectableV(fmt.Sprintf("%d", font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {
+				if imgui.SelectableV(strconv.Itoa(font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {
 					id.Size = font.Size
 					newFont = GetFont(font)
 					changed = true

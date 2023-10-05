@@ -187,16 +187,16 @@ type RadarTrack struct {
 func FormatAltitude(falt float32) string {
 	alt := int(falt)
 	if alt >= 18000 {
-		return "FL" + fmt.Sprintf("%d", alt/100)
+		return "FL" + strconv.Itoa(alt/100)
 	} else if alt < 1000 {
-		return fmt.Sprintf("%d", alt)
+		return strconv.Itoa(alt)
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100 * 100
 		if th == 0 {
-			return fmt.Sprintf("%d", hu)
+			return strconv.Itoa(hu)
 		} else if hu == 0 {
-			return fmt.Sprintf("%d,000", th)
+			return strconv.Itoa(th) + ",000"
 		} else {
 			return fmt.Sprintf("%d,%03d", th, hu)
 		}
