@@ -851,6 +851,12 @@ func (s *Sim) signOn(callsign string) error {
 		}
 		s.World.Controllers[callsign] = ctrl
 
+		if callsign == s.World.PrimaryController {
+			// The primary controller signed in so the sim will resume.
+			// Reset lastUpdateTime so that the next time Update() is
+			// called for the sim, we don't try to run a ton of steps.
+			s.lastUpdateTime = time.Now()
+		}
 	}
 
 	s.eventStream.Post(Event{
@@ -1109,7 +1115,7 @@ func (s *Sim) Update() {
 	ns := int(elapsed.Truncate(time.Second).Seconds())
 	if ns > 10 {
 		s.lg.Warn("unexpected hitch in update rate", slog.Duration("elapsed", elapsed),
-			slog.Duration("slop", s.updateTimeSlop))
+			slog.Int("steps", ns), slog.Duration("slop", s.updateTimeSlop))
 	}
 	for i := 0; i < ns; i++ {
 		s.SimTime = s.SimTime.Add(time.Second)
