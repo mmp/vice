@@ -1052,6 +1052,14 @@ func (s *Sim) Update() {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	startUpdate := time.Now()
+	defer func() {
+		if d := time.Since(startUpdate); d > 200*time.Millisecond {
+			lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
+				slog.Any("sim", s))
+		}
+	}()
+
 	for _, ac := range s.World.Aircraft {
 		ac.Check(s.lg)
 	}
@@ -1099,6 +1107,10 @@ func (s *Sim) Update() {
 	elapsed = time.Duration(s.SimRate*float32(elapsed)) + s.updateTimeSlop
 	// Run the sim for this many seconds
 	ns := int(elapsed.Truncate(time.Second).Seconds())
+	if ns > 10 {
+		s.lg.Warn("unexpected hitch in update rate", slog.Duration("elapsed", elapsed),
+			slog.Duration("slop", s.updateTimeSlop))
+	}
 	for i := 0; i < ns; i++ {
 		s.SimTime = s.SimTime.Add(time.Second)
 		s.updateState()
