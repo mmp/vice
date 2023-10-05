@@ -12,7 +12,6 @@ import (
 	"runtime"
 	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
@@ -569,7 +568,7 @@ func (c *NewSimConfiguration) Start() error {
 type Sim struct {
 	Name string
 
-	mu sync.Mutex
+	mu LoggingMutex
 
 	ScenarioGroup string
 	Scenario      string
@@ -838,8 +837,8 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 }
 
 func (s *Sim) signOn(callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if callsign != "Observer" {
 		if s.controllerIsSignedIn(callsign) {
@@ -864,8 +863,8 @@ func (s *Sim) signOn(callsign string) error {
 }
 
 func (s *Sim) SignOff(token string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
@@ -928,8 +927,8 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 }
 
 func (s *Sim) TogglePause(token string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if _, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
@@ -983,8 +982,8 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 }
 
 func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
@@ -1050,8 +1049,8 @@ func (s *Sim) SetSTARSInput(input string) {
 // Simulation
 
 func (s *Sim) Update() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	for _, ac := range s.World.Aircraft {
 		ac.Check(s.lg)
@@ -1076,9 +1075,9 @@ func (s *Sim) Update() {
 
 				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
 					s.lg.Warnf("%s: signing off idle controller", ctrl.Callsign)
-					s.mu.Unlock()
+					s.mu.Unlock(s.lg)
 					s.SignOff(token)
-					s.mu.Lock()
+					s.mu.Lock(s.lg)
 				}
 			}
 		}
@@ -1229,8 +1228,8 @@ func (s *Sim) updateState() {
 }
 
 func (s *Sim) IdleTime() time.Duration {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 	return time.Since(s.lastUpdateTime)
 }
 
@@ -1389,8 +1388,8 @@ func (s *Sim) spawnAircraft() {
 // Commands from the user
 
 func (s *Sim) SetSimRate(token string, rate float32) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if _, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
@@ -1402,8 +1401,8 @@ func (s *Sim) SetSimRate(token string, rate float32) error {
 }
 
 func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
@@ -1443,8 +1442,8 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 }
 
 func (s *Sim) TakeOrReturnLaunchControl(token string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
@@ -1470,8 +1469,8 @@ func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 }
 
 func (s *Sim) LaunchAircraft(ac Aircraft) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	s.launchAircraftNoLock(ac)
 }
@@ -1557,8 +1556,8 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 }
 
 func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1568,8 +1567,8 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 }
 
 func (s *Sim) InitiateTrack(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(c *Controller, ac *Aircraft) error {
@@ -1594,8 +1593,8 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 }
 
 func (s *Sim) DropTrack(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1611,8 +1610,8 @@ func (s *Sim) DropTrack(token, callsign string) error {
 }
 
 func (s *Sim) HandoffTrack(token, callsign, controller string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -1643,8 +1642,8 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 }
 
 func (s *Sim) HandoffControl(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -1693,8 +1692,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 }
 
 func (s *Sim) AcceptHandoff(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -1727,8 +1726,8 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 }
 
 func (s *Sim) RejectHandoff(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -1751,8 +1750,8 @@ func (s *Sim) RejectHandoff(token, callsign string) error {
 }
 
 func (s *Sim) CancelHandoff(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1786,8 +1785,8 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 }
 
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1796,8 +1795,8 @@ func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bo
 }
 
 func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1817,8 +1816,8 @@ type HeadingArgs struct {
 }
 
 func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(hdg.ControllerToken, hdg.Callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1835,8 +1834,8 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 }
 
 func (s *Sim) AssignSpeed(token, callsign string, speed int, afterAltitude bool) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1845,8 +1844,8 @@ func (s *Sim) AssignSpeed(token, callsign string, speed int, afterAltitude bool)
 }
 
 func (s *Sim) MaintainSlowestPractical(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1855,8 +1854,8 @@ func (s *Sim) MaintainSlowestPractical(token, callsign string) error {
 }
 
 func (s *Sim) MaintainMaximumForward(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1865,8 +1864,8 @@ func (s *Sim) MaintainMaximumForward(token, callsign string) error {
 }
 
 func (s *Sim) ExpediteDescent(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1875,8 +1874,8 @@ func (s *Sim) ExpediteDescent(token, callsign string) error {
 }
 
 func (s *Sim) ExpediteClimb(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1885,8 +1884,8 @@ func (s *Sim) ExpediteClimb(token, callsign string) error {
 }
 
 func (s *Sim) DirectFix(token, callsign, fix string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1895,8 +1894,8 @@ func (s *Sim) DirectFix(token, callsign, fix string) error {
 }
 
 func (s *Sim) DepartFixDirect(token, callsign, fixa string, fixb string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1905,8 +1904,8 @@ func (s *Sim) DepartFixDirect(token, callsign, fixa string, fixb string) error {
 }
 
 func (s *Sim) DepartFixHeading(token, callsign, fix string, heading int) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1915,8 +1914,8 @@ func (s *Sim) DepartFixHeading(token, callsign, fix string, heading int) error {
 }
 
 func (s *Sim) CrossFixAt(token, callsign, fix string, ar *AltitudeRestriction, speed int) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1925,8 +1924,8 @@ func (s *Sim) CrossFixAt(token, callsign, fix string, ar *AltitudeRestriction, s
 }
 
 func (s *Sim) AtFixCleared(token, callsign, fix, approach string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1935,8 +1934,8 @@ func (s *Sim) AtFixCleared(token, callsign, fix, approach string) error {
 }
 
 func (s *Sim) ExpectApproach(token, callsign, approach string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1945,8 +1944,8 @@ func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 }
 
 func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1959,8 +1958,8 @@ func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool)
 }
 
 func (s *Sim) InterceptLocalizer(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1969,8 +1968,8 @@ func (s *Sim) InterceptLocalizer(token, callsign string) error {
 }
 
 func (s *Sim) CancelApproachClearance(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1979,8 +1978,8 @@ func (s *Sim) CancelApproachClearance(token, callsign string) error {
 }
 
 func (s *Sim) ClimbViaSID(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1989,8 +1988,8 @@ func (s *Sim) ClimbViaSID(token, callsign string) error {
 }
 
 func (s *Sim) DescendViaSTAR(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -1999,8 +1998,8 @@ func (s *Sim) DescendViaSTAR(token, callsign string) error {
 }
 
 func (s *Sim) GoAround(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
@@ -2009,8 +2008,8 @@ func (s *Sim) GoAround(token, callsign string) error {
 }
 
 func (s *Sim) DeleteAircraft(token, callsign string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {

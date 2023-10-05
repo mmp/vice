@@ -19,7 +19,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -205,7 +204,7 @@ type SimManager struct {
 	configs              map[string]*SimConfiguration
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
-	mu                   sync.Mutex
+	mu                   LoggingMutex
 	startTime            time.Time
 	lg                   *Logger
 }
@@ -235,8 +234,8 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		sim.prespawn()
 		return sm.Add(sim, result)
 	} else {
-		sm.mu.Lock()
-		defer sm.mu.Unlock()
+		sm.mu.Lock(sm.lg)
+		defer sm.mu.Unlock(sm.lg)
 
 		sim, ok := sm.activeSims[config.SelectedRemoteSim]
 		if !ok {
@@ -264,27 +263,27 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sim.Activate(sm.lg)
 
-	sm.mu.Lock()
+	sm.mu.Lock(lg)
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
 	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
-		sm.mu.Unlock()
+		sm.mu.Unlock(sm.lg)
 		return ErrDuplicateSimName
 	}
 
 	lg.Infof("%s: adding sim", sim.Name)
 	sm.activeSims[sim.Name] = sim
 
-	sm.mu.Unlock()
+	sm.mu.Unlock(sm.lg)
 
 	world, token, err := sim.SignOn(sim.World.PrimaryController)
 	if err != nil {
 		return err
 	}
 
-	sm.mu.Lock()
+	sm.mu.Lock(lg)
 	sm.controllerTokenToSim[token] = sim
-	sm.mu.Unlock()
+	sm.mu.Unlock(sm.lg)
 
 	go func() {
 		// Terminate idle Sims after 4 hours, but not unnamed Sims, since
@@ -295,7 +294,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 		}
 
 		lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
-		sm.mu.Lock()
+		sm.mu.Lock(lg)
 		delete(sm.activeSims, sim.Name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
 		for tok, s := range sm.controllerTokenToSim {
@@ -303,7 +302,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 				delete(sm.controllerTokenToSim, tok)
 			}
 		}
-		sm.mu.Unlock()
+		sm.mu.Unlock(sm.lg)
 	}()
 
 	*result = NewSimResult{
@@ -329,8 +328,8 @@ func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
 		return err
 	}
 
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
 
@@ -338,12 +337,12 @@ func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
 }
 
 func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	running := make(map[string]*RemoteSim)
 	for name, s := range sm.activeSims {
-		s.mu.Lock()
+		s.mu.Lock(s.lg)
 		rs := &RemoteSim{
 			GroupName:          s.ScenarioGroup,
 			ScenarioName:       s.Scenario,
@@ -364,7 +363,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 				rs.CoveredPositions[ctrl.Callsign] = struct{}{}
 			}
 		}
-		s.mu.Unlock()
+		s.mu.Unlock(s.lg)
 
 		running[name] = rs
 	}
@@ -380,8 +379,8 @@ func (sm *SimManager) SimShouldExit(sim *Sim) bool {
 		return false
 	}
 
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	nIdle := 0
 	for _, sim := range sm.activeSims {
@@ -393,8 +392,8 @@ func (sm *SimManager) SimShouldExit(sim *Sim) bool {
 }
 
 func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	if sm.controllerTokenToSim == nil {
 		return ErrNoSimForControllerToken
@@ -408,8 +407,8 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 }
 
 func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	sim, ok := sm.controllerTokenToSim[token]
 	return sim, ok
@@ -435,8 +434,8 @@ func (ss SimStatus) LogValue() slog.Value {
 }
 
 func (sm *SimManager) GetSimStatus() []SimStatus {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	var ss []SimStatus
 	for _, name := range SortedMapKeys(sm.activeSims) {
@@ -478,20 +477,20 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 		return ErrInvalidPassword
 	}
 
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.mu.Lock(lg)
+	defer sm.mu.Unlock(sm.lg)
 
 	lg.Infof("Broadcasting message: %s", m.Message)
 
 	for _, sim := range sm.activeSims {
-		sim.mu.Lock()
+		sim.mu.Lock(sim.lg)
 
 		sim.eventStream.Post(Event{
 			Type:    ServerBroadcastMessageEvent,
 			Message: m.Message,
 		})
 
-		sim.mu.Unlock()
+		sim.mu.Unlock(sim.lg)
 	}
 	return nil
 }
