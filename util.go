@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/exp/constraints"
 	"image"
 	"image/color"
 	"image/draw"
@@ -30,6 +29,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 	"unicode"
@@ -37,6 +37,7 @@ import (
 	"github.com/MichaelTJones/pcg"
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slog"
 )
 
@@ -2163,4 +2164,54 @@ func Callstack() []StackFrame {
 		}
 	}
 	return fr
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LoggingMutex
+
+var heldMutexesMutex sync.Mutex
+var heldMutexes map[*LoggingMutex]interface{} = make(map[*LoggingMutex]interface{})
+
+type LoggingMutex struct {
+	sync.Mutex
+	acq      time.Time
+	ackStack []StackFrame
+}
+
+func (l *LoggingMutex) Lock(lg *Logger) {
+	tryTime := time.Now()
+	lg.Debug("attempting to acquire mutex", slog.Any("mutex", l))
+
+	l.Mutex.Lock()
+
+	heldMutexesMutex.Lock()
+	heldMutexes[l] = nil
+	heldMutexesMutex.Unlock()
+
+	l.acq = time.Now()
+	l.ackStack = Callstack()
+	w := l.acq.Sub(tryTime)
+	lg.Debug("acquired mutex", slog.Any("mutex", l), slog.Duration("wait", w))
+	if w > time.Second {
+		lg.Warn("long wait to acquire mutex", slog.Any("mutex", l), slog.Duration("wait", w))
+	}
+}
+
+func (l *LoggingMutex) Unlock(lg *Logger) {
+	heldMutexesMutex.Lock()
+	if _, ok := heldMutexes[l]; !ok {
+		lg.Error("mutex not held", slog.Any("held_mutexes", heldMutexes))
+	}
+	delete(heldMutexes, l)
+
+	if d := time.Since(l.acq); d > time.Second {
+		lg.Warn("mutex held for over 1 second", slog.Any("mutex", l), slog.Duration("held", d),
+			slog.Any("held_mutexes", heldMutexes))
+	}
+
+	heldMutexesMutex.Unlock()
+
+	l.Mutex.Unlock()
+
+	lg.Debug("released mutex", slog.Any("mutex", l))
 }
