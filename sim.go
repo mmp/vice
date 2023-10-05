@@ -1723,8 +1723,6 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				Message:    ac.ContactMessage(s.ReportingPoints),
 				Type:       RadioTransmissionContact,
 			}}
-
-			return nil
 		})
 }
 

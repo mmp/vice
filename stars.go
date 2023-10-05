@@ -1255,7 +1255,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Do this at the end of drawing so that we hold on to the tracks we
 	// have for rendering the current frame.
-	if sp.discardTracks == true {
+	if sp.discardTracks {
 		for _, state := range sp.Aircraft {
 			state.tracksIndex = 0
 		}

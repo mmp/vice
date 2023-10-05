@@ -600,7 +600,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg, simConfigurations, *server == true)
+	initializeSimConfigurations(sg, simConfigurations, *server)
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,

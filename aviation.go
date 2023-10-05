@@ -1293,19 +1293,6 @@ func parseNavaids() map[string]Navaid {
 	return navaids
 }
 
-func point2LLFromComponents(lat []string, long []string) Point2LL {
-	latitude := atof(lat[0]) + atof(lat[1])/60. + atof(lat[2])/3600.
-	if lat[3] == "S" {
-		latitude = -latitude
-	}
-	longitude := atof(long[0]) + atof(long[1])/60. + atof(long[2])/3600.
-	if long[3] == "W" {
-		longitude = -longitude
-	}
-
-	return Point2LL{float32(longitude), float32(latitude)}
-}
-
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 

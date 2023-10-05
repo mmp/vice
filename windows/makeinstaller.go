@@ -90,7 +90,10 @@ func main() {
 		panic(err)
 	}
 
-	tmpl.Execute(os.Stdout, r)
+	if err := tmpl.Execute(os.Stdout, r); err != nil {
+		panic(err)
+	}
+
 }
 
 const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
