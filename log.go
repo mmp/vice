@@ -28,7 +28,7 @@ func NewLogger(server bool, level string) *Logger {
 	if server {
 		w = &lumberjack.Logger{
 			Filename: "vice-logs/slog",
-			MaxSize:  1024, // MB
+			MaxSize:  64, // MB
 			MaxAge:   14,
 			Compress: true,
 		}
