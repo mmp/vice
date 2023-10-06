@@ -1133,7 +1133,8 @@ func (e *ErrorModalClient) Draw() int {
 		imgui.Image(imgui.TextureID(ui.sadTowerTextureID), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
-		imgui.Text("\n\n" + e.message)
+		text, _ := wrapText(e.message, 80, 0, true)
+		imgui.Text("\n\n" + text)
 
 		imgui.EndTable()
 	}
