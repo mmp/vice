@@ -122,27 +122,30 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 	return true
 }
 
+func SetDefaultConfig() {
+	globalConfig = &GlobalConfig{}
+	globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
+	globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
+	globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
+	globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
+
+	globalConfig.Version = CurrentConfigVersion
+	globalConfig.WhatsNewIndex = len(whatsNew)
+
+	globalConfig.InitialWindowPosition = [2]int{100, 100}
+}
+
 func LoadOrMakeDefaultConfig() {
 	fn := configFilePath()
 	lg.Infof("Loading config from: %s", fn)
 
-	globalConfig = &GlobalConfig{}
-	config, err := os.ReadFile(fn)
-	if err != nil {
-		globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
-		globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
-		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
-		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
-
-		globalConfig.Version = CurrentConfigVersion
-		globalConfig.WhatsNewIndex = len(whatsNew)
-
-		globalConfig.InitialWindowPosition = [2]int{100, 100}
-	} else {
+	SetDefaultConfig()
+	if config, err := os.ReadFile(fn); err == nil {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)
 
 		if err := d.Decode(globalConfig); err != nil {
+			SetDefaultConfig()
 			ShowErrorDialog("Configuration file is corrupt: %v", err)
 		}
 
