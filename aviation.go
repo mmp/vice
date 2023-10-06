@@ -504,7 +504,11 @@ func (a *AltitudeRestriction) UnmarshalJSON(b []byte) error {
 }
 
 func (a AltitudeRestriction) TargetAltitude(alt float32) float32 {
-	return clamp(alt, a.Range[0], a.Range[1])
+	if a.Range[1] != 0 {
+		return clamp(alt, a.Range[0], a.Range[1])
+	} else {
+		return max(alt, a.Range[0])
+	}
 }
 
 // ClampRange limits a range of altitudes to satisfy the altitude
