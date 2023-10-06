@@ -80,7 +80,7 @@ type STARSPane struct {
 
 	AutoTrackDepartures map[string]interface{}
 
-	PointedOutAircraft map[string]struct{}
+	PointedOutAircraft map[string]string // callsign -> originating controller id
 	queryUnassociated  *TransientMap[string, interface{}]
 
 	RangeBearingLines []STARSRangeBearingLine
@@ -908,7 +908,7 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 		sp.HavePlayedSPCAlertSound = make(map[string]interface{})
 	}
 	if sp.PointedOutAircraft == nil {
-		sp.PointedOutAircraft = make(map[string]struct{})
+		sp.PointedOutAircraft = make(map[string]string)
 	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = NewTransientMap[string, interface{}]()
@@ -1075,7 +1075,11 @@ func (sp *STARSPane) processEvents(w *World) {
 		switch event.Type {
 		case PointOutEvent:
 			if event.ToController == w.Callsign {
-				sp.PointedOutAircraft[event.Callsign] = struct{}{}
+				if ctrl := w.GetController(event.FromController); ctrl != nil {
+					sp.PointedOutAircraft[event.Callsign] = ctrl.SectorId
+				} else {
+					sp.PointedOutAircraft[event.Callsign] = ""
+				}
 			}
 
 		case OfferedHandoffEvent:
@@ -4721,8 +4725,8 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		if ac.Mode == Ident {
 			cs += " ID"
 		}
-		if _, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
-			cs += " PO"
+		if id, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
+			cs += " PO" + id
 		}
 		mainblock[0] = append(mainblock[0], cs)
 		mainblock[1] = append(mainblock[1], cs)
