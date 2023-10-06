@@ -390,7 +390,6 @@ func main() {
 				if world != nil {
 					world.Disconnect()
 				}
-				discord_client.Logout()
 				break
 			}
 		}
