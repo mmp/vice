@@ -250,7 +250,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		dir := Select(*nav.Altitude.AfterSpeed > nav.FlightState.Altitude, "climb", "descend")
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s",
 			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
-	} else if c := nav.getWaypointAltitudeConstraint(); c != nil {
+	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		lines = append(lines, dir+" to "+FormatAltitude(c.Altitude)+" to cross "+
 			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
@@ -814,8 +814,6 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			return alt, MaximumRate
 		}
 	}
-	flyingPT := (nav.Heading.RacetrackPT != nil && nav.Heading.RacetrackPT.State != PTStateApproaching) ||
-		(nav.Heading.Standard45PT != nil && nav.Heading.Standard45PT.State != PT45StateApproaching)
 
 	if nav.Altitude.Assigned != nil {
 		alt = *nav.Altitude.Assigned
@@ -838,7 +836,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			rate = MaximumRate
 			return
 		}
-	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !flyingPT {
+	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		lg.Debugf("alt: altitude %.0f for final waypoint %s in %.0f seconds", c.Altitude, c.FinalFix, c.ETA)
 		if c.ETA < 5 {
 			return c.Altitude, MaximumRate
@@ -854,6 +852,11 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 	}
 
 	return
+}
+
+func (nav *Nav) flyingPT() bool {
+	return (nav.Heading.RacetrackPT != nil && nav.Heading.RacetrackPT.State != PTStateApproaching) ||
+		(nav.Heading.Standard45PT != nil && nav.Heading.Standard45PT.State != PT45StateApproaching)
 }
 
 type WaypointCrossingConstraint struct {
