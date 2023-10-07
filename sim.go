@@ -261,7 +261,7 @@ func MakeNewSimConfiguration() NewSimConfiguration {
 }
 
 func (c *NewSimConfiguration) updateRemoteSims() {
-	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer != nil {
+	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer.client != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &PendingCall{
@@ -328,7 +328,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	}
 
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-	if remoteServer != nil {
+	if remoteServer.client != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()

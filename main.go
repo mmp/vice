@@ -139,10 +139,7 @@ func main() {
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan, err := TryConnectRemoteServer(*serverAddress)
-		if err != nil {
-			lg.Warnf("error connecting to remote server: %v", err)
-		}
+		remoteSimServerChan := TryConnectRemoteServer(*serverAddress)
 
 		var stats Stats
 		var renderer Renderer
@@ -280,16 +277,21 @@ func main() {
 				}
 
 			case remoteServer = <-remoteSimServerChan:
-				if remoteServer != nil && remoteServer.err != nil {
-					uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
-						message: "This version of vice is incompatible with the vice multi-controller server.\n" +
-							"If you're using an older version of vice, please upgrade to the latest\n" +
-							"version for multi-controller support. (If you're using a beta build, then\n" +
-							"thanks for your help testing vice; when the beta is released, the server\n" +
-							"will be updated as well.)",
-					}), true)
-					remoteServer = nil
-					stopConnectingRemoteServer = true
+				if remoteServer.err != nil {
+					lg.Warn("Unable to connect to remote server", slog.Any("error", remoteServer.err))
+
+					if remoteServer.err == ErrRPCVersionMismatch {
+						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
+							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
+								"If you're using an older version of vice, please upgrade to the latest\n" +
+								"version for multi-controller support. (If you're using a beta build, then\n" +
+								"thanks for your help testing vice; when the beta is released, the server\n" +
+								"will be updated as well.)",
+						}), true)
+
+						remoteServer = nil
+						stopConnectingRemoteServer = true
+					}
 				}
 
 			default:
@@ -313,10 +315,7 @@ func main() {
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
-				if err != nil {
-					lg.Warnf("TryConnectRemoteServer: %v", err)
-				}
+				remoteSimServerChan = TryConnectRemoteServer(*serverAddress)
 			}
 
 			// Inform imgui about input events from the user.
