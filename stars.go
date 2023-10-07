@@ -1168,7 +1168,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		// Clean up for the updated paneExtent that accounts for the space the DCB took.
 		transforms = GetScopeTransformations(paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
-			sp.CurrentPreferenceSet.CurrentCenter, float32(sp.CurrentPreferenceSet.Range), 0)
+			sp.CurrentPreferenceSet.CurrentCenter, float32(ps.Range), 0)
 		if ctx.mouse != nil {
 			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
 			// the DCB is at the top, in which case it's unchanged.
@@ -5155,9 +5155,40 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		return
 	}
 
+	mouse := ctx.mouse
+	ps := &sp.CurrentPreferenceSet
 	if activeSpinner == nil {
-		UpdateScopePosition(ctx.mouse, MouseButtonSecondary, transforms,
-			&sp.CurrentPreferenceSet.CurrentCenter, &sp.CurrentPreferenceSet.Range)
+		// Handle dragging the scope center
+		if mouse.Dragging[MouseButtonSecondary] {
+			delta := mouse.DragDelta
+			if delta[0] != 0 || delta[1] != 0 {
+				deltaLL := transforms.LatLongFromWindowV(delta)
+				ps.CurrentCenter = sub2f(ps.CurrentCenter, deltaLL)
+			}
+		}
+
+		// Consume mouse wheel
+		if mouse.Wheel[1] != 0 {
+			r := ps.Range
+			if _, ok := ctx.keyboard.Pressed[KeyControl]; ok {
+				ps.Range += 3 * mouse.Wheel[1]
+			} else {
+				ps.Range += mouse.Wheel[1]
+			}
+			ps.Range = clamp(ps.Range, 6, 512) // 4-33
+
+			// We want to zoom in centered at the mouse position; this affects
+			// the scope center after the zoom, so we'll find the
+			// transformation that gives the new center position.
+			mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
+			scale := ps.Range / r
+			centerTransform := Identity3x3().
+				Translate(mouseLL[0], mouseLL[1]).
+				Scale(scale, scale).
+				Translate(-mouseLL[0], -mouseLL[1])
+
+			ps.CurrentCenter = centerTransform.TransformPoint(ps.CurrentCenter)
+		}
 	}
 
 	if ctx.mouse.Clicked[MouseButtonPrimary] {

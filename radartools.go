@@ -455,42 +455,6 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 ///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
-func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransformations,
-	center *Point2LL, rangeNM *float32) (moved bool) {
-	if mouse == nil {
-		return
-	}
-
-	// Handle dragging the scope center
-	if mouse.Dragging[button] {
-		delta := mouse.DragDelta
-		if delta[0] != 0 || delta[1] != 0 {
-			deltaLL := transforms.LatLongFromWindowV(delta)
-			*center = sub2f(*center, deltaLL)
-			moved = true
-		}
-	}
-
-	// Consume mouse wheel
-	if mouse.Wheel[1] != 0 {
-		scale := pow(1.05, mouse.Wheel[1])
-
-		// We want to zoom in centered at the mouse position; this affects
-		// the scope center after the zoom, so we'll find the
-		// transformation that gives the new center position.
-		mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
-		centerTransform := Identity3x3().
-			Translate(mouseLL[0], mouseLL[1]).
-			Scale(scale, scale).
-			Translate(-mouseLL[0], -mouseLL[1])
-
-		*center = centerTransform.TransformPoint(*center)
-		*rangeNM *= scale
-		moved = true
-	}
-	return
-}
-
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
 func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
