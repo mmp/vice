@@ -116,6 +116,12 @@ var (
 		"Fixed a bug where arrivals would sometimes climb after being cleared for the approach",
 		"Fixed a bug in the Windows installer that caused new scenarios (AAC, SAV, SDF) to not be installed locally",
 		"Added the ability to draw active departure, arrival, and approach routes on the radar scope",
+		"Added the D01 (Denver TRACON) scenario to single-user vice (the installer was missing it)",
+		"Added support for updating your Discord activity based on your vice activities (thanks, Samuel Valencia!)",
+		"Fixed bug with aircraft descending too early when flying procedure turns",
+		"Fixed bug with some departures trying to re-fly their initial departure route",
+		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
+		"Fixed bug with the default DCB brightness being set to 0",
 	}
 )
 
