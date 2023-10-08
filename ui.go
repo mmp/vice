@@ -889,8 +889,8 @@ func showAboutDialog() {
 	// vertically maximized. So we hand-wrap the lines for the
 	// font we're using...
 	credits :=
-		`Additional credits: Thanks to Dennis Graiani for
-improvements to vice's STARS emulation
+		`Additional credits: Thanks to Dennis Graiani and
+Samuel Valencia for contributing features to vice
 and to Adam Bolek, Mike K, Arya T, and Samuel
 Valencia for contributing additional scenarios.
 Video maps are thanks to the ZAU, ZBW, ZDV, ZJX,
