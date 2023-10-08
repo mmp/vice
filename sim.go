@@ -261,11 +261,11 @@ func MakeNewSimConfiguration() NewSimConfiguration {
 }
 
 func (c *NewSimConfiguration) updateRemoteSims() {
-	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer.client != nil {
+	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &PendingCall{
-			Call:      remoteServer.client.Go("SimManager.GetRunningSims", 0, &rs, nil),
+			Call:      remoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
 				remoteServer.runningSims = rs
@@ -328,7 +328,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	}
 
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-	if remoteServer.client != nil {
+	if remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -542,7 +542,7 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 
 func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
-	if err := c.selectedServer.client.CallWithTimeout("SimManager.New", c, &result); err != nil {
+	if err := c.selectedServer.CallWithTimeout("SimManager.New", c, &result); err != nil {
 		// Problem with the connection to the remote server? Let the main
 		// loop try to reconnect.
 		remoteServer = nil
@@ -552,7 +552,7 @@ func (c *NewSimConfiguration) Start() error {
 
 	result.World.simProxy = &SimProxy{
 		ControllerToken: result.ControllerToken,
-		Client:          c.selectedServer.client,
+		Client:          c.selectedServer.RPCClient,
 	}
 
 	globalConfig.LastScenarioGroup = c.GroupName

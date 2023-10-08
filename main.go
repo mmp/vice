@@ -198,13 +198,13 @@ func main() {
 
 		if globalConfig.Sim != nil && !*resetSim {
 			var result NewSimResult
-			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
+			if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 				lg.Errorf("error restoring saved Sim: %v", err)
 			} else {
 				world = result.World
 				world.simProxy = &SimProxy{
 					ControllerToken: result.ControllerToken,
-					Client:          localServer.client,
+					Client:          localServer.RPCClient,
 				}
 				world.ToggleShowScenarioInfoWindow()
 			}
@@ -228,10 +228,10 @@ func main() {
 		}
 		//Set intial activity
 		discord_err = discord_client.SetActivity(discord_client.Activity{
-			State: "In the main menu",
-			Details: "On Break",
+			State:      "In the main menu",
+			Details:    "On Break",
 			LargeImage: "towerlarge",
-			LargeText: "Vice ATC",
+			LargeText:  "Vice ATC",
 			Timestamps: &discord_client.Timestamps{
 				Start: &simStartTime,
 			},
@@ -248,12 +248,12 @@ func main() {
 		stats.startTime = time.Now()
 		lastDiscordUpdate := time.Now()
 		for {
-			if time.Since(lastDiscordUpdate) > 5 * time.Second {
+			if time.Since(lastDiscordUpdate) > 5*time.Second {
 				discord_client.SetActivity(discord_client.Activity{
-					State: "In the main menu",
-					Details: "On Break",
+					State:      "In the main menu",
+					Details:    "On Break",
 					LargeImage: "towerlarge",
-					LargeText: "Vice ATC",
+					LargeText:  "Vice ATC",
 					Timestamps: &discord_client.Timestamps{
 						Start: &simStartTime,
 					},
@@ -276,11 +276,11 @@ func main() {
 					})
 				}
 
-			case remoteServer = <-remoteSimServerChan:
-				if remoteServer.err != nil {
-					lg.Warn("Unable to connect to remote server", slog.Any("error", remoteServer.err))
+			case remoteServerConn := <-remoteSimServerChan:
+				if err := remoteServerConn.err; err != nil {
+					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
 
-					if remoteServer.err == ErrRPCVersionMismatch {
+					if err == ErrRPCVersionMismatch {
 						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
 								"If you're using an older version of vice, please upgrade to the latest\n" +
@@ -292,6 +292,8 @@ func main() {
 						remoteServer = nil
 						stopConnectingRemoteServer = true
 					}
+				} else {
+					remoteServer = remoteServerConn.server
 				}
 
 			default:
@@ -303,10 +305,10 @@ func main() {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
 				//Update discord RPC
 				discord_client.SetActivity(discord_client.Activity{
-					State: strconv.Itoa(world.TotalDepartures) + " departures" + " | " + strconv.Itoa(world.TotalArrivals) + " arrivals",
-					Details: "Controlling " + world.Callsign,
+					State:      strconv.Itoa(world.TotalDepartures) + " departures" + " | " + strconv.Itoa(world.TotalArrivals) + " arrivals",
+					Details:    "Controlling " + world.Callsign,
 					LargeImage: "towerlarge",
-					LargeText: "Vice ATC",
+					LargeText:  "Vice ATC",
 					Timestamps: &discord_client.Timestamps{
 						Start: &simStartTime,
 					},
@@ -383,7 +385,7 @@ func main() {
 
 			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
-				saveSim := world != nil && world.simProxy.Client == localServer.client
+				saveSim := world != nil && world.simProxy.Client == localServer.RPCClient
 				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)
 
 				if world != nil {

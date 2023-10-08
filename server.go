@@ -28,11 +28,15 @@ import (
 const ViceRPCVersion = 5
 
 type SimServer struct {
+	*RPCClient
 	name        string
-	client      *RPCClient
 	configs     map[string]*SimConfiguration
 	runningSims map[string]*RemoteSim
-	err         error
+}
+
+type SimServerConnection struct {
+	server *SimServer
+	err    error
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1077,24 +1081,26 @@ func getClient(hostname string) (*RPCClient, error) {
 	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
-func TryConnectRemoteServer(hostname string) chan *SimServer {
-	ch := make(chan *SimServer, 1)
+func TryConnectRemoteServer(hostname string) chan *SimServerConnection {
+	ch := make(chan *SimServerConnection, 1)
 	go func() {
 		if client, err := getClient(hostname); err != nil {
-			ch <- &SimServer{err: err}
+			ch <- &SimServerConnection{err: err}
 			return
 		} else {
 			var so SignOnResult
 			start := time.Now()
 			if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
-				ch <- &SimServer{err: err}
+				ch <- &SimServerConnection{err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
-				ch <- &SimServer{
-					name:        "Network (Multi-controller)",
-					client:      client,
-					configs:     so.Configurations,
-					runningSims: so.RunningSims,
+				ch <- &SimServerConnection{
+					server: &SimServer{
+						RPCClient:   client,
+						name:        "Network (Multi-controller)",
+						configs:     so.Configurations,
+						runningSims: so.RunningSims,
+					},
 				}
 			}
 		}
@@ -1124,9 +1130,9 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 		}
 
 		ch <- &SimServer{
-			name:    "Local (Single controller)",
-			client:  client,
-			configs: configs,
+			RPCClient: client,
+			name:      "Local (Single controller)",
+			configs:   configs,
 		}
 	}()
 
