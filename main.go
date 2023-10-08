@@ -217,6 +217,10 @@ func main() {
 			uiShowConnectDialog(false)
 		}
 
+		if !globalConfig.AskedDiscordOptIn {
+			uiShowDiscordOptInDialog()
+		}
+
 		simStartTime := time.Now()
 
 		///////////////////////////////////////////////////////////////////////////

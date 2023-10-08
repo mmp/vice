@@ -41,6 +41,7 @@ type GlobalConfig struct {
 	DevScenarioFile string
 	DevVideoMapFile string
 
+	AskedDiscordOptIn      bool
 	InhibitDiscordActivity AtomicBool
 
 	// This is only for serialize / deserialize

@@ -195,6 +195,10 @@ func uiShowConnectDialog(allowCancel bool) {
 	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{allowCancel: allowCancel}), false)
 }
 
+func uiShowDiscordOptInDialog() {
+	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}), true)
+}
+
 // If |b| is true, all following imgui elements will be disabled (and drawn
 // accordingly).
 func uiStartDisable(b bool) {
@@ -853,6 +857,49 @@ func (b *BroadcoastModalDialog) Buttons() []ModalDialogButton {
 
 func (b *BroadcoastModalDialog) Draw() int {
 	imgui.Text(b.Message)
+	return -1
+}
+
+type DiscordOptInModalClient struct{}
+
+func (d *DiscordOptInModalClient) Title() string {
+	return "Discord Activity Updates"
+}
+
+func (d *DiscordOptInModalClient) Opening() {}
+
+func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Ok",
+			action: func() bool {
+				globalConfig.AskedDiscordOptIn = true
+				return true
+			},
+		},
+	}
+}
+
+func (d *DiscordOptInModalClient) Draw() int {
+	style := imgui.CurrentStyle()
+	spc := style.ItemSpacing()
+	spc.Y -= 4
+	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
+
+	imgui.Text("By default, vice will automatically update your Discord Activity to say")
+	imgui.Text("that you are running vice, using information about your current session.")
+	imgui.Text("If you do not want it to do this, you can disable this feature using the")
+	imgui.Text("checkbox below. You can also change this setting any time in the future")
+	imgui.Text("in the settings window " + FontAwesomeIconCog + " via the menu bar.")
+
+	imgui.PopStyleVar()
+
+	imgui.Text("")
+
+	update := !globalConfig.InhibitDiscordActivity.Load()
+	imgui.Checkbox("Update Discord activity status", &update)
+	globalConfig.InhibitDiscordActivity.Store(!update)
+
 	return -1
 }
 
