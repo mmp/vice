@@ -32,6 +32,7 @@ import (
 	"time"
 	"unicode"
 
+	discord_client "github.com/hugolgst/rich-go/client"
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
 	"golang.org/x/exp/constraints"
@@ -1263,6 +1264,29 @@ func Callstack() []StackFrame {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// AtomicBool
+
+// AtomicBool is a simple wrapper around atomic.Bool that adds support for
+// JSON marshaling/unmarshaling.
+type AtomicBool struct {
+	atomic.Bool
+}
+
+func (a AtomicBool) MarshalJSON() ([]byte, error) {
+	b := a.Load()
+	return json.Marshal(b)
+}
+
+func (a *AtomicBool) UnmarshalJSON(data []byte) error {
+	var b bool
+	err := json.Unmarshal(data, &b)
+	if err == nil {
+		a.Store(b)
+	}
+	return err
+}
+
+///////////////////////////////////////////////////////////////////////////
 // LoggingMutex
 
 var heldMutexesMutex sync.Mutex
@@ -1310,4 +1334,104 @@ func (l *LoggingMutex) Unlock(lg *Logger) {
 	l.Mutex.Unlock()
 
 	lg.Debug("released mutex", slog.Any("mutex", l))
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// discordStatus encapsulates the user's current vice activity; if the user is not
+// currently controlling, callsign should be an empty string.
+type discordStatus struct {
+	totalDepartures, totalArrivals int
+	callsign                       string
+	start                          time.Time
+}
+
+// discord collects various variables related to the state of the discord
+// connection / activity updates.
+var discord struct {
+	// mu should be held when reading from or writing to any of the other
+	// fields in the structure.
+	mu sync.Mutex
+	// last reported status from the user
+	status discordStatus
+	// has the status changed since the last activity update sent to
+	// discord?
+	statusChanged   bool
+	updaterLaunched bool
+}
+
+func SetDiscordStatus(s discordStatus) {
+	discord.mu.Lock()
+	defer discord.mu.Unlock()
+
+	if s.totalDepartures != discord.status.totalDepartures ||
+		s.totalArrivals != discord.status.totalArrivals ||
+		s.callsign != discord.status.callsign ||
+		s.start != discord.status.start {
+		discord.statusChanged = true
+	}
+
+	// Record the current status even if we're not sending discord updates;
+	// they may be enabled later.
+	discord.status = s
+
+	// Don't even launch the update goroutine if the user has asked to not
+	// update their discord status.
+	if !discord.updaterLaunched && !globalConfig.InhibitDiscordActivity.Load() {
+		discord.updaterLaunched = true
+		go updateDiscordStatus()
+	}
+}
+
+func updateDiscordStatus() {
+	// Sign in to the Vice app on Discord
+	discord_err := discord_client.Login("1158289394717970473")
+	if discord_err != nil {
+		lg.Error("Discord RPC Error", slog.String("error", discord_err.Error()))
+		return
+	}
+	lg.Info("Successfully logged into Discord")
+
+	for {
+		// Immediately make a copy of all of the values we need and release
+		// the mutex quickly.
+		discord.mu.Lock()
+		status := discord.status
+		changed := discord.statusChanged
+		discord.statusChanged = false
+		discord.mu.Unlock()
+
+		// Skip updates if the user has disabled discord updates.
+		if changed && !globalConfig.InhibitDiscordActivity.Load() {
+			// Common discord_client.Activity initialization regardless of
+			// whether we're connected or not.
+			activity := discord_client.Activity{
+				LargeImage: "towerlarge",
+				LargeText:  "Vice ATC",
+				Timestamps: &discord_client.Timestamps{
+					Start: &status.start,
+				},
+			}
+			if status.callsign == "" {
+				// Disconnected
+				activity.State = "In the main menu"
+				activity.Details = "On Break"
+			} else {
+				activity.State = strconv.Itoa(status.totalDepartures) + " departures" + " | " +
+					strconv.Itoa(status.totalArrivals) + " arrivals"
+				activity.Details = "Controlling " + status.callsign
+			}
+
+			if err := discord_client.SetActivity(activity); err != nil {
+				lg.Error("Discord RPC Error: ", slog.String("error", err.Error()))
+			} else {
+				lg.Info("Updated Discord activity", slog.Any("activity", activity))
+			}
+		}
+
+		// Rate limit updates; note that this may introduce a small lag
+		// from receiving an update (if we haven't sent an update for a
+		// while), but it's just a few seconds so no big deal..
+		time.Sleep(5 * time.Second)
+	}
 }

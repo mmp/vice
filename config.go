@@ -41,6 +41,8 @@ type GlobalConfig struct {
 	DevScenarioFile string
 	DevVideoMapFile string
 
+	InhibitDiscordActivity AtomicBool
+
 	// This is only for serialize / deserialize
 	Sim      *Sim
 	Callsign string

@@ -1508,6 +1508,10 @@ func (w *World) DrawSettingsWindow() {
 		w.SetSimRate(w.SimRate)
 	}
 
+	update := !globalConfig.InhibitDiscordActivity.Load()
+	imgui.Checkbox("Update Discord activity status", &update)
+	globalConfig.InhibitDiscordActivity.Store(!update)
+
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := make(map[int]interface{})
 		for fontid := range fonts {
