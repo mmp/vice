@@ -345,7 +345,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 
 	for _, event := range ui.eventsSubscription.Get() {
 		if event.Type == ServerBroadcastMessageEvent {
-			uiShowModalDialog(NewModalDialogBox(&BroadcoastModalDialog{Message: event.Message}), false)
+			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.Message}), false)
 		}
 	}
 
@@ -834,17 +834,17 @@ func (nr *WhatsNewModalClient) Draw() int {
 	return -1
 }
 
-type BroadcoastModalDialog struct {
+type BroadcastModalDialog struct {
 	Message string
 }
 
-func (b *BroadcoastModalDialog) Title() string {
+func (b *BroadcastModalDialog) Title() string {
 	return "Server Broadcast Message"
 }
 
-func (b *BroadcoastModalDialog) Opening() {}
+func (b *BroadcastModalDialog) Opening() {}
 
-func (b *BroadcoastModalDialog) Buttons() []ModalDialogButton {
+func (b *BroadcastModalDialog) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
 		ModalDialogButton{
 			text: "Ok",
@@ -855,7 +855,7 @@ func (b *BroadcoastModalDialog) Buttons() []ModalDialogButton {
 	}
 }
 
-func (b *BroadcoastModalDialog) Draw() int {
+func (b *BroadcastModalDialog) Draw() int {
 	imgui.Text(b.Message)
 	return -1
 }
