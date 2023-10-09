@@ -1295,7 +1295,7 @@ var heldMutexes map[*LoggingMutex]interface{} = make(map[*LoggingMutex]interface
 type LoggingMutex struct {
 	sync.Mutex
 	acq      time.Time
-	ackStack []StackFrame
+	acqStack []StackFrame
 }
 
 func (l *LoggingMutex) Lock(lg *Logger) {
@@ -1309,7 +1309,7 @@ func (l *LoggingMutex) Lock(lg *Logger) {
 	heldMutexesMutex.Unlock()
 
 	l.acq = time.Now()
-	l.ackStack = Callstack()
+	l.acqStack = Callstack()
 	w := l.acq.Sub(tryTime)
 	lg.Debug("acquired mutex", slog.Any("mutex", l), slog.Duration("wait", w))
 	if w > time.Second {
