@@ -118,6 +118,7 @@ var (
 		"Added the ability to draw active departure, arrival, and approach routes on the radar scope",
 		"Added the D01 (Denver TRACON) scenario to single-user vice (the installer was missing it)",
 		"Added support for updating your Discord activity based on your vice activities (thanks, Samuel Valencia!)",
+		"Clicking the " + FontAwesomeIconKeyboard + " icon on the menubar gives a summary of vice's keyboard commands",
 		"Fixed bug with aircraft descending too early when flying procedure turns",
 		"Fixed bug with some departures trying to re-fly their initial departure route",
 		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
