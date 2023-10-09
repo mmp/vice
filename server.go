@@ -25,7 +25,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 5
+const ViceRPCVersion = 6
 
 type SimServer struct {
 	*RPCClient
@@ -161,6 +161,13 @@ func (s *SimProxy) PointOut(callsign string, controller string) *rpc.Call {
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Controller:      controller,
+	}, nil, nil)
+}
+
+func (s *SimProxy) AcknowledgePointOut(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.AcknowledgePointOut", &PointOutArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
 	}, nil, nil)
 }
 
@@ -692,6 +699,14 @@ func (sd *SimDispatcher) PointOut(po *PointOutArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.PointOut(po.ControllerToken, po.Callsign, po.Controller)
+	}
+}
+
+func (sd *SimDispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.AcknowledgePointOut(po.ControllerToken, po.Callsign)
 	}
 }
 

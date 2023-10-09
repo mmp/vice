@@ -39,12 +39,12 @@ var (
 		RGB{.16, .16, .43},
 		RGB{.12, .12, .35},
 	}
-	STARSJRingConeColor          = RGB{.5, .5, 1}
-	STARSTrackedAircraftColor    = RGB{1, 1, 1}
-	STARSUntrackedAircraftColor  = RGB{0, 1, 0}
-	STARSPointedOutAircraftColor = RGB{1, 1, 0}
-	STARSGhostColor              = RGB{1, 1, 0}
-	STARSSelectedAircraftColor   = RGB{0, 1, 1}
+	STARSJRingConeColor         = RGB{.5, .5, 1}
+	STARSTrackedAircraftColor   = RGB{1, 1, 1}
+	STARSUntrackedAircraftColor = RGB{0, 1, 0}
+	STARSInboundPointOutColor   = RGB{1, 1, 0}
+	STARSGhostColor             = RGB{1, 1, 0}
+	STARSSelectedAircraftColor  = RGB{0, 1, 1}
 
 	STARSDCBButtonColor         = RGB{0, .4, 0}
 	STARSDCBActiveButtonColor   = RGB{0, .8, 0}
@@ -80,8 +80,11 @@ type STARSPane struct {
 
 	AutoTrackDepartures map[string]interface{}
 
-	PointedOutAircraft map[string]string // callsign -> originating controller id
-	queryUnassociated  *TransientMap[string, interface{}]
+	// callsign -> controller id
+	InboundPointOuts  map[string]string
+	OutboundPointOuts map[string]string
+
+	queryUnassociated *TransientMap[string, interface{}]
 
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]string
@@ -907,8 +910,11 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.HavePlayedSPCAlertSound == nil {
 		sp.HavePlayedSPCAlertSound = make(map[string]interface{})
 	}
-	if sp.PointedOutAircraft == nil {
-		sp.PointedOutAircraft = make(map[string]string)
+	if sp.InboundPointOuts == nil {
+		sp.InboundPointOuts = make(map[string]string)
+	}
+	if sp.OutboundPointOuts == nil {
+		sp.OutboundPointOuts = make(map[string]string)
 	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = NewTransientMap[string, interface{}]()
@@ -1076,9 +1082,28 @@ func (sp *STARSPane) processEvents(w *World) {
 		case PointOutEvent:
 			if event.ToController == w.Callsign {
 				if ctrl := w.GetController(event.FromController); ctrl != nil {
-					sp.PointedOutAircraft[event.Callsign] = ctrl.SectorId
+					sp.InboundPointOuts[event.Callsign] = ctrl.SectorId
 				} else {
-					sp.PointedOutAircraft[event.Callsign] = ""
+					sp.InboundPointOuts[event.Callsign] = ""
+				}
+			}
+			if event.FromController == w.Callsign {
+				if ctrl := w.GetController(event.ToController); ctrl != nil {
+					sp.OutboundPointOuts[event.Callsign] = ctrl.SectorId
+				} else {
+					sp.OutboundPointOuts[event.Callsign] = ""
+				}
+			}
+
+		case AcknowledgedPointOutEvent:
+			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.OutboundPointOuts, event.Callsign)
+				}
+			}
+			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.InboundPointOuts, event.Callsign)
 				}
 			}
 
@@ -2573,6 +2598,13 @@ func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller stri
 		})
 }
 
+func (sp *STARSPane) acknowledgePointOut(ctx *PaneContext, callsign string) {
+	ctx.world.AcknowledgePointOut(callsign, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.CancelHandoff(callsign, nil,
 		func(err error) {
@@ -2662,9 +2694,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 					sp.cancelHandoff(ctx, ac.Callsign)
 					return
-				} else if _, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
+				} else if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 					// ack point out
-					delete(sp.PointedOutAircraft, ac.Callsign)
+					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if state.OutboundHandoffAccepted {
@@ -4168,7 +4200,7 @@ func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 	}
 
 	// Point outs are FDB until acked.
-	if _, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
+	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 		dt = FullDatablock
 	}
 
@@ -4725,7 +4757,10 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		if ac.Mode == Ident {
 			cs += " ID"
 		}
-		if id, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
+		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+			cs += " PO"
+		}
+		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			cs += " PO" + id
 		}
 		mainblock[0] = append(mainblock[0], cs)
@@ -4798,9 +4833,9 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 		br = STARSBrightness(100)
 	}
 
-	if _, ok := sp.PointedOutAircraft[ac.Callsign]; ok {
-		// yellow for pointed out
-		return br.ScaleRGB(STARSPointedOutAircraftColor)
+	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+		// yellow for pointed out by someone else
+		return br.ScaleRGB(STARSInboundPointOutColor)
 	} else if ac.TrackingController == w.Callsign {
 		// white if we are tracking, unless it's selected
 		if state.IsSelected {

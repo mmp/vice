@@ -598,7 +598,10 @@ type Sim struct {
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
 
+	// callsign -> auto accept time
 	Handoffs map[string]time.Time
+	// callsign -> "to" controller
+	PointOuts map[string]map[string]PointOut
 
 	TotalDepartures int
 	TotalArrivals   int
@@ -616,6 +619,11 @@ type Sim struct {
 	Paused         bool
 
 	STARSInputOverride string
+}
+
+type PointOut struct {
+	FromController string
+	AcceptTime     time.Time
 }
 
 type ServerController struct {
@@ -663,8 +671,9 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
 
-		SimRate:  1,
-		Handoffs: make(map[string]time.Time),
+		SimRate:   1,
+		Handoffs:  make(map[string]time.Time),
+		PointOuts: make(map[string]map[string]PointOut),
 	}
 
 	if !isLocal {
@@ -804,6 +813,7 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("next_departure_spawn", s.NextDepartureSpawn),
 		slog.Any("next_arrival_spawn", s.NextArrivalSpawn),
 		slog.Any("automatic_handoffs", s.Handoffs),
+		slog.Any("automatic_pointouts", s.PointOuts),
 		slog.Int("departures", s.TotalDepartures),
 		slog.Int("arrivals", s.TotalArrivals),
 		slog.Time("sim_time", s.SimTime),
@@ -1157,6 +1167,30 @@ func (s *Sim) updateState() {
 			ac.HandoffTrackController = ""
 		}
 		delete(s.Handoffs, callsign)
+	}
+
+	for callsign, acPointOuts := range s.PointOuts {
+		for toController, po := range acPointOuts {
+			if !now.After(po.AcceptTime) {
+				continue
+			}
+
+			if ac, ok := s.World.Aircraft[callsign]; ok && !s.controllerIsSignedIn(toController) {
+				// Note that "to" and "from" are swapped in the event,
+				// since the ack is coming from the "to" controller of the
+				// original point out.
+				s.eventStream.Post(Event{
+					Type:           AcknowledgedPointOutEvent,
+					FromController: toController,
+					ToController:   po.FromController,
+					Callsign:       ac.Callsign,
+				})
+				s.lg.Info("automatic pointout accept", slog.String("callsign", ac.Callsign),
+					slog.String("by", toController), slog.String("to", po.FromController))
+			}
+
+			delete(s.PointOuts[callsign], toController)
+		}
 	}
 
 	// Update the simulation state once a second.
@@ -1653,6 +1687,9 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 
 			ac.HandoffTrackController = octrl.Callsign
 
+			// Add them to the auto-accept map even if the target is
+			// covered; this way, if they sign off in the interim, we still
+			// end up accepting it automatically.
 			acceptDelay := 4 + rand.Intn(10)
 			s.Handoffs[ac.Callsign] = s.SimTime.Add(time.Duration(acceptDelay) * time.Second)
 			return nil
@@ -1798,6 +1835,42 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 				ToController:   octrl.Callsign,
 				Callsign:       ac.Callsign,
 			})
+
+			// As with handoffs, always add it to the auto-accept list for now.
+			acceptDelay := 4 + rand.Intn(10)
+			if s.PointOuts[ac.Callsign] == nil {
+				s.PointOuts[ac.Callsign] = make(map[string]PointOut)
+			}
+			s.PointOuts[ac.Callsign][octrl.Callsign] = PointOut{
+				FromController: ctrl.Callsign,
+				AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+			}
+
+			return nil
+		})
+}
+
+func (s *Sim) AcknowledgePointOut(token, callsign string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if _, ok := s.PointOuts[callsign]; !ok {
+				return ErrNotPointedOutToMe
+			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
+				return ErrNotPointedOutToMe
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			// As with auto accepts, "to" and "from" are swapped in the
+			// event since they are w.r.t. the original point out.
+			s.eventStream.Post(Event{
+				Type:           AcknowledgedPointOutEvent,
+				FromController: ctrl.Callsign,
+				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
+				Callsign:       ac.Callsign,
+			})
+
+			delete(s.PointOuts[callsign], ctrl.Callsign)
 			return nil
 		})
 }

@@ -27,6 +27,7 @@ var (
 	ErrNoValidArrivalFound          = errors.New("Unable to find a valid arrival")
 	ErrNoValidDepartureFound        = errors.New("Unable to find a valid departure")
 	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
+	ErrNotPointedOutToMe            = errors.New("Aircraft not being pointed out to current controller")
 	ErrNotClearedForApproach        = errors.New("Aircraft has not been cleared for an approach")
 	ErrNotFlyingRoute               = errors.New("Aircraft is not currently flying its assigned route")
 	ErrOtherControllerHasTrack      = errors.New("Another controller is already tracking the aircraft")
@@ -62,6 +63,7 @@ var errorStringToError = map[string]error{
 	ErrNoFlightPlan.Error():                 ErrNoFlightPlan,
 	ErrNoValidDepartureFound.Error():        ErrNoValidDepartureFound,
 	ErrNotBeingHandedOffToMe.Error():        ErrNotBeingHandedOffToMe,
+	ErrNotPointedOutToMe.Error():            ErrNotPointedOutToMe,
 	ErrNotClearedForApproach.Error():        ErrNotClearedForApproach,
 	ErrNotFlyingRoute.Error():               ErrNotFlyingRoute,
 	ErrOtherControllerHasTrack.Error():      ErrOtherControllerHasTrack,
@@ -122,6 +124,7 @@ var starsErrorRemap = map[error]*STARSError{
 	ErrNoController:                 ErrSTARSIllegalSector,
 	ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
 	ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
+	ErrNotPointedOutToMe:            ErrSTARSIllegalTrack,
 	ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	ErrNotFlyingRoute:               ErrSTARSIllegalValue,
 	ErrOtherControllerHasTrack:      ErrSTARSIllegalTrack,
