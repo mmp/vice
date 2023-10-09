@@ -251,7 +251,7 @@ func main() {
 				if err := remoteServerConn.err; err != nil {
 					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
 
-					if err == ErrRPCVersionMismatch {
+					if err.Error() == ErrRPCVersionMismatch.Error() {
 						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
 								"If you're using an older version of vice, please upgrade to the latest\n" +
@@ -260,9 +260,9 @@ func main() {
 								"will be updated as well.)",
 						}), true)
 
-						remoteServer = nil
 						stopConnectingRemoteServer = true
 					}
+					remoteServer = nil
 				} else {
 					remoteServer = remoteServerConn.server
 				}
