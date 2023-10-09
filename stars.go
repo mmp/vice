@@ -729,15 +729,15 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.VFRList.Lines = 5
 	ps.VFRList.Visible = true
 
-	ps.AlertList.Position = [2]float32{.85, .25}
+	ps.AlertList.Position = [2]float32{.8, .25}
 	ps.AlertList.Lines = 5
 	ps.AlertList.Visible = true
 
-	ps.CoastList.Position = [2]float32{.85, .65}
+	ps.CoastList.Position = [2]float32{.8, .65}
 	ps.CoastList.Lines = 5
 	ps.CoastList.Visible = false
 
-	ps.SignOnList.Position = [2]float32{.85, .95}
+	ps.SignOnList.Position = [2]float32{.8, .95}
 	ps.SignOnList.Visible = true
 
 	ps.VideoMapsList.Position = [2]float32{.85, .5}
