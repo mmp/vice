@@ -1319,6 +1319,12 @@ func (l *LoggingMutex) Lock(lg *Logger) {
 
 func (l *LoggingMutex) Unlock(lg *Logger) {
 	heldMutexesMutex.Lock()
+	// Though it may seem like we could unlock this sooner, holding it
+	// until this function returns ensures that if we end up doing logging
+	// in the code below, other mutexes aren't unlocked while we're trying
+	// to log the held ones.
+	defer heldMutexesMutex.Unlock()
+
 	if _, ok := heldMutexes[l]; !ok {
 		lg.Error("mutex not held", slog.Any("held_mutexes", heldMutexes))
 	}
@@ -1329,11 +1335,18 @@ func (l *LoggingMutex) Unlock(lg *Logger) {
 			slog.Any("held_mutexes", heldMutexes))
 	}
 
-	heldMutexesMutex.Unlock()
-
+	l.acq = time.Time{}
+	l.acqStack = nil
 	l.Mutex.Unlock()
 
 	lg.Debug("released mutex", slog.Any("mutex", l))
+}
+
+func (l *LoggingMutex) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.Time("acq", l.acq),
+		slog.Duration("held", time.Since(l.acq)),
+		slog.Any("acq_stack", l.acqStack))
 }
 
 ///////////////////////////////////////////////////////////////////////////
