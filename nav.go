@@ -22,13 +22,8 @@ type Nav struct {
 	Approach       NavApproach
 	FixAssignments map[string]NavFixAssignment
 
-	Waypoints []Waypoint
-
-	// hilpt... -> this feels very goroutiney... maybe lnav is via control
-	// flow, gotos, etc and go routines..?
-	//
-	// lnav: fly route, flyheading, procedure turns (Maybe those are fly
-	// route actually though...)
+	FinalAltitude float32
+	Waypoints     []Waypoint
 }
 
 type FlightState struct {
@@ -153,6 +148,7 @@ func MakeDepartureNav(w *World, fp FlightPlan, perf AircraftPerformance, alt flo
 func makeNav(w *World, fp FlightPlan, perf AircraftPerformance, wp []Waypoint) *Nav {
 	nav := &Nav{
 		Perf:           perf,
+		FinalAltitude:  float32(fp.Altitude),
 		Waypoints:      DuplicateSlice(wp),
 		FixAssignments: make(map[string]NavFixAssignment),
 	}
@@ -256,6 +252,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
 	} else if nav.Altitude.Restriction != nil {
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
+		tgt = min(tgt, nav.FinalAltitude)
 		if tgt == nav.FlightState.Altitude {
 			lines = append(lines, "At "+FormatAltitude(tgt)+" due to previous crossing restriction")
 		} else if tgt < nav.FlightState.Altitude {
@@ -439,6 +436,8 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 
 func (nav *Nav) updateAltitude(lg *Logger) {
 	targetAltitude, targetRate := nav.TargetAltitude(lg)
+
+	targetAltitude = min(targetAltitude, nav.FinalAltitude)
 
 	if targetAltitude == nav.FlightState.Altitude {
 		return
@@ -882,23 +881,31 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 	getRestriction := func(i int) *AltitudeRestriction {
 		wp := nav.Waypoints[i]
+		// Return any controller-assigned constraint in preference to a
+		// charted one.
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
 			return nfa.Arrive.Altitude
 		}
 		return nav.Waypoints[i].AltitudeRestriction
 	}
 
-	// Find the last waypoint that has an altitude restriction for our
-	// starting point.
+	// Find the *last* waypoint that has an altitude restriction that
+	// applies to the aircraft.
 	lastWp := -1
 	for i := len(nav.Waypoints) - 1; i >= 0; i-- {
-		if getRestriction(i) != nil {
+		// Skip restrictions that don't apply (e.g. "at or above" if we're
+		// already above.) I think(?) we would actually bail out and return
+		// nil if we find one that doesn't apply, under the principle that
+		// we should also already be meeting any restrictions that are
+		// before it, but this seems less risky.
+		if r := getRestriction(i); r != nil &&
+			r.TargetAltitude(nav.FlightState.Altitude) != nav.FlightState.Altitude {
 			lastWp = i
 			break
 		}
 	}
 	if lastWp == -1 {
-		// No altitude restrictions, so nothing to do here.
+		// No applicable altitude restrictions found, so nothing to do here.
 		return nil
 	}
 
@@ -935,7 +942,11 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 	// Unless we can't make the constraints, we'll cross the last waypoint
 	// at the upper range of the altitude restrictions.
-	finalAlt := altRange[1]
+	finalAlt := Select(altRange[1] != 0, altRange[1], 60000)
+
+	// The cruising altitude in the flight plan takes precedence if it's lower
+	// then the fix's altitude restriction.
+	finalAlt = min(finalAlt, nav.FinalAltitude)
 
 	// Sum of distances in nm since the last waypoint with an altitude
 	// restriction.
@@ -954,6 +965,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		}
 
 		// Ignore it if the aircraft is cleared for the approach and is below it.
+		// TODO: I think this can be 'break' rather than continue...
 		if nav.Approach.Cleared && nav.FlightState.Altitude < restr.Range[0] {
 			continue
 		}
@@ -966,19 +978,25 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		// waypoint.
 		dalt := altRate * eta / 60
 
-		// possibleRange is altitude range might we have at this waypoint,
-		// assuming we meet the constraint at the subsequent waypoint with
-		// an altitude restriction. Note that dalt only applies to one
-		// limit, since the aircraft can always maintain its current
-		// altitude between waypoints; which limit depends on whether it is
-		// climbing or descending (but then it's confusingly backwards
+		// possibleRange is altitude range the aircraft could have at this
+		// waypoint, given its performance characteristics and assuming it
+		// will meet the constraint at the subsequent waypoint with an
+		// altitude restriction.
+		//
+		// Note that dalt only applies to one limit, since the aircraft can
+		// always maintain its current altitude between waypoints; which
+		// limit depends on whether it is climbing or descending (but then
+		// which one and the addition/subtraction are confusingly backwards
 		// since we're going through waypoints in reverse order...)
-		possibleRange := Select(nav.FlightState.IsDeparture,
-			[2]float32{altRange[0] - dalt, altRange[1]},
-			[2]float32{altRange[0], altRange[1] + dalt})
+		possibleRange := altRange
+		if nav.FlightState.IsDeparture {
+			possibleRange[0] -= dalt
+		} else {
+			possibleRange[1] += dalt
+		}
 
-		// Limit the possible range to the restriction at the current
-		// waypoint.
+		// Limit the possible range according to the restriction at the
+		// current waypoint.
 		var ok bool
 		altRange, ok = restr.ClampRange(possibleRange)
 		if !ok {
@@ -993,8 +1011,9 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		sumDist = 0
 	}
 
-	// Distance and ETA between the aircraft and the first waypoint with an
-	// altitude restriction.
+	// Add the distance to the first waypoint to get the total distance
+	// (and then the ETA) between the aircraft and the first waypoint with
+	// an altitude restriction.
 	d := sumDist + nmdistance2ll(nav.FlightState.Position, nav.Waypoints[0].Location)
 	eta := d / nav.FlightState.GS * 3600 // seconds
 	alt := altRange[1]                   // prefer to be higher rather than lower
