@@ -360,6 +360,16 @@ func (w *World) AcknowledgePointOut(callsign string, success func(any), err func
 		})
 }
 
+func (w *World) RejectPointOut(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RejectPointOut(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) ChangeControlPosition(callsign string, keepTracks bool) error {
 	err := w.simProxy.ChangeControlPosition(callsign, keepTracks)
 	if err == nil {

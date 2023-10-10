@@ -171,6 +171,13 @@ func (s *SimProxy) AcknowledgePointOut(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) RejectPointOut(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.RejectPointOut", &PointOutArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
 func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
 		ControllerToken: s.ControllerToken,
@@ -707,6 +714,14 @@ func (sd *SimDispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) erro
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AcknowledgePointOut(po.ControllerToken, po.Callsign)
+	}
+}
+
+func (sd *SimDispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RejectPointOut(po.ControllerToken, po.Callsign)
 	}
 }
 

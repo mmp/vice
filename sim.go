@@ -1875,6 +1875,11 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 		})
 }
 
+func (s *Sim) RejectPointOut(token, callsign string) error {
+	// TODO: implement
+	return nil
+}
+
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

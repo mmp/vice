@@ -189,6 +189,7 @@ const (
 	StatusMessageEvent
 	ServerBroadcastMessageEvent
 	AcknowledgedPointOutEvent
+	RejectedPointOutEvent
 	NumEventTypes
 )
 
@@ -196,7 +197,7 @@ func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
 		"OfferedHandoff", "AcceptedHandoff", "CanceledHandoff", "RejectedHandoff",
 		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
-		"AcknowledgedPointOut"}[t]
+		"AcknowledgedPointOut", "RejectedPointOut"}[t]
 }
 
 type Event struct {
