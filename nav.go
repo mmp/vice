@@ -252,7 +252,9 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
 	} else if nav.Altitude.Restriction != nil {
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
-		tgt = min(tgt, nav.FinalAltitude)
+		if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
+			tgt = min(tgt, nav.FinalAltitude)
+		}
 		if tgt == nav.FlightState.Altitude {
 			lines = append(lines, "At "+FormatAltitude(tgt)+" due to previous crossing restriction")
 		} else if tgt < nav.FlightState.Altitude {
@@ -437,7 +439,9 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 func (nav *Nav) updateAltitude(lg *Logger) {
 	targetAltitude, targetRate := nav.TargetAltitude(lg)
 
-	targetAltitude = min(targetAltitude, nav.FinalAltitude)
+	if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
+		targetAltitude = min(targetAltitude, nav.FinalAltitude)
+	}
 
 	if targetAltitude == nav.FlightState.Altitude {
 		return
@@ -946,7 +950,9 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 	// The cruising altitude in the flight plan takes precedence if it's lower
 	// then the fix's altitude restriction.
-	finalAlt = min(finalAlt, nav.FinalAltitude)
+	if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
+		finalAlt = min(finalAlt, nav.FinalAltitude)
+	}
 
 	// Sum of distances in nm since the last waypoint with an altitude
 	// restriction.
