@@ -507,8 +507,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	defer ReturnTextDrawBuilder(td)
 	ld := GetLinesDrawBuilder()
 	defer ReturnLinesDrawBuilder(ld)
-	selectionLd := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(selectionLd)
+	trid := GetTrianglesDrawBuilder()
+	defer ReturnTrianglesDrawBuilder(trid)
 
 	// Draw from the bottom
 	scrollOffset := fsp.scrollbar.Offset()
@@ -688,7 +688,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			// line between two strips; the index then is to the lower one.
 			splitIndex := int(ctx.mouse.Pos[1]/stripHeight + 0.5)
 			yl := float32(splitIndex) * stripHeight
-			selectionLd.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
+			trid.AddQuad([2]float32{0, yl - 1}, [2]float32{drawWidth, yl - 1},
+				[2]float32{drawWidth, yl + 1}, [2]float32{0, yl + 1})
 		}
 	}
 	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[MouseButtonPrimary]) {
@@ -763,8 +764,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	td.GenerateCommands(cb)
 
 	cb.SetRGB(UITextHighlightColor)
-	cb.LineWidth(3)
-	selectionLd.GenerateCommands(cb)
+	trid.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
