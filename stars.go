@@ -1208,14 +1208,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
 
 	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-	cb.LineWidth(1)
 	DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.PointSize(5)
-	cb.LineWidth(1)
 	for _, vmap := range ctx.world.STARSMaps {
 		if _, ok := ps.VideoMapVisible[vmap.Name]; !ok {
 			continue
@@ -1246,7 +1243,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1)
 		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
 		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
@@ -4179,7 +4175,6 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	}
 
 	ps := sp.CurrentPreferenceSet
-	cb.LineWidth(3)
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
@@ -4264,13 +4259,11 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			trackId, &pd, &pd2, ld, trid, td)
 	}
 
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.PointSize(12) // bigger points for fused mode primary tracks
-	pd2.GenerateCommands(cb)
-	cb.PointSize(5)
+	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
+	pd2.GenerateCommands(cb)
+	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
@@ -4466,7 +4459,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 
 	case RadarModeFused:
 		color := brightness.ScaleRGB(STARSTrackBlockColor)
-		pd2.AddPoint(pos, color)
+		pd2.AddPoint(pw, 12, color) // TODO: base point size on font size?
 	}
 
 	// Draw main track symbol letter
@@ -4512,7 +4505,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 
 		p := state.tracks[idx].Position
 		if !p.IsZero() {
-			pd.AddPoint(p, trackColor)
+			pd.AddPoint(transforms.WindowFromLatLongP(p), 5, trackColor)
 		}
 	}
 }
@@ -4926,7 +4919,6 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 }
 
@@ -5420,7 +5412,6 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1)
 
 	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
 		dcbDrawState.mouseDownPos = ctx.mouse.Pos[:]

@@ -44,6 +44,8 @@ type Renderer interface {
 	// rendered.
 	RenderCommandBuffer(*CommandBuffer) RendererStats
 
+	GetPointsTextureId() uint32
+
 	// Dispose releases resources allocated by the renderer.
 	Dispose()
 }
@@ -90,15 +92,14 @@ func (rs RendererStats) LogValue() slog.Value {
 // after each command briefly describe its arguments.
 //
 // Buffers (vertex, index, color, texcoord), are all stored directly in the
-// CommandBuffer, following RendererFloatBuffer and RendererIntBuffer
-// commands; the first argument after those commands is the length of the
-// buffer and then its values follow directly. Rendering commands that use
-// buffers (e.g., buffer binding commands like RendererVertexArray or draw
-// commands like RendererDrawLines) are then directed to those buffers via
-// integer parameters that encode the offset from the start of the command
-// buffer where a buffer begins. (Note that this implies that one
-// CommandBuffer cannot refer to a vertex/index buffer in another
-// CommandBuffer.
+// CommandBuffer, following the RendererDataBuffer command; the first
+// argument after those commands is the length of the buffer in int32s and
+// then its values follow directly. Rendering commands that use buffers
+// (e.g., buffer binding commands like RendererVertexArray or draw commands
+// like RendererDrawLines) are then directed to those buffers via integer
+// parameters that encode the offset from the start of the command buffer
+// where a buffer begins. (Note that this implies that one CommandBuffer
+// cannot refer to a vertex/index buffer in another CommandBuffer.
 
 const (
 	RendererLoadProjectionMatrix = iota // 16 float32: matrix
@@ -109,24 +110,19 @@ const (
 	RendererBlend                       // no args: for now always src alpha, 1-src alpha
 	RendererSetRGBA                     // 4 float32: RGBA
 	RendererDisableBlend                // no args
-	RendererFloatBuffer                 // int32 size, then size*float32 values
-	RendererIntBuffer                   // int32: size, then size*int32 values
-	RendererRawBuffer                   // int32: size *in bytes*, then (3+size)/4 int32 values
+	RendererDataBuffer                  // int32 size for skip ahead, then size*uint32 values
 	RendererEnableTexture               // int32 handle
 	RendererDisableTexture              // no args
-	RendererVertexArray                 // byte offset to array values, n components, stride (bytes)
+	RendererVertexArray                 // byte offset to array value, size (bytes), n components, stride (bytes)
 	RendererDisableVertexArray          // no args
-	RendererRGB8Array                   // byte offset to array values, n components, stride (bytes)
-	RendererRGB32Array                  // byte offset to array values, n components, stride (bytes)
+	RendererRGB8Array                   // byte offset to array values, size (bytes), n components, stride (bytes)
+	RendererRGB32Array                  // byte offset to array values, size (bytes), n components, stride (bytes)
 	RendererDisableColorArray           // no args
-	RendererTexCoordArray               // byte offset to array values, n components, stride (bytes)
+	RendererTexCoordArray               // byte offset to array values, size (bytes), n components, stride (bytes)
 	RendererDisableTexCoordArray        // no args
-	RendererPointSize                   // float32
-	RendererDrawPoints                  // 2 int32: offset to the index buffer, count
-	RendererLineWidth                   // float32
-	RendererDrawLines                   // 2 int32: offset to the index buffer, count
-	RendererDrawTriangles               // 2 int32: offset to the index buffer, count
-	RendererDrawQuads                   // 2 int32: offset to the index buffer, count
+	RendererDrawPoints                  // 3 int32: offset to the index buffer, size (bytes), count
+	RendererDrawLines                   // 3 int32: offset to the index buffer, size (bytes), count
+	RendererDrawTriangles               // 3 int32: offset to the index buffer, size (bytes), count
 	RendererCallBuffer                  // 1 int32: buffer index
 	RendererResetState                  // no args
 )
@@ -290,70 +286,54 @@ func (cb *CommandBuffer) DisableBlend() {
 	cb.appendInts(RendererDisableBlend)
 }
 
-// Float2Buffer stores the provided slice of [2]float32 values in the
-// CommandBuffer and returns the byte offset where the first value of the
-// slice is stored; this offset can then be passed to commands like
-// VertexArray to specify this array.
-func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
-	cb.appendInts(RendererFloatBuffer, 2*len(buf))
-	offset := 4 * len(cb.Buf)
+// Float2Buffer stores the length of the provided slice of [2]float32
+// values and then the values themselves in the CommandBuffer and returns
+// the byte offset where the length of the slice is stored; this offset can
+// then be passed to commands like VertexArray to specify this array.
 
-	n := 2 * len(buf)
-	cb.growFor(n)
-	start := len(cb.Buf)
-	cb.Buf = cb.Buf[:start+n]
-	copy(cb.Buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
-
-	return offset
+type RenderBuffer struct {
+	// both are in bytes
+	Offset int
+	Size   int
 }
 
-// RGBBuffer stores the provided slice of RGB values in the command buffer
-// and returns the byte offset where the first value of the slice is
-// stored.
-func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
-	cb.appendInts(RendererFloatBuffer, 3*len(buf))
-	offset := 4 * len(cb.Buf)
+/*
+type RenderBufferView struct {
+	Offset      int
+	Stride      int
+	NComponents int
+	Bits        int
+}
+*/
 
-	n := 3 * len(buf)
-	cb.growFor(n)
-	start := len(cb.Buf)
-	copy(cb.Buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
-	cb.Buf = cb.Buf[:start+n]
-
-	return offset
+func (cb *CommandBuffer) AddFloat2Buffer(buf [][2]float32) RenderBuffer {
+	return addBuffer(cb, buf)
 }
 
-// IntBuffer stores the provided slice of int32 values in the command buffer
-// and returns the byte offset where the first value of the slice is stored.
-func (cb *CommandBuffer) IntBuffer(buf []int32) int {
-	cb.appendInts(RendererIntBuffer, len(buf))
-	offset := 4 * len(cb.Buf)
-
-	n := len(buf)
-	cb.growFor(n)
-	start := len(cb.Buf)
-	copy(cb.Buf[start:start+n], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), n))
-	cb.Buf = cb.Buf[:start+n]
-
-	return offset
+func (cb *CommandBuffer) AddInt32Buffer(buf []int32) RenderBuffer {
+	return addBuffer(cb, buf)
 }
 
-// RawBuffer stores the provided bytes, without further interpretation in
-// the command buffer and returns the byte offset from the start of the
-// buffer where they begin.
-func (cb *CommandBuffer) RawBuffer(buf []byte) int {
-	nints := (len(buf) + 3) / 4
-	cb.appendInts(RendererRawBuffer, nints)
-	offset := 4 * len(cb.Buf)
+func (cb *CommandBuffer) AddRGB32Buffer(buf []RGB) RenderBuffer {
+	return addBuffer(cb, buf)
+}
 
-	cb.growFor(nints)
+func (cb *CommandBuffer) AddByteBuffer(buf []byte) RenderBuffer {
+	return addBuffer(cb, buf)
+}
+
+func addBuffer[T any](cb *CommandBuffer, buf []T) RenderBuffer {
+	nBytes := int(unsafe.Sizeof(buf[0])) * len(buf)
+	nInt32s := (nBytes + 3) / 4
+	cb.appendInts(RendererDataBuffer, nInt32s)
+	dataByteOffset := 4 * len(cb.Buf)
+
+	cb.growFor(nInt32s)
 	start := len(cb.Buf)
-	ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(4*start)
-	slice := unsafe.Slice((*byte)(unsafe.Pointer(ptr)), len(buf))
-	copy(slice, buf)
-	cb.Buf = cb.Buf[:start+nints]
+	cb.Buf = cb.Buf[:start+nInt32s]
+	copy(cb.Buf[start:start+nInt32s], unsafe.Slice((*uint32)(unsafe.Pointer(&buf[0])), nInt32s))
 
-	return offset
+	return RenderBuffer{Offset: dataByteOffset, Size: nBytes}
 }
 
 // EnableTexture enables texturing from the specified texture id (as
@@ -374,8 +354,8 @@ func (cb *CommandBuffer) DisableTexture() {
 // as returned by Float2Buffer), nComps is the number of components per
 // vertex (generally 2 for vice), and stride gives the stride in bytes
 // between vertices (e.g., 8 for densely packed 2D vertex coordinates.)
-func (cb *CommandBuffer) VertexArray(offset, nComps, stride int) {
-	cb.appendInts(RendererVertexArray, offset, nComps, stride)
+func (cb *CommandBuffer) VertexArray(b RenderBuffer, nComps, stride int) {
+	cb.appendInts(RendererVertexArray, b.Offset, b.Size, nComps, stride)
 }
 
 // DisableVertexArray adds a command to the command buffer to disable the
@@ -387,15 +367,15 @@ func (cb *CommandBuffer) DisableVertexArray() {
 // ColorArray adds a command to the command buffer that specifies an array
 // of float32 RGB colors to use for a subsequent draw command. Its
 // arguments are analogous to the ones passed to VertexArray.
-func (cb *CommandBuffer) RGB32Array(offset, nComps, stride int) {
-	cb.appendInts(RendererRGB32Array, offset, nComps, stride)
+func (cb *CommandBuffer) RGB32Array(b RenderBuffer, nComps, stride int) {
+	cb.appendInts(RendererRGB32Array, b.Offset, b.Size, nComps, stride)
 }
 
 // ColorArray adds a command to the command buffer that specifies an array
 // of 8-bit RGBA colors to use for a subsequent draw command. Its arguments
 // are analogous to the ones passed to VertexArray.
-func (cb *CommandBuffer) RGB8Array(offset, nComps, stride int) {
-	cb.appendInts(RendererRGB8Array, offset, nComps, stride)
+func (cb *CommandBuffer) RGB8Array(b RenderBuffer, nComps, stride int) {
+	cb.appendInts(RendererRGB8Array, b.Offset, b.Size, nComps, stride)
 }
 
 // DisableColorArray adds a command to the command buffer that disables
@@ -407,8 +387,8 @@ func (cb *CommandBuffer) DisableColorArray() {
 // TexCoordArray adds a command to the command buffer that specifies an
 // array of per-vertex texture coordinates. Its arguments are analogous
 // to the ones passed to VertexArray.
-func (cb *CommandBuffer) TexCoordArray(offset, nComps, stride int) {
-	cb.appendInts(RendererTexCoordArray, offset, nComps, stride)
+func (cb *CommandBuffer) TexCoordArray(b RenderBuffer, nComps, stride int) {
+	cb.appendInts(RendererTexCoordArray, b.Offset, b.Size, nComps, stride)
 }
 
 // DisableTexCoordArray adds a command to the command buffer that disables
@@ -417,28 +397,12 @@ func (cb *CommandBuffer) DisableTexCoordArray() {
 	cb.appendInts(RendererDisableTexCoordArray)
 }
 
-// PointSize adds a command to the command buffer that specifies the size
-// of subsequent points that are drawn in pixels.
-func (cb *CommandBuffer) PointSize(w float32) {
-	cb.appendInts(RendererPointSize)
-	// Scale as needed so that points are the same size on retina-style displays.
-	cb.appendFloats(w * platform.DPIScale())
-}
-
 // DrawPoints adds a command to the command buffer to draw a number of points.
 // offset gives the offset in the command buffer where the vertex indices for
 // the points begin (as returned by e.g., the IntBuffer method) and count is
 // the number of points to draw.
-func (cb *CommandBuffer) DrawPoints(offset, count int) {
-	cb.appendInts(RendererDrawPoints, offset, count)
-}
-
-// LineWidth adds a command to the command buffer that sets the width in
-// pixels of subsequent lines that are drawn.
-func (cb *CommandBuffer) LineWidth(w float32) {
-	cb.appendInts(RendererLineWidth)
-	// Scale as needed so that lines are the same width on retina-style displays.
-	cb.appendFloats(w * platform.DPIScale())
+func (cb *CommandBuffer) DrawPoints(b RenderBuffer, count int) {
+	cb.appendInts(RendererDrawPoints, b.Offset, b.Size, count)
 }
 
 // DrawLines adds a command to the command buffer to draw a number of
@@ -446,24 +410,16 @@ func (cb *CommandBuffer) LineWidth(w float32) {
 // offset gives the offset in the current command buffer where the index
 // buffer is (e.g., as returned by IntBuffer), and count gives the total
 // number of vertices in the vertex buffer.
-func (cb *CommandBuffer) DrawLines(offset, count int) {
-	cb.appendInts(RendererDrawLines, offset, count)
+func (cb *CommandBuffer) DrawLines(indices RenderBuffer, count int) {
+	cb.appendInts(RendererDrawLines, indices.Offset, indices.Size, count)
 }
 
 // DrawTriangles adds a command to the command buffer to draw a number of
 // triangles; each is specified by three vertices in the index
 // buffer. offset gives the offset to the start of the index buffer in the
 // current command buffer and count gives the total number of indices.
-func (cb *CommandBuffer) DrawTriangles(offset, count int) {
-	cb.appendInts(RendererDrawTriangles, offset, count)
-}
-
-// DrawTriangles adds a command to the command buffer to draw a number of
-// quads; each is specified by four vertices in the index buffer. offset
-// gives the offset to the start of the index buffer in the current command
-// buffer and count gives the total number of indices.
-func (cb *CommandBuffer) DrawQuads(offset, count int) {
-	cb.appendInts(RendererDrawQuads, offset, count)
+func (cb *CommandBuffer) DrawTriangles(indices RenderBuffer, count int) {
+	cb.appendInts(RendererDrawTriangles, indices.Offset, indices.Size, count)
 }
 
 // Call adds a command to the command buffer that causes the commands in
@@ -499,9 +455,8 @@ func (cb *CommandBuffer) ResetState() {
 
 // PointsDrawBuilder accumulates colored points to be drawn.
 type PointsDrawBuilder struct {
-	p       [][2]float32
-	color   []RGB
-	indices []int32
+	TexturedTrianglesDrawBuilder
+	color []RGB
 }
 
 // Reset resets all of the internal storage in the PointsDrawBuilder so that
@@ -509,17 +464,19 @@ type PointsDrawBuilder struct {
 // once the system reaches steady state, there will generally not be dynamic
 // memory allocations when it is used.
 func (p *PointsDrawBuilder) Reset() {
-	p.p = p.p[:0]
+	p.TexturedTrianglesDrawBuilder.Reset()
 	p.color = p.color[:0]
-	p.indices = p.indices[:0]
 }
 
 // AddPoint adds the specified point to the draw list in the
 // PointsDrawBuilder.
-func (p *PointsDrawBuilder) AddPoint(pt [2]float32, color RGB) {
-	p.p = append(p.p, pt)
-	p.color = append(p.color, color)
-	p.indices = append(p.indices, int32(len(p.p)-1))
+func (p *PointsDrawBuilder) AddPoint(pt [2]float32, radius float32, color RGB) {
+	r2 := radius / 2
+	p.TexturedTrianglesDrawBuilder.AddQuad(
+		add2f(pt, [2]float32{-r2, -r2}), add2f(pt, [2]float32{r2, -r2}),
+		add2f(pt, [2]float32{r2, r2}), add2f(pt, [2]float32{-r2, r2}),
+		[2]float32{0, 0}, [2]float32{1, 0}, [2]float32{1, 1}, [2]float32{0, 1})
+	p.color = append(p.color, color, color, color, color)
 }
 
 // Bounds returns the 2D bounding box of all of the points provided to the
@@ -531,24 +488,14 @@ func (p *PointsDrawBuilder) Bounds() Extent2D {
 // GenerateCommands adds a draw command for all of the points in the
 // PointsDrawBuilder to the provided command buffer.
 func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
-	if len(p.indices) == 0 {
+	if len(p.color) == 0 {
 		return
 	}
 
-	// Create arrays for the vertex positions and colors.
-	pi := cb.Float2Buffer(p.p)
-	cb.VertexArray(pi, 2, 2*4)
-	rgb := cb.RGBBuffer(p.color)
-	cb.RGB32Array(rgb, 3, 3*4)
+	rgbBuf := cb.AddRGB32Buffer(p.color)
+	cb.RGB32Array(rgbBuf, 3, 3*4)
+	p.TexturedTrianglesDrawBuilder.GenerateCommands(renderer.GetPointsTextureId(), cb)
 
-	// Create an index buffer from the indices.
-	ind := cb.IntBuffer(p.indices)
-
-	// Add the draw command to the command buffer.
-	cb.DrawPoints(ind, len(p.indices))
-
-	// Clean up
-	cb.DisableVertexArray()
 	cb.DisableColorArray()
 }
 
@@ -668,15 +615,11 @@ func (l *LinesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		return
 	}
 
-	// Add the vertex positions to the command buffer.
-	p := cb.Float2Buffer(l.p)
-	cb.VertexArray(p, 2, 2*4)
+	cb.VertexArray(cb.AddFloat2Buffer(l.p), 2, 2*4)
 
-	// Add the vertex indices and issue the draw command.
-	ind := cb.IntBuffer(l.indices)
-	cb.DrawLines(ind, len(l.indices))
+	indBuf := cb.AddInt32Buffer(l.indices)
+	cb.DrawLines(indBuf, len(l.indices))
 
-	// Clean up
 	cb.DisableVertexArray()
 }
 
@@ -730,17 +673,19 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs 
 	}
 }
 
-func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) (int, int) {
+func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	if len(l.indices) == 0 {
-		return 0, 0
+		return
 	}
 
-	rgb := cb.RGBBuffer(l.color)
-	cb.RGB32Array(rgb, 3, 3*4)
+	cb.VertexArray(cb.AddFloat2Buffer(l.p), 2, 2*4)
+	cb.RGB32Array(cb.AddRGB32Buffer(l.color), 2, 3*4)
 
-	l.LinesDrawBuilder.GenerateCommands(cb)
+	indBuf := cb.AddInt32Buffer(l.indices)
+	cb.DrawLines(indBuf, len(l.indices))
 
-	return rgb, 3 * len(l.color)
+	cb.DisableVertexArray()
+	cb.DisableColorArray()
 }
 
 // ColoredLinesDrawBuilders are managed using a sync.Pool so that their buf
@@ -812,11 +757,11 @@ func (t *TrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		return
 	}
 
-	p := cb.Float2Buffer(t.p)
-	cb.VertexArray(p, 2, 2*4)
+	pBuf := cb.AddFloat2Buffer(t.p)
+	cb.VertexArray(pBuf, 2, 2*4)
 
-	ind := cb.IntBuffer(t.indices)
-	cb.DrawTriangles(ind, len(t.indices))
+	indBuf := cb.AddInt32Buffer(t.indices)
+	cb.DrawTriangles(indBuf, len(t.indices))
 
 	cb.DisableVertexArray()
 }
@@ -874,8 +819,8 @@ func (t *ColoredTrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		return
 	}
 
-	rgb := cb.RGBBuffer(t.color)
-	cb.RGB32Array(rgb, 3, 3*4)
+	rgbBuf := cb.AddRGB32Buffer(t.color)
+	cb.RGB32Array(rgbBuf, 3, 3*4)
 
 	t.TrianglesDrawBuilder.GenerateCommands(cb)
 
@@ -931,8 +876,8 @@ func (t *TexturedTrianglesDrawBuilder) GenerateCommands(texid uint32, cb *Comman
 	cb.Blend() // alpha blending...
 	cb.EnableTexture(texid)
 
-	uv := cb.Float2Buffer(t.uv)
-	cb.TexCoordArray(uv, 2, 2*4)
+	uvBuf := cb.AddFloat2Buffer(t.uv)
+	cb.TexCoordArray(uvBuf, 2, 2*4)
 
 	t.TrianglesDrawBuilder.GenerateCommands(cb)
 
@@ -1000,7 +945,8 @@ func (t *TextBuffers) Add(p [2]float32, glyph *Glyph, color RGB) {
 		add2f(p, [2]float32{x1, -y0}),
 		add2f(p, [2]float32{x1, -y1}),
 		add2f(p, [2]float32{x0, -y1})}...)
-	t.indices = append(t.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
+	t.indices = append(t.indices, startIdx, startIdx+1, startIdx+2)
+	t.indices = append(t.indices, startIdx, startIdx+2, startIdx+3)
 }
 
 func (t *TextBuffers) GenerateCommands(cb *CommandBuffer) {
@@ -1009,16 +955,16 @@ func (t *TextBuffers) GenerateCommands(cb *CommandBuffer) {
 	}
 
 	// Enable the assorted vertex buffers.
-	p := cb.Float2Buffer(t.p)
-	cb.VertexArray(p, 2, 2*4)
-	rgb := cb.RGBBuffer(t.rgb)
-	cb.RGB32Array(rgb, 3, 3*4)
-	uv := cb.Float2Buffer(t.uv)
-	cb.TexCoordArray(uv, 2, 2*4)
+	pBuf := cb.AddFloat2Buffer(t.p)
+	cb.VertexArray(pBuf, 2, 2*4)
+	rgbBuf := cb.AddRGB32Buffer(t.rgb)
+	cb.RGB32Array(rgbBuf, 3, 3*4)
+	uvBuf := cb.AddFloat2Buffer(t.uv)
+	cb.TexCoordArray(uvBuf, 2, 2*4)
 
 	// Enable the index buffer and issue the draw command.
-	ind := cb.IntBuffer(t.indices)
-	cb.DrawQuads(ind, len(t.indices))
+	indBuf := cb.AddInt32Buffer(t.indices)
+	cb.DrawTriangles(indBuf, len(t.indices))
 }
 
 // TextStyle specifies the style of text to be drawn.
@@ -1093,7 +1039,8 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 				{bx1 + padx, by0 - pady},
 				{bx1 + padx, by1 + pady},
 				{bx0 - padx, by1 + pady}}...)
-			td.background.indices = append(td.background.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
+			td.background.indices = append(td.background.indices, startIdx, startIdx+1, startIdx+2)
+			td.background.indices = append(td.background.indices, startIdx, startIdx+2, startIdx+3)
 		}
 
 		for _, ch := range text[i] {
@@ -1159,14 +1106,14 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	// Issue the commands to draw the background first, if any background
 	// quads have been specified.
 	if len(td.background.indices) > 0 {
-		p := cb.Float2Buffer(td.background.p)
-		cb.VertexArray(p, 2, 2*4)
+		pBuf := cb.AddFloat2Buffer(td.background.p)
+		cb.VertexArray(pBuf, 2, 2*4)
 
-		rgb := cb.RGBBuffer(td.background.rgb)
-		cb.RGB32Array(rgb, 3, 3*4)
+		rgbBuf := cb.AddRGB32Buffer(td.background.rgb)
+		cb.RGB32Array(rgbBuf, 3, 3*4)
 
-		ind := cb.IntBuffer(td.background.indices)
-		cb.DrawQuads(ind, len(td.background.indices))
+		indBuf := cb.AddInt32Buffer(td.background.indices)
+		cb.DrawTriangles(indBuf, len(td.background.indices))
 	}
 
 	// Issue the drawing commands for the text itself.
@@ -1262,14 +1209,17 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer) {
 			indexBufferPtr = unsafe.Pointer(&buf32[0])
 			indexBufferSizeBytes = 4 * n
 		}
-		indexOffset := cb.IntBuffer(unsafe.Slice((*int32)(indexBufferPtr), indexBufferSizeBytes/4))
+		indexSlice := unsafe.Slice((*int32)(indexBufferPtr), indexBufferSizeBytes/4)
+		indexBuf := cb.AddInt32Buffer(indexSlice)
 
-		// Copy the vertex buffer into the command buffer and specify the
-		// various draw arrays.
-		vertexOffset := cb.RawBuffer(unsafe.Slice((*byte)(vertexBufferPtr), vertexBufferSizeBytes))
-		cb.VertexArray(vertexOffset+vertexOffsetPos, 2, vertexSize)
-		cb.TexCoordArray(vertexOffset+vertexOffsetUV, 2, vertexSize)
-		cb.RGB8Array(vertexOffset+vertexOffsetRGB, 4, vertexSize)
+		vertexBuf := cb.AddByteBuffer(unsafe.Slice((*byte)(vertexBufferPtr), vertexBufferSizeBytes))
+
+		cb.VertexArray(RenderBuffer{Offset: vertexBuf.Offset + vertexOffsetPos,
+			Size: vertexBuf.Size - vertexOffsetPos}, 2, vertexSize)
+		cb.TexCoordArray(RenderBuffer{Offset: vertexBuf.Offset + vertexOffsetUV,
+			Size: vertexBuf.Size - vertexOffsetUV}, 2, vertexSize)
+		cb.RGB8Array(RenderBuffer{Offset: vertexBuf.Offset + vertexOffsetRGB,
+			Size: vertexBuf.Size - vertexOffsetRGB}, 4, vertexSize)
 
 		for _, command := range commandList.Commands() {
 			if command.HasUserCallback() {
@@ -1279,10 +1229,11 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer) {
 				cb.Scissor(int(clipRect.X), int(fbHeight)-int(clipRect.W),
 					int(clipRect.Z-clipRect.X), int(clipRect.W-clipRect.Y))
 				cb.EnableTexture(uint32(command.TextureID()))
-				cb.DrawTriangles(indexOffset, command.ElementCount())
+				cb.DrawTriangles(indexBuf, command.ElementCount())
 			}
 
-			indexOffset += command.ElementCount() * 4
+			indexBuf.Offset += command.ElementCount() * 4
+			indexBuf.Size -= command.ElementCount() * 4
 		}
 	}
 

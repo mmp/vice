@@ -759,7 +759,6 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(UIControlColor)
-	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 

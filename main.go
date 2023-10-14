@@ -38,6 +38,7 @@ var (
 	// number of these in the future.
 	globalConfig *GlobalConfig
 	platform     Platform
+	renderer     Renderer
 	database     *StaticDatabase
 	lg           *Logger
 	resourcesFS  fs.StatFS
@@ -139,7 +140,6 @@ func main() {
 		remoteSimServerChan := TryConnectRemoteServer(*serverAddress)
 
 		var stats Stats
-		var renderer Renderer
 
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
@@ -181,7 +181,7 @@ func main() {
 		}
 		imgui.CurrentIO().SetClipboard(platform.GetClipboard())
 
-		renderer, err = NewOpenGL2Renderer(imgui.CurrentIO())
+		renderer, err = NewOpenGLRenderer(imgui.CurrentIO())
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}

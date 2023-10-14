@@ -238,15 +238,15 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, transforms Scop
 	rb := w.radarBounds
 	p := [4][2]float32{[2]float32{rb.p0[0], rb.p0[1]}, [2]float32{rb.p1[0], rb.p0[1]},
 		[2]float32{rb.p1[0], rb.p1[1]}, [2]float32{rb.p0[0], rb.p1[1]}}
-	pidx := cb.Float2Buffer(p[:])
-	cb.VertexArray(pidx, 2, 2*4)
+	pbuf := cb.AddFloat2Buffer(p[:])
+	cb.VertexArray(pbuf, 2, 2*4)
 
 	uv := [4][2]float32{[2]float32{0, 1}, [2]float32{1, 1}, [2]float32{1, 0}, [2]float32{0, 0}}
-	uvidx := cb.Float2Buffer(uv[:])
-	cb.TexCoordArray(uvidx, 2, 2*4)
+	uvBuf := cb.AddFloat2Buffer(uv[:])
+	cb.TexCoordArray(uvBuf, 2, 2*4)
 
-	indidx := cb.IntBuffer([]int32{0, 1, 2, 3})
-	cb.DrawQuads(indidx, 4)
+	idxBuf := cb.AddInt32Buffer([]int32{0, 1, 2, 0, 2, 3})
+	cb.DrawTriangles(idxBuf, 4)
 
 	cb.DisableTexture()
 	cb.DisableBlend()
@@ -477,7 +477,6 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *Comm
 	ld.AddCircle(p, radius, 360, color)
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(3)
 	ld.GenerateCommands(cb)
 }
 

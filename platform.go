@@ -94,8 +94,10 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 
 	io.SetBackendFlags(io.GetBackendFlags() | imgui.BackendFlagsHasMouseCursors)
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 2)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
 	if windowSize[0] == 0 || windowSize[1] == 0 {
 		vm := glfw.GetPrimaryMonitor().GetVideoMode()

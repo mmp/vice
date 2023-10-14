@@ -1194,14 +1194,11 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	// drawn.
 	cb.SetRGB(color)
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(2)
 	ld.GenerateCommands(cb)
-	cb.PointSize(5)
-	pd.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
+	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1)
 	ldr.GenerateCommands(cb)
 }
 
@@ -1434,7 +1431,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		drawnWaypoints[wp.Fix] = nil
 
 		// Draw a circle at the waypoint's location
-		pd.AddPoint([2]float32(wp.Location), color)
+		pd.AddPoint(transforms.WindowFromLatLongP(wp.Location), 5, color)
 
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j
