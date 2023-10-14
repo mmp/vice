@@ -37,6 +37,7 @@ type PaneUpgrader interface {
 }
 
 type PaneContext struct {
+	fbSize           [2]int
 	paneExtent       Extent2D
 	parentPaneExtent Extent2D
 

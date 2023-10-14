@@ -125,6 +125,9 @@ const (
 	RendererDrawTriangles               // 3 int32: offset to the index buffer, size (bytes), count
 	RendererCallBuffer                  // 1 int32: buffer index
 	RendererResetState                  // no args
+	RendererStartRTT                    // 2 int32 (res)
+	RendererEndRTT                      // no args
+	RendererApplyCRT                    // no args
 )
 
 // CommandBuffer encodes a sequence of rendering commands in an
@@ -442,6 +445,19 @@ func (cb *CommandBuffer) Call(sub CommandBuffer) {
 // arrays, etc.) to default values.
 func (cb *CommandBuffer) ResetState() {
 	cb.appendInts(RendererResetState)
+}
+
+func (cb *CommandBuffer) StartRTT(res [2]int) {
+	cb.appendInts(RendererStartRTT, res[0], res[1])
+}
+
+func (cb *CommandBuffer) EndRTT() {
+	cb.appendInts(RendererEndRTT)
+}
+
+func (cb *CommandBuffer) ApplyCRTEffect(e Extent2D) {
+	cb.appendInts(RendererApplyCRT)
+	cb.appendFloats(e.p0[0], e.p0[1], e.p1[0], e.p1[1])
 }
 
 ///////////////////////////////////////////////////////////////////////////

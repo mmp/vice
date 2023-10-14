@@ -94,6 +94,8 @@ type STARSPane struct {
 	// For CRDA
 	ConvergingRunways []STARSConvergingRunways
 
+	SimulateCRT bool
+
 	// Various UI state
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
 	activeDCBMenu       int
@@ -1037,6 +1039,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 
 func (sp *STARSPane) DrawUI() {
 	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
+	imgui.Checkbox("Use CRT effect", &sp.SimulateCRT)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -1173,6 +1176,10 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	ps := sp.CurrentPreferenceSet
 
+	if sp.SimulateCRT {
+		cb.StartRTT(ctx.fbSize)
+	}
+
 	// Clear to background color
 	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
 
@@ -1286,6 +1293,12 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		sp.lastTrackUpdate = time.Time{} // force update
 		sp.discardTracks = false
+	}
+
+	if sp.SimulateCRT {
+		cb.EndRTT()
+		cb.SetDrawBounds(ctx.paneExtent) // undo DCB bounds update
+		cb.ApplyCRTEffect(ctx.paneExtent)
 	}
 }
 

@@ -509,6 +509,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 		func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
 			haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
 			ctx := PaneContext{
+				fbSize:           [2]int{int(fbSize[0]), int(fbSize[1])},
 				paneExtent:       paneExtent,
 				parentPaneExtent: parentExtent,
 				platform:         p,
