@@ -4265,10 +4265,10 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.PointSize(12) // bigger points for fused mode primary tracks
-	pd2.GenerateCommands(cb)
 	cb.PointSize(5)
 	pd.GenerateCommands(cb)
+	cb.PointSize(12) // bigger points for fused mode primary tracks
+	pd2.GenerateCommands(cb)
 	trid.GenerateCommands(cb)
 	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
