@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/iancoleman/orderedmap"
 )
@@ -762,14 +763,21 @@ func InAirspace(p Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bo
 ///////////////////////////////////////////////////////////////////////////
 // LoadScenarioGroups
 
-func loadVideoMaps(filesystem fs.FS, path string, e *ErrorLogger) map[string]CommandBuffer {
-	e.Push("File " + path)
-	defer e.Pop()
+type LoadedVideoMap struct {
+	path        string
+	commandBufs map[string]CommandBuffer
+	err         error
+}
+
+func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
+	start := time.Now()
+	lvm := LoadedVideoMap{path: path}
 
 	contents, err := fs.ReadFile(filesystem, path)
 	if err != nil {
-		e.Error(err)
-		return nil
+		lvm.err = err
+		result <- lvm
+		return
 	}
 
 	if strings.HasSuffix(strings.ToLower(path), ".zst") {
@@ -778,11 +786,12 @@ func loadVideoMaps(filesystem fs.FS, path string, e *ErrorLogger) map[string]Com
 
 	var maps map[string][]Point2LL
 	if err := UnmarshalJSON(contents, &maps); err != nil {
-		e.Error(err)
-		return nil
+		lvm.err = err
+		result <- lvm
+		return
 	}
 
-	vm := make(map[string]CommandBuffer)
+	lvm.commandBufs = make(map[string]CommandBuffer)
 	for name, segs := range maps {
 		ld := GetLinesDrawBuilder()
 		for i := 0; i < len(segs)/2; i++ {
@@ -791,12 +800,14 @@ func loadVideoMaps(filesystem fs.FS, path string, e *ErrorLogger) map[string]Com
 		var cb CommandBuffer
 		ld.GenerateCommands(&cb)
 
-		vm[name] = cb
+		lvm.commandBufs[name] = cb
 
 		ReturnLinesDrawBuilder(ld)
 	}
 
-	return vm
+	lg.Infof("%s: video map loaded in %s\n", path, time.Since(start))
+
+	result <- lvm
 }
 
 func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioGroup {
@@ -843,6 +854,10 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 
+	start := time.Now()
+	vmChan := make(chan LoadedVideoMap, 16)
+	launches := 0
+
 	err := fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -857,17 +872,33 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 			return nil
 		}
 
-		lg.Infof("%s: loading video map", path)
-		vm := loadVideoMaps(resourcesFS, path, e)
-		if vm != nil {
-			videoMapCommandBuffers[path] = vm
-		}
+		launches++
+		go loadVideoMaps(resourcesFS, path, vmChan)
 		return nil
 	})
 	if err != nil {
 		lg.Errorf("error loading videomaps: %v", err)
 		os.Exit(1)
 	}
+
+	receiveLoadedVideoMap := func() {
+		lvm := <-vmChan
+		if lvm.err != nil {
+			e.Push("File " + lvm.path)
+			e.Error(lvm.err)
+			e.Pop()
+		} else {
+			videoMapCommandBuffers[lvm.path] = lvm.commandBufs
+		}
+	}
+
+	// Get all of the loaded video map command buffers
+	for launches > 0 {
+		receiveLoadedVideoMap()
+		launches--
+	}
+
+	lg.Infof("video map load time: %s\n", time.Since(start))
 
 	// Load the video map specified on the command line, if any.
 	loadVid := func(filename string) {
@@ -879,10 +910,8 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 					return os.DirFS(".")
 				}
 			}()
-			vm := loadVideoMaps(fs, filename, e)
-			if vm != nil {
-				videoMapCommandBuffers[filename] = vm
-			}
+			loadVideoMaps(fs, filename, vmChan)
+			receiveLoadedVideoMap()
 		}
 	}
 	loadVid(*videoMapFilename)
