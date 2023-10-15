@@ -245,8 +245,8 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, transforms Scop
 	uvBuf := cb.AddFloat2Buffer(uv[:])
 	cb.TexCoordArray(uvBuf, 2, 2*4)
 
-	idxBuf := cb.AddInt32Buffer([]int32{0, 1, 2, 0, 2, 3})
-	cb.DrawTriangles(idxBuf, 4)
+	idxBuf := cb.AddInt32Buffer([]int32{0, 1, 2, 2, 0, 3})
+	cb.DrawTriangles(idxBuf, 6)
 
 	cb.DisableTexture()
 	cb.DisableBlend()
