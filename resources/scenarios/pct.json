@@ -639,8 +639,219 @@
         ]
       },
       "departure_routes": {
-        
+        "30": {
+          "RAMAY": {
+            "cleared_altitude": 3000,
+            "route": "BUNZZ3",
+            "waypoints": "_IAD_30 _IAD_12/h280 LOULU BUNZZ"
+          },
+          "MAULS,FLASK": {
+            "cleared_altitude": 3000,
+            "route": "CLTCH3",
+            "waypoints":  "_IAD_30 _IAD_12/h280 BUTRZ/a3000+ CLTCH KERRK"
+          },
+          "SCOOB": {
+            "cleared_altitude": 3000,
+            "route": "JCOBY4",
+            "waypoints": "_IAD_30 _IAD_12/h300 RIGNZ/a3000 JCOBY BAUGH AMEEE COLIN"
+          },
+          "AGARD": {
+            "cleared_altitude": 3000,
+            "route": "JCOBY4",
+            "waypoints": "_IAD_30 _IAD_12/h300 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR"
+          },
+          "SWANN": {
+            "cleared_altitude": 3000,
+            "route": "JCOBY4",
+            "waypoints": "_IAD_30 _IAD_12/h300 RIGNZ/a3000+ JCOBY GRIIM SOOKI"
+          },
+          "RRSIN": {
+            "cleared_altitude": 3000,
+            "route": "JDUBB4",
+            "waypoints": "_IAD_30 _IAD_12/h280 HAFNR/a3000+ JDUBB TYPNZ SCORN"
+          },
+          "MELTN": {
+            "cleared_altitude": 3000,
+            "route": "JDUBB4",
+            "waypoints": "_IAD_30 _IAD_12/h280 HAFNR/a3000+ JDUBB CASLY"
+          },
+          "JERES": {
+            "cleared_altitude": 3000,
+            "route": "JERES2",
+            "waypoints": "_IAD_30 _IAD_12/h300 IDORE"
+          },
+          "MCRAY": {
+            "cleared_altitude": 3000,
+            "route": "MCRAY2",
+            "waypoints": "_IAD_30 _IAD_12/h300 HAYGR"
+          },
+          "OTTTO": {
+            "cleared_altitude": 3000,
+            "route": "RNLDI4",
+            "waypoints": "_IAD_30 _IAD_12/h280 LOULU RNLDI"
+          },
+          "GLANC": {
+            "cleared_altitude": 3000,
+            "route": "SCRAM6",
+            "waypoints": "_IAD_30 _IAD_12/h280 POOCH/a3000+ SCRAM DANOO WALCE"
+          }
+        }
       }
+    },
+    "departures": [
+      {
+        "airlines": [
+          {
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "icao": "SWA"
+          }
+        ],
+        "destination": "KATL",
+        "exit": "FLASK",
+        "route": "FLASK OZZZI1"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "ASH"
+          },
+          {
+            "icao": "JIA"
+          }
+        ],
+        "destination": "KCLT",
+        "exit": "GLANC",
+        "route": "GLANC LYH CHSLY5"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "UAL"
+          },
+          {
+            "icao": "SWA"
+          }
+        ],
+        "destination": "KDEN",
+        "exit": "OTTTO",
+        "route": "OTTTO Q176 STL HYS J24 OATHE CLASH4"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "ASA"
+          },
+          {
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "fleet": "short",
+            "icao": "UAL"
+          }
+        ],
+        "destination": "KSEA",
+        "exit": "MCRAY",
+        "route": "MCRAY Q178 AVERE Q178 DJB J34 RWF LWT MLP GLASR2"
+      },
+      {
+        "airlines": [
+          {
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "fleet": "short",
+            "icao": "AAL"
+          }
+        ],
+        "destination": "KDFW",
+        "exit": "OTTTO",
+        "route": "OTTTO Q80 FAREV RAMRD Q68 LITTR MEEOW FEWWW SEEVR4"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "VIR"
+          },
+          {
+            "fleet": "long",
+            "icao": "UAL"
+          },
+          {
+            "fleet": "long",
+            "icao": "BAW"
+          }
+        ],
+        "destination": "EGLL",
+        "exit": "AGARD",
+        "route": "AGARD DONIL AJGON HEADI RIFLE ACK KANNI N139A PORTI NATT ELSOX LULOX SIDDI DAWLY ELRIP OTMET OTMET1H"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "JZA"
+          },
+          {
+            "icao": "ASH"
+          }
+        ],
+        "destination": "CYYZ",
+        "exit": "JERES",
+        "route": "JERES J220 SFK WOZEE LINNG3"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "ASH"
+          },
+          {
+            "fleet": "short",
+            "icao": "DAL"
+          }
+        ],
+        "destination": "KDTW",
+        "exit": "MCRAY",
+        "route": "MCRAY Q178 KOZAR KLYNK3"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "ASH"
+          }
+        ],
+        "destination": "KLGA",
+        "exit": "AGARD",
+        "route": "AGARD KORRY4"
+      }
+    ],
+    "exit_categories": {
+      "RAMAY": "ALL",
+      "MAULS": "ALL",
+      "FLASK": "ALL",
+      "SCOOB": "ALL",
+      "AGARD": "ALL",
+      "SWANN": "ALL",
+      "RRSIN": "ALL",
+      "MELTN": "ALL",
+      "JERES": "ALL",
+      "MCRAY": "ALL",
+      "OTTTO": "ALL",
+      "GLANC": "ALL"
+    },
+    "location": "KIAD",
+    "tower_list": 3
+  },
+  "KBWI": {
+    "approaches": {
+
     }
   }
 }
