@@ -5,6 +5,7 @@
 package main
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -784,30 +785,180 @@ func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
 		contents = []byte(decompressZstd(string(contents)))
 	}
 
-	var maps map[string][]Point2LL
-	if err := UnmarshalJSON(contents, &maps); err != nil {
+	lvm.commandBufs, err = loadVideoMapFile(contents)
+	if err != nil {
 		lvm.err = err
 		result <- lvm
 		return
 	}
 
-	lvm.commandBufs = make(map[string]CommandBuffer)
-	for name, segs := range maps {
+	lg.Infof("%s: video map loaded in %s\n", path, time.Since(start))
+
+	result <- lvm
+}
+
+func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
+	// For debugging, enable check here; the file will also be parsed using
+	// encoding/json and the result will be compared to what we get out of
+	// our parser.
+	check := false
+	var checkJSONMaps map[string][]Point2LL
+	if check {
+		if err := UnmarshalJSON(b, &checkJSONMaps); err != nil {
+			return nil, err
+		}
+	}
+
+	// Custom "just enough" JSON parser below. This expects only vice JSON
+	// video map files but is ~2x faster than using encoding/json.
+	pos := 0 // byte offset into the file
+	line := 1
+	skipWhitespace := func() {
+		for pos < len(b) {
+			if b[pos] == '\n' {
+				line++
+			}
+			if b[pos] != ' ' && b[pos] != '\n' && b[pos] != '\t' && b[pos] != '\f' && b[pos] != '\r' && b[pos] != '\v' {
+				break
+			}
+			pos++
+		}
+	}
+	// Called when we expect the given character as the next token.
+	expect := func(ch byte) error {
+		skipWhitespace()
+		if pos < len(b) && b[pos] == ch {
+			pos++
+			return nil
+		}
+		return fmt.Errorf("expected '%s' at line %d, found '%s'", string(ch), line, string(b[pos]))
+	}
+	// tryQuoted tries to return a quoted string; nil is returned if the
+	// first non-whitespace character found is not a quotation mark.
+	tryQuoted := func() []byte {
+		skipWhitespace()
+		if pos < len(b) && b[pos] != '"' {
+			return nil
+		}
+		pos++
+
+		// Scan ahead to the closing quote
+		start := pos
+		for pos < len(b) && b[pos] != '"' {
+			if b[pos] == '\n' {
+				panic(fmt.Sprintf("unterminated string at line %d", line))
+			}
+			pos++
+		}
+		if pos == len(b) {
+			panic("unterminated string")
+		}
+		pos++ // skip closing quote
+		return b[start : pos-1]
+	}
+	// tryComma returns true and advances pos if the next non-whitespace
+	// character is a comma.
+	tryComma := func() bool {
+		skipWhitespace()
+		ok := pos < len(b) && b[pos] == ','
+		if ok {
+			pos++
+		}
+		return ok
+	}
+
+	m := make(map[string]CommandBuffer)
+
+	// Video map JSON files encode a JSON object where members are arrays
+	// of strings, where each string encodes a lat-long position.
+	if err := expect('{'); err != nil {
+		return nil, err
+	}
+	for {
+		// Is there another member in the object?
+		name := tryQuoted()
+		if len(name) == 0 {
+			break
+		}
+		if err := expect(':'); err != nil {
+			return nil, err
+		}
+		// Expect an array for its value.
+		if err := expect('['); err != nil {
+			return nil, err
+		}
+
+		var segs []Point2LL
+		for {
+			// Parse an element of the array, which should be a string
+			// representing a position.
+			ll := tryQuoted()
+			if len(ll) == 0 {
+				break
+			}
+
+			p, err := ParseLatLong(ll)
+			if err != nil {
+				return nil, err
+			}
+			segs = append(segs, p)
+
+			// Is there another entry after this one?
+			if !tryComma() {
+				break
+			}
+		}
+		// Array close.
+		if err := expect(']'); err != nil {
+			return nil, err
+		}
+
+		if check {
+			// Make sure we have the same number of points and that they
+			// are equal to the reference deserialized by encoding/json.
+			jsegs, ok := checkJSONMaps[string(name)]
+			if !ok {
+				return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", string(name))
+			}
+			if len(jsegs) != len(segs) {
+				return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", string(name), len(jsegs), len(segs))
+			}
+			for i := range jsegs {
+				if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
+					return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", string(name), i, jsegs[i], segs[i])
+				}
+			}
+			delete(checkJSONMaps, string(name))
+		}
+
+		// Generate the command buffer to draw this video map.
 		ld := GetLinesDrawBuilder()
+
 		for i := 0; i < len(segs)/2; i++ {
 			ld.AddLine(segs[2*i], segs[2*i+1])
 		}
 		var cb CommandBuffer
 		ld.GenerateCommands(&cb)
 
-		lvm.commandBufs[name] = cb
-
+		m[string(name)] = cb
 		ReturnLinesDrawBuilder(ld)
+
+		// Is there another video map in the object?
+		if !tryComma() {
+			break
+		}
+	}
+	expect('}')
+
+	if check && len(checkJSONMaps) > 0 {
+		var s []string
+		for k := range checkJSONMaps {
+			s = append(s, k)
+		}
+		return nil, fmt.Errorf("encoding/json found maps that we did not: %s", strings.Join(s, " "))
 	}
 
-	lg.Infof("%s: video map loaded in %s\n", path, time.Since(start))
-
-	result <- lvm
+	return m, nil
 }
 
 func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioGroup {
