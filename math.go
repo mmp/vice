@@ -365,7 +365,7 @@ func (p Point2LL) DDString() string {
 }
 
 // DMSString returns the position in degrees minutes, seconds, e.g.
-// N039.51.39.243, W075.16.29.511
+// N039.51.39.243,W075.16.29.511
 func (p Point2LL) DMSString() string {
 	format := func(v float32) string {
 		s := fmt.Sprintf("%03d", int(v))

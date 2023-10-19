@@ -4275,6 +4275,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
 	pd2.GenerateCommands(cb)
+
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
