@@ -830,7 +830,16 @@
         "destination": "KLGA",
         "exit": "AGARD",
         "route": "AGARD KORRY4"
-      }
+      },
+      {
+        "airlines" : [
+          {
+            "icao": "UAL
+          }
+      },
+      "destination": "KORD",
+      "exit": "RAMAY",
+      "route": "RAMAY Q72 HACKS J149 ROD WATSN4"
     ],
     "exit_categories": {
       "RAMAY": "ALL",
