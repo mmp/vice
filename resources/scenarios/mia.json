@@ -275,7 +275,67 @@
               "cleared_altitude": 5000,
               "route": "HURCN3",
               "waypoints": "_MIA_8R _MIA_26L CSALT DEALZ LIIVV NIBLT JOENZ/a5000"
-             }
+             },
+            "ZFP,ZADUS": {
+              "cleared_altitude": 5000,
+              "route": "FOLZZ2" ,
+              "waypoints": "_MIA_12 _MIA_30 JAMBA KBOLA MARCK/a5000 FOLZZ"
+            },
+            "ALYRA,SNAGY,SUMRS": {
+              "cleared_altitude": 5000,
+              "route": "FOLZZ2" ,
+              "waypoints": "_MIA_12 _MIA_30 JAMBA KBOLA MARCK/a5000 FOLZZ GOZZR"
+            },
+            "GWAVA": {
+              "cleared_altitude": 5000,
+              "route": "GWAVA2",
+              "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM"
+            },
+            "URSUS,LRODD,GLAMS": {
+              "cleared_altitude": 5000,
+              "route": "GWAVA2",
+              "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM GWAVA"
+            },
+            "RAJAY": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_12 _MIA_30 JAMBA KBOLA KLADA ELQUE"
+            },
+            "BITAC": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_12 _MIA_30 JAMBA KBOLA KLADA MEDLI"
+            },
+            "JAGOR": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_12 _MIA_30 JAMBA KBOLA KLADA UPACE JAGOR"
+            },
+            "KALDA": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_12 _MIA_30 JAMBA KBOLA"
+            },
+            "CANOA,MAXIM": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            },
+            "JABOX": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR MCLAW SLIPT"
+            },
+            "SLIPT": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR MCLAW"
+            },
+            "FUNDI": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR MCLAW"
+            }
           },
           "12": {
             "ZFP,ZADUS": {
@@ -337,7 +397,62 @@
               "cleared_altitude": 5000,
               "route": "MAYNR1",
               "waypoints": "_MIA_12 _MIA_30 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR MCLAW"
-            }
+            },
+            "DUCEN": {
+              "cleared_altitude": 5000,
+              "route": "ALTNN1",
+              "waypoints": "_MIA_8R _MIA_26L CSALT DEALZ LIIVV FARRY AGERS/a5000 PERTS ALTNN MMART ENWOD SEAZY"
+            },
+            "ALTNN": {
+              "cleared_altitude": 5000,
+              "route": "ALTNN1",
+              "waypoints": "_MIA_8R _MIA_26L CSALT DEALZ LIIVV FARRY AGERS/a5000 PERTS"
+            },
+            "DOLIE,COREA,MERKS": {
+              "cleared_altitude": 5000,
+              "route": "BNGOS3",
+              "waypoints": "_MIA_8R MIA_26L CSALT DEALZ LIIVV NIBLT MRENO/a5000 BNGOS"
+            },
+            "BNGOS": {
+              "cleared_altitude": 5000,
+              "route": "BNGOS3",
+              "waypoints": "_MIA_8R MIA_26L CSALT DEALZ LIIVV NIBLT MRENO/a5000"
+            },
+            "STYMY,WAPON.FLMGO": {
+              "cleared_altitude": 5000,
+              "route": "FLMGO1",
+              "waypoints": "_MIA_8R MIA_26L CSALT DEALZ LIIVV GEITH ALNZO/a5000"
+            },
+            "SHAQQ,BAGGS": {
+              "cleared_altitude": 5000,
+              "route": "GLADZ2",
+              "waypoints": "_MIA_8R MIA_26L CSALT DEALZ LIIVV BLART SELFI GAYTR/a5000 RUTLG GLADZ MARCI"
+            },
+            "LULLS": {
+              "cleared_altitude": 5000,
+              "route": "GLADZ2",
+              "waypoints": "_MIA_8R MIA_26L CSALT DEALZ LIIVV BLART SELFI GAYTR/a5000 RUTLG GLADZ WIGNA"
+            },
+            "GLADZ": {
+              "cleared_altitude": 5000,
+              "route": "GLADZ2",
+              "waypoints": "_MIA_8R MIA_26L CSALT DEALZ LIIVV BLART SELFI GAYTR/a5000 RUTLG"
+            },
+             "KPASA": {
+              "cleared_altitude": 5000,
+              "route": "HURCN3",
+              "waypoints": "_MIA_8R _MIA_26L CSALT DEALZ LIIVV NIBLT JOENZ/a5000 HURCN BLAAK PYROS"
+             },
+             "SMELZ": {
+              "cleared_altitude": 5000,
+              "route": "HURCN3",
+              "waypoints": "_MIA_8R _MIA_26L CSALT DEALZ LIIVV NIBLT JOENZ/a5000 HURCN THEUU GNARL"
+             },
+             "HURCN": {
+              "cleared_altitude": 5000,
+              "route": "HURCN3",
+              "waypoints": "_MIA_8R _MIA_26L CSALT DEALZ LIIVV NIBLT JOENZ/a5000"
+             }
             },
           "26L": {
             "DUCEN": {
@@ -389,6 +504,70 @@
               "cleared_altitude": 5000,
               "route": "FOLZZ2" ,
               "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS RMIRO KELEY SHQIL MARCK/a5000 FOLZZ GOZZR"
+            },
+            "cleared_altitude": 5000,
+              "route": "GLADZ2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO GAYTR/a5000 RUTLG GLADZ MARCI"
+            },
+            "LULLS": {
+              "cleared_altitude": 5000,
+              "route": "GLADZ2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO GAYTR/a5000 RUTLG GLADZ WIGNA"
+            },
+            "GLADZ": {
+              "cleared_altitude": 5000,
+              "route": "GLADZ2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO GAYTR/a5000 RUTLG"
+            },
+            "GWAVA": {
+              "cleared_altitude": 5000,
+              "route": "GWAVA2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO"
+            },
+            "URSUS,LRODD,GLAMS": {
+              "cleared_altitude": 5000,
+              "route": "GWAVA2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO"
+            },
+            "RAJAY": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO CWEAD KLADA ELQUE"
+            },
+            "BITAC": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO CWEAD KLADA MEDLI"
+            },
+            "JAGOR": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO CWEAD KLADA UPACE JAGOR"
+            },
+            "KALDA": {
+              "cleared_altitude": 5000,
+              "route": "KALDA2",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO CWEAD"
+            },
+            "CANOA,MAXIM": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            },
+            "JABOX": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR MCLAW SLIPT"
+            },
+            "SLIPT": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR MCLAW"
+            },
+            "FUNDI": {
+              "cleared_altitude": 5000,
+              "route": "MAYNR1",
+              "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR MCLAW"
             }
           },
           "27": {
@@ -456,6 +635,56 @@
               "cleared_altitude": 5000,
               "route": "MAYNR1",
               "waypoints": "_MIA_27 _MIA_9 KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR MCLAW"
+            },
+             "DUCEN": {
+              "cleared_altitude": 5000,
+              "route": "ALTNN1",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS RMIRO FARRY AGERS/a5000 PERTS ALTNN MMART ENWOD SEAZY"
+            },
+            "ALTNN": {
+              "cleared_altitude": 5000,
+              "route": "ALTNN1",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS RMIRO FARRY AGERS/a5000 PERTS"
+            },
+            "DOLIE,COREA,MERKS": {
+              "cleared_altitude": 5000,
+              "route": "BNGOS3",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS MRENO/a5000 BNGOS"
+            },
+            "BNGOS": {
+              "cleared_altitude": 5000,
+              "route": "BNGOS3",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS MRENO/a5000"
+            },
+            "STYMY,WAPON.FLMGO": {
+              "cleared_altitude": 5000,
+              "route": "FLMGO1",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS RMIRO ALNZO/a5000"
+            },
+             "KPASA": {
+              "cleared_altitude": 5000,
+              "route": "HURCN3",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS NIBLT JOENZ/a5000 HURCN BLAAK PYROS"
+             },
+             "SMELZ": {
+              "cleared_altitude": 5000,
+              "route": "HURCN3",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS NIBLT JOENZ/a5000 HURCN THEUU GNARL"
+             },
+             "HRUCN": {
+              "cleared_altitude": 5000,
+              "route": "HURCN3",
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS NIBLT JOENZ/a5000"
+             },
+             "ZFP,ZADUS": {
+              "cleared_altitude": 5000,
+              "route": "FOLZZ2" ,
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS RMIRO KELEY SHQIL MARCK/a5000 FOLZZ"
+            },
+            "ALYRA,SNAGY,SUMRS": {
+              "cleared_altitude": 5000,
+              "route": "FOLZZ2" ,
+              "waypoints": "_MIA_26L _MIA_8R KROCS RUSSS RMIRO KELEY SHQIL MARCK/a5000 FOLZZ GOZZR"
             }
           }
         },
