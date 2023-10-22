@@ -59,7 +59,8 @@ func (fs FlightState) LogValue() slog.Value {
 }
 
 type NavAltitude struct {
-	Assigned        *float32
+	Assigned        *float32 // controller assigned
+	Cleared         *float32 // from initial clearance
 	AfterSpeed      *float32
 	AfterSpeedSpeed *float32
 	Expedite        bool
@@ -137,7 +138,7 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 func MakeDepartureNav(w *World, fp FlightPlan, perf AircraftPerformance, alt float32,
 	wp []Waypoint) *Nav {
 	if nav := makeNav(w, fp, perf, wp); nav != nil {
-		nav.Altitude.Assigned = &alt
+		nav.Altitude.Cleared = &alt
 		nav.FlightState.IsDeparture = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
 		return nav
@@ -250,6 +251,18 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		lines = append(lines, dir+" to "+FormatAltitude(c.Altitude)+" to cross "+
 			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
+	} else if nav.Altitude.Cleared != nil {
+		if abs(nav.FlightState.Altitude-*nav.Altitude.Cleared) < 100 {
+			lines = append(lines, "At cleared altitude "+
+				FormatAltitude(*nav.Altitude.Cleared))
+		} else {
+			line := "At " + FormatAltitude(nav.FlightState.Altitude) + " for " +
+				FormatAltitude(*nav.Altitude.Cleared)
+			if nav.Altitude.Expedite {
+				line += ", expediting"
+			}
+			lines = append(lines, line)
+		}
 	} else if nav.Altitude.Restriction != nil {
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
 		if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
@@ -818,27 +831,27 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		}
 	}
 
-	if nav.Altitude.Assigned != nil {
-		alt = *nav.Altitude.Assigned
-		lg.Debugf("alt: assigned %.0f", alt)
-
+	getAssignedRate := func() float32 {
 		if nav.FlightState.IsDeparture {
 			if nav.FlightState.Altitude < 10000 {
 				targetSpeed := min(250, nav.Perf.Speed.Cruise)
 				if nav.FlightState.IAS < 0.9*targetSpeed {
 					// Prioritize accelerate over climb starting at 1500 AGL
-					rate = 0.2 * nav.Perf.Rate.Climb
-					return
+					return 0.2 * nav.Perf.Rate.Climb
 				}
 			}
 
 			// Climb normally if at target speed or >10,000'.
-			rate = 0.7 * nav.Perf.Rate.Climb
-			return
+			return 0.7 * nav.Perf.Rate.Climb
 		} else {
-			rate = MaximumRate
-			return
+			return MaximumRate
 		}
+	}
+
+	if nav.Altitude.Assigned != nil {
+		alt, rate = *nav.Altitude.Assigned, getAssignedRate()
+		lg.Debugf("alt: assigned %.0f, rate %.0f", alt, rate)
+		return
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		lg.Debugf("alt: altitude %.0f for final waypoint %s in %.0f seconds", c.Altitude, c.FinalFix, c.ETA)
 		if c.ETA < 5 {
@@ -847,6 +860,10 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			rate = abs(c.Altitude-nav.FlightState.Altitude) / c.ETA
 			return c.Altitude, rate * 60 // rate is in feet per minute
 		}
+	} else if nav.Altitude.Cleared != nil {
+		alt, rate = *nav.Altitude.Cleared, getAssignedRate()
+		lg.Debugf("alt: cleared %.0f, rate %.0f", alt, rate)
+		return
 	}
 
 	if ar := nav.Altitude.Restriction; ar != nil {
