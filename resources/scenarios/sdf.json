@@ -772,6 +772,20 @@
   "_SDF_35L": "N38.09.29.311,W85.44.21.201",
   "_SDF_35R": "N38.09.56.531,W85.43.26.158"
 },
+"inhibit_ca_volumes": [
+  {
+    "name": "SDF NO CA",
+    "type": "polygon",
+    "floor": 0,
+    "ceiling": 4000,
+    "vertices": [
+      "N038.37.17.709,W085.56.13.818",
+      "N038.39.24.518,W085.49.26.143",
+      "N037.43.21.933,W085.31.09.131",
+      "N037.43.08.282,W085.36.38.226"
+    ]
+  }
+],
 "magnetic_variation": 4.9,
 "name": "KSDF",
 "nm_per_latitude": 60,
@@ -869,7 +883,7 @@
       "SDF_E_TWR",
       "SDF_W_TWR"
     ],
-    "default_map": "MAP 1",
+    "default_map": "RWY 17s BASE",
     "departure_airspace": [
       "sdfapp"
     ],
@@ -932,7 +946,7 @@
       "SDF_E_TWR",
       "SDF_W_TWR"
     ],
-    "default_map": "MAP 2",
+    "default_map": "RWY 35s BASE",
     "departure_airspace": [
       "sdfapp"
     ],
@@ -960,20 +974,154 @@
 "stars_maps": [
   {
     "group": 0,
-    "label": "RWY 17",
-    "name": "MAP 1"
+    "label": "17s",
+    "name": "RWY 17s BASE"
   },
   {
-    "group": 0,
-    "label": "RWY 35",
-    "name": "MAP 2"
+      "group": 0,
+      "label": "35s",
+      "name": "RWY 35s BASE"
   },
   {
-    "group": 0,
-    "label": "RWY 29",
-    "name": "MAP 3"
+      "group": 0,
+      "label": "29",
+      "name": "RWY 29 BASE"
+  },
+  {
+      "group": 1,
+      "label": "MVA",
+      "name": "SDF MVA"
+  },
+  {
+    "group": 1,
+    "label": "CLASS C",
+    "name": "SDF Class C"
+  },
+  {
+    "group": 1,
+    "label": "FRIZN",
+    "name": "FRIZN STAR"
+  },
+  {
+      "group": 1,
+      "label": "CHERI",
+      "name": "CHERI STAR"
+  },
+  {
+      "group": 1,
+      "label": "DAMEN",
+      "name": "DAMEN STAR"
+  },
+  {
+      "group": 1,
+      "label": "DARBY",
+      "name": "DARBY STAR"
+  },
+  {
+      "group": 1,
+      "label": "MAUDD",
+      "name": "MAUDD STAR"
+  },
+  {
+      "group": 1,
+      "label": "RDSTN",
+      "name": "RDSTN STAR"
+  },
+  {
+      "group": 1,
+      "label": "DLAMP",
+      "name": "DLAMP STAR"
+  },
+  {
+      "group": 1,
+      "label": "MBELL",
+      "name": "MBELL STAR"
+  },
+  {
+      "group": 1,
+      "label": "APALO",
+      "name": "APALO SID"
+  },
+  {
+      "group": 1,
+      "label": "CRRGO",
+      "name": "CRRGO SID"
+  },
+  {
+      "group": 1,
+      "label": "FEDRA",
+      "name": "FEDRA  SID"
+  },
+  {
+      "group": 1,
+      "label": "STREP",
+      "name": "STREP SID"
+  },
+  {
+      "group": 1,
+      "label": "LOU GPS",
+      "name": "LOU RNAV 24/33"
+  },
+  {
+      "group": 1,
+      "label": "FTK GPS",
+      "name": "FTK RNAV 15/18/36"
+  },
+  {
+      "group": 1,
+      "label": "JVY GPS",
+      "name": "JVY RNAV 18/36"
+  },
+  {
+      "group": 1,
+      "label": "BRY GPS",
+      "name": "BRY RNAV 3/21"
+  },
+  {
+      "group": 1,
+      "label": "EKX GPS",
+      "name": "EKX RNAV 5/23"
+  },
+  {
+      "group": 1,
+      "label": "IMS GPS",
+      "name": "IMS RNAV 3/21"
+  },
+  {
+      "group": 1,
+      "label": "FRH GPS",
+      "name": "FRH RNAV 8/26"
+  },
+  {
+      "group": 1,
+      "label": "6I2 GPS",
+      "name": "6I2 RNAV 11/29"
+  },
+  {
+    "group": 1,
+    "label": "I93 GPS",
+    "name": "I93 RNAV RWY 10-28"
+  },
+  {
+    "group": 1,
+    "label": "VFR",
+    "name": "SDF VFR"
+  },
+  {
+    "group": 1,
+    "label": "IR618",
+    "name": "IR618 Training Route"
+  },
+  {
+    "group": 1,
+    "label": "RIVERS",
+    "name": "Rivers"
+  },
+  {
+    "group": 1,
+    "label": "STADIUM",
+    "name": "Stadiums"
   }
-]
-    ,
-  "video_map_file": "videomaps/sdf-maps.json.zst"
+],
+"video_map_file": "videomaps/ZID-videomaps.json.zst"
 }

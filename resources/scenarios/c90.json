@@ -3376,6 +3376,20 @@
                 "KMDW": "N41.47.07.223,W87.45.05.876",
                 "MDW": "N41.47.07.223,W87.45.05.876"
             },
+            "inhibit_ca_volumes": [
+                {
+                    "name": "ORD FINAL NO CA",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N041.55.55.513,W087.07.12.174",
+                        "N042.04.16.874,W087.07.12.174",
+                        "N042.04.16.874,W088.44.03.640",
+                        "N041.53.22.624,W088.44.03.640"
+                    ]
+                }
+            ],
             "magnetic_variation": -2.0,
             "name": "KORD",
             "nm_per_latitude": 60,
@@ -4115,7 +4129,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map":"SSAT MDW 31C",
+                    "default_map":"C90 SSAT MDW 31C",
                     "departure_airspace": [
                         "CHI_S_APP31C"
                     ],
@@ -4165,7 +4179,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map":"SSAT MDW 4R",
+                "default_map":"C90 SSAT MDW 4R",
                 "departure_airspace": [
                     "CHI_S_APP4"
                 ],
@@ -4215,7 +4229,7 @@
                 "ORD_S_TWR",
                 "MDW_TWR"
             ],
-            "default_map":"SSAT MDW 13C",
+            "default_map":"C90 SSAT MDW 13C",
             "departure_airspace": [
                 "CHI_S_APP31C"
             ],
@@ -4265,7 +4279,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map":"SSAT MDW 22L",
+                "default_map":"C90 SSAT MDW 22L",
                 "departure_airspace": [
                     "CHI_S_APP22"
                 ],
@@ -4470,130 +4484,135 @@
             },
             "stars_maps": [
                 {
+                    "group": 1,
+                    "label": "MVA",
+                    "name": "C90 MVA"
+                },
+                {
+                    "group": 1,
+                    "label": "CLASSBC",
+                    "name": "C90 CLASS B C"
+                },
+                {
+                    "group": 0,
+                    "label": "STAR WP",
+                    "name": "C90 ORD STAR WP"
+                },
+                {
+                    "group": 0,
+                    "label": "CAP BAR",
+                    "name": "C90 CAPTURE BARS"
+                },
+                {
+                    "group": 1,
+                    "label": "SATAPCH",
+                    "name": "C90 SAT APCHS"
+                },
+                {
+                    "group": 0,
+                    "label": "ROADS",
+                    "name": "C90 VFR"
+                },
+                {
                     "group": 0,
                     "label": "MAIN",
                     "name": "C90 MAIN"
                 },
                 {
                     "group": 0,
-                    "label": "CLASS B/C",
-                    "name": "C90 CLASS B/C"
+                    "label": "DEP",
+                    "name": "C90 DEPS"
                 },
                 {
                     "group": 0,
-                    "label": "STAR",
-                    "name": "ORD STAR WAYPOINTS"
+                    "label": "FEED W",
+                    "name": "C90 WEST FLOW"
                 },
                 {
                     "group": 0,
-                    "label": "FINAL/FEED W",
-                    "name": "C90 FEEDER/FINAL ORD WEST"
+                    "label": "FEED W",
+                    "name": "C90 WEST FLOW"
                 },
                 {
                     "group": 0,
-                    "label": "FINAL/FEED E",
-                    "name": "C90 FEEDER/FINAL ORD EAST"
+                    "label": "FEED 4R",
+                    "name": "C90 ORD 4R"
                 },
                 {
                     "group": 0,
-                    "label": "FINAL/FEED 4R",
-                    "name": "C90 FEEDER/FINAL ORD 4R"
+                    "label": "FEED 22",
+                    "name": "C90 ORD 22"
                 },
                 {
                     "group": 0,
-                    "label": "FINAL/FEED 22",
-                    "name": "C90 FEEDER/FINAL ORD 22"
+                    "label": "SSAT 4R",
+                    "name": "C90 SSAT MDW 4R"
                 },
                 {
                     "group": 0,
-                    "label": "CPT BARS",
-                    "name": "ORD SIMUL CAPTURE BARS"
+                    "label": "SSAT 13C",
+                    "name": "C90 SSAT MDW 13C"
                 },
                 {
                     "group": 0,
-                    "label": "DEPS",
-                    "name": "C90 DEPARTURES"
+                    "label": "SSAT 22L",
+                    "name": "C90 SSAT MDW 22L"
                 },
                 {
                     "group": 0,
-                    "label": "MDW 13C",
-                    "name": "SSAT MDW 13C"
+                    "label": "SSAT 31C",
+                    "name": "C90 SSAT MDW 31C"
                 },
                 {
                     "group": 0,
-                    "label": "MDW 4R",
-                    "name": "SSAT MDW 4R"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW 22L",
-                    "name": "SSAT MDW 22L"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW 31C",
-                    "name": "SSAT MDW 31C"
-                },
-                {
-                    "group": 0,
-                    "label": "LOW SEC",
-                    "name": "ZAU LOW SECTOR BOUNDARIES"
-                },
-                {
-                    "group": 0,
-                    "label": "ORD ILS 9R",
-                    "name": "ORD ILS RWY 9R"
-                },
-                {
-                    "group": 0,
-                    "label": "ORD ILS 10L",
-                    "name": "ORD ILS RWY 10L"
-                },
-                {
-                    "group": 0,
-                    "label": "ORD ILS 27L",
-                    "name": "ORD ILS RWY 27L"
-                },
-                {
-                    "group": 0,
-                    "label": "ORD ILS 28R",
-                    "name": "ORD ILS RWY 28R"
-                },
-                {
-                    "group": 0,
-                    "label": "C90 MVA",
-                    "name": "C90 3NM MVA"
-                }
-                ,{
-                    "group": 0,
-                    "label": "SAT APCHS",
-                    "name": "C90 SAT AIRPORT APCHS"
-                },
-                {
-                    "group": 0,
-                    "label": "ROADS",
-                    "name": "C90 ROADS"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW RNAV Y 13C",
-                    "name": "MDW RNAV Y RWY 13C"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW RNAV Y RWY 4R",
+                    "label": "MDW 4RY",
                     "name": "MDW RNAV Y RWY 4R"
                 },
                 {
                     "group": 0,
-                    "label": "MDW RNAV Y RWY 31C",
+                    "label": "MDW 13Y",
+                    "name": "MDW RNAV Y RWY 13C"
+                },
+                {
+                    "group": 0,
+                    "label": "MDW 22X",
+                    "name": "MDW RNAV X RWY 22L"
+                },
+                {
+                    "group": 0,
+                    "label": "MDW 31Y",
                     "name": "MDW RNAV Y RWY 31C"
                 },
                 {
                     "group": 0,
-                    "label": "SHORELINE",
-                    "name": "SHORELINE"
+                    "label": "ZAU SECT",
+                    "name": "C90 ZAU LOW SECTORS"
+                },
+                {
+                    "group": 1,
+                    "label": "SHORE",
+                    "name": "C90 SHORE"
+                },
+                {
+                    "group": 0,
+                    "label": "ORD 10L",
+                    "name": "ORD ILS RWY 10L"
+                },
+                {
+                    "group": 0,
+                    "label": "ORD 28R",
+                    "name": "ORD ILS RWY 28R"
+                },
+                {
+                    "group": 0,
+                    "label": "9R-27L",
+                    "name": "ZAU C90 9C-27C 9R-27L"
+                },
+                {
+                    "group": 0,
+                    "label": "ARR FIX",
+                    "name": "ZAU C90 Arrival Fixes"
                 }
             ],
-            "video_map_file": "videomaps/c90-maps.json.zst"
+            "video_map_file": "videomaps/ZAU-videomaps.json.zst"
         }

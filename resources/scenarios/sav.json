@@ -812,6 +812,16 @@
     "SAV":     "N32.08.46.464,W81.11.56.648",
     "KSAV":    "N32.07.39.009,W81.12.07.892"
   },
+  "inhibit_ca_volumes": [
+    {
+      "name": "SAV NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 2000,
+      "radius": 7,
+      "center": "N32.07.39.009,W81.12.07.892"
+    }
+  ],
   "magnetic_variation": 7.1,
   "name": "KSAV",
   "nm_per_latitude": 60,
@@ -874,7 +884,7 @@
         "JAX_30_CTR",
         "SAV_TWR"
       ],
-      "default_map": "Basic ACTC Sector",
+      "default_map": "RADAR MAP",
       "departure_airspace": [
         "SAVAPP"
       ],
@@ -929,7 +939,7 @@
         "JAX_30_CTR",
         "SAV_TWR"
       ],
-      "default_map": "Basic ACTC Sector",
+      "default_map": "RADAR MAP",
       "departure_airspace": [
         "SAVAPP"
       ],
@@ -954,34 +964,49 @@
   "stars_maps": [
     {
       "group": 0,
-      "label": "Basic",
-      "name": "Basic ACTC Sector"
+      "label": "MAP",
+      "name": "RADAR MAP"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "MVA",
-      "name": "MVA"
+      "name": "MVA "
+    },
+    {
+      "group": 1,
+      "label": "CLASS C",
+      "name": "CLASS C D AIRSPACE"
+    },
+    {
+      "group": 1,
+      "label": "LOWAIRW",
+      "name": "LOW AIRWAYS SAV"
+    },
+    {
+    "group": 1,
+    "label": "COAST",
+    "name": "COASTLINE"
     },
     {
       "group": 0,
-      "label": "SAV C",
-      "name": "Class Airspace with Altitudes"
+      "label": "RVAV 28",
+      "name": "RNAV Z - 28"
     },
     {
-      "group": 0,
-      "label": "GPS",
-      "name": "Secondary/SAV  GPS"
+        "group": 0,
+        "label": "RVAV 10",
+        "name": "RNAV-10"
     },
     {
-      "group": 0,
-      "label": "MOA 1",
-      "name": "Coastal MOA 1E, 1W, 2"
+        "group": 0,
+        "label": "RNAV 19",
+        "name": "RNAV-19"
     },
     {
-      "group": 0,
-      "label": "MOA 2",
-      "name": "Coastal MOA 4B NBC"
+        "group": 0,
+        "label": "RNAV 01",
+        "name": "RNAV - 01"
     }
   ],
-  "video_map_file": "videomaps/sav-maps.json.zst"
+  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
 }

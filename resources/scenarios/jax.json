@@ -1038,7 +1038,7 @@
         "MCO_E_APP",
         "JAX_TWR"
       ],
-      "default_map": "JAX EAST OPERATIONS",
+      "default_map": "EAST FLOW",
       "departure_airspace": [
         "JAX_N_APP"
       ],
@@ -1134,7 +1134,7 @@
         "MCO_E_APP",
         "JAX_TWR"
       ],
-      "default_map": "JAX EAST OPERATIONS",
+      "default_map": "EAST FLOW",
       "departure_airspace": [
         "JAX_N_APP"
       ],
@@ -1233,7 +1233,7 @@
         "MCO_E_APP",
         "JAX_TWR"
       ],
-      "default_map": "JAX WEST OPERATIONS",
+      "default_map": "WEST FLOW",
       "departure_airspace": [
         "JAX_N_APP"
       ],
@@ -1265,199 +1265,84 @@
   "stars_maps": [
     {
       "group": 0,
-      "label": "JAX E",
-      "name": "JAX EAST OPERATIONS"
+      "label": "EAST",
+      "name": "EAST FLOW"
     },
     {
       "group": 0,
-      "label": "JAX W",
-      "name": "JAX WEST OPERATIONS"
+      "label": "WEST",
+      "name": "WEST FLOW"
+    },
+    {
+    "group": 1,
+    "label": "CLASS C",
+    "name": "CLASS C AIRSPACE"
     },
     {
       "group": 1,
-      "label": "CLASS C",
-      "name": "JAX CLASS C SURFACE AREA"
-    },
-    {
-      "group":1,
       "label": "CLASS D",
-      "name": "JAX CLASS D SURFACE AREAS"
-    },
-    {
-      "group": 0,
-      "label": "LOW",
-      "name": "JAX LOW ROUTES"
-    },
-    {
-      "group": 0,
-      "label": "HIGH",
-      "name": "JAX HIGH ROUTES"
-    },
-    {
-      "group": 0,
-      "label": "GEO",
-      "name": "GEOGRAPHY"
-    },
-    {
-      "group": 0,
-      "label": "MVA",
-      "name": "MINIMUM VECTORING ALT"
+      "name": "CLASS D AIRSPACE"
     },
     {
       "group": 0,
       "label": "GPS",
-      "name": "JAX_GPS"
+      "name": "GPS APPROACHES"
     },
     {
-      "group": 0,
-      "label": "VOR",
-      "name": "JAX VOR APPROACHES"
+      "group": 1,
+      "label": "MVA",
+      "name": "MULTI MVA"
     },
     {
-      "group": 0,
-      "label": "SID",
-      "name": "SID WAYPOINTS"
+      "group": 1,
+      "label": "SIDWAY",
+      "name": "SID WAYPOINTS (JAX)"
     },
     {
-      "group": 0,
-      "label": "IR",
-      "name": "IR ROUTES"
-    },
-    {
-      "group": 0,
-      "label": "STARS 8",
-      "name": "RNAV STARS 8"
-    },
-    {
-      "group": 0,
-      "label": "STARS 14",
-      "name": "RNAV STARS 14"
-    },
-    {
-      "group": 0,
-      "label": "STARS 26",
-      "name": "RNAV STARS 26"
-    },
-    {
-      "group": 0,
-      "label": "STARS 32",
-      "name": "RNAV STARS 32"
-    },
-    {
-      "group": 0,
-      "label": "ALCRN",
-      "name": "ALCRN1 ARRIVAL"
-    },
-    {
-      "group": 0,
-      "label": "POGIE",
-      "name": "POGIE2 ARRIVAL"
-    },
-    {
-      "group": 0,
-      "label": "BRSTL",
-      "name": "BRSTL1 DEPARTURE"
-    },
-    {
-      "group": 0,
-      "label": "EXBOX",
-      "name": "EXBOX2 DEPARTURE"
-    },
-    {
-      "group": 0,
-      "label": "SAWGY",
-      "name": "SAWGY3 DEPARTURE"
-    },
-    {
-      "group": 0,
-      "label": "JETIN",
-      "name": "JETIN2 DEPARTURE"
-    },
-    {
-      "group": 0,
-      "label": "TACAN",
-      "name": "NIP/NEN TACAN APP"
-    },
-    {
-      "group": 0,
-      "label": "SGJ",
-      "name": "SGJ SHELF"
-    },
-    {
-      "group": 0,
-      "label": "HOTAR",
-      "name": "HOTAR STAR"
-    },
-    {
-      "group": 0,
+      "group": 1,
       "label": "LUNNI",
       "name": "LUNNI STAR"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "MARQO",
       "name": "MARQO STAR"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "OHDEA",
       "name": "OHDEA STAR"
     },
     {
-      "group": 0,
+      "group": 1,
       "label": "QUBEN",
       "name": "QUBEN STAR"
+   },
+   {
+       "group": 1,
+       "label": "TEBOW",
+       "name": "TEBOW STAR"
+   },
+   {
+    "group": 1,
+    "label": "RNAVS14",
+    "name": "RNAV STARS RWY 14"
     },
     {
-      "group": 0,
-      "label": "TEBOW",
-      "name": "TEBOW STAR"
+        "group": 1,
+        "label": "RNAVS26",
+        "name": "RNAV STARS RWY 26"
     },
     {
-      "group": 0,
-      "label": "VQQ/CGC",
-      "name": "VQQ/CGC APCHS"
+        "group": 1,
+        "label": "RNAVS08",
+        "name": "RNAV STARS RWY 08"
     },
     {
-      "group": 0,
-      "label": "R2903ab",
-      "name": "RESTRICTED AREA 2903"
-    },
-    {
-      "group": 0,
-      "label": "R2903cd",
-      "name": "RESTRICTED AREA 2903 C,D"
-    },
-    {
-      "group": 0,
-      "label": "R2904",
-      "name": "RESTRICTED AREA 2904"
-    },
-    {
-      "group": 0,
-      "label": "R2906",
-      "name": "RESTRICTED AREA 2906"
-    },
-    {
-      "group": 0,
-      "label": "PALATKA",
-      "name": "PALATKA RESTRICTED AREA"
-    },
-    {
-      "group": 0,
-      "label": "P MOA",
-      "name": "PALATKA MOA"
-    },
-    {
-      "group": 0,
-      "label": "NRB MOA",
-      "name": "MAYPORT MOA"
-    },
-    {
-      "group": 0,
-      "label": "C MOA",
-      "name": "COASTAL MOA"
-    }
+      "group": 1,
+      "label": "RNAVS32",
+      "name": "RNAV STARS RWY 32"
+   }
   ],
-  "video_map_file": "videomaps/jax-maps.json.zst"
+  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
 }
