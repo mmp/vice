@@ -830,16 +830,7 @@
         "destination": "KLGA",
         "exit": "AGARD",
         "route": "AGARD KORRY4"
-      },
-      {
-        "airlines" : [
-          {
-            "icao": "UAL
-          }
-      },
-      "destination": "KORD",
-      "exit": "RAMAY",
-      "route": "RAMAY Q72 HACKS J149 ROD WATSN4"
+      }
     ],
     "exit_categories": {
       "RAMAY": "ALL",
@@ -860,7 +851,38 @@
   },
   "KBWI": {
     "approaches": {
-
+      "I10": {
+        "full_name": "ILS Runway 10",
+        "runway": "10",
+        "type": "ILS",
+        "waypoints": [
+          "COLUM/a2500 JEANS/a1500 KHORT/a860 _BWI_10/a143"
+        ]
+      },
+      "I5L": {
+        "full_name": "ILS Runway 15L",
+        "runway": "15L",
+        "type": "ILS",
+        "waypoints": [
+          "KRENE/a3000 MNKEY/a2500 ZOWEE/a2100 ADCOK/a980 _BWI_15L/a142"
+        ]
+      },
+      "I5R": {
+        "full_name": "ILS Runway 15R",
+        "runway": "15R",
+        "type": "ILS",
+        "waypoints": [
+          "EMI/a3000 BMORE/a2500 KEVVN/a2100 TATTO/a1080 _BWI_15R/a138"
+        ]
+      },
+      "I28": {
+        "full_name": "ILS Runway 28",
+        "runway": "28",
+        "type": "ILS",
+        "waypoints": [
+          "HURTZ/a2000 JURTI/a2000 _BWI_28/a143"
+        ]
+      }
     }
   }
 }
