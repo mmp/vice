@@ -1637,6 +1637,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = ErrSTARSIllegalFix
 					return
 				}
+			} else if ac := lookupAircraft(f[0]); ac != nil && len(f) > 1 {
+				acCmds := strings.Join(f[1:], " ")
+				ctx.world.RunAircraftCommands(ac, acCmds,
+					func(err error) {
+						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						sp.previewAreaOutput = GetSTARSError(err).Error()
+					})
+
+				status.clear = true
+				return
 			}
 		}
 
