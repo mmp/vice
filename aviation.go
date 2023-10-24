@@ -208,11 +208,10 @@ type TransponderMode int
 const (
 	Standby = iota
 	Charlie
-	Ident
 )
 
 func (t TransponderMode) String() string {
-	return [...]string{"Standby", "C", "Ident"}[t]
+	return [...]string{"Standby", "C"}[t]
 }
 
 type Runway struct {

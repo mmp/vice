@@ -945,6 +945,11 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return err
 				}
+			} else if command == "ID" {
+				if err := sim.Ident(token, callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
 			} else {
 				sim.SetSTARSInput(strings.Join(commands[i:], " "))
 				return ErrInvalidCommandSyntax

@@ -1618,6 +1618,32 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 		})
 }
 
+func (s *Sim) Ident(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(c *Controller, ac *Aircraft) error {
+			// Can't ask for ident if they're on someone else's frequency.
+			if ac.ControllingController != "" && ac.ControllingController != c.Callsign {
+				return ErrOtherControllerHasTrack
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			s.eventStream.Post(Event{
+				Type:     IdentEvent,
+				Callsign: ac.Callsign,
+			})
+
+			return []RadioTransmission{RadioTransmission{
+				Controller: ctrl.Callsign,
+				Message:    "ident",
+				Type:       RadioTransmissionReadback,
+			}}
+		})
+}
+
 func (s *Sim) InitiateTrack(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
