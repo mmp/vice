@@ -1775,24 +1775,26 @@
       },
       "solo_controller": "AAC_NR_APP",
       "multi_controllers": {
-        "AAC_NR_APP": {
-          "primary": true,
-          "departure": true,
-          "arrivals": [
-            "BARTS2",
-            "REELI1"
-          ]
-        },
-        "AAC_SR_APP": {
-          "backup": "AAC_NR_APP",
-          "arrivals": [
-            "ATOKA1",
-            "KILLR4"
-          ]
-        },
-        "AAC_F_APP": {
-          "backup": "AAC_NR_APP"
-        }
+          "default" : {
+              "AAC_NR_APP": {
+                  "primary": true,
+                  "departure": true,
+                  "arrivals": [
+                      "BARTS2",
+                      "REELI1"
+                  ]
+              },
+              "AAC_SR_APP": {
+                  "backup": "AAC_NR_APP",
+                  "arrivals": [
+                      "ATOKA1",
+                      "KILLR4"
+                  ]
+              },
+              "AAC_F_APP": {
+                  "backup": "AAC_NR_APP"
+              }
+          }
       },
       "controllers": [
         "AAC_TWR",
@@ -1855,26 +1857,28 @@
       },
       "solo_controller": "AAC_NR_APP",
       "multi_controllers": {
-        "AAC_NR_APP": {
-          "primary": true,
-          "departure": true,
-          "arrivals": [
-            "BARTS",
-            "REELI"
-          ]
-        },
-        "AAC_SR_APP": {
-          "backup": "AAC_NR_APP",
-          "arrivals": [
-            "ATOKA",
-            "KILLR"
-          ]
-        },
-        "AAC_F_APP": {
-          "backup": "AAC_NR_APP"
-        }
+          "default" : {
+              "AAC_NR_APP": {
+                  "primary": true,
+                  "departure": true,
+                  "arrivals": [
+                      "BARTS",
+                      "REELI"
+                  ]
+              },
+              "AAC_SR_APP": {
+                  "backup": "AAC_NR_APP",
+                  "arrivals": [
+                      "ATOKA",
+                      "KILLR"
+                  ]
+              },
+              "AAC_F_APP": {
+                  "backup": "AAC_NR_APP"
+              }
+          }
       },
-      "controllers": [
+    "controllers": [
         "AAC_TWR",
         "JKE_TWR",
         "SGF_APP",

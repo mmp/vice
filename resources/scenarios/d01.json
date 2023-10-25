@@ -1845,47 +1845,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -1969,47 +1971,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2097,47 +2101,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2221,47 +2227,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2345,47 +2353,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2469,47 +2479,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2593,47 +2605,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2717,47 +2731,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2837,47 +2853,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",
@@ -2957,47 +2975,49 @@
         },
         "solo_controller": "DEN_I_APP",
         "multi_controllers": {
-          "DEN_I_APP": {
-            "primary": true,
-            "arrivals": ["SSKII3", "TBARR3"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "arrivals": ["FLATI3", "LONGZ2"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_H_APP",
-            "arrivals": ["AALLE3", "LAWGR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_G_APP",
-            "arrivals": ["NIIXX3", "CLASH4"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_O_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "departure": true
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_N_DEP"
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP"
-          }
+            "default" : {
+                "DEN_I_APP": {
+                    "primary": true,
+                    "arrivals": ["SSKII3", "TBARR3"]
+                },
+                "DEN_H_APP": {
+                    "backup": "DEN_I_APP",
+                    "arrivals": ["FLATI3", "LONGZ2"]
+                },
+                "DEN_G_APP": {
+                    "backup": "DEN_H_APP",
+                    "arrivals": ["AALLE3", "LAWGR3"]
+                },
+                "DEN_X_APP": {
+                    "backup": "DEN_G_APP",
+                    "arrivals": ["NIIXX3", "CLASH4"]
+                },
+                "DEN_W_APP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_E_APP": {
+                    "backup": "DEN_W_APP"
+                },
+                "DEN_O_APP": {
+                    "backup": "DEN_E_APP"
+                },
+                "DEN_T_APP": {
+                    "backup": "DEN_O_APP"
+                },
+                "DEN_L_DEP": {
+                    "backup": "DEN_I_APP"
+                },
+                "DEN_N_DEP": {
+                    "backup": "DEN_L_DEP",
+                    "departure": true
+                },
+                "DEN_R_DEP": {
+                    "backup": "DEN_N_DEP"
+                },
+                "DEN_S_DEP": {
+                    "backup": "DEN_R_DEP"
+                }
+            }
         },
         "controllers": [
           "DEN_E_TWR",

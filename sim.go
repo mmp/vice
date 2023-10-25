@@ -25,9 +25,12 @@ type SimConfiguration struct {
 }
 
 type SimScenarioConfiguration struct {
-	SelectedController string
-	Wind               Wind
-	LaunchConfig       LaunchConfig
+	SelectedController  string
+	SelectedSplit       string
+	SplitConfigurations SplitConfigurations
+
+	Wind         Wind
+	LaunchConfig LaunchConfig
 
 	DepartureRunways []ScenarioGroupDepartureRunway
 	ArrivalRunways   []ScenarioGroupArrivalRunway
@@ -395,6 +398,18 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.EndCombo()
 		}
 
+		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
+			if imgui.BeginComboV("Split", c.Scenario.SelectedSplit, imgui.ComboFlagsHeightLarge) {
+				for _, split := range sc.Splits() {
+					if imgui.SelectableV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
+						c.Scenario.SelectedSplit = split
+						c.Scenario.SelectedController = sc.GetPrimaryController(split)
+					}
+				}
+				imgui.EndCombo()
+			}
+		}
+
 		if c.NewSimType == NewSimCreateRemote {
 			if imgui.InputTextV("Name", &c.NewSimName, 0, nil) {
 				c.displayError = nil
@@ -698,7 +713,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 		}
 	}
 	if *server {
-		for callsign := range sc.MultiControllers {
+		for callsign := range sc.SplitConfigurations.GetControllers(ssc.Scenario.SelectedSplit) {
 			add(callsign)
 		}
 	} else {
@@ -716,8 +731,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
 	if *server {
-		w.PrimaryController, _ = GetPrimaryController(sc.MultiControllers)
-		w.MultiControllers = DuplicateMap(sc.MultiControllers)
+		w.PrimaryController = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
+		w.MultiControllers = sc.SplitConfigurations.GetControllers(ssc.Scenario.SelectedSplit)
 	} else {
 		w.PrimaryController = sc.SoloController
 	}
@@ -747,6 +762,13 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimTime = s.SimTime
 
 	for _, callsign := range sc.VirtualControllers {
+		// Skip controllers that are in MultiControllers
+		if w.MultiControllers != nil {
+			if _, ok := w.MultiControllers[callsign]; ok {
+				continue
+			}
+		}
+
 		if ctrl, ok := sg.ControlPositions[callsign]; ok {
 			w.Controllers[callsign] = ctrl
 		} else {

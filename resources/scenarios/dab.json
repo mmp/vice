@@ -666,13 +666,15 @@
       },
       "solo_controller": "DAB_H_APP",
       "multi_controllers": {
-        "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
-        "DAB_M_APP": {"backup": "DAB_H_APP"},
-        "DAB_L_APP": {"backup": "DAB_H_APP"},
-        "DAB_N_APP": {"backup": "DAB_H_APP"},
-        "DAB_S_APP": {"backup": "DAB_H_APP"},
-        "DAB_E_APP": {"backup": "DAB_H_APP", "departure": true},
-        "DAB_W_APP": {"backup": "DAB_H_APP"}
+          "default" : {
+              "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
+              "DAB_M_APP": {"backup": "DAB_H_APP"},
+              "DAB_L_APP": {"backup": "DAB_H_APP"},
+              "DAB_N_APP": {"backup": "DAB_H_APP"},
+              "DAB_S_APP": {"backup": "DAB_H_APP"},
+              "DAB_E_APP": {"backup": "DAB_H_APP", "departure": true},
+              "DAB_W_APP": {"backup": "DAB_H_APP"}
+          }
       },
       "controllers": [
         "DAB_H_APP",
@@ -731,13 +733,15 @@
       },
       "solo_controller": "DAB_H_APP",
       "multi_controllers": {
-        "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
-        "DAB_M_APP": {"backup": "DAB_H_APP"},
-        "DAB_L_APP": {"backup": "DAB_H_APP"},
-        "DAB_N_APP": {"backup": "DAB_H_APP"},
-        "DAB_S_APP": {"backup": "DAB_H_APP"},
-        "DAB_E_APP": {"backup": "DAB_H_APP"},
-        "DAB_W_APP": {"backup": "DAB_H_APP", "departure": true}
+          "default" : {
+              "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
+              "DAB_M_APP": {"backup": "DAB_H_APP"},
+              "DAB_L_APP": {"backup": "DAB_H_APP"},
+              "DAB_N_APP": {"backup": "DAB_H_APP"},
+              "DAB_S_APP": {"backup": "DAB_H_APP"},
+              "DAB_E_APP": {"backup": "DAB_H_APP"},
+              "DAB_W_APP": {"backup": "DAB_H_APP", "departure": true}
+          }
       },
       "controllers": [
         "DAB_H_APP",

@@ -865,9 +865,11 @@
       },
       "solo_controller": "SAV_N_APP",
       "multi_controllers": {
-        "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"], "departure": true},
-        "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"]},
-        "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
+          "default" : {
+              "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"], "departure": true},
+              "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"]},
+              "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
+          }
       },
       "controllers": [
         "SAV_N_APP",
@@ -920,9 +922,11 @@
       },
       "solo_controller": "SAV_N_APP",
       "multi_controllers": {
-        "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"]},
-        "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"], "departure": true}, 
-        "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
+          "default" : {
+              "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"]},
+              "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"], "departure": true}, 
+              "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
+          }
       },
       "controllers": [
         "SAV_N_APP",
