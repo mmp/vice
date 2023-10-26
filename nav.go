@@ -419,10 +419,13 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 }
 
 func (nav *Nav) DepartureMessage() string {
+	alt := func(a float32) string {
+		return FormatAltitude(float32(100 * int((a+50)/100)))
+	}
 	if nav.Altitude.Assigned == nil || nav.FlightState.Altitude == *nav.Altitude.Assigned {
-		return "at " + FormatAltitude(nav.FlightState.Altitude)
+		return "at " + alt(nav.FlightState.Altitude)
 	} else {
-		return "at " + FormatAltitude(nav.FlightState.Altitude) + " for " + FormatAltitude(*nav.Altitude.Assigned)
+		return "at " + alt(nav.FlightState.Altitude) + " for " + alt(*nav.Altitude.Assigned)
 	}
 }
 
