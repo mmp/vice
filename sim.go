@@ -27,7 +27,7 @@ type SimConfiguration struct {
 type SimScenarioConfiguration struct {
 	SelectedController  string
 	SelectedSplit       string
-	SplitConfigurations SplitConfigurations
+	SplitConfigurations SplitConfigurationSet
 
 	Wind         Wind
 	LaunchConfig LaunchConfig
@@ -713,7 +713,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 		}
 	}
 	if *server {
-		for callsign := range sc.SplitConfigurations.GetControllers(ssc.Scenario.SelectedSplit) {
+		for callsign := range sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit) {
 			add(callsign)
 		}
 	} else {
@@ -732,7 +732,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Callsign = "__SERVER__"
 	if *server {
 		w.PrimaryController = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
-		w.MultiControllers = sc.SplitConfigurations.GetControllers(ssc.Scenario.SelectedSplit)
+		w.MultiControllers = sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
 	} else {
 		w.PrimaryController = sc.SoloController
 	}

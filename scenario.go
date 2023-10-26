@@ -90,11 +90,11 @@ type ControllerAirspaceVolume struct {
 }
 
 type Scenario struct {
-	SoloController      string              `json:"solo_controller"`
-	SplitConfigurations SplitConfigurations `json:"multi_controllers"`
-	DefaultSplit        string              `json:"default_split"`
-	Wind                Wind                `json:"wind"`
-	VirtualControllers  []string            `json:"controllers"`
+	SoloController      string                `json:"solo_controller"`
+	SplitConfigurations SplitConfigurationSet `json:"multi_controllers"`
+	DefaultSplit        string                `json:"default_split"`
+	Wind                Wind                  `json:"wind"`
+	VirtualControllers  []string              `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
@@ -110,8 +110,11 @@ type Scenario struct {
 	DefaultMap string `json:"default_map"`
 }
 
-// split -> controller
-type SplitConfigurations map[string]map[string]*MultiUserController
+// split -> config
+type SplitConfigurationSet map[string]SplitConfiguration
+
+// callsign -> controller contig
+type SplitConfiguration map[string]*MultiUserController
 
 type MultiUserController struct {
 	Primary          bool     `json:"primary"`
@@ -1208,11 +1211,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 ///////////////////////////////////////////////////////////////////////////
 // SplitConfigurations
 
-func (sc SplitConfigurations) GetControllers(split string) map[string]*MultiUserController {
-	return DuplicateMap(sc.getSplitConfig(split))
-}
-
-func (sc SplitConfigurations) getSplitConfig(split string) map[string]*MultiUserController {
+func (sc SplitConfigurationSet) GetConfiguration(split string) SplitConfiguration {
 	if len(sc) == 1 {
 		// ignore split
 		for _, config := range sc {
@@ -1227,8 +1226,8 @@ func (sc SplitConfigurations) getSplitConfig(split string) map[string]*MultiUser
 	return config
 }
 
-func (sc SplitConfigurations) GetPrimaryController(split string) string {
-	for callsign, mc := range sc.getSplitConfig(split) {
+func (sc SplitConfigurationSet) GetPrimaryController(split string) string {
+	for callsign, mc := range sc.GetConfiguration(split) {
 		if mc.Primary {
 			return callsign
 		}
@@ -1238,10 +1237,38 @@ func (sc SplitConfigurations) GetPrimaryController(split string) string {
 	return ""
 }
 
-func (sc SplitConfigurations) Len() int {
+func (sc SplitConfigurationSet) Len() int {
 	return len(sc)
 }
 
-func (sc SplitConfigurations) Splits() []string {
+func (sc SplitConfigurationSet) Splits() []string {
 	return SortedMapKeys(sc)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SplitConfiguration
+
+// ResolveController takes a controller callsign and returns the signed-in
+// controller that is responsible for that position (possibly just the
+// provided callsign).
+func (sc SplitConfiguration) ResolveController(callsign string, active func(callsign string) bool) string {
+	i := 0
+	for {
+		if active(callsign) {
+			return callsign
+		}
+
+		if ctrl, ok := sc[callsign]; !ok {
+			lg.Errorf("%s: failed to find controller in MultiControllers", callsign)
+			return ""
+		} else {
+			callsign = ctrl.BackupController
+		}
+
+		i++
+		if i == 20 {
+			lg.Errorf("%s: unable to find backup for arrival handoff controller", callsign)
+			return ""
+		}
+	}
 }

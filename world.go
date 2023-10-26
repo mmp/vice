@@ -55,7 +55,7 @@ type World struct {
 	// to access directly.
 	LaunchConfig      LaunchConfig
 	PrimaryController string
-	MultiControllers  map[string]*MultiUserController
+	MultiControllers  SplitConfiguration
 	SimIsPaused       bool
 	SimRate           float32
 	SimName           string
