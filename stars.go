@@ -4216,6 +4216,11 @@ func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = PartialDatablock
 	}
 
+	if ac.TrackingController == ctx.world.Callsign || ac.ControllingController == ctx.world.Callsign {
+		// it's under our control
+		dt = FullDatablock
+	}
+
 	if ac.HandoffTrackController == ctx.world.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
@@ -5861,16 +5866,7 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 
 					if fp := ac.FlightPlan; fp != nil {
 						if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
-							// We'd like to auto-track this departure, but first
-							// check that we are the departure controller.
-
-							departureController := w.GetDepartureController(ac)
-
-							// Turns out that we are in fact the departure controller.
-							if w.Callsign == departureController {
-								w.InitiateTrack(callsign, nil, nil) // ignore error...
-								sp.Aircraft[callsign].DatablockType = FullDatablock
-							}
+							w.InitiateTrack(callsign, nil, nil) // ignore error...
 						}
 					}
 				}
