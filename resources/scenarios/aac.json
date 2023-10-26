@@ -1,6 +1,7 @@
 {
   "airports": {
     "KAAC": {
+      "name": "Academy",
       "approaches": {
         "I8R": {
           "full_name": "ILS 28R",
@@ -487,6 +488,7 @@
       "tower_list": 1
     },
     "KJKE": {
+      "name": "Jeske",
       "approaches": {
         "I27": {
           "full_name": "ILS 27",

@@ -1,6 +1,7 @@
 {
   "airports": {
     "KEWR": {
+      "name": "Newark",
       "approaches": {
         "I11": {
           "full_name": "ILS 11",
@@ -1075,6 +1076,7 @@
       "tower_list": 1
     },
     "KTEB": {
+      "name": "Teterboro",
       "approaches": {
         "I06": {
           "full_name": "ILS 6",

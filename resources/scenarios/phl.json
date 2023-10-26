@@ -1,6 +1,7 @@
 {
   "airports": {
     "KPHL": {
+      "name": "Philadelphia",
       "approaches": {
         "17Z": {
           "full_name": "ILS 17",

@@ -14,6 +14,8 @@ type Airport struct {
 	Location       Point2LL `json:"location"`
 	TowerListIndex int      `json:"tower_list"`
 
+	Name string `json:"name"`
+
 	Approaches map[string]Approach `json:"approaches,omitempty"`
 	Departures []Departure         `json:"departures,omitempty"`
 

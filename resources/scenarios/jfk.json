@@ -1,6 +1,7 @@
 {
   "airports": {
     "KFRG": {
+      "name": "Republic",
       "approaches": {
         "I14": {
           "full_name": "ILS Runway 14",
@@ -214,6 +215,7 @@
       "tower_list": 2
     },
     "KHVN": {
+      "name": "New Haven",
       "approaches": {
         "I2": {
           "full_name": "ILS Runway 2",
@@ -383,6 +385,7 @@
       "location": "KHVN"
     },
     "KISP": {
+      "name": "MacArthur",
       "approaches": {
         "R5R": {
           "full_name": "RNAV Runway 15R",
@@ -669,6 +672,7 @@
       "tower_list": 3
     },
     "KJFK": {
+      "name": "Kennedy",
       "approaches": {
         "I1L": {
           "full_name": "ILS 31 Left",
