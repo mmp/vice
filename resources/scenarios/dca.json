@@ -705,8 +705,313 @@
             "icao": "JIA"
           }
         ]
-      }
+      },
+      "cleared_altitude": 12000,
+      "initial_altitude": 14000,
+      "initial_controller": "BWI_S_APP",
+      "initial_speed": 270,
+      "route": "/. CLIPR3",
+      "runway_waypoints": {
+        "1":  "EYESS FELTY HITEK CAVDI/h187",
+        "4":  "EYESS FELTY HITEK CAVDI/h187",
+        "15": "EYESS EDDWD MEGGS NAYES/h327",
+        "19": "EYESS EDDWD MEGGS NAYES/h327",
+        "22": "EYESS EDDWD MEGGS NAYES/h327",
+        "33": "EYESS FELTY HITEK CAVDI/h187"
+      },
+      "waypoints": "CLIPR/a12000 BAL/a10000/s250/ho EYESS"
+    }
+  ],
+  "DEALE3": [
+    {
+      "airlines": {
+        "KDCA": [
+          {
+            "airport": "KACY",
+            "icao": "NKS"
+          },
+          {
+            "airport": "KJFK",
+            "icao": "JBU"
+          },
+          {
+            "airport": "KJFK",
+            "icao": "JIA"
+          },
+          {
+            "airport": "KLGA",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KEWR",
+            "fleet": "short",
+            "icao": "UAL"
+          }
+        ]
+      },
+      "cleared_altitude": 11000,
+      "initial_altitude": 12000,
+      "initial_controller": "DC_CTR",
+      "initial_speed": 280,
+      "route": "/. DEALE3",
+      "runway_waypoints": {
+        "1":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
+        "4":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
+        "15": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
+        "19": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
+        "22": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
+        "33": "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187"
+      },
+      "waypoints": "BILIT/a11000 DEALE/a10000/s280/ho"
     }
   ]
-}
+},
+"center": "KDCA",
+"control_positions": {
+  "DC_CTR": {
+  "frequency": 133725,
+  "full_name": "Washington Center",
+  "scope_char": "C",
+  "sector_id": "W32"
+  },
+  "NY_CTR": {
+  "frequency": 125325,
+  "full_name": "New York Center",
+  "scope_char": "C",
+  "sector_id": "N56"
+  },
+  "BWI_S_APP": {
+    "frequency": 119700,
+    "full_name": "Potomac Approach",
+    "scope_char": "S",
+    "sector_id": "S"
+  },
+  "IAD_M_APP": {
+    "frequency": 126100,
+    "full_name": "Potomac Approach",
+    "scope_char": "M",
+    "sector_id": "3M"
+  },
+  "DCA_APP": {
+    "frequency": 119850,
+    "full_name" : "Potomac Approach",
+    "scope_char": "J",
+    "sector_id": "J"
+  },
+  "DCA_J_APP": {
+    "frequency": 119850,
+    "full_name" : "Potomac Approach",
+    "scope_char": "J",
+    "sector_id": "J"
+  },
+  "DCA_E_APP": {
+    "frequency": 124200,
+    "full_name" : "Potomac Approach",
+    "scope_char": "E",
+    "sector_id": "E"
+  },
+  "DCA_D_APP": {
+    "frequency": 128350,
+    "full_name" : "Potomac Approach",
+    "scope_char": "D",
+    "sector_id": "D"
+  },
+  "DCA_L_APP": {
+    "frequency": 118675,
+    "full_name" : "Potomac Approach",
+    "scope_char": "L",
+    "sector_id": "L"
+  },
+  "DCA_V_APP": {
+    "frequency": 124700,
+    "full_name" : "Potomac Approach",
+    "scope_char": "V",
+    "sector_id": "V"
+  },
+  "DCA_F_APP": {
+    "frequency": 121050,
+    "full_name" : "Potomac Approach",
+    "scope_char": "F",
+    "sector_id": "F"
+  },
+  "DCA_Y_APP": {
+    "frequency": 118950,
+    "full_name" : "Potomac Approach",
+    "scope_char": "Y",
+    "sector_id": "Y"
+  },
+  "DCA_K_APP": {
+    "frequency": 125650,
+    "full_name" : "Potomac Approach",
+    "scope_char": "K",
+    "sector_id": "K"
+  },
+  "DCA_A_APP": {
+    "frequency": 128000,
+    "full_name": "Potomac Approach",
+    "scope_char": "A",
+    "sector_id": "A"
+  },
+  "DCA_TWR": {
+    "frequency": 119100,
+    "full_name": "Washington Tower",
+    "scope_char": "T",
+    "sector_id": "4T"
+  }
+  },
+  "default_scenario": "KDCA North OPS",
+  "fixes": {
+    "_DCA_1":  "N38.50.30.629,W77.02.12.802",
+    "_DCA_4":  "N38.50.30.312,W77.02.27.983",
+    "_DCA_15": "N38.51.40.608,W77.02.36.774",
+    "_DCA_19": "N38.51.41.390,W77.02.19.905",
+    "_DCA_22": "N38.51.13.183,W77.02.01.924",
+    "_DCA_33": "N38.50.59.364,W77.01.56.277",
+    "KDCA":    "N38.51.11.346,W77.02.25.727",
+    "DCA":     "N38.51.34.118,W77.02.10.979"
+  },
+  "inhibit_ca_volumes": [
+    {
+      "name": "DCA NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1500,
+      "radius": 5,
+      "center": "N38.51.34.118,W77.02.10.979"
+    }
+  ],
+  "magnetic_variation": 10.8,
+  "name": "KDCA",
+  "nm_per_latitude": 60,
+  "nm_per_longitude": 45,
+  "primary_airport": "KDCA",
+  "radar_sites": {
+    "DCA": {
+      "char": "D",
+      "position": "38.8451920,-77.0331090",
+      "elevation": 88,
+      "primary_range":60,
+      "secondary_range":120,
+      "silence_angle": 54.7 , 
+      "slope_angle": 0.3
+    },
+    "ADW": {
+      "char": "A",
+      "position": "38.8122660,-76.8670090",
+      "elevation": 338,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3,
+    },
+    "BAL": {
+      "char": "B",
+      "position": "39.1794850,-76.6838430",
+      "elevation": 325,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3 
+    },
+    "CHO": {
+      "char": "C",
+      "position": "38.1800000,-78.4193610",
+      "elevation": 1599,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3
+    },
+    "IAD": {
+      "char": "I",
+      "position": "38.9565300,-77.4633900",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "MDT": {
+      "char": "T",
+      "position": "40.1857740,-76.7950640",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "MRB": {
+      "char": "M",
+      "position": "39.3952650,-77.9946880",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "NHK": {
+      "char": "N",
+      "position": "38.2987080,-76.4120690",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "PHL": {
+      "char": "P",
+      "position": "39.8591750,-75.2667470",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "RIC": {
+      "char": "R",
+      "position": "37.5053410,-77.3242350",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "QBE": {
+      "char": "E",
+      "position": "37.5173130,-79.5101010",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "QBN": {
+      "char": "Q",
+      "position": "37.3828590,-76.9987510",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "QIE": {
+      "char": "Z",
+      "position": "39.8247290,-74.9541500",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    },
+    "QPL": {
+      "char": "L",
+      "position": "38.8823130,-77.7030850",
+      "elevation": ,
+      "primary_range":,
+      "secondary_range":,
+      "silence_angle": , 
+      "slope_angle": 0.3
+    }
+  }
 }
