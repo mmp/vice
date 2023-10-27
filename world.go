@@ -55,7 +55,7 @@ type World struct {
 	// to access directly.
 	LaunchConfig      LaunchConfig
 	PrimaryController string
-	MultiControllers  map[string]*MultiUserController
+	MultiControllers  SplitConfiguration
 	SimIsPaused       bool
 	SimRate           float32
 	SimName           string
@@ -446,22 +446,6 @@ func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
 }
 
-func (w *World) GetDepartureController(ac *Aircraft) string {
-	// This may be already set, e.g. for a departure with a specified
-	// initial controller at another airport.
-	if ac.ControllingController != "" {
-		return ac.ControllingController
-	}
-
-	// See if the departure controller is signed in
-	for callsign, mc := range w.MultiControllers {
-		if _, ok := w.Controllers[callsign]; ok && mc.Departure {
-			return callsign
-		}
-	}
-	return w.PrimaryController // default
-}
-
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if w.simProxy == nil {
 		return
@@ -767,7 +751,22 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	}
 
 	ac.FlightPlan = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
-	if err := ac.InitializeArrival(w, arrivalGroup, idx, goAround); err != nil {
+
+	// Figure out which controller will (for starters) get the arrival
+	// handoff. For single-user, it's easy.  Otherwise, figure out which
+	// control position is initially responsible for the arrival. Note that
+	// the actual handoff controller will be resolved later when the
+	// handoff happens, so that it can reflect which controllers are
+	// actually signed in at that point.
+	arrivalController := w.PrimaryController
+	if w.MultiControllers != nil {
+		arrivalController = w.MultiControllers.GetArrivalController(arrivalGroup)
+		if arrivalController == "" {
+			arrivalController = w.PrimaryController
+		}
+	}
+
+	if err := ac.InitializeArrival(w, arrivalGroup, idx, arrivalController, goAround); err != nil {
 		return nil, err
 	}
 
@@ -822,6 +821,18 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
+	virtualDepartureController := ap.DepartureController
+	humanDepartureController := ""
+	if virtualDepartureController == "" {
+		humanDepartureController = w.PrimaryController
+		if w.MultiControllers != nil {
+			humanDepartureController = w.MultiControllers.GetDepartureController(departureAirport, runway)
+			if humanDepartureController == "" {
+				humanDepartureController = w.PrimaryController
+			}
+		}
+	}
+
 	airline := Sample(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
@@ -830,7 +841,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
-	if err := ac.InitializeDeparture(w, ap, dep, exitRoute); err != nil {
+	if err := ac.InitializeDeparture(w, ap, dep, virtualDepartureController,
+		humanDepartureController, exitRoute); err != nil {
 		return nil, nil, err
 	}
 

@@ -856,12 +856,14 @@
     },
     "solo_controller": "SDF_I_APP",
     "multi_controllers": {
-      "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL4"]},
-      "SDF_B_DEP": {"backup": "SDF_I_APP", "departure": true},
-      "SDF_W_APP": {"backup": "SDF_I_APP"},
-      "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP6", "MAUDD6"]},
-      "SDF_E_APP": {"backup": "SDF_W_APP"},
-      "SDF_D_DEP": {"backup": "SDF_B_DEP"}
+        "default" : {
+            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL4"]},
+            "SDF_B_DEP": {"backup": "SDF_I_APP", "departures": ["KSDF"] },
+            "SDF_W_APP": {"backup": "SDF_I_APP"},
+            "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP6", "MAUDD6"]},
+            "SDF_E_APP": {"backup": "SDF_W_APP"},
+            "SDF_D_DEP": {"backup": "SDF_B_DEP"}
+        }
     },
     "controllers": [
       "IND_CTR",
@@ -919,12 +921,14 @@
     },
     "solo_controller": "SDF_I_APP",
     "multi_controllers": {
-      "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL4"]},
-      "SDF_B_DEP": {"backup": "SDF_I_APP", "departure": true},
-      "SDF_W_APP": {"backup": "SDF_I_APP"},
-      "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP6", "MAUDD6"]},
-      "SDF_E_APP": {"backup": "SDF_W_APP"},
-      "SDF_D_DEP": {"backup": "SDF_B_DEP"}
+        "default" : {
+            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL4"]},
+            "SDF_B_DEP": {"backup": "SDF_I_APP", "departures": ["KSDF"]},
+            "SDF_W_APP": {"backup": "SDF_I_APP"},
+            "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP6", "MAUDD6"]},
+            "SDF_E_APP": {"backup": "SDF_W_APP"},
+            "SDF_D_DEP": {"backup": "SDF_B_DEP"}
+        }
     },
     "controllers": [
       "IND_CTR",
@@ -943,37 +947,36 @@
         "rate" :40
       }
     ],
-    "wind": {
-      "direction": 330,
-      "gust": 19,
-      "speed": 13
-    }
+      "wind": {
+          "direction": 330,
+          "gust": 19,
+          "speed": 13
+      }
   }
 },
 "scratchpads": {
-"APALO": "APA",
-"CRRGO": "CRG",
-"SHIPR": "FED",
-"OHAGI": "FED",
-"STREP": "STR"
+    "APALO": "APA",
+    "CRRGO": "CRG",
+    "SHIPR": "FED",
+    "OHAGI": "FED",
+    "STREP": "STR"
 },
 "stars_maps": [
-  {
-    "group": 0,
-    "label": "RWY 17",
-    "name": "MAP 1"
-  },
-  {
-    "group": 0,
-    "label": "RWY 35",
-    "name": "MAP 2"
-  },
-  {
-    "group": 0,
-    "label": "RWY 29",
-    "name": "MAP 3"
-  }
-]
-    ,
-  "video_map_file": "videomaps/sdf-maps.json.zst"
+    {
+        "group": 0,
+        "label": "RWY 17",
+        "name": "MAP 1"
+    },
+    {
+        "group": 0,
+        "label": "RWY 35",
+        "name": "MAP 2"
+    },
+    {
+        "group": 0,
+        "label": "RWY 29",
+        "name": "MAP 3"
+    }
+]    ,
+"video_map_file": "videomaps/sdf-maps.json.zst"
 }

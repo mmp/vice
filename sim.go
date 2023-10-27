@@ -25,13 +25,18 @@ type SimConfiguration struct {
 }
 
 type SimScenarioConfiguration struct {
-	SelectedController string
-	Wind               Wind
-	LaunchConfig       LaunchConfig
+	SelectedController  string
+	SelectedSplit       string
+	SplitConfigurations SplitConfigurationSet
+
+	Wind         Wind
+	LaunchConfig LaunchConfig
 
 	DepartureRunways []ScenarioGroupDepartureRunway
 	ArrivalRunways   []ScenarioGroupArrivalRunway
 }
+
+const ServerSimCallsign = "__SERVER__"
 
 const (
 	LaunchAutomatic = iota
@@ -395,6 +400,18 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.EndCombo()
 		}
 
+		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
+			if imgui.BeginComboV("Split", c.Scenario.SelectedSplit, imgui.ComboFlagsHeightLarge) {
+				for _, split := range sc.Splits() {
+					if imgui.SelectableV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
+						c.Scenario.SelectedSplit = split
+						c.Scenario.SelectedController = sc.GetPrimaryController(split)
+					}
+				}
+				imgui.EndCombo()
+			}
+		}
+
 		if c.NewSimType == NewSimCreateRemote {
 			if imgui.InputTextV("Name", &c.NewSimName, 0, nil) {
 				c.displayError = nil
@@ -698,7 +715,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 		}
 	}
 	if *server {
-		for callsign := range sc.MultiControllers {
+		for callsign := range sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit) {
 			add(callsign)
 		}
 	} else {
@@ -716,8 +733,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
 	if *server {
-		w.PrimaryController, _ = GetPrimaryController(sc.MultiControllers)
-		w.MultiControllers = DuplicateMap(sc.MultiControllers)
+		w.PrimaryController = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
+		w.MultiControllers = sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
 	} else {
 		w.PrimaryController = sc.SoloController
 	}
@@ -747,6 +764,13 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimTime = s.SimTime
 
 	for _, callsign := range sc.VirtualControllers {
+		// Skip controllers that are in MultiControllers
+		if w.MultiControllers != nil {
+			if _, ok := w.MultiControllers[callsign]; ok {
+				continue
+			}
+		}
+
 		if ctrl, ok := sg.ControlPositions[callsign]; ok {
 			w.Controllers[callsign] = ctrl
 		} else {
@@ -1197,7 +1221,50 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 		for callsign, ac := range s.World.Aircraft {
-			ac.Update(s.World, s, s.lg)
+			passedWaypoint := ac.Update(s.World, s, s.lg)
+			if passedWaypoint != nil && passedWaypoint.Handoff {
+				// Handoff arrival from virtual controller to a human
+				// controller.
+				ctrl := s.ResolveController(ac.ArrivalHandoffController)
+
+				s.eventStream.Post(Event{
+					Type:           OfferedHandoffEvent,
+					Callsign:       ac.Callsign,
+					FromController: ac.TrackingController,
+					ToController:   ctrl,
+				})
+
+				ac.HandoffTrackController = ctrl
+			}
+
+			// Contact the departure controller
+			if ac.IsDeparture() && ac.DepartureContactAltitude != 0 &&
+				ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+				// Time to check in
+				ctrl := s.ResolveController(ac.DepartureContactController)
+				lg.Info("contacting departure controller", slog.String("callsign", ctrl))
+
+				airportName := ac.FlightPlan.DepartureAirport
+				if ap, ok := s.World.Airports[airportName]; ok && ap.Name != "" {
+					airportName = ap.Name
+				}
+
+				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
+				PostRadioEvents(ac.Callsign, []RadioTransmission{RadioTransmission{
+					Controller: ctrl,
+					Message:    msg,
+					Type:       RadioTransmissionContact,
+				}}, s)
+
+				// Clear this out so we only send one contact message
+				ac.DepartureContactAltitude = 0
+
+				// Only after we're on frequency can the controller start
+				// issuing control commands..
+				if ac.TrackingController == ctrl {
+					ac.ControllingController = ctrl
+				}
+			}
 
 			// Cull far-away departures/arrivals
 			if ac.IsDeparture() {
@@ -1214,68 +1281,32 @@ func (s *Sim) updateState() {
 				s.lg.Info("culled far-away arrival", slog.String("callsign", callsign))
 				delete(s.World.Aircraft, callsign)
 			}
-
-			// FIXME: this is sort of ugly to have here...
-			if ac.HandoffTrackController == s.World.Callsign {
-				// We hit a /ho at a fix; update to the correct controller.
-				// Note that s.controllers may be empty when initially
-				// running the sim after it has been launched. Just hand
-				// off to the primary controller in that case...
-				if len(s.World.MultiControllers) > 0 && len(s.controllers) > 0 {
-					callsign := ""
-					if ac.IsDeparture() {
-						callsign = s.getDepartureController(ac)
-					} else {
-						callsign = ac.ArrivalHandoffController
-					}
-					if callsign == "" {
-						ac.HandoffTrackController = ""
-					}
-
-					i := 0
-					for {
-						if s.controllerIsSignedIn(callsign) {
-							ac.HandoffTrackController = callsign
-							break
-						}
-						mc, ok := s.World.MultiControllers[callsign]
-						if !ok {
-							s.lg.Errorf("%s: failed to find controller in MultiControllers", callsign)
-							ac.HandoffTrackController = ""
-							break
-						}
-						callsign = mc.BackupController
-
-						i++
-						if i == 20 {
-							s.lg.Errorf("%s: unable to find backup for arrival handoff controller",
-								ac.ArrivalHandoffController)
-							ac.HandoffTrackController = ""
-							break
-						}
-					}
-
-				} else {
-					ac.HandoffTrackController = s.World.PrimaryController
-				}
-
-				s.lg.Info("resolved handoff", slog.String("callsign", ac.Callsign),
-					slog.String("from", ac.ControllingController),
-					slog.String("to", ac.HandoffTrackController))
-
-				s.eventStream.Post(Event{
-					Type:           OfferedHandoffEvent,
-					Callsign:       ac.Callsign,
-					FromController: ac.ControllingController,
-					ToController:   ac.HandoffTrackController,
-				})
-			}
 		}
 	}
 
 	// Don't spawn automatically if someone is spawning manually.
 	if s.LaunchConfig.Mode == LaunchAutomatic {
 		s.spawnAircraft()
+	}
+}
+
+func (s *Sim) ResolveController(callsign string) string {
+	if s.World.MultiControllers == nil {
+		// Single controller
+		return s.World.PrimaryController
+	} else if len(s.controllers) == 0 {
+		// This can happen during the prespawn phase right after launching but
+		// before the user has been signed in.
+		return s.World.PrimaryController
+	} else {
+		c := s.World.MultiControllers.ResolveController(callsign,
+			func(callsign string) bool {
+				return s.controllerIsSignedIn(callsign)
+			})
+		if c == "" { // This shouldn't happen...
+			return s.World.PrimaryController
+		}
+		return c
 	}
 }
 
@@ -1292,15 +1323,6 @@ func (s *Sim) controllerIsSignedIn(callsign string) bool {
 		}
 	}
 	return false
-}
-
-func (s *Sim) getDepartureController(ac *Aircraft) string {
-	for cs, ctrl := range s.World.MultiControllers {
-		if ctrl.Departure && s.controllerIsSignedIn(cs) {
-			return cs
-		}
-	}
-	return s.World.PrimaryController
 }
 
 func (s *Sim) prespawn() {
@@ -1615,6 +1637,32 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			ac.Scratchpad = scratchpad
 			return nil
+		})
+}
+
+func (s *Sim) Ident(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(c *Controller, ac *Aircraft) error {
+			// Can't ask for ident if they're on someone else's frequency.
+			if ac.ControllingController != "" && ac.ControllingController != c.Callsign {
+				return ErrOtherControllerHasTrack
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			s.eventStream.Post(Event{
+				Type:     IdentEvent,
+				Callsign: ac.Callsign,
+			})
+
+			return []RadioTransmission{RadioTransmission{
+				Controller: ctrl.Callsign,
+				Message:    "ident",
+				Type:       RadioTransmissionReadback,
+			}}
 		})
 }
 

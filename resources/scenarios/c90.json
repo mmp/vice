@@ -3440,23 +3440,25 @@
                     },
                     "solo_controller": "CHI_Z_APP",
                     "multi_controllers": {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departure": true, "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "default" : {
+                            "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
+                            "CHI_B_DEP": {"departures": ["KORD"], "backup": "CHI_Z_APP"},
+                            "CHI_F_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_W_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_H_APP": {"backup": "CHI_W_APP"},
+                            "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_A_APP": {"backup": "CHI_B_DEP"},
+                            "CHI_M_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_G_DEP": {"backup": "CHI_M_DEP"},
+                            "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
+                            "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                            "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                            "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                            "CHI_S_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_U_APP": {"backup": "CHI_S_APP"},
+                            "CHI_P_APP": {"backup": "CHI_S_APP"},
+                            "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        }
                     },
                     "controllers": [
                         "CHI_81_CTR",
@@ -3558,23 +3560,25 @@
                     },
                     "solo_controller": "CHI_Z_APP",
                     "multi_controllers": {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departure": true, "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK5", "PANGG4"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "default" : {
+                            "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
+                            "CHI_B_DEP": {"departures": ["KORD", "KMDW"], "backup": "CHI_Z_APP"},
+                            "CHI_F_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_W_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_H_APP": {"backup": "CHI_W_APP"},
+                            "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_A_APP": {"backup": "CHI_B_DEP"},
+                            "CHI_M_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_G_DEP": {"backup": "CHI_M_DEP"},
+                            "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
+                            "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                            "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                            "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                            "CHI_S_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK5", "PANGG4"]},
+                            "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                            "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        }
                     },
                     "controllers": [
                         "CHI_81_CTR",
@@ -3681,23 +3685,25 @@
                     },
                     "solo_controller": "CHI_Z_APP",
                     "multi_controllers": {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departure": true, "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK5", "PANGG4"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "default" : {
+                            "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
+                            "CHI_B_DEP": {"departures": ["KORD", "KMDW"], "backup": "CHI_Z_APP"},
+                            "CHI_F_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_W_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_H_APP": {"backup": "CHI_W_APP"},
+                            "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_A_APP": {"backup": "CHI_B_DEP"},
+                            "CHI_M_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_G_DEP": {"backup": "CHI_M_DEP"},
+                            "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
+                            "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                            "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                            "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                            "CHI_S_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK5", "PANGG4"]},
+                            "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                            "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        }
                     },
                     "controllers": [
                         "CHI_81_CTR",
@@ -3788,26 +3794,28 @@
                         "WYNDE2": {
                             "KORD": 10
                         }
-                        },
-                        "solo_controller": "CHI_Z_APP",
+                    },
+                    "solo_controller": "CHI_Z_APP",
                     "multi_controllers": {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departure": true, "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "default" : {
+                            "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
+                            "CHI_B_DEP": {"departures": ["KORD"], "backup": "CHI_Z_APP"},
+                            "CHI_F_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_W_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_H_APP": {"backup": "CHI_W_APP"},
+                            "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_A_APP": {"backup": "CHI_B_DEP"},
+                            "CHI_M_DEP": {"backup": "CHI_B_DEP"},
+                            "CHI_G_DEP": {"backup": "CHI_M_DEP"},
+                            "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
+                            "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                            "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                            "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                            "CHI_S_APP": {"backup": "CHI_Z_APP"},
+                            "CHI_U_APP": {"backup": "CHI_S_APP"},
+                            "CHI_P_APP": {"backup": "CHI_S_APP"},
+                            "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        }
                     },
                     "controllers": [
                         "CHI_81_CTR",
@@ -3899,26 +3907,28 @@
                     "PANGG4": {
                         "KMDW": 10
                     }
-                    },
-                    "solo_controller": "CHI_Z_APP",
+                },
+                "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
-                    "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                    "CHI_B_DEP": {"departure": true, "backup": "CHI_Z_APP"},
-                    "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                    "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                    "CHI_H_APP": {"backup": "CHI_W_APP"},
-                    "CHI_D_DEP": {"backup": "CHI_B_DEP"},
-                    "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                    "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                    "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                    "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                    "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                    "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                    "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
-                    "CHI_S_APP": {"backup": "CHI_Z_APP"},
-                    "CHI_U_APP": {"backup": "CHI_S_APP","arrivals": ["FISSK5", "PANGG4"]},
-                    "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                    "CHI_L_APP": {"backup": "CHI_P_APP"}
+                    "default" : {
+                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
+                        "CHI_B_DEP": {"departures": ["KORD", "KMDW"], "backup": "CHI_Z_APP"},
+                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
+                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
+                        "CHI_H_APP": {"backup": "CHI_W_APP"},
+                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_A_APP": {"backup": "CHI_B_DEP"},
+                        "CHI_M_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_S_APP": {"backup": "CHI_Z_APP"},
+                        "CHI_U_APP": {"backup": "CHI_S_APP","arrivals": ["FISSK5", "PANGG4"]},
+                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                    }
                 },
                 "controllers": [
                     "CHI_81_CTR",
@@ -4015,26 +4025,28 @@
                 "PANGG4": {
                     "KMDW": 10
                 }
-                },
-                "solo_controller": "CHI_Z_APP",
+            },
+            "solo_controller": "CHI_Z_APP",
             "multi_controllers": {
-                "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                "CHI_B_DEP": {"departure": true, "backup": "CHI_Z_APP"},
-                "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                "CHI_H_APP": {"backup": "CHI_W_APP"},
-                "CHI_D_DEP": {"backup": "CHI_B_DEP"},
-                "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
-                "CHI_S_APP": {"backup": "CHI_Z_APP"},
-                "CHI_U_APP": {"backup": "CHI_S_APP","arrivals": ["FISSK5", "PANGG4"]},
-                "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                "CHI_L_APP": {"backup": "CHI_P_APP"}
+                "default" : {
+                    "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
+                    "CHI_B_DEP": {"departures": ["KORD", "KMDW"], "backup": "CHI_Z_APP"},
+                    "CHI_F_APP": {"backup": "CHI_Z_APP"},
+                    "CHI_W_APP": {"backup": "CHI_Z_APP"},
+                    "CHI_H_APP": {"backup": "CHI_W_APP"},
+                    "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                    "CHI_A_APP": {"backup": "CHI_B_DEP"},
+                    "CHI_M_DEP": {"backup": "CHI_B_DEP"},
+                    "CHI_G_DEP": {"backup": "CHI_M_DEP"},
+                    "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
+                    "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                    "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                    "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                    "CHI_S_APP": {"backup": "CHI_Z_APP"},
+                    "CHI_U_APP": {"backup": "CHI_S_APP","arrivals": ["FISSK5", "PANGG4"]},
+                    "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                    "CHI_L_APP": {"backup": "CHI_P_APP"}
+                }
             },
             "controllers": [
                 "CHI_81_CTR",
@@ -4101,13 +4113,15 @@
                         "PANGG4": {
                             "KMDW": 10
                         }
-                        },
-                        "solo_controller": "CHI_S_APP",
+                    },
+                    "solo_controller": "CHI_S_APP",
                     "multi_controllers": {
-                        "CHI_S_APP": {"primary": true},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departure": true, "arrivals": ["FISSK5", "PANGG4"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "default" : {
+                            "CHI_S_APP": {"primary": true},
+                            "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK5", "PANGG4"]},
+                            "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                            "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        }
                     },
                     "controllers": [
                         "CHI_81_CTR",
@@ -4151,13 +4165,15 @@
                     "PANGG4": {
                         "KMDW": 10
                     }
-                    },
-                    "solo_controller": "CHI_S_APP",
+                },
+                "solo_controller": "CHI_S_APP",
                 "multi_controllers": {
-                    "CHI_S_APP": {"primary": true},
-                    "CHI_U_APP": {"backup": "CHI_S_APP", "departure": true, "arrivals": ["FISSK5", "PANGG4"]},
-                    "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                    "CHI_L_APP": {"backup": "CHI_P_APP"}
+                    "default" : {
+                        "CHI_S_APP": {"primary": true},
+                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK5", "PANGG4"]},
+                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                    }
                 },
                 "controllers": [
                     "CHI_81_CTR",
@@ -4201,13 +4217,15 @@
                 "PANGG4": {
                     "KMDW": 10
                 }
-                },
-                "solo_controller": "CHI_S_APP",
+            },
+            "solo_controller": "CHI_S_APP",
             "multi_controllers": {
-                "CHI_S_APP": {"primary": true},
-                "CHI_U_APP": {"backup": "CHI_S_APP", "departure": true, "arrivals": ["FISSK5", "PANGG4"]},
-                "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                "CHI_L_APP": {"backup": "CHI_P_APP"}
+                "default" : {
+                    "CHI_S_APP": {"primary": true},
+                    "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK5", "PANGG4"]},
+                    "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                    "CHI_L_APP": {"backup": "CHI_P_APP"}
+                }
             },
             "controllers": [
                 "CHI_81_CTR",
@@ -4251,13 +4269,15 @@
                     "PANGG4": {
                         "KMDW": 10
                     }
-                    },
-                    "solo_controller": "CHI_S_APP",
+                },
+                "solo_controller": "CHI_S_APP",
                 "multi_controllers": {
-                    "CHI_S_APP": {"primary": true},
-                    "CHI_U_APP": {"backup": "CHI_S_APP", "departure": true, "arrivals": ["FISSK5", "PANGG4"]},
-                    "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                    "CHI_L_APP": {"backup": "CHI_P_APP"}
+                    "default" : {
+                        "CHI_S_APP": {"primary": true},
+                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK5", "PANGG4"]},
+                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
+                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                    }
                 },
                 "controllers": [
                     "CHI_81_CTR",

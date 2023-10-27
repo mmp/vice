@@ -1,6 +1,7 @@
 {
     "airports": {
       "KLGA": {
+      "name": "LaGuardia",
         "approaches": {
           "I4": {
             "full_name": "ILS 4",

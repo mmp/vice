@@ -25,7 +25,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 6
+const ViceRPCVersion = 7
 
 type SimServer struct {
 	*RPCClient
@@ -942,6 +942,11 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 		case 'I':
 			if len(command) == 1 {
 				if err := sim.InterceptLocalizer(token, callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if command == "ID" {
+				if err := sim.Ident(token, callsign); err != nil {
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return err
 				}

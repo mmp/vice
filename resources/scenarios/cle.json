@@ -3100,11 +3100,13 @@
                             },
                             "solo_controller": "CLE_A_APP",
                             "multi_controllers": {
-                                "CLE_A_APP": {"primary": true , "arrivals": ["BRWNZ4", "ROKNN3", "ROLLN2", "TRYBE4"]},
-                                "CLE_F_APP": {"backup": "CLE_A_APP"},
-                                "CLE_D_DEP": {"departure": true, "backup": "CLE_A_APP"},
-                                "CLE_R_DEP": {"backup": "CLE_D_DEP"},
-                                "CLE_N_APP": {"backup": "CLE_A_APP"}
+                                "default" : {
+                                    "CLE_A_APP": {"primary": true , "arrivals": ["BRWNZ4", "ROKNN3", "ROLLN2", "TRYBE4"]},
+                                    "CLE_F_APP": {"backup": "CLE_A_APP"},
+                                    "CLE_D_DEP": {"departures": ["KCLE", "KCGF"], "backup": "CLE_A_APP"},
+                                    "CLE_R_DEP": {"backup": "CLE_D_DEP"},
+                                    "CLE_N_APP": {"backup": "CLE_A_APP"}
+                                }
                             },
                             "controllers": [
                                 "CLE_CTR",
@@ -3311,11 +3313,13 @@
                             },
                             "solo_controller": "CLE_A_APP",
                             "multi_controllers": {
-                                "CLE_A_APP": {"primary": true , "arrivals": ["BRWNZ4", "ROKNN3", "ROLLN2", "TRYBE4"]},
-                                "CLE_F_APP": {"backup": "CLE_A_APP"},
-                                "CLE_D_DEP": {"departure": true, "backup": "CLE_A_APP"},
-                                "CLE_R_DEP": {"backup": "CLE_D_DEP"},
-                                "CLE_N_APP": {"backup": "CLE_A_APP"}
+                                "default" : {
+                                    "CLE_A_APP": {"primary": true , "arrivals": ["BRWNZ4", "ROKNN3", "ROLLN2", "TRYBE4"]},
+                                    "CLE_F_APP": {"backup": "CLE_A_APP"},
+                                    "CLE_D_DEP": {"departures": ["KCLE", "KCGF"], "backup": "CLE_A_APP"},
+                                    "CLE_R_DEP": {"backup": "CLE_D_DEP"},
+                                    "CLE_N_APP": {"backup": "CLE_A_APP"}
+                                }
                             },
                             "controllers": [
                                 "CLE_CTR",
