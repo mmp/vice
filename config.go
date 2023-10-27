@@ -22,7 +22,8 @@ import (
 // 10: stop being clever about JSON encoding Waypoint arrays to strings
 // 11: expedite, intercept localizer, fix airspace serialization
 // 12: set 0 DCB brightness to 50 (WAR not setting a default for it)
-const CurrentConfigVersion = 12
+// 13: update departure handling for multi-controllers (and rename some members)
+const CurrentConfigVersion = 13
 
 type GlobalConfig struct {
 	Version               int
