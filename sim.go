@@ -1679,9 +1679,13 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			// Note: only tracking controller, not controlling yet; that
-			// only comes after the aircraft checks in with departure.
 			ac.TrackingController = ctrl.Callsign
+			if ac.DepartureContactAltitude == 0 {
+				// If they have already contacted departure, then
+				// initiating track gives control as well; otherwise
+				// ControllingController is left unset until contact.
+				ac.ControllingController = ctrl.Callsign
+			}
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
 				Callsign:     ac.Callsign,
