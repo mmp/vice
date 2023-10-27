@@ -15,8 +15,8 @@
         "runway": "1",
         "type": "RNAV",
         "waypoints": [
-          "IRONS/a3500 JWASH/a3500 MIRON/a2500 BADDN/a1600 _DCA_1/a14",
-          "MIRON/a2500 BADDN/a1600 _DCA_1/a14"
+          "IRONS/a3500 JWASH/a3500 MRION/a2500 BADDN/a1600 _DCA_1/a14",
+          "MRION/a2500 BADDN/a1600 _DCA_1/a14"
         ]
       },
       "MVT": {
@@ -32,7 +32,7 @@
         "runway": "15",
         "type": "RNAV",
         "waypoints": [
-          "ANL/a3000 NIPEE/a2500 AVOLE/a2000 _DCA_15/a14"
+          "AML/a3000 NIPEE/a2500 AVOLE/a2000 _DCA_15/a14"
         ]
       },
       "R19": {
@@ -40,7 +40,7 @@
         "runway": "19",
         "type": "RNAV",
         "waypoints": [
-          "FERGI/a3000/s210 DARIC/a2600 GREYZ/a1700/s200 SETOC/a1500 FONVI/a1200 JUBOL/a950 WISRO/a450 FIROP/a180 _DCA_19/a13"
+          "FERGI/a3000/s210 DARIC/a2600 GREYZ/a1700/s200 SETOC/a1500 FONVI/a1200 JUBOL/a950 WIRSO/a450 FIROP/a180 _DCA_19/a13"
         ]
       },
       "RIV": {
@@ -48,7 +48,7 @@
         "runway": "19",
         "type": "RNAV",
         "waypoints": [
-          "FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/as2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300 _DCA_19/a13"
+          "FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300 _DCA_19/a13"
         ]
       },
       "R33": {
@@ -56,7 +56,7 @@
         "runway": "33",
         "type": "RNAV",
         "waypoints": [
-          "KATRN/a2500 NADSE/a1700 _DCA_33/a13"
+          "KATRN/a2500 NADSE/a1700 IDTEK/a300 _DCA_33/a13"
         ]
       }
     },
@@ -97,7 +97,7 @@
       "runways": ["1", "33"],
       "leader_directions": ["W", "E"],
       "tie_symbol": "/",
-      "stagger_symbol": 0,
+      "stagger_symbol": "0",
       "tie_offset": 2.5
     }
   ],
@@ -106,57 +106,57 @@
       "SCOOB": {
         "cleared_altitude": 5000,
         "route": "AMEEE1",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000-"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000-"
       },
       "MAULS": {
         "cleared_altitude": 5000,
         "route": "CLTCH3",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK"
       },
       "FLASK": {
         "cleared_altitude": 5000,
         "route": "CLTCH3",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK TEEMS"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK TEEMS"
       },
       "DQO,AGARD": {
         "cleared_altitude": 5000,
         "route": "DOCTR5",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+"
       },
       "JERES,BUFFR": {
         "cleared_altitude": 5000,
         "route": "HORTO4",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII MELOE HORTO/a5000+"
       },
       "RRSIN": {
         "cleared_altitude": 5000,
         "route": "JDUBB4",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB TYPNZ SCORN"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB TYPNZ SCORN"
       },
       "MELTN": {
         "cleared_altitude": 5000,
         "route": "JDUBB4",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB CASLY"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB CASLY"
       },
       "OTTTO": {
         "cleared_altitude": 5000,
         "route": "REBLL5",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI DUDDD REBLL/a5000+"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII CUKLI DUDDD REBLL/a5000+"
       },
       "GLANC": {
         "cleared_altitude": 5000,
         "route": "SCRAM6",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI POOCH/a3000+ SCRAM DANOO WALCE"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII CUKLI POOCH/a3000+ SCRAM DANOO WALCE"
       },
       "SWANN": {
         "cleared_altitude": 5000,
         "route": "SOOKI5",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+"
       },
       "RAMAY": {
         "cleared_altitude": 5000,
         "route": "WYNGS5",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII MELOE WYNGS/a5000+"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220- BEBLE RGIII MELOE WYNGS/a5000+"
       }
     },
     "19": {
@@ -224,10 +224,10 @@
           "icao": "JBU"
         },
         {
-          "fleet": "RPA"
+          "icao": "RPA"
         },
         {
-          "fleet": "fleet",
+          "fleet": "short",
           "icao": "AAL"
         }
       ],
@@ -373,7 +373,7 @@
           "icao": "AAL"
         },
         {
-          "icao": "EMY"
+          "icao": "ENY"
         },
         {
           "icao": "RPA"
@@ -583,9 +583,13 @@
       "full_name": "ILS Runway 33L",
       "runway": "33L",
       "type": "ILS",
-      "waypoints": "JANNS/a4000 BWI/a14"
+      "waypoints":[
+       "JANNS/a4000 BWI/a14"
+      ]
      }
-  }
+  },
+  "location": "KBWI",
+  "tower_list": 1
 }
 },
 "arrival_groups": {
@@ -765,6 +769,74 @@
       },
       "waypoints": "BILIT/a11000 DEALE/a10000/s280/ho"
     }
+  ],
+  "FRDMM5": [
+    {
+      "airlines": {
+        "KDCA": [
+          {
+            "airport": "KMDW",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KORD",
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "airport": "KORD",
+            "fleet": "short",
+            "icao": "AAL"
+          },
+          {
+            "airport": "KMSP",
+            "fleet": "short",
+            "icao": "DAL"
+          },
+          {
+            "airport": "KMSP",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KMKE",
+            "icao": "JIA"
+          },
+          {
+            "airport": "KDEN",
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "airport": "KDEN",
+            "icao": "SWA"
+          },
+          {
+            "airport": "KCLE",
+            "fleet": "short",
+            "icao": "UAL"
+          },
+          {
+            "airport": "KCLE",
+            "fleet": "short",
+            "icao": "AAL"
+          }
+        ]
+      },
+      "cleared_altitude": 14000,
+      "initial_altitude": 16000,
+      "initial_controller": "DC_CTR",
+      "initial_speed": 280,
+      "route": "/. FRDMM5",
+      "runway_waypoints": {
+        "1":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
+        "4":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
+        "15": "ALYWZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+        "19": "ALYWZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+        "22": "ALYWZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+        "33": "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189"
+      },
+      "waypoints": "WEWIL/a14000+/ho NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a1000 ALWYZ/a10000-"
+    }
   ]
 },
 "center": "KDCA",
@@ -860,7 +932,7 @@
     "sector_id": "4T"
   }
   },
-  "default_scenario": "KDCA North OPS",
+  "default_scenario": "DCA North",
   "fixes": {
     "_DCA_1":  "N38.50.30.629,W77.02.12.802",
     "_DCA_4":  "N38.50.30.312,W77.02.27.983",
@@ -869,7 +941,8 @@
     "_DCA_22": "N38.51.13.183,W77.02.01.924",
     "_DCA_33": "N38.50.59.364,W77.01.56.277",
     "KDCA":    "N38.51.11.346,W77.02.25.727",
-    "DCA":     "N38.51.34.118,W77.02.10.979"
+    "DCA":     "N38.51.34.118,W77.02.10.979",
+    "BWI": "BAL"
   },
   "inhibit_ca_volumes": [
     {
@@ -903,7 +976,7 @@
       "primary_range": 60,
       "secondary_range": 120,
       "silence_angle": 54.7, 
-      "slope_angle": 0.3,
+      "slope_angle": 0.3
     },
     "BAL": {
       "char": "B",
@@ -926,92 +999,290 @@
     "IAD": {
       "char": "I",
       "position": "38.9565300,-77.4633900",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 425,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
       "slope_angle": 0.3
     },
     "MDT": {
       "char": "T",
       "position": "40.1857740,-76.7950640",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 1007,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
       "slope_angle": 0.3
     },
     "MRB": {
       "char": "M",
       "position": "39.3952650,-77.9946880",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 883,
+      "primary_range": 70,
+      "secondary_range": 120,
+      "silence_angle": 49.7,
       "slope_angle": 0.3
     },
     "NHK": {
       "char": "N",
       "position": "38.2987080,-76.4120690",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 88,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 59.7, 
       "slope_angle": 0.3
     },
     "PHL": {
       "char": "P",
       "position": "39.8591750,-75.2667470",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 123,
+      "primary_range": 70,
+      "secondary_range": 120,
+      "silence_angle": 49.7,
       "slope_angle": 0.3
     },
     "RIC": {
       "char": "R",
       "position": "37.5053410,-77.3242350",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 259,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7,
       "slope_angle": 0.3
     },
     "QBE": {
       "char": "E",
       "position": "37.5173130,-79.5101010",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 4353,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
       "slope_angle": 0.3
     },
     "QBN": {
       "char": "Q",
       "position": "37.3828590,-76.9987510",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 303,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
       "slope_angle": 0.3
     },
     "QIE": {
       "char": "Z",
       "position": "39.8247290,-74.9541500",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 371,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
       "slope_angle": 0.3
     },
     "QPL": {
       "char": "L",
       "position": "38.8823130,-77.7030850",
-      "elevation": ,
-      "primary_range":,
-      "secondary_range":,
-      "silence_angle": , 
+      "elevation": 1943,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
       "slope_angle": 0.3
     }
-  }
+  },
+  "reporting_points": [
+    "CAPSS",
+    "HOYAS",
+    "BAL",
+    "EYESS",
+    "DEALE",
+    "SEPII",
+    "FORGT",
+    "TRUPS",
+    "OOURR",
+    "DFORT"
+  ],
+  "scenarios": {
+    "DCA North": {
+      "arrival_runways": [
+        {
+          "airport": "KDCA",
+          "runway": "1"
+         },
+         {
+          "airport": "KDCA",
+          "runway": "33"
+         }
+      ],
+      "arrivals": {
+        "CAPSS3": {
+          "KDCA": 15
+        },
+        "CLIPR3": {
+          "KDCA": 10
+        }
+      },
+      "solo_controller": "DCA_APP",
+      "multi_controllers": {
+        "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3"]},
+        "DCA_K_APP": {"backup": "DCA_J_APP", "departure": true},
+        "DCA_Y_APP": {"backup": "DCA_K_APP"},
+        "DCA_L_APP": {"backup": "DCA_Y_APP"},
+        "DCA_F_APP": {"backup": "DCA_Y_APP"},
+        "DCA_A_APP": {"backup": "DCA_K_APP"},
+        "DCA_D_APP": {"backup": "DCA_K_APP"},
+        "DCA_V_APP": {"backup": "DCA_J_APP"},
+        "DCA_E_APP": {"backup": "DCA_J_APP"}
+      },
+      "controllers": [
+        "DC_CTR",
+        "DCA_TWR",
+        "NY_CTR",
+        "DCA_TWR",
+        "BWI_S_APP"
+      ],
+      "default_map": "MTV North",
+      "wind": {
+        "direction": 30,
+        "gust": 12,
+        "speed": 7
+      },
+      "departure_runways": [
+        {
+          "airport": "KDCA",
+          "rate": 45,
+          "runway": "1"
+        }
+      ]
+    }
+  },
+  "scratchpads": {
+    "SCOOB": "AME",
+    "MAULS": "CLT",
+    "FLASK": "CLT",
+    "DQO": "DOC",
+    "AGARD": "DOC",
+    "JERES": "HOR",
+    "BUFFR": "HOR",
+    "RRSIN": "JDU",
+    "MELTN": "JDU",
+    "OTTTO": "REB",
+    "GLANC": "SCR",
+    "SWANN": "SOO",
+    "RAMAY": "WYN"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "MNORTH",
+      "name": "MTV North"
+    },
+    {
+      "group": 0,
+      "label": "MSOUTH",
+      "name": "MTV South"
+    },
+    {
+      "group": 0,
+      "label": "MADWN",
+      "name": "MTV ADWN"
+    },
+    {
+      "group": 0,
+      "label": "ADW S",
+      "name": "ADW South"
+    },
+    {
+      "group": 1,
+      "label": "ACOAST",
+      "name": "PCT Coastlines"
+    },
+    {
+      "group": 1,
+      "label": "MRIVER",
+      "name": "MTV River"
+   },
+    {
+      "group": 1,
+      "label": "ASFRA",
+      "name": "PCT SFRA"
+    },
+    {
+      "group": 1,
+      "label": "AMVA",
+      "name": "PCT MVA"
+    },
+    {
+      "group": 1,
+      "label": "MDANSR",
+      "name": "MTV DCA NSTAR"
+    },
+    {
+      "group": 1,
+      "label": "MDCASSR",
+      "name": "MTV DCA SSTAR"
+    },
+    {
+      "group": 1,
+      "label": "ABRAVO",
+      "name": "PCT ClassB"
+    },
+    {
+      "group": 1,
+      "label": "MDCANSD",
+      "name": "MTV DCA NSID"
+    },
+    {
+      "group": 1,
+      "label": "MDCASSD",
+      "name": "MTV DCA SSID"
+    },
+    {
+      "group": 1,
+      "label": "MADWSTR",
+      "name": "MTV ADW STAR"
+    },
+    {
+      "group": 1,
+      "label": "MADWSID",
+      "name": "MTV ADW SID"
+    },
+    {
+      "group": 1,
+      "label": "MBWISTR",
+      "name": "MTV BWI STAR"
+    },
+    {
+      "group": 1,
+      "label": "MCGSRNV",
+      "name": "MTV CGS RNAV"
+    },
+    {
+      "group": 0,
+      "label": "MDCAR33",
+      "name": "MTV DCA R33"
+    },
+    {
+      "group": 1,
+      "label": "MDCATCT",
+      "name": "MTV DCATCT"
+    },
+    {
+      "group": 1,
+      "label": "MOTHSID",
+      "name": "MTV Other SID"
+    },
+    {
+      "group": 1,
+      "label": "MRIVER",
+      "name": "MTV River"
+    },
+    {
+      "group": 1,
+      "label": "AARPT",
+      "name": "PCT Airport"
+    },
+    {
+      "group": 1,
+      "label": "ADELTA",
+      "name": "PCT ClassD"
+    }
+  ]
 }
