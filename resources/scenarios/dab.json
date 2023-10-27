@@ -672,7 +672,7 @@
               "DAB_L_APP": {"backup": "DAB_H_APP"},
               "DAB_N_APP": {"backup": "DAB_H_APP"},
               "DAB_S_APP": {"backup": "DAB_H_APP"},
-              "DAB_E_APP": {"backup": "DAB_H_APP", "departure": true},
+              "DAB_E_APP": {"backup": "DAB_H_APP", "departures": ["KDAB"]},
               "DAB_W_APP": {"backup": "DAB_H_APP"}
           }
       },
@@ -740,7 +740,7 @@
               "DAB_N_APP": {"backup": "DAB_H_APP"},
               "DAB_S_APP": {"backup": "DAB_H_APP"},
               "DAB_E_APP": {"backup": "DAB_H_APP"},
-              "DAB_W_APP": {"backup": "DAB_H_APP", "departure": true}
+              "DAB_W_APP": {"backup": "DAB_H_APP", "departures": ["KDAB"]}
           }
       },
       "controllers": [

@@ -999,7 +999,7 @@
           "default" : {
               "JAX_N_APP": {
                   "primary": true,
-                  "departure": true,
+                  "departures": ["KJAX"],
                   "arrivals": [
                       "LUNNI1"
                   ]
@@ -1096,7 +1096,7 @@
           "default" : {
               "JAX_N_APP": {
                   "primary": true,
-                  "departure": true,
+                  "departures": ["KJAX", "KFHB"],
                   "arrivals": [
                       "LUNNI1"
                   ]
@@ -1200,7 +1200,7 @@
           "default" : {
               "JAX_N_APP": {
                   "primary": true,
-                  "departure": true,
+                  "departures": ["KJAX"],
                   "arrivals": [
                       "LUNNI1",
                       "OHDEA1",

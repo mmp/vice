@@ -2347,7 +2347,7 @@
                             "solo_controller": "CLT_APP",
                             "multi_controllers": {
                                 "default" : {
-                                    "CLT_W_DEP": {"departure": true, "primary": true},
+                                    "CLT_W_DEP": {"departures": ["KCLT"], "primary": true},
                                     "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3S", "CHSLY5S"]},
                                     "CLT_A_APP": {"backup": "CLT_H_APP"},
                                     "CLT_M_APP": {"backup": "CLT_A_APP"},
@@ -2479,7 +2479,7 @@
                             "solo_controller": "CLT_APP",
                             "multi_controllers": {
                                 "default" : {
-                                    "CLT_W_DEP": {"departure": true, "primary": true},
+                                    "CLT_W_DEP": {"departures": ["KCLT"], "primary": true},
                                     "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3N", "CHSLY5N"]},
                                     "CLT_A_APP": {"backup": "CLT_H_APP"},
                                     "CLT_M_APP": {"backup": "CLT_A_APP"},

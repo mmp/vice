@@ -1879,7 +1879,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2005,7 +2005,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2135,7 +2135,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2261,7 +2261,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2387,7 +2387,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2513,7 +2513,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2639,7 +2639,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2765,7 +2765,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -2887,7 +2887,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"
@@ -3009,7 +3009,7 @@
                 },
                 "DEN_N_DEP": {
                     "backup": "DEN_L_DEP",
-                    "departure": true
+                    "departures": ["KDEN"]
                 },
                 "DEN_R_DEP": {
                     "backup": "DEN_N_DEP"

@@ -3228,6 +3228,7 @@
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
                     "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
@@ -3235,13 +3236,14 @@
                 },
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_S_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departure": true
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3366,6 +3368,7 @@
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
                     "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
@@ -3373,13 +3376,14 @@
                 },
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_S_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departure": true
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3576,6 +3580,7 @@
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
                     "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
@@ -3583,13 +3588,14 @@
                 },
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_S_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departure": true
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3786,6 +3792,7 @@
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
                     "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
@@ -3793,13 +3800,14 @@
                 },
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_S_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departure": true
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3995,6 +4003,7 @@
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
                     "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
@@ -4002,13 +4011,14 @@
                 },
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
                     "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_S_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departure": true
+                    "departures": [ "KJFK" ]
                 }
             }
         },

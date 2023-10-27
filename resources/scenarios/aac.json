@@ -1780,7 +1780,7 @@
           "default" : {
               "AAC_NR_APP": {
                   "primary": true,
-                  "departure": true,
+                  "departures": ["KAAC"],
                   "arrivals": [
                       "BARTS2",
                       "REELI1"
@@ -1788,6 +1788,7 @@
               },
               "AAC_SR_APP": {
                   "backup": "AAC_NR_APP",
+                  "departures": ["KJKE"],
                   "arrivals": [
                       "ATOKA1",
                       "KILLR4"
@@ -1862,7 +1863,7 @@
           "default" : {
               "AAC_NR_APP": {
                   "primary": true,
-                  "departure": true,
+                  "departures": ["KAAC"],
                   "arrivals": [
                       "BARTS",
                       "REELI"
@@ -1870,6 +1871,7 @@
               },
               "AAC_SR_APP": {
                   "backup": "AAC_NR_APP",
+                  "departures": ["KJKE"],
                   "arrivals": [
                       "ATOKA",
                       "KILLR"

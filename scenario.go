@@ -118,8 +118,8 @@ type SplitConfiguration map[string]*MultiUserController
 
 type MultiUserController struct {
 	Primary          bool     `json:"primary"`
-	Departure        bool     `json:"departure"`
 	BackupController string   `json:"backup"`
+	Departures       []string `json:"departures"`
 	Arrivals         []string `json:"arrivals"`
 }
 
@@ -236,12 +236,11 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	}
 	for name, controllers := range s.SplitConfigurations {
 		primaryController := ""
-		departureController := ""
-		e.Push("\"multi_controllers\": split " + name)
+		e.Push("\"multi_controllers\": split \"" + name + "\"")
 
-		for callsign, mc := range controllers {
+		for callsign, ctrl := range controllers {
 			e.Push(callsign)
-			if mc.Primary {
+			if ctrl.Primary {
 				if primaryController != "" {
 					e.ErrorString("multiple controllers specified as \"primary\": %s %s",
 						primaryController, callsign)
@@ -249,18 +248,30 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 					primaryController = callsign
 				}
 			}
-			if mc.Departure {
-				if departureController != "" {
-					e.ErrorString("multiple controllers specified as \"departure\": %s %s",
-						departureController, callsign)
+
+			// Make sure any airports claimed for departures are valid
+			for _, airportRunway := range ctrl.Departures {
+				ap, rwy, ok := strings.Cut(airportRunway, "/")
+				if !ok { // no runway specified; take all runways
+					pred := func(r ScenarioGroupDepartureRunway) bool {
+						return r.Airport == ap
+					}
+					if FindIf(s.DepartureRunways, pred) == -1 {
+						e.ErrorString("airport \"%s\" is not departing aircraft in this scenario", ap)
+					}
 				} else {
-					departureController = callsign
+					pred := func(r ScenarioGroupDepartureRunway) bool {
+						return r.Airport == ap && r.Runway == rwy
+					}
+					if FindIf(s.DepartureRunways, pred) == -1 {
+						e.ErrorString("runway \"%s\" at airport \"%s\" is not departing aircraft in this scenario", rwy, ap)
+					}
 				}
 			}
 
 			// Make sure all arrivals are valid. Below we make sure all
 			// included arrivals have a controller.
-			for _, arr := range mc.Arrivals {
+			for _, arr := range ctrl.Arrivals {
 				if _, ok := s.ArrivalGroupDefaultRates[arr]; !ok {
 					e.ErrorString("arrival \"%s\" not found in scenario", arr)
 				}
@@ -270,10 +281,34 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		if primaryController == "" {
 			e.ErrorString("No controller in \"multi_controllers\" was specified as \"primary\"")
 		}
-		if departureController == "" {
-			e.ErrorString("No controller in \"multi_controllers\" was specified as \"departure\"")
+
+		// Make sure each active departing airport runway has exactly one
+		// controller handling its departures.
+		for _, r := range s.DepartureRunways {
+			if ap, ok := sg.Airports[r.Airport]; ok && ap.DepartureController != "" {
+				// If a virtual controller will take the initial track then
+				// we don't need a human-controller to be covering it.
+				continue
+			}
+
+			controller := ""
+			for callsign, ctrl := range controllers {
+				if ctrl.IsDepartureController(r.Airport, r.Runway) {
+					if controller != "" {
+						e.ErrorString("both \"%s\" and \"%s\" expect to handle %s/%s departures",
+							controller, callsign, r.Airport, r.Runway)
+					}
+					controller = callsign
+				}
+			}
+			if controller == "" {
+				e.ErrorString("no controller found that is covering %s/%s departures",
+					r.Airport, r.Runway)
+			}
 		}
 
+		// Make sure all controllers are either the primary or have a path
+		// of backup controllers that eventually ends with the primary.
 		havePathToPrimary := make(map[string]interface{})
 		havePathToPrimary[primaryController] = nil
 		var followPathToPrimary func(callsign string, mc *MultiUserController, depth int) bool
@@ -1271,4 +1306,49 @@ func (sc SplitConfiguration) ResolveController(callsign string, active func(call
 			return ""
 		}
 	}
+}
+
+func (sc SplitConfiguration) GetArrivalController(arrivalGroup string) string {
+	for callsign, ctrl := range sc {
+		if ctrl.IsArrivalController(arrivalGroup) {
+			return callsign
+		}
+	}
+
+	lg.Error(arrivalGroup+": couldn't find arrival controller", slog.Any("config", sc))
+	return ""
+}
+
+func (sc SplitConfiguration) GetDepartureController(airport, runway string) string {
+	for callsign, ctrl := range sc {
+		if ctrl.IsDepartureController(airport, runway) {
+			return callsign
+		}
+	}
+
+	lg.Error(airport+"/"+runway+": couldn't find departure controller", slog.Any("config", sc))
+	return ""
+}
+
+///////////////////////////////////////////////////////////////////////////
+// MultiUserController
+
+func (c *MultiUserController) IsDepartureController(ap, rwy string) bool {
+	for _, d := range c.Departures {
+		depAirport, depRunway, ok := strings.Cut(d, "/")
+		if ok { // have a runway
+			if ap == depAirport && rwy == depRunway {
+				return true
+			}
+		} else { // no runway, only match airport
+			if ap == depAirport {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
+	return Find(c.Arrivals, arrivalGroup) != -1
 }

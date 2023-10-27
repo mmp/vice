@@ -5349,7 +5349,7 @@
               "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS6" ] },
               "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
               "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "departure": true }
+              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
           }
       },
       "controllers": [
@@ -5418,7 +5418,7 @@
               "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID3", "SPUDS6" ] },
               "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
               "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "departure": true }
+              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
           }
       },
       "controllers": [

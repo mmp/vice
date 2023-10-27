@@ -866,7 +866,7 @@
       "solo_controller": "SAV_N_APP",
       "multi_controllers": {
           "default" : {
-              "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"], "departure": true},
+              "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"], "departures": ["KSAV"]},
               "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"]},
               "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
           }
@@ -924,7 +924,7 @@
       "multi_controllers": {
           "default" : {
               "SAV_N_APP": {"primary": true, "arrivals": ["SOOOP", "PLZZZ"]},
-              "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"], "departure": true}, 
+              "SAV_W_APP": {"backup": "SAV_N_APP", "arrivals": ["LOTTS"], "departures": ["KSAV"]}, 
               "SAV_S_APP": {"backup": "SAV_W_APP", "arrivals": ["VIYAP"]}
           }
       },
