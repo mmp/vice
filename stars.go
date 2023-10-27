@@ -83,6 +83,7 @@ type STARSPane struct {
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
+	RejectedPointOuts map[string]interface{}
 
 	queryUnassociated *TransientMap[string, interface{}]
 
@@ -921,6 +922,9 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.OutboundPointOuts == nil {
 		sp.OutboundPointOuts = make(map[string]string)
 	}
+	if sp.RejectedPointOuts == nil {
+		sp.RejectedPointOuts = make(map[string]interface{})
+	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = NewTransientMap[string, interface{}]()
 	}
@@ -1104,6 +1108,19 @@ func (sp *STARSPane) processEvents(w *World) {
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
 				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
+				}
+			}
+			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.InboundPointOuts, event.Callsign)
+				}
+			}
+
+		case RejectedPointOutEvent:
+			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.OutboundPointOuts, event.Callsign)
+					sp.RejectedPointOuts[event.Callsign] = nil
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
@@ -2721,6 +2738,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
+				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+					// ack rejected point out
+					delete(sp.RejectedPointOuts, ac.Callsign)
+					status.clear = true
+					return
 				} else if state.OutboundHandoffAccepted {
 					// ack an accepted handoff, which we will treat as also
 					// handing off control.
@@ -2800,6 +2822,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
 					state.SPCOverride = cmd
+					status.clear = true
+					return
+				} else if cmd == "UN" {
+					ctx.world.RejectPointOut(ac.Callsign, nil, func(err error) {
+						sp.previewAreaOutput = GetSTARSError(err).Error()
+					})
 					status.clear = true
 					return
 				}
@@ -4798,6 +4826,9 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		}
 		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			cs += " PO" + id
+		}
+		if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+			cs += " UN"
 		}
 		mainblock[0] = append(mainblock[0], cs)
 		mainblock[1] = append(mainblock[1], cs)

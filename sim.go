@@ -1928,8 +1928,28 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 }
 
 func (s *Sim) RejectPointOut(token, callsign string) error {
-	// TODO: implement
-	return nil
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if _, ok := s.PointOuts[callsign]; !ok {
+				return ErrNotPointedOutToMe
+			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
+				return ErrNotPointedOutToMe
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			// As with auto accepts, "to" and "from" are swapped in the
+			// event since they are w.r.t. the original point out.
+			s.eventStream.Post(Event{
+				Type:           RejectedPointOutEvent,
+				FromController: ctrl.Callsign,
+				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
+				Callsign:       ac.Callsign,
+			})
+
+			delete(s.PointOuts[callsign], ctrl.Callsign)
+			return nil
+		})
 }
 
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
