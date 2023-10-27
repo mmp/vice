@@ -1951,24 +1951,16 @@ func (nav *Nav) prepareForApproach(airport string, straightIn bool, arr *Arrival
 		}
 	}
 
-	if ap.Type == ILSApproach {
-		if directApproachFix {
-			// all good
-		} else if assignedHeading {
-			nav.Approach.InterceptState = InitialHeading
-		} else {
-			return "unable. We need either direct or a heading to intercept", ErrUnableCommand
-		}
-		// If the aircraft is on a heading, there's nothing more to do for
-		// now; keep flying the heading and after we intercept we'll add
-		// the rest of the waypoints to the aircraft's waypoints array.
+	if directApproachFix {
+		// all good
+	} else if assignedHeading {
+		nav.Approach.InterceptState = InitialHeading
 	} else {
-		// RNAV
-		if !directApproachFix {
-			// FIXME: allow intercepting via a heading
-			return "unable. We need direct to a fix on the approach.", ErrUnableCommand
-		}
+		return "unable. We need either direct or a heading to intercept", ErrUnableCommand
 	}
+	// If the aircraft is on a heading, there's nothing more to do for
+	// now; keep flying the heading and after we intercept we'll add
+	// the rest of the waypoints to the aircraft's waypoints array.
 
 	// No procedure turn if it intercepts via a heading
 	nav.Approach.NoPT = straightIn || assignedHeading
