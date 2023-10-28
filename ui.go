@@ -1769,6 +1769,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
 	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
+	[3]string{"*ID*", `"Ident."`, "*ID*"},
 }
 
 var starsCommands = [][2]string{
@@ -1848,8 +1849,12 @@ func uiDrawKeyboardWindow(w *World) {
 	if selectedCommandTypes == ACControlPrimary || selectedCommandTypes == ACControlSecondary {
 		imgui.Text("\n")
 		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
-After entering one the following commands, click on an aircraft to issue the command to it.
-Multiple commands may be given separated by spaces.
+To issue a command to an aircraft, enter one the following commands and then click on an
+aircraft to issue the command. Alternatively, enter the aircraft's callsign with a
+space after it and then enter a command. Multiple commands may be given separated by spaces.
+`)
+		imgui.Text("\n\n")
+		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
 Note that all altitudes should be specified in hundreds of feet and speed/altitude changes happen
 simultaneously unless the *TC*, *TD*, or *TS* commands are used to specify the change to be done
 after the first.`)
