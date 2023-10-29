@@ -10,7 +10,6 @@ import (
 	"path"
 	"runtime"
 	"runtime/debug"
-	"strings"
 	"time"
 
 	"golang.org/x/exp/slog"
@@ -29,7 +28,7 @@ func NewLogger(server bool, level string) *Logger {
 	if server {
 		w = &lumberjack.Logger{
 			Filename: "vice-logs/slog",
-			MaxSize:  1024, // MB
+			MaxSize:  64, // MB
 			MaxAge:   14,
 			Compress: true,
 		}
@@ -99,35 +98,6 @@ func NewLogger(server bool, level string) *Logger {
 	return l
 }
 
-// callstack returns slog.Attr representing the callstack, starting at the function
-// that called into one of the logging functions
-func callstack() slog.Attr {
-	var callers [16]uintptr
-	n := runtime.Callers(3, callers[:]) // skip up to function that is doing logging
-	frames := runtime.CallersFrames(callers[:n])
-
-	type Frame struct {
-		File     string `json:"file"`
-		Line     int    `json:"line"`
-		Function string `json:"function"`
-	}
-	var fr []Frame
-	for i := 0; ; i++ {
-		frame, more := frames.Next()
-		fr = append(fr, Frame{
-			File:     path.Base(frame.File),
-			Line:     frame.Line,
-			Function: strings.TrimPrefix(frame.Function, "main."),
-		})
-
-		// Don't keep going up into go runtime stack frames.
-		if !more || frame.Function == "main.main" {
-			break
-		}
-	}
-	return slog.Any("callstack", fr)
-}
-
 // Debug wraps slog.Debug to add call stack information (and similarly for
 // the following Logger methods...)  Note that we do not wrap the entire
 // slog logging interface, so, for example, WarnContext and Log do not have
@@ -137,8 +107,8 @@ func callstack() slog.Attr {
 // debug and info messages are discarded (though warnings and errors still
 // go through to slog.)
 func (l *Logger) Debug(msg string, args ...any) {
-	if l != nil {
-		args = append([]any{callstack()}, args...)
+	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
+		args = append([]any{slog.Any("callstack", Callstack())}, args...)
 		l.Logger.Debug(msg, args...)
 	}
 }
@@ -146,26 +116,26 @@ func (l *Logger) Debug(msg string, args ...any) {
 // Debugf is a convenience wrapper that logs just a message and allows
 // printf-style formatting of the provided args.
 func (l *Logger) Debugf(msg string, args ...any) {
-	if l != nil {
-		l.Logger.Debug(fmt.Sprintf(msg, args...), callstack())
+	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
+		l.Logger.Debug(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	}
 }
 
 func (l *Logger) Info(msg string, args ...any) {
-	if l != nil {
-		args = append([]any{callstack()}, args...)
+	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
+		args = append([]any{slog.Any("callstack", Callstack())}, args...)
 		l.Logger.Info(msg, args...)
 	}
 }
 
 func (l *Logger) Infof(msg string, args ...any) {
-	if l != nil {
-		l.Logger.Info(fmt.Sprintf(msg, args...), callstack())
+	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
+		l.Logger.Info(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	}
 }
 
 func (l *Logger) Warn(msg string, args ...any) {
-	args = append([]any{callstack()}, args...)
+	args = append([]any{slog.Any("callstack", Callstack())}, args...)
 	if l == nil {
 		slog.Warn(msg, args...)
 	} else {
@@ -175,14 +145,14 @@ func (l *Logger) Warn(msg string, args ...any) {
 
 func (l *Logger) Warnf(msg string, args ...any) {
 	if l == nil {
-		slog.Warn(fmt.Sprintf(msg, args...), callstack())
+		slog.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	} else {
-		l.Logger.Warn(fmt.Sprintf(msg, args...), callstack())
+		l.Logger.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	}
 }
 
 func (l *Logger) Error(msg string, args ...any) {
-	args = append([]any{callstack()}, args...)
+	args = append([]any{slog.Any("callstack", Callstack())}, args...)
 	if l == nil {
 		slog.Error(msg, args...)
 	} else {
@@ -192,9 +162,9 @@ func (l *Logger) Error(msg string, args ...any) {
 
 func (l *Logger) Errorf(msg string, args ...any) {
 	if l == nil {
-		slog.Error(fmt.Sprintf(msg, args...), callstack())
+		slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	} else {
-		l.Logger.Error(fmt.Sprintf(msg, args...), callstack())
+		l.Logger.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	}
 }
 

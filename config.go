@@ -21,7 +21,9 @@ import (
 // 9: correct STARSColors, so update brightness settings to compensate
 // 10: stop being clever about JSON encoding Waypoint arrays to strings
 // 11: expedite, intercept localizer, fix airspace serialization
-const CurrentConfigVersion = 11
+// 12: set 0 DCB brightness to 50 (WAR not setting a default for it)
+// 13: update departure handling for multi-controllers (and rename some members)
+const CurrentConfigVersion = 13
 
 type GlobalConfig struct {
 	Version               int
@@ -39,6 +41,9 @@ type GlobalConfig struct {
 
 	DevScenarioFile string
 	DevVideoMapFile string
+
+	AskedDiscordOptIn      bool
+	InhibitDiscordActivity AtomicBool
 
 	// This is only for serialize / deserialize
 	Sim      *Sim
@@ -121,25 +126,30 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 	return true
 }
 
+func SetDefaultConfig() {
+	globalConfig = &GlobalConfig{}
+	globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
+	globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
+	globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
+	globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
+
+	globalConfig.Version = CurrentConfigVersion
+	globalConfig.WhatsNewIndex = len(whatsNew)
+
+	globalConfig.InitialWindowPosition = [2]int{100, 100}
+}
+
 func LoadOrMakeDefaultConfig() {
 	fn := configFilePath()
 	lg.Infof("Loading config from: %s", fn)
 
-	globalConfig = &GlobalConfig{}
-	config, err := os.ReadFile(fn)
-	if err != nil {
-		globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
-		globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
-		globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
-		globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
-
-		globalConfig.Version = CurrentConfigVersion
-		globalConfig.WhatsNewIndex = len(whatsNew)
-	} else {
+	SetDefaultConfig()
+	if config, err := os.ReadFile(fn); err == nil {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)
 
 		if err := d.Decode(globalConfig); err != nil {
+			SetDefaultConfig()
 			ShowErrorDialog("Configuration file is corrupt: %v", err)
 		}
 

@@ -1,13 +1,14 @@
 {
   "airports": {
     "KFRG": {
+      "name": "Republic",
       "approaches": {
         "I14": {
           "full_name": "ILS Runway 14",
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "N040.48.42.061,W073.32.03.431/a2000 FRIKK/a1600/hilpt/pta1400 _FRG_14/a50"
+            "DPK FRIKK/iaf/faf/a1600+/hilpt/pta1400 _FRG_14/a50"
           ]
         },
         "R1": {
@@ -15,8 +16,8 @@
           "runway": "1",
           "type": "RNAV",
           "waypoints": [
-            "WULUG/a2000 BLAND/a1500 DEUCE/a1600 XAREW/a1500 _FRG_1/a50",
-            "ZACHS/a2000 BLAND/a1500 DEUCE/a1600 XAREW/a1500 _FRG_1/a50"
+            "WULUG/iaf BLAND/if/a2000 DEUCE/faf/a1600 XAREW/a1500 _FRG_1/a50",
+            "ZACHS/iaf BLAND/if/a2000 DEUCE/faf/a1600 XAREW/a1500 _FRG_1/a50"
           ]
         },
         "R14": {
@@ -24,8 +25,8 @@
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "HOBAM/a2000 LAAZE/a2000 ALABE/a1400 _FRG_14/a50",
-            "CAMRN/a4000 HEREK/a2000 SEHDO/a2000 WUPMA/a1400/s180 N040.45.19.596,W073.33.27.971 N040.46.28.220,W073.32.38.148 N040.46.38.973,W073.31.02.567 ALABE/a1400 _FRG_14/a50"
+            "HOBAM/iaf LAAZE/if/a2000+ ALABE/faf/a1400 _FRG_14/a50",
+            "CAMRN HEREK/iaf/a4000+ SEHDO/if/a2000+ WUPMA/a2000+/s180 N040.45.19.596,W073.33.27.971/a1400+ N040.46.28.220,W073.32.38.148/a1400+ N040.46.38.973,W073.31.02.567/a1400+ ALABE/faf/a1400 _FRG_14/a50"
           ]
         },
         "R19": {
@@ -33,8 +34,8 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "BLINZ/a2000 DEBYE/a2000 MOIRE/a1500 WULOP/a800 _FRG_19/a50",
-            "ZOSAB/a2000 DEBYE/a2000 MOIRE/a1500 WULOP/a800 _FRG_19/a50"
+            "BLINZ/iaf DEBYE/if/a2000 MOIRE/faf/a1500 WULOP/a800 _FRG_19/a50",
+            "ZOSAB/iaf DEBYE/if/a2000 MOIRE/faf/a1500 WULOP/a800 _FRG_19/a50"
           ]
         },
         "R32": {
@@ -42,8 +43,8 @@
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "JUSIN/a2000 TRCCY/a2000 ALFED/a1400 _FRG_32/a50",
-            "SHYNA/a2000 TRCCY/a2000 ALFED/a1400 _FRG_32/a50"
+            "JUSIN/iaf TRCCY/if/a2000 ALFED/faf/a1400 _FRG_32/a50",
+            "SHYNA/iaf TRCCY/if/a2000 ALFED/faf/a1400 _FRG_32/a50"
           ]
         }
       },
@@ -214,13 +215,14 @@
       "tower_list": 2
     },
     "KHVN": {
+      "name": "New Haven",
       "approaches": {
         "I2": {
           "full_name": "ILS Runway 2",
           "runway": "2",
           "type": "ILS",
           "waypoints": [
-            "CCC/nopt PEPER SALLT/a1500/hilpt _HVN_20/a50"
+            "CCC/iaf/nopt PEPER/if/a1800+ SALLT/faf/a1500/hilpt _HVN_20/a50"
           ]
         },
         "R2": {
@@ -228,8 +230,8 @@
           "runway": "2",
           "type": "RNAV",
           "waypoints": [
-            "KEYED/nopt PEPER/a1800/hilpt SALLT/a1500 _HVN_20/a50",
-            "NESSI PEPER/a1800/hilpt SALLT/a1500 _HVN_20/a50"
+            "KEYED/nopt PEPER/iaf/if/a1800/hilpt SALLT/faf/a1500 _HVN_20/a50",
+            "NESSI PEPER/iaf/if/a1800/hilpt SALLT/faf/a1500 _HVN_20/a50"
           ]
         },
         "R20": {
@@ -237,8 +239,8 @@
           "runway": "20",
           "type": "RNAV",
           "waypoints": [
-            "SOARS SORRY GUUMP/a2600 ELLVS/a1700 YERNU/a920 _HVN_2/a50",
-            "HFD GUUMP/a2600 ELLVS/a1700 YERNU/a920 _HVN_2/a50"
+            "SOARS SORRY/iaf/a3000+ GUUMP/if/a2600 ELLVS/faf/a1700 YERNU/a920 _HVN_2/a50",
+            "HFD/iaf GUUMP/if/a2600 ELLVS/a1700 YERNU/faf/a920 _HVN_2/a50"
           ]
         }
       },
@@ -383,13 +385,14 @@
       "location": "KHVN"
     },
     "KISP": {
+      "name": "MacArthur",
       "approaches": {
         "R5R": {
           "full_name": "RNAV Runway 15R",
           "runway": "15R",
           "type": "RNAV",
           "waypoints": [
-              "CCC FORMU/a2000/hilpt ZIVUX/a1600 WENGA N040.48.07.275,W073.06.25.784/a50"
+              "CCC FORMU/iaf/if/a2000/hilpt ZIVUX/faf/a1600 WENGA N040.48.07.275,W073.06.25.784/a50"
           ]
         },
         "I24": {
@@ -397,7 +400,7 @@
           "runway": "24",
           "type": "ILS",
           "waypoints": [
-              "CCC CORAM/a2000 RIZER/a1400 N040.48.07.728,W073.05.41.070/a50"
+              "CCC/iaf CORAM/if/a2000 RIZER/faf/a1400 N040.48.07.728,W073.05.41.070/a50"
           ]
         },
         "R24": {
@@ -405,7 +408,7 @@
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
-              "CCC CORAM/a2000 UKEGE/a1400 N040.48.07.728,W073.05.41.070/a50"
+              "CCC/iaf CORAM/if/a2000 UKEGE/faf/a1400 N040.48.07.728,W073.05.41.070/a50"
           ]
         },
         "R3L": {
@@ -413,7 +416,7 @@
           "runway": "33L",
           "type": "RNAV",
           "waypoints": [
-              "CCC BJACK/a2000/hilpt JATEV/a1500 N040.47.32.215,W073.05.39.669/a50"
+              "CCC BJACK/iaf/if/a2000/hilpt JATEV/faf/a1500 N040.47.32.215,W073.05.39.669/a50"
           ]
         },
         "I6": {
@@ -421,7 +424,7 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-              "CCC YOSUR/a1600/hilpt WILAK/a500 N040.47.19.677,W073.06.44.434/a50"
+              "CCC YOSUR/iaf/faf/a1600/hilpt WILAK/a500 N040.47.19.677,W073.06.44.434/a50"
           ]
         },
         "R6": {
@@ -429,7 +432,7 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-              "CCC DEERY/a2000/hilpt YOSUR/a1600 N040.47.19.677,W073.06.44.434/a50"
+              "CCC DEERY/iaf/if/a2000/hilpt YOSUR/faf/a1600 N040.47.19.677,W073.06.44.434/a50"
           ]
         }
       },
@@ -669,14 +672,15 @@
       "tower_list": 3
     },
     "KJFK": {
+      "name": "Kennedy",
       "approaches": {
         "I1L": {
           "full_name": "ILS 31 Left",
           "runway": "31L",
           "type": "ILS",
           "waypoints": [
-            "CHANT/a2000 ZACHS/a2000 MEALS/a1500 _JFK_31L/a50",
-            "DPK/a2000 ZACHS/a2000 MEALS/a1500 _JFK_31L/a50"
+            "CHANT/iaf ZACHS/if/a2000 MEALS/faf/a1500 _JFK_31L/a50",
+            "DPK/iaf ZACHS/if/a2000 MEALS/faf/a1500 _JFK_31L/a50"
           ]
         },
         "I1R": {
@@ -684,7 +688,7 @@
           "runway": "31R",
           "type": "ILS",
           "waypoints": [
-            "CATOD/a3000 MALDE/a3000 ZULAB/a1900 _JFK_31R/a50"
+            "CATOD/if/a3000 MALDE/a3000 ZULAB/faf/a1900 _JFK_31R/a50"
           ]
         },
         "I2L": {
@@ -692,8 +696,8 @@
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
-            "CIMBL/a14000 HAIRR/a14000 CEEGL/a10000 TAPPR/a8000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000 ZALPO/a1800 _JFK_22L/a50",
-            "NRTON/a10000 SAJUL/a10000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000 ZALPO/a1800 _JFK_22L/a50"
+            "CIMBL/iaf HAIRR/a14000+ CEEGL/a10000+ TAPPR/a8000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ ROSLY/if/a3000 ZALPO/faf/a1800 _JFK_22L/a50",
+            "NRTON/iaf SAJUL/a10000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ ROSLY/if/a3000+ ZALPO/faf/a1800 _JFK_22L/a50"
           ]
         },
         "I2R": {
@@ -701,8 +705,8 @@
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
-            "CIMBL/a14000 HAIRR/a14000 CEEGL/a10000 TAPPR/a8000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 CORVT/a3000 MATTR/a1800 _JFK_22R/a50",
-            "NRTON/a10000 SAJUL/a10000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 CORVT/a3000 MATTR/a1900 _JFK_22R/a50"
+            "CIMBL/iaf HAIRR/a14000+ CEEGL/a10000+ TAPPR/a8000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ CORVT/if/a3000 MATTR/faf/a1900 _JFK_22R/a50",
+            "NRTON/iaf SAJUL/a10000+ DETGY/a7000+ HAUPT/a6000+ LEFER/a4000+ CORVT/if/a3000 MATTR/faf/a1900 _JFK_22R/a50"
           ]
         },
         "I3L": {
@@ -710,7 +714,7 @@
           "runway": "13L",
           "type": "ILS",
           "waypoints": [
-            "COVIR/a3000 KMCHI/a2900 BUZON/a2900 TELEX/a2100 CAXUN/a1500 UXHUB/a680 _JFK_13L/a50"
+            "COVIR/iaf KMCHI/iaf/a2900+ BUZON/iaf/a2900 TELEX/if/a2100 CAXUN/faf/a1500 UXHUB/a680 _JFK_13L/a50"
           ]
         },
         "I4L": {
@@ -718,7 +722,7 @@
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
-            "AROKE/a2000 KRSTL/a1500 _JFK_4L/a50"
+            "AROKE/if/a2000 KRSTL/faf/a1500 _JFK_4L/a50"
           ]
         },
         "I4R": {
@@ -726,7 +730,7 @@
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
-            "ZETAL/a2000 EBBEE/a1500 _JFK_4R/a50"
+            "ZETAL/if/a2000 EBBEE/faf/a1500 _JFK_4R/a50"
           ]
         },
         "R1L": {
@@ -734,8 +738,8 @@
           "runway": "31L",
           "type": "RNAV",
           "waypoints": [
-            "SESKE ZACHS/a2000/s210 CUVKU/a1800 _JFK_31L/a50",
-            "RISSY ZACHS/a2000/s210 CUVKU/a1800 _JFK_31L/a50"
+            "DPK SESKE/iaf/a2400+ ZACHS/if/a2000/s210 CUVKU/faf/a1800 _JFK_31L/a50",
+            "CHANT RISSY/a2000+ ZACHS/if/a2000/s210 CUVKU/faf/a1800 _JFK_31L/a50"
           ]
         },
         "R1R": {
@@ -743,8 +747,8 @@
           "runway": "31R",
           "type": "RNAV",
           "waypoints": [
-            "PZULU CATOD/a3000/s210 IGIDE/a1900 _JFK_31R/a50",
-            "VIDIO CATOD/a3000/s210 IGIDE/a1900 _JFK_31R/a50"
+            "DPK PZULU/iaf/a3000+ CATOD/if/a3000/s210 IGIDE/faf/a1900 _JFK_31R/a50",
+            "CAMRN VIDIO/iaf/a3000+ CATOD/if/a3000/s210 IGIDE/faf/a1900 _JFK_31R/a50"
           ]
         },
         "R2L": {
@@ -752,7 +756,8 @@
           "runway": "22L",
           "type": "RNAV",
           "waypoints": [
-            "WIKOL/a3000 GIGPE/a2900 CAPIT/a2900 ENEEE/a1700 ZOSDO/a800 _JFK_22L/a50"
+            "WIKOL/iaf GIGPE/a3000+ CAPIT/if/a2900 ENEEE/faf/a1700 ZOSDO/a800 _JFK_22L/a50",
+            "DPK/iaf CAPIT/if/a2900 ENEEE/faf/a1700 ZOSDO/a800 _JFK_22L/a50"
           ]
         },
         "R2R": {
@@ -760,7 +765,7 @@
           "runway": "22R",
           "type": "RNAV",
           "waypoints": [
-            "RIVRA/a3000 HENEB/a1900 _JFK_22R/a50"
+            "DPK/iaf RIVRA/if/a3000 HENEB/faf/a1900 _JFK_22R/a50"
           ]
         },
         "R3L": {
@@ -768,7 +773,7 @@
           "runway": "13L",
           "type": "RNAV",
           "waypoints": [
-            "ASALT/a3000/s210 CNRSE/a2000 LEISA/a1246 SILJY/a835 ROBJE/a456 _JFK_13L/a50"
+            "ASALT/if/a3000/s210 CNRSE/faf/a2000 LEISA/a1246 SILJY/a835 ROBJE/a456 _JFK_13L/a50"
           ]
         },
         "R3R": {
@@ -776,7 +781,7 @@
           "runway": "13R",
           "type": "RNAV",
           "waypoints": [
-            "ASALT/a3000/s210 NUCRI/a2000 PEEBO/a921 MAYMA/a520 _JFK_13R/a50"
+            "ASALT/if/a3000/s210 NUCRI/faf/a2000 PEEBO/a921 MAYMA/a520 _JFK_13R/a50"
           ]
         },
         "R4L": {
@@ -784,7 +789,7 @@
           "runway": "4L",
           "type": "RNAV",
           "waypoints": [
-            "REPRE/a2000 KRSTL/a1500 _JFK_4L/a50"
+            "REPRE/if/a2000 KRSTL/faf/a1500 _JFK_4L/a50"
           ]
         },
         "R4R": {
@@ -792,7 +797,7 @@
           "runway": "4R",
           "type": "RNAV",
           "waypoints": [
-            "VERRU/a2000 EBBEE/a1500 _JFK_4R/a50"
+            "VERRU/if/a2000 EBBEE/faf/a1500 _JFK_4R/a50"
           ]
         }
       },
@@ -1922,7 +1927,7 @@
         "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935/ho CAMRN/h40"
       }
     ],
-    "Intra-TRACON (ISP)": [
+    "Intra-TRACON (ISP/HVN)": [
       {
         "airlines": {
           "KISP": [
@@ -1943,6 +1948,7 @@
         "cleared_altitude": 10000,
         "cruise_altitude": 14000,
         "initial_altitude": 10000,
+        "description": "via HTO",
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HTO V46 CCC ISP",
@@ -1969,6 +1975,7 @@
         "cleared_altitude": 10000,
         "cruise_altitude": 14000,
         "initial_altitude": 10000,
+        "description": "via HFD",
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. HVN",
@@ -1987,6 +1994,7 @@
         "cleared_altitude": 8000,
         "cruise_altitude": 8000,
         "initial_altitude": 8000,
+        "description": "via CCC",
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CCC ISP",
@@ -2016,6 +2024,7 @@
         "cleared_altitude": 10000,
         "cruise_altitude": 10000,
         "initial_altitude": 10000,
+        "description": "via MAD",
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. MAD V1 BELTT ISP",
@@ -2041,6 +2050,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
+        "description": "via JFK",
         "initial_altitude": 5000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2059,6 +2069,7 @@
         "cleared_altitude": 7000,
         "cruise_altitude": 27000,
         "initial_altitude": 7000,
+        "description": "via SARDI",
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. SARDI V139 RICED KEYED HVN",
@@ -2076,6 +2087,7 @@
         "cleared_altitude": 10000,
         "cruise_altitude": 10000,
         "initial_altitude": 10000,
+        "description": "via CREAM",
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CREAM HVN",
@@ -2094,6 +2106,7 @@
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
         "initial_altitude": 5000,
+        "description": "via DEENA",
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. DENNA HVN",
@@ -2111,12 +2124,13 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
+        "description": "via BDR",
         "initial_altitude": 5000,
         "initial_controller": "LGA_DEP",
         "initial_speed": 250,
         "route": "/. BDR HVN",
         "speed_restriction": 250,
-        "waypoints": "N040.57.50.320,W073.29.57.747 N040.57.50.320,W073.29.57.747/ho BDR HVN"
+        "waypoints": "N040.57.00.469,W073.31.33.740 N041.01.04.242,W073.23.53.468/ho BDR HVN"
       }
     ],
     "Intra-TRACON (JFK/FRG East)": [
@@ -2176,6 +2190,7 @@
         "cleared_altitude": 5000,
         "cruise_altitude": 5000,
         "initial_altitude": 5000,
+        "description": "via ZIGGI",
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. ZIGGI",
@@ -2204,6 +2219,7 @@
         "cleared_altitude": 4000,
         "cruise_altitude": 9000,
         "initial_altitude": 4000,
+        "description": "via COL",
         "initial_controller": "EWR_APP",
         "initial_speed": 250,
         "route": "/. COL",
@@ -2331,6 +2347,7 @@
         "cleared_altitude": 19000,
         "cruise_altitude": 37000,
         "initial_altitude": 20000,
+        "description": "LENDY8",
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. LENDY8",
@@ -2427,6 +2444,7 @@
         },
         "cleared_altitude": 19000,
         "cruise_altitude": 39000,
+        "description": "IGN1",
         "initial_altitude": 19000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
@@ -2465,6 +2483,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 15000,
+        "description": "DENNA3",
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2491,6 +2510,7 @@
         },
         "cleared_altitude": 5000,
         "cruise_altitude": 29000,
+        "description": "LOVES2",
         "initial_altitude": 8000,
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
@@ -2739,6 +2759,7 @@
         },
         "cleared_altitude": 12000,
         "cruise_altitude": 36000,
+        "description": "PARCH3",
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
@@ -2770,6 +2791,7 @@
         },
         "cleared_altitude": 12000,
         "cruise_altitude": 36000,
+        "description": "ROBER2",
         "initial_altitude": 13000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
@@ -3174,7 +3196,7 @@
             "KJFK": 0,
             "KFRG": 0
         },
-        "Intra-TRACON (ISP)": {
+        "Intra-TRACON (ISP/HVN)": {
           "KISP": 0,
           "KHVN": 0
         },
@@ -3197,30 +3219,34 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "solo_controller": "JFK_APP",
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "BOS_E_CTR",
         "EWR_APP",
@@ -3310,7 +3336,7 @@
             "KJFK": 0,
             "KFRG": 0
         },
-        "Intra-TRACON (ISP)": {
+        "Intra-TRACON (ISP/HVN)": {
           "KISP": 0,
           "KHVN": 0
         },
@@ -3334,29 +3360,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
@@ -3518,7 +3548,7 @@
             "KJFK": 0,
             "KFRG": 0
         },
-        "Intra-TRACON (ISP)": {
+        "Intra-TRACON (ISP/HVN)": {
           "KISP": 0,
           "KHVN": 0
         },
@@ -3542,29 +3572,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
@@ -3726,7 +3760,7 @@
             "KJFK": 0,
             "KFRG": 0
         },
-        "Intra-TRACON (ISP)": {
+        "Intra-TRACON (ISP/HVN)": {
           "KISP": 0,
           "KHVN": 0
         },
@@ -3750,29 +3784,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "BOS_E_CTR",
         "EWR_APP",
@@ -3933,7 +3971,7 @@
             "KJFK": 0,
             "KFRG": 0
         },
-        "Intra-TRACON (ISP)": {
+        "Intra-TRACON (ISP/HVN)": {
           "KISP": 0,
           "KHVN": 0
         },
@@ -3957,29 +3995,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "BOS_E_CTR",
         "EWR_APP",

@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"runtime/debug"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -106,6 +107,22 @@ var (
 		"New command: AFIX/CAPP: at FIX cleared APP approach",
 		"Altitude crossing restrictions are more flexible: CFIX/A100-, CFIX/A80+, CFIX/A140-160, etc.",
 		"Fixed a bug where arrivals would disappear with some scenarios",
+		"Various updates to the JAX, C90, and F11 scenarios",
+		"Added D01, KSAV, and KSDF scenarios",
+		"Allow altitude and speed instructions to be either simultaneous or consecutive",
+		"Added a new KAAC/KJKE scenario",
+		"Various minor bugfixes and STARS simulation improvements",
+		"Many improvements to the accuracy of the KAAC scenario",
+		"Fixed a bug where arrivals would sometimes climb after being cleared for the approach",
+		"Fixed a bug in the Windows installer that caused new scenarios (AAC, SAV, SDF) to not be installed locally",
+		"Added the ability to draw active departure, arrival, and approach routes on the radar scope",
+		"Added the D01 (Denver TRACON) scenario to single-user vice (the installer was missing it)",
+		"Added support for updating your Discord activity based on your vice activities (thanks, Samuel Valencia!)",
+		"Clicking the " + FontAwesomeIconKeyboard + " icon on the menubar gives a summary of vice's keyboard commands",
+		"Fixed bug with aircraft descending too early when flying procedure turns",
+		"Fixed bug with some departures trying to re-fly their initial departure route",
+		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
+		"Fixed bug with the default DCB brightness being set to 0",
 	}
 )
 
@@ -179,6 +196,10 @@ func uiShowConnectDialog(allowCancel bool) {
 	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{allowCancel: allowCancel}), false)
 }
 
+func uiShowDiscordOptInDialog() {
+	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}), true)
+}
+
 // If |b| is true, all following imgui elements will be disabled (and drawn
 // accordingly).
 func uiStartDisable(b bool) {
@@ -250,11 +271,18 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			}
 
 			if imgui.Button(FontAwesomeIconQuestionCircle) {
-				w.ToggleShowApproachesWindow()
+				w.ToggleShowScenarioInfoWindow()
 			}
 			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Show available approaches")
+				imgui.SetTooltip("Show available departures, arrivals, and approaches")
 			}
+		}
+
+		if imgui.Button(FontAwesomeIconKeyboard) {
+			uiToggleShowKeyboardWindow()
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Show summary of keyboard commands")
 		}
 
 		enableLaunch := w != nil &&
@@ -277,7 +305,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
 		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Display vice documentation")
+			imgui.SetTooltip("Display online vice documentation")
 		}
 
 		width, _ := ui.font.BoundText(FontAwesomeIconInfoCircle, 0)
@@ -304,7 +332,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 	if w != nil {
 		w.DrawSettingsWindow()
 
-		w.DrawApproachesWindow()
+		w.DrawScenarioInfoWindow()
 
 		w.DrawMissingPrimaryDialog()
 
@@ -318,13 +346,15 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 
 	for _, event := range ui.eventsSubscription.Get() {
 		if event.Type == ServerBroadcastMessageEvent {
-			uiShowModalDialog(NewModalDialogBox(&BroadcoastModalDialog{Message: event.Message}), false)
+			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.Message}), false)
 		}
 	}
 
 	drawActiveDialogBoxes()
 
 	wmDrawUI(p)
+
+	uiDrawKeyboardWindow(w)
 
 	imgui.PopFont()
 
@@ -805,17 +835,17 @@ func (nr *WhatsNewModalClient) Draw() int {
 	return -1
 }
 
-type BroadcoastModalDialog struct {
+type BroadcastModalDialog struct {
 	Message string
 }
 
-func (b *BroadcoastModalDialog) Title() string {
+func (b *BroadcastModalDialog) Title() string {
 	return "Server Broadcast Message"
 }
 
-func (b *BroadcoastModalDialog) Opening() {}
+func (b *BroadcastModalDialog) Opening() {}
 
-func (b *BroadcoastModalDialog) Buttons() []ModalDialogButton {
+func (b *BroadcastModalDialog) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
 		ModalDialogButton{
 			text: "Ok",
@@ -826,8 +856,51 @@ func (b *BroadcoastModalDialog) Buttons() []ModalDialogButton {
 	}
 }
 
-func (b *BroadcoastModalDialog) Draw() int {
+func (b *BroadcastModalDialog) Draw() int {
 	imgui.Text(b.Message)
+	return -1
+}
+
+type DiscordOptInModalClient struct{}
+
+func (d *DiscordOptInModalClient) Title() string {
+	return "Discord Activity Updates"
+}
+
+func (d *DiscordOptInModalClient) Opening() {}
+
+func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Ok",
+			action: func() bool {
+				globalConfig.AskedDiscordOptIn = true
+				return true
+			},
+		},
+	}
+}
+
+func (d *DiscordOptInModalClient) Draw() int {
+	style := imgui.CurrentStyle()
+	spc := style.ItemSpacing()
+	spc.Y -= 4
+	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
+
+	imgui.Text("By default, vice will automatically update your Discord Activity to say")
+	imgui.Text("that you are running vice, using information about your current session.")
+	imgui.Text("If you do not want it to do this, you can disable this feature using the")
+	imgui.Text("checkbox below. You can also change this setting any time in the future")
+	imgui.Text("in the settings window " + FontAwesomeIconCog + " via the menu bar.")
+
+	imgui.PopStyleVar()
+
+	imgui.Text("")
+
+	update := !globalConfig.InhibitDiscordActivity.Load()
+	imgui.Checkbox("Update Discord activity status", &update)
+	globalConfig.InhibitDiscordActivity.Store(!update)
+
 	return -1
 }
 
@@ -870,17 +943,17 @@ func showAboutDialog() {
 	// vertically maximized. So we hand-wrap the lines for the
 	// font we're using...
 	credits :=
-		`Additional credits: Thanks to Dennis Graiani for
-improvements to vice's STARS emulation
-and to Adam Bolek, Mike K, and Arya T for
-contributing additional scenarios. Video maps
-are thanks to the ZNY and ZJX VATSIM ARTCCs.
-Thanks also to OpenScope for the airline fleet
-and aircraft performance databases and to
-ourairports.com for the airport database.
-See the file CREDITS.txt in the vice source
-code distribution for third-party software,
-fonts, sounds, etc.`
+		`Additional credits: Thanks to Dennis Graiani and
+Samuel Valencia for contributing features to vice
+and to Adam Bolek, Mike K, Arya T, and Samuel
+Valencia for contributing additional scenarios.
+Video maps are thanks to the ZAU, ZBW, ZDV, ZJX,
+ZNY, and ZOB VATSIM ARTCCs. Thanks also to
+OpenScope for the airline fleet and aircraft
+performance databases and to ourairports.com for
+the airport database. See the file CREDITS.txt
+in the vice source code distribution for third-party
+software, fonts, sounds, etc.`
 
 	imgui.Text(credits)
 
@@ -1114,7 +1187,8 @@ func (e *ErrorModalClient) Draw() int {
 		imgui.Image(imgui.TextureID(ui.sadTowerTextureID), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
-		imgui.Text("\n\n" + e.message)
+		text, _ := wrapText(e.message, 80, 0, true)
+		imgui.Text("\n\n" + text)
 
 		imgui.EndTable()
 	}
@@ -1512,7 +1586,8 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 		}, 0)
 		imgui.Text(fmt.Sprintf("Departures: %d total", ndep))
 
-		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
+			imgui.TableFlagsSizingStretchProp
 		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 		if imgui.BeginTableV("dep", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
 			imgui.TableSetupColumn("Airport")
@@ -1533,7 +1608,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 				imgui.Text(dep.Airport + " " + dep.Runway + " " + dep.Category)
 
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%d", dep.TotalLaunches))
+				imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
 				imgui.TableNextColumn()
 				imgui.Text(dep.Aircraft.Callsign)
@@ -1594,7 +1669,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 				imgui.Text(arr.Group)
 
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%d", arr.TotalLaunches))
+				imgui.Text(strconv.Itoa(arr.TotalLaunches))
 
 				imgui.TableNextColumn()
 				imgui.Text(arr.Airport)
@@ -1648,4 +1723,310 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 	if !showLaunchControls {
 		lc.w.TakeOrReturnLaunchControl(eventStream)
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+var keyboardWindowVisible bool
+var selectedCommandTypes string
+
+func uiToggleShowKeyboardWindow() {
+	keyboardWindowVisible = !keyboardWindowVisible
+}
+
+var primaryAcCommands = [][3]string{
+	[3]string{"*H_hdg", `"Fly heading _hdg_." If no heading is given, "fly present heading".`,
+		"*H050*, *H*"},
+	[3]string{"*D_fix", `"Proceed direct _fix_".`, "*DWAVEY*"},
+	[3]string{"*C_alt", `"Climb and maintain _alt_".`, "*C170*"},
+	[3]string{"*TC_alt", `"After reaching speed _kts_, climb and maintain _alt_", where _kts_ is a previously-assigned speed.`, "*TC170*"},
+	[3]string{"*D_alt", `"Descend and maintain _alt_".`, "*D20*"},
+	[3]string{"*TD_alt", `"Descend and maintain _alt_ after reaching _kts_ knots", where _kts_ is a previously-assigned
+speed. (*TD* = 'then descend')`, "*TD20*"},
+	[3]string{"*S_kts", `"Reduce/increase speed to _kts_."
+If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
+	[3]string{"*TS_kts", `"After reaching _alt_, reduce/increase speed to _kts_", where _alt_ is a previously-assigned
+altitude. (*TS* = 'then speed')`, "*TS210*"},
+	[3]string{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
+	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
+	[3]string{"*X*", "(Deletes the aircraft.)", "*X*"},
+}
+
+var secondaryAcCommands = [][3]string{
+	[3]string{"*L_hdg", `"Turn left heading _hdg_."`, "*L130*"},
+	[3]string{"*L_deg*D", `"Turn _deg_ degrees left."`, "*L10D*"},
+	[3]string{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
+	[3]string{"*R_deg*D", `"Turn _deg_ degrees right".`, "*R20D*"},
+	[3]string{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
+	[3]string{"*C_fix*/A_alt*/S_kts",
+		`"Cross _fix_ at _alt_ / _kts_ knots."
+Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
+	[3]string{"*ED*", `"Expedite descent"`, "*ED*"},
+	[3]string{"*EC*", `"Expedite climb"`, "*EC*"},
+	[3]string{"*SMIN*", `"Maintain slowest practical speed".`, "*SMIN*"},
+	[3]string{"*SMAX*", `"Maintain maximum forward speed".`, "*SMAX*"},
+	[3]string{"*A_fix*/C_appr", `"At _fix_, cleared _appr_ approach."`, "*AROSLY/CI2L*"},
+	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
+	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
+	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
+	[3]string{"*ID*", `"Ident."`, "*ID*"},
+}
+
+var starsCommands = [][2]string{
+	[2]string{"@", `If the aircraft is an inbound handoff, accept the handoff.
+If the aircraft has been handed off to another controller who has accepted
+the handoff, transfer control to the other controller.`},
+	[2]string{"*[F3] @", `Initiate track of an untracked aircraft.`},
+	[2]string{"_id_ @", `Handoff aircraft to the controller identified by _id_.`},
+	[2]string{". @", `Clear aircraft's scratchpad.`},
+	[2]string{"*[F7]Y_scr_ @", `Set aircraft's scratchpad to _scr_ (3 character limit).`},
+	[2]string{"+_alt_ @", `Set the temporary altitude in the aircraft's datablock to _alt_,
+which must be 3 digits (e.g., *040*).`},
+	[2]string{"_id_\\* @", `Point out the aircraft to the controller identified by _id_.`},
+}
+
+// draw the windows that shows the available keyboard commands
+func uiDrawKeyboardWindow(w *World) {
+	if !keyboardWindowVisible {
+		return
+	}
+
+	imgui.BeginV("Keyboard Command Reference", &keyboardWindowVisible, 0)
+
+	style := imgui.CurrentStyle()
+
+	// Initial line with a link to the website
+	imgui.Text("See the ")
+	imgui.SameLineV(0, 0)
+	imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{0.4, 0.6, 1, 1})
+	imgui.Text("vice website")
+	// Underline the link
+	min, max := imgui.ItemRectMin(), imgui.ItemRectMax()
+	c := style.Color(imgui.StyleColorText)
+	imgui.WindowDrawList().AddLine(imgui.Vec2{min.X, max.Y}, max, imgui.PackedColorFromVec4(c))
+	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
+		browser.OpenURL("https://pharr.org/vice/")
+	}
+	imgui.PopStyleColor()
+	imgui.SameLineV(0, 0)
+	imgui.Text(" for full documentation of vice's keyboard commands.")
+
+	imgui.Separator()
+
+	fixedFont := GetFont(FontIdentifier{Name: "Roboto Mono", Size: globalConfig.UIFontSize})
+	italicFont := GetFont(FontIdentifier{Name: "Roboto Mono Italic", Size: globalConfig.UIFontSize})
+
+	// Tighten up the line spacing
+	spc := style.ItemSpacing()
+	spc.Y -= 4
+	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
+
+	// Handling of the three types of commands that may be drawn is fairly
+	// hard-coded in the following; there are few enough of them that any
+	// further abstraction doesn't seem worth the trouble.
+	const ACControlPrimary = "Aircraft Control (Primary)"
+	const ACControlSecondary = "Aircraft Control (Secondary)"
+	const STARS = "STARS (Most frequently used)"
+
+	if selectedCommandTypes == "" {
+		selectedCommandTypes = ACControlPrimary
+	}
+	if imgui.BeginComboV("Command Group", selectedCommandTypes, imgui.ComboFlagsHeightLarge) {
+		if imgui.SelectableV(ACControlPrimary, selectedCommandTypes == ACControlPrimary, 0, imgui.Vec2{}) {
+			selectedCommandTypes = ACControlPrimary
+		}
+		if imgui.SelectableV(ACControlSecondary, selectedCommandTypes == ACControlSecondary, 0, imgui.Vec2{}) {
+			selectedCommandTypes = ACControlSecondary
+		}
+		if imgui.SelectableV(STARS, selectedCommandTypes == STARS, 0, imgui.Vec2{}) {
+			selectedCommandTypes = STARS
+		}
+		imgui.EndCombo()
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
+		imgui.TableFlagsSizingStretchProp
+	if selectedCommandTypes == ACControlPrimary || selectedCommandTypes == ACControlSecondary {
+		imgui.Text("\n")
+		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
+To issue a command to an aircraft, enter one the following commands and then click on an
+aircraft to issue the command. Alternatively, enter the aircraft's callsign with a
+space after it and then enter a command. Multiple commands may be given separated by spaces.
+`)
+		imgui.Text("\n\n")
+		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
+Note that all altitudes should be specified in hundreds of feet and speed/altitude changes happen
+simultaneously unless the *TC*, *TD*, or *TS* commands are used to specify the change to be done
+after the first.`)
+		imgui.Text("\n\n")
+
+		if w != nil {
+			var apprNames []string
+			for _, rwy := range w.ArrivalRunways {
+				ap := w.Airports[rwy.Airport]
+				for _, name := range SortedMapKeys(ap.Approaches) {
+					appr := ap.Approaches[name]
+					if appr.Runway == rwy.Runway {
+						apprNames = append(apprNames, name+" ("+rwy.Airport+")")
+					}
+				}
+			}
+			if len(apprNames) > 0 {
+				uiDrawMarkedupText(ui.font, fixedFont, italicFont, `Active approaches: `+strings.Join(apprNames, ", "))
+				imgui.Text("\n\n")
+			}
+		}
+
+		if imgui.BeginTableV("control", 3, flags, imgui.Vec2{}, 0.) {
+			imgui.TableSetupColumn("Command")
+			imgui.TableSetupColumn("Instruction")
+			imgui.TableSetupColumn("Example")
+			imgui.TableHeadersRow()
+
+			cmds := Select(selectedCommandTypes == ACControlPrimary, primaryAcCommands, secondaryAcCommands)
+			for _, cmd := range cmds {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[0])
+				imgui.TableNextColumn()
+				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[1])
+				imgui.TableNextColumn()
+				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[2])
+			}
+		}
+		imgui.EndTable()
+	} else {
+		imgui.Text("\n")
+		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
+In the following, the mouse icon @ indicates clicking on the radar track of an aircraft on the scope.
+Keyboard function keys are shown in brackets: *[F3]*.
+The _id_s used to identify other controllers are 2-3 characters and are listed to the left of the
+control positions in the controller list on the upper right side of the scope (unless moved).`)
+		imgui.Text("\n\n")
+
+		if imgui.BeginTableV("stars", 2, flags, imgui.Vec2{}, 0.) {
+			imgui.TableSetupColumn("Command")
+			imgui.TableSetupColumn("Description")
+			imgui.TableHeadersRow()
+
+			for _, cmd := range starsCommands {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[0])
+				imgui.TableNextColumn()
+				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[1])
+			}
+			imgui.EndTable()
+		}
+	}
+
+	imgui.PopStyleVar()
+
+	imgui.End()
+}
+
+// uiDrawMarkedupText uses imgui to draw the given string, which may
+// include some rudimentary markup:
+//
+// - @ -> draw a computer mouse icon
+// - _ -> start/stop italic font
+// - * -> start/stop fixed-width font
+// - \ -> escape character: interpret the next character literally
+//
+// If italic text follows fixed-width font text (or vice versa), it is not
+// necessary to denote the end of the old formatting. Thus, one may write
+// "*D_alt" to have "D" fixed-width and "alt" in italics; it is not
+// necessary to write "*D*_alt_".
+func uiDrawMarkedupText(regularFont *Font, fixedFont *Font, italicFont *Font, str string) {
+	// regularFont is the default and starting point
+	imgui.PushFont(regularFont.ifont)
+
+	// textWidth approximates the width of the given string in pixels; it
+	// may slightly over-estimate the width, but that's fine since we use
+	// it to decide when to wrap lines of text.
+	textWidth := func(s string) float32 {
+		s = strings.Trim(s, `_*\`) // remove markup characters
+		imgui.PushFont(fixedFont.ifont)
+		sz := imgui.CalcTextSize(s, false, 0)
+		imgui.PopFont()
+		return sz.X
+	}
+
+	fixed, italic := false, false
+	// Split the string into words. Note that this doesn't preserve extra
+	// spacing from multiple spaces or respect embedded newlines.
+	for _, word := range strings.Fields(str) {
+		if textWidth(word) > imgui.ContentRegionAvail().X {
+			// start a new line
+			imgui.Text("\n")
+		}
+
+		// Rather than calling imgui.Text() for each word, we'll accumulate
+		// text into s and then display it when needed (font change, new
+		// line, etc..)
+		var s string
+		flush := func() {
+			imgui.Text(s)
+			imgui.SameLineV(0, 0) // prevent extra spacing after the text.
+			s = ""
+		}
+
+		nextLiteral := false // should the next character be treated literally?
+		for _, ch := range word {
+			if nextLiteral {
+				s += string(ch)
+				nextLiteral = false
+				continue
+			}
+
+			switch ch {
+			case '@':
+				s += FontAwesomeIconMouse
+
+			case '\\':
+				nextLiteral = true
+
+			case '*':
+				flush() // font change
+				if fixed {
+					// end of fixed-width
+					fixed = false
+					imgui.PopFont()
+				} else {
+					if italic {
+						// end italic
+						imgui.PopFont()
+					}
+					fixed, italic = true, false
+					imgui.PushFont(fixedFont.ifont)
+				}
+
+			case '_':
+				flush() // font change
+				if italic {
+					// end of italics
+					italic = false
+					imgui.PopFont()
+				} else {
+					if fixed {
+						// end of fixed-width
+						imgui.PopFont()
+					}
+					fixed, italic = false, true
+					imgui.PushFont(italicFont.ifont)
+				}
+
+			default:
+				s += string(ch)
+			}
+		}
+		s += " "
+		flush()
+	}
+
+	if fixed || italic {
+		imgui.PopFont()
+	}
+
+	imgui.PopFont() // regular font
 }

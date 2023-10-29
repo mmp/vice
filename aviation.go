@@ -187,14 +187,16 @@ type RadarTrack struct {
 func FormatAltitude(falt float32) string {
 	alt := int(falt)
 	if alt >= 18000 {
-		return "FL" + fmt.Sprintf("%d", alt/100)
+		return "FL" + strconv.Itoa(alt/100)
+	} else if alt < 1000 {
+		return strconv.Itoa(alt)
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100 * 100
 		if th == 0 {
-			return fmt.Sprintf("%d", hu)
+			return strconv.Itoa(hu)
 		} else if hu == 0 {
-			return fmt.Sprintf("%d,000", th)
+			return strconv.Itoa(th) + ",000"
 		} else {
 			return fmt.Sprintf("%d,%03d", th, hu)
 		}
@@ -206,11 +208,10 @@ type TransponderMode int
 const (
 	Standby = iota
 	Charlie
-	Ident
 )
 
 func (t TransponderMode) String() string {
-	return [...]string{"Standby", "C", "Ident"}[t]
+	return [...]string{"Standby", "C"}[t]
 }
 
 type Runway struct {
@@ -229,21 +230,6 @@ type Navaid struct {
 type Fix struct {
 	Id       string
 	Location Point2LL
-}
-
-func ParseAltitude(s string) (int, error) {
-	s = strings.ToUpper(s)
-	if strings.HasPrefix(s, "FL") {
-		if alt, err := strconv.Atoi(s[2:]); err != nil {
-			return 0, err
-		} else {
-			return alt * 100, nil
-		}
-	} else if alt, err := strconv.Atoi(s); err != nil {
-		return 0, err
-	} else {
-		return alt, nil
-	}
 }
 
 func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
@@ -517,7 +503,11 @@ func (a *AltitudeRestriction) UnmarshalJSON(b []byte) error {
 }
 
 func (a AltitudeRestriction) TargetAltitude(alt float32) float32 {
-	return clamp(alt, a.Range[0], a.Range[1])
+	if a.Range[1] != 0 {
+		return clamp(alt, a.Range[0], a.Range[1])
+	} else {
+		return max(alt, a.Range[0])
+	}
 }
 
 // ClampRange limits a range of altitudes to satisfy the altitude
@@ -638,6 +628,7 @@ type Waypoint struct {
 	Handoff             bool                 `json:"handoff,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
+	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -653,6 +644,15 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.ProcedureTurn != nil {
 		attrs = append(attrs, slog.Any("procedure_turn", wp.ProcedureTurn))
+	}
+	if wp.IAF {
+		attrs = append(attrs, slog.Bool("IAF", wp.IAF))
+	}
+	if wp.IF {
+		attrs = append(attrs, slog.Bool("IF", wp.IF))
+	}
+	if wp.FAF {
+		attrs = append(attrs, slog.Bool("FAF", wp.FAF))
 	}
 	if wp.NoPT {
 		attrs = append(attrs, slog.Bool("no_pt", wp.NoPT))
@@ -714,6 +714,15 @@ func (wslice WaypointArray) Encode() string {
 				s += fmt.Sprintf("/pta%0f", pt.ExitAltitude)
 			}
 		}
+		if w.IAF {
+			s += "/iaf"
+		}
+		if w.IF {
+			s += "/if"
+		}
+		if w.FAF {
+			s += "/faf"
+		}
 		if w.NoPT {
 			s += "/nopt"
 		}
@@ -754,6 +763,109 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 		}
 		return err
 	}
+}
+
+func (w WaypointArray) CheckDeparture(e *ErrorLogger) {
+	w.checkBasics(e)
+
+	var lastMin float32 // previous minimum altitude restriction
+	var minFix string
+
+	for _, wp := range w {
+		e.Push(wp.Fix)
+		if wp.IAF || wp.IF || wp.FAF {
+			e.ErrorString("Unexpected IAF/IF/FAF specification in departure")
+		}
+		if war := wp.AltitudeRestriction; war != nil {
+			// Make sure it's generally reasonable
+			if war.Range[0] < 0 || war.Range[0] >= 50000 || war.Range[1] < 0 || war.Range[1] >= 50000 {
+				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
+					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
+			}
+			if war.Range[0] != 0 {
+				if lastMin != 0 && war.Range[0] < lastMin {
+					// our minimum must be >= the previous minimum
+					e.ErrorString("Minimum altitude %s is lower than previous fix %s's minimum %s",
+						FormatAltitude(war.Range[0]), minFix, FormatAltitude(lastMin))
+				}
+				lastMin = war.Range[0]
+				minFix = wp.Fix
+			}
+		}
+
+		e.Pop()
+	}
+}
+
+func (w WaypointArray) checkBasics(e *ErrorLogger) {
+	for _, wp := range w {
+		e.Push(wp.Fix)
+		if wp.Speed < 0 || wp.Speed > 300 {
+			e.ErrorString("invalid speed restriction %d", wp.Speed)
+		}
+		e.Pop()
+	}
+}
+
+func (w WaypointArray) CheckApproach(e *ErrorLogger) {
+	w.checkBasics(e)
+	w.checkDescending(e)
+
+	/*
+		// Disable for now...
+		foundFAF := false
+		for _, wp := range w {
+			if wp.FAF {
+				foundFAF = true
+				break
+			}
+		}
+		if !foundFAF {
+			e.ErrorString("No /faf specifier found in approach")
+		}
+	*/
+}
+
+func (w WaypointArray) CheckArrival(e *ErrorLogger) {
+	w.checkBasics(e)
+	w.checkDescending(e)
+
+	for _, wp := range w {
+		e.Push(wp.Fix)
+		if wp.IAF || wp.IF || wp.FAF {
+			e.ErrorString("Unexpected IAF/IF/FAF specification in arrival")
+		}
+		e.Pop()
+	}
+}
+
+func (w WaypointArray) checkDescending(e *ErrorLogger) {
+	// or at least, check not climbing...
+	var lastMax float32 // previous maximum altitude restriction
+	var maxFix string
+
+	for _, wp := range w {
+		e.Push(wp.Fix)
+
+		if war := wp.AltitudeRestriction; war != nil {
+			// Make sure it's generally reasonable
+			if war.Range[0] < 0 || war.Range[0] >= 50000 || war.Range[1] < 0 || war.Range[1] >= 50000 {
+				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
+					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
+			}
+			if war.Range[1] != 0 {
+				if lastMax != 0 && war.Range[1] > lastMax {
+					e.ErrorString("Maximum altitude %s is higher than previous fix %s's maximum %s",
+						FormatAltitude(war.Range[1]), maxFix, FormatAltitude(lastMax))
+				}
+				lastMax = war.Range[1]
+				maxFix = wp.Fix
+			}
+		}
+
+		e.Pop()
+	}
+
 }
 
 func parsePTExtent(pt *ProcedureTurn, extent string) error {
@@ -799,6 +911,12 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					wp.Handoff = true
 				} else if f == "delete" {
 					wp.Delete = true
+				} else if f == "iaf" {
+					wp.IAF = true
+				} else if f == "if" {
+					wp.IF = true
+				} else if f == "faf" {
+					wp.FAF = true
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
 					if wp.ProcedureTurn == nil {
 						wp.ProcedureTurn = &ProcedureTurn{}
@@ -898,6 +1016,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 
 	return waypoints, nil
 }
+
+///////////////////////////////////////////////////////////////////////////
 
 type RadarSite struct {
 	Char           string   `json:"char"`
@@ -1176,23 +1296,33 @@ func parseNavaids() map[string]Navaid {
 	return navaids
 }
 
-func point2LLFromComponents(lat []string, long []string) Point2LL {
-	latitude := atof(lat[0]) + atof(lat[1])/60. + atof(lat[2])/3600.
-	if lat[3] == "S" {
-		latitude = -latitude
-	}
-	longitude := atof(long[0]) + atof(long[1])/60. + atof(long[2])/3600.
-	if long[3] == "W" {
-		longitude = -longitude
-	}
-
-	return Point2LL{float32(longitude), float32(latitude)}
-}
-
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 
 	airportsRaw := LoadResource("airports.csv.zst") // https://ourairports.com/data/
+
+	parse := func(s string) Point2LL {
+		loc, err := ParseLatLong([]byte(s))
+		if err != nil {
+			panic(err)
+		}
+		return loc
+	}
+
+	// These aren't in the FAA database but we need to have them defined
+	// for the AAC scenario...
+	airports["4V4"] = FAAAirport{Id: "4V4", Name: "", Elevation: 623,
+		Location: parse("N36.02.19.900,W95.28.49.512")}
+	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
+		Location: parse("N36.26.30.006,W95.36.21.936")}
+	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
+		Location: parse("N036.11.08.930,W095.45.53.942")}
+	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
+		Location: parse("N36.30.26.585,W96.16.28.968")}
+	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
+		Location: parse("N035.56.19.765,W095.42.49.812")}
+	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
+		Location: parse("N36.05.06.948,W96.26.57.501")}
 
 	// FAA database
 	mungeCSV("airports", string(airportsRaw),

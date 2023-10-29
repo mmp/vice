@@ -3,7 +3,9 @@ vice
 
 ![dall-e 2 tower](https://github.com/mmp/vice/blob/master/icons/tower-rounded-inset-256x256.png?raw=true)
 
-*A fun folly writing an ATC client*.
+*A fun folly writing an ATC simulator*. See the [vice
+website](https://pharr.org/vice) for more information and documentation
+about how to use vice.
 
 [<img src="https://github.com/mmp/vice/actions/workflows/ci-windows.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-windows)
 [<img src="https://github.com/mmp/vice/actions/workflows/ci-mac.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-mac)

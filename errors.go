@@ -6,7 +6,10 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/rpc"
+	"os"
+	"strings"
 )
 
 // Aviation-related
@@ -24,6 +27,7 @@ var (
 	ErrNoValidArrivalFound          = errors.New("Unable to find a valid arrival")
 	ErrNoValidDepartureFound        = errors.New("Unable to find a valid departure")
 	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
+	ErrNotPointedOutToMe            = errors.New("Aircraft not being pointed out to current controller")
 	ErrNotClearedForApproach        = errors.New("Aircraft has not been cleared for an approach")
 	ErrNotFlyingRoute               = errors.New("Aircraft is not currently flying its assigned route")
 	ErrOtherControllerHasTrack      = errors.New("Another controller is already tracking the aircraft")
@@ -59,6 +63,7 @@ var errorStringToError = map[string]error{
 	ErrNoFlightPlan.Error():                 ErrNoFlightPlan,
 	ErrNoValidDepartureFound.Error():        ErrNoValidDepartureFound,
 	ErrNotBeingHandedOffToMe.Error():        ErrNotBeingHandedOffToMe,
+	ErrNotPointedOutToMe.Error():            ErrNotPointedOutToMe,
 	ErrNotClearedForApproach.Error():        ErrNotClearedForApproach,
 	ErrNotFlyingRoute.Error():               ErrNotFlyingRoute,
 	ErrOtherControllerHasTrack.Error():      ErrOtherControllerHasTrack,
@@ -119,6 +124,7 @@ var starsErrorRemap = map[error]*STARSError{
 	ErrNoController:                 ErrSTARSIllegalSector,
 	ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
 	ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
+	ErrNotPointedOutToMe:            ErrSTARSIllegalTrack,
 	ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	ErrNotFlyingRoute:               ErrSTARSIllegalValue,
 	ErrOtherControllerHasTrack:      ErrSTARSIllegalTrack,
@@ -146,4 +152,54 @@ func GetSTARSError(e error) *STARSError {
 
 	lg.Errorf("%v: unexpected error passed to GetSTARSError", e)
 	return ErrSTARSCommandFormat
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// ErrorLogger is a small utility class used to log errors when validating
+// the parsed JSON scenarios. It tracks context about what is currently
+// being validated and accumulates multiple errors, making it possible to
+// log errors while still continuing validation.
+type ErrorLogger struct {
+	// Tracked via Push()/Pop() calls to remember what we're looking at if
+	// an error is found.
+	hierarchy []string
+	// Actual error messages to report.
+	errors []string
+}
+
+func (e *ErrorLogger) Push(s string) {
+	e.hierarchy = append(e.hierarchy, s)
+}
+
+func (e *ErrorLogger) Pop() {
+	e.hierarchy = e.hierarchy[:len(e.hierarchy)-1]
+}
+
+func (e *ErrorLogger) ErrorString(s string, args ...interface{}) {
+	e.errors = append(e.errors, strings.Join(e.hierarchy, " / ")+": "+fmt.Sprintf(s, args...))
+}
+
+func (e *ErrorLogger) Error(err error) {
+	e.errors = append(e.errors, strings.Join(e.hierarchy, " / ")+": "+err.Error())
+}
+
+func (e *ErrorLogger) HaveErrors() bool {
+	return len(e.errors) > 0
+}
+
+func (e *ErrorLogger) PrintErrors(lg *Logger) {
+	// Two loops so they aren't interleaved with logging to stdout
+	if lg != nil {
+		for _, err := range e.errors {
+			lg.Errorf("%+v", err)
+		}
+	}
+	for _, err := range e.errors {
+		fmt.Fprintln(os.Stderr, err)
+	}
+}
+
+func (e *ErrorLogger) String() string {
+	return strings.Join(e.errors, "\n")
 }
