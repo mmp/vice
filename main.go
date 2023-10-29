@@ -18,9 +18,11 @@ import (
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
+	"strconv"
 	"time"
 
 	"github.com/apenwarr/fixconsole"
+	discord_client "github.com/hugolgst/rich-go/client"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -41,6 +43,7 @@ var (
 	database     *StaticDatabase
 	lg           *Logger
 	resourcesFS  fs.StatFS
+	simStartTime time.Time
 
 	// client only
 	newWorldChan chan *World
@@ -217,11 +220,25 @@ func main() {
 			uiShowConnectDialog(false)
 		}
 
-		if !globalConfig.AskedDiscordOptIn {
-			uiShowDiscordOptInDialog()
+		//Initialize discord RPC
+		simStartTime = time.Now()
+		discord_err := discord_client.Login("1158289394717970473")
+		if discord_err != nil {
+			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
 		}
-
-		simStartTime := time.Now()
+		//Set intial activity
+		discord_err = discord_client.SetActivity(discord_client.Activity{
+			State: "In the main menu",
+			Details: "On Break",
+			LargeImage: "towerlarge",
+			LargeText: "Vice ATC",
+			Timestamps: &discord_client.Timestamps{
+				Start: &simStartTime,
+			},
+		})
+		if discord_err != nil {
+			lg.Error("Discord RPC Error: ", slog.String("error", discord_err.Error()))
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
@@ -229,7 +246,20 @@ func main() {
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
+		lastDiscordUpdate := time.Now()
 		for {
+			if time.Since(lastDiscordUpdate) > 5 * time.Second {
+				discord_client.SetActivity(discord_client.Activity{
+					State: "In the main menu",
+					Details: "On Break",
+					LargeImage: "towerlarge",
+					LargeText: "Vice ATC",
+					Timestamps: &discord_client.Timestamps{
+						Start: &simStartTime,
+					},
+				})
+				lastDiscordUpdate = time.Now()
+			}
 			select {
 			case nw := <-newWorldChan:
 				if world != nil {
@@ -275,12 +305,15 @@ func main() {
 				SetDiscordStatus(discordStatus{start: simStartTime})
 			} else {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
-				// Update discord RPC
-				SetDiscordStatus(discordStatus{
-					totalDepartures: world.TotalDepartures,
-					totalArrivals:   world.TotalArrivals,
-					callsign:        world.Callsign,
-					start:           simStartTime,
+				//Update discord RPC
+				discord_client.SetActivity(discord_client.Activity{
+					State: strconv.Itoa(world.TotalDepartures) + " departures" + " | " + strconv.Itoa(world.TotalArrivals) + " arrivals",
+					Details: "Controlling " + world.Callsign,
+					LargeImage: "towerlarge",
+					LargeText: "Vice ATC",
+					Timestamps: &discord_client.Timestamps{
+						Start: &simStartTime,
+					},
 				})
 			}
 
@@ -360,6 +393,7 @@ func main() {
 				if world != nil {
 					world.Disconnect()
 				}
+				discord_client.Logout()
 				break
 			}
 		}
