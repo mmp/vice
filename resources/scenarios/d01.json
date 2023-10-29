@@ -1785,6 +1785,20 @@
       "KDEN": "N39.51.41.421,W104.40.23.005",
       "DEN": "N39.51.41.421,W104.40.23.005"
     },
+    "inhibit_ca_volumes": [
+      {
+        "name": "D01 NO CA",
+        "type": "polygon",
+        "floor": 5000,
+        "ceiling": 13000,
+        "vertices": [
+          "N039.18.01.727,W104.33.48.707",
+          "N039.18.14.375,W104.45.11.370",
+          "N040.24.47.562,W104.45.01.098",
+          "N040.24.22.019,W104.31.03.253"
+        ]
+      }
+    ],
     "magnetic_variation": 7.9,
     "name": "KDEN",
    "nm_per_latitude": 60,
@@ -1896,7 +1910,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2022,7 +2036,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2152,7 +2166,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2278,7 +2292,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2404,7 +2418,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2530,7 +2544,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2656,7 +2670,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2782,7 +2796,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2904,7 +2918,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -3026,7 +3040,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "AR BASE",
+        "default_map": "D01 AR BASE",
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -3090,123 +3104,363 @@
       {
         "group": 0,
         "label": "AR BASE",
-        "name": "AR BASE"
-      },
-      {
-        "group": 0,
-        "label": "FINAL N",
-        "name": "LN Dump"
-      },
-      {
-        "group": 0,
-        "label": "FINAL S",
-        "name": "LS Dump"
-      },
-      {
-        "group": 0,
-        "label": "FINAL W",
-        "name": "LW DUMP"
-      },
-      {
-        "group": 0,
-        "label": "FINAL E",
-        "name": "LE DUMP"
-      },
-      {
-        "group": 0,
-        "label": "MVA",
-        "name": "D01 DEN-PUB FUS3"
-      },
-      {
-        "group": 0,
-        "label": "BRAVO",
-        "name": "AIRSPACE CLASS"
-      },
-      {
-        "group": 0,
-        "label": "AR LS",
-        "name": "AR Land South"
-      },
-      {
-        "group": 0,
-        "label": "AR LN",
-        "name": "AR Land North"
-      },
-      {
-        "group": 0,
-        "label": "DR LS",
-        "name": "DR Land South"
-      },
-      {
-        "group": 0,
-        "label": "DR LN",
-        "name": "DR Land North"
-      },
-      {
-        "group": 0,
-        "label": "AR LNS",
-        "name": "AR Land North-South"
-      },
-      {
-        "group": 0,
-        "label": "DR LNS",
-        "name": "DR Land North-South"
-      },
-      {
-        "group": 0,
-        "label": "AR LEW",
-        "name": "AR Land East-West"
-      },
-      {
-        "group": 0,
-        "label": "DR LEW",
-        "name": "DR Land East-West"
-      },
-      {
-        "group": 0,
-        "label": "AR LW",
-        "name": "AR Land West"
-      },
-      {
-        "group": 0,
-        "label": "DR LW",
-        "name": "DR Land West"
-      },
-      {
-        "group": 0,
-        "label": "AR COMB",
-        "name": "AR BASE COMBO"
+        "name": "D01 AR BASE"
       },
       {
         "group": 0,
         "label": "DR BASE",
-        "name": "DR BASE"
+        "name": "D01 DR BASE"
+      },
+      {
+        "group": 1,
+        "label": "D01 MVA",
+        "name": "D01 MVA"
       },
       {
         "group": 0,
-        "label": "DR COMB",
-        "name": "DR BASE COMBO"
+        "label": "EOVM",
+        "name": "D01 EOVM"
       },
       {
         "group": 0,
-        "label": "AALASID",
-        "name": "AR ALL SID"
+        "label": "AIRWAYS",
+        "name": "D01 AIRWAYS"
+     },
+     {
+      "group": 0,
+      "label": "VFR",
+      "name": "D01 VFR"
       },
       {
         "group": 0,
-        "label": "ALLDSID",
-        "name": "DR ALL SID"
+        "label": "NORTH D",
+        "name": "D01 North Dump"
       },
       {
         "group": 0,
-        "label": "LN STAR",
-        "name": "AR LN STARS"
+        "label": "SOUTH D",
+        "name": "D01 South Dump"
       },
       {
         "group": 0,
-        "label": "LS STAR ",
-        "name": "AR LS STARS"
+        "label": "EAST D",
+        "name": "D01 East Dump"
+     },
+     {
+      "group": 0,
+      "label": "WEST D",
+      "name": "D01 West Dump"
+      },
+      {
+        "group": 0,
+        "label": "AR LE",
+        "name": "D01 AR LE"
+      },
+      {
+          "group": 0,
+          "label": "AR LEW",
+          "name": "D01 AR LEW"
+      },
+      {
+          "group": 0,
+          "label": "AR LN",
+          "name": "D01 AR LN"
+      },
+      {
+          "group": 0,
+          "label": "AR LNE",
+          "name": "D01 AR LNE"
+      },
+      {
+          "group": 0,
+          "label": "AR LNS",
+          "name": "D01 AR LNS"
+      },
+      {
+          "group": 0,
+          "label": "AR LNW",
+          "name": "D01 AR LNW"
+      },
+      {
+          "group": 0,
+          "label": "AR LS",
+          "name": "D01 AR LS"
+      },
+      {
+          "group": 0,
+          "label": "AR LSE",
+          "name": "D01 AR LSE"
+      },
+      {
+          "group": 0,
+          "label": "AR LSW",
+          "name": "D01 AR LSW"
+      },
+      {
+          "group": 0,
+          "label": "AR LW",
+          "name": "D01 AR LW"
+      },
+      {
+          "group": 0,
+          "label": "BRAVO",
+          "name": "D01 BRAVO"
+      },
+      {
+        "group": 0,
+        "label": "DR LE",
+        "name": "D01 DR LE"
+      },
+      {
+          "group": 0,
+          "label": "DR LEW",
+          "name": "D01 DR LEW"
+      },
+      {
+          "group": 0,
+          "label": "DR LN",
+          "name": "D01 DR LN"
+      },
+      {
+          "group": 0,
+          "label": "DR LNE",
+          "name": "D01 DR LNE"
+      },
+      {
+          "group": 0,
+          "label": "DR LNS",
+          "name": "D01 DR LNS"
+      },
+      {
+          "group": 0,
+          "label": "DR LNW",
+          "name": "D01 DR LNW"
+      },
+      {
+          "group": 0,
+          "label": "DR LS",
+          "name": "D01 DR LS"
+      },
+      {
+          "group": 0,
+          "label": "DR LSE",
+          "name": "D01 DR LSE"
+      },
+      {
+          "group": 0,
+          "label": "DR LSW",
+          "name": "D01 DR LSW"
+      },
+      {
+          "group": 0,
+          "label": "DR LW",
+          "name": "D01 DR LW"
+      },
+      {
+        "group": 0,
+        "label": "ESID LE",
+        "name": "D01 ESID LE"
+      },
+      {
+          "group": 0,
+          "label": "ESID LN",
+          "name": "D01 ESID LN"
+      },
+      {
+          "group": 0,
+          "label": "ESID LS",
+          "name": "D01 ESID LS"
+      },
+      {
+          "group": 0,
+          "label": "FIXES",
+          "name": "D01 Fixes"
+      },
+      {
+          "group": 0,
+          "label": "FR LE",
+          "name": "D01 FR LE"
+      },
+      {
+          "group": 0,
+          "label": "FR LN",
+          "name": "D01 FR LN"
+      },
+      {
+          "group": 0,
+          "label": "FR LS6L",
+          "name": "D01 FR LS6L"
+      },
+      {
+          "group": 0,
+          "label": "FR LS6R",
+          "name": "D01 FR LS6R"
+      },
+      {
+          "group": 0,
+          "label": "FR LW",
+          "name": "D01 FR LW"
+      },
+      {
+          "group": 0,
+          "label": "I6R34L",
+          "name": "D01 I16R34L"
+      },
+      {
+          "group": 0,
+          "label": "I17L35R",
+          "name": "D01 I17L35R"
+      },
+      {
+          "group": 0,
+          "label": "I17R35L",
+          "name": "D01 I17R35L"
+      },
+      {
+          "group": 0,
+          "label": "I34R",
+          "name": "D01 I34R"
+      },
+      {
+          "group": 0,
+          "label": "JET RTE",
+          "name": "D01 JET RTE"
+      },
+      {
+          "group": 0,
+          "label": "LN STAR",
+          "name": "D01 LN STARs"
+      },
+      {
+          "group": 0,
+          "label": "LNS STAR",
+          "name": "D01 LNS STARS"
+      },
+      {
+          "group": 0,
+          "label": "LS STAR",
+          "name": "D01 LS STAR"
+      },
+      {
+          "group": 1,
+          "label": "D01 MVA",
+          "name": "D01 MVA"
+      },
+      {
+          "group": 0,
+          "label": "NORTH DUMP",
+          "name": "D01 North Dump"
+      },
+      {
+          "group": 0,
+          "label": "NSID LEW",
+          "name": "D01 NSID LE-W"
+      },
+      {
+          "group": 0,
+          "label": "NSID LN",
+          "name": "D01 NSID LN"
+      },
+      {
+          "group": 0,
+          "label": "SAT SID",
+          "name": "D01 SAT SID"
+      },
+      {
+          "group": 0,
+          "label": "SAT STAR",
+          "name": "D01 SAT STAR"
+      },
+      {
+          "group": 0,
+          "label": "SOUTH DUMP",
+          "name": "D01 South Dump"
+      },
+      {
+          "group": 0,
+          "label": "SR LE",
+          "name": "D01 SR LE"
+      },
+      {
+          "group": 0,
+          "label": "SR LEW",
+          "name": "D01 SR LEW"
+      },
+      {
+          "group": 0,
+          "label": "SR LN",
+          "name": "D01 SR LN="
+      },
+      {
+          "group": 0,
+          "label": "SR LNE",
+          "name": "D01 SR LNE"
+      },
+      {
+          "group": 0,
+          "label": "SR LNS",
+          "name": "D01 SR LNS"
+      },
+      {
+          "group": 0,
+          "label": "SR LNW",
+          "name": "D01 SR LNW"
+      },
+      {
+          "group": 0,
+          "label": "SR LS",
+          "name": "D01 SR LS"
+      },
+      {
+          "group": 0,
+          "label": "SR LSE",
+          "name": "D01 SR LSE"
+      },
+      {
+          "group": 0,
+          "label": "SR LSW",
+          "name": "D01 SR LSW"
+      },
+      {
+          "group": 0,
+          "label": "SR LW",
+          "name": "D01 SR LW"
+      },
+      {
+          "group": 0,
+          "label": "SSID LEW",
+          "name": "D01 SSID LE-W"
+      },
+      {
+          "group": 0,
+          "label": "SSID LS",
+          "name": "D01 SSID LS"
+      },
+      {
+          "group": 0,
+          "label": "VFR",
+          "name": "D01 VFR"
+      },
+      {
+          "group": 0,
+          "label": "WEST DUMP",
+          "name": "D01 West Dump"
+      },
+      {
+          "group": 0,
+          "label": "WSID LNW",
+          "name": "D01 WSID LN-W"
+      },
+      {
+          "group": 0,
+          "label": "WSID LS",
+          "name": "D01 WSID LS"
+      },
+      {
+          "group": 0,
+          "label": "ZDV",
+          "name": "D01 ZDV"
       }
     ],
-    "video_map_file": "videomaps/den-maps.json.zst"
+    "video_map_file": "videomaps/ZDV-videomaps.json.zst"
   }

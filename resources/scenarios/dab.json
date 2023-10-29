@@ -684,7 +684,7 @@
         "MCO_B_APP",
         "JAX_N_APP"
       ],
-      "default_map": "DAB East Ops",
+      "default_map": "DAB EAST FLOW",
       "departure_airspace": [
         "DAB_H_APP"
       ],
@@ -751,7 +751,7 @@
         "MCO_B_APP",
         "JAX_N_APP"
       ],
-      "default_map": "DAB WEST OPS",
+      "default_map": "DAB WEST FLOW",
       "departure_airspace": [
         "DAB_H_APP"
       ],
@@ -776,64 +776,49 @@
   "stars_maps": [
     {
       "group": 0,
-      "label": "EAST OPS",
-      "name": "DAB East Ops"
+      "label": "DAB_E",
+      "name": "DAB EAST FLOW"
     },
     {
       "group": 0,
-      "label": "WEST OPS",
-      "name": "DAB WEST OPS"
-    },
-    {
-      "group": 0,
-      "label": "DAB RNAV",
-      "name": "DAB RNAV"
-    },
-    {
-      "group": 1,
-      "label": "VFR MAP",
-      "name": "VFR MAP"
-    },
-    {
-      "group": 0,
-      "label": "D34",
-      "name": "D34"
-    },
-    {
-      "group": 0,
-      "label": "APPROACH",
-      "name": "DAB Approach Boundaries"
-    },
-    {
-      "group": 0,
-      "label": "DED RNAV",
-      "name": "DED RNAV"
-    },
-    {
-      "group": 0,
-      "label": "TOWER",
-      "name": "TOWER"
-    },
-    {
-      "group": 1,
-      "label": "AIR-HIGH",
-      "name": "High Airways"
-    },
-    {
-      "group": 1,
-      "label": "AIR-LOW",
-      "name": "Low Airways"
-    },
-    {
-      "group": 0,
-      "label": "ASR",
-      "name": "DAB ASR"
+      "label": "DAB_W",
+      "name": "DAB WEST FLOW"
     },
     {
       "group": 1,
       "label": "CLASS C",
       "name": "DAB CLASS C"
+    },
+    {
+      "group": 1,
+      "label": "CLASS D",
+      "name": "DAB CLASS D"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "DAB MVA"
+    },
+    {
+      "group": 0,
+      "label": "FIN_R",
+      "name": "FIN RNAV APPROACHES"
+    },
+    {
+      "group": 0,
+      "label": "SAT_APP",
+      "name": "SATELLITE APPROACHES"
+    },
+    {
+      "group": 0,
+      "label": "RNAV",
+      "name": "RNAV"
+    },
+    {
+      "group": 0,
+      "label": "SEC_BDY",
+      "name": "SECTOR BOUNDARY"
     }
   ],
-  "video_map_file": "videomaps/dab-maps.json.zst"
+  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
 }

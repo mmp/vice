@@ -9847,5 +9847,9 @@
       "name": "RNAV X21/XMR"
     }
   ],
+<<<<<<< HEAD
+  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+=======
   "video_map_file": "videomaps/zjx-maps.json.zst"
+>>>>>>> parent of 6783856 (rename a80 json to proper name, update f11 video maps, add zab, zau, zdc, zdv, zhu, zid, zjx, zma, zob, ztl new video maps)
 }
