@@ -241,3 +241,49 @@ func TestNormalizeHeading(t *testing.T) {
 		}
 	}
 }
+
+func TestPointSegmentDistance(t *testing.T) {
+	refSampled := func(p, v, w [2]float32) float32 {
+		const n = 16384
+		dmin := float32(1e30)
+		for i := 0; i < n; i++ {
+			t := float32(i) / float32(n-1)
+			pp := lerp2f(t, v, w)
+			dmin = min(dmin, distance2f(pp, p))
+		}
+		return dmin
+	}
+
+	cases := []struct {
+		p, v, w [2]float32
+		dist    float32
+	}{
+		{p: [2]float32{1, 1}, v: [2]float32{0, 0}, w: [2]float32{2, 2}, dist: 0},
+		{p: [2]float32{-2, -2}, v: [2]float32{-1, -1}, w: [2]float32{2, 2}, dist: 1.414214},
+	}
+
+	for _, c := range cases {
+		ref := c.dist
+		if ref < 0 {
+			ref = refSampled(c.p, c.v, c.w)
+		}
+
+		d := PointSegmentDistance(c.p, c.v, c.w)
+		if abs(d-ref) > .001 {
+			t.Errorf("p %v v %v w %v expected %f got %f", c.p, c.v, c.w, ref, d)
+		}
+	}
+
+	// Do some randoms
+	for i := 0; i < 32; i++ {
+		r := func() float32 { return -10 + 20*rand.Float32() }
+		p := [2]float32{r(), r()}
+		v := [2]float32{r(), r()}
+		w := [2]float32{r(), r()}
+		ref := refSampled(p, v, w)
+		d := PointSegmentDistance(p, v, w)
+		if abs(d-ref) > .001 {
+			t.Errorf("p %v v %v w %v expected %f got %f", p, v, w, ref, d)
+		}
+	}
+}
