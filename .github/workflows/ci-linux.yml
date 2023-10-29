@@ -39,6 +39,7 @@ jobs:
 
     - name: Build
       run: |
+        rm windows/makeinstaller.go
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
         go build -tags imguifreetype -o ./ ./...
         ls

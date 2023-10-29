@@ -158,7 +158,7 @@
       ],
       "departure_routes": {
         "08": {
-          "AMG,BAXLY": {
+          "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
             "route": "BRSTL1",
             "waypoints": "_JAX_08 _JAX_26/h077 TEREE BRSTL"
@@ -190,7 +190,7 @@
           }
         },
         "26": {
-          "AMG,BAXLY": {
+          "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
             "route": "BRSTL1",
             "waypoints": "_JAX_26 _JAX_08/h260 TEREE BRSTL"
@@ -278,8 +278,8 @@
             }
           ],
           "destination": "KBNA",
-          "exit": "AMG",
-          "route": "AMG YANTI THRSR WESSN JAGIR SWFFT2"
+          "exit": "ALLMA",
+          "route": "ALLMA YANTI THRSR WESSN JAGIR SWFFT2"
         },
         {
           "airlines": [
@@ -292,8 +292,8 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "AMG",
-          "route": "AMG YANTI GIFFY WONEE WRIGL OATHE CLASH4"
+          "exit": "ALLMA",
+          "route": "ALLMA YANTI GIFFY WONEE WRIGL OATHE CLASH4"
         },
         {
           "airlines": [
@@ -307,8 +307,8 @@
             }
           ],
           "destination": "KORD",
-          "exit": "AMG",
-          "route": "AMG THRSR Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5"
+          "exit": "ALLMA",
+          "route": "ALLMA THRSR Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -413,12 +413,12 @@
             }
           ],
           "destination": "KBNA",
-          "exit": "AMG",
-          "route": "AMG YANTI THRSR WESSN JAGIR SWFFT2"
+          "exit": "ALLMA",
+          "route": "ALLMA YANTI THRSR WESSN JAGIR SWFFT2"
         }
       ],
       "exit_categories": {
-        "AMG": "North",
+        "ALLMA": "North",
         "BAXLY": "North",
         "WISPR": "North",
         "EXBOX": "South",
@@ -428,6 +428,67 @@
       },
       "location": "N30.29.38.517,W81.41.16.247",
       "tower_list": 1
+    },
+    "KFHB": {
+      "approaches": {
+        "R4": {
+          "full_name": "RNAV Runway 4",
+          "runway": "4",
+          "type": "RNAV",
+          "waypoints": [
+            "WILNA/a2100-6000 SHOAT/a1800 _FHB_04/a15"
+          ]
+        }
+      },
+      "departure_routes": {
+        "04": {
+          "SSI": {
+            "cleared_altitude": 2000,
+            "route": "SSI",
+            "waypoints": "_FHB_04 _FHB_22/h010"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 13000,
+          "destination": "KSAV",
+          "exit": "SSI",
+          "route": "SSI SAV"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KHXD",
+          "exit": "SSI",
+          "route": "SSI SAV"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 29000,
+          "destination": "KCHS",
+          "exit": "SSI",
+          "route": "SSI SAV CHS"
+        }
+      ],
+      "exit_categories": {
+        "SSI": "ALL"
+      },
+      "location": "N30.36.42.123,W81.27.40.348",
+      "tower_list": 0
     }
   },
   "airspace": {
@@ -607,6 +668,33 @@
           "32": "COROE/a9000/s250 GWIIZ/a5000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137"
         },
         "waypoints": "MARQO/ho COROE/a9000/s250"
+      }
+    ],
+    "MONIA": [
+      {
+        "airlines": {
+          "KFHB": [
+            {
+              "airport": "KDAL",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KBFM",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KPNS",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+          "cleared_altitude": 8000,
+          "initial_altitude": 10000,
+          "initial_controller": "JAX_30_CTR",
+          "initial_speed": 250,
+          "route": "/. MONIA",
+          "waypoints": "CAMJO MARQO/ho MONIA"
       }
     ],
     "OHDEA1": [
@@ -813,7 +901,14 @@
     "_JAX_08": "N30.29.46.268,W81.41.59.776",
     "_JAX_14": "N30.29.31.829,W81.42.02.982",
     "_JAX_26": "N30.30.19.359,W81.40.12.108",
-    "_JAX_32": "N30.28.42.242,W81.40.56.148"
+    "_JAX_32": "N30.28.42.242,W81.40.56.148",
+    "KFHB":    "N30.36.42.123,W81.27.40.348",
+    "FHB":     "N30.36.42.123,W81.27.40.348",
+    "_FHB_04": "N30.36.42.123,W81.27.40.348",
+    "_FHB_22": "N30.36.42.123,W81.27.40.348",
+    "TEREE":    "N30.52.11.109,W81.53.26.758",
+    "BRSTL":    "N30.58.58.505,W81.58.13.811",
+    "ALLMA":    "N31.32.11.183,W82.30.28.614"
   },
   "magnetic_variation": 5,
   "name": "KJAX",
@@ -901,41 +996,43 @@
       },
       "solo_controller": "JAX_N_APP",
       "multi_controllers": {
-        "JAX_N_APP": {
-          "primary": true,
-          "departure": true,
-          "arrivals": [
-            "LUNNI1"
-          ]
-        },
-        "JAX_J_APP": {
-          "backup": "JAX_R_APP"
-        },
-        "JAX_R_APP": {
-          "backup": "JAX_N_APP",
-          "arrivals": [
-            "MARQO2",
-            "OHDEA1"
-          ]
-        },
-        "JAX_W_APP": {
-          "backup": "JAX_R_APP",
-          "arrivals": [
-            "TEBOW1"
-          ]
-        },
-        "JAX_V_APP": {
-          "backup": "JAX_W_APP"
-        },
-        "JAX_E_APP": {
-          "backup": "JAX_N_APP",
-          "arrivals": [
-            "QUBEN1"
-          ]
-        },
-        "JAX_S_APP": {
-          "backup": "JAX_E_APP"
-        }
+          "default" : {
+              "JAX_N_APP": {
+                  "primary": true,
+                  "departures": ["KJAX"],
+                  "arrivals": [
+                      "LUNNI1"
+                  ]
+              },
+              "JAX_J_APP": {
+                  "backup": "JAX_R_APP"
+              },
+              "JAX_R_APP": {
+                  "backup": "JAX_N_APP",
+                  "arrivals": [
+                      "MARQO2",
+                      "OHDEA1"
+                  ]
+              },
+              "JAX_W_APP": {
+                  "backup": "JAX_R_APP",
+                  "arrivals": [
+                      "TEBOW1"
+                  ]
+              },
+              "JAX_V_APP": {
+                  "backup": "JAX_W_APP"
+              },
+              "JAX_E_APP": {
+                  "backup": "JAX_N_APP",
+                  "arrivals": [
+                      "QUBEN1"
+                  ]
+              },
+              "JAX_S_APP": {
+                  "backup": "JAX_E_APP"
+              }
+          }
       },
       "controllers": [
         "JAX_30_CTR",
@@ -960,6 +1057,109 @@
         "speed": 5
       }
     },
+    "KJAX East with Sat": {
+      "approach_airspace": [
+        "JAX_N_APP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KJAX",
+          "runway": "08"
+        },
+        {
+          "airport": "KJAX",
+          "runway": "14"
+        }
+      ],
+      "arrivals": {
+        "LUNNI1": {
+          "KJAX": 10
+        },
+        "MARQO2": {
+          "KJAX": 4
+        },
+        "OHDEA1": {
+          "KJAX": 10
+        },
+        "QUBEN1": {
+          "KJAX": 2
+        },
+        "TEBOW1": {
+          "KJAX": 5
+        },
+        "MONIA": {
+          "KFHB": 2
+        }
+      },
+      "solo_controller": "JAX_N_APP",
+      "multi_controllers": {
+          "default" : {
+              "JAX_N_APP": {
+                  "primary": true,
+                  "departures": ["KJAX", "KFHB"],
+                  "arrivals": [
+                      "LUNNI1"
+                  ]
+              },
+              "JAX_J_APP": {
+                  "backup": "JAX_R_APP"
+              },
+              "JAX_R_APP": {
+                  "backup": "JAX_N_APP",
+                  "arrivals": [
+                      "MARQO2",
+                      "OHDEA1",
+                      "MONIA"
+                  ]
+              },
+              "JAX_W_APP": {
+                  "backup": "JAX_R_APP",
+                  "arrivals": [
+                      "TEBOW1"
+                  ]
+              },
+              "JAX_V_APP": {
+                  "backup": "JAX_W_APP"
+              },
+              "JAX_E_APP": {
+                  "backup": "JAX_N_APP",
+                  "arrivals": [
+                      "QUBEN1"
+                  ]
+              },
+              "JAX_S_APP": {
+                  "backup": "JAX_E_APP"
+              }
+          }
+      },
+      "controllers": [
+        "JAX_30_CTR",
+        "DAB_H_APP",
+        "MCO_E_APP",
+        "JAX_TWR"
+      ],
+      "default_map": "JAX EAST OPERATIONS",
+      "departure_airspace": [
+        "JAX_N_APP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KJAX",
+          "rate": 15,
+          "runway": "08"
+        },
+        {
+          "airport": "KFHB",
+          "rate": 2,
+          "runway": "04"
+        }
+      ],
+      "wind": {
+        "direction": 90,
+        "gust": 10,
+        "speed": 5
+      }
+    },
     "KJAX West": {
       "approach_airspace": [
         "JAX_N_APP"
@@ -972,6 +1172,10 @@
         {
           "airport": "KJAX",
           "runway": "32"
+        },
+        {
+          "airport": "KFHB",
+          "runway": "4"
         }
       ],
       "arrivals": {
@@ -993,39 +1197,41 @@
       },
       "solo_controller": "JAX_N_APP",
       "multi_controllers": {
-        "JAX_N_APP": {
-          "primary": true,
-          "departure": true,
-          "arrivals": [
-            "LUNNI1",
-            "OHDEA1",
-            "MARQO2"
-          ]
-        },
-        "JAX_J_APP": {
-          "backup": "JAX_R_APP"
-        },
-        "JAX_R_APP": {
-          "backup": "JAX_N_APP"
-        },
-        "JAX_W_APP": {
-          "backup": "JAX_N_APP",
-          "arrivals": [
-            "TEBOW1"
-          ]
-        },
-        "JAX_V_APP": {
-          "backup": "JAX_W_APP"
-        },
-        "JAX_E_APP": {
-          "backup": "JAX_N_APP",
-          "arrivals": [
-            "QUBEN1"
-          ]
-        },
-        "JAX_S_APP": {
-          "backup": "JAX_E_APP"
-        }
+          "default" : {
+              "JAX_N_APP": {
+                  "primary": true,
+                  "departures": ["KJAX"],
+                  "arrivals": [
+                      "LUNNI1",
+                      "OHDEA1",
+                      "MARQO2"
+                  ]
+              },
+              "JAX_J_APP": {
+                  "backup": "JAX_R_APP"
+              },
+              "JAX_R_APP": {
+                  "backup": "JAX_N_APP"
+              },
+              "JAX_W_APP": {
+                  "backup": "JAX_N_APP",
+                  "arrivals": [
+                      "TEBOW1"
+                  ]
+              },
+              "JAX_V_APP": {
+                  "backup": "JAX_W_APP"
+              },
+              "JAX_E_APP": {
+                  "backup": "JAX_N_APP",
+                  "arrivals": [
+                      "QUBEN1"
+                  ]
+              },
+              "JAX_S_APP": {
+                  "backup": "JAX_E_APP"
+              }
+          }
       },
       "controllers": [
         "JAX_30_CTR",
@@ -1052,14 +1258,15 @@
     }
   },
   "scratchpads": {
-    "AMG": "ARN",
-    "BAXLY": "ARN",
+    "ALLMA": "BRS",
+    "BAXLY": "BRS",
     "WISPR": "CRO",
     "EXBOX": "EXB",
     "OMN": "EXB",
     "CAPPS": "JET",
     "JAYJA": "JET",
-    "SAWGY": "SAW"
+    "SAWGY": "SAW",
+    "SSI": "SSI"
   },
   "stars_maps": [
     {
@@ -1084,6 +1291,16 @@
     },
     {
       "group": 0,
+      "label": "LOW",
+      "name": "JAX LOW ROUTES"
+    },
+    {
+      "group": 0,
+      "label": "HIGH",
+      "name": "JAX HIGH ROUTES"
+    },
+    {
+      "group": 0,
       "label": "GEO",
       "name": "GEOGRAPHY"
     },
@@ -1091,6 +1308,26 @@
       "group": 0,
       "label": "MVA",
       "name": "MINIMUM VECTORING ALT"
+    },
+    {
+      "group": 0,
+      "label": "GPS",
+      "name": "JAX_GPS"
+    },
+    {
+      "group": 0,
+      "label": "VOR",
+      "name": "JAX VOR APPROACHES"
+    },
+    {
+      "group": 0,
+      "label": "SID",
+      "name": "SID WAYPOINTS"
+    },
+    {
+      "group": 0,
+      "label": "IR",
+      "name": "IR ROUTES"
     },
     {
       "group": 0,
@@ -1111,6 +1348,121 @@
       "group": 0,
       "label": "STARS 32",
       "name": "RNAV STARS 32"
+    },
+    {
+      "group": 0,
+      "label": "ALCRN",
+      "name": "ALCRN1 ARRIVAL"
+    },
+    {
+      "group": 0,
+      "label": "POGIE",
+      "name": "POGIE2 ARRIVAL"
+    },
+    {
+      "group": 0,
+      "label": "BRSTL",
+      "name": "BRSTL1 DEPARTURE"
+    },
+    {
+      "group": 0,
+      "label": "EXBOX",
+      "name": "EXBOX2 DEPARTURE"
+    },
+    {
+      "group": 0,
+      "label": "SAWGY",
+      "name": "SAWGY3 DEPARTURE"
+    },
+    {
+      "group": 0,
+      "label": "JETIN",
+      "name": "JETIN2 DEPARTURE"
+    },
+    {
+      "group": 0,
+      "label": "TACAN",
+      "name": "NIP/NEN TACAN APP"
+    },
+    {
+      "group": 0,
+      "label": "SGJ",
+      "name": "SGJ SHELF"
+    },
+    {
+      "group": 0,
+      "label": "HOTAR",
+      "name": "HOTAR STAR"
+    },
+    {
+      "group": 0,
+      "label": "LUNNI",
+      "name": "LUNNI STAR"
+    },
+    {
+      "group": 0,
+      "label": "MARQO",
+      "name": "MARQO STAR"
+    },
+    {
+      "group": 0,
+      "label": "OHDEA",
+      "name": "OHDEA STAR"
+    },
+    {
+      "group": 0,
+      "label": "QUBEN",
+      "name": "QUBEN STAR"
+    },
+    {
+      "group": 0,
+      "label": "TEBOW",
+      "name": "TEBOW STAR"
+    },
+    {
+      "group": 0,
+      "label": "VQQ/CGC",
+      "name": "VQQ/CGC APCHS"
+    },
+    {
+      "group": 0,
+      "label": "R2903ab",
+      "name": "RESTRICTED AREA 2903"
+    },
+    {
+      "group": 0,
+      "label": "R2903cd",
+      "name": "RESTRICTED AREA 2903 C,D"
+    },
+    {
+      "group": 0,
+      "label": "R2904",
+      "name": "RESTRICTED AREA 2904"
+    },
+    {
+      "group": 0,
+      "label": "R2906",
+      "name": "RESTRICTED AREA 2906"
+    },
+    {
+      "group": 0,
+      "label": "PALATKA",
+      "name": "PALATKA RESTRICTED AREA"
+    },
+    {
+      "group": 0,
+      "label": "P MOA",
+      "name": "PALATKA MOA"
+    },
+    {
+      "group": 0,
+      "label": "NRB MOA",
+      "name": "MAYPORT MOA"
+    },
+    {
+      "group": 0,
+      "label": "C MOA",
+      "name": "COASTAL MOA"
     }
   ],
   "video_map_file": "videomaps/jax-maps.json.zst"

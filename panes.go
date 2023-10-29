@@ -6,7 +6,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
@@ -507,8 +507,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	defer ReturnTextDrawBuilder(td)
 	ld := GetLinesDrawBuilder()
 	defer ReturnLinesDrawBuilder(ld)
-	selectionLd := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(selectionLd)
+	trid := GetTrianglesDrawBuilder()
+	defer ReturnTrianglesDrawBuilder(trid)
 
 	// Draw from the bottom
 	scrollOffset := fsp.scrollbar.Offset()
@@ -553,9 +553,9 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Second column; 3 entries
 		x += width0
 		td.AddText(ac.AssignedSquawk.String(), [2]float32{x, y}, style)
-		td.AddText(fmt.Sprintf("%d", ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
+		td.AddText(strconv.Itoa(ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
 		if fp != nil {
-			td.AddText(fmt.Sprintf("%d", fp.Altitude), [2]float32{x, y - fh*3}, style)
+			td.AddText(strconv.Itoa(fp.Altitude), [2]float32{x, y - fh*3}, style)
 		}
 		ld.AddLine([2]float32{width0, y - 4./3.*fh}, [2]float32{width0 + width1, y - 4./3.*fh})
 		ld.AddLine([2]float32{width0, y - 8./3.*fh}, [2]float32{width0 + width1, y - 8./3.*fh})
@@ -688,7 +688,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			// line between two strips; the index then is to the lower one.
 			splitIndex := int(ctx.mouse.Pos[1]/stripHeight + 0.5)
 			yl := float32(splitIndex) * stripHeight
-			selectionLd.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
+			trid.AddQuad([2]float32{0, yl - 1}, [2]float32{drawWidth, yl - 1},
+				[2]float32{drawWidth, yl + 1}, [2]float32{0, yl + 1})
 		}
 	}
 	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[MouseButtonPrimary]) {
@@ -763,8 +764,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	td.GenerateCommands(cb)
 
 	cb.SetRGB(UITextHighlightColor)
-	cb.LineWidth(3)
-	selectionLd.GenerateCommands(cb)
+	trid.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////

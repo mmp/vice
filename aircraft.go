@@ -40,10 +40,13 @@ type Aircraft struct {
 	// nil -> unset/unspecified.
 	Nav Nav
 
-	GoAroundDistance         *float32
-	DepartureContactAltitude float32
+	// Departure related state
+	Exit                       string
+	DepartureContactAltitude   float32
+	DepartureContactController string
 
 	// Arrival-related state
+	GoAroundDistance         *float32
 	ArrivalGroup             string
 	ArrivalGroupIndex        int
 	ArrivalHandoffController string
@@ -60,12 +63,26 @@ func (a *Aircraft) IsAssociated() bool {
 	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
 }
 
-func (ac *Aircraft) DropControllerTrack(callsign string) {
-	if ac.HandoffTrackController == callsign {
-		ac.HandoffTrackController = ""
+func (ac *Aircraft) HandleControllerDisconnect(callsign string, w *World) {
+	if callsign == w.PrimaryController {
+		// Don't change anything; the sim will pause without the primary
+		// controller, so we might as well have all of the tracks and
+		// inbound handoffs waiting for them when they return.
+		return
 	}
+
+	if ac.HandoffTrackController == callsign {
+		// Otherwise redirect handoffs to the primary controller. This is
+		// not a perfect solution; for an arrival, for example, we should
+		// re-resolve it based on the signed-in controllers, as is done in
+		// Sim updateState() for arrivals when they are first handed
+		// off. We don't have all of that information here, though...
+		ac.HandoffTrackController = w.PrimaryController
+	}
+
 	if ac.ControllingController == callsign {
 		if ac.TrackingController == callsign {
+			// Drop track of aircraft that we control
 			ac.TrackingController = ""
 			ac.ControllingController = ""
 		} else {
@@ -104,54 +121,23 @@ func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission 
 	}}
 }
 
-func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) {
+func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 	lg := simlg.With(slog.String("callsign", ac.Callsign))
 
-	if passedWaypoint := ac.Nav.Update(w, lg); passedWaypoint != nil {
+	passedWaypoint := ac.Nav.Update(w, lg)
+	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
-		if passedWaypoint.Handoff {
-			ac.HandoffTrackController = w.Callsign
-			lg.Info("handing off at waypoint",
-				slog.String("fix", passedWaypoint.Fix),
-				slog.String("controller", w.Callsign))
 
-			if ep != nil {
-				ep.PostEvent(Event{
-					Type:           OfferedHandoffEvent,
-					Callsign:       ac.Callsign,
-					FromController: ac.ControllingController,
-					ToController:   ac.HandoffTrackController,
-				})
-			}
-		}
 		if passedWaypoint.Delete && ac.Nav.Approach.Cleared {
 			lg.Info("deleting aircraft after landing")
 			w.DeleteAircraft(ac, nil)
 		}
 	}
 
-	if ac.IsDeparture() && ac.DepartureContactAltitude != 0 &&
-		ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
-		ac.TrackingController != "" {
-		// Tracked and above the contact altitude, so time to check in.
-		PostRadioEvents(ac.Callsign, []RadioTransmission{RadioTransmission{
-			Controller: ac.TrackingController,
-			Message:    ac.Nav.DepartureMessage(),
-			Type:       RadioTransmissionContact,
-		}}, ep)
-		lg.Info("contacting departure controller", slog.String("callsign", ac.TrackingController))
-
-		// Clear this out so we only send one contact message
-		ac.DepartureContactAltitude = 0
-
-		// Only after we're on frequency can the controller start
-		// issuing control commands..
-		ac.ControllingController = ac.TrackingController
-	}
-
 	if ac.GoAroundDistance != nil {
 		if d, err := ac.Nav.finalApproachDistance(); err == nil && d < *ac.GoAroundDistance {
 			lg.Info("randomly going around")
+			ac.GoAroundDistance = nil // only go around once
 			rt := ac.GoAround()
 			PostRadioEvents(ac.Callsign, rt, ep)
 
@@ -167,6 +153,8 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) {
 			}
 		}
 	}
+
+	return passedWaypoint
 }
 
 func (ac *Aircraft) GoAround() []RadioTransmission {
@@ -342,7 +330,7 @@ func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {
 }
 
 func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
-	arrivalGroupIndex int, goAround bool) error {
+	arrivalGroupIndex int, arrivalHandoffController string, goAround bool) error {
 	arr := &w.ArrivalGroups[arrivalGroup][arrivalGroupIndex]
 	ac.ArrivalGroup = arrivalGroup
 	ac.ArrivalGroupIndex = arrivalGroupIndex
@@ -350,16 +338,7 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 
 	ac.TrackingController = arr.InitialController
 	ac.ControllingController = arr.InitialController
-	if len(w.MultiControllers) > 0 {
-		for callsign, mc := range w.MultiControllers {
-			if idx := Find(mc.Arrivals, arrivalGroup); idx != -1 {
-				ac.ArrivalHandoffController = callsign
-			}
-		}
-		if ac.ArrivalHandoffController == "" {
-			return fmt.Errorf("%s: couldn't find arrival controller", ac.Callsign)
-		}
-	}
+	ac.ArrivalHandoffController = arrivalHandoffController
 
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
@@ -393,7 +372,7 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 }
 
 func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
-	exitRoute ExitRoute) error {
+	virtualDepartureController string, humanDepartureController string, exitRoute ExitRoute) error {
 	wp := DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
@@ -406,7 +385,12 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 		return ErrUnknownAircraftType
 	}
 
-	ac.Scratchpad = w.Scratchpads[dep.Exit]
+	ac.Scratchpad = dep.Scratchpad
+	if ac.Scratchpad == "" {
+		ac.Scratchpad = w.Scratchpads[dep.Exit]
+	}
+	ac.Exit = dep.Exit
+
 	if dep.Altitude == 0 {
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan, perf)
 	} else {
@@ -420,11 +404,14 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 	}
 	ac.Nav = *nav
 
-	ac.TrackingController = ap.DepartureController
-	ac.ControllingController = ap.DepartureController
-	ac.DepartureContactAltitude =
-		ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
-	ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+	ac.TrackingController = virtualDepartureController
+	ac.ControllingController = virtualDepartureController
+	if humanDepartureController != "" {
+		ac.DepartureContactAltitude =
+			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactController = humanDepartureController
+	}
 
 	ac.Nav.Check(lg)
 
@@ -440,7 +427,10 @@ func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) string {
 }
 
 func (ac *Aircraft) DepartOnCourse() {
-	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude))
+	if ac.Exit == "" {
+		lg.Warn("unset \"exit\" for departure", slog.String("callsign", ac.Callsign))
+	}
+	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.Exit)
 }
 
 func (ac *Aircraft) IsDeparture() bool {

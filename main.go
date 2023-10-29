@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
@@ -95,6 +96,17 @@ func main() {
 				lg.Errorf("unable to start CPU profile: %v", err)
 			} else {
 				defer pprof.StopCPUProfile()
+
+				// Catch ctrl-c and to write out the profile before exiting
+				sig := make(chan os.Signal, 1)
+				signal.Notify(sig, os.Interrupt)
+
+				go func() {
+					<-sig
+					pprof.StopCPUProfile()
+					f.Close()
+					os.Exit(0)
+				}()
 			}
 		}
 	}
@@ -124,10 +136,7 @@ func main() {
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan, err := TryConnectRemoteServer(*serverAddress)
-		if err != nil {
-			lg.Warnf("error connecting to remote server: %v", err)
-		}
+		remoteSimServerChan := TryConnectRemoteServer(*serverAddress)
 
 		var stats Stats
 		var renderer Renderer
@@ -186,15 +195,15 @@ func main() {
 
 		if globalConfig.Sim != nil && !*resetSim {
 			var result NewSimResult
-			if err := localServer.client.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
+			if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 				lg.Errorf("error restoring saved Sim: %v", err)
 			} else {
 				world = result.World
 				world.simProxy = &SimProxy{
 					ControllerToken: result.ControllerToken,
-					Client:          localServer.client,
+					Client:          localServer.RPCClient,
 				}
-				world.ToggleShowApproachesWindow()
+				world.ToggleShowScenarioInfoWindow()
 			}
 		}
 
@@ -207,6 +216,12 @@ func main() {
 		if world == nil {
 			uiShowConnectDialog(false)
 		}
+
+		if !globalConfig.AskedDiscordOptIn {
+			uiShowDiscordOptInDialog()
+		}
+
+		simStartTime := time.Now()
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
@@ -221,27 +236,35 @@ func main() {
 					world.Disconnect()
 				}
 				world = nw
+				simStartTime = time.Now()
 
 				if world == nil {
 					uiShowConnectDialog(false)
 				} else if world != nil {
-					world.ToggleShowApproachesWindow()
+					world.ToggleShowScenarioInfoWindow()
 					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 						p.ResetWorld(world)
 					})
 				}
 
-			case remoteServer = <-remoteSimServerChan:
-				if remoteServer != nil && remoteServer.err != nil {
-					uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
-						message: "This version of vice is incompatible with the vice multi-controller server.\n" +
-							"If you're using an older version of vice, please upgrade to the latest\n" +
-							"version for multi-controller support. (If you're using a beta build, then\n" +
-							"thanks for your help testing vice; when the beta is released, the server\n" +
-							"will be updated as well.)",
-					}), true)
+			case remoteServerConn := <-remoteSimServerChan:
+				if err := remoteServerConn.err; err != nil {
+					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
+
+					if err.Error() == ErrRPCVersionMismatch.Error() {
+						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
+							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
+								"If you're using an older version of vice, please upgrade to the latest\n" +
+								"version for multi-controller support. (If you're using a beta build, then\n" +
+								"thanks for your help testing vice; when the beta is released, the server\n" +
+								"will be updated as well.)",
+						}), true)
+
+						stopConnectingRemoteServer = true
+					}
 					remoteServer = nil
-					stopConnectingRemoteServer = true
+				} else {
+					remoteServer = remoteServerConn.server
 				}
 
 			default:
@@ -249,16 +272,21 @@ func main() {
 
 			if world == nil {
 				platform.SetWindowTitle("vice: [disconnected]")
+				SetDiscordStatus(discordStatus{start: simStartTime})
 			} else {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+				// Update discord RPC
+				SetDiscordStatus(discordStatus{
+					totalDepartures: world.TotalDepartures,
+					totalArrivals:   world.TotalArrivals,
+					callsign:        world.Callsign,
+					start:           simStartTime,
+				})
 			}
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan, err = TryConnectRemoteServer(*serverAddress)
-				if err != nil {
-					lg.Warnf("TryConnectRemoteServer: %v", err)
-				}
+				remoteSimServerChan = TryConnectRemoteServer(*serverAddress)
 			}
 
 			// Inform imgui about input events from the user.
@@ -326,7 +354,7 @@ func main() {
 
 			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
-				saveSim := world != nil && world.simProxy.Client == localServer.client
+				saveSim := world != nil && world.simProxy.Client == localServer.RPCClient
 				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)
 
 				if world != nil {

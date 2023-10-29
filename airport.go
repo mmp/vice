@@ -7,15 +7,20 @@ package main
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 type Airport struct {
 	Location       Point2LL `json:"location"`
 	TowerListIndex int      `json:"tower_list"`
 
+	Name string `json:"name"`
+
 	Approaches map[string]Approach `json:"approaches,omitempty"`
 	Departures []Departure         `json:"departures,omitempty"`
 
+	// Optional: initial tracking controller, for cases where a virtual
+	// controller has the initial track.
 	DepartureController string `json:"departure_controller"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
@@ -177,6 +182,10 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 }
 
 func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+	if ap.Location.IsZero() {
+		e.ErrorString("Must specify \"location\" for airport")
+	}
+
 	for name, ap := range ap.Approaches {
 		e.Push("Approach " + name)
 
@@ -202,7 +211,10 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				}
 				e.Pop()
 			}
+
+			ap.Waypoints[i].CheckApproach(e)
 		}
+
 		if ap.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
@@ -226,6 +238,8 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.Push("Exit " + exitList)
 			sg.InitializeWaypointLocations(route.Waypoints, e)
 
+			route.Waypoints.CheckDeparture(e)
+
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("exit repeatedly specified in routes")
@@ -244,7 +258,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
 
-		if _, ok := sg.Scratchpads[dep.Exit]; !ok {
+		if _, ok := sg.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
@@ -261,14 +275,27 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.Pop()
 		}
 
+		// We may have multiple ways to reach an exit (e.g. different for
+		// jets vs piston aircraft); in that case the departure exit may be
+		// specified like COLIN.P, etc.  Therefore, here we remove any
+		// trailing non-alphabetical characters for the departure exit name
+		// used below.
+		depExit := dep.Exit
+		for i, ch := range depExit {
+			if !unicode.IsLetter(ch) {
+				depExit = depExit[:i]
+				break
+			}
+		}
+
 		sawExit := false
 		for _, fix := range strings.Fields(dep.Route) {
-			sawExit = sawExit || fix == dep.Exit
+			sawExit = sawExit || fix == depExit
 			wp := []Waypoint{Waypoint{Fix: fix}}
 			// Best effort only to find waypoint locations; this will fail
 			// for airways, international ones not in the FAA database,
 			// latlongs in the flight plan, etc.
-			if fix == dep.Exit {
+			if fix == depExit {
 				sg.InitializeWaypointLocations(wp, e)
 			} else {
 				// nil here so errors aren't logged if it's not the actual exit.
@@ -347,6 +374,7 @@ type ExitRoute struct {
 	InitialRoute    string        `json:"route"`
 	ClearedAltitude int           `json:"cleared_altitude"`
 	Waypoints       WaypointArray `json:"waypoints"`
+	Description     string        `json:"description"`
 }
 
 type Departure struct {
@@ -357,6 +385,7 @@ type Departure struct {
 	Route          string             `json:"route"`
 	RouteWaypoints WaypointArray      // not specified in user JSON
 	Airlines       []DepartureAirline `json:"airlines"`
+	Scratchpad     string             `json:"scratchpad"` // optional
 }
 
 type DepartureAirline struct {

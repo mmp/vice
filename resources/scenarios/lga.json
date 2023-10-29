@@ -1,15 +1,14 @@
 {
     "airports": {
       "KLGA": {
+      "name": "LaGuardia",
         "approaches": {
           "I4": {
             "full_name": "ILS 4",
             "runway": "4",
             "type": "ILS",
             "waypoints": [
-              "GREGG/a4000 ZARID/a4000 VADDR/a4000 JACIE/a4000 NECOl/a4000 VARAZ/a4000 BENNG/a3000 RAHEL/a1800 DNNIS/a1700 WARIN/a640 _LGA_4/a50",
-              "VARAZ/a4000 BENNG/a3000 RAHEL/a1800 DNNIS/a1700 WARIN/a640 _LGA_4/a50",
-              "BENNG/a3000 RAHEL/a1800 DNNIS/a1700 WARIN/a640 _LGA_4/a50"
+              "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ BENNG/if/a3000 RAHEL/a1800 DNNIS/faf/a1700 WARIN/a640 _LGA_4/a50"
             ]
           },
           "I22": {
@@ -17,7 +16,7 @@
             "runway": "22",
             "type": "ILS",
             "waypoints": [
-              "YOMAN/a3000 GREKO/a1900 _LGA_22/a50"
+              "YOMAN/if/a3000 GREKO/faf/a1900 _LGA_22/a50"
             ]
           },
           "I13": {
@@ -25,7 +24,7 @@
             "runway": "13",
             "type": "ILS",
             "waypoints": [
-              "PAYMI/a2800 STEED/a1900 COROR/a800 _LGA_13/a50"
+              "PAYMI/if/a2800 STEED/faf/a1900 COROR/a800 _LGA_13/a50"
             ]
           },
           "R31": {
@@ -33,8 +32,7 @@
             "runway": "31",
             "type": "RNAV",
             "waypoints": [
-              "GREGG/a4000 ZARID/a4000 VADDR/a4000 JACIE/a4000 NECOl/a4000 PACHU/a3000 SHAYY/a2500 GACAR/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50",
-              "PACHU/a3000 SHAYY/a2500 GACAR/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
+              "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ PACHU/if/a3000 SHAYY/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
             ]
           }
         },
@@ -528,7 +526,7 @@
           "initial_speed": 300,
           "route": "/. KORRY4",
           "speed_restriction": 250,
-          "waypoints": "BESSI EDJER/ho DAVYS HOLEY BRAND KORRY RBV TYKES MINKS RENUE APPLE PROUD LGA/h45"
+          "waypoints": "BESSI/a17000+ EDJER/ho DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 RBV TYKES MINKS RENUE APPLE PROUD LGA/h45"
         }
       ],
       "MIP4": [

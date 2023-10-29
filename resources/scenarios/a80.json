@@ -1444,7 +1444,7 @@
         "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095"
       },
       "speed_restriction": 250,
-      "waypoints": "SMAWG/a17000/ho HOBTT/a1400 ENSLL/a12000"
+      "waypoints": "SMAWG/a17000/ho HOBTT/a14000 ENSLL/a12000"
     }
    ],
    "HOBTT2_AFINALT": [
@@ -2034,7 +2034,7 @@
         "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
         "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
         "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
-        "27L": "HAARY CALLA/a900 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
+        "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
         "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
         "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
       },
@@ -2401,21 +2401,23 @@
         },
         "solo_controller": "ATL_APP",
         "multi_controllers": {
-          "ATL_H_APP": {"primary": true, "arrivals": ["JJEDI3"]},
-          "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"]},
-          "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"]},
-          "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["HOBTT2"]},
-          "ATL_O_APP": {"backup": "ATL_H_APP"},
-          "ATL_V_APP": {"backup": "ATL_D_APP"},
-          "ATL_A_APP": {"backup": "ATL_L_APP"},
-          "ATL_N_DEP": {"departure": true, "backup": "ATL_H_APP"},
-          "ATL_S_DEP": {"backup": "ATL_N_DEP"},
-          "ATL_I_DEP": {"backup": "ATL_S_DEP"},
-          "ATL_P_APP": {"backup": "ATL_I_DEP"},
-          "ATL_F_APP": {"backup": "ATL_P_APP"},
-          "ATL_X_APP": {"backup": "ATL_F_APP"},
-          "ATL_G_APP": {"backup": "ATL_X_APP"},
-          "ATL_Q_APP": {"backup": "ATL_G_APP"}
+            "default" : {
+                "ATL_H_APP": {"primary": true, "arrivals": ["JJEDI3"]},
+                "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"]},
+                "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"]},
+                "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["HOBTT2"]},
+                "ATL_O_APP": {"backup": "ATL_H_APP"},
+                "ATL_V_APP": {"backup": "ATL_D_APP"},
+                "ATL_A_APP": {"backup": "ATL_L_APP"},
+                "ATL_N_DEP": {"departures": ["KATL"], "backup": "ATL_H_APP"},
+                "ATL_S_DEP": {"backup": "ATL_N_DEP"},
+                "ATL_I_DEP": {"backup": "ATL_S_DEP"},
+                "ATL_P_APP": {"backup": "ATL_I_DEP"},
+                "ATL_F_APP": {"backup": "ATL_P_APP"},
+                "ATL_X_APP": {"backup": "ATL_F_APP"},
+                "ATL_G_APP": {"backup": "ATL_X_APP"},
+                "ATL_Q_APP": {"backup": "ATL_G_APP"}
+            }
         },
         "controllers": [
           "ATL_1_TWR",
@@ -2501,21 +2503,23 @@
             },
             "solo_controller": "ATL_APP",
             "multi_controllers": {
-              "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]},
-              "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"]},
-              "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"]},
-              "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["HOBTT2"]},
-              "ATL_O_APP": {"backup": "ATL_H_APP"},
-              "ATL_V_APP": {"backup": "ATL_D_APP"},
-              "ATL_A_APP": {"backup": "ATL_L_APP"},
-              "ATL_N_DEP": {"departure": true, "backup": "ATL_H_APP"},
-              "ATL_S_DEP": {"backup": "ATL_N_DEP"},
-              "ATL_I_DEP": {"backup": "ATL_S_DEP"},
-              "ATL_P_APP": {"backup": "ATL_I_DEP"},
-              "ATL_F_APP": {"backup": "ATL_P_APP"},
-              "ATL_X_APP": {"backup": "ATL_F_APP"},
-              "ATL_G_APP": {"backup": "ATL_X_APP"},
-              "ATL_Q_APP": {"backup": "ATL_G_APP"}
+                "default" : {
+                    "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]},
+                    "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"]},
+                    "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"]},
+                    "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["HOBTT2"]},
+                    "ATL_O_APP": {"backup": "ATL_H_APP"},
+                    "ATL_V_APP": {"backup": "ATL_D_APP"},
+                    "ATL_A_APP": {"backup": "ATL_L_APP"},
+                    "ATL_N_DEP": {"departures": ["KATL"], "backup": "ATL_H_APP"},
+                    "ATL_S_DEP": {"backup": "ATL_N_DEP"},
+                    "ATL_I_DEP": {"backup": "ATL_S_DEP"},
+                    "ATL_P_APP": {"backup": "ATL_I_DEP"},
+                    "ATL_F_APP": {"backup": "ATL_P_APP"},
+                    "ATL_X_APP": {"backup": "ATL_F_APP"},
+                    "ATL_G_APP": {"backup": "ATL_X_APP"},
+                    "ATL_Q_APP": {"backup": "ATL_G_APP"}
+                }
             },
             "controllers": [
               "ATL_1_TWR",

@@ -5,7 +5,6 @@
 package main
 
 import (
-	"bytes"
 	_ "embed"
 	"fmt"
 	"image"
@@ -456,42 +455,6 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 ///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
-func UpdateScopePosition(mouse *MouseState, button int, transforms ScopeTransformations,
-	center *Point2LL, rangeNM *float32) (moved bool) {
-	if mouse == nil {
-		return
-	}
-
-	// Handle dragging the scope center
-	if mouse.Dragging[button] {
-		delta := mouse.DragDelta
-		if delta[0] != 0 || delta[1] != 0 {
-			deltaLL := transforms.LatLongFromWindowV(delta)
-			*center = sub2f(*center, deltaLL)
-			moved = true
-		}
-	}
-
-	// Consume mouse wheel
-	if mouse.Wheel[1] != 0 {
-		scale := pow(1.05, mouse.Wheel[1])
-
-		// We want to zoom in centered at the mouse position; this affects
-		// the scope center after the zoom, so we'll find the
-		// transformation that gives the new center position.
-		mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
-		centerTransform := Identity3x3().
-			Translate(mouseLL[0], mouseLL[1]).
-			Scale(scale, scale).
-			Translate(-mouseLL[0], -mouseLL[1])
-
-		*center = centerTransform.TransformPoint(*center)
-		*rangeNM *= scale
-		moved = true
-	}
-	return
-}
-
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
 func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
@@ -516,59 +479,6 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *Comm
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(3)
 	ld.GenerateCommands(cb)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Plane icon
-
-var (
-	planeIconTextureId uint32
-
-	//go:embed resources/plane-solid.png
-	planeIconPNG string
-)
-
-// PlaneIconSpec is a simple structure that specifies the position,
-// heading, and size of an aircraft icon to be drawn by DrawPlaneIcons.
-type PlaneIconSpec struct {
-	P       [2]float32 // should be window coordinates
-	Heading float32
-	Size    float32
-}
-
-// DrawPlaneIcons issues draw commands to the provided command buffer that
-// draw aircraft icons with the specified color, as specified by the slice
-// of PlaneIconSpec structs.
-func DrawPlaneIcons(ctx *PaneContext, specs []PlaneIconSpec, color RGB, cb *CommandBuffer) {
-	if planeIconTextureId == 0 {
-		if iconImage, err := png.Decode(bytes.NewReader([]byte(planeIconPNG))); err != nil {
-			lg.Errorf("Unable to decode plane icon PNG: %v", err)
-		} else {
-			pyramid := GenerateImagePyramid(iconImage)
-			planeIconTextureId = ctx.renderer.CreateTextureFromImages(pyramid)
-		}
-	}
-
-	td := GetTexturedTrianglesDrawBuilder()
-	defer ReturnTexturedTrianglesDrawBuilder(td)
-
-	for _, s := range specs {
-		// Start with a one-pixel big quad
-		p := [4][2]float32{[2]float32{-.5, -.5}, [2]float32{.5, -.5}, [2]float32{.5, .5}, [2]float32{-.5, .5}}
-		uv := [4][2]float32{[2]float32{0, 0}, [2]float32{1, 0}, [2]float32{1, 1}, [2]float32{0, 1}}
-
-		// Transform the corner vertices: scale, rotate, translate...
-		for i := range p {
-			p[i] = scale2f(p[i], s.Size)
-			rot := rotator2f(s.Heading - 90)
-			p[i] = rot(p[i])
-			p[i] = add2f(p[i], s.P)
-		}
-		td.AddQuad(p[0], p[1], p[2], p[3], uv[0], uv[1], uv[2], uv[3])
-	}
-
-	cb.SetRGB(color)
-	td.GenerateCommands(planeIconTextureId, cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
