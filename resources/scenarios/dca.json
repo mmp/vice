@@ -1217,7 +1217,7 @@
       "initial_speed": 250,
       "speed_restriction": 250,
       "route": "/. FRDMM5",
-      "scratchpad": "MTV",
+      "scratchpad": "RIV",
       "waypoints": "ALWYZ/a10000- FRDMM/a8000/s240/ho STAND TGTHR FERGI/h148"
     }
   ],
@@ -1290,7 +1290,7 @@
       },
       "cleared_altitude": 6000,
       "cruise_altitude": 24000,
-      "expect_approach": "MTV",
+      "expect_approach": "RIV",
       "initial_altitude": 8000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
