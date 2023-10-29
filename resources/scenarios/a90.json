@@ -2368,16 +2368,18 @@
         }
       },
       "solo_controller": "BOS_APP",
-      "multi_controllers": {
-        "BOS_DEP": {"departure": true, "primary": true},
-        "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
-        "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
-        "BOS_F_APP": {"backup": "BOS_N_APP"},
-        "BOS_I_APP": {"backup": "BOS_F_APP"},
-        "BOS_B_APP": {"backup": "BOS_N_APP"},
-        "BOS_U_APP": {"backup": "BOS_B_APP"},
-        "BOS_L_APP": {"backup": "BOS_U_APP"}
-      },
+        "multi_controllers": {
+            "default" : {
+                "BOS_DEP": {"departures": ["KBOS"], "primary": true},
+                "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
+                "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
+                "BOS_F_APP": {"backup": "BOS_N_APP"},
+                "BOS_I_APP": {"backup": "BOS_F_APP"},
+                "BOS_B_APP": {"backup": "BOS_N_APP"},
+                "BOS_U_APP": {"backup": "BOS_B_APP"},
+                "BOS_L_APP": {"backup": "BOS_U_APP"}
+            }
+        },
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
@@ -2426,16 +2428,18 @@
         }
       },
       "solo_controller": "BOS_APP",
-      "multi_controllers": {
-        "BOS_DEP": {"departure": true, "primary": true},
-        "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
-        "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
-        "BOS_F_APP": {"backup": "BOS_N_APP"},
-        "BOS_I_APP": {"backup": "BOS_F_APP"},
-        "BOS_B_APP": {"backup": "BOS_N_APP"},
-        "BOS_U_APP": {"backup": "BOS_B_APP"},
-        "BOS_L_APP": {"backup": "BOS_U_APP"}
-      },
+        "multi_controllers": {
+            "default" : {
+                "BOS_DEP": {"departures": ["KBOS"], "primary": true},
+                "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
+                "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
+                "BOS_F_APP": {"backup": "BOS_N_APP"},
+                "BOS_I_APP": {"backup": "BOS_F_APP"},
+                "BOS_B_APP": {"backup": "BOS_N_APP"},
+                "BOS_U_APP": {"backup": "BOS_B_APP"},
+                "BOS_L_APP": {"backup": "BOS_U_APP"}
+            }
+        },
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
@@ -2480,16 +2484,18 @@
         }
       },
       "solo_controller": "BOS_APP",
-      "multi_controllers": {
-        "BOS_DEP": {"departure": true, "primary": true},
-        "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
-        "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
-        "BOS_F_APP": {"backup": "BOS_N_APP"},
-        "BOS_I_APP": {"backup": "BOS_F_APP"},
-        "BOS_B_APP": {"backup": "BOS_N_APP"},
-        "BOS_U_APP": {"backup": "BOS_B_APP"},
-        "BOS_L_APP": {"backup": "BOS_U_APP"}
-      },
+        "multi_controllers": {
+            "default" : {
+                "BOS_DEP": {"departures": ["KBOS"], "primary": true},
+                "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
+                "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
+                "BOS_F_APP": {"backup": "BOS_N_APP"},
+                "BOS_I_APP": {"backup": "BOS_F_APP"},
+                "BOS_B_APP": {"backup": "BOS_N_APP"},
+                "BOS_U_APP": {"backup": "BOS_B_APP"},
+                "BOS_L_APP": {"backup": "BOS_U_APP"}
+            }
+        },
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
@@ -2534,16 +2540,18 @@
         }
       },
       "solo_controller": "BOS_APP",
-      "multi_controllers": {
-        "BOS_DEP": {"departure": true, "primary": true},
-        "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
-        "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
-        "BOS_F_APP": {"backup": "BOS_N_APP"},
-        "BOS_I_APP": {"backup": "BOS_F_APP"},
-        "BOS_B_APP": {"backup": "BOS_N_APP"},
-        "BOS_U_APP": {"backup": "BOS_B_APP"},
-        "BOS_L_APP": {"backup": "BOS_U_APP"}
-      },
+        "multi_controllers": {
+            "default" : {
+                "BOS_DEP": {"departures": ["KBOS"], "primary": true},
+                "BOS_N_APP": {"backup": "BOS_DEP", "arrivals": ["JFUND2", "OOSHN5"]},
+                "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3"]},
+                "BOS_F_APP": {"backup": "BOS_N_APP"},
+                "BOS_I_APP": {"backup": "BOS_F_APP"},
+                "BOS_B_APP": {"backup": "BOS_N_APP"},
+                "BOS_U_APP": {"backup": "BOS_B_APP"},
+                "BOS_L_APP": {"backup": "BOS_U_APP"}
+            }
+        },
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",

@@ -2358,20 +2358,22 @@
                                     "KCLT": 6
                                 }
                             },
-                        "solo_controller": "CLT_APP",
-                        "multi_controllers": {
-                            "CLT_W_DEP": {"departure": true, "primary": true},
-                            "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3S", "CHSLY5S"]},
-                            "CLT_A_APP": {"backup": "CLT_H_APP"},
-                            "CLT_M_APP": {"backup": "CLT_A_APP"},
-                            "CLT_F_APP": {"backup": "CLT_M_APP"},
-                            "CLT_E_DEP": {"backup": "CLT_W_DEP"},
-                            "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3S", "PARQR3S"]},
-                            "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3S", "JONZE3S"]},
-                            "CLT_S_APP": {"backup": "CLT_E_DEP"},
-                            "CLT_N_APP": {"backup": "CLT_S_APP"},
-                            "CLT_Q_APP": {"backup": "CLT_N_APP"}
-                        },
+                            "solo_controller": "CLT_APP",
+                            "multi_controllers": {
+                                "default" : {
+                                    "CLT_W_DEP": {"departures": ["KCLT"], "primary": true},
+                                    "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3S", "CHSLY5S"]},
+                                    "CLT_A_APP": {"backup": "CLT_H_APP"},
+                                    "CLT_M_APP": {"backup": "CLT_A_APP"},
+                                    "CLT_F_APP": {"backup": "CLT_M_APP"},
+                                    "CLT_E_DEP": {"backup": "CLT_W_DEP"},
+                                    "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3S", "PARQR3S"]},
+                                    "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3S", "JONZE3S"]},
+                                    "CLT_S_APP": {"backup": "CLT_E_DEP"},
+                                    "CLT_N_APP": {"backup": "CLT_S_APP"},
+                                    "CLT_Q_APP": {"backup": "CLT_N_APP"}
+                                }
+                            },
                         "controllers": [
                             "ATL_CTR",
                             "DC_CTR",
@@ -2490,17 +2492,19 @@
                             },
                             "solo_controller": "CLT_APP",
                             "multi_controllers": {
-                                "CLT_W_DEP": {"departure": true, "primary": true},
-                                "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3N", "CHSLY5N"]},
-                                "CLT_A_APP": {"backup": "CLT_H_APP"},
-                                "CLT_M_APP": {"backup": "CLT_A_APP"},
-                                "CLT_F_APP": {"backup": "CLT_M_APP"},
-                                "CLT_E_DEP": {"backup": "CLT_W_DEP"},
-                                "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3N", "PARQR3N"]},
-                                "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3N", "JONZE3N"]},
-                                "CLT_S_APP": {"backup": "CLT_E_DEP"},
-                                "CLT_N_APP": {"backup": "CLT_S_APP"},
-                                "CLT_Q_APP": {"backup": "CLT_N_APP"}
+                                "default" : {
+                                    "CLT_W_DEP": {"departures": ["KCLT"], "primary": true},
+                                    "CLT_H_APP": {"backup": "CLT_W_DEP", "arrivals": ["STOCR3N", "CHSLY5N"]},
+                                    "CLT_A_APP": {"backup": "CLT_H_APP"},
+                                    "CLT_M_APP": {"backup": "CLT_A_APP"},
+                                    "CLT_F_APP": {"backup": "CLT_M_APP"},
+                                    "CLT_E_DEP": {"backup": "CLT_W_DEP"},
+                                    "CLT_U_APP": {"backup": "CLT_H_APP", "arrivals": ["FLIPZ3N", "PARQR3N"]},
+                                    "CLT_D_APP": {"backup": "CLT_U_APP", "arrivals": ["BANKR3N", "JONZE3N"]},
+                                    "CLT_S_APP": {"backup": "CLT_E_DEP"},
+                                    "CLT_N_APP": {"backup": "CLT_S_APP"},
+                                    "CLT_Q_APP": {"backup": "CLT_N_APP"}
+                                }
                             },
                             "controllers": [
                                 "ATL_CTR",

@@ -83,6 +83,7 @@ type STARSPane struct {
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
+	RejectedPointOuts map[string]interface{}
 
 	queryUnassociated *TransientMap[string, interface{}]
 
@@ -341,6 +342,7 @@ type STARSAircraftState struct {
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
 
+	IdentEnd                time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
 }
@@ -405,6 +407,10 @@ func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 	// but haven't heard from the aircraft recently.
 	idx := (s.tracksIndex - 1) % len(s.tracks)
 	return s.tracksIndex == 0 || now.Sub(s.tracks[idx].Time) > 30*time.Second
+}
+
+func (s *STARSAircraftState) Ident() bool {
+	return !s.IdentEnd.IsZero() && s.IdentEnd.After(time.Now())
 }
 
 type STARSMap struct {
@@ -916,6 +922,9 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.OutboundPointOuts == nil {
 		sp.OutboundPointOuts = make(map[string]string)
 	}
+	if sp.RejectedPointOuts == nil {
+		sp.RejectedPointOuts = make(map[string]interface{})
+	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = NewTransientMap[string, interface{}]()
 	}
@@ -1107,6 +1116,19 @@ func (sp *STARSPane) processEvents(w *World) {
 				}
 			}
 
+		case RejectedPointOutEvent:
+			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.OutboundPointOuts, event.Callsign)
+					sp.RejectedPointOuts[event.Callsign] = nil
+				}
+			}
+			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.InboundPointOuts, event.Callsign)
+				}
+			}
+
 		case OfferedHandoffEvent:
 			if event.ToController == w.Callsign {
 				globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
@@ -1121,6 +1143,13 @@ func (sp *STARSPane) processEvents(w *World) {
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 					globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 				}
+			}
+
+		case IdentEvent:
+			if state, ok := sp.Aircraft[event.Callsign]; !ok {
+				lg.Errorf("%s: have IdentEvent but missing STARS state?", event.Callsign)
+			} else {
+				state.IdentEnd = time.Now().Add(10 * time.Second)
 			}
 		}
 	}
@@ -1637,6 +1666,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = ErrSTARSIllegalFix
 					return
 				}
+			} else if ac := lookupAircraft(f[0]); ac != nil && len(f) > 1 {
+				acCmds := strings.Join(f[1:], " ")
+				ctx.world.RunAircraftCommands(ac, acCmds,
+					func(err error) {
+						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						sp.previewAreaOutput = GetSTARSError(err).Error()
+					})
+
+				status.clear = true
+				return
 			}
 		}
 
@@ -2688,7 +2727,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
-				} else if ac.HandoffTrackController != ctx.world.Callsign &&
+				} else if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign &&
 					ac.TrackingController == ctx.world.Callsign {
 					// cancel offered handoff offered
 					status.clear = true
@@ -2697,6 +2736,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 					// ack point out
 					sp.acknowledgePointOut(ctx, ac.Callsign)
+					status.clear = true
+					return
+				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+					// ack rejected point out
+					delete(sp.RejectedPointOuts, ac.Callsign)
 					status.clear = true
 					return
 				} else if state.OutboundHandoffAccepted {
@@ -2778,6 +2822,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
 					state.SPCOverride = cmd
+					status.clear = true
+					return
+				} else if cmd == "UN" {
+					ctx.world.RejectPointOut(ac.Callsign, nil, func(err error) {
+						sp.previewAreaOutput = GetSTARSError(err).Error()
+					})
 					status.clear = true
 					return
 				}
@@ -4194,6 +4244,11 @@ func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = PartialDatablock
 	}
 
+	if ac.TrackingController == ctx.world.Callsign || ac.ControllingController == ctx.world.Callsign {
+		// it's under our control
+		dt = FullDatablock
+	}
+
 	if ac.HandoffTrackController == ctx.world.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
@@ -4265,10 +4320,10 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.PointSize(12) // bigger points for fused mode primary tracks
-	pd2.GenerateCommands(cb)
 	cb.PointSize(5)
 	pd.GenerateCommands(cb)
+	cb.PointSize(12) // bigger points for fused mode primary tracks
+	pd2.GenerateCommands(cb)
 	trid.GenerateCommands(cb)
 	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
@@ -4708,6 +4763,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		mainblock[1] = append(mainblock[1], "TODO LIMITED DATABLOCK")
 
 	case PartialDatablock:
+		// STARS Operators Manual 2-69
 		if ac.Squawk != ac.AssignedSquawk {
 			sq := ac.Squawk.String()
 			mainblock[0] = append(mainblock[0], sq)
@@ -4730,21 +4786,32 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			suffix += "J"
 		}
 
-		// Unassociated with LDB should be 2 lines: squawk, altitude--unless
-		// beacon codes are inhibited in LDBs.
+		ident := Select(state.Ident(), "ID", "")
+
+		ho := " "
+		if ac.HandoffTrackController != "" {
+			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
+				ho = ctrl.SectorId[len(ctrl.SectorId)-1:]
+			}
+		}
 
 		if fp := ac.FlightPlan; fp != nil && fp.Rules == IFR {
 			// Alternate between altitude and either scratchpad or destination airport.
-			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)+suffix)
+			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)+ho+suffix+ident)
 			if ac.Scratchpad != "" {
-				mainblock[1] = append(mainblock[1], ac.Scratchpad+suffix)
+				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.Scratchpad)+ho+suffix+ident)
 			} else {
-				mainblock[1] = append(mainblock[1], fp.ArrivalAirport+suffix)
+				ap := fp.ArrivalAirport
+				if len(ap) == 4 {
+					ap = ap[1:] // drop the leading K
+				}
+				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ap)+ho+suffix+ident)
 			}
 		} else {
+			// VFR
 			as := fmt.Sprintf("%03d  %02d", (state.TrackAltitude()+50)/100, (state.TrackGroundspeed()+5)/10)
-			mainblock[0] = append(mainblock[0], as)
-			mainblock[1] = append(mainblock[1], as)
+			mainblock[0] = append(mainblock[0], as+ident)
+			mainblock[1] = append(mainblock[1], as+ident)
 		}
 		return
 
@@ -4754,14 +4821,14 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		// TODO: draw triangle after callsign if conflict alerts inhibited
 		// TODO: space then asterisk after callsign if MSAW inhibited
 
-		if ac.Mode == Ident {
-			cs += " ID"
-		}
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 			cs += " PO"
 		}
 		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			cs += " PO" + id
+		}
+		if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+			cs += " UN"
 		}
 		mainblock[0] = append(mainblock[0], cs)
 		mainblock[1] = append(mainblock[1], cs)
@@ -4780,7 +4847,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			alt = "CST"
 		}
 		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
-		// TODO: pilot reported altitude. Asterisk after alt when showing.
+
 		actype := ac.FlightPlan.TypeWithoutSuffix()
 		var suffix string
 		if ac.FlightPlan.Rules == VFR {
@@ -4802,7 +4869,13 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			actype = strings.TrimPrefix(actype, "J/")
 			suffix += "J"
 		}
-		mainblock[0] = append(mainblock[0], alt+ho+speed+suffix)
+
+		if state.Ident() {
+			// Speed is followed by ID when identing (2-67, field 5)
+			mainblock[0] = append(mainblock[0], alt+ho+speed+"ID")
+		} else {
+			mainblock[0] = append(mainblock[0], alt+ho+speed+suffix)
+		}
 
 		// mainblock[1]
 		arrscr := ac.FlightPlan.ArrivalAirport
@@ -4833,6 +4906,17 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 		br = STARSBrightness(100)
 	}
 
+	// Handle cases where it should flash
+	now := time.Now()
+	if now.Second()&1 == 0 { // one second cycle
+		if state.Ident() || // ident
+			ac.HandoffTrackController == w.Callsign || // handing off to us
+			// we handed it off, it was accepted, but we haven't yet acknowledged
+			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) {
+			br /= 3
+		}
+	}
+
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 		// yellow for pointed out by someone else
 		return br.ScaleRGB(STARSInboundPointOutColor)
@@ -4845,17 +4929,9 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 		}
 	} else if ac.HandoffTrackController == w.Callsign {
 		// flashing white if it's being handed off to us.
-		if time.Now().Second()&1 == 0 { // TODO: is a one second cycle right?
-			br /= 3
-		}
 		return br.ScaleRGB(STARSTrackedAircraftColor)
 	} else if state.OutboundHandoffAccepted {
 		// we handed it off, it was accepted, but we haven't yet acknowledged
-		now := time.Now()
-		if now.Before(state.OutboundHandoffFlashEnd) && now.Second()&1 == 0 { // TODO: is a one second cycle right?
-			// flash for 10 seconds after accept
-			br /= 3
-		}
 		return br.ScaleRGB(STARSTrackedAircraftColor)
 	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 		// quick look all plus
@@ -5821,16 +5897,7 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 
 					if fp := ac.FlightPlan; fp != nil {
 						if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
-							// We'd like to auto-track this departure, but first
-							// check that we are the departure controller.
-
-							departureController := w.GetDepartureController(ac)
-
-							// Turns out that we are in fact the departure controller.
-							if w.Callsign == departureController {
-								w.InitiateTrack(callsign, nil, nil) // ignore error...
-								sp.Aircraft[callsign].DatablockType = FullDatablock
-							}
+							w.InitiateTrack(callsign, nil, nil) // ignore error...
 						}
 					}
 				}

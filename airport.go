@@ -14,9 +14,13 @@ type Airport struct {
 	Location       Point2LL `json:"location"`
 	TowerListIndex int      `json:"tower_list"`
 
+	Name string `json:"name"`
+
 	Approaches map[string]Approach `json:"approaches,omitempty"`
 	Departures []Departure         `json:"departures,omitempty"`
 
+	// Optional: initial tracking controller, for cases where a virtual
+	// controller has the initial track.
 	DepartureController string `json:"departure_controller"`
 
 	ExitCategories map[string]string `json:"exit_categories"`

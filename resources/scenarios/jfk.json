@@ -1,6 +1,7 @@
 {
   "airports": {
     "KFRG": {
+      "name": "Republic",
       "approaches": {
         "I14": {
           "full_name": "ILS Runway 14",
@@ -214,6 +215,7 @@
       "tower_list": 2
     },
     "KHVN": {
+      "name": "New Haven",
       "approaches": {
         "I2": {
           "full_name": "ILS Runway 2",
@@ -383,6 +385,7 @@
       "location": "KHVN"
     },
     "KISP": {
+      "name": "MacArthur",
       "approaches": {
         "R5R": {
           "full_name": "RNAV Runway 15R",
@@ -669,6 +672,7 @@
       "tower_list": 3
     },
     "KJFK": {
+      "name": "Kennedy",
       "approaches": {
         "I1L": {
           "full_name": "ILS 31 Left",
@@ -3215,30 +3219,34 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "solo_controller": "JFK_APP",
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "BOS_E_CTR",
         "EWR_APP",
@@ -3352,29 +3360,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
@@ -3560,29 +3572,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "JFK_APP",
         "BOS_E_CTR",
@@ -3768,29 +3784,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "BOS_E_CTR",
         "EWR_APP",
@@ -3975,29 +3995,33 @@
         }
       },
       "solo_controller": "JFK_APP",
-      "multi_controllers": {
-            "JFK_G_APP": {
-                "primary": true,
-                "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
-            },
-            "ISP_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
-            },
-            "JFK_A_APP": {
-                "backup": "JFK_G_APP"
-            },
-            "JFK_K_APP": {
-                "backup": "JFK_G_APP",
-                "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
-            },
-            "JFK_S_APP": {
-                "backup": "JFK_K_APP"
-            },
-            "JFK_DEP": {
-                "departure": true
+        "multi_controllers": {
+            "default" : {
+                "JFK_G_APP": {
+                    "primary": true,
+                    "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
+                },
+                "ISP_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KISP", "KHVN" ],
+                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                },
+                "JFK_A_APP": {
+                    "backup": "JFK_G_APP"
+                },
+                "JFK_K_APP": {
+                    "backup": "JFK_G_APP",
+                    "departures": [ "KFRG" ],
+                    "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                },
+                "JFK_S_APP": {
+                    "backup": "JFK_K_APP"
+                },
+                "JFK_DEP": {
+                    "departures": [ "KJFK" ]
+                }
             }
-      },
+        },
       "controllers": [
         "BOS_E_CTR",
         "EWR_APP",
