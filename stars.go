@@ -78,7 +78,10 @@ type STARSPane struct {
 	AircraftToIndex map[string]int // for use in lists
 	IndexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
 
-	AutoTrackDepartures map[string]interface{}
+	// explicit JSON name to avoid errors during config deserialization for
+	// backwards compatibility, since this used to be a
+	// map[string]interface{}.
+	AutoTrackDepartures bool `json:"autotrack_departures"`
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -942,10 +945,6 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 		sp.IndexToAircraft = make(map[int]string)
 	}
 
-	if sp.AutoTrackDepartures == nil {
-		sp.AutoTrackDepartures = make(map[string]interface{})
-	}
-
 	sp.events = eventStream.Subscribe()
 
 	ps := sp.CurrentPreferenceSet
@@ -1045,7 +1044,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 }
 
 func (sp *STARSPane) DrawUI() {
-	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
+	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -1635,27 +1634,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		f := strings.Fields(cmd)
 		if len(f) > 1 {
-			if f[0] == ".AUTOTRACK" {
-				for _, airport := range f[1:] {
-					if airport == "NONE" {
-						sp.AutoTrackDepartures = make(map[string]interface{})
-					} else if airport == "ALL" {
-						sp.AutoTrackDepartures = make(map[string]interface{})
-						for name := range ctx.world.DepartureAirports {
-							sp.AutoTrackDepartures[name] = nil
-						}
-					} else {
-						// See if it's in the facility
-						if ctx.world.DepartureAirports[airport] != nil {
-							sp.AutoTrackDepartures[airport] = nil
-						} else {
-							status.err = ErrSTARSIllegalAirport
-							return
-						}
-					}
+			if f[0] == ".AUTOTRACK" && len(f) == 2 {
+				if f[1] == "NONE" {
+					sp.AutoTrackDepartures = false
+					status.clear = true
+					return
+				} else if f[1] == "ALL" {
+					sp.AutoTrackDepartures = true
+					status.clear = true
+					return
 				}
-				status.clear = true
-				return
 			} else if f[0] == ".FIND" {
 				if pos, ok := ctx.world.Locate(f[1]); ok {
 					globalConfig.highlightedLocation = pos
@@ -5895,10 +5883,9 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 				if state.FirstRadarTrack.IsZero() {
 					state.FirstRadarTrack = now
 
-					if fp := ac.FlightPlan; fp != nil {
-						if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
-							w.InitiateTrack(callsign, nil, nil) // ignore error...
-						}
+					if sp.AutoTrackDepartures && ac.TrackingController == "" &&
+						w.DepartureController(ac) == w.Callsign {
+						w.InitiateTrack(callsign, nil, nil) // ignore error...
 					}
 				}
 

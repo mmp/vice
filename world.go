@@ -446,6 +446,15 @@ func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
 }
 
+func (w *World) DepartureController(ac *Aircraft) string {
+	callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
+		func(callsign string) bool {
+			ctrl, ok := w.Controllers[callsign]
+			return ok && ctrl.IsHuman
+		})
+	return Select(callsign != "", callsign, w.PrimaryController)
+}
+
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if w.simProxy == nil {
 		return
