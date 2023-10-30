@@ -710,7 +710,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		if id == "0" {
+		if id == "0" || id == "00" || id == "000" || id == "0000" {
 			continue // bleh, try again
 		} else if _, ok := w.Aircraft[callsign+id]; ok {
 			continue // it already exits
