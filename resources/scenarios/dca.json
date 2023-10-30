@@ -1714,15 +1714,17 @@
       },
       "solo_controller": "DCA_APP",
       "multi_controllers": {
-        "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
-        "DCA_K_APP": {"backup": "DCA_J_APP", "departure": true, "arrivals": ["RAVNN6"]},
-        "DCA_Y_APP": {"backup": "DCA_K_APP"},
-        "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
-        "DCA_F_APP": {"backup": "DCA_Y_APP"},
-        "DCA_A_APP": {"backup": "DCA_K_APP"},
-        "DCA_D_APP": {"backup": "DCA_K_APP"},
-        "DCA_V_APP": {"backup": "DCA_J_APP"},
-        "DCA_E_APP": {"backup": "DCA_J_APP"}
+          "default": {
+              "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
+              "DCA_K_APP": {"backup": "DCA_J_APP", "departures": [ "KDCA" ], "arrivals": ["RAVNN6"]},
+              "DCA_Y_APP": {"backup": "DCA_K_APP"},
+              "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
+              "DCA_F_APP": {"backup": "DCA_Y_APP"},
+              "DCA_A_APP": {"backup": "DCA_K_APP"},
+              "DCA_D_APP": {"backup": "DCA_K_APP"},
+              "DCA_V_APP": {"backup": "DCA_J_APP"},
+              "DCA_E_APP": {"backup": "DCA_J_APP"}
+          }
       },
       "controllers": [
         "DC_CTR",
@@ -1781,15 +1783,17 @@
       },
       "solo_controller": "DCA_APP",
       "multi_controllers": {
-        "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
-        "DCA_K_APP": {"backup": "DCA_J_APP", "departure": true, "arrivals": ["RAVNN6"]},
-        "DCA_Y_APP": {"backup": "DCA_K_APP"},
-        "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
-        "DCA_F_APP": {"backup": "DCA_Y_APP"},
-        "DCA_A_APP": {"backup": "DCA_K_APP"},
-        "DCA_D_APP": {"backup": "DCA_K_APP"},
-        "DCA_V_APP": {"backup": "DCA_J_APP"},
-        "DCA_E_APP": {"backup": "DCA_J_APP"}
+        "default": {
+            "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
+            "DCA_K_APP": {"backup": "DCA_J_APP", "departures": [ "KDCA" ], "arrivals": ["RAVNN6"]},
+            "DCA_Y_APP": {"backup": "DCA_K_APP"},
+            "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
+            "DCA_F_APP": {"backup": "DCA_Y_APP"},
+            "DCA_A_APP": {"backup": "DCA_K_APP"},
+            "DCA_D_APP": {"backup": "DCA_K_APP"},
+            "DCA_V_APP": {"backup": "DCA_J_APP"},
+            "DCA_E_APP": {"backup": "DCA_J_APP"}
+        }
       },
       "controllers": [
         "DC_CTR",
@@ -2013,5 +2017,6 @@
       "label": "ADELTA",
       "name": "PCT ClassD"
     }
-  ]
+  ],
+  "video_map_file": "videomaps/ZDC-videomaps.json"
 }

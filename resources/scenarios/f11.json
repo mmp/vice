@@ -8878,18 +8878,20 @@
       },
       "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-        "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "GTOUT1", "RIDES2" ] },
-        "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
-        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
-        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_S_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_N_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_P_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
+        "default": {
+            "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "GTOUT1", "RIDES2" ] },
+            "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+            "MCO_M_APP" : {"backup" : "MCO_L_APP" },
+            "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+            "MCO_E_DEP" : {"departures": [ "KMCO", "KORL", "KSFB" ], "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
+            "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+            "MCO_D_APP" : {"backup" : "MCO_B_APP" },
+            "MCO_K_APP" : {"backup" : "MCO_D_APP" },
+            "MCO_S_APP" : {"backup" : "MCO_D_APP" },
+            "MCO_N_APP" : {"backup" : "MCO_D_APP" },
+            "MCO_P_APP" : {"backup" : "MCO_D_APP" },
+            "MCO_V_APP" : {"backup" : "MCO_D_APP" }
+        }
       },
       "controllers": [
         "TPA_E_APP",
@@ -9030,18 +9032,20 @@
       },
       "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-        "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "SNFLD3", "RIDES2" ] },
-        "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-        "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
-        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
-        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_S_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_N_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_P_APP" : {"backup" : "MCO_D_APP" },
-        "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
+         "default": {
+             "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "SNFLD3", "RIDES2" ] },
+             "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+             "MCO_M_APP" : {"backup" : "MCO_L_APP" },
+             "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+             "MCO_E_DEP" : {"departures": [ "KMCO", "KSFB", "KISM", "KORL" ], "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
+             "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+             "MCO_D_APP" : {"backup" : "MCO_B_APP" },
+             "MCO_K_APP" : {"backup" : "MCO_D_APP" },
+             "MCO_S_APP" : {"backup" : "MCO_D_APP" },
+             "MCO_N_APP" : {"backup" : "MCO_D_APP" },
+             "MCO_P_APP" : {"backup" : "MCO_D_APP" },
+             "MCO_V_APP" : {"backup" : "MCO_D_APP" }
+         }
       },
       "controllers": [
         "TPA_E_APP",
