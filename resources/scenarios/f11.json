@@ -1237,6 +1237,20 @@
       },
       "location": "N028.06.09.896,W080.38.42.894",
       "tower_list": 1
+    },
+    "KTPA": {
+      "approaches": {
+        "I2L": {
+          "full_name": "ILS Runway 2L",
+          "runway": "2L",
+          "type": "ILS",
+          "waypoints": [
+            "KTPA/a82"
+          ]
+        }
+      },
+      "location": "KTPA",
+      "tower_list": 1
     }
   },
   "airspace": {
@@ -2446,11 +2460,11 @@
         },
         "cleared_altitude": 14000,
         "initial_altitude": 15000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "route": "/. ALYNA3",
         "speed_restriction": 250,
-        "waypoints": "BEAUX/ho SURFR/a14000 ALYNA HIGGZ/a11000/s250 VOSSS/a9000/s230 SUNDE/a6000 CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
+        "waypoints": "BEAUX SURFR/a14000 ALYNA/ho HIGGZ/a11000/s250 VOSSS/a9000/s230 SUNDE/a6000 CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
     ],
     "ALYNA3_BSU": [
@@ -2506,11 +2520,11 @@
         },
         "cleared_altitude": 14000,
         "initial_altitude": 15000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "route": "/. ALYNA3",
         "speed_restriction": 250,
-        "waypoints": "BEAUX/ho SURFR/a14000 ALYNA BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540"
+        "waypoints": "BEAUX SURFR/a14000/ho ALYNA BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540"
       }
     ],
     "ALYNA3_SFINAL": [
@@ -2602,6 +2616,61 @@
         "route": "/. AYLNA3",
         "scratchpad": "I9L",
         "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
+      }
+    ],
+    "DADES1": [
+      {
+        "airlines": {
+          "KTPA": [
+            {
+              "airport": "EGKK",
+              "fleet": "short",
+              "icao": "BAW"
+            },
+            {
+              "airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "airport": "EDDF",
+              "fleet": "long",
+              "icao": "DLH"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KISP",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KJFK",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KLGA",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KEWR",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KPVD",
+              "icao": "SWA"
+            }
+          ]
+        },
+        "cleared_altitude": 17000,
+        "initial_altitude": 19000,
+        "initial_controller": "MIA_46_CTR",
+        "initial_speed": 290,
+        "route": "/. DADES1",
+        "speed_restriction": 290,
+        "waypoints": "BEAUX ZINGR/a17000/ho WORAK ZOPER CAMKO ROSTR GUURR DADES LZARD JKBAL KTPA"
       }
     ],
     "GOOFY7": [
@@ -8643,7 +8712,8 @@
     "_MCO_18R_PRICY_FINAL": "N28.39.39.141,W81.22.13.939",
     "_MCO_36L_GRNCH_FINAL": "N28.11.38.735,W81.25.31.516",
     "_MCO_35R_BITHO": "N28.12.51.499,W81.11.03.126",
-    "_MCO_17L_BITHO": "N28.40.01.555,W81.11.30.377"
+    "_MCO_17L_BITHO": "N28.40.01.555,W81.11.30.377",
+    "KTPA": "N27.58.29.470,W82.32.00.334"
   },
   "inhibit_ca_volumes": [
     {
@@ -8801,24 +8871,25 @@
         },
         "RIDES2": {
           "KMCO": 10
+        },
+        "DADES1": {
+          "KTPA": 5
         }
       },
       "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-          "default" : {
-              "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "GTOUT1", "RIDES2" ] },
-              "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-              "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-              "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-              "MCO_E_DEP" : {"departures": ["KMCO", "KSFB", "KORL"], "backup": "MCO_L_APP"},
-              "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-              "MCO_D_APP" : {"backup" : "MCO_B_APP" },
-              "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_S_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_N_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_P_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
-          }
+        "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "GTOUT1", "RIDES2" ] },
+        "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
+        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
+        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_S_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_N_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_P_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
       },
       "controllers": [
         "TPA_E_APP",
@@ -8833,7 +8904,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "ARRIVAL RADAR SOUTH OPS",
+      "default_map": "ARRIVAL SOUTH SOLID LINE",
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -8952,24 +9023,25 @@
         },
         "SNFLD3": {
           "KMCO": 15
+        },
+        "DADES1": {
+          "KTPA": 5
         }
       },
       "solo_controller": "MCO_B_APP",
       "multi_controllers": {
-          "default" : {
-              "MCO_B_APP" : {"primary": true, "arrivals": [ "ALYNA3", "GOOFY7", "SNFLD3", "RIDES2" ] },
-              "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
-              "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-              "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-              "MCO_E_DEP" : {"departures": ["KMCO", "KSFB", "KISM", "KORL"], "backup": "MCO_L_APP"},
-              "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-              "MCO_D_APP" : {"backup" : "MCO_B_APP" },
-              "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_S_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_N_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_P_APP" : {"backup" : "MCO_D_APP" },
-              "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
-          }
+        "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "SNFLD3", "RIDES2" ] },
+        "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+        "MCO_M_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_G_APP" : {"backup" : "MCO_L_APP" },
+        "MCO_E_DEP" : {"departure": true, "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
+        "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
+        "MCO_D_APP" : {"backup" : "MCO_B_APP" },
+        "MCO_K_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_S_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_N_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_P_APP" : {"backup" : "MCO_D_APP" },
+        "MCO_V_APP" : {"backup" : "MCO_D_APP" } 
       },
       "controllers": [
         "TPA_E_APP",
@@ -8984,7 +9056,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "ARRIVAL RADAR NORTH OPS",
+      "default_map": "ARRIVAL NORTH SOLID LINE",
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -9075,7 +9147,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "Dep Radar North Flow",
+      "default_map": "DEPARTURE NORTH SOLID",
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -9193,7 +9265,7 @@
         "MCO_B_APP",
         "MCO_L_APP"
       ],
-      "default_map": "Final South Ops",
+      "default_map": "SOUTH FINAL BASE",
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9234,7 +9306,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL RADAR SOUTH OPS SIMPLE",
+      "default_map": "ARRIVAL SOUTH SOLID LINE",
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9289,7 +9361,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL RADAR SOUTH OPS SIMPLE",
+      "default_map": "ARRIVAL SOUTH SOLID LINE",
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9333,7 +9405,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL RADAR SOUTH OPS SIMPLE",
+      "default_map": "ARRIVAL SOUTH SOLID LINE",
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9374,7 +9446,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL RADAR NORTH OPS SIMPLE",
+      "default_map": "ARRIVAL NORTH SOLID LINE",
       "wind": {
         "direction": 360,
         "gust": 8,
@@ -9429,7 +9501,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL RADAR NORTH OPS SIMPLE",
+      "default_map": "ARRIVAL NORTH SOLID LINE",
       "wind": {
         "direction": 360,
         "gust": 8,
@@ -9473,7 +9545,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL RADAR NORTH OPS SIMPLE",
+      "default_map": "ARRIVAL NORTH SOLID LINE",
       "wind": {
         "direction": 360,
         "gust": 8,
@@ -9521,9 +9593,10 @@
         "SFB_N_TWR",
         "SFB_S_TWR",
         "MCO_W_TWR",
-        "MCO_B_APP"
+        "MCO_B_APP",
+        "MCO_L_APP"
       ],
-      "default_map": "Final North Ops",
+      "default_map": "NORTH FINAL BASE",
       "wind": {
         "direction": 340,
         "gust": 8,
@@ -9550,7 +9623,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "Dep Radar South Flow",
+      "default_map": "DEPARTURE SOUTH SOLID",
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -9647,209 +9720,140 @@
   },
   "stars_maps": [
     {
-      "group": 1,
-      "label": "RSIDS",
-      "name": "RNAV SIDS"
-    },
-    {
-      "group": 1,
-      "label": "RSTARS",
-      "name": "RNAV STARS"
+      "group": 0,
+      "label": "ARR S",
+      "name": "ARRIVAL SOUTH SOLID LINE"
     },
     {
       "group": 0,
-      "label": "DR-N",
-      "name": "Dep Radar North Flow"
+      "label": "ARR N",
+      "name": "ARRIVAL NORTH SOLID LINE"
     },
     {
       "group": 0,
-      "label": "DR-S",
-      "name": "Dep Radar South Flow"
+      "label": "DEP S",
+      "name": "DEPARTURE SOUTH SOLID"
     },
     {
       "group": 0,
-      "label": "AR-N",
-      "name": "ARRIVAL RADAR NORTH OPS"
+      "label": "DEP N",
+      "name": "DEPARTURE NORTH SOLID"
     },
     {
       "group": 0,
-      "label": "AR-S",
-      "name": "ARRIVAL RADAR SOUTH OPS"
+      "label": "SSDASH",
+      "name": "SATELLITE SOUTH DASHED"
     },
     {
       "group": 0,
-      "label": "AR-NS",
-      "name": "ARRIVAL RADAR NORTH OPS SIMPLE"
+      "label": "SNDASH",
+      "name": "SATELLITE NORTH DASHED"
     },
     {
       "group": 0,
-      "label": "AR-SS",
-      "name": "ARRIVAL RADAR SOUTH OPS SIMPLE"
+      "label": "S FINAL",
+      "name": "SOUTH FINAL BASE"
     },
     {
       "group": 0,
-      "label": "ARM",
-      "name": "ARM FINAL MONITOR"
-    },
-    {
-      "group": 0,
-      "label": "ARM-N",
-      "name": "Final North Ops"
-    },
-    {
-      "group": 0,
-      "label": "ARM-S",
-      "name": "Final South Ops"
-    },
-    {
-      "group": 0,
-      "label": "SAT-N",
-      "name": "Satellite North Operations"
-    },
-    {
-      "group": 0,
-      "label": "SAT-S",
-      "name": "Satellite South Operations"
-    },
-    {
-      "group": 0,
-      "label": "FINAL",
-      "name": "ORL FINALS"
+      "label": "N FINAL",
+      "name": "NORTH FINAL BASE"
     },
     {
       "group": 1,
-      "label": "APT",
-      "name": "AIRPORTS"
+      "label": "CLASS B",
+      "name": "MCO CLASS B"
+    },
+    {
+      "group": 1,
+      "label": "CLASS D",
+      "name": "F11 CLASS D"
+    },
+    {
+      "group": 1,
+      "label": "ILS FIX",
+      "name": "F11 ILS FIXES WITH NAMES"
     },
     {
       "group": 0,
-      "label": "ILS",
-      "name": "ILS FIXES"
-    },
-    {
-      "group": 0,
-      "label": "RNAV-A",
-      "name": "RNAV Arrival Points"
+      "label": "FINALS",
+      "name": "MCO FINALS"
     },
     {
       "group": 1,
       "label": "MVA",
-      "name": "MVA"
-    },
-    {
-      "group": 1,
-      "label": "CAS",
-      "name": "Class Airspace Map"
-    },
-    {
-      "group": 1,
-      "label": "GND",
-      "name": "Airport Diagrams"
-    },
-    {
-      "group": 1,
-      "label": "LOW",
-      "name": "LOW AIRWAYS"
-    },
-    {
-      "group": 1,
-      "label": "HIGH",
-      "name": "HIGH AIRWAYS"
-    },
-    {
-      "group": 1,
-      "label": "DISNEY",
-      "name": "DISNEY TFR SFC-3000"
+      "name": "F11 MVA"
     },
     {
       "group": 0,
-      "label": "CLASS D",
-      "name": "F11 Class Delta Airspace"
+      "label": "LEE",
+      "name": "LEE RNAV"
     },
     {
       "group": 0,
-      "label": "FIXES",
-      "name": "F11 Airspace Fixes"
+      "label": "ISM",
+      "name": "ISM FINALS"
     },
     {
       "group": 1,
-      "label": "HWY",
-      "name": "Interstates Map"
+      "label": "SSIDS",
+      "name": "MCO SIDS SOUTH"
+   },
+   {
+    "group": 1,
+    "label": "NSIDS",
+    "name": "MCO SIDS NORTH"
     },
     {
       "group": 1,
-      "label": "COAST",
-      "name": "Coastline"
+      "label": "SSRESTR",
+      "name": "MCO STARS SOUTH RESTRICTIONS"
+    },
+    {
+    "group": 1,
+    "label": "NSRESTR",
+    "name": "MCO STARS NORTH RESTRICTIONS"
     },
     {
       "group": 1,
-      "label": "VFR",
-      "name": "VFR Map"
+      "label": "ASALTS",
+      "name": "ARRIVAL SOUTH ALTITUDES"
     },
     {
-      "group": 0,
-      "label": "ORL-7",
-      "name": "Orlando runway 7"
+      "group": 1,
+      "label": "ANALTS",
+      "name": "ARRIVAL NORTH ALTITUDES"
     },
     {
-      "group": 0,
-      "label": "ORL-25",
-      "name": "Orlando runway 25"
+      "group": 1,
+      "label": "DSALTS",
+      "name": "DEPARTURE SOUTH ALTITUDES"
     },
     {
-      "group": 0,
-      "label": "MCO",
-      "name": "MCO TWR"
+      "group": 1,
+      "label": "DNALTS",
+      "name": "DEPARTURE NORTH ALTITUDES"
     },
     {
-      "group": 0,
-      "label": "RNAV",
-      "name": "KMCO RNAV Finals"
+      "group": 1,
+      "label": "DADESAR",
+      "name": "DADES ARRIVAL"
     },
     {
-      "group": 0,
+      "group": 1,
+      "label": "PACA N",
+      "name": "PACA NORTH OPS"
+    },
+    {
+      "group": 1,
+      "label": "PACA S",
+      "name": "PACA SOUTH OPS"
+    },
+    {
+      "group": 1,
       "label": "NTZ",
-      "name": "MCO FINAL NTZ"
-    },
-    {
-      "group": 0,
-      "label": "GPS",
-      "name": "RNAV Approach Fixes"
-    },
-    {
-      "group": 0,
-      "label": "RESTRICTED",
-      "name": "Area Restricted Airspace"
-    },
-    {
-      "group": 0,
-      "label": "SATN9",
-      "name": "SAT-N SFB 9"
-    },
-    {
-      "group": 0,
-      "label": "STS27",
-      "name": "SAT-S SFB 27"
-    },
-    {
-      "group": 0,
-      "label": "STN27",
-      "name": "SAT-N SFB 27"
-    },
-    {
-      "group": 0,
-      "label": "STS09",
-      "name": "SAT-S SFB 09"
-    },
-    {
-      "group": 0,
-      "label": "X21/XMR",
-      "name": "RNAV X21/XMR"
+      "name": "MCO FINAL NO TRANSGRETION ZONE (NTZ)"
     }
   ],
-<<<<<<< HEAD
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
-=======
-  "video_map_file": "videomaps/zjx-maps.json.zst"
->>>>>>> parent of 6783856 (rename a80 json to proper name, update f11 video maps, add zab, zau, zdc, zdv, zhu, zid, zjx, zma, zob, ztl new video maps)
 }
