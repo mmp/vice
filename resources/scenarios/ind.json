@@ -477,7 +477,7 @@
     }
   },
   "arrival_groups": {
-    "CLANG7": [
+    "SNKPT2": [
       {
         "airlines": {
           "KIND": [
@@ -522,8 +522,37 @@
         "route": "/. RINTE.SNKPT2",
         "runway_waypoints": {
           "05L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-          "05R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229"
-        }
+          "05R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
+          "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
+          "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
+          "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
+          "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140"
+        },
+        "waypoints": "RINTE JEEDR/a24000+/ho DOTKE/a23000- SNKPT/a14000-19000 BABNE/a11500-15000 CCUUK"
+      },
+      {
+        "airlines": {
+          "KIND": [
+            {
+              "airport": "KDTW",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "cleared_altitude": 20000,
+        "initial_altitude": 22000,
+        "initial_controller": "IND_CTR",
+        "initial_speed": 280,
+        "route": "/. SJAYY.SNKPT2",
+        "runway_waypoints": {
+          "05L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+          "05R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
+          "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
+          "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
+          "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
+          "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140"
+        },
+        "waypoints": "SJAAY/ho ARCAB/a20000- SNKPT/a14000-19000 BABNE/a11500-15000 CCUUK"
       }
     ]
   }
