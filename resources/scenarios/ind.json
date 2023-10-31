@@ -554,6 +554,31 @@
         },
         "waypoints": "SJAAY/ho ARCAB/a20000- SNKPT/a14000-19000 BABNE/a11500-15000 CCUUK"
       }
+    ],
+    "GIIBS3": [
+      {
+        "airlines": {
+          "KIND": [
+            {
+              "airport": "KMCO",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "NKS"
+            }
+          ]
+        },
+        "cleared_altitude": 24000,
+        "initial_altitude": 26000,
+        "initial_controller": "IND_CTR",
+        "initial_speed": 280,
+        "route": "/. HAGAL.GIIBS3",
+      }
     ]
   }
 }
