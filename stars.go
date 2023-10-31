@@ -4722,8 +4722,6 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		errs = append(errs, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		errs = append(errs, "MI")
-	} else if ac.Squawk == Squawk(0o1236) {
-		errs = append(errs, "SA")
 	}
 	if AnySlice(sp.CAAircraft,
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
