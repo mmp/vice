@@ -1,6 +1,7 @@
 {
   "airports": {
     "KIND": {
+      "name": "Indianapolis",
       "approaches": {
         "I5L": {
           "full_name": "ILS 5L",
@@ -285,25 +286,41 @@
               "icao": "AAL"
             },
             {
-              "icao": "UAL"
-            }
-          ],
-          "destination": "KORD",
-          "exit": "MEARZ",
-          "route": "MEARZ BRATN BONNT VEECK5"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            },
-            {
               "icao": "DAL"
             }
           ],
           "destination": "KLGA",
           "exit": "BDOCK",
           "route": "BDOCK DJB CXR J146 ETG MIP4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "MYS",
+          "route": "MYS HITMN NEWBB IHAVE MTHEW CHPPR1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "DEN",
+          "exit": "SPI",
+          "route": "SPI IRK HSI BRWRY LAWGR3"
         },
         {
           "airlines": [
@@ -317,10 +334,197 @@
         },
         {
           "airlines": [
-            
-          ]
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KFJK",
+          "exit": "BDOCK",
+          "route": "BDOCK DJB JHW J70 LVZ LENDY8"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "IIU",
+          "route": "IIU WINNA NOTWO WALET ZJAYX GRNCH5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "MEARZ",
+          "route": "MEARZ BRATN BONNT VEECK5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "IIU",
+          "route": "IIU SKYWA FILPZ3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "PXV",
+          "route": "PXV J131 LIT MEEOW FEWWW SEEVR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KBOS",
+          "exit": "BDOCK",
+          "route": "BDOCK DJB JHW Q82 PONCT JFUND2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "ROCKY",
+          "route": "ROCKY HLV KK51E CIM ZUN EAGUL6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "BDOCK",
+          "route": "BDOCK DJB DORET J584 SLT FQM3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KAUS",
+          "exit": "PXV",
+          "route": "PXV J131 LIT BROBB WINDU SEWZY6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "MEARZ",
+          "route": "MEARZ CLLRK DROSE SWAYD HANBL3"
         }
-      ]
+      ],
+      "exit_categories": {
+        "DAWNN": "South",
+        "MYS": "South",
+        "IIU": "South",
+        "WEGEE": "South",
+        "PXV": "South",
+        "MAREO": "East",
+        "BDOCK": "East",
+        "MEARZ": "North",
+        "BVT": "North",
+        "MZZ": "North",
+        "ROCKY": "West",
+        "SPI": "West",
+        "STL": "West"
+      },
+      "location": "N039.43.02.300 W086.17.40.700",
+      "tower_list": 1
     }
+  },
+  "arrival_groups": {
+    "CLANG7": [
+      {
+        "airlines": {
+          "KIND": [
+            {
+              "airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KEWR",
+              "icao": "NKS" 
+            }
+          ]
+        },
+        "cleared_altitude": 24000,
+        "initial_altitude": 26000,
+        "initial_controller": "IND_CTR",
+        "initial_speed": 280,
+        "route": "/. RINTE.SNKPT2",
+        "runway_waypoints": {
+          "05L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+          "05R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229"
+        }
+      }
+    ]
   }
 }
