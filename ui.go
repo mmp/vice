@@ -123,6 +123,11 @@ var (
 		"Fixed bug with some departures trying to re-fly their initial departure route",
 		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
 		"Fixed bug with the default DCB brightness being set to 0",
+		"Added DCA scenario",
+		"There is now a short delay before aircraft start to follow heading assignments",
+		"Added \"ID\" command for ident",
+		"Aircraft can now also be issued control commands by entering their callsign before the commands",
+		"Fixed bugs with endless go-arounds and with departures not obeying altitude restrictions",
 	}
 )
 
