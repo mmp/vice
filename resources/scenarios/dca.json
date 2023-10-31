@@ -2018,5 +2018,5 @@
       "name": "PCT ClassD"
     }
   ],
-  "video_map_file": "videomaps/ZDC-videomaps.json"
+  "video_map_file": "videomaps/ZDC-videomaps.json.zst"
 }
