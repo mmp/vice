@@ -1058,7 +1058,7 @@
       "speed_restriction": 250,
       "route": "/. DEALE3",
       "scratchpad": "MTV",
-      "waypoints": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000-/ho HITEK/a7000 MITEY/h187"
+      "waypoints": "DEALE/a10000/s280 YUCKK/a10000/ho TIRZA/a8000- HITEK/a7000 MITEY/h187"
     }
   ],
   "FINAL_NS": [
@@ -1413,7 +1413,7 @@
   "frequency": 133725,
   "full_name": "Washington Center",
   "scope_char": "C",
-  "sector_id": "W32"
+  "sector_id": "32"
   },
   "NY_CTR": {
   "frequency": 125325,
@@ -1425,19 +1425,19 @@
     "frequency": 119700,
     "full_name": "Potomac Approach",
     "scope_char": "S",
-    "sector_id": "S"
+    "sector_id": "1S"
   },
   "BWI_P_APP": {
     "frequency": 119700,
     "full_name": "Potomac Approach",
     "scope_char": "P",
-    "sector_id": "P"
+    "sector_id": "1P"
   },
   "BWI_W_APP": {
     "frequency": 128700,
     "full_name": "Potomac Approach",
     "scope_char": "W",
-    "sector_id": "W"
+    "sector_id": "1W"
   },
   "IAD_M_APP": {
     "frequency": 126100,
@@ -1449,37 +1449,37 @@
     "frequency": 119850,
     "full_name" : "Potomac Approach",
     "scope_char": "J",
-    "sector_id": "J"
+    "sector_id": "1J"
   },
   "DCA_J_APP": {
     "frequency": 119850,
     "full_name" : "Potomac Approach",
     "scope_char": "J",
-    "sector_id": "J"
+    "sector_id": "1J"
   },
   "DCA_E_APP": {
     "frequency": 124200,
     "full_name" : "Potomac Approach",
     "scope_char": "E",
-    "sector_id": "E"
+    "sector_id": "1E"
   },
   "DCA_D_APP": {
     "frequency": 128350,
     "full_name" : "Potomac Approach",
     "scope_char": "D",
-    "sector_id": "D"
+    "sector_id": "1D"
   },
   "DCA_L_APP": {
     "frequency": 118675,
     "full_name" : "Potomac Approach",
     "scope_char": "L",
-    "sector_id": "L"
+    "sector_id": "1L"
   },
   "DCA_V_APP": {
     "frequency": 124700,
     "full_name" : "Potomac Approach",
     "scope_char": "V",
-    "sector_id": "V"
+    "sector_id": "1V"
   },
   "DCA_F_APP": {
     "frequency": 121050,
@@ -1491,19 +1491,19 @@
     "frequency": 118950,
     "full_name" : "Potomac Approach",
     "scope_char": "Y",
-    "sector_id": "Y"
+    "sector_id": "1Y"
   },
   "DCA_K_APP": {
     "frequency": 125650,
     "full_name" : "Potomac Approach",
     "scope_char": "K",
-    "sector_id": "K"
+    "sector_id": "1K"
   },
   "DCA_A_APP": {
     "frequency": 128000,
     "full_name": "Potomac Approach",
     "scope_char": "A",
-    "sector_id": "A"
+    "sector_id": "1A"
   },
   "DCA_TWR": {
     "frequency": 119100,
@@ -1714,17 +1714,17 @@
       },
       "solo_controller": "DCA_APP",
       "multi_controllers": {
-          "default": {
-              "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
-              "DCA_K_APP": {"backup": "DCA_J_APP", "departures": [ "KDCA" ], "arrivals": ["RAVNN6"]},
-              "DCA_Y_APP": {"backup": "DCA_K_APP"},
-              "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
-              "DCA_F_APP": {"backup": "DCA_Y_APP"},
-              "DCA_A_APP": {"backup": "DCA_K_APP"},
-              "DCA_D_APP": {"backup": "DCA_K_APP"},
-              "DCA_V_APP": {"backup": "DCA_J_APP"},
-              "DCA_E_APP": {"backup": "DCA_J_APP"}
-          }
+        "default": {
+            "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
+            "DCA_K_APP": {"backup": "DCA_J_APP", "departures": [ "KDCA" ], "arrivals": ["RAVNN6"]},
+            "DCA_Y_APP": {"backup": "DCA_K_APP"},
+            "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
+            "DCA_F_APP": {"backup": "DCA_Y_APP"},
+            "DCA_A_APP": {"backup": "DCA_K_APP"},
+            "DCA_D_APP": {"backup": "DCA_K_APP"},
+            "DCA_V_APP": {"backup": "DCA_J_APP"},
+            "DCA_E_APP": {"backup": "DCA_J_APP"}
+        }
       },
       "controllers": [
         "DC_CTR",
