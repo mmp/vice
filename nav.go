@@ -673,8 +673,9 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 
 	heading, turn, rate = nav.FlightState.Heading, TurnClosest, 3 // baseline
 
-	if nav.Approach.InterceptState == InitialHeading ||
-		nav.Approach.InterceptState == TurningToJoin {
+	// nav.Heading.Assigned may still be nil pending a deferred turn
+	if (nav.Approach.InterceptState == InitialHeading ||
+		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
 		return nav.LocalizerHeading(wind, lg)
 	}
 
