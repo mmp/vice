@@ -577,7 +577,7 @@
         "initial_altitude": 26000,
         "initial_controller": "IND_CTR",
         "initial_speed": 280,
-        "route": "/. HAGAL.GIIBS3",
+        "route": "/. HAGAL.GIIBS3"
       }
     ]
   }
