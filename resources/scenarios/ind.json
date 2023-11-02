@@ -594,7 +594,12 @@
         "airlines": {
           "KIND": [
             {
-              "airport": ""
+              "airport": "KORD",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KORD",
+              "icao": "UAL"
             }
           ]
         }
