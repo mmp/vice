@@ -1128,6 +1128,12 @@ func (sp *STARSPane) processEvents(w *World) {
 				}
 			}
 
+		case InitiatedTrackEvent:
+			if event.ToController == w.Callsign {
+				state := sp.Aircraft[event.Callsign]
+				state.DatablockType = FullDatablock
+			}
+
 		case OfferedHandoffEvent:
 			if event.ToController == w.Callsign {
 				globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
@@ -4223,7 +4229,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -4283,7 +4289,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		brightness := ps.Brightness.Positions
 
-		dt := sp.DatablockType(ctx, ac)
+		dt := sp.datablockType(ctx, ac)
 
 		if dt == PartialDatablock || dt == LimitedDatablock {
 			brightness = ps.Brightness.LimitedDatablocks
@@ -4741,7 +4747,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		return
 	}
 
-	ty := sp.DatablockType(ctx, ac)
+	ty := sp.datablockType(ctx, ac)
 
 	switch ty {
 	case LimitedDatablock:
