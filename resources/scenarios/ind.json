@@ -602,6 +602,27 @@
               "icao": "UAL"
             }
           ]
+        },
+        "cleared_altitude": 16000,
+        "initial_altitude": 26000,
+        "initial_controller": "IND_CTR",
+        "initial_speed": 280,
+        "route": "/. ELANR.JAKKS2",
+        "runway_waypoints": {
+          "05L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
+          "05R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
+          "14": "ATILE/a13000- AADIE KEADY/a4000+/s210",
+          "23L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
+          "23R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
+          "32": "ATILE/a13000- BBACK/a10000+ EBEDE/a7000+/s230 PNFLD/a6000/s210"
+        },
+        "waypoints": "ELANR EMMLY JAKKS OPPIE/a11000-a16000 ATILE/a13000-"
+      }
+    ],
+    "KOLTS2": [
+      {
+        "airlines": {
+          
         }
       }
     ]
