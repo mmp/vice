@@ -116,7 +116,7 @@ jobs:
             --apple-id ${APPLE_CODESIGN_ID} \
             --password ${APPLE_CODESIGN_PASSWORD} \
             --team-id ${APPLE_TEAMID} \
-            --timeout 5m \
+            --timeout 30m \
             vice.zip
         # notarized! staple the notarization
         xcrun stapler staple Vice.app
