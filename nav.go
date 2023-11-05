@@ -1984,7 +1984,10 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr 
 		return resp, err
 	} else {
 		nav.Approach.Cleared = true
-		nav.Altitude = NavAltitude{} // in case we have intercepted but are only being cleared now
+		if nav.Approach.InterceptState == HoldingLocalizer {
+			// First intercepted then cleared, so allow it to start descending.
+			nav.Altitude = NavAltitude{}
+		}
 		// Cleared approach also cancels speed restrictions.
 		nav.Speed = NavSpeed{}
 
