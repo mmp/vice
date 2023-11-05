@@ -2004,6 +2004,8 @@ func (nav *Nav) CancelApproachClearance() string {
 	}
 
 	nav.Approach.Cleared = false
+	nav.Approach.InterceptState = NotIntercepting
+	nav.Approach.NoPT = false
 
 	return "cancel approach clearance."
 }
