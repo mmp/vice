@@ -1119,7 +1119,13 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// an altitude restriction.
 	d := sumDist + nmdistance2ll(nav.FlightState.Position, nav.Waypoints[0].Location)
 	eta := d / nav.FlightState.GS * 3600 // seconds
-	alt := altRange[1]                   // prefer to be higher rather than lower
+
+	alt := altRange[1] // generally prefer to be higher rather than lower
+	if !nav.FlightState.IsDeparture &&
+		nav.FlightState.Altitude >= altRange[0] && nav.FlightState.Altitude <= altRange[1] {
+		// But leave arrivals at their current altitude if it's acceptable
+		alt = nav.FlightState.Altitude
+	}
 
 	return &WaypointCrossingConstraint{
 		Altitude:      alt,
