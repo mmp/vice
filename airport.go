@@ -218,6 +218,13 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		if ap.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
+
+		if ap.Type == ChartedVisualApproach && len(ap.Waypoints) != 1 {
+			// Note: this could be relaxed if necessary but the logic in
+			// Nav prepareForChartedVisual() assumes as much.
+			e.ErrorString("Only a single set of waypoints are allowed for a charted visual approach route")
+		}
+
 		e.Pop()
 	}
 
@@ -398,10 +405,11 @@ type ApproachType int
 const (
 	ILSApproach = iota
 	RNAVApproach
+	ChartedVisualApproach
 )
 
 func (at ApproachType) String() string {
-	return []string{"ILS", "RNAV"}[at]
+	return []string{"ILS", "RNAV", "Charted Visual"}[at]
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
@@ -410,6 +418,8 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 		return []byte("\"ILS\""), nil
 	case RNAVApproach:
 		return []byte("\"RNAV\""), nil
+	case ChartedVisualApproach:
+		return []byte("\"Visual\""), nil
 	default:
 		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
 	}
@@ -423,6 +433,10 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 
 	case "\"RNAV\"":
 		*at = RNAVApproach
+		return nil
+
+	case "\"Visual\"":
+		*at = ChartedVisualApproach
 		return nil
 
 	default:

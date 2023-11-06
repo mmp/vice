@@ -1946,6 +1946,11 @@ func (nav *Nav) prepareForApproach(straightIn bool) (string, error) {
 
 	ap := nav.Approach.Assigned
 
+	// Charted visual is special in all sorts of ways
+	if ap.Type == ChartedVisualApproach {
+		return nav.prepareForChartedVisual()
+	}
+
 	directApproachFix := false
 	_, assignedHeading := nav.AssignedHeading()
 	if !assignedHeading && len(nav.Waypoints) > 0 {
@@ -1977,6 +1982,97 @@ func (nav *Nav) prepareForApproach(straightIn bool) (string, error) {
 	nav.Approach.NoPT = straightIn || assignedHeading
 
 	return "", nil
+}
+
+func (nav *Nav) prepareForChartedVisual() (string, error) {
+	// Airport PostDeserialize() checks that there is just a single set of
+	// waypoints for charted visual approaches.
+	wp := nav.Approach.Assigned.Waypoints[0]
+
+	// First try to find the first (if any) waypoint along the approach
+	// that is within 15 degrees of the aircraft's current heading.
+	intercept := -1
+	for i := range wp {
+		h := headingp2ll(nav.FlightState.Position, wp[i].Location,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		if headingDifference(h, nav.FlightState.Heading) < 30 {
+			intercept = i
+			break
+		}
+	}
+
+	// Also check for intercepting a segment of the approach. There are two
+	// cases:
+	// 1. If we found a waypoint intercept above, then we are only
+	//    interested in the segment from that waypoint to the subsequent
+	//    one; we will take that if we find it (so the aircraft can stay
+	//    on its present heading) but will not take a later one (so that it
+	//    gets on the approach sooner rather than later.)
+	// 2. If no waypoint intercept is found, we will take the first
+	//    intercept with an approach segment. This case should be unusual
+	//    but may come into play when an aircraft is very close to the
+	//    approach route and no waypoints are close to its current course.
+
+	// Work in nm coordinates
+	pac0 := ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+	// Find a second point along its current course (note: ignoring wind)
+	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
+	dir := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+	pac1 := add2f(pac0, dir)
+
+	checkSegment := func(i int) *Waypoint {
+		if i+1 == len(wp) {
+			return nil
+		}
+		pl0 := ll2nm(wp[i].Location, nav.FlightState.NmPerLongitude)
+		pl1 := ll2nm(wp[i+1].Location, nav.FlightState.NmPerLongitude)
+
+		if pi, ok := LineLineIntersect(pac0, pac1, pl0, pl1); ok {
+			// We only want intersections along the segment from pl0 to pl1
+			// and not along the infinite line they define, so this is a
+			// hacky check to limit to that.
+			if Extent2DFromPoints([][2]float32{pl0, pl1}).Inside(pi) {
+				return &Waypoint{
+					Fix:      "intercept",
+					Location: nm2ll(pi, nav.FlightState.NmPerLongitude),
+				}
+			}
+		}
+		return nil
+	}
+
+	// wi will store the route the aircraft will fly if it is going to join
+	// the approach.
+	var wi []Waypoint
+
+	if intercept == -1 { // check all of the segments
+		for i := range wp {
+			if w := checkSegment(i); w != nil {
+				// Take the first one that works
+				wi = append([]Waypoint{*w}, wp[i+1:]...)
+				break
+			}
+		}
+	} else {
+		// Just check the segment after the waypoint we're considering
+		if w := checkSegment(intercept); w != nil {
+			wi = append([]Waypoint{*w}, wp[intercept+1:]...)
+		} else {
+			// No problem if it doesn't intersect that segment; just start
+			// the route from that waypoint.
+			wi = wp[intercept:]
+		}
+	}
+
+	if wi != nil {
+		// Update the route and go direct to the intercept point.
+		nav.Waypoints = wi
+		nav.Heading = NavHeading{}
+		nav.DeferredHeading = nil
+		return "", nil
+	}
+
+	return "unable. We are not on course to intercept the approach", ErrUnableCommand
 }
 
 func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *Arrival,
