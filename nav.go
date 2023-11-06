@@ -144,7 +144,7 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = Select(spd != 0, &spd, nil)
 		alt := arr.ClearedAltitude
-		nav.Altitude.Restriction = &AltitudeRestriction{Range: [2]float32{alt, alt}}
+		nav.Altitude.Cleared = &alt
 
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = min(arr.InitialSpeed, nav.Perf.Speed.Cruise)
@@ -317,9 +317,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
 			tgt = min(tgt, nav.FinalAltitude)
 		}
-		if tgt == nav.FlightState.Altitude {
-			lines = append(lines, "At "+FormatAltitude(tgt)+" due to previous crossing restriction")
-		} else if tgt < nav.FlightState.Altitude {
+		if tgt < nav.FlightState.Altitude {
 			lines = append(lines, "Descending "+FormatAltitude(nav.FlightState.Altitude)+
 				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		} else {
@@ -673,8 +671,9 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 
 	heading, turn, rate = nav.FlightState.Heading, TurnClosest, 3 // baseline
 
-	if nav.Approach.InterceptState == InitialHeading ||
-		nav.Approach.InterceptState == TurningToJoin {
+	// nav.Heading.Assigned may still be nil pending a deferred turn
+	if (nav.Approach.InterceptState == InitialHeading ||
+		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
 		return nav.LocalizerHeading(wind, lg)
 	}
 
@@ -878,6 +877,14 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		}
 	}
 
+	if ar := nav.Altitude.Restriction; ar != nil {
+		if nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+			lg.Debug("clearing earlier altitude restriction now that it is met",
+				slog.Any("flight_state", nav.FlightState), slog.Any("restriction", nav.Altitude.Restriction))
+			nav.Altitude.Restriction = nil
+		}
+	}
+
 	if nav.FlightState.IsDeparture {
 		// Accel is given in "per 2 seconds...", want to return per minute..
 		maxClimb := nav.Perf.Rate.Climb
@@ -939,9 +946,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		alt, rate = *nav.Altitude.Cleared, getAssignedRate()
 		lg.Debugf("alt: cleared %.0f, rate %.0f", alt, rate)
 		return
-	}
-
-	if ar := nav.Altitude.Restriction; ar != nil {
+	} else if ar := nav.Altitude.Restriction; ar != nil {
 		lg.Debugf("alt: previous restriction %.0f-%.0f", ar.Range[0], ar.Range[1])
 		alt = nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
 	}
@@ -1114,7 +1119,13 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// an altitude restriction.
 	d := sumDist + nmdistance2ll(nav.FlightState.Position, nav.Waypoints[0].Location)
 	eta := d / nav.FlightState.GS * 3600 // seconds
-	alt := altRange[1]                   // prefer to be higher rather than lower
+
+	alt := altRange[1] // generally prefer to be higher rather than lower
+	if !nav.FlightState.IsDeparture &&
+		nav.FlightState.Altitude >= altRange[0] && nav.FlightState.Altitude <= altRange[1] {
+		// But leave arrivals at their current altitude if it's acceptable
+		alt = nav.FlightState.Altitude
+	}
 
 	return &WaypointCrossingConstraint{
 		Altitude:      alt,
@@ -1890,7 +1901,7 @@ func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival, w *World) strin
 		return "we have to be flying a heading to intercept"
 	}
 
-	resp, err := nav.prepareForApproach(airport, false, arr, w)
+	resp, err := nav.prepareForApproach(false)
 	if err != nil {
 		return resp
 	} else {
@@ -1928,12 +1939,17 @@ func (nav *Nav) AtFixCleared(fix, id string) string {
 		"cleared " + ap.FullName + " at " + fix})
 }
 
-func (nav *Nav) prepareForApproach(airport string, straightIn bool, arr *Arrival, w *World) (string, error) {
+func (nav *Nav) prepareForApproach(straightIn bool) (string, error) {
 	if nav.Approach.AssignedId == "" {
 		return "you never told us to expect an approach", ErrClearedForUnexpectedApproach
 	}
 
 	ap := nav.Approach.Assigned
+
+	// Charted visual is special in all sorts of ways
+	if ap.Type == ChartedVisualApproach {
+		return nav.prepareForChartedVisual()
+	}
 
 	directApproachFix := false
 	_, assignedHeading := nav.AssignedHeading()
@@ -1951,29 +1967,112 @@ func (nav *Nav) prepareForApproach(airport string, straightIn bool, arr *Arrival
 		}
 	}
 
-	if ap.Type == ILSApproach {
-		if directApproachFix {
-			// all good
-		} else if assignedHeading {
-			nav.Approach.InterceptState = InitialHeading
-		} else {
-			return "unable. We need either direct or a heading to intercept", ErrUnableCommand
-		}
-		// If the aircraft is on a heading, there's nothing more to do for
-		// now; keep flying the heading and after we intercept we'll add
-		// the rest of the waypoints to the aircraft's waypoints array.
+	if directApproachFix {
+		// all good
+	} else if assignedHeading {
+		nav.Approach.InterceptState = InitialHeading
 	} else {
-		// RNAV
-		if !directApproachFix {
-			// FIXME: allow intercepting via a heading
-			return "unable. We need direct to a fix on the approach.", ErrUnableCommand
-		}
+		return "unable. We need either direct or a heading to intercept", ErrUnableCommand
 	}
+	// If the aircraft is on a heading, there's nothing more to do for
+	// now; keep flying the heading and after we intercept we'll add
+	// the rest of the waypoints to the aircraft's waypoints array.
 
 	// No procedure turn if it intercepts via a heading
 	nav.Approach.NoPT = straightIn || assignedHeading
 
 	return "", nil
+}
+
+func (nav *Nav) prepareForChartedVisual() (string, error) {
+	// Airport PostDeserialize() checks that there is just a single set of
+	// waypoints for charted visual approaches.
+	wp := nav.Approach.Assigned.Waypoints[0]
+
+	// First try to find the first (if any) waypoint along the approach
+	// that is within 15 degrees of the aircraft's current heading.
+	intercept := -1
+	for i := range wp {
+		h := headingp2ll(nav.FlightState.Position, wp[i].Location,
+			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		if headingDifference(h, nav.FlightState.Heading) < 30 {
+			intercept = i
+			break
+		}
+	}
+
+	// Also check for intercepting a segment of the approach. There are two
+	// cases:
+	// 1. If we found a waypoint intercept above, then we are only
+	//    interested in the segment from that waypoint to the subsequent
+	//    one; we will take that if we find it (so the aircraft can stay
+	//    on its present heading) but will not take a later one (so that it
+	//    gets on the approach sooner rather than later.)
+	// 2. If no waypoint intercept is found, we will take the first
+	//    intercept with an approach segment. This case should be unusual
+	//    but may come into play when an aircraft is very close to the
+	//    approach route and no waypoints are close to its current course.
+
+	// Work in nm coordinates
+	pac0 := ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+	// Find a second point along its current course (note: ignoring wind)
+	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
+	dir := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+	pac1 := add2f(pac0, dir)
+
+	checkSegment := func(i int) *Waypoint {
+		if i+1 == len(wp) {
+			return nil
+		}
+		pl0 := ll2nm(wp[i].Location, nav.FlightState.NmPerLongitude)
+		pl1 := ll2nm(wp[i+1].Location, nav.FlightState.NmPerLongitude)
+
+		if pi, ok := LineLineIntersect(pac0, pac1, pl0, pl1); ok {
+			// We only want intersections along the segment from pl0 to pl1
+			// and not along the infinite line they define, so this is a
+			// hacky check to limit to that.
+			if Extent2DFromPoints([][2]float32{pl0, pl1}).Inside(pi) {
+				return &Waypoint{
+					Fix:      "intercept",
+					Location: nm2ll(pi, nav.FlightState.NmPerLongitude),
+				}
+			}
+		}
+		return nil
+	}
+
+	// wi will store the route the aircraft will fly if it is going to join
+	// the approach.
+	var wi []Waypoint
+
+	if intercept == -1 { // check all of the segments
+		for i := range wp {
+			if w := checkSegment(i); w != nil {
+				// Take the first one that works
+				wi = append([]Waypoint{*w}, wp[i+1:]...)
+				break
+			}
+		}
+	} else {
+		// Just check the segment after the waypoint we're considering
+		if w := checkSegment(intercept); w != nil {
+			wi = append([]Waypoint{*w}, wp[intercept+1:]...)
+		} else {
+			// No problem if it doesn't intersect that segment; just start
+			// the route from that waypoint.
+			wi = wp[intercept:]
+		}
+	}
+
+	if wi != nil {
+		// Update the route and go direct to the intercept point.
+		nav.Waypoints = wi
+		nav.Heading = NavHeading{}
+		nav.DeferredHeading = nil
+		return "", nil
+	}
+
+	return "unable. We are not on course to intercept the approach", ErrUnableCommand
 }
 
 func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *Arrival,
@@ -1987,11 +2086,14 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr 
 			ErrClearedForUnexpectedApproach
 	}
 
-	if resp, err := nav.prepareForApproach(airport, straightIn, arr, w); err != nil {
+	if resp, err := nav.prepareForApproach(straightIn); err != nil {
 		return resp, err
 	} else {
 		nav.Approach.Cleared = true
-		nav.Altitude = NavAltitude{} // in case we have intercepted but are only being cleared now
+		if nav.Approach.InterceptState == HoldingLocalizer {
+			// First intercepted then cleared, so allow it to start descending.
+			nav.Altitude = NavAltitude{}
+		}
 		// Cleared approach also cancels speed restrictions.
 		nav.Speed = NavSpeed{}
 
@@ -2011,6 +2113,8 @@ func (nav *Nav) CancelApproachClearance() string {
 	}
 
 	nav.Approach.Cleared = false
+	nav.Approach.InterceptState = NotIntercepting
+	nav.Approach.NoPT = false
 
 	return "cancel approach clearance."
 }

@@ -123,6 +123,15 @@ var (
 		"Fixed bug with some departures trying to re-fly their initial departure route",
 		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
 		"Fixed bug with the default DCB brightness being set to 0",
+		"Added DCA scenario",
+		"There is now a short delay before aircraft start to follow heading assignments",
+		"Added \"ID\" command for ident",
+		"Aircraft can now also be issued control commands by entering their callsign before the commands",
+		"Fixed bugs with endless go-arounds and with departures not obeying altitude restrictions",
+		"Fixed a bug that caused vice to sometimes crash after aircraft were given approach clearance",
+		"Fixed a bug where descending aircraft would stop descending when given approach clearance",
+		"Small fixes to the DCA scenario",
+		"Polished up handling of early hand-offs of departures in the STARS scope",
 	}
 )
 
@@ -1769,6 +1778,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
 	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
+	[3]string{"*ID*", `"Ident."`, "*ID*"},
 }
 
 var starsCommands = [][2]string{
@@ -1848,8 +1858,12 @@ func uiDrawKeyboardWindow(w *World) {
 	if selectedCommandTypes == ACControlPrimary || selectedCommandTypes == ACControlSecondary {
 		imgui.Text("\n")
 		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
-After entering one the following commands, click on an aircraft to issue the command to it.
-Multiple commands may be given separated by spaces.
+To issue a command to an aircraft, enter one the following commands and then click on an
+aircraft to issue the command. Alternatively, enter the aircraft's callsign with a
+space after it and then enter a command. Multiple commands may be given separated by spaces.
+`)
+		imgui.Text("\n\n")
+		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
 Note that all altitudes should be specified in hundreds of feet and speed/altitude changes happen
 simultaneously unless the *TC*, *TD*, or *TS* commands are used to specify the change to be done
 after the first.`)

@@ -799,6 +799,22 @@
           "waypoints": [
             "VERRU/if/a2000 EBBEE/faf/a1500 _JFK_4R/a50"
           ]
+        },
+        "BVA": {
+          "full_name": "Belmont Visual 22L",
+          "runway": "22L",
+          "type": "Visual",
+          "waypoints": [
+            "N040.48.24.798,W073.22.52.247 N040.47.44.094,W073.25.04.879 N040.48.28.905,W073.31.48.599 N040.46.55.988,W073.32.51.771/a3000+ ZALPO/a1600 _JFK_22L/a50"
+          ]
+        },
+        "PVA": {
+          "full_name": "Parkway Visual 13L",
+          "runway": "13L",
+          "type": "Visual",
+          "waypoints": [
+            "N040.28.17.250,W074.00.28.729 CRI/a1500-1700 N040.39.44.692,W073.50.22.146/a1000-1200 N040.39.54.470,W073.49.02.825/a750-900 N040.39.47.562,W073.48.05.174/a250-300 _JFK_13L/a50"
+          ]
         }
       },
       "departure_routes": {

@@ -2289,6 +2289,20 @@
                         "KCLT": "N35.12.48.150,W80.56.56.487",
                         "CLT": "N35.12.48.150,W80.56.56.487"
                     },
+                    "inhibit_ca_volumes": [
+                        {
+                            "name": "CLT NO CA",
+                            "type": "polygon",
+                            "floor": 0,
+                            "ceiling": 7000,
+                            "vertices": [
+                                "N035.40.57.861,W080.55.23.748",
+                                "N035.40.57.861,W081.02.11.671",
+                                "N034.42.27.537,W080.59.16.933",
+                                "N034.42.46.598,W080.47.34.467"
+                            ]
+                        }
+                    ],
                     "magnetic_variation": 7.7,
                     "name": "KCLT",
                     "nm_per_latitude": 60,
@@ -2367,7 +2381,7 @@
                             "CLT_TWR",
                             "GSO_APP"
                         ],
-                        "default_map": "AR/DR/SAT SOUTH",
+                        "default_map": "CLT SOUTH",
                         "departure_airspace": [
                             "CLT_APP"
                         ],
@@ -2499,7 +2513,7 @@
                                 "CLT_TWR",
                                 "GSO_APP"
                             ],
-                            "default_map": "AR/DR/SAT NORTH",
+                            "default_map": "CLT NORTH",
                             "departure_airspace": [
                                 "CLT_APP"
                             ],
@@ -2594,23 +2608,13 @@
                     "stars_maps": [
                         {
                             "group": 0,
-                            "label": "AIRSPACE",
-                            "name": "Airspace"
+                            "label": "CLT N",
+                            "name": "CLT NORTH"
                         },
                         {
                             "group": 0,
-                            "label": "MVA",
-                            "name": "Minimum Vectoring Altitudes"
-                        },
-                        {
-                            "group": 0,
-                            "label": "DR N",
-                            "name": "DEPARTURE RADAR NORTH"
-                        },
-                        {
-                            "group": 0,
-                            "label": "DR S",
-                            "name": "DEPARTURE RADAR SOUTH"
+                            "label": "CLT S",
+                            "name": "CLT SOUTH"
                         },
                         {
                             "group": 0,
@@ -2624,54 +2628,84 @@
                         },
                         {
                             "group": 0,
-                            "label": "FR N",
-                            "name": "FINAL RADAR NORTH/SOUTH"
+                            "label": "EXBNDRY",
+                            "name": "CLT TRACON EXTERNAL BOUNDARY"
                         },
                         {
-                            "group": 0,
-                            "label": "FR S",
-                            "name": "FINAL RADAR NORTH/SOUTH"
+                            "group": 1,
+                            "label": "MVA",
+                            "name": "CLT MINIMUM VECTORING ALTITUDE"
                         },
                         {
-                            "group": 0,
-                            "label": "RWYS",
-                            "name": "CLT Runways"
-                        },
-                        {
-                            "group": 0,
+                            "group": 1,
                             "label": "CLASS B",
-                            "name": "CLASS B AIRSPACE"
+                            "name": "CLT CLASS B"
                         },
                         {
                             "group": 0,
-                            "label": "ARN FAC",
-                            "name": "ARRIVAL RADAR NORTH WITH FINAL APPROACH COURSES"
+                            "label": "CLT GPS",
+                            "name": "CLT AIRPORT RNAV (GPS) APPROACHES"
                         },
                         {
                             "group": 0,
-                            "label": "ARS FAC",
-                            "name":"ARRIVAL RADAR SOUTH WITH FINAL APPROACH COURSES"
+                            "label": "DR N",
+                            "name": "DEPARTURE RADAR NORTH"
                         },
                         {
                             "group": 0,
-                            "label": "TRIPS-N",
-                            "name": "TRIPLE APPROACHES NORTH"
+                            "label": "DR S",
+                            "name": "DEPARTURE RADAR SOUTH"
                         },
                         {
                             "group": 0,
-                            "label": "TRIPS-S",
-                            "name": "TRIPLE APPROACHES SOUTH"
+                            "label": "SAT N",
+                            "name": "SATELLITE RADAR NORTH"
                         },
                         {
                             "group": 0,
-                            "label": "CLT N",
-                            "name": "AR/DR/SAT NORTH"
+                            "label": "SAT S",
+                            "name": "SATELLITE RADAR SOUTH"
+                        },
+                        {
+                            "group": 1,
+                            "label": "RNV DEP",
+                            "name": "RNAV DEPARTURES"
+                        },
+                        {
+                            "group": 1,
+                            "label": "N STAR",
+                            "name": "NORTH RNAV STARS"
+                        },
+                        {
+                            "group": 1,
+                            "label": "S STARS",
+                            "name": "SOUTH RNAV STARS"
                         },
                         {
                             "group": 0,
-                            "label": "CLT S",
-                            "name": "AR/DR/SAT SOUTH"
+                            "label": "ADJ AIR",
+                            "name": "ADJACENT AIRSPACE"
+                        },
+                        {
+                            "group": 1,
+                            "label": "CTR AIR",
+                            "name": "ZTL/ZJX/ZDC AIRSPACE"
+                        },
+                        {
+                            "group": 0,
+                            "label": "NAVAIDS",
+                            "name": "NAVAIDS WITHIN 250 MILES"
+                        },
+                        {
+                            "group": 1,
+                            "label": "ARR FIX",
+                            "name": "CLT RNAV STAR FIXES"
+                        },
+                        {
+                            "group": 0,
+                            "label": "NOISE S",
+                            "name": "NOISE 2NM/4NM LINES (SOUTH)"
                         }
                     ],
-                "video_map_file": "videomaps/cltmaps.json.zst"
+                    "video_map_file": "videomaps/ZTL-videomaps.json.zst"
                }

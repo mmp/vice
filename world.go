@@ -446,6 +446,15 @@ func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
 }
 
+func (w *World) DepartureController(ac *Aircraft) string {
+	callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
+		func(callsign string) bool {
+			ctrl, ok := w.Controllers[callsign]
+			return ok && ctrl.IsHuman
+		})
+	return Select(callsign != "", callsign, w.PrimaryController)
+}
+
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if w.simProxy == nil {
 		return
@@ -701,7 +710,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		if id == "0" {
+		if id == "0" || id == "00" || id == "000" || id == "0000" {
 			continue // bleh, try again
 		} else if _, ok := w.Aircraft[callsign+id]; ok {
 			continue // it already exits
@@ -1422,15 +1431,12 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			}
 		}
 
-		if wp.Fix[0] == '_' {
-			// Don't draw fix names or other details for internal-use fixes...
-			continue
-		}
+		drawName := wp.Fix[0] != '_'
 		if _, err := ParseLatLong([]byte(wp.Fix)); err == nil {
-			// Also don't draw fixes that are directly specified as latlong
-			// coordinates.
-			continue
+			// Also don't draw names that are directly specified as latlongs.
+			drawName = false
 		}
+
 		if _, ok := drawnWaypoints[wp.Fix]; ok {
 			// And if we're given the same fix more than once (as may
 			// happen with T-shaped RNAV arrivals for example), only draw
@@ -1457,7 +1463,9 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		// properties, and altitude/speed restrictions.
 		p := transforms.WindowFromLatLongP(wp.Location)
 		p = add2f(p, offset)
-		p = td.AddText(wp.Fix+"\n", p, style)
+		if drawName {
+			p = td.AddText(wp.Fix+"\n", p, style)
+		}
 
 		if wp.IAF || wp.IF || wp.FAF || wp.NoPT {
 			var s []string

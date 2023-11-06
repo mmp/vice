@@ -34,6 +34,14 @@
             "waypoints": [
               "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ PACHU/if/a3000 SHAYY/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
             ]
+          },
+          "PVA": {
+            "full_name": "Park Visual 31",
+            "runway": "31",
+            "type": "Visual",
+            "waypoints": [
+              "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+ _LGA_31/a50"
+            ]
           }
         },
         "departure_routes": {
@@ -722,6 +730,24 @@
         "scope_char": "V",
         "sector_id": "1V"
       },
+      "LGA_V_APP": {
+        "frequency": 120800,
+        "full_name": "New York approach",
+        "scope_char": "V",
+        "sector_id": "1V"
+      },
+      "LGA_D_APP": {
+        "frequency": 127300,
+        "full_name": "New York approach",
+        "scope_char": "D",
+        "sector_id": "1D"
+      },
+      "LGA_F_APP": {
+        "frequency": 127300,
+        "full_name": "New York approach",
+        "scope_char": "F",
+        "sector_id": "1F"
+      },
       "LGA_DEP": {
         "frequency": 120400,
         "full_name": "New York departure",
@@ -1052,6 +1078,14 @@
           }
         },
         "solo_controller": "LGA_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": { "primary": true, "arrivals": [ "HAARP3" ] },
+              "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+              "LGA_F_APP": { "backup": "LGA_V_APP" },
+              "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" }
+          }
+        },
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1115,6 +1149,14 @@
           }
         },
         "solo_controller": "LGA_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": { "primary": true, "arrivals": [ "HAARP3" ] },
+              "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+              "LGA_F_APP": { "backup": "LGA_V_APP" },
+              "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" }
+          }
+        },
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1178,6 +1220,14 @@
           }
         },
         "solo_controller": "LGA_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": { "primary": true, "arrivals": [ "HAARP3" ] },
+              "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+              "LGA_F_APP": { "backup": "LGA_V_APP" },
+              "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" }
+          }
+        },
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1241,6 +1291,14 @@
           }
         },
         "solo_controller": "LGA_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": { "primary": true, "arrivals": [ "HAARP3" ] },
+              "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+              "LGA_F_APP": { "backup": "LGA_V_APP" },
+              "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" }
+          }
+        },
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",
@@ -1304,6 +1362,14 @@
           }
         },
         "solo_controller": "LGA_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": { "primary": true, "arrivals": [ "HAARP3" ] },
+              "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+              "LGA_F_APP": { "backup": "LGA_V_APP" },
+              "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" }
+          }
+        },
         "controllers": [
           "JFK_APP",
           "BOS_E_CTR",

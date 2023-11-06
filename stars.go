@@ -78,11 +78,15 @@ type STARSPane struct {
 	AircraftToIndex map[string]int // for use in lists
 	IndexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
 
-	AutoTrackDepartures map[string]interface{}
+	// explicit JSON name to avoid errors during config deserialization for
+	// backwards compatibility, since this used to be a
+	// map[string]interface{}.
+	AutoTrackDepartures bool `json:"autotrack_departures"`
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
+	RejectedPointOuts map[string]interface{}
 
 	queryUnassociated *TransientMap[string, interface{}]
 
@@ -923,6 +927,9 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	if sp.OutboundPointOuts == nil {
 		sp.OutboundPointOuts = make(map[string]string)
 	}
+	if sp.RejectedPointOuts == nil {
+		sp.RejectedPointOuts = make(map[string]interface{})
+	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = NewTransientMap[string, interface{}]()
 	}
@@ -938,10 +945,6 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 	}
 	if sp.IndexToAircraft == nil {
 		sp.IndexToAircraft = make(map[int]string)
-	}
-
-	if sp.AutoTrackDepartures == nil {
-		sp.AutoTrackDepartures = make(map[string]interface{})
 	}
 
 	sp.events = eventStream.Subscribe()
@@ -1043,7 +1046,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 }
 
 func (sp *STARSPane) DrawUI() {
-	sp.AutoTrackDepartures, _ = drawAirportSelector(sp.AutoTrackDepartures, "Auto track departure airports")
+	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 	imgui.Checkbox("Use CRT effect", &sp.SimulateCRT)
 }
 
@@ -1113,6 +1116,25 @@ func (sp *STARSPane) processEvents(w *World) {
 				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 				}
+			}
+
+		case RejectedPointOutEvent:
+			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.OutboundPointOuts, event.Callsign)
+					sp.RejectedPointOuts[event.Callsign] = nil
+				}
+			}
+			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
+				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
+					delete(sp.InboundPointOuts, event.Callsign)
+				}
+			}
+
+		case InitiatedTrackEvent:
+			if event.ToController == w.Callsign {
+				state := sp.Aircraft[event.Callsign]
+				state.DatablockType = FullDatablock
 			}
 
 		case OfferedHandoffEvent:
@@ -1627,27 +1649,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		f := strings.Fields(cmd)
 		if len(f) > 1 {
-			if f[0] == ".AUTOTRACK" {
-				for _, airport := range f[1:] {
-					if airport == "NONE" {
-						sp.AutoTrackDepartures = make(map[string]interface{})
-					} else if airport == "ALL" {
-						sp.AutoTrackDepartures = make(map[string]interface{})
-						for name := range ctx.world.DepartureAirports {
-							sp.AutoTrackDepartures[name] = nil
-						}
-					} else {
-						// See if it's in the facility
-						if ctx.world.DepartureAirports[airport] != nil {
-							sp.AutoTrackDepartures[airport] = nil
-						} else {
-							status.err = ErrSTARSIllegalAirport
-							return
-						}
-					}
+			if f[0] == ".AUTOTRACK" && len(f) == 2 {
+				if f[1] == "NONE" {
+					sp.AutoTrackDepartures = false
+					status.clear = true
+					return
+				} else if f[1] == "ALL" {
+					sp.AutoTrackDepartures = true
+					status.clear = true
+					return
 				}
-				status.clear = true
-				return
 			} else if f[0] == ".FIND" {
 				if pos, ok := ctx.world.Locate(f[1]); ok {
 					globalConfig.highlightedLocation = pos
@@ -2719,7 +2730,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
-				} else if ac.HandoffTrackController != ctx.world.Callsign &&
+				} else if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign &&
 					ac.TrackingController == ctx.world.Callsign {
 					// cancel offered handoff offered
 					status.clear = true
@@ -2728,6 +2739,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 					// ack point out
 					sp.acknowledgePointOut(ctx, ac.Callsign)
+					status.clear = true
+					return
+				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+					// ack rejected point out
+					delete(sp.RejectedPointOuts, ac.Callsign)
 					status.clear = true
 					return
 				} else if state.OutboundHandoffAccepted {
@@ -2809,6 +2825,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
 					state.SPCOverride = cmd
+					status.clear = true
+					return
+				} else if cmd == "UN" {
+					ctx.world.RejectPointOut(ac.Callsign, nil, func(err error) {
+						sp.previewAreaOutput = GetSTARSError(err).Error()
+					})
 					status.clear = true
 					return
 				}
@@ -4215,7 +4237,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) DatablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -4275,7 +4297,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		brightness := ps.Brightness.Positions
 
-		dt := sp.DatablockType(ctx, ac)
+		dt := sp.datablockType(ctx, ac)
 
 		if dt == PartialDatablock || dt == LimitedDatablock {
 			brightness = ps.Brightness.LimitedDatablocks
@@ -4713,8 +4735,6 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		errs = append(errs, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		errs = append(errs, "MI")
-	} else if ac.Squawk == Squawk(0o1236) {
-		errs = append(errs, "SA")
 	}
 	if AnySlice(sp.CAAircraft,
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
@@ -4734,7 +4754,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		return
 	}
 
-	ty := sp.DatablockType(ctx, ac)
+	ty := sp.datablockType(ctx, ac)
 
 	switch ty {
 	case LimitedDatablock:
@@ -4805,6 +4825,9 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		}
 		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			cs += " PO" + id
+		}
+		if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+			cs += " UN"
 		}
 		mainblock[0] = append(mainblock[0], cs)
 		mainblock[1] = append(mainblock[1], cs)
@@ -5869,10 +5892,9 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 				if state.FirstRadarTrack.IsZero() {
 					state.FirstRadarTrack = now
 
-					if fp := ac.FlightPlan; fp != nil {
-						if _, ok := sp.AutoTrackDepartures[fp.DepartureAirport]; ok && ac.TrackingController == "" {
-							w.InitiateTrack(callsign, nil, nil) // ignore error...
-						}
+					if sp.AutoTrackDepartures && ac.TrackingController == "" &&
+						w.DepartureController(ac) == w.Callsign {
+						w.InitiateTrack(callsign, nil, nil) // ignore error...
 					}
 				}
 

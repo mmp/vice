@@ -294,8 +294,10 @@ func (c *NewSimConfiguration) SetScenarioGroup(name string) {
 		if name != "" {
 			lg.Errorf("%s: scenario group not found!", name)
 		}
-		name = SortedMapKeys(c.selectedServer.configs)[0] // first one
-		c.Group = c.selectedServer.configs[name]
+		configs := c.selectedServer.configs
+		// Pick one at random
+		name = SortedMapKeys(configs)[rand.Intn(len(configs))]
+		c.Group = configs[name]
 	}
 	c.GroupName = name
 
@@ -1679,9 +1681,13 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			// Note: only tracking controller, not controlling yet; that
-			// only comes after the aircraft checks in with departure.
 			ac.TrackingController = ctrl.Callsign
+			if ac.DepartureContactAltitude == 0 {
+				// If they have already contacted departure, then
+				// initiating track gives control as well; otherwise
+				// ControllingController is left unset until contact.
+				ac.ControllingController = ctrl.Callsign
+			}
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
 				Callsign:     ac.Callsign,
@@ -1924,8 +1930,28 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 }
 
 func (s *Sim) RejectPointOut(token, callsign string) error {
-	// TODO: implement
-	return nil
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if _, ok := s.PointOuts[callsign]; !ok {
+				return ErrNotPointedOutToMe
+			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
+				return ErrNotPointedOutToMe
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			// As with auto accepts, "to" and "from" are swapped in the
+			// event since they are w.r.t. the original point out.
+			s.eventStream.Post(Event{
+				Type:           RejectedPointOutEvent,
+				FromController: ctrl.Callsign,
+				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
+				Callsign:       ac.Callsign,
+			})
+
+			delete(s.PointOuts[callsign], ctrl.Callsign)
+			return nil
+		})
 }
 
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {

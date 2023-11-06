@@ -923,6 +923,15 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 		return ok
 	}
 
+	tryNull := func() bool {
+		skipWhitespace()
+		if pos+3 < len(b) && string(b[pos:pos+4]) == "null" {
+			pos += 4
+			return true
+		}
+		return false
+	}
+
 	m := make(map[string]CommandBuffer)
 
 	// Video map JSON files encode a JSON object where members are arrays
@@ -939,52 +948,58 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 		if err := expect(':'); err != nil {
 			return nil, err
 		}
+
 		// Expect an array for its value.
-		if err := expect('['); err != nil {
-			return nil, err
-		}
-
 		var segs []Point2LL
-		for {
-			// Parse an element of the array, which should be a string
-			// representing a position.
-			ll := tryQuoted()
-			if len(ll) == 0 {
-				break
-			}
-
-			p, err := ParseLatLong(ll)
-			if err != nil {
+		// Allow "null" for an empty array but ignore it
+		if tryNull() {
+			// don't try to parse the array...
+		} else {
+			if err := expect('['); err != nil {
 				return nil, err
 			}
-			segs = append(segs, p)
 
-			// Is there another entry after this one?
-			if !tryComma() {
-				break
-			}
-		}
-		// Array close.
-		if err := expect(']'); err != nil {
-			return nil, err
-		}
+			for {
+				// Parse an element of the array, which should be a string
+				// representing a position.
+				ll := tryQuoted()
+				if len(ll) == 0 {
+					break
+				}
 
-		if check {
-			// Make sure we have the same number of points and that they
-			// are equal to the reference deserialized by encoding/json.
-			jsegs, ok := checkJSONMaps[string(name)]
-			if !ok {
-				return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", string(name))
-			}
-			if len(jsegs) != len(segs) {
-				return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", string(name), len(jsegs), len(segs))
-			}
-			for i := range jsegs {
-				if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
-					return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", string(name), i, jsegs[i], segs[i])
+				p, err := ParseLatLong(ll)
+				if err != nil {
+					return nil, err
+				}
+				segs = append(segs, p)
+
+				// Is there another entry after this one?
+				if !tryComma() {
+					break
 				}
 			}
-			delete(checkJSONMaps, string(name))
+			// Array close.
+			if err := expect(']'); err != nil {
+				return nil, err
+			}
+
+			if check {
+				// Make sure we have the same number of points and that they
+				// are equal to the reference deserialized by encoding/json.
+				jsegs, ok := checkJSONMaps[string(name)]
+				if !ok {
+					return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", string(name))
+				}
+				if len(jsegs) != len(segs) {
+					return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", string(name), len(jsegs), len(segs))
+				}
+				for i := range jsegs {
+					if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
+						return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", string(name), i, jsegs[i], segs[i])
+					}
+				}
+				delete(checkJSONMaps, string(name))
+			}
 		}
 
 		// Generate the command buffer to draw this video map.

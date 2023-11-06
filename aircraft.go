@@ -137,6 +137,7 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 	if ac.GoAroundDistance != nil {
 		if d, err := ac.Nav.finalApproachDistance(); err == nil && d < *ac.GoAroundDistance {
 			lg.Info("randomly going around")
+			ac.GoAroundDistance = nil // only go around once
 			rt := ac.GoAround()
 			PostRadioEvents(ac.Callsign, rt, ep)
 

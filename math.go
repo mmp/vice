@@ -301,6 +301,19 @@ func PointLineDistance(p, p0, p1 [2]float32) float32 {
 	return abs(SignedPointLineDistance(p, p0, p1))
 }
 
+// Return minimum distance between line segment vw and point p
+// https://stackoverflow.com/a/1501725
+func PointSegmentDistance(p, v, w [2]float32) float32 {
+	l := sub2f(v, w)
+	l2 := dot(l, l)
+	if l2 == 0 {
+		return length2f(sub2f(p, v))
+	}
+	t := clamp(dot(sub2f(p, v), sub2f(w, v))/l2, 0, 1)
+	proj := add2f(v, scale2f(sub2f(w, v), t))
+	return distance2f(p, proj)
+}
+
 // ClosestPointOnLine returns the closest point on the (infinite) line to
 // the given point p.
 func ClosestPointOnLine(line [2][2]float32, p [2]float32) [2]float32 {
