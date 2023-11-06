@@ -144,7 +144,7 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = Select(spd != 0, &spd, nil)
 		alt := arr.ClearedAltitude
-		nav.Altitude.Restriction = &AltitudeRestriction{Range: [2]float32{alt, alt}}
+		nav.Altitude.Cleared = &alt
 
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = min(arr.InitialSpeed, nav.Perf.Speed.Cruise)
