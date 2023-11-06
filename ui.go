@@ -128,6 +128,10 @@ var (
 		"Added \"ID\" command for ident",
 		"Aircraft can now also be issued control commands by entering their callsign before the commands",
 		"Fixed bugs with endless go-arounds and with departures not obeying altitude restrictions",
+		"Fixed a bug that caused vice to sometimes crash after aircraft were given approach clearance",
+		"Fixed a bug where descending aircraft would stop descending when given approach clearance",
+		"Small fixes to the DCA scenario",
+		"Polished up handling of early hand-offs of departures in the STARS scope",
 	}
 )
 
