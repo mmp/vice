@@ -1895,7 +1895,7 @@ func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival, w *World) strin
 		return "we have to be flying a heading to intercept"
 	}
 
-	resp, err := nav.prepareForApproach(airport, false, arr, w)
+	resp, err := nav.prepareForApproach(false)
 	if err != nil {
 		return resp
 	} else {
@@ -1933,7 +1933,7 @@ func (nav *Nav) AtFixCleared(fix, id string) string {
 		"cleared " + ap.FullName + " at " + fix})
 }
 
-func (nav *Nav) prepareForApproach(airport string, straightIn bool, arr *Arrival, w *World) (string, error) {
+func (nav *Nav) prepareForApproach(straightIn bool) (string, error) {
 	if nav.Approach.AssignedId == "" {
 		return "you never told us to expect an approach", ErrClearedForUnexpectedApproach
 	}
@@ -1984,7 +1984,7 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr 
 			ErrClearedForUnexpectedApproach
 	}
 
-	if resp, err := nav.prepareForApproach(airport, straightIn, arr, w); err != nil {
+	if resp, err := nav.prepareForApproach(straightIn); err != nil {
 		return resp, err
 	} else {
 		nav.Approach.Cleared = true
