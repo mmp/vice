@@ -1434,15 +1434,12 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			}
 		}
 
-		if wp.Fix[0] == '_' {
-			// Don't draw fix names or other details for internal-use fixes...
-			continue
-		}
+		drawName := wp.Fix[0] != '_'
 		if _, err := ParseLatLong([]byte(wp.Fix)); err == nil {
-			// Also don't draw fixes that are directly specified as latlong
-			// coordinates.
-			continue
+			// Also don't draw names that are directly specified as latlongs.
+			drawName = false
 		}
+
 		if _, ok := drawnWaypoints[wp.Fix]; ok {
 			// And if we're given the same fix more than once (as may
 			// happen with T-shaped RNAV arrivals for example), only draw
@@ -1469,7 +1466,9 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		// properties, and altitude/speed restrictions.
 		p := transforms.WindowFromLatLongP(wp.Location)
 		p = add2f(p, offset)
-		p = td.AddText(wp.Fix+"\n", p, style)
+		if drawName {
+			p = td.AddText(wp.Fix+"\n", p, style)
+		}
 
 		if wp.IAF || wp.IF || wp.FAF || wp.NoPT {
 			var s []string
