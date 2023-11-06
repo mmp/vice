@@ -294,8 +294,10 @@ func (c *NewSimConfiguration) SetScenarioGroup(name string) {
 		if name != "" {
 			lg.Errorf("%s: scenario group not found!", name)
 		}
-		name = SortedMapKeys(c.selectedServer.configs)[0] // first one
-		c.Group = c.selectedServer.configs[name]
+		configs := c.selectedServer.configs
+		// Pick one at random
+		name = SortedMapKeys(configs)[rand.Intn(len(configs))]
+		c.Group = configs[name]
 	}
 	c.GroupName = name
 
