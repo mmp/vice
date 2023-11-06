@@ -37,6 +37,14 @@
             "MXE/iaf BWINE/if/a4000 ASOCI/a3000 KELEE/faf/a1800 BALDN/a740 N039.51.39.133,W075.16.29.620/a50"
           ]
         },
+        "RVR": {
+          "full_name": "River Visual 9R",
+          "runway": "9R",
+          "type": "Visual",
+          "waypoints": [
+            "DQO/a4000+ _rvrd5/a4000 _rvrd9/a3000 _rvrd14/a1500 N039.51.29.273,W075.17.17.274 N039.51.39.133,W075.16.29.620/a50"
+          ]
+        },
         "G35": {
           "full_name": "RNAV 35",
           "runway": "35",
@@ -5166,7 +5174,11 @@
     }
   },
   "default_scenario": "KPHL Depart 27L Land 27R/35",
-  "fixes": { },
+  "fixes": {
+      "_rvrd5": "DQO@061/5",
+      "_rvrd9": "N039.46.14.391,W075.28.05.879",
+      "_rvrd14": "N039.49.23.699,W075.22.51.176"
+  },
   "inhibit_ca_volumes": [
       {
           "name": "PHL NO CA",
@@ -5490,6 +5502,11 @@
       "group": 1,
       "label": "PHL B",
       "name": "Philly Class B"
+    },
+    {
+      "group": 1,
+      "label": "COAST",
+      "name": "Coastline"
     }
   ],
   "video_map_file": "videomaps/phl-maps.json.zst"

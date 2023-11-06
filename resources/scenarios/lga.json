@@ -34,6 +34,14 @@
             "waypoints": [
               "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ PACHU/if/a3000 SHAYY/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
             ]
+          },
+          "PVA": {
+            "full_name": "Park Visual 31",
+            "runway": "31",
+            "type": "Visual",
+            "waypoints": [
+              "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+ _LGA_31/a50"
+            ]
           }
         },
         "departure_routes": {
