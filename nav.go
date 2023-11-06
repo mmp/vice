@@ -317,9 +317,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 		if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
 			tgt = min(tgt, nav.FinalAltitude)
 		}
-		if tgt == nav.FlightState.Altitude {
-			lines = append(lines, "At "+FormatAltitude(tgt)+" due to previous crossing restriction")
-		} else if tgt < nav.FlightState.Altitude {
+		if tgt < nav.FlightState.Altitude {
 			lines = append(lines, "Descending "+FormatAltitude(nav.FlightState.Altitude)+
 				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		} else {
@@ -879,6 +877,14 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		}
 	}
 
+	if ar := nav.Altitude.Restriction; ar != nil {
+		if nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+			lg.Debug("clearing earlier altitude restriction now that it is met",
+				slog.Any("flight_state", nav.FlightState), slog.Any("restriction", nav.Altitude.Restriction))
+			nav.Altitude.Restriction = nil
+		}
+	}
+
 	if nav.FlightState.IsDeparture {
 		// Accel is given in "per 2 seconds...", want to return per minute..
 		maxClimb := nav.Perf.Rate.Climb
@@ -940,9 +946,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		alt, rate = *nav.Altitude.Cleared, getAssignedRate()
 		lg.Debugf("alt: cleared %.0f, rate %.0f", alt, rate)
 		return
-	}
-
-	if ar := nav.Altitude.Restriction; ar != nil {
+	} else if ar := nav.Altitude.Restriction; ar != nil {
 		lg.Debugf("alt: previous restriction %.0f-%.0f", ar.Range[0], ar.Range[1])
 		alt = nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
 	}
