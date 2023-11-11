@@ -513,12 +513,12 @@ func (nav *Nav) updateAltitude(lg *Logger) {
 	}
 
 	if targetAltitude == nav.FlightState.Altitude {
+		nav.Altitude.Expedite = false
 		return
 	}
 
 	if abs(targetAltitude-nav.FlightState.Altitude) < 3 {
 		nav.FlightState.Altitude = targetAltitude
-		nav.Altitude.Expedite = false
 		lg.Debug("reached target altitude")
 		return
 	}
