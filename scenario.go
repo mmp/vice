@@ -717,7 +717,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			waypoints[i].Location = pos
 
 			d := nmdistance2ll(prev, waypoints[i].Location)
-			if i > 1 && d > 75 && e != nil {
+			if i > 1 && d > 120 && e != nil {
 				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
 					waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d)
 			}
