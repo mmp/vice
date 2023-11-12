@@ -2826,8 +2826,49 @@
         }
       },
       "solo_controller": "EWR_APP",
+      "multi_controllers": {
+        "default": {
+          "EWR_P_APP": {
+            "primary": true,
+            "arrivals": [
+              "FQM3",
+              "PHLBO4",
+              "PHL",
+              "WRI"
+            ]
+          },
+          "EWR_DEP": {
+            "backup": "EWR_P_APP",
+            "departures": [
+              "KEWR",
+              "KTEB"
+            ]
+          },
+          "EWR_A_APP": {
+            "backup": "EWR_P_APP",
+            "arrivals": [
+              "FLOSI4"
+            ]
+          },
+          "EWR_U_APP": {
+            "backup": "EWR_P_APP"
+          },
+          "EWR_H_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "MAZIE3"
+            ]
+          },
+          "EWR_S_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "COATE",
+              "LVZ4"
+            ]
+          }
+        }
+      },
       "controllers": [
-        "EWR_APP",
         "LGA_DEP",
         "LGA_APP",
         "NY_CTR",
@@ -2940,8 +2981,49 @@
         }
       },
       "solo_controller": "EWR_APP",
+      "multi_controllers": {
+        "default": {
+          "EWR_P_APP": {
+            "primary": true,
+            "arrivals": [
+              "PHLBO4",
+              "PHL",
+              "WRI"
+            ]
+          },
+          "EWR_A_APP": {
+            "backup": "EWR_P_APP",
+            "arrivals": [
+              "FQM3",
+              "FLOSI4"
+            ]
+          },
+          "EWR_DEP": {
+            "backup": "EWR_P_APP",
+            "departures": [
+              "KEWR",
+              "KTEB"
+            ]
+          },
+          "EWR_U_APP": {
+            "backup": "EWR_P_APP"
+          },
+          "EWR_H_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "MAZIE3"
+            ]
+          },
+          "EWR_S_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "COATE",
+              "LVZ4"
+            ]
+          }
+        }
+      },
       "controllers": [
-        "EWR_APP",
         "LGA_DEP",
         "LGA_APP",
         "NY_CTR",
