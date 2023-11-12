@@ -1190,9 +1190,14 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 				// These may have an empty "video_map_file" member, which
 				// is automatically patched up here...
 				if s.VideoMapFile == "" {
-					s.VideoMapFile = globalConfig.DevVideoMapFile
+					s.VideoMapFile = *videoMapFilename
+					if s.VideoMapFile == "" && globalConfig != nil && globalConfig.DevVideoMapFile != "" {
+						s.VideoMapFile = globalConfig.DevVideoMapFile
+					}
+
 					if s.VideoMapFile == "" {
-						s.VideoMapFile = *videoMapFilename
+						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+							filename)
 					}
 				}
 
