@@ -68,137 +68,151 @@
           ]
         }
       },
-        "approach_regions": {
-            "22L": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.69662,-74.16214",
-                "reference_heading": 219,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "2L" ]
-            },
-            "22R": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.69719,-74.16559",
-                "reference_heading": 219,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "2R" ]
-            },
-            "11": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.70269,-74.17891",
-                "reference_heading": 108,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "11" ]
-            },
-            "4L": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 6,
-                "descent_altitude": 2000,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.68352,-74.17428",
-                "reference_heading": 39,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "4L" ]
-            },
-            "4R": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 5.1,
-                "descent_altitude": 1700,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.68176,-74.17159",
-                "reference_heading": 39,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "4R" ]
-            }
+      "approach_regions": {
+        "22L": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.69662,-74.16214",
+          "reference_heading": 219,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "2L"
+          ]
+        },
+        "22R": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.69719,-74.16559",
+          "reference_heading": 219,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "2R"
+          ]
+        },
+        "11": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.70269,-74.17891",
+          "reference_heading": 108,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "11"
+          ]
+        },
+        "4L": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 6,
+          "descent_altitude": 2000,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.68352,-74.17428",
+          "reference_heading": 39,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "4L"
+          ]
+        },
+        "4R": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 5.1,
+          "descent_altitude": 1700,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.68176,-74.17159",
+          "reference_heading": 39,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "4R"
+          ]
+        }
       },
       "converging_runways": [
-          {
-              "runways": [ "22L", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "4R", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "22R", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "4L", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          }
+        {
+          "runways": [
+            "22L",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "4R",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "22R",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "4L",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        }
       ],
       "departure_routes": {
         "22R": {
@@ -2655,14 +2669,14 @@
     "_TEB_6": "N040.50.48.376,W074.04.13.509"
   },
   "inhibit_ca_volumes": [
-      {
-          "name": "EWR NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KEWR"
-      }
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KEWR"
+    }
   ],
   "magnetic_variation": 13.3,
   "name": "KEWR",
@@ -2717,23 +2731,23 @@
     }
   },
   "reporting_points": [
-      "CAMMO",
-      "CYN",
-      "DYLIN",
-      "FLOSI",
-      "GXU",
-      "HARTY",
-      "HELON",
-      "HUO",
-      "MAZIE",
-      "MERSR",
-      "MUGZY",
-      "PENNS",
-      "PHLBO",
-      "RBV",
-      "SAX",
-      "SOMTO",
-      "WACKI"
+    "CAMMO",
+    "CYN",
+    "DYLIN",
+    "FLOSI",
+    "GXU",
+    "HARTY",
+    "HELON",
+    "HUO",
+    "MAZIE",
+    "MERSR",
+    "MUGZY",
+    "PENNS",
+    "PHLBO",
+    "RBV",
+    "SAX",
+    "SOMTO",
+    "WACKI"
   ],
   "scenarios": {
     "KEWR Depart 22R": {
