@@ -1609,11 +1609,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           }
         },
@@ -1621,11 +1623,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           }
         },
@@ -1633,11 +1637,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           }
         },
@@ -1645,11 +1651,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           }
         }
@@ -3259,8 +3267,8 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departures": [ "KJFK" ]
                     "backup": "JFK_G_APP",
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3400,8 +3408,8 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departures": [ "KJFK" ]
                     "backup": "JFK_G_APP",
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3613,8 +3621,8 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departures": [ "KJFK" ]
                     "backup": "JFK_G_APP",
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -3826,8 +3834,8 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departures": [ "KJFK" ]
                     "backup": "JFK_G_APP",
+                    "departures": [ "KJFK" ]
                 }
             }
         },
@@ -4038,8 +4046,8 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
-                    "departures": [ "KJFK" ]
                     "backup": "JFK_K_APP",
+                    "departures": [ "KJFK" ]
                 }
             }
         },

@@ -830,18 +830,6 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
-	virtualDepartureController := ap.DepartureController
-	humanDepartureController := ""
-	if virtualDepartureController == "" {
-		humanDepartureController = w.PrimaryController
-		if w.MultiControllers != nil {
-			humanDepartureController = w.MultiControllers.GetDepartureController(departureAirport, runway)
-			if humanDepartureController == "" {
-				humanDepartureController = w.PrimaryController
-			}
-		}
-	}
-
 	airline := Sample(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
@@ -850,8 +838,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
-	if err := ac.InitializeDeparture(w, ap, dep, virtualDepartureController,
-		humanDepartureController, exitRoute); err != nil {
+	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
 

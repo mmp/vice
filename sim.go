@@ -1225,9 +1225,8 @@ func (s *Sim) updateState() {
 		for callsign, ac := range s.World.Aircraft {
 			passedWaypoint := ac.Update(s.World, s, s.lg)
 			if passedWaypoint != nil && passedWaypoint.Handoff {
-				// Handoff arrival from virtual controller to a human
-				// controller.
-				ctrl := s.ResolveController(ac.ArrivalHandoffController)
+				// Handoff from virtual controller to a human controller.
+				ctrl := s.ResolveController(ac.WaypointHandoffController)
 
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,

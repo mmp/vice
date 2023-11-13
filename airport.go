@@ -261,6 +261,29 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
 
+	// Make sure if departures are initially controlled by a virtual
+	// controller, all routes have a valid handoff controller (and the
+	// converse).
+	for rwy, routes := range ap.DepartureRoutes {
+		e.Push("Departure runway " + rwy)
+		for exit, route := range routes {
+			e.Push("Exit " + exit)
+
+			if ap.DepartureController != "" {
+				if route.HandoffController == "" {
+					e.ErrorString("no \"handoff_controller\" specified even though airport has a \"departure_controller\"")
+				} else if _, ok := sg.ControlPositions[route.HandoffController]; !ok {
+					e.ErrorString("control position \"%s\" unknown in scenario", route.HandoffController)
+				}
+			} else if route.HandoffController != "" {
+				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
+			}
+
+			e.Pop()
+		}
+		e.Pop()
+	}
+
 	for i, dep := range ap.Departures {
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
@@ -382,6 +405,8 @@ type ExitRoute struct {
 	ClearedAltitude int           `json:"cleared_altitude"`
 	Waypoints       WaypointArray `json:"waypoints"`
 	Description     string        `json:"description"`
+	// optional, control position to handoff to at a /ho
+	HandoffController string `json:"handoff_controller"`
 }
 
 type Departure struct {
