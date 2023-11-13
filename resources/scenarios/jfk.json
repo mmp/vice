@@ -3260,6 +3260,7 @@
                 },
                 "JFK_DEP": {
                     "departures": [ "KJFK" ]
+                    "backup": "JFK_G_APP",
                 }
             }
         },
@@ -3400,6 +3401,7 @@
                 },
                 "JFK_DEP": {
                     "departures": [ "KJFK" ]
+                    "backup": "JFK_G_APP",
                 }
             }
         },
@@ -3612,6 +3614,7 @@
                 },
                 "JFK_DEP": {
                     "departures": [ "KJFK" ]
+                    "backup": "JFK_G_APP",
                 }
             }
         },
@@ -3824,6 +3827,7 @@
                 },
                 "JFK_DEP": {
                     "departures": [ "KJFK" ]
+                    "backup": "JFK_G_APP",
                 }
             }
         },
@@ -4035,6 +4039,7 @@
                 },
                 "JFK_DEP": {
                     "departures": [ "KJFK" ]
+                    "backup": "JFK_K_APP",
                 }
             }
         },

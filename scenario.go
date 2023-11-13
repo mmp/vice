@@ -337,7 +337,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			return false
 		}
 		for callsign, mc := range controllers {
-			followPathToPrimary(callsign, mc, 25)
+			if !followPathToPrimary(callsign, mc, 25) {
+				e.ErrorString("controller \"%s\" doesn't have a valid backup controller", callsign)
+			}
 		}
 		e.Pop()
 	}
