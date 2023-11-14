@@ -688,6 +688,8 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	}
 	ps.SystemMapVisible = make(map[int]interface{})
 
+	ps.FusedRadarMode = true
+
 	ps.LeaderLineDirection = North
 	ps.LeaderLineLength = 1
 
