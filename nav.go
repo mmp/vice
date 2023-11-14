@@ -776,7 +776,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 		// fly through the localizer if it's too sharp an intercept
 		hdg := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		if d := headingDifference(hdg, nav.FlightState.Heading); d > 45 {
-			lg.Info("heading: difference %.0f too much to intercept the localizer", d)
+			lg.Infof("heading: difference %.0f too much to intercept the localizer", d)
 			return
 		}
 
