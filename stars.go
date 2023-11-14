@@ -5150,11 +5150,17 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		DrawBackground: true, // default BackgroundColor is fine
 	}
 
-	drawRBL := func(p0 Point2LL, p1 Point2LL, idx int) {
+	drawRBL := func(p0 Point2LL, p1 Point2LL, idx int, gs float32) {
 		// Format the range-bearing line text for the two positions.
 		hdg := headingp2ll(p0, p1, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
 		dist := nmdistance2ll(p0, p1)
-		text := fmt.Sprintf("%d/%.2f-%d", int(hdg+.5), dist, idx)
+		text := fmt.Sprintf("%3d/%.2f", int(hdg+.5), dist)
+		if gs != 0 {
+			// Add ETA in minutes
+			eta := 60 * dist / gs
+			text += fmt.Sprintf("/%d", int(eta+.5))
+		}
+		text += fmt.Sprintf("-%d", idx)
 
 		// And draw the line and the text.
 		pText := transforms.WindowFromLatLongP(mid2ll(p0, p1))
@@ -5163,26 +5169,48 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 	}
 
 	// Maybe draw a wip RBL with p1 as the mouse's position
-	wp := sp.wipRBL.P[0]
-	if ctx.mouse != nil && (!wp.Loc.IsZero() || wp.Callsign != "") {
-		p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
-		if wp.Callsign != "" {
-			if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
-				Find(aircraft, ac) != -1 {
-				if state, ok := sp.Aircraft[wp.Callsign]; ok {
-					drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1)
+	if sp.wipRBL != nil {
+		wp := sp.wipRBL.P[0]
+		if ctx.mouse != nil {
+			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
+			if wp.Callsign != "" {
+				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
+					Find(aircraft, ac) != -1 {
+					if state, ok := sp.Aircraft[wp.Callsign]; ok {
+						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
+					}
 				}
+			} else {
+				drawRBL(wp.Loc, p1, len(sp.RangeBearingLines)+1, 0)
 			}
-		} else {
-			drawRBL(wp.Loc, p1, len(sp.RangeBearingLines)+1)
 		}
 	}
 
 	for i, rbl := range sp.RangeBearingLines {
 		if p0, p1 := rbl.GetPoints(ctx, aircraft, sp); !p0.IsZero() && !p1.IsZero() {
-			drawRBL(p0, p1, i+1)
+			gs := float32(0)
+
+			// If one but not both are tracks, get the groundspeed so we
+			// can display an ETA.
+			if rbl.P[0].Callsign != "" {
+				if rbl.P[1].Callsign == "" {
+					if ac := ctx.world.Aircraft[rbl.P[0].Callsign]; ac != nil {
+						gs = ac.GS()
+					}
+				}
+			} else if rbl.P[1].Callsign != "" {
+				if rbl.P[0].Callsign == "" {
+					if ac := ctx.world.Aircraft[rbl.P[1].Callsign]; ac != nil {
+						gs = ac.GS()
+					}
+				}
+
+				drawRBL(p0, p1, i+1, gs)
+			}
 		}
 	}
+
+	// Remove stale ones that include aircraft that have landed, etc.
 	sp.RangeBearingLines = FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
 		p0, p1 := rbl.GetPoints(ctx, aircraft, sp)
 		return !p0.IsZero() && !p1.IsZero()

@@ -478,3 +478,11 @@ func (ac *Aircraft) MagneticVariation() float32 {
 func (ac *Aircraft) IsAirborne() bool {
 	return ac.Nav.IsAirborne()
 }
+
+func (ac *Aircraft) IAS() float32 {
+	return ac.Nav.FlightState.IAS
+}
+
+func (ac *Aircraft) GS() float32 {
+	return ac.Nav.FlightState.GS
+}
