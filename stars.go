@@ -122,7 +122,7 @@ type STARSPane struct {
 	drawDepartureAirspace bool
 
 	// The start of a RBL--one click received, waiting for the second.
-	wipRBL STARSRangeBearingLine
+	wipRBL *STARSRangeBearingLine
 }
 
 type STARSRangeBearingLine struct {
@@ -1426,7 +1426,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
-			sp.wipRBL = STARSRangeBearingLine{}
+			sp.wipRBL = nil
 
 		case KeyF1:
 			if ctx.keyboard.IsPressed(KeyControl) {
@@ -1585,13 +1585,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 
-		case "*T":
-			// Remove all RBLs
-			sp.wipRBL = STARSRangeBearingLine{}
-			sp.RangeBearingLines = nil
-			status.clear = true
-			return
-
 		case "**J":
 			// remove all j-rings
 			for _, state := range sp.Aircraft {
@@ -1624,9 +1617,15 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		}
 
-		if len(cmd) >= 3 && cmd[:2] == "*T" {
-			// Delete specified rbl
-			if idx, err := strconv.Atoi(cmd[2:]); err == nil {
+		if len(cmd) >= 2 && cmd[:2] == "*T" {
+			suffix := cmd[2:]
+			if suffix == "" {
+				// Remove all RBLs
+				sp.wipRBL = nil
+				sp.RangeBearingLines = nil
+				status.clear = true
+			} else if idx, err := strconv.Atoi(cmd[2:]); err == nil {
+				// Delete specified rbl
 				idx--
 				if idx >= 0 && idx < len(sp.RangeBearingLines) {
 					sp.RangeBearingLines = DeleteSliceElement(sp.RangeBearingLines, idx)
@@ -1634,8 +1633,21 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else {
 					status.err = ErrSTARSIllegalParam
 				}
+			} else if p, ok := ctx.world.Locate(suffix); ok {
+				// Fix name for first or second point of RBL
+				if rbl := sp.wipRBL; rbl != nil {
+					rbl.P[1].Loc = p
+					sp.RangeBearingLines = append(sp.RangeBearingLines, *rbl)
+					sp.wipRBL = nil
+					status.clear = true
+				} else {
+					sp.wipRBL = &STARSRangeBearingLine{}
+					sp.wipRBL.P[0].Loc = p
+					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
+					sp.previewAreaInput = "*T" // set up for the second point
+				}
 			} else {
-				status.err = ErrSTARSIllegalParam
+				status.err = ErrSTARSIllegalFix
 			}
 			return
 		}
@@ -2812,9 +2824,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				} else if cmd == "*T" {
 					// range bearing line
-					sp.wipRBL = STARSRangeBearingLine{}
+					sp.wipRBL = &STARSRangeBearingLine{}
 					sp.wipRBL.P[0].Callsign = ac.Callsign
 					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
+					// Do not clear the input area to allow entering a fix for the second location
 					return
 				} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
 					state.SPCOverride = cmd
@@ -3118,7 +3131,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	// No aircraft selected
 	if sp.commandMode == CommandModeNone {
 		if cmd == "*T" {
-			sp.wipRBL = STARSRangeBearingLine{}
+			sp.wipRBL = &STARSRangeBearingLine{}
 			sp.wipRBL.P[0].Loc = transforms.LatLongFromWindowP(mousePosition)
 			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 			return
@@ -3235,8 +3248,13 @@ func numpadToDirection(key byte) (*CardinalOrdinalDirection, bool) {
 
 func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, ScopeTransformations) (status STARSCommandStatus) {
 	return func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
-		rbl := sp.wipRBL
-		sp.wipRBL = STARSRangeBearingLine{}
+		if sp.wipRBL == nil {
+			// this shouldn't happen, but let's not crash if it does...
+			return
+		}
+
+		rbl := *sp.wipRBL
+		sp.wipRBL = nil
 		if ac, _ := sp.tryGetClosestAircraft(ctx.world, pw, transforms); ac != nil {
 			rbl.P[1].Callsign = ac.Callsign
 		} else {
