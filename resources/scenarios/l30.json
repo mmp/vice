@@ -1372,7 +1372,7 @@
             "sector_id": "LT"
         }
     },
-    "default_scenario": "LAS Configuration One.",
+    "default_scenario": "KLAS Depart 19L/26R Land 19L/26L/26R",
     "fixes": {
         "_LAS_26L": "N036.04.24.619,W115.07.38.761",
         "_LAS_26R": "N036.04.35.660,W115.07.23.875",
@@ -1401,7 +1401,7 @@
 
     },
     "scenarios": {
-        "LAS Configuration One.": {
+        "KLAS Depart 19L/26R Land 19L/26L/26R": {
             "arrival_runways": [
                 {
                     "airport": "KLAS",
@@ -1507,7 +1507,7 @@
                 "speed": 6
             }
         },
-        "LAS Configuration Two.": {
+        "KLAS Depart 1L/1R/8L/8R Land 1L/1R": {
             "arrival_runways": [
                 {
                     "airport": "KLAS",
@@ -1619,8 +1619,7 @@
                 "speed": 3
             }
         },
-        
-        "LAS Configuration Three.": {
+        "KLAS Depart 1L/1R Land 1L/1R/26L": {
             "arrival_runways": [
                 {
                     "airport": "KLAS",
@@ -1711,7 +1710,7 @@
                 "speed": 6
             }
         },
-        "LAS Configuration Four.": {
+        "KLAS Depart 8L Land 19L/19R.": {
             "arrival_runways": [
                 {
                     "airport": "KLAS",
