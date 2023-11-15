@@ -1512,7 +1512,7 @@
     "sector_id": "4T"
   }
   },
-  "default_scenario": "DCA North",
+  "default_scenario": "KDCA North",
   "fixes": {
     "_DCA_1":  "N38.50.30.629,W77.02.12.802",
     "_DCA_4":  "N38.50.30.312,W77.02.27.983",
@@ -1681,7 +1681,7 @@
     "DFORT"
   ],
   "scenarios": {
-    "DCA North": {
+    "KDCA North": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1750,7 +1750,7 @@
         }
       ]
     },
-    "DCA South": {
+    "KDCA South": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1819,7 +1819,7 @@
         }
       ]
     },
-    "DCA N Final": {
+    "KDCA N Final": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1852,7 +1852,7 @@
       "speed": 5
     }
   },
-  "DCA S Final": {
+  "KDCA S Final": {
     "arrival_runways": [
       {
         "airport": "KDCA",

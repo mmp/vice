@@ -2275,7 +2275,7 @@
                         "sector_id": "CT"
                       }
                     },
-                    "default_scenario": "CLT Land 18L/C/R Depart 18C/L",
+                    "default_scenario": "KCLT Land 18L/C/R Depart 18C/L",
                     "fixes": {
                         "_CLT_18L_183_2": "N35.10.03.516,W80.55.51.553",
                         "_CLT_18C_183_2": "N35.09.58.368,W80.57.02.192",
@@ -2320,7 +2320,7 @@
                         }
                     },
                     "scenarios": {
-                        "CLT Land 18L/C/R Depart 18C/L": {
+                        "KCLT Land 18L/C/R Depart 18C/L": {
                             "approach_airspace": [
                                 "CLT_APP"
                             ],
