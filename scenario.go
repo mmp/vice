@@ -20,6 +20,7 @@ import (
 )
 
 type ScenarioGroup struct {
+	TRACON           string                 `json:"tracon"`
 	Name             string                 `json:"name"`
 	Airports         map[string]*Airport    `json:"airports"`
 	VideoMapFile     string                 `json:"video_map_file"`
@@ -436,7 +437,7 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]*SimConfiguration) {
+func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
 	// Do these first!
 	sg.Fixes = make(map[string]Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
@@ -662,7 +663,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,
-	simConfigurations map[string]*SimConfiguration, multiController bool) {
+	simConfigurations map[string]map[string]*SimConfiguration, multiController bool) {
 	config := &SimConfiguration{
 		ScenarioConfigs:  make(map[string]*SimScenarioConfiguration),
 		ControlPositions: sg.ControlPositions,
@@ -700,7 +701,10 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	// Skip scenario groups that don't have any single/multi-controller
 	// scenarios, as appropriate.
 	if len(config.ScenarioConfigs) > 0 {
-		simConfigurations[sg.Name] = config
+		if simConfigurations[sg.TRACON] == nil {
+			simConfigurations[sg.TRACON] = make(map[string]*SimConfiguration)
+		}
+		simConfigurations[sg.TRACON][sg.Name] = config
 	}
 }
 
@@ -1058,6 +1062,10 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioG
 		e.ErrorString("scenario group is missing \"name\"")
 		return nil
 	}
+	if s.TRACON == "" {
+		e.ErrorString("scenario group is missing \"tracon\"")
+		return nil
+	}
 	return &s
 }
 
@@ -1074,7 +1082,7 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*SimConfiguration) {
+func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration) {
 	// First load the embedded video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 
@@ -1144,8 +1152,8 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	}
 
 	// Now load the scenarios.
-	scenarioGroups := make(map[string]*ScenarioGroup)
-	simConfigurations := make(map[string]*SimConfiguration)
+	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
+	simConfigurations := make(map[string]map[string]*SimConfiguration)
 
 	err = fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -1164,10 +1172,13 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 		lg.Infof("%s: loading scenario", path)
 		s := loadScenarioGroup(resourcesFS, path, e)
 		if s != nil {
-			if _, ok := scenarioGroups[s.Name]; ok {
-				e.ErrorString("%s: scenario redefined", s.Name)
+			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {
+				e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
 			} else {
-				scenarioGroups[s.Name] = s
+				if scenarioGroups[s.TRACON] == nil {
+					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
+				}
+				scenarioGroups[s.TRACON][s.Name] = s
 			}
 		}
 		return nil
@@ -1204,7 +1215,10 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 				}
 
 				// These are allowed to redefine an existing scenario.
-				scenarioGroups[s.Name] = s
+				if scenarioGroups[s.TRACON] == nil {
+					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
+				}
+				scenarioGroups[s.TRACON][s.Name] = s
 			}
 		}
 	}
@@ -1214,41 +1228,60 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]*ScenarioGroup, map[string]*
 	}
 
 	// Final tidying before we return the loaded scenarios.
-	for name, sgroup := range scenarioGroups {
-		e.Push("Scenario group " + name)
+	for tname, tracon := range scenarioGroups {
+		e.Push("TRACON " + tname)
 
-		// Initialize the CommandBuffers in the scenario's STARSMaps.
-		if sgroup.VideoMapFile == "" {
-			e.ErrorString("no \"video_map_file\" specified")
-		} else {
-			if bufferMap, ok := videoMapCommandBuffers[sgroup.VideoMapFile]; !ok {
-				e.ErrorString("video map file \"%s\" unknown", sgroup.VideoMapFile)
+		scenarioNames := make(map[string]string)
+
+		for groupName, sgroup := range tracon {
+			e.Push("Scenario group " + groupName)
+
+			// Make sure the same scenario name isn't used in multiple
+			// group definitions.
+			for scenarioName := range sgroup.Scenarios {
+				if other, ok := scenarioNames[scenarioName]; ok {
+					e.ErrorString("scenario \"%s\" is also defined in the \"%s\" scenario group",
+						scenarioName, other)
+				}
+				scenarioNames[scenarioName] = groupName
+			}
+
+			// Initialize the CommandBuffers in the scenario's STARSMaps.
+			if sgroup.VideoMapFile == "" {
+				e.ErrorString("no \"video_map_file\" specified")
 			} else {
-				for i, sm := range sgroup.STARSMaps {
-					if cb, ok := bufferMap[sm.Name]; !ok {
-						e.ErrorString("video map \"%s\" not found", sm.Name)
-					} else {
-						sgroup.STARSMaps[i].CommandBuffer = cb
+				if bufferMap, ok := videoMapCommandBuffers[sgroup.VideoMapFile]; !ok {
+					e.ErrorString("video map file \"%s\" unknown", sgroup.VideoMapFile)
+				} else {
+					for i, sm := range sgroup.STARSMaps {
+						if cb, ok := bufferMap[sm.Name]; !ok {
+							e.ErrorString("video map \"%s\" not found", sm.Name)
+						} else {
+							sgroup.STARSMaps[i].CommandBuffer = cb
+						}
 					}
 				}
 			}
+
+			sgroup.PostDeserialize(e, simConfigurations)
+
+			e.Pop()
 		}
-
-		sgroup.PostDeserialize(e, simConfigurations)
-
 		e.Pop()
 	}
 
 	// Walk all of the scenario groups to get all of the possible departing aircraft
 	// types to see where V2 is needed in the performance database..
 	acTypes := make(map[string]struct{})
-	for _, sg := range scenarioGroups {
-		for _, ap := range sg.Airports {
-			for _, dep := range ap.Departures {
-				for _, al := range dep.Airlines {
-					fleet := Select(al.Fleet != "", al.Fleet, "default")
-					for _, ac := range database.Airlines[al.ICAO].Fleets[fleet] {
-						acTypes[ac.ICAO] = struct{}{}
+	for _, tracon := range scenarioGroups {
+		for _, sg := range tracon {
+			for _, ap := range sg.Airports {
+				for _, dep := range ap.Departures {
+					for _, al := range dep.Airlines {
+						fleet := Select(al.Fleet != "", al.Fleet, "default")
+						for _, ac := range database.Airlines[al.ICAO].Fleets[fleet] {
+							acTypes[ac.ICAO] = struct{}{}
+						}
 					}
 				}
 			}

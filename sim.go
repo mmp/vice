@@ -224,7 +224,8 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 }
 
 type NewSimConfiguration struct {
-	Group          *SimConfiguration
+	TRACONName     string
+	TRACON         map[string]*SimConfiguration
 	GroupName      string
 	Scenario       *SimScenarioConfiguration
 	ScenarioName   string
@@ -260,7 +261,7 @@ func MakeNewSimConfiguration() NewSimConfiguration {
 		NewSimName:     getRandomAdjectiveNoun(),
 	}
 
-	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
+	c.SetTRACON(globalConfig.LastTRACON)
 
 	return c
 }
@@ -288,32 +289,41 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 	}
 }
 
-func (c *NewSimConfiguration) SetScenarioGroup(name string) {
+func (c *NewSimConfiguration) SetTRACON(name string) {
 	var ok bool
-	if c.Group, ok = c.selectedServer.configs[name]; !ok {
+	if c.TRACON, ok = c.selectedServer.configs[name]; !ok {
 		if name != "" {
-			lg.Errorf("%s: scenario group not found!", name)
+			lg.Errorf("%s: TRACON not found!", name)
 		}
 		configs := c.selectedServer.configs
 		// Pick one at random
 		name = SortedMapKeys(configs)[rand.Intn(len(configs))]
-		c.Group = configs[name]
+		c.TRACON = configs[name]
 	}
-	c.GroupName = name
+	c.TRACONName = name
+	c.GroupName = SortedMapKeys(c.TRACON)[0]
 
-	c.SetScenario(c.Group.DefaultScenario)
+	c.SetScenario(c.GroupName, c.TRACON[c.GroupName].DefaultScenario)
 }
 
-func (c *NewSimConfiguration) SetScenario(name string) {
+func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
-	if c.Scenario, ok = c.Group.ScenarioConfigs[name]; !ok {
-		if name != "" {
-			lg.Errorf("%s: scenario not found in group %s", name, c.GroupName)
-		}
-		name = SortedMapKeys(c.Group.ScenarioConfigs)[0]
-		c.Scenario = c.Group.ScenarioConfigs[name]
+	var groupConfig *SimConfiguration
+	if groupConfig, ok = c.TRACON[groupName]; !ok {
+		lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
+		groupName = SortedMapKeys(c.TRACON)[0]
+		groupConfig = c.TRACON[c.GroupName]
 	}
-	c.ScenarioName = name
+	c.GroupName = groupName
+
+	if c.Scenario, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
+		if scenarioName != "" {
+			lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
+		}
+		scenarioName = groupConfig.DefaultScenario
+		c.Scenario = groupConfig.ScenarioConfigs[scenarioName]
+	}
+	c.ScenarioName = scenarioName
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
@@ -347,7 +357,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, NewSimCreateLocal) &&
 				origType != NewSimCreateLocal {
 				c.selectedServer = localServer
-				c.SetScenarioGroup("")
+				c.SetTRACON(globalConfig.LastTRACON)
 				c.displayError = nil
 			}
 
@@ -357,7 +367,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, NewSimCreateRemote) &&
 				origType != NewSimCreateRemote {
 				c.selectedServer = remoteServer
-				c.SetScenarioGroup("")
+				c.SetTRACON(globalConfig.LastTRACON)
 				c.displayError = nil
 			}
 
@@ -384,19 +394,22 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	imgui.Separator()
 
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
-		if imgui.BeginComboV("Airport/Scenario", c.GroupName, imgui.ComboFlagsHeightLarge) {
+		if imgui.BeginComboV("TRACON/ATCT", c.TRACONName, imgui.ComboFlagsHeightLarge) {
 			for _, name := range SortedMapKeys(c.selectedServer.configs) {
-				if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
-					c.SetScenarioGroup(name)
+				if imgui.SelectableV(name, name == c.TRACONName, 0, imgui.Vec2{}) {
+					c.SetTRACON(name)
 				}
 			}
 			imgui.EndCombo()
 		}
 
 		if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
-			for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
-				if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-					c.SetScenario(name)
+			for _, groupName := range SortedMapKeys(c.TRACON) {
+				group := c.TRACON[groupName]
+				for _, name := range SortedMapKeys(group.ScenarioConfigs) {
+					if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+						c.SetScenario(groupName, name)
+					}
 				}
 			}
 			imgui.EndCombo()
@@ -574,7 +587,7 @@ func (c *NewSimConfiguration) Start() error {
 		Client:          c.selectedServer.RPCClient,
 	}
 
-	globalConfig.LastScenarioGroup = c.GroupName
+	globalConfig.LastTRACON = c.TRACONName
 
 	newWorldChan <- result.World
 
@@ -659,10 +672,15 @@ func (sc *ServerController) LogValue() slog.Value {
 		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
 }
 
-func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
+func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
 	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
 
-	sg, ok := scenarioGroups[ssc.GroupName]
+	tracon, ok := scenarioGroups[ssc.TRACONName]
+	if !ok {
+		lg.Errorf("%s: unknown TRACON", ssc.TRACONName)
+		return nil
+	}
+	sg, ok := tracon[ssc.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
 		return nil

@@ -1,4 +1,5 @@
 {
+  "tracon": "L30 (Las Vegas)",
     "airports": {
         "KLAS": {
             "approaches": {
@@ -1710,7 +1711,7 @@
                 "speed": 6
             }
         },
-        "KLAS Depart 8L Land 19L/19R.": {
+        "KLAS Depart 8L Land 19L/19R": {
             "arrival_runways": [
                 {
                     "airport": "KLAS",

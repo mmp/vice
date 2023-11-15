@@ -33,7 +33,7 @@ type GlobalConfig struct {
 	ImGuiSettings         string
 	WhatsNewIndex         int
 	LastServer            string
-	LastScenarioGroup     string
+	LastTRACON            string
 	UIFontSize            int
 
 	Audio AudioSettings
