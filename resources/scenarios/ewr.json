@@ -2288,7 +2288,9 @@
         "initial_speed": 250,
         "route": "/ FLOSI4",
         "speed_restriction": null,
-        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180"
+        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
+        "expect_approach": "I4R",
+        "scratchpad": "I4R"
       }
     ],
     "PHL": [
@@ -2472,7 +2474,9 @@
         "initial_speed": 250,
         "route": "/ PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025"
+        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
+        "expect_approach": "I2L",
+        "scratchpad": "I2L"
       }
     ],
     "WRI": [
