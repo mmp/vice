@@ -2755,44 +2755,6 @@
     "WACKI"
   ],
   "scenarios": {
-    "KEWR Depart 22R": {
-      "solo_controller": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "EWR",
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "rate": 20,
-          "runway": "22R"
-        },
-        {
-          "airport": "KTEB",
-          "rate": 10,
-          "runway": "24"
-        }
-      ],
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
     "KEWR Depart 22R Land 22L": {
       "arrival_runways": [
         {
@@ -2908,44 +2870,6 @@
         "direction": 220,
         "gust": 13,
         "speed": 7
-      }
-    },
-    "KEWR Depart 4L": {
-      "solo_controller": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "EWR",
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "rate": 20,
-          "runway": "4L"
-        },
-        {
-          "airport": "KTEB",
-          "rate": 10,
-          "runway": "1"
-        }
-      ],
-      "wind": {
-        "direction": 30,
-        "gust": 9,
-        "speed": 4
       }
     },
     "KEWR Depart 4L Land 4R": {
