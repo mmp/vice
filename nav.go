@@ -1636,15 +1636,7 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {
 		return fmt.Sprintf("unable. %.0f isn't a valid heading", hdg)
 	}
 
-	// Only cancel approach clearance if the aircraft wasn't on a
-	// heading and now we're giving them one.
-	if _, ok := nav.AssignedHeading(); !ok {
-		nav.Approach.Cleared = false
-	}
-
-	// Don't carry this from a waypoint we may have previously passed.
-	nav.Approach.NoPT = false
-	nav.EnqueueHeading(NavHeading{Assigned: &hdg, Turn: &turn})
+	nav.assignHeading(hdg, turn)
 
 	switch turn {
 	case TurnClosest:
@@ -1662,17 +1654,31 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {
 	}
 }
 
-func (nav *Nav) FlyPresentHeading() string {
+func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
 		nav.Approach.Cleared = false
+
+		// If an arrival is given a heading off of a route with altitude
+		// constraints, set its cleared altitude to its current altitude
+		// for now.
+		if !nav.FlightState.IsDeparture && nav.Altitude.Assigned == nil {
+			if c := nav.getWaypointAltitudeConstraint(); c != nil {
+				// Don't take a direct pointer to nav.FlightState.Altitude!
+				alt := nav.FlightState.Altitude
+				nav.Altitude.Cleared = &alt
+			}
+		}
 	}
 
-	hdg := nav.FlightState.Heading
-	nav.EnqueueHeading(NavHeading{Assigned: &hdg})
+	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
+	nav.EnqueueHeading(NavHeading{Assigned: &hdg, Turn: &turn})
+}
 
+func (nav *Nav) FlyPresentHeading() string {
+	nav.assignHeading(nav.FlightState.Heading, TurnClosest)
 	return "fly present heading"
 }
 
