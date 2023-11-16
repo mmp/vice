@@ -1,4 +1,5 @@
 {
+  "tracon": "N90 (New York)",
   "airports": {
     "KEWR": {
       "name": "Newark",
@@ -68,137 +69,151 @@
           ]
         }
       },
-        "approach_regions": {
-            "22L": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.69662,-74.16214",
-                "reference_heading": 219,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "2L" ]
-            },
-            "22R": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.69719,-74.16559",
-                "reference_heading": 219,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "2R" ]
-            },
-            "11": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.70269,-74.17891",
-                "reference_heading": 108,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "11" ]
-            },
-            "4L": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 6,
-                "descent_altitude": 2000,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.68352,-74.17428",
-                "reference_heading": 39,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "4L" ]
-            },
-            "4R": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 5.1,
-                "descent_altitude": 1700,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.68176,-74.17159",
-                "reference_heading": 39,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "4R" ]
-            }
+      "approach_regions": {
+        "22L": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.69662,-74.16214",
+          "reference_heading": 219,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "2L"
+          ]
+        },
+        "22R": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.69719,-74.16559",
+          "reference_heading": 219,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "2R"
+          ]
+        },
+        "11": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.70269,-74.17891",
+          "reference_heading": 108,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "11"
+          ]
+        },
+        "4L": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 6,
+          "descent_altitude": 2000,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.68352,-74.17428",
+          "reference_heading": 39,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "4L"
+          ]
+        },
+        "4R": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 5.1,
+          "descent_altitude": 1700,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.68176,-74.17159",
+          "reference_heading": 39,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "4R"
+          ]
+        }
       },
       "converging_runways": [
-          {
-              "runways": [ "22L", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "4R", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "22R", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "4L", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          }
+        {
+          "runways": [
+            "22L",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "4R",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "22R",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "4L",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        }
       ],
       "departure_routes": {
         "22R": {
@@ -2274,7 +2289,9 @@
         "initial_speed": 250,
         "route": "/ FLOSI4",
         "speed_restriction": null,
-        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180"
+        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
+        "expect_approach": "I4R",
+        "scratchpad": "I4R"
       }
     ],
     "PHL": [
@@ -2458,7 +2475,9 @@
         "initial_speed": 250,
         "route": "/ PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025"
+        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
+        "expect_approach": "I2L",
+        "scratchpad": "I2L"
       }
     ],
     "WRI": [
@@ -2482,7 +2501,7 @@
       }
     ]
   },
-  "center": "KEWR",
+    "center": "N040.43.34.389,W074.28.54.713",
   "range": 60,
   "control_positions": {
     "ABE_APP": {
@@ -2655,14 +2674,14 @@
     "_TEB_6": "N040.50.48.376,W074.04.13.509"
   },
   "inhibit_ca_volumes": [
-      {
-          "name": "EWR NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KEWR"
-      }
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KEWR"
+    }
   ],
   "magnetic_variation": 13.3,
   "name": "KEWR",
@@ -2717,63 +2736,25 @@
     }
   },
   "reporting_points": [
-      "CAMMO",
-      "CYN",
-      "DYLIN",
-      "FLOSI",
-      "GXU",
-      "HARTY",
-      "HELON",
-      "HUO",
-      "MAZIE",
-      "MERSR",
-      "MUGZY",
-      "PENNS",
-      "PHLBO",
-      "RBV",
-      "SAX",
-      "SOMTO",
-      "WACKI"
+    "CAMMO",
+    "CYN",
+    "DYLIN",
+    "FLOSI",
+    "GXU",
+    "HARTY",
+    "HELON",
+    "HUO",
+    "MAZIE",
+    "MERSR",
+    "MUGZY",
+    "PENNS",
+    "PHLBO",
+    "RBV",
+    "SAX",
+    "SOMTO",
+    "WACKI"
   ],
   "scenarios": {
-    "KEWR Depart 22R": {
-      "solo_controller": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "EWR",
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "rate": 20,
-          "runway": "22R"
-        },
-        {
-          "airport": "KTEB",
-          "rate": 10,
-          "runway": "24"
-        }
-      ],
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
     "KEWR Depart 22R Land 22L": {
       "arrival_runways": [
         {
@@ -2812,8 +2793,49 @@
         }
       },
       "solo_controller": "EWR_APP",
+      "multi_controllers": {
+        "default": {
+          "EWR_P_APP": {
+            "primary": true,
+            "arrivals": [
+              "FQM3",
+              "PHLBO4",
+              "PHL",
+              "WRI"
+            ]
+          },
+          "EWR_DEP": {
+            "backup": "EWR_P_APP",
+            "departures": [
+              "KEWR",
+              "KTEB"
+            ]
+          },
+          "EWR_A_APP": {
+            "backup": "EWR_P_APP",
+            "arrivals": [
+              "FLOSI4"
+            ]
+          },
+          "EWR_U_APP": {
+            "backup": "EWR_P_APP"
+          },
+          "EWR_H_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "MAZIE3"
+            ]
+          },
+          "EWR_S_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "COATE",
+              "LVZ4"
+            ]
+          }
+        }
+      },
       "controllers": [
-        "EWR_APP",
         "LGA_DEP",
         "LGA_APP",
         "NY_CTR",
@@ -2831,7 +2853,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2848,44 +2870,6 @@
         "direction": 220,
         "gust": 13,
         "speed": 7
-      }
-    },
-    "KEWR Depart 4L": {
-      "solo_controller": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "EWR",
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "rate": 20,
-          "runway": "4L"
-        },
-        {
-          "airport": "KTEB",
-          "rate": 10,
-          "runway": "1"
-        }
-      ],
-      "wind": {
-        "direction": 30,
-        "gust": 9,
-        "speed": 4
       }
     },
     "KEWR Depart 4L Land 4R": {
@@ -2926,8 +2910,49 @@
         }
       },
       "solo_controller": "EWR_APP",
+      "multi_controllers": {
+        "default": {
+          "EWR_P_APP": {
+            "primary": true,
+            "arrivals": [
+              "PHLBO4",
+              "PHL",
+              "WRI"
+            ]
+          },
+          "EWR_A_APP": {
+            "backup": "EWR_P_APP",
+            "arrivals": [
+              "FQM3",
+              "FLOSI4"
+            ]
+          },
+          "EWR_DEP": {
+            "backup": "EWR_P_APP",
+            "departures": [
+              "KEWR",
+              "KTEB"
+            ]
+          },
+          "EWR_U_APP": {
+            "backup": "EWR_P_APP"
+          },
+          "EWR_H_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "MAZIE3"
+            ]
+          },
+          "EWR_S_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "COATE",
+              "LVZ4"
+            ]
+          }
+        }
+      },
       "controllers": [
-        "EWR_APP",
         "LGA_DEP",
         "LGA_APP",
         "NY_CTR",
@@ -2945,7 +2970,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2999,7 +3024,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3035,7 +3060,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3071,7 +3096,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3107,7 +3132,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 30,
         "gust": 0,

@@ -1,4 +1,5 @@
 {
+  "tracon": "N90 (New York)",
     "airports": {
       "KLGA": {
       "name": "LaGuardia",
@@ -921,144 +922,6 @@
         "VALRE"
     ],
     "scenarios": {
-      "KLGA Depart 13": {
-        "solo_controller": "LGA_DEP",
-        "controllers": [
-          "LGA_DEP",
-          "BOS_E_CTR",
-          "JFK_TWR",
-          "LGA_DEP",
-          "LGA_APP",
-          "LGA_TWR",
-          "NY_C_CTR",
-          "NY_LE_DEP",
-          "NY_LS_DEP"
-        ],
-        "default_map": "LGA",
-        "departure_runways": [
-          {
-            "airport": "KLGA",
-            "category": "North",
-            "rate": 10,
-            "runway": "13"
-          },
-          {
-            "airport": "KLGA",
-            "category": "East",
-            "rate": 10,
-            "runway": "13"
-          },
-          {
-            "airport": "KLGA",
-            "category": "South",
-            "rate": 15,
-            "runway": "13"
-          },
-          {
-            "airport": "KLGA",
-            "category": "West",
-            "rate": 20,
-            "runway": "13"
-          }
-        ],
-        "wind": {
-          "direction": 140,
-          "gust": 0,
-          "speed": 17
-        }
-      },
-      "KLGA Depart 4": {
-        "solo_controller": "LGA_DEP",
-        "controllers": [
-          "LGA_DEP",
-          "BOS_E_CTR",
-          "JFK_TWR",
-          "LGA_DEP",
-          "LGA_APP",
-          "LGA_TWR",
-          "NY_C_CTR",
-          "NY_LE_DEP",
-          "NY_LS_DEP"
-        ],
-        "default_map": "LGA",
-        "departure_runways": [
-          {
-            "airport": "KLGA",
-            "category": "North",
-            "rate": 10,
-            "runway": "4"
-          },
-          {
-            "airport": "KLGA",
-            "category": "East",
-            "rate": 10,
-            "runway": "4"
-          },
-          {
-            "airport": "KLGA",
-            "category": "South",
-            "rate": 15,
-            "runway": "4"
-          },
-          {
-            "airport": "KLGA",
-            "category": "West",
-            "rate": 20,
-            "runway": "4"
-          }
-        ],
-        "wind": {
-          "direction": 70,
-          "gust": 0,
-          "speed": 12
-        }
-      },
-      "KLGA Depart 31": {
-        "solo_controller": "LGA_DEP",
-        "controllers": [
-          "LGA_DEP",
-          "BOS_E_CTR",
-          "JFK_TWR",
-          "LGA_DEP",
-          "LGA_APP",
-          "LGA_TWR",
-          "NY_C_CTR",
-          "NY_LE_DEP",
-          "NY_LS_DEP"
-        ],
-        "default_map": "LGA",
-        "departure_runways": [
-          {
-            "airport": "KLGA",
-            "category": "North",
-            "rate": 10,
-            "runway": "31"
-          },
-          {
-            "airport": "KLGA",
-            "category": "East",
-            "rate": 10,
-            "runway": "31"
-          },
-          {
-            "airport": "KLGA",
-            "category": "South",
-            "rate": 15,
-            "runway": "31"
-          },
-          {
-            "airport": "KLGA",
-            "category": "West",
-            "rate": 20,
-            "runway": "31"
-          }
-        ],
-        "wind": {
-          "direction": 350,
-          "gust": 0,
-          "speed": 14
-        }
-      },
       "KLGA Depart 13 Land 22": {
         "arrival_runways": [
           {
@@ -1097,7 +960,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1168,7 +1031,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1239,7 +1102,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1310,7 +1173,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1381,7 +1244,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",

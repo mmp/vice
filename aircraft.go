@@ -12,13 +12,14 @@ import (
 )
 
 type Aircraft struct {
-	Callsign       string
-	Scratchpad     string
-	AssignedSquawk Squawk // from ATC
-	Squawk         Squawk // actually squawking
-	Mode           TransponderMode
-	TempAltitude   int
-	FlightPlan     *FlightPlan
+	Callsign            string
+	Scratchpad          string
+	SecondaryScratchpad string
+	AssignedSquawk      Squawk // from ATC
+	Squawk              Squawk // actually squawking
+	Mode                TransponderMode
+	TempAltitude        int
+	FlightPlan          *FlightPlan
 
 	// Who has the radar track
 	TrackingController string
@@ -46,10 +47,12 @@ type Aircraft struct {
 	DepartureContactController string
 
 	// Arrival-related state
-	GoAroundDistance         *float32
-	ArrivalGroup             string
-	ArrivalGroupIndex        int
-	ArrivalHandoffController string
+	GoAroundDistance  *float32
+	ArrivalGroup      string
+	ArrivalGroupIndex int
+
+	// Who to try to hand off to at a waypoint with /ho
+	WaypointHandoffController string
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -335,10 +338,11 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	ac.ArrivalGroup = arrivalGroup
 	ac.ArrivalGroupIndex = arrivalGroupIndex
 	ac.Scratchpad = arr.Scratchpad
+	ac.SecondaryScratchpad = arr.SecondaryScratchpad
 
 	ac.TrackingController = arr.InitialController
 	ac.ControllingController = arr.InitialController
-	ac.ArrivalHandoffController = arrivalHandoffController
+	ac.WaypointHandoffController = arrivalHandoffController
 
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
@@ -371,8 +375,8 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	return nil
 }
 
-func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
-	virtualDepartureController string, humanDepartureController string, exitRoute ExitRoute) error {
+func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport string, dep *Departure, runway string,
+	exitRoute ExitRoute) error {
 	wp := DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
@@ -389,6 +393,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 	if ac.Scratchpad == "" {
 		ac.Scratchpad = w.Scratchpads[dep.Exit]
 	}
+	ac.SecondaryScratchpad = dep.SecondaryScratchpad
 	ac.Exit = dep.Exit
 
 	if dep.Altitude == 0 {
@@ -404,13 +409,25 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, dep *Departure,
 	}
 	ac.Nav = *nav
 
-	ac.TrackingController = virtualDepartureController
-	ac.ControllingController = virtualDepartureController
-	if humanDepartureController != "" {
+	if ap.DepartureController != "" {
+		// starting out with a virtual controller
+		ac.TrackingController = ap.DepartureController
+		ac.ControllingController = ap.DepartureController
+		ac.WaypointHandoffController = exitRoute.HandoffController
+	} else {
+		// human controller will be first
+		ctrl := w.PrimaryController
+		if w.MultiControllers != nil {
+			ctrl = w.MultiControllers.GetDepartureController(departureAirport, runway)
+			if ctrl == "" {
+				ctrl = w.PrimaryController
+			}
+		}
+
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
 		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
-		ac.DepartureContactController = humanDepartureController
+		ac.DepartureContactController = ctrl
 	}
 
 	ac.Nav.Check(lg)
@@ -463,4 +480,12 @@ func (ac *Aircraft) MagneticVariation() float32 {
 
 func (ac *Aircraft) IsAirborne() bool {
 	return ac.Nav.IsAirborne()
+}
+
+func (ac *Aircraft) IAS() float32 {
+	return ac.Nav.FlightState.IAS
+}
+
+func (ac *Aircraft) GS() float32 {
+	return ac.Nav.FlightState.GS
 }

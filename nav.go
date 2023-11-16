@@ -486,6 +486,23 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 	// Stay within the aircraft's capabilities
 	targetSpeed = clamp(targetSpeed, nav.Perf.Speed.Min, nav.Perf.Speed.Max)
 
+	setSpeed := func(next float32) {
+		if nav.Altitude.AfterSpeed != nil &&
+			(nav.Altitude.Assigned == nil || *nav.Altitude.Assigned == nav.FlightState.Altitude) {
+			cur := nav.FlightState.IAS
+			at := *nav.Altitude.AfterSpeedSpeed
+			// Check if we've reached or are passing a speed assignment
+			// after which an altitude assignment should be followed.
+			if (cur > at && next <= at) || (cur < at && next >= at) {
+				nav.Altitude.Assigned = nav.Altitude.AfterSpeed
+				nav.Altitude.AfterSpeed = nil
+				nav.Altitude.AfterSpeedSpeed = nil
+				lg.Debugf("alt: reached target speed %.0f; now going for altitude %.0f", at, *nav.Altitude.Assigned)
+			}
+		}
+		nav.FlightState.IAS = next
+	}
+
 	if nav.FlightState.IAS < targetSpeed {
 		accel := nav.Perf.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
 		accel = min(accel, targetRate/60)
@@ -493,7 +510,7 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 			// Reduce acceleration since also climbing
 			accel *= 0.6
 		}
-		nav.FlightState.IAS = min(targetSpeed, nav.FlightState.IAS+accel)
+		setSpeed(min(targetSpeed, nav.FlightState.IAS+accel))
 	} else if nav.FlightState.IAS > targetSpeed {
 		decel := nav.Perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
@@ -501,7 +518,7 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 			// Reduce deceleration since also descending
 			decel *= 0.6
 		}
-		nav.FlightState.IAS = max(targetSpeed, nav.FlightState.IAS-decel)
+		setSpeed(max(targetSpeed, nav.FlightState.IAS-decel))
 	}
 }
 
@@ -513,12 +530,30 @@ func (nav *Nav) updateAltitude(lg *Logger) {
 	}
 
 	if targetAltitude == nav.FlightState.Altitude {
+		nav.Altitude.Expedite = false
 		return
 	}
 
+	// Wrap altitude setting in a lambda so we can detect when we pass
+	// through an altitude for "at alt, reduce speed" sort of assignments.
+	setAltitude := func(next float32) {
+		if nav.Speed.AfterAltitude != nil &&
+			(nav.Speed.Assigned == nil || *nav.Speed.Assigned == nav.FlightState.IAS) {
+			cur := nav.FlightState.Altitude
+			at := *nav.Speed.AfterAltitudeAltitude
+			if (cur > at && next <= at) || (cur < at && next >= at) {
+				// Reached or passed the altitude, now go for speed
+				lg.Debugf("speed: reached altitude %.0f; now going for speed %.0f", at, *nav.Speed.AfterAltitude)
+				nav.Speed.Assigned = nav.Speed.AfterAltitude
+				nav.Speed.AfterAltitude = nil
+				nav.Speed.AfterAltitudeAltitude = nil
+			}
+		}
+		nav.FlightState.Altitude = next
+	}
+
 	if abs(targetAltitude-nav.FlightState.Altitude) < 3 {
-		nav.FlightState.Altitude = targetAltitude
-		nav.Altitude.Expedite = false
+		setAltitude(targetAltitude)
 		lg.Debug("reached target altitude")
 		return
 	}
@@ -547,13 +582,13 @@ func (nav *Nav) updateAltitude(lg *Logger) {
 			// Reduce rate due to concurrent acceleration
 			climb *= 0.7
 		}
-		nav.FlightState.Altitude = min(targetAltitude, nav.FlightState.Altitude+climb/60)
+		setAltitude(min(targetAltitude, nav.FlightState.Altitude+climb/60))
 	} else if nav.FlightState.Altitude > targetAltitude {
 		if nav.Speed.Assigned != nil && nav.FlightState.IAS > *nav.Speed.Assigned {
 			// Reduce rate due to concurrent deceleration
 			descent *= 0.7
 		}
-		nav.FlightState.Altitude = max(targetAltitude, nav.FlightState.Altitude-descent/60)
+		setAltitude(max(targetAltitude, nav.FlightState.Altitude-descent/60))
 	}
 }
 
@@ -776,7 +811,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 		// fly through the localizer if it's too sharp an intercept
 		hdg := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		if d := headingDifference(hdg, nav.FlightState.Heading); d > 45 {
-			lg.Info("heading: difference %.0f too much to intercept the localizer", d)
+			lg.Infof("heading: difference %.0f too much to intercept the localizer", d)
 			return
 		}
 
@@ -865,17 +900,6 @@ const initialClimbAltitude = 1500
 func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 	// Baseline...
 	alt, rate = nav.FlightState.Altitude, MaximumRate // FIXME: not maximum rate
-
-	if nav.Altitude.AfterSpeed != nil &&
-		(nav.Altitude.Assigned == nil || *nav.Altitude.Assigned == nav.FlightState.Altitude) {
-		if nav.FlightState.IAS == *nav.Altitude.AfterSpeedSpeed {
-			nav.Altitude.Assigned = nav.Altitude.AfterSpeed
-			nav.Altitude.AfterSpeed = nil
-			nav.Altitude.AfterSpeedSpeed = nil
-			lg.Debugf("alt: reached target speed %.0f; now going for altitude %.0f",
-				nav.FlightState.IAS, *nav.Altitude.Assigned)
-		}
-	}
 
 	if ar := nav.Altitude.Restriction; ar != nil {
 		if nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
@@ -1143,18 +1167,6 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		// Cancel speed restrictions inside 5 mile final
 		lg.Debug("speed: cancel speed restrictions at 5 mile final")
 		nav.Speed = NavSpeed{}
-	}
-
-	if nav.Speed.AfterAltitude != nil &&
-		(nav.Speed.Assigned == nil || *nav.Speed.Assigned == nav.FlightState.IAS) {
-		if nav.FlightState.Altitude == *nav.Speed.AfterAltitudeAltitude {
-			// Reached altitude, now go for speed
-			lg.Debugf("speed: reached altitude %.0f; now going for speed %.0f",
-				*nav.Speed.AfterAltitudeAltitude, *nav.Speed.AfterAltitude)
-			nav.Speed.Assigned = nav.Speed.AfterAltitude
-			nav.Speed.AfterAltitude = nil
-			nav.Speed.AfterAltitudeAltitude = nil
-		}
 	}
 
 	if nav.Speed.MaintainSlowestPractical {
@@ -1624,15 +1636,7 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {
 		return fmt.Sprintf("unable. %.0f isn't a valid heading", hdg)
 	}
 
-	// Only cancel approach clearance if the aircraft wasn't on a
-	// heading and now we're giving them one.
-	if _, ok := nav.AssignedHeading(); !ok {
-		nav.Approach.Cleared = false
-	}
-
-	// Don't carry this from a waypoint we may have previously passed.
-	nav.Approach.NoPT = false
-	nav.EnqueueHeading(NavHeading{Assigned: &hdg, Turn: &turn})
+	nav.assignHeading(hdg, turn)
 
 	switch turn {
 	case TurnClosest:
@@ -1650,17 +1654,31 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) string {
 	}
 }
 
-func (nav *Nav) FlyPresentHeading() string {
+func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
 		nav.Approach.Cleared = false
+
+		// If an arrival is given a heading off of a route with altitude
+		// constraints, set its cleared altitude to its current altitude
+		// for now.
+		if !nav.FlightState.IsDeparture && nav.Altitude.Assigned == nil {
+			if c := nav.getWaypointAltitudeConstraint(); c != nil {
+				// Don't take a direct pointer to nav.FlightState.Altitude!
+				alt := nav.FlightState.Altitude
+				nav.Altitude.Cleared = &alt
+			}
+		}
 	}
 
-	hdg := nav.FlightState.Heading
-	nav.EnqueueHeading(NavHeading{Assigned: &hdg})
+	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
+	nav.EnqueueHeading(NavHeading{Assigned: &hdg, Turn: &turn})
+}
 
+func (nav *Nav) FlyPresentHeading() string {
+	nav.assignHeading(nav.FlightState.Heading, TurnClosest)
 	return "fly present heading"
 }
 

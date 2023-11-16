@@ -23,6 +23,7 @@ import (
 // 11: expedite, intercept localizer, fix airspace serialization
 // 12: set 0 DCB brightness to 50 (WAR not setting a default for it)
 // 13: update departure handling for multi-controllers (and rename some members)
+// 14: Aircraft ArrivalHandoffController -> WaypointHandoffController
 const CurrentConfigVersion = 13
 
 type GlobalConfig struct {
@@ -32,7 +33,7 @@ type GlobalConfig struct {
 	ImGuiSettings         string
 	WhatsNewIndex         int
 	LastServer            string
-	LastScenarioGroup     string
+	LastTRACON            string
 	UIFontSize            int
 
 	Audio AudioSettings

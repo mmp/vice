@@ -1,4 +1,5 @@
 {
+  "tracon": "F11 (Central Florida)",
   "airports": {
     "KMCO": {
       "approaches": {
@@ -8906,7 +8907,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "ARRIVAL SOUTH SOLID LINE",
+      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -9060,7 +9061,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "ARRIVAL NORTH SOLID LINE",
+      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -9151,7 +9152,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "DEPARTURE NORTH SOLID",
+      "default_maps": [ "DEPARTURE NORTH SOLID" ],
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",
@@ -9269,7 +9270,7 @@
         "MCO_B_APP",
         "MCO_L_APP"
       ],
-      "default_map": "SOUTH FINAL BASE",
+      "default_maps": [ "SOUTH FINAL BASE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9310,7 +9311,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL SOUTH SOLID LINE",
+      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9365,7 +9366,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL SOUTH SOLID LINE",
+      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9409,7 +9410,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL SOUTH SOLID LINE",
+      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
@@ -9450,7 +9451,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL NORTH SOLID LINE",
+      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "wind": {
         "direction": 360,
         "gust": 8,
@@ -9505,7 +9506,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL NORTH SOLID LINE",
+      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "wind": {
         "direction": 360,
         "gust": 8,
@@ -9549,7 +9550,7 @@
         "MCO_B_APP",
         "MCO_G_APP"
       ],
-      "default_map": "ARRIVAL NORTH SOLID LINE",
+      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "wind": {
         "direction": 360,
         "gust": 8,
@@ -9600,7 +9601,7 @@
         "MCO_B_APP",
         "MCO_L_APP"
       ],
-      "default_map": "NORTH FINAL BASE",
+      "default_maps": [ "NORTH FINAL BASE" ],
       "wind": {
         "direction": 340,
         "gust": 8,
@@ -9627,7 +9628,7 @@
         "SFB_S_TWR",
         "MCO_W_TWR"
       ],
-      "default_map": "DEPARTURE SOUTH SOLID",
+      "default_maps": [ "DEPARTURE SOUTH SOLID" ],
       "departure_airspace": [
         "MCO_E_APP",
         "MCO_E1_APP",

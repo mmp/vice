@@ -1,4 +1,5 @@
 {
+  "tracon": "D01 (Denver)",
   "airports": {
     "KDEN": {
       "approaches": {
@@ -1910,7 +1911,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2036,7 +2037,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2166,7 +2167,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2292,7 +2293,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2418,7 +2419,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2544,7 +2545,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2670,7 +2671,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2796,7 +2797,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -2918,7 +2919,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -3040,7 +3041,7 @@
           "DEN_S_TWR",
           "DEN_17_CTR"
         ],
-        "default_map": "D01 AR BASE",
+        "default_maps": [ "D01 AR BASE" ],
         "departure_runways": [
           {
             "airport": "KDEN",

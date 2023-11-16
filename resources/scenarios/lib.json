@@ -1,4 +1,5 @@
 {
+  "tracon": "N90 (New York)",
   "airports": {
     "KEWR": {
       "departure_routes": {
@@ -2577,7 +2578,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2642,7 +2643,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2705,7 +2706,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -2795,7 +2796,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2849,7 +2850,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2927,7 +2928,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2999,7 +3000,7 @@
         "NY_C_CTR",
         "BOS_SW_CTR"
       ],
-      "default_map": "LIB Departure",
+      "default_maps": [ "LIB Departure" ],
       "departure_runways": [
         {
           "airport": "KEWR",

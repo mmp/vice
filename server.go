@@ -25,12 +25,12 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 7
+const ViceRPCVersion = 8
 
 type SimServer struct {
 	*RPCClient
 	name        string
-	configs     map[string]*SimConfiguration
+	configs     map[string]map[string]*SimConfiguration
 	runningSims map[string]*RemoteSim
 }
 
@@ -100,6 +100,14 @@ func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
 
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Scratchpad:      scratchpad,
+	}, nil, nil)
+}
+
+func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
+	return s.Client.Go("Sim.SetSecondaryScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Scratchpad:      scratchpad,
@@ -218,8 +226,8 @@ func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
 // SimManager
 
 type SimManager struct {
-	scenarioGroups       map[string]*ScenarioGroup
-	configs              map[string]*SimConfiguration
+	scenarioGroups       map[string]map[string]*ScenarioGroup
+	configs              map[string]map[string]*SimConfiguration
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
 	mu                   LoggingMutex
@@ -227,8 +235,8 @@ type SimManager struct {
 	lg                   *Logger
 }
 
-func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
-	simConfigurations map[string]*SimConfiguration, lg *Logger) *SimManager {
+func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
+	simConfigurations map[string]map[string]*SimConfiguration, lg *Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
@@ -332,7 +340,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 }
 
 type SignOnResult struct {
-	Configurations map[string]*SimConfiguration
+	Configurations map[string]map[string]*SimConfiguration
 	RunningSims    map[string]*RemoteSim
 }
 
@@ -620,6 +628,14 @@ func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error 
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
+	}
+}
+
+func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetSecondaryScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
 	}
 }
 
@@ -1174,8 +1190,8 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 	return ch, nil
 }
 
-func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
-	ch := make(chan map[string]*SimConfiguration, 1)
+func runServer(l net.Listener, isLocal bool) chan map[string]map[string]*SimConfiguration {
+	ch := make(chan map[string]map[string]*SimConfiguration, 1)
 
 	server := func() {
 		var e ErrorLogger

@@ -1,4 +1,5 @@
 {
+  "tracon": "PCT (Potomac)",
 "airports": {
   "KDCA": {
     "approaches": {
@@ -1512,7 +1513,7 @@
     "sector_id": "4T"
   }
   },
-  "default_scenario": "DCA North",
+  "default_scenario": "KDCA North",
   "fixes": {
     "_DCA_1":  "N38.50.30.629,W77.02.12.802",
     "_DCA_4":  "N38.50.30.312,W77.02.27.983",
@@ -1681,7 +1682,7 @@
     "DFORT"
   ],
   "scenarios": {
-    "DCA North": {
+    "KDCA North": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1736,7 +1737,7 @@
         "BWI_W_APP",
         "IAD_M_APP"
       ],
-      "default_map": "MTV North",
+      "default_maps": [ "MTV North" ],
       "wind": {
         "direction": 30,
         "gust": 12,
@@ -1750,7 +1751,7 @@
         }
       ]
     },
-    "DCA South": {
+    "KDCA South": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1805,7 +1806,7 @@
         "BWI_W_APP",
         "IAD_M_APP"
       ],
-      "default_map": "MTV South",
+      "default_maps": [ "MTV South" ],
       "wind": {
         "direction": 180,
         "gust": 12,
@@ -1819,7 +1820,7 @@
         }
       ]
     },
-    "DCA N Final": {
+    "KDCA N Final": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1846,13 +1847,13 @@
       "DCA_K_APP",
       "DC_CTR"
     ],
-    "default_map": "MTV North",
+    "default_maps": [ "MTV North" ],
     "wind": {
       "direction": 20,
       "speed": 5
     }
   },
-  "DCA S Final": {
+  "KDCA S Final": {
     "arrival_runways": [
       {
         "airport": "KDCA",
@@ -1879,7 +1880,7 @@
     "DCA_K_APP",
     "DC_CTR"
   ],
-  "default_map": "MTV South",
+  "default_maps": [ "MTV South" ],
   "wind": {
     "direction": 190,
     "speed": 5

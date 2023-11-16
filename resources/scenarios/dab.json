@@ -1,4 +1,5 @@
 {
+  "tracon": "DAB (Daytona Beach)",
   "airports": {
     "KDAB": {
       "approaches": {
@@ -684,7 +685,7 @@
         "MCO_B_APP",
         "JAX_N_APP"
       ],
-      "default_map": "DAB EAST FLOW",
+      "default_maps": [ "DAB EAST FLOW" ],
       "departure_airspace": [
         "DAB_H_APP"
       ],
@@ -751,7 +752,7 @@
         "MCO_B_APP",
         "JAX_N_APP"
       ],
-      "default_map": "DAB WEST FLOW",
+      "default_maps": [ "DAB WEST FLOW" ],
       "departure_airspace": [
         "DAB_H_APP"
       ],

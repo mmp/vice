@@ -1,4 +1,5 @@
 {
+  "tracon": "N90 (New York)",
   "airports": {
     "KFRG": {
       "name": "Republic",
@@ -1609,11 +1610,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           }
         },
@@ -1621,11 +1624,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           }
         },
@@ -1633,11 +1638,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           }
         },
@@ -1645,11 +1652,13 @@
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "route": "LGA7",
+            "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           }
         }
@@ -3109,77 +3118,6 @@
       "ZIGGI"
   ],
   "scenarios": {
-    "KJFK Depart 13R": {
-      "solo_controller": "JFK_DEP",
-      "controllers": [
-        "BOS_E_CTR",
-        "JFK_TWR",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_C_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "JFK 13s",
-      "departure_runways": [
-        {
-          "airport": "KJFK",
-          "category": "North",
-          "rate": 10,
-          "runway": "13R"
-        },
-        {
-          "airport": "KJFK",
-          "category": "East",
-          "rate": 10,
-          "runway": "13R"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Southwest",
-          "rate": 10,
-          "runway": "13R"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Water",
-          "rate": 10,
-          "runway": "13R"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Water",
-          "rate": 10,
-          "runway": "13"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Southwest",
-          "rate": 0,
-          "runway": "13"
-        },
-        {
-          "airport": "KHVN",
-          "rate": 0,
-          "runway": "20"
-        },
-        {
-          "airport": "KISP",
-          "rate": 0,
-          "runway": "15R"
-        },
-        {
-          "airport": "KFRG",
-          "rate": 0,
-          "runway": "14"
-        }
-      ],
-      "wind": {
-        "direction": 140,
-        "gust": 0,
-        "speed": 24
-      }
-    },
     "KJFK Depart 13R Land 13L": {
       "arrival_runways": [
         {
@@ -3259,6 +3197,7 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
+                    "backup": "JFK_G_APP",
                     "departures": [ "KJFK" ]
                 }
             }
@@ -3275,7 +3214,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 13s",
+      "default_maps": [ "JFK 13s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3399,6 +3338,7 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
+                    "backup": "JFK_G_APP",
                     "departures": [ "KJFK" ]
                 }
             }
@@ -3416,7 +3356,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 22s",
+      "default_maps": [ "JFK 22s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3455,77 +3395,6 @@
         "direction": 140,
         "gust": 17,
         "speed": 12
-      }
-    },
-    "KJFK Depart 22R": {
-      "solo_controller": "JFK_DEP",
-      "controllers": [
-        "BOS_E_CTR",
-        "JFK_TWR",
-        "LGA_APP",
-        "LGA_DEP",
-        "NY_C_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "JFK 22s",
-      "departure_runways": [
-        {
-          "airport": "KJFK",
-          "category": "North",
-          "rate": 10,
-          "runway": "22R"
-        },
-        {
-          "airport": "KJFK",
-          "category": "East",
-          "rate": 10,
-          "runway": "22R"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Southwest",
-          "rate": 10,
-          "runway": "22R"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Water",
-          "rate": 10,
-          "runway": "22R"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Water",
-          "rate": 10,
-          "runway": "22"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Southwest",
-          "rate": 0,
-          "runway": "22"
-        },
-        {
-          "airport": "KHVN",
-          "rate": 0,
-          "runway": "20"
-        },
-        {
-          "airport": "KISP",
-          "rate": 0,
-          "runway": "24"
-        },
-        {
-          "airport": "KFRG",
-          "rate": 0,
-          "runway": "19"
-        }
-      ],
-      "wind": {
-        "direction": 190,
-        "gust": 0,
-        "speed": 24
       }
     },
     "KJFK Depart 22R Land 22 L/R": {
@@ -3611,6 +3480,7 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
+                    "backup": "JFK_G_APP",
                     "departures": [ "KJFK" ]
                 }
             }
@@ -3628,7 +3498,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 22s",
+      "default_maps": [ "JFK 22s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3665,77 +3535,6 @@
       ],
       "wind": {
         "direction": 190,
-        "gust": 17,
-        "speed": 12
-      }
-    },
-    "KJFK Depart 31L": {
-      "solo_controller": "JFK_DEP",
-      "controllers": [
-        "BOS_E_CTR",
-        "JFK_TWR",
-        "LGA_APP",
-        "LGA_DEP",
-        "NY_C_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "JFK 31s",
-      "departure_runways": [
-        {
-          "airport": "KJFK",
-          "category": "North",
-          "rate": 10,
-          "runway": "31L"
-        },
-        {
-          "airport": "KJFK",
-          "category": "East",
-          "rate": 10,
-          "runway": "31L"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Southwest",
-          "rate": 10,
-          "runway": "31L"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Water",
-          "rate": 10,
-          "runway": "31L"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Water",
-          "rate": 10,
-          "runway": "31"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Southwest",
-          "rate": 10,
-          "runway": "31"
-        },
-        {
-          "airport": "KHVN",
-          "rate": 0,
-          "runway": "20"
-        },
-        {
-          "airport": "KISP",
-          "rate": 0,
-          "runway": "33L"
-        },
-        {
-          "airport": "KFRG",
-          "rate": 0,
-          "runway": "32"
-        }
-      ],
-      "wind": {
-        "direction": 330,
         "gust": 17,
         "speed": 12
       }
@@ -3823,6 +3622,7 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
+                    "backup": "JFK_G_APP",
                     "departures": [ "KJFK" ]
                 }
             }
@@ -3839,7 +3639,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 31s",
+      "default_maps": [ "JFK 31s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3878,77 +3678,6 @@
         "direction": 330,
         "gust": 17,
         "speed": 12
-      }
-    },
-    "KJFK Depart 4L": {
-      "solo_controller": "JFK_DEP",
-      "controllers": [
-        "BOS_E_CTR",
-        "JFK_TWR",
-        "LGA_APP",
-        "LGA_DEP",
-        "NY_C_CTR",
-        "NY_LE_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "JFK 4s",
-      "departure_runways": [
-        {
-          "airport": "KJFK",
-          "category": "North",
-          "rate": 10,
-          "runway": "4L"
-        },
-        {
-          "airport": "KJFK",
-          "category": "East",
-          "rate": 10,
-          "runway": "4L"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Southwest",
-          "rate": 10,
-          "runway": "4L"
-        },
-        {
-          "airport": "KJFK",
-          "category": "Water",
-          "rate": 10,
-          "runway": "4L"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Water",
-          "rate": 10,
-          "runway": "4"
-        },
-        {
-          "airport": "KLGA",
-          "category": "Southwest",
-          "rate": 0,
-          "runway": "4"
-        },
-        {
-          "airport": "KHVN",
-          "rate": 0,
-          "runway": "2"
-        },
-        {
-          "airport": "KISP",
-          "rate": 0,
-          "runway": "6"
-        },
-        {
-          "airport": "KFRG",
-          "rate": 0,
-          "runway": "1"
-        }
-      ],
-      "wind": {
-        "direction": 30,
-        "gust": 0,
-        "speed": 8
       }
     },
     "KJFK Depart 4L Land 4L/R": {
@@ -4034,6 +3763,7 @@
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
+                    "backup": "JFK_K_APP",
                     "departures": [ "KJFK" ]
                 }
             }
@@ -4050,7 +3780,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 4s",
+      "default_maps": [ "JFK 4s" ],
       "departure_runways": [
         {
           "airport": "KJFK",

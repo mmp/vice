@@ -1,4 +1,5 @@
 {
+  "tracon": "A80 (Atlanta)",
   "airports": {
     "KATL": {
       "approaches": {
@@ -2427,7 +2428,7 @@
           "ATL_4_TWR",
           "ATL_5_TWR"
         ],
-        "default_map": "TERMINAL ARRIVAL RADAR WEST",
+        "default_maps": [ "TERMINAL ARRIVAL RADAR WEST" ],
         "departure_airspace": [
           "ATLAPP"
         ],
@@ -2529,7 +2530,7 @@
               "ATL_4_TWR",
               "ATL_5_TWR"
             ],
-            "default_map": "TERMINAL ARRIVAL RADAR EAST",
+            "default_maps": [ "TERMINAL ARRIVAL RADAR EAST" ],
             "departure_airspace": [
               "ATLAPP"
             ],
@@ -2615,7 +2616,7 @@
                 "ATL_5_TWR",
                 "ATL_CTR"
               ],
-              "default_map": "ARRIVAL RADAR WEST TRIPLES",
+              "default_maps": [ "ARRIVAL RADAR WEST TRIPLES" ],
               "wind": {
                 "direction": 270,
                 "speed": 5
@@ -2667,7 +2668,7 @@
                 "ATL_5_TWR",
                 "ATL_CTR"
               ],
-              "default_map": "ARRIVAL RADAR WEST DUALS",
+              "default_maps": [ "ARRIVAL RADAR WEST DUALS" ],
               "wind": {
                 "direction": 270,
                 "speed": 5

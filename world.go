@@ -69,7 +69,7 @@ type World struct {
 	RadarSites        map[string]*RadarSite
 	Center            Point2LL
 	Range             float32
-	DefaultMap        string
+	DefaultMaps       []string
 	STARSMaps         []STARSMap
 	InhibitCAVolumes  []AirspaceVolume
 	Wind              Wind
@@ -118,7 +118,7 @@ func (w *World) Assign(other *World) {
 	w.RadarSites = other.RadarSites
 	w.Center = other.Center
 	w.Range = other.Range
-	w.DefaultMap = other.DefaultMap
+	w.DefaultMaps = other.DefaultMaps
 	w.STARSMaps = other.STARSMaps
 	w.InhibitCAVolumes = other.InhibitCAVolumes
 	w.Wind = other.Wind
@@ -225,6 +225,20 @@ func (w *World) SetScratchpad(callsign string, scratchpad string, success func(a
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetScratchpad(callsign, scratchpad),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) SetSecondaryScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.SecondaryScratchpad = scratchpad
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetSecondaryScratchpad(callsign, scratchpad),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -830,18 +844,6 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
-	virtualDepartureController := ap.DepartureController
-	humanDepartureController := ""
-	if virtualDepartureController == "" {
-		humanDepartureController = w.PrimaryController
-		if w.MultiControllers != nil {
-			humanDepartureController = w.MultiControllers.GetDepartureController(departureAirport, runway)
-			if humanDepartureController == "" {
-				humanDepartureController = w.PrimaryController
-			}
-		}
-	}
-
 	airline := Sample(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
@@ -850,8 +852,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
-	if err := ac.InitializeDeparture(w, ap, dep, virtualDepartureController,
-		humanDepartureController, exitRoute); err != nil {
+	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
 

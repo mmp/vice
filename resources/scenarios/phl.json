@@ -1,4 +1,5 @@
 {
+  "tracon": "PHL (Philadelphia)",
   "airports": {
     "KPHL": {
       "name": "Philadelphia",
@@ -5307,6 +5308,8 @@
         }
       },
       "solo_controller": "PHL_F1_APP",
+      "center": "N039.55.00.306,W074.59.15.972",
+      "range": 30,
       "controllers": [
         "PHL_TWR",
         "PHL_NA_APP",
@@ -5314,7 +5317,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "Philadelphia Map West",
+      "default_maps": [ "Philadelphia Map West" ],
       "wind": {
         "direction": 290,
         "speed": 8
@@ -5369,7 +5372,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "Philadelphia Map West",
+      "default_maps": [ "Philadelphia Map West" ],
       "departure_airspace": [
         "PHL_N_DEP27",
         "PHL_S_DEP27",
@@ -5438,7 +5441,7 @@
         "DC_CTR",
         "NY_CTR"
       ],
-      "default_map": "Philadelphia Map East",
+      "default_maps": [ "Philadelphia Map East" ],
       "departure_airspace": [
         "PHL_N_DEP9",
         "PHL_N_HIGH9",
