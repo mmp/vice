@@ -1851,12 +1851,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				// Only take control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign
 			}
-
-			return []RadioTransmission{RadioTransmission{
-				Controller: ctrl.Callsign,
-				Message:    ac.ContactMessage(s.ReportingPoints),
-				Type:       RadioTransmissionContact,
-			}}
+			return nil
 		})
 }
 
