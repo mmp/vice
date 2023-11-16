@@ -4588,7 +4588,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 	}
 }
 
-func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText string, text [2][]string) {
+func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText string, text [][]string) {
 	now := ctx.world.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac) {
@@ -4603,7 +4603,7 @@ func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText s
 	rightJustify := dir > South
 	if rightJustify {
 		maxLen := 0
-		for i := 0; i < 2; i++ {
+		for i := 0; i < len(text); i++ {
 			for j := range text[i] {
 				text[i][j] = strings.TrimSpace(text[i][j])
 				maxLen = max(maxLen, len(text[i][j]))
@@ -4616,7 +4616,7 @@ func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText s
 			}
 			return fmt.Sprintf("%*c", maxLen-len(s), ' ') + s
 		}
-		for i := 0; i < 2; i++ {
+		for i := 0; i < len(text); i++ {
 			text[i][0] = justify(text[i][0])
 		}
 	}
@@ -4738,7 +4738,7 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 	}
 }
 
-func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock string, mainblock [2][]string) {
+func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock string, mainblock [][]string) {
 	state := sp.Aircraft[ac.Callsign]
 
 	var errs []string
@@ -4773,10 +4773,13 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 
 	switch ty {
 	case LimitedDatablock:
+		mainblock = make([][]string, 2)
 		mainblock[0] = append(mainblock[0], "TODO LIMITED DATABLOCK")
 		mainblock[1] = append(mainblock[1], "TODO LIMITED DATABLOCK")
 
 	case PartialDatablock:
+		mainblock = make([][]string, 2)
+
 		// STARS Operators Manual 2-69
 		if ac.Squawk != ac.AssignedSquawk {
 			sq := ac.Squawk.String()
@@ -4830,6 +4833,8 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		return
 
 	case FullDatablock:
+		mainblock = make([][]string, 2)
+
 		// First line; the same for both.
 		cs := ac.Callsign
 		// TODO: draw triangle after callsign if conflict alerts inhibited
@@ -4982,7 +4987,8 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 		color := sp.datablockColor(ctx.world, ac)
 		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: 0}
-		currentDatablockText := datablockText[(realNow.Second()/2)&1] // 2 second cycle
+		db := (realNow.Second() / 2) % len(datablockText) // 2 second cycle
+		currentDatablockText := datablockText[db]
 
 		// Compute the bounds of the datablock; always use the first one so
 		// things don't jump around when it switches between them.
