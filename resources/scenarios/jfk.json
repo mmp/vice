@@ -3214,7 +3214,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 13s",
+      "default_maps": [ "JFK 13s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3356,7 +3356,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 22s",
+      "default_maps": [ "JFK 22s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3498,7 +3498,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 22s",
+      "default_maps": [ "JFK 22s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3639,7 +3639,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 31s",
+      "default_maps": [ "JFK 31s" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3780,7 +3780,7 @@
         "NY_CTR",
         "NY_L_DEP"
       ],
-      "default_map": "JFK 4s",
+      "default_maps": [ "JFK 4s" ],
       "departure_runways": [
         {
           "airport": "KJFK",

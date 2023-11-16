@@ -1737,7 +1737,7 @@
         "BWI_W_APP",
         "IAD_M_APP"
       ],
-      "default_map": "MTV North",
+      "default_maps": [ "MTV North" ],
       "wind": {
         "direction": 30,
         "gust": 12,
@@ -1806,7 +1806,7 @@
         "BWI_W_APP",
         "IAD_M_APP"
       ],
-      "default_map": "MTV South",
+      "default_maps": [ "MTV South" ],
       "wind": {
         "direction": 180,
         "gust": 12,
@@ -1847,7 +1847,7 @@
       "DCA_K_APP",
       "DC_CTR"
     ],
-    "default_map": "MTV North",
+    "default_maps": [ "MTV North" ],
     "wind": {
       "direction": 20,
       "speed": 5
@@ -1880,7 +1880,7 @@
     "DCA_K_APP",
     "DC_CTR"
   ],
-  "default_map": "MTV South",
+  "default_maps": [ "MTV South" ],
   "wind": {
     "direction": 190,
     "speed": 5

@@ -3480,7 +3480,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPW"
                     ],
@@ -3600,7 +3600,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPW"
                     ],
@@ -3725,7 +3725,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPW"
                     ],
@@ -3837,7 +3837,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPE"
                     ],
@@ -3950,7 +3950,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "departure_airspace": [
                     "CHI_APPE"
                 ],
@@ -4068,7 +4068,7 @@
                 "ORD_S_TWR",
                 "MDW_TWR"
             ],
-            "default_map": "C90 MAIN",
+            "default_maps": [ "C90 MAIN" ],
             "departure_airspace": [
                 "CHI_APPE"
             ],
@@ -4144,7 +4144,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map":"C90 SSAT MDW 31C",
+                    "default_maps": [ "C90 SSAT MDW 31C" ],
                     "departure_airspace": [
                         "CHI_S_APP31C"
                     ],
@@ -4196,7 +4196,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map":"C90 SSAT MDW 4R",
+                "default_maps": [ "C90 SSAT MDW 4R" ],
                 "departure_airspace": [
                     "CHI_S_APP4"
                 ],
@@ -4248,7 +4248,7 @@
                 "ORD_S_TWR",
                 "MDW_TWR"
             ],
-            "default_map":"C90 SSAT MDW 13C",
+            "default_maps": [ "C90 SSAT MDW 13C" ],
             "departure_airspace": [
                 "CHI_S_APP31C"
             ],
@@ -4300,7 +4300,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map":"C90 SSAT MDW 22L",
+                "default_maps": [ "C90 SSAT MDW 22L" ],
                 "departure_airspace": [
                     "CHI_S_APP22"
                 ],
@@ -4337,7 +4337,7 @@
                     "CHI_Y_APP",
                     "ORD_S_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2
@@ -4364,7 +4364,7 @@
                     "CHI_Y_APP",
                     "ORD_S_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 50,
                     "speed": 2
@@ -4394,7 +4394,7 @@
                     "CHI_J_APP",
                     "ORD_S_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2
@@ -4446,7 +4446,7 @@
                     "CHI_X_APP",
                     "CHI_Y_APP"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2
@@ -4477,7 +4477,7 @@
                     "ORD_S_TWR",
                     "CHI_E_APP"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2

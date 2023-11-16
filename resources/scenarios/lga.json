@@ -960,7 +960,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1031,7 +1031,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1102,7 +1102,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1173,7 +1173,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",
@@ -1244,7 +1244,7 @@
           "NY_CTR",
           "NY_L_DEP"
         ],
-        "default_map": "LGA",
+        "default_maps": [ "LGA" ],
         "departure_runways": [
           {
             "airport": "KLGA",

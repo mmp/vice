@@ -1807,7 +1807,7 @@
         "ZAE_OKC_LOW",
         "ZAE_TUL_LOW"
       ],
-      "default_map": "AAC VIDEOMAP",
+      "default_maps": [ "AAC VIDEOMAP" ],
       "departure_runways": [
         {
           "airport": "KAAC",
@@ -1890,7 +1890,7 @@
         "ZAE_OKC_LOW",
         "ZAE_TUL_LOW"
       ],
-      "default_map": "AAC VIDEOMAP",
+      "default_maps": [ "AAC VIDEOMAP" ],
       "departure_runways": [
         {
           "airport": "KAAC",

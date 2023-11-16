@@ -2853,7 +2853,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2970,7 +2970,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3024,7 +3024,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3060,7 +3060,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3096,7 +3096,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3132,7 +3132,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 30,
         "gust": 0,

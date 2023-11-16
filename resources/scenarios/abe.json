@@ -673,7 +673,7 @@
         "MDT_APP",
         "NY_CTR"
       ],
-      "default_map": "Allentown TRACON Video Map",
+      "default_maps": [ "Allentown TRACON Video Map" ],
       "departure_runways": [
         {
           "airport": "KABE",
@@ -721,7 +721,7 @@
         "MDT_APP",
         "NY_CTR"
       ],
-      "default_map": "Allentown TRACON Video Map",
+      "default_maps": [ "Allentown TRACON Video Map" ],
       "departure_runways": [
         {
           "airport": "KABE",

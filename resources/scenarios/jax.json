@@ -1041,7 +1041,7 @@
         "MCO_E_APP",
         "JAX_TWR"
       ],
-      "default_map": "EAST FLOW",
+      "default_maps": [ "EAST FLOW" ],
       "departure_airspace": [
         "JAX_N_APP"
       ],
@@ -1139,7 +1139,7 @@
         "MCO_E_APP",
         "JAX_TWR"
       ],
-      "default_map": "EAST FLOW",
+      "default_maps": [ "EAST FLOW" ],
       "departure_airspace": [
         "JAX_N_APP"
       ],
@@ -1240,7 +1240,7 @@
         "MCO_E_APP",
         "JAX_TWR"
       ],
-      "default_map": "WEST FLOW",
+      "default_maps": [ "WEST FLOW" ],
       "departure_airspace": [
         "JAX_N_APP"
       ],

@@ -976,8 +976,10 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	ps.RangeRingsCenter = ps.Center
 
 	ps.VideoMapVisible = make(map[string]interface{})
-	// Make the scenario's default video map be visible
-	ps.VideoMapVisible[w.DefaultMap] = nil
+	// Make the scenario's default video maps be visible
+	for _, dm := range w.DefaultMaps {
+		ps.VideoMapVisible[dm] = nil
+	}
 	ps.SystemMapVisible = make(map[int]interface{})
 
 	sp.SystemMaps = makeSystemMaps(w)

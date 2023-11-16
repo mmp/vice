@@ -887,7 +887,7 @@
         "JAX_30_CTR",
         "SAV_TWR"
       ],
-      "default_map": "RADAR MAP",
+      "default_maps": [ "RADAR MAP" ],
       "departure_airspace": [
         "SAVAPP"
       ],
@@ -944,7 +944,7 @@
         "JAX_30_CTR",
         "SAV_TWR"
       ],
-      "default_map": "RADAR MAP",
+      "default_maps": [ "RADAR MAP" ],
       "departure_airspace": [
         "SAVAPP"
       ],

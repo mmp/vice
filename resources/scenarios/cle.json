@@ -3128,7 +3128,7 @@
                                 "CLE_TWR",
                                 "DTW_F_APP"
                             ],
-                            "default_map": "CLE-003 (RY6)",
+                            "default_maps": [ "CLE-003 (RY6)" ],
                             "departure_airspace": [
                                 "CLE_APP"
                             ],
@@ -3180,7 +3180,7 @@
                                     "DTW_F_APP",
                                     "CLE_CTR"
                                 ],
-                                "default_map": "CLE-001 (RY24)",
+                                "default_maps": [ "CLE-001 (RY24)" ],
                                 "wind": {
                                     "direction": 270,
                                     "gust": 8,
@@ -3218,7 +3218,7 @@
                                         "DTW_F_APP",
                                         "CLE_CTR"
                                     ],
-                                    "default_map": "CLE-001 (RY24)",
+                                    "default_maps": [ "CLE-001 (RY24)" ],
                                     "wind": {
                                         "direction": 270,
                                         "gust": 8,
@@ -3257,7 +3257,7 @@
                                             "CLE_CTR",
                                             "CLE_F_APP"
                                         ],
-                                        "default_map": "CLE-003 (RY6)",
+                                        "default_maps": [ "CLE-003 (RY6)" ],
                                         "wind": {
                                             "direction": 70,
                                             "gust": 8,
@@ -3295,7 +3295,7 @@
                                         "DTW_F_APP",
                                         "CLE_CTR"
                                     ],
-                                    "default_map": "CLE-003 (RY6)",
+                                    "default_maps": [ "CLE-003 (RY6)" ],
                                     "wind": {
                                         "direction": 60,
                                         "gust": 8,
@@ -3341,7 +3341,7 @@
                                 "CLE_TWR",
                                 "DTW_F_APP"
                             ],
-                            "default_map": "CLE-001 (RY24)",
+                            "default_maps": [ "CLE-001 (RY24)" ],
                             "departure_airspace": [
                                 "CLE_APP"
                             ],

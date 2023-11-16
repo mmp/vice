@@ -886,7 +886,7 @@
       "SDF_E_TWR",
       "SDF_W_TWR"
     ],
-    "default_map": "RWY 17s BASE",
+    "default_maps": [ "RWY 17s BASE" ],
     "departure_airspace": [
       "sdfapp"
     ],
@@ -951,7 +951,7 @@
       "SDF_E_TWR",
       "SDF_W_TWR"
     ],
-    "default_map": "RWY 35s BASE",
+    "default_maps": [ "RWY 35s BASE" ],
     "departure_airspace": [
       "sdfapp"
     ],

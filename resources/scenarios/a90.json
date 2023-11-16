@@ -2386,7 +2386,7 @@
         "BOS_W_TWR",
         "BOS_CTR"
       ],
-      "default_map": "BOS A90 MAIN",
+      "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
         "BOS_APP4R"
       ],
@@ -2446,7 +2446,7 @@
         "BOS_W_TWR",
         "BOS_CTR"
       ],
-      "default_map": "BOS A90 MAIN",
+      "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
         "BOS_APP"
       ],
@@ -2502,7 +2502,7 @@
         "BOS_W_TWR",
         "BOS_CTR"
       ],
-      "default_map": "BOS A90 MAIN",
+      "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
         "BOS_APP"
       ],
@@ -2558,7 +2558,7 @@
         "BOS_W_TWR",
         "BOS_CTR"
       ],
-      "default_map": "BOS A90 MAIN",
+      "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
         "BOS_APP"
       ],
@@ -2605,7 +2605,7 @@
         "BOS_N_APP",
         "BOS_S_APP"
       ],
-      "default_map": "BOS 4R/L",
+      "default_maps": [ "BOS 4R/L" ],
       "wind": {
         "direction": 70,
         "speed": 10

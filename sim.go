@@ -762,7 +762,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.RadarSites = sg.RadarSites
 	w.Center = sg.Center
 	w.Range = sg.Range
-	w.DefaultMap = sc.DefaultMap
+	w.DefaultMaps = sc.DefaultMaps
 	w.STARSMaps = sg.STARSMaps
 	w.InhibitCAVolumes = sg.InhibitCAVolumes
 	w.Scratchpads = sg.Scratchpads

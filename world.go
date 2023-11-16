@@ -69,7 +69,7 @@ type World struct {
 	RadarSites        map[string]*RadarSite
 	Center            Point2LL
 	Range             float32
-	DefaultMap        string
+	DefaultMaps       []string
 	STARSMaps         []STARSMap
 	InhibitCAVolumes  []AirspaceVolume
 	Wind              Wind
@@ -118,7 +118,7 @@ func (w *World) Assign(other *World) {
 	w.RadarSites = other.RadarSites
 	w.Center = other.Center
 	w.Range = other.Range
-	w.DefaultMap = other.DefaultMap
+	w.DefaultMaps = other.DefaultMaps
 	w.STARSMaps = other.STARSMaps
 	w.InhibitCAVolumes = other.InhibitCAVolumes
 	w.Wind = other.Wind

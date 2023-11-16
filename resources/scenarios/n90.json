@@ -3809,7 +3809,7 @@
                 
 
             ],
-            "default_map": "EWR",
+            "default_maps": [ "EWR", "LGA", "JFK 22s" ],
             "departure_runways": [
                 {
                     "airport": "KJFK",

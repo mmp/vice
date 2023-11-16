@@ -108,7 +108,7 @@ type Scenario struct {
 	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	DefaultMap string `json:"default_map"`
+	DefaultMaps []string `json:"default_maps"`
 }
 
 // split -> config
@@ -398,15 +398,16 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	}
 
-	if s.DefaultMap == "" {
-		e.ErrorString("must specify a default video map using \"default_map\"")
+	if len(s.DefaultMaps) == 0 {
+		e.ErrorString("must specify at least one default video map using \"default_maps\"")
 	} else {
-		idx := FindIf(sg.STARSMaps, func(m STARSMap) bool { return m.Name == s.DefaultMap })
-		if idx == -1 {
-			e.ErrorString("video map \"%s\" not found in \"stars_maps\"", s.DefaultMap)
+		for _, dm := range s.DefaultMaps {
+			idx := FindIf(sg.STARSMaps, func(m STARSMap) bool { return m.Name == dm })
+			if idx == -1 {
+				e.ErrorString("video map \"%s\" not found in \"stars_maps\"", dm)
+			}
 		}
 	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////

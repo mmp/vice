@@ -1487,7 +1487,7 @@
                 "LAS_TWR",
                 "LAX_55_CTR"
             ],
-            "default_map": "283 BM3M L30", 
+            "default_maps": [ "283 BM3M L30" ] ,
             "departure_runways": [
                 {
                     "airport": "KLAS",
@@ -1590,7 +1590,7 @@
                 "LAS_TWR",
                 "LAX_55_CTR"
             ],
-            "default_map": "283 BM3M L30", 
+            "default_maps": [ "283 BM3M L30" ] ,
             "departure_runways": [
                 {
                     "airport": "KLAS",
@@ -1689,7 +1689,7 @@
                 "LAS_TWR",
                 "LAX_55_CTR"
             ],
-            "default_map": "283 BM3M L30", 
+            "default_maps": [ "283 BM3M L30" ] ,
             "departure_runways": [
                 {
                     "airport": "KLAS",
@@ -1793,7 +1793,7 @@
                 "LAS_TWR",
                 "LAX_55_CTR"
             ],
-            "default_map": "283 BM3M L30", 
+            "default_maps": [ "283 BM3M L30" ] ,
             "departure_runways": [
                 {
                     "airport": "KLAS",
