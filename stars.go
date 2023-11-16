@@ -2745,6 +2745,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					for i, ca := range sp.CAAircraft {
 						if ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign {
 							sp.CAAircraft[i].Acknowledged = true
+							return
 						}
 					}
 				} else if ac.HandoffTrackController == ctx.world.Callsign {
@@ -2774,18 +2775,25 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = time.Now()
 					sp.handoffControl(ctx, ac.Callsign)
-				} else { //if ac.IsAssociated() {
-					if state.DatablockType != FullDatablock {
-						state.DatablockType = FullDatablock
-						// do not collapse datablock if user is tracking the aircraft
-					} else if ac.TrackingController != ctx.world.Callsign {
-						state.DatablockType = PartialDatablock
+					return
+				} else if ctx.keyboard != nil {
+					_, ctrl := ctx.keyboard.Pressed[KeyControl]
+					_, shift := ctx.keyboard.Pressed[KeyShift]
+					if ctrl && shift {
+						// initiate track, CRC style
+						sp.initiateTrack(ctx, ac.Callsign)
+						return
 					}
 				}
-			//} else {
-			//sp.queryUnassociated.Add(ac, nil, 5*time.Second)
-			//}
-			// TODO: ack SPC alert
+
+				//if ac.IsAssociated() {
+				if state.DatablockType != FullDatablock {
+					state.DatablockType = FullDatablock
+					// do not collapse datablock if user is tracking the aircraft
+				} else if ac.TrackingController != ctx.world.Callsign {
+					state.DatablockType = PartialDatablock
+				}
+				//}
 
 			case 1:
 				if cmd == "." {
