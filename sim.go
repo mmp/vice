@@ -617,15 +617,10 @@ type Sim struct {
 	// airport -> runway -> category
 	lastDeparture map[string]map[string]map[string]*Departure
 
-	// The same runway may be present multiple times in DepartureRates,
-	// with different categories. However, we want to make sure that we
-	// don't spawn two aircraft on the same runway at the same time (or
-	// close to it).  Therefore, here we track a per-runway "when's the
-	// next time that we will spawn *something* from the runway" time.
-	// When the time is up, we'll figure out which specific category to
-	// use...
-	// airport -> runway -> time
-	NextDepartureSpawn map[string]map[string]time.Time
+	// We track an overall "at what time do we launch the next departure"
+	// time for each airport. When that time is reached, we'll pick a
+	// runway, category, etc., based on the respective rates.
+	NextDepartureSpawn map[string]time.Time `json:"NextDepartureSpawn2"` // avoid parse errors on old configs
 
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
@@ -1387,21 +1382,17 @@ func (s *Sim) setInitialSpawnTimes() {
 		s.NextArrivalSpawn[group] = randomSpawn(rateSum)
 	}
 
-	s.NextDepartureSpawn = make(map[string]map[string]time.Time)
+	s.NextDepartureSpawn = make(map[string]time.Time)
 	for airport, runwayRates := range s.LaunchConfig.DepartureRates {
-		spawn := make(map[string]time.Time)
+		rateSum := 0
 
-		for runway, categoryRates := range runwayRates {
-			rateSum := 0
+		for _, categoryRates := range runwayRates {
 			for _, rate := range categoryRates {
 				rateSum += rate
 			}
-			if rateSum > 0 {
-				spawn[runway] = randomSpawn(rateSum)
-			}
 		}
 
-		s.NextDepartureSpawn[airport] = spawn
+		s.NextDepartureSpawn[airport] = randomSpawn(rateSum)
 	}
 }
 
@@ -1420,6 +1411,26 @@ func sampleRateMap(rates map[string]int) (string, int) {
 		}
 	}
 	return result, rateSum
+}
+
+func sampleRateMap2(rates map[string]map[string]int) (string, string, int) {
+	// Choose randomly in proportion to the rates in the map
+	rateSum := 0
+	var result0, result1 string
+	for item0, rateMap := range rates {
+		for item1, rate := range rateMap {
+			if rate == 0 {
+				continue
+			}
+			rateSum += rate
+			// Weighted reservoir sampling...
+			if rand.Float32() < float32(rate)/float32(rateSum) {
+				result0 = item0
+				result1 = item1
+			}
+		}
+	}
+	return result0, result1, rateSum
 }
 
 func randomWait(rate int) time.Duration {
@@ -1448,31 +1459,29 @@ func (s *Sim) spawnAircraft() {
 		}
 	}
 
-	for airport, runwayTimes := range s.NextDepartureSpawn {
-		for runway, spawnTime := range runwayTimes {
-			if !now.After(spawnTime) {
-				continue
-			}
+	for airport, spawnTime := range s.NextDepartureSpawn {
+		if !now.After(spawnTime) {
+			continue
+		}
 
-			// Figure out which category to launch
-			category, rateSum := sampleRateMap(s.LaunchConfig.DepartureRates[airport][runway])
-			if rateSum == 0 {
-				s.lg.Errorf("%s/%s: couldn't find a matching runway for spawning departure?", airport, runway)
-				continue
-			}
+		// Figure out which category to launch
+		runway, category, rateSum := sampleRateMap2(s.LaunchConfig.DepartureRates[airport])
+		if rateSum == 0 {
+			s.lg.Errorf("%s: couldn't find an active runway for spawning departure?", airport)
+			continue
+		}
 
-			prevDep := s.lastDeparture[airport][runway][category]
-			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
-				s.LaunchConfig.DepartureChallenge, prevDep)
-			if err != nil {
-				s.lg.Errorf("CreateDeparture error: %v", err)
-			} else {
-				s.lastDeparture[airport][runway][category] = dep
-				s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
-				s.launchAircraftNoLock(*ac)
-				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
-			}
+		prevDep := s.lastDeparture[airport][runway][category]
+		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
+		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
+			s.LaunchConfig.DepartureChallenge, prevDep)
+		if err != nil {
+			s.lg.Errorf("CreateDeparture error: %v", err)
+		} else {
+			s.lastDeparture[airport][runway][category] = dep
+			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
+			s.launchAircraftNoLock(*ac)
+			s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum))
 		}
 	}
 }
@@ -1504,16 +1513,16 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 	} else {
 		// Update the next spawn time for any rates that changed.
 		for ap, rwyRates := range lc.DepartureRates {
+			newSum, oldSum := 0, 0
 			for rwy, categoryRates := range rwyRates {
-				newSum, oldSum := 0, 0
 				for category, rate := range categoryRates {
 					newSum += rate
 					oldSum += s.LaunchConfig.DepartureRates[ap][rwy][category]
 				}
-				if newSum != oldSum {
-					s.lg.Infof("%s/%s: departure rate changed %d -> %d", ap, rwy, oldSum, newSum)
-					s.NextDepartureSpawn[ap][rwy] = s.SimTime.Add(randomWait(newSum))
-				}
+			}
+			if newSum != oldSum {
+				s.lg.Infof("%s: departure rate changed %d -> %d", ap, oldSum, newSum)
+				s.NextDepartureSpawn[ap] = s.SimTime.Add(randomWait(newSum))
 			}
 		}
 		for group, groupRates := range lc.ArrivalGroupRates {
