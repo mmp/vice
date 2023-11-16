@@ -1668,6 +1668,17 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 		})
 }
 
+func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchTrackingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.SecondaryScratchpad = scratchpad
+			return nil
+		})
+}
+
 func (s *Sim) Ident(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

@@ -412,12 +412,13 @@ type ExitRoute struct {
 type Departure struct {
 	Exit string `json:"exit"`
 
-	Destination    string             `json:"destination"`
-	Altitude       int                `json:"altitude,omitempty"`
-	Route          string             `json:"route"`
-	RouteWaypoints WaypointArray      // not specified in user JSON
-	Airlines       []DepartureAirline `json:"airlines"`
-	Scratchpad     string             `json:"scratchpad"` // optional
+	Destination         string             `json:"destination"`
+	Altitude            int                `json:"altitude,omitempty"`
+	Route               string             `json:"route"`
+	RouteWaypoints      WaypointArray      // not specified in user JSON
+	Airlines            []DepartureAirline `json:"airlines"`
+	Scratchpad          string             `json:"scratchpad"`           // optional
+	SecondaryScratchpad string             `json:"secondary_scratchpad"` // optional
 }
 
 type DepartureAirline struct {

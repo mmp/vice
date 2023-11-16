@@ -2350,19 +2350,27 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 
 		case "Y":
+			isSecondary := false
+			if len(cmd) > 0 && cmd[0] == '+' {
+				isSecondary = true
+				cmd = cmd[1:]
+			}
+
 			f := strings.Fields(cmd)
 			if len(f) == 1 {
 				// Y callsign -> clear scratchpad and reported altitude
+				// Y+ callsign -> secondary scratchpad..
 				callsign := lookupCallsign(f[0])
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
-					sp.setScratchpad(ctx, callsign, "")
+					sp.setScratchpad(ctx, callsign, "", isSecondary)
 					status.clear = true
 				}
 				return
 			} else if len(f) == 2 {
 				// Y callsign <space> scratch -> set scatchpad
 				// Y callsign <space> ### -> set pilot alt
+				// as above, Y+ -> secondary scratchpad
 
 				// Either pilot alt or scratchpad entry
 				if ac := lookupAircraft(f[0]); ac == nil {
@@ -2370,7 +2378,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
 				} else {
-					sp.setScratchpad(ctx, ac.Callsign, f[1])
+					sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary)
 				}
 				status.clear = true
 				return
@@ -2575,11 +2583,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	return
 }
 
-func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string) {
-	ctx.world.SetScratchpad(callsign, contents, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) {
+	if isSecondary {
+		ctx.world.SetSecondaryScratchpad(callsign, contents, nil,
+			func(err error) {
+				sp.previewAreaOutput = GetSTARSError(err).Error()
+			})
+	} else {
+		ctx.world.SetScratchpad(callsign, contents, nil,
+			func(err error) {
+				sp.previewAreaOutput = GetSTARSError(err).Error()
+			})
+	}
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
@@ -2775,7 +2790,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			case 1:
 				if cmd == "." {
 					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "")
+					sp.setScratchpad(ctx, ac.Callsign, "", false)
+					return
+				} else if cmd == "+" {
+					status.clear = true
+					sp.setScratchpad(ctx, ac.Callsign, "", true)
 					return
 				} else if cmd == "U" {
 					status.clear = true
@@ -2861,10 +2880,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			case 4:
 				if cmd[0] == '+' {
 					if alt, err := strconv.Atoi(cmd[1:]); err == nil {
-						status.clear = true
 						sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
+						status.clear = true
 					} else {
-						status.err = ErrSTARSCommandFormat
+						sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true)
+						status.clear = true
 					}
 					return
 				} else {
@@ -3067,11 +3087,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 
 			case "Y":
+				isSecondary := false
+				if len(cmd) > 0 && cmd[0] == '+' {
+					isSecondary = true
+					cmd = cmd[1:]
+				}
+
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
 					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "")
+					sp.setScratchpad(ctx, ac.Callsign, "", isSecondary)
 					return
 				} else {
 					// Is it an altitude or a scratchpad update?
@@ -3080,7 +3106,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.clear = true
 					} else {
 						status.clear = true
-						sp.setScratchpad(ctx, ac.Callsign, cmd)
+						sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary)
 					}
 					return
 				}
@@ -4778,7 +4804,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		mainblock[1] = append(mainblock[1], "TODO LIMITED DATABLOCK")
 
 	case PartialDatablock:
-		mainblock = make([][]string, 2)
+		mainblock = make([][]string, 2) // 2 by default, handle 3 as needed below
 
 		// STARS Operators Manual 2-69
 		if ac.Squawk != ac.AssignedSquawk {
@@ -4815,8 +4841,17 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		if fp := ac.FlightPlan; fp != nil && fp.Rules == IFR {
 			// Alternate between altitude and either scratchpad or destination airport.
 			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)+ho+suffix+ident)
-			if ac.Scratchpad != "" {
+			if ac.Scratchpad != "" && ac.SecondaryScratchpad != "" {
+				// both scratchpads
+				mainblock = append(mainblock, mainblock[1]) // copy what we have so far
 				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.Scratchpad)+ho+suffix+ident)
+				mainblock[2] = append(mainblock[2], fmt.Sprintf("%3s", ac.SecondaryScratchpad)+ho+suffix+ident)
+			} else if ac.Scratchpad != "" {
+				// just primary
+				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.Scratchpad)+ho+suffix+ident)
+			} else if ac.SecondaryScratchpad != "" {
+				// have secondary but not primary
+				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.SecondaryScratchpad)+ho+suffix+ident)
 			} else {
 				ap := fp.ArrivalAirport
 				if len(ap) == 4 {
@@ -4896,13 +4931,18 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			mainblock[0] = append(mainblock[0], alt+ho+speed+suffix)
 		}
 
-		// mainblock[1]
-		arrscr := ac.FlightPlan.ArrivalAirport
-		if ac.Scratchpad != "" {
-			arrscr = ac.Scratchpad
+		// scratchpad(s) or arrival airport
+		if ac.Scratchpad != "" && ac.SecondaryScratchpad != "" {
+			mainblock = append(mainblock, mainblock[1])
+			mainblock[1] = append(mainblock[1], ac.Scratchpad+ho+actype)
+			mainblock[2] = append(mainblock[2], ac.SecondaryScratchpad+ho+actype)
+		} else if ac.Scratchpad != "" {
+			mainblock[1] = append(mainblock[1], ac.Scratchpad+ho+actype)
+		} else if ac.SecondaryScratchpad != "" {
+			mainblock[1] = append(mainblock[1], ac.SecondaryScratchpad+ho+actype)
+		} else {
+			mainblock[1] = append(mainblock[1], ac.FlightPlan.ArrivalAirport+ho+actype)
 		}
-
-		mainblock[1] = append(mainblock[1], arrscr+ho+actype)
 	}
 
 	if ac.TempAltitude != 0 {

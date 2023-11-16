@@ -106,6 +106,14 @@ func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
+	return s.Client.Go("Sim.SetSecondaryScratchpad", &SetScratchpadArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Scratchpad:      scratchpad,
+	}, nil, nil)
+}
+
 func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
 		ControllerToken: s.ControllerToken,
@@ -620,6 +628,14 @@ func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error 
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
+	}
+}
+
+func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetSecondaryScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
 	}
 }
 

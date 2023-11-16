@@ -60,14 +60,15 @@ type Arrival struct {
 	CruiseAltitude  float32                  `json:"cruise_altitude"`
 	Route           string                   `json:"route"`
 
-	InitialController string  `json:"initial_controller"`
-	InitialAltitude   float32 `json:"initial_altitude"`
-	ClearedAltitude   float32 `json:"cleared_altitude"`
-	InitialSpeed      float32 `json:"initial_speed"`
-	SpeedRestriction  float32 `json:"speed_restriction"`
-	ExpectApproach    string  `json:"expect_approach"`
-	Scratchpad        string  `json:"scratchpad"`
-	Description       string  `json:"description"`
+	InitialController   string  `json:"initial_controller"`
+	InitialAltitude     float32 `json:"initial_altitude"`
+	ClearedAltitude     float32 `json:"cleared_altitude"`
+	InitialSpeed        float32 `json:"initial_speed"`
+	SpeedRestriction    float32 `json:"speed_restriction"`
+	ExpectApproach      string  `json:"expect_approach"`
+	Scratchpad          string  `json:"scratchpad"`
+	SecondaryScratchpad string  `json:"secondary_scratchpad"`
+	Description         string  `json:"description"`
 
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
 }

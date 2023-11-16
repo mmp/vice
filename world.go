@@ -231,6 +231,20 @@ func (w *World) SetScratchpad(callsign string, scratchpad string, success func(a
 		})
 }
 
+func (w *World) SetSecondaryScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.SecondaryScratchpad = scratchpad
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetSecondaryScratchpad(callsign, scratchpad),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(any), err func(error)) {
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
 		ac.TempAltitude = alt
