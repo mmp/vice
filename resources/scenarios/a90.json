@@ -2598,6 +2598,7 @@
         }
       },
       "solo_controller": "BOS_F_APP",
+      "range": 36,
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",

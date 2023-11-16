@@ -760,8 +760,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Fixes = sg.Fixes
 	w.PrimaryAirport = sg.PrimaryAirport
 	w.RadarSites = sg.RadarSites
-	w.Center = sg.Center
-	w.Range = sg.Range
+	w.Center = Select(sc.Center.IsZero(), sg.Center, sc.Center)
+	w.Range = Select(sc.Range == 0, sg.Range, sc.Range)
 	w.DefaultMaps = sc.DefaultMaps
 	w.STARSMaps = sg.STARSMaps
 	w.InhibitCAVolumes = sg.InhibitCAVolumes

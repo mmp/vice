@@ -5308,6 +5308,8 @@
         }
       },
       "solo_controller": "PHL_F1_APP",
+      "center": "N039.55.00.306,W074.59.15.972",
+      "range": 30,
       "controllers": [
         "PHL_TWR",
         "PHL_NA_APP",

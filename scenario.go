@@ -109,7 +109,10 @@ type Scenario struct {
 	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	DefaultMaps []string `json:"default_maps"`
+	Center       Point2LL `json:"-"`
+	CenterString string   `json:"center"`
+	Range        float32  `json:"range"`
+	DefaultMaps  []string `json:"default_maps"`
 }
 
 // split -> config
@@ -396,6 +399,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	for _, ctrl := range s.VirtualControllers {
 		if _, ok := sg.ControlPositions[ctrl]; !ok {
 			e.ErrorString("controller \"%s\" unknown", ctrl)
+		}
+	}
+
+	if s.CenterString != "" {
+		if pos, ok := sg.locate(s.CenterString); !ok {
+			e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
+		} else {
+			s.Center = pos
 		}
 	}
 
