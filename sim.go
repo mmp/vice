@@ -2205,7 +2205,12 @@ func (s *Sim) GoAround(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.GoAround()
+			resp := ac.GoAround()
+			for i := range resp {
+				// Upgrade to unexpected versus it just being controller initiated.
+				resp[i].Type = RadioTransmissionUnexpected
+			}
+			return resp
 		})
 }
 

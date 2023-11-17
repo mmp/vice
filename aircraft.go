@@ -55,6 +55,11 @@ type Aircraft struct {
 	WaypointHandoffController string
 }
 
+type PilotResponse struct {
+	Message    string
+	Unexpected bool // should it be highlighted in the UI
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Aircraft
 
@@ -124,6 +129,22 @@ func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission 
 	}}
 }
 
+func (ac *Aircraft) readbackUnexpected(f string, args ...interface{}) []RadioTransmission {
+	return []RadioTransmission{RadioTransmission{
+		Controller: ac.ControllingController,
+		Message:    fmt.Sprintf(f, args...),
+		Type:       RadioTransmissionUnexpected,
+	}}
+}
+
+func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
+	return []RadioTransmission{RadioTransmission{
+		Controller: ac.ControllingController,
+		Message:    r.Message,
+		Type:       RadioTransmissionType(Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
+	}}
+}
+
 func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 	lg := simlg.With(slog.String("callsign", ac.Callsign))
 
@@ -165,42 +186,40 @@ func (ac *Aircraft) GoAround() []RadioTransmission {
 
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
-		Message:    resp,
-		Type:       RadioTransmissionContact,
+		Message:    resp.Message,
+		Type:       RadioTransmissionType(Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
 	}}
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) []RadioTransmission {
 	response := ac.Nav.AssignAltitude(float32(altitude), afterSpeed)
-	return ac.readback(response)
+	return ac.transmitResponse(response)
 }
 
 func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) []RadioTransmission {
 	resp := ac.Nav.AssignSpeed(float32(speed), afterAltitude)
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) MaintainSlowestPractical() []RadioTransmission {
-	return ac.readback(ac.Nav.MaintainSlowestPractical())
+	return ac.transmitResponse(ac.Nav.MaintainSlowestPractical())
 }
 
 func (ac *Aircraft) MaintainMaximumForward() []RadioTransmission {
-	return ac.readback(ac.Nav.MaintainMaximumForward())
+	return ac.transmitResponse(ac.Nav.MaintainMaximumForward())
 }
 
 func (ac *Aircraft) ExpediteDescent() []RadioTransmission {
-	resp := ac.Nav.ExpediteDescent()
-	return ac.readback(resp)
+	return ac.transmitResponse(ac.Nav.ExpediteDescent())
 }
 
 func (ac *Aircraft) ExpediteClimb() []RadioTransmission {
-	resp := ac.Nav.ExpediteClimb()
-	return ac.readback(resp)
+	return ac.transmitResponse(ac.Nav.ExpediteClimb())
 }
 
 func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmission {
 	resp := ac.Nav.AssignHeading(float32(heading), turn)
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
@@ -216,28 +235,26 @@ func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
 }
 
 func (ac *Aircraft) FlyPresentHeading() []RadioTransmission {
-	resp := ac.Nav.FlyPresentHeading()
-	return ac.readback(resp)
+	return ac.transmitResponse(ac.Nav.FlyPresentHeading())
 }
 
 func (ac *Aircraft) DirectFix(fix string) []RadioTransmission {
-	resp := ac.Nav.DirectFix(strings.ToUpper(fix))
-	return ac.readback(resp)
+	return ac.transmitResponse(ac.Nav.DirectFix(strings.ToUpper(fix)))
 }
 
 func (ac *Aircraft) DepartFixHeading(fix string, hdg int) []RadioTransmission {
 	resp := ac.Nav.DepartFixHeading(strings.ToUpper(fix), float32(hdg))
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) DepartFixDirect(fixa, fixb string) []RadioTransmission {
 	resp := ac.Nav.DepartFixDirect(strings.ToUpper(fixa), strings.ToUpper(fixb))
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) []RadioTransmission {
 	resp := ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed)
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
@@ -254,82 +271,81 @@ func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
 
 func (ac *Aircraft) ExpectApproach(id string, w *World, lg *Logger) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure.")
+		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable.")
+		return ac.readbackUnexpected("unable.")
 	}
 
 	lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-	resp, _ := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, id, arr, w, lg)
-	return ac.readback(resp)
+	resp := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, id, arr, w, lg)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
-	return ac.readback(ac.Nav.AtFixCleared(fix, approach))
+	return ac.transmitResponse(ac.Nav.AtFixCleared(fix, approach))
 }
 
 func (ac *Aircraft) ClearedApproach(id string, w *World) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure.")
+		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable.")
+		return ac.readbackUnexpected("unable.")
 	}
 
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false, arr, w)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
 	}
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string, w *World) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure.")
+		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable.")
+		return ac.readbackUnexpected("unable.")
 	}
 
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true, arr, w)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
 	}
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) CancelApproachClearance() []RadioTransmission {
-	resp := ac.Nav.CancelApproachClearance()
-	return ac.readback(resp)
+	return ac.transmitResponse(ac.Nav.CancelApproachClearance())
 }
 
 func (ac *Aircraft) ClimbViaSID() []RadioTransmission {
-	return ac.readback(ac.Nav.ClimbViaSID())
+	return ac.transmitResponse(ac.Nav.ClimbViaSID())
 }
 
 func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
-	return ac.readback(ac.Nav.DescendViaSTAR())
+	return ac.transmitResponse(ac.Nav.DescendViaSTAR())
 }
 
 func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {
 	if ac.IsDeparture() {
-		return ac.readback("unable. This aircraft is a departure.")
+		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
 	arr, err := ac.getArrival(w)
 	if err != nil {
-		return ac.readback("unable.")
+		return ac.readbackUnexpected("unable.")
 	}
 
 	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport, arr, w)
-	return ac.readback(resp)
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
