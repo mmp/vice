@@ -4727,6 +4727,9 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 
 	conflicting := func(callsigna, callsignb string) bool {
 		sa, sb := sp.Aircraft[callsigna], sp.Aircraft[callsignb]
+		if sa.DisableCAWarnings || sb.DisableCAWarnings {
+			return false
+		}
 		if inCAVolumes(sa) || inCAVolumes(sb) {
 			return false
 		}
