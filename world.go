@@ -1549,6 +1549,10 @@ func (w *World) DrawSettingsWindow() {
 		w.SetSimRate(w.SimRate)
 	}
 
+	show := !globalConfig.HideFlightStrips
+	imgui.Checkbox("Show flight strips", &show)
+	globalConfig.HideFlightStrips = !show
+
 	update := !globalConfig.InhibitDiscordActivity.Load()
 	imgui.Checkbox("Update Discord activity status", &update)
 	globalConfig.InhibitDiscordActivity.Store(!update)

@@ -419,9 +419,9 @@ func wmReleaseKeyboardFocus() {
 
 // wmPaneIsPresent checks to see if the specified Pane is present in the
 // display hierarchy.
-func wmPaneIsPresent(pane Pane) bool {
+func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 	found := false
-	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+	root.VisitPanes(func(p Pane) {
 		if p == pane {
 			found = true
 		}
@@ -435,14 +435,29 @@ func wmPaneIsPresent(pane Pane) bool {
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
 func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
-	if !wmPaneIsPresent(wm.keyboardFocusPane) {
+	root := globalConfig.DisplayRoot
+	if globalConfig.HideFlightStrips {
+		var filter func(d *DisplayNode) *DisplayNode
+		filter = func(d *DisplayNode) *DisplayNode {
+			if _, ok := d.Children[0].Pane.(*FlightStripPane); ok {
+				return filter(d.Children[1])
+			} else if _, ok := d.Children[1].Pane.(*FlightStripPane); ok {
+				return filter(d.Children[0])
+			} else {
+				return d
+			}
+		}
+		root = filter(root)
+	}
+
+	if !wmPaneIsPresent(wm.keyboardFocusPane, root) {
 		// It was deleted in the config editor or a new config was loaded.
 		wm.keyboardFocusPane = nil
 	}
 	if wm.keyboardFocusPane == nil {
 		// Take any one that can take keyboard events.
 		if wm.keyboardFocusPane == nil {
-			globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
+			root.VisitPanes(func(pane Pane) {
 				if pane.CanTakeKeyboardFocus() {
 					wm.keyboardFocusPane = pane
 				}
@@ -462,7 +477,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	mousePos := [2]float32{imgui.MousePos().X, displaySize[1] - 1 - imgui.MousePos().Y}
 
 	// Figure out which Pane the mouse is in.
-	mousePane := globalConfig.DisplayRoot.FindPaneForMouse(paneDisplayExtent, mousePos)
+	mousePane := root.FindPaneForMouse(paneDisplayExtent, mousePos)
 
 	io := imgui.CurrentIO()
 
@@ -494,11 +509,6 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	// Now traverse all of the Panes...
 	// First clear the entire window to the background color.
 	commandBuffer.ClearRGB(RGB{})
-
-	// By default we'll visit the tree starting at
-	// DisplayRoot. However, if a Pane has been maximized to cover the
-	// whole screen, we will instead start with it.
-	root := globalConfig.DisplayRoot
 
 	// Actually visit the panes.
 	var keyboard *KeyboardState
