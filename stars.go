@@ -5263,9 +5263,9 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 						gs = ac.GS()
 					}
 				}
-
-				drawRBL(p0, p1, i+1, gs)
 			}
+
+			drawRBL(p0, p1, i+1, gs)
 		}
 	}
 
