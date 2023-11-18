@@ -1129,76 +1129,13 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration) {
-	// First load the embedded video maps.
-	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
-
 	start := time.Now()
-	vmChan := make(chan LoadedVideoMap, 16)
-	launches := 0
 
-	err := fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			lg.Errorf("error walking videomaps: %v", err)
-			return nil
-		}
-
-		if d.IsDir() {
-			return nil
-		}
-
-		if filepath.Ext(path) != ".json" && filepath.Ext(path) != ".zst" {
-			return nil
-		}
-
-		launches++
-		go loadVideoMaps(resourcesFS, path, vmChan)
-		return nil
-	})
-	if err != nil {
-		lg.Errorf("error loading videomaps: %v", err)
-		os.Exit(1)
-	}
-
-	receiveLoadedVideoMap := func() {
-		lvm := <-vmChan
-		if lvm.err != nil {
-			e.Push("File " + lvm.path)
-			e.Error(lvm.err)
-			e.Pop()
-		} else {
-			videoMapCommandBuffers[lvm.path] = lvm.commandBufs
-		}
-	}
-
-	// Get all of the loaded video map command buffers
-	for launches > 0 {
-		receiveLoadedVideoMap()
-		launches--
-	}
-
-	lg.Infof("video map load time: %s\n", time.Since(start))
-
-	// Load the video map specified on the command line, if any.
-	loadVid := func(filename string) {
-		if filename != "" {
-			fs := func() fs.FS {
-				if filepath.IsAbs(filename) {
-					return RootFS{}
-				} else {
-					return os.DirFS(".")
-				}
-			}()
-			loadVideoMaps(fs, filename, vmChan)
-			receiveLoadedVideoMap()
-		}
-	}
-	loadVid(*videoMapFilename)
-
-	// Now load the scenarios.
+	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
 	simConfigurations := make(map[string]map[string]*SimConfiguration)
 
-	err = fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("error walking scenarios/: %v", err)
 			return nil
@@ -1263,6 +1200,68 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		}
 	}
 	loadScenario(*scenarioFilename)
+
+	// Next load the video maps.
+	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
+	vmChan := make(chan LoadedVideoMap, 16)
+	launches := 0
+	err = fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			lg.Errorf("error walking videomaps: %v", err)
+			return nil
+		}
+
+		if d.IsDir() {
+			return nil
+		}
+
+		if filepath.Ext(path) != ".json" && filepath.Ext(path) != ".zst" {
+			return nil
+		}
+
+		launches++
+		go loadVideoMaps(resourcesFS, path, vmChan)
+		return nil
+	})
+	if err != nil {
+		lg.Errorf("error loading videomaps: %v", err)
+		os.Exit(1)
+	}
+
+	receiveLoadedVideoMap := func() {
+		lvm := <-vmChan
+		if lvm.err != nil {
+			e.Push("File " + lvm.path)
+			e.Error(lvm.err)
+			e.Pop()
+		} else {
+			videoMapCommandBuffers[lvm.path] = lvm.commandBufs
+		}
+	}
+
+	// Get all of the loaded video map command buffers
+	for launches > 0 {
+		receiveLoadedVideoMap()
+		launches--
+	}
+
+	lg.Infof("video map load time: %s\n", time.Since(start))
+
+	// Load the video map specified on the command line, if any.
+	loadVid := func(filename string) {
+		if filename != "" {
+			fs := func() fs.FS {
+				if filepath.IsAbs(filename) {
+					return RootFS{}
+				} else {
+					return os.DirFS(".")
+				}
+			}()
+			loadVideoMaps(fs, filename, vmChan)
+			receiveLoadedVideoMap()
+		}
+	}
+	loadVid(*videoMapFilename)
 
 	// Final tidying before we return the loaded scenarios.
 	for tname, tracon := range scenarioGroups {
