@@ -1160,9 +1160,6 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		}
 	}
 	loadVid(*videoMapFilename)
-	if globalConfig != nil {
-		loadVid(globalConfig.DevVideoMapFile)
-	}
 
 	// Now load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
@@ -1217,9 +1214,6 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				// is automatically patched up here...
 				if s.VideoMapFile == "" {
 					s.VideoMapFile = *videoMapFilename
-					if s.VideoMapFile == "" && globalConfig != nil && globalConfig.DevVideoMapFile != "" {
-						s.VideoMapFile = globalConfig.DevVideoMapFile
-					}
 
 					if s.VideoMapFile == "" {
 						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
@@ -1236,9 +1230,6 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		}
 	}
 	loadScenario(*scenarioFilename)
-	if globalConfig != nil {
-		loadScenario(globalConfig.DevScenarioFile)
-	}
 
 	// Final tidying before we return the loaded scenarios.
 	for tname, tracon := range scenarioGroups {

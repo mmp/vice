@@ -41,8 +41,6 @@ var (
 		iconTextureID     uint32
 		sadTowerTextureID uint32
 
-		jsonSelectDialog *FileSelectDialogBox
-
 		activeModalDialogs []*ModalDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
