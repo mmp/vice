@@ -5,7 +5,10 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -16,6 +19,7 @@ import (
 	"time"
 
 	"github.com/iancoleman/orderedmap"
+	"github.com/klauspost/compress/zstd"
 	"golang.org/x/exp/slog"
 )
 
@@ -849,18 +853,21 @@ func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
 	start := time.Now()
 	lvm := LoadedVideoMap{path: path}
 
-	contents, err := fs.ReadFile(filesystem, path)
+	fr, err := filesystem.Open(path)
 	if err != nil {
 		lvm.err = err
 		result <- lvm
 		return
 	}
+	defer fr.Close()
 
+	var r io.Reader
+	r = fr
 	if strings.HasSuffix(strings.ToLower(path), ".zst") {
-		contents = []byte(decompressZstd(string(contents)))
+		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	}
 
-	lvm.commandBufs, err = loadVideoMapFile(contents)
+	lvm.commandBufs, err = loadVideoMapFile(r)
 	if err != nil {
 		lvm.err = err
 		result <- lvm
@@ -872,83 +879,108 @@ func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
 	result <- lvm
 }
 
-func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
+func loadVideoMapFile(ir io.Reader) (map[string]CommandBuffer, error) {
+	r := bufio.NewReader(ir)
+
 	// For debugging, enable check here; the file will also be parsed using
 	// encoding/json and the result will be compared to what we get out of
 	// our parser.
 	check := false
 	var checkJSONMaps map[string][]Point2LL
 	if check {
-		if err := UnmarshalJSON(b, &checkJSONMaps); err != nil {
+		buf, err := io.ReadAll(ir)
+		if err != nil {
+			panic(err)
+		}
+		if err := UnmarshalJSON(buf, &checkJSONMaps); err != nil {
 			return nil, err
 		}
+		r = bufio.NewReader(bytes.NewReader(buf))
+	}
+
+	cur, err := r.ReadByte()
+	if err != nil {
+		return nil, err
+	}
+
+	eof := false
+	advance := func() bool {
+		var err error
+		cur, err = r.ReadByte()
+		eof = err == io.EOF
+		return err == nil
 	}
 
 	// Custom "just enough" JSON parser below. This expects only vice JSON
 	// video map files but is ~2x faster than using encoding/json.
-	pos := 0 // byte offset into the file
 	line := 1
 	skipWhitespace := func() {
-		for pos < len(b) {
-			if b[pos] == '\n' {
+		for !eof {
+			if cur == '\n' {
 				line++
 			}
-			if b[pos] != ' ' && b[pos] != '\n' && b[pos] != '\t' && b[pos] != '\f' && b[pos] != '\r' && b[pos] != '\v' {
+			if cur != ' ' && cur != '\n' && cur != '\t' && cur != '\f' && cur != '\r' && cur != '\v' {
 				break
 			}
-			pos++
+			advance()
 		}
 	}
 	// Called when we expect the given character as the next token.
 	expect := func(ch byte) error {
 		skipWhitespace()
-		if pos < len(b) && b[pos] == ch {
-			pos++
+		if !eof && cur == ch {
+			advance()
 			return nil
 		}
-		return fmt.Errorf("expected '%s' at line %d, found '%s'", string(ch), line, string(b[pos]))
+		return fmt.Errorf("expected '%s' at line %d, found '%s'", string(ch), line, string(cur))
 	}
 	// tryQuoted tries to return a quoted string; nil is returned if the
 	// first non-whitespace character found is not a quotation mark.
-	tryQuoted := func() []byte {
+	tryQuoted := func(buf []byte) []byte {
+		buf = buf[:0]
 		skipWhitespace()
-		if pos < len(b) && b[pos] != '"' {
-			return nil
+		if !eof && cur != '"' {
+			return buf
 		}
-		pos++
+		advance()
 
 		// Scan ahead to the closing quote
-		start := pos
-		for pos < len(b) && b[pos] != '"' {
-			if b[pos] == '\n' {
+		for !eof && cur != '"' {
+			if cur == '\n' {
 				panic(fmt.Sprintf("unterminated string at line %d", line))
 			}
-			pos++
+			buf = append(buf, cur)
+			advance()
 		}
-		if pos == len(b) {
+		if eof {
 			panic("unterminated string")
 		}
-		pos++ // skip closing quote
-		return b[start : pos-1]
+		advance()
+		return buf
 	}
-	// tryComma returns true and advances pos if the next non-whitespace
+	// tryChar returns true and advances pos if the next non-whitespace
 	// character is a comma.
-	tryComma := func() bool {
+	tryChar := func(ch byte) bool {
 		skipWhitespace()
-		ok := pos < len(b) && b[pos] == ','
+		ok := !eof && cur == ch
 		if ok {
-			pos++
+			advance()
 		}
 		return ok
 	}
 
 	tryNull := func() bool {
-		skipWhitespace()
-		if pos+3 < len(b) && string(b[pos:pos+4]) == "null" {
-			pos += 4
-			return true
+		if !tryChar('n') {
+			return false
 		}
-		return false
+		for _, ch := range []byte{'u', 'l', 'l'} {
+			if eof || cur != ch {
+				return false
+			}
+			advance()
+		}
+		return true
+		return tryChar('n') && tryChar('u') && tryChar('l') && tryChar('l')
 	}
 
 	m := make(map[string]CommandBuffer)
@@ -958,9 +990,10 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 	if err := expect('{'); err != nil {
 		return nil, err
 	}
+	var name, ll []byte
 	for {
 		// Is there another member in the object?
-		name := tryQuoted()
+		name = tryQuoted(name)
 		if len(name) == 0 {
 			break
 		}
@@ -981,7 +1014,7 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 			for {
 				// Parse an element of the array, which should be a string
 				// representing a position.
-				ll := tryQuoted()
+				ll = tryQuoted(ll)
 				if len(ll) == 0 {
 					break
 				}
@@ -993,7 +1026,7 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 				segs = append(segs, p)
 
 				// Is there another entry after this one?
-				if !tryComma() {
+				if !tryChar(',') {
 					break
 				}
 			}
@@ -1034,7 +1067,7 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 		ReturnLinesDrawBuilder(ld)
 
 		// Is there another video map in the object?
-		if !tryComma() {
+		if !tryChar(',') {
 			break
 		}
 	}
