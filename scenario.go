@@ -849,7 +849,7 @@ type LoadedVideoMap struct {
 	err         error
 }
 
-func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
+func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string]map[string]interface{}, result chan LoadedVideoMap) {
 	start := time.Now()
 	lvm := LoadedVideoMap{path: path}
 
@@ -867,7 +867,11 @@ func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
 		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	}
 
-	lvm.commandBufs, err = loadVideoMapFile(r)
+	referenced, ok := referencedVideoMaps[path]
+	if !ok {
+		panic(path)
+	}
+	lvm.commandBufs, err = loadVideoMapFile(r, referenced)
 	if err != nil {
 		lvm.err = err
 		result <- lvm
@@ -879,7 +883,7 @@ func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
 	result <- lvm
 }
 
-func loadVideoMapFile(ir io.Reader) (map[string]CommandBuffer, error) {
+func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
 	r := bufio.NewReader(ir)
 
 	// For debugging, enable check here; the file will also be parsed using
@@ -1001,6 +1005,8 @@ func loadVideoMapFile(ir io.Reader) (map[string]CommandBuffer, error) {
 			return nil, err
 		}
 
+		_, doparse := referenced[string(name)]
+
 		// Expect an array for its value.
 		var segs []Point2LL
 		// Allow "null" for an empty array but ignore it
@@ -1019,11 +1025,14 @@ func loadVideoMapFile(ir io.Reader) (map[string]CommandBuffer, error) {
 					break
 				}
 
-				p, err := ParseLatLong(ll)
-				if err != nil {
-					return nil, err
+				if doparse {
+					// Skip this work if this video map isn't used
+					p, err := ParseLatLong(ll)
+					if err != nil {
+						return nil, err
+					}
+					segs = append(segs, p)
 				}
-				segs = append(segs, p)
 
 				// Is there another entry after this one?
 				if !tryChar(',') {
@@ -1055,16 +1064,18 @@ func loadVideoMapFile(ir io.Reader) (map[string]CommandBuffer, error) {
 		}
 
 		// Generate the command buffer to draw this video map.
-		ld := GetLinesDrawBuilder()
+		if doparse {
+			ld := GetLinesDrawBuilder()
 
-		for i := 0; i < len(segs)/2; i++ {
-			ld.AddLine(segs[2*i], segs[2*i+1])
+			for i := 0; i < len(segs)/2; i++ {
+				ld.AddLine(segs[2*i], segs[2*i+1])
+			}
+			var cb CommandBuffer
+			ld.GenerateCommands(&cb)
+
+			m[string(name)] = cb
+			ReturnLinesDrawBuilder(ld)
 		}
-		var cb CommandBuffer
-		ld.GenerateCommands(&cb)
-
-		m[string(name)] = cb
-		ReturnLinesDrawBuilder(ld)
 
 		// Is there another video map in the object?
 		if !tryChar(',') {
@@ -1134,7 +1145,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
 	simConfigurations := make(map[string]map[string]*SimConfiguration)
-
+	referencedVideoMaps := make(map[string]map[string]interface{}) // filename -> map name -> used
 	err := fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("error walking scenarios/: %v", err)
@@ -1159,6 +1170,13 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
 				}
 				scenarioGroups[s.TRACON][s.Name] = s
+			}
+
+			if referencedVideoMaps[s.VideoMapFile] == nil {
+				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			}
+			for _, m := range s.STARSMaps {
+				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
 			}
 		}
 		return nil
@@ -1220,7 +1238,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		}
 
 		launches++
-		go loadVideoMaps(resourcesFS, path, vmChan)
+		go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		return nil
 	})
 	if err != nil {
@@ -1257,7 +1275,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 					return os.DirFS(".")
 				}
 			}()
-			loadVideoMaps(fs, filename, vmChan)
+			loadVideoMaps(fs, filename, referencedVideoMaps, vmChan)
 			receiveLoadedVideoMap()
 		}
 	}
