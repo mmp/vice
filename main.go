@@ -88,6 +88,17 @@ func main() {
 	// Initialize the logging system first and foremost.
 	lg = NewLogger(*server, *logLevel)
 
+	writeMemProfile := func() {
+		f, err := os.Create(*memprofile)
+		if err != nil {
+			lg.Errorf("%s: unable to create memory profile file: %v", *memprofile, err)
+		}
+		if err = pprof.WriteHeapProfile(f); err != nil {
+			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
+		}
+		f.Close()
+	}
+
 	if *cpuprofile != "" {
 		if f, err := os.Create(*cpuprofile); err != nil {
 			lg.Errorf("%s: unable to create CPU profile file: %v", *cpuprofile, err)
@@ -109,6 +120,16 @@ func main() {
 				}()
 			}
 		}
+	}
+	if *memprofile != "" {
+		// Catch ctrl-c
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, os.Interrupt)
+		go func() {
+			<-sig
+			writeMemProfile()
+			os.Exit(0)
+		}()
 	}
 
 	resourcesFS = getResourcesFS()
@@ -367,13 +388,6 @@ func main() {
 
 	// Common cleanup
 	if *memprofile != "" {
-		f, err := os.Create(*memprofile)
-		if err != nil {
-			lg.Errorf("%s: unable to create memory profile file: %v", *memprofile, err)
-		}
-		if err = pprof.WriteHeapProfile(f); err != nil {
-			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
-		}
-		f.Close()
+		writeMemProfile()
 	}
 }
