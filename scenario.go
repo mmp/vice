@@ -963,7 +963,7 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 		return buf
 	}
 	// tryChar returns true and advances pos if the next non-whitespace
-	// character is a comma.
+	// character matches the one given.
 	tryChar := func(ch byte) bool {
 		skipWhitespace()
 		ok := !eof && cur == ch
