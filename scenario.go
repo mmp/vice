@@ -1005,7 +1005,8 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			return nil, err
 		}
 
-		_, doparse := referenced[string(name)]
+		_, doparse := referenced[name]
+		doparse = doparse || check
 
 		// Expect an array for its value.
 		var segs []Point2LL
@@ -1043,24 +1044,24 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			if err := expect(']'); err != nil {
 				return nil, err
 			}
+		}
 
-			if check {
-				// Make sure we have the same number of points and that they
-				// are equal to the reference deserialized by encoding/json.
-				jsegs, ok := checkJSONMaps[string(name)]
-				if !ok {
-					return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", string(name))
-				}
-				if len(jsegs) != len(segs) {
-					return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", string(name), len(jsegs), len(segs))
-				}
-				for i := range jsegs {
-					if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
-						return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", string(name), i, jsegs[i], segs[i])
-					}
-				}
-				delete(checkJSONMaps, string(name))
+		if check {
+			// Make sure we have the same number of points and that they
+			// are equal to the reference deserialized by encoding/json.
+			jsegs, ok := checkJSONMaps[name]
+			if !ok {
+				return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", name)
 			}
+			if len(jsegs) != len(segs) {
+				return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", name, len(jsegs), len(segs))
+			}
+			for i := range jsegs {
+				if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
+					return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", name, i, jsegs[i], segs[i])
+				}
+			}
+			delete(checkJSONMaps, name)
 		}
 
 		// Generate the command buffer to draw this video map.
@@ -1089,7 +1090,7 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 		for k := range checkJSONMaps {
 			s = append(s, k)
 		}
-		return nil, fmt.Errorf("encoding/json found maps that we did not: %s", strings.Join(s, " "))
+		return nil, fmt.Errorf("encoding/json found maps that we did not: %s", strings.Join(s, ", "))
 	}
 
 	return m, nil
