@@ -137,6 +137,10 @@ var (
 		"STARS allows control-shift click to initiate track (CRC style)",
 		"Secondary scratchpads are now supported",
 		"Fixed various navigation bugs",
+		"STARS: fixed a bug where RBL lines for *T that included aircraft weren't drawn",
+		"Added an option to hide the flight strips (Settings window, Flight Strips section)",
+		"Fixed a bug where inbound handoffs wouldn't send a radio contact message",
+		"Sped up loading of video maps so that vice launches more quickly",
 	}
 )
 
