@@ -435,20 +435,17 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
 func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
-	root := globalConfig.DisplayRoot
-	if globalConfig.HideFlightStrips {
-		var filter func(d *DisplayNode) *DisplayNode
-		filter = func(d *DisplayNode) *DisplayNode {
-			if _, ok := d.Children[0].Pane.(*FlightStripPane); ok {
-				return filter(d.Children[1])
-			} else if _, ok := d.Children[1].Pane.(*FlightStripPane); ok {
-				return filter(d.Children[0])
-			} else {
-				return d
-			}
+	var filter func(d *DisplayNode) *DisplayNode
+	filter = func(d *DisplayNode) *DisplayNode {
+		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+			return filter(d.Children[1])
+		} else if fsp, ok := d.Children[1].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+			return filter(d.Children[0])
+		} else {
+			return d
 		}
-		root = filter(root)
 	}
+	root := filter(globalConfig.DisplayRoot)
 
 	if !wmPaneIsPresent(wm.keyboardFocusPane, root) {
 		// It was deleted in the config editor or a new config was loaded.

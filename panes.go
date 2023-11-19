@@ -274,6 +274,7 @@ type FlightStripPane struct {
 	FontSize int
 	font     *Font
 
+	HideFlightStrips          bool
 	AutoAddDepartures         bool
 	AutoAddArrivals           bool
 	AutoAddTracked            bool
@@ -438,6 +439,11 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI() {
+	show := !fsp.HideFlightStrips
+	imgui.Checkbox("Show flight strips", &show)
+	fsp.HideFlightStrips = !show
+
+	uiStartDisable(fsp.HideFlightStrips)
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
@@ -453,6 +459,7 @@ func (fsp *FlightStripPane) DrawUI() {
 		fsp.FontSize = newFont.size
 		fsp.font = newFont
 	}
+	uiEndDisable(fsp.HideFlightStrips)
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {

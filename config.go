@@ -35,7 +35,6 @@ type GlobalConfig struct {
 	LastServer            string
 	LastTRACON            string
 	UIFontSize            int
-	HideFlightStrips      bool
 
 	Audio AudioSettings
 
