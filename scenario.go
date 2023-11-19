@@ -994,13 +994,16 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 	if err := expect('{'); err != nil {
 		return nil, err
 	}
-	var name, ll []byte
+	var nameBuf, ll []byte
 	for {
 		// Is there another member in the object?
-		name = tryQuoted(name)
-		if len(name) == 0 {
+		nameBuf = tryQuoted(nameBuf)
+		if len(nameBuf) == 0 {
 			break
 		}
+		// Handle escaped unicode characters \uXXXX
+		name, _ := strconv.Unquote(`"` + string(nameBuf) + `"`)
+
 		if err := expect(':'); err != nil {
 			return nil, err
 		}
@@ -1074,7 +1077,7 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			var cb CommandBuffer
 			ld.GenerateCommands(&cb)
 
-			m[string(name)] = cb
+			m[name] = cb
 			ReturnLinesDrawBuilder(ld)
 		}
 
