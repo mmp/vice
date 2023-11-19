@@ -202,7 +202,7 @@ func main() {
 		}
 		imgui.CurrentIO().SetClipboard(platform.GetClipboard())
 
-		renderer, err = NewOpenGL2Renderer(imgui.CurrentIO())
+		renderer, err = NewOpenGL2Renderer()
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
