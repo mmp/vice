@@ -15,7 +15,6 @@ import (
 	"unsafe"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/mmp/imgui-go/v4"
 )
 
 type OpenGL41Renderer struct {
@@ -150,7 +149,7 @@ outColor=vec4(col*0.5, 1.0);
 
 // NewOpenGLRenderer creates an OpenGL context and compiles the
 // vertex/fragment shaders.
-func NewOpenGLRenderer(io imgui.IO) (Renderer, error) {
+func NewOpenGLRenderer() (Renderer, error) {
 	lg.Info("Starting OpenGL41Renderer initialization")
 	if err := gl.Init(); err != nil {
 		return nil, fmt.Errorf("failed to initialize OpenGL: %w", err)
