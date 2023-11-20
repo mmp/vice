@@ -1859,10 +1859,16 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			ac.HandoffTrackController = ""
 			ac.TrackingController = ctrl.Callsign
 			if !s.controllerIsSignedIn(ac.ControllingController) {
-				// Only take control on handoffs from virtual
+				// Take immediate control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign
+				return []RadioTransmission{RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message:    ac.ContactMessage(s.ReportingPoints),
+					Type:       RadioTransmissionContact,
+				}}
+			} else {
+				return nil
 			}
-			return nil
 		})
 }
 
@@ -2205,7 +2211,12 @@ func (s *Sim) GoAround(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.GoAround()
+			resp := ac.GoAround()
+			for i := range resp {
+				// Upgrade to unexpected versus it just being controller initiated.
+				resp[i].Type = RadioTransmissionUnexpected
+			}
+			return resp
 		})
 }
 

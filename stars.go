@@ -4734,6 +4734,9 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 
 	conflicting := func(callsigna, callsignb string) bool {
 		sa, sb := sp.Aircraft[callsigna], sp.Aircraft[callsignb]
+		if sa.DisableCAWarnings || sb.DisableCAWarnings {
+			return false
+		}
 		if inCAVolumes(sa) || inCAVolumes(sb) {
 			return false
 		}
@@ -5266,9 +5269,9 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 						gs = ac.GS()
 					}
 				}
-
-				drawRBL(p0, p1, i+1, gs)
 			}
+
+			drawRBL(p0, p1, i+1, gs)
 		}
 	}
 

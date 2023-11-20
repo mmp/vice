@@ -301,8 +301,9 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan, perf AircraftPerformance) 
 type RadioTransmissionType int
 
 const (
-	RadioTransmissionContact  = iota // Messages initiated by the pilot
-	RadioTransmissionReadback        // Reading back an instruction
+	RadioTransmissionContact    = iota // Messages initiated by the pilot
+	RadioTransmissionReadback          // Reading back an instruction
+	RadioTransmissionUnexpected        // Something urgent or unusual
 )
 
 func (r RadioTransmissionType) String() string {
@@ -311,6 +312,8 @@ func (r RadioTransmissionType) String() string {
 		return "contact"
 	case RadioTransmissionReadback:
 		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
 	default:
 		return "(unhandled type)"
 	}

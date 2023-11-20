@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
@@ -274,6 +275,7 @@ type FlightStripPane struct {
 	FontSize int
 	font     *Font
 
+	HideFlightStrips          bool
 	AutoAddDepartures         bool
 	AutoAddArrivals           bool
 	AutoAddTracked            bool
@@ -438,6 +440,11 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI() {
+	show := !fsp.HideFlightStrips
+	imgui.Checkbox("Show flight strips", &show)
+	fsp.HideFlightStrips = !show
+
+	uiStartDisable(fsp.HideFlightStrips)
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
@@ -453,6 +460,7 @@ func (fsp *FlightStripPane) DrawUI() {
 		fsp.FontSize = newFont.size
 		fsp.font = newFont
 	}
+	uiEndDisable(fsp.HideFlightStrips)
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -772,6 +780,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 type Message struct {
 	contents string
+	system   bool
 	error    bool
 }
 
@@ -781,6 +790,7 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
+	lastFlash      time.Time
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -836,14 +846,16 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	indent := float32(2)
 	style := TextStyle{Font: mp.font, Color: RGB{1, 1, 1}}
-	errorStyle := TextStyle{Font: mp.font, Color: RGB{.1, .9, .1}}
+	systemStyle := TextStyle{Font: mp.font, Color: RGB{.1, .9, .1}}
+	errorStyle := TextStyle{Font: mp.font, Color: RGB{.9, .1, .1}}
 
 	scrollOffset := mp.scrollbar.Offset()
 	y := lineHeight
 	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
-		td.AddText(msg.contents, [2]float32{indent, y}, Select(msg.error, errorStyle, style))
+		s := Select(msg.error, errorStyle, Select(msg.system, systemStyle, style))
+		td.AddText(msg.contents, [2]float32{indent, y}, s)
 		y += lineHeight
 	}
 
@@ -855,6 +867,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 func (mp *MessagesPane) processEvents(w *World) {
 	lastRadioCallsign := ""
 	var lastRadioType RadioTransmissionType
+	var unexpectedTransmission bool
 	var transmissions []string
 
 	addTransmissions := func() {
@@ -894,7 +907,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 			if len(response) > 0 {
 				response = strings.ToUpper(response[:1]) + response[1:]
 			}
-			msg = Message{contents: response + ". " + radioCallsign}
+			msg = Message{contents: response + ". " + radioCallsign, error: unexpectedTransmission}
 		}
 		lg.Debug("radio_transmission", slog.String("callsign", callsign), slog.Any("message", msg))
 		mp.messages = append(mp.messages, msg)
@@ -908,11 +921,13 @@ func (mp *MessagesPane) processEvents(w *World) {
 					if len(transmissions) > 0 {
 						addTransmissions()
 						transmissions = nil
+						unexpectedTransmission = false
 					}
 					lastRadioCallsign = event.Callsign
 					lastRadioType = event.RadioTransmissionType
 				}
 				transmissions = append(transmissions, event.Message)
+				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == RadioTransmissionUnexpected)
 			}
 
 		case StatusMessageEvent:
@@ -925,7 +940,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 				mp.messages = append(mp.messages,
 					Message{
 						contents: event.Message,
-						error:    true,
+						system:   true,
 					})
 			}
 		}

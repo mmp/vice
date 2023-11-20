@@ -1594,53 +1594,5 @@ func (w *World) DrawSettingsWindow() {
 		messages.DrawUI()
 	}
 
-	if imgui.CollapsingHeader("Developer") {
-		if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Scenario:")
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.DevScenarioFile)
-			imgui.TableNextColumn()
-			if imgui.Button("New...##scenario") {
-				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
-					globalConfig.DevScenarioFile, func(filename string) {
-						globalConfig.DevScenarioFile = filename
-						ui.jsonSelectDialog = nil
-					})
-				ui.jsonSelectDialog.Activate()
-			}
-			imgui.TableNextColumn()
-			if globalConfig.DevScenarioFile != "" && imgui.Button("Clear##scenario") {
-				globalConfig.DevScenarioFile = ""
-			}
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Video maps:")
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.DevVideoMapFile)
-			imgui.TableNextColumn()
-			if imgui.Button("New...##vid") {
-				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
-					globalConfig.DevVideoMapFile, func(filename string) {
-						globalConfig.DevVideoMapFile = filename
-						ui.jsonSelectDialog = nil
-					})
-				ui.jsonSelectDialog.Activate()
-			}
-			imgui.TableNextColumn()
-			if globalConfig.DevVideoMapFile != "" && imgui.Button("Clear##vid") {
-				globalConfig.DevVideoMapFile = ""
-			}
-
-			imgui.EndTable()
-		}
-
-		if ui.jsonSelectDialog != nil {
-			ui.jsonSelectDialog.Draw()
-		}
-	}
-
 	imgui.End()
 }

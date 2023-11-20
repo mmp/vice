@@ -41,8 +41,6 @@ var (
 		iconTextureID     uint32
 		sadTowerTextureID uint32
 
-		jsonSelectDialog *FileSelectDialogBox
-
 		activeModalDialogs []*ModalDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
@@ -132,6 +130,17 @@ var (
 		"Fixed a bug where descending aircraft would stop descending when given approach clearance",
 		"Small fixes to the DCA scenario",
 		"Polished up handling of early hand-offs of departures in the STARS scope",
+		"Added L30 (Las Vegas) scenarios and a combined N90 (JFK+LGA+EWR) scenario",
+		"Important readbacks from pilots are now highlighted in red",
+		"Improved STARS *T to allow entering fix names and to show ETA",
+		"Added support for charted visual approaches",
+		"STARS allows control-shift click to initiate track (CRC style)",
+		"Secondary scratchpads are now supported",
+		"Fixed various navigation bugs",
+		"STARS: fixed a bug where RBL lines for *T that included aircraft weren't drawn",
+		"Added an option to hide the flight strips (Settings window, Flight Strips section)",
+		"Fixed a bug where inbound handoffs wouldn't send a radio contact message",
+		"Sped up loading of video maps so that vice launches more quickly",
 	}
 )
 

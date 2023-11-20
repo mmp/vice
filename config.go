@@ -40,9 +40,6 @@ type GlobalConfig struct {
 
 	DisplayRoot *DisplayNode
 
-	DevScenarioFile string
-	DevVideoMapFile string
-
 	AskedDiscordOptIn      bool
 	InhibitDiscordActivity AtomicBool
 

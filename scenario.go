@@ -5,7 +5,10 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -16,6 +19,7 @@ import (
 	"time"
 
 	"github.com/iancoleman/orderedmap"
+	"github.com/klauspost/compress/zstd"
 	"golang.org/x/exp/slog"
 )
 
@@ -845,22 +849,29 @@ type LoadedVideoMap struct {
 	err         error
 }
 
-func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
+func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string]map[string]interface{}, result chan LoadedVideoMap) {
 	start := time.Now()
 	lvm := LoadedVideoMap{path: path}
 
-	contents, err := fs.ReadFile(filesystem, path)
+	fr, err := filesystem.Open(path)
 	if err != nil {
 		lvm.err = err
 		result <- lvm
 		return
 	}
+	defer fr.Close()
 
+	var r io.Reader
+	r = fr
 	if strings.HasSuffix(strings.ToLower(path), ".zst") {
-		contents = []byte(decompressZstd(string(contents)))
+		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	}
 
-	lvm.commandBufs, err = loadVideoMapFile(contents)
+	referenced, ok := referencedVideoMaps[path]
+	if !ok {
+		panic(path)
+	}
+	lvm.commandBufs, err = loadVideoMapFile(r, referenced)
 	if err != nil {
 		lvm.err = err
 		result <- lvm
@@ -872,83 +883,108 @@ func loadVideoMaps(filesystem fs.FS, path string, result chan LoadedVideoMap) {
 	result <- lvm
 }
 
-func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
+func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
+	r := bufio.NewReader(ir)
+
 	// For debugging, enable check here; the file will also be parsed using
 	// encoding/json and the result will be compared to what we get out of
 	// our parser.
 	check := false
 	var checkJSONMaps map[string][]Point2LL
 	if check {
-		if err := UnmarshalJSON(b, &checkJSONMaps); err != nil {
+		buf, err := io.ReadAll(ir)
+		if err != nil {
+			panic(err)
+		}
+		if err := UnmarshalJSON(buf, &checkJSONMaps); err != nil {
 			return nil, err
 		}
+		r = bufio.NewReader(bytes.NewReader(buf))
+	}
+
+	cur, err := r.ReadByte()
+	if err != nil {
+		return nil, err
+	}
+
+	eof := false
+	advance := func() bool {
+		var err error
+		cur, err = r.ReadByte()
+		eof = err == io.EOF
+		return err == nil
 	}
 
 	// Custom "just enough" JSON parser below. This expects only vice JSON
 	// video map files but is ~2x faster than using encoding/json.
-	pos := 0 // byte offset into the file
 	line := 1
 	skipWhitespace := func() {
-		for pos < len(b) {
-			if b[pos] == '\n' {
+		for !eof {
+			if cur == '\n' {
 				line++
 			}
-			if b[pos] != ' ' && b[pos] != '\n' && b[pos] != '\t' && b[pos] != '\f' && b[pos] != '\r' && b[pos] != '\v' {
+			if cur != ' ' && cur != '\n' && cur != '\t' && cur != '\f' && cur != '\r' && cur != '\v' {
 				break
 			}
-			pos++
+			advance()
 		}
 	}
 	// Called when we expect the given character as the next token.
 	expect := func(ch byte) error {
 		skipWhitespace()
-		if pos < len(b) && b[pos] == ch {
-			pos++
+		if !eof && cur == ch {
+			advance()
 			return nil
 		}
-		return fmt.Errorf("expected '%s' at line %d, found '%s'", string(ch), line, string(b[pos]))
+		return fmt.Errorf("expected '%s' at line %d, found '%s'", string(ch), line, string(cur))
 	}
 	// tryQuoted tries to return a quoted string; nil is returned if the
 	// first non-whitespace character found is not a quotation mark.
-	tryQuoted := func() []byte {
+	tryQuoted := func(buf []byte) []byte {
+		buf = buf[:0]
 		skipWhitespace()
-		if pos < len(b) && b[pos] != '"' {
-			return nil
+		if !eof && cur != '"' {
+			return buf
 		}
-		pos++
+		advance()
 
 		// Scan ahead to the closing quote
-		start := pos
-		for pos < len(b) && b[pos] != '"' {
-			if b[pos] == '\n' {
+		for !eof && cur != '"' {
+			if cur == '\n' {
 				panic(fmt.Sprintf("unterminated string at line %d", line))
 			}
-			pos++
+			buf = append(buf, cur)
+			advance()
 		}
-		if pos == len(b) {
+		if eof {
 			panic("unterminated string")
 		}
-		pos++ // skip closing quote
-		return b[start : pos-1]
+		advance()
+		return buf
 	}
-	// tryComma returns true and advances pos if the next non-whitespace
-	// character is a comma.
-	tryComma := func() bool {
+	// tryChar returns true and advances pos if the next non-whitespace
+	// character matches the one given.
+	tryChar := func(ch byte) bool {
 		skipWhitespace()
-		ok := pos < len(b) && b[pos] == ','
+		ok := !eof && cur == ch
 		if ok {
-			pos++
+			advance()
 		}
 		return ok
 	}
 
 	tryNull := func() bool {
-		skipWhitespace()
-		if pos+3 < len(b) && string(b[pos:pos+4]) == "null" {
-			pos += 4
-			return true
+		if !tryChar('n') {
+			return false
 		}
-		return false
+		for _, ch := range []byte{'u', 'l', 'l'} {
+			if eof || cur != ch {
+				return false
+			}
+			advance()
+		}
+		return true
+		return tryChar('n') && tryChar('u') && tryChar('l') && tryChar('l')
 	}
 
 	m := make(map[string]CommandBuffer)
@@ -958,15 +994,22 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 	if err := expect('{'); err != nil {
 		return nil, err
 	}
+	var nameBuf, ll []byte
 	for {
 		// Is there another member in the object?
-		name := tryQuoted()
-		if len(name) == 0 {
+		nameBuf = tryQuoted(nameBuf)
+		if len(nameBuf) == 0 {
 			break
 		}
+		// Handle escaped unicode characters \uXXXX
+		name, _ := strconv.Unquote(`"` + string(nameBuf) + `"`)
+
 		if err := expect(':'); err != nil {
 			return nil, err
 		}
+
+		_, doparse := referenced[name]
+		doparse = doparse || check
 
 		// Expect an array for its value.
 		var segs []Point2LL
@@ -981,19 +1024,22 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 			for {
 				// Parse an element of the array, which should be a string
 				// representing a position.
-				ll := tryQuoted()
+				ll = tryQuoted(ll)
 				if len(ll) == 0 {
 					break
 				}
 
-				p, err := ParseLatLong(ll)
-				if err != nil {
-					return nil, err
+				if doparse {
+					// Skip this work if this video map isn't used
+					p, err := ParseLatLong(ll)
+					if err != nil {
+						return nil, err
+					}
+					segs = append(segs, p)
 				}
-				segs = append(segs, p)
 
 				// Is there another entry after this one?
-				if !tryComma() {
+				if !tryChar(',') {
 					break
 				}
 			}
@@ -1001,40 +1047,42 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 			if err := expect(']'); err != nil {
 				return nil, err
 			}
+		}
 
-			if check {
-				// Make sure we have the same number of points and that they
-				// are equal to the reference deserialized by encoding/json.
-				jsegs, ok := checkJSONMaps[string(name)]
-				if !ok {
-					return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", string(name))
-				}
-				if len(jsegs) != len(segs) {
-					return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", string(name), len(jsegs), len(segs))
-				}
-				for i := range jsegs {
-					if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
-						return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", string(name), i, jsegs[i], segs[i])
-					}
-				}
-				delete(checkJSONMaps, string(name))
+		if check {
+			// Make sure we have the same number of points and that they
+			// are equal to the reference deserialized by encoding/json.
+			jsegs, ok := checkJSONMaps[name]
+			if !ok {
+				return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", name)
 			}
+			if len(jsegs) != len(segs) {
+				return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", name, len(jsegs), len(segs))
+			}
+			for i := range jsegs {
+				if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
+					return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", name, i, jsegs[i], segs[i])
+				}
+			}
+			delete(checkJSONMaps, name)
 		}
 
 		// Generate the command buffer to draw this video map.
-		ld := GetLinesDrawBuilder()
+		if doparse {
+			ld := GetLinesDrawBuilder()
 
-		for i := 0; i < len(segs)/2; i++ {
-			ld.AddLine(segs[2*i], segs[2*i+1])
+			for i := 0; i < len(segs)/2; i++ {
+				ld.AddLine(segs[2*i], segs[2*i+1])
+			}
+			var cb CommandBuffer
+			ld.GenerateCommands(&cb)
+
+			m[name] = cb
+			ReturnLinesDrawBuilder(ld)
 		}
-		var cb CommandBuffer
-		ld.GenerateCommands(&cb)
-
-		m[string(name)] = cb
-		ReturnLinesDrawBuilder(ld)
 
 		// Is there another video map in the object?
-		if !tryComma() {
+		if !tryChar(',') {
 			break
 		}
 	}
@@ -1045,7 +1093,7 @@ func loadVideoMapFile(b []byte) (map[string]CommandBuffer, error) {
 		for k := range checkJSONMaps {
 			s = append(s, k)
 		}
-		return nil, fmt.Errorf("encoding/json found maps that we did not: %s", strings.Join(s, " "))
+		return nil, fmt.Errorf("encoding/json found maps that we did not: %s", strings.Join(s, ", "))
 	}
 
 	return m, nil
@@ -1096,14 +1144,90 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration) {
-	// First load the embedded video maps.
-	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
-
 	start := time.Now()
+
+	// First load the scenarios.
+	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
+	simConfigurations := make(map[string]map[string]*SimConfiguration)
+	referencedVideoMaps := make(map[string]map[string]interface{}) // filename -> map name -> used
+	err := fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			lg.Errorf("error walking scenarios/: %v", err)
+			return nil
+		}
+
+		if d.IsDir() {
+			return nil
+		}
+
+		if filepath.Ext(path) != ".json" {
+			return nil
+		}
+
+		lg.Infof("%s: loading scenario", path)
+		s := loadScenarioGroup(resourcesFS, path, e)
+		if s != nil {
+			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {
+				e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
+			} else {
+				if scenarioGroups[s.TRACON] == nil {
+					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
+				}
+				scenarioGroups[s.TRACON][s.Name] = s
+			}
+
+			if referencedVideoMaps[s.VideoMapFile] == nil {
+				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			}
+			for _, m := range s.STARSMaps {
+				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		lg.Errorf("error walking scenarios: %v", err)
+		os.Exit(1)
+	}
+
+	// Load the scenario specified on command line, if any.
+	loadScenario := func(filename string) {
+		if filename != "" {
+			fs := func() fs.FS {
+				if filepath.IsAbs(filename) {
+					return RootFS{}
+				} else {
+					return os.DirFS(".")
+				}
+			}()
+			s := loadScenarioGroup(fs, filename, e)
+			if s != nil {
+				// These may have an empty "video_map_file" member, which
+				// is automatically patched up here...
+				if s.VideoMapFile == "" {
+					s.VideoMapFile = *videoMapFilename
+
+					if s.VideoMapFile == "" {
+						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+							filename)
+					}
+				}
+
+				// These are allowed to redefine an existing scenario.
+				if scenarioGroups[s.TRACON] == nil {
+					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
+				}
+				scenarioGroups[s.TRACON][s.Name] = s
+			}
+		}
+	}
+	loadScenario(*scenarioFilename)
+
+	// Next load the video maps.
+	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
 	vmChan := make(chan LoadedVideoMap, 16)
 	launches := 0
-
-	err := fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
+	err = fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
 			return nil
@@ -1118,7 +1242,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		}
 
 		launches++
-		go loadVideoMaps(resourcesFS, path, vmChan)
+		go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		return nil
 	})
 	if err != nil {
@@ -1155,90 +1279,11 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 					return os.DirFS(".")
 				}
 			}()
-			loadVideoMaps(fs, filename, vmChan)
+			loadVideoMaps(fs, filename, referencedVideoMaps, vmChan)
 			receiveLoadedVideoMap()
 		}
 	}
 	loadVid(*videoMapFilename)
-	if globalConfig != nil {
-		loadVid(globalConfig.DevVideoMapFile)
-	}
-
-	// Now load the scenarios.
-	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
-	simConfigurations := make(map[string]map[string]*SimConfiguration)
-
-	err = fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			lg.Errorf("error walking scenarios/: %v", err)
-			return nil
-		}
-
-		if d.IsDir() {
-			return nil
-		}
-
-		if filepath.Ext(path) != ".json" {
-			return nil
-		}
-
-		lg.Infof("%s: loading scenario", path)
-		s := loadScenarioGroup(resourcesFS, path, e)
-		if s != nil {
-			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {
-				e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
-			} else {
-				if scenarioGroups[s.TRACON] == nil {
-					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
-				}
-				scenarioGroups[s.TRACON][s.Name] = s
-			}
-		}
-		return nil
-	})
-	if err != nil {
-		lg.Errorf("error walking scenarios: %v", err)
-		os.Exit(1)
-	}
-
-	// Load the scenario specified on command line, if any.
-	loadScenario := func(filename string) {
-		if filename != "" {
-			fs := func() fs.FS {
-				if filepath.IsAbs(filename) {
-					return RootFS{}
-				} else {
-					return os.DirFS(".")
-				}
-			}()
-			s := loadScenarioGroup(fs, filename, e)
-			if s != nil {
-				// These may have an empty "video_map_file" member, which
-				// is automatically patched up here...
-				if s.VideoMapFile == "" {
-					s.VideoMapFile = *videoMapFilename
-					if s.VideoMapFile == "" && globalConfig != nil && globalConfig.DevVideoMapFile != "" {
-						s.VideoMapFile = globalConfig.DevVideoMapFile
-					}
-
-					if s.VideoMapFile == "" {
-						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
-							filename)
-					}
-				}
-
-				// These are allowed to redefine an existing scenario.
-				if scenarioGroups[s.TRACON] == nil {
-					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
-				}
-				scenarioGroups[s.TRACON][s.Name] = s
-			}
-		}
-	}
-	loadScenario(*scenarioFilename)
-	if globalConfig != nil {
-		loadScenario(globalConfig.DevScenarioFile)
-	}
 
 	// Final tidying before we return the loaded scenarios.
 	for tname, tracon := range scenarioGroups {
