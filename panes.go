@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
@@ -790,7 +789,6 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
-	lastFlash      time.Time
 }
 
 func NewMessagesPane() *MessagesPane {

@@ -984,7 +984,6 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			advance()
 		}
 		return true
-		return tryChar('n') && tryChar('u') && tryChar('l') && tryChar('l')
 	}
 
 	m := make(map[string]CommandBuffer)
@@ -1086,7 +1085,9 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			break
 		}
 	}
-	expect('}')
+	if err := expect('}'); err != nil {
+		return nil, err
+	}
 
 	if check && len(checkJSONMaps) > 0 {
 		var s []string
