@@ -14,7 +14,6 @@ https://www.sciencedirect.com/science/article/pii/S2590198221002074#tblfn2
 
 import (
 	"encoding/binary"
-	"fmt"
 	"math"
 	"os"
 )
