@@ -116,8 +116,6 @@ type STARSPane struct {
 	lastTrackUpdate time.Time
 	discardTracks   bool
 
-	LastCASoundTime time.Time
-
 	drawApproachAirspace  bool
 	drawDepartureAirspace bool
 
@@ -1140,7 +1138,7 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case OfferedHandoffEvent:
 			if event.ToController == w.Callsign {
-				globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+				globalConfig.Audio.PlayOnce(AudioInboundHandoff)
 			}
 
 		case AcceptedHandoffEvent:
@@ -1150,7 +1148,6 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-					globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 				}
 			}
 
@@ -1319,6 +1316,13 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
 	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
+
+	// Play the CA sound if any CAs are unacknowledged
+	if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
+		globalConfig.Audio.StartPlayContinuous(AudioConflictAlert)
+	} else {
+		globalConfig.Audio.StopPlayContinuous(AudioConflictAlert)
+	}
 
 	// Do this at the end of drawing so that we hold on to the tracks we
 	// have for rendering the current frame.
@@ -1680,7 +1684,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				acCmds := strings.Join(f[1:], " ")
 				ctx.world.RunAircraftCommands(ac, acCmds,
 					func(err error) {
-						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						globalConfig.Audio.PlayOnce(AudioCommandError)
 						sp.previewAreaOutput = GetSTARSError(err).Error()
 					})
 
@@ -2976,7 +2980,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if len(cmd) > 0 {
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
-						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						globalConfig.Audio.PlayOnce(AudioCommandError)
 						sp.previewAreaOutput = GetSTARSError(err).Error()
 					})
 
@@ -4763,14 +4767,6 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 					})
 				}
 			}
-		}
-	}
-
-	// Play the sound if any are unacknowledged and it has been 2s since the last sound
-	if now := w.CurrentTime(); now.Sub(sp.LastCASoundTime) > 2*time.Second {
-		if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
-			globalConfig.Audio.PlaySound(AudioEventConflictAlert)
-			sp.LastCASoundTime = now
 		}
 	}
 }
