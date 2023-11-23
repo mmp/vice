@@ -531,9 +531,13 @@ func AnySlice[V any](s []V, pred func(V) bool) bool {
 	return false
 }
 
-// Sample uniformly randomly samples an element of a non-empty slice.
-func Sample[T any](slice []T) T {
+// SampleSlice uniformly randomly samples an element of a non-empty slice.
+func SampleSlice[T any](slice []T) T {
 	return slice[rand.Intn(len(slice))]
+}
+
+func Sample[T any](t ...T) T {
+	return t[rand.Intn(len(t))]
 }
 
 // SampleFiltered uniformly randomly samples a slice, returning the index

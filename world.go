@@ -712,7 +712,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	for {
 		format := "####"
 		if len(al.Callsign.CallsignFormats) > 0 {
-			format = Sample(al.Callsign.CallsignFormats)
+			format = SampleSlice(al.Callsign.CallsignFormats)
 		}
 
 		id := ""
@@ -767,7 +767,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	}
 	arr := arrivals[idx]
 
-	airline := Sample(arr.Airlines[arrivalAirport])
+	airline := SampleSlice(arr.Airlines[arrivalAirport])
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -844,7 +844,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
-	airline := Sample(dep.Airlines)
+	airline := SampleSlice(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")

@@ -225,13 +225,13 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmiss
 func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
 	hdg := NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnLeft)
-	return ac.readback(Sample([]string{"turn %d degrees left", "%d to the left"}), deg)
+	return ac.readback(Sample("turn %d degrees left", "%d to the left"), deg)
 }
 
 func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
 	hdg := NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnRight)
-	return ac.readback(Sample([]string{"turn %d degrees right", "%d to the right"}), deg)
+	return ac.readback(Sample("turn %d degrees right", "%d to the right"), deg)
 }
 
 func (ac *Aircraft) FlyPresentHeading() []RadioTransmission {
