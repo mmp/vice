@@ -4,15 +4,25 @@
 
 package main
 
-import (
-	"fmt"
-	"sync"
-	"time"
+// typedef unsigned char uint8;
+// void audioCallback(void *userdata, uint8 *stream, int len);
+import "C"
 
+import (
+	"C"
+	"bytes"
+	"fmt"
+	"io"
+	"reflect"
+	"sync"
+	"unsafe"
+
+	mp3 "github.com/hajimehoshi/go-mp3"
 	"github.com/mmp/imgui-go/v4"
 	"github.com/veandco/go-sdl2/sdl"
-	"golang.org/x/exp/slog"
 )
+
+const AudioSampleRate = 16000
 
 type AudioType int
 
@@ -43,16 +53,11 @@ type AudioEngine struct {
 	AudioEnabled  bool
 	EffectEnabled [AudioNumTypes]bool
 
-	effects [AudioNumTypes]*SoundEffect
-	mu      sync.Mutex
-}
+	effects        [AudioNumTypes]*mp3.Decoder
+	playOnceCount  [AudioNumTypes]int
+	playContinuous [AudioNumTypes]bool
 
-type SoundEffect struct {
-	wav              []byte
-	duration         time.Duration
-	device           sdl.AudioDeviceID
-	continuous       bool
-	refillQueueLimit uint32
+	mu sync.Mutex
 }
 
 func (a *AudioEngine) SetDefaults() {
@@ -67,25 +72,9 @@ func (a *AudioEngine) PlayOnce(e AudioType) {
 		return
 	}
 
-	if se := a.effects[e]; se != nil {
-		// Make sure an SDL panic doesn't take down vice
-		defer func() {
-			if err := recover(); err != nil {
-				lg.Error("SDL panic playing audio", slog.Any("panic", err))
-			}
-		}()
-
-		// Only call into SDL from one thread at a time
-		a.mu.Lock()
-		defer a.mu.Unlock()
-
-		if err := sdl.QueueAudio(se.device, se.wav); err != nil {
-			lg.Errorf("Unable to queue SDL audio: %v", err)
-		}
-
-		// Release the device so it starts playing the sound.
-		sdl.PauseAudioDevice(se.device, false)
-	}
+	a.mu.Lock()
+	a.playOnceCount[e]++
+	a.mu.Unlock()
 }
 
 func (a *AudioEngine) StartPlayContinuous(e AudioType) {
@@ -93,103 +82,99 @@ func (a *AudioEngine) StartPlayContinuous(e AudioType) {
 		return
 	}
 
-	if se := a.effects[e]; se != nil {
-		defer func() {
-			if err := recover(); err != nil {
-				lg.Error("SDL panic playing audio", slog.Any("panic", err))
-			}
-		}()
-
-		// Only call into SDL from one thread at a time
-		a.mu.Lock()
-		defer a.mu.Unlock()
-
-		if !se.continuous {
-			se.continuous = true
-			for i := 0; i < 10; i++ {
-				if err := sdl.QueueAudio(se.device, se.wav); err != nil {
-					lg.Errorf("Unable to queue SDL audio: %v", err)
-				}
-			}
-			se.refillQueueLimit = sdl.GetQueuedAudioSize(se.device) / 5
-
-			// Release the device so it starts playing the sound.
-			sdl.PauseAudioDevice(se.device, false)
-		} else if sdl.GetQueuedAudioSize(se.device) < se.refillQueueLimit {
-			// Queue up more repeats so there's no break in playback
-			for i := 0; i < 10; i++ {
-				if err := sdl.QueueAudio(se.device, se.wav); err != nil {
-					lg.Errorf("Unable to queue SDL audio: %v", err)
-				}
-			}
-		}
-	}
+	a.mu.Lock()
+	a.playContinuous[e] = true
+	a.mu.Unlock()
 }
 
 func (a *AudioEngine) StopPlayContinuous(e AudioType) {
-	defer func() {
-		if err := recover(); err != nil {
-			lg.Error("SDL panic playing audio", slog.Any("panic", err))
-		}
-	}()
-
 	// Don't check if audio or the effect is enabled since if those were
 	// changed in the UI and the sound is playing, we still want to stop...
-	if se := a.effects[e]; se != nil {
-		// Only call into SDL from one thread at a time
-		a.mu.Lock()
-		if se.continuous {
-			se.continuous = false
-			sdl.ClearQueuedAudio(se.device)
+	a.mu.Lock()
+	if a.playContinuous[e] {
+		a.playContinuous[e] = false
+		if _, err := a.effects[e].Seek(0, io.SeekStart); err != nil {
+			panic(err)
 		}
-		a.mu.Unlock()
+	}
+	a.mu.Unlock()
+}
+
+//export audioCallback
+func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
+	n := int(size)
+	hdr := reflect.SliceHeader{Data: uintptr(unsafe.Pointer(ptr)), Len: n, Cap: n}
+	out := *(*[]C.uint8)(unsafe.Pointer(&hdr))
+	a := &globalConfig.Audio
+
+	accum := make([]int, n/2)
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	for i := 0; i < AudioNumTypes; i++ {
+		buf := make([]byte, 2*n) // go-mp3 always gives 2 channels * 16-bits
+		bread := buf
+		for len(bread) > 0 && (a.playContinuous[i] || a.playOnceCount[i] > 0) {
+			nr, err := io.ReadFull(a.effects[i], bread)
+			bread = bread[nr:]
+			if err == io.EOF || err == io.ErrUnexpectedEOF {
+				if a.playOnceCount[i] > 0 {
+					a.playOnceCount[i]--
+				}
+				if _, err := a.effects[i].Seek(0, io.SeekStart); err != nil {
+					panic(err)
+				}
+			} else if err != nil {
+				panic(err)
+			}
+		}
+
+		for i := 0; i < len(buf)/4; i++ {
+			// just take the first channel
+			accum[i] += int(int16(buf[4*i])|int16(buf[4*i+1])<<8) / 2
+		}
+	}
+
+	for i := 0; i < n/2; i++ {
+		v := int16(clamp(accum[i], -32768, 32767))
+		out[2*i] = C.uint8(v & 0xff)
+		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}
 }
 
-func (a *AudioEngine) addEffect(t AudioType, filename string) {
-	wav := LoadResource("audio/" + filename)
-	rw, err := sdl.RWFromMem([]byte(wav))
+func (a *AudioEngine) loadMP3(filename string) *mp3.Decoder {
+	r := bytes.NewReader(LoadResource("audio/" + filename))
+	dec, err := mp3.NewDecoder(r)
 	if err != nil {
-		lg.Errorf("%s: unable to add audio effect: %v", filename, err)
-		return
+		panic(err)
 	}
 
-	loaded, spec := sdl.LoadWAVRW(rw, false /* do not free */)
-
-	duration := float32(len([]byte(wav))) /
-		float32(int(spec.Freq)*int(spec.Channels)*int(spec.Format.BitSize())/8)
-
-	var obtained sdl.AudioSpec
-	audioDevice, err := sdl.OpenAudioDevice("", false /* no record */, spec, &obtained, 0)
-	if err != nil {
-		lg.Errorf("Unable to open SDL audio device: %v", err)
-		return
+	if dec.SampleRate() != AudioSampleRate {
+		panic(fmt.Sprintf("expected %d Hz sample rate, got %d", AudioSampleRate, dec.SampleRate()))
 	}
 
-	a.effects[t] = &SoundEffect{
-		wav:      loaded,
-		duration: time.Duration(duration * float32(time.Second)),
-		device:   audioDevice,
-	}
-
-	if err = rw.Close(); err != nil {
-		lg.Errorf("SDL error: %v", err)
-	}
+	return dec
 }
 
 func (a *AudioEngine) Activate() error {
 	lg.Info("Starting to initialize audio")
-	err := sdl.Init(sdl.INIT_AUDIO)
-	if err != nil {
-		return fmt.Errorf("failed to initialize SDL2 audio: %w", err)
-	}
 
-	a.addEffect(AudioConflictAlert, "ca.wav")
-	a.addEffect(AudioEmergencySquawk, "emergency.wav")
-	a.addEffect(AudioMinimumSafeAltitudeWarning, "msaw.wav")
-	a.addEffect(AudioModeCIntruder, "intruder.wav")
-	a.addEffect(AudioInboundHandoff, "263124__pan14__sine-octaves-up-beep.wav")
-	a.addEffect(AudioCommandError, "426888__thisusernameis__beep4.wav")
+	spec := sdl.AudioSpec{
+		Freq:     AudioSampleRate,
+		Format:   sdl.AUDIO_S16SYS,
+		Channels: 1,
+		Samples:  512,
+		Callback: sdl.AudioCallback(C.audioCallback),
+	}
+	sdl.OpenAudio(&spec, nil)
+	sdl.PauseAudio(false)
+
+	a.effects[AudioConflictAlert] = a.loadMP3("ca.mp3")
+	a.effects[AudioEmergencySquawk] = a.loadMP3("emergency.mp3")
+	a.effects[AudioMinimumSafeAltitudeWarning] = a.loadMP3("msaw.mp3")
+	a.effects[AudioModeCIntruder] = a.loadMP3("intruder.mp3")
+	a.effects[AudioInboundHandoff] = a.loadMP3("263124__pan14__sine-octaves-up-beep.mp3")
+	a.effects[AudioCommandError] = a.loadMP3("426888__thisusernameis__beep4.mp3")
 
 	lg.Info("Finished initializing audio")
 	return nil
