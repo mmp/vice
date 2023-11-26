@@ -5,7 +5,7 @@
       "name": "Philadelphia",
       "approaches": {
         "17Z": {
-          "full_name": "ILS 17",
+          "full_name": "ILS Runway 17",
           "runway": "17",
           "type": "ILS",
           "waypoints": [
@@ -14,7 +14,7 @@
           ]
         },
         "27L": {
-          "full_name": "ILS 27L",
+          "full_name": "ILS Runway 27 Left",
           "runway": "27L",
           "type": "ILS",
           "waypoints": [
@@ -22,7 +22,7 @@
           ]
         },
         "27R": {
-          "full_name": "ILS 27R",
+          "full_name": "ILS Runway 27 Right",
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
@@ -31,7 +31,7 @@
           ]
         },
         "9RZ": {
-          "full_name": "ILS 9R",
+          "full_name": "ILS Runway 9 Right",
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
@@ -39,7 +39,7 @@
           ]
         },
         "RVR": {
-          "full_name": "River Visual 9R",
+          "full_name": "River Visual Runway 9 Right",
           "runway": "9R",
           "type": "Visual",
           "waypoints": [
@@ -47,7 +47,7 @@
           ]
         },
         "G35": {
-          "full_name": "RNAV 35",
+          "full_name": "RNAV Runway 35",
           "runway": "35",
           "type": "RNAV",
           "waypoints": [
@@ -57,7 +57,7 @@
           ]
         },
         "I26": {
-          "full_name": "ILS 26",
+          "full_name": "ILS Runway 26",
           "runway": "26",
           "type": "ILS",
           "waypoints": [
@@ -65,7 +65,7 @@
           ]
         },
         "I9L": {
-          "full_name": "ILS 9L",
+          "full_name": "ILS Runway 9 Left",
           "runway": "9L",
           "type": "ILS",
           "waypoints": [

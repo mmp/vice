@@ -4,7 +4,7 @@
         "KLAS": {
             "approaches": {
                 "IY6": {
-                    "full_name": "ILS Y 26 Left",
+                    "full_name": "ILS Y Runway 26 Left",
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
@@ -12,7 +12,7 @@
                     ]
                 },
                 "IZ6": {
-                    "full_name": "ILS Z 26 Left",
+                    "full_name": "ILS Z Runway 26 Left",
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
@@ -21,7 +21,7 @@
                     ]
                 },
                 "RY9R": {
-                    "full_name": "RNAV Y 19 Right",
+                    "full_name": "RNAV Y Runway 19 Right",
                     "runway": "19R",
                     "type": "RNAV",
                     "waypoints": [
@@ -30,7 +30,7 @@
                     ]
                 },
                 "I1L": {
-                    "full_name": "ILS 1 Left",
+                    "full_name": "ILS Runway 1 Left",
                     "runway": "1L",
                     "type": "ILS",
                     "waypoints": [
@@ -39,7 +39,7 @@
                     ] 
                 },
                 "R1R": {
-                    "full_name": "RNAV 1R",
+                    "full_name": "RNAV Runway 1 Right",
                     "runway": "1R",
                     "type": "RNAV",
                     "waypoints": [
@@ -48,7 +48,7 @@
                     ]
                 },
                 "RY9L": {
-                    "full_name": "RNAV Y 19 Left",
+                    "full_name": "RNAV Y Runway 19 Left",
                     "runway": "19L",
                     "type": "RNAV",
                     "waypoints": [
@@ -57,7 +57,7 @@
                     ]
                 },
                 "IZ2": {
-                    "full_name": "ILS Z 26 Right",
+                    "full_name": "ILS Z Runway 26 Right",
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
@@ -66,7 +66,7 @@
                     ]
                 },
                 "IY2": {
-                    "full_name": "ILS Y 26 Right",
+                    "full_name": "ILS Y Runway 26 Right",
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [

@@ -4,7 +4,7 @@
     "KABE": {
       "approaches": {
         "I13": {
-          "full_name": "ILS 13",
+          "full_name": "ILS Runway 13",
           "runway": "13",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,7 @@
           ]
         },
         "I24": {
-          "full_name": "ILS 24",
+          "full_name": "ILS Runway 24",
           "runway": "24",
           "type": "ILS",
           "waypoints": [
@@ -20,7 +20,7 @@
           ]
         },
         "I6": {
-          "full_name": "ILS 6",
+          "full_name": "ILS Runway 6",
           "runway": "6",
           "type": "ILS",
           "waypoints": [
@@ -28,7 +28,7 @@
           ]
         },
         "R13": {
-          "full_name": "RNAV 13",
+          "full_name": "RNAV Runway 13",
           "runway": "13",
           "type": "RNAV",
           "waypoints": [
@@ -38,7 +38,7 @@
           ]
         },
         "R31": {
-          "full_name": "RNAV 31",
+          "full_name": "RNAV Runway 31",
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
@@ -48,7 +48,7 @@
           ]
         },
         "R6": {
-          "full_name": "RNAV 6",
+          "full_name": "RNAV Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [

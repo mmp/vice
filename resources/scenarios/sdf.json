@@ -4,7 +4,7 @@
     "KSDF": {
       "approaches": {
         "I7L": {
-          "full_name": "ILS Runway 17L",
+          "full_name": "ILS Runway 17 Left",
           "runway": "17L",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,7 @@
           ]
         },
         "I7R" : {
-          "full_name": "ILS Runway 17R",
+          "full_name": "ILS Runway 17 Right",
           "runway": "17R",
           "type": "ILS",
           "waypoints":[
@@ -20,7 +20,7 @@
           ]
         },
         "I5L": {
-          "full_name": "ILS Runway 35L",
+          "full_name": "ILS Runway 35 Left",
           "runway": "35L",
           "type": "ILS",
           "waypoints": [
@@ -28,7 +28,7 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS Runway 35R",
+          "full_name": "ILS Runway 35 Right",
           "runway": "35R",
           "type": "ILS",
           "waypoints": [

@@ -4,7 +4,7 @@
     "KSAV": {
       "approaches": {
         "I1": {
-          "full_name":" ILS Runway 1",
+          "full_name":"ILS Runway 1",
           "runway": "1",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,7 @@
           ]
         },
         "R1": {
-          "full_name":" RNAV Runway 1",
+          "full_name":"RNAV Runway 1",
           "runway": "1",
           "type": "RNAV",
           "waypoints": [

@@ -4,7 +4,7 @@
     "KJAX": {
       "approaches": {
         "I8": {
-          "full_name": "ILS 8",
+          "full_name": "ILS Runway 8",
           "runway": "08",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,7 @@
           ]
         },
         "RZ8": {
-          "full_name": "RNAV Z 8",
+          "full_name": "RNAV Z Runway 8",
           "runway": "08",
           "type": "RNAV",
           "waypoints": [
@@ -22,7 +22,7 @@
           ]
         },
         "I14": {
-          "full_name": "ILS 14",
+          "full_name": "ILS Runway 14",
           "runway": "14",
           "type": "ILS",
           "waypoints": [
@@ -30,7 +30,7 @@
           ]
         },
         "R14": {
-          "full_name": "RNAV 14",
+          "full_name": "RNAV Runway 14",
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
@@ -40,7 +40,7 @@
           ]
         },
         "I26": {
-          "full_name": "ILS 26",
+          "full_name": "ILS Runway 26",
           "runway": "26",
           "type": "ILS",
           "waypoints": [
@@ -48,7 +48,7 @@
           ]
         },
         "R26": {
-          "full_name": "RNAV 26",
+          "full_name": "RNAV Runway 26",
           "runway": "26",
           "type": "RNAV",
           "waypoints": [
@@ -58,7 +58,7 @@
           ]
         },
         "R32": {
-          "full_name": "RNAV 32",
+          "full_name": "RNAV Runway 32",
           "runway": "32",
           "type": "RNAV",
           "waypoints": [

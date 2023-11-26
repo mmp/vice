@@ -4,7 +4,7 @@
         "KCLT": {
             "approaches": {
                 "I8L": {
-                    "full_name": "ILS 18L",
+                    "full_name": "ILS Runway 18 Left",
                     "runway": "18L",
                     "type": "ILS",
                     "waypoints": [
@@ -12,7 +12,7 @@
                     ]
                 },
                 "I8C": {
-                    "full_name": "ILS 18C",
+                    "full_name": "ILS Runway 18 Center",
                     "runway": "18C",
                     "type": "ILS",
                     "waypoints": [
@@ -20,7 +20,7 @@
                     ]
                 },
                 "I8R": {
-                    "full_name": "ILS 18R",
+                    "full_name": "ILS Runway 18 Right",
                     "runway": "18R",
                     "type": "ILS",
                     "waypoints": [
@@ -28,7 +28,7 @@
                     ]
                 },
                 "I6L": {
-                    "full_name": "ILS 36L",
+                    "full_name": "ILS Runway 36 Left",
                     "runway": "36L",
                     "type": "ILS",
                     "waypoints": [
@@ -36,7 +36,7 @@
                     ]
                 },
                 "I6C": {
-                    "full_name": "ILS 36C",
+                    "full_name": "ILS Runway 36 Center",
                     "runway": "36C",
                     "type": "ILS",
                     "waypoints": [
@@ -44,7 +44,7 @@
                     ]
                 },
                 "I6R": {
-                    "full_name": "ILS 36R",
+                    "full_name": "ILS Runway 36 Right",
                     "runway": "36R",
                     "type": "ILS",
                     "waypoints": [

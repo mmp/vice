@@ -4,7 +4,7 @@
     "KDAB": {
       "approaches": {
         "I7L": {
-          "full_name": "ILS 7L",
+          "full_name": "ILS Runway 7 Left",
           "runway": "7L",
           "type": "ILS",
           "waypoints": [
@@ -13,7 +13,7 @@
           ]
         },
         "R7R": {
-          "full_name": "RNAV 7R",
+          "full_name": "RNAV Runway 7 Right",
           "runway": "7R",
           "type": "RNAV",
           "waypoints": [
@@ -22,7 +22,7 @@
           ]
         },
         "R16": {
-          "full_name": "RNAV 16",
+          "full_name": "RNAV Runway 16",
           "runway": "16",
           "type": "RNAV",
           "waypoints": [
@@ -31,7 +31,7 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS 25R",
+          "full_name": "ILS Runway 25 Right",
           "runway": "25R",
           "type": "ILS",
           "waypoints": [
@@ -39,7 +39,7 @@
           ]
         },
         "R5L": {
-          "full_name": "RNAV 25L",
+          "full_name": "RNAV Runway 25 Left",
           "runway": "25L",
           "type": "RNAV",
           "waypoints": [
@@ -47,7 +47,7 @@
           ]
         },
         "R34": {
-          "full_name": "RNAV 34",
+          "full_name": "RNAV Runway 34",
           "runway": "34",
           "type": "RNAV",
           "waypoints": [

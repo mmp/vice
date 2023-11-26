@@ -20,7 +20,7 @@
           ]
         },
         "I6L": {
-          "full_name": "ILS Runway 16L",
+          "full_name": "ILS Runway 16 Left",
           "runway": "16L",
           "type": "ILS",
           "waypoints": [
@@ -31,7 +31,7 @@
           ]
         },
         "I6R": {
-          "full_name": "ILS Runway 16R",
+          "full_name": "ILS Runway 16 Right",
           "runway": "16R",
           "type": "ILS",
           "waypoints": [
@@ -42,7 +42,7 @@
           ]
         },
         "I7L": {
-          "full_name": "ILS Runway 17L",
+          "full_name": "ILS Runway 17 Left",
           "runway": "17L",
           "type": "ILS",
           "waypoints": [
@@ -54,7 +54,7 @@
           ]
         },
         "I7R": {
-          "full_name": "ILS Runway 17R",
+          "full_name": "ILS Runway 17 Right",
           "runway": "17R",
           "type": "ILS",
           "waypoints": [
@@ -81,7 +81,7 @@
           ]
         },
         "I4L": {
-          "full_name": "ILS Runway 34L",
+          "full_name": "ILS Runway 34 Left",
           "runway": "34L",
           "type": "ILS",
           "waypoints": [
@@ -92,7 +92,7 @@
           ]
         },
         "I4R": {
-          "full_name": "ILS Runway 34R",
+          "full_name": "ILS Runway 34 Right",
           "runway": "34R",
           "type": "ILS",
           "waypoints": [
@@ -103,7 +103,7 @@
           ]
         },
         "I5L": {
-          "full_name": "ILS Runway 35L",
+          "full_name": "ILS Runway 35 Left",
           "runway": "35L",
           "type": "ILS",
           "waypoints": [
@@ -114,7 +114,7 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS Runway 35R",
+          "full_name": "ILS Runway 35 Right",
           "runway": "35R",
           "type": "ILS",
           "waypoints": [

@@ -5,7 +5,7 @@
             "name": "LaGuardia",
               "approaches": {
                 "I4": {
-                  "full_name": "ILS 4",
+                  "full_name": "ILS Runway 4",
                   "runway": "4",
                   "type": "ILS",
                   "waypoints": [
@@ -13,7 +13,7 @@
                   ]
                 },
                 "I22": {
-                  "full_name": "ILS 22",
+                  "full_name": "ILS Runway 22",
                   "runway": "22",
                   "type": "ILS",
                   "waypoints": [
@@ -21,7 +21,7 @@
                   ]
                 },
                 "I13": {
-                  "full_name": "ILS 13",
+                  "full_name": "ILS Runway 13",
                   "runway": "13",
                   "type": "ILS",
                   "waypoints": [
@@ -29,7 +29,7 @@
                   ]
                 },
                 "R31": {
-                  "full_name": "RNAV X-Ray 31",
+                  "full_name": "RNAV X Runway 31",
                   "runway": "31",
                   "type": "RNAV",
                   "waypoints": [
@@ -37,7 +37,7 @@
                   ]
                 },
                 "PVA": {
-                  "full_name": "Park Visual 31",
+                  "full_name": "Park Visual Runway 31",
                   "runway": "31",
                   "type": "Visual",
                   "waypoints": [
@@ -395,7 +395,7 @@
                 "name": "Newark",
                 "approaches": {
                   "I11": {
-                    "full_name": "ILS 11",
+                    "full_name": "ILS Runway 11",
                     "runway": "11",
                     "type": "ILS",
                     "waypoints": [
@@ -403,7 +403,7 @@
                     ]
                   },
                   "I2L": {
-                    "full_name": "ILS 22 Left",
+                    "full_name": "ILS Runway 22 Left",
                     "runway": "22L",
                     "type": "ILS",
                     "waypoints": [
@@ -411,7 +411,7 @@
                     ]
                   },
                   "I2R": {
-                    "full_name": "ILS 22 Right",
+                    "full_name": "ILS Runway 22 Right",
                     "runway": "22R",
                     "type": "ILS",
                     "waypoints": [
@@ -419,7 +419,7 @@
                     ]
                   },
                   "I4L": {
-                    "full_name": "ILS 4 Left",
+                    "full_name": "ILS Runway 4 Left",
                     "runway": "4L",
                     "type": "ILS",
                     "waypoints": [
@@ -427,7 +427,7 @@
                     ]
                   },
                   "I4R": {
-                    "full_name": "ILS 4 Right",
+                    "full_name": "ILS Runway 4 Right",
                     "runway": "4R",
                     "type": "ILS",
                     "waypoints": [
@@ -435,7 +435,7 @@
                     ]
                   },
                   "R29": {
-                    "full_name": "RNAV X 29",
+                    "full_name": "RNAV X Runway 29",
                     "runway": "29",
                     "type": "RNAV",
                     "waypoints": [
@@ -443,7 +443,7 @@
                     ]
                   },
                   "RY9": {
-                    "full_name": "RNAV Y 29",
+                    "full_name": "RNAV Y Runway 29",
                     "runway": "29",
                     "type": "RNAV",
                     "waypoints": [
@@ -451,7 +451,7 @@
                     ]
                   },
                   "RZ9": {
-                    "full_name": "RNAV Z 29",
+                    "full_name": "RNAV Z Runway 29",
                     "runway": "29",
                     "type": "RNAV",
                     "waypoints": [
@@ -1470,7 +1470,7 @@
                 "name": "Kennedy",
                 "approaches": {
                   "I1L": {
-                    "full_name": "ILS 31 Left",
+                    "full_name": "ILS Runway 31 Left",
                     "runway": "31L",
                     "type": "ILS",
                     "waypoints": [
@@ -1479,7 +1479,7 @@
                     ]
                   },
                   "I1R": {
-                    "full_name": "ILS 31 Right",
+                    "full_name": "ILS Runway 31 Right",
                     "runway": "31R",
                     "type": "ILS",
                     "waypoints": [
@@ -1487,7 +1487,7 @@
                     ]
                   },
                   "I2L": {
-                    "full_name": "ILS 22 Left",
+                    "full_name": "ILS Runway 22 Left",
                     "runway": "22L",
                     "type": "ILS",
                     "waypoints": [
@@ -1496,7 +1496,7 @@
                     ]
                   },
                   "I2R": {
-                    "full_name": "ILS 22 Right",
+                    "full_name": "ILS Runway 22 Right",
                     "runway": "22R",
                     "type": "ILS",
                     "waypoints": [
@@ -1505,7 +1505,7 @@
                     ]
                   },
                   "I3L": {
-                    "full_name": "ILS 13 Left",
+                    "full_name": "ILS Runway 13 Left",
                     "runway": "13L",
                     "type": "ILS",
                     "waypoints": [
@@ -1513,7 +1513,7 @@
                     ]
                   },
                   "I4L": {
-                    "full_name": "ILS 4 Left",
+                    "full_name": "ILS Runway 4 Left",
                     "runway": "4L",
                     "type": "ILS",
                     "waypoints": [
@@ -1521,7 +1521,7 @@
                     ]
                   },
                   "I4R": {
-                    "full_name": "ILS 4 Right",
+                    "full_name": "ILS Runway 4 Right",
                     "runway": "4R",
                     "type": "ILS",
                     "waypoints": [
@@ -1529,7 +1529,7 @@
                     ]
                   },
                   "R1L": {
-                    "full_name": "RNAV Zulu 31 Left",
+                    "full_name": "RNAV Z Runway 31 Left",
                     "runway": "31L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1538,7 +1538,7 @@
                     ]
                   },
                   "R1R": {
-                    "full_name": "RNAV Zulu 31 Right",
+                    "full_name": "RNAV Z Runway 31 Right",
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1547,7 +1547,7 @@
                     ]
                   },
                   "R2L": {
-                    "full_name": "RNAV X-Ray 22 Left",
+                    "full_name": "RNAV X Runway 22 Left",
                     "runway": "22L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1556,7 +1556,7 @@
                     ]
                   },
                   "R2R": {
-                    "full_name": "RNAV Zulu 22 Right",
+                    "full_name": "RNAV Z Runway 22 Right",
                     "runway": "22R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1564,7 +1564,7 @@
                     ]
                   },
                   "R3L": {
-                    "full_name": "RNAV Zulu 13 Left",
+                    "full_name": "RNAV Z Runway 13 Left",
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1572,7 +1572,7 @@
                     ]
                   },
                   "R3R": {
-                    "full_name": "RNAV Zulu 13 Right",
+                    "full_name": "RNAV Z Runway 13 Right",
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1580,7 +1580,7 @@
                     ]
                   },
                   "R4L": {
-                    "full_name": "RNAV Zulu 4 Left",
+                    "full_name": "RNAV Z Runway 4 Left",
                     "runway": "4L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1588,7 +1588,7 @@
                     ]
                   },
                   "R4R": {
-                    "full_name": "RNAV Zulu 4 Right",
+                    "full_name": "RNAV Z Runway 4 Right",
                     "runway": "4R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1596,7 +1596,7 @@
                     ]
                   },
                   "BVA": {
-                    "full_name": "Belmont Visual 22L",
+                    "full_name": "Belmont Visual Runway 22 Left",
                     "runway": "22L",
                     "type": "Visual",
                     "waypoints": [
@@ -1604,7 +1604,7 @@
                     ]
                   },
                   "PVA": {
-                    "full_name": "Parkway Visual 13L",
+                    "full_name": "Parkway Visual Runway 13 Left",
                     "runway": "13L",
                     "type": "Visual",
                     "waypoints": [

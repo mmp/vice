@@ -4,7 +4,7 @@
     "KMCO": {
       "approaches": {
         "I7L": {
-          "full_name": "ILS Runway 17L",
+          "full_name": "ILS Runway 17 Left",
           "runway": "17L",
           "type": "ILS",
           "waypoints": [
@@ -13,7 +13,7 @@
           ]
         },
         "R7L": {
-          "full_name": "RNAV Runway 17L",
+          "full_name": "RNAV Runway 17 Left",
           "runway": "17L",
           "type": "RNAV",
           "waypoints": [
@@ -22,7 +22,7 @@
           ]
         },
         "I7R": {
-          "full_name": "ILS Runway 17R",
+          "full_name": "ILS Runway 17 Right",
           "runway": "17R",
           "type": "ILS",
           "waypoints": [
@@ -30,7 +30,7 @@
           ]
         },
         "R7R": {
-          "full_name": "RNAV Runway 17R",
+          "full_name": "RNAV Runway 17 Right",
           "runway": "17R",
           "type": "RNAV",
           "waypoints": [
@@ -38,7 +38,7 @@
           ]
         },
         "R8L": {
-          "full_name": "RNAV Runway 18L",
+          "full_name": "RNAV Runway 18 Left",
           "runway": "18L",
           "type": "RNAV",
           "waypoints": [
@@ -46,7 +46,7 @@
           ]
         },
         "I8R": {
-          "full_name": "ILS Runway 18R",
+          "full_name": "ILS Runway 18 Right",
           "runway": "18R",
           "type": "ILS",
           "waypoints": [
@@ -55,7 +55,7 @@
           ]
         },
         "R8R": {
-          "full_name": "RNAV Runway 18R",
+          "full_name": "RNAV Runway 18 Right",
           "runway": "18R",
           "type": "RNAV",
           "waypoints": [
@@ -64,7 +64,7 @@
           ]
         },
         "I5L": {
-          "full_name": "ILS Runway 35L",
+          "full_name": "ILS Runway 35 Left",
           "runway": "35L",
           "type": "ILS",
           "waypoints": [
@@ -72,7 +72,7 @@
           ]
         },
         "R5L": {
-          "full_name": "RNAV Runway 35L",
+          "full_name": "RNAV Runway 35 Left",
           "runway": "35L",
           "type": "RNAV",
           "waypoints": [
@@ -80,7 +80,7 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS Runway 35R",
+          "full_name": "ILS Runway 35 Right",
           "runway": "35R",
           "type": "ILS",
           "waypoints": [
@@ -89,7 +89,7 @@
           ]
         },
         "R5R": {
-          "full_name": "RNAV Runway 35R",
+          "full_name": "RNAV Runway 35 Right",
           "runway": "35R",
           "type": "ILS",
           "waypoints": [
@@ -98,7 +98,7 @@
           ]
         },
         "I6R": {
-          "full_name": "ILS Runway 36R",
+          "full_name": "ILS Runway 36 Right",
           "runway": "36R",
           "type": "ILS",
           "waypoints": [
@@ -106,7 +106,7 @@
           ]
         },
         "R6R": {
-          "full_name": "RNAV Runway 36R",
+          "full_name": "RNAV Runway 36 Right",
           "runway": "36R",
           "type": "RNAV",
           "waypoints": [
@@ -114,7 +114,7 @@
           ]
         },
         "R6L": {
-          "full_name": "RNAV Runway 36L",
+          "full_name": "RNAV Runway 36 Left",
           "runway": "36L",
           "type": "RNAV",
           "waypoints": [
@@ -846,7 +846,7 @@
     "KORL": {
       "approaches": {
         "I7": {
-          "full_name": "ILS Runway 07",
+          "full_name": "ILS Runway 7",
           "runway": "7",
           "type": "ILS",
           "waypoints": [
@@ -854,7 +854,7 @@
           ]
         },
         "R7": {
-          "full_name": "RNAV Runway 07",
+          "full_name": "RNAV Runway 7",
           "runway": "7",
           "type": "RNAV",
           "waypoints": [
@@ -928,7 +928,7 @@
     "KSFB": {
       "approaches": {
         "I9L": {
-          "full_name": "ILS Runway 9L",
+          "full_name": "ILS Runway 9 Left",
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
@@ -938,7 +938,7 @@
           ]
         },
         "R9L": {
-          "full_name": "RNAV Runway 9L",
+          "full_name": "RNAV Runway 9 Left",
           "runway": "9L",
           "type": "RNAV",
           "waypoints": [
@@ -948,7 +948,7 @@
           ]
         },
         "I9R": {
-          "full_name": "ILS Runway 9R",
+          "full_name": "ILS Runway 9 Right",
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
@@ -958,7 +958,7 @@
           ]
         },
         "R9R": {
-          "full_name": "RNAV Runway 9R",
+          "full_name": "RNAV Runway 9 Right",
           "runway": "9R",
           "type": "RNAV",
           "waypoints": [
@@ -968,7 +968,7 @@
           ]
         },
         "I7G": {
-          "full_name": "ILS Runway 27R",
+          "full_name": "ILS Runway 27 Right",
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
@@ -978,7 +978,7 @@
           ]
         },
         "R7G": {
-          "full_name": "RNAV Runway 27R",
+          "full_name": "RNAV Runway 27 Right",
           "runway": "27R",
           "type": "RNAV",
           "waypoints": [
@@ -988,7 +988,7 @@
           ]
         },
         "R7H": {
-          "full_name": "RNAV Runway 27L",
+          "full_name": "RNAV Runway 27 Left",
           "runway": "27L",
           "type": "RNAV",
           "waypoints": [
@@ -1242,7 +1242,7 @@
     "KTPA": {
       "approaches": {
         "I2L": {
-          "full_name": "ILS Runway 2L",
+          "full_name": "ILS Runway 2 Left",
           "runway": "2L",
           "type": "ILS",
           "waypoints": [

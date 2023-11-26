@@ -4,7 +4,7 @@
     "KBOS": {
       "approaches": {
         "I4R": {
-          "full_name": "ILS Runway 4R",
+          "full_name": "ILS Runway 4 Right",
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,7 @@
           ]
         },
         "R4L": {
-          "full_name": "RNAV Runway 4L",
+          "full_name": "RNAV Runway 4 Left",
           "runway": "4L",
           "type": "RNAV",
           "waypoints": [
@@ -20,7 +20,7 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS Runway 15R",
+          "full_name": "ILS Runway 15 Right",
           "runway": "15R",
           "type": "ILS",
           "waypoints": [
@@ -29,7 +29,7 @@
           ]
         },
         "I2L": {
-          "full_name": "ILS Runway 22L",
+          "full_name": "ILS Runway 22 Left",
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
@@ -45,7 +45,7 @@
           ]
         },
         "I3L": {
-          "full_name": "ILS Runway 33L",
+          "full_name": "ILS Runway 33 Left",
           "runway": "33L",
           "type": "ILS",
           "waypoints": [

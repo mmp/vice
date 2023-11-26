@@ -5,7 +5,7 @@
       "name": "Newark",
       "approaches": {
         "I11": {
-          "full_name": "ILS 11",
+          "full_name": "ILS Runway 11",
           "runway": "11",
           "type": "ILS",
           "waypoints": [
@@ -13,7 +13,7 @@
           ]
         },
         "I2L": {
-          "full_name": "ILS 22 Left",
+          "full_name": "ILS Runway 22 Left",
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
@@ -21,7 +21,7 @@
           ]
         },
         "I2R": {
-          "full_name": "ILS 22 Right",
+          "full_name": "ILS Runway 22 Right",
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
@@ -29,7 +29,7 @@
           ]
         },
         "I4L": {
-          "full_name": "ILS 4 Left",
+          "full_name": "ILS Runway 4 Left",
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
@@ -37,7 +37,7 @@
           ]
         },
         "I4R": {
-          "full_name": "ILS 4 Right",
+          "full_name": "ILS Runway 4 Right",
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
@@ -45,7 +45,7 @@
           ]
         },
         "R29": {
-          "full_name": "RNAV X 29",
+          "full_name": "RNAV X Runway 29",
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
@@ -53,7 +53,7 @@
           ]
         },
         "RY9": {
-          "full_name": "RNAV Y 29",
+          "full_name": "RNAV Y Runway 29",
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
@@ -61,7 +61,7 @@
           ]
         },
         "RZ9": {
-          "full_name": "RNAV Z 29",
+          "full_name": "RNAV Z Runway 29",
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
@@ -1094,7 +1094,7 @@
       "name": "Teterboro",
       "approaches": {
         "I06": {
-          "full_name": "ILS 6",
+          "full_name": "ILS Runway 6",
           "runway": "6",
           "type": "ILS",
           "waypoints": [
@@ -1102,7 +1102,7 @@
           ]
         },
         "I19": {
-          "full_name": "ILS 19",
+          "full_name": "ILS Runway 19",
           "runway": "19",
           "type": "ILS",
           "waypoints": [
@@ -1110,7 +1110,7 @@
           ]
         },
         "R24": {
-          "full_name": "RNAV 24",
+          "full_name": "RNAV Runway 24",
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
@@ -1118,7 +1118,7 @@
           ]
         },
         "RX6": {
-          "full_name": "RNAV X 6",
+          "full_name": "RNAV X Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1128,7 +1128,7 @@
           ]
         },
         "RX9": {
-          "full_name": "RNAV X 19",
+          "full_name": "RNAV X Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
@@ -1136,7 +1136,7 @@
           ]
         },
         "RY6": {
-          "full_name": "RNAV Y 6",
+          "full_name": "RNAV Y Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1146,7 +1146,7 @@
           ]
         },
         "RY9": {
-          "full_name": "RNAV Y 19",
+          "full_name": "RNAV Y Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
@@ -1154,7 +1154,7 @@
           ]
         },
         "RZ6": {
-          "full_name": "RNAV Z 6",
+          "full_name": "RNAV Z Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1164,7 +1164,7 @@
           ]
         },
         "RZ9": {
-          "full_name": "RNAV Z 19",
+          "full_name": "RNAV Z Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [

@@ -4,7 +4,7 @@
     "KATL": {
       "approaches": {
         "I8L": {
-          "full_name": "ILS Runway 8L",
+          "full_name": "ILS Runway 8 Left",
           "runway": "8L",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,7 @@
           ]
         },
         "I8R": {
-          "full_name": "ILS Runway 8R",
+          "full_name": "ILS Runway 8 Right",
           "runway": "8R",
           "type": "ILS",
           "waypoints": [
@@ -20,7 +20,7 @@
           ]
         },
         "I9L": {
-          "full_name": "ILS Runway 9L",
+          "full_name": "ILS Runway 9 Left",
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
@@ -28,7 +28,7 @@
           ]
         },
         "I9R": {
-          "full_name": "ILS Runway 9R",
+          "full_name": "ILS Runway 9 Right",
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
@@ -44,7 +44,7 @@
           ]
         },
         "I6L": {
-          "full_name": "ILS Runway 26L",
+          "full_name": "ILS Runway 26 Left",
           "runway": "26L",
           "type": "ILS",
           "waypoints": [
@@ -52,7 +52,7 @@
           ]
         },
         "I6R": {
-          "full_name": "ILS Runway 26R",
+          "full_name": "ILS Runway 26 Right",
           "runway": "26R",
           "type": "ILS",
           "waypoints": [
@@ -60,7 +60,7 @@
           ]
         },
         "I7L": {
-          "full_name": "ILS Runway 27L",
+          "full_name": "ILS Runway 27 Left",
           "runway": "27L",
           "type": "ILS",
           "waypoints": [
@@ -68,7 +68,7 @@
           ]
         },
         "I7R": {
-          "full_name": "ILS Runway 27R",
+          "full_name": "ILS Runway 27 Right",
           "runway": "27R",
           "type": "ILS",
           "waypoints": [

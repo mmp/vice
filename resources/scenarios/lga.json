@@ -5,7 +5,7 @@
       "name": "LaGuardia",
         "approaches": {
           "I4": {
-            "full_name": "ILS 4",
+            "full_name": "ILS Runway 4",
             "runway": "4",
             "type": "ILS",
             "waypoints": [
@@ -13,7 +13,7 @@
             ]
           },
           "I22": {
-            "full_name": "ILS 22",
+            "full_name": "ILS Runway 22",
             "runway": "22",
             "type": "ILS",
             "waypoints": [
@@ -21,7 +21,7 @@
             ]
           },
           "I13": {
-            "full_name": "ILS 13",
+            "full_name": "ILS Runway 13",
             "runway": "13",
             "type": "ILS",
             "waypoints": [
@@ -29,7 +29,7 @@
             ]
           },
           "R31": {
-            "full_name": "RNAV X-Ray 31",
+            "full_name": "RNAV X Runway 31",
             "runway": "31",
             "type": "RNAV",
             "waypoints": [
@@ -37,7 +37,7 @@
             ]
           },
           "PVA": {
-            "full_name": "Park Visual 31",
+            "full_name": "Park Visual Runway 31",
             "runway": "31",
             "type": "Visual",
             "waypoints": [
