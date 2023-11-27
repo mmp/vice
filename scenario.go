@@ -1187,8 +1187,11 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		return nil
 	})
 	if err != nil {
-		lg.Errorf("error walking scenarios: %v", err)
-		os.Exit(1)
+		e.Error(err)
+	}
+	if e.HaveErrors() {
+		// Don't keep going since we'll likely crash in the following
+		return nil, nil
 	}
 
 	// Load the scenario specified on command line, if any.
@@ -1203,22 +1206,29 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			}()
 			s := loadScenarioGroup(fs, filename, e)
 			if s != nil {
-				// These may have an empty "video_map_file" member, which
-				// is automatically patched up here...
-				if s.VideoMapFile == "" {
-					s.VideoMapFile = *videoMapFilename
-
-					if s.VideoMapFile == "" {
-						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
-							filename)
-					}
-				}
-
 				// These are allowed to redefine an existing scenario.
 				if scenarioGroups[s.TRACON] == nil {
 					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
 				}
 				scenarioGroups[s.TRACON][s.Name] = s
+
+				// These may have an empty "video_map_file" member, which
+				// is automatically patched up here...
+				if s.VideoMapFile == "" {
+					if *videoMapFilename != "" {
+						s.VideoMapFile = *videoMapFilename
+					} else {
+						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+							filename)
+					}
+				}
+
+				if referencedVideoMaps[s.VideoMapFile] == nil {
+					referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+				}
+				for _, m := range s.STARSMaps {
+					referencedVideoMaps[s.VideoMapFile][m.Name] = nil
+				}
 			}
 		}
 	}
@@ -1271,20 +1281,17 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	lg.Infof("video map load time: %s\n", time.Since(start))
 
 	// Load the video map specified on the command line, if any.
-	loadVid := func(filename string) {
-		if filename != "" {
-			fs := func() fs.FS {
-				if filepath.IsAbs(filename) {
-					return RootFS{}
-				} else {
-					return os.DirFS(".")
-				}
-			}()
-			loadVideoMaps(fs, filename, referencedVideoMaps, vmChan)
-			receiveLoadedVideoMap()
-		}
+	if *videoMapFilename != "" {
+		fs := func() fs.FS {
+			if filepath.IsAbs(*videoMapFilename) {
+				return RootFS{}
+			} else {
+				return os.DirFS(".")
+			}
+		}()
+		loadVideoMaps(fs, *videoMapFilename, referencedVideoMaps, vmChan)
+		receiveLoadedVideoMap()
 	}
-	loadVid(*videoMapFilename)
 
 	// Final tidying before we return the loaded scenarios.
 	for tname, tracon := range scenarioGroups {
