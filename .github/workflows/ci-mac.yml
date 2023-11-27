@@ -76,7 +76,7 @@ jobs:
         cp icon.icns Vice.app/Contents/Resources
         cp resources/*.zst resources/*.json Vice.app/Contents/Resources
         mkdir -p Vice.app/Contents/Resources/{audio,fonts,scenarios,videomaps}
-        cp resources/audio/*wav Vice.app/Contents/Resources/audio/
+        cp resources/audio/*mp3 Vice.app/Contents/Resources/audio/
         cp resources/fonts/*zst Vice.app/Contents/Resources/fonts/
         cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios/
         cp resources/videomaps/*zst Vice.app/Contents/Resources/videomaps/

@@ -80,7 +80,7 @@ func main() {
 	}
 
 	r.ResourceFiles = initFiles("resources/*.zst", "resources/*json")
-	r.AudioFiles = initFiles("resources/audio/*.wav")
+	r.AudioFiles = initFiles("resources/audio/*.mp3")
 	r.FontFiles = initFiles("resources/fonts/*.zst")
 	r.VideoMapFiles = initFiles("resources/videomaps/*.zst")
 	r.ScenarioFiles = initFiles("resources/scenarios/*.json")
