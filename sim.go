@@ -1274,10 +1274,10 @@ func (s *Sim) updateState() {
 				ac.DepartureContactAltitude = 0
 
 				// Only after we're on frequency can the controller start
-				// issuing control commands..
-				if ac.TrackingController == ctrl {
-					ac.ControllingController = ctrl
-				}
+				// issuing control commands.. (Note that track may have
+				// already been handed off to the next controller at this
+				// point.)
+				ac.ControllingController = ctrl
 			}
 
 			// Cull far-away departures/arrivals
