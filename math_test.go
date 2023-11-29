@@ -287,3 +287,19 @@ func TestPointSegmentDistance(t *testing.T) {
 		}
 	}
 }
+
+func TestPermutationElement(t *testing.T) {
+	for _, n := range []int{8, 31, 10523} {
+		for _, h := range []uint32{0, 0xff, 0xfeedface} {
+			m := make(map[int]int)
+
+			for i := 0; i < n; i++ {
+				perm := PermutationElement(i, n, h)
+				if _, ok := m[perm]; ok {
+					t.Errorf("%d: appeared multiple times", perm)
+				}
+				m[perm] = i
+			}
+		}
+	}
+}
