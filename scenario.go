@@ -867,17 +867,16 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	}
 
-	referenced, ok := referencedVideoMaps[path]
-	if !ok {
-		panic(path)
+	if referenced, ok := referencedVideoMaps[path]; !ok {
+		fmt.Printf("%s: video map not used in any scenarios\n", path)
+	} else {
+		lvm.commandBufs, err = loadVideoMapFile(r, referenced)
+		if err != nil {
+			lvm.err = err
+			result <- lvm
+			return
+		}
 	}
-	lvm.commandBufs, err = loadVideoMapFile(r, referenced)
-	if err != nil {
-		lvm.err = err
-		result <- lvm
-		return
-	}
-
 	lg.Infof("%s: video map loaded in %s\n", path, time.Since(start))
 
 	result <- lvm
@@ -1195,44 +1194,41 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	}
 
 	// Load the scenario specified on command line, if any.
-	loadScenario := func(filename string) {
-		if filename != "" {
-			fs := func() fs.FS {
-				if filepath.IsAbs(filename) {
-					return RootFS{}
+	if *scenarioFilename != "" {
+		fs := func() fs.FS {
+			if filepath.IsAbs(*scenarioFilename) {
+				return RootFS{}
+			} else {
+				return os.DirFS(".")
+			}
+		}()
+		s := loadScenarioGroup(fs, *scenarioFilename, e)
+		if s != nil {
+			// These are allowed to redefine an existing scenario.
+			if scenarioGroups[s.TRACON] == nil {
+				scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
+			}
+			scenarioGroups[s.TRACON][s.Name] = s
+
+			// These may have an empty "video_map_file" member, which
+			// is automatically patched up here...
+			if s.VideoMapFile == "" {
+				if *videoMapFilename != "" {
+					s.VideoMapFile = *videoMapFilename
 				} else {
-					return os.DirFS(".")
+					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+						*scenarioFilename)
 				}
-			}()
-			s := loadScenarioGroup(fs, filename, e)
-			if s != nil {
-				// These are allowed to redefine an existing scenario.
-				if scenarioGroups[s.TRACON] == nil {
-					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
-				}
-				scenarioGroups[s.TRACON][s.Name] = s
+			}
 
-				// These may have an empty "video_map_file" member, which
-				// is automatically patched up here...
-				if s.VideoMapFile == "" {
-					if *videoMapFilename != "" {
-						s.VideoMapFile = *videoMapFilename
-					} else {
-						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
-							filename)
-					}
-				}
-
-				if referencedVideoMaps[s.VideoMapFile] == nil {
-					referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
-				}
-				for _, m := range s.STARSMaps {
-					referencedVideoMaps[s.VideoMapFile][m.Name] = nil
-				}
+			if referencedVideoMaps[s.VideoMapFile] == nil {
+				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			}
+			for _, m := range s.STARSMaps {
+				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
 			}
 		}
 	}
-	loadScenario(*scenarioFilename)
 
 	// Next load the video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
