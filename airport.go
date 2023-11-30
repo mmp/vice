@@ -249,7 +249,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
-					e.ErrorString("exit repeatedly specified in routes")
+					e.ErrorString("%s: exit repeatedly specified in routes", exit)
 				}
 				seenExits[exit] = nil
 
