@@ -3789,10 +3789,10 @@
                     "EWR_P_APP": {"backup": "JFK_G_APP", "arrivals": ["FQM3", "PHLBO4"]},
                     "EWR_DEP": {"backup": "EWR_P_APP", "departures": ["KEWR"]},
                     "EWR_A_APP": {"backup": "EWR_P_APP", "arrivals": ["FLOSI4"]},
-                    "NY_LE_APP": {"backup": "JFK_G_APP"},
-                    "NY_LW_APP": {"backup": "JFK_G_APP"},
-                    "NY_LN_APP": {"backup": "JFK_G_APP"},
-                    "NY_LS_APP": {"backup": "JFK_G_APP"}
+                    "NY_LE_DEP": {"backup": "JFK_G_APP"},
+                    "NY_LW_DEP": {"backup": "JFK_G_APP"},
+                    "NY_LN_DEP": {"backup": "JFK_G_APP"},
+                    "NY_LS_DEP": {"backup": "JFK_G_APP"}
 
                 }
             },
