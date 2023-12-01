@@ -1823,6 +1823,13 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 				})
 			}
 
+			s.eventStream.Post(Event{
+				Type:           HandoffControllEvent,
+				FromController: ac.ControllingController,
+				ToController:   ac.TrackingController,
+				Callsign:       ac.Callsign,
+			})
+
 			ac.ControllingController = ac.TrackingController
 
 			// Go ahead and climb departures the rest of the way and send

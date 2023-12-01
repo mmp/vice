@@ -408,7 +408,12 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 			if ac, ok := w.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == w.Callsign {
 					possiblyAdd(ac)
-				} else if fsp.AutoRemoveHandoffs && ac.TrackingController != w.Callsign {
+				}
+			}
+
+		case HandoffControllEvent:
+			if ac, ok := w.Aircraft[event.Callsign]; ok {
+				if fsp.AutoRemoveHandoffs && ac.TrackingController != w.Callsign {
 					remove(event.Callsign)
 				}
 			}
