@@ -10,19 +10,16 @@ import "C"
 
 import (
 	"C"
-	"bytes"
-	"fmt"
-	"io"
 	"reflect"
 	"sync"
 	"unsafe"
 
-	mp3 "github.com/hajimehoshi/go-mp3"
 	"github.com/mmp/imgui-go/v4"
+	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const AudioSampleRate = 16000
+const AudioSampleRate = 12000
 
 type AudioType int
 
@@ -53,11 +50,16 @@ type AudioEngine struct {
 	AudioEnabled  bool
 	EffectEnabled [AudioNumTypes]bool
 
-	effects        [AudioNumTypes]*mp3.Decoder
-	playOnceCount  [AudioNumTypes]int
-	playContinuous [AudioNumTypes]bool
+	effects [AudioNumTypes]AudioEffect
 
 	mu sync.Mutex
+}
+
+type AudioEffect struct {
+	pcm            []byte
+	playOnceCount  int
+	playContinuous bool
+	playOffset     int
 }
 
 func (a *AudioEngine) SetDefaults() {
@@ -73,7 +75,7 @@ func (a *AudioEngine) PlayOnce(e AudioType) {
 	}
 
 	a.mu.Lock()
-	a.playOnceCount[e]++
+	a.effects[e].playOnceCount++
 	a.mu.Unlock()
 }
 
@@ -83,7 +85,7 @@ func (a *AudioEngine) StartPlayContinuous(e AudioType) {
 	}
 
 	a.mu.Lock()
-	a.playContinuous[e] = true
+	a.effects[e].playContinuous = true
 	a.mu.Unlock()
 }
 
@@ -91,11 +93,9 @@ func (a *AudioEngine) StopPlayContinuous(e AudioType) {
 	// Don't check if audio or the effect is enabled since if those were
 	// changed in the UI and the sound is playing, we still want to stop...
 	a.mu.Lock()
-	if a.playContinuous[e] {
-		a.playContinuous[e] = false
-		if _, err := a.effects[e].Seek(0, io.SeekStart); err != nil {
-			panic(err)
-		}
+	if a.effects[e].playContinuous {
+		a.effects[e].playContinuous = false
+		a.effects[e].playOffset = 0
 	}
 	a.mu.Unlock()
 }
@@ -111,27 +111,25 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	for i := 0; i < AudioNumTypes; i++ {
-		buf := make([]byte, 2*n) // go-mp3 always gives 2 channels * 16-bits
+	for i := range a.effects {
+		e := &a.effects[i]
+		buf := make([]byte, n)
 		bread := buf
-		for len(bread) > 0 && (a.playContinuous[i] || a.playOnceCount[i] > 0) {
-			nr, err := io.ReadFull(a.effects[i], bread)
-			bread = bread[nr:]
-			if err == io.EOF || err == io.ErrUnexpectedEOF {
-				if a.playOnceCount[i] > 0 {
-					a.playOnceCount[i]--
+		for len(bread) > 0 && (e.playContinuous || e.playOnceCount > 0) {
+			nc := copy(bread, e.pcm[e.playOffset:])
+			e.playOffset += nc
+			bread = bread[nc:]
+
+			if e.playOffset == len(e.pcm) {
+				e.playOffset = 0
+				if e.playOnceCount > 0 {
+					e.playOnceCount--
 				}
-				if _, err := a.effects[i].Seek(0, io.SeekStart); err != nil {
-					panic(err)
-				}
-			} else if err != nil {
-				panic(err)
 			}
 		}
 
-		for i := 0; i < len(buf)/4; i++ {
-			// just take the first channel
-			accum[i] += int(int16(buf[4*i])|int16(buf[4*i+1])<<8) / 2
+		for i := 0; i < len(buf)/2; i++ {
+			accum[i] += int(int16(buf[2*i])|int16(buf[2*i+1])<<8) / 2
 		}
 	}
 
@@ -142,18 +140,19 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	}
 }
 
-func (a *AudioEngine) loadMP3(filename string) *mp3.Decoder {
-	r := bytes.NewReader(LoadResource("audio/" + filename))
-	dec, err := mp3.NewDecoder(r)
+func (a *AudioEngine) loadMP3(filename string) AudioEffect {
+	dec, pcm, err := minimp3.DecodeFull(LoadResource("audio/" + filename))
 	if err != nil {
-		panic(err)
+		lg.Errorf("%s: unable to decode mp3: %v", filename, err)
+	}
+	if dec.SampleRate != AudioSampleRate {
+		lg.Errorf("expected %d Hz sample rate, got %d", AudioSampleRate, dec.SampleRate)
+	}
+	if dec.Channels != 1 {
+		lg.Errorf("expected 1 channel, got %d", dec.Channels)
 	}
 
-	if dec.SampleRate() != AudioSampleRate {
-		panic(fmt.Sprintf("expected %d Hz sample rate, got %d", AudioSampleRate, dec.SampleRate()))
-	}
-
-	return dec
+	return AudioEffect{pcm: pcm}
 }
 
 func (a *AudioEngine) Activate() error {

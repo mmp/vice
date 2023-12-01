@@ -16,7 +16,7 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/shirou/gopsutil v3.21.11+incompatible
-       github.com/veandco/go-sdl2 v0.5.0-alpha.3.0.20220913133553-3c4862273074
+	github.com/veandco/go-sdl2 v0.5.0-alpha.3.0.20220913133553-3c4862273074
 	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
@@ -28,6 +28,7 @@ require (
 	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
+	github.com/tosone/minimp3 v1.0.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/sys v0.2.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
