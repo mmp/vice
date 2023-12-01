@@ -2349,7 +2349,7 @@
   "magnetic_variation": 5.2,
   "name": "KATL",
   "nm_per_latitude": 60,
-  "nm_per_longitude": 40,
+  "nm_per_longitude": 50,
   "primary_airport": "KATL",
   "radar_sites": {
     "KATL": {
