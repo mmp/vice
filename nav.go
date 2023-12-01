@@ -1757,9 +1757,9 @@ func (nav *Nav) directFix(fix string) bool {
 
 	if ap := nav.Approach.Assigned; ap != nil {
 		for _, route := range ap.Waypoints {
-			for _, wp := range route {
+			for i, wp := range route {
 				if wp.Fix == fix {
-					nav.Waypoints = []Waypoint{wp}
+					nav.Waypoints = route[i:]
 					return true
 				}
 			}
