@@ -1058,8 +1058,6 @@
   ],
   "magnetic_variation": 13.3,
   "name": "KLGA",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KLGA",
   "radar_sites": {
     "EWR": {

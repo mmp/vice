@@ -1538,8 +1538,6 @@
   ],
   "magnetic_variation": 10.8,
   "name": "KDCA",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KDCA",
   "radar_sites": {
     "DCA": {

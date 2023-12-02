@@ -3393,8 +3393,6 @@
             ],
             "magnetic_variation": -2.0,
             "name": "KORD",
-            "nm_per_latitude": 60,
-            "nm_per_longitude": 40,
             "primary_airport": "KORD",
             "radar_sites": {
                 "KORD": {

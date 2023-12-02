@@ -3075,8 +3075,6 @@
                         ],
                         "magnetic_variation": -8.2,
                         "name": "KCLE",
-                        "nm_per_latitude": 60,
-                        "nm_per_longitude": 40,
                         "primary_airport": "KCLE",
                         "radar_sites": {
                           "KCLE": {

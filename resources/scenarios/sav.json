@@ -825,8 +825,6 @@
   ],
   "magnetic_variation": 7.1,
   "name": "KSAV",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 49,
   "primary_airport": "KSAV",
   "radar_sites": {
     "SAV": {

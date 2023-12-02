@@ -5252,8 +5252,6 @@
   ],
   "magnetic_variation": 13.3,
   "name": "KPHL",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KPHL",
   "radar_sites": {
     "NXX": {

@@ -574,8 +574,6 @@
   },
   "magnetic_variation": 6.8,
   "name": "KDAB",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 52,
   "primary_airport": "KDAB",
   "radar_sites": {
     "DAB": {

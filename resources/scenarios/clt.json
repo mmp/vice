@@ -2306,8 +2306,6 @@
                     ],
                     "magnetic_variation": 7.7,
                     "name": "KCLT",
-                    "nm_per_latitude": 60,
-                    "nm_per_longitude": 52.5,
                     "primary_airport": "KCLT",
                     "radar_sites": {
                         "CLT": {

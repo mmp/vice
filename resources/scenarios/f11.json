@@ -8768,8 +8768,6 @@
   ],
   "magnetic_variation": 5,
   "name": "KMCO",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 52,
   "primary_airport": "KMCO",
   "radar_sites": {
     "MCO": {

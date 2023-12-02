@@ -48,8 +48,8 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude     float32 `json:"nm_per_latitude"`
-	NmPerLongitude    float32 `json:"nm_per_longitude"`
+	NmPerLatitude     float32 // Always 60
+	NmPerLongitude    float32 // Derived from Center
 	MagneticVariation float32 `json:"magnetic_variation"`
 }
 
@@ -456,6 +456,18 @@ var (
 
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
 	// Do these first!
+	if sg.CenterString == "" {
+		e.ErrorString("No \"center\" specified")
+	} else if pos, ok := sg.locate(sg.CenterString); !ok {
+		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
+	} else {
+		sg.Center = pos
+	}
+
+	sg.NmPerLatitude = 60
+	sg.NmPerLongitude = 60 * cos(radians(sg.Center[1]))
+	fmt.Printf("%s: nm per long %f\n", sg.Name, sg.NmPerLongitude)
+
 	sg.Fixes = make(map[string]Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
 		loc, _ := sg.FixesStrings.Get(fix)
@@ -554,14 +566,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			e.ErrorString("no \"full_name\" specified")
 		}
 		e.Pop()
-	}
-
-	if sg.CenterString == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.locate(sg.CenterString); !ok {
-		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
-	} else {
-		sg.Center = pos
 	}
 
 	if sg.Range == 0 {

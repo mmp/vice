@@ -913,8 +913,6 @@
   },
   "magnetic_variation": 5,
   "name": "KJAX",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 52,
   "primary_airport": "KJAX",
   "radar_sites": {
     "JAX": {

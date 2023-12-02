@@ -2329,8 +2329,6 @@
    ],
    "magnetic_variation": 14.4,
    "name": "KBOS",
-   "nm_per_latitude": 60,
-   "nm_per_longitude": 40,
    "primary_airport": "KBOS",
    "radar_sites": {
      "KMLB": {

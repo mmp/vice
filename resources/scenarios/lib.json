@@ -2516,8 +2516,6 @@
   },
   "magnetic_variation": 13.3,
   "name": "LIB",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KEWR",
   "radar_sites": {
     "EWR": {

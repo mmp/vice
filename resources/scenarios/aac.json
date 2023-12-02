@@ -1711,8 +1711,6 @@
   ],
   "magnetic_variation": 2.2,
   "name": "KAAC",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 48,
   "primary_airport": "KAAC",
   "radar_sites": {
     "AAC": {

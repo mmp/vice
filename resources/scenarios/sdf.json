@@ -789,8 +789,6 @@
 ],
 "magnetic_variation": 4.9,
 "name": "KSDF",
-"nm_per_latitude": 60,
-"nm_per_longitude": 52,
 "primary_airport": "KSDF",
 "radar_sites": {
   "SDF": {

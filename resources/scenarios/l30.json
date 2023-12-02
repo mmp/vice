@@ -1386,8 +1386,6 @@
     },
     "magnetic_variation": -11,
     "name": "KLAS",
-    "nm_per_latitude": 60,
-    "nm_per_longitude": 48,
     "primary_airport": "KLAS",
     "radar_sites": {
         "KLAS": {

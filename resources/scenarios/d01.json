@@ -1802,8 +1802,6 @@
     ],
     "magnetic_variation": 7.9,
     "name": "KDEN",
-   "nm_per_latitude": 60,
-   "nm_per_longitude": 45,
    "primary_airport": "KDEN",
     "radar_sites": {
       "DEN": {
