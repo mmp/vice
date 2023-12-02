@@ -466,7 +466,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * cos(radians(sg.Center[1]))
-	fmt.Printf("%s: nm per long %f\n", sg.Name, sg.NmPerLongitude)
 
 	sg.Fixes = make(map[string]Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
