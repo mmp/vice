@@ -144,7 +144,15 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = Select(spd != 0, &spd, nil)
 		alt := arr.ClearedAltitude
-		nav.Altitude.Cleared = &alt
+		if arr.DescentNotIssued {
+			// Descend to the assigned altitude but then hold that until
+			// DVS is issued.
+			nav.Altitude.Assigned = &alt
+		} else {
+			// Initial clearance, though STAR altitude restrictions are
+			// then allowed to be in effect.
+			nav.Altitude.Cleared = &alt
+		}
 
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = min(arr.InitialSpeed, nav.Perf.Speed.Cruise)
