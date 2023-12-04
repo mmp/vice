@@ -156,110 +156,110 @@
         "17L": {
           "APALO": {
           "cleared_altitude": 5000,
-          "route": "APALO6",
+          "sid": "APALO6",
           "waypoints": "_SDF_17L _SDF_35R DROPA DIIME ONMEE DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
-          "route": "CRRGO4",
+          "sid": "CRRGO4",
           "waypoints": "_SDF_17L _SDF_35R DROPA DIIME ONMEE DOCKE"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
-          "route": "FEDRA5",
+          "sid": "FEDRA5",
           "waypoints": "_SDF_17L _SDF_35R DROPA FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
-          "route": "STREP5",
+          "sid": "STREP5",
           "waypoints": "_SDF_17L _SDF_35R DROPA DIIME ONMEE CANBE"
         }
       },
       "17R": {
         "APALO": {
           "cleared_altitude": 5000,
-          "route": "APALO6",
+          "sid": "APALO6",
           "waypoints": "_SDF_17R _SDF_35L LEENE ONMEE DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
-          "route": "CRRGO4",
+          "sid": "CRRGO4",
           "waypoints": "_SDF_17R _SDF_35L LEENE ONMEE DOCKE"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
-          "route": "FEDRA5",
+          "sid": "FEDRA5",
           "waypoints": "_SDF_17R _SDF_35L LEENE PKAGE FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
-          "route": "STREP5",
+          "sid": "STREP5",
           "waypoints": "_SDF_17R _SDF_35L LEENE ONMEE CANBE"
         }
       },
       "29": {
         "APALO": {
           "cleared_altitude": 5000,
-          "route": "APALO6",
+          "sid": "APALO6",
           "waypoints": "_SDF_29 _SDF_11 GADSN LUUKE ALOMY DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
-          "route": "CRRGO4",
+          "sid": "CRRGO4",
           "waypoints": "_SDF_29 _SDF_11 GADSN LUUKE"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
-          "route": "FEDRA5",
+          "sid": "FEDRA5",
           "waypoints": "_SDF_29 _SDF_11 GADSN LUUKE IAMUR FADDR FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
-          "route": "STREP5",
+          "sid": "STREP5",
           "waypoints": "_SDF_29 _SDF_11 GADSN CANBE"
         }
       },
       "35L": {
         "APALO": {
           "cleared_altitude": 5000,
-          "route": "APALO6",
+          "sid": "APALO6",
           "waypoints": "_SDF_35L _SDF_17R RRROE BUHBA ALOMY DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
-          "route": "CRRGO4",
+          "sid": "CRRGO4",
           "waypoints": "_SDF_35L _SDF_17R RRROE BUHBA"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
-          "route": "FEDRA5",
+          "sid": "FEDRA5",
           "waypoints": "_SDF_35L _SDF_17R RRROE LLAWS GLDIE FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
-          "route": "STREP5",
+          "sid": "STREP5",
           "waypoints": "_SDF_35L _SDF_17R RRROE"
         }
       },
       "35R": {
         "APALO": {
           "cleared_altitude": 5000,
-          "route": "APALO6",
+          "sid": "APALO6",
           "waypoints": "_SDF_35R _SDF_17L SLATY BUHBA ALOMY DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
-          "route": "CRRGO4",
+          "sid": "CRRGO4",
           "waypoints": "_SDF_35R _SDF_17L SLATY BUHBA"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
-          "route": "FEDRA5",
+          "sid": "FEDRA5",
           "waypoints": "_SDF_35R _SDF_17L GRIPZ BAALK SIXMI GLDIE FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
-          "route": "STREP5",
+          "sid": "STREP5",
           "waypoints": "_SDF_35R _SDF_17L GRIPZ YAGRR"
       }
       }

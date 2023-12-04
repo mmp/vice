@@ -401,7 +401,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 }
 
 type ExitRoute struct {
-	InitialRoute    string        `json:"route"`
+	SID             string        `json:"sid"`
 	ClearedAltitude int           `json:"cleared_altitude"`
 	Waypoints       WaypointArray `json:"waypoints"`
 	Description     string        `json:"description"`

@@ -88,328 +88,328 @@
         "26L": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "route": "BANNG3",
+            "sid": "BANNG3",
             "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT/s250 BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "route": "CUTTN2",
+            "sid": "CUTTN2",
             "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "route": "GAIRY2",
+            "sid": "GAIRY2",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN SMOGG GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "route": "HAALO3",
+            "sid": "HAALO3",
             "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "route": "JACCC2",
+            "sid": "JACCC2",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN SMOGG JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "route": "KAJIN2",
+            "sid": "KAJIN2",
             "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD KAJIN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "route": "NASSA2",
+            "sid": "NASSA2",
             "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "route": "PADGT2",
+            "sid": "PADGT2",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "route" : "PENCL2",
+            "sid": "PENCL2",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 WURLD PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "route": "PHIIL3",
+            "sid": "PHIIL3",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 SMOGG PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "route": "PLMMR3",
+            "sid": "PLMMR3",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 SMOGG DLLNN PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "route": "POUNC2",
+            "sid": "POUNC2",
             "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "route": "SMKEY2",
+            "sid": "SMKEY2",
             "waypoints":"_ATL_26L _ATL_8R MPASS ZELAN/s250 SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "route": "SMLTZ3",
+            "sid": "SMLTZ3",
             "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
-            "route": "VARNM2",
+            "sid": "VARNM2",
             "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN WURLD VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "route": "VRSTY3",
+            "sid": "VRSTY3",
             "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT VRSTY"
           }
         },
         "27R": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "route": "BANNG3",
+            "sid": "BANNG3",
             "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT/s250 BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "route": "CUTTN2",
+            "sid": "CUTTN2",
             "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "route": "GAIRY2",
+            "sid": "GAIRY2",
             "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "route": "HAALO3",
+            "sid": "HAALO3",
             "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "route": "JACCC2",
+            "sid": "JACCC2",
             "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF DDUBB JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "route": "KAJIN2",
+            "sid": "KAJIN2",
             "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK KAJIN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "route": "NASSA2",
+            "sid": "NASSA2",
             "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "route": "PADGT2",
+            "sid": "PADGT2",
             "waypoints": "_ATL_27R _ATL_9L CPARK MPASS ZELAN PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "route" : "PENCL2",
+            "sid": "PENCL2",
             "waypoints": "_ATL_27R _ATL_9L CPARK MPASS ZELAN/s250 WURLD PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "route": "PHIIL3",
+            "sid": "PHIIL3",
             "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "route": "PLMMR3",
+            "sid": "PLMMR3",
             "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "route": "POUNC2",
+            "sid": "POUNC2",
             "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "route": "SMKEY2",
+            "sid": "SMKEY2",
             "waypoints":"_ATL_27R _ATL_9L CPARK MPASS ZELAN/s250 SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "route": "SMLTZ3",
+            "sid": "SMLTZ3",
             "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
-            "route": "VARNM2",
+            "sid": "VARNM2",
             "waypoints": "_ATL_27R _ATL_9L CPARK MPASS ZELAN WURLD VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "route": "VRSTY3",
+            "sid": "VRSTY3",
             "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT VRSTY"
           }
         },
         "8R": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "route": "BANNG3",
+            "sid": "BANNG3",
             "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "route": "CUTTN2",
+            "sid": "CUTTN2",
             "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "route": "GAIRY2",
+            "sid": "GAIRY2",
             "waypoints": "_ATL_8R _ATL_26L RONII IGEBE GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "route": "HAALO3",
+            "sid": "HAALO3",
             "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "route": "JACCC2",
+            "sid": "JACCC2",
             "waypoints": "_ATL_8R _ATL_26L RONII IGEBE JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "route": "KAJIN2",
+            "sid": "KAJIN2",
             "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB KAJIN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "route": "NASSA2",
+            "sid": "NASSA2",
             "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "route": "PADGT2",
+            "sid": "PADGT2",
             "waypoints": "_ATL_8R _ATL_26L RONII HOYYT GRABA PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "route" : "PENCL2",
+            "sid": "PENCL2",
             "waypoints": "_ATL_8R _ATL_26L RONII HOYYT PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "route": "PHIIL3",
+            "sid": "PHIIL3",
             "waypoints": "_ATL_8R _ATL_26L RONII IGEBE PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "route": "PLMMR3",
+            "sid": "PLMMR3",
             "waypoints": "_ATL_8R _ATL_26L RONII IGEBE PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "route": "POUNC2",
+            "sid": "POUNC2",
             "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "route": "SMKEY2",
+            "sid": "SMKEY2",
             "waypoints":"_ATL_8R _ATL_26L RONII HOYYT CUMON SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "route": "SMLTZ3",
+            "sid": "SMLTZ3",
             "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN TROFY SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
-            "route": "VARNM2",
+            "sid": "VARNM2",
             "waypoints": "_ATL_8R _ATL_26L RONII HOYYT VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "route": "VRSTY3",
+            "sid": "VRSTY3",
             "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN TROFY VRSTY"
           }
         },
         "9L": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "route": "BANNG3",
+            "sid": "BANNG3",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "route": "CUTTN2",
+            "sid": "CUTTN2",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "route": "GAIRY2",
+            "sid": "GAIRY2",
             "waypoints": "_ATL_9L _ATL_27R GRITZ DDUBB GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "route": "HAALO3",
+            "sid": "HAALO3",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "route": "JACCC2",
+            "sid": "JACCC2",
             "waypoints": "_ATL_9L _ATL_27R GRITZ DDUBB JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "route": "KAJIN2",
+            "sid": "KAJIN2",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "route": "NASSA2",
+            "sid": "NASSA2",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "route": "PADGT2",
+            "sid": "PADGT2",
             "waypoints": "_ATL_9L _ATL_27R PICKT RONII HOYYT GRABA PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "route" : "PENCL2",
+            "sid": "PENCL2",
             "waypoints": "_ATL_9L _ATL_27R PICKT RONII HOYYT PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "route": "PHIIL3",
+            "sid": "PHIIL3",
             "waypoints": "_ATL_9L _ATL_27R LIDAS ERWIN PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "route": "PLMMR3",
+            "sid": "PLMMR3",
             "waypoints": "_ATL_9L _ATL_27R LIDAS ERWIN PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "route": "POUNC2",
+            "sid": "POUNC2",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "route": "SMKEY2",
+            "sid": "SMKEY2",
             "waypoints":"_ATL_9L _ATL_27R PICKT RONII HOYYT CUMON SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "route": "SMLTZ3",
+            "sid": "SMLTZ3",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TROFY SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
-            "route": "VARNM2",
+            "sid": "VARNM2",
             "waypoints": "_ATL_9L _ATL_27R PICKT RONII HOYYT VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "route": "VRSTY3",
+            "sid": "VRSTY3",
             "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TROFY VRSTY"
           }
         }

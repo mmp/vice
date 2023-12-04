@@ -53,28 +53,28 @@
         "1": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
-            "route": "REP1",
+            "sid": "REP1",
             "waypoints": "_FRG_1 _FRG_19 _FRG_1a/h13"
           }
         },
         "14": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
-            "route": "REP1",
+            "sid": "REP1",
             "waypoints": "_FRG_14 _FRG_32 _FRG_14a/h220"
           }
         },
         "19": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
-            "route": "REP1",
+            "sid": "REP1",
             "waypoints": "_FRG_19 _FRG_1 _FRG_19a/h220"
           }
         },
         "32": {
           "ARD,BAYYS,BDR,BETTE,COATE,DEEZZ,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
-            "route": "REP1",
+            "sid": "REP1",
             "waypoints": "_FRG_32 _FRG_14 _FRG_32a/h10"
           }
         }
@@ -249,14 +249,14 @@
         "2": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "route": "BHAVN1",
+            "sid": "BHAVN1",
             "waypoints": "_HVN_20 _HVN_2/h20"
           }
         },
         "20": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "route": "BHAVN1",
+            "sid": "BHAVN1",
             "waypoints": "_HVN_2 _HVN_20/h200"
           }
         }
@@ -441,28 +441,28 @@
         "15R": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
-            "route": "LONGI7",
+            "sid": "LONGI7",
             "waypoints": "_ISP_15R _ISP_15Ra/h150"
           }
         },
         "24": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
-            "route": "LONGI7",
+            "sid": "LONGI7",
             "waypoints": "_ISP_24 _ISP_24a/h240"
           }
         },
         "33L": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
-            "route": "LONGI7",
+            "sid": "LONGI7",
             "waypoints": "_ISP_33L _ISP_33La/h330"
           }
         },
         "6": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
-            "route": "LONGI7",
+            "sid": "LONGI7",
             "waypoints": "_ISP_6 _ISP_6a/h60"
           }
         }
@@ -822,68 +822,68 @@
         "13R": {
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/h185"
           },
           "BAYYS,BDR,COATE,GAYEL,GREKI,HAAYS,MERIT,NEION": {
             "cleared_altitude": 5000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/h110"
           },
           "BETTE,HAPIE": {
             "cleared_altitude": 5000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/h155"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_13R _JFK_31L/h109"
           },
           "SHIPP,WAVEY": {
             "cleared_altitude": 5000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/h170"
           }
         },
         "22R": {
           "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 5000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_22R _JFK_4L/h222"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_22R _JFK_4L/h222"
           }
         },
         "31L": {
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
-            "route": "SKORR5.RNGRR",
+            "sid": "SKORR5.RNGRR",
             "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR/h223"
           },
           "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
-            "route": "SKORR5.YNKEE",
+            "sid": "SKORR5.YNKEE",
             "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
           }
         },
         "4L": {
           "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 5000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_4La/h100"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_4L _JFK_4La/h100"
           }
         }
@@ -1609,13 +1609,13 @@
         "13": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
           }
@@ -1623,13 +1623,13 @@
         "22": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
           }
@@ -1637,13 +1637,13 @@
         "31": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
           }
@@ -1651,13 +1651,13 @@
         "4": {
           "BETTE,HAPIE,SHIPP,WAVEY": {
             "cleared_altitude": 8000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
           }

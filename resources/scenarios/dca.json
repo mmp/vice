@@ -106,114 +106,114 @@
     "1": {
       "SCOOB": {
         "cleared_altitude": 5000,
-        "route": "AMEEE1",
+        "sid": "AMEEE1",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000-"
       },
       "MAULS": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK"
       },
       "FLASK": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK TEEMS"
       },
       "DQO,AGARD": {
         "cleared_altitude": 5000,
-        "route": "DOCTR5",
+        "sid": "DOCTR5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+"
       },
       "JERES,BUFFR": {
         "cleared_altitude": 5000,
-        "route": "HORTO4",
+        "sid": "HORTO4",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+"
       },
       "RRSIN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB TYPNZ SCORN"
       },
       "MELTN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB CASLY"
       },
       "OTTTO": {
         "cleared_altitude": 5000,
-        "route": "REBLL5",
+        "sid": "REBLL5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI DUDDD REBLL/a5000+"
       },
       "GLANC": {
         "cleared_altitude": 5000,
-        "route": "SCRAM6",
+        "sid": "SCRAM6",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI POOCH/a3000+ SCRAM DANOO WALCE"
       },
       "SWANN": {
         "cleared_altitude": 5000,
-        "route": "SOOKI5",
+        "sid": "SOOKI5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+"
       },
       "RAMAY": {
         "cleared_altitude": 5000,
-        "route": "WYNGS5",
+        "sid": "WYNGS5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII MELOE WYNGS/a5000+"
       }
     },
     "19": {
       "SCOOB": {
         "cleared_altitude": 5000,
-        "route": "AMEEE1",
+        "sid": "AMEEE1",
         "waypoints": "_DCA_19 _DCA_1 LEAVY FIMBI/a1500+/s230 MCNAB AMEEE/a5000+ COLIN"
       },
       "MAULS": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK"
       },
       "FLASK": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints":"_DCA_19 _DCA_1 CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK TEEMS"
       },
       "DQO,AGARD": {
         "cleared_altitude": 5000,
-        "route": "DOCTR5",
+        "sid": "DOCTR5",
         "waypoints": "_DCA_19 _DCA_1 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP HMBGR DOCTR/a5000+"
       },
       "JERES,BUFFR": {
         "cleared_altitude": 5000,
-        "route": "HORTO4",
+        "sid": "HORTO4",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE LBOLT RLLLL HORTO/a5000+"
       },
       "RRSIN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB TYPNZ SCORN"
       },
       "MELTN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB CASLY"
       },
       "OTTTO": {
         "cleared_altitude": 5000,
-        "route": "REBLL5",
+        "sid": "REBLL5",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE LBOLT TEZER REBLL/a5000+"
       },
       "GLANC": {
         "cleared_altitude": 5000,
-        "route": "SCRAM6",
+        "sid": "SCRAM6",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT POOCH/a3000+ SCRAM DANOO WALCE"
       },
       "SWANN": {
         "cleared_altitude": 5000,
-        "route": "SOOKI5",
+        "sid": "SOOKI5",
         "waypoints": "_DCA_19 _DCA_1 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP RIISE SOOKI/a5000+"
       },
       "RAMAY": {
         "cleared_altitude": 5000,
-        "route": "WYNGS5",
+        "sid": "WYNGS5",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE LBOLT GINYA WYNGS/a5000+"
       }
     }

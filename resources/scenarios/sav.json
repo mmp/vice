@@ -60,34 +60,28 @@
         "10": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "route": "GIPPL",
               "waypoints": "_SAV_10 _SAV_28/h097"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "route": "JROSS",
               "waypoints": "_SAV_10 _SAV_28/h097"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "route": "SMALZ",
               "waypoints": "_SAV_10 _SAV_28/h097"
             }
         },
         "28": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "route": "GIPPL",
               "waypoints": "_SAV_28 _SAV_10/h277"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "route": "JROSS",
               "waypoints": "_SAV_28 _SAV_10/h277"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "route": "SMALZ",
               "waypoints": "_SAV_28 _SAV_10/h277"
             }
         }

@@ -207,39 +207,39 @@
         "27L": {
           "ARD,FJC,MAZIE,MXE,PTW": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675/h265"
           },
           "DITCH,OOD,RUUTH": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675/h230"
           },
           "DQO,STOEN": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.08.453,W075.14.02.761 N039.51.39.160,W075.16.29.675/h245"
           }
         },
         "9L": {
           "ARD,MAZIE,PTW,RUUTH": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h95"
           },
           "DITCH": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h110"
           },
           "DQO,OOD": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h125"
           },
           "FJC,MXE,STOEN": {
             "cleared_altitude": 5000,
-            "route": "PHL2",
+            "sid": "PHL2",
             "waypoints": "N039.52.07.436,W075.15.19.226 N039.52.07.436,W075.15.19.226/h80"
           }
         }

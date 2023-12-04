@@ -161,64 +161,64 @@
         "08": {
           "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
-            "route": "BRSTL1",
+            "sid": "BRSTL1",
             "waypoints": "_JAX_08 _JAX_26/h077 TEREE BRSTL"
           },
           "WISPR": {
             "cleared_altitude": 3000,
-            "route": "CROSB2",
+            "sid": "CROSB2",
             "waypoints": "_JAX_08 _JAX_26/h077 GIGLZ CROSB"
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
-            "route": "EXBOX2",
+            "sid": "EXBOX2",
             "waypoints": "_JAX_08 _JAX_26/h077 SAWGY"
           },
           "CAPPS": {
             "cleared_altitude": 3000,
-            "route": "JETIN",
+            "sid": "JETIN",
             "waypoints": "_JAX_08 _JAX_26/h077 DURTE JETIN ELAGE ZOOSS"
           },
           "JAYJA": {
             "cleared_altitude": 3000,
-            "route": "JETIN2",
+            "sid": "JETIN2",
             "waypoints": "_JAX_08 _JAX_26/h077 DURTE JETIN FELTZ"
           },
           "SAWGY": {
             "cleared_altitude": 3000,
-            "route": "SAWGY3",
+            "sid": "SAWGY3",
             "waypoints": "_JAX_08 _JAX_26/h077 CRG SAWGY"
           }
         },
         "26": {
           "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
-            "route": "BRSTL1",
+            "sid": "BRSTL1",
             "waypoints": "_JAX_26 _JAX_08/h260 TEREE BRSTL"
           },
           "WISPR": {
             "cleared_altitude": 3000,
-            "route": "CROSB2",
+            "sid": "CROSB2",
             "waypoints": "_JAX_26 _JAX_08/h260 GIGLZ CROSB"
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
-            "route": "EXBOX2",
+            "sid": "EXBOX2",
             "waypoints": "_JAX_26 _JAX_08/h260 SAWGY"
           },
           "CAPPS": {
             "cleared_altitude": 3000,
-            "route": "JETIN",
+            "sid": "JETIN",
             "waypoints": "_JAX_26 _JAX_08/h260 DURTE JETIN ELAGE ZOOSS"
           },
           "JAYJA": {
             "cleared_altitude": 3000,
-            "route": "JETIN2",
+            "sid": "JETIN2",
             "waypoints": "_JAX_26 _JAX_08/h260 DURTE JETIN FELTZ"
           },
           "SAWGY": {
             "cleared_altitude": 3000,
-            "route": "SAWGY3",
+            "sid": "SAWGY3",
             "waypoints": "_JAX_26 _JAX_08/h260 CRG SAWGY"
           }
         }
@@ -445,7 +445,6 @@
         "04": {
           "SSI": {
             "cleared_altitude": 2000,
-            "route": "SSI",
             "waypoints": "_FHB_04 _FHB_22/h010"
           }
         }

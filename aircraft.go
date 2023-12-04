@@ -397,7 +397,11 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
-	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
+	if exitRoute.SID != "" {
+		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
+	} else {
+		ac.FlightPlan.Route = dep.Route
+	}
 
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {

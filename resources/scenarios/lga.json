@@ -49,31 +49,31 @@
         "4": {
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
             "cleared_altitude": 5000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/h360"
           },
           "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 5000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/h40"
           }
         },
         "31": {
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
             "cleared_altitude": 5000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/h340"
           },
           "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 5000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/h360"
           }
         },
         "13": {
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
-            "route": "TNNIS6",
+            "sid": "TNNIS6",
             "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES TNNIS/h045"
           }
         }
@@ -399,13 +399,13 @@
           "SAX": {
             "cleared_altitude": 8000,
             "handoff_controller": "LGA_DEP",
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "N040.38.51.930,W073.48.48.845 N040.37.30.947,W073.46.15.009 N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h240"
           },
           "HAAYS,NEION,COATE": {
             "cleared_altitude": 9000,
             "handoff_controller": "LGA_DEP",
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "N040.38.51.930,W073.48.48.845 N040.37.30.947,W073.46.15.009 N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h240"
           }
         }
@@ -457,7 +457,7 @@
           "SHIPP,WAVEY,MERIT,BAYYS,GREKI,BDR": {
             "cleared_altitude": 5000,
             "handoff_controller": "LGA_DEP",
-            "route": "EWR5",
+            "sid": "EWR5",
             "waypoints": "N040.41.56.775,W074.09.55.294 N040.40.45.666,W074.10.36.904 N040.39.27.677,W074.10.11.471 N040.42.03.490,W074.07.05.665/ho N040.47.13.154,W074.04.08.153/h130"
           }
         }
@@ -516,13 +516,13 @@
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 7000,
             "handoff_controller": "LGA_DEP",
-            "route": "HPN8",
+            "sid": "HPN8",
             "waypoints": "N041.04.01.822,W073.42.58.793  N041.03.53.610,W073.41.59.961  N041.03.28.067,W073.38.12.599/ho/h270"
           },
           "DIXIE": {
             "cleared_altitude": 6000,
             "handoff_controller": "LGA_DEP",
-            "route": "HPN8",
+            "sid": "HPN8",
             "waypoints": "N041.04.01.822,W073.42.58.793  N041.03.53.610,W073.41.59.961  N041.03.28.067,W073.38.12.599/ho/h270"
           }
         }

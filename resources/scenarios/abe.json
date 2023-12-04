@@ -62,14 +62,12 @@
         "24": {
           "FJC,SAX,ARD,RBV,PTW,ETX": {
             "cleared_altitude": 3000,
-            "route": "",
             "waypoints": "_ABE6 _ABE24/h240"
           }
         },
         "6": {
           "FJC,SAX,ARD,RBV,PTW,ETX": {
             "cleared_altitude": 3000,
-            "route": "",
             "waypoints": "_ABE24 _ABE6/h060"
           }
         }
