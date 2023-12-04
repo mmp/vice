@@ -2558,6 +2558,12 @@
       "scope_char": "P",
       "sector_id": "4P"
     },
+    "EWR_M_APP": {
+      "frequency": 125550,
+      "full_name": "New York approach",
+      "scope_char": "M",
+      "sector_id": "4M"
+    },
     "EWR_Q_APP": {
       "frequency": 125500,
       "full_name": "New York approach",
@@ -2830,6 +2836,9 @@
               "COATE",
               "LVZ4"
             ]
+          },
+          "EWR_M_APP": {
+            "backup": "EWR_P_APP"
           }
         }
       },
@@ -2947,6 +2956,9 @@
               "COATE",
               "LVZ4"
             ]
+          },
+          "EWR_Q_APP": {
+            "backup": "EWR_P_APP"
           }
         }
       },
