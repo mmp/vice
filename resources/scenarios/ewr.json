@@ -219,14 +219,14 @@
         "22R": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2500,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
           }
         },
         "4L": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
           }
         }

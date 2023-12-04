@@ -6,44 +6,44 @@
         "22R": {
           "BIGGY,PARKE": {
             "cleared_altitude": 11000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra/h350"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra ELVAE"
           },
           "ELIOT,NEWEL,ZIMMZ": {
             "cleared_altitude": 10000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra/h300"
           },
           "LANNA": {
             "cleared_altitude": 11000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           }
         },
         "4L": {
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 10000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R/ho _EWR4_4La _EWR4_4Lb/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R/ho _EWR4_4La _EWR4_4Lb/h350"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "sid": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R/ho _EWR4_4La _EWR4_4Lc ELVAE"
           }
         }
