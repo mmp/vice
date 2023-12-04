@@ -176,7 +176,7 @@
           },
           "CAPPS": {
             "cleared_altitude": 3000,
-            "sid": "JETIN",
+            "sid": "JETIN2",
             "waypoints": "_JAX_08 _JAX_26/h077 DURTE JETIN ELAGE ZOOSS"
           },
           "JAYJA": {
@@ -208,7 +208,7 @@
           },
           "CAPPS": {
             "cleared_altitude": 3000,
-            "sid": "JETIN",
+            "sid": "JETIN2",
             "waypoints": "_JAX_26 _JAX_08/h260 DURTE JETIN ELAGE ZOOSS"
           },
           "JAYJA": {
