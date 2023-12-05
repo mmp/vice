@@ -438,7 +438,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 		// human controller will be first
 		ctrl := w.PrimaryController
 		if w.MultiControllers != nil {
-			ctrl = w.MultiControllers.GetDepartureController(departureAirport, runway)
+			ctrl = w.MultiControllers.GetDepartureController(departureAirport, exitRoute.SID)
 			if ctrl == "" {
 				ctrl = w.PrimaryController
 			}
