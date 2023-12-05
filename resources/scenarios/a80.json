@@ -1436,7 +1436,7 @@
       "initial_altitude": 17000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
-      "route": "/.GNDLF2",
+      "route": "/.HOBTT2",
       "runway_waypoints": {
         "26L": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
         "26R": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h905",
@@ -1509,7 +1509,7 @@
       "initial_controller": "ATL_Y_APP",
       "initial_speed": 250,
       "speed_restriction": 220,
-      "route": "/.GNDLF2",
+      "route": "/.HOBTT2",
       "scratchpad": "I28",
       "waypoints": "SHURT/ho FOGER HITTT YURII/h095"
     }
@@ -1575,7 +1575,7 @@
       "initial_controller": "ATL_Y_APP",
       "initial_speed": 250,
       "speed_restriction": 220,
-      "route": "/.GNDLF2",
+      "route": "/.HOBTT2",
       "scratchpad": "I7L",
       "waypoints": "SHURT/ho FOGER HITTT YURII/h095"
     }
@@ -2026,7 +2026,7 @@
       "initial_altitude": 15000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
-      "route": "/. ONDRE1",
+      "route": "/. OZZZI1",
       "runway_waypoints": {
         "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
         "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
@@ -2100,7 +2100,7 @@
       "initial_controller": "ATL_Y_APP",
       "initial_speed": 250,
       "speed_restriction": 220,
-      "route": "/. ONDRE1",
+      "route": "/. OZZZI1",
       "scratchpad" : "I7L",
       "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275"
     }
