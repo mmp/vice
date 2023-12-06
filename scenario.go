@@ -682,6 +682,10 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				e.Pop()
 			}
 
+			if ar.InitialAltitude == 0 {
+				e.ErrorString("must specify \"initial_altitude\"")
+			}
+
 			if ar.InitialController == "" {
 				e.ErrorString("\"initial_controller\" missing")
 			} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
