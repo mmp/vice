@@ -1882,9 +1882,9 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
         "route": "/ ALB V489 COATE",
@@ -1962,9 +1962,9 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
+        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
         "route": "/ FLOSI4",
@@ -2042,9 +2042,9 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
+        "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/ FQM3",
@@ -2122,9 +2122,9 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
+        "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/ LVZ4",
@@ -2202,9 +2202,9 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
         "route": "/ MAZIE3",
@@ -2388,9 +2388,9 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
         "cruise_altitude": 39000,
         "initial_altitude": 20000,
+        "descent_issued": true,
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
         "route": "/ PHLBO4",
@@ -2501,7 +2501,7 @@
       }
     ]
   },
-    "center": "N040.43.34.389,W074.28.54.713",
+  "center": "N040.43.34.389,W074.28.54.713",
   "range": 60,
   "control_positions": {
     "ABE_APP": {

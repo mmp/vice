@@ -710,9 +710,9 @@
             }
           ]
         },
-        "cleared_altitude": 10000,
         "cruise_altitude": 35000,
-        "initial_altitude": 11000,
+        "initial_altitude": 17000,
+        "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "route": "/. KORRY4",

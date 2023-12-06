@@ -1689,8 +1689,8 @@
             }
           ]
         },
-        "cleared_altitude": 14000,
         "initial_altitude": 17000,
+        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 290,
         "route": "/. JFUND2",
@@ -1883,10 +1883,10 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 35000,
         "expect_approach": "I4R",
         "initial_altitude": 7000,
+        "descent_issued": true,
         "initial_controller": "BOS_N_APP",
         "initial_speed": 230,
         "speed_restriction": 220,
@@ -2010,8 +2010,8 @@
             }
           ]
         },
-        "cleared_altitude": 120000,
         "initial_altitude": 17000,
+        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 290,
         "route": "/. OOSHN5",
@@ -2112,8 +2112,8 @@
             }
           ]
         },
-        "cleared_altitude": 13000,
         "initial_altitude": 17000,
+        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 290,
         "route": "/. ROBUC3",
@@ -2214,8 +2214,8 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 35000,
+        "descent_issued": true,
         "expect_approach": "I4R",
         "initial_altitude": 8000,
         "initial_controller": "BOS_S_APP",

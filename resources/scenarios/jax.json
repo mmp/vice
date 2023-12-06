@@ -596,8 +596,8 @@
             }
           ]
         },
-        "cleared_altitude": 10000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "route": "/. LUNNI1",
@@ -656,8 +656,8 @@
             }
           ]
         },
-        "cleared_altitude": 10000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "route": "/. MARQO2",
@@ -743,8 +743,8 @@
             }
           ]
         },
-        "cleared_altitude": 10000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "route": "/. OHDEA1",
@@ -775,8 +775,8 @@
             }
           ]
         },
-        "cleared_altitude": 13000,
         "initial_altitude": 15000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "route": "/. QUBEN1",
@@ -811,8 +811,8 @@
             }
           ]
         },
-        "cleared_altitude": 10000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "route": "/. TEBOW1",

@@ -518,9 +518,9 @@
           }
         ]
       },
-      "cleared_altitude": 11000,
       "cruise_altitude": 37000,
       "initial_altitude": 11000,
+      "descent_issued": true,
       "initial_controller": "IND_CTR",
       "route": "/. DAMEN5",
       "runway_waypoints": {
@@ -561,9 +561,9 @@
           }
         ]
       },
-      "cleared_altitude": 10000,
       "cruise_altitude": 32000,
-      "initial_altitude": 10000,
+      "initial_altitude": 15000,
+      "descent_issued": true,
       "initial_controller" : "CVG_APP",
       "initial_speed": 250,
       "route": "/. DLAMP6",
@@ -600,9 +600,9 @@
           }
         ]
       },
-      "cleared_altitude": 11000,
       "cruise_altitude": 37000,
-      "initial_altitude": 11000,
+      "initial_altitude": 17000,
+      "descent_issued": true,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
       "route": "/. FRIZN5",
@@ -643,9 +643,9 @@
           }
         ]
       },
-      "cleared_altitude": 11000,
       "cruise_altitude": 36000,
-      "initial_altitude": 11000,
+      "initial_altitude": 16000,
+      "descent_issued": true,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
       "route": "/. MAUDD6",
@@ -682,9 +682,9 @@
           }
         ]
       },
-      "cleared_altitude": 11000,
       "cruise_altitude": 37000,
-      "initial_altitude": 11000,
+      "initial_altitude": 14000,
+      "descent_issued": true,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
       "route": "/. MBELL4",

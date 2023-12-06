@@ -1129,8 +1129,8 @@
             }
           ]
         },
-        "cleared_altitude": 13000,
         "initial_altitude": 15000,
+        "descent_issued": true,
         "initial_controller" : "ATL_CTR",
         "initial_speed": 290,
         "route": "/. CHPPR1",
@@ -1294,8 +1294,8 @@
           }
         ]
       },
-      "cleared_altitude": 13000,
       "initial_altitude": 15000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/. GLAVN1",
@@ -1369,8 +1369,8 @@
           }
         ]
       },
-      "cleared_altitude": 11000,
       "initial_altitude": 13000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/.GNDLF2",
@@ -1432,8 +1432,8 @@
           }
         ]
       },
-      "cleared_altitude": 15000,
       "initial_altitude": 17000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/.HOBTT2",
@@ -1655,7 +1655,7 @@
         ]
       },
       "initial_altitude": 13000,
-      "cleared_altitude": 11000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/. JJEDI3",
@@ -1889,8 +1889,8 @@
           }
         ]
       },
-      "cleared_altitude": 13000,
       "initial_altitude": 15000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/. ONDRE1",
@@ -2022,8 +2022,8 @@
           }
         ]
       },
-      "cleared_altitude": 13000,
       "initial_altitude": 15000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/. OZZZI1",
@@ -2180,7 +2180,7 @@
         ]
       },
       "initial_altitude": 15000,
-      "cleared_altitude": 14000,
+      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "route": "/. SITTH2",

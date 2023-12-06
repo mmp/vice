@@ -1728,8 +1728,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
                         "cruise_altitude": 33000,
+                        "descent_issued": true,
                         "initial_altitude": 17000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
@@ -1785,8 +1785,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
                         "cruise_altitude": 33000,
+                        "descent_issued": true,
                         "initial_altitude": 17000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
@@ -1836,9 +1836,9 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
                         "cruise_altitude": 33000,
                         "initial_altitude": 17000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "route": "/. BRWNZ4",
@@ -1887,10 +1887,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 5000,
                         "cruise_altitude": 33000,
                         "expect_approach": "I4R",
                         "initial_altitude": 7000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
@@ -1941,9 +1941,9 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 5000,
                         "cruise_altitude": 33000,
                         "expect_approach": "I6L",
+                        "descent_issued": true,
                         "initial_altitude": 7000,
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
@@ -2008,8 +2008,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 19000,
                         "initial_altitude": 21000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "route": "/. ROKNN3",
@@ -2078,8 +2078,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 19000,
                         "initial_altitude": 21000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "route": "/. ROKNN3",
@@ -2142,8 +2142,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 19000,
                         "initial_altitude": 21000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "route": "/. ROKNN3",
@@ -2206,10 +2206,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
                         "cruise_altitude": 33000,
                         "expect_approach": "I4R",
                         "initial_altitude": 9000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
@@ -2273,10 +2273,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "cruise_altitude": 33000,
                         "expect_approach": "I6L",
                         "initial_altitude": 9000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
@@ -2353,10 +2353,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 19000,
                         "initial_altitude": 21000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
+                        "descent_issued": true,
                         "route": "/. ROLLN2",
                         "speed_restriction": 280,
                         "runway_waypoints": {
@@ -2436,8 +2436,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 19000,
                         "initial_altitude": 21000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "route": "/. ROLLN2",
@@ -2513,8 +2513,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 19000,
                         "initial_altitude": 21000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "route": "/. ROLLN2",
@@ -2590,10 +2590,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
                         "cruise_altitude": 33000,
                         "expect_approach": "I4R",
                         "initial_altitude": 9000,
+                        "descent_issued": true,
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
@@ -2670,9 +2670,9 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
                         "cruise_altitude": 33000,
                         "expect_approach": "I6L",
+                        "descent_issued": true,
                         "initial_altitude": 9000,
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
@@ -2733,10 +2733,10 @@
                                 }
                             ]
                         },
-                                    "cleared_altitude": 19000,
                                     "initial_altitude": 21000,
                                     "initial_controller": "CLE_CTR",
                                     "initial_speed": 280,
+                                    "descent_issued": true,
                                     "route": "/. TRYBE4",
                                     "speed_restriction": 280,
                                     "runway_waypoints": {
@@ -2799,10 +2799,10 @@
                                             }
                                         ]
                                     },
-                                                "cleared_altitude": 19000,
                                                 "initial_altitude": 21000,
                                                 "initial_controller": "CLE_CTR",
                                                 "initial_speed": 280,
+                                                "descent_issued": true,
                                                 "route": "/. TRYBE4",
                                                 "speed_restriction": 280,
                                                 "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780"
@@ -2859,9 +2859,9 @@
                                                         }
                                                     ]
                                                 },
-                                                            "cleared_altitude": 19000,
                                                             "initial_altitude": 21000,
                                                             "initial_controller": "CLE_CTR",
+                                                            "descent_issued": true,
                                                             "initial_speed": 280,
                                                             "route": "/. TRYBE4",
                                                             "speed_restriction": 280,
@@ -2919,9 +2919,9 @@
                                             }
                                         ]
                                     },
-                                                "cleared_altitude": 6000,
                                                 "cruise_altitude": 350000,
                                                 "expect_approach": "I4R",
+                                                "descent_issued": true,
                                                 "initial_altitude": 8000,
                                                 "initial_controller": "CLE_A_APP",
                                                 "initial_speed": 250,
@@ -2982,9 +2982,9 @@
                                                         }
                                                     ]
                                                 },
-                                                            "cleared_altitude": 6000,
                                                             "cruise_altitude": 350000,
                                                             "expect_approach": "I6L",
+                                                            "descent_issued": true,
                                                             "initial_altitude": 8000,
                                                             "initial_controller": "CLE_A_APP",
                                                             "initial_speed": 250,

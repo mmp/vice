@@ -2389,7 +2389,7 @@
         },
         "cleared_altitude": 14000,
         "initial_altitude": 15000,
-        "descent_not_issued": true,
+        "descent_issued": false,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 300,
         "route": "/. ALYNA3",
@@ -2462,7 +2462,7 @@
         },
         "cleared_altitude": 14000,
         "initial_altitude": 15000,
-        "descent_not_issued": true,
+        "descent_issued": false,
         "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "route": "/. ALYNA3",
@@ -2523,7 +2523,7 @@
         },
         "cleared_altitude": 14000,
         "initial_altitude": 15000,
-        "descent_not_issued": true,
+        "descent_issued": false,
         "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "route": "/. ALYNA3",
@@ -2582,7 +2582,7 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
+        "descent_issued": true,
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 7000,
@@ -2610,10 +2610,10 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "expect_approach": "I9L",
         "initial_altitude": 7000,
+        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -2668,8 +2668,8 @@
             }
           ]
         },
-        "cleared_altitude": 17000,
         "initial_altitude": 19000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 290,
         "route": "/. DADES1",
@@ -2725,7 +2725,7 @@
         "initial_speed": 250,
         "route": "/. GOOFY7",
         "speed_restriction": 250,
-        "waypoints": " TRV/ho BAIRN ODDEL SABOT"
+        "waypoints": "TRV/ho BAIRN ODDEL SABOT"
       }
     ],
     "FINAL_S_GRNCH4": [
@@ -3056,10 +3056,10 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
         "initial_altitude": 8000,
+        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -3396,10 +3396,10 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
         "initial_altitude": 8000,
+        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -3736,8 +3736,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 11000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "route": "/. GRNCH4",
@@ -4083,8 +4083,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 17000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "route": "/. GRNCH4",
@@ -4420,8 +4420,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 17000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "route": "/. GRNCH4",
@@ -4850,8 +4850,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. GTOUT1",
@@ -5280,8 +5280,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. GTOUT1",
@@ -5710,10 +5710,10 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 9000,
+        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -5740,8 +5740,8 @@
             }
           ]
         },
-        "cleared_altitude": 12000,
         "initial_altitude": 14000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. JAFAR3",
@@ -6027,8 +6027,8 @@
             }
           ]
         },
-        "cleared_altitude": 13000,
         "initial_altitude": 13000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "route": "/. PRICY3",
@@ -6233,8 +6233,8 @@
             }
           ]
         },
-        "cleared_altitude": 13000,
         "initial_altitude": 13000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "route": "/. PRICY3",
@@ -6429,8 +6429,8 @@
             }
           ]
         },
-        "cleared_altitude": 13000,
         "initial_altitude": 13000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "route": "/. PRICY3",
@@ -6625,10 +6625,10 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
         "initial_altitude": 7000,
+        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -6824,10 +6824,10 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
         "initial_altitude": 9000,
+        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "route": "/. PRICY3",
@@ -6903,13 +6903,13 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
-        "initial_altitude": 11000,
+        "initial_altitude": 15000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "route": "/. RIDES2",
         "speed_restriction": 250,
-        "waypoints": "MOOTS/a15000/ho RIDES/a8000 HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
+        "waypoints": "MOOTS/a15000/ho RIDES/a8000+ HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
     ],
     "RIDES2_BSU": [
@@ -6980,8 +6980,8 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
         "initial_altitude": 11000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "route": "/. RIDES2",
@@ -7057,8 +7057,8 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
         "initial_altitude": 11000,
+        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "route": "/. RIDES2",
@@ -7144,10 +7144,10 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 8000,
+        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -7224,10 +7224,10 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
         "cruise_altitude": 39000,
         "expect_approach": "I5R",
         "initial_altitude": 8000,
+        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -7657,10 +7657,10 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
         "cruise_altitude": 39000,
         "expect_approach": "I5R",
         "initial_altitude": 8000,
+        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -8090,8 +8090,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. SNFLD3",
@@ -8520,8 +8520,8 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
         "initial_altitude": 12000,
+        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "route": "/. SNFLD3",

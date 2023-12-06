@@ -1352,9 +1352,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 10000,
                             "cruise_altitude": 35000,
                             "initial_altitude": 13000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.BANKR3",
@@ -1397,9 +1397,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 10000,
                             "cruise_altitude": 35000,
                             "initial_altitude": 13000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.BANKR3",
@@ -1524,9 +1524,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 34000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.CHSLY5",
@@ -1651,9 +1651,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 34000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.CHSLY5",
@@ -1717,10 +1717,10 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 37000,
                             "initial_altitude": 18000,
                             "initial_controller": "ATL_CTR",
+                            "descent_issued": true,
                             "initial_speed": 280,
                             "route": "/.FLIPZ3",
                             "waypoints": "JJENY/a20000 N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a18000/s270 ADOWN/a16000/s250 INWAL/a13000/s250 JELNO/a11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183"
@@ -1783,9 +1783,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 37000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.FLIPZ3",
@@ -1842,9 +1842,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 37000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.JONZE3",
@@ -1901,9 +1901,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 37000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.JONZE3",
@@ -1964,9 +1964,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 32000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.PARQR3",
@@ -2027,9 +2027,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 32000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "route": "/.PARQR3",
@@ -2094,9 +2094,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 32000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "route": "/.STOCR3",
@@ -2161,9 +2161,9 @@
                                     }
                                 ]
                             },
-                            "cleared_altitude": 18000,
                             "cruise_altitude": 32000,
                             "initial_altitude": 18000,
+                            "descent_issued": true,
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "route": "/.STOCR3",

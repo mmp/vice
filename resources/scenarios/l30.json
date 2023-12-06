@@ -809,9 +809,9 @@
                             }
                         ]
                     },
-                    "cleared_altitude": 12000,
                     "cruise_altitude": 35000,
                     "initial_altitude": 22000,
+                    "descent_issued": true,
                     "initial_controller": "LAX_55_CTR",
                     "initial_speed": 250,
                     "route": "/.BLAID1",
@@ -850,10 +850,9 @@
                             } 
                         ]
                     },
-                    
-                    "cleared_altitude": 8000,
                     "cruise_altitude": 35000,
                     "initial_altitude": 22000,
+                    "descent_issued": true,
                     "initial_controller": "LAX_55_CTR",
                     "initial_speed": 250,
                     "route": "/.CHOWW2",
@@ -904,9 +903,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 8000,
                 "cruise_altitude": 35000,
                 "initial_altitude": 21000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.COKTL3",
@@ -957,9 +956,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 7300,
                 "cruise_altitude": 34000,
                 "initial_altitude": 17000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.CRESO5",
@@ -1000,9 +999,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 8300,
                 "cruise_altitude": 35000,
                 "initial_altitude": 17000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.GAMES2",
@@ -1043,9 +1042,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 14000,
                 "cruise_altitude": 35000,
                 "initial_altitude": 14000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.ISHEE2",
@@ -1088,9 +1087,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 8000,
                 "cruise_altitude": 35000,
                 "initial_altitude": 19000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.JAYSN2",
@@ -1141,9 +1140,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 12500,
                 "cruise_altitude": 35000,
                 "initial_altitude": 24000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.LARKK1",
@@ -1184,9 +1183,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 8000,
                 "cruise_altitude": 35000,
                 "initial_altitude": 24000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 250,
                 "route": "/.PUMLE1",
@@ -1229,9 +1228,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 7000,
                 "cruise_altitude": 35000,
                 "initial_altitude": 19000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.RKSTAR3",
@@ -1285,9 +1284,9 @@
                         }
                     ]
                 },
-                "cleared_altitude": 8000,
                 "cruise_altitude": 35000,
                 "initial_altitude": 24000,
+                "descent_issued": true,
                 "initial_controller": "LAX_55_CTR",
                 "initial_speed": 280,
                 "route": "/.RNDRZ2",

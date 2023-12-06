@@ -336,7 +336,7 @@
             }
           ]
         },
-        "cleared_altitude": 12000,
+        "descent_issued": true,
         "cruise_altitude": 36000,
         "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",

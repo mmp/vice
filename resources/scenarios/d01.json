@@ -997,9 +997,9 @@
               }
             ]
           },
-          "cleared_altitude": 18000,
           "cruise_altitude": 36000,
           "initial_altitude": 20000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. AALLE3",
@@ -1105,9 +1105,9 @@
               }
             ]
           },
-          "cleared_altitude": 18000,
           "cruise_altitude": 36000,
           "initial_altitude": 20000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. CLASH4",
@@ -1192,9 +1192,9 @@
               } 
             ]
           },
-          "cleared_altitude": 20000,
           "cruise_altitude": 35000,
           "initial_altitude": 21000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. FLATI3",
@@ -1309,9 +1309,9 @@
                 }
             ]
           },
-          "cleared_altitude": 20000,
           "cruise_altitude": 35000,
           "initial_altitude": 21000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. LAWGR3",
@@ -1378,9 +1378,9 @@
               }
             ]
           },
-          "cleared_altitude": 20000,
           "cruise_altitude": 35000,
           "initial_altitude": 21000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. LONGZ2",
@@ -1461,9 +1461,9 @@
              }
             ]
           },
-          "cleared_altitude": 20000,
           "cruise_altitude": 35000,
           "initial_altitude": 21000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. NIIXX3",
@@ -1550,9 +1550,9 @@
               }
             ]
           },
-          "cleared_altitude": 20000,
           "cruise_altitude": 35000,
           "initial_altitude": 21000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. SSKII3",
@@ -1639,9 +1639,9 @@
               }
             ]
           },
-          "cleared_altitude": 20000,
           "cruise_altitude": 35000,
           "initial_altitude": 21000,
+          "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
           "route": "/. FLATI3",

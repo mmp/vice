@@ -5004,8 +5004,8 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
         "initial_altitude": 9000,
+        "descent_issued": true,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
         "route": "/. JIIMS4",

@@ -2138,8 +2138,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 12000,
                         "initial_altitude": 13000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 280,
                         "route": "/. BENKY6",
@@ -2271,8 +2271,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "initial_altitude": 7000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 250,
                         "route": "/. ENDEE6",
@@ -2518,8 +2518,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "initial_altitude": 7000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
                         "route": "/. FISSK5",
@@ -2589,8 +2589,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 13000,
                         "initial_altitude": 15000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "route": "/. FYTTE7",
@@ -2786,8 +2786,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "initial_altitude": 7000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
                         "route": "/. PANGG4",
@@ -2849,8 +2849,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 13000,
                         "initial_altitude": 15000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "route": "/. SHAIN2",
@@ -2912,8 +2912,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 11000,
                         "initial_altitude": 13000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "route": "/. VEECK5",
@@ -3067,8 +3067,8 @@
                                 }
                             ]
                         },
-                            "cleared_altitude": 12000,
                             "initial_altitude": 13000,
+                            "descent_issued": true,
                             "initial_controller": "CHI_81_CTR",
                             "initial_speed": 280,
                             "route": "/. WATSN4",
@@ -3197,8 +3197,8 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
                         "initial_altitude": 15000,
+                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "route": "/. ERNNY8",
