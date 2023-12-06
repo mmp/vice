@@ -2722,7 +2722,7 @@
         "waypoints": "TRV/ho BAIRN ODDEL SABOT"
       }
     ],
-    "FINAL_S_GRNCH4": [
+    "FINAL_S_GRNCH5": [
       {
         "airlines": {
           "KMCO": [
@@ -3056,7 +3056,7 @@
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
-        "star": "GRNCH4",
+        "star": "GRNCH5",
         "scratchpad": "I8R",
         "waypoints": "BLAYK BUNIE/a7000/s230/ho YAGGO/a6000/s210 NAVAL/a4000 ONNER/a000"
       }
@@ -3391,16 +3391,16 @@
         },
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
-        "initial_altitude": 8000,
+        "initial_altitude": 9000,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
-        "star": "GRNCH4",
+        "star": "GRNCH5",
         "scratchpad": "R6L",
-        "waypoints": "HARAM DORII/a8000/s220/ho BRICE/a5000/s210/h186"
+        "waypoints": "HARAM DORII/a8000+/s220/ho BRICE/a5000/s210/h186"
       }
     ],
-    "GRNCH4": [
+    "GRNCH5": [
       {
         "airlines": {
           "KMCO": [
@@ -3731,22 +3731,22 @@
         "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
-        "star": "GRNCH4",
+        "star": "GRNCH5",
         "runway_waypoints": {
-          "17L": "GRNCH BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "17R": "GRNCH BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "18L": "GRNCH BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "18R": "GRNCH BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000",
-          "35L": "GRNCH WHOVL/a13000 HARAM DORII/a8000 BRICE/a5000/s210/h186",
-          "35R": "GRNCH WHOVL/a13000 HARAM DORII/a8000 BRICE/a5000/s210/h186",
-          "36L": "GRNCH WHOVL/a13000 HARAM DORII/a8000 BRICE/a5000/s210/h186",
-          "36R": "GRNCH WHOVL/a13000 HARAM DORII/a8000 BRICE/a5000/s210/h186"
+          "17L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "17R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "18L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "18R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "35L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+          "35R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+          "36L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+          "36R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
         },
         "speed_restriction": 290,
-        "waypoints": "GRTNG/a17000/s290/ho GRNCH"
+        "waypoints": "GRTNG/a17000+/s290/ho GRNCH"
       }
     ],
-    "GRNCH4_LSU": [
+    "GRNCH5_LSU": [
       {
         "airlines": {
           "KMCO": [
@@ -4077,12 +4077,12 @@
         "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
-        "star": "GRNCH4",
+        "star": "GRNCH5",
         "speed_restriction": 290,
-        "waypoints": "GRTNG/a17000/s290/ho GRNCH BUGGZ/a13000/s280 BLAYK/a11000 BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94"
+        "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94"
       }
     ],
-    "GRNCH4_LNU": [
+    "GRNCH5_LNU": [
       {
         "airlines": {
           "KMCO": [
@@ -4413,9 +4413,9 @@
         "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
-        "star": "GRNCH4",
+        "star": "GRNCH5",
         "speed_restriction": 290,
-        "waypoints": "GRTNG/a17000/s290/ho GRNCH BUGGZ/a13000/s280 BLAYK WHOVL/a11000/s250 HARAM DORII/a8000/s220 BRICE/a5000/s210 _MCO_36L_GRNCH_FINAL/a2500 BERDY/a1600 _MCO_36L/a93"
+        "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210 _MCO_36L_GRNCH_FINAL/a2500 BERDY/a1600 _MCO_36L/a93"
       }
     ],
     "GTOUT1": [
@@ -8830,7 +8830,7 @@
           "KORL": 3,
           "KSFB": 1
         },
-        "GRNCH4": {
+        "GRNCH5": {
           "KMCO": 15
         },
         "GTOUT1": {
@@ -8854,7 +8854,7 @@
       "multi_controllers": {
         "default": {
             "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "GTOUT1", "RIDES2" ] },
-            "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+            "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH5", "JOKRS3", "PRICY3" ]},
             "MCO_M_APP" : {"backup" : "MCO_L_APP" },
             "MCO_G_APP" : {"backup" : "MCO_L_APP" },
             "MCO_E_DEP" : {"departures": [ "KMCO", "KORL", "KSFB" ], "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
@@ -8984,7 +8984,7 @@
           "KORL": 3,
           "KSFB": 2
         },
-        "GRNCH4": {
+        "GRNCH5": {
           "KMCO": 15
         },
         "JOKRS3": {
@@ -9008,7 +9008,7 @@
       "multi_controllers": {
          "default": {
              "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "SNFLD3", "RIDES2" ] },
-             "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH4", "JOKRS3", "PRICY3" ]},
+             "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH5", "JOKRS3", "PRICY3" ]},
              "MCO_M_APP" : {"backup" : "MCO_L_APP" },
              "MCO_G_APP" : {"backup" : "MCO_L_APP" },
              "MCO_E_DEP" : {"departures": [ "KMCO", "KSFB", "KISM", "KORL" ], "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
@@ -9211,7 +9211,7 @@
         }
       ],
       "arrivals": {
-        "FINAL_S_GRNCH4": {
+        "FINAL_S_GRNCH5": {
           "KMCO": 10
         },
         "ALYNA3_SFINAL": {
@@ -9261,7 +9261,7 @@
         }
       ],
       "arrivals": {
-        "GRNCH4_LSU": {
+        "GRNCH5_LSU": {
           "KMCO": 10
         },
         "PRICY3_LSU": {
@@ -9307,7 +9307,7 @@
         }
       ],
       "arrivals": {
-        "GRNCH4_LSU": {
+        "GRNCH5_LSU": {
           "KMCO": 10
         },
         "PRICY3_LSU": {
@@ -9401,7 +9401,7 @@
         }
       ],
       "arrivals": {
-        "GRNCH4_LNU": {
+        "GRNCH5_LNU": {
           "KMCO": 10
         },
         "PRICY3_LNU": {
@@ -9447,7 +9447,7 @@
         }
       ],
       "arrivals": {
-        "GRNCH4_LNU": {
+        "GRNCH5_LNU": {
           "KMCO": 10
         },
         "PRICY3_LNU": {
