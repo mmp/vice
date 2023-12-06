@@ -20,6 +20,7 @@ import (
 
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -640,9 +641,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			}
 
 			haveAR := func(wp Waypoint) bool { return wp.AltitudeRestriction != nil }
-			haveAltitudeRestrictions := AnySlice(ar.Waypoints, haveAR)
+			haveAltitudeRestrictions := slices.ContainsFunc(ar.Waypoints, haveAR)
 			for _, wps := range ar.RunwayWaypoints {
-				haveAltitudeRestrictions = haveAltitudeRestrictions || AnySlice(wps, haveAR)
+				haveAltitudeRestrictions = haveAltitudeRestrictions || slices.ContainsFunc(wps, haveAR)
 			}
 
 			if ar.DescentIssued == nil {

@@ -18,6 +18,7 @@ import (
 	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 )
 
 // IFR TRACON separation requirements
@@ -1318,7 +1319,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 
 	// Play the CA sound if any CAs are unacknowledged
-	if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
+	if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
 		globalConfig.Audio.StartPlayContinuous(AudioConflictAlert)
 	} else {
 		globalConfig.Audio.StopPlayContinuous(AudioConflictAlert)
@@ -2741,7 +2742,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		case CommandModeNone:
 			switch len(cmd) {
 			case 0:
-				if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool {
+				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
 				}) {
@@ -4749,8 +4750,8 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 
 	// Remove ones that are no longer visible
 	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
-		return AnySlice(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
-			AnySlice(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
+		return slices.ContainsFunc(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
+			slices.ContainsFunc(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
 	})
 
 	// Add new conflicts; by appending we keep them sorted by when they
@@ -4759,7 +4760,7 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 	for i, callsign := range callsigns {
 		for _, ocs := range callsigns[i+1:] {
 			if conflicting(callsign, ocs) {
-				if !AnySlice(sp.CAAircraft, func(ca CAAircraft) bool {
+				if !slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return callsign == ca.Callsigns[0] && ocs == ca.Callsigns[1]
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
@@ -4784,7 +4785,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		errs = append(errs, "MI")
 	}
-	if AnySlice(sp.CAAircraft,
+	if slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
 	}
