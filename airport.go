@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"strings"
 	"unicode"
+
+	"golang.org/x/exp/slices"
 )
 
 type Airport struct {
@@ -148,8 +150,8 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 		}
 
 		if len(ar.ScratchpadPatterns) > 0 {
-			if idx := FindIf(ar.ScratchpadPatterns,
-				func(pat string) bool { return strings.Contains(scratchpad, pat) }); idx == -1 {
+			if !slices.ContainsFunc(ar.ScratchpadPatterns,
+				func(pat string) bool { return strings.Contains(scratchpad, pat) }) {
 				return nil
 			}
 		}
@@ -204,8 +206,8 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			for j, wp := range ap.Waypoints[i] {
 				e.Push("Fix " + wp.Fix)
 				if wp.NoPT {
-					if FindIf(ap.Waypoints[i][j+1:],
-						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) == -1 {
+					if !slices.ContainsFunc(ap.Waypoints[i][j+1:],
+						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) {
 						e.ErrorString("No procedure turn found after fix with \"nopt\"")
 					}
 				}
@@ -351,9 +353,8 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Push(rwy + " region")
 		def.Runway = rwy
 
-		idx := FindIf(ap.ConvergingRunways,
-			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy })
-		if idx == -1 {
+		if !slices.ContainsFunc(ap.ConvergingRunways,
+			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy }) {
 			e.ErrorString("runway not used in \"converging_runways\"")
 		}
 

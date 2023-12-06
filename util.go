@@ -496,28 +496,6 @@ func FilterSlice[V any](s []V, pred func(V) bool) []V {
 	return filtered
 }
 
-// Find returns the index of the first instance of the given value in the
-// slice or -1 if it is not present.
-func Find[V comparable](s []V, value V) int {
-	for i, v := range s {
-		if v == value {
-			return i
-		}
-	}
-	return -1
-}
-
-// FindIf returns the index of the first item in the given slice for which
-// the provided predicate returns true.
-func FindIf[V any](s []V, pred func(V) bool) int {
-	for i, v := range s {
-		if pred(v) {
-			return i
-		}
-	}
-	return -1
-}
-
 // SampleSlice uniformly randomly samples an element of a non-empty slice.
 func SampleSlice[T any](slice []T) T {
 	return slice[rand.Intn(len(slice))]

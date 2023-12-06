@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -937,9 +938,8 @@ func (mp *MessagesPane) processEvents(w *World) {
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
 			start := max(0, n-5)
-			if idx := FindIf(mp.messages[start:], func(m Message) bool {
-				return m.contents == event.Message
-			}); idx == -1 {
+			if !slices.ContainsFunc(mp.messages[start:],
+				func(m Message) bool { return m.contents == event.Message }) {
 				mp.messages = append(mp.messages,
 					Message{
 						contents: event.Message,

@@ -2213,10 +2213,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						// Toggle
 						match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
 						matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-						if idx := FindIf(ps.QuickLookPositions, match); idx != -1 {
+						if slices.ContainsFunc(ps.QuickLookPositions, match) {
 							nomatch := func(q QuickLookPosition) bool { return !match(q) }
 							ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-						} else if idx := FindIf(ps.QuickLookPositions, matchId); idx != -1 {
+						} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
 							// Toggle plus
 							ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
 						} else {
@@ -4318,8 +4318,8 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 	ps := sp.CurrentPreferenceSet
 	if ps.QuickLookAll {
 		dt = FullDatablock
-	} else if idx := FindIf(ps.QuickLookPositions,
-		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }); idx != -1 {
+	} else if slices.ContainsFunc(ps.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }) {
 		dt = FullDatablock
 	}
 
@@ -5003,8 +5003,8 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 		// quick look all plus
 		return br.ScaleRGB(STARSTrackedAircraftColor)
-	} else if idx := FindIf(ps.QuickLookPositions,
-		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }); idx != -1 {
+	} else if slices.ContainsFunc(ps.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }) {
 		// individual quicklook plus controller
 		return br.ScaleRGB(STARSTrackedAircraftColor)
 	}

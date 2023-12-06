@@ -13,6 +13,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -803,7 +804,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, ErrUnknownAirport
 	}
 
-	idx := FindIf(w.DepartureRunways,
+	idx := slices.IndexFunc(w.DepartureRunways,
 		func(r ScenarioGroupDepartureRunway) bool {
 			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
 		})

@@ -427,8 +427,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.ErrorString("must specify at least one default video map using \"default_maps\"")
 	} else {
 		for _, dm := range s.DefaultMaps {
-			idx := FindIf(sg.STARSMaps, func(m STARSMap) bool { return m.Name == dm })
-			if idx == -1 {
+			if !slices.ContainsFunc(sg.STARSMaps, func(m STARSMap) bool { return m.Name == dm }) {
 				e.ErrorString("video map \"%s\" not found in \"stars_maps\"", dm)
 			}
 		}

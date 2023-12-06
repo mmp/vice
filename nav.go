@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -661,7 +662,7 @@ func (nav *Nav) updatePositionAndGS(wind WindModel, lg *Logger) {
 
 func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 	// Make sure we are going direct to the exit.
-	if idx := FindIf(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
+	if idx := slices.IndexFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
 	}
 	nav.Altitude = NavAltitude{Assigned: &alt}
@@ -1719,7 +1720,7 @@ func (nav *Nav) fixInRoute(fix string) bool {
 
 func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
 	find := func(f string, wp []Waypoint) int {
-		return FindIf(wp, func(wp Waypoint) bool { return wp.Fix == f })
+		return slices.IndexFunc(wp, func(wp Waypoint) bool { return wp.Fix == f })
 	}
 
 	var apWaypoints []WaypointArray
@@ -1892,7 +1893,7 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 			// aircraft's current waypoints...
 			found := false
 			for i, wp := range waypoints {
-				if idx := FindIf(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+				if idx := slices.IndexFunc(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
 					nav.Waypoints = nav.Waypoints[:idx]
 					nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
 					found = true
@@ -1957,7 +1958,7 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		return PilotResponse{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true}
 	}
 
-	if idx := FindIf(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }); idx == -1 {
+	if !slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }) {
 		return PilotResponse{Message: "unable. " + fix + " is not in our route", Unexpected: true}
 	}
 	nav.Approach.AtFixClearedRoute = nil
