@@ -336,7 +336,6 @@
             }
           ]
         },
-        "descent_issued": true,
         "cruise_altitude": 36000,
         "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
@@ -371,7 +370,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 11000,
         "initial_altitude": 11000,
         "initial_controller": "JAX_N_APP",
@@ -418,7 +417,7 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
+        "assigned_altitude": 7000,
         "cruise_altitude": 9000,
         "initial_altitude": 8000,
         "initial_controller": "JAX_N_APP",
@@ -445,7 +444,7 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
+        "assigned_altitude": 5000,
         "cruise_altitude": 7000,
         "initial_altitude": 6000,
         "initial_controller": "MCO_B_APP",
@@ -472,7 +471,7 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
+        "assigned_altitude": 5000,
         "cruise_altitude": 9000,
         "initial_altitude": 8000,
         "initial_controller": "MCO_B_APP",
@@ -632,7 +631,7 @@
       "approach_airspace": [
         "DAB_H_APP"
       ],
-      "arrival_runways": [
+      "arrival_runways": [
         {
           "airport": "KDAB",
           "runway": "7L"

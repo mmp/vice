@@ -722,7 +722,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 23000,
-        "descent_issued": true,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
         "star": "ATOKA1",
@@ -776,7 +775,6 @@
           ]
         },
         "cruise_altitude": 39000,
-        "descent_issued": true,
         "initial_altitude": 23000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -852,7 +850,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 13000,
-        "descent_issued": true,
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
         "star": "KILLR4",
@@ -924,7 +921,6 @@
         "cruise_altitude": 39000,
         "initial_altitude": 13000,
         "initial_controller": "ZAE_TUL_LOW",
-        "descent_issued": true,
         "initial_speed": 300,
         "star": "REELI1",
         "runway_waypoints": {
@@ -969,7 +965,6 @@
           ]
         },
         "cruise_altitude": 39000,
-        "descent_issued": true,
         "description": "jets",
         "initial_altitude": 16000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -989,7 +984,6 @@
         },
         "cruise_altitude": 31000,
         "description": "turboprops",
-        "descent_issued": true,
         "initial_altitude": 14000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
@@ -1007,7 +1001,6 @@
           ]
         },
         "cruise_altitude": 11000,
-        "descent_issued": true,
         "description": "pistons",
         "initial_altitude": 7000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1048,7 +1041,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 39000,
         "initial_altitude": 10000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1100,7 +1093,6 @@
           ]
         },
         "cruise_altitude": 39000,
-        "descent_issued": true,
         "description": "jets",
         "initial_altitude": 18000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1124,7 +1116,6 @@
           ]
         },
         "cruise_altitude": 31000,
-        "descent_issued": true,
         "description": "turboprops",
         "initial_altitude": 14000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1143,7 +1134,6 @@
           ]
         },
         "cruise_altitude": 31000,
-        "descent_issued": true,
         "description": "pistons",
         "initial_altitude": 8000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1196,7 +1186,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 39000,
         "initial_altitude": 11000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1273,7 +1263,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 13000,
-        "descent_issued": true,
         "description": "jets",
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
@@ -1291,7 +1280,6 @@
           ]
         },
         "cruise_altitude": 31000,
-        "descent_issued": true,
         "description": "turboprops",
         "initial_altitude": 10000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1310,7 +1298,6 @@
           ]
         },
         "cruise_altitude": 10000,
-        "descent_issued": true,
         "description": "pistons",
         "initial_altitude": 6000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1385,7 +1372,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 7000,
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 250,
         "route": "/. KILLR JKE",
@@ -1452,7 +1439,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
-        "descent_issued": true,
         "description": "jets",
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
@@ -1470,7 +1456,6 @@
           ]
         },
         "cruise_altitude": 31000,
-        "descent_issued": true,
         "description": "turboprops",
         "initial_altitude": 11000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1489,7 +1474,6 @@
           ]
         },
         "cruise_altitude": 9000,
-        "descent_issued": true,
         "description": "pistons",
         "initial_altitude": 7000,
         "initial_controller": "ZAE_OKC_LOW",
@@ -1556,7 +1540,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 10000,
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 250,
         "route": "/. REELI JKE",

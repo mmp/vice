@@ -622,7 +622,7 @@
           ]
         },
         "cruise_altitude": 38000,
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
@@ -676,7 +676,7 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "cruise_altitude": 36000,
         "initial_altitude": 11000,
         "initial_controller": "JAX_30_CTR",
@@ -728,7 +728,7 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "cruise_altitude": 33000,
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
@@ -755,7 +755,7 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "cruise_altitude": 31000,
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",

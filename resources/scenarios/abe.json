@@ -266,7 +266,7 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 10000,
         "initial_altitude": 6000,
         "description": "EWR S sats",
@@ -285,7 +285,7 @@
             }
           ]
         },
-        "cleared_altitude": 4000,
+        "assigned_altitude": 4000,
         "cruise_altitude": 8000,
         "initial_altitude": 4000,
         "description": "EWR via BWZ",
@@ -303,7 +303,7 @@
             }
           ]
         },
-        "cleared_altitude": 4000,
+        "assigned_altitude": 4000,
         "cruise_altitude": 18000,
         "description": "EWR N sats",
         "initial_altitude": 4000,
@@ -324,7 +324,7 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
+        "assigned_altitude": 7000,
         "cruise_altitude": 9000,
         "initial_altitude": 7000,
         "description": "MDT departures",
@@ -347,7 +347,7 @@
             }
           ]
         },
-        "cleared_altitude": 4000,
+        "assigned_altitude": 4000,
         "cruise_altitude": 4000,
         "initial_altitude": 300,
         "description": "RDG departures",
@@ -376,7 +376,7 @@
             }
           ]
         },
-        "cleared_altitude": 4000,
+        "assigned_altitude": 4000,
         "cruise_altitude": 4000,
         "initial_altitude": 4000,
         "initial_controller": "PHL_NA_APP",
@@ -403,7 +403,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 27000,
         "description": "via KRAZE",
         "initial_altitude": 10000,
@@ -433,7 +433,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 33000,
         "initial_altitude": 10000,
         "description": "via SNOWY",
@@ -464,7 +464,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 22000,
         "initial_altitude": 10000,
         "description": "via SLATT",
@@ -492,7 +492,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 35000,
         "initial_altitude": 10000,
         "description": "via V162 DUMMR",
@@ -523,7 +523,7 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 12000,
         "initial_altitude": 10000,
         "description": "via V93 DUMMR",

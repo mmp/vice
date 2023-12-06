@@ -712,7 +712,6 @@
         },
         "cruise_altitude": 35000,
         "initial_altitude": 17000,
-        "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "star": "KORRY4",
@@ -802,7 +801,7 @@
             }
           ]
         },
-        "cleared_altitude": 10000,
+        "assigned_altitude": 10000,
         "cruise_altitude": 35000,
         "initial_altitude": 13000,
         "initial_controller": "NY_CTR",
@@ -845,7 +844,7 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
+        "assigned_altitude": 8000,
         "cruise_altitude": 34000,
         "initial_altitude": 12000,
         "initial_controller": "BOS_E_CTR",

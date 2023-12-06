@@ -144,17 +144,11 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 	if nav := makeNav(w, fp, perf, arr.Waypoints); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = Select(spd != 0, &spd, nil)
-		if arr.ClearedAltitude > 0 {
-			alt := arr.ClearedAltitude
-			if arr.DescentIssued != nil && *arr.DescentIssued {
-				// Initial clearance altitude, though STAR altitude
-				// restrictions are also in effect.
-				nav.Altitude.Cleared = &alt
-			} else {
-				// Descend to the assigned altitude but then hold that until
-				// DVS is issued.
-				nav.Altitude.Assigned = &alt
-			}
+		if arr.AssignedAltitude > 0 {
+			// Descend to the assigned altitude but then hold that until
+			// either DVS or further descents are given.
+			alt := arr.AssignedAltitude
+			nav.Altitude.Assigned = &alt
 		}
 
 		nav.FlightState.Altitude = arr.InitialAltitude

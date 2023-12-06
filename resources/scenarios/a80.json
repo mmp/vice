@@ -1130,7 +1130,6 @@
           ]
         },
         "initial_altitude": 15000,
-        "descent_issued": true,
         "initial_controller" : "ATL_CTR",
         "initial_speed": 290,
         "star": "CHPPR1",
@@ -1216,7 +1215,7 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
+      "assigned_altitude": 6000,
       "cruise_altitude": 35000,
       "expect_approach": "I6R",
       "initial_altitude": 8000,
@@ -1295,7 +1294,6 @@
         ]
       },
       "initial_altitude": 15000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "GLAVN1",
@@ -1370,7 +1368,6 @@
         ]
       },
       "initial_altitude": 13000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "GNDLF2",
@@ -1433,7 +1430,6 @@
         ]
       },
       "initial_altitude": 17000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "HOBTT2",
@@ -1502,7 +1498,7 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
+      "assigned_altitude": 6000,
       "cruise_altitude": 34000,
       "expect_approach": "I28",
       "initial_altitude": 8000,
@@ -1568,7 +1564,7 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
+      "assigned_altitude": 6000,
       "cruise_altitude": 34000,
       "expect_approach": "I7L",
       "initial_altitude": 8000,
@@ -1655,7 +1651,6 @@
         ]
       },
       "initial_altitude": 13000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "JJEDI3",
@@ -1736,7 +1731,7 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
+      "assigned_altitude": 6000,
       "cruise_altitude": 35000,
       "expect_approach": "I7L",
       "initial_altitude": 8000,
@@ -1822,7 +1817,7 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
+      "assigned_altitude": 6000,
       "cruise_altitude": 35000,
       "expect_approach": "I28",
       "initial_altitude": 8000,
@@ -1890,7 +1885,6 @@
         ]
       },
       "initial_altitude": 15000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "ONDRE1",
@@ -1960,7 +1954,7 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
+      "assigned_altitude": 6000,
       "cruise_altitude": 34000,
       "expect_approach": "I6R",
       "initial_altitude": 8000,
@@ -2023,7 +2017,6 @@
         ]
       },
       "initial_altitude": 15000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "OZZZI1",
@@ -2093,7 +2086,7 @@
           }
         ]
       },
-      "cleared_altitude": 8000,
+      "assigned_altitude": 8000,
       "cruise_altitude": 34000,
       "expect_approach": "I7L",
       "initial_altitude": 10000,
@@ -2180,7 +2173,6 @@
         ]
       },
       "initial_altitude": 15000,
-      "descent_issued": true,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "SITTH2",

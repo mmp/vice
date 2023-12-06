@@ -2387,9 +2387,8 @@
             }
           ]
         },
-        "cleared_altitude": 14000,
+        "assigned_altitude": 14000,
         "initial_altitude": 15000,
-        "descent_issued": false,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 300,
         "star": "ALYNA3",
@@ -2460,9 +2459,8 @@
             }
           ]
         },
-        "cleared_altitude": 14000,
+        "assigned_altitude": 14000,
         "initial_altitude": 15000,
-        "descent_issued": false,
         "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "star": "ALYNA3",
@@ -2521,9 +2519,8 @@
             }
           ]
         },
-        "cleared_altitude": 14000,
+        "assigned_altitude": 14000,
         "initial_altitude": 15000,
-        "descent_issued": false,
         "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "star": "ALYNA3",
@@ -2582,7 +2579,6 @@
             }
           ]
         },
-        "descent_issued": true,
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 7000,
@@ -2613,7 +2609,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I9L",
         "initial_altitude": 7000,
-        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -2669,7 +2664,6 @@
           ]
         },
         "initial_altitude": 19000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 290,
         "star": "DADES1",
@@ -2719,7 +2713,7 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
+        "assigned_altitude": 8000,
         "initial_altitude": 8000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 250,
@@ -3059,7 +3053,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
         "initial_altitude": 8000,
-        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -3399,7 +3392,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
         "initial_altitude": 8000,
-        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -3737,7 +3729,6 @@
           ]
         },
         "initial_altitude": 11000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "star": "GRNCH4",
@@ -4084,7 +4075,6 @@
           ]
         },
         "initial_altitude": 17000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "star": "GRNCH4",
@@ -4421,7 +4411,6 @@
           ]
         },
         "initial_altitude": 17000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "star": "GRNCH4",
@@ -4851,7 +4840,6 @@
           ]
         },
         "initial_altitude": 12000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
@@ -5281,7 +5269,6 @@
           ]
         },
         "initial_altitude": 12000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
@@ -5713,7 +5700,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 9000,
-        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -5741,7 +5727,6 @@
           ]
         },
         "initial_altitude": 14000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "JAFAR3",
@@ -5831,7 +5816,7 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
+        "assigned_altitude": 8000,
         "initial_altitude": 8000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 250,
@@ -6028,7 +6013,6 @@
           ]
         },
         "initial_altitude": 13000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
@@ -6234,7 +6218,6 @@
           ]
         },
         "initial_altitude": 13000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
@@ -6430,7 +6413,6 @@
           ]
         },
         "initial_altitude": 13000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
@@ -6628,7 +6610,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
         "initial_altitude": 7000,
-        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -6827,7 +6808,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
         "initial_altitude": 9000,
-        "descent_issued": true,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "star": "PRICY3",
@@ -6904,7 +6884,6 @@
           ]
         },
         "initial_altitude": 15000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
@@ -6981,7 +6960,6 @@
           ]
         },
         "initial_altitude": 11000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
@@ -7058,7 +7036,6 @@
           ]
         },
         "initial_altitude": 11000,
-        "descent_issued": true,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
@@ -7147,7 +7124,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 8000,
-        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -7227,7 +7203,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I5R",
         "initial_altitude": 8000,
-        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -7660,7 +7635,6 @@
         "cruise_altitude": 39000,
         "expect_approach": "I5R",
         "initial_altitude": 8000,
-        "descent_issued": true,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -8091,7 +8065,6 @@
           ]
         },
         "initial_altitude": 12000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
@@ -8521,7 +8494,6 @@
           ]
         },
         "initial_altitude": 12000,
-        "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",

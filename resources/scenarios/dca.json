@@ -651,7 +651,6 @@
       },
       "cruise_altitude": 33000,
       "initial_altitude": 18000,
-      "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed": 290,
       "star": "CAPSS3",
@@ -712,7 +711,6 @@
         ]
       },
       "initial_altitude": 14000,
-      "descent_issued": true,
       "initial_controller": "BWI_W_APP",
       "initial_speed": 270,
       "star": "CLIPR3",
@@ -756,7 +754,6 @@
         ]
       },
       "initial_altitude": 12000,
-      "descent_issued": true,
       "initial_controller": "BWI_P_APP",
       "initial_speed": 280,
       "star": "DEALE3",
@@ -824,7 +821,6 @@
         ]
       },
       "initial_altitude": 16000,
-      "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
       "star": "FRDMM5",
@@ -875,7 +871,6 @@
         ]
       },
       "initial_altitude": 16000,
-      "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
       "star": "TRUPS4",
@@ -973,7 +968,6 @@
       },
       "cruise_altitude": 33000,
       "expect_approach": "MTV",
-      "descent_issued": true,
       "initial_altitude": 8000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
@@ -1053,7 +1047,6 @@
       "cruise_altitude": 24000,
       "expect_approach": "MTV",
       "initial_altitude": 10000,
-      "descent_issued": true,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
@@ -1119,7 +1112,6 @@
       },
       "initial_altitude": 10000,
       "cruise_altitude": 33000,
-      "descent_issued": true,
       "expect_approach": "MTV",
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
@@ -1210,7 +1202,6 @@
           }
         ]
       },
-      "descent_issued": true,
       "cruise_altitude": 33000,
       "expect_approach": "RIV",
       "initial_altitude": 8000,
@@ -1291,7 +1282,6 @@
       },
       "cruise_altitude": 24000,
       "expect_approach": "RIV",
-      "descent_issued": true,
       "initial_altitude": 10000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
@@ -1359,7 +1349,6 @@
       "cruise_altitude": 33000,
       "expect_approach": "RIV",
       "initial_altitude": 7000,
-      "descent_issued": true,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
@@ -1400,7 +1389,6 @@
         ]
       },
       "initial_altitude" : 18000,
-      "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed" : 280,
       "star": "RAVNN6",

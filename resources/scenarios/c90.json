@@ -2139,7 +2139,6 @@
                             ]
                         },
                         "initial_altitude": 13000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 280,
                         "star": "BENKY6",
@@ -2213,7 +2212,7 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 35000,
                         "expect_approach": "I8C",
                         "initial_altitude": 8000,
@@ -2272,7 +2271,6 @@
                             ]
                         },
                         "initial_altitude": 7000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 250,
                         "star": "ENDEE6",
@@ -2304,7 +2302,7 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
+                        "assigned_altitude": 14000,
                         "initial_altitude": 14000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
@@ -2460,7 +2458,7 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 32000,
                         "expect_approach": "I7C",
                         "initial_altitude": 8000,
@@ -2519,7 +2517,6 @@
                             ]
                         },
                         "initial_altitude": 7000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
                         "star": "FISSK5",
@@ -2590,7 +2587,6 @@
                             ]
                         },
                         "initial_altitude": 15000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "star": "FYTTE7",
@@ -2668,7 +2664,7 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 36000,
                         "expect_approach": "I7R",
                         "initial_altitude": 8000,
@@ -2736,7 +2732,7 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 36000,
                         "expect_approach": "I9L",
                         "initial_altitude": 8000,
@@ -2787,7 +2783,6 @@
                             ]
                         },
                         "initial_altitude": 7000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
                         "star": "PANGG4",
@@ -2850,7 +2845,6 @@
                             ]
                         },
                         "initial_altitude": 15000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "star": "SHAIN2",
@@ -2913,7 +2907,6 @@
                             ]
                         },
                         "initial_altitude": 13000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "star": "VEECK5",
@@ -2989,7 +2982,7 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 35000,
                         "expect_approach": "I8C",
                         "initial_altitude": 8000,
@@ -3068,7 +3061,6 @@
                             ]
                         },
                             "initial_altitude": 13000,
-                            "descent_issued": true,
                             "initial_controller": "CHI_81_CTR",
                             "initial_speed": 280,
                             "star": "WATSN4",
@@ -3198,7 +3190,6 @@
                             ]
                         },
                         "initial_altitude": 15000,
-                        "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
                         "star": "WYNDE2",

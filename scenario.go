@@ -68,8 +68,7 @@ type Arrival struct {
 
 	InitialController   string  `json:"initial_controller"`
 	InitialAltitude     float32 `json:"initial_altitude"`
-	ClearedAltitude     float32 `json:"cleared_altitude"`
-	DescentIssued       *bool   `json:"descent_issued"` // *bool so we can tell if it has been set explicitly
+	AssignedAltitude    float32 `json:"assigned_altitude"`
 	InitialSpeed        float32 `json:"initial_speed"`
 	SpeedRestriction    float32 `json:"speed_restriction"`
 	ExpectApproach      string  `json:"expect_approach"`
@@ -642,27 +641,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 					WaypointArray(ewp).CheckArrival(e)
 
 					e.Pop()
-				}
-			}
-
-			haveAR := func(wp Waypoint) bool { return wp.AltitudeRestriction != nil }
-			haveAltitudeRestrictions := slices.ContainsFunc(ar.Waypoints, haveAR)
-			for _, wps := range ar.RunwayWaypoints {
-				haveAltitudeRestrictions = haveAltitudeRestrictions || slices.ContainsFunc(wps, haveAR)
-			}
-
-			if ar.DescentIssued == nil {
-				if haveAltitudeRestrictions {
-					e.ErrorString("must specify a value for \"descent_issued\" for an arrival with altitude restrictions")
-				} else if ar.ClearedAltitude == 0 {
-					e.ErrorString("must specify \"cleared_altitude\" for arrival")
-				}
-			} else {
-				if !haveAltitudeRestrictions {
-					e.ErrorString("\"descent_issued\" cannot be specified for an arrival with no altitude restrictions")
-				}
-				if *ar.DescentIssued && ar.ClearedAltitude != 0 {
-					e.ErrorString("cannot specify \"cleared_altitude\" with \"descent_issued\": \"true\"")
 				}
 			}
 

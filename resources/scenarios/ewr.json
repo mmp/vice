@@ -599,7 +599,7 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
+              "icao": "GJS"
             }
           ],
           "altitude": 8000,
@@ -1884,7 +1884,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
-        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
         "route": "/. ALB V489 COATE",
@@ -1964,7 +1963,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
-        "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
         "star": "FLOSI4",
@@ -2044,7 +2042,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
-        "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "star": "FQM3",
@@ -2124,7 +2121,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
-        "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
         "star": "LVZ4",
@@ -2204,7 +2200,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
-        "descent_issued": true,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
         "star": "MAZIE3",
@@ -2282,7 +2277,7 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "EWR_A_APP",
@@ -2308,7 +2303,7 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
+        "assigned_altitude": 7000,
         "cruise_altitude": 7000,
         "initial_altitude": 7000,
         "initial_controller": "PHL_NA_APP",
@@ -2390,7 +2385,6 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 20000,
-        "descent_issued": true,
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
         "star": "PHLBO4",
@@ -2468,7 +2462,7 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "EWR_P_APP",
@@ -2490,7 +2484,7 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "WRI_APP",
