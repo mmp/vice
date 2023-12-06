@@ -394,7 +394,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.Push("\"multi_controllers\": split \"" + split + "\"")
 				count := 0
 				for _, mc := range controllers {
-					if idx := Find(mc.Arrivals, name); idx != -1 {
+					if slices.Contains(mc.Arrivals, name) {
 						count++
 					}
 				}
@@ -1504,5 +1504,5 @@ func (c *MultiUserController) IsDepartureController(ap, sid string) bool {
 }
 
 func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
-	return Find(c.Arrivals, arrivalGroup) != -1
+	return slices.Contains(c.Arrivals, arrivalGroup)
 }

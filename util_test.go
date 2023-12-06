@@ -174,19 +174,6 @@ func TestFilterSlice(t *testing.T) {
 	}
 }
 
-func TestFindSlice(t *testing.T) {
-	a := []int{0, 1, 2, 3, 4, 5}
-	for i := 0; i < 5; i++ {
-		if Find(a, i) != i {
-			t.Errorf("find %d returned %d", i, Find(a, i))
-		}
-	}
-
-	if Find(a, 8) != -1 {
-		t.Errorf("find of nonexistent didn't return -1")
-	}
-}
-
 func TestRingBuffer(t *testing.T) {
 	rb := NewRingBuffer[int](10)
 

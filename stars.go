@@ -140,13 +140,13 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraf
 	p0, p1 = rbl.P[0].Loc, rbl.P[1].Loc
 	if ac := ctx.world.Aircraft[rbl.P[0].Callsign]; ac != nil {
 		state, ok := sp.Aircraft[ac.Callsign]
-		if ok && !state.LostTrack(ctx.world.CurrentTime()) && Find(aircraft, ac) != -1 {
+		if ok && !state.LostTrack(ctx.world.CurrentTime()) && slices.Contains(aircraft, ac) {
 			p0 = state.TrackPosition()
 		}
 	}
 	if ac := ctx.world.Aircraft[rbl.P[1].Callsign]; ac != nil {
 		state, ok := sp.Aircraft[ac.Callsign]
-		if ok && !state.LostTrack(ctx.world.CurrentTime()) && Find(aircraft, ac) != -1 {
+		if ok && !state.LostTrack(ctx.world.CurrentTime()) && slices.Contains(aircraft, ac) {
 			p1 = state.TrackPosition()
 		}
 	}
@@ -5231,7 +5231,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			if wp.Callsign != "" {
 				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
-					Find(aircraft, ac) != -1 {
+					slices.Contains(aircraft, ac) {
 					if state, ok := sp.Aircraft[wp.Callsign]; ok {
 						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
 					}
