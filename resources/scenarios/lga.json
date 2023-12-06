@@ -715,7 +715,7 @@
         "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
-        "route": "/. KORRY4",
+        "star": "KORRY4",
         "speed_restriction": 250,
         "waypoints": "BESSI/a17000+ EDJER/ho DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 RBV TYKES MINKS RENUE APPLE PROUD LGA/h45"
       }

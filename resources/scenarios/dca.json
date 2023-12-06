@@ -654,7 +654,7 @@
       "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed": 290,
-      "route": "/. CAPSS3",
+      "star": "CAPSS3",
       "runway_waypoints": {
         "1": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
         "4": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
@@ -715,7 +715,7 @@
       "descent_issued": true,
       "initial_controller": "BWI_W_APP",
       "initial_speed": 270,
-      "route": "/. CLIPR3",
+      "star": "CLIPR3",
       "runway_waypoints": {
         "1":  "EYESS FELTY HITEK CAVDI/h187",
         "4":  "EYESS FELTY HITEK CAVDI/h187",
@@ -759,7 +759,7 @@
       "descent_issued": true,
       "initial_controller": "BWI_P_APP",
       "initial_speed": 280,
-      "route": "/. DEALE3",
+      "star": "DEALE3",
       "runway_waypoints": {
         "1":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
         "4":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
@@ -827,7 +827,7 @@
       "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
-      "route": "/. FRDMM5",
+      "star": "FRDMM5",
       "runway_waypoints": {
         "1":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
         "4":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
@@ -878,7 +878,7 @@
       "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
-      "route": "/. TRUPS4",
+      "star": "TRUPS4",
       "runway_waypoints": {
         "1":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
         "4":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
@@ -978,7 +978,7 @@
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. FRDMM5",
+      "star": "FRDMM5",
       "scratchpad": "MTV",
       "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189"
     }
@@ -1057,7 +1057,7 @@
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. DEALE3",
+      "star": "DEALE3",
       "scratchpad": "MTV",
       "waypoints": "DEALE/a10000/s280 YUCKK/a10000/ho TIRZA/a8000- HITEK/a7000 MITEY/h187"
     }
@@ -1124,7 +1124,7 @@
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. CAPSS3",
+      "star": "CAPSS3",
       "scratchpad": "MTV",
       "waypoints": "CAPSS/a10000 HOYAS/a7000/ho HALLL KATRN/h008"
     }
@@ -1217,7 +1217,7 @@
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. FRDMM5",
+      "star": "FRDMM5",
       "scratchpad": "RIV",
       "waypoints": "ALWYZ/a10000- FRDMM/a8000/s240/ho STAND TGTHR FERGI/h148"
     }
@@ -1296,7 +1296,7 @@
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. DEALE3",
+      "star": "DEALE3",
       "scratchpad": "RIV",
       "waypoints": "DEALE/a10000/s280 EDDGY THANE/a6000/ho MEGGS/h327"
     }
@@ -1363,7 +1363,7 @@
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. CAPSS3",
+      "star": "CAPSS3",
       "scratchpad": "RIV",
       "waypoints": "JILES SMOOT/a7000+/ho BAAAM/a6000 PACKE/h327"
     }
@@ -1403,7 +1403,7 @@
       "descent_issued": true,
       "initial_controller": "DC_CTR",
       "initial_speed" : 280,
-      "route": "/. RAVNN6",
+      "star": "RAVNN6",
       "waypoints": "DFORT/a18000+ WALKN/a16000/s280/ho JAYOH/a12000 CAPKO/a9000 RAVNN/a6000 JETNA BAL"
     }
   ]

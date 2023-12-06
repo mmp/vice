@@ -725,7 +725,7 @@
         "descent_issued": true,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
-        "route": "/. ATOKA1",
+        "star": "ATOKA1",
         "waypoints": "N035.45.24.842,W096.39.17.446 N035.47.19.059,W096.33.46.922/ho ATOKA/a17000+ FRANK/a15000+/s250 JIMMY/s230 DDALE/a10000/s210 CECIL/a10000 RANDY/a8000/h100"
       }
     ],
@@ -780,7 +780,7 @@
         "initial_altitude": 23000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
-        "route": "/. BARTS2",
+        "star": "BARTS2",
         "waypoints": "N036.46.21.655,W096.29.52.007 N036.42.41.077,W096.25.30.258/ho BARTS GANDD/a15000+/s250 TERRY SNARE/a10000/s210 TAILR/a10000 SIMPS/a8000/h100"
       }
     ],
@@ -855,7 +855,7 @@
         "descent_issued": true,
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
-        "route": "/. KILLR4",
+        "star": "KILLR4",
         "runway_waypoints": {
           "28L": "SHREM ZEEKK/a9000-/s210 CHIEF/a6000 RUBIN/a6000 CHAPP/a5000",
           "28R": "SHREM COLEY/a6000+/s210 HULET/a4000-5000 HOWRD/a4000 GRAYY/a4000"
@@ -926,7 +926,7 @@
         "initial_controller": "ZAE_TUL_LOW",
         "descent_issued": true,
         "initial_speed": 300,
-        "route": "/. REELI1",
+        "star": "REELI1",
         "runway_waypoints": {
           "28R": "GERAT DMANN/a6000+/s210 OSCAR/a5000- HOWRD/a4000 GRAYY/a4000",
           "28L": "GERAT TRISH RUBIN/a6000/s210 CHAPP/a5000"
@@ -974,7 +974,7 @@
         "initial_altitude": 16000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
-        "route": "/. TULSA4",
+        "star": "TULSA4",
         "waypoints": "N035.45.24.842,W096.39.17.446 N035.47.19.059,W096.33.46.922/ho ATOKA/a15000+/h055"
       },
       {
@@ -1053,7 +1053,7 @@
         "initial_altitude": 10000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 250,
-        "route": "ATOKA JKE",
+        "route": "/. ATOKA JKE",
         "waypoints": "N035.45.24.842,W096.39.17.446 N035.47.19.059,W096.33.46.922/ho ATOKA N035.53.42.441,W096.19.55.724 JKE"
       }
     ],
@@ -1105,7 +1105,7 @@
         "initial_altitude": 18000,
         "initial_controller": "ZAE_OKC_LOW",
         "initial_speed": 300,
-        "route": "/. TULSA4",
+        "star": "TULSA4",
         "waypoints": "N036.46.21.655,W096.29.52.007 N036.42.41.077,W096.25.30.258/ho BARTS/a15000+/h140"
       },
       {
@@ -1277,7 +1277,7 @@
         "description": "jets",
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
-        "route": "/. TULSA4",
+        "star": "TULSA4",
         "waypoints": "N035.27.48.630,W095.13.43.123 N035.32.19.389,W095.17.22.053/ho KILLR/a10000/h010"
       },
       {
@@ -1456,7 +1456,7 @@
         "description": "jets",
         "initial_controller": "ZAE_TUL_LOW",
         "initial_speed": 300,
-        "route": "/. TULSA4",
+        "star": "TULSA4",
         "waypoints": "N036.44.24.994,W094.59.19.899 N036.41.31.822,W095.03.53.404/ho REELI/a11000/h190"
       },
       {

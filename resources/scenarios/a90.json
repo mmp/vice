@@ -1693,7 +1693,7 @@
         "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 290,
-        "route": "/. JFUND2",
+        "star": "JFUND2",
         "runway_waypoints": {
           "15R": "JFUND BADCA/a9000+/s250 WACHU/a7000/s210 SSAAM AADMS/h148",
           "22L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS ISLAY/a6000/s220 LWLND/a6000/s210/h035",
@@ -1890,7 +1890,7 @@
         "initial_controller": "BOS_N_APP",
         "initial_speed": 230,
         "speed_restriction": 220,
-        "route": "/. JFUND2",
+        "star": "JFUND2",
         "scratchpad": "I4R",
         "waypoints": "N42.23.29.343,W70.59.16.890/ho GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213"
       }
@@ -2014,7 +2014,7 @@
         "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 290,
-        "route": "/. OOSHN5",
+        "star": "OOSHN5",
         "runway_waypoints": {
           "4R": "OOSHN/a9000-14000/s250/ho TTERI/a9000+/s250 WAATR FLUTI/a9000+ GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
           "4L": "OOSHN/a9000-14000/s250/ho TTERI/a9000+/s250 WAATR FLUTI/a9000+ GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
@@ -2116,7 +2116,7 @@
         "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 290,
-        "route": "/. ROBUC3",
+        "star": "ROBUC3",
         "runway_waypoints": {
           "4R": "ROBUC/a12000-19000/s260/ho PROVI/a11000+ JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
           "4L": "ROBUC/a12000-19000/s260/ho PROVI/a11000+ JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
@@ -2221,7 +2221,7 @@
         "initial_controller": "BOS_S_APP",
         "initial_speed": 230,
         "speed_restriction": 220,
-        "route": "/. ROBUC3",
+        "star": "ROBUC3",
         "scratchpad": "I4R",
         "waypoints": "ERNEI/a7000/ho GOSHI/a6000/s210/h035"
       }

@@ -64,6 +64,7 @@ type Arrival struct {
 	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
 	CruiseAltitude  float32                  `json:"cruise_altitude"`
 	Route           string                   `json:"route"`
+	STAR            string                   `json:"star"`
 
 	InitialController   string  `json:"initial_controller"`
 	InitialAltitude     float32 `json:"initial_altitude"`
@@ -605,11 +606,16 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		}
 
 		for _, ar := range arrivals {
-			if ar.Route == "" {
-				e.ErrorString("\"route\" not specified")
+			if ar.Route == "" && ar.STAR == "" {
+				e.ErrorString("neither \"route\" nor \"star\" specified")
+				continue
 			}
 
-			e.Push("Route " + ar.Route)
+			if ar.Route != "" {
+				e.Push("Route " + ar.Route)
+			} else {
+				e.Push("Route " + ar.STAR)
+			}
 
 			if len(ar.Waypoints) < 2 {
 				e.ErrorString("must provide at least two \"waypoints\" for approach " +

@@ -1002,7 +1002,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. AALLE3",
+          "star": "AALLE3",
           "runway_waypoints": {
             "7": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
             "8": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
@@ -1110,7 +1110,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. CLASH4",
+          "star": "CLASH4",
           "runway_waypoints": {
             "7": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
             "8": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
@@ -1197,7 +1197,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. FLATI3",
+          "star": "FLATI3",
           "runway_waypoints": {
             "7": "ELLDO/a18000/s250 MLVVA/a14000/h132",
             "8": "ELLDO/a18000/s250 MLVVA/a14000/h132",
@@ -1314,7 +1314,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. LAWGR3",
+          "star": "LAWGR3",
           "runway_waypoints": {
             "7": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
             "8": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
@@ -1383,7 +1383,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. LONGZ2",
+          "star": "LONGZ2",
           "runway_waypoints": {
             "7": "FLNEL/a18000/s250 DORKE/a16000 BASHE/a13000/s210/h170",
             "8": "FLNEL/a18000/s250 DORKE/a16000 BASHE/a13000/s210/h170",
@@ -1466,7 +1466,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. NIIXX3",
+          "star": "NIIXX3",
           "runway_waypoints": {
             "7": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
             "8": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
@@ -1555,7 +1555,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. SSKII3",
+          "star": "SSKII3",
           "runway_waypoints": {
             "7": "BGDEE/a19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
             "8": "BGDEE/a19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
@@ -1644,7 +1644,7 @@
           "descent_issued": true,
           "initial_controller": "DEN_17_CTR",
           "initial_speed": 290,
-          "route": "/. FLATI3",
+          "star": "FLATI3",
           "runway_waypoints": {
               "7": "MNARK/a19000/s250 SUMTT/a14000/h033",
               "8": "MNARK/a19000/s250 SUMTT/a14000/h033",

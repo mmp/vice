@@ -626,7 +626,7 @@
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "SOOOP",
+        "route": "/. SOOOP",
         "waypoints": "MEECH SOOOP/ho/h252 "
       }
     ],

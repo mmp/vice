@@ -1887,7 +1887,7 @@
         "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
-        "route": "/ ALB V489 COATE",
+        "route": "/. ALB V489 COATE",
         "speed_restriction": null,
         "waypoints": "FILPS WEARD/ho CAMMO HUO LEMOR/a6000 COATE KEWR"
       }
@@ -1967,7 +1967,7 @@
         "descent_issued": true,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
-        "route": "/ FLOSI4",
+        "star": "FLOSI4",
         "speed_restriction": null,
         "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180"
       }
@@ -2047,7 +2047,7 @@
         "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
-        "route": "/ FQM3",
+        "star": "FQM3",
         "speed_restriction": null,
         "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122"
       }
@@ -2127,7 +2127,7 @@
         "descent_issued": true,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
-        "route": "/ LVZ4",
+        "star": "LVZ4",
         "speed_restriction": null,
         "waypoints": "LVZ/a18000/ho HARTY MUGZY/a6000 STW/h125"
       }
@@ -2207,7 +2207,7 @@
         "descent_issued": true,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
-        "route": "/ MAZIE3",
+        "star": "MAZIE3",
         "speed_restriction": null,
         "waypoints": "JAIKE ILENE/a12000/ho WACKI/a11000 MAZIE REGLE/a7000 GNNZO SBJ/h059"
       }
@@ -2287,7 +2287,7 @@
         "initial_altitude": 6000,
         "initial_controller": "EWR_A_APP",
         "initial_speed": 250,
-        "route": "/ FLOSI4",
+        "star": "FLOSI4",
         "speed_restriction": null,
         "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
         "expect_approach": "I4R",
@@ -2313,7 +2313,7 @@
         "initial_altitude": 7000,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
-        "route": "/ RUUTH V123 RBV",
+        "route": "/. RUUTH V123 RBV",
         "speed_restriction": null,
         "waypoints": "RUUTH/ho RBV KEWR"
       }
@@ -2393,7 +2393,7 @@
         "descent_issued": true,
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
-        "route": "/ PHLBO4",
+        "star": "PHLBO4",
         "speed_restriction": null,
         "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
       }
@@ -2473,7 +2473,7 @@
         "initial_altitude": 6000,
         "initial_controller": "EWR_P_APP",
         "initial_speed": 250,
-        "route": "/ PHLBO4",
+        "star": "PHLBO4",
         "speed_restriction": null,
         "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
         "expect_approach": "I2L",
@@ -2495,7 +2495,7 @@
         "initial_altitude": 6000,
         "initial_controller": "WRI_APP",
         "initial_speed": 300,
-        "route": "/ CYN GXU RBV V249 METRO",
+        "route": "/. CYN GXU RBV V249 METRO",
         "speed_restriction": null,
         "waypoints": "CYN/ho GXU RBV METRO KEWR"
       }

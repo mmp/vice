@@ -47,6 +47,7 @@ type Aircraft struct {
 	DepartureContactController string
 
 	// Arrival-related state
+	STAR              string
 	GoAroundDistance  *float32
 	ArrivalGroup      string
 	ArrivalGroupIndex int
@@ -351,6 +352,7 @@ func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {
 func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	arrivalGroupIndex int, arrivalHandoffController string, goAround bool) error {
 	arr := &w.ArrivalGroups[arrivalGroup][arrivalGroupIndex]
+	ac.STAR = arr.STAR
 	ac.ArrivalGroup = arrivalGroup
 	ac.ArrivalGroupIndex = arrivalGroupIndex
 	ac.Scratchpad = arr.Scratchpad
@@ -370,7 +372,11 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	if ac.FlightPlan.Altitude == 0 { // unspecified
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan, perf)
 	}
-	ac.FlightPlan.Route = arr.Route
+	if arr.Route != "" {
+		ac.FlightPlan.Route = arr.Route
+	} else {
+		ac.FlightPlan.Route = "/. " + arr.STAR
+	}
 
 	if goAround {
 		d := 0.1 + .6*rand.Float32()

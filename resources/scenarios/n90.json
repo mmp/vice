@@ -2541,7 +2541,7 @@
               "descent_issued": true,
               "initial_controller": "NY_CTR",
               "initial_speed": 300,
-              "route": "/. KORRY4",
+              "star": "KORRY4",
               "speed_restriction": 250,
               "waypoints": "BESSI/a17000+ EDJER/ho DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 RBV TYKES MINKS RENUE APPLE PROUD LGA/h45"
             }
@@ -2633,7 +2633,7 @@
               "initial_altitude": 13000,
               "initial_controller": "NY_CTR",
               "initial_speed": 300,
-              "route": "/. MIP4",
+              "star": "MIP4",
               "speed_restriction": 250,
               "waypoints": "BILEY VIBES LIZZI/ho BEUTY HARLM DREMS APPLE PROUD LGA/h45"
             }
@@ -2676,7 +2676,7 @@
               "initial_altitude": 12000,
               "initial_controller": "BOS_CTR",
               "initial_speed": 300,
-              "route": "/. HAARP3",
+              "star": "HAARP3",
               "speed_restriction": 250,
               "waypoints": "PWL IGN/ho VALRE BASYE HAARP CRALY LGA/h224"
             }
@@ -2733,7 +2733,7 @@
                       "initial_altitude": 12000,
                       "initial_controller": "NY_CTR",
                       "initial_speed": 300,
-                      "route": "/. CAMRN4",
+                      "star": "CAMRN4",
                       "speed_restriction": 250,
                       "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935/ho CAMRN/h40"
                     }
@@ -2827,7 +2827,7 @@
                           "description": "LENDY8",
                           "initial_controller": "NY_CTR",
                           "initial_speed": 300,
-                          "route": "/. LENDY8",
+                          "star": "LENDY8",
                           "speed_restriction": 250,
                           "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY/h135"
                         },
@@ -2891,7 +2891,7 @@
                           "initial_altitude": 19000,
                           "initial_controller": "NY_CTR",
                           "initial_speed": 300,
-                          "route": "/. IGN1",
+                          "star": "IGN1",
                           "speed_restriction": 250,
                           "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY/h135"
                         }
@@ -3018,7 +3018,7 @@
                               "descent_issued": true,
                               "initial_controller": "BOS_CTR",
                               "initial_speed": 300,
-                              "route": "/ FLOSI4",
+                              "star": "FLOSI4",
                               "speed_restriction": null,
                               "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180"
                             }
@@ -3098,7 +3098,7 @@
                               "descent_issued": true,
                               "initial_controller": "NY_CTR",
                               "initial_speed": 300,
-                              "route": "/ FQM3",
+                              "star": "FQM3",
                               "speed_restriction": null,
                               "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122"
                             }
@@ -3219,7 +3219,7 @@
                               "initial_altitude": 13000,
                               "initial_controller": "BOS_CTR",
                               "initial_speed": 275,
-                              "route": "/. PARCH3",
+                              "star": "PARCH3",
                               "runway_waypoints": {
                                 "22L": "ROBER CRAIL/h302",
                                 "22R": "ROBER CRAIL/h302"
@@ -3251,7 +3251,7 @@
                                 "initial_altitude": 13000,
                                 "initial_controller": "BOS_CTR",
                                 "initial_speed": 275,
-                                "route": "/. ROBER2",
+                                "star": "ROBER2",
                                 "speed_restriction": 250,
                                 "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h276"
                               }
@@ -3331,7 +3331,7 @@
                               "descent_issued": true,
                               "initial_controller": "DC_CTR",
                               "initial_speed": 300,
-                              "route": "/ PHLBO4",
+                              "star": "PHLBO4",
                               "speed_restriction": null,
                               "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
                             }

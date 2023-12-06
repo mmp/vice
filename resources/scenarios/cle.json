@@ -1733,7 +1733,7 @@
                         "initial_altitude": 17000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. BRWNZ4",
+                        "star": "BRWNZ4",
                         "runway_waypoints": {
                             "6L": "BRWNZ/a13000/s280 MAAAK/a9000 KLLAY/a7000 JIIMM/a5000 HICKR/a5000/s210/h241",
                             "6R": "BRWNZ/a13000/s280 MAAAK/a9000 KLLAY/a7000 JIIMM/a5000 HICKR/a5000/s210/h241",
@@ -1790,7 +1790,7 @@
                         "initial_altitude": 17000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. BRWNZ4",
+                        "star": "BRWNZ4",
                         "waypoints": "RDZON/a17000/ho WINNZ/a14000 GOLIC BRWNZ/a13000/s280 TRRKY/a7000 DEEKN/a6000 LLROY/a5000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
                     }
                 ],
@@ -1841,7 +1841,7 @@
                         "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. BRWNZ4",
+                        "star": "BRWNZ4",
                         "waypoints": "RDZON/a17000/ho WINNZ/a14000 GOLIC BRWNZ/a13000/s280 MAAAK/a9000 KLLAY/a7000 JIIMM/a5000 HICKR/a5000/s210 CRTEZ/a3000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                     }
                 ],
@@ -1894,7 +1894,7 @@
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. BRWNZ4",
+                        "star": "BRWNZ4",
                         "scratchpad": "I4R",
                         "waypoints": "QUUBE/a7000/ho DEEKN/a6000 LLROY/a5000/s210/h056"
                     }
@@ -1948,7 +1948,7 @@
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. BRWNZ4",
+                        "star": "BRWNZ4",
                         "scratchpad": "I6L",
                         "waypoints": "KLLAY/a7000 JIIMM/a6000/ho HICKR/a5000/s210/h241"
                     }
@@ -2012,7 +2012,7 @@
                         "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. ROKNN3",
+                        "star": "ROKNN3",
                         "speed_restriction": 280,
                         "runway_waypoints": {
                             "6L": "ROKNN/a14000/s280 DEVOH/a10000 KINCS/a7000 KWENE/a6000/s210 DAYZD/a4000",
@@ -2082,7 +2082,7 @@
                         "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. ROKNN3",
+                        "star": "ROKNN3",
                         "speed_restriction": 280,
                         "waypoints": "HEADZ/a19000/ho ROKNN/a14000/s280 DEVOH/a14000 SEPLN/a9000 CLAPT/a7000/s210  _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
                     }
@@ -2146,7 +2146,7 @@
                         "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. ROKNN3",
+                        "star": "ROKNN3",
                         "speed_restriction": 280,
                         "waypoints": "HEADZ/a19000/ho ROKNN/a14000/s280 DEVOH/a10000 KINCS/a7000 KWENE/a6000/s210 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                     }
@@ -2213,7 +2213,7 @@
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. ROKNN3",
+                        "star": "ROKNN3",
                         "scratchpad": "I4R",
                         "waypoints": "SEPLN/a9000/ho DAHOO/a7000/s210/h058"
                     }
@@ -2280,7 +2280,7 @@
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. ROKNN3",
+                        "star": "ROKNN3",
                         "scratchpad": "I6L",
                         "waypoints": "DEVOH/a9000/ho KINCS/a7000 KWENE/a6000/s210 DAYZD/a4000 BETLL/a2900 "
                     }
@@ -2357,7 +2357,7 @@
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "descent_issued": true,
-                        "route": "/. ROLLN2",
+                        "star": "ROLLN2",
                         "speed_restriction": 280,
                         "runway_waypoints": {
                             "6L": "ROLLN/a15000 STOHN/a10000 LVISS/a9000 NIXXS/a6000 GROHL/a6000/s210/h236",
@@ -2440,7 +2440,7 @@
                         "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. ROLLN2",
+                        "star": "ROLLN2",
                         "speed_restriction": 280,
                         "waypoints": "GEDDY/a21000/s280/ho ROLLN/a15000 STOHN/a14000 MEEAT CLAPT/a7000/s210 _ROLLN2_24R_FINAL SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780"
                     }
@@ -2517,7 +2517,7 @@
                         "descent_issued": true,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
-                        "route": "/. ROLLN2",
+                        "star": "ROLLN2",
                         "speed_restriction": 280,
                         "waypoints": "GEDDY/a21000/s280/ho ROLLN/a15000 STOHN/a10000 LVISS/a9000 NIXXS/a6000 GROHL/a6000/s210 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                     }
@@ -2597,7 +2597,7 @@
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. ROLLN2",
+                        "star": "ROLLN2",
                         "scratchpad": "I4R",
                         "waypoints": "MEEAT/ho CLAPT/a7000/s210/h056"
                     }
@@ -2677,7 +2677,7 @@
                         "initial_controller": "CLE_A_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. ROLLN2",
+                        "star": "ROLLN2",
                         "scratchpad": "I6L",
                         "waypoints": "LVISS/a8000 NIXXS/a6000/ho GROHL/a6000/s210/h236"
                     }
@@ -2737,7 +2737,7 @@
                                     "initial_controller": "CLE_CTR",
                                     "initial_speed": 280,
                                     "descent_issued": true,
-                                    "route": "/. TRYBE4",
+                                    "star": "TRYBE4",
                                     "speed_restriction": 280,
                                     "runway_waypoints": {
                                         "6L": "HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000",
@@ -2803,7 +2803,7 @@
                                                 "initial_controller": "CLE_CTR",
                                                 "initial_speed": 280,
                                                 "descent_issued": true,
-                                                "route": "/. TRYBE4",
+                                                "star": "TRYBE4",
                                                 "speed_restriction": 280,
                                                 "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780"
                                             }
@@ -2863,7 +2863,7 @@
                                                             "initial_controller": "CLE_CTR",
                                                             "descent_issued": true,
                                                             "initial_speed": 280,
-                                                            "route": "/. TRYBE4",
+                                                            "star": "TRYBE4",
                                                             "speed_restriction": 280,
                                                             "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a17000/s280 NAGGY/a10000 CLVTO/a7000 JAAIN/a7000/s210 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                                                         }
@@ -2926,7 +2926,7 @@
                                                 "initial_controller": "CLE_A_APP",
                                                 "initial_speed": 250,
                                                 "speed_restriction": 210,
-                                                "route": "/. TRYBE4",
+                                                "star": "TRYBE4",
                                                 "scratchpad": "I4R",
                                                 "waypoints": "NAGGY/a8000/ho BUDRW/a6000/s250 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000"
                                             }
@@ -2989,7 +2989,7 @@
                                                             "initial_controller": "CLE_A_APP",
                                                             "initial_speed": 250,
                                                             "speed_restriction": 210,
-                                                            "route": "/. TRYBE4",
+                                                            "star": "TRYBE4",
                                                             "scratchpad": "I6L",
                                                             "waypoints": "CLVTO/a9000/ho JAAIN/a7000/s210"
                                                         }

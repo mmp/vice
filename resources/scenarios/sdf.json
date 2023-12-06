@@ -522,7 +522,7 @@
       "initial_altitude": 11000,
       "descent_issued": true,
       "initial_controller": "IND_CTR",
-      "route": "/. DAMEN5",
+      "star": "DAMEN5",
       "runway_waypoints": {
         "17L"  : "DAMEN CAESR HAUGN CURNL/h349",
         "17R":   "DAMEN CAESR HAUGN CURNL/h349",
@@ -566,7 +566,7 @@
       "descent_issued": true,
       "initial_controller" : "CVG_APP",
       "initial_speed": 250,
-      "route": "/. DLAMP6",
+      "star": "DLAMP6",
       "runway_waypoints": {
         "17L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
         "17R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
@@ -605,7 +605,7 @@
       "descent_issued": true,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
-      "route": "/. FRIZN5",
+      "star": "FRIZN5",
       "runway_waypoints": {
         "17L": "HONOS THUND/a5000 RACRR/a4000/h170",
         "17R": "HONOS SPYRS/a4000/h170",
@@ -648,7 +648,7 @@
       "descent_issued": true,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
-      "route": "/. MAUDD6",
+      "star": "MAUDD6",
       "runway_waypoints": {
         "17L": "TUKKR BRELL DLAMP CURRT/h350",
         "17R": "TUKKR BRELL DLAMP CURRT/h350",
@@ -687,7 +687,7 @@
       "descent_issued": true,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
-      "route": "/. MBELL4",
+      "star": "MBELL4",
       "runway_waypoints": {
         "17L": "BRBON BRELL DLAMP CURRT/h350",
         "17R": "BRBON BULCO HAUGN CURNL/h350",

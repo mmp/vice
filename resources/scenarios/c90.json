@@ -2142,7 +2142,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 280,
-                        "route": "/. BENKY6",
+                        "star": "BENKY6",
                         "runway_waypoints": {
                             "9L": "AHSTN/h350",
                             "10L": "AHSTN/h350",
@@ -2220,7 +2220,7 @@
                         "initial_controller": "CHI_X_APP",
                         "initial_speed" : 250,
                         "speed_restriction": 210,
-                        "route": "/. BENKY6",
+                        "star": "BENKY6",
                         "scratchpad": "I8C",
                         "waypoints": "PETAH JORJO/ho MONKZ TONIE/h093"
                     }
@@ -2275,7 +2275,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 250,
-                        "route": "/. ENDEE6",
+                        "star": "ENDEE6",
                         "runway_waypoints": {
                             "4R": "STKNY/a6000 ALQUE/a6000/h047",
                             "13C": "STKNY/a6000 GORLC/h043",
@@ -2308,7 +2308,7 @@
                         "initial_altitude": 14000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. ERNNY8",
+                        "star": "ERNNY8",
                         "runway_waypoints": {
                             "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
                             "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
@@ -2467,7 +2467,7 @@
                         "initial_controller": "CHI_J_APP",
                         "initial_speed": 250,
                         "speed_restriction": 250,
-                        "route": "/. ERNNY8",
+                        "star": "ERNNY8",
                         "scratchpad": "I7C",
                         "waypoints": "ERNNY PAPPI/h160/ho"
                     }
@@ -2522,7 +2522,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
-                        "route": "/. FISSK5",
+                        "star": "FISSK5",
                         "runway_waypoints": {
                             "4R": "HALIE/a6000 OLCYK/a4000/h278",
                             "13C": "HALIE/a6000 OLCYK/a4000 TINLY/h279",
@@ -2593,7 +2593,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. FYTTE7",
+                        "star": "FYTTE7",
                         "runway_waypoints": {
                             "9L": "MADII/h200",
                             "9C": "MADII/h200",
@@ -2675,7 +2675,7 @@
                         "initial_controller": "CHI_Y_APP",
                         "initial_speed": 250,
                         "speed_restriction": 220,
-                        "route": "/. FYTTE7",
+                        "star": "FYTTE7",
                         "scratchpad": "I7R",
                         "waypoints": "SOOLU KURKK/ho VULCN"
                     }
@@ -2743,7 +2743,7 @@
                         "initial_controller": "CHI_Y_APP",
                         "initial_speed": 250,
                         "speed_restriction": 220,
-                        "route": "/. FYTTE7",
+                        "star": "FYTTE7",
                         "scratchpad": "I9L",
                         "waypoints": "COGSS MADII/h200/ho"
                     }
@@ -2790,7 +2790,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
-                        "route": "/. PANGG4",
+                        "star": "PANGG4",
                         "runway_waypoints": {
                             "4R": "HALIE/a6000 OLCYK/a4000/h278",
                             "13C": "HALIE/a6000 OLCYK/a4000 TINLY/a4000/h279",
@@ -2853,7 +2853,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. SHAIN2",
+                        "star": "SHAIN2",
                         "speed_restriction": 250,
                         "waypoints": "TRIDE/a15000/ho SHAIN/a12000 RAGSS JUMPN NUNWS/h072 "
                     }
@@ -2916,7 +2916,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. VEECK5",
+                        "star": "VEECK5",
                         "runway_waypoints": {
                             "9L": "CLUSO KAYTO PINKK VULCN KURKK BAMBB/h270",
                             "9C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
@@ -2996,7 +2996,7 @@
                         "initial_controller": "CHI_E_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. VEECK5",
+                        "star": "VEECK5",
                         "scratchpad": "I8C",
                         "waypoints": "HANNI CLUSO/h015/ho"
                     }
@@ -3071,7 +3071,7 @@
                             "descent_issued": true,
                             "initial_controller": "CHI_81_CTR",
                             "initial_speed": 280,
-                            "route": "/. WATSN4",
+                            "star": "WATSN4",
                             "speed_restriction": 250,
                             "waypoints": "PRISE/ho HULLS/a11000 STYLE DWEEB CENAK/h270"
                         }
@@ -3201,7 +3201,7 @@
                         "descent_issued": true,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. ERNNY8",
+                        "star": "WYNDE2",
                         "runway_waypoints": {
                             "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
                             "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",

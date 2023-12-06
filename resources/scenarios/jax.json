@@ -600,7 +600,7 @@
         "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "/. LUNNI1",
+        "star": "LUNNI1",
         "runway_waypoints": {
           "08": "LUNNI/a10000/s250 SAVAE/a6000 PENSE/a4000/s210 RUMEE/h257",
           "14": "LUNNI/a10000/s250 WADIG/a5000/s230 DEDDA/a3000/s210",
@@ -660,7 +660,7 @@
         "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "/. MARQO2",
+        "star": "MARQO2",
         "runway_waypoints": {
           "08": "COROE/a9000/s250 NATII/a5000/s230 GUTTY/a3000/s210/h103",
           "14": "COROE/a9000/s250 TASCH/a5000 GWIIZ/a5000 DIPDE/a3000/s210 ",
@@ -747,7 +747,7 @@
         "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "/. OHDEA1",
+        "star": "OHDEA1",
         "runway_waypoints": {
           "08": "KIPLE/a10000/s250 KITZO/a5000/s230 CEDOT/a3000/s210/h150",
           "14": "KIPLE MAHKA/a5000/s230 ORTAR/a3000/s210/h145",
@@ -779,7 +779,7 @@
         "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "/. QUBEN1",
+        "star": "QUBEN1",
         "runway_waypoints": {
           "08": "BETLE/a5000/s230 PLANK WADOR/a3000/s210/h346",
           "14": "BETLE/a5000/s230 PLANK EYLND/a4000/s210 KRISO/a3000 DUNTE JAKRU/h317",
@@ -815,7 +815,7 @@
         "descent_issued": true,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "/. TEBOW1",
+        "star": "TEBOW1",
         "runway_waypoints": {
           "08": "TEBOW/a11000 JERZI/a5000/s230 FAROT/a3000/s210/h038",
           "14": "TEBOW/a11000 GRRAS/a6000 KAYEM/a4000/s210 DUNTE JAKRU/h317",
