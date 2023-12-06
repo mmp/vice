@@ -7,6 +7,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 func TestWrapText(t *testing.T) {
@@ -73,39 +75,6 @@ func TestTransientMap(t *testing.T) {
 	}
 }
 
-func TestSliceEqual(t *testing.T) {
-	a := []int{1, 2, 3, 4, 5}
-	b := []int{1, 2, 3, 4, 5}
-	if !SliceEqual(a, b) {
-		t.Errorf("SliceEqual incorrect")
-	}
-
-	b = append(b, 6)
-	if SliceEqual(a, b) {
-		t.Errorf("SliceEqual incorrect")
-	}
-
-	a = append(a, 6)
-	if !SliceEqual(a, b) {
-		t.Errorf("SliceEqual incorrect")
-	}
-
-	a = a[1:]
-	if SliceEqual(a, b) {
-		t.Errorf("SliceEqual incorrect")
-	}
-
-	a = nil
-	if SliceEqual(a, b) {
-		t.Errorf("SliceEqual incorrect")
-	}
-
-	b = nil
-	if !SliceEqual(a, b) {
-		t.Errorf("SliceEqual incorrect")
-	}
-}
-
 func TestMapSlice(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5}
 	b := MapSlice[int, float32](a, func(i int) float32 { return 2 * float32(i) })
@@ -122,23 +91,23 @@ func TestMapSlice(t *testing.T) {
 func TestDeleteSliceElement(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5}
 	a = DeleteSliceElement(a, 2)
-	if !SliceEqual(a, []int{1, 2, 4, 5}) {
+	if !slices.Equal(a, []int{1, 2, 4, 5}) {
 		t.Errorf("Slice element delete incorrect")
 	}
 	a = DeleteSliceElement(a, 3)
-	if !SliceEqual(a, []int{1, 2, 4}) {
+	if !slices.Equal(a, []int{1, 2, 4}) {
 		t.Errorf("Slice element delete incorrect")
 	}
 	a = DeleteSliceElement(a, 0)
-	if !SliceEqual(a, []int{2, 4}) {
+	if !slices.Equal(a, []int{2, 4}) {
 		t.Errorf("Slice element delete incorrect")
 	}
 	a = DeleteSliceElement(a, 1)
-	if !SliceEqual(a, []int{2}) {
+	if !slices.Equal(a, []int{2}) {
 		t.Errorf("Slice element delete incorrect")
 	}
 	a = DeleteSliceElement(a, 0)
-	if !SliceEqual(a, nil) {
+	if !slices.Equal(a, nil) {
 		t.Errorf("Slice element delete incorrect")
 	}
 }
@@ -146,17 +115,17 @@ func TestDeleteSliceElement(t *testing.T) {
 func TestInsertSliceElement(t *testing.T) {
 	a := []int{1, 2, 4, 5}
 	a = InsertSliceElement(a, 2, 3)
-	if !SliceEqual(a, []int{1, 2, 3, 4, 5}) {
+	if !slices.Equal(a, []int{1, 2, 3, 4, 5}) {
 		t.Errorf("Slice insert incorrect: %+v", a)
 	}
 
 	a = InsertSliceElement(a, 0, 0)
-	if !SliceEqual(a, []int{0, 1, 2, 3, 4, 5}) {
+	if !slices.Equal(a, []int{0, 1, 2, 3, 4, 5}) {
 		t.Errorf("Slice insert incorrect: %+v", a)
 	}
 
 	a = InsertSliceElement(a, 6, 6)
-	if !SliceEqual(a, []int{0, 1, 2, 3, 4, 5, 6}) {
+	if !slices.Equal(a, []int{0, 1, 2, 3, 4, 5, 6}) {
 		t.Errorf("Slice insert incorrect: %+v", a)
 	}
 }

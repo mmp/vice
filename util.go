@@ -460,19 +460,6 @@ func InsertSliceElement[V any](s []V, i int, v V) []V {
 	return s
 }
 
-// SliceEqual checks whether two slices are equal.
-func SliceEqual[V comparable](a []V, b []V) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, f := range a {
-		if f != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
 // MapSlice returns the slice that is the result of applying the provided
 // xform function to all of the elements of the given slice.
 func MapSlice[F, T any](from []F, xform func(F) T) []T {
