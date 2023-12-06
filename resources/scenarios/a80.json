@@ -1650,7 +1650,7 @@
           }
         ]
       },
-      "initial_altitude": 13000,
+      "initial_altitude": 14000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "JJEDI3",

@@ -1353,7 +1353,7 @@
                                 ]
                             },
                             "cruise_altitude": 35000,
-                            "initial_altitude": 13000,
+                            "initial_altitude": 18000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "BANKR3",
@@ -1397,7 +1397,7 @@
                                 ]
                             },
                             "cruise_altitude": 35000,
-                            "initial_altitude": 13000,
+                            "initial_altitude": 18000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "BANKR3",
@@ -1714,7 +1714,7 @@
                                 ]
                             },
                             "cruise_altitude": 37000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 23000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "FLIPZ3",
@@ -1779,7 +1779,7 @@
                                 ]
                             },
                             "cruise_altitude": 37000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 23000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "FLIPZ3",
@@ -1837,11 +1837,11 @@
                                 ]
                             },
                             "cruise_altitude": 37000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 20000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "JONZE3",
-                            "waypoints": "CAAKE/a26000/s270 N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a18000/s250 WHYLE/a13000 FREEK/a11000/s250 AAIRE/a9000/s210 JRDEN/a6000/s210/h003"
+                            "waypoints": "CAAKE/a17000-26000/s270 N34.39.58.235,W81.40.33.200/ho JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a9000-11000/s250 AAIRE/a9000/s210 JRDEN/a6000/s210/h003"
                         }
                     ],
                     "JONZE3N": [
@@ -1895,11 +1895,11 @@
                                 ]
                             },
                             "cruise_altitude": 37000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 20000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "JONZE3",
-                            "waypoints": "CAAKE/a26000/s270 N34.39.58.235,W81.40.33.200/a20000/ho JONZE/a14000/s250 DUBBB/a12000 CHELE/a7000/s210/h090"
+                            "waypoints": "CAAKE/a17000-26000/s270 N34.39.58.235,W81.40.33.200/ho JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/h090"
                         }
                     ],
                     "PARQR3S": [
@@ -1957,11 +1957,11 @@
                                 ]
                             },
                             "cruise_altitude": 32000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 22000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "PARQR3",
-                            "waypoints": "SUZNN/a23000/s270 N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 NCOMA/a11000 BOATN/a9000 CAMPR/a9000/s220/h092"
+                            "waypoints": "SUZNN/a19000+/s270 N35.56.19.889,W81.28.07.689/ho PARQR/a12000-20000/s250 NCOMA/a11000-12000 BOATN/a9000-10000 CAMPR/a9000/s220/h092"
                         }
                     ],
                     "PARQR3N": [
@@ -2019,11 +2019,11 @@
                                 ]
                             },
                             "cruise_altitude": 32000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 22000,
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "PARQR3",
-                            "waypoints": "N35.56.19.889,W81.28.07.689/ho PARQR/a17000/s250 PAYKN/a13000 THACK/a12000/s250 BBQEE CEDOX VALLL/a6000/s210/h183"
+                            "waypoints": "SUZNN/a19000+/s270 N35.56.19.889,W81.28.07.689/ho PARQR/a12000-20000/s250 PAYKN/a12000-15000 THACK/a12000/s250 BBQEE CEDOX VALLL/h183"
                         }
                     ],
                     "STOCR3S": [
@@ -2151,7 +2151,7 @@
                                 ]
                             },
                             "cruise_altitude": 32000,
-                            "initial_altitude": 18000,
+                            "initial_altitude": 22000,
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "star": "STOCR3",

@@ -820,7 +820,7 @@
           }
         ]
       },
-      "initial_altitude": 16000,
+      "initial_altitude": 20000,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
       "star": "FRDMM5",
@@ -870,7 +870,7 @@
           }
         ]
       },
-      "initial_altitude": 16000,
+      "initial_altitude": 18000,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
       "star": "TRUPS4",

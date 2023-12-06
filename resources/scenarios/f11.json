@@ -3728,7 +3728,7 @@
             }
           ]
         },
-        "initial_altitude": 11000,
+        "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 290,
         "star": "GRNCH4",
@@ -6012,7 +6012,7 @@
             }
           ]
         },
-        "initial_altitude": 13000,
+        "initial_altitude": 19000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
@@ -6217,7 +6217,7 @@
             }
           ]
         },
-        "initial_altitude": 13000,
+        "initial_altitude": 19000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
@@ -6412,7 +6412,7 @@
             }
           ]
         },
-        "initial_altitude": 13000,
+        "initial_altitude": 19000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
@@ -6609,7 +6609,7 @@
         },
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
-        "initial_altitude": 7000,
+        "initial_altitude": 8000,
         "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
@@ -6959,7 +6959,7 @@
             }
           ]
         },
-        "initial_altitude": 11000,
+        "initial_altitude": 15000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
@@ -7035,7 +7035,7 @@
             }
           ]
         },
-        "initial_altitude": 11000,
+        "initial_altitude": 15000,
         "initial_controller": "MIA_46_CTR",
         "initial_speed": 280,
         "star": "RIDES2",

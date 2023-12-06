@@ -2138,7 +2138,7 @@
                                 }
                             ]
                         },
-                        "initial_altitude": 13000,
+                        "initial_altitude": 20000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 280,
                         "star": "BENKY6",

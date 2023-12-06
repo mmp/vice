@@ -2965,7 +2965,7 @@
                                                 },
                                                             "cruise_altitude": 350000,
                                                             "expect_approach": "I6L",
-                                                            "initial_altitude": 8000,
+                                                            "initial_altitude": 9000,
                                                             "initial_controller": "CLE_A_APP",
                                                             "initial_speed": 250,
                                                             "speed_restriction": 210,

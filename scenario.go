@@ -668,6 +668,15 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 			if ar.InitialAltitude == 0 {
 				e.ErrorString("must specify \"initial_altitude\"")
+			} else {
+				// Make sure the initial altitude isn't below any of
+				// altitude restrictions.
+				for _, wp := range ar.Waypoints {
+					if wp.AltitudeRestriction != nil &&
+						wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
+						e.ErrorString("\"initial_altitude\" is below altitude restriction at \"%s\"", wp.Fix)
+					}
+				}
 			}
 
 			if ar.InitialController == "" {

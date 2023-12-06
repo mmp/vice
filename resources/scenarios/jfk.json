@@ -2174,9 +2174,9 @@
             }
           ]
         },
-        "assigned_altitude": 10000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 16000,
-        "initial_altitude": 9000,
+        "initial_altitude": 10000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. DPK",

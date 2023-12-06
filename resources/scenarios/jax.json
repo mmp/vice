@@ -772,7 +772,7 @@
             }
           ]
         },
-        "initial_altitude": 15000,
+        "initial_altitude": 16000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "star": "QUBEN1",
@@ -807,7 +807,7 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "star": "TEBOW1",
