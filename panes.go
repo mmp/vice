@@ -8,9 +8,9 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -410,7 +410,12 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 			if ac, ok := w.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == w.Callsign {
 					possiblyAdd(ac)
-				} else if fsp.AutoRemoveHandoffs && ac.TrackingController != w.Callsign {
+				}
+			}
+
+		case HandoffControllEvent:
+			if ac, ok := w.Aircraft[event.Callsign]; ok {
+				if fsp.AutoRemoveHandoffs && ac.TrackingController != w.Callsign {
 					remove(event.Callsign)
 				}
 			}
@@ -790,7 +795,6 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
-	lastFlash      time.Time
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -934,9 +938,8 @@ func (mp *MessagesPane) processEvents(w *World) {
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
 			start := max(0, n-5)
-			if idx := FindIf(mp.messages[start:], func(m Message) bool {
-				return m.contents == event.Message
-			}); idx == -1 {
+			if !slices.ContainsFunc(mp.messages[start:],
+				func(m Message) bool { return m.contents == event.Message }) {
 				mp.messages = append(mp.messages,
 					Message{
 						contents: event.Message,

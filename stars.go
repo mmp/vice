@@ -18,6 +18,7 @@ import (
 	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 )
 
 // IFR TRACON separation requirements
@@ -118,8 +119,6 @@ type STARSPane struct {
 	lastTrackUpdate time.Time
 	discardTracks   bool
 
-	LastCASoundTime time.Time
-
 	drawApproachAirspace  bool
 	drawDepartureAirspace bool
 
@@ -143,13 +142,13 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraf
 	p0, p1 = rbl.P[0].Loc, rbl.P[1].Loc
 	if ac := ctx.world.Aircraft[rbl.P[0].Callsign]; ac != nil {
 		state, ok := sp.Aircraft[ac.Callsign]
-		if ok && !state.LostTrack(ctx.world.CurrentTime()) && Find(aircraft, ac) != -1 {
+		if ok && !state.LostTrack(ctx.world.CurrentTime()) && slices.Contains(aircraft, ac) {
 			p0 = state.TrackPosition()
 		}
 	}
 	if ac := ctx.world.Aircraft[rbl.P[1].Callsign]; ac != nil {
 		state, ok := sp.Aircraft[ac.Callsign]
-		if ok && !state.LostTrack(ctx.world.CurrentTime()) && Find(aircraft, ac) != -1 {
+		if ok && !state.LostTrack(ctx.world.CurrentTime()) && slices.Contains(aircraft, ac) {
 			p1 = state.TrackPosition()
 		}
 	}
@@ -1143,7 +1142,7 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case OfferedHandoffEvent:
 			if event.ToController == w.Callsign {
-				globalConfig.Audio.PlaySound(AudioEventInboundHandoff)
+				globalConfig.Audio.PlayOnce(AudioInboundHandoff)
 			}
 
 		case AcceptedHandoffEvent:
@@ -1153,7 +1152,6 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-					globalConfig.Audio.PlaySound(AudioEventHandoffAccepted)
 				}
 			}
 
@@ -1322,6 +1320,13 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
 	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
+
+	// Play the CA sound if any CAs are unacknowledged
+	if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
+		globalConfig.Audio.StartPlayContinuous(AudioConflictAlert)
+	} else {
+		globalConfig.Audio.StopPlayContinuous(AudioConflictAlert)
+	}
 
 	// Do this at the end of drawing so that we hold on to the tracks we
 	// have for rendering the current frame.
@@ -1689,7 +1694,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				acCmds := strings.Join(f[1:], " ")
 				ctx.world.RunAircraftCommands(ac, acCmds,
 					func(err error) {
-						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						globalConfig.Audio.PlayOnce(AudioCommandError)
 						sp.previewAreaOutput = GetSTARSError(err).Error()
 					})
 
@@ -2217,10 +2222,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						// Toggle
 						match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
 						matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-						if idx := FindIf(ps.QuickLookPositions, match); idx != -1 {
+						if slices.ContainsFunc(ps.QuickLookPositions, match) {
 							nomatch := func(q QuickLookPosition) bool { return !match(q) }
 							ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-						} else if idx := FindIf(ps.QuickLookPositions, matchId); idx != -1 {
+						} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
 							// Toggle plus
 							ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
 						} else {
@@ -2746,7 +2751,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		case CommandModeNone:
 			switch len(cmd) {
 			case 0:
-				if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool {
+				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
 				}) {
@@ -2985,7 +2990,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if len(cmd) > 0 {
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
-						globalConfig.Audio.PlaySound(AudioEventCommandError)
+						globalConfig.Audio.PlayOnce(AudioCommandError)
 						sp.previewAreaOutput = GetSTARSError(err).Error()
 					})
 
@@ -4321,8 +4326,8 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 	ps := sp.CurrentPreferenceSet
 	if ps.QuickLookAll {
 		dt = FullDatablock
-	} else if idx := FindIf(ps.QuickLookPositions,
-		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }); idx != -1 {
+	} else if slices.ContainsFunc(ps.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }) {
 		dt = FullDatablock
 	}
 
@@ -4752,8 +4757,8 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 
 	// Remove ones that are no longer visible
 	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
-		return AnySlice(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
-			AnySlice(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
+		return slices.ContainsFunc(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
+			slices.ContainsFunc(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
 	})
 
 	// Add new conflicts; by appending we keep them sorted by when they
@@ -4762,7 +4767,7 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 	for i, callsign := range callsigns {
 		for _, ocs := range callsigns[i+1:] {
 			if conflicting(callsign, ocs) {
-				if !AnySlice(sp.CAAircraft, func(ca CAAircraft) bool {
+				if !slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return callsign == ca.Callsigns[0] && ocs == ca.Callsigns[1]
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
@@ -4770,14 +4775,6 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 					})
 				}
 			}
-		}
-	}
-
-	// Play the sound if any are unacknowledged and it has been 2s since the last sound
-	if now := w.CurrentTime(); now.Sub(sp.LastCASoundTime) > 2*time.Second {
-		if AnySlice(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
-			globalConfig.Audio.PlaySound(AudioEventConflictAlert)
-			sp.LastCASoundTime = now
 		}
 	}
 }
@@ -4795,7 +4792,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		errs = append(errs, "MI")
 	}
-	if AnySlice(sp.CAAircraft,
+	if slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
 	}
@@ -5013,8 +5010,8 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 		// quick look all plus
 		return br.ScaleRGB(STARSTrackedAircraftColor)
-	} else if idx := FindIf(ps.QuickLookPositions,
-		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }); idx != -1 {
+	} else if slices.ContainsFunc(ps.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }) {
 		// individual quicklook plus controller
 		return br.ScaleRGB(STARSTrackedAircraftColor)
 	}
@@ -5240,7 +5237,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			if wp.Callsign != "" {
 				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
-					Find(aircraft, ac) != -1 {
+					slices.Contains(aircraft, ac) {
 					if state, ok := sp.Aircraft[wp.Callsign]; ok {
 						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
 					}

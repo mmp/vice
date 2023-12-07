@@ -47,6 +47,7 @@ type Aircraft struct {
 	DepartureContactController string
 
 	// Arrival-related state
+	STAR              string
 	GoAroundDistance  *float32
 	ArrivalGroup      string
 	ArrivalGroupIndex int
@@ -225,13 +226,13 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmiss
 func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
 	hdg := NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnLeft)
-	return ac.readback(Sample([]string{"turn %d degrees left", "%d to the left"}), deg)
+	return ac.readback(Sample("turn %d degrees left", "%d to the left"), deg)
 }
 
 func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
 	hdg := NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnRight)
-	return ac.readback(Sample([]string{"turn %d degrees right", "%d to the right"}), deg)
+	return ac.readback(Sample("turn %d degrees right", "%d to the right"), deg)
 }
 
 func (ac *Aircraft) FlyPresentHeading() []RadioTransmission {
@@ -351,6 +352,7 @@ func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {
 func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	arrivalGroupIndex int, arrivalHandoffController string, goAround bool) error {
 	arr := &w.ArrivalGroups[arrivalGroup][arrivalGroupIndex]
+	ac.STAR = arr.STAR
 	ac.ArrivalGroup = arrivalGroup
 	ac.ArrivalGroupIndex = arrivalGroupIndex
 	ac.Scratchpad = arr.Scratchpad
@@ -370,7 +372,11 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 	if ac.FlightPlan.Altitude == 0 { // unspecified
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan, perf)
 	}
-	ac.FlightPlan.Route = arr.Route
+	if arr.Route != "" {
+		ac.FlightPlan.Route = arr.Route
+	} else {
+		ac.FlightPlan.Route = "/. " + arr.STAR
+	}
 
 	if goAround {
 		d := 0.1 + .6*rand.Float32()
@@ -397,7 +403,11 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
-	ac.FlightPlan.Route = exitRoute.InitialRoute + " " + dep.Route
+	if exitRoute.SID != "" {
+		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
+	} else {
+		ac.FlightPlan.Route = dep.Route
+	}
 
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
@@ -434,7 +444,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 		// human controller will be first
 		ctrl := w.PrimaryController
 		if w.MultiControllers != nil {
-			ctrl = w.MultiControllers.GetDepartureController(departureAirport, runway)
+			ctrl = w.MultiControllers.GetDepartureController(departureAirport, exitRoute.SID)
 			if ctrl == "" {
 				ctrl = w.PrimaryController
 			}

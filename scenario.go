@@ -20,6 +20,7 @@ import (
 
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -48,8 +49,8 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude     float32 `json:"nm_per_latitude"`
-	NmPerLongitude    float32 `json:"nm_per_longitude"`
+	NmPerLatitude     float32 // Always 60
+	NmPerLongitude    float32 // Derived from Center
 	MagneticVariation float32 `json:"magnetic_variation"`
 }
 
@@ -63,10 +64,11 @@ type Arrival struct {
 	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
 	CruiseAltitude  float32                  `json:"cruise_altitude"`
 	Route           string                   `json:"route"`
+	STAR            string                   `json:"star"`
 
 	InitialController   string  `json:"initial_controller"`
 	InitialAltitude     float32 `json:"initial_altitude"`
-	ClearedAltitude     float32 `json:"cleared_altitude"`
+	AssignedAltitude    float32 `json:"assigned_altitude"`
 	InitialSpeed        float32 `json:"initial_speed"`
 	SpeedRestriction    float32 `json:"speed_restriction"`
 	ExpectApproach      string  `json:"expect_approach"`
@@ -230,6 +232,26 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.ErrorString("controller \"%s\" for \"solo_controller\" is unknown", s.SoloController)
 	}
 
+	// Figure out which airports and SIDs are used in the scenario.
+	activeAirportSIDs := make(map[string]map[string]interface{})
+	for _, rwy := range s.DepartureRunways {
+		if ap, ok := sg.Airports[rwy.Airport]; ok && ap.DepartureController != "" {
+			// If a virtual controller will take the initial track then
+			// we don't need a human-controller to be covering it.
+			continue
+		}
+
+		ap := sg.Airports[rwy.Airport]
+		for fix, route := range rwy.ExitRoutes {
+			if rwy.Category == "" || ap.ExitCategories[fix] == rwy.Category {
+				if activeAirportSIDs[rwy.Airport] == nil {
+					activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
+				}
+				activeAirportSIDs[rwy.Airport][route.SID] = nil
+			}
+		}
+	}
+
 	// Various multi_controllers validations
 	if len(s.SplitConfigurations) > 0 {
 		if len(s.SplitConfigurations) == 1 && s.DefaultSplit == "" {
@@ -259,21 +281,13 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			}
 
 			// Make sure any airports claimed for departures are valid
-			for _, airportRunway := range ctrl.Departures {
-				ap, rwy, ok := strings.Cut(airportRunway, "/")
-				if !ok { // no runway specified; take all runways
-					pred := func(r ScenarioGroupDepartureRunway) bool {
-						return r.Airport == ap
-					}
-					if FindIf(s.DepartureRunways, pred) == -1 {
-						e.ErrorString("airport \"%s\" is not departing aircraft in this scenario", ap)
-					}
-				} else {
-					pred := func(r ScenarioGroupDepartureRunway) bool {
-						return r.Airport == ap && r.Runway == rwy
-					}
-					if FindIf(s.DepartureRunways, pred) == -1 {
-						e.ErrorString("runway \"%s\" at airport \"%s\" is not departing aircraft in this scenario", rwy, ap)
+			for _, airportSID := range ctrl.Departures {
+				ap, sid, haveSID := strings.Cut(airportSID, "/")
+				if sids, ok := activeAirportSIDs[ap]; !ok {
+					e.ErrorString("airport \"%s\" is not departing aircraft in this scenario", ap)
+				} else if haveSID {
+					if _, ok := sids[sid]; !ok {
+						e.ErrorString("SID \"%s\" at airport \"%s\" is not active in this scenario", sid, ap)
 					}
 				}
 			}
@@ -291,28 +305,23 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.ErrorString("No controller in \"multi_controllers\" was specified as \"primary\"")
 		}
 
-		// Make sure each active departing airport runway has exactly one
-		// controller handling its departures.
-		for _, r := range s.DepartureRunways {
-			if ap, ok := sg.Airports[r.Airport]; ok && ap.DepartureController != "" {
-				// If a virtual controller will take the initial track then
-				// we don't need a human-controller to be covering it.
-				continue
-			}
-
-			controller := ""
-			for callsign, ctrl := range controllers {
-				if ctrl.IsDepartureController(r.Airport, r.Runway) {
-					if controller != "" {
-						e.ErrorString("both \"%s\" and \"%s\" expect to handle %s/%s departures",
-							controller, callsign, r.Airport, r.Runway)
+		// Make sure each active departure config (airport and possibly
+		// SID) has exactly one controller handling its departures.
+		for airport, sids := range activeAirportSIDs {
+			for sid := range sids {
+				controller := ""
+				for callsign, ctrl := range controllers {
+					if ctrl.IsDepartureController(airport, sid) {
+						if controller != "" {
+							e.ErrorString("both \"%s\" and \"%s\" expect to handle %s/%s departures",
+								controller, callsign, airport, sid)
+						}
+						controller = callsign
 					}
-					controller = callsign
 				}
-			}
-			if controller == "" {
-				e.ErrorString("no controller found that is covering %s/%s departures",
-					r.Airport, r.Runway)
+				if controller == "" {
+					e.ErrorString("no controller found that is covering %s/%s departures", airport, sid)
+				}
 			}
 		}
 
@@ -385,7 +394,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.Push("\"multi_controllers\": split \"" + split + "\"")
 				count := 0
 				for _, mc := range controllers {
-					if idx := Find(mc.Arrivals, name); idx != -1 {
+					if slices.Contains(mc.Arrivals, name) {
 						count++
 					}
 				}
@@ -418,8 +427,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.ErrorString("must specify at least one default video map using \"default_maps\"")
 	} else {
 		for _, dm := range s.DefaultMaps {
-			idx := FindIf(sg.STARSMaps, func(m STARSMap) bool { return m.Name == dm })
-			if idx == -1 {
+			if !slices.ContainsFunc(sg.STARSMaps, func(m STARSMap) bool { return m.Name == dm }) {
 				e.ErrorString("video map \"%s\" not found in \"stars_maps\"", dm)
 			}
 		}
@@ -456,6 +464,17 @@ var (
 
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
 	// Do these first!
+	if sg.CenterString == "" {
+		e.ErrorString("No \"center\" specified")
+	} else if pos, ok := sg.locate(sg.CenterString); !ok {
+		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
+	} else {
+		sg.Center = pos
+	}
+
+	sg.NmPerLatitude = 60
+	sg.NmPerLongitude = 60 * cos(radians(sg.Center[1]))
+
 	sg.Fixes = make(map[string]Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
 		loc, _ := sg.FixesStrings.Get(fix)
@@ -556,14 +575,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Pop()
 	}
 
-	if sg.CenterString == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.locate(sg.CenterString); !ok {
-		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
-	} else {
-		sg.Center = pos
-	}
-
 	if sg.Range == 0 {
 		sg.Range = 50
 	}
@@ -594,11 +605,16 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		}
 
 		for _, ar := range arrivals {
-			if ar.Route == "" {
-				e.ErrorString("\"route\" not specified")
+			if ar.Route == "" && ar.STAR == "" {
+				e.ErrorString("neither \"route\" nor \"star\" specified")
+				continue
 			}
 
-			e.Push("Route " + ar.Route)
+			if ar.Route != "" {
+				e.Push("Route " + ar.Route)
+			} else {
+				e.Push("Route " + ar.STAR)
+			}
 
 			if len(ar.Waypoints) < 2 {
 				e.ErrorString("must provide at least two \"waypoints\" for approach " +
@@ -648,6 +664,19 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				}
 
 				e.Pop()
+			}
+
+			if ar.InitialAltitude == 0 {
+				e.ErrorString("must specify \"initial_altitude\"")
+			} else {
+				// Make sure the initial altitude isn't below any of
+				// altitude restrictions.
+				for _, wp := range ar.Waypoints {
+					if wp.AltitudeRestriction != nil &&
+						wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
+						e.ErrorString("\"initial_altitude\" is below altitude restriction at \"%s\"", wp.Fix)
+					}
+				}
 			}
 
 			if ar.InitialController == "" {
@@ -867,17 +896,16 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	}
 
-	referenced, ok := referencedVideoMaps[path]
-	if !ok {
-		panic(path)
+	if referenced, ok := referencedVideoMaps[path]; !ok {
+		fmt.Printf("%s: video map not used in any scenarios\n", path)
+	} else {
+		lvm.commandBufs, err = loadVideoMapFile(r, referenced)
+		if err != nil {
+			lvm.err = err
+			result <- lvm
+			return
+		}
 	}
-	lvm.commandBufs, err = loadVideoMapFile(r, referenced)
-	if err != nil {
-		lvm.err = err
-		result <- lvm
-		return
-	}
-
 	lg.Infof("%s: video map loaded in %s\n", path, time.Since(start))
 
 	result <- lvm
@@ -984,7 +1012,6 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			advance()
 		}
 		return true
-		return tryChar('n') && tryChar('u') && tryChar('l') && tryChar('l')
 	}
 
 	m := make(map[string]CommandBuffer)
@@ -1086,7 +1113,9 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 			break
 		}
 	}
-	expect('}')
+	if err := expect('}'); err != nil {
+		return nil, err
+	}
 
 	if check && len(checkJSONMaps) > 0 {
 		var s []string
@@ -1186,42 +1215,49 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		return nil
 	})
 	if err != nil {
-		lg.Errorf("error walking scenarios: %v", err)
-		os.Exit(1)
+		e.Error(err)
+	}
+	if e.HaveErrors() {
+		// Don't keep going since we'll likely crash in the following
+		return nil, nil
 	}
 
 	// Load the scenario specified on command line, if any.
-	loadScenario := func(filename string) {
-		if filename != "" {
-			fs := func() fs.FS {
-				if filepath.IsAbs(filename) {
-					return RootFS{}
-				} else {
-					return os.DirFS(".")
-				}
-			}()
-			s := loadScenarioGroup(fs, filename, e)
-			if s != nil {
-				// These may have an empty "video_map_file" member, which
-				// is automatically patched up here...
-				if s.VideoMapFile == "" {
+	if *scenarioFilename != "" {
+		fs := func() fs.FS {
+			if filepath.IsAbs(*scenarioFilename) {
+				return RootFS{}
+			} else {
+				return os.DirFS(".")
+			}
+		}()
+		s := loadScenarioGroup(fs, *scenarioFilename, e)
+		if s != nil {
+			// These are allowed to redefine an existing scenario.
+			if scenarioGroups[s.TRACON] == nil {
+				scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
+			}
+			scenarioGroups[s.TRACON][s.Name] = s
+
+			// These may have an empty "video_map_file" member, which
+			// is automatically patched up here...
+			if s.VideoMapFile == "" {
+				if *videoMapFilename != "" {
 					s.VideoMapFile = *videoMapFilename
-
-					if s.VideoMapFile == "" {
-						e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
-							filename)
-					}
+				} else {
+					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+						*scenarioFilename)
 				}
+			}
 
-				// These are allowed to redefine an existing scenario.
-				if scenarioGroups[s.TRACON] == nil {
-					scenarioGroups[s.TRACON] = make(map[string]*ScenarioGroup)
-				}
-				scenarioGroups[s.TRACON][s.Name] = s
+			if referencedVideoMaps[s.VideoMapFile] == nil {
+				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			}
+			for _, m := range s.STARSMaps {
+				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
 			}
 		}
 	}
-	loadScenario(*scenarioFilename)
 
 	// Next load the video maps.
 	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
@@ -1270,20 +1306,17 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	lg.Infof("video map load time: %s\n", time.Since(start))
 
 	// Load the video map specified on the command line, if any.
-	loadVid := func(filename string) {
-		if filename != "" {
-			fs := func() fs.FS {
-				if filepath.IsAbs(filename) {
-					return RootFS{}
-				} else {
-					return os.DirFS(".")
-				}
-			}()
-			loadVideoMaps(fs, filename, referencedVideoMaps, vmChan)
-			receiveLoadedVideoMap()
-		}
+	if *videoMapFilename != "" {
+		fs := func() fs.FS {
+			if filepath.IsAbs(*videoMapFilename) {
+				return RootFS{}
+			} else {
+				return os.DirFS(".")
+			}
+		}()
+		loadVideoMaps(fs, *videoMapFilename, referencedVideoMaps, vmChan)
+		receiveLoadedVideoMap()
 	}
-	loadVid(*videoMapFilename)
 
 	// Final tidying before we return the loaded scenarios.
 	for tname, tracon := range scenarioGroups {
@@ -1432,28 +1465,28 @@ func (sc SplitConfiguration) GetArrivalController(arrivalGroup string) string {
 	return ""
 }
 
-func (sc SplitConfiguration) GetDepartureController(airport, runway string) string {
+func (sc SplitConfiguration) GetDepartureController(airport, sid string) string {
 	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, runway) {
+		if ctrl.IsDepartureController(airport, sid) {
 			return callsign
 		}
 	}
 
-	lg.Error(airport+"/"+runway+": couldn't find departure controller", slog.Any("config", sc))
+	lg.Error(airport+"/"+sid+": couldn't find departure controller", slog.Any("config", sc))
 	return ""
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // MultiUserController
 
-func (c *MultiUserController) IsDepartureController(ap, rwy string) bool {
+func (c *MultiUserController) IsDepartureController(ap, sid string) bool {
 	for _, d := range c.Departures {
-		depAirport, depRunway, ok := strings.Cut(d, "/")
-		if ok { // have a runway
-			if ap == depAirport && rwy == depRunway {
+		depAirport, depSID, ok := strings.Cut(d, "/")
+		if ok { // have a SID
+			if ap == depAirport && sid == depSID {
 				return true
 			}
-		} else { // no runway, only match airport
+		} else { // no SID, only match airport
 			if ap == depAirport {
 				return true
 			}
@@ -1463,5 +1496,5 @@ func (c *MultiUserController) IsDepartureController(ap, rwy string) bool {
 }
 
 func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
-	return Find(c.Arrivals, arrivalGroup) != -1
+	return slices.Contains(c.Arrivals, arrivalGroup)
 }

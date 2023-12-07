@@ -25,7 +25,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 8
+const ViceRPCVersion = 9
 
 type SimServer struct {
 	*RPCClient
@@ -271,6 +271,10 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrNoController
 		}
 
+		if sim.RequirePassword && config.RemoteSimPassword != sim.Password {
+			return ErrInvalidPassword
+		}
+
 		world, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
 		if err != nil {
 			return err
@@ -373,6 +377,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			GroupName:          s.ScenarioGroup,
 			ScenarioName:       s.Scenario,
 			PrimaryController:  s.World.PrimaryController,
+			RequirePassword:    s.RequirePassword,
 			AvailablePositions: make(map[string]struct{}),
 			CoveredPositions:   make(map[string]struct{}),
 		}

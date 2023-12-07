@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net/rpc"
 	"runtime"
 	"sort"
 	"strings"
@@ -224,19 +225,23 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 }
 
 type NewSimConfiguration struct {
-	TRACONName     string
-	TRACON         map[string]*SimConfiguration
-	GroupName      string
-	Scenario       *SimScenarioConfiguration
-	ScenarioName   string
-	selectedServer *SimServer
-	NewSimName     string // for create remote only
-	NewSimType     int
+	TRACONName      string
+	TRACON          map[string]*SimConfiguration
+	GroupName       string
+	Scenario        *SimScenarioConfiguration
+	ScenarioName    string
+	selectedServer  *SimServer
+	NewSimName      string // for create remote only
+	RequirePassword bool   // for create remote only
+	Password        string // for create remote only
+	NewSimType      int
 
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
-	lastRemoteSimsUpdate      time.Time
-	updateRemoteSimsCall      *PendingCall
+	RemoteSimPassword         string // for join remote only
+
+	lastRemoteSimsUpdate time.Time
+	updateRemoteSimsCall *PendingCall
 
 	displayError error
 }
@@ -245,6 +250,7 @@ type RemoteSim struct {
 	GroupName          string
 	ScenarioName       string
 	PrimaryController  string
+	RequirePassword    bool
 	AvailablePositions map[string]struct{}
 	CoveredPositions   map[string]struct{}
 }
@@ -437,6 +443,17 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				imgui.Text(FontAwesomeIconExclamationTriangle)
 				imgui.PopStyleColor()
 			}
+
+			imgui.Checkbox("Require Password", &c.RequirePassword)
+			if c.RequirePassword {
+				imgui.InputTextV("Password", &c.Password, 0, nil)
+				if c.Password == "" {
+					imgui.SameLine()
+					imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
+					imgui.Text(FontAwesomeIconExclamationTriangle)
+					imgui.PopStyleColor()
+				}
+			}
 		}
 
 		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
@@ -497,7 +514,8 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Text("Available simulations:")
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingFixedFit
-		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{tableScale * 700, 0}, 0.) {
+		if imgui.BeginTableV("simulation", 4, flags, imgui.Vec2{tableScale * 700, 0}, 0.) {
+			imgui.TableSetupColumn("") // lock
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Configuration")
 			imgui.TableSetupColumn("Controllers")
@@ -512,6 +530,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 				imgui.PushID(simName)
 				imgui.TableNextRow()
+				imgui.TableNextColumn()
+
+				// Indicate if a password is required
+				if rs.RequirePassword {
+					imgui.Text(FontAwesomeIconLock)
+				}
 				imgui.TableNextColumn()
 
 				selected := simName == c.SelectedRemoteSim
@@ -563,21 +587,28 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 			imgui.EndCombo()
 		}
+		if rs.RequirePassword {
+			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
+		}
 	}
 
 	return false
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
-	return c.NewSimType == NewSimCreateRemote && c.NewSimName == ""
+	return c.NewSimType == NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
 }
 
 func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
 	if err := c.selectedServer.CallWithTimeout("SimManager.New", c, &result); err != nil {
-		// Problem with the connection to the remote server? Let the main
-		// loop try to reconnect.
-		remoteServer = nil
+		err = TryDecodeError(err)
+
+		if err == ErrRPCTimeout || err == ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
+			// Problem with the connection to the remote server? Let the main
+			// loop try to reconnect.
+			remoteServer = nil
+		}
 
 		return err
 	}
@@ -634,6 +665,9 @@ type Sim struct {
 	TotalArrivals   int
 
 	ReportingPoints []ReportingPoint
+
+	RequirePassword bool
+	Password        string
 
 	lastSimUpdate time.Time
 
@@ -699,6 +733,9 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		lastDeparture: make(map[string]map[string]map[string]*Departure),
 
 		ReportingPoints: sg.ReportingPoints,
+
+		Password:        ssc.Password,
+		RequirePassword: ssc.RequirePassword,
 
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
@@ -1274,10 +1311,10 @@ func (s *Sim) updateState() {
 				ac.DepartureContactAltitude = 0
 
 				// Only after we're on frequency can the controller start
-				// issuing control commands..
-				if ac.TrackingController == ctrl {
-					ac.ControllingController = ctrl
-				}
+				// issuing control commands.. (Note that track may have
+				// already been handed off to the next controller at this
+				// point.)
+				ac.ControllingController = ctrl
 			}
 
 			// Cull far-away departures/arrivals
@@ -1802,8 +1839,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			var radioTransmissions []RadioTransmission
 			if octrl := s.World.GetController(ac.TrackingController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
-				bye := Sample([]string{"good day", "seeya"})
-				contact := Sample([]string{"contact ", "over to ", ""})
+				bye := Sample("good day", "seeya")
+				contact := Sample("contact ", "over to ", "")
 				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
 				radioTransmissions = append(radioTransmissions, RadioTransmission{
 					Controller: ac.ControllingController,
@@ -1822,6 +1859,13 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 					Type:       RadioTransmissionReadback,
 				})
 			}
+
+			s.eventStream.Post(Event{
+				Type:           HandoffControllEvent,
+				FromController: ac.ControllingController,
+				ToController:   ac.TrackingController,
+				Callsign:       ac.Callsign,
+			})
 
 			ac.ControllingController = ac.TrackingController
 

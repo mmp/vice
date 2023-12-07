@@ -5,7 +5,7 @@
             "name": "LaGuardia",
               "approaches": {
                 "I4": {
-                  "full_name": "ILS 4",
+                  "full_name": "ILS Runway 4",
                   "runway": "4",
                   "type": "ILS",
                   "waypoints": [
@@ -13,7 +13,7 @@
                   ]
                 },
                 "I22": {
-                  "full_name": "ILS 22",
+                  "full_name": "ILS Runway 22",
                   "runway": "22",
                   "type": "ILS",
                   "waypoints": [
@@ -21,7 +21,7 @@
                   ]
                 },
                 "I13": {
-                  "full_name": "ILS 13",
+                  "full_name": "ILS Runway 13",
                   "runway": "13",
                   "type": "ILS",
                   "waypoints": [
@@ -29,7 +29,7 @@
                   ]
                 },
                 "R31": {
-                  "full_name": "RNAV X-Ray 31",
+                  "full_name": "RNAV X Runway 31",
                   "runway": "31",
                   "type": "RNAV",
                   "waypoints": [
@@ -37,7 +37,7 @@
                   ]
                 },
                 "PVA": {
-                  "full_name": "Park Visual 31",
+                  "full_name": "Park Visual Runway 31",
                   "runway": "31",
                   "type": "Visual",
                   "waypoints": [
@@ -49,31 +49,31 @@
                 "4": {
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
                     "cleared_altitude": 5000,
-                    "route": "LGA7",
+                    "sid": "LGA7",
                     "waypoints": "_LGA_4 _LGA_22/h360"
                   },
                   "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
                     "cleared_altitude": 5000,
-                    "route": "LGA7",
+                    "sid": "LGA7",
                     "waypoints": "_LGA_4 _LGA_22/h40"
                   }
                 },
                 "31": {
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
                     "cleared_altitude": 5000,
-                    "route": "LGA7",
+                    "sid": "LGA7",
                     "waypoints": "_LGA_31 _LGA_13/h340"
                   },
                   "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
                     "cleared_altitude": 5000,
-                    "route": "LGA7",
+                    "sid": "LGA7",
                     "waypoints": "_LGA_31 _LGA_13/h360"
                   }
                 },
                 "13": {
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                     "cleared_altitude": 5000,
-                    "route": "TNNIS6",
+                    "sid": "TNNIS6",
                     "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES TNNIS/h045"
                   }
                 }
@@ -395,7 +395,7 @@
                 "name": "Newark",
                 "approaches": {
                   "I11": {
-                    "full_name": "ILS 11",
+                    "full_name": "ILS Runway 11",
                     "runway": "11",
                     "type": "ILS",
                     "waypoints": [
@@ -403,7 +403,7 @@
                     ]
                   },
                   "I2L": {
-                    "full_name": "ILS 22 Left",
+                    "full_name": "ILS Runway 22 Left",
                     "runway": "22L",
                     "type": "ILS",
                     "waypoints": [
@@ -411,7 +411,7 @@
                     ]
                   },
                   "I2R": {
-                    "full_name": "ILS 22 Right",
+                    "full_name": "ILS Runway 22 Right",
                     "runway": "22R",
                     "type": "ILS",
                     "waypoints": [
@@ -419,7 +419,7 @@
                     ]
                   },
                   "I4L": {
-                    "full_name": "ILS 4 Left",
+                    "full_name": "ILS Runway 4 Left",
                     "runway": "4L",
                     "type": "ILS",
                     "waypoints": [
@@ -427,7 +427,7 @@
                     ]
                   },
                   "I4R": {
-                    "full_name": "ILS 4 Right",
+                    "full_name": "ILS Runway 4 Right",
                     "runway": "4R",
                     "type": "ILS",
                     "waypoints": [
@@ -435,7 +435,7 @@
                     ]
                   },
                   "R29": {
-                    "full_name": "RNAV X 29",
+                    "full_name": "RNAV X Runway 29",
                     "runway": "29",
                     "type": "RNAV",
                     "waypoints": [
@@ -443,7 +443,7 @@
                     ]
                   },
                   "RY9": {
-                    "full_name": "RNAV Y 29",
+                    "full_name": "RNAV Y Runway 29",
                     "runway": "29",
                     "type": "RNAV",
                     "waypoints": [
@@ -451,7 +451,7 @@
                     ]
                   },
                   "RZ9": {
-                    "full_name": "RNAV Z 29",
+                    "full_name": "RNAV Z Runway 29",
                     "runway": "29",
                     "type": "RNAV",
                     "waypoints": [
@@ -595,14 +595,14 @@
                   "22R": {
                     "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
                       "cleared_altitude": 2500,
-                      "route": "EWR4",
+                      "sid": "EWR5",
                       "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
                     }
                   },
                   "4L": {
                     "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
                       "cleared_altitude": 3000,
-                      "route": "EWR4",
+                      "sid": "EWR5",
                       "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
                     }
                   }
@@ -1470,7 +1470,7 @@
                 "name": "Kennedy",
                 "approaches": {
                   "I1L": {
-                    "full_name": "ILS 31 Left",
+                    "full_name": "ILS Runway 31 Left",
                     "runway": "31L",
                     "type": "ILS",
                     "waypoints": [
@@ -1479,7 +1479,7 @@
                     ]
                   },
                   "I1R": {
-                    "full_name": "ILS 31 Right",
+                    "full_name": "ILS Runway 31 Right",
                     "runway": "31R",
                     "type": "ILS",
                     "waypoints": [
@@ -1487,7 +1487,7 @@
                     ]
                   },
                   "I2L": {
-                    "full_name": "ILS 22 Left",
+                    "full_name": "ILS Runway 22 Left",
                     "runway": "22L",
                     "type": "ILS",
                     "waypoints": [
@@ -1496,7 +1496,7 @@
                     ]
                   },
                   "I2R": {
-                    "full_name": "ILS 22 Right",
+                    "full_name": "ILS Runway 22 Right",
                     "runway": "22R",
                     "type": "ILS",
                     "waypoints": [
@@ -1505,7 +1505,7 @@
                     ]
                   },
                   "I3L": {
-                    "full_name": "ILS 13 Left",
+                    "full_name": "ILS Runway 13 Left",
                     "runway": "13L",
                     "type": "ILS",
                     "waypoints": [
@@ -1513,7 +1513,7 @@
                     ]
                   },
                   "I4L": {
-                    "full_name": "ILS 4 Left",
+                    "full_name": "ILS Runway 4 Left",
                     "runway": "4L",
                     "type": "ILS",
                     "waypoints": [
@@ -1521,7 +1521,7 @@
                     ]
                   },
                   "I4R": {
-                    "full_name": "ILS 4 Right",
+                    "full_name": "ILS Runway 4 Right",
                     "runway": "4R",
                     "type": "ILS",
                     "waypoints": [
@@ -1529,7 +1529,7 @@
                     ]
                   },
                   "R1L": {
-                    "full_name": "RNAV Zulu 31 Left",
+                    "full_name": "RNAV Z Runway 31 Left",
                     "runway": "31L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1538,7 +1538,7 @@
                     ]
                   },
                   "R1R": {
-                    "full_name": "RNAV Zulu 31 Right",
+                    "full_name": "RNAV Z Runway 31 Right",
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1547,7 +1547,7 @@
                     ]
                   },
                   "R2L": {
-                    "full_name": "RNAV X-Ray 22 Left",
+                    "full_name": "RNAV X Runway 22 Left",
                     "runway": "22L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1556,7 +1556,7 @@
                     ]
                   },
                   "R2R": {
-                    "full_name": "RNAV Zulu 22 Right",
+                    "full_name": "RNAV Z Runway 22 Right",
                     "runway": "22R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1564,7 +1564,7 @@
                     ]
                   },
                   "R3L": {
-                    "full_name": "RNAV Zulu 13 Left",
+                    "full_name": "RNAV Z Runway 13 Left",
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1572,7 +1572,7 @@
                     ]
                   },
                   "R3R": {
-                    "full_name": "RNAV Zulu 13 Right",
+                    "full_name": "RNAV Z Runway 13 Right",
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1580,7 +1580,7 @@
                     ]
                   },
                   "R4L": {
-                    "full_name": "RNAV Zulu 4 Left",
+                    "full_name": "RNAV Z Runway 4 Left",
                     "runway": "4L",
                     "type": "RNAV",
                     "waypoints": [
@@ -1588,7 +1588,7 @@
                     ]
                   },
                   "R4R": {
-                    "full_name": "RNAV Zulu 4 Right",
+                    "full_name": "RNAV Z Runway 4 Right",
                     "runway": "4R",
                     "type": "RNAV",
                     "waypoints": [
@@ -1596,7 +1596,7 @@
                     ]
                   },
                   "BVA": {
-                    "full_name": "Belmont Visual 22L",
+                    "full_name": "Belmont Visual Runway 22 Left",
                     "runway": "22L",
                     "type": "Visual",
                     "waypoints": [
@@ -1604,7 +1604,7 @@
                     ]
                   },
                   "PVA": {
-                    "full_name": "Parkway Visual 13L",
+                    "full_name": "Parkway Visual Runway 13 Left",
                     "runway": "13L",
                     "type": "Visual",
                     "waypoints": [
@@ -1616,68 +1616,68 @@
                   "13R": {
                     "ARD,DIXIE,RBV,WHITE": {
                       "cleared_altitude": 5000,
-                      "route": "JFK5",
+                      "sid": "JFK5",
                       "waypoints": "_JFK_13R _JFK_31L/h185"
                     },
                     "BAYYS,BDR,COATE,GAYEL,GREKI,HAAYS,MERIT,NEION": {
                       "cleared_altitude": 5000,
-                      "route": "JFK5",
+                      "sid": "JFK5",
                       "waypoints": "_JFK_13R _JFK_31L/h110"
                     },
                     "BETTE,HAPIE": {
                       "cleared_altitude": 5000,
-                      "route": "JFK5",
+                      "sid": "JFK5",
                       "waypoints": "_JFK_13R _JFK_31L/h155"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
-                      "route": "DEEZZ5",
+                      "sid": "DEEZZ5",
                       "waypoints": "_JFK_13R _JFK_31L/h109"
                     },
                     "SHIPP,WAVEY": {
                       "cleared_altitude": 5000,
-                      "route": "JFK5",
+                      "sid": "JFK5",
                       "waypoints": "_JFK_13R _JFK_31L/h170"
                     }
                   },
                   "22R": {
                     "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
                       "cleared_altitude": 5000,
-                      "route": "JFK5",
+                      "sid": "JFK5",
                       "waypoints": "_JFK_22R _JFK_4L/h222"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
-                      "route": "DEEZZ5",
+                      "sid": "DEEZZ5",
                       "waypoints": "_JFK_22R _JFK_4L/h222"
                     }
                   },
                   "31L": {
                     "ARD,DIXIE,RBV,WHITE": {
                       "cleared_altitude": 5000,
-                      "route": "SKORR5.RNGRR",
+                      "sid": "SKORR5.RNGRR",
                       "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR/h223"
                     },
                     "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                       "cleared_altitude": 5000,
-                      "route": "SKORR5.YNKEE",
+                      "sid": "SKORR5.YNKEE",
                       "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
-                      "route": "DEEZZ5",
+                      "sid": "DEEZZ5",
                       "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
                     }
                   },
                   "4L": {
                     "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
                       "cleared_altitude": 5000,
-                      "route": "JFK5",
+                      "sid": "JFK5",
                       "waypoints": "_JFK_4L _JFK_4La/h100"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
-                      "route": "DEEZZ5",
+                      "sid": "DEEZZ5",
                       "waypoints": "_JFK_4L _JFK_4La/h100"
                     }
                   }
@@ -2536,12 +2536,11 @@
                   }
                 ]
               },
-              "cleared_altitude": 10000,
               "cruise_altitude": 35000,
-              "initial_altitude": 11000,
+              "initial_altitude": 17000,
               "initial_controller": "NY_CTR",
               "initial_speed": 300,
-              "route": "/. KORRY4",
+              "star": "KORRY4",
               "speed_restriction": 250,
               "waypoints": "BESSI/a17000+ EDJER/ho DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 RBV TYKES MINKS RENUE APPLE PROUD LGA/h45"
             }
@@ -2628,12 +2627,12 @@
                   }
                 ]
               },
-              "cleared_altitude": 10000,
+              "assigned_altitude": 10000,
               "cruise_altitude": 35000,
               "initial_altitude": 13000,
               "initial_controller": "NY_CTR",
               "initial_speed": 300,
-              "route": "/. MIP4",
+              "star": "MIP4",
               "speed_restriction": 250,
               "waypoints": "BILEY VIBES LIZZI/ho BEUTY HARLM DREMS APPLE PROUD LGA/h45"
             }
@@ -2671,12 +2670,12 @@
                   }
                 ]
               },
-              "cleared_altitude": 8000,
+              "assigned_altitude": 8000,
               "cruise_altitude": 34000,
               "initial_altitude": 12000,
               "initial_controller": "BOS_CTR",
               "initial_speed": 300,
-              "route": "/. HAARP3",
+              "star": "HAARP3",
               "speed_restriction": 250,
               "waypoints": "PWL IGN/ho VALRE BASYE HAARP CRALY LGA/h224"
             }
@@ -2728,12 +2727,12 @@
                           }
                         ]
                       },
-                      "cleared_altitude": 11000,
+                      "assigned_altitude": 11000,
                       "cruise_altitude": 39000,
                       "initial_altitude": 12000,
                       "initial_controller": "NY_CTR",
                       "initial_speed": 300,
-                      "route": "/. CAMRN4",
+                      "star": "CAMRN4",
                       "speed_restriction": 250,
                       "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935/ho CAMRN/h40"
                     }
@@ -2821,13 +2820,13 @@
                               }
                             ]
                           },
-                          "cleared_altitude": 19000,
+                          "assigned_altitude": 19000,
                           "cruise_altitude": 37000,
                           "initial_altitude": 20000,
                           "description": "LENDY8",
                           "initial_controller": "NY_CTR",
                           "initial_speed": 300,
-                          "route": "/. LENDY8",
+                          "star": "LENDY8",
                           "speed_restriction": 250,
                           "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY/h135"
                         },
@@ -2885,13 +2884,13 @@
                               }
                             ]
                           },
-                          "cleared_altitude": 19000,
+                          "assigned_altitude": 19000,
                           "cruise_altitude": 39000,
                           "description": "IGN1",
                           "initial_altitude": 19000,
                           "initial_controller": "NY_CTR",
                           "initial_speed": 300,
-                          "route": "/. IGN1",
+                          "star": "IGN1",
                           "speed_restriction": 250,
                           "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY/h135"
                         }
@@ -2932,7 +2931,7 @@
                               }
                             ]
                           },
-                          "cleared_altitude": 9000,
+                          "assigned_altitude": 9000,
                           "cruise_altitude": 41000,
                           "initial_altitude": 11000,
                           "initial_controller": "NY_CTR",
@@ -3013,12 +3012,11 @@
                                   }
                                 ]
                               },
-                              "cleared_altitude": 7000,
                               "cruise_altitude": 39000,
                               "initial_altitude": 18000,
                               "initial_controller": "BOS_CTR",
                               "initial_speed": 300,
-                              "route": "/ FLOSI4",
+                              "star": "FLOSI4",
                               "speed_restriction": null,
                               "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180"
                             }
@@ -3093,12 +3091,11 @@
                                   }
                                 ]
                               },
-                              "cleared_altitude": 7000,
                               "cruise_altitude": 39000,
                               "initial_altitude": 18000,
                               "initial_controller": "NY_CTR",
                               "initial_speed": 300,
-                              "route": "/ FQM3",
+                              "star": "FQM3",
                               "speed_restriction": null,
                               "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122"
                             }
@@ -3213,13 +3210,13 @@
                                   }
                                 ]
                               },
-                              "cleared_altitude": 12000,
+                              "assigned_altitude": 12000,
                               "cruise_altitude": 36000,
                               "description": "PARCH3",
                               "initial_altitude": 13000,
                               "initial_controller": "BOS_CTR",
                               "initial_speed": 275,
-                              "route": "/. PARCH3",
+                              "star": "PARCH3",
                               "runway_waypoints": {
                                 "22L": "ROBER CRAIL/h302",
                                 "22R": "ROBER CRAIL/h302"
@@ -3245,13 +3242,13 @@
                                     }
                                   ]
                                 },
-                                "cleared_altitude": 12000,
+                                "assigned_altitude": 12000,
                                 "cruise_altitude": 36000,
                                 "description": "ROBER2",
                                 "initial_altitude": 13000,
                                 "initial_controller": "BOS_CTR",
                                 "initial_speed": 275,
-                                "route": "/. ROBER2",
+                                "star": "ROBER2",
                                 "speed_restriction": 250,
                                 "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h276"
                               }
@@ -3326,12 +3323,11 @@
                                   }
                                 ]
                               },
-                              "cleared_altitude": 8000,
                               "cruise_altitude": 39000,
                               "initial_altitude": 20000,
                               "initial_controller": "DC_CTR",
                               "initial_speed": 300,
-                              "route": "/ PHLBO4",
+                              "star": "PHLBO4",
                               "speed_restriction": null,
                               "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
                             }
@@ -3574,8 +3570,6 @@
             ],
             "magnetic_variation": 13.3,
     "name": "N90 Combined",
-    "nm_per_latitude": 60,
-    "nm_per_longitude": 45,
     "primary_airport": "KEWR",
     "radar_sites": {
       "EWR": {
@@ -3789,10 +3783,10 @@
                     "EWR_P_APP": {"backup": "JFK_G_APP", "arrivals": ["FQM3", "PHLBO4"]},
                     "EWR_DEP": {"backup": "EWR_P_APP", "departures": ["KEWR"]},
                     "EWR_A_APP": {"backup": "EWR_P_APP", "arrivals": ["FLOSI4"]},
-                    "NY_LE_APP": {"backup": "JFK_G_APP"},
-                    "NY_LW_APP": {"backup": "JFK_G_APP"},
-                    "NY_LN_APP": {"backup": "JFK_G_APP"},
-                    "NY_LS_APP": {"backup": "JFK_G_APP"}
+                    "NY_LE_DEP": {"backup": "JFK_G_APP"},
+                    "NY_LW_DEP": {"backup": "JFK_G_APP"},
+                    "NY_LN_DEP": {"backup": "JFK_G_APP"},
+                    "NY_LS_DEP": {"backup": "JFK_G_APP"}
 
                 }
             },

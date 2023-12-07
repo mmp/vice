@@ -188,10 +188,6 @@ func main() {
 
 		context = imguiInit()
 
-		if err = audioInit(); err != nil {
-			lg.Errorf("Unable to initialize audio: %v", err)
-		}
-
 		LoadOrMakeDefaultConfig()
 
 		multisample := runtime.GOOS != "darwin"

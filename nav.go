@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -143,8 +144,12 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 	if nav := makeNav(w, fp, perf, arr.Waypoints); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = Select(spd != 0, &spd, nil)
-		alt := arr.ClearedAltitude
-		nav.Altitude.Cleared = &alt
+		if arr.AssignedAltitude > 0 {
+			// Descend to the assigned altitude but then hold that until
+			// either DVS or further descents are given.
+			alt := arr.AssignedAltitude
+			nav.Altitude.Assigned = &alt
+		}
 
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = min(arr.InitialSpeed, nav.Perf.Speed.Cruise)
@@ -651,7 +656,7 @@ func (nav *Nav) updatePositionAndGS(wind WindModel, lg *Logger) {
 
 func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 	// Make sure we are going direct to the exit.
-	if idx := FindIf(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
+	if idx := slices.IndexFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
 	}
 	nav.Altitude = NavAltitude{Assigned: &alt}
@@ -1531,7 +1536,7 @@ func (nav *Nav) GoAround() PilotResponse {
 
 	nav.Waypoints = nil
 
-	s := Sample([]string{"going around", "on the go"})
+	s := Sample("going around", "on the go")
 	return PilotResponse{Message: s}
 }
 
@@ -1542,11 +1547,11 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 
 	var response string
 	if alt > nav.FlightState.Altitude {
-		response = Sample([]string{"climb and maintain ", "up to "}) + FormatAltitude(alt)
+		response = Sample("climb and maintain ", "up to ") + FormatAltitude(alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = Sample([]string{"maintain ", "we'll keep it at "}) + FormatAltitude(alt)
+		response = Sample("maintain ", "we'll keep it at ") + FormatAltitude(alt)
 	} else {
-		response = Sample([]string{"descend and maintain ", "down to "}) + FormatAltitude(alt)
+		response = Sample("descend and maintain ", "down to ") + FormatAltitude(alt)
 	}
 
 	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
@@ -1584,10 +1589,10 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
-			msg := Sample([]string{"reduce speed to %.0f knots", "down to %.0f"})
+			msg := Sample("reduce speed to %.0f knots", "down to %.0f")
 			response = fmt.Sprintf(msg, speed)
 		} else if speed > nav.FlightState.IAS {
-			msg := Sample([]string{"increase speed to %.0f knots", "up to %.0f"})
+			msg := Sample("increase speed to %.0f knots", "up to %.0f")
 			response = fmt.Sprintf(msg, speed)
 		} else {
 			response = fmt.Sprintf("maintain %.0f knots", speed)
@@ -1598,13 +1603,13 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 
 func (nav *Nav) MaintainSlowestPractical() PilotResponse {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
-	r := Sample([]string{"we'll maintain slowest practical speed", "slowing as much as we can"})
+	r := Sample("we'll maintain slowest practical speed", "slowing as much as we can")
 	return PilotResponse{Message: r}
 }
 
 func (nav *Nav) MaintainMaximumForward() PilotResponse {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
-	r := Sample([]string{"we'll keep it at maximum forward speed", "maintaining maximum forward speed"})
+	r := Sample("we'll keep it at maximum forward speed", "maintaining maximum forward speed")
 	return PilotResponse{Message: r}
 }
 
@@ -1614,11 +1619,11 @@ func (nav *Nav) ExpediteDescent() PilotResponse {
 		return PilotResponse{Message: "unable. We're not descending", Unexpected: true}
 	}
 	if nav.Altitude.Expedite {
-		return PilotResponse{Message: Sample([]string{"we're already expediting", "that's our best rate"})}
+		return PilotResponse{Message: Sample("we're already expediting", "that's our best rate")}
 	}
 
 	nav.Altitude.Expedite = true
-	resp := Sample([]string{"expediting down to", "expedite to"})
+	resp := Sample("expediting down to", "expedite to")
 	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
 }
 
@@ -1628,12 +1633,12 @@ func (nav *Nav) ExpediteClimb() PilotResponse {
 		return PilotResponse{Message: "unable. We're not climbing", Unexpected: true}
 	}
 	if nav.Altitude.Expedite {
-		r := Sample([]string{"we're already expediting", "that's our best rate"})
+		r := Sample("we're already expediting", "that's our best rate")
 		return PilotResponse{Message: r}
 	}
 
 	nav.Altitude.Expedite = true
-	resp := Sample([]string{"expediting up to", "expedite to"})
+	resp := Sample("expediting up to", "expedite to")
 	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
 }
 
@@ -1709,7 +1714,7 @@ func (nav *Nav) fixInRoute(fix string) bool {
 
 func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
 	find := func(f string, wp []Waypoint) int {
-		return FindIf(wp, func(wp Waypoint) bool { return wp.Fix == f })
+		return slices.IndexFunc(wp, func(wp Waypoint) bool { return wp.Fix == f })
 	}
 
 	var apWaypoints []WaypointArray
@@ -1757,9 +1762,9 @@ func (nav *Nav) directFix(fix string) bool {
 
 	if ap := nav.Approach.Assigned; ap != nil {
 		for _, route := range ap.Waypoints {
-			for _, wp := range route {
+			for i, wp := range route {
 				if wp.Fix == fix {
-					nav.Waypoints = []Waypoint{wp}
+					nav.Waypoints = route[i:]
 					return true
 				}
 			}
@@ -1882,7 +1887,7 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 			// aircraft's current waypoints...
 			found := false
 			for i, wp := range waypoints {
-				if idx := FindIf(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+				if idx := slices.IndexFunc(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
 					nav.Waypoints = nav.Waypoints[:idx]
 					nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
 					found = true
@@ -1908,7 +1913,7 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 		}
 	}
 
-	opener := Sample([]string{"we'll expect the", "expecting the", "we'll plan for the"})
+	opener := Sample("we'll expect the", "expecting the", "we'll plan for the")
 	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
 }
 
@@ -1929,8 +1934,7 @@ func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival, w *World) Pilot
 	if err != nil {
 		return resp
 	} else {
-		r := Sample([]string{"intercepting the " + ap.FullName + " approach",
-			"intercepting " + ap.FullName})
+		r := Sample("intercepting the "+ap.FullName+" approach", "intercepting "+ap.FullName)
 		return PilotResponse{Message: r}
 	}
 }
@@ -1948,7 +1952,7 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		return PilotResponse{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true}
 	}
 
-	if idx := FindIf(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }); idx == -1 {
+	if !slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }) {
 		return PilotResponse{Message: "unable. " + fix + " is not in our route", Unexpected: true}
 	}
 	nav.Approach.AtFixClearedRoute = nil
@@ -1960,8 +1964,8 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		}
 	}
 
-	return PilotResponse{Message: Sample([]string{"at " + fix + ", cleared " + ap.FullName,
-		"cleared " + ap.FullName + " at " + fix})}
+	return PilotResponse{Message: Sample("at "+fix+", cleared "+ap.FullName,
+		"cleared "+ap.FullName+" at "+fix)}
 }
 
 func (nav *Nav) prepareForApproach(straightIn bool) (PilotResponse, error) {

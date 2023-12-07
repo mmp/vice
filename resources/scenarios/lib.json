@@ -6,44 +6,44 @@
         "22R": {
           "BIGGY,PARKE": {
             "cleared_altitude": 11000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra/h350"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra ELVAE"
           },
           "ELIOT,NEWEL,ZIMMZ": {
             "cleared_altitude": 10000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra/h300"
           },
           "LANNA": {
             "cleared_altitude": 11000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           }
         },
         "4L": {
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 10000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R/ho _EWR4_4La _EWR4_4Lb/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R/ho _EWR4_4La _EWR4_4Lb/h350"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R/ho _EWR4_4La _EWR4_4Lc ELVAE"
           }
         }
@@ -830,145 +830,145 @@
         "13R": {
           "ARD": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/ho _JFK5_13Rc/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/ho _JFK5_13Ra/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_13R _JFK_31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/ho _JFK5_13Rc _JFK5_13Rd/h222"
           },
           "RBV": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_13R _JFK_31L/ho _JFK5_13Rc RBV"
           }
         },
         "22R": {
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 7000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_22R _JFK_4L/ho/h222"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_22R _JFK_4L/ho _JFK5_22Ra _JFK5_22Rb/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_22R _JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_22R _JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
           }
         },
         "31L": {
           "ARD,RBV": {
             "cleared_altitude": 11000,
-            "route": "SKORR5.RNGRR",
+            "sid": "SKORR5.RNGRR",
             "waypoints": "_JFK_31L _JFK_13R/ho SKORR METSS RNGRR/h223"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
-            "route": "SKORR5.YNKEE",
+            "sid": "SKORR5.YNKEE",
             "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID/h060"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
-            "route": "SKORR5.YNKEE",
+            "sid": "SKORR5.YNKEE",
             "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID _JFK_31La/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID _JFK_31La/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
-            "route": "SKORR5.RNGRR",
+            "sid": "SKORR5.RNGRR",
             "waypoints": "_JFK_31L _JFK_13R/ho SKORR METSS RNGRR/h223"
           }
         },
         "4L - Coney": {
           "ARD": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La _JFK5_4Lc/h222"
           },
           "RBV": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La RBV"
           }
         },
         "4L - No Coney": {
           "ARD": {
             "cleared_altitude": 9000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "route": "DEEZZ5",
+            "sid": "DEEZZ5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La _JFK5_4Lc/h222"
           },
           "RBV": {
             "cleared_altitude": 9000,
-            "route": "JFK5",
+            "sid": "JFK5",
             "waypoints": "_JFK_4L _JFK_22R/ho _JFK5_4La RBV"
           }
         }
@@ -1404,157 +1404,157 @@
         "13 - Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "WHITE": {
             "cleared_altitude": 10000,
-            "route": "NTHNS5",
+            "sid": "NTHNS5",
             "waypoints": "_LGA_13 _LGA_31/ho KIWIE NTHNS CNRSE ASALT/h224"
           }
         },
         "13 - No Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_13 _LGA_31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h220"
           }
         },
         "22 - Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES TNNIS/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 15000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "WHITE": {
             "cleared_altitude": 10000,
-            "route": "HOPEA3",
+            "sid": "HOPEA3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a HOPEA CRI ASALT/h224"
           }
         },
         "22 - No Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES TNNIS/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "WHITE": {
             "cleared_altitude": 12000,
-            "route": "JUTES3",
+            "sid": "JUTES3",
             "waypoints": "_LGA_22 _LGA_4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c _LGA7_22d/h220"
           }
         },
         "31": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/ho _LGA7_31c/h070"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/ho _LGA7_31a/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/ho _LGA7_31b/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/ho _LGA7_31b/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_31 _LGA_13/ho _LGA7_31a/h210"
           }
         },
         "4": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/ho _LGA7_4a _LGA7_PLMa/h070"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/ho _LGA7_4a _LGA7_PLMa/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/ho _LGA7_4a _LGA7_PLMa/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
-            "route": "LGA7",
+            "sid": "LGA7",
             "waypoints": "_LGA_4 _LGA_22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h210"
           }
         }
@@ -2516,8 +2516,6 @@
   },
   "magnetic_variation": 13.3,
   "name": "LIB",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KEWR",
   "radar_sites": {
     "EWR": {

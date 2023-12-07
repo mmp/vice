@@ -844,25 +844,31 @@ func (w WaypointArray) CheckArrival(e *ErrorLogger) {
 
 func (w WaypointArray) checkDescending(e *ErrorLogger) {
 	// or at least, check not climbing...
-	var lastMax float32 // previous maximum altitude restriction
-	var maxFix string
+	var lastMin float32
+	var minFix string // last fix that established a specific minimum alt
 
 	for _, wp := range w {
 		e.Push(wp.Fix)
 
 		if war := wp.AltitudeRestriction; war != nil {
+			if war.Range[0] != 0 && war.Range[1] != 0 && war.Range[0] > war.Range[1] {
+				e.ErrorString("Minimum altitude %s is higher than maximum %s",
+					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
+			}
+
 			// Make sure it's generally reasonable
 			if war.Range[0] < 0 || war.Range[0] >= 50000 || war.Range[1] < 0 || war.Range[1] >= 50000 {
 				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
 					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
 			}
-			if war.Range[1] != 0 {
-				if lastMax != 0 && war.Range[1] > lastMax {
-					e.ErrorString("Maximum altitude %s is higher than previous fix %s's maximum %s",
-						FormatAltitude(war.Range[1]), maxFix, FormatAltitude(lastMax))
+
+			if war.Range[0] != 0 {
+				if minFix != "" && war.Range[0] > lastMin {
+					e.ErrorString("Minimum altitude %s is higher than previous fix %s's minimum %s",
+						FormatAltitude(war.Range[1]), minFix, FormatAltitude(lastMin))
 				}
-				lastMax = war.Range[1]
-				maxFix = wp.Fix
+				minFix = wp.Fix
+				lastMin = war.Range[0]
 			}
 		}
 
