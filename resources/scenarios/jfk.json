@@ -862,17 +862,17 @@
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
             "sid": "SKORR5.RNGRR",
-            "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR/h223"
+            "waypoints": "_JFK_31L _JFK_13R SKORR METSS/a2500+ RNGRR/h223"
           },
           "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
             "sid": "SKORR5.YNKEE",
-            "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
+            "waypoints": "_JFK_31L _JFK_13R SKORR CESID/a2500+ YNKEE/h172"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
             "sid": "DEEZZ5",
-            "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
+            "waypoints": "_JFK_31L _JFK_13R SKORR CESID/a2500+ YNKEE/h172"
           }
         },
         "4L": {
