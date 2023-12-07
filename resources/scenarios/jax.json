@@ -596,17 +596,17 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 15000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
         "star": "LUNNI1",
         "runway_waypoints": {
-          "08": "LUNNI/a10000/s250 SAVAE/a6000 PENSE/a4000/s210 RUMEE/h257",
-          "14": "LUNNI/a10000/s250 WADIG/a5000/s230 DEDDA/a3000/s210",
-          "26": "LUNNI/a8000/s250 LAYON/a3000/s210",
-          "32": "LUNNI/a8000/s250 SSAWW/a7000/s230 ZAXIT/a4000/s210 PALSY PEPIE/h137"
+          "08": "LUNNI/a8000-12000/s250 SAVAE/a6000-7000 PENSE/a4000/s210 RUMEE/h257",
+          "14": "LUNNI/a8000-12000/s250 WADIG/a5000-6000/s230 DEDDA/a3000/s210",
+          "26": "LUNNI/a8000-12000/s250 LAYON/a3000/s210",
+          "32": "LUNNI/a8000-12000/s250 SSAWW/a6000-7000/s230 ZAXIT/a4000/s210 PALSY PEPIE/h137"
         },
-        "waypoints": "GOTBE/ho LUNNI/a10000/s250"
+        "waypoints": "GOTBE/ho LUNNI/a8000-12000/s250"
       }
     ],
     "MARQO2": [
@@ -660,12 +660,12 @@
         "initial_speed": 250,
         "star": "MARQO2",
         "runway_waypoints": {
-          "08": "COROE/a9000/s250 NATII/a5000/s230 GUTTY/a3000/s210/h103",
-          "14": "COROE/a9000/s250 TASCH/a5000 GWIIZ/a5000 DIPDE/a3000/s210 ",
-          "26": "COROE/a9000/s250 GWIIZ/a5000 EGAGE/a4000/s210 NOMTE OLEKE/h077",
-          "32": "COROE/a9000/s250 GWIIZ/a5000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137"
+          "08": "COROE/a9000-12000/s250 NATII/a5000-6000/s230 GUTTY/a3000/s210/h103",
+          "14": "COROE/a9000-12000/s250 TASCH/a5000-6000 DIPDE/a3000/s210",
+          "26": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 EGAGE/a4000/s210 NOMTE OLEKE/h077",
+          "32": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137"
         },
-        "waypoints": "MARQO/ho COROE/a9000/s250"
+        "waypoints": "MARQO/ho COROE/a9000-12000/s250"
       }
     ],
     "MONIA": [
@@ -746,12 +746,12 @@
         "initial_speed": 250,
         "star": "OHDEA1",
         "runway_waypoints": {
-          "08": "KIPLE/a10000/s250 KITZO/a5000/s230 CEDOT/a3000/s210/h150",
-          "14": "KIPLE MAHKA/a5000/s230 ORTAR/a3000/s210/h145",
-          "26": "KIPLE MATLL/a6000/s230 NANAA/a4000/s210 NOMTE OLEKE/h077",
-          "32": "KIPLE NAMPE/a6000/s230 ACENE/a4000/s230 CALIM PEPIE/h137"
+          "08": "KIPLE/a7000-10000/s250 KITZO/a5000-6000/s230 CEDOT/a3000/s210/h150",
+          "14": "KIPLE/a7000-10000/s250 MAHKA/a5000-6000/s230 ORTAR/a3000/s210/h145",
+          "26": "KIPLE/a7000-10000/s250 MATLL/a6000-7000/s230 NANAA/a4000/s210 NOMTE OLEKE/h077",
+          "32": "KIPLE/a7000-10000/s250 NAMPE/a6000-7000/s230 ACENE/a4000/s230 CALIM PEPIE/h137"
         },
-        "waypoints": "FORMB/a11000/ho OHDEA KIPLE/a10000/s250"
+        "waypoints": "FORMB/a10000-13000/ho OHDEA KIPLE/a7000-11000/s250"
       }
     ],
     "QUBEN1": [
@@ -777,12 +777,12 @@
         "initial_speed": 250,
         "star": "QUBEN1",
         "runway_waypoints": {
-          "08": "BETLE/a5000/s230 PLANK WADOR/a3000/s210/h346",
-          "14": "BETLE/a5000/s230 PLANK EYLND/a4000/s210 KRISO/a3000 DUNTE JAKRU/h317",
-          "26": "BETLE/a5000/s230 GUTNE/a4000/s210 CLART/h084",
-          "32": "BETLE/a5000/s230 GURDE/a3000/s210/h023"
+          "08": "BETLE/a5000+/s230 PLANK WADOR/a3000/s210/h346",
+          "14": "BETLE/a5000+/s230 PLANK EYLND/a4000/s210 KRISO/a3000 DUNTE JAKRU/h317",
+          "26": "BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h084",
+          "32": "BETLE/a5000+/s230 GURDE/a3000/s210/h023"
         },
-        "waypoints": "SHINR/a16000/ho POGIE/a13000 QUBEN/a10000/s250 BETLE/a5000/s230"
+        "waypoints": "SHINR/a16000-19000/ho BASSS POGIE/a12000-14000 QUBEN/a9000-12000/s250 BETLE/a5000+/s230"
       }
     ],
     "TEBOW1": [
@@ -812,12 +812,12 @@
         "initial_speed": 250,
         "star": "TEBOW1",
         "runway_waypoints": {
-          "08": "TEBOW/a11000 JERZI/a5000/s230 FAROT/a3000/s210/h038",
-          "14": "TEBOW/a11000 GRRAS/a6000 KAYEM/a4000/s210 DUNTE JAKRU/h317",
-          "26": "TEBOW/a11000 BETLE/a7000/s230 GUTNE/a4000/s210 CLART/h084",
-          "32": "TEBOW/a11000 BETLE/a7000/s230 GURDE/a3000/s210/h023"
+          "08": "TEBOW/a9000-12000/s250 JERZI/a5000+/s230 FAROT/a3000/s210/h038",
+          "14": "TEBOW/a9000-12000/s250 GRRAS/a5000+ KAYEM/a4000/s210 DUNTE JAKRU/h317",
+          "26": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h084",
+          "32": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GURDE/a3000/s210/h023"
         },
-        "waypoints": "HILIS/a17000/s280 FABES/a13000/ho TEBOW/a11000"
+        "waypoints": "HILIS/a17000+/s280 FABES/a12000-15000/ho TEBOW/a9000-12000/s250"
       }
     ]
   },

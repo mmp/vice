@@ -2388,19 +2388,19 @@
           ]
         },
         "assigned_altitude": 14000,
-        "initial_altitude": 15000,
+        "initial_altitude": 18000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 300,
         "star": "ALYNA3",
         "runway_waypoints": {
-          "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210 HERVI/a4000 FONIK/a3000",
+          "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
           "17R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
           "18L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
           "18R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-          "35R": "SURFR/a14000 ALYNA HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210/h186",
-          "35L": "SURFR/a14000 ALYNA HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210/h186",
-          "36R": "SURFR/a14000 ALYNA HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210/h186",
-          "36L": "SURFR/a14000 ALYNA HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210/h186",
+          "35R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+          "35L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+          "36R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+          "36L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
           "27L": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
           "9R": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
         },
@@ -2465,7 +2465,7 @@
         "initial_speed": 300,
         "star": "ALYNA3",
         "speed_restriction": 250,
-        "waypoints": "BEAUX SURFR/a14000 ALYNA/ho HIGGZ/a11000/s250 VOSSS/a9000/s230 SUNDE/a6000 CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
+        "waypoints": "BEAUX SURFR/a14000 ALYNA/ho HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
     ],
     "ALYNA3_BSU": [
@@ -2668,7 +2668,15 @@
         "initial_speed": 290,
         "star": "DADES1",
         "speed_restriction": 290,
-        "waypoints": "BEAUX ZINGR/a17000/ho WORAK ZOPER CAMKO ROSTR GUURR DADES LZARD JKBAL KTPA"
+          "runway_waypoints": {
+              "1L": "LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
+              "1R": "LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
+              "28": "LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
+              "19L": "LZARD JKBAL/a6000/s230/h277",
+              "19R": "LZARD JKBAL/a6000/s230/h277",
+              "10": "LZARD JKBAL/a6000/s230/h277"
+        },
+        "waypoints": "BEAUX ZINGR/a10000+/ho WORAK ZOPER CAMKO ROSTR GUURR DADES LZARD"
       }
     ],
     "GOOFY7": [
@@ -4839,12 +4847,12 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 13000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000/ho BGBBY/a10000/s250 GTOUT/a9000 TUGLE BANYA/a7000/s210/h250"
+        "waypoints": "NICCK/a12000-14000/ho BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210/h250"
       }
     ],
     "GTOUT1_BSU": [
@@ -5268,12 +5276,12 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 13000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000/ho BGBBY/a10000/s250 GTOUT/a9000 TUGLE BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90"
+        "waypoints": "NICCK/a12000-14000/ho BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90"
       }
     ],
     "GTOUT1_SFINAL": [
@@ -5705,7 +5713,7 @@
         "speed_restriction": 220,
         "star": "GTOUT1",
         "scratchpad": "I7L",
-        "waypoints": "GTOUT/a9000 TUGLE/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
+        "waypoints": "GTOUT/a9000-11000 TUGLE/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       }
     ],
     "JAFAR3": [
@@ -5731,17 +5739,17 @@
         "initial_speed": 280,
         "star": "JAFAR3",
         "runway_waypoints": {
-          "17L": "JAFAR CRPIT LAMMP YAGGO/a6000/s210/h106",
-          "17R": "JAFAR CRPIT LAMMP YAGGO/a6000/s210/h106",
-          "18L": "JAFAR CRPIT LAMMP YAGGO/a6000/s210/h106",
-          "18R": "JAFAR CRPIT LAMMP YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000",
-          "36L": "JAFAR CRPIT LAMMP WISHH/a10000/s250 HARAM DORII/a8000/s220 BRICE/a5000/s210/h186",
-          "36R": "JAFAR CRPIT LAMMP WISHH/a10000/s250 HARAM DORII/a8000/s220 BRICE/a5000/s210/h186",
-          "35L": "JAFAR CRPIT LAMMP WISHH/a10000/s250 HARAM DORII/a8000/s220 BRICE/a5000/s210/h186",
-          "35R": "JAFAR CRPIT LAMMP WISHH/a10000/s250 HARAM DORII/a8000/s220 BRICE/a5000/s210/h186"
+          "17L": "LAMMP YAGGO/a6000/s210/h106",
+          "17R": "LAMMP YAGGO/a6000/s210/h106",
+          "18L": "LAMMP YAGGO/a6000/s210/h106",
+          "18R": "LAMMP YAGGO/a6000/s210/h106",
+          "36L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+          "36R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+          "35L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+          "35R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
         },
         "speed_restriction": 280,
-        "waypoints": "BRKWL/ho JAFAR"
+        "waypoints": "BRKWL/ho JAFAR CRPIT LAMMP"
       }
     ],
     "JOKRS3": [
@@ -6017,17 +6025,17 @@
         "initial_speed": 280,
         "star": "PRICY3",
         "runway_waypoints": {
-          "17L": "PRICY/a13000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210/h006",
-          "17R": "PRICY/a13000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210/h006",
-          "18L": "PRICY/a13000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210/h006",
-          "18R": "PRICY/a13000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210/h006",
-          "36L": "PRICY/a13000 BOCCE JUMBA AMADS/a9000 LORRA/a7000/s210/h096",
-          "36R": "PRICY/a13000 BOCCE JUMBA AMADS/a9000 LORRA/a7000/s210/h096",
-          "35L": "PRICY/a13000 BOCCE JUMBA AMADS/a9000 LORRA/a7000/s210/h096",
-          "35R": "PRICY/a13000 BOCCE JUMBA AMADS/a9000 LORRA/a7000/s210/h096"
+          "17L": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+          "17R": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+          "18L": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+          "18R": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+          "36L": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+          "36R": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+          "35L": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+          "35R": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096"
         },
         "speed_restriction": 250,
-        "waypoints": "BULKS/a19000/ho PRICY/a13000"
+        "waypoints": "BULKS/a19000-20000/s280/ho PRICY/a13000-16000"
       }
     ],
     "PRICY3_LNU": [
@@ -6222,7 +6230,7 @@
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
-        "waypoints": "BULKS/a19000/ho PRICY/a15000 BOCCE JUMBA AMADS/a9000 LORRA/a7000/s210  EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
+        "waypoints": "BULKS/a19000-20000/ho PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
       }
     ],
     "PRICY3_LSU": [

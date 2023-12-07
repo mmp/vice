@@ -1734,12 +1734,12 @@
                         "initial_speed": 280,
                         "star": "BRWNZ4",
                         "runway_waypoints": {
-                            "6L": "BRWNZ/a13000/s280 MAAAK/a9000 KLLAY/a7000 JIIMM/a5000 HICKR/a5000/s210/h241",
-                            "6R": "BRWNZ/a13000/s280 MAAAK/a9000 KLLAY/a7000 JIIMM/a5000 HICKR/a5000/s210/h241",
-                            "24L": "BRWNZ/a13000/s280 TRRKY/a7000 DEEKN/a6000 LLROY/a5000/s210/h056",
-                            "24R": "BRWNZ/a13000/s280 TRRKY/a7000 DEEKN/a6000 LLROY/a5000/s210/h056"
+                            "6L": "BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210/h241",
+                            "6R": "BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210/h241",
+                            "24L": "BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210/h056",
+                            "24R": "BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210/h056"
                         },
-                        "waypoints": "RDZON/a17000/ho WINNZ/a14000 GOLIC BRWNZ/a13000/s280"
+                        "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280"
                     }
                 ],
                 "BRWNZ4_FEEDERS": [
@@ -1785,11 +1785,11 @@
                             ]
                         },
                         "cruise_altitude": 33000,
-                        "initial_altitude": 17000,
+                        "initial_altitude": 18000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "star": "BRWNZ4",
-                        "waypoints": "RDZON/a17000/ho WINNZ/a14000 GOLIC BRWNZ/a13000/s280 TRRKY/a7000 DEEKN/a6000 LLROY/a5000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
+                        "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
                     }
                 ],
                 "BRWNZ4_FEEDERN": [
@@ -1835,11 +1835,11 @@
                             ]
                         },
                         "cruise_altitude": 33000,
-                        "initial_altitude": 17000,
+                        "initial_altitude": 18000,
                         "initial_controller": "CLE_CTR",
                         "initial_speed": 280,
                         "star": "BRWNZ4",
-                        "waypoints": "RDZON/a17000/ho WINNZ/a14000 GOLIC BRWNZ/a13000/s280 MAAAK/a9000 KLLAY/a7000 JIIMM/a5000 HICKR/a5000/s210 CRTEZ/a3000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
+                        "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210 CRTEZ/a3000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                     }
                 ],
                 "BRWNZ4_FINALS": [
@@ -1892,7 +1892,7 @@
                         "speed_restriction": 210,
                         "star": "BRWNZ4",
                         "scratchpad": "I4R",
-                        "waypoints": "QUUBE/a7000/ho DEEKN/a6000 LLROY/a5000/s210/h056"
+                        "waypoints": "QUUBE/a6000-7000/ho DEEKN/a5000-6000 LLROY/a5000/s210/h056"
                     }
                 ],
                 "BRWNZ4_FINALN": [
@@ -1945,7 +1945,7 @@
                         "speed_restriction": 210,
                         "star": "BRWNZ4",
                         "scratchpad": "I6L",
-                        "waypoints": "KLLAY/a7000 JIIMM/a6000/ho HICKR/a5000/s210/h241"
+                        "waypoints": "KLLAY/a6000-7000 JIIMM/a5000-6000/ho HICKR/a5000/s210/h241"
                     }
                 ],
                 "ROKNN3": [
@@ -2009,12 +2009,12 @@
                         "star": "ROKNN3",
                         "speed_restriction": 280,
                         "runway_waypoints": {
-                            "6L": "ROKNN/a14000/s280 DEVOH/a10000 KINCS/a7000 KWENE/a6000/s210 DAYZD/a4000",
-                            "6R": "ROKNN/a14000/s280 DEVOH/a10000 KINCS/a7000 RUHSH/a6000/s210 RMONZ/a4000",
-                            "24L": "ROKNN/a14000/s280 DEVOH/a14000 SEPLN/a9000 DAHOO/a7000/s210/h058",
-                            "24R": "ROKNN/a14000/s280 DEVOH/a14000 SEPLN/a9000 CLAPT/a7000/s210/h058"
+                            "6L": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210",
+                            "6R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 RUHSH/a6000+/s210",
+                            "24L": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 DAHOO/a7000/s210/h058",
+                            "24R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210/h058"
                         },
-                        "waypoints": "HEADZ/a19000/ho ROKNN/a14000/s280"
+                        "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280"
                     }
                 ],
                 "ROKNN3_FEEDERS": [
@@ -2077,7 +2077,7 @@
                         "initial_speed": 280,
                         "star": "ROKNN3",
                         "speed_restriction": 280,
-                        "waypoints": "HEADZ/a19000/ho ROKNN/a14000/s280 DEVOH/a14000 SEPLN/a9000 CLAPT/a7000/s210  _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
+                        "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
                     }
                 ],
                 "ROKNN3_FEEDERN": [
@@ -2140,7 +2140,7 @@
                         "initial_speed": 280,
                         "star": "ROKNN3",
                         "speed_restriction": 280,
-                        "waypoints": "HEADZ/a19000/ho ROKNN/a14000/s280 DEVOH/a10000 KINCS/a7000 KWENE/a6000/s210 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
+                        "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                     }
                 ],
                 "ROKNN3_FINALS": [
@@ -2206,7 +2206,7 @@
                         "speed_restriction": 210,
                         "star": "ROKNN3",
                         "scratchpad": "I4R",
-                        "waypoints": "SEPLN/a9000/ho DAHOO/a7000/s210/h058"
+                        "waypoints": "SEPLN/a8000-10000/ho DAHOO/a7000/s210/h058"
                     }
                 ],
                 "ROKNN3_FINALN": [
@@ -2272,7 +2272,7 @@
                         "speed_restriction": 210,
                         "star": "ROKNN3",
                         "scratchpad": "I6L",
-                        "waypoints": "DEVOH/a9000/ho KINCS/a7000 KWENE/a6000/s210 DAYZD/a4000 BETLL/a2900 "
+                        "waypoints": "DEVOH/a8000-14000/ho KINCS/a7000-9000 KWENE/a6000+/s210 DAYZD/a4000 BETLL/a2900 "
                     }
                 ],
                 "ROLLN2": [
@@ -2349,12 +2349,12 @@
                         "star": "ROLLN2",
                         "speed_restriction": 280,
                         "runway_waypoints": {
-                            "6L": "ROLLN/a15000 STOHN/a10000 LVISS/a9000 NIXXS/a6000 GROHL/a6000/s210/h236",
-                            "6R": "ROLLN/a15000 STOHN/a10000 LVISS/a9000 NIXXS/a6000 GROHL/a6000/s210/h236",
-                            "24L": "ROLLN/a15000 STOHN/a14000 MEEAT CLAPT/a7000/s210/h056",
-                            "24R": "ROLLN/a15000 STOHN/a14000 MEEAT CLAPT/a7000/s210/h056"
+                            "6L": "ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236",
+                            "6R": "ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236",
+                            "24L": "ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056",
+                            "24R": "ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056"
                         },
-                        "waypoints": "GEDDY/a21000/s280/ho ROLLN/a15000"
+                        "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000"
                     }
                 ],
                 "ROLLN2_FEEDERS": [
@@ -2430,7 +2430,7 @@
                         "initial_speed": 280,
                         "star": "ROLLN2",
                         "speed_restriction": 280,
-                        "waypoints": "GEDDY/a21000/s280/ho ROLLN/a15000 STOHN/a14000 MEEAT CLAPT/a7000/s210 _ROLLN2_24R_FINAL SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780"
+                        "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056 _ROLLN2_24R_FINAL SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780"
                     }
                 ],
                 "ROLLN2_FEEDERN": [
@@ -2506,7 +2506,7 @@
                         "initial_speed": 280,
                         "star": "ROLLN2",
                         "speed_restriction": 280,
-                        "waypoints": "GEDDY/a21000/s280/ho ROLLN/a15000 STOHN/a10000 LVISS/a9000 NIXXS/a6000 GROHL/a6000/s210 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
+                        "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
                     }
                 ],
                 "ROLLN2_FINALS": [
@@ -2664,7 +2664,7 @@
                         "speed_restriction": 210,
                         "star": "ROLLN2",
                         "scratchpad": "I6L",
-                        "waypoints": "LVISS/a8000 NIXXS/a6000/ho GROHL/a6000/s210/h236"
+                        "waypoints": "LVISS/a8000-9000 NIXXS/a6000/ho GROHL/a6000/s210/h236"
                     }
                 ],
                 "TRYBE4": [
@@ -2724,12 +2724,12 @@
                                     "star": "TRYBE4",
                                     "speed_restriction": 280,
                                     "runway_waypoints": {
-                                        "6L": "HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000",
-                                        "6R": "HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000",
-                                        "24L": "HFNER/a18000/s280 TRYBE/a17000/s280 NAGGY/a10000 CLVTO/a7000 JAAIN/a7000/s210/h238",
-                                        "24R": "HFNER/a18000/s280 TRYBE/a17000/s280 NAGGY/a10000 CLVTO/a7000 JAAIN/a7000/s210/h238"
+                                        "6L": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ BUDRW/a6000/s240",
+                                        "6R": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ BUDRW/a6000/s240",
+                                        "24L": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ CLVTO/a7000-10000 JAAIN/a7000/s210/h238",
+                                        "24R": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ CLVTO/a7000-10000 JAAIN/a7000/s210/h238"
                                     },
-                                    "waypoints": "LFTON/a21000/ho HFNER/a18000/s280"
+                                    "waypoints": "LFTON/a17000-23000/ho HFNER/a16000+/s280"
                                 }
                             ],
                             "TRYBE4_FEEDERS": [

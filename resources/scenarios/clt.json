@@ -1357,7 +1357,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "BANKR3",
-                            "waypoints": "BANKR/a18000/s270/ho DEBBT/a18000 ROBRR/a14000 FOBAR/a13000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003"
+                            "waypoints": "BANKR/a13000-22000/s270/ho DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003"
                         }
                     ],
                     "BANKR3N": [
@@ -1401,7 +1401,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "BANKR3",
-                            "waypoints": "BANKR/a18000/s270/ho DEBBT/a13000 CONTR/a11000 OPALS/a10000 BLNCE/a9000/s210/h090"
+                            "waypoints": "BANKR/a13000-22000/s270/ho DEBBT/a12000-21000/s250 CONTR/a11000+ OPALS/a10000-12000 BLNCE/a9000/s210/h090"
                         }
                     ],
                     "CHSLY5S": [
@@ -1527,7 +1527,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "CHSLY5",
-                            "waypoints": "BOOTS/a18000 CHSLY/a15000/s250/ho KRISS/a11000 NODEW/a8000/s230 HEELZ/a6000/s210/h270"
+                            "waypoints": "BOOTS/a13000-23000 CHSLY/a13000-22000/s250/ho KRISS/a11000+ SLPOH/a10000-21000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/h270"
                         }
                     ],
                     "CHSLY5N": [
@@ -1653,7 +1653,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "CHSLY5",
-                            "waypoints": "BOOTS/a18000 CHSLY/a18000/s250/ho KRISS/a15000 JAMGO/a13000/s250 WHIZE/a10000 CAATT/a9000/s210 EPAYE/a6000/s210/h183"
+                            "waypoints": "BOOTS/a13000-23000 CHSLY/a13000-22000/s250/ho KRISS/a11000+ SLPOH/a10000-21000 JAMGO/a10000-16000/s250 WHIZE/a9000-12000 CAATT/a9000/s210 EPAYE/a6000/s210/h183"
                         }
                     ],
                     "FLIPZ3N": [
@@ -1718,7 +1718,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "FLIPZ3",
-                            "waypoints": "JJENY/a20000 N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a18000/s270 ADOWN/a16000/s250 INWAL/a13000/s250 JELNO/a11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183"
+                            "waypoints": "JJENY/a19000-27000 N35.35.11.189,W82.06.58.014/ho FILPZ/a16000+/s270 ADOWN/a12000-19000/s250 INWAL/a11000-15000/s250 JELNO/a10000-11000 CEDOX/a9000/s210 VALLL/a6000/s210/h183"
                         }
                     ],
                     "FLIPZ3S": [
@@ -1783,7 +1783,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "FLIPZ3",
-                            "waypoints": "JJENY/a20000 N35.35.11.189,W82.06.58.014/a18000/ho FILPZ/a16000/s270 GLAXI/a13000/s250 JOBOT/a11000/s250 ERHRT/a10000 FISHN/a7000/s210/h090"
+                            "waypoints": "JJENY/a19000-27000 N35.35.11.189,W82.06.58.014/ho FILPZ/a16000+/s270 GLAXI/a12000+/s250 JOBOT/a11000-12000/s250 ERHRT/a10000- FISHN/a7000/s210/h090"
                         }
                     ],
                     "JONZE3S": [
@@ -2155,7 +2155,7 @@
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "star": "STOCR3",
-                            "waypoints": "FFNSH/a19000/s280/ho STOCR/a17000/s250 FIBBR/a13000/s250 TYMER/a10000 TERIE/a7000 GATEE/a6000/s210/h273"
+                            "waypoints": "FFNSH/a16000-23000/s280/ho STOCR/a12000-19000/s250 FIBBR/a11000-16000/s250 TYMER/a8000-11000 TERIE/a6000-8000 GATEE/a6000/s210/h273"
                         }
                     ]
                 },
