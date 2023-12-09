@@ -91,6 +91,17 @@ func main() {
 	// Initialize the logging system first and foremost.
 	lg = NewLogger(*server, *logLevel)
 
+	writeMemProfile := func() {
+		f, err := os.Create(*memprofile)
+		if err != nil {
+			lg.Errorf("%s: unable to create memory profile file: %v", *memprofile, err)
+		}
+		if err = pprof.WriteHeapProfile(f); err != nil {
+			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
+		}
+		f.Close()
+	}
+
 	if *cpuprofile != "" {
 		if f, err := os.Create(*cpuprofile); err != nil {
 			lg.Errorf("%s: unable to create CPU profile file: %v", *cpuprofile, err)
@@ -112,6 +123,16 @@ func main() {
 				}()
 			}
 		}
+	}
+	if *memprofile != "" {
+		// Catch ctrl-c
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, os.Interrupt)
+		go func() {
+			<-sig
+			writeMemProfile()
+			os.Exit(0)
+		}()
 	}
 
 	resourcesFS = getResourcesFS()
@@ -170,10 +191,6 @@ func main() {
 
 		context = imguiInit()
 
-		if err = audioInit(); err != nil {
-			lg.Errorf("Unable to initialize audio: %v", err)
-		}
-
 		LoadOrMakeDefaultConfig()
 
 		multisample := runtime.GOOS != "darwin"
@@ -184,7 +201,7 @@ func main() {
 		}
 		imgui.CurrentIO().SetClipboard(platform.GetClipboard())
 
-		renderer, err = NewOpenGL2Renderer(imgui.CurrentIO())
+		renderer, err = NewOpenGL2Renderer()
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
@@ -401,13 +418,6 @@ func main() {
 
 	// Common cleanup
 	if *memprofile != "" {
-		f, err := os.Create(*memprofile)
-		if err != nil {
-			lg.Errorf("%s: unable to create memory profile file: %v", *memprofile, err)
-		}
-		if err = pprof.WriteHeapProfile(f); err != nil {
-			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
-		}
-		f.Close()
+		writeMemProfile()
 	}
 }

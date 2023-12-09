@@ -1,5 +1,6 @@
 {
-"airports": {
+  "tracon": "PCT (Potomac)",
+  "airports": {
   "KDCA": {
     "approaches": {
       "ILS": {
@@ -22,7 +23,7 @@
       "MTV": {
         "full_name": "Mount Vernon Visual Runway 1",
         "runway": "1",
-        "type": "ILS",
+        "type": "Visual",
         "waypoints": [
           "KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166 _DCA_1/a14"
         ]
@@ -46,7 +47,7 @@
       "RIV": {
         "full_name": "River Visual Runway 19",
         "runway": "19",
-        "type": "ILS",
+        "type": "Visual",
         "waypoints": [
           "FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300 _DCA_19/a13"
         ]
@@ -105,114 +106,114 @@
     "1": {
       "SCOOB": {
         "cleared_altitude": 5000,
-        "route": "AMEEE1",
+        "sid": "AMEEE1",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000-"
       },
       "MAULS": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK"
       },
       "FLASK": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK TEEMS"
       },
       "DQO,AGARD": {
         "cleared_altitude": 5000,
-        "route": "DOCTR5",
+        "sid": "DOCTR5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+"
       },
       "JERES,BUFFR": {
         "cleared_altitude": 5000,
-        "route": "HORTO4",
+        "sid": "HORTO4",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+"
       },
       "RRSIN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB TYPNZ SCORN"
       },
       "MELTN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB CASLY"
       },
       "OTTTO": {
         "cleared_altitude": 5000,
-        "route": "REBLL5",
+        "sid": "REBLL5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI DUDDD REBLL/a5000+"
       },
       "GLANC": {
         "cleared_altitude": 5000,
-        "route": "SCRAM6",
+        "sid": "SCRAM6",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII CUKLI POOCH/a3000+ SCRAM DANOO WALCE"
       },
       "SWANN": {
         "cleared_altitude": 5000,
-        "route": "SOOKI5",
+        "sid": "SOOKI5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+"
       },
       "RAMAY": {
         "cleared_altitude": 5000,
-        "route": "WYNGS5",
+        "sid": "WYNGS5",
         "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE RGIII MELOE WYNGS/a5000+"
       }
     },
     "19": {
       "SCOOB": {
         "cleared_altitude": 5000,
-        "route": "AMEEE1",
+        "sid": "AMEEE1",
         "waypoints": "_DCA_19 _DCA_1 LEAVY FIMBI/a1500+/s230 MCNAB AMEEE/a5000+ COLIN"
       },
       "MAULS": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK"
       },
       "FLASK": {
         "cleared_altitude": 5000,
-        "route": "CLTCH3",
+        "sid": "CLTCH3",
         "waypoints":"_DCA_19 _DCA_1 CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK TEEMS"
       },
       "DQO,AGARD": {
         "cleared_altitude": 5000,
-        "route": "DOCTR5",
+        "sid": "DOCTR5",
         "waypoints": "_DCA_19 _DCA_1 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP HMBGR DOCTR/a5000+"
       },
       "JERES,BUFFR": {
         "cleared_altitude": 5000,
-        "route": "HORTO4",
+        "sid": "HORTO4",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE LBOLT RLLLL HORTO/a5000+"
       },
       "RRSIN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB TYPNZ SCORN"
       },
       "MELTN": {
         "cleared_altitude": 5000,
-        "route": "JDUBB4",
+        "sid": "JDUBB4",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB CASLY"
       },
       "OTTTO": {
         "cleared_altitude": 5000,
-        "route": "REBLL5",
+        "sid": "REBLL5",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE LBOLT TEZER REBLL/a5000+"
       },
       "GLANC": {
         "cleared_altitude": 5000,
-        "route": "SCRAM6",
+        "sid": "SCRAM6",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE DMKRT POOCH/a3000+ SCRAM DANOO WALCE"
       },
       "SWANN": {
         "cleared_altitude": 5000,
-        "route": "SOOKI5",
+        "sid": "SOOKI5",
         "waypoints": "_DCA_19 _DCA_1 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP RIISE SOOKI/a5000+"
       },
       "RAMAY": {
         "cleared_altitude": 5000,
-        "route": "WYNGS5",
+        "sid": "WYNGS5",
         "waypoints": "_DCA_19 _DCA_1 CAPVC GAITE LBOLT GINYA WYNGS/a5000+"
       }
     }
@@ -648,12 +649,11 @@
           }
         ]
       },
-      "cleared_altitude": 16000,
       "cruise_altitude": 33000,
       "initial_altitude": 18000,
       "initial_controller": "DC_CTR",
       "initial_speed": 290,
-      "route": "/. CAPSS3",
+      "star": "CAPSS3",
       "runway_waypoints": {
         "1": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
         "4": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
@@ -710,11 +710,10 @@
           }
         ]
       },
-      "cleared_altitude": 12000,
       "initial_altitude": 14000,
       "initial_controller": "BWI_W_APP",
       "initial_speed": 270,
-      "route": "/. CLIPR3",
+      "star": "CLIPR3",
       "runway_waypoints": {
         "1":  "EYESS FELTY HITEK CAVDI/h187",
         "4":  "EYESS FELTY HITEK CAVDI/h187",
@@ -754,11 +753,10 @@
           }
         ]
       },
-      "cleared_altitude": 11000,
       "initial_altitude": 12000,
       "initial_controller": "BWI_P_APP",
       "initial_speed": 280,
-      "route": "/. DEALE3",
+      "star": "DEALE3",
       "runway_waypoints": {
         "1":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
         "4":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
@@ -822,11 +820,10 @@
           }
         ]
       },
-      "cleared_altitude": 14000,
-      "initial_altitude": 16000,
+      "initial_altitude": 20000,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
-      "route": "/. FRDMM5",
+      "star": "FRDMM5",
       "runway_waypoints": {
         "1":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
         "4":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
@@ -873,11 +870,10 @@
           }
         ]
       },
-      "cleared_altitude": 14000,
-      "initial_altitude": 16000,
+      "initial_altitude": 18000,
       "initial_controller": "DC_CTR",
       "initial_speed": 280,
-      "route": "/. TRUPS4",
+      "star": "TRUPS4",
       "runway_waypoints": {
         "1":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
         "4":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
@@ -886,7 +882,7 @@
         "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
         "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
       },
-      "waypoints": "USAAY/a17000-19000/s280 WEEDU/a16000-19000/ho SUPRT/a14000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250"
+      "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250"
     }
   ],
   "FINAL_NNW": [
@@ -970,14 +966,13 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
       "cruise_altitude": 33000,
       "expect_approach": "MTV",
       "initial_altitude": 8000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. FRDMM5",
+      "star": "FRDMM5",
       "scratchpad": "MTV",
       "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189"
     }
@@ -1049,16 +1044,15 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
       "cruise_altitude": 24000,
       "expect_approach": "MTV",
-      "initial_altitude": 8000,
+      "initial_altitude": 10000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. DEALE3",
+      "star": "DEALE3",
       "scratchpad": "MTV",
-      "waypoints": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000-/ho HITEK/a7000 MITEY/h187"
+      "waypoints": "DEALE/a10000/s280 YUCKK/a10000/ho TIRZA/a8000- HITEK/a7000 MITEY/h187"
     }
   ],
   "FINAL_NS": [
@@ -1116,14 +1110,13 @@
           }
         ]
       },
-      "cleared_altitude": 7000,
+      "initial_altitude": 10000,
       "cruise_altitude": 33000,
       "expect_approach": "MTV",
-      "initial_altitude": 7000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. CAPSS3",
+      "star": "CAPSS3",
       "scratchpad": "MTV",
       "waypoints": "CAPSS/a10000 HOYAS/a7000/ho HALLL KATRN/h008"
     }
@@ -1209,14 +1202,13 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
       "cruise_altitude": 33000,
       "expect_approach": "RIV",
       "initial_altitude": 8000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. FRDMM5",
+      "star": "FRDMM5",
       "scratchpad": "RIV",
       "waypoints": "ALWYZ/a10000- FRDMM/a8000/s240/ho STAND TGTHR FERGI/h148"
     }
@@ -1288,14 +1280,13 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
       "cruise_altitude": 24000,
       "expect_approach": "RIV",
-      "initial_altitude": 8000,
+      "initial_altitude": 10000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. DEALE3",
+      "star": "DEALE3",
       "scratchpad": "RIV",
       "waypoints": "DEALE/a10000/s280 EDDGY THANE/a6000/ho MEGGS/h327"
     }
@@ -1355,14 +1346,13 @@
           }
         ]
       },
-      "cleared_altitude": 6000,
       "cruise_altitude": 33000,
       "expect_approach": "RIV",
       "initial_altitude": 7000,
       "initial_controller": "DCA_J_APP",
       "initial_speed": 250,
       "speed_restriction": 250,
-      "route": "/. CAPSS3",
+      "star": "CAPSS3",
       "scratchpad": "RIV",
       "waypoints": "JILES SMOOT/a7000+/ho BAAAM/a6000 PACKE/h327"
     }
@@ -1398,11 +1388,10 @@
           }
         ]
       },
-      "cleared_altitude" : 16000,
       "initial_altitude" : 18000,
       "initial_controller": "DC_CTR",
       "initial_speed" : 280,
-      "route": "/. RAVNN6",
+      "star": "RAVNN6",
       "waypoints": "DFORT/a18000+ WALKN/a16000/s280/ho JAYOH/a12000 CAPKO/a9000 RAVNN/a6000 JETNA BAL"
     }
   ]
@@ -1413,7 +1402,7 @@
   "frequency": 133725,
   "full_name": "Washington Center",
   "scope_char": "C",
-  "sector_id": "W32"
+  "sector_id": "32"
   },
   "NY_CTR": {
   "frequency": 125325,
@@ -1425,19 +1414,19 @@
     "frequency": 119700,
     "full_name": "Potomac Approach",
     "scope_char": "S",
-    "sector_id": "S"
+    "sector_id": "1S"
   },
   "BWI_P_APP": {
     "frequency": 119700,
     "full_name": "Potomac Approach",
     "scope_char": "P",
-    "sector_id": "P"
+    "sector_id": "1P"
   },
   "BWI_W_APP": {
     "frequency": 128700,
     "full_name": "Potomac Approach",
     "scope_char": "W",
-    "sector_id": "W"
+    "sector_id": "1W"
   },
   "IAD_M_APP": {
     "frequency": 126100,
@@ -1449,37 +1438,37 @@
     "frequency": 119850,
     "full_name" : "Potomac Approach",
     "scope_char": "J",
-    "sector_id": "J"
+    "sector_id": "1J"
   },
   "DCA_J_APP": {
     "frequency": 119850,
     "full_name" : "Potomac Approach",
     "scope_char": "J",
-    "sector_id": "J"
+    "sector_id": "1J"
   },
   "DCA_E_APP": {
     "frequency": 124200,
     "full_name" : "Potomac Approach",
     "scope_char": "E",
-    "sector_id": "E"
+    "sector_id": "1E"
   },
   "DCA_D_APP": {
     "frequency": 128350,
     "full_name" : "Potomac Approach",
     "scope_char": "D",
-    "sector_id": "D"
+    "sector_id": "1D"
   },
   "DCA_L_APP": {
     "frequency": 118675,
     "full_name" : "Potomac Approach",
     "scope_char": "L",
-    "sector_id": "L"
+    "sector_id": "1L"
   },
   "DCA_V_APP": {
     "frequency": 124700,
     "full_name" : "Potomac Approach",
     "scope_char": "V",
-    "sector_id": "V"
+    "sector_id": "1V"
   },
   "DCA_F_APP": {
     "frequency": 121050,
@@ -1491,19 +1480,19 @@
     "frequency": 118950,
     "full_name" : "Potomac Approach",
     "scope_char": "Y",
-    "sector_id": "Y"
+    "sector_id": "1Y"
   },
   "DCA_K_APP": {
     "frequency": 125650,
     "full_name" : "Potomac Approach",
     "scope_char": "K",
-    "sector_id": "K"
+    "sector_id": "1K"
   },
   "DCA_A_APP": {
     "frequency": 128000,
     "full_name": "Potomac Approach",
     "scope_char": "A",
-    "sector_id": "A"
+    "sector_id": "1A"
   },
   "DCA_TWR": {
     "frequency": 119100,
@@ -1512,7 +1501,7 @@
     "sector_id": "4T"
   }
   },
-  "default_scenario": "DCA North",
+  "default_scenario": "KDCA North",
   "fixes": {
     "_DCA_1":  "N38.50.30.629,W77.02.12.802",
     "_DCA_4":  "N38.50.30.312,W77.02.27.983",
@@ -1537,8 +1526,6 @@
   ],
   "magnetic_variation": 10.8,
   "name": "KDCA",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KDCA",
   "radar_sites": {
     "DCA": {
@@ -1681,7 +1668,7 @@
     "DFORT"
   ],
   "scenarios": {
-    "DCA North": {
+    "KDCA North": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1714,15 +1701,17 @@
       },
       "solo_controller": "DCA_APP",
       "multi_controllers": {
-        "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
-        "DCA_K_APP": {"backup": "DCA_J_APP", "departure": true, "arrivals": ["RAVNN6"]},
-        "DCA_Y_APP": {"backup": "DCA_K_APP"},
-        "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
-        "DCA_F_APP": {"backup": "DCA_Y_APP"},
-        "DCA_A_APP": {"backup": "DCA_K_APP"},
-        "DCA_D_APP": {"backup": "DCA_K_APP"},
-        "DCA_V_APP": {"backup": "DCA_J_APP"},
-        "DCA_E_APP": {"backup": "DCA_J_APP"}
+        "default": {
+            "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
+            "DCA_K_APP": {"backup": "DCA_J_APP", "departures": [ "KDCA" ], "arrivals": ["RAVNN6"]},
+            "DCA_Y_APP": {"backup": "DCA_K_APP"},
+            "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
+            "DCA_F_APP": {"backup": "DCA_Y_APP"},
+            "DCA_A_APP": {"backup": "DCA_K_APP"},
+            "DCA_D_APP": {"backup": "DCA_K_APP"},
+            "DCA_V_APP": {"backup": "DCA_J_APP"},
+            "DCA_E_APP": {"backup": "DCA_J_APP"}
+        }
       },
       "controllers": [
         "DC_CTR",
@@ -1734,7 +1723,7 @@
         "BWI_W_APP",
         "IAD_M_APP"
       ],
-      "default_map": "MTV North",
+      "default_maps": [ "MTV North" ],
       "wind": {
         "direction": 30,
         "gust": 12,
@@ -1748,7 +1737,7 @@
         }
       ]
     },
-    "DCA South": {
+    "KDCA South": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1781,15 +1770,17 @@
       },
       "solo_controller": "DCA_APP",
       "multi_controllers": {
-        "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
-        "DCA_K_APP": {"backup": "DCA_J_APP", "departure": true, "arrivals": ["RAVNN6"]},
-        "DCA_Y_APP": {"backup": "DCA_K_APP"},
-        "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
-        "DCA_F_APP": {"backup": "DCA_Y_APP"},
-        "DCA_A_APP": {"backup": "DCA_K_APP"},
-        "DCA_D_APP": {"backup": "DCA_K_APP"},
-        "DCA_V_APP": {"backup": "DCA_J_APP"},
-        "DCA_E_APP": {"backup": "DCA_J_APP"}
+        "default": {
+            "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
+            "DCA_K_APP": {"backup": "DCA_J_APP", "departures": [ "KDCA" ], "arrivals": ["RAVNN6"]},
+            "DCA_Y_APP": {"backup": "DCA_K_APP"},
+            "DCA_L_APP": {"backup": "DCA_Y_APP", "arrivals": ["FRDMM5","TRUPS4"]},
+            "DCA_F_APP": {"backup": "DCA_Y_APP"},
+            "DCA_A_APP": {"backup": "DCA_K_APP"},
+            "DCA_D_APP": {"backup": "DCA_K_APP"},
+            "DCA_V_APP": {"backup": "DCA_J_APP"},
+            "DCA_E_APP": {"backup": "DCA_J_APP"}
+        }
       },
       "controllers": [
         "DC_CTR",
@@ -1801,7 +1792,7 @@
         "BWI_W_APP",
         "IAD_M_APP"
       ],
-      "default_map": "MTV South",
+      "default_maps": [ "MTV South" ],
       "wind": {
         "direction": 180,
         "gust": 12,
@@ -1815,7 +1806,7 @@
         }
       ]
     },
-    "DCA N Final": {
+    "KDCA N Final": {
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -1842,13 +1833,13 @@
       "DCA_K_APP",
       "DC_CTR"
     ],
-    "default_map": "MTV North",
+    "default_maps": [ "MTV North" ],
     "wind": {
       "direction": 20,
       "speed": 5
     }
   },
-  "DCA S Final": {
+  "KDCA S Final": {
     "arrival_runways": [
       {
         "airport": "KDCA",
@@ -1875,7 +1866,7 @@
     "DCA_K_APP",
     "DC_CTR"
   ],
-  "default_map": "MTV South",
+  "default_maps": [ "MTV South" ],
   "wind": {
     "direction": 190,
     "speed": 5
@@ -2013,5 +2004,6 @@
       "label": "ADELTA",
       "name": "PCT ClassD"
     }
-  ]
+  ],
+  "video_map_file": "videomaps/ZDC-videomaps.json.zst"
 }

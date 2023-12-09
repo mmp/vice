@@ -23,7 +23,9 @@ import (
 // 11: expedite, intercept localizer, fix airspace serialization
 // 12: set 0 DCB brightness to 50 (WAR not setting a default for it)
 // 13: update departure handling for multi-controllers (and rename some members)
-const CurrentConfigVersion = 13
+// 14: Aircraft ArrivalHandoffController -> WaypointHandoffController
+// 15: audio engine rewrite
+const CurrentConfigVersion = 15
 
 type GlobalConfig struct {
 	Version               int
@@ -32,15 +34,12 @@ type GlobalConfig struct {
 	ImGuiSettings         string
 	WhatsNewIndex         int
 	LastServer            string
-	LastScenarioGroup     string
+	LastTRACON            string
 	UIFontSize            int
 
-	Audio AudioSettings
+	Audio AudioEngine
 
 	DisplayRoot *DisplayNode
-
-	DevScenarioFile string
-	DevVideoMapFile string
 
 	AskedDiscordOptIn      bool
 	InhibitDiscordActivity AtomicBool
@@ -128,14 +127,10 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 
 func SetDefaultConfig() {
 	globalConfig = &GlobalConfig{}
-	globalConfig.Audio.SoundEffects[AudioEventConflictAlert] = "Alert 2"
-	globalConfig.Audio.SoundEffects[AudioEventInboundHandoff] = "Beep Up"
-	globalConfig.Audio.SoundEffects[AudioEventHandoffAccepted] = "Blip"
-	globalConfig.Audio.SoundEffects[AudioEventCommandError] = "Beep Negative"
 
+	globalConfig.Audio.SetDefaults()
 	globalConfig.Version = CurrentConfigVersion
 	globalConfig.WhatsNewIndex = len(whatsNew)
-
 	globalConfig.InitialWindowPosition = [2]int{100, 100}
 }
 
@@ -161,6 +156,11 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.Sim = nil
 			globalConfig.Callsign = ""
 		}
+		if globalConfig.Version < 15 && globalConfig.Audio.AudioEnabled {
+			for i := 0; i < AudioNumTypes; i++ {
+				globalConfig.Audio.EffectEnabled[i] = true
+			}
+		}
 		if globalConfig.Version < CurrentConfigVersion {
 			globalConfig.Sim = nil
 
@@ -178,6 +178,10 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig.UIFontSize = 16
 	}
 	globalConfig.Version = CurrentConfigVersion
+
+	if err := globalConfig.Audio.Activate(); err != nil {
+		lg.Errorf("Audio: %v", err)
+	}
 
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }

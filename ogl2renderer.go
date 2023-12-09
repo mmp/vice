@@ -13,18 +13,15 @@ import (
 	"unsafe"
 
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/mmp/imgui-go/v4"
 )
 
 type OpenGL2Renderer struct {
-	imguiIO imgui.IO
-
 	createdTextures map[uint32]int
 }
 
 // NewOpenGL2Renderer creates an OpenGL context and creates a texture for the imgui fonts.
 // Thus, all font creation must be finished before the renderer is created.
-func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
+func NewOpenGL2Renderer() (Renderer, error) {
 	lg.Info("Starting OpenGL2Renderer initialization")
 	if err := gl.Init(); err != nil {
 		return nil, fmt.Errorf("failed to initialize OpenGL: %w", err)
@@ -35,7 +32,6 @@ func NewOpenGL2Renderer(io imgui.IO) (Renderer, error) {
 
 	lg.Info("Finished OpenGL2Renderer initialization")
 	return &OpenGL2Renderer{
-		imguiIO:         io,
 		createdTextures: make(map[uint32]int),
 	}, nil
 }

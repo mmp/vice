@@ -41,8 +41,6 @@ var (
 		iconTextureID     uint32
 		sadTowerTextureID uint32
 
-		jsonSelectDialog *FileSelectDialogBox
-
 		activeModalDialogs []*ModalDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
@@ -123,6 +121,26 @@ var (
 		"Fixed bug with some departures trying to re-fly their initial departure route",
 		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
 		"Fixed bug with the default DCB brightness being set to 0",
+		"Added DCA scenario",
+		"There is now a short delay before aircraft start to follow heading assignments",
+		"Added \"ID\" command for ident",
+		"Aircraft can now also be issued control commands by entering their callsign before the commands",
+		"Fixed bugs with endless go-arounds and with departures not obeying altitude restrictions",
+		"Fixed a bug that caused vice to sometimes crash after aircraft were given approach clearance",
+		"Fixed a bug where descending aircraft would stop descending when given approach clearance",
+		"Small fixes to the DCA scenario",
+		"Polished up handling of early hand-offs of departures in the STARS scope",
+		"Added L30 (Las Vegas) scenarios and a combined N90 (JFK+LGA+EWR) scenario",
+		"Important readbacks from pilots are now highlighted in red",
+		"Improved STARS *T to allow entering fix names and to show ETA",
+		"Added support for charted visual approaches",
+		"STARS allows control-shift click to initiate track (CRC style)",
+		"Secondary scratchpads are now supported",
+		"Fixed various navigation bugs",
+		"STARS: fixed a bug where RBL lines for *T that included aircraft weren't drawn",
+		"Added an option to hide the flight strips (Settings window, Flight Strips section)",
+		"Fixed a bug where inbound handoffs wouldn't send a radio contact message",
+		"Sped up loading of video maps so that vice launches more quickly",
 	}
 )
 
@@ -945,11 +963,11 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits: Thanks to Dennis Graiani and
 Samuel Valencia for contributing features to vice
-and to Adam Bolek, Mike K, Arya T, and Samuel
-Valencia for contributing additional scenarios.
-Video maps are thanks to the ZAU, ZBW, ZDV, ZJX,
-ZNY, and ZOB VATSIM ARTCCs. Thanks also to
-OpenScope for the airline fleet and aircraft
+and to Adam Bolek, Mike K, Arya T, Michael Trokel,
+and Samuel Valencia for contributing additional
+scenarios. Video maps are thanks to the ZAU, ZBW,
+ZDV, ZJX, ZNY, and ZOB VATSIM ARTCCs. Thanks
+also to OpenScope for the airline fleet and aircraft
 performance databases and to ourairports.com for
 the airport database. See the file CREDITS.txt
 in the vice source code distribution for third-party

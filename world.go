@@ -13,6 +13,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -69,7 +70,7 @@ type World struct {
 	RadarSites        map[string]*RadarSite
 	Center            Point2LL
 	Range             float32
-	DefaultMap        string
+	DefaultMaps       []string
 	STARSMaps         []STARSMap
 	InhibitCAVolumes  []AirspaceVolume
 	Wind              Wind
@@ -118,7 +119,7 @@ func (w *World) Assign(other *World) {
 	w.RadarSites = other.RadarSites
 	w.Center = other.Center
 	w.Range = other.Range
-	w.DefaultMap = other.DefaultMap
+	w.DefaultMaps = other.DefaultMaps
 	w.STARSMaps = other.STARSMaps
 	w.InhibitCAVolumes = other.InhibitCAVolumes
 	w.Wind = other.Wind
@@ -225,6 +226,20 @@ func (w *World) SetScratchpad(callsign string, scratchpad string, success func(a
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetScratchpad(callsign, scratchpad),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) SetSecondaryScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.SecondaryScratchpad = scratchpad
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetSecondaryScratchpad(callsign, scratchpad),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -444,6 +459,15 @@ func (w *World) GetController(callsign string) *Controller {
 
 func (w *World) GetAllControllers() map[string]*Controller {
 	return w.Controllers
+}
+
+func (w *World) DepartureController(ac *Aircraft) string {
+	callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
+		func(callsign string) bool {
+			ctrl, ok := w.Controllers[callsign]
+			return ok && ctrl.IsHuman
+		})
+	return Select(callsign != "", callsign, w.PrimaryController)
 }
 
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
@@ -689,7 +713,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	for {
 		format := "####"
 		if len(al.Callsign.CallsignFormats) > 0 {
-			format = Sample(al.Callsign.CallsignFormats)
+			format = SampleSlice(al.Callsign.CallsignFormats)
 		}
 
 		id := ""
@@ -701,7 +725,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		if id == "0" {
+		if id == "0" || id == "00" || id == "000" || id == "0000" {
 			continue // bleh, try again
 		} else if _, ok := w.Aircraft[callsign+id]; ok {
 			continue // it already exits
@@ -744,7 +768,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	}
 	arr := arrivals[idx]
 
-	airline := Sample(arr.Airlines[arrivalAirport])
+	airline := SampleSlice(arr.Airlines[arrivalAirport])
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -780,7 +804,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, ErrUnknownAirport
 	}
 
-	idx := FindIf(w.DepartureRunways,
+	idx := slices.IndexFunc(w.DepartureRunways,
 		func(r ScenarioGroupDepartureRunway) bool {
 			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
 		})
@@ -821,19 +845,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
-	virtualDepartureController := ap.DepartureController
-	humanDepartureController := ""
-	if virtualDepartureController == "" {
-		humanDepartureController = w.PrimaryController
-		if w.MultiControllers != nil {
-			humanDepartureController = w.MultiControllers.GetDepartureController(departureAirport, runway)
-			if humanDepartureController == "" {
-				humanDepartureController = w.PrimaryController
-			}
-		}
-	}
-
-	airline := Sample(dep.Airlines)
+	airline := SampleSlice(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -841,8 +853,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
-	if err := ac.InitializeDeparture(w, ap, dep, virtualDepartureController,
-		humanDepartureController, exitRoute); err != nil {
+	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
 
@@ -1425,15 +1436,12 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			}
 		}
 
-		if wp.Fix[0] == '_' {
-			// Don't draw fix names or other details for internal-use fixes...
-			continue
-		}
+		drawName := wp.Fix[0] != '_'
 		if _, err := ParseLatLong([]byte(wp.Fix)); err == nil {
-			// Also don't draw fixes that are directly specified as latlong
-			// coordinates.
-			continue
+			// Also don't draw names that are directly specified as latlongs.
+			drawName = false
 		}
+
 		if _, ok := drawnWaypoints[wp.Fix]; ok {
 			// And if we're given the same fix more than once (as may
 			// happen with T-shaped RNAV arrivals for example), only draw
@@ -1460,7 +1468,9 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		// properties, and altitude/speed restrictions.
 		p := transforms.WindowFromLatLongP(wp.Location)
 		p = add2f(p, offset)
-		p = td.AddText(wp.Fix+"\n", p, style)
+		if drawName {
+			p = td.AddText(wp.Fix+"\n", p, style)
+		}
 
 		if wp.IAF || wp.IF || wp.FAF || wp.NoPT {
 			var s []string
@@ -1586,54 +1596,6 @@ func (w *World) DrawSettingsWindow() {
 	}
 	if messages != nil && imgui.CollapsingHeader("Messages") {
 		messages.DrawUI()
-	}
-
-	if imgui.CollapsingHeader("Developer") {
-		if imgui.BeginTableV("GlobalFiles", 4, 0, imgui.Vec2{}, 0) {
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Scenario:")
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.DevScenarioFile)
-			imgui.TableNextColumn()
-			if imgui.Button("New...##scenario") {
-				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
-					globalConfig.DevScenarioFile, func(filename string) {
-						globalConfig.DevScenarioFile = filename
-						ui.jsonSelectDialog = nil
-					})
-				ui.jsonSelectDialog.Activate()
-			}
-			imgui.TableNextColumn()
-			if globalConfig.DevScenarioFile != "" && imgui.Button("Clear##scenario") {
-				globalConfig.DevScenarioFile = ""
-			}
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Video maps:")
-			imgui.TableNextColumn()
-			imgui.Text(globalConfig.DevVideoMapFile)
-			imgui.TableNextColumn()
-			if imgui.Button("New...##vid") {
-				ui.jsonSelectDialog = NewFileSelectDialogBox("Select JSON File", []string{".json"},
-					globalConfig.DevVideoMapFile, func(filename string) {
-						globalConfig.DevVideoMapFile = filename
-						ui.jsonSelectDialog = nil
-					})
-				ui.jsonSelectDialog.Activate()
-			}
-			imgui.TableNextColumn()
-			if globalConfig.DevVideoMapFile != "" && imgui.Button("Clear##vid") {
-				globalConfig.DevVideoMapFile = ""
-			}
-
-			imgui.EndTable()
-		}
-
-		if ui.jsonSelectDialog != nil {
-			ui.jsonSelectDialog.Draw()
-		}
 	}
 
 	imgui.End()

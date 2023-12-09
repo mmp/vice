@@ -1,9 +1,10 @@
 {
+  "tracon": "SAV (Savannah)",
   "airports": {
     "KSAV": {
       "approaches": {
         "I1": {
-          "full_name":" ILS Runway 1",
+          "full_name":"ILS Runway 1",
           "runway": "1",
           "type": "ILS",
           "waypoints": [
@@ -11,7 +12,7 @@
           ]
         },
         "R1": {
-          "full_name":" RNAV Runway 1",
+          "full_name":"RNAV Runway 1",
           "runway": "1",
           "type": "RNAV",
           "waypoints": [
@@ -59,34 +60,28 @@
         "10": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "route": "GIPPL",
               "waypoints": "_SAV_10 _SAV_28/h097"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "route": "JROSS",
               "waypoints": "_SAV_10 _SAV_28/h097"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "route": "SMALZ",
               "waypoints": "_SAV_10 _SAV_28/h097"
             }
         },
         "28": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "route": "GIPPL",
               "waypoints": "_SAV_28 _SAV_10/h277"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "route": "JROSS",
               "waypoints": "_SAV_28 _SAV_10/h277"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "route": "SMALZ",
               "waypoints": "_SAV_28 _SAV_10/h277"
             }
         }
@@ -627,11 +622,11 @@
           ]
         },
         "cruise_altitude": 38000,
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "SOOOP",
+        "route": "/. SOOOP",
         "waypoints": "MEECH SOOOP/ho/h252 "
       }
     ],
@@ -681,7 +676,7 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "cruise_altitude": 36000,
         "initial_altitude": 11000,
         "initial_controller": "JAX_30_CTR",
@@ -733,7 +728,7 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "cruise_altitude": 33000,
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
@@ -760,7 +755,7 @@
             }
           ]
         },
-        "cleared_altitude": 11000,
+        "assigned_altitude": 11000,
         "cruise_altitude": 31000,
         "initial_altitude": 12000,
         "initial_controller": "JAX_30_CTR",
@@ -824,8 +819,6 @@
   ],
   "magnetic_variation": 7.1,
   "name": "KSAV",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 49,
   "primary_airport": "KSAV",
   "radar_sites": {
     "SAV": {
@@ -886,7 +879,7 @@
         "JAX_30_CTR",
         "SAV_TWR"
       ],
-      "default_map": "RADAR MAP",
+      "default_maps": [ "RADAR MAP" ],
       "departure_airspace": [
         "SAVAPP"
       ],
@@ -943,7 +936,7 @@
         "JAX_30_CTR",
         "SAV_TWR"
       ],
-      "default_map": "RADAR MAP",
+      "default_maps": [ "RADAR MAP" ],
       "departure_airspace": [
         "SAVAPP"
       ],

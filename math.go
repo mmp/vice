@@ -301,6 +301,19 @@ func PointLineDistance(p, p0, p1 [2]float32) float32 {
 	return abs(SignedPointLineDistance(p, p0, p1))
 }
 
+// Return minimum distance between line segment vw and point p
+// https://stackoverflow.com/a/1501725
+func PointSegmentDistance(p, v, w [2]float32) float32 {
+	l := sub2f(v, w)
+	l2 := dot(l, l)
+	if l2 == 0 {
+		return length2f(sub2f(p, v))
+	}
+	t := clamp(dot(sub2f(p, v), sub2f(w, v))/l2, 0, 1)
+	proj := add2f(v, scale2f(sub2f(w, v), t))
+	return distance2f(p, proj)
+}
+
 // ClosestPointOnLine returns the closest point on the (infinite) line to
 // the given point p.
 func ClosestPointOnLine(line [2][2]float32, p [2]float32) [2]float32 {
@@ -864,4 +877,41 @@ func (r *Rand) Int31n(n int32) int32 {
 
 func (r *Rand) Float32() float32 {
 	return float32(r.r.Random()) / (1<<32 - 1)
+}
+
+// PermutationElement returns the ith element of a random permutation of the
+// set of integers [0...,n-1].
+// i/n, p is hash, via Andrew Kensler
+func PermutationElement(i int, n int, p uint32) int {
+	ui, l := uint32(i), uint32(n)
+	w := l - 1
+	w |= w >> 1
+	w |= w >> 2
+	w |= w >> 4
+	w |= w >> 8
+	w |= w >> 16
+	for {
+		ui ^= p
+		ui *= 0xe170893d
+		ui ^= p >> 16
+		ui ^= (ui & w) >> 4
+		ui ^= p >> 8
+		ui *= 0x0929eb3f
+		ui ^= p >> 23
+		ui ^= (ui & w) >> 1
+		ui *= 1 | p>>27
+		ui *= 0x6935fa69
+		ui ^= (ui & w) >> 11
+		ui *= 0x74dcb303
+		ui ^= (ui & w) >> 2
+		ui *= 0x9e501cc3
+		ui ^= (ui & w) >> 2
+		ui *= 0xc860a3df
+		ui &= w
+		ui ^= ui >> 5
+		if ui < l {
+			break
+		}
+	}
+	return int((ui + p) % l)
 }
