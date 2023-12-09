@@ -466,7 +466,7 @@ func (ac *Aircraft) NavSummary() string {
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) string {
-	return ac.Nav.ContactMessage(reportingPoints)
+	return ac.Nav.ContactMessage(reportingPoints, ac.STAR)
 }
 
 func (ac *Aircraft) DepartOnCourse() {
