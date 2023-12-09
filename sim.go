@@ -57,14 +57,19 @@ type LaunchConfig struct {
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]int
+	ArrivalGroupRates           map[string]map[string]int
+	ArrivalPushes               bool
+	ArrivalPushFrequencyMinutes int
+	ArrivalPushLengthMinutes    int
 }
 
 func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, arr map[string]map[string]int) LaunchConfig {
 	lc := LaunchConfig{
-		DepartureChallenge: 0.25,
-		GoAroundRate:       0.05,
-		ArrivalGroupRates:  arr,
+		DepartureChallenge:          0.25,
+		GoAroundRate:                0.05,
+		ArrivalGroupRates:           arr,
+		ArrivalPushFrequencyMinutes: 20,
+		ArrivalPushLengthMinutes:    10,
 	}
 
 	// Walk the departure runways to create the map for departures.
@@ -192,6 +197,16 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	imgui.Text("Arrivals")
 	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
 	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
+
+	changed = imgui.Checkbox("Include random arrival pushes", &lc.ArrivalPushes) || changed
+	uiStartDisable(!lc.ArrivalPushes)
+	freq := int32(lc.ArrivalPushFrequencyMinutes)
+	changed = imgui.SliderInt("Push frequency (minutes)", &freq, 3, 60) || changed
+	lc.ArrivalPushFrequencyMinutes = int(freq)
+	min := int32(lc.ArrivalPushLengthMinutes)
+	changed = imgui.SliderInt("Length of push (minutes)", &min, 5, 30) || changed
+	lc.ArrivalPushLengthMinutes = int(min)
+	uiEndDisable(!lc.ArrivalPushes)
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
@@ -679,6 +694,9 @@ type Sim struct {
 	SimRate        float32
 	Paused         bool
 
+	NextPushStart time.Time // both w.r.t. sim time
+	PushEnd       time.Time
+
 	STARSInputOverride string
 }
 
@@ -747,6 +765,12 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 
 	if !isLocal {
 		s.Name = ssc.NewSimName
+	}
+
+	if s.LaunchConfig.ArrivalPushes {
+		// Figure out when the next arrival push will start
+		m := 1 + rand.Intn(s.LaunchConfig.ArrivalPushFrequencyMinutes)
+		s.NextPushStart = time.Now().Add(time.Duration(m) * time.Minute)
 	}
 
 	for ap := range s.LaunchConfig.DepartureRates {
@@ -895,6 +919,8 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("sim_time", s.SimTime),
 		slog.Float64("sim_rate", float64(s.SimRate)),
 		slog.Bool("paused", s.Paused),
+		slog.Time("next_push_start", s.NextPushStart),
+		slog.Time("push_end", s.PushEnd),
 		slog.Any("aircraft", s.World.Aircraft))
 }
 
@@ -1222,6 +1248,7 @@ func (s *Sim) Update() {
 // separate so time management can be outside this so we can do the prespawn stuff...
 func (s *Sim) updateState() {
 	now := s.SimTime
+
 	for callsign, t := range s.Handoffs {
 		if !now.After(t) {
 			continue
@@ -1470,10 +1497,14 @@ func sampleRateMap2(rates map[string]map[string]int) (string, string, int) {
 	return result0, result1, rateSum
 }
 
-func randomWait(rate int) time.Duration {
+func randomWait(rate int, pushActive bool) time.Duration {
 	if rate == 0 {
 		return 365 * 24 * time.Hour
 	}
+	if pushActive {
+		rate = rate * 3 / 2
+	}
+
 	avgSeconds := 3600 / float32(rate)
 	seconds := lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
 	return time.Duration(seconds * float32(time.Second))
@@ -1481,6 +1512,22 @@ func randomWait(rate int) time.Duration {
 
 func (s *Sim) spawnAircraft() {
 	now := s.SimTime
+
+	if !s.NextPushStart.IsZero() && now.After(s.NextPushStart) {
+		// party time
+		s.PushEnd = now.Add(time.Duration(s.LaunchConfig.ArrivalPushLengthMinutes) * time.Minute)
+		s.lg.Info("arrival push starting", slog.Time("end_time", s.PushEnd))
+		s.NextPushStart = time.Time{}
+	}
+	if !s.PushEnd.IsZero() && now.After(s.PushEnd) {
+		// end push
+		m := -2 + rand.Intn(4) + s.LaunchConfig.ArrivalPushFrequencyMinutes
+		s.NextPushStart = now.Add(time.Duration(m) * time.Minute)
+		s.lg.Info("arrival push ending", slog.Time("next_start", s.NextPushStart))
+		s.PushEnd = time.Time{}
+	}
+
+	pushActive := now.Before(s.PushEnd)
 
 	for group, airportRates := range s.LaunchConfig.ArrivalGroupRates {
 		if now.After(s.NextArrivalSpawn[group]) {
@@ -1491,7 +1538,7 @@ func (s *Sim) spawnAircraft() {
 				s.lg.Error("CreateArrival error: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
-				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
+				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum, pushActive))
 			}
 		}
 	}
@@ -1518,7 +1565,7 @@ func (s *Sim) spawnAircraft() {
 			s.lastDeparture[airport][runway][category] = dep
 			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
 			s.launchAircraftNoLock(*ac)
-			s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum))
+			s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
 		}
 	}
 }
@@ -1559,7 +1606,7 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 			}
 			if newSum != oldSum {
 				s.lg.Infof("%s: departure rate changed %d -> %d", ap, oldSum, newSum)
-				s.NextDepartureSpawn[ap] = s.SimTime.Add(randomWait(newSum))
+				s.NextDepartureSpawn[ap] = s.SimTime.Add(randomWait(newSum, false))
 			}
 		}
 		for group, groupRates := range lc.ArrivalGroupRates {
@@ -1569,8 +1616,9 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 				oldSum += s.LaunchConfig.ArrivalGroupRates[group][ap]
 			}
 			if newSum != oldSum {
+				pushActive := s.SimTime.Before(s.PushEnd)
 				s.lg.Infof("%s: arrival rate changed %d -> %d", group, oldSum, newSum)
-				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum))
+				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum, pushActive))
 			}
 
 		}
