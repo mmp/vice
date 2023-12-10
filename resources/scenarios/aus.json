@@ -400,9 +400,8 @@
                               "sid": "MUCKY3",
                               "waypoints": "N29.53.49.186,W97.52.11.925 N29.53.11.609,W97.51.25.441/h129 PAYDA/a5000 MUCKY"
                           },
-                          "RH": {
+                          "KHYI": {
                                 "cleared_altitude": 4000,
-                                "sid": "RH",
                                 "waypoints": "N29.53.49.186,W97.52.11.925 N29.53.11.609,W97.51.25.441/h129"
                           }
                     },
@@ -437,9 +436,8 @@
                               "sid": "MUCKY3",
                               "waypoints": "N29.53.11.609,W97.51.25.441 N29.53.49.186,W97.52.11.925/h309 PAYDA/a5000 MUCKY"
                           },
-                          "RH": {
+                          "KHYI": {
                             "cleared_altitude": 4000,
-                            "sid": "RH",
                             "waypoints": "N29.53.11.609,W97.51.25.441 N29.53.49.186,W97.52.11.925/h309"
                       }
                     }
@@ -474,8 +472,8 @@
                             }
                         ],
                         "destination": "KSAT",
-                        "exit": "RH",
-                        "route": "RH KSAT"
+                        "exit": "KHYI",
+                        "route": "KHYI KSAT"
                     },
                     {
                         "airlines": [
@@ -484,8 +482,8 @@
                             }
                         ],
                         "destination": "KSGR",
-                        "exit": "RH",
-                        "route": "RH KSGR"
+                        "exit": "KHYI",
+                        "route": "KHYI KSGR"
                     },
                     {
                         "airlines": [
@@ -494,8 +492,8 @@
                             }
                         ],
                         "destination": "KCLL",
-                        "exit": "RH",
-                        "route": "RH KCLL"
+                        "exit": "KHYI",
+                        "route": "KHYI KCLL"
                     },
                     {
                         "airlines": [
@@ -543,24 +541,22 @@
                     "29": {
                         "AMUSE": {
                             "cleared_altitude": 4000,
-                            "sid": "AMUSE",
+                            "sid": "AEROZ2",
                             "waypoints": "N30.40.32.374,W97.40.29.883 N30.40.52.973,W97.41.10.216/h290 AMUSE"
                           },
                         "CLL": {
                             "cleared_altitude": 5000,
-                            "sid": "CLL",
                             "waypoints": "N30.40.32.374,W97.40.29.883 N30.40.52.973,W97.41.10.216/h290 CLL"
                         }
                     },
                     "11": {
                         "AMUSE": {
                             "cleared_altitude": 4000,
-                            "sid": "AMUSE",
+                            "sid": "AEROZ2",
                             "waypoints": "N30.40.52.973,W97.41.10.216 N30.40.32.374,W97.40.29.883/h110 AMUSE"
                           },
                         "CLL": {
                             "cleared_altitude": 5000,
-                            "sid": "CLL",
                             "waypoints": "N30.40.52.973,W97.41.10.216 N30.40.32.374,W97.40.29.883/h110 CLL"
                         }
                     }
@@ -1657,7 +1653,7 @@
                         "KLNGR": "KLN",
                         "AMUSE": "AMU",
                         "CLL": "CLL",
-                        "RH": "RH"
+                        "KHYI": ""
                     },
                     "stars_maps": [
                         {
