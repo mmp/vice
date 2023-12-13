@@ -963,11 +963,12 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits: Thanks to Dennis Graiani and
 Samuel Valencia for contributing features to vice
-and to Adam Bolek, Jace Martin, Mike K, Arya T,
-Michael Trokel, and Samuel Valencia for contributing
-additional scenarios. Video maps are thanks to the
-ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB,
-and ZTL VATSIM ARTCCs. Thanks also to OpenScope
+and to Adam Bolek, Aaron Flett, Mike K, Mike K,
+Jace Martin, Arya T, Michael Trokel, and Samuel
+Valencia for contributing additional scenarios.
+Video maps are thanks to the ZAU, ZBW, ZDC,
+ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB, ZSE, and
+ZTL VATSIM ARTCCs. Thanks also to OpenScope
 for the airline fleet and aircraft performance
 databases and to ourairports.com for the airport
 database. See the file CREDITS.txt in the vice
