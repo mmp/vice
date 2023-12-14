@@ -92,74 +92,74 @@
         "24": {
           "DAYVS": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           },
           "JOEYE": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           },
           "KELCC": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           },
           "RHETT": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           },
           "MRICA": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           },
           "CHEHA": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           },
           "GUMMP": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_24 _BHM_6/h238"
           }
         },
         "6": {
           "DAYVS": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           },
           "JOEYE": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           },
           "KELCC": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           },
           "RHETT": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           },
           "MRICA": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           },
           "CHEHA": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           },
           "GUMMP": {
             "cleared_altitude": 4000,
-            "sid": "GIPPL",
+            "sid": "BHM8",
             "waypoints": "_BHM_6 _BHM_24/h058"
           }
         }
@@ -752,19 +752,19 @@
       "frequency": 132975,
       "full_name": "Atlanta Center",
       "scope_char": "C",
-      "sector_id": "43"
+      "sector_id": "C43"
     },
     "MEM_CTR": {
       "frequency": 132550,
       "full_name": "Memphis Center",
       "scope_char": "C",
-      "sector_id": "22"
+      "sector_id": "M22"
     },
     "BHM_TWR": {
       "frequency": 119900,
       "full_name": "Birmingham Tower",
       "scope_char": "C",
-      "sector_id": "B"
+      "sector_id": "1B"
     },
     "BHM_N_APP": {
       "frequency": 127670,
