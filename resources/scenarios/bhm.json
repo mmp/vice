@@ -4,7 +4,6 @@
     "KBHM": {
       "approaches": {
         "I24": {
-          "full_name": "ILS 24",
           "runway": "24",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +11,7 @@
           ]
         },
         "Y24": {
-          "full_name": " RNAV Y Runway 24",
+          "full_name": "RNAV Y Runway 24",
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
@@ -31,7 +30,6 @@
           ]
         },
         "I6": {
-          "full_name": "ILS 6",
           "runway": "6",
           "type": "ILS",
           "waypoints": [

@@ -4,7 +4,6 @@
         "KCLE": {
             "approaches": {
                 "I6L" : {
-                    "full_name": "ILS Runway 6 Left",
                     "runway": "6L",
                     "type": "ILS",
                     "waypoints": [
@@ -17,7 +16,6 @@
                     ]
                 },
                 "I6R": {
-                    "full_name": "ILS Runway 6 Right",
                     "runway": "6R",
                     "type": "ILS",
                     "waypoints": [
@@ -31,7 +29,6 @@
                     ]
                 },
                 "R10": {
-                    "full_name": "RNAV Runway 10",
                     "runway": "10",
                     "type": "RNAV",
                     "waypoints": [
@@ -42,7 +39,6 @@
                     ]
                 },
                 "I4L": {
-                    "full_name": "ILS Runway 24 Left",
                     "runway": "24L",
                     "type": "ILS",
                     "waypoints": [
@@ -58,7 +54,6 @@
                     ]
                 },
                 "I4R": {
-                    "full_name": "ILS Runway 24 Right",
                     "runway": "24R",
                     "type": "ILS",
                     "waypoints": [
@@ -72,7 +67,6 @@
                     ]
                 },
                 "I28": {
-                    "full_name": "ILS Runway 28",
                     "runway": "28",
                     "type": "ILS",
                     "waypoints": [
@@ -680,15 +674,13 @@
                 "KCGF": {
                     "approaches": {
                         "R6": {
-                            "full_name": "RNAV Runway 6",
-                            "runway": "06",
+                            "runway": "6",
                             "type": "RNAV",
                             "waypoints": [
                                 "ZONIA/a2200 EUKER/a2200 _CGF_6/a874"
                             ]
                         },
                         "I24": {
-                            "full_name": "ILS Runway 24",
                             "runway": "24",
                             "type": "ILS",
                             "waypoints": [
@@ -696,7 +688,6 @@
                             ]
                         },
                         "R24": {
-                            "full_name": "RNAV Runway 24",
                             "runway": "24",
                             "type": "RNAV",
                             "waypoints": [

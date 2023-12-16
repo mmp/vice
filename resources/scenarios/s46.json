@@ -5,7 +5,6 @@
       "name": "Seattle",
       "approaches": {
         "I6C": {
-          "full_name": "ILS 16C",
           "runway": "16C",
           "type": "ILS",
           "waypoints": [
@@ -14,7 +13,6 @@
           ]
         },
         "I6L": {
-          "full_name": "ILS 16L",
           "runway": "16L",
           "type": "ILS",
           "waypoints": [
@@ -23,7 +21,6 @@
           ]
         },
         "I6R": {
-          "full_name": "ILS 16R",
           "runway": "16R",
           "type": "ILS",
           "waypoints": [
@@ -32,7 +29,6 @@
           ]
         },
         "I4C": {
-          "full_name": "ILS 34C",
           "runway": "34C",
           "type": "ILS",
           "waypoints": [
@@ -42,7 +38,6 @@
           ]
         },
         "I4L": {
-          "full_name": "ILS 34L",
           "runway": "34L",
           "type": "ILS",
           "waypoints": [
@@ -52,7 +47,6 @@
           ]
         },
         "I4R": {
-          "full_name": "ILS 34R",
           "runway": "34R",
           "type": "ILS",
           "waypoints": [
@@ -60,7 +54,7 @@
           ]
         },
         "Z6C": {
-          "full_name": "RNAV Zulu 16C",
+          "full_name": "RNAV Z Runway 16C",
           "runway": "16C",
           "type": "RNAV",
           "waypoints": [
@@ -72,7 +66,7 @@
           ]
         },
         "Z6L": {
-          "full_name": "RNAV Zulu 16L",
+          "full_name": "RNAV Z Runway 16L",
           "runway": "16L",
           "type": "RNAV",
           "waypoints": [
@@ -82,7 +76,7 @@
           ]
         },
         "Z6R": {
-          "full_name": "RNAV Zulu 16R",
+          "full_name": "RNAV Z Runway 16R",
           "runway": "16R",
           "type": "RNAV",
           "waypoints": [
@@ -94,7 +88,7 @@
           ]
         },
         "Z4C": {
-          "full_name": "RNAV Zulu 34C",
+          "full_name": "RNAV Z Runway 34C",
           "runway": "34C",
           "type": "RNAV",
           "waypoints": [
@@ -104,7 +98,7 @@
           ]
         },
         "Z4L": {
-          "full_name": "RNAV Zulu 34L",
+          "full_name": "RNAV Z Runway 34L",
           "runway": "34L",
           "type": "RNAV",
           "waypoints": [
@@ -114,7 +108,7 @@
           ]
         },
         "Z4R": {
-          "full_name": "RNAV Zulu 34R",
+          "full_name": "RNAV Z Runway 34R",
           "runway": "34R",
           "type": "RNAV",
           "waypoints": [

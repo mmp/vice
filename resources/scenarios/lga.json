@@ -5,7 +5,6 @@
       "name": "LaGuardia",
       "approaches": {
         "I4": {
-          "full_name": "ILS Runway 4",
           "runway": "4",
           "type": "ILS",
           "waypoints": [
@@ -13,7 +12,6 @@
           ]
         },
         "I22": {
-          "full_name": "ILS Runway 22",
           "runway": "22",
           "type": "ILS",
           "waypoints": [
@@ -21,7 +19,6 @@
           ]
         },
         "I13": {
-          "full_name": "ILS Runway 13",
           "runway": "13",
           "type": "ILS",
           "waypoints": [

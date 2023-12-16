@@ -221,6 +221,19 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			e.ErrorString("Must specify \"runway\"")
 		}
 
+		if ap.FullName == "" {
+			switch ap.Type {
+			case ILSApproach:
+				ap.FullName = "ILS Runway " + ap.Runway
+			case RNAVApproach:
+				ap.FullName = "RNAV Runway " + ap.Runway
+			case ChartedVisualApproach:
+				e.ErrorString("Must provide \"full_name\" for charted visual approach")
+			}
+		} else if !strings.Contains(ap.FullName, "runway") && !strings.Contains(ap.FullName, "Runway") {
+			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
+		}
+
 		if ap.Type == ChartedVisualApproach && len(ap.Waypoints) != 1 {
 			// Note: this could be relaxed if necessary but the logic in
 			// Nav prepareForChartedVisual() assumes as much.

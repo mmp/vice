@@ -5,7 +5,6 @@
       "name": "Academy",
       "approaches": {
         "I8R": {
-          "full_name": "ILS Runway 28 Right",
           "runway": "28R",
           "type": "ILS",
           "waypoints": [
@@ -13,7 +12,6 @@
           ]
         },
         "R8L": {
-          "full_name": "RNAV Runway 28 Left",
           "runway": "28L",
           "type": "RNAV",
           "waypoints": [
@@ -21,7 +19,6 @@
           ]
         },
         "R8R": {
-          "full_name": "RNAV Runway 28 Right",
           "runway": "28R",
           "type": "RNAV",
           "waypoints": [
@@ -492,7 +489,6 @@
       "name": "Jeske",
       "approaches": {
         "I27": {
-          "full_name": "ILS Runway 27",
           "runway": "27",
           "type": "ILS",
           "waypoints": [
