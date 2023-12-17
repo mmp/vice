@@ -1863,7 +1863,7 @@ func (nav *Nav) getApproach(airport string, id string, w *World) (*Approach, err
 
 	for name, appr := range ap.Approaches {
 		if name == id {
-			return &appr, nil
+			return appr, nil
 		}
 	}
 	return nil, ErrUnknownApproach
