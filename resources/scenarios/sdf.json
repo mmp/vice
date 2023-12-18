@@ -5,6 +5,7 @@
       "approaches": {
         "I7L": {
           "runway": "17L",
+          "tower_controller": "SDF_W_TWR",
           "type": "ILS",
           "waypoints": [
           "THUND/a5000 RACRR/a4000 SLGRR/a2500 KELEI/a1320 _SDF_17L/a499"
@@ -12,6 +13,7 @@
         },
         "I7R" : {
           "runway": "17R",
+          "tower_controller": "SDF_W_TWR",
           "type": "ILS",
           "waypoints":[
           "SPYRS/a4000 BLGRS/a3000 CHRCL/a2500 VOYUK/a1300 _SDF_17R/a485"
@@ -19,6 +21,7 @@
         },
         "I5L": {
           "runway": "35L",
+          "tower_controller": "SDF_E_TWR",
           "type": "ILS",
           "waypoints": [
             "BRBON/a6000 RDBRD/a5000 AWLEE/a4000 CRDNL/a2400 BARRR/a1380 _SDF_35L/a464"
@@ -26,6 +29,7 @@
         },
         "I5R": {
           "runway": "35R",
+          "tower_controller": "SDF_E_TWR",
           "type": "ILS",
           "waypoints": [
           "PGSUS/a4000 UPSCO/a3000 PARCL/a2400 _SDF_35R/a480"
@@ -33,6 +37,7 @@
         },
         "R29": {
           "runway": "29",
+          "tower_controller": "SDF_E_TWR",
           "type": "RNAV",
           "waypoints": [
           "FINCH/a3000/nopt CITMO/a3000/hilpt CUCAK/a2200 _SDF_29/a480",

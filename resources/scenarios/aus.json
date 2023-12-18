@@ -5,6 +5,7 @@
             "approaches": {
                 "I8L": {
                     "runway": "18L",
+                    "tower_controller": "AUS_E_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "DOFFS/a5000 SCALI/a4000 RRTOO/a2500 DDTOO/a1600 _AUS_18L/a492"
@@ -12,6 +13,7 @@
                 },
                 "I8R": {
                     "runway": "18R",
+                    "tower_controller": "AUS_W_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "CHADE/a4000 UTEEE/a2800 ELLBJ/a1600 _AUS_18R/a542"
@@ -19,6 +21,7 @@
                 },
                 "I6L": {
                     "runway": "36L",
+                    "tower_controller": "AUS_W_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "LAMAS/a5000 CAMDY/a4000 BIIRD/a2500 JOVSA/a2100 FUNNN/a1600 _AUS_36L/a496"
@@ -26,6 +29,7 @@
                 },
                 "I6R": {
                     "runway": "36R",
+                    "tower_controller": "AUS_E_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "BALLD/a4000 SSHOE/a2500 ZEDKU/a2100 FNNLY/a1600 _AUS_36R/a480"
@@ -33,6 +37,7 @@
                 },
                 "R6L": {
                     "full_name": "RNAV RNP Runway 36L",
+                    "tower_controller": "AUS_W_TWR",
                     "runway": "36L",
                     "type": "RNAV",
                     "waypoints": [
@@ -41,6 +46,7 @@
                 },
                 "R6R": {
                     "full_name": "RNAV RNP Runway 36R",
+                    "tower_controller": "AUS_E_TWR",
                     "runway": "36R",
                     "type": "RNAV",
                     "waypoints": [

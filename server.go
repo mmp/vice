@@ -1064,7 +1064,12 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			}
 
 		case 'T':
-			if len(command) > 2 {
+			if command == "TO" {
+				if err := sim.ContactTower(token, callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if len(command) > 2 {
 				switch command[:2] {
 				case "TS":
 					if kts, err := strconv.Atoi(command[2:]); err != nil {

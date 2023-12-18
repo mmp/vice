@@ -217,7 +217,11 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			for _, appr := range ap.Approaches {
 				if appr.Runway == rwy.Runway {
 					found = true
-					break
+					// Add the tower controller to the virtual controller
+					// list if it isn't there already.
+					if !slices.Contains(s.VirtualControllers, appr.TowerController) {
+						s.VirtualControllers = append(s.VirtualControllers, appr.TowerController)
+					}
 				}
 			}
 
@@ -563,7 +567,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
-		ap.PostDeserialize(sg, e)
+		ap.PostDeserialize(name, sg, e)
 		e.Pop()
 	}
 

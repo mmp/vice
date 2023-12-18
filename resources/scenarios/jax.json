@@ -428,6 +428,7 @@
       "approaches": {
         "R4": {
           "runway": "4",
+          "tower_controller": "JAX_N_APP",
           "type": "RNAV",
           "waypoints": [
             "WILNA/a2100-6000 SHOAT/a1800 _FHB_04/a15"
@@ -877,6 +878,12 @@
       "sector_id": "3V"
     },
     "JAX_TWR": {
+      "frequency": 118300,
+      "full_name": "Jacksonville tower",
+      "scope_char": "T",
+      "sector_id": "3JT"
+    },
+    "FHB_TWR": {
       "frequency": 118300,
       "full_name": "Jacksonville tower",
       "scope_char": "T",

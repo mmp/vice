@@ -3010,6 +3010,12 @@
                                 "scope_char": "T",
                                 "sector_id": "2CT"
                             },
+                            "CGF_TWR": {
+                                "frequency": 118500,
+                                "full_name": "County Tower",
+                                "scope_char": "T",
+                                "sector_id": "3T"
+                            },
                             "DTW_F_APP": {
                                 "frequency": 126225,
                                 "full_name": "Detroit Approach",

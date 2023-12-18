@@ -183,7 +183,7 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 	return ghost
 }
 
-func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
 	if ap.Location.IsZero() {
 		e.ErrorString("Must specify \"location\" for airport")
 	}
@@ -232,6 +232,16 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			}
 		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
 			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
+		}
+
+		if appr.TowerController == "" {
+			appr.TowerController = icao[1:] + "_TWR"
+			if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+				e.ErrorString("No position specified for \"tower_controller\" and \"" +
+					appr.TowerController + "\" is not a valid controller")
+			}
+		} else if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+			e.ErrorString("No control position \"" + appr.TowerController + "\" for \"tower_controller\"")
 		}
 
 		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
@@ -485,10 +495,11 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
-	FullName  string          `json:"full_name"`
-	Type      ApproachType    `json:"type"`
-	Runway    string          `json:"runway"`
-	Waypoints []WaypointArray `json:"waypoints"`
+	FullName        string          `json:"full_name"`
+	Type            ApproachType    `json:"type"`
+	Runway          string          `json:"runway"`
+	Waypoints       []WaypointArray `json:"waypoints"`
+	TowerController string          `json:"tower_controller"`
 }
 
 func (ap *Approach) Line() [2]Point2LL {

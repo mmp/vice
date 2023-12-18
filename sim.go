@@ -2312,6 +2312,16 @@ func (s *Sim) GoAround(token, callsign string) error {
 		})
 }
 
+func (s *Sim) ContactTower(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.ContactTower(s.World)
+		})
+}
+
 func (s *Sim) DeleteAircraft(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

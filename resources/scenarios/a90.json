@@ -5,6 +5,7 @@
       "approaches": {
         "I4R": {
           "runway": "4R",
+          "tower_controller": "BOS_W_TWR",
           "type": "ILS",
           "waypoints": [
             "GOSHI/iaf/a6000 WINNI/if/a4000 NABBO/a3000 MILTT/faf/a1700 IRSEW/a700 _BOS_4R/a18"
@@ -12,6 +13,7 @@
         },
         "R4L": {
           "runway": "4L",
+          "tower_controller": "BOS_W_TWR",
           "type": "RNAV",
           "waypoints": [
             "AAALL/iaf/a4000 LVRON/if/a3000 MTAPN/faf/a1700 _BOS_4L/a14"
@@ -19,6 +21,7 @@
         },
         "I5R": {
           "runway": "15R",
+          "tower_controller": "BOS_W_TWR",
           "type": "ILS",
           "waypoints": [
             "AADMS/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700 _BOS_15R/a17",
@@ -27,6 +30,7 @@
         },
         "I2L": {
           "runway": "22L",
+          "tower_controller": "BOS_E_TWR",
           "type": "ILS",
           "waypoints": [
             "NOLEY/if/a4000 WYANE/a3000 VOCUS/faf/a1700 ZUMOL/a700 _BOS_22L/a16"
@@ -34,6 +38,7 @@
         },
         "I27": {
           "runway": "27",
+          "tower_controller": "BOS_E_TWR",
           "type": "ILS",
           "waypoints": [
             "AYBEE/iaf/a6000 KLANE/a4000 LONER/if/a3000 RIPIT/faf/a1700 _BOS_27/a17"
@@ -41,6 +46,7 @@
         },
         "I3L": {
           "runway": "33L",
+          "tower_controller": "BOS_E_TWR",
           "type": "ILS",
           "waypoints": [
             "BENNN/if/a4000 COHAS/a3000 NIMOY/faf/a1500 RDUKE/a700 _BOS_33L/a16"

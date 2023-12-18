@@ -1488,6 +1488,12 @@
     "scope_char": "A",
     "sector_id": "1A"
   },
+  "BWI_TWR": {
+    "frequency": 119400,
+    "full_name": "Baltimore Tower",
+    "scope_char": "T",
+    "sector_id": "3T"
+  },
   "DCA_TWR": {
     "frequency": 119100,
     "full_name": "Washington Tower",

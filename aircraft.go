@@ -51,6 +51,7 @@ type Aircraft struct {
 	GoAroundDistance  *float32
 	ArrivalGroup      string
 	ArrivalGroupIndex int
+	GotContactTower   bool
 
 	// Who to try to hand off to at a waypoint with /ho
 	WaypointHandoffController string
@@ -333,6 +334,37 @@ func (ac *Aircraft) ClimbViaSID() []RadioTransmission {
 
 func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.DescendViaSTAR())
+}
+
+func (ac *Aircraft) ContactTower(w *World) []RadioTransmission {
+	if ac.IsDeparture() {
+		return ac.readbackUnexpected("unable. This aircraft is a departure.")
+	} else if ac.GotContactTower {
+		// No response; they're not on our frequency any more.
+		return nil
+	} else if ac.Nav.Approach.Assigned == nil {
+		return ac.readbackUnexpected("unable. We haven't been given an approach.")
+	} else if !ac.Nav.Approach.Cleared {
+		return ac.readbackUnexpected("unable. We haven't been cleared for the approach.")
+	} else {
+		ac.GotContactTower = true
+		twr := ac.Nav.Approach.Assigned.TowerController
+		prevController := ac.ControllingController
+		ac.ControllingController = twr
+
+		msg := "contact tower"
+		if ctrl, ok := w.Controllers[twr]; !ok {
+			lg.Error("unknown tower controller", slog.String("tower_callsign", twr), slog.Any("aircraft", ac))
+		} else {
+			msg += ", " + ctrl.Frequency.String()
+		}
+
+		return []RadioTransmission{RadioTransmission{
+			Controller: prevController,
+			Message:    msg,
+			Type:       RadioTransmissionReadback,
+		}}
+	}
 }
 
 func (ac *Aircraft) InterceptLocalizer(w *World) []RadioTransmission {

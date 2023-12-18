@@ -1769,6 +1769,7 @@ If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
 altitude. (*TS* = 'then speed')`, "*TS210*"},
 	[3]string{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
 	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
+	[3]string{"*TO*", `"Contact tower"`, "*TO*"},
 	[3]string{"*X*", "(Deletes the aircraft.)", "*X*"},
 }
 
@@ -1790,6 +1791,8 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
 	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
+	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
+	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
 }
 
 var starsCommands = [][2]string{
