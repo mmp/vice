@@ -141,6 +141,11 @@ var (
 		"Added an option to hide the flight strips (Settings window, Flight Strips section)",
 		"Fixed a bug where inbound handoffs wouldn't send a radio contact message",
 		"Sped up loading of video maps so that vice launches more quickly",
+		"Added multiple new scenarios: S46, BHM, GSP (Aaron Flett), AUS (Jace Martin), P50 (Mike K)",
+		"Multi-controller servers can now be password-protected",
+		"Added \"TO\" command for \"contact tower\"",
+		"Various bugfixes with handoffs and approach navigation",
+		"Match real-world STARS alert sounds",
 	}
 )
 
