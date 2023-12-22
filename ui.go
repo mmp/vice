@@ -1916,8 +1916,8 @@ after the first.`)
 				imgui.TableNextColumn()
 				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[2])
 			}
+			imgui.EndTable()
 		}
-		imgui.EndTable()
 	} else {
 		imgui.Text("\n")
 		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
