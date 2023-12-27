@@ -853,6 +853,8 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					if err := sim.AtFixCleared(token, callsign, fix, approach); err != nil {
 						sim.SetSTARSInput(strings.Join(commands[i:], " "))
 						return err
+					} else {
+						continue
 					}
 				}
 
