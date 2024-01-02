@@ -4,8 +4,8 @@
     "KMCO": {
       "approaches": {
         "I7L": {
-          "full_name": "ILS Runway 17 Left",
           "runway": "17L",
+          "tower_controller": "MCO_E_TWR",
           "type": "ILS",
           "waypoints": [
             "BOSCH/a6000 KAKEY/a5000 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90",
@@ -13,8 +13,8 @@
           ]
         },
         "R7L": {
-          "full_name": "RNAV Runway 17 Left",
           "runway": "17L",
+          "tower_controller": "MCO_E_TWR",
           "type": "RNAV",
           "waypoints": [
             "BOSCH/a6000 KAKEY/a5000 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90",
@@ -22,32 +22,32 @@
           ]
         },
         "I7R": {
-          "full_name": "ILS Runway 17 Right",
           "runway": "17R",
+          "tower_controller": "MCO_E_TWR",
           "type": "ILS",
           "waypoints": [
             "RATOY/a6000 SACRO/a6000 TACOT/a5000 DALTY/a4000 ELLAN/a3000 GLOSI/a2500 MINCO/a1600 _MCO_17R/a90"
           ]
         },
         "R7R": {
-          "full_name": "RNAV Runway 17 Right",
           "runway": "17R",
+          "tower_controller": "MCO_E_TWR",
           "type": "RNAV",
           "waypoints": [
             "RATOY/a6000 SACRO/a6000 TACOT/a5000 DALTY/a4000 ELLAN/a3000 GLOSI/a2500 MINCO/a1600 _MCO_17R/a90"
           ]
         },
         "R8L": {
-          "full_name": "RNAV Runway 18 Left",
           "runway": "18L",
+          "tower_controller": "MCO_W_TWR",
           "type": "RNAV",
           "waypoints": [
             "ZANTI/a4000 HABRA/a4000 GIPNE/a3000 COBOP/a2200 NAPPA/a560 _MCO_18L/a96"
           ]
         },
         "I8R": {
-          "full_name": "ILS Runway 18 Right",
           "runway": "18R",
+          "tower_controller": "MCO_W_TWR",
           "type": "ILS",
           "waypoints": [
             "HOLOP/a5000 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94",
@@ -55,8 +55,8 @@
           ]
         },
         "R8R": {
-          "full_name": "RNAV Runway 18 Right",
           "runway": "18R",
+          "tower_controller": "MCO_W_TWR",
           "type": "RNAV",
           "waypoints": [
             "HOLOP/a5000 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94",
@@ -64,24 +64,24 @@
           ]
         },
         "I5L": {
-          "full_name": "ILS Runway 35 Left",
           "runway": "35L",
+          "tower_controller": "MCO_E_TWR",
           "type": "ILS",
           "waypoints": [
             "NOGGI/a5000 FOBUK/a4000 FITEM/a3000 SPURR/a1600 _MCO_35L/a88"
           ]
         },
         "R5L": {
-          "full_name": "RNAV Runway 35 Left",
           "runway": "35L",
+          "tower_controller": "MCO_E_TWR",
           "type": "RNAV",
           "waypoints": [
             "ODDEL/a4000/nopt FOBUK/a4000/hilpt FITEM/a3000 SPURR/a1600 _MCO_35L/a88"
           ]
         },
         "I5R": {
-          "full_name": "ILS Runway 35 Right",
           "runway": "35R",
+          "tower_controller": "MCO_E_TWR",
           "type": "ILS",
           "waypoints": [
             "CRUSE/a5000 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90",
@@ -89,8 +89,8 @@
           ]
         },
         "R5R": {
-          "full_name": "RNAV Runway 35 Right",
           "runway": "35R",
+          "tower_controller": "MCO_E_TWR",
           "type": "ILS",
           "waypoints": [
             "CRUSE/a5000 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90",
@@ -98,24 +98,24 @@
           ]
         },
         "I6R": {
-          "full_name": "ILS Runway 36 Right",
           "runway": "36R",
+          "tower_controller": "MCO_W_TWR",
           "type": "ILS",
           "waypoints": [
             "TRAMP/a5000 FLOZY/a4000 SILKY/a3000 JAKOR/a1600 UVEKE/a540 _MCO_36R/a92"
           ]
         },
         "R6R": {
-          "full_name": "RNAV Runway 36 Right",
           "runway": "36R",
+          "tower_controller": "MCO_W_TWR",
           "type": "RNAV",
           "waypoints": [
             "MINEE/a4000 BOYAB/a4000/nopt FLOZY/a4000/hilpt SILKY/a3000 JAKOR/a1600 UVEKE/a540 _MCO_36R/a92"
           ]
         },
         "R6L": {
-          "full_name": "RNAV Runway 36 Left",
           "runway": "36L",
+          "tower_controller": "MCO_W_TWR",
           "type": "RNAV",
           "waypoints": [
             "LORRA/a7000 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
@@ -846,7 +846,6 @@
     "KORL": {
       "approaches": {
         "I7": {
-          "full_name": "ILS Runway 7",
           "runway": "7",
           "type": "ILS",
           "waypoints": [
@@ -854,7 +853,6 @@
           ]
         },
         "R7": {
-          "full_name": "RNAV Runway 7",
           "runway": "7",
           "type": "RNAV",
           "waypoints": [
@@ -862,7 +860,6 @@
           ]
         },
         "I25": {
-          "full_name": "ILS Runway 25",
           "runway": "25",
           "type": "ILS",
           "waypoints": [
@@ -870,7 +867,6 @@
           ]
         },
         "R25": {
-          "full_name": "RNAV Runway 25",
           "runway": "25",
           "type": "RNAV",
           "waypoints": [
@@ -928,7 +924,6 @@
     "KSFB": {
       "approaches": {
         "I9L": {
-          "full_name": "ILS Runway 9 Left",
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
@@ -938,7 +933,6 @@
           ]
         },
         "R9L": {
-          "full_name": "RNAV Runway 9 Left",
           "runway": "9L",
           "type": "RNAV",
           "waypoints": [
@@ -948,7 +942,6 @@
           ]
         },
         "I9R": {
-          "full_name": "ILS Runway 9 Right",
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
@@ -958,7 +951,6 @@
           ]
         },
         "R9R": {
-          "full_name": "RNAV Runway 9 Right",
           "runway": "9R",
           "type": "RNAV",
           "waypoints": [
@@ -968,7 +960,6 @@
           ]
         },
         "I7G": {
-          "full_name": "ILS Runway 27 Right",
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
@@ -978,7 +969,6 @@
           ]
         },
         "R7G": {
-          "full_name": "RNAV Runway 27 Right",
           "runway": "27R",
           "type": "RNAV",
           "waypoints": [
@@ -988,7 +978,6 @@
           ]
         },
         "R7H": {
-          "full_name": "RNAV Runway 27 Left",
           "runway": "27L",
           "type": "RNAV",
           "waypoints": [
@@ -1110,7 +1099,6 @@
     "KISM": {
       "approaches": {
         "R6": {
-          "full_name": "RNAV Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1120,7 +1108,6 @@
           ]
         },
         "I15": {
-          "full_name": "ILS Runway 15",
           "runway": "15",
           "type": "ILS",
           "waypoints": [
@@ -1128,7 +1115,6 @@
           ]
         },
         "R15": {
-          "full_name": "RNAV Runway 15",
           "runway": "15",
           "type": "RNAV",
           "waypoints": [
@@ -1138,7 +1124,6 @@
           ]
         },
         "R33": {
-          "full_name": "RNAV Runway 33",
           "runway": "33",
           "type": "RNAV",
           "waypoints": [
@@ -1242,7 +1227,6 @@
     "KTPA": {
       "approaches": {
         "I2L": {
-          "full_name": "ILS Runway 2 Left",
           "runway": "2L",
           "type": "ILS",
           "waypoints": [
@@ -8649,6 +8633,18 @@
       "full_name": "Orlando Executive tower",
       "scope_char": "T",
       "sector_id": "4OT"
+    },
+    "SFB_TWR": {
+      "frequency": 120300,
+      "full_name": "Sanford tower",
+      "scope_char": "T",
+      "sector_id": "4ST"
+    },
+    "TPA_TWR": {
+      "frequency": 119500,
+      "full_name": "Tampa tower",
+      "scope_char": "T",
+      "sector_id": "4TT"
     },
     "MCO_G_APP": {
       "frequency": 127750,

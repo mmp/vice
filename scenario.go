@@ -217,7 +217,11 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			for _, appr := range ap.Approaches {
 				if appr.Runway == rwy.Runway {
 					found = true
-					break
+					// Add the tower controller to the virtual controller
+					// list if it isn't there already.
+					if !slices.Contains(s.VirtualControllers, appr.TowerController) {
+						s.VirtualControllers = append(s.VirtualControllers, appr.TowerController)
+					}
 				}
 			}
 
@@ -232,8 +236,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.ErrorString("controller \"%s\" for \"solo_controller\" is unknown", s.SoloController)
 	}
 
-	// Figure out which airports and SIDs are used in the scenario.
+	// Figure out which airports/runways and airports/SIDs are used in the scenario.
 	activeAirportSIDs := make(map[string]map[string]interface{})
+	activeAirportRunways := make(map[string]map[string]interface{})
 	for _, rwy := range s.DepartureRunways {
 		if ap, ok := sg.Airports[rwy.Airport]; ok && ap.DepartureController != "" {
 			// If a virtual controller will take the initial track then
@@ -247,7 +252,11 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				if activeAirportSIDs[rwy.Airport] == nil {
 					activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
 				}
+				if activeAirportRunways[rwy.Airport] == nil {
+					activeAirportRunways[rwy.Airport] = make(map[string]interface{})
+				}
 				activeAirportSIDs[rwy.Airport][route.SID] = nil
+				activeAirportRunways[rwy.Airport][rwy.Runway] = nil
 			}
 		}
 	}
@@ -269,6 +278,8 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		primaryController := ""
 		e.Push("\"multi_controllers\": split \"" + name + "\"")
 
+		haveDepartureSIDSpec, haveDepartureRunwaySpec := false, false
+
 		for callsign, ctrl := range controllers {
 			e.Push(callsign)
 			if ctrl.Primary {
@@ -282,12 +293,22 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 			// Make sure any airports claimed for departures are valid
 			for _, airportSID := range ctrl.Departures {
-				ap, sid, haveSID := strings.Cut(airportSID, "/")
+				ap, sidRunway, haveSIDRunway := strings.Cut(airportSID, "/")
 				if sids, ok := activeAirportSIDs[ap]; !ok {
 					e.ErrorString("airport \"%s\" is not departing aircraft in this scenario", ap)
-				} else if haveSID {
-					if _, ok := sids[sid]; !ok {
-						e.ErrorString("SID \"%s\" at airport \"%s\" is not active in this scenario", sid, ap)
+				} else if haveSIDRunway {
+					// If there's something after a slash, make sure it's
+					// either a valid SID or runway.
+					_, okSID := sids[sidRunway]
+					_, okRunway := activeAirportRunways[ap][sidRunway]
+					if !okSID && !okRunway {
+						e.ErrorString("\"%s\" at airport \"%s\" is neither an active runway or SID in this scenario", sidRunway, ap)
+					}
+
+					haveDepartureSIDSpec = haveDepartureSIDSpec || okSID
+					haveDepartureRunwaySpec = haveDepartureRunwaySpec || okRunway
+					if haveDepartureSIDSpec && haveDepartureRunwaySpec {
+						e.ErrorString("cannot use both runways and SIDs to specify the departure controller")
 					}
 				}
 			}
@@ -307,22 +328,34 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 		// Make sure each active departure config (airport and possibly
 		// SID) has exactly one controller handling its departures.
-		for airport, sids := range activeAirportSIDs {
-			for sid := range sids {
-				controller := ""
-				for callsign, ctrl := range controllers {
-					if ctrl.IsDepartureController(airport, sid) {
-						if controller != "" {
-							e.ErrorString("both \"%s\" and \"%s\" expect to handle %s/%s departures",
-								controller, callsign, airport, sid)
+		validateDep := func(active map[string]map[string]interface{}, check func(ctrl *MultiUserController, airport, spec string) bool) {
+			for airport, specs := range active {
+				for spec := range specs {
+					controller := ""
+					for callsign, ctrl := range controllers {
+						if check(ctrl, airport, spec) {
+							if controller != "" {
+								e.ErrorString("both \"%s\" and \"%s\" expect to handle %s/%s departures",
+									controller, callsign, airport, spec)
+							}
+							controller = callsign
 						}
-						controller = callsign
+					}
+					if controller == "" {
+						e.ErrorString("no controller found that is covering %s/%s departures", airport, spec)
 					}
 				}
-				if controller == "" {
-					e.ErrorString("no controller found that is covering %s/%s departures", airport, sid)
-				}
 			}
+		}
+		if haveDepartureSIDSpec {
+			validateDep(activeAirportSIDs, func(ctrl *MultiUserController, airport, spec string) bool {
+				return ctrl.IsDepartureController(airport, "", spec)
+			})
+		}
+		if haveDepartureRunwaySpec {
+			validateDep(activeAirportRunways, func(ctrl *MultiUserController, airport, spec string) bool {
+				return ctrl.IsDepartureController(airport, spec, "")
+			})
 		}
 
 		// Make sure all controllers are either the primary or have a path
@@ -534,7 +567,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
-		ap.PostDeserialize(sg, e)
+		ap.PostDeserialize(name, sg, e)
 		e.Pop()
 	}
 
@@ -1465,9 +1498,9 @@ func (sc SplitConfiguration) GetArrivalController(arrivalGroup string) string {
 	return ""
 }
 
-func (sc SplitConfiguration) GetDepartureController(airport, sid string) string {
+func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) string {
 	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, sid) {
+		if ctrl.IsDepartureController(airport, runway, sid) {
 			return callsign
 		}
 	}
@@ -1479,14 +1512,14 @@ func (sc SplitConfiguration) GetDepartureController(airport, sid string) string 
 ///////////////////////////////////////////////////////////////////////////
 // MultiUserController
 
-func (c *MultiUserController) IsDepartureController(ap, sid string) bool {
+func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 	for _, d := range c.Departures {
-		depAirport, depSID, ok := strings.Cut(d, "/")
-		if ok { // have a SID
-			if ap == depAirport && sid == depSID {
+		depAirport, depSIDRwy, ok := strings.Cut(d, "/")
+		if ok { // have a runway or SID
+			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
 				return true
 			}
-		} else { // no SID, only match airport
+		} else { // no runway/SID, so only match airport
 			if ap == depAirport {
 				return true
 			}

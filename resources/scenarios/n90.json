@@ -52,7 +52,7 @@
                     "sid": "LGA7",
                     "waypoints": "_LGA_4 _LGA_22/h360"
                   },
-                  "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+                  "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
                     "cleared_altitude": 5000,
                     "sid": "LGA7",
                     "waypoints": "_LGA_4 _LGA_22/h40"
@@ -70,14 +70,57 @@
                     "waypoints": "_LGA_31 _LGA_13/h360"
                   }
                 },
-                "13": {
+                "13.LGA-Belmont.JFK-Coney": {
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
-                    "cleared_altitude": 5000,
-                    "sid": "TNNIS6",
-                    "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES TNNIS/h045"
+                                      "cleared_altitude": 5000,
+                                      "sid": "LGA7",
+                                      "waypoints": "_LGA_13 _LGA_31 _LGA_WHITESTONE2/h40/s210"
                   }
+              },
+              "13.LGA-Coney.JFK-Belmont": {
+                "GREKI,MERIT,BAYYS,BDR,CMK":{
+                  "cleared_altitude": 5000,
+                  "sid": "TNNIS6",
+                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h45"
+                },
+                "SHIPP,WAVEY,DIXIE,DPK,WHITE": {
+                  "cleared_altitude": 5000,
+                  "sid": "NTHNS5",
+                  "waypoints": "_LGA_13 _LGA_31 KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
+                },
+                "SAX,COATE,NEION,HAAYS,GAYEL,SBJ,BIGGY,LANNA,PARKE,ELIOT,NEWEL,ZIMMZ": {
+                  "cleared_altitude": 5000,
+                  "sid": "GLDMN8",
+                  "waypoints": "_LGA_13 _LGA_31 KIWIE/s220/a2500+ VOBOZ/s220/a4500+ GLDMN/h335"
                 }
               },
+              "13.LGA-Coney.LGA-Belmont": {
+                "SHIPP,WAVEY,DIXIE,DPK,WHITE": {
+                  "cleared_altitude": 5000,
+                  "sid": "NTHNS5",
+                  "waypoints": "_LGA_13 _LGA_31 KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
+                },
+                "SAX,COATE,NEION,HAAYS,GAYEL,SBJ,BIGGY,LANNA,PARKE,ELIOT,NEWEL,ZIMMZ,GREKI,MERIT,BAYYS,BDR,CMK": {
+                  "cleared_altitude": 5000,
+                  "sid": "TNNIS6",
+                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h045"
+                }
+              },
+              "13.JFK-Coney.JFK-Belmont": {
+                "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
+                  "cleared_altitude": 5000,
+                  "sid": "TNNIS6",
+                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h045"
+                  }
+              },
+              "13.JFK-ILS-13": {
+                "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
+                  "cleared_altitude": 5000,
+                  "sid": "LGA7",
+                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b/h050"
+                  }
+              }
+            },
               "departures": [
                 {
                   "airlines": [
@@ -604,6 +647,13 @@
                       "cleared_altitude": 3000,
                       "sid": "EWR5",
                       "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
+                    }
+                  },
+                  "4L ": {
+                    "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
+                      "cleared_altitude": 2000,
+                      "sid": "DEVIL1",
+                      "waypoints": "_EWR_4L _EWR_22R _EWR4_DEVIL/h290"
                     }
                   }
                 },
@@ -3511,7 +3561,7 @@
 
         
             },
-            "default_scenario": "N90 Combined",
+            "default_scenario": "N90 Combined. Coney: JFK Belmont: LGA",
             "fixes": {
                 "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",
                 "_EWR4_4La": "N040.45.33.714,W074.05.08.743",
@@ -3533,6 +3583,7 @@
                 "_LGA_13": "N040.46.56.029,W073.52.42.359",
                 "_LGA_13a": "N040.48.06.479,W073.55.40.914",
                 "_LGA_13b": "N040.45.36.529,W073.49.23.397",
+                "_LGA_WHITESTONE": "N040.44.27.137,W073.50.56.973",
                 "_LGA_22": "N040.47.06.864,W073.52.14.811",
                 "_LGA_22a": "N040.51.18.890,W073.49.30.483",
                 "_LGA_31": "N040.46.19.788,W073.51.25.949",
@@ -3540,7 +3591,9 @@
                 "_LGA_31b": "N040.48.50.809,W073.46.42.200",
                 "_LGA_4": "N040.46.09.447,W073.53.02.574",
                 "_LGA_4a": "N040.44.56.662,W073.51.53.497",
-                "_LGA_4b": "N040.47.59.557,W073.47.11.533"
+                "_LGA_4b": "N040.47.59.557,W073.47.11.533",
+                "_LGA_WHITESTONE2": "N040.43.18.046,W073.50.29.864",
+                "_EWR4_DEVIL": "N040.45.39.688,W074.07.31.043"
             },
             "inhibit_ca_volumes": [
                 {
@@ -3664,7 +3717,7 @@
       "ZIGGI"
     ],
     "scenarios": {
-        "N90 Combined": {
+        "N90 Combined. Coney: JFK Belmont: LGA": {
            "arrival_runways": [
             {
                 "airport": "KEWR",
@@ -3833,7 +3886,7 @@
                   {
                     "airport": "KLGA",
                     "rate": 0,
-                    "runway": "13"
+                    "runway": "13.LGA-Belmont.JFK-Coney"
                   },
                   {
                     "airport": "KLGA",
@@ -3858,8 +3911,781 @@
                 "speed": 5
               }
             
-        }
+        },
+        "N90 Combined. Coney: JFK Belmont: JFK": {
+            "arrival_runways": [
+             {
+                 "airport": "KEWR",
+                 "runway": "22L"
+               },
+               {
+                 "airport": "KEWR",
+                 "runway": "4R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "13R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "13L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "31R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "31L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "22R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "22L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "4R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "4L"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "22"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "4"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "13"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "31"
+               }
+             ],
+             "arrivals": {
+                 "FLOSI4": {
+                     "KEWR": 5
+                   },
+                   "FQM3": {
+                     "KEWR": 10
+                   },
+                   "PHLBO4": {
+                     "KEWR": 10
+                   },
+                   "KORRY4": {
+                     "KLGA": 15
+                   },
+                   "MIP4": {
+                     "KLGA": 15
+                   },
+                   "HAARP3": {
+                     "KLGA": 10
+                   },
+                   "OWENZ": {
+                     "KJFK": 10
+                   },
+                   "CAMRN4": {
+                     "KJFK": 12
+                   },
+                   "LENDY8/IGN1": {
+                     "KJFK": 12
+                   },
+                   "PARCH3/ROBER2":{
+                   "KJFK": 5
+                   }
+             },
+             "solo_controller": "NY_APP",
+             "multi_controllers": {
+                 "default" : {
+                     "JFK_G_APP": {
+                         "primary": true,
+                         "arrivals": ["CAMRN4", "OWENZ"]
+                     },
+                     "JFK_A_APP": {
+                         "backup": "JFK_G_APP"
+                     },
+                     "JFK_K_APP": {
+                         "backup": "JFK_G_APP",
+                         "arrivals": ["LENDY8/IGN1", "PARCH3/ROBER2"]
+                     },
+                     "JFK_S_APP": {
+                         "backup": "JFK_K_APP"
+                     },
+                     "JFK_DEP": {
+                         "backup": "JFK_G_APP",
+                         "departures": [ "KJFK" ]
+                     },
+                     "LGA_V_APP": { "backup": "JFK_G_APP", "arrivals": [ "HAARP3" ] },
+                     "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+                     "LGA_F_APP": { "backup": "LGA_V_APP" },
+                     "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" },
+                     "EWR_P_APP": {"backup": "JFK_G_APP", "arrivals": ["FQM3", "PHLBO4"]},
+                     "EWR_DEP": {"backup": "EWR_P_APP", "departures": ["KEWR"]},
+                     "EWR_A_APP": {"backup": "EWR_P_APP", "arrivals": ["FLOSI4"]},
+                     "NY_LE_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LW_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LN_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LS_DEP": {"backup": "JFK_G_APP"}
+ 
+                 }
+             },
+             "controllers": [
+                 "BOS_CTR",
+                 "ABE_APP",
+                 "JFK_TWR",
+                 "EWR_TWR",
+                 "LGA_TWR",
+                 "NY_CTR",
+                 "NY_F_CTR",
+                 "NY_C_CTR",
+                 "DC_CTR"
+                 
+ 
+             ],
+             "default_maps": [ "EWR", "LGA", "JFK 22s" ],
+             "departure_runways": [
+                 {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "13R"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "31L"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "22R"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "4L"
+                   },
+                   {
+                     "airport": "KEWR",
+                     "rate": 0,
+                     "runway": "22R"
+                   },
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "13.JFK-Coney.JFK-Belmont"
+                   },
+                     {
+                         "airport": "KEWR",
+                         "rate": 0,
+                         "runway": "4L"
+                     }
+                   
+             ],
+             "wind": {
+                 "direction": 280,
+                 "gust": 7,
+                 "speed": 5
+               }
+             
+         },
+         "N90 Combined. Coney: LGA Belmont: JFK": {
+            "arrival_runways": [
+             {
+                 "airport": "KEWR",
+                 "runway": "22L"
+               },
+               {
+                 "airport": "KEWR",
+                 "runway": "4R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "13R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "13L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "31R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "31L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "22R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "22L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "4R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "4L"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "22"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "4"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "13"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "31"
+               }
+             ],
+             "arrivals": {
+                 "FLOSI4": {
+                     "KEWR": 5
+                   },
+                   "FQM3": {
+                     "KEWR": 10
+                   },
+                   "PHLBO4": {
+                     "KEWR": 10
+                   },
+                   "KORRY4": {
+                     "KLGA": 15
+                   },
+                   "MIP4": {
+                     "KLGA": 15
+                   },
+                   "HAARP3": {
+                     "KLGA": 10
+                   },
+                   "OWENZ": {
+                     "KJFK": 10
+                   },
+                   "CAMRN4": {
+                     "KJFK": 12
+                   },
+                   "LENDY8/IGN1": {
+                     "KJFK": 12
+                   },
+                   "PARCH3/ROBER2":{
+                   "KJFK": 5
+                   }
+             },
+             "solo_controller": "NY_APP",
+             "multi_controllers": {
+                 "default" : {
+                     "JFK_G_APP": {
+                         "primary": true,
+                         "arrivals": ["CAMRN4", "OWENZ"]
+                     },
+                     "JFK_A_APP": {
+                         "backup": "JFK_G_APP"
+                     },
+                     "JFK_K_APP": {
+                         "backup": "JFK_G_APP",
+                         "arrivals": ["LENDY8/IGN1", "PARCH3/ROBER2"]
+                     },
+                     "JFK_S_APP": {
+                         "backup": "JFK_K_APP"
+                     },
+                     "JFK_DEP": {
+                         "backup": "JFK_G_APP",
+                         "departures": [ "KJFK" ]
+                     },
+                     "LGA_V_APP": { "backup": "JFK_G_APP", "arrivals": [ "HAARP3" ] },
+                     "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+                     "LGA_F_APP": { "backup": "LGA_V_APP" },
+                     "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" },
+                     "EWR_P_APP": {"backup": "JFK_G_APP", "arrivals": ["FQM3", "PHLBO4"]},
+                     "EWR_DEP": {"backup": "EWR_P_APP", "departures": ["KEWR"]},
+                     "EWR_A_APP": {"backup": "EWR_P_APP", "arrivals": ["FLOSI4"]},
+                     "NY_LE_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LW_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LN_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LS_DEP": {"backup": "JFK_G_APP"}
+ 
+                 }
+             },
+             "controllers": [
+                 "BOS_CTR",
+                 "ABE_APP",
+                 "JFK_TWR",
+                 "EWR_TWR",
+                 "LGA_TWR",
+                 "NY_CTR",
+                 "NY_F_CTR",
+                 "NY_C_CTR",
+                 "DC_CTR"
+                 
+ 
+             ],
+             "default_maps": [ "EWR", "LGA", "JFK 22s" ],
+             "departure_runways": [
+                 {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "13R"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "31L"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "22R"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "4L"
+                   },
+                   {
+                     "airport": "KEWR",
+                     "rate": 0,
+                     "runway": "22R"
+                   },
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "13.LGA-Coney.JFK-Belmont"
+                   },
+                   
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "4"
+                   },
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "31"
+                     },
+                     {
+                         "airport": "KEWR",
+                         "rate": 0,
+                         "runway": "4L"
+                     }
+                   
+             ],
+             "wind": {
+                 "direction": 280,
+                 "gust": 7,
+                 "speed": 5
+               }
+             
+         },
+         "N90 Combined. Coney: LGA Belmont: LGA": {
+            "arrival_runways": [
+             {
+                 "airport": "KEWR",
+                 "runway": "22L"
+               },
+               {
+                 "airport": "KEWR",
+                 "runway": "4R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "13R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "13L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "31R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "31L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "22R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "22L"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "4R"
+               },
+               {
+                 "airport": "KJFK",
+                 "runway": "4L"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "22"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "4"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "13"
+               },
+               {
+                 "airport": "KLGA",
+                 "runway": "31"
+               }
+             ],
+             "arrivals": {
+                 "FLOSI4": {
+                     "KEWR": 5
+                   },
+                   "FQM3": {
+                     "KEWR": 10
+                   },
+                   "PHLBO4": {
+                     "KEWR": 10
+                   },
+                   "KORRY4": {
+                     "KLGA": 15
+                   },
+                   "MIP4": {
+                     "KLGA": 15
+                   },
+                   "HAARP3": {
+                     "KLGA": 10
+                   },
+                   "OWENZ": {
+                     "KJFK": 10
+                   },
+                   "CAMRN4": {
+                     "KJFK": 12
+                   },
+                   "LENDY8/IGN1": {
+                     "KJFK": 12
+                   },
+                   "PARCH3/ROBER2":{
+                   "KJFK": 5
+                   }
+             },
+             "solo_controller": "NY_APP",
+             "multi_controllers": {
+                 "default" : {
+                     "JFK_G_APP": {
+                         "primary": true,
+                         "arrivals": ["CAMRN4", "OWENZ"]
+                     },
+                     "JFK_A_APP": {
+                         "backup": "JFK_G_APP"
+                     },
+                     "JFK_K_APP": {
+                         "backup": "JFK_G_APP",
+                         "arrivals": ["LENDY8/IGN1", "PARCH3/ROBER2"]
+                     },
+                     "JFK_S_APP": {
+                         "backup": "JFK_K_APP"
+                     },
+                     "JFK_DEP": {
+                         "backup": "JFK_G_APP",
+                         "departures": [ "KJFK" ]
+                     },
+                     "LGA_V_APP": { "backup": "JFK_G_APP", "arrivals": [ "HAARP3" ] },
+                     "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+                     "LGA_F_APP": { "backup": "LGA_V_APP" },
+                     "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" },
+                     "EWR_P_APP": {"backup": "JFK_G_APP", "arrivals": ["FQM3", "PHLBO4"]},
+                     "EWR_DEP": {"backup": "EWR_P_APP", "departures": ["KEWR"]},
+                     "EWR_A_APP": {"backup": "EWR_P_APP", "arrivals": ["FLOSI4"]},
+                     "NY_LE_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LW_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LN_DEP": {"backup": "JFK_G_APP"},
+                     "NY_LS_DEP": {"backup": "JFK_G_APP"}
+ 
+                 }
+             },
+             "controllers": [
+                 "BOS_CTR",
+                 "ABE_APP",
+                 "JFK_TWR",
+                 "EWR_TWR",
+                 "LGA_TWR",
+                 "NY_CTR",
+                 "NY_F_CTR",
+                 "NY_C_CTR",
+                 "DC_CTR"
+                 
+ 
+             ],
+             "default_maps": [ "EWR", "LGA", "JFK 22s" ],
+             "departure_runways": [
+                 {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "13R"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "31L"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "22R"
+                   },
+                   {
+                     "airport": "KJFK",
+                     "rate": 0,
+                     "runway": "4L"
+                   },
+                   {
+                     "airport": "KEWR",
+                     "rate": 0,
+                     "runway": "22R"
+                   },
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "13.LGA-Coney.LGA-Belmont"
+                   },
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "4"
+                   },
+                   {
+                     "airport": "KLGA",
+                     "rate": 0,
+                     "runway": "31"
+                     },
+                     {
+                         "airport": "KEWR",
+                         "rate": 0,
+                         "runway": "4L"
+                     }
+                   
+             ],
+             "wind": {
+                 "direction": 280,
+                 "gust": 7,
+                 "speed": 5
+               }
+             
+         },
+         "N90 Combined. JFK: ILS 13": {
+          "arrival_runways": [
+           {
+               "airport": "KEWR",
+               "runway": "22L"
+             },
+             {
+               "airport": "KEWR",
+               "runway": "4R"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "13R"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "13L"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "31R"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "31L"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "22R"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "22L"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "4R"
+             },
+             {
+               "airport": "KJFK",
+               "runway": "4L"
+             },
+             {
+               "airport": "KLGA",
+               "runway": "22"
+             },
+             {
+               "airport": "KLGA",
+               "runway": "4"
+             },
+             {
+               "airport": "KLGA",
+               "runway": "13"
+             },
+             {
+               "airport": "KLGA",
+               "runway": "31"
+             }
+           ],
+           "arrivals": {
+               "FLOSI4": {
+                   "KEWR": 5
+                 },
+                 "FQM3": {
+                   "KEWR": 10
+                 },
+                 "PHLBO4": {
+                   "KEWR": 10
+                 },
+                 "KORRY4": {
+                   "KLGA": 15
+                 },
+                 "MIP4": {
+                   "KLGA": 15
+                 },
+                 "HAARP3": {
+                   "KLGA": 10
+                 },
+                 "OWENZ": {
+                   "KJFK": 10
+                 },
+                 "CAMRN4": {
+                   "KJFK": 12
+                 },
+                 "LENDY8/IGN1": {
+                   "KJFK": 12
+                 },
+                 "PARCH3/ROBER2":{
+                 "KJFK": 5
+                 }
+           },
+           "solo_controller": "NY_APP",
+           "multi_controllers": {
+               "default" : {
+                   "JFK_G_APP": {
+                       "primary": true,
+                       "arrivals": ["CAMRN4", "OWENZ"]
+                   },
+                   "JFK_A_APP": {
+                       "backup": "JFK_G_APP"
+                   },
+                   "JFK_K_APP": {
+                       "backup": "JFK_G_APP",
+                       "arrivals": ["LENDY8/IGN1", "PARCH3/ROBER2"]
+                   },
+                   "JFK_S_APP": {
+                       "backup": "JFK_K_APP"
+                   },
+                   "JFK_DEP": {
+                       "backup": "JFK_G_APP",
+                       "departures": [ "KJFK" ]
+                   },
+                   "LGA_V_APP": { "backup": "JFK_G_APP", "arrivals": [ "HAARP3" ] },
+                   "LGA_D_APP": { "backup": "LGA_V_APP", "arrivals": [ "KORRY4", "MIP4" ] },
+                   "LGA_F_APP": { "backup": "LGA_V_APP" },
+                   "LGA_DEP": { "departures": [ "KLGA" ], "backup": "LGA_V_APP" },
+                   "EWR_P_APP": {"backup": "JFK_G_APP", "arrivals": ["FQM3", "PHLBO4"]},
+                   "EWR_DEP": {"backup": "EWR_P_APP", "departures": ["KEWR"]},
+                   "EWR_A_APP": {"backup": "EWR_P_APP", "arrivals": ["FLOSI4"]},
+                   "NY_LE_DEP": {"backup": "JFK_G_APP"},
+                   "NY_LW_DEP": {"backup": "JFK_G_APP"},
+                   "NY_LN_DEP": {"backup": "JFK_G_APP"},
+                   "NY_LS_DEP": {"backup": "JFK_G_APP"}
+
+               }
+           },
+           "controllers": [
+               "BOS_CTR",
+               "ABE_APP",
+               "JFK_TWR",
+               "EWR_TWR",
+               "LGA_TWR",
+               "NY_CTR",
+               "NY_F_CTR",
+               "NY_C_CTR",
+               "DC_CTR"
+               
+
+           ],
+           "default_maps": [ "EWR", "LGA", "JFK 22s" ],
+           "departure_runways": [
+               {
+                   "airport": "KJFK",
+                   "rate": 0,
+                   "runway": "13R"
+                 },
+                 {
+                   "airport": "KJFK",
+                   "rate": 0,
+                   "runway": "31L"
+                 },
+                 {
+                   "airport": "KJFK",
+                   "rate": 0,
+                   "runway": "22R"
+                 },
+                 {
+                   "airport": "KJFK",
+                   "rate": 0,
+                   "runway": "4L"
+                 },
+                 {
+                   "airport": "KEWR",
+                   "rate": 0,
+                   "runway": "22R"
+                 },
+                 {
+                  "airport": "KEWR",
+                  "rate": 0,
+                  "runway": "4L "
+                },
+                 {
+                   "airport": "KLGA",
+                   "rate": 0,
+                   "runway": "13.JFK-ILS-13"
+                 },
+                 {
+                   "airport": "KLGA",
+                   "rate": 0,
+                   "runway": "4"
+                 },
+                 {
+                   "airport": "KLGA",
+                   "rate": 0,
+                   "runway": "31"
+                   }
+                 
+           ],
+           "wind": {
+               "direction": 280,
+               "gust": 7,
+               "speed": 5
+             }
+           
+       }
+         
     },
+    
     "scratchpads": {
         "BAYYS": "BAY",
         "BETTE": "BET",
@@ -3993,5 +4819,3 @@
         ],
         "video_map_file": "videomaps/n90-maps.json.zst"
 }
-
-

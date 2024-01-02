@@ -4,104 +4,104 @@
         "KORD": {
             "approaches": {
                 "G4R": {
-                    "full_name": "ILS Runway 4 Right",
                     "runway": "4R",
+                    "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200 _ORD_4R/a661"
                     ]
                 },
                 "I9L": {
-                    "full_name": "ILS Runway 9 Left",
                     "runway": "9L",
+                    "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760 _ORD_9L/a668"
                     ]
                 },
                 "I9C": {
-                    "full_name": "ILS Runway 9 Center",
                     "runway": "9C",
+                    "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400 _ORD_9C/a673"
                     ]
                 },
                 "I9R": {
-                    "full_name": "ILS Runway 9 Right",
                     "runway": "9R",
+                    "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380 _ORD_9R/a668"
                     ]
                 },
                 "I0L": {
-                    "full_name": "ILS Runway 10 Left",
                     "runway": "10L",
+                    "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200 _ORD_10L/a672"
                     ]
                 },
                 "I0C": {
-                    "full_name": "ILS Runway 10 Center",
                     "runway": "10C",
+                    "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220 _ORD_10C/a669"
                     ]
                 },
                 "I0R": {
-                    "full_name": "ILS Runway 10 Right",
                     "runway": "10R",
+                    "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220 _ORD_10R/a680"
                     ]
                 },
                 "I7L": {
-                    "full_name": "ILS Runway 27 Left",
                     "runway": "27L",
+                    "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160 _ORD_27L/a654"
                     ]
                 },
                 "I7C": {
-                    "full_name": "ILS Runway 27 Center",
                     "runway": "27C",
+                    "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160 _ORD_27C/a653"
                     ]
                 },
                 "I7R": {
-                    "full_name": "ILS Runway 27 Right",
                     "runway": "27R",
+                    "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200 _ORD_27R/a664"
                     ]
                 },
                 "I8L": {
-                    "full_name": "ILS Runway 28 Left",
                     "runway": "28L",
+                    "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240 _ORD_28L/a667"
                     ]
                 },
                 "I8C": {
-                    "full_name": "ILS Runway 28 Center",
                     "runway": "28C",
+                    "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KOENN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300 _ORD_28C/a651"
                     ]
                 },
                 "I8R": {
-                    "full_name": "ILS Runway 28 Right",
                     "runway": "28R",
+                    "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200 _ORD_28R/a651"
@@ -516,7 +516,6 @@
                 "KMDW": {
                     "approaches": {
                         "I4R": {
-                            "full_name": "ILS Runway 4 Right",
                             "runway": "4R",
                             "type": "ILS",
                             "waypoints": [
@@ -524,7 +523,6 @@
                             ]
                         },
                         "I3C": {
-                            "full_name": "ILS Runway 13 Center",
                             "runway": "13C",
                             "type": "ILS",
                             "waypoints": [
@@ -533,7 +531,6 @@
                             ]
                         },
                         "R2L": {
-                            "full_name": "RNAV Runway 22 Left",
                             "runway": "22L",
                             "type": "RNAV",
                             "waypoints": [
@@ -541,7 +538,6 @@
                             ]
                         },
                         "I1C": {
-                            "full_name": "ILS Runway 31 Center",
                             "runway": "31C",
                             "type": "ILS",
                             "waypoints": [
@@ -3327,6 +3323,30 @@
                     "full_name": "O'Hare Tower",
                     "scope_char": "T",
                     "sector_id": "SLC"
+                },
+                "ORD_N_TWR": {
+                    "frequency": 126900,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "NLC"
+                },
+                "ORD_C_TWR": {
+                    "frequency": 132700,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "3LC"
+                },
+                "ORD_NN_TWR": {
+                    "frequency": 128150,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "LCN"
+                },
+                "ORD_SS_TWR": {
+                    "frequency": 133000,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "LCS"
                 },
                 "MDW_TWR": {
                     "frequency": 125200,

@@ -432,7 +432,7 @@ func (nav *Nav) DepartureMessage() string {
 	}
 }
 
-func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint) string {
+func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) string {
 	// We'll just handle a few cases here; this isn't supposed to be exhaustive..
 	msgs := []string{}
 
@@ -457,9 +457,15 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint) string {
 
 	if hdg, ok := nav.AssignedHeading(); ok {
 		msgs = append(msgs, fmt.Sprintf("on a %03d heading", int(hdg)))
+	} else if star != "" {
+		if nav.Altitude.Assigned == nil {
+			msgs = append(msgs, "descending on the "+star)
+		} else {
+			msgs = append(msgs, "on the "+star)
+		}
 	}
 
-	if nav.Altitude.Assigned != nil {
+	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude {
 		msgs = append(msgs, "at "+FormatAltitude(nav.FlightState.Altitude)+" for "+
 			FormatAltitude(*nav.Altitude.Assigned)+" assigned")
 	} else {
@@ -1857,7 +1863,7 @@ func (nav *Nav) getApproach(airport string, id string, w *World) (*Approach, err
 
 	for name, appr := range ap.Approaches {
 		if name == id {
-			return &appr, nil
+			return appr, nil
 		}
 	}
 	return nil, ErrUnknownApproach

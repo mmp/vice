@@ -30,7 +30,6 @@
                     ]
                 },
                 "I1L": {
-                    "full_name": "ILS Runway 1 Left",
                     "runway": "1L",
                     "type": "ILS",
                     "waypoints": [
@@ -39,7 +38,6 @@
                     ] 
                 },
                 "R1R": {
-                    "full_name": "RNAV Runway 1 Right",
                     "runway": "1R",
                     "type": "RNAV",
                     "waypoints": [
@@ -72,12 +70,8 @@
                     "waypoints": [
                         "BERBN/if/a8000/s210 LUISA/a7000 SETKE/a6600/s210 ZEPAM/a5800 HAWKO/a5100 CONDY/a3800 _LAS_26R/a2200"
                     ]
-
                 }
-
             },
-
-
             "departure_routes": {
                 "26R": {
                     "VERKN": {

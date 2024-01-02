@@ -4,8 +4,8 @@
     "KDAB": {
       "approaches": {
         "I7L": {
-          "full_name": "ILS Runway 7 Left",
           "runway": "7L",
+          "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
             "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30",
@@ -13,8 +13,8 @@
           ]
         },
         "R7R": {
-          "full_name": "RNAV Runway 7 Right",
           "runway": "7R",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600 _DAB_7R/a32",
@@ -22,8 +22,8 @@
           ]
         },
         "R16": {
-          "full_name": "RNAV Runway 16",
           "runway": "16",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800 _DAB_16/a30",
@@ -31,24 +31,24 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS Runway 25 Right",
           "runway": "25R",
+          "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
             "WISPO/a3000 RINEE/a2700 DIYAK/a1600 _DAB_25R/a34"
           ]
         },
         "R5L": {
-          "full_name": "RNAV Runway 25 Left",
           "runway": "25L",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020 _DAB_25L/a33"
           ]
         },
         "R34": {
-          "full_name": "RNAV Runway 34",
           "runway": "34",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34",
