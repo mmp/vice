@@ -151,7 +151,8 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 					imgui.TableNextColumn()
 					imgui.Text(airport)
 					imgui.TableNextColumn()
-					imgui.Text(runway)
+					rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
+					imgui.Text(rshort)
 					imgui.TableNextColumn()
 					if category == "" {
 						imgui.Text("(All)")
