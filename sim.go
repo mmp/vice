@@ -412,6 +412,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Text("Unable to connect to the multi-controller vice server; " +
 			"only single-player scenarios are available.")
 		imgui.PopStyleColor()
+		c.NewSimType = NewSimCreateLocal
 	}
 	imgui.Separator()
 
