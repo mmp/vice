@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net/rpc"
 	"runtime"
 	"sort"
 	"strings"
@@ -56,14 +57,19 @@ type LaunchConfig struct {
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
 	// arrival group -> airport -> rate
-	ArrivalGroupRates map[string]map[string]int
+	ArrivalGroupRates           map[string]map[string]int
+	ArrivalPushes               bool
+	ArrivalPushFrequencyMinutes int
+	ArrivalPushLengthMinutes    int
 }
 
 func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, arr map[string]map[string]int) LaunchConfig {
 	lc := LaunchConfig{
-		DepartureChallenge: 0.25,
-		GoAroundRate:       0.05,
-		ArrivalGroupRates:  arr,
+		DepartureChallenge:          0.25,
+		GoAroundRate:                0.05,
+		ArrivalGroupRates:           arr,
+		ArrivalPushFrequencyMinutes: 20,
+		ArrivalPushLengthMinutes:    10,
 	}
 
 	// Walk the departure runways to create the map for departures.
@@ -145,7 +151,8 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 					imgui.TableNextColumn()
 					imgui.Text(airport)
 					imgui.TableNextColumn()
-					imgui.Text(runway)
+					rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
+					imgui.Text(rshort)
 					imgui.TableNextColumn()
 					if category == "" {
 						imgui.Text("(All)")
@@ -192,6 +199,16 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
 	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
 
+	changed = imgui.Checkbox("Include random arrival pushes", &lc.ArrivalPushes) || changed
+	uiStartDisable(!lc.ArrivalPushes)
+	freq := int32(lc.ArrivalPushFrequencyMinutes)
+	changed = imgui.SliderInt("Push frequency (minutes)", &freq, 3, 60) || changed
+	lc.ArrivalPushFrequencyMinutes = int(freq)
+	min := int32(lc.ArrivalPushLengthMinutes)
+	changed = imgui.SliderInt("Length of push (minutes)", &min, 5, 30) || changed
+	lc.ArrivalPushLengthMinutes = int(min)
+	uiEndDisable(!lc.ArrivalPushes)
+
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
@@ -224,18 +241,23 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 }
 
 type NewSimConfiguration struct {
-	Group          *SimConfiguration
-	GroupName      string
-	Scenario       *SimScenarioConfiguration
-	ScenarioName   string
-	selectedServer *SimServer
-	NewSimName     string // for create remote only
-	NewSimType     int
+	TRACONName      string
+	TRACON          map[string]*SimConfiguration
+	GroupName       string
+	Scenario        *SimScenarioConfiguration
+	ScenarioName    string
+	selectedServer  *SimServer
+	NewSimName      string // for create remote only
+	RequirePassword bool   // for create remote only
+	Password        string // for create remote only
+	NewSimType      int
 
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
-	lastRemoteSimsUpdate      time.Time
-	updateRemoteSimsCall      *PendingCall
+	RemoteSimPassword         string // for join remote only
+
+	lastRemoteSimsUpdate time.Time
+	updateRemoteSimsCall *PendingCall
 
 	displayError error
 }
@@ -244,6 +266,7 @@ type RemoteSim struct {
 	GroupName          string
 	ScenarioName       string
 	PrimaryController  string
+	RequirePassword    bool
 	AvailablePositions map[string]struct{}
 	CoveredPositions   map[string]struct{}
 }
@@ -260,7 +283,7 @@ func MakeNewSimConfiguration() NewSimConfiguration {
 		NewSimName:     getRandomAdjectiveNoun(),
 	}
 
-	c.SetScenarioGroup(globalConfig.LastScenarioGroup)
+	c.SetTRACON(globalConfig.LastTRACON)
 
 	return c
 }
@@ -288,30 +311,41 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 	}
 }
 
-func (c *NewSimConfiguration) SetScenarioGroup(name string) {
+func (c *NewSimConfiguration) SetTRACON(name string) {
 	var ok bool
-	if c.Group, ok = c.selectedServer.configs[name]; !ok {
+	if c.TRACON, ok = c.selectedServer.configs[name]; !ok {
 		if name != "" {
-			lg.Errorf("%s: scenario group not found!", name)
+			lg.Errorf("%s: TRACON not found!", name)
 		}
-		name = SortedMapKeys(c.selectedServer.configs)[0] // first one
-		c.Group = c.selectedServer.configs[name]
+		configs := c.selectedServer.configs
+		// Pick one at random
+		name = SortedMapKeys(configs)[rand.Intn(len(configs))]
+		c.TRACON = configs[name]
 	}
-	c.GroupName = name
+	c.TRACONName = name
+	c.GroupName = SortedMapKeys(c.TRACON)[0]
 
-	c.SetScenario(c.Group.DefaultScenario)
+	c.SetScenario(c.GroupName, c.TRACON[c.GroupName].DefaultScenario)
 }
 
-func (c *NewSimConfiguration) SetScenario(name string) {
+func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
-	if c.Scenario, ok = c.Group.ScenarioConfigs[name]; !ok {
-		if name != "" {
-			lg.Errorf("%s: scenario not found in group %s", name, c.GroupName)
-		}
-		name = SortedMapKeys(c.Group.ScenarioConfigs)[0]
-		c.Scenario = c.Group.ScenarioConfigs[name]
+	var groupConfig *SimConfiguration
+	if groupConfig, ok = c.TRACON[groupName]; !ok {
+		lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
+		groupName = SortedMapKeys(c.TRACON)[0]
+		groupConfig = c.TRACON[c.GroupName]
 	}
-	c.ScenarioName = name
+	c.GroupName = groupName
+
+	if c.Scenario, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
+		if scenarioName != "" {
+			lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
+		}
+		scenarioName = groupConfig.DefaultScenario
+		c.Scenario = groupConfig.ScenarioConfigs[scenarioName]
+	}
+	c.ScenarioName = scenarioName
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
@@ -345,7 +379,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, NewSimCreateLocal) &&
 				origType != NewSimCreateLocal {
 				c.selectedServer = localServer
-				c.SetScenarioGroup("")
+				c.SetTRACON(globalConfig.LastTRACON)
 				c.displayError = nil
 			}
 
@@ -355,7 +389,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, NewSimCreateRemote) &&
 				origType != NewSimCreateRemote {
 				c.selectedServer = remoteServer
-				c.SetScenarioGroup("")
+				c.SetTRACON(globalConfig.LastTRACON)
 				c.displayError = nil
 			}
 
@@ -382,19 +416,22 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	imgui.Separator()
 
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
-		if imgui.BeginComboV("Airport/Scenario", c.GroupName, imgui.ComboFlagsHeightLarge) {
+		if imgui.BeginComboV("TRACON/ATCT", c.TRACONName, imgui.ComboFlagsHeightLarge) {
 			for _, name := range SortedMapKeys(c.selectedServer.configs) {
-				if imgui.SelectableV(name, name == c.GroupName, 0, imgui.Vec2{}) {
-					c.SetScenarioGroup(name)
+				if imgui.SelectableV(name, name == c.TRACONName, 0, imgui.Vec2{}) {
+					c.SetTRACON(name)
 				}
 			}
 			imgui.EndCombo()
 		}
 
 		if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
-			for _, name := range SortedMapKeys(c.Group.ScenarioConfigs) {
-				if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-					c.SetScenario(name)
+			for _, groupName := range SortedMapKeys(c.TRACON) {
+				group := c.TRACON[groupName]
+				for _, name := range SortedMapKeys(group.ScenarioConfigs) {
+					if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+						c.SetScenario(groupName, name)
+					}
 				}
 			}
 			imgui.EndCombo()
@@ -421,6 +458,17 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
 				imgui.Text(FontAwesomeIconExclamationTriangle)
 				imgui.PopStyleColor()
+			}
+
+			imgui.Checkbox("Require Password", &c.RequirePassword)
+			if c.RequirePassword {
+				imgui.InputTextV("Password", &c.Password, 0, nil)
+				if c.Password == "" {
+					imgui.SameLine()
+					imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
+					imgui.Text(FontAwesomeIconExclamationTriangle)
+					imgui.PopStyleColor()
+				}
 			}
 		}
 
@@ -482,7 +530,8 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Text("Available simulations:")
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingFixedFit
-		if imgui.BeginTableV("simulation", 3, flags, imgui.Vec2{tableScale * 700, 0}, 0.) {
+		if imgui.BeginTableV("simulation", 4, flags, imgui.Vec2{tableScale * 700, 0}, 0.) {
+			imgui.TableSetupColumn("") // lock
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Configuration")
 			imgui.TableSetupColumn("Controllers")
@@ -497,6 +546,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 				imgui.PushID(simName)
 				imgui.TableNextRow()
+				imgui.TableNextColumn()
+
+				// Indicate if a password is required
+				if rs.RequirePassword {
+					imgui.Text(FontAwesomeIconLock)
+				}
 				imgui.TableNextColumn()
 
 				selected := simName == c.SelectedRemoteSim
@@ -548,21 +603,28 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 			imgui.EndCombo()
 		}
+		if rs.RequirePassword {
+			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
+		}
 	}
 
 	return false
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
-	return c.NewSimType == NewSimCreateRemote && c.NewSimName == ""
+	return c.NewSimType == NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
 }
 
 func (c *NewSimConfiguration) Start() error {
 	var result NewSimResult
 	if err := c.selectedServer.CallWithTimeout("SimManager.New", c, &result); err != nil {
-		// Problem with the connection to the remote server? Let the main
-		// loop try to reconnect.
-		remoteServer = nil
+		err = TryDecodeError(err)
+
+		if err == ErrRPCTimeout || err == ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
+			// Problem with the connection to the remote server? Let the main
+			// loop try to reconnect.
+			remoteServer = nil
+		}
 
 		return err
 	}
@@ -572,7 +634,7 @@ func (c *NewSimConfiguration) Start() error {
 		Client:          c.selectedServer.RPCClient,
 	}
 
-	globalConfig.LastScenarioGroup = c.GroupName
+	globalConfig.LastTRACON = c.TRACONName
 
 	newWorldChan <- result.World
 
@@ -602,15 +664,10 @@ type Sim struct {
 	// airport -> runway -> category
 	lastDeparture map[string]map[string]map[string]*Departure
 
-	// The same runway may be present multiple times in DepartureRates,
-	// with different categories. However, we want to make sure that we
-	// don't spawn two aircraft on the same runway at the same time (or
-	// close to it).  Therefore, here we track a per-runway "when's the
-	// next time that we will spawn *something* from the runway" time.
-	// When the time is up, we'll figure out which specific category to
-	// use...
-	// airport -> runway -> time
-	NextDepartureSpawn map[string]map[string]time.Time
+	// We track an overall "at what time do we launch the next departure"
+	// time for each airport. When that time is reached, we'll pick a
+	// runway, category, etc., based on the respective rates.
+	NextDepartureSpawn map[string]time.Time `json:"NextDepartureSpawn2"` // avoid parse errors on old configs
 
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
@@ -625,6 +682,9 @@ type Sim struct {
 
 	ReportingPoints []ReportingPoint
 
+	RequirePassword bool
+	Password        string
+
 	lastSimUpdate time.Time
 
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
@@ -634,6 +694,9 @@ type Sim struct {
 	lastLogTime    time.Time
 	SimRate        float32
 	Paused         bool
+
+	NextPushStart time.Time // both w.r.t. sim time
+	PushEnd       time.Time
 
 	STARSInputOverride string
 }
@@ -657,10 +720,15 @@ func (sc *ServerController) LogValue() slog.Value {
 		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
 }
 
-func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
+func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
 	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
 
-	sg, ok := scenarioGroups[ssc.GroupName]
+	tracon, ok := scenarioGroups[ssc.TRACONName]
+	if !ok {
+		lg.Errorf("%s: unknown TRACON", ssc.TRACONName)
+		return nil
+	}
+	sg, ok := tracon[ssc.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
 		return nil
@@ -685,6 +753,9 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 
 		ReportingPoints: sg.ReportingPoints,
 
+		Password:        ssc.Password,
+		RequirePassword: ssc.RequirePassword,
+
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
 
@@ -695,6 +766,12 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]*ScenarioGroup, i
 
 	if !isLocal {
 		s.Name = ssc.NewSimName
+	}
+
+	if s.LaunchConfig.ArrivalPushes {
+		// Figure out when the next arrival push will start
+		m := 1 + rand.Intn(s.LaunchConfig.ArrivalPushFrequencyMinutes)
+		s.NextPushStart = time.Now().Add(time.Duration(m) * time.Minute)
 	}
 
 	for ap := range s.LaunchConfig.DepartureRates {
@@ -745,9 +822,9 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Fixes = sg.Fixes
 	w.PrimaryAirport = sg.PrimaryAirport
 	w.RadarSites = sg.RadarSites
-	w.Center = sg.Center
-	w.Range = sg.Range
-	w.DefaultMap = sc.DefaultMap
+	w.Center = Select(sc.Center.IsZero(), sg.Center, sc.Center)
+	w.Range = Select(sc.Range == 0, sg.Range, sc.Range)
+	w.DefaultMaps = sc.DefaultMaps
 	w.STARSMaps = sg.STARSMaps
 	w.InhibitCAVolumes = sg.InhibitCAVolumes
 	w.Scratchpads = sg.Scratchpads
@@ -843,6 +920,8 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("sim_time", s.SimTime),
 		slog.Float64("sim_rate", float64(s.SimRate)),
 		slog.Bool("paused", s.Paused),
+		slog.Time("next_push_start", s.NextPushStart),
+		slog.Time("push_end", s.PushEnd),
 		slog.Any("aircraft", s.World.Aircraft))
 }
 
@@ -1170,6 +1249,7 @@ func (s *Sim) Update() {
 // separate so time management can be outside this so we can do the prespawn stuff...
 func (s *Sim) updateState() {
 	now := s.SimTime
+
 	for callsign, t := range s.Handoffs {
 		if !now.After(t) {
 			continue
@@ -1223,9 +1303,8 @@ func (s *Sim) updateState() {
 		for callsign, ac := range s.World.Aircraft {
 			passedWaypoint := ac.Update(s.World, s, s.lg)
 			if passedWaypoint != nil && passedWaypoint.Handoff {
-				// Handoff arrival from virtual controller to a human
-				// controller.
-				ctrl := s.ResolveController(ac.ArrivalHandoffController)
+				// Handoff from virtual controller to a human controller.
+				ctrl := s.ResolveController(ac.WaypointHandoffController)
 
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,
@@ -1260,10 +1339,10 @@ func (s *Sim) updateState() {
 				ac.DepartureContactAltitude = 0
 
 				// Only after we're on frequency can the controller start
-				// issuing control commands..
-				if ac.TrackingController == ctrl {
-					ac.ControllingController = ctrl
-				}
+				// issuing control commands.. (Note that track may have
+				// already been handed off to the next controller at this
+				// point.)
+				ac.ControllingController = ctrl
 			}
 
 			// Cull far-away departures/arrivals
@@ -1368,21 +1447,17 @@ func (s *Sim) setInitialSpawnTimes() {
 		s.NextArrivalSpawn[group] = randomSpawn(rateSum)
 	}
 
-	s.NextDepartureSpawn = make(map[string]map[string]time.Time)
+	s.NextDepartureSpawn = make(map[string]time.Time)
 	for airport, runwayRates := range s.LaunchConfig.DepartureRates {
-		spawn := make(map[string]time.Time)
+		rateSum := 0
 
-		for runway, categoryRates := range runwayRates {
-			rateSum := 0
+		for _, categoryRates := range runwayRates {
 			for _, rate := range categoryRates {
 				rateSum += rate
 			}
-			if rateSum > 0 {
-				spawn[runway] = randomSpawn(rateSum)
-			}
 		}
 
-		s.NextDepartureSpawn[airport] = spawn
+		s.NextDepartureSpawn[airport] = randomSpawn(rateSum)
 	}
 }
 
@@ -1403,10 +1478,34 @@ func sampleRateMap(rates map[string]int) (string, int) {
 	return result, rateSum
 }
 
-func randomWait(rate int) time.Duration {
+func sampleRateMap2(rates map[string]map[string]int) (string, string, int) {
+	// Choose randomly in proportion to the rates in the map
+	rateSum := 0
+	var result0, result1 string
+	for item0, rateMap := range rates {
+		for item1, rate := range rateMap {
+			if rate == 0 {
+				continue
+			}
+			rateSum += rate
+			// Weighted reservoir sampling...
+			if rand.Float32() < float32(rate)/float32(rateSum) {
+				result0 = item0
+				result1 = item1
+			}
+		}
+	}
+	return result0, result1, rateSum
+}
+
+func randomWait(rate int, pushActive bool) time.Duration {
 	if rate == 0 {
 		return 365 * 24 * time.Hour
 	}
+	if pushActive {
+		rate = rate * 3 / 2
+	}
+
 	avgSeconds := 3600 / float32(rate)
 	seconds := lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
 	return time.Duration(seconds * float32(time.Second))
@@ -1414,6 +1513,22 @@ func randomWait(rate int) time.Duration {
 
 func (s *Sim) spawnAircraft() {
 	now := s.SimTime
+
+	if !s.NextPushStart.IsZero() && now.After(s.NextPushStart) {
+		// party time
+		s.PushEnd = now.Add(time.Duration(s.LaunchConfig.ArrivalPushLengthMinutes) * time.Minute)
+		s.lg.Info("arrival push starting", slog.Time("end_time", s.PushEnd))
+		s.NextPushStart = time.Time{}
+	}
+	if !s.PushEnd.IsZero() && now.After(s.PushEnd) {
+		// end push
+		m := -2 + rand.Intn(4) + s.LaunchConfig.ArrivalPushFrequencyMinutes
+		s.NextPushStart = now.Add(time.Duration(m) * time.Minute)
+		s.lg.Info("arrival push ending", slog.Time("next_start", s.NextPushStart))
+		s.PushEnd = time.Time{}
+	}
+
+	pushActive := now.Before(s.PushEnd)
 
 	for group, airportRates := range s.LaunchConfig.ArrivalGroupRates {
 		if now.After(s.NextArrivalSpawn[group]) {
@@ -1424,36 +1539,34 @@ func (s *Sim) spawnAircraft() {
 				s.lg.Error("CreateArrival error: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
-				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum))
+				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum, pushActive))
 			}
 		}
 	}
 
-	for airport, runwayTimes := range s.NextDepartureSpawn {
-		for runway, spawnTime := range runwayTimes {
-			if !now.After(spawnTime) {
-				continue
-			}
+	for airport, spawnTime := range s.NextDepartureSpawn {
+		if !now.After(spawnTime) {
+			continue
+		}
 
-			// Figure out which category to launch
-			category, rateSum := sampleRateMap(s.LaunchConfig.DepartureRates[airport][runway])
-			if rateSum == 0 {
-				s.lg.Errorf("%s/%s: couldn't find a matching runway for spawning departure?", airport, runway)
-				continue
-			}
+		// Figure out which category to launch
+		runway, category, rateSum := sampleRateMap2(s.LaunchConfig.DepartureRates[airport])
+		if rateSum == 0 {
+			s.lg.Errorf("%s: couldn't find an active runway for spawning departure?", airport)
+			continue
+		}
 
-			prevDep := s.lastDeparture[airport][runway][category]
-			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
-				s.LaunchConfig.DepartureChallenge, prevDep)
-			if err != nil {
-				s.lg.Errorf("CreateDeparture error: %v", err)
-			} else {
-				s.lastDeparture[airport][runway][category] = dep
-				s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
-				s.launchAircraftNoLock(*ac)
-				s.NextDepartureSpawn[airport][runway] = now.Add(randomWait(rateSum))
-			}
+		prevDep := s.lastDeparture[airport][runway][category]
+		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
+		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
+			s.LaunchConfig.DepartureChallenge, prevDep)
+		if err != nil {
+			s.lg.Errorf("CreateDeparture error: %v", err)
+		} else {
+			s.lastDeparture[airport][runway][category] = dep
+			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
+			s.launchAircraftNoLock(*ac)
+			s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
 		}
 	}
 }
@@ -1485,16 +1598,16 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 	} else {
 		// Update the next spawn time for any rates that changed.
 		for ap, rwyRates := range lc.DepartureRates {
+			newSum, oldSum := 0, 0
 			for rwy, categoryRates := range rwyRates {
-				newSum, oldSum := 0, 0
 				for category, rate := range categoryRates {
 					newSum += rate
 					oldSum += s.LaunchConfig.DepartureRates[ap][rwy][category]
 				}
-				if newSum != oldSum {
-					s.lg.Infof("%s/%s: departure rate changed %d -> %d", ap, rwy, oldSum, newSum)
-					s.NextDepartureSpawn[ap][rwy] = s.SimTime.Add(randomWait(newSum))
-				}
+			}
+			if newSum != oldSum {
+				s.lg.Infof("%s: departure rate changed %d -> %d", ap, oldSum, newSum)
+				s.NextDepartureSpawn[ap] = s.SimTime.Add(randomWait(newSum, false))
 			}
 		}
 		for group, groupRates := range lc.ArrivalGroupRates {
@@ -1504,8 +1617,9 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 				oldSum += s.LaunchConfig.ArrivalGroupRates[group][ap]
 			}
 			if newSum != oldSum {
+				pushActive := s.SimTime.Before(s.PushEnd)
 				s.lg.Infof("%s: arrival rate changed %d -> %d", group, oldSum, newSum)
-				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum))
+				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum, pushActive))
 			}
 
 		}
@@ -1640,6 +1754,17 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 		})
 }
 
+func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchTrackingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.SecondaryScratchpad = scratchpad
+			return nil
+		})
+}
+
 func (s *Sim) Ident(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -1763,8 +1888,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			var radioTransmissions []RadioTransmission
 			if octrl := s.World.GetController(ac.TrackingController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
-				bye := Sample([]string{"good day", "seeya"})
-				contact := Sample([]string{"contact ", "over to ", ""})
+				bye := Sample("good day", "seeya")
+				contact := Sample("contact ", "over to ", "")
 				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
 				radioTransmissions = append(radioTransmissions, RadioTransmission{
 					Controller: ac.ControllingController,
@@ -1783,6 +1908,13 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 					Type:       RadioTransmissionReadback,
 				})
 			}
+
+			s.eventStream.Post(Event{
+				Type:           HandoffControllEvent,
+				FromController: ac.ControllingController,
+				ToController:   ac.TrackingController,
+				Callsign:       ac.Callsign,
+			})
 
 			ac.ControllingController = ac.TrackingController
 
@@ -1820,15 +1952,16 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			ac.HandoffTrackController = ""
 			ac.TrackingController = ctrl.Callsign
 			if !s.controllerIsSignedIn(ac.ControllingController) {
-				// Only take control on handoffs from virtual
+				// Take immediate control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign
+				return []RadioTransmission{RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message:    ac.ContactMessage(s.ReportingPoints),
+					Type:       RadioTransmissionContact,
+				}}
+			} else {
+				return nil
 			}
-
-			return []RadioTransmission{RadioTransmission{
-				Controller: ctrl.Callsign,
-				Message:    ac.ContactMessage(s.ReportingPoints),
-				Type:       RadioTransmissionContact,
-			}}
 		})
 }
 
@@ -2171,7 +2304,22 @@ func (s *Sim) GoAround(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			return ac.GoAround()
+			resp := ac.GoAround()
+			for i := range resp {
+				// Upgrade to unexpected versus it just being controller initiated.
+				resp[i].Type = RadioTransmissionUnexpected
+			}
+			return resp
+		})
+}
+
+func (s *Sim) ContactTower(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.ContactTower(s.World)
 		})
 }
 

@@ -80,6 +80,14 @@ var errorStringToError = map[string]error{
 	ErrRPCTimeout.Error():                   ErrRPCTimeout,
 	ErrRPCVersionMismatch.Error():           ErrRPCVersionMismatch,
 	ErrRestoringSavedState.Error():          ErrRestoringSavedState,
+	ErrInvalidPassword.Error():              ErrInvalidPassword,
+}
+
+func TryDecodeError(e error) error {
+	if err, ok := errorStringToError[e.Error()]; ok {
+		return err
+	}
+	return e
 }
 
 ///////////////////////////////////////////////////////////////////////////

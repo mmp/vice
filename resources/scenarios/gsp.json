@@ -1,0 +1,686 @@
+{
+  "tracon": "GSP (Greenville-Spartanburg)",
+  "airports": {
+    "KGSP": {
+      "approaches": {
+        "I4": {
+          "runway": "4",
+          "type": "ILS",
+          "waypoints": [
+            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA _GSP_4/a964"
+          ]
+        },
+        "R4": {
+          "runway": "4",
+          "type": "RNAV",
+          "waypoints": [
+            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA _GSP_4/a964"
+          ]
+        },
+        "I22": {
+          "runway": "22",
+          "type" : "ILS",
+          "waypoints": [
+            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964"
+          ]
+        },
+        "R22": {
+          "runway": "22",
+          "type": "RNAV",
+          "waypoints": [
+            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964",
+            "IROPY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964",
+            "NAGRY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964"
+          ]
+        }
+      },
+      "departure_routes": {
+        "4": {
+          "DRIVN,ACERB": {
+            "cleared_altitude": 5000,
+            "sid": "BIMMR3",
+            "waypoints": "_GSP_4 _GSP_22/h038"
+          },
+          "JLENA": {
+            "cleared_altitude": 5000,
+            "sid": "BWALL2",
+            "waypoints": "_GSP_4 _GSP_22/h038"
+          },
+          "HRS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_4 _GSP_22/h038"
+          },
+          "DGESS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_4 _GSP_22/h038"
+          },
+          "SPA": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_4 _GSP_22/h038"
+          },
+          "SOTHH": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_4 _GSP_22/h038"
+          }
+        },
+        "22": {
+          "DRIVN,ACERB": {
+            "cleared_altitude": 5000,
+            "sid": "BIMMR3",
+            "waypoints": "_GSP_22 _GSP_4/h219"
+          },
+          "JLENA": {
+            "cleared_altitude": 5000,
+            "sid": "BWALL2",
+            "waypoints": "_GSP_22 _GSP_4/h219"
+          },
+          "HRS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_22 _GSP_4/h219"
+          },
+          "DGESS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_22 _GSP_4/h219"
+          },
+          "SPA": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_22 _GSP_4/h219"
+          },
+          "SOTHH": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSP_22 _GSP_4/h219"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "SOTHH",
+          "route": "SOTHH BANKR BANKR4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "HRS",
+          "route": "HRS GQO MEM J66 LIT FEWWW BRDJE4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "fleet": "short",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "DGESS",
+          "route": "DGESS OZZZI1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UPS"
+            }
+          ],
+          "destination": "KSDF",
+          "exit": "JLENA",
+          "route": "JLENA LAFOX MAUDD6"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "b744",
+              "icao": "TAY"
+            }
+          ],
+          "destination": "EDFH",
+          "exit": "DRIVN",
+          "route": "DRIVN GULFY BARMY BATTA RDU LVL RIC SIE DRIFT HTO BRADD N197A NICSO NATZ ELSOX LESLU OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 REMBA SOPOK Y863 ROPUV ROPUV4R"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MTN"
+            }
+          ],
+          "destination": "KGSO",
+          "exit": "SPA",
+          "route": "SPA V605 GENOD BROOK BROOK4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "long",
+              "icao": "FDX"
+            }
+          ],
+          "destination": "KMEM",
+          "exit": "HRS",
+          "route": "HRS GQO TALLO VANZE3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "DRIVN",
+          "route": "DRIVN JOOLI Q56 KIWII WAVES CAPSS3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "DRIVN",
+          "route": "DRIVN EVING Q60 HURTS HUBBS PXT KORRY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "DRIVN",
+          "route": "DRIVN KIDDO Q22 UMBRE QUART PHLBO4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ],
+          "destination": "KTTA",
+          "exit": "DRIVN",
+          "route": "DRIVN"
+        }
+      ],
+      "exit_categories": {
+        "DRIVN": "BIMMR3",
+        "ACERB": "BIMMR3",
+        "JLENA": "BWALL2"
+      },
+      "location":"N34.53.37.418,W82.12.56.731",
+      "tower_list": 1
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "GSPAPP0100": [
+        "N34.28.26.253,W81.22.05.022",
+        "N34.17.44.021,W81.49.54.186",
+        "N34.04.43.618,W81.53.22.042",
+        "N34.03.56.177,W82.15.50.142",
+        "N34.03.10.252,W82.20.53.413",
+        "N34.21.09.998,W82.51.25.526",
+        "N34.32.16.244,W82.59.15.252",
+        "N34.40.02.192,W82.59.25.195",
+        "N34.50.36.663,W82.56.29.893",
+        "N35.04.15.650,W82.37.07.032",
+        "N35.04.44.608,W82.18.44.846",
+        "N35.04.50.768,W82.13.57.570",
+        "N35.08.40.567,W82.09.45.989",
+        "N35.13.22.326,W82.09.52.703",
+        "N35.17.25.918,W82.05.46.512",
+        "N35.32.56.900,W82.05.48.452",
+        "N35.32.57.191,W81.49.35.060",
+        "N35.25.49.644,W81.40.44.011",
+        "N35.14.13.224,W81.43.12.953",
+        "N34.28.21.766,W81.21.54.836"
+      ],
+      "GSPAPP050": [
+        "N35.13.23.993,W82.09.57.240",
+        "N35.08.46.845,W82.09.55.109",
+        "N35.04.55.195,W82.13.51.818",
+        "N35.04.51.184,W82.18.47.238",
+        "N35.13.23.993,W82.09.57.240",
+        "N35.21.47.451,W82.02.16.242",
+        "N35.21.38.255,W82.05.47.162",
+        "N35.32.52.677,W82.05.51.760",
+        "N35.32.56.529,W81.49.42.759",
+        "N35.25.50.217,W81.40.38.184",
+        "N35.24.48.947,W82.02.35.186",
+        "N35.21.50.746,W82.02.12.805"
+      ]
+    },
+    "volumes": {
+      "GSPAPP": [
+        {
+          "boundaries": [
+            "GSPAPP0100"
+          ],
+          "lower": 0,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "GSPAPP050"
+          ],
+          "lower": 0,
+          "upper": 5000
+        }
+      ]
+    }
+  },
+  "arrival_groups": {
+    "WORXS2": [
+      {
+        "airlines": {
+          "KGSP": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KDFW",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KIAH",
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "cruise_altitude": 34000,
+        "initial_altitude": 14000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 280,
+        "route": "/. TDAAY",
+        "waypoints": "WORXS TUSDE/ho ANGRI/a11000 TDAAY/h043"
+      }
+    ],
+    "MCHLN2": [
+      {
+        "airlines": {
+          "KGSP": [
+            {
+              "airport": "KMIA",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KORD",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KORD",
+              "icao": "SKW"
+            }
+          ]
+        },
+        "cruise_altitude": 34000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 280,
+        "route": "/. TYRES",
+        "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h004"
+      }
+    ],
+    "RCTOR2": [
+      {
+        "airlines": {
+          "KGSP": [
+            {
+              "airport": "KIND",
+              "fleet": "long",
+              "icao": "FDX"
+            },
+            {
+              "airport": "KSDF",
+              "icao": "UPS"
+            },
+            {
+              "airport": "KMEM",
+              "fleet": "long",
+              "icao": "FDX"
+            },
+            {
+              "airport": "KDTW",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "cruise_altitude": 34000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. UNMAN",
+        "waypoints": "LUVTT/ho/s250/a11000 RCTOR/a7000 UNMAN/h181"
+      }
+    ],
+    "JUNNR3": [
+      {
+        "airlines": {
+          "KGSP": [
+            {
+              "airport": "KDCA",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KEWR",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "EDV"
+            }
+          ]
+        },
+        "cruise_altitude": 34000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 280,
+        "route": "/. SPA",
+        "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264"
+      }
+    ]
+  },
+  "center": "KGSP",
+  "control_positions": {
+    "ATL_CTR": {
+      "frequency": 132975,
+      "full_name": "Atlanta Center",
+      "scope_char": "C",
+      "sector_id": "43"
+    },
+    "GSP_TWR": {
+      "frequency": 119900,
+      "full_name": "Birmingham Tower",
+      "scope_char": "T",
+      "sector_id": "1T"
+    },
+    "GSP_N_APP": {
+      "frequency": 127670,
+      "full_name": "Radar West",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "GSP_S_APP": {
+      "frequency": 123800,
+      "full_name": "Radar East",
+      "scope_char": "E",
+      "sector_id": "1E"
+    },
+    "GSP_W_APP": {
+      "frequency": 120150,
+      "full_name": "Radar South",
+      "scope_char": "S",
+      "sector_id": "1S"
+    }
+  },
+  "default_scenario": "KGSP Runway 22",
+  "fixes": {
+    "_GSP_4": "N34.52.58.430,W82.13.42.760",
+    "_GSP_22": "N34.54.30.210,W82.12.32.492",
+    "KGSP": "N33.33.49.992,W86.45.08.294"
+  },
+  "magnetic_variation": 13.3,
+  "name": "KGSP",
+  "primary_airport": "KGSP",
+  "radar_sites": {
+      "GSP": {
+        "char": "G",
+        "position": "34.88823,-82.20683",
+        "elevation": 1010,
+        "primary_range": 100,
+        "secondary_range": 150,
+        "silence_angle": 30.0,
+        "slope_angle": 0.3
+      },
+      "QRM": {
+        "char": "Q",
+        "position": "35.61081,-81.23825",
+        "elevation": 1324,
+        "primary_range": 200,
+        "secondary_range": 200,
+        "silence_angle": 29.7,
+        "slope_angle": 0.3
+      },
+      "QNK": {
+        "char": "K",
+        "position": "33.75978,-82.467",
+        "elevation": 808,
+        "primary_range": 200,
+        "secondary_range": 200,
+        "silence_angle": 29.7,
+        "slope_angle": 0.3
+      }
+  },
+  "reporting_points": [
+    "TDAAY",
+    "TYRES",
+    "SPA"
+  ],
+  "scenarios": {
+    "KGSP Runway 22": {
+      "approach_airspace": [
+        "GSPAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        }
+      ],
+      "arrivals": {
+        "JUNNR3": {
+          "KGSP": 6
+        },
+        "RCTOR2": {
+          "KGSP": 8
+        },
+        "MCHLN2": {
+          "KGSP": 4
+        },
+        "WORXS2": {
+          "KGSP": 10
+        }
+      },
+      "solo_controller": "GSP_W_APP",
+      "multi_controllers": {
+        "default" : {
+            "GSP_W_APP": {"primary": true, "arrivals": ["WORXS2", "RCTOR2"], "departures": ["KGSP"]},
+            "GSP_E_APP": {"backup": "GSP_W_APP", "arrivals": ["JUNNR3"]},
+            "GSP_S_APP": {"backup": "GSP_W_APP", "arrivals": ["MCHLN2"]}
+        }
+    },
+      "controllers": [
+        "GSP_TWR",
+        "ATL_CTR"
+      ],
+      "default_maps": [ "SOUTH FLOW" ],
+      "departure_airspace": [
+        "GSPAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KGSP",
+          "rate" : 20,
+          "runway": "22"
+        }
+      ],
+      "wind": {
+        "direction": 220,
+        "speed": 8
+      }
+    },
+    "KGSP Runway 4": {
+      "approach_airspace": [
+        "GSPAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KGSP",
+          "runway": "4"
+        }
+      ],
+      "arrivals": {
+        "JUNNR3": {
+          "KGSP": 6
+        },
+        "RCTOR2": {
+          "KGSP": 8
+        },
+        "MCHLN2": {
+          "KGSP": 4
+        },
+        "WORXS2": {
+          "KGSP": 10
+        }
+      },
+      "solo_controller": "GSP_S_APP",
+      "multi_controllers": {
+        "default" : {
+          "GSP_W_APP": {"primary": true, "arrivals": ["WORXS2", "RCTOR2"], "departures": ["KGSP"]},
+          "GSP_E_APP": {"backup": "GSP_W_APP", "arrivals": ["JUNNR3"]},
+          "GSP_S_APP": {"backup": "GSP_W_APP", "arrivals": ["MCHLN2"]}
+        }
+    },
+      "controllers": [
+        "GSP_TWR",
+        "ATL_CTR"
+      ],
+      "default_maps": [ "NORTH FLOW" ],
+      "departure_airspace": [
+        "GSPAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KGSP",
+          "rate" : 20,
+          "runway": "4"
+        }
+      ],
+      "wind": {
+        "direction": 40,
+        "speed": 8
+      }
+    }
+  },
+    "scratchpads": {
+        "DRIVN": "DRIVN",
+        "ACERB": "ACERB",
+        "JLENA": "JLENA",
+        "DGESS": "DGESS",
+        "SOTHH": "SOTHH",
+        "SPA": "SPA",
+        "HRS": "HRS",
+        "GQO": "GQO"
+  },
+  "stars_maps": [
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "GSP MINIMUM VECTORING ALTITUDE"
+  },
+  {
+      "group": 1,
+      "label": "COUNTY",
+      "name": "COUNTY JURISDICTIONS"
+  },
+  {
+      "group": 1,
+      "label": "RNAVOTH",
+      "name": "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)"
+  },
+  {
+      "group": 0,
+      "label": "MISC",
+      "name": "SIDS/STARS/EXTENDED FINAL APPROACH COURSES"
+  },
+  {
+      "group": 1,
+      "label": "RNAVNOR",
+      "name": "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)"
+  },
+  {
+      "group": 0,
+      "label": "NORTH",
+      "name": "NORTH FLOW"
+  },
+  {
+      "group": 0,
+      "label": "VPLOW",
+      "name": "VPLOW WAYPOINT"
+  },
+  {
+      "group": 1,
+      "label": "RNAVSOT",
+      "name": "RNAV APPROACHES (FQD19, SPA23, 35A23, LUX26, GRD27, GMU19, GMU28, GYH23, LQK23, AND23, AND35, CEU25)"
+  },
+  {
+      "group": 0,
+      "label": "SOUTH",
+      "name": "SOUTH FLOW"
+  },
+  {
+      "group": 1,
+      "label": "EOVM",
+      "name": "GSP EMERGENCY OBSTRUCTION VIDEO MAP"
+  },
+  {
+      "group": 1,
+      "label": "EMRGCY",
+      "name": "EMERGENCY LOCATIONS"
+  },
+  {
+      "group": 0,
+      "label": "RNAV23",
+      "name": "GYH RNAV 23"
+  },
+  {
+      "group": 0,
+      "label": "RNAV19",
+      "name": "GMU RNAV 19"
+  },
+  {
+      "group": 0,
+      "label": "RNAV10",
+      "name": "GMU RNAV 10"
+  },
+  {
+      "group": 0,
+      "label": "RNAV28",
+      "name": "GMU RNAV 28"
+  }
+  ],
+"video_map_file": "videomaps/ZTL-videomaps.json.zst"
+}

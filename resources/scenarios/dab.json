@@ -1,10 +1,11 @@
 {
+  "tracon": "DAB (Daytona Beach)",
   "airports": {
     "KDAB": {
       "approaches": {
         "I7L": {
-          "full_name": "ILS 7L",
           "runway": "7L",
+          "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
             "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30",
@@ -12,8 +13,8 @@
           ]
         },
         "R7R": {
-          "full_name": "RNAV 7R",
           "runway": "7R",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600 _DAB_7R/a32",
@@ -21,8 +22,8 @@
           ]
         },
         "R16": {
-          "full_name": "RNAV 16",
           "runway": "16",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800 _DAB_16/a30",
@@ -30,24 +31,24 @@
           ]
         },
         "I5R": {
-          "full_name": "ILS 25R",
           "runway": "25R",
+          "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
             "WISPO/a3000 RINEE/a2700 DIYAK/a1600 _DAB_25R/a34"
           ]
         },
         "R5L": {
-          "full_name": "RNAV 25L",
           "runway": "25L",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020 _DAB_25L/a33"
           ]
         },
         "R34": {
-          "full_name": "RNAV 34",
           "runway": "34",
+          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34",
@@ -60,34 +61,30 @@
         "7L": {
           "CRG": {
             "cleared_altitude": 4000,
-            "route": "ROYES7",
+            "sid": "ROYES7",
             "waypoints": "_DAB_7L _DAB_25R/h070 BARBS ROYES CRG"
           },
           "MALET": {
             "cleared_altitude": 3000,
-            "route": "MALET",
             "waypoints": "_DAB_7R _DAB_25L/h070 MALET"
           },
           "ROYES": {
             "cleared_altitude": 3000,
-            "route": "ROYES",
             "waypoints": "_DAB_7L _DAB_25R/h070 ROYES"
           }
         },
         "25R": {
           "CRG": {
             "cleared_altitude": 4000,
-            "route": "ROYES7",
+            "sid": "ROYES7",
             "waypoints": "_DAB_25R _DAB_7L/h250 BARBS ROYES CRG"
           },
           "MALET": {
             "cleared_altitude": 3000,
-            "route": "MALET",
             "waypoints": "_DAB_25L _DAB_7R/h250 MALET"
           },
           "ROYES": {
             "cleared_altitude": 3000,
-            "route": "ROYES",
             "waypoints": "_DAB_25R _DAB_7L/h250 ROYES"
           }
         }
@@ -339,12 +336,11 @@
             }
           ]
         },
-        "cleared_altitude": 12000,
         "cruise_altitude": 36000,
         "initial_altitude": 17000,
         "initial_controller": "JAX_30_CTR",
         "initial_speed": 250,
-        "route": "/. TTHOR3 ",
+        "star": "TTHOR3",
         "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165"
       }
     ],
@@ -374,12 +370,12 @@
             }
           ]
         },
-        "cleared_altitude": 9000,
+        "assigned_altitude": 9000,
         "cruise_altitude": 11000,
         "initial_altitude": 11000,
         "initial_controller": "JAX_N_APP",
         "initial_speed": 130,
-        "route": "/. FONEX ",
+        "route": "/. FONEX OMN",
         "waypoints": "WEXUR IMEKE/ho FONEX OMN"
       }
     ],
@@ -421,12 +417,12 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
+        "assigned_altitude": 7000,
         "cruise_altitude": 9000,
         "initial_altitude": 8000,
         "initial_controller": "JAX_N_APP",
         "initial_speed": 130,
-        "route": "/. FOLUT ",
+        "route": "/. FOLUT OMN",
         "waypoints": "BUNDE CODMO/ho FOLUT OMN"
       }
     ],
@@ -448,12 +444,12 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
+        "assigned_altitude": 5000,
         "cruise_altitude": 7000,
         "initial_altitude": 6000,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 130,
-        "route": "/. KIZER ",
+        "route": "/. KIZER",
         "waypoints": "WHOVL UDUZI/ho KIZER"
       }
     ],
@@ -475,12 +471,12 @@
             }
           ]
         },
-        "cleared_altitude": 5000,
+        "assigned_altitude": 5000,
         "cruise_altitude": 9000,
         "initial_altitude": 8000,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 130,
-        "route": "/. DOMES ",
+        "route": "/. DOMES EYORE",
         "waypoints": "ROCIT APEAK/ho DOMES EYORE"
       }
     ]
@@ -573,8 +569,6 @@
   },
   "magnetic_variation": 6.8,
   "name": "KDAB",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 52,
   "primary_airport": "KDAB",
   "radar_sites": {
     "DAB": {
@@ -637,7 +631,7 @@
       "approach_airspace": [
         "DAB_H_APP"
       ],
-      "arrival_runways": [
+      "arrival_runways": [
         {
           "airport": "KDAB",
           "runway": "7L"
@@ -684,7 +678,7 @@
         "MCO_B_APP",
         "JAX_N_APP"
       ],
-      "default_map": "DAB EAST FLOW",
+      "default_maps": [ "DAB EAST FLOW" ],
       "departure_airspace": [
         "DAB_H_APP"
       ],
@@ -751,7 +745,7 @@
         "MCO_B_APP",
         "JAX_N_APP"
       ],
-      "default_map": "DAB WEST FLOW",
+      "default_maps": [ "DAB WEST FLOW" ],
       "departure_airspace": [
         "DAB_H_APP"
       ],

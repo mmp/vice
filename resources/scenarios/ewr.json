@@ -1,10 +1,10 @@
 {
+  "tracon": "N90 (New York)",
   "airports": {
     "KEWR": {
       "name": "Newark",
       "approaches": {
         "I11": {
-          "full_name": "ILS 11",
           "runway": "11",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +12,6 @@
           ]
         },
         "I2L": {
-          "full_name": "ILS 22 Left",
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
@@ -20,7 +19,6 @@
           ]
         },
         "I2R": {
-          "full_name": "ILS 22 Right",
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
@@ -28,7 +26,6 @@
           ]
         },
         "I4L": {
-          "full_name": "ILS 4 Left",
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
@@ -36,7 +33,6 @@
           ]
         },
         "I4R": {
-          "full_name": "ILS 4 Right",
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
@@ -44,7 +40,7 @@
           ]
         },
         "R29": {
-          "full_name": "RNAV X 29",
+          "full_name": "RNAV X Runway 29",
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
@@ -52,7 +48,7 @@
           ]
         },
         "RY9": {
-          "full_name": "RNAV Y 29",
+          "full_name": "RNAV Y Runway 29",
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
@@ -60,7 +56,7 @@
           ]
         },
         "RZ9": {
-          "full_name": "RNAV Z 29",
+          "full_name": "RNAV Z Runway 29",
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
@@ -68,150 +64,164 @@
           ]
         }
       },
-        "approach_regions": {
-            "22L": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.69662,-74.16214",
-                "reference_heading": 219,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "2L" ]
-            },
-            "22R": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.69719,-74.16559",
-                "reference_heading": 219,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "2R" ]
-            },
-            "11": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 4.5,
-                "descent_altitude": 1500,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.70269,-74.17891",
-                "reference_heading": 108,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "11" ]
-            },
-            "4L": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 6,
-                "descent_altitude": 2000,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.68352,-74.17428",
-                "reference_heading": 39,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "4L" ]
-            },
-            "4R": {
-                "heading_tolerance":  90,
-
-                "near_distance": 1,
-                "near_half_width": 3,
-                "far_half_width": 6,
-                "region_length": 30,
-
-                "descent_distance": 5.1,
-                "descent_altitude": 1700,
-                "above_altitude_tolerance": 6000,
-                "below_altitude_tolerance": 1000,
-
-                "reference_point": "40.68176,-74.17159",
-                "reference_heading": 39,
-                "reference_length": 30,
-                "reference_altitude": 0,
-
-                "scratchpad_patterns": [ "4R" ]
-            }
+      "approach_regions": {
+        "22L": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.69662,-74.16214",
+          "reference_heading": 219,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "2L"
+          ]
+        },
+        "22R": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.69719,-74.16559",
+          "reference_heading": 219,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "2R"
+          ]
+        },
+        "11": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 4.5,
+          "descent_altitude": 1500,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.70269,-74.17891",
+          "reference_heading": 108,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "11"
+          ]
+        },
+        "4L": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 6,
+          "descent_altitude": 2000,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.68352,-74.17428",
+          "reference_heading": 39,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "4L"
+          ]
+        },
+        "4R": {
+          "heading_tolerance": 90,
+          "near_distance": 1,
+          "near_half_width": 3,
+          "far_half_width": 6,
+          "region_length": 30,
+          "descent_distance": 5.1,
+          "descent_altitude": 1700,
+          "above_altitude_tolerance": 6000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "40.68176,-74.17159",
+          "reference_heading": 39,
+          "reference_length": 30,
+          "reference_altitude": 0,
+          "scratchpad_patterns": [
+            "4R"
+          ]
+        }
       },
       "converging_runways": [
-          {
-              "runways": [ "22L", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "4R", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "22R", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          },
-          {
-              "runways": [ "4L", "11" ],
-              "leader_directions": [ "S", "E" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "0",
-              "tie_offset": 2
-          }
+        {
+          "runways": [
+            "22L",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "4R",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "22R",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        },
+        {
+          "runways": [
+            "4L",
+            "11"
+          ],
+          "leader_directions": [
+            "S",
+            "E"
+          ],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2
+        }
       ],
       "departure_routes": {
         "22R": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2500,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
           }
         },
         "4L": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
-            "route": "EWR4",
+            "sid": "EWR5",
             "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
           }
         }
@@ -584,7 +594,7 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
+              "icao": "GJS"
             }
           ],
           "altitude": 8000,
@@ -1079,7 +1089,6 @@
       "name": "Teterboro",
       "approaches": {
         "I06": {
-          "full_name": "ILS 6",
           "runway": "6",
           "type": "ILS",
           "waypoints": [
@@ -1087,7 +1096,6 @@
           ]
         },
         "I19": {
-          "full_name": "ILS 19",
           "runway": "19",
           "type": "ILS",
           "waypoints": [
@@ -1095,7 +1103,6 @@
           ]
         },
         "R24": {
-          "full_name": "RNAV 24",
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
@@ -1103,7 +1110,7 @@
           ]
         },
         "RX6": {
-          "full_name": "RNAV X 6",
+          "full_name": "RNAV X Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1113,7 +1120,7 @@
           ]
         },
         "RX9": {
-          "full_name": "RNAV X 19",
+          "full_name": "RNAV X Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
@@ -1121,7 +1128,7 @@
           ]
         },
         "RY6": {
-          "full_name": "RNAV Y 6",
+          "full_name": "RNAV Y Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1131,7 +1138,7 @@
           ]
         },
         "RY9": {
-          "full_name": "RNAV Y 19",
+          "full_name": "RNAV Y Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
@@ -1139,7 +1146,7 @@
           ]
         },
         "RZ6": {
-          "full_name": "RNAV Z 6",
+          "full_name": "RNAV Z Runway 6",
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
@@ -1149,7 +1156,7 @@
           ]
         },
         "RZ9": {
-          "full_name": "RNAV Z 19",
+          "full_name": "RNAV Z Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
@@ -1163,14 +1170,14 @@
         "1": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "route": "TEB4",
+            "sid": "TEB4",
             "waypoints": "_TEB_1 _TEB_19 _TEB4_1a/h280"
           }
         },
         "24": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "route": "RUUDY6",
+            "sid": "RUUDY6",
             "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/a1500+/h280"
           }
         }
@@ -1867,12 +1874,11 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
-        "route": "/ ALB V489 COATE",
+        "route": "/. ALB V489 COATE",
         "speed_restriction": null,
         "waypoints": "FILPS WEARD/ho CAMMO HUO LEMOR/a6000 COATE KEWR"
       }
@@ -1947,12 +1953,11 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
         "initial_controller": "BOS_CTR",
         "initial_speed": 300,
-        "route": "/ FLOSI4",
+        "star": "FLOSI4",
         "speed_restriction": null,
         "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180"
       }
@@ -2027,12 +2032,11 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
-        "route": "/ FQM3",
+        "star": "FQM3",
         "speed_restriction": null,
         "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122"
       }
@@ -2107,12 +2111,11 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
         "initial_controller": "NY_CTR",
         "initial_speed": 300,
-        "route": "/ LVZ4",
+        "star": "LVZ4",
         "speed_restriction": null,
         "waypoints": "LVZ/a18000/ho HARTY MUGZY/a6000 STW/h125"
       }
@@ -2187,12 +2190,11 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
-        "route": "/ MAZIE3",
+        "star": "MAZIE3",
         "speed_restriction": null,
         "waypoints": "JAIKE ILENE/a12000/ho WACKI/a11000 MAZIE REGLE/a7000 GNNZO SBJ/h059"
       }
@@ -2267,14 +2269,16 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "EWR_A_APP",
         "initial_speed": 250,
-        "route": "/ FLOSI4",
+        "star": "FLOSI4",
         "speed_restriction": null,
-        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180"
+        "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
+        "expect_approach": "I4R",
+        "scratchpad": "I4R"
       }
     ],
     "PHL": [
@@ -2291,12 +2295,12 @@
             }
           ]
         },
-        "cleared_altitude": 7000,
+        "assigned_altitude": 7000,
         "cruise_altitude": 7000,
         "initial_altitude": 7000,
         "initial_controller": "PHL_NA_APP",
         "initial_speed": 300,
-        "route": "/ RUUTH V123 RBV",
+        "route": "/. RUUTH V123 RBV",
         "speed_restriction": null,
         "waypoints": "RUUTH/ho RBV KEWR"
       }
@@ -2371,12 +2375,11 @@
             }
           ]
         },
-        "cleared_altitude": 8000,
         "cruise_altitude": 39000,
         "initial_altitude": 20000,
         "initial_controller": "DC_CTR",
         "initial_speed": 300,
-        "route": "/ PHLBO4",
+        "star": "PHLBO4",
         "speed_restriction": null,
         "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h025"
       }
@@ -2451,14 +2454,16 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "EWR_P_APP",
         "initial_speed": 250,
-        "route": "/ PHLBO4",
+        "star": "PHLBO4",
         "speed_restriction": null,
-        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025"
+        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
+        "expect_approach": "I2L",
+        "scratchpad": "I2L"
       }
     ],
     "WRI": [
@@ -2471,18 +2476,18 @@
             }
           ]
         },
-        "cleared_altitude": 6000,
+        "assigned_altitude": 6000,
         "cruise_altitude": 39000,
         "initial_altitude": 6000,
         "initial_controller": "WRI_APP",
         "initial_speed": 300,
-        "route": "/ CYN GXU RBV V249 METRO",
+        "route": "/. CYN GXU RBV V249 METRO",
         "speed_restriction": null,
         "waypoints": "CYN/ho GXU RBV METRO KEWR"
       }
     ]
   },
-  "center": "KEWR",
+  "center": "N040.43.34.389,W074.28.54.713",
   "range": 60,
   "control_positions": {
     "ABE_APP": {
@@ -2538,6 +2543,12 @@
       "full_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P"
+    },
+    "EWR_M_APP": {
+      "frequency": 125550,
+      "full_name": "New York approach",
+      "scope_char": "M",
+      "sector_id": "4M"
     },
     "EWR_Q_APP": {
       "frequency": 125500,
@@ -2655,19 +2666,17 @@
     "_TEB_6": "N040.50.48.376,W074.04.13.509"
   },
   "inhibit_ca_volumes": [
-      {
-          "name": "EWR NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KEWR"
-      }
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KEWR"
+    }
   ],
   "magnetic_variation": 13.3,
   "name": "KEWR",
-  "nm_per_latitude": 60,
-  "nm_per_longitude": 45,
   "primary_airport": "KEWR",
   "radar_sites": {
     "EWR": {
@@ -2717,63 +2726,25 @@
     }
   },
   "reporting_points": [
-      "CAMMO",
-      "CYN",
-      "DYLIN",
-      "FLOSI",
-      "GXU",
-      "HARTY",
-      "HELON",
-      "HUO",
-      "MAZIE",
-      "MERSR",
-      "MUGZY",
-      "PENNS",
-      "PHLBO",
-      "RBV",
-      "SAX",
-      "SOMTO",
-      "WACKI"
+    "CAMMO",
+    "CYN",
+    "DYLIN",
+    "FLOSI",
+    "GXU",
+    "HARTY",
+    "HELON",
+    "HUO",
+    "MAZIE",
+    "MERSR",
+    "MUGZY",
+    "PENNS",
+    "PHLBO",
+    "RBV",
+    "SAX",
+    "SOMTO",
+    "WACKI"
   ],
   "scenarios": {
-    "KEWR Depart 22R": {
-      "solo_controller": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "EWR",
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "rate": 20,
-          "runway": "22R"
-        },
-        {
-          "airport": "KTEB",
-          "rate": 10,
-          "runway": "24"
-        }
-      ],
-      "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
-      }
-    },
     "KEWR Depart 22R Land 22L": {
       "arrival_runways": [
         {
@@ -2812,8 +2783,52 @@
         }
       },
       "solo_controller": "EWR_APP",
+      "multi_controllers": {
+        "default": {
+          "EWR_P_APP": {
+            "primary": true,
+            "arrivals": [
+              "FQM3",
+              "PHLBO4",
+              "PHL",
+              "WRI"
+            ]
+          },
+          "EWR_DEP": {
+            "backup": "EWR_P_APP",
+            "departures": [
+              "KEWR",
+              "KTEB"
+            ]
+          },
+          "EWR_A_APP": {
+            "backup": "EWR_P_APP",
+            "arrivals": [
+              "FLOSI4"
+            ]
+          },
+          "EWR_U_APP": {
+            "backup": "EWR_P_APP"
+          },
+          "EWR_H_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "MAZIE3"
+            ]
+          },
+          "EWR_S_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "COATE",
+              "LVZ4"
+            ]
+          },
+          "EWR_M_APP": {
+            "backup": "EWR_P_APP"
+          }
+        }
+      },
       "controllers": [
-        "EWR_APP",
         "LGA_DEP",
         "LGA_APP",
         "NY_CTR",
@@ -2831,7 +2846,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2848,44 +2863,6 @@
         "direction": 220,
         "gust": 13,
         "speed": 7
-      }
-    },
-    "KEWR Depart 4L": {
-      "solo_controller": "EWR_DEP",
-      "controllers": [
-        "EWR_DEP",
-        "EWR_APP",
-        "LGA_DEP",
-        "LGA_APP",
-        "NY_CTR",
-        "DC_CTR",
-        "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP"
-      ],
-      "default_map": "EWR",
-      "departure_runways": [
-        {
-          "airport": "KEWR",
-          "rate": 20,
-          "runway": "4L"
-        },
-        {
-          "airport": "KTEB",
-          "rate": 10,
-          "runway": "1"
-        }
-      ],
-      "wind": {
-        "direction": 30,
-        "gust": 9,
-        "speed": 4
       }
     },
     "KEWR Depart 4L Land 4R": {
@@ -2926,8 +2903,52 @@
         }
       },
       "solo_controller": "EWR_APP",
+      "multi_controllers": {
+        "default": {
+          "EWR_P_APP": {
+            "primary": true,
+            "arrivals": [
+              "PHLBO4",
+              "PHL",
+              "WRI"
+            ]
+          },
+          "EWR_A_APP": {
+            "backup": "EWR_P_APP",
+            "arrivals": [
+              "FQM3",
+              "FLOSI4"
+            ]
+          },
+          "EWR_DEP": {
+            "backup": "EWR_P_APP",
+            "departures": [
+              "KEWR",
+              "KTEB"
+            ]
+          },
+          "EWR_U_APP": {
+            "backup": "EWR_P_APP"
+          },
+          "EWR_H_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "MAZIE3"
+            ]
+          },
+          "EWR_S_APP": {
+            "backup": "EWR_U_APP",
+            "arrivals": [
+              "COATE",
+              "LVZ4"
+            ]
+          },
+          "EWR_Q_APP": {
+            "backup": "EWR_P_APP"
+          }
+        }
+      },
       "controllers": [
-        "EWR_APP",
         "LGA_DEP",
         "LGA_APP",
         "NY_CTR",
@@ -2945,7 +2966,7 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2999,7 +3020,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3035,7 +3056,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3071,7 +3092,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3107,7 +3128,7 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_map": "EWR",
+      "default_maps": [ "EWR" ],
       "wind": {
         "direction": 30,
         "gust": 0,

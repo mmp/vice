@@ -1,106 +1,107 @@
 {
+  "tracon": "C90 (Chicago)",
     "airports": {
         "KORD": {
             "approaches": {
                 "G4R": {
-                    "full_name": "ILS 4R",
                     "runway": "4R",
+                    "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200 _ORD_4R/a661"
                     ]
                 },
                 "I9L": {
-                    "full_name": "ILS 9L",
                     "runway": "9L",
+                    "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760 _ORD_9L/a668"
                     ]
                 },
                 "I9C": {
-                    "full_name": "ILS 9C",
                     "runway": "9C",
+                    "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400 _ORD_9C/a673"
                     ]
                 },
                 "I9R": {
-                    "full_name": "ILS 9R",
                     "runway": "9R",
+                    "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380 _ORD_9R/a668"
                     ]
                 },
                 "I0L": {
-                    "full_name": "ILS 10L",
                     "runway": "10L",
+                    "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200 _ORD_10L/a672"
                     ]
                 },
                 "I0C": {
-                    "full_name": "ILS 10C",
                     "runway": "10C",
+                    "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220 _ORD_10C/a669"
                     ]
                 },
                 "I0R": {
-                    "full_name": "ILS 10R",
                     "runway": "10R",
+                    "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220 _ORD_10R/a680"
                     ]
                 },
                 "I7L": {
-                    "full_name": "ILS 27L",
                     "runway": "27L",
+                    "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160 _ORD_27L/a654"
                     ]
                 },
                 "I7C": {
-                    "full_name": "ILS 27C",
                     "runway": "27C",
+                    "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160 _ORD_27C/a653"
                     ]
                 },
                 "I7R": {
-                    "full_name": "ILS 27R",
                     "runway": "27R",
+                    "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200 _ORD_27R/a664"
                     ]
                 },
                 "I8L": {
-                    "full_name": "ILS 28L",
                     "runway": "28L",
+                    "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240 _ORD_28L/a667"
                     ]
                 },
                 "I8C": {
-                    "full_name": "ILS 28C",
                     "runway": "28C",
+                    "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KOENN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300 _ORD_28C/a651"
                     ]
                 },
                 "I8R": {
-                    "full_name": "ILS 28R",
                     "runway": "28R",
+                    "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200 _ORD_28R/a651"
@@ -111,35 +112,35 @@
                     "10L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
-                            "route": "ORD7",
+                            "sid": "ORD7",
                             "waypoints": "_ORD_10L _ORD_28R/h250"
                         }
                     },
                     "9R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
-                            "route": "ORD7",
+                            "sid": "ORD7",
                             "waypoints": "_ORD_9R _ORD_27L/h320"
                         }
                     },
                     "22L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
-                            "route": "ORD7",
+                            "sid": "ORD7",
                             "waypoints": "_ORD_22L _ORD_4R/h180"
                         }
                     },
                     "28R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
-                            "route": "ORD7",
+                            "sid": "ORD7",
                             "waypoints": "_ORD_28R _ORD_10L/h250"
                         }
                     },
                     "27L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
-                            "route": "ORD7",
+                            "sid": "ORD7",
                             "waypoints": "_ORD_27L _ORD_9R/h010"
                         }
                     }
@@ -515,7 +516,6 @@
                 "KMDW": {
                     "approaches": {
                         "I4R": {
-                            "full_name": "ILS 4R",
                             "runway": "4R",
                             "type": "ILS",
                             "waypoints": [
@@ -523,7 +523,6 @@
                             ]
                         },
                         "I3C": {
-                            "full_name": "ILS 13C",
                             "runway": "13C",
                             "type": "ILS",
                             "waypoints": [
@@ -532,7 +531,6 @@
                             ]
                         },
                         "R2L": {
-                            "full_name": "RNAV 22L",
                             "runway": "22L",
                             "type": "RNAV",
                             "waypoints": [
@@ -540,7 +538,6 @@
                             ]
                         },
                         "I1C": {
-                            "full_name": "ILS 31C",
                             "runway": "31C",
                             "type": "ILS",
                             "waypoints": [
@@ -552,68 +549,68 @@
                         "4R": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_4R _MDW_22L/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_4R _MDW_22L/h130"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_4R _MDW_22L/h250"
                             }
                         },
                         "13C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_13C _MDW_31C/h090"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_13C _MDW_31C/h170"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_13C _MDW_31C/h200"
                             }
                         },
                         "22L": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_4R _MDW_22L/h140"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_4R _MDW_22L/h180"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_22L _MDW_4R/h250"
                             }
                         },
                         "31C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_31C _MDW_13C/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_31C _MDW_13C/h220"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
-                                "route": "MIDWA6",
+                                "sid": "MIDWA6",
                                 "waypoints": "_MDW_31C _MDW_13C/h250"
                             }
                         }
@@ -2137,11 +2134,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 12000,
-                        "initial_altitude": 13000,
+                        "initial_altitude": 20000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 280,
-                        "route": "/. BENKY6",
+                        "star": "BENKY6",
                         "runway_waypoints": {
                             "9L": "AHSTN/h350",
                             "10L": "AHSTN/h350",
@@ -2212,14 +2208,14 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 35000,
                         "expect_approach": "I8C",
                         "initial_altitude": 8000,
                         "initial_controller": "CHI_X_APP",
                         "initial_speed" : 250,
                         "speed_restriction": 210,
-                        "route": "/. BENKY6",
+                        "star": "BENKY6",
                         "scratchpad": "I8C",
                         "waypoints": "PETAH JORJO/ho MONKZ TONIE/h093"
                     }
@@ -2270,11 +2266,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "initial_altitude": 7000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed" : 250,
-                        "route": "/. ENDEE6",
+                        "star": "ENDEE6",
                         "runway_waypoints": {
                             "4R": "STKNY/a6000 ALQUE/a6000/h047",
                             "13C": "STKNY/a6000 GORLC/h043",
@@ -2303,11 +2298,11 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
+                        "assigned_altitude": 14000,
                         "initial_altitude": 14000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. ERNNY8",
+                        "star": "ERNNY8",
                         "runway_waypoints": {
                             "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
                             "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
@@ -2459,14 +2454,14 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 32000,
                         "expect_approach": "I7C",
                         "initial_altitude": 8000,
                         "initial_controller": "CHI_J_APP",
                         "initial_speed": 250,
                         "speed_restriction": 250,
-                        "route": "/. ERNNY8",
+                        "star": "ERNNY8",
                         "scratchpad": "I7C",
                         "waypoints": "ERNNY PAPPI/h160/ho"
                     }
@@ -2517,11 +2512,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "initial_altitude": 7000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
-                        "route": "/. FISSK5",
+                        "star": "FISSK5",
                         "runway_waypoints": {
                             "4R": "HALIE/a6000 OLCYK/a4000/h278",
                             "13C": "HALIE/a6000 OLCYK/a4000 TINLY/h279",
@@ -2588,11 +2582,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 13000,
                         "initial_altitude": 15000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. FYTTE7",
+                        "star": "FYTTE7",
                         "runway_waypoints": {
                             "9L": "MADII/h200",
                             "9C": "MADII/h200",
@@ -2667,14 +2660,14 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 36000,
                         "expect_approach": "I7R",
                         "initial_altitude": 8000,
                         "initial_controller": "CHI_Y_APP",
                         "initial_speed": 250,
                         "speed_restriction": 220,
-                        "route": "/. FYTTE7",
+                        "star": "FYTTE7",
                         "scratchpad": "I7R",
                         "waypoints": "SOOLU KURKK/ho VULCN"
                     }
@@ -2735,14 +2728,14 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 36000,
                         "expect_approach": "I9L",
                         "initial_altitude": 8000,
                         "initial_controller": "CHI_Y_APP",
                         "initial_speed": 250,
                         "speed_restriction": 220,
-                        "route": "/. FYTTE7",
+                        "star": "FYTTE7",
                         "scratchpad": "I9L",
                         "waypoints": "COGSS MADII/h200/ho"
                     }
@@ -2785,11 +2778,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 6000,
                         "initial_altitude": 7000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 250,
-                        "route": "/. PANGG4",
+                        "star": "PANGG4",
                         "runway_waypoints": {
                             "4R": "HALIE/a6000 OLCYK/a4000/h278",
                             "13C": "HALIE/a6000 OLCYK/a4000 TINLY/a4000/h279",
@@ -2848,11 +2840,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 13000,
                         "initial_altitude": 15000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. SHAIN2",
+                        "star": "SHAIN2",
                         "speed_restriction": 250,
                         "waypoints": "TRIDE/a15000/ho SHAIN/a12000 RAGSS JUMPN NUNWS/h072 "
                     }
@@ -2911,11 +2902,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 11000,
                         "initial_altitude": 13000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. VEECK5",
+                        "star": "VEECK5",
                         "runway_waypoints": {
                             "9L": "CLUSO KAYTO PINKK VULCN KURKK BAMBB/h270",
                             "9C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
@@ -2988,14 +2978,14 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 7000,
+                        "assigned_altitude": 7000,
                         "cruise_altitude": 35000,
                         "expect_approach": "I8C",
                         "initial_altitude": 8000,
                         "initial_controller": "CHI_E_APP",
                         "initial_speed": 250,
                         "speed_restriction": 210,
-                        "route": "/. VEECK5",
+                        "star": "VEECK5",
                         "scratchpad": "I8C",
                         "waypoints": "HANNI CLUSO/h015/ho"
                     }
@@ -3066,11 +3056,10 @@
                                 }
                             ]
                         },
-                            "cleared_altitude": 12000,
                             "initial_altitude": 13000,
                             "initial_controller": "CHI_81_CTR",
                             "initial_speed": 280,
-                            "route": "/. WATSN4",
+                            "star": "WATSN4",
                             "speed_restriction": 250,
                             "waypoints": "PRISE/ho HULLS/a11000 STYLE DWEEB CENAK/h270"
                         }
@@ -3196,11 +3185,10 @@
                                 }
                             ]
                         },
-                        "cleared_altitude": 14000,
                         "initial_altitude": 15000,
                         "initial_controller": "CHI_81_CTR",
                         "initial_speed": 280,
-                        "route": "/. ERNNY8",
+                        "star": "WYNDE2",
                         "runway_waypoints": {
                             "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
                             "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
@@ -3336,6 +3324,30 @@
                     "scope_char": "T",
                     "sector_id": "SLC"
                 },
+                "ORD_N_TWR": {
+                    "frequency": 126900,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "NLC"
+                },
+                "ORD_C_TWR": {
+                    "frequency": 132700,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "3LC"
+                },
+                "ORD_NN_TWR": {
+                    "frequency": 128150,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "LCN"
+                },
+                "ORD_SS_TWR": {
+                    "frequency": 133000,
+                    "full_name": "O'Hare Tower",
+                    "scope_char": "T",
+                    "sector_id": "LCS"
+                },
                 "MDW_TWR": {
                     "frequency": 125200,
                     "full_name": "Midway Tower",
@@ -3392,8 +3404,6 @@
             ],
             "magnetic_variation": -2.0,
             "name": "KORD",
-            "nm_per_latitude": 60,
-            "nm_per_longitude": 40,
             "primary_airport": "KORD",
             "radar_sites": {
                 "KORD": {
@@ -3479,7 +3489,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPW"
                     ],
@@ -3599,7 +3609,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPW"
                     ],
@@ -3724,7 +3734,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPW"
                     ],
@@ -3836,7 +3846,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map": "C90 MAIN",
+                    "default_maps": [ "C90 MAIN" ],
                     "departure_airspace": [
                         "CHI_APPE"
                     ],
@@ -3949,7 +3959,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "departure_airspace": [
                     "CHI_APPE"
                 ],
@@ -4067,7 +4077,7 @@
                 "ORD_S_TWR",
                 "MDW_TWR"
             ],
-            "default_map": "C90 MAIN",
+            "default_maps": [ "C90 MAIN" ],
             "departure_airspace": [
                 "CHI_APPE"
             ],
@@ -4143,7 +4153,7 @@
                         "ORD_S_TWR",
                         "MDW_TWR"
                     ],
-                    "default_map":"C90 SSAT MDW 31C",
+                    "default_maps": [ "C90 SSAT MDW 31C" ],
                     "departure_airspace": [
                         "CHI_S_APP31C"
                     ],
@@ -4195,7 +4205,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map":"C90 SSAT MDW 4R",
+                "default_maps": [ "C90 SSAT MDW 4R" ],
                 "departure_airspace": [
                     "CHI_S_APP4"
                 ],
@@ -4247,7 +4257,7 @@
                 "ORD_S_TWR",
                 "MDW_TWR"
             ],
-            "default_map":"C90 SSAT MDW 13C",
+            "default_maps": [ "C90 SSAT MDW 13C" ],
             "departure_airspace": [
                 "CHI_S_APP31C"
             ],
@@ -4299,7 +4309,7 @@
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
-                "default_map":"C90 SSAT MDW 22L",
+                "default_maps": [ "C90 SSAT MDW 22L" ],
                 "departure_airspace": [
                     "CHI_S_APP22"
                 ],
@@ -4336,7 +4346,7 @@
                     "CHI_Y_APP",
                     "ORD_S_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2
@@ -4363,7 +4373,7 @@
                     "CHI_Y_APP",
                     "ORD_S_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 50,
                     "speed": 2
@@ -4393,7 +4403,7 @@
                     "CHI_J_APP",
                     "ORD_S_TWR"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2
@@ -4445,7 +4455,7 @@
                     "CHI_X_APP",
                     "CHI_Y_APP"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2
@@ -4476,7 +4486,7 @@
                     "ORD_S_TWR",
                     "CHI_E_APP"
                 ],
-                "default_map": "C90 MAIN",
+                "default_maps": [ "C90 MAIN" ],
                 "wind": {
                     "direction": 250,
                     "speed": 2

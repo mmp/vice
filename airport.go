@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"strings"
 	"unicode"
+
+	"golang.org/x/exp/slices"
 )
 
 type Airport struct {
@@ -16,8 +18,8 @@ type Airport struct {
 
 	Name string `json:"name"`
 
-	Approaches map[string]Approach `json:"approaches,omitempty"`
-	Departures []Departure         `json:"departures,omitempty"`
+	Approaches map[string]*Approach `json:"approaches,omitempty"`
+	Departures []Departure          `json:"departures,omitempty"`
 
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
@@ -148,8 +150,8 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 		}
 
 		if len(ar.ScratchpadPatterns) > 0 {
-			if idx := FindIf(ar.ScratchpadPatterns,
-				func(pat string) bool { return strings.Contains(scratchpad, pat) }); idx == -1 {
+			if !slices.ContainsFunc(ar.ScratchpadPatterns,
+				func(pat string) bool { return strings.Contains(scratchpad, pat) }) {
 				return nil
 			}
 		}
@@ -181,43 +183,73 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 	return ghost
 }
 
-func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
 	if ap.Location.IsZero() {
 		e.ErrorString("Must specify \"location\" for airport")
 	}
 
-	for name, ap := range ap.Approaches {
+	for name, appr := range ap.Approaches {
 		e.Push("Approach " + name)
 
 		if isAllNumbers(name) {
 			e.ErrorString("Approach names cannot only have numbers in them")
 		}
 
-		for i := range ap.Waypoints {
-			n := len(ap.Waypoints[i])
-			ap.Waypoints[i][n-1].Delete = true
-			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
+		for i := range appr.Waypoints {
+			n := len(appr.Waypoints[i])
+			appr.Waypoints[i][n-1].Delete = true
+			sg.InitializeWaypointLocations(appr.Waypoints[i], e)
 
-			if ap.Waypoints[i][n-1].ProcedureTurn != nil {
+			if appr.Waypoints[i][n-1].ProcedureTurn != nil {
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
 			}
-			for j, wp := range ap.Waypoints[i] {
+			for j, wp := range appr.Waypoints[i] {
 				e.Push("Fix " + wp.Fix)
 				if wp.NoPT {
-					if FindIf(ap.Waypoints[i][j+1:],
-						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) == -1 {
+					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
+						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) {
 						e.ErrorString("No procedure turn found after fix with \"nopt\"")
 					}
 				}
 				e.Pop()
 			}
 
-			ap.Waypoints[i].CheckApproach(e)
+			appr.Waypoints[i].CheckApproach(e)
 		}
 
-		if ap.Runway == "" {
+		if appr.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
+
+		if appr.FullName == "" {
+			switch appr.Type {
+			case ILSApproach:
+				appr.FullName = "ILS Runway " + appr.Runway
+			case RNAVApproach:
+				appr.FullName = "RNAV Runway " + appr.Runway
+			case ChartedVisualApproach:
+				e.ErrorString("Must provide \"full_name\" for charted visual approach")
+			}
+		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
+			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
+		}
+
+		if appr.TowerController == "" {
+			appr.TowerController = icao[1:] + "_TWR"
+			if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+				e.ErrorString("No position specified for \"tower_controller\" and \"" +
+					appr.TowerController + "\" is not a valid controller")
+			}
+		} else if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+			e.ErrorString("No control position \"" + appr.TowerController + "\" for \"tower_controller\"")
+		}
+
+		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
+			// Note: this could be relaxed if necessary but the logic in
+			// Nav prepareForChartedVisual() assumes as much.
+			e.ErrorString("Only a single set of waypoints are allowed for a charted visual approach route")
+		}
+
 		e.Pop()
 	}
 
@@ -242,7 +274,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 			for _, exit := range strings.Split(exitList, ",") {
 				if _, ok := seenExits[exit]; ok {
-					e.ErrorString("exit repeatedly specified in routes")
+					e.ErrorString("%s: exit repeatedly specified in routes", exit)
 				}
 				seenExits[exit] = nil
 
@@ -253,6 +285,29 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Pop()
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
+
+	// Make sure if departures are initially controlled by a virtual
+	// controller, all routes have a valid handoff controller (and the
+	// converse).
+	for rwy, routes := range ap.DepartureRoutes {
+		e.Push("Departure runway " + rwy)
+		for exit, route := range routes {
+			e.Push("Exit " + exit)
+
+			if ap.DepartureController != "" {
+				if route.HandoffController == "" {
+					e.ErrorString("no \"handoff_controller\" specified even though airport has a \"departure_controller\"")
+				} else if _, ok := sg.ControlPositions[route.HandoffController]; !ok {
+					e.ErrorString("control position \"%s\" unknown in scenario", route.HandoffController)
+				}
+			} else if route.HandoffController != "" {
+				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
+			}
+
+			e.Pop()
+		}
+		e.Pop()
+	}
 
 	for i, dep := range ap.Departures {
 		e.Push("Departure exit " + dep.Exit)
@@ -321,9 +376,8 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Push(rwy + " region")
 		def.Runway = rwy
 
-		idx := FindIf(ap.ConvergingRunways,
-			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy })
-		if idx == -1 {
+		if !slices.ContainsFunc(ap.ConvergingRunways,
+			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy }) {
 			e.ErrorString("runway not used in \"converging_runways\"")
 		}
 
@@ -371,21 +425,24 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 }
 
 type ExitRoute struct {
-	InitialRoute    string        `json:"route"`
+	SID             string        `json:"sid"`
 	ClearedAltitude int           `json:"cleared_altitude"`
 	Waypoints       WaypointArray `json:"waypoints"`
 	Description     string        `json:"description"`
+	// optional, control position to handoff to at a /ho
+	HandoffController string `json:"handoff_controller"`
 }
 
 type Departure struct {
 	Exit string `json:"exit"`
 
-	Destination    string             `json:"destination"`
-	Altitude       int                `json:"altitude,omitempty"`
-	Route          string             `json:"route"`
-	RouteWaypoints WaypointArray      // not specified in user JSON
-	Airlines       []DepartureAirline `json:"airlines"`
-	Scratchpad     string             `json:"scratchpad"` // optional
+	Destination         string             `json:"destination"`
+	Altitude            int                `json:"altitude,omitempty"`
+	Route               string             `json:"route"`
+	RouteWaypoints      WaypointArray      // not specified in user JSON
+	Airlines            []DepartureAirline `json:"airlines"`
+	Scratchpad          string             `json:"scratchpad"`           // optional
+	SecondaryScratchpad string             `json:"secondary_scratchpad"` // optional
 }
 
 type DepartureAirline struct {
@@ -398,10 +455,11 @@ type ApproachType int
 const (
 	ILSApproach = iota
 	RNAVApproach
+	ChartedVisualApproach
 )
 
 func (at ApproachType) String() string {
-	return []string{"ILS", "RNAV"}[at]
+	return []string{"ILS", "RNAV", "Charted Visual"}[at]
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
@@ -410,6 +468,8 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 		return []byte("\"ILS\""), nil
 	case RNAVApproach:
 		return []byte("\"RNAV\""), nil
+	case ChartedVisualApproach:
+		return []byte("\"Visual\""), nil
 	default:
 		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
 	}
@@ -425,16 +485,21 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 		*at = RNAVApproach
 		return nil
 
+	case "\"Visual\"":
+		*at = ChartedVisualApproach
+		return nil
+
 	default:
 		return fmt.Errorf("%s: unknown approach_type", string(b))
 	}
 }
 
 type Approach struct {
-	FullName  string          `json:"full_name"`
-	Type      ApproachType    `json:"type"`
-	Runway    string          `json:"runway"`
-	Waypoints []WaypointArray `json:"waypoints"`
+	FullName        string          `json:"full_name"`
+	Type            ApproachType    `json:"type"`
+	Runway          string          `json:"runway"`
+	Waypoints       []WaypointArray `json:"waypoints"`
+	TowerController string          `json:"tower_controller"`
 }
 
 func (ap *Approach) Line() [2]Point2LL {

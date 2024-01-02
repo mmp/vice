@@ -25,12 +25,12 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 7
+const ViceRPCVersion = 9
 
 type SimServer struct {
 	*RPCClient
 	name        string
-	configs     map[string]*SimConfiguration
+	configs     map[string]map[string]*SimConfiguration
 	runningSims map[string]*RemoteSim
 }
 
@@ -100,6 +100,14 @@ func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
 
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Scratchpad:      scratchpad,
+	}, nil, nil)
+}
+
+func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
+	return s.Client.Go("Sim.SetSecondaryScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Scratchpad:      scratchpad,
@@ -218,8 +226,8 @@ func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
 // SimManager
 
 type SimManager struct {
-	scenarioGroups       map[string]*ScenarioGroup
-	configs              map[string]*SimConfiguration
+	scenarioGroups       map[string]map[string]*ScenarioGroup
+	configs              map[string]map[string]*SimConfiguration
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
 	mu                   LoggingMutex
@@ -227,8 +235,8 @@ type SimManager struct {
 	lg                   *Logger
 }
 
-func NewSimManager(scenarioGroups map[string]*ScenarioGroup,
-	simConfigurations map[string]*SimConfiguration, lg *Logger) *SimManager {
+func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
+	simConfigurations map[string]map[string]*SimConfiguration, lg *Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
@@ -261,6 +269,10 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		}
 		if _, ok := sim.World.Controllers[config.SelectedRemoteSimPosition]; ok {
 			return ErrNoController
+		}
+
+		if sim.RequirePassword && config.RemoteSimPassword != sim.Password {
+			return ErrInvalidPassword
 		}
 
 		world, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
@@ -332,7 +344,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 }
 
 type SignOnResult struct {
-	Configurations map[string]*SimConfiguration
+	Configurations map[string]map[string]*SimConfiguration
 	RunningSims    map[string]*RemoteSim
 }
 
@@ -365,6 +377,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			GroupName:          s.ScenarioGroup,
 			ScenarioName:       s.Scenario,
 			PrimaryController:  s.World.PrimaryController,
+			RequirePassword:    s.RequirePassword,
 			AvailablePositions: make(map[string]struct{}),
 			CoveredPositions:   make(map[string]struct{}),
 		}
@@ -623,6 +636,14 @@ func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error 
 	}
 }
 
+func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetSecondaryScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
+	}
+}
+
 type InitiateTrackArgs AircraftSpecifier
 
 func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
@@ -832,6 +853,8 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					if err := sim.AtFixCleared(token, callsign, fix, approach); err != nil {
 						sim.SetSTARSInput(strings.Join(commands[i:], " "))
 						return err
+					} else {
+						continue
 					}
 				}
 
@@ -1043,7 +1066,12 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 			}
 
 		case 'T':
-			if len(command) > 2 {
+			if command == "TO" {
+				if err := sim.ContactTower(token, callsign); err != nil {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+			} else if len(command) > 2 {
 				switch command[:2] {
 				case "TS":
 					if kts, err := strconv.Atoi(command[2:]); err != nil {
@@ -1174,8 +1202,8 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 	return ch, nil
 }
 
-func runServer(l net.Listener, isLocal bool) chan map[string]*SimConfiguration {
-	ch := make(chan map[string]*SimConfiguration, 1)
+func runServer(l net.Listener, isLocal bool) chan map[string]map[string]*SimConfiguration {
+	ch := make(chan map[string]map[string]*SimConfiguration, 1)
 
 	server := func() {
 		var e ErrorLogger

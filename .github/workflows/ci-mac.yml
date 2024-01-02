@@ -76,7 +76,7 @@ jobs:
         cp icon.icns Vice.app/Contents/Resources
         cp resources/*.zst resources/*.json Vice.app/Contents/Resources
         mkdir -p Vice.app/Contents/Resources/{audio,fonts,scenarios,videomaps}
-        cp resources/audio/*wav Vice.app/Contents/Resources/audio/
+        cp resources/audio/*mp3 Vice.app/Contents/Resources/audio/
         cp resources/fonts/*zst Vice.app/Contents/Resources/fonts/
         cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios/
         cp resources/videomaps/*zst Vice.app/Contents/Resources/videomaps/
@@ -104,10 +104,22 @@ jobs:
 
     - name: Notarize Vice.app
       env:
-        APPLE_CODESIGN_PASSWORD: ${{ secrets.APPLE_CODESIGN_PASSWORD }}
-        APPLE_CODESIGN_ID: ${{ secrets.APPLE_CODESIGN_ID }}
-      run:
-        zsh osx/notarize-app.sh
+        APPLE_CODESIGN_PASSWORD: ${{ secrets.APPLE_CODESIGN_PASSWORD2 }}
+        APPLE_CODESIGN_ID: ${{ secrets.APPLE_CODESIGN_ID2 }}
+        APPLE_TEAMID: ${{ secrets.APPLE_TEAMID }}
+      run: |
+        # make a zip for notarization.
+        zip -rv vice.zip Vice.app
+        # get the zip file notarized
+        xcrun notarytool submit \
+            --wait \
+            --apple-id ${APPLE_CODESIGN_ID} \
+            --password ${APPLE_CODESIGN_PASSWORD} \
+            --team-id ${APPLE_TEAMID} \
+            --timeout 30m \
+            vice.zip
+        # notarized! staple the notarization
+        xcrun stapler staple Vice.app
 
     - name: Create zip file for notarized app
       run:

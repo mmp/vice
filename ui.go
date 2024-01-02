@@ -41,8 +41,6 @@ var (
 		iconTextureID     uint32
 		sadTowerTextureID uint32
 
-		jsonSelectDialog *FileSelectDialogBox
-
 		activeModalDialogs []*ModalDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
@@ -123,6 +121,31 @@ var (
 		"Fixed bug with some departures trying to re-fly their initial departure route",
 		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
 		"Fixed bug with the default DCB brightness being set to 0",
+		"Added DCA scenario",
+		"There is now a short delay before aircraft start to follow heading assignments",
+		"Added \"ID\" command for ident",
+		"Aircraft can now also be issued control commands by entering their callsign before the commands",
+		"Fixed bugs with endless go-arounds and with departures not obeying altitude restrictions",
+		"Fixed a bug that caused vice to sometimes crash after aircraft were given approach clearance",
+		"Fixed a bug where descending aircraft would stop descending when given approach clearance",
+		"Small fixes to the DCA scenario",
+		"Polished up handling of early hand-offs of departures in the STARS scope",
+		"Added L30 (Las Vegas) scenarios and a combined N90 (JFK+LGA+EWR) scenario",
+		"Important readbacks from pilots are now highlighted in red",
+		"Improved STARS *T to allow entering fix names and to show ETA",
+		"Added support for charted visual approaches",
+		"STARS allows control-shift click to initiate track (CRC style)",
+		"Secondary scratchpads are now supported",
+		"Fixed various navigation bugs",
+		"STARS: fixed a bug where RBL lines for *T that included aircraft weren't drawn",
+		"Added an option to hide the flight strips (Settings window, Flight Strips section)",
+		"Fixed a bug where inbound handoffs wouldn't send a radio contact message",
+		"Sped up loading of video maps so that vice launches more quickly",
+		"Added multiple new scenarios: S46, BHM, GSP (Aaron Flett), AUS (Jace Martin), P50 (Mike K)",
+		"Multi-controller servers can now be password-protected",
+		"Added \"TO\" command for \"contact tower\"",
+		"Various bugfixes with handoffs and approach navigation",
+		"Match real-world STARS alert sounds",
 	}
 )
 
@@ -945,15 +968,17 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits: Thanks to Dennis Graiani and
 Samuel Valencia for contributing features to vice
-and to Adam Bolek, Mike K, Arya T, and Samuel
+and to Adam Bolek, Aaron Flett, Mike K, Mike K,
+Jace Martin, Arya T, Michael Trokel, and Samuel
 Valencia for contributing additional scenarios.
-Video maps are thanks to the ZAU, ZBW, ZDV, ZJX,
-ZNY, and ZOB VATSIM ARTCCs. Thanks also to
-OpenScope for the airline fleet and aircraft
-performance databases and to ourairports.com for
-the airport database. See the file CREDITS.txt
-in the vice source code distribution for third-party
-software, fonts, sounds, etc.`
+Video maps are thanks to the ZAU, ZBW, ZDC,
+ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB, ZSE, and
+ZTL VATSIM ARTCCs. Thanks also to OpenScope
+for the airline fleet and aircraft performance
+databases and to ourairports.com for the airport
+database. See the file CREDITS.txt in the vice
+source code distribution for third-party software,
+fonts, sounds, etc.`
 
 	imgui.Text(credits)
 
@@ -1749,6 +1774,7 @@ If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
 altitude. (*TS* = 'then speed')`, "*TS210*"},
 	[3]string{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
 	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
+	[3]string{"*TO*", `"Contact tower"`, "*TO*"},
 	[3]string{"*X*", "(Deletes the aircraft.)", "*X*"},
 }
 
@@ -1770,6 +1796,8 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
 	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
+	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
+	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
 }
 
 var starsCommands = [][2]string{
@@ -1893,8 +1921,8 @@ after the first.`)
 				imgui.TableNextColumn()
 				uiDrawMarkedupText(ui.font, fixedFont, italicFont, cmd[2])
 			}
+			imgui.EndTable()
 		}
-		imgui.EndTable()
 	} else {
 		imgui.Text("\n")
 		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `

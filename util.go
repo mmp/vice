@@ -460,19 +460,6 @@ func InsertSliceElement[V any](s []V, i int, v V) []V {
 	return s
 }
 
-// SliceEqual checks whether two slices are equal.
-func SliceEqual[V comparable](a []V, b []V) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, f := range a {
-		if f != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
 // MapSlice returns the slice that is the result of applying the provided
 // xform function to all of the elements of the given slice.
 func MapSlice[F, T any](from []F, xform func(F) T) []T {
@@ -496,44 +483,13 @@ func FilterSlice[V any](s []V, pred func(V) bool) []V {
 	return filtered
 }
 
-// Find returns the index of the first instance of the given value in the
-// slice or -1 if it is not present.
-func Find[V comparable](s []V, value V) int {
-	for i, v := range s {
-		if v == value {
-			return i
-		}
-	}
-	return -1
-}
-
-// Find returns the index of the first instance of the given value in the
-// slice or -1 if it is not present.
-func FindIf[V any](s []V, pred func(V) bool) int {
-	for i, v := range s {
-		if pred(v) {
-			return i
-		}
-	}
-	return -1
-}
-
-// AnySlice applies the given predicate to each element of the provided
-// slice in sequence and returns true after the first element where the
-// predicate returns true.  False is returned if the predicate always
-// evaluates to false.
-func AnySlice[V any](s []V, pred func(V) bool) bool {
-	for _, v := range s {
-		if pred(v) {
-			return true
-		}
-	}
-	return false
-}
-
-// Sample uniformly randomly samples an element of a non-empty slice.
-func Sample[T any](slice []T) T {
+// SampleSlice uniformly randomly samples an element of a non-empty slice.
+func SampleSlice[T any](slice []T) T {
 	return slice[rand.Intn(len(slice))]
+}
+
+func Sample[T any](t ...T) T {
+	return t[rand.Intn(len(t))]
 }
 
 // SampleFiltered uniformly randomly samples a slice, returning the index
