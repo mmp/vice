@@ -932,11 +932,11 @@
           },
           "IND_E_DEP": {
             "backup": "IND_B_APP",
-            "departures": ["KIND/23L"]
+            "departures": ["KIND/MAREO5","KIND/DAWNN1"]
           },
           "IND_W_DEP": {
             "backup": "IND_E_DEP",
-            "departures": ["KIND/23R"]
+            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
           }
         }
       },
