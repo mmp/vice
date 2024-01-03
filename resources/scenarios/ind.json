@@ -687,7 +687,7 @@
           "23R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
           "32": "BUPTE SADLE/a7000+/s230 OZMOE/a4500+/s210"
         },
-        "waypoints": "HAGAL HASEV/a24000+ GLNCH N038.44.55.742,W085.40.29.434/ho EASEL/a13000 GIIBS BUPTE"
+        "waypoints": "HAGAL HASEV/a24000+ GLNCH N038.55.35.778,W085.42.05.976/ho EASEL/a13000 GIIBS BUPTE"
       }
     ],
     "JAKKS2": [
@@ -744,7 +744,40 @@
           "23R": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h050",
           "32": "EKEKE/a10000+ FRENY/a7000+/s230 PNFLD/a6000/s210 ZASNI/h139"
         },
-        "waypoints": "N039.50.31.004,W087.22.13.273/ho CIRGO/a11000+ EKEKE/a10000+"
+        "waypoints": "N039.50.43.583,W087.02.13.483/ho CIRGO/a11000+ EKEKE/a10000+"
+      }
+    ],
+    "SMUKE2": [
+      {
+        "airlines": {
+          "KIND": [
+            {
+              "airport": "KDFW",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KAUS",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KAUS",
+              "icao": "SWA"
+            }
+          ]
+        },
+        "initial_altitude": 15500,
+        "initial_controller": "IND_34_CTR",
+        "initial_speed": 280,
+        "route": "/. RACYR.SMUKE2",
+        "runway_waypoints": {
+          "05L": "FIIRE WESLE/a6000+ WAAYN/a5000+/s210",
+          "05R": "FIIRE WESLE/a6000+ IIUUU/a5000+/s210",
+          "14" : "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
+          "23L": "FIIRE CHERZ/a11000+ TTKAY/a10000+ EDODE/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
+          "23R": "FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
+          "32" : "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139"
+        },
+        "waypoints": "RACYR/a12000-19000/ho SMUKE FIIRE"
       }
     ]
   },
@@ -865,16 +898,19 @@
       ],
       "arrivals": {
         "SNKPT2": {
-          "KIND": 7
+          "KIND": 6
         },
         "GIIBS3": {
-          "KIND": 7
+          "KIND": 6
         },
         "JAKKS2": {
-          "KIND": 7
+          "KIND": 6
         },
         "KOLTS2": {
-          "KIND": 7
+          "KIND": 6
+        },
+        "SMUKE2": {
+          "KIND": 6
         }
       },
       "solo_controller": "IND_B_APP",
@@ -882,10 +918,10 @@
         "default": {
           "IND_B_APP": {
             "primary": true,
-            "arrivals": [ "SNKPT2", "GIIBS3" ]
+            "arrivals": [ "JAKKS2", "KOLTS2", "SMUKE2" ]
           },
           "IND_D_APP": {
-            "arrivals": [ "JAKKS2", "KOLTS2" ],
+            "arrivals": [ "GIIBS3", "SNKPT2" ],
             "backup": "IND_B_APP"
           },
           "IND_F_APP": {
@@ -918,12 +954,12 @@
       "departure_runways": [
         {
           "airport": "KIND",
-          "rate": 10,
+          "rate": 15,
           "runway": "23L"
         },
         {
           "airport": "KIND",
-          "rate": 10,
+          "rate": 15,
           "runway": "23R"
         }
       ],
