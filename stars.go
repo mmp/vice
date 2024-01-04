@@ -83,6 +83,7 @@ type STARSPane struct {
 	// backwards compatibility, since this used to be a
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
+	LockDisplay         bool
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -1048,6 +1049,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 
 func (sp *STARSPane) DrawUI() {
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
+	imgui.Checkbox("Lock display", &sp.LockDisplay)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -5391,7 +5393,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 
 	mouse := ctx.mouse
 	ps := &sp.CurrentPreferenceSet
-	if activeSpinner == nil {
+	if activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
 		if mouse.Dragging[MouseButtonSecondary] {
 			delta := mouse.DragDelta
