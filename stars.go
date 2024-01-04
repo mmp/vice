@@ -4315,7 +4315,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -4324,12 +4324,12 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = PartialDatablock
 	}
 
-	if ac.TrackingController == ctx.world.Callsign || ac.ControllingController == ctx.world.Callsign {
+	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
 	}
 
-	if ac.HandoffTrackController == ctx.world.Callsign {
+	if ac.HandoffTrackController == w.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -4375,7 +4375,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		brightness := ps.Brightness.Positions
 
-		dt := sp.datablockType(ctx, ac)
+		dt := sp.datablockType(ctx.world, ac)
 
 		if dt == PartialDatablock || dt == LimitedDatablock {
 			brightness = ps.Brightness.LimitedDatablocks
@@ -4828,7 +4828,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		return
 	}
 
-	ty := sp.datablockType(ctx, ac)
+	ty := sp.datablockType(ctx.world, ac)
 
 	switch ty {
 	case LimitedDatablock:
@@ -4991,7 +4991,9 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.CurrentPreferenceSet
-	br := ps.Brightness.FullDatablocks
+	dt := sp.datablockType(w, ac)
+	br := Select(dt == PartialDatablock || dt == LimitedDatablock,
+		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
 	state := sp.Aircraft[ac.Callsign]
 
 	if ac.Callsign == sp.dwellAircraft {
