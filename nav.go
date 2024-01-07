@@ -778,23 +778,25 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 		v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
 		v = scale2f(v, nav.FlightState.GS)
 
-		// where we'll actually end up, given the wind
-		vp := add2f(v, wind.AverageWindVector())
+		if nav.IsAirborne() {
+			// model where we'll actually end up, given the wind
+			vp := add2f(v, wind.AverageWindVector())
 
-		// Find the deflection angle of how much the wind pushes us off course.
-		vn, vpn := normalize2f(v), normalize2f(vp)
-		deflection := degrees(angleBetween(vn, vpn))
-		// Get a signed angle: take the cross product and then (effectively)
-		// dot with (0,0,1) to figure out which way it goes
-		if vn[0]*vpn[1]-vn[1]*vpn[0] > 0 {
-			deflection = -deflection
+			// Find the deflection angle of how much the wind pushes us off course.
+			vn, vpn := normalize2f(v), normalize2f(vp)
+			deflection := degrees(angleBetween(vn, vpn))
+			// Get a signed angle: take the cross product and then (effectively)
+			// dot with (0,0,1) to figure out which way it goes
+			if vn[0]*vpn[1]-vn[1]*vpn[0] > 0 {
+				deflection = -deflection
+			}
+
+			// Turn into the wind; this is a bit of an approximation, since
+			// turning changes how much the wind affects the aircraft, but this
+			// should be minor since the aircraft's speed should be much
+			// greater than the wind speed...
+			hdg -= deflection
 		}
-
-		// Turn into the wind; this is a bit of an approximation, since
-		// turning changes how much the wind affects the aircraft, but this
-		// should be minor since the aircraft's speed should be much
-		// greater than the wind speed...
-		hdg -= deflection
 
 		// Incorporate magnetic variation in the final heading
 		hdg += nav.FlightState.MagneticVariation

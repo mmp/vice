@@ -83,6 +83,7 @@ type STARSPane struct {
 	// backwards compatibility, since this used to be a
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
+	LockDisplay         bool
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -1048,6 +1049,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 
 func (sp *STARSPane) DrawUI() {
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
+	imgui.Checkbox("Lock display", &sp.LockDisplay)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -2368,8 +2370,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				callsign := lookupCallsign(f[0])
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
-					sp.setScratchpad(ctx, callsign, "", isSecondary)
-					status.clear = true
+					if err := sp.setScratchpad(ctx, callsign, "", isSecondary); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 				}
 				return
 			} else if len(f) == 2 {
@@ -2383,7 +2388,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
 				} else {
-					sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary)
+					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary); err != nil {
+						status.err = err
+					}
 				}
 				status.clear = true
 				return
@@ -2588,7 +2595,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	return
 }
 
-func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) {
+func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
+	if len(contents) > 4 {
+		return ErrSTARSIllegalScratchpad
+	}
+
 	if isSecondary {
 		ctx.world.SetSecondaryScratchpad(callsign, contents, nil,
 			func(err error) {
@@ -2600,6 +2611,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 				sp.previewAreaOutput = GetSTARSError(err).Error()
 			})
 	}
+	return nil
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
@@ -2802,12 +2814,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case 1:
 				if cmd == "." {
-					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "", false)
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				} else if cmd == "+" {
-					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "", true)
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				} else if cmd == "U" {
 					status.clear = true
@@ -2896,8 +2914,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
 						status.clear = true
 					} else {
-						sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true)
-						status.clear = true
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true); err != nil {
+							status.err = err
+						} else {
+							status.clear = true
+						}
 					}
 					return
 				} else {
@@ -3109,8 +3130,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
-					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "", isSecondary)
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				} else {
 					// Is it an altitude or a scratchpad update?
@@ -3118,8 +3142,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						state.pilotAltitude = alt * 100
 						status.clear = true
 					} else {
-						status.clear = true
-						sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary)
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary); err != nil {
+							status.err = err
+						} else {
+							status.clear = true
+						}
 					}
 					return
 				}
@@ -4290,7 +4317,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -4299,12 +4326,12 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = PartialDatablock
 	}
 
-	if ac.TrackingController == ctx.world.Callsign || ac.ControllingController == ctx.world.Callsign {
+	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
 	}
 
-	if ac.HandoffTrackController == ctx.world.Callsign {
+	if ac.HandoffTrackController == w.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -4350,7 +4377,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		brightness := ps.Brightness.Positions
 
-		dt := sp.datablockType(ctx, ac)
+		dt := sp.datablockType(ctx.world, ac)
 
 		if dt == PartialDatablock || dt == LimitedDatablock {
 			brightness = ps.Brightness.LimitedDatablocks
@@ -4803,7 +4830,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		return
 	}
 
-	ty := sp.datablockType(ctx, ac)
+	ty := sp.datablockType(ctx.world, ac)
 
 	switch ty {
 	case LimitedDatablock:
@@ -4966,7 +4993,9 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.CurrentPreferenceSet
-	br := ps.Brightness.FullDatablocks
+	dt := sp.datablockType(w, ac)
+	br := Select(dt == PartialDatablock || dt == LimitedDatablock,
+		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
 	state := sp.Aircraft[ac.Callsign]
 
 	if ac.Callsign == sp.dwellAircraft {
@@ -5364,7 +5393,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 
 	mouse := ctx.mouse
 	ps := &sp.CurrentPreferenceSet
-	if activeSpinner == nil {
+	if activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
 		if mouse.Dragging[MouseButtonSecondary] {
 			delta := mouse.DragDelta
@@ -5403,6 +5432,15 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+		}
+
+		if ctx.keyboard.IsPressed(KeyControl) {
+			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+				if state := sp.Aircraft[ac.Callsign]; state != nil {
+					state.IsSelected = !state.IsSelected
+					return
+				}
+			}
 		}
 
 		// If a scope click handler has been registered, give it the click

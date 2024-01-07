@@ -1,0 +1,877 @@
+{
+  "tracon": "COS (Colorado Springs)",
+  "airports": {
+    "KCOS": {
+      "approaches": {
+        "I7L": {
+          "runway": "17L",
+          "type": "ILS",
+          "tower_controller": "COS_E_TWR",
+          "waypoints": [
+            "ADANE/arc11BRK MOGAL/a10000 AWONE/a9000 ROCCK/iaf/a8700 HUMPE/a7540 _COS17L/a6187"
+          ]
+        },
+        "RY7L": {
+          "runway": "17L",
+          "type": "RNAV",
+          "full_name": "RNAV Y Runway 17L",
+          "tower_controller": "COS_E_TWR",
+          "waypoints": [
+            "ADANE OLAPE/iaf NUBSE/a9500/iaf ROCCK/iaf/a8700 JESLO/a7500 _COS17L/a6187"
+          ]
+        },
+        "RZ7L": {
+          "runway": "17L",
+          "type": "RNAV",
+          "full_name": "RNAV Z Runway 17L",
+          "tower_controller": "COS_E_TWR",
+          "waypoints": [
+            "LUFSE/iaf JONOL/if ROCCK/iaf/a8700 _COS17L/a6187",
+            "FSHER/iaf WIPUN/if ZIVAD SOGKO ROCCK/iaf/a8700 _COS17L/a6187",
+            "ADANE/iaf REEFF/if SOGKO ROCCK/iaf/a8700 _COS17L/a6187"
+          ]
+        },
+        "RY7R": {
+          "runway": "17R",
+          "type": "RNAV",
+          "full_name": "RNAV Y Runway 17R",
+          "tower_controller": "COS_W_TWR",
+          "waypoints": [
+            "LUFSE HIDAN/iaf FEBLA/if/a9500 CEMKA/a8700 KAGHU/a7240 LAXLY/a6860 _COS17R/a6187"
+          ]
+        },
+        "I5L": {
+          "runway": "35L",
+          "type": "ILS",
+          "tower_controller": "COS_W_TWR",
+          "waypoints": [
+            "DRAKE/iaf/a8000/arc22.7BRK MIDAY/a8000 _COS35L/a6075"
+          ]
+        },
+        "RY5L": {
+          "runway": "35L",
+          "tower_controller": "COS_W_TWR",
+          "full_name": "RNAV Y Runway 35L",
+          "type": "RNAV",
+          "waypoints": [
+            "DRAKE/a8100 ASHLL/iaf/a8100 MIDAY/if/a8100 KUSAC/a8100 _COS35L/a6075"
+          ]
+        },
+        "RZ5L": {
+          "runway": "35L",
+          "type": "RNAV",
+          "tower_controller": "COS_W_TWR",
+          "full_name": "RNAV Z Runway 35L",
+          "waypoints": [
+            "DRAKE/iaf/a9000 WOVID/if/a9000 HUNSI/s180 KUSAC/a8100 _COS35L/a6075",
+            "FSHER/iaf/a9000 MIDAY/if/a8100 KUSAC/a8100 _COS35L/a6075"
+          ]
+        },
+        "I5R": {
+          "runway": "35R",
+          "type": "ILS",
+          "tower_controller": "COS_E_TWR",
+          "waypoints": [
+            "DRAKE/iaf/a8100/arc22.7BRK FALUR/a8100 CEGIX/a8100 _COS35R/a6118"
+          ]
+        },
+        "RY5R": {
+          "runway": "35R",
+          "type": "ILS",
+          "tower_controller": "COS_E_TWR",
+          "full_name": "RNAV Y Runway 35R",
+          "waypoints": [
+            "DRAKE/a8100 HABUK/iaf/a8100 FALUR/a8100 CEGIX/a8100 _COS35R/a6118",
+            "PUB HABUK/iaf/a8100 FALUR/a8100 CEGIX/a8100 _COS35R/a6118"
+          ]
+        },
+        "RZ5R": {
+          "runway": "35R",
+          "type": "ILS",
+          "tower_controller": "COS_E_TWR",
+          "full_name": "RNAV Z Runway 35R",
+          "waypoints": [
+            "DRAKE/iaf/a8100 JODUM/if/a8100/s180 ZIRKU/a8100 CEGIX/a8100 _COS35R/a6118",
+            "FSHER/iaf FALUR/if/a8100 CEGIX/a8100 _COS35R/a6118"
+          ]
+        }
+      },
+      "departure_routes": {
+        "35L": {
+          "LUFSE": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "PUB": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "BRK": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "HBU": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "LAA": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "TBE": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "ALS": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "DVV": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          },
+          "FQF": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35L _COS17R/h003"
+          }
+        },
+        "35R": {
+          "LUFSE": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "PUB": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "BRK": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "HBU": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "LAA": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "TBE": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "ALS": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "DVV": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          },
+          "FQF": {
+            "cleared_altitude": 11000,
+            "waypoints": "_COS35R _COS17L/h003"
+          }
+        },
+          "17L": {
+            "LUFSE": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "PUB": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "BRK": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "HBU": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "LAA": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "TBE": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "ALS": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "DVV": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            },
+            "FQF": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17L _COS35R/h182"
+            }
+          },
+          "17R": {
+            "LUFSE": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "PUB": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "BRK": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "HBU": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "LAA": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "TBE": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "ALS": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "DVV": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            },
+            "FQF": {
+              "cleared_altitude": 11000,
+              "waypoints": "_COS17R _COS35L/h182"
+            }
+          }
+        },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 23000,
+          "destination": "KSAT",
+          "route": "BRK BRESH TBE",
+          "exit": "TBE"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KAPA",
+          "route": "ADANE LUFSE",
+          "exit": "LUFSE"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 20000,
+          "destination": "KBZN",
+          "route": "BRK FQF DEN YAMMI",
+          "exit": "FQF"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KDEN",
+          "route": "ADANE LUFSE JEFEL FQF",
+          "exit": "LUFSE"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 23000,
+          "destination": "KLAX",
+          "route": "DRAKE V83 PUB",
+          "exit": "PUB"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 23000,
+          "destination": "KOMA",
+          "route": "BRK JEWLS GLD",
+          "exit": "BRK"
+        }
+      ],
+      "exit_categories": {
+        "LUFSE": "North",
+        "PUB": "North",
+        "BRK": "North",
+        "HBU": "North",
+        "LAA": "North",
+        "TBE": "North",
+        "ALS": "North",
+        "DVV": "North",
+        "FQF": "North"
+      },
+      "location": "KCOS",
+      "tower_list": 2
+    }
+  },
+  "airspace": {
+    "boundaries": {
+        "COS_ARSPC": [
+          "N038.26.11.374,W105.00.19.171",
+          "N038.26.12.761,W104.47.57.346",
+          "N038.29.59.368,W104.02.39.906",
+          "N038.51.10.101,W104.05.07.177",
+          "N039.11.47.794,W104.15.09.750",
+          "N039.10.10.235,W104.19.35.234",
+          "N039.10.03.135,W104.42.08.723",
+          "N039.06.24.947,W104.46.38.464",
+          "N039.07.44.790,W105.05.10.501",
+          "N038.58.43.397,W105.03.24.043",
+          "N038.42.03.669,W104.57.03.532",
+          "N038.32.15.763,W104.59.04.738",
+          "N038.26.09.863,W105.00.13.293"
+        ],
+        "COS_OUTER": [
+          "N038.26.34.226,W104.45.05.685",
+          "N038.21.59.856,W104.44.59.588",
+          "N038.23.03.192,W104.32.54.325",
+          "N038.29.29.348,W104.09.01.186"
+          ]
+    },
+    "volumes": {
+        "COS_APP": [
+            {
+                "boundaries": [
+                    "COS_ARSPC"
+                ],
+                "lower": 0,
+                "upper": 17000
+            },
+            {
+              "boundaries": [
+                  "COS_OUTER"
+              ],
+              "lower": 11000,
+              "upper": 12000
+          }
+        ]
+        }
+    },
+  "inhibit_ca_volumes": [
+    {
+        "name": "COS NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 9500,
+        "radius": 10,
+        "center": "N038.47.52.142,W104.42.03.065"
+    }
+],
+  "arrival_groups": {
+    "OZZZY5": [
+      {
+        "airlines": {
+          "KCOS": [
+            {
+              "airport": "KMCI",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KOMA",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "cruise_altitude": 28000,
+        "initial_altitude": 18000,
+        "description": "",
+        "initial_controller": "DEN_29_CTR",
+        "initial_speed": 270,
+        "route": "HGO OZZZY",
+        "waypoints": "HGO/a17000/ho OZZZY/a14000/s250/ho"
+      }
+    ],
+    "DEBERRY5": [
+      {
+        "airlines": {
+          "KCOS": [
+            {
+              "airport": "KSAT",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KPHX",
+              "icao": "EDV"
+            },
+            {
+              "airport": "KABQ",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "cruise_altitude": 23000,
+        "initial_altitude": 12000,
+        "assigned_altitude": 11000,
+        "description": "",
+        "initial_controller": "PUB_APP",
+        "initial_speed": 210,
+        "route": "OPSHN FSHER BRK",
+        "waypoints": "OPSHN/s250 FSHER/s250/ho BRK"
+      }
+    ],
+    "DEN": [
+      {
+        "airlines": {
+          "KCOS": [
+            {
+              "airport": "KAPA",
+              "icao": "N"
+            },
+            {
+              "airport": "KGXY",
+              "icao": "N"
+            },
+            {
+              "airport": "KBJC",
+              "icao": "N"
+            },
+            {
+              "airport": "KFNL",
+              "icao": "N"
+            }
+          ]
+        },
+        "cruise_altitude": 11000,
+        "initial_altitude": 11000,
+        "description": "",
+        "initial_controller": "DEN_A_APP",
+        "initial_speed": 160,
+        "route": "LUFSE ADANE BRK",
+        "waypoints": "N039.19.52.813,W104.24.24.065 LUFSE/ho ADANE BRK"
+      }
+    ],
+    "PUB": [
+      {
+        "airlines": {
+          "KCOS": [
+            {
+              "airport": "KPUB",
+              "icao": "N"
+            }
+          ]
+        },
+        "cruise_altitude": 11000,
+        "initial_altitude": 11000,
+        "description": "",
+        "initial_controller": "PUB_APP",
+        "initial_speed": 160,
+        "route": "KCOS",
+        "waypoints": "N038.18.27.106,W104.38.51.298 N038.21.18.080,W104.38.42.427/ho"
+      }
+    ],
+    "DEN.NW": [
+      {
+        "airlines": {
+          "KCOS": [
+            {
+              "airport": "KBJC",
+              "icao": "N"
+            },
+            {
+              "airport": "KFNL",
+              "icao": "N"
+            },
+            {
+              "airport": "KGXY",
+              "icao": "N"
+            }
+          ]
+        },
+        "cruise_altitude": 11000,
+        "initial_altitude": 11000,
+        "description": "",
+        "initial_controller": "DEN_A_APP",
+        "initial_speed": 160,
+        "route": "ADANE BRK",
+        "waypoints": "N039.17.29.606,W104.42.09.739 N039.13.10.370,W104.35.00.860/ho ADANE BRK"
+      }
+    ]
+  },
+  "center": "N038.47.36.733,W104.35.10.501",
+  "control_positions": {
+    "COS_APP": {
+      "frequency": 124000,
+      "full_name": "Springs approach",
+      "scope_char": "A",
+      "sector_id": "2A"
+    },
+    "COS_V_APP": {
+      "frequency": 120600,
+      "full_name": "Springs approach",
+      "scope_char": "V",
+      "sector_id": "2V"
+    },
+    "COS_W_TWR": {
+      "frequency": 119900,
+      "full_name": "Springs tower",
+      "scope_char": "T",
+      "sector_id": "2WT"
+    },
+    "COS_E_TWR": {
+      "frequency": 135150,
+      "full_name": "Springs tower",
+      "scope_char": "T",
+      "sector_id": "2ET"
+    },
+    "DEN_A_APP": {
+      "frequency": 132750,
+      "full_name": "Denver approach",
+      "scope_char": "A",
+      "sector_id": "1A"
+    },
+    "DEN_29_CTR": {
+      "frequency": 132225,
+      "full_name": "Denver center",
+      "scope_char": "C",
+      "sector_id": "29"
+    },
+    "PUB_APP": {
+      "frequency": 120100,
+      "full_name": "Pueblo Approach",
+      "scope_char": "P",
+      "sector_id": "1P"
+    }
+  },
+  "default_scenario": "North VMC",
+  "fixes": {
+    "_COS": "38.805801,-104.700996",
+    "_COS35R": "N038.46.41.554,W104.41.09.122",
+    "_COS35L": "N038.47.36.280,W104.42.58.381",
+    "_COS17L": "N038.49.00.367,W104.41.08.408",
+    "_COS17R": "N038.49.27.489,W104.42.59.589"
+  },
+  "magnetic_variation": 3.0,
+  "name": "KCOS",
+  "primary_airport": "KCOS",
+  "radar_sites": {
+    "COS": {
+      "char": "A",
+      "position": "N038.47.36.733,W104.35.10.501",
+      "elevation": 6075,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "range": 30,
+  "scenarios": {
+    "North VMC": {
+      "approach_airspace": [
+        "COS_APP"
+      ],
+      "departure_airspace": [
+        "COS_APP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCOS",
+          "runway": "35L"
+        },
+        {
+          "airport": "KCOS",
+          "runway": "35R"
+        }
+      ],
+      "arrivals": {
+        "DEBERRY5": {
+          "KCOS": 6
+        },
+        "OZZZY5": {
+          "KCOS": 8
+        },
+        "DEN": {
+          "KCOS": 2
+        },
+        "DEN.NW": {
+          "KCOS": 2
+        },
+        "PUB": {
+          "KCOS": 2
+        }
+      },
+      "solo_controller": "COS_APP",
+      "controllers": [
+        "COS_W_TWR",
+        "COS_E_TWR",
+        "COS_APP",
+        "DEN_A_APP",
+        "DEN_29_CTR",
+        "PUB_APP"
+      ],
+      "default_maps": [ "COS NORTH" ],
+      "departure_runways": [
+        {
+          "airport": "KCOS",
+          "rate": 10,
+          "runway": "35R"
+        },
+        {
+          "airport": "KCOS",
+          "rate": 10,
+          "runway": "35L"
+        }
+      ],
+      "wind": {
+        "direction": 300,
+        "gust": 0,
+        "speed": 15
+      }
+    },
+    "South VMC": {
+      "approach_airspace": [
+        "COS_APP"
+      ],
+      "departure_airspace": [
+        "COS_APP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCOS",
+          "runway": "17L"
+        },
+        {
+          "airport": "KCOS",
+          "runway": "17R"
+        }
+      ],
+      "arrivals": {
+        "DEBERRY5": {
+          "KCOS": 6
+        },
+        "OZZZY5": {
+          "KCOS": 8
+        },
+        "DEN": {
+          "KCOS": 2
+        },
+        "DEN.NW": {
+          "KCOS": 2
+        },
+        "PUB": {
+          "KCOS": 2
+        }
+      },
+      "solo_controller": "COS_APP",
+      "controllers": [
+        "COS_W_TWR",
+        "COS_E_TWR",
+        "COS_APP",
+        "DEN_A_APP",
+        "DEN_29_CTR",
+        "PUB_APP"
+      ],
+      "default_maps": [ "COS SOUTH" ],
+      "departure_runways": [
+        {
+          "airport": "KCOS",
+          "rate": 10,
+          "runway": "17R"
+        },
+        {
+          "airport": "KCOS",
+          "rate": 10,
+          "runway": "17L"
+        }
+      ],
+      "wind": {
+        "direction": 170,
+        "gust": 5,
+        "speed": 10
+      }
+    }
+  },
+  "scratchpads": {
+    "LUFSE": "LUF",
+    "PUB": "PUB",
+    "BRK": "BRK",
+    "HBU": "HBU",
+    "LAA": "LAA",
+    "TBE": "TBE",
+    "ALS": "ALS",
+    "DVV": "DVV",
+    "FQF": "FQF"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "NORTH",
+      "name": "COS NORTH"
+    },
+    {
+        "group": 0,
+        "label": "SOUTH",
+        "name": "COS SOUTH"
+    },
+    {
+        "group": 1,
+        "label": "MVA",
+        "name": "COS MVA"
+    },
+    {
+        "group": 0,
+        "label": "ODO",
+        "name": "COS ODO"
+    },
+    {
+        "group": 1,
+        "label": "EOVM",
+        "name": "COS EOVM"
+    },
+    {
+        "group": 0,
+        "label": "AFF RTE",
+        "name": "COS AFF RTE"
+    },
+    {
+        "group": 0,
+        "label": "AFF TFR",
+        "name": "COS AFF TFR"
+    },
+    {
+        "group": 1,
+        "label": "CLASS C",
+        "name": "COS CLASS C"
+    },
+    {
+        "group": 0,
+        "label": "DEN FIX",
+        "name": "COS DEN FIX"
+    },
+    {
+        "group": 1,
+        "label": "DME ARC",
+        "name": "COS DME ARC"
+    },
+    {
+        "group": 1,
+        "label": "GPS",
+        "name": "COS GPS"
+    },
+    {
+        "group": 0,
+        "label": "MID",
+        "name": "COS MID"
+    },
+    {
+        "group": 0,
+        "label": "RNP N",
+        "name": "COS RNPZ N"
+    },
+    {
+        "group": 0,
+        "label": "RNP S",
+        "name": "COS RNPZ S"
+    },
+    {
+        "group": 0,
+        "label": "RNV STAR",
+        "name": "COS RNV STR"
+    },
+    {
+      "group": 0,
+      "label": "STDMS",
+      "name": "COS STDMS"
+    },
+    {
+      "group": 0,
+      "label": "TOWER",
+      "name": "COS TOWER"
+    },
+    {
+      "group": 0,
+      "label": "VR",
+      "name": "COS VR"
+    },
+    {
+      "group": 0,
+      "label": "Z 17L",
+      "name": "COS Z 17L"
+    },
+    {
+      "group": 0,
+      "label": "Z 17R",
+      "name": "COS Z 17R"
+    },
+    {
+      "group": 0,
+      "label": "Z 35L",
+      "name": "COS Z 35L"
+    },
+    {
+      "group": 0,
+      "label": "Z 35L",
+      "name": "COS Z 35R"
+    }
+  ],
+  "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+}
