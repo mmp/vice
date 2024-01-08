@@ -547,3 +547,7 @@ func (ac *Aircraft) IAS() float32 {
 func (ac *Aircraft) GS() float32 {
 	return ac.Nav.FlightState.GS
 }
+
+func (ac *Aircraft) OnApproach() bool {
+	return ac.Nav.OnApproach()
+}

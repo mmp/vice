@@ -270,6 +270,15 @@ func (nav *Nav) EnqueueHeading(h NavHeading) {
 	}
 }
 
+func (nav *Nav) OnApproach() bool {
+	if !nav.Approach.Cleared {
+		return false
+	}
+
+	_, assigned := nav.AssignedHeading()
+	return !assigned // no heading -> on the localizer or flying approach route
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Communication
 

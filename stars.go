@@ -4711,9 +4711,14 @@ func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir Cardina
 	return drawOffset
 }
 
-func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
+func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
 	// Only report on ones that are tracked by us
 	if ac.TrackingController != ctx.world.Callsign {
+		return
+	}
+
+	if ac.OnApproach() {
+		// No warnings once they're flying the approach
 		return
 	}
 
@@ -4816,7 +4821,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
 	}
-	if alts, outside := sp.OutsideAirspace(ctx, ac); outside {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
