@@ -670,6 +670,13 @@ func (nav *Nav) updatePositionAndGS(wind WindModel, lg *Logger) {
 }
 
 func (nav *Nav) DepartOnCourse(alt float32, exit string) {
+	if _, ok := nav.AssignedHeading(); !ok {
+		// Don't do anything if they are not on a heading; let them fly the
+		// regular route and don't (potentially) skip waypoints and go
+		// straight to the exit.
+		return
+	}
+
 	// Make sure we are going direct to the exit.
 	if idx := slices.IndexFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
