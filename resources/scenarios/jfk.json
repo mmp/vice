@@ -2357,7 +2357,7 @@
         "initial_speed": 300,
         "star": "LENDY8",
         "speed_restriction": 250,
-        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY/h135"
+        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY LGA/h135"
       },
       {
         "airlines": {
@@ -2455,7 +2455,7 @@
         "initial_speed": 300,
         "star": "IGN1",
         "speed_restriction": 250,
-        "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY/h135"
+        "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY LGA"
       }
     ],
     "DENNA3/LOVES2": [
