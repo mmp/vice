@@ -1149,6 +1149,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				if state, ok := sp.Aircraft[event.Callsign]; !ok {
 					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
 				} else {
+					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				}
