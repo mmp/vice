@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='Vice'
+	   Manufacturer='Matt Pharr'
+	   Id='*'
+	   UpgradeCode='A10E3C66-BA55-406A-B4E2-586D7108D622'
+	   Language='1033'
+	   Codepage='1252'
+	   Version='0.10.16'
+	   >
+    <Package Id='*'
+    	     Keywords='Installer'
+	     Description="Vice Installer"
+	     Manufacturer='Matt Pharr'
+	     InstallerVersion='100'
+	     Languages='1033'
+	     Compressed='yes'
+	     SummaryCodepage='1252'
+	     />
+
+    <MajorUpgrade DowngradeErrorMessage="A later version of Vice is already installed. Setup will now exit." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Vice">
+          <Component Id="ViceExe" Guid='A10E3C66-BA55-406A-B4E2-586D7108D622'>
+            <File KeyPath="yes" Name="Vice.exe" Source="Vice.exe"></File>
+          </Component>
+          <Component Id="SDLDLL" Guid='85535501-4016-47c4-9466-846df4cf49a5'>
+            <File KeyPath="yes" Source="windows/SDL2.dll"></File>
+          </Component>
+          <Component Id="gccseh" Guid='68f22a6b-1710-4987-820c-b5cbad791dbe'>
+            <File KeyPath="yes" Source="windows/libgcc_s_seh-1.dll"></File>
+          </Component>
+          <Component Id="libstdcpp" Guid='a7080cc5-8ddf-45b9-bf09-466652cc8b06'>
+            <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
+          </Component>
+          <Directory Id="ResourcesFolder" Name="resources">
+            <Component Id="ResourcesFilesId" Guid="b5e58c58-4d43-4613-91f7-d55fb9fdde91">
+                <File Id="FIX_BASE.csv.zst" Source="resources\FIX_BASE.csv.zst" KeyPath="yes" />
+                <File Id="NAV_BASE.csv.zst" Source="resources\NAV_BASE.csv.zst" />
+                <File Id="airports.csv.zst" Source="resources\airports.csv.zst" />
+                <File Id="openscope_aircraft.json" Source="resources\openscope-aircraft.json" />
+                <File Id="openscope_airlines.json" Source="resources\openscope-airlines.json" />
+
+            </Component>
+            <Directory Id="AudioFolder" Name="audio">
+              <Component Id="AudioId" Guid="e14412f8-b08c-45d3-a753-706bf5f560f5">
+                <File Id="_263124__pan14__sine_octaves_up_beep.mp3" Source="resources\audio\263124__pan14__sine-octaves-up-beep.mp3" KeyPath="yes" />
+                <File Id="_426888__thisusernameis__beep4.mp3" Source="resources\audio\426888__thisusernameis__beep4.mp3" />
+                <File Id="ca.mp3" Source="resources\audio\ca.mp3" />
+                <File Id="emergency.mp3" Source="resources\audio\emergency.mp3" />
+                <File Id="intruder.mp3" Source="resources\audio\intruder.mp3" />
+                <File Id="msaw.mp3" Source="resources\audio\msaw.mp3" />
+
+              </Component>
+            </Directory>
+            <Directory Id="MyFontsFolder" Name="fonts">
+              <Component Id="FontsId" Guid="263928e7-8110-4fae-8030-2ee477cb0595">
+                <File Id="FixedDemiBold.otf.zst" Source="resources\fonts\FixedDemiBold.otf.zst" KeyPath="yes" />
+                <File Id="Flight_Strip_Printer.ttf.zst" Source="resources\fonts\Flight-Strip-Printer.ttf.zst" />
+                <File Id="Font_Awesome_5_Brands_Regular_400.otf.zst" Source="resources\fonts\Font Awesome 5 Brands-Regular-400.otf.zst" />
+                <File Id="Font_Awesome_5_Free_Regular_400.otf.zst" Source="resources\fonts\Font Awesome 5 Free-Regular-400.otf.zst" />
+                <File Id="Font_Awesome_5_Free_Solid_900.otf.zst" Source="resources\fonts\Font Awesome 5 Free-Solid-900.otf.zst" />
+                <File Id="Inconsolata_SemiBold.ttf.zst" Source="resources\fonts\Inconsolata-SemiBold.ttf.zst" />
+                <File Id="Inconsolata_Condensed_Regular.ttf.zst" Source="resources\fonts\Inconsolata_Condensed-Regular.ttf.zst" />
+                <File Id="Roboto_Regular.ttf.zst" Source="resources\fonts\Roboto-Regular.ttf.zst" />
+                <File Id="RobotoMono_Medium.ttf.zst" Source="resources\fonts\RobotoMono-Medium.ttf.zst" />
+                <File Id="RobotoMono_MediumItalic.ttf.zst" Source="resources\fonts\RobotoMono-MediumItalic.ttf.zst" />
+                <File Id="VT323_Regular.ttf.zst" Source="resources\fonts\VT323-Regular.ttf.zst" />
+
+              </Component>
+            </Directory>
+            <Directory Id="VideoMapsFolder" Name="videomaps">
+              <Component Id="VideoMapsId" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
+                <File Id="ZAB_videomaps.json.zst" Source="resources\videomaps\ZAB-videomaps.json.zst" KeyPath="yes" />
+                <File Id="ZAU_videomaps.json.zst" Source="resources\videomaps\ZAU-videomaps.json.zst" />
+                <File Id="ZBW_videomaps.json.zst" Source="resources\videomaps\ZBW-videomaps.json.zst" />
+                <File Id="ZDC_videomaps.json.zst" Source="resources\videomaps\ZDC-videomaps.json.zst" />
+                <File Id="ZDV_videomaps.json.zst" Source="resources\videomaps\ZDV-videomaps.json.zst" />
+                <File Id="ZHU_videomaps.json.zst" Source="resources\videomaps\ZHU-videomaps.json.zst" />
+                <File Id="ZID_videomaps.json.zst" Source="resources\videomaps\ZID-videomaps.json.zst" />
+                <File Id="ZJX_videomaps.json.zst" Source="resources\videomaps\ZJX-videomaps.json.zst" />
+                <File Id="ZLA_videomaps.json.zst" Source="resources\videomaps\ZLA-videomaps.json.zst" />
+                <File Id="ZOB_videomaps.json.zst" Source="resources\videomaps\ZOB-videomaps.json.zst" />
+                <File Id="ZSE_videomaps.json.zst" Source="resources\videomaps\ZSE-videomaps.json.zst" />
+                <File Id="ZTL_videomaps.json.zst" Source="resources\videomaps\ZTL-videomaps.json.zst" />
+                <File Id="aac_maps.json.zst" Source="resources\videomaps\aac-maps.json.zst" />
+                <File Id="abe_maps.json.zst" Source="resources\videomaps\abe-maps.json.zst" />
+                <File Id="atl_maps.json.zst" Source="resources\videomaps\atl-maps.json.zst" />
+                <File Id="n90_maps.json.zst" Source="resources\videomaps\n90-maps.json.zst" />
+                <File Id="phl_maps.json.zst" Source="resources\videomaps\phl-maps.json.zst" />
+
+              </Component>
+            </Directory>
+            <Directory Id="ScenariosFolder" Name="scenarios">
+              <Component Id="ScenariosId" Guid="3072033b-c670-4e11-b941-2ea9bf892a83">
+                <File Id="a80.json" Source="resources\scenarios\a80.json" KeyPath="yes" />
+                <File Id="a90.json" Source="resources\scenarios\a90.json" />
+                <File Id="aac.json" Source="resources\scenarios\aac.json" />
+                <File Id="abe.json" Source="resources\scenarios\abe.json" />
+                <File Id="aus.json" Source="resources\scenarios\aus.json" />
+                <File Id="bhm.json" Source="resources\scenarios\bhm.json" />
+                <File Id="c90.json" Source="resources\scenarios\c90.json" />
+                <File Id="cle.json" Source="resources\scenarios\cle.json" />
+                <File Id="clt.json" Source="resources\scenarios\clt.json" />
+                <File Id="d01.json" Source="resources\scenarios\d01.json" />
+                <File Id="dab.json" Source="resources\scenarios\dab.json" />
+                <File Id="dca.json" Source="resources\scenarios\dca.json" />
+                <File Id="ewr.json" Source="resources\scenarios\ewr.json" />
+                <File Id="f11.json" Source="resources\scenarios\f11.json" />
+                <File Id="gsp.json" Source="resources\scenarios\gsp.json" />
+                <File Id="ind.json" Source="resources\scenarios\ind.json" />
+                <File Id="jax.json" Source="resources\scenarios\jax.json" />
+                <File Id="jfk.json" Source="resources\scenarios\jfk.json" />
+                <File Id="l30.json" Source="resources\scenarios\l30.json" />
+                <File Id="lga.json" Source="resources\scenarios\lga.json" />
+                <File Id="lib.json" Source="resources\scenarios\lib.json" />
+                <File Id="n90.json" Source="resources\scenarios\n90.json" />
+                <File Id="p50.json" Source="resources\scenarios\p50.json" />
+                <File Id="phl.json" Source="resources\scenarios\phl.json" />
+                <File Id="s46.json" Source="resources\scenarios\s46.json" />
+                <File Id="sav.json" Source="resources\scenarios\sav.json" />
+                <File Id="sdf.json" Source="resources\scenarios\sdf.json" />
+
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+
+	<Directory Id="ProgramMenuFolder">
+	  <Directory Id="ApplicationProgramsFolder" Name="Vice"/>
+	</Directory>
+
+	<Directory Id="DesktopFolder" Name="Desktop">
+          <Component Id="ApplicationShortcutDesktop" Guid="*">
+            <Shortcut Id="ApplicationDesktopShortcut"
+                      Name="Vice ATC"
+                      Description="Vice ATC Simulator"
+                      Target="[#Vice.exe]"
+                      WorkingDirectory="INSTALLFOLDER"/>
+            <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+            <RegistryValue
+                Root="HKCU"
+                Key="Software\Matt Pharr\Vice"
+                Name="installed"
+                Type="integer"
+                Value="1"
+                KeyPath="yes"/>
+          </Component>
+	</Directory>
+
+      </Directory>
+    </Directory>
+
+    <UI Id="UserInterface">
+      <Property Id="WIXUI_INSTALLDIR" Value="TARGETDIR" />
+      <Property Id="WixUI_Mode" Value="Custom" />
+
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="9" Bold="yes" />
+      <TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="EndDialog" Value="Return" Order="2"></Publish>
+
+    </UI>
+    <UIRef Id="WixUI_Common" />
+
+    <WixVariable Id="WixUIDialogBmp" Value="windows\dialog.bmp" />
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid='93fae481-57c0-499a-84c2-517067428f13'>
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Vice"
+                  Description="ATC Simulator"
+                  Target="[#Vice.exe]"
+                  WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Matt Pharr\Vice" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="MyFeature">
+      <ComponentRef Id="ViceExe" />
+      <ComponentRef Id="SDLDLL" />
+      <ComponentRef Id="gccseh" />
+      <ComponentRef Id="libstdcpp" />
+      <ComponentRef Id="ResourcesFilesId" />
+      <ComponentRef Id="AudioId" />
+      <ComponentRef Id="FontsId" />
+      <ComponentRef Id="ScenariosId" />
+      <ComponentRef Id="VideoMapsId" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+    </Feature>
+  </Product>
+</Wix>
