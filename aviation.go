@@ -629,6 +629,7 @@ type Waypoint struct {
 	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                bool                 `json:"nopt,omitempty"`
 	Handoff             bool                 `json:"handoff,omitempty"`
+	FlyOver             bool                 `json:"flyover,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
 	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
@@ -662,6 +663,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Handoff {
 		attrs = append(attrs, slog.Bool("handoff", wp.Handoff))
+	}
+	if wp.FlyOver {
+		attrs = append(attrs, slog.Bool("fly_over", wp.FlyOver))
 	}
 	if wp.Delete {
 		attrs = append(attrs, slog.Bool("delete", wp.Delete))
@@ -731,6 +735,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.Handoff {
 			s += "/ho"
+		}
+		if w.FlyOver {
+			s += "/flyover"
 		}
 		if w.Delete {
 			s += "/delete"
@@ -918,6 +925,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			} else {
 				if f == "ho" {
 					wp.Handoff = true
+				} else if f == "flyover" {
+					wp.FlyOver = true
 				} else if f == "delete" {
 					wp.Delete = true
 				} else if f == "iaf" {

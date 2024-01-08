@@ -1384,7 +1384,16 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 		hdg = nav.FlightState.Heading
 	}
 
-	if nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind, lg) {
+	passedWaypoint := false
+	if wp.FlyOver {
+		dist := nmdistance2ll(nav.FlightState.Position, wp.Location)
+		eta := dist / nav.FlightState.GS * 3600 // in seconds
+		passedWaypoint = eta < 2
+	} else {
+		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind, lg)
+	}
+
+	if passedWaypoint {
 		lg.Debugf("turning outbound from %.1f to %.1f for %s", nav.FlightState.Heading,
 			hdg, wp.Fix)
 

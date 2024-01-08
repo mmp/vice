@@ -74,7 +74,7 @@
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                                       "cleared_altitude": 5000,
                                       "sid": "LGA7",
-                                      "waypoints": "_LGA_13 _LGA_31 _LGA_WHITESTONE2/h40/s210"
+                                      "waypoints": "_LGA_13 _LGA_31 _LGA_WHITESTONE/h40/s210/flyover"
                   }
               },
               "13.LGA-Coney.JFK-Belmont": {
