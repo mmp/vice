@@ -2479,7 +2479,7 @@
             "GLAVN1": {
               "KATL": 10
             },
-            "HOBTT2": {
+            "GNDLF2": {
               "KATL": 10
             },
             "SITTH2": {
@@ -2498,7 +2498,7 @@
                     "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]},
                     "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"]},
                     "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"]},
-                    "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["HOBTT2"]},
+                    "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["GNDLF2"]},
                     "ATL_O_APP": {"backup": "ATL_H_APP"},
                     "ATL_V_APP": {"backup": "ATL_D_APP"},
                     "ATL_A_APP": {"backup": "ATL_L_APP"},
