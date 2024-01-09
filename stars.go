@@ -3454,8 +3454,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 		site := sp.radarSiteId(ctx.world)
-		if STARSSelectButton("SITE\n"+site, STARSButtonFull, buttonScale) {
-			sp.activeDCBMenu = DCBMenuSite
+		if len(ctx.world.RadarSites) == 0 {
+			STARSDisabledButton("SITE\n"+site, STARSButtonFull, buttonScale)
+		} else {
+			if STARSSelectButton("SITE\n"+site, STARSButtonFull, buttonScale) {
+				sp.activeDCBMenu = DCBMenuSite
+			}
 		}
 		if STARSSelectButton("SSA\nFILTER", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuSSAFilter
@@ -5968,6 +5972,11 @@ const (
 )
 
 func (sp *STARSPane) radarMode(w *World) int {
+	if len(w.RadarSites) == 0 {
+		// Straight-up fused mode if none are specified.
+		return RadarModeFused
+	}
+
 	ps := sp.CurrentPreferenceSet
 	if _, ok := w.RadarSites[ps.RadarSiteSelected]; ps.RadarSiteSelected != "" && ok {
 		return RadarModeSingle
@@ -6013,25 +6022,37 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 			continue
 		}
 
-		for id, site := range w.RadarSites {
-			if single && ps.RadarSiteSelected != id {
-				continue
-			}
+		visible := false
 
-			if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
-				aircraft = append(aircraft, ac)
-
-				// Is this the first we've seen it?
-				if state.FirstRadarTrack.IsZero() {
-					state.FirstRadarTrack = now
-
-					if sp.AutoTrackDepartures && ac.TrackingController == "" &&
-						w.DepartureController(ac) == w.Callsign {
-						w.InitiateTrack(callsign, nil, nil) // ignore error...
-					}
+		if sp.radarMode(w) == RadarModeFused {
+			// visible unless if it's almost on the ground
+			alt := float32(state.TrackAltitude())
+			visible = (ac.IsDeparture() && alt > ac.DepartureAirportElevation()+100) ||
+				(!ac.IsDeparture() && alt > ac.ArrivalAirportElevation()+100)
+		} else {
+			// Otherwise see if any of the radars can see it
+			for id, site := range w.RadarSites {
+				if single && ps.RadarSiteSelected != id {
+					continue
 				}
 
-				break
+				if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
+					visible = true
+				}
+			}
+		}
+
+		if visible {
+			aircraft = append(aircraft, ac)
+
+			// Is this the first we've seen it?
+			if state.FirstRadarTrack.IsZero() {
+				state.FirstRadarTrack = now
+
+				if sp.AutoTrackDepartures && ac.TrackingController == "" &&
+					w.DepartureController(ac) == w.Callsign {
+					w.InitiateTrack(callsign, nil, nil) // ignore error...
+				}
 			}
 		}
 	}

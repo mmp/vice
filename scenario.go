@@ -612,9 +612,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		sg.Range = 50
 	}
 
-	if len(sg.RadarSites) == 0 {
-		e.ErrorString("no \"radar_sites\" specified")
-	}
 	for name, rs := range sg.RadarSites {
 		e.Push("Radar site " + name)
 		if p, ok := sg.locate(rs.PositionString); rs.PositionString == "" || !ok {

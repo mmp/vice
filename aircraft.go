@@ -551,3 +551,11 @@ func (ac *Aircraft) GS() float32 {
 func (ac *Aircraft) OnApproach() bool {
 	return ac.Nav.OnApproach()
 }
+
+func (ac *Aircraft) DepartureAirportElevation() float32 {
+	return ac.Nav.FlightState.DepartureAirportElevation
+}
+
+func (ac *Aircraft) ArrivalAirportElevation() float32 {
+	return ac.Nav.FlightState.ArrivalAirportElevation
+}
