@@ -1292,9 +1292,9 @@ func (s *Sim) updateState() {
 				})
 				s.lg.Info("automatic pointout accept", slog.String("callsign", ac.Callsign),
 					slog.String("by", toController), slog.String("to", po.FromController))
-			}
 
-			delete(s.PointOuts[callsign], toController)
+				delete(s.PointOuts[callsign], toController)
+			}
 		}
 	}
 
