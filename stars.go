@@ -2909,30 +2909,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-			case 4:
-				if cmd[0] == '+' {
-					if alt, err := strconv.Atoi(cmd[1:]); err == nil {
-						sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
-						status.clear = true
-					} else {
-						if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true); err != nil {
-							status.err = err
-						} else {
-							status.clear = true
-						}
-					}
-					return
-				} else {
-					// HACK: disable this for training command mode...
-					/*
-						status.clear = true
-						status.err = amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
-							fp.AircraftType = strings.TrimRight(cmd, "*")
-						})
-						return
-					*/
-				}
-
 			case 5:
 				switch cmd[:2] {
 				case "++":
@@ -2946,6 +2922,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				}
+			}
+
+			if len(cmd) >= 2 && cmd[0] == '+' {
+				if alt, err := strconv.Atoi(cmd[1:]); err == nil {
+					sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
+					status.clear = true
+				} else {
+					if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
+				}
+				return
 			}
 
 			if cmd == ".ROUTE" {
