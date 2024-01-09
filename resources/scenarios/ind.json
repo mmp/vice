@@ -1137,6 +1137,79 @@
         "direction": 320,
         "speed": 13
       }
+    },
+    "KIND Southeast": {
+      "arrival_runways": [
+        {
+          "airport": "KIND",
+          "runway": "14"
+        }
+      ],
+      "arrivals": {
+        "SNKPT2": {
+          "KIND": 3
+        },
+        "GIIBS3": {
+          "KIND": 3
+        },
+        "JAKKS2": {
+          "KIND": 3
+        },
+        "KOLTS2": {
+          "KIND": 3
+        },
+        "SMUKE2": {
+          "KIND": 3
+        }
+      },
+      "solo_controller": "IND_B_APP",
+      "multi_controllers": {
+        "default": {
+          "IND_B_APP": {
+            "primary": true,
+            "arrivals": [ "JAKKS2", "KOLTS2", "SMUKE2" ]
+          },
+          "IND_D_APP": {
+            "arrivals": [ "GIIBS3", "SNKPT2" ],
+            "backup": "IND_B_APP"
+          },
+          "IND_F_APP": {
+            "backup": "IND_B_APP"
+          },
+          "IND_I_APP": {
+            "backup": "IND_F_APP"
+          },
+          "IND_E_DEP": {
+            "backup": "IND_B_APP",
+            "departures": ["KIND/MAREO5","KIND/DAWNN1"]
+          },
+          "IND_W_DEP": {
+            "backup": "IND_E_DEP",
+            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
+          }
+        }
+      },
+      "controllers": [
+        "IND_34_CTR",
+        "CHI_81_CTR",
+        "IND_B_APP",
+        "CVG_N_APP",
+        "HUF_N_APP",
+        "FWA_W_APP",
+        "IND_E_TWR"
+      ],
+      "default_maps": [ "RWY 14", "Class C/D", "RWY 14 Composite Training", "Departures (Fixes Only)" ],
+      "departure_runways": [
+        {
+          "airport": "KIND",
+          "rate": 15,
+          "runway": "14"
+        }
+      ],
+      "wind": {
+        "direction": 140,
+        "speed": 13
+      }
     }
   },
   "scratchpads": {
