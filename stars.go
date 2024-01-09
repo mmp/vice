@@ -348,6 +348,13 @@ type STARSAircraftState struct {
 	IdentEnd                time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
+
+	// This is a little messy: we maintain maps from callsign->sector id
+	// for pointouts that track the global state of them. Here we track
+	// just inbound pointouts to the current controller so that the first
+	// click acks a point out but leaves it yellow and a second clears it
+	// entirely.
+	PointedOut bool
 }
 
 type GhostState int
@@ -1117,6 +1124,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
 				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
+					sp.Aircraft[event.Callsign].PointedOut = true
 				}
 			}
 
@@ -2782,6 +2790,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
+				} else if state.PointedOut {
+					state.PointedOut = false
+					status.clear = true
+					return
 				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, ac.Callsign)
@@ -4335,6 +4347,9 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 		dt = FullDatablock
 	}
+	if state.PointedOut {
+		dt = FullDatablock
+	}
 
 	// Quicklook
 	ps := sp.CurrentPreferenceSet
@@ -4910,7 +4925,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		// TODO: draw triangle after callsign if conflict alerts inhibited
 		// TODO: space then asterisk after callsign if MSAW inhibited
 
-		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
 			cs += " PO"
 		}
 		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
@@ -5005,16 +5020,18 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	// Handle cases where it should flash
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
+		_, pointOut := sp.InboundPointOuts[ac.Callsign]
 		if state.Ident() || // ident
 			ac.HandoffTrackController == w.Callsign || // handing off to us
 			// we handed it off, it was accepted, but we haven't yet acknowledged
-			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) {
+			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
+			pointOut {
 			br /= 3
 		}
 	}
 
-	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
-		// yellow for pointed out by someone else
+	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
+		// yellow for pointed out by someone else or uncleared after acknowledged.
 		return br.ScaleRGB(STARSInboundPointOutColor)
 	} else if ac.TrackingController == w.Callsign {
 		// white if we are tracking, unless it's selected
