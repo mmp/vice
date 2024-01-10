@@ -575,31 +575,31 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 		// At or below
 		alt, err := strconv.Atoi(s[:n-1])
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		}
 		return &AltitudeRestriction{Range: [2]float32{0, float32(alt)}}, nil
 	} else if s[n-1] == '+' {
 		// At or above
 		alt, err := strconv.Atoi(s[:n-1])
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		}
 		return &AltitudeRestriction{Range: [2]float32{float32(alt), 0}}, nil
 	} else if alts := strings.Split(s, "-"); len(alts) == 2 {
 		// Between
 		if low, err := strconv.Atoi(alts[0]); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else if high, err := strconv.Atoi(alts[1]); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else if low > high {
-			return nil, fmt.Errorf("low altitude %d is above high altitude %d", low, high)
+			return nil, fmt.Errorf("%s: low altitude %d is above high altitude %d", s, low, high)
 		} else {
 			return &AltitudeRestriction{Range: [2]float32{float32(low), float32(high)}}, nil
 		}
 	} else {
 		// At
 		if alt, err := strconv.Atoi(s); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else {
 			return &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}, nil
 		}
@@ -971,7 +971,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					if alt, err := strconv.Atoi(f[3:]); err == nil {
 						wp.ProcedureTurn.ExitAltitude = float32(alt)
 					} else {
-						return nil, fmt.Errorf("%s error parsing procedure turn exit altitude: %v", f[3:], err)
+						return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
 					}
 				} else if f == "nopt" {
 					wp.NoPT = true
@@ -1009,7 +1009,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 				} else if f[0] == 's' {
 					kts, err := strconv.Atoi(f[1:])
 					if err != nil {
-						return nil, err
+						return nil, fmt.Errorf("%s: error parsing number after speed restriction: %v", f[1:], err)
 					}
 					wp.Speed = kts
 				} else if f[0] == 'h' { // after "ho" and "hilpt" check...
