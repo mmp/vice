@@ -954,7 +954,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			// so aircraft are not too high too soon
 			alt := elev + initialClimbAltitude
 			lg.Debugf("alt: initial climb to %.0f", alt)
-			return alt, 0.6 * maxClimb
+			return alt, 0.8 * maxClimb
 		}
 	}
 
@@ -970,14 +970,14 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		if nav.FlightState.IsDeparture {
 			if nav.FlightState.Altitude < 10000 {
 				targetSpeed := min(250, nav.Perf.Speed.Cruise)
-				if nav.FlightState.IAS < 0.9*targetSpeed {
+				if nav.FlightState.IAS < 0.8*targetSpeed {
 					// Prioritize accelerate over climb starting at 1500 AGL
-					return 0.2 * nav.Perf.Rate.Climb
+					return 0.8 * nav.Perf.Rate.Climb
 				}
 			}
 
 			// Climb normally if at target speed or >10,000'.
-			return 0.7 * nav.Perf.Rate.Climb
+			return nav.Perf.Rate.Climb
 		} else {
 			return MaximumRate
 		}
@@ -1221,7 +1221,7 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		} else if agl := nav.FlightState.Altitude - nav.FlightState.DepartureAirportElevation; agl < initialClimbAltitude {
 			// Just airborne; prioritize climb
 			lg.Debugf("speed: prioritize climb at %.0f AGL; acceleration limited", agl)
-			return targetSpeed, 0.2 * maxAccel
+			return targetSpeed, 0.6 * maxAccel
 		}
 		// Otherwise fall through to the cases below
 	}
@@ -1294,7 +1294,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 		// departures when this kicks in at 1500' AGL given that VNav will
 		// slow the rate of climb at that point until we reach the target
 		// speed.
-		return min(nav.Perf.Speed.Cruise, 250), 0.8 * maxAccel
+		return min(nav.Perf.Speed.Cruise, 250), 0.9 * maxAccel
 	}
 
 	x := clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
