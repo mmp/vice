@@ -335,9 +335,11 @@
         {
           "airlines": [
             {
+              "fleet": "short",
               "icao": "ACA"
             },
             {
+              "fleet": "jfk",
               "icao": "WJA"
             }
           ],
@@ -351,9 +353,11 @@
               "icao": "EDV"
             },
             {
+              "fleet": "short",
               "icao": "ACA"
             },
             {
+              "fleet": "jfk",
               "icao": "WJA"
             }
           ],

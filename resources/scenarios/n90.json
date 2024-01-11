@@ -381,6 +381,7 @@
                 {
                   "airlines": [
                     {
+                      "fleet": "short",
                       "icao": "ACA"
                     },
                     {
@@ -397,6 +398,7 @@
                       "icao": "EDV"
                     },
                     {
+                      "fleet": "short",
                       "icao": "ACA"
                     },
                     {
