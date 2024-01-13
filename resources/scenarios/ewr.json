@@ -594,7 +594,8 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
+              "icao": "GJS"
+
             }
           ],
           "altitude": 8000,
@@ -2277,8 +2278,7 @@
         "star": "FLOSI4",
         "speed_restriction": null,
         "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
-        "expect_approach": "I4R",
-        "scratchpad": "I4R"
+        "expect_approach": "I4R"
       }
     ],
     "PHL": [
@@ -2462,8 +2462,8 @@
         "star": "PHLBO4",
         "speed_restriction": null,
         "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
-        "expect_approach": "I2L",
-        "scratchpad": "I2L"
+        "expect_approach": "I2L"
+        
       }
     ],
     "WRI": [
