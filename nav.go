@@ -88,7 +88,9 @@ type NavAltitude struct {
 	AfterSpeed      *float32
 	AfterSpeedSpeed *float32
 	Expedite        bool
-	// Carried after passing a waypoint
+	// Carried after passing a waypoint if we were unable to meet the
+	// restriction at the way point; we keep trying until we get there (or
+	// are given another instruction..)
 	Restriction *AltitudeRestriction
 }
 
