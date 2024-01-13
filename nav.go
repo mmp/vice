@@ -1221,7 +1221,11 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		if !nav.IsAirborne() {
 			return targetSpeed, 0.8 * maxAccel
 		} else if agl := nav.FlightState.Altitude - nav.FlightState.DepartureAirportElevation; agl < initialClimbAltitude {
-			// Just airborne; prioritize climb
+			// Just airborne; prioritize climb, though be aware of any
+			// upcoming speed restrictions.
+			if wp, speed, _ := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
+				targetSpeed = min(targetSpeed, speed)
+			}
 			lg.Debugf("speed: prioritize climb at %.0f AGL; acceleration limited", agl)
 			return targetSpeed, 0.6 * maxAccel
 		}
@@ -1428,7 +1432,8 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			// fix's altitude.
 			nav.Altitude.Restriction = wp.AltitudeRestriction
 		}
-		if wp.Speed != 0 {
+		if wp.Speed != 0 && !nav.FlightState.IsDeparture {
+			// Carry on the speed restriction only if we're an arrival.
 			spd := float32(wp.Speed)
 			nav.Speed.Restriction = &spd
 		}
