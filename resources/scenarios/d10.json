@@ -1996,7 +1996,7 @@
                     "MLC": {
                         "cleared_altitude": 3000,
                         "sid": "NANDR2",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
+                        "waypoints": "_AFW_16L _AFW_34R/h166 CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS"
                     },
                     "TORNN": {
                         "cleared_altitude": 3000,
@@ -2038,7 +2038,7 @@
                         "MLC": {
                             "cleared_altitude": 3000,
                             "sid": "NANDR2",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
+                            "waypoints": "_AFW_34R _AFW_16L/h346 CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS"
                         },
                         "TORNN": {
                             "cleared_altitude": 3000,
