@@ -71,7 +71,7 @@
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
             "sid": "TNNIS6",
-            "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES TNNIS/h045"
+            "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+ TNNIS/a5000+/h045"
           }
         }
       },
