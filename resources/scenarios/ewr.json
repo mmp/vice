@@ -1179,7 +1179,7 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "sid": "RUUDY6",
-            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/a1500+/h280"
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/h280"
           }
         }
       },
