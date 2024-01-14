@@ -25,7 +25,8 @@ import (
 // 13: update departure handling for multi-controllers (and rename some members)
 // 14: Aircraft ArrivalHandoffController -> WaypointHandoffController
 // 15: audio engine rewrite
-const CurrentConfigVersion = 15
+// 16: cleared/assigned alt for departures, minor nav changes
+const CurrentConfigVersion = 16
 
 type GlobalConfig struct {
 	Version               int
