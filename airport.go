@@ -304,6 +304,12 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
 			}
 
+			if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
+				e.ErrorString("must specify either \"assigned_altitude\" or \"cleared_altitude\"")
+			} else if route.AssignedAltitude != 0 && route.ClearedAltitude != 0 {
+				e.ErrorString("cannot specify both \"assigned_altitude\" and \"cleared_altitude\"")
+			}
+
 			e.Pop()
 		}
 		e.Pop()
@@ -425,10 +431,11 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 }
 
 type ExitRoute struct {
-	SID             string        `json:"sid"`
-	ClearedAltitude int           `json:"cleared_altitude"`
-	Waypoints       WaypointArray `json:"waypoints"`
-	Description     string        `json:"description"`
+	SID              string        `json:"sid"`
+	AssignedAltitude int           `json:"assigned_altitude"`
+	ClearedAltitude  int           `json:"cleared_altitude"`
+	Waypoints        WaypointArray `json:"waypoints"`
+	Description      string        `json:"description"`
 	// optional, control position to handoff to at a /ho
 	HandoffController string `json:"handoff_controller"`
 }

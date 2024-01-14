@@ -165,10 +165,16 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 	return nil
 }
 
-func MakeDepartureNav(w *World, fp FlightPlan, perf AircraftPerformance, alt float32,
+func MakeDepartureNav(w *World, fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt int,
 	wp []Waypoint) *Nav {
 	if nav := makeNav(w, fp, perf, wp); nav != nil {
-		nav.Altitude.Cleared = &alt
+		if assignedAlt != 0 {
+			alt := float32(min(assignedAlt, fp.Altitude))
+			nav.Altitude.Assigned = &alt
+		} else {
+			alt := float32(min(clearedAlt, fp.Altitude))
+			nav.Altitude.Cleared = &alt
+		}
 		nav.FlightState.IsDeparture = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
 		return nav
@@ -314,8 +320,13 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
-		lines = append(lines, dir+" to "+FormatAltitude(c.Altitude)+" to cross "+
-			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
+		fixAlt, finalAlt := c.Altitude, c.FinalAltitude
+		if nav.Altitude.Cleared != nil {
+			fixAlt = min(fixAlt, *nav.Altitude.Cleared)
+			finalAlt = min(finalAlt, *nav.Altitude.Cleared)
+		}
+		lines = append(lines, dir+" to "+FormatAltitude(fixAlt)+" to cross "+
+			c.FinalFix+" at "+FormatAltitude(finalAlt))
 	} else if nav.Altitude.Cleared != nil {
 		if abs(nav.FlightState.Altitude-*nav.Altitude.Cleared) < 100 {
 			lines = append(lines, "At cleared altitude "+
