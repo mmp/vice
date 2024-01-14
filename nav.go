@@ -530,6 +530,7 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 				nav.Altitude.Assigned = nav.Altitude.AfterSpeed
 				nav.Altitude.AfterSpeed = nil
 				nav.Altitude.AfterSpeedSpeed = nil
+				nav.Altitude.Restriction = nil
 				lg.Debugf("alt: reached target speed %.0f; now going for altitude %.0f", at, *nav.Altitude.Assigned)
 			}
 		}
