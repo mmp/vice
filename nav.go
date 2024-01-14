@@ -320,13 +320,11 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
-		fixAlt, finalAlt := c.Altitude, c.FinalAltitude
+		alt := c.Altitude
 		if nav.Altitude.Cleared != nil {
-			fixAlt = min(fixAlt, *nav.Altitude.Cleared)
-			finalAlt = min(finalAlt, *nav.Altitude.Cleared)
+			alt = min(alt, *nav.Altitude.Cleared)
 		}
-		lines = append(lines, dir+" to "+FormatAltitude(fixAlt)+" to cross "+
-			c.FinalFix+" at "+FormatAltitude(finalAlt))
+		lines = append(lines, dir+" to "+FormatAltitude(alt)+" for alt. restriction at "+c.Fix)
 	} else if nav.Altitude.Cleared != nil {
 		if abs(nav.FlightState.Altitude-*nav.Altitude.Cleared) < 100 {
 			lines = append(lines, "At cleared altitude "+
@@ -1002,7 +1000,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		lg.Debugf("alt: assigned %.0f, rate %.0f", alt, rate)
 		return
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
-		lg.Debugf("alt: altitude %.0f for final waypoint %s in %.0f seconds", c.Altitude, c.FinalFix, c.ETA)
+		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 {
 			return c.Altitude, MaximumRate
 		} else {
@@ -1027,10 +1025,9 @@ func (nav *Nav) flyingPT() bool {
 }
 
 type WaypointCrossingConstraint struct {
-	Altitude      float32
-	ETA           float32 // seconds
-	FinalFix      string
-	FinalAltitude float32
+	Altitude float32
+	Fix      string  // where we're trying to readh Altitude
+	ETA      float32 // seconds
 }
 
 // getWaypointAltitudeConstraint looks at the waypoint altitude
@@ -1124,6 +1121,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 	// Loop over waypoints in reverse starting at the one before the last
 	// one with a waypoint restriction.
+	fix := nav.Waypoints[lastWp].Fix // first one with an alt restriction
 	for i := lastWp - 1; i >= 0; i-- {
 		sumDist += nmdistance2ll(nav.Waypoints[i+1].Location, nav.Waypoints[i].Location)
 		wp := nav.Waypoints[i]
@@ -1139,6 +1137,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		if nav.Approach.Cleared && nav.FlightState.Altitude < restr.Range[0] {
 			continue
 		}
+
+		fix = nav.Waypoints[i].Fix
 
 		// TODO: account for decreasing GS with altitude?
 		// TODO: incorporate a simple wind model in GS?
@@ -1195,10 +1195,9 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	}
 
 	return &WaypointCrossingConstraint{
-		Altitude:      alt,
-		ETA:           eta,
-		FinalFix:      nav.Waypoints[lastWp].Fix,
-		FinalAltitude: finalAlt,
+		Altitude: alt,
+		ETA:      eta,
+		Fix:      fix,
 	}
 }
 
