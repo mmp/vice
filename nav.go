@@ -1105,16 +1105,6 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// incrementally working backwards from the last altitude restriction.
 	altRange := getRestriction(lastWp).Range
 
-	// Unless we can't make the constraints, we'll cross the last waypoint
-	// at the upper range of the altitude restrictions.
-	finalAlt := Select(altRange[1] != 0, altRange[1], 60000)
-
-	// The cruising altitude in the flight plan takes precedence if it's lower
-	// then the fix's altitude restriction.
-	if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
-		finalAlt = min(finalAlt, nav.FinalAltitude)
-	}
-
 	// Sum of distances in nm since the last waypoint with an altitude
 	// restriction.
 	sumDist := float32(0)
@@ -1187,11 +1177,16 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	d := sumDist + nmdistance2ll(nav.FlightState.Position, nav.Waypoints[0].Location)
 	eta := d / nav.FlightState.GS * 3600 // seconds
 
-	alt := altRange[1] // generally prefer to be higher rather than lower
-	if !nav.FlightState.IsDeparture &&
-		nav.FlightState.Altitude >= altRange[0] && nav.FlightState.Altitude <= altRange[1] {
-		// But leave arrivals at their current altitude if it's acceptable
-		alt = nav.FlightState.Altitude
+	// Prefer to be higher rather than low; deal with "at or above" here as well.
+	alt := Select(altRange[1] != 0, altRange[1], nav.FinalAltitude)
+
+	// But leave arrivals at their current altitude if it's acceptable;
+	// don't climb just because we can.
+	if !nav.FlightState.IsDeparture {
+		ar := AltitudeRestriction{Range: altRange}
+		if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+			alt = nav.FlightState.Altitude
+		}
 	}
 
 	return &WaypointCrossingConstraint{
