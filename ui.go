@@ -146,6 +146,16 @@ var (
 		"Added \"TO\" command for \"contact tower\"",
 		"Various bugfixes with handoffs and approach navigation",
 		"Match real-world STARS alert sounds",
+		"Added new scenarios: D10 (Mike K), CYS, ASE, COS (Jud Lopez)",
+		"Fixed multiple bugs with handling of altitude and speed restrictions in departure routes",
+		"Increased acceleration and climb rate of departures to be more realistic",
+		"Fixed multiple bugs with point outs",
+		"Fixed bug in the STARS scope that required secondary scratchpads to be three characters",
+		"(Re-)added optional sound effect for accepted handoffs",
+		"Airspace warnings are inhibited for aircraft flying approaches",
+		"STARS: allow control-left-click in place of the third mouse button to highlight aircraft",
+		"STARS: actually use the LDB brightness setting for limited/partial datablocks",
+		"STARS: fix incorrect error message after issuing \"at fix, cleared approach\"",
 	}
 )
 
