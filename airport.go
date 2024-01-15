@@ -273,6 +273,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			route.Waypoints.CheckDeparture(e)
 
 			for _, exit := range strings.Split(exitList, ",") {
+				exit = strings.TrimSpace(exit)
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("%s: exit repeatedly specified in routes", exit)
 				}
