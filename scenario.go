@@ -777,6 +777,13 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	// Skip scenario groups that don't have any single/multi-controller
 	// scenarios, as appropriate.
 	if len(config.ScenarioConfigs) > 0 {
+		// The default scenario may be invalid; e.g. if it's single
+		// controller but we're gathering multi-controller here. Pick
+		// something valid in that case.
+		if _, ok := config.ScenarioConfigs[config.DefaultScenario]; !ok {
+			config.DefaultScenario = SortedMapKeys(config.ScenarioConfigs)[0]
+		}
+
 		if simConfigurations[sg.TRACON] == nil {
 			simConfigurations[sg.TRACON] = make(map[string]*SimConfiguration)
 		}
