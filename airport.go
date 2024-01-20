@@ -511,12 +511,14 @@ type Approach struct {
 }
 
 func (ap *Approach) Line() [2]Point2LL {
-	// assume we have at least one set of waypoints and that it has >= 2 waypoints!
+	// assume we have at least one set of waypoints and that it has >= 3 waypoints!
 	wp := ap.Waypoints[0]
 
-	// use the last two waypoints
+	// use the last two waypoints of the actual approach, skipping the very
+	// last one which specifies the runway threshold and may have some slop
+	// in it...
 	n := len(wp)
-	return [2]Point2LL{wp[n-2].Location, wp[n-1].Location}
+	return [2]Point2LL{wp[n-3].Location, wp[n-2].Location}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
