@@ -8,7 +8,9 @@
                     "tower_controller": "AUS_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "DOFFS/a5000 SCALI/a4000 RRTOO/a2500 DDTOO/a1600 _AUS_18L/a492"
+                        "DOFFS/a5000/iaf SCALI/a4000 RRTOO/a2500 DDTOO/a1600/faf _AUS_18L/a492",
+                        "JEDYE/a4000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf _AUS_18L/a492",
+                        "HOUKM/a5000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf _AUS_18L/a492"
                     ]
                 },
                 "I8R": {
@@ -16,7 +18,9 @@
                     "tower_controller": "AUS_W_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "CHADE/a4000 UTEEE/a2800 ELLBJ/a1600 _AUS_18R/a542"
+                        "CHADE/a4000/iaf UTEEE/a2800 ELLBJ/a1600/faf _AUS_18R/a542",
+                        "HOUKM/a5000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf _AUS_18R/a542",
+                        "JEDYE/a4000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf _AUS_18R/a542"
                     ]
                 },
                 "I6L": {
@@ -24,7 +28,7 @@
                     "tower_controller": "AUS_W_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "LAMAS/a5000 CAMDY/a4000 BIIRD/a2500 JOVSA/a2100 FUNNN/a1600 _AUS_36L/a496"
+                        "LAMAS/a5000/iaf CAMDY/a4000/iaf BIIRD/a2500/if JOVSA/a2100 FUNNN/a1600/faf _AUS_36L/a496"
                     ]
                 },
                 "I6R": {
@@ -32,7 +36,7 @@
                     "tower_controller": "AUS_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "BALLD/a4000 SSHOE/a2500 ZEDKU/a2100 FNNLY/a1600 _AUS_36R/a480"
+                        "BALLD/a4000/iaf SSHOE/a2500 ZEDKU/a2100 FNNLY/a1600/faf _AUS_36R/a480"
                     ]
                 },
                 "R6L": {
@@ -41,7 +45,11 @@
                     "runway": "36L",
                     "type": "RNAV",
                     "waypoints": [
-                        "LAIDY/a5000/s210/if ANGGS POIMM SUKEY FUNNN/a1600 _AUS_36L/a496"
+                        "LAIDY/a5000/s210/if ANGGS POIMM SUKEY FUNNN/faf/a1600 _AUS_36L/a496",
+                        "LIPSS/a4000/s210/if POIMM SUKEY FUNNN/faf/a1600 _AUS_36L/a496",
+                        "LAMAS/a5000+/iaf CAMDY/iaf/a4000 BIIRD/if FUNNN/faf/a1600 _AUS_36L/a496",
+                        "SMRFF/a5000/s210/if SQWCH ZILKR HEGVO ODINE FUNNN/faf/a1600 _AUS_36L/a496",
+                        "BOWTZ/a4000/s210/if ZILKR HEGVO ODINE FUNNN/faf/a1600 _AUS_36L/a496"
                     ]
                 },
                 "R6R": {
@@ -50,7 +58,37 @@
                     "runway": "36R",
                     "type": "RNAV",
                     "waypoints": [
-                        "SMRFF/a5000/s210/if WRRDD MYOPE APALE FNNLY _AUS_36R/a480"
+                        "SMRFF/a5000/s210/if WRRDD MYOPE APALE FNNLY/a1600/faf _AUS_36R/a480",
+                        "BOWTZ/a4000/s210/if MYOPE APALE FNNLY/a1600/faf _AUS_36R/a480",
+                        "BALLD/a4000+/iaf SSHOE/if FNNLY/a1600/faf _AUS_36R/a480",
+                        "LAIDY/a5000/s210/if ANGGS POIMM RFRCE BLURG TREKS FNNLY/a1600/faf _AUS_36R/a480",
+                        "LIPSS/a4000/s210/if POIMM RFRCE BLURG TREKS FNNLY/a1600/faf _AUS_36R/a480"
+                    ]
+                },
+                "R8R": {
+                    "full_name": "RNAV RNP Runway 18R",
+                    "tower_controller": "AUS_W_TWR",
+                    "runway": "18R",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "TRPPN/a6000/s210/iaf RUBZZ/if PEAYR N030.17.43.469,W097.44.09.572 MAYHL ELLBJ/a1600/faf _AUS_18R/a542",
+                        "HOUKM/a5000/s210/iaf UTEEE/if ELLBJ/a1600/faf _AUS_18R/a542",
+                        "JEDYE/a4000/s210/iaf UTEEE/if ELLBJ/a1600/faf _AUS_18R/a542",
+                        "SMRFF/a5000/s210/iaf RGGLS ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf _AUS_18R/a542",
+                        "XWING/a4000/if ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf _AUS_18R/a542"
+                    ]
+                },
+                "R8L": {
+                    "full_name": "RNAV RNP Runway 18L",
+                    "tower_controller": "AUS_E_TWR",
+                    "runway": "18L",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "SMRFF/a5000/s210/if LAYYA HANNN NEEMS DDTOO/a1600/faf _AUS_18L/a492",
+                        "XWING/a4000/s210/if HANNN NEEMS DDTOO/a1600/faf _AUS_18L/a492",
+                        "JEDYE/a4000/s210/iaf RRTOO/if DDTOO/a1600/faf _AUS_18L/a492",
+                        "HOUKM/a5000/s210/iaf RRTOO/if DDTOO/a1600/faf _AUS_18L/a492",
+                        "TRPPN/a6000/s210/iaf RUBZZ/if DREPL SWMMP TGONE HUDDD DDTOO/a1600/faf _AUS_18L/a492"
                     ]
                 }
             },  
@@ -1642,13 +1680,13 @@
                         }
                     },
                     "scratchpads": {
-                        "ZENZI": "ZEN",
-                        "SAYBR": "SAY",
-                        "SJT": "SJT",
-                        "ABI": "ABI",
-                        "BNDIA": "BND",
-                        "MUCKY": "MUK",
-                        "KLNGR": "KLN",
+                        "ZENZI": "HOO",
+                        "SAYBR": "MUN",
+                        "SJT": "AMU",
+                        "ABI": "WLM",
+                        "BNDIA": "GAR",
+                        "MUCKY": "PAY",
+                        "KLNGR": "WLM",
                         "AMUSE": "AMU",
                         "CLL": "CLL",
                         "KHYI": ""
