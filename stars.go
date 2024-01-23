@@ -168,29 +168,9 @@ type QuickLookPosition struct {
 func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, error) {
 	var positions []QuickLookPosition
 
-	ctrl, ok := w.Controllers[w.Callsign]
-	if !ok {
-		lg.Errorf("%s: couldn't get *Controller for us?", w.Callsign)
-		return nil, s, ErrSTARSIllegalPosition
-	}
-	num := string(ctrl.SectorId[0])
-
-	idx := 0
-
-	tryAddController := func(id string) bool {
-		ctrl := w.GetController(id)
-		if ctrl != nil {
-			plus := idx < len(s) && s[idx] == '+'
-			if plus {
-				idx++
-			}
-			positions = append(positions, QuickLookPosition{
-				Callsign: ctrl.Callsign,
-				Id:       id,
-				Plus:     plus,
-			})
-		}
-		return ctrl != nil
+	subset := ""
+	if ctrl, ok := w.Controllers[w.Callsign]; ok { // this will fail if we're an observer
+		subset = string(ctrl.SectorId[0])
 	}
 
 	// per 6-94, this is "fun"
@@ -199,38 +179,24 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 	// - if a single character id is entered, then we prepend the number for
 	//   the current controller's sector id. in that case a space is required
 	//   before the next one, if any
-	id := ""
-	for idx < len(s) {
-		// Start work on a new controller id
-		id = string(s[idx])
-		idx++
-		if id == " " {
-			// Allow multiple spaces between ids
-			continue
+	ids := strings.Fields(s)
+	for i, id := range ids {
+		plus := len(id) > 1 && id[len(id)-1] == '+'
+		id = strings.TrimRight(id, "+")
+
+		ctrl := w.GetController(id)
+		if ctrl == nil && len(id) == 1 && subset != "" {
+			id = subset + id
+			ctrl = w.GetController(id)
 		}
-
-		// Just a single character id (maybe with a plus), so prepend
-		// our id number and see if it works.
-		if tryAddController(num + id) {
-			// Must have a space next (or be done)
-			if idx < len(s) && s[idx] != ' ' {
-				return positions, s[idx:], ErrSTARSIllegalParam
-			}
+		if ctrl == nil {
+			return positions, strings.Join(ids[i:], " "), ErrSTARSIllegalPosition
 		} else {
-			// Multi-character position specification
-			for idx < len(s) {
-				// Loop precondition: we have a partial but invalid specification.
-				id += string(s[idx])
-				idx++
-
-				if tryAddController(id) {
-					id = ""
-					break
-				}
-			}
-			if id != "" {
-				return positions, id, ErrSTARSIllegalPosition
-			}
+			positions = append(positions, QuickLookPosition{
+				Callsign: ctrl.Callsign,
+				Id:       id,
+				Plus:     plus,
+			})
 		}
 	}
 
