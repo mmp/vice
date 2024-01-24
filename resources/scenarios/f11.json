@@ -1226,11 +1226,11 @@
     },
     "KTPA": {
       "approaches": {
-        "I2L": {
-          "runway": "2L",
+        "I1L": {
+          "runway": "1L",
           "type": "ILS",
           "waypoints": [
-            "KTPA/a82"
+            "LAGOO/if/iaf/hilpt/a2600 SELMN/a2600 ZERUR/a540/faf KTPA/a82"
           ]
         }
       },
