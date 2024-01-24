@@ -319,7 +319,7 @@ func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 		fsp.addedAircraft = make(map[string]interface{})
 	}
 	if fsp.scrollbar == nil {
-		fsp.scrollbar = NewScrollBar(4, true)
+		fsp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	fsp.events = eventStream.Subscribe()
 
@@ -494,7 +494,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	widthCenter := ctx.paneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
 	if fsp.scrollbar.Visible() {
-		widthCenter -= float32(fsp.scrollbar.Width())
+		widthCenter -= float32(fsp.scrollbar.PixelExtent())
 	}
 	if widthCenter < 0 {
 		// not sure what to do if it comes to this...
@@ -503,7 +503,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	drawWidth := ctx.paneExtent.Width()
 	if fsp.scrollbar.Visible() {
-		drawWidth -= float32(fsp.scrollbar.Width())
+		drawWidth -= float32(fsp.scrollbar.PixelExtent())
 	}
 
 	// This can happen if, for example, the last aircraft is selected and
@@ -811,7 +811,7 @@ func (mp *MessagesPane) Activate(w *World, eventStream *EventStream) {
 		mp.FontIdentifier = mp.font.id
 	}
 	if mp.scrollbar == nil {
-		mp.scrollbar = NewScrollBar(4, true)
+		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
 }
@@ -842,7 +842,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	drawWidth := ctx.paneExtent.Width()
 	if mp.scrollbar.Visible() {
-		drawWidth -= float32(mp.scrollbar.Width())
+		drawWidth -= float32(mp.scrollbar.PixelExtent())
 	}
 
 	td := GetTextDrawBuilder()

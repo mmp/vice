@@ -1271,16 +1271,17 @@ type ScrollBar struct {
 	barWidth          int
 	nItems, nVisible  int
 	accumDrag         float32
-	invertY           bool
+	invert            bool
+	vertical          bool
 	mouseClickedInBar bool
 }
 
-// NewScrollBar returns a new ScrollBar instance with the given width.
-// invertY indicates whether the scrolled items are drawn from the bottom
-// of the Pane or the top; invertY should be true if they are being drawn
+// NewVerticalScrollBar returns a new ScrollBar instance with the given width.
+// invert indicates whether the scrolled items are drawn from the bottom
+// of the Pane or the top; invert should be true if they are being drawn
 // from the bottom.
-func NewScrollBar(width int, invertY bool) *ScrollBar {
-	return &ScrollBar{barWidth: width, invertY: invertY}
+func NewVerticalScrollBar(width int, invert bool) *ScrollBar {
+	return &ScrollBar{barWidth: width, invert: invert, vertical: true}
 }
 
 // Update should be called once per frame, providing the total number of things
@@ -1292,7 +1293,7 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 
 	if sb.nItems > sb.nVisible {
 		sign := float32(1)
-		if sb.invertY {
+		if sb.invert {
 			sign = -1
 		}
 
@@ -1300,12 +1301,16 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 			sb.offset += int(sign * ctx.mouse.Wheel[1])
 
 			if ctx.mouse.Clicked[0] {
-				sb.mouseClickedInBar = ctx.mouse.Pos[0] >= ctx.paneExtent.Width()-float32(sb.Width())
+				sb.mouseClickedInBar = Select(sb.vertical,
+					ctx.mouse.Pos[0] >= ctx.paneExtent.Width()-float32(sb.PixelExtent()),
+					ctx.mouse.Pos[1] >= ctx.paneExtent.Height()-float32(sb.PixelExtent()))
 				sb.accumDrag = 0
 			}
 
 			if ctx.mouse.Dragging[0] && sb.mouseClickedInBar {
-				sb.accumDrag += -sign * ctx.mouse.DragDelta[1] * float32(sb.nItems) / ctx.paneExtent.Height()
+				axis := Select(sb.vertical, 1, 0)
+				wh := Select(sb.vertical, ctx.paneExtent.Height(), ctx.paneExtent.Width())
+				sb.accumDrag += -sign * ctx.mouse.DragDelta[axis] * float32(sb.nItems) / wh
 				if abs(sb.accumDrag) >= 1 {
 					sb.offset += int(sb.accumDrag)
 					sb.accumDrag -= float32(int(sb.accumDrag))
@@ -1342,27 +1347,38 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return
 	}
 
-	pw, ph := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	// The visible region is [offset,offset+nVisible].
 	// Visible region w.r.t. [0,1]
-	y0, y1 := float32(sb.offset)/float32(sb.nItems), float32(sb.offset+sb.nVisible)/float32(sb.nItems)
-	if sb.invertY {
-		y0, y1 = 1-y0, 1-y1
+	v0, v1 := float32(sb.offset)/float32(sb.nItems), float32(sb.offset+sb.nVisible)/float32(sb.nItems)
+	if sb.invert {
+		v0, v1 = 1-v0, 1-v1
 	}
-	// Visible region in window coordinates
-	const edgeSpace = 2
-	wy0, wy1 := lerp(y0, ph-edgeSpace, edgeSpace), lerp(y1, ph-edgeSpace, edgeSpace)
 
 	quad := GetColoredTrianglesDrawBuilder()
 	defer ReturnColoredTrianglesDrawBuilder(quad)
-	quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
-		[2]float32{pw - float32(edgeSpace), wy0},
-		[2]float32{pw - float32(edgeSpace), wy1},
-		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
+
+	const edgeSpace = 2
+	pw, ph := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+
+	if sb.vertical {
+		// Visible region in window coordinates
+		wy0, wy1 := lerp(v0, ph-edgeSpace, edgeSpace), lerp(v1, ph-edgeSpace, edgeSpace)
+		quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
+			[2]float32{pw - float32(edgeSpace), wy0},
+			[2]float32{pw - float32(edgeSpace), wy1},
+			[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
+	} else {
+		wx0, wx1 := lerp(v0, pw-edgeSpace, edgeSpace), lerp(v1, pw-edgeSpace, edgeSpace)
+		quad.AddQuad([2]float32{wx0, ph - float32(sb.barWidth) - float32(edgeSpace)},
+			[2]float32{wx0, ph - float32(edgeSpace)},
+			[2]float32{wx1, ph - float32(edgeSpace)},
+			[2]float32{wx1, ph - float32(sb.barWidth) - float32(edgeSpace)}, UIControlColor)
+	}
+
 	quad.GenerateCommands(cb)
 }
 
-func (sb *ScrollBar) Width() int {
+func (sb *ScrollBar) PixelExtent() int {
 	return sb.barWidth + 4 /* for edge space... */
 }
 
