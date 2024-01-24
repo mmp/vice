@@ -579,7 +579,15 @@
       "runway": "33L",
       "type": "ILS",
       "waypoints":[
-       "JANNS/a4000 BWI/a14"
+       "JANNS/a4000/if SPLAT/a2400 GRAFE/a1500/faf HAXAK/a600 N039.09.52.410,W076.39.43.950/a14"
+      ]
+     },
+    "I5R":
+     {
+      "runway": "15R",
+      "type": "ILS",
+      "waypoints":[
+       "BMORE/if/a2500 KEVVN/a2100/faf TATTO/a1080 N039.11.05.606,W076.40.52.368/a14"
       ]
      }
   },
@@ -1677,6 +1685,10 @@
          {
           "airport": "KDCA",
           "runway": "33"
+         },
+         {
+          "airport": "KBWI",
+          "runway": "33L"
          }
       ],
       "arrivals": {
@@ -1746,6 +1758,10 @@
          {
           "airport": "KDCA",
           "runway": "15"
+         },
+         {
+          "airport": "KBWI",
+          "runway": "15R"
          }
       ],
       "arrivals": {
