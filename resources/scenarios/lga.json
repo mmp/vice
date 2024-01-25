@@ -30,7 +30,7 @@
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
-            "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ PACHU/if/a3000 SHAYY/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
+            "GGREG/iaf/s240 ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/s200/a4000+ VARAZ/s200/iaf/a4000+ PACHU/if/a3000 SHAYY/s180/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
           ]
         },
         "PVA": {
@@ -39,6 +39,14 @@
           "type": "Visual",
           "waypoints": [
             "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+ _LGA_31/a50"
+          ]
+        },
+        "L31": {
+          "full_name": "Localizer Runway 31",
+          "runway": "31",
+          "type": "ILS",
+          "waypoints": [
+            "QUENE/if/a1700 FABRY/faf/a1700 _LGA_31/a50"
           ]
         }
       },
