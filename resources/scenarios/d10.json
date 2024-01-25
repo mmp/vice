@@ -326,17 +326,17 @@
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
@@ -443,17 +443,17 @@
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 WETUR/a10000+ NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 WETUR/a10000+ NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 WETUR/a10000+ NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
@@ -560,17 +560,17 @@
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
@@ -677,17 +677,17 @@
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
-                        "sid": "NEYLN6",
+                        "sid": "NELYN6",
                         "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
@@ -1357,7 +1357,7 @@
             },
             "departure_routes": {
                 "13R": {
-                    "NEYLN": {
+                    "NELYN": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
                         "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO"
@@ -1370,7 +1370,7 @@
                     "ARDIA": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO"
+                        "waypoints": "_DAL_13R _DAL_31L  DRSET/a6000- HAYZZ/a6000 CURLO"
                     },
                     "DARTZ": {
                         "cleared_altitude": 6000,
@@ -1539,7 +1539,7 @@
                     }
                 },
                 "31L": {
-                    "NEYLN": {
+                    "NELYN": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
                         "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
@@ -1882,7 +1882,7 @@
                 }
             ],
             "exit_categories": {    
-                "NEYLN": "ALL",
+                "NELYN": "ALL",
                 "JASPA": "ALL",
                 "ARDIA": "ALL",
                 "DARTZ": "ALL",
@@ -1976,42 +1976,42 @@
                     "BSKAT": {
                     "cleared_altitude": 3000,
                     "sid": "KUSSO1",
-                    "waypoints": "_AFW_16L _AFW_34R/h166 SALVE KUSSO ZERLU SWDIA ZACHH"
+                    "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE KUSSO ZERLU SWDIA ZACHH"
                     },
                     "LOOSE": {
                         "cleared_altitude": 3000,
                         "sid": "KUSSO1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 SALVE TRRCH JAYXX TRYTN"
+                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE TRRCH JAYXX TRYTN"
                         },
                     "FORCK": {
                         "cleared_altitude": 3000,
                         "sid": "KUSSO1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 SALVE KUSSO HANUH LYING"
+                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE KUSSO HANUH LYING"
                         },
                     "ZALEA": {
                             "cleared_altitude": 3000,
                             "sid": "KUSSO1",
-                            "waypoints": "_AFW_16L _AFW_34R/h166 SALVE KUSSO THHOR JJANE MRSSH"
+                            "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE KUSSO THHOR JJANE MRSSH"
                         },
                     "MLC": {
                         "cleared_altitude": 3000,
                         "sid": "NANDR2",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS"
+                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
                     },
                     "TORNN": {
                         "cleared_altitude": 3000,
                         "sid": "JPOOL6",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 TTT DARTZ BRDEN"
+                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 TTT DARTZ BRDEN"
                     },
                     "HUDAD": {
                         "cleared_altitude": 3000,
                         "sid": "SWABR1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 BOTCH SWABR PGLET MUTEE"
+                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 BOTCH SWABR PGLET MUTEE"
                     },
                     "HULZE": {
                         "cleared_altitude": 3000,
                         "sid": "SWABR1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166 BOTCH SWABR TYGGR DBLSS HRPER"
+                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 BOTCH SWABR TYGGR DBLSS HRPER"
                     }
                 },
                 "34R": {
@@ -2038,7 +2038,7 @@
                         "MLC": {
                             "cleared_altitude": 3000,
                             "sid": "NANDR2",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS"
+                            "waypoints": "_AFW_34R _AFW_16L/h346 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
                         },
                         "TORNN": {
                             "cleared_altitude": 3000,
@@ -3329,10 +3329,10 @@
     },
     "default_scenario": "D10 South",
     "fixes": {
-        "_DAL_13L": "N032.50.05.104,W096.50.37.582",
-        "_DAL_13R": "N032.50.33.091,W096.50.21.734",
-        "_DAL_31L": "N032.51.04.622,W096.51.45.368",
-        "_DAL_31R": "N032.51.24.837,W096.51.20.291",
+        "_DAL_13L": "N032.51.25.894,W096.51.23.340",
+        "_DAL_13R": "N032.51.06.256,W096.51.47.537",
+        "_DAL_31L": "N032.50.05.859,W096.50.39.230",
+        "_DAL_31R": "N032.50.33.325,W096.50.21.679",
         "_DFW_13R": "N032.54.32.538,W097.04.57.811",
         "_DFW_13L": "N032.54.49.334,W097.01.02.045",
         "_DFW_31L": "N032.53.26.483,W097.03.48.598",
@@ -3347,10 +3347,10 @@
         "_DFW_35R": "N032.52.32.059,W097.00.36.254",
         "_DFW_36L": "N032.52.45.957,W097.03.17.396",
         "_DFW_36R": "N032.52.46.754,W097.03.01.768",
-        "_AFW_16L": "N032.58.37.904,W097.19.03.511",
-        "_AFW_16R": "N032.58.34.979,W097.18.55.464",
-        "_AFW_34L": "N033.00.18.841,W097.19.15.157",
-        "_AFW_34R": "N033.00.18.498,W097.19.23.012"
+        "_AFW_16L": "N033.00.20.599,W097.19.16.585",
+        "_AFW_16R": "N033.00.18.045,W097.19.23.507",
+        "_AFW_34L": "N032.58.35.858,W097.18.54.695",
+        "_AFW_34R": "N032.58.34.855,W097.19.00.737"
     },
     "inhibit_ca_volumes": [
         {
@@ -3406,7 +3406,7 @@
             ]
         }
     ],
-    "magnetic_variation": 3.2, 
+    "magnetic_variation": -3.2, 
     "name": "D10",
     "primary_airport": "KDFW",
     "radar_sites": {
@@ -3769,41 +3769,41 @@
     },
     "scratchpads": {
         "MLC": "AKU",
-        "ALI": "ALI",
-        "CLL": "ARD",
+        "ALIAN": "RBT",
+        "CLL": "RDA",
         "TUL": "BLE",
         "IRW": "BLE",
         "TORNN": "DAR",
         "TNV": "DAR",
-        "FOR": "FOR",
+        "FOR": "HAN",
         "EAKER": "GRA",
         "OKM": "GRA",
         "GRABE": "GRA",
-        "HULZE": "HRP",
-        "HUDAD": "HUD",
+        "HULZE": "TGR",
+        "HUDAD": "PGL",
         "WINDU": "JAS",
-        "BRHMA": "KAT",
+        "BRHMA": "ROO",
         "ADM": "LOW",
         "ROLLS": "LOW",
-        "ZALEA": "MRS",
-        "BDDAY": "MRS",
+        "ZALEA": "THO",
+        "BDDAY": "THO",
         "ACT": "NEY",
-        "HOARY": "NEY",
-        "SAT": "NEY",
-        "LOOSE": "TRY",
-        "CIKAN": "WST",
-        "DOSXX": "WST",
-        "BSKAT": "ZAC",
-        "NEYLN": "CUR",
-        "JASPA": "CUR",
-        "ARDIA": "CUR",
-        "DARTZ": "CUR",
-        "ELLVR": "CUR",
-        "RBDEN": "CUR",
-        "BILEE": "CUR",
-        "FORCK": "LND",
-        "MRRSH": "LND",
-        "TIKYS": "SWT"
+        "HOARY": "NEL",
+        "SAT": "NEL",
+        "LOOSE": "TCH",
+        "CIKAN": "RBT",
+        "DOSXX": "RBT",
+        "BSKAT": "ZER",
+        "NELYN": "NEL",
+        "JASPA": "JAS",
+        "ARDIA": "DAR",
+        "DARTZ": "DAR",
+        "ELLVR": "DAR",
+        "BRDEN": "DAR",
+        "BILEE": "DAR",
+        "FORCK": "FOR",
+        "MRRSH": "THO",
+        "TIKYS": "AKU"
     },
     "stars_maps": [
         {
