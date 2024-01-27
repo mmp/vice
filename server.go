@@ -1071,7 +1071,41 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 					sim.SetSTARSInput(strings.Join(commands[i:], " "))
 					return err
 				}
-			} else if len(command) > 2 {
+			} else if n := len(command); n > 2 {
+				if deg, err := strconv.Atoi(command[1 : n-1]); err == nil {
+					if command[n-1] == 'L' {
+						// turn x degrees left
+						if err := sim.AssignHeading(&HeadingArgs{
+							ControllerToken: token,
+							Callsign:        callsign,
+							LeftDegrees:     deg,
+						}); err != nil {
+							sim.SetSTARSInput(strings.Join(commands[i:], " "))
+							return err
+						} else {
+							continue
+						}
+					} else if command[n-1] == 'R' {
+						// turn x degrees right
+						if err := sim.AssignHeading(&HeadingArgs{
+							ControllerToken: token,
+							Callsign:        callsign,
+							RightDegrees:    deg,
+						}); err != nil {
+							sim.SetSTARSInput(strings.Join(commands[i:], " "))
+							return err
+						} else {
+							continue
+						}
+					} else {
+						sim.SetSTARSInput(strings.Join(commands[i:], " "))
+						return ErrInvalidCommandSyntax
+					}
+				} else {
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return err
+				}
+
 				switch command[:2] {
 				case "TS":
 					if kts, err := strconv.Atoi(command[2:]); err != nil {
@@ -1090,6 +1124,10 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 						sim.SetSTARSInput(strings.Join(commands[i:], " "))
 						return err
 					}
+
+				default:
+					sim.SetSTARSInput(strings.Join(commands[i:], " "))
+					return ErrInvalidCommandSyntax
 				}
 			}
 

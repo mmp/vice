@@ -1807,9 +1807,9 @@ altitude. (*TS* = 'then speed')`, "*TS210*"},
 
 var secondaryAcCommands = [][3]string{
 	[3]string{"*L_hdg", `"Turn left heading _hdg_."`, "*L130*"},
-	[3]string{"*L_deg*D", `"Turn _deg_ degrees left."`, "*L10D*"},
+	[3]string{"*T_deg*L", `"Turn _deg_ degrees left."`, "*T10L*"},
 	[3]string{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
-	[3]string{"*R_deg*D", `"Turn _deg_ degrees right".`, "*R20D*"},
+	[3]string{"*T_deg*R", `"Turn _deg_ degrees right".`, "*T20R*"},
 	[3]string{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
 	[3]string{"*C_fix*/A_alt*/S_kts",
 		`"Cross _fix_ at _alt_ / _kts_ knots."
