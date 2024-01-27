@@ -446,7 +446,7 @@
         "initial_controller": "DEN_29_CTR",
         "initial_speed": 270,
         "route": "HGO OZZZY",
-        "waypoints": "HGO/a17000/ho OZZZY/a14000/s250/ho"
+        "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250"
       }
     ],
     "DEBERRY5": [
