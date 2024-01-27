@@ -948,6 +948,11 @@ func (w *World) DrawScenarioInfoWindow() {
 				}
 
 				for i, arr := range arrivals {
+					if len(w.LaunchConfig.ArrivalGroupRates[name]) == 0 {
+						// Not used in the current scenario.
+						continue
+					}
+
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 					enabled := w.scopeDraw.arrivals[name][i]
