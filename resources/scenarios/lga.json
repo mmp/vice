@@ -989,7 +989,7 @@
         "initial_controller": "LGA_D_APP",
         "initial_speed": 250,
         "route": "/. KORRY4",
-        "waypoints": "N040.36.10.568,W074.06.33.502/a7000 N040.38.38.870,W074.04.39.052/ho N040.43.11.194,W074.01.06.714/h045/a4000"
+        "waypoints": "N040.33.57.167,W074.05.39.807 N040.38.49.870,W074.01.21.573/a4000/ho N040.41.40.488,W074.00.46.417"
       }
     ],
     "Finals-EMPYR-ILS22/D31": [
@@ -1274,7 +1274,7 @@
         "initial_controller": "LGA_V_APP",
         "initial_speed": 250,
         "route": "/. HAARP4",
-        "waypoints": "HAARP CRALY N041.01.58.817,W073.39.59.249/ho YOMAN"
+        "waypoints": "HAARP CRALY/ho YOMAN"
       }
     ],
     "Finals-HAARP-LOC31": [
@@ -2290,10 +2290,10 @@
       ],
       "arrivals": {
         "Finals-EMPYR-ILS22/D13": {
-          "KLGA": 22
+          "KLGA": 32
         },
         "Finals-HAARP-ILS22": {
-          "KLGA": 22
+          "KLGA": 14
         }
       },
       "solo_controller": "LGA_F_APP",
