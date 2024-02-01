@@ -4999,13 +4999,10 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		return br.ScaleRGB(STARSInboundPointOutColor)
+	} else if state.IsSelected {
+		return br.ScaleRGB(STARSSelectedAircraftColor)
 	} else if ac.TrackingController == w.Callsign {
-		// white if we are tracking, unless it's selected
-		if state.IsSelected {
-			return br.ScaleRGB(STARSSelectedAircraftColor)
-		} else {
-			return br.ScaleRGB(STARSTrackedAircraftColor)
-		}
+		return br.ScaleRGB(STARSTrackedAircraftColor)
 	} else if ac.HandoffTrackController == w.Callsign {
 		// flashing white if it's being handed off to us.
 		return br.ScaleRGB(STARSTrackedAircraftColor)
