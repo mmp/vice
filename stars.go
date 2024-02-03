@@ -4341,22 +4341,12 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	defer ReturnColoredTrianglesDrawBuilder(trid)
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
-	ps := sp.CurrentPreferenceSet
-
 	now := ctx.world.CurrentTime()
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
 
 		if state.LostTrack(now) {
 			continue
-		}
-
-		brightness := ps.Brightness.Positions
-
-		dt := sp.datablockType(ctx.world, ac)
-
-		if dt == PartialDatablock || dt == LimitedDatablock {
-			brightness = ps.Brightness.LimitedDatablocks
 		}
 
 		trackId := ""
@@ -4373,8 +4363,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(state, heading, ctx, transforms, brightness, STARSTrackBlockColor,
-			trackId, &pd, &pd2, ld, trid, td)
+		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, &pd, &pd2, ld, trid, td)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -4504,12 +4493,14 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, ctx *PaneContext,
-	transforms ScopeTransformations, brightness STARSBrightness, trackColor RGB, trackId string,
+func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
+	transforms ScopeTransformations, trackId string,
 	pd *PointsDrawBuilder, pd2 *PointsDrawBuilder, ld *ColoredLinesDrawBuilder,
 	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
+
+	primaryTargetBrightness := ps.Brightness.PrimarySymbols
 
 	pos := state.TrackPosition()
 	pw := transforms.WindowFromLatLongP(pos)
@@ -4537,7 +4528,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
 		if primary {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -4553,7 +4544,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			line[i] = add2f(rot(scale2f(line[i], scale)), pw)
 			line[i] = transforms.LatLongFromWindowP(line[i])
 		}
-		ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+		ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
 
 	case RadarModeMulti:
 		primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
@@ -4567,7 +4558,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
 		if primary {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -4578,14 +4569,19 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 		}
 
 	case RadarModeFused:
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
 		pd2.AddPoint(pos, color)
 	}
 
 	// Draw main track symbol letter
+	trackIdBrightness := ps.Brightness.Positions
+	dt := sp.datablockType(ctx.world, ac)
+	if dt == PartialDatablock || dt == LimitedDatablock {
+		trackIdBrightness = ps.Brightness.LimitedDatablocks
+	}
 	if trackId != "" {
 		font := sp.systemFont[ps.CharSize.PositionSymbols]
-		td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: brightness.RGB(), DropShadow: true})
+		td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.RGB(), DropShadow: true})
 	} else {
 		// TODO: draw box if in range of squawks we have selected
 
@@ -4599,8 +4595,8 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 
 		px := float32(3) * scale
 		// diagonals
-		diagPx := px * 0.707107                                     /* 1/sqrt(2) */
-		trackColor := brightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+		diagPx := px * 0.707107                                            /* 1/sqrt(2) */
+		trackColor := trackIdBrightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
 		ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
 		ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
 		// horizontal line
@@ -4972,7 +4968,6 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 }
 
 func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
-	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(w, ac)
 	br := Select(dt == PartialDatablock || dt == LimitedDatablock,
