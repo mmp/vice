@@ -1097,13 +1097,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *stru
 						} else {
 							continue
 						}
-					} else {
-						sim.SetSTARSInput(strings.Join(commands[i:], " "))
-						return ErrInvalidCommandSyntax
 					}
-				} else {
-					sim.SetSTARSInput(strings.Join(commands[i:], " "))
-					return err
 				}
 
 				switch command[:2] {
