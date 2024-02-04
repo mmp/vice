@@ -401,6 +401,15 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		if arrivals, ok := sg.ArrivalGroups[name]; !ok {
 			e.ErrorString("arrival group not found")
 		} else {
+			// Add initial controllers to the controller list, if
+			// necessary.
+			for _, ar := range arrivals {
+				if ar.InitialController != "" &&
+					!slices.Contains(s.VirtualControllers, ar.InitialController) {
+					s.VirtualControllers = append(s.VirtualControllers, ar.InitialController)
+				}
+			}
+
 			// Check the airports in it
 			for airport := range s.ArrivalGroupDefaultRates[name] {
 				e.Push("Airport " + airport)
