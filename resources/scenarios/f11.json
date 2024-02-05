@@ -8522,7 +8522,7 @@
     },
     "TPA_E_APP": {
       "frequency": 118150,
-      "full_name": "Tampa Bay approach",
+      "full_name": "Tampa approach",
       "scope_char": "A",
       "sector_id": "TE"
     },
@@ -8547,6 +8547,12 @@
     "MCO_W_DEP": {
       "frequency": 120150,
       "full_name": "Orlando departure",
+      "scope_char": "W",
+      "sector_id": "4W"
+    },
+    "MCO_W_APP": {
+      "frequency": 120150,
+      "full_name": "Orlando Approach",
       "scope_char": "W",
       "sector_id": "4W"
     },
@@ -8854,21 +8860,20 @@
           "KTPA": 5
         }
       },
-      "solo_controller": "MCO_B_APP",
+      "solo_controller": "MCO_E_APP",
       "multi_controllers": {
         "default": {
-            "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "GTOUT1", "RIDES2" ] },
-            "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH5", "JOKRS3", "PRICY3" ]},
-            "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-            "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-            "MCO_E_DEP" : {"departures": [ "KMCO", "KORL", "KSFB" ], "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
-            "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-            "MCO_D_APP" : {"backup" : "MCO_B_APP" },
-            "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-            "MCO_S_APP" : {"backup" : "MCO_D_APP" },
-            "MCO_N_APP" : {"backup" : "MCO_D_APP" },
-            "MCO_P_APP" : {"backup" : "MCO_D_APP" },
-            "MCO_V_APP" : {"backup" : "MCO_D_APP" }
+          "MCO_E_APP": {"primary": true, "departures": ["KMCO/17R"], "arrivals": ["ALYNA3", "DADES1"]},
+          "MCO_W_APP": {"backup": "MCO_E_APP", "departures": ["KMCO/18L"]},
+          "MCO_D_APP": {"backup": "MCO_W_APP"},
+          "MCO_M_APP": {"backup": "MCO_W_APP"},
+          "MCO_G_APP": {"backup": "MCO_M_APP"},
+          "MCO_B_APP": {"backup": "MCO_E_APP","arrivals": ["GOOFY7", "GTOUT1", "RIDES2"]},
+          "MCO_L_APP": {"backup": "MCO_W_APP", "arrivals": ["PRICY3", "GRNCH5", "JOKRS3"]},
+          "MCO_A_APP": {"backup": "MCO_D_APP"},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KORL", "KSFB"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP"},
+          "MCO_V_APP": {"backup": "MCO_A_APP"}
         }
       },
       "controllers": [
@@ -9008,22 +9013,21 @@
           "KTPA": 5
         }
       },
-      "solo_controller": "MCO_B_APP",
+      "solo_controller": "MCO_E_APP",
       "multi_controllers": {
-         "default": {
-             "MCO_B_APP" : {"primary": true, "arrivals": ["GOOFY7", "SNFLD3", "RIDES2" ] },
-             "MCO_L_APP" : {"backup" : "MCO_B_APP", "arrivals": [ "GRNCH5", "JOKRS3", "PRICY3" ]},
-             "MCO_M_APP" : {"backup" : "MCO_L_APP" },
-             "MCO_G_APP" : {"backup" : "MCO_L_APP" },
-             "MCO_E_DEP" : {"departures": [ "KMCO", "KSFB", "KISM", "KORL" ], "backup": "MCO_L_APP", "arrivals": ["ALYNA3", "DADES1"]},
-             "MCO_W_DEP" : {"backup" : "MCO_E_DEP" },
-             "MCO_D_APP" : {"backup" : "MCO_B_APP" },
-             "MCO_K_APP" : {"backup" : "MCO_D_APP" },
-             "MCO_S_APP" : {"backup" : "MCO_D_APP" },
-             "MCO_N_APP" : {"backup" : "MCO_D_APP" },
-             "MCO_P_APP" : {"backup" : "MCO_D_APP" },
-             "MCO_V_APP" : {"backup" : "MCO_D_APP" }
-         }
+        "default": {
+          "MCO_E_APP": {"primary": true, "departures": ["KMCO/35L"], "arrivals": ["ALYNA3", "DADES1"]},
+          "MCO_W_APP": {"backup": "MCO_E_APP", "departures": ["KMCO/36R"]},
+          "MCO_D_APP": {"backup": "MCO_W_APP", "departures": ["KISM"]},
+          "MCO_M_APP": {"backup": "MCO_W_APP"},
+          "MCO_G_APP": {"backup": "MCO_M_APP"},
+          "MCO_B_APP": {"backup": "MCO_E_APP","arrivals": ["GOOFY7", "SNFLD3", "RIDES2"]},
+          "MCO_L_APP": {"backup": "MCO_W_APP", "arrivals": ["PRICY3", "GRNCH5", "JOKRS3"]},
+          "MCO_A_APP": {"backup": "MCO_D_APP"},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KORL", "KSFB"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP"},
+          "MCO_V_APP": {"backup": "MCO_A_APP"}
+        }
       },
       "controllers": [
         "TPA_E_APP",
@@ -9231,7 +9235,7 @@
           "KMCO": 5
         }
         },
-      "solo_controller":"MCO_G_APP",
+      "solo_controller":"MCO_M_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9327,7 +9331,7 @@
           "KMCO": 10
         }
       },
-      "solo_controller":"MCO_L_APP",
+      "solo_controller":"MCO_B_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
@@ -9562,7 +9566,7 @@
           "KMCO": 15
         }
         },
-      "solo_controller":"MCO_G_APP",
+      "solo_controller":"MCO_M_APP",
       "controllers": [
         "TPA_E_APP",
         "JAX_30_CTR",
