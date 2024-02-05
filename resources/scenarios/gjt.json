@@ -1,0 +1,776 @@
+{
+  "tracon": "GJT (Grand Junction)",
+  "airports": {
+    "KGJT": {
+      "approaches": {
+        "I11": {
+          "runway": "11",
+          "type": "ILS",
+          "waypoints": [
+            "WINDO/a13000 BITAR/a12000 MACKS/iaf/a8200 LOMMA/if/a8200 JINNY/a6700 _GJT11/a4833",
+            "ZUKSO/a8200/arc13JNC JISIG/iaf/a8200/arc13JNC LOMMA/if/a8200 JINNY/a6700 _GJT11/a4833"
+          ]
+        },
+        "RY11": {
+          "runway": "11",
+          "type": "RNAV",
+          "full_name": "RNAV Y Runway 11",
+          "waypoints": [
+            "MACKS/a9000 LOMMA/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU _GJT11/a4833",
+            "PACES/a9000 HASKI/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU _GJT11/a4833",
+            "JNC AVUXE/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU _GJT11/a4833"
+          ]
+        },
+        "RZ11": {
+          "runway": "11",
+          "type": "RNAV",
+          "full_name": "RNAV Z Runway 11",
+          "waypoints": [
+            "MACKS/iaf/a8900 LOMMA/a8200 CARKU/a6700/if VUXOH/a6700 KAREC/faf _GJT11/a4833",
+            "PACES/iaf/a9900 NATLL/a9300 CULIP/if/a8600 FEKVA/a7800 WURNI/a6700 VUXOH/a6700 KAREC/faf _GJT11/a4833",
+            "SINSY/a11000/iaf HONTU/a9900 IWUGO/a8900 TADUY/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf _GJT11/a4833",
+            "SPADA/iaf/a8800 OLILE/a8500 HEBUT/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf _GJT11/a4833"
+          ]
+        },
+        "L29": {
+          "runway": "29",
+          "type": "RNAV",
+          "full_name": "LDA DME Runway 29",
+          "waypoints": [
+            "SPADA/iaf/a8500/arc21JNC HRSON/a8500 ALVOJ/a6800 _GJT29/a4833"
+          ]
+        },
+        "R29": {
+          "runway": "29",
+          "type": "RNAV",
+          "full_name": "RNAV GPS Runway 29",
+          "waypoints": [
+            "CESBA/iaf/a8500 HANSU/a8500 TELSE/a7800 EKIRE/a6900 _GJT29/a4833"
+          ]
+        }
+      },
+      "departure_routes": {
+        "11": {
+          "SQUAT,PACES,DIRDY,BRICK,DBL": {
+            "assigned_altitude": 8000,
+            "sid": "GJT7",
+            "waypoints": "_GJT11 _GJT29/h110"
+          },
+          "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
+            "assigned_altitude": 8000,
+            "sid": "GRAND1",
+            "waypoints": "_GJT11 _GJT29/h110"
+          },
+          "HAQHY": {
+            "assigned_altitude": 8000,
+            "sid": "NOKXI1",
+            "waypoints": "_GJT11 _GJT29 NOKXI MIRXE"
+          }
+        },
+        "29": {
+          "TESSY": {
+            "assigned_altitude": 8000,
+            "sid": "RHONE2",
+            "waypoints": "_GJT29 _GJT11/h290 RHONE LOMMA"
+          },
+          "SQUAT,PACES,DIRDY,BRICK,DBL": {
+            "assigned_altitude": 6000,
+            "sid": "GJT7",
+            "waypoints": "_GJT29 _GJT11/h290"
+          },
+          "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
+            "assigned_altitude": 8000,
+            "sid": "GRAND1",
+            "waypoints": "_GJT29 _GJT11/h290"
+          },
+          "HAQHY": {
+            "assigned_altitude": 8000,
+            "sid": "NOKXI1",
+            "waypoints": "_GJT29 _GJT11/h290"
+          }
+        }
+    },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination":"KDEN",
+          "exit": "HAQHY",
+          "route": "HAQHY SSKII3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination":"KTEX",
+          "exit": "ETL",
+          "route": "ETL KTEX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination":"KTEX",
+          "exit": "ETL",
+          "route": "ETL KTEX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination":"KCOS",
+          "exit": "JNC",
+          "route": "JNC HBU DBRY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination":"KSLC",
+          "exit": "JNC",
+          "route": "JNC HBU DBRY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination":"KRAP",
+          "exit": "CKW",
+          "route": "CKW DDY"
+        }
+          ],
+      "exit_categories": {
+        "SQUAT": "SQUAT",
+        "PACES": "PACES",
+        "DIRDY": "DIRDY",
+        "BRICK": "BRICK",
+        "DBL": "DBL",
+        "VEL": "VEL",
+        "EKR": "EKR",
+        "MTU": "MTU",
+        "PUC": "PUC",
+        "JNC": "JNC",
+        "RIL": "RIL",
+        "FQF": "FQF",
+        "DVV": "DVV",
+        "HBU": "HBU",
+        "ETL": "ETL",
+        "MTJ": "MTJ",
+        "DVC": "DVC",
+        "HVE": "HVE",
+        "OAB": "OAB",
+        "TESSY": "TESSY",
+        "HAQHY": "HAQHY",
+        "CKW": "CKW"
+      },
+      "location": "KGJT",
+      "tower_list": 1
+   }
+  },
+  "arrival_groups": {
+    "NORTH": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KDEN",
+              "icao": "N"
+            },
+            {
+              "airport": "KRAP",
+              "icao": "N"
+            },
+            {
+              "airport": "KCYS",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KDEN",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KRAP",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KCYS",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho"
+      }
+    ],
+    "NORTHEAST": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KDEN",
+              "icao": "N"
+            },
+            {
+              "airport": "KSNY",
+              "icao": "N"
+            },
+            {
+              "airport": "KPUB",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KDEN",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KSNY",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KPUB",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho"
+      }
+    ],
+    "SOUTHEAST": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KALS",
+              "icao": "N"
+            },
+            {
+              "airport": "KAXX",
+              "icao": "N"
+            },
+            {
+              "airport": "KSKX",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_12_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KABQ",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KDFW",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KPUB",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_12_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho"
+      }
+    ],
+    "SOUTH": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KCEZ",
+              "icao": "N"
+            },
+            {
+              "airport": "KSLC",
+              "icao": "N"
+            },
+            {
+              "airport": "KAIB",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KRQE",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KGUP",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KXNI",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho"
+      }
+    ],
+    "SOUTHWEST": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KCNY",
+              "icao": "N"
+            },
+            {
+              "airport": "KHVE",
+              "icao": "N"
+            },
+            {
+              "airport": "KSLC",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KCNY",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KHVE",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KCEZ",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho"
+      }
+    ],
+    "WEST": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KRIF",
+              "icao": "N"
+            },
+            {
+              "airport": "KFOM",
+              "icao": "N"
+            },
+            {
+              "airport": "KPUC",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KRIF",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KFOM",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KPUC",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho"
+      }
+    ],
+    "NORTHWEST": [
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KVEL",
+              "icao": "N"
+            },
+            {
+              "airport": "KEEO",
+              "icao": "N"
+            },
+            {
+              "airport": "4V0",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 140,
+        "route": "KGJT",
+        "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho"
+      },
+      {
+        "airlines": {
+          "KGJT": [
+            {
+              "airport": "KVEL",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KEEO",
+              "fleet": "fastGA",
+              "icao": "N"
+            },
+            {
+              "airport": "4V0",
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "DEN_11_CTR",
+        "initial_speed": 250,
+        "route": "KGJT",
+        "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho"
+      }
+    ]
+  },
+  "center": "KGJT",
+  "control_positions": {
+    "GJT_APP": {
+      "frequency": 119700,
+      "full_name": "Denver Approach",
+      "scope_char": "J",
+      "sector_id": "1J"
+    },
+    "DEN_11_CTR": {
+      "frequency": 120470,
+      "full_name": "Denver Center",
+      "scope_char": "C",
+      "sector_id": "11"
+    },
+    "DEN_12_CTR": {
+      "frequency": 125350,
+      "full_name": "Denver Center",
+      "scope_char": "C",
+      "sector_id": "11"
+    },
+    "GJT_TWR": {
+      "frequency": 118100,
+      "full_name": "Grand Junction Tower",
+      "scope_char": "T",
+      "sector_id": "5T"
+    }
+  },
+  "default_scenario": "GJT East Flow",
+  "fixes": {
+    "_GJT": "39.126663,-108.529387",
+    "_GJT11": "N039.08.06.392,W108.32.39.768",
+    "_GJT29": "N039.07.06.722,W108.30.51.141"
+  },
+  "magnetic_variation": -9.7,
+  "name": "KGJT",
+  "primary_airport": "KGJT",
+  "radar_sites": {
+    "GJT": {
+      "char": "A",
+      "position": "KGJT",
+      "elevation": 4900,
+      "primary_range": 120,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "reporting_points": [
+    "KGJT"
+  ],
+  "scenarios": {
+    "GJT East Flow": {
+      "arrival_runways": [
+        {
+          "airport": "KGJT",
+          "runway": "11"
+        }
+      ],
+      "arrivals": {
+        "NORTH": {
+          "KGJT": 3
+        },
+        "NORTHEAST": {
+          "KGJT": 3
+        },
+        "SOUTHEAST": {
+          "KGJT": 3
+        },
+        "SOUTHWEST": {
+          "KGJT": 3
+        },
+        "WEST": {
+          "KGJT": 3
+        },
+        "NORTHWEST": {
+          "KGJT": 3
+        }
+      },
+      "solo_controller": "GJT_APP",
+      "controllers": [
+          "DEN_11_CTR",
+          "DEN_12_CTR",
+          "GJT_TWR"
+      ],
+      "default_maps": [
+        "GJT BASE"
+      ],
+      "departure_runways":[
+        {
+          "airport":"KGJT",
+          "rate": 5,
+          "runway":"11"
+        }
+      ],
+      "wind": {
+        "direction": 20,
+        "speed": 10
+      }
+    },
+    "GJT West Flow": {
+      "arrival_runways": [
+        {
+          "airport": "KGJT",
+          "runway": "29"
+        }
+      ],
+      "arrivals": {
+        "NORTH": {
+          "KGJT": 3
+        },
+        "NORTHEAST": {
+          "KGJT": 3
+        },
+        "SOUTHEAST": {
+          "KGJT": 3
+        },
+        "SOUTHWEST": {
+          "KGJT": 3
+        },
+        "WEST": {
+          "KGJT": 3
+        },
+        "NORTHWEST": {
+          "KGJT": 3
+        }
+      },
+      "solo_controller": "GJT_APP",
+      "controllers": [
+          "DEN_11_CTR",
+          "DEN_12_CTR",
+          "GJT_TWR"
+      ],
+      "default_maps": [
+        "GJT BASE"
+      ],
+      "departure_runways":[
+        {
+          "airport":"KGJT",
+          "rate": 5,
+          "runway":"29"
+        }
+      ],
+      "wind": {
+        "direction": 20,
+        "speed": 10
+      }
+    }
+  },
+  "scratchpads": {
+    "SQUAT": "SQT",
+    "PACES": "PCS",
+    "DIRDY": "DRB",
+    "BRICK": "BRK",
+    "DBL": "DBL",
+    "VEL": "VEL",
+    "EKR": "EKR",
+    "MTU": "MTU",
+    "PUC": "PUC",
+    "JNC": "JNC",
+    "RIL": "RIL",
+    "FQF": "FQF",
+    "DVV": "DVV",
+    "HBU": "HBU",
+    "ETL": "ETL",
+    "MTJ": "MTJ",
+    "DVC": "DVC",
+    "HVE": "HVE",
+    "OAB": "OAB",
+    "TESSY": "TSY",
+    "HAQHY": "HQY",
+    "CKW": "CKW"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "ARWAYS",
+      "name": "GJT AIRWAYS"
+    },
+    {
+      "group": 0,
+      "label": "GJTBASE",
+      "name": "GJT BASE"
+    },
+    {
+    "group": 0,
+    "label": "GPS 29",
+    "name": "GJT GPS 29"
+    },
+    {
+      "group": 0,
+      "label": "GPSY 11",
+      "name": "GJT GPS Y 11"
+    },
+    {
+      "group": 0,
+      "label": "ILS 11",
+      "name": "GJT ILS 11"
+    },
+    {
+      "group": 1,
+      "label": "GJT MVA",
+      "name": "GJT MVA"
+    },
+    {
+      "group": 0,
+      "label": "NOKXI1",
+      "name": "GJT NOKXI1"
+  },
+  {
+    "group": 0,
+    "label": "RHONE2",
+    "name": "GJT RHONE2"
+  },
+  {
+    "group": 0,
+    "label": "RNP Z",
+    "name": "GJT RNP Z"
+},
+{
+  "group": 0,
+  "label": "GJT SAT",
+  "name": "GJT SATS"
+},
+{
+  "group": 1,
+  "label": "GJT VFR",
+  "name": "GJT VFR"
+}
+  ],
+  "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
