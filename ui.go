@@ -981,9 +981,9 @@ func showAboutDialog() {
 Samuel Valencia for contributing features to vice
 and to Adam Bolek, Aaron Flett, Mike K, Mike K,
 Jud Lopez, Jace Martin, Justin Nguyen, Arya T,
-Michael Trokel, and Samuel Valencia for
-developing scenarios. Video maps are thanks to
-the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA,
+Eli Thompson, Michael Trokel, and Samuel Valencia
+for developing scenarios. Video maps are thanks
+to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA,
 ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs. Thanks
 also to OpenScope for the airline fleet and aircraft
 performance databases and to ourairports.com
