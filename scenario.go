@@ -76,6 +76,7 @@ type Arrival struct {
 	SecondaryScratchpad string  `json:"secondary_scratchpad"`
 	Description         string  `json:"description"`
 
+	// Airport -> arrival airlines
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
 }
 
@@ -416,11 +417,22 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				if _, ok := sg.Airports[airport]; !ok {
 					e.ErrorString("unknown arrival airport")
 				} else {
+					// Make sure the airport exists in at least one of the
+					// arrivals in the group.
 					found := false
 					for _, ar := range arrivals {
 						if _, ok := ar.Airlines[airport]; ok {
 							found = true
-							break
+
+							// Make sure the airport has at least one
+							// active arrival runway.
+							if !slices.ContainsFunc(s.ArrivalRunways,
+								func(r ScenarioGroupArrivalRunway) bool {
+									return r.Airport == airport
+								}) {
+								e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
+									airport, airport)
+							}
 						}
 					}
 					if !found {

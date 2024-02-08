@@ -262,6 +262,16 @@
             "location": "KSNA"
         },
         "KBUR": {
+            "approaches": {
+                "I8": {
+                    "runway": "8",
+                    "type": "ILS",
+                    "waypoints": [
+                        "MIKEI/iaf/nopt/a7000 SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf _BUR_8/a778",
+                        "VTU/iaf/nopt TOAKS/iaf/nopt SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf _BUR_8/a778"
+                    ]
+                }
+            },
             "location": "KBUR"
         },
         "KPSP": {
@@ -1002,6 +1012,14 @@
                 {
                     "airport": "KPSP",
                     "runway": "31L"
+                },
+                {
+                    "airport": "KBUR",
+                    "runway": "8"
+                },
+                {
+                    "airport": "KSNA",
+                    "runway": "20R"
                 }
             ],
             "arrivals": {
@@ -1090,6 +1108,10 @@
                 {
                     "airport": "KPSP",
                     "runway": "13R"
+                },
+                {
+                    "airport": "KBUR",
+                    "runway": "8"
                 },
                 {
                     "airport": "KSNA",

@@ -8828,6 +8828,10 @@
         {
           "airport": "KORL",
           "runway": "7"
+        },
+        {
+          "airport": "KTPA",
+          "runway": "1L"
         }
       ],
       "arrivals": {
@@ -8981,6 +8985,10 @@
         {
           "airport": "KORL",
           "runway": "7"
+        },
+        {
+          "airport": "KTPA",
+          "runway": "1L"
         }
       ],
       "arrivals": {
