@@ -25,7 +25,7 @@
           "type": "RNAV",
           "waypoints": [
             "HOBAM/iaf LAAZE/if/a2000+ ALABE/faf/a1400 _FRG_14/a50",
-            "CAMRN HEREK/iaf/a4000+ SEHDO/if/a2000+ WUPMA/a2000+/s180 N040.45.19.596,W073.33.27.971/a1400+ N040.46.28.220,W073.32.38.148/a1400+ N040.46.38.973,W073.31.02.567/a1400+ ALABE/faf/a1400 _FRG_14/a50"
+            "CAMRN HEREK/iaf/a4000+ SEHDO/if/a2000+ WUPMA/a2000+/s180/arc7.5 ALABE/faf/a1400 _FRG_14/a50"
           ]
         },
         "R19": {

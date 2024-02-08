@@ -27,8 +27,8 @@
           "tower_controller": "COS_E_TWR",
           "waypoints": [
             "LUFSE/iaf JONOL/if ROCCK/iaf/a8700 _COS17L/a6187",
-            "FSHER/iaf WIPUN/if ZIVAD SOGKO ROCCK/iaf/a8700 _COS17L/a6187",
-            "ADANE/iaf REEFF/if SOGKO ROCCK/iaf/a8700 _COS17L/a6187"
+            "FSHER/iaf WIPUN/if ZIVAD SOGKO/arc8.2 ROCCK/iaf/a8700 _COS17L/a6187",
+            "ADANE/iaf REEFF/if SOGKO/arc8.2 ROCCK/iaf/a8700 _COS17L/a6187"
           ]
         },
         "RY7R": {
@@ -63,7 +63,7 @@
           "tower_controller": "COS_W_TWR",
           "full_name": "RNAV Z Runway 35L",
           "waypoints": [
-            "DRAKE/iaf/a9000 WOVID/if/a9000 HUNSI/s180 KUSAC/a8100 _COS35L/a6075",
+            "DRAKE/iaf/a9000 WOVID/if/a9000 HUNSI/s180/arc3.9 KUSAC/a8100 _COS35L/a6075",
             "FSHER/iaf/a9000 MIDAY/if/a8100 KUSAC/a8100 _COS35L/a6075"
           ]
         },
@@ -87,11 +87,11 @@
         },
         "RZ5R": {
           "runway": "35R",
-          "type": "ILS",
+          "type": "RNAV",
           "tower_controller": "COS_E_TWR",
           "full_name": "RNAV Z Runway 35R",
           "waypoints": [
-            "DRAKE/iaf/a8100 JODUM/if/a8100/s180 ZIRKU/a8100 CEGIX/a8100 _COS35R/a6118",
+            "DRAKE/iaf/a8100 JODUM/if/a8100/s180 ZIRKU/a8100/arc4 CEGIX/a8100 _COS35R/a6118",
             "FSHER/iaf FALUR/if/a8100 CEGIX/a8100 _COS35R/a6118"
           ]
         }
