@@ -609,10 +609,13 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 ///////////////////////////////////////////////////////////////////////////
 // DMEArc
 
+// Can either be specified with (Fix,Radius), or (Length,Clockwise); the
+// remaining fields are then derived from those.
 type DMEArc struct {
 	Fix            string
 	Center         Point2LL
 	Radius         float32
+	Length         float32
 	InitialHeading float32
 	Clockwise      bool
 }
@@ -746,7 +749,11 @@ func (wslice WaypointArray) Encode() string {
 			s += fmt.Sprintf("/h%d", w.Heading)
 		}
 		if w.Arc != nil {
-			s += fmt.Sprintf("/arc%.0f%s", w.Arc.Radius, w.Arc.Fix)
+			if w.Arc.Fix != "" {
+				s += fmt.Sprintf("/arc%f%s", w.Arc.Radius, w.Arc.Fix)
+			} else {
+				s += fmt.Sprintf("/arc%f", w.Arc.Length)
+			}
 		}
 
 		entries = append(entries, s)
@@ -984,7 +991,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 						wp.ProcedureTurn = &ProcedureTurn{}
 					}
 					wp.ProcedureTurn.Entry180NoPT = true
-				} else if len(f) > 5 && f[:3] == "arc" {
+				} else if len(f) >= 4 && f[:3] == "arc" {
 					spec := f[3:]
 					rend := 0
 					for rend < len(spec) &&
@@ -994,13 +1001,22 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					if rend == 0 {
 						return nil, fmt.Errorf("%s: radius not found after /arc", f)
 					}
-					radius, err := strconv.ParseFloat(spec[:rend], 32)
+
+					v, err := strconv.ParseFloat(spec[:rend], 32)
 					if err != nil {
-						return nil, fmt.Errorf("%s: invalid radius: %w", f, err)
+						return nil, fmt.Errorf("%s: invalid arc radius/length: %w", f, err)
 					}
-					wp.Arc = &DMEArc{
-						Fix:    spec[rend:],
-						Radius: float32(radius),
+
+					if rend == len(spec) {
+						// no fix given, so interpret it as an arc length
+						wp.Arc = &DMEArc{
+							Length: float32(v),
+						}
+					} else {
+						wp.Arc = &DMEArc{
+							Fix:    spec[rend:],
+							Radius: float32(v),
+						}
 					}
 
 					// Do these last since they only match the first character...

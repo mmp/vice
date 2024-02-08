@@ -446,7 +446,6 @@ func (nav *Nav) DepartureMessage() string {
 		return FormatAltitude(float32(100 * int((a+50)/100)))
 	}
 	if nav.Altitude.Assigned == nil || nav.FlightState.Altitude == *nav.Altitude.Assigned {
-		
 		return "at " + alt(nav.FlightState.Altitude) + " climbing " + alt(*nav.Altitude.Cleared)
 	} else {
 		return "at " + alt(nav.FlightState.Altitude) + " for " + alt(*nav.Altitude.Assigned)
@@ -832,8 +831,7 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 
 		heading = NormalizeHeading(hdg)
 		if nav.Heading.Arc != nil {
-			lg.Debugf("heading: flying %.0f for %.1f %s arc", heading, nav.Heading.Arc.Radius,
-				nav.Heading.Arc.Fix)
+			lg.Debugf("heading: flying %.0f for %.1fnm radius arc", heading, nav.Heading.Arc.Radius)
 		} else {
 			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
 		}

@@ -50,6 +50,14 @@ func sin(a float32) float32 {
 	return float32(math.Sin(float64(a)))
 }
 
+func safeASin(a float32) float32 {
+	return float32(math.Asin(float64(clamp(a, -1, 1))))
+}
+
+func safeACos(a float32) float32 {
+	return float32(math.Acos(float64(clamp(a, -1, 1))))
+}
+
 func cos(a float32) float32 {
 	return float32(math.Cos(float64(a)))
 }
