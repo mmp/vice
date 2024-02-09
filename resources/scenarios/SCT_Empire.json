@@ -38,8 +38,8 @@
                     "runway": "8L",
                     "type": "RNAV",
                     "waypoints": [
-                        "EFFXX/a6000/s210 RUKKY COLTN UNLAY IMANE/s190 LOGJM/a2000 _ONT_8L/a944",
-                        "NUTZO/a6000 OUTCH PRMNT ICWEB/s180 UGIVE LOGJM/a2000 LOGJM/a2000 _ONT_8L/a944",
+                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.1 UNLAY IMANE/s190/arc3.4 LOGJM/a2000 _ONT_8L/a944",
+                        "NUTZO/a6000 OUTCH PRMNT ICWEB/s180/arc3.6 UGIVE/arc2.5 LOGJM/a2000 LOGJM/a2000 _ONT_8L/a944",
                         "JALOT/a2900 LEAGE LOGJM/a2000 _ONT_8L/a944"
                     ]
                 },
@@ -48,8 +48,8 @@
                     "runway": "8R",
                     "type": "RNAV",
                     "waypoints": [
-                        "EFFXX/a6000/s210 RUKKY COLTN YAFFS YETTS/s190 STAAG/a2000 _ONT_8R/a944",
-                        "NUTZO/a6000 OUTCH PRMNT NIPKE/s180 ICILO STAAG/a2000 _ONT_8R/a944",
+                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.5 YAFFS YETTS/s190/arc3.2 STAAG/a2000 _ONT_8R/a944",
+                        "NUTZO/a6000 OUTCH PRMNT NIPKE/s180/arc3.5 ICILO/arc2.8 STAAG/a2000 _ONT_8R/a944",
                         "JALOT/a2900 GRHRT STAAG/a2000 _ONT_8R/a944"
                     ]
                 },
@@ -59,7 +59,7 @@
                     "type": "RNAV",
                     "waypoints": [
                         "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 TESRE/a2900 _ONT_26L/a944",
-                        "MRIAM ADRYN PDZ/a7000 SUZZI/a5300/s210 TESRE/a2900 _ONT_26L/a944",
+                        "MRIAM ADRYN PDZ/a7000 SUZZI/a5300/s210/arc7.7 TESRE/a2900 _ONT_26L/a944",
                         "TAKOE/s210 TESRE/a2900 _ONT_26L/a944"
                     ]
                 },
@@ -69,7 +69,7 @@
                     "type": "RNAV",
                     "waypoints": [
                         "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 SCRIM _ONT_26R/a944",
-                        "MRIAM ADRYN PDZ/a7000 EMMER/s210 SCRIM/a2900 _ONT_26R/a944",
+                        "MRIAM ADRYN PDZ/a7000 EMMER/s210/arc7.9 SCRIM/a2900 _ONT_26R/a944",
                         "TAKOE/s210 SCRIM/a2900 _ONT_26R/a944"
                     ]
                 }
@@ -663,7 +663,7 @@
                 "cruise_altitude": 37000,
                 "initial_altitude": 12000,
                 "initial_controller": "LAX_37_CTR",
-                "initial_speed": 280,
+                "initial_speed": 260,
                 "star": "JCKIE2",
                 "waypoints": "GRRAY/a12000+ 34.5080556,-116.93972222222223/ho HINOH/a11000+ RUMBL/a10000/s240 FIXUT/a9000 ILONE/a8000 ESAYE/a6000 EFFXX/a6000/s210 CASIE/h267"
             }
@@ -702,7 +702,7 @@
                 "cruise_altitude": 37000,
                 "initial_altitude": 16000,
                 "initial_controller": "LAX_39_CTR",
-                "initial_speed": 280,
+                "initial_speed": 270,
                 "star": "SCBBY2",
                 "waypoints": "MSTRY/a16000+ MCHNE/a15000+ DEWAY/a14000-/ho SCBBY/a9300+ STRKS/a7900+ CAYDE/a6000+ KALEA/a5000/s220 TAKOE/a4300+/s210"
             }
@@ -728,7 +728,7 @@
                 "cruise_altitude": 37000,
                 "initial_altitude": 14000,
                 "initial_controller": "LAX_39_CTR",
-                "initial_speed": 280,
+                "initial_speed": 260,
                 "star": "SCBBY2",
                 "waypoints": "SNSTT/ho SOLAY/a12000+ SCBBY/a9300+ STRKS/a7900+ CAYDE/a6000+ KALEA/a5000/s220 TAKOE/a4300+/s210"
             }
@@ -755,7 +755,7 @@
                 "cruise_altitude": 37000,
                 "initial_altitude": 16000,
                 "initial_controller": "LAX_39_CTR",
-                "initial_speed": 280,
+                "initial_speed": 270,
                 "star": "THRNE3",
                 "waypoints": "ARRYA/a16000 YATZE/a14000/ho IRONN/a13000 THRNE/a11000 BFOON/a10000 CRCUS/a10000 NNEDD/a8000 34.0863889,-118.62972222222221/a4000 SILEX/a3700 BUDDE/a3000 _BUR_8/a778"
             }
@@ -779,7 +779,7 @@
                 "initial_altitude": 15000,
                 "assigned_altitude": 12000,
                 "initial_controller": "LAX_30_CTR",
-                "initial_speed": 280,
+                "initial_speed": 260,
                 "star": "SETER5",
                 "waypoints": "OCN 33.3077778,-117.33111111111111/ho ROTHY/a12000 SETER PETIS"
             }
@@ -824,9 +824,54 @@
                 "cruise_altitude": 32000,
                 "initial_altitude": 20000,
                 "initial_controller": "LAX_37_CTR",
-                "initial_speed": 290,
+                "initial_speed": 280,
                 "star": "SIZLR3",
                 "waypoints": "MXIMO HITOP/ho PZUKY/a16000 BITTY/a16000 MORON/a14000 FERNN/a11000 PSP/a9000 DEZZY/a9000"
+            }
+        ],
+        "SIZLR3 PSP": [
+            {
+                "airlines": {
+                    "KPSP": [
+                        {
+                            "airport": "KSFO",
+                            "icao": "ASA"
+                        },
+                        {
+                            "airport": "KSFO",
+                            "icao": "UAL",
+                            "fleet": "short"
+                        },
+                        {
+                            "airport": "KSJC",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KOAK",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KSEA",
+                            "icao": "DAL",
+                            "fleet": "short"
+                        },
+                        {
+                            "airport": "KSEA",
+                            "icao": "ASA"
+                        },
+                        {
+                            "airport": "KMRY",
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }     
+                    ]
+                },
+                "cruise_altitude": 32000,
+                "initial_altitude": 16000,
+                "initial_controller": "LAX_37_CTR",
+                "initial_speed": 280,
+                "star": "SIZLR3",
+                "waypoints": "PZUKY/a16000 BITTY/a16000/ho MORON/a14000 FERNN/a11000 PSP/a9000 DEZZY/a9000"
             }
         ],
         "SBONO1": [
@@ -917,6 +962,12 @@
             "sector_id": "3O"
         },
         "ONT_N_APP": {
+            "frequency": 127000,
+            "full_name": "Socal Approach",
+            "scope_char": "N",
+            "sector_id": "3N"
+        },
+        "ONT_APP": {
             "frequency": 127000,
             "full_name": "Socal Approach",
             "scope_char": "N",
@@ -1048,7 +1099,7 @@
                     "KBUR": 2
                 }
             },
-            "solo_controller": "ONT_N_APP",
+            "solo_controller": "ONT_APP",
             "multi_controllers": {
                 "default": {
                     "ONT_N_APP": {
@@ -1093,6 +1144,80 @@
             "wind": {
                 "direction": 260,
                 "gust": 6
+            }
+        },
+        "Springs 31L": {
+            "arrival_runways": [
+                {
+                    "airport": "KPSP",
+                    "runway": "31L"
+                }
+            ],
+            "arrivals": {
+                "SIZLR3 PSP": {
+                    "KPSP": 7
+                },
+                "SBONO1": {
+                    "KPSP": 7
+                }
+            },
+            "solo_controller": "PSP_APP",
+            "controllers": [
+                "PSP_TWR",
+                "LAX_04_CTR",
+                "LAX_30_CTR",
+                "LAX_39_CTR",
+                "LAX_37_CTR",
+                "ONT_N_APP"
+            ],
+            "default_maps": ["300S EMPB LW SCT"],
+            "departure_runways": [
+                {
+                    "airport": "KPSP",
+                    "rate": 7,
+                    "runway":"31L"
+                }
+            ],
+            "wind": {
+                "direction": 260,
+                "gust": 6
+            }
+        },
+        "Springs 13R": {
+            "arrival_runways": [
+                {
+                    "airport": "KPSP",
+                    "runway": "13R"
+                }
+            ],
+            "arrivals": {
+                "SIZLR3 PSP": {
+                    "KPSP": 7
+                },
+                "SBONO1": {
+                    "KPSP": 7
+                }
+            },
+            "solo_controller": "PSP_APP",
+            "controllers": [
+                "PSP_TWR",
+                "LAX_04_CTR",
+                "LAX_30_CTR",
+                "LAX_39_CTR",
+                "LAX_37_CTR",
+                "ONT_N_APP"
+            ],
+            "default_maps": ["301S EMPB LE SCT"],
+            "departure_runways": [
+                {
+                    "airport": "KPSP",
+                    "rate": 7,
+                    "runway":"13R"
+                }
+            ],
+            "wind": {
+                "direction": 100,
+                "gust": 12
             }
         },
         "Empire East": {
@@ -1144,7 +1269,7 @@
                     "KBUR": 2
                 }
             },
-            "solo_controller": "ONT_N_APP",
+            "solo_controller": "ONT_APP",
             "multi_controllers": {
                 "default": {
                     "ONT_N_APP": {
