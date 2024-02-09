@@ -493,7 +493,18 @@
             "location": "33.81799771311464,-118.15161443130283"
         },
         "KLAX": {
-            "location": "KLAX"
+            "location": "KLAX",
+            "approaches": {
+                "I5L": {
+                    "runway": "25L",
+                    "type": "ILS",
+                    "waypoints": [
+                        "CRCUS/iaf/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128",
+                        "SEAVU/iaf/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128",
+                        "CLPUR/iaf/s250 WITZZ JUDOH KENZO SNNAK GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128"
+                    ]
+                }
+            }
         }
     },
     "arrival_groups": {
@@ -925,6 +936,12 @@
             "scope_char": "D",
             "sector_id": "2D"
         },
+        "LAX_TWR": {
+            "frequency": 120950,
+            "full_name": "Los Angeles Tower",
+            "scope_char": "V",
+            "sector_id": "2V"
+        },
         "SNA_T_APP": {
             "frequency": 121300,
             "full_name": "Socal Approach",
@@ -984,6 +1001,10 @@
                 {
                     "airport": "KSNA",
                     "runway": "20R"
+                },
+                {
+                    "airport": "KLAX",
+                    "runway": "25L"
                 }
             ],
             "arrivals": {
