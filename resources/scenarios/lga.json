@@ -903,7 +903,7 @@
         "expect_approach": "I4",
         "scratchpad": "I4",
         "route": "/. KORRY4",
-        "waypoints": "TYKES MINKS N040.25.24.215,W074.12.54.398/a7000/ho APPLE/a4000 PROUD"
+        "waypoints": "TYKES MINKS/ho/a7000 APPLE PROUD"
       }
     ],
     "Finals-EMPYR-ILS13": [
@@ -2189,6 +2189,7 @@
       "controllers": [
         "JFK_APP",
         "EWR_APP",
+        "EWR_DEP",
         "JFK_TWR",
         "JFK_DEP",
         "LGA_D_APP",
@@ -2226,6 +2227,7 @@
       "controllers": [
         "JFK_APP",
         "EWR_APP",
+        "EWR_DEP",
         "JFK_TWR",
         "JFK_DEP",
         "LGA_D_APP",
