@@ -923,13 +923,10 @@ func (t *TexturedTrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32, uv0, u
 	t.uv = append(t.uv, uv0, uv1, uv2, uv3)
 }
 
-func (t *TexturedTrianglesDrawBuilder) GenerateCommands(texid uint32, cb *CommandBuffer) {
+func (t *TexturedTrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	if len(t.indices) == 0 {
 		return
 	}
-
-	cb.Blend() // alpha blending...
-	cb.EnableTexture(texid)
 
 	uv := cb.Float2Buffer(t.uv)
 	cb.TexCoordArray(uv, 2, 2*4)
@@ -937,8 +934,6 @@ func (t *TexturedTrianglesDrawBuilder) GenerateCommands(texid uint32, cb *Comman
 	t.TrianglesDrawBuilder.GenerateCommands(cb)
 
 	cb.DisableTexCoordArray()
-	cb.DisableTexture()
-	cb.DisableBlend()
 }
 
 // And as above, these are also managed in a pool.
