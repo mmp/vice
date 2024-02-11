@@ -884,7 +884,7 @@ func NewSTARSPane(w *World) *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
+func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
@@ -3581,6 +3581,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
+				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumSTARSPreferenceSets; i++ {

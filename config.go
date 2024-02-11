@@ -187,7 +187,7 @@ func LoadOrMakeDefaultConfig() {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
+func (gc *GlobalConfig) Activate(w *World, r Renderer, eventStream *EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
@@ -248,5 +248,5 @@ func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, eventStream) })
+	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, r, eventStream) })
 }
