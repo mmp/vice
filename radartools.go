@@ -203,9 +203,9 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, transforms Scop
 		if ok {
 			w.radarBounds = ib.bounds
 			if w.texId == 0 {
-				w.texId = ctx.renderer.CreateTextureFromImage(ib.img)
+				w.texId = ctx.renderer.CreateTextureFromImage(ib.img, false)
 			} else {
-				ctx.renderer.UpdateTextureFromImage(w.texId, ib.img)
+				ctx.renderer.UpdateTextureFromImage(w.texId, ib.img, false)
 			}
 		}
 	default:

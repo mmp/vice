@@ -193,13 +193,13 @@ func uiInit(r Renderer, p Platform, es *EventStream) {
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
 	} else {
-		ui.iconTextureID = r.CreateTextureFromImage(iconImage)
+		ui.iconTextureID = r.CreateTextureFromImage(iconImage, false)
 	}
 
 	if sadTowerImage, err := png.Decode(bytes.NewReader([]byte(sadTowerPNG))); err != nil {
 		lg.Errorf("Unable to decode sad tower PNG: %v", err)
 	} else {
-		ui.sadTowerTextureID = r.CreateTextureFromImage(sadTowerImage)
+		ui.sadTowerTextureID = r.CreateTextureFromImage(sadTowerImage, false)
 	}
 
 	// Do this asynchronously since it involves network traffic and may

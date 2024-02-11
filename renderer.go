@@ -22,19 +22,19 @@ import (
 type Renderer interface {
 	// CreateTextureFromImage returns an identifier for a texture map defined
 	// by the specified image.
-	CreateTextureFromImage(image image.Image) uint32
+	CreateTextureFromImage(image image.Image, magNearest bool) uint32
 
 	// CreateTextureFromImage returns an identifier for a texture map defined
 	// by the specified image pyramid.
-	CreateTextureFromImages(image []image.Image) uint32
+	CreateTextureFromImages(image []image.Image, magNearest bool) uint32
 
 	// UpdateTextureFromImage updates the contents of an existing texture
 	// with the provided image.
-	UpdateTextureFromImage(id uint32, image image.Image)
+	UpdateTextureFromImage(id uint32, image image.Image, magNearest bool)
 
 	// UpdateTextureFromImage updates the contents of an existing texture
 	// with the provided image pyramid.
-	UpdateTextureFromImages(id uint32, image []image.Image)
+	UpdateTextureFromImages(id uint32, image []image.Image, magNearest bool)
 
 	// DestroyTexture frees the resources associated with the given texture id.
 	DestroyTexture(id uint32)
