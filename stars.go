@@ -3969,11 +3969,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 					return false
 				} else {
 					a, b := ctx.world.GetAirport(airports[i]), ctx.world.GetAirport(airports[j])
-					if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
-						return true
-					} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
-						return false
-					}
+					ai, bi := a.TowerListIndex, b.TowerListIndex
+					return Select(ai != 0, ai, 1000) < Select(bi != 0, bi, 1000)
 				}
 				return airports[i] < airports[j]
 			})
@@ -4181,38 +4178,56 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		drawList(text, ps.CRDAStatusList.Position)
 	}
 
+	// Figure out airport<-->tower list assignments. Sort the airports
+	// according to their TowerListIndex, putting zero (i.e., unassigned)
+	// indices at the end. Break ties alphabetically by airport name. The
+	// first three then are assigned to the corresponding tower list.
+	towerListAirports := SortedMapKeys(ctx.world.ArrivalAirports)
+	sort.Slice(towerListAirports, func(a, b int) bool {
+		ai := ctx.world.ArrivalAirports[towerListAirports[a]].TowerListIndex
+		if ai == 0 {
+			ai = 1000
+		}
+		bi := ctx.world.ArrivalAirports[towerListAirports[b]].TowerListIndex
+		if bi == 0 {
+			bi = 1000
+		}
+		if ai == bi {
+			return a < b
+		}
+		return ai < bi
+	})
+
 	for i, tl := range ps.TowerLists {
-		if !tl.Visible {
+		if !tl.Visible || i >= len(towerListAirports) {
 			continue
 		}
 
-		for name, ap := range ctx.world.AllAirports() {
-			if ap.TowerListIndex == i+1 {
-				text := stripK(name) + " TOWER\n"
-				m := make(map[float32]string)
-				for _, ac := range aircraft {
-					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == name {
-						dist := nmdistance2ll(ap.Location, sp.Aircraft[ac.Callsign].TrackPosition())
-						actype := ac.FlightPlan.TypeWithoutSuffix()
-						actype = strings.TrimPrefix(actype, "H/")
-						actype = strings.TrimPrefix(actype, "S/")
-						// We'll punt on the chance that two aircraft have the
-						// exact same distance to the airport...
-						m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
-					}
-				}
-
-				k := SortedMapKeys(m)
-				if len(k) > tl.Lines {
-					k = k[:tl.Lines]
-				}
-
-				for _, key := range k {
-					text += m[key] + "\n"
-				}
-				drawList(text, tl.Position)
+		ap := towerListAirports[i]
+		loc := ctx.world.ArrivalAirports[ap].Location
+		text := stripK(ap) + " TOWER\n"
+		m := make(map[float32]string)
+		for _, ac := range aircraft {
+			if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap {
+				dist := nmdistance2ll(loc, sp.Aircraft[ac.Callsign].TrackPosition())
+				actype := ac.FlightPlan.TypeWithoutSuffix()
+				actype = strings.TrimPrefix(actype, "H/")
+				actype = strings.TrimPrefix(actype, "S/")
+				// We'll punt on the chance that two aircraft have the
+				// exact same distance to the airport...
+				m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
 			}
 		}
+
+		k := SortedMapKeys(m)
+		if len(k) > tl.Lines {
+			k = k[:tl.Lines]
+		}
+
+		for _, key := range k {
+			text += m[key] + "\n"
+		}
+		drawList(text, tl.Position)
 	}
 
 	if ps.SignOnList.Visible {
