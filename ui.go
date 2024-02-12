@@ -156,6 +156,12 @@ var (
 		"STARS: allow control-left-click in place of the third mouse button to highlight aircraft",
 		"STARS: actually use the LDB brightness setting for limited/partial datablocks",
 		"STARS: fix incorrect error message after issuing \"at fix, cleared approach\"",
+		"Added new scenarios: TPA (Connor Allen), SAN, SCT-BUR (Justin Nguyen), SCT (Eli Thompson), NCT, GJT (Jud Lopez)",
+		"Smaller scenario updates: D10 and JAX (Mike K), AUS (Jace Martin), LGA, JFK, COS, CLE, ASE, DCA, F11",
+		"Arc routes between fixes can now be accurately specified",
+		"STARS: more accurate simulation of STARS weather radar display",
+		"Added new syntax for issuing left/right turn in degrees: T10L, T20R, etc.",
+		"STARS: allow middle-click highlight of aircraft regardless of having their track",
 	}
 )
 
