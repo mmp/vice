@@ -979,7 +979,7 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits: Thanks to Dennis Graiani and
 Samuel Valencia for contributing features to vice
-and to Adam Bolek, Aaron Flett, Mike K, Mike K,
+and to Connor Allen, Adam Bolek, Aaron Flett, Mike K,
 Jud Lopez, Jace Martin, Justin Nguyen, Arya T,
 Eli Thompson, Michael Trokel, and Samuel Valencia
 for developing scenarios. Video maps are thanks
