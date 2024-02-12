@@ -248,22 +248,22 @@ func (ogl2 *OpenGL41Renderer) createdTexture(texid uint32, bytes int) {
 	}
 }
 
-func (ogl2 *OpenGL41Renderer) CreateTextureFromImage(img image.Image) uint32 {
-	return ogl2.CreateTextureFromImages([]image.Image{img})
+func (ogl2 *OpenGL41Renderer) CreateTextureFromImage(img image.Image, magNearest bool) uint32 {
+	return ogl2.CreateTextureFromImages([]image.Image{img}, magNearest)
 }
 
-func (ogl2 *OpenGL41Renderer) CreateTextureFromImages(pyramid []image.Image) uint32 {
+func (ogl2 *OpenGL41Renderer) CreateTextureFromImages(pyramid []image.Image, magNearest bool) uint32 {
 	var texid uint32
 	gl.GenTextures(1, &texid)
-	ogl2.UpdateTextureFromImages(texid, pyramid)
+	ogl2.UpdateTextureFromImages(texid, pyramid, magNearest)
 	return texid
 }
 
-func (ogl2 *OpenGL41Renderer) UpdateTextureFromImage(texid uint32, img image.Image) {
-	ogl2.UpdateTextureFromImages(texid, []image.Image{img})
+func (ogl2 *OpenGL41Renderer) UpdateTextureFromImage(texid uint32, img image.Image, magNearest bool) {
+	ogl2.UpdateTextureFromImages(texid, []image.Image{img}, magNearest)
 }
 
-func (ogl2 *OpenGL41Renderer) UpdateTextureFromImages(texid uint32, pyramid []image.Image) {
+func (ogl2 *OpenGL41Renderer) UpdateTextureFromImages(texid uint32, pyramid []image.Image, magNearest bool) {
 	var lastTexture int32
 	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
 
@@ -273,7 +273,7 @@ func (ogl2 *OpenGL41Renderer) UpdateTextureFromImages(texid uint32, pyramid []im
 	} else {
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 	}
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, int32(Select(magNearest, gl.NEAREST, gl.LINEAR)))
 	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
 
 	bytes := 0
@@ -689,7 +689,7 @@ func (ogl *OpenGL41Renderer) initializePointsTexture() {
 		res = nr
 	}
 
-	ogl.pointsTextureId = ogl.CreateTextureFromImages(pyramid)
+	ogl.pointsTextureId = ogl.CreateTextureFromImages(pyramid, false)
 }
 
 func (ogl *OpenGL41Renderer) GetPointsTextureId() uint32 {

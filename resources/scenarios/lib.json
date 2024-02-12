@@ -885,27 +885,27 @@
           "ARD,RBV": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.RNGRR",
-            "waypoints": "_JFK_31L _JFK_13R/ho SKORR METSS RNGRR/h223"
+            "waypoints": "_JFK_31L _JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.YNKEE",
-            "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID/h060"
+            "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID/a2500+/h060"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "SKORR5.YNKEE",
-            "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID _JFK_31La/h010"
+            "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID _JFK_31La/h010"
+            "waypoints": "_JFK_31L _JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "SKORR5.RNGRR",
-            "waypoints": "_JFK_31L _JFK_13R/ho SKORR METSS RNGRR/h223"
+            "waypoints": "_JFK_31L _JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
           }
         },
         "4L - Coney": {

@@ -4,7 +4,6 @@
     "KSAV": {
       "approaches": {
         "I1": {
-          "full_name":"ILS Runway 1",
           "runway": "1",
           "type": "ILS",
           "waypoints": [
@@ -12,7 +11,6 @@
           ]
         },
         "R1": {
-          "full_name":"RNAV Runway 1",
           "runway": "1",
           "type": "RNAV",
           "waypoints": [
@@ -21,7 +19,6 @@
           ]
         },
         "I10": {
-          "full_name": "ILS Runway 10",
           "runway": "10",
           "type": "ILS",
           "waypoints": [
@@ -29,7 +26,6 @@
           ]
         },
         "R10": {
-          "full_name": "RNAV Runway 10",
           "runway": "10",
           "type": "RNAV",
           "waypoints": [
@@ -38,7 +34,6 @@
           ]
         },
         "R19": {
-          "full_name": "RNAV Runway 19",
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
@@ -47,7 +42,7 @@
           ]
         },
         "R28": {
-          "full_name": "RNAV Zulu Runway 28",
+          "full_name": "RNAV Z Runway 28",
           "runway": "28",
           "type": "RNAV",
           "waypoints": [

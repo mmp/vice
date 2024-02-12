@@ -575,31 +575,31 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 		// At or below
 		alt, err := strconv.Atoi(s[:n-1])
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		}
 		return &AltitudeRestriction{Range: [2]float32{0, float32(alt)}}, nil
 	} else if s[n-1] == '+' {
 		// At or above
 		alt, err := strconv.Atoi(s[:n-1])
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		}
 		return &AltitudeRestriction{Range: [2]float32{float32(alt), 0}}, nil
 	} else if alts := strings.Split(s, "-"); len(alts) == 2 {
 		// Between
 		if low, err := strconv.Atoi(alts[0]); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else if high, err := strconv.Atoi(alts[1]); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else if low > high {
-			return nil, fmt.Errorf("low altitude %d is above high altitude %d", low, high)
+			return nil, fmt.Errorf("%s: low altitude %d is above high altitude %d", s, low, high)
 		} else {
 			return &AltitudeRestriction{Range: [2]float32{float32(low), float32(high)}}, nil
 		}
 	} else {
 		// At
 		if alt, err := strconv.Atoi(s); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else {
 			return &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}, nil
 		}
@@ -609,10 +609,13 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 ///////////////////////////////////////////////////////////////////////////
 // DMEArc
 
+// Can either be specified with (Fix,Radius), or (Length,Clockwise); the
+// remaining fields are then derived from those.
 type DMEArc struct {
 	Fix            string
 	Center         Point2LL
 	Radius         float32
+	Length         float32
 	InitialHeading float32
 	Clockwise      bool
 }
@@ -629,6 +632,7 @@ type Waypoint struct {
 	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                bool                 `json:"nopt,omitempty"`
 	Handoff             bool                 `json:"handoff,omitempty"`
+	FlyOver             bool                 `json:"flyover,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
 	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
@@ -662,6 +666,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Handoff {
 		attrs = append(attrs, slog.Bool("handoff", wp.Handoff))
+	}
+	if wp.FlyOver {
+		attrs = append(attrs, slog.Bool("fly_over", wp.FlyOver))
 	}
 	if wp.Delete {
 		attrs = append(attrs, slog.Bool("delete", wp.Delete))
@@ -732,6 +739,9 @@ func (wslice WaypointArray) Encode() string {
 		if w.Handoff {
 			s += "/ho"
 		}
+		if w.FlyOver {
+			s += "/flyover"
+		}
 		if w.Delete {
 			s += "/delete"
 		}
@@ -739,7 +749,11 @@ func (wslice WaypointArray) Encode() string {
 			s += fmt.Sprintf("/h%d", w.Heading)
 		}
 		if w.Arc != nil {
-			s += fmt.Sprintf("/arc%.0f%s", w.Arc.Radius, w.Arc.Fix)
+			if w.Arc.Fix != "" {
+				s += fmt.Sprintf("/arc%f%s", w.Arc.Radius, w.Arc.Fix)
+			} else {
+				s += fmt.Sprintf("/arc%f", w.Arc.Length)
+			}
 		}
 
 		entries = append(entries, s)
@@ -813,6 +827,10 @@ func (w WaypointArray) checkBasics(e *ErrorLogger) {
 func (w WaypointArray) CheckApproach(e *ErrorLogger) {
 	w.checkBasics(e)
 	w.checkDescending(e)
+
+	if len(w) < 3 {
+		e.ErrorString("must have at least three waypoints in an approach")
+	}
 
 	/*
 		// Disable for now...
@@ -918,6 +936,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			} else {
 				if f == "ho" {
 					wp.Handoff = true
+				} else if f == "flyover" {
+					wp.FlyOver = true
 				} else if f == "delete" {
 					wp.Delete = true
 				} else if f == "iaf" {
@@ -962,7 +982,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					if alt, err := strconv.Atoi(f[3:]); err == nil {
 						wp.ProcedureTurn.ExitAltitude = float32(alt)
 					} else {
-						return nil, fmt.Errorf("%s error parsing procedure turn exit altitude: %v", f[3:], err)
+						return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
 					}
 				} else if f == "nopt" {
 					wp.NoPT = true
@@ -971,7 +991,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 						wp.ProcedureTurn = &ProcedureTurn{}
 					}
 					wp.ProcedureTurn.Entry180NoPT = true
-				} else if len(f) > 5 && f[:3] == "arc" {
+				} else if len(f) >= 4 && f[:3] == "arc" {
 					spec := f[3:]
 					rend := 0
 					for rend < len(spec) &&
@@ -981,13 +1001,22 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					if rend == 0 {
 						return nil, fmt.Errorf("%s: radius not found after /arc", f)
 					}
-					radius, err := strconv.ParseFloat(spec[:rend], 32)
+
+					v, err := strconv.ParseFloat(spec[:rend], 32)
 					if err != nil {
-						return nil, fmt.Errorf("%s: invalid radius: %w", f, err)
+						return nil, fmt.Errorf("%s: invalid arc radius/length: %w", f, err)
 					}
-					wp.Arc = &DMEArc{
-						Fix:    spec[rend:],
-						Radius: float32(radius),
+
+					if rend == len(spec) {
+						// no fix given, so interpret it as an arc length
+						wp.Arc = &DMEArc{
+							Length: float32(v),
+						}
+					} else {
+						wp.Arc = &DMEArc{
+							Fix:    spec[rend:],
+							Radius: float32(v),
+						}
 					}
 
 					// Do these last since they only match the first character...
@@ -1000,7 +1029,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 				} else if f[0] == 's' {
 					kts, err := strconv.Atoi(f[1:])
 					if err != nil {
-						return nil, err
+						return nil, fmt.Errorf("%s: error parsing number after speed restriction: %v", f[1:], err)
 					}
 					wp.Speed = kts
 				} else if f[0] == 'h' { // after "ho" and "hilpt" check...

@@ -20,7 +20,7 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(w *World, eventStream *EventStream)
+	Activate(w *World, r Renderer, eventStream *EventStream)
 	Deactivate()
 	ResetWorld(w *World)
 
@@ -259,10 +259,10 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*World, *EventStream) {}
-func (ep *EmptyPane) Deactivate()                   {}
-func (ep *EmptyPane) ResetWorld(w *World)           {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool    { return false }
+func (ep *EmptyPane) Activate(*World, Renderer, *EventStream) {}
+func (ep *EmptyPane) Deactivate()                             {}
+func (ep *EmptyPane) ResetWorld(w *World)                     {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool              { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
@@ -309,7 +309,7 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
+func (fsp *FlightStripPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
@@ -320,7 +320,7 @@ func (fsp *FlightStripPane) Activate(w *World, eventStream *EventStream) {
 		fsp.addedAircraft = make(map[string]interface{})
 	}
 	if fsp.scrollbar == nil {
-		fsp.scrollbar = NewScrollBar(4, true)
+		fsp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	fsp.events = eventStream.Subscribe()
 
@@ -495,7 +495,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	widthCenter := ctx.paneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
 	if fsp.scrollbar.Visible() {
-		widthCenter -= float32(fsp.scrollbar.Width())
+		widthCenter -= float32(fsp.scrollbar.PixelExtent())
 	}
 	if widthCenter < 0 {
 		// not sure what to do if it comes to this...
@@ -504,7 +504,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	drawWidth := ctx.paneExtent.Width()
 	if fsp.scrollbar.Visible() {
-		drawWidth -= float32(fsp.scrollbar.Width())
+		drawWidth -= float32(fsp.scrollbar.PixelExtent())
 	}
 
 	// This can happen if, for example, the last aircraft is selected and
@@ -805,13 +805,13 @@ func NewMessagesPane() *MessagesPane {
 
 func (mp *MessagesPane) Name() string { return "Messages" }
 
-func (mp *MessagesPane) Activate(w *World, eventStream *EventStream) {
+func (mp *MessagesPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	if mp.font = GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = GetDefaultFont()
 		mp.FontIdentifier = mp.font.id
 	}
 	if mp.scrollbar == nil {
-		mp.scrollbar = NewScrollBar(4, true)
+		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
 }
@@ -842,7 +842,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	drawWidth := ctx.paneExtent.Width()
 	if mp.scrollbar.Visible() {
-		drawWidth -= float32(mp.scrollbar.Width())
+		drawWidth -= float32(mp.scrollbar.PixelExtent())
 	}
 
 	td := GetTextDrawBuilder()

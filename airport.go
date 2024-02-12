@@ -18,8 +18,8 @@ type Airport struct {
 
 	Name string `json:"name"`
 
-	Approaches map[string]Approach `json:"approaches,omitempty"`
-	Departures []Departure         `json:"departures,omitempty"`
+	Approaches map[string]*Approach `json:"approaches,omitempty"`
+	Departures []Departure          `json:"departures,omitempty"`
 
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
@@ -183,30 +183,30 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 	return ghost
 }
 
-func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
 	if ap.Location.IsZero() {
 		e.ErrorString("Must specify \"location\" for airport")
 	}
 
-	for name, ap := range ap.Approaches {
+	for name, appr := range ap.Approaches {
 		e.Push("Approach " + name)
 
 		if isAllNumbers(name) {
 			e.ErrorString("Approach names cannot only have numbers in them")
 		}
 
-		for i := range ap.Waypoints {
-			n := len(ap.Waypoints[i])
-			ap.Waypoints[i][n-1].Delete = true
-			sg.InitializeWaypointLocations(ap.Waypoints[i], e)
+		for i := range appr.Waypoints {
+			n := len(appr.Waypoints[i])
+			appr.Waypoints[i][n-1].Delete = true
+			sg.InitializeWaypointLocations(appr.Waypoints[i], e)
 
-			if ap.Waypoints[i][n-1].ProcedureTurn != nil {
+			if appr.Waypoints[i][n-1].ProcedureTurn != nil {
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
 			}
-			for j, wp := range ap.Waypoints[i] {
+			for j, wp := range appr.Waypoints[i] {
 				e.Push("Fix " + wp.Fix)
 				if wp.NoPT {
-					if !slices.ContainsFunc(ap.Waypoints[i][j+1:],
+					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
 						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) {
 						e.ErrorString("No procedure turn found after fix with \"nopt\"")
 					}
@@ -214,14 +214,37 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.Pop()
 			}
 
-			ap.Waypoints[i].CheckApproach(e)
+			appr.Waypoints[i].CheckApproach(e)
 		}
 
-		if ap.Runway == "" {
+		if appr.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
 
-		if ap.Type == ChartedVisualApproach && len(ap.Waypoints) != 1 {
+		if appr.FullName == "" {
+			switch appr.Type {
+			case ILSApproach:
+				appr.FullName = "ILS Runway " + appr.Runway
+			case RNAVApproach:
+				appr.FullName = "RNAV Runway " + appr.Runway
+			case ChartedVisualApproach:
+				e.ErrorString("Must provide \"full_name\" for charted visual approach")
+			}
+		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
+			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
+		}
+
+		if appr.TowerController == "" {
+			appr.TowerController = icao[1:] + "_TWR"
+			if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+				e.ErrorString("No position specified for \"tower_controller\" and \"" +
+					appr.TowerController + "\" is not a valid controller")
+			}
+		} else if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+			e.ErrorString("No control position \"" + appr.TowerController + "\" for \"tower_controller\"")
+		}
+
+		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
 			// Note: this could be relaxed if necessary but the logic in
 			// Nav prepareForChartedVisual() assumes as much.
 			e.ErrorString("Only a single set of waypoints are allowed for a charted visual approach route")
@@ -250,6 +273,7 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			route.Waypoints.CheckDeparture(e)
 
 			for _, exit := range strings.Split(exitList, ",") {
+				exit = strings.TrimSpace(exit)
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("%s: exit repeatedly specified in routes", exit)
 				}
@@ -281,6 +305,12 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
 			}
 
+			if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
+				e.ErrorString("must specify either \"assigned_altitude\" or \"cleared_altitude\"")
+			} else if route.AssignedAltitude != 0 && route.ClearedAltitude != 0 {
+				e.ErrorString("cannot specify both \"assigned_altitude\" and \"cleared_altitude\"")
+			}
+
 			e.Pop()
 		}
 		e.Pop()
@@ -296,6 +326,10 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 		if _, ok := database.Airports[dep.Destination]; !ok {
 			e.ErrorString("destination airport \"%s\" unknown", dep.Destination)
+		}
+
+		if len(dep.Airlines) == 0 {
+			e.ErrorString("No \"airlines\" specified for departure")
 		}
 
 		// Make sure that all runways have a route to the exit
@@ -402,10 +436,11 @@ func (ap *Airport) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 }
 
 type ExitRoute struct {
-	SID             string        `json:"sid"`
-	ClearedAltitude int           `json:"cleared_altitude"`
-	Waypoints       WaypointArray `json:"waypoints"`
-	Description     string        `json:"description"`
+	SID              string        `json:"sid"`
+	AssignedAltitude int           `json:"assigned_altitude"`
+	ClearedAltitude  int           `json:"cleared_altitude"`
+	Waypoints        WaypointArray `json:"waypoints"`
+	Description      string        `json:"description"`
 	// optional, control position to handoff to at a /ho
 	HandoffController string `json:"handoff_controller"`
 }
@@ -472,19 +507,22 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
-	FullName  string          `json:"full_name"`
-	Type      ApproachType    `json:"type"`
-	Runway    string          `json:"runway"`
-	Waypoints []WaypointArray `json:"waypoints"`
+	FullName        string          `json:"full_name"`
+	Type            ApproachType    `json:"type"`
+	Runway          string          `json:"runway"`
+	Waypoints       []WaypointArray `json:"waypoints"`
+	TowerController string          `json:"tower_controller"`
 }
 
 func (ap *Approach) Line() [2]Point2LL {
-	// assume we have at least one set of waypoints and that it has >= 2 waypoints!
+	// assume we have at least one set of waypoints and that it has >= 3 waypoints!
 	wp := ap.Waypoints[0]
 
-	// use the last two waypoints
+	// use the last two waypoints of the actual approach, skipping the very
+	// last one which specifies the runway threshold and may have some slop
+	// in it...
 	n := len(wp)
-	return [2]Point2LL{wp[n-2].Location, wp[n-1].Location}
+	return [2]Point2LL{wp[n-3].Location, wp[n-2].Location}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {

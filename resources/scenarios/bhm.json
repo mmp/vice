@@ -1,0 +1,1114 @@
+{
+  "tracon": "BHM (Birmingham)",
+  "airports": {
+    "KBHM": {
+      "approaches": {
+        "I24": {
+          "runway": "24",
+          "type": "ILS",
+          "waypoints": [
+            "SPATT/iaf/a4000 HUKEV/a2700 LOWGA/faf/a2200 CUXOB/a1740 _BHM_24/a650"
+          ]
+        },
+        "Y24": {
+          "full_name": "RNAV Y Runway 24",
+          "runway": "24",
+          "type": "RNAV",
+          "waypoints": [
+            "SPATT/iaf/a3300 HUKEV/a2700 LOWGA/a2200 CUXOB/a1740 _BHM_24/a650"
+          ]
+        },
+        "Z24": {
+          "full_name": "RNAV Z Runway 24",
+          "runway": "24",
+          "type" : "RNAV",
+          "waypoints": [
+            "MREKK/iaf/a6000 SPATT/if/a4000 HUKEV/a2700 LOWGA/a2200 _BHM_24/a650",
+            "MOKEE NOCIM LOWGA/faf/a2200 _BHM_24/a650",
+            "VLKNN/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200 _BHM_24/a650",
+            "HESGA/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200 _BHM_24/a650"
+          ]
+        },
+        "I6": {
+          "runway": "6",
+          "type": "ILS",
+          "waypoints": [
+            "OKW/a3000 GUFLO/if/a2600 CEMPO/a2200 _BHM_6/a650"
+          ]
+        },
+        "Z6": {
+          "full_name": "RNAV Z Runway 6",
+          "runway": "6",
+          "type": "RNAV",
+          "waypoints": [
+            "GUFLO/if/a2300 LELNE/faf/a2300 _BHM_6/a650",
+            "CRMSN/a9000 JAVJA/a6000 WOSIX/a4000 GUFLO/a2300 LELNE/faf/a2300 _BHM_6/a650",
+            "VLKNN/iaf/a3000 AYUCE/s180/a3000 CEWFA/s180/a2300 LELNE/faf/a2300 _BHM_6/a650",
+            "WENDO/a6000 MREKK/iaf/a4000 EMIZI/if/s180/a3000 AYUCE/s180/a2300 CEWFA/s180/a2300 LELNE/faf/s180/a2300 _BHM_6/a650",
+            "BAMTE/if/s180/a3000 RAVPE/s180/a2300 LELNE/faf/a2300 _BHM_6/a650"
+          ]
+        },
+        "Y6": {
+          "full_name": "RNAV Y Runway 6",
+          "runway": "6",
+          "type": "RNAV",
+          "waypoints": [
+            "OKW/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200 _BHM_6/a650",
+            "HEENA/iaf/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200 _BHM_6/a650",
+            "RIMZO/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200 _BHM_6/a650"
+          ]
+        },
+        "G18": {
+          "full_name": "RNAV GPS Runway 18",
+          "runway": "18",
+          "type": "RNAV",
+          "waypoints": [
+            "CAPUN/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300 _BHM_18/a650",
+            "ALEPE/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300 _BHM_18/a650",
+            "COLIG/iaf/a3500 BIDPE/a2600 BASKN/faf/a2300 _BHM_18/a650"
+          ]
+        },
+        "G36": {
+          "full_name": "RNAV GPS Runway 36",
+          "runway": "36",
+          "type": "RNAV",
+          "waypoints": [
+            "OKW/a3000 JAPAM/iaf/a3000 GOTBY/if/a3000 IMOBY/a2800 BERFY/a2300 _BHM_36/a650",
+            "GOTBY/iaf/a3000 IMOBY/a2800 BERFY/a2300 _BHM_36/a650"
+          ]
+        },
+        "I18": {
+          "full_name": "LOC Runway 18",
+          "runway": "18",
+          "type": "ILS",
+          "waypoints": [
+            "COLIG/iaf/a3500 BASKN/faf/a2300 IMTOY/a1380 _BHM_18/a650"
+          ]
+        }
+      },
+      "departure_routes": {
+        "24": {
+          "DAYVS": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          },
+          "JOEYE": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          },
+          "KELCC": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          },
+          "RHETT": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          },
+          "MRICA": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          },
+          "CHEHA": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          },
+          "GUMMP": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_24 _BHM_6/h238"
+          }
+        },
+        "6": {
+          "DAYVS": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          },
+          "JOEYE": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          },
+          "KELCC": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          },
+          "RHETT": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          },
+          "MRICA": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          },
+          "CHEHA": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          },
+          "GUMMP": {
+            "cleared_altitude": 4000,
+            "sid": "BHM8",
+            "waypoints": "_BHM_6 _BHM_24/h058"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "GUMMP",
+          "route": "GUMMP DRSDN GNDLF2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "CHEHA",
+          "route": "CHEHA BESTT JONZE4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KMSY",
+          "exit": "DAYVS",
+          "route": "DAYVS KWANE MERDN TRSSH1"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KGSO",
+          "exit": "MRICA",
+          "route": "MRICA GAD SPA TRAKS3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KTYS",
+          "exit": "MRICA",
+          "route": "MRICA GAD"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCHA",
+          "exit": "MRICA",
+          "route": "MRICA"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "CHEHA",
+          "route": "CHEHA KBLER Q56 KIWII WAVES CAPSS3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "MRICA",
+          "route": "MRICA GAD RMG FIGEY Q64 SAWED Q97 DLAAY RADDS SIE CAMRN4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KRDU",
+          "exit": "CHEHA",
+          "route": "CHEHA THRSR IRQ PYRES DMSTR1"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBWI",
+          "exit": "CHEHA",
+          "route": "CHEHA KBLER KELLN Q58 PEETT THHMP RAVNN6"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "JOEYE",
+          "route": "JOEYE IGB MLU YUYUN WHINY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KIAH",
+          "exit": "DAYVS",
+          "route": "DAYVS KWANE MEI AEX SKNRD4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "JOEYE",
+          "route": "JOEYE IGB LIT TUL GCK KIISS CLASH4"
+        }
+      ],
+      "exit_categories": {
+        "JOEYE": "ALL",
+        "KELCC": "ALL",
+        "RHETT": "ALL",
+        "MRICA": "ALL",
+        "CHEHA": "ALL",
+        "GUMMP": "ALL",
+        "DAYVS": "ALL"
+      },
+      "location":"N33.34.26.023,W86.45.22.674",
+      "tower_list": 1
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "BHMAPP0100": [
+        "N34.00.57.643,W87.32.49.609",
+        "N34.05.52.106,W87.15.59.807",
+        "N34.05.54.744,W86.42.44.188",
+        "N34.23.05.284,W86.10.24.885",
+        "N34.06.04.072,W85.50.54.786",
+        "N33.53.43.381,W85.41.33.673",
+        "N33.51.34.644,W85.48.50.937",
+        "N33.29.47.787,W85.42.23.188",
+        "N33.15.55.377,W85.59.49.347",
+        "N33.04.12.935,W86.10.36.598",
+        "N32.58.11.460,W86.59.40.805",
+        "N33.00.44.902,W87.06.58.108",
+        "N33.00.48.814,W87.23.42.081",
+        "N32.41.49.866,W87.50.44.192",
+        "N33.02.26.375,W87.58.52.431",
+        "N33.17.07.465,W87.40.07.983",
+        "N33.26.36.521,W87.36.51.064"
+      ]
+    },
+    "volumes": {
+      "BHMAPP": [
+        {
+          "boundaries": [
+            "BHMAPP0100"
+          ],
+          "lower": 0,
+          "upper": 10000
+        }
+      ]
+    }
+  },
+  "arrival_groups": {
+    "LYMPH6": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 34000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. LYMPH",
+        "waypoints": "LBY MEI BOYDD/ho LYMPH/s250/h071"
+      }
+    ],
+    "LYMPH24": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 34000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. LYMPH",
+        "waypoints": "LBY MEI BOYDD/ho LYMPH/s250/h071"
+      }
+    ],
+  "KIOSK24": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. KIOSK",
+        "waypoints": "KOCEY/ho KIOSK/s250/h272"
+      }
+    ],
+      "KIOSK6": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KGSO",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. KIOSK",
+        "waypoints": "KOCEY/ho KIOSK/h272"
+      }
+    ],
+    "NULLS24": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KMDW",
+              "fleet": "short",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KORD",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KMEM",
+              "fleet": "short",
+              "icao": "FDX"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. NULLS",
+        "waypoints": "QECKE/ho NULLS/s250/h166"
+      }
+    ],
+    "NULLS6": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KMDW",
+              "fleet": "short",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KORD",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KMEM",
+              "fleet": "short",
+              "icao": "FDX"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. NULLS",
+        "waypoints": "QECKE/ho NULLS/s250/h166"
+      }
+    ],
+    "NESTS6": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KDFW",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KDAL",
+              "icao": "SWA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. NESTS",
+        "waypoints": "BESOM/ho NESTS/s250/h099"
+      }
+    ],
+    "NESTS24": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KDFW",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KDAL",
+              "icao": "SWA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. NESTS",
+        "waypoints": "BESOM/ho NESTS/s250/h099"
+      }
+    ],
+    "HERKO6": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KMXF",
+              "icao": "AWE"
+            },
+            {
+              "airport": "KMGM",
+              "icao": "RPA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. HERKO",
+        "waypoints": "IXUSE/ho HERKO/s250/h013"
+      }
+    ],
+    "HERKO24": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KMXF",
+              "icao": "AWE"
+            },
+            {
+              "airport": "KMGM",
+              "icao": "RPA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. HERKO",
+        "waypoints": "IXUSE/ho HERKO/s250/h013"
+      }
+    ],
+    "SHIMS": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KMEM",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KMEM",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KMCI",
+              "icao": "ENY"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. EXIST SHIMS",
+        "waypoints": "EXIST/ho SHIMS/h122"
+      }
+    ],
+    "DIODE24": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KORD",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KMDW",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. DIODE",
+        "waypoints": "CIVMA/ho DIODE/s250/h211"
+      }
+    ],
+    "DIODE6": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KORD",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KMDW",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. DIODE",
+        "waypoints": "CIVMA/ho DIODE/s250/h211"
+      }
+    ],
+    "WANDS": [
+      {
+        "airlines": {
+          "KBHM": [
+            {
+              "airport": "KTLH",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KBTR",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "assigned_altitude": 11000,
+        "cruise_altitude": 36000,
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. WANDS",
+        "waypoints": "FAYEZ/ho WANDS/h326"
+      }
+    ]
+  },
+  "center": "KBHM",
+  "control_positions": {
+    "ATL_CTR": {
+      "frequency": 132975,
+      "full_name": "Atlanta Center",
+      "scope_char": "C",
+      "sector_id": "C43"
+    },
+    "MEM_CTR": {
+      "frequency": 132550,
+      "full_name": "Memphis Center",
+      "scope_char": "C",
+      "sector_id": "M22"
+    },
+    "BHM_TWR": {
+      "frequency": 119900,
+      "full_name": "Birmingham Tower",
+      "scope_char": "C",
+      "sector_id": "1B"
+    },
+    "BHM_N_APP": {
+      "frequency": 127670,
+      "full_name": "Birmingham Approach",
+      "scope_char": "N",
+      "sector_id": "1N"
+    },
+    "BHM_S_APP": {
+      "frequency": 123800,
+      "full_name": "Birmingham Approach",
+      "scope_char": "S",
+      "sector_id": "1S"
+    },
+    "BHM_W_APP": {
+      "frequency": 120150,
+      "full_name": "Birmingham Approach",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "BHM_E_APP": {
+      "frequency": 120050,
+      "full_name": "Birmingham Approach",
+      "scope_char": "E",
+      "sector_id": "1E"
+    },
+    "BHM_F_APP": {
+      "frequency": 126150,
+      "full_name": "Birmingham Approach",
+      "scope_char": "F",
+      "sector_id": "1F"
+    }
+  },
+  "default_scenario": "KBHM Runway 24",
+  "fixes": {
+    "_BHM_18": "N33.34.23.594,W86.44.49.909",
+    "_BHM_36": "N33.33.13.358,W86.44.49.918",
+    "_BHM_6": "N33.33.17.344,W86.46.17.782",
+    "_BHM_24": "N33.34.24.480,W86.44.20.840",
+    "KBHM": "N33.33.49.992,W86.45.08.294"
+  },
+  "inhibit_ca_volumes": [
+    {
+      "name": "BHM NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+          "-86.897208,33.532504",
+          "-86.641151,33.677967",
+          "-86.584176,33.611529",
+          "-86.839472,33.462847"
+      ]
+  },
+  {
+    "name": "BHM NO CA",
+    "type": "polygon",
+    "floor": 0,
+    "ceiling": 3500,
+    "vertices": [
+        "-86.695616,33.672883",
+        "-86.695274,33.453065",
+        "-86.79461,33.453311",
+        "-86.794879,33.672271"
+    ]
+}
+  ],
+  "magnetic_variation": 13.3,
+  "name": "KBHM",
+  "primary_airport": "KBHM",
+  "radar_sites": {
+    "BHM": {
+      "char": "B",
+      "position": "33.573611,-86.75611",
+      "elevation": 705,
+      "primary_range": 100,
+      "secondary_range": 150,
+      "silence_angle": 50.4,
+      "slope_angle": 0.3
+    }
+  },
+  "reporting_points": [
+    "KIOSK",
+    "DIODE",
+    "NULLS",
+    "SHIMS",
+    "NESTS",
+    "LYMPH",
+    "HERKO",
+    "WANDS"
+  ],
+  "scenarios": {
+    "KBHM Runway 24": {
+      "approach_airspace": [
+        "BHMAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KBHM",
+          "runway": "24"
+        }
+      ],
+      "arrivals": {
+        "SHIMS": {
+          "KBHM": 5
+        },
+        "NESTS24": {
+          "KBHM": 6
+        },
+        "LYMPH24": {
+          "KBHM": 7
+        },
+        "HERKO24": {
+          "KBHM": 4
+        },
+        "WANDS": {
+          "KBHM": 4
+        },
+        "KIOSK24": {
+          "KBHM": 9
+        },
+        "DIODE24": {
+          "KBHM": 10
+        },
+        "NULLS24": {
+          "KBHM": 6
+        }
+      },
+      "solo_controller": "BHM_S_APP",
+      "multi_controllers": {
+        "default" : {
+            "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK24", "WANDS", "HERKO24"], "departures": ["KBHM"]},
+            "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS24", "SHIMS", "NESTS24", "DIODE24", "LYMPH24"]}
+        }
+    },
+      "controllers": [
+        "BHM_TWR",
+        "ATL_CTR",
+        "MEM_CTR"
+      ],
+      "default_maps": [ "BHM MAIN" ],
+      "departure_airspace": [
+        "BHMAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBHM",
+          "rate" : 20,
+          "runway": "24"
+        }
+      ],
+      "wind": {
+        "direction": 240,
+        "speed": 5
+      }
+    },
+    "KBHM Runway 6": {
+      "approach_airspace": [
+        "BHMAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KBHM",
+          "runway": "6"
+        }
+      ],
+      "arrivals": {
+        "SHIMS": {
+          "KBHM": 5
+        },
+        "NESTS6": {
+          "KBHM": 6
+        },
+        "LYMPH6": {
+          "KBHM": 7
+        },
+        "HERKO6": {
+          "KBHM": 4
+        },
+        "WANDS": {
+          "KBHM": 4
+        },
+        "KIOSK6": {
+          "KBHM": 9
+        },
+        "DIODE6": {
+          "KBHM": 10
+        },
+        "NULLS6": {
+          "KBHM": 6
+        }
+      },
+      "solo_controller": "BHM_S_APP",
+      "multi_controllers": {
+        "default" : {
+            "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK6", "WANDS", "HERKO6"], "departures": ["KBHM"]},
+            "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS6", "SHIMS", "NESTS6", "DIODE6", "LYMPH6"]}
+        }
+    },
+      "controllers": [
+        "BHM_TWR",
+        "ATL_CTR",
+        "MEM_CTR"
+      ],
+      "default_maps": [ "BHM MAIN" ],
+      "departure_airspace": [
+        "BHMAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBHM",
+          "rate" : 20,
+          "runway": "6"
+        }
+      ],
+      "wind": {
+        "direction": 60,
+        "speed": 5
+      }
+    }
+  },
+    "scratchpads": {
+      "RHETT": "RHETT",
+      "MRICA": "MRICA",
+      "CHEHA": "CHEHA",
+      "GUMMP": "GUMMP",
+      "DAYVS": "DAYVS",
+      "JOEYE": "JOEYE",
+      "KELCC": "KELCC",
+      "BNA": "BNA",
+      "GQO": "GQO",
+      "GAD": "GAD",
+      "ATL": "ATL",
+      "LGC": "LGC",
+      "MGM": "MGM",
+      "MEI": "MEI",
+      "OKW": "OKW",
+      "IGB": "IGB",
+      "VUZ": "VUZ",
+      "MEM": "MEM"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "MAIN",
+      "name": "BHM MAIN"
+    },
+    {
+      "group": 0,
+      "label": "CLASS C",
+      "name": "BHM CLASS C"
+    },
+    {
+      "group": 1,
+      "label": "EMRGCY",
+      "name": "BHM EMERGENCY"
+    },
+    {
+      "group": 0,
+      "label": "RNV0624",
+      "name": "BHM RNAV RUNWAY 06/24 APPROACH"
+    },
+    {
+      "group": 0,
+      "label": "ANNEX",
+      "name": "BHM/TCL ANNEX"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "BHM MINIMUM VECTORING ALTITUDE"
+    },
+    {
+      "group": 1,
+      "label": "IR RTE",
+      "name": "BHM IFR MILITARY TRAINING ROUTES"
+    },
+    {
+      "group": 1,
+      "label": "EOVM",
+      "name": "BHM EMERGENCY OBSTRUCTION VIDEO MAP"
+    },
+    {
+      "group": 0,
+      "label": "INTXN",
+      "name": "BHM INTERSECTIONS"
+    },
+    {
+      "group": 0,
+      "label": "STADIUM",
+      "name": "BHM STADIUMS"
+    },
+    {
+      "group": 0,
+      "label": "RNV1836",
+      "name": "BHM RNAV RUNWAY 18/36 APPROACHES"
+    },
+    {
+      "group": 0,
+      "label": "VORS",
+      "name": "BHM VORS WITHIN 250NM"
+    },
+    {
+      "group": 0,
+      "label": "ARR FIX",
+      "name": "BHM ARRIVAL FIXES"
+    },
+    {
+      "group": 1,
+      "label": "DEP FIX",
+      "name": "BHM DEPARTURE FIX LABELS"
+    },
+    {
+      "group": 1,
+      "label": "ARR LBL",
+      "name": "BHM ARRIVAL FIX LABELS"
+    },
+    {
+      "group": 0,
+      "label": "RNP24",
+      "name": "BHM RNAV (RNP) Z RWY 24 APPROACH"
+    },
+    {
+      "group": 0,
+      "label": "2436BDY",
+      "name": "RWY 24/36 FINAL BOUNDARY"
+    },
+    {
+      "group": 0,
+      "label": "RNP6",
+      "name": "BHM RNAV (RNP) Z RWY 6 APPROACH"
+    },
+    {
+      "group": 0,
+      "label": "2418BDY",
+      "name": "RWY 24/18 FINAL BOUNDARY"
+    },
+    {
+      "group": 1,
+      "label": "INTXNAM",
+      "name": "BHM INTERSECTIONS WITH NAMES"
+    },
+    {
+      "group": 0,
+      "label": "SAT BDY",
+      "name": "BHM SAT BOUNDARY"
+    }
+  ],
+"video_map_file": "videomaps/ZTL-videomaps.json.zst"
+}

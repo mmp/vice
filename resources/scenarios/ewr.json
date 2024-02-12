@@ -5,7 +5,6 @@
       "name": "Newark",
       "approaches": {
         "I11": {
-          "full_name": "ILS Runway 11",
           "runway": "11",
           "type": "ILS",
           "waypoints": [
@@ -13,7 +12,6 @@
           ]
         },
         "I2L": {
-          "full_name": "ILS Runway 22 Left",
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
@@ -21,7 +19,6 @@
           ]
         },
         "I2R": {
-          "full_name": "ILS Runway 22 Right",
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
@@ -29,7 +26,6 @@
           ]
         },
         "I4L": {
-          "full_name": "ILS Runway 4 Left",
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
@@ -37,7 +33,6 @@
           ]
         },
         "I4R": {
-          "full_name": "ILS Runway 4 Right",
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
@@ -599,7 +594,8 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
+              "icao": "GJS"
+
             }
           ],
           "altitude": 8000,
@@ -1094,7 +1090,6 @@
       "name": "Teterboro",
       "approaches": {
         "I06": {
-          "full_name": "ILS Runway 6",
           "runway": "6",
           "type": "ILS",
           "waypoints": [
@@ -1102,7 +1097,6 @@
           ]
         },
         "I19": {
-          "full_name": "ILS Runway 19",
           "runway": "19",
           "type": "ILS",
           "waypoints": [
@@ -1110,7 +1104,6 @@
           ]
         },
         "R24": {
-          "full_name": "RNAV Runway 24",
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
@@ -1186,7 +1179,7 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "sid": "RUUDY6",
-            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/a1500+/h280"
+            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/h280"
           }
         }
       },
@@ -2285,8 +2278,7 @@
         "star": "FLOSI4",
         "speed_restriction": null,
         "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
-        "expect_approach": "I4R",
-        "scratchpad": "I4R"
+        "expect_approach": "I4R"
       }
     ],
     "PHL": [
@@ -2470,8 +2462,8 @@
         "star": "PHLBO4",
         "speed_restriction": null,
         "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
-        "expect_approach": "I2L",
-        "scratchpad": "I2L"
+        "expect_approach": "I2L"
+        
       }
     ],
     "WRI": [

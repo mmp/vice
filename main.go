@@ -228,7 +228,7 @@ func main() {
 
 		uiInit(renderer, platform, eventStream)
 
-		globalConfig.Activate(world, eventStream)
+		globalConfig.Activate(world, renderer, eventStream)
 
 		if world == nil {
 			uiShowConnectDialog(false)

@@ -4,7 +4,6 @@
   "KDCA": {
     "approaches": {
       "ILS": {
-        "full_name": "ILS Runway 1",
         "runway": "1",
         "type": "ILS",
         "waypoints": [
@@ -12,7 +11,6 @@
         ]
       },
       "R1": {
-        "full_name": "RNAV Runway 1",
         "runway": "1",
         "type": "RNAV",
         "waypoints": [
@@ -29,7 +27,6 @@
         ]
       },
       "R15": {
-        "full_name": "RNAV Runway 15",
         "runway": "15",
         "type": "RNAV",
         "waypoints": [
@@ -37,7 +34,6 @@
         ]
       },
       "R19": {
-        "full_name": "RNAV Runway 19",
         "runway": "19",
         "type": "RNAV",
         "waypoints": [
@@ -53,7 +49,6 @@
         ]
       },
       "R33": {
-        "full_name": "RNAV Runway 33",
         "runway": "33",
         "type": "RNAV",
         "waypoints": [
@@ -107,7 +102,7 @@
       "SCOOB": {
         "cleared_altitude": 5000,
         "sid": "AMEEE1",
-        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000-"
+        "waypoints": "_DCA_1 _DCA_19 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000+ COLIN"
       },
       "MAULS": {
         "cleared_altitude": 5000,
@@ -581,11 +576,18 @@
   "approaches": {
     "I3L":
      {
-      "full_name": "ILS Runway 33L",
       "runway": "33L",
       "type": "ILS",
       "waypoints":[
-       "JANNS/a4000 BWI/a14"
+       "JANNS/a4000/if SPLAT/a2400 GRAFE/a1500/faf HAXAK/a600 N039.09.52.410,W076.39.43.950/a14"
+      ]
+     },
+    "I5R":
+     {
+      "runway": "15R",
+      "type": "ILS",
+      "waypoints":[
+       "BMORE/if/a2500 KEVVN/a2100/faf TATTO/a1080 N039.11.05.606,W076.40.52.368/a14"
       ]
      }
   },
@@ -1494,6 +1496,12 @@
     "scope_char": "A",
     "sector_id": "1A"
   },
+  "BWI_TWR": {
+    "frequency": 119400,
+    "full_name": "Baltimore Tower",
+    "scope_char": "T",
+    "sector_id": "3T"
+  },
   "DCA_TWR": {
     "frequency": 119100,
     "full_name": "Washington Tower",
@@ -1677,6 +1685,10 @@
          {
           "airport": "KDCA",
           "runway": "33"
+         },
+         {
+          "airport": "KBWI",
+          "runway": "33L"
          }
       ],
       "arrivals": {
@@ -1746,6 +1758,10 @@
          {
           "airport": "KDCA",
           "runway": "15"
+         },
+         {
+          "airport": "KBWI",
+          "runway": "15R"
          }
       ],
       "arrivals": {

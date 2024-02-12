@@ -83,6 +83,7 @@ type STARSPane struct {
 	// backwards compatibility, since this used to be a
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
+	LockDisplay         bool
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -169,29 +170,9 @@ type QuickLookPosition struct {
 func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, error) {
 	var positions []QuickLookPosition
 
-	ctrl, ok := w.Controllers[w.Callsign]
-	if !ok {
-		lg.Errorf("%s: couldn't get *Controller for us?", w.Callsign)
-		return nil, s, ErrSTARSIllegalPosition
-	}
-	num := string(ctrl.SectorId[0])
-
-	idx := 0
-
-	tryAddController := func(id string) bool {
-		ctrl := w.GetController(id)
-		if ctrl != nil {
-			plus := idx < len(s) && s[idx] == '+'
-			if plus {
-				idx++
-			}
-			positions = append(positions, QuickLookPosition{
-				Callsign: ctrl.Callsign,
-				Id:       id,
-				Plus:     plus,
-			})
-		}
-		return ctrl != nil
+	subset := ""
+	if ctrl, ok := w.Controllers[w.Callsign]; ok { // this will fail if we're an observer
+		subset = string(ctrl.SectorId[0])
 	}
 
 	// per 6-94, this is "fun"
@@ -200,38 +181,24 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 	// - if a single character id is entered, then we prepend the number for
 	//   the current controller's sector id. in that case a space is required
 	//   before the next one, if any
-	id := ""
-	for idx < len(s) {
-		// Start work on a new controller id
-		id = string(s[idx])
-		idx++
-		if id == " " {
-			// Allow multiple spaces between ids
-			continue
+	ids := strings.Fields(s)
+	for i, id := range ids {
+		plus := len(id) > 1 && id[len(id)-1] == '+'
+		id = strings.TrimRight(id, "+")
+
+		ctrl := w.GetController(id)
+		if ctrl == nil && len(id) == 1 && subset != "" {
+			id = subset + id
+			ctrl = w.GetController(id)
 		}
-
-		// Just a single character id (maybe with a plus), so prepend
-		// our id number and see if it works.
-		if tryAddController(num + id) {
-			// Must have a space next (or be done)
-			if idx < len(s) && s[idx] != ' ' {
-				return positions, s[idx:], ErrSTARSIllegalParam
-			}
+		if ctrl == nil {
+			return positions, strings.Join(ids[i:], " "), ErrSTARSIllegalPosition
 		} else {
-			// Multi-character position specification
-			for idx < len(s) {
-				// Loop precondition: we have a partial but invalid specification.
-				id += string(s[idx])
-				idx++
-
-				if tryAddController(id) {
-					id = ""
-					break
-				}
-			}
-			if id != "" {
-				return positions, id, ErrSTARSIllegalPosition
-			}
+			positions = append(positions, QuickLookPosition{
+				Callsign: ctrl.Callsign,
+				Id:       id,
+				Plus:     plus,
+			})
 		}
 	}
 
@@ -349,6 +316,13 @@ type STARSAircraftState struct {
 	IdentEnd                time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
+
+	// This is a little messy: we maintain maps from callsign->sector id
+	// for pointouts that track the global state of them. Here we track
+	// just inbound pointouts to the current controller so that the first
+	// click acks a point out but leaves it yellow and a second clears it
+	// entirely.
+	PointedOut bool
 }
 
 type GhostState int
@@ -449,7 +423,7 @@ type STARSPreferenceSet struct {
 
 	RadarTrackHistory int
 
-	WeatherIntensity [6]bool
+	DisplayWeatherLevel [6]bool
 
 	// If empty, then then MULTI or FUSED mode, depending on
 	// FusedRadarMode.  The custom JSON name is so we don't get errors
@@ -721,6 +695,10 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.Brightness.Weather = 30
 	ps.Brightness.WxContrast = 30
 
+	for i := range ps.DisplayWeatherLevel {
+		ps.DisplayWeatherLevel[i] = true
+	}
+
 	ps.CharSize.DCB = 1
 	ps.CharSize.Datablocks = 1
 	ps.CharSize.Lists = 1
@@ -912,7 +890,7 @@ func NewSTARSPane(w *World) *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
+func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
@@ -952,7 +930,7 @@ func (sp *STARSPane) Activate(w *World, eventStream *EventStream) {
 
 	ps := sp.CurrentPreferenceSet
 	if ps.Brightness.Weather != 0 {
-		sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
+		sp.weatherRadar.Activate(ps.Center, r)
 	}
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
@@ -1050,6 +1028,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 
 func (sp *STARSPane) DrawUI() {
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
+	imgui.Checkbox("Lock display", &sp.LockDisplay)
 	imgui.Checkbox("Use CRT effect", &sp.SimulateCRT)
 }
 
@@ -1118,6 +1097,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
 				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
+					sp.Aircraft[event.Callsign].PointedOut = true
 				}
 			}
 
@@ -1150,6 +1130,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				if state, ok := sp.Aircraft[event.Callsign]; !ok {
 					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
 				} else {
+					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				}
@@ -1196,6 +1177,17 @@ func (sp *STARSPane) Upgrade(from, to int) {
 		for i := range sp.PreferenceSets {
 			if sp.PreferenceSets[i].Brightness.DCB == 0 {
 				sp.PreferenceSets[i].Brightness.DCB = 60
+			}
+		}
+	}
+	if from < 17 {
+		// Added DisplayWeatherLevel
+		for i := range sp.CurrentPreferenceSet.DisplayWeatherLevel {
+			sp.CurrentPreferenceSet.DisplayWeatherLevel[i] = true
+		}
+		for i := range sp.PreferenceSets {
+			for j := range sp.PreferenceSets[i].DisplayWeatherLevel {
+				sp.PreferenceSets[i].DisplayWeatherLevel[j] = true
 			}
 		}
 	}
@@ -1247,8 +1239,10 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 
-	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
-	sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
+	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
+	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
+	sp.weatherRadar.Draw(ctx, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
+		transforms, cb)
 
 	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
 	DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
@@ -2377,8 +2371,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				callsign := lookupCallsign(f[0])
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
-					sp.setScratchpad(ctx, callsign, "", isSecondary)
-					status.clear = true
+					if err := sp.setScratchpad(ctx, callsign, "", isSecondary); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 				}
 				return
 			} else if len(f) == 2 {
@@ -2392,7 +2389,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
 				} else {
-					sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary)
+					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary); err != nil {
+						status.err = err
+					}
 				}
 				status.clear = true
 				return
@@ -2597,7 +2596,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	return
 }
 
-func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) {
+func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
+	if len(contents) > 4 {
+		return ErrSTARSIllegalScratchpad
+	}
+
 	if isSecondary {
 		ctx.world.SetSecondaryScratchpad(callsign, contents, nil,
 			func(err error) {
@@ -2609,6 +2612,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 				sp.previewAreaOutput = GetSTARSError(err).Error()
 			})
 	}
+	return nil
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
@@ -2778,6 +2782,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
+				} else if state.PointedOut {
+					state.PointedOut = false
+					status.clear = true
+					return
 				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, ac.Callsign)
@@ -2811,12 +2819,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case 1:
 				if cmd == "." {
-					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "", false)
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				} else if cmd == "+" {
-					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "", true)
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				} else if cmd == "U" {
 					status.clear = true
@@ -2899,27 +2913,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-			case 4:
-				if cmd[0] == '+' {
-					if alt, err := strconv.Atoi(cmd[1:]); err == nil {
-						sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
-						status.clear = true
-					} else {
-						sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true)
-						status.clear = true
-					}
-					return
-				} else {
-					// HACK: disable this for training command mode...
-					/*
-						status.clear = true
-						status.err = amendFlightPlan(ac.Callsign, func(fp *FlightPlan) {
-							fp.AircraftType = strings.TrimRight(cmd, "*")
-						})
-						return
-					*/
-				}
-
 			case 5:
 				switch cmd[:2] {
 				case "++":
@@ -2933,6 +2926,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				}
+			}
+
+			if len(cmd) >= 2 && cmd[0] == '+' {
+				if alt, err := strconv.Atoi(cmd[1:]); err == nil {
+					sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
+					status.clear = true
+				} else {
+					if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
+				}
+				return
 			}
 
 			if cmd == ".ROUTE" {
@@ -3118,8 +3125,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
-					status.clear = true
-					sp.setScratchpad(ctx, ac.Callsign, "", isSecondary)
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				} else {
 					// Is it an altitude or a scratchpad update?
@@ -3127,8 +3137,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						state.pilotAltitude = alt * 100
 						status.clear = true
 					} else {
-						status.clear = true
-						sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary)
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary); err != nil {
+							status.err = err
+						} else {
+							status.clear = true
+						}
 					}
 					return
 				}
@@ -3406,9 +3419,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				}
 			}
 		}
-		for i := range ps.WeatherIntensity {
-			STARSDisabledButton("WX"+strconv.Itoa(i), STARSButtonHalfHorizontal, buttonScale)
-
+		for i := range ps.DisplayWeatherLevel {
+			STARSToggleButton("WX"+strconv.Itoa(i), &ps.DisplayWeatherLevel[i], STARSButtonHalfHorizontal, buttonScale)
 		}
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
@@ -3445,8 +3457,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 		site := sp.radarSiteId(ctx.world)
-		if STARSSelectButton("SITE\n"+site, STARSButtonFull, buttonScale) {
-			sp.activeDCBMenu = DCBMenuSite
+		if len(ctx.world.RadarSites) == 0 {
+			STARSDisabledButton("SITE\n"+site, STARSButtonFull, buttonScale)
+		} else {
+			if STARSSelectButton("SITE\n"+site, STARSButtonFull, buttonScale) {
+				sp.activeDCBMenu = DCBMenuSite
+			}
 		}
 		if STARSSelectButton("SSA\nFILTER", STARSButtonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = DCBMenuSSAFilter
@@ -3560,7 +3576,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSBrightnessSpinner(ctx, "WX ", &ps.Brightness.Weather, 5, true, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "WXC ", &ps.Brightness.WxContrast, 5, false, STARSButtonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
-			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
+			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
 		} else {
 			// Don't fetch weather maps if they're not going to be displayed.
 			sp.weatherRadar.Deactivate()
@@ -3590,6 +3606,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
+				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumSTARSPreferenceSets; i++ {
@@ -3961,11 +3978,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 					return false
 				} else {
 					a, b := ctx.world.GetAirport(airports[i]), ctx.world.GetAirport(airports[j])
-					if a.TowerListIndex != 0 && b.TowerListIndex == 0 {
-						return true
-					} else if b.TowerListIndex != 0 && a.TowerListIndex == 0 {
-						return false
-					}
+					ai, bi := a.TowerListIndex, b.TowerListIndex
+					return Select(ai != 0, ai, 1000) < Select(bi != 0, bi, 1000)
 				}
 				return airports[i] < airports[j]
 			})
@@ -4173,38 +4187,56 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		drawList(text, ps.CRDAStatusList.Position)
 	}
 
+	// Figure out airport<-->tower list assignments. Sort the airports
+	// according to their TowerListIndex, putting zero (i.e., unassigned)
+	// indices at the end. Break ties alphabetically by airport name. The
+	// first three then are assigned to the corresponding tower list.
+	towerListAirports := SortedMapKeys(ctx.world.ArrivalAirports)
+	sort.Slice(towerListAirports, func(a, b int) bool {
+		ai := ctx.world.ArrivalAirports[towerListAirports[a]].TowerListIndex
+		if ai == 0 {
+			ai = 1000
+		}
+		bi := ctx.world.ArrivalAirports[towerListAirports[b]].TowerListIndex
+		if bi == 0 {
+			bi = 1000
+		}
+		if ai == bi {
+			return a < b
+		}
+		return ai < bi
+	})
+
 	for i, tl := range ps.TowerLists {
-		if !tl.Visible {
+		if !tl.Visible || i >= len(towerListAirports) {
 			continue
 		}
 
-		for name, ap := range ctx.world.AllAirports() {
-			if ap.TowerListIndex == i+1 {
-				text := stripK(name) + " TOWER\n"
-				m := make(map[float32]string)
-				for _, ac := range aircraft {
-					if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == name {
-						dist := nmdistance2ll(ap.Location, sp.Aircraft[ac.Callsign].TrackPosition())
-						actype := ac.FlightPlan.TypeWithoutSuffix()
-						actype = strings.TrimPrefix(actype, "H/")
-						actype = strings.TrimPrefix(actype, "S/")
-						// We'll punt on the chance that two aircraft have the
-						// exact same distance to the airport...
-						m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
-					}
-				}
-
-				k := SortedMapKeys(m)
-				if len(k) > tl.Lines {
-					k = k[:tl.Lines]
-				}
-
-				for _, key := range k {
-					text += m[key] + "\n"
-				}
-				drawList(text, tl.Position)
+		ap := towerListAirports[i]
+		loc := ctx.world.ArrivalAirports[ap].Location
+		text := stripK(ap) + " TOWER\n"
+		m := make(map[float32]string)
+		for _, ac := range aircraft {
+			if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap {
+				dist := nmdistance2ll(loc, sp.Aircraft[ac.Callsign].TrackPosition())
+				actype := ac.FlightPlan.TypeWithoutSuffix()
+				actype = strings.TrimPrefix(actype, "H/")
+				actype = strings.TrimPrefix(actype, "S/")
+				// We'll punt on the chance that two aircraft have the
+				// exact same distance to the airport...
+				m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
 			}
 		}
+
+		k := SortedMapKeys(m)
+		if len(k) > tl.Lines {
+			k = k[:tl.Lines]
+		}
+
+		for _, key := range k {
+			text += m[key] + "\n"
+		}
+		drawList(text, tl.Position)
 	}
 
 	if ps.SignOnList.Visible {
@@ -4298,7 +4330,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -4307,18 +4339,21 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = PartialDatablock
 	}
 
-	if ac.TrackingController == ctx.world.Callsign || ac.ControllingController == ctx.world.Callsign {
+	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
 	}
 
-	if ac.HandoffTrackController == ctx.world.Callsign {
+	if ac.HandoffTrackController == w.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
 
 	// Point outs are FDB until acked.
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+		dt = FullDatablock
+	}
+	if state.PointedOut {
 		dt = FullDatablock
 	}
 
@@ -4346,22 +4381,12 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	defer ReturnColoredTrianglesDrawBuilder(trid)
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
-	ps := sp.CurrentPreferenceSet
-
 	now := ctx.world.CurrentTime()
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
 
 		if state.LostTrack(now) {
 			continue
-		}
-
-		brightness := ps.Brightness.Positions
-
-		dt := sp.datablockType(ctx, ac)
-
-		if dt == PartialDatablock || dt == LimitedDatablock {
-			brightness = ps.Brightness.LimitedDatablocks
 		}
 
 		trackId := ""
@@ -4378,8 +4403,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(state, heading, ctx, transforms, brightness, STARSTrackBlockColor,
-			trackId, &pd, &pd2, ld, trid, td)
+		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, &pd, &pd2, ld, trid, td)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -4508,12 +4532,14 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, ctx *PaneContext,
-	transforms ScopeTransformations, brightness STARSBrightness, trackColor RGB, trackId string,
+func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
+	transforms ScopeTransformations, trackId string,
 	pd *PointsDrawBuilder, pd2 *PointsDrawBuilder, ld *ColoredLinesDrawBuilder,
 	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
+
+	primaryTargetBrightness := ps.Brightness.PrimarySymbols
 
 	pos := state.TrackPosition()
 	pw := transforms.WindowFromLatLongP(pos)
@@ -4541,7 +4567,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
 		if primary {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -4557,7 +4583,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			line[i] = add2f(rot(scale2f(line[i], scale)), pw)
 			line[i] = transforms.LatLongFromWindowP(line[i])
 		}
-		ld.AddLine(line[0], line[1], brightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+		ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
 
 	case RadarModeMulti:
 		primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
@@ -4571,7 +4597,7 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 			box[i] = transforms.LatLongFromWindowP(box[i])
 		}
 
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
 		if primary {
 			// Draw a filled box
 			trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -4582,14 +4608,19 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 		}
 
 	case RadarModeFused:
-		color := brightness.ScaleRGB(STARSTrackBlockColor)
+		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
 		pd2.AddPoint(pw, 12, color) // TODO: base point size on font size?
 	}
 
 	// Draw main track symbol letter
+	trackIdBrightness := ps.Brightness.Positions
+	dt := sp.datablockType(ctx.world, ac)
+	if dt == PartialDatablock || dt == LimitedDatablock {
+		trackIdBrightness = ps.Brightness.LimitedDatablocks
+	}
 	if trackId != "" {
 		font := sp.systemFont[ps.CharSize.PositionSymbols]
-		td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: brightness.RGB(), DropShadow: true})
+		td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.RGB(), DropShadow: true})
 	} else {
 		// TODO: draw box if in range of squawks we have selected
 
@@ -4603,8 +4634,8 @@ func (sp *STARSPane) drawRadarTrack(state *STARSAircraftState, heading float32, 
 
 		px := float32(3) * scale
 		// diagonals
-		diagPx := px * 0.707107                                     /* 1/sqrt(2) */
-		trackColor := brightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+		diagPx := px * 0.707107                                            /* 1/sqrt(2) */
+		trackColor := trackIdBrightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
 		ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
 		ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
 		// horizontal line
@@ -4691,9 +4722,14 @@ func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir Cardina
 	return drawOffset
 }
 
-func (sp *STARSPane) OutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
+func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
 	// Only report on ones that are tracked by us
 	if ac.TrackingController != ctx.world.Callsign {
+		return
+	}
+
+	if ac.OnApproach() {
+		// No warnings once they're flying the approach
 		return
 	}
 
@@ -4796,7 +4832,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
 	}
-	if alts, outside := sp.OutsideAirspace(ctx, ac); outside {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
@@ -4810,7 +4846,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		return
 	}
 
-	ty := sp.datablockType(ctx, ac)
+	ty := sp.datablockType(ctx.world, ac)
 
 	switch ty {
 	case LimitedDatablock:
@@ -4890,7 +4926,7 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		// TODO: draw triangle after callsign if conflict alerts inhibited
 		// TODO: space then asterisk after callsign if MSAW inhibited
 
-		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
 			cs += " PO"
 		}
 		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
@@ -4971,9 +5007,10 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 }
 
 func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
-	// TODO: when do we use Brightness.LimitedDatablocks?
 	ps := sp.CurrentPreferenceSet
-	br := ps.Brightness.FullDatablocks
+	dt := sp.datablockType(w, ac)
+	br := Select(dt == PartialDatablock || dt == LimitedDatablock,
+		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
 	state := sp.Aircraft[ac.Callsign]
 
 	if ac.Callsign == sp.dwellAircraft {
@@ -4983,24 +5020,23 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 	// Handle cases where it should flash
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
+		_, pointOut := sp.InboundPointOuts[ac.Callsign]
 		if state.Ident() || // ident
 			ac.HandoffTrackController == w.Callsign || // handing off to us
 			// we handed it off, it was accepted, but we haven't yet acknowledged
-			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) {
+			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
+			pointOut {
 			br /= 3
 		}
 	}
 
-	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
-		// yellow for pointed out by someone else
+	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
+		// yellow for pointed out by someone else or uncleared after acknowledged.
 		return br.ScaleRGB(STARSInboundPointOutColor)
+	} else if state.IsSelected {
+		return br.ScaleRGB(STARSSelectedAircraftColor)
 	} else if ac.TrackingController == w.Callsign {
-		// white if we are tracking, unless it's selected
-		if state.IsSelected {
-			return br.ScaleRGB(STARSSelectedAircraftColor)
-		} else {
-			return br.ScaleRGB(STARSTrackedAircraftColor)
-		}
+		return br.ScaleRGB(STARSTrackedAircraftColor)
 	} else if ac.HandoffTrackController == w.Callsign {
 		// flashing white if it's being handed off to us.
 		return br.ScaleRGB(STARSTrackedAircraftColor)
@@ -5370,7 +5406,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 
 	mouse := ctx.mouse
 	ps := &sp.CurrentPreferenceSet
-	if activeSpinner == nil {
+	if activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
 		if mouse.Dragging[MouseButtonSecondary] {
 			delta := mouse.DragDelta
@@ -5409,6 +5445,15 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+		}
+
+		if ctx.keyboard.IsPressed(KeyControl) {
+			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+				if state := sp.Aircraft[ac.Callsign]; state != nil {
+					state.IsSelected = !state.IsSelected
+					return
+				}
+			}
 		}
 
 		// If a scope click handler has been registered, give it the click
@@ -5939,6 +5984,11 @@ const (
 )
 
 func (sp *STARSPane) radarMode(w *World) int {
+	if len(w.RadarSites) == 0 {
+		// Straight-up fused mode if none are specified.
+		return RadarModeFused
+	}
+
 	ps := sp.CurrentPreferenceSet
 	if _, ok := w.RadarSites[ps.RadarSiteSelected]; ps.RadarSiteSelected != "" && ok {
 		return RadarModeSingle
@@ -5984,25 +6034,37 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 			continue
 		}
 
-		for id, site := range w.RadarSites {
-			if single && ps.RadarSiteSelected != id {
-				continue
-			}
+		visible := false
 
-			if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
-				aircraft = append(aircraft, ac)
-
-				// Is this the first we've seen it?
-				if state.FirstRadarTrack.IsZero() {
-					state.FirstRadarTrack = now
-
-					if sp.AutoTrackDepartures && ac.TrackingController == "" &&
-						w.DepartureController(ac) == w.Callsign {
-						w.InitiateTrack(callsign, nil, nil) // ignore error...
-					}
+		if sp.radarMode(w) == RadarModeFused {
+			// visible unless if it's almost on the ground
+			alt := float32(state.TrackAltitude())
+			visible = (ac.IsDeparture() && alt > ac.DepartureAirportElevation()+100) ||
+				(!ac.IsDeparture() && alt > ac.ArrivalAirportElevation()+100)
+		} else {
+			// Otherwise see if any of the radars can see it
+			for id, site := range w.RadarSites {
+				if single && ps.RadarSiteSelected != id {
+					continue
 				}
 
-				break
+				if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
+					visible = true
+				}
+			}
+		}
+
+		if visible {
+			aircraft = append(aircraft, ac)
+
+			// Is this the first we've seen it?
+			if state.FirstRadarTrack.IsZero() {
+				state.FirstRadarTrack = now
+
+				if sp.AutoTrackDepartures && ac.TrackingController == "" &&
+					w.DepartureController(ac) == w.Callsign {
+					w.InitiateTrack(callsign, nil, nil) // ignore error...
+				}
 			}
 		}
 	}

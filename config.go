@@ -25,7 +25,9 @@ import (
 // 13: update departure handling for multi-controllers (and rename some members)
 // 14: Aircraft ArrivalHandoffController -> WaypointHandoffController
 // 15: audio engine rewrite
-const CurrentConfigVersion = 15
+// 16: cleared/assigned alt for departures, minor nav changes
+// 17: weather intensity default bool
+const CurrentConfigVersion = 17
 
 type GlobalConfig struct {
 	Version               int
@@ -186,7 +188,7 @@ func LoadOrMakeDefaultConfig() {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
+func (gc *GlobalConfig) Activate(w *World, r Renderer, eventStream *EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
@@ -247,5 +249,5 @@ func (gc *GlobalConfig) Activate(w *World, eventStream *EventStream) {
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, eventStream) })
+	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, r, eventStream) })
 }
