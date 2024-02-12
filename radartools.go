@@ -14,9 +14,9 @@ import (
 	"math"
 	"net/http"
 	"net/url"
+	"sort"
 	"time"
 
-	"github.com/nfnt/resize"
 	"golang.org/x/exp/slog"
 )
 
@@ -25,60 +25,91 @@ import (
 
 // WeatherRadar provides functionality for fetching radar images to display
 // in radar scopes. Only locations in the USA are currently supported, as
-// the only current data source is the US NOAA. (TODO: find more sources
-// and add support for them!)
+// the only current data source is the US NOAA...
 type WeatherRadar struct {
 	active bool
 
-	// Images are fetched in a separate goroutine; updated radar center
-	// locations are sent from the main thread via reqChan and downloaded
-	// radar images are returned via imageChan.
-	reqChan   chan Point2LL
-	imageChan chan ImageAndBounds
+	// Radar images are fetched and processed in a separate goroutine;
+	// updated radar center locations are sent from the main thread via
+	// reqChan and command buffers to draw each of the 6 weather levels are
+	// returned by cbChan.
+	reqChan chan Point2LL
+	cbChan  chan [NumWxLevels]CommandBuffer
 
-	// radarBounds records the lat-long bounding box of the most recently
-	// received radar image, which has texId as its GPU texture it.
-	radarBounds Extent2D
-	texId       uint32
+	// Texture id for each wx level's image.
+	texId [NumWxLevels]uint32
+	wxCb  [NumWxLevels]CommandBuffer
 }
+
+const NumWxLevels = 6
+
+// Block size in pixels of the quads in the converted radar image used for
+// display.
+const WxBlockRes = 4
 
 // Latitude-longitude extent of the fetched image; the requests are +/-
 // this much from the current center.
-const weatherLatLongExtent = 5
-
-type ImageAndBounds struct {
-	img    image.Image
-	bounds Extent2D
-}
+const WxLatLongExtent = 2.5
 
 // Activate must be called for the WeatherRadar to start fetching weather
 // radar images; it is called with an initial center position in
 // latitude-longitude coordinates.
-func (w *WeatherRadar) Activate(center Point2LL) {
+func (w *WeatherRadar) Activate(center Point2LL, r Renderer) {
 	if w.active {
+		w.reqChan <- center
 		return
 	}
 	w.active = true
 
 	w.reqChan = make(chan Point2LL, 1000) // lots of buffering
 	w.reqChan <- center
-	w.imageChan = make(chan ImageAndBounds) // unbuffered channel
+	w.cbChan = make(chan [NumWxLevels]CommandBuffer, 8)
 
-	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
-	// every 100s to stay current.
-	go fetchWeather(w.reqChan, w.imageChan, 100*time.Second)
+	if w.texId[0] == 0 {
+		// Create a small texture for each weather level
+		img := image.NewRGBA(image.Rectangle{Max: image.Point{X: WxBlockRes, Y: WxBlockRes}})
+
+		for i := 0; i < NumWxLevels; i++ {
+			// RGBs from STARS Manual, B-5
+			baseColor := Select(i < 3, color.RGBA{R: 37, G: 77, B: 77, A: 255},
+				color.RGBA{R: 100, G: 100, B: 51, A: 255})
+			stipple := i % 3
+
+			for y := 0; y < WxBlockRes; y++ {
+				for x := 0; x < WxBlockRes; x++ {
+					c := baseColor
+					switch stipple {
+					case 1: // light stipple: every other line, every 4th pixel
+						if y&1 == 1 {
+							offset := y & 2 // alternating 0 and 2
+							if x%4 == offset {
+								c = color.RGBA{R: 250, G: 250, B: 250, A: 255}
+							}
+						}
+
+					case 2: // dense stipple: every other line, every other pixel
+						if x&1 == 1 && y&1 == 1 {
+							c = color.RGBA{R: 250, G: 250, B: 250, A: 255}
+						}
+					}
+					img.Set(x, y, c)
+				}
+			}
+
+			// Nearest filter for magnification
+			w.texId[i] = r.CreateTextureFromImage(img, true)
+		}
+	}
+
+	go fetchWeather(w.reqChan, w.cbChan)
 }
 
-// Deactivate causes the WeatherRadar to stop fetching weather updates;
-// it is important that this method be called when a radar scope is
-// deactivated so that we don't continue to consume bandwidth fetching
-// unneeded weather images.
+// Deactivate causes the WeatherRadar to stop fetching weather updates.
 func (w *WeatherRadar) Deactivate() {
-	if !w.active {
-		return
+	if w.active {
+		close(w.reqChan)
+		w.active = false
 	}
-	close(w.reqChan)
-	w.active = false
 }
 
 // UpdateCenter provides a new center point for the radar image, causing a
@@ -94,13 +125,161 @@ func (w *WeatherRadar) UpdateCenter(center Point2LL) {
 	}
 }
 
+// A single scanline of this color map, converted to RGB bytes:
+// https://opengeo.ncep.noaa.gov/geoserver/styles/reflectivity.png
+//
+//go:embed resources/radar_reflectivity.rgb
+var radarReflectivity []byte
+
+type kdNode struct {
+	rgb  [3]byte
+	refl float32
+	c    [2]*kdNode
+}
+
+var radarReflectivityKdTree *kdNode
+
+func init() {
+	type rgbRefl struct {
+		rgb  [3]byte
+		refl float32
+	}
+
+	var r []rgbRefl
+
+	for i := 0; i < len(radarReflectivity); i += 3 {
+		r = append(r, rgbRefl{
+			rgb:  [3]byte{radarReflectivity[i], radarReflectivity[i+1], radarReflectivity[i+2]},
+			refl: float32(i) / float32(len(radarReflectivity)),
+		})
+	}
+
+	// Build a kd-tree over the RGB points in the color map.
+	var buildTree func(r []rgbRefl, depth int) *kdNode
+	buildTree = func(r []rgbRefl, depth int) *kdNode {
+		if len(r) == 0 {
+			return nil
+		}
+		if len(r) == 1 {
+			return &kdNode{rgb: r[0].rgb, refl: r[0].refl}
+		}
+
+		// The split dimension cycles through RGB with tree depth.
+		dim := depth % 3
+
+		// Sort the points in the current dimension
+		sort.Slice(r, func(i, j int) bool {
+			return r[i].rgb[dim] < r[j].rgb[dim]
+		})
+
+		// Split in the middle and recurse
+		mid := len(r) / 2
+		return &kdNode{
+			rgb:  r[mid].rgb,
+			refl: r[mid].refl,
+			c:    [2]*kdNode{buildTree(r[:mid], depth+1), buildTree(r[mid+1:], depth+1)},
+		}
+	}
+
+	radarReflectivityKdTree = buildTree(r, 0)
+}
+
+func invertRadarReflectivity(rgb [3]byte) float32 {
+	// All white -> 0
+	if rgb[0] == 255 && rgb[1] == 255 && rgb[2] == 255 {
+		return 0
+	}
+
+	// Returns the distnace between the specified RGB and the RGB passed to
+	// invertRadarReflectivity.
+	dist := func(o []byte) float32 {
+		d2 := sqr(int(o[0])-int(rgb[0])) + sqr(int(o[1])-int(rgb[1])) + sqr(int(o[2])-int(rgb[2]))
+		return sqrt(float32(d2))
+	}
+
+	var searchTree func(n *kdNode, closestNode *kdNode, closestDist float32, depth int) (*kdNode, float32)
+	searchTree = func(n *kdNode, closestNode *kdNode, closestDist float32, depth int) (*kdNode, float32) {
+		if n == nil {
+			return closestNode, closestDist
+		}
+
+		// Check the current node
+		d := dist(n.rgb[:])
+		if d < closestDist {
+			closestDist = d
+			closestNode = n
+		}
+
+		// Split dimension as in buildTree above
+		dim := depth % 3
+
+		// Initially traverse the tree based on which side of the split
+		// plane the lookup point is on.
+		var first, second *kdNode
+		if rgb[dim] < n.rgb[dim] {
+			first, second = n.c[0], n.c[1]
+		} else {
+			first, second = n.c[1], n.c[0]
+		}
+
+		closestNode, closestDist = searchTree(first, closestNode, closestDist, depth+1)
+
+		// If the distance to the split plane is less than the distance to
+		// the closest point found so far, we need to check the other side
+		// of the split.
+		if float32(abs(int(rgb[dim])-int(n.rgb[dim]))) < closestDist {
+			closestNode, closestDist = searchTree(second, closestNode, closestDist, depth+1)
+		}
+
+		return closestNode, closestDist
+	}
+
+	if true {
+		n, _ := searchTree(radarReflectivityKdTree, nil, 100000, 0)
+		return n.refl
+	} else {
+		// Debugging: verify the point found is indeed the closest by
+		// exhaustively checking the distance to all of points in the color
+		// map.
+		n, nd := searchTree(radarReflectivityKdTree, nil, 100000, 0)
+
+		closest, closestDist := -1, float32(100000)
+		for i := 0; i < len(radarReflectivity); i += 3 {
+			d := dist(radarReflectivity[i : i+3])
+			if d < closestDist {
+				closestDist = d
+				closest = i
+			}
+		}
+
+		// Note that multiple points in the color map may have the same
+		// distance to the lookup point; thus we only check the distance
+		// here and not the reflectivity (which should be very close but is
+		// not necessarily the same.)
+		if nd != closestDist {
+			fmt.Printf("WAH %d,%d,%d -> %d,%d,%d: dist %f vs %d,%d,%d: dist %f\n",
+				int(rgb[0]), int(rgb[1]), int(rgb[2]),
+				int(n.rgb[0]), int(n.rgb[1]), int(n.rgb[2]), nd,
+				int(radarReflectivity[closest]), int(radarReflectivity[closest+1]), int(radarReflectivity[closest+2]),
+				closestDist)
+		}
+
+		return n.refl
+	}
+}
+
 // fetchWeather runs asynchronously in a goroutine, receiving requests from
 // reqChan, fetching corresponding radar images from the NOAA, and sending
-// the results back on imageChan.  New images are also automatically
+// the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay time.Duration) {
+func fetchWeather(reqChan chan Point2LL, cbChan chan [NumWxLevels]CommandBuffer) {
+	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
+	// every 100s to stay current.
+	fetchRate := 100 * time.Second
+
 	// center stores the current center position of the radar image
 	var center Point2LL
+	var lastFetch time.Time
 	for {
 		var ok, timedOut bool
 		select {
@@ -113,18 +292,25 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 				}
 			} else {
 				// The channel is closed; wrap up.
-				close(imageChan)
+				close(cbChan)
 				return
 			}
-		case <-time.After(delay):
+		case <-time.After(fetchRate):
 			// Periodically make a new request even if the center hasn't
 			// changed.
 			timedOut = true
 		}
 
+		// Even if the center has moved, don't fetch more than every 15
+		// seconds.
+		if !timedOut && !lastFetch.IsZero() && time.Since(lastFetch) < 15*time.Second {
+			continue
+		}
+		lastFetch = time.Now()
+
 		// Lat-long bounds of the region we're going to request weater for.
-		rb := Extent2D{p0: sub2ll(center, Point2LL{weatherLatLongExtent, weatherLatLongExtent}),
-			p1: add2ll(center, Point2LL{weatherLatLongExtent, weatherLatLongExtent})}
+		rb := Extent2D{p0: sub2ll(center, Point2LL{WxLatLongExtent, WxLatLongExtent}),
+			p1: add2ll(center, Point2LL{WxLatLongExtent, WxLatLongExtent})}
 
 		// The weather radar image comes via a WMS GetMap request from the NOAA.
 		//
@@ -137,15 +323,15 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 		params.Add("SERVICE", "WMS")
 		params.Add("REQUEST", "GetMap")
 		params.Add("FORMAT", "image/png")
-		params.Add("WIDTH", "1024")
-		params.Add("HEIGHT", "1024")
+		params.Add("WIDTH", "2048")
+		params.Add("HEIGHT", "2048")
 		params.Add("LAYERS", "conus_bref_qcd")
 		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.p0[0], rb.p0[1], rb.p1[0], rb.p1[1]))
 
 		url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
-		lg.Info("Fetching weather", slog.String("url", url))
 
 		// Request the image
+		lg.Info("Fetching weather", slog.String("url", url))
 		resp, err := http.Get(url)
 		if err != nil {
 			lg.Infof("Weather error: %s", err)
@@ -159,97 +345,122 @@ func fetchWeather(reqChan chan Point2LL, imageChan chan ImageAndBounds, delay ti
 			continue
 		}
 
-		// Convert the Image returned by png.Decode to an RGBA image so
-		// that we can patch up some of the pixel values.
-		rgba := image.NewRGBA(img.Bounds())
-		draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
-		ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
-		for y := 0; y < ny; y++ {
-			for x := 0; x < nx; x++ {
-				r, g, b, a := img.At(x, y).RGBA()
-				// Convert all-white to black and an alpha channel of zero, so
-				// that where there's no weather, nothing is drawn.
-				if r == 0xffff && g == 0xffff && b == 0xffff && a == 0xffff {
-					rgba.Set(x, y, color.RGBA{})
-				}
-			}
-		}
+		// Send the command buffers back to the main thread.
+		cbChan <- makeWeatherCommandBuffers(img, rb)
 
-		// The image we get back is relatively low resolution (and doesn't
-		// even have 1024x1024 pixels of actual detail); use a decent
-		// filter to upsample it, which looks better than relying on GPU
-		// bilinear interpolation...
-		resized := resize.Resize(2048, 2048, rgba, resize.MitchellNetravali)
-
-		// Send it back to the main thread.
-		imageChan <- ImageAndBounds{img: resized, bounds: rb}
 		lg.Info("finish weather fetch")
-
-		if !timedOut {
-			time.Sleep(15 * time.Second)
-		}
 	}
 }
 
-// Draw draws the current weather radar image, if available. (If none is yet
-// available, it returns rather than stalling waiting for it). The provided
-// CommandBuffer should be set up with viewing matrices such that vertex
-// coordinates are provided in latitude-longitude.
-func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, transforms ScopeTransformations, cb *CommandBuffer) {
-	// Try to receive an updated image from the fetchWather goroutine, if
-	// one is available.
-	select {
-	case ib, ok := <-w.imageChan:
-		if ok {
-			w.radarBounds = ib.bounds
-			if w.texId == 0 {
-				w.texId = ctx.renderer.CreateTextureFromImage(ib.img, false)
-			} else {
-				ctx.renderer.UpdateTextureFromImage(w.texId, ib.img, false)
+func makeWeatherCommandBuffers(img image.Image, rb Extent2D) [NumWxLevels]CommandBuffer {
+	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
+	rgba := image.NewRGBA(img.Bounds())
+	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
+
+	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
+	if ny%WxBlockRes != 0 || nx%WxBlockRes != 0 {
+		lg.Errorf("invalid weather image resolution; must be multiple of WxBlockRes")
+		return [NumWxLevels]CommandBuffer{}
+	}
+	nby, nbx := ny/WxBlockRes, nx/WxBlockRes
+
+	// First determine the weather level for each WxBlockRes*WxBlockRes
+	// block of the image.
+	levels := make([]int, nbx*nby)
+	for y := 0; y < nby; y++ {
+		for x := 0; x < nbx; x++ {
+			avg := float32(0)
+			for dy := 0; dy < WxBlockRes; dy++ {
+				for dx := 0; dx < WxBlockRes; dx++ {
+					px := rgba.RGBAAt(x*WxBlockRes+dx, y*WxBlockRes+dy)
+					avg += invertRadarReflectivity([3]byte{px.R, px.G, px.B})
+				}
+			}
+
+			// levels from [0,6].
+			level := int(min(avg*7/(WxBlockRes*WxBlockRes), 6))
+			levels[x+y*nbx] = level
+		}
+	}
+
+	// Now generate the command buffer for each weather level.  We don't
+	// draw anything for level==0, so the indexing into cb is off by 1
+	// below.
+	var cb [NumWxLevels]CommandBuffer
+	tb := GetTexturedTrianglesDrawBuilder()
+	defer ReturnTexturedTrianglesDrawBuilder(tb)
+
+	for level := 1; level <= NumWxLevels; level++ {
+		tb.Reset()
+
+		// We'd like to be somewhat efficient and not necessarily draw an
+		// individual quad for each block, but on the other hand don't want
+		// to make this too complicated... So we'll consider block
+		// scanlines and quads across neighbors that are the same level
+		// when we find them.
+		for y := 0; y < nby; y++ {
+			for x := 0; x < nbx; x++ {
+				// Skip ahead until we reach a block at the level we currently care about.
+				if levels[x+y*nbx] != level {
+					continue
+				}
+
+				// Now see how long a span of repeats we have.
+				// Each quad spans [0,0]->[1,1] in texture coordinates; the
+				// texture is created with repeat wrap mode, so we just pad
+				// out the u coordinate into u1 accordingly.
+				x0 := x
+				u1 := float32(0)
+				for x < nbx && levels[x+y*nbx] == level {
+					x++
+					u1++
+				}
+
+				// Corner points
+				p0 := rb.Lerp([2]float32{float32(x0) / float32(nbx), float32(y) / float32(nby)})
+				p1 := rb.Lerp([2]float32{float32(x) / float32(nbx), float32(y+1) / float32(nby)})
+
+				// Draw a single quad
+				tb.AddQuad([2]float32{p0[0], p0[1]}, [2]float32{p1[0], p0[1]},
+					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]},
+					[2]float32{0, 1}, [2]float32{u1, 1}, [2]float32{u1, 0}, [2]float32{0, 0})
 			}
 		}
+
+		// Subtract one so that level==1 is drawn by cb[0], etc, since we
+		// don't draw anything for level==0.
+		tb.GenerateCommands(&cb[level-1])
+	}
+
+	return cb
+}
+
+// Draw draws the current weather radar image, if available. (If none is yet
+// available, it returns rather than stalling waiting for it).
+func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float32,
+	active [NumWxLevels]bool, transforms ScopeTransformations, cb *CommandBuffer) {
+	select {
+	case w.wxCb = <-w.cbChan:
+		// got updated command buffers, yaay.  Note that we always go ahead
+		// and drain the cbChan, even if if the WeatherRadar is inactive.
+
 	default:
 		// no message
 	}
 
-	// Note that we always go ahead and drain the imageChan, even if if the
-	// WeatherRadar is inactive. This way the chan is ready for the
-	// future...
-	if !w.active {
-		return
+	if w.active {
+		transforms.LoadLatLongViewingMatrices(cb)
+		cb.SetRGBA(RGBA{1, 1, 1, intensity})
+		cb.Blend()
+		for i, wcb := range w.wxCb {
+			if active[i] {
+				cb.EnableTexture(w.texId[i])
+				cb.Call(wcb)
+				cb.DisableTexture()
+			}
+		}
+		cb.DisableBlend()
 	}
-
-	if w.texId == 0 {
-		// Presumably we haven't yet gotten a response to the initial
-		// request...
-		return
-	}
-
-	// We have a valid radar image, so draw it.
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.SetRGBA(RGBA{1, 1, 1, intensity})
-	cb.Blend()
-	cb.EnableTexture(w.texId)
-
-	// Draw the lat-long space quad corresponding to the region that we
-	// have weather for; just stuff the vertex and index buffers into the
-	// CommandBuffer directly rather than bothering with a
-	// TrianglesDrawable or the like.
-	rb := w.radarBounds
-	p := [4][2]float32{[2]float32{rb.p0[0], rb.p0[1]}, [2]float32{rb.p1[0], rb.p0[1]},
-		[2]float32{rb.p1[0], rb.p1[1]}, [2]float32{rb.p0[0], rb.p1[1]}}
-	pidx := cb.Float2Buffer(p[:])
-	cb.VertexArray(pidx, 2, 2*4)
-
-	uv := [4][2]float32{[2]float32{0, 1}, [2]float32{1, 1}, [2]float32{1, 0}, [2]float32{0, 0}}
-	uvidx := cb.Float2Buffer(uv[:])
-	cb.TexCoordArray(uvidx, 2, 2*4)
-
-	indidx := cb.IntBuffer([]int32{0, 1, 2, 3})
-	cb.DrawQuads(indidx, 4)
-
-	cb.DisableTexture()
-	cb.DisableBlend()
 }
 
 ///////////////////////////////////////////////////////////////////////////

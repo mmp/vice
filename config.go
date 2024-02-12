@@ -26,7 +26,8 @@ import (
 // 14: Aircraft ArrivalHandoffController -> WaypointHandoffController
 // 15: audio engine rewrite
 // 16: cleared/assigned alt for departures, minor nav changes
-const CurrentConfigVersion = 16
+// 17: weather intensity default bool
+const CurrentConfigVersion = 17
 
 type GlobalConfig struct {
 	Version               int

@@ -421,7 +421,7 @@ type STARSPreferenceSet struct {
 
 	RadarTrackHistory int
 
-	WeatherIntensity [6]bool
+	DisplayWeatherLevel [6]bool
 
 	// If empty, then then MULTI or FUSED mode, depending on
 	// FusedRadarMode.  The custom JSON name is so we don't get errors
@@ -693,6 +693,10 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.Brightness.Weather = 30
 	ps.Brightness.WxContrast = 30
 
+	for i := range ps.DisplayWeatherLevel {
+		ps.DisplayWeatherLevel[i] = true
+	}
+
 	ps.CharSize.DCB = 1
 	ps.CharSize.Datablocks = 1
 	ps.CharSize.Lists = 1
@@ -924,7 +928,7 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 
 	ps := sp.CurrentPreferenceSet
 	if ps.Brightness.Weather != 0 {
-		sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
+		sp.weatherRadar.Activate(ps.Center, r)
 	}
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
@@ -1173,6 +1177,17 @@ func (sp *STARSPane) Upgrade(from, to int) {
 			}
 		}
 	}
+	if from < 17 {
+		// Added DisplayWeatherLevel
+		for i := range sp.CurrentPreferenceSet.DisplayWeatherLevel {
+			sp.CurrentPreferenceSet.DisplayWeatherLevel[i] = true
+		}
+		for i := range sp.PreferenceSets {
+			for j := range sp.PreferenceSets[i].DisplayWeatherLevel {
+				sp.PreferenceSets[i].DisplayWeatherLevel[j] = true
+			}
+		}
+	}
 }
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -1217,8 +1232,10 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 	}
 
-	weatherIntensity := float32(ps.Brightness.Weather) / float32(100)
-	sp.weatherRadar.Draw(ctx, weatherIntensity, transforms, cb)
+	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
+	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
+	sp.weatherRadar.Draw(ctx, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
+		transforms, cb)
 
 	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
 	cb.LineWidth(1)
@@ -3393,9 +3410,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				}
 			}
 		}
-		for i := range ps.WeatherIntensity {
-			STARSDisabledButton("WX"+strconv.Itoa(i), STARSButtonHalfHorizontal, buttonScale)
-
+		for i := range ps.DisplayWeatherLevel {
+			STARSToggleButton("WX"+strconv.Itoa(i), &ps.DisplayWeatherLevel[i], STARSButtonHalfHorizontal, buttonScale)
 		}
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
@@ -3551,7 +3567,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSBrightnessSpinner(ctx, "WX ", &ps.Brightness.Weather, 5, true, STARSButtonHalfVertical, buttonScale)
 		STARSBrightnessSpinner(ctx, "WXC ", &ps.Brightness.WxContrast, 5, false, STARSButtonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
-			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
+			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
 		} else {
 			// Don't fetch weather maps if they're not going to be displayed.
 			sp.weatherRadar.Deactivate()
@@ -3581,7 +3597,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
-				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center)
+				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumSTARSPreferenceSets; i++ {
