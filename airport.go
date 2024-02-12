@@ -328,6 +328,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.ErrorString("destination airport \"%s\" unknown", dep.Destination)
 		}
 
+		if len(dep.Airlines) == 0 {
+			e.ErrorString("No \"airlines\" specified for departure")
+		}
+
 		// Make sure that all runways have a route to the exit
 		for rwy, routes := range ap.DepartureRoutes {
 			e.Push("Runway " + rwy)

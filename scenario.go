@@ -586,6 +586,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		}
 	}
 
+	if len(sg.Airports) == 0 {
+		e.ErrorString("No \"airports\" specified in scenario group")
+	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
 		ap.PostDeserialize(name, sg, e)
@@ -697,6 +700,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 			for arrivalAirport, airlines := range ar.Airlines {
 				e.Push("Arrival airport " + arrivalAirport)
+				if len(airlines) == 0 {
+					e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
+				}
 				for _, al := range airlines {
 					database.CheckAirline(al.ICAO, al.Fleet, e)
 					if _, ok := database.Airports[al.Airport]; !ok {
@@ -750,10 +756,17 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	}
 
 	// Do after airports!
+	if len(sg.Scenarios) == 0 {
+		e.ErrorString("No \"scenarios\" specified")
+	}
 	for name, s := range sg.Scenarios {
 		e.Push("Scenario " + name)
 		s.PostDeserialize(sg, e)
 		e.Pop()
+	}
+
+	if len(sg.STARSMaps) == 0 {
+		e.ErrorString("No \"stars_maps\" specified")
 	}
 
 	initializeSimConfigurations(sg, simConfigurations, *server)
