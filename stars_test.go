@@ -33,21 +33,21 @@ func TestParseQLControllers(t *testing.T) {
 			},
 		},
 		// no space
-		testcase{s: "N564P",
+		testcase{s: "N56 4P",
 			exp: []QuickLookPosition{
 				QuickLookPosition{Id: "N56", Callsign: "NY_CTR", Plus: false},
 				QuickLookPosition{Id: "4P", Callsign: "EWR_APP", Plus: false},
 			},
 		},
 		// plus
-		testcase{s: "2W+N56",
+		testcase{s: "2W+ N56",
 			exp: []QuickLookPosition{
 				QuickLookPosition{Id: "2W", Callsign: "JFK_TWR", Plus: true},
 				QuickLookPosition{Id: "N56", Callsign: "NY_CTR", Plus: false},
 			},
 		},
 		// implicit prefix of our #id
-		testcase{s: "N56+W 4P",
+		testcase{s: "N56+ W 4P",
 			exp: []QuickLookPosition{
 				QuickLookPosition{Id: "N56", Callsign: "NY_CTR", Plus: true},
 				QuickLookPosition{Id: "2W", Callsign: "JFK_TWR", Plus: false},
@@ -55,7 +55,7 @@ func TestParseQLControllers(t *testing.T) {
 			},
 		},
 		// implicit prefix of our #id + plus
-		testcase{s: "N56+W+ 4P",
+		testcase{s: "N56+ W+ 4P",
 			exp: []QuickLookPosition{
 				QuickLookPosition{Id: "N56", Callsign: "NY_CTR", Plus: true},
 				QuickLookPosition{Id: "2W", Callsign: "JFK_TWR", Plus: true},

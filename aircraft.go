@@ -460,8 +460,8 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 		ac.FlightPlan.Altitude = dep.Altitude
 	}
 
-	alt := float32(min(exitRoute.ClearedAltitude, ac.FlightPlan.Altitude))
-	nav := MakeDepartureNav(w, *ac.FlightPlan, perf, alt, wp)
+	nav := MakeDepartureNav(w, *ac.FlightPlan, perf, exitRoute.AssignedAltitude,
+		exitRoute.ClearedAltitude, wp)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -546,4 +546,16 @@ func (ac *Aircraft) IAS() float32 {
 
 func (ac *Aircraft) GS() float32 {
 	return ac.Nav.FlightState.GS
+}
+
+func (ac *Aircraft) OnApproach() bool {
+	return ac.Nav.OnApproach()
+}
+
+func (ac *Aircraft) DepartureAirportElevation() float32 {
+	return ac.Nav.FlightState.DepartureAirportElevation
+}
+
+func (ac *Aircraft) ArrivalAirportElevation() float32 {
+	return ac.Nav.FlightState.ArrivalAirportElevation
 }

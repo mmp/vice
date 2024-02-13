@@ -32,6 +32,7 @@ const (
 	AudioModeCIntruder
 	AudioInboundHandoff
 	AudioCommandError
+	AudioHandoffAccepted
 	AudioNumTypes
 )
 
@@ -43,6 +44,7 @@ func (ae AudioType) String() string {
 		"Mode C Intruder",
 		"Inbound Handoff",
 		"Command Error",
+		"Handoff Accepted",
 	}[ae]
 }
 
@@ -174,6 +176,7 @@ func (a *AudioEngine) Activate() error {
 	a.effects[AudioModeCIntruder] = a.loadMP3("intruder.mp3")
 	a.effects[AudioInboundHandoff] = a.loadMP3("263124__pan14__sine-octaves-up-beep.mp3")
 	a.effects[AudioCommandError] = a.loadMP3("426888__thisusernameis__beep4.mp3")
+	a.effects[AudioHandoffAccepted] = a.loadMP3("321104__nsstudios__blip2.mp3")
 
 	lg.Info("Finished initializing audio")
 	return nil
@@ -185,7 +188,7 @@ func (a *AudioEngine) DrawUI() {
 
 	uiStartDisable(!a.AudioEnabled)
 	// Not all of the ones available in the engine are used, so only offer these up:
-	for _, i := range []AudioType{AudioConflictAlert, AudioInboundHandoff, AudioCommandError} {
+	for _, i := range []AudioType{AudioConflictAlert, AudioInboundHandoff, AudioHandoffAccepted, AudioCommandError} {
 		if imgui.Checkbox(AudioType(i).String(), &a.EffectEnabled[i]) && a.EffectEnabled[i] {
 			n := Select(i == AudioConflictAlert, 5, 1)
 			for j := 0; j < n; j++ {

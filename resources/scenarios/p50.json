@@ -56,12 +56,12 @@
             "departure_routes": {
                 "7L": {
                     "JNIPR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_7L _PHX_25R SPRKY BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_7L _PHX_25R SPRKY BROAK FTHLS JNIPR JSSUA"
                     },
@@ -71,54 +71,54 @@
                         "waypoints": "_PHX_7L _PHX_25R SPRKY ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "FYRBD1",
                         "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
                     },
                     "MESSI": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "MRBIL1",
                         "waypoints": "_PHX_7L _PHX_25R SPRKY GOALY/a9000- POCCK MRBIL YOTES"
                     },
                     "RIMMM": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "QUAKY1",
                         "waypoints": "_PHX_7L _PHX_25R SPRKY GOALY/a9000- QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "STRRM1",
                         "waypoints": "_PHX_7L _PHX_25R SPRKY/a2600+/s220 ANZEL DDUKE BNYRD STRRM"
                     },
                     "RRSTA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "ZEPER2",
                         "waypoints": "_PHX_7L _PHX_25R SPRKY GOALY/a9000- JOLAR ZEPER MAYSA"
                     }
                 },
                 "8": {
                     "JNIPR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_8 _PHX_26 SPRKY BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_8 _PHX_26 SPRKY BROAK FTHLS JNIPR JSSUA"
                     },
@@ -128,54 +128,54 @@
                         "waypoints": "_PHX_8 _PHX_26 SPRKY ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "FYRBD1",
                         "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
                     },
                     "MESSI": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "MRBIL1",
                         "waypoints": "_PHX_8 _PHX_26 SPRKY GOALY/a9000- POCCK MRBIL YOTES"
                     },
                     "RIMMM": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "QUAKY1",
                         "waypoints": "_PHX_8 _PHX_26 SPRKY GOALY/a9000- QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "STRRM1",
                         "waypoints": "_PHX_8 _PHX_26 SPRKY/a2600+/s220 ANZEL DDUKE BNYRD STRRM"
                     },
                     "RRSTA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "ZEPER2",
                         "waypoints": "_PHX_8 _PHX_26 SPRKY GOALY/a9000- JOLAR ZEPER MAYSA"
                     }
                 },
                 "25R": {
                     "JNIPR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
                     },
@@ -185,54 +185,54 @@
                         "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL RIICH ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "FYRBD1",
                         "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL FYRBD JUDTH"
                     },
                     "MESSI": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_25R _PHX_7L WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_25R _PHX_7L WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_25R _PHX_7L WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "MRBIL1",
                         "waypoints": "_PHX_25R _PHX_7L JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
                     },
                     "RIMMM": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "QUAKY1",
                         "waypoints": "_PHX_25R _PHX_7L JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "STRRM1",
                         "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL BNYRD STRRM"
                     },
                     "RRSTA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "ZEPER2",
                         "waypoints": "_PHX_25R _PHX_7L JINOL OSGUE ZIDOG/a5000+/s230 FANON ZEPER MAYSA"
                     }
                 },
                 "26": {
                     "JNIPR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "BROAK1",
                         "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
                     },
@@ -242,42 +242,42 @@
                         "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL RIICH ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "FYRBD1",
                         "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL FYRBD JUDTH"
                     },
                     "MESSI": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_26 _PHX_8 WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_26 _PHX_8 WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "KEENS2",
                         "waypoints": "_PHX_26 _PHX_8 WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "MRBIL1",
                         "waypoints": "_PHX_26 _PHX_8 WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
                     },
                     "RIMMM": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "QUAKY1",
                         "waypoints": "_PHX_26 _PHX_8 WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "STRRM1",
                         "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL BNYRD STRRM"
                     },
                     "RRSTA": {
-                        "cleared_altitude": 4000,
+                        "cleared_altitude": 8000,
                         "sid": "ZEPER2",
                         "waypoints": "_PHX_26 _PHX_8 WIVLA HIRVU ZIDOG/a5000+/s230 FANON ZEPER MAYSA"
                     }

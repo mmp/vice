@@ -120,14 +120,14 @@
       "departure_routes": {
         "16L": {
           "ARRIE,PANGL": {
-            "cleared_altitude": 7000,
+            "cleared_altitude": 10000,
             "sid": "BANGR9",
-            "waypoints": "_SEA_16L _SEA_34R CAVOB RENBE RICHR TOMRE BANGR"
+            "waypoints": "_SEA_16L _SEA_34R CAVOB RENBE/a3000+ RICHR TOMRE BANGR/a10000+"
           },
           "ERAVE,FEPOT,HISKU": {
-            "cleared_altitude": 7000,
+            "cleared_altitude": 10000,
             "sid": "HAROB6",
-            "waypoints": "_SEA_16L _SEA_34R CAVOB RENBE RICHR EMRLD HAROB"
+            "waypoints": "_SEA_16L _SEA_34R CAVOB RENBE/a3000+ RICHR EMRLD HAROB/a10000+"
           },
           "YYJ,HQM,CVO": {
             "cleared_altitude": 7000,
@@ -152,14 +152,14 @@
           },
           "34R": {
             "ARRIE,PANGL": {
-              "cleared_altitude": 7000,
+              "cleared_altitude": 10000,
               "sid": "BANGR9",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL ATOME BREMM BANGR"
+              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL/a3100+ ATOME BREMM BANGR/a10000+"
             },
             "ERAVE,FEPOT,HISKU": {
-              "cleared_altitude": 7000,
+              "cleared_altitude": 10000,
               "sid": "HAROB6",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL ATOME BREMM HAROB"
+              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL/a3100+ ATOME BREMM HAROB/a10000+"
             },
             "ISBRG": {
               "cleared_altitude": 9000,

@@ -25,7 +25,7 @@
           "type": "RNAV",
           "waypoints": [
             "HOBAM/iaf LAAZE/if/a2000+ ALABE/faf/a1400 _FRG_14/a50",
-            "CAMRN HEREK/iaf/a4000+ SEHDO/if/a2000+ WUPMA/a2000+/s180 N040.45.19.596,W073.33.27.971/a1400+ N040.46.28.220,W073.32.38.148/a1400+ N040.46.38.973,W073.31.02.567/a1400+ ALABE/faf/a1400 _FRG_14/a50"
+            "CAMRN HEREK/iaf/a4000+ SEHDO/if/a2000+ WUPMA/a2000+/s180/arc7.5 ALABE/faf/a1400 _FRG_14/a50"
           ]
         },
         "R19": {
@@ -1591,27 +1591,13 @@
             "cleared_altitude": 8000,
             "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
+            "waypoints": "_LGA_13 _LGA_31 N040.45.12.043,W073.50.27.447 N040.51.57.274,W073.43.29.609 N040.53.08.287,W073.50.06.546 N040.50.18.136,W073.53.33.500/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_13 _LGA_31 _LGA_31a _LGA_31b/ho JFK"
-          }
-        },
-        "22": {
-          "BETTE,HAPIE,SHIPP,WAVEY": {
-            "cleared_altitude": 8000,
-            "sid": "LGA7",
-            "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
-          },
-          "DIXIE,WHITE": {
-            "cleared_altitude": 6000,
-            "sid": "LGA7",
-            "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_22 _LGA_4 _LGA_4a _LGA_4b/ho JFK"
+            "waypoints": "_LGA_13 _LGA_31 N040.45.12.043,W073.50.27.447 N040.51.57.274,W073.43.29.609 N040.53.08.287,W073.50.06.546 N040.50.18.136,W073.53.33.500/ho JFK"
           }
         },
         "31": {
@@ -1619,13 +1605,13 @@
             "cleared_altitude": 8000,
             "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
+            "waypoints": "_LGA_31 _LGA_13 N040.53.57.492,W073.52.46.973 N040.53.24.711,W073.48.34.947/ho JFK" 
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_31 _LGA_13 _LGA_13a/ho JFK"
+            "waypoints": "_LGA_31 _LGA_13 N040.53.57.492,W073.52.46.973 N040.53.24.711,W073.48.34.947/ho JFK" 
           }
         },
         "4": {
@@ -1633,13 +1619,13 @@
             "cleared_altitude": 8000,
             "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
+            "waypoints": "_LGA_4 _LGA_22 N040.51.10.513,W073.48.41.484 N040.54.23.090,W073.52.06.571 N040.49.33.655,W073.53.25.673/ho JFK"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
-            "waypoints": "_LGA_4 _LGA_22 _LGA_22a/ho JFK"
+            "waypoints": "_LGA_4 _LGA_22 N040.51.10.513,W073.48.41.484 N040.54.23.090,W073.52.06.571 N040.49.33.655,W073.53.25.673/ho JFK"
           }
         }
       },
@@ -2357,7 +2343,7 @@
         "initial_speed": 300,
         "star": "LENDY8",
         "speed_restriction": 250,
-        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY/h135"
+        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY LGA/h135"
       },
       {
         "airlines": {
@@ -2455,7 +2441,7 @@
         "initial_speed": 300,
         "star": "IGN1",
         "speed_restriction": 250,
-        "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY/h135"
+        "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY LGA"
       }
     ],
     "DENNA3/LOVES2": [
@@ -3487,13 +3473,13 @@
           "airport": "KLGA",
           "category": "Water",
           "rate": 10,
-          "runway": "22"
+          "runway": "13"
         },
         {
           "airport": "KLGA",
           "category": "Southwest",
           "rate": 0,
-          "runway": "22"
+          "runway": "13"
         },
         {
           "airport": "KHVN",

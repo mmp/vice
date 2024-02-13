@@ -74,7 +74,7 @@
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                                       "cleared_altitude": 5000,
                                       "sid": "LGA7",
-                                      "waypoints": "_LGA_13 _LGA_31 _LGA_WHITESTONE2/h40/s210"
+                                      "waypoints": "_LGA_13 _LGA_31 _LGA_WHITESTONE/h40/s210/flyover"
                   }
               },
               "13.LGA-Coney.JFK-Belmont": {
@@ -381,6 +381,7 @@
                 {
                   "airlines": [
                     {
+                      "fleet": "short",
                       "icao": "ACA"
                     },
                     {
@@ -397,6 +398,7 @@
                       "icao": "EDV"
                     },
                     {
+                      "fleet": "short",
                       "icao": "ACA"
                     },
                     {
@@ -1706,17 +1708,17 @@
                     "ARD,DIXIE,RBV,WHITE": {
                       "cleared_altitude": 5000,
                       "sid": "SKORR5.RNGRR",
-                      "waypoints": "_JFK_31L _JFK_13R SKORR METSS RNGRR/h223"
+                      "waypoints": "_JFK_31L _JFK_13R SKORR METSS/a2500+ RNGRR/h223"
                     },
                     "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                       "cleared_altitude": 5000,
                       "sid": "SKORR5.YNKEE",
-                      "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
+                      "waypoints": "_JFK_31L _JFK_13R SKORR CESID/a2500+ YNKEE/h172"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
                       "sid": "DEEZZ5",
-                      "waypoints": "_JFK_31L _JFK_13R SKORR CESID YNKEE/h172"
+                      "waypoints": "_JFK_31L _JFK_13R SKORR CESID/a2500+ YNKEE/h172"
                     }
                   },
                   "4L": {
@@ -2878,7 +2880,7 @@
                           "initial_speed": 300,
                           "star": "LENDY8",
                           "speed_restriction": 250,
-                          "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY/h135"
+                          "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY LGA"
                         },
                         {
                           "airlines": {
@@ -2942,7 +2944,7 @@
                           "initial_speed": 300,
                           "star": "IGN1",
                           "speed_restriction": 250,
-                          "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY/h135"
+                          "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY LGA"
                         }
                       ],
                       "OWENZ": [

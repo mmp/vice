@@ -24,7 +24,7 @@
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "BIGGS/a6000 ZIDSO/a4000 HAMOC/a1900 SONIA/a1700 KUYER/a480 _JAX_14/a27"
+            "ORTAR/a2000/if SONIA/a1700/faf KUYER/a480 _JAX_14/a27"
           ]
         },
         "R14": {
@@ -603,6 +603,52 @@
         "waypoints": "GOTBE/ho LUNNI/a8000-12000/s250"
       }
     ],
+    "LUNNI1_FE": [
+      {
+        "airlines": {
+          "KJAX": [
+            {
+              "airport": "KPHL",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KPHL",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KJFK",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "JBU"
+            }
+          ]
+        },
+        "initial_altitude": 6000,
+        "expect_approach": "I8",
+        "initial_controller": "JAX_N_APP",
+        "initial_speed": 250,
+        "star": "LUNNI1",
+        "scratchpad": "I8",
+        "waypoints": "SAVAE/a6000-7000/ho PENSE/a4000/s210 RUMEE/h257"
+      }
+    ],
     "MARQO2": [
       {
         "airlines": {
@@ -660,6 +706,61 @@
           "32": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137"
         },
         "waypoints": "MARQO/ho COROE/a9000-12000/s250"
+      }
+    ],
+    "MARQO2_FE": [
+      {
+        "airlines": {
+          "KJAX": [
+            {
+              "airport": "KLAX",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KLAX",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KLAX",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDFW",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KDFW",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KDAL",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KHOU",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KIAH",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KIAH",
+              "icao": "SKW"
+            }
+          ]
+        },
+        "initial_altitude": 9000,
+        "expect_approach": "I8",
+        "initial_controller": "JAX_R_APP",
+        "initial_speed": 250,
+        "star": "MARQO2",
+        "scratchpad": "I8",
+        "waypoints": "COROE/a9000/s250 N030.28.36.167,W082.14.12.456/ho NATII/a5000-6000/s230 GUTTY/a3000/s210/h103"
       }
     ],
     "MONIA": [
@@ -748,6 +849,61 @@
         "waypoints": "FORMB/a10000-13000/ho OHDEA KIPLE/a7000-11000/s250"
       }
     ],
+    "OHDEA1_FE": [
+      {
+        "airlines": {
+          "KJAX": [
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KATL",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KBNA",
+              "icao": "AAY"
+            },
+            {
+              "airport": "KMEM",
+              "icao": "FDX"
+            },
+            {
+              "airport": "KORD",
+              "icao": "AAL",
+              "fleet": "short"
+            },
+            {
+              "airport": "KORD",
+              "icao": "UAL",
+              "fleet": "short"
+            },
+            {
+              "airport": "KMDW",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KSDF",
+              "icao": "UPS"
+            },
+            {
+              "airport": "KCVG",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "initial_altitude": 12000,
+        "expect_approach": "I14",
+        "initial_controller":"JAX_R_APP",
+        "initial_speed": 250,
+        "star": "OHDEA1",
+        "scratchpad": "I14",
+        "waypoints": "KIPLE/a9000/s250 N030.47.30.540,W082.02.59.983/ho MAHKA/a5000-6000/s230 ORTAR/a3000/s210/h145"
+      }
+    ],
     "QUBEN1": [
       {
         "airlines": {
@@ -777,6 +933,33 @@
           "32": "BETLE/a5000+/s230 GURDE/a3000/s210/h023"
         },
         "waypoints": "SHINR/a16000-19000/ho BASSS POGIE/a12000-14000 QUBEN/a9000-12000/s250 BETLE/a5000+/s230"
+      }
+    ],
+    "QUBEN1_FE": [
+      {
+        "airlines": {
+          "KJAX": [
+            {
+              "airport": "KMIA",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "NKS"
+            }
+          ]
+        },
+        "initial_altitude": 6000,
+        "expect_approach": "I8",
+        "initial_controller": "JAX_W_APP",
+        "initial_speed": 250,
+        "star": "QUBEN1",
+        "scratchpad": "I8",
+        "waypoints": "BETLE/a5000+/s230/ho PLANK WADOR/a3000/s210/h344"
       }
     ],
     "TEBOW1": [
@@ -812,6 +995,37 @@
           "32": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GURDE/a3000/s210/h023"
         },
         "waypoints": "HILIS/a17000+/s280 FABES/a12000-15000/ho TEBOW/a9000-12000/s250"
+      }
+    ],
+    "TEBOW1_FE": [
+      {
+        "airlines": {
+          "KJAX": [
+            {
+              "airport": "KTPA",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "FFT"
+            },
+            {
+              "airport": "KMIA",
+              "icao": "ENY"
+            }
+          ]
+        },
+        "initial_altitude": 5000,
+        "expect_approach": "I8",
+        "initial_controller": "JAX_W_APP",
+        "initial_speed": 250,
+        "star": "TEBOW1",
+        "scratchpad": "I8",
+        "waypoints": "JERZI/a5000/s230/ho FAROT/a3000/s210/h038"
       }
     ]
   },
@@ -1062,6 +1276,10 @@
         {
           "airport": "KJAX",
           "runway": "14"
+        },
+        {
+          "airport": "KFHB",
+          "runway": "4"
         }
       ],
       "arrivals": {
@@ -1247,6 +1465,52 @@
         "direction": 290,
         "gust": 10,
         "speed": 5
+      }
+    },
+    "Final East Ops": {
+      "arrival_runways": [
+        {
+          "airport": "KJAX",
+          "runway": "08"
+        },
+        {
+          "airport": "KJAX",
+          "runway": "14"
+        }
+      ],
+      "arrivals": {
+        "LUNNI1_FE": {
+          "KJAX": 15
+        },
+        "OHDEA1_FE": {
+          "KJAX": 20
+        },
+        "MARQO2_FE": {
+          "KJAX": 5
+        },
+        "QUBEN1_FE": {
+          "KJAX": 5
+        },
+        "TEBOW1_FE": {
+          "KJAX": 2
+        }
+      },
+      "solo_controller": "JAX_J_APP",
+      "controllers": [
+        "JAX_N_APP",
+        "JAX_W_APP",
+        "JAX_R_APP",
+        "JAX_S_APP",
+        "JAX_E_APP",
+        "JAX_V_APP",
+        "JAX_30_CTR",
+        "JAX_TWR"
+      ],
+      "default_maps": [ "EAST FLOW" ],
+      "wind": {
+        "direction": 90,
+        "gust": 12,
+        "speed": 8
       }
     }
   },
