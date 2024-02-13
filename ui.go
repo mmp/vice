@@ -162,6 +162,7 @@ var (
 		"STARS: more accurate simulation of STARS weather radar display",
 		"Added new syntax for issuing left/right turn in degrees: T10L, T20R, etc.",
 		"STARS: allow middle-click highlight of aircraft regardless of having their track",
+		"STARS: fixed bug with airport weather list flickering",
 	}
 )
 
