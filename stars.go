@@ -3960,7 +3960,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 		if filter.All || filter.AirportWeather {
 			var lines []string
-			airports, _ := FlattenMap(ctx.world.AllAirports())
+			airports := SortedMapKeys(ctx.world.AllAirports())
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
 				if airports[i] == ctx.world.PrimaryAirport {
