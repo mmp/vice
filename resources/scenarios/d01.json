@@ -136,7 +136,7 @@
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000 TURBN CHICN/a15000 VELAA/a17000 YOKES/a19000 LNGWD"
+            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ VELAA/a16000+ YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
@@ -151,57 +151,57 @@
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a9000 TURBN CHICN/a15000 FAARM/a17000 YAMMI/a19000"
+            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a9000 SHOBO/a11000 LUPTN/a15000 MRENE"
+            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_8 _DEN_26 TIGHT/a9000 HAAHN/a11000 GASSS/a15000 SNIPR"
+            "waypoints": "_DEN_8 _DEN_26 TIGHT/a10000- HAAHN/a12000- GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a9000 PIDLE APUUU/a15000 EPKEE/a16000 POIZN"
+            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a9000 KMBEL BHIGH MMESA/a15000"
+            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a9000 TURBN CHICN/a15000 KKIMM/a17000 BRYCC/a19000 HHOTH"
+            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ KKIMM/a16000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a9000 TWWIN FIGTR/a15000 PACMN/a17000 SHOJO/a19000 SABTH"
+            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ PACMN/a16000+ SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a9000 TWWIN FIGTR/a15000 SEGAH/a17000 BCORP/a18000 STAKR/a19000 AZARO"
+            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ SEGAH/a16000+ BCORP/a17000+ STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a9000 TWWIN FIGTR/a15000 WEPON/a17000 SOLAR/a18000 SMMUR"
+            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ WEPON/a16000+ SOLAR/a17000+ SMMUR"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a9000 TWWIN FIGTR/a15000 HANGR/a17000 SCAGS/a19000 FRNKE/a24000"
+            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ HANGR/a16000+ SCAGS/a18000+ FRNKE/a23000+"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a9000 TURBN CHICN/a15000 FAARM/a17000 RIKKK/a18000"
+            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
@@ -213,7 +213,7 @@
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_17L _DEN_35R GOROC BRKEM/a9000 WAKIR/a12000 TUULO/a15000 HLTON MTSUI/a18000 BAYLR/a19000 BOBBA"
+            "waypoints": "_DEN_17L _DEN_35R GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
@@ -223,12 +223,12 @@
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_17L _DEN_35R FOAMS/a9000 TAVRN/a13000 VONNN/a15000 TEEBO/a17000"
+            "waypoints": "_DEN_17L _DEN_35R FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_17L _DEN_35R FOAMS/a9000 IPALE/a13000 MOLSN/a15000 BULLT/a17000 COORZ"
+            "waypoints": "_DEN_17L _DEN_35R FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
@@ -238,22 +238,22 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a8000 KIDNG/a9000 KAYGG LUPTN/a15000"
+            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a8000 KIDNG/a9000 TWEDT GASSS/a15000 SNIPR"
+            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a8000 MLHOS/a9000 SMTHR/a11000 SMPSN APUUU/a15000 EPKEE/a16000 POIZN"
+            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ MLHOS/a10000- SMTHR/a11000 SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a8000 BGONE/a9000 OLDDD MMESA/a15000 FALUJ"
+            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -263,22 +263,22 @@
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a9000 JSMNN/a18000 SHOJO/a19000 SABTH"
+            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- JSMNN/a17000+ SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a9000 BCORP/a18000 STAKR/a19000 AZARO"
+            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a9000 SIGHT/a11000 SOLAR/a18000 SMMUR"
+            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a9000 CHOZN/a12000 FLYYR/a16000 SCAGS/a19000 FRNKE/a24000"
+            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- CHOZN/a12000 FLYYR/a16000 SCAGS/a18000+ FRNKE/a23000+"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
@@ -288,34 +288,34 @@
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_17L _DEN_35R MUGBE/a9000 RALFI/a13000 RAPDS/a15000 PCKNS/a18000 ZIMMR/a19000"  
+            "waypoints": "_DEN_17L _DEN_35R MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         },
         "25": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a9000 WAKIR/a12000 TUULO/a15000 HLTON MTSUI/a18000 BAYLR/a19000 BOBBA"
+            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a9000 WAZEE LODOE/a13000 RINKR/a15000 ELCEE/a17000 YOKES/a19000 LNGWD"
+            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ ELCEE/a16000+ YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_25 _DEN_7 FOAMS/a9000 TAVRN/a13000 VONNN/a15000 TEEBO/a17000"
+            "waypoints": "_DEN_25 _DEN_7 FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_25 _DEN_7 FOAMS/a9000 IPALE/a13000 MOLSN/a15000 BULLT/a17000 COORZ"
+            "waypoints": "_DEN_25 _DEN_7 FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a9000 WAZEE LODOE/a13000 RINKR/a15000 HERDR/a17000 TROTO YAMMI"
+            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ TROTO YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
@@ -340,89 +340,89 @@
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a9000 WAZEE LODOE/a13000 RINKR/a16000 TAGKO/a18000 BRYCC/a19000 HHOTH"
+            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ TAGKO/a16000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a9000 LENNN/a11000 TIKLR CIROS/a15000 ICECI/a19000 SHOJO/a21000 SABTH"
+            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ ICECI/a16000+ SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a9000 LENNN/a11000 TIKLR CIROS/a16000 WEPON/a18000 STAKR/a19000 AZARO"
+            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ WEPON/a16000 STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a9000 LENNN/a11000 TIKLR CIROS/a15000 RKYMT/a17000 SOLAR/a21000 SMMUR "
+            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ RKYMT/a16000+ SOLAR/a17000+ SMMUR "
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a9000 LENNN/a11000 TIKLR CIROS/a16000 RKYMT/a18000 SCAGS/a21000 FRNKE"
+            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a11000 TIKLR CIROS/a16000 RKYMT/a18000 SCAGS/a21000 FRNKE"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a9000 WAZEE LODOE/a13000 RINKR/a15000 HERDR/a17000 RIKKK/a18000"
+            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a13000 RINKR/a15000 HERDR/a17000 RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a9000 RALFI/a13000 RAPDS/a15000 PCKNS/a17000 ZIMMR/a19000"  
+            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"  
           }
         },
         "34L": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_34L _DEN_16R BRKEM/a9000 WAKIR/a12000 TUULO/a15000 HLTON MTSUI/a18000 BAYLR/a19000 BOBBA"
+            "waypoints": "_DEN_34L _DEN_16R BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a9000 YOKES/a19000 LNGWD"
+            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_34L _DEN_16R FOAMS/a9000 TAVRN/a13000 VONNN/a15000 TEEBO/a17000"
+            "waypoints": "_DEN_34L _DEN_16R FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_34L _DEN_16R FOAMS/a9000 IPALE/a13000 MOLSN/a15000 BULLT/a17000 COORZ"
+            "waypoints": "_DEN_34L _DEN_16R FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a9000 KAYOO/a10000 YAMMI/a19000"
+            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_34L _DEN_16R NUGGS HIDEF/a9000 SHOBO/a11000 LUPTN/a15000 MRENE"
+            "waypoints": "_DEN_34L _DEN_16R NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_34L _DEN_16R NUGGS HIDEF/a9000 BRSTO/a11000 GASSS/a15000 SNIPR"
+            "waypoints": "_DEN_34L _DEN_16R NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_34L _DEN_16R KIDNG/a9000 PIDLE APUUU/a15000 EPKEE/a16000 POIZN"
+            "waypoints": "_DEN_34L _DEN_16R KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_34L _DEN_16R KIDNG/a9000 KMBEL BHIGH MMESA/a15000"
+            "waypoints": "_DEN_34L _DEN_16R KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a9000 HAWKR CCLYD/a15000 BRYCC/a19000 HHOTH"
+            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
@@ -447,64 +447,64 @@
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a9000 HAWKR BNITA/a15000 RIKKK/a19000"
+            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_34L _DEN_16R MUGBE/a9000 RALFI/a13000 RAPDS/a15000 PCKNS/a17000 ZIMMR/a19000"  
+            "waypoints": "_DEN_34L _DEN_16R MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         },
         "34R": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_34R _DEN_16L BRKEM/a9000 WAKIR/a12000 TUULO/a15000 HLTON MTSUI/a18000 BAYLR/a19000 BOBBA"
+            "waypoints": "_DEN_34R _DEN_16L BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a9000 YOKES/a19000 LNGWD"
+            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_34R _DEN_16L FOAMS/a9000 TAVRN/a13000 VONNN/a15000 TEEBO/a17000"
+            "waypoints": "_DEN_34R _DEN_16L FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_34R _DEN_16L FOAMS/a9000 IPALE/a13000 MOLSN/a15000 BULLT/a17000 COORZ"
+            "waypoints": "_DEN_34R _DEN_16L FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a9000 KAYOO/a10000 YAMMI/a19000"
+            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_34R _DEN_16L NUGGS HIDEF/a9000 SHOBO/a11000 LUPTN/a15000 MRENE"
+            "waypoints": "_DEN_34R _DEN_16L NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_34R _DEN_16L NUGGS HIDEF/a9000 BRSTO/a11000 GASSS/a15000 SNIPR"
+            "waypoints": "_DEN_34R _DEN_16L NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_34R _DEN_16L KIDNG/a9000 PIDLE APUUU/a15000 EPKEE/a16000 POIZN"
+            "waypoints": "_DEN_34R _DEN_16L KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_34R _DEN_16L KIDNG/a9000 KMBEL BHIGH MMESA/a15000"
+            "waypoints": "_DEN_34R _DEN_16L KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a9000 HAWKR CCLYD/a15000 BRYCC/a19000 HHOTH"
+            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
@@ -529,19 +529,19 @@
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a9000 HAWKR BNITA/a15000 RIKKK/a19000"
+            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_34R _DEN_16L MUGBE/a9000 RALFI/a13000 RAPDS/a15000 PCKNS/a17000 ZIMMR/a19000"  
+            "waypoints": "_DEN_34R _DEN_16L MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         },
         "16L" : {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_16L _DEN_34R GOROC BRKEM/a9000 WAKIR/a12000 TUULO/a16000 HLTON MTSUI/a18000 BAYLR/a19000 BOBBA"
+            "waypoints": "_DEN_16L _DEN_34R GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a16000 HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
@@ -551,12 +551,12 @@
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_16L _DEN_34R FOAMS/a9000 TAVRN/a13000 VONNN/a15000 TEEBO/a17000"
+            "waypoints": "_DEN_16L _DEN_34R FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_16L _DEN_34R FOAMS/a9000 IPALE/a13000 MOLSN/a15000 BULLT/a17000 COORZ"
+            "waypoints": "_DEN_16L _DEN_34R FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
@@ -566,22 +566,22 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a8000 KIDNG/a9000 KAYGG LUPTN/a16000 MRENE"
+            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a8000 KIDNG/a9000 TWEDT GASSS/a16000 SNIPR"
+            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a8000 MLHOS/a9000 SMTHR/a11000 SMPSN APUUU/a15000 EPKEE/a16000 POIZN"
+            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ MLHOS/a10000- SMTHR/a12000- SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a8000 BGONE/a9000 OLDDD MMESA/a15000 FALUJ"
+            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -591,22 +591,22 @@
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a9000 SHOJO/a20000 SABTH"
+            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a9000 BCORP/a18000 STAKR/a19000 AZARO"
+            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a9000 SIGHT/a12000 SOLAR/a18000 SMMUR"
+            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a9000 CHOZN/a12000 FLYYR/a14000 CONRD/a19000 SCAGS/a21000 FRNKE/a23000"
+            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- CHOZN/a12000 FLYYR/a14000 CONRD/a19000 SCAGS/a21000 FRNKE/a23000"
           },
           "XXWNG": {
             "cleared_altitude": 23000,
@@ -616,7 +616,7 @@
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_16L _DEN_34R MUGBE/a9000 RALFI/a13000 RAPDS/a15000 PCKNS/a17000 ZIMMR/a19000"  
+            "waypoints": "_DEN_16L _DEN_34R MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         }
         },

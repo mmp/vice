@@ -7,76 +7,53 @@
                     "runway": "6L",
                     "type": "ILS",
                     "waypoints": [
-                        "KWENE/a6000 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
-                        "HICKR/a6000 CRTEZ/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
-                        "CRTEZ/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
-                        "GROHL/a6000 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
-                        "FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
-                        "DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773"
+                        "KWENE/a6000/s210/iaf DAYZD BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf _CLE_6L/a773",
+                        "HICKR/a5000/s210/iaf CRTEZ BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf _CLE_6L/a773",
+                        "GROHL/a6000/s210/iaf FUZED BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf _CLE_6L/a773"
                     ]
                 },
                 "I6R": {
                     "runway": "6R",
                     "type": "ILS",
                     "waypoints": [
-                        "RUHSH/a6000 RMONZ/a4000 DOORZ/a2900 POAST/a2500 DILYN/a2000 _CLE_6R/a777",
-                        "HICKR/a6000 DAUGS/a4000 DOORZ/a2900 POAST/a2500 DILYN/a2000 _CLE_6R/a777",
-                        "DAUGS/a4000 DOORZ/a2900 POAST/a2500 DILYN/a2000 _CLE_6R/a777",
-                        "GROHL/a6000 SHEEP/a4000 DOORZ/a2900 POAST/a2500 DILYN/a2000 _CLE_6R/a777",
-                        "SHEEP/a4000 DOORZ/a2900 POAST/a2500 DILYN/a2000 _CLE_6R/a777",
-                        "DOORZ/a2900 POAST/a2500 DILYN/a2000 _CLE_6R/a777",
-                        "POAST/a2500 DILYN/a2000 _CLE_6R/a777"
+                        "RUHSH/a6000/s210/iaf RMONZ DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf _CLE_6R/a777",
+                        "HICKR/a5000/s210/iaf DAUGS DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf _CLE_6R/a777",
+                        "GROHL/a6000/s210/iaf SHEEP DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf _CLE_6R/a777"
                     ]
                 },
                 "R10": {
                     "runway": "10",
                     "type": "RNAV",
                     "waypoints": [
-                        "GILLS/a4000 TAMDE/a3000 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783",
-                        "TAMDE/a3000 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783",
-                        "FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783",
-                        "DJB/a4000 FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783"
+                        "GILLS TAMDE/iaf/nopt FIMOL/hilpt4nm/a3000 JUUBA/a2400/faf _CLE_10/a783",
+                        "FIMOL/hilpt4nm/a3000/iaf/if JUUBA/a2400/faf _CLE_10/a783",
+                        "DJB/iaf/nopt FIMOL/hilpt4nm/a3000 JUUBA/a2400 _CLE_10/a783"
                     ]
                 },
                 "I4L": {
                     "runway": "24L",
                     "type": "ILS",
                     "waypoints": [
-                        "THRTN/a5000 HHERB/a4000 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "BUDRW/a6000/s240 WIINR/a5000/s210 ANJEY/a4000/s210 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "WIINR/a5000/s210 ANJEY/a4000/s210 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "ANJEY/a4000/s210 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "LLROY/a5000/s210 KARAY/a4000 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "KARAY/a4000 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "HHERB/a4000 ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "ALOMR/a3000 FELLR/a2000 _CLE_24L/a799",
-                        "FELLR/a2000 _CLE_24L/a799"
+                        "THRTN/a5000/iaf HHERB/a4000 ALOMR/a3000/if FELLR/a2000/faf _CLE_24L/a799",
+                        "BUDRW/a6000/s240/iaf WIINR/s210 ANJEY ALOMR/a3000/if FELLR/a2000/faf _CLE_24L/a799",
+                        "LLROY/a5000/s210/iaf KARAY ALOMR/if FELLR/a2000/faf _CLE_24L/a799"
                     ]
                 },
                 "I4R": {
                     "runway": "24R",
                     "type": "ILS",
                     "waypoints": [
-                        "BUDRW/a6000/s240 WIINR/a5000/s210 ANJEY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
-                        "WIINR/a5000/s210 ANJEY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
-                        "ANJEY/a4000/s210 ALOMR/a3000 FELLR/a2000 _CLE_24R/a799",
-                        "LLROY/a5000/s210 BORNY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
-                        "BORNY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
-                        "SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
-                        "GROZA/a2000 FIDIN/a1600 _CLE_24R/a799"
+                        "BUDRW/a6000/s240/iaf WIINR/s210 ANJEY SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600 _CLE_24R/a799",
+                        "LLROY/a5000/s210/iaf BORNY/a4000 SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600 _CLE_24R/a799",
+                        "PAULB/a5000/iaf GRHMM SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600 _CLE_24R/a799"
                     ]
                 },
                 "I28": {
                     "runway": "28",
                     "type": "ILS",
                     "waypoints": [
-                        "HARDR/a6000/s210 WHONT/a4000/s210 GETTT/a3600 FOOLD/a2600 _CLE_28/a799",
-                        "WHONT/a4000/s210 GETTT/a3600 FOOLD/a2600 _CLE_28/a799",
-                        "YYESS/a6000/s210 JHENY/a5000/s210 WHONT/a4000 GETTT/a3600 FOOLD/a2600 _CLE_28/a799",
-                        "JHENY/a5000/s210 WHONT/a4000 GETTT/a3600 FOOLD/a2600 _CLE_28/a799",
-                        "WHONT/a4000 GETTT/a3600 FOOLD/a2600 _CLE_28/a799",
-                        "GETTT/a3600 FOOLD/a2600 _CLE_28/a799",
-                        "FOOLD/a2600 _CLE_28/a799"
+                        "HARDR/a6000/s210/iaf WHONT GETTT/a3600/if FOOLD/a2600/faf _CLE_28/a799",
+                        "YYESS/a6000/iaf JHENY WHONT GETTT/a3600/if FOOLD/a2600/faf _CLE_28/a799"
                     ]
                 }
             },

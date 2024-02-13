@@ -193,7 +193,6 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 			sumRates += rate
 		}
 	}
-	nAirports := len(allAirports)
 
 	imgui.Text("Arrivals")
 	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
@@ -211,26 +210,28 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-	if imgui.BeginTableV("arrivalgroups", 1+nAirports, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
+	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Arrival")
-		sortedAirports := SortedMapKeys(allAirports)
-		for _, ap := range sortedAirports {
-			imgui.TableSetupColumn(ap + " AAR")
-		}
+		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("AAR")
 		imgui.TableHeadersRow()
 
 		for _, group := range SortedMapKeys(lc.ArrivalGroupRates) {
 			imgui.PushID(group)
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text(group)
-			for _, ap := range sortedAirports {
-				imgui.TableNextColumn()
+			for _, ap := range SortedMapKeys(allAirports) {
+				imgui.PushID(ap)
 				if rate, ok := lc.ArrivalGroupRates[group][ap]; ok {
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Text(ap)
+					imgui.TableNextColumn()
+					imgui.Text(group)
+					imgui.TableNextColumn()
 					r := int32(rate)
 					changed = imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) || changed
 					lc.ArrivalGroupRates[group][ap] = int(r)
 				}
+				imgui.PopID()
 			}
 			imgui.PopID()
 		}
@@ -1292,9 +1293,9 @@ func (s *Sim) updateState() {
 				})
 				s.lg.Info("automatic pointout accept", slog.String("callsign", ac.Callsign),
 					slog.String("by", toController), slog.String("to", po.FromController))
-			}
 
-			delete(s.PointOuts[callsign], toController)
+				delete(s.PointOuts[callsign], toController)
+			}
 		}
 	}
 

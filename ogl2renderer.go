@@ -58,22 +58,22 @@ func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
 	}
 }
 
-func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image) uint32 {
-	return ogl2.CreateTextureFromImages([]image.Image{img})
+func (ogl2 *OpenGL2Renderer) CreateTextureFromImage(img image.Image, magNearest bool) uint32 {
+	return ogl2.CreateTextureFromImages([]image.Image{img}, magNearest)
 }
 
-func (ogl2 *OpenGL2Renderer) CreateTextureFromImages(pyramid []image.Image) uint32 {
+func (ogl2 *OpenGL2Renderer) CreateTextureFromImages(pyramid []image.Image, magNearest bool) uint32 {
 	var texid uint32
 	gl.GenTextures(1, &texid)
-	ogl2.UpdateTextureFromImages(texid, pyramid)
+	ogl2.UpdateTextureFromImages(texid, pyramid, magNearest)
 	return texid
 }
 
-func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image) {
-	ogl2.UpdateTextureFromImages(texid, []image.Image{img})
+func (ogl2 *OpenGL2Renderer) UpdateTextureFromImage(texid uint32, img image.Image, magNearest bool) {
+	ogl2.UpdateTextureFromImages(texid, []image.Image{img}, magNearest)
 }
 
-func (ogl2 *OpenGL2Renderer) UpdateTextureFromImages(texid uint32, pyramid []image.Image) {
+func (ogl2 *OpenGL2Renderer) UpdateTextureFromImages(texid uint32, pyramid []image.Image, magNearest bool) {
 	var lastTexture int32
 	gl.GetIntegerv(gl.TEXTURE_BINDING_2D, &lastTexture)
 
@@ -83,7 +83,7 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImages(texid uint32, pyramid []ima
 	} else {
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 	}
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, int32(Select(magNearest, gl.NEAREST, gl.LINEAR)))
 	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
 
 	bytes := 0

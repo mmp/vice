@@ -948,6 +948,11 @@ func (w *World) DrawScenarioInfoWindow() {
 				}
 
 				for i, arr := range arrivals {
+					if len(w.LaunchConfig.ArrivalGroupRates[name]) == 0 {
+						// Not used in the current scenario.
+						continue
+					}
+
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 					enabled := w.scopeDraw.arrivals[name][i]
@@ -1472,7 +1477,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			p = td.AddText(wp.Fix+"\n", p, style)
 		}
 
-		if wp.IAF || wp.IF || wp.FAF || wp.NoPT {
+		if wp.IAF || wp.IF || wp.FAF || wp.NoPT || wp.FlyOver {
 			var s []string
 			if wp.IAF {
 				s = append(s, "IAF")
@@ -1485,6 +1490,9 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			}
 			if wp.NoPT {
 				s = append(s, "NoPT")
+			}
+			if wp.FlyOver {
+				s = append(s, "FlyOver")
 			}
 			p = td.AddText(strings.Join(s, "/")+"\n", p, style)
 		}

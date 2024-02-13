@@ -282,7 +282,7 @@ func fontsInit(r Renderer, platform Platform) {
 		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
 		Stride: 4 * img.Width,
 		Rect:   image.Rectangle{Max: image.Point{X: img.Width, Y: img.Height}}}
-	fontId := r.CreateTextureFromImage(rgb8Image)
+	fontId := r.CreateTextureFromImage(rgb8Image, false)
 	io.Fonts().SetTextureID(imgui.TextureID(fontId))
 
 	lg.Info("Finished initializing fonts")

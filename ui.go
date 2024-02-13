@@ -146,6 +146,22 @@ var (
 		"Added \"TO\" command for \"contact tower\"",
 		"Various bugfixes with handoffs and approach navigation",
 		"Match real-world STARS alert sounds",
+		"Added new scenarios: D10 (Mike K), CYS, ASE, COS (Jud Lopez)",
+		"Fixed multiple bugs with handling of altitude and speed restrictions in departure routes",
+		"Increased acceleration and climb rate of departures to be more realistic",
+		"Fixed multiple bugs with point outs",
+		"Fixed bug in the STARS scope that required secondary scratchpads to be three characters",
+		"(Re-)added optional sound effect for accepted handoffs",
+		"Airspace warnings are inhibited for aircraft flying approaches",
+		"STARS: allow control-left-click in place of the third mouse button to highlight aircraft",
+		"STARS: actually use the LDB brightness setting for limited/partial datablocks",
+		"STARS: fix incorrect error message after issuing \"at fix, cleared approach\"",
+		"Added new scenarios: TPA (Connor Allen), SAN, SCT-BUR (Justin Nguyen), SCT (Eli Thompson), NCT, GJT (Jud Lopez)",
+		"Smaller scenario updates: D10 and JAX (Mike K), AUS (Jace Martin), LGA, JFK, COS, CLE, ASE, DCA, F11",
+		"Arc routes between fixes can now be accurately specified",
+		"STARS: more accurate simulation of STARS weather radar display",
+		"Added new syntax for issuing left/right turn in degrees: T10L, T20R, etc.",
+		"STARS: allow middle-click highlight of aircraft regardless of having their track",
 	}
 )
 
@@ -183,13 +199,13 @@ func uiInit(r Renderer, p Platform, es *EventStream) {
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
 	} else {
-		ui.iconTextureID = r.CreateTextureFromImage(iconImage)
+		ui.iconTextureID = r.CreateTextureFromImage(iconImage, false)
 	}
 
 	if sadTowerImage, err := png.Decode(bytes.NewReader([]byte(sadTowerPNG))); err != nil {
 		lg.Errorf("Unable to decode sad tower PNG: %v", err)
 	} else {
-		ui.sadTowerTextureID = r.CreateTextureFromImage(sadTowerImage)
+		ui.sadTowerTextureID = r.CreateTextureFromImage(sadTowerImage, false)
 	}
 
 	// Do this asynchronously since it involves network traffic and may
@@ -613,6 +629,7 @@ func (m *ModalDialogBox) Draw() {
 	imgui.OpenPopup(title)
 
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
 			imgui.SetKeyboardFocusHere()
@@ -968,16 +985,16 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits: Thanks to Dennis Graiani and
 Samuel Valencia for contributing features to vice
-and to Adam Bolek, Aaron Flett, Mike K, Mike K,
-Jud Lopez, Jace Martin, Arya T, Michael Trokel,
-and Samuel Valencia for contributing additional
-scenarios. Video maps are thanks to the ZAU,
-ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB,
-ZSE, and ZTL VATSIM ARTCCs. Thanks also to
-OpenScope for the airline fleet and aircraft
-performance databases and to ourairports.com for
-the airport database. See the file CREDITS.txt in
-the vice source code distribution for third-party
+and to Connor Allen, Adam Bolek, Aaron Flett, Mike K,
+Jud Lopez, Jace Martin, Justin Nguyen, Arya T,
+Eli Thompson, Michael Trokel, and Samuel Valencia
+for developing scenarios. Video maps are thanks
+to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA,
+ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs. Thanks
+also to OpenScope for the airline fleet and aircraft
+performance databases and to ourairports.com
+for the airport database. See the file CREDITS.txt
+in the vice source code distribution for third-party
 software, fonts, sounds, etc.`
 
 	imgui.Text(credits)
@@ -1260,16 +1277,17 @@ type ScrollBar struct {
 	barWidth          int
 	nItems, nVisible  int
 	accumDrag         float32
-	invertY           bool
+	invert            bool
+	vertical          bool
 	mouseClickedInBar bool
 }
 
-// NewScrollBar returns a new ScrollBar instance with the given width.
-// invertY indicates whether the scrolled items are drawn from the bottom
-// of the Pane or the top; invertY should be true if they are being drawn
+// NewVerticalScrollBar returns a new ScrollBar instance with the given width.
+// invert indicates whether the scrolled items are drawn from the bottom
+// of the Pane or the top; invert should be true if they are being drawn
 // from the bottom.
-func NewScrollBar(width int, invertY bool) *ScrollBar {
-	return &ScrollBar{barWidth: width, invertY: invertY}
+func NewVerticalScrollBar(width int, invert bool) *ScrollBar {
+	return &ScrollBar{barWidth: width, invert: invert, vertical: true}
 }
 
 // Update should be called once per frame, providing the total number of things
@@ -1281,7 +1299,7 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 
 	if sb.nItems > sb.nVisible {
 		sign := float32(1)
-		if sb.invertY {
+		if sb.invert {
 			sign = -1
 		}
 
@@ -1289,12 +1307,16 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 			sb.offset += int(sign * ctx.mouse.Wheel[1])
 
 			if ctx.mouse.Clicked[0] {
-				sb.mouseClickedInBar = ctx.mouse.Pos[0] >= ctx.paneExtent.Width()-float32(sb.Width())
+				sb.mouseClickedInBar = Select(sb.vertical,
+					ctx.mouse.Pos[0] >= ctx.paneExtent.Width()-float32(sb.PixelExtent()),
+					ctx.mouse.Pos[1] >= ctx.paneExtent.Height()-float32(sb.PixelExtent()))
 				sb.accumDrag = 0
 			}
 
 			if ctx.mouse.Dragging[0] && sb.mouseClickedInBar {
-				sb.accumDrag += -sign * ctx.mouse.DragDelta[1] * float32(sb.nItems) / ctx.paneExtent.Height()
+				axis := Select(sb.vertical, 1, 0)
+				wh := Select(sb.vertical, ctx.paneExtent.Height(), ctx.paneExtent.Width())
+				sb.accumDrag += -sign * ctx.mouse.DragDelta[axis] * float32(sb.nItems) / wh
 				if abs(sb.accumDrag) >= 1 {
 					sb.offset += int(sb.accumDrag)
 					sb.accumDrag -= float32(int(sb.accumDrag))
@@ -1331,27 +1353,38 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return
 	}
 
-	pw, ph := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 	// The visible region is [offset,offset+nVisible].
 	// Visible region w.r.t. [0,1]
-	y0, y1 := float32(sb.offset)/float32(sb.nItems), float32(sb.offset+sb.nVisible)/float32(sb.nItems)
-	if sb.invertY {
-		y0, y1 = 1-y0, 1-y1
+	v0, v1 := float32(sb.offset)/float32(sb.nItems), float32(sb.offset+sb.nVisible)/float32(sb.nItems)
+	if sb.invert {
+		v0, v1 = 1-v0, 1-v1
 	}
-	// Visible region in window coordinates
-	const edgeSpace = 2
-	wy0, wy1 := lerp(y0, ph-edgeSpace, edgeSpace), lerp(y1, ph-edgeSpace, edgeSpace)
 
 	quad := GetColoredTrianglesDrawBuilder()
 	defer ReturnColoredTrianglesDrawBuilder(quad)
-	quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
-		[2]float32{pw - float32(edgeSpace), wy0},
-		[2]float32{pw - float32(edgeSpace), wy1},
-		[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
+
+	const edgeSpace = 2
+	pw, ph := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+
+	if sb.vertical {
+		// Visible region in window coordinates
+		wy0, wy1 := lerp(v0, ph-edgeSpace, edgeSpace), lerp(v1, ph-edgeSpace, edgeSpace)
+		quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
+			[2]float32{pw - float32(edgeSpace), wy0},
+			[2]float32{pw - float32(edgeSpace), wy1},
+			[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
+	} else {
+		wx0, wx1 := lerp(v0, pw-edgeSpace, edgeSpace), lerp(v1, pw-edgeSpace, edgeSpace)
+		quad.AddQuad([2]float32{wx0, ph - float32(sb.barWidth) - float32(edgeSpace)},
+			[2]float32{wx0, ph - float32(edgeSpace)},
+			[2]float32{wx1, ph - float32(edgeSpace)},
+			[2]float32{wx1, ph - float32(sb.barWidth) - float32(edgeSpace)}, UIControlColor)
+	}
+
 	quad.GenerateCommands(cb)
 }
 
-func (sb *ScrollBar) Width() int {
+func (sb *ScrollBar) PixelExtent() int {
 	return sb.barWidth + 4 /* for edge space... */
 }
 
@@ -1780,9 +1813,9 @@ altitude. (*TS* = 'then speed')`, "*TS210*"},
 
 var secondaryAcCommands = [][3]string{
 	[3]string{"*L_hdg", `"Turn left heading _hdg_."`, "*L130*"},
-	[3]string{"*L_deg*D", `"Turn _deg_ degrees left."`, "*L10D*"},
+	[3]string{"*T_deg*L", `"Turn _deg_ degrees left."`, "*T10L*"},
 	[3]string{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
-	[3]string{"*R_deg*D", `"Turn _deg_ degrees right".`, "*R20D*"},
+	[3]string{"*T_deg*R", `"Turn _deg_ degrees right".`, "*T20R*"},
 	[3]string{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
 	[3]string{"*C_fix*/A_alt*/S_kts",
 		`"Cross _fix_ at _alt_ / _kts_ knots."

@@ -88,7 +88,9 @@ type NavAltitude struct {
 	AfterSpeed      *float32
 	AfterSpeedSpeed *float32
 	Expedite        bool
-	// Carried after passing a waypoint
+	// Carried after passing a waypoint if we were unable to meet the
+	// restriction at the way point; we keep trying until we get there (or
+	// are given another instruction..)
 	Restriction *AltitudeRestriction
 }
 
@@ -163,10 +165,16 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 	return nil
 }
 
-func MakeDepartureNav(w *World, fp FlightPlan, perf AircraftPerformance, alt float32,
+func MakeDepartureNav(w *World, fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt int,
 	wp []Waypoint) *Nav {
 	if nav := makeNav(w, fp, perf, wp); nav != nil {
-		nav.Altitude.Cleared = &alt
+		if assignedAlt != 0 {
+			alt := float32(min(assignedAlt, fp.Altitude))
+			nav.Altitude.Assigned = &alt
+		} else {
+			alt := float32(min(clearedAlt, fp.Altitude))
+			nav.Altitude.Cleared = &alt
+		}
 		nav.FlightState.IsDeparture = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
 		return nav
@@ -270,6 +278,15 @@ func (nav *Nav) EnqueueHeading(h NavHeading) {
 	}
 }
 
+func (nav *Nav) OnApproach() bool {
+	if !nav.Approach.Cleared {
+		return false
+	}
+
+	_, assigned := nav.AssignedHeading()
+	return !assigned // no heading -> on the localizer or flying approach route
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Communication
 
@@ -303,8 +320,11 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		dir := Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
-		lines = append(lines, dir+" to "+FormatAltitude(c.Altitude)+" to cross "+
-			c.FinalFix+" at "+FormatAltitude(c.FinalAltitude))
+		alt := c.Altitude
+		if nav.Altitude.Cleared != nil {
+			alt = min(alt, *nav.Altitude.Cleared)
+		}
+		lines = append(lines, dir+" to "+FormatAltitude(alt)+" for alt. restriction at "+c.Fix)
 	} else if nav.Altitude.Cleared != nil {
 		if abs(nav.FlightState.Altitude-*nav.Altitude.Cleared) < 100 {
 			lines = append(lines, "At cleared altitude "+
@@ -426,7 +446,7 @@ func (nav *Nav) DepartureMessage() string {
 		return FormatAltitude(float32(100 * int((a+50)/100)))
 	}
 	if nav.Altitude.Assigned == nil || nav.FlightState.Altitude == *nav.Altitude.Assigned {
-		return "at " + alt(nav.FlightState.Altitude)
+		return "at " + alt(nav.FlightState.Altitude) + " climbing " + alt(*nav.Altitude.Cleared)
 	} else {
 		return "at " + alt(nav.FlightState.Altitude) + " for " + alt(*nav.Altitude.Assigned)
 	}
@@ -508,6 +528,7 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 				nav.Altitude.Assigned = nav.Altitude.AfterSpeed
 				nav.Altitude.AfterSpeed = nil
 				nav.Altitude.AfterSpeedSpeed = nil
+				nav.Altitude.Restriction = nil
 				lg.Debugf("alt: reached target speed %.0f; now going for altitude %.0f", at, *nav.Altitude.Assigned)
 			}
 		}
@@ -661,6 +682,13 @@ func (nav *Nav) updatePositionAndGS(wind WindModel, lg *Logger) {
 }
 
 func (nav *Nav) DepartOnCourse(alt float32, exit string) {
+	if _, ok := nav.AssignedHeading(); !ok {
+		// Don't do anything if they are not on a heading; let them fly the
+		// regular route and don't (potentially) skip waypoints and go
+		// straight to the exit.
+		return
+	}
+
 	// Make sure we are going direct to the exit.
 	if idx := slices.IndexFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
@@ -803,8 +831,7 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *Logger) (heading float32, turn
 
 		heading = NormalizeHeading(hdg)
 		if nav.Heading.Arc != nil {
-			lg.Debugf("heading: flying %.0f for %.1f %s arc", heading, nav.Heading.Arc.Radius,
-				nav.Heading.Arc.Fix)
+			lg.Debugf("heading: flying %.0f for %.1fnm radius arc", heading, nav.Heading.Arc.Radius)
 		} else {
 			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
 		}
@@ -938,7 +965,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 			// so aircraft are not too high too soon
 			alt := elev + initialClimbAltitude
 			lg.Debugf("alt: initial climb to %.0f", alt)
-			return alt, 0.6 * maxClimb
+			return alt, 0.8 * maxClimb
 		}
 	}
 
@@ -954,14 +981,14 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		if nav.FlightState.IsDeparture {
 			if nav.FlightState.Altitude < 10000 {
 				targetSpeed := min(250, nav.Perf.Speed.Cruise)
-				if nav.FlightState.IAS < 0.9*targetSpeed {
+				if nav.FlightState.IAS < 0.8*targetSpeed {
 					// Prioritize accelerate over climb starting at 1500 AGL
-					return 0.2 * nav.Perf.Rate.Climb
+					return 0.8 * nav.Perf.Rate.Climb
 				}
 			}
 
 			// Climb normally if at target speed or >10,000'.
-			return 0.7 * nav.Perf.Rate.Climb
+			return nav.Perf.Rate.Climb
 		} else {
 			return MaximumRate
 		}
@@ -972,7 +999,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 		lg.Debugf("alt: assigned %.0f, rate %.0f", alt, rate)
 		return
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
-		lg.Debugf("alt: altitude %.0f for final waypoint %s in %.0f seconds", c.Altitude, c.FinalFix, c.ETA)
+		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 {
 			return c.Altitude, MaximumRate
 		} else {
@@ -997,10 +1024,9 @@ func (nav *Nav) flyingPT() bool {
 }
 
 type WaypointCrossingConstraint struct {
-	Altitude      float32
-	ETA           float32 // seconds
-	FinalFix      string
-	FinalAltitude float32
+	Altitude float32
+	Fix      string  // where we're trying to readh Altitude
+	ETA      float32 // seconds
 }
 
 // getWaypointAltitudeConstraint looks at the waypoint altitude
@@ -1078,22 +1104,13 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// incrementally working backwards from the last altitude restriction.
 	altRange := getRestriction(lastWp).Range
 
-	// Unless we can't make the constraints, we'll cross the last waypoint
-	// at the upper range of the altitude restrictions.
-	finalAlt := Select(altRange[1] != 0, altRange[1], 60000)
-
-	// The cruising altitude in the flight plan takes precedence if it's lower
-	// then the fix's altitude restriction.
-	if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
-		finalAlt = min(finalAlt, nav.FinalAltitude)
-	}
-
 	// Sum of distances in nm since the last waypoint with an altitude
 	// restriction.
 	sumDist := float32(0)
 
 	// Loop over waypoints in reverse starting at the one before the last
 	// one with a waypoint restriction.
+	fix := nav.Waypoints[lastWp].Fix // first one with an alt restriction
 	for i := lastWp - 1; i >= 0; i-- {
 		sumDist += nmdistance2ll(nav.Waypoints[i+1].Location, nav.Waypoints[i].Location)
 		wp := nav.Waypoints[i]
@@ -1109,6 +1126,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		if nav.Approach.Cleared && nav.FlightState.Altitude < restr.Range[0] {
 			continue
 		}
+
+		fix = nav.Waypoints[i].Fix
 
 		// TODO: account for decreasing GS with altitude?
 		// TODO: incorporate a simple wind model in GS?
@@ -1157,18 +1176,22 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	d := sumDist + nmdistance2ll(nav.FlightState.Position, nav.Waypoints[0].Location)
 	eta := d / nav.FlightState.GS * 3600 // seconds
 
-	alt := altRange[1] // generally prefer to be higher rather than lower
-	if !nav.FlightState.IsDeparture &&
-		nav.FlightState.Altitude >= altRange[0] && nav.FlightState.Altitude <= altRange[1] {
-		// But leave arrivals at their current altitude if it's acceptable
-		alt = nav.FlightState.Altitude
+	// Prefer to be higher rather than low; deal with "at or above" here as well.
+	alt := Select(altRange[1] != 0, altRange[1], nav.FinalAltitude)
+
+	// But leave arrivals at their current altitude if it's acceptable;
+	// don't climb just because we can.
+	if !nav.FlightState.IsDeparture {
+		ar := AltitudeRestriction{Range: altRange}
+		if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+			alt = nav.FlightState.Altitude
+		}
 	}
 
 	return &WaypointCrossingConstraint{
-		Altitude:      alt,
-		ETA:           eta,
-		FinalFix:      nav.Waypoints[lastWp].Fix,
-		FinalAltitude: finalAlt,
+		Altitude: alt,
+		ETA:      eta,
+		Fix:      fix,
 	}
 }
 
@@ -1203,9 +1226,13 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 		if !nav.IsAirborne() {
 			return targetSpeed, 0.8 * maxAccel
 		} else if agl := nav.FlightState.Altitude - nav.FlightState.DepartureAirportElevation; agl < initialClimbAltitude {
-			// Just airborne; prioritize climb
+			// Just airborne; prioritize climb, though be aware of any
+			// upcoming speed restrictions.
+			if wp, speed, _ := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
+				targetSpeed = min(targetSpeed, speed)
+			}
 			lg.Debugf("speed: prioritize climb at %.0f AGL; acceleration limited", agl)
-			return targetSpeed, 0.2 * maxAccel
+			return targetSpeed, 0.6 * maxAccel
 		}
 		// Otherwise fall through to the cases below
 	}
@@ -1278,7 +1305,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 		// departures when this kicks in at 1500' AGL given that VNav will
 		// slow the rate of climb at that point until we reach the target
 		// speed.
-		return min(nav.Perf.Speed.Cruise, 250), 0.8 * maxAccel
+		return min(nav.Perf.Speed.Cruise, 250), 0.9 * maxAccel
 	}
 
 	x := clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
@@ -1375,7 +1402,16 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 		hdg = nav.FlightState.Heading
 	}
 
-	if nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind, lg) {
+	passedWaypoint := false
+	if wp.FlyOver {
+		dist := nmdistance2ll(nav.FlightState.Position, wp.Location)
+		eta := dist / nav.FlightState.GS * 3600 // in seconds
+		passedWaypoint = eta < 2
+	} else {
+		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wind, lg)
+	}
+
+	if passedWaypoint {
 		lg.Debugf("turning outbound from %.1f to %.1f for %s", nav.FlightState.Heading,
 			hdg, wp.Fix)
 
@@ -1401,7 +1437,8 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			// fix's altitude.
 			nav.Altitude.Restriction = wp.AltitudeRestriction
 		}
-		if wp.Speed != 0 {
+		if wp.Speed != 0 && !nav.FlightState.IsDeparture {
+			// Carry on the speed restriction only if we're an arrival.
 			spd := float32(wp.Speed)
 			nav.Speed.Restriction = &spd
 		}

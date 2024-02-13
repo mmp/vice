@@ -76,6 +76,7 @@ type Arrival struct {
 	SecondaryScratchpad string  `json:"secondary_scratchpad"`
 	Description         string  `json:"description"`
 
+	// Airport -> arrival airlines
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
 }
 
@@ -401,17 +402,37 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		if arrivals, ok := sg.ArrivalGroups[name]; !ok {
 			e.ErrorString("arrival group not found")
 		} else {
+			// Add initial controllers to the controller list, if
+			// necessary.
+			for _, ar := range arrivals {
+				if ar.InitialController != "" &&
+					!slices.Contains(s.VirtualControllers, ar.InitialController) {
+					s.VirtualControllers = append(s.VirtualControllers, ar.InitialController)
+				}
+			}
+
 			// Check the airports in it
 			for airport := range s.ArrivalGroupDefaultRates[name] {
 				e.Push("Airport " + airport)
 				if _, ok := sg.Airports[airport]; !ok {
 					e.ErrorString("unknown arrival airport")
 				} else {
+					// Make sure the airport exists in at least one of the
+					// arrivals in the group.
 					found := false
 					for _, ar := range arrivals {
 						if _, ok := ar.Airlines[airport]; ok {
 							found = true
-							break
+
+							// Make sure the airport has at least one
+							// active arrival runway.
+							if !slices.ContainsFunc(s.ArrivalRunways,
+								func(r ScenarioGroupArrivalRunway) bool {
+									return r.Airport == airport
+								}) {
+								e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
+									airport, airport)
+							}
 						}
 					}
 					if !found {
@@ -565,6 +586,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		}
 	}
 
+	if len(sg.Airports) == 0 {
+		e.ErrorString("No \"airports\" specified in scenario group")
+	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
 		ap.PostDeserialize(name, sg, e)
@@ -612,9 +636,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		sg.Range = 50
 	}
 
-	if len(sg.RadarSites) == 0 {
-		e.ErrorString("no \"radar_sites\" specified")
-	}
 	for name, rs := range sg.RadarSites {
 		e.Push("Radar site " + name)
 		if p, ok := sg.locate(rs.PositionString); rs.PositionString == "" || !ok {
@@ -679,6 +700,9 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 			for arrivalAirport, airlines := range ar.Airlines {
 				e.Push("Arrival airport " + arrivalAirport)
+				if len(airlines) == 0 {
+					e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
+				}
 				for _, al := range airlines {
 					database.CheckAirline(al.ICAO, al.Fleet, e)
 					if _, ok := database.Airports[al.Airport]; !ok {
@@ -732,10 +756,17 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	}
 
 	// Do after airports!
+	if len(sg.Scenarios) == 0 {
+		e.ErrorString("No \"scenarios\" specified")
+	}
 	for name, s := range sg.Scenarios {
 		e.Push("Scenario " + name)
 		s.PostDeserialize(sg, e)
 		e.Pop()
+	}
+
+	if len(sg.STARSMaps) == 0 {
+		e.ErrorString("No \"stars_maps\" specified")
 	}
 
 	initializeSimConfigurations(sg, simConfigurations, *server)
@@ -780,6 +811,13 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	// Skip scenario groups that don't have any single/multi-controller
 	// scenarios, as appropriate.
 	if len(config.ScenarioConfigs) > 0 {
+		// The default scenario may be invalid; e.g. if it's single
+		// controller but we're gathering multi-controller here. Pick
+		// something valid in that case.
+		if _, ok := config.ScenarioConfigs[config.DefaultScenario]; !ok {
+			config.DefaultScenario = SortedMapKeys(config.ScenarioConfigs)[0]
+		}
+
 		if simConfigurations[sg.TRACON] == nil {
 			simConfigurations[sg.TRACON] = make(map[string]*SimConfiguration)
 		}
@@ -814,7 +852,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		}
 	}
 
-	// Do DME arcs after wp.Locations have been initialized
+	// Do (DME) arcs after wp.Locations have been initialized
 	for i, wp := range waypoints {
 		if wp.Arc == nil {
 			continue
@@ -824,24 +862,113 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			e.Push("Fix " + wp.Fix)
 		}
 
-		if pos, ok := sg.locate(wp.Arc.Fix); !ok {
-			if e != nil {
-				e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
-			}
-		} else {
-			wp.Arc.Center = pos
-		}
-
 		if i+1 == len(waypoints) {
 			if e != nil {
-				e.ErrorString("can't have DME arc after final waypoint")
+				e.ErrorString("can't have DME arc starting at the final waypoint")
+			}
+			break
+		}
+
+		if wp.Arc.Fix != "" {
+			// Center point was specified
+			if pos, ok := sg.locate(wp.Arc.Fix); !ok {
+				if e != nil {
+					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+				}
+				break
+			} else {
+				wp.Arc.Center = pos
+
+				hpre := headingp2ll(wp.Arc.Center, waypoints[i].Location, 60 /* nm per */, 0 /* mag */)
+				hpost := headingp2ll(wp.Arc.Center, waypoints[i+1].Location, 60 /* nm per */, 0 /* mag */)
+
+				h := NormalizeHeading(hpost - hpre)
+				wp.Arc.Clockwise = h < 180
 			}
 		} else {
-			hpre := headingp2ll(wp.Arc.Center, waypoints[i].Location, 60 /* nm per */, 0 /* mag */)
-			hpost := headingp2ll(wp.Arc.Center, waypoints[i+1].Location, 60 /* nm per */, 0 /* mag */)
+			// Just the arc length was specified; need to figure out the
+			// center and radius of the circle that gives that.
+			p0, p1 := ll2nm(wp.Location, sg.NmPerLongitude), ll2nm(waypoints[i+1].Location, sg.NmPerLongitude)
+			d := distance2f(p0, p1)
+			if d >= wp.Arc.Length {
+				if e != nil {
+					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
+						d, wp.Arc.Length)
+				}
+				continue
+			}
+			if wp.Arc.Length > d*3.14159 {
+				// No circle is possible to give an arc that long
+				if e != nil {
+					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
+				}
+				continue
+			}
 
-			h := NormalizeHeading(hpost - hpre)
-			wp.Arc.Clockwise = h < 180
+			// Which way are we turning as we depart p0? Use either the
+			// previous waypoint or the next one after the end of the arc
+			// to figure it out.
+			var v0, v1 [2]float32
+			if i > 0 {
+				v0 = sub2f(p0, ll2nm(waypoints[i-1].Location, sg.NmPerLongitude))
+				v1 = sub2f(p1, p0)
+			} else {
+				if i+2 == len(waypoints) {
+					if e != nil {
+						e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+					}
+					return
+				}
+				v0 = sub2f(p1, p0)
+				v1 = sub2f(ll2nm(waypoints[i+1].Location, sg.NmPerLongitude), p1)
+			}
+			// cross product
+			x := v0[0]*v1[1] - v0[1]*v1[0]
+			wp.Arc.Clockwise = x < 0
+
+			// Now search for a center point of a circle that goes through
+			// p0 and p1 and has the desired arc length.  We will search
+			// along the line perpendicular to the vector p1-p0 that goes
+			// through its center point.
+
+			// There are two possible center points for the circle, one on
+			// each side of the line p0-p1.  We will take positive or
+			// negative steps in parametric t along the perpendicular line
+			// so that we're searching in the right direction to get the
+			// clockwise/counter clockwise route we want.
+			delta := float32(Select(wp.Arc.Clockwise, -.01, .01))
+
+			// We will search with uniform small steps along the line. Some
+			// sort of bisection search would probably be better, but...
+			t := delta
+			limit := 100 * distance2f(p0, p1) // ad-hoc
+			v := normalize2f(sub2f(p1, p0))
+			v[0], v[1] = -v[1], v[0] // perp!
+			for t < limit {
+				center := add2f(mid2f(p0, p1), scale2f(v, t))
+				radius := distance2f(center, p0)
+
+				// Angle subtended by p0 and p1 w.r.t. center
+				cosTheta := dot(sub2f(p0, center), sub2f(p1, center)) / sqr(radius)
+				theta := safeACos(cosTheta)
+
+				arcLength := theta * radius
+
+				if arcLength < wp.Arc.Length {
+					wp.Arc.Center = nm2ll(center, sg.NmPerLongitude)
+					wp.Arc.Radius = radius
+					break
+				}
+
+				t += delta
+			}
+
+			if t >= limit {
+				if e != nil {
+					e.ErrorString("unable to find valid circle radius for arc")
+				}
+				continue
+			}
 		}
 
 		// Heading from the center of the arc to the current fix
