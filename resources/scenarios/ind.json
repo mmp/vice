@@ -64,7 +64,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600 _IND_23L/a790" 
+            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600 _IND_23L/a790"
           ]
         },
         "R3L": {
@@ -629,7 +629,7 @@
             },
             {
               "airport": "KEWR",
-              "icao": "NKS" 
+              "icao": "NKS"
             }
           ]
         },
@@ -719,7 +719,7 @@
           ]
         },
         "initial_altitude": 26000,
-        "initial_controller": "CHI_81_CTR",
+        "initial_controller": "CHI_35_CTR",
         "initial_speed": 280,
         "route": "/. ELANR.JAKKS2",
         "runway_waypoints": {
@@ -786,10 +786,10 @@
         "runway_waypoints": {
           "05L": "FIIRE WESLE/a6000+ WAAYN/a5000/s210",
           "05R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210",
-          "14" : "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
+          "14": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
           "23L": "FIIRE CHERZ/a11000+ TTKAY/a10000+ EDODE/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
           "23R": "FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
-          "32" : "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139"
+          "32": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139"
         },
         "waypoints": "RACYR/a12000-19000/ho SMUKE FIIRE"
       }
@@ -797,93 +797,147 @@
   },
   "center": "KIND",
   "control_positions": {
+    "IND_33_CTR": {
+      "frequency": 124525,
+      "full_name": "Indianapolis Center",
+      "scope_char": "C",
+      "sector_id": "C33"
+    },
     "IND_34_CTR": {
       "frequency": 119550,
       "full_name": "Indianapolis Center",
       "scope_char": "C",
-      "sector_id": "34"
+      "sector_id": "C34"
     },
-    "CHI_81_CTR": {
-      "frequency": 120350,
+    "IND_35_CTR": {
+      "frequency": 132200,
+      "full_name": "Indianapolis Center",
+      "scope_char": "C",
+      "sector_id": "C35"
+    },
+    "CHI_35_CTR": {
+      "frequency": 134875,
       "full_name": "Chicago Center",
       "scope_char": "C",
-      "sector_id": "G81"
+      "sector_id": "Z35"
+    },
+    "CHI_51_CTR": {
+      "frequency": 133150,
+      "full_name": "Chicago Center",
+      "scope_char": "C",
+      "sector_id": "Z51"
+    },
+    "IND_E_APP": {
+      "frequency": 124950,
+      "full_name": "Indianapolis Approach",
+      "scope_char": "E",
+      "sector_id": "1E"
+    },
+    "IND_W_APP": {
+      "frequency": 119050,
+      "full_name": "Indianapolis Approach",
+      "scope_char": "W",
+      "sector_id": "1W"
     },
     "IND_B_APP": {
-      "frequency": 124650,
+      "frequency": 121100,
       "full_name": "Indianapolis Approach",
       "scope_char": "B",
-      "sector_id": "3B"
+      "sector_id": "1B"
     },
     "IND_D_APP": {
-      "frequency": 127150,
-      "full_name": "Indianapolis Approach",
-      "scope_char": "D",
-      "sector_id": "3D"
-    },
-    "IND_F_APP": {
       "frequency": 128175,
       "full_name": "Indianapolis Approach",
+      "scope_char": "D",
+      "sector_id": "1D"
+    },
+    "IND_F_APP": {
+      "frequency": 123950,
+      "full_name": "Indianapolis Approach",
       "scope_char": "F",
-      "sector_id": "3F"
+      "sector_id": "1F"
     },
     "IND_I_APP": {
       "frequency": 120525,
       "full_name": "Indianapolis Approach",
       "scope_char": "I",
-      "sector_id": "3I"
+      "sector_id": "1I"
     },
-    "IND_E_DEP": {
-      "frequency": 124950,
-      "full_name": "Indianapolis Departure",
-      "scope_char": "E",
-      "sector_id": "3E"
-    },
-    "IND_W_DEP": {
-      "frequency": 119050,
+    "IND_S_APP": {
+      "frequency": 127150,
       "full_name": "Indianapolis Approach",
-      "scope_char": "W",
-      "sector_id": "3W"
+      "scope_char": "S",
+      "sector_id": "1S"
     },
-    "CVG_N_APP": {
-      "frequency": 123875,
-      "full_name": "Cincinnati Approach",
+    "IND_N_APP": {
+      "frequency": 124650,
+      "full_name": "Indianapolis Approach",
       "scope_char": "N",
       "sector_id": "1N"
-    },
-    "HUF_N_APP": {
-      "frequency": 125450,
-      "full_name": "Hulman Approach",
-      "scope_char": "H",
-      "sector_id": "9H"
-    },
-    "FWA_W_APP": {
-      "frequency": 127200,
-      "full_name": "Fort Wayne Approach",
-      "scope_char": "W",
-      "sector_id": "FW"
     },
     "IND_E_TWR": {
       "frequency": 120900,
       "full_name": "Indianapolis Tower",
       "scope_char": "Y",
-      "sector_id": "3Y"
+      "sector_id": "1Y"
     },
     "IND_W_TWR": {
       "frequency": 127825,
       "full_name": "Indianapolis Tower",
       "scope_char": "X",
-      "sector_id": "3X"
+      "sector_id": "1X"
+    },
+    "CMH_U_APP": {
+      "frequency": 118420,
+      "full_name": "Columbus Approach",
+      "scope_char": "U",
+      "sector_id": "11U"
+    },
+    "CVG_N_APP": {
+      "frequency": 123875,
+      "full_name": "Cincinnati Approach",
+      "scope_char": "N",
+      "sector_id": "21N"
+    },
+    "HUF_H_APP": {
+      "frequency": 125450,
+      "full_name": "Hulman Approach",
+      "scope_char": "H",
+      "sector_id": "31H"
+    },
+    "HUF_Q_APP": {
+      "frequency": 119800,
+      "full_name": "Hulman Approach",
+      "scope_char": "Q",
+      "sector_id": "31Q"
+    },
+    "HUF_G_APP": {
+      "frequency": 128025,
+      "full_name": "Hulman Approach",
+      "scope_char": "G",
+      "sector_id": "31G"
+    },
+    "GUS_E_APP": {
+      "frequency": 121050,
+      "full_name": "Grissom Approach",
+      "scope_char": "E",
+      "sector_id": "41E"
+    },
+    "FWA_W_APP": {
+      "frequency": 127200,
+      "full_name": "Fort Wayne Approach",
+      "scope_char": "W",
+      "sector_id": "51W"
     }
   },
   "default_scenario": "KIND Southwest",
   "fixes": {
     "_IND_05L": "N39.42.23.034, W86.19.14.904",
     "_IND_05R": "N39.42.00.876, W86.18.15.906",
-    "_IND_14" : "N39.44.03.204, W86.17.19.764",
+    "_IND_14": "N39.44.03.204, W86.17.19.764",
     "_IND_23L": "N39.43.11.286, W86.16.46.128",
     "_IND_23R": "N39.43.41.910, W86.17.34.362",
-    "_IND_32" : "N39.43.12.744, W86.16.13.392"
+    "_IND_32": "N39.43.12.744, W86.16.13.392"
   },
   "inhibit_ca_volumes": [
     {
@@ -1004,7 +1058,7 @@
     }
   ],
   "magnetic_variation": 5,
-  "name": "KIND", 
+  "name": "KIND",
   "primary_airport": "KIND",
   "radar_sites": {
     "INDA": {
@@ -1045,44 +1099,70 @@
           "KIND": 6
         }
       },
-      "solo_controller": "IND_B_APP",
+      "solo_controller": "IND_E_APP",
       "multi_controllers": {
         "default": {
-          "IND_B_APP": {
+          "IND_E_APP": {
             "primary": true,
-            "arrivals": [ "JAKKS2", "KOLTS2", "SMUKE2" ]
+            "departures": [
+              "KIND/MAREO5",
+              "KIND/DAWNN1"
+            ]
+          },
+          "IND_W_APP": {
+            "backup": "IND_E_APP",
+            "departures": [
+              "KIND/OOM5",
+              "KIND/MEARZ7",
+              "KIND/ROCKY1"
+            ]
+          },
+          "IND_B_APP": {
+            "backup": "IND_E_APP",
+            "arrivals": [
+              "JAKKS2",
+              "KOLTS2",
+              "SMUKE2"
+            ]
           },
           "IND_D_APP": {
-            "arrivals": [ "GIIBS3", "SNKPT2" ],
+            "arrivals": [
+              "GIIBS3",
+              "SNKPT2"
+            ],
             "backup": "IND_B_APP"
           },
           "IND_F_APP": {
-            "backup": "IND_B_APP"
+            "backup": "IND_E_APP"
           },
           "IND_I_APP": {
             "backup": "IND_F_APP"
           },
-          "IND_E_DEP": {
-            "backup": "IND_B_APP",
-            "departures": ["KIND/MAREO5","KIND/DAWNN1"]
+          "IND_S_APP": {
+            "backup": "IND_E_APP"
           },
-          "IND_W_DEP": {
-            "backup": "IND_E_DEP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
+          "IND_N_APP": {
+            "backup": "IND_S_APP"
           }
         }
       },
       "controllers": [
         "IND_34_CTR",
-        "CHI_81_CTR",
-        "IND_B_APP",
-        "CVG_N_APP",
-        "HUF_N_APP",
-        "FWA_W_APP",
+        "IND_33_CTR",
+        "IND_35_CTR",
+        "CHI_35_CTR",
+        "CHI_51_CTR",
+        "IND_E_APP",
+        "HUF_G_APP",
         "IND_E_TWR",
         "IND_W_TWR"
       ],
-      "default_maps": [ "RWY 23s", "Class C/D", "RWY 23s Composite Training", "Departures (Fixes Only)" ],
+      "default_maps": [
+        "RWY 23s",
+        "Class C/D",
+        "RWY 23s Composite Training",
+        "Departures (Fixes Only)"
+      ],
       "departure_runways": [
         {
           "airport": "KIND",
@@ -1128,44 +1208,70 @@
           "KIND": 6
         }
       },
-      "solo_controller": "IND_B_APP",
+      "solo_controller": "IND_E_APP",
       "multi_controllers": {
         "default": {
-          "IND_B_APP": {
+          "IND_E_APP": {
             "primary": true,
-            "arrivals": [ "JAKKS2", "KOLTS2", "SMUKE2" ]
+            "departures": [
+              "KIND/MAREO5",
+              "KIND/DAWNN1"
+            ]
+          },
+          "IND_W_APP": {
+            "backup": "IND_E_APP",
+            "departures": [
+              "KIND/OOM5",
+              "KIND/MEARZ7",
+              "KIND/ROCKY1"
+            ]
+          },
+          "IND_B_APP": {
+            "backup": "IND_E_APP",
+            "arrivals": [
+              "JAKKS2",
+              "KOLTS2",
+              "SMUKE2"
+            ]
           },
           "IND_D_APP": {
-            "arrivals": [ "GIIBS3", "SNKPT2" ],
+            "arrivals": [
+              "GIIBS3",
+              "SNKPT2"
+            ],
             "backup": "IND_B_APP"
           },
           "IND_F_APP": {
-            "backup": "IND_B_APP"
+            "backup": "IND_E_APP"
           },
           "IND_I_APP": {
             "backup": "IND_F_APP"
           },
-          "IND_E_DEP": {
-            "backup": "IND_B_APP",
-            "departures": ["KIND/MAREO5","KIND/DAWNN1"]
+          "IND_S_APP": {
+            "backup": "IND_E_APP"
           },
-          "IND_W_DEP": {
-            "backup": "IND_E_DEP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
+          "IND_N_APP": {
+            "backup": "IND_S_APP"
           }
         }
       },
       "controllers": [
         "IND_34_CTR",
-        "CHI_81_CTR",
-        "IND_B_APP",
-        "CVG_N_APP",
-        "HUF_N_APP",
-        "FWA_W_APP",
+        "IND_33_CTR",
+        "IND_35_CTR",
+        "CHI_35_CTR",
+        "CHI_51_CTR",
+        "IND_E_APP",
+        "HUF_G_APP",
         "IND_E_TWR",
         "IND_W_TWR"
       ],
-      "default_maps": [ "RWY 5s", "Class C/D", "RWY 5s Composite Training", "Departures (Fixes Only)" ],
+      "default_maps": [
+        "RWY 5s",
+        "Class C/D",
+        "RWY 5s Composite Training",
+        "Departures (Fixes Only)"
+      ],
       "departure_runways": [
         {
           "airport": "KIND",
@@ -1207,43 +1313,70 @@
           "KIND": 3
         }
       },
-      "solo_controller": "IND_B_APP",
+      "solo_controller": "IND_E_APP",
       "multi_controllers": {
         "default": {
-          "IND_B_APP": {
+          "IND_E_APP": {
             "primary": true,
-            "arrivals": [ "JAKKS2", "KOLTS2", "SMUKE2" ]
+            "departures": [
+              "KIND/MAREO5",
+              "KIND/DAWNN1"
+            ]
+          },
+          "IND_W_APP": {
+            "backup": "IND_E_APP",
+            "departures": [
+              "KIND/OOM5",
+              "KIND/MEARZ7",
+              "KIND/ROCKY1"
+            ]
+          },
+          "IND_B_APP": {
+            "backup": "IND_E_APP",
+            "arrivals": [
+              "JAKKS2",
+              "KOLTS2",
+              "SMUKE2"
+            ]
           },
           "IND_D_APP": {
-            "arrivals": [ "GIIBS3", "SNKPT2" ],
+            "arrivals": [
+              "GIIBS3",
+              "SNKPT2"
+            ],
             "backup": "IND_B_APP"
           },
           "IND_F_APP": {
-            "backup": "IND_B_APP"
+            "backup": "IND_E_APP"
           },
           "IND_I_APP": {
             "backup": "IND_F_APP"
           },
-          "IND_E_DEP": {
-            "backup": "IND_B_APP",
-            "departures": ["KIND/MAREO5","KIND/DAWNN1"]
+          "IND_S_APP": {
+            "backup": "IND_E_APP"
           },
-          "IND_W_DEP": {
-            "backup": "IND_E_DEP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
+          "IND_N_APP": {
+            "backup": "IND_S_APP"
           }
         }
       },
       "controllers": [
         "IND_34_CTR",
-        "CHI_81_CTR",
-        "IND_B_APP",
-        "CVG_N_APP",
-        "HUF_N_APP",
-        "FWA_W_APP",
-        "IND_E_TWR"
+        "IND_33_CTR",
+        "IND_35_CTR",
+        "CHI_35_CTR",
+        "CHI_51_CTR",
+        "IND_E_APP",
+        "HUF_G_APP",
+        "IND_E_TWR",
+        "IND_W_TWR"
       ],
-      "default_maps": [ "RWY 32", "Class C/D", "RWY 32 Composite Training", "Departures (Fixes Only)" ],
+      "default_maps": [
+        "RWY 32",
+        "Class C/D",
+        "RWY 32 Composite Training",
+        "Departures (Fixes Only)"
+      ],
       "departure_runways": [
         {
           "airport": "KIND",
@@ -1280,43 +1413,70 @@
           "KIND": 3
         }
       },
-      "solo_controller": "IND_B_APP",
+      "solo_controller": "IND_E_APP",
       "multi_controllers": {
         "default": {
-          "IND_B_APP": {
+          "IND_E_APP": {
             "primary": true,
-            "arrivals": [ "JAKKS2", "KOLTS2", "SMUKE2" ]
+            "departures": [
+              "KIND/MAREO5",
+              "KIND/DAWNN1"
+            ]
+          },
+          "IND_W_APP": {
+            "backup": "IND_E_APP",
+            "departures": [
+              "KIND/OOM5",
+              "KIND/MEARZ7",
+              "KIND/ROCKY1"
+            ]
+          },
+          "IND_B_APP": {
+            "backup": "IND_E_APP",
+            "arrivals": [
+              "JAKKS2",
+              "KOLTS2",
+              "SMUKE2"
+            ]
           },
           "IND_D_APP": {
-            "arrivals": [ "GIIBS3", "SNKPT2" ],
+            "arrivals": [
+              "GIIBS3",
+              "SNKPT2"
+            ],
             "backup": "IND_B_APP"
           },
           "IND_F_APP": {
-            "backup": "IND_B_APP"
+            "backup": "IND_E_APP"
           },
           "IND_I_APP": {
             "backup": "IND_F_APP"
           },
-          "IND_E_DEP": {
-            "backup": "IND_B_APP",
-            "departures": ["KIND/MAREO5","KIND/DAWNN1"]
+          "IND_S_APP": {
+            "backup": "IND_E_APP"
           },
-          "IND_W_DEP": {
-            "backup": "IND_E_DEP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
+          "IND_N_APP": {
+            "backup": "IND_S_APP"
           }
         }
       },
       "controllers": [
         "IND_34_CTR",
-        "CHI_81_CTR",
-        "IND_B_APP",
-        "CVG_N_APP",
-        "HUF_N_APP",
-        "FWA_W_APP",
-        "IND_E_TWR"
+        "IND_33_CTR",
+        "IND_35_CTR",
+        "CHI_35_CTR",
+        "CHI_51_CTR",
+        "IND_E_APP",
+        "HUF_G_APP",
+        "IND_E_TWR",
+        "IND_W_TWR"
       ],
-      "default_maps": [ "RWY 14", "Class C/D", "RWY 14 Composite Training", "Departures (Fixes Only)" ],
+      "default_maps": [
+        "RWY 14",
+        "Class C/D",
+        "RWY 14 Composite Training",
+        "Departures (Fixes Only)"
+      ],
       "departure_runways": [
         {
           "airport": "KIND",
