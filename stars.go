@@ -1361,7 +1361,12 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 		state.tracksIndex++
 	}
 
-	sp.updateCAAircraft(w)
+	aircraft := sp.visibleAircraft(w)
+	sort.Slice(aircraft, func(i, j int) bool {
+		return aircraft[i].Callsign < aircraft[j].Callsign
+	})
+
+	sp.updateCAAircraft(w, aircraft)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -4751,12 +4756,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [
 	return
 }
 
-func (sp *STARSPane) updateCAAircraft(w *World) {
-	aircraft := sp.visibleAircraft(w)
-	sort.Slice(aircraft, func(i, j int) bool {
-		return aircraft[i].Callsign < aircraft[j].Callsign
-	})
-
+func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	inCAVolumes := func(state *STARSAircraftState) bool {
 		for _, vol := range w.InhibitCAVolumes {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
@@ -4776,7 +4776,8 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 		}
 		return nmdistance2ll(sa.TrackPosition(), sb.TrackPosition()) <= LateralMinimum &&
 			/*small slop for fp error*/
-			abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5
+			abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5 &&
+			!sp.diverging(w.Aircraft[callsigna], w.Aircraft[callsignb])
 	}
 
 	// Remove ones that are no longer conflicting
@@ -4806,6 +4807,34 @@ func (sp *STARSPane) updateCAAircraft(w *World) {
 			}
 		}
 	}
+}
+
+func (sp *STARSPane) diverging(a, b *Aircraft) bool {
+	sa, sb := sp.Aircraft[a.Callsign], sp.Aircraft[b.Callsign]
+
+	pa := ll2nm(sa.TrackPosition(), a.NmPerLongitude())
+	da := ll2nm(sa.HeadingVector(a.NmPerLongitude(), a.MagneticVariation()), a.NmPerLongitude())
+	pb := ll2nm(sb.TrackPosition(), b.NmPerLongitude())
+	db := ll2nm(sb.HeadingVector(b.NmPerLongitude(), b.MagneticVariation()), b.NmPerLongitude())
+
+	pint, ok := LineLineIntersect(pa, add2f(pa, da), pb, add2f(pb, db))
+	if !ok {
+		// This generally happens at the start when we don't have a valid
+		// track heading vector yet.
+		return false
+	}
+
+	if dot(da, sub2f(pint, pa)) > 0 && dot(db, sub2f(pint, pb)) > 0 {
+		// intersection is in front of one of them
+		return false
+	}
+
+	// Intersection behind both; make sure headings are at least 15 degrees apart.
+	if headingDifference(sa.TrackHeading(a.NmPerLongitude()), sb.TrackHeading(b.NmPerLongitude())) < 15 {
+		return false
+	}
+
+	return true
 }
 
 func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock string, mainblock [][]string) {
