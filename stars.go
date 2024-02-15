@@ -2749,8 +2749,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 		switch sp.commandMode {
 		case CommandModeNone:
-			switch len(cmd) {
-			case 0:
+			if cmd == "" {
 				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
@@ -2802,129 +2801,106 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				}
-
-				//if ac.IsAssociated() {
-				if state.DatablockType != FullDatablock {
+				} else if state.DatablockType != FullDatablock {
 					state.DatablockType = FullDatablock
 					// do not collapse datablock if user is tracking the aircraft
 				} else if ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
 				}
-				//}
+			} else if cmd == "." {
+				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
+					status.err = err
+				} else {
+					status.clear = true
+				}
+				return
+			} else if cmd == "+" {
+				if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
+					status.err = err
+				} else {
+					status.clear = true
+				}
+				return
+			} else if cmd == "U" {
+				status.clear = true
+				sp.rejectHandoff(ctx, ac.Callsign)
+				return
+			} else if cmd == "*" {
+				from := sp.Aircraft[ac.Callsign].TrackPosition()
+				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
+					p := transforms.LatLongFromWindowP(pw)
+					hdg := headingp2ll(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
+					dist := nmdistance2ll(from, p)
 
-			case 1:
-				if cmd == "." {
-					if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
-						status.err = err
-					} else {
-						status.clear = true
-					}
-					return
-				} else if cmd == "+" {
-					if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
-						status.err = err
-					} else {
-						status.clear = true
-					}
-					return
-				} else if cmd == "U" {
-					status.clear = true
-					sp.rejectHandoff(ctx, ac.Callsign)
-					return
-				} else if cmd == "*" {
-					from := sp.Aircraft[ac.Callsign].TrackPosition()
-					sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
-						p := transforms.LatLongFromWindowP(pw)
-						hdg := headingp2ll(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
-						dist := nmdistance2ll(from, p)
-
-						status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
-						status.clear = true
-						return
-					}
-					return
-				} else if dir, ok := numpadToDirection(cmd[0]); ok {
-					state.LeaderLineDirection = dir
+					status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
 					status.clear = true
 					return
-				} else if cmd == "?" {
-					ctx.world.PrintInfo(ac)
-					status.clear = true
-					return
-				} else if cmd == "X" {
-					ctx.world.DeleteAircraft(ac, func(e error) {
-						status.err = ErrSTARSIllegalTrack
+				}
+				return
+			} else if dir, ok := numpadToDirection(cmd[0]); ok && len(cmd) == 1 {
+				state.LeaderLineDirection = dir
+				status.clear = true
+				return
+			} else if cmd == "?" {
+				ctx.world.PrintInfo(ac)
+				status.clear = true
+				return
+			} else if cmd == "X" {
+				ctx.world.DeleteAircraft(ac, func(e error) {
+					status.err = ErrSTARSIllegalTrack
+				})
+				status.clear = true
+				return
+			} else if isControllerId(cmd) {
+				status.clear = true
+				sp.handoffTrack(ctx, ac.Callsign, cmd)
+				return
+			} else if cmd == "*J" {
+				// remove j-ring for aircraft
+				state.JRingRadius = 0
+				status.clear = true
+				return
+			} else if cmd == "*P" {
+				// remove cone for aircraft
+				state.ConeLength = 0
+				status.clear = true
+				return
+			} else if cmd == "*T" {
+				// range bearing line
+				sp.wipRBL = &STARSRangeBearingLine{}
+				sp.wipRBL.P[0].Callsign = ac.Callsign
+				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
+				// Do not clear the input area to allow entering a fix for the second location
+				return
+			} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
+				state.SPCOverride = cmd
+				status.clear = true
+				return
+			} else if cmd == "UN" {
+				ctx.world.RejectPointOut(ac.Callsign, nil, func(err error) {
+					sp.previewAreaOutput = GetSTARSError(err).Error()
+				})
+				status.clear = true
+				return
+			} else if cmd == "*D+" {
+				ps.DisplayTPASize = !ps.DisplayTPASize
+				status.clear = true
+				return
+			} else if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
+				state.pilotAltitude = alt * 100
+				status.clear = true
+				return
+			} else if len(cmd) == 5 && cmd[:2] == "++" {
+				if alt, err := strconv.Atoi(cmd[2:]); err == nil {
+					status.err = amendFlightPlan(ctx.world, ac.Callsign, func(fp *FlightPlan) {
+						fp.Altitude = alt * 100
 					})
 					status.clear = true
-					return
+				} else {
+					status.err = ErrSTARSCommandFormat
 				}
-
-			case 2:
-				if isControllerId(cmd) {
-					status.clear = true
-					sp.handoffTrack(ctx, ac.Callsign, cmd)
-					return
-				} else if cmd == "*J" {
-					// remove j-ring for aircraft
-					state.JRingRadius = 0
-					status.clear = true
-					return
-				} else if cmd == "*P" {
-					// remove cone for aircraft
-					state.ConeLength = 0
-					status.clear = true
-					return
-				} else if cmd == "*T" {
-					// range bearing line
-					sp.wipRBL = &STARSRangeBearingLine{}
-					sp.wipRBL.P[0].Callsign = ac.Callsign
-					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
-					// Do not clear the input area to allow entering a fix for the second location
-					return
-				} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
-					state.SPCOverride = cmd
-					status.clear = true
-					return
-				} else if cmd == "UN" {
-					ctx.world.RejectPointOut(ac.Callsign, nil, func(err error) {
-						sp.previewAreaOutput = GetSTARSError(err).Error()
-					})
-					status.clear = true
-					return
-				}
-
-			case 3:
-				if isControllerId(cmd) {
-					status.clear = true
-					sp.handoffTrack(ctx, ac.Callsign, cmd)
-					return
-				} else if cmd == "*D+" {
-					ps.DisplayTPASize = !ps.DisplayTPASize
-					status.clear = true
-					return
-				} else if alt, err := strconv.Atoi(cmd); err == nil {
-					state.pilotAltitude = alt * 100
-					status.clear = true
-					return
-				}
-
-			case 5:
-				switch cmd[:2] {
-				case "++":
-					if alt, err := strconv.Atoi(cmd[2:]); err == nil {
-						status.err = amendFlightPlan(ctx.world, ac.Callsign, func(fp *FlightPlan) {
-							fp.Altitude = alt * 100
-						})
-						status.clear = true
-					} else {
-						status.err = ErrSTARSCommandFormat
-					}
-					return
-				}
-			}
-
-			if len(cmd) >= 2 && cmd[0] == '+' {
+				return
+			} else if len(cmd) >= 2 && cmd[0] == '+' {
 				if alt, err := strconv.Atoi(cmd[1:]); err == nil {
 					sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
 					status.clear = true
@@ -2936,15 +2912,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				}
 				return
-			}
-
-			if cmd == ".ROUTE" {
+			} else if cmd == ".ROUTE" {
 				sp.drawRouteAircraft = ac.Callsign
 				status.clear = true
 				return
-			}
-
-			if len(cmd) > 2 && cmd[:2] == "*J" {
+			} else if len(cmd) > 2 && cmd[:2] == "*J" {
 				if r, err := strconv.Atoi(cmd[2:]); err == nil {
 					if r < 1 || r > 30 {
 						status.err = ErrSTARSIllegalValue
@@ -2963,8 +2935,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-			}
-			if len(cmd) > 2 && cmd[:2] == "*P" {
+			} else if len(cmd) > 2 && cmd[:2] == "*P" {
 				if r, err := strconv.Atoi(cmd[2:]); err == nil {
 					if r < 1 || r > 30 {
 						status.err = ErrSTARSIllegalValue
@@ -2983,14 +2954,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-			}
-			if lc := len(cmd); lc > 2 && cmd[lc-1] == '*' && isControllerId(cmd[:lc-1]) {
+			} else if lc := len(cmd); lc > 2 && cmd[lc-1] == '*' && isControllerId(cmd[:lc-1]) {
 				status.clear = true
 				sp.pointOut(ctx, ac.Callsign, cmd[:lc-1])
 				return
-			}
-
-			if len(cmd) > 0 {
+			} else if len(cmd) > 0 {
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						globalConfig.Audio.PlayOnce(AudioCommandError)
