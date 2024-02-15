@@ -135,6 +135,21 @@ func lerp(x, a, b float32) float32 {
 	return (1-x)*a + x*b
 }
 
+// greatest common divisor
+func gcd(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// least common multiple
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Extent2D
 

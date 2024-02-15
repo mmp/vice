@@ -303,3 +303,49 @@ func TestPermutationElement(t *testing.T) {
 		}
 	}
 }
+
+func TestGCD(t *testing.T) {
+	type Test struct {
+		a, b   int
+		result int
+	}
+	for _, test := range []Test{
+		Test{a: 9, b: 3, result: 3},
+		Test{a: 36, b: 2, result: 2},
+		Test{a: 18, b: 36, result: 18},
+		Test{a: 2, b: 8, result: 2},
+		Test{a: 13, b: 31, result: 1},
+	} {
+		g := gcd(test.a, test.b)
+		if g != test.result {
+			t.Errorf("incorrect gcd for (%d,%d): wanted %d, got %d", test.a, test.b, test.result, g)
+		}
+		if test.a%test.result != 0 || test.b%test.result != 0 {
+			t.Errorf("bogus test case for (%d,%d): expected result %d is not a valid divisor",
+				test.a, test.b, test.result)
+		}
+	}
+}
+
+func TestLCM(t *testing.T) {
+	type Test struct {
+		a, b   int
+		result int
+	}
+	for _, test := range []Test{
+		Test{a: 9, b: 3, result: 9},
+		Test{a: 3, b: 2, result: 6},
+		Test{a: 5, b: 7, result: 35},
+		Test{a: 1, b: 11, result: 11},
+		Test{a: 12, b: 12, result: 12},
+	} {
+		g := lcm(test.a, test.b)
+		if g != test.result {
+			t.Errorf("incorrect lcm for (%d,%d): wanted %d, got %d", test.a, test.b, test.result, g)
+		}
+		if test.result%test.a != 0 || test.result%test.b != 0 {
+			t.Errorf("bogus test case for (%d,%d): expected result %d is not a valid multiple",
+				test.a, test.b, test.result)
+		}
+	}
+}
