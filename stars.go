@@ -5181,7 +5181,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 	defer ReturnTextDrawBuilder(td)
 
 	ps := sp.CurrentPreferenceSet
-	font := sp.systemFont[ps.CharSize.Tools]
+	font := sp.systemFont[ps.CharSize.Datablocks]
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 	textStyle := TextStyle{Font: font, DrawBackground: true, Color: color}
 
