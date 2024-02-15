@@ -4938,7 +4938,6 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 			mainblock[0] = append(mainblock[0], as+ident)
 			mainblock[1] = append(mainblock[1], as+ident)
 		}
-		return
 
 	case FullDatablock:
 		mainblock = make([][]string, 2)
@@ -5016,13 +5015,13 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		} else {
 			mainblock[1] = append(mainblock[1], ac.FlightPlan.ArrivalAirport+ho+actype)
 		}
-	}
 
-	if ac.TempAltitude != 0 {
-		ta := (ac.TempAltitude + 50) / 100
-		tastr := fmt.Sprintf("     A%03d", ta)
-		mainblock[0] = append(mainblock[0], tastr)
-		mainblock[1] = append(mainblock[1], tastr)
+		if ac.TempAltitude != 0 {
+			ta := (ac.TempAltitude + 50) / 100
+			tastr := fmt.Sprintf("     A%03d", ta)
+			mainblock[0] = append(mainblock[0], tastr)
+			mainblock[1] = append(mainblock[1], tastr)
+		}
 	}
 
 	return
