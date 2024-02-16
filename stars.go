@@ -47,6 +47,9 @@ var (
 	STARSGhostColor             = RGB{1, 1, 0}
 	STARSSelectedAircraftColor  = RGB{0, 1, 1}
 
+	STARSATPAWarningColor = RGB{1, 1, 0}
+	STARSATPAAlertColor   = RGB{1, .215, 0}
+
 	STARSDCBButtonColor         = RGB{0, .4, 0}
 	STARSDCBActiveButtonColor   = RGB{0, .8, 0}
 	STARSDCBTextColor           = RGB{1, 1, 1}
@@ -370,6 +373,7 @@ const (
 	DCBMenuSite
 	DCBMenuSSAFilter
 	DCBMenuGITextFilter
+	DCBMenuTPA
 )
 
 type STARSAircraftState struct {
@@ -387,9 +391,14 @@ type STARSAircraftState struct {
 	IsSelected bool // middle click
 
 	// Only drawn if non-zero
-	JRingRadius    float32
-	ConeLength     float32
-	DisplayTPASize bool // flip this so that zero-init works here? (What is the default?)
+	JRingRadius          float32
+	ConeLength           float32
+	DisplayTPASize       *bool // unspecified->system default if nil
+	DisplayATPAMonitor   *bool // unspecified->system default if nil
+	DisplayATPAWarnAlert *bool // unspecified->system default if nil
+	IntrailDistance      float32
+	ATPAStatus           ATPAStatus
+	MinimumMIT           float32
 
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
@@ -427,6 +436,15 @@ type STARSAircraftState struct {
 	PointedOut bool
 }
 
+type ATPAStatus int
+
+const (
+	ATPAStatusUnset = iota
+	ATPAStatusMonitor
+	ATPAStatusWarning
+	ATPAStatusAlert
+)
+
 type GhostState int
 
 const (
@@ -438,6 +456,14 @@ const (
 func (s *STARSAircraftState) TrackAltitude() int {
 	idx := (s.tracksIndex - 1) % len(s.tracks)
 	return s.tracks[idx].Altitude
+}
+
+func (s *STARSAircraftState) TrackDeltaAltitude() int {
+	if s.tracksIndex < 2 {
+		return 0
+	}
+	prev := (s.tracksIndex - 2) % len(s.tracks)
+	return s.TrackAltitude() - s.tracks[prev].Altitude
 }
 
 func (s *STARSAircraftState) TrackPosition() Point2LL {
@@ -573,7 +599,10 @@ type STARSPreferenceSet struct {
 	OverflightFullDatablocks bool
 	AutomaticFDBOffset       bool
 
-	DisplayTPASize bool
+	DisplayTPASize               bool
+	DisplayATPAIntrailDist       bool
+	DisplayATPAWarningAlertCones bool
+	DisplayATPAMonitorCones      bool
 
 	VideoMapVisible  map[string]interface{}
 	SystemMapVisible map[int]interface{}
@@ -776,6 +805,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.DisplayUncorrelatedTargets = true
 
 	ps.DisplayTPASize = true
+	ps.DisplayATPAWarningAlertCones = true
 
 	ps.PTLLength = 1
 
@@ -1292,6 +1322,15 @@ func (sp *STARSPane) Upgrade(from, to int) {
 			}
 		}
 	}
+	if from < 18 {
+		// ATPA; set defaults
+		sp.CurrentPreferenceSet.DisplayATPAIntrailDist = true
+		sp.CurrentPreferenceSet.DisplayATPAWarningAlertCones = true
+		for i := range sp.PreferenceSets {
+			sp.PreferenceSets[i].DisplayATPAIntrailDist = true
+			sp.PreferenceSets[i].DisplayATPAWarningAlertCones = true
+		}
+	}
 }
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -1471,6 +1510,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
+	sp.updateIntrailDistance(aircraft)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -1686,13 +1726,70 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	switch sp.commandMode {
 	case CommandModeNone:
 		switch cmd {
+		case "*AE":
+			// Enable ATPA warning/alert cones
+			ps.DisplayATPAWarningAlertCones = true
+			status.clear = true
+			return
+
+		case "*AI":
+			// Inhibit ATPA warning/alert cones
+			ps.DisplayATPAWarningAlertCones = false
+			status.clear = true
+			return
+
+		case "*BE":
+			// Enable ATPA monitor cones
+			ps.DisplayATPAMonitorCones = true
+			status.clear = true
+			return
+
+		case "*BI":
+			// Inhibit ATPA monitor cones
+			ps.DisplayATPAMonitorCones = false
+			status.clear = true
+			return
+
+		case "*DE":
+			// Enable ATPA in-trail distances
+			ps.DisplayATPAIntrailDist = true
+			status.clear = true
+			return
+
+		case "*DI":
+			// Inhibit ATPA in-trail distances
+			ps.DisplayATPAIntrailDist = false
+			status.clear = true
+			return
+
 		case "*D+":
+			// Toggle
 			ps.DisplayTPASize = !ps.DisplayTPASize
-			// TODO: check that toggling all is the expected behavior
 			for _, state := range sp.Aircraft {
-				state.DisplayTPASize = !state.DisplayTPASize
+				state.DisplayTPASize = nil
+			}
+			status.output = Select(ps.DisplayTPASize, "TPA SIZE ON", "TPA SIZE OFF")
+			status.clear = true
+			return
+
+		case "*D+E":
+			// Enable
+			ps.DisplayTPASize = true
+			for _, state := range sp.Aircraft {
+				state.DisplayTPASize = nil
 			}
 			status.clear = true
+			status.output = "TPA SIZE ON"
+			return
+
+		case "*D+I":
+			// Inhibit
+			ps.DisplayTPASize = false
+			for _, state := range sp.Aircraft {
+				state.DisplayTPASize = nil
+			}
+			status.clear = true
+			status.output = "TPA SIZE OFF"
 			return
 
 		case "**J":
@@ -2987,7 +3084,55 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				return
 			} else if cmd == "*D+" {
-				ps.DisplayTPASize = !ps.DisplayTPASize
+				// TODO: this and the following two should give ILL FNCT if
+				// there's no j-ring/[A]TPA cone being displayed for the
+				// track (6-173).
+
+				// toggle TPA size display
+				if state.DisplayTPASize == nil {
+					b := ps.DisplayTPASize // new variable; don't alias ps.DisplayTPASize!
+					state.DisplayTPASize = &b
+				}
+				*state.DisplayTPASize = !*state.DisplayTPASize
+				status.clear = true
+				return
+			} else if cmd == "*D+E" {
+				// enable TPA size display
+				b := true
+				state.DisplayTPASize = &b
+				status.clear = true
+				return
+			} else if cmd == "*D+I" {
+				// inhibit TPA size display
+				b := false
+				state.DisplayTPASize = &b
+				status.clear = true
+				return
+			} else if cmd == "*AE" {
+				// Enable ATPA warning/alert cones for the track
+				// TODO: for this and *AI and the two *B commands below, we
+				// should issue an error if not IFR, not displaying FDB, or
+				// not in ATPA approach volume (6-176).
+				b := true
+				state.DisplayATPAWarnAlert = &b
+				status.clear = true
+				return
+			} else if cmd == "*AI" {
+				// Inhibit ATPA warning/alert cones for the track
+				b := false
+				state.DisplayATPAWarnAlert = &b
+				status.clear = true
+				return
+			} else if cmd == "*BE" {
+				// Enable ATPA monitor cones for the track
+				b := true
+				state.DisplayATPAMonitor = &b
+				status.clear = true
+				return
+			} else if cmd == "*BI" {
+				// Inhibit ATPA monitor cones for the track
+				b := false
+				state.DisplayATPAMonitor = &b
 				status.clear = true
 				return
 			} else if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
@@ -3582,6 +3727,9 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				return mode
 			},
 			STARSButtonFull, buttonScale)
+		if STARSSelectButton("TPA/\nATPA", STARSButtonFull, buttonScale) {
+			sp.activeDCBMenu = DCBMenuTPA
+		}
 		if STARSSelectButton("SHIFT", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
@@ -3788,6 +3936,24 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
+		}
+
+	case DCBMenuTPA:
+		onoff := func(b bool) string { return Select(b, "ENABLED", "INHIBTD") }
+		if STARSSelectButton("A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), STARSButtonFull, buttonScale) {
+			ps.DisplayTPASize = !ps.DisplayTPASize
+		}
+		if STARSSelectButton("INTRAIL\nDIST\n"+onoff(ps.DisplayATPAIntrailDist), STARSButtonFull, buttonScale) {
+			ps.DisplayATPAIntrailDist = !ps.DisplayATPAIntrailDist
+		}
+		if STARSSelectButton("ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), STARSButtonFull, buttonScale) {
+			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
+		}
+		if STARSSelectButton("MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), STARSButtonFull, buttonScale) {
+			ps.DisplayATPAMonitorCones = !ps.DisplayATPAMonitorCones
+		}
+		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
+			sp.activeDCBMenu = DCBMenuAux
 		}
 	}
 
@@ -4868,6 +5034,173 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	}
 }
 
+func (sp *STARSPane) inATPAApproachVolume(ac *Aircraft) bool {
+	ap, ok := database.Airports[ac.FlightPlan.ArrivalAirport]
+
+	// altitude and distance checks are proxies for properly-defined
+	// ATPA approach volumes.
+	return ac.IsAirborne() &&
+		ac.Altitude()-ac.ArrivalAirportElevation() < 6000 && // <= 6000' AGL
+		(!ok || nmdistance2ll(ac.Position(), ap.Location) < 25) // within 25nm of arrival aiport
+
+}
+
+func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
+	// Zero out the previous distance
+	for _, ac := range aircraft {
+		sp.Aircraft[ac.Callsign].IntrailDistance = 0
+		sp.Aircraft[ac.Callsign].MinimumMIT = 0
+		sp.Aircraft[ac.Callsign].ATPAStatus = ATPAStatusUnset
+	}
+
+	// For simplicity, we always compute all of the necessary distances
+	// here, regardless of things like both ps.DisplayATPAWarningAlertCones
+	// and ps.DisplayATPAMonitorCones being disabled. Later, when it's time
+	// to display things (or not), we account for both that as well as all
+	// of the potential per-aircraft overrides. This does mean that
+	// sometimes the work here is fully wasted.
+
+	atpaCandidate := func(ac *Aircraft) bool {
+		// TODO: also check distance to arrival airport?
+		return !ac.IsDeparture() && sp.inATPAApproachVolume(ac)
+	}
+	for _, bac := range aircraft { // back aircraft
+		if !atpaCandidate(bac) {
+			continue
+		}
+
+		bstate := sp.Aircraft[bac.Callsign]
+
+		bhdg := bstate.TrackHeading(bac.NmPerLongitude()) + bac.MagneticVariation()
+		var intrail *Aircraft
+
+		// This is O(n^2) which is not ideal
+		for _, fac := range aircraft { // front aircraft
+			if !atpaCandidate(bac) || bac == fac {
+				continue
+			}
+
+			if bac.FlightPlan.ArrivalAirport != fac.FlightPlan.ArrivalAirport {
+				continue
+			}
+
+			d := nmdistance2ll(bac.Position(), fac.Position())
+			if d > 15 { // TODO: what should this be?
+				continue
+			}
+			if bstate.IntrailDistance != 0 && d > bstate.IntrailDistance {
+				// We have already found another in-trail aircraft that the
+				// back aircraft is closer to.
+				continue
+			}
+
+			hto := headingp2ll(bac.Position(), fac.Position(), bac.NmPerLongitude(), bac.MagneticVariation())
+			if headingDifference(bhdg, hto) < 60 { // is it in front?
+				intrail = fac
+				bstate.IntrailDistance = d
+			}
+		}
+
+		if intrail != nil {
+			// bac is in-trail of someone, so figure out what separation is
+			// required and whether or not we have it.
+			sp.checkInTrailSeparation(bac, intrail)
+		}
+	}
+}
+
+func (sp *STARSPane) checkInTrailSeparation(ac, intrail *Aircraft) {
+	// Convert the weight classes from the performance database to an
+	// integer: 0 small, 1 large, 2 heavy, 3 super.
+	actype := func(ac *Aircraft) int {
+		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
+		if !ok {
+			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			return 1
+		}
+		wc := perf.WeightClass
+		if len(wc) == 0 {
+			lg.Errorf("%s: no weight class found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			return 1
+		}
+		switch wc[0] {
+		case 'S':
+			return 0
+		case 'M', 'L':
+			return 1
+		case 'H':
+			return 2
+		case 'J':
+			return 3
+		default:
+			lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
+			return 1
+		}
+	}
+
+	// We don't have the info we need for RECAT in the openscope
+	// aircraft database, so this will have to do....
+	mitRequirements := [4][4]int{ // [front][back]
+		[4]int{3, 3, 3, 3}, // any behind small is 3
+		[4]int{4, 3, 3, 3}, // behind large
+		[4]int{5, 5, 4, 3}, // behind heavy
+		[4]int{8, 7, 6, 3}, // behind super
+	}
+	mit := mitRequirements[actype(intrail)][actype(ac)]
+
+	// Front aircraft
+	fstate := sp.Aircraft[intrail.Callsign]
+	fp := ll2nm(fstate.TrackPosition(), intrail.NmPerLongitude())
+	fv := fstate.HeadingVector(intrail.NmPerLongitude(), intrail.MagneticVariation()) // one minute
+	fv = scale2f(fv, float32(1)/float32(60))                                          // per second
+	fv = ll2nm(fv, intrail.NmPerLongitude())
+	falt, fdalt := float32(fstate.TrackAltitude()), float32(fstate.TrackDeltaAltitude()) // per second
+
+	// Behind aircraft
+	state := sp.Aircraft[ac.Callsign]
+	p := ll2nm(state.TrackPosition(), ac.NmPerLongitude())
+	v := state.HeadingVector(ac.NmPerLongitude(), ac.MagneticVariation()) // one minute
+	v = scale2f(v, float32(1)/float32(60))                                // per second
+	v = ll2nm(v, ac.NmPerLongitude())
+	alt, dalt := float32(state.TrackAltitude()), float32(state.TrackDeltaAltitude()) // per second
+
+	state.MinimumMIT = float32(mit)
+	state.ATPAStatus = ATPAStatusMonitor // baseline
+
+	if sp.diverging(ac, intrail) {
+		// No warning or alert if their courses are diverging.
+		return
+	}
+
+	// Will there be a conflict s seconds in the future?
+	for s := float32(0); s < 45; s++ {
+		// Use a simple linear model where we assume altitude will continue
+		// to change at the current rate and aircraft will fly along their
+		// present heading at their present speed.
+
+		// Compute expected altitude
+		fa, a := falt+s*fdalt, alt+s*dalt
+		if abs(fa-a) >= 990 { // altitude separated, with a little slop..
+			continue
+		}
+
+		// Expected position
+		fpp := add2f(fp, scale2f(fv, s))
+		pp := add2f(p, scale2f(v, s))
+		if distance2f(fpp, pp) < float32(mit) { // no bueno
+			if s <= 24 {
+				// Error if conflict expected within 24 seconds (6-159).
+				state.ATPAStatus = ATPAStatusAlert
+				return
+			} else {
+				// Warning if conflict expected within 45 seconds (6-159).
+				state.ATPAStatus = ATPAStatusWarning
+				return
+			}
+		}
+	}
+}
+
 func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	sa, sb := sp.Aircraft[a.Callsign], sp.Aircraft[b.Callsign]
 
@@ -5077,7 +5410,31 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			}
 		}
 
-		field6 := "     "
+		field6 := ""
+		var line3FieldColors *STARSDatablockFieldColors
+		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
+			field6 = "*TPA"
+		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAIntrailDist {
+			field6 = fmt.Sprintf("%.2f", state.IntrailDistance)
+
+			if state.ATPAStatus == ATPAStatusWarning {
+				line3FieldColors = &STARSDatablockFieldColors{
+					Start: 0,
+					End:   len(field6),
+					Color: STARSATPAWarningColor,
+				}
+			} else if state.ATPAStatus == ATPAStatusAlert {
+				line3FieldColors = &STARSDatablockFieldColors{
+					Start: 0,
+					End:   len(field6),
+					Color: STARSATPAAlertColor,
+				}
+			}
+		}
+		for len(field6) < 5 {
+			field6 += " "
+		}
+
 		field7 := "    "
 		if ac.TempAltitude != 0 {
 			ta := (ac.TempAltitude + 50) / 100
@@ -5095,6 +5452,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			db := baseDB.Duplicate()
 			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
 			db.Lines[3].Text = line3
+			if line3FieldColors != nil {
+				db.Lines[3].Colors = append(db.Lines[3].Colors, *line3FieldColors)
+			}
 			dbs = append(dbs, db)
 		}
 		return dbs
@@ -5273,7 +5633,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			radius := state.JRingRadius / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 			ld.AddCircle(pc, radius, nsegs, color)
 
-			if ps.DisplayTPASize || state.DisplayTPASize {
+			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				// draw the ring size around 7.5 o'clock
 				// vector from center to the circle there
 				v := [2]float32{-.707106 * radius, -.707106 * radius} // -sqrt(2)/2
@@ -5284,7 +5644,24 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			}
 		}
 
-		if state.ConeLength > 0 && state.HaveHeading() {
+		atpaStatus := state.ATPAStatus // this may change
+
+		// If warning/alert cones are inhibited but monitor cones are not,
+		// we may still draw a monitor cone.
+		if (atpaStatus == ATPAStatusWarning || atpaStatus == ATPAStatusAlert) &&
+			(!ps.DisplayATPAWarningAlertCones || (state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert)) {
+			atpaStatus = ATPAStatusMonitor
+		}
+
+		drawATPAMonitor := atpaStatus == ATPAStatusMonitor && ps.DisplayATPAMonitorCones &&
+			(state.DisplayATPAMonitor == nil || *state.DisplayATPAMonitor)
+		drawATPAWarning := atpaStatus == ATPAStatusWarning && ps.DisplayATPAWarningAlertCones &&
+			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
+		drawATPAAlert := atpaStatus == ATPAStatusAlert && ps.DisplayATPAWarningAlertCones &&
+			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
+
+		if state.HaveHeading() &&
+			(state.ConeLength > 0 || drawATPAMonitor || drawATPAWarning || drawATPAAlert) {
 			// We'll draw in window coordinates. First figure out the
 			// coordinates of the vertices of the cone triangle. We'll
 			// start with a canonical triangle in nm coordinates, going one
@@ -5292,7 +5669,12 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			v := [4][2]float32{[2]float32{0, 0}, [2]float32{-.04, 1}, [2]float32{.04, 1}}
 
 			// Now we want to get that triangle in window coordinates...
-			length := state.ConeLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
+
+			// The cone length is at minimum the required MIT if the aircraft is
+			// in the ATPA volume.
+			coneLength := max(state.ConeLength, state.MinimumMIT)
+			length := coneLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
+
 			rot := rotator2f(state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation())
 			for i := range v {
 				// First scale it to make it the desired length in nautical
@@ -5304,14 +5686,21 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 				v[i] = rot(v[i])
 			}
 
+			coneColor := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
+			if atpaStatus == ATPAStatusWarning {
+				coneColor = ps.Brightness.Lines.ScaleRGB(STARSATPAWarningColor)
+			} else if atpaStatus == ATPAStatusAlert {
+				coneColor = ps.Brightness.Lines.ScaleRGB(STARSATPAAlertColor)
+			}
+
 			// We've got what we need to draw a polyline with the
 			// aircraft's position as an anchor.
 			pw := transforms.WindowFromLatLongP(state.TrackPosition())
-			ld.AddPolyline(pw, color, v[:])
+			ld.AddPolyline(pw, coneColor, v[:])
 
-			if ps.DisplayTPASize || state.DisplayTPASize {
+			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				ptext := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
-				td.AddTextCentered(format(state.ConeLength), ptext, textStyle)
+				td.AddTextCentered(format(coneLength), ptext, textStyle)
 			}
 		}
 	}

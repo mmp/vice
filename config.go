@@ -27,7 +27,8 @@ import (
 // 15: audio engine rewrite
 // 16: cleared/assigned alt for departures, minor nav changes
 // 17: weather intensity default bool
-const CurrentConfigVersion = 17
+// 18: STARS ATPA
+const CurrentConfigVersion = 18
 
 type GlobalConfig struct {
 	Version               int
