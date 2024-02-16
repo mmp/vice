@@ -218,6 +218,110 @@ type STARSConvergingRunways struct {
 	Index           int
 }
 
+type STARSDatablockFieldColors struct {
+	Start, End int
+	Color      RGB
+}
+
+type STARSDatablockLine struct {
+	Text   string
+	Colors []STARSDatablockFieldColors
+}
+
+func (s *STARSDatablockLine) RightJustify(n int) {
+	if n > len(s.Text) {
+		delta := n - len(s.Text)
+		s.Text = fmt.Sprintf("%*c", delta, ' ') + s.Text
+		// Keep the formatting aligned.
+		for i := range s.Colors {
+			s.Colors[i].Start += delta
+			s.Colors[i].End += delta
+		}
+	}
+}
+
+type STARSDatablock struct {
+	Lines [4]STARSDatablockLine
+}
+
+func (s *STARSDatablock) RightJustify(n int) {
+	for i := range s.Lines {
+		s.Lines[i].RightJustify(n)
+	}
+}
+
+func (s *STARSDatablock) Duplicate() STARSDatablock {
+	var sd STARSDatablock
+	for i := range s.Lines {
+		sd.Lines[i].Text = s.Lines[i].Text
+		sd.Lines[i].Colors = DuplicateSlice(s.Lines[i].Colors)
+	}
+	return sd
+}
+
+func (s *STARSDatablock) BoundText(font *Font) (int, int) {
+	text := ""
+	for i, l := range s.Lines {
+		text += l.Text
+		if i+1 < len(s.Lines) {
+			text += "\n"
+		}
+	}
+	return font.BoundText(text, 0)
+}
+
+func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font, baseColor RGB,
+	brightness STARSBrightness) {
+	style := TextStyle{
+		Font:        font,
+		Color:       brightness.ScaleRGB(baseColor),
+		DropShadow:  true,
+		LineSpacing: 0}
+
+	for _, line := range s.Lines {
+		haveFormatting := len(line.Colors) > 0
+		if haveFormatting {
+			p0 := pt // save starting point
+
+			// Gather spans of characters that have the same color
+			spanColor := baseColor
+			start, end := 0, 0
+
+			flush := func(newColor RGB) {
+				if end > start {
+					style := TextStyle{
+						Font:        font,
+						Color:       brightness.ScaleRGB(spanColor),
+						DropShadow:  true,
+						LineSpacing: 0}
+					pt = td.AddText(line.Text[start:end], pt, style)
+					start = end
+				}
+				spanColor = newColor
+			}
+
+			for ; end < len(line.Text); end++ {
+				if line.Text[end] == ' ' {
+					// let spaces ride regardless of style
+					continue
+				}
+				// Does this character have a new color?
+				for _, format := range line.Colors {
+					if end >= format.Start && end < format.End && !spanColor.Equals(format.Color) {
+						flush(format.Color)
+					}
+				}
+			}
+			flush(spanColor)
+
+			// newline from start so we maintain aligned columns.
+			pt = td.AddText("\n", p0, style)
+		} else {
+			pt = td.AddText(line.Text+"\n", pt, style)
+		}
+	}
+}
+
 type CRDARunwayState struct {
 	Enabled                 bool
 	LeaderLineDirection     *CardinalOrdinalDirection // nil -> unset
@@ -4488,9 +4592,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 
 		// Leader line
 		v := sp.getLeaderLineVector(ghost.LeaderLineDirection)
-		p0 := add2f(pac, scale2f(normalize2f(v), float32(2+trackFont.size/2)))
-		p1 := add2f(pac, v)
-		ld.AddLine(p0, p1, color)
+		ld.AddLine(pac, add2f(pac, v), color)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -4631,58 +4733,47 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 	}
 }
 
-func (sp *STARSPane) getDatablockText(ctx *PaneContext, ac *Aircraft) (errText string, text [][]string) {
+func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
 	now := ctx.world.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac) {
-		return
+		return nil
 	}
 
-	errText, text = sp.formatDatablock(ctx, ac)
+	dbs := sp.formatDatablocks(ctx, ac)
 
-	// For westerly directions the datablock text should be right
-	// justified, since the leader line will be connecting on that side.
+	// For Southern or Westerly directions the datablock text should be
+	// right justified, since the leader line will be connecting on that
+	// side.
 	dir := sp.getLeaderLineDirection(ac, ctx.world)
-	rightJustify := dir > South
+	rightJustify := dir >= South
 	if rightJustify {
 		maxLen := 0
-		for i := 0; i < len(text); i++ {
-			for j := range text[i] {
-				text[i][j] = strings.TrimSpace(text[i][j])
-				maxLen = max(maxLen, len(text[i][j]))
+		for _, db := range dbs {
+			for _, line := range db.Lines {
+				maxLen = max(maxLen, len(line.Text))
 			}
 		}
-
-		justify := func(s string) string {
-			if len(s) == maxLen {
-				return s
-			}
-			return fmt.Sprintf("%*c", maxLen-len(s), ' ') + s
-		}
-		for i := 0; i < len(text); i++ {
-			text[i][0] = justify(text[i][0])
+		for i := range dbs {
+			dbs[i].RightJustify(maxLen)
 		}
 	}
 
-	return
+	return dbs
 }
 
 func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir CardinalOrdinalDirection) [2]float32 {
 	// To place the datablock, start with the vector for the leader line.
 	drawOffset := sp.getLeaderLineVector(leaderDir)
 
-	// And now fine-tune so that e.g., for East, the datablock is
-	// vertically aligned with the track line. (And similarly for other
-	// directions...)
+	// And now fine-tune so that the leader line connects with the midpoint
+	// of the line that includes the callsign.
+	lineHeight := textBounds[1] / 4
 	switch leaderDir {
-	case North:
-		drawOffset = add2f(drawOffset, [2]float32{0, textBounds[1]})
-	case NorthEast, East, SouthEast:
-		drawOffset = add2f(drawOffset, [2]float32{0, textBounds[1] / 2})
-	case South:
-		drawOffset = add2f(drawOffset, [2]float32{0, 0})
-	case SouthWest, West, NorthWest:
-		drawOffset = add2f(drawOffset, [2]float32{-textBounds[0], textBounds[1] / 2})
+	case North, NorthEast, East, SouthEast:
+		drawOffset = add2f(drawOffset, [2]float32{2, lineHeight * 3 / 2})
+	case South, SouthWest, West, NorthWest:
+		drawOffset = add2f(drawOffset, [2]float32{-2 - textBounds[0], lineHeight * 3 / 2})
 	}
 
 	return drawOffset
@@ -4805,7 +4896,7 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	return true
 }
 
-func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock string, mainblock [][]string) {
+func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
 	state := sp.Aircraft[ac.Callsign]
 
 	var errs []string
@@ -4829,181 +4920,198 @@ func (sp *STARSPane) formatDatablock(ctx *PaneContext, ac *Aircraft) (errblock s
 		}
 		errs = append(errs, "AS"+altStrs)
 	}
-	// TODO: LA
-	errblock = strings.Join(errs, "/") // want e.g., EM/LA if multiple things going on
+
+	// baseDB is what stays the same for all datablock variants
+	baseDB := STARSDatablock{}
+	baseDB.Lines[0].Text = strings.Join(errs, "/") // want e.g., EM/LA if multiple things going on
+	if len(errs) > 0 {
+		baseDB.Lines[0].Colors = append(baseDB.Lines[0].Colors,
+			STARSDatablockFieldColors{
+				Start: 0,
+				End:   len(baseDB.Lines[0].Text),
+				Color: STARSTextAlertColor,
+			})
+	}
 
 	if ac.Mode == Standby {
-		return
+		return nil
 	}
 
 	ty := sp.datablockType(ctx.world, ac)
 
 	switch ty {
 	case LimitedDatablock:
-		mainblock = make([][]string, 2)
-		mainblock[0] = append(mainblock[0], "TODO LIMITED DATABLOCK")
-		mainblock[1] = append(mainblock[1], "TODO LIMITED DATABLOCK")
+		db := baseDB.Duplicate()
+		db.Lines[1].Text = "TODO LIMITED DATABLOCK"
+		return []STARSDatablock{db}
 
 	case PartialDatablock:
-		mainblock = make([][]string, 2) // 2 by default, handle 3 as needed below
+		dbs := []STARSDatablock{baseDB.Duplicate(), baseDB.Duplicate()}
 
-		// STARS Operators Manual 2-69
 		if ac.Squawk != ac.AssignedSquawk {
 			sq := ac.Squawk.String()
-			mainblock[0] = append(mainblock[0], sq)
-			mainblock[1] = append(mainblock[1], sq+"WHO")
-		}
-		actype := ac.FlightPlan.TypeWithoutSuffix()
-		var suffix string
-		if ac.FlightPlan.Rules == VFR {
-			suffix = "V"
-		} else if sp.isOverflight(ctx, ac) {
-			suffix = "E"
-		} else {
-			suffix = " "
-		}
-		if actype == "B757" {
-			suffix += "F"
-		} else if strings.HasPrefix(actype, "H/") {
-			suffix += "H"
-		} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
-			suffix += "J"
+			if len(baseDB.Lines[0].Text) > 0 {
+				dbs[0].Lines[0].Text += " "
+				dbs[1].Lines[0].Text += " "
+			}
+			dbs[0].Lines[0].Text += sq
+			dbs[1].Lines[0].Text += sq + "WHO"
 		}
 
-		ident := Select(state.Ident(), "ID", "")
+		field4 := Select(state.Ident(), "ID", "")
 
-		ho := " "
+		if fp := ac.FlightPlan; fp != nil && fp.Rules == VFR {
+			as := fmt.Sprintf("%03d  %02d", (state.TrackAltitude()+50)/100, (state.TrackGroundspeed()+5)/10)
+			dbs[0].Lines[1].Text = as + field4
+			dbs[1].Lines[1].Text = as + field4
+			return dbs
+		}
+
+		field2 := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				ho = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
 			}
 		}
 
-		if fp := ac.FlightPlan; fp != nil && fp.Rules == IFR {
-			// Alternate between altitude and either scratchpad or destination airport.
-			mainblock[0] = append(mainblock[0], fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)+ho+suffix+ident)
-			if ac.Scratchpad != "" && ac.SecondaryScratchpad != "" {
-				// both scratchpads
-				mainblock = append(mainblock, mainblock[1]) // copy what we have so far
-				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.Scratchpad)+ho+suffix+ident)
-				mainblock[2] = append(mainblock[2], fmt.Sprintf("%3s", ac.SecondaryScratchpad)+ho+suffix+ident)
-			} else if ac.Scratchpad != "" {
-				// just primary
-				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.Scratchpad)+ho+suffix+ident)
-			} else if ac.SecondaryScratchpad != "" {
-				// have secondary but not primary
-				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ac.SecondaryScratchpad)+ho+suffix+ident)
-			} else {
-				ap := fp.ArrivalAirport
-				if len(ap) == 4 {
-					ap = ap[1:] // drop the leading K
-				}
-				mainblock[1] = append(mainblock[1], fmt.Sprintf("%3s", ap)+ho+suffix+ident)
-			}
-		} else {
-			// VFR
-			as := fmt.Sprintf("%03d  %02d", (state.TrackAltitude()+50)/100, (state.TrackGroundspeed()+5)/10)
-			mainblock[0] = append(mainblock[0], as+ident)
-			mainblock[1] = append(mainblock[1], as+ident)
+		field3 := ""
+		if ac.FlightPlan.Rules == VFR {
+			field3 += "V"
+		} else if sp.isOverflight(ctx, ac) {
+			field3 += "E"
 		}
+
+		actype := ac.FlightPlan.TypeWithoutSuffix()
+		if actype == "B757" {
+			field3 += "F"
+		} else if strings.HasPrefix(actype, "H/") {
+			field3 += "H"
+		} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
+			field3 += "J"
+		}
+
+		// Field 1: alternate between altitude and either primary
+		// scratchpad or destination airport.
+		ap := ac.FlightPlan.ArrivalAirport
+		if len(ap) == 4 {
+			ap = ap[1:] // drop the leading K
+		}
+		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+		sp := fmt.Sprintf("%3s", ac.Scratchpad)
+
+		field1 := [2]string{alt, Select(ac.Scratchpad != "", sp, ap)}
+
+		dbs[0].Lines[1].Text = field1[0] + field2 + field3 + field4
+		dbs[1].Lines[1].Text = field1[1] + field2 + field3 + field4
+
+		return dbs
 
 	case FullDatablock:
-		mainblock = make([][]string, 2)
-
-		// First line; the same for both.
-		cs := ac.Callsign
-		// TODO: draw triangle after callsign if conflict alerts inhibited
-		// TODO: space then asterisk after callsign if MSAW inhibited
-
+		// Line 1: fields 1, 2, and 8 (surprisingly). Always the same content; nothing multiplexed
+		field1 := ac.Callsign
+		field2 := "" // TODO: * for MSAW inhibited, etc.
+		field8 := ""
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
-			cs += " PO"
+			field8 = " PO"
+		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
+			field8 = " PO" + id
+		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+			field8 = " UN"
 		}
-		if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
-			cs += " PO" + id
-		}
-		if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
-			cs += " UN"
-		}
-		mainblock[0] = append(mainblock[0], cs)
-		mainblock[1] = append(mainblock[1], cs)
+		baseDB.Lines[1].Text = field1 + field2 + field8
 
-		// Second line of the non-error datablock
-		ho := " "
-		if ac.HandoffTrackController != "" {
-			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				ho = ctrl.SectorId[len(ctrl.SectorId)-1:]
-			}
-		}
-
-		// Altitude and speed: mainblock[0]
+		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if state.LostTrack(ctx.world.CurrentTime()) {
 			alt = "CST"
 		}
-		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
-
-		actype := ac.FlightPlan.TypeWithoutSuffix()
-		var suffix string
-		if ac.FlightPlan.Rules == VFR {
-			suffix = "V"
-		} else if sp.isOverflight(ctx, ac) {
-			suffix = "E"
-		} else {
-			suffix = " "
+		field3 := []string{alt}
+		if ac.Scratchpad != "" {
+			field3 = append(field3, ac.Scratchpad)
 		}
+		if ac.SecondaryScratchpad != "" {
+			field3 = append(field3, ac.SecondaryScratchpad)
+		}
+		if len(field3) == 1 {
+			ap := ac.FlightPlan.ArrivalAirport
+			if len(ap) == 4 {
+				ap = ap[1:] // drop the leading K
+			}
+			field3 = append(field3, ap)
+		}
+
+		field4 := "  "
+		if ac.HandoffTrackController != "" {
+			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
+				field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+			}
+		}
+
+		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
+		acCategory := ""
+		actype := ac.FlightPlan.TypeWithoutSuffix()
 		if actype == "B757" {
-			suffix += "F"
+			acCategory = "F"
 		} else if strings.HasPrefix(actype, "H/") {
 			actype = strings.TrimPrefix(actype, "H/")
-			suffix += "H"
+			acCategory = "H"
 		} else if strings.HasPrefix(actype, "S/") {
 			actype = strings.TrimPrefix(actype, "S/")
-			suffix += "J"
+			acCategory = "J"
 		} else if strings.HasPrefix(actype, "J/") {
 			actype = strings.TrimPrefix(actype, "J/")
-			suffix += "J"
+			acCategory = "J"
 		}
 
+		field5 := []string{} // alternate speed and aircraft type
 		if state.Ident() {
 			// Speed is followed by ID when identing (2-67, field 5)
-			mainblock[0] = append(mainblock[0], alt+ho+speed+"ID")
+			field5 = append(field5, speed+"ID")
 		} else {
-			mainblock[0] = append(mainblock[0], alt+ho+speed+suffix)
+			field5 = append(field5, speed+acCategory)
+		}
+		field5 = append(field5, actype)
+		for i := range field5 {
+			if len(field5[i]) < 5 {
+				field5[i] = fmt.Sprintf("%-5s", field5[i])
+			}
 		}
 
-		// scratchpad(s) or arrival airport
-		if ac.Scratchpad != "" && ac.SecondaryScratchpad != "" {
-			mainblock = append(mainblock, mainblock[1])
-			mainblock[1] = append(mainblock[1], ac.Scratchpad+ho+actype)
-			mainblock[2] = append(mainblock[2], ac.SecondaryScratchpad+ho+actype)
-		} else if ac.Scratchpad != "" {
-			mainblock[1] = append(mainblock[1], ac.Scratchpad+ho+actype)
-		} else if ac.SecondaryScratchpad != "" {
-			mainblock[1] = append(mainblock[1], ac.SecondaryScratchpad+ho+actype)
-		} else {
-			mainblock[1] = append(mainblock[1], ac.FlightPlan.ArrivalAirport+ho+actype)
-		}
-
+		field6 := "     "
+		field7 := "    "
 		if ac.TempAltitude != 0 {
 			ta := (ac.TempAltitude + 50) / 100
-			tastr := fmt.Sprintf("     A%03d", ta)
-			mainblock[0] = append(mainblock[0], tastr)
-			mainblock[1] = append(mainblock[1], tastr)
+			field7 = fmt.Sprintf("A%03d", ta)
 		}
+		line3 := field6 + "  " + field7
+
+		// Now make some datablocks. For our purposes, only field3 and
+		// field5 (and thus line 2) may be time multiplexed, which
+		// simplifies db creation here.  Note that line 1 has already been
+		// set in baseDB above.)
+		dbs := []STARSDatablock{}
+		n := lcm(len(field3), len(field5)) // cycle through all variations
+		for i := 0; i < n; i++ {
+			db := baseDB.Duplicate()
+			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
+			db.Lines[3].Text = line3
+			dbs = append(dbs, db)
+		}
+		return dbs
 	}
 
-	return
+	return nil
 }
 
-func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
+func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(w, ac)
-	br := Select(dt == PartialDatablock || dt == LimitedDatablock,
-		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
 	state := sp.Aircraft[ac.Callsign]
+	brightness = Select(dt == PartialDatablock || dt == LimitedDatablock,
+		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
 
 	if ac.Callsign == sp.dwellAircraft {
-		br = STARSBrightness(100)
+		brightness = STARSBrightness(100)
 	}
 
 	// Handle cases where it should flash
@@ -5015,34 +5123,36 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) RGB {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
 			pointOut {
-			br /= 3
+			brightness /= 3
 		}
 	}
 
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
-		return br.ScaleRGB(STARSInboundPointOutColor)
+		color = STARSInboundPointOutColor
 	} else if state.IsSelected {
-		return br.ScaleRGB(STARSSelectedAircraftColor)
+		color = STARSSelectedAircraftColor
 	} else if ac.TrackingController == w.Callsign {
-		return br.ScaleRGB(STARSTrackedAircraftColor)
+		color = STARSTrackedAircraftColor
 	} else if ac.HandoffTrackController == w.Callsign {
 		// flashing white if it's being handed off to us.
-		return br.ScaleRGB(STARSTrackedAircraftColor)
+		color = STARSTrackedAircraftColor
 	} else if state.OutboundHandoffAccepted {
 		// we handed it off, it was accepted, but we haven't yet acknowledged
-		return br.ScaleRGB(STARSTrackedAircraftColor)
+		color = STARSTrackedAircraftColor
 	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 		// quick look all plus
-		return br.ScaleRGB(STARSTrackedAircraftColor)
+		color = STARSTrackedAircraftColor
 	} else if slices.ContainsFunc(ps.QuickLookPositions,
 		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController && q.Plus }) {
 		// individual quicklook plus controller
-		return br.ScaleRGB(STARSTrackedAircraftColor)
+		color = STARSTrackedAircraftColor
+	} else {
+		// green otherwise
+		color = STARSUntrackedAircraftColor
 	}
 
-	// green otherwise
-	return br.ScaleRGB(STARSUntrackedAircraftColor)
+	return
 }
 
 func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
@@ -5063,41 +5173,29 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		errText, datablockText := sp.getDatablockText(ctx, ac)
+		dbs := sp.getDatablocks(ctx, ac)
+		if len(dbs) == 0 {
+			continue
+		}
 
-		color := sp.datablockColor(ctx.world, ac)
-		style := TextStyle{Font: font, Color: color, DropShadow: true, LineSpacing: 0}
-		db := (realNow.Second() / 2) % len(datablockText) // 2 second cycle
-		currentDatablockText := datablockText[db]
+		baseColor, brightness := sp.datablockColor(ctx.world, ac)
 
 		// Compute the bounds of the datablock; always use the first one so
-		// things don't jump around when it switches between them.
-		var boundsText []string
-		if errText != "" {
-			boundsText = append(boundsText, errText)
-		}
-		boundsText = append(boundsText, datablockText[0]...)
-		w, h := font.BoundText(strings.Join(boundsText, "\n"), style.LineSpacing)
+		// things don't jump around when it switches between multiple of
+		// them.
+		w, h := dbs[0].BoundText(font)
 		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
 			sp.getLeaderLineDirection(ac, ctx.world))
 
 		// Draw characters starting at the upper left.
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		pt := add2f(datablockOffset, pac)
-		if errText != "" {
-			errorStyle := TextStyle{
-				Font:        font,
-				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor),
-				LineSpacing: 0}
-			pt = td.AddText(errText+"\n", pt, errorStyle)
-		}
-		td.AddText(strings.Join(currentDatablockText, "\n"), pt, style)
+		idx := (realNow.Second() / 2) % len(dbs) // 2 second cycle
+		dbs[idx].DrawText(td, pt, font, baseColor, brightness)
 
 		// Leader line
 		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
-		p0 := add2f(pac, scale2f(normalize2f(v), float32(2+font.size/2)))
-		p1 := add2f(pac, v)
-		ld.AddLine(p0, p1, color)
+		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
