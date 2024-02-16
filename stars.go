@@ -4217,8 +4217,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 					return false
 				} else {
 					a, b := ctx.world.GetAirport(airports[i]), ctx.world.GetAirport(airports[j])
-					ai, bi := a.TowerListIndex, b.TowerListIndex
-					return Select(ai != 0, ai, 1000) < Select(bi != 0, bi, 1000)
+					ai := Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
+					bi := Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
+					if ai != bi {
+						return ai < bi
+					}
 				}
 				return airports[i] < airports[j]
 			})

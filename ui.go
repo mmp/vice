@@ -19,7 +19,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
@@ -435,26 +434,6 @@ func setCursorForRightButtons(text []string) {
 	}
 	offset := imgui.ContentRegionAvail().X - width
 	imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-func drawAirportSelector(airports map[string]interface{}, title string) (map[string]interface{}, bool) {
-	airportsString := strings.Join(SortedMapKeys(airports), ",")
-
-	if imgui.InputTextV(title, &airportsString, imgui.InputTextFlagsCharsUppercase, nil) {
-		ap := strings.FieldsFunc(airportsString, func(ch rune) bool {
-			return unicode.IsSpace(ch) || ch == ','
-		})
-
-		airports = make(map[string]interface{})
-		for _, a := range ap {
-			airports[a] = nil
-		}
-		return airports, true
-	}
-
-	return airports, false
 }
 
 ///////////////////////////////////////////////////////////////////////////
