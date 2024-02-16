@@ -309,10 +309,15 @@ func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font
 					continue
 				}
 				// Does this character have a new color?
+				chColor := baseColor
 				for _, format := range line.Colors {
-					if end >= format.Start && end < format.End && !spanColor.Equals(format.Color) {
-						flush(format.Color)
+					if end >= format.Start && end < format.End {
+						chColor = format.Color
+						break
 					}
+				}
+				if !spanColor.Equals(chColor) {
+					flush(chColor)
 				}
 			}
 			flush(spanColor)
