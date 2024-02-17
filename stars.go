@@ -727,6 +727,7 @@ type VideoMapsGroup int
 const (
 	VideoMapsGroupGeo = iota
 	VideoMapsGroupSysProc
+	VideoMapsGroupCurrent
 )
 
 func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
@@ -3765,18 +3766,22 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			}
 		}
 
-		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo
+		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible
 		if STARSToggleButton("GEO\nMAPS", &geoMapsSelected, STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupGeo
-			ps.VideoMapsList.Visible = true
+			ps.VideoMapsList.Visible = geoMapsSelected
 		}
 		STARSDisabledButton("AIRPORT", STARSButtonHalfVertical, buttonScale)
-		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc
+		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc && ps.VideoMapsList.Visible
 		if STARSToggleButton("SYS\nPROC", &sysProcSelected, STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupSysProc
-			ps.VideoMapsList.Visible = true
+			ps.VideoMapsList.Visible = sysProcSelected
 		}
-		STARSToggleButton("CURRENT", &ps.VideoMapsList.Visible, STARSButtonHalfVertical, buttonScale)
+		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupCurrent && ps.VideoMapsList.Visible
+		if STARSToggleButton("CURRENT", &currentMapsSelected, STARSButtonHalfVertical, buttonScale) {
+			ps.VideoMapsList.Selection = VideoMapsGroupCurrent
+			ps.VideoMapsList.Visible = currentMapsSelected
+		}
 
 	case DCBMenuBrite:
 		STARSBrightnessSpinner(ctx, "DCB ", &ps.Brightness.DCB, 25, false, STARSButtonHalfVertical, buttonScale)
@@ -4387,6 +4392,14 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			for _, index := range SortedMapKeys(sp.SystemMaps) {
 				_, vis := ps.SystemMapVisible[index]
 				text += format(*sp.SystemMaps[index], index, vis)
+			}
+		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
+			text += "MAPS\n"
+			for i, m := range ctx.world.STARSMaps {
+				_, vis := ps.VideoMapVisible[m.Name]
+				if vis {
+					text += format(m, i+1, vis) // 1-based indexing
+				}
 			}
 		} else {
 			lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
