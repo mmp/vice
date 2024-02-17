@@ -396,14 +396,15 @@ type STARSAircraftState struct {
 	IsSelected bool // middle click
 
 	// Only drawn if non-zero
-	JRingRadius          float32
-	ConeLength           float32
-	DisplayTPASize       *bool // unspecified->system default if nil
-	DisplayATPAMonitor   *bool // unspecified->system default if nil
-	DisplayATPAWarnAlert *bool // unspecified->system default if nil
-	IntrailDistance      float32
-	ATPAStatus           ATPAStatus
-	MinimumMIT           float32
+	JRingRadius              float32
+	ConeLength               float32
+	DisplayTPASize           *bool // unspecified->system default if nil
+	DisplayATPAMonitor       *bool // unspecified->system default if nil
+	DisplayATPAWarnAlert     *bool // unspecified->system default if nil
+	IntrailDistance          float32
+	ATPAStatus               ATPAStatus
+	MinimumMIT               float32
+	ATPALeadAircraftCallsign string
 
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
@@ -5059,6 +5060,7 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
 		sp.Aircraft[ac.Callsign].MinimumMIT = 0
 		sp.Aircraft[ac.Callsign].ATPAStatus = ATPAStatusUnset
+		sp.Aircraft[ac.Callsign].ATPALeadAircraftCallsign = ""
 	}
 
 	// For simplicity, we always compute all of the necessary distances
@@ -5173,6 +5175,7 @@ func (sp *STARSPane) checkInTrailSeparation(ac, intrail *Aircraft) {
 	alt, dalt := float32(state.TrackAltitude()), float32(state.TrackDeltaAltitude()) // per second
 
 	state.MinimumMIT = float32(mit)
+	state.ATPALeadAircraftCallsign = intrail.Callsign
 	state.ATPAStatus = ATPAStatusMonitor // baseline
 
 	if sp.diverging(ac, intrail) {
@@ -5662,14 +5665,15 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 		}
 
 		drawATPAMonitor := atpaStatus == ATPAStatusMonitor && ps.DisplayATPAMonitorCones &&
-			(state.DisplayATPAMonitor == nil || *state.DisplayATPAMonitor)
+			(state.DisplayATPAMonitor == nil || *state.DisplayATPAMonitor) &&
+			state.IntrailDistance-state.MinimumMIT <= 2 // monitor only if within 2nm of MIT requirement
 		drawATPAWarning := atpaStatus == ATPAStatusWarning && ps.DisplayATPAWarningAlertCones &&
 			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
 		drawATPAAlert := atpaStatus == ATPAStatusAlert && ps.DisplayATPAWarningAlertCones &&
 			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
+		drawATPACone := drawATPAMonitor || drawATPAWarning || drawATPAAlert
 
-		if state.HaveHeading() &&
-			(state.ConeLength > 0 || drawATPAMonitor || drawATPAWarning || drawATPAAlert) {
+		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
 			// We'll draw in window coordinates. First figure out the
 			// coordinates of the vertices of the cone triangle. We'll
 			// start with a canonical triangle in nm coordinates, going one
@@ -5683,7 +5687,20 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			coneLength := max(state.ConeLength, state.MinimumMIT)
 			length := coneLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 
-			rot := rotator2f(state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation())
+			var coneHeading float32
+			if drawATPACone {
+				// Cone is oriented to point toward the leading aircraft
+				sfront, ok := sp.Aircraft[state.ATPALeadAircraftCallsign]
+				if ok {
+					coneHeading = headingp2ll(state.TrackPosition(), sfront.TrackPosition(),
+						ac.NmPerLongitude(), ac.MagneticVariation())
+				}
+			} else {
+				// Cone is oriented along the aircraft's heading
+				coneHeading = state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation()
+			}
+
+			rot := rotator2f(coneHeading)
 			for i := range v {
 				// First scale it to make it the desired length in nautical
 				// miles; while we're at it, we'll convert that over to
