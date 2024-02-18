@@ -4553,14 +4553,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransform
 
 	ps := sp.CurrentPreferenceSet
 	for i, state := range ps.CRDA.RunwayPairState {
-		if !state.Enabled {
-			continue
-		}
 		for j, rwyState := range state.RunwayState {
-			if !rwyState.Enabled {
-				continue
-			}
-
 			if rwyState.DrawCourseLines {
 				region := sp.ConvergingRunways[i].ApproachRegions[j]
 				line, _ := region.GetLateralGeometry(ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
