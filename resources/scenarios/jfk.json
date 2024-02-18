@@ -1582,7 +1582,111 @@
         "WHITE": "Southwest"
       },
       "location": "N040.38.30.356,W073.46.51.483",
-      "tower_list": 1
+      "tower_list": 1,
+        "atpa_volumes": {
+            "4L": {
+                "runway_threshold": "_JFK_4L",
+                "heading": 44,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 3000,
+                "right_width": 1000,
+                "filtered_scratchpads": [ "VAP" ],
+                "excluded_scratchpads": [ "I4R", "R4R" ]
+            },
+            "4R": {
+                "runway_threshold": "_JFK_4R",
+                "heading": 44,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 3000,
+                "right_width": 1000,
+                "filtered_scratchpads": [ "VAP" ],
+                "excluded_scratchpads": [ "I2L", "R2L", "BVA" ],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
+            },
+            "13L": {
+                "runway_threshold": "_JFK_13L",
+                "heading": 134,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 2000,
+                "right_width": 1000,
+                "filtered_scratchpads": [ "VAP", "PVA" ],
+                "excluded_scratchpads": [ "I3R", "R3R" ],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
+            },
+            "13R": {
+                "runway_threshold": "_JFK_13R",
+                "heading": 134,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 1000,
+                "right_width": 2000,
+                "filtered_scratchpads": [ "VAP", "PVA" ],
+                "excluded_scratchpads": [ "I3L", "R3L" ]
+            },
+            "22L": {
+                "runway_threshold": "_JFK_22L",
+                "heading": 224,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 3000,
+                "right_width": 1000,
+                "filtered_scratchpads": [ "VAP", "BVA" ],
+                "excluded_scratchpads": [ "I2R", "R2R" ],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
+            },
+            "22R": {
+                "runway_threshold": "_JFK_22R",
+                "heading": 224,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 3000,
+                "right_width": 1000,
+                "filtered_scratchpads": [ "VAP" ],
+                "excluded_scratchpads": [ "I2L", "R2L", "BVA" ]
+            },
+            "31L": {
+                "runway_threshold": "_JFK_31L",
+                "heading": 314,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 3000,
+                "right_width": 1000,
+                "filtered_scratchpads": [ "VAP" ],
+                "excluded_scratchpads": [ "I3R", "R3R" ]
+            },
+            "31R": {
+                "runway_threshold": "_JFK_31R",
+                "heading": 314,
+                "max_heading_deviation": 90,
+                "floor": 100,
+                "ceiling": 5000,
+                "length": 14,
+                "left_width": 1000,
+                "right_width": 3000,
+                "filtered_scratchpads": [ "VAP" ],
+                "excluded_scratchpads": [ "I3L", "R3L" ]
+            }
+        }
     },
     "KLGA": {
       "departure_routes": {
