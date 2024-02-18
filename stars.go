@@ -3034,7 +3034,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				} else if state.DatablockType != FullDatablock {
+				}
+
+				if state.DatablockType != FullDatablock {
 					state.DatablockType = FullDatablock
 					// do not collapse datablock if user is tracking the aircraft
 				} else if ac.TrackingController != ctx.world.Callsign {
