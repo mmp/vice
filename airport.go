@@ -32,6 +32,8 @@ type Airport struct {
 
 	ApproachRegions   map[string]*ApproachRegion `json:"approach_regions"`
 	ConvergingRunways []ConvergingRunways        `json:"converging_runways"`
+
+	ATPAVolumes map[string]*ATPAVolume `json:"atpa_volumes"`
 }
 
 type ConvergingRunways struct {
@@ -66,6 +68,23 @@ type ApproachRegion struct {
 	BelowAltitudeTolerance float32 `json:"below_altitude_tolerance"`
 
 	ScratchpadPatterns []string `json:"scratchpad_patterns"`
+}
+
+type ATPAVolume struct {
+	Id                  string // Unique identifier, set after deserialization
+	ThresholdString     string `json:"runway_threshold"`
+	Threshold           Point2LL
+	Heading             float32  `json:"heading"`
+	MaxHeadingDeviation float32  `json:"max_heading_deviation"`
+	Floor               float32  `json:"floor"`
+	Ceiling             float32  `json:"ceiling"`
+	Length              float32  `json:"length"`
+	LeftWidth           float32  `json:"left_width"`
+	RightWidth          float32  `json:"right_width"`
+	FilteredScratchpads []string `json:"filtered_scratchpads"`
+	ExcludedScratchpads []string `json:"excluded_scratchpads"`
+	Enable25nmApproach  bool     `json:"enable_2.5nm"`
+	Dist25nmApproach    float32  `json:"2.5nm_distance"`
 }
 
 // returns a point along the reference line with given distance from the
@@ -181,6 +200,36 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 	}
 
 	return ghost
+}
+
+func (a *ATPAVolume) Inside(p Point2LL, alt, hdg, nmPerLongitude, magneticVariation float32) bool {
+	if alt < a.Floor || alt > a.Ceiling {
+		return false
+	}
+	if headingDifference(hdg, a.Heading) > a.MaxHeadingDeviation {
+		return false
+	}
+
+	rect := a.GetRect(nmPerLongitude, magneticVariation)
+	return PointInPolygon(p, rect[:])
+}
+
+func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]Point2LL {
+	// Segment along the approach course
+	p0 := ll2nm(a.Threshold, nmPerLongitude)
+	hdg := a.Heading - magneticVariation + 180
+	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
+	p1 := add2f(p0, scale2f(v, a.Length))
+
+	vp := [2]float32{-v[1], v[0]} // perp
+	left, right := a.LeftWidth/NauticalMilesToFeet, a.RightWidth/NauticalMilesToFeet
+
+	quad := [4][2]float32{
+		add2f(p0, scale2f(vp, -left)), add2f(p1, scale2f(vp, -left)),
+		add2f(p1, scale2f(vp, right)), add2f(p0, scale2f(vp, right))}
+	return [4]Point2LL{
+		nm2ll(quad[0], nmPerLongitude), nm2ll(quad[1], nmPerLongitude),
+		nm2ll(quad[2], nmPerLongitude), nm2ll(quad[3], nmPerLongitude)}
 }
 
 func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
@@ -431,6 +480,43 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			}
 			e.Pop()
 		}
+		e.Pop()
+	}
+
+	for rwy, vol := range ap.ATPAVolumes {
+		e.Push("ATPA " + rwy)
+
+		vol.Id = ap.Name + rwy
+
+		if vol.ThresholdString == "" {
+			e.ErrorString("\"runway_threshold\" not specified.")
+		} else {
+			var ok bool
+			if vol.Threshold, ok = sg.locate(vol.ThresholdString); !ok {
+				e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
+			}
+
+			// Defaults if things are not specified
+			if vol.MaxHeadingDeviation == 0 {
+				vol.MaxHeadingDeviation = 90
+			}
+			if vol.Floor == 0 {
+				vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
+			}
+			if vol.Ceiling == 0 {
+				vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
+			}
+			if vol.Length == 0 {
+				vol.Length = 15
+			}
+			if vol.LeftWidth == 0 {
+				vol.LeftWidth = 2000
+			}
+			if vol.RightWidth == 0 {
+				vol.RightWidth = 2000
+			}
+		}
+
 		e.Pop()
 	}
 }

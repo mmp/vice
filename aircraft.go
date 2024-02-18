@@ -559,3 +559,7 @@ func (ac *Aircraft) DepartureAirportElevation() float32 {
 func (ac *Aircraft) ArrivalAirportElevation() float32 {
 	return ac.Nav.FlightState.ArrivalAirportElevation
 }
+
+func (ac *Aircraft) ATPAVolume() *ATPAVolume {
+	return ac.Nav.Approach.ATPAVolume
+}

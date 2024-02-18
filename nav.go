@@ -116,6 +116,7 @@ type NavHeading struct {
 type NavApproach struct {
 	Assigned          *Approach
 	AssignedId        string
+	ATPAVolume        *ATPAVolume
 	Cleared           bool
 	InterceptState    InterceptLocalizerState
 	NoPT              bool
@@ -1920,6 +1921,10 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 
 	nav.Approach.Assigned = ap
 	nav.Approach.AssignedId = id
+	nav.Approach.ATPAVolume = nil
+	if airp := w.GetAirport(airport); airp != nil {
+		nav.Approach.ATPAVolume = airp.ATPAVolumes[ap.Runway]
+	}
 
 	if waypoints := arr.RunwayWaypoints[ap.Runway]; len(waypoints) > 0 {
 		if len(nav.Waypoints) == 0 {
