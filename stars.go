@@ -396,14 +396,15 @@ type STARSAircraftState struct {
 	IsSelected bool // middle click
 
 	// Only drawn if non-zero
-	JRingRadius          float32
-	ConeLength           float32
-	DisplayTPASize       *bool // unspecified->system default if nil
-	DisplayATPAMonitor   *bool // unspecified->system default if nil
-	DisplayATPAWarnAlert *bool // unspecified->system default if nil
-	IntrailDistance      float32
-	ATPAStatus           ATPAStatus
-	MinimumMIT           float32
+	JRingRadius              float32
+	ConeLength               float32
+	DisplayTPASize           *bool // unspecified->system default if nil
+	DisplayATPAMonitor       *bool // unspecified->system default if nil
+	DisplayATPAWarnAlert     *bool // unspecified->system default if nil
+	IntrailDistance          float32
+	ATPAStatus               ATPAStatus
+	MinimumMIT               float32
+	ATPALeadAircraftCallsign string
 
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
@@ -726,6 +727,7 @@ type VideoMapsGroup int
 const (
 	VideoMapsGroupGeo = iota
 	VideoMapsGroupSysProc
+	VideoMapsGroupCurrent
 )
 
 func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
@@ -1158,6 +1160,31 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 
 		radarIndex++
 		ReturnLinesDrawBuilder(ld)
+	}
+
+	// ATPA approach volumes
+	atpaIndex := 801
+	for _, name := range SortedMapKeys(w.ArrivalAirports) {
+		ap := w.ArrivalAirports[name]
+		for _, rwy := range SortedMapKeys(ap.ATPAVolumes) {
+			vol := ap.ATPAVolumes[rwy]
+
+			sm := &STARSMap{
+				Label: name + rwy + " VOL",
+				Name:  name + rwy + " ATPA APPROACH VOLUME",
+			}
+
+			ld := GetLinesDrawBuilder()
+			rect := vol.GetRect(w.NmPerLongitude, w.MagneticVariation)
+			for i := range rect {
+				ld.AddLine(rect[i], rect[(i+1)%len(rect)])
+			}
+			ld.GenerateCommands(&sm.CommandBuffer)
+
+			maps[atpaIndex] = sm
+			atpaIndex++
+			ReturnLinesDrawBuilder(ld)
+		}
 	}
 
 	return maps
@@ -3007,7 +3034,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				} else if state.DatablockType != FullDatablock {
+				}
+
+				if state.DatablockType != FullDatablock {
 					state.DatablockType = FullDatablock
 					// do not collapse datablock if user is tracking the aircraft
 				} else if ac.TrackingController != ctx.world.Callsign {
@@ -3764,18 +3793,22 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			}
 		}
 
-		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo
+		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible
 		if STARSToggleButton("GEO\nMAPS", &geoMapsSelected, STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupGeo
-			ps.VideoMapsList.Visible = true
+			ps.VideoMapsList.Visible = geoMapsSelected
 		}
 		STARSDisabledButton("AIRPORT", STARSButtonHalfVertical, buttonScale)
-		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc
+		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc && ps.VideoMapsList.Visible
 		if STARSToggleButton("SYS\nPROC", &sysProcSelected, STARSButtonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupSysProc
-			ps.VideoMapsList.Visible = true
+			ps.VideoMapsList.Visible = sysProcSelected
 		}
-		STARSToggleButton("CURRENT", &ps.VideoMapsList.Visible, STARSButtonHalfVertical, buttonScale)
+		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupCurrent && ps.VideoMapsList.Visible
+		if STARSToggleButton("CURRENT", &currentMapsSelected, STARSButtonHalfVertical, buttonScale) {
+			ps.VideoMapsList.Selection = VideoMapsGroupCurrent
+			ps.VideoMapsList.Visible = currentMapsSelected
+		}
 
 	case DCBMenuBrite:
 		STARSBrightnessSpinner(ctx, "DCB ", &ps.Brightness.DCB, 25, false, STARSButtonHalfVertical, buttonScale)
@@ -4387,6 +4420,14 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				_, vis := ps.SystemMapVisible[index]
 				text += format(*sp.SystemMaps[index], index, vis)
 			}
+		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
+			text += "MAPS\n"
+			for i, m := range ctx.world.STARSMaps {
+				_, vis := ps.VideoMapVisible[m.Name]
+				if vis {
+					text += format(m, i+1, vis) // 1-based indexing
+				}
+			}
 		} else {
 			lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
 		}
@@ -4512,14 +4553,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransform
 
 	ps := sp.CurrentPreferenceSet
 	for i, state := range ps.CRDA.RunwayPairState {
-		if !state.Enabled {
-			continue
-		}
 		for j, rwyState := range state.RunwayState {
-			if !rwyState.Enabled {
-				continue
-			}
-
 			if rwyState.DrawCourseLines {
 				region := sp.ConvergingRunways[i].ApproachRegions[j]
 				line, _ := region.GetLateralGeometry(ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
@@ -5059,6 +5093,7 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
 		sp.Aircraft[ac.Callsign].MinimumMIT = 0
 		sp.Aircraft[ac.Callsign].ATPAStatus = ATPAStatusUnset
+		sp.Aircraft[ac.Callsign].ATPALeadAircraftCallsign = ""
 	}
 
 	// For simplicity, we always compute all of the necessary distances
@@ -5068,56 +5103,119 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
 	// of the potential per-aircraft overrides. This does mean that
 	// sometimes the work here is fully wasted.
 
-	atpaCandidate := func(ac *Aircraft) bool {
-		// TODO: also check distance to arrival airport?
-		return !ac.IsDeparture() && sp.inATPAApproachVolume(ac)
-	}
-	for _, bac := range aircraft { // back aircraft
-		if !atpaCandidate(bac) {
+	// We basically want to loop over each active volume and process all of
+	// the aircraft inside it together. There's no direct way to iterate
+	// over them, so we'll instead loop over aircraft and when we find one
+	// that's inside a volume that hasn't been processed, process all
+	// aircraft inside it and then mark the volume as completed.
+	handledVolumes := make(map[string]interface{})
+
+	for _, ac := range aircraft {
+		vol := ac.ATPAVolume()
+		if vol == nil {
+			continue
+		}
+		if _, ok := handledVolumes[vol.Id]; ok {
 			continue
 		}
 
-		bstate := sp.Aircraft[bac.Callsign]
+		// Get all aircraft on approach to this runway
+		runwayAircraft := FilterSlice(aircraft, func(ac *Aircraft) bool {
+			if v := ac.ATPAVolume(); v == nil || v.Id != vol.Id {
+				return false
+			}
 
-		bhdg := bstate.TrackHeading(bac.NmPerLongitude()) + bac.MagneticVariation()
-		var intrail *Aircraft
+			// Excluded scratchpad -> aircraft doesn't participate in the
+			// party whatsoever.
+			if ac.Scratchpad != "" && slices.Contains(vol.ExcludedScratchpads, ac.Scratchpad) {
+				return false
+			}
 
-		// This is O(n^2) which is not ideal
-		for _, fac := range aircraft { // front aircraft
-			if !atpaCandidate(bac) || bac == fac {
+			state := sp.Aircraft[ac.Callsign]
+			return vol.Inside(state.TrackPosition(), float32(state.TrackAltitude()),
+				state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(),
+				ac.NmPerLongitude(), ac.MagneticVariation())
+		})
+
+		// Sort by distance to threshold (there will be some redundant
+		// lookups of STARSAircraft state et al. here, but it's
+		// straightforward to implement it like this.)
+		sort.Slice(runwayAircraft, func(i, j int) bool {
+			pi := sp.Aircraft[runwayAircraft[i].Callsign].TrackPosition()
+			pj := sp.Aircraft[runwayAircraft[j].Callsign].TrackPosition()
+			return nmdistance2ll(pi, vol.Threshold) < nmdistance2ll(pj, vol.Threshold)
+		})
+
+		for i := range runwayAircraft {
+			if i == 0 {
+				// The first one doesn't have anyone in front...
 				continue
 			}
-
-			if bac.FlightPlan.ArrivalAirport != fac.FlightPlan.ArrivalAirport {
-				continue
-			}
-
-			d := nmdistance2ll(bac.Position(), fac.Position())
-			if d > 15 { // TODO: what should this be?
-				continue
-			}
-			if bstate.IntrailDistance != 0 && d > bstate.IntrailDistance {
-				// We have already found another in-trail aircraft that the
-				// back aircraft is closer to.
-				continue
-			}
-
-			hto := headingp2ll(bac.Position(), fac.Position(), bac.NmPerLongitude(), bac.MagneticVariation())
-			if headingDifference(bhdg, hto) < 60 { // is it in front?
-				intrail = fac
-				bstate.IntrailDistance = d
-			}
+			leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
+			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
+			trailingState.IntrailDistance =
+				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
+			sp.checkInTrailSeparation(trailing, leading)
 		}
 
-		if intrail != nil {
-			// bac is in-trail of someone, so figure out what separation is
-			// required and whether or not we have it.
-			sp.checkInTrailSeparation(bac, intrail)
-		}
+		handledVolumes[vol.Id] = nil
 	}
 }
 
-func (sp *STARSPane) checkInTrailSeparation(ac, intrail *Aircraft) {
+type ModeledAircraft struct {
+	callsign     string
+	p            [2]float32 // nm coords
+	v            [2]float32 // nm, normalized
+	gs           float32
+	alt          float32
+	dalt         float32    // per second
+	threshold    [2]float32 // nm
+	landingSpeed float32
+}
+
+func MakeModeledAircraft(ac *Aircraft, state *STARSAircraftState, threshold Point2LL) ModeledAircraft {
+	ma := ModeledAircraft{
+		callsign:  ac.Callsign,
+		p:         ll2nm(state.TrackPosition(), ac.NmPerLongitude()),
+		gs:        float32(state.TrackGroundspeed()),
+		alt:       float32(state.TrackAltitude()),
+		dalt:      float32(state.TrackDeltaAltitude()),
+		threshold: ll2nm(threshold, ac.NmPerLongitude()),
+	}
+	if perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]; ok {
+		ma.landingSpeed = perf.Speed.Landing
+	} else {
+		ma.landingSpeed = 120 // ....
+	}
+	ma.v = state.HeadingVector(ac.NmPerLongitude(), ac.MagneticVariation())
+	ma.v = ll2nm(ma.v, ac.NmPerLongitude())
+	ma.v = normalize2f(ma.v)
+	return ma
+}
+
+// estimated altitude s seconds in the future
+func (ma *ModeledAircraft) EstimatedAltitude(s float32) float32 {
+	// simple linear model
+	return ma.alt + s*ma.dalt
+}
+
+// Return estimated position 1s in the future
+func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
+	gs := ma.gs // current speed
+	td := distance2f(p, ma.threshold)
+	if td < 2 {
+		gs = min(gs, ma.landingSpeed)
+	} else if td < 5 {
+		t := (td - 2) / 3 // [0,1]
+		// lerp from current speed down to landing speed
+		gs = lerp(t, ma.landingSpeed, gs)
+	}
+
+	gs /= 3600 // nm / second
+	return add2f(p, scale2f(ma.v, gs))
+}
+
+func (sp *STARSPane) checkInTrailSeparation(back, front *Aircraft) {
 	// Convert the weight classes from the performance database to an
 	// integer: 0 small, 1 large, 2 heavy, 3 super.
 	actype := func(ac *Aircraft) int {
@@ -5148,54 +5246,48 @@ func (sp *STARSPane) checkInTrailSeparation(ac, intrail *Aircraft) {
 
 	// We don't have the info we need for RECAT in the openscope
 	// aircraft database, so this will have to do....
-	mitRequirements := [4][4]int{ // [front][back]
-		[4]int{3, 3, 3, 3}, // any behind small is 3
-		[4]int{4, 3, 3, 3}, // behind large
-		[4]int{5, 5, 4, 3}, // behind heavy
-		[4]int{8, 7, 6, 3}, // behind super
+	mitRequirements := [4][4]float32{ // [front][back]
+		[4]float32{3, 3, 3, 3}, // any behind small is 3
+		[4]float32{4, 3, 3, 3}, // behind large
+		[4]float32{5, 5, 4, 3}, // behind heavy
+		[4]float32{8, 7, 6, 3}, // behind super
 	}
-	mit := mitRequirements[actype(intrail)][actype(ac)]
+	fclass, bclass := actype(front), actype(back)
+	mit := mitRequirements[fclass][bclass]
 
-	// Front aircraft
-	fstate := sp.Aircraft[intrail.Callsign]
-	fp := ll2nm(fstate.TrackPosition(), intrail.NmPerLongitude())
-	fv := fstate.HeadingVector(intrail.NmPerLongitude(), intrail.MagneticVariation()) // one minute
-	fv = scale2f(fv, float32(1)/float32(60))                                          // per second
-	fv = ll2nm(fv, intrail.NmPerLongitude())
-	falt, fdalt := float32(fstate.TrackAltitude()), float32(fstate.TrackDeltaAltitude()) // per second
+	state := sp.Aircraft[back.Callsign]
+	vol := back.ATPAVolume()
+	if vol.Enable25nmApproach &&
+		nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
+		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
+		// 1. leading weight class <= trailing weight class
+		// 2. super/heavy can't be leading
+		if fclass <= bclass && fclass < 2 {
+			mit = 2.5
+		}
+	}
 
-	// Behind aircraft
-	state := sp.Aircraft[ac.Callsign]
-	p := ll2nm(state.TrackPosition(), ac.NmPerLongitude())
-	v := state.HeadingVector(ac.NmPerLongitude(), ac.MagneticVariation()) // one minute
-	v = scale2f(v, float32(1)/float32(60))                                // per second
-	v = ll2nm(v, ac.NmPerLongitude())
-	alt, dalt := float32(state.TrackAltitude()), float32(state.TrackDeltaAltitude()) // per second
-
-	state.MinimumMIT = float32(mit)
+	state.MinimumMIT = mit
+	state.ATPALeadAircraftCallsign = front.Callsign
 	state.ATPAStatus = ATPAStatusMonitor // baseline
 
-	if sp.diverging(ac, intrail) {
-		// No warning or alert if their courses are diverging.
+	// If the aircraft's scratchpad is filtered, then it doesn't get
+	// warnings or alerts but is still here for the aircraft behind it.
+	if back.Scratchpad != "" && slices.Contains(vol.FilteredScratchpads, back.Scratchpad) {
 		return
 	}
 
-	// Will there be a conflict s seconds in the future?
+	// front, back aircraft
+	fac := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
+	bac := MakeModeledAircraft(back, state, vol.Threshold)
+
+	// Will there be a MIT violation s seconds in the future?  (Note that
+	// we don't include altitude separation here since what we need is
+	// distance separation by the threshold...)
+	fp, bp := fac.p, bac.p
 	for s := float32(0); s < 45; s++ {
-		// Use a simple linear model where we assume altitude will continue
-		// to change at the current rate and aircraft will fly along their
-		// present heading at their present speed.
-
-		// Compute expected altitude
-		fa, a := falt+s*fdalt, alt+s*dalt
-		if abs(fa-a) >= 990 { // altitude separated, with a little slop..
-			continue
-		}
-
-		// Expected position
-		fpp := add2f(fp, scale2f(fv, s))
-		pp := add2f(p, scale2f(v, s))
-		if distance2f(fpp, pp) < float32(mit) { // no bueno
+		fp, bp := fac.NextPosition(fp), bac.NextPosition(bp)
+		if distance2f(fp, bp) < float32(mit) { // no bueno
 			if s <= 24 {
 				// Error if conflict expected within 24 seconds (6-159).
 				state.ATPAStatus = ATPAStatusAlert
@@ -5662,14 +5754,15 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 		}
 
 		drawATPAMonitor := atpaStatus == ATPAStatusMonitor && ps.DisplayATPAMonitorCones &&
-			(state.DisplayATPAMonitor == nil || *state.DisplayATPAMonitor)
+			(state.DisplayATPAMonitor == nil || *state.DisplayATPAMonitor) &&
+			state.IntrailDistance-state.MinimumMIT <= 2 // monitor only if within 2nm of MIT requirement
 		drawATPAWarning := atpaStatus == ATPAStatusWarning && ps.DisplayATPAWarningAlertCones &&
 			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
 		drawATPAAlert := atpaStatus == ATPAStatusAlert && ps.DisplayATPAWarningAlertCones &&
 			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
+		drawATPACone := drawATPAMonitor || drawATPAWarning || drawATPAAlert
 
-		if state.HaveHeading() &&
-			(state.ConeLength > 0 || drawATPAMonitor || drawATPAWarning || drawATPAAlert) {
+		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
 			// We'll draw in window coordinates. First figure out the
 			// coordinates of the vertices of the cone triangle. We'll
 			// start with a canonical triangle in nm coordinates, going one
@@ -5683,7 +5776,20 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			coneLength := max(state.ConeLength, state.MinimumMIT)
 			length := coneLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 
-			rot := rotator2f(state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation())
+			var coneHeading float32
+			if drawATPACone {
+				// Cone is oriented to point toward the leading aircraft
+				sfront, ok := sp.Aircraft[state.ATPALeadAircraftCallsign]
+				if ok {
+					coneHeading = headingp2ll(state.TrackPosition(), sfront.TrackPosition(),
+						ac.NmPerLongitude(), ac.MagneticVariation())
+				}
+			} else {
+				// Cone is oriented along the aircraft's heading
+				coneHeading = state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation()
+			}
+
+			rot := rotator2f(coneHeading)
 			for i := range v {
 				// First scale it to make it the desired length in nautical
 				// miles; while we're at it, we'll convert that over to
