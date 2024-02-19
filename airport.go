@@ -269,6 +269,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		if appr.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
+		if _, ok := LookupRunway(icao, appr.Runway); !ok {
+			e.ErrorString("\"runway\" \"%s\" is unknown. Options: %s", appr.Runway,
+				database.Airports[icao].ValidRunways())
+		}
 
 		if appr.FullName == "" {
 			switch appr.Type {
@@ -384,6 +388,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		// Make sure that all runways have a route to the exit
 		for rwy, routes := range ap.DepartureRoutes {
 			e.Push("Runway " + rwy)
+
+			if _, ok := LookupRunway(icao, rwy); !ok {
+				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+			}
 			if _, ok := routes[dep.Exit]; !ok {
 				e.ErrorString("exit \"%s\" not found in runway's \"departure_routes\"", dep.Exit)
 			}
@@ -436,6 +444,11 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Push(rwy + " region")
 		def.Runway = rwy
 
+		if _, ok := LookupRunway(icao, rwy); !ok {
+			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy,
+				database.Airports[icao].ValidRunways())
+		}
+
 		if !slices.ContainsFunc(ap.ConvergingRunways,
 			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy }) {
 			e.ErrorString("runway not used in \"converging_runways\"")
@@ -446,6 +459,12 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 
 	for i, pair := range ap.ConvergingRunways {
 		e.Push("Converging runways " + pair.Runways[0] + "/" + pair.Runways[1])
+
+		for _, rwy := range pair.Runways {
+			if _, ok := LookupRunway(icao, rwy); !ok {
+				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+			}
+		}
 
 		// Find the runway intersection point
 		reg0, reg1 := ap.ApproachRegions[pair.Runways[0]], ap.ApproachRegions[pair.Runways[1]]
@@ -487,6 +506,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Push("ATPA " + rwy)
 
 		vol.Id = ap.Name + rwy
+
+		if _, ok := LookupRunway(icao, rwy); !ok {
+			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+		}
 
 		if vol.ThresholdString == "" {
 			e.ErrorString("\"runway_threshold\" not specified.")

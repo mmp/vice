@@ -804,9 +804,7 @@
         "star": "LUBBR3",
         "runway_waypoints": {
           "32": "ZEBON RUNNE BREKR WUDDY LYFIE MURDO/flyover/a3000/h228",
-          "14": "ZEBON RUNNE BREKR WUDDY LYFIE RUTAE/a3000/h230",
-          "10": "ZEBON ZEPHR/a3000/h177",
-          "28": "ZEBON ZEPHR/a3000/h177"
+          "14": "ZEBON RUNNE BREKR WUDDY LYFIE RUTAE/a3000/h230"
         },
         "speed_restriction": 250,
         "waypoints": "N028.51.14.839,W082.07.49.555/ho LUBBR ZEBON"

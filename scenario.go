@@ -684,6 +684,22 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 				for rwy, wp := range ar.RunwayWaypoints {
 					e.Push("Runway " + rwy)
+
+					foundRunway := false
+					for ap := range ar.Airlines { // airlines is keyed on airport names
+						if _, ok := LookupRunway(ap, rwy); ok {
+							foundRunway = true
+							break
+						}
+					}
+					if !foundRunway {
+						var runways []string
+						for ap := range ar.Airlines {
+							runways = append(runways, ap+": "+database.Airports[ap].ValidRunways())
+						}
+						e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, strings.Join(runways, ", "))
+					}
+
 					sg.InitializeWaypointLocations(wp, e)
 
 					if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {

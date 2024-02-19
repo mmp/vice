@@ -1365,11 +1365,18 @@ func parseAirports() map[string]FAAAirport {
 	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
 		Location: parse("N36.26.30.006,W95.36.21.936")}
 	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
-		Location: parse("N036.11.08.930,W095.45.53.942")}
+		Location: parse("N036.11.08.930,W095.45.53.942"),
+		Runways: []Runway{
+			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.10.37.069,W095.44.51.979"), Elevation: 677},
+			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.11.23.280,W095.44.35.912"), Elevation: 677},
+		}}
 	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
 		Location: parse("N36.30.26.585,W96.16.28.968")}
 	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
-		Location: parse("N035.56.19.765,W095.42.49.812")}
+		Location: parse("N035.56.19.765,W095.42.49.812"),
+		Runways: []Runway{
+			Runway{Id: "27", Heading: 270, Threshold: parse("N035.56.14.615,W095.42.05.152"), Elevation: 689},
+		}}
 	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
 		Location: parse("N36.05.06.948,W96.26.57.501")}
 
@@ -1635,10 +1642,29 @@ func LookupRunway(icao, rwy string) (Runway, bool) {
 	if ap, ok := database.Airports[icao]; !ok {
 		return Runway{}, false
 	} else {
+		// The runway may have extra text to distinguish different
+		// configurations (e.g., "13.JFK-ILS-13"). Find the prefix that is
+		// an actual runway specifier to use in the search below.
+		for i, ch := range rwy {
+			if ch >= '0' && ch <= '9' {
+				continue
+			} else if ch == 'L' || ch == 'R' || ch == 'C' {
+				rwy = rwy[:i+1]
+				break
+			} else {
+				rwy = rwy[:i]
+				break
+			}
+		}
+
 		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
 		if idx == -1 {
 			return Runway{}, false
 		}
 		return ap.Runways[idx], true
 	}
+}
+
+func (ap FAAAirport) ValidRunways() string {
+	return strings.Join(MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
 }
