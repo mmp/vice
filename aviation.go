@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -1563,6 +1564,7 @@ func parseCIFP() map[string]FAAAirport {
 				rwy := string(line[13:18])
 				rwy = strings.TrimPrefix(rwy, "RW")
 				rwy = strings.TrimPrefix(rwy, "0")
+				rwy = strings.TrimSpace(rwy)
 
 				ap := airports[icao]
 				ap.Runways = append(ap.Runways, Runway{
@@ -1626,5 +1628,17 @@ func FixReadback(fix string) string {
 		return stopShouting(aid.Name)
 	} else {
 		return fix
+	}
+}
+
+func LookupRunway(icao, rwy string) (Runway, bool) {
+	if ap, ok := database.Airports[icao]; !ok {
+		return Runway{}, false
+	} else {
+		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
+		if idx == -1 {
+			return Runway{}, false
+		}
+		return ap.Runways[idx], true
 	}
 }

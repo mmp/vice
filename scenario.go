@@ -506,9 +506,13 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 		return f.Location, ok
 	} else if p, err := ParseLatLong([]byte(s)); err == nil {
 		return p, true
-	} else {
-		return Point2LL{}, false
+	} else if len(s) > 5 && s[0] == 'K' && s[4] == '-' {
+		if rwy, ok := LookupRunway(s[:4], s[5:]); ok {
+			return rwy.Threshold, true
+		}
 	}
+
+	return Point2LL{}, false
 }
 
 var (
