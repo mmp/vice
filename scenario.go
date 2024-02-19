@@ -788,6 +788,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 			Wind:             scenario.Wind,
 			DepartureRunways: scenario.DepartureRunways,
 			ArrivalRunways:   scenario.ArrivalRunways,
+			PrimaryAirport: sg.PrimaryAirport,
 		}
 
 		if multiController {

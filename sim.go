@@ -12,9 +12,11 @@ import (
 	"net/rpc"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -29,6 +31,7 @@ type SimScenarioConfiguration struct {
 	SelectedController  string
 	SelectedSplit       string
 	SplitConfigurations SplitConfigurationSet
+	PrimaryAirport 		string
 
 	Wind         Wind
 	LaunchConfig LaunchConfig
@@ -253,6 +256,7 @@ type NewSimConfiguration struct {
 	Password        string // for create remote only
 	NewSimType      int
 
+	LiveWeather               bool
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
 	RemoteSimPassword         string // for join remote only
@@ -496,12 +500,36 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				sort.Strings(a)
 				imgui.Text(strings.Join(a, ", "))
 			}
-
+			validAirport := false
+				if c.Scenario.PrimaryAirport == "KAAC" || remoteServer == nil {
+					validAirport = false
+					
+				} else {
+					validAirport = true
+				}
+			
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Wind:")
+			uiStartDisable(!validAirport)
+			imgui.Checkbox("Live Weather", &c.LiveWeather)
+			uiEndDisable(!validAirport)
 			imgui.TableNextColumn()
-			wind := c.Scenario.Wind
+			var wind Wind
+			if !c.LiveWeather {
+				wind = c.Scenario.Wind
+			} else {
+				var liveWind chan Wind
+				go func(liveWinds chan Wind) {
+					fmt.Println("Making request: ", validAirport)
+					winds := getWind(c)
+					
+					liveWinds <- winds
+				}(liveWind)
+					wind = <- liveWind
+
+			}
+
 			if wind.Gust > wind.Speed {
 				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 			} else {
@@ -611,6 +639,27 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	}
 
 	return false
+}
+
+func getWind(c *NewSimConfiguration) Wind {
+	airport := c.Scenario.PrimaryAirport
+	var s *Sim
+	fmt.Println("Calling function")
+	weather, errorss := getweather.GetWeather(airport)
+	fmt.Println("Function called", weather)
+	if len(errorss) > 0 {
+		s.lg.Errorf("Error getting weather for %v. Error %v\n", airport, errorss)
+		fmt.Printf("Error getting weather for %v. Error %v\n", airport, errorss)
+		return Wind{}
+	} else {
+		wind := Wind{
+			Direction: int32(weather[0].Wdir),
+			Speed:     int32(weather[0].Wspd),
+			Gust:      int32(weather[0].Wgst),
+		}
+		fmt.Println("Everything Good. ", wind)
+		return wind
+	}
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
@@ -858,8 +907,10 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	}
 
 	// Make some fake METARs; slightly different for all airports.
-	alt := 2980 + rand.Intn(40)
+	var alt int
+
 	fakeMETAR := func(icao string) {
+		alt = 2980 + rand.Intn(40)
 		spd := w.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
@@ -885,6 +936,41 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 	}
 
+	realMETAR := func(icao string) {
+		weather, errors := getweather.GetWeather(icao)
+		if len(errors) != 0 {
+			s.lg.Errorf("Error getting weather")
+		}
+		fullMETAR := weather[0].RawMETAR
+		altimiter := getAltimiter(fullMETAR)
+		var err error
+		alt, err = strconv.Atoi(altimiter)
+		if err != nil {
+			s.lg.Errorf("Error converting altimiter to an intiger: ", altimiter)
+		}
+		var wind string
+		spd := weather[0].Wspd
+		if spd >= 0 {
+			wind = "00000KT"
+		} else if spd > 4 {
+			wind = fmt.Sprintf("VRB%vKT", spd)
+		} else {
+			dir := weather[0].Wdir
+			wind = fmt.Sprintf("%03d%02d", dir, spd)
+			gst := weather[0].Wgst
+			if gst > 5 {
+				wind += fmt.Sprintf("G%02d", gst)
+			}
+			wind += "KT"
+		}
+		// Just provide the stuff that the STARS display shows
+		w.METAR[icao] = &METAR{
+			AirportICAO: icao,
+			Wind:        wind,
+			Altimeter:   fmt.Sprintf("A%d", alt),
+		}
+	}
+
 	w.DepartureAirports = make(map[string]*Airport)
 	for name := range s.LaunchConfig.DepartureRates {
 		w.DepartureAirports[name] = w.GetAirport(name)
@@ -895,15 +981,43 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 			w.ArrivalAirports[name] = w.GetAirport(name)
 		}
 	}
-
-	for ap := range w.DepartureAirports {
-		fakeMETAR(ap)
-	}
-	for ap := range w.ArrivalAirports {
-		fakeMETAR(ap)
+	if ssc.LiveWeather {
+		for ap := range w.DepartureAirports {
+			realMETAR(ap)
+		}
+		for ap := range w.ArrivalAirports {
+			realMETAR(ap)
+		}
+	} else {
+		for ap := range w.DepartureAirports {
+			fakeMETAR(ap)
+		}
+		for ap := range w.ArrivalAirports {
+			fakeMETAR(ap)
+		}
 	}
 
 	return w
+}
+func getAltimiter(metar string) string {
+
+	indexOfA := strings.Index(metar, "A3")
+	if indexOfA == -1 {
+		indexB := strings.Index(metar, "A2")
+		if indexB == -1 {
+			fmt.Println("No atmospheric pressure information found.")
+			return ""
+		} else {
+			pressure := metar[indexB+1 : indexB+5]
+			return pressure
+		}
+
+	} else {
+		pressure := metar[indexOfA+1 : indexOfA+5]
+		fmt.Println(pressure)
+		return pressure
+	}
+
 }
 
 func (s *Sim) LogValue() slog.Value {
