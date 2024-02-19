@@ -113,7 +113,7 @@
           "type": "RNAV",
           "waypoints": [
             "NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200 _SEA_34R/a433",
-            "SONDR/iaf/a6000 NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200 _SEA_34L/a432"
+            "SONDR/iaf/a6000 NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200 _SEA_34R/a432"
           ]
         }
       },

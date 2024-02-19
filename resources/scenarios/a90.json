@@ -137,7 +137,7 @@
             "REVSS": {
               "cleared_altitude": 5000,
               "sid": "REVSS5",
-              "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 FENWY GLLET WYMTH DEDHM"
             },
             "SSOXS": {
               "cleared_altitude": 5000,

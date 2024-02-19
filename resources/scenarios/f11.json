@@ -1230,7 +1230,7 @@
           "runway": "1L",
           "type": "ILS",
           "waypoints": [
-            "LAGOO/if/iaf/hilpt/a2600 SELMN/a2600 ZERUR/a540/faf KTPA/a82"
+            "LAGOO/if/iaf/hilpt/a2600 SELMN/a2600 ZERUR/a540/faf KTPA-1L/a82"
           ]
         }
       },

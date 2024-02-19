@@ -436,7 +436,7 @@
         }
       },
       "departure_routes": {
-        "04": {
+        "4": {
           "SSI": {
             "cleared_altitude": 2000,
             "waypoints": "_FHB_04 _FHB_22/h010"
@@ -1362,7 +1362,7 @@
         {
           "airport": "KFHB",
           "rate": 2,
-          "runway": "04"
+          "runway": "4"
         }
       ],
       "wind": {

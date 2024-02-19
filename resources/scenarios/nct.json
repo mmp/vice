@@ -1267,7 +1267,7 @@
             "waypoints": "_SFO10L _SFO28R/h100"
           }
         },
-        "01L": {
+        "1L": {
           "CINNY,BEBOP,ALCOA,AMAKR": {
             "cleared_altitude": 2500,
             "sid":"GNNRR3",
@@ -1319,7 +1319,7 @@
             "waypoints": "_SFO1L _SFO19R/h033"
           }
         },
-      "01R": {
+      "1R": {
         "CINNY,BEBOP,ALCOA,AMAKR": {
           "cleared_altitude": 2500,
           "sid":"GNNRR3",
@@ -7945,12 +7945,12 @@
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01L"
+          "runway": "1L"
         },
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01R"
+          "runway": "1R"
         }
       ],
       "wind": {
@@ -8540,12 +8540,12 @@
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01L"
+          "runway": "1L"
         },
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01R"
+          "runway": "1R"
         },
         {
           "airport": "KOAK",
@@ -9281,12 +9281,12 @@
         {
           "airport": "KSFO",
           "rate": 0,
-          "runway": "01L"
+          "runway": "1L"
         },
         {
           "airport": "KSFO",
           "rate": 0,
-          "runway": "01R"
+          "runway": "1R"
         },
         {
           "airport": "KSFO",

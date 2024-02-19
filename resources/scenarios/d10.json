@@ -613,7 +613,7 @@
                     "TORNN": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
+                        "waypoints": "_DFW_35L _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
                     },
                     "TNV": {
                         "cleared_altitude": 10000,
@@ -1295,8 +1295,8 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "FRDDM/a1600+/if TOFLY/a1600/faf _DAL_13L/a485",
-                        "NETNE/a3000/s210/if VEALY/a2000/s200  TOFLY/a1600/faf _DAL_13L/a485"
+                        "FRDDM/a1600+/if TOFLY/a1600/faf KDAL-13R/a485",
+                        "NETNE/a3000/s210/if VEALY/a2000/s200  TOFLY/a1600/faf KDAL-13R/a485"
                     ]
                 },
                 "I1L": {
