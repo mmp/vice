@@ -502,6 +502,22 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Pop()
 	}
 
+	// Generate reasonable default ATPA volumes for any runways they aren't
+	// specified for.
+	if ap.ATPAVolumes == nil {
+		ap.ATPAVolumes = make(map[string]*ATPAVolume)
+	}
+	for _, rwy := range database.Airports[icao].Runways {
+		if _, ok := ap.ATPAVolumes[rwy.Id]; !ok {
+			// Make a default volume
+			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{
+				Id:        rwy.Id,
+				Threshold: rwy.Threshold,
+				Heading:   rwy.Heading,
+			}
+		}
+	}
+
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)
 
@@ -511,33 +527,35 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
 		}
 
-		if vol.ThresholdString == "" {
-			e.ErrorString("\"runway_threshold\" not specified.")
-		} else {
-			var ok bool
-			if vol.Threshold, ok = sg.locate(vol.ThresholdString); !ok {
-				e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
+		if vol.Threshold.IsZero() { // the location is set directly for default volumes
+			if vol.ThresholdString == "" {
+				e.ErrorString("\"runway_threshold\" not specified.")
+			} else {
+				var ok bool
+				if vol.Threshold, ok = sg.locate(vol.ThresholdString); !ok {
+					e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
+				}
 			}
+		}
 
-			// Defaults if things are not specified
-			if vol.MaxHeadingDeviation == 0 {
-				vol.MaxHeadingDeviation = 90
-			}
-			if vol.Floor == 0 {
-				vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
-			}
-			if vol.Ceiling == 0 {
-				vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
-			}
-			if vol.Length == 0 {
-				vol.Length = 15
-			}
-			if vol.LeftWidth == 0 {
-				vol.LeftWidth = 2000
-			}
-			if vol.RightWidth == 0 {
-				vol.RightWidth = 2000
-			}
+		// Defaults if things are not specified
+		if vol.MaxHeadingDeviation == 0 {
+			vol.MaxHeadingDeviation = 90
+		}
+		if vol.Floor == 0 {
+			vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
+		}
+		if vol.Ceiling == 0 {
+			vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
+		}
+		if vol.Length == 0 {
+			vol.Length = 15
+		}
+		if vol.LeftWidth == 0 {
+			vol.LeftWidth = 2000
+		}
+		if vol.RightWidth == 0 {
+			vol.RightWidth = 2000
 		}
 
 		e.Pop()
