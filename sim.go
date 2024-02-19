@@ -315,7 +315,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 		}
 	}
 }
-
+var countingNumber int
 func (c *NewSimConfiguration) SetTRACON(name string) {
 	var ok bool
 	if c.TRACON, ok = c.selectedServer.configs[name]; !ok {
@@ -513,23 +513,32 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.Text("Wind:")
 			uiStartDisable(!validAirport)
 			imgui.Checkbox("Live Weather", &c.LiveWeather)
+			fmt.Println(c.LiveWeather)
+			if !validAirport {
+				c.LiveWeather = false 
+			}
 			uiEndDisable(!validAirport)
 			imgui.TableNextColumn()
 			var wind Wind
 			if !c.LiveWeather {
 				wind = c.Scenario.Wind
 			} else {
-				var liveWind chan Wind
-				go func(liveWinds chan Wind) {
-					fmt.Println("Making request: ", validAirport)
-					winds := getWind(c)
-					
-					liveWinds <- winds
-				}(liveWind)
-					wind = <- liveWind
-
+				liveWind := make(chan Wind)
+				if countingNumber == 0 {
+					go func(liveWinds chan Wind) {
+						countingNumber += 1
+						fmt.Println("Making request: ", validAirport)
+						winds := getWind(c)
+						fmt.Println("continuing")
+						liveWinds <- winds
+						fmt.Println("imbed end")
+					}(liveWind)
+					fmt.Println("imbed end2 ")
+						wind = <- liveWind
+						countingNumber = 0
+				}
 			}
-
+			fmt.Println("continuing drawuing")
 			if wind.Gust > wind.Speed {
 				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 			} else {
