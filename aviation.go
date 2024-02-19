@@ -24,6 +24,14 @@ type FAAAirport struct {
 	Name      string
 	Elevation int
 	Location  Point2LL
+	Runways   []Runway
+}
+
+type Runway struct {
+	Id        string
+	Heading   float32
+	Threshold Point2LL
+	Elevation int
 }
 
 type METAR struct {
@@ -212,12 +220,6 @@ const (
 
 func (t TransponderMode) String() string {
 	return [...]string{"Standby", "C"}[t]
-}
-
-type Runway struct {
-	Number         string
-	Heading        float32
-	Threshold, End Point2LL
 }
 
 type Navaid struct {
@@ -1256,8 +1258,16 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
+	var airports map[string]FAAAirport
+	wg.Add(1)
+	go func() { airports = parseCIFP(); wg.Done() }()
 	wg.Wait()
 
+	for icao, ap := range airports {
+		db.Airports[icao] = ap
+	}
+
+	fmt.Printf("Parsed built-in databases in %v\n", time.Since(start))
 	lg.Infof("Parsed built-in databases in %v", time.Since(start))
 
 	return db
@@ -1453,6 +1463,121 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 		callsigns[strings.ToUpper(al.ICAO)] = al.Callsign.Name
 	}
 	return airlines, callsigns
+}
+
+// FAA Coded Instrument Flight Procedures (CIFP)
+// https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
+func parseCIFP() map[string]FAAAirport {
+	airports := make(map[string]FAAAirport)
+
+	cifp := LoadResource("FAACIFP18.zst")
+
+	const lineLength = 134 // 132 chars + \r + \n
+	if len(cifp)%lineLength != 0 {
+		panic("Invalid CIFP file: not all lines are 132 characters")
+	}
+
+	parseLLDigits := func(d, m, s []byte) float32 {
+		deg, err := strconv.Atoi(string(d))
+		if err != nil {
+			panic(err)
+		}
+		min, err := strconv.Atoi(string(m))
+		if err != nil {
+			panic(err)
+		}
+		sec, err := strconv.Atoi(string(s))
+		if err != nil {
+			panic(err)
+		}
+		return float32(deg) + float32(min)/60 + float32(sec)/100/3600
+	}
+	parseLatLong := func(lat, long []byte) Point2LL {
+		var p Point2LL
+
+		p[1] = parseLLDigits(lat[1:3], lat[3:5], lat[5:])
+		p[0] = parseLLDigits(long[1:4], long[4:6], long[6:])
+
+		if lat[0] == 'S' {
+			p[1] = -p[1]
+		}
+		if long[0] == 'W' {
+			p[0] = -p[0]
+		}
+		return p
+	}
+	parseInt := func(s []byte) int {
+		if v, err := strconv.Atoi(string(s)); err != nil {
+			panic(err)
+		} else {
+			return v
+		}
+	}
+
+	for len(cifp) > 0 {
+		line := cifp[:lineLength]
+		cifp = cifp[lineLength:]
+
+		recordType := line[0]
+		if recordType != 'S' { // not a standard field
+			continue
+		}
+		customer := line[1:4]
+		if string(customer) != "USA" && string(customer) != "PAC" { // ignore Canada stuff.
+			continue
+		}
+
+		sectionCode := line[4]
+		switch sectionCode {
+		case 'D':
+			// TODO: navaids
+
+		case 'E':
+			// TODO: enroute waypoints, holding patterns, airways, etc...
+
+		case 'P':
+			// Airports
+			icao := string(line[6:10])
+			subsection := line[12]
+			switch subsection {
+			case 'A': // primary airport records 4.1.7
+				location := parseLatLong(line[32:41], line[41:51])
+				elevation := parseInt(line[56:61])
+
+				airports[icao] = FAAAirport{
+					Id:        icao,
+					Elevation: elevation,
+					Location:  location,
+				}
+
+			case 'G': // runway records 4.1.10
+				continuation := line[21]
+				if continuation != '0' && continuation != '1' {
+					continue
+				}
+				if string(line[27:31]) == "    " {
+					// No heading available. This happens for e.g. seaports.
+					continue
+				}
+
+				rwy := string(line[13:18])
+				rwy = strings.TrimPrefix(rwy, "RW")
+				rwy = strings.TrimPrefix(rwy, "0")
+
+				ap := airports[icao]
+				ap.Runways = append(ap.Runways, Runway{
+					Id:        rwy,
+					Heading:   float32(parseInt(line[27:31])) / 10,
+					Threshold: parseLatLong(line[32:41], line[41:51]),
+					Elevation: parseInt(line[66:71]),
+				})
+				airports[icao] = ap
+			}
+		}
+
+	}
+
+	return airports
 }
 
 ///////////////////////////////////////////////////////////////////////////
