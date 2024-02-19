@@ -37,8 +37,8 @@
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
-            "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800 _CYS31/a6147",
-            "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800 _CYS31/a6147"
+            "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800",
+            "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800"
           ]
         }
       },

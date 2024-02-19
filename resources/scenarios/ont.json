@@ -28,9 +28,9 @@
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
-                        "PDZ HIGRO/a4300+ PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1680 ",
-                        "TAKOE/a4300+ ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700 _ONT_26L/a944",
-                        "PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700 _ONT_26L/a944"
+                        "PDZ HIGRO/a4300+ PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1680 _ONT_26R/a944",
+                        "TAKOE/a4300+ ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700 _ONT_26R/a944",
+                        "PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700 _ONT_26R/a944"
                     ]
                 },
                 "R8L": {

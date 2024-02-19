@@ -2585,7 +2585,7 @@
           "waypoints": [
             "MYNRR/iaf/a9000 FIPIN/if/a3000 JUNBO/a1100 _SMF35L/a25",
             "ISYOH/iaf/a6000 ELMAC/if/a3000 JUNBO/a1100 _SMF35L/a25",
-            "PIECH/iaf/a4000 BANZA/iaf/a4000 ZITUL/a2200 PUGYI/a2000 LERIY/a1100 JUNBO/a1100 _SMF35R/a25"
+            "PIECH/iaf/a4000 BANZA/iaf/a4000 ZITUL/a2200 PUGYI/a2000 LERIY/a1100 JUNBO/a1100 _SMF35L/a25"
           ]
         }
       },
@@ -3136,7 +3136,7 @@
           "full_name": "RNAV Z Runway 28L",
           "waypoints": [
              "UNIGE/a2000 NUPUZ/iaf/a2000 CUMLO/if/a2000 SARNE/a1800 _MER31/a55",
-            "EBTUW/iaf/a2000 CUMLO/if/a2000 SARNE/a1800 _MER13/a55"
+            "EBTUW/iaf/a2000 CUMLO/if/a2000 SARNE/a1800 _MER31/a55"
           ]
         }
       },

@@ -1301,7 +1301,7 @@
                 },
                 "I1L": {
                     "full_name": "ILS Runway 31L",
-                    "runway": "13L",
+                    "runway": "31L",
                     "type": "ILS",
                     "waypoints": [
                         "MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520 _DAL_31L/a477"

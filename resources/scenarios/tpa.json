@@ -564,9 +564,9 @@
           "runway": "28",
           "type": "RNAV",
           "waypoints": [
-            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_10/a132",
-            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_10/a132",
-            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_10/a132"
+            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_28/a132",
+            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_28/a132",
+            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_28/a132"
           ]
         }
       },
