@@ -831,8 +831,8 @@ func (w WaypointArray) CheckApproach(e *ErrorLogger) {
 	w.checkBasics(e)
 	w.checkDescending(e)
 
-	if len(w) < 3 {
-		e.ErrorString("must have at least three waypoints in an approach")
+	if len(w) < 2 {
+		e.ErrorString("must have at least two waypoints in an approach")
 	}
 
 	/*
