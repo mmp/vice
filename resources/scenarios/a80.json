@@ -2813,10 +2813,10 @@
             "solo_controller": "ATL_APP",
             "multi_controllers": {
                 "default" : {
-                    "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]},
-                    "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1 EAST", "CHPPR1 EAST"]},
-                    "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1 EAST", "OZZZI1 EAST"]},
-                    "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["GNDLF2"]},
+                    "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]}, 
+                    "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1 EAST", "CHPPR1 EAST"]}, 
+                    "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1 EAST", "OZZZI1 EAST"]}, 
+                    "ATL_Y_APP": {"backup": "ATL_H_APP", "arrivals": ["GNDLF2"]},
                     "ATL_O_APP": {"backup": "ATL_H_APP"},
                     "ATL_V_APP": {"backup": "ATL_D_APP"},
                     "ATL_A_APP": {"backup": "ATL_L_APP"},
