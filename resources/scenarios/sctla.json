@@ -77,7 +77,7 @@
         "RY7R": {
           "runway": "7R",
           "tower_controller": "LAX_S_TWR",
-          "type": "ILS",
+          "type": "RNAV",
           "full_name": "RNAV Y Runway 7R",
           "waypoints": [
             "WAKER/iaf/a5600 KILIE/a2600 TIMSE/if/a2600 FUMBL/a1800",
@@ -87,7 +87,7 @@
         "RZ7R": {
           "runway": "7R",
           "tower_controller": "LAX_S_TWR",
-          "type": "ILS",
+          "type": "RNAV",
           "full_name": "RNAV Z Runway 7R",
           "waypoints": [
             "WAKER/iaf/a5600 KILIE/a2600 JAAKI/if/a2300 FUMBL/faf/a1800",
@@ -107,7 +107,7 @@
         "RY4R": {
           "runway": "24R",
           "tower_controller": "LAX_N_TWR",
-          "type": "ILS",
+          "type": "RNAV",
           "full_name": "RNAV Y Runway 24R",
           "waypoints": [
             "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720",
@@ -139,7 +139,7 @@
         "RY4L": {
           "runway": "24L",
           "tower_controller": "LAX_N_TWR",
-          "type": "ILS",
+          "type": "RNAV",
           "full_name": "RNAV Y Runway 24L",
           "waypoints": [
             "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY/a740",
@@ -149,7 +149,7 @@
         "RZ4L": {
           "runway": "24L",
           "tower_controller": "LAX_N_TWR",
-          "type": "ILS",
+          "type": "RNAV",
           "full_name": "RNAV Z Runway 24L",
           "waypoints": [
             "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY",
