@@ -730,23 +730,6 @@
     "LUBBR3": [
       {
         "airlines": {
-          "KPIE": [
-            {
-              "airport": "KDAB",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KISM",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KMLB",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
           "KSRQ": [
             {
               "airport": "KDAB",
@@ -1380,8 +1363,7 @@
           "KPIE": 1
         },
         "LUBBR3": {
-          "KSRQ": 2,
-          "KPIE": 1
+          "KSRQ": 2
         }
       },
       "solo_controller": "TPA_E_APP",
@@ -1511,8 +1493,7 @@
           "KPIE": 1
         },
         "LUBBR3": {
-          "KSRQ": 2,
-          "KPIE": 1
+          "KSRQ": 2
         }
       },
       "solo_controller": "TPA_E_APP",
