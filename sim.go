@@ -31,7 +31,7 @@ type SimScenarioConfiguration struct {
 	SelectedController  string
 	SelectedSplit       string
 	SplitConfigurations SplitConfigurationSet
-	PrimaryAirport 		string
+	PrimaryAirport      string
 
 	Wind         Wind
 	LaunchConfig LaunchConfig
@@ -315,7 +315,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 		}
 	}
 }
-var countingNumber int
+
 func (c *NewSimConfiguration) SetTRACON(name string) {
 	var ok bool
 	if c.TRACON, ok = c.selectedServer.configs[name]; !ok {
@@ -353,6 +353,8 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioName = scenarioName
 }
 
+
+var airportWind map[string]Wind
 func (c *NewSimConfiguration) DrawUI() bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
 		c.updateRemoteSimsCall = nil
@@ -501,21 +503,20 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				imgui.Text(strings.Join(a, ", "))
 			}
 			validAirport := false
-				if c.Scenario.PrimaryAirport == "KAAC" || remoteServer == nil {
-					validAirport = false
-					
-				} else {
-					validAirport = true
-				}
-			
+			if c.Scenario.PrimaryAirport == "KAAC" || remoteServer == nil {
+				validAirport = false
+
+			} else {
+				validAirport = true
+			}
+
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Wind:")
 			uiStartDisable(!validAirport)
 			imgui.Checkbox("Live Weather", &c.LiveWeather)
-			fmt.Println(c.LiveWeather)
 			if !validAirport {
-				c.LiveWeather = false 
+				c.LiveWeather = false
 			}
 			uiEndDisable(!validAirport)
 			imgui.TableNextColumn()
@@ -523,22 +524,21 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if !c.LiveWeather {
 				wind = c.Scenario.Wind
 			} else {
-				liveWind := make(chan Wind)
-				if countingNumber == 0 {
+				empty := Wind{}
+				if airportWind[c.Scenario.PrimaryAirport] != empty {
+					wind = airportWind[c.Scenario.PrimaryAirport]
+				} else {
+					liveWind := make(chan Wind)
 					go func(liveWinds chan Wind) {
-						countingNumber += 1
-						fmt.Println("Making request: ", validAirport)
 						winds := getWind(c)
-						fmt.Println("continuing")
+	
 						liveWinds <- winds
-						fmt.Println("imbed end")
+	
 					}(liveWind)
-					fmt.Println("imbed end2 ")
-						wind = <- liveWind
-						countingNumber = 0
-				}
+					wind = <-liveWind}
+				
 			}
-			fmt.Println("continuing drawuing")
+			
 			if wind.Gust > wind.Speed {
 				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 			} else {
@@ -652,13 +652,11 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 func getWind(c *NewSimConfiguration) Wind {
 	airport := c.Scenario.PrimaryAirport
-	var s *Sim
-	fmt.Println("Calling function")
+
 	weather, errorss := getweather.GetWeather(airport)
-	fmt.Println("Function called", weather)
+
 	if len(errorss) > 0 {
-		s.lg.Errorf("Error getting weather for %v. Error %v\n", airport, errorss)
-		fmt.Printf("Error getting weather for %v. Error %v\n", airport, errorss)
+		fmt.Println("Error. ", errorss)
 		return Wind{}
 	} else {
 		wind := Wind{
@@ -666,7 +664,6 @@ func getWind(c *NewSimConfiguration) Wind {
 			Speed:     int32(weather[0].Wspd),
 			Gust:      int32(weather[0].Wgst),
 		}
-		fmt.Println("Everything Good. ", wind)
 		return wind
 	}
 }
@@ -959,9 +956,9 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 		var wind string
 		spd := weather[0].Wspd
-		if spd >= 0 {
+		if spd <= 0 {
 			wind = "00000KT"
-		} else if spd > 4 {
+		} else if spd < 4 {
 			wind = fmt.Sprintf("VRB%vKT", spd)
 		} else {
 			dir := weather[0].Wdir
@@ -1014,7 +1011,6 @@ func getAltimiter(metar string) string {
 	if indexOfA == -1 {
 		indexB := strings.Index(metar, "A2")
 		if indexB == -1 {
-			fmt.Println("No atmospheric pressure information found.")
 			return ""
 		} else {
 			pressure := metar[indexB+1 : indexB+5]
@@ -1023,7 +1019,6 @@ func getAltimiter(metar string) string {
 
 	} else {
 		pressure := metar[indexOfA+1 : indexOfA+5]
-		fmt.Println(pressure)
 		return pressure
 	}
 
