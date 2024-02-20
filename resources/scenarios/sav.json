@@ -22,15 +22,15 @@
           "runway": "10",
           "type": "ILS",
           "waypoints": [
-            "TILEE/a2600 SOVIE/a2000 _SAV_10/a30"
+            "TILEE/a2600 SOVIE/a2000 KSAV-10/a30"
           ]
         },
         "R10": {
           "runway": "10",
           "type": "RNAV",
           "waypoints": [
-            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30",
-            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30"
+            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000 KSAV-10/a30",
+            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000 KSAV-10/a30"
           ]
         },
         "R19": {
@@ -55,29 +55,29 @@
         "10": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_10 _SAV_28/h097"
+              "waypoints": "KSAV-10 _SAV_28/h097"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_10 _SAV_28/h097"
+              "waypoints": "KSAV-10 _SAV_28/h097"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_10 _SAV_28/h097"
+              "waypoints": "KSAV-10 _SAV_28/h097"
             }
         },
         "28": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_28 _SAV_10/h277"
+              "waypoints": "_SAV_28 KSAV-10/h277"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_28 _SAV_10/h277"
+              "waypoints": "_SAV_28 KSAV-10/h277"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_28 _SAV_10/h277"
+              "waypoints": "_SAV_28 KSAV-10/h277"
             }
         }
       },
@@ -796,7 +796,6 @@
   "default_scenario": "KSAV Depart 10/1 Land 10/1",
   "fixes": {
     "_SAV_1":  "N32.06.59.665,W81.11.59.962",
-    "_SAV_10": "N32.07.43.590,W81.13.07.675",
     "_SAV_19": "N32.08.08.959,W81.12.00.495",
     "_SAV_28": "N32.07.42.544,W81.11.18.875",
     "SAV":     "N32.08.46.464,W81.11.56.648",
