@@ -46,7 +46,8 @@ var (
 	newWorldChan chan *World
 	localServer  *SimServer
 	remoteServer *SimServer
-
+	airportWind map[string]Wind
+	
 	//go:embed resources/version.txt
 	buildVersion string
 
