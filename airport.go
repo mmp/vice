@@ -244,10 +244,28 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.ErrorString("Approach names cannot only have numbers in them")
 		}
 
+		if appr.Runway == "" {
+			e.ErrorString("Must specify \"runway\"")
+		}
+		rwy, ok := LookupRunway(icao, appr.Runway)
+		if !ok {
+			e.ErrorString("\"runway\" \"%s\" is unknown. Options: %s", appr.Runway,
+				database.Airports[icao].ValidRunways())
+		}
+
 		for i := range appr.Waypoints {
-			n := len(appr.Waypoints[i])
-			appr.Waypoints[i][n-1].Delete = true
 			sg.InitializeWaypointLocations(appr.Waypoints[i], e)
+
+			// Add the final fix at the runway threshold.
+			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
+				Fix:      appr.Runway,
+				Location: rwy.Threshold,
+				AltitudeRestriction: &AltitudeRestriction{
+					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
+				},
+				Delete: true,
+			})
+			n := len(appr.Waypoints[i])
 
 			if appr.Waypoints[i][n-1].ProcedureTurn != nil {
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
@@ -264,14 +282,6 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			}
 
 			appr.Waypoints[i].CheckApproach(e)
-		}
-
-		if appr.Runway == "" {
-			e.ErrorString("Must specify \"runway\"")
-		}
-		if _, ok := LookupRunway(icao, appr.Runway); !ok {
-			e.ErrorString("\"runway\" \"%s\" is unknown. Options: %s", appr.Runway,
-				database.Airports[icao].ValidRunways())
 		}
 
 		if appr.FullName == "" {

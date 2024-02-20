@@ -8,9 +8,9 @@
                     "tower_controller": "AUS_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "DOFFS/a5000/iaf SCALI/a4000 RRTOO/a2500 DDTOO/a1600/faf _AUS_18L/a492",
-                        "JEDYE/a4000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf _AUS_18L/a492",
-                        "HOUKM/a5000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf _AUS_18L/a492"
+                        "DOFFS/a5000/iaf SCALI/a4000 RRTOO/a2500 DDTOO/a1600/faf",
+                        "JEDYE/a4000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf",
+                        "HOUKM/a5000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf"
                     ]
                 },
                 "I8R": {
@@ -18,9 +18,9 @@
                     "tower_controller": "AUS_W_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "CHADE/a4000/iaf UTEEE/a2800 ELLBJ/a1600/faf _AUS_18R/a542",
-                        "HOUKM/a5000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf _AUS_18R/a542",
-                        "JEDYE/a4000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf _AUS_18R/a542"
+                        "CHADE/a4000/iaf UTEEE/a2800 ELLBJ/a1600/faf",
+                        "HOUKM/a5000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf",
+                        "JEDYE/a4000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf"
                     ]
                 },
                 "I6L": {
@@ -28,7 +28,7 @@
                     "tower_controller": "AUS_W_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "LAMAS/a5000/iaf CAMDY/a4000/iaf BIIRD/a2500/if JOVSA/a2100 FUNNN/a1600/faf _AUS_36L/a496"
+                        "LAMAS/a5000/iaf CAMDY/a4000/iaf BIIRD/a2500/if JOVSA/a2100 FUNNN/a1600/faf"
                     ]
                 },
                 "I6R": {
@@ -36,7 +36,7 @@
                     "tower_controller": "AUS_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "BALLD/a4000/iaf SSHOE/a2500 ZEDKU/a2100 FNNLY/a1600/faf _AUS_36R/a480"
+                        "BALLD/a4000/iaf SSHOE/a2500 ZEDKU/a2100 FNNLY/a1600/faf"
                     ]
                 },
                 "R6L": {
@@ -45,11 +45,11 @@
                     "runway": "36L",
                     "type": "RNAV",
                     "waypoints": [
-                        "LAIDY/a5000/s210/if ANGGS POIMM SUKEY FUNNN/faf/a1600 _AUS_36L/a496",
-                        "LIPSS/a4000/s210/if POIMM SUKEY FUNNN/faf/a1600 _AUS_36L/a496",
-                        "LAMAS/a5000+/iaf CAMDY/iaf/a4000 BIIRD/if FUNNN/faf/a1600 _AUS_36L/a496",
-                        "SMRFF/a5000/s210/if SQWCH ZILKR HEGVO ODINE FUNNN/faf/a1600 _AUS_36L/a496",
-                        "BOWTZ/a4000/s210/if ZILKR HEGVO ODINE FUNNN/faf/a1600 _AUS_36L/a496"
+                        "LAIDY/a5000/s210/if ANGGS POIMM SUKEY FUNNN/faf/a1600",
+                        "LIPSS/a4000/s210/if POIMM SUKEY FUNNN/faf/a1600",
+                        "LAMAS/a5000+/iaf CAMDY/iaf/a4000 BIIRD/if FUNNN/faf/a1600",
+                        "SMRFF/a5000/s210/if SQWCH ZILKR HEGVO ODINE FUNNN/faf/a1600",
+                        "BOWTZ/a4000/s210/if ZILKR HEGVO ODINE FUNNN/faf/a1600"
                     ]
                 },
                 "R6R": {
@@ -58,11 +58,11 @@
                     "runway": "36R",
                     "type": "RNAV",
                     "waypoints": [
-                        "SMRFF/a5000/s210/if WRRDD MYOPE APALE FNNLY/a1600/faf _AUS_36R/a480",
-                        "BOWTZ/a4000/s210/if MYOPE APALE FNNLY/a1600/faf _AUS_36R/a480",
-                        "BALLD/a4000+/iaf SSHOE/if FNNLY/a1600/faf _AUS_36R/a480",
-                        "LAIDY/a5000/s210/if ANGGS POIMM RFRCE BLURG TREKS FNNLY/a1600/faf _AUS_36R/a480",
-                        "LIPSS/a4000/s210/if POIMM RFRCE BLURG TREKS FNNLY/a1600/faf _AUS_36R/a480"
+                        "SMRFF/a5000/s210/if WRRDD MYOPE APALE FNNLY/a1600/faf",
+                        "BOWTZ/a4000/s210/if MYOPE APALE FNNLY/a1600/faf",
+                        "BALLD/a4000+/iaf SSHOE/if FNNLY/a1600/faf",
+                        "LAIDY/a5000/s210/if ANGGS POIMM RFRCE BLURG TREKS FNNLY/a1600/faf",
+                        "LIPSS/a4000/s210/if POIMM RFRCE BLURG TREKS FNNLY/a1600/faf"
                     ]
                 },
                 "R8R": {
@@ -71,11 +71,11 @@
                     "runway": "18R",
                     "type": "RNAV",
                     "waypoints": [
-                        "TRPPN/a6000/s210/iaf RUBZZ/if PEAYR N030.17.43.469,W097.44.09.572 MAYHL ELLBJ/a1600/faf _AUS_18R/a542",
-                        "HOUKM/a5000/s210/iaf UTEEE/if ELLBJ/a1600/faf _AUS_18R/a542",
-                        "JEDYE/a4000/s210/iaf UTEEE/if ELLBJ/a1600/faf _AUS_18R/a542",
-                        "SMRFF/a5000/s210/iaf RGGLS ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf _AUS_18R/a542",
-                        "XWING/a4000/if ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf _AUS_18R/a542"
+                        "TRPPN/a6000/s210/iaf RUBZZ/if PEAYR N030.17.43.469,W097.44.09.572 MAYHL ELLBJ/a1600/faf",
+                        "HOUKM/a5000/s210/iaf UTEEE/if ELLBJ/a1600/faf",
+                        "JEDYE/a4000/s210/iaf UTEEE/if ELLBJ/a1600/faf",
+                        "SMRFF/a5000/s210/iaf RGGLS ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf",
+                        "XWING/a4000/if ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf"
                     ]
                 },
                 "R8L": {
@@ -84,11 +84,11 @@
                     "runway": "18L",
                     "type": "RNAV",
                     "waypoints": [
-                        "SMRFF/a5000/s210/if LAYYA HANNN NEEMS DDTOO/a1600/faf _AUS_18L/a492",
-                        "XWING/a4000/s210/if HANNN NEEMS DDTOO/a1600/faf _AUS_18L/a492",
-                        "JEDYE/a4000/s210/iaf RRTOO/if DDTOO/a1600/faf _AUS_18L/a492",
-                        "HOUKM/a5000/s210/iaf RRTOO/if DDTOO/a1600/faf _AUS_18L/a492",
-                        "TRPPN/a6000/s210/iaf RUBZZ/if DREPL SWMMP TGONE HUDDD DDTOO/a1600/faf _AUS_18L/a492"
+                        "SMRFF/a5000/s210/if LAYYA HANNN NEEMS DDTOO/a1600/faf",
+                        "XWING/a4000/s210/if HANNN NEEMS DDTOO/a1600/faf",
+                        "JEDYE/a4000/s210/iaf RRTOO/if DDTOO/a1600/faf",
+                        "HOUKM/a5000/s210/iaf RRTOO/if DDTOO/a1600/faf",
+                        "TRPPN/a6000/s210/iaf RUBZZ/if DREPL SWMMP TGONE HUDDD DDTOO/a1600/faf"
                     ]
                 }
             },  
@@ -396,14 +396,14 @@
                         "runway": "13",
                         "type": "RNAV",
                         "waypoints": [
-                            "ORALE/a3500 JISGO/a2700 YOYTU/a1700 N29.53.49.186,W97.52.11.925/a593"
+                            "ORALE/a3500 JISGO/a2700 YOYTU/a1700"
                     ]
                     },
                     "R31": {
                         "runway": "31",
                         "type": "RNAV",
                         "waypoints": [
-                            "HODAL/a3000 RUYOK/a2000 TONXU/a1420 N29.53.11.609,W97.51.25.441/a583"
+                            "HODAL/a3000 RUYOK/a2000 TONXU/a1420"
                     ]
                     }},
                 "departure_routes": {
@@ -563,14 +563,14 @@
                         "runway": "11",
                         "type": "RNAV",
                         "waypoints": [
-                            "URHIN/iaf VEGEJ/iaf LOFJA/a3400/if LUDFE/a2400 CUBLO/a1620 N30.40.52.973,W97.41.10.216/a790"
+                            "URHIN/iaf VEGEJ/iaf LOFJA/a3400/if LUDFE/a2400 CUBLO/a1620"
                     ]
                     },
                     "R29": {
                         "runway": "29",
                         "type": "RNAV",
                         "waypoints": [
-                            "APCEX/iaf FEBYI/iaf KOJCY/a3000/if IWKOK/a2400 HEGUR/a1760 N30.40.32.374,W97.40.29.883/a777"
+                            "APCEX/iaf FEBYI/iaf KOJCY/a3000/if IWKOK/a2400 HEGUR/a1760"
                     ]
                     }},
                 "departure_routes": {

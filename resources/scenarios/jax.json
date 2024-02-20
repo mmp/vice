@@ -7,7 +7,7 @@
           "runway": "8",
           "type": "ILS",
           "waypoints": [
-            "LIBBY/a2000 DINNS/a1900 _JAX_08/a30"
+            "LIBBY/a2000 DINNS/a1900"
           ]
         },
         "RZ8": {
@@ -15,49 +15,49 @@
           "runway": "8",
           "type": "RNAV",
           "waypoints": [
-            "UDAQI/a2000/hilpt/nopt180 IVTEF/a1900 _JAX_08/a30",
-            "ZOLUV/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900 _JAX_08/a30",
-            "IJAYU/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900 _JAX_08/a30"
+            "UDAQI/a2000/hilpt/nopt180 IVTEF/a1900",
+            "ZOLUV/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900",
+            "IJAYU/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900"
           ]
         },
         "I14": {
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "ORTAR/a2000/if SONIA/a1700/faf KUYER/a480 _JAX_14/a27"
+            "ORTAR/a2000/if SONIA/a1700/faf KUYER/a480"
           ]
         },
         "R14": {
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700 _JAX_14/a27",
-            "JIXOL/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700 _JAX_14/a27",
-            "ZUDLI/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700 _JAX_14/a27"
+            "OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700",
+            "JIXOL/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700",
+            "ZUDLI/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700"
           ]
         },
         "I26": {
           "runway": "26",
           "type": "ILS",
           "waypoints": [
-            "TIKRY/a2000 DALTN/a1600 ZETRI/a480 _JAX_26/a27"
+            "TIKRY/a2000 DALTN/a1600 ZETRI/a480"
           ]
         },
         "R26": {
           "runway": "26",
           "type": "RNAV",
           "waypoints": [
-            "YEJWO/a2000/hilpt/nopt180 WOQTA/a1600 ZALDU/a740 _JAX_26/a27",
-            "CUSIB/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740 _JAX_26/a27",
-            "ZIXIL/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740 _JAX_26/a27"
+            "YEJWO/a2000/hilpt/nopt180 WOQTA/a1600 ZALDU/a740",
+            "CUSIB/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740",
+            "ZIXIL/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740"
           ]
         },
         "R32": {
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "BUNDE/a2100 POTME/a2100 FIVOX/a1700 YUSKU/a740 _JAX_32/a27",
-            "POTME/a2100 FIVOX/a1700 YUSKU/a740 _JAX_32/a28"
+            "BUNDE/a2100 POTME/a2100 FIVOX/a1700 YUSKU/a740",
+            "POTME/a2100 FIVOX/a1700 YUSKU/a740"
           ]
         }
       },
@@ -431,7 +431,7 @@
           "tower_controller": "JAX_N_APP",
           "type": "RNAV",
           "waypoints": [
-            "WILNA/a2100-6000 SHOAT/a1800 _FHB_04/a15"
+            "WILNA/a2100-6000 SHOAT/a1800"
           ]
         }
       },

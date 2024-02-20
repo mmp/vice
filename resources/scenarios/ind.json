@@ -10,7 +10,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 OSCRR/a1220 _IND_05L/a747"
+            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 OSCRR/a1220"
           ]
         },
         "R5L": {
@@ -19,7 +19,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 _IND_05L/a747"
+            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100"
           ]
         },
         "I5R": {
@@ -28,7 +28,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 GOLSE/a1240 _IND_05R/a791"
+            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 GOLSE/a1240"
           ]
         },
         "R5R": {
@@ -37,7 +37,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "RNAV",
           "waypoints": [
-            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 _IND_05R/a791"
+            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100"
           ]
         },
         "I14": {
@@ -46,7 +46,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 YEAAR/a1320 _IND_14/a796"
+            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 YEAAR/a1320"
           ]
         },
         "R14": {
@@ -55,7 +55,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 _IND_14/a796"
+            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400"
           ]
         },
         "I3L": {
@@ -64,7 +64,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600 _IND_23L/a790"
+            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600"
           ]
         },
         "R3L": {
@@ -73,7 +73,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "RNAV",
           "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600 _IND_23L/a790"
+            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600"
           ]
         },
         "I3R": {
@@ -82,7 +82,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600 _IND_23R/a783"
+            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600"
           ]
         },
         "R3R": {
@@ -91,7 +91,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600 _IND_23R/a783"
+            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600"
           ]
         },
         "I32": {
@@ -100,7 +100,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400 _IND_32/a793"
+            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400"
           ]
         },
         "R32": {
@@ -109,7 +109,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400 _IND_32/a793"
+            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400"
           ]
         }
       },

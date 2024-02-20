@@ -8,9 +8,9 @@
           "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "CLVVR/iaf/a3600 NATHN/if/a3600 ALISN/a1800 KLAX-6L/a116",
-            "EXERT/iaf/a3600 NATHN/if/a3600 ALISN/a1800 KLAX-6L/a116",
-            "WAKER/iaf/a5600 KILIE/a3600 NATHN/if/a3600 ALISN/a1800 KLAX-6L/a116"
+            "CLVVR/iaf/a3600 NATHN/if/a3600 ALISN/a1800",
+            "EXERT/iaf/a3600 NATHN/if/a3600 ALISN/a1800",
+            "WAKER/iaf/a5600 KILIE/a3600 NATHN/if/a3600 ALISN/a1800"
           ]
         },
         "RY6L": {
@@ -19,8 +19,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 6L",
           "waypoints": [
-            "WAKER/iaf/a6000 KILIE NATHN/if/a3600 ALISN/a1800 KLAX-6L/a116",
-            "EXERT/iaf/a4000 CLVVR/a3600 NATHN/if/a3600 ALISN/a1800 KLAX-6L/a116"
+            "WAKER/iaf/a6000 KILIE NATHN/if/a3600 ALISN/a1800",
+            "EXERT/iaf/a4000 CLVVR/a3600 NATHN/if/a3600 ALISN/a1800"
           ]
         },
         "RZ6L": {
@@ -29,9 +29,9 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 6L",
           "waypoints": [
-            "SASSI/a7000/iaf/s210 JOLPO NATHN/if/a3600/arc7SMO ALISN/a1800 KLAX-6L/a116",
-            "WAKER/iaf/a6000 KILIE NATHN/if/a3600/arc7SMO ALISN/a1800 KLAX-6L/a116",
-            "EXERT/iaf/a4000 CLVVR/a3600 NATHN/if/a3600/arc7SMO ALISN/a1800 KLAX-6L/a116"
+            "SASSI/a7000/iaf/s210 JOLPO NATHN/if/a3600/arc7SMO ALISN/a1800",
+            "WAKER/iaf/a6000 KILIE NATHN/if/a3600/arc7SMO ALISN/a1800",
+            "EXERT/iaf/a4000 CLVVR/a3600 NATHN/if/a3600/arc7SMO ALISN/a1800"
           ]
         },
         "I6R": {
@@ -39,8 +39,8 @@
           "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800 KLAX-6R/a116",
-            "EXERT/iaf/a4000 KRSPI/a3600 OTTES/if/a3600 GUPPI/a1800 KLAX-6R/a116"
+            "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800",
+            "EXERT/iaf/a4000 KRSPI/a3600 OTTES/if/a3600 GUPPI/a1800"
           ]
         },
         "RY6R": {
@@ -49,8 +49,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 6R",
           "waypoints": [
-            "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800 KLAX-6R/a116",
-            "EXERT/iaf/a4000 KRSPI/a3600 OTTES/if/a3600 GUPPI/a1800 KLAX-6R/a116"
+            "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800",
+            "EXERT/iaf/a4000 KRSPI/a3600 OTTES/if/a3600 GUPPI/a1800"
           ]
         },
         "RZ6R": {
@@ -59,9 +59,9 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 6R",
           "waypoints": [
-            "SASSI/iaf/a7000/s210 OVBIE/a5800 OTTES/if/a3600/arc7SMO GUPPI/a1800 KLAX-6R/a116",
-            "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800 KLAX-6R/a116",
-            "EXERT/iaf/a4000 KRSPI/a3600 OTTES/if/a3600 GUPPI/a1800 KLAX-6R/a116"
+            "SASSI/iaf/a7000/s210 OVBIE/a5800 OTTES/if/a3600/arc7SMO GUPPI/a1800",
+            "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800",
+            "EXERT/iaf/a4000 KRSPI/a3600 OTTES/if/a3600 GUPPI/a1800"
           ]
         },
         "I7R": {
@@ -69,9 +69,9 @@
           "tower_controller": "LAX_S_TWR",
           "type": "ILS",
           "waypoints": [
-            "WAKER/iaf/a5600 KILIE/a2600 TIMSE/if/a2600 FUMBL/a1800 KLAX-7R/a116",
-            "JJONN/iaf/a2600 TIMSE/if/a2600 FUMBL/a1800 KLAX-7R/a116",
-            "EXERT/iaf/a2600 TIMSE/if/a2600 FUMBL/a1800 KLAX-7R/a116"
+            "WAKER/iaf/a5600 KILIE/a2600 TIMSE/if/a2600 FUMBL/a1800",
+            "JJONN/iaf/a2600 TIMSE/if/a2600 FUMBL/a1800",
+            "EXERT/iaf/a2600 TIMSE/if/a2600 FUMBL/a1800"
           ]
         },
         "RY7R": {
@@ -80,8 +80,8 @@
           "type": "ILS",
           "full_name": "RNAV Y Runway 7R",
           "waypoints": [
-            "WAKER/iaf/a5600 KILIE/a2600 TIMSE/if/a2600 FUMBL/a1800 KLAX-7R/a116",
-            "EXERT/iaf/a2600 TIMSE/if/a2600 FUMBL/a1800 KLAX-7R/a116"
+            "WAKER/iaf/a5600 KILIE/a2600 TIMSE/if/a2600 FUMBL/a1800",
+            "EXERT/iaf/a2600 TIMSE/if/a2600 FUMBL/a1800"
           ]
         },
         "RZ7R": {
@@ -90,9 +90,9 @@
           "type": "ILS",
           "full_name": "RNAV Z Runway 7R",
           "waypoints": [
-            "WAKER/iaf/a5600 KILIE/a2600 JAAKI/if/a2300 FUMBL/faf/a1800 KLAX-7R/a116",
-            "EXERT/iaf/a2600 JAAKI/if/a2300 FUMBL/faf/a1800 KLAX-7R/a116",
-            "WNDFL/a6000/s210/if VICUG JAAKI/arc8SMO/if/a2300 FUMBL/faf/a1800 KLAX-7R/a116"
+            "WAKER/iaf/a5600 KILIE/a2600 JAAKI/if/a2300 FUMBL/faf/a1800",
+            "EXERT/iaf/a2600 JAAKI/if/a2300 FUMBL/faf/a1800",
+            "WNDFL/a6000/s210/if VICUG JAAKI/arc8SMO/if/a2300 FUMBL/faf/a1800"
           ]
         },
         "I4R": {
@@ -100,8 +100,8 @@
           "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116",
-            "SEAVU/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116"
+            "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720",
+            "SEAVU/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720"
           ]
         },
         "RY4R": {
@@ -110,21 +110,21 @@
           "type": "ILS",
           "full_name": "RNAV Y Runway 24R",
           "waypoints": [
-            "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116",
-            "SEAVU/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116"
+            "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720",
+            "SEAVU/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720"
           ]
         },
         "RZ4R": {
           "runway": "24R",
           "tower_controller": "LAX_N_TWR",
-          "type": "ILS",
+          "type": "RNAV",
           "full_name": "RNAV Z Runway 24R",
           "waypoints": [
-            "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 MUBME/a2500 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116",
-            "SEAVU/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 MUBME/a2500 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116",
-            "DAHJR/if/a6000 NORPE/a4500/arc3.3 LAZES/a2500/arc3.3 MUBME/a2500/arc3SMO KOBEE/a2200 ARBIE/a720 KLAX-24R/a116",
-            "DARTS/iaf/a4700 VAALE/if/a3500 LAZES/a2500/arc3.3 MUBME/a2500 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116",
-            "TRNDO/if/a5000/s210 KURXO/a2500 MUBME/a2500 KOBEE/a2200 ARBIE/a720 KLAX-24R/a116"
+            "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 MUBME/a2500 KOBEE/a2200 ARBIE/a720",
+            "SEAVU/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 MUBME/a2500 KOBEE/a2200 ARBIE/a720",
+            "DAHJR/if/a6000 NORPE/a4500/arc3.3 LAZES/a2500/arc3.3 MUBME/a2500/arc3SMO KOBEE/a2200 ARBIE/a720",
+            "DARTS/iaf/a4700 VAALE/if/a3500 LAZES/a2500/arc3.3 MUBME/a2500 KOBEE/a2200 ARBIE/a720",
+            "TRNDO/if/a5000/s210 KURXO/a2500 MUBME/a2500 KOBEE/a2200 ARBIE/a720"
           ]
         },
         "I4L": {
@@ -132,8 +132,8 @@
           "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 BOUBY/a4000 SUTIE/a2200 CORTY KLAX-24L/a116",
-            "SEAVU/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 BOUBY/a4000 SUTIE/a2200 KLAX-24L/a116"
+            "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 BOUBY/a4000 SUTIE/a2200 CORTY/a740",
+            "SEAVU/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 BOUBY/a4000 SUTIE/a2200 CORTY/a740"
           ]
         },
         "RY4L": {
@@ -142,8 +142,8 @@
           "type": "ILS",
           "full_name": "RNAV Y Runway 24L",
           "waypoints": [
-            "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY KLAX-24L/a116",
-            "SEAVU/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 KLAX-24L/a116"
+            "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY/a740",
+            "SEAVU/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY/a740"
           ]
         },
         "RZ4L": {
@@ -152,9 +152,9 @@
           "type": "ILS",
           "full_name": "RNAV Z Runway 24L",
           "waypoints": [
-            "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY KLAX-24L/a116",
-            "SEAVU/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 KLAX-24L/a116",
-            "TRNDO/if/a5000 GIRBE/a3100 IFIJU/a2500 SUTIE/a2200 KLAX-24L/a116"
+            "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY",
+            "SEAVU/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 SUTIE/a2200 CORTY",
+            "TRNDO/if/a5000 GIRBE/a3100 IFIJU/a2500 SUTIE/a2200 CORTY"
           ]
         },
         "I5L": {
@@ -162,10 +162,10 @@
           "tower_controller": "LAX_S_TWR",
           "type": "ILS",
           "waypoints": [
-            "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116",
-            "SEAVU/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116",
-            "CLPUR/iaf/s250/a9000 WITZZ/a8000 JUDOH/a7000 KENZO/a6300 SNNAK/a5000 WUNAR GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116",
-            "TRNDO/iaf/a5000 HIGHT/a3600 OUTDO HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116"
+            "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
+            "SEAVU/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
+            "CLPUR/iaf/s250/a9000 WITZZ/a8000 JUDOH/a7000 KENZO/a6300 SNNAK/a5000 WUNAR GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
+            "TRNDO/iaf/a5000 HIGHT/a3600 OUTDO HUNDA/if/a3600 GIGII/a1900 LADLE"
           ]
         },
         "RY5L": {
@@ -174,10 +174,10 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 25L",
           "waypoints": [
-            "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116",
-            "SEAVU/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116",
-            "CLPUR/iaf/s250/a9000 WITZZ/a8000 JUDOH/a7000 KENZO/a6300 SNNAK/a5000 WUNAR GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116",
-            "TRNDO/iaf/a5000 HIGHT/a3600 OUTDO HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116"
+            "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
+            "SEAVU/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
+            "CLPUR/iaf/s250/a9000 WITZZ/a8000 JUDOH/a7000 KENZO/a6300 SNNAK/a5000 WUNAR GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
+            "TRNDO/iaf/a5000 HIGHT/a3600 OUTDO HUNDA/if/a3600 GIGII/a1900 LADLE"
           ]
         },
         "RZ5L": {
@@ -186,10 +186,10 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 25L",
           "waypoints": [
-            "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 WAVUD/a2200 GIGII/a1900 LADLE KLAX-25L/a116",
-            "SEAVU/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 WAVUD/a2200  GIGII/a1900 LADLE KLAX-25L/a116",
-            "CLPUR/iaf/a9000 WITZZ/a8000 JUDOH/a7000 KENZO/a6300 SNNAK/a5000 WUNAR GAATE/iaf/a5000 HUNDA/if/a3600 WAVUD/a2200 GIGII/a1900 LADLE KLAX-25L/a116",
-            "TRNDO/iaf/a4500 HIPED/a3600/arc3.5 HUNDA/if/a3600 GIGII/a1900 LADLE KLAX-25L/a116"
+            "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 WAVUD/a2200 GIGII/a1900 LADLE",
+            "SEAVU/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 WAVUD/a2200  GIGII/a1900 LADLE",
+            "CLPUR/iaf/a9000 WITZZ/a8000 JUDOH/a7000 KENZO/a6300 SNNAK/a5000 WUNAR GAATE/iaf/a5000 HUNDA/if/a3600 WAVUD/a2200 GIGII/a1900 LADLE",
+            "TRNDO/iaf/a4500 HIPED/a3600/arc3.5 HUNDA/if/a3600 GIGII/a1900 LADLE"
           ]
         }
       },
@@ -663,7 +663,7 @@
         "runway": "7",
         "type": "RNAV",
         "waypoints": [
-          "SLI/a4000 WILMA/a4000 LIMBO/a4000 INISH/a4000 TANDY/iaf/a3600 JOHME/a3600 MEANA/if/a3600 ZEFER/a2800 KHHR-7/a116"
+          "SLI/a4000 WILMA/a4000 LIMBO/a4000 INISH/a4000 TANDY/iaf/a3600 JOHME/a3600 MEANA/if/a3600 ZEFER/a2800"
         ]
       },
       "L25": {
@@ -671,16 +671,16 @@
         "type": "RNAV",
         "full_name": "Localizer Runway 25",
         "waypoints": [
-          "SLI/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA KHHR-25/a116",
-          "POWUP/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA KHHR-25/a116"
+          "SLI/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA",
+          "POWUP/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA"
         ]
       },
       "R25": {
         "runway": "25",
         "type": "RNAV",
         "waypoints": [
-          "SLI/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA KHHR-25/a116",
-          "POWUP/iaf/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA KHHR-25/a116"
+          "SLI/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA",
+          "POWUP/iaf/a2700 WELLZ/if/a2700 HASHY/a1500 ZANIR/a1500 WARVA"
         ]
       },
       "V25": {
@@ -688,9 +688,9 @@
         "type": "ILS",
         "full_name": "VOR Runway 25",
         "waypoints": [
-          "LAHAB/iaf/a2700 DMYHV NORWA/if/a2700 BELLI/a1900 VIVSE KHHR-25/a116",
-          "SLI/iaf/a2700 NORWA/if/a2700 BELLI/a1900 VIVSE KHHR-25/a116",
-          "ELMOO/iaf/a2700 NORWA/if/a2700 BELLI/a1900 VIVSE KHHR-25/a116"
+          "LAHAB/iaf/a2700 DMYHV NORWA/if/a2700 BELLI/a1900 VIVSE",
+          "SLI/iaf/a2700 NORWA/if/a2700 BELLI/a1900 VIVSE",
+          "ELMOO/iaf/a2700 NORWA/if/a2700 BELLI/a1900 VIVSE"
         ]
       }
     },

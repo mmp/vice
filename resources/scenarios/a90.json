@@ -8,7 +8,7 @@
             "tower_controller": "BOS_W_TWR",
             "type": "ILS",
             "waypoints": [
-              "GOSHI/iaf/a6000 WINNI/if/a4000 NABBO/a3000 MILTT/faf/a1700 IRSEW/a700 _BOS_4R/a18"
+              "GOSHI/iaf/a6000 WINNI/if/a4000 NABBO/a3000 MILTT/faf/a1700 IRSEW/a700"
             ]
           },
           "R4L": {
@@ -16,7 +16,7 @@
             "tower_controller": "BOS_W_TWR",
             "type": "RNAV",
             "waypoints": [
-              "AAALL/iaf/a4000 LVRON/if/a3000 MTAPN/faf/a1700 _BOS_4L/a14"
+              "AAALL/iaf/a4000 LVRON/if/a3000 MTAPN/faf/a1700"
             ]
           },
           "I5R": {
@@ -24,8 +24,8 @@
             "tower_controller": "BOS_W_TWR",
             "type": "ILS",
             "waypoints": [
-              "AADMS/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700 _BOS_15R/a17",
-              "GDM/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700 _BOS_15R/a17"
+              "AADMS/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700",
+              "GDM/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700"
             ]
           },
           "I2L": {
@@ -33,7 +33,7 @@
             "tower_controller": "BOS_E_TWR",
             "type": "ILS",
             "waypoints": [
-              "NOLEY/if/a4000 WYANE/a3000 VOCUS/faf/a1700 ZUMOL/a700 _BOS_22L/a16"
+              "NOLEY/if/a4000 WYANE/a3000 VOCUS/faf/a1700 ZUMOL/a700"
             ]
           },
           "I27": {
@@ -41,7 +41,7 @@
             "tower_controller": "BOS_E_TWR",
             "type": "ILS",
             "waypoints": [
-              "AYBEE/iaf/a6000 KLANE/a4000 LONER/if/a3000 RIPIT/faf/a1700 _BOS_27/a17"
+              "AYBEE/iaf/a6000 KLANE/a4000 LONER/if/a3000 RIPIT/faf/a1700"
             ]
           },
           "I3L": {
@@ -49,7 +49,7 @@
             "tower_controller": "BOS_E_TWR",
             "type": "ILS",
             "waypoints": [
-              "BENNN/if/a4000 COHAS/a3000 NIMOY/faf/a1500 RDUKE/a700 _BOS_33L/a16"
+              "BENNN/if/a4000 COHAS/a3000 NIMOY/faf/a1500 RDUKE/a700"
             ]
           }
         },

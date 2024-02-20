@@ -8,30 +8,30 @@
           "runway": "17",
           "type": "ILS",
           "waypoints": [
-            "PTW/iaf COWAD/if/a3000 HYILL/faf/a2000 HOOCH/a760 N039.53.14.508,W075.14.09.655/a50",
-            "ARD/iaf COWAD/if/a3000 HYILL/faf/a2000 HOOCH/a760 N039.53.14.508,W075.14.09.655/a50"
+            "PTW/iaf COWAD/if/a3000 HYILL/faf/a2000 HOOCH/a760",
+            "ARD/iaf COWAD/if/a3000 HYILL/faf/a2000 HOOCH/a760"
           ]
         },
         "27L": {
           "runway": "27L",
           "type": "ILS",
           "waypoints": [
-            "CYN/iaf FESTI/if/a3000 TORNE/faf/a3000 GLOUS/a2060 XIVOY/a400 N039.52.08.453,W075.14.02.761/a50"
+            "CYN/iaf FESTI/if/a3000 TORNE/faf/a3000 GLOUS/a2060 XIVOY/a400"
           ]
         },
         "27R": {
           "runway": "27R",
           "type": "ILS",
           "waypoints": [
-            "MENGE/iaf MRTIN/if/a3000 JALTO/faf/a2100 HADNI/a740 N039.52.28.008,W075.13.25.682/a50",
-            "ENZEW/iaf MRTIN/if/a3000 JALTO/faf/a2100 HADNI/a740 N039.52.28.008,W075.13.25.682/a50"
+            "MENGE/iaf MRTIN/if/a3000 JALTO/faf/a2100 HADNI/a740",
+            "ENZEW/iaf MRTIN/if/a3000 JALTO/faf/a2100 HADNI/a740"
           ]
         },
         "9RZ": {
           "runway": "9R",
           "type": "ILS",
           "waypoints": [
-            "MXE/iaf BWINE/if/a4000 ASOCI/a3000 KELEE/faf/a1800 BALDN/a740 N039.51.39.133,W075.16.29.620/a50"
+            "MXE/iaf BWINE/if/a4000 ASOCI/a3000 KELEE/faf/a1800 BALDN/a740"
           ]
         },
         "RVR": {
@@ -39,31 +39,31 @@
           "runway": "9R",
           "type": "Visual",
           "waypoints": [
-            "DQO/a4000+ _rvrd5/a4000 _rvrd9/a3000 _rvrd14/a1500 N039.51.29.273,W075.17.17.274 N039.51.39.133,W075.16.29.620/a50"
+            "DQO/a4000+ _rvrd5/a4000 _rvrd9/a3000 _rvrd14/a1500 N039.51.29.273,W075.17.17.274"
           ]
         },
         "G35": {
           "runway": "35",
           "type": "RNAV",
           "waypoints": [
-            "WIKAV/iaf JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50",
-            "JIIMS BDAWK/iaf/a3000+ JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50",
-            "ALBEK KUSLE/iaf/a4700+ JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900 N039.52.16.047,W075.13.40.458/a50"
+            "WIKAV/iaf JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900",
+            "JIIMS BDAWK/iaf/a3000+ JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900",
+            "ALBEK KUSLE/iaf/a4700+ JEPUG/if/a3000 HARLU/faf/a2000 CEMEK/a900"
           ]
         },
         "I26": {
           "runway": "26",
           "type": "ILS",
           "waypoints": [
-            "HOLEY/iaf FOSOM/if/a2000 ESKOE/faf/a2000 N039.52.54.183,W075.12.47.257/a50"
+            "HOLEY/iaf FOSOM/if/a2000 ESKOE/faf/a2000"
           ]
         },
         "I9L": {
           "runway": "9L",
           "type": "ILS",
           "waypoints": [
-            "MXE/iaf QWEST/if/a4000 OBEKE/a3000 ANNET/faf/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50",
-            "DQO/iaf QWEST/if/a4000 OBEKE/a3000 ANNET/faf/a2100 LANDI/a760 N039.52.07.340,W075.15.19.692/a50"
+            "MXE/iaf QWEST/if/a4000 OBEKE/a3000 ANNET/faf/a2100 LANDI/a760",
+            "DQO/iaf QWEST/if/a4000 OBEKE/a3000 ANNET/faf/a2100 LANDI/a760"
           ]
         }
       },

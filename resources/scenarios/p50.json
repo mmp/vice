@@ -9,7 +9,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "ILS",
                      "waypoints": [
-                      "AVONA/a4000+/iaf QAQCE FOWLE/a4000/if ZINGA/faf/a2600 PURCH/a1620 _PHX_7L/a1116"
+                      "AVONA/a4000+/iaf QAQCE FOWLE/a4000/if ZINGA/faf/a2600 PURCH/a1620"
                     ]
                 },
                 "I7R": {
@@ -17,7 +17,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ALLIS/iaf/a7000 FFIXA/a7000 TESLE/if/a7000 FALGO/a6000 CAGOR/a5000 BALTE/a4000 TOTIE/a3000/faf ALOGE/a1840 _PHX_7R/a1116"
+                        "ALLIS/iaf/a7000 FFIXA/a7000 TESLE/if/a7000 FALGO/a6000 CAGOR/a5000 BALTE/a4000 TOTIE/a3000/faf ALOGE/a1840"
                     ]
                 },
                 "I8": {
@@ -25,7 +25,7 @@
                     "tower_controller": "PHX_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ALLIS/iaf/a6000 SARTE/a6000 HIKID/a6000 ILIKE/a5000/if JAMIL/a4000 WAZUP/a3000 _PHX_8/a1118"
+                        "ALLIS/iaf/a6000 SARTE/a6000 HIKID/a6000 ILIKE/a5000/if JAMIL/a4000 WAZUP/a3000"
                     ]
                 },
                 "I5L": {
@@ -33,7 +33,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ZERLO/a5000 FIXAR/a5000/iaf BUDME/a5000 HAMEK/a4000/if GIPSE/a4000 SCADE/a3000 KONTE/a2040 _PHX_25L/a1126"
+                        "ZERLO/a5000 FIXAR/a5000/iaf BUDME/a5000 HAMEK/a4000/if GIPSE/a4000 SCADE/a3000 KONTE/a2040"
                     ]
                 },
                 "R5R": {
@@ -41,7 +41,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "RNAV",
                     "waypoints": [
-                        "ZERLO/a7000 UVIYO/a7000/iaf TEYYI/a5000/if ZAMEX/a4000 UXCUN/a3000/faf YASCU/a1860 _PHX_25R/a1134"
+                        "ZERLO/a7000 UVIYO/a7000/iaf TEYYI/a5000/if ZAMEX/a4000 UXCUN/a3000/faf YASCU/a1860"
                     ]
                 },
                 "I26": {
@@ -49,7 +49,7 @@
                     "tower_controller": "PHX_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ZERLO/a7000 CERUN/iaf/a7000 ZEMOS/a6000 TODRE/if/a5000 JAGAL/a4000 PRUNN/a3000/faf DELSE/a1740 _PHX_26/a1135"
+                        "ZERLO/a7000 CERUN/iaf/a7000 ZEMOS/a6000 TODRE/if/a5000 JAGAL/a4000 PRUNN/a3000/faf DELSE/a1740"
                     ]
                 }
             },

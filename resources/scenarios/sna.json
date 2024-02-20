@@ -8,8 +8,8 @@
                     "runway": "20R",
                     "type": "ILS",
                     "waypoints": [
-                        "SLI SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040 _SNA_20R/a56",
-                         "SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040 _SNA_20R/a56"
+                        "SLI SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040",
+                         "SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040"
                     ]
                 },
                 "D0R": {
@@ -17,7 +17,7 @@
                     "runway": "20R",
                     "type": "ILS",
                     "waypoints": [
-                        "TUSTI EFFIE/pt45/a2800 TUSTI/a1900 GAUER/a880 _SNA_20R/a56"
+                        "TUSTI EFFIE/pt45/a2800 TUSTI/a1900 GAUER/a880"
                     ]
                 },
                 "R0R": {
@@ -25,8 +25,8 @@
                     "runway": "20R",
                     "type": "RNAV",
                     "waypoints": [
-                        "DSNEE/a8000/s220 BONVY/a6000 DEKRT AMELE EHVOX FEBTA WEMDO CALIT/s190 ZETOV _SNA_20R/a56",
-                        "KLEVR/a5000 MNNIE/a4400/s210 KLIPP/s210/arc5.7 CALIT/s190 ZETOV/a1400 _SNA_20R/a56"
+                        "DSNEE/a8000/s220 BONVY/a6000 DEKRT AMELE EHVOX FEBTA WEMDO CALIT/s190 ZETOV",
+                        "KLEVR/a5000 MNNIE/a4400/s210 KLIPP/s210/arc5.7 CALIT/s190 ZETOV/a1400"
                     ]
                 }
             },
@@ -360,9 +360,9 @@
                     "runway": "30",
                     "type": "ILS",
                     "waypoints": [
-                        "EZKEL/a4000 LUCIG/if/nopt GUNEY/hilpt/a1600 _LGB_30/a60",
-                        "MIDDS/a4000 LUCIG/if/nopt GUNEY/hilpt/a1600 _LGB_30/a60",
-                        "DRTTY/a3000 LUCIG/if/nopt GUNEY/hilpt/a1600 _LGB_30/a60"
+                        "EZKEL/a4000 LUCIG/if/nopt GUNEY/hilpt/a1600",
+                        "MIDDS/a4000 LUCIG/if/nopt GUNEY/hilpt/a1600",
+                        "DRTTY/a3000 LUCIG/if/nopt GUNEY/hilpt/a1600"
                     ]
                 },
                 "R30": {
@@ -370,9 +370,9 @@
                     "runway": "30",
                     "type": "RNAV",
                     "waypoints": [
-                        "EZKEL/a4000 LUCIG/a3000 GUNEY/a1600 _LGB_30/a60",
-                        "MIDDS/a4000 LUCIG/a3000 GUNEY/a1600 _LGB_30/a60",
-                        "DRTTY/a3000 LUCIG/a3000 GUNEY/a1600 _LGB_30/a60"
+                        "EZKEL/a4000 LUCIG/a3000 GUNEY/a1600",
+                        "MIDDS/a4000 LUCIG/a3000 GUNEY/a1600",
+                        "DRTTY/a3000 LUCIG/a3000 GUNEY/a1600"
                     ]
                 },
                 "R12": {
@@ -380,7 +380,7 @@
                     "runway": "12",
                     "type": "RNAV",
                     "waypoints": [
-                        "BREKE/a3000 JUXAT/s200 WRYAN/a1500 TIDOY _LGB_12/a60"
+                        "BREKE/a3000 JUXAT/s200 WRYAN/a1500 TIDOY"
                     ]
                 },
                 "R26R": {
@@ -388,9 +388,9 @@
                     "runway": "26R",
                     "type": "RNAV",
                     "waypoints": [
-                        "ALBAS/a4000 LUCIG/a3000/s180 JILAN/a2800 CASIV/a2066 BUCAS/a731 _LGB_26R/a60",
-                        "DRTTY/a3000 LUCIG/a3000/s180 JILAN/a2800 CASIV/a2066 BUCAS/a731 _LGB_26R/a60",
-                        "MIDDS/a4000 LUCIG/a3000/s180 JILAN/a2800 CASIV/a2066 BUCAS/a731 _LGB_26R/a60"
+                        "ALBAS/a4000 LUCIG/a3000/s180 JILAN/a2800 CASIV/a2066 BUCAS/a731",
+                        "DRTTY/a3000 LUCIG/a3000/s180 JILAN/a2800 CASIV/a2066 BUCAS/a731",
+                        "MIDDS/a4000 LUCIG/a3000/s180 JILAN/a2800 CASIV/a2066 BUCAS/a731"
                     ]
                 },
                 "RY30": {
@@ -398,9 +398,9 @@
                     "runway": "30",
                     "type": "RNAV",
                     "waypoints": [
-                        "EZKEL/a4000 LUCIG/a3000 GUNEY/a1600 _LGB_30/a60",
-                        "MIDDS/a4000 LUCIG/a3000 GUNEY/a1600 _LGB_30/a60",
-                        "DRTTY/a3000 LUCIG/a3000 GUNEY/a1600 _LGB_30/a60"
+                        "EZKEL/a4000 LUCIG/a3000 GUNEY/a1600",
+                        "MIDDS/a4000 LUCIG/a3000 GUNEY/a1600",
+                        "DRTTY/a3000 LUCIG/a3000 GUNEY/a1600"
                     ]
                 }
             },
@@ -499,9 +499,9 @@
                     "runway": "25L",
                     "type": "ILS",
                     "waypoints": [
-                        "CRCUS/iaf/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128",
-                        "SEAVU/iaf/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128",
-                        "CLPUR/iaf/s250 WITZZ JUDOH KENZO SNNAK GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128"
+                        "CRCUS/iaf/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700",
+                        "SEAVU/iaf/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700",
+                        "CLPUR/iaf/s250 WITZZ JUDOH KENZO SNNAK GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE/a700"
                     ]
                 }
             }

@@ -8,9 +8,9 @@
           "full_name": "Localizer DME Runway 15",
           "type": "ILS",
           "waypoints": [
-            "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG KASE-15/a7820",
-            "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG KASE-15/a7820",
-            "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG KASE-15/a7820"
+            "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
+            "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
+            "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG"
           ]
         },
         "RG15": {
@@ -18,7 +18,7 @@
           "type": "RNAV",
           "full_name": "RNAV GPS Runway 15",
           "waypoints": [
-            "DBL/iaf/if/a13700 HEPEB/a12900 ALLIX/a12200 MAFMU KASE-15/a7820"
+            "DBL/iaf/if/a13700 HEPEB/a12900 ALLIX/a12200 MAFMU"
           ]
         },
         "RY15": {
@@ -26,8 +26,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 15",
           "waypoints": [
-            "DBL/a14000 BASLT/iaf/s210 GLDEN/if/a12800 GNTRI/a10600 PHPPS/a9414 OSLEE/a8798 UCISE/a8325 SAYYO/a7917 KASE-15/a7820",
-            "LINDZ/iaf/a12800 GLDEN/if/a12800 GNTRI/a10600 PHPPS/a9414 OSLEE/a8798 UCISE/a8325 SAYYO/a7917 KASE-15/a7820"
+            "DBL/a14000 BASLT/iaf/s210 GLDEN/if/a12800 GNTRI/a10600 PHPPS/a9414 OSLEE/a8798 UCISE/a8325 SAYYO/a7917",
+            "LINDZ/iaf/a12800 GLDEN/if/a12800 GNTRI/a10600 PHPPS/a9414 OSLEE/a8798 UCISE/a8325 SAYYO/a7917"
           ]
         },
         "RZ15": {
@@ -35,8 +35,8 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 15",
           "waypoints": [
-            "DBL SITWO/iaf/a13000 NALDY/if/a13000 WASLO/a11900 ONCAP/a10800  WIDMI KASE-15/a7820",
-            "LINDZ/iaf/a13000 NALDY/if/a13000 WASLO/a11900 ONCAP/a10800 WIDMI KASE-15/a7820"
+            "DBL SITWO/iaf/a13000 NALDY/if/a13000 WASLO/a11900 ONCAP/a10800  WIDMI",
+            "LINDZ/iaf/a13000 NALDY/if/a13000 WASLO/a11900 ONCAP/a10800 WIDMI"
           ]
         },
         "V33": {
@@ -44,7 +44,7 @@
           "runway": "33",
           "type": "Visual",
           "waypoints": [
-            "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf KASE-33/a7820"
+            "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
           ]
         }
       },

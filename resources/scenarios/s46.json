@@ -8,49 +8,49 @@
           "runway": "16C",
           "type": "ILS",
           "waypoints": [
-            "JINRU/iaf/a7000 HULTO/iaf/a6000 ERYKA/iaf/a5000 MGNUM/if/a4000 ANVIL/a3200 SODOE/a1900 _SEA_16C/a432",
-            "PAE/a7000 JINRU/iaf/a7000 HULTO/iaf/a6000 ERYKA/iaf/a5000 MGNUM/if/a4000 ANVIL/a3200 SODOE/a1900 _SEA_16C/a432"
+            "JINRU/iaf/a7000 HULTO/iaf/a6000 ERYKA/iaf/a5000 MGNUM/if/a4000 ANVIL/a3200 SODOE/a1900",
+            "PAE/a7000 JINRU/iaf/a7000 HULTO/iaf/a6000 ERYKA/iaf/a5000 MGNUM/if/a4000 ANVIL/a3200 SODOE/a1900"
           ]
         },
         "I6L": {
           "runway": "16L",
           "type": "ILS",
           "waypoints": [
-            "ZEDKI/iaf/a7000 WUMUL/iaf/a6000 KENMO/iaf/a5000 HELZR/if/a4000 KARFO/a3200 DGLAS/a1900 _SEA_16L/a432",
-            "PAE/a7000 ZEDKI/iaf/a7000 WUMUL/iaf/a6000 KENMO/iaf/a5000 HELZR/if/a4000 KARFO/a3200 DGLAS/a1900 _SEA_16L/a432"
+            "ZEDKI/iaf/a7000 WUMUL/iaf/a6000 KENMO/iaf/a5000 HELZR/if/a4000 KARFO/a3200 DGLAS/a1900",
+            "PAE/a7000 ZEDKI/iaf/a7000 WUMUL/iaf/a6000 KENMO/iaf/a5000 HELZR/if/a4000 KARFO/a3200 DGLAS/a1900"
           ]
         },
         "I6R": {
           "runway": "16R",
           "type": "ILS",
           "waypoints": [
-            "ZIKRO/iaf/a7000 CIBUX/iaf/a6000 AGANE/iaf/a5000 CELAK/if/a4000 BUGNE/a3200 FINKA/a1900 _SEA_16R/a432",
-            "PAE/a7000 ZIKRO/iaf/a7000 CIBUX/iaf/a6000 AGANE/iaf/a5000 CELAK/if/a4000 BUGNE/a3200 FINKA/a1900 _SEA_16R/a432"
+            "ZIKRO/iaf/a7000 CIBUX/iaf/a6000 AGANE/iaf/a5000 CELAK/if/a4000 BUGNE/a3200 FINKA/a1900",
+            "PAE/a7000 ZIKRO/iaf/a7000 CIBUX/iaf/a6000 AGANE/iaf/a5000 CELAK/if/a4000 BUGNE/a3200 FINKA/a1900"
           ]
         },
         "I4C": {
           "runway": "34C",
           "type": "ILS",
           "waypoints": [
-            "LORIE/if/a5000 ODBOE/a4000 TIFYS/faf/a2400 RYBKA/a1000 _SEA_34C/a432",
-            "CIDUG/iaf/a5000 LORIE/if/a5000 ODBOE/a4000 TIFYS/faf/a2400 RYBKA/a1000 _SEA_34C/a432",
-            "SONDR/iaf/a6000 LORIE/if/a5000 ODBOE/a4000 TIFYS/faf/a2400 RYBKA/a1000 _SEA_34C/a432"
+            "LORIE/if/a5000 ODBOE/a4000 TIFYS/faf/a2400 RYBKA/a1000",
+            "CIDUG/iaf/a5000 LORIE/if/a5000 ODBOE/a4000 TIFYS/faf/a2400 RYBKA/a1000",
+            "SONDR/iaf/a6000 LORIE/if/a5000 ODBOE/a4000 TIFYS/faf/a2400 RYBKA/a1000"
           ]
         },
         "I4L": {
           "runway": "34L",
           "type": "ILS",
           "waypoints": [
-            "HIPRO/if/a5000 JOSTA/a4000 JALON/a2400 HOVOS/a1000 _SEA_34L/a432",
-            "CIDUG/iaf/a5000 JOSTA/a4000 JALON/a2400 HOVOS/a1000 _SEA_34L/a432",
-            "SONDR/iaf/a6000 JOSTA/a4000 JALON/a2400 HOVOS/a1000 _SEA_34L/a432"
+            "HIPRO/if/a5000 JOSTA/a4000 JALON/a2400 HOVOS/a1000",
+            "CIDUG/iaf/a5000 JOSTA/a4000 JALON/a2400 HOVOS/a1000",
+            "SONDR/iaf/a6000 JOSTA/a4000 JALON/a2400 HOVOS/a1000"
           ]
         },
         "I4R": {
           "runway": "34R",
           "type": "ILS",
           "waypoints": [
-            "JIPOX/iaf/a7000 WAGTI/iaf/a6000 NEEAL/if/a5000 KLEWS/a4000 BUCKK/faf/a2200 CNNTI/a1040 _SEA_34R/a432"
+            "JIPOX/iaf/a7000 WAGTI/iaf/a6000 NEEAL/if/a5000 KLEWS/a4000 BUCKK/faf/a2200 CNNTI/a1040"
           ]
         },
         "Z6C": {
@@ -58,11 +58,11 @@
           "runway": "16C",
           "type": "RNAV",
           "waypoints": [
-            "ERYKA/iaf/a4000 MGNUM/if/a3200 ANVIL/a2200 EPUDE/a2200 SODOE/faf/a1900 _SEA_16C/a433",
-            "GRIFY/iaf/s210/a6000 MGNUM/if/a3200 ANVIL/a2200 EPUDE/a2200 SODOE/faf/a1900 _SEA_16C/a433",
-            "PPAUL/if/s230/a5900 FERIE/s230/a5000 HEGEM/s230/a3700 SEGAW/s210/a3200 PINTR/a3200 EPUDE/a2200 SODOE/faf/a1900 _SEA_16C/a433",
-            "VASHN/if/s210/a6000 RAYUU/s210/a5000 SEGAW/s210/a3200 PINTR/a3200  EPUDE/a2200 SODOE/faf/a1900 _SEA_16C/a433",
-            "PAE/a5000 ERYKA/iaf/a4000 MGNUM/if/a3200 ANVIL/a2200 EPUDE/a2200 SODOE/faf/a1900 _SEA_16C/a433"
+            "ERYKA/iaf/a4000 MGNUM/if/a3200 ANVIL/a2200 EPUDE/a2200 SODOE/faf/a1900",
+            "GRIFY/iaf/s210/a6000 MGNUM/if/a3200 ANVIL/a2200 EPUDE/a2200 SODOE/faf/a1900",
+            "PPAUL/if/s230/a5900 FERIE/s230/a5000 HEGEM/s230/a3700 SEGAW/s210/a3200 PINTR/a3200 EPUDE/a2200 SODOE/faf/a1900",
+            "VASHN/if/s210/a6000 RAYUU/s210/a5000 SEGAW/s210/a3200 PINTR/a3200  EPUDE/a2200 SODOE/faf/a1900",
+            "PAE/a5000 ERYKA/iaf/a4000 MGNUM/if/a3200 ANVIL/a2200 EPUDE/a2200 SODOE/faf/a1900"
           ]
         },
         "Z6L": {
@@ -70,9 +70,9 @@
           "runway": "16L",
           "type": "RNAV",
           "waypoints": [
-            "KENMO/iaf/a4000 HELZR/if/a4000 KARFO/a3200 DGLAS/faf/a1900 _SEA_16L/a433",
-            "PAE/a5000 KENMO/iaf/a4000 HELZR/if/a4000 KARFO/a3200 DGLAS/faf/a1900 _SEA_16L/a433",
-            "GRIFY/iaf/s210/a6000 HELZR/if/a4000 KARFO/a3200 DGLAS/faf/a1900 _SEA_16L/a433"
+            "KENMO/iaf/a4000 HELZR/if/a4000 KARFO/a3200 DGLAS/faf/a1900",
+            "PAE/a5000 KENMO/iaf/a4000 HELZR/if/a4000 KARFO/a3200 DGLAS/faf/a1900",
+            "GRIFY/iaf/s210/a6000 HELZR/if/a4000 KARFO/a3200 DGLAS/faf/a1900"
           ]
         },
         "Z6R": {
@@ -80,11 +80,11 @@
           "runway": "16R",
           "type": "RNAV",
           "waypoints": [
-            "AGANE/iaf/a4000 CELAK/if/a3200 BUGNE/a2300 WOTIK/a2300 FINKA/faf/a1900 _SEA_16R/a433",
-            "GRIFY/iaf/s210/a6000 CELAK/if/a3200 BUGNE/a2300 WOTIK/a2300 FINKA/faf/a1900  _SEA_16R/a433",
-            "PPAUL/if/s230/a5900 FERIE/s230/a5000 HEGEM/s230/a3700 SEGAW/s210/a3200 PINTR/a3200 WOTIK/a2300 FINKA/faf/a1900 _SEA_16R/a433",
-            "VASHN/if/s210/a6000 RAYUU/s210/a5000 SEGAW/s210/a3200 PINTR/a3200 EPUDE/a2200 SODOE/faf/a1900 _SEA_16R/a433",
-            "PAE/a5000 AGANE/iaf/a4000 CELAK/if/a3200 BUGNE/a2300 WOTIK/a2300 FINKA/faf/a1900 _SEA_16R/a433"
+            "AGANE/iaf/a4000 CELAK/if/a3200 BUGNE/a2300 WOTIK/a2300 FINKA/faf/a1900",
+            "GRIFY/iaf/s210/a6000 CELAK/if/a3200 BUGNE/a2300 WOTIK/a2300 FINKA/faf/a1900 ",
+            "PPAUL/if/s230/a5900 FERIE/s230/a5000 HEGEM/s230/a3700 SEGAW/s210/a3200 PINTR/a3200 WOTIK/a2300 FINKA/faf/a1900",
+            "VASHN/if/s210/a6000 RAYUU/s210/a5000 SEGAW/s210/a3200 PINTR/a3200 EPUDE/a2200 SODOE/faf/a1900",
+            "PAE/a5000 AGANE/iaf/a4000 CELAK/if/a3200 BUGNE/a2300 WOTIK/a2300 FINKA/faf/a1900"
           ]
         },
         "Z4C": {
@@ -92,9 +92,9 @@
           "runway": "34C",
           "type": "RNAV",
           "waypoints": [
-            "LORIE/if/a5000 ZINUB/a2900 TIFYS/faf/a2400 _SEA_34C/a433",
-            "SHIPZ/if/s210/a7000 BELNE/a6000 LANGL/a5000 FAWNA/a2900 ZINUB/a2900 TIFYS/faf/a2400 _SEA_34C/a433",
-            "SONDR/iaf/s230/a6000 LORIE/if/a5000 ZINUB/a2900 TIFYS/faf/a2400 _SEA_34C/a433"
+            "LORIE/if/a5000 ZINUB/a2900 TIFYS/faf/a2400",
+            "SHIPZ/if/s210/a7000 BELNE/a6000 LANGL/a5000 FAWNA/a2900 ZINUB/a2900 TIFYS/faf/a2400",
+            "SONDR/iaf/s230/a6000 LORIE/if/a5000 ZINUB/a2900 TIFYS/faf/a2400"
           ]
         },
         "Z4L": {
@@ -102,9 +102,9 @@
           "runway": "34L",
           "type": "RNAV",
           "waypoints": [
-            "HIPRO/if/a3000 BAKMN/a3000 JALON/faf/a2400 _SEA_34L/a433",
-            "SHIPZ/if/a7000 BELNE/a5000 LANGL/a3000 BAKMN/a3000 JALON/faf/a2400 _SEA_34L/a433",
-            "SONDR/iaf/s230/a6000 HIPRO/if/a3000 BAKMN/a3000 JALON/faf/a2400 _SEA_34L/a433"
+            "HIPRO/if/a3000 BAKMN/a3000 JALON/faf/a2400",
+            "SHIPZ/if/a7000 BELNE/a5000 LANGL/a3000 BAKMN/a3000 JALON/faf/a2400",
+            "SONDR/iaf/s230/a6000 HIPRO/if/a3000 BAKMN/a3000 JALON/faf/a2400"
           ]
         },
         "Z4R": {
@@ -112,8 +112,8 @@
           "runway": "34R",
           "type": "RNAV",
           "waypoints": [
-            "NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200 _SEA_34R/a433",
-            "SONDR/iaf/a6000 NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200 _SEA_34R/a432"
+            "NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200",
+            "SONDR/iaf/a6000 NEEAL/if/a5000 BEKKR/a3000 BUCKK/faf/a2200"
           ]
         }
       },

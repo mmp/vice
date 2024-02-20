@@ -8,21 +8,21 @@
           "runway": "4",
           "type": "ILS",
           "waypoints": [
-            "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ BENNG/if/a3000 RAHEL/a1800 DNNIS/faf/a1700 WARIN/a640 _LGA_4/a50"
+            "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ BENNG/if/a3000 RAHEL/a1800 DNNIS/faf/a1700 WARIN/a640"
           ]
         },
         "I22": {
           "runway": "22",
           "type": "ILS",
           "waypoints": [
-            "YOMAN/if/a3000 GREKO/faf/a1900 _LGA_22/a50"
+            "YOMAN/if/a3000 GREKO/faf/a1900"
           ]
         },
         "I13": {
           "runway": "13",
           "type": "ILS",
           "waypoints": [
-            "PAYMI/if/a2800 STEED/faf/a1900 COROR/a800 _LGA_13/a50"
+            "PAYMI/if/a2800 STEED/faf/a1900 COROR/a800"
           ]
         },
         "R31": {
@@ -30,7 +30,7 @@
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
-            "GGREG/iaf/s240 ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/s200/a4000+ VARAZ/s200/iaf/a4000+ PACHU/if/a3000 SHAYY/s180/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422 _LGA_31/a50"
+            "GGREG/iaf/s240 ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/s200/a4000+ VARAZ/s200/iaf/a4000+ PACHU/if/a3000 SHAYY/s180/a2500 GACAR/faf/a2200 DRRYL/a1142 KEYTH/a782 DCTRK/a422"
           ]
         },
         "PVA": {
@@ -38,7 +38,7 @@
           "runway": "31",
           "type": "Visual",
           "waypoints": [
-            "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+ _LGA_31/a50"
+            "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+"
           ]
         },
         "L31": {
@@ -46,7 +46,7 @@
           "runway": "31",
           "type": "ILS",
           "waypoints": [
-            "QUENE/if/a1700 FABRY/faf/a1700 _LGA_31/a50"
+            "QUENE/if/a1700 FABRY/faf/a1700"
           ]
         }
       },

@@ -7,38 +7,38 @@
           "runway": "1",
           "type": "ILS",
           "waypoints": [
-            "TERBE/a2000 MIZLU/a2000 _SAV_1/a39"
+            "TERBE/a2000 MIZLU/a2000"
           ]
         },
         "R1": {
           "runway": "1",
           "type": "RNAV",
           "waypoints": [
-            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39",
-            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39"
+            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000",
+            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000"
           ]
         },
         "I10": {
           "runway": "10",
           "type": "ILS",
           "waypoints": [
-            "TILEE/a2600 SOVIE/a2000 KSAV-10/a30"
+            "TILEE/a2600 SOVIE/a2000"
           ]
         },
         "R10": {
           "runway": "10",
           "type": "RNAV",
           "waypoints": [
-            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000 KSAV-10/a30",
-            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000 KSAV-10/a30"
+            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000",
+            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000"
           ]
         },
         "R19": {
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47",
-            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47"
+            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000",
+            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000"
           ]
         },
         "R28": {
@@ -46,8 +46,8 @@
           "runway": "28",
           "type": "RNAV",
           "waypoints": [
-            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50",
-            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50"
+            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800",
+            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800"
           ]
         }
       },

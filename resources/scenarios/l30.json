@@ -8,7 +8,7 @@
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BERBN/if/a8000/s210 BISHP/a7000 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200 _LAS_26L/a2200"
+                        "BERBN/if/a8000/s210 BISHP/a7000 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200"
                     ]
                 },
                 "IZ6": {
@@ -16,8 +16,8 @@
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BLD/iaf/a8000 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800 _LAS_26L/a2200",
-                        "PRINO/iaf/a8000/s210 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800 _LAS_26L/a2200"   
+                        "BLD/iaf/a8000 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800",
+                        "PRINO/iaf/a8000/s210 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800"   
                     ]
                 },
                 "RY9R": {
@@ -25,24 +25,24 @@
                     "runway": "19R",
                     "type": "RNAV",
                     "waypoints": [
-                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 WAKSI/faf/a4300 _LAS_19R/a2200",
-                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 WAKSI/faf/a4300 _LAS_19R/a2200"
+                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 WAKSI/faf/a4300",
+                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 WAKSI/faf/a4300"
                     ]
                 },
                 "I1L": {
                     "runway": "1L",
                     "type": "ILS",
                     "waypoints": [
-                        "KRUDY/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf _LAS_1L/a2200",
-                        "ROAMN/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf _LAS_1L/a2200"
+                        "KRUDY/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf",
+                        "ROAMN/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf"
                     ] 
                 },
                 "R1R": {
                     "runway": "1R",
                     "type": "RNAV",
                     "waypoints": [
-                        "CAKNU/iaf/a6000+ FEBET/if/a6000 KIBSE/faf/a5100 _LAS_1R/a2200",
-                        "BUHLL/iaf/a7000/s210 FEBET/if/a6000 KIBSE/faf/a5100 _LAS_1R/a2200"
+                        "CAKNU/iaf/a6000+ FEBET/if/a6000 KIBSE/faf/a5100",
+                        "BUHLL/iaf/a7000/s210 FEBET/if/a6000 KIBSE/faf/a5100"
                     ]
                 },
                 "RY9L": {
@@ -50,8 +50,8 @@
                     "runway": "19L",
                     "type": "RNAV",
                     "waypoints": [
-                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 DIRDE/faf/a4300 _LAS_19L/a2200",
-                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 DIRDE/faf/a4300 _LAS_19L/a2200"
+                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 DIRDE/faf/a4300",
+                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 DIRDE/faf/a4300"
                     ]
                 },
                 "IZ2": {
@@ -59,8 +59,8 @@
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
-                        "FLYES/iaf/a8000/s210 FLICR/a6500 BJORG/a4800 CONDY/a3800/faf _LAS_26R/a2200",
-                        "BLD/a6500+/iaf FLICR/a6500 BJORG/a4800 CONDY/a3800/faf _LAS_26R/a2200"
+                        "FLYES/iaf/a8000/s210 FLICR/a6500 BJORG/a4800 CONDY/a3800/faf",
+                        "BLD/a6500+/iaf FLICR/a6500 BJORG/a4800 CONDY/a3800/faf"
                     ]
                 },
                 "IY2": {
@@ -68,7 +68,7 @@
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
-                        "BERBN/if/a8000/s210 LUISA/a7000 SETKE/a6600/s210 ZEPAM/a5800 HAWKO/a5100 CONDY/a3800 _LAS_26R/a2200"
+                        "BERBN/if/a8000/s210 LUISA/a7000 SETKE/a6600/s210 ZEPAM/a5800 HAWKO/a5100 CONDY/a3800"
                     ]
                 }
             },

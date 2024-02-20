@@ -8,9 +8,9 @@
                     "runway": "8L",
                     "type": "ILS",
                     "waypoints": [
-                        "COVIN/a4000 JALOT NAROD/a2900 _ONT_8L/a944",
-                        "JALOT/hilpt1min NAROD/a2900 _ONT_8L/a944",
-                        "PDZ/a4000/h286 JALOT/hilpt1min NAROD/a2900 _ONT_8L/a944"
+                        "COVIN/a4000 JALOT NAROD/a2900",
+                        "JALOT/hilpt1min NAROD/a2900",
+                        "PDZ/a4000/h286 JALOT/hilpt1min NAROD/a2900"
                     ]
                 },
                 "I6L": {
@@ -18,9 +18,9 @@
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "PDZ HIGRO/a4300+ PETIS/a3400 YUCUC/a3400 MUNNS/a3000 BAKES/a1700 _ONT_26L/a944",
-                        "TAKOE/a4300+ YUCUC/a3400 MUNNS/a3000 BAKES/a1700 _ONT_26L/a944",
-                        "PETIS/a3400 YUCUC/a3400 MUNNS/a3000 BAKES/a1700 _ONT_26L/a944"
+                        "PDZ HIGRO/a4300+ PETIS/a3400 YUCUC/a3400 MUNNS/a3000 BAKES/a1700",
+                        "TAKOE/a4300+ YUCUC/a3400 MUNNS/a3000 BAKES/a1700",
+                        "PETIS/a3400 YUCUC/a3400 MUNNS/a3000 BAKES/a1700"
                     ]
                 },
                 "I6R": {
@@ -28,9 +28,9 @@
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
-                        "PDZ HIGRO/a4300+ PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1680 _ONT_26R/a944",
-                        "TAKOE/a4300+ ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700 _ONT_26R/a944",
-                        "PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700 _ONT_26R/a944"
+                        "PDZ HIGRO/a4300+ PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1680",
+                        "TAKOE/a4300+ ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700",
+                        "PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700"
                     ]
                 },
                 "R8L": {
@@ -38,9 +38,9 @@
                     "runway": "8L",
                     "type": "RNAV",
                     "waypoints": [
-                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.1 UNLAY IMANE/s190/arc3.4 LOGJM/a2000 _ONT_8L/a944",
-                        "NUTZO/a6000 OUTCH PRMNT ICWEB/s180/arc3.6 UGIVE/arc2.5 LOGJM/a2000 LOGJM/a2000 _ONT_8L/a944",
-                        "JALOT/a2900 LEAGE LOGJM/a2000 _ONT_8L/a944"
+                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.1 UNLAY IMANE/s190/arc3.4 LOGJM/a2000",
+                        "NUTZO/a6000 OUTCH PRMNT ICWEB/s180/arc3.6 UGIVE/arc2.5 LOGJM/a2000 LOGJM/a2000",
+                        "JALOT/a2900 LEAGE LOGJM/a2000"
                     ]
                 },
                 "R8R": {
@@ -48,9 +48,9 @@
                     "runway": "8R",
                     "type": "RNAV",
                     "waypoints": [
-                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.5 YAFFS YETTS/s190/arc3.2 STAAG/a2000 _ONT_8R/a944",
-                        "NUTZO/a6000 OUTCH PRMNT NIPKE/s180/arc3.5 ICILO/arc2.8 STAAG/a2000 _ONT_8R/a944",
-                        "JALOT/a2900 GRHRT STAAG/a2000 _ONT_8R/a944"
+                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.5 YAFFS YETTS/s190/arc3.2 STAAG/a2000",
+                        "NUTZO/a6000 OUTCH PRMNT NIPKE/s180/arc3.5 ICILO/arc2.8 STAAG/a2000",
+                        "JALOT/a2900 GRHRT STAAG/a2000"
                     ]
                 },
                 "R6L": {
@@ -58,9 +58,9 @@
                     "runway": "26L",
                     "type": "RNAV",
                     "waypoints": [
-                        "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 TESRE/a2900 _ONT_26L/a944",
-                        "MRIAM ADRYN PDZ/a7000 SUZZI/a5300/s210/arc7.7 TESRE/a2900 _ONT_26L/a944",
-                        "TAKOE/s210 TESRE/a2900 _ONT_26L/a944"
+                        "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 TESRE/a2900",
+                        "MRIAM ADRYN PDZ/a7000 SUZZI/a5300/s210/arc7.7 TESRE/a2900",
+                        "TAKOE/s210 TESRE/a2900"
                     ]
                 },
                 "R6R": {
@@ -68,9 +68,9 @@
                     "runway": "26R",
                     "type": "RNAV",
                     "waypoints": [
-                        "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 SCRIM _ONT_26R/a944",
-                        "MRIAM ADRYN PDZ/a7000 EMMER/s210/arc7.9 SCRIM/a2900 _ONT_26R/a944",
-                        "TAKOE/s210 SCRIM/a2900 _ONT_26R/a944"
+                        "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 SCRIM",
+                        "MRIAM ADRYN PDZ/a7000 EMMER/s210/arc7.9 SCRIM/a2900",
+                        "TAKOE/s210 SCRIM/a2900"
                     ]
                 }
             },
@@ -254,8 +254,8 @@
                     "runway": "20R",
                     "type": "RNAV",
                     "waypoints": [
-                        "DSNEE/a8000/s220/iaf BONVY/a6000 DEKRT AMELE EHVOX/if FEBTA WEMDO CALIT/s190 ZETOV/faf _SNA_20R/a56",
-                        "KLEVR/iaf/a5000 MNNIE/a4400/s210 KLIPP/s190/arc5.7 CALIT ZETOV/faf _SNA_20R/a56"
+                        "DSNEE/a8000/s220/iaf BONVY/a6000 DEKRT AMELE EHVOX/if FEBTA WEMDO CALIT/s190 ZETOV/faf",
+                        "KLEVR/iaf/a5000 MNNIE/a4400/s210 KLIPP/s190/arc5.7 CALIT ZETOV/faf"
                     ]
                 }
             },
@@ -267,8 +267,8 @@
                     "runway": "8",
                     "type": "ILS",
                     "waypoints": [
-                        "MIKEI/iaf/nopt/a7000 SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf _BUR_8/a778",
-                        "VTU/iaf/nopt TOAKS/iaf/nopt SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf _BUR_8/a778"
+                        "MIKEI/iaf/nopt/a7000 SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf",
+                        "VTU/iaf/nopt TOAKS/iaf/nopt SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf"
                     ]
                 }
             },
@@ -281,11 +281,11 @@
                     "runway": "31L",
                     "type": "RNAV",
                     "waypoints": [
-                        "CLOWD/a11000/s250 WEMIR/a8000- RIYOC/a5300-/s210 TEVUC/a4000 JISOP/a2900 _PSP_31L/a476",
-                        "SBONO/a9000-/s210 WEMIR/a8000 RIYOC/a5300-/s210 TEVUC/a4000 JISOP/a2900 _PSP_31L/a476",
-                        "TRM/a5500-/s210 TEVUC/a4000 JISOP/a2900+ _PSP_31L/a476",
-                        "BALDI/a12000 CUPOL/a8000/s210/arc6 HIXOV/a6500/s210/arc16.9 TEVUC/a4000 JISOP/a2900 _PSP_31L/a476",
-                        "PSP/a11000 HIXOV/a6500/s210/arc16.9 TEVUC/a4000 JISOP/a2900 _PSP_31L/a476"
+                        "CLOWD/a11000/s250 WEMIR/a8000- RIYOC/a5300-/s210 TEVUC/a4000 JISOP/a2900",
+                        "SBONO/a9000-/s210 WEMIR/a8000 RIYOC/a5300-/s210 TEVUC/a4000 JISOP/a2900",
+                        "TRM/a5500-/s210 TEVUC/a4000 JISOP/a2900+",
+                        "BALDI/a12000 CUPOL/a8000/s210/arc6 HIXOV/a6500/s210/arc16.9 TEVUC/a4000 JISOP/a2900",
+                        "PSP/a11000 HIXOV/a6500/s210/arc16.9 TEVUC/a4000 JISOP/a2900"
                     ]
                 },
                 "R3R": {
@@ -293,9 +293,9 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "SBONO/a9000+ YAGUS/s210/arc7.8 CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713 _PSP_13R/a476",
-                        "FERNN/a11000 JEVOK/s210/arc13.3 CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713 _PSP_13R/a476",
-                        "TRM/a9000+ CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713 _PSP_13R/a476"
+                        "SBONO/a9000+ YAGUS/s210/arc7.8 CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713",
+                        "FERNN/a11000 JEVOK/s210/arc13.3 CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713",
+                        "TRM/a9000+ CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713"
                     ]
                 }
             },

@@ -9,7 +9,7 @@
           "runway": "1L",
           "type": "ILS",
           "waypoints": [
-            "LAGOO/hilpt/iaf/a2600+ SELMN/a2600/faf ZERUR/a540 KTPA-1L/a11"
+            "LAGOO/hilpt/iaf/a2600+ SELMN/a2600/faf ZERUR/a540"
           ]
         },
         "R1L": {
@@ -18,7 +18,7 @@
           "runway": "1L",
           "type": "RNAV",
           "waypoints": [
-            "FITPA/a2600/hilpt/iaf/nopt180 SNORK/a2600/faf WELIT/a1300 KTPA-1L/a11"
+            "FITPA/a2600/hilpt/iaf/nopt180 SNORK/a2600/faf WELIT/a1300"
           ]
         },
         "R1R": {
@@ -27,7 +27,7 @@
           "runway": "1R",
           "type": "RNAV",
           "waypoints": [
-            "MUWTY/hilpt/a2600+/iaf/nopt180 ANAZE/a2600/faf ZELTO/a1300 KTPA-1R/a18"
+            "MUWTY/hilpt/a2600+/iaf/nopt180 ANAZE/a2600/faf ZELTO/a1300"
           ]
         },
         "I9L": {
@@ -36,7 +36,7 @@
           "runway": "19L",
           "type": "ILS",
           "waypoints": [
-            "BUCCS/a3000/if POMSE/a2000/faf KTPA-19L/a18"
+            "BUCCS/a3000/if POMSE/a2000/faf"
           ]
         },
         "R9L": {
@@ -45,10 +45,10 @@
           "runway": "19L",
           "type": "RNAV",
           "waypoints": [
-            "COBOX/a3000/if POMSE/a2000/faf KTPA-19L/a18",
-            "LZARD/iaf COBOX/a3000/if POMSE/a2000/faf KTPA-19L/a18",
-            "DARBS ZADSA/iaf COBOX/a3000/if POMSE/a2000/faf KTPA-19L/a18",
-            "JSTRM UFLIX ZPLIN/iaf COBOX/a3000/if POMSE/a2000/faf KTPA-19L/a18"
+            "COBOX/a3000/if POMSE/a2000/faf",
+            "LZARD/iaf COBOX/a3000/if POMSE/a2000/faf",
+            "DARBS ZADSA/iaf COBOX/a3000/if POMSE/a2000/faf",
+            "JSTRM UFLIX ZPLIN/iaf COBOX/a3000/if POMSE/a2000/faf"
           ]
         },
         "I9R": {
@@ -57,7 +57,7 @@
           "runway": "19R",
           "type": "ILS",
           "waypoints": [
-            "MERRA/a3000/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520 KTPA-19R/a11"
+            "MERRA/a3000/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520"
           ]
         },
         "R9R": {
@@ -66,7 +66,7 @@
           "runway": "19R",
           "type": "RNAV",
           "waypoints": [
-            "MERRA/a3000/if/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520 KTPA-19R/a11"
+            "MERRA/a3000/if/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520"
           ]
         }
       },
@@ -314,7 +314,7 @@
           "runway": "32",
           "type": "ILS",
           "waypoints": [
-            "ZABQO/pt45/pta1800 RINGY/a1800/iaf/faf ZALDI/a480 KSRQ-32/a26"
+            "ZABQO/pt45/pta1800 RINGY/a1800/iaf/faf ZALDI/a480"
           ]
         },
         "R32": {
@@ -322,7 +322,7 @@
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "SABEE/iaf/nopt FAXID/if/iaf/a2000+/hilpt4nm/nopt180 RINGY/faf/a1800 ZALDI/a540 KSRQ-32/a26"
+            "SABEE/iaf/nopt FAXID/if/iaf/a2000+/hilpt4nm/nopt180 RINGY/faf/a1800 ZALDI/a540"
           ]
         },
         "I14": {
@@ -330,7 +330,7 @@
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "PIE/iaf/nopt PASOE/if FRUGL/iaf/faf/a2000/hilpt1min ETIGY/a500 KSRQ-14/a26"
+            "PIE/iaf/nopt PASOE/if FRUGL/iaf/faf/a2000/hilpt1min ETIGY/a500"
           ]
         },
         "R14": {
@@ -338,7 +338,7 @@
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "PIE/iaf/nopt PASOE/if/iaf/a2000+/hilpt4nm FRUGL/faf/a2000 ETIGY/a560 KSRQ-14/a26"
+            "PIE/iaf/nopt PASOE/if/iaf/a2000+/hilpt4nm FRUGL/faf/a2000 ETIGY/a560"
           ]
         }
       },
@@ -440,7 +440,7 @@
           "runway": "36",
           "type": "ILS",
           "waypoints": [
-            "RONXI/a2000+/if SONES/a2000/faf/lhilpt1min SAWGA/a680 KPIE-36/a7"
+            "RONXI/a2000+/if SONES/a2000/faf/lhilpt1min SAWGA/a680"
           ]
         },
         "R36": {
@@ -448,7 +448,7 @@
           "runway": "36",
           "type": "RNAV",
           "waypoints": [
-            "RONXI/a2000+/if/lhilpt4nm SONES/a2000/faf SAWGA/a720 KPIE-36/a7"
+            "RONXI/a2000+/if/lhilpt4nm SONES/a2000/faf SAWGA/a720"
           ]
         },
         "I18": {
@@ -456,8 +456,8 @@
           "runway": "18",
           "type": "ILS",
           "waypoints": [
-            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 KPIE-18/a7",
-            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 KPIE-18/a7"
+            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460",
+            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460"
           ]
         },
         "R18": {
@@ -465,8 +465,8 @@
           "runway": "18",
           "type": "RNAV",
           "waypoints": [
-            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 KPIE-18/a7",
-            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 KPIE-18/a7"
+            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460",
+            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460"
           ]
         }
       },
@@ -546,7 +546,7 @@
           "runway": "10",
           "type": "ILS",
           "waypoints": [
-            "ARSHW/if/iaf/a2700-6000/hilpt1min FLYEN/a1700/faf SUNFN/a720 KLAL-10/a132"
+            "ARSHW/if/iaf/a2700-6000/hilpt1min FLYEN/a1700/faf SUNFN/a720"
           ]
         },
         "R10": {
@@ -554,9 +554,9 @@
           "runway": "10",
           "type": "RNAV",
           "waypoints": [
-            "ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720 KLAL-10/a132",
-            "GUUNR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720 KLAL-10/a132",
-            "BOMRR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720 KLAL-10/a132"
+            "ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720",
+            "GUUNR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720",
+            "BOMRR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720"
           ]
         },
         "R28": {
@@ -564,9 +564,9 @@
           "runway": "28",
           "type": "RNAV",
           "waypoints": [
-            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 KLAL-28/a132",
-            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 KLAL-28/a132",
-            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 KLAL-28/a132"
+            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800",
+            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800",
+            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800"
           ]
         }
       },

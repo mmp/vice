@@ -7,15 +7,15 @@
         "runway": "1",
         "type": "ILS",
         "waypoints": [
-          "KATRN/a2500 BADDN/a1600 _DCA_1/a14"
+          "KATRN/a2500 BADDN/a1600"
         ]
       },
       "R1": {
         "runway": "1",
         "type": "RNAV",
         "waypoints": [
-          "IRONS/a3500 JWASH/a3500 MRION/a2500 BADDN/a1600 _DCA_1/a14",
-          "MRION/a2500 BADDN/a1600 _DCA_1/a14"
+          "IRONS/a3500 JWASH/a3500 MRION/a2500 BADDN/a1600",
+          "MRION/a2500 BADDN/a1600"
         ]
       },
       "MTV": {
@@ -23,21 +23,21 @@
         "runway": "1",
         "type": "Visual",
         "waypoints": [
-          "KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166 _DCA_1/a14"
+          "KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
         ]
       },
       "R15": {
         "runway": "15",
         "type": "RNAV",
         "waypoints": [
-          "AML/a3000 NIPEE/a2500 AVOLE/a2000 _DCA_15/a14"
+          "AML/a3000 NIPEE/a2500 AVOLE/a2000"
         ]
       },
       "R19": {
         "runway": "19",
         "type": "RNAV",
         "waypoints": [
-          "FERGI/a3000/s210 DARIC/a2600 GREYZ/a1700/s200 SETOC/a1500 FONVI/a1200 JUBOL/a950 WIRSO/a450 FIROP/a180 _DCA_19/a13"
+          "FERGI/a3000/s210 DARIC/a2600 GREYZ/a1700/s200 SETOC/a1500 FONVI/a1200 JUBOL/a950 WIRSO/a450 FIROP/a180"
         ]
       },
       "RIV": {
@@ -45,14 +45,14 @@
         "runway": "19",
         "type": "Visual",
         "waypoints": [
-          "FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300 _DCA_19/a13"
+          "FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300"
         ]
       },
       "R33": {
         "runway": "33",
         "type": "RNAV",
         "waypoints": [
-          "KATRN/a2500 NADSE/a1700 IDTEK/a300 _DCA_33/a13"
+          "KATRN/a2500 NADSE/a1700 IDTEK/a300"
         ]
       }
     },
@@ -579,7 +579,7 @@
       "runway": "33L",
       "type": "ILS",
       "waypoints":[
-       "JANNS/a4000/if SPLAT/a2400 GRAFE/a1500/faf HAXAK/a600 N039.09.52.410,W076.39.43.950/a14"
+       "JANNS/a4000/if SPLAT/a2400 GRAFE/a1500/faf HAXAK/a600"
       ]
      },
     "I5R":
@@ -587,7 +587,7 @@
       "runway": "15R",
       "type": "ILS",
       "waypoints":[
-       "BMORE/if/a2500 KEVVN/a2100/faf TATTO/a1080 N039.11.05.606,W076.40.52.368/a14"
+       "BMORE/if/a2500 KEVVN/a2100/faf TATTO/a1080"
       ]
      }
   },

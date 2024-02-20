@@ -10,7 +10,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "MORRY/a3000/if POPPA/a3000 HODAX/a2300/faf _DFW_13R/a591"
+                        "MORRY/a3000/if POPPA/a3000 HODAX/a2300/faf"
                     ]
                 },
                 "I7L": {
@@ -19,7 +19,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
-                        "RIVET/a5000/if DRAAK/a5000 INWOD/a3000 GBUSH/a2300/faf _DFW_17L/a545"
+                        "RIVET/a5000/if DRAAK/a5000 INWOD/a3000 GBUSH/a2300/faf"
                     ]
                 },
                 "I7C": {
@@ -28,7 +28,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E1_TWR",
                     "waypoints": [
-                        "BOSSI/a6000/if PENNY/a5000 ZINGG/a3000 JIFFY/a2300/faf _DFW_17C/a562"
+                        "BOSSI/a6000/if PENNY/a5000 ZINGG/a3000 JIFFY/a2300/faf"
                     ]
                 },
                 "I7R": {
@@ -37,7 +37,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E1_TWR",
                     "waypoints": [
-                        "NETTS/a6000/if GARZA/a5000 YALTA/a3000 BBAKR/a2200/faf _DFW_17R/a567"
+                        "NETTS/a6000/if GARZA/a5000 YALTA/a3000 BBAKR/a2200/faf"
                     ]
                 },
                 "I8L": {
@@ -46,7 +46,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "GRUCH/a4000/if ALIGN/a3000 UDALL/a3000 JAYCI/a2300/faf _DFW_18L/a602"
+                        "GRUCH/a4000/if ALIGN/a3000 UDALL/a3000 JAYCI/a2300/faf"
                     ]
                 },
                 "I8R": {
@@ -55,7 +55,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "ICKEL/a4000/if YOHAN/a3000 LEGRE/a3000 NETEE/a2400/faf _DFW_18R/a607"
+                        "ICKEL/a4000/if YOHAN/a3000 LEGRE/a3000 NETEE/a2400/faf"
                     ]
                 },
                 "I1R": {
@@ -64,7 +64,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "TULOY/a5000/iaf GACHO/a5000/if VANDE/a3000 FIVIS/a2400/faf GUKSE/a1060 _DFW_31R/a523"
+                        "TULOY/a5000/iaf GACHO/a5000/if VANDE/a3000 FIVIS/a2400/faf GUKSE/a1060"
                     ]
                 },
                 "R1L": {
@@ -73,7 +73,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
-                        "ZUREK/a5000/iaf WOLKA/a5000/if NKORT/a3000 TARRO/a2400/faf _DFW_31L/a581"
+                        "ZUREK/a5000/iaf WOLKA/a5000/if NKORT/a3000 TARRO/a2400/faf"
                     ]
                 },
                 "I5L": {
@@ -82,7 +82,7 @@
                     "type": "ILS",
                     "tower_controller":"DFW_E1_TWR",
                     "waypoints": [
-                        "TANDE/a6000/if CORMN/a5000 DALLN/a3000 BEGGO/a2500/faf _DFW_35L/a564"
+                        "TANDE/a6000/if CORMN/a5000 DALLN/a3000 BEGGO/a2500/faf"
                     ]
                 },
                 "I5C": {
@@ -91,7 +91,7 @@
                     "type": "ILS",
                     "tower_controller":"DFW_E1_TWR",
                     "waypoints": [
-                        "RAYMA/a6000/if TUFFO/a5000 DAYZZ/a3000 JOBBS/a2100/faf _DFW_35C/a563"
+                        "RAYMA/a6000/if TUFFO/a5000 DAYZZ/a3000 JOBBS/a2100/faf"
                     ]
                 },
                 "I5R": {
@@ -100,7 +100,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
-                        "GALOP/a5000/if FRIZZ/a5000 COROL/a3000 POLKE/a2200 _DFW_35R/a575"
+                        "GALOP/a5000/if FRIZZ/a5000 COROL/a3000 POLKE/a2200"
                     ]
                 },
                 "I6L": {
@@ -109,7 +109,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "ALLIN/a4000/if HUTEN/a3000 CHAAR/a3000 BOBIN/a2300 _DFW_36L/a588"
+                        "ALLIN/a4000/if HUTEN/a3000 CHAAR/a3000 BOBIN/a2300"
                     ]
                 },
                 "I6R": {
@@ -118,7 +118,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "SLOCO/a4000/if KICKA/a3000 TUTOO/a3000 BASIN/a2300/faf _DFW_36R/a581"
+                        "SLOCO/a4000/if KICKA/a3000 TUTOO/a3000 BASIN/a2300/faf"
                     ]
                 }
             },
@@ -1220,7 +1220,7 @@
                     "runway": "13L",
                     "type": "ILS",
                     "waypoints": [
-                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920 _DAL_13L/a485"
+                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920"
                     ]
                 },
                 "Z3L": {
@@ -1228,7 +1228,7 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920 _DAL_13L/a485"
+                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920"
                     ]
                 },
                 "Y3L": {
@@ -1236,7 +1236,7 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/if/a2300 CAMSO/faf/a2000 _DAL_13L/a485"
+                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/if/a2300 CAMSO/faf/a2000"
                     ]
                 },
                 "W3L": {
@@ -1244,8 +1244,8 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "NOKME/a4000/iaf/s230 WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212 _DAL_13L/a485",
-                        "WENOP/a3000/s210/if  HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212 _DAL_13L/a485"
+                        "NOKME/a4000/iaf/s230 WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212",
+                        "WENOP/a3000/s210/if  HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212"
                     ]
                 },
                 "X3L": {
@@ -1253,8 +1253,8 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "TUNDE/a1600+/if ZUNAM/a1600/faf _DAL_13L/a485",
-                        "NETNE/a3000/s210/if VEALY/a2000/s200 ZUNAM/a1600/faf _DAL_13L/a485"
+                        "TUNDE/a1600+/if ZUNAM/a1600/faf",
+                        "NETNE/a3000/s210/if VEALY/a2000/s200 ZUNAM/a1600/faf"
                     ]
                 },
                 "I3R": {
@@ -1262,7 +1262,7 @@
                     "runway": "13R",
                     "type": "ILS",
                     "waypoints": [
-                        "LIPPI/a2500/if LAURA/a1900/faf _DAL_13R/a479"
+                        "LIPPI/a2500/if LAURA/a1900/faf"
                     ]
                 },
                 "Y3R": {
@@ -1270,7 +1270,7 @@
                     "runway": "13R",
                     "type": "ILS",
                     "waypoints": [
-                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/a2300/if CAMSO/a2000/faf _DAL_13R/a479"
+                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/a2300/if CAMSO/a2000/faf"
                     ]
                 },
                 "Z3R": {
@@ -1278,7 +1278,7 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "LIPPI/a2500/if LAURA/a1900/faf _DAL_13R/a479"
+                        "LIPPI/a2500/if LAURA/a1900/faf"
                     ]
                 },
                 "W3R": {
@@ -1286,8 +1286,8 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "NOKME/a4000/s230/if WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100 LAICH/a2000/s190 INAPT/faf/a1600 WUREM/a1250 _DAL_13R/a478",
-                        "WENOP/a3000/if/s210 HEXOV/a2100 LAICH/a2000 INAPT/a1600/faf WUREM/a1250 _DAL_13R/a478"
+                        "NOKME/a4000/s230/if WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100 LAICH/a2000/s190 INAPT/faf/a1600 WUREM/a1250",
+                        "WENOP/a3000/if/s210 HEXOV/a2100 LAICH/a2000 INAPT/a1600/faf WUREM/a1250"
                     ]
                 },
                 "X3R": {
@@ -1295,8 +1295,8 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "FRDDM/a1600+/if TOFLY/a1600/faf KDAL-13R/a485",
-                        "NETNE/a3000/s210/if VEALY/a2000/s200  TOFLY/a1600/faf KDAL-13R/a485"
+                        "FRDDM/a1600+/if TOFLY/a1600/faf",
+                        "NETNE/a3000/s210/if VEALY/a2000/s200  TOFLY/a1600/faf"
                     ]
                 },
                 "I1L": {
@@ -1304,7 +1304,7 @@
                     "runway": "31L",
                     "type": "ILS",
                     "waypoints": [
-                        "MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520 _DAL_31L/a477"
+                        "MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520"
                     ]
                 },
                 "Y1L": {
@@ -1312,7 +1312,7 @@
                     "runway": "31L",
                     "type": "RNAV",
                     "waypoints": [
-                        "ORVLL/a3000+ CEMPI/a3000/iaf MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520 _DAL_31L/a477"
+                        "ORVLL/a3000+ CEMPI/a3000/iaf MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520"
                     ]
                 },
                 "Z1L": {
@@ -1320,10 +1320,10 @@
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
-                        "RYCKK/if/a2800+ SCATS/a2800 WAGBU/a1900/faf _DAL_31L/a476",
-                        "SUMLN/a4000/if NAKFA/s210 WAGBU/a1900/faf _DAL_31L/a476",
-                        "JALIM/a4000/if LAYER/s210 NAKFA/s210 WAGBU/a1900/faf _DAL_31L/a476",
-                        "DWNTN/if/a3000 OVELE/s210 WAGBU/a1900/faf _DAL_31L/a476"
+                        "RYCKK/if/a2800+ SCATS/a2800 WAGBU/a1900/faf",
+                        "SUMLN/a4000/if NAKFA/s210 WAGBU/a1900/faf",
+                        "JALIM/a4000/if LAYER/s210 NAKFA/s210 WAGBU/a1900/faf",
+                        "DWNTN/if/a3000 OVELE/s210 WAGBU/a1900/faf"
                     ]
                 },
                 "I1R": {
@@ -1331,7 +1331,7 @@
                     "runway": "31R",
                     "type": "ILS",
                     "waypoints": [
-                        "FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360 _DAL_31R/a487"
+                        "FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360"
                     ]
                 },
                 "Y1R": {
@@ -1339,8 +1339,8 @@
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
-                        "YEAGR/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360 _DAL_31R/a487",
-                        "ORVLL/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360 _DAL_31R/a487"
+                        "YEAGR/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360",
+                        "ORVLL/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360"
                     ]
                 },
                 "Z1R": {
@@ -1348,10 +1348,10 @@
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
-                        "KELHR/a2800+/if ZORNO/a2800 TIRKE/a1900/faf _DAL_31R/a487",
-                        "DWNTN/a3000/if USURY/s210 TIRKE/a1900/faf _DAL_31R/a487",
-                        "SUMLN/a4000/if QUARE/a3000/s210 TIRKE/a1900/faf _DAL_31R/a487",
-                        "JALIM/a4000/if WEANS/s210/a3300 QUARE/s210 TIRKE/a1900/faf _DAL_31R/a487"
+                        "KELHR/a2800+/if ZORNO/a2800 TIRKE/a1900/faf",
+                        "DWNTN/a3000/if USURY/s210 TIRKE/a1900/faf",
+                        "SUMLN/a4000/if QUARE/a3000/s210 TIRKE/a1900/faf",
+                        "JALIM/a4000/if WEANS/s210/a3300 QUARE/s210 TIRKE/a1900/faf"
                     ]
                 }
             },
@@ -1933,7 +1933,7 @@
                     "runway": "16L",
                     "type": "ILS",
                     "waypoints": [
-                        "ARGUE/if/a4000 WIGZU/a2400 _AFW_16L/a723"
+                        "ARGUE/if/a4000 WIGZU/a2400"
                     ]
                 },
                 "R6L": {
@@ -1941,8 +1941,8 @@
                     "runway": "16L",
                     "type": "ILS",
                     "waypoints": [
-                        "MQP/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf _AFW_16L/a723",
-                        "UKW/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf _AFW_16L/a723"
+                        "MQP/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf",
+                        "UKW/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf"
                     ]
                 },
                 "R6R": {
@@ -1950,8 +1950,8 @@
                     "runway": "16R",
                     "type": "RNAV",
                     "waypoints": [
-                        "UKW/a4000+ FUNGO/iaf/a4000 KEENE/a3000/if ROMPS/a2400 DHOBI/a1400 _AFW_16R/a721",
-                        "PULSE/a4000/iaf KEENE/a3000/if ROMPS/a2400 DHOBI/a1400 _AFW_16R/a721"
+                        "UKW/a4000+ FUNGO/iaf/a4000 KEENE/a3000/if ROMPS/a2400 DHOBI/a1400",
+                        "PULSE/a4000/iaf KEENE/a3000/if ROMPS/a2400 DHOBI/a1400"
                     ]
                 },
                 "I4R": {
@@ -1959,7 +1959,7 @@
                     "runway": "34R",
                     "type": "ILS",
                     "waypoints": [
-                        "UCCOL/a3000/if ERPIF/a2400/faf _AFW_34R/a681"
+                        "UCCOL/a3000/if ERPIF/a2400/faf"
                     ]
                 },
                 "R4R": {
@@ -1967,7 +1967,7 @@
                     "runway": "34R",
                     "type": "RNAV",
                     "waypoints": [
-                        "UCCOL/a3000/if ERPIF/a2400/faf _AFW_34R/a681"
+                        "UCCOL/a3000/if ERPIF/a2400/faf"
                     ]
                 }
             },

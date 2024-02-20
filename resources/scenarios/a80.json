@@ -8,7 +8,7 @@
           "tower_controller": "ATL_1_TWR",
           "type": "ILS",
           "waypoints": [
-            "LARII/a5000 JAAJJ/a5000 BAZAR/a4000 SCHEL/a2900 _ATL_8L/a1015"
+            "LARII/a5000 JAAJJ/a5000 BAZAR/a4000 SCHEL/a2900"
           ]
         },
         "I8R": {
@@ -16,7 +16,7 @@
           "tower_controller": "ATL_2_TWR",
           "type": "ILS",
           "waypoints": [
-            "GPEAT/a5000 PEARI/a5000 NZBIT/a4000 HARSN/a2800 _ATL_8R/a1015"
+            "GPEAT/a5000 PEARI/a5000 NZBIT/a4000 HARSN/a2800"
           ]
         },
         "I9L": {
@@ -24,7 +24,7 @@
           "tower_controller": "ATL_3_TWR",
           "type": "ILS",
           "waypoints": [
-            "RYENN/a7000 AAKAY/a6000 ARRBE/a5000 HRDEY/a4000 VINII/a2700 _ATL_9L/a1019"
+            "RYENN/a7000 AAKAY/a6000 ARRBE/a5000 HRDEY/a4000 VINII/a2700"
           ]
         },
         "I9R": {
@@ -32,7 +32,7 @@
           "tower_controller": "ATL_4_TWR",
           "type": "ILS",
           "waypoints": [
-            "ANDIY/a7000 DFINS/a6000 GGUYY/a5000 EEASY/a4000 BURNY/a2700 _ATL_9R/a1026"
+            "ANDIY/a7000 DFINS/a6000 GGUYY/a5000 EEASY/a4000 BURNY/a2700"
           ]
         },
         "I10": {
@@ -40,7 +40,7 @@
           "tower_controller": "ATL_5_TWR",
           "type": "ILS",
           "waypoints": [
-            "DEWHY/a4000 CTEEE/a4000 ZMANN/a2700 _ATL_10/a1000"
+            "DEWHY/a4000 CTEEE/a4000 ZMANN/a2700"
           ]
         },
         "I6L": {
@@ -48,7 +48,7 @@
           "tower_controller": "ATL_2_TWR",
           "type": "ILS",
           "waypoints": [
-            "JIRRI/a5000 BOYKN/a5000 MARKD/a4000 DEJAA/a2600 _ATL_26L/a990"
+            "JIRRI/a5000 BOYKN/a5000 MARKD/a4000 DEJAA/a2600"
           ]
         },
         "I6R": {
@@ -56,7 +56,7 @@
           "tower_controller": "ATL_1_TWR",
           "type": "ILS",
           "waypoints": [
-            "ZELOW/a5000 HAINZ/a5000 BAMBU/a4000 AJAAY/a2700 _ATL_26R/a996"
+            "ZELOW/a5000 HAINZ/a5000 BAMBU/a4000 AJAAY/a2700"
           ]
         },
         "I7L": {
@@ -64,7 +64,7 @@
           "tower_controller": "ATL_4_TWR",
           "type": "ILS",
           "waypoints": [
-            "SLVAA/a7000 ROMMM/a6000 SEJAY/a5000 GRMPI/a4000 DEPOT/a2800 _ATL_27L/a985"
+            "SLVAA/a7000 ROMMM/a6000 SEJAY/a5000 GRMPI/a4000 DEPOT/a2800"
           ]
         },
         "I7R": {
@@ -72,7 +72,7 @@
           "tower_controller": "ATL_3_TWR",
           "type": "ILS",
           "waypoints": [
-            "YOUYU/a7000 MMCAP/a6000 MAASN/a5000 MRCER/a4000 OSTRR/a2700 _ATL_27R/a985"
+            "YOUYU/a7000 MMCAP/a6000 MAASN/a5000 MRCER/a4000 OSTRR/a2700"
           ]
         },
         "I28": {
@@ -80,7 +80,7 @@
           "tower_controller": "ATL_5_TWR",
           "type": "ILS",
           "waypoints": [
-            "N033.37.09.702,W083.54.02.559 PRMAN/a4000 WONZR/a4000 JUBBA/a2700 _ATL_28/a998"
+            "N033.37.09.702,W083.54.02.559 PRMAN/a4000 WONZR/a4000 JUBBA/a2700"
           ]
         }
       },

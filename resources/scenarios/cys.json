@@ -7,30 +7,30 @@
           "runway": "9",
           "type": "RNAV",
           "waypoints": [
-            "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060 _CYS9/a6155"
+            "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060"
           ]
         },
         "R13": {
           "runway": "13",
           "type": "RNAV",
           "waypoints": [
-            "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180 _CYS13/a6155"
+            "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180"
           ]
         },
         "I27": {
           "runway": "27",
           "type": "ILS",
           "waypoints": [
-            "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155"
+            "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
           ]
         },
         "R27": {
           "runway": "27",
           "type": "RNAV",
           "waypoints": [
-            "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155",
-            "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155",
-            "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155"
+            "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
+            "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
+            "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
           ]
         },
         "R31": {
