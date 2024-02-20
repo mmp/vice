@@ -353,8 +353,8 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioName = scenarioName
 }
 
-
 var airportWind map[string]Wind
+
 func (c *NewSimConfiguration) DrawUI() bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
 		c.updateRemoteSimsCall = nil
@@ -531,14 +531,15 @@ func (c *NewSimConfiguration) DrawUI() bool {
 					liveWind := make(chan Wind)
 					go func(liveWinds chan Wind) {
 						winds := getWind(c)
-	
+
 						liveWinds <- winds
-	
+
 					}(liveWind)
-					wind = <-liveWind}
-				
+					wind = <-liveWind
+				}
+
 			}
-			
+
 			if wind.Gust > wind.Speed {
 				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 			} else {
@@ -945,14 +946,14 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	realMETAR := func(icao string) {
 		weather, errors := getweather.GetWeather(icao)
 		if len(errors) != 0 {
-			s.lg.Errorf("Error getting weather")
+			s.lg.Errorf("Error getting weather for %v.", icao)
 		}
 		fullMETAR := weather[0].RawMETAR
 		altimiter := getAltimiter(fullMETAR)
 		var err error
 		alt, err = strconv.Atoi(altimiter)
 		if err != nil {
-			s.lg.Errorf("Error converting altimiter to an intiger: ", altimiter)
+			s.lg.Errorf("Error converting altimiter to an intiger: %v.", altimiter)
 		}
 		var wind string
 		spd := weather[0].Wspd
