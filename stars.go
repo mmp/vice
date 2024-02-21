@@ -6804,10 +6804,45 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 }
 
 func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
+
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
-	if ac.TrackingController == ctx.world.Callsign {
+
+	// 1. You have track control: COMPLETE
+	// 2. The track is being handed off to you: COMPLETE 
+	// 3. The track has been pointed out to you: COMPLETE
+	// 4. You have handed off the track to another controller and the handoff has been accepted: COMPLETE
+	// 5. You have manually forced an FDB by clicking on a target that is displaying a PDB: COMPLETE
+	// 6. You have enabled beacon code readout with the F1 key and the track is associated: N/A
+	// 7. The track is squawking a Special Purpose Code: COMPLETE
+	// 8. You have enabled Quick Look for the TCP that owns the track: COMPLETE
+	// 9. The track is an overflight and you have enabled forced FDBs for overflights
+
+	if ac.TrackingController == ctx.world.Callsign{ 
+		// For owned datablocks
 		return true 
+	} else if ac.HandoffTrackController == ctx.world.Callsign {
+		// For recieving handoffs
+		return true 
+	} else if ac.ControllingController == ctx.world.Callsign {
+		// For non-greened handoffs
+		return true
+	} else if sp.InboundPointOuts[ctx.world.Callsign] == ac.TrackingController {
+			// For point outs. Need to test!!
+		 	return true 
+	} else if ac.Squawk == 7500 || ac.Squawk == 7600 || ac.Squawk == 7700 || ac.Squawk == 7777 || ac.Squawk == 7400 {
+		// Special purpose codes
+		return true 
+	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
+		// If FDB, may trump others but idc
+		return true 
+	}
+
+	// Quick Look Positions.
+	for _, quickLookPositions := range sp.CurrentPreferenceSet.QuickLookPositions {
+		if ac.TrackingController == quickLookPositions.Callsign {
+			return true 
+		}	
 	}
 
 	if !ac.IsAssociated() {
