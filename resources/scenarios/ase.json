@@ -54,49 +54,49 @@
             "cleared_altitude": 21000,
             "sid": "LINDZ9",
             "description": "LINDZ9.DBL",
-            "waypoints": "KASE-33 KASE-15/h343 LINDZ"
+            "waypoints": "KASE-15/h343 LINDZ"
           },
           "RLG": {
             "cleared_altitude": 21000,
             "sid": "LINDZ9",
             "description": "LINDZ9.RLG",
-            "waypoints": "KASE-33 KASE-15/h343 LINDZ SXW JESIE"
+            "waypoints": "KASE-15/h343 LINDZ SXW JESIE"
           },
           "33.EKR": {
             "cleared_altitude": 21000,
             "sid": "LINDZ9",
             "description": "LINDZ9.EKR",
-            "waypoints": "KASE-33 KASE-15/h343 LINDZ SLOLM RIL"
+            "waypoints": "KASE-15/h343 LINDZ SLOLM RIL"
           },
           "33.JNC": {
             "cleared_altitude": 21000,
             "sid": "LINDZ9",
             "description": "LINDZ9.JNC",
-            "waypoints": "KASE-33 KASE-15/h343 LINDZ SLOLM PACES"
+            "waypoints": "KASE-15/h343 LINDZ SLOLM PACES"
           },
           "HBU": {
             "cleared_altitude": 21000,
             "sid": "ASPE7",
             "description": "ASPE7.HBU",
-            "waypoints": "KASE-33 KASE-15/h348"
+            "waypoints": "KASE-15/h348"
           },
           "MTJ": {
             "cleared_altitude": 21000,
             "sid": "ASPE7",
             "description": "ASPE7.MTJ",
-            "waypoints": "KASE-33 KASE-15/h348"
+            "waypoints": "KASE-15/h348"
           },
           "EKR": {
             "cleared_altitude": 21000,
             "sid": "PITKN4",
             "description": "PITKN4.EKR",
-            "waypoints": "KASE-33 KASE-15 ADINY/a8320 BOYET LINDZ GLENO/a16000 SLOLM RIL"
+            "waypoints": "KASE-15 ADINY/a8320 BOYET LINDZ GLENO/a16000 SLOLM RIL"
           },
           "JNC": {
             "cleared_altitude": 21000,
             "sid": "PITKN4",
             "description": "PITKN4.JNC",
-            "waypoints": "KASE-33 KASE-15 ADINY/a8320 BOYET LINDZ GLENO/a16000 SLOLM"
+            "waypoints": "KASE-15 ADINY/a8320 BOYET LINDZ GLENO/a16000 SLOLM"
           }
         }
       },

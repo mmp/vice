@@ -31,44 +31,44 @@
           "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h010"
+            "waypoints": "KAAC-10R/h010"
           },
           "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h310"
+            "waypoints": "KAAC-10R/h310"
           },
           "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h190"
+            "waypoints": "KAAC-10R/h190"
           },
           "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h260"
+            "waypoints": "KAAC-10R/h260"
           }
         },
         "28R": {
           "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h010"
+            "waypoints": "KAAC-10L/h010"
           },
           "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h310"
+            "waypoints": "KAAC-10L/h310"
           },
           "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h190"
+            "waypoints": "KAAC-10L/h190"
           },
           "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h260"
+            "waypoints": "KAAC-10L/h260"
           }
         }
       },
@@ -500,7 +500,7 @@
         "27": {
           "COLIN,MAYES,NOBLE,SHAWN": {
             "cleared_altitude": 4000,
-            "waypoints": "_KJKE_27b _KJKE_27e/h270"
+            "waypoints": "KJKE-9/h270"
           }
         }
       },
@@ -1617,23 +1617,17 @@
     "SHAWN": "TUL@267/29",
     "AVANT": "TUL@300/20",
     "BARTS": "TUL@327/27",
-    "_KJKE_27b": "N035.56.14.615,W095.42.05.152",
-    "_KJKE_27e": "N035.56.21.440,W095.44.35.967",
-    "CHAPL": "_KJKE_27b@090/5.4",
-    "ARREL": "_KJKE_27b@090/7.9",
-    "BEJEO": "_KJKE_27b@090/10.9",
-    "_KAAC_28Rb": "N036.11.23.280,W095.44.35.912",
-    "_KAAC_28Re": "_KAAC_28Rb@280/1.8",
-    "WOODY": "_KAAC_28Rb@100/4.3",
-    "RUSTY": "_KAAC_28Rb@100/7.3",
-    "ADCOK": "_KAAC_28Rb@100/10.9",
-    "GRAYY": "_KAAC_28Rb@100/15",
-    "_KAAC_28Lb": "N036.10.37.069,W095.44.51.979",
-    "_KAAC_28Le": "_KAAC_28Lb@280/1.8",
-    "ONETA": "_KAAC_28Lb@100/4.3",
-    "RICKY": "_KAAC_28Lb@100/7.3",
-    "LITTL": "_KAAC_28Lb@100/10.6",
-    "CHAPP": "_KAAC_28Lb@100/13.8",
+    "CHAPL": "KJKE-27@090/5.4",
+    "ARREL": "KJKE-27@090/7.9",
+    "BEJEO": "KJKE-27@090/10.9",
+    "WOODY": "KAAC-28R@100/4.3",
+    "RUSTY": "KAAC-28R@100/7.3",
+    "ADCOK": "KAAC-28R@100/10.9",
+    "GRAYY": "KAAC-28R@100/15",
+    "ONETA": "KAAC-28L@100/4.3",
+    "RICKY": "KAAC-28L@100/7.3",
+    "LITTL": "KAAC-28L@100/10.6",
+    "CHAPP": "KAAC-28L@100/13.8",
     "ALETH": "COLIN@180/16",
     "STONE": "ALETH@180/8",
     "KURDZ": "STONE@190/3",

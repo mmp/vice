@@ -215,14 +215,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
+            "waypoints": "_EWR4_22Ra/h220"
           }
         },
         "4L": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
+            "waypoints": "_EWR4_4La/h290"
           }
         }
       },
@@ -1172,14 +1172,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a/h280"
+            "waypoints": "_TEB4_1a/h280"
           }
         },
         "24": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "sid": "RUUDY6",
-            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/h280"
+            "waypoints": "DAVIM WENTZ/a1500 RUUDY/h280"
           }
         }
       },

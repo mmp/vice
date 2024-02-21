@@ -122,74 +122,74 @@
           "ARRIE,PANGL": {
             "cleared_altitude": 10000,
             "sid": "BANGR9",
-            "waypoints": "_SEA_16L _SEA_34R CAVOB RENBE/a3000+ RICHR TOMRE BANGR/a10000+"
+            "waypoints": "CAVOB RENBE/a3000+ RICHR TOMRE BANGR/a10000+"
           },
           "ERAVE,FEPOT,HISKU": {
             "cleared_altitude": 10000,
             "sid": "HAROB6",
-            "waypoints": "_SEA_16L _SEA_34R CAVOB RENBE/a3000+ RICHR EMRLD HAROB/a10000+"
+            "waypoints": "CAVOB RENBE/a3000+ RICHR EMRLD HAROB/a10000+"
           },
           "YYJ,HQM,CVO": {
             "cleared_altitude": 7000,
             "sid": "ELMAA4",
-            "waypoints": "_SEA_16La _SEA_16Lb PEAKK/a3000+/h251"
+            "waypoints": "PEAKK/a3000+/h251"
           },
           "GEG,MLP,MWH,SEA,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
             "cleared_altitude": 7000,
             "sid": "MONTN2",
-            "waypoints": "_SEA_16La _SEA_16Lb PEAKK/a3000+/h071"
+            "waypoints": "PEAKK/a3000+/h071"
           },
           "PAE,EPH,YDC,HUH,YVR,TOU,AST,UBG,BTG,YKM,EUG,ELN": {
             "cleared_altitude": 7000,
             "sid": "SEA8",
-            "waypoints": "_SEA_16La _SEA_16Lb/h165"
+            "waypoints": "KSEA-34R/h165"
           },
           "SUMMA": {
             "cleared_altitude": 7000,
             "sid": "SUMMA2",
-            "waypoints": "_SEA_16La _SEA_16Lb NEVJO SUMMA"
+            "waypoints": "NEVJO SUMMA"
           }
           },
           "34R": {
             "ARRIE,PANGL": {
               "cleared_altitude": 10000,
               "sid": "BANGR9",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL/a3100+ ATOME BREMM BANGR/a10000+"
+              "waypoints": "DODVE WUREL/a3100+ ATOME BREMM BANGR/a10000+"
             },
             "ERAVE,FEPOT,HISKU": {
               "cleared_altitude": 10000,
               "sid": "HAROB6",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL/a3100+ ATOME BREMM HAROB/a10000+"
+              "waypoints": "DODVE WUREL/a3100+ ATOME BREMM HAROB/a10000+"
             },
             "ISBRG": {
               "cleared_altitude": 9000,
               "sid": "ISBRG1",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL/a3100+ ATOME BREMM ISBRG/h259"
+              "waypoints": "DODVE WUREL/a3100+ ATOME BREMM ISBRG/h259"
             },
             "JEFPO": {
               "cleared_altitude": 9000,
               "sid": "JEFPO1",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL ATOME CENEX JEFPO/h343"
+              "waypoints": "DODVE WUREL ATOME CENEX JEFPO/h343"
             },
             "OZWLD": {
               "cleared_altitude": 9000,
               "sid": "OZWLD1",
-              "waypoints": "_SEA_34R _SEA_16L DODVE WUREL/a3100+ ATOME BREMM OZWLD/h210"
+              "waypoints": "DODVE WUREL/a3100+ ATOME BREMM OZWLD/h210"
             },
             "MLP,MWH,SEA,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
               "cleared_altitude": 7000,
               "sid": "MONTN2",
-              "waypoints": "_SEA_34Ra _SEA_34Rb NEZUG/a4000+/h071"
+              "waypoints": "NEZUG/a4000+/h071"
             },
             "SEA8": {
               "cleared_altitude": 7000,
               "sid": "SEA8",
-              "waypoints": "_SEA_34Ra _SEA_34Rb/h341"
+              "waypoints": "KSEA-16L/h341"
             },
             "SUMMA": {
               "cleared_altitude": 7000,
               "sid": "SUMMA2",
-              "waypoints": "_SEA_34Ra _SEA_34Rb NEZUG/a4000+/h090"
+              "waypoints": "NEZUG/a4000+/h090"
             }
         }
       },

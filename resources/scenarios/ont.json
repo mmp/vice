@@ -79,64 +79,64 @@
                     "AVRRY": {
                         "cleared_altitude": 8000,
                         "sid": "RAJEE3",
-                        "waypoints": "_ONT_26R 34.05772996082202,-117.65719063833245 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
+                        "waypoints": "34.05772996082202,-117.65719063833245 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
                     },
                     "OTAYY": {
                         "cleared_altitude": 8000,
                         "sid": "RAJEE3",
-                        "waypoints": "_ONT_26R 34.05772996082202,-117.65719063833245 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
+                        "waypoints": "34.05772996082202,-117.65719063833245 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
                     },
                     "SXC": {
                         "cleared_altitude": 8000,
                         "sid": "RAJEE3",
-                        "waypoints": "_ONT_26R 34.05772996082202,-117.65719063833245 SOEHL/a4000+ RAJEE/a7000- NIKKL SHAYL ARIII LANAA/a13000+ TUDOO/a15000 SXC"
+                        "waypoints": "34.05772996082202,-117.65719063833245 SOEHL/a4000+ RAJEE/a7000- NIKKL SHAYL ARIII LANAA/a13000+ TUDOO/a15000 SXC"
                     },
                     "COREZ": {
                         "cleared_altitude": 10000,
                         "sid": "SNSHN5",
-                        "waypoints": "_ONT_26R 34.05772996082202,-117.65719063833245 DINNK POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+                        "waypoints": "34.05772996082202,-117.65719063833245 DINNK POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
                     },
                     "LAS": {
                         "cleared_altitude": 10000,
                         "sid": "SNSHN5",
-                        "waypoints": "_ONT_26R 34.05772996082202,-117.65719063833245 DINNK POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 NNAVY BLAZN LAS"
+                        "waypoints": "34.05772996082202,-117.65719063833245 DINNK POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 NNAVY BLAZN LAS"
                     },
                     "BEALE": {
                         "cleared_altitude": 10000,
                         "sid": "SNSHN5",
-                        "waypoints": "_ONT_26R 34.05772996082202,-117.65719063833245 DINNK POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 ARCUS YELAH WYZEE BEALE"
+                        "waypoints": "34.05772996082202,-117.65719063833245 DINNK POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 ARCUS YELAH WYZEE BEALE"
                     }
                 },
                 "8L": {
                     "AVRRY": {
                         "cleared_altitude": 8000,
                         "sid": "RAJEE3",
-                        "waypoints": "_ONT_8L 34.056149712279094,-117.53904675904735 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
+                        "waypoints": "34.056149712279094,-117.53904675904735 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
                     },
                     "OTAYY": {
                         "cleared_altitude": 8000,
                         "sid": "RAJEE3",
-                        "waypoints": "_ONT_8L 34.056149712279094,-117.53904675904735 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
+                        "waypoints": "34.056149712279094,-117.53904675904735 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
                     },
                     "SXC": {
                         "cleared_altitude": 8000,
                         "sid": "RAJEE3",
-                        "waypoints": "_ONT_8L 34.056149712279094,-117.53904675904735 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
+                        "waypoints": "34.056149712279094,-117.53904675904735 SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL AVRRY"
                     },
                     "COREZ": {
                         "cleared_altitude": 10000,
                         "sid": "SNSHN5",
-                        "waypoints": "_ONT_8L 34.056149712279094,-117.53904675904735 34.0116667,-117.52277777777778 LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+                        "waypoints": "34.056149712279094,-117.53904675904735 34.0116667,-117.52277777777778 LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
                     },
                     "LAS": {
                         "cleared_altitude": 10000,
                         "sid": "SNSHN5",
-                        "waypoints": "_ONT_8L 34.056149712279094,-117.53904675904735 34.0116667,-117.52277777777778 LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 NNAVY BLAZN LAS"
+                        "waypoints": "34.056149712279094,-117.53904675904735 34.0116667,-117.52277777777778 LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 NNAVY BLAZN LAS"
                     },
                     "BEALE": {
                         "cleared_altitude": 10000,
                         "sid": "SNSHN5",
-                        "waypoints": "_ONT_8L 34.056149712279094,-117.53904675904735 34.0116667,-117.52277777777778 LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 ARCUS YELAH WYZEE BEALE"
+                        "waypoints": "34.056149712279094,-117.53904675904735 34.0116667,-117.52277777777778 LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000 ARCUS YELAH WYZEE BEALE"
                     }
                 }
             },
@@ -304,24 +304,24 @@
                     "TNP": {
                         "cleared_altitude": 8000,
                         "sid": "CATH1",
-                        "waypoints": "_PSP_31L 33.986980293202635,-116.62063047517309 EMRUD 33.7469444,-116.32472222222222 PSP TNP"
+                        "waypoints": "33.986980293202635,-116.62063047517309 EMRUD 33.7469444,-116.32472222222222 PSP TNP"
                     },
                     "PMD": {
                         "cleared_altitude": 8000,
                         "sid": "CATH1",
-                        "waypoints": "_PSP_31L 33.986980293202635,-116.62063047517309 EMRUD 33.7469444,-116.32472222222222 PSP SOGGI PMD"
+                        "waypoints": "33.986980293202635,-116.62063047517309 EMRUD 33.7469444,-116.32472222222222 PSP SOGGI PMD"
                     }
                 },
                 "13R": {
                     "TNP": {
                         "cleared_altitude": 8000,
                         "sid": "CATH1",
-                        "waypoints": "_PSP_13R 33.807036154991266,-116.46713924726865 EMRUD PSP TNP"
+                        "waypoints": "33.807036154991266,-116.46713924726865 EMRUD PSP TNP"
                     },
                     "PMD": {
                         "cleared_altitude": 8000,
                         "sid": "CATH1",
-                        "waypoints": "_PSP_13R 33.807036154991266,-116.46713924726865 EMRUD PSP YUCCA SOGGI PMD"
+                        "waypoints": "33.807036154991266,-116.46713924726865 EMRUD PSP YUCCA SOGGI PMD"
                     }
                 }
             },

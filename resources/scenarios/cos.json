@@ -100,153 +100,153 @@
         "35L": {
           "LUFSE": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "PUB": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "BRK": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "HBU": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "LAA": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "TBE": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "ALS": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "DVV": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           },
           "FQF": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35L _COS17R/h003"
+            "waypoints": "_COS17R/h003"
           }
         },
         "35R": {
           "LUFSE": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "PUB": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "BRK": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "HBU": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "LAA": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "TBE": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "ALS": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "DVV": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           },
           "FQF": {
             "cleared_altitude": 11000,
-            "waypoints": "_COS35R _COS17L/h003"
+            "waypoints": "_COS17L/h003"
           }
         },
           "17L": {
             "LUFSE": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "PUB": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "BRK": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "HBU": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "LAA": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "TBE": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "ALS": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "DVV": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             },
             "FQF": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17L _COS35R/h182"
+              "waypoints": "_COS35R/h182"
             }
           },
           "17R": {
             "LUFSE": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "PUB": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "BRK": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "HBU": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "LAA": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "TBE": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "ALS": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "DVV": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             },
             "FQF": {
               "cleared_altitude": 11000,
-              "waypoints": "_COS17R _COS35L/h182"
+              "waypoints": "_COS35L/h182"
             }
           }
         },

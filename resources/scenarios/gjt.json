@@ -54,39 +54,39 @@
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 8000,
             "sid": "GJT7",
-            "waypoints": "_GJT11 _GJT29/h110"
+            "waypoints": "_GJT29/h110"
           },
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
             "assigned_altitude": 8000,
             "sid": "GRAND1",
-            "waypoints": "_GJT11 _GJT29/h110"
+            "waypoints": "_GJT29/h110"
           },
           "HAQHY": {
             "assigned_altitude": 8000,
             "sid": "NOKXI1",
-            "waypoints": "_GJT11 _GJT29 NOKXI MIRXE"
+            "waypoints": "NOKXI MIRXE"
           }
         },
         "29": {
           "TESSY": {
             "assigned_altitude": 8000,
             "sid": "RHONE2",
-            "waypoints": "_GJT29 _GJT11/h290 RHONE LOMMA"
+            "waypoints": "_GJT11/h290 RHONE LOMMA"
           },
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 6000,
             "sid": "GJT7",
-            "waypoints": "_GJT29 _GJT11/h290"
+            "waypoints": "_GJT11/h290"
           },
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
             "assigned_altitude": 8000,
             "sid": "GRAND1",
-            "waypoints": "_GJT29 _GJT11/h290"
+            "waypoints": "_GJT11/h290"
           },
           "HAQHY": {
             "assigned_altitude": 8000,
             "sid": "NOKXI1",
-            "waypoints": "_GJT29 _GJT11/h290"
+            "waypoints": "_GJT11/h290"
           }
         }
     },

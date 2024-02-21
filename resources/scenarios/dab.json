@@ -62,30 +62,30 @@
           "CRG": {
             "cleared_altitude": 4000,
             "sid": "ROYES7",
-            "waypoints": "_DAB_7L _DAB_25R/h070 BARBS ROYES CRG"
+            "waypoints": "_DAB_25R/h070 BARBS ROYES CRG"
           },
           "MALET": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_7L _DAB_25L/h070 MALET"
+            "waypoints": "_DAB_25L/h070 MALET"
           },
           "ROYES": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_7L _DAB_25R/h070 ROYES"
+            "waypoints": "_DAB_25R/h070 ROYES"
           }
         },
         "25R": {
           "CRG": {
             "cleared_altitude": 4000,
             "sid": "ROYES7",
-            "waypoints": "_DAB_25R _DAB_7L/h250 BARBS ROYES CRG"
+            "waypoints": "_DAB_7L/h250 BARBS ROYES CRG"
           },
           "MALET": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_25L _DAB_7R/h250 MALET"
+            "waypoints": "_DAB_7R/h250 MALET"
           },
           "ROYES": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_25R _DAB_7L/h250 ROYES"
+            "waypoints": "_DAB_7L/h250 ROYES"
           }
         }
       },

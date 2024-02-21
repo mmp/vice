@@ -118,282 +118,282 @@
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_05L _IND_23R/h050 SNEVA FOYTT"
+            "waypoints": "_IND_23R/h050 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_05L _IND_23R/h050 OOM EYTEJ"
+            "waypoints": "_IND_23R/h050 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05L _IND_23R/h050"
+            "waypoints": "_IND_23R/h050"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05L _IND_23R/h050 MAREO"
+            "waypoints": "_IND_23R/h050 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050"
+            "waypoints": "_IND_23R/h050"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050 MEARZ"
+            "waypoints": "_IND_23R/h050 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050 MEARZ SACHS"
+            "waypoints": "_IND_23R/h050 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050 MEARZ BRATN"
+            "waypoints": "_IND_23R/h050 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_05L _IND_23R/h050 TTH"
+            "waypoints": "_IND_23R/h050 TTH"
           }
         },
         "5R": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_05R _IND_23L/h050 SNEVA FOYTT"
+            "waypoints": "_IND_23L/h050 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_05R _IND_23L/h050 OOM EYTEJ"
+            "waypoints": "_IND_23L/h050 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05R _IND_23L/h050"
+            "waypoints": "_IND_23L/h050"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05R _IND_23L/h050 MAREO"
+            "waypoints": "_IND_23L/h050 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050"
+            "waypoints": "_IND_23L/h050"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050 MEARZ"
+            "waypoints": "_IND_23L/h050 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050 MEARZ SACHS"
+            "waypoints": "_IND_23L/h050 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050 MEARZ BRATN"
+            "waypoints": "_IND_23L/h050 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_05R _IND_23L/h050 TTH"
+            "waypoints": "_IND_23L/h050 TTH"
           }
         },
         "14": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_14 _IND_32/h140 SNEVA FOYTT"
+            "waypoints": "_IND_32/h140 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_14 _IND_32/h140 OOM EYTEJ"
+            "waypoints": "_IND_32/h140 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_14 _IND_32/h140"
+            "waypoints": "_IND_32/h140"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_14 _IND_32/h140 MAREO"
+            "waypoints": "_IND_32/h140 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140"
+            "waypoints": "_IND_32/h140"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140 MEARZ"
+            "waypoints": "_IND_32/h140 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140 MEARZ SACHS"
+            "waypoints": "_IND_32/h140 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140 MEARZ BRATN"
+            "waypoints": "_IND_32/h140 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_14 _IND_32/h140 TTH"
+            "waypoints": "_IND_32/h140 TTH"
           }
         },
         "23L": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_23L _IND_05R/h230 SNEVA FOYTT DAWNN"
+            "waypoints": "_IND_05R/h230 SNEVA FOYTT DAWNN"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_23L _IND_05R/h230 OOM EYTEJ"
+            "waypoints": "_IND_05R/h230 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23L _IND_05R/h230"
+            "waypoints": "_IND_05R/h230"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23L _IND_05R/h230 MAREO"
+            "waypoints": "_IND_05R/h230 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230"
+            "waypoints": "_IND_05R/h230"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230 MEARZ"
+            "waypoints": "_IND_05R/h230 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230 MEARZ SACHS"
+            "waypoints": "_IND_05R/h230 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230 MEARZ BRATN"
+            "waypoints": "_IND_05R/h230 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_23L _IND_05R/h230 TTH"
+            "waypoints": "_IND_05R/h230 TTH"
           }
         },
         "23R": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_23R _IND_05L/h230 SNEVA FOYTT DAWNN"
+            "waypoints": "_IND_05L/h230 SNEVA FOYTT DAWNN"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_23R _IND_05L/h230 OOM EYTEJ"
+            "waypoints": "_IND_05L/h230 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23R _IND_05L/h230"
+            "waypoints": "_IND_05L/h230"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23R _IND_05L/h230 MAREO"
+            "waypoints": "_IND_05L/h230 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230"
+            "waypoints": "_IND_05L/h230"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230 MEARZ"
+            "waypoints": "_IND_05L/h230 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230 MEARZ SACHS"
+            "waypoints": "_IND_05L/h230 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230 MEARZ BRATN"
+            "waypoints": "_IND_05L/h230 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_23R _IND_05L/h230 TTH"
+            "waypoints": "_IND_05L/h230 TTH"
           }
         },
         "32": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_32 _IND_14/h320 SNEVA FOYTT"
+            "waypoints": "_IND_14/h320 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_32 _IND_14/h320 OOM EYTEJ"
+            "waypoints": "_IND_14/h320 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_32 _IND_14/h320"
+            "waypoints": "_IND_14/h320"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_32 _IND_14/h320 MAREO"
+            "waypoints": "_IND_14/h320 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320"
+            "waypoints": "_IND_14/h320"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320 MEARZ"
+            "waypoints": "_IND_14/h320 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320 MEARZ SACHS"
+            "waypoints": "_IND_14/h320 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320 MEARZ BRATN"
+            "waypoints": "_IND_14/h320 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_32 _IND_14/h320 TTH"
+            "waypoints": "_IND_14/h320 TTH"
           }
         }
       },

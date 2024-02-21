@@ -50,74 +50,74 @@
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
                     "cleared_altitude": 5000,
                     "sid": "LGA7",
-                    "waypoints": "_LGA_4 _LGA_22/h360"
+                    "waypoints": "_LGA_22/h360"
                   },
                   "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
                     "cleared_altitude": 5000,
                     "sid": "LGA7",
-                    "waypoints": "_LGA_4 _LGA_22/h40"
+                    "waypoints": "_LGA_22/h40"
                   }
                 },
                 "31": {
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
                     "cleared_altitude": 5000,
                     "sid": "LGA7",
-                    "waypoints": "_LGA_31 _LGA_13/h340"
+                    "waypoints": "_LGA_13/h340"
                   },
                   "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
                     "cleared_altitude": 5000,
                     "sid": "LGA7",
-                    "waypoints": "_LGA_31 _LGA_13/h360"
+                    "waypoints": "_LGA_13/h360"
                   }
                 },
                 "13.LGA-Belmont.JFK-Coney": {
                   "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
-                                      "cleared_altitude": 5000,
-                                      "sid": "LGA7",
-                                      "waypoints": "_LGA_13 _LGA_31 _LGA_WHITESTONE/h40/s210/flyover"
+                      "cleared_altitude": 5000,
+                      "sid": "LGA7",
+                      "waypoints": "_LGA_WHITESTONE/h40/s210/flyover"
                   }
               },
               "13.LGA-Coney.JFK-Belmont": {
                 "GREKI,MERIT,BAYYS,BDR,CMK":{
                   "cleared_altitude": 5000,
                   "sid": "TNNIS6",
-                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h45"
+                  "waypoints": "_LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h45"
                 },
                 "SHIPP,WAVEY,DIXIE,DPK,WHITE": {
                   "cleared_altitude": 5000,
                   "sid": "NTHNS5",
-                  "waypoints": "_LGA_13 _LGA_31 KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
+                  "waypoints": "KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
                 },
                 "SAX,COATE,NEION,HAAYS,GAYEL,SBJ,BIGGY,LANNA,PARKE,ELIOT,NEWEL,ZIMMZ": {
                   "cleared_altitude": 5000,
                   "sid": "GLDMN8",
-                  "waypoints": "_LGA_13 _LGA_31 KIWIE/s220/a2500+ VOBOZ/s220/a4500+ GLDMN/h335"
+                  "waypoints": "KIWIE/s220/a2500+ VOBOZ/s220/a4500+ GLDMN/h335"
                 }
               },
               "13.LGA-Coney.LGA-Belmont": {
                 "SHIPP,WAVEY,DIXIE,DPK,WHITE": {
                   "cleared_altitude": 5000,
                   "sid": "NTHNS5",
-                  "waypoints": "_LGA_13 _LGA_31 KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
+                  "waypoints": "KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
                 },
                 "SAX,COATE,NEION,HAAYS,GAYEL,SBJ,BIGGY,LANNA,PARKE,ELIOT,NEWEL,ZIMMZ,GREKI,MERIT,BAYYS,BDR,CMK": {
                   "cleared_altitude": 5000,
                   "sid": "TNNIS6",
-                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h045"
+                  "waypoints": "_LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h045"
                 }
               },
               "13.JFK-Coney.JFK-Belmont": {
                 "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                   "cleared_altitude": 5000,
                   "sid": "TNNIS6",
-                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h045"
+                  "waypoints": "_LGA_13b JUTES/a3000+/s220 TNNIS/a5000+/h045"
                   }
               },
               "13.JFK-ILS-13": {
                 "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                   "cleared_altitude": 5000,
                   "sid": "LGA7",
-                  "waypoints": "_LGA_13 _LGA_31 _LGA_13b/h050"
+                  "waypoints": "_LGA_13b/h050"
                   }
               }
             },
@@ -641,21 +641,21 @@
                     "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
                       "cleared_altitude": 2500,
                       "sid": "EWR5",
-                      "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
+                      "waypoints": "_EWR4_22Ra/h220"
                     }
                   },
                   "4L": {
                     "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
                       "cleared_altitude": 3000,
                       "sid": "EWR5",
-                      "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
+                      "waypoints": "_EWR4_4La/h290"
                     }
                   },
                   "4L ": {
                     "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
                       "cleared_altitude": 2000,
                       "sid": "DEVIL1",
-                      "waypoints": "_EWR_4L _EWR_22R _EWR4_DEVIL/h290"
+                      "waypoints": "_EWR4_DEVIL/h290"
                     }
                   }
                 },
@@ -1669,68 +1669,68 @@
                     "ARD,DIXIE,RBV,WHITE": {
                       "cleared_altitude": 5000,
                       "sid": "JFK5",
-                      "waypoints": "_JFK_13R _JFK_31L/h185"
+                      "waypoints": "KJFK-31L/h185"
                     },
                     "BAYYS,BDR,COATE,GAYEL,GREKI,HAAYS,MERIT,NEION": {
                       "cleared_altitude": 5000,
                       "sid": "JFK5",
-                      "waypoints": "_JFK_13R _JFK_31L/h110"
+                      "waypoints": "KJFK-31L/h110"
                     },
                     "BETTE,HAPIE": {
                       "cleared_altitude": 5000,
                       "sid": "JFK5",
-                      "waypoints": "_JFK_13R _JFK_31L/h155"
+                      "waypoints": "KJFK-31L/h155"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
                       "sid": "DEEZZ5",
-                      "waypoints": "_JFK_13R _JFK_31L/h109"
+                      "waypoints": "KJFK-31L/h109"
                     },
                     "SHIPP,WAVEY": {
                       "cleared_altitude": 5000,
                       "sid": "JFK5",
-                      "waypoints": "_JFK_13R _JFK_31L/h170"
+                      "waypoints": "KJFK-31L/h170"
                     }
                   },
                   "22R": {
                     "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
                       "cleared_altitude": 5000,
                       "sid": "JFK5",
-                      "waypoints": "_JFK_22R _JFK_4L/h222"
+                      "waypoints": "KJFK-4L/h222"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
                       "sid": "DEEZZ5",
-                      "waypoints": "_JFK_22R _JFK_4L/h222"
+                      "waypoints": "KJFK-4L/h222"
                     }
                   },
                   "31L": {
                     "ARD,DIXIE,RBV,WHITE": {
                       "cleared_altitude": 5000,
                       "sid": "SKORR5.RNGRR",
-                      "waypoints": "_JFK_31L _JFK_13R SKORR METSS/a2500+ RNGRR/h223"
+                      "waypoints": "SKORR METSS/a2500+ RNGRR/h223"
                     },
                     "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
                       "cleared_altitude": 5000,
                       "sid": "SKORR5.YNKEE",
-                      "waypoints": "_JFK_31L _JFK_13R SKORR CESID/a2500+ YNKEE/h172"
+                      "waypoints": "SKORR CESID/a2500+ YNKEE/h172"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
                       "sid": "DEEZZ5",
-                      "waypoints": "_JFK_31L _JFK_13R SKORR CESID/a2500+ YNKEE/h172"
+                      "waypoints": "SKORR CESID/a2500+ YNKEE/h172"
                     }
                   },
                   "4L": {
                     "ARD,BAYYS,BDR,BETTE,COATE,DIXIE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,RBV,SHIPP,WAVEY,WHITE": {
                       "cleared_altitude": 5000,
                       "sid": "JFK5",
-                      "waypoints": "_JFK_4L _JFK_4La/h100"
+                      "waypoints": "_JFK_4La/h100"
                     },
                     "DEEZZ": {
                       "cleared_altitude": 5000,
                       "sid": "DEEZZ5",
-                      "waypoints": "_JFK_4L _JFK_4La/h100"
+                      "waypoints": "_JFK_4La/h100"
                     }
                   }
                 },
@@ -3574,10 +3574,7 @@
                 "_EWR_4L": "N040.40.45.790,W074.10.36.795",
                 "_EWR_4R": "N040.40.39.678,W074.10.27.566",
                 "_JFK_13L": "N040.39.26.976,W073.47.24.277",
-                "_JFK_13R": "N040.38.53.537,W073.49.00.188",
                 "_JFK_22L": "N040.38.41.232,W073.45.18.511",
-                "_JFK_22R": "N040.39.00.362,W073.45.49.053",
-                "_JFK_31L": "N040.37.41.000,W073.46.20.227",
                 "_JFK_31R": "N040.38.35.986,W073.45.31.503",
                 "_JFK_4L": "N040.37.19.370,W073.47.08.045",
                 "_JFK_4La": "N040.39.21.332,W073.45.32.849",

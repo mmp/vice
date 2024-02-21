@@ -329,9 +329,28 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		seenExits := make(map[string]interface{})
 		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
 
+		r, ok := LookupRunway(icao, rwy)
+		if !ok {
+			e.ErrorString("unknown runway for airport")
+		}
+		rend, ok := LookupOppositeRunway(icao, rwy)
+		if !ok {
+			e.ErrorString("missing opposite runway")
+		}
+
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
 			sg.InitializeWaypointLocations(route.Waypoints, e)
+
+			route.Waypoints = append([]Waypoint{
+				Waypoint{
+					Fix:      rwy,
+					Location: r.Threshold,
+				},
+				Waypoint{
+					Fix:      rwy + "-mid",
+					Location: lerp2f(0.75, r.Threshold, rend.Threshold),
+				}}, route.Waypoints...)
 
 			route.Waypoints.CheckDeparture(e)
 

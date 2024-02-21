@@ -75,91 +75,91 @@
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO1",
-            "waypoints": "KTPA-1L KTPA-19R/h003 FINKI BAYPO ECAKE WILON"
+            "waypoints": "KTPA-19R/h003 FINKI BAYPO ECAKE WILON"
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "waypoints": "KTPA-1L KTPA-19R/h003 MILEJ CROWD HALLR"
+            "waypoints": "KTPA-19R/h003 MILEJ CROWD HALLR"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "waypoints": "KTPA-1L KTPA-19R/h003 SYKES DORMR PSTOL"
+            "waypoints": "KTPA-19R/h003 SYKES DORMR PSTOL"
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED1",
-            "waypoints": "KTPA-1L KTPA-19R/h003 ENDED LACEN"
+            "waypoints": "KTPA-19R/h003 ENDED LACEN"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "waypoints": "KTPA-1L KTPA-19R/h003 GANDY PAIRS MURDO SABEE"
+            "waypoints": "KTPA-19R/h003 GANDY PAIRS MURDO SABEE"
           },
           "REMIS": {
             "cleared_altitude": 6000,
             "sid": "KNOST2",
-            "waypoints": "KTPA-1L KTPA-19R/h003 WOBAD/a6000 LOREC KNOST"
+            "waypoints": "KTPA-19R/h003 WOBAD/a6000 LOREC KNOST"
           }
         },
         "1R": {
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO1",
-            "waypoints": "KTPA-1R KTPA-19L/h003 FINKI BAYPO ECAKE "
+            "waypoints": "KTPA-19L/h003 FINKI BAYPO ECAKE "
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "waypoints": "KTPA-1R KTPA-19L/h003 MILEJ CROWD HALLR"
+            "waypoints": "KTPA-19L/h003 MILEJ CROWD HALLR"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "waypoints": "KTPA-1R KTPA-19L/h003 SYKES DORMR PSTOL "
+            "waypoints": "KTPA-19L/h003 SYKES DORMR PSTOL "
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED1",
-            "waypoints": "KTPA-1R KTPA-19L/h003 ENDED LACEN"
+            "waypoints": "KTPA-19L/h003 ENDED LACEN"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "waypoints": "KTPA-1R KTPA-19L/h003 GANDY PAIRS MURDO SABEE"
+            "waypoints": "KTPA-19L/h003 GANDY PAIRS MURDO SABEE"
           },
           "REMIS": {
             "cleared_altitude": 6000,
             "sid": "KNOST2",
-            "waypoints": "KTPA-1R KTPA-19L/h003 WOBAD/a6000 LOREC KNOST "
+            "waypoints": "KTPA-19L/h003 WOBAD/a6000 LOREC KNOST "
           }
         },
         "19R": {
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO1",
-            "waypoints": "KTPA-19R KTPA-1L/h203 FINKI BAYPO ECAKE "
+            "waypoints": "KTPA-1L/h203 FINKI BAYPO ECAKE "
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "waypoints": "KTPA-19R KTPA-1L/h203 MILEJ CROWD HALLR"
+            "waypoints": "KTPA-1L/h203 MILEJ CROWD HALLR"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "waypoints": "KTPA-19R KTPA-1L/h203 SYKES DORMR PSTOL "
+            "waypoints": "KTPA-1L/h203 SYKES DORMR PSTOL "
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED1",
-            "waypoints": "KTPA-19R KTPA-1L/h203 ENDED LACEN"
+            "waypoints": "KTPA-1L/h203 ENDED LACEN"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "waypoints": "KTPA-19R KTPA-1L/h203 GANDY PAIRS MURDO SABEE"
+            "waypoints": "KTPA-1L/h203 GANDY PAIRS MURDO SABEE"
           }
         }
       },
@@ -347,34 +347,34 @@
           "CAMJO": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "KSRQ-32 KSRQ-14 VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
+            "waypoints": "VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
           },
           "MOMIE": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "KSRQ-32 KSRQ-14 VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
+            "waypoints": "VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
           },
           "SIMMR": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "KSRQ-32 KSRQ-14 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
+            "waypoints": "VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
           }
         },
         "14": {
           "CAMJO": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "KSRQ-14 KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
+            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
           },
           "MOMIE": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "KSRQ-14 KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
+            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
           },
           "SIMMR": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "KSRQ-14 KSRQ-32/h139 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
+            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
           }
         }
       },
@@ -475,34 +475,34 @@
           "CAMJO": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "KPIE-36 KPIE-18/h356 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
+            "waypoints": "KPIE-18/h356 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
           },
           "WILON": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "KPIE-36 KPIE-18/h356 INLTT MAEKO BAYPO ECAKE WILON"
+            "waypoints": "KPIE-18/h356 INLTT MAEKO BAYPO ECAKE WILON"
           },
           "LACEN": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "KPIE-36 KPIE-18/h356 INLTT MAEKO ENDED LACEN"
+            "waypoints": "KPIE-18/h356 INLTT MAEKO ENDED LACEN"
           }
         },
         "18": {
           "CAMJO": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "KPIE-18 KPIE-36/h167 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
+            "waypoints": "KPIE-36/h167 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
           },
           "WILON": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "KPIE-18 KPIE-36/h167 INLTT MAEKO BAYPO ECAKE WILON"
+            "waypoints": "KPIE-36/h167 INLTT MAEKO BAYPO ECAKE WILON"
           },
           "LACEN": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "KPIE-18 KPIE-36/h167 INLTT MAEKO ENDED LACEN"
+            "waypoints": "KPIE-36/h167 INLTT MAEKO ENDED LACEN"
           }
         }
       },

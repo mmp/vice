@@ -113,35 +113,35 @@
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_10L _ORD_28R/h250"
+                            "waypoints": "_ORD_28R/h250"
                         }
                     },
                     "9R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_9R _ORD_27L/h320"
+                            "waypoints": "_ORD_27L/h320"
                         }
                     },
                     "22L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_22L _ORD_4R/h180"
+                            "waypoints": "_ORD_4R/h180"
                         }
                     },
                     "28R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_28R _ORD_10L/h250"
+                            "waypoints": "_ORD_10L/h250"
                         }
                     },
                     "27L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_27L _ORD_9R/h010"
+                            "waypoints": "_ORD_9R/h010"
                         }
                     }
                 },
@@ -550,68 +550,68 @@
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h100"
+                                "waypoints": "_MDW_22L/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h130"
+                                "waypoints": "_MDW_22L/h130"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h250"
+                                "waypoints": "_MDW_22L/h250"
                             }
                         },
                         "13C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h090"
+                                "waypoints": "_MDW_31C/h090"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h170"
+                                "waypoints": "_MDW_31C/h170"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h200"
+                                "waypoints": "_MDW_31C/h200"
                             }
                         },
                         "22L": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_22L _MDW_4R/h140"
+                                "waypoints": "_MDW_4R/h140"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_22L _MDW_4R/h180"
+                                "waypoints": "_MDW_4R/h180"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_22L _MDW_4R/h250"
+                                "waypoints": "_MDW_4R/h250"
                             }
                         },
                         "31C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h100"
+                                "waypoints": "_MDW_13C/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h220"
+                                "waypoints": "_MDW_13C/h220"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h250"
+                                "waypoints": "_MDW_13C/h250"
                             }
                         }
                     },

@@ -198,316 +198,316 @@
           "LAS,HAILO,BEALE": {
             "assigned_altitude": 8000,
             "sid": "GARDY4",
-            "waypoints": "KLAX-7L KLAX-7L/h071 CHVEZ TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
+            "waypoints": "KLAX-25R/h071 CHVEZ TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
           },
           "AVE,EHF": {
             "assigned_altitude": 15000,
             "sid": "GMN7",
-            "waypoints": "KLAX-7L KLAX-7L/h071 VNY GMN"
+            "waypoints": "KLAX-25R/h071 VNY GMN"
           },
           "CLEEE,CNERY": {
             "assigned_altitude": 15000,
             "sid": "DOTSS2",
-            "waypoints": "KLAX-7L KLAX-7L/h056"
+            "waypoints": "KLAX-25R/h056"
           },
           "CSTRO,COREZ": {
             "assigned_altitude": 15000,
             "sid": "LADYJ4",
-            "waypoints": "KLAX-7L KLAX-7L/h056"
+            "waypoints": "KLAX-25R/h056"
           },
           "IKAYE": {
             "assigned_altitude": 15000,
             "sid": "MOOOS2",
-            "waypoints": "KLAX-7L KLAX-7L/h056"
+            "waypoints": "KLAX-25R/h056"
           },
           "RZS,KWANG": {
             "assigned_altitude": 15000,
             "sid": "MUELR4",
-            "waypoints": "KLAX-7L KLAX-7L DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+            "waypoints": "DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
           },
           "SCTRR,STOKD,MCKEY,DINTY": {
             "assigned_altitude": 15000,
             "sid": "SUMMR2",
-            "waypoints": "KLAX-7L KLAX-7L"
+            "waypoints": ""
           }
         },
         "7R": {
           "LAS,HAILO,BEALE": {
             "assigned_altitude": 8000,
             "sid": "GARDY4",
-            "waypoints": "KLAX-7R KLAX-25L/h071 TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
+            "waypoints": "KLAX-25L/h071 TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
           },
           "AVE,EHF": {
             "assigned_altitude": 15000,
             "sid": "GMN7",
-            "waypoints": "KLAX-7R KLAX-25L/h071 VNY GMN"
+            "waypoints": "KLAX-25L/h071 VNY GMN"
           },
           "CLEEE,CNERY": {
             "assigned_altitude": 15000,
             "sid": "DOTSS2",
-            "waypoints": "KLAX-7R KLAX-25L/h056"
+            "waypoints": "KLAX-25L/h056"
           },
           "CSTRO,COREZ": {
             "assigned_altitude": 15000,
             "sid": "LADYJ4",
-            "waypoints": "KLAX-7R KLAX-25L/h056"
+            "waypoints": "KLAX-25L/h056"
           },
           "IKAYE": {
             "assigned_altitude": 15000,
             "sid": "MOOOS2",
-            "waypoints": "KLAX-7R KLAX-25L/h056"
+            "waypoints": "KLAX-25L/h056"
           },
           "RZS,KWANG": {
             "assigned_altitude": 15000,
             "sid": "MUELR4",
-            "waypoints": "KLAX-7R KLAX-25L DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+            "waypoints": "DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
           },
           "SCTRR,STOKD,MCKEY,DINTY": {
             "assigned_altitude": 15000,
             "sid": "SUMMR2",
-            "waypoints": "KLAX-7R KLAX-25L"
+            "waypoints": ""
           }
         },
         "6R": {
           "LAS,HAILO,BEALE": {
             "assigned_altitude": 640,
             "sid": "GARDY4",
-            "waypoints": "KLAX-6R KLAX-24L KOFAX TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
+            "waypoints": "KOFAX TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
           },
           "AVE,EHF": {
             "assigned_altitude": 15000,
             "sid": "GMN7",
-            "waypoints": "KLAX-6R KLAX-24L/h056 VNY GMN"
+            "waypoints": "KLAX-24L/h056 VNY GMN"
           },
           "CLEEE,CNERY": {
             "assigned_altitude": 15000,
             "sid": "DOTSS2",
-            "waypoints": "KLAX-6R KLAX-24L/h056"
+            "waypoints": "KLAX-24L/h056"
           },
           "CSTRO,COREZ": {
             "assigned_altitude": 15000,
             "sid": "LADYJ4",
-            "waypoints": "KLAX-6R KLAX-24L/h056"
+            "waypoints": "KLAX-24L/h056"
           },
           "IKAYE": {
             "assigned_altitude": 15000,
             "sid": "MOOOS2",
-            "waypoints": "KLAX-6R KLAX-24L/h056"
+            "waypoints": "KLAX-24L/h056"
           },
           "RZS,KWANG": {
             "assigned_altitude": 15000,
             "sid": "MUELR4",
-            "waypoints": "KLAX-6R KLAX-24L DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+            "waypoints": "DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
           },
           "SCTRR,STOKD,MCKEY,DINTY": {
             "assigned_altitude": 15000,
             "sid": "SUMMR2",
-            "waypoints": "KLAX-6R KLAX-24L"
+            "waypoints": ""
           }
         },
           "6L": {
             "LAS,HAILO,BEALE": {
               "assigned_altitude": 640,
               "sid": "GARDY4",
-              "waypoints": "KLAX-6L KLAX-24R CHVEZ TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
+              "waypoints": "CHVEZ TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
             },
             "AVE,EHF": {
               "assigned_altitude": 15000,
               "sid": "GMN7",
-              "waypoints": "KLAX-6L KLAX-24R/h056 VNY GMN"
+              "waypoints": "KLAX-24R/h056 VNY GMN"
             },
             "CLEEE,CNERY": {
               "assigned_altitude": 15000,
               "sid": "DOTSS2",
-              "waypoints": "KLAX-6L KLAX-24R/h056"
+              "waypoints": "KLAX-24R/h056"
             },
             "CSTRO,COREZ": {
               "assigned_altitude": 15000,
               "sid": "LADYJ4",
-              "waypoints": "KLAX-6L KLAX-24R/h056"
+              "waypoints": "KLAX-24R/h056"
             },
             "IKAYE": {
               "assigned_altitude": 15000,
               "sid": "MOOOS2",
-              "waypoints": "KLAX-6L KLAX-24R/h056"
+              "waypoints": "KLAX-24R/h056"
             },
             "RZS,KWANG": {
               "assigned_altitude": 15000,
               "sid": "MUELR4",
-              "waypoints": "KLAX-6L KLAX-24R/h056"
+              "waypoints": "KLAX-24R/h056"
             },
             "SCTRR,STOKD,MCKEY,DINTY": {
               "assigned_altitude": 15000,
               "sid": "SUMMR2",
-              "waypoints": "KLAX-6L KLAX-24R/h056"
+              "waypoints": "KLAX-24R/h056"
             }
         },
         "25R": {
           "LAS,HAILO": {
             "assigned_altitude": 640,
             "sid": "GARDY4",
-            "waypoints": "KLAX-25R KLAX-7L/h251"
+            "waypoints": "KLAX-7L/h251"
           },
           "SCTRR,STOKD,MCKEY,DINTY": {
             "assigned_altitude": 15000,
             "sid": "SUMMR2",
-            "waypoints": "KLAX-25R KLAX-7L DOCKR/a3000 EVOSE/a5000 MKGEE DARRK/a12000 SUMMR OLOFF RIZIN"
+            "waypoints": "DOCKR/a3000 EVOSE/a5000 MKGEE DARRK/a12000 SUMMR OLOFF RIZIN"
           },
           "CLEEE,CNERY": {
             "assigned_altitude": 15000,
             "sid": "DOTSS2",
-            "waypoints": "KLAX-25R KLAX-7L DOCKR/a3000 WEILR/a5000 SHAEF PEVEE HOLTZ DOTSS/a15000"
+            "waypoints": "DOCKR/a3000 WEILR/a5000 SHAEF PEVEE HOLTZ DOTSS/a15000"
           },
           "AVE,EHF": {
             "assigned_altitude": 15000,
             "sid": "GMN7",
-            "waypoints": "KLAX-25R KLAX-7L/h251 VNY GMN"
+            "waypoints": "KLAX-7L/h251 VNY GMN"
           },
           "CSTRO,COREZ": {
             "assigned_altitude": 15000,
             "sid": "LADYJ4",
-            "waypoints": "KLAX-25R KLAX-7L DOCKR/a3000 EVOSE/a5000 MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
+            "waypoints": "DOCKR/a3000 EVOSE/a5000 MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
           },
           "IKAYE": {
             "assigned_altitude": 15000,
             "sid": "MOOOS2",
-            "waypoints": "KLAX-25R KLAX-7L/h056"
+            "waypoints": "KLAX-7L/h056"
           },
           "RZS,KWANG": {
             "assigned_altitude": 15000,
             "sid": "MUELR4",
-            "waypoints": "KLAX-25R KLAX-7L DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+            "waypoints": "DOCKR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
           },
           "BEALE": {
             "assigned_altitude": 15000,
             "sid": "OSHNN1",
-            "waypoints": "KLAX-25R KLAX-7L DOCKR/a3000 WEILR/a5000 SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
+            "waypoints": "DOCKR/a3000 WEILR/a5000 SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
           }
       },
       "25L": {
         "LAS,HAILO": {
           "assigned_altitude": 640,
           "sid": "GARDY4",
-          "waypoints": "KLAX-25L KLAX-7R/h251"
+          "waypoints": "KLAX-7R/h251"
         },
         "SCTRR,STOKD,MCKEY,DINTY": {
           "assigned_altitude": 15000,
           "sid": "SUMMR2",
-          "waypoints": "KLAX-25L KLAX-7R HIIPR/a3000 ENNEY/a5000 NAANC DARRK/a12000 SUMMR OLOFF RIZIN"
+          "waypoints": "HIIPR/a3000 ENNEY/a5000 NAANC DARRK/a12000 SUMMR OLOFF RIZIN"
         },
         "CLEEE,CNERY": {
           "assigned_altitude": 15000,
           "sid": "DOTSS2",
-          "waypoints": "KLAX-25L KLAX-7R HIIPR/a3000 ADORE/a5000 SHAEF PEVEE HOLTZ DOTSS/a15000"
+          "waypoints": "HIIPR/a3000 ADORE/a5000 SHAEF PEVEE HOLTZ DOTSS/a15000"
         },
         "AVE,EHF": {
           "assigned_altitude": 15000,
           "sid": "GMN7",
-          "waypoints": "KLAX-25L KLAX-7R/h251 VNY GMN"
+          "waypoints": "KLAX-7R/h251 VNY GMN"
         },
         "CSTRO,COREZ": {
           "assigned_altitude": 15000,
           "sid": "LADYJ4",
-          "waypoints": "KLAX-25L KLAX-7R HIIPR/a3000 EVOSE/a5000 MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
+          "waypoints": "HIIPR/a3000 EVOSE/a5000 MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
         },
         "IKAYE": {
           "assigned_altitude": 15000,
           "sid": "MOOOS2",
-          "waypoints": "KLAX-25L KLAX-7R/h251"
+          "waypoints": "KLAX-7R/h251"
         },
         "RZS,KWANG": {
           "assigned_altitude": 15000,
           "sid": "MUELR4",
-          "waypoints": "KLAX-25L KLAX-7R HIIPR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+          "waypoints": "HIIPR ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
         },
         "BEALE": {
           "assigned_altitude": 15000,
           "sid": "OSHNN1",
-          "waypoints": "KLAX-25L KLAX-7R HIIPR/a3000 ADORE/a5000 SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
+          "waypoints": "HIIPR/a3000 ADORE/a5000 SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
         }
     },
     "24R": {
       "LAS,HAILO": {
         "assigned_altitude": 640,
         "sid": "GARDY4",
-        "waypoints": "KLAX-24R KLAX-6L/h251"
+        "waypoints": "KLAX-6L/h251"
       },
       "SCTRR,STOKD,MCKEY,DINTY": {
         "assigned_altitude": 15000,
         "sid": "SUMMR2",
-        "waypoints": "KLAX-24R KLAX-6L FABRA/a3000 ENNEY/a5000 NAANC DARRK/a12000 SUMMR OLOFF RIZIN"
+        "waypoints": "FABRA/a3000 ENNEY/a5000 NAANC DARRK/a12000 SUMMR OLOFF RIZIN"
       },
       "CLEEE,CNERY": {
         "assigned_altitude": 15000,
         "sid": "DOTSS2",
-        "waypoints": "KLAX-24R KLAX-6L FABRA/a3000 ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ DOTSS/a15000"
+        "waypoints": "FABRA/a3000 ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ DOTSS/a15000"
       },
       "AVE,EHF": {
         "assigned_altitude": 15000,
         "sid": "GMN7",
-        "waypoints": "KLAX-24R KLAX-6L/h251 VNY GMN"
+        "waypoints": "KLAX-6L/h251 VNY GMN"
       },
       "CSTRO,COREZ": {
         "assigned_altitude": 15000,
         "sid": "LADYJ",
-        "waypoints": "KLAX-24R KLAX-6L FABRA/a3000 ENNEY/a5000 EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
+        "waypoints": "FABRA/a3000 ENNEY/a5000 EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
       },
       "IKAYE": {
         "assigned_altitude": 15000,
         "sid": "MOOOS2",
-        "waypoints": "KLAX-24R KLAX-6L/h251"
+        "waypoints": "KLAX-6L/h251"
       },
       "RZS,KWANG": {
         "assigned_altitude": 15000,
         "sid": "MUELR4",
-        "waypoints": "KLAX-24R KLAX-6L FABRA ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+        "waypoints": "FABRA ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
       },
       "BEALE": {
         "assigned_altitude": 15000,
         "sid": "OSHNN1",
-        "waypoints": "KLAX-24R KLAX-6L FABRA ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
+        "waypoints": "FABRA ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
       }
   },
   "24L": {
     "LAS,HAILO": {
       "assigned_altitude": 640,
       "sid": "GARDY4",
-      "waypoints": "KLAX-24L KLAX-6R/h251"
+      "waypoints": "KLAX-6R/h251"
     },
     "SCTRR,STOKD,MCKEY,DINTY": {
       "assigned_altitude": 15000,
       "sid": "SUMMR2",
-      "waypoints": "KLAX-24L KLAX-6R DLREY/a3000 ENNEY/a5000 NAANC DARRK/a12000 SUMMR OLOFF RIZIN"
+      "waypoints": "DLREY/a3000 ENNEY/a5000 NAANC DARRK/a12000 SUMMR OLOFF RIZIN"
     },
     "CLEEE,CNERY": {
       "assigned_altitude": 15000,
       "sid": "DOTSS2",
-      "waypoints": "KLAX-24L KLAX-6R DLREY/a3000 ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ DOTSS/a15000"
+      "waypoints": "DLREY/a3000 ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ DOTSS/a15000"
     },
     "AVE,EHF": {
       "assigned_altitude": 15000,
       "sid": "GMN7",
-      "waypoints": "KLAX-24L KLAX-6R/h251 VNY GMN"
+      "waypoints": "KLAX-6R/h251 VNY GMN"
     },
     "CSTRO,COREZ": {
       "assigned_altitude": 15000,
       "sid": "LADYJ4",
-      "waypoints": "KLAX-24L KLAX-6R DLREY/a3000 ENNEY/a5000 EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
+      "waypoints": "DLREY/a3000 ENNEY/a5000 EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
     },
     "IKAYE": {
       "assigned_altitude": 15000,
       "sid": "MOOOS2",
-      "waypoints": "KLAX-24L KLAX-6R/h251"
+      "waypoints": "KLAX-6R/h251"
     },
     "RZS,KWANG": {
       "assigned_altitude": 15000,
       "sid": "MUELR4",
-      "waypoints": "KLAX-24L KLAX-6R DLREY ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
+      "waypoints": "DLREY ENNEY/a5000 NAANC MUELR FIXIT/a10000/s290 IKAYE WGGNR"
     },
     "BEALE": {
       "assigned_altitude": 15000,
       "sid": "OSHNN1",
-      "waypoints": "KLAX-24L KLAX-6R DLREY ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
+      "waypoints": "DLREY ENNEY/a5000 NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000 ZOOMM/a16000 SEBBY PLAYY ARCUS YELAH WYZEE"
     }
 }
     },
