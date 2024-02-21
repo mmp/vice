@@ -4779,12 +4779,14 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 		if state.Ghost.PartialDatablock {
 			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
 			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
-
-			fp := ctx.world.Aircraft[ghost.Callsign].FlightPlan
-			fields := strings.Split(fp.AircraftType, "/")
-			if len(fields) > 1 && (fields[0] == "H" || fields[0] == "J" || fields[0] == "S") {
-				datablockText += fields[0]
-			}
+			ac := ctx.world.Aircraft[ghost.Callsign]
+			recat := getRecatCategory(ac)
+			// fp := ctx.world.Aircraft[ghost.Callsign].FlightPlan
+			// fields := strings.Split(fp.AircraftType, "/")
+			// if len(fields) > 1 && (fields[0] == "H" || fields[0] == "J" || fields[0] == "S") {
+			// 	datablockText += fields[0]
+			// }
+			datablockText += recat
 		} else {
 			// The full datablock ain't much more...
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
