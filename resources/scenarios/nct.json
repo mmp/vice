@@ -506,7 +506,6 @@
         "LIN": "East",
         "TECKY": "Southeast"
       },
-      "location": "KSJC",
       "tower_list": 1
     },
     "KOAK": {
@@ -907,7 +906,6 @@
         "LIN": "East",
         "SUNNE": "East"
       },
-      "location": "KOAK",
       "tower_list": 2
     },
     "KSFO": {
@@ -2019,7 +2017,6 @@
         "CCR": "Southeast",
         "RBL": "Southeast"
       },
-      "location": "KSFO",
       "tower_list": 3
     },
     "KRNO": {
@@ -2483,7 +2480,6 @@
         "MRLET": "West",
         "BLKJK": "East"
       },
-      "location": "KRNO",
       "tower_list": 4
     },
     "KSMF": {
@@ -2891,7 +2887,6 @@
         "FROGO": "North",
         "NTELL": "South"
       },
-      "location": "KSMF",
       "tower_list": 5
     },
     "KMRY": {
@@ -3108,7 +3103,6 @@
         "SNS": "North",
         "SHOEY": "North"
       },
-      "location": "KMRY",
       "tower_list": 6
     },
     "KMER": {
@@ -3234,7 +3228,6 @@
         "SHOEY": "East",
         "FUULL": "East"
       },
-      "location": "KMER",
       "tower_list": 7
     },
     "KMOD": {
@@ -3323,7 +3316,6 @@
         "NTELL": "East",
         "SYRAH": "East"
       },
-      "location": "KMOD",
       "tower_list": 8
     },
     "KSCK": {
@@ -3428,7 +3420,6 @@
         "AVE": "East",
         "MOD": "East"
       },
-      "location": "KSCK",
       "tower_list": 9
     },
     "KSAC": {
@@ -3530,7 +3521,6 @@
         "SAC": "East",
         "FROGO": "East"
       },
-      "location": "KSAC",
       "tower_list": 10
     },
     "KLVK": {
@@ -3626,7 +3616,6 @@
         "SAC": "East",
         "OAK": "East"
       },
-      "location": "KLVK",
       "tower_list": 11
     },
     "KSNS": {
@@ -3738,7 +3727,6 @@
         "SUSEY": "East",
         "SNS": "East"
       },
-      "location": "KSNS",
       "tower_list": 12
     }
   },

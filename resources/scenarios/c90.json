@@ -510,7 +510,6 @@
                     "OLINN": "West",
                     "PEKUE": "West"
                 },
-                "location": "KORD",
                 "tower_list": 4
                 },
                 "KMDW": {
@@ -974,7 +973,6 @@
                         "EARND": "South",
                         "DENNT": "South"
                     },
-                    "location": "N41.47.08.974,W87.45.10.284",
                     "tower_list": 1
                 }
             },

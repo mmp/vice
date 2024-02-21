@@ -645,7 +645,6 @@
                         "SNNOH": "NORTH",
                         "SINKR": "NORTH"
                     },
-                    "location": "KCLE",
                     "tower_list": 1
                 },
                 "KCGF": {
@@ -833,7 +832,6 @@
                             "SINKR" : "NORTH",
                             "SNNOH": "NORTH"
                         },
-                        "location": "KCGF",
                         "tower_list": 1
                     }
                 },

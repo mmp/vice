@@ -453,7 +453,6 @@
                 "SLI": "South",
                 "LAX": "Southwest"
             },
-            "location": "N034.19.99.040,W118.35.44.560",
             "tower_list": 1
 
 
@@ -693,7 +692,6 @@
                 "BLH": "Southeast",
                 "DAG": "Northeast"
             },
-            "location": "N034.12.35.300,W118.29.23.900",
             "tower_list": 1
         },
         "KWHP": {
@@ -732,7 +730,6 @@
                     }
                 }
             },
-            "location": "N034.15.33.571,W118.24.48.359",
             "tower_list": 1
 
         }

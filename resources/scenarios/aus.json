@@ -387,7 +387,6 @@
                         "KLNGR": "Northwest",
                         "MUCKY": "West"
                     },
-                    "location": "KAUS",
                     "tower_list": 1
                 },
             "KHYI": {
@@ -554,7 +553,6 @@
                     "KLNGR": "Northwest",
                     "MUCKY": "West"
                 },
-                "location": "KHYI",
                 "tower_list": 1
             },
             "KGTU": {
@@ -643,7 +641,6 @@
                     "CLL": "East",
                     "AMUSE": "West"
                 },
-                "location": "KGTU",
                 "tower_list": 1
             }
             },

@@ -654,7 +654,6 @@
         "COREZ": "COREZ",
         "SCTRR": "SCTRR"
       },
-      "location": "KLAX",
       "tower_list": 1
    },
    "KHHR": {
@@ -694,7 +693,6 @@
         ]
       }
     },
-    "location": "KHHR",
     "tower_list": 2
  }
   },

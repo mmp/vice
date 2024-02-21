@@ -433,7 +433,6 @@
                 "NEWEL": "West",
                 "ZIMMZ": "West"
               },
-              "location": "N040.46.36.940,W073.52.26.264",
               "tower_list": 1
             },
             "KEWR": {
@@ -1515,7 +1514,6 @@
                   "WHITE": "South",
                   "ZIMMZ": "West"
                 },
-                "location": "N040.41.28.005,W074.10.16.223",
                 "tower_list": 2
               },
               "KJFK": {
@@ -2447,7 +2445,6 @@
                   "WAVEY": "Water",
                   "WHITE": "Southwest"
                 },
-                "location": "N040.38.30.356,W073.46.51.483",
                 "tower_list": 3
               }
 

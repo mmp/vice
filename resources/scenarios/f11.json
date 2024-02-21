@@ -840,7 +840,6 @@
         "VIYAP": "FATHE",
         "ZALEN": "DDANY"
       },
-      "location": "N028.25.45.781,W081.18.32.260",
       "tower_list": 2
     },
     "KORL": {
@@ -918,7 +917,6 @@
         "DDANY": "South",
         "MLB": "South"
       },
-      "location": "N28.32.45.979,W81.19.58.601",
       "tower_list": 1
     },
     "KSFB": {
@@ -1093,7 +1091,6 @@
         "GDUNN": "West",
         "OSPRY": "West"
       },
-      "location": "N028.46.37.847,W081.14.05.700",
       "tower_list": 2
     },
     "KISM": {
@@ -1171,7 +1168,6 @@
           "route": "MLB BLUFI4"
         }
       ],
-      "location": "N028.17.23.303,W081.26.13.489",
       "tower_list": 1
     },
     "KMLB": {
@@ -1221,7 +1217,6 @@
         "WORMS": "North",
         "KLMAN": "West"
       },
-      "location": "N028.06.09.896,W080.38.42.894",
       "tower_list": 1
     },
     "KTPA": {
@@ -1234,7 +1229,6 @@
           ]
         }
       },
-      "location": "KTPA",
       "tower_list": 1
     }
   },

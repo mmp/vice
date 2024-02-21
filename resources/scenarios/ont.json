@@ -244,8 +244,7 @@
                     "exit": "AVRRY",
                     "route": "AVRRY NICKT J74 DRYHT ONM CNX HUDAD CVE MEMFS HUTCC KNSAW RUSSA GLAVN1"
                 }
-            ],
-            "location": "KONT"
+            ]
         },
         "KSNA": {
             "approaches": {
@@ -258,8 +257,7 @@
                         "KLEVR/iaf/a5000 MNNIE/a4400/s210 KLIPP/s190/arc5.7 CALIT ZETOV/faf"
                     ]
                 }
-            },
-            "location": "KSNA"
+            }
         },
         "KBUR": {
             "approaches": {
@@ -271,8 +269,7 @@
                         "VTU/iaf/nopt TOAKS/iaf/nopt SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf"
                     ]
                 }
-            },
-            "location": "KBUR"
+            }
         },
         "KPSP": {
             "approaches": {
@@ -403,8 +400,7 @@
                     "exit": "TNP",
                     "route": "TNP TFD J50 ELP J183 FUSCO DILLO LAIKS3"
                 }
-            ],
-            "location": "KPSP"
+            ]
         }
     },
     "arrival_groups": {

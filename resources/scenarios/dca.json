@@ -569,7 +569,6 @@
     "SWANN": "ALL",
     "RAMAY": "ALL"
   },
-  "location": "KDCA",
   "tower_list": 1
 },
 "KBWI": {
@@ -591,7 +590,6 @@
       ]
      }
   },
-  "location": "KBWI",
   "tower_list": 1
 }
 },

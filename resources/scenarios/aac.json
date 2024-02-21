@@ -482,7 +482,6 @@
         "SHAWN.P": "SHAWN",
         "SHAWN.JT": "SHAWN"
       },
-      "location": "KAAC",
       "tower_list": 1
     },
     "KJKE": {
@@ -677,7 +676,6 @@
         "NOBLE": "NOBLE",
         "SHAWN": "SHAWN"
       },
-      "location": "KJKE",
       "tower_list": 2
     }
   },

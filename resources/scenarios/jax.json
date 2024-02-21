@@ -421,7 +421,6 @@
         "JAYJA": "West",
         "SAWGY": "South"
       },
-      "location": "N30.29.38.517,W81.41.16.247",
       "tower_list": 1
     },
     "KFHB": {
@@ -481,7 +480,6 @@
       "exit_categories": {
         "SSI": "ALL"
       },
-      "location": "N30.36.42.123,W81.27.40.348",
       "tower_list": 0
     }
   },

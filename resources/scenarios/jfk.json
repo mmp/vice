@@ -208,7 +208,6 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "location": "KFRG",
       "tower_list": 2
     },
     "KHVN": {
@@ -375,8 +374,7 @@
         "SAX": "North",
         "SBJ": "West",
         "WHITE": "South"
-      },
-      "location": "KHVN"
+      }
     },
     "KISP": {
       "name": "MacArthur",
@@ -656,7 +654,6 @@
         "SBJ": "West",
         "WHITE": "South"
       },
-      "location": "N040.47.50.068,W073.06.01.148",
       "tower_list": 3
     },
     "KJFK": {
@@ -1581,7 +1578,6 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "location": "N040.38.30.356,W073.46.51.483",
       "tower_list": 1,
         "atpa_volumes": {
             "4L": {
@@ -1918,8 +1914,7 @@
         "SHIPP": "Water",
         "WAVEY": "Water",
         "WHITE": "Southwest"
-      },
-      "location": "N040.46.36.940,W073.52.26.264"
+      }
     }
   },
   "arrival_groups": {

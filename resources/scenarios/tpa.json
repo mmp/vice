@@ -303,7 +303,6 @@
         "SABEE": "GANDY",
         "REMIS": "KNOST"
       },
-      "location": "N27.58.31.700,W82.31.59.700",
       "name": "KTPA",
       "tower_list": 1
     },
@@ -430,7 +429,6 @@
         "MOMIE": "SRKUS",
         "SIMMR": "SRKUS"
       },
-      "location": "N27.23.43.600,W82.33.15.800",
       "tower_list": 2
     },
     "KPIE": {
@@ -536,7 +534,6 @@
         "WILON": "MAEKO",
         "LACEN": "MAEKO"
       },
-      "location": "N27.54.31.081,W82.41.11.436",
       "tower_list": 3
     },
     "KLAL": { 
@@ -569,8 +566,7 @@
             "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800"
           ]
         }
-      },
-      "location": "N27.59.15.500,W82.01.08.400"
+      }
     }
   },
   "airspace": {

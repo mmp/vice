@@ -494,9 +494,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
-	if ap, ok := sg.Airports[s]; ok {
-		return ap.Location, true
-	} else if p, ok := sg.Fixes[s]; ok {
+	if p, ok := sg.Fixes[s]; ok {
 		return p, true
 	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
@@ -887,6 +885,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		if i+1 == len(waypoints) {
 			if e != nil {
 				e.ErrorString("can't have DME arc starting at the final waypoint")
+				e.Pop()
 			}
 			break
 		}
@@ -896,6 +895,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			if pos, ok := sg.locate(wp.Arc.Fix); !ok {
 				if e != nil {
 					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+					e.Pop()
 				}
 				break
 			} else {
@@ -916,6 +916,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 				if e != nil {
 					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
 						d, wp.Arc.Length)
+					e.Pop()
 				}
 				continue
 			}
@@ -923,6 +924,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 				// No circle is possible to give an arc that long
 				if e != nil {
 					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
+					e.Pop()
 				}
 				continue
 			}
@@ -938,6 +940,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 				if i+2 == len(waypoints) {
 					if e != nil {
 						e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+						e.Pop()
 					}
 					return
 				}
@@ -988,6 +991,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			if t >= limit {
 				if e != nil {
 					e.ErrorString("unable to find valid circle radius for arc")
+					e.Pop()
 				}
 				continue
 			}

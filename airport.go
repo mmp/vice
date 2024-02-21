@@ -13,8 +13,8 @@ import (
 )
 
 type Airport struct {
-	Location       Point2LL `json:"location"`
-	TowerListIndex int      `json:"tower_list"`
+	Location       Point2LL
+	TowerListIndex int `json:"tower_list"`
 
 	Name string `json:"name"`
 
@@ -233,6 +233,12 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]Point
 }
 
 func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
+	if info, ok := database.Airports[icao]; !ok {
+		e.ErrorString("airport \"%s\" not found in airport database", icao)
+	} else {
+		ap.Location = info.Location
+	}
+
 	if ap.Location.IsZero() {
 		e.ErrorString("Must specify \"location\" for airport")
 	}

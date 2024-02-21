@@ -1209,7 +1209,6 @@
                 "DOSXX": "West",
                 "BSKAT": "East"
             },
-            "location": "N032.54.07.668,W097.01.25.089",
             "tower_list": 2
         },
         "KDAL": {
@@ -1922,7 +1921,6 @@
                 "HULZE": "ALL",
                 "HUDAD": "ALL"
             },
-            "location": "N032.50.53.375,W096.51.10.706",
             "tower_list": 1
         },
         "KAFW": {
@@ -2184,7 +2182,6 @@
                 "HUDAD": "ALL",
                 "HULZE": "ALL"
             },
-            "location": "N032.59.24.239,W097.19.11.037",
             "tower_list": 1
         }
     },

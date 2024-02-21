@@ -350,8 +350,7 @@
                     "exit": "WAGAV",
                     "route": "WAGAV TIJ UT4 LMM UJ3 MZT J141 OBRUG"
                 }
-            ],
-            "location": "33.67526171573142,-117.86838850454082"
+            ]
         },
         "KLGB": {
             "approaches": {
@@ -489,11 +488,9 @@
                     "exit": "BLCKD",
                     "route": "BLCKD BLH J169 KOFFA J169 TFD J50 SSO ELP J2 FST J138 SAT BELLR5"
                 }
-            ],
-            "location": "33.81799771311464,-118.15161443130283"
+            ]
         },
         "KLAX": {
-            "location": "KLAX",
             "approaches": {
                 "I5L": {
                     "runway": "25L",
