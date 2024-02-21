@@ -1212,6 +1212,11 @@ type AircraftPerformance struct {
 		Accelerate float32 `json:"accelerate"` // kts / 2 seconds
 		Decelerate float32 `json:"decelerate"`
 	} `json:"rate"`
+	Category struct {
+		SRS int `json:"srs"`
+		LAHSO int `json:"lahso"`
+		RECAT string `json:"recat"`
+	}
 	Runway struct {
 		Takeoff float32 `json:"takeoff"` // nm
 		Landing float32 `json:"landing"` // nm
