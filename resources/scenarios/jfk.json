@@ -2048,7 +2048,7 @@
         "initial_speed": 250,
         "route": "/. HTO V46 CCC ISP",
         "speed_restriction": 250,
-        "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC ISP"
+        "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC KISP"
       },
       {
         "airlines": {
@@ -2093,7 +2093,7 @@
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 250,
         "route": "/. CCC ISP",
-        "waypoints": "N041.28.15.080,W072.08.52.040 SALEM/ho CCC ISP"
+        "waypoints": "N041.28.15.080,W072.08.52.040 SALEM/ho CCC KISP"
       },
       {
         "airlines": {
@@ -2124,7 +2124,7 @@
         "initial_speed": 250,
         "route": "/. MAD V1 BELTT ISP",
         "speed_restriction": 250,
-        "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT ISP"
+        "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT KISP"
       },
       {
         "airlines": {
@@ -2150,7 +2150,7 @@
         "initial_controller": "NY_CTR",
         "initial_speed": 250,
         "route": "/. JFK CCC ISP",
-        "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC ISP"
+        "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC KISP"
       },
       {
         "airlines": {

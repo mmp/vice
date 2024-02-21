@@ -1250,18 +1250,14 @@ func InitializeStaticDatabase() *StaticDatabase {
 	db := &StaticDatabase{}
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go func() { db.Navaids = parseNavaids(); wg.Done() }()
-	wg.Add(1)
 	go func() { db.Airports = parseAirports(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.Fixes = parseFixes(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	var airports map[string]FAAAirport
 	wg.Add(1)
-	go func() { airports = parseCIFP(); wg.Done() }()
+	go func() { airports, db.Navaids, db.Fixes = parseCIFP(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1323,28 +1319,6 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 	}
 }
 
-func parseNavaids() map[string]Navaid {
-	navaids := make(map[string]Navaid)
-
-	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2023-09-07/
-	navBaseRaw := LoadResource("NAV_BASE.csv.zst")
-	mungeCSV("navaids", string(navBaseRaw),
-		[]string{"NAV_ID", "NAV_TYPE", "NAME", "LONG_DECIMAL", "LAT_DECIMAL"},
-		func(s []string) {
-			n := Navaid{
-				Id:       s[0],
-				Type:     s[1],
-				Name:     s[2],
-				Location: Point2LL{float32(atof(s[3])), float32(atof(s[4]))},
-			}
-			if n.Id != "" {
-				navaids[n.Id] = n
-			}
-		})
-
-	return navaids
-}
-
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 
@@ -1399,26 +1373,6 @@ func parseAirports() map[string]FAAAirport {
 		})
 
 	return airports
-}
-
-func parseFixes() map[string]Fix {
-	fixes := make(map[string]Fix)
-
-	fixesRaw := LoadResource("FIX_BASE.csv.zst")
-
-	mungeCSV("fixes", string(fixesRaw),
-		[]string{"FIX_ID", "LONG_DECIMAL", "LAT_DECIMAL"},
-		func(s []string) {
-			f := Fix{
-				Id:       s[0],
-				Location: Point2LL{float32(atof(s[1])), float32(atof(s[2]))},
-			}
-			if f.Id != "" {
-				fixes[f.Id] = f
-			}
-		})
-
-	return fixes
 }
 
 func parseAircraftPerformance() map[string]AircraftPerformance {
@@ -1478,8 +1432,10 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 
 // FAA Coded Instrument Flight Procedures (CIFP)
 // https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
-func parseCIFP() map[string]FAAAirport {
+func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
 	airports := make(map[string]FAAAirport)
+	navaids := make(map[string]Navaid)
+	fixes := make(map[string]Fix)
 
 	cifp := LoadResource("FAACIFP18.zst")
 
@@ -1525,6 +1481,15 @@ func parseCIFP() map[string]FAAAirport {
 		}
 	}
 
+	empty := func(s []byte) bool {
+		for _, b := range s {
+			if b != ' ' {
+				return false
+			}
+		}
+		return true
+	}
+
 	for len(cifp) > 0 {
 		line := cifp[:lineLength]
 		cifp = cifp[lineLength:]
@@ -1533,21 +1498,70 @@ func parseCIFP() map[string]FAAAirport {
 		if recordType != 'S' { // not a standard field
 			continue
 		}
-		customer := line[1:4]
-		if string(customer) != "USA" && string(customer) != "PAC" { // ignore Canada stuff.
-			continue
-		}
+		/*
+			customer := line[1:4]
+			if string(customer) != "USA" && string(customer) != "PAC" { // ignore Canada stuff.
+				continue
+			}
+		*/
 
 		sectionCode := line[4]
 		switch sectionCode {
 		case 'D':
-			// TODO: navaids
+			subsectionCode := line[6]
+			if subsectionCode == ' ' /* VOR */ || subsectionCode == 'B' /* NDB */ {
+				id := strings.TrimSpace(string(line[13:17]))
+				if len(id) < 3 {
+					break
+				}
+
+				if false && id == "DPK" {
+					println(line)
+				}
+
+				name := strings.TrimSpace(string(line[93:123]))
+				if !empty(line[32:51]) {
+					navaids[id] = Navaid{
+						Id:       id,
+						Type:     Select(subsectionCode == ' ', "VOR", "NDB"),
+						Name:     name,
+						Location: parseLatLong(line[32:41], line[41:51]),
+					}
+				} else {
+					navaids[id] = Navaid{
+						Id:       id,
+						Type:     "DME",
+						Name:     name,
+						Location: parseLatLong(line[55:64], line[64:74]),
+					}
+				}
+			}
 
 		case 'E':
-			// TODO: enroute waypoints, holding patterns, airways, etc...
+			subsection := line[5]
+			switch subsection {
+			case 'A': // enroute waypoint
+				id := strings.TrimSpace(string(line[13:18]))
+				fixes[id] = Fix{
+					Id:       id,
+					Location: parseLatLong(line[32:41], line[41:51]),
+				}
+			}
+			// TODO: holding patterns, airways, etc...
 
-		case 'P':
-			// Airports
+		case 'H': // Heliports
+			subsection := line[12]
+			switch subsection {
+			case 'C': // waypoint record
+				id := string(line[13:18])
+				location := parseLatLong(line[32:41], line[41:51])
+				if _, ok := fixes[id]; ok {
+					fmt.Printf("%s: repeats\n", id)
+				}
+				fixes[id] = Fix{Id: id, Location: location}
+			}
+
+		case 'P': // Airports
 			icao := string(line[6:10])
 			subsection := line[12]
 			switch subsection {
@@ -1560,6 +1574,14 @@ func parseCIFP() map[string]FAAAirport {
 					Elevation: elevation,
 					Location:  location,
 				}
+
+			case 'C': // waypoint record 4.1.4
+				id := string(line[13:18])
+				location := parseLatLong(line[32:41], line[41:51])
+				if _, ok := fixes[id]; ok {
+					fmt.Printf("%s: repeats\n", id)
+				}
+				fixes[id] = Fix{Id: id, Location: location}
 
 			case 'G': // runway records 4.1.10
 				continuation := line[21]
@@ -1589,7 +1611,7 @@ func parseCIFP() map[string]FAAAirport {
 
 	}
 
-	return airports
+	return airports, navaids, fixes
 }
 
 ///////////////////////////////////////////////////////////////////////////
