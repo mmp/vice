@@ -4946,9 +4946,9 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
 	now := ctx.world.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
-	if state.LostTrack(now) || !sp.datablockVisible(ac) {
+	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx){
 		return nil
-	}
+	} //Good!
 
 	dbs := sp.formatDatablocks(ctx, ac)
 
@@ -5768,9 +5768,9 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
-		if state.LostTrack(now) || !sp.datablockVisible(ac) {
+		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
-		}
+		} //Good!
 
 		dbs := sp.getDatablocks(ctx, ac)
 		if len(dbs) == 0 {
@@ -6002,7 +6002,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		if ctx.mouse != nil {
 			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			if wp.Callsign != "" {
-				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
+				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) && //Good!
 					slices.Contains(aircraft, ac) {
 					if state, ok := sp.Aircraft[wp.Callsign]; ok {
 						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
@@ -6803,9 +6803,13 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 	return aircraft
 }
 
-func (sp *STARSPane) datablockVisible(ac *Aircraft) bool {
+func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
+	if ac.TrackingController == ctx.world.Callsign {
+		return true 
+	}
+
 	if !ac.IsAssociated() {
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 	} else {
