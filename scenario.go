@@ -517,7 +517,7 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 
 var (
 	// "FIX@HDG/DIST"
-	reFixHeadingDistance = regexp.MustCompile(`^([\w]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
+	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
@@ -547,10 +547,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 		if _, ok := sg.Fixes[fix]; ok {
 			e.ErrorString("fix has multiple definitions")
-		} else if pos, ok := sg.locate(location); ok {
-			// It's something simple, likely a latlong that we could parse
-			// directly.
-			sg.Fixes[fix] = pos
 		} else if strs := reFixHeadingDistance.FindStringSubmatch(location); len(strs) >= 4 {
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
@@ -569,6 +565,12 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				p = add2f(p, v)
 				sg.Fixes[fix] = nm2ll(p, sg.NmPerLongitude)
 			}
+		} else if pos, ok := sg.locate(location); ok {
+			// It's something simple. Check this after FIX@HDG/DIST,
+			// though, since the runway matching KJFK-31L discards stuff
+			// after the runway and we don't want that to match in that
+			// case.
+			sg.Fixes[fix] = pos
 		} else {
 			e.ErrorString("invalid location syntax \"%s\" for fix \"%s\"", location, fix)
 		}
