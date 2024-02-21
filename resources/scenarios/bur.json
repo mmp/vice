@@ -8,11 +8,11 @@
                     "runway": "8",
                     "type": "ILS",
                     "waypoints": [
-                        "VTU TOAKS SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "TOAKS SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "MIKEI/a7000 SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "SMO/a4400 SILEX/hilpt1min BUDDE/a3000 _BUR_8/a778"
+                        "VTU TOAKS SILEX/a3700 BUDDE/a3000",
+                        "TOAKS SILEX/a3700 BUDDE/a3000",
+                        "MIKEI/a7000 SILEX/a3700 BUDDE/a3000",
+                        "SILEX/a3700 BUDDE/a3000",
+                        "SMO/a4400 SILEX/hilpt1min BUDDE/a3000"
 
                     ]
                 },
@@ -21,11 +21,11 @@
                     "runway": "8",
                     "type": "ILS",
                     "waypoints": [
-                        "VTU TOAKS SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "TOAKS SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "MIKEI/a7000 SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "SILEX/a3700 BUDDE/a3000 _BUR_8/a778",
-                        "SMO/a4400 SILEX/hilpt1min BUDDE/a3000 _BUR_8/a778"
+                        "VTU TOAKS SILEX/a3700 BUDDE/a3000",
+                        "TOAKS SILEX/a3700 BUDDE/a3000",
+                        "MIKEI/a7000 SILEX/a3700 BUDDE/a3000",
+                        "SILEX/a3700 BUDDE/a3000",
+                        "SMO/a4400 SILEX/hilpt1min BUDDE/a3000"
                     ]
                 },
                 "RZ8": {
@@ -33,9 +33,9 @@
                     "runway": "8",
                     "type": "RNAV",
                     "waypoints": [
-                        "VTU TOAKS/a4600 SILEX BUBNE/a3000 _BUR_8/a778",
-                        "MIKEI/a7000 SILEX BUBNE/a3000 _BUR_8/a778",
-                        "SILEX BUBNE/a3000 _BUR_8/a778"
+                        "VTU TOAKS/a4600 SILEX BUBNE/a3000",
+                        "MIKEI/a7000 SILEX BUBNE/a3000",
+                        "SILEX BUBNE/a3000"
                     ]
                 },
                 "RY8": {
@@ -43,9 +43,9 @@
                     "runway": "8",
                     "type": "RNAV",
                     "waypoints": [
-                        "MIKEI/a7000 SILEX/a4500 YEBUN/a3000 WESKI/a2700 _BUR_8/a778",
-                        "WABBT/a6000 NIBYI ZEMEP/s210 HIMVI/a3400 YEBUN/a3000 WESKI/a2700 _BUR_8/a778",
-                        "SILEX/a4500 YEBUN/a3000 WESKI/a2700 _BUR_8/a778"
+                        "MIKEI/a7000 SILEX/a4500 YEBUN/a3000 WESKI/a2700",
+                        "WABBT/a6000 NIBYI ZEMEP/s210 HIMVI/a3400 YEBUN/a3000 WESKI/a2700",
+                        "SILEX/a4500 YEBUN/a3000 WESKI/a2700"
                     ]
                 },
                 "VOR8": {
@@ -53,12 +53,12 @@
                     "runway": "8",
                     "type": "RNAV",
                     "waypoints": [
-                        "FIM SUANA/a4400 CANOG/a3700 VNY/a3100/h089 _BUR_8/a778",
-                        "VTU SUANA/a4400 CANOG/a3700 VNY/a3100/h089 _BUR_8/a778",
-                        "GINNA SUANA/a4400 CANOG/a3700 VNY/a3100/h089 _BUR_8/a778",
-                        "SUANA/a4400 CANOG/a3700 VNY/a3100/h089 _BUR_8/a778",
-                        "SMO SUANA/hilpt1min CANOG/a3700 VNY/a3100/h089 _BUR_8/a778",
-                        "LAX SUANA/hilpt1min CANOG/a3700 VNY/a3100/h089 _BUR_8/a778"
+                        "FIM SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
+                        "VTU SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
+                        "GINNA SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
+                        "SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
+                        "SMO SUANA/hilpt1min CANOG/a3700 VNY/a3100/h089",
+                        "LAX SUANA/hilpt1min CANOG/a3700 VNY/a3100/h089"
                     ]
                 },
                 "FS5": {
@@ -66,7 +66,7 @@
                     "runway": "15",
                     "type": "Visual",
                     "waypoints": [
-                        "N034.33.03.680,W118.60.06.990/a5000 N034.31.38.070,W118.48.92.780/a4000 N034.28.06.230,W118.38.66.250/a3000 N034.25.39.613,W118.36.89.438/a1500 _BUR_15/a778"
+                        "N034.33.03.680,W118.60.06.990/a5000 N034.31.38.070,W118.48.92.780/a4000 N034.28.06.230,W118.38.66.250/a3000 N034.25.39.613,W118.36.89.438/a1500"
                     ]
                 },
                 "V26": {
@@ -74,7 +74,7 @@
                     "runway": "26",
                     "type": "ILS",
                     "waypoints": [
-                        "N034.17.89.177,W118.30.01.305/a3000 N034.19.73.819,W118.32.54.505/a2200 N034.19.78.123,W118.34.35.608/a1200 _BUR_26/a778"
+                        "N034.17.89.177,W118.30.01.305/a3000 N034.19.73.819,W118.32.54.505/a2200 N034.19.78.123,W118.34.35.608/a1200"
                     ]
                 },
                 "V33": {
@@ -82,7 +82,7 @@
                     "runway": "33",
                     "type": "ILS",
                     "waypoints": [
-                        "N034.17.63.570,W118.35.03.414/a2500 N034.18.20.331,W118.35.18.006/a2000 N034.18.85.608,W118.35.37.747/a1200 _BUR_33/a778"
+                        "N034.17.63.570,W118.35.03.414/a2500 N034.18.20.331,W118.35.18.006/a2000 N034.18.85.608,W118.35.37.747/a1200"
                     ]
                 }
             },
@@ -91,228 +91,228 @@
                     "CSTRO": {
                         "cleared_altitude": 24000,
                         "sid": "OROSZ2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
                     },
                     "COREZ": {
                         "cleared_altitude": 24000,
                         "sid": "OROSZ2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
                     },
                     "HAILO":{
                         "cleared_altitude": 25000,
                         "sid": "SLAPP2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
                     },
                     "LAS": {
                         "cleared_altitude": 25000,
                         "sid": "SLAPP2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
                     },
                     "MISEN": {
                         "cleared_altitude": 25000,
                         "sid": "SLAPP2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
                     },
                     "HEC": {
                         "cleared_altitude": 25000,
                         "sid": "SLAPP2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                     },
                     "BLH": {
                         "cleared_altitude": 25000,
                         "sid": "SLAPP2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                     },
                     "DAG": {
                         "cleared_altitude": 25000,
                         "sid": "VVERA2",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h210 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h210 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
                     },
                     "SLI": {
                         "cleared_altitude": 19000,
                         "sid": "ELMOO9",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855 ELMOO/a4000 SLI"
+                        "waypoints": "N034.11.51.541,W118.20.59.855 ELMOO/a4000 SLI"
                     },
                     "LAX": {
                         "cleared_altitude": 19000,
                         "sid": "ELMOO9",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855 ELMOO/a4000 LAX"
+                        "waypoints": "N034.11.51.541,W118.20.59.855 ELMOO/a4000 LAX"
                     },
                     "TWINE": {
                         "cleared_altitude": 9000,
                         "sid": "BURP30A",
-                        "waypoints": "_BUR_8 N034.11.51.541,W118.20.59.855/h079 TWINE KIMMO SLI KELPS MZB"
+                        "waypoints": "N034.11.51.541,W118.20.59.855/h079 TWINE KIMMO SLI KELPS MZB"
                     }
                 },
                 "26": {
                         "CSTRO": {
                             "cleared_altitude": 24000,
                             "sid": "OROSZ2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
                         },
                         "COREZ": {
                             "cleared_altitude": 24000,
                             "sid": "OROSZ2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
                         },
                         "HAILO":{
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
                         },
                         "LAS": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
                         },
                         "MISEN": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
                         },
                         "HEC": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                         },
                         "BLH": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                         },
                         "DAG": {
                             "cleared_altitude": 25000,
                             "sid": "VVERA2",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h290 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h290 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
                         },
                         "SLI": {
                             "cleared_altitude": 19000,
                             "sid": "ELMOO9",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914 ELMOO/a4000 SLI"
+                            "waypoints": "N034.11.52.479,W118.22.08.914 ELMOO/a4000 SLI"
                         },
                         "LAX": {
                             "cleared_altitude": 19000,
                             "sid": "ELMOO9",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914 ELMOO/a4000 LAX"
+                            "waypoints": "N034.11.52.479,W118.22.08.914 ELMOO/a4000 LAX"
                         },
                         "TWINE": {
                             "cleared_altitude": 9000,
                             "sid": "BURP30A",
-                            "waypoints": "_BUR_26 N034.11.52.479,W118.22.08.914/h259 TWINE KIMMO SLI KELPS MZB"
+                            "waypoints": "N034.11.52.479,W118.22.08.914/h259 TWINE KIMMO SLI KELPS MZB"
                     }
                 },
                 "15": {
                         "CSTRO": {
                             "cleared_altitude": 24000,
                             "sid": "OROSZ2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
                         },
                         "COREZ": {
                             "cleared_altitude": 24000,
                             "sid": "OROSZ2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
                         },
                         "HAILO":{
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
                         },
                         "LAS": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
                         },
                         "MISEN": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
                         },
                         "HEC": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                         },
                         "BLH": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                         },
                         "DAG": {
                             "cleared_altitude": 25000,
                             "sid": "VVERA2",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h210 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h210 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
                         },
                         "SLI": {
                             "cleared_altitude": 19000,
                             "sid": "ELMOO9",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333 ELMOO/a4000 SLI"
+                            "waypoints": "N034.11.38.058,W118.21.19.333 ELMOO/a4000 SLI"
                         },
                         "LAX": {
                             "cleared_altitude": 19000,
                             "sid": "ELMOO9",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333 ELMOO/a4000 LAX"
+                            "waypoints": "N034.11.38.058,W118.21.19.333 ELMOO/a4000 LAX"
                         },
                         "TWINE": {
                             "cleared_altitude": 9000,
                             "sid": "BURP30A",
-                            "waypoints": "_BUR_15 N034.11.38.058,W118.21.19.333/h155 TWINE KIMMO SLI KELPS MZB"
+                            "waypoints": "N034.11.38.058,W118.21.19.333/h155 TWINE KIMMO SLI KELPS MZB"
                     }
                 },
                 "33": {
                         "CSTRO": {
                             "cleared_altitude": 24000,
                             "sid": "OROSZ2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 TILLR/a8000 OROSZ/a9000 HEYJO CSTRO"
                         },
                         "COREZ": {
                             "cleared_altitude": 24000,
                             "sid": "OROSZ2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 TILLR/a8000 OROSZ/a9000 BRRKK MDWAY COREZ"
                         },
                         "HAILO":{
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
                         },
                         "LAS": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
                         },
                         "MISEN": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
                         },
                         "HEC": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                         },
                         "BLH": {
                             "cleared_altitude": 25000,
                             "sid": "SLAPP2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                         },
                         "DAG": {
                             "cleared_altitude": 25000,
                             "sid": "VVERA2",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h270 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h270 CCHUM/a6800 KIMMO/a7000 SLAPP JARZO VVERA SSETH DAG"
                         },
                         "SLI": {
                             "cleared_altitude": 19000,
                             "sid": "ELMOO9",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660 ELMOO/a4000 SLI"
+                            "waypoints": "N034.12.44.440,W118.21.37.660 ELMOO/a4000 SLI"
                         },
                         "LAX": {
                             "cleared_altitude": 19000,
                             "sid": "ELMOO9",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660 ELMOO/a4000 LAX"
+                            "waypoints": "N034.12.44.440,W118.21.37.660 ELMOO/a4000 LAX"
                         },
                         "TWINE": {
                             "cleared_altitude": 9000,
                             "sid": "BURP30A",
-                            "waypoints": "_BUR_33 N034.12.44.440,W118.21.37.660/h335 TWINE KIMMO SLI KELPS MZB"
+                            "waypoints": "N034.12.44.440,W118.21.37.660/h335 TWINE KIMMO SLI KELPS MZB"
                     }
                 }   
             },
@@ -466,10 +466,10 @@
                     "runway": "16R",
                     "type": "ILS",
                     "waypoints": [
-                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800 _VNY_16R/a802",
-                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800 _VNY_16R/a802",
-                        "FIM JINAT/a4900 FURRY/a3800 _VNY_16R/a802",
-                        "UMBER/a6000 JINAT/a4900 FURRY/a3800 _VNY_16R/a802"
+                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800",
+                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800",
+                        "FIM JINAT/a4900 FURRY/a3800",
+                        "UMBER/a6000 JINAT/a4900 FURRY/a3800"
                     ]
                 },
                 "IZ6R": {
@@ -477,8 +477,8 @@
                     "runway": "16R",
                     "type": "ILS",
                     "waypoints": [
-                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800 _VNY_16R/a802",
-                        "UMBER/a6000 JINAT/a4900 FURRY/a3800 _VNY_16R/a802"
+                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800",
+                        "UMBER/a6000 JINAT/a4900 FURRY/a3800"
                     ]
                 },
                 "V4L":{
@@ -486,7 +486,7 @@
                     "runway": "34L",
                     "type": "Visual",
                     "waypoints": [
-                        "N034.18.09.590,W118.48.85.358/a1800 N034.19.18.908,W118.48.88.362/a1100 _VNY_34L/a802"
+                        "N034.18.09.590,W118.48.85.358/a1800 N034.19.18.908,W118.48.88.362/a1100"
                     ]
                 },
                 "V4R":{
@@ -494,7 +494,7 @@
                     "runway": "34R",
                     "type": "Visual",
                     "waypoints": [
-                        "N034.19.38.987,W118.48.64.759/a1800 N034.20.35.489,W118.48.79.350/a1100 _VNY_34R/a802"
+                        "N034.19.38.987,W118.48.64.759/a1800 N034.20.35.489,W118.48.79.350/a1100"
                     ]
                 }
             },
@@ -503,131 +503,131 @@
                     "HAILO":{
                         "cleared_altitude": 25000,
                         "sid": "HARYS4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
+                        "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
                     },
                     "LAS": {
                         "cleared_altitude": 25000,
                         "sid": "HARYS4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
+                        "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
                     },
                     "MISEN": {
                         "cleared_altitude": 25000,
                         "sid": "HARYS4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
+                        "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
                     },
                     "HEC": {
                         "cleared_altitude": 25000,
                         "sid": "HARYS4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                        "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                     },
                     "BLH": {
                         "cleared_altitude": 25000,
                         "sid": "HARYS4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                        "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                     },
                     "DAG": {
                         "cleared_altitude": 25000,
                         "sid": "RSCO3",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h110 BSHOW/a5300 KIMMO/a7100 SLAPP JARZO VVERA SSETH DAG"
+                        "waypoints": "PPRRY/a1300/h110 BSHOW/a5300 KIMMO/a7100 SLAPP JARZO VVERA SSETH DAG"
                     },
                     "CSTRO": {
                         "cleared_altitude": 24000,
                         "sid": "WLKKR4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000 HEYJO CSTRO"
+                        "waypoints": "PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000 HEYJO CSTRO"
                     },
                     "COREZ": {
                         "cleared_altitude": 24000,
                         "sid": "WLKKR4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000 BRRKK SHORS MDWAY COREZ"
+                        "waypoints": "PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000 BRRKK SHORS MDWAY COREZ"
                     },
                     "OROSZ": {
                         "cleared_altitude": 24000,
                         "sid": "WLKKR4",
-                        "waypoints": "_VNY_16R PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000"
+                        "waypoints": "PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000"
                     },
                     "GMN": {
                         "cleared_altitude": 24000,
                         "sid": "CANOG3",
-                        "waypoints": "_VNY_16R/h163 N034.18.00.553,W118.48.79.891/h213 IPIHO CASTA/a8300 GMN"
+                        "waypoints": "KVNY-34L/h163 N034.18.00.553,W118.48.79.891/h213 IPIHO CASTA/a8300 GMN"
                     }
                 },
                 "34L":{
                     "HAILO":{
                         "cleared_altitude": 25000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
                     },
                     "LAS": {
                         "cleared_altitude": 25000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
                     },
                     "MISEN": {
                         "cleared_altitude": 25000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
                     },
                     "HEC": {
                         "cleared_altitude": 25000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                     },
                     "BLH": {
                         "cleared_altitude": 25000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                     },
                     "CSTRO": {
                         "cleared_altitude": 24000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000 HEYJO CSTRO"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000 HEYJO CSTRO"
                     },
                     "COREZ": {
                         "cleared_altitude": 24000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000 BRRKK SHORS MDWAY COREZ"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000 BRRKK SHORS MDWAY COREZ"
                     },
                     "OROSZ": {
                         "cleared_altitude": 24000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000"
                     },
                     "FIM": {
                         "cleared_altitude": 24000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34L CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 FIM"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 FIM"
                     },
                     "GMN": {
                         "cleared_altitude": 24000,
                         "sid": "CANOG3",
-                        "waypoints": "_VNY_34L VNY/h253 IPIHO CASTA/a8300 GMN"
+                        "waypoints": "VNY/h253 IPIHO CASTA/a8300 GMN"
                     }
                 },
                 "34R": {
                     "GMN": {
                         "cleared_altitude": 24000,
                         "sid": "CANOG3",
-                        "waypoints": "_VNY_34R VNY/h253 IPIHO CASTA/a8300 GMN"
+                        "waypoints": "KVNY-16L/h253 IPIHO CASTA/a8300 GMN"
                     },
                     "MISEN": {
                         "cleared_altitude": 24000,
                         "sid": "MISEN1",
-                        "waypoints": "_VNY_34R VNY/h340 MISEN"
+                        "waypoints": "KVNY-16L/h340 MISEN"
                     },
                     "BLH": {
                         "cleared_altitude": 25000,
                         "sid": "BLH1",
-                        "waypoints": "_VNY_34R CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
                     },
                     "HEC": {
                         "cleared_altitude": 25000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34R CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 WUXAK/a8500 SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
                     },
                     "CSTRO": {
                         "cleared_altitude": 24000,
                         "sid": "HAYEZ9",
-                        "waypoints": "_VNY_34R CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000 HEYJO CSTRO"
+                        "waypoints": "CONDS/a2400 TRAFF/a3500 LYDEY/a5000 HAYEZ/a6100/s250 DYSPO/a7000 OROSZ/a9000 HEYJO CSTRO"
                     }
                 }
             },
@@ -703,8 +703,8 @@
                     "runway": "12",
                     "type": "RNAV",
                     "waypoints": [
-                        "FIM NODUQ/a5000 JAZEE/a4700 JIXAP/a3620 WOSIR/a2220 _WHP_12/a1003",
-                        "NODUQ/a5000 JAZEE/a4700 JIXAP/a3620 WOSIR/a2220 _WHP_12/a1003"
+                        "FIM NODUQ/a5000 JAZEE/a4700 JIXAP/a3620 WOSIR/a2220",
+                        "NODUQ/a5000 JAZEE/a4700 JIXAP/a3620 WOSIR/a2220/a1003"
                     ]
                 },
                 "V0": {
@@ -712,7 +712,7 @@
                     "runway": "30",
                     "type": "Visual",
                     "waypoints": [
-                        "NODUQ/a5000 WOSIR/a2220 _WHP_30/a1003"
+                        "NODUQ/a5000 WOSIR/a2220"
                     ]
                 }
             },
@@ -721,14 +721,14 @@
                     "VNY": {
                         "cleared_altitude": 12000,
                         "sid": "WHP1",
-                        "waypoints": "_WHP_12 N034.15.18.060,W118.24.32.150 VNY/h325"
+                        "waypoints": "N034.15.18.060,W118.24.32.150 VNY/h325"
                     }
                 },
                 "30":{
                     "VNY": {
                         "cleared_altitude": 12000,
                         "sid": "WHP1",
-                        "waypoints": "_WHP_30 _WHP_12 TRAFF VNY UMBER/a4600 "
+                        "waypoints": "KWHP-12 TRAFF VNY UMBER/a4600 "
                     }
                 }
             },

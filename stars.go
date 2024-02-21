@@ -5078,17 +5078,6 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	}
 }
 
-func (sp *STARSPane) inATPAApproachVolume(ac *Aircraft) bool {
-	ap, ok := database.Airports[ac.FlightPlan.ArrivalAirport]
-
-	// altitude and distance checks are proxies for properly-defined
-	// ATPA approach volumes.
-	return ac.IsAirborne() &&
-		ac.Altitude()-ac.ArrivalAirportElevation() < 6000 && // <= 6000' AGL
-		(!ok || nmdistance2ll(ac.Position(), ap.Location) < 25) // within 25nm of arrival aiport
-
-}
-
 func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
 	// Zero out the previous distance
 	for _, ac := range aircraft {

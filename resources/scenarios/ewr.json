@@ -8,35 +8,35 @@
           "runway": "11",
           "type": "ILS",
           "waypoints": [
-            "JARIT/if/a1600 JEENO/faf/a1600 _EWR_11"
+            "JARIT/if/a1600 JEENO/faf/a1600"
           ]
         },
         "I2L": {
           "runway": "22L",
           "type": "ILS",
           "waypoints": [
-            "PATRN/iaf IZEKO/if/a3000 GIMEE/a2500 BUZZD/faf/a1500 _EWR_22L/a50"
+            "PATRN/iaf IZEKO/if/a3000 GIMEE/a2500 BUZZD/faf/a1500"
           ]
         },
         "I2R": {
           "runway": "22R",
           "type": "ILS",
           "waypoints": [
-            "PATRN/iaf AGNSS/if/a3000 VERDE/a2500 TALTE/faf/a1500 _EWR_22R/a50"
+            "PATRN/iaf AGNSS/if/a3000 VERDE/a2500 TALTE/faf/a1500"
           ]
         },
         "I4L": {
           "runway": "4L",
           "type": "ILS",
           "waypoints": [
-            "KILMA/iaf EMBAY/if/a2800 HOWYA/faf/a2000 _EWR_4L/a50"
+            "KILMA/iaf EMBAY/if/a2800 HOWYA/faf/a2000"
           ]
         },
         "I4R": {
           "runway": "4R",
           "type": "ILS",
           "waypoints": [
-            "KILMA/iaf GRITY/if/a2800 DOOIN/faf/a1700 _EWR_4R/a50"
+            "KILMA/iaf GRITY/if/a2800 DOOIN/faf/a1700"
           ]
         },
         "R29": {
@@ -44,7 +44,7 @@
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
-            "FLIKR CASHH/iaf/a3000+ ZIAAA/iaf/a3000+ PIJAY/iaf/a2000+ UJODY/if/a2000 STATU/faf/a1400 ISERE _EWR_29/a50"
+            "FLIKR CASHH/iaf/a3000+ ZIAAA/iaf/a3000+ PIJAY/iaf/a2000+ UJODY/if/a2000 STATU/faf/a1400 ISERE"
           ]
         },
         "RY9": {
@@ -52,7 +52,7 @@
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
-            "TETER/if/a3000 GIMEE/a2500 JIMLO/faf/a2500 COPKO _EWR_29/a50"
+            "TETER/if/a3000 GIMEE/a2500 JIMLO/faf/a2500 COPKO"
           ]
         },
         "RZ9": {
@@ -60,7 +60,7 @@
           "runway": "29",
           "type": "RNAV",
           "waypoints": [
-            "KILMA/iaf GRITY/if/a3000 COWWE/a3000 NNICK/faf/a3000 CORTO/a2327 GOLSN/a2000 HALPA/a823 _EWR_29/a50"
+            "KILMA/iaf GRITY/if/a3000 COWWE/a3000 NNICK/faf/a3000 CORTO/a2327 GOLSN/a2000 HALPA/a823"
           ]
         }
       },
@@ -215,14 +215,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "_EWR_22R _EWR_4L _EWR4_22Ra/h220"
+            "waypoints": "_EWR4_22Ra/h220"
           }
         },
         "4L": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "_EWR_4L _EWR_22R _EWR4_4La/h290"
+            "waypoints": "_EWR4_4La/h290"
           }
         }
       },
@@ -1093,21 +1093,21 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-            "SBJ/iaf MALCN/a2200+ VINGS/if/a2000 LEESY/a1700 DANDY/a1500 TORBY/faf/a1300 _TEB_6/a50"
+            "SBJ/iaf MALCN/a2200+ VINGS/if/a2000 LEESY/a1700 DANDY/a1500 TORBY/faf/a1300"
           ]
         },
         "I19": {
           "runway": "19",
           "type": "ILS",
           "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500 _TEB_19/a50"
+            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
           ]
         },
         "R24": {
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ WHEZY/a2200+ SHREW/if/a2000 ANGLE/faf/a1700 BAITH _TEB_24/a50"
+            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ WHEZY/a2200+ SHREW/if/a2000 ANGLE/faf/a1700 BAITH"
           ]
         },
         "RX6": {
@@ -1115,9 +1115,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300 _TEB_6/a50",
-            "STW ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300 _TEB_6/a50",
-            "SBJ JERSE/iaf/a3400+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300 _TEB_6/a50"
+            "COATE ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300",
+            "STW ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300",
+            "SBJ JERSE/iaf/a3400+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300"
           ]
         },
         "RX9": {
@@ -1125,7 +1125,7 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "CUROK/iaf WHOLN/a2300+ MOOGZ/if/a1700 DUUNE/faf/a1500 COFFS _TEB_19/a50"
+            "CUROK/iaf WHOLN/a2300+ MOOGZ/if/a1700 DUUNE/faf/a1500 COFFS"
           ]
         },
         "RY6": {
@@ -1133,9 +1133,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300 _TEB_6/a50",
-            "STW ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300 _TEB_6/a50",
-            "SBJ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300 _TEB_6/a50"
+            "COATE ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300",
+            "STW ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300",
+            "SBJ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300"
           ]
         },
         "RY9": {
@@ -1143,7 +1143,7 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500 _TEB_19/a50"
+            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
           ]
         },
         "RZ6": {
@@ -1151,9 +1151,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "COATE ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC _TEB_6/a50",
-            "STW ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC _TEB_6/a50",
-            "SBJ/iaf GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC _TEB_6/a50"
+            "COATE ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
+            "STW ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
+            "SBJ/iaf GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC"
           ]
         },
         "RZ9": {
@@ -1161,9 +1161,9 @@
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "COATE LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR _TEB_19/a50",
-            "STW LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR _TEB_19/a50",
-            "SBJ SHOTT/a3000+ LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR _TEB_19/a50"
+            "COATE LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR",
+            "STW LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR",
+            "SBJ SHOTT/a3000+ LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR"
           ]
         }
       },
@@ -1172,14 +1172,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "_TEB_1 _TEB_19 _TEB4_1a/h280"
+            "waypoints": "_TEB4_1a/h280"
           }
         },
         "24": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
             "sid": "RUUDY6",
-            "waypoints": "_TEB_24 _TEB_6 DAVIM WENTZ/a1500 RUUDY/h280"
+            "waypoints": "DAVIM WENTZ/a1500 RUUDY/h280"
           }
         }
       },

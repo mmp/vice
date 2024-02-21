@@ -6,38 +6,38 @@
       "approaches": {
         "I5L": {
           "full_name": "ILS Runway 5L",
-          "runway": "05L",
+          "runway": "5L",
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 OSCRR/a1220 _IND_05L/a747"
+            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 OSCRR/a1220"
           ]
         },
         "R5L": {
           "full_name": "RNAV Y Runway 5L",
-          "runway": "05L",
+          "runway": "5L",
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 _IND_05L/a747"
+            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100"
           ]
         },
         "I5R": {
           "full_name": "ILS Runway 5R",
-          "runway": "05R",
+          "runway": "5R",
           "tower_controller": "IND_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 GOLSE/a1240 _IND_05R/a791"
+            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 GOLSE/a1240"
           ]
         },
         "R5R": {
           "full_name": "RNAV Y Runway 5R",
-          "runway": "05R",
+          "runway": "5R",
           "tower_controller": "IND_W_TWR",
           "type": "RNAV",
           "waypoints": [
-            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 _IND_05R/a791"
+            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100"
           ]
         },
         "I14": {
@@ -46,7 +46,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 YEAAR/a1320 _IND_14/a796"
+            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 YEAAR/a1320"
           ]
         },
         "R14": {
@@ -55,7 +55,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 _IND_14/a796"
+            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400"
           ]
         },
         "I3L": {
@@ -64,7 +64,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600 _IND_23L/a790"
+            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600"
           ]
         },
         "R3L": {
@@ -73,7 +73,7 @@
           "tower_controller": "IND_W_TWR",
           "type": "RNAV",
           "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600 _IND_23L/a790"
+            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600"
           ]
         },
         "I3R": {
@@ -82,7 +82,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600 _IND_23R/a783"
+            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600"
           ]
         },
         "R3R": {
@@ -91,7 +91,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600 _IND_23R/a783"
+            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600"
           ]
         },
         "I32": {
@@ -100,7 +100,7 @@
           "tower_controller": "IND_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400 _IND_32/a793"
+            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400"
           ]
         },
         "R32": {
@@ -109,291 +109,291 @@
           "tower_controller": "IND_E_TWR",
           "type": "RNAV",
           "waypoints": [
-            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400 _IND_32/a793"
+            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400"
           ]
         }
       },
       "departure_routes": {
-        "05L": {
+        "5L": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_05L _IND_23R/h050 SNEVA FOYTT"
+            "waypoints": "_IND_23R/h050 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_05L _IND_23R/h050 OOM EYTEJ"
+            "waypoints": "_IND_23R/h050 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05L _IND_23R/h050"
+            "waypoints": "_IND_23R/h050"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05L _IND_23R/h050 MAREO"
+            "waypoints": "_IND_23R/h050 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050"
+            "waypoints": "_IND_23R/h050"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050 MEARZ"
+            "waypoints": "_IND_23R/h050 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050 MEARZ SACHS"
+            "waypoints": "_IND_23R/h050 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L _IND_23R/h050 MEARZ BRATN"
+            "waypoints": "_IND_23R/h050 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_05L _IND_23R/h050 TTH"
+            "waypoints": "_IND_23R/h050 TTH"
           }
         },
-        "05R": {
+        "5R": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_05R _IND_23L/h050 SNEVA FOYTT"
+            "waypoints": "_IND_23L/h050 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_05R _IND_23L/h050 OOM EYTEJ"
+            "waypoints": "_IND_23L/h050 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05R _IND_23L/h050"
+            "waypoints": "_IND_23L/h050"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_05R _IND_23L/h050 MAREO"
+            "waypoints": "_IND_23L/h050 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050"
+            "waypoints": "_IND_23L/h050"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050 MEARZ"
+            "waypoints": "_IND_23L/h050 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050 MEARZ SACHS"
+            "waypoints": "_IND_23L/h050 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R _IND_23L/h050 MEARZ BRATN"
+            "waypoints": "_IND_23L/h050 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_05R _IND_23L/h050 TTH"
+            "waypoints": "_IND_23L/h050 TTH"
           }
         },
         "14": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_14 _IND_32/h140 SNEVA FOYTT"
+            "waypoints": "_IND_32/h140 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_14 _IND_32/h140 OOM EYTEJ"
+            "waypoints": "_IND_32/h140 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_14 _IND_32/h140"
+            "waypoints": "_IND_32/h140"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_14 _IND_32/h140 MAREO"
+            "waypoints": "_IND_32/h140 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140"
+            "waypoints": "_IND_32/h140"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140 MEARZ"
+            "waypoints": "_IND_32/h140 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140 MEARZ SACHS"
+            "waypoints": "_IND_32/h140 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14 _IND_32/h140 MEARZ BRATN"
+            "waypoints": "_IND_32/h140 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_14 _IND_32/h140 TTH"
+            "waypoints": "_IND_32/h140 TTH"
           }
         },
         "23L": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_23L _IND_05R/h230 SNEVA FOYTT DAWNN"
+            "waypoints": "_IND_05R/h230 SNEVA FOYTT DAWNN"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_23L _IND_05R/h230 OOM EYTEJ"
+            "waypoints": "_IND_05R/h230 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23L _IND_05R/h230"
+            "waypoints": "_IND_05R/h230"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23L _IND_05R/h230 MAREO"
+            "waypoints": "_IND_05R/h230 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230"
+            "waypoints": "_IND_05R/h230"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230 MEARZ"
+            "waypoints": "_IND_05R/h230 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230 MEARZ SACHS"
+            "waypoints": "_IND_05R/h230 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L _IND_05R/h230 MEARZ BRATN"
+            "waypoints": "_IND_05R/h230 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_23L _IND_05R/h230 TTH"
+            "waypoints": "_IND_05R/h230 TTH"
           }
         },
         "23R": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_23R _IND_05L/h230 SNEVA FOYTT DAWNN"
+            "waypoints": "_IND_05L/h230 SNEVA FOYTT DAWNN"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_23R _IND_05L/h230 OOM EYTEJ"
+            "waypoints": "_IND_05L/h230 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23R _IND_05L/h230"
+            "waypoints": "_IND_05L/h230"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_23R _IND_05L/h230 MAREO"
+            "waypoints": "_IND_05L/h230 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230"
+            "waypoints": "_IND_05L/h230"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230 MEARZ"
+            "waypoints": "_IND_05L/h230 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230 MEARZ SACHS"
+            "waypoints": "_IND_05L/h230 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R _IND_05L/h230 MEARZ BRATN"
+            "waypoints": "_IND_05L/h230 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_23R _IND_05L/h230 TTH"
+            "waypoints": "_IND_05L/h230 TTH"
           }
         },
         "32": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_32 _IND_14/h320 SNEVA FOYTT"
+            "waypoints": "_IND_14/h320 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_32 _IND_14/h320 OOM EYTEJ"
+            "waypoints": "_IND_14/h320 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_32 _IND_14/h320"
+            "waypoints": "_IND_14/h320"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO5",
-            "waypoints": "_IND_32 _IND_14/h320 MAREO"
+            "waypoints": "_IND_14/h320 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320"
+            "waypoints": "_IND_14/h320"
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320 MEARZ"
+            "waypoints": "_IND_14/h320 MEARZ"
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320 MEARZ SACHS"
+            "waypoints": "_IND_14/h320 MEARZ SACHS"
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32 _IND_14/h320 MEARZ BRATN"
+            "waypoints": "_IND_14/h320 MEARZ BRATN"
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_32 _IND_14/h320 TTH"
+            "waypoints": "_IND_14/h320 TTH"
           }
         }
       },
@@ -638,8 +638,8 @@
         "initial_speed": 280,
         "route": "/. RINTE.SNKPT2",
         "runway_waypoints": {
-          "05L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-          "05R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
+          "5L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+          "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
           "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
           "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
           "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
@@ -661,8 +661,8 @@
         "initial_speed": 280,
         "route": "/. SJAYY.SNKPT2",
         "runway_waypoints": {
-          "05L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-          "05R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
+          "5L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+          "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
           "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
           "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
           "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
@@ -694,8 +694,8 @@
         "initial_speed": 280,
         "route": "/. HAGAL.GIIBS3",
         "runway_waypoints": {
-          "05L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
-          "05R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
+          "5L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
+          "5R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
           "14": "BUPTE JOCKE/a12000-16000 OPEVE/a10000+ PDIDY ROGIE/a7000+/s230 PNFLD/a6000/s210 WONOK/h320",
           "23L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
           "23R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
@@ -723,8 +723,8 @@
         "initial_speed": 280,
         "route": "/. ELANR.JAKKS2",
         "runway_waypoints": {
-          "05L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
-          "05R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
+          "5L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
+          "5R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
           "14": "ATILE/a13000- AADIE KEADY/a4000+/s210",
           "23L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
           "23R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
@@ -752,8 +752,8 @@
         "initial_speed": 280,
         "route": "/. KOLTS.KOLTS2",
         "runway_waypoints": {
-          "05L": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-          "05R": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+          "5L": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+          "5R": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
           "23L": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h050",
           "23R": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h050",
           "32": "EKEKE/a10000+ FRENY/a7000+/s230 PNFLD/a6000/s210 ZASNI/h139"
@@ -784,8 +784,8 @@
         "initial_speed": 280,
         "route": "/. RACYR.SMUKE2",
         "runway_waypoints": {
-          "05L": "FIIRE WESLE/a6000+ WAAYN/a5000/s210",
-          "05R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210",
+          "5L": "FIIRE WESLE/a6000+ WAAYN/a5000/s210",
+          "5R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210",
           "14": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
           "23L": "FIIRE CHERZ/a11000+ TTKAY/a10000+ EDODE/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
           "23R": "FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
@@ -1184,11 +1184,11 @@
       "arrival_runways": [
         {
           "airport": "KIND",
-          "runway": "05L"
+          "runway": "5L"
         },
         {
           "airport": "KIND",
-          "runway": "05R"
+          "runway": "5R"
         }
       ],
       "arrivals": {
@@ -1276,12 +1276,12 @@
         {
           "airport": "KIND",
           "rate": 15,
-          "runway": "05L"
+          "runway": "5L"
         },
         {
           "airport": "KIND",
           "rate": 15,
-          "runway": "05R"
+          "runway": "5R"
         }
       ],
       "wind": {

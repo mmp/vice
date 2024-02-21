@@ -7,30 +7,30 @@
           "runway": "4",
           "type": "ILS",
           "waypoints": [
-            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA _GSP_4/a964"
+            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"
           ]
         },
         "R4": {
           "runway": "4",
           "type": "RNAV",
           "waypoints": [
-            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA _GSP_4/a964"
+            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"
           ]
         },
         "I22": {
           "runway": "22",
           "type" : "ILS",
           "waypoints": [
-            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964"
+            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET"
           ]
         },
         "R22": {
           "runway": "22",
           "type": "RNAV",
           "waypoints": [
-            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964",
-            "IROPY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964",
-            "NAGRY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET _GSP_22/a964"
+            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET",
+            "IROPY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET",
+            "NAGRY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET"
           ]
         }
       },
@@ -39,56 +39,56 @@
           "DRIVN,ACERB": {
             "cleared_altitude": 5000,
             "sid": "BIMMR3",
-            "waypoints": "_GSP_4 _GSP_22/h038"
+            "waypoints": "_GSP_22/h038"
           },
           "JLENA": {
             "cleared_altitude": 5000,
             "sid": "BWALL2",
-            "waypoints": "_GSP_4 _GSP_22/h038"
+            "waypoints": "_GSP_22/h038"
           },
           "HRS": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_4 _GSP_22/h038"
+            "waypoints": "_GSP_22/h038"
           },
           "DGESS": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_4 _GSP_22/h038"
+            "waypoints": "_GSP_22/h038"
           },
           "SPA": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_4 _GSP_22/h038"
+            "waypoints": "_GSP_22/h038"
           },
           "SOTHH": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_4 _GSP_22/h038"
+            "waypoints": "_GSP_22/h038"
           }
         },
         "22": {
           "DRIVN,ACERB": {
             "cleared_altitude": 5000,
             "sid": "BIMMR3",
-            "waypoints": "_GSP_22 _GSP_4/h219"
+            "waypoints": "_GSP_4/h219"
           },
           "JLENA": {
             "cleared_altitude": 5000,
             "sid": "BWALL2",
-            "waypoints": "_GSP_22 _GSP_4/h219"
+            "waypoints": "_GSP_4/h219"
           },
           "HRS": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_22 _GSP_4/h219"
+            "waypoints": "_GSP_4/h219"
           },
           "DGESS": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_22 _GSP_4/h219"
+            "waypoints": "_GSP_4/h219"
           },
           "SPA": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_22 _GSP_4/h219"
+            "waypoints": "_GSP_4/h219"
           },
           "SOTHH": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_22 _GSP_4/h219"
+            "waypoints": "_GSP_4/h219"
           }
         }
       },

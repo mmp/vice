@@ -507,14 +507,18 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 		return f.Location, ok
 	} else if p, err := ParseLatLong([]byte(s)); err == nil {
 		return p, true
-	} else {
-		return Point2LL{}, false
+	} else if len(s) > 5 && s[0] == 'K' && s[4] == '-' {
+		if rwy, ok := LookupRunway(s[:4], s[5:]); ok {
+			return rwy.Threshold, true
+		}
 	}
+
+	return Point2LL{}, false
 }
 
 var (
 	// "FIX@HDG/DIST"
-	reFixHeadingDistance = regexp.MustCompile(`^([\w]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
+	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
@@ -544,10 +548,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 		if _, ok := sg.Fixes[fix]; ok {
 			e.ErrorString("fix has multiple definitions")
-		} else if pos, ok := sg.locate(location); ok {
-			// It's something simple, likely a latlong that we could parse
-			// directly.
-			sg.Fixes[fix] = pos
 		} else if strs := reFixHeadingDistance.FindStringSubmatch(location); len(strs) >= 4 {
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
@@ -566,6 +566,12 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				p = add2f(p, v)
 				sg.Fixes[fix] = nm2ll(p, sg.NmPerLongitude)
 			}
+		} else if pos, ok := sg.locate(location); ok {
+			// It's something simple. Check this after FIX@HDG/DIST,
+			// though, since the runway matching KJFK-31L discards stuff
+			// after the runway and we don't want that to match in that
+			// case.
+			sg.Fixes[fix] = pos
 		} else {
 			e.ErrorString("invalid location syntax \"%s\" for fix \"%s\"", location, fix)
 		}
@@ -681,6 +687,22 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 				for rwy, wp := range ar.RunwayWaypoints {
 					e.Push("Runway " + rwy)
+
+					foundRunway := false
+					for ap := range ar.Airlines { // airlines is keyed on airport names
+						if _, ok := LookupRunway(ap, rwy); ok {
+							foundRunway = true
+							break
+						}
+					}
+					if !foundRunway {
+						var runways []string
+						for ap := range ar.Airlines {
+							runways = append(runways, ap+": "+database.Airports[ap].ValidRunways())
+						}
+						e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, strings.Join(runways, ", "))
+					}
+
 					sg.InitializeWaypointLocations(wp, e)
 
 					if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {

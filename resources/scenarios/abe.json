@@ -7,48 +7,48 @@
           "runway": "13",
           "type": "ILS",
           "waypoints": [
-            "HASIS/iaf/if/a3000/hilpt CAVRU/a2700 MOOVY/faf/a2400 IZKIP/a1260 _ABE31/a380"
+            "HASIS/iaf/if/a3000/hilpt CAVRU/a2700 MOOVY/faf/a2400 IZKIP/a1260"
           ]
         },
         "I24": {
           "runway": "24",
           "type": "ILS",
           "waypoints": [
-            "STW/iaf/nopt MUDRE/if/iaf/a3000/hilpt MUSYK/faf/a2400 NENTE/a1380 _ABE6/a380"
+            "STW/iaf/nopt MUDRE/if/iaf/a3000/hilpt MUSYK/faf/a2400 NENTE/a1380"
           ]
         },
         "I6": {
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-            "JISTO/iaf/if/a3000/hilpt SHAGY/faf/a2400 _ABE24/a380"
+            "JISTO/iaf/if/a3000/hilpt SHAGY/faf/a2400"
           ]
         },
         "R13": {
           "runway": "13",
           "type": "RNAV",
           "waypoints": [
-            "BEERS TIKLE/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260 _ABE31/a380",
-            "ROCOY TIKLE/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260 _ABE31/a380",
-            "DUMMR JAREV/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260 _ABE31/a380"
+            "BEERS TIKLE/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260",
+            "ROCOY TIKLE/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260",
+            "DUMMR JAREV/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260"
           ]
         },
         "R31": {
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
-            "ARD/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540 _ABE13/a380",
-            "BEERS FINRA/a4000+/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540 _ABE13/a380",
-            "FONUP FINRA/a4000+/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540 _ABE13/a380"
+            "ARD/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540",
+            "BEERS FINRA/a4000+/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540",
+            "FONUP FINRA/a4000+/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540"
           ]
         },
         "R6": {
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "BEERS SAYOV/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400 _ABE24/a380",
-            "DUMMR SAYOV/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400 _ABE24/a380",
-            "ARD HADAD/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400 _ABE24/a380"
+            "BEERS SAYOV/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400",
+            "DUMMR SAYOV/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400",
+            "ARD HADAD/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400"
           ]
         }
       },
@@ -56,13 +56,13 @@
         "24": {
           "FJC,SAX,ARD,RBV,PTW,ETX": {
             "cleared_altitude": 3000,
-            "waypoints": "_ABE6 _ABE24/h240"
+            "waypoints": "KABE-6/h240"
           }
         },
         "6": {
           "FJC,SAX,ARD,RBV,PTW,ETX": {
             "cleared_altitude": 3000,
-            "waypoints": "_ABE24 _ABE6/h060"
+            "waypoints": "KABE-24/h060"
           }
         }
       },
@@ -578,12 +578,6 @@
     }
   },
   "default_scenario": "KABE Depart 6 Land 6",
-  "fixes": {
-    "_ABE13": "N040.38.47.604,W075.25.56.652",
-    "_ABE24": "N040.38.48.717,W075.27.00.758",
-    "_ABE31": "N040.39.17.391,W075.26.57.324",
-    "_ABE6": "N040.39.34.612,W075.25.46.517"
-  },
   "inhibit_ca_volumes": [
       {
           "name": "ABE NO CA",

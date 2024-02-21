@@ -8,7 +8,7 @@
                     "runway": "9",
                     "type": "RNAV",
                     "waypoints": [
-                         "SARGS/a2100 GATTO/a2000 _SAN_9/a17"
+                         "SARGS/a2100 GATTO/a2000"
                  ]
                  },
                 "RY7":{
@@ -16,7 +16,7 @@
                     "runway": "27",
                     "type": "RNAV",
                     "waypoints": [
-                        "LYNDI/a5000/s210 VYDDA/a4000 OKAIN/a3600 CIJHI/a2700 REEBO/a2000 _SAN_27/a17"
+                        "LYNDI/a5000/s210 VYDDA/a4000 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
                     ]
                 },
                 "RZ7":{
@@ -24,8 +24,8 @@
                     "runway": "27",
                     "type": "RNAV",
                     "waypoints": [
-                        "LYNDI/a5000/s210 VYDDA OKAIN SAYAE/a3200 CIJHI/a2700 REEBO/a2000 _SAN_27/a17",
-                        "KLOMN/a6000/s210 AJADE CATDG CRSNR SAYAE/a3200 CIJHI/a2700 REEBO/a2000 _SAN_27/a17"
+                        "LYNDI/a5000/s210 VYDDA OKAIN SAYAE/a3200 CIJHI/a2700 REEBO/a2000",
+                        "KLOMN/a6000/s210 AJADE CATDG CRSNR SAYAE/a3200 CIJHI/a2700 REEBO/a2000"
                     ]
                 },
                 "IY9":{
@@ -33,7 +33,7 @@
                     "runway": "9",
                     "type": "ILS",
                     "waypoints": [
-                        "SARGS/a2100 GATTO/a2000 _SAN_9/a17"
+                        "SARGS/a2100 GATTO/a2000"
                     ]
                 },
                 "IZ9":{
@@ -41,7 +41,7 @@
                     "runway": "9",
                     "type": "ILS",
                     "waypoints": [
-                        "SARGS/a2100 GATTO/a2000 _SAN_9/a17"
+                        "SARGS/a2100 GATTO/a2000"
                     ]
                 },
                 "L7":{
@@ -49,7 +49,7 @@
                     "runway": "27",
                     "type": "ILS",
                     "waypoints": [
-                        "LYNDI/iaf/a5000/s210 VYDDA/if/a4000 OKAIN/a3600 CIJHI/a2700 REEBO/a2000 _SAN_27/a17"
+                        "LYNDI/iaf/a5000/s210 VYDDA/if/a4000 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
                     ]
                 },
                 "V27":{
@@ -57,7 +57,7 @@
                     "runway": "27",
                     "type": "ILS",
                     "waypoints": [
-                        "LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/a2000 _SAN_27/a17"
+                        "LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
                     ]
                 },
                 "V9":{
@@ -65,7 +65,7 @@
                     "runway": "9",
                     "type": "ILS",
                     "waypoints": [
-                        "SARGS/a2100 GATTO/a2000 _SAN_9/a17"
+                        "SARGS/a2100 GATTO/a2000"
                     ]
                 }
 
@@ -75,135 +75,135 @@
                 "LAX": {
                     "cleared_altitude": 10000,
                     "sid": "CWARD2",
-                    "waypoints": "_SAN_27 WNFLD GYWNN/a6000 PADRZ CWARD/a12000 LAX"
+                    "waypoints": "WNFLD GYWNN/a6000 PADRZ CWARD/a12000 LAX"
                 },
                 "SLI": {
                     "cleared_altitude": 10000,
                     "sid": "CWARD2",
-                    "waypoints": "_SAN_27 WNFLD GYWNN/a6000 PADRZ CWARD/a12000 MADOW SLI"
+                    "waypoints": "WNFLD GYWNN/a6000 PADRZ CWARD/a12000 MADOW SLI"
                 },
                 "MALIT": {
                     "cleared_altitude": 30000,
                     "sid": "PADRZ2",
-                    "waypoints": "_SAN_27 WNFLD KERNL GYWNN/a8000+ PADRZ SXC MALIT"
+                    "waypoints": "WNFLD KERNL GYWNN/a8000+ PADRZ SXC MALIT"
                 },
                 "DINTY": {
                     "cleared_altitude": 32000,
                     "sid": "PADRZ2",
-                    "waypoints": "_SAN_27 WNFLD KERNL GYWNN/a8000+ PADRZ SXC "
+                    "waypoints": "WNFLD KERNL GYWNN/a8000+ PADRZ SXC "
                 },
                 "IKAYE": {
                     "cleared_altitude": 28000,
                     "sid": "PADRZ2",
-                    "waypoints": "_SAN_27 WNFLD KERNL GYWNN/a8000+ PADRZ IKAYE"
+                    "waypoints": "WNFLD KERNL GYWNN/a8000+ PADRZ IKAYE"
                 },
                 "OROSZ": {
                     "cleared_altitude": 28000,
                     "sid": "PADRZ2",
-                    "waypoints": "_SAN_27 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+                    "waypoints": "WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
                 },
                 "EHF": {
                     "cleared_altitude": 36000,
                     "sid": "PADRZ2",
-                    "waypoints": "_SAN_27 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+                    "waypoints": "WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
                 },
                 "CHKNN": {
                     "cleared_altitude": 29000,
                     "sid": "PADRZ2",
-                    "waypoints": "_SAN_27 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN"
+                    "waypoints": "WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN"
                 },
                 "MTBAL": {
                     "cleared_altitude": 29000,
                     "sid": "ZZOOO3",
-                    "waypoints": "_SAN_27 JETTI ZZOOO/a6000+ JORRJ/a14000 GRIDR PIEZZ NSHEE MTBAL"
+                    "waypoints": "JETTI ZZOOO/a6000+ JORRJ/a14000 GRIDR PIEZZ NSHEE MTBAL"
                 },
                 "IPL": {
                     "cleared_altitude": 29000,
                     "sid": "ZZOOO3",
-                    "waypoints": "_SAN_27 JETTI ZZOOO/a6000+ JORRJ/a14000 GRIDR BLUZE IPL"
+                    "waypoints": "JETTI ZZOOO/a6000+ JORRJ/a14000 GRIDR BLUZE IPL"
                 },
                 "CENZA": {
                     "cleared_altitude": 15000,
                     "sid": "ZZOOO3",
-                    "waypoints": "_SAN_27 JETTI ZZOOO/a6000+ CENZA"
+                    "waypoints": "JETTI ZZOOO/a6000+ CENZA"
                 },
                 "JLI":{
                     "cleared_altitude": 25000,
                     "sid": "BRDR7",
-                    "waypoints": "_SAN_27 ZZOOO PGY BROWS JLI"
+                    "waypoints": "ZZOOO PGY BROWS JLI"
                 },
                 "SXC":{
                     "cleared_altitude": 18000,
                     "sid": "FALCC1",
-                    "waypoints": "_SAN_27 CLSTR/a4000 BOKNE MAFAN/a8000 LNSAY FALCC SXC"
+                    "waypoints": "CLSTR/a4000 BOKNE MAFAN/a8000 LNSAY FALCC SXC"
                 },
                 "OCN":{
                     "cleared_altitude": 6000,
-                    "waypoints": "_SAN_27 OCN DANAH POXKU PDZ"
+                    "waypoints": "OCN DANAH POXKU PDZ"
                 },
                 "TANNR":{
                     "cleared_altitude": 10000,
-                    "waypoints": "_SAN_27 TANNR HDF PETIS"
+                    "waypoints": "TANNR HDF PETIS"
                 }
             },
             "9": {
                 "SLI": {
                     "cleared_altitude": 24000,
                     "sid": "ECHHO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000 MMOTO SLI"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000 MMOTO SLI"
                 },
                 "IKAYE": {
                     "cleared_altitude": 26000,
                     "sid": "ECHHO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000 MMOTO TEDEY GEEGN IKAYE"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000 MMOTO TEDEY GEEGN IKAYE"
                 },
                 "DINTY": {
                     "cleared_altitude": 28000,
                     "sid": "MMOTO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000 SXC"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000 SXC"
                 },
                 "MALIT": {
                     "cleared_altitude": 30000,
                     "sid": "MMOTO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000 SXC MALIT"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000 SXC MALIT"
                 },
                 "MTBAL": {
                     "cleared_altitude": 29000,
                     "sid": "SAYOW2",
-                    "waypoints": "_SAN_9 SAYOW/a4900+ LEGUE/a10000 JLI NSHEE MTBAL"
+                    "waypoints": "SAYOW/a4900+ LEGUE/a10000 JLI NSHEE MTBAL"
                 },
                 "IPL":{
                     "cleared_altitude": 27000,
                     "sid": "BRDR7",
-                    "waypoints": "_SAN_9 BROWS IPL"
+                    "waypoints": "BROWS IPL"
                 },
                 "JLI":{
                     "cleared_altitude": 25000,
                     "sid": "BRDR7",
-                    "waypoints": "_SAN_9 BROWS JLI"
+                    "waypoints": "BROWS JLI"
                 },
                 "OCN":{
                     "cleared_altitude": 6000,
-                    "waypoints": "_SAN_9 OCN DANAH POXKU PDZ"
+                    "waypoints": "OCN DANAH POXKU PDZ"
                 },
                 "TANNR":{
                     "cleared_altitude": 10000,
-                    "waypoints": "_SAN_9 TANNR HDF PETIS"
+                    "waypoints": "TANNR HDF PETIS"
                 },
                 "EHF": {
                     "cleared_altitude": 36000,
                     "sid": "ECHHO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000 MMOTO SLI EHF"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000 MMOTO SLI EHF"
                 },
                 "OROSZ": {
                     "cleared_altitude": 36000,
                     "sid": "ECHHO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000 MMOTO SLI OROSZ"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000 MMOTO SLI OROSZ"
                 },
                 "CHKNN": {
                     "cleared_altitude": 29000,
                     "sid": "ECHHO2",
-                    "waypoints": "_SAN_9 BAUCA ECHHO GOFUR/a15000 MMOTO SLI CHKNN"
+                    "waypoints": "BAUCA ECHHO GOFUR/a15000 MMOTO SLI CHKNN"
                 }
             }
          },

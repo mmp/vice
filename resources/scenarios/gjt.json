@@ -7,8 +7,8 @@
           "runway": "11",
           "type": "ILS",
           "waypoints": [
-            "WINDO/a13000 BITAR/a12000 MACKS/iaf/a8200 LOMMA/if/a8200 JINNY/a6700 _GJT11/a4833",
-            "ZUKSO/a8200/arc13JNC JISIG/iaf/a8200/arc13JNC LOMMA/if/a8200 JINNY/a6700 _GJT11/a4833"
+            "WINDO/a13000 BITAR/a12000 MACKS/iaf/a8200 LOMMA/if/a8200 JINNY/a6700",
+            "ZUKSO/a8200/arc13JNC JISIG/iaf/a8200/arc13JNC LOMMA/if/a8200 JINNY/a6700"
           ]
         },
         "RY11": {
@@ -16,9 +16,9 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 11",
           "waypoints": [
-            "MACKS/a9000 LOMMA/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU _GJT11/a4833",
-            "PACES/a9000 HASKI/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU _GJT11/a4833",
-            "JNC AVUXE/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU _GJT11/a4833"
+            "MACKS/a9000 LOMMA/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU",
+            "PACES/a9000 HASKI/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU",
+            "JNC AVUXE/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU"
           ]
         },
         "RZ11": {
@@ -26,10 +26,10 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 11",
           "waypoints": [
-            "MACKS/iaf/a8900 LOMMA/a8200 CARKU/a6700/if VUXOH/a6700 KAREC/faf _GJT11/a4833",
-            "PACES/iaf/a9900 NATLL/a9300 CULIP/if/a8600 FEKVA/a7800 WURNI/a6700 VUXOH/a6700 KAREC/faf _GJT11/a4833",
-            "SINSY/a11000/iaf HONTU/a9900 IWUGO/a8900 TADUY/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf _GJT11/a4833",
-            "SPADA/iaf/a8800 OLILE/a8500 HEBUT/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf _GJT11/a4833"
+            "MACKS/iaf/a8900 LOMMA/a8200 CARKU/a6700/if VUXOH/a6700 KAREC/faf",
+            "PACES/iaf/a9900 NATLL/a9300 CULIP/if/a8600 FEKVA/a7800 WURNI/a6700 VUXOH/a6700 KAREC/faf",
+            "SINSY/a11000/iaf HONTU/a9900 IWUGO/a8900 TADUY/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf",
+            "SPADA/iaf/a8800 OLILE/a8500 HEBUT/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf"
           ]
         },
         "L29": {
@@ -37,7 +37,7 @@
           "type": "RNAV",
           "full_name": "LDA DME Runway 29",
           "waypoints": [
-            "SPADA/iaf/a8500/arc21JNC HRSON/a8500 ALVOJ/a6800 _GJT29/a4833"
+            "SPADA/iaf/a8500/arc21JNC HRSON/a8500 ALVOJ/a6800"
           ]
         },
         "R29": {
@@ -45,7 +45,7 @@
           "type": "RNAV",
           "full_name": "RNAV GPS Runway 29",
           "waypoints": [
-            "CESBA/iaf/a8500 HANSU/a8500 TELSE/a7800 EKIRE/a6900 _GJT29/a4833"
+            "CESBA/iaf/a8500 HANSU/a8500 TELSE/a7800 EKIRE/a6900"
           ]
         }
       },
@@ -54,39 +54,39 @@
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 8000,
             "sid": "GJT7",
-            "waypoints": "_GJT11 _GJT29/h110"
+            "waypoints": "_GJT29/h110"
           },
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
             "assigned_altitude": 8000,
             "sid": "GRAND1",
-            "waypoints": "_GJT11 _GJT29/h110"
+            "waypoints": "_GJT29/h110"
           },
           "HAQHY": {
             "assigned_altitude": 8000,
             "sid": "NOKXI1",
-            "waypoints": "_GJT11 _GJT29 NOKXI MIRXE"
+            "waypoints": "NOKXI MIRXE"
           }
         },
         "29": {
           "TESSY": {
             "assigned_altitude": 8000,
             "sid": "RHONE2",
-            "waypoints": "_GJT29 _GJT11/h290 RHONE LOMMA"
+            "waypoints": "_GJT11/h290 RHONE LOMMA"
           },
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 6000,
             "sid": "GJT7",
-            "waypoints": "_GJT29 _GJT11/h290"
+            "waypoints": "_GJT11/h290"
           },
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
             "assigned_altitude": 8000,
             "sid": "GRAND1",
-            "waypoints": "_GJT29 _GJT11/h290"
+            "waypoints": "_GJT11/h290"
           },
           "HAQHY": {
             "assigned_altitude": 8000,
             "sid": "NOKXI1",
-            "waypoints": "_GJT29 _GJT11/h290"
+            "waypoints": "_GJT11/h290"
           }
         }
     },
