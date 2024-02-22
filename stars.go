@@ -6834,7 +6834,13 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		// Quick look all
 		return true 
 	}
-
+	
+	for _, event := range sp.events.Get() {
+		if event.ToController == ctx.world.Callsign {
+			// Incoming handoffs
+			return true
+		}
+	}
 	// Quick Look Positions.
 	for _, quickLookPositions := range sp.CurrentPreferenceSet.QuickLookPositions {
 		if ac.TrackingController == quickLookPositions.Callsign {
