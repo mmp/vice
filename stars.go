@@ -1242,6 +1242,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.InboundPointOuts[event.Callsign] = ""
 				}
+				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 			if event.FromController == w.Callsign {
 				if ctrl := w.GetController(event.ToController); ctrl != nil {
@@ -1249,6 +1250,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.OutboundPointOuts[event.Callsign] = ""
 				}
+				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 
 		case AcknowledgedPointOutEvent:
@@ -5536,7 +5538,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-		
 		if ctx.world.RECAT {
 			cat := getRecatCategory(ac)
 			field3 = cat
@@ -6808,7 +6809,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
-
+ 
 	if ac.TrackingController == ctx.world.Callsign{ 
 		// For owned datablocks
 		return true 
@@ -6818,8 +6819,9 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	} else if ac.ControllingController == ctx.world.Callsign {
 		// For non-greened handoffs
 		return true
-	} else if sp.InboundPointOuts[ctx.world.Callsign] == ac.TrackingController {
-			// For point outs. Need to test!!
+	} else if sp.Aircraft[ac.Callsign].PointedOut{
+		// Pointouts: This is if its been accepted, 
+		// for an incoming pointout, it falls to the FDB check
 		 	return true 
 	} else if ac.Squawk == 7500 || ac.Squawk == 7600 || ac.Squawk == 7700 || ac.Squawk == 7777 || ac.Squawk == 7400 {
 		// Special purpose codes
