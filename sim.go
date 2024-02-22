@@ -895,7 +895,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
-
+	w.RECAT = sg.RECAT
+	fmt.Println(w.RECAT)
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
 		if w.MultiControllers != nil {

@@ -1542,7 +1542,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
-	sp.updateIntrailDistance(aircraft)
+	sp.updateIntrailDistance(aircraft, w)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -5078,7 +5078,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	}
 }
 
-func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
+func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
 	// Zero out the previous distance
 	for _, ac := range aircraft {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
@@ -5146,11 +5146,12 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
 				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
-				// if recatFacility {
+				
+				if w.RECAT {
 					sp.checkInTrailRecatSeparation(trailing, leading)
-				// } else {
-				// 	sp.checkInTrailSeparation(trailing, leading)
-				// }
+				} else {
+					sp.checkInTrailSeparation(trailing, leading)
+				}
 			
 		}
 
@@ -5535,22 +5536,21 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-
-		// if recatFacility {
+		
+		if ctx.world.RECAT {
 			cat := getRecatCategory(ac)
 			field3 = cat
-		// } else {
-		// 	actype := ac.FlightPlan.TypeWithoutSuffix()
-		// if actype == "B757" {
-		// 	field3 += "F"
-		// } else if strings.HasPrefix(actype, "H/") {
-		// 	field3 += "H"
-		// } else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
-		// 	field3 += "J"
-		// }
-		// }
+		} else {
+			actype := ac.FlightPlan.TypeWithoutSuffix()
+		if actype == "B757" {
+			field3 += "F"
+		} else if strings.HasPrefix(actype, "H/") {
+			field3 += "H"
+		} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
+			field3 += "J"
+		}
+		}
 		
-		// fmt.Println(ac.Callsign, cat)
 
 		// Field 1: alternate between altitude and either primary
 		// scratchpad or destination airport.
@@ -5615,24 +5615,25 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if strings.Index(actype, "/") == 1 {
 			actype = actype[2:]
 		}
-		// if recatFacility {
+	
+		if ctx.world.RECAT {
 			cat := getRecatCategory(ac)
 			acCategory = fmt.Sprintf(" %v", cat)
-		// } else {
-		// 	if actype == "B757" {
-		// 		acCategory = "F"
-		// 	} else if strings.HasPrefix(actype, "H/") {
-		// 		actype = strings.TrimPrefix(actype, "H/")
-		// 		acCategory = "H"
-		// 	} else if strings.HasPrefix(actype, "S/") {
-		// 		actype = strings.TrimPrefix(actype, "S/")
-		// 		acCategory = "J"
-		// 	} else if strings.HasPrefix(actype, "J/") {
-		// 		actype = strings.TrimPrefix(actype, "J/")
-		// 		acCategory = "J"
-		// 	}
-		// }
-		// fmt.Println(recatFacility)
+		} else {
+			if actype == "B757" {
+				acCategory = "F"
+			} else if strings.HasPrefix(actype, "H/") {
+				actype = strings.TrimPrefix(actype, "H/")
+				acCategory = "H"
+			} else if strings.HasPrefix(actype, "S/") {
+				actype = strings.TrimPrefix(actype, "S/")
+				acCategory = "J"
+			} else if strings.HasPrefix(actype, "J/") {
+				actype = strings.TrimPrefix(actype, "J/")
+				acCategory = "J"
+			}
+		}
+		
 		
 
 		field5 := []string{} // alternate speed and aircraft type
@@ -6808,16 +6809,6 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
 
-	// 1. You have track control: COMPLETE
-	// 2. The track is being handed off to you: COMPLETE 
-	// 3. The track has been pointed out to you: COMPLETE
-	// 4. You have handed off the track to another controller and the handoff has been accepted: COMPLETE
-	// 5. You have manually forced an FDB by clicking on a target that is displaying a PDB: COMPLETE
-	// 6. You have enabled beacon code readout with the F1 key and the track is associated: N/A
-	// 7. The track is squawking a Special Purpose Code: COMPLETE
-	// 8. You have enabled Quick Look for the TCP that owns the track: COMPLETE
-	// 9. The track is an overflight and you have enabled forced FDBs for overflights
-
 	if ac.TrackingController == ctx.world.Callsign{ 
 		// For owned datablocks
 		return true 
@@ -6835,6 +6826,12 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		return true 
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
 		// If FDB, may trump others but idc
+		return true 
+	} else if sp.isOverflight(ctx, ac) && sp.CurrentPreferenceSet.OverflightFullDatablocks { //Need a f7 + e
+		// Overflights
+		return true 
+	} else if sp.CurrentPreferenceSet.QuickLookAll {
+		// Quick look all
 		return true 
 	}
 

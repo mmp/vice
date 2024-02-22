@@ -39,7 +39,7 @@ type ScenarioGroup struct {
 	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
 
 	Center           Point2LL              `json:"-"`
-	RECAT			  bool 	  `json:"recat_facility"`
+	RECAT			 bool 	  			   `json:"recat_facility"`
 	CenterString     string                `json:"center"`
 	Range            float32               `json:"range"`
 	PrimaryAirport   string                `json:"primary_airport"`

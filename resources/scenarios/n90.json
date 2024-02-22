@@ -3385,6 +3385,7 @@
                             }
                           ]
                 },
+                "recat_facility": true,
                 "center": "KLGA",
                 "range": 80,
                 "control_positions": {

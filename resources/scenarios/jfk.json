@@ -2896,6 +2896,7 @@
       }
     ]
   },
+  "recat_facility": true,
   "center": "KJFK",
   "control_positions": {
     "BOS_E_CTR": {

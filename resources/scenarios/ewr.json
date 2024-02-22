@@ -2488,6 +2488,7 @@
     ]
   },
   "center": "N040.43.34.389,W074.28.54.713",
+  "recat_facility": true,
   "range": 60,
   "control_positions": {
     "ABE_APP": {
