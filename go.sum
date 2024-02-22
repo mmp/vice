@@ -19,6 +19,8 @@ github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab h1:CMGzRRCjnD50RjUFSA
 github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab/go.mod h1:nfFtvHn2Hgs9G1u0/J6LHQv//EksNC+7G8vXmd1VTJ8=
 github.com/checkandmate1/AirportWeatherData v1.7.0 h1:re8h+6pYZDeTiyqS0LDk4KiN/CvKIsnD7kEV5ofb07Q=
 github.com/checkandmate1/AirportWeatherData v1.7.0/go.mod h1:CI1FFqnw1jTuz6bg60dh/NcFLpb10DOWkRcHunEB/4M=
+github.com/checkandmate1/AirportWeatherData v1.10.0 h1:pJZcNayuVCLxt/Ix0n29yXtz8vLSwbAueSQFSQfYqmA=
+github.com/checkandmate1/AirportWeatherData v1.10.0/go.mod h1:CI1FFqnw1jTuz6bg60dh/NcFLpb10DOWkRcHunEB/4M=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

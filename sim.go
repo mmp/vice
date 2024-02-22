@@ -543,6 +543,10 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			} else {
 				imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
 			}
+			refresh := imgui.Button("Refresh Weather")
+			if refresh {
+				clear(airportWind)
+			}
 			imgui.EndTable()
 
 		}
@@ -658,8 +662,13 @@ func getWind(c *NewSimConfiguration) Wind {
 		fmt.Println("Error. ", errorss)
 		return Wind{}
 	} else {
+		dirString := fmt.Sprintf("%v", weather[0].Wdir)
+		dir, err := strconv.Atoi(dirString)
+		if err != nil {
+			lg.Errorf("Error converting %v to an int", dirString)
+		}
 		wind := Wind{
-			Direction: int32(weather[0].Wdir),
+			Direction: int32(dir),
 			Speed:     int32(weather[0].Wspd),
 			Gust:      int32(weather[0].Wgst),
 		}

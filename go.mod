@@ -5,7 +5,7 @@ go 1.21.4
 require (
 	github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed
 	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29
-	github.com/checkandmate1/AirportWeatherData v1.7.0
+	github.com/checkandmate1/AirportWeatherData v1.10.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b
