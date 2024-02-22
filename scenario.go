@@ -890,27 +890,42 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			break
 		}
 
+		// Which way are we turning as we depart p0? Use either the
+		// previous waypoint or the next one after the end of the arc
+		// to figure it out.
+		var v0, v1 [2]float32
+		p0, p1 := ll2nm(wp.Location, sg.NmPerLongitude), ll2nm(waypoints[i+1].Location, sg.NmPerLongitude)
+		if i > 0 {
+			v0 = sub2f(p0, ll2nm(waypoints[i-1].Location, sg.NmPerLongitude))
+			v1 = sub2f(p1, p0)
+		} else {
+			if i+2 == len(waypoints) {
+				if e != nil {
+					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+					e.Pop()
+				}
+				continue
+			}
+			v0 = sub2f(p1, p0)
+			v1 = sub2f(ll2nm(waypoints[i+2].Location, sg.NmPerLongitude), p1)
+		}
+		// cross product
+		x := v0[0]*v1[1] - v0[1]*v1[0]
+		wp.Arc.Clockwise = x < 0
+
 		if wp.Arc.Fix != "" {
 			// Center point was specified
-			if pos, ok := sg.locate(wp.Arc.Fix); !ok {
+			var ok bool
+			if wp.Arc.Center, ok = sg.locate(wp.Arc.Fix); !ok {
 				if e != nil {
 					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
 					e.Pop()
 				}
-				break
-			} else {
-				wp.Arc.Center = pos
-
-				hpre := headingp2ll(wp.Arc.Center, waypoints[i].Location, 60 /* nm per */, 0 /* mag */)
-				hpost := headingp2ll(wp.Arc.Center, waypoints[i+1].Location, 60 /* nm per */, 0 /* mag */)
-
-				h := NormalizeHeading(hpost - hpre)
-				wp.Arc.Clockwise = h < 180
+				continue
 			}
 		} else {
 			// Just the arc length was specified; need to figure out the
 			// center and radius of the circle that gives that.
-			p0, p1 := ll2nm(wp.Location, sg.NmPerLongitude), ll2nm(waypoints[i+1].Location, sg.NmPerLongitude)
 			d := distance2f(p0, p1)
 			if d >= wp.Arc.Length {
 				if e != nil {
@@ -928,28 +943,6 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 				}
 				continue
 			}
-
-			// Which way are we turning as we depart p0? Use either the
-			// previous waypoint or the next one after the end of the arc
-			// to figure it out.
-			var v0, v1 [2]float32
-			if i > 0 {
-				v0 = sub2f(p0, ll2nm(waypoints[i-1].Location, sg.NmPerLongitude))
-				v1 = sub2f(p1, p0)
-			} else {
-				if i+2 == len(waypoints) {
-					if e != nil {
-						e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
-						e.Pop()
-					}
-					return
-				}
-				v0 = sub2f(p1, p0)
-				v1 = sub2f(ll2nm(waypoints[i+1].Location, sg.NmPerLongitude), p1)
-			}
-			// cross product
-			x := v0[0]*v1[1] - v0[1]*v1[0]
-			wp.Arc.Clockwise = x < 0
 
 			// Now search for a center point of a circle that goes through
 			// p0 and p1 and has the desired arc length.  We will search
