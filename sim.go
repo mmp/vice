@@ -955,12 +955,12 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 		var wind string
 		spd := weather[0].Wspd
+		dir := weather[0].Wdir
 		if spd <= 0 {
 			wind = "00000KT"
-		} else if spd < 4 {
+		} else if dir == -1{
 			wind = fmt.Sprintf("VRB%vKT", spd)
 		} else {
-			dir := weather[0].Wdir
 			wind = fmt.Sprintf("%03d%02d", dir, spd)
 			gst := weather[0].Wgst
 			if gst > 5 {
