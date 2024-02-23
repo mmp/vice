@@ -4,65 +4,65 @@
     "KJAX": {
       "approaches": {
         "I8": {
-          "runway": "08",
+          "runway": "8",
           "type": "ILS",
           "waypoints": [
-            "LIBBY/a2000 DINNS/a1900 _JAX_08/a30"
+            "LIBBY/a2000 DINNS/a1900"
           ]
         },
         "RZ8": {
           "full_name": "RNAV Z Runway 8",
-          "runway": "08",
+          "runway": "8",
           "type": "RNAV",
           "waypoints": [
-            "UDAQI/a2000/hilpt/nopt180 IVTEF/a1900 _JAX_08/a30",
-            "ZOLUV/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900 _JAX_08/a30",
-            "IJAYU/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900 _JAX_08/a30"
+            "UDAQI/a2000/hilpt/nopt180 IVTEF/a1900",
+            "ZOLUV/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900",
+            "IJAYU/a2000/nopt UDAQI/a2000/hilpt/nopt180 IVTEF/a1900"
           ]
         },
         "I14": {
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "ORTAR/a2000/if SONIA/a1700/faf KUYER/a480 _JAX_14/a27"
+            "ORTAR/a2000/if SONIA/a1700/faf KUYER/a480"
           ]
         },
         "R14": {
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700 _JAX_14/a27",
-            "JIXOL/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700 _JAX_14/a27",
-            "ZUDLI/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700 _JAX_14/a27"
+            "OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700",
+            "JIXOL/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700",
+            "ZUDLI/a2000/nopt OSBAJ/a2000/hilpt/nopt180 WOLQU/a1700"
           ]
         },
         "I26": {
           "runway": "26",
           "type": "ILS",
           "waypoints": [
-            "TIKRY/a2000 DALTN/a1600 ZETRI/a480 _JAX_26/a27"
+            "TIKRY/a2000 DALTN/a1600 ZETRI/a480"
           ]
         },
         "R26": {
           "runway": "26",
           "type": "RNAV",
           "waypoints": [
-            "YEJWO/a2000/hilpt/nopt180 WOQTA/a1600 ZALDU/a740 _JAX_26/a27",
-            "CUSIB/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740 _JAX_26/a27",
-            "ZIXIL/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740 _JAX_26/a27"
+            "YEJWO/a2000/hilpt/nopt180 WOQTA/a1600 ZALDU/a740",
+            "CUSIB/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740",
+            "ZIXIL/a2000/nopt YEJWO/a2000/hilpt WOQTA/a1600 ZALDU/a740"
           ]
         },
         "R32": {
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "BUNDE/a2100 POTME/a2100 FIVOX/a1700 YUSKU/a740 _JAX_32/a27",
-            "POTME/a2100 FIVOX/a1700 YUSKU/a740 _JAX_32/a28"
+            "BUNDE/a2100 POTME/a2100 FIVOX/a1700 YUSKU/a740",
+            "POTME/a2100 FIVOX/a1700 YUSKU/a740"
           ]
         }
       },
       "approach_regions": {
-        "08": {
+        "8": {
           "heading_tolerance": 90,
           "near_distance": 5,
           "near_half_width": 3,
@@ -126,7 +126,7 @@
       "converging_runways": [
         {
           "runways": [
-            "08",
+            "8",
             "14"
           ],
           "leader_directions": [
@@ -152,68 +152,68 @@
         }
       ],
       "departure_routes": {
-        "08": {
+        "8": {
           "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
             "sid": "BRSTL1",
-            "waypoints": "_JAX_08 _JAX_26/h077 TEREE BRSTL"
+            "waypoints": "_JAX_26/h077 TEREE BRSTL"
           },
           "WISPR": {
             "cleared_altitude": 3000,
             "sid": "CROSB2",
-            "waypoints": "_JAX_08 _JAX_26/h077 GIGLZ CROSB"
+            "waypoints": "_JAX_26/h077 GIGLZ CROSB"
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
             "sid": "EXBOX2",
-            "waypoints": "_JAX_08 _JAX_26/h077 SAWGY"
+            "waypoints": "_JAX_26/h077 SAWGY"
           },
           "CAPPS": {
             "cleared_altitude": 3000,
             "sid": "JETIN2",
-            "waypoints": "_JAX_08 _JAX_26/h077 DURTE JETIN ELAGE ZOOSS"
+            "waypoints": "_JAX_26/h077 DURTE JETIN ELAGE ZOOSS"
           },
           "JAYJA": {
             "cleared_altitude": 3000,
             "sid": "JETIN2",
-            "waypoints": "_JAX_08 _JAX_26/h077 DURTE JETIN FELTZ"
+            "waypoints": "_JAX_26/h077 DURTE JETIN FELTZ"
           },
           "SAWGY": {
             "cleared_altitude": 3000,
             "sid": "SAWGY3",
-            "waypoints": "_JAX_08 _JAX_26/h077 CRG SAWGY"
+            "waypoints": "_JAX_26/h077 CRG SAWGY"
           }
         },
         "26": {
           "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
             "sid": "BRSTL1",
-            "waypoints": "_JAX_26 _JAX_08/h260 TEREE BRSTL"
+            "waypoints": "_JAX_08/h260 TEREE BRSTL"
           },
           "WISPR": {
             "cleared_altitude": 3000,
             "sid": "CROSB2",
-            "waypoints": "_JAX_26 _JAX_08/h260 GIGLZ CROSB"
+            "waypoints": "_JAX_08/h260 GIGLZ CROSB"
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
             "sid": "EXBOX2",
-            "waypoints": "_JAX_26 _JAX_08/h260 SAWGY"
+            "waypoints": "_JAX_08/h260 SAWGY"
           },
           "CAPPS": {
             "cleared_altitude": 3000,
             "sid": "JETIN2",
-            "waypoints": "_JAX_26 _JAX_08/h260 DURTE JETIN ELAGE ZOOSS"
+            "waypoints": "_JAX_08/h260 DURTE JETIN ELAGE ZOOSS"
           },
           "JAYJA": {
             "cleared_altitude": 3000,
             "sid": "JETIN2",
-            "waypoints": "_JAX_26 _JAX_08/h260 DURTE JETIN FELTZ"
+            "waypoints": "_JAX_08/h260 DURTE JETIN FELTZ"
           },
           "SAWGY": {
             "cleared_altitude": 3000,
             "sid": "SAWGY3",
-            "waypoints": "_JAX_26 _JAX_08/h260 CRG SAWGY"
+            "waypoints": "_JAX_08/h260 CRG SAWGY"
           }
         }
       },
@@ -431,15 +431,15 @@
           "tower_controller": "JAX_N_APP",
           "type": "RNAV",
           "waypoints": [
-            "WILNA/a2100-6000 SHOAT/a1800 _FHB_04/a15"
+            "WILNA/a2100-6000 SHOAT/a1800"
           ]
         }
       },
       "departure_routes": {
-        "04": {
+        "4": {
           "SSI": {
             "cleared_altitude": 2000,
-            "waypoints": "_FHB_04 _FHB_22/h010"
+            "waypoints": "KFHB-22/h010"
           }
         }
       },
@@ -595,7 +595,7 @@
         "initial_speed": 250,
         "star": "LUNNI1",
         "runway_waypoints": {
-          "08": "LUNNI/a8000-12000/s250 SAVAE/a6000-7000 PENSE/a4000/s210 RUMEE/h257",
+          "8": "LUNNI/a8000-12000/s250 SAVAE/a6000-7000 PENSE/a4000/s210 RUMEE/h257",
           "14": "LUNNI/a8000-12000/s250 WADIG/a5000-6000/s230 DEDDA/a3000/s210",
           "26": "LUNNI/a8000-12000/s250 LAYON/a3000/s210",
           "32": "LUNNI/a8000-12000/s250 SSAWW/a6000-7000/s230 ZAXIT/a4000/s210 PALSY PEPIE/h137"
@@ -700,7 +700,7 @@
         "initial_speed": 250,
         "star": "MARQO2",
         "runway_waypoints": {
-          "08": "COROE/a9000-12000/s250 NATII/a5000-6000/s230 GUTTY/a3000/s210/h103",
+          "8": "COROE/a9000-12000/s250 NATII/a5000-6000/s230 GUTTY/a3000/s210/h103",
           "14": "COROE/a9000-12000/s250 TASCH/a5000-6000 DIPDE/a3000/s210",
           "26": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 EGAGE/a4000/s210 NOMTE OLEKE/h077",
           "32": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137"
@@ -841,7 +841,7 @@
         "initial_speed": 250,
         "star": "OHDEA1",
         "runway_waypoints": {
-          "08": "KIPLE/a7000-10000/s250 KITZO/a5000-6000/s230 CEDOT/a3000/s210/h150",
+          "8": "KIPLE/a7000-10000/s250 KITZO/a5000-6000/s230 CEDOT/a3000/s210/h150",
           "14": "KIPLE/a7000-10000/s250 MAHKA/a5000-6000/s230 ORTAR/a3000/s210/h145",
           "26": "KIPLE/a7000-10000/s250 MATLL/a6000-7000/s230 NANAA/a4000/s210 NOMTE OLEKE/h077",
           "32": "KIPLE/a7000-10000/s250 NAMPE/a6000-7000/s230 ACENE/a4000/s230 CALIM PEPIE/h137"
@@ -927,7 +927,7 @@
         "initial_speed": 250,
         "star": "QUBEN1",
         "runway_waypoints": {
-          "08": "BETLE/a5000+/s230 PLANK WADOR/a3000/s210/h346",
+          "8": "BETLE/a5000+/s230 PLANK WADOR/a3000/s210/h346",
           "14": "BETLE/a5000+/s230 PLANK EYLND/a4000/s210 KRISO/a3000 DUNTE JAKRU/h317",
           "26": "BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h084",
           "32": "BETLE/a5000+/s230 GURDE/a3000/s210/h023"
@@ -989,7 +989,7 @@
         "initial_speed": 250,
         "star": "TEBOW1",
         "runway_waypoints": {
-          "08": "TEBOW/a9000-12000/s250 JERZI/a5000+/s230 FAROT/a3000/s210/h038",
+          "8": "TEBOW/a9000-12000/s250 JERZI/a5000+/s230 FAROT/a3000/s210/h038",
           "14": "TEBOW/a9000-12000/s250 GRRAS/a5000+ KAYEM/a4000/s210 DUNTE JAKRU/h317",
           "26": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h084",
           "32": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GURDE/a3000/s210/h023"
@@ -1177,7 +1177,7 @@
       "arrival_runways": [
         {
           "airport": "KJAX",
-          "runway": "08"
+          "runway": "8"
         },
         {
           "airport": "KJAX",
@@ -1255,7 +1255,7 @@
         {
           "airport": "KJAX",
           "rate": 15,
-          "runway": "08"
+          "runway": "8"
         }
       ],
       "wind": {
@@ -1271,7 +1271,7 @@
       "arrival_runways": [
         {
           "airport": "KJAX",
-          "runway": "08"
+          "runway": "8"
         },
         {
           "airport": "KJAX",
@@ -1357,12 +1357,12 @@
         {
           "airport": "KJAX",
           "rate": 15,
-          "runway": "08"
+          "runway": "8"
         },
         {
           "airport": "KFHB",
           "rate": 2,
-          "runway": "04"
+          "runway": "4"
         }
       ],
       "wind": {
@@ -1471,7 +1471,7 @@
       "arrival_runways": [
         {
           "airport": "KJAX",
-          "runway": "08"
+          "runway": "8"
         },
         {
           "airport": "KJAX",

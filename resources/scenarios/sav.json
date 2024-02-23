@@ -7,38 +7,38 @@
           "runway": "1",
           "type": "ILS",
           "waypoints": [
-            "TERBE/a2000 MIZLU/a2000 _SAV_1/a39"
+            "TERBE/a2000 MIZLU/a2000"
           ]
         },
         "R1": {
           "runway": "1",
           "type": "RNAV",
           "waypoints": [
-            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39",
-            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000 _SAV_1/a39"
+            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000",
+            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000"
           ]
         },
         "I10": {
           "runway": "10",
           "type": "ILS",
           "waypoints": [
-            "TILEE/a2600 SOVIE/a2000 _SAV_10/a30"
+            "TILEE/a2600 SOVIE/a2000"
           ]
         },
         "R10": {
           "runway": "10",
           "type": "RNAV",
           "waypoints": [
-            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30",
-            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000 _SAV_10/a30"
+            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000",
+            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000"
           ]
         },
         "R19": {
           "runway": "19",
           "type": "RNAV",
           "waypoints": [
-            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47",
-            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000 _SAV_19/a47"
+            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000",
+            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000"
           ]
         },
         "R28": {
@@ -46,8 +46,8 @@
           "runway": "28",
           "type": "RNAV",
           "waypoints": [
-            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50",
-            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800 _SAV_28/a50"
+            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800",
+            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800"
           ]
         }
       },
@@ -55,29 +55,29 @@
         "10": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_10 _SAV_28/h097"
+              "waypoints": "KSAV-28/h097"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_10 _SAV_28/h097"
+              "waypoints": "KSAV-28/h097"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_10 _SAV_28/h097"
+              "waypoints": "KSAV-28/h097"
             }
         },
         "28": {
             "GIPPL": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_28 _SAV_10/h277"
+              "waypoints": "KSAV-10/h277"
             },
             "JROSS": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_28 _SAV_10/h277"
+              "waypoints": "KSAV-10/h277"
             },
             "SMALZ": {
               "cleared_altitude": 3000,
-              "waypoints": "_SAV_28 _SAV_10/h277"
+              "waypoints": "KSAV-10/h277"
             }
         }
       },
@@ -796,7 +796,6 @@
   "default_scenario": "KSAV Depart 10/1 Land 10/1",
   "fixes": {
     "_SAV_1":  "N32.06.59.665,W81.11.59.962",
-    "_SAV_10": "N32.07.43.590,W81.13.07.675",
     "_SAV_19": "N32.08.08.959,W81.12.00.495",
     "_SAV_28": "N32.07.42.544,W81.11.18.875",
     "SAV":     "N32.08.46.464,W81.11.56.648",

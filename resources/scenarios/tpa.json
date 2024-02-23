@@ -9,7 +9,7 @@
           "runway": "1L",
           "type": "ILS",
           "waypoints": [
-            "LAGOO/hilpt/iaf/a2600+ SELMN/a2600/faf ZERUR/a540 _TPA_1L/a11"
+            "LAGOO/hilpt/iaf/a2600+ SELMN/a2600/faf ZERUR/a540"
           ]
         },
         "R1L": {
@@ -18,7 +18,7 @@
           "runway": "1L",
           "type": "RNAV",
           "waypoints": [
-            "FITPA/a2600/hilpt/iaf/nopt180 SNORK/a2600/faf WELIT/a1300 _TPA_1L/a11"
+            "FITPA/a2600/hilpt/iaf/nopt180 SNORK/a2600/faf WELIT/a1300"
           ]
         },
         "R1R": {
@@ -27,7 +27,7 @@
           "runway": "1R",
           "type": "RNAV",
           "waypoints": [
-            "MUWTY/hilpt/a2600+/iaf/nopt180 ANAZE/a2600/faf ZELTO/a1300 _TPA_1R/a18"
+            "MUWTY/hilpt/a2600+/iaf/nopt180 ANAZE/a2600/faf ZELTO/a1300"
           ]
         },
         "I9L": {
@@ -36,7 +36,7 @@
           "runway": "19L",
           "type": "ILS",
           "waypoints": [
-            "BUCCS/a3000/if POMSE/a2000/faf _TPA_19L/a18"
+            "BUCCS/a3000/if POMSE/a2000/faf"
           ]
         },
         "R9L": {
@@ -45,10 +45,10 @@
           "runway": "19L",
           "type": "RNAV",
           "waypoints": [
-            "COBOX/a3000/if POMSE/a2000/faf _TPA_19L/a18",
-            "LZARD/iaf COBOX/a3000/if POMSE/a2000/faf _TPA_19L/a18",
-            "DARBS ZADSA/iaf COBOX/a3000/if POMSE/a2000/faf _TPA_19L/a18",
-            "JSTRM UFLIX ZPLIN/iaf COBOX/a3000/if POMSE/a2000/faf _TPA_19L/a18"
+            "COBOX/a3000/if POMSE/a2000/faf",
+            "LZARD/iaf COBOX/a3000/if POMSE/a2000/faf",
+            "DARBS ZADSA/iaf COBOX/a3000/if POMSE/a2000/faf",
+            "JSTRM UFLIX ZPLIN/iaf COBOX/a3000/if POMSE/a2000/faf"
           ]
         },
         "I9R": {
@@ -57,7 +57,7 @@
           "runway": "19R",
           "type": "ILS",
           "waypoints": [
-            "MERRA/a3000/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520 _TPA_19R/a11"
+            "MERRA/a3000/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520"
           ]
         },
         "R9R": {
@@ -66,7 +66,7 @@
           "runway": "19R",
           "type": "RNAV",
           "waypoints": [
-            "MERRA/a3000/if/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520 _TPA_19R/a11"
+            "MERRA/a3000/if/iaf/hilpt FADDI/a3000 JMBOB/a2000 ZESHY/a520"
           ]
         }
       },
@@ -75,91 +75,91 @@
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO1",
-            "waypoints": "_TPA_1L _TPA_19R/h003 FINKI BAYPO ECAKE WILON"
+            "waypoints": "KTPA-19R/h003 FINKI BAYPO ECAKE WILON"
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "waypoints": "_TPA_1L _TPA_19R/h003 MILEJ CROWD HALLR"
+            "waypoints": "KTPA-19R/h003 MILEJ CROWD HALLR"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "waypoints": "_TPA_1L _TPA_19R/h003 SYKES DORMR PSTOL"
+            "waypoints": "KTPA-19R/h003 SYKES DORMR PSTOL"
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED1",
-            "waypoints": "_TPA_1L _TPA_19R/h003 ENDED LACEN"
+            "waypoints": "KTPA-19R/h003 ENDED LACEN"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "waypoints": "_TPA_1L _TPA_19R/h003 GANDY PAIRS MURDO SABEE"
+            "waypoints": "KTPA-19R/h003 GANDY PAIRS MURDO SABEE"
           },
           "REMIS": {
             "cleared_altitude": 6000,
             "sid": "KNOST2",
-            "waypoints": "_TPA_1L _TPA_19R/h003 WOBAD/a6000 LOREC KNOST"
+            "waypoints": "KTPA-19R/h003 WOBAD/a6000 LOREC KNOST"
           }
         },
         "1R": {
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO1",
-            "waypoints": "_TPA_1R _TPA_19L/h003 FINKI BAYPO ECAKE "
+            "waypoints": "KTPA-19L/h003 FINKI BAYPO ECAKE "
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "waypoints": "_TPA_1R _TPA_19L/h003 MILEJ CROWD HALLR"
+            "waypoints": "KTPA-19L/h003 MILEJ CROWD HALLR"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "waypoints": "_TPA_1R _TPA_19L/h003 SYKES DORMR PSTOL "
+            "waypoints": "KTPA-19L/h003 SYKES DORMR PSTOL "
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED1",
-            "waypoints": "_TPA_1R _TPA_19L/h003 ENDED LACEN"
+            "waypoints": "KTPA-19L/h003 ENDED LACEN"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "waypoints": "_TPA_1R _TPA_19L/h003 GANDY PAIRS MURDO SABEE"
+            "waypoints": "KTPA-19L/h003 GANDY PAIRS MURDO SABEE"
           },
           "REMIS": {
             "cleared_altitude": 6000,
             "sid": "KNOST2",
-            "waypoints": "_TPA_1R _TPA_19L/h003 WOBAD/a6000 LOREC KNOST "
+            "waypoints": "KTPA-19L/h003 WOBAD/a6000 LOREC KNOST "
           }
         },
         "19R": {
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO1",
-            "waypoints": "_TPA_19R _TPA_1L/h203 FINKI BAYPO ECAKE "
+            "waypoints": "KTPA-1L/h203 FINKI BAYPO ECAKE "
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "waypoints": "_TPA_19R _TPA_1L/h203 MILEJ CROWD HALLR"
+            "waypoints": "KTPA-1L/h203 MILEJ CROWD HALLR"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "waypoints": "_TPA_19R _TPA_1L/h203 SYKES DORMR PSTOL "
+            "waypoints": "KTPA-1L/h203 SYKES DORMR PSTOL "
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED1",
-            "waypoints": "_TPA_19R _TPA_1L/h203 ENDED LACEN"
+            "waypoints": "KTPA-1L/h203 ENDED LACEN"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "waypoints": "_TPA_19R _TPA_1L/h203 GANDY PAIRS MURDO SABEE"
+            "waypoints": "KTPA-1L/h203 GANDY PAIRS MURDO SABEE"
           }
         }
       },
@@ -314,7 +314,7 @@
           "runway": "32",
           "type": "ILS",
           "waypoints": [
-            "ZABQO/pt45/pta1800 RINGY/a1800/iaf/faf ZALDI/a480 _SRQ_32/a26"
+            "ZABQO/pt45/pta1800 RINGY/a1800/iaf/faf ZALDI/a480"
           ]
         },
         "R32": {
@@ -322,7 +322,7 @@
           "runway": "32",
           "type": "RNAV",
           "waypoints": [
-            "SABEE/iaf/nopt FAXID/if/iaf/a2000+/hilpt4nm/nopt180 RINGY/faf/a1800 ZALDI/a540 _SRQ_32/a26"
+            "SABEE/iaf/nopt FAXID/if/iaf/a2000+/hilpt4nm/nopt180 RINGY/faf/a1800 ZALDI/a540"
           ]
         },
         "I14": {
@@ -330,7 +330,7 @@
           "runway": "14",
           "type": "ILS",
           "waypoints": [
-            "PIE/iaf/nopt PASOE/if FRUGL/iaf/faf/a2000/hilpt1min ETIGY/a500 _SRQ_14/a26"
+            "PIE/iaf/nopt PASOE/if FRUGL/iaf/faf/a2000/hilpt1min ETIGY/a500"
           ]
         },
         "R14": {
@@ -338,7 +338,7 @@
           "runway": "14",
           "type": "RNAV",
           "waypoints": [
-            "PIE/iaf/nopt PASOE/if/iaf/a2000+/hilpt4nm FRUGL/faf/a2000 ETIGY/a560 _SRQ_14/a26"
+            "PIE/iaf/nopt PASOE/if/iaf/a2000+/hilpt4nm FRUGL/faf/a2000 ETIGY/a560"
           ]
         }
       },
@@ -347,34 +347,34 @@
           "CAMJO": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "_SRQ_32 _SRQ_14 VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
+            "waypoints": "VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
           },
           "MOMIE": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "_SRQ_32 _SRQ_14 VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
+            "waypoints": "VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
           },
           "SIMMR": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "_SRQ_32 _SRQ_14 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
+            "waypoints": "VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
           }
         },
         "14": {
           "CAMJO": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "_SRQ_14 _SRQ_32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
+            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED WILON SPRNG CAMJO"
           },
           "MOMIE": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "_SRQ_14 _SRQ_32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
+            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED MOMIE"
           },
           "SIMMR": {
             "cleared_altitude": 3000,
             "sid": "SRKUS4",
-            "waypoints": "_SRQ_14 _SRQ_32/h139 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
+            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
           }
         }
       },
@@ -440,7 +440,7 @@
           "runway": "36",
           "type": "ILS",
           "waypoints": [
-            "RONXI/a2000+/if SONES/a2000/faf/lhilpt1min SAWGA/a680 _PIE_36/a7"
+            "RONXI/a2000+/if SONES/a2000/faf/lhilpt1min SAWGA/a680"
           ]
         },
         "R36": {
@@ -448,7 +448,7 @@
           "runway": "36",
           "type": "RNAV",
           "waypoints": [
-            "RONXI/a2000+/if/lhilpt4nm SONES/a2000/faf SAWGA/a720 _PIE_36/a7"
+            "RONXI/a2000+/if/lhilpt4nm SONES/a2000/faf SAWGA/a720"
           ]
         },
         "I18": {
@@ -456,8 +456,8 @@
           "runway": "18",
           "type": "ILS",
           "waypoints": [
-            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 _PIE_18/a7",
-            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 _PIE_18/a7"
+            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460",
+            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460"
           ]
         },
         "R18": {
@@ -465,8 +465,8 @@
           "runway": "18",
           "type": "RNAV",
           "waypoints": [
-            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 _PIE_18/a7",
-            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460 _PIE_18/a7"
+            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460",
+            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf JINPI/a460"
           ]
         }
       },
@@ -475,34 +475,34 @@
           "CAMJO": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "_PIE_36 _PIE_18/h356 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
+            "waypoints": "KPIE-18/h356 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
           },
           "WILON": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "_PIE_36 _PIE_18/h356 INLTT MAEKO BAYPO ECAKE WILON"
+            "waypoints": "KPIE-18/h356 INLTT MAEKO BAYPO ECAKE WILON"
           },
           "LACEN": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "_PIE_36 _PIE_18/h356 INLTT MAEKO ENDED LACEN"
+            "waypoints": "KPIE-18/h356 INLTT MAEKO ENDED LACEN"
           }
         },
         "18": {
           "CAMJO": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "_PIE_18 _PIE_36/h167 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
+            "waypoints": "KPIE-36/h167 INLTT MAEKO BAYPO ECAKE WILON SPRNG CAMJO"
           },
           "WILON": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "_PIE_18 _PIE_36/h167 INLTT MAEKO BAYPO ECAKE WILON"
+            "waypoints": "KPIE-36/h167 INLTT MAEKO BAYPO ECAKE WILON"
           },
           "LACEN": {
             "cleared_altitude": 1600,
             "sid": "MAEKO1",
-            "waypoints": "_PIE_18 _PIE_36/h167 INLTT MAEKO ENDED LACEN"
+            "waypoints": "KPIE-36/h167 INLTT MAEKO ENDED LACEN"
           }
         }
       },
@@ -546,7 +546,7 @@
           "runway": "10",
           "type": "ILS",
           "waypoints": [
-            "ARSHW/if/iaf/a2700-6000/hilpt1min FLYEN/a1700/faf SUNFN/a720 _LAL_10/a132"
+            "ARSHW/if/iaf/a2700-6000/hilpt1min FLYEN/a1700/faf SUNFN/a720"
           ]
         },
         "R10": {
@@ -554,9 +554,9 @@
           "runway": "10",
           "type": "RNAV",
           "waypoints": [
-            "ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720 _LAL_10/a132",
-            "GUUNR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720 _LAL_10/a132",
-            "BOMRR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720 _LAL_10/a132"
+            "ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720",
+            "GUUNR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720",
+            "BOMRR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720"
           ]
         },
         "R28": {
@@ -564,9 +564,9 @@
           "runway": "28",
           "type": "RNAV",
           "waypoints": [
-            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_10/a132",
-            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_10/a132",
-            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800 _LAL_10/a132"
+            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800",
+            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800",
+            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800"
           ]
         }
       },
@@ -730,23 +730,6 @@
     "LUBBR3": [
       {
         "airlines": {
-          "KPIE": [
-            {
-              "airport": "KDAB",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KISM",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KMLB",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
           "KSRQ": [
             {
               "airport": "KDAB",
@@ -804,9 +787,7 @@
         "star": "LUBBR3",
         "runway_waypoints": {
           "32": "ZEBON RUNNE BREKR WUDDY LYFIE MURDO/flyover/a3000/h228",
-          "14": "ZEBON RUNNE BREKR WUDDY LYFIE RUTAE/a3000/h230",
-          "10": "ZEBON ZEPHR/a3000/h177",
-          "28": "ZEBON ZEPHR/a3000/h177"
+          "14": "ZEBON RUNNE BREKR WUDDY LYFIE RUTAE/a3000/h230"
         },
         "speed_restriction": 250,
         "waypoints": "N028.51.14.839,W082.07.49.555/ho LUBBR ZEBON"
@@ -1263,23 +1244,7 @@
     "KTPA": "N27.58.31.700,W82.31.59.700",
     "KSRQ": "N27.23.43.600,W82.33.15.800",
     "KPIE": "N27.54.31.081,W82.41.11.436",
-    "KLAL": "N27.59.15.500,W82.01.08.400",
-
-    "_TPA_1L": "N27.57.47.859,W82.32.32.479",
-    "_TPA_19R": "N27.59.36.742,W82.32.28.780",
-    "_TPA_1R": "N27.57.51.516,W82.31.44.368",
-    "_TPA_19L": "N27.59.13.660,W82.31.41.573",
-    "_TPA_10": "N27.58.14.991,W82.32.09.902",
-    "_TPA_28": "N27.58.12.890,W82.30.51.878",
-
-    "_PIE_36": "N27.53.49.053,W82.41.10.151",
-    "_PIE_18": "N27.55.24.293,W82.41.26.538",
-
-    "_SRQ_14": "N27.24.16.639,W82.33.56.316",
-    "_SRQ_32": "N27.23.10.842,W82.32.40.990",
-
-    "_LAL_10": "N27.59.21.253,W82.02.01.927",
-    "_LAL_28": "N27.59.21.458,W82.00.27.118"
+    "KLAL": "N27.59.15.500,W82.01.08.400"
   },
   "inhibit_ca_volumes": [
     {
@@ -1382,8 +1347,7 @@
           "KPIE": 1
         },
         "LUBBR3": {
-          "KSRQ": 2,
-          "KPIE": 1
+          "KSRQ": 2
         }
       },
       "solo_controller": "TPA_E_APP",
@@ -1513,8 +1477,7 @@
           "KPIE": 1
         },
         "LUBBR3": {
-          "KSRQ": 2,
-          "KPIE": 1
+          "KSRQ": 2
         }
       },
       "solo_controller": "TPA_E_APP",

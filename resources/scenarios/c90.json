@@ -8,7 +8,7 @@
                     "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200 _ORD_4R/a661"
+                        "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200"
                     ]
                 },
                 "I9L": {
@@ -16,7 +16,7 @@
                     "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760 _ORD_9L/a668"
+                        "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760"
                     ]
                 },
                 "I9C": {
@@ -24,7 +24,7 @@
                     "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400 _ORD_9C/a673"
+                        "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400"
                     ]
                 },
                 "I9R": {
@@ -32,7 +32,7 @@
                     "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380 _ORD_9R/a668"
+                        "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380"
                     ]
                 },
                 "I0L": {
@@ -40,7 +40,7 @@
                     "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200 _ORD_10L/a672"
+                        "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200"
                     ]
                 },
                 "I0C": {
@@ -48,7 +48,7 @@
                     "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220 _ORD_10C/a669"
+                        "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220"
                     ]
                 },
                 "I0R": {
@@ -56,7 +56,7 @@
                     "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220 _ORD_10R/a680"
+                        "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220"
                     ]
                 },
                 "I7L": {
@@ -64,7 +64,7 @@
                     "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160 _ORD_27L/a654"
+                        "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160"
                     ]
                 },
                 "I7C": {
@@ -72,7 +72,7 @@
                     "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160 _ORD_27C/a653"
+                        "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160"
                     ]
                 },
                 "I7R": {
@@ -80,7 +80,7 @@
                     "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200 _ORD_27R/a664"
+                        "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200"
                     ]
                 },
                 "I8L": {
@@ -88,7 +88,7 @@
                     "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240 _ORD_28L/a667"
+                        "VOGLR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240"
                     ]
                 },
                 "I8C": {
@@ -96,7 +96,7 @@
                     "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KOENN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300 _ORD_28C/a651"
+                        "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KOENN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300"
                     ]
                 },
                 "I8R": {
@@ -104,7 +104,7 @@
                     "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200 _ORD_28R/a651"
+                        "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200"
                     ]
                 }
                 },
@@ -113,35 +113,35 @@
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_10L _ORD_28R/h250"
+                            "waypoints": "_ORD_28R/h250"
                         }
                     },
                     "9R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_9R _ORD_27L/h320"
+                            "waypoints": "_ORD_27L/h320"
                         }
                     },
                     "22L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_22L _ORD_4R/h180"
+                            "waypoints": "_ORD_4R/h180"
                         }
                     },
                     "28R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_28R _ORD_10L/h250"
+                            "waypoints": "_ORD_10L/h250"
                         }
                     },
                     "27L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_27L _ORD_9R/h010"
+                            "waypoints": "_ORD_9R/h010"
                         }
                     }
                 },
@@ -519,29 +519,29 @@
                             "runway": "4R",
                             "type": "ILS",
                             "waypoints": [
-                                "ALQUE/a6000 BANER/a5000 CADON/a4000 CITGO/a2400 OLOXE/a1460 _MDW_4R/a619"
+                                "ALQUE/a6000 BANER/a5000 CADON/a4000 CITGO/a2400 OLOXE/a1460"
                             ]
                         },
                         "I3C": {
                             "runway": "13C",
                             "type": "ILS",
                             "waypoints": [
-                                "DPA/a2600 HEBKU/a2600 HITOB/a2000 HISKO/a1440 _MDW_13C/a611",
-                                "HEBKU/a2600 HITOB/a2000 HISKO/a1440 _MDW_13C/a611"
+                                "DPA/a2600 HEBKU/a2600 HITOB/a2000 HISKO/a1440",
+                                "HEBKU/a2600 HITOB/a2000 HISKO/a1440"
                             ]
                         },
                         "R2L": {
                             "runway": "22L",
                             "type": "RNAV",
                             "waypoints": [
-                                "STERE/a3000 TACTT/a3000 SAILZ/a3000 DXXON/a3000 MNDOE/a2400 JIBBB/a1900 YACHT/a1500 _MDW_22L/a611"
+                                "STERE/a3000 TACTT/a3000 SAILZ/a3000 DXXON/a3000 MNDOE/a2400 JIBBB/a1900 YACHT/a1500"
                             ]
                         },
                         "I1C": {
                             "runway": "31C",
                             "type": "ILS",
                             "waypoints": [
-                                "HILLS/a5000 GLEAM/a4000 RUNTS/a2500 HOBEL/a1700 _MDW_31C/a613"
+                                "HILLS/a5000 GLEAM/a4000 RUNTS/a2500 HOBEL/a1700"
                             ]
                         }
                     },
@@ -550,68 +550,68 @@
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h100"
+                                "waypoints": "_MDW_22L/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h130"
+                                "waypoints": "_MDW_22L/h130"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h250"
+                                "waypoints": "_MDW_22L/h250"
                             }
                         },
                         "13C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h090"
+                                "waypoints": "_MDW_31C/h090"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h170"
+                                "waypoints": "_MDW_31C/h170"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h200"
+                                "waypoints": "_MDW_31C/h200"
                             }
                         },
                         "22L": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h140"
+                                "waypoints": "_MDW_4R/h140"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h180"
+                                "waypoints": "_MDW_4R/h180"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_22L _MDW_4R/h250"
+                                "waypoints": "_MDW_4R/h250"
                             }
                         },
                         "31C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h100"
+                                "waypoints": "_MDW_13C/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h220"
+                                "waypoints": "_MDW_13C/h220"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h250"
+                                "waypoints": "_MDW_13C/h250"
                             }
                         }
                     },

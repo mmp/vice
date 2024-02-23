@@ -7,7 +7,7 @@
           "runway": "24",
           "type": "ILS",
           "waypoints": [
-            "SPATT/iaf/a4000 HUKEV/a2700 LOWGA/faf/a2200 CUXOB/a1740 _BHM_24/a650"
+            "SPATT/iaf/a4000 HUKEV/a2700 LOWGA/faf/a2200 CUXOB/a1740"
           ]
         },
         "Y24": {
@@ -15,7 +15,7 @@
           "runway": "24",
           "type": "RNAV",
           "waypoints": [
-            "SPATT/iaf/a3300 HUKEV/a2700 LOWGA/a2200 CUXOB/a1740 _BHM_24/a650"
+            "SPATT/iaf/a3300 HUKEV/a2700 LOWGA/a2200 CUXOB/a1740"
           ]
         },
         "Z24": {
@@ -23,17 +23,17 @@
           "runway": "24",
           "type" : "RNAV",
           "waypoints": [
-            "MREKK/iaf/a6000 SPATT/if/a4000 HUKEV/a2700 LOWGA/a2200 _BHM_24/a650",
-            "MOKEE NOCIM LOWGA/faf/a2200 _BHM_24/a650",
-            "VLKNN/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200 _BHM_24/a650",
-            "HESGA/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200 _BHM_24/a650"
+            "MREKK/iaf/a6000 SPATT/if/a4000 HUKEV/a2700 LOWGA/a2200",
+            "MOKEE NOCIM LOWGA/faf/a2200",
+            "VLKNN/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200",
+            "HESGA/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200"
           ]
         },
         "I6": {
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-            "OKW/a3000 GUFLO/if/a2600 CEMPO/a2200 _BHM_6/a650"
+            "OKW/a3000 GUFLO/if/a2600 CEMPO/a2200"
           ]
         },
         "Z6": {
@@ -41,11 +41,11 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "GUFLO/if/a2300 LELNE/faf/a2300 _BHM_6/a650",
-            "CRMSN/a9000 JAVJA/a6000 WOSIX/a4000 GUFLO/a2300 LELNE/faf/a2300 _BHM_6/a650",
-            "VLKNN/iaf/a3000 AYUCE/s180/a3000 CEWFA/s180/a2300 LELNE/faf/a2300 _BHM_6/a650",
-            "WENDO/a6000 MREKK/iaf/a4000 EMIZI/if/s180/a3000 AYUCE/s180/a2300 CEWFA/s180/a2300 LELNE/faf/s180/a2300 _BHM_6/a650",
-            "BAMTE/if/s180/a3000 RAVPE/s180/a2300 LELNE/faf/a2300 _BHM_6/a650"
+            "GUFLO/if/a2300 LELNE/faf/a2300",
+            "CRMSN/a9000 JAVJA/a6000 WOSIX/a4000 GUFLO/a2300 LELNE/faf/a2300",
+            "VLKNN/iaf/a3000 AYUCE/s180/a3000 CEWFA/s180/a2300 LELNE/faf/a2300",
+            "WENDO/a6000 MREKK/iaf/a4000 EMIZI/if/s180/a3000 AYUCE/s180/a2300 CEWFA/s180/a2300 LELNE/faf/s180/a2300",
+            "BAMTE/if/s180/a3000 RAVPE/s180/a2300 LELNE/faf/a2300"
           ]
         },
         "Y6": {
@@ -53,9 +53,9 @@
           "runway": "6",
           "type": "RNAV",
           "waypoints": [
-            "OKW/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200 _BHM_6/a650",
-            "HEENA/iaf/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200 _BHM_6/a650",
-            "RIMZO/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200 _BHM_6/a650"
+            "OKW/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200",
+            "HEENA/iaf/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200",
+            "RIMZO/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200"
           ]
         },
         "G18": {
@@ -63,9 +63,9 @@
           "runway": "18",
           "type": "RNAV",
           "waypoints": [
-            "CAPUN/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300 _BHM_18/a650",
-            "ALEPE/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300 _BHM_18/a650",
-            "COLIG/iaf/a3500 BIDPE/a2600 BASKN/faf/a2300 _BHM_18/a650"
+            "CAPUN/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300",
+            "ALEPE/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300",
+            "COLIG/iaf/a3500 BIDPE/a2600 BASKN/faf/a2300"
           ]
         },
         "G36": {
@@ -73,8 +73,8 @@
           "runway": "36",
           "type": "RNAV",
           "waypoints": [
-            "OKW/a3000 JAPAM/iaf/a3000 GOTBY/if/a3000 IMOBY/a2800 BERFY/a2300 _BHM_36/a650",
-            "GOTBY/iaf/a3000 IMOBY/a2800 BERFY/a2300 _BHM_36/a650"
+            "OKW/a3000 JAPAM/iaf/a3000 GOTBY/if/a3000 IMOBY/a2800 BERFY/a2300",
+            "GOTBY/iaf/a3000 IMOBY/a2800 BERFY/a2300"
           ]
         },
         "I18": {
@@ -82,7 +82,7 @@
           "runway": "18",
           "type": "ILS",
           "waypoints": [
-            "COLIG/iaf/a3500 BASKN/faf/a2300 IMTOY/a1380 _BHM_18/a650"
+            "COLIG/iaf/a3500 BASKN/faf/a2300 IMTOY/a1380"
           ]
         }
       },
@@ -91,74 +91,74 @@
           "DAYVS": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           },
           "JOEYE": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           },
           "KELCC": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           },
           "RHETT": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           },
           "MRICA": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           },
           "CHEHA": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           },
           "GUMMP": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_24 _BHM_6/h238"
+            "waypoints": "_BHM_6/h238"
           }
         },
         "6": {
           "DAYVS": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           },
           "JOEYE": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           },
           "KELCC": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           },
           "RHETT": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           },
           "MRICA": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           },
           "CHEHA": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           },
           "GUMMP": {
             "cleared_altitude": 4000,
             "sid": "BHM8",
-            "waypoints": "_BHM_6 _BHM_24/h058"
+            "waypoints": "_BHM_24/h058"
           }
         }
       },

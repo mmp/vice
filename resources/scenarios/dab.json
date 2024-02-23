@@ -8,8 +8,8 @@
           "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30",
-            "SMYRA/arc18.9OMN WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680 _DAB_7L/a30"
+            "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680",
+            "SMYRA/arc18.9OMN WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680"
           ]
         },
         "R7R": {
@@ -17,8 +17,8 @@
           "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
-            "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600 _DAB_7R/a32",
-            "TACUR/lhilpt4nm/a1700 JUSAD/a1600 _DAB_7R/a32"
+            "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600",
+            "TACUR/lhilpt4nm/a1700 JUSAD/a1600"
           ]
         },
         "R16": {
@@ -26,8 +26,8 @@
           "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
-            "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800 _DAB_16/a30",
-            "CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800 _DAB_16/a30"
+            "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800",
+            "CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800"
           ]
         },
         "I5R": {
@@ -35,7 +35,7 @@
           "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "WISPO/a3000 RINEE/a2700 DIYAK/a1600 _DAB_25R/a34"
+            "WISPO/a3000 RINEE/a2700 DIYAK/a1600"
           ]
         },
         "R5L": {
@@ -43,7 +43,7 @@
           "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
-            "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020 _DAB_25L/a33"
+            "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020"
           ]
         },
         "R34": {
@@ -51,9 +51,9 @@
           "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
-            "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34",
-            "OAKIE/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34",
-            "KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700 _DAB_34/a34"
+            "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",
+            "OAKIE/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",
+            "KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700"
           ]
         }
       },
@@ -62,30 +62,30 @@
           "CRG": {
             "cleared_altitude": 4000,
             "sid": "ROYES7",
-            "waypoints": "_DAB_7L _DAB_25R/h070 BARBS ROYES CRG"
+            "waypoints": "_DAB_25R/h070 BARBS ROYES CRG"
           },
           "MALET": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_7R _DAB_25L/h070 MALET"
+            "waypoints": "_DAB_25L/h070 MALET"
           },
           "ROYES": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_7L _DAB_25R/h070 ROYES"
+            "waypoints": "_DAB_25R/h070 ROYES"
           }
         },
         "25R": {
           "CRG": {
             "cleared_altitude": 4000,
             "sid": "ROYES7",
-            "waypoints": "_DAB_25R _DAB_7L/h250 BARBS ROYES CRG"
+            "waypoints": "_DAB_7L/h250 BARBS ROYES CRG"
           },
           "MALET": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_25L _DAB_7R/h250 MALET"
+            "waypoints": "_DAB_7R/h250 MALET"
           },
           "ROYES": {
             "cleared_altitude": 3000,
-            "waypoints": "_DAB_25R _DAB_7L/h250 ROYES"
+            "waypoints": "_DAB_7L/h250 ROYES"
           }
         }
       },

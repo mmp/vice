@@ -8,7 +8,7 @@
             "tower_controller": "BOS_W_TWR",
             "type": "ILS",
             "waypoints": [
-              "GOSHI/iaf/a6000 WINNI/if/a4000 NABBO/a3000 MILTT/faf/a1700 IRSEW/a700 _BOS_4R/a18"
+              "GOSHI/iaf/a6000 WINNI/if/a4000 NABBO/a3000 MILTT/faf/a1700 IRSEW/a700"
             ]
           },
           "R4L": {
@@ -16,7 +16,7 @@
             "tower_controller": "BOS_W_TWR",
             "type": "RNAV",
             "waypoints": [
-              "AAALL/iaf/a4000 LVRON/if/a3000 MTAPN/faf/a1700 _BOS_4L/a14"
+              "AAALL/iaf/a4000 LVRON/if/a3000 MTAPN/faf/a1700"
             ]
           },
           "I5R": {
@@ -24,8 +24,8 @@
             "tower_controller": "BOS_W_TWR",
             "type": "ILS",
             "waypoints": [
-              "AADMS/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700 _BOS_15R/a17",
-              "GDM/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700 _BOS_15R/a17"
+              "AADMS/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700",
+              "GDM/iaf SWIGG/if/a4000 WOBUR/a3000 MALDY/faf/a1700"
             ]
           },
           "I2L": {
@@ -33,7 +33,7 @@
             "tower_controller": "BOS_E_TWR",
             "type": "ILS",
             "waypoints": [
-              "NOLEY/if/a4000 WYANE/a3000 VOCUS/faf/a1700 ZUMOL/a700 _BOS_22L/a16"
+              "NOLEY/if/a4000 WYANE/a3000 VOCUS/faf/a1700 ZUMOL/a700"
             ]
           },
           "I27": {
@@ -41,7 +41,7 @@
             "tower_controller": "BOS_E_TWR",
             "type": "ILS",
             "waypoints": [
-              "AYBEE/iaf/a6000 KLANE/a4000 LONER/if/a3000 RIPIT/faf/a1700 _BOS_27/a17"
+              "AYBEE/iaf/a6000 KLANE/a4000 LONER/if/a3000 RIPIT/faf/a1700"
             ]
           },
           "I3L": {
@@ -49,7 +49,7 @@
             "tower_controller": "BOS_E_TWR",
             "type": "ILS",
             "waypoints": [
-              "BENNN/if/a4000 COHAS/a3000 NIMOY/faf/a1500 RDUKE/a700 _BOS_33L/a16"
+              "BENNN/if/a4000 COHAS/a3000 NIMOY/faf/a1500 RDUKE/a700"
             ]
           }
         },
@@ -107,32 +107,32 @@
             "BLZZR": {
               "cleared_altitude": 5000,
               "sid": "BLZZR5",
-              "waypoints" : "_BOS_9 _BOS_27 CLAWW/s250 FENWY JAITE HEWMO/s260 KENWI"
+              "waypoints": "CLAWW/s250 FENWY JAITE HEWMO/s260 KENWI"
             },
             "BRUWN": {
               "cleared_altitude": 5000,
               "sid": "BRUWN6",
-              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 FENWY BUCYK"
+              "waypoints": "CLAWW/s250 FENWY BUCYK"
             },
             "CELTK": {
               "cleared_altitude": 5000,
               "sid": "CELTK6",
-              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 FENWY SCOAR"
+              "waypoints": "CLAWW/s250 FENWY SCOAR"
             },
             "HYLND": {
               "cleared_altitude": 5000,
               "sid": "HYLND6",
-              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 CORRT STAYC SOFEA SHAAN"
+              "waypoints": "CLAWW/s250 CORRT STAYC SOFEA SHAAN"
             },
             "LBSTA": {
               "cleared_altitude": 5000,
               "sid": "LBSTA7",
-              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 CLMPP SHAUN"
+              "waypoints": "CLAWW/s250 CLMPP SHAUN"
             },
             "PATSS": {
               "cleared_altitude": 5000,
               "sid": "PATSS6",
-              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 FENWY GLLET WYMTH"
+              "waypoints": "CLAWW/s250 FENWY GLLET WYMTH"
             },
             "REVSS": {
               "cleared_altitude": 5000,
@@ -142,133 +142,133 @@
             "SSOXS": {
               "cleared_altitude": 5000,
               "sid": "SSOXS6",
-              "waypoints": "_BOS_9 _BOS_27 CLAWW/s250 FENWY BUCYK JSTER"
+              "waypoints": "CLAWW/s250 FENWY BUCYK JSTER"
             }
           },
           "15R": {
             "BLZZR": {
               "cleared_altitude": 5000,
               "sid": "BLZZR5",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+              "waypoints": "TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
             },
             "BRUWN": {
               "cleared_altitude": 5000,
               "sid": "BRUWN6",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BRRRO/s250 BUCYK"
+              "waypoints": "TASKT BRRRO/s250 BUCYK"
             },
             "CELTK": {
               "cleared_altitude": 5000,
               "sid": "CELTK6",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BRRRO/s250 SCOAR"
+              "waypoints": "TASKT BRRRO/s250 SCOAR"
             },
             "HYLND": {
               "cleared_altitude": 5000,
               "sid": "HYLND6",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BOATT/s250 HEARR MARBB"
+              "waypoints": "TASKT BOATT/s250 HEARR MARBB"
             },
             "LBSTA": {
               "cleared_altitude": 5000,
               "sid": "LBSTA7",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BOATT/s250 HEARR SHAUN"
+              "waypoints": "TASKT BOATT/s250 HEARR SHAUN"
             }, 
             "PATSS": {
               "cleared_altitude": 5000,
               "sid": "PATSS6",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+              "waypoints": "TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
             },
             "REVSS": {
               "cleared_altitude": 5000,
               "sid": "REVSS5",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+              "waypoints": "TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
             },
             "SSOXS": {
               "cleared_altitude": 5000,
               "sid": "SSOXS6",
-              "waypoints": "_BOS_15R _BOS_33L TASKT BRRRO/s250 BUCYK JSTER"
+              "waypoints": "TASKT BRRRO/s250 BUCYK JSTER"
             }
           },
           "22R": {
             "BLZZR": {
               "cleared_altitude": 5000,
               "sid": "BLZZR5",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+              "waypoints": "TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
             },
             "BRUWN": {
               "cleared_altitude": 5000,
               "sid": "BRUWN6",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BRRRO/s250 BUCYK"
+              "waypoints": "TJAYY BRRRO/s250 BUCYK"
             },
             "CELTK": {
               "cleared_altitude": 5000,
               "sid": "CELTK6",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BRRRO/s250 SCOAR"
+              "waypoints": "TJAYY BRRRO/s250 SCOAR"
             },
             "HYLND": {
               "cleared_altitude": 5000,
               "sid": "HYLND6",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BOATT/s250 HEARR MARBB"
+              "waypoints": "TJAYY BOATT/s250 HEARR MARBB"
             },
             "LBSTA": {
               "cleared_altitude": 5000,
               "sid": "LBSTA7",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BOATT/s250 HEARR SHAUN"
+              "waypoints": "TJAYY BOATT/s250 HEARR SHAUN"
             },
             "PATSS": {
               "cleared_altitude": 5000,
               "sid": "PATSS6",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+              "waypoints": "TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
             },
             "REVSS": {
               "cleared_altitude": 5000,
               "sid": "REVSS5",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+              "waypoints": "TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
             },
             "SSOXS": {
               "cleared_altitude": 5000,
               "sid": "SSOXS6",
-              "waypoints": "_BOS_22R _BOS_4L TJAYY BRRRO/s250 BUCYK JSTER"
+              "waypoints": "TJAYY BRRRO/s250 BUCYK JSTER"
             }
           },
           "33L": {
             "BLZZR": {
               "cleared_altitude": 5000,
               "sid": "BLZZR5",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK EXXXX"
+              "waypoints": "TEKKK EXXXX"
             },
             "BRUWN": {
               "cleared_altitude": 5000,
               "sid": "BRUWN6",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK COUSY CBEAR COLYN BEREI"
+              "waypoints": "TEKKK COUSY CBEAR COLYN BEREI"
             },
             "CELTK": {
               "cleared_altitude": 5000,
               "sid": "CELTK6",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK COUSY CBEAR COLYN"
+              "waypoints": "TEKKK COUSY CBEAR COLYN"
             },
             "HYLND": {
               "cleared_altitude": 5000,
               "sid": "HYLND6",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK CAMWI"
+              "waypoints": "TEKKK CAMWI"
             },
             "LBSTA": {
               "cleared_altitude": 5000,
               "sid": "LBSTA7",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK CAMWI"
+              "waypoints": "TEKKK CAMWI"
             },
             "PATSS": {
               "cleared_altitude": 5000,
               "sid": "PATSS6",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK COUSY"
+              "waypoints": "TEKKK COUSY"
             },
             "REVSS": {
               "cleared_altitude": 5000,
               "sid": "REVSS5",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK DUBYU"
+              "waypoints": "TEKKK DUBYU"
             },
             "SSOXS": {
               "cleared_altitude": 5000,
               "sid": "SSOXS6",
-              "waypoints": "_BOS_33L _BOS_15R TEKKK COUSY CBEAR COLYN"
+              "waypoints": "TEKKK COUSY CBEAR COLYN"
             }
           }
         },

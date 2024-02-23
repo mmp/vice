@@ -244,10 +244,28 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.ErrorString("Approach names cannot only have numbers in them")
 		}
 
+		if appr.Runway == "" {
+			e.ErrorString("Must specify \"runway\"")
+		}
+		rwy, ok := LookupRunway(icao, appr.Runway)
+		if !ok {
+			e.ErrorString("\"runway\" \"%s\" is unknown. Options: %s", appr.Runway,
+				database.Airports[icao].ValidRunways())
+		}
+
 		for i := range appr.Waypoints {
-			n := len(appr.Waypoints[i])
-			appr.Waypoints[i][n-1].Delete = true
 			sg.InitializeWaypointLocations(appr.Waypoints[i], e)
+
+			// Add the final fix at the runway threshold.
+			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
+				Fix:      appr.Runway,
+				Location: rwy.Threshold,
+				AltitudeRestriction: &AltitudeRestriction{
+					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
+				},
+				Delete: true,
+			})
+			n := len(appr.Waypoints[i])
 
 			if appr.Waypoints[i][n-1].ProcedureTurn != nil {
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
@@ -264,10 +282,6 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			}
 
 			appr.Waypoints[i].CheckApproach(e)
-		}
-
-		if appr.Runway == "" {
-			e.ErrorString("Must specify \"runway\"")
 		}
 
 		if appr.FullName == "" {
@@ -315,9 +329,28 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		seenExits := make(map[string]interface{})
 		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
 
+		r, ok := LookupRunway(icao, rwy)
+		if !ok {
+			e.ErrorString("unknown runway for airport")
+		}
+		rend, ok := LookupOppositeRunway(icao, rwy)
+		if !ok {
+			e.ErrorString("missing opposite runway")
+		}
+
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
 			sg.InitializeWaypointLocations(route.Waypoints, e)
+
+			route.Waypoints = append([]Waypoint{
+				Waypoint{
+					Fix:      rwy,
+					Location: r.Threshold,
+				},
+				Waypoint{
+					Fix:      rwy + "-mid",
+					Location: lerp2f(0.75, r.Threshold, rend.Threshold),
+				}}, route.Waypoints...)
 
 			route.Waypoints.CheckDeparture(e)
 
@@ -384,6 +417,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		// Make sure that all runways have a route to the exit
 		for rwy, routes := range ap.DepartureRoutes {
 			e.Push("Runway " + rwy)
+
+			if _, ok := LookupRunway(icao, rwy); !ok {
+				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+			}
 			if _, ok := routes[dep.Exit]; !ok {
 				e.ErrorString("exit \"%s\" not found in runway's \"departure_routes\"", dep.Exit)
 			}
@@ -436,6 +473,11 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Push(rwy + " region")
 		def.Runway = rwy
 
+		if _, ok := LookupRunway(icao, rwy); !ok {
+			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy,
+				database.Airports[icao].ValidRunways())
+		}
+
 		if !slices.ContainsFunc(ap.ConvergingRunways,
 			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy }) {
 			e.ErrorString("runway not used in \"converging_runways\"")
@@ -446,6 +488,12 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 
 	for i, pair := range ap.ConvergingRunways {
 		e.Push("Converging runways " + pair.Runways[0] + "/" + pair.Runways[1])
+
+		for _, rwy := range pair.Runways {
+			if _, ok := LookupRunway(icao, rwy); !ok {
+				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+			}
+		}
 
 		// Find the runway intersection point
 		reg0, reg1 := ap.ApproachRegions[pair.Runways[0]], ap.ApproachRegions[pair.Runways[1]]
@@ -483,38 +531,60 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Pop()
 	}
 
+	// Generate reasonable default ATPA volumes for any runways they aren't
+	// specified for.
+	if ap.ATPAVolumes == nil {
+		ap.ATPAVolumes = make(map[string]*ATPAVolume)
+	}
+	for _, rwy := range database.Airports[icao].Runways {
+		if _, ok := ap.ATPAVolumes[rwy.Id]; !ok {
+			// Make a default volume
+			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{
+				Id:        rwy.Id,
+				Threshold: rwy.Threshold,
+				Heading:   rwy.Heading,
+			}
+		}
+	}
+
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)
 
 		vol.Id = ap.Name + rwy
 
-		if vol.ThresholdString == "" {
-			e.ErrorString("\"runway_threshold\" not specified.")
-		} else {
-			var ok bool
-			if vol.Threshold, ok = sg.locate(vol.ThresholdString); !ok {
-				e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
-			}
+		if _, ok := LookupRunway(icao, rwy); !ok {
+			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+		}
 
-			// Defaults if things are not specified
-			if vol.MaxHeadingDeviation == 0 {
-				vol.MaxHeadingDeviation = 90
+		if vol.Threshold.IsZero() { // the location is set directly for default volumes
+			if vol.ThresholdString == "" {
+				e.ErrorString("\"runway_threshold\" not specified.")
+			} else {
+				var ok bool
+				if vol.Threshold, ok = sg.locate(vol.ThresholdString); !ok {
+					e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
+				}
 			}
-			if vol.Floor == 0 {
-				vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
-			}
-			if vol.Ceiling == 0 {
-				vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
-			}
-			if vol.Length == 0 {
-				vol.Length = 15
-			}
-			if vol.LeftWidth == 0 {
-				vol.LeftWidth = 2000
-			}
-			if vol.RightWidth == 0 {
-				vol.RightWidth = 2000
-			}
+		}
+
+		// Defaults if things are not specified
+		if vol.MaxHeadingDeviation == 0 {
+			vol.MaxHeadingDeviation = 90
+		}
+		if vol.Floor == 0 {
+			vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
+		}
+		if vol.Ceiling == 0 {
+			vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
+		}
+		if vol.Length == 0 {
+			vol.Length = 15
+		}
+		if vol.LeftWidth == 0 {
+			vol.LeftWidth = 2000
+		}
+		if vol.RightWidth == 0 {
+			vol.RightWidth = 2000
 		}
 
 		e.Pop()
@@ -601,14 +671,12 @@ type Approach struct {
 }
 
 func (ap *Approach) Line() [2]Point2LL {
-	// assume we have at least one set of waypoints and that it has >= 3 waypoints!
+	// assume we have at least one set of waypoints and that it has >= 2 waypoints!
 	wp := ap.Waypoints[0]
 
-	// use the last two waypoints of the actual approach, skipping the very
-	// last one which specifies the runway threshold and may have some slop
-	// in it...
+	// use the last two waypoints of the approach
 	n := len(wp)
-	return [2]Point2LL{wp[n-3].Location, wp[n-2].Location}
+	return [2]Point2LL{wp[n-2].Location, wp[n-1].Location}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {

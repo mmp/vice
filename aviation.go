@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -24,6 +25,14 @@ type FAAAirport struct {
 	Name      string
 	Elevation int
 	Location  Point2LL
+	Runways   []Runway
+}
+
+type Runway struct {
+	Id        string
+	Heading   float32
+	Threshold Point2LL
+	Elevation int
 }
 
 type METAR struct {
@@ -212,12 +221,6 @@ const (
 
 func (t TransponderMode) String() string {
 	return [...]string{"Standby", "C"}[t]
-}
-
-type Runway struct {
-	Number         string
-	Heading        float32
-	Threshold, End Point2LL
 }
 
 type Navaid struct {
@@ -764,7 +767,7 @@ func (wslice WaypointArray) Encode() string {
 }
 
 func (w *WaypointArray) UnmarshalJSON(b []byte) error {
-	if len(b) > 2 && b[0] == '"' && b[len(b)-1] == '"' {
+	if len(b) >= 2 && b[0] == '"' && b[len(b)-1] == '"' {
 		// Handle the string encoding used in scenario JSON files
 		wp, err := parseWaypoints(string(b[1 : len(b)-1]))
 		if err == nil {
@@ -828,8 +831,8 @@ func (w WaypointArray) CheckApproach(e *ErrorLogger) {
 	w.checkBasics(e)
 	w.checkDescending(e)
 
-	if len(w) < 3 {
-		e.ErrorString("must have at least three waypoints in an approach")
+	if len(w) < 2 {
+		e.ErrorString("must have at least two waypoints in an approach")
 	}
 
 	/*
@@ -1256,8 +1259,16 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
+	var airports map[string]FAAAirport
+	wg.Add(1)
+	go func() { airports = parseCIFP(); wg.Done() }()
 	wg.Wait()
 
+	for icao, ap := range airports {
+		db.Airports[icao] = ap
+	}
+
+	fmt.Printf("Parsed built-in databases in %v\n", time.Since(start))
 	lg.Infof("Parsed built-in databases in %v", time.Since(start))
 
 	return db
@@ -1354,11 +1365,21 @@ func parseAirports() map[string]FAAAirport {
 	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
 		Location: parse("N36.26.30.006,W95.36.21.936")}
 	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
-		Location: parse("N036.11.08.930,W095.45.53.942")}
+		Location: parse("N036.11.08.930,W095.45.53.942"),
+		Runways: []Runway{
+			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.10.37.069,W095.44.51.979"), Elevation: 677},
+			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.11.23.280,W095.44.35.912"), Elevation: 677},
+			Runway{Id: "10L", Heading: 280, Threshold: parse("N036.10.32.180,W095.44.24.843"), Elevation: 677},
+			Runway{Id: "10R", Heading: 280, Threshold: parse("N036.11.19.188,W095.44.10.863"), Elevation: 677},
+		}}
 	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
 		Location: parse("N36.30.26.585,W96.16.28.968")}
 	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
-		Location: parse("N035.56.19.765,W095.42.49.812")}
+		Location: parse("N035.56.19.765,W095.42.49.812"),
+		Runways: []Runway{
+			Runway{Id: "27", Heading: 270, Threshold: parse("N035.56.14.615,W095.42.05.152"), Elevation: 689},
+			Runway{Id: "9", Heading: 270, Threshold: parse("N035.56.20.355,W095.41.35.791"), Elevation: 689},
+		}}
 	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
 		Location: parse("N36.05.06.948,W96.26.57.501")}
 
@@ -1455,6 +1476,122 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 	return airlines, callsigns
 }
 
+// FAA Coded Instrument Flight Procedures (CIFP)
+// https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
+func parseCIFP() map[string]FAAAirport {
+	airports := make(map[string]FAAAirport)
+
+	cifp := LoadResource("FAACIFP18.zst")
+
+	const lineLength = 134 // 132 chars + \r + \n
+	if len(cifp)%lineLength != 0 {
+		panic("Invalid CIFP file: not all lines are 132 characters")
+	}
+
+	parseLLDigits := func(d, m, s []byte) float32 {
+		deg, err := strconv.Atoi(string(d))
+		if err != nil {
+			panic(err)
+		}
+		min, err := strconv.Atoi(string(m))
+		if err != nil {
+			panic(err)
+		}
+		sec, err := strconv.Atoi(string(s))
+		if err != nil {
+			panic(err)
+		}
+		return float32(deg) + float32(min)/60 + float32(sec)/100/3600
+	}
+	parseLatLong := func(lat, long []byte) Point2LL {
+		var p Point2LL
+
+		p[1] = parseLLDigits(lat[1:3], lat[3:5], lat[5:])
+		p[0] = parseLLDigits(long[1:4], long[4:6], long[6:])
+
+		if lat[0] == 'S' {
+			p[1] = -p[1]
+		}
+		if long[0] == 'W' {
+			p[0] = -p[0]
+		}
+		return p
+	}
+	parseInt := func(s []byte) int {
+		if v, err := strconv.Atoi(string(s)); err != nil {
+			panic(err)
+		} else {
+			return v
+		}
+	}
+
+	for len(cifp) > 0 {
+		line := cifp[:lineLength]
+		cifp = cifp[lineLength:]
+
+		recordType := line[0]
+		if recordType != 'S' { // not a standard field
+			continue
+		}
+		customer := line[1:4]
+		if string(customer) != "USA" && string(customer) != "PAC" { // ignore Canada stuff.
+			continue
+		}
+
+		sectionCode := line[4]
+		switch sectionCode {
+		case 'D':
+			// TODO: navaids
+
+		case 'E':
+			// TODO: enroute waypoints, holding patterns, airways, etc...
+
+		case 'P':
+			// Airports
+			icao := string(line[6:10])
+			subsection := line[12]
+			switch subsection {
+			case 'A': // primary airport records 4.1.7
+				location := parseLatLong(line[32:41], line[41:51])
+				elevation := parseInt(line[56:61])
+
+				airports[icao] = FAAAirport{
+					Id:        icao,
+					Elevation: elevation,
+					Location:  location,
+				}
+
+			case 'G': // runway records 4.1.10
+				continuation := line[21]
+				if continuation != '0' && continuation != '1' {
+					continue
+				}
+				if string(line[27:31]) == "    " {
+					// No heading available. This happens for e.g. seaports.
+					continue
+				}
+
+				rwy := string(line[13:18])
+				rwy = strings.TrimPrefix(rwy, "RW")
+				rwy = strings.TrimPrefix(rwy, "0")
+				rwy = strings.TrimSpace(rwy)
+
+				ap := airports[icao]
+				ap.Runways = append(ap.Runways, Runway{
+					Id:        rwy,
+					Heading:   float32(parseInt(line[27:31])) / 10,
+					Threshold: parseLatLong(line[32:41], line[41:51]),
+					Elevation: parseInt(line[66:71]),
+				})
+				airports[icao] = ap
+			}
+		}
+
+	}
+
+	return airports
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Utility methods
 
@@ -1502,4 +1639,83 @@ func FixReadback(fix string) string {
 	} else {
 		return fix
 	}
+}
+
+func cleanRunway(rwy string) string {
+	// The runway may have extra text to distinguish different
+	// configurations (e.g., "13.JFK-ILS-13"). Find the prefix that is
+	// an actual runway specifier to use in the search below.
+	for i, ch := range rwy {
+		if ch >= '0' && ch <= '9' {
+			continue
+		} else if ch == 'L' || ch == 'R' || ch == 'C' {
+			return rwy[:i+1]
+		} else {
+			return rwy[:i]
+		}
+	}
+	return rwy
+}
+
+func LookupRunway(icao, rwy string) (Runway, bool) {
+	if ap, ok := database.Airports[icao]; !ok {
+		return Runway{}, false
+	} else {
+		rwy = cleanRunway(rwy)
+		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
+		if idx == -1 {
+			return Runway{}, false
+		}
+		return ap.Runways[idx], true
+	}
+}
+
+func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
+	if ap, ok := database.Airports[icao]; !ok {
+		return Runway{}, false
+	} else {
+		rwy = cleanRunway(rwy)
+
+		// Break runway into number and optional extension and swap
+		// left/right.
+		n := len(rwy)
+		num, ext := "", ""
+		switch rwy[n-1] {
+		case 'R':
+			ext = "L"
+			num = rwy[:n-1]
+		case 'L':
+			ext = "R"
+			num = rwy[:n-1]
+		case 'C':
+			ext = "C"
+			num = rwy[:n-1]
+		default:
+			num = rwy
+		}
+
+		// Extract the number so we can get the opposite heading
+		v, err := strconv.Atoi(num)
+		if err != nil {
+			return Runway{}, false
+		}
+
+		// The (v+18)%36 below would give us 0 for runway 36, so handle 18
+		// specially.
+		if v == 18 {
+			rwy = "36" + ext
+		} else {
+			rwy = fmt.Sprintf("%d", (v+18)%36) + ext
+		}
+
+		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
+		if idx == -1 {
+			return Runway{}, false
+		}
+		return ap.Runways[idx], true
+	}
+}
+
+func (ap FAAAirport) ValidRunways() string {
+	return strings.Join(MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
 }
