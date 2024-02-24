@@ -5290,10 +5290,12 @@ func (sp *STARSPane) checkInTrailSeparation(back, front *Aircraft) {
 			if s <= 24 {
 				// Error if conflict expected within 24 seconds (6-159).
 				state.ATPAStatus = ATPAStatusAlert
+				state.DatablockType = FullDatablock
 				return
 			} else {
 				// Warning if conflict expected within 45 seconds (6-159).
 				state.ATPAStatus = ATPAStatusWarning
+				state.DatablockType = FullDatablock
 				return
 			}
 		}
@@ -5470,6 +5472,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	if slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
+		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
 	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
@@ -6828,6 +6831,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		return true 
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
 		// If FDB, may trump others but idc
+		// This *should* be primarily doing CA and ATPA cones
 		return true 
 	} else if sp.isOverflight(ctx, ac) && sp.CurrentPreferenceSet.OverflightFullDatablocks { //Need a f7 + e
 		// Overflights
