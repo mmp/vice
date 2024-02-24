@@ -965,7 +965,11 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 		var wind string
 		spd := weather[0].Wspd
-		dir := weather[0].Wdir
+		dirStr := fmt.Sprintf("%v", weather[0].Wdir)
+		dir, err := strconv.Atoi(dirStr)
+		if err != nil {
+			lg.Errorf("Error converting %v into an int: %v.", dirStr, err)
+		}
 		if spd <= 0 {
 			wind = "00000KT"
 		} else if dir == -1{
@@ -977,13 +981,16 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 				wind += fmt.Sprintf("G%02d", gst)
 			}
 			wind += "KT"
+			fmt.Println(dir, spd, gst, wind)
 		}
+		
 		// Just provide the stuff that the STARS display shows
 		w.METAR[icao] = &METAR{
 			AirportICAO: icao,
 			Wind:        wind,
 			Altimeter:   fmt.Sprintf("A%d", alt),
 		}
+		fmt.Println(w.METAR[icao])
 	}
 
 	w.DepartureAirports = make(map[string]*Airport)
