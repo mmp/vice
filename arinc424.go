@@ -251,6 +251,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 						ap.Approaches = make(map[string][]WaypointArray)
 						airports[icao] = ap
 					}
+					id = tidyFAAApproachId(id)
 					if _, ok := airports[icao].Approaches[id]; ok {
 						panic("already seen approach id " + id)
 					}
@@ -289,6 +290,32 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 	fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
 
 	return airports, navaids, fixes
+}
+
+func tidyFAAApproachId(id string) string {
+	// Remove any hyphens
+	id = strings.ReplaceAll(id, "-", "")
+
+	// Pull out alphabetical identifier of the approach
+	alpha := ""
+	if end := id[len(id)-1]; end >= 'A' && end <= 'Z' && end != 'R' && end != 'L' {
+		alpha = string(id[len(id)-1])
+		id = id[:len(id)-1]
+	}
+
+	atype := id[0]
+	if atype == 'H' {
+		// Make all RNAVs start with "R"
+		atype = 'R'
+	}
+	rwy := id[1:]
+
+	// Trim leading 0 from runway numbers
+	if rwy[0] == '0' {
+		rwy = rwy[1:]
+	}
+
+	return string(atype) + alpha + rwy
 }
 
 type ssaRecord struct {

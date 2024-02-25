@@ -262,10 +262,17 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 				} else {
 					appr.Type = ILSApproach // close enough
 				}
-				appr.Runway = cleanRunway(appr.Id[1:])
-				if appr.Runway[0] == '0' {
-					appr.Runway = appr.Runway[1:]
+				// RZ22L -> 22L
+				for i, ch := range appr.Id {
+					if ch >= '1' && ch <= '9' {
+						appr.Runway = appr.Id[i:]
+						break
+					}
 				}
+				if len(appr.Runway) == 0 {
+					e.ErrorString("unable to convert approach id \"%s\" to runway", appr.Id)
+				}
+
 				appr.Waypoints = wps
 			}
 		}
@@ -689,7 +696,7 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
-	Id              string          `json:"id"`
+	Id              string          `json:"cifp_id"`
 	FullName        string          `json:"full_name"`
 	Type            ApproachType    `json:"type"`
 	Runway          string          `json:"runway"`

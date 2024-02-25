@@ -11,8 +11,8 @@
             "DPK FRIKK/iaf/faf/a1600+/hilpt/pta1400"
           ]
         },
-        "R1": { "cifp_id": "R01" },
-        "R14": { "cifp_id": "H14-Z" },
+        "R1": { "cifp_id": "R1" },
+        "R14": { "cifp_id": "RZ14" },
         "R19": { "cifp_id": "R19" },
         "R32": { "cifp_id": "R32" }
       },
@@ -184,8 +184,8 @@
     "KHVN": {
       "name": "New Haven",
       "approaches": {
-        "I2": { "cifp_id": "I02" },
-        "R2": { "cifp_id": "R02" },
+        "I2": { "cifp_id": "I2" },
+        "R2": { "cifp_id": "R2" },
         "R20": { "cifp_id": "R20" }
       },
       "departure_routes": {
@@ -334,8 +334,8 @@
         "I24": { "cifp_id": "I24" },
         "R24": { "cifp_id": "R24" },
         "R3L": { "cifp_id": "R33L" },
-        "I6": { "cifp_id": "I06" },
-        "R6": { "cifp_id": "R06" }
+        "I6": { "cifp_id": "I6" },
+        "R6": { "cifp_id": "R6" }
       },
       "departure_routes": {
         "15R": {
@@ -579,11 +579,11 @@
         "I2L": { "cifp_id": "I22L" },
         "I2R": { "cifp_id": "I22R" },
         "I3L": { "cifp_id": "I13L" },
-        "I4L": { "cifp_id": "I04L" },
-        "I4R": { "cifp_id": "I04R" },
-        "R1L": { "cifp_id": "H31LZ" },
-        "R1R": { "cifp_id": "H31RZ" },
-        "R2L": { "cifp_id": "R22LX" },
+        "I4L": { "cifp_id": "I4L" },
+        "I4R": { "cifp_id": "I4R" },
+        "R1L": { "cifp_id": "RZ31L" },
+        "R1R": { "cifp_id": "RZ31R" },
+        "R2L": { "cifp_id": "RX22L" },
         "R2R": { "cifp_id": "R22R" },
         "R3L": {
           "full_name": "RNAV Z Runway 13 Left",
@@ -601,8 +601,8 @@
             "ASALT/if/a3000/s210 NUCRI/faf/a2000 PEEBO/a921 MAYMA/a520"
           ]
         },
-        "R4L": { "cifp_id": "H04LZ" },
-        "R4R": { "cifp_id": "H04RZ" },
+        "R4L": { "cifp_id": "RZ4L" },
+        "R4R": { "cifp_id": "RZ4R" },
         "BVA": {
           "full_name": "Belmont Visual Runway 22 Left",
           "runway": "22L",
