@@ -543,10 +543,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			} else {
 				imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
 			}
+			uiStartDisable(!c.LiveWeather)
 			refresh := imgui.Button("Refresh Weather")
 			if refresh {
 				clear(airportWind)
 			}
+			uiEndDisable(!c.LiveWeather)
 			imgui.EndTable()
 
 		}
