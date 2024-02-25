@@ -250,6 +250,26 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.ErrorString("Approach names cannot only have numbers in them")
 		}
 
+		if appr.Id != "" {
+			if wps, ok := database.Airports[icao].Approaches[appr.Id]; !ok {
+				e.ErrorString("Approach \"%s\" not in database. Options: %s", appr.Id,
+					strings.Join(SortedMapKeys(database.Airports[icao].Approaches), ", "))
+				e.Pop()
+				continue
+			} else {
+				if appr.Id[0] == 'H' || appr.Id[0] == 'R' {
+					appr.Type = RNAVApproach
+				} else {
+					appr.Type = ILSApproach // close enough
+				}
+				appr.Runway = cleanRunway(appr.Id[1:])
+				if appr.Runway[0] == '0' {
+					appr.Runway = appr.Runway[1:]
+				}
+				appr.Waypoints = wps
+			}
+		}
+
 		if appr.Runway == "" {
 			e.ErrorString("Must specify \"runway\"")
 		}
@@ -669,6 +689,7 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
+	Id              string          `json:"id"`
 	FullName        string          `json:"full_name"`
 	Type            ApproachType    `json:"type"`
 	Runway          string          `json:"runway"`
