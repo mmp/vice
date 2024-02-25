@@ -390,9 +390,9 @@ func (pt PTType) String() string {
 type ProcedureTurn struct {
 	Type         PTType
 	RightTurns   bool
-	ExitAltitude float32 `json:",omitempty"`
-	MinuteLimit  int     `json:",omitempty"`
-	NmLimit      int     `json:",omitempty"`
+	ExitAltitude int     `json:",omitempty"`
+	MinuteLimit  float32 `json:",omitempty"`
+	NmLimit      float32 `json:",omitempty"`
 	Entry180NoPT bool    `json:",omitempty"`
 }
 
@@ -716,15 +716,15 @@ func (wslice WaypointArray) Encode() string {
 				}
 			}
 			if pt.MinuteLimit != 0 {
-				s += fmt.Sprintf("%dmin", pt.MinuteLimit)
+				s += fmt.Sprintf("%.1fmin", pt.MinuteLimit)
 			} else {
-				s += fmt.Sprintf("%dnm", pt.NmLimit)
+				s += fmt.Sprintf("%.1fnm", pt.NmLimit)
 			}
 			if pt.Entry180NoPT {
 				s += "/nopt180"
 			}
 			if pt.ExitAltitude != 0 {
-				s += fmt.Sprintf("/pta%0f", pt.ExitAltitude)
+				s += fmt.Sprintf("/pta%d", pt.ExitAltitude)
 			}
 		}
 		if w.IAF {
@@ -753,9 +753,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.Arc != nil {
 			if w.Arc.Fix != "" {
-				s += fmt.Sprintf("/arc%f%s", w.Arc.Radius, w.Arc.Fix)
+				s += fmt.Sprintf("/arc%.1f%s", w.Arc.Radius, w.Arc.Fix)
 			} else {
-				s += fmt.Sprintf("/arc%f", w.Arc.Length)
+				s += fmt.Sprintf("/arc%.1f", w.Arc.Length)
 			}
 		}
 
@@ -908,14 +908,17 @@ func parsePTExtent(pt *ProcedureTurn, extent string) error {
 	}
 
 	var err error
+	var limit float64
 	if extent[len(extent)-2:] == "nm" {
-		if pt.NmLimit, err = strconv.Atoi(extent[:len(extent)-2]); err != nil {
+		if limit, err = strconv.ParseFloat(extent[:len(extent)-2], 32); err != nil {
 			return fmt.Errorf("%s: unable to parse length in nm for procedure turn: %v", extent, err)
 		}
+		pt.NmLimit = float32(limit)
 	} else if extent[len(extent)-3:] == "min" {
-		if pt.MinuteLimit, err = strconv.Atoi(extent[:len(extent)-3]); err != nil {
+		if limit, err = strconv.ParseFloat(extent[:len(extent)-3], 32); err != nil {
 			return fmt.Errorf("%s: unable to parse minutes procedure turn: %v", extent, err)
 		}
+		pt.MinuteLimit = float32(pt.MinuteLimit)
 	} else {
 		return fmt.Errorf("%s: invalid extent units for procedure turn", extent)
 	}
@@ -983,7 +986,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					}
 
 					if alt, err := strconv.Atoi(f[3:]); err == nil {
-						wp.ProcedureTurn.ExitAltitude = float32(alt)
+						wp.ProcedureTurn.ExitAltitude = alt
 					} else {
 						return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
 					}

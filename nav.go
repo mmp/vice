@@ -427,7 +427,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 				fmt.Sprintf("Fly the %s procedure turn at %s, %s entry", pt.ProcedureTurn.Type,
 					pt.Fix, pt.Entry.String()))
 			if pt.ProcedureTurn.ExitAltitude != 0 &&
-				nav.FlightState.Altitude > pt.ProcedureTurn.ExitAltitude {
+				nav.FlightState.Altitude > float32(pt.ProcedureTurn.ExitAltitude) {
 				lines = append(lines, fmt.Sprintf("Descend to %d in the procedure turn",
 					int(pt.ProcedureTurn.ExitAltitude)))
 			}
@@ -2527,9 +2527,9 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel, lg *Logger) (floa
 
 func (fp *FlyRacetrackPT) GetAltitude(nav *Nav) (float32, bool) {
 	descend := fp.ProcedureTurn.ExitAltitude != 0 &&
-		nav.FlightState.Altitude > fp.ProcedureTurn.ExitAltitude &&
+		nav.FlightState.Altitude > float32(fp.ProcedureTurn.ExitAltitude) &&
 		fp.State != PTStateApproaching
-	return fp.ProcedureTurn.ExitAltitude, descend
+	return float32(fp.ProcedureTurn.ExitAltitude), descend
 }
 
 func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel, lg *Logger) (float32, TurnMethod, float32) {
