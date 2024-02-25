@@ -656,10 +656,10 @@ func (c *NewSimConfiguration) DrawUI() bool {
 func getWind(c *NewSimConfiguration) Wind {
 	airport := c.Scenario.PrimaryAirport
 
-	weather, errorss := getweather.GetWeather(airport)
+	weather, err := getweather.GetWeather(airport)
 
-	if len(errorss) > 0 {
-		fmt.Println("Error. ", errorss)
+	if len(err) > 0 {
+		lg.Info(fmt.Sprintf("%v", err))
 		return Wind{}
 	} else {
 		dirString := fmt.Sprintf("%v", weather[0].Wdir)

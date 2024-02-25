@@ -1216,8 +1216,8 @@ type AircraftPerformance struct {
 		Decelerate float32 `json:"decelerate"`
 	} `json:"rate"`
 	Category struct {
-		SRS int `json:"srs"`
-		LAHSO int `json:"lahso"`
+		SRS   int    `json:"srs"`
+		LAHSO int    `json:"lahso"`
 		RECAT string `json:"recat"`
 	}
 	Runway struct {
