@@ -223,6 +223,20 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 			case 'D': // SID 4.1.9
 
 			case 'E': // STAR 4.1.9
+				recs := matchingSSARecs(line)
+				id := recs[0].id
+				if star := parseSTAR(recs); star != nil {
+					if airports[icao].STARs == nil {
+						ap := airports[icao]
+						ap.STARs = make(map[string]STAR)
+						airports[icao] = ap
+					}
+					if _, ok := airports[icao].STARs[id]; ok {
+						panic("already seen STAR id " + id)
+					}
+
+					airports[icao].STARs[id] = *star
+				}
 
 			case 'F': // Approach 4.1.9
 				recs := matchingSSARecs(line)
@@ -479,6 +493,47 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 	}
 
 	return transitions
+}
+
+func parseSTAR(recs []ssaRecord) *STAR {
+	transitions := parseTransitions(recs,
+		func(r ssaRecord) bool { return false },                                          // log
+		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
+		func(r ssaRecord, transitions map[string]WaypointArray) bool { return false })    // terminate
+
+	star := MakeSTAR()
+	for t, wps := range transitions {
+		if len(t) > 3 && t[:2] == "RW" && t[2] >= '0' && t[2] <= '9' {
+			// it's a runway
+			rwy := cleanRunway(t[2:])
+			if _, ok := star.RunwayWaypoints[rwy]; ok {
+				panic(rwy + " runway already seen?")
+			}
+			star.RunwayWaypoints[rwy] = wps
+		} else if t == "" {
+			// common waypoints; skip...
+		} else {
+			base, ok := transitions[""]
+			if !ok {
+				base, ok = transitions["ALL"]
+			}
+			if base == nil {
+				// There's no common segment, which is fine
+				star.Transitions[t] = wps
+			} else {
+				sp := spliceTransition(wps, base)
+				if sp == nil {
+					fmt.Printf("%s/%s [%s] [%s]: mismatching fixes for %s transition\n",
+						recs[0].icao, recs[0].id, WaypointArray(wps).Encode(), WaypointArray(base).Encode(), t)
+
+				} else {
+					star.Transitions[t] = sp
+				}
+			}
+		}
+	}
+
+	return star
 }
 
 func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {

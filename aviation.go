@@ -27,6 +27,21 @@ type FAAAirport struct {
 	Location   Point2LL
 	Runways    []Runway
 	Approaches map[string][]WaypointArray
+	STARs      map[string]STAR
+}
+
+type STAR struct {
+	Transitions     map[string]WaypointArray
+	RunwayWaypoints map[string]WaypointArray
+}
+
+func MakeSTAR() *STAR {
+	return &STAR{
+		Transitions:     make(map[string]WaypointArray),
+		RunwayWaypoints: make(map[string]WaypointArray),
+	}
+}
+
 }
 
 type Runway struct {
