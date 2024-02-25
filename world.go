@@ -83,6 +83,7 @@ type World struct {
 	ArrivalGroups     map[string][]Arrival
 	TotalDepartures   int
 	TotalArrivals     int
+	AirspaceAwarenessRules []AirspaceAwareness
 
 	STARSInputOverride string
 }
@@ -132,6 +133,7 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
+	w.AirspaceAwarenessRules = other.AirspaceAwarenessRules
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {

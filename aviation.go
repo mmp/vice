@@ -131,6 +131,7 @@ type Controller struct {
 	SectorId  string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope     string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
 	IsHuman   bool      // Not provided in scenario JSON
+	FacilityIdentifier string `json:"facility_identifier"` // For example the "N" in "N4P" showing the N90 TRACON
 }
 
 type FlightRules int

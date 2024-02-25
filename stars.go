@@ -8,6 +8,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"runtime"
 	"sort"
@@ -87,6 +88,7 @@ type STARSPane struct {
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
 	LockDisplay         bool
+	AirspaceAwareness 	bool
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -1193,6 +1195,7 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 func (sp *STARSPane) DrawUI() {
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
+	imgui.Checkbox("Airspace Awareness", &sp.AirspaceAwareness)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -2891,10 +2894,58 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
+	// Change the "C" to "C56" for example
+	if len(controller) == 1 && sp.AirspaceAwareness{
+		var err error
+		controller, err = calculateAirpsace(ctx, controller, callsign)
+		if err != nil {
+			// TODO: STARS FORMAT or something idk
+			lg.Errorf("Unable to find the proper controller for %v.\n", callsign) // Remove this later
+		}
+	}
+	
 	ctx.world.HandoffTrack(callsign, controller, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
+}
+func breakAltitude(initial string) ([2]int, error ){
+	firstInit, err := strconv.Atoi(initial[:3])
+	if err != nil {
+		lg.Errorf("Error converting %v to an int", initial[:3])
+		return [2]int{000, 999}, err
+	}
+	secondInit, err := strconv.Atoi(initial[4:])
+	if err != nil {
+		lg.Errorf("Error converting %v to an int", initial[4:])
+		return [2]int{000, 999}, err
+	}
+	return [2]int{firstInit * 100, secondInit * 100}, nil
+}
+
+func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, error) {
+	for _, rules := range ctx.world.AirspaceAwarenessRules {
+			if strings.Contains(ctx.world.Aircraft[callsign].FlightPlan.Route, rules.Fix) {
+
+				// Find the reciving controller
+				for _, control := range ctx.world.Controllers {
+					if (controller == control.FacilityIdentifier && 
+					rules.ReceivingController == fmt.Sprintf("%v", control.FacilityIdentifier + control.SectorId)) || rules.ToCenter {
+		
+						if alt, err := breakAltitude(rules.AltitudeRange); ctx.world.Aircraft[callsign].FlightPlan.Altitude >= alt[0] && 
+						ctx.world.Aircraft[callsign].FlightPlan.Altitude <= alt[1] {
+						
+							if err != nil {
+								lg.Errorf("Error breaking altitude: %v.", err)
+							}
+							return rules.ReceivingController, nil
+						}
+						
+					}
+				} 
+			}
+	}
+	return "", errors.New("unable to find appropriate controller")
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
@@ -3088,7 +3139,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				})
 				status.clear = true
 				return
-			} else if isControllerId(cmd) {
+			} else if isControllerId(cmd) || cmd == "C" {
 				status.clear = true
 				sp.handoffTrack(ctx, ac.Callsign, cmd)
 				return
@@ -5325,7 +5376,7 @@ func getRecatCategory(ac *Aircraft) string {
 		return "A"
 	default:
 		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-		fmt.Printf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
+		lg.Errorf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
 		return "NOWGT"
 	}
 

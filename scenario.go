@@ -23,6 +23,12 @@ import (
 	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
+type AirspaceAwareness struct {
+	Fix string `json:"fix"`
+	AltitudeRange string `json:"altitude_range"`
+	ReceivingController string `json:"receiving_controller"`
+	ToCenter 			bool 	`json:"to_center"`
+}
 
 type ScenarioGroup struct {
 	TRACON           string                 `json:"tracon"`
@@ -52,6 +58,7 @@ type ScenarioGroup struct {
 	NmPerLatitude     float32 // Always 60
 	NmPerLongitude    float32 // Derived from Center
 	MagneticVariation float32 `json:"magnetic_variation"`
+	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness"`
 }
 
 type ReportingPoint struct {
