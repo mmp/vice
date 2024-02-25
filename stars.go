@@ -5325,7 +5325,7 @@ func getRecatCategory(ac *Aircraft) string {
 		return "A"
 	default:
 		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-		fmt.Printf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
+		lg.Errorf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
 		return "NOWGT"
 	}
 
