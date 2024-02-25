@@ -60,12 +60,12 @@ type ReportingPoint struct {
 }
 
 type Arrival struct {
-	Waypoints       WaypointArray            `json:"waypoints"`
-	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
-	SpawnWaypoint   string                   `json:"spawn"` // if "waypoints" aren't specified
-	CruiseAltitude  float32                  `json:"cruise_altitude"`
-	Route           string                   `json:"route"`
-	STAR            string                   `json:"star"`
+	Waypoints       WaypointArray                       `json:"waypoints"`
+	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
+	SpawnWaypoint   string                              `json:"spawn"`            // if "waypoints" aren't specified
+	CruiseAltitude  float32                             `json:"cruise_altitude"`
+	Route           string                              `json:"route"`
+	STAR            string                              `json:"star"`
 
 	InitialController   string  `json:"initial_controller"`
 	InitialAltitude     float32 `json:"initial_altitude"`
@@ -710,38 +710,37 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 				ar.Waypoints.CheckArrival(e)
 
-				for rwy, wp := range ar.RunwayWaypoints {
-					e.Push("Runway " + rwy)
+				for ap, rwywp := range ar.RunwayWaypoints {
+					e.Push("Airport " + ap)
 
-					foundRunway := false
-					for ap := range ar.Airlines { // airlines is keyed on airport names
-						if _, ok := LookupRunway(ap, rwy); ok {
-							foundRunway = true
-							break
+					if _, ok := database.Airports[ap]; !ok {
+						e.ErrorString("airport is unknown")
+						continue
+					}
+
+					for rwy, wp := range rwywp {
+						e.Push("Runway " + rwy)
+
+						if _, ok := LookupRunway(ap, rwy); !ok {
+							e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[ap].ValidRunways())
 						}
-					}
-					if !foundRunway {
-						var runways []string
-						for ap := range ar.Airlines {
-							runways = append(runways, ap+": "+database.Airports[ap].ValidRunways())
+
+						sg.InitializeWaypointLocations(wp, e)
+
+						if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
+							e.ErrorString("initial \"runway_waypoints\" fix must match " +
+								"last \"waypoints\" fix")
 						}
-						e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, strings.Join(runways, ", "))
+
+						// For the check, splice together the last common
+						// waypoint and the runway waypoints.  This will give
+						// us a repeated first fix, but this way we can check
+						// compliance with restrictions at that fix...
+						ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
+						WaypointArray(ewp).CheckArrival(e)
+
+						e.Pop()
 					}
-
-					sg.InitializeWaypointLocations(wp, e)
-
-					if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
-						e.ErrorString("initial \"runway_waypoints\" fix must match " +
-							"last \"waypoints\" fix")
-					}
-
-					// For the check, splice together the last common
-					// waypoint and the runway waypoints.  This will give
-					// us a repeated first fix, but this way we can check
-					// compliance with restrictions at that fix...
-					ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
-					WaypointArray(ewp).CheckArrival(e)
-
 					e.Pop()
 				}
 			}
@@ -1758,4 +1757,13 @@ func (a Arrival) GetWaypoints(airport string) WaypointArray {
 	}
 
 	return wps
+}
+
+func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
+	if a.RunwayWaypoints != nil {
+		if aprwy, ok := a.RunwayWaypoints[airport]; ok && aprwy != nil {
+			return aprwy[rwy]
+		}
+	}
+	return nil
 }

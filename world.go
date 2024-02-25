@@ -1157,24 +1157,26 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 			// Draw runway-specific waypoints
-			for _, rwy := range SortedMapKeys(arr.RunwayWaypoints) {
-				wp := arr.RunwayWaypoints[rwy]
-				w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+			for _, ap := range SortedMapKeys(arr.RunwayWaypoints) {
+				for _, rwy := range SortedMapKeys(arr.RunwayWaypoints[ap]) {
+					wp := arr.RunwayWaypoints[ap][rwy]
+					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
-				if len(wp) > 1 {
-					// Draw the runway number in the middle of the line
-					// between the first two waypoints.
-					pmid := mid2ll(wp[0].Location, wp[1].Location)
-					td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
-				} else if wp[0].Heading != 0 {
-					// This should be the only other case... The heading arrow is drawn
-					// up to 2nm out, so put the runway 1nm along its axis.
-					a := radians(float32(wp[0].Heading) - w.MagneticVariation)
-					v := [2]float32{sin(a), cos(a)}
-					pend := ll2nm(wp[0].Location, w.NmPerLongitude)
-					pend = add2f(pend, v)
-					pell := nm2ll(pend, w.NmPerLongitude)
-					td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
+					if len(wp) > 1 {
+						// Draw the runway number in the middle of the line
+						// between the first two waypoints.
+						pmid := mid2ll(wp[0].Location, wp[1].Location)
+						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
+					} else if wp[0].Heading != 0 {
+						// This should be the only other case... The heading arrow is drawn
+						// up to 2nm out, so put the runway 1nm along its axis.
+						a := radians(float32(wp[0].Heading) - w.MagneticVariation)
+						v := [2]float32{sin(a), cos(a)}
+						pend := ll2nm(wp[0].Location, w.NmPerLongitude)
+						pend = add2f(pend, v)
+						pell := nm2ll(pend, w.NmPerLongitude)
+						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
+					}
 				}
 			}
 		}

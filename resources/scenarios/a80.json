@@ -1132,17 +1132,19 @@
         "initial_controller" : "ATL_CTR",
         "initial_speed": 290,
         "star": "CHPPR1",
-        "runway_waypoints": {
-          "8L": "MRCHH JAGRR/a9000/h180",
-          "8R": "MRCHH JAGRR/a9000/h180",
-          "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-          "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-          "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
-          "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-          "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-          "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-          "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-          "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+          "runway_waypoints": {
+              "KATL": {
+                  "8L": "MRCHH JAGRR/a9000/h180",
+                  "8R": "MRCHH JAGRR/a9000/h180",
+                  "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                  "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                  "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                  "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                  "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                  "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                  "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                  "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+              }
         },
         "speed_restriction": 250,
         "waypoints": "OWNNS/ho CHPPR/a13000 MRCHH"
@@ -1219,17 +1221,19 @@
       "initial_controller" : "ATL_CTR",
       "initial_speed": 290,
       "star": "CHPPR1",
-      "runway_waypoints": {
-        "8L": "MRCHH JAGRR/a9000/h180",
-        "8R": "MRCHH JAGRR/a9000/h180",
-        "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-        "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-        "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
-        "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+        "runway_waypoints": {
+            "KATL": {
+                "8L": "MRCHH JAGRR/a9000/h180",
+                "8R": "MRCHH JAGRR/a9000/h180",
+                "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "OWNNS/ho CHPPR/a13000/s250 MRCHH"
@@ -1384,16 +1388,18 @@
       "initial_speed": 290,
       "star": "GLAVN1",
       "runway_waypoints": {
-        "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
-        "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
-        "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-        "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-        "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
-        "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            "KATL": {
+                "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
+                "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
+                "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "MADDX/ho GLAVN/a14000 STHRN"
@@ -1470,16 +1476,18 @@
       "initial_speed": 290,
       "star": "GLAVN1",
       "runway_waypoints": {
-        "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
-        "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
-        "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-        "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-        "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
-        "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            "KATL": {
+                "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
+                "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
+                "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "MADDX/ho GLAVN/a12000/s250 STHRN"
@@ -1606,11 +1614,13 @@
       "initial_speed": 290,
       "star": "HOBTT2",
       "runway_waypoints": {
-        "26L": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26R": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h905",
-        "27L": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095"
+            "KATL": {
+                "26L": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26R": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h905",
+                "27L": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "SMAWG/a17000/ho HOBTT/a14000 ENSLL/a12000"
@@ -2061,16 +2071,18 @@
       "initial_speed": 290,
       "star": "ONDRE1",
       "runway_waypoints": {
-        "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "SMELY VOLTS/a9000/h175",
-        "26R": "SMELY VOLTS/a9000/h175",
-        "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
-        "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            "KATL": {
+                "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "26L": "SMELY VOLTS/a9000/h175",
+                "26R": "SMELY VOLTS/a9000/h175",
+                "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+                "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
+                "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "STRWY/ho ONDRE/a13000/s250 SMELY"
@@ -2136,16 +2148,18 @@
       "initial_speed": 290,
       "star": "ONDRE1",
       "runway_waypoints": {
-        "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "SMELY VOLTS/a9000/h175",
-        "26R": "SMELY VOLTS/a9000/h175",
-        "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
-        "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            "KATL": {
+                "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "26L": "SMELY VOLTS/a9000/h175",
+                "26R": "SMELY VOLTS/a9000/h175",
+                "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+                "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
+                "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "STRWY/ho ONDRE/a13000 SMELY"
@@ -2268,16 +2282,18 @@
       "initial_speed": 290,
       "star": "OZZZI1",
       "runway_waypoints": {
-        "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
-        "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
-        "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
-        "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+          "KATL": {
+              "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+              "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+              "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+              "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+              "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+              "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
+              "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
+              "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
+              "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+              "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "WINNG/ho OZZZI/a12000/s250 HAARY"
@@ -2338,16 +2354,18 @@
       "initial_speed": 290,
       "star": "OZZZI1",
       "runway_waypoints": {
-        "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
-        "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
-        "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
-        "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+            "KATL": {
+                "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+                "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
+                "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
+                "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
+                "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+                "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "WINNG/ho OZZZI/a14000 HAARY"
@@ -2494,11 +2512,13 @@
       "initial_speed": 290,
       "star": "SITTH2",
       "runway_waypoints": {
-        "8L": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275"
+            "KATL": {
+                "8L": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "FORCC/ho SITTH/a14000 TIZZY/a12000"

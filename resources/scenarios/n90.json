@@ -3267,8 +3267,10 @@
                               "initial_speed": 275,
                               "star": "PARCH3",
                               "runway_waypoints": {
-                                "22L": "ROBER CRAIL/h302",
-                                "22R": "ROBER CRAIL/h302"
+                                  "KJFK": {
+                                      "22L": "ROBER CRAIL/h302",
+                                      "22R": "ROBER CRAIL/h302"
+                                  }
                               },
                               "speed_restriction": 250,
                               "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h278"

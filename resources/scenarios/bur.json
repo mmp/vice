@@ -811,9 +811,11 @@
                 "initial_speed": 250,
                 "star": "ROKKR2",
                 "runway_waypoints": {
-                    "8": "IVINS/a8000 MIKEI/a7000/h216",
-                    "15": "IVINS/a8000 MAURK/a6000/h083",
-                    "33": "IVINS/a8000 MIKEI/a7000 EHUNT/a6000/h216"
+                    "KBUR": {
+                        "8": "IVINS/a8000 MIKEI/a7000/h216",
+                        "15": "IVINS/a8000 MAURK/a6000/h083",
+                        "33": "IVINS/a8000 MIKEI/a7000 EHUNT/a6000/h216"
+                    }
                 },
                 "waypoints": "PEPRZ/a14000/ho HEVVY ROKKR/a11000/s250 ZEPPE/a9000/s240 IVINS/a8000"
             }

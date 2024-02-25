@@ -2589,12 +2589,14 @@
                     "star": "VKTRY2",
                     "waypoints": "COWNE/a17000-19000/s290/ho JEYAR/a13000-16000/s270 VKTRY/a10000-11000/s250",
                     "runway_waypoints": {
+                      "KDFW": {
                         "13R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 THASA/a5000/s240 MORRY POPPA/h135",
                         "17L": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "17C": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "17R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "18R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "18L": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090"
+                      }
                 }
             }
         ],

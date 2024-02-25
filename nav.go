@@ -1926,7 +1926,7 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 		nav.Approach.ATPAVolume = airp.ATPAVolumes[ap.Runway]
 	}
 
-	if waypoints := arr.RunwayWaypoints[ap.Runway]; len(waypoints) > 0 {
+	if waypoints := arr.GetRunwayWaypoints(airport, ap.Runway); len(waypoints) > 0 {
 		if len(nav.Waypoints) == 0 {
 			// Nothing left on our route; assume that it has (hopefully
 			// recently) passed the last fix and that patching in the rest

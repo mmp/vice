@@ -28,7 +28,8 @@ import (
 // 16: cleared/assigned alt for departures, minor nav changes
 // 17: weather intensity default bool
 // 18: STARS ATPA
-const CurrentConfigVersion = 18
+// 19: runway waypoints now per-airport
+const CurrentConfigVersion = 19
 
 type GlobalConfig struct {
 	Version               int

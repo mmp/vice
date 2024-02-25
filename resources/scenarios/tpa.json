@@ -782,8 +782,10 @@
         "initial_speed": 280,
         "star": "LUBBR3",
         "runway_waypoints": {
-          "32": "ZEBON RUNNE BREKR WUDDY LYFIE MURDO/flyover/a3000/h228",
-          "14": "ZEBON RUNNE BREKR WUDDY LYFIE RUTAE/a3000/h230"
+            "KSRQ": {
+                "32": "ZEBON RUNNE BREKR WUDDY LYFIE MURDO/flyover/a3000/h228",
+                "14": "ZEBON RUNNE BREKR WUDDY LYFIE RUTAE/a3000/h230"
+            }
         },
         "speed_restriction": 250,
         "waypoints": "N028.51.14.839,W082.07.49.555/ho LUBBR ZEBON"
@@ -829,10 +831,14 @@
         "initial_speed": 280,
         "star": "BANGZ1",
         "runway_waypoints": {
-          "36": "BANGZ KIDLE BOLTS/a3000/h090",
-          "18": "BANGZ KIDLE BOLTS/a3000/h090",
-          "32": "BANGZ KIDLE ALROE MAHAR FIVDO MURDO/flyover/a3000/h228",
-          "14": "BANGZ KIDLE ALROE MAHAR PASOE/a3000/h140"
+            "KPIE": {
+                "36": "BANGZ KIDLE BOLTS/a3000/h090",
+                "18": "BANGZ KIDLE BOLTS/a3000/h090"
+            },
+            "KSRQ": {
+                "32": "BANGZ KIDLE ALROE MAHAR FIVDO MURDO/flyover/a3000/h228",
+                "14": "BANGZ KIDLE ALROE MAHAR PASOE/a3000/h140"
+            }
         },
         "speed_restriction": 250,
         "waypoints": "N028.26.12.809,W083.18.32.173 N028.23.05.581,W083.17.00.465/ho BANGZ/a7000-13000"
@@ -901,16 +907,22 @@
         "initial_speed": 280,
         "star": "RAYZZ2",
         "runway_waypoints": {
-          "1L": "RAYZZ HIDOS CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
-          "19R": "RAYZZ HIDOS ENTAH VENNU/a5000/s210/h006",
-          "1R": "RAYZZ HIDOS CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
-          "19L": "RAYZZ HIDOS ENTAH VENNU/a5000/s210/h006",
-          "32": "RAYZZ ALROE MAHAR/h138",
-          "14": "RAYZZ ALROE MAHAR/h138",
-          "36": "RAYZZ SHKRA/h090",
-          "18": "RAYZZ SHKRA/h090",
-          "10": "RAYZZ SHKRA/h090",
-          "28": "RAYZZ SHKRA/h090"
+              "KTPA": {
+                  "1L": "RAYZZ HIDOS CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
+                  "19R": "RAYZZ HIDOS ENTAH VENNU/a5000/s210/h006",
+                  "1R": "RAYZZ HIDOS CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
+                  "19L": "RAYZZ HIDOS ENTAH VENNU/a5000/s210/h006",
+                  "10": "RAYZZ SHKRA/h090",
+                  "28": "RAYZZ SHKRA/h090"
+              },
+              "KSRQ": {
+                  "32": "RAYZZ ALROE MAHAR/h138",
+                  "14": "RAYZZ ALROE MAHAR/h138"
+              },
+              "KPIE": {
+                  "36": "RAYZZ SHKRA/h090",
+                  "18": "RAYZZ SHKRA/h090"
+              }
         },
         "speed_restriction": 250,
         "waypoints": "N027.52.35.980,W083.27.30.997 N027.53.32.299,W083.21.47.785/ho RAYZZ/a10000"
@@ -990,12 +1002,16 @@
         "initial_speed": 280,
         "star": "MAATY4",
         "runway_waypoints": {
-          "1L": "MAATY ROOKR BLOUT CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
-          "19R": "MAATY ROOKR SCLOP/a5000/s230/h097",
-          "1R": "MAATY ROOKR BLOUT CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
-          "19L": "MAATY ROOKR SCLOP/a5000/s230/h097",
-          "10": "MAATY GOOFS/a11000/h155",
-          "28": "MAATY GOOFS/a11000/h155"
+              "KTPA": {
+                  "1L": "MAATY ROOKR BLOUT CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
+                  "19R": "MAATY ROOKR SCLOP/a5000/s230/h097",
+                  "1R": "MAATY ROOKR BLOUT CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187",
+                  "19L": "MAATY ROOKR SCLOP/a5000/s230/h097"
+              },
+              "KLAL": {
+                  "10": "MAATY GOOFS/a11000/h155",
+                  "28": "MAATY GOOFS/a11000/h155"
+              }
         },
         "speed_restriction": 250,
         "waypoints": "N028.43.52.097,W083.11.46.146 N028.39.12.145,W083.09.01.653/ho AAHOY MAATY/a11000"
@@ -1064,12 +1080,16 @@
         "initial_speed": 290,
         "star": "DADES1",
         "runway_waypoints": {
-          "1L": "DADES LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
-          "19R": "DADES/s250 LZARD JKBAL/a6000/s230/h277",
-          "1R": "DADES LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
-          "19L": "DADES/s250 LZARD JKBAL/a6000/s230/h277",
-          "36": "DADES GSPAR/h180",
-          "18": "DADES GSPAR/h180"
+            "KTPA": {
+                "1L": "DADES LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
+                "19R": "DADES/s250 LZARD JKBAL/a6000/s230/h277",
+                "1R": "DADES LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
+                "19L": "DADES/s250 LZARD JKBAL/a6000/s230/h277"
+            },
+            "KPIE": {
+                "36": "DADES GSPAR/h180",
+                "18": "DADES GSPAR/h180"
+            }
         },
         "speed_restriction": 250,
         "waypoints": "N028.57.02.646,W082.18.37.694 N028.47.35.030,W082.16.02.155/ho OLENE/a13000/ho MARVI KOKOH DADES"
@@ -1122,12 +1142,16 @@
         "initial_speed": 290,
         "star": "BLFRG2",
         "runway_waypoints": {
-          "1L": "DSIDE JSTRM CRUUZ/a4000",
-          "19R": "DSIDE JSTRM GUZDA LISAF/a4000/h005/s210",
-          "1R": "DSIDE JSTRM CRUUZ/a4000",
-          "19L": "DSIDE JSTRM GUZDA LISAF/a4000/h005/s210",
-          "36": "DSIDE OXISE/a4000+/h285",
-          "18": "DSIDE OXISE/a4000+/h285"
+            "KTPA": {
+                "1L": "DSIDE JSTRM CRUUZ/a4000",
+                "19R": "DSIDE JSTRM GUZDA LISAF/a4000/h005/s210",
+                "1R": "DSIDE JSTRM CRUUZ/a4000",
+                "19L": "DSIDE JSTRM GUZDA LISAF/a4000/h005/s210"
+            },
+            "KPIE": {
+                "36": "DSIDE OXISE/a4000+/h285",
+                "18": "DSIDE OXISE/a4000+/h285"
+            }
         },
         "speed_restriction": 250,
         "waypoints": "N027.13.18.850,W081.56.09.808 N027.18.49.669,W082.02.00.629/ho COSAR DSIDE/a11000"

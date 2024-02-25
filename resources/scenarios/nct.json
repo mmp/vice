@@ -4492,10 +4492,12 @@
         "route": "STUBL/a24000/s280/ho RAZRR/a20000 OUCHH/a16000 NIKKT/a10000",
         "waypoints": "STUBL/a24000/s280/ho RAZRR/a20000 OUCHH/a16000 NIKKT/a10000",
         "runway_waypoints": {
-          "30L": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
-          "30R": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
-          "12R": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000",
-          "12L": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000"
+            "KSJC": {
+                "30L": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
+                "30R": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
+                "12R": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000",
+                "12L": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000"
+            }
         }
       }
     ],
@@ -4714,10 +4716,12 @@
         "route": "ROBIE N036.12.54.041,W121.12.43.000/ho GOALI SNS",
         "waypoints": "ROBIE N036.12.54.041,W121.12.43.000/ho GOALI SNS",
         "runway_waypoints": {
-          "30L": "SNS GILRO",
-          "30R": "SNS GILRO",
-          "12R": "SNS SJC",
-          "12L": "SNS SJC"
+            "KSJC": {
+                "30L": "SNS GILRO",
+                "30R": "SNS GILRO",
+                "12R": "SNS SJC",
+                "12L": "SNS SJC"
+            }
         }
       }
     ],
@@ -4764,10 +4768,12 @@
         "route": "TROXX/a26000 N036.15.02.375,W121.11.30.463/ho SILCN/a20000/s280 VLLEY/a15000/s250",
         "waypoints": "TROXX/a26000 N036.15.02.375,W121.11.30.463/ho SILCN/a20000/s280 VLLEY/a15000/s250",
         "runway_waypoints": {
-          "30L": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s230",
-          "30R": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s23",
-          "12R": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600",
-          "12L": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600"
+            "KSJC": {
+                "30L": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s230",
+                "30R": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s23",
+                "12R": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600",
+                "12L": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600"
+            }
         }
       }
     ],
@@ -6044,10 +6050,12 @@
         "route": "SLMMR/a13000/ho POZUR/a8000",
         "waypoints": "SLMMR/a13000/ho POZUR/a8000",
         "runway_waypoints": {
-          "17R": "POZUR/a8000 TENCO/a4000/h255",
-          "17L": "POZUR/a8000 TENCO/a4000/h255",
-          "35R": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210",
-          "35L": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210"
+            "KSMF": {
+                "17R": "POZUR/a8000 TENCO/a4000/h255",
+                "17L": "POZUR/a8000 TENCO/a4000/h255",
+                "35R": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210",
+                "35L": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210"
+            }
         }
       }
     ],
@@ -6138,10 +6146,12 @@
         "route": "SUUTR/a24000/s250 FOOLZ/a21000 GLDDD/a19000 WRAPS/a17000 N037.54.29.105,W120.50.04.568/ho PNNEN/a12000 SLUIC",
         "waypoints": "SUUTR/a24000/s250 FOOLZ/a21000 GLDDD/a19000 WRAPS/a17000 N037.54.29.105,W120.50.04.568 PNNEN/a12000 SLUIC",
         "runway_waypoints": {
-          "17R": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
-          "17L": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
-          "35R": "SLUIC AMADR/a9000 MYNRR/a9000/h299",
-          "35L": "SLUIC AMADR/a9000 MYNRR/a9000/h299"
+            "KSMF": {
+                "17R": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
+                "17L": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
+                "35R": "SLUIC AMADR/a9000 MYNRR/a9000/h299",
+                "35L": "SLUIC AMADR/a9000 MYNRR/a9000/h299"
+            }
         }
       }
     ],

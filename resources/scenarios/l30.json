@@ -848,12 +848,14 @@
                     "initial_speed": 250,
                     "star": "CHOWW2",
                     "runway_waypoints": {
-                        "26R": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221",
-                        "26L": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
-                        "19L": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                        "19R": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                        "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
-                        "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210"
+                        "KLAS": {
+                            "26R": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221",
+                            "26L": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
+                            "19L": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
+                            "19R": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
+                            "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
+                            "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210"
+                        }
                     },
                     "waypoints": "AALAN/a17000+/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/s250/a19000- WOLPH"
     
@@ -900,14 +902,16 @@
                 "initial_speed": 280,
                 "star": "COKTL3",
                 "runway_waypoints": {
-                    "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
-                    "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
-                    "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
-                    "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
-                    "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                    "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079"
+                    "KLAS": {
+                        "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
+                        "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
+                        "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
+                        "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
+                        "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
+                        "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079"
+                    }
                 },
                 "waypoints": " ARYEL/a21000+/ho COKTL/a16000+/a19000-/s250 ZLLDA/a14000+ "
             }
@@ -1080,14 +1084,16 @@
                 "initial_speed": 280,
                 "star": "JAYSN2",
                 "runway_waypoints": {
-                   "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                   "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                   "26R": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
-                   "26L": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
-                   "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                   "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                   "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005",
-                   "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                   "KLAS": {
+                       "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
+                       "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
+                       "26R": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
+                       "26L": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
+                       "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                       "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                       "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005",
+                       "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                   }
                 },
                 "waypoints": "JAYSN/a19000+/ho WAPID"
             }
@@ -1218,16 +1224,16 @@
                 "initial_speed": 280,
                 "star": "RKSTR3",
                 "runway_waypoints": {
-                    "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
-                    "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210",
-                    "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
-                    "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
-                    "26R": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
-                    "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                    "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                    "26L": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290"
-
-
+                    "KLAS": {
+                        "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
+                        "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210",
+                        "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
+                        "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
+                        "26R": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
+                        "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
+                        "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
+                        "26L": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290"
+                    }
                 },
                 "waypoints": "KWEAN STYYX/a22000+/a26000-/ho PEHTY/a14000+/a19000-/s250 RKSTR"
             }
@@ -1273,13 +1279,15 @@
                 "initial_speed": 280,
                 "star": "RNDRZ2",
                 "runway_waypoints" : {
-                    "19R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "19L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "1L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                    "1R": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                    "8L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                    "KLAS": {
+                        "19R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "19L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "1L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                        "1R": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                        "8L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                    }
                 },
                 "waypoints": " WATEV/a19000+/ho TOETS RNDRZ/a13000+/a19000-/s250 "
             }
