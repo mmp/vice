@@ -63,6 +63,7 @@ var (
 	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
 	broadcastPassword = flag.String("password", "", "password to authenticate with server for broadcast message")
 	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
+	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given airport")
 )
 
 func init() {
@@ -149,6 +150,27 @@ func main() {
 		BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword)
 	} else if *server {
 		RunSimServer()
+	} else if *showRoutes != "" {
+		ap, ok := database.Airports[*showRoutes]
+		if !ok {
+			fmt.Printf("%s: airport not present in database\n", *showRoutes)
+			os.Exit(1)
+		}
+		fmt.Printf("STARs:\n")
+		for _, s := range SortedMapKeys(ap.STARs) {
+			ap.STARs[s].Print(s)
+		}
+		fmt.Printf("\nApproaches:\n")
+		for _, appr := range SortedMapKeys(ap.Approaches) {
+			fmt.Printf("%-5s: ", appr)
+			for i, wp := range ap.Approaches[appr] {
+				if i > 0 {
+					fmt.Printf("       ")
+				}
+				fmt.Println(wp.Encode())
+			}
+		}
+		os.Exit(0)
 	} else {
 		localSimServerChan, err := LaunchLocalSimServer()
 		if err != nil {

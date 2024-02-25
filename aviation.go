@@ -92,10 +92,10 @@ func MakeSTAR() *STAR {
 
 func (s STAR) Print(name string) {
 	for tr, wps := range s.Transitions {
-		fmt.Printf("%-11s: %s\n", name+"."+tr, wps.Encode())
+		fmt.Printf("%-12s: %s\n", name+"."+tr, wps.Encode())
 	}
 	for rwy, wps := range s.RunwayWaypoints {
-		fmt.Printf("%-6s: %s\n", name+".RWY"+rwy, wps.Encode())
+		fmt.Printf("%-12s: %s\n", name+".RWY"+rwy, wps.Encode())
 	}
 }
 
