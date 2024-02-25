@@ -62,6 +62,7 @@ type ReportingPoint struct {
 type Arrival struct {
 	Waypoints       WaypointArray            `json:"waypoints"`
 	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
+	SpawnWaypoint   string                   `json:"spawn"` // if "waypoints" aren't specified
 	CruiseAltitude  float32                  `json:"cruise_altitude"`
 	Route           string                   `json:"route"`
 	STAR            string                   `json:"star"`
@@ -674,7 +675,34 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				e.Push("Route " + ar.STAR)
 			}
 
-			if len(ar.Waypoints) < 2 {
+			if len(ar.Waypoints) == 0 {
+				// STAR details are coming from the FAA CIFP; make sure
+				// everything is ok so we don't get into trouble when we
+				// spawn arrivals...
+				if ar.STAR == "" {
+					e.ErrorString("must provide \"star\" if \"waypoints\" aren't given")
+				} else {
+					if ar.SpawnWaypoint == "" {
+						e.ErrorString("must specify \"spawn\" if \"waypoints\" aren't given with arrival")
+					}
+					for airport := range ar.Airlines {
+						if ap, ok := database.Airports[airport]; !ok {
+							e.ErrorString("airport \"%s\" not found in database", airport)
+						} else {
+							if star, ok := ap.STARs[ar.STAR]; !ok {
+								e.ErrorString("STAR \"%s\" not available for %s. Options: %s",
+									ar.STAR, airport, strings.Join(SortedMapKeys(ap.STARs), ", "))
+							} else {
+								star.Check(e)
+								if ar.SpawnWaypoint != "" && !star.HasWaypoint(ar.SpawnWaypoint) {
+									e.ErrorString("\"spawn\" waypoint %s not present in %s STAR", ar.SpawnWaypoint,
+										airport+"."+ar.STAR)
+								}
+							}
+						}
+					}
+				}
+			} else if len(ar.Waypoints) < 2 {
 				e.ErrorString("must provide at least two \"waypoints\" for approach " +
 					"(even if \"runway_waypoints\" are provided)")
 			} else {
@@ -1676,4 +1704,58 @@ func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 
 func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
 	return slices.Contains(c.Arrivals, arrivalGroup)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Arrival
+
+func (a Arrival) GetWaypoints(airport string) WaypointArray {
+	if len(a.Waypoints) > 0 {
+		// explicitly specified in scenario
+		return a.Waypoints
+	}
+
+	// else, via FAA CIFP...
+	ap, ok := database.Airports[airport]
+	if !ok {
+		lg.Errorf("%s: unknown airport in Arrival GetWaypoints", airport)
+		return nil
+	}
+
+	star, ok := ap.STARs[a.STAR]
+	if !ok {
+		lg.Errorf("%s.%s: unknown STAR in Arrival GetWaypoints", airport, a.STAR)
+		return nil
+	}
+
+	wps := star.GetWaypointsFrom(a.SpawnWaypoint)
+	for i := range wps {
+		var ok bool
+		if wps[i].Location, ok = database.LookupWaypoint(wps[i].Fix); !ok {
+			lg.Errorf("%s: waypoint not found in db", wps[i].Fix)
+		}
+	}
+
+	switch len(wps) {
+	case 0:
+		lg.Errorf("no waypoints fount for spawn %s in %s.%s", a.SpawnWaypoint, airport, a.STAR)
+
+	case 1:
+		wps[0].Handoff = true
+
+	default:
+		// add a handoff point randomly between the first two waypoints but
+		// at least 1/2 of the way between them and not too close to the second
+		t := 0.5 + 0.45*rand.Float32()
+		mid := Waypoint{
+			Fix: "ho",
+			// FIXME: it's a little sketchy to lerp Point2ll coordinates
+			// but probably ok over short distances here...
+			Location: lerp2f(t, wps[0].Location, wps[1].Location),
+			Handoff:  true,
+		}
+		wps = append([]Waypoint{wps[0], mid}, wps[1:]...)
+	}
+
+	return wps
 }

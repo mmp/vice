@@ -144,7 +144,7 @@ const (
 )
 
 func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerformance) *Nav {
-	if nav := makeNav(w, fp, perf, arr.Waypoints); nav != nil {
+	if nav := makeNav(w, fp, perf, arr.GetWaypoints(fp.ArrivalAirport)); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {

@@ -35,6 +35,54 @@ type STAR struct {
 	RunwayWaypoints map[string]WaypointArray
 }
 
+func (s STAR) Check(e *ErrorLogger) {
+	check := func(wps WaypointArray) {
+		for _, wp := range wps {
+			_, okn := database.Navaids[wp.Fix]
+			_, okf := database.Fixes[wp.Fix]
+			if !okn && !okf {
+				e.ErrorString("fix %s not found in navaid database", wp.Fix)
+			}
+		}
+	}
+	for _, wps := range s.Transitions {
+		check(wps)
+	}
+	for _, wps := range s.RunwayWaypoints {
+		check(wps)
+	}
+}
+
+func (s STAR) HasWaypoint(wp string) bool {
+	for _, wps := range s.Transitions {
+		if slices.ContainsFunc(wps, func(w Waypoint) bool { return w.Fix == wp }) {
+			return true
+		}
+	}
+	for _, wps := range s.RunwayWaypoints {
+		if slices.ContainsFunc(wps, func(w Waypoint) bool { return w.Fix == wp }) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s STAR) GetWaypointsFrom(fix string) WaypointArray {
+	for _, tr := range SortedMapKeys(s.Transitions) {
+		wps := s.Transitions[tr]
+		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
+			return wps[idx:]
+		}
+	}
+	for _, tr := range SortedMapKeys(s.RunwayWaypoints) {
+		wps := s.RunwayWaypoints[tr]
+		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
+			return wps[idx:]
+		}
+	}
+	return nil
+}
+
 func MakeSTAR() *STAR {
 	return &STAR{
 		Transitions:     make(map[string]WaypointArray),
@@ -42,6 +90,13 @@ func MakeSTAR() *STAR {
 	}
 }
 
+func (s STAR) Print(name string) {
+	for tr, wps := range s.Transitions {
+		fmt.Printf("%-11s: %s\n", name+"."+tr, wps.Encode())
+	}
+	for rwy, wps := range s.RunwayWaypoints {
+		fmt.Printf("%-6s: %s\n", name+".RWY"+rwy, wps.Encode())
+	}
 }
 
 type Runway struct {
@@ -1220,6 +1275,16 @@ type StaticDatabase struct {
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
+}
+
+func (d StaticDatabase) LookupWaypoint(f string) (Point2LL, bool) {
+	if n, ok := d.Navaids[f]; ok {
+		return n.Location, true
+	} else if f, ok := d.Fixes[f]; ok {
+		return f.Location, true
+	} else {
+		return Point2LL{}, false
+	}
 }
 
 type AircraftPerformance struct {
