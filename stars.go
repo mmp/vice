@@ -4782,17 +4782,8 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
 			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
 			ac := ctx.world.Aircraft[ghost.Callsign]
-			if ctx.world.RECAT {
-				recat := getRecatCategory(ac)
-				datablockText += recat
-			} else {
-				fp := ctx.world.Aircraft[ghost.Callsign].FlightPlan
-				fields := strings.Split(fp.AircraftType, "/")
-				if len(fields) > 1 && (fields[0] == "H" || fields[0] == "J" || fields[0] == "S") {
-					datablockText += fields[0]
-				}
-			}
-
+			recat := getRecatCategory(ac)
+			datablockText += recat
 		} else {
 			// The full datablock ain't much more...
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
@@ -5152,15 +5143,8 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
 				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
-
-			if w.RECAT {
-				sp.checkInTrailRecatSeparation(trailing, leading)
-			} else {
-				sp.checkInTrailSeparation(trailing, leading)
-			}
-
+			sp.checkInTrailRecatSeparation(trailing, leading)
 		}
-
 		handledVolumes[vol.Id] = nil
 	}
 }
@@ -5311,28 +5295,34 @@ func getRecatCategory(ac *Aircraft) string {
 		lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
-	wc := perf.Category.RECAT
+	wc := perf.Category.CWT
 	if len(wc) == 0 {
 		lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		lg.Errorf("%s: no recat category found for %s\n", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 
-	switch wc[0] {
-	case 'F':
+	switch wc {
+	case "NOWGT":
+		return "NOWGT"
+	case "I":
+		return "I"
+	case "H":
+		return "H"
+	case "G":
+		return "G"
+	case "F":
 		return "F"
-	case 'E':
+	case "E":
 		return "E"
-	case 'D':
+	case "D":
 		return "D"
-	case 'C':
+	case "C":
 		return "C"
-	case 'B':
+	case "B":
 		return "B"
-	case 'A':
+	case "A":
 		return "A"
-	case 'H':
-		return "F"
 	default:
 		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
 		fmt.Printf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
@@ -5348,36 +5338,47 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 1
 		}
-		wc := perf.Category.RECAT
+		wc := perf.Category.CWT
 		if len(wc) == 0 {
 			lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 1
 		}
 		switch wc[0] {
-		case 'F':
+		case 'I':
 			return 0
-		case 'E':
+		case 'H':
 			return 1
-		case 'D':
+		case 'G':
 			return 2
-		case 'C':
+		case 'F':
 			return 3
-		case 'B':
+		case 'E':
 			return 4
-		case 'A':
+		case 'D':
 			return 5
+		case 'C':
+			return 6
+		case 'B':
+			return 7
+		case 'A':
+			return 8
 		default:
 			lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-			return 1
+			return 9
 		}
 	}
-	mitRequirements := [6][6]float32{ // [front][back]
-		[6]float32{3, 3, 3, 3, 3, 3},     // Behind F
-		[6]float32{3, 3, 3, 3, 3, 3},     // Behind E
-		[6]float32{3, 3, 3, 3, 3, 4},     // Behind D
-		[6]float32{3, 3, 3, 3.5, 3.5, 5}, // Behind C
-		[6]float32{5, 5, 5, 4, 3, 3},     // Behind B
-		[6]float32{8, 7, 7, 6, 5, 3},     // Behind A
+	mitRequirements := [10][10]float32{ // [front][back]
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behing I
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind H
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind G
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind F
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind E
+		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind D
+		[10]float32{5, 5, 3.5, 3.5, 3.5, 3, 3, 3, 3, 10},    // Behind C
+		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind B
+		[10]float32{8, 7, 7, 7, 7, 6, 6, 4.5, 3, 10},        // Behind A
+		[10]float32{10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, // Behind NOWGT (No weight: 7110.762)
+
 	}
 	fclass, bclass := actype(front), actype(back)
 	mit := mitRequirements[fclass][bclass]
@@ -5541,19 +5542,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-		if ctx.world.RECAT {
-			cat := getRecatCategory(ac)
-			field3 += cat
-		} else {
-			actype := ac.FlightPlan.TypeWithoutSuffix()
-			if actype == "B757" {
-				field3 += "F"
-			} else if strings.HasPrefix(actype, "H/") {
-				field3 += "H"
-			} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
-				field3 += "J"
-			}
-		}
+		cat := getRecatCategory(ac)
+		field3 += cat
 
 		// Field 1: alternate between altitude and either primary
 		// scratchpad or destination airport.
@@ -5618,24 +5608,16 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if strings.Index(actype, "/") == 1 {
 			actype = actype[2:]
 		}
-
-		if ctx.world.RECAT {
-			cat := getRecatCategory(ac)
-			acCategory = fmt.Sprintf(" %v", cat)
-		} else {
-			if actype == "B757" {
-				acCategory = "F"
-			} else if strings.HasPrefix(actype, "H/") {
-				actype = strings.TrimPrefix(actype, "H/")
-				acCategory = "H"
-			} else if strings.HasPrefix(actype, "S/") {
-				actype = strings.TrimPrefix(actype, "S/")
-				acCategory = "J"
-			} else if strings.HasPrefix(actype, "J/") {
-				actype = strings.TrimPrefix(actype, "J/")
-				acCategory = "J"
-			}
+		modifier := ""
+		if ac.FlightPlan.Rules == VFR {
+			modifier += "V"
+		} else if sp.isOverflight(ctx, ac) {
+			modifier += "E"
+		} else if modifier == "" {
+			modifier = " "
 		}
+		cat := getRecatCategory(ac)
+		acCategory = fmt.Sprintf("%v%v", modifier, cat)
 
 		field5 := []string{} // alternate speed and aircraft type
 		if state.Ident() {

@@ -904,7 +904,6 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
-	w.RECAT = sg.RECAT
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
@@ -972,7 +971,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 		if spd <= 0 {
 			wind = "00000KT"
-		} else if dir == -1{
+		} else if dir == -1 {
 			wind = fmt.Sprintf("VRB%vKT", spd)
 		} else {
 			wind = fmt.Sprintf("%03d%02d", dir, spd)
@@ -983,7 +982,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 			wind += "KT"
 			fmt.Println(dir, spd, gst, wind)
 		}
-		
+
 		// Just provide the stuff that the STARS display shows
 		w.METAR[icao] = &METAR{
 			AirportICAO: icao,

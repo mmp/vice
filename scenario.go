@@ -39,7 +39,6 @@ type ScenarioGroup struct {
 	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
 
 	Center           Point2LL              `json:"-"`
-	RECAT			 bool 	  			   `json:"recat_facility"`
 	CenterString     string                `json:"center"`
 	Range            float32               `json:"range"`
 	PrimaryAirport   string                `json:"primary_airport"`
@@ -802,7 +801,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		ControlPositions: sg.ControlPositions,
 		DefaultScenario:  sg.DefaultScenario,
 	}
-	
+
 	for name, scenario := range sg.Scenarios {
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
@@ -811,7 +810,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 			Wind:             scenario.Wind,
 			DepartureRunways: scenario.DepartureRunways,
 			ArrivalRunways:   scenario.ArrivalRunways,
-			PrimaryAirport: sg.PrimaryAirport,
+			PrimaryAirport:   sg.PrimaryAirport,
 		}
 
 		if multiController {
@@ -1548,7 +1547,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	// Walk all of the scenario groups to get all of the possible departing aircraft
 	// types to see where V2 is needed in the performance database..
 	acTypes := make(map[string]struct{})
-	
+
 	for _, tracon := range scenarioGroups {
 		for _, sg := range tracon {
 			for _, ap := range sg.Airports {

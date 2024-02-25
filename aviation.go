@@ -1218,7 +1218,7 @@ type AircraftPerformance struct {
 	Category struct {
 		SRS   int    `json:"srs"`
 		LAHSO int    `json:"lahso"`
-		RECAT string `json:"recat"`
+		CWT   string `json:"cwt"`
 	}
 	Runway struct {
 		Takeoff float32 `json:"takeoff"` // nm

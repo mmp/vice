@@ -29,7 +29,6 @@ type World struct {
 	Aircraft    map[string]*Aircraft
 	METAR       map[string]*METAR
 	Controllers map[string]*Controller
-	RECAT 		bool 
 
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
@@ -133,7 +132,6 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
-	w.RECAT = other.RECAT
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
