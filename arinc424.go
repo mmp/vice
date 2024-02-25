@@ -225,6 +225,24 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 			case 'E': // STAR 4.1.9
 
 			case 'F': // Approach 4.1.9
+				recs := matchingSSARecs(line)
+				id := recs[0].id
+
+				if wps := parseApproach(recs); wps != nil {
+					// Note: database.Airports isn't initialized yet but
+					// the CIFP file is sorted so we get the airports
+					// before the approaches..
+					if airports[icao].Approaches == nil {
+						ap := airports[icao]
+						ap.Approaches = make(map[string][]WaypointArray)
+						airports[icao] = ap
+					}
+					if _, ok := airports[icao].Approaches[id]; ok {
+						panic("already seen approach id " + id)
+					}
+
+					airports[icao].Approaches[id] = wps
+				}
 
 			case 'G': // runway records 4.1.10
 				continuation := line[21]
@@ -254,5 +272,252 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 
 	}
 
+	fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
+
 	return airports, navaids, fixes
+}
+
+type ssaRecord struct {
+	icao                   string
+	id                     string
+	transition             string
+	fix                    string
+	turnDirectionValid     byte
+	pathAndTermination     string
+	waypointDescription    []byte
+	continuation           byte
+	turnDirection          byte
+	recommendedNavaid      []byte
+	arcRadius              []byte
+	rho                    []byte
+	outboundMagneticCourse []byte
+	routeDistance          []byte
+	altDescrip             byte
+	alt0, alt1             []byte
+	speed                  []byte
+	centerFix              []byte
+	speedLimitType         byte
+}
+
+func (r ssaRecord) Print() {
+	fmt.Printf("icao %s id %s fix %5s.%5s %s desc [%s] alt %s/%s[%c] speed %s[%c] turn valid [%c] arc %s dist %s "+
+		"center fix %s rho %s outbound mag %s recommended navaid %s\n",
+		r.icao, r.id, r.fix, r.transition, string(r.pathAndTermination), string(r.waypointDescription),
+		string(r.alt0), string(r.alt1), r.altDescrip, string(r.speed), r.speedLimitType,
+		r.turnDirectionValid, string(r.arcRadius), string(r.routeDistance), string(r.centerFix),
+		string(r.rho), string(r.outboundMagneticCourse), string(r.recommendedNavaid))
+}
+
+func parseSSA(line []byte) ssaRecord {
+	return ssaRecord{
+		icao:                   string(line[6:10]),
+		id:                     strings.TrimSpace(string(line[13:19])),
+		continuation:           line[38],
+		transition:             strings.TrimSpace(string(line[20:25])),
+		fix:                    strings.TrimSpace(string(line[29:34])),
+		waypointDescription:    line[39:43],
+		turnDirectionValid:     line[49],
+		pathAndTermination:     string(line[47:49]), // 5.21, p188
+		turnDirection:          line[43],
+		recommendedNavaid:      line[50:54],
+		arcRadius:              line[56:62],
+		rho:                    line[66:70],
+		outboundMagneticCourse: line[70:74],
+		routeDistance:          line[74:78],
+		altDescrip:             line[82], // sec 5.29
+		alt0:                   line[84:89],
+		alt1:                   line[89:94],
+		speed:                  line[99:102],
+		centerFix:              line[106:111],
+		speedLimitType:         line[117], // 5.261
+	}
+}
+
+func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc) {
+	switch string(r.pathAndTermination) {
+	case "FM", "VM":
+		// these are headings off of the previous waypoint
+		panic("shouldn't call GetWaypoint on FM Or VM record")
+
+	case "AF", "RF": // arcs
+		break
+
+	case "HF", "PI": // procedure turns
+		break
+
+	case "IF", "TF": // initial fix, direct to fix
+		break
+
+	case "CF": // heading to fix; treat as direct to fix?
+		break
+
+	case "DF": // direct to fix from unspecified point
+		break
+
+	default:
+		/*
+			r.Print()
+			panic(string(r.pathAndTermination) + ": unexpected pathAndTermination")
+		*/
+	}
+
+	var alt0, alt1, speed int
+	if !empty(r.alt0) {
+		alt0 = parseAltitude(r.alt0)
+	}
+	if !empty(r.alt1) {
+		alt1 = parseAltitude(r.alt1)
+	}
+	if !empty(r.speed) {
+		speed = parseInt(r.speed)
+	}
+
+	wp = Waypoint{
+		Fix:     r.fix,
+		Speed:   speed,
+		FlyOver: r.waypointDescription[1] == 'Y',
+		IAF:     r.waypointDescription[3] == 'A' || r.waypointDescription[3] == 'C' || r.waypointDescription[3] == 'D',
+		IF:      r.waypointDescription[3] == 'B',
+		FAF:     r.waypointDescription[3] == 'I',
+	}
+	if alt0 != 0 || alt1 != 0 {
+		switch r.altDescrip { // 5.29
+		case ' ':
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
+		case '+':
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0)}}
+		case '-':
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{0, float32(alt0)}}
+		case 'B':
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt1)}}
+		case 'G', 'I':
+			// glideslope alt in second, 'at' in first
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
+		case 'H', 'J':
+			// glideslope alt in second, 'at or above' in first
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0)}}
+		case 'V':
+			// coded vertical angle alt in second, 'at or above' in first
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0)}}
+		case 'X':
+			// coded vertical angle alt in second, 'at' in first
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
+		default:
+			panic("TODO alt descrip: " + string(r.altDescrip))
+		}
+	}
+
+	switch r.pathAndTermination {
+	case "AF": // arc to fix. w.r.t. a NAVAID
+		arc = &DMEArc{
+			Fix:    strings.TrimSpace(string(r.recommendedNavaid)),
+			Radius: float32(parseInt(r.rho)) / 10,
+		}
+
+	case "RF": // constant radius arc
+		arc = &DMEArc{
+			Fix:    strings.TrimSpace(string(r.centerFix)),
+			Radius: float32(parseInt(r.routeDistance)) / 10,
+		}
+
+	case "HF", "PI": // procedure turns
+		if alt0 == 0 {
+			fmt.Printf("%s/%s/%s: HF no alt0?\n", r.icao, r.id, r.fix)
+		}
+		pt := &ProcedureTurn{
+			Type:       PTType(Select(r.pathAndTermination == "HI", PTRacetrack, PTStandard45)),
+			RightTurns: r.turnDirection != 'L',
+			// TODO: when do we set Entry180NoPt /nopt180?
+			ExitAltitude: alt0,
+		}
+
+		if r.routeDistance[0] == 'T' { // it's a time
+			pt.MinuteLimit = float32(parseInt(r.routeDistance[1:])) / 10
+		} else {
+			pt.NmLimit = float32(parseInt(r.routeDistance)) / 10
+		}
+
+		wp.ProcedureTurn = pt
+	}
+	return
+}
+
+func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r ssaRecord) bool,
+	terminate func(r ssaRecord, transitions map[string]WaypointArray) bool) map[string]WaypointArray {
+	transitions := make(map[string]WaypointArray)
+
+	for _, rec := range recs {
+		if log(rec) {
+			rec.Print()
+		}
+		if skip(rec) {
+			continue
+		}
+		if terminate(rec, transitions) {
+			break
+		}
+
+		if string(rec.pathAndTermination) == "FM" || string(rec.pathAndTermination) == "VM" {
+			hdg := parseInt(rec.outboundMagneticCourse)
+			if n := len(transitions[rec.transition]); n == 0 {
+				panic("FM as first waypoint in transition?")
+			} else {
+				transitions[rec.transition][n-1].Heading = (hdg + 5) / 10
+			}
+		} else {
+			wp, arc := rec.GetWaypoint()
+			if arc != nil {
+				// it goes on the previous one...
+				if n := len(transitions[rec.transition]); n == 0 {
+					fmt.Printf("%s/%s/%s: no previous fix to add arc to?\n", rec.icao, rec.id, rec.fix)
+				} else {
+					transitions[rec.transition][n-1].Arc = arc
+				}
+			}
+			transitions[rec.transition] = append(transitions[rec.transition], wp)
+		}
+	}
+
+	return transitions
+}
+
+func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
+	idx := slices.IndexFunc(base, func(wp Waypoint) bool { return wp.Fix == tr[len(tr)-1].Fix })
+	if idx == -1 {
+		return nil
+	}
+
+	// Important: we cull the dupe from the common segment, since the transitions may
+	// include procedure turns, etc., in their Waypoint variants for the fix.
+	return append(WaypointArray(tr), base[idx+1:]...)
+}
+
+func parseApproach(recs []ssaRecord) []WaypointArray {
+	transitions := parseTransitions(recs,
+		func(r ssaRecord) bool { return false },                                          // log
+		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
+		func(r ssaRecord, transitions map[string]WaypointArray) bool {
+			return (r.fix == "" && len(transitions[""]) > 0) ||
+				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */
+		})
+
+	if len(transitions) == 1 {
+		return []WaypointArray{transitions[""]}
+	} else {
+		base := transitions[""]
+
+		var wps []WaypointArray
+		for t, w := range transitions {
+			if t != "" {
+				sp := spliceTransition(w, base)
+				if sp == nil {
+					fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
+						recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
+				} else {
+					wps = append(wps, sp)
+				}
+			}
+		}
+		return wps
+	}
 }

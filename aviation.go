@@ -21,11 +21,12 @@ import (
 )
 
 type FAAAirport struct {
-	Id        string
-	Name      string
-	Elevation int
-	Location  Point2LL
-	Runways   []Runway
+	Id         string
+	Name       string
+	Elevation  int
+	Location   Point2LL
+	Runways    []Runway
+	Approaches map[string][]WaypointArray
 }
 
 type Runway struct {
@@ -1438,6 +1439,7 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
 	start := time.Now()
 	cifp := LoadResource("FAACIFP18.zst")
+	fmt.Printf("decompress cifp %s\n", time.Since(start))
 
 	return ParseARINC424(cifp)
 }
