@@ -820,7 +820,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		pred := Select(rand.Float32() < .5,
 			func(d Departure) bool { return d.Exit == lastDeparture.Exit },
 			func(d Departure) bool {
-				return ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
 			})
 
 		if idx := SampleFiltered(ap.Departures, pred); idx == -1 {
@@ -835,7 +836,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		// Sample uniformly, minding the category, if specified
 		idx := SampleFiltered(ap.Departures,
 			func(d Departure) bool {
-				return rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit]
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
@@ -1093,7 +1095,8 @@ func (w *World) DrawScenarioInfoWindow() {
 						imgui.TableNextColumn()
 						imgui.Text(airport)
 						imgui.TableNextColumn()
-						imgui.Text(rwy)
+						rwyBase, _, _ := strings.Cut(rwy, ".")
+						imgui.Text(rwyBase)
 						imgui.TableNextColumn()
 						if len(routeToExit) == 1 {
 							// If we only saw a single departure route, no

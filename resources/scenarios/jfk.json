@@ -627,6 +627,40 @@
             "sid": "JFK5",
             "waypoints": "KJFK-31L/h185"
           },
+          "SHIPP,WAVEY": {
+            "cleared_altitude": 5000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/h170"
+          }
+        },
+        "13L": {
+          "BAYYS,BDR,COATE,GAYEL,GREKI,HAAYS,MERIT,NEION": {
+            "cleared_altitude": 5000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31R/h110"
+          },
+          "BETTE,HAPIE": {
+            "cleared_altitude": 5000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31R/h155"
+          },
+          "DEEZZ": {
+            "cleared_altitude": 5000,
+            "sid": "DEEZZ5",
+            "waypoints": "KJFK-31R/h109"
+          }
+        },
+        "13R.All": {
+          "ARD,DIXIE,RBV,WHITE": {
+            "cleared_altitude": 5000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/h185"
+          },
+          "SHIPP,WAVEY": {
+            "cleared_altitude": 5000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/h170"
+          },
           "BAYYS,BDR,COATE,GAYEL,GREKI,HAAYS,MERIT,NEION": {
             "cleared_altitude": 5000,
             "sid": "JFK5",
@@ -641,11 +675,6 @@
             "cleared_altitude": 5000,
             "sid": "DEEZZ5",
             "waypoints": "KJFK-31L/h109"
-          },
-          "SHIPP,WAVEY": {
-            "cleared_altitude": 5000,
-            "sid": "JFK5",
-            "waypoints": "KJFK-31L/h170"
           }
         },
         "22R": {
@@ -2996,7 +3025,7 @@
       "ZIGGI"
   ],
   "scenarios": {
-    "KJFK Depart 13R Land 13L": {
+    "KJFK Depart 13L/R Land 13L": {
       "arrival_runways": [
         {
           "airport": "KFRG",
@@ -3096,7 +3125,12 @@
       "departure_runways": [
         {
           "airport": "KJFK",
-          "rate": 40,
+          "rate": 20,
+          "runway": "13L"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 20,
           "runway": "13R"
         },
         {
@@ -3239,7 +3273,7 @@
         {
           "airport": "KJFK",
           "rate": 40,
-          "runway": "13R"
+          "runway": "13R.All"
         },
         {
           "airport": "KLGA",

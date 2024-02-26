@@ -448,16 +448,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		}
 
 		// Make sure that all runways have a route to the exit
-		for rwy, routes := range ap.DepartureRoutes {
-			e.Push("Runway " + rwy)
-
+		for rwy := range ap.DepartureRoutes {
 			if _, ok := LookupRunway(icao, rwy); !ok {
 				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
 			}
-			if _, ok := routes[dep.Exit]; !ok {
-				e.ErrorString("exit \"%s\" not found in runway's \"departure_routes\"", dep.Exit)
-			}
-			e.Pop()
 		}
 
 		// We may have multiple ways to reach an exit (e.g. different for

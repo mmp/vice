@@ -176,8 +176,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	})
 
+	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
+
+		if airportExits[rwy.Airport] == nil {
+			airportExits[rwy.Airport] = make(map[string]interface{})
+		}
+
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString("airport not found")
 		} else {
@@ -185,6 +191,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.ErrorString("runway departure routes not found")
 			} else {
 				s.DepartureRunways[i].ExitRoutes = routes
+				for exit := range routes {
+					// It's fine if multiple active runways cover the exit.
+					airportExits[rwy.Airport][exit] = nil
+				}
 			}
 
 			if rwy.Category != "" {
@@ -201,6 +211,17 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			}
 		}
 		e.Pop()
+	}
+	for icao, exits := range airportExits {
+		// We already gave an error above if the airport is unknown, so
+		// don't need to again here..
+		if ap, ok := sg.Airports[icao]; ok {
+			for _, dep := range ap.Departures {
+				if _, ok := exits[dep.Exit]; !ok {
+					e.ErrorString("No active runway at %s covers in-use exit \"%s\"", icao, dep.Exit)
+				}
+			}
+		}
 	}
 
 	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
