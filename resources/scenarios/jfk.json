@@ -1461,8 +1461,8 @@
                 "2.5nm_distance": 10
             },
             "13L": {
-                "runway_threshold": "KJFK-13L",
-                "heading": 134,
+                "runway_threshold": "LEISA",
+                "heading": 44,
                 "max_heading_deviation": 90,
                 "floor": 100,
                 "ceiling": 5000,
@@ -1475,14 +1475,14 @@
                 "2.5nm_distance": 10
             },
             "13R": {
-                "runway_threshold": "KJFK-13R",
-                "heading": 134,
+                "runway_threshold": "LEISA",
+                "heading": 44,
                 "max_heading_deviation": 90,
                 "floor": 100,
                 "ceiling": 5000,
                 "length": 14,
-                "left_width": 1000,
-                "right_width": 2000,
+                "left_width": 2000,
+                "right_width": 1000,
                 "filtered_scratchpads": [ "VAP", "PVA" ],
                 "excluded_scratchpads": [ "I3L", "R3L" ]
             },
