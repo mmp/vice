@@ -500,13 +500,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				sort.Strings(a)
 				imgui.Text(strings.Join(a, ", "))
 			}
-			validAirport := false
-			if c.Scenario.PrimaryAirport == "KAAC" || remoteServer == nil {
-				validAirport = false
-
-			} else {
-				validAirport = true
-			}
+			validAirport := c.Scenario.PrimaryAirport != "KAAC" && remoteServer != nil
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -522,31 +516,30 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			if !c.LiveWeather {
 				wind = c.Scenario.Wind
 			} else {
-				empty := Wind{}
-				if airportWind[c.Scenario.PrimaryAirport] != empty {
+				var ok bool
+				if wind, ok = airportWind[c.Scenario.PrimaryAirport]; ok {
 					wind = airportWind[c.Scenario.PrimaryAirport]
 				} else {
-					liveWind := make(chan Wind)
-					go func(liveWinds chan Wind) {
-						winds := getWind(c)
+					primary := c.Scenario.PrimaryAirport
+					wind, ok = getWind(primary)
+					if !ok {
+						wind = c.Scenario.Wind
+					}
 
-						liveWinds <- winds
-
-					}(liveWind)
-					wind = <-liveWind
 				}
 
 			}
 
 			if wind.Gust > wind.Speed {
-				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
+				imgui.Text(fmt.Sprintf("%v at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
 			} else {
-				imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
+				imgui.Text(fmt.Sprintf("%v at %d", wind.Direction, wind.Speed))
 			}
 			uiStartDisable(!c.LiveWeather)
 			refresh := imgui.Button("Refresh Weather")
 			if refresh {
 				clear(airportWind)
+				clear(windRequest)
 			}
 			uiEndDisable(!c.LiveWeather)
 			imgui.EndTable()
@@ -655,27 +648,47 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	return false
 }
 
-func getWind(c *NewSimConfiguration) Wind {
-	airport := c.Scenario.PrimaryAirport
+func getWind(airport string) (Wind, bool) {
 
-	weather, err := getweather.GetWeather(airport)
-
-	if len(err) > 0 {
-		lg.Info(fmt.Sprintf("%v", err))
-		return Wind{}
-	} else {
-		dirString := fmt.Sprintf("%v", weather[0].Wdir)
-		dir, err := strconv.Atoi(dirString)
-		if err != nil {
-			lg.Errorf("Error converting %v to an int", dirString)
+	for airport, ch := range windRequest {
+		select {
+		case w := <-ch:
+			dirStr := fmt.Sprintf("%v", w[0].Wdir)
+			dir, err := strconv.Atoi(dirStr)
+			if err != nil {
+				lg.Errorf("Error converting %v to an int: %v", dirStr, err)
+			}
+			airportWind[airport] = Wind{
+				Direction: int32(dir),
+				Speed:     int32(w[0].Wspd),
+				Gust:      int32(w[0].Wgst),
+			}
+			delete(windRequest, airport)
+		default:
+			// no wind yet
 		}
-		wind := Wind{
-			Direction: int32(dir),
-			Speed:     int32(weather[0].Wspd),
-			Gust:      int32(weather[0].Wgst),
-		}
-		return wind
 	}
+
+	if _, ok := airportWind[airport]; ok {
+		// The wind is in the map
+		return airportWind[airport], true
+	} else if _, ok := windRequest[airport]; ok {
+		// it's been requested but we don't have it yet
+		return Wind{}, false
+	} else {
+		// It hasn't been requested nor is in airportWind
+		c := make(chan []getweather.MetarData)
+		windRequest[airport] = c
+		go func() {
+			weather, err := getweather.GetWeather(airport)
+			if len(err) != 0 {
+				lg.Errorf("%v", err)
+			}
+			c <- weather
+		}()
+		return Wind{}, false
+	}
+
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
@@ -960,38 +973,36 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		fullMETAR := weather[0].RawMETAR
 		altimiter := getAltimiter(fullMETAR)
 		var err error
-		alt, err = strconv.Atoi(altimiter)
+
 		if err != nil {
 			s.lg.Errorf("Error converting altimiter to an intiger: %v.", altimiter)
 		}
 		var wind string
 		spd := weather[0].Wspd
-		dirStr := fmt.Sprintf("%v", weather[0].Wdir)
-		dir, err := strconv.Atoi(dirStr)
+		dir := weather[0].Wdir.(float64)
+	
 		if err != nil {
-			lg.Errorf("Error converting %v into an int: %v.", dirStr, err)
+			lg.Errorf("Error converting %v into an int: %v.", dir, err)
 		}
 		if spd <= 0 {
 			wind = "00000KT"
 		} else if dir == -1 {
 			wind = fmt.Sprintf("VRB%vKT", spd)
 		} else {
-			wind = fmt.Sprintf("%03d%02d", dir, spd)
+			wind = fmt.Sprintf("%03d%02d", int(dir), spd)
 			gst := weather[0].Wgst
 			if gst > 5 {
 				wind += fmt.Sprintf("G%02d", gst)
 			}
 			wind += "KT"
-			fmt.Println(dir, spd, gst, wind)
 		}
 
 		// Just provide the stuff that the STARS display shows
 		w.METAR[icao] = &METAR{
 			AirportICAO: icao,
 			Wind:        wind,
-			Altimeter:   fmt.Sprintf("A%d", alt),
+			Altimeter:   "A" + altimiter,
 		}
-		fmt.Println(w.METAR[icao])
 	}
 
 	w.DepartureAirports = make(map[string]*Airport)
@@ -1024,14 +1035,19 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 }
 func getAltimiter(metar string) string {
 
-	indexOfA := strings.Index(metar, "A3")
+	indexOfA := strings.Index(metar, " A3")
 	if indexOfA == -1 {
-		indexB := strings.Index(metar, "A2")
+		indexB := strings.Index(metar, " A2")
 		if indexB == -1 {
 			return ""
 		} else {
-			pressure := metar[indexB+1 : indexB+5]
-			return pressure
+			for _, indexString := range []string{" A3", " A2"} {
+				index := strings.Index(metar, indexString)
+				if index != -1 && index+5 < len(metar) {
+					return metar[index+1 : index+5]
+				}
+			}
+			return ""
 		}
 
 	} else {

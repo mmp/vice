@@ -20,6 +20,7 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/apenwarr/fixconsole"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
@@ -47,6 +48,7 @@ var (
 	localServer  *SimServer
 	remoteServer *SimServer
 	airportWind  map[string]Wind
+	windRequest map[string]chan []getweather.MetarData
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -244,6 +246,10 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Info("Starting main loop")
+		// Init the wind maps
+		airportWind = make(map[string]Wind)
+		windRequest = make(map[string]chan []getweather.MetarData)
+		
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()

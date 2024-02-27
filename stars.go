@@ -1242,7 +1242,6 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.InboundPointOuts[event.Callsign] = ""
 				}
-				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 			if event.FromController == w.Callsign {
 				if ctrl := w.GetController(event.ToController); ctrl != nil {
@@ -1250,7 +1249,6 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.OutboundPointOuts[event.Callsign] = ""
 				}
-				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 
 		case AcknowledgedPointOutEvent:
@@ -4945,7 +4943,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 		return nil
-	} //Good!
+	} 
 
 	dbs := sp.formatDatablocks(ctx, ac)
 
@@ -5202,93 +5200,6 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return add2f(p, scale2f(ma.v, gs))
 }
 
-func (sp *STARSPane) checkInTrailSeparation(back, front *Aircraft) {
-	// Convert the weight classes from the performance database to an
-	// integer: 0 small, 1 large, 2 heavy, 3 super.
-	actype := func(ac *Aircraft) int {
-		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
-		if !ok {
-			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 1
-		}
-		wc := perf.WeightClass
-		if len(wc) == 0 {
-			lg.Errorf("%s: no weight class found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 1
-		}
-		switch wc[0] {
-		case 'S':
-			return 0
-		case 'M', 'L':
-			return 1
-		case 'H':
-			return 2
-		case 'J':
-			return 3
-		default:
-			lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-			return 1
-		}
-	}
-
-	// We don't have the info we need for RECAT in the openscope
-	// aircraft database, so this will have to do....
-	mitRequirements := [4][4]float32{ // [front][back]
-		[4]float32{3, 3, 3, 3}, // any behind small is 3
-		[4]float32{4, 3, 3, 3}, // behind large
-		[4]float32{5, 5, 4, 3}, // behind heavy
-		[4]float32{8, 7, 6, 3}, // behind super
-	}
-	fclass, bclass := actype(front), actype(back)
-	mit := mitRequirements[fclass][bclass]
-
-	state := sp.Aircraft[back.Callsign]
-	vol := back.ATPAVolume()
-	if vol.Enable25nmApproach &&
-		nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
-		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
-		// 1. leading weight class <= trailing weight class
-		// 2. super/heavy can't be leading
-		if fclass <= bclass && fclass < 2 {
-			mit = 2.5
-		}
-	}
-
-	state.MinimumMIT = mit
-	state.ATPALeadAircraftCallsign = front.Callsign
-	state.ATPAStatus = ATPAStatusMonitor // baseline
-
-	// If the aircraft's scratchpad is filtered, then it doesn't get
-	// warnings or alerts but is still here for the aircraft behind it.
-	if back.Scratchpad != "" && slices.Contains(vol.FilteredScratchpads, back.Scratchpad) {
-		return
-	}
-
-	// front, back aircraft
-	fac := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
-	bac := MakeModeledAircraft(back, state, vol.Threshold)
-
-	// Will there be a MIT violation s seconds in the future?  (Note that
-	// we don't include altitude separation here since what we need is
-	// distance separation by the threshold...)
-	fp, bp := fac.p, bac.p
-	for s := float32(0); s < 45; s++ {
-		fp, bp := fac.NextPosition(fp), bac.NextPosition(bp)
-		if distance2f(fp, bp) < float32(mit) { // no bueno
-			if s <= 24 {
-				// Error if conflict expected within 24 seconds (6-159).
-				state.ATPAStatus = ATPAStatusAlert
-				state.DatablockType = FullDatablock
-				return
-			} else {
-				// Warning if conflict expected within 45 seconds (6-159).
-				state.ATPAStatus = ATPAStatusWarning
-				state.DatablockType = FullDatablock
-				return
-			}
-		}
-	}
-}
 func getRecatCategory(ac *Aircraft) string {
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
@@ -5298,7 +5209,6 @@ func getRecatCategory(ac *Aircraft) string {
 	wc := perf.Category.CWT
 	if len(wc) == 0 {
 		lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-		lg.Errorf("%s: no recat category found for %s\n", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 
@@ -5325,7 +5235,6 @@ func getRecatCategory(ac *Aircraft) string {
 		return "A"
 	default:
 		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-		lg.Errorf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
 		return "NOWGT"
 	}
 
@@ -5613,11 +5522,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			modifier += "V"
 		} else if sp.isOverflight(ctx, ac) {
 			modifier += "E"
-		} else if modifier == "" {
+		} else {
 			modifier = " "
 		}
 		cat := getRecatCategory(ac)
-		acCategory = fmt.Sprintf("%v%v", modifier, cat)
+		acCategory = modifier+cat
 
 		field5 := []string{} // alternate speed and aircraft type
 		if state.Ident() {
