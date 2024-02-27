@@ -1536,11 +1536,12 @@ func (lc *LaunchControlWindow) spawnArrival(group, airport string) *Aircraft {
 			return ac
 		}
 	}
-	panic("unable to spawn a departure")
+	panic("unable to spawn an arrival")
 }
 
 func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 	showLaunchControls := true
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
 	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
 
 	imgui.Text("Mode:")
@@ -1557,7 +1558,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 	// Right-justify
 	imgui.SameLine()
 	//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
-	imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(5*width), imgui.CursorPosY()})
+	imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
 	if lc.w != nil && lc.w.Connected() {
 		if lc.w.SimIsPaused {
 			if imgui.Button(FontAwesomeIconPlayCircle) {
