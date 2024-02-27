@@ -30,6 +30,39 @@ type FAAAirport struct {
 	STARs      map[string]STAR
 }
 
+type ReportingPoint struct {
+	Fix      string
+	Location Point2LL
+}
+
+type Arrival struct {
+	Waypoints       WaypointArray                       `json:"waypoints"`
+	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
+	SpawnWaypoint   string                              `json:"spawn"`            // if "waypoints" aren't specified
+	CruiseAltitude  float32                             `json:"cruise_altitude"`
+	Route           string                              `json:"route"`
+	STAR            string                              `json:"star"`
+
+	InitialController   string  `json:"initial_controller"`
+	InitialAltitude     float32 `json:"initial_altitude"`
+	AssignedAltitude    float32 `json:"assigned_altitude"`
+	InitialSpeed        float32 `json:"initial_speed"`
+	SpeedRestriction    float32 `json:"speed_restriction"`
+	ExpectApproach      string  `json:"expect_approach"`
+	Scratchpad          string  `json:"scratchpad"`
+	SecondaryScratchpad string  `json:"secondary_scratchpad"`
+	Description         string  `json:"description"`
+
+	// Airport -> arrival airlines
+	Airlines map[string][]ArrivalAirline `json:"airlines"`
+}
+
+type ArrivalAirline struct {
+	ICAO    string `json:"icao"`
+	Airport string `json:"airport"`
+	Fleet   string `json:"fleet,omitempty"`
+}
+
 type STAR struct {
 	Transitions     map[string]WaypointArray
 	RunwayWaypoints map[string]WaypointArray
@@ -1655,4 +1688,222 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 
 func (ap FAAAirport) ValidRunways() string {
 	return strings.Join(MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Arrival
+
+func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+	if ar.Route == "" && ar.STAR == "" {
+		e.ErrorString("neither \"route\" nor \"star\" specified")
+		return
+	}
+
+	if ar.Route != "" {
+		e.Push("Route " + ar.Route)
+	} else {
+		e.Push("Route " + ar.STAR)
+	}
+	defer e.Pop()
+
+	if len(ar.Waypoints) == 0 {
+		// STAR details are coming from the FAA CIFP; make sure
+		// everything is ok so we don't get into trouble when we
+		// spawn arrivals...
+		if ar.STAR == "" {
+			e.ErrorString("must provide \"star\" if \"waypoints\" aren't given")
+			return
+		}
+		if ar.SpawnWaypoint == "" {
+			e.ErrorString("must specify \"spawn\" if \"waypoints\" aren't given with arrival")
+			return
+		}
+
+		spawnPoint, spawnTString, ok := strings.Cut(ar.SpawnWaypoint, "@")
+		spawnT := float32(0)
+		if ok {
+			if st, err := strconv.ParseFloat(spawnTString, 32); err != nil {
+				e.ErrorString("error parsing spawn offset \"%s\": %s", spawnTString, err)
+			} else {
+				spawnT = float32(st)
+			}
+		}
+
+		for icao := range ar.Airlines {
+			airport, ok := database.Airports[icao]
+			if !ok {
+				e.ErrorString("airport \"%s\" not found in database", icao)
+				continue
+			}
+
+			star, ok := airport.STARs[ar.STAR]
+			if !ok {
+				e.ErrorString("STAR \"%s\" not available for %s. Options: %s",
+					ar.STAR, icao, strings.Join(SortedMapKeys(airport.STARs), ", "))
+				continue
+			}
+
+			star.Check(e)
+
+			if len(ar.Waypoints) == 0 {
+				for _, tr := range SortedMapKeys(star.Transitions) {
+					wps := star.Transitions[tr]
+					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
+						ar.Waypoints = wps[idx:]
+						sg.InitializeWaypointLocations(ar.Waypoints, e)
+
+						if len(ar.Waypoints) >= 2 && spawnT != 0 {
+							ar.Waypoints[0].Location = lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
+							ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
+						}
+
+						break
+					}
+				}
+			}
+
+			if star.RunwayWaypoints != nil {
+				if ar.RunwayWaypoints == nil {
+					ar.RunwayWaypoints = make(map[string]map[string]WaypointArray)
+				}
+				if ar.RunwayWaypoints[icao] == nil {
+					ar.RunwayWaypoints[icao] = make(map[string]WaypointArray)
+				}
+
+				for _, rwy := range airport.Runways {
+					for starRwy, wp := range star.RunwayWaypoints {
+						// Trim leading 0, if any
+						if starRwy[0] == '0' {
+							starRwy = starRwy[1:]
+						}
+
+						n := len(starRwy)
+						if starRwy == rwy.Id ||
+							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
+							ar.RunwayWaypoints[icao][rwy.Id] = DuplicateSlice(wp)
+							sg.InitializeWaypointLocations(ar.RunwayWaypoints[icao][rwy.Id], e)
+						}
+					}
+				}
+
+				ar.RunwayWaypoints[icao] = DuplicateMap(star.RunwayWaypoints)
+			}
+		}
+		switch len(ar.Waypoints) {
+		case 0:
+			e.ErrorString("Couldn't find waypoint %s in any of the STAR routes", spawnPoint)
+			return
+
+		case 1:
+			ar.Waypoints[0].Handoff = true
+
+		default:
+			// add a handoff point randomly halfway between the first two waypoints.
+			mid := Waypoint{
+				Fix: "_handoff",
+				// FIXME: it's a little sketchy to lerp Point2ll coordinates
+				// but probably ok over short distances here...
+				Location: lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+				Handoff:  true,
+			}
+			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
+		}
+	} else {
+		if len(ar.Waypoints) < 2 {
+			e.ErrorString("must provide at least two \"waypoints\" for arrival " +
+				"(even if \"runway_waypoints\" are provided)")
+		}
+
+		sg.InitializeWaypointLocations(ar.Waypoints, e)
+
+		for ap, rwywp := range ar.RunwayWaypoints {
+			e.Push("Airport " + ap)
+
+			if _, ok := database.Airports[ap]; !ok {
+				e.ErrorString("airport is unknown")
+				continue
+			}
+
+			for rwy, wp := range rwywp {
+				e.Push("Runway " + rwy)
+
+				if _, ok := LookupRunway(ap, rwy); !ok {
+					e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[ap].ValidRunways())
+				}
+
+				sg.InitializeWaypointLocations(wp, e)
+
+				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
+					e.ErrorString("initial \"runway_waypoints\" fix must match " +
+						"last \"waypoints\" fix")
+				}
+
+				// For the check, splice together the last common
+				// waypoint and the runway waypoints.  This will give
+				// us a repeated first fix, but this way we can check
+				// compliance with restrictions at that fix...
+				ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
+				WaypointArray(ewp).CheckArrival(e)
+
+				e.Pop()
+			}
+			e.Pop()
+		}
+	}
+
+	ar.Waypoints.CheckArrival(e)
+
+	for arrivalAirport, airlines := range ar.Airlines {
+		e.Push("Arrival airport " + arrivalAirport)
+		if len(airlines) == 0 {
+			e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
+		}
+		for _, al := range airlines {
+			database.CheckAirline(al.ICAO, al.Fleet, e)
+			if _, ok := database.Airports[al.Airport]; !ok {
+				e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
+			}
+		}
+
+		ap, ok := sg.Airports[arrivalAirport]
+		if !ok {
+			e.ErrorString("arrival airport \"%s\" unknown", arrivalAirport)
+		} else if ar.ExpectApproach != "" {
+			if _, ok := ap.Approaches[ar.ExpectApproach]; !ok {
+				e.ErrorString("arrival airport \"%s\" doesn't have a \"%s\" approach",
+					arrivalAirport, ar.ExpectApproach)
+			}
+		}
+
+		e.Pop()
+	}
+
+	if ar.InitialAltitude == 0 {
+		e.ErrorString("must specify \"initial_altitude\"")
+	} else {
+		// Make sure the initial altitude isn't below any of
+		// altitude restrictions.
+		for _, wp := range ar.Waypoints {
+			if wp.AltitudeRestriction != nil &&
+				wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
+				e.ErrorString("\"initial_altitude\" is below altitude restriction at \"%s\"", wp.Fix)
+			}
+		}
+	}
+
+	if ar.InitialController == "" {
+		e.ErrorString("\"initial_controller\" missing")
+	} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
+		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
+	}
+}
+
+func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
+	if ap, ok := a.RunwayWaypoints[airport]; !ok {
+		return nil
+	} else if wp, ok := ap[rwy]; !ok {
+		return nil
+	} else {
+		return wp
+	}
 }
