@@ -251,6 +251,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 						ap.Approaches = make(map[string][]WaypointArray)
 						airports[icao] = ap
 					}
+
 					id = tidyFAAApproachId(id)
 					if _, ok := airports[icao].Approaches[id]; ok {
 						panic("already seen approach id " + id)
@@ -532,7 +533,10 @@ func parseSTAR(recs []ssaRecord) *STAR {
 	for t, wps := range transitions {
 		if len(t) > 3 && t[:2] == "RW" && t[2] >= '0' && t[2] <= '9' {
 			// it's a runway
-			rwy := cleanRunway(t[2:])
+			rwy := t[2:]
+			if rwy[0] == '0' {
+				rwy = rwy[1:]
+			}
 			if _, ok := star.RunwayWaypoints[rwy]; ok {
 				panic(rwy + " runway already seen?")
 			}
