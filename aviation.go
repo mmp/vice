@@ -1782,11 +1782,10 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
 							ar.RunwayWaypoints[icao][rwy.Id] = DuplicateSlice(wp)
 							sg.InitializeWaypointLocations(ar.RunwayWaypoints[icao][rwy.Id], e)
+							break
 						}
 					}
 				}
-
-				ar.RunwayWaypoints[icao] = DuplicateMap(star.RunwayWaypoints)
 			}
 		}
 		switch len(ar.Waypoints) {
