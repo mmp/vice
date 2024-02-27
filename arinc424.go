@@ -467,7 +467,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc) {
 			fmt.Printf("%s/%s/%s: HF no alt0?\n", r.icao, r.id, r.fix)
 		}
 		pt := &ProcedureTurn{
-			Type:       PTType(Select(r.pathAndTermination == "HI", PTRacetrack, PTStandard45)),
+			Type:       PTType(Select(r.pathAndTermination == "HF", PTRacetrack, PTStandard45)),
 			RightTurns: r.turnDirection != 'L',
 			// TODO: when do we set Entry180NoPt /nopt180?
 			ExitAltitude: alt0,
