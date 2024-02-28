@@ -1542,7 +1542,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
-	sp.updateIntrailDistance(aircraft)
+	sp.updateIntrailDistance(aircraft, w)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -4779,12 +4779,9 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 		if state.Ghost.PartialDatablock {
 			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
 			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
-
-			fp := ctx.world.Aircraft[ghost.Callsign].FlightPlan
-			fields := strings.Split(fp.AircraftType, "/")
-			if len(fields) > 1 && (fields[0] == "H" || fields[0] == "J" || fields[0] == "S") {
-				datablockText += fields[0]
-			}
+			ac := ctx.world.Aircraft[ghost.Callsign]
+			recat := getRecatCategory(ac)
+			datablockText += recat
 		} else {
 			// The full datablock ain't much more...
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
@@ -4944,9 +4941,9 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
 	now := ctx.world.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
-	if state.LostTrack(now) || !sp.datablockVisible(ac) {
+	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 		return nil
-	}
+	} 
 
 	dbs := sp.formatDatablocks(ctx, ac)
 
@@ -5076,7 +5073,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	}
 }
 
-func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
+func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
 	// Zero out the previous distance
 	for _, ac := range aircraft {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
@@ -5144,9 +5141,8 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft) {
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
 				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
-			sp.checkInTrailSeparation(trailing, leading)
+			sp.checkInTrailRecatSeparation(trailing, leading)
 		}
-
 		handledVolumes[vol.Id] = nil
 	}
 }
@@ -5204,42 +5200,94 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return add2f(p, scale2f(ma.v, gs))
 }
 
-func (sp *STARSPane) checkInTrailSeparation(back, front *Aircraft) {
-	// Convert the weight classes from the performance database to an
-	// integer: 0 small, 1 large, 2 heavy, 3 super.
+func getRecatCategory(ac *Aircraft) string {
+	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
+	if !ok {
+		lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
+		return "NOWGT"
+	}
+	wc := perf.Category.CWT
+	if len(wc) == 0 {
+		lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+		return "NOWGT"
+	}
+
+	switch wc {
+	case "NOWGT":
+		return "NOWGT"
+	case "I":
+		return "I"
+	case "H":
+		return "H"
+	case "G":
+		return "G"
+	case "F":
+		return "F"
+	case "E":
+		return "E"
+	case "D":
+		return "D"
+	case "C":
+		return "C"
+	case "B":
+		return "B"
+	case "A":
+		return "A"
+	default:
+		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
+		return "NOWGT"
+	}
+
+}
+
+func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 	actype := func(ac *Aircraft) int {
 		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 		if !ok {
 			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 1
 		}
-		wc := perf.WeightClass
+		wc := perf.Category.CWT
 		if len(wc) == 0 {
-			lg.Errorf("%s: no weight class found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 1
 		}
 		switch wc[0] {
-		case 'S':
+		case 'I':
 			return 0
-		case 'M', 'L':
-			return 1
 		case 'H':
+			return 1
+		case 'G':
 			return 2
-		case 'J':
+		case 'F':
 			return 3
+		case 'E':
+			return 4
+		case 'D':
+			return 5
+		case 'C':
+			return 6
+		case 'B':
+			return 7
+		case 'A':
+			return 8
 		default:
 			lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-			return 1
+			return 9
 		}
 	}
+	mitRequirements := [10][10]float32{ // [front][back]
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behing I
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind H
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind G
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind F
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind E
+		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind D
+		[10]float32{5, 5, 3.5, 3.5, 3.5, 3, 3, 3, 3, 10},    // Behind C
+		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind B
+		[10]float32{8, 7, 7, 7, 7, 6, 6, 4.5, 3, 10},        // Behind A
+		[10]float32{10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, // Behind NOWGT (No weight: 7110.762)
 
-	// We don't have the info we need for RECAT in the openscope
-	// aircraft database, so this will have to do....
-	mitRequirements := [4][4]float32{ // [front][back]
-		[4]float32{3, 3, 3, 3}, // any behind small is 3
-		[4]float32{4, 3, 3, 3}, // behind large
-		[4]float32{5, 5, 4, 3}, // behind heavy
-		[4]float32{8, 7, 6, 3}, // behind super
 	}
 	fclass, bclass := actype(front), actype(back)
 	mit := mitRequirements[fclass][bclass]
@@ -5251,7 +5299,7 @@ func (sp *STARSPane) checkInTrailSeparation(back, front *Aircraft) {
 		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
 		// 1. leading weight class <= trailing weight class
 		// 2. super/heavy can't be leading
-		if fclass <= bclass && fclass < 2 {
+		if fclass <= bclass && fclass < 3 {
 			mit = 2.5
 		}
 	}
@@ -5334,6 +5382,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	if slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
 		errs = append(errs, "CA")
+		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
 	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
@@ -5402,15 +5451,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-
-		actype := ac.FlightPlan.TypeWithoutSuffix()
-		if actype == "B757" {
-			field3 += "F"
-		} else if strings.HasPrefix(actype, "H/") {
-			field3 += "H"
-		} else if strings.HasPrefix(actype, "S/") || strings.HasPrefix(actype, "J/") {
-			field3 += "J"
-		}
+		cat := getRecatCategory(ac)
+		field3 += cat
 
 		// Field 1: alternate between altitude and either primary
 		// scratchpad or destination airport.
@@ -5472,18 +5514,19 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 		acCategory := ""
 		actype := ac.FlightPlan.TypeWithoutSuffix()
-		if actype == "B757" {
-			acCategory = "F"
-		} else if strings.HasPrefix(actype, "H/") {
-			actype = strings.TrimPrefix(actype, "H/")
-			acCategory = "H"
-		} else if strings.HasPrefix(actype, "S/") {
-			actype = strings.TrimPrefix(actype, "S/")
-			acCategory = "J"
-		} else if strings.HasPrefix(actype, "J/") {
-			actype = strings.TrimPrefix(actype, "J/")
-			acCategory = "J"
+		if strings.Index(actype, "/") == 1 {
+			actype = actype[2:]
 		}
+		modifier := ""
+		if ac.FlightPlan.Rules == VFR {
+			modifier += "V"
+		} else if sp.isOverflight(ctx, ac) {
+			modifier += "E"
+		} else {
+			modifier = " "
+		}
+		cat := getRecatCategory(ac)
+		acCategory = modifier+cat
 
 		field5 := []string{} // alternate speed and aircraft type
 		if state.Ident() {
@@ -5618,7 +5661,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
-		if state.LostTrack(now) || !sp.datablockVisible(ac) {
+		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
 		}
 
@@ -5852,7 +5895,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		if ctx.mouse != nil {
 			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			if wp.Callsign != "" {
-				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac) &&
+				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) &&
 					slices.Contains(aircraft, ac) {
 					if state, ok := sp.Aircraft[wp.Callsign]; ok {
 						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
@@ -6653,9 +6696,52 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 	return aircraft
 }
 
-func (sp *STARSPane) datablockVisible(ac *Aircraft) bool {
+func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
+
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
+
+	if ac.TrackingController == ctx.world.Callsign {
+		// For owned datablocks
+		return true
+	} else if ac.HandoffTrackController == ctx.world.Callsign {
+		// For recieving handoffs
+		return true
+	} else if ac.ControllingController == ctx.world.Callsign {
+		// For non-greened handoffs
+		return true
+	} else if sp.Aircraft[ac.Callsign].PointedOut {
+		// Pointouts: This is if its been accepted,
+		// for an incoming pointout, it falls to the FDB check
+		return true
+	} else if ac.Squawk == 7500 || ac.Squawk == 7600 || ac.Squawk == 7700 || ac.Squawk == 7777 || ac.Squawk == 7400 {
+		// Special purpose codes
+		return true
+	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
+		// If FDB, may trump others but idc
+		// This *should* be primarily doing CA and ATPA cones
+		return true
+	} else if sp.isOverflight(ctx, ac) && sp.CurrentPreferenceSet.OverflightFullDatablocks { //Need a f7 + e
+		// Overflights
+		return true
+	} else if sp.CurrentPreferenceSet.QuickLookAll {
+		// Quick look all
+		return true
+	}
+
+	for _, event := range sp.events.Get() {
+		if event.ToController == ctx.world.Callsign {
+			// Incoming handoffs
+			return true
+		}
+	}
+	// Quick Look Positions.
+	for _, quickLookPositions := range sp.CurrentPreferenceSet.QuickLookPositions {
+		if ac.TrackingController == quickLookPositions.Callsign {
+			return true
+		}
+	}
+
 	if !ac.IsAssociated() {
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 	} else {

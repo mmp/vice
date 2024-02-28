@@ -731,6 +731,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 			Wind:             scenario.Wind,
 			DepartureRunways: scenario.DepartureRunways,
 			ArrivalRunways:   scenario.ArrivalRunways,
+			PrimaryAirport:   sg.PrimaryAirport,
 		}
 
 		if multiController {
@@ -1466,6 +1467,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	// Walk all of the scenario groups to get all of the possible departing aircraft
 	// types to see where V2 is needed in the performance database..
 	acTypes := make(map[string]struct{})
+
 	for _, tracon := range scenarioGroups {
 		for _, sg := range tracon {
 			for _, ap := range sg.Airports {
