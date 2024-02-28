@@ -106,11 +106,11 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 	// returns array of ssaRecords for all lines starting at the given one
 	// that are airport records with the same subsection.
 	matchingSSARecs := func(line []byte) []ssaRecord {
-		icao := string(line[6:10])
+		// icao := string(line[6:10])
 		id := strings.TrimSpace(string(line[13:19]))
 		subsec := line[12]
 
-		log := icao == "KJAX" && id == "TEBOW1"
+		log := false // icao == "KJAX" && id == "TEBOW1"
 
 		if log {
 			printColumnHeader()
@@ -216,7 +216,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 				id := string(line[13:18])
 				location := parseLatLong(line[32:41], line[41:51])
 				if _, ok := fixes[id]; ok {
-					fmt.Printf("%s: repeats\n", id)
+					// fmt.Printf("%s: repeats\n", id)
 				}
 				fixes[id] = Fix{Id: id, Location: location}
 
@@ -288,7 +288,9 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 
 	}
 
-	fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
+	if false {
+		fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
+	}
 
 	return airports, navaids, fixes
 }
@@ -554,9 +556,8 @@ func parseSTAR(recs []ssaRecord) *STAR {
 			} else {
 				sp := spliceTransition(wps, base)
 				if sp == nil {
-					fmt.Printf("%s/%s [%s] [%s]: mismatching fixes for %s transition\n",
-						recs[0].icao, recs[0].id, WaypointArray(wps).Encode(), WaypointArray(base).Encode(), t)
-
+					//fmt.Printf("%s/%s [%s] [%s]: mismatching fixes for %s transition\n",
+					//recs[0].icao, recs[0].id, WaypointArray(wps).Encode(), WaypointArray(base).Encode(), t)
 				} else {
 					star.Transitions[t] = sp
 				}
@@ -597,8 +598,8 @@ func parseApproach(recs []ssaRecord) []WaypointArray {
 			if t != "" {
 				sp := spliceTransition(w, base)
 				if sp == nil {
-					fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
-						recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
+					//fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
+					//recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
 				} else {
 					wps = append(wps, sp)
 				}

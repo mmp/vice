@@ -1386,7 +1386,7 @@ func InitializeStaticDatabase() *StaticDatabase {
 		db.Airports[icao] = ap
 	}
 
-	fmt.Printf("Parsed built-in databases in %v\n", time.Since(start))
+	//fmt.Printf("Parsed built-in databases in %v\n", time.Since(start))
 	lg.Infof("Parsed built-in databases in %v", time.Since(start))
 
 	return db
@@ -1557,7 +1557,9 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
 	start := time.Now()
 	cifp := LoadResource("FAACIFP18.zst")
-	fmt.Printf("decompress cifp %s\n", time.Since(start))
+	if false {
+		fmt.Printf("decompress cifp %s\n", time.Since(start))
+	}
 
 	return ParseARINC424(cifp)
 }
