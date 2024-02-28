@@ -1868,7 +1868,7 @@
         "initial_speed": 300,
         "star": "CAMRN4",
         "speed_restriction": 250,
-        "waypoints": "N039.50.25.524,W073.59.19.240 N039.56.04.398,W073.54.59.935/ho CAMRN/h40"
+        "spawn": "KARRS"
       }
     ],
     "Intra-TRACON (ISP/HVN)": [
@@ -2296,7 +2296,7 @@
         "initial_speed": 300,
         "star": "LENDY8",
         "speed_restriction": 250,
-        "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY LGA/h135"
+        "spawn": "STW@0.6"
       },
       {
         "airlines": {
@@ -2394,7 +2394,7 @@
         "initial_speed": 300,
         "star": "IGN1",
         "speed_restriction": 250,
-        "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY LGA"
+        "spawn": "DOORE"
       }
     ],
     "DENNA3/LOVES2": [
@@ -2433,7 +2433,7 @@
         "initial_speed": 250,
         "star": "DENNA3",
         "speed_restriction": 250,
-        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006/ho LOVES DENNA"
+        "spawn": "PWL"
       },
       {
         "airlines": {
@@ -2460,7 +2460,7 @@
         "initial_speed": 250,
         "star": "LOVES2",
         "speed_restriction": 250,
-        "waypoints": "N041.51.19.605,W073.39.26.537 PWL N041.42.43.838,W073.34.26.006/ho LOVES BDR CCC"
+        "spawn": "PWL"
       }
     ],
     "NELIE3": [
@@ -2492,7 +2492,7 @@
         "initial_speed": 250,
         "star": "NELIE3",
         "speed_restriction": 250,
-        "waypoints": "N041.28.15.767,W072.03.53.020 WANDI/ho CCC"
+        "spawn": "ORW"
       }
     ],
     "OWENZ": [
@@ -2704,18 +2704,12 @@
         "assigned_altitude": 12000,
         "cruise_altitude": 36000,
         "description": "PARCH3",
-        "initial_altitude": 13000,
+        "initial_altitude": 18000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
         "star": "PARCH3",
-        "runway_waypoints": {
-            "KJFK": {
-                "22L": "ROBER CRAIL/h302",
-                "22R": "ROBER CRAIL/h302"
-            }
-        },
         "speed_restriction": 250,
-        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h278"
+        "spawn": "PARCH"
       },
       {
         "airlines": {
@@ -2738,12 +2732,12 @@
         "assigned_altitude": 12000,
         "cruise_altitude": 36000,
         "description": "ROBER2",
-        "initial_altitude": 13000,
+        "initial_altitude": 18000,
         "initial_controller": "BOS_E_CTR",
         "initial_speed": 275,
         "star": "ROBER2",
         "speed_restriction": 250,
-        "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h276"
+        "spawn": "PARCH"
       }
     ]
   },
