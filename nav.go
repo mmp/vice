@@ -1807,14 +1807,25 @@ func (nav *Nav) directFix(fix string) bool {
 	}
 
 	if ap := nav.Approach.Assigned; ap != nil {
+		// This is a little hacky, but... Because of the way we currently
+		// interpret ARINC424 files, fixes with procedure turns have no
+		// procedure turn for routes with /nopt from the previous fix.
+		// Therefore, if we are going direct to a fix that has a procedure
+		// turn, we can't take the first matching route but have to keep
+		// looking for it in case another route has it with a PT...
+		found := false
 		for _, route := range ap.Waypoints {
 			for i, wp := range route {
 				if wp.Fix == fix {
 					nav.Waypoints = route[i:]
-					return true
+					found = true
+					if wp.ProcedureTurn != nil {
+						break
+					}
 				}
 			}
 		}
+		return found
 	}
 	return false
 }
