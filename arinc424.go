@@ -518,7 +518,13 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 					transitions[rec.transition][n-1].Arc = arc
 				}
 			}
-			transitions[rec.transition] = append(transitions[rec.transition], wp)
+
+			if n := len(transitions[rec.transition]); n > 0 && wp.Fix == transitions[rec.transition][n-1].Fix &&
+				wp.ProcedureTurn != nil {
+				transitions[rec.transition][n-1] = wp
+			} else {
+				transitions[rec.transition] = append(transitions[rec.transition], wp)
+			}
 		}
 	}
 
