@@ -162,6 +162,12 @@ var (
 		"Added new syntax for issuing left/right turn in degrees: T10L, T20R, etc.",
 		"STARS: allow middle-click highlight of aircraft regardless of having their track",
 		"STARS: fixed bug with airport weather list flickering",
+		"Added new scenarios: SCT LAX (Jud Lopez), IND (Samuel Valencia), MKE (Yahya Nazimuddin), MIA (Mike K)",
+		"Scenario updates/bugfixes: TPA (Connor Allen), SCT ONT/SNA (Eli Thompson), A80, L30 (Michael Trokel)",
+		"STARS: added automated terminal proximity alert (ATPA) support",
+		"STARS: consolidated wake turbulence (CWT) categories are now shown in datablocks and used for ATPA in-trail requirements",
+		"Live weather can now be used in sims",
+		"STARS: fixed various small bugs related to when the FDB should be displayed",
 	}
 )
 
