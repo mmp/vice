@@ -5663,7 +5663,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		state := sp.Aircraft[ac.Callsign]
 		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
-		} //Good!
+		}
 
 		dbs := sp.getDatablocks(ctx, ac)
 		if len(dbs) == 0 {
@@ -5895,7 +5895,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		if ctx.mouse != nil {
 			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			if wp.Callsign != "" {
-				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) && //Good!
+				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) &&
 					slices.Contains(aircraft, ac) {
 					if state, ok := sp.Aircraft[wp.Callsign]; ok {
 						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
