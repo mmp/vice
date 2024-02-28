@@ -512,22 +512,16 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			}
 			uiEndDisable(!validAirport)
 			imgui.TableNextColumn()
-			var wind Wind
-			if !c.LiveWeather {
-				wind = c.Scenario.Wind
-			} else {
+			wind := c.Scenario.Wind
+			if c.LiveWeather {
 				var ok bool
-				if wind, ok = airportWind[c.Scenario.PrimaryAirport]; ok {
-					wind = airportWind[c.Scenario.PrimaryAirport]
-				} else {
+				if wind, ok = airportWind[c.Scenario.PrimaryAirport]; !ok {
 					primary := c.Scenario.PrimaryAirport
 					wind, ok = getWind(primary)
 					if !ok {
 						wind = c.Scenario.Wind
 					}
-
 				}
-
 			}
 
 			if wind.Gust > wind.Speed {
@@ -649,7 +643,6 @@ func (c *NewSimConfiguration) DrawUI() bool {
 }
 
 func getWind(airport string) (Wind, bool) {
-
 	for airport, ch := range windRequest {
 		select {
 		case w := <-ch:
@@ -1033,28 +1026,15 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 
 	return w
 }
+
 func getAltimiter(metar string) string {
-
-	indexOfA := strings.Index(metar, " A3")
-	if indexOfA == -1 {
-		indexB := strings.Index(metar, " A2")
-		if indexB == -1 {
-			return ""
-		} else {
-			for _, indexString := range []string{" A3", " A2"} {
-				index := strings.Index(metar, indexString)
-				if index != -1 && index+5 < len(metar) {
-					return metar[index+1 : index+5]
-				}
-			}
-			return ""
+	for _, indexString := range []string{" A3", " A2"} {
+		index := strings.Index(metar, indexString)
+		if index != -1 && index+5 < len(metar) {
+			return metar[index+1 : index+5]
 		}
-
-	} else {
-		pressure := metar[indexOfA+1 : indexOfA+5]
-		return pressure
 	}
-
+	return ""
 }
 
 func (s *Sim) LogValue() slog.Value {
