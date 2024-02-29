@@ -907,6 +907,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
 	w.AirspaceAwarenessRules = sg.AirspaceAwareness
+	w.ScratchpadRules = sg.ScratchpadRules
 	
 
 	for _, callsign := range sc.VirtualControllers {

@@ -2895,20 +2895,24 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 		})
 }
 
-func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
+func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
 	// Change the "C" to "N56" for example
-	if len(controller) == 1 {
-		var err error
+	var err error
+	
 		controller, err = calculateAirpsace(ctx, controller, callsign)
 		if err != nil {
 			lg.Errorf("Unable to find the proper controller for %v.\n", callsign) // Remove this later
+			return err
 		}
-	}
-
+	
 	ctx.world.HandoffTrack(callsign, controller, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
+			
 		})
+		return nil
+	
+		
 }
 func breakAltitude(initial string) ([2]int, error) {
 	firstInit, err := strconv.Atoi(initial[:3])
@@ -2924,9 +2928,24 @@ func breakAltitude(initial string) ([2]int, error) {
 
 func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, error) {
 	aircraft := ctx.world.Aircraft[callsign]
+
+	isControllerId := func(id string) bool {
+		// FIXME: check--this is likely to be pretty slow, relatively
+		// speaking...
+		for _, ctrl := range ctx.world.GetAllControllers() {
+			if ctrl.SectorId == id {
+				return true
+			}
+		}
+		return false
+	}
 	// Intra-facility non-sense
 	// if string(controller[0]) == "∆" {
 	// }
+
+	if isControllerId(controller) { // Correct controller passed in
+		return controller, nil
+	}
 	if controller == "C" { // To center
 		for _, rules := range ctx.world.AirspaceAwarenessRules {
 			for _, fix := range rules.Fix {
@@ -2947,25 +2966,32 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 			}
 		}
 	}
-
+	
 	// Same-facility handoffs
-
-	var id string // User Sector ID
-	// Find the user controller ID
-	for _, control := range ctx.world.Controllers {
-		if control.Callsign == ctx.world.Callsign {
-			id = control.SectorId
+	if string(controller[0]) != "∆" && len(controller) == 1 {
+		// Find the user controller ID
+		var id string // User Sector ID
+		for _, control := range ctx.world.Controllers {
+			if control.Callsign == ctx.world.Callsign {
+				id = control.SectorId
+			}
+		}
+		// Check if a position in the same sector exists
+		for _, control := range ctx.world.Controllers {
+			if control.SectorId[0] == id[0] && controller == string(control.SectorId[1]) {
+				return control.SectorId, nil
+			}
 		}
 	}
-	// Check if a position in the same sector exists
-	for _, control := range ctx.world.Controllers {
-		if control.SectorId[0] == id[0] && controller == string(control.SectorId[1]) {
-			fmt.Println(control.SectorId, aircraft.Callsign)
-			return control.SectorId, nil
-		}
-	}
+	
+		
+	
 
-	return "", nil
+	
+	
+	
+
+	return "", errors.New("Error finding controller")
 
 }
 
@@ -2995,7 +3021,6 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 		if control.Callsign == ctx.world.Callsign {
 			id = control.SectorId
 			fac = control.FacilityIdentifier
-			fmt.Printf("ID: %v. FAC: %v.\n", id, fac)
 		}
 	}
 	if len(controller) == 1 {
@@ -3005,12 +3030,10 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 			}
 			if controller == string(control.SectorId[1]) {
 				controller = control.SectorId
-				fmt.Println("len1: ", control.SectorId)
 			}
 		}
 	}
 	var receivingFac string
-	fmt.Println(controller)
 	if isControllerId(controller) {
 		for _, control := range ctx.world.Controllers {
 			if control.SectorId == controller {
@@ -3020,7 +3043,6 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 	} else {
 		receivingFac = ""
 	}
-	fmt.Println(id[0] == controller[0], receivingFac == fac, receivingFac != "", controller)
 	return [3]bool{id[0] == controller[0], receivingFac == fac, receivingFac != ""}, controller
 }
 
@@ -3366,12 +3388,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					if len(cmd) == 2 {
 
 						if allTrue(same) {
-							fmt.Println("All true.", control)
 							sp.pointOut(ctx, ac.Callsign, control)
 						}
 					} else if len(cmd) == 3 {
 						if same[0] && same[2] {
-							fmt.Println("zero and 2:", control)
 							sp.pointOut(ctx, ac.Callsign, control)
 						}
 					}
@@ -3381,7 +3401,23 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				return
 			} else if len(cmd) > 0 {
-				sp.handoffTrack(ctx, ac.Callsign, cmd)
+				err := sp.handoffTrack(ctx, ac.Callsign, cmd)
+				if err != nil && (len(cmd) <= 3 || (len(cmd) <= 4 && ctx.world.ScratchpadRules[0])) {
+					ctx.world.RunAircraftCommands(ac, cmd,
+						func(err error) {
+							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.ScratchpadRules[0]) {
+								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+							} 
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+				} else {
+					ctx.world.RunAircraftCommands(ac, cmd,
+						func(err error) {
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+				}
 				status.clear = true
 				return
 			} else {
