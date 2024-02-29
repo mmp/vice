@@ -2931,10 +2931,11 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 				for _, control := range ctx.world.Controllers {
 					if (controller == control.FacilityIdentifier && 
 					rules.ReceivingController == fmt.Sprintf("%v", control.FacilityIdentifier + control.SectorId)) || rules.ToCenter {
-		
-						if alt, err := breakAltitude(rules.AltitudeRange); ctx.world.Aircraft[callsign].FlightPlan.Altitude >= alt[0] && 
-						ctx.world.Aircraft[callsign].FlightPlan.Altitude <= alt[1] {
-						
+						if rules.AltitudeRange == "" {
+							return rules.ReceivingController, nil
+						}
+						if alt, err := breakAltitude(rules.AltitudeRange); (ctx.world.Aircraft[callsign].FlightPlan.Altitude >= alt[0] && 
+						ctx.world.Aircraft[callsign].FlightPlan.Altitude <= alt[1]) {
 							if err != nil {
 								lg.Errorf("Error breaking altitude: %v.", err)
 							}
