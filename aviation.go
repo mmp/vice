@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"strconv"
 	"strings"
 	"sync"
@@ -1555,10 +1556,9 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 // FAA Coded Instrument Flight Procedures (CIFP)
 // https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
 func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
-	start := time.Now()
-	cifp := LoadResource("FAACIFP18.zst")
-	if false {
-		fmt.Printf("decompress cifp %s\n", time.Since(start))
+	cifp, err := fs.ReadFile(resourcesFS, "FAACIFP18.zst")
+	if err != nil {
+		panic(err)
 	}
 
 	return ParseARINC424(cifp)

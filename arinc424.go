@@ -5,7 +5,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 	"time"
@@ -53,10 +55,6 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 	navaids := make(map[string]Navaid)
 	fixes := make(map[string]Fix)
 
-	if len(file)%ARINC424LineLength != 0 {
-		panic("Invalid ARINC-424 file: not all lines are 132 characters")
-	}
-
 	parseLLDigits := func(d, m, s []byte) float32 {
 		deg, err := strconv.Atoi(string(d))
 		if err != nil {
@@ -87,20 +85,28 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		return p
 	}
 
-	offset := 0
+	br := bufio.NewReader(zstdReader(file))
+	var lines [][]byte
+
 	getline := func() []byte {
-		if offset == len(file) {
+		if n := len(lines); n > 0 {
+			l := lines[n-1]
+			lines = lines[:n-1]
+			return l
+		}
+
+		b, err := br.ReadBytes('\n')
+		if err == io.EOF {
 			return nil
 		}
-		start := offset
-		offset += ARINC424LineLength
-		return file[start:offset]
-	}
-	ungetline := func() {
-		if offset == 0 {
-			panic("can't unget")
+
+		if len(b) != ARINC424LineLength {
+			panic(fmt.Sprintf("unexpected line length: %d", len(b)))
 		}
-		offset -= ARINC424LineLength
+		return b
+	}
+	ungetline := func(line []byte) {
+		lines = append(lines, line)
 	}
 
 	// returns array of ssaRecords for all lines starting at the given one
@@ -128,7 +134,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 			}
 			lineid := strings.TrimSpace(string(line[13:19]))
 			if lineid != id || line[0] != 'S' || line[4] != 'P' /* section: airport */ || line[12] != subsec {
-				ungetline()
+				ungetline(line)
 				break
 			}
 		}
