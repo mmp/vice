@@ -88,7 +88,10 @@ type STARSPane struct {
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
 	LockDisplay         bool
-	AirspaceAwareness   bool
+	AirspaceAwareness   struct {
+		Interfacility bool
+		Intrafacility bool
+	}
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -1195,7 +1198,6 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 func (sp *STARSPane) DrawUI() {
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
-	imgui.Checkbox("Airspace Awareness", &sp.AirspaceAwareness)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -2894,8 +2896,8 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
-	// Change the "C" to "C56" for example
-	if len(controller) == 1 && sp.AirspaceAwareness {
+	// Change the "C" to "N56" for example
+	if len(controller) == 1 {
 		var err error
 		controller, err = calculateAirpsace(ctx, controller, callsign)
 		if err != nil {
@@ -2927,19 +2929,19 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 	// }
 	if controller == "C" { // To center
 		for _, rules := range ctx.world.AirspaceAwarenessRules {
-			if strings.Contains(aircraft.FlightPlan.Route, rules.Fix) {
-				if rules.AltitudeRange == "" {
-					fmt.Printf("Center. receiving: %v. Rules: %v. Aircraft: %v\n", rules.ReceivingController, rules, aircraft)
-					return rules.ReceivingController, nil
-				} else {
-					alt, err := breakAltitude(rules.AltitudeRange)
-					if err != nil {
-						lg.Errorf("Error breaking %v", rules.AltitudeRange)
-						return "", errors.New("error breaking altitude")
-					}
-					if aircraft.FlightPlan.Altitude >= alt[0] && aircraft.FlightPlan.Altitude >= alt[1] {
-						fmt.Printf("Center. receiving: %v. Rules: %v. Aircraft: %v\n", rules.ReceivingController, rules, aircraft)
+			for _, fix := range rules.Fix {
+				if strings.Contains(aircraft.FlightPlan.Route, fix) {
+					if rules.AltitudeRange == "" {
 						return rules.ReceivingController, nil
+					} else {
+						alt, err := breakAltitude(rules.AltitudeRange)
+						if err != nil {
+							lg.Errorf("Error breaking %v", rules.AltitudeRange)
+							return "", errors.New("error breaking altitude")
+						}
+						if aircraft.FlightPlan.Altitude >= alt[0] && aircraft.FlightPlan.Altitude >= alt[1] {
+							return rules.ReceivingController, nil
+						}
 					}
 				}
 			}
@@ -2957,13 +2959,13 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 	}
 	// Check if a position in the same sector exists
 	for _, control := range ctx.world.Controllers {
-		if control.SectorId[0] == id[0] && controller == string(control.SectorId[1]) { 
-			fmt.Printf("Same. receiving: %v. Aircraft: %v\n", control.SectorId, aircraft)
+		if control.SectorId[0] == id[0] && controller == string(control.SectorId[1]) {
+			fmt.Println(control.SectorId, aircraft.Callsign)
 			return control.SectorId, nil
 		}
 	}
-	
-		return "", nil
+
+	return "", nil
 
 }
 
@@ -2972,6 +2974,54 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
+}
+
+func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // First bool is same facility, second bool is same sector
+	// Third is are you even a controler
+	var id, fac string // User Sector ID
+	// Find the user controller ID
+	isControllerId := func(id string) bool {
+		// FIXME: check--this is likely to be pretty slow, relatively
+		// speaking...
+		for _, ctrl := range ctx.world.GetAllControllers() {
+			if ctrl.SectorId == id {
+				return true
+			}
+		}
+		return false
+	}
+	controller = controller[:len(controller) - 1]
+	for _, control := range ctx.world.Controllers {
+		if control.Callsign == ctx.world.Callsign {
+			id = control.SectorId
+			fac = control.FacilityIdentifier
+			fmt.Printf("ID: %v. FAC: %v.\n", id, fac)
+		}
+	}
+	if len(controller) == 1 {
+		for _, control := range ctx.world.Controllers {
+			if control.FacilityIdentifier != fac {
+				continue
+			}
+			if controller == string(control.SectorId[1]) {
+				controller = control.SectorId
+				fmt.Println("len1: ", control.SectorId)
+			}
+		}
+	}
+	var receivingFac string
+	fmt.Println(controller)
+	if isControllerId(controller) {
+		for _, control := range ctx.world.Controllers {
+			if control.SectorId == controller {
+				receivingFac = control.FacilityIdentifier
+			}
+		}
+	} else {
+		receivingFac = ""
+	}
+	fmt.Println(id[0] == controller[0], receivingFac == fac, receivingFac != "", controller)
+	return [3]bool{id[0] == controller[0], receivingFac == fac, receivingFac != ""}, controller
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
@@ -2995,12 +3045,6 @@ func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 		})
 }
 
-func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
-	ctx.world.RejectHandoff(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
-}
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
 	ghosts []*GhostAircraft, transforms ScopeTransformations) (status STARSCommandStatus) {
@@ -3128,11 +3172,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 				}
 				return
-			} else if cmd == "U" {
-				status.clear = true
-				sp.rejectHandoff(ctx, ac.Callsign)
-				return
-			} else if cmd == "*" {
+			}  else if cmd == "*" {
 				from := sp.Aircraft[ac.Callsign].TrackPosition()
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 					p := transforms.LatLongFromWindowP(pw)
@@ -3309,20 +3349,48 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-			} else if lc := len(cmd); lc > 2 && cmd[lc-1] == '*' && isControllerId(cmd[:lc-1]) {
-				status.clear = true
+			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
+				same, control := sameFacility(ctx, cmd[:2])
+				if string(cmd[0]) == "∆" && !same[1] && same[2] { // Interfacility pointout
+
+				} else { // Intrafacility pointout
+
+					allTrue := func(same [3]bool) bool {
+						for _, v := range same {
+							if !v {
+								return false
+							}
+						}
+						return true
+					}
+					if len(cmd) == 2 {
+
+						if allTrue(same) {
+							fmt.Println("All true.", control)
+							sp.pointOut(ctx, ac.Callsign, control)
+						}
+					} else if len(cmd) == 3 {
+						if same[0] && same[2] {
+							fmt.Println("zero and 2:", control)
+							sp.pointOut(ctx, ac.Callsign, control)
+						}
+					}
+				}
 				sp.pointOut(ctx, ac.Callsign, cmd[:lc-1])
+
+				status.clear = true
 				return
 			} else if len(cmd) > 0 {
 				sp.handoffTrack(ctx, ac.Callsign, cmd)
+				status.clear = true
+				return
+			} else {
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						globalConfig.Audio.PlayOnce(AudioCommandError)
 						sp.previewAreaOutput = GetSTARSError(err).Error()
 					})
-
 				status.clear = true
-				return
 			}
 
 		case CommandModeInitiateControl:
@@ -3338,6 +3406,29 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			return
 
 		case CommandModeHandOff:
+			if string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
+				// Manual 4-30
+				if string(cmd[1]) == "X" {
+					if string(cmd[2]) == "E" {
+						sp.AirspaceAwareness.Interfacility = true
+					} else if string(cmd[2]) == "I" {
+						sp.AirspaceAwareness.Interfacility = false
+					}
+				} else if string(cmd[1]) == "T" {
+					if string(cmd[2]) == "E" {
+						sp.AirspaceAwareness.Intrafacility = true
+					} else if string(cmd[2]) == "I" {
+						sp.AirspaceAwareness.Intrafacility = false
+					}
+				}
+				if string(cmd[1]) == "E" {
+					sp.AirspaceAwareness.Intrafacility = true
+					sp.AirspaceAwareness.Interfacility = true
+				} else if string(cmd[1]) == "I" {
+					sp.AirspaceAwareness.Intrafacility = false
+					sp.AirspaceAwareness.Interfacility = false
+				}
+			}
 			if cmd == "" {
 				status.clear = true
 				sp.cancelHandoff(ctx, ac.Callsign)

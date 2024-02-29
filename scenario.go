@@ -24,7 +24,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 type AirspaceAwareness struct {
-	Fix string `json:"fix"`
+	Fix []string `json:"fix"`
 	AltitudeRange string `json:"altitude_range"`
 	ReceivingController string `json:"receiving_controller"`
 	ToCenter 			bool 	`json:"to_center"`
