@@ -577,7 +577,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)
 
-		vol.Id = ap.Name + rwy
+		vol.Id = icao + rwy
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
 			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
@@ -599,10 +599,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			vol.MaxHeadingDeviation = 90
 		}
 		if vol.Floor == 0 {
-			vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
+			vol.Floor = float32(database.Airports[icao].Elevation + 100)
 		}
 		if vol.Ceiling == 0 {
-			vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
+			vol.Ceiling = float32(database.Airports[icao].Elevation + 5000)
 		}
 		if vol.Length == 0 {
 			vol.Length = 15
