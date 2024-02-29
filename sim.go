@@ -214,8 +214,8 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
-		imgui.TableSetupColumn("Arrival")
 		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("Arrival")
 		imgui.TableSetupColumn("AAR")
 		imgui.TableHeadersRow()
 
@@ -973,7 +973,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		var wind string
 		spd := weather[0].Wspd
 		dir := weather[0].Wdir.(float64)
-	
+
 		if err != nil {
 			lg.Errorf("Error converting %v into an int: %v.", dir, err)
 		}
