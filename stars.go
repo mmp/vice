@@ -3016,7 +3016,11 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 		}
 		return false
 	}
-	controller = controller[:len(controller) - 1]
+	fmt.Println("Zero: ", controller)
+	if string(controller[len(controller)]) == "*" {
+		controller = controller[:len(controller) - 1]
+	}
+	fmt.Println("One: ", controller)
 	for _, control := range ctx.world.Controllers {
 		if control.Callsign == ctx.world.Callsign {
 			id = control.SectorId
@@ -3025,15 +3029,14 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 	}
 	if len(controller) == 1 {
 		for _, control := range ctx.world.Controllers {
-			if control.FacilityIdentifier != fac {
-				continue
-			}
-			if controller == string(control.SectorId[1]) {
+			if controller == string(control.SectorId[1]) && control.FacilityIdentifier == fac {
 				controller = control.SectorId
+				fmt.Println("Two: ", controller)
 			}
 		}
 	}
 	var receivingFac string
+	fmt.Println("Three: ", controller)
 	if isControllerId(controller) {
 		for _, control := range ctx.world.Controllers {
 			if control.SectorId == controller {
@@ -3047,8 +3050,10 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
+	fmt.Println(controller)
 	ctx.world.PointOut(callsign, controller, nil,
 		func(err error) {
+			fmt.Println("pointout error: ", err, controller)
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
@@ -3373,6 +3378,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
 				same, control := sameFacility(ctx, cmd[:2])
+				fmt.Println(same, control)
 				if string(cmd[0]) == "∆" && !same[1] && same[2] { // Interfacility pointout
 
 				} else { // Intrafacility pointout
@@ -3388,11 +3394,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					if len(cmd) == 2 {
 
 						if allTrue(same) {
+							// fmt.Println("One", control)
 							sp.pointOut(ctx, ac.Callsign, control)
+							status.clear = true
+							return 
 						}
 					} else if len(cmd) == 3 {
 						if same[0] && same[2] {
+							// fmt.Println("two", control)
 							sp.pointOut(ctx, ac.Callsign, control)
+							status.clear = true
+							return 
 						}
 					}
 				}
@@ -3402,11 +3414,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if len(cmd) > 0 {
 				err := sp.handoffTrack(ctx, ac.Callsign, cmd)
+				if err == nil {
+					status.clear = true 
+					return
+				}
 				if err != nil && (len(cmd) <= 3 || (len(cmd) <= 4 && ctx.world.ScratchpadRules[0])) {
 					ctx.world.RunAircraftCommands(ac, cmd,
 						func(err error) {
 							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.ScratchpadRules[0]) {
 								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+								status.clear = true 
+								return
 							} 
 							globalConfig.Audio.PlayOnce(AudioCommandError)
 							sp.previewAreaOutput = GetSTARSError(err).Error()
