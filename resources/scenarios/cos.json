@@ -608,7 +608,6 @@
     "_COS17L": "N038.49.00.367,W104.41.08.408",
     "_COS17R": "N038.49.27.489,W104.42.59.589"
   },
-  "magnetic_variation": 3.0,
   "name": "KCOS",
   "primary_airport": "KCOS",
   "radar_sites": {

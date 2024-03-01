@@ -2816,7 +2816,7 @@
       ]
     }
   ],
-  "magnetic_variation": 5.7,
+  "magnetic_adjustment": -0.75,
   "name": "KTPA",
   "primary_airport": "KTPA",
   "radar_sites": {

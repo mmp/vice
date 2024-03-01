@@ -1277,7 +1277,7 @@
             ]
         }
     ],
-    "magnetic_variation": -10.1,
+    "magnetic_adjustment": -2,
     "name": "KPHX",
     "primary_airport": "KPHX",
     "radar_sites": {

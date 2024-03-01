@@ -828,7 +828,7 @@
     ]
 }
   ],
-  "magnetic_variation": 13.3,
+  "magnetic_adjustment": -1,
   "name": "KBHM",
   "primary_airport": "KBHM",
   "radar_sites": {

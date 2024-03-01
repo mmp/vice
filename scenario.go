@@ -49,9 +49,10 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude     float32 // Always 60
-	NmPerLongitude    float32 // Derived from Center
-	MagneticVariation float32 `json:"magnetic_variation"`
+	NmPerLatitude      float32 // Always 60
+	NmPerLongitude     float32 // Derived from Center
+	MagneticAdjustment float32 `json:"magnetic_adjustment"`
+	MagneticVariation  float32 // Set automatically
 }
 
 type Airspace struct {
@@ -590,8 +591,12 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 	if sg.PrimaryAirport == "" {
 		e.ErrorString("\"primary_airport\" not specified")
-	} else if _, ok := sg.locate(sg.PrimaryAirport); !ok {
+	} else if ap, ok := database.Airports[sg.PrimaryAirport]; !ok {
 		e.ErrorString("\"primary_airport\" \"%s\" unknown", sg.PrimaryAirport)
+	} else if mvar, err := database.MagneticGrid.Lookup(ap.Location); err != nil {
+		e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+	} else {
+		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
 	if sg.NmPerLatitude == 0 {

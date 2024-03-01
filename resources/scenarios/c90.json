@@ -3416,7 +3416,7 @@
                     ]
                 }
             ],
-            "magnetic_variation": -2.0,
+            "magnetic_adjustment": -0.75,
             "name": "KORD",
             "primary_airport": "KORD",
             "radar_sites": {

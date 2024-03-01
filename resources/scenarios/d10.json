@@ -3405,7 +3405,7 @@
             ]
         }
     ],
-    "magnetic_variation": -3.2, 
+    "magnetic_adjustment": -0.75, 
     "name": "D10",
     "primary_airport": "KDFW",
     "radar_sites": {

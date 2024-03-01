@@ -3856,7 +3856,7 @@
     "center": "N25.38.53.381,W80.25.49.415"
   }
 ],
-"magnetic_variation": 6.8,
+"magnetic_adjustment": -2,
 "name": "KMIA",
 "primary_airport": "KMIA",
 "radar_sites": {

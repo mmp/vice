@@ -1687,7 +1687,7 @@
       ]
     }
   ],
-  "magnetic_variation": 2.2,
+  "magnetic_adjustment": 2,
   "name": "KAAC",
   "primary_airport": "KAAC",
   "radar_sites": {

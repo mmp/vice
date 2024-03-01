@@ -1373,7 +1373,6 @@
         "_LAS_19L": "N036.05.48.980,W115.09.29.091",
         "_LAS_19R": "N036.05.50.697,W115.09.15.633"
     },
-    "magnetic_variation": -11,
     "name": "KLAS",
     "primary_airport": "KLAS",
     "radar_sites": {

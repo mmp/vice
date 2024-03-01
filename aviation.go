@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
@@ -1309,6 +1310,7 @@ type StaticDatabase struct {
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
+	MagneticGrid        MagneticGrid
 }
 
 func (d StaticDatabase) LookupWaypoint(f string) (Point2LL, bool) {
@@ -1381,6 +1383,8 @@ func InitializeStaticDatabase() *StaticDatabase {
 	var airports map[string]FAAAirport
 	wg.Add(1)
 	go func() { airports, db.Navaids, db.Fixes = parseCIFP(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1394,7 +1398,7 @@ func InitializeStaticDatabase() *StaticDatabase {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// FAA databases
+// FAA (and other) databases
 
 // Utility function for parsing CSV files as strings; it breaks each line
 // of the file into fields and calls the provided callback function for
@@ -1562,6 +1566,73 @@ func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
 	}
 
 	return ParseARINC424(cifp)
+}
+
+type MagneticGrid struct {
+	MinLatitude, MaxLatitude   float32
+	MinLongitude, MaxLongitude float32
+	LatLongStep                float32
+	Samples                    []float32
+}
+
+func parseMagneticGrid() MagneticGrid {
+	/*
+	1. Download software and coefficients from https://www.ncei.noaa.gov/products/world-magnetic-model
+	2. Build wmm_grid, run with the parameters in the MagneticGrid initializer below, year 2024,
+	   altitude 0 -> 0, select "declination" for output.
+	3. awk '{print $5}' < GridResults.txt | zstd -19 -o magnetic_grid.txt.zst
+	*/
+	mg := MagneticGrid{
+		MinLatitude:  24,
+		MaxLatitude:  50,
+		MinLongitude: -125,
+		MaxLongitude: -66,
+		LatLongStep:  0.25,
+	}
+
+	samples := LoadResource("magnetic_grid.txt.zst")
+	r := bufio.NewReader(bytes.NewReader(samples))
+
+	for {
+		line, err := r.ReadString('\n')
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			panic(err)
+		}
+
+		if v, err := strconv.ParseFloat(strings.TrimSpace(line), 32); err != nil {
+			panic(line + ": parsing error: " + err.Error())
+		} else {
+			mg.Samples = append(mg.Samples, float32(v))
+		}
+	}
+
+	nlat := int(1 + (mg.MaxLatitude-mg.MinLatitude)/mg.LatLongStep)
+	nlong := int(1 + (mg.MaxLongitude-mg.MinLongitude)/mg.LatLongStep)
+	if len(mg.Samples) != nlat*nlong {
+		panic(fmt.Sprintf("found %d magnetic grid samples, expected %d x %d = %d",
+			len(mg.Samples), nlat, nlong, nlat*nlong))
+	}
+
+	return mg
+}
+
+func (mg *MagneticGrid) Lookup(p Point2LL) (float32, error) {
+	if p[0] < mg.MinLongitude || p[0] > mg.MaxLongitude ||
+		p[1] < mg.MinLatitude || p[1] > mg.MaxLatitude {
+		return 0, fmt.Errorf("lookup point outside sampled grid")
+	}
+
+	nlat := int(1 + (mg.MaxLatitude-mg.MinLatitude)/mg.LatLongStep)
+	nlong := int(1 + (mg.MaxLongitude-mg.MinLongitude)/mg.LatLongStep)
+
+	// Round to nearest
+	lat := min(int((p[1]-mg.MinLatitude)/mg.LatLongStep+0.5), nlat-1)
+	long := min(int((p[0]-mg.MinLongitude)/mg.LatLongStep+0.5), nlong-1)
+
+	// Note: we flip the sign
+	return -mg.Samples[long+nlong*lat], nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

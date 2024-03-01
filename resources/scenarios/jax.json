@@ -1127,7 +1127,6 @@
     "BRSTL":    "N30.58.58.505,W81.58.13.811",
     "ALLMA":    "N31.32.11.183,W82.30.28.614"
   },
-  "magnetic_variation": 5,
   "name": "KJAX",
   "primary_airport": "KJAX",
   "radar_sites": {

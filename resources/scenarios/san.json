@@ -663,7 +663,6 @@
         "KSAN": "N032.44.00.800,W117.11.22.800",
         "SAN": "N032.44.00.800,W117.11.22.800"
     },
-    "magnetic_variation": -10,
     "name": "KSAN",
     "primary_airport": "KSAN",
     "radar_sites": {
