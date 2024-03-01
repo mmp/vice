@@ -1412,9 +1412,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.weatherRadar.Draw(ctx, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
 		transforms, cb)
 
-	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-	cb.LineWidth(1)
-	DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
+	if ps.Brightness.RangeRings > 0 {
+		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
+		cb.LineWidth(1)
+		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
+	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
@@ -4943,7 +4945,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 		return nil
-	} 
+	}
 
 	dbs := sp.formatDatablocks(ctx, ac)
 
@@ -5526,7 +5528,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			modifier = " "
 		}
 		cat := getRecatCategory(ac)
-		acCategory = modifier+cat
+		acCategory = modifier + cat
 
 		field5 := []string{} // alternate speed and aircraft type
 		if state.Ident() {
