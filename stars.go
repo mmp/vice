@@ -2957,7 +2957,9 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 				if rules.ToCenter {
 					continue
 				}
+				
 				for _, fix := range rules.Fix {
+					fmt.Println(fix, rules.Fix, rules.AltitudeRange)
 					if strings.Contains(aircraft.FlightPlan.Route, fix) {
 						if rules.AltitudeRange == "" {
 							return rules.ReceivingController, nil
