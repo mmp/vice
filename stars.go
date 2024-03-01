@@ -1549,6 +1549,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
+	
 	sp.updateIntrailDistance(aircraft, w)
 }
 
@@ -2900,6 +2901,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 	var err error
 	
 		controller, err = calculateAirpsace(ctx, controller, callsign)
+		fmt.Println(err)
 		if err != nil {
 			lg.Errorf("Unable to find the proper controller for %v.\n", callsign) // Remove this later
 			return err
@@ -2928,6 +2930,9 @@ func breakAltitude(initial string) ([2]int, error) {
 
 func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, error) {
 	aircraft := ctx.world.Aircraft[callsign]
+	
+	same, control := sameFacility(ctx, controller)
+	fmt.Println(same, control, controller)
 
 	isControllerId := func(id string) bool {
 		// FIXME: check--this is likely to be pretty slow, relatively
@@ -2939,15 +2944,61 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 		}
 		return false
 	}
-	// Intra-facility non-sense
-	// if string(controller[0]) == "∆" {
-	// }
 
-	if isControllerId(controller) { // Correct controller passed in
+	if same[0] && same[2] { // Correct controller passed in, same fac
 		return controller, nil
 	}
+
+	// Inter-facility non-sense
+	if string(controller[0]) == "/" { // Change to ∆ when able
+		if len(controller) == 2 { //Airspace Awareness Rules
+			for _, rules := range ctx.world.AirspaceAwarenessRules {
+				fmt.Println(rules.ToCenter)
+				if rules.ToCenter {
+					continue
+				}
+				for _, fix := range rules.Fix {
+					if strings.Contains(aircraft.FlightPlan.Route, fix) {
+						if rules.AltitudeRange == "" {
+							return rules.ReceivingController, nil
+						} else {
+							alt, err := breakAltitude(rules.AltitudeRange)
+							if err != nil {
+								lg.Errorf("Error breaking %v", rules.AltitudeRange)
+								return "", errors.New("error breaking altitude")
+							}
+							if aircraft.FlightPlan.Altitude >= alt[0] && aircraft.FlightPlan.Altitude >= alt[1] {
+								return rules.ReceivingController, nil
+							}
+						}
+					}
+				}
+			}
+		} else if len(controller) == 4 { // Direct handoff
+			fac, id := controller[1:2], controller[2:]
+			fmt.Println(fac, id, isControllerId(id))
+			if fac != controller && isControllerId(id) {
+				return id, nil
+			} 
+		} 
+
+
+
+		// var id string
+		// for _, control := range ctx.world.Controllers {
+		// 	if control.Callsign == ctx.world.Callsign {
+		// 		id = control.SectorId
+		// 	}
+		// }
+		
+
+	}
+
 	if controller == "C" { // To center
 		for _, rules := range ctx.world.AirspaceAwarenessRules {
+			if !rules.ToCenter {
+				continue
+			}
 			for _, fix := range rules.Fix {
 				if strings.Contains(aircraft.FlightPlan.Route, fix) {
 					if rules.AltitudeRange == "" {
@@ -2968,7 +3019,7 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 	}
 	
 	// Same-facility handoffs
-	if string(controller[0]) != "∆" && len(controller) == 1 {
+	if string(controller[0]) != "/" && len(controller) == 1 { // Change to ∆ when able
 		// Find the user controller ID
 		var id string // User Sector ID
 		for _, control := range ctx.world.Controllers {
@@ -2979,6 +3030,7 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 		// Check if a position in the same sector exists
 		for _, control := range ctx.world.Controllers {
 			if control.SectorId[0] == id[0] && controller == string(control.SectorId[1]) {
+				fmt.Println(control.SectorId, id[0], controller)
 				return control.SectorId, nil
 			}
 		}
@@ -2990,7 +3042,7 @@ func calculateAirpsace(ctx *PaneContext, controller, callsign string) (string, e
 	
 	
 	
-
+	
 	return "", errors.New("Error finding controller")
 
 }
@@ -3001,9 +3053,8 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
-
-func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // First bool is same facility, second bool is same sector
-	// Third is are you even a controler
+// First bool is same facility, second bool is same sector, third is are you even a controler
+func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { 
 	var id, fac string // User Sector ID
 	// Find the user controller ID
 	isControllerId := func(id string) bool {
@@ -3016,11 +3067,11 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 		}
 		return false
 	}
-	fmt.Println("Zero: ", controller)
-	if string(controller[len(controller)]) == "*" {
+
+	if string(controller[len(controller) - 1]) == "*" {
 		controller = controller[:len(controller) - 1]
 	}
-	fmt.Println("One: ", controller)
+
 	for _, control := range ctx.world.Controllers {
 		if control.Callsign == ctx.world.Callsign {
 			id = control.SectorId
@@ -3031,14 +3082,15 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 		for _, control := range ctx.world.Controllers {
 			if controller == string(control.SectorId[1]) && control.FacilityIdentifier == fac {
 				controller = control.SectorId
-				fmt.Println("Two: ", controller)
+	
 			}
 		}
 	}
 	var receivingFac string
-	fmt.Println("Three: ", controller)
+	
 	if isControllerId(controller) {
 		for _, control := range ctx.world.Controllers {
+			// fmt.Println(control.SectorId, control.FacilityIdentifier)
 			if control.SectorId == controller {
 				receivingFac = control.FacilityIdentifier
 			}
@@ -3050,10 +3102,9 @@ func sameFacility(ctx *PaneContext, controller string) ([3]bool, string) { // Fi
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
-	fmt.Println(controller)
+
 	ctx.world.PointOut(callsign, controller, nil,
 		func(err error) {
-			fmt.Println("pointout error: ", err, controller)
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
@@ -3378,7 +3429,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
 				same, control := sameFacility(ctx, cmd[:2])
-				fmt.Println(same, control)
+			
 				if string(cmd[0]) == "∆" && !same[1] && same[2] { // Interfacility pointout
 
 				} else { // Intrafacility pointout
@@ -5418,93 +5469,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return add2f(p, scale2f(ma.v, gs))
 }
 
-func (sp *STARSPane) checkInTrailSeparation(back, front *Aircraft) {
-	// Convert the weight classes from the performance database to an
-	// integer: 0 small, 1 large, 2 heavy, 3 super.
-	actype := func(ac *Aircraft) int {
-		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
-		if !ok {
-			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 1
-		}
-		wc := perf.WeightClass
-		if len(wc) == 0 {
-			lg.Errorf("%s: no weight class found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 1
-		}
-		switch wc[0] {
-		case 'S':
-			return 0
-		case 'M', 'L':
-			return 1
-		case 'H':
-			return 2
-		case 'J':
-			return 3
-		default:
-			lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-			return 1
-		}
-	}
 
-	// We don't have the info we need for RECAT in the openscope
-	// aircraft database, so this will have to do....
-	mitRequirements := [4][4]float32{ // [front][back]
-		[4]float32{3, 3, 3, 3}, // any behind small is 3
-		[4]float32{4, 3, 3, 3}, // behind large
-		[4]float32{5, 5, 4, 3}, // behind heavy
-		[4]float32{8, 7, 6, 3}, // behind super
-	}
-	fclass, bclass := actype(front), actype(back)
-	mit := mitRequirements[fclass][bclass]
-
-	state := sp.Aircraft[back.Callsign]
-	vol := back.ATPAVolume()
-	if vol.Enable25nmApproach &&
-		nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
-		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
-		// 1. leading weight class <= trailing weight class
-		// 2. super/heavy can't be leading
-		if fclass <= bclass && fclass < 2 {
-			mit = 2.5
-		}
-	}
-
-	state.MinimumMIT = mit
-	state.ATPALeadAircraftCallsign = front.Callsign
-	state.ATPAStatus = ATPAStatusMonitor // baseline
-
-	// If the aircraft's scratchpad is filtered, then it doesn't get
-	// warnings or alerts but is still here for the aircraft behind it.
-	if back.Scratchpad != "" && slices.Contains(vol.FilteredScratchpads, back.Scratchpad) {
-		return
-	}
-
-	// front, back aircraft
-	fac := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
-	bac := MakeModeledAircraft(back, state, vol.Threshold)
-
-	// Will there be a MIT violation s seconds in the future?  (Note that
-	// we don't include altitude separation here since what we need is
-	// distance separation by the threshold...)
-	fp, bp := fac.p, bac.p
-	for s := float32(0); s < 45; s++ {
-		fp, bp := fac.NextPosition(fp), bac.NextPosition(bp)
-		if distance2f(fp, bp) < float32(mit) { // no bueno
-			if s <= 24 {
-				// Error if conflict expected within 24 seconds (6-159).
-				state.ATPAStatus = ATPAStatusAlert
-				state.DatablockType = FullDatablock
-				return
-			} else {
-				// Warning if conflict expected within 45 seconds (6-159).
-				state.ATPAStatus = ATPAStatusWarning
-				state.DatablockType = FullDatablock
-				return
-			}
-		}
-	}
-}
 func getRecatCategory(ac *Aircraft) string {
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
@@ -5584,7 +5549,7 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		}
 	}
 	mitRequirements := [10][10]float32{ // [front][back]
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behing I
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind I
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind H
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind G
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind F
@@ -5601,12 +5566,14 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 
 	state := sp.Aircraft[back.Callsign]
 	vol := back.ATPAVolume()
+	// fmt.Println(vol.Enable25nmApproach, nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach)
 	if vol.Enable25nmApproach &&
 		nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
 		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
 		// 1. leading weight class <= trailing weight class
 		// 2. super/heavy can't be leading
-		if fclass <= bclass && fclass < 3 {
+		
+		if fclass <= bclass && fclass > 4 {
 			mit = 2.5
 		}
 	}
