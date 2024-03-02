@@ -465,7 +465,6 @@
         "RUUTH": "South",
         "STOEN": "North"
       },
-      "location": "N039.52.05.747,W075.14.52.117",
       "tower_list": 1
     }
   },
@@ -4820,11 +4819,13 @@
         "initial_speed": 250,
         "star": "BOJID3",
         "runway_waypoints": {
-          "17": "SCOOL/h104",
-          "27L": "SCOOL BOJID HIFAL EYRIE FERUS/h085",
-          "27R": "SCOOL BOJID HIFAL EYRIE FERUS/h085",
-          "9L": "SCOOL KYILL EXPRS WHEYY/h265",
-          "9R": "SCOOL KYILL EXPRS WHEYY/h265"
+          "KPHL": {
+              "17": "SCOOL/h104",
+              "27L": "SCOOL BOJID HIFAL EYRIE FERUS/h085",
+              "27R": "SCOOL BOJID HIFAL EYRIE FERUS/h085",
+              "9L": "SCOOL KYILL EXPRS WHEYY/h265",
+              "9R": "SCOOL KYILL EXPRS WHEYY/h265"
+          }
         },
         "waypoints": "N040.07.01.916,W076.17.25.294 N040.07.05.074,W076.07.58.591/ho TRAGG BUNTS SCOOL"
       }
@@ -5002,12 +5003,14 @@
         "initial_speed": 250,
         "star": "JIIMS4",
         "runway_waypoints": {
-          "27L": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
-          "27R": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
-          "17": "JIIMS/a8000 SNEDE/h312",
-          "35": "JIIMS/a8000 SNEDE/h312",
-          "9L": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268",
-          "9R": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268"
+          "KPHL": {
+              "27L": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
+              "27R": "JIIMS/a8000 ZMRMN CHPMN PSOUT MKORD/h87",
+              "17": "JIIMS/a8000 SNEDE/h312",
+              "35": "JIIMS/a8000 SNEDE/h312",
+              "9L": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268",
+              "9R": "JIIMS/a8000 WUDRR WEVVE ERNYY/h268"
+          }
         },
         "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS/a8000"
       }
@@ -5045,11 +5048,13 @@
         "initial_speed": 250,
         "star": "PAATS4",
         "runway_waypoints": {
-          "27L": "PAATS RROLL CHPMN PSOUT MKORD/h87",
-          "27R": "PAATS RROLL CHPMN PSOUT MKORD/h87",
-          "35": "PAATS TEBEE/h57",
-          "9L": "PAATS TRNBL WEVVE ERNYY/h268",
-          "9R": "PAATS TRNBL WEVVE ERNYY/h268"
+            "KPHL": {
+                "27L": "PAATS RROLL CHPMN PSOUT MKORD/h87",
+                "27R": "PAATS RROLL CHPMN PSOUT MKORD/h87",
+                "35": "PAATS TEBEE/h57",
+                "9L": "PAATS TRNBL WEVVE ERNYY/h268",
+                "9R": "PAATS TRNBL WEVVE ERNYY/h268"
+            }
         },
         "waypoints": "N039.12.04.205,W075.38.03.975 ESSSO/ho PAATS"
       }
@@ -5082,10 +5087,12 @@
         "initial_speed": 250,
         "star": "SPUDS6",
         "runway_waypoints": {
-          "27L": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
-          "27R": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
-          "9L": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265",
-          "9R": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265"
+          "KPHL": {
+              "27L": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
+              "27R": "ANMAR BOJID HIFAL EYRIE/s190 FERUS/h085",
+              "9L": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265",
+              "9R": "ANMAR SCOOL KYILL EXPRS/s190 WHEYY/h265"
+          }
         },
         "waypoints": "N040.32.20.652,W075.34.42.760 N040.30.01.579,W075.30.03.735/ho SPUDS ANMAR"
       }
@@ -5242,7 +5249,6 @@
           ]
       }
   ],
-  "magnetic_variation": 13.3,
   "name": "KPHL",
   "primary_airport": "KPHL",
   "radar_sites": {
@@ -5257,7 +5263,7 @@
     },
     "PHL": {
       "char": "P",
-      "position": "PHL",
+      "position": "KPHL",
       "elevation": 150,
       "primary_range": 60,
       "secondary_range": 120,

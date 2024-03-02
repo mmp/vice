@@ -249,7 +249,6 @@
         "CRG": "North",
         "ROYES": "North"
       },
-      "location": "N29.10.47.724,W81.03.28.574",
       "tower_list": 2
     }
   },
@@ -558,6 +557,9 @@
   },
   "default_scenario": "KDAB Depart 7L/R Land 7L/R",
   "fixes": {
+    "WEXUR": "29.64356111,-81.77610833",
+    "IMEKE": "29.64354722,-81.680475",
+    "FONEX": "29.64353055,-81.62203888",
     "_DAB_7L": "N29.10.21.125,W81.04.39.972",
     "_DAB_7R": "N29.10.33.723,W81.03.24.554",
     "_DAB_16": "N29.11.26.967,W81.03.22.765",
@@ -567,7 +569,7 @@
     "KDAB": "N29.10.47.737,W81.03.28.719",
     "DAB": "N29.10.47.737,W81.03.28.719"
   },
-  "magnetic_variation": 6.8,
+  "magnetic_adjustment": -2,
   "name": "KDAB",
   "primary_airport": "KDAB",
   "radar_sites": {

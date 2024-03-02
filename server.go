@@ -25,7 +25,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-const ViceRPCVersion = 10
+const ViceRPCVersion = 11
 
 type SimServer struct {
 	*RPCClient

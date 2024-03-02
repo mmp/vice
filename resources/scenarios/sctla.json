@@ -654,7 +654,6 @@
         "COREZ": "COREZ",
         "SCTRR": "SCTRR"
       },
-      "location": "KLAX",
       "tower_list": 1
    },
    "KHHR": {
@@ -694,7 +693,6 @@
         ]
       }
     },
-    "location": "KHHR",
     "tower_list": 2
  }
   },
@@ -746,8 +744,10 @@
         "route": "SALYY GLESN ANJLL KAOSS TOLLA SLACR BIGBR",
         "waypoints": "SALYY/a29000 GLESN/a27000 ANJLL/a24000/s280/ho KAOSS/a19000 TOLLA/a17000 SLACR/a15000 BIGBR/a13000",
         "runway_waypoints": {
-          "6L": "BIGBR/a13000 DRYSS/a10000 TOMYS/a9000 CLIFY/a7000 HNCHE SASSI/a7000/h251",
-          "7R": "BIGBR/a13000 LADDD/a10000 JOELZ/a8000 NORML/a6000/s220 WNDFL/a6000"
+          "KLAX": {
+              "6L": "BIGBR/a13000 DRYSS/a10000 TOMYS/a9000 CLIFY/a7000 HNCHE SASSI/a7000/h251",
+              "7R": "BIGBR/a13000 LADDD/a10000 JOELZ/a8000 NORML/a6000/s220 WNDFL/a6000"
+          }
         }
       }
     ],
@@ -827,8 +827,10 @@
         "route": "MDLER MNROE HLYWD BRUEN AVATR TRUBL EMMMY WHDDN SHRTZ",
         "waypoints": "MDLER MNROE HLYWD BRUEN/a32000 AVATR/a29000/s280/ho TRUBL/a19000 EMMMY/a17000 WHDDN/a15000 SHRTZ/a13000",
         "runway_waypoints": {
-          "6L": "SHRTZ/a13000 DRYSS/a10000 TOMYS/a9000 CLIFY/a7000/s220 HNCHE SASSI/a7000/s210 SHIPM",
-          "7R": "SHRTZ/a13000 LADDD/a10000 JOELZ/a8000 NORML/a6000/s220 WNDFL/a6000 NIKEY"
+          "KLAX": {
+              "6L": "SHRTZ/a13000 DRYSS/a10000 TOMYS/a9000 CLIFY/a7000/s220 HNCHE SASSI/a7000/s210 SHIPM",
+              "7R": "SHRTZ/a13000 LADDD/a10000 JOELZ/a8000 NORML/a6000/s220 WNDFL/a6000 NIKEY"
+          }
         }
       }
     ],
@@ -1544,7 +1546,6 @@
     "_LAX": "33.942501,-118.407997",
     "_HHR": "N033.55.22.787,W118.20.05.886"
   },
-  "magnetic_variation": -13,
   "name": "KLAX",
   "primary_airport": "KLAX",
   "scenarios": {

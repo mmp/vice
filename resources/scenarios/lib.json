@@ -822,7 +822,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "location": "N040.41.28.005,W074.10.16.223",
       "tower_list": 2
     },
     "KJFK": {
@@ -1396,7 +1395,6 @@
         "WAVEY": "Water",
         "WHITE": "Southwest"
       },
-      "location": "N040.38.30.356,W073.46.51.483",
       "tower_list": 1
     },
     "KLGA": {
@@ -2388,7 +2386,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "location": "N040.46.37.462,W073.52.19.947",
       "tower_list": 3
     }
   },
@@ -2512,7 +2509,6 @@
     "_LGA_31": "N040.46.19.019,W073.51.25.675",
     "_LGA_4": "N040.46.09.172,W073.53.03.041"
   },
-  "magnetic_variation": 13.3,
   "name": "LIB",
   "primary_airport": "KEWR",
   "radar_sites": {

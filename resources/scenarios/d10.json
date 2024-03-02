@@ -1209,7 +1209,6 @@
                 "DOSXX": "West",
                 "BSKAT": "East"
             },
-            "location": "N032.54.07.668,W097.01.25.089",
             "tower_list": 2
         },
         "KDAL": {
@@ -1922,7 +1921,6 @@
                 "HULZE": "ALL",
                 "HUDAD": "ALL"
             },
-            "location": "N032.50.53.375,W096.51.10.706",
             "tower_list": 1
         },
         "KAFW": {
@@ -2184,7 +2182,6 @@
                 "HUDAD": "ALL",
                 "HULZE": "ALL"
             },
-            "location": "N032.59.24.239,W097.19.11.037",
             "tower_list": 1
         }
     },
@@ -2592,12 +2589,14 @@
                     "star": "VKTRY2",
                     "waypoints": "COWNE/a17000-19000/s290/ho JEYAR/a13000-16000/s270 VKTRY/a10000-11000/s250",
                     "runway_waypoints": {
+                      "KDFW": {
                         "13R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 THASA/a5000/s240 MORRY POPPA/h135",
                         "17L": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "17C": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "17R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "18R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "18L": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090"
+                      }
                 }
             }
         ],
@@ -3406,7 +3405,7 @@
             ]
         }
     ],
-    "magnetic_variation": -3.2, 
+    "magnetic_adjustment": -0.75, 
     "name": "D10",
     "primary_airport": "KDFW",
     "radar_sites": {

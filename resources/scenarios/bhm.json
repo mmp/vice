@@ -343,7 +343,6 @@
         "GUMMP": "ALL",
         "DAYVS": "ALL"
       },
-      "location":"N33.34.26.023,W86.45.22.674",
       "tower_list": 1
     }
   },
@@ -829,7 +828,7 @@
     ]
 }
   ],
-  "magnetic_variation": 13.3,
+  "magnetic_adjustment": -1,
   "name": "KBHM",
   "primary_airport": "KBHM",
   "radar_sites": {

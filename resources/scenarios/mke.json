@@ -176,7 +176,6 @@
         "SQUIB": "MKE9",
         "BRAVE": "MKE9"
       },
-      "location": "KMKE",
       "tower_list": 1
    }
   },
@@ -531,7 +530,6 @@
   "fixes": {
     "_MKE": "42.947200775146484,-87.89659882"
   },
-  "magnetic_variation": -3,
   "name": "KMKE",
   "primary_airport": "KMKE",
   "radar_sites": {

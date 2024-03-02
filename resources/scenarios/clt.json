@@ -1156,7 +1156,6 @@
                         "SMIAM": "KRITR5",
                         "CLAWD": "WEAZL4"
                     },
-                    "location": "KCLT",
                     "tower_list": 1
                 }
             },
@@ -2286,7 +2285,7 @@
                             ]
                         }
                     ],
-                    "magnetic_variation": 7.7,
+                    "magnetic_adjustment": -0.5,
                     "name": "KCLT",
                     "primary_airport": "KCLT",
                     "radar_sites": {

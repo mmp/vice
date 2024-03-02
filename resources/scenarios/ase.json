@@ -191,7 +191,6 @@
         "HBU": "Southwest",
         "MTJ": "Southwest"
       },
-      "location": "KASE",
       "tower_list": 1
     }
   },
@@ -425,7 +424,6 @@
       ]
     }
   ],
-  "magnetic_variation": 7.7,
   "name": "KASE",
   "primary_airport": "KASE",
   "radar_sites": {

@@ -569,7 +569,6 @@
     "SWANN": "ALL",
     "RAMAY": "ALL"
   },
-  "location": "KDCA",
   "tower_list": 1
 },
 "KBWI": {
@@ -591,7 +590,6 @@
       ]
      }
   },
-  "location": "KBWI",
   "tower_list": 1
 }
 },
@@ -657,12 +655,14 @@
       "initial_speed": 290,
       "star": "CAPSS3",
       "runway_waypoints": {
-        "1": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
-        "4": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
-        "15": "CAPSS/a11000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
-        "19": "CAPSS/a11000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
-        "22": "CAPSS/a11000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
-        "33": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008"
+        "KDCA": {
+            "1": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
+            "4": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008",
+            "15": "CAPSS/a11000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
+            "19": "CAPSS/a11000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
+            "22": "CAPSS/a11000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
+            "33": "CAPSS/a11000 HOYAS/a9000 HALLL KATRN/h008"
+        }
       },
       "waypoints": "KSETT/a17000+ ELAPP/a16000/s280/ho BULII/a14000 CAPSS/a11000"
     }
@@ -717,12 +717,14 @@
       "initial_speed": 270,
       "star": "CLIPR3",
       "runway_waypoints": {
-        "1":  "EYESS FELTY HITEK CAVDI/h187",
-        "4":  "EYESS FELTY HITEK CAVDI/h187",
-        "15": "EYESS EDDWD MEGGS NAYES/h327",
-        "19": "EYESS EDDWD MEGGS NAYES/h327",
-        "22": "EYESS EDDWD MEGGS NAYES/h327",
-        "33": "EYESS FELTY HITEK CAVDI/h187"
+        "KDCA": {
+            "1":  "EYESS FELTY HITEK CAVDI/h187",
+            "4":  "EYESS FELTY HITEK CAVDI/h187",
+            "15": "EYESS EDDWD MEGGS NAYES/h327",
+            "19": "EYESS EDDWD MEGGS NAYES/h327",
+            "22": "EYESS EDDWD MEGGS NAYES/h327",
+            "33": "EYESS FELTY HITEK CAVDI/h187"
+        }
       },
       "waypoints": "CLIPR/a12000 BAL/a10000/s250/ho EYESS"
     }
@@ -760,12 +762,14 @@
       "initial_speed": 280,
       "star": "DEALE3",
       "runway_waypoints": {
-        "1":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
-        "4":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
-        "15": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
-        "19": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
-        "22": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
-        "33": "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187"
+        "KDCA": {
+            "1":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
+            "4":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
+            "15": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
+            "19": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
+            "22": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
+            "33": "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187"
+        }
       },
       "waypoints": "BILIT/a11000 DEALE/a10000/s280/ho"
     }
@@ -827,12 +831,14 @@
       "initial_speed": 280,
       "star": "FRDMM5",
       "runway_waypoints": {
-        "1":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
-        "4":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
-        "15": "ALWYZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-        "19": "ALWYZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-        "22": "ALWYZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-        "33": "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189"
+        "KDCA": {
+            "1":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
+            "4":  "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189",
+            "15": "ALWYZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+            "19": "ALWYZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+            "22": "ALWYZ/a10000- FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+            "33": "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/a189"
+        }
       },
       "waypoints": "COURG/a20000-23000/s280 PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000 ALWYZ/a10000-"
     }
@@ -877,12 +883,14 @@
       "initial_speed": 280,
       "star": "TRUPS4",
       "runway_waypoints": {
-        "1":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-        "4":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-        "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-        "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-        "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-        "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
+        "KDCA": {
+            "1":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
+            "4":  "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
+            "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+            "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+            "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+            "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
+        }
       },
       "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250"
     }
@@ -1532,7 +1540,6 @@
       "center": "N38.51.34.118,W77.02.10.979"
     }
   ],
-  "magnetic_variation": 10.8,
   "name": "KDCA",
   "primary_airport": "KDCA",
   "radar_sites": {

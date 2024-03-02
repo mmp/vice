@@ -1083,7 +1083,6 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       },
-      "location": "N040.41.28.005,W074.10.16.223",
       "tower_list": 1
     },
     "KTEB": {
@@ -1800,8 +1799,7 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      },
-      "location": "N040.50.59.912,W074.03.39.424"
+      }
     }
   },
   "arrival_groups": {
@@ -2710,7 +2708,6 @@
       "center": "KEWR"
     }
   ],
-  "magnetic_variation": 13.3,
   "name": "KEWR",
   "primary_airport": "KEWR",
   "radar_sites": {

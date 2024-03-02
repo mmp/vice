@@ -221,7 +221,6 @@
         "ACERB": "BIMMR3",
         "JLENA": "BWALL2"
       },
-      "location":"N34.53.37.418,W82.12.56.731",
       "tower_list": 1
     }
   },
@@ -452,7 +451,6 @@
     "_GSP_22": "N34.54.30.210,W82.12.32.492",
     "KGSP": "N33.33.49.992,W86.45.08.294"
   },
-  "magnetic_variation": 13.3,
   "name": "KGSP",
   "primary_airport": "KGSP",
   "radar_sites": {

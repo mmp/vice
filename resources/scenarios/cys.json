@@ -241,7 +241,6 @@
         "EGBER": "East",
         "SNY": "East"
       },
-      "location": "KCYS",
       "tower_list": 1
     }
   },
@@ -409,7 +408,7 @@
     }
   },
   "default_scenario": "KCYS Landing East",
-  "magnetic_variation": 7.7,
+  "magnetic_adjustment": -2,
   "name": "KCYS",
   "primary_airport": "KCYS",
   "radar_sites": {

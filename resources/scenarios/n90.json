@@ -433,7 +433,6 @@
                 "NEWEL": "West",
                 "ZIMMZ": "West"
               },
-              "location": "N040.46.36.940,W073.52.26.264",
               "tower_list": 1
             },
             "KEWR": {
@@ -1515,7 +1514,6 @@
                   "WHITE": "South",
                   "ZIMMZ": "West"
                 },
-                "location": "N040.41.28.005,W074.10.16.223",
                 "tower_list": 2
               },
               "KJFK": {
@@ -2447,7 +2445,6 @@
                   "WAVEY": "Water",
                   "WHITE": "Southwest"
                 },
-                "location": "N040.38.30.356,W073.46.51.483",
                 "tower_list": 3
               }
 
@@ -3270,8 +3267,10 @@
                               "initial_speed": 275,
                               "star": "PARCH3",
                               "runway_waypoints": {
-                                "22L": "ROBER CRAIL/h302",
-                                "22R": "ROBER CRAIL/h302"
+                                  "KJFK": {
+                                      "22L": "ROBER CRAIL/h302",
+                                      "22R": "ROBER CRAIL/h302"
+                                  }
                               },
                               "speed_restriction": 250,
                               "waypoints": "N040.58.56.856,W072.35.46.481 N040.57.33.565,W072.40.07.791/ho CCC ROBER/h278"
@@ -3620,7 +3619,6 @@
                     "center": "KJFK"
                 }
             ],
-            "magnetic_variation": 13.3,
     "name": "N90 Combined",
     "primary_airport": "KEWR",
     "radar_sites": {

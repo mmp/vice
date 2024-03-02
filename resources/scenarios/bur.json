@@ -453,7 +453,6 @@
                 "SLI": "South",
                 "LAX": "Southwest"
             },
-            "location": "N034.19.99.040,W118.35.44.560",
             "tower_list": 1
 
 
@@ -693,7 +692,6 @@
                 "BLH": "Southeast",
                 "DAG": "Northeast"
             },
-            "location": "N034.12.35.300,W118.29.23.900",
             "tower_list": 1
         },
         "KWHP": {
@@ -732,7 +730,6 @@
                     }
                 }
             },
-            "location": "N034.15.33.571,W118.24.48.359",
             "tower_list": 1
 
         }
@@ -814,9 +811,11 @@
                 "initial_speed": 250,
                 "star": "ROKKR2",
                 "runway_waypoints": {
-                    "8": "IVINS/a8000 MIKEI/a7000/h216",
-                    "15": "IVINS/a8000 MAURK/a6000/h083",
-                    "33": "IVINS/a8000 MIKEI/a7000 EHUNT/a6000/h216"
+                    "KBUR": {
+                        "8": "IVINS/a8000 MIKEI/a7000/h216",
+                        "15": "IVINS/a8000 MAURK/a6000/h083",
+                        "33": "IVINS/a8000 MIKEI/a7000 EHUNT/a6000/h216"
+                    }
                 },
                 "waypoints": "PEPRZ/a14000/ho HEVVY ROKKR/a11000/s250 ZEPPE/a9000/s240 IVINS/a8000"
             }
@@ -1074,7 +1073,6 @@
         "KWHP": "N034.15.33.571,W118.24.48.359",
         "WHP": "N034.15.33.571,W118.24.48.359"
     },
-    "magnetic_variation": -10,
     "name": "KBUR",
     "primary_airport": "KBUR",
     "radar_sites": {

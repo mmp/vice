@@ -13,8 +13,8 @@ import (
 )
 
 type Airport struct {
-	Location       Point2LL `json:"location"`
-	TowerListIndex int      `json:"tower_list"`
+	Location       Point2LL
+	TowerListIndex int `json:"tower_list"`
 
 	Name string `json:"name"`
 
@@ -233,6 +233,12 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]Point
 }
 
 func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
+	if info, ok := database.Airports[icao]; !ok {
+		e.ErrorString("airport \"%s\" not found in airport database", icao)
+	} else {
+		ap.Location = info.Location
+	}
+
 	if ap.Location.IsZero() {
 		e.ErrorString("Must specify \"location\" for airport")
 	}
@@ -242,6 +248,33 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 
 		if isAllNumbers(name) {
 			e.ErrorString("Approach names cannot only have numbers in them")
+		}
+
+		if appr.Id != "" {
+			if wps, ok := database.Airports[icao].Approaches[appr.Id]; !ok {
+				e.ErrorString("Approach \"%s\" not in database. Options: %s", appr.Id,
+					strings.Join(SortedMapKeys(database.Airports[icao].Approaches), ", "))
+				e.Pop()
+				continue
+			} else {
+				if appr.Id[0] == 'H' || appr.Id[0] == 'R' {
+					appr.Type = RNAVApproach
+				} else {
+					appr.Type = ILSApproach // close enough
+				}
+				// RZ22L -> 22L
+				for i, ch := range appr.Id {
+					if ch >= '1' && ch <= '9' {
+						appr.Runway = appr.Id[i:]
+						break
+					}
+				}
+				if len(appr.Runway) == 0 {
+					e.ErrorString("unable to convert approach id \"%s\" to runway", appr.Id)
+				}
+
+				appr.Waypoints = wps
+			}
 		}
 
 		if appr.Runway == "" {
@@ -415,16 +448,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		}
 
 		// Make sure that all runways have a route to the exit
-		for rwy, routes := range ap.DepartureRoutes {
-			e.Push("Runway " + rwy)
-
+		for rwy := range ap.DepartureRoutes {
 			if _, ok := LookupRunway(icao, rwy); !ok {
 				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
 			}
-			if _, ok := routes[dep.Exit]; !ok {
-				e.ErrorString("exit \"%s\" not found in runway's \"departure_routes\"", dep.Exit)
-			}
-			e.Pop()
 		}
 
 		// We may have multiple ways to reach an exit (e.g. different for
@@ -550,7 +577,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)
 
-		vol.Id = ap.Name + rwy
+		vol.Id = icao + rwy
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
 			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
@@ -572,10 +599,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			vol.MaxHeadingDeviation = 90
 		}
 		if vol.Floor == 0 {
-			vol.Floor = float32(database.Airports[ap.Name].Elevation + 100)
+			vol.Floor = float32(database.Airports[icao].Elevation + 100)
 		}
 		if vol.Ceiling == 0 {
-			vol.Ceiling = float32(database.Airports[ap.Name].Elevation + 5000)
+			vol.Ceiling = float32(database.Airports[icao].Elevation + 5000)
 		}
 		if vol.Length == 0 {
 			vol.Length = 15
@@ -663,6 +690,7 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
+	Id              string          `json:"cifp_id"`
 	FullName        string          `json:"full_name"`
 	Type            ApproachType    `json:"type"`
 	Runway          string          `json:"runway"`

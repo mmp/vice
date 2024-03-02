@@ -52,6 +52,7 @@ type ScenarioGroup struct {
 	NmPerLatitude     float32 // Always 60
 	NmPerLongitude    float32 // Derived from Center
 	MagneticVariation float32 `json:"magnetic_variation"`
+	MagneticAdjustment float32 `json:"magnetic_adjustment"`
 	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_adaptation"`
 }
 
@@ -73,32 +74,6 @@ type ReportingPoint struct {
 	Location Point2LL
 }
 
-type Arrival struct {
-	Waypoints       WaypointArray            `json:"waypoints"`
-	RunwayWaypoints map[string]WaypointArray `json:"runway_waypoints"`
-	CruiseAltitude  float32                  `json:"cruise_altitude"`
-	Route           string                   `json:"route"`
-	STAR            string                   `json:"star"`
-
-	InitialController   string  `json:"initial_controller"`
-	InitialAltitude     float32 `json:"initial_altitude"`
-	AssignedAltitude    float32 `json:"assigned_altitude"`
-	InitialSpeed        float32 `json:"initial_speed"`
-	SpeedRestriction    float32 `json:"speed_restriction"`
-	ExpectApproach      string  `json:"expect_approach"`
-	Scratchpad          string  `json:"scratchpad"`
-	SecondaryScratchpad string  `json:"secondary_scratchpad"`
-	Description         string  `json:"description"`
-
-	// Airport -> arrival airlines
-	Airlines map[string][]ArrivalAirline `json:"airlines"`
-}
-
-type ArrivalAirline struct {
-	ICAO    string `json:"icao"`
-	Airport string `json:"airport"`
-	Fleet   string `json:"fleet,omitempty"`
-}
 
 type Airspace struct {
 	Boundaries map[string][]Point2LL                 `json:"boundaries"`
@@ -189,8 +164,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	})
 
+	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
+
+		if airportExits[rwy.Airport] == nil {
+			airportExits[rwy.Airport] = make(map[string]interface{})
+		}
+
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString("airport not found")
 		} else {
@@ -198,6 +179,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				e.ErrorString("runway departure routes not found")
 			} else {
 				s.DepartureRunways[i].ExitRoutes = routes
+				for exit := range routes {
+					// It's fine if multiple active runways cover the exit.
+					airportExits[rwy.Airport][exit] = nil
+				}
 			}
 
 			if rwy.Category != "" {
@@ -214,6 +199,17 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			}
 		}
 		e.Pop()
+	}
+	for icao, exits := range airportExits {
+		// We already gave an error above if the airport is unknown, so
+		// don't need to again here..
+		if ap, ok := sg.Airports[icao]; ok {
+			for _, dep := range ap.Departures {
+				if _, ok := exits[dep.Exit]; !ok {
+					e.ErrorString("No active runway at %s covers in-use exit \"%s\"", icao, dep.Exit)
+				}
+			}
+		}
 	}
 
 	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
@@ -508,9 +504,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
-	if ap, ok := sg.Airports[s]; ok {
-		return ap.Location, true
-	} else if p, ok := sg.Fixes[s]; ok {
+	if p, ok := sg.Fixes[s]; ok {
 		return p, true
 	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
@@ -617,8 +611,12 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 
 	if sg.PrimaryAirport == "" {
 		e.ErrorString("\"primary_airport\" not specified")
-	} else if _, ok := sg.locate(sg.PrimaryAirport); !ok {
+	} else if ap, ok := database.Airports[sg.PrimaryAirport]; !ok {
 		e.ErrorString("\"primary_airport\" \"%s\" unknown", sg.PrimaryAirport)
+	} else if mvar, err := database.MagneticGrid.Lookup(ap.Location); err != nil {
+		e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+	} else {
+		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
 	if sg.NmPerLatitude == 0 {
@@ -678,107 +676,8 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			e.ErrorString("no arrivals in arrival group")
 		}
 
-		for _, ar := range arrivals {
-			if ar.Route == "" && ar.STAR == "" {
-				e.ErrorString("neither \"route\" nor \"star\" specified")
-				continue
-			}
-
-			if ar.Route != "" {
-				e.Push("Route " + ar.Route)
-			} else {
-				e.Push("Route " + ar.STAR)
-			}
-
-			if len(ar.Waypoints) < 2 {
-				e.ErrorString("must provide at least two \"waypoints\" for approach " +
-					"(even if \"runway_waypoints\" are provided)")
-			} else {
-				sg.InitializeWaypointLocations(ar.Waypoints, e)
-
-				ar.Waypoints.CheckArrival(e)
-
-				for rwy, wp := range ar.RunwayWaypoints {
-					e.Push("Runway " + rwy)
-
-					foundRunway := false
-					for ap := range ar.Airlines { // airlines is keyed on airport names
-						if _, ok := LookupRunway(ap, rwy); ok {
-							foundRunway = true
-							break
-						}
-					}
-					if !foundRunway {
-						var runways []string
-						for ap := range ar.Airlines {
-							runways = append(runways, ap+": "+database.Airports[ap].ValidRunways())
-						}
-						e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, strings.Join(runways, ", "))
-					}
-
-					sg.InitializeWaypointLocations(wp, e)
-
-					if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
-						e.ErrorString("initial \"runway_waypoints\" fix must match " +
-							"last \"waypoints\" fix")
-					}
-
-					// For the check, splice together the last common
-					// waypoint and the runway waypoints.  This will give
-					// us a repeated first fix, but this way we can check
-					// compliance with restrictions at that fix...
-					ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
-					WaypointArray(ewp).CheckArrival(e)
-
-					e.Pop()
-				}
-			}
-
-			for arrivalAirport, airlines := range ar.Airlines {
-				e.Push("Arrival airport " + arrivalAirport)
-				if len(airlines) == 0 {
-					e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
-				}
-				for _, al := range airlines {
-					database.CheckAirline(al.ICAO, al.Fleet, e)
-					if _, ok := database.Airports[al.Airport]; !ok {
-						e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
-					}
-				}
-
-				ap, ok := sg.Airports[arrivalAirport]
-				if !ok {
-					e.ErrorString("arrival airport \"%s\" unknown", arrivalAirport)
-				} else if ar.ExpectApproach != "" {
-					if _, ok := ap.Approaches[ar.ExpectApproach]; !ok {
-						e.ErrorString("arrival airport \"%s\" doesn't have a \"%s\" approach",
-							arrivalAirport, ar.ExpectApproach)
-					}
-				}
-
-				e.Pop()
-			}
-
-			if ar.InitialAltitude == 0 {
-				e.ErrorString("must specify \"initial_altitude\"")
-			} else {
-				// Make sure the initial altitude isn't below any of
-				// altitude restrictions.
-				for _, wp := range ar.Waypoints {
-					if wp.AltitudeRestriction != nil &&
-						wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
-						e.ErrorString("\"initial_altitude\" is below altitude restriction at \"%s\"", wp.Fix)
-					}
-				}
-			}
-
-			if ar.InitialController == "" {
-				e.ErrorString("\"initial_controller\" missing")
-			} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
-				e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
-			}
-
-			e.Pop()
+		for i := range arrivals {
+			arrivals[i].PostDeserialize(sg, e)
 		}
 		e.Pop()
 	}
@@ -902,35 +801,53 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		if i+1 == len(waypoints) {
 			if e != nil {
 				e.ErrorString("can't have DME arc starting at the final waypoint")
+				e.Pop()
 			}
 			break
 		}
 
+		// Which way are we turning as we depart p0? Use either the
+		// previous waypoint or the next one after the end of the arc
+		// to figure it out.
+		var v0, v1 [2]float32
+		p0, p1 := ll2nm(wp.Location, sg.NmPerLongitude), ll2nm(waypoints[i+1].Location, sg.NmPerLongitude)
+		if i > 0 {
+			v0 = sub2f(p0, ll2nm(waypoints[i-1].Location, sg.NmPerLongitude))
+			v1 = sub2f(p1, p0)
+		} else {
+			if i+2 == len(waypoints) {
+				if e != nil {
+					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+					e.Pop()
+				}
+				continue
+			}
+			v0 = sub2f(p1, p0)
+			v1 = sub2f(ll2nm(waypoints[i+2].Location, sg.NmPerLongitude), p1)
+		}
+		// cross product
+		x := v0[0]*v1[1] - v0[1]*v1[0]
+		wp.Arc.Clockwise = x < 0
+
 		if wp.Arc.Fix != "" {
 			// Center point was specified
-			if pos, ok := sg.locate(wp.Arc.Fix); !ok {
+			var ok bool
+			if wp.Arc.Center, ok = sg.locate(wp.Arc.Fix); !ok {
 				if e != nil {
 					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+					e.Pop()
 				}
-				break
-			} else {
-				wp.Arc.Center = pos
-
-				hpre := headingp2ll(wp.Arc.Center, waypoints[i].Location, 60 /* nm per */, 0 /* mag */)
-				hpost := headingp2ll(wp.Arc.Center, waypoints[i+1].Location, 60 /* nm per */, 0 /* mag */)
-
-				h := NormalizeHeading(hpost - hpre)
-				wp.Arc.Clockwise = h < 180
+				continue
 			}
 		} else {
 			// Just the arc length was specified; need to figure out the
 			// center and radius of the circle that gives that.
-			p0, p1 := ll2nm(wp.Location, sg.NmPerLongitude), ll2nm(waypoints[i+1].Location, sg.NmPerLongitude)
 			d := distance2f(p0, p1)
 			if d >= wp.Arc.Length {
 				if e != nil {
 					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
 						d, wp.Arc.Length)
+					e.Pop()
 				}
 				continue
 			}
@@ -938,30 +855,10 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 				// No circle is possible to give an arc that long
 				if e != nil {
 					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
+					e.Pop()
 				}
 				continue
 			}
-
-			// Which way are we turning as we depart p0? Use either the
-			// previous waypoint or the next one after the end of the arc
-			// to figure it out.
-			var v0, v1 [2]float32
-			if i > 0 {
-				v0 = sub2f(p0, ll2nm(waypoints[i-1].Location, sg.NmPerLongitude))
-				v1 = sub2f(p1, p0)
-			} else {
-				if i+2 == len(waypoints) {
-					if e != nil {
-						e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
-					}
-					return
-				}
-				v0 = sub2f(p1, p0)
-				v1 = sub2f(ll2nm(waypoints[i+1].Location, sg.NmPerLongitude), p1)
-			}
-			// cross product
-			x := v0[0]*v1[1] - v0[1]*v1[0]
-			wp.Arc.Clockwise = x < 0
 
 			// Now search for a center point of a circle that goes through
 			// p0 and p1 and has the desired arc length.  We will search
@@ -1003,6 +900,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			if t >= limit {
 				if e != nil {
 					e.ErrorString("unable to find valid circle radius for arc")
+					e.Pop()
 				}
 				continue
 			}
@@ -1093,9 +991,7 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	}
 
-	if referenced, ok := referencedVideoMaps[path]; !ok {
-		fmt.Printf("%s: video map not used in any scenarios\n", path)
-	} else {
+	if referenced, ok := referencedVideoMaps[path]; ok {
 		lvm.commandBufs, err = loadVideoMapFile(r, referenced)
 		if err != nil {
 			lvm.err = err

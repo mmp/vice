@@ -180,7 +180,6 @@
         "HAQHY": "HAQHY",
         "CKW": "CKW"
       },
-      "location": "KGJT",
       "tower_list": 1
    }
   },
@@ -576,7 +575,6 @@
     "_GJT11": "N039.08.06.392,W108.32.39.768",
     "_GJT29": "N039.07.06.722,W108.30.51.141"
   },
-  "magnetic_variation": -9.7,
   "name": "KGJT",
   "primary_airport": "KGJT",
   "radar_sites": {

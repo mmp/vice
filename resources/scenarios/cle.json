@@ -645,7 +645,6 @@
                         "SNNOH": "NORTH",
                         "SINKR": "NORTH"
                     },
-                    "location": "KCLE",
                     "tower_list": 1
                 },
                 "KCGF": {
@@ -833,7 +832,6 @@
                             "SINKR" : "NORTH",
                             "SNNOH": "NORTH"
                         },
-                        "location": "KCGF",
                         "tower_list": 1
                     }
                 },
@@ -1702,10 +1700,12 @@
                         "initial_speed": 280,
                         "star": "BRWNZ4",
                         "runway_waypoints": {
-                            "6L": "BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210/h241",
-                            "6R": "BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210/h241",
-                            "24L": "BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210/h056",
-                            "24R": "BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210/h056"
+                            "KCLE": {
+                                "6L": "BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210/h241",
+                                "6R": "BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210/h241",
+                                "24L": "BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210/h056",
+                                "24R": "BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210/h056"
+                            }
                         },
                         "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280"
                     }
@@ -1977,10 +1977,12 @@
                         "star": "ROKNN3",
                         "speed_restriction": 280,
                         "runway_waypoints": {
-                            "6L": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210",
-                            "6R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 RUHSH/a6000+/s210",
-                            "24L": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 DAHOO/a7000/s210/h058",
-                            "24R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210/h058"
+                            "KCLE": {
+                                "6L": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210",
+                                "6R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 RUHSH/a6000+/s210",
+                                "24L": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 DAHOO/a7000/s210/h058",
+                                "24R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210/h058"
+                            }
                         },
                         "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280"
                     }
@@ -2317,10 +2319,12 @@
                         "star": "ROLLN2",
                         "speed_restriction": 280,
                         "runway_waypoints": {
-                            "6L": "ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236",
-                            "6R": "ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236",
-                            "24L": "ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056",
-                            "24R": "ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056"
+                            "KCLE": {
+                                "6L": "ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236",
+                                "6R": "ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236",
+                                "24L": "ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056",
+                                "24R": "ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h056"
+                            }
                         },
                         "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000"
                     }
@@ -2692,10 +2696,12 @@
                                     "star": "TRYBE4",
                                     "speed_restriction": 280,
                                     "runway_waypoints": {
-                                        "6L": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ BUDRW/a6000/s240",
-                                        "6R": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ BUDRW/a6000/s240",
-                                        "24L": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ CLVTO/a7000-10000 JAAIN/a7000/s210/h238",
-                                        "24R": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ CLVTO/a7000-10000 JAAIN/a7000/s210/h238"
+                                        "KCLE": {
+                                            "6L": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ BUDRW/a6000/s240",
+                                            "6R": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ BUDRW/a6000/s240",
+                                            "24L": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ CLVTO/a7000-10000 JAAIN/a7000/s210/h238",
+                                            "24R": "HFNER/a16000+/s280 TRYBE/a10000-19000/s280 NAGGY/a7000+ CLVTO/a7000-10000 JAAIN/a7000/s210/h238"
+                                        }
                                     },
                                     "waypoints": "LFTON/a17000-23000/ho HFNER/a16000+/s280"
                                 }
@@ -3027,7 +3033,6 @@
                                 ]
                             }
                         ],
-                        "magnetic_variation": -8.2,
                         "name": "KCLE",
                         "primary_airport": "KCLE",
                         "radar_sites": {

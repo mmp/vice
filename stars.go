@@ -1420,9 +1420,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.weatherRadar.Draw(ctx, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
 		transforms, cb)
 
-	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-	cb.LineWidth(1)
-	DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
+	if ps.Brightness.RangeRings > 0 {
+		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
+		cb.LineWidth(1)
+		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
+	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
@@ -5435,7 +5437,6 @@ func getRecatCategory(ac *Aircraft) string {
 	wc := perf.Category.CWT
 	if len(wc) == 0 {
 		lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-		lg.Errorf("%s: no recat category found for %s\n", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 
@@ -5462,7 +5463,6 @@ func getRecatCategory(ac *Aircraft) string {
 		return "A"
 	default:
 		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-		lg.Errorf("%s: unexpected weight class \"%c\"\n", ac.Callsign, wc[0])
 		return "NOWGT"
 	}
 
@@ -5505,7 +5505,7 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		}
 	}
 	mitRequirements := [10][10]float32{ // [front][back]
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind I
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behing I
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind H
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind G
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind F
@@ -6124,7 +6124,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		if ctx.mouse != nil {
 			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			if wp.Callsign != "" {
-				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) && //Good!
+				if ac := ctx.world.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) &&
 					slices.Contains(aircraft, ac) {
 					if state, ok := sp.Aircraft[wp.Callsign]; ok {
 						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())

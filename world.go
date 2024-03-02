@@ -823,7 +823,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		pred := Select(rand.Float32() < .5,
 			func(d Departure) bool { return d.Exit == lastDeparture.Exit },
 			func(d Departure) bool {
-				return ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
 			})
 
 		if idx := SampleFiltered(ap.Departures, pred); idx == -1 {
@@ -838,7 +839,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		// Sample uniformly, minding the category, if specified
 		idx := SampleFiltered(ap.Departures,
 			func(d Departure) bool {
-				return rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit]
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
@@ -1096,7 +1098,8 @@ func (w *World) DrawScenarioInfoWindow() {
 						imgui.TableNextColumn()
 						imgui.Text(airport)
 						imgui.TableNextColumn()
-						imgui.Text(rwy)
+						rwyBase, _, _ := strings.Cut(rwy, ".")
+						imgui.Text(rwyBase)
 						imgui.TableNextColumn()
 						if len(routeToExit) == 1 {
 							// If we only saw a single departure route, no
@@ -1160,24 +1163,26 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 			// Draw runway-specific waypoints
-			for _, rwy := range SortedMapKeys(arr.RunwayWaypoints) {
-				wp := arr.RunwayWaypoints[rwy]
-				w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+			for _, ap := range SortedMapKeys(arr.RunwayWaypoints) {
+				for _, rwy := range SortedMapKeys(arr.RunwayWaypoints[ap]) {
+					wp := arr.RunwayWaypoints[ap][rwy]
+					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
-				if len(wp) > 1 {
-					// Draw the runway number in the middle of the line
-					// between the first two waypoints.
-					pmid := mid2ll(wp[0].Location, wp[1].Location)
-					td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
-				} else if wp[0].Heading != 0 {
-					// This should be the only other case... The heading arrow is drawn
-					// up to 2nm out, so put the runway 1nm along its axis.
-					a := radians(float32(wp[0].Heading) - w.MagneticVariation)
-					v := [2]float32{sin(a), cos(a)}
-					pend := ll2nm(wp[0].Location, w.NmPerLongitude)
-					pend = add2f(pend, v)
-					pell := nm2ll(pend, w.NmPerLongitude)
-					td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
+					if len(wp) > 1 {
+						// Draw the runway number in the middle of the line
+						// between the first two waypoints.
+						pmid := mid2ll(wp[0].Location, wp[1].Location)
+						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
+					} else if wp[0].Heading != 0 {
+						// This should be the only other case... The heading arrow is drawn
+						// up to 2nm out, so put the runway 1nm along its axis.
+						a := radians(float32(wp[0].Heading) - w.MagneticVariation)
+						v := [2]float32{sin(a), cos(a)}
+						pend := ll2nm(wp[0].Location, w.NmPerLongitude)
+						pend = add2f(pend, v)
+						pell := nm2ll(pend, w.NmPerLongitude)
+						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
+					}
 				}
 			}
 		}

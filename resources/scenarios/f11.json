@@ -840,7 +840,6 @@
         "VIYAP": "FATHE",
         "ZALEN": "DDANY"
       },
-      "location": "N028.25.45.781,W081.18.32.260",
       "tower_list": 2
     },
     "KORL": {
@@ -918,7 +917,6 @@
         "DDANY": "South",
         "MLB": "South"
       },
-      "location": "N28.32.45.979,W81.19.58.601",
       "tower_list": 1
     },
     "KSFB": {
@@ -1093,7 +1091,6 @@
         "GDUNN": "West",
         "OSPRY": "West"
       },
-      "location": "N028.46.37.847,W081.14.05.700",
       "tower_list": 2
     },
     "KISM": {
@@ -1171,7 +1168,6 @@
           "route": "MLB BLUFI4"
         }
       ],
-      "location": "N028.17.23.303,W081.26.13.489",
       "tower_list": 1
     },
     "KMLB": {
@@ -1221,7 +1217,6 @@
         "WORMS": "North",
         "KLMAN": "West"
       },
-      "location": "N028.06.09.896,W080.38.42.894",
       "tower_list": 1
     },
     "KTPA": {
@@ -1234,7 +1229,6 @@
           ]
         }
       },
-      "location": "KTPA",
       "tower_list": 1
     }
   },
@@ -2377,16 +2371,20 @@
         "initial_speed": 300,
         "star": "ALYNA3",
         "runway_waypoints": {
-          "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-          "17R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-          "18L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-          "18R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-          "35R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-          "35L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-          "36R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-          "36L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-          "27L": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
-          "9R": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
+            "KMCO": {
+                "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                "17R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                "18L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                "18R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                "35R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+                "35L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+                "36R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+                "36L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186"
+            },
+            "KSFB": {
+                "27L": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
+                "9R": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
+            }
         },
         "speed_restriction": 250,
         "waypoints": "BEAUX/ho SURFR/a14000"
@@ -2652,13 +2650,15 @@
         "initial_speed": 290,
         "star": "DADES1",
         "speed_restriction": 290,
-          "runway_waypoints": {
+        "runway_waypoints": {
+            "KTPA": {
               "1L": "LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
               "1R": "LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
               "28": "LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210/h186",
               "19L": "LZARD JKBAL/a6000/s230/h277",
               "19R": "LZARD JKBAL/a6000/s230/h277",
               "10": "LZARD JKBAL/a6000/s230/h277"
+            }
         },
         "waypoints": "BEAUX ZINGR/a10000+/ho WORAK ZOPER CAMKO ROSTR GUURR DADES LZARD"
       }
@@ -3725,14 +3725,16 @@
         "initial_speed": 290,
         "star": "GRNCH5",
         "runway_waypoints": {
-          "17L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "17R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "18L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "18R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
-          "35L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-          "35R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-          "36L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-          "36R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
+          "KMCO": {
+              "17L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+              "17R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+              "18L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+              "18R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+              "35L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+              "35R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+              "36L": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+              "36R": "GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
+          }
         },
         "speed_restriction": 290,
         "waypoints": "GRTNG/a17000+/s290/ho GRNCH"
@@ -5723,14 +5725,16 @@
         "initial_speed": 280,
         "star": "JAFAR3",
         "runway_waypoints": {
-          "17L": "LAMMP YAGGO/a6000/s210/h106",
-          "17R": "LAMMP YAGGO/a6000/s210/h106",
-          "18L": "LAMMP YAGGO/a6000/s210/h106",
-          "18R": "LAMMP YAGGO/a6000/s210/h106",
-          "36L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-          "36R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-          "35L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-          "35R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
+          "KMCO": {
+              "17L": "LAMMP YAGGO/a6000/s210/h106",
+              "17R": "LAMMP YAGGO/a6000/s210/h106",
+              "18L": "LAMMP YAGGO/a6000/s210/h106",
+              "18R": "LAMMP YAGGO/a6000/s210/h106",
+              "36L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+              "36R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+              "35L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
+              "35R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
+          }
         },
         "speed_restriction": 280,
         "waypoints": "BRKWL/ho JAFAR CRPIT LAMMP"
@@ -6009,14 +6013,16 @@
         "initial_speed": 280,
         "star": "PRICY3",
         "runway_waypoints": {
-          "17L": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
-          "17R": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
-          "18L": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
-          "18R": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
-          "36L": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
-          "36R": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
-          "35L": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
-          "35R": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096"
+          "KMCO": {
+              "17L": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+              "17R": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+              "18L": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+              "18R": "PRICY/a13000-16000 BOCCE JUMBA TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+              "36L": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+              "36R": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+              "35L": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+              "35R": "PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096"
+          }
         },
         "speed_restriction": 250,
         "waypoints": "BULKS/a19000-20000/s280/ho PRICY/a13000-16000"
@@ -7032,14 +7038,16 @@
         "initial_speed": 280,
         "star": "RIDES2",
         "runway_waypoints": {
-          "17L": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
-          "17R": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
-          "18L": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
-          "18R": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
-          "36L": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
-          "36R": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
-          "35L": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
-          "35R": "RIDES/a8000+ WISRD HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000"
+          "KMCO": {
+              "17L": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+              "17R": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+              "18L": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+              "18R": "RIDES WISRD THEAM/a10000+ PARRX/a9000-11000/s220 HAANZ/a8000-9000/s220  PTMAN/a5000/s210/h005",
+              "36L": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
+              "36R": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
+              "35L": "RIDES/a8000+ WISRD HAHNA/a6000/s210/h339",
+              "35R": "RIDES/a8000+ WISRD HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000"
+          }
         },
         "speed_restriction": 250,
         "waypoints": "MOOTS/a15000+/ho RIDES"
@@ -8751,7 +8759,6 @@
       ]
     }
   ],
-  "magnetic_variation": 5,
   "name": "KMCO",
   "primary_airport": "KMCO",
   "radar_sites": {

@@ -6,6 +6,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	_ "embed"
 	"encoding/gob"
 	"encoding/json"
@@ -54,6 +55,15 @@ func decompressZstd(s string) string {
 		lg.Errorf("Error decompressing buffer")
 	}
 	return string(b)
+}
+
+func zstdReader(b []byte) io.Reader {
+	br := bytes.NewReader(b)
+	r, err := zstd.NewReader(br)
+	if err != nil {
+		panic(err)
+	}
+	return r
 }
 
 ///////////////////////////////////////////////////////////////////////////

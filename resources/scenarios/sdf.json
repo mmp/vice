@@ -417,7 +417,6 @@
       "STREP": "ALL",
       "OHAGI": "AAL"
     },
-    "location": "N38.10.26.179,W85.44.11.310",
     "tower_list": 2
   }
 },
@@ -523,11 +522,13 @@
       "initial_controller": "IND_CTR",
       "star": "DAMEN5",
       "runway_waypoints": {
-        "17L"  : "DAMEN CAESR HAUGN CURNL/h349",
-        "17R":   "DAMEN CAESR HAUGN CURNL/h349",
-        "29":   "DAMEN COORN SQWRL/h116",
-        "35L": "DAMEN HAUGN LEWSS/h170",
-        "35R": "DAMEN HAUGN LEWSS/h170"
+          "KSDF": {
+              "17L"  : "DAMEN CAESR HAUGN CURNL/h349",
+              "17R":   "DAMEN CAESR HAUGN CURNL/h349",
+              "29":   "DAMEN COORN SQWRL/h116",
+              "35L": "DAMEN HAUGN LEWSS/h170",
+              "35R": "DAMEN HAUGN LEWSS/h170"
+          }
       },
       "waypoints": " PENTO N038.19.01.589,W087.03.38.490/ho CHERI/a11000/s250 DAMEN"
     }
@@ -566,11 +567,13 @@
       "initial_speed": 250,
       "star": "DLAMP6",
       "runway_waypoints": {
-        "17L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
-        "17R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
-        "29": "NERVE/a10000 RDSTN/h222",
-        "35L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP BRELL/h170",
-        "35R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP BRELL/h170"
+          "KSDF": {
+              "17L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
+              "17R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
+              "29": "NERVE/a10000 RDSTN/h222",
+              "35L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP BRELL/h170",
+              "35R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP BRELL/h170"
+          }
       },
       "waypoints": "CVG WARSA/ho NERVE/a10000"
     }
@@ -604,11 +607,13 @@
       "initial_speed": 250,
       "star": "FRIZN5",
       "runway_waypoints": {
-        "17L": "HONOS THUND/a5000 RACRR/a4000/h170",
-        "17R": "HONOS SPYRS/a4000/h170",
-        "29":  "HONOS  HOOLA MIDDR SORTT/h117",
-        "35L": "HONOS PROUF HAUGN LEWSS/h170",
-        "35R": "HONOS PROUF HAUGN LEWSS/h170"
+        "KSDF": {
+            "17L": "HONOS THUND/a5000 RACRR/a4000/h170",
+            "17R": "HONOS SPYRS/a4000/h170",
+            "29":  "HONOS  HOOLA MIDDR SORTT/h117",
+            "35L": "HONOS PROUF HAUGN LEWSS/h170",
+            "35R": "HONOS PROUF HAUGN LEWSS/h170"
+        }
       },
       "waypoints": "SUSZE UNCOD/ho FRIZN/a11000/s250 HONOS"
     }
@@ -646,11 +651,13 @@
       "initial_speed": 250,
       "star": "MAUDD6",
       "runway_waypoints": {
-        "17L": "TUKKR BRELL DLAMP CURRT/h350",
-        "17R": "TUKKR BRELL DLAMP CURRT/h350",
-        "29" : "TUKKR INDAA VILLL",
-        "35L": "TUKKR RDBRD/a5000 AWLEE/a4000/h350",
-        "35R": "TUKKR PGSUS/a4000 UPSCO/a3000/h350"
+        "KSDF": {
+            "17L": "TUKKR BRELL DLAMP CURRT/h350",
+            "17R": "TUKKR BRELL DLAMP CURRT/h350",
+            "29" : "TUKKR INDAA VILLL",
+            "35L": "TUKKR RDBRD/a5000 AWLEE/a4000/h350",
+            "35R": "TUKKR PGSUS/a4000 UPSCO/a3000/h350"
+        }
       },
       "waypoints": "UNCKL DARBY/ho MAUDD/a10000 TUKKR"
     }
@@ -684,11 +691,13 @@
       "initial_speed": 250,
       "star": "MBELL4",
       "runway_waypoints": {
-        "17L": "BRBON BRELL DLAMP CURRT/h350",
-        "17R": "BRBON BULCO HAUGN CURNL/h350",
-        "29":  "BRBON TAATR SQWRL/h008",
-        "35L": "BRBON RDBRD/a5000 AWLEE/a4000/h350",
-        "35R": "BRBON PGSUS/a4000 UPSCO/a3000/h350"
+        "KSDF": {
+            "17L": "BRBON BRELL DLAMP CURRT/h350",
+            "17R": "BRBON BULCO HAUGN CURNL/h350",
+            "29":  "BRBON TAATR SQWRL/h008",
+            "35L": "BRBON RDBRD/a5000 AWLEE/a4000/h350",
+            "35R": "BRBON PGSUS/a4000 UPSCO/a3000/h350"
+        }
       },
       "waypoints": "WANAV N37.22.06.541,W85.50.12.457/ho MYTON MBELL BRBON"
     }
@@ -782,7 +791,6 @@
     ]
   }
 ],
-"magnetic_variation": 4.9,
 "name": "KSDF",
 "primary_airport": "KSDF",
 "radar_sites": {
