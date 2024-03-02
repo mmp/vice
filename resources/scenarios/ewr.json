@@ -2488,157 +2488,192 @@
     ]
   },
   "center": "N040.43.34.389,W074.28.54.713",
+  "stars_adaptation": {
+    "scratchpad_rules": [true, true],
+  "airspace_awareness": [
+    {
+      "fix": ["MERIT"],
+      "receiving_controller": "6N"
+    }
+  ]
+  },
+  
   "range": 60,
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
       "full_name": "Allentown approach",
       "scope_char": "F",
-      "sector_id": "AF"
+      "sector_id": "AF",
+      "facility_identifier": "A"
     },
     "BOS_CTR": {
       "frequency": 134700,
       "full_name": "Boston center",
       "scope_char": "C",
-      "sector_id": "B37"
+      "sector_id": "B37",
+      "facility_identifier": "B"
     },
     "CDW_TWR": {
       "frequency": 119800,
       "full_name": "Caldwell tower",
       "scope_char": "T",
-      "sector_id": "4T"
+      "sector_id": "4T",
+      "facility_identifier": "N"
     },
     "DC_CTR": {
       "frequency": 133725,
       "full_name": "Washington center",
       "scope_char": "C",
-      "sector_id": "W32"
+      "sector_id": "W32",
+      "facility_identifier": "W"
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility_identifier": "N"
     },
     "EWR_A_APP": {
       "frequency": 120150,
       "full_name": "New York approach",
       "scope_char": "A",
-      "sector_id": "4A"
+      "sector_id": "4A",
+      "facility_identifier": "N"
     },
     "EWR_DEP": {
       "frequency": 119200,
       "full_name": "New York departure",
       "scope_char": "N",
-      "sector_id": "4N"
+      "sector_id": "4N",
+      "facility_identifier": "N"
     },
     "EWR_H_APP": {
       "frequency": 132800,
       "full_name": "New York approach",
       "scope_char": "H",
-      "sector_id": "4H"
+      "sector_id": "4H",
+      "facility_identifier": "N"
     },
     "EWR_P_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility_identifier": "N"
     },
     "EWR_M_APP": {
       "frequency": 125550,
       "full_name": "New York approach",
       "scope_char": "M",
-      "sector_id": "4M"
+      "sector_id": "4M",
+      "facility_identifier": "N"
     },
     "EWR_Q_APP": {
       "frequency": 125500,
       "full_name": "New York approach",
       "scope_char": "Q",
-      "sector_id": "4Q"
+      "sector_id": "4Q",
+      "facility_identifier": "N"
     },
     "EWR_S_APP": {
       "frequency": 123770,
       "full_name": "New York approach",
       "scope_char": "S",
-      "sector_id": "4S"
+      "sector_id": "4S",
+      "facility_identifier": "N"
     },
     "EWR_TWR": {
       "frequency": 118300,
       "full_name": "Newark tower",
       "scope_char": "T",
-      "sector_id": "4Z"
+      "sector_id": "4Z",
+      "facility_identifier": "N"
     },
     "EWR_U_APP": {
       "frequency": 127600,
       "full_name": "New York approach",
       "scope_char": "U",
-      "sector_id": "4U"
+      "sector_id": "4U",
+      "facility_identifier": "N"
     },
     "LGA_APP": {
       "frequency": 120800,
       "full_name": "New York approach",
       "scope_char": "V",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "facility_identifier": "N"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York approach",
       "scope_char": "L",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "facility_identifier": "N"
     },
     "MMU_TWR": {
       "frequency": 118100,
       "full_name": "Morristown tower",
       "scope_char": "T",
-      "sector_id": "4K"
+      "sector_id": "4K",
+      "facility_identifier": "N"
     },
     "NY_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "N56",
+      "facility_identifier": "N"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
-      "sector_id": "5E"
+      "sector_id": "5E",
+      "facility_identifier": "N"
     },
     "NY_LN_DEP": {
       "frequency": 118170,
       "full_name": "New York departure",
       "scope_char": "T",
-      "sector_id": "5T"
+      "sector_id": "5T",
+      "facility_identifier": "N"
     },
     "NY_LS_DEP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
-      "sector_id": "5S"
+      "sector_id": "5S",
+      "facility_identifier": "N"
     },
     "NY_LW_DEP": {
       "frequency": 120850,
       "full_name": "New York departure",
       "scope_char": "W",
-      "sector_id": "5W"
+      "sector_id": "5W",
+      "facility_identifier": "N"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
       "full_name": "Philly approach",
       "scope_char": "N",
-      "sector_id": "6N"
+      "sector_id": "6N",
+      "facility_identifier": "P"
     },
     "TEB_TWR": {
       "frequency": 119500,
       "full_name": "Teterboro tower",
       "scope_char": "T",
-      "sector_id": "4J"
+      "sector_id": "4J",
+      "facility_identifier": "N"
     },
     "WRI_APP": {
       "frequency": 126470,
       "full_name": "McGuire approach",
       "scope_char": "Y",
-      "sector_id": "MY"
+      "sector_id": "MY",
+      "facility_identifier": "M"
     }
   },
   "default_scenario": "KEWR Depart 22R Land 22L",

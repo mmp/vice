@@ -3375,10 +3375,47 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP
+			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
+				// STARS Manual 6-70 (On slew). Cannot go interfacility
+				// TODO
+				status.err = GetSTARSError(ErrSTARSCommandFormat)
+				return 
+				// if cmd == "**" { // Non specified TCP
+				// 	if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
+				// 		state.ForceQL = true
+				// 	} else {
+				// 		status.err = GetSTARSError(ErrSTARSIllegalPosition)
+				// 	}
+				// } else {
+				// 	tcps := strings.Split(cmd[2:], " ")
+				// 	if tcps[0] == "ALL" {
+				// 		// Force QL for all TCP
+				// 		// Find user fac
+				// 		var fac string
+				// 		for _, control := range ctx.world.Controllers {
+				// 			if control.Callsign == ctx.world.Callsign {
+				// 				fac = control.FacilityIdentifier
+				// 			}
+				// 		}
+				// 		for _, control := range ctx.world.Controllers {
+				// 			if control.FacilityIdentifier == fac {
+				// 				// Make it yellow for these TCPS
+				// 			}
+				// 		}
+				// 	}
+				// 	for _, tcp := range tcps {
+				// 		ok, control := sameFacility(ctx, tcp, ac.Callsign)
+				// 		if !ok {
+				// 			// Do something idk
+				// 			status.clear = true
+				// 			fmt.Println("bad")
+				// 			return
+				// 		}
+				// 		// Some sort of logic that makes it yellow for that scope. 
+				// 		fmt.Println(tcp, control)
+				// 	}
+				// }
 
-				state.ForceQL = true
-				return
 			} else if len(cmd) > 0 {
 				// Handoffs
 				err := sp.handoffTrack(ctx, ac.Callsign, cmd)
