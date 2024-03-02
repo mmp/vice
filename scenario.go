@@ -521,6 +521,14 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * cos(radians(sg.Center[1]))
 
+	if sg.TRACON == "" {
+		e.ErrorString("\"tracon\" must be specified")
+	} else if _, ok := database.TRACONs[sg.TRACON]; !ok {
+		e.ErrorString("TRACON %s is unknown; it must be a 3-letter identifier listed at "+
+			"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
+			sg.TRACON)
+	}
+
 	sg.Fixes = make(map[string]Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
 		loc, _ := sg.FixesStrings.Get(fix)

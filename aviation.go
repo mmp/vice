@@ -32,6 +32,15 @@ type FAAAirport struct {
 	STARs      map[string]STAR
 }
 
+type TRACON struct {
+	Name  string
+	ARTCC string
+}
+
+type ARTCC struct {
+	Name string
+}
+
 type ReportingPoint struct {
 	Fix      string
 	Location Point2LL
@@ -1311,6 +1320,8 @@ type StaticDatabase struct {
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
+	ARTCCs              map[string]ARTCC
+	TRACONs             map[string]TRACON
 }
 
 func (d StaticDatabase) LookupWaypoint(f string) (Point2LL, bool) {
@@ -1385,6 +1396,8 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { airports, db.Navaids, db.Fixes = parseCIFP(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1633,6 +1646,29 @@ func (mg *MagneticGrid) Lookup(p Point2LL) (float32, error) {
 
 	// Note: we flip the sign
 	return -mg.Samples[long+nlong*lat], nil
+}
+
+func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
+	artccJSON := LoadResource("artccs.json")
+	var artccs map[string]ARTCC
+	if err := json.Unmarshal(artccJSON, &artccs); err != nil {
+		panic(fmt.Sprintf("error unmarshalling ARTCCs: %v", err))
+	}
+
+	traconJSON := LoadResource("tracons.json")
+	var tracons map[string]TRACON
+	if err := json.Unmarshal(traconJSON, &tracons); err != nil {
+		panic(fmt.Sprintf("error unmarshalling TRACONs: %v", err))
+	}
+
+	// Validate that all of the TRACON ARTCCs are known.
+	for name, tracon := range tracons {
+		if _, ok := artccs[tracon.ARTCC]; !ok {
+			panic(tracon.ARTCC + ": ARTCC unknown for TRACON " + name)
+		}
+	}
+
+	return artccs, tracons
 }
 
 ///////////////////////////////////////////////////////////////////////////
