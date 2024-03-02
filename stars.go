@@ -2974,7 +2974,6 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 		controller = controller[:len(controller) - 1]
 		lc = len(controller)
 	}
-	fmt.Printf("after:%v.\n", controller)
 	// ARTCC airspaceawareness
 	if controller == "C" || (lc == 2 && string(controller[0]) == "/") { // Change / to ∆
 		control, err := calculateAirspace(ctx, callsign)
@@ -2991,7 +2990,6 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 			if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
 				string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
 				string(control.SectorId[1]) == controller { // The actual controller
-				fmt.Println(1)
 				return true, control.SectorId
 			}
 		}
@@ -2999,7 +2997,6 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 		for _, control := range ctx.world.Controllers {
 			if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
 				control.SectorId == controller { // The actual controller
-				fmt.Println(2)
 				return true, control.SectorId
 			}
 		}
@@ -3028,7 +3025,6 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
 	ctx.world.PointOut(callsign, controller, nil,
 		func(err error) {
-			fmt.Println(err)
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
@@ -3355,26 +3351,23 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 				// Check if arrival
 				for _, airport := range ctx.world.ArrivalAirports {
-					if airport.Name == ac.FlightPlan.ArrivalAirport {
-						fmt.Println(airport.Name, ac.FlightPlan.ArrivalAirport)
-						sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalTrack).Error()
+					if airport.Name == ac.FlightPlan.ArrivalAirport && string(cmd[0]) == "/"{
+						status.err = GetSTARSError(ErrSTARSIllegalTrack)
+						return
 					}
 				}
 				// Check if being handed off, pointed out or suspended (TODO suspended)
 				if sp.OutboundPointOuts[ac.Callsign] != "" || 
 				(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign) {
-		
-					fmt.Printf(".%v.%v.%v.\n",sp.OutboundPointOuts[ac.Callsign], ac.HandoffTrackController, ctx.world.Callsign)
-					sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalTrack).Error()
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
 				}
 
 				ok, control := sameFacility(ctx, cmd, ac.Callsign) 
 				if !ok {
-					fmt.Println(ok)
 					sp.previewAreaOutput = GetSTARSError(ErrSTARSCommandFormat).Error()
 				} else {
 					status.clear = true
-					fmt.Println(control)
 					sp.pointOut(ctx, ac.Callsign, control)
 					return
 				}
