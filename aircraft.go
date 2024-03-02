@@ -32,6 +32,8 @@ type Aircraft struct {
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
 
+	TabularNubmer int
+
 	// The controller who gave approach clearance
 	ApproachController string
 
