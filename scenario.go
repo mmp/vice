@@ -24,13 +24,6 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-type AirspaceAwareness struct {
-	Fix                 []string `json:"fix"`
-	AltitudeRange       string   `json:"altitude_range"`
-	ReceivingController string   `json:"receiving_controller"`
-	ToCenter            bool     `json:"to_center"`
-}
-
 type ScenarioGroup struct {
 	TRACON           string                 `json:"tracon"`
 	Name             string                 `json:"name"`
@@ -42,7 +35,6 @@ type ScenarioGroup struct {
 	DefaultScenario  string                 `json:"default_scenario"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
 	Scratchpads      map[string]string      `json:"scratchpads"`
-	ScratchpadRules  [2]bool                `json:"scratchpad_rules"`
 	Airspace         Airspace               `json:"airspace"`
 	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
 
@@ -57,10 +49,23 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude     float32             // Always 60
-	NmPerLongitude    float32             // Derived from Center
-	MagneticVariation float32             `json:"magnetic_variation"`
+	NmPerLatitude     float32 // Always 60
+	NmPerLongitude    float32 // Derived from Center
+	MagneticVariation float32 `json:"magnetic_variation"`
+	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_adaptation"`
+}
+
+type AirspaceAwareness struct {
+	Fix                 []string `json:"fix"`
+	AltitudeRange       string   `json:"altitude_range"`
+	ReceivingController string   `json:"receiving_controller"`
+	ToCenter            bool     `json:"to_center"`
+}
+
+type STARSFacilityAdaptation struct {
 	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness"`
+	ForceQLToSelf     bool                `json:"force_ql_self"`
+	ScratchpadRules  [2]bool                `json:"scratchpad_rules"`
 }
 
 type ReportingPoint struct {

@@ -80,11 +80,10 @@ type World struct {
 	DepartureRunways       []ScenarioGroupDepartureRunway
 	ArrivalRunways         []ScenarioGroupArrivalRunway
 	Scratchpads            map[string]string
-	ScratchpadRules        [2]bool
 	ArrivalGroups          map[string][]Arrival
 	TotalDepartures        int
 	TotalArrivals          int
-	AirspaceAwarenessRules []AirspaceAwareness
+	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	STARSInputOverride string
 }
@@ -134,8 +133,8 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
-	w.AirspaceAwarenessRules = other.AirspaceAwarenessRules
-	w.ScratchpadRules = other.ScratchpadRules
+	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
+	
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
