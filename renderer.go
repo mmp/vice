@@ -591,6 +591,15 @@ func (l *LinesDrawBuilder) AddPolyline(p [2]float32, shape [][2]float32) {
 	}
 }
 
+// Adds a closed poly line
+func (l *LinesDrawBuilder) AddClosedPolyline(p [][2]float32) {
+	idx := int32(len(l.p))
+	l.p = append(l.p, p...)
+	for i := range p {
+		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%len(p)))
+	}
+}
+
 var (
 	// So that we can efficiently draw circles with various tessellations,
 	// circlePoints caches vertex positions of a unit circle at the origin
@@ -653,6 +662,39 @@ func (l *LinesDrawBuilder) AddLatLongCircle(p Point2LL, nmPerLongitude float32, 
 			return nm2ll(add2f(pc, v), nmPerLongitude)
 		}
 		l.AddLine(pt(i), pt(i+1))
+	}
+}
+
+// Draws a number using digits drawn with lines. This can be helpful in
+// cases like drawing an altitude on a video map where we want the number
+// size to change when the user zooms the scope.
+func (l *LinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string) {
+	// digit -> slice of line segments
+	coords := [][][2][2]float32{
+		{{{0, 2}, {2, 2}}, {{2, 2}, {2, 0}}, {{2, 0}, {0, 0}}, {{0, 0}, {0, 2}}},
+		{{{1, 2}, {1, 0}}, {{1, 2}, {0.5, 1.5}}},
+		{{{0, 2}, {2, 2}}, {{2, 2}, {2, 1}}, {{2, 1}, {0, 1}}, {{0, 1}, {0, 0}}, {{0, 0}, {2, 0}}},
+		{{{0, 2}, {2, 2}}, {{2, 2}, {2, 0}}, {{2, 0}, {0, 0}}, {{1, 1}, {2, 1}}},
+		{{{0, 1}, {2, 1}}, {{2, 2}, {2, 0}}, {{0, 2}, {0, 1}}},
+		{{{2, 2}, {0, 2}}, {{0, 2}, {0, 1}}, {{0, 1}, {2, 1}}, {{2, 1}, {2, 0}}, {{2, 0}, {0, 0}}},
+		{{{0, 0}, {2, 0}}, {{2, 0}, {2, 1}}, {{2, 1}, {0, 1}}, {{0, 0}, {0, 2}}, {{0, 2}, {1, 2}}},
+		{{{0, 2}, {2, 2}}, {{2, 2}, {1, 0}}},
+		{{{0, 2}, {2, 2}}, {{2, 2}, {2, 1}}, {{2, 1}, {0, 1}}, {{0, 1}, {0, 2}}, {{0, 1}, {2, 1}}, {{2, 1}, {2, 0}}, {{2, 0}, {0, 0}}, {{0, 0}, {0, 1}}},
+		{{{1, 0}, {2, 0}}, {{2, 0}, {2, 2}}, {{2, 2}, {0, 2}}, {{0, 2}, {0, 1}}, {{0, 1}, {2, 1}}},
+	}
+
+	for _, digit := range v {
+		d := digit - '0'
+		if d >= 0 && d <= 9 {
+			for _, seg := range coords[d] {
+				l.AddLine(add2f(p, scale2f(seg[0], sz)), add2f(p, scale2f(seg[1], sz)))
+			}
+		} else {
+			// draw an x
+			l.AddLine(p, add2f(p, scale2f([2]float32{2, 2}, sz)))
+			l.AddLine(add2f(p, [2]float32{2 * sz, 0}), add2f(p, [2]float32{0, 2 * sz}))
+		}
+		p[0] += 2.5 * sz
 	}
 }
 
