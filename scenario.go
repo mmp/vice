@@ -914,7 +914,7 @@ func InAirspace(p Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bo
 	for _, v := range volumes {
 		inside := false
 		for _, pts := range v.Boundaries {
-			if PointInPolygon(p, pts) {
+			if PointInPolygon2LL(p, pts) {
 				inside = !inside
 			}
 		}

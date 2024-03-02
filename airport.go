@@ -139,7 +139,7 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 	nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostAircraft {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
 	line, quad := ar.GetLateralGeometry(nmPerLongitude, magneticVariation)
-	if !PointInPolygon(track.Position, quad[:]) {
+	if !PointInPolygon2LL(track.Position, quad[:]) {
 		return nil
 	}
 
@@ -211,7 +211,7 @@ func (a *ATPAVolume) Inside(p Point2LL, alt, hdg, nmPerLongitude, magneticVariat
 	}
 
 	rect := a.GetRect(nmPerLongitude, magneticVariation)
-	return PointInPolygon(p, rect[:])
+	return PointInPolygon2LL(p, rect[:])
 }
 
 func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]Point2LL {

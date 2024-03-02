@@ -1277,7 +1277,7 @@ func (a *AirspaceVolume) Inside(p Point2LL, alt int) bool {
 
 	switch a.Type {
 	case AirspaceVolumePolygon:
-		return PointInPolygon(p, a.Vertices)
+		return PointInPolygon2LL(p, a.Vertices)
 	case AirspaceVolumeCircle:
 		return nmdistance2ll(p, a.Center) < a.Radius
 	default:
@@ -1590,10 +1590,10 @@ type MagneticGrid struct {
 
 func parseMagneticGrid() MagneticGrid {
 	/*
-	1. Download software and coefficients from https://www.ncei.noaa.gov/products/world-magnetic-model
-	2. Build wmm_grid, run with the parameters in the MagneticGrid initializer below, year 2024,
-	   altitude 0 -> 0, select "declination" for output.
-	3. awk '{print $5}' < GridResults.txt | zstd -19 -o magnetic_grid.txt.zst
+		1. Download software and coefficients from https://www.ncei.noaa.gov/products/world-magnetic-model
+		2. Build wmm_grid, run with the parameters in the MagneticGrid initializer below, year 2024,
+		   altitude 0 -> 0, select "declination" for output.
+		3. awk '{print $5}' < GridResults.txt | zstd -19 -o magnetic_grid.txt.zst
 	*/
 	mg := MagneticGrid{
 		MinLatitude:  24,

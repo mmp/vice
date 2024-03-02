@@ -209,7 +209,7 @@ func TestPointInPolygon(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := PointInPolygon(tc.point, tc.polygon)
+			result := PointInPolygon2LL(tc.point, tc.polygon)
 			if result != tc.expected {
 				t.Errorf("Expected %v, got %v for point %v and polygon %v",
 					tc.expected, result, tc.point, tc.polygon)
