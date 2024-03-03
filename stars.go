@@ -7198,6 +7198,8 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	} else if sp.CurrentPreferenceSet.QuickLookAll {
 		// Quick look all
 		return true
+	} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
+		return true 
 	}
 
 	for _, event := range sp.events.Get() {
