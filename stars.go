@@ -1765,7 +1765,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	}
 
 	ps := &sp.CurrentPreferenceSet
-
 	switch sp.commandMode {
 	case CommandModeNone:
 		switch cmd {
@@ -3231,6 +3230,48 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				})
 				status.clear = true
 				return
+			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
+				// STARS Manual 6-70 (On slew). Cannot go interfacility
+				// TODO
+				if cmd == "**" { // Non specified TCP
+					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
+						state.ForceQL = true
+						status.clear = true
+						return
+					} else {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+				} else {
+					tcps := strings.Split(cmd[2:], " ")
+					if tcps[0] == "ALL" {
+						// Force QL for all TCP
+						// Find user fac
+						var fac string
+						for _, control := range ctx.world.Controllers {
+							if control.Callsign == ctx.world.Callsign {
+								fac = control.FacilityIdentifier
+							}
+						}
+						for _, control := range ctx.world.Controllers {
+							if control.FacilityIdentifier == fac {
+								ac.ForceQLControllers = append(ac.ForceQLControllers, control.SectorId)
+							}
+						}
+					}
+					for _, tcp := range tcps {
+						ok, control := sameFacility(ctx, tcp, ac.Callsign)
+						if !ok {
+							// Do something idk
+							status.clear = true
+							fmt.Println("bad")
+							return
+						}
+						// Some sort of logic that makes it yellow for that scope. 
+						fmt.Println(tcp, control)
+					}
+				}
+
 			} else if cmd == "*D+" {
 				// TODO: this and the following two should give ILL FNCT if
 				// there's no j-ring/[A]TPA cone being displayed for the
@@ -3377,47 +3418,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
-				// STARS Manual 6-70 (On slew). Cannot go interfacility
-				// TODO
-				status.err = GetSTARSError(ErrSTARSCommandFormat)
-				return 
-				// if cmd == "**" { // Non specified TCP
-				// 	if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
-				// 		state.ForceQL = true
-				// 	} else {
-				// 		status.err = GetSTARSError(ErrSTARSIllegalPosition)
-				// 	}
-				// } else {
-				// 	tcps := strings.Split(cmd[2:], " ")
-				// 	if tcps[0] == "ALL" {
-				// 		// Force QL for all TCP
-				// 		// Find user fac
-				// 		var fac string
-				// 		for _, control := range ctx.world.Controllers {
-				// 			if control.Callsign == ctx.world.Callsign {
-				// 				fac = control.FacilityIdentifier
-				// 			}
-				// 		}
-				// 		for _, control := range ctx.world.Controllers {
-				// 			if control.FacilityIdentifier == fac {
-				// 				// Make it yellow for these TCPS
-				// 			}
-				// 		}
-				// 	}
-				// 	for _, tcp := range tcps {
-				// 		ok, control := sameFacility(ctx, tcp, ac.Callsign)
-				// 		if !ok {
-				// 			// Do something idk
-				// 			status.clear = true
-				// 			fmt.Println("bad")
-				// 			return
-				// 		}
-				// 		// Some sort of logic that makes it yellow for that scope. 
-				// 		fmt.Println(tcp, control)
-				// 	}
-				// }
-
 			} else if len(cmd) > 0 {
 				// Handoffs
 				err := sp.handoffTrack(ctx, ac.Callsign, cmd)
@@ -3446,6 +3446,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				return
 			} else {
+				fmt.Println(cmd[0:2])
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						globalConfig.Audio.PlayOnce(AudioCommandError)
@@ -5171,7 +5172,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 		return nil
-	} //Good!
+	} 
 
 	dbs := sp.formatDatablocks(ctx, ac)
 
@@ -5528,7 +5529,7 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		// 1. leading weight class <= trailing weight class
 		// 2. super/heavy can't be leading
 
-		if fclass <= bclass && fclass > 4 {
+		if fclass <= bclass && fclass <= 6 {
 			mit = 2.5
 		}
 	}
@@ -5847,7 +5848,14 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 			brightness /= 3
 		}
 	}
-	// fmt.Println(state.ForceQL)
+	
+	// Check if were the controller being ForceQL
+	for _, control := range ac.ForceQLControllers {
+		if control == w.Callsign {
+			color = STARSInboundPointOutColor
+			return
+		}
+	}
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
@@ -5892,7 +5900,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		state := sp.Aircraft[ac.Callsign]
 		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
-		} //Good!
+		} 
 
 		dbs := sp.getDatablocks(ctx, ac)
 		if len(dbs) == 0 {
