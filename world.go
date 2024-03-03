@@ -358,6 +358,26 @@ func (w *World) CancelHandoff(callsign string, success func(any), err func(error
 		})
 }
 
+func (w *World) ForceQL(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls, 
+	&PendingCall{
+		Call: w.simProxy.ForceQL(callsign, controller),
+		IssueTime: time.Now(),
+		OnSuccess: success,
+		OnErr: err,
+	})
+}
+
+func (w *World) RemoveForceQL(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls, 
+	&PendingCall{
+		Call: w.simProxy.RemoveForceQL(callsign, controller),
+		IssueTime: time.Now(),
+		OnSuccess: success,
+		OnErr: err,
+	})
+}
+
 func (w *World) PointOut(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{

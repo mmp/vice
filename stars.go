@@ -1866,6 +1866,188 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		}
 
+		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
+			// Manual 6-69
+			cmd = cmd[2:]
+			if unicode.IsDigit(rune(cmd[0])) { //BCN code
+				bcn := cmd[:4]
+
+				for _, aircraft := range ctx.world.Aircraft {
+					fmt.Println(fmt.Sprintf(".%v.", aircraft.AssignedSquawk), bcn)
+					if fmt.Sprintf("%v", aircraft.AssignedSquawk) == bcn {
+						if len(cmd) > 5 {
+							cmd = cmd[5:]
+						} else {
+							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							fmt.Println(cmd)
+							return
+						}
+						fmt.Println(cmd)
+						tcps := strings.Split(cmd, " ")
+						for _, tcp := range tcps {
+							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+							if !ok {
+								// do stuff idk
+								status.clear = true
+								return
+							}
+							sp.forceQL(ctx, aircraft.Callsign, control)
+							status.clear = true
+						}
+						return
+					}
+				}
+
+			} else {
+				for _, aircraft := range ctx.world.Aircraft {
+					if len(cmd) > 8 && cmd[:7] == aircraft.Callsign {
+						if len(cmd) > 8 {
+							cmd = cmd[8:]
+						} else {
+							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							fmt.Println(cmd)
+							return
+						}
+						tcps := strings.Split(cmd, " ")
+						for _, tcp := range tcps {
+							fmt.Println(tcp)
+							if tcp == "ALL" {
+								var fac string
+								for _, control := range ctx.world.Controllers {
+									if control.Callsign == ctx.world.Callsign {
+										fac = control.FacilityIdentifier
+									}
+								}
+								for _, control := range ctx.world.Controllers {
+									if !control.ERAMFacility && control.FacilityIdentifier == fac {
+										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+										status.clear = true
+										return
+									}
+								}
+							}
+							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+							fmt.Println(control)
+							if !ok {
+								// do stuff idk
+								status.clear = true
+								return
+							}
+							sp.forceQL(ctx, aircraft.Callsign, control)
+							status.clear = true
+						}
+						return
+					} else if len(cmd) > 7 && cmd[:6] == aircraft.Callsign {
+						if len(cmd) > 7 {
+							cmd = cmd[7:]
+						} else {
+							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							fmt.Println(cmd)
+							return
+						}
+						tcps := strings.Split(cmd, " ")
+						for _, tcp := range tcps {
+							if tcp == "ALL" {
+								var fac string
+								for _, control := range ctx.world.Controllers {
+									if control.Callsign == ctx.world.Callsign {
+										fac = control.FacilityIdentifier
+									}
+								}
+								for _, control := range ctx.world.Controllers {
+									if !control.ERAMFacility && control.FacilityIdentifier == fac {
+										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+										status.clear = true
+										return
+									}
+								}
+							}
+							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+							if !ok {
+								// do stuff idk
+								status.clear = true
+								return
+							}
+							sp.forceQL(ctx, aircraft.Callsign, control)
+							status.clear = true
+						}
+						return
+					} else if len(cmd) > 6 && cmd[:5] == aircraft.Callsign {
+						if len(cmd) > 6 {
+							cmd = cmd[6:]
+						} else {
+							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							fmt.Println(cmd)
+							return
+						}
+						tcps := strings.Split(cmd, " ")
+						for _, tcp := range tcps {
+							if tcp == "ALL" {
+								var fac string
+								for _, control := range ctx.world.Controllers {
+									if control.Callsign == ctx.world.Callsign {
+										fac = control.FacilityIdentifier
+									}
+								}
+								for _, control := range ctx.world.Controllers {
+									if !control.ERAMFacility && control.FacilityIdentifier == fac {
+										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+										status.clear = true
+										return
+									}
+								}
+							}
+							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+							if !ok {
+								// do stuff idk
+								status.clear = true
+								return
+							}
+							sp.forceQL(ctx, aircraft.Callsign, control)
+							status.clear = true
+						}
+						return
+					} else if len(cmd) > 5 && cmd[:4] == aircraft.Callsign {
+						if len(cmd) > 5 {
+							cmd = cmd[5:]
+						} else {
+							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							fmt.Println(cmd)
+							return
+						}
+
+						tcps := strings.Split(cmd, " ")
+						for _, tcp := range tcps {
+							if tcp == "ALL" {
+								var fac string
+								for _, control := range ctx.world.Controllers {
+									if control.Callsign == ctx.world.Callsign {
+										fac = control.FacilityIdentifier
+									}
+								}
+								for _, control := range ctx.world.Controllers {
+									if !control.ERAMFacility && control.FacilityIdentifier == fac {
+										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+										status.clear = true
+										return
+									}
+								}
+							}
+							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+							if !ok {
+								// do stuff idk
+								status.clear = true
+								return
+							}
+							sp.forceQL(ctx, aircraft.Callsign, control)
+							status.clear = true
+						}
+						return
+					}
+				}
+			}
+		}
+
 		if len(cmd) >= 2 && cmd[:2] == "*T" {
 			suffix := cmd[2:]
 			if suffix == "" {
@@ -3023,6 +3205,17 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 	return false, ""
 }
 
+func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
+	ctx.world.ForceQL(callsign, controller, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
+func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string) {
+	ctx.world.RemoveForceQL(callsign, controller, nil, nil) // Just a slew so the slew could be for other things
+}
+
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
 	ctx.world.PointOut(callsign, controller, nil,
 		func(err error) {
@@ -3097,6 +3290,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		switch sp.commandMode {
 		case CommandModeNone:
 			if cmd == "" {
+				for _, tcp := range ac.ForceQLControllers {
+					if tcp == ctx.world.Callsign {
+						sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
+					}
+				}
 				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
@@ -3254,8 +3452,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 							}
 						}
 						for _, control := range ctx.world.Controllers {
-							if control.FacilityIdentifier == fac {
-								ac.ForceQLControllers = append(ac.ForceQLControllers, control.SectorId)
+							if !control.ERAMFacility && control.FacilityIdentifier == fac {
+								sp.forceQL(ctx, ac.Callsign, control.SectorId)
 							}
 						}
 					}
@@ -3264,12 +3462,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						if !ok {
 							// Do something idk
 							status.clear = true
-							fmt.Println("bad")
 							return
 						}
-						// Some sort of logic that makes it yellow for that scope. 
-						fmt.Println(tcp, control)
+						sp.forceQL(ctx, ac.Callsign, control)
+
+						status.clear = true
 					}
+					return
 				}
 
 			} else if cmd == "*D+" {
@@ -5172,7 +5371,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 		return nil
-	} 
+	}
 
 	dbs := sp.formatDatablocks(ctx, ac)
 
@@ -5848,7 +6047,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 			brightness /= 3
 		}
 	}
-	
+
 	// Check if were the controller being ForceQL
 	for _, control := range ac.ForceQLControllers {
 		if control == w.Callsign {
@@ -5900,7 +6099,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		state := sp.Aircraft[ac.Callsign]
 		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
-		} 
+		}
 
 		dbs := sp.getDatablocks(ctx, ac)
 		if len(dbs) == 0 {

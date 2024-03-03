@@ -193,6 +193,8 @@ const (
 	IdentEvent
 	HandoffControllEvent
 	NumEventTypes
+	ForceQLEvent
+	AcknowledgedForceQLEvent
 )
 
 func (t EventType) String() string {

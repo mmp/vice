@@ -749,6 +749,7 @@ type Sim struct {
 	Handoffs map[string]time.Time
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
+	// ForceQL map[string]
 
 	TotalDepartures int
 	TotalArrivals   int
@@ -2136,6 +2137,50 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		})
 }
 
+func (s *Sim) ForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign, 
+	func(ctrl *Controller, ac *Aircraft) error {
+		if s.World.GetController(controller) == nil {
+			return ErrNoController
+		}
+		return nil
+	},
+	func (ctrl *Controller, ac *Aircraft) []RadioTransmission {
+		octrl := s.World.GetController(controller)
+		s.eventStream.Post(Event{
+			Type: ForceQLEvent,
+			FromController: ctrl.Callsign,
+			ToController: octrl.Callsign,
+			Callsign: ac.Callsign,
+		})
+		ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+		fmt.Println(ac.ForceQLControllers)
+		return nil
+	})
+}
+
+func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+	func(ctrl *Controller, ac *Aircraft) error {
+		return nil
+	},
+	func (ctrl *Controller, ac *Aircraft) []RadioTransmission {
+		octrl := s.World.GetController(controller)
+		s.eventStream.Post(Event{
+			Type: AcknowledgedForceQLEvent,
+			FromController: ctrl.Callsign,
+			ToController: octrl.Callsign,
+			Callsign: ac.Callsign,
+		})
+		for i, s := range ac.ForceQLControllers {
+			if s == controller {
+				ac.ForceQLControllers = append(ac.ForceQLControllers[:i], ac.ForceQLControllers[i+1:]... )
+			}
+		}
+		return nil
+	})
+}
+
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -2219,6 +2264,8 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 			return nil
 		})
 }
+
+
 
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
 	s.mu.Lock(s.lg)
