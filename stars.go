@@ -1873,16 +1873,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				bcn := cmd[:4]
 
 				for _, aircraft := range ctx.world.Aircraft {
-					fmt.Println(fmt.Sprintf(".%v.", aircraft.AssignedSquawk), bcn)
 					if fmt.Sprintf("%v", aircraft.AssignedSquawk) == bcn {
 						if len(cmd) > 5 {
-							cmd = cmd[5:]
 						} else {
 							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							fmt.Println(cmd)
 							return
 						}
-						fmt.Println(cmd)
 						tcps := strings.Split(cmd, " ")
 						for _, tcp := range tcps {
 							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
@@ -1905,12 +1901,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							cmd = cmd[8:]
 						} else {
 							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							fmt.Println(cmd)
 							return
 						}
 						tcps := strings.Split(cmd, " ")
 						for _, tcp := range tcps {
-							fmt.Println(tcp)
 							if tcp == "ALL" {
 								var fac string
 								for _, control := range ctx.world.Controllers {
@@ -1927,7 +1921,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 								}
 							}
 							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-							fmt.Println(control)
 							if !ok {
 								// do stuff idk
 								status.clear = true
@@ -1942,7 +1935,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							cmd = cmd[7:]
 						} else {
 							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							fmt.Println(cmd)
 							return
 						}
 						tcps := strings.Split(cmd, " ")
@@ -1977,7 +1969,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							cmd = cmd[6:]
 						} else {
 							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							fmt.Println(cmd)
 							return
 						}
 						tcps := strings.Split(cmd, " ")
@@ -2012,7 +2003,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							cmd = cmd[5:]
 						} else {
 							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							fmt.Println(cmd)
 							return
 						}
 
@@ -3645,7 +3635,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				return
 			} else {
-				fmt.Println(cmd[0:2])
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						globalConfig.Audio.PlayOnce(AudioCommandError)

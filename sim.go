@@ -2154,7 +2154,6 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 			Callsign: ac.Callsign,
 		})
 		ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
-		fmt.Println(ac.ForceQLControllers)
 		return nil
 	})
 }

@@ -595,7 +595,6 @@
           "airlines": [
             {
               "icao": "GJS"
-
             }
           ],
           "altitude": 8000,
@@ -2461,7 +2460,6 @@
         "speed_restriction": null,
         "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
         "expect_approach": "I2L"
-        
       }
     ],
     "WRI": [
@@ -2487,15 +2485,20 @@
   },
   "center": "N040.43.34.389,W074.28.54.713",
   "stars_adaptation": {
-    "scratchpad_rules": [true, true],
-  "airspace_awareness": [
-    {
-      "fix": ["MERIT"],
-      "receiving_controller": "6N"
-    }
-  ]
+    "scratchpad_rules": [
+      true,
+      true
+    ],
+    "airspace_awareness": [
+      {
+        "fix": [
+          "MERIT"
+        ],
+        "receiving_controller": "6N"
+      }
+    ],
+    "force_ql_self": true
   },
-  
   "range": 60,
   "control_positions": {
     "ABE_APP": {
@@ -2622,7 +2625,8 @@
       "full_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56",
-      "facility_identifier": "N"
+      "facility_identifier": "N",
+      "eram_facility": true
     },
     "NY_LE_DEP": {
       "frequency": 126800,
@@ -2878,7 +2882,9 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -2998,7 +3004,9 @@
         "PHL_NA_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3052,7 +3060,9 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3088,7 +3098,9 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3124,7 +3136,9 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "wind": {
         "direction": 220,
         "gust": 13,
@@ -3160,7 +3174,9 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "wind": {
         "direction": 30,
         "gust": 0,
