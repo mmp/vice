@@ -21,6 +21,7 @@ type Aircraft struct {
 	TempAltitude        int
 	FlightPlan          *FlightPlan
 	ForceQLControllers []string
+	PointOutHistory []string
 
 	// Who has the radar track
 	TrackingController string

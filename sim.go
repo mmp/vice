@@ -2009,7 +2009,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		})
 }
 
-func (s *Sim) HandoffControl(token, callsign string) error {
+func (s *Sim) HandoffControl(token, callsign, controller string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -2056,7 +2056,9 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
-			if ac.IsDeparture() {
+			octrl := s.World.GetController(ac.TrackingController)
+			fmt.Println(octrl.Callsign, octrl.IsHuman, ac.IsDeparture())
+			if ac.IsDeparture() && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
 				ac.DepartOnCourse()
@@ -2233,7 +2235,14 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
+			if len(ac.PointOutHistory) < 20 {
+				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
+			} else {
+				ac.PointOutHistory = ac.PointOutHistory[:19]
+				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
+			}
 
+			
 			delete(s.PointOuts[callsign], ctrl.Callsign)
 			return nil
 		})

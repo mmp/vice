@@ -2107,43 +2107,45 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				return
 			}
 		}
-		ok, control := sameFacility(ctx, cmd, "") 
-		if !ok {
-			// Do something idk
-			status.err = GetSTARSError(ErrSTARSCommandFormat)
-			return
-		}
-		for _, controler := range ctx.world.Controllers {
-			if controler.SectorId == control {
-				positions, input, err := parseQuickLookPositions(ctx.world, cmd)
-				if len(positions) > 0 {
-					ps.QuickLookAll = false
-
-					for _, pos := range positions {
-						// Toggle
-						match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-						matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-						if slices.ContainsFunc(ps.QuickLookPositions, match) {
-							nomatch := func(q QuickLookPosition) bool { return !match(q) }
-							ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-						} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-							// Toggle plus
-							ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-						} else {
-							ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-						}
-					}
-					sort.Slice(ps.QuickLookPositions,
-						func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-				}
-
-				if err == nil {
-					status.clear = true
-				} else {
-					status.err = err
-					sp.previewAreaInput = input
-				}
+		if len(cmd) > 0 {
+			ok, control := sameFacility(ctx, cmd, "")
+			if !ok {
+				// Do something idk
+				status.err = GetSTARSError(ErrSTARSCommandFormat)
 				return
+			}
+			for _, controler := range ctx.world.Controllers {
+				if controler.SectorId == control {
+					positions, input, err := parseQuickLookPositions(ctx.world, cmd)
+					if len(positions) > 0 {
+						ps.QuickLookAll = false
+
+						for _, pos := range positions {
+							// Toggle
+							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+							if slices.ContainsFunc(ps.QuickLookPositions, match) {
+								nomatch := func(q QuickLookPosition) bool { return !match(q) }
+								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+								// Toggle plus
+								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+							} else {
+								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+							}
+						}
+						sort.Slice(ps.QuickLookPositions,
+							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+					}
+
+					if err == nil {
+						status.clear = true
+					} else {
+						status.err = err
+						sp.previewAreaInput = input
+					}
+					return
+				}
 			}
 		}
 
@@ -2657,7 +2659,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				}
 				status.clear = true
 				return
-			} else { 
+			} else {
 				positions, input, err := parseQuickLookPositions(ctx.world, cmd)
 				if len(positions) > 0 {
 					ps.QuickLookAll = false
@@ -3160,7 +3162,6 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
-	fmt.Println("Done like this")
 	ctx.world.HandoffControl(callsign, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
@@ -3367,12 +3368,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if state.OutboundHandoffAccepted {
 					// ack an accepted handoff, which we will treat as also
 					// handing off control.
+					sp.handoffControl(ctx, ac.Callsign)
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = time.Now()
-					fmt.Println(ac.Callsign, ac.DepartureContactAltitude)
-					if ac.DepartureContactAltitude == 0 {
-						sp.handoffControl(ctx, ac.Callsign)
-					}
 					return
 				} else if ctx.keyboard != nil {
 					_, ctrl := ctx.keyboard.Pressed[KeyControl]
@@ -3463,7 +3461,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
 				// STARS Manual 6-70 (On slew). Cannot go interfacility
-				
+
 				if cmd == "**" { // Non specified TCP
 					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
 						state.ForceQL = true
@@ -3849,6 +3847,28 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				}
+			case "O": //Pointout history
+				if ac.TrackingController != ctx.world.Callsign {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
+				}
+
+				if len(ac.PointOutHistory) == 0 {
+					// sp.previewAreaOutput = ""
+					status.clear = true
+					return
+				}
+
+				var out string
+				for _, callsigns := range ac.PointOutHistory {
+					
+
+					out += fmt.Sprintf("%v ", callsigns)
+				}
+				status.clear = true
+				sp.previewAreaOutput = fmt.Sprintf("%v", out)
+				status.output = fmt.Sprintf("%v", out)
+				return
 			}
 
 		case CommandModeFlightData:
@@ -5073,9 +5093,15 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
-	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign || (ac.DepartureContactAltitude != 0 && ac.DepartureContactController == w.Callsign){
+	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign || (ac.DepartureContactAltitude != 0 && ac.DepartureContactController == w.Callsign) {
 		// it's under our control
 		dt = FullDatablock
+	}
+	me := w.GetController(w.Callsign)
+	for _, control := range ac.ForceQLControllers {
+		if control == me.Callsign {
+			dt = FullDatablock
+		}
 	}
 
 	if ac.HandoffTrackController == w.Callsign {
@@ -6087,7 +6113,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 			return
 		}
 	}
-	
+
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
@@ -7198,8 +7224,6 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	} else if sp.CurrentPreferenceSet.QuickLookAll {
 		// Quick look all
 		return true
-	} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
-		return true 
 	}
 
 	for _, event := range sp.events.Get() {
