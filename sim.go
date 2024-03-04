@@ -914,7 +914,6 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
 	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
-	
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
@@ -2140,46 +2139,46 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 }
 
 func (s *Sim) ForceQL(token, callsign, controller string) error {
-	return s.dispatchCommand(token, callsign, 
-	func(ctrl *Controller, ac *Aircraft) error {
-		if s.World.GetController(controller) == nil {
-			return ErrNoController
-		}
-		return nil
-	},
-	func (ctrl *Controller, ac *Aircraft) []RadioTransmission {
-		octrl := s.World.GetController(controller)
-		s.eventStream.Post(Event{
-			Type: ForceQLEvent,
-			FromController: ctrl.Callsign,
-			ToController: octrl.Callsign,
-			Callsign: ac.Callsign,
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if s.World.GetController(controller) == nil {
+				return ErrNoController
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+			s.eventStream.Post(Event{
+				Type:           ForceQLEvent,
+				FromController: ctrl.Callsign,
+				ToController:   octrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+			return nil
 		})
-		ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
-		return nil
-	})
 }
 
 func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
-	func(ctrl *Controller, ac *Aircraft) error {
-		return nil
-	},
-	func (ctrl *Controller, ac *Aircraft) []RadioTransmission {
-		octrl := s.World.GetController(controller)
-		s.eventStream.Post(Event{
-			Type: AcknowledgedForceQLEvent,
-			FromController: ctrl.Callsign,
-			ToController: octrl.Callsign,
-			Callsign: ac.Callsign,
-		})
-		for i, s := range ac.ForceQLControllers {
-			if s == controller {
-				ac.ForceQLControllers = append(ac.ForceQLControllers[:i], ac.ForceQLControllers[i+1:]... )
+		func(ctrl *Controller, ac *Aircraft) error {
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+			s.eventStream.Post(Event{
+				Type:           AcknowledgedForceQLEvent,
+				FromController: ctrl.Callsign,
+				ToController:   octrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+			for i, s := range ac.ForceQLControllers {
+				if s == controller {
+					ac.ForceQLControllers = append(ac.ForceQLControllers[:i], ac.ForceQLControllers[i+1:]...)
+				}
 			}
-		}
-		return nil
-	})
+			return nil
+		})
 }
 
 func (s *Sim) PointOut(token, callsign, controller string) error {
@@ -2241,8 +2240,8 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ac.PointOutHistory = ac.PointOutHistory[:19]
 				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
 			}
+			ac.POFlashingEndTime = time.Now().Add(5 * time.Second)
 
-			
 			delete(s.PointOuts[callsign], ctrl.Callsign)
 			return nil
 		})
@@ -2272,8 +2271,6 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 			return nil
 		})
 }
-
-
 
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
 	s.mu.Lock(s.lg)

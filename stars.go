@@ -2587,6 +2587,32 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 
 		case "O":
+			if len(cmd) > 2 {
+				specifiedAircraft := cmd
+				var aircraft *Aircraft
+				for _, ac := range ctx.world.Aircraft {
+					fmt.Println(ac.Callsign, specifiedAircraft, ac.AssignedSquawk, cmd, cmd[2:])
+					if ac.Callsign == specifiedAircraft || fmt.Sprintf("%v", ac.AssignedSquawk) == cmd {
+						aircraft = ac
+
+					}
+				}
+				if aircraft == nil {
+					status.err = GetSTARSError(ErrSTARSCommandFormat)
+					return
+				}
+				if len(aircraft.PointOutHistory) == 0 {
+					status.clear = true
+					return
+				}
+				var out string
+				for _, callsigns := range aircraft.PointOutHistory {
+					out += fmt.Sprintf("%v ", callsigns)
+				}
+				status.clear = true
+				status.output = out
+				return
+			}
 			if cmd == "" {
 				ps.AutomaticFDBOffset = !ps.AutomaticFDBOffset
 				status.clear = true
@@ -3461,6 +3487,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
 				// STARS Manual 6-70 (On slew). Cannot go interfacility
+				// TODO: Or can be used to accept a pointout as a handoff.
 
 				if cmd == "**" { // Non specified TCP
 					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
@@ -3854,20 +3881,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 
 				if len(ac.PointOutHistory) == 0 {
-					// sp.previewAreaOutput = ""
 					status.clear = true
 					return
 				}
 
 				var out string
 				for _, callsigns := range ac.PointOutHistory {
-					
-
 					out += fmt.Sprintf("%v ", callsigns)
 				}
 				status.clear = true
-				sp.previewAreaOutput = fmt.Sprintf("%v", out)
-				status.output = fmt.Sprintf("%v", out)
+				status.output = out
 				return
 			}
 
@@ -5966,9 +5989,12 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = " PO"
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			field8 = " PO" + id
-		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok && time.Now().Second()&1 == 0 {
 			field8 = " UN"
+		} else if time.Until(ac.POFlashingEndTime) >= 0 && time.Now().Second()&1 == 0 {
+			field8 = " PO"
 		}
+
 		baseDB.Lines[1].Text = field1 + field2 + field8
 
 		// Line 2: fields 3, 4, 5
@@ -6016,7 +6042,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		acCategory = fmt.Sprintf("%v%v", modifier, cat)
 
 		field5 := []string{} // alternate speed and aircraft type
-		if state.Ident() {
+		if state.Ident() && time.Now().Second()&1 == 0 {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 		} else {
@@ -6097,8 +6123,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
 		_, pointOut := sp.InboundPointOuts[ac.Callsign]
-		if state.Ident() || // ident
-			ac.HandoffTrackController == w.Callsign || // handing off to us
+		if ac.HandoffTrackController == w.Callsign || // handing off to us
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
 			pointOut {

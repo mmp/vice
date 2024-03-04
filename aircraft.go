@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"golang.org/x/exp/slog"
 )
@@ -20,8 +21,9 @@ type Aircraft struct {
 	Mode                TransponderMode
 	TempAltitude        int
 	FlightPlan          *FlightPlan
-	ForceQLControllers []string
-	PointOutHistory []string
+	ForceQLControllers  []string
+	PointOutHistory     []string
+	POFlashingEndTime   time.Time
 
 	// Who has the radar track
 	TrackingController string
