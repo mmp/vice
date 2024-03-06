@@ -81,7 +81,18 @@ jobs:
         cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios/
         cp resources/videomaps/*zst Vice.app/Contents/Resources/videomaps/
 
+    - name: Check Secrets
+       # The secrets aren't available for a PR but we don't want the build to fail just because of that...
+       id: check_secret
+       run: |
+         if [ -z "${{ secrets.APPLE_DEVELOPER_ID_CERT_PASSWORD }}" ]; then
+             echo "SECRETS_AVAILABLE=false" >> $GITHUB_ENV
+         else
+             echo "SECRETS_AVAILABLE=true" >> $GITHUB_ENV
+         fi
+
     - name: Set up keychain for signing binary
+      if: env.SECRETS_AVAILABLE == 'true'
       env:
         APPLE_DEVELOPER_ID_CERT_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERT_PASSWORD }}
         APPLE_DEVELOPER_ID_CERT_FILE: ${{ secrets.APPLE_DEVELOPER_ID_CERT_FILE }}
@@ -97,12 +108,14 @@ jobs:
         security default-keychain -d "user" -s "${EPHEMERAL_KEYCHAIN_FULL_PATH}"
 
     - name: Sign Vice.app
+      if: env.SECRETS_AVAILABLE == 'true'
       env:
         APPLE_DEVELOPER_ID_APPLICATION: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION }}
       run: |
         codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime Vice.app
 
     - name: Notarize Vice.app
+      if: env.SECRETS_AVAILABLE == 'true'
       env:
         APPLE_CODESIGN_PASSWORD: ${{ secrets.APPLE_CODESIGN_PASSWORD2 }}
         APPLE_CODESIGN_ID: ${{ secrets.APPLE_CODESIGN_ID2 }}
@@ -121,7 +134,7 @@ jobs:
         # notarized! staple the notarization
         xcrun stapler staple Vice.app
 
-    - name: Create zip file for notarized app
+    - name: Create zip file for app
       run:
         zip -rv Vice-osx.zip Vice.app
 
