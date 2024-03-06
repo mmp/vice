@@ -5301,7 +5301,8 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
 		// 1. leading weight class <= trailing weight class
 		// 2. super/heavy can't be leading
-		if fclass <= bclass && fclass < 3 {
+
+		if fclass <= bclass && fclass <= 6 {
 			mit = 2.5
 		}
 	}
