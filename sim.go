@@ -1980,7 +1980,6 @@ func (s *Sim) RedirectedHandoff(token, callsign, controller string) error {
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId &&
 			 ac.HandoffTrackController != ctrl.Callsign {
-				fmt.Println(ac.RedirectedHandoff.RedirectedTo, ctrl.SectorId, ac.HandoffTrackController)
 				return ErrOtherControllerHasTrack
 			 }
 			if s.World.GetController(controller) == nil {
@@ -2128,7 +2127,6 @@ func (s *Sim) HandoffControl(token, callsign, controller string) error {
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
 			octrl := s.World.GetController(ac.TrackingController)
-			fmt.Println(octrl.Callsign, octrl.IsHuman, ac.IsDeparture())
 			if ac.IsDeparture() && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
@@ -2206,6 +2204,26 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
+			return nil
+		})
+}
+
+func (s *Sim) RecallRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchTrackingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			if ctrl.Callsign == ac.TrackingController {
+
+			} else {
+				for index, redirect := range ac.RedirectedHandoff.Redirector {
+					if ctrl.SectorId == redirect {
+						ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[index+1]
+						ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]		
+					}
+				}
+			}
 			return nil
 		})
 }
