@@ -82,7 +82,6 @@ jobs:
         cp resources/videomaps/*zst Vice.app/Contents/Resources/videomaps/
 
     - name: Check Secrets
-       # The secrets aren't available for PRs but we don't want the build to fail just because of that...
        run: |
          if [ -z "${{ secrets.APPLE_DEVELOPER_ID_CERT_PASSWORD }}" ]; then
              echo "SECRETS_AVAILABLE=false" >> $GITHUB_ENV
