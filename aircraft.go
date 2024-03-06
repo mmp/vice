@@ -36,6 +36,11 @@ type Aircraft struct {
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
 
+	RedirectedHandoff struct{
+		OrigionalOwner string
+		Redirector []string
+		RedirectedTo string
+	}
 	TabularNubmer int
 
 	// The controller who gave approach clearance

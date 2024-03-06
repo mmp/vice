@@ -302,6 +302,26 @@ func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 		})
 }
 
+func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RedirectedHandoff(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) HandoffTrack(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
