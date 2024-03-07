@@ -58,7 +58,7 @@ type ScenarioGroup struct {
 
 type AirspaceAwareness struct {
 	Fix                 []string `json:"fix"`
-	AltitudeRange       string   `json:"altitude_range"`
+	AltitudeRange       [2]int   `json:"altitude_range"`
 	ReceivingController string   `json:"receiving_controller"`
 	ToCenter            bool     `json:"to_center"`
 }

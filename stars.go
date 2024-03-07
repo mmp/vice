@@ -8,7 +8,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"runtime"
 	"sort"
@@ -1873,7 +1872,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 			callsign, tcps, _ := strings.Cut(cmd, " ")
 			aircraft := lookupAircraft(callsign)
-			if aircraft != nil {
+			if aircraft == nil {
+				status.err = ErrSTARSNoFlight
+			} else {
 				for _, tcp := range strings.Split(tcps, " ") {
 					if tcp == "ALL" {
 						var fac string
@@ -1885,19 +1886,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						for _, control := range ctx.world.Controllers {
 							if !control.ERAMFacility && control.FacilityIdentifier == fac {
 								sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
-								status.clear = true
-								return
 							}
 						}
+					} else {
+						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+						if !ok {
+							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							return
+						}
+						sp.forceQL(ctx, aircraft.Callsign, control)
 					}
-					ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-					if !ok {
-						status.err = GetSTARSError(ErrSTARSCommandFormat)
-						return
-					}
-					sp.forceQL(ctx, aircraft.Callsign, control)
-					status.clear = true
 				}
+				status.clear = true
 				return
 			}
 		}
@@ -1974,7 +1974,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		if len(cmd) > 0 {
 			ok, control := sameFacility(ctx, cmd, "")
 			if !ok {
-				// Do something idk
 				status.err = GetSTARSError(ErrSTARSCommandFormat)
 				return
 			}
@@ -2982,39 +2981,23 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 		})
 }
 
-func breakAltitude(initial string) ([2]int, error) {
-	firstInit, err := strconv.Atoi(initial[:3])
-	if err != nil {
-		return [2]int{000, 999}, err
-	}
-	secondInit, err := strconv.Atoi(initial[4:])
-	if err != nil {
-		return [2]int{000, 999}, err
-	}
-	return [2]int{firstInit * 100, secondInit * 100}, nil
-}
-
-func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
+// returns the controller responsible for the aircraft given its altitude
+// and route.
+func calculateAirspace(ctx *PaneContext, callsign string) string {
 	ac := ctx.world.Aircraft[callsign]
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
 		for _, fix := range rules.Fix {
 			if strings.Contains(ac.FlightPlan.Route, fix) {
-				if rules.AltitudeRange == "" {
-					return rules.ReceivingController, nil
-				} else {
-					alt, err := breakAltitude(rules.AltitudeRange)
-					if err != nil {
-						return "", errors.New(fmt.Sprintf("Error breaking %v: %v", rules.AltitudeRange, err))
-					}
-					if ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1] {
-						return rules.ReceivingController, nil
-					}
+				alt := rules.AltitudeRange
+				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
+					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
+					return rules.ReceivingController
 				}
 			}
 		}
 	}
 
-	return "", errors.New(fmt.Sprintf("Error finding controller"))
+	return ""
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
@@ -3028,17 +3011,14 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 // Also decode the controller into its regular sector (N4P -> 4P)
 func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) {
 	userController := *ctx.world.GetController(ctx.world.Callsign)
+
+	controller = strings.TrimSuffix(controller, "*")
 	lc := len(controller)
 
-	if string(controller[len(controller)-1]) == "*" { // Remove *
-		controller = controller[:len(controller)-1]
-		lc = len(controller)
-	}
 	// ARTCC airspaceawareness
 	if controller == "C" || (lc == 2 && string(controller[0]) == STARSTriangleCharacter) {
-		control, err := calculateAirspace(ctx, callsign)
-		if err == nil {
-
+		control := calculateAirspace(ctx, callsign)
+		if control != "" {
 			return true, control
 		}
 	} else {
@@ -3314,7 +3294,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 				if cmd == "**" { // Non specified TCP
 					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
-
 						state.ForceQL = true
 						status.clear = true
 						return
@@ -3324,7 +3303,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				} else {
 					tcps := strings.Split(cmd[2:], " ")
-					if tcps[0] == "ALL" {
+					if len(tcps) > 0 && tcps[0] == "ALL" {
 						// Force QL for all TCP
 						// Find user fac
 						for _, control := range ctx.world.Controllers {
@@ -3340,9 +3319,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 							return
 						}
 						sp.forceQL(ctx, ac.Callsign, control)
-
-						status.clear = true
 					}
+					status.clear = true
 					return
 				}
 
