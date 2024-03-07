@@ -20,6 +20,7 @@ type Aircraft struct {
 	Mode                TransponderMode
 	TempAltitude        int
 	FlightPlan          *FlightPlan
+	ForceQLControllers  []string
 
 	// Who has the radar track
 	TrackingController string

@@ -8,6 +8,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"runtime"
 	"sort"
@@ -24,6 +25,9 @@ import (
 // IFR TRACON separation requirements
 const LateralMinimum = 3
 const VerticalMinimum = 1000
+
+// STARS ∆
+const STARSTriangleCharacter = "\u00c2"
 
 var (
 	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
@@ -87,6 +91,10 @@ type STARSPane struct {
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
 	LockDisplay         bool
+	AirspaceAwareness   struct {
+		Interfacility bool
+		Intrafacility bool
+	}
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -440,6 +448,7 @@ type STARSAircraftState struct {
 	// click acks a point out but leaves it yellow and a second clears it
 	// entirely.
 	PointedOut bool
+	ForceQL    bool
 }
 
 type ATPAStatus int
@@ -1858,6 +1867,41 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		}
 
+		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
+			// Manual 6-69
+			cmd = cmd[2:]
+
+			callsign, tcps, _ := strings.Cut(cmd, " ")
+			aircraft := lookupAircraft(callsign)
+			if aircraft != nil {
+				for _, tcp := range strings.Split(tcps, " ") {
+					if tcp == "ALL" {
+						var fac string
+						for _, control := range ctx.world.Controllers {
+							if control.Callsign == ctx.world.Callsign {
+								fac = control.FacilityIdentifier
+							}
+						}
+						for _, control := range ctx.world.Controllers {
+							if !control.ERAMFacility && control.FacilityIdentifier == fac {
+								sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+								status.clear = true
+								return
+							}
+						}
+					}
+					ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+					if !ok {
+						status.err = GetSTARSError(ErrSTARSCommandFormat)
+						return
+					}
+					sp.forceQL(ctx, aircraft.Callsign, control)
+					status.clear = true
+				}
+				return
+			}
+		}
+
 		if len(cmd) >= 2 && cmd[:2] == "*T" {
 			suffix := cmd[2:]
 			if suffix == "" {
@@ -1925,6 +1969,47 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 				status.clear = true
 				return
+			}
+		}
+		if len(cmd) > 0 {
+			ok, control := sameFacility(ctx, cmd, "")
+			if !ok {
+				// Do something idk
+				status.err = GetSTARSError(ErrSTARSCommandFormat)
+				return
+			}
+			for _, controler := range ctx.world.Controllers {
+				if controler.SectorId == control {
+					positions, input, err := parseQuickLookPositions(ctx.world, cmd)
+					if len(positions) > 0 {
+						ps.QuickLookAll = false
+
+						for _, pos := range positions {
+							// Toggle
+							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+							if slices.ContainsFunc(ps.QuickLookPositions, match) {
+								nomatch := func(q QuickLookPosition) bool { return !match(q) }
+								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+								// Toggle plus
+								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+							} else {
+								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+							}
+						}
+						sort.Slice(ps.QuickLookPositions,
+							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+					}
+
+					if err == nil {
+						status.clear = true
+					} else {
+						status.err = err
+						sp.previewAreaInput = input
+					}
+					return
+				}
 			}
 		}
 
@@ -2897,11 +2982,112 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 		})
 }
 
+func breakAltitude(initial string) ([2]int, error) {
+	firstInit, err := strconv.Atoi(initial[:3])
+	if err != nil {
+		return [2]int{000, 999}, err
+	}
+	secondInit, err := strconv.Atoi(initial[4:])
+	if err != nil {
+		return [2]int{000, 999}, err
+	}
+	return [2]int{firstInit * 100, secondInit * 100}, nil
+}
+
+func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
+	ac := ctx.world.Aircraft[callsign]
+	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
+		for _, fix := range rules.Fix {
+			if strings.Contains(ac.FlightPlan.Route, fix) {
+				if rules.AltitudeRange == "" {
+					return rules.ReceivingController, nil
+				} else {
+					alt, err := breakAltitude(rules.AltitudeRange)
+					if err != nil {
+						return "", errors.New(fmt.Sprintf("Error breaking %v: %v", rules.AltitudeRange, err))
+					}
+					if ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1] {
+						return rules.ReceivingController, nil
+					}
+				}
+			}
+		}
+	}
+
+	return "", errors.New(fmt.Sprintf("Error finding controller"))
+}
+
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 	ctx.world.HandoffControl(callsign, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
+}
+
+// Give a bool if the handoff is good and the correct syntax.
+// Also decode the controller into its regular sector (N4P -> 4P)
+func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) {
+	userController := *ctx.world.GetController(ctx.world.Callsign)
+	lc := len(controller)
+
+	if string(controller[len(controller)-1]) == "*" { // Remove *
+		controller = controller[:len(controller)-1]
+		lc = len(controller)
+	}
+	// ARTCC airspaceawareness
+	if controller == "C" || (lc == 2 && string(controller[0]) == STARSTriangleCharacter) {
+		control, err := calculateAirspace(ctx, callsign)
+		if err == nil {
+
+			return true, control
+		}
+	} else {
+		// Non ARTCC airspaceawareness handoffs
+		if lc == 1 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector.
+			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
+				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
+					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
+					string(control.SectorId[1]) == controller { // The actual controller
+					return true, control.SectorId
+				}
+			}
+		} else if lc == 2 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector || same fac.
+			controllers := ctx.world.GetAllControllers()
+			// Find the controller fac
+			for _, control := range controllers {
+				if control.SectorId == controller && control.FacilityIdentifier == userController.FacilityIdentifier { // Found the facility
+					return true, control.SectorId
+				}
+			}
+
+		} else if lc == 5 && string(controller[0]) == STARSTriangleCharacter { // ∆N4P for example. Must be different fac
+			controller = controller[2:] // Remove the ∆
+			receivingController := Controller{
+				SectorId:           controller[1:],
+				FacilityIdentifier: string(controller[0]),
+			}
+			if userController.FacilityIdentifier != receivingController.FacilityIdentifier {
+				return true, receivingController.SectorId
+			}
+
+		}
+
+	}
+	if lc > 3 || (lc > 3 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
+		return false, "sp one" // Should to to scratchpad one
+	}
+	return false, ""
+}
+
+func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
+	ctx.world.ForceQL(callsign, controller, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
+func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string) {
+	ctx.world.RemoveForceQL(callsign, controller, nil, nil) // Just a slew so the slew could be for other things
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
@@ -3016,6 +3202,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.PointedOut = false
 					status.clear = true
 					return
+				} else if state.ForceQL {
+					state.ForceQL = false
+					status.clear = true
 				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, ac.Callsign)
@@ -3119,6 +3308,44 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				})
 				status.clear = true
 				return
+			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
+				// STARS Manual 6-70 (On slew). Cannot go interfacility
+				// TODO: Or can be used to accept a pointout as a handoff.
+
+				if cmd == "**" { // Non specified TCP
+					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
+
+						state.ForceQL = true
+						status.clear = true
+						return
+					} else {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+				} else {
+					tcps := strings.Split(cmd[2:], " ")
+					if tcps[0] == "ALL" {
+						// Force QL for all TCP
+						// Find user fac
+						for _, control := range ctx.world.Controllers {
+							if control.Callsign == ctx.world.Callsign && !control.ERAMFacility {
+								sp.forceQL(ctx, ac.Callsign, control.SectorId)
+							}
+						}
+					}
+					for _, tcp := range tcps {
+						ok, control := sameFacility(ctx, tcp, ac.Callsign)
+						if !ok {
+							status.err = GetSTARSError(ErrSTARSIllegalPosition)
+							return
+						}
+						sp.forceQL(ctx, ac.Callsign, control)
+
+						status.clear = true
+					}
+					return
+				}
+
 			} else if cmd == "*D+" {
 				// TODO: this and the following two should give ILL FNCT if
 				// there's no j-ring/[A]TPA cone being displayed for the
@@ -4635,6 +4862,9 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	if state.PointedOut {
 		dt = FullDatablock
 	}
+	if state.ForceQL {
+		dt = FullDatablock
+	}
 
 	// Quicklook
 	ps := sp.CurrentPreferenceSet
@@ -5622,7 +5852,17 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 		}
 	}
 
-	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
+	// Check if were the controller being ForceQL
+	for _, control := range ac.ForceQLControllers {
+		if control == w.Callsign {
+			color = STARSInboundPointOutColor
+			return
+		}
+	}
+
+	// redirected
+
+	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
 	} else if state.IsSelected {

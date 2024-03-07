@@ -54,35 +54,36 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	LaunchConfig      LaunchConfig
-	PrimaryController string
-	MultiControllers  SplitConfiguration
-	SimIsPaused       bool
-	SimRate           float32
-	SimName           string
-	SimDescription    string
-	SimTime           time.Time
-	MagneticVariation float32
-	NmPerLongitude    float32
-	Airports          map[string]*Airport
-	Fixes             map[string]Point2LL
-	PrimaryAirport    string
-	RadarSites        map[string]*RadarSite
-	Center            Point2LL
-	Range             float32
-	DefaultMaps       []string
-	STARSMaps         []STARSMap
-	InhibitCAVolumes  []AirspaceVolume
-	Wind              Wind
-	Callsign          string
-	ApproachAirspace  []ControllerAirspaceVolume
-	DepartureAirspace []ControllerAirspaceVolume
-	DepartureRunways  []ScenarioGroupDepartureRunway
-	ArrivalRunways    []ScenarioGroupArrivalRunway
-	Scratchpads       map[string]string
-	ArrivalGroups     map[string][]Arrival
-	TotalDepartures   int
-	TotalArrivals     int
+	LaunchConfig            LaunchConfig
+	PrimaryController       string
+	MultiControllers        SplitConfiguration
+	SimIsPaused             bool
+	SimRate                 float32
+	SimName                 string
+	SimDescription          string
+	SimTime                 time.Time
+	MagneticVariation       float32
+	NmPerLongitude          float32
+	Airports                map[string]*Airport
+	Fixes                   map[string]Point2LL
+	PrimaryAirport          string
+	RadarSites              map[string]*RadarSite
+	Center                  Point2LL
+	Range                   float32
+	DefaultMaps             []string
+	STARSMaps               []STARSMap
+	InhibitCAVolumes        []AirspaceVolume
+	Wind                    Wind
+	Callsign                string
+	ApproachAirspace        []ControllerAirspaceVolume
+	DepartureAirspace       []ControllerAirspaceVolume
+	DepartureRunways        []ScenarioGroupDepartureRunway
+	ArrivalRunways          []ScenarioGroupArrivalRunway
+	Scratchpads             map[string]string
+	ArrivalGroups           map[string][]Arrival
+	TotalDepartures         int
+	TotalArrivals           int
+	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	STARSInputOverride string
 }
@@ -132,6 +133,7 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
+	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -349,6 +351,26 @@ func (w *World) CancelHandoff(callsign string, success func(any), err func(error
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.CancelHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) ForceQL(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.ForceQL(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) RemoveForceQL(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RemoveForceQL(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,

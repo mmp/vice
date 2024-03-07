@@ -164,6 +164,22 @@ func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) ForceQL(callsign, controller string) *rpc.Call {
+	return s.Client.Go("Sim.ForceQL", &ForceQLArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      controller,
+	}, nil, nil)
+}
+
+func (s *SimProxy) RemoveForceQL(callsign, controller string) *rpc.Call {
+	return s.Client.Go("Sim.RemoveForceQL", &ForceQLArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      controller,
+	}, nil, nil)
+}
+
 func (s *SimProxy) PointOut(callsign string, controller string) *rpc.Call {
 	return s.Client.Go("Sim.PointOut", &PointOutArgs{
 		ControllerToken: s.ControllerToken,
@@ -720,6 +736,27 @@ type PointOutArgs struct {
 	ControllerToken string
 	Callsign        string
 	Controller      string
+}
+type ForceQLArgs struct {
+	ControllerToken string
+	Callsign        string
+	Controller      string
+}
+
+func (sd *SimDispatcher) ForceQL(po *ForceQLArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ForceQL(po.ControllerToken, po.Callsign, po.Controller)
+	}
+}
+
+func (sd *SimDispatcher) RemoveForceQL(po *ForceQLArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RemoveForceQL(po.ControllerToken, po.Callsign, po.Controller)
+	}
 }
 
 func (sd *SimDispatcher) PointOut(po *PointOutArgs, _ *struct{}) error {

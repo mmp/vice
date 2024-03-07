@@ -912,6 +912,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
+	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
@@ -2130,6 +2131,32 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
+			return nil
+		})
+}
+
+func (s *Sim) ForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if s.World.GetController(controller) == nil {
+				return ErrNoController
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+			return nil
+		})
+}
+
+func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.ForceQLControllers = FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
 			return nil
 		})
 }
