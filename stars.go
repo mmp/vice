@@ -1570,7 +1570,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		input = input[1:]
 	}
 	sp.previewAreaInput += input
-	sp.previewAreaInput = strings.Replace(sp.previewAreaInput, "`", "\u00c2", -1)
+	sp.previewAreaInput = strings.Replace(sp.previewAreaInput, "`", "\u008A", -1)
 	ps := &sp.CurrentPreferenceSet
 
 	//lg.Infof("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
