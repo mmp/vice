@@ -134,7 +134,6 @@ func (w *World) Assign(other *World) {
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
 	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
-
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
