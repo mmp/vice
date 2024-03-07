@@ -2458,19 +2458,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if aircraft.TrackingController == "" {
 					status.err = GetSTARSError(ErrSTARSIllegalTrack)
 					return
-				}
-
-				if len(aircraft.PointOutHistory) == 0 {
+				} else {
+					status.output = strings.Join(aircraft.PointOutHistory, " ")
 					status.clear = true
 					return
 				}
-				var out string
-				for _, callsigns := range aircraft.PointOutHistory {
-					out += fmt.Sprintf("%v ", callsigns)
-				}
-				status.clear = true
-				status.output = out
-				return
 			}
 			if cmd == "" {
 				ps.AutomaticFDBOffset = !ps.AutomaticFDBOffset
@@ -3627,17 +3619,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-				if len(ac.PointOutHistory) == 0 {
-					status.clear = true
-					return
-				}
-
-				var out string
-				for _, callsigns := range ac.PointOutHistory {
-					out += fmt.Sprintf("%v ", callsigns)
-				}
+				status.output = strings.Join(ac.PointOutHistory, " ")
 				status.clear = true
-				status.output = out
 				return
 			}
 
