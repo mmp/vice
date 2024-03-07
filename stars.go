@@ -3107,29 +3107,6 @@ func breakAltitude(initial string) ([2]int, error) {
 	return [2]int{firstInit * 100, secondInit * 100}, nil
 }
 
-func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
-	ac := ctx.world.Aircraft[callsign]
-	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
-		for _, fix := range rules.Fix {
-			if strings.Contains(ac.FlightPlan.Route, fix) {
-				if rules.AltitudeRange == "" {
-					return rules.ReceivingController, nil
-				} else {
-					alt, err := breakAltitude(rules.AltitudeRange)
-					if err != nil {
-						return "", errors.New(fmt.Sprintf("Error breaking %v: %v", rules.AltitudeRange, err))
-					}
-					if ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1] {
-						return rules.ReceivingController, nil
-					}
-				}
-			}
-		}
-	}
-
-	return "", errors.New(fmt.Sprintf("Error finding controller"))
-}
-
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *PaneContext, callsign string) string {
