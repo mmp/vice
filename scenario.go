@@ -69,11 +69,6 @@ type STARSFacilityAdaptation struct {
 	ScratchpadRules  [2]bool                `json:"scratchpad_rules"`
 }
 
-type ReportingPoint struct {
-	Fix      string
-	Location Point2LL
-}
-
 
 type Airspace struct {
 	Boundaries map[string][]Point2LL                 `json:"boundaries"`
