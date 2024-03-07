@@ -2450,6 +2450,28 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 
 		case "O":
+			if len(cmd) > 2 {
+				aircraft := lookupAircraft(cmd)
+				if aircraft == nil {
+					status.err = GetSTARSError(ErrSTARSCommandFormat)
+					return
+				} else if aircraft.TrackingController == "" {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
+				}
+
+				if len(aircraft.PointOutHistory) == 0 {
+					status.clear = true
+					return
+				}
+				var out string
+				for _, callsigns := range aircraft.PointOutHistory {
+					out += fmt.Sprintf("%v ", callsigns)
+				}
+				status.clear = true
+				status.output = out
+				return
+			}
 			if cmd == "" {
 				ps.AutomaticFDBOffset = !ps.AutomaticFDBOffset
 				status.clear = true
@@ -3599,6 +3621,24 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				}
+			case "O": //Pointout history
+				if ac.TrackingController != ctx.world.Callsign {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
+				}
+
+				if len(ac.PointOutHistory) == 0 {
+					status.clear = true
+					return
+				}
+
+				var out string
+				for _, callsigns := range ac.PointOutHistory {
+					out += fmt.Sprintf("%v ", callsigns)
+				}
+				status.clear = true
+				status.output = out
+				return
 			}
 
 		case CommandModeFlightData:
