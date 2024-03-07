@@ -42,7 +42,6 @@ type Aircraft struct {
 		RedirectedTo   string
 		RDIndicator    bool
 	}
-	TabularNubmer int
 
 	// The controller who gave approach clearance
 	ApproachController string

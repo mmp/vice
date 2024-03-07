@@ -4836,7 +4836,6 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		for i, acIdx := range SortedMapKeys(dep) {
 			ac := dep[acIdx]
 			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
-			ac.TabularNubmer = acIdx
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
 				break
@@ -6037,7 +6036,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		acCategory = fmt.Sprintf("%v%v", modifier, cat)
 
 		field5 := []string{} // alternate speed and aircraft type
-		if state.Ident() && time.Now().Second()&1 == 0 {
+		if state.Ident() {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 		} else {
