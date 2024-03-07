@@ -2079,7 +2079,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		})
 }
 
-func (s *Sim) HandoffControl(token, callsign, controller string) error {
+func (s *Sim) HandoffControl(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -2238,12 +2238,6 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetController(controller)
-			s.eventStream.Post(Event{
-				Type:           ForceQLEvent,
-				FromController: ctrl.Callsign,
-				ToController:   octrl.Callsign,
-				Callsign:       ac.Callsign,
-			})
 			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
 			return nil
 		})
@@ -2255,18 +2249,7 @@ func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			octrl := s.World.GetController(controller)
-			s.eventStream.Post(Event{
-				Type:           AcknowledgedForceQLEvent,
-				FromController: ctrl.Callsign,
-				ToController:   octrl.Callsign,
-				Callsign:       ac.Callsign,
-			})
-			for i, s := range ac.ForceQLControllers {
-				if s == controller {
-					ac.ForceQLControllers = append(ac.ForceQLControllers[:i], ac.ForceQLControllers[i+1:]...)
-				}
-			}
+			ac.ForceQLControllers = FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
 			return nil
 		})
 }

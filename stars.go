@@ -26,6 +26,9 @@ import (
 const LateralMinimum = 3
 const VerticalMinimum = 1000
 
+// STARS ∆
+const STARSTriangleCharacter = "\u00c2"
+
 var (
 	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor          = RGB{.1, .9, .1}
@@ -1567,7 +1570,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		input = input[1:]
 	}
 	sp.previewAreaInput += input
-	sp.previewAreaInput = strings.Replace(sp.previewAreaInput, "`", "\u008A", -1)
+	sp.previewAreaInput = strings.Replace(sp.previewAreaInput, "`", "\u00c2", -1)
 	ps := &sp.CurrentPreferenceSet
 
 	//lg.Infof("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
@@ -1874,173 +1877,37 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
 			// Manual 6-69
-			cmd = cmd[2:]
-			if unicode.IsDigit(rune(cmd[0])) { //BCN code
-				bcn := cmd[:4]
-				for _, aircraft := range ctx.world.Aircraft {
-					if fmt.Sprintf("%v", aircraft.AssignedSquawk) == bcn {
-						if len(cmd) > 5 {
-						} else {
-							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							return
+			cmd = cmd[2:]	
+			
+				callsign, tcps, _ := strings.Cut(cmd, " ")
+				aircraft := lookupAircraft(callsign)
+				if aircraft != nil {
+					for _, tcp := range strings.Split(tcps, " ") {
+						if tcp == "ALL" {
+							var fac string
+							for _, control := range ctx.world.Controllers {
+								if control.Callsign == ctx.world.Callsign {
+									fac = control.FacilityIdentifier
+								}
+							}
+							for _, control := range ctx.world.Controllers {
+								if !control.ERAMFacility && control.FacilityIdentifier == fac {
+									sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+									status.clear = true
+									return
+								}
+							}
 						}
-						tcps := strings.Split(cmd, " ")
-						for _, tcp := range tcps {
-							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
 							if !ok {
-								// do stuff idk
-								status.clear = true
+								status.err = GetSTARSError(ErrSTARSCommandFormat)
 								return
 							}
 							sp.forceQL(ctx, aircraft.Callsign, control)
 							status.clear = true
-						}
-						return
 					}
+					return
 				}
-
-			} else {
-				for _, aircraft := range ctx.world.Aircraft {
-					if len(cmd) > 8 && cmd[:7] == aircraft.Callsign {
-						if len(cmd) > 8 {
-							cmd = cmd[8:]
-						} else {
-							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							return
-						}
-						tcps := strings.Split(cmd, " ")
-						for _, tcp := range tcps {
-							if tcp == "ALL" {
-								var fac string
-								for _, control := range ctx.world.Controllers {
-									if control.Callsign == ctx.world.Callsign {
-										fac = control.FacilityIdentifier
-									}
-								}
-								for _, control := range ctx.world.Controllers {
-									if !control.ERAMFacility && control.FacilityIdentifier == fac {
-										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
-										status.clear = true
-										return
-									}
-								}
-							}
-							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-							if !ok {
-								// do stuff idk
-								status.clear = true
-								return
-							}
-							sp.forceQL(ctx, aircraft.Callsign, control)
-							status.clear = true
-						}
-						return
-					} else if len(cmd) > 7 && cmd[:6] == aircraft.Callsign {
-						if len(cmd) > 7 {
-							cmd = cmd[7:]
-						} else {
-							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							return
-						}
-						tcps := strings.Split(cmd, " ")
-						for _, tcp := range tcps {
-							if tcp == "ALL" {
-								var fac string
-								for _, control := range ctx.world.Controllers {
-									if control.Callsign == ctx.world.Callsign {
-										fac = control.FacilityIdentifier
-									}
-								}
-								for _, control := range ctx.world.Controllers {
-									if !control.ERAMFacility && control.FacilityIdentifier == fac {
-										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
-										status.clear = true
-										return
-									}
-								}
-							}
-							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-							if !ok {
-								// do stuff idk
-								status.clear = true
-								return
-							}
-							sp.forceQL(ctx, aircraft.Callsign, control)
-							status.clear = true
-						}
-						return
-					} else if len(cmd) > 6 && cmd[:5] == aircraft.Callsign {
-						if len(cmd) > 6 {
-							cmd = cmd[6:]
-						} else {
-							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							return
-						}
-						tcps := strings.Split(cmd, " ")
-						for _, tcp := range tcps {
-							if tcp == "ALL" {
-								var fac string
-								for _, control := range ctx.world.Controllers {
-									if control.Callsign == ctx.world.Callsign {
-										fac = control.FacilityIdentifier
-									}
-								}
-								for _, control := range ctx.world.Controllers {
-									if !control.ERAMFacility && control.FacilityIdentifier == fac {
-										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
-										status.clear = true
-										return
-									}
-								}
-							}
-							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-							if !ok {
-								// do stuff idk
-								status.clear = true
-								return
-							}
-							sp.forceQL(ctx, aircraft.Callsign, control)
-							status.clear = true
-						}
-						return
-					} else if len(cmd) > 5 && cmd[:4] == aircraft.Callsign {
-						if len(cmd) > 5 {
-							cmd = cmd[5:]
-						} else {
-							status.err = GetSTARSError(ErrSTARSCommandFormat)
-							return
-						}
-
-						tcps := strings.Split(cmd, " ")
-						for _, tcp := range tcps {
-							if tcp == "ALL" {
-								var fac string
-								for _, control := range ctx.world.Controllers {
-									if control.Callsign == ctx.world.Callsign {
-										fac = control.FacilityIdentifier
-									}
-								}
-								for _, control := range ctx.world.Controllers {
-									if !control.ERAMFacility && control.FacilityIdentifier == fac {
-										sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
-										status.clear = true
-										return
-									}
-								}
-							}
-							ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-							if !ok {
-								// do stuff idk
-								status.clear = true
-								return
-							}
-							sp.forceQL(ctx, aircraft.Callsign, control)
-							status.clear = true
-						}
-						return
-					}
-				}
-			}
 		}
 
 		if len(cmd) >= 2 && cmd[:2] == "*T" {
@@ -2617,18 +2484,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "O":
 			if len(cmd) > 2 {
-				specifiedAircraft := cmd
-				var aircraft *Aircraft
-				for _, ac := range ctx.world.Aircraft {
-					if ac.Callsign == specifiedAircraft || fmt.Sprintf("%v", ac.AssignedSquawk) == cmd {
-						aircraft = ac
-
-					}
-				}
+				aircraft := lookupAircraft(cmd)
 				if aircraft == nil {
 					status.err = GetSTARSError(ErrSTARSCommandFormat)
 					return
+				} else if aircraft.TrackingController == "" {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
 				}
+
 				if len(aircraft.PointOutHistory) == 0 {
 					status.clear = true
 					return
@@ -3262,7 +3125,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 		lc = len(controller)
 	}
 	// ARTCC airspaceawareness
-	if controller == "C" || (lc == 2 && string(controller[0]) == "\u00C2") {
+	if controller == "C" || (lc == 2 && string(controller[0]) == STARSTriangleCharacter) {
 		control, err := calculateAirspace(ctx, callsign)
 		if err == nil {
 
@@ -3270,7 +3133,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 		}
 	} else {
 		// Non ARTCC airspaceawareness handoffs
-		if lc == 1 && string(controller[0]) != "\u00C2" { // Must be a same sector.
+		if lc == 1 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector.
 			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
 					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
@@ -3278,7 +3141,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 					return true, control.SectorId
 				}
 			}
-		} else if lc == 2 && string(controller[0]) != "\u00C2" { // Must be a same sector || same fac.
+		} else if lc == 2 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector || same fac.
 			controllers := ctx.world.GetAllControllers()
 			// Find the controller fac
 			for _, control := range controllers {
@@ -3287,7 +3150,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 				}
 			}
 
-		} else if lc == 5 && string(controller[0]) == "\u00C2" { // ∆N4P for example. Must be different fac
+		} else if lc == 5 && string(controller[0]) == STARSTriangleCharacter { // ∆N4P for example. Must be different fac
 			controller = controller[2:] // Remove the ∆
 			receivingController := Controller{
 				SectorId:           controller[1:],
@@ -3416,7 +3279,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				} else if ac.HandoffTrackController == ctx.world.Callsign {
 					if len(cmd) > 0 { // Redirecting handoff
-						if cmd[0] == '\u00C2' { 
+						if cmd[0] == '\u00C2' {
 							cmd = cmd[2:]
 						}
 						ok, control := sameFacility(ctx, cmd, ac.Callsign)
@@ -3593,14 +3456,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					if tcps[0] == "ALL" {
 						// Force QL for all TCP
 						// Find user fac
-						var fac string
 						for _, control := range ctx.world.Controllers {
-							if control.Callsign == ctx.world.Callsign {
-								fac = control.FacilityIdentifier
-							}
-						}
-						for _, control := range ctx.world.Controllers {
-							if !control.ERAMFacility && control.FacilityIdentifier == fac {
+							if control.Callsign == ctx.world.Callsign && !control.ERAMFacility {
 								sp.forceQL(ctx, ac.Callsign, control.SectorId)
 							}
 						}
@@ -3608,8 +3465,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					for _, tcp := range tcps {
 						ok, control := sameFacility(ctx, tcp, ac.Callsign)
 						if !ok {
-							// Do something idk
-							status.clear = true
+							status.err = GetSTARSError(ErrSTARSIllegalPosition)
 							return
 						}
 						sp.forceQL(ctx, ac.Callsign, control)
@@ -3778,7 +3634,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 					sp.redirectHandoff(ctx, ac.Callsign, control)
-					state.RDIndicator = true 
+					state.RDIndicator = true
 					status.clear = true
 					return
 				} else {
@@ -6078,27 +5934,26 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// Line 1: fields 1, 2, and 8 (surprisingly). Always the same content; nothing multiplexed
 		field1 := ac.Callsign
 		field2 := "" // TODO: * for MSAW inhibited, etc.
-		field8 := ""
+		field8 := []string{""}
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
-			field8 = " PO"
+			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
-			field8 = " PO" + id
-		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok && time.Now().Second()&1 == 0 {
-			field8 = " UN"
-		} else if time.Until(ac.POFlashingEndTime) >= 0 && time.Now().Second()&1 == 0 {
-			field8 = " PO"
-		} else if redirect := ac.RedirectedHandoff; state.RDIndicator && (redirect.RedirectedTo == user.SectorId || 
-		(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
-			field8 = " RD"
-		}
-
-		for _, controller := range ac.RedirectedHandoff.Redirector {
-			if controller == user.SectorId {
-				field8 = " RD"
+			field8 = []string{" PO" + id}
+		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+			field8 = append(field8, " UN")
+		} else if time.Until(ac.POFlashingEndTime) >= 0  {
+			field8 = append(field8, " PO")
+		} else if redirect := ac.RedirectedHandoff; state.RDIndicator && (redirect.RedirectedTo == user.SectorId ||
+			(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
+				field8 = []string{" RD"}
+		} else {
+			for _, controller := range ac.RedirectedHandoff.Redirector {
+				if controller == user.SectorId {
+					field8 = []string{" RD"}
+				}
 			}
-		}
-
-		baseDB.Lines[1].Text = field1 + field2 + field8
+	
+		} 
 
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
@@ -6202,8 +6057,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// set in baseDB above.)
 		dbs := []STARSDatablock{}
 		n := lcm(len(field3), len(field5)) // cycle through all variations
+		n = lcm(n, len(field8))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
+			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
 			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
 			db.Lines[3].Text = line3
 			if line3FieldColors != nil {
@@ -6239,7 +6096,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
 		_, pointOut := sp.InboundPointOuts[ac.Callsign]
-		if (ac.HandoffTrackController == w.Callsign && !strings.Contains(fmt.Sprintf("%v", ac.RedirectedHandoff.Redirector), userController.SectorId)) || // handing off to us
+		if (ac.HandoffTrackController == w.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, userController.SectorId)) || // handing off to us
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
 			pointOut || ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
@@ -6267,7 +6124,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	} else if ac.RedirectedHandoff.OrigionalOwner == userController.SectorId || ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
 		color = STARSTrackedAircraftColor
 	} else if (ac.HandoffTrackController == w.Callsign &&
-		!strings.Contains(fmt.Sprintf("%v", ac.RedirectedHandoff.Redirector), userController.SectorId)) ||
+		!slices.Contains(ac.RedirectedHandoff.Redirector, userController.SectorId)) ||
 		ac.RedirectedHandoff.RedirectedTo == w.Callsign {
 		// flashing white if it's being handed off to us.
 		color = STARSTrackedAircraftColor

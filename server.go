@@ -728,7 +728,7 @@ func (sd *SimDispatcher) HandoffControl(h *HandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.HandoffControl(h.ControllerToken, h.Callsign, h.Controller)
+		return sim.HandoffControl(h.ControllerToken, h.Callsign)
 	}
 }
 
