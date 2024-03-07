@@ -413,7 +413,6 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-	RDIndicator              bool
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
@@ -3072,6 +3071,31 @@ func (sp *STARSPane) acceptRedirectedHandoff(ctx *PaneContext, callsign string) 
 		})
 }
 
+func (sp *STARSPane) slewRedirect(ctx *PaneContext, callsign string) {
+	ctx.world.SlewRedirectedHandoff(callsign,
+		func(any) {
+			if state, ok := sp.Aircraft[callsign]; ok {
+				state.DatablockType = FullDatablock
+			}
+		},
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
+
+func (sp *STARSPane) recallRedirectedHandoff(ctx *PaneContext, callsign string) {
+	ctx.world.RecallRedirectedHandoff(callsign,
+		func(any) {
+			if state, ok := sp.Aircraft[callsign]; ok {
+				state.DatablockType = FullDatablock
+			}
+		},
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
 func breakAltitude(initial string) ([2]int, error) {
 	firstInit, err := strconv.Atoi(initial[:3])
 	if err != nil {
@@ -3258,8 +3282,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if ac.RedirectedHandoff.RedirectedTo == user.SectorId {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 				}
-				if state.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
-					state.RDIndicator = false
+				if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
+					sp.recallRedirectedHandoff(ctx, ac.Callsign)
+					return
+				}
+				if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
+					fmt.Println("slew")
+					sp.slewRedirect(ctx, ac.Callsign)
+					return
 				}
 				for _, tcp := range ac.ForceQLControllers {
 					if tcp == ctx.world.Callsign {
@@ -3634,7 +3664,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 					sp.redirectHandoff(ctx, ac.Callsign, control)
-					state.RDIndicator = true
 					status.clear = true
 					return
 				} else {
@@ -5085,6 +5114,9 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	if ac.RedirectedHandoff.RedirectedTo == me.SectorId {
 		dt = FullDatablock
 	}
+	if ac.RedirectedHandoff.RDIndicator {
+		dt = FullDatablock
+	}
 	for _, redirect := range ac.RedirectedHandoff.Redirector {
 		if redirect == me.SectorId {
 			dt = FullDatablock
@@ -5935,6 +5967,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		field1 := ac.Callsign
 		field2 := "" // TODO: * for MSAW inhibited, etc.
 		field8 := []string{""}
+		rd := ac.RedirectedHandoff.RDIndicator
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
 			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
@@ -5943,7 +5976,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = append(field8, " UN")
 		} else if time.Until(ac.POFlashingEndTime) >= 0  {
 			field8 = append(field8, " PO")
-		} else if redirect := ac.RedirectedHandoff; state.RDIndicator && (redirect.RedirectedTo == user.SectorId ||
+		} else if redirect := ac.RedirectedHandoff; rd || (redirect.RedirectedTo == user.SectorId ||
 			(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
 				field8 = []string{" RD"}
 		} else {
@@ -5954,7 +5987,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			}
 	
 		} 
-
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if state.LostTrack(ctx.world.CurrentTime()) {

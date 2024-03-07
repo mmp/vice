@@ -164,6 +164,19 @@ func (s *SimProxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
 		Callsign:        callsign,
 	}, nil, nil)
 }
+func (s *SimProxy) RecallRedirectedHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.RecallRedirectedHandoff", &AcceptHandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) SlewRedirectedHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.SlewRedirectedHandoff", &AcceptHandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
 
 func (s *SimProxy) RejectHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.RejectHandoff", &RejectHandoffArgs{
@@ -721,6 +734,22 @@ func (sd *SimDispatcher) AcceptRedirectedHandoff(h *AcceptHandoffArgs, _ *struct
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AcceptRedirectedHandoff(h.ControllerToken, h.Callsign)
+	}
+}
+
+func (sd *SimDispatcher) RecallRedirectedHandoff(h *AcceptHandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RecallRedirectedHandoff(h.ControllerToken, h.Callsign)
+	}
+}
+
+func (sd *SimDispatcher) SlewRedirectedHandoff(h *AcceptHandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SlewRedirectedHandoff(h.ControllerToken, h.Callsign)
 	}
 }
 

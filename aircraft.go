@@ -40,6 +40,7 @@ type Aircraft struct {
 		OrigionalOwner string
 		Redirector []string
 		RedirectedTo string
+		RDIndicator bool
 	}
 	TabularNubmer int
 

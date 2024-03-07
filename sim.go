@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"net/rpc"
 	"runtime"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -1999,6 +2000,7 @@ func (s *Sim) RedirectedHandoff(token, callsign, controller string) error {
 			ac.RedirectedHandoff.OrigionalOwner = ac.TrackingController
 			ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.SectorId)
 			ac.RedirectedHandoff.RedirectedTo = octrl.SectorId
+			ac.RedirectedHandoff.RDIndicator = true 
 
 			// Add them to the auto-accept map even if the target is
 			// covered; this way, if they sign off in the interim, we still
@@ -2028,7 +2030,9 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			})
 
 			ac.HandoffTrackController = ""
-			ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string}{}
+			ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string; RDIndicator bool}{
+				RDIndicator: true,
+			}
 			ac.TrackingController = ctrl.Callsign
 			if !s.controllerIsSignedIn(ac.ControllingController) {
 				// Take immediate control on handoffs from virtual
@@ -2208,19 +2212,54 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		})
 }
 
+func (s *Sim) SlewRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		
+		func(ctrl *Controller, ac *Aircraft) error {
+			return nil
+		},
+		
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string; RDIndicator bool}{
+				RDIndicator: false,
+			}
+			return nil
+		})
+}
+
 func (s *Sim) RecallRedirectedHandoff(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackingCommand(token, callsign,
+	return s.dispatchCommand(token, callsign,
+		
+		func(ctrl *Controller, ac *Aircraft) error {
+			if !slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.SectorId) || ctrl.SectorId == ac.RedirectedHandoff.RedirectedTo{
+				return ErrSTARSIllegalTrack
+			}
+			return nil
+		},
+		
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			if ctrl.Callsign == ac.TrackingController {
 
 			} else {
 				for index, redirect := range ac.RedirectedHandoff.Redirector {
 					if ctrl.SectorId == redirect {
-						ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[index+1]
-						ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]		
+						if index == 0 {
+							ac.HandoffTrackController = ctrl.Callsign
+							ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string; RDIndicator bool}{
+								RDIndicator: true,
+							}
+						} else {
+							ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[index]
+							ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]	
+						}
+						
+							
 					}
 				}
 			}
