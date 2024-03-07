@@ -8,6 +8,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"runtime"
 	"sort"
@@ -24,6 +25,9 @@ import (
 // IFR TRACON separation requirements
 const LateralMinimum = 3
 const VerticalMinimum = 1000
+
+// STARS ∆
+const STARSTriangleCharacter = "\u00c2"
 
 var (
 	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
@@ -87,6 +91,10 @@ type STARSPane struct {
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
 	LockDisplay         bool
+	AirspaceAwareness   struct {
+		Interfacility bool
+		Intrafacility bool
+	}
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -405,7 +413,7 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-
+	RDIndicator              bool
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
@@ -440,6 +448,7 @@ type STARSAircraftState struct {
 	// click acks a point out but leaves it yellow and a second clears it
 	// entirely.
 	PointedOut bool
+	ForceQL    bool
 }
 
 type ATPAStatus int
@@ -1242,6 +1251,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.InboundPointOuts[event.Callsign] = ""
 				}
+				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 			if event.FromController == w.Callsign {
 				if ctrl := w.GetController(event.ToController); ctrl != nil {
@@ -1249,6 +1259,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.OutboundPointOuts[event.Callsign] = ""
 				}
+				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 
 		case AcknowledgedPointOutEvent:
@@ -1544,6 +1555,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
+
 	sp.updateIntrailDistance(aircraft, w)
 }
 
@@ -1558,7 +1570,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		input = input[1:]
 	}
 	sp.previewAreaInput += input
-
+	sp.previewAreaInput = strings.Replace(sp.previewAreaInput, "`", "\u008A", -1)
 	ps := &sp.CurrentPreferenceSet
 
 	//lg.Infof("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
@@ -1584,8 +1596,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 	for key := range ctx.keyboard.Pressed {
 		switch key {
 		case KeyBackspace:
+
 			if len(sp.previewAreaInput) > 0 {
-				sp.previewAreaInput = sp.previewAreaInput[:len(sp.previewAreaInput)-1]
+				if len(sp.previewAreaInput) >= 2 && string(sp.previewAreaInput[len(sp.previewAreaInput)-2]) == "Â" {
+					sp.previewAreaInput = sp.previewAreaInput[:len(sp.previewAreaInput)-2]
+				} else {
+					sp.previewAreaInput = sp.previewAreaInput[:len(sp.previewAreaInput)-1]
+				}
+
 			} else {
 				sp.multiFuncPrefix = ""
 			}
@@ -1756,7 +1774,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	}
 
 	ps := &sp.CurrentPreferenceSet
-
 	switch sp.commandMode {
 	case CommandModeNone:
 		switch cmd {
@@ -1858,6 +1875,41 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		}
 
+		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
+			// Manual 6-69
+			cmd = cmd[2:]	
+			
+				callsign, tcps, _ := strings.Cut(cmd, " ")
+				aircraft := lookupAircraft(callsign)
+				if aircraft != nil {
+					for _, tcp := range strings.Split(tcps, " ") {
+						if tcp == "ALL" {
+							var fac string
+							for _, control := range ctx.world.Controllers {
+								if control.Callsign == ctx.world.Callsign {
+									fac = control.FacilityIdentifier
+								}
+							}
+							for _, control := range ctx.world.Controllers {
+								if !control.ERAMFacility && control.FacilityIdentifier == fac {
+									sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+									status.clear = true
+									return
+								}
+							}
+						}
+						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+							if !ok {
+								status.err = GetSTARSError(ErrSTARSCommandFormat)
+								return
+							}
+							sp.forceQL(ctx, aircraft.Callsign, control)
+							status.clear = true
+					}
+					return
+				}
+		}
+
 		if len(cmd) >= 2 && cmd[:2] == "*T" {
 			suffix := cmd[2:]
 			if suffix == "" {
@@ -1927,6 +1979,47 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				return
 			}
 		}
+		if len(cmd) > 0 {
+			ok, control := sameFacility(ctx, cmd, "")
+			if !ok {
+				// Do something idk
+				status.err = GetSTARSError(ErrSTARSCommandFormat)
+				return
+			}
+			for _, controler := range ctx.world.Controllers {
+				if controler.SectorId == control {
+					positions, input, err := parseQuickLookPositions(ctx.world, cmd)
+					if len(positions) > 0 {
+						ps.QuickLookAll = false
+
+						for _, pos := range positions {
+							// Toggle
+							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+							if slices.ContainsFunc(ps.QuickLookPositions, match) {
+								nomatch := func(q QuickLookPosition) bool { return !match(q) }
+								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+								// Toggle plus
+								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+							} else {
+								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+							}
+						}
+						sort.Slice(ps.QuickLookPositions,
+							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+					}
+
+					if err == nil {
+						status.clear = true
+					} else {
+						status.err = err
+						sp.previewAreaInput = input
+					}
+					return
+				}
+			}
+		}
 
 	case CommandModeInitiateControl:
 		if ac := lookupAircraft(cmd); ac == nil {
@@ -1952,6 +2045,30 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		}
 
 	case CommandModeHandOff:
+
+		if string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
+			// Manual 4-30
+			if string(cmd[1]) == "X" {
+				if string(cmd[2]) == "E" {
+					sp.AirspaceAwareness.Interfacility = true
+				} else if string(cmd[2]) == "I" {
+					sp.AirspaceAwareness.Interfacility = false
+				}
+			} else if string(cmd[1]) == "T" {
+				if string(cmd[2]) == "E" {
+					sp.AirspaceAwareness.Intrafacility = true
+				} else if string(cmd[2]) == "I" {
+					sp.AirspaceAwareness.Intrafacility = false
+				}
+			}
+			if string(cmd[1]) == "E" {
+				sp.AirspaceAwareness.Intrafacility = true
+				sp.AirspaceAwareness.Interfacility = true
+			} else if string(cmd[1]) == "I" {
+				sp.AirspaceAwareness.Intrafacility = false
+				sp.AirspaceAwareness.Interfacility = false
+			}
+		}
 		f := strings.Fields(cmd)
 		switch len(f) {
 		case 0:
@@ -2366,6 +2483,27 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 
 		case "O":
+			if len(cmd) > 2 {
+				aircraft := lookupAircraft(cmd)
+				if aircraft == nil {
+					status.err = GetSTARSError(ErrSTARSCommandFormat)
+					return
+				} else if aircraft.TrackingController == "" {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+				}
+
+				if len(aircraft.PointOutHistory) == 0 {
+					status.clear = true
+					return
+				}
+				var out string
+				for _, callsigns := range aircraft.PointOutHistory {
+					out += fmt.Sprintf("%v ", callsigns)
+				}
+				status.clear = true
+				status.output = out
+				return
+			}
 			if cmd == "" {
 				ps.AutomaticFDBOffset = !ps.AutomaticFDBOffset
 				status.clear = true
@@ -2890,11 +3028,83 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 		})
 }
 
-func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) {
-	ctx.world.HandoffTrack(callsign, controller, nil,
+func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
+	// Change the "C" to "N56" for example
+	ok, control := sameFacility(ctx, controller, callsign)
+	if !ok {
+		return errors.New(fmt.Sprintf("Something went wrong trying to handoff: %v with the %v code.", callsign, controller))
+	}
+
+	ctx.world.HandoffTrack(callsign, control, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+
+		})
+	return nil
+
+}
+
+func (sp *STARSPane) redirectHandoff(ctx *PaneContext, callsign, controller string) error {
+	ok, control := sameFacility(ctx, controller, callsign)
+	if !ok {
+		return errors.New(fmt.Sprintf("Something went wrong trying to redirect handoff: %v with the %v code.", callsign, controller))
+	}
+	ctx.world.RedirectHandoff(callsign, control, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+
+		})
+	return nil
+}
+
+func (sp *STARSPane) acceptRedirectedHandoff(ctx *PaneContext, callsign string) {
+	ctx.world.AcceptRedirectedHandoff(callsign,
+		func(any) {
+			if state, ok := sp.Aircraft[callsign]; ok {
+				state.DatablockType = FullDatablock
+			}
+			if ac, ok := ctx.world.Aircraft[callsign]; ok {
+				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
+			}
+		},
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
+}
+
+func breakAltitude(initial string) ([2]int, error) {
+	firstInit, err := strconv.Atoi(initial[:3])
+	if err != nil {
+		return [2]int{000, 999}, err
+	}
+	secondInit, err := strconv.Atoi(initial[4:])
+	if err != nil {
+		return [2]int{000, 999}, err
+	}
+	return [2]int{firstInit * 100, secondInit * 100}, nil
+}
+
+func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
+	ac := ctx.world.Aircraft[callsign]
+	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
+		for _, fix := range rules.Fix {
+			if strings.Contains(ac.FlightPlan.Route, fix) {
+				if rules.AltitudeRange == "" {
+					return rules.ReceivingController, nil
+				} else {
+					alt, err := breakAltitude(rules.AltitudeRange)
+					if err != nil {
+						return "", errors.New(fmt.Sprintf("Error breaking %v: %v", rules.AltitudeRange, err))
+					}
+					if ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1] {
+						return rules.ReceivingController, nil
+					}
+				}
+			}
+		}
+	}
+
+	return "", errors.New(fmt.Sprintf("Error finding controller"))
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
@@ -2902,6 +3112,72 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
+}
+
+// Give a bool if the handoff is good and the correct syntax.
+// Also decode the controller into its regular sector (N4P -> 4P)
+func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) {
+	userController := *ctx.world.GetController(ctx.world.Callsign)
+	lc := len(controller)
+
+	if string(controller[len(controller)-1]) == "*" { // Remove *
+		controller = controller[:len(controller)-1]
+		lc = len(controller)
+	}
+	// ARTCC airspaceawareness
+	if controller == "C" || (lc == 2 && string(controller[0]) == STARSTriangleCharacter) {
+		control, err := calculateAirspace(ctx, callsign)
+		if err == nil {
+
+			return true, control
+		}
+	} else {
+		// Non ARTCC airspaceawareness handoffs
+		if lc == 1 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector.
+			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
+				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
+					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
+					string(control.SectorId[1]) == controller { // The actual controller
+					return true, control.SectorId
+				}
+			}
+		} else if lc == 2 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector || same fac.
+			controllers := ctx.world.GetAllControllers()
+			// Find the controller fac
+			for _, control := range controllers {
+				if control.SectorId == controller && control.FacilityIdentifier == userController.FacilityIdentifier { // Found the facility
+					return true, control.SectorId
+				}
+			}
+
+		} else if lc == 5 && string(controller[0]) == STARSTriangleCharacter { // ∆N4P for example. Must be different fac
+			controller = controller[2:] // Remove the ∆
+			receivingController := Controller{
+				SectorId:           controller[1:],
+				FacilityIdentifier: string(controller[0]),
+			}
+			if userController.FacilityIdentifier != receivingController.FacilityIdentifier {
+				return true, receivingController.SectorId
+			}
+
+		}
+
+	}
+	if lc > 3 || (lc > 3 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
+		return false, "sp one" // Should to to scratchpad one
+	}
+	return false, ""
+}
+
+func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
+	ctx.world.ForceQL(callsign, controller, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
+func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string) {
+	ctx.world.RemoveForceQL(callsign, controller, nil, nil) // Just a slew so the slew could be for other things
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
@@ -2920,13 +3196,6 @@ func (sp *STARSPane) acknowledgePointOut(ctx *PaneContext, callsign string) {
 
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.CancelHandoff(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
-}
-
-func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
-	ctx.world.RejectHandoff(callsign, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
@@ -2985,6 +3254,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		switch sp.commandMode {
 		case CommandModeNone:
 			if cmd == "" {
+				user := ctx.world.GetController(ctx.world.Callsign)
+				if ac.RedirectedHandoff.RedirectedTo == user.SectorId {
+					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
+				}
+				if state.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
+					state.RDIndicator = false
+				}
+				for _, tcp := range ac.ForceQLControllers {
+					if tcp == ctx.world.Callsign {
+						sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
+					}
+				}
 				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
@@ -2997,6 +3278,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					}
 				} else if ac.HandoffTrackController == ctx.world.Callsign {
+					if len(cmd) > 0 { // Redirecting handoff
+						if cmd[0] == '\u00C2' {
+							cmd = cmd[2:]
+						}
+						ok, control := sameFacility(ctx, cmd, ac.Callsign)
+						if !ok {
+							status.err = GetSTARSError(ErrSTARSIllegalPosition)
+							return
+						}
+						sp.handoffTrack(ctx, ac.Callsign, control)
+
+						status.clear = true
+						return
+					}
 					// Accept inbound h/o
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
@@ -3016,6 +3311,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.PointedOut = false
 					status.clear = true
 					return
+				} else if state.ForceQL {
+					state.ForceQL = false
+					status.clear = true
 				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, ac.Callsign)
@@ -3024,9 +3322,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if state.OutboundHandoffAccepted {
 					// ack an accepted handoff, which we will treat as also
 					// handing off control.
+					sp.handoffControl(ctx, ac.Callsign)
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = time.Now()
-					sp.handoffControl(ctx, ac.Callsign)
 					return
 				} else if ctx.keyboard != nil {
 					_, ctrl := ctx.keyboard.Pressed[KeyControl]
@@ -3058,10 +3356,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 				}
 				return
-			} else if cmd == "U" {
-				status.clear = true
-				sp.rejectHandoff(ctx, ac.Callsign)
-				return
 			} else if cmd == "*" {
 				from := sp.Aircraft[ac.Callsign].TrackPosition()
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
@@ -3088,9 +3382,33 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				})
 				status.clear = true
 				return
-			} else if isControllerId(cmd) {
+			} else if isControllerId(cmd) || cmd == "C" { // For ARTCC handoffs
 				status.clear = true
-				sp.handoffTrack(ctx, ac.Callsign, cmd)
+				err := sp.handoffTrack(ctx, ac.Callsign, cmd)
+				if err == nil {
+					status.clear = true
+					return
+				}
+				if err != nil && (len(cmd) <= 3 || (len(cmd) <= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0])) { // Scratchpads on slew
+					ctx.world.RunAircraftCommands(ac, cmd,
+						func(err error) {
+							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
+								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+								status.clear = true
+								return
+							}
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+				} else {
+					ctx.world.RunAircraftCommands(ac, cmd,
+						func(err error) {
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+				}
+				status.clear = true
+				return
 				return
 			} else if cmd == "*J" {
 				// remove j-ring for aircraft
@@ -3119,6 +3437,44 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				})
 				status.clear = true
 				return
+			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
+				// STARS Manual 6-70 (On slew). Cannot go interfacility
+				// TODO: Or can be used to accept a pointout as a handoff.
+
+				if cmd == "**" { // Non specified TCP
+					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
+
+						state.ForceQL = true
+						status.clear = true
+						return
+					} else {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+				} else {
+					tcps := strings.Split(cmd[2:], " ")
+					if tcps[0] == "ALL" {
+						// Force QL for all TCP
+						// Find user fac
+						for _, control := range ctx.world.Controllers {
+							if control.Callsign == ctx.world.Callsign && !control.ERAMFacility {
+								sp.forceQL(ctx, ac.Callsign, control.SectorId)
+							}
+						}
+					}
+					for _, tcp := range tcps {
+						ok, control := sameFacility(ctx, tcp, ac.Callsign)
+						if !ok {
+							status.err = GetSTARSError(ErrSTARSIllegalPosition)
+							return
+						}
+						sp.forceQL(ctx, ac.Callsign, control)
+
+						status.clear = true
+					}
+					return
+				}
+
 			} else if cmd == "*D+" {
 				// TODO: this and the following two should give ILL FNCT if
 				// there's no j-ring/[A]TPA cone being displayed for the
@@ -3239,19 +3595,83 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-			} else if lc := len(cmd); lc > 2 && cmd[lc-1] == '*' && isControllerId(cmd[:lc-1]) {
-				status.clear = true
-				sp.pointOut(ctx, ac.Callsign, cmd[:lc-1])
-				return
+			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
+				// First check for errors. (Manual 6-73)
+
+				// Check if arrival
+				for _, airport := range ctx.world.ArrivalAirports {
+					if airport.Name == ac.FlightPlan.ArrivalAirport && string(cmd[0]) == "/" {
+						status.err = GetSTARSError(ErrSTARSIllegalTrack)
+						return
+					}
+				}
+				// Check if being handed off, pointed out or suspended (TODO suspended)
+				if sp.OutboundPointOuts[ac.Callsign] != "" || sp.InboundPointOuts[ac.Callsign] != "" ||
+					(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign) {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
+				}
+
+				ok, control := sameFacility(ctx, cmd, ac.Callsign)
+				if !ok {
+					sp.previewAreaOutput = GetSTARSError(ErrSTARSCommandFormat).Error()
+				} else {
+					status.clear = true
+					sp.pointOut(ctx, ac.Callsign, control)
+					return
+				}
+
 			} else if len(cmd) > 0 {
+				// Handoffs
+				user := ctx.world.GetController(ctx.world.Callsign)
+				if ac.HandoffTrackController == user.Callsign || ac.RedirectedHandoff.RedirectedTo == user.SectorId { // Redirect
+					if cmd[0] == '\u00C2' {
+						cmd = cmd[2:]
+					}
+					ok, control := sameFacility(ctx, cmd, ac.Callsign)
+					if !ok {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+					sp.redirectHandoff(ctx, ac.Callsign, control)
+					state.RDIndicator = true
+					status.clear = true
+					return
+				} else {
+					err := sp.handoffTrack(ctx, ac.Callsign, cmd)
+					if err == nil {
+						status.clear = true
+						return
+					}
+				}
+
+				if err != nil && (len(cmd) <= 3 || (len(cmd) <= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0])) { // Scratchpads on slew
+					ctx.world.RunAircraftCommands(ac, cmd,
+						func(err error) {
+							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
+								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+								status.clear = true
+								return
+							}
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+				} else {
+					ctx.world.RunAircraftCommands(ac, cmd,
+						func(err error) {
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+				}
+				status.clear = true
+				return
+			} else {
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						globalConfig.Audio.PlayOnce(AudioCommandError)
 						sp.previewAreaOutput = GetSTARSError(err).Error()
 					})
-
 				status.clear = true
-				return
 			}
 
 		case CommandModeInitiateControl:
@@ -3394,6 +3814,24 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				}
+			case "O": //Pointout history
+				if ac.TrackingController != ctx.world.Callsign {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
+				}
+
+				if len(ac.PointOutHistory) == 0 {
+					status.clear = true
+					return
+				}
+
+				var out string
+				for _, callsigns := range ac.PointOutHistory {
+					out += fmt.Sprintf("%v ", callsigns)
+				}
+				status.clear = true
+				status.output = out
+				return
 			}
 
 		case CommandModeFlightData:
@@ -4370,7 +4808,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		for i, acIdx := range SortedMapKeys(dep) {
 			ac := dep[acIdx]
 			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
-
+			ac.TabularNubmer = acIdx
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
 				break
@@ -4397,7 +4835,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.CoastList.Visible {
 		text := "COAST/SUSPEND"
-		// TODO
+		// TODO.
 		drawList(text, ps.CoastList.Position)
 	}
 
@@ -4618,9 +5056,15 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
-	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
+	if ac.TrackingController == w.Callsign || (ac.ControllingController == w.Callsign) {
 		// it's under our control
 		dt = FullDatablock
+	}
+	me := w.GetController(w.Callsign)
+	for _, control := range ac.ForceQLControllers {
+		if control == me.Callsign {
+			dt = FullDatablock
+		}
 	}
 
 	if ac.HandoffTrackController == w.Callsign {
@@ -4634,6 +5078,18 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	}
 	if state.PointedOut {
 		dt = FullDatablock
+	}
+	if state.ForceQL {
+		dt = FullDatablock
+	}
+	if ac.RedirectedHandoff.RedirectedTo == me.SectorId {
+		dt = FullDatablock
+	}
+	for _, redirect := range ac.RedirectedHandoff.Redirector {
+		if redirect == me.SectorId {
+			dt = FullDatablock
+
+		}
 	}
 
 	// Quicklook
@@ -5474,18 +5930,30 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		return dbs
 
 	case FullDatablock:
+		user := ctx.world.GetController(ctx.world.Callsign)
 		// Line 1: fields 1, 2, and 8 (surprisingly). Always the same content; nothing multiplexed
 		field1 := ac.Callsign
 		field2 := "" // TODO: * for MSAW inhibited, etc.
-		field8 := ""
+		field8 := []string{""}
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
-			field8 = " PO"
+			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
-			field8 = " PO" + id
+			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
-			field8 = " UN"
-		}
-		baseDB.Lines[1].Text = field1 + field2 + field8
+			field8 = append(field8, " UN")
+		} else if time.Until(ac.POFlashingEndTime) >= 0  {
+			field8 = append(field8, " PO")
+		} else if redirect := ac.RedirectedHandoff; state.RDIndicator && (redirect.RedirectedTo == user.SectorId ||
+			(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
+				field8 = []string{" RD"}
+		} else {
+			for _, controller := range ac.RedirectedHandoff.Redirector {
+				if controller == user.SectorId {
+					field8 = []string{" RD"}
+				}
+			}
+	
+		} 
 
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
@@ -5510,7 +5978,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		field4 := "  "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				if ac.RedirectedHandoff.RedirectedTo != "" {
+
+					field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+				} else {
+					field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				}
+
 			}
 		}
 
@@ -5525,14 +5999,14 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			modifier += "V"
 		} else if sp.isOverflight(ctx, ac) {
 			modifier += "E"
-		} else {
+		} else if modifier == "" {
 			modifier = " "
 		}
 		cat := getRecatCategory(ac)
-		acCategory = modifier + cat
+		acCategory = fmt.Sprintf("%v%v", modifier, cat)
 
 		field5 := []string{} // alternate speed and aircraft type
-		if state.Ident() {
+		if state.Ident() && time.Now().Second()&1 == 0 {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 		} else {
@@ -5583,8 +6057,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// set in baseDB above.)
 		dbs := []STARSDatablock{}
 		n := lcm(len(field3), len(field5)) // cycle through all variations
+		n = lcm(n, len(field8))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
+			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
 			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
 			db.Lines[3].Text = line3
 			if line3FieldColors != nil {
@@ -5608,28 +6084,48 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	if ac.Callsign == sp.dwellAircraft {
 		brightness = STARSBrightness(100)
 	}
+	userController := w.GetController(w.Callsign)
+
+	for _, controller := range ac.RedirectedHandoff.Redirector {
+		if controller == userController.SectorId && ac.RedirectedHandoff.RedirectedTo != userController.SectorId {
+			color = STARSUntrackedAircraftColor
+		}
+	}
 
 	// Handle cases where it should flash
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
 		_, pointOut := sp.InboundPointOuts[ac.Callsign]
-		if state.Ident() || // ident
-			ac.HandoffTrackController == w.Callsign || // handing off to us
+		if (ac.HandoffTrackController == w.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, userController.SectorId)) || // handing off to us
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
-			pointOut {
+			pointOut || ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
 			brightness /= 3
 		}
 	}
 
-	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
+	// Check if were the controller being ForceQL
+	for _, control := range ac.ForceQLControllers {
+		if control == w.Callsign {
+			color = STARSInboundPointOutColor
+			return
+		}
+	}
+
+	// redirected
+
+	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
 	} else if state.IsSelected {
 		color = STARSSelectedAircraftColor
 	} else if ac.TrackingController == w.Callsign {
 		color = STARSTrackedAircraftColor
-	} else if ac.HandoffTrackController == w.Callsign {
+	} else if ac.RedirectedHandoff.OrigionalOwner == userController.SectorId || ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
+		color = STARSTrackedAircraftColor
+	} else if (ac.HandoffTrackController == w.Callsign &&
+		!slices.Contains(ac.RedirectedHandoff.Redirector, userController.SectorId)) ||
+		ac.RedirectedHandoff.RedirectedTo == w.Callsign {
 		// flashing white if it's being handed off to us.
 		color = STARSTrackedAircraftColor
 	} else if state.OutboundHandoffAccepted {
@@ -6703,7 +7199,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
-
+	user := ctx.world.GetController(ctx.world.Callsign)
 	if ac.TrackingController == ctx.world.Callsign {
 		// For owned datablocks
 		return true
@@ -6730,6 +7226,15 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	} else if sp.CurrentPreferenceSet.QuickLookAll {
 		// Quick look all
 		return true
+	} else if ac.RedirectedHandoff.RedirectedTo == user.SectorId {
+		// Redirected too
+		return true
+	}
+
+	for _, redirect := range ac.RedirectedHandoff.Redirector {
+		if redirect == user.SectorId {
+			return true
+		}
 	}
 
 	for _, event := range sp.events.Get() {

@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"golang.org/x/exp/slog"
 )
@@ -20,6 +21,9 @@ type Aircraft struct {
 	Mode                TransponderMode
 	TempAltitude        int
 	FlightPlan          *FlightPlan
+	ForceQLControllers  []string
+	PointOutHistory     []string
+	POFlashingEndTime   time.Time
 
 	// Who has the radar track
 	TrackingController string
@@ -31,6 +35,13 @@ type Aircraft struct {
 
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
+
+	RedirectedHandoff struct{
+		OrigionalOwner string
+		Redirector []string
+		RedirectedTo string
+	}
+	TabularNubmer int
 
 	// The controller who gave approach clearance
 	ApproachController string

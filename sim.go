@@ -749,6 +749,7 @@ type Sim struct {
 	Handoffs map[string]time.Time
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
+	// ForceQL map[string]
 
 	TotalDepartures int
 	TotalArrivals   int
@@ -912,6 +913,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
+	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
@@ -1971,6 +1973,77 @@ func (s *Sim) DropTrack(token, callsign string) error {
 		})
 }
 
+func (s *Sim) RedirectedHandoff(token, callsign, controller string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId &&
+			 ac.HandoffTrackController != ctrl.Callsign {
+				return ErrOtherControllerHasTrack
+			 }
+			if s.World.GetController(controller) == nil {
+				return ErrNoController
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+
+			s.eventStream.Post(Event{
+				Type:           OfferedHandoffEvent,
+				FromController: ctrl.Callsign,
+				ToController:   octrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+			ac.RedirectedHandoff.OrigionalOwner = ac.TrackingController
+			ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.SectorId)
+			ac.RedirectedHandoff.RedirectedTo = octrl.SectorId
+
+			// Add them to the auto-accept map even if the target is
+			// covered; this way, if they sign off in the interim, we still
+			// end up accepting it automatically.
+			
+			return nil
+		})
+}
+
+func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if ac.HandoffTrackController != ctrl.Callsign && ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId{
+				return ErrNotBeingHandedOffToMe
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			s.eventStream.Post(Event{
+				Type:           AcceptedHandoffEvent,
+				FromController: ac.ControllingController,
+				ToController:   ctrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+
+			ac.HandoffTrackController = ""
+			ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string}{}
+			ac.TrackingController = ctrl.Callsign
+			if !s.controllerIsSignedIn(ac.ControllingController) {
+				// Take immediate control on handoffs from virtual
+				ac.ControllingController = ctrl.Callsign
+				return []RadioTransmission{RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message:    ac.ContactMessage(s.ReportingPoints),
+					Type:       RadioTransmissionContact,
+				}}
+			} else {
+				return nil
+			}
+		})
+}
+
 func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2053,7 +2126,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
-			if ac.IsDeparture() {
+			octrl := s.World.GetController(ac.TrackingController)
+			if ac.IsDeparture() && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
 				ac.DepartOnCourse()
@@ -2134,10 +2208,56 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		})
 }
 
+func (s *Sim) RecallRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchTrackingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			if ctrl.Callsign == ac.TrackingController {
+
+			} else {
+				for index, redirect := range ac.RedirectedHandoff.Redirector {
+					if ctrl.SectorId == redirect {
+						ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[index+1]
+						ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]		
+					}
+				}
+			}
+			return nil
+		})
+}
+
+func (s *Sim) ForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if s.World.GetController(controller) == nil {
+				return ErrNoController
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+			return nil
+		})
+}
+
+func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.ForceQLControllers = FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
+			return nil
+		})
+}
+
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.ControllingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			if s.World.GetController(controller) == nil {
@@ -2187,6 +2307,13 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
+			if len(ac.PointOutHistory) < 20 {
+				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
+			} else {
+				ac.PointOutHistory = ac.PointOutHistory[:19]
+				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
+			}
+			ac.POFlashingEndTime = time.Now().Add(5 * time.Second)
 
 			delete(s.PointOuts[callsign], ctrl.Callsign)
 			return nil
