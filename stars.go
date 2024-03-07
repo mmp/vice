@@ -1876,37 +1876,37 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
 			// Manual 6-69
-			cmd = cmd[2:]	
-			
-				callsign, tcps, _ := strings.Cut(cmd, " ")
-				aircraft := lookupAircraft(callsign)
-				if aircraft != nil {
-					for _, tcp := range strings.Split(tcps, " ") {
-						if tcp == "ALL" {
-							var fac string
-							for _, control := range ctx.world.Controllers {
-								if control.Callsign == ctx.world.Callsign {
-									fac = control.FacilityIdentifier
-								}
-							}
-							for _, control := range ctx.world.Controllers {
-								if !control.ERAMFacility && control.FacilityIdentifier == fac {
-									sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
-									status.clear = true
-									return
-								}
+			cmd = cmd[2:]
+
+			callsign, tcps, _ := strings.Cut(cmd, " ")
+			aircraft := lookupAircraft(callsign)
+			if aircraft != nil {
+				for _, tcp := range strings.Split(tcps, " ") {
+					if tcp == "ALL" {
+						var fac string
+						for _, control := range ctx.world.Controllers {
+							if control.Callsign == ctx.world.Callsign {
+								fac = control.FacilityIdentifier
 							}
 						}
-						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
-							if !ok {
-								status.err = GetSTARSError(ErrSTARSCommandFormat)
+						for _, control := range ctx.world.Controllers {
+							if !control.ERAMFacility && control.FacilityIdentifier == fac {
+								sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
+								status.clear = true
 								return
 							}
-							sp.forceQL(ctx, aircraft.Callsign, control)
-							status.clear = true
+						}
 					}
-					return
+					ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+					if !ok {
+						status.err = GetSTARSError(ErrSTARSCommandFormat)
+						return
+					}
+					sp.forceQL(ctx, aircraft.Callsign, control)
+					status.clear = true
 				}
+				return
+			}
 		}
 
 		if len(cmd) >= 2 && cmd[:2] == "*T" {
@@ -3082,7 +3082,6 @@ func (sp *STARSPane) slewRedirect(ctx *PaneContext, callsign string) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
 }
-
 
 func (sp *STARSPane) recallRedirectedHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.RecallRedirectedHandoff(callsign,
@@ -5974,19 +5973,19 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 			field8 = append(field8, " UN")
-		} else if time.Until(ac.POFlashingEndTime) >= 0  {
+		} else if time.Until(ac.POFlashingEndTime) >= 0 {
 			field8 = append(field8, " PO")
 		} else if redirect := ac.RedirectedHandoff; rd || (redirect.RedirectedTo == user.SectorId ||
 			(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
-				field8 = []string{" RD"}
+			field8 = []string{" RD"}
 		} else {
 			for _, controller := range ac.RedirectedHandoff.Redirector {
 				if controller == user.SectorId {
 					field8 = []string{" RD"}
 				}
 			}
-	
-		} 
+
+		}
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if state.LostTrack(ctx.world.CurrentTime()) {

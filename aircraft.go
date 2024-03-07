@@ -36,11 +36,11 @@ type Aircraft struct {
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
 
-	RedirectedHandoff struct{
+	RedirectedHandoff struct {
 		OrigionalOwner string
-		Redirector []string
-		RedirectedTo string
-		RDIndicator bool
+		Redirector     []string
+		RedirectedTo   string
+		RDIndicator    bool
 	}
 	TabularNubmer int
 

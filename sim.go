@@ -1980,9 +1980,9 @@ func (s *Sim) RedirectedHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId &&
-			 ac.HandoffTrackController != ctrl.Callsign {
+				ac.HandoffTrackController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
-			 }
+			}
 			if s.World.GetController(controller) == nil {
 				return ErrNoController
 			}
@@ -2000,12 +2000,12 @@ func (s *Sim) RedirectedHandoff(token, callsign, controller string) error {
 			ac.RedirectedHandoff.OrigionalOwner = ac.TrackingController
 			ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.SectorId)
 			ac.RedirectedHandoff.RedirectedTo = octrl.SectorId
-			ac.RedirectedHandoff.RDIndicator = true 
+			ac.RedirectedHandoff.RDIndicator = true
 
 			// Add them to the auto-accept map even if the target is
 			// covered; this way, if they sign off in the interim, we still
 			// end up accepting it automatically.
-			
+
 			return nil
 		})
 }
@@ -2016,7 +2016,7 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.HandoffTrackController != ctrl.Callsign && ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId{
+			if ac.HandoffTrackController != ctrl.Callsign && ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId {
 				return ErrNotBeingHandedOffToMe
 			}
 			return nil
@@ -2030,7 +2030,12 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			})
 
 			ac.HandoffTrackController = ""
-			ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string; RDIndicator bool}{
+			ac.RedirectedHandoff = struct {
+				OrigionalOwner string
+				Redirector     []string
+				RedirectedTo   string
+				RDIndicator    bool
+			}{
 				RDIndicator: true,
 			}
 			ac.TrackingController = ctrl.Callsign
@@ -2217,13 +2222,18 @@ func (s *Sim) SlewRedirectedHandoff(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		
+
 		func(ctrl *Controller, ac *Aircraft) error {
 			return nil
 		},
-		
+
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string; RDIndicator bool}{
+			ac.RedirectedHandoff = struct {
+				OrigionalOwner string
+				Redirector     []string
+				RedirectedTo   string
+				RDIndicator    bool
+			}{
 				RDIndicator: false,
 			}
 			return nil
@@ -2235,14 +2245,14 @@ func (s *Sim) RecallRedirectedHandoff(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		
+
 		func(ctrl *Controller, ac *Aircraft) error {
-			if !slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.SectorId) || ctrl.SectorId == ac.RedirectedHandoff.RedirectedTo{
+			if !slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.SectorId) || ctrl.SectorId == ac.RedirectedHandoff.RedirectedTo {
 				return ErrSTARSIllegalTrack
 			}
 			return nil
 		},
-		
+
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			if ctrl.Callsign == ac.TrackingController {
 
@@ -2251,15 +2261,19 @@ func (s *Sim) RecallRedirectedHandoff(token, callsign string) error {
 					if ctrl.SectorId == redirect {
 						if index == 0 {
 							ac.HandoffTrackController = ctrl.Callsign
-							ac.RedirectedHandoff = struct{OrigionalOwner string; Redirector []string; RedirectedTo string; RDIndicator bool}{
+							ac.RedirectedHandoff = struct {
+								OrigionalOwner string
+								Redirector     []string
+								RedirectedTo   string
+								RDIndicator    bool
+							}{
 								RDIndicator: true,
 							}
 						} else {
 							ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[index]
-							ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]	
+							ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]
 						}
-						
-							
+
 					}
 				}
 			}

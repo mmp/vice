@@ -49,10 +49,10 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude     float32 // Always 60
-	NmPerLongitude    float32 // Derived from Center
-	MagneticVariation float32 `json:"magnetic_variation"`
-	MagneticAdjustment float32 `json:"magnetic_adjustment"`
+	NmPerLatitude           float32                 // Always 60
+	NmPerLongitude          float32                 // Derived from Center
+	MagneticVariation       float32                 `json:"magnetic_variation"`
+	MagneticAdjustment      float32                 `json:"magnetic_adjustment"`
 	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_adaptation"`
 }
 
@@ -66,9 +66,8 @@ type AirspaceAwareness struct {
 type STARSFacilityAdaptation struct {
 	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness"`
 	ForceQLToSelf     bool                `json:"force_ql_self"`
-	ScratchpadRules  [2]bool                `json:"scratchpad_rules"`
+	ScratchpadRules   [2]bool             `json:"scratchpad_rules"`
 }
-
 
 type Airspace struct {
 	Boundaries map[string][]Point2LL                 `json:"boundaries"`
