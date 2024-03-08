@@ -25,8 +25,8 @@ import (
 const LateralMinimum = 3
 const VerticalMinimum = 1000
 
-// STARS ∆
-const STARSTriangleCharacter = "\u00c2"
+// STARS ∆ is U+008A in the FixedDemiBold font we use...
+const STARSTriangleCharacter = "\u008A"
 
 var (
 	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
@@ -1565,11 +1565,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		sp.multiFuncPrefix = string(input[0])
 		input = input[1:]
 	}
-	sp.previewAreaInput += input
-
+	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
 	ps := &sp.CurrentPreferenceSet
 
-	//lg.Infof("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
 	if ctx.keyboard.IsPressed(KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
 		// This test should be redundant given the IsDigit check, but just to be safe...
@@ -1593,7 +1591,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		switch key {
 		case KeyBackspace:
 			if len(sp.previewAreaInput) > 0 {
-				sp.previewAreaInput = sp.previewAreaInput[:len(sp.previewAreaInput)-1]
+				// We need to be careful to deal with UTF8 for the triangle...
+				r := []rune(sp.previewAreaInput)
+				sp.previewAreaInput = string(r[:len(r)-1])
 			} else {
 				sp.multiFuncPrefix = ""
 			}
@@ -3030,14 +3030,15 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 	lc := len(controller)
 
 	// ARTCC airspaceawareness
-	if controller == "C" || (lc == 2 && string(controller[0]) == STARSTriangleCharacter) {
+	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
+	if controller == "C" || haveTrianglePrefix {
 		control := calculateAirspace(ctx, callsign)
 		if control != "" {
 			return true, control
 		}
 	} else {
 		// Non ARTCC airspaceawareness handoffs
-		if lc == 1 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector.
+		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
 			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
 					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
@@ -3045,7 +3046,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 					return true, control.SectorId
 				}
 			}
-		} else if lc == 2 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector || same fac.
+		} else if lc == 2 && !haveTrianglePrefix { // Must be a same sector || same fac.
 			controllers := ctx.world.GetAllControllers()
 			// Find the controller fac
 			for _, control := range controllers {
@@ -3054,7 +3055,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 				}
 			}
 
-		} else if lc == 5 && string(controller[0]) == STARSTriangleCharacter { // ∆N4P for example. Must be different fac
+		} else if lc == 5 && haveTrianglePrefix { // ∆N4P for example. Must be different fac
 			controller = controller[2:] // Remove the ∆
 			receivingController := Controller{
 				SectorId:           controller[1:],
