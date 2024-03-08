@@ -3106,13 +3106,6 @@ func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 		})
 }
 
-func (sp *STARSPane) rejectHandoff(ctx *PaneContext, callsign string) {
-	ctx.world.RejectHandoff(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
-}
-
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
 	ghosts []*GhostAircraft, transforms ScopeTransformations) (status STARSCommandStatus) {
 	// See if an aircraft was clicked
@@ -3244,10 +3237,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else {
 					status.clear = true
 				}
-				return
-			} else if cmd == "U" {
-				status.clear = true
-				sp.rejectHandoff(ctx, ac.Callsign)
 				return
 			} else if cmd == "*" {
 				from := sp.Aircraft[ac.Callsign].TrackPosition()
