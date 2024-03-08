@@ -5711,15 +5711,14 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// Line 1: fields 1, 2, and 8 (surprisingly). Always the same content; nothing multiplexed
 		field1 := ac.Callsign
 		field2 := "" // TODO: * for MSAW inhibited, etc.
-		field8 := ""
+		field8 := []string{""}
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
-			field8 = " PO"
+			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
-			field8 = " PO" + id
+			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
-			field8 = " UN"
+			field8 = append(field8, " UN")
 		}
-		baseDB.Lines[1].Text = field1 + field2 + field8
 
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
@@ -5817,8 +5816,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// set in baseDB above.)
 		dbs := []STARSDatablock{}
 		n := lcm(len(field3), len(field5)) // cycle through all variations
+		n = lcm(n, len(field8))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
+			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
 			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
 			db.Lines[3].Text = line3
 			if line3FieldColors != nil {
@@ -5846,12 +5847,14 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	// Handle cases where it should flash
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
-		_, pointOut := sp.InboundPointOuts[ac.Callsign]
-		if state.Ident() || // ident
-			ac.HandoffTrackController == w.Callsign || // handing off to us
+		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
+			// point out
+			brightness /= 3
+		} else if state.Ident() {
+			// ident
+			brightness /= 3
+		} else if state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
-			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
-			pointOut {
 			brightness /= 3
 		}
 	}
@@ -5864,14 +5867,14 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 		}
 	}
 
-	// redirected
-
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
 	} else if state.IsSelected {
+		// middle button selected
 		color = STARSSelectedAircraftColor
 	} else if ac.TrackingController == w.Callsign {
+		// we own the track track
 		color = STARSTrackedAircraftColor
 	} else if ac.HandoffTrackController == w.Callsign {
 		// flashing white if it's being handed off to us.
@@ -6944,7 +6947,6 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 }
 
 func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
-
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
 
