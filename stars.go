@@ -26,8 +26,8 @@ import (
 const LateralMinimum = 3
 const VerticalMinimum = 1000
 
-// STARS ∆
-const STARSTriangleCharacter = "\u00c2"
+// STARS ∆ is U+008A in the FixedDemiBold font we use...
+const STARSTriangleCharacter = "\u008A"
 
 var (
 	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
@@ -1568,11 +1568,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		sp.multiFuncPrefix = string(input[0])
 		input = input[1:]
 	}
-	sp.previewAreaInput += input
-	sp.previewAreaInput = strings.Replace(sp.previewAreaInput, "`", "\u008A", -1)
+	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
+
 	ps := &sp.CurrentPreferenceSet
 
-	//lg.Infof("input \"%s\" ctl %v alt %v", input, ctx.keyboard.IsPressed(KeyControl), ctx.keyboard.IsPressed(KeyAlt))
 	if ctx.keyboard.IsPressed(KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
 		// This test should be redundant given the IsDigit check, but just to be safe...
@@ -1595,14 +1594,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 	for key := range ctx.keyboard.Pressed {
 		switch key {
 		case KeyBackspace:
-
 			if len(sp.previewAreaInput) > 0 {
-				if len(sp.previewAreaInput) >= 2 && string(sp.previewAreaInput[len(sp.previewAreaInput)-2]) == "Â" {
-					sp.previewAreaInput = sp.previewAreaInput[:len(sp.previewAreaInput)-2]
-				} else {
-					sp.previewAreaInput = sp.previewAreaInput[:len(sp.previewAreaInput)-1]
-				}
-
+				// We need to be careful to deal with UTF8 for the triangle...
+				r := []rune(sp.previewAreaInput)
+				sp.previewAreaInput = string(r[:len(r)-1])
 			} else {
 				sp.multiFuncPrefix = ""
 			}
@@ -3088,18 +3083,6 @@ func (sp *STARSPane) recallRedirectedHandoff(ctx *PaneContext, callsign string) 
 		})
 }
 
-func breakAltitude(initial string) ([2]int, error) {
-	firstInit, err := strconv.Atoi(initial[:3])
-	if err != nil {
-		return [2]int{000, 999}, err
-	}
-	secondInit, err := strconv.Atoi(initial[4:])
-	if err != nil {
-		return [2]int{000, 999}, err
-	}
-	return [2]int{firstInit * 100, secondInit * 100}, nil
-}
-
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *PaneContext, callsign string) string {
@@ -3135,14 +3118,15 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 	lc := len(controller)
 
 	// ARTCC airspaceawareness
-	if controller == "C" || (lc == 2 && string(controller[0]) == STARSTriangleCharacter) {
+	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
+	if controller == "C" || haveTrianglePrefix {
 		control := calculateAirspace(ctx, callsign)
 		if control != "" {
 			return true, control
 		}
 	} else {
 		// Non ARTCC airspaceawareness handoffs
-		if lc == 1 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector.
+		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
 			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
 					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
@@ -3150,7 +3134,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 					return true, control.SectorId
 				}
 			}
-		} else if lc == 2 && string(controller[0]) != STARSTriangleCharacter { // Must be a same sector || same fac.
+		} else if lc == 2 && !haveTrianglePrefix { // Must be a same sector || same fac.
 			controllers := ctx.world.GetAllControllers()
 			// Find the controller fac
 			for _, control := range controllers {
@@ -3159,7 +3143,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 				}
 			}
 
-		} else if lc == 5 && string(controller[0]) == STARSTriangleCharacter { // ∆N4P for example. Must be different fac
+		} else if lc == 5 && haveTrianglePrefix { // ∆N4P for example. Must be different fac
 			controller = controller[2:] // Remove the ∆
 			receivingController := Controller{
 				SectorId:           controller[1:],
@@ -3266,22 +3250,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				user := ctx.world.GetController(ctx.world.Callsign)
 				if ac.RedirectedHandoff.RedirectedTo == user.SectorId {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
-				}
-				if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
+          return
+				} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
 					sp.recallRedirectedHandoff(ctx, ac.Callsign)
 					return
-				}
-				if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
-					fmt.Println("slew")
+				} else if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
 					sp.slewRedirect(ctx, ac.Callsign)
 					return
-				}
-				for _, tcp := range ac.ForceQLControllers {
-					if tcp == ctx.world.Callsign {
-						sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
-					}
-				}
-				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
+				} else if slices.Contains(ac.ForceQLControllers, ctx.world.Callsign) {
+					sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
+					return
+				} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
 				}) {
@@ -4837,7 +4816,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.CoastList.Visible {
 		text := "COAST/SUSPEND"
-		// TODO.
+		// TODO
 		drawList(text, ps.CoastList.Position)
 	}
 
@@ -5958,8 +5937,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 					field8 = []string{" RD"}
 				}
 			}
-
 		}
+    
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if state.LostTrack(ctx.world.CurrentTime()) {
@@ -5984,12 +5963,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
 				if ac.RedirectedHandoff.RedirectedTo != "" {
-
 					field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
 				} else {
 					field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
 				}
-
 			}
 		}
 
@@ -6004,7 +5981,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			modifier += "V"
 		} else if sp.isOverflight(ctx, ac) {
 			modifier += "E"
-		} else if modifier == "" {
+		} else {
 			modifier = " "
 		}
 		cat := getRecatCategory(ac)
@@ -6100,13 +6077,18 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	// Handle cases where it should flash
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
-		_, pointOut := sp.InboundPointOuts[ac.Callsign]
-		if (ac.HandoffTrackController == w.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, userController.SectorId)) || // handing off to us
-			// we handed it off, it was accepted, but we haven't yet acknowledged
-			(state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd)) ||
-			pointOut || ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
+		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
+			// point out
 			brightness /= 3
-		}
+		} else if state.Ident() {
+			// ident
+			brightness /= 3
+		} else if state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd) {
+			// we handed it off, it was accepted, but we haven't yet acknowledged
+			brightness /= 3
+		} else if (ac.HandoffTrackController == w.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, userController.SectorId)) || { // handing off to us
+			ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
+			brightness /= 3
 	}
 
 	// Check if were the controller being ForceQL
@@ -6117,14 +6099,14 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 		}
 	}
 
-	// redirected
-
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
 	} else if state.IsSelected {
+		// middle button selected
 		color = STARSSelectedAircraftColor
 	} else if ac.TrackingController == w.Callsign {
+		// we own the track track
 		color = STARSTrackedAircraftColor
 	} else if ac.RedirectedHandoff.OrigionalOwner == userController.SectorId || ac.RedirectedHandoff.RedirectedTo == userController.SectorId {
 		color = STARSTrackedAircraftColor
@@ -7201,7 +7183,6 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 }
 
 func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
-
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
 	user := ctx.world.GetController(ctx.world.Callsign)
