@@ -3165,7 +3165,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		switch sp.commandMode {
 		case CommandModeNone:
 			if cmd == "" {
-				if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
+				if slices.Contains(ac.ForceQLControllers, ctx.world.Callsign) {
+					sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
+					return
+				} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
 				}) {
