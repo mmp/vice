@@ -20,6 +20,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Debug wix paths
+      run: |
+	Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue -Filter candle.exe
+
     - name: Checkout source
       uses: actions/checkout@v3
       with:
@@ -70,10 +74,7 @@ jobs:
         ./vice.exe -lint
 
     - name: Add WIX to path
-      run: |
-        echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
-        ls "C:\Program Files (x86)\"
-        ls "C:\Program Files\"
+      run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
       shell: bash
 
     - name: Create installer
