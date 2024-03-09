@@ -70,7 +70,10 @@ jobs:
         ./vice.exe -lint
 
     - name: Add WIX to path
-      run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
+      run: |
+        echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
+        ls "C:\Program Files (x86)\"
+        ls "C:\Program Files\"
       shell: bash
 
     - name: Create installer
