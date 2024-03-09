@@ -3250,7 +3250,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				user := ctx.world.GetController(ctx.world.Callsign)
 				if ac.RedirectedHandoff.RedirectedTo == user.SectorId {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
-          return
+					return
 				} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
 					sp.recallRedirectedHandoff(ctx, ac.Callsign)
 					return
@@ -3272,23 +3272,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					}
 				} else if ac.HandoffTrackController == ctx.world.Callsign {
-					if len(cmd) > 0 { // Redirecting handoff
-						if cmd[0] == '\u00C2' {
-							cmd = cmd[2:]
-						}
-						ok, control := sameFacility(ctx, cmd, ac.Callsign)
-						if !ok {
-							status.err = GetSTARSError(ErrSTARSIllegalPosition)
-							return
-						}
-						sp.handoffTrack(ctx, ac.Callsign, control)
+					// Redirecting handoff
 
-						status.clear = true
+					ok, control := sameFacility(ctx, cmd, ac.Callsign)
+					if !ok {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
 						return
 					}
-					// Accept inbound h/o
+					sp.handoffTrack(ctx, ac.Callsign, control)
+
 					status.clear = true
-					sp.acceptHandoff(ctx, ac.Callsign)
 					return
 				} else if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign &&
 					ac.TrackingController == ctx.world.Callsign {
@@ -5926,8 +5919,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 			field8 = append(field8, " UN")
-		} else if time.Until(ac.POFlashingEndTime) >= 0 {
-			field8 = append(field8, " PO")
 		} else if redirect := ac.RedirectedHandoff; rd || (redirect.RedirectedTo == user.SectorId ||
 			(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
 			field8 = []string{" RD"}
@@ -5938,7 +5929,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 				}
 			}
 		}
-    
+
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if state.LostTrack(ctx.world.CurrentTime()) {
