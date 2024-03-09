@@ -3257,6 +3257,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
 					sp.slewRedirect(ctx, ac.Callsign)
 					return
+				} else if ac.HandoffTrackController == ctx.world.Callsign{
+					sp.acceptHandoff(ctx, ac.Callsign)
 				} else if slices.Contains(ac.ForceQLControllers, ctx.world.Callsign) {
 					sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
 					return
@@ -3585,7 +3587,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 				// Check if arrival
 				for _, airport := range ctx.world.ArrivalAirports {
-					if airport.Name == ac.FlightPlan.ArrivalAirport && string(cmd[0]) == "/" {
+					if airport.Name == ac.FlightPlan.ArrivalAirport {
 						status.err = GetSTARSError(ErrSTARSIllegalTrack)
 						return
 					}
@@ -5919,12 +5921,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 			field8 = append(field8, " UN")
-		} else if redirect := ac.RedirectedHandoff; rd || (redirect.RedirectedTo == user.SectorId ||
+		} else if redirect := ac.RedirectedHandoff; (rd && len(redirect.Redirector) > 0 && ac.RedirectedHandoff.RedirectedTo != "") ||
+		 ((redirect.RedirectedTo == user.SectorId) ||
 			(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
 			field8 = []string{" RD"}
 		} else {
 			for _, controller := range ac.RedirectedHandoff.Redirector {
-				if controller == user.SectorId {
+				if controller == user.SectorId{
 					field8 = []string{" RD"}
 				}
 			}
