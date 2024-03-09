@@ -672,8 +672,57 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		b = append(b, ModalDialogButton{text: "Cancel"})
 	}
 
+	next := ModalDialogButton{
+		text:     "Next",
+		disabled: c.config.OkDisabled(),
+		action: func() bool {
+			uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
+				config:      c.config,
+				allowCancel: c.allowCancel}), false)
+			return true
+		},
+	}
+
+	return append(b, next)
+}
+
+func (c *ConnectModalClient) Draw() int {
+	if enter := c.config.DrawUI(); enter {
+		return 1
+	} else {
+		return -1
+	}
+}
+
+type RatesModalClient struct {
+	config      NewSimConfiguration
+	allowCancel bool
+}
+
+func (c *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
+
+func (c *RatesModalClient) Opening() {}
+
+func (c *RatesModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+
+	prev := ModalDialogButton{
+		text: "Previous",
+		action: func() bool {
+			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{
+				config:      c.config,
+				allowCancel: c.allowCancel}), false)
+			return true
+		},
+	}
+	b = append(b, prev)
+
+	if c.allowCancel {
+		b = append(b, ModalDialogButton{text: "Cancel"})
+	}
+
 	ok := ModalDialogButton{
-		text:     "Ok",
+		text:     "Create",
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
 			c.config.displayError = c.config.Start()
@@ -684,8 +733,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	return append(b, ok)
 }
 
-func (c *ConnectModalClient) Draw() int {
-	if enter := c.config.DrawUI(); enter {
+func (c *RatesModalClient) Draw() int {
+	if enter := c.config.DrawRatesUI(); enter {
 		return 1
 	} else {
 		return -1

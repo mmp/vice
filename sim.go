@@ -18,6 +18,7 @@ import (
 
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -422,25 +423,70 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	imgui.Separator()
 
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
-		if imgui.BeginComboV("TRACON/ATCT", c.TRACONName, imgui.ComboFlagsHeightLarge) {
-			for _, name := range SortedMapKeys(c.selectedServer.configs) {
-				if imgui.SelectableV(name, name == c.TRACONName, 0, imgui.Vec2{}) {
-					c.SetTRACON(name)
-				}
-			}
-			imgui.EndCombo()
-		}
+		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
+			imgui.TableFlagsSizingStretchProp
+		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 650, tableScale * 300}, 0.) {
+			imgui.TableSetupColumn("ARTCC")
+			imgui.TableSetupColumn("ATCT/TRACON")
+			imgui.TableSetupColumn("Scenario")
+			imgui.TableHeadersRow()
+			imgui.TableNextRow()
 
-		if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
-			for _, groupName := range SortedMapKeys(c.TRACON) {
-				group := c.TRACON[groupName]
-				for _, name := range SortedMapKeys(group.ScenarioConfigs) {
-					if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-						c.SetScenario(groupName, name)
+			// ARTCCs
+			artccs := make(map[string]interface{})
+			allTRACONs := SortedMapKeys(c.selectedServer.configs)
+			for _, tracon := range allTRACONs {
+				artccs[database.TRACONs[tracon].ARTCC] = nil
+			}
+			imgui.TableNextColumn()
+			if imgui.BeginChildV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
+				imgui.WindowFlagsNoResize) {
+				for _, artcc := range SortedMapKeys(artccs) {
+					label := fmt.Sprintf("%s (%s)", artcc, strings.ReplaceAll(database.ARTCCs[artcc].Name, " Center", ""))
+					if imgui.SelectableV(label, artcc == database.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
+						artcc != database.TRACONs[c.TRACONName].ARTCC {
+						// a new ARTCC was chosen; reset the TRACON to the first one with that ARTCC
+						idx := slices.IndexFunc(allTRACONs, func(tracon string) bool { return artcc == database.TRACONs[tracon].ARTCC })
+						c.SetTRACON(allTRACONs[idx])
 					}
 				}
 			}
-			imgui.EndCombo()
+			imgui.EndChild()
+
+			// TRACONs for selected ARTCC
+			imgui.TableNextColumn()
+			if imgui.BeginChildV("tracons", imgui.Vec2{tableScale * 200, tableScale * 350}, false, /* border */
+				imgui.WindowFlagsNoResize) {
+				for _, tracon := range allTRACONs {
+					if database.TRACONs[tracon].ARTCC != database.TRACONs[c.TRACONName].ARTCC {
+						continue
+					}
+					label := fmt.Sprintf("%s (%s)", tracon, database.TRACONs[tracon].Name)
+					if imgui.SelectableV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
+						// TRACON selected
+						c.SetTRACON(tracon)
+					}
+				}
+			}
+			imgui.EndChild()
+
+			// Scenarios for the tracon
+			imgui.TableNextColumn()
+			if imgui.BeginChildV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, false, /* border */
+				imgui.WindowFlagsNoResize) {
+				for _, groupName := range SortedMapKeys(c.TRACON) {
+					group := c.TRACON[groupName]
+					for _, name := range SortedMapKeys(group.ScenarioConfigs) {
+						if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+							c.SetScenario(groupName, name)
+						}
+					}
+				}
+			}
+			imgui.EndChild()
+
+			imgui.EndTable()
 		}
 
 		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
@@ -539,10 +585,6 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.EndTable()
 
 		}
-		imgui.Separator()
-
-		c.Scenario.LaunchConfig.DrawDepartureUI()
-		c.Scenario.LaunchConfig.DrawArrivalUI()
 	} else {
 		// Join remote
 		runningSims := remoteServer.runningSims
@@ -639,6 +681,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 	}
 
+	return false
+}
+
+func (c *NewSimConfiguration) DrawRatesUI() bool {
+	c.Scenario.LaunchConfig.DrawDepartureUI()
+	c.Scenario.LaunchConfig.DrawArrivalUI()
 	return false
 }
 
